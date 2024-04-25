@@ -1,118 +1,119 @@
-Return-Path: <linux-kernel+bounces-158517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC1A8B2199
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:28:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1668B219A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2481F22BC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:28:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE68A1C222AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF2312C46B;
-	Thu, 25 Apr 2024 12:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D34412BF3E;
+	Thu, 25 Apr 2024 12:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQYJLaIH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XP+Dy3TL"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A7912AAEC;
-	Thu, 25 Apr 2024 12:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721E012BF28
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714048119; cv=none; b=bLKM52LrJ6M2jfkGtOOAaYvt844AKMWhXyeWZKeI/UyeHCtgoeWpsLKSk6uWxOG9Cx9IRPzw42E9XTT9prL4F414gLCraFRYDW2kCyuDSQgJRr37qbYf1Ay0Jj86ifO+GsX66v+kZZl5ZH1vgSUb4wGtUQdRzNALwqjw/sv8NuE=
+	t=1714048154; cv=none; b=tn4TVVinmE0hTC+Vkm/oBr3aKCF9ZG0MC8ey2Cb/NYlsRlHZacnTS5vBSXj6NmTO0MErA+nNQH6cdv45cL0RU6bUBetVQ+rZVT1wOr7o6H7E36+hZh9Qfaf9pgJXFEDEh2CimOseFrVkOHAEAIIIogpUIxByREa8D2jc6HMVj74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714048119; c=relaxed/simple;
-	bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ExtzoxgXL79GsTZgrk6lTDoKjMVuL/tFUBwekMGnxWm/7/Z4OqsEeJz/vLRoFHkVpcJuFmQ0/KswXiUi9XN3Xs2TY1y1JKl3KQ52R8VPnH3tWIuWCFMaitFkpl2o4Bbc8RB05eyrE711Tfb90tkoIKlRvmqf0Nj7GvNopfR0yPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQYJLaIH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113B5C113CC;
-	Thu, 25 Apr 2024 12:28:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714048118;
-	bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LQYJLaIHV4IcTJrE3/86wGqEexF4wZbsZ+syPCclBnWKmf8VEzLmXnxPjS6LaWRwW
-	 d6UVHNoe4rF4Gk57mxEKW8EvR2ORcwhopq9QMQ2cUyDwMZ8Ho9BHg10TuMkeK2oA2T
-	 WN5cyvdhCoH+IRBPXLy/iR+bCjNzM2ouAnCMA+Lyp67dEP8uqegyRaDl0xjR8yEVsZ
-	 bKLMN3dMajYdSoxMHOG9FakFW8yYMJNUCQB86XdFEStYfnBCBI4lWA9kmL5TcmLzXk
-	 EGj/89lt0Asiy7WbZ5Svw2Bn/iMknVatObou4ecXqQ+V+ama1CcbQ9hAn/Qi+OiIN0
-	 SpgroX1Z0/IFA==
-From: Christian Brauner <brauner@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>,
-	Chandan Babu R <chandanbabu@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	djwong@kernel.org,
-	hch@infradead.org,
-	david@fromorbit.com,
-	tytso@mit.edu,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 0/9] xfs/iomap: fix non-atomic clone operation and don't update size when zeroing range post eof
-Date: Thu, 25 Apr 2024 14:25:47 +0200
-Message-ID: <20240425-modeerscheinung-ortstarif-bf25f0e3e6f3@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
-References: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1714048154; c=relaxed/simple;
+	bh=drcLk8pUBmRnR0q4bgDQ6UjNtZcLfMvW/yQjuXeW7Lg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mgx2ktX6WPPl19+Kdk43aMMPf+Sc95zZUPRRLSXnARaRUXF1SzFRkibbz8HqiPWBiYPYGGYO44vpRCdZrwYkKzwyWHyFDeo9otEfep1/nkDRu31pVzYELz/gK50ONr6cHenc1yxZMr/SRof2pPXyNMCostEjZzVCsUi2Rj860As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XP+Dy3TL; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id 552771C0004;
+	Thu, 25 Apr 2024 12:29:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714048144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WJAkEXrvSwROdlTnoslcx5AIwSJalnex1Ta2XlQ37l8=;
+	b=XP+Dy3TLIvGOqZUqVN/+W+zZnOOPe/yfNa11henjn5j1pnTPLOf6QA/qBAuYDkaYJ7gsBb
+	6992Cw/g0Q0ww71z9dTFSngI4E68/kbB1j5rFw+4ztmQV1IN/K1Wkw6HfD1nM/r9+7BN9i
+	zzUKiA5Zf/rXjo/2ZUDUggo+HhZgybQieuqtwHMdUM/fkmmtkmVPsNYVLxyUL0/HbS7tF3
+	MTqffsTiFmuyfuqVYTfzzHVr6IIzNSWnVyG7z41j6i+mka7njqRdD/7Yivrb7MFHO0OoVc
+	DQ33/t41MGcAnhJtVvniX93WjA4QUcqqLTsCd/bfOl1Sas8XlqjNABlRpYgs0w==
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+To: Rodolfo Giometti <giometti@enneenne.com>
+Cc: linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com,
+	christophercordahi@nanometrics.ca,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Subject: [PATCH v3 1/1] pps: clients: gpio: Bypass edge's direction check when not needed
+Date: Thu, 25 Apr 2024 14:28:52 +0200
+Message-ID: <20240425122853.29544-1-bastien.curutchet@bootlin.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1847; i=brauner@kernel.org; h=from:subject:message-id; bh=saQubiJ8B8IiQWQ1nNmf3R9q/utKA2r6d7Pfe/giCGw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRp+bh+uvB+6mTTyLUH3LY735QI5729o+5o1iGLhU3pf rXb63obO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbyfh3D/+gkxrvNMewCOlpf LytlXpldw1rwUXw1j82975HeF7arrmb4p61/MD4w5YVPY5Bzq/9Btvs6Fxqu/n+W9MA/4/Ebh6V TWQE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On Wed, 20 Mar 2024 19:05:39 +0800, Zhang Yi wrote:
-> Changes since v3:
->  - Improve some git message comments and do some minor code cleanup, no
->    logic changes.
-> 
-> Changes since v2:
->  - Merge the patch for dropping of xfs_convert_blocks() and the patch
->    for modifying xfs_bmapi_convert_delalloc().
->  - Reword the commit message of the second patch.
-> 
-> [...]
+In the IRQ handler, the GPIO's state is read to verify the direction of
+the edge that triggered the interruption before generating the PPS event.
+If a pulse is too short, the GPIO line can reach back its original state
+before this verification and the PPS event is lost.
 
-@Chandan, since the bug has been determined to be in the xfs specific changes
-for this I've picked up the cleanup patches into vfs.iomap. If you need to rely
-on that branch I can keep it stable.
+This check is needed when info->capture_clear is set because it needs
+interruptions on both rising and falling edges. When info->capture_clear
+is not set, interruption is triggered by one edge only so this check can
+be omitted.
 
+Add a warning if irq_handler is left without triggering any PPS event.
+Bypass the edge's direction verification when info->capture_clear is not
+set.
+
+Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
+Changes in v3:
+ - Add a warning in irq_handler
+Changes in v2:
+ - Modifiy the way the bypass is done to avoid code duplication
 
-Applied to the vfs.iomap branch of the vfs/vfs.git tree.
-Patches in the vfs.iomap branch should appear in linux-next soon.
+v1: https://lore.kernel.org/all/20240410113502.73038-1-bastien.curutchet@bootlin.com/
+v2: https://lore.kernel.org/all/20240411061329.7262-1-bastien.curutchet@bootlin.com/
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+ drivers/pps/clients/pps-gpio.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+diff --git a/drivers/pps/clients/pps-gpio.c b/drivers/pps/clients/pps-gpio.c
+index 2f4b11b4dfcd..af62d944d051 100644
+--- a/drivers/pps/clients/pps-gpio.c
++++ b/drivers/pps/clients/pps-gpio.c
+@@ -52,7 +52,9 @@ static irqreturn_t pps_gpio_irq_handler(int irq, void *data)
+ 
+ 	info = data;
+ 
+-	rising_edge = gpiod_get_value(info->gpio_pin);
++	/* Small trick to bypass the check on edge's direction when capture_clear is unset */
++	rising_edge = info->capture_clear ?
++		      gpiod_get_value(info->gpio_pin) : !info->assert_falling_edge;
+ 	if ((rising_edge && !info->assert_falling_edge) ||
+ 			(!rising_edge && info->assert_falling_edge))
+ 		pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
+@@ -60,6 +62,8 @@ static irqreturn_t pps_gpio_irq_handler(int irq, void *data)
+ 			((rising_edge && info->assert_falling_edge) ||
+ 			(!rising_edge && !info->assert_falling_edge)))
+ 		pps_event(info->pps, &ts, PPS_CAPTURECLEAR, data);
++	else
++		dev_warn_ratelimited(info->pps->dev, "IRQ did not trigger any PPS event\n");
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.44.0
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.iomap
-
-[5/9] iomap: drop the write failure handles when unsharing and zeroing
-      https://git.kernel.org/vfs/vfs/c/89c6c1d91ab2
-[6/9] iomap: don't increase i_size if it's not a write operation
-      https://git.kernel.org/vfs/vfs/c/943bc0882ceb
-[7/9] iomap: use a new variable to handle the written bytes in iomap_write_iter()
-      https://git.kernel.org/vfs/vfs/c/1a61d74932d4
-[8/9] iomap: make iomap_write_end() return a boolean
-      https://git.kernel.org/vfs/vfs/c/815f4b633ba1
-[9/9] iomap: do some small logical cleanup in buffered write
-      https://git.kernel.org/vfs/vfs/c/e1f453d4336d
 
