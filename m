@@ -1,132 +1,149 @@
-Return-Path: <linux-kernel+bounces-158017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E96278B1A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:15:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AB878B1A3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A990B21CDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:15:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39535286BF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57ED3B781;
-	Thu, 25 Apr 2024 05:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6453A29C;
+	Thu, 25 Apr 2024 05:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="PrmBRQtL";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="F+makd09"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="BRBRiOrO"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BEB2B9DE;
-	Thu, 25 Apr 2024 05:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF0B3A1BF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714022106; cv=none; b=LeSu7/Xbiql9sEO5XlGDX5NqiZi9TOYNkiiLRfgy8iMVy2Kq3aIXPyMXzR8QLhi/aP1WsuZN8YEHJ6mUVjA3bQfDmixyAoziPrQLWVXYypt/ydoop75zPDQ/2PBCMJBX5aHHQVv9jtzxcXFDpr9CdHgXQFXXYOXyrwconAXHY8c=
+	t=1714022145; cv=none; b=UlPj1pOtkUXUgrkgeq88wEd/gAZe7FMwyNqq8FWw3PGZiSFq8ssvaWb+Fl/SzbGG50akT9cd46u9pK8+Ft5Bw9t6iTKKtOs2Z3vPzu1X5OM66/EsMXvKbutOyDFWbs7inPQuH8nElwy8yVfLwPAw0o/sSSfpP82O49iI3oaUh5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714022106; c=relaxed/simple;
-	bh=iW8ATjleso1uM6oVbDeQRVFxVXqLdoVu5uZ3W7y/49I=;
-	h=Subject:Date:From:To:Cc:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RBvrbRzW7FjFVeibUmwGGNrCRutVuHuuVvOitVQlVulVMoiHsbd4B4pz06gcSt+rZVnzR5BNJzpIyaEnZBlDXh6bj9KEm9KU7vbqUaPFZ8+/cKGE8zHF/wIDtkmh45yoYeNqMwoK8gbsk8tiu8g2RbCyQC5XenW1ymGNuD6jgbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=PrmBRQtL; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=F+makd09 reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1714022145; c=relaxed/simple;
+	bh=KMml6kOnTgP5A7N4cMeQuHkBnwThjTY+lkYFRv3m4lA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gtq1l2cYdRfLivglLYIZES1JihY4W3IBNQIg2I1+MybHj0Ppj1YUsD+41/kQs6YUuthV0OaGMjhXdRPAP05LT1cgwOx7prIsLjgobrLyXh34RbyKtEx9n2VIwRcDO4LT4i/xH8V/P0tLCOEqode+fkfJRpQxthcjhLEfEMi48g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=BRBRiOrO; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e5715a9ebdso4419715ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 22:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1714022103; x=1745558103;
-  h=date:from:to:cc:message-id:references:mime-version:
-   content-transfer-encoding:in-reply-to:subject;
-  bh=BPkT8A48a6oXi458YKzL+nQT48iFaKKVvkLsK6sfIQ8=;
-  b=PrmBRQtLU18tGvtdRqNaPYzfIobbHNakJBzhgQMXr4AnfxDSPcouCN1U
-   cjnyJdqaRkLxIBZDJNb5yP0JFW7KJXOSyDYf8n3J82uTGbmDIr6WfMJoT
-   ntggT+DJP6TbH2zb80s3J6rY+ZMlKlCnJq278Bp4P0Nq69ehxKVKjwXkn
-   UEqEQuFnk/UzyZSUHW/7Oj2AE2e8Mrx3k5Tirl49Yangx9slVPpykY+Mb
-   qggJE4S21QzhkyNpWQS1T1nvZ0lM9P+NR5cS6twJZJJ819swwvysFo1pr
-   6OyYTBIkB5L+iKmwi8AyzPqSN/pJnzLd0mEErN/hJM66UU693ji4/iu4D
-   g==;
-X-IronPort-AV: E=Sophos;i="6.07,228,1708383600"; 
-   d="scan'208";a="36602262"
-Subject: Re: Re: [PATCH 1/4] can: mcp251xfd: stop timestamp before sending chip to
- sleep
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 25 Apr 2024 07:14:59 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55EDF16DDB5;
-	Thu, 25 Apr 2024 07:14:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1714022095;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=BPkT8A48a6oXi458YKzL+nQT48iFaKKVvkLsK6sfIQ8=;
-	b=F+makd09QV/2FCHjI+XH7QQZUn/V0xyGCU+yHRobL284y70ZbyQ4HJ5MCi1JEdH44/LEke
-	e+OMl0VqEthNKUerZuKQa7fg7kX2EU4Fzx5lxoAakMZmySpqwxF2NhknjCxmGJA0T8tQu6
-	UMlF1Vs5ufb8H7YV9zm+fqt41XfF65pQ1k9FEbJ0V4ZntBJEyH4YZTGYHYLQBI68QRWI5G
-	Nh1iRYig8X8WWc0t2Jsju9LeY6Q9Cu48ovC8XcxJgyL/TnkbPZUUNROfQeqccDpSqkHFet
-	OC25z7vGqXNoaIgi32ZhBi6vEW34TJJuvV7TPi8k2tlB8YyVdRipv1GP+jCdPg==
-Date: Thu, 25 Apr 2024 07:14:47 +0200
-From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Thomas Kopp <thomas.kopp@microchip.com>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux@ew.tq-group.com,
-	alexander.stein@ew.tq-group.com
-Message-ID: <Zinmx6c2ITl3jQQm@herburgerg-w2>
-References: <20240417-mcp251xfd-gpio-feature-v1-0-bc0c61fd0c80@ew.tq-group.com>
- <20240417-mcp251xfd-gpio-feature-v1-1-bc0c61fd0c80@ew.tq-group.com>
- <20240424-fast-sandy-jackrabbit-d289a0-mkl@pengutronix.de>
+        d=bytedance.com; s=google; t=1714022143; x=1714626943; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bNdUFtYR2xbr86vH1UwuLkPY/+I0PhhpA884pNqNeBA=;
+        b=BRBRiOrO/0ZBdi6rDOWpLKIIojZHBhZm7QsyoAqowo+sVt8BDsvaEGq0Ocfg0gq/gb
+         UoJzv2UlLwZ/dR7Ro5ZYZSV5teT5ivU1mbSfkwoOA72XOm2eqzktzkiWZmWAFtpF6KLr
+         M4leknzkYM+c6XFYIaQi/KuE5Mv5gk+DIrjIchinNS1LdeId6bCEoJKRd3UAJnw3810J
+         yGBmIhVdPrMhqHBIeXbqsUW/2J/9buwfqMboZUyyig7GkXodgW+20e8g2AArryz1At9K
+         4fzCh5zpLy1NvrcnsEjXio7nEsKETLYaWhDi7KjFO/hr5epEncL1wm6Q05QAVuUdE7Vc
+         YkdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714022143; x=1714626943;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bNdUFtYR2xbr86vH1UwuLkPY/+I0PhhpA884pNqNeBA=;
+        b=LT0/kyXMpYtEfPucZ6Z5rhkcrs3s3oI9v+4tvUhZBc5JrY3HspOKmHYdWQErutYYlg
+         r75ACs2XVPn+gu/iMCdLLK08qpTSsHelUKaEpMnKWegYf5V6/ZxvWPh7Bu6HOQwkVPAO
+         K/KWpVFpas6K+DV+w6rxOXg3YBcGypeLdn+x5yM8X8qa4rr2Yr5SEuLa16oOrYYNIi/T
+         FmlWyU3JQQm54zHc7Pkz0/8GzOk7BOyxYLsLsd1BPrXCYDBJlFioXC4xPJ9j8SnjKOAo
+         Oc4zLuDlgmhzZ7i54nWXcTBYpA0ajepjN0ujuhQ6BwQgP0pC+A0sX/PAcUbWFRSpKaC9
+         vpsg==
+X-Forwarded-Encrypted: i=1; AJvYcCULDM0y1e57pmcgtykThrhwKgKuZdDf+hKTvtwT+ODaQKKeSPBF7g38Wr8kYANpR2LcONs2Wk0UufD08yjx3rUqSeSYBV+qTnXQCW+Y
+X-Gm-Message-State: AOJu0Yx9uy3KRZ36toLm0EAkvzKTLOCgr9/mdQIYTOlEk7P6VXXVxFfb
+	52OiNcF6hzIEc0tQxtmVFa96ndAA6BLT3DgSPQivWLfv4UdpJEG5dk6UUFpv/Lc=
+X-Google-Smtp-Source: AGHT+IEQITLDZGcYmA+FjKYuiztsfCh0wLhqQI6Xcb/IceR3ZPd+qhouMoKXS2ZMMGdGKHN5UKg2Ig==
+X-Received: by 2002:a17:903:41d0:b0:1e4:6243:8543 with SMTP id u16-20020a17090341d000b001e462438543mr5733230ple.5.1714022143006;
+        Wed, 24 Apr 2024 22:15:43 -0700 (PDT)
+Received: from [10.3.132.118] ([61.213.176.5])
+        by smtp.gmail.com with ESMTPSA id f16-20020a170902ce9000b001e78d217fd9sm12826398plg.16.2024.04.24.22.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 22:15:42 -0700 (PDT)
+Message-ID: <e1c97315-de7a-4222-9fd4-788e566b2eaa@bytedance.com>
+Date: Thu, 25 Apr 2024 13:15:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/12] cachefiles: make on-demand read killable
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
+ Hou Tao <houtao1@huawei.com>, zhujia.zj@bytedance.com
+References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
+ <20240424033916.2748488-13-libaokun@huaweicloud.com>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <20240424033916.2748488-13-libaokun@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424-fast-sandy-jackrabbit-d289a0-mkl@pengutronix.de>
-X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, Apr 24, 2024 at 10:24:58AM +0200, Marc Kleine-Budde wrote:
-> On 17.04.2024 15:43:54, Gregor Herburger wrote:
-> > MCP2518FD exits Low-Power Mode (LPM) when CS is asserted. When chip
-> > is send to sleep and the timestamp workqueue is not stopped chip is
-> > waked by SPI transfer of mcp251xfd_timestamp_read.
-> > 
-> > So before sending chip to sleep stop timestamp otherwise the
-> > mcp251xfd_timestamp_read callback would wake chip up.
-> > 
-> > Also there are error paths in mcp251xfd_chip_start where workqueue has
-> > not been initialized but mcp251xfd_chip_stop is called. So check for
-> > initialized func before canceling delayed_work.
+
+
+在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
+> From: Baokun Li <libaokun1@huawei.com>
 > 
-> Can you move the mcp251xfd_timestamp_init() (which starts the
-> timestamping worker) into mcp251xfd_chip_start() to keep things
-> symmetrical? I think then you don't need to check for "work->func" in
-> mcp251xfd_timestamp_stop().
+> Replacing wait_for_completion() with wait_for_completion_killable() in
+> cachefiles_ondemand_send_req() allows us to kill processes that might
+> trigger a hunk_task if the daemon is abnormal.
 > 
-Hi Marc,
+> But now only CACHEFILES_OP_READ is killable, because OP_CLOSE and OP_OPEN
+> is initiated from kworker context and the signal is prohibited in these
+> kworker.
+> 
+> Note that when the req in xas changes, i.e. xas_load(&xas) != req, it
+> means that a process will complete the current request soon, so wait
+> again for the request to be completed.
+> 
+> Suggested-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-I realise now I confused mcp251xfd_timestamp_init with
-mcp251xfd_chip_timestamp_init.
+Reviewed-by: Jia Zhu <zhujia.zj@bytedance.com>
 
-The only call chip mcp251xfd_chip_stop without call to
-mcp251xfd_timestamp_stop is from mcp251xfd_handle_cerrif.
-
-So it should be sufficient to stop the worker there and the check for
-"work->func" can be also omitted.
-
-Best regards,
-Gregor
--- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
+> ---
+>   fs/cachefiles/ondemand.c | 21 +++++++++++++++++++--
+>   1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+> index 673e7ad52041..b766430f4abf 100644
+> --- a/fs/cachefiles/ondemand.c
+> +++ b/fs/cachefiles/ondemand.c
+> @@ -525,8 +525,25 @@ static int cachefiles_ondemand_send_req(struct cachefiles_object *object,
+>   		goto out;
+>   
+>   	wake_up_all(&cache->daemon_pollwq);
+> -	wait_for_completion(&req->done);
+> -	ret = req->error;
+> +wait:
+> +	ret = wait_for_completion_killable(&req->done);
+> +	if (!ret) {
+> +		ret = req->error;
+> +	} else {
+> +		xas_reset(&xas);
+> +		xas_lock(&xas);
+> +		if (xas_load(&xas) == req) {
+> +			xas_store(&xas, NULL);
+> +			ret = -EINTR;
+> +		}
+> +		xas_unlock(&xas);
+> +
+> +		/* Someone will complete it soon. */
+> +		if (ret != -EINTR) {
+> +			cpu_relax();
+> +			goto wait;
+> +		}
+> +	}
+>   	cachefiles_req_put(req);
+>   	return ret;
+>   out:
 
