@@ -1,69 +1,134 @@
-Return-Path: <linux-kernel+bounces-158576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F9948B2257
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:15:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A03A8B2246
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:12:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71B821C21060
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:15:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C722867B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8129F149C5E;
-	Thu, 25 Apr 2024 13:15:19 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F5B149C62;
+	Thu, 25 Apr 2024 13:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JJD6JBgB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B691494B4;
-	Thu, 25 Apr 2024 13:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280A149C44;
+	Thu, 25 Apr 2024 13:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714050919; cv=none; b=ZGRKCSqiRxja5a2BJl+sORzXisrpZVvojP04Ng+FdyoM3VTvmbEcKTeBSgeoNdZq6D9O+wWlzsdBUqg2cQPiN0LNlA3zWyL7xjFo0HGXIXoKFTYSERZ1Kx3TXd1ftXKaqI7PzOU0SlXh446/7OlYEk2o3F+ZC3zyKnMnjsWTmmc=
+	t=1714050727; cv=none; b=TuKUlgihAE+WCMHYbjN0st0Zo5LCleeS+cZRCeCXp3ZLACTnvEfD75kqt88EUCeUGU1+K0m+QNaR5kex++uwc9wiMh+fv3FqN5P86ko06kwbc/+nXXCALa99WbDPQgDypLVL1J2zwlSbTW0mAWbmd6dIXnv3xBqsEHXV3I6+YZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714050919; c=relaxed/simple;
-	bh=a8oXnegoRuH7QSHKQT/j9X3v7gxfYFvlmdSHuZ9hPO4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GnM8YsQexV1J2+WDTqnylwTkUsQVhRJ8GpOm6yc6LPNBc1ohmo8PfeJToyfzxmprQei2dWP6sS+6WDbKGpGJlmf2hi7tA617V+yKJy5fh1eEZM//PTptPWVa4CwDKlZIT622nFI6Vi2WUKqVSc6Gz5MsVUoixp38uJb07/Qtazc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 0B8FA68C4E; Thu, 25 Apr 2024 15:08:45 +0200 (CEST)
-Date: Thu, 25 Apr 2024 15:08:44 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Lennart Poettering <mzxreary@0pointer.de>
-Subject: Re: API break, sysfs "capability" file
-Message-ID: <20240425130844.GA6022@lst.de>
-References: <ZhRSVSmNmb_IjCCH@gardel-login> <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com> <ZhT5_fZ9SrM0053p@gardel-login> <20240409141531.GB21514@lst.de> <d7a2b07c-26eb-4d55-8aa7-137168bd0b49@kernel.dk> <Zh6IpqnSfGHXMjVa@gardel-login> <b74f99e8-5a50-4e93-987f-0bcfc0c27959@kernel.dk> <Zh6KZ7ynHuOd0mgQ@gardel-login> <c3a6a639-bf15-4f8b-abbd-978d9836d93c@kernel.dk> <5ef0ac71-21dd-46d7-a0c1-1b1b391e51a8@leemhuis.info>
+	s=arc-20240116; t=1714050727; c=relaxed/simple;
+	bh=6oZ89fNLVqBFlw2FqXYow9IUd50x0ChIAGq7WZrSWb8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vAIbOgKkWZSE/NRVExmdIG9ykJqigN10Li3t5qOOM0dNHsEe+g8I8mGOJOilZB1Juv5ulpKXqE2My4iHvoirSseAZT8Awt9dyrky9Oa0dOkGSugDeXD+Y067G/qwLwkSFi2vpb+bz7InsKAV1s9sj2RcUtc+87qI7ZymmhAQ1Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JJD6JBgB; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714050726; x=1745586726;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6oZ89fNLVqBFlw2FqXYow9IUd50x0ChIAGq7WZrSWb8=;
+  b=JJD6JBgBGFhGEhO0E2Tbaf5masdI2+xUR1EccyJtiHWcoetP0Jv8Xgh2
+   BZpwiaSiXkuRt/0KAjeyxESLMUZOv8bt5f1keWElTgqF8qJJyEVuqm7DM
+   8usw7LKalCq8GG3Vk+nWMeSC8+NWmzetAFFR6z5Lp4sY1L4e+6oye9EVO
+   rmHQCU8qHt53b6x6UT2woqHr9IvQEylVvo1HATeYk4CsCA8WXNyafjtHO
+   rywqBo/8Vfb5PCIMAHNoWagsHTID/S2i3AHJq5FK3gtN2vDQ+nmWfu0AR
+   NIFYgZqGvrVGGWutYBOziQjpoheQrw7+Jl5t/Eo6hsVd4gmYm6n2Ha1Vj
+   w==;
+X-CSE-ConnectionGUID: qGJhRqLnTmqE67o8RNBtPg==
+X-CSE-MsgGUID: you8vt16Q4KW4dBFnUJbeg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="27190441"
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="27190441"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:12:04 -0700
+X-CSE-ConnectionGUID: gJLLNdAVRh+rRxXktGAXqg==
+X-CSE-MsgGUID: OlnglW8xS+6HlMR2Clurrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="56010371"
+Received: from ehlflashnuc2.fi.intel.com (HELO [10.237.72.57]) ([10.237.72.57])
+  by orviesa002.jf.intel.com with ESMTP; 25 Apr 2024 06:11:59 -0700
+Message-ID: <62e58960-f568-459d-8690-0c9c608a4d9f@linux.intel.com>
+Date: Thu, 25 Apr 2024 16:11:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ef0ac71-21dd-46d7-a0c1-1b1b391e51a8@leemhuis.info>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] Define i2c_designware in a header file
+Content-Language: en-US
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+ Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
+ Mengyuan Lou <mengyuanlou@net-swift.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Andrew Lunn <andrew@lunn.ch>, Duanqiang Wen <duanqiangwen@net-swift.com>,
+ "open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+ "open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+References: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 10:09:35AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Jens, quick question: what's the plan forward here and who will realize
-> what you outlined?
+On 4/25/24 3:26 AM, Florian Fainelli wrote:
+> This patch series depends upon the following two patches being applied:
 > 
-> I'm asking, as afaics nothing happened for a week (hope I didn't miss
-> anything!). Sure, it's not a regression from the last cycle or so, so
-> it's not that urgent. But hch's "It is not a regression at all" last
-> week made me worry that this in the end might not be solved unless
-> somebody has it on the todo list. Normally I would have CCed Linus at
-> that point anyway to get his stance, but from your statements it sounds
-> like this is unnecessary here.
+> https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
+> https://lore.kernel.org/all/20240422084109.3201-2-duanqiangwen@net-swift.com/
+> 
+> There is no reason why each driver should have to repeat the
+> "i2c_designware" string all over the place, because when that happens we
+> see the reverts like the above being necessary.
+> 
+> Changes in v2:
+> 
+> - avoid changing i2c-designware-pcidrv.c more than necessary
+> - move constant to include/linux/platform_data/i2c-designware.h
+> - add comments as to how this constant is used and why
+> 
+> Florian Fainelli (4):
+>    i2c: designware: Create shared header hosting driver name
+>    mfd: intel-lpss: Utilize i2c-designware.h
+>    mfd: intel_quark_i2c_gpio: Utilize i2c-designware.h
+>    net: txgbe: Utilize i2c-designware.h
+> 
+>   MAINTAINERS                                    |  1 +
+>   drivers/i2c/busses/i2c-designware-pcidrv.c     |  3 ++-
+>   drivers/i2c/busses/i2c-designware-platdrv.c    |  5 +++--
+>   drivers/mfd/intel-lpss.c                       |  3 ++-
+>   drivers/mfd/intel_quark_i2c_gpio.c             |  5 +++--
+>   drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c |  7 ++++---
+>   include/linux/platform_data/i2c-designware.h   | 11 +++++++++++
+>   7 files changed, 26 insertions(+), 9 deletions(-)
+>   create mode 100644 include/linux/platform_data/i2c-designware.h
+> 
+I have mixed feeling about this set will it help maintaining and 
+developing new code or do the opposite. Surely misnaming as referenced 
+above can happen but I think it's not too common pattern while having 
+single define header put under include/ feels added burden.
 
-I'll get to adding a real interface in a bit.  Sorry, I've been
-a little too busy the last days.
+Also I personally like explicit strings put into MODULE_ALIAS() since 
+they are easier to grep from sources and modules.alias file when 
+debugging autoloading issues. So change like below makes that debugging 
+one step more labor.
 
+-MODULE_ALIAS("platform:i2c_designware");
++MODULE_ALIAS("platform:" I2C_DESIGNWARE_NAME);
 
