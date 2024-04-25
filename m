@@ -1,76 +1,75 @@
-Return-Path: <linux-kernel+bounces-158857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61508B25DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F358B25DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:01:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F2F21F2227B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BB761F227DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B0014D2B1;
-	Thu, 25 Apr 2024 16:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B2A14C5B8;
+	Thu, 25 Apr 2024 16:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fnC32YMn"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gB08OIcc"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C3D14D2A0
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F11414C59B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714060846; cv=none; b=cEyvOIeZYQWH3JyjqkqC+HfSYy2td8rFiIGJhvhv1WFvGzlVmk7/y2oD+NF2iOXoW7jd5oKjIlamsawEwonDf2Ir3SDYgV+o509S7jYa28fmu1Qo0chtRCVJVrZjl/w7OI0FIWA48SFfIQmRF6GPoD47AquSfdfhbRxG1dVICKY=
+	t=1714060854; cv=none; b=O0+j0qXuhUNXzY8CGfFotzPbQ11RnujKtmDqXpSHdPg1WR4Gyb8WPWceEu0V0FNjKIy99fcYW5iZCxfWuwyOiDobR28pO26Pa9Zx5somsjCFPXIPDI1t/HhBOQS5ZFzW0TxvKwemaMWBCcclDwJcZCZ44q6VP5ExJjjBnp/hhz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714060846; c=relaxed/simple;
-	bh=fzI4MCRm+4/oXv+wNRCbGfB0i4ApNccDio/5m7s9FkQ=;
+	s=arc-20240116; t=1714060854; c=relaxed/simple;
+	bh=JBXvcCemZK7+GexmKhCeDPXQjou4mKuLIHvf0CFyybU=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=P6sN5VQlJfhUeR+iWyQWE3kAXcxPj86lbmRR1JSw1K800qTxMN4p3VMMR7KeIio5/RUgOPus6BsuIjOZT8NNGizXrbTkOk2wsBppTZCxEap8EXexStOGumXA6ZNnApp4Px4M7orHRr0p7xeyj0hIIdTsY1fJXIhjeuzTNLLV42Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fnC32YMn; arc=none smtp.client-ip=209.85.221.46
+	 In-Reply-To:Content-Type; b=aqnw+MCPHKiZQTttX8q+DCpMal2C/o+pvcnzliQKOENy0BiMA0W4oi+7RDnd3Bl4+KC8oKrYmkEfqIRTaAeiN6tfAnL4YuqMS1BxbQqbUIXU7/SUOGawhX6u8ak+ZbhvUbg0OmCPSEanB+xV0MY35ta4wnTP7uKcH3yOkJrwAos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gB08OIcc; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34b029296f5so1189886f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:00:44 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso9080085e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714060843; x=1714665643; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714060851; x=1714665651; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wGYFYnULTAAU0aFrjX7VVM7UZ6GIxaemoe8H8xCPZbQ=;
-        b=fnC32YMnGZpSJNc8U1BzW09fmFOmvVGLwmmrtQeEDX3K7uvfKc6rrSzK3bCM4jtxLS
-         N0arvcHnjFtP/dH75MIJiyL8C9yALwvvN2sWfKrc1RQEmBdtJh49/TOhCdFylz6n5Jjw
-         17IVUcOwW32gcPq2mIkFyVcqNK4nZR5oBf84YNLzcMdnSW2cOGyt9TK1Yi5U7f4Ra6CU
-         LVhYcBdD99TrbZuUNft4pA/BB0szxevh3e+AKAFyseb2akyjzH4FSqFQarL+C4JLFi18
-         Q9+FBSFcg9+9og6oXuA4cPd/SMU369SO+VBNztDQJhZzDGCn3doxi5621mbQeXEGxPhM
-         APEA==
+        bh=kckeE+NEI4roa7Me46yLkkObGQIsPjSIT73YQTFPxCk=;
+        b=gB08OIccV71zTTCV7uVsNzbyR03f4qDMTxOoja5oubEV+WPG1uK31GFBZuoV9TWwSh
+         pRBynavLM4VZzLAqPfVFqEnbVlDmaqJ23ZCnGVlBHpeSgavpLHCe0h2b018kWSSwKrSm
+         VPAgwB8OlU8hwcEtmFFutpqb51bdNu0DZz0Ts9Fb16Vl6MLstWVbzUnz7paGx61mykNJ
+         VDExRWa6DCynzOawUHlsnDCjYF4Sedv1GcUK/Llg14vcwub4lYwh6wWmdqBjw8AlfHxO
+         krnPPSh15NWdvNlSQJ/0W09CLShAotT9GxlwvZ+qv73vdA2wRZRQ+vN9/TX2vX8GexIV
+         OYlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714060843; x=1714665643;
+        d=1e100.net; s=20230601; t=1714060851; x=1714665651;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=wGYFYnULTAAU0aFrjX7VVM7UZ6GIxaemoe8H8xCPZbQ=;
-        b=Hx2LDhgS5zUJXToKIOIqVdJzFRciognf+s+ezFn79jFsL974miuBs6fNg7SU3Qkvpg
-         8iQRxW3rJTJjjWUJS56ZZlzU0ZJI+12ex7ol4C9HdyLKzWyqYMDImUf2+H5w0a5jsFy1
-         S34nxoolF04rClVh2gL4X7tb/Gsxs2YJonvYo97oo7XBrB9syP+YF6TW07tc/vOkv/xO
-         QkqbOC8n8sgGoQofHfEWwEeJQt58rn0i7fX6iHuHQ6pj+MpBH4DIgqevr4m7epyvoQvN
-         5gqG868QnVDWLs0MhIm4lCBf3XSID4g1JgUQzcKAU37bLX6vbwGQlrozMUEDhiVZCTJ+
-         RsCw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbbHp7ou/SKbT+MdZN7mUvvLwnp6YxIaDhGDU6Zq3brk/HDFXzt2CiwqkKZxp1YxSHLgidrws3q5qdRoqV6FDRJoEaZojoXRqUG/cy
-X-Gm-Message-State: AOJu0YwhIdX7w42JODXgP9U80hO19B53q/KsCOfRs2MRlRneFtzZ46B2
-	O5FjyqDBaPxVpq2CkYZ20yCqLJtaR8BH45AcvWFFDHFnxYpb25VW2zWsHTmOi+YDIc4GnlQNM8y
-	QruI=
-X-Google-Smtp-Source: AGHT+IHDrrx5zIevOrXHuv98ZaOQmOYkhPHMInLfyTpExcxkK+PVCMoBfbV/yH/h1aVwEACnI2JMDg==
-X-Received: by 2002:a5d:4746:0:b0:349:f83f:9ebf with SMTP id o6-20020a5d4746000000b00349f83f9ebfmr5834974wrs.5.1714060842837;
-        Thu, 25 Apr 2024 09:00:42 -0700 (PDT)
+        bh=kckeE+NEI4roa7Me46yLkkObGQIsPjSIT73YQTFPxCk=;
+        b=RXItWteDNp6Z2n5G3qgMc+RdCmlPvV5oQqAEJGRPcqH1zuBJIEVvf5iepFrLsp1/SN
+         sA+Hw3JvsQE+Il4am5zZVeXwxYshQjudmKPYKQcbruNtHPK6jkYorfNTnbk3m8nBSlB4
+         eP0PFSNvC3AJDGIOPQDR4wirj77027dzSFKHFOHid+6/KBjeH7t5dsSRfrFrFb0/ZKVm
+         KY0gY3QRx7rLgDJb0QMmUtcPkEryOb+nAajo/FRBO+273/8FOu/kPNBqt8PhZz3Ygnll
+         agGVefUilTvAzafPX11ABqGGhYLdnRJ7gPuaD8uBvBzQT/aK/iN2ObwifRPU/SHbCNTJ
+         t+9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUk0zuUN9629VP2kaNTuWKj9wQw4WSvbbYEvGEgc4HngqavVGnU9mlonIb//Rw0ZC+29rRc44asn9WAJ9/VKe8wcNZ2VX8y1Q/ivCcX
+X-Gm-Message-State: AOJu0Yz2uiddKQon88XLVZUbrhxMOd7XQncWMdB7f7s28HuYVwZ0kuuQ
+	owazkrA90yCKwYRT0BpsXUcpHZgKcTp71i5X3WaslF3MNfm3q/64tVQesk0KOJY=
+X-Google-Smtp-Source: AGHT+IHrjKF3l4sThlKJ+RxAmHgEGNIe9JwcfNY91sPhFvLEeh9FjhlyUGA200aqY+kHV/MZSMGDfA==
+X-Received: by 2002:a5d:5642:0:b0:34a:ed29:8d1d with SMTP id j2-20020a5d5642000000b0034aed298d1dmr4312102wrw.64.1714060850776;
+        Thu, 25 Apr 2024 09:00:50 -0700 (PDT)
 Received: from ?IPV6:2a01:e0a:982:cbb0:15c7:bd9c:c500:ed62? ([2a01:e0a:982:cbb0:15c7:bd9c:c500:ed62])
-        by smtp.gmail.com with ESMTPSA id q12-20020adfcd8c000000b00343cad2a4d3sm20072228wrj.18.2024.04.25.09.00.42
+        by smtp.gmail.com with ESMTPSA id v4-20020adfa1c4000000b0034c32e9e2fdsm624252wrv.13.2024.04.25.09.00.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 09:00:42 -0700 (PDT)
-Message-ID: <c47e814a-f609-450a-aa20-9342034475e2@linaro.org>
-Date: Thu, 25 Apr 2024 18:00:41 +0200
+        Thu, 25 Apr 2024 09:00:50 -0700 (PDT)
+Message-ID: <85be9e9d-887f-4138-8980-80385ff523fc@linaro.org>
+Date: Thu, 25 Apr 2024 18:00:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,8 +79,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v1 1/3] drm/panel: ili9341: Correct use of device property
- APIs
+Subject: Re: [PATCH v1 2/3] drm/panel: ili9341: Respect deferred probe
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
  linux-kernel@vger.kernel.org
@@ -90,7 +88,7 @@ Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
  David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
 References: <20240425142706.2440113-1-andriy.shevchenko@linux.intel.com>
- <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <20240425142706.2440113-3-andriy.shevchenko@linux.intel.com>
 Content-Language: en-US, fr
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -117,58 +115,42 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro
-In-Reply-To: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240425142706.2440113-3-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 25/04/2024 16:26, Andy Shevchenko wrote:
-> It seems driver missed the point of proper use of device property APIs.
-> Correct this by updating headers and calls respectively.
+> GPIO controller might not be available when driver is being probed.
+> There are plenty of reasons why, one of which is deferred probe.
+> 
+> Since GPIOs are optional, return any error code we got to the upper
+> layer, including deferred probe. With that in mind, use dev_err_probe()
+> in order to avoid spamming the logs.
 > 
 > Fixes: 5a04227326b0 ("drm/panel: Add ilitek ili9341 panel driver")
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->   drivers/gpu/drm/panel/Kconfig                | 2 +-
->   drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 5 +++--
->   2 files changed, 4 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> index e54f6f5604ed..2d4515555820 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -177,7 +177,7 @@ config DRM_PANEL_ILITEK_IL9322
->   
->   config DRM_PANEL_ILITEK_ILI9341
->   	tristate "Ilitek ILI9341 240x320 QVGA panels"
-> -	depends on OF && SPI
-> +	depends on SPI
->   	select DRM_KMS_HELPER
->   	select DRM_GEM_DMA_HELPER
->   	depends on BACKLIGHT_CLASS_DEVICE
 > diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-> index 3574681891e8..7584ddb0e441 100644
+> index 7584ddb0e441..24c74c56e564 100644
 > --- a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
 > +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-> @@ -22,8 +22,9 @@
->   #include <linux/bitops.h>
->   #include <linux/delay.h>
->   #include <linux/gpio/consumer.h>
-> +#include <linux/mod_devicetable.h>
->   #include <linux/module.h>
-> -#include <linux/of.h>
-> +#include <linux/property.h>
->   #include <linux/regulator/consumer.h>
->   #include <linux/spi/spi.h>
+> @@ -715,11 +715,11 @@ static int ili9341_probe(struct spi_device *spi)
 >   
-> @@ -691,7 +692,7 @@ static int ili9341_dpi_probe(struct spi_device *spi, struct gpio_desc *dc,
->   	 * Every new incarnation of this display must have a unique
->   	 * data entry for the system in this driver.
->   	 */
-> -	ili->conf = of_device_get_match_data(dev);
-> +	ili->conf = device_get_match_data(dev);
->   	if (!ili->conf) {
->   		dev_err(dev, "missing device configuration\n");
->   		return -ENODEV;
+>   	reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+>   	if (IS_ERR(reset))
+> -		dev_err(dev, "Failed to get gpio 'reset'\n");
+> +		return dev_err_probe(dev, PTR_ERR(reset), "Failed to get gpio 'reset'\n");
+>   
+>   	dc = devm_gpiod_get_optional(dev, "dc", GPIOD_OUT_LOW);
+>   	if (IS_ERR(dc))
+> -		dev_err(dev, "Failed to get gpio 'dc'\n");
+> +		return dev_err_probe(dev, PTR_ERR(dc), "Failed to get gpio 'dc'\n");
+>   
+>   	if (!strcmp(id->name, "sf-tc240t-9370-t"))
+>   		return ili9341_dpi_probe(spi, dc, reset);
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
