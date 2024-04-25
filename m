@@ -1,252 +1,297 @@
-Return-Path: <linux-kernel+bounces-158186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 477D98B1CB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:18:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E37B48B1CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05D552849AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:18:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6EDE282165
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD42B6EB7C;
-	Thu, 25 Apr 2024 08:17:51 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721973EA86
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EEB96EB6F;
+	Thu, 25 Apr 2024 08:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I6KCWD+1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3E72D60A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714033071; cv=none; b=jn8IR3Ez4RWVlO8nj65HhuEZgGRf3poF41LkIkA78STSES0g4S2F9YOgzYyP/LqOXMmPN7SIwmm6KN3gzOjuEzpVXiT1cg07UNYfk6E9apUjBTrs/JByr5Hn+Q2lQrgVF3d3thQGfogQ1ie0L4oz6Ir5ZJCBjYDTXyf+BLrffNc=
+	t=1714033197; cv=none; b=b4DPBxE3Vz8dCu2VfpHlPCPjfv6lJNhUOPlL1+M8Czxmo569P3og/dRLzJxpkDCHyzcnsnQBopVOwOUiC6WKLSD9dMAj4zDXR6WqWuy8iBwWVJzQrBKYT5yrcHAyxaKroXjEIFSNQnXpPNwCOaGi2RmEKs2ULfvVP4g6kueIht0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714033071; c=relaxed/simple;
-	bh=hRWmynBQoyjehIaOOFj2XlwWXtPxnZ2VxLMQhUN/LRQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tQrHfz6jMIbgb75lnILdFsqnLoaP6YN9YFTuO2kceKPPedXPHNstRsyUsfJXVkfkFarsHBi7MtNRGEJLhriVxEXdIdUWftKSCCzAmcVpiwAwtd+KyruUIifMEkJ3sYszPbC8jV3rPNrMCwQJekN/AHSt2lWYhWPgp+tLFKSAqCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B09B1007;
-	Thu, 25 Apr 2024 01:18:15 -0700 (PDT)
-Received: from [10.57.75.12] (unknown [10.57.75.12])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8BC43F64C;
-	Thu, 25 Apr 2024 01:17:45 -0700 (PDT)
-Message-ID: <4204b5f6-21f0-4aa2-a625-3dd2f416b649@arm.com>
-Date: Thu, 25 Apr 2024 09:17:44 +0100
+	s=arc-20240116; t=1714033197; c=relaxed/simple;
+	bh=X0LexaSUYca3KBoxilRdzCtdkjqHtHxgzOLPDEOLU4Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uzHYTAR4iTRo9LGiQTmMscZrMy4mXOGN3QShr+zIWBIJ2Conna1F6DE1frKXrtGtE1RsYvmRcfxfakWLh060lcZ6VZQeA4+NDii8Qw737O2i8begPU60ZGo9I2MPERLFKTVkY5fYxlZFAuj+WVaYF1+Nuh0F6z/9fY8Tz+YZup0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I6KCWD+1; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714033195; x=1745569195;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=X0LexaSUYca3KBoxilRdzCtdkjqHtHxgzOLPDEOLU4Q=;
+  b=I6KCWD+1iw5Vm6Nnjiwx6gMBCjQ587F552mwTwzrj6j1nA9MnvLKR1d6
+   pQvnJymvQMkKRLzaq+mZOlQSbBQjKrIH7+ku9sgigKQNvGhLJ4xpENQMJ
+   k3e0YAKXpbog8xvhF24iW4x227obls/K773etBnbmSE5NF/DbVnBFxyBL
+   giUi9nda+xyjZdyoWRl2gQKdXUlX2SJebdF103JTKLXCgHb3q5idnHpF+
+   0TA1JE9ZGy+nE9D9/nSQ95NEwWHBZCGn3Az1sp/Qxx23tihegAqVDrb7M
+   DjGRqpyBptb6NAz8W7QM7CvMDba0Pu8BmUEFHr4Wfdl5X9c1qN6YeGv5W
+   Q==;
+X-CSE-ConnectionGUID: JJLMlsVJQwiq/wBxOCG7/g==
+X-CSE-MsgGUID: bAe3YfnyTpupxw+2yRv/Cw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9815789"
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="9815789"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 01:19:53 -0700
+X-CSE-ConnectionGUID: 6XyZWAvmRVOwKqK+3DMurw==
+X-CSE-MsgGUID: NUqMB8tkRQuRepSk1h6YIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
+   d="scan'208";a="24868019"
+Received: from scojocar-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.46.44])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 01:19:46 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
+Cc: Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, linus.walleij@linaro.org, Cong Yang
+ <yangcong5@huaqin.corp-partner.google.com>,
+ lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang
+ <hsinyi@google.com>, Sam Ravnborg <sam@ravnborg.org>, Douglas Anderson
+ <dianders@chromium.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie
+ <airlied@gmail.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of
+ mipi_dsi_*_write_seq()
+In-Reply-To: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
+Date: Thu, 25 Apr 2024 11:19:43 +0300
+Message-ID: <87pludq2g0.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/5] add mTHP support for anonymous share pages
-Content-Language: en-GB
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
- hughd@google.com
-Cc: willy@infradead.org, david@redhat.com, wangkefeng.wang@huawei.com,
- 21cnbao@gmail.com, ying.huang@intel.com, shy828301@gmail.com,
- ziy@nvidia.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1713755580.git.baolin.wang@linux.alibaba.com>
- <4b998e7d-153f-48cc-a9bb-8c84bb675581@arm.com>
- <c1f68109-7665-4905-996f-f1067dfa2cb6@linux.alibaba.com>
- <80b5f87e-c156-4ccc-98f0-96f1fd864273@arm.com>
- <ef4f15dd-da31-4a1e-bec5-62a7002c4f7c@linux.alibaba.com>
- <5b8b22e7-6355-4b08-b5b5-1e33ebae6f16@arm.com>
- <813fe7fd-3004-4e8b-801d-95c33559a025@linux.alibaba.com>
- <76f816dd-3bbf-48c9-a630-3787051cf289@arm.com>
- <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <8c0d6358-3c16-4a57-822c-04b3b3403fe6@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 25/04/2024 07:20, Baolin Wang wrote:
-> 
-> 
-> On 2024/4/24 22:20, Ryan Roberts wrote:
->> On 24/04/2024 14:49, Baolin Wang wrote:
->>>
->>>
->>> On 2024/4/24 18:01, Ryan Roberts wrote:
->>>> On 24/04/2024 10:55, Baolin Wang wrote:
->>>>>
->>>>>
->>>>> On 2024/4/24 16:26, Ryan Roberts wrote:
->>>>>> On 24/04/2024 07:55, Baolin Wang wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2024/4/23 18:41, Ryan Roberts wrote:
->>>>>>>> On 22/04/2024 08:02, Baolin Wang wrote:
->>>>>>>>> Anonymous pages have already been supported for multi-size (mTHP)
->>>>>>>>> allocation
->>>>>>>>> through commit 19eaf44954df, that can allow THP to be configured
->>>>>>>>> through the
->>>>>>>>> sysfs interface located at
->>>>>>>>> '/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled'.
->>>>>>>>>
->>>>>>>>> However, the anonymous shared pages will ignore the anonymous mTHP rule
->>>>>>>>> configured through the sysfs interface, and can only use the PMD-mapped
->>>>>>>>> THP, that is not reasonable. Many implement anonymous page sharing through
->>>>>>>>> mmap(MAP_SHARED | MAP_ANONYMOUS), especially in database usage scenarios,
->>>>>>>>> therefore, users expect to apply an unified mTHP strategy for anonymous
->>>>>>>>> pages,
->>>>>>>>> also including the anonymous shared pages, in order to enjoy the
->>>>>>>>> benefits of
->>>>>>>>> mTHP. For example, lower latency than PMD-mapped THP, smaller memory bloat
->>>>>>>>> than PMD-mapped THP, contiguous PTEs on ARM architecture to reduce TLB
->>>>>>>>> miss
->>>>>>>>> etc.
->>>>>>>>
->>>>>>>> This sounds like a very useful addition!
->>>>>>>>
->>>>>>>> Out of interest, can you point me at any workloads (and off-the-shelf
->>>>>>>> benchmarks
->>>>>>>> for those workloads) that predominantly use shared anon memory?
->>>>>>>
->>>>>>> As far as I know, some database related workloads make extensive use of
->>>>>>> shared
->>>>>>> anonymous page, such as PolarDB[1] in our Alibaba fleet, or MySQL likely
->>>>>>> also
->>>>>>> uses shared anonymous memory. And I still need to do some investigation to
->>>>>>> measure the performance.
->>>>>>>
->>>>>>> [1] https://github.com/ApsaraDB/PolarDB-for-PostgreSQL
->>>>>>
->>>>>> Thanks for the pointer!
->>>>>>
->>>>>>>
->>>>>>>>> The primary strategy is that, the use of huge pages for anonymous shared
->>>>>>>>> pages
->>>>>>>>> still follows the global control determined by the mount option "huge="
->>>>>>>>> parameter
->>>>>>>>> or the sysfs interface at
->>>>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled'.
->>>>>>>>> The utilization of mTHP is allowed only when the global 'huge' switch is
->>>>>>>>> enabled.
->>>>>>>>> Subsequently, the mTHP sysfs interface
->>>>>>>>> (/sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled)
->>>>>>>>> is checked to determine the mTHP size that can be used for large folio
->>>>>>>>> allocation
->>>>>>>>> for these anonymous shared pages.
->>>>>>>>
->>>>>>>> I'm not sure about this proposed control mechanism; won't it break
->>>>>>>> compatibility? I could be wrong, but I don't think shmem's use of THP
->>>>>>>> used to
->>>>>>>> depend upon the value of /sys/kernel/mm/transparent_hugepage/enabled? So it
->>>>>>>
->>>>>>> Yes, I realized this after more testing.
->>>>>>>
->>>>>>>> doesn't make sense to me that we now depend upon the
->>>>>>>> /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled values (which by
->>>>>>>> default disables all sizes except 2M, which is set to "inherit" from
->>>>>>>> /sys/kernel/mm/transparent_hugepage/enabled).
->>>>>>>>
->>>>>>>> The other problem is that shmem_enabled has a different set of options
->>>>>>>> (always/never/within_size/advise/deny/force) to enabled
->>>>>>>> (always/madvise/never)
->>>>>>>>
->>>>>>>> Perhaps it would be cleaner to do the same trick we did for enabled;
->>>>>>>> Introduce
->>>>>>>> /mm/transparent_hugepage/hugepage-XXkb/shmem_enabled, which can have all
->>>>>>>> the
->>>>>>>> same values as the top-level
->>>>>>>> /sys/kernel/mm/transparent_hugepage/shmem_enabled,
->>>>>>>> plus the additional "inherit" option. By default all sizes will be set to
->>>>>>>> "never" except 2M, which is set to "inherit".
->>>>>>>
->>>>>>> Sounds good to me. But I do not want to copy all same values from top-level
->>>>>>> '/sys/kernel/mm/transparent_hugepage/shmem_enabled':
->>>>>>> always within_size advise never deny force
->>>>>>>
->>>>>>> For mTHP's shmem_enabled interface, we can just keep below values:
->>>>>>> always within_size advise never
->>>>>>>
->>>>>>> Cause when checking if mTHP can be used for anon shmem, 'deny' is equal to
->>>>>>> 'never', and 'force' is equal to 'always'.
->>>>>>
->>>>>> I'll admit it wasn't completely clear to me after reading the docs, but my
->>>>>> rough
->>>>>> understanding is:
->>>>>>
->>>>>>     - /sys/kernel/mm/transparent_hugepage/shmem_enabled controls
->>>>>>       mmap(SHARED|ANON) allocations (mostly; see rule 3)
->>>>>>     - huge=... controls tmpfs allocations
->>>>>>     - deny and force in shmem_enabled are equivalent to never and always for
->>>>>>       mmap(SHARED|ANON) but additionally override all tmpfs mounts so they
->>>>>> act as
->>>>>>       if they were mounted with huge=never or huge=always
->>>>>>
->>>>>> Is that correct? If so, then I think it still makes sense to support per-size
->>>>>
->>>>> Correct.
->>>>>
->>>>>> deny/force. Certainly if a per-size control is set to "inherit" and the
->>>>>> top-level control is set to deny or force, you would need that to mean
->>>>>> something.
->>>>>
->>>>> IMHO, the '/mm/transparent_hugepage/hugepage-XXkb/shmem_enabled' interface
->>>>> should only control the anonymous shmem. And 'huge=' controls tmpfs
->>>>> allocation,
->>>>> so we should not use anonymous control to override tmpfs control, which
->>>>> seems a
->>>>> little mess?
->>>>
->>>> I agree it would be cleaner to only handle mmap(SHARED|ANON) here, and leave
->>>> the
->>>> tmpfs stuff for another time. But my point is that
->>>> /mm/transparent_hugepage/shmem_enabled already interferes with tmpfs if the
->>>> value is deny or force. So if you have:
->>>>
->>>> echo deny > /mm/transparent_hugepage/shmem_enabled
->>>
->>> IIUC, this global control will cause shmem_is_huge() to always return false, so
->>> no matter how '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' is set,
->>> anonymous shmem will not use mTHP. No?
->>
->> No, that's not how '/mm/transparent_hugepage/hugepage-xxxkB/enabled' works, and
->> I think '/mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled' should follow
->> the established pattern.
->>
->> For anon-private, each size is controlled by its
->> /mm/transparent_hugepage/hugepage-xxxkB/enabled value. Unless that value is
->> "inherit", in which case the value in /mm/transparent_hugepage/enabled is used
->> for that size.
->>
->> That approach enables us to 1) maintain back-compat and 2) control each size
->> independently
->>
->> 1) is met because the default is that all sizes are initially set to "never",
->> except the PMD-size (e.g. /mm/transparent_hugepage/hugepage-2048kB/enabled)
->> which is initially set to inherit. So any mTHP unaware SW can still modify
->> /mm/transparent_hugepage/enabled and it will still only apply to PMD size.
->>
->> 2) is met because mTHP aware SW can come along and e.g. enable the 64K size
->> (echo always > /mm/transparent_hugepage/hugepage-64kB/enabled) without having to
->> modify the value in /mm/transparent_hugepage/enabled.
-> 
-> Thanks for explanation. Initially, I want to make
-> ‘/mm/transparent_hugepage/shmem_enabled’ be a global control for huge page, but
-> I think it should follow the same strategy as anon mTHP as you said.
-> 
->>>> echo inherit > /mm/transparent_hugepage/hugepage-64kB/shmem_enabled
->>>>
->>>> What does that mean?
->>
->> So I think /mm/transparent_hugepage/hugepage-xxxkB/shmem_enabled will need to
->> support the deny and force values. When applied to non-PMD sizes, "deny" can
->> just be a noop for now, because there was no way to configure a tmpfs mount for
->> non-PMD size THP in the first place. But I'm not sure what to do with "force"?
-> 
-> OK. And I also prefer that "force" should be a noop too, since anon shmem
-> control should not configure tmpfs huge page allocation.
+On Wed, 24 Apr 2024, Douglas Anderson <dianders@chromium.org> wrote:
+> The consensus of many DRM folks is that we want to move away from DSI
+> drivers defining tables of init commands. Instead, we want to move to
+> init functions that can use common DRM functions. The issue thus far
+> has been that using the macros mipi_dsi_generic_write_seq() and
+> mipi_dsi_dcs_write_seq() bloats the driver using them.
+>
+> Through a cooperative effort between Hsin-Yi Wang and Dmitry
+> Baryshkov, we have realized that the majority of the bloat is the fact
+> that we have the dev_err_ratelimited() directly in the macros. Let's
+> hoist this call into drm_mipi_dsi.c by adding a "chatty" version of
+> the functions that includes the print.
+>
+> Without any changes to clients this gives a dramatic savings. Building
+> with my build system shows one example:
+>
+> $ scripts/bloat-o-meter \
+>   .../before/panel-novatek-nt36672e.ko \
+>   .../after/panel-novatek-nt36672e.ko
+>
+> add/remove: 0/1 grow/shrink: 1/1 up/down: 6/-19652 (-19646)
+> Function                                     old     new   delta
+> __UNIQUE_ID_vermagic520                       64      70      +6
+> nt36672e_1080x2408_60hz_init               16592    7260   -9332
+> nt36672e_1080x2408_60hz_init._rs           10320       -  -10320
+> Total: Before=31503, After=11857, chg -62.36%
+>
+> Note that given the change in location of the print it's harder to
+> include the "cmd" in the printout for mipi_dsi_dcs_write_seq() since,
+> theoretically, someone could call the new chatty function with a
+> zero-size array and it would be illegal to dereference data[0].
+> There's a printk format to print the whole buffer and this is probably
+> more useful for debugging anyway. Given that we're doing this for
+> mipi_dsi_dcs_write_seq(), let's also print the buffer for
+> mipi_dsi_generic_write_seq() in the error case.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> The MIPI device I have in front of me (wormdingler) hasn't been
+> converted to use these functions yet, so this is just compile
+> tested. It's about my end of day so I'm sending this out since it's
+> pretty straightforward. Hopefully others can confirm it works well for
+> them and also saves space under their compilers.
+>
+>  drivers/gpu/drm/drm_mipi_dsi.c | 54 ++++++++++++++++++++++++++++++++++
+>  include/drm/drm_mipi_dsi.h     | 31 ++++++++-----------
+>  2 files changed, 67 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+> index 795001bb7ff1..5ded6aef38ed 100644
+> --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> @@ -764,6 +764,33 @@ ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
+>  }
+>  EXPORT_SYMBOL(mipi_dsi_generic_write);
+>  
+> +/**
+> + * mipi_dsi_generic_write_chatty() - mipi_dsi_generic_write() w/ an error log
+> + * @dsi: DSI peripheral device
+> + * @payload: buffer containing the payload
+> + * @size: size of payload buffer
+> + *
+> + * Just like mipi_dsi_generic_write() but includes a dev_err_ratelimited()
+> + * call for you.
+> + *
+> + * Return: The number of bytes transmitted on success or a negative error code
+> + * on failure.
+> + */
+> +ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
+> +				      const void *payload, size_t size)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	ret = mipi_dsi_generic_write(dsi, payload, size);
+> +	if (ret < 0)
+> +		dev_err_ratelimited(dev, "sending generic data %*ph failed: %d\n",
+> +				    (int)size, payload, ret);
 
-I guess technically they won't be noops, but (for the non-PMD-sizes) "force"
-will be an alias for "always" and "deny" will be an alias for "never"?
+Why does this even need to be ratelimited? See below.
 
-I was just a bit concerned about later changing that behavior to also impact
-tmpfs once tmpfs supports mTHP; could that cause breaks? But thinking about it,
-I don't see that as a problem.
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(mipi_dsi_generic_write_chatty);
+> +
+>  /**
+>   * mipi_dsi_generic_read() - receive data using a generic read packet
+>   * @dsi: DSI peripheral device
+> @@ -852,6 +879,33 @@ ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
+>  }
+>  EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer);
+>  
+> +/**
+> + * mipi_dsi_dcs_write_buffer_chatty - mipi_dsi_dcs_write_buffer() w/ an error log
+> + * @dsi: DSI peripheral device
+> + * @data: buffer containing data to be transmitted
+> + * @len: size of transmission buffer
+> + *
+> + * Just like mipi_dsi_dcs_write_buffer() but includes a dev_err_ratelimited()
+> + * call for you.
+> + *
+> + * Return: The number of bytes successfully transmitted or a negative error
+> + * code on failure.
+> + */
+> +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
+> +					 const void *data, size_t len)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	ret = mipi_dsi_dcs_write_buffer(dsi, data, len);
+> +	if (ret < 0)
+> +		dev_err_ratelimited(dev, "sending dcs data %*ph failed: %d\n",
+> +				    (int)len, data, ret);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(mipi_dsi_dcs_write_buffer_chatty);
+> +
+>  /**
+>   * mipi_dsi_dcs_write() - send DCS write command
+>   * @dsi: DSI peripheral device
+> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> index 82b1cc434ea3..784e425dc4c8 100644
+> --- a/include/drm/drm_mipi_dsi.h
+> +++ b/include/drm/drm_mipi_dsi.h
+> @@ -256,6 +256,8 @@ int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
+>  
+>  ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
+>  			       size_t size);
+> +ssize_t mipi_dsi_generic_write_chatty(struct mipi_dsi_device *dsi,
+> +				      const void *payload, size_t size);
+>  ssize_t mipi_dsi_generic_read(struct mipi_dsi_device *dsi, const void *params,
+>  			      size_t num_params, void *data, size_t size);
+>  
+> @@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
+>  
+>  ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
+>  				  const void *data, size_t len);
+> +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
+> +					 const void *data, size_t len);
+>  ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
+>  			   const void *data, size_t len);
+>  ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, void *data,
+> @@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
+>  #define mipi_dsi_generic_write_seq(dsi, seq...)                                \
+>  	do {                                                                   \
+>  		static const u8 d[] = { seq };                                 \
+> -		struct device *dev = &dsi->dev;                                \
+>  		int ret;                                                       \
+> -		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
+> -		if (ret < 0) {                                                 \
+> -			dev_err_ratelimited(dev, "transmit data failed: %d\n", \
+> -					    ret);                              \
+> +		ret = mipi_dsi_generic_write_chatty(dsi, d, ARRAY_SIZE(d));    \
+> +		if (ret < 0)                                                   \
+>  			return ret;                                            \
+> -		}                                                              \
+>  	} while (0)
 
+The one thing that I've always disliked about these macros (even if I've
+never actually used them myself) is that they hide control flow from the
+caller, i.e. return directly. You don't see that in the code, it's not
+documented, and if you wanted to do better error handling yourself,
+you're out of luck.
+
+Be that as it may, the combo of ratelimited error printing and return on
+errors does not make much sense to me. If there's something to print,
+you bail out, that's it. I suspect we never hit the ratelimit.
+
+You might even want to try *only* changing the ratelimited printing to a
+regular error message, and see if the compiler can combine the logging
+to a single exit point in the callers. Ratelimited it obviously can't
+because every single one of them is unique.
+
+BR,
+Jani.
+
+>  
+>  /**
+> @@ -333,18 +333,13 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
+>   * @cmd: Command
+>   * @seq: buffer containing data to be transmitted
+>   */
+> -#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                           \
+> -	do {                                                               \
+> -		static const u8 d[] = { cmd, seq };                        \
+> -		struct device *dev = &dsi->dev;                            \
+> -		int ret;                                                   \
+> -		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
+> -		if (ret < 0) {                                             \
+> -			dev_err_ratelimited(                               \
+> -				dev, "sending command %#02x failed: %d\n", \
+> -				cmd, ret);                                 \
+> -			return ret;                                        \
+> -		}                                                          \
+> +#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                               \
+> +	do {                                                                   \
+> +		static const u8 d[] = { cmd, seq };                            \
+> +		int ret;                                                       \
+> +		ret = mipi_dsi_dcs_write_buffer_chatty(dsi, d, ARRAY_SIZE(d)); \
+> +		if (ret < 0)                                                   \
+> +			return ret;                                            \
+>  	} while (0)
+>  
+>  /**
+
+-- 
+Jani Nikula, Intel
 
