@@ -1,90 +1,91 @@
-Return-Path: <linux-kernel+bounces-159370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C7008B2DC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:49:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979B28B2DC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:50:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582552819A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:49:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30D061F224A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC30156988;
-	Thu, 25 Apr 2024 23:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D88156C7C;
+	Thu, 25 Apr 2024 23:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eKTJZctI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kVSiM8dT"
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE4E14E2EF;
-	Thu, 25 Apr 2024 23:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0770B15533B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714088959; cv=none; b=pd0segRU15R1sGugpITR15DlyJP8GH7cGHqK+aVtA2UON0iS9s9WQPFcRliI1Thy8W56qNXqIvhi34MRiH359kFkVpTPZDepPF+QeUabeLtpL0RbqkqvheTQVF9il9yOr0gjnZine4CpxXzSgX6r70stiMCKBRka5oK+XJF+VrQ=
+	t=1714089052; cv=none; b=LBpjqq/IA9lprdc9EUjuD/EltIKCUIeGZfN8SCKkG8bOrbOLwF/i4r4dK1W0i0GdtkaW5pQ/dnVWSWeFEEDCRPP2Nqoa/q/AK/Kq8W/gdN8BzcMriyV6L0WWXJ6a2fqbOmZq8p08NQesTonNW2N+wFxsFk+Ful7Pm5SObu8J7h8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714088959; c=relaxed/simple;
-	bh=xThSuDa7B7/IrHBAvCAlq+cuUm1QUymQXFLtZ01/yBY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=WcbUF4XJ0jpyaWvwliutNzGGm72U5enGEp0KWvk3nDV6WMf6O7FWpX995iqooaMNAbBC9NRBMau5KETgwi7k7ShOqU8XMNYYqafy8GulmOx2K8Otu+s2GxJb0hfZ/zY0G57Onzu2t8zLI9BhyN8HsB3qS85EqwyttC02kTW+who=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eKTJZctI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB97C113CC;
-	Thu, 25 Apr 2024 23:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1714088958;
-	bh=xThSuDa7B7/IrHBAvCAlq+cuUm1QUymQXFLtZ01/yBY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eKTJZctIgAnNhEvYPY2857R1t3FtNk6ED3TJMxHDTM4ggwp1v4bCx0sn76PwQ1tM6
-	 a57YFhEymsUHaJEpgUqPEhS82jzBH4j1KLB5q2RRj2NtNf42wkSRgJI4tDt+9jXfhR
-	 6T1kjJKoagm96u759c62opUlD5ELcHmMgxoTiv04=
-Date: Thu, 25 Apr 2024 16:49:17 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Kees Cook
- <keescook@chromium.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David
- Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin
- <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] mm/slub: Avoid recursive loop with kmemleak
-Message-Id: <20240425164917.8c9603387b4cce11121024a8@linux-foundation.org>
-In-Reply-To: <CAJuCfpEMK-6+1CUDfiiKLGLfTEomJGjaeHOfsWZZBdaJ6DcvFQ@mail.gmail.com>
-References: <20240425205516.work.220-kees@kernel.org>
-	<ebc6pcoq4cle3ge526ch6q5hz2vvphmgwu2yqdveypjm24pa3b@cwsggjnoepaq>
-	<CAJuCfpEMK-6+1CUDfiiKLGLfTEomJGjaeHOfsWZZBdaJ6DcvFQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714089052; c=relaxed/simple;
+	bh=OS6pp0gMWtmBK9RLfOvHFjAv8kO/PRmUpAyYohUkgUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AZnyw8P4/OMFs4vR7oiTWPn0E6m0y45nTc4Gi3tEuQ4178R4kvNCE+UjctpNyjZFo4UmGlNpbp0oZOuXNWiQKLdfPTWiFuPxKnJ2n1c/Ruy+zs2jPqnDc0dN0iVeRqvxZJscH1SVO+lZvjUtSw8+TZJOV8aOyb3C5t+lpBuIRag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kVSiM8dT; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6cebfd92-7ad0-496a-9f31-f4c696fb5cb8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714089049;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O9GImcDZJ1T3zd/p2AjMxBvWvdh595wzGLC3mDjc/3w=;
+	b=kVSiM8dTzBoY4x/UZrCB3I6uzU4vkL/NPT8OcWzedjF2FGFGfB7M2ey1Y58wxfqy+ydDul
+	2p16+ghDU3MlG6+M7+owRn8ajp8F81P/GbdZV/IMSK7080yg9D+H4DpH2C1CnWAqvHy3Bp
+	p9sj5JKmvRYJEitTyCvWQ5Sgaaa9an4=
+Date: Thu, 25 Apr 2024 16:50:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [RFC PATCH bpf-next v5 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+ kernel@quicinc.com
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-2-quic_abchauha@quicinc.com>
+ <662a69475869_1de39b29415@willemb.c.googlers.com.notmuch>
+ <a84d314a-fca4-4317-9d33-0c7d3213c612@quicinc.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <a84d314a-fca4-4317-9d33-0c7d3213c612@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 25 Apr 2024 14:30:55 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+On 4/25/24 12:02 PM, Abhishek Chauhan (ABC) wrote:
+>>>> @@ -9444,7 +9444,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>>>   					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>>>   		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>>>   					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+>>> -		/* skb->tc_at_ingress && skb->mono_delivery_time,
+>>> +		/* skb->tc_at_ingress && skb->tstamp_type:1,
+>> Is the :1 a stale comment after we discussed how to handle the 2-bit
+> This is first patch which does not add tstamp_type:2 at the moment.
+> This series is divided into two patches
+> 1. One patchset => Just rename (So the comment is still skb->tstamp_type:1)
+> 2. Second patchset => add another bit (comment is changed to skb->tstamp_type:2)
 
-> > > --- a/mm/kmemleak.c
-> > > +++ b/mm/kmemleak.c
-> > > @@ -463,7 +463,7 @@ static struct kmemleak_object *mem_pool_alloc(gfp_t gfp)
-> > >
-> > >       /* try the slab allocator first */
-> > >       if (object_cache) {
-> > > -             object = kmem_cache_alloc(object_cache, gfp_kmemleak_mask(gfp));
-> > > +             object = kmem_cache_alloc_noprof(object_cache, gfp_kmemleak_mask(gfp));
-> >
-> > What do these get accounted to, or does this now pop a warning with
-> > CONFIG_MEM_ALLOC_PROFILING_DEBUG?
-> 
-> Thanks for the fix, Kees!
-> I'll look into this recursion more closely to see if there is a better
-> way to break it. As a stopgap measure seems ok to me. I also think
-> it's unlikely that one would use both tracking mechanisms on the same
-> system.
-
-I'd really like to start building mm-stable without having to route
-around memprofiling.  How about I include Kees's patch in that for now?
-
+I would suggest to completely avoid the ":1" or ":2" part in patch 1. Just use 
+"... && skb->tstamp_type". The number of bits does not matter. The tstamp_type 
+will still be considered as a whole even if it would become 3 bits (unlikely) in 
+the future.
 
