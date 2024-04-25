@@ -1,253 +1,111 @@
-Return-Path: <linux-kernel+bounces-158660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFFF08B238C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:08:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF6A8B238E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6739D28B785
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:08:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FA1C28B941
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB1E14A4DE;
-	Thu, 25 Apr 2024 14:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A37414A091;
+	Thu, 25 Apr 2024 14:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ls9ZQDKY"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="mKpb3Fly"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B0414A08B;
-	Thu, 25 Apr 2024 14:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BA7149C79
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054066; cv=none; b=u4Ac+VzVz5ohrRPxT/NcEy07VmLJR523AF3wd1oNzSnNaKi+so51gc5RHZaO7Z9XYcxshiIM7k6GmQQor7M68iLtXp4ChD1RFFOQEaEBQgJTKUvZUr+TcPAv5wqGBm+y7V+RfvLyvhW4lujOcpyHuWC3T2tmKfkZh0BCmgugAxI=
+	t=1714054216; cv=none; b=GmKjqiyI/NlbhDXbFaRoULw388GjTsezqG78c3nlcM1rS+YTROttbO7dVWAnp3Jw96f5tvscVMXrYLYaEhxyX8RG0Nqp7Stf9evJKHNkKVMquJf8PU5v7C5VitRVyIn/OWAdzLSQk/BRdoY+qkdZxZnh5RI0aQCd2Gnf+qlYOgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054066; c=relaxed/simple;
-	bh=f912mfReOheDjns3RC7abWLfrtnapEajcYOVlQgNpps=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=iDLDyhxjvNBM3RBnIYZF38FEYzgnWusi8mpGOF7YUF9o+wXlnhQFU9Gp4gpkiQ9ViI59bNF/msL5OAA0UT5LUIPuIB10aTQP5CfmzIwteZbGcdMAcEES4fNyjynNqeeOsqa2SHLS7ib/xcNsS3URjxiKfaT/TNMGSKYyPrksl+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ls9ZQDKY; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-69b10c9cdf4so4136106d6.1;
-        Thu, 25 Apr 2024 07:07:44 -0700 (PDT)
+	s=arc-20240116; t=1714054216; c=relaxed/simple;
+	bh=PMcrQr7vfTZSRSNcRmkCpyQp7LWBnFY770gK/C5SUSk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CJjCKzS9qye0fx3GZ39zsKtoDSxc/qjRJWEsO0gsLY2rE5WhBgiQtEePqXJrrcsWMUAR4Sp3Kl7RMLHe9bwAULOBMxRxkp/Omal4FnUiyLEnARkLV4PNgZ5SdWK5qlV0JzchNzHijQBF+ZMGdfW6rv69En+PPKSnqaYI4Ufpvc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=mKpb3Fly; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2351c03438cso408597fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714054064; x=1714658864; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ajyInVtzAAqe0l9PhKTduxRwaK1ASztz36ZB//OXaoc=;
-        b=ls9ZQDKYg+XF4Jv811AwPVATF5JlgNUR1s5mhXokGMOSEr1JdkOXtg5r5JpNx1OFYe
-         Ze4Ci/gdb7khOdTo0xN7L4InflfGyiuX/zwazG8oLXXgiPF47O4CL3lIrE3f5yc7edXF
-         5Wzib+e8xkehe4QOW6irkSP0tNYp9lw6EWzv33FvHplaC8UIsBJAyHhS0xlAX6mD5HYv
-         c/84xXOclDN/0JlJGdXiXORWgFXW1bB3sn3cAKQDO8gyXS+UZIOvnWEZxSEzrU63HCE5
-         1WgYzVOr354lJjnPjCOfWq0a1eUVG1l3HK0FFXIZob7bqtsXj1q8oNvlIiPlKGv2o+/T
-         vZdg==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714054213; x=1714659013; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/EIvcYkNNA7uNCHReQKx+DoUp53lMP7MDiBbZ5jB3G0=;
+        b=mKpb3FlyRk44HMN9uezQae6MeQSwZ107oJt0ulYJ5nBVmj4A3A7lp0y0WaaRQyVObP
+         Du/eHRzlA/hviFHvjSYTxzdhVFydjLZMlihRhCFMYFsnxfWu1c8UHTf/VgVA1LY4PxMT
+         eqZARisR0YCl8o/E7fzS3WFnSO6gzS84fxv2jlVGADiEfBUF6njP7By8HVzHiR5cQG+6
+         F3LNAT1kg6vAfuURYk8v8SFX4k6hKBwtF5cBFjS9mxv1fhrsTxjlPKjzZjhbIwia21Lu
+         UDadC7YV2P13PUcbfgye4ZT78SOFcyTjAYetKIR7AW+06T8qX4x7010+NniHYdgBWh4C
+         EPgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714054064; x=1714658864;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ajyInVtzAAqe0l9PhKTduxRwaK1ASztz36ZB//OXaoc=;
-        b=rfN0d4KTA8Ex21Hk/oDCUnnPGorKvYXi6awbZfMcWD6ZURdR/P2R+jXEce2P0PPpjb
-         doXVgDsLPl4guud4j5LYpEBBPsAICjJAbL62UZDUdmrGqeGyyTUOaehC3r39khp13sCM
-         q4I/acJZGbBYPtE3+GM9NxKckTZIuV/LQOyRiPr9ZyvHUNHoVYZfwWsE+k6OCMEl6XqQ
-         xogT0ThzFg67jM6fG1o8epNqYonTwKh719eEiRnWHFH+6H7zAvd3V93RqEw+pi6qFmTn
-         7FwxdtYCUH5OYmd32MKQcD4Oc86prff2R2wJeMPDDcjXqGm5cAp7n71fsKt7Hahu/7az
-         xtWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVUC/St5zjIlASJeG72KF9icgbdlQlq7a8aC+F0b1mzO1P43mmaKU9Bc5kaIxTQKizwjK9qkgDkF26hhWqrYL5sixf8gCjHXxBBdkm/1Y4lhcR5Cdt/1WlzybOz
-X-Gm-Message-State: AOJu0YwWPvIRbyIq+dEaoaGvnwfDf4zWwhAdiY8gUD7In7DVJdw/qaR/
-	hR2AA4PA3YI4f0EwUwugoJSdIs0T8G7iPgQR0P6BZm0NOSwnYuRA
-X-Google-Smtp-Source: AGHT+IEKQevdcF25H22KzEMeaVqYeb/Og5tSvrWKvAI7d6NJxvHnnoiJFq/p1ER0DWGbvizxwWlYyw==
-X-Received: by 2002:a0c:9b12:0:b0:69b:6375:43f8 with SMTP id b18-20020a0c9b12000000b0069b637543f8mr6011430qve.13.1714054063582;
-        Thu, 25 Apr 2024 07:07:43 -0700 (PDT)
-Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
-        by smtp.gmail.com with ESMTPSA id g2-20020a0cdf02000000b0069b447066bbsm6963515qvl.78.2024.04.25.07.07.43
+        d=1e100.net; s=20230601; t=1714054213; x=1714659013;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/EIvcYkNNA7uNCHReQKx+DoUp53lMP7MDiBbZ5jB3G0=;
+        b=OMn0BXpkp4PXuEpOWuDIfuUCAOqioc/jahIvwWvvg7G9Kmimju9DHHHuCBp7Ot2Ndc
+         ex9bDPoSpedt6Snn8jSHKR/nvgYfpPoQVRSFl9JM26f5lGsYADcU14MuR9p485NLYmr2
+         2G530DLxL7idF9qQ07CzaFqUp/QnwUos/sCLMmT3QTWzZ0t/IDXi+iMaekA6dNuDcko0
+         FiB2tln0fmBqjylnC1dffsPCbtgSqZ3kVYjxHqpDnO/KUIB9nYL+Sik1y0TZdPB9e78R
+         KPrrJkmCEG4nf7DpuKrlbUYjbnNLKGX7kZRutqOByU9NrB2Z4mxEaWI8uuDFTOvwBYNz
+         939Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXZ25mmpWQT9FEBGd0oVFwJNkRuhe99eqPh90vIlHntpPytCAwqqeB6LqTPDsHCukvP7u/YiM44A3L2WcHx1xM5cg9H7JzK0sgwQzlR
+X-Gm-Message-State: AOJu0Yz15UEzLEDB6HDHtr0WXe4iJcLsX0EVxdzkXpL2Cr8euRRSRHYi
+	DIzUSFyqrQXSd3BpwZlFmyZ0zv4BTfuXROZZh7MM6r7C2/qouL3B/pGpoFD1neA=
+X-Google-Smtp-Source: AGHT+IGPh8BWqW4vel5Qzl3DF4uhNTmrKORgW/O0L3hxpcKmJ6L/waBufcrQ+V8+zzseyb0YDKubeg==
+X-Received: by 2002:a05:6870:e408:b0:22e:b2b4:f00b with SMTP id n8-20020a056870e40800b0022eb2b4f00bmr6380665oag.39.1714054212707;
+        Thu, 25 Apr 2024 07:10:12 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id pz8-20020a056871e48800b0023b5203fc58sm294786oac.37.2024.04.25.07.10.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 07:07:43 -0700 (PDT)
-Date: Thu, 25 Apr 2024 10:07:42 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
- "maze@google.com" <maze@google.com>, 
- "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
- "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
- "kuba@kernel.org" <kuba@kernel.org>, 
- =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
- "pabeni@redhat.com" <pabeni@redhat.com>, 
- "edumazet@google.com" <edumazet@google.com>, 
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
- "davem@davemloft.net" <davem@davemloft.net>, 
- "yan@cloudflare.com" <yan@cloudflare.com>
-Message-ID: <662a63aeee385_1de39b294fd@willemb.c.googlers.com.notmuch>
-In-Reply-To: <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
-References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
- <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
- <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
- <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
- <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
- <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
- <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
- <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
- <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
- <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
- <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
- <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
- <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
- <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
- <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
- <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch>
- <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
- <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
- <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
- <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch>
- <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
+        Thu, 25 Apr 2024 07:10:12 -0700 (PDT)
+From: David Lechner <dlechner@baylibre.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH 0/2] iio: adc: ad7944: implement chain mode support
+Date: Thu, 25 Apr 2024 09:09:58 -0500
+Message-ID: <20240425-iio-ad7944-chain-mode-v1-0-9d9220ff21e1@baylibre.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
-> > >  struct sk_buff *tail = NULL;
-> > >  struct sk_buff *nskb, *tmp;
-> > >  int len_diff, err;
-> > > @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct
-> > sk_buff
-> > > *skb,
-> > >  if (err)
-> > >  goto err_linearize;
-> > >  
-> > > +if (mss != GSO_BY_FRAGS && mss != skb_headlen(skb))
-> > > +return ERR_PTR(-EFAULT);
-> > > +
-> > 
-> > Do this precondition integrity check before the skb_unclone path?
-> 
-> After return error, the skb will enter into kfree_skb, not consume_skb.
-> It may meet same crash problem which has been resolved by skb_unclone.
-> 
-> Or kfree_skb could well handle the cloned skb's release?
+This series adds support and documentation for the chain mode wiring
+configuration to the ad7944 driver. In this configuration, multiple
+chips are daisy-chained together in series via the SPI data lines.
+So it appears on the SPI bus as a single device with multiple channels.
 
-Since this is an error path it should reach kfree_skb rather than
-consume_skb.
+---
+David Lechner (2):
+      iio: adc: ad7944: add support for chain mode
+      docs: iio: ad7944: add documentation for chain mode
 
-> 
-> Other changes are updated as below:
-> 
-> From 301da5c9d65652bac6091d4cd64b751b3338f8bb Mon Sep 17 00:00:00 2001
-> From: Shiming Cheng <shiming.cheng@mediatek.com>
-> Date: Wed, 24 Apr 2024 13:42:35 +0800
-> Subject: [PATCH net] net: prevent BPF pulling SKB_GSO_FRAGLIST skb
-> 
-> A SKB_GSO_FRAGLIST skb can't be pulled data
-> from its fraglist as it may result an invalid
-> segmentation or kernel exception.
-> 
-> For such structured skb we limit the BPF pulling
-> data length smaller than skb_headlen() and return
-> error if exceeding.
-> 
-> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
-> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-> ---
->  net/core/filter.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 8adf95765cdd..8ed4d5d87167 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad,
-> bpf_sp);
->  static inline int __bpf_try_make_writable(struct sk_buff *skb,
->  					  unsigned int write_len)
->  {
-> +	if (skb_is_gso(skb) &&
-> +	    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
-> +	     write_len > skb_headlen(skb)) {
-> +		return -ENOMEM;
-> +	}
->  	return skb_ensure_writable(skb, write_len);
->  }
->  
-> -- 
-> 2.18.0
-> 
-> 
-> From 64d55392debbc90ef2e9c33441024d612075bdd7 Mon Sep 17 00:00:00 2001
-> From: Shiming Cheng <shiming.cheng@mediatek.com>
-> Date: Wed, 24 Apr 2024 14:43:45 +0800
-> Subject: [PATCH net] net: drop pulled SKB_GSO_FRAGLIST skb
-> 
-> A SKB_GSO_FRAGLIST skb without GSO_BY_FRAGS is
-> expected to have all segments except the last
-> to be gso_size long. If this does not hold, the
-> skb has been modified and the fraglist gso integrity
-> is lost. Drop the packet, as it cannot be segmented
-> correctly by skb_segment_list.
-> 
-> The skb could be salvaged, though, right?
-> By linearizing, dropping the SKB_GSO_FRAGLIST bit
-> and entering the normal skb_segment path rather than
-> the skb_segment_list path.
+ Documentation/iio/ad7944.rst |  30 ++++++-
+ drivers/iio/adc/ad7944.c     | 186 ++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 204 insertions(+), 12 deletions(-)
+---
+base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
+change-id: 20240424-iio-ad7944-chain-mode-f5c4e6a856f6
 
-Drop the "though, right?"
-> 
-> That choice is currently made in the protocol caller,
-> __udp_gso_segment. It's not trivial to add such a
-> backup path here. So let's add this backstop against
-> kernel crashes.
-> 
-> If the gso_size does not match skb_headlen(),
-> it means part of or the entire fraglist has been pulled.
-> It has been messed with and we should return error to
-> free this skb.
-
-This paragraph is now duplicative. Drop.
-> 
-> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
-> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-> ---
->  net/core/skbuff.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index b99127712e67..4777f5fea6c3 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -4491,6 +4491,7 @@ struct sk_buff *skb_segment_list(struct sk_buff
-> *skb,
->  {
->  	struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
->  	unsigned int tnl_hlen = skb_tnl_header_len(skb);
-> +	unsigned int mss = skb_shinfo(skb)->gso_size;
->  	unsigned int delta_truesize = 0;
->  	unsigned int delta_len = 0;
->  	struct sk_buff *tail = NULL;
-> @@ -4504,6 +4505,9 @@ struct sk_buff *skb_segment_list(struct sk_buff
-> *skb,
->  	if (err)
->  		goto err_linearize;
->  
-> +	if (mss != GSO_BY_FRAGS && mss != skb_headlen(skb))
-> +		return ERR_PTR(-EFAULT);
-> +
->  	skb_shinfo(skb)->frag_list = NULL;
->  
->  	while (list_skb) {
-> -- 
-> 2.18.0
-
+Best regards,
+-- 
+David Lechner <dlechner@baylibre.com>
 
 
