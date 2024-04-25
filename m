@@ -1,136 +1,164 @@
-Return-Path: <linux-kernel+bounces-158483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54068B20C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:52:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489BB8B20C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:53:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13CE31C232EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED5A7285A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABD812AAEC;
-	Thu, 25 Apr 2024 11:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8781F12B151;
+	Thu, 25 Apr 2024 11:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Kadmz8lA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZnFBdGsw"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uHvz8s1c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E5F84DFC;
-	Thu, 25 Apr 2024 11:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2FB84DFC;
+	Thu, 25 Apr 2024 11:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714045934; cv=none; b=ZNpTNIaL0dCX2CwyRk8vQJUtAJg1y5b8zKvoThdOumqa6a4+j4Fef3eEGNlqWVyItU+otQ1ZKA2pZbWJh2TTNdyKnti0BTETYWI8GpUPpWzLUEeUUibL8nekFdve+Sf3D838Is6Y90y00um4BS3XD/JDvgGNM8Rslf3jOPVItAA=
+	t=1714046007; cv=none; b=mVda4k5d1gRi/2lPOSBxkJIGJHb+LqKw/dwtAaZjr6LWsGAAE9LpZbAsYxKRdBqJyxcqIwfMkPBzwLmwfu6DYaUfWUwpMXJnjREYo1y9F34+pAOffOiqCW/cfLzrSWKY48bjlvDwn8oxgdYczrFtTYunF0caQGsRPn6FmHpbJlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714045934; c=relaxed/simple;
-	bh=ibYMa3jhzNP65WVjGG80S1ZgkEVT/nRrO3d7MImhra8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kIBN0M1sOEM7pOjsMzVXV3aa+fp22NP/flUYmB76wCejUzhR0ck5q/iH1w2g/DEcNHy5eSnIgi7P+RByELBgc/KnScspAKppnN1WR+2bj2ESOlwiXmrUxlSF2153PFMdu7dpum70SR9IiV1kaU+MgFnSJung6dhN2KPjbEFCXk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Kadmz8lA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZnFBdGsw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Nam Cao <namcao@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714045930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fibyo5fIycycuHzgFLgvHTjArYf2fAIDmOJSGGnfeGs=;
-	b=Kadmz8lAwQLU3paaGZBH65Tjdo3KhzmylFuE02Dqc7LTfpnpfS3GfwxvL1yyQGORNj17EC
-	V+McuIKS7D0dxVPn3HBxgZd+D8kdby9OBv0FlQDAiCv4EiVxCvaAGQkbNtsbk9nCp1SHhN
-	ditgLrxqv7LYyRUkOCd9fvSf0B+2eRN7bbf2pSKWK/I0ZoTuORnXruLjq3mmIaCzmi3bpP
-	g5EYyjly4N7X9EIIFFWKmmXJYGEHXGFz3R8at4BrejfxGE4eLd6zROXFgm6g2xKQKi2Lg1
-	+s9dmyG0/YgbtpqP4Pe2Mva5mxCyJZXL9dmsMThEI8py4tcqac7YdGExA6nSHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714045930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fibyo5fIycycuHzgFLgvHTjArYf2fAIDmOJSGGnfeGs=;
-	b=ZnFBdGswK+ol1V8O6CB2quAGkSrJbxl+WNQir6NbIJkdiz+PDXH5C9go+QLzuDZ5g2kBW8
-	aLndt7NlV0MzdbBw==
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Baoquan He <bhe@redhat.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	rppt@kernel.org
-Cc: Nam Cao <namcao@linutronix.de>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] riscv: fix overlap of allocated page and PTR_ERR
-Date: Thu, 25 Apr 2024 13:52:01 +0200
-Message-Id: <20240425115201.3044202-1-namcao@linutronix.de>
+	s=arc-20240116; t=1714046007; c=relaxed/simple;
+	bh=aSfRSzbWwXn9rPVbS1GrF8vTY4pX7wXyQ1jpn5zCY0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKcxAh0JIFyYLuPeWMlGY+8KSxGTH1zkaSxdJ+AykRZ/WKCxa27HkD+/IQe5VtwPCvQHYYZtf5hCOPqWVvN1C7KUCxwcAA93IoLsrmtqTdE2uffIfJquqPjiACa1zb4mfu/Lvutj0EuuHV53mwfaKmMOUbH8eZbPbRABL7ZsE50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uHvz8s1c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC134C113CC;
+	Thu, 25 Apr 2024 11:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714046007;
+	bh=aSfRSzbWwXn9rPVbS1GrF8vTY4pX7wXyQ1jpn5zCY0Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uHvz8s1cmMTXAZLt/3PajxbpXItV7EGNw/wFmB6RODxKLGySTYVpi5ZZgwXebA1wh
+	 HK5bcsbOj4mU7fM2VWZAwbA3to2V/SljHI6oXcnSjvgi1FL8jFcj7lPqoReS4gk2qq
+	 n4hI0fXTQUTAqK+ZJ9+cXDsO8iDdb6ddPPKJzI5TmNbtFGX9kHCG9+0wJ6qDQElM26
+	 w2ZceHsrVRp6DJdOC36/wSfIrvtvKdDYsMq+848/asQPQNUJHwuGkBwdl6ltCxdbyC
+	 VpLNihJbgXbzj0yWQvNGr4VXUzanBYpNKlwZH7BDuePXwDo8x8Wkmx4aUSEjzcUcC2
+	 H4LjRTpWQ1/bg==
+Message-ID: <260f8e7c-d96e-4f47-bccd-414e3443fcff@kernel.org>
+Date: Thu, 25 Apr 2024 13:53:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/7] ASoC: dt-bindings: document wcd937x Audio Codec
+To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com,
+ quic_pkumpatl@quicinc.com
+References: <20240425091857.2161088-1-quic_mohs@quicinc.com>
+ <20240425091857.2161088-2-quic_mohs@quicinc.com>
+ <3f961aca-6dff-4d51-bb0b-c974ed80b646@kernel.org>
+ <89c29d6c-173d-5b19-ce7d-9c2b7cec40f2@quicinc.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <89c29d6c-173d-5b19-ce7d-9c2b7cec40f2@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On riscv32, it is possible for the last page in virtual address space
-(0xfffff000) to be allocated. This page overlaps with PTR_ERR, so that
-shouldn't happen.
+On 25/04/2024 13:47, Mohammad Rafi Shaik wrote:
+> On 4/25/2024 4:31 PM, Krzysztof Kozlowski wrote:
+>> On 25/04/2024 11:18, Mohammad Rafi Shaik wrote:
+>>> From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+>>>
+>>> Document the Qualcomm WCD9370/WCD9375 Audio Codec and the soundwire
+>>> devices can be found on Qualcomm QCM6490 based platforms.
+>>>
+>>> The Qualcomm WCD9370/WCD9375 Audio Codec communicates
+>>> with the host SoC over 2 Soundwire links to provide:
+>>> - 3 TX ADC paths with 4 differential AMIC inputs
+>>> - 6 DMIC inputs that are shared with AMIC input
+>>> - 4 Microphone BIAS
+>>> - RX paths with 4 PAs – HPHL/R, EAR and AUX
+>>> - Stereo Headphone output
+>>> - MBHC engine for Headset Detection
+>>>
+>>> Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+>>> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+>>> Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+>>
+>> 1. That's odd order of tags. Who created the first patch?
+> 
+>     First patch is created by : Prasad Kumpatla <quic_pkumpatl@quicinc.com>
 
-There is already some code to ensure memblock won't allocate the last page.
-However, buddy allocator is left unchecked.
+So look at submitting patches explaining the order.
 
-Fix this by reserving physical memory that would be mapped at virtual
-addresses greater than 0xfffff000.
 
-Reported-by: Björn Töpel <bjorn@kernel.org>
-Closes: https://lore.kernel.org/linux-riscv/878r1ibpdn.fsf@all.your.base.are.belong.to.us
-Fixes: 76d2a0493a17 ("RISC-V: Init and Halt Code")
-Signed-off-by: Nam Cao <namcao@linutronix.de>
-Cc: <stable@vger.kernel.org>
----
- arch/riscv/mm/init.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+>>
+>> 2. Last time you received report that this was not tested. Now there is
+>> again report.
+>> Are you sure you test patches before sending?
+>>
+>    Yes i have tested patches multiple times before sending.
+> 
+>    In my setup the "make dt_binding_check"  became success, there is no 
+> errors.
+> 
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 968761843203..7c985435b3fc 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -235,18 +235,19 @@ static void __init setup_bootmem(void)
- 		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
- 
- 	/*
--	 * memblock allocator is not aware of the fact that last 4K bytes of
--	 * the addressable memory can not be mapped because of IS_ERR_VALUE
--	 * macro. Make sure that last 4k bytes are not usable by memblock
--	 * if end of dram is equal to maximum addressable memory.  For 64-bit
--	 * kernel, this problem can't happen here as the end of the virtual
--	 * address space is occupied by the kernel mapping then this check must
--	 * be done as soon as the kernel mapping base address is determined.
-+	 * Reserve physical address space that would be mapped to virtual
-+	 * addresses greater than (void *)(-PAGE_SIZE) because:
-+	 *  - This memory would overlap with ERR_PTR
-+	 *  - This memory belongs to high memory, which is not supported
-+	 *
-+	 * This is not applicable to 64-bit kernel, because virtual addresses
-+	 * after (void *)(-PAGE_SIZE) are not linearly mapped: they are
-+	 * occupied by kernel mapping. Also it is unrealistic for high memory
-+	 * to exist on 64-bit platforms.
- 	 */
- 	if (!IS_ENABLED(CONFIG_64BIT)) {
--		max_mapped_addr = __pa(~(ulong)0);
--		if (max_mapped_addr == (phys_ram_end - 1))
--			memblock_set_current_limit(max_mapped_addr - 4096);
-+		max_mapped_addr = __va_to_pa_nodebug(-PAGE_SIZE);
-+		memblock_reserve(max_mapped_addr, (phys_addr_t)-max_mapped_addr);
- 	}
- 
- 	min_low_pfn = PFN_UP(phys_ram_base);
--- 
-2.39.2
+I can easily reproduce the errors, so you probably don't have yamllint
+and use old dtschema and/or old kernel.
+
+
+
+Best regards,
+Krzysztof
 
 
