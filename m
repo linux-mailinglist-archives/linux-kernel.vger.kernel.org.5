@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-158804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7345D8B2520
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:30:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC528B251F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:30:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF338B24FDC
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30BDC281D47
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548E914BFA3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5712014BFAB;
 	Thu, 25 Apr 2024 15:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZkw8+EZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fypgInQV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9443514AD2F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943EC14AD2E;
 	Thu, 25 Apr 2024 15:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059034; cv=none; b=cqLq/OXvcLif+Ew2V0hkKvKAnvRwkcRSWPyZNVUaaicb6DXTJKHzqCuSCEHyYUeIQO54bxr+q6OYvZwL5B7ZE3s94aR7lnDLezznkPdmNiI12X0OqY5u07hKxwa358rbdnpnUSeJtxvU2EhektG00CK19gzSB0L8ozB1k178kMw=
+	t=1714059034; cv=none; b=C05/mk+KhLk8KqwaKLdCVuZ1pW8rVf87ZVNVu22xtWbJ1Lfvt4XEq4yRDloJrIYOEIojaNsFdxHd3an70sref4aFAXX6FDunuGeCcaoaW/y0EMrzmU//XiZH7ouAV8iZ/vrrB0Kxkz5BM2V2SvDBxtyPL+SMUHO0L08DO5+KnlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714059034; c=relaxed/simple;
-	bh=gUSLbzxAFjoTHvhf/UGxNryWbTZm3Kr57AkiJjhbJSI=;
+	bh=c72zLocSIR3CxXrqJBjeWWnmB7baaCULJUGYE4ucAbE=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=CqMA19p++iq8yHgF9yQkyPz3xXK8f2ZSGhhwGfqV2LKGp2+RnK8akAHXpDSqgYECAS/cAwyyToKxpX04BFiGWTHcGOuTjmHU3a0w6OmoSZEQhMzbhmy2KWHVXH2CPIvgo58gyGXYEFA+DycHw88SHZNaE2U87MrOQmJoIkXpDbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZkw8+EZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3E7A4C113CE;
+	 In-Reply-To:To:Cc; b=g/Wrx3TeHN7z/omxIMNczbmF/4WESjrcXcxrmYJZqZPjwV9DTeq8YYRuFt3Gd6TxDoMJKdQXockXGT2IV0Tiykv+TEmIva6DQRHR3AqwfVcWWhyq6UxUI1gry/H0JYmpkXWY5rir7HaDVSBVnemJnYzr/jrKE+jdr2m7Iw/70Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fypgInQV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D065C4AF08;
 	Thu, 25 Apr 2024 15:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714059034;
-	bh=gUSLbzxAFjoTHvhf/UGxNryWbTZm3Kr57AkiJjhbJSI=;
+	bh=c72zLocSIR3CxXrqJBjeWWnmB7baaCULJUGYE4ucAbE=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=WZkw8+EZoMU7PoHKxuEmTbaq+kiMkDD3op0/mrQDsnXFkSHAJhMucNjzxssHKJ8Wg
-	 cqyarp90+aSaWtlxV6rJ1LqWgoEkp8eErMSsc7EVL+uYasvswzWnSIt34MQj4a5Qn4
-	 kjBgoiAy9XBtYKZvGPweZXbueImUSnRcs0ZZP4FYB6aX0PRKm2M8Q41kgaj5/2oE5o
-	 pKvRexppZtx/Dc/PUBWlc3x8BLjsL2iLj9qy6xmOxVYGfzotTlkcIucwJAAihlfTOg
-	 QknvVUHD26M2f2lmKO+eETZeCVyb5hMrj/IkRCbIy9DrJgJGAY7ZM51mIA+IsxuHuG
-	 sQnL3U1WZR5lQ==
+	b=fypgInQVBcqty0KxIrsiX/GKCIsHgr+fuUZMKrJzrAU/m3t6SmuNMNuQFymOwAvWU
+	 LMibSj3p3H4eYdUBhbimaegfVKffq5MaYAI7zfTYnOHhT6+A5PxrnEt300VeKKwYDk
+	 Ycw4Df+gSV4rx0iM7jwtxVLunaWzfclMNMFyYdcB0mmh2B1IwOikYmHIlK8iKUn3Rl
+	 jX0kNbM0CDPg0ey05biml++lwRjOIq82/PgtvFKd0UVfYedQNSTekpzlO0Jun5iAkx
+	 uV3apFJ67zT/2bMhYiwpxKjijPTJUtkhxQQg8phEqvKPLiaowxvb5IFJQYTYBpReUi
+	 kmlD/T1T9QopA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 29F3EC595CE;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 33CD1CF21C4;
 	Thu, 25 Apr 2024 15:30:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,43 +51,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: ethernet: ti: am65-cpts: Fix PTPv1 message type
- on TX packets
+Subject: Re: [PATCH net] net: ti: icssg-prueth: Fix signedness bug in
+ prueth_init_rx_chns()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171405903416.5824.618925777912040630.git-patchwork-notify@kernel.org>
+ <171405903420.5824.17370077851663422898.git-patchwork-notify@kernel.org>
 Date: Thu, 25 Apr 2024 15:30:34 +0000
-References: <20240424071626.32558-1-r-gunasekaran@ti.com>
-In-Reply-To: <20240424071626.32558-1-r-gunasekaran@ti.com>
-To: Ravi Gunasekaran <r-gunasekaran@ti.com>
-Cc: s-vadapalli@ti.com, rogerq@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- richardcochran@gmail.com, jreeder@ti.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, srk@ti.com, ed.trexel@hp.com
+References: <05282415-e7f4-42f3-99f8-32fde8f30936@moroto.mountain>
+In-Reply-To: <05282415-e7f4-42f3-99f8-32fde8f30936@moroto.mountain>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: rogerq@ti.com, danishanwar@ti.com, rogerq@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+ jan.kiszka@siemens.com, diogo.ivo@siemens.com, robh@kernel.org,
+ grygorii.strashko@ti.com, vigneshr@ti.com,
+ linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
 Hello:
 
 This patch was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 24 Apr 2024 12:46:26 +0530 you wrote:
-> From: Jason Reeder <jreeder@ti.com>
+On Tue, 23 Apr 2024 19:15:22 +0300 you wrote:
+> The rx_chn->irq[] array is unsigned int but it should be signed for the
+> error handling to work.  Also if k3_udma_glue_rx_get_irq() returns zero
+> then we should return -ENXIO instead of success.
 > 
-> The CPTS, by design, captures the messageType (Sync, Delay_Req, etc.)
-> field from the second nibble of the PTP header which is defined in the
-> PTPv2 (1588-2008) specification. In the PTPv1 (1588-2002) specification
-> the first two bytes of the PTP header are defined as the versionType
-> which is always 0x0001. This means that any PTPv1 packets that are
-> tagged for TX timestamping by the CPTS will have their messageType set
-> to 0x0 which corresponds to a Sync message type. This causes issues
-> when a PTPv1 stack is expecting a Delay_Req (messageType: 0x1)
-> timestamp that never appears.
+> Fixes: 128d5874c082 ("net: ti: icssg-prueth: Add ICSSG ethernet driver")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] net: ethernet: ti: am65-cpts: Fix PTPv1 message type on TX packets
-    https://git.kernel.org/netdev/net/c/1b9e743e923b
+  - [net] net: ti: icssg-prueth: Fix signedness bug in prueth_init_rx_chns()
+    https://git.kernel.org/netdev/net/c/4dcd0e83ea1d
 
 You are awesome, thank you!
 -- 
