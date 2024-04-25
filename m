@@ -1,243 +1,289 @@
-Return-Path: <linux-kernel+bounces-158300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105258B1E0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C20C8B1E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317021C2406C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:31:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FD201C222D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B8284DFB;
-	Thu, 25 Apr 2024 09:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PgXlwjHz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA09728F7;
-	Thu, 25 Apr 2024 09:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FBC384DE6;
+	Thu, 25 Apr 2024 09:32:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951F528F7;
+	Thu, 25 Apr 2024 09:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037457; cv=none; b=eiX2e2z6nRVkBIMf2tWI/iLyVOIkTmA3NyG9kl+6A2AACtDvia8fwSj489unz6QCkRhwdlS50hCFix0oU+qroyPv3Vr9ORXs223+coJgJnUvW3/xsTEm6Helo3/iChHKnU77OTFs7Ql1SQiBZrNqylcLhO87XHrdx0JiQCQF5cs=
+	t=1714037558; cv=none; b=Hu439UqBATg02B8PDPyW6G9oxuqMn4ZG8hDWedtaT8bGzrLT81fklduBYwNcOpSF9MjkCI55YHwkTZeJLK0eSXi09cFXiq/XcokpOZD2RIIEXrdLHlzr/UXuNrHYr46D5IGbWtg3lfykhCS/ECC1ilGNHzptYBzCB8tAtWpBRcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037457; c=relaxed/simple;
-	bh=BidwcMZvw8hOvIN0VNzLTIwSisk6VgByY2ElyypLUNs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RC5JlCwkfWoygg61jYCislNYsfbcDprEQcoANh8tu24NKjgCXjUpBs28TX0g9BPdE+r7xZsgzbGMZjErczTMndH55vbw1+JXPKb9KCK5qWtmStagp80v7WPVU5GmHl/SHywwNBXxUSEhDWfYh+UjV3rKmGytcC9YpPOZHlT8A7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PgXlwjHz; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714037456; x=1745573456;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BidwcMZvw8hOvIN0VNzLTIwSisk6VgByY2ElyypLUNs=;
-  b=PgXlwjHzNZPObJJrN/9XPMFjPZrAf75xUCwX/3f0XKNM79m2OTwKkJLm
-   OzU6oAzoY8B6SdWPKMIrrRLvMUyNLnFu3QG/hev4EfhshiRTUS7mdHzbP
-   DmxQKI2/zUVeo3PQZGysGi7yoJ2FRTAek/Vjcrk9aHEPjTAiItMe1q3iR
-   djM4f1gsBxs2g3QGec4y0xt1BCAqQS4b/BPywfOAQo5tJiFvok8Vr2uML
-   BGa/P7jrqLeQilc+SDG0jVG/XFTY3TiacC904Oo+4RI+DssXrCXF3CtvG
-   ebd9VR2emUq3GyTqRdX2HfAtv9A0gK3/FCx4o3RHvRB34LmeFx3uPCfp8
-   w==;
-X-CSE-ConnectionGUID: YA3aW5ybQGK/qo0okejWXA==
-X-CSE-MsgGUID: mhgK/B53SxWVr+hPZhDFww==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="13495975"
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="13495975"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 02:30:55 -0700
-X-CSE-ConnectionGUID: 6Lpm9UTlRXC1Pzb3vKTFXg==
-X-CSE-MsgGUID: eDqDKVkqQ2CEowjwPnckpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="29472185"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 25 Apr 2024 02:30:52 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzvRK-0002Dm-10;
-	Thu, 25 Apr 2024 09:30:50 +0000
-Date: Thu, 25 Apr 2024 17:30:47 +0800
-From: kernel test robot <lkp@intel.com>
-To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 4/4] net: add heuristic for enabling TCP
- fraglist GRO
-Message-ID: <202404251744.Tq24y05K-lkp@intel.com>
-References: <20240424180458.56211-5-nbd@nbd.name>
+	s=arc-20240116; t=1714037558; c=relaxed/simple;
+	bh=vAAPcR08Lfk7tNRCkcxaWVf2F2/2MEJYOvGihhU5akI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q91twtLFLShnWtTkVkpeu1fv9ZJ2rzagpPOHLDmYItSicRtyJlynM9LV6xUS2Z+V8zwJM0Vh8V6uFMdHBPd2Ur6oBnomFWedo+VadzUuc6L4SnB0PW86EIBk6nuHq6IlaL9UGIoR9Cz4oPYPMomEZf2rGN3JnOnxMes7aH21Xkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A12E1007;
+	Thu, 25 Apr 2024 02:32:58 -0700 (PDT)
+Received: from [192.168.1.216] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3232C3F64C;
+	Thu, 25 Apr 2024 02:32:27 -0700 (PDT)
+Message-ID: <1d360b13-ea7a-4d13-bb16-ab3d0688ddd2@arm.com>
+Date: Thu, 25 Apr 2024 10:32:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424180458.56211-5-nbd@nbd.name>
-
-Hi Felix,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Felix-Fietkau/net-move-skb_gro_receive_list-from-udp-to-core/20240425-060838
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240424180458.56211-5-nbd%40nbd.name
-patch subject: [PATCH net-next 4/4] net: add heuristic for enabling TCP fraglist GRO
-config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20240425/202404251744.Tq24y05K-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240425/202404251744.Tq24y05K-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404251744.Tq24y05K-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from net/ipv6/tcpv6_offload.c:9:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from net/ipv6/tcpv6_offload.c:9:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from net/ipv6/tcpv6_offload.c:9:
-   In file included from include/linux/skbuff.h:17:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/um/include/asm/hardirq.h:5:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> net/ipv6/tcpv6_offload.c:48:7: error: call to undeclared function '__inet6_lookup_established'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-           sk = __inet6_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-                ^
-   net/ipv6/tcpv6_offload.c:48:7: note: did you mean '__inet_lookup_established'?
-   include/net/inet_hashtables.h:371:14: note: '__inet_lookup_established' declared here
-   struct sock *__inet_lookup_established(struct net *net,
-                ^
-   net/ipv6/tcpv6_offload.c:48:5: error: incompatible integer to pointer conversion assigning to 'struct sock *' from 'int' [-Wint-conversion]
-           sk = __inet6_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   12 warnings and 2 errors generated.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support for
+ reading crash data
+To: Linu Cherian <lcherian@marvell.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+ George Cherian <gcherian@marvell.com>,
+ Anil Kumar Reddy H <areddy3@marvell.com>, Tanmay Jagdale
+ <tanmay@marvell.com>, "mike.leach@linaro.org" <mike.leach@linaro.org>,
+ "leo.yan@linaro.org" <leo.yan@linaro.org>
+References: <20240307033625.325058-1-lcherian@marvell.com>
+ <20240307033625.325058-6-lcherian@marvell.com>
+ <d707430f-00ee-4427-a9e4-6e42bc5b6aa9@arm.com>
+ <PH0PR18MB5002D42E980EDF6317051B77CE092@PH0PR18MB5002.namprd18.prod.outlook.com>
+ <a7b8d15f-5bcf-4774-a5b2-eb95d6174c43@arm.com>
+ <PH0PR18MB5002CFB5DD77312CE0337896CE132@PH0PR18MB5002.namprd18.prod.outlook.com>
+ <02191345-7048-4839-aecf-0e34479d49ef@arm.com>
+ <PH0PR18MB5002E428481F88D92EA9FA22CE172@PH0PR18MB5002.namprd18.prod.outlook.com>
+Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <PH0PR18MB5002E428481F88D92EA9FA22CE172@PH0PR18MB5002.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
-vim +/__inet6_lookup_established +48 net/ipv6/tcpv6_offload.c
 
-    16	
-    17	static bool tcp6_check_fraglist_gro(struct sk_buff *skb)
-    18	{
-    19		const struct ipv6hdr *hdr = skb_gro_network_header(skb);
-    20		struct net *net = dev_net(skb->dev);
-    21		unsigned int off, hlen, thlen;
-    22		struct tcphdr *th;
-    23		struct sock *sk;
-    24		int iif, sdif;
-    25	
-    26		if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
-    27			return false;
-    28	
-    29		inet6_get_iif_sdif(skb, &iif, &sdif);
-    30	
-    31		off = skb_gro_offset(skb);
-    32		hlen = off + sizeof(*th);
-    33		th = skb_gro_header(skb, hlen, off);
-    34		if (unlikely(!th))
-    35			return false;
-    36	
-    37		thlen = th->doff * 4;
-    38		if (thlen < sizeof(*th))
-    39			return false;
-    40	
-    41		hlen = off + thlen;
-    42		if (!skb_gro_may_pull(skb, hlen)) {
-    43			th = skb_gro_header_slow(skb, hlen, off);
-    44			if (unlikely(!th))
-    45				return false;
-    46		}
-    47	
-  > 48		sk = __inet6_lookup_established(net, net->ipv4.tcp_death_row.hashinfo,
-    49						&hdr->saddr, th->source,
-    50						&hdr->daddr, ntohs(th->dest),
-    51						iif, sdif);
-    52		if (!sk)
-    53			return true;
-    54	
-    55		sock_put(sk);
-    56	
-    57		return false;
-    58	}
-    59	
+On 25/04/2024 03:07, Linu Cherian wrote:
+> Hi James,
+> 
+>> -----Original Message-----
+>> From: James Clark <james.clark@arm.com>
+>> Sent: Monday, April 22, 2024 1:48 PM
+>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
+>> <suzuki.poulose@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
+>> kernel@vger.kernel.org; robh+dt@kernel.org;
+>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Anil
+>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
+>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
+>> Subject: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support for
+>> reading crash data
+>>
+>> Prioritize security for external emails: Confirm sender and content safety
+>> before clicking links or opening attachments
+>>
+>> ----------------------------------------------------------------------
+>>
+>>
+>> On 21/04/2024 03:49, Linu Cherian wrote:
+>>> Hi James,
+>>>
+>>>> -----Original Message-----
+>>>> From: James Clark <james.clark@arm.com>
+>>>> Sent: Monday, April 15, 2024 2:59 PM
+>>>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
+>>>> <suzuki.poulose@arm.com>
+>>>> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org;
+>>>> linux- kernel@vger.kernel.org; robh+dt@kernel.org;
+>>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>>>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+>>>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>;
+>> Anil
+>>>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
+>>>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
+>>>> Subject: Re: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add
+>>>> support for reading crash data
+>>>>
+>>>>
+>>>>
+>>>> On 15/04/2024 05:01, Linu Cherian wrote:
+>>>>> Hi James,
+>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: James Clark <james.clark@arm.com>
+>>>>>> Sent: Friday, April 12, 2024 3:36 PM
+>>>>>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
+>>>>>> <suzuki.poulose@arm.com>
+>>>>>> Cc: linux-arm-kernel@lists.infradead.org;
+>>>>>> coresight@lists.linaro.org;
+>>>>>> linux- kernel@vger.kernel.org; robh+dt@kernel.org;
+>>>>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>>>>>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
+>>>>>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>;
+>>>> Anil
+>>>>>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
+>>>>>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
+>>>>>> Subject: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support
+>>>>>> for reading crash data
+>>>>>>
+>>>>>> Prioritize security for external emails: Confirm sender and content
+>>>>>> safety before clicking links or opening attachments
+>>>>>>
+>>>>>> -------------------------------------------------------------------
+>>>>>> --
+>>>>>> -
+>>>>>>
+>>>>>>
+>>>>>> On 07/03/2024 03:36, Linu Cherian wrote:
+>>>>>>> * Introduce a new mode CS_MODE_READ_CRASHDATA for reading
+>> trace
+>>>>>>>   captured in previous crash/watchdog reset.
+>>>>>>>
+>>>>>>> * Add special device files for reading ETR/ETF crash data.
+>>>>>>>
+>>>>>>> * User can read the crash data as below
+>>>>>>>
+>>>>>>>   For example, for reading crash data from tmc_etf sink
+>>>>>>>
+>>>>>>>   #dd if=/dev/crash_tmc_etfXX of=~/cstrace.bin
+>>>>>>>
+>>>>>>> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
+>>>>>>> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+>>>>>>> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+>>>>>>> ---
+>>>>>>> Changelog from v6:
+>>>>>>> * Removed read_prevboot flag in sysfs
+>>>>>>> * Added special device files for reading crashdata
+>>>>>>> * Renamed CS mode READ_PREVBOOT to READ_CRASHDATA
+>>>>>>> * Setting the READ_CRASHDATA mode is done as part of file open.
+>>>>>>>
+>>>>>>
+>>>>>> [...]
+>>>>>>
+>>>>>>> @@ -619,6 +740,19 @@ static int tmc_probe(struct amba_device
+>>>>>>> *adev,
+>>>>>> const struct amba_id *id)
+>>>>>>>  		coresight_unregister(drvdata->csdev);
+>>>>>>>  	else
+>>>>>>>  		pm_runtime_put(&adev->dev);
+>>>>>>> +
+>>>>>>> +	if (!is_tmc_reserved_region_valid(dev))
+>>>>>>> +		goto out;
+>>>>>>> +
+>>>>>>> +	drvdata->crashdev.name =
+>>>>>>> +		devm_kasprintf(dev, GFP_KERNEL, "%s_%s",
+>> "crash",
+>>>>>> desc.name);
+>>>>>>> +	drvdata->crashdev.minor = MISC_DYNAMIC_MINOR;
+>>>>>>> +	drvdata->crashdev.fops = &tmc_crashdata_fops;
+>>>>>>> +	ret = misc_register(&drvdata->crashdev);
+>>>>>>> +	if (ret)
+>>>>>>> +		pr_err("%s: Failed to setup dev interface for
+>> crashdata\n",
+>>>>>>> +		       desc.name);
+>>>>>>> +
+>>>>>>
+>>>>>> Is this all optional after the is_tmc_reserved_region_valid()?
+>>>>>> Skipping to out seems to be more like an error condition, but in
+>>>>>> this case it's not? Having it like this makes it more difficult to
+>>>>>> add extra steps to the probe function. You could move it to a
+>>>>>> function and flip
+>>>> the condition which would be clearer:
+>>>>>>
+>>>>>
+>>>>> Ack.
+>>>>>
+>>>>>>    if (is_tmc_reserved_region_valid(dev))
+>>>>>>       register_crash_dev_interface(drvdata);
+>>>>>>
+>>>
+>>> Did you meant changing the condition of "is_tmc_reserved_region_valid"
+>> by "flip the condition".
+>>> If yes, that’s not required IMHO, since the reserved region is still valid.
+>>>
+>>
+>> By flip I mean remove the !. You had this:
+>>
+>>   	if (!is_tmc_reserved_region_valid(dev))
+>> 		goto out;
+>>
+>> But instead you should put your registration code in a function, remove the !
+>> and replace the goto with a function:
+>>
+>>     if (is_tmc_reserved_region_valid(dev))
+>>         ret = register_crash_dev_interface(drvdata);
+>>
+>> Where register_crash_dev_interface() is everything you added in between
+>> the goto and the out: label. The reason is that you've made it impossible to
+>> extend the probe function with new behavior without having to understand
+>> that this new bit must always come last. Otherwise new behavior would also
+>> be skipped over if the reserved region doesn't exist.
+>>
+> 
+> Thanks. That’s clear to me.
+> 
+>>> IIUC, the idea here is to not to fail the tmc_probe due to an error
+>>> condition in register_crash_dev_interface,  so that the normal condition is
+>> not affected. Also the error condition can be notified to the user using a
+>> pr_dbg / pr_err.
+>>>
+>>> Thanks.
+>>>
+>>
+>> I'm not sure I follow exactly what you mean here, but for the one error
+>> condition you are checking for on the call to misc_register() you can still
+>> return that from the new function and check it in the probe.
+> 
+> Actually was trying to clarify that we may not want to fail the probe due to a failure in the register_crash_dev_interface, since the normal trace operations could continue without crash_dev interface.(Tracing with or without the reserved region doesn’t get affected as well).
+>  Please see the changes below. That way the changes are simpler. 
+> 
+> 
+> @@ -507,6 +628,18 @@ static u32 tmc_etr_get_max_burst_size(struct device *dev)
+>         return burst_size;
+>  }
+> 
+> +static void register_crash_dev_interface(struct tmc_drvdata * drvdata,
+> +                                        const char *name)
+> +{
+> +       drvdata->crashdev.name =
+> +               devm_kasprintf(&drvdata->csdev->dev, GFP_KERNEL, "%s_%s", "crash", name);
+> +       drvdata->crashdev.minor = MISC_DYNAMIC_MINOR;
+> +       drvdata->crashdev.fops = &tmc_crashdata_fops;
+> +       if (misc_register(&drvdata->crashdev))
+> +               dev_dbg(&drvdata->csdev->dev,
+> +                       "Failed to setup user interface for crashdata\n");
+> +}
+> +
+>  static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+>  {
+>         int ret = 0;
+> @@ -619,6 +752,10 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+>                 coresight_unregister(drvdata->csdev);
+>         else
+>                 pm_runtime_put(&adev->dev);
+> +
+> +       if (is_tmc_reserved_region_valid(dev))
+> +               register_crash_dev_interface(drvdata, desc.name);
+> +
+>  out:
+>         return ret;
+>  }
+> 
+> Thanks.
+> Linu Cherian.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Looks good to me!
 
