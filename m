@@ -1,172 +1,166 @@
-Return-Path: <linux-kernel+bounces-159334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D7D98B2D3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:44:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 807918B2D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:46:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE44F2835F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:44:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813DCB21058
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E8E156231;
-	Thu, 25 Apr 2024 22:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB381514D8;
+	Thu, 25 Apr 2024 22:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SOnByfDX"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UaSeLntn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD75414C580
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A941E631
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714085034; cv=none; b=l/U9pzv6E7XjzuPRBJKalJfCkrjeaflEf0QOK/CUcHZgy5VhmS43critxYtkcigEAftVcMewUirbvTW6lplJ+J3t9uZhtUocdIYcsARxgDE25lJLCPSBpW9LxbKhqwyuT1BdMRFKTgRL6VwK97P+o4Sn0OVD9FPUaEDar0a2UjQ=
+	t=1714085157; cv=none; b=cXh6aZOCghO1ZiTS5kPJm2X9qAJ/eHP8G+aM78QkyZR6aCfi1mns4pXKRY3A3YcKORSnELxlZtQs/ed0C7xT83swM4qztW7jr5VOcfLN7tkn++1raH5AuQNzxHZ6mZPz+nR4zVDJ+hP3cDmCCUcuEEnkqXc8Ancqn43rfTCAZ88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714085034; c=relaxed/simple;
-	bh=H9ptPffD72a6EE/F8GmAJPbH4Hs3FnnZrATVgQncKMk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YORvSxjeGIOciQxCBfdrXDFs0HBmkhFeC8HqZF/jlaDSs02bOmTJRHSI+toK6Z3FdqQHVapTWVLrg3Dc7tcBSl/p8LlSKcOB+q7XRWC0Ge16x68vG24Bgb+WinoHPEb7CUkHivVMVja9JziSNXUQjH82cMr/M6QgTDmqHHK9Lkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SOnByfDX; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26783b4so2349806276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714085032; x=1714689832; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrglaiEx1K/p7eLezRNfFqqwp5tC5DyM7fbQ8fng/Qs=;
-        b=SOnByfDXjE3qVf99fyP9uKuHBKKXqKWTgbMj/XXbcKiR+p4z6wUr+k6S8N0j+KSNCI
-         PHUj53dvMjKRTvhXtR7qUXduEmyXey/QW3c4KMYDnlSK0sVcStISn6Zgd98GntVzGS7J
-         z/muwndBoOYmroz9go2oGcGQnp8tFXRYpuX5KXfEoHWufm6Wowkh0tPpiqaHdAu1bO9c
-         t+BHU2v+gD5H60Ce6aTcsd5gUpLtx+tDG6vFw1/9tD6k7x0jBucqYGlCCr22rf3ZPxDc
-         wOVLAb1hkh/yV0TytGecpv075Bxro+T35ymKjDSRirlFbpWXcrX9kKbqUrD9bIzn/S1e
-         0z9Q==
+	s=arc-20240116; t=1714085157; c=relaxed/simple;
+	bh=jxeYLbFIO3qrKWZkoNdHv4O2h0rfDqP4aBN95HlAjIA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Xr5aOeJuugfAanUliWvnfeXyYKdN0xRPdCNV7w67o8DqIRU0T8ZaDLHEXvjsryY3oKQM1buOapIBNiDg33WBWBxcJClgoQ8NljnW3Gt/yeA8Bd1AznEUDpsRlZiCZ1C8BOg6ySldo5s4nCwvw3hta7U8/VSRctXj4QdOhdJaOHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UaSeLntn; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714085153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+nUaSmzGbXoW6XdSxqdYrfPKfpk8zIxCfRz2a71nXGU=;
+	b=UaSeLntnA8IXyvdprbvdt3Jq38koMd2vBxCJ6sgok8cfizHb0nppCFBWUhtHaYTxyfEE/l
+	sXBoowMsIeIn3JPM0IABa4jz9VdjGwH9fuMuF0XqvwGfpWvQNn7yQwkS3zLmk08hj+WTYr
+	r6+bRTscJEg8oAXxEWQi+jmQyriutlg=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-270-U4A8_P_XMee3EGFkN8VkZA-1; Thu, 25 Apr 2024 18:45:52 -0400
+X-MC-Unique: U4A8_P_XMee3EGFkN8VkZA-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2a5457a8543so1704683a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:45:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714085032; x=1714689832;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrglaiEx1K/p7eLezRNfFqqwp5tC5DyM7fbQ8fng/Qs=;
-        b=gTh+s/ABiT0ZLomtxWda1juyTvjNDUBxQBiY+RTCWP1yizu0ZQG9k6TtNND0RMlVaa
-         hA1BYp3nTQUDQX6GalOTgoyjVl40tCqk9yoDaRmLxwU/YgaiUb5XZ3898CtWXn5vCYzj
-         0J5IWlK1uXv8D8EE3JHo2aSb2CqsQDLnfYwcpvyl7TWMy1E0XShGRRrc6okeyclHvp8/
-         4BVaYujHHNlQEEe1sJvcH0U+xwsBnF1HbApm+KRP6u5z2MAsrLWAeXYxsIU6I49k5hIr
-         pIcWh52EFHig34wWKtBz02DnjUnRGTCemg3UXK1oyk7nz4+rZUrmES7Cvjd30epPRBpS
-         nYgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVuBtscQelUgxiRpTcDQT4kyBHV6qRpY21tzILBy6DVV/q2pf8S5GsiuWKoubvmmijEgGZBdeR/tSTEQdQALaWtmQAsJXDz7BF39Rx9
-X-Gm-Message-State: AOJu0Yy6K9JNvthEXLMoSpex3fNSNHQhzNH7/xGoieSMHyz6Cr7XUnUZ
-	Bc23UEr4NAv32khMVlX+2DAbupGutuzEmAfoPosl69mvfUyZB1bVsrpWblm5BeV0WjfgZG5GYtX
-	mNw==
-X-Google-Smtp-Source: AGHT+IE0l8k5q6IRZWoxVpxZFQN5YmWjoxKGFyyO2KChppLOxrZxf2iMNWv7d/ZYxr9xghhup9Fmi2GUOUI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ab6e:0:b0:dda:c566:dadd with SMTP id
- u101-20020a25ab6e000000b00ddac566daddmr110183ybi.4.1714085031720; Thu, 25 Apr
- 2024 15:43:51 -0700 (PDT)
-Date: Thu, 25 Apr 2024 15:43:50 -0700
-In-Reply-To: <b605722ac1ffb0ffdc1d3a4702d4e987a5639399.camel@intel.com>
+        d=1e100.net; s=20230601; t=1714085151; x=1714689951;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+nUaSmzGbXoW6XdSxqdYrfPKfpk8zIxCfRz2a71nXGU=;
+        b=k/t75XApXjmw9drOCVB6yAyQomRDLufzljHtK6lcCHACb69hKDYDJ/auZRknn8y4ao
+         Nh6EWogElHiJUrAnWpFqkkJrMINZU5288Zvz5YTkfGLsPUJpIq/r4Dz3anLoeEYxuymM
+         8yZ5dJf62jpgc9QlGFuFU/VzqV3oO/wdQfYZxOoBlNyETz0cMHT6E5WdLIpN50InZelS
+         4w6oixPdka4mTsYL0AhMRiuJypUflSyiYMiMzpU2xe8v3NHP4prDPnEb7akuHKIhSUpJ
+         U1pMuzmWYoEmQVDJOz4tFKU7mJqKZ7aNxC0DmJZo9AUPgqyosqtIOOh7Q0GjLuNCheL8
+         xRJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWV+9TsqSsLnub7SjvNmqc8GBBuAotfPU7yWYPYjMCAGu/xyxQi1+kuwXFLRGXXoCTdO0veLXLn9rt2b4rOwqcU0pz8sWekBYoeaeAx
+X-Gm-Message-State: AOJu0YxRmEXHe/r3MZQfq+yP9wP5mJpIyUPN9ugnENECMjK+Zt4Jf1WR
+	4ZfkJIId3chCHs3JxMbPxjJlzChW6EIc62mQ/sO9BFtMC4jdn5AgBgKLJ5bGIIR26kbHLTX3RYt
+	e/2g63SQPAdC0etw+2zMvnmCtNH9uhdpNmsRCdL3fS+6SMWLXCusCVccT88k0tw==
+X-Received: by 2002:a17:90a:e641:b0:2af:ff3:e14a with SMTP id ep1-20020a17090ae64100b002af0ff3e14amr988541pjb.16.1714085151122;
+        Thu, 25 Apr 2024 15:45:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnxWn5UoPJJ42z8vEJ1hDvOvdFClinMSMRuOccHoaQeuvslKornt6YigcRd8+yX/ZUX5Pd3Q==
+X-Received: by 2002:a17:90a:e641:b0:2af:ff3:e14a with SMTP id ep1-20020a17090ae64100b002af0ff3e14amr988527pjb.16.1714085150743;
+        Thu, 25 Apr 2024 15:45:50 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id ck16-20020a17090afe1000b002a2f6da006csm13512078pjb.52.2024.04.25.15.45.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 15:45:49 -0700 (PDT)
+Message-ID: <9237d933-406d-4120-a5fd-34a238f2ccdb@redhat.com>
+Date: Fri, 26 Apr 2024 08:45:44 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZiaWMpNm30DD1A-0@google.com> <3771fee103b2d279c415e950be10757726a7bd3b.camel@intel.com>
- <Zib76LqLfWg3QkwB@google.com> <6e83e89f145aee496c6421fc5a7248aae2d6f933.camel@intel.com>
- <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
- <ZifQiCBPVeld-p8Y@google.com> <61ec08765f0cd79f2d5ea1e2acf285ea9470b239.camel@intel.com>
- <9c6119dacac30750defb2b799f1a192c516ac79c.camel@intel.com>
- <ZiqFQ1OSFM4OER3g@google.com> <b605722ac1ffb0ffdc1d3a4702d4e987a5639399.camel@intel.com>
-Message-ID: <Zircphag9i1h-aAK@google.com>
-Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
-	Bo2 Chen <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, 
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] vhost: Improve vhost_get_avail_head()
+Content-Language: en-US
+To: kernel test robot <lkp@intel.com>, virtualization@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ mst@redhat.com, jasowang@redhat.com, shan.gavin@gmail.com
+References: <20240423032407.262329-4-gshan@redhat.com>
+ <202404260448.g7F06v7M-lkp@intel.com>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <202404260448.g7F06v7M-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024, Kai Huang wrote:
-> On Thu, 2024-04-25 at 09:30 -0700, Sean Christopherson wrote:
-> > On Tue, Apr 23, 2024, Kai Huang wrote:
-> > And anecdotally, I know of at least one crash in our production environment where
-> > a VMX instruction hit a seemingly spurious #UD, i.e. it's not impossible for a
-> > ucode bug or hardware defect to cause problems.  That's obviously _extremely_
-> > unlikely, but that's why I emphasized that sanity checking CR4.VMXE is cheap.
+On 4/26/24 06:42, kernel test robot wrote:> kernel test robot noticed the following build warnings:
 > 
-> Yeah I agree it could happen although very unlikely.
+> [auto build test WARNING on mst-vhost/linux-next]
+> [also build test WARNING on linus/master v6.9-rc5 next-20240424]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 > 
-> But just to be sure:
+> url:    https://github.com/intel-lab-lkp/linux/commits/Gavin-Shan/vhost-Drop-variable-last_avail_idx-in-vhost_get_vq_desc/20240423-112803
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
+> patch link:    https://lore.kernel.org/r/20240423032407.262329-4-gshan%40redhat.com
+> patch subject: [PATCH 3/4] vhost: Improve vhost_get_avail_head()
+> config: i386-randconfig-141-20240426 (https://download.01.org/0day-ci/archive/20240426/202404260448.g7F06v7M-lkp@intel.com/config)
+> compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 > 
-> I believe the #UD itself doesn't crash the kernel/machine, but should be
-> the kernel unable to handle #UD in such case?
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404260448.g7F06v7M-lkp@intel.com/
+> 
+> smatch warnings:
+> drivers/vhost/vhost.c:2614 vhost_get_vq_desc() warn: unsigned 'head' is never less than zero.
+> drivers/vhost/vhost.c:2614 vhost_get_vq_desc() warn: error code type promoted to positive: 'head'
+> 
+> vim +/head +2614 drivers/vhost/vhost.c
+> 
+>    2581	
+>    2582	/* This looks in the virtqueue and for the first available buffer, and converts
+>    2583	 * it to an iovec for convenient access.  Since descriptors consist of some
+>    2584	 * number of output then some number of input descriptors, it's actually two
+>    2585	 * iovecs, but we pack them into one and note how many of each there were.
+>    2586	 *
+>    2587	 * This function returns the descriptor number found, or vq->num (which is
+>    2588	 * never a valid descriptor number) if none was found.  A negative code is
+>    2589	 * returned on error. */
+>    2590	int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+>    2591			      struct iovec iov[], unsigned int iov_size,
+>    2592			      unsigned int *out_num, unsigned int *in_num,
+>    2593			      struct vhost_log *log, unsigned int *log_num)
+>    2594	{
+>    2595		struct vring_desc desc;
+>    2596		unsigned int i, head, found = 0;
+>    2597		int ret, access;
+>    2598	
+>    2599		if (vq->avail_idx == vq->last_avail_idx) {
+>    2600			ret = vhost_get_avail_idx(vq);
+>    2601			if (unlikely(ret))
+>    2602				return ret;
+>    2603	
+>    2604			/* If there's nothing new since last we looked, return
+>    2605			 * invalid.
+>    2606			 */
+>    2607			if (vq->avail_idx == vq->last_avail_idx)
+>    2608				return vq->num;
+>    2609		}
+>    2610	
+>    2611		/* Grab the next descriptor number they're advertising, and increment
+>    2612		 * the index we've seen. */
+>    2613		head = vhost_get_avail_head(vq);
+>>   2614		if (unlikely(head < 0))
+>    2615			return head;
 
-Correct, the #UD is likely not (immediately) fatal.
-> 
-> If so, I am not sure whether the CR4.VMX check can make the kernel any
-> safer, because we can already handle the #UD for the SEAMCALL instruction.
+Thanks for the report. @head needs to be 'int' instead of 'unsigned int'
+so that it can hold the error number from vhost_get_avail_head(). I would
+give it more time to see if there are other review comments before I revise
+it to fix it up.
 
-It's not about making the kernel safer, it's about helping triage/debug issues.
+Thanks,
+Gavin
 
-> Yeah we can clearly dump message saying "CPU isn't in VMX operation" and
-> return failure if we have the check, but if we don't, the worst situation
-> is we might mistakenly report "CPU isn't in VMX operation" (currently code
-> just treats #UD as CPU not in VMX operation) when CPU doesn't
-> IA32_VMX_PROCBASED_CTLS3[5].
-> 
-> And for the IA32_VMX_PROCBASED_CTLS3[5] we can easily do some pre-check in
-> KVM code during module loading to rule out this case.
->
-> And in practice, I even believe the BIOS cannot turn on TDX if the
-> IA32_VMX_PROCBASED_CTLS3[5] is not supported.  I can check on this.
-
-Eh, I wouldn't worry about that too much.  The only reason I brought up that
-check was to call out that we can't *know* with 100% certainty that SEAMCALL
-failed due to the CPU not being post-VMXON.
-
-> > Practically speaking it costs nothing, so IMO it's worth adding even if the odds
-> > of it ever being helpful are one-in-and-million.
-> 
-> I think we will need to do below at somewhere for the common SEAMCALL
-> function:
-> 
-> 	unsigned long flags;
-> 	int ret = -EINVAL;
-> 
-> 	local_irq_save(flags);
-> 
-> 	if (WARN_ON_ONCE(!(__read_cr4() & X86_CR4_VMXE)))
-> 		goto out;
-> 
-> 	ret = seamcall();
-> out:
-> 	local_irq_restore(flags);
-> 	return ret;
-> 
-> to make it IRQ safe.
->
-> And the odd is currently the common SEAMCALL functions, a.k.a,
-> __seamcall() and seamcall() (the latter is a mocro actually), both return
-> u64, so if we want to have such CR4.VMX check code in the common code, we
-> need to invent a new error code for it.
-
-Oh, I wasn't thinking that we'd check CR4.VMXE before *every* SEAMCALL, just
-before the TDH.SYS.LP.INIT call, i.e. before the one that is most likely to fail
-due to a software bug that results in the CPU not doing VMXON before enabling
-TDX.
-
-Again, my intent is to add a simple, cheap, and targeted sanity check to help
-deal with potential failures in code that historically has been less than rock
-solid, and in function that has a big fat assumption that the caller has done
-VMXON on the CPU.
-
-> That being said, although I agree it can make the code a little bit
-> clearer, I am not sure whether it can make the code any safer -- even w/o
-> it, the worst case is to incorrectly report "CPU is not in VMX operation",
-> but shouldn't crash kernel etc.
 
