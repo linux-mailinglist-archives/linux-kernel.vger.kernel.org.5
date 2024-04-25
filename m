@@ -1,77 +1,403 @@
-Return-Path: <linux-kernel+bounces-158069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B2D8B1B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B708F8B1B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B711F22F97
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:28:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750D32840FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2827044C68;
-	Thu, 25 Apr 2024 06:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0B75A116;
+	Thu, 25 Apr 2024 06:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="WRPdkha1"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA283EA9B;
-	Thu, 25 Apr 2024 06:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pgf1X8se"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFD940C03;
+	Thu, 25 Apr 2024 06:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714026481; cv=none; b=K9oeV+u1jtLGGG/qvLRLg/c6SzMs74jpjB3xRe+FRavIOcyiHOwost/ihErzs730BGo4f6102rEYqG8I4hW+71wC8/J+FRdzUSCRzZMeuxas3VfCQ+iYLbcJLLOgp3HYqeI8zjU/MeI7fd7K6OrIAi3Rjs4d9plDSu3BxZsMtgw=
+	t=1714026492; cv=none; b=COktXs6a7Dhsf3kffuItWyspkIk+daAX90GJ/14Ow9LWqcMb6rK7n3UahoIAKaHKe8BfYDvapO5KbDLiOJK5IdyP2i8oT1Voc1lcxMIbE5QdgEaPtW0b46KHzeFEeWYce9Sob8whYJVKou7IsLE1hTZLxepiP7Q8W9rnpEp3jcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714026481; c=relaxed/simple;
-	bh=SiMqzdMtou6kAayXXS0uiVZiQoklH13hCuMPwP1iRQM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Us808wK5+mAd5+veIAF01/OvKckVJvGWWBL7yH98p0eTENnt5hkr1rbJZCh8ACRgC3R7BYcpgn5K2fUjTnE8bjRxfl6/LxABmqVIyJPuk4RnPiwrQOZEzgxyf2W381j2VRtZJVzpsTRRT7zctci8+OOzVe431ONy9BAo/fUfznA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=WRPdkha1; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=D26qblXcQ4jrB+4QyFeKaKxnGrY0sSzMJdsfGunhcOI=;
-	b=WRPdkha1CJ4RnL+zPIsf/x5T/GBduA+Wfu3Z8W6QlnHFmIsdShsPO1CFrmtfiz
-	3WSVmr3s2fwL1vwYfKzs1CoMtAgc4inAWQcer/tXnm+7HKHUj6v+S0fzbW05lwGZ
-	KiWBM6TEdDlDV3i2yjNtQvORVdJBOuU8TEMH/8jL5QwUM=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrAC3f0Gs9ylmbD9sAw--.38992S3;
-	Thu, 25 Apr 2024 14:26:53 +0800 (CST)
-Date: Thu, 25 Apr 2024 14:26:52 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: francesco@dolcini.it, festevam@gmail.com, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960 and
- sai[0,1,4,5]
-Message-ID: <Zin3rNoY5JL7bv/L@dragon>
-References: <20240417150829.333152-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1714026492; c=relaxed/simple;
+	bh=pMGdU3FRhPiA5xxqEp2nuiQ5CIEIiPPzHAy4OyHVNWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p145Ekz26WCeq3Fuv1V67eLJ+tyvWzOeBxE5h44vMIhbTId26+IB77eDR50+aJXPc/+Xur+yWQ1+FjGrKoOrg0oCjBDh/+5LN2uTgFWC65nROOMpmScykn44r1g66vOOzi8ZXCyctYMBnvBsEqEmS8EtMoS/mRET9ngy/QBc8Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pgf1X8se; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6419DC2BD10;
+	Thu, 25 Apr 2024 06:28:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714026491;
+	bh=pMGdU3FRhPiA5xxqEp2nuiQ5CIEIiPPzHAy4OyHVNWU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Pgf1X8seF8O5V9Xtfub1hocqhBPJJyoT/jz6F+IF7cCSxrHQvohrsJaRqIeIzdA00
+	 Ru4agpKHEuzGolT2vJJy4HeXPoW1j+Fnk3vZ9Xl7IB3wNulHiI6RuTzB0XHteT2EDt
+	 aq1E0KUaz0+TuLbQobXhw067tVv+HRLGlmJgVgZ1m8IlC5Z+KUyunNuFhDRAZY+P5R
+	 4OHwKGDc0CP/rjbeujR9jt7X3uP2nzBoh7HS0+6+wFDASrCG3NPMkCFnNIwNTFfI0L
+	 /ceJMSutRZ8DUQv9RdFr+qaIHCHF2SK59haKvNQGSa+PwS498rI7ltAjILs80OscEG
+	 RXwnKdZp92S4Q==
+Message-ID: <0d1c6ed9-0c20-4b0e-876d-4b0adf5aa75d@kernel.org>
+Date: Thu, 25 Apr 2024 08:28:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417150829.333152-1-Frank.Li@nxp.com>
-X-CM-TRANSID:ClUQrAC3f0Gs9ylmbD9sAw--.38992S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU4IJmUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDw-LZVnxcqq8GwAAs5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/10] arm64: dts: qcom: Add AYN Odin 2
+To: wuxilin123@gmail.com, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Tengfei Fan <quic_tengfan@quicinc.com>,
+ Molly Sophia <mollysophia379@gmail.com>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
+ <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 11:08:29AM -0400, Frank Li wrote:
-> Add cm40_i2c, wm8960 and sai[0,1,4,5] for imx8qxp-mek (SCH-38813).
+On 24/04/2024 17:29, Xilin Wu via B4 Relay wrote:
+> From: Xilin Wu <wuxilin123@gmail.com>
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> AYN Odin 2 is a gaming handheld based on QCS8550, which is derived
+> from SM8550 but without modem RF system.
+> 
 
-Applied, thanks!
+
+
+> +
+> +/ {
+> +	model = "AYN Odin 2";
+> +	compatible = "ayn,odin2", "qcom,qcs8550", "qcom,sm8550";
+> +	chassis-type = "handset";
+> +
+> +	qcom,msm-id = <QCOM_ID_QCS8550 0x20000>;
+> +	qcom,board-id = <0x1001f 0>;
+
+No, these are not allowed. You did not test your dts.
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+> +
+> +	aliases {
+> +		serial0 = &uart7;
+> +		serial1 = &uart14;
+> +		serial2 = &uart15;
+> +	};
+> +
+> +	backlight: backlight {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pmk8550_pwm 0 860000>;
+> +		brightness-levels = <1023 0>;
+> +		num-interpolated-steps = <1023>;
+> +		default-brightness-level = <600>;
+> +		power-supply = <&vph_pwr>;
+> +		enable-gpios = <&pmk8550_gpios 5 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pwm_backlight_default>;
+> +		status = "okay";
+
+Drop, why do you need it? Do you see it anywhere else in the backlight
+nodes in DTS?
+
+
+> +	};
+> +
+> +	fan_pwr: fan-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "fan_pwr";
+> +
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +
+> +		gpio = <&tlmm 109 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&fan_pwr_en>;
+> +
+> +		regulator-state-mem {
+> +			regulator-off-in-suspend;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-0 = <&volume_up_n>, <&m1_m2_keys_default>;
+> +		pinctrl-names = "default";
+> +
+> +		key-volume-up {
+> +			label = "Volume Up";
+> +			linux,code = <KEY_VOLUMEUP>;
+> +			gpios = <&pm8550_gpios 6 GPIO_ACTIVE_LOW>;
+> +			debounce-interval = <15>;
+> +			linux,can-disable;
+> +			wakeup-source;
+> +		};
+> +
+> +		m1-button {
+> +			label = "M1";
+> +			linux,code = <BTN_TRIGGER_HAPPY1>;
+> +			gpios = <&tlmm 57 GPIO_ACTIVE_LOW>;
+> +		};
+> +
+> +		m2-button {
+> +			label = "M2";
+> +			linux,code = <BTN_TRIGGER_HAPPY2>;
+> +			gpios = <&tlmm 58 GPIO_ACTIVE_LOW>;
+> +		};
+> +	};
+> +
+> +	hdmi-out {
+> +		compatible = "hdmi-connector";
+> +		type = "d";
+> +		hpd-gpios = <&tlmm 9 GPIO_ACTIVE_HIGH>;
+> +
+> +		port {
+> +			hdmi_con: endpoint {
+> +				remote-endpoint = <&lt8912_out>;
+> +			};
+> +		};
+> +	};
+> +
+> +	hdmi_pwr: hdmi-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "hdmi_pwr";
+> +
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +
+> +		gpio = <&tlmm 10 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	vdd_lcm_2p8: vdd-lcm-2p8-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd_lcm_2p8";
+> +
+> +		regulator-min-microvolt = <2800000>;
+> +		regulator-max-microvolt = <2800000>;
+> +
+> +		gpio = <&tlmm 142 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	led_left_side: led-controller-1 {
+> +		compatible = "pwm-leds-multicolor";
+> +
+> +		multi-led {
+> +			label = "left-side";
+> +			color = <LED_COLOR_ID_RGB>;
+> +			max-brightness = <255>;
+> +
+> +			led-red {
+> +				color = <LED_COLOR_ID_RED>;
+> +				pwms = <&pwm_rgb_left 0>;
+> +			};
+> +
+> +			led-green {
+> +				color = <LED_COLOR_ID_GREEN>;
+> +				pwms = <&pwm_rgb_left 1>;
+> +			};
+> +
+> +			led-blue {
+> +				color = <LED_COLOR_ID_BLUE>;
+> +				pwms = <&pwm_rgb_left 2>;
+> +			};
+> +		};
+> +	};
+> +
+> +	led_left_joystick: led-controller-2 {
+> +		compatible = "pwm-leds-multicolor";
+> +
+> +		multi-led {
+> +			label = "left-joystick";
+> +			color = <LED_COLOR_ID_RGB>;
+> +			max-brightness = <255>;
+> +
+> +			led-red {
+> +				color = <LED_COLOR_ID_RED>;
+> +				pwms = <&pwm_rgb_left 6>;
+> +			};
+> +
+> +			led-green {
+> +				color = <LED_COLOR_ID_GREEN>;
+> +				pwms = <&pwm_rgb_left 7>;
+> +			};
+> +
+> +			led-blue {
+> +				color = <LED_COLOR_ID_BLUE>;
+> +				pwms = <&pwm_rgb_left 8>;
+> +			};
+> +		};
+> +	};
+> +
+> +	led_right_side: led-controller-3 {
+> +		compatible = "pwm-leds-multicolor";
+> +
+> +		multi-led {
+> +			label = "right-side";
+> +			color = <LED_COLOR_ID_RGB>;
+> +			max-brightness = <255>;
+> +
+> +			led-red {
+> +				color = <LED_COLOR_ID_RED>;
+> +				pwms = <&pwm_rgb_right 0>;
+> +			};
+> +
+> +			led-green {
+> +				color = <LED_COLOR_ID_GREEN>;
+> +				pwms = <&pwm_rgb_right 1>;
+> +			};
+> +
+> +			led-blue {
+> +				color = <LED_COLOR_ID_BLUE>;
+> +				pwms = <&pwm_rgb_right 2>;
+> +			};
+> +		};
+> +	};
+> +
+> +	led_right_joystick: led-controller-4 {
+> +		compatible = "pwm-leds-multicolor";
+> +
+> +		multi-led {
+> +			label = "right-joystick";
+> +			color = <LED_COLOR_ID_RGB>;
+> +			max-brightness = <255>;
+> +
+> +			led-red {
+> +				color = <LED_COLOR_ID_RED>;
+> +				pwms = <&pwm_rgb_right 6>;
+> +			};
+> +
+> +			led-green {
+> +				color = <LED_COLOR_ID_GREEN>;
+> +				pwms = <&pwm_rgb_right 7>;
+> +			};
+> +
+> +			led-blue {
+> +				color = <LED_COLOR_ID_BLUE>;
+> +				pwms = <&pwm_rgb_right 8>;
+> +			};
+> +		};
+> +	};
+> +
+> +	mcu_3v3: mcu-3v3-regulator {
+
+Name all regulators regulator-n, where n is decimal number. Then order
+the nodes by name.
+
+
+..
+
+> +
+> +&i2c4 {
+> +	clock-frequency = <400000>;
+> +	status = "okay";
+> +
+> +	touchscreen@20 {
+> +		compatible = "syna,rmi4-i2c";
+> +		reg = <0x20>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		interrupts-extended = <&tlmm 25 0x2008>;
+> +
+> +		pinctrl-names = "default", "sleep";
+> +		pinctrl-0 = <&ts_int_default>;
+> +		pinctrl-1 = <&ts_int_sleep>;
+> +
+> +		vio-supply = <&vreg_l12b_1p8>;
+> +
+> +		syna,startup-delay-ms = <200>;
+> +		syna,reset-delay-ms = <200>;
+> +
+> +		rmi4-f01@1 {
+> +			syna,nosleep-mode = <0x1>;
+> +			reg = <0x1>;
+> +		};
+> +
+> +		rmi4-f12@12 {
+> +			reg = <0x12>;
+> +			syna,rezero-wait-ms = <20>;
+> +			syna,clip-x-low = <0>;
+> +			syna,clip-y-low = <0>;
+> +			syna,clip-x-high = <1080>;
+> +			syna,clip-y-high = <1920>;
+> +			syna,sensor-type = <1>;
+> +			touchscreen-inverted-x;
+> +		};
+> +	};
+
+Please confirm the status of dtbs_check for your board. I am pretty sure
+it fails.
+
+Best regards,
+Krzysztof
 
 
