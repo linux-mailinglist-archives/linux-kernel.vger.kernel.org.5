@@ -1,344 +1,251 @@
-Return-Path: <linux-kernel+bounces-159154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2948B2A06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:44:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC61B8B2A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972DD1F229CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:44:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 754AB285255
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE271553B5;
-	Thu, 25 Apr 2024 20:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF38153BC7;
+	Thu, 25 Apr 2024 20:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J5ZeiFT4"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Lt2kjDsz"
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE56315381B;
-	Thu, 25 Apr 2024 20:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578F8153809;
+	Thu, 25 Apr 2024 20:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077825; cv=none; b=G89dwNuTNbmwGJvEvVV3OelI7f4CR9wi9JSiAV5mNw0KdTxlPXoyKKy2mVRYib/Jss5D7lnmkxILstwcrVKTvVfZBTkqBteMt0NZVaNSnFFaUi5m6nwScGAUaNa1KvIGQ1n6tcQqFO8CyT+G1A6EhMI+gWLwzRBWm63slNy4+cU=
+	t=1714077855; cv=none; b=f+Qqn1A7nqtO8V5FCeN10nOAR09IlaJGMfL7wxLqqg77QcwaoS6SGIhMBMGoprE7TQVXpF6JrX4w8MqEPxJYR+K8pIVZxW2zlXXFJp0yaAZTcWxhF9PNIoijRFkgmS1rPARHQC4AfiG17Bz7A5faNazyok9i6+LKfIWoplylxtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077825; c=relaxed/simple;
-	bh=SQ00Biuzgi8ooOKmj4SDQQLUJ9vx5PPWa/yT4EKopUs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KJT9rP+8BSlGqU/HJTJNRKUHQWT6a27kwxgt58ULIA7AqBvcf9qMc8AkdN6S4IoPehU0kukcnbwIDmOv7LO8ulDlrn2NMhGa8p3EWq0G4emLcfSdNFL9dEbSocrb+lIDhsVSd5GNeTK+HygOpYdX32mc3q77zUS3H7UojGdPSPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J5ZeiFT4; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5e152c757a5so973354a12.2;
-        Thu, 25 Apr 2024 13:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714077823; x=1714682623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
-        b=J5ZeiFT4KOLnAaQnP1QEHH/ltoWHfneGQLSMvzJfz7pTsV4W7ZKeIHZCznoMv5WFlU
-         HPeeTBPSldcZTAA5XzggZemaEmR4adsdTbMLLqzpkY/67QXiyPwKaEMwJnxTdsvv3uNC
-         JsCAvTC6h2eIv6XAN4iz2x5CXYV4yo/Qo6UjwmsAM/DBa/6bvFN6kc+dFsoC2mn/fDx2
-         RuGe1NRUhdPyfZ4p47n1LWxDc6ebobJimNAclByfQCNHUNNrT7lAu802NhQbtQ0gks0Z
-         y0blGYNZzvyGJNPmEYZ4SUXOi4HsEtyy/WE0u9nxugbj4Xp0Al8GqB6QMko62Nb00B/E
-         OJiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714077823; x=1714682623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1gI9GtX2kU2O+gI3EzYjJFlSgaBQf6k4DIS3uLiY3BU=;
-        b=jKJEB4E2FpiiPTa7J/zFVYJK90FLi4s8GG+IEjnD89k2qdzWpTlq7NfJZBfbO4H91g
-         ShHmjyFqkN2W1u+6GCf/7b+rwu/H6ZTP5jbP7A0PRVPAZDvK0Aso1ttKPJFFCVfHDcS5
-         D8hpSvjBCvfOgwBx+/cyweCoHmsWnDwBSrtSEU8CkFAWhqhWAjaSJZA76vwajKeexvah
-         qXJ7IXVrjXPLFVu5cgwgA/1nhFCxOUsnnxDjlyFJ8NTBwXDLoXiAoyXWARIklXbMGmeu
-         IAFpyryhHmqUNHpKquTpd9vPfcU/4FJveiY5Vwi4ym8Fqjvj/KakHyzgd8XyyqgLTKBO
-         VdWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUliVTy9cpglN4G4OJ6EEF//fTqfOJ/mYhrW5AFjKjQ3gDZoitOE41/f4MrdVAXD5px53SBo15Gg4HoAj+f+cNOxRfogsxpN4ZcNgn+fmOa8YXNvIpyVpeY5n75BmugLBWz
-X-Gm-Message-State: AOJu0YxKxcOHVI4lWqmLnQNJZalrm4Z/h4vcJ86xug0bLHVw39SE27Ym
-	JahX1oGxFfzajtNxNWlGduVS3N/5eyhKgYELebh/20EzYpi4Q1p6x/ZyAkiZZWOTg4uiOQ6Ptfd
-	47/n/bX0J1uzJ/pZNgu2nTUfS7ok=
-X-Google-Smtp-Source: AGHT+IFTFS8ouyJ8nLmy+93w5RtLBwRt63tqP78ViX1kn334RBkekxMginP1hbtj1x9tbPoLxWGu1XDSuDtNLzlHmj0=
-X-Received: by 2002:a17:90a:7895:b0:2aa:e719:3901 with SMTP id
- x21-20020a17090a789500b002aae7193901mr777681pjk.20.1714077823135; Thu, 25 Apr
- 2024 13:43:43 -0700 (PDT)
+	s=arc-20240116; t=1714077855; c=relaxed/simple;
+	bh=WyRKRpDdDWspxjCjUuscQqnxFO2RBD2WTOpPg6Fwpw0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JsJ5XX2g1gaF6Sfm8GtzGBOW5m800H5/mv7cRY18G9xx8uMpj493ZCuVH9W3Ub1cihZ15nhyovGPQZ6AgGEz6upWrDv7v6S1UnXJD1GsQHjlw8nYqJ8VLq/vaUfgUn/wfH6kgOh6AhM8tKP1vqFTD+zoy0olRUb1BopOF+SEav4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Lt2kjDsz; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+	Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=tq5X8zmN+3k5A79fjsOahtoee5I5v66qJtvAbIOuA/0=; b=Lt2kjDszrhUtpDwANofp1SHp1c
+	Tdsdb8Mbw2ACXHtyZvmIRF2ickkBKO0xNEKrwZiflhZQNJS4JkvSEvt+GRGkh+jfzdN6G22QEyX2T
+	1YfaIyTpjgZ+nh7tkY8ZpI+jOXcO8OvLb53EpbaiDrkbp1nix/fMCmmBisSQ9S1LuCo5EXvRv3iJ0
+	XfxyUt6lRoVwRlTa0gqDxKUlW97ExfduqAePjzuVTvYOk4iTOaiqXYlniMQZvXXJ7GFOhP4Pa0xcL
+	eQzSdrcgb+TlND+gC3Qz9tF5iMwZqZE8qIAT2QX2pCKweoCimN1CrgsK5ydJq1qvbSFgvwaskPJSQ
+	uFjrzW7Q==;
+Received: from 201-42-129-95.dsl.telesp.net.br ([201.42.129.95] helo=steammachine.lan)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1s05wW-008iV5-LF; Thu, 25 Apr 2024 22:43:45 +0200
+From: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	"Boqun Feng" <boqun.feng@gmail.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	"Paul Turner" <pjt@google.com>,
+	linux-api@vger.kernel.org,
+	"Christian Brauner" <brauner@kernel.org>,
+	"Florian Weimer" <fw@deneb.enyo.de>,
+	David.Laight@ACULAB.COM,
+	carlos@redhat.com,
+	"Peter Oskolkov" <posk@posk.io>,
+	"Alexander Mikhalitsyn" <alexander@mihalicyn.com>,
+	"Chris Kennelly" <ckennelly@google.com>,
+	"Ingo Molnar" <mingo@redhat.com>,
+	"Darren Hart" <dvhart@infradead.org>,
+	"Davidlohr Bueso" <dave@stgolabs.net>,
+	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	libc-alpha@sourceware.org,
+	"Steven Rostedt" <rostedt@goodmis.org>,
+	"Jonathan Corbet" <corbet@lwn.net>,
+	"Noah Goldstein" <goldstein.w.n@gmail.com>,
+	"Daniel Colascione" <dancol@google.com>,
+	longman@redhat.com,
+	kernel-dev@igalia.com
+Subject: [RFC PATCH 0/1] Add FUTEX_SPIN operation
+Date: Thu, 25 Apr 2024 17:43:31 -0300
+Message-ID: <20240425204332.221162-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424173550.16359-1-puranjay@kernel.org> <20240424173550.16359-3-puranjay@kernel.org>
- <CAEf4BzZOFye13KdBUKA7E=41NVNy5fOzF3bxFzaeZAzkq0kh-w@mail.gmail.com>
- <mb61pwmollpfh.fsf@kernel.org> <CAEf4BzZe-rtewAvDeNwqoud+x+fTraiLM1mzdvae_5yNrWsWyg@mail.gmail.com>
- <mb61po79x9sqr.fsf@kernel.org>
-In-Reply-To: <mb61po79x9sqr.fsf@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 25 Apr 2024 13:43:31 -0700
-Message-ID: <CAEf4BzbxehG2_K8=xqfOdB4_FGVfdO3qaFMhQpvsc5JZg=NkUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 11:56=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
-g> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Thu, Apr 25, 2024 at 3:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
-org> wrote:
-> >>
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> >>
-> >> > On Wed, Apr 24, 2024 at 10:36=E2=80=AFAM Puranjay Mohan <puranjay@ke=
-rnel.org> wrote:
-> >> >>
-> >> >> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inlin=
-e
-> >> >> bpf_get_smp_processor_id().
-> >> >>
-> >> >> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
-> >> >>
-> >> >> Here is how the BPF and ARM64 JITed assembly changes after this com=
-mit:
-> >> >>
-> >> >>                                          BPF
-> >> >>                                         =3D=3D=3D=3D=3D
-> >> >>               BEFORE                                       AFTER
-> >> >>              --------                                     -------
-> >> >>
-> >> >> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_g=
-et_smp_processor_id();
-> >> >> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8=
-00082072008
-> >> >>                                                 (bf) r0 =3D r0
-> >> >
-> >> > nit: hmm, you are probably using a bit outdated bpftool, it should b=
-e
-> >> > emitted as:
-> >> >
-> >> > (bf) r0 =3D &(void __percpu *)(r0)
-> >>
-> >> Yes, I was using the bpftool shipped with the distro. I tried it again
-> >> with the latest bpftool and it emitted this as expected.
-> >
-> > Cool, would be nice to update the commit message with the right syntax
-> > for next revision, thanks!
-> >
->
-> Sure, will do.
->
-> >>
-> >> >
-> >> >>                                                 (61) r0 =3D *(u32 *=
-)(r0 +0)
-> >> >>
-> >> >>                                       ARM64 JIT
-> >> >>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >> >>
-> >> >>               BEFORE                                       AFTER
-> >> >>              --------                                     -------
-> >> >>
-> >> >> int cpu =3D bpf_get_smp_processor_id();      int cpu =3D bpf_get_sm=
-p_processor_id();
-> >> >> mov     x10, #0xfffffffffffff4d0           mov     x7, #0xffff8000f=
-fffffff
-> >> >> movk    x10, #0x802b, lsl #16              movk    x7, #0x8207, lsl=
- #16
-> >> >> movk    x10, #0x8000, lsl #32              movk    x7, #0x2008
-> >> >> blr     x10                                mrs     x10, tpidr_el1
-> >> >> add     x7, x0, #0x0                       add     x7, x7, x10
-> >> >>                                            ldr     w7, [x7]
-> >> >>
-> >> >> Performance improvement using benchmark[1]
-> >> >>
-> >> >>              BEFORE                                       AFTER
-> >> >>             --------                                     -------
-> >> >>
-> >> >> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   2=
-4.631 =C2=B1 0.027M/s
-> >> >> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   2=
-3.742 =C2=B1 0.023M/s
-> >> >> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   1=
-2.625 =C2=B1 0.004M/s
-> >> >>
-> >> >> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
-> >> >>
-> >> >> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> >> >> ---
-> >> >>  kernel/bpf/verifier.c | 11 ++++++++++-
-> >> >>  1 file changed, 10 insertions(+), 1 deletion(-)
-> >> >>
-> >> >
-> >> > Besides the nits, lgtm.
-> >> >
-> >> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >> >
-> >> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> >> index 9715c88cc025..3373be261889 100644
-> >> >> --- a/kernel/bpf/verifier.c
-> >> >> +++ b/kernel/bpf/verifier.c
-> >> >> @@ -20205,7 +20205,7 @@ static int do_misc_fixups(struct bpf_verifi=
-er_env *env)
-> >> >>                         goto next_insn;
-> >> >>                 }
-> >> >>
-> >> >> -#ifdef CONFIG_X86_64
-> >> >> +#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
-> >> >
-> >> > I think you can drop this, we are protected by
-> >> > bpf_jit_supports_percpu_insn() check and newly added inner #if/#elif
-> >> > checks?
-> >>
-> >> If I remove this and later add support of percpu_insn on RISCV without
-> >> inlining bpf_get_smp_processor_id() then it will cause problems here
-> >> right? because then the last 5-6 lines inside this if(){} will be
-> >> executed for RISCV.
-> >
-> > Just add
-> >
-> > #else
-> > return -EFAULT;
->
-> I don't think we can return.
+Hi,
 
-ah, because it's not an error condition, right
+In the last LPC, Mathieu Desnoyers and I presented[0] a proposal to extend the
+rseq interface to be able to implement spin locks in userspace correctly. Thomas
+Gleixner agreed that this is something that Linux could improve, but asked for
+an alternative proposal first: a futex operation that allows to spin a user
+lock inside the kernel. This patchset implements a prototype of this idea for
+further discussion.
 
->
-> > #endif
-> >
-> > ?
-> >
-> > I'm trying to avoid this duplication of the defined(CONFIG_xxx) checks
-> > for supported architectures.
->
-> Does the following look correct?
->
-> I will do it like this:
->
->                 /* Implement bpf_get_smp_processor_id() inline. */
->                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
-) {
->                         /* BPF_FUNC_get_smp_processor_id inlining is an
->                          * optimization, so if pcpu_hot.cpu_number is eve=
-r
->                          * changed in some incompatible and hard to suppo=
-rt
->                          * way, it's fine to back out this inlining logic
->                          */
-> #if defined(CONFIG_X86_64)
->                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
->                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
->                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
->                         cnt =3D 3;
-> #elif defined(CONFIG_ARM64)
->                         struct bpf_insn cpu_number_addr[2] =3D { BPF_LD_I=
-MM64(BPF_REG_0, (u64)&cpu_number) };
->
->                         insn_buf[0] =3D cpu_number_addr[0];
->                         insn_buf[1] =3D cpu_number_addr[1];
->                         insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
->                         insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
->                         cnt =3D 4;
-> #else
->                         goto next_insn;
-> #endif
+With FUTEX2_SPIN flag set during a futex_wait(), the futex value is expected to
+be the PID of the lock owner. Then, the kernel gets the task_struct of the
+corresponding PID, and checks if it's running. It spins until the futex
+is awaken, the task is scheduled out or if a timeout happens.  If the lock owner
+is scheduled out at any time, then the syscall follows the normal path of
+sleeping as usual.
 
-yep, I just wrote a large comment about goto next_insns above and then
-saw you already proposed that :) Yep, I think this is the way.
+If the futex is awaken and we are spinning, we can return to userspace quickly,
+avoid the scheduling out and in again to wake from a futex_wait(), thus
+speeding up the wait operation.
 
->                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
->                         if (!new_prog)
->                                 return -ENOMEM;
->
->                         delta    +=3D cnt - 1;
->                         env->prog =3D prog =3D new_prog;
->                         insn      =3D new_prog->insnsi + i + delta;
->                         goto next_insn;
->                 }
->
->
-> >>
-> >> >
-> >> >>                 /* Implement bpf_get_smp_processor_id() inline. */
-> >> >>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id =
-&&
-> >> >>                     prog->jit_requested && bpf_jit_supports_percpu_=
-insn()) {
-> >> >> @@ -20214,11 +20214,20 @@ static int do_misc_fixups(struct bpf_veri=
-fier_env *env)
-> >> >>                          * changed in some incompatible and hard to=
- support
-> >> >>                          * way, it's fine to back out this inlining=
- logic
-> >> >>                          */
-> >> >> +#if defined(CONFIG_X86_64)
-> >> >>                         insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u=
-32)(unsigned long)&pcpu_hot.cpu_number);
-> >> >>                         insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
-G_0, BPF_REG_0);
-> >> >>                         insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
-0, BPF_REG_0, 0);
-> >> >>                         cnt =3D 3;
-> >> >> +#elif defined(CONFIG_ARM64)
-> >> >> +                       struct bpf_insn cpu_number_addr[2] =3D { BP=
-F_LD_IMM64(BPF_REG_0, (u64)&cpu_number) };
-> >> >>
-> >> >
-> >> > this &cpu_number offset is not guaranteed to be within 4GB on arm64?
-> >>
-> >> Unfortunately, the per-cpu section is not placed in the first 4GB and
-> >> therefore the per-cpu pointers are not 32-bit on ARM64.
-> >
-> > I see. It might make sense to turn x86-64 code into using MOV64_IMM as
-> > well to keep more of the logic common. Then it will be just the
-> > difference of an offset that's loaded. Give it a try?
->
-> I think MOV64_IMM would have more overhead than MOV32_IMM and if we can
-> use it in x86-64 we should keep doing it that way. Wdyt?
+I didn't manage to find a good mechanism to prevent race conditions between
+setting *futex = PID in userspace and doing find_get_task_by_vpid(PID) in kernel
+space, giving that there's enough room for the original PID owner exit and such
+PID to be relocated to another unrelated task in the system. I didn't performed
+benchmarks so far, as I hope to clarify if this interface makes sense prior to
+doing measurements on it.
 
-My assumption (which I didn't check) was that BPF JITs should optimize
-such MOV64_IMM that have a constant fitting within 32-bits with a
-faster and smaller instruction. But I'm fine leaving it as is, of
-course.
+This implementation has some debug prints to make it easy to inspect what the
+kernel is doing, so you can check if the futex woke during spinning or if
+just slept as the normal path:
 
->
-> >>
-> >> >
-> >> >> +                       insn_buf[0] =3D cpu_number_addr[0];
-> >> >> +                       insn_buf[1] =3D cpu_number_addr[1];
-> >> >> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
-G_0, BPF_REG_0);
-> >> >> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_=
-0, BPF_REG_0, 0);
-> >> >> +                       cnt =3D 4;
-> >> >> +#endif
-> >> >>                         new_prog =3D bpf_patch_insn_data(env, i + d=
-elta, insn_buf, cnt);
-> >> >>                         if (!new_prog)
-> >> >>                                 return -ENOMEM;
-> >> >> --
-> >> >> 2.40.1
-> >> >>
+[ 6331] futex_spin: spinned 64738 times, sleeping
+[ 6331] futex_spin: woke after 1864606 spins
+[ 6332] futex_spin: woke after 1820906 spins
+[ 6351] futex_spin: spinned 1603293 times, sleeping
+[ 6352] futex_spin: woke after 1848199 spins
+
+[0] https://lpc.events/event/17/contributions/1481/
+
+You can find a small snippet to play with this interface here:
+
+---
+
+/*
+ * futex2_spin example, by André Almeida <andrealmeid@igalia.com>
+ *
+ * gcc spin.c -o spin
+ */
+
+#define _GNU_SOURCE
+#include <err.h>
+#include <errno.h>
+#include <linux/futex.h>
+#include <linux/sched.h>
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <unistd.h>
+
+#define __NR_futex_wake 454
+#define __NR_futex_wait 455
+
+#define WAKE_WAIT_US	10000
+#define FUTEX2_SPIN	0x08
+#define STACK_SIZE	(1024 * 1024)
+
+#define FUTEX2_SIZE_U32	0x02
+#define FUTEX2_PRIVATE	FUTEX_PRIVATE_FLAG
+
+#define timeout_ns  30000000
+
+void *futex;
+
+static inline int futex2_wake(volatile void *uaddr, unsigned long mask, int nr, unsigned int flags)
+{
+	return syscall(__NR_futex_wake, uaddr, mask, nr, flags);
+}
+
+static inline int futex2_wait(volatile void *uaddr, unsigned long val, unsigned long mask,
+			      unsigned int flags, struct timespec *timo, clockid_t clockid)
+{
+	return syscall(__NR_futex_wait, uaddr, val, mask, flags, timo, clockid);
+}
+
+void waiter_fn()
+{
+	struct timespec to;
+	unsigned int flags = FUTEX2_PRIVATE | FUTEX2_SIZE_U32 | FUTEX2_SPIN;
+
+	uint32_t child_pid = *(uint32_t *) futex;
+
+	clock_gettime(CLOCK_MONOTONIC, &to);
+	to.tv_nsec += timeout_ns;
+	if (to.tv_nsec >= 1000000000) {
+		to.tv_sec++;
+		to.tv_nsec -= 1000000000;
+	}
+
+	printf("waiting on PID %d...\n", child_pid);
+	if (futex2_wait(futex, child_pid, ~0U, flags, &to, CLOCK_MONOTONIC))
+		printf("waiter failed errno %d\n", errno);
+
+	puts("waiting done");
+}
+
+int function(int n)
+{
+	return n + n;
+}
+
+#define CHILD_LOOPS 500000
+
+static int child_fn(void *arg)
+{
+	int i, n = 2;
+
+	for (i = 0; i < CHILD_LOOPS; i++)
+		n = function(n);
+
+	futex2_wake(futex, ~0U, 1, FUTEX2_SIZE_U32 | FUTEX_PRIVATE_FLAG);
+
+	puts("child thread is done");
+
+	return 0;
+}
+
+int main() {
+	uint32_t child_pid = 0;
+	char *stack;
+
+	futex = &child_pid;
+
+	stack = mmap(NULL, STACK_SIZE, PROT_READ | PROT_WRITE,
+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+
+	if (stack == MAP_FAILED)
+		err(EXIT_FAILURE, "mmap");
+
+	child_pid = clone(child_fn, stack + STACK_SIZE, CLONE_VM, NULL);
+
+	waiter_fn();
+
+	usleep(WAKE_WAIT_US * 10);
+
+	return 0;
+}
+
+---
+
+André Almeida (1):
+  futex: Add FUTEX_SPIN operation
+
+ include/uapi/linux/futex.h |  2 +-
+ kernel/futex/futex.h       |  6 ++-
+ kernel/futex/waitwake.c    | 79 +++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 83 insertions(+), 4 deletions(-)
+
+-- 
+2.44.0
+
 
