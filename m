@@ -1,121 +1,131 @@
-Return-Path: <linux-kernel+bounces-159097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A98508B296C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:08:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ECA68B296E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 372C21F222F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:08:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFED41C21CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D7F15350B;
-	Thu, 25 Apr 2024 20:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933F4152E0F;
+	Thu, 25 Apr 2024 20:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hluguHNa"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="OBIYah/f"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DB8152DF1
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E32621101
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714075694; cv=none; b=h0UhBwaIYH2q2ucOhRq80Pgp/6g95f2vUqsVWmCdt9wBg/2NC/cvAlDMVNZiF0k6qsVVggjnRXl9hl/Z6ZJnTMiH2p+wAyXeUROWPecx/B6mq2PPVUoFujARKwvqDp19U7q8OvJgv/yKopfb3iSNRY1aDiZJEk1wT2jjoWmkMi0=
+	t=1714075716; cv=none; b=gzMgoerWy22uUx5S6k5VCAVlfoySb00dnZRo9LrpRrapmVpoZDQEsHMIyJnfev5vIVRtcCSzoV+9pwno5HsOLjOOk/NrLUheuKuf0YM2a+3MJtrSWkFDR8yLPI1gRqWnAfIsU5hg14eE8mTT6AgAqap40n7gX0vZaHnDPoGSdJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714075694; c=relaxed/simple;
-	bh=7ciCYviadDCESvkbbfYYDhcw4dNfYDHt5C6Yzrv1psw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qqlkein48q7K/jnCHLOe/JZ8yBKefvvq0LMJvq2HBhEraWnASYVS6j9q91fkChuDjfbMzrAi6W6n/TIr8ZihLsOZw8CWu9TZEoE06A5iiOE3p+zFZvf5Lf9nRJzVbwAXopJjz8jHhXZAzAr9w6mnzK0r76zG9QkEDULKzQ5jnQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hluguHNa; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e2b137d666so10827235ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:08:12 -0700 (PDT)
+	s=arc-20240116; t=1714075716; c=relaxed/simple;
+	bh=0sCH/svKrcHQRBgwMdS8kOTd5s/vWg8I+tWzNaJ25Ug=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k7XlpGzY4P8AONH9rt9kGHDWRLgbjWcN38DgDZ7dd8itO3idB/+jCnPJ0OgQfeRv8lnL5XXQnZgc+LTXIPaY9ok3oqGZ/2Gn/TZ3mrH8VEcRLfEwl2IZY923R0tsQiGrZrOMRiWhe3e3Of13EL9UWk7GJ5OYI1qzJJmuw9isVvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=OBIYah/f; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-36c30a81507so3469295ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714075692; x=1714680492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ekH2ncVU5TU90wC0+JU7SiT8D9UwcwiJNzKzOJmDUPE=;
-        b=hluguHNa3+jkYTvirKPnwbb3PspgFmPQQGCw/CuEWwz+SVTO/L29pZdZUmQO+VxrUs
-         LttNGPjwNt40efzj/jw6YvmYY4yhLWqHnZgQPSytBqfAuRuf5ee4Z4AOFcGQ0lUX1d9a
-         uxlivsYYYN1hCwCwMvshFk6gOFPYelyrJ6FQY=
+        d=sifive.com; s=google; t=1714075714; x=1714680514; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bmZS627iyI6cXvDn9mYzVXZNUslQZgCxIUmm314nlkE=;
+        b=OBIYah/fAXnDM0IQoUnhSlYG4d5cE6gqdD11GfgYgClWhkQhwjTKE/uti+AP/X2dpO
+         /qJIy1pOrCNrGunCM772+iK81VUQQikGvA71eq76Nlj+OMDHe/twkBzH7tDxoMWmyavA
+         u5yz2JWdPsgc7T2O7HoMColqjEIRYncM9dFmyMfiR/lBlhKdVKx7puLRGryRj3iU1Eiv
+         CV3KZooE/a+H+RJ1q1fVMic3o9rfNEFdFnvQz/XoG62Z1Jh3w094k64VQW9zlBBwusPU
+         q8WvM/cxguqbsDRR6F0uQ7uDnKTceo8zaC4rXk5YyCJOCPidQ5nn63qusB/Po+VTP8mQ
+         baaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714075692; x=1714680492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ekH2ncVU5TU90wC0+JU7SiT8D9UwcwiJNzKzOJmDUPE=;
-        b=eBOge8tGu8lH+vV4GXkpAmje4oyEjl0AxefEtfsZ+t7UJeB9iFHke1ovlDBVqx+rLQ
-         se2HCh7EZbKvJA9G/8aw/1zdVnlMHGduxsis9+dS67XXFlDrq7T/CBW3L677mbfsybD+
-         ZomIKFdN3MBI1EUwMEkm+MlLXOuUdf5wFBYjPimK+tAmues/ZTgutqCpTAuavllRsjHr
-         ICLTI6uR1VUdRZkSViMNtWVHvYIKvZhOX9nBcfTdtczr2xTewH4Af4xnOkkaLYJ3VD7N
-         RkJcxopOZNvjGiDHyHzgdGnv3lWEylfKBQ75jVcUaI4+/6uU7+zBcubLFkHHgZ6cL5VZ
-         dJmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCIEh0GP3PYd5dN0r2tchSHzT4bnRXJsNy44Gf0qWsyX0sYGneLjOhMnRA2cj8mFJ2U7Hsvo9zAIbsq0XT7pBuYlUSe5ySbvSRd/b3
-X-Gm-Message-State: AOJu0YyGGQu8MxnYhRhmEE6IZyAMXaPWS0IIaWl8YLUcLjlcYUuOEGaz
-	UnEDEJ3UVpx1Oby57q3nMIz0CmaXvL0/7OAOMKuZidpPzkcK6pPq3f436/rJEg==
-X-Google-Smtp-Source: AGHT+IENLaRsnHeJ8vPQA0HMTgbKv7kjkvunXKY2OsqKLXqA91N5TvqvgatgH/rNiBbiRYXFmTuk2w==
-X-Received: by 2002:a17:902:6548:b0:1e9:519:d464 with SMTP id d8-20020a170902654800b001e90519d464mr560628pln.65.1714075691780;
-        Thu, 25 Apr 2024 13:08:11 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m6-20020a1709026bc600b001e99ffdbe56sm8266309plt.215.2024.04.25.13.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 13:08:11 -0700 (PDT)
-Date: Thu, 25 Apr 2024 13:08:10 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp,
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-	jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev,
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
-	ytcoode@gmail.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
-	glider@google.com, elver@google.com, dvyukov@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
-	kernel-team@android.com, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-Message-ID: <202404251307.FD73DE1@keescook>
-References: <20240321163705.3067592-1-surenb@google.com>
+        d=1e100.net; s=20230601; t=1714075714; x=1714680514;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bmZS627iyI6cXvDn9mYzVXZNUslQZgCxIUmm314nlkE=;
+        b=cmfdGsDRDCYvVbjFRPkTJ75MMeW5nmMtWPc8FXjTA6sideoEUm2eea3g/luuhN0O2y
+         Mt3DbvuBlDnWxSMUJuGj9NS75Tlsgz4Mnkc8U0l9wgqrYD3WgWxetoeOmBaMJiLsMPXY
+         Si+m79D51lklaVDdh26Yr05F/iI7JmlzpO/rn7NzEafPSNC5ZeB8qb3p6rPqVZK7RU8H
+         OvRx25bx689/dvcJHbABztjCQrIPTMQc8QEhvHOeW+xCAGcWAZ6jOshi6RNomWxXhsdh
+         AKsAijWp48O2OuhJQNlOq0vwY8ktMvIFKu1JKo/LSyuwyCSvAbMCHNkIXbhz0LFfiXBH
+         rXsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWk6EJzZqaGSS3Ar4osIzju4pdjIF528NotwZIuHk+3pgaJbuBl2ard9lib7hBfLEbXaId0iflMUvbdHEpQF4U2vBMckXxGlwozbREP
+X-Gm-Message-State: AOJu0YwLf4JcjiXuyCFznqiaHXFn7KNS5e/iJCBrXehREGY7sTCHwIsn
+	LDfkbk+jc//GSdkajzpTcIlKbx2UviEmVvUILOTHx3HJYNoaScwMZbPCI/kLfjY=
+X-Google-Smtp-Source: AGHT+IF7UibZ9Tq2CyV/lcHoINwh7wba3leqbYShtMwVRmIS9aOy6+dNx8r1b604+CtMfbV/ku5vLA==
+X-Received: by 2002:a05:6e02:144b:b0:36b:24c5:eee5 with SMTP id p11-20020a056e02144b00b0036b24c5eee5mr885883ilo.27.1714075714321;
+        Thu, 25 Apr 2024 13:08:34 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.6.197])
+        by smtp.gmail.com with ESMTPSA id p6-20020a92d286000000b003687fe513f2sm3634471ilp.2.2024.04.25.13.08.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 13:08:33 -0700 (PDT)
+Message-ID: <d2742ee1-7e3c-4c0d-8172-d3543fe78e5e@sifive.com>
+Date: Thu, 25 Apr 2024 15:08:31 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [kvm-riscv/for-next 1/2] drivers/perf: riscv: Remove the warning
+ from stop function
+To: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Jones <ajones@ventanamicro.com>, Anup Patel <anup@brainfault.org>,
+ Atish Patra <atishp@atishpatra.org>,
+ Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org,
+ kvm-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Will Deacon <will@kernel.org>
+References: <20240425232933.4111680-1-atishp@rivosinc.com>
+ <20240425232933.4111680-2-atishp@rivosinc.com>
+Content-Language: en-US
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240425232933.4111680-2-atishp@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
-> Overview:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for
-> debug kernels, overhead low enough to be deployed in production.
+On 2024-04-25 6:29 PM, Atish Patra wrote:
+> The warning message was initially added just to indicate that counter
+> stop function is being called while the event is already stopped.
+> 
+> However, we update the state to stopped case now in an overflow handler
+> after stopping the counter. If there is another child overflow handler
+> is registered (e.g kvm) it may call stop again which will trigger the
+> warning.
+> 
+> Fixes : commit 22f5dac41004d ("drivers/perf: riscv: Implement SBI PMU snapshot function")
 
-A bit late to actually _running_ this code, but I remain a fan:
+This may be intentional, since you wanted these to be squashed, but this isn't
+the right format for a Fixes: tag (no space before ":" and no "commit"). Otherwise,
 
-Tested-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
 
-I have a little tweak patch I'll send out too...
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  drivers/perf/riscv_pmu.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/perf/riscv_pmu.c b/drivers/perf/riscv_pmu.c
+> index 36d348753d05..78c490e0505a 100644
+> --- a/drivers/perf/riscv_pmu.c
+> +++ b/drivers/perf/riscv_pmu.c
+> @@ -191,8 +191,6 @@ void riscv_pmu_stop(struct perf_event *event, int flags)
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	struct riscv_pmu *rvpmu = to_riscv_pmu(event->pmu);
+>  
+> -	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+> -
+>  	if (!(hwc->state & PERF_HES_STOPPED)) {
+>  		if (rvpmu->ctr_stop) {
+>  			rvpmu->ctr_stop(event, 0);
 
--- 
-Kees Cook
 
