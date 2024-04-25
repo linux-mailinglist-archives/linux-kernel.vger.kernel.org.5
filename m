@@ -1,136 +1,135 @@
-Return-Path: <linux-kernel+bounces-158488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D00C8B20D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 058D08B20D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:02:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 446891F24E01
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:00:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF4CC1F24F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6519C12B151;
-	Thu, 25 Apr 2024 12:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B302212BE86;
+	Thu, 25 Apr 2024 12:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vl6wdiT9"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssZnt+F6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AD312AAF3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 12:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC9884E0E;
+	Thu, 25 Apr 2024 12:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714046438; cv=none; b=NQSjMQropsDiv0Z8QkTrRId4nrIAXFWqjj95gd40p+W88vHI1VmC9/HGmt3sOMFxtRtP8o1Aw06JDEUDIRzBWrlFr/KeTRIRDEA1r0x69jWg3VQG6mM66wRZFOkzyEnZYEoeDmj/gCmInMgbJUj8Zsk35P8zIxmV/mzKVkK2Lng=
+	t=1714046535; cv=none; b=LcW0FfjMglvyzK+P9A/2sz74AdHpYZmk5W23chi8/ocY6Zr0YqfEc3pSE8wNWy3kC8V0qKfSzW2l1Hh5Y8t3sghl9iw9AGYZabyX1rF85fUULVADoEXJZ88FPHWoxqh9l2YDE15UsooloBDRSMfP8wiqa1D1SNyEtIeIUDrwFeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714046438; c=relaxed/simple;
-	bh=yz3reNGqZHR64SfzCcPbognzfBDQMj6j27eguea4rPg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lnz9CEuALxdYcEaxd8sKBLRWGyAZ47qRcTqiqR8FctYjhu2dQ9gpD78eTAVIpNCz6yfG8NdrywIzUpg0y2xuf0d26X0Gu2quWrlMeSsidp16fG4FAoP7eGx3dtag7Wu97YI6tKy+I8Q9cgW45DUZKiQFLZSzV7utuhpn0nj9IqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vl6wdiT9; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2dd6c160eaaso10617111fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 05:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714046435; x=1714651235; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yz3reNGqZHR64SfzCcPbognzfBDQMj6j27eguea4rPg=;
-        b=Vl6wdiT9DmxI+oz7X/IE5LGmi/qch0JzxiqdDCag5Fpy7sFVd1kblxxmr1AJWeNa3e
-         6izXKX5m4sWsUDmoIoi/zS5WSqFnp0n7F932R8uFWQ14czbleKQarZIRZg+2Axr+T7nG
-         fzGKuwv5z4tmcNgL/SOTCv//TwFfaE7HbJLMWA2VQU0y/0BN9DjFkOxECe5mstGrlrrI
-         JWtltlY/ehNN3sz9x5emo+Q4XbQ84K3vye5BJOJXNHggrocAkmb4CG/gqr2vVm1LNILc
-         M9PPbNU/xqSl/IuEdFo/Uyg5efUm6IJUciidc250ZWHNt2EIWm9YrbaOfVb5DQjjXSKO
-         sGnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714046435; x=1714651235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yz3reNGqZHR64SfzCcPbognzfBDQMj6j27eguea4rPg=;
-        b=u7+kEhgjqS3zOv1sPuoJ6gwhd/Z/ZLlH4bDD/UjyC5Ysq8JnYRmtKgAqqLdO0K6WLP
-         f3DzCEDNvPNYWgn0zsTqYSnnVIgZ7VhzC6Oy5JwleFV/rDxGDhjr/NOK0pmhoi8juzoH
-         r/V+IKA3fN/1T+qNGx97JsprC2YfQm9QuWU4IoyWbFIpXS6dSIhtu9MXKxzuq1PXoWfE
-         4b2uX4BtHP7IJokwAwRL9gczXH4TDIJOlznXw7n+gJ9TgFJcl92WyeY2kxdAL/i646mn
-         VRtx0uZemip+R8cAqB3LiNtgv+JoBL4KZYGe2cWWt9Mj7faG+TcMw5jyHd0w/RJLYmzK
-         MQZA==
-X-Forwarded-Encrypted: i=1; AJvYcCURh3GQQOhEdvfKkjcA0Y5bEG8AuODI+z79EJa2WRYQ6FHdNiO3YQjAY/IK3JIwgVpKNz+0RA7kkkDvsdaPNiZGm1T+WHabF+1/IrD5
-X-Gm-Message-State: AOJu0YzxyrlBV9FRvQlbAOLeQ/p4WoYxSWX5YzflLwRSk7CntE6zlgov
-	YCMhNBlTCl74Y2lgv5admQRzUzyDv+52u7HItfG373MzHQ0inuXQT4JzisMaPiUaVLkPUilOEAG
-	KJLiuXKxFEerzA0GpKq3GDSiHI3w=
-X-Google-Smtp-Source: AGHT+IGuFQ8p1l3INQCxTz34lQfNbPhf0hEa7Wzdg8HrAjVcVf0cpVwmvELoG50FznFjTLAg335EOYp6IP7GorGuaEs=
-X-Received: by 2002:ac2:5dcc:0:b0:519:5a60:5fe7 with SMTP id
- x12-20020ac25dcc000000b005195a605fe7mr4594534lfq.66.1714046434863; Thu, 25
- Apr 2024 05:00:34 -0700 (PDT)
+	s=arc-20240116; t=1714046535; c=relaxed/simple;
+	bh=IsokxEzMjspQdJ6vbgSWEZO+bwVScekTaycFJ/Dr5nM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FadfTfHAfGLJboiZmGniFIpW3JDMjvoVp1tz97fGMXMJCyqZ0CPWQZF0JgxOdvuxheheGOuFau418tbZWUudqyLz1xiDV2tSKpulI37YCX5Vw+G/cH5wyyPuOEl5NecqKd6V3iKZiqwyOv7BRzk+Im4hqxuajuZG6lxafkPjaBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssZnt+F6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D7DC113CC;
+	Thu, 25 Apr 2024 12:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714046534;
+	bh=IsokxEzMjspQdJ6vbgSWEZO+bwVScekTaycFJ/Dr5nM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ssZnt+F6c5C7fMP2Rv+zpjBsDZUzPNNQxiUU3+aKm/gMy76wi/kViatVTn0CwizWF
+	 GKQmIY/KZtpsqcd3hGGWRqVBKFxKqfg/qhEFgvkPtoQ1Ivpaij54PeyWnWD86GOw+a
+	 ETQQ/q97VlYlkalLlE2f1QK8rzoFmCIfRROFKBF8GkTtOEAtg3pTvxbwd7F6CjYsDs
+	 wYIImnz+C3zwgR/vFCMBBUwSGAHZyw9Ar48HwrAeH/dS3xzUEh87u1PeUlPfub/0qb
+	 ADx988KGvC5r/QxV6gr3xd8jHidY7Afv0fAUZA3fRMj9svI5UE6nozaR80ECjOqEnn
+	 GH0q3p3x2sheA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rzxnq-000000001yQ-0MAo;
+	Thu, 25 Apr 2024 14:02:14 +0200
+Date: Thu, 25 Apr 2024 14:02:14 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Jaiganesh Narayanan <njaigane@codeaurora.org>,
+	Doug Anderson <dianders@chromium.org>,
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain
+ support
+Message-ID: <ZipGRl_QC_x83MFt@hovoldconsulting.com>
+References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK1f24nb6FkipH3OZa0uwbBWkefS3f2BrJ_GTxkS2j6+6bgODQ@mail.gmail.com>
- <20240425085051.74889-1-ioworker0@gmail.com> <49394660-8455-48ec-8ae1-fbd2d590d27a@redhat.com>
- <CAK1f24kaphS9Gz4Nxe-+=iHs_+CpA1Qk7q=pdzUJKc5u-0_qXw@mail.gmail.com> <e75b509a-bf4f-418c-a921-cf3383fc5929@redhat.com>
-In-Reply-To: <e75b509a-bf4f-418c-a921-cf3383fc5929@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Thu, 25 Apr 2024 20:00:23 +0800
-Message-ID: <CAK1f24njK_=FFTZyCCcZYPosop=WU8WGZHZRtPOk6zJDp2SdCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/vmscan: avoid split PMD-mapped THP during shrink_folio_list()
-To: David Hildenbrand <david@redhat.com>
-Cc: ziy@nvidia.com, 21cnbao@gmail.com, akpm@linux-foundation.org, 
-	fengwei.yin@intel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	maskray@google.com, mhocko@suse.com, minchan@kernel.org, peterx@redhat.com, 
-	ryan.roberts@arm.com, shy828301@gmail.com, songmuchun@bytedance.com, 
-	wangkefeng.wang@huawei.com, willy@infradead.org, xiehuan09@gmail.com, 
-	zokeefe@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
 
-On Thu, Apr 25, 2024 at 5:25=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> >> I was wondering if we can better integrate that into the pagewalk belo=
-w.
-> >>
-> >> That is, don't do the TTU_SPLIT_HUGE_PMD immediately. Start the pagewa=
-lk
-> >> first. If we walk a PMD, try to unmap it. Only if that fails, split it=
-.
-> >
-> > Nice. Thanks for the suggestion!
-> > I'll work on integrating it into the pagewalk as you suggested.
-> >
-> >>
-> >> Less working on "vma + address" and instead directly on PMDs.
-> >
-> > Yes, some of the work on "vma + address" can be avoided :)
->
-> Doing the conditional split while in the pagewalk will be the
-> interesting bit to sort out (we temporarily have to drop the PTL and
-> start once again from that now-PTE-mapped page table). But it should be
-> a reasonable thing to have.
+On Wed, Apr 24, 2024 at 08:45:31PM -0700, Bjorn Andersson wrote:
+> When a GPIO is configured as OPEN_DRAIN gpiolib will in
+> gpiod_direction_output() attempt to configure the open-drain property of
+> the hardware and if this fails fall back to software emulation of this
+> state.
+> 
+> The TLMM block in most Qualcomm platform does not implement such
+> functionality, so this call would be expected to fail. But due to lack
+> of checks for this condition, the zero-initialized od_bit will cause
+> this request to silently corrupt the lowest bit in the config register
+> (which typically is part of the bias configuration) and happily continue
+> on.
+> 
+> Fix this by checking if the od_bit value is unspecified and if so fail
+> the request to avoid the unexpected state, and to make sure the software
+> fallback actually kicks in.
 
-Yep, it's an interesting challenge for me, but definitely worth tackling ;)
+Fortunately, this is currently not a problem as the gpiochip driver does
+not implement the set_config() callback, which means that the attempt to
+change the pin configuration currently always fails with -ENOTSUP (see
+gpio_do_set_config()).
 
->
-> Please let us know if you run into bigger issues with that!
+Specifically, this means that the software fallback kicks in, which I
+had already verified.
 
-Thanks, I'll do my best to sort it out and reach out for help if needed :p
+Now, perhaps there is some other path which can allow you to end up
+here, but it's at least not via gpiod_direction_output().
 
->
-> See walk_pmd_range() as an inspiration where we call split_huge_pmd().
+The msm pinctrl binding does not allow 'drive-open-drain' so that path
+should also be ok unless you have a non-conformant devicetree.
 
-Thanks for your suggestion! I'll take a closer look at it.
+> It is assumed for now that no implementation will come into existence
+> with BIT(0) being the open-drain bit, simply for convenience sake.
+> 
+> Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
 
-Thanks again for clarifying!
-Lance
+I guess hardware open-drain mode has never been properly tested on
+ipq4019.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-msm.c | 2 ++
+>  drivers/pinctrl/qcom/pinctrl-msm.h | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> index aeaf0d1958f5..329474dc21c0 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -313,6 +313,8 @@ static int msm_config_reg(struct msm_pinctrl *pctrl,
+>  			*mask |= BIT(g->i2c_pull_bit) >> *bit;
+>  		break;
+>  	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
+> +		if (!g->od_bit)
+> +			return -EOPNOTSUPP;
+
+I believe this should be -ENOTSUPP, which the rest of the driver and
+subsystem appear to use.
+
+>  		*bit = g->od_bit;
+>  		*mask = 1;
+>  		break;
+
+Johan
 
