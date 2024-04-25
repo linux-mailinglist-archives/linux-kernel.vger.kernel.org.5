@@ -1,193 +1,77 @@
-Return-Path: <linux-kernel+bounces-158068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320D08B1AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:27:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B2D8B1B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A910B22AB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:27:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B711F22F97
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58AE4AEEC;
-	Thu, 25 Apr 2024 06:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2827044C68;
+	Thu, 25 Apr 2024 06:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="It1Mo04d"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DE740C03
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="WRPdkha1"
+Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA283EA9B;
+	Thu, 25 Apr 2024 06:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714026413; cv=none; b=GMh5DeR2uNsuzY2I5TrgYZ+zCFns7fm7zpZddhusv+PuFTJ0xmAC36K/IiJQ6UBKL7kR+xbG8jmszCYU98Fga3FAyTjWFnlq+ItXAhOEuN5h1jkNmS9UP0BravKj9fsh7TFb8F8Dzj5YNI+qaKc/2ShrmrXLKpxSd9GLBmpWx3g=
+	t=1714026481; cv=none; b=K9oeV+u1jtLGGG/qvLRLg/c6SzMs74jpjB3xRe+FRavIOcyiHOwost/ihErzs730BGo4f6102rEYqG8I4hW+71wC8/J+FRdzUSCRzZMeuxas3VfCQ+iYLbcJLLOgp3HYqeI8zjU/MeI7fd7K6OrIAi3Rjs4d9plDSu3BxZsMtgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714026413; c=relaxed/simple;
-	bh=738bx0ebszciNfqD7UVbAZya1SA+u1TcvpkDfJNU9Gg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n/0+/6VANsIGkigMTeeOgIiL+4rsyH6iNmGaMLK0ye7oRWMCZ0svxDy5alFWOeC2ymckq2FdyzFtWet+A00yafQm+xXJ+DdQueN5tX+g6n1ClL6sMi95ect4gIQZDjra8WzhnCp3k8dWE94LzoM2C5uJR7GdKweosyeVYw+RBj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=It1Mo04d; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 90AB93FE5A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714026409;
-	bh=vEKVDSHMK5F/yU8ggTZJjhUhsGYpK1yP0OK1ux8Mb5o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=It1Mo04dCe+tCH/jmCiuKboCxyCyJewDkfXOsZxlIcIJgDWz3L2+e/JmFgf95Kp79
-	 sPRwnGaSsKl04ZTW3HkIbsleNZr+U1Fm5wKTIfw93/mruc2JFGVht9crfbHhMSIUuv
-	 uZYmgfzEWiQDuxWlEa/Y+KHVQYESAJVrJvypzKPOsYvwLGdARG7bGZETE3BiBDNwTN
-	 SoPHGUqkMv0g1e4XrXRR14YNCdKR+XOK07PC8lZeGyG4eAewyIevNAu/fDVG/EMk2O
-	 6BL4cFAzNvYTGFvHBaWhFh2XadCubnoxcIKZLWoqWNidGIxd9DvaVbSEIAaRb2a0Ko
-	 hBuzf84lnzJwQ==
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5e4f312a995so595040a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 23:26:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714026407; x=1714631207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vEKVDSHMK5F/yU8ggTZJjhUhsGYpK1yP0OK1ux8Mb5o=;
-        b=bZ3JT47LsdwU0jQZtH/Y2++bemgJkwrfZ6iKUOoDls1DSIHylAbYaoNJNMhokNkgmB
-         jgnuSXqapFURAfJkbHIfuVED6Da4T8dzkXYXyXKp4QR9HSxMhz218yix5beC1m19YvdC
-         ViHoebOVKMq33G2jfBtCTOvSdvnhJZ5/qzYM91Fk8acEG3wJ8vwgHQu6O0fmnzs+CvyI
-         ccjzg3Fy9KRklJv6DzFat4VOgtqTZ13b1msX01uyBFbrFdzQMHtd9qASyqPaYky/K+0c
-         J+zotFod64xPHs3YASiZr/Qrt3W48hyk3OgpEwZZLjHT9FrbUGfl1c2tmdH3hHajsfBY
-         JPsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXoba90p4VdO+Q1QQyzE0K2jlEuy3FiiBdFAkCrm9Jac+SOwkjJ3yIEIdVs3qdEs+VsqkxruHp+xjIb3IDPX6KzYQbR5k2RucaIE+t4
-X-Gm-Message-State: AOJu0Ywodw+sJ/AaY9bfiwHm2iLD9Pyw6QOl8X9jefWXQIpH9TzU0Bkr
-	afo1Fgi+X6Qdo/e6qMR6ulf4JZBW7UoKbnEepvY2UfmdpsdnzPVwHkda59ILFM4CYPnZlrUrfrs
-	wP5O1dawYyMkP19hJrKtSq6s8Vh2SxwIxqikJ+ucgASw5+Z/RmeHpIsd8Op1BwP6Z27B00I170N
-	a3xg4jA8lE4YtJWZKm6iVoylY+YVLXXxyxKJt8bzoEr/2WgsOhyJOR
-X-Received: by 2002:a17:90a:4485:b0:2a6:ff2e:dce0 with SMTP id t5-20020a17090a448500b002a6ff2edce0mr5440125pjg.5.1714026406792;
-        Wed, 24 Apr 2024 23:26:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHLNR3SuwzJ2NqCuDu7XgA6QzggBx2sXnYGhGItyhdXG9zOH57lKQGVFKFleuFQOUiHqsV2LTxk6EPDijTfycg=
-X-Received: by 2002:a17:90a:4485:b0:2a6:ff2e:dce0 with SMTP id
- t5-20020a17090a448500b002a6ff2edce0mr5440111pjg.5.1714026406400; Wed, 24 Apr
- 2024 23:26:46 -0700 (PDT)
+	s=arc-20240116; t=1714026481; c=relaxed/simple;
+	bh=SiMqzdMtou6kAayXXS0uiVZiQoklH13hCuMPwP1iRQM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Us808wK5+mAd5+veIAF01/OvKckVJvGWWBL7yH98p0eTENnt5hkr1rbJZCh8ACRgC3R7BYcpgn5K2fUjTnE8bjRxfl6/LxABmqVIyJPuk4RnPiwrQOZEzgxyf2W381j2VRtZJVzpsTRRT7zctci8+OOzVe431ONy9BAo/fUfznA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=WRPdkha1; arc=none smtp.client-ip=123.58.177.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=D26qblXcQ4jrB+4QyFeKaKxnGrY0sSzMJdsfGunhcOI=;
+	b=WRPdkha1CJ4RnL+zPIsf/x5T/GBduA+Wfu3Z8W6QlnHFmIsdShsPO1CFrmtfiz
+	3WSVmr3s2fwL1vwYfKzs1CoMtAgc4inAWQcer/tXnm+7HKHUj6v+S0fzbW05lwGZ
+	KiWBM6TEdDlDV3i2yjNtQvORVdJBOuU8TEMH/8jL5QwUM=
+Received: from dragon (unknown [223.68.79.243])
+	by smtp1 (Coremail) with SMTP id ClUQrAC3f0Gs9ylmbD9sAw--.38992S3;
+	Thu, 25 Apr 2024 14:26:53 +0800 (CST)
+Date: Thu, 25 Apr 2024 14:26:52 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: francesco@dolcini.it, festevam@gmail.com, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960 and
+ sai[0,1,4,5]
+Message-ID: <Zin3rNoY5JL7bv/L@dragon>
+References: <20240417150829.333152-1-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416043225.1462548-1-kai.heng.feng@canonical.com> <2aff18aa-32b7-4092-8235-aead9b708ea0@linux.intel.com>
-In-Reply-To: <2aff18aa-32b7-4092-8235-aead9b708ea0@linux.intel.com>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Thu, 25 Apr 2024 14:26:34 +0800
-Message-ID: <CAAd53p7e5dWEsSdrvpZ_5b9LLrhVwQEChUkFityN_nOuT2K=zQ@mail.gmail.com>
-Subject: Re: [PATCH v8 1/3] PCI: Add helper to check if any of ancestor device
- support D3cold
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: bhelgaas@google.com, mahesh@linux.ibm.com, oohall@gmail.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, bagasdotme@gmail.com, 
-	regressions@lists.linux.dev, linux-nvme@lists.infradead.org, kch@nvidia.com, 
-	hch@lst.de, gloriouseggroll@gmail.com, kbusch@kernel.org, sagi@grimberg.me, 
-	hare@suse.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417150829.333152-1-Frank.Li@nxp.com>
+X-CM-TRANSID:ClUQrAC3f0Gs9ylmbD9sAw--.38992S3
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU4IJmUUUUU
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDw-LZVnxcqq8GwAAs5
 
-On Thu, Apr 18, 2024 at 9:15=E2=80=AFAM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
-> On 4/15/24 9:32 PM, Kai-Heng Feng wrote:
-> > In addition to nearest upstream bridge, driver may want to know if the
-> > entire hierarchy can be powered off to perform different action.
-> >
-> > So walk higher up the hierarchy to find out if any device has valid
-> > _PR3.
-> >
-> > The user will be introduced in next patch.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
->
-> Since it has been a while, I was not sure what this series is about.
->
-> IMO, it is better to include a cover letter with the summary of your
-> changes.
+On Wed, Apr 17, 2024 at 11:08:29AM -0400, Frank Li wrote:
+> Add cm40_i2c, wm8960 and sai[0,1,4,5] for imx8qxp-mek (SCH-38813).
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-OK, will do in next revision.
+Applied, thanks!
 
->
->
-> > v8:
-> >  - No change.
-> >
-> >  drivers/pci/pci.c   | 16 ++++++++++++++++
-> >  include/linux/pci.h |  2 ++
-> >  2 files changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index e5f243dd4288..7a5662f116b8 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -6225,6 +6225,22 @@ bool pci_pr3_present(struct pci_dev *pdev)
-> >               acpi_has_method(adev->handle, "_PR3");
-> >  }
-> >  EXPORT_SYMBOL_GPL(pci_pr3_present);
-> > +
-> > +bool pci_ancestor_pr3_present(struct pci_dev *pdev)
-> > +{
-> > +     struct pci_dev *parent =3D pdev;
-> > +
-> > +     if (acpi_disabled)
-> > +             return false;
-> > +
-> > +     while ((parent =3D pci_upstream_bridge(parent))) {
-> > +             if (pci_pr3_present(pdev))
->
-> I think it should be "parent" here?
-
-Thanks for catching this.
-
-But this patch will be dropped in next version for better simplicity.
-
-Kai-Heng
-
->
-> > +                     return true;
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> > +EXPORT_SYMBOL_GPL(pci_ancestor_pr3_present);
-> >  #endif
-> >
-> >  /**
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index 16493426a04f..cd71ebfd0f89 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -2620,10 +2620,12 @@ struct irq_domain *pci_host_bridge_acpi_msi_dom=
-ain(struct pci_bus *bus);
-> >  void
-> >  pci_msi_register_fwnode_provider(struct fwnode_handle *(*fn)(struct de=
-vice *));
-> >  bool pci_pr3_present(struct pci_dev *pdev);
-> > +bool pci_ancestor_pr3_present(struct pci_dev *pdev);
-> >  #else
-> >  static inline struct irq_domain *
-> >  pci_host_bridge_acpi_msi_domain(struct pci_bus *bus) { return NULL; }
-> >  static inline bool pci_pr3_present(struct pci_dev *pdev) { return fals=
-e; }
-> > +static inline bool pci_ancestor_pr3_present(struct pci_dev *pdev) { re=
-turn false; }
-> >  #endif
-> >
-> >  #ifdef CONFIG_EEH
->
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
->
 
