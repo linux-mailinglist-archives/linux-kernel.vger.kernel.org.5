@@ -1,132 +1,133 @@
-Return-Path: <linux-kernel+bounces-158847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA238B25B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:52:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AA88B25B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F9B71C210FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:52:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 731111C20B13
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23F312B156;
-	Thu, 25 Apr 2024 15:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cpl17gQJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1314149E05;
-	Thu, 25 Apr 2024 15:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A4A14C5A3;
+	Thu, 25 Apr 2024 15:53:04 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8441512B156;
+	Thu, 25 Apr 2024 15:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714060355; cv=none; b=PZQ+eS4LGn4Gb5b9nXgzx1qaEDt7GaM0bY2cZurD1rYdKEAEOgDYMJjA55QyQL6mkEEh+5KTayXHtGgx5lGIROd8R3sEs4xTBWEhfa5Q/9NtPjdBb/LjwH0xLAOaLu0hVQ7ODQIsW69iM5SXD2i9Sne/zfHLePmJPt4kWQenO4c=
+	t=1714060384; cv=none; b=q24j9OylZeA+bSaXo3f/+w9AMOhMXvCuAYqFNabuqhFAAFUt+Y/qxmA4uSlWb3G95GHftMCUuoTQ4MomRdp31/bjaXN6GOTHFYbjGdHk5ndWprPEhCUC2SdQgTdJfEFyLoyHq/DFP5qK8SnC+z+pVAaFYloF9zHBtkzOUThtxm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714060355; c=relaxed/simple;
-	bh=B7Wmbm/n62aWiRnQINEzBVkAKyQUnC6b/81Q7ziiERY=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=aRd8BzGo2lT3xojBB7M5n7Fpq5q63jHrriqlCly+5PqCcuXCWnkEv3FnKPlT6YWsSixTAc6puEXiU7MN1uujaSSGDFJT/ZX9JfRwsKQTGpHxVFMvocfZmrDgR63n8NIBcyxWjHrB0zoFy4bQSiqhBtO2N8YkhuYkNLNfrl0meLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cpl17gQJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0A0C113CC;
-	Thu, 25 Apr 2024 15:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714060354;
-	bh=B7Wmbm/n62aWiRnQINEzBVkAKyQUnC6b/81Q7ziiERY=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=Cpl17gQJo6f4S7YharycS9+9clLcvEGJCo+FiOgL/rhae/OTS7MktDX8WQIQIGqCN
-	 8cfsMuvqx2rAc2a1lJdXw/7TJg9OCxIc4ytRRqd6TZ8y25XSeMEbPU0bbUCcIOpAsa
-	 kXH2VCrv6fCSrMB6T5AAzrXxkgoRpNjveXo1gFuY2gOJXWAtrJWjCrwnVDZ9Wmo8AV
-	 TOhdpKNVp7W2phgu5yAMqLeeHxktFBlma6kwbRvWkaN6tZA45jSumM/GLcHiZpBDi9
-	 dp4DhGY5HgUFEZTJTBEvJFy/H6AdlIzxK3xH7eL/jctWgm7GcZQAcovaeeTgAirA33
-	 kZq0Q+wqC2zOQ==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714060384; c=relaxed/simple;
+	bh=wpvhhW2gIm86VfAGnDMuFuxo/RtovAFc2eHB/QgqRRQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PE4SO/jmfRGzjG0fD8FZyMSQO+dqoj6o2XEvm6mmqhEahHTlRZNPzOZ2S85iv9OZ1FulZbMB9rgxhzelFiFJnMHEGoz3R3F+wPucpG7koLfrL9IO4HW6hjmkqj6sAgi9a/SDR13hl0sGiD15URD09XrJRtj8eb7bMr653I1CCyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E112D1007;
+	Thu, 25 Apr 2024 08:53:27 -0700 (PDT)
+Received: from [10.57.56.40] (unknown [10.57.56.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF7D83F73F;
+	Thu, 25 Apr 2024 08:52:55 -0700 (PDT)
+Message-ID: <c3424195-6d9b-4d15-b5c0-f4ef1fdbf160@arm.com>
+Date: Thu, 25 Apr 2024 16:52:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
-References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Wu Yunchuan
-	<yunchuan@nfschina.com>, Johannes Berg <johannes.berg@intel.com>, "Breno
- Leitao" <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
- <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171406032921.2967849.6111681305541795423.kvalo@kernel.org>
-Date: Thu, 25 Apr 2024 15:52:23 +0000 (UTC)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 09/14] arm64: Enable memory encrypt for Realms
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ kernel test robot <lkp@intel.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
+ Emanuele.Rocca@arm.com
+References: <20240412084213.1733764-10-steven.price@arm.com>
+ <202404151003.vkNApJiS-lkp@intel.com>
+ <f11e6d5d-d2b9-400e-96c3-5d1ded827720@arm.com>
+From: Steven Price <steven.price@arm.com>
+Content-Language: en-GB
+In-Reply-To: <f11e6d5d-d2b9-400e-96c3-5d1ded827720@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
+On 25/04/2024 14:42, Suzuki K Poulose wrote:
+> On 15/04/2024 04:13, kernel test robot wrote:
+>> Hi Steven,
+>>
+>> kernel test robot noticed the following build errors:
+>>
 
-> Syzkaller reports [1] hitting a warning about an endpoint in use
-> not having an expected type to it.
+<snip>
+
+>>>> drivers/hv/channel.c:442:8: error: call to undeclared function
+>>>> 'set_memory_decrypted'; ISO C99 and later do not support implicit
+>>>> function declarations [-Wimplicit-function-declaration]
+>>       442 |         ret = set_memory_decrypted((unsigned long)kbuffer,
+>>           |               ^
+>>>> drivers/hv/channel.c:531:3: error: call to undeclared function
+>>>> 'set_memory_encrypted'; ISO C99 and later do not support implicit
+>>>> function declarations [-Wimplicit-function-declaration]
+>>       531 |                 set_memory_encrypted((unsigned long)kbuffer,
+>>           |                 ^
+>>     drivers/hv/channel.c:848:8: error: call to undeclared function
+>> 'set_memory_encrypted'; ISO C99 and later do not support implicit
+>> function declarations [-Wimplicit-function-declaration]
+>>       848 |         ret = set_memory_encrypted((unsigned
+>> long)gpadl->buffer,
+>>           |               ^
+>>     5 warnings and 3 errors generated.
 > 
-> Fix the issue by checking for the existence of all proper
-> endpoints with their according types intact.
+> Thats my mistake. The correct place for declaring set_memory_*crypted()
+> is asm/set_memory.h not asm/mem_encrypt.h.
 > 
-> Sadly, this patch has not been tested on real hardware.
+> Steven, please could you fold this patch below :
+
+Sure, I've folded into my local branch. Thanks for looking into the error.
+
+Steve
+
 > 
-> [1] Syzkaller report:
-> ------------[ cut here ]------------
-> usb 1-1: BOGUS urb xfer, pipe 3 != type 1
-> WARNING: CPU: 0 PID: 3643 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-> ...
-> Call Trace:
->  <TASK>
->  ar5523_cmd+0x41b/0x780 drivers/net/wireless/ath/ar5523/ar5523.c:275
->  ar5523_cmd_read drivers/net/wireless/ath/ar5523/ar5523.c:302 [inline]
->  ar5523_host_available drivers/net/wireless/ath/ar5523/ar5523.c:1376 [inline]
->  ar5523_probe+0x14b0/0x1d10 drivers/net/wireless/ath/ar5523/ar5523.c:1655
->  usb_probe_interface+0x30f/0x7f0 drivers/usb/core/driver.c:396
->  call_driver_probe drivers/base/dd.c:560 [inline]
->  really_probe+0x249/0xb90 drivers/base/dd.c:639
->  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
->  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
->  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
->  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
->  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
->  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
->  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
->  usb_set_configuration+0x101d/0x1900 drivers/usb/core/message.c:2170
->  usb_generic_driver_probe+0xbe/0x100 drivers/usb/core/generic.c:238
->  usb_probe_device+0xd8/0x2c0 drivers/usb/core/driver.c:293
->  call_driver_probe drivers/base/dd.c:560 [inline]
->  really_probe+0x249/0xb90 drivers/base/dd.c:639
->  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
->  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
->  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
->  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
->  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
->  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
->  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
->  usb_new_device.cold+0x685/0x10ad drivers/usb/core/hub.c:2573
->  hub_port_connect drivers/usb/core/hub.c:5353 [inline]
->  hub_port_connect_change drivers/usb/core/hub.c:5497 [inline]
->  port_event drivers/usb/core/hub.c:5653 [inline]
->  hub_event+0x26cb/0x45d0 drivers/usb/core/hub.c:5735
->  process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
->  worker_thread+0x669/0x1090 kernel/workqueue.c:2436
->  kthread+0x2e8/0x3a0 kernel/kthread.c:376
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
->  </TASK>
+> diff --git a/arch/arm64/include/asm/mem_encrypt.h
+> b/arch/arm64/include/asm/mem_encrypt.h
+> index 7381f9585321..e47265cd180a 100644
+> --- a/arch/arm64/include/asm/mem_encrypt.h
+> +++ b/arch/arm64/include/asm/mem_encrypt.h
+> @@ -14,6 +14,4 @@ static inline bool force_dma_unencrypted(struct device
+> *dev)
+>         return is_realm_world();
+>  }
 > 
-> Reported-and-tested-by: syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com
-> Fixes: b7d572e1871d ("ar5523: Add new driver")
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-
-Does anyone have a real device to test this? I have had so much problems with
-syzbot fixes in the past that I'm hesitant to take such patches without
-testing.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240408121425.29392-1-n.zhandarovich@fintech.ru/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> -int set_memory_encrypted(unsigned long addr, int numpages);
+> -int set_memory_decrypted(unsigned long addr, int numpages);
+>  #endif
+> diff --git a/arch/arm64/include/asm/set_memory.h
+> b/arch/arm64/include/asm/set_memory.h
+> index 0f740b781187..9561b90fb43c 100644
+> --- a/arch/arm64/include/asm/set_memory.h
+> +++ b/arch/arm64/include/asm/set_memory.h
+> @@ -14,4 +14,6 @@ int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  bool kernel_page_present(struct page *page);
+> 
+> +int set_memory_encrypted(unsigned long addr, int numpages);
+> +int set_memory_decrypted(unsigned long addr, int numpages);
+> 
+> 
+> 
+> Suzuki
 
 
