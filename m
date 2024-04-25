@@ -1,148 +1,160 @@
-Return-Path: <linux-kernel+bounces-158990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3148B27D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:06:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 694308B27DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:07:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23F421F21673
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:06:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C07A1C21899
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7832C1514E6;
-	Thu, 25 Apr 2024 18:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6BDA1509AE;
+	Thu, 25 Apr 2024 18:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YKDhNvoH"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LIY81YGx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501CF1509A2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 18:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5657314F123;
+	Thu, 25 Apr 2024 18:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714068361; cv=none; b=RbL91BcQCqBfxPaewFrsKrKTFlqOTbZCniXj9Qf1p5QyUwXByy5q9sGFNRmOXXBizhWk0ltsgxeZK1YAtWbOzHdvGprPpovanI007fqpjra+h2c+6NuWoN5WmpTLLpDHNI+waAWH/emQTsvaEXvf9nWgpgdXmZemlF3KuZ9cBxo=
+	t=1714068380; cv=none; b=fWLml0a6lxbkN1oLddx+w3KPAvY7URs1ZPSzNxyHCRZTOx7vvx98Pd6GKaitZAZXNMjgpnuGozIkPZfkfrYHswdXW57Y3cejTdz4XZswOmwq450AZISW9295X6wHhjj1bsNR3ooOWXbPCnZTQ8KFIT4CiJZYRvCTjfiDFvinDc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714068361; c=relaxed/simple;
-	bh=cI7gssY7RK5sFBcqYPd69se9pxreozcJ57b2DuII1KI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oYAolIKe3PbSfWFwFB/ImdpLa+7GfM6J8+J2Dv8Kt3PhwcCQFTFQ+1wYKDvM+zVqJoAoeBYf0QL9wML/DeQW+/sIg9LAfcZmQ/jgP68yeA0yXhbTR7LxJ7wrazt9fCEXL9V66sjOZ7pMMbhufN8Viq2UZnN2oj0y/BmrxIa977g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=YKDhNvoH; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43PHNxlJ024243;
-	Thu, 25 Apr 2024 18:05:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=PpOUtB30mkU/WhCWnJO885CVzo2dXyXZaqQ4tqSiGwI=;
- b=YKDhNvoHpKYAErNlmQk2logYk3ypjlQqNq3+B8s0SA0SHZ/YVKzljLac3pjO4zVFvnmU
- dAT6PAfzsk0vSsE7DFZA7iczqzGPx5DsWRG4PJIMWDuMyfNHDHVYptYC9zF6abvqLoFR
- QB3S4Wy8RGDUJB985WjpyzDYS+2bMBsxchGwS2DrBuLP+hseSWrgooYzlStXRZnnab4F
- wOsPfETdnA8wRaa11Dg8LoKp/NdKu2tazzaLt5+EWyPdLHdEbVnZy919k7Rxbh/7aL8C
- 17hVyxfT8CnVCbJ9ZeWB+Yf9/Sl4KA/YlQ87pCh3taiTx4cwbP/G04+bfmeViVHyVDup 6Q== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm5re44gu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Apr 2024 18:05:50 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43PGTbR6001812;
-	Thu, 25 Apr 2024 18:05:49 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm45be425-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Apr 2024 18:05:49 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43PI20Kj032785;
-	Thu, 25 Apr 2024 18:05:48 GMT
-Received: from aruramak-dev.osdevelopmeniad.oraclevcn.com (aruramak-dev.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.253.155])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xm45be3wd-4;
-	Thu, 25 Apr 2024 18:05:48 +0000
-From: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, dave.hansen@linux.intel.com, tglx@linutronix.de,
-        mingo@kernel.org, keith.lucas@oracle.com, aruna.ramakrishna@oracle.com
-Subject: [PATCH v3 3/4] x86/pkeys: Update PKRU to enable all pkeys before XSAVE
-Date: Thu, 25 Apr 2024 18:05:41 +0000
-Message-Id: <20240425180542.1042933-4-aruna.ramakrishna@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240425180542.1042933-1-aruna.ramakrishna@oracle.com>
-References: <20240425180542.1042933-1-aruna.ramakrishna@oracle.com>
+	s=arc-20240116; t=1714068380; c=relaxed/simple;
+	bh=BDad7BMP0Go/r5l+KQ6WZzGzf90LuHfz7J8+KLDA4ZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r4WYe43C5/DA4smheaeLWNCW5nnvZNflXkmyVUhWwasoeMCX9VPUGDMwenikyTDsGB8LiDoisOJ0VpyBHB6MNDXYwu10wUKE3oRylTB3nDs14/IhNZqVrvKQv5IwUSxCFdehbmc+wp7T1Rs151M1ojCrWX3sRjnwSqcX9OgvzKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LIY81YGx; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714068377; x=1745604377;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BDad7BMP0Go/r5l+KQ6WZzGzf90LuHfz7J8+KLDA4ZY=;
+  b=LIY81YGxOPyRqy6SM3nJA0RBvadfAFH4U4tU5Bt4p1LS+k4DyvjH8tOx
+   afusgvxlqCd0vT2JrcGCbBb9TjbzHlosOpmx6WUe/ZzSQF1vZTYM7h1wY
+   tUJLuZ3/0qgLBwmhsxfmXRse8h4JWaxv95sigWCR/VsyqB+MuOuW7d14R
+   k5ZIogF80d2QoyrQWERPMvD6mqd2QdnmMeNZiQ+wmJy/x+6tS6jge8X6J
+   e3T/bex9MXW+bcTx02PiVrs+0MK8PFCrhGFvWDCpQ31MypR8bdT/AdWnZ
+   0Pj9Lq/6p4NRqY7A8/Bnzr9RE+Y9shW8Y80t2QY6Dmio7JuRnQECl2OV5
+   Q==;
+X-CSE-ConnectionGUID: TsniBO3gSN2dmBGumHtexQ==
+X-CSE-MsgGUID: AiT0Ke8mSBK8rR0CzQTfYQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="12713746"
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="12713746"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 11:06:16 -0700
+X-CSE-ConnectionGUID: AlN4B2RPSmC8whK7zIIljQ==
+X-CSE-MsgGUID: /2TQMtoURYSy30O74AOM1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="29798118"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 25 Apr 2024 11:06:11 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s03U0-0002hs-2B;
+	Thu, 25 Apr 2024 18:06:08 +0000
+Date: Fri, 26 Apr 2024 02:05:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sky Huang <SkyLake.Huang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Qingfang Deng <dqfext@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	Steven Liu <Steven.Liu@mediatek.com>,
+	"SkyLake.Huang" <skylake.huang@mediatek.com>
+Subject: Re: [PATCH 2/3] net: phy: mediatek: Add mtk phy lib for token ring
+ access & LED/other manipulations
+Message-ID: <202404260115.HS8G6ns3-lkp@intel.com>
+References: <20240425023325.15586-3-SkyLake.Huang@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_17,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404250131
-X-Proofpoint-ORIG-GUID: E0CnQJjba1e4Np_Llegy2PTRtSuUzgLD
-X-Proofpoint-GUID: E0CnQJjba1e4Np_Llegy2PTRtSuUzgLD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425023325.15586-3-SkyLake.Huang@mediatek.com>
 
-If the alternate signal stack is protected by a different pkey than the
-current execution stack, copying xsave data to the altsigstack will fail
-if its pkey is not enabled. This commit enables all pkeys before xsave,
-so that the signal handler accessibility is not dictated by the PKRU
-value that the thread sets up. It then writes the original PKRU value
-onto the sigframe so that it's restored correctly from sigcontext.
+Hi Sky,
 
-Signed-off-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
----
- arch/x86/kernel/fpu/signal.c | 11 +++++++++--
- arch/x86/kernel/signal.c     |  3 +++
- 2 files changed, 12 insertions(+), 2 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index dce84cce7cf8..5d52c7fde43b 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -185,8 +185,15 @@ static inline bool save_xstate_epilog(void __user *buf, int ia32_frame,
- static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf,
- 					  u32 pkru)
- {
--	if (use_xsave())
--		return xsave_to_user_sigframe(buf);
-+	int err = 0;
-+
-+	if (use_xsave()) {
-+		err = xsave_to_user_sigframe(buf);
-+		if (!err && cpu_feature_enabled(X86_FEATURE_OSPKE))
-+			err = __update_pkru_in_sigframe(buf, pkru);
-+		return err;
-+	}
-+
- 	if (use_fxsr())
- 		return fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
- 	else
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 75dfd05c59aa..c985bdfd855a 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -278,6 +278,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 	if (stepping)
- 		user_disable_single_step(current);
- 
-+	pkru = sig_prepare_pkru();
- 	failed = (setup_rt_frame(ksig, regs, pkru) < 0);
- 	if (!failed) {
- 		/*
-@@ -295,6 +296,8 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 		 * Ensure the signal handler starts with the new fpu state.
- 		 */
- 		fpu__clear_user_states(fpu);
-+	} else {
-+		write_pkru(pkru);
- 	}
- 	signal_setup_done(failed, ksig, stepping);
- }
+[auto build test WARNING on next-20240424]
+[cannot apply to net-next/main net/main linus/master v6.9-rc5 v6.9-rc4 v6.9-rc3 v6.9-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sky-Huang/net-phy-mediatek-Re-organize-MediaTek-ethernet-phy-drivers/20240425-103608
+base:   next-20240424
+patch link:    https://lore.kernel.org/r/20240425023325.15586-3-SkyLake.Huang%40mediatek.com
+patch subject: [PATCH 2/3] net: phy: mediatek: Add mtk phy lib for token ring access & LED/other manipulations
+config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20240426/202404260115.HS8G6ns3-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404260115.HS8G6ns3-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404260115.HS8G6ns3-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/phy/mediatek/mtk-phy-lib.c:51:13: warning: 'tr_write' defined but not used [-Wunused-function]
+      51 | static void tr_write(struct phy_device *phydev, u8 ch_addr, u8 node_addr, u8 data_addr, u32 tr_data)
+         |             ^~~~~~~~
+>> drivers/net/phy/mediatek/mtk-phy-lib.c:33:13: warning: 'tr_read' defined but not used [-Wunused-function]
+      33 | static void tr_read(struct phy_device *phydev, u8 ch_addr, u8 node_addr, u8 data_addr,
+         |             ^~~~~~~
+
+
+vim +/tr_write +51 drivers/net/phy/mediatek/mtk-phy-lib.c
+
+    32	
+  > 33	static void tr_read(struct phy_device *phydev, u8 ch_addr, u8 node_addr, u8 data_addr,
+    34			    u16 *tr_high, u16 *tr_low)
+    35	{
+    36		phy_select_page(phydev, MTK_PHY_PAGE_EXTENDED_52B5);
+    37		__tr_read(phydev, ch_addr, node_addr, data_addr, tr_high, tr_low);
+    38		phy_restore_page(phydev, MTK_PHY_PAGE_STANDARD, 0);
+    39	}
+    40	
+    41	static void __tr_write(struct phy_device *phydev, u8 ch_addr, u8 node_addr, u8 data_addr,
+    42			       u32 tr_data)
+    43	{
+    44		__phy_write(phydev, 0x11, tr_data & 0xffff);
+    45		__phy_write(phydev, 0x12, tr_data >> 16);
+    46		dev_dbg(&phydev->mdio.dev, "tr_high write: 0x%x, tr_low write: 0x%x\n",
+    47			tr_data >> 16, tr_data & 0xffff);
+    48		tr_access(phydev, false, ch_addr, node_addr, data_addr);
+    49	}
+    50	
+  > 51	static void tr_write(struct phy_device *phydev, u8 ch_addr, u8 node_addr, u8 data_addr, u32 tr_data)
+    52	{
+    53		phy_select_page(phydev, MTK_PHY_PAGE_EXTENDED_52B5);
+    54		__tr_write(phydev, ch_addr, node_addr, data_addr, tr_data);
+    55		phy_restore_page(phydev, MTK_PHY_PAGE_STANDARD, 0);
+    56	}
+    57	
+
 -- 
-2.39.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
