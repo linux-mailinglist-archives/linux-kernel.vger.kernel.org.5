@@ -1,134 +1,354 @@
-Return-Path: <linux-kernel+bounces-158220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD35E8B1D24
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:53:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D451E8B1D28
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946E0286601
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:53:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D381F21D06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 08:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910158249A;
-	Thu, 25 Apr 2024 08:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2720811FE;
+	Thu, 25 Apr 2024 08:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BgQ6XWu4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JAcricNL"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4E47FBB4;
-	Thu, 25 Apr 2024 08:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551457FBB0
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035200; cv=none; b=TG6L4TppqUKSvaYpKVi7s/G8OX/etq56RwpcYatmn72wOViaN9f3m/dhuCvSPRkc9XBD2jZbRgWlTEx7UuMEpmj78I2lBJgUtB2nnL3UscLRwA82hMsya7Uik4cBJZ/xukjiVvigKrRv0WotKI5JSeR/oLKnjufMBrcg/lJQ75o=
+	t=1714035399; cv=none; b=qBsvitFygzpBwT5ICxQmKUHMSwfiHiw2zbuOGwXx1uLE02dq92+Z4xQijNGefkZdfWxRWDqidyTzoZOf4eDk/ZDgzAYa8RZzwy2sJfGX5pB22Tp4r2lKlIoaY1Abig4dWoqpPKAQBkII3wlBd5IZGsUD6hweuUDMnfafmMo029E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035200; c=relaxed/simple;
-	bh=39w5XQsRAGKnURUuXsQ1Wk8XgraObcOPly8hISIv0IE=;
+	s=arc-20240116; t=1714035399; c=relaxed/simple;
+	bh=N/WOc/y37uAkYr9zVVieC5AyNNxl0w/zBIWTapyQM+A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MaKcqaLt733L7UuVP31Qw6x0pvp0iDCODaHf+yi18LJK3+QUIo/0IZAvvA3nVaaQej5pqVgfBhB8Id3TAc5eEXzxIMqxihJvO30tLSJr6lliCxP4h1Mj8v44irwt+Gh6hdYwnQD1gSashr0753g5Dtsxmw+tOmc357vtDiff7bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BgQ6XWu4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53AFFC113CC;
-	Thu, 25 Apr 2024 08:53:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714035200;
-	bh=39w5XQsRAGKnURUuXsQ1Wk8XgraObcOPly8hISIv0IE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BgQ6XWu4j//NQ+XzmO9Edx2/vMnfoCNacDVh0oH6Igb9ft6E2ihSDh5gTNGuNBf2V
-	 9ALM3rKYjIQP8K0QnFcPOz6R7zhQ3nuAo6Jw0/bCIOhRHj2QYCS0L4UE/tzAWg2a/k
-	 mKycos2AMlSnwKLkFzY2So29mkpIjYmIYvKDNgrug0F91n+ZOLHbuh9wQH1aiR+peQ
-	 j97t1YIB5I/8A8z73fWpma6KnBND+XcB3y5eh6iLfFYVOF9aDsC6OES1hEm6BayZKF
-	 eHjxGjhzz8HVgO2XLyqdNhLSskCSBg3PYMZzT+cyyhuFN/P9vcXiNFcPiv6yKeJdbx
-	 pR9r4ZFdyHTWg==
-Date: Thu, 25 Apr 2024 10:53:10 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 12/16] selftests/bpf: wq: add bpf_wq_init()
- checks
-Message-ID: <v7avo5guriv6vbxt25m6bf4gs6ifblolxsui2vmswkyavim4c6@w6yposzvdxtg>
-References: <20240420-bpf_wq-v2-0-6c986a5a741f@kernel.org>
- <20240420-bpf_wq-v2-12-6c986a5a741f@kernel.org>
- <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TecXMv/6X7Cd/ubPnOnqSNJ681E6HAcFzRYWuI1FYQWJsnO690vOWM+SGow/02a/cV3E3xUWvqwVerY4FAXB+Ymz4yrQqRIQoS0yqubVaTtEREaO+81FC69uZji1oz4iusNe8Q3CCiCylE98KuvGtVOwyn4zF74PZrKjW08UmJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JAcricNL; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so829219e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:56:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714035395; x=1714640195; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KKqGqtlUD/Lz0MbLYaR+VCjUnJhIc5ox17am+QQAiwE=;
+        b=JAcricNL1dfW0Uqx2Lqaxhgrqy+g1By0OFF7VYnoaFPWHGsPh3NmbKcgg3k8+fwSH4
+         diO05aRoNFs4cKZQGWQnTyWJO+defY0xXt2wGXiia35c+qR873eyg1saVGsTEWnws/Qu
+         JLBsCuqHy0lSHDoVrmQG4dWE+6VAgN+KU6CWb3Eo47+Clhn24VC1Z905C8gCqMsStNmp
+         1wH5aCiKq94MtT/rFRMF3qHNcH6Qmp5f6Dhom0Dc9T8I0nuwKG/lZ/brBFPSesG9TZIw
+         E1U/RjYzQ7kJsInCeuoFKJe5fu1bbZphqhQ8obxKfixKnJDU+2g1PV21Q/iU7P8HjY5W
+         J7lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714035395; x=1714640195;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KKqGqtlUD/Lz0MbLYaR+VCjUnJhIc5ox17am+QQAiwE=;
+        b=a4u1NSz4gVK4GneAA3vR6+5diruAmFOwTa6UIqahdddRYP+/g1vtAPsDKdBBP1wRWV
+         qkTomPHkP4+e7Swwrk7LZEA9UZruXYRguXQMi/XFeLXlYHc3WBPzPlxotylRIg9k+rLd
+         ZZ4Ka34rCOatzHA7CrjP5Pr40kuL+rK+Eja+v+bxkjIKCajgS/olwXKvfJU2BGVtbOp2
+         MdxUQDtIl3mDuO19l/28owLePPuowiC9Ype3dx/lDGNfnk+xHMi2evJiDx993RsVrdDy
+         5Nw9Ciqk6XOx2Muf7sAeixcDVj3fAzxZOpA8rq42w8VfrsKh0qg92cr1hog2vxngjTyx
+         GfDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvslHpE1o8Tzsnj4MPZcTJEGr5AaRHi8CiksN6n57RS8upRMV6/QEQOOhBPT5AFb3634O0GAFQ9owqTfE9tIehExitqYA0ZkUjUIze
+X-Gm-Message-State: AOJu0YyiCnVoVQWdCAWahJnTL1E9usduoDLzD4Xo2RGmyRnNkOkWVKd5
+	3wfyxobTAKrayEV3ErTGabBm97FFp5iy9C37KI2qaPpI2wQP3QX75pMWuRKe+bTAVDTWufOdN2R
+	ElzI=
+X-Google-Smtp-Source: AGHT+IFCDpCuXESp5OEY/4ehtfOoWrdFjyUwXLBIWcg7XfekW3WmeuwZKKFV4eucQ+cs7rX7ODNyQQ==
+X-Received: by 2002:a05:6512:36c9:b0:51b:fe4b:da45 with SMTP id e9-20020a05651236c900b0051bfe4bda45mr2796709lfs.38.1714035395091;
+        Thu, 25 Apr 2024 01:56:35 -0700 (PDT)
+Received: from nuoska (87-100-245-199.bb.dnainternet.fi. [87.100.245.199])
+        by smtp.gmail.com with ESMTPSA id bi30-20020a0565120e9e00b0051acd59ead9sm2146081lfb.169.2024.04.25.01.56.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 01:56:34 -0700 (PDT)
+Date: Thu, 25 Apr 2024 11:56:32 +0300
+From: Mikko Rapeli <mikko.rapeli@linaro.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lennart Poettering <lennart@poettering.net>,
+	linux-integrity@vger.kernel.org
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+Message-ID: <ZioawGrx8gi3mqMg@nuoska>
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+ <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
+ <ZiZhSfgeAdrbnaVL@nuoska>
+ <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+ <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+ <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+ <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
+ <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
+ <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbqmrucgeXX9+Hgnhefne-go9nHYPmh_+JwuMHeNNsv-g@mail.gmail.com>
+In-Reply-To: <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
 
-On Apr 24 2024, Andrii Nakryiko wrote:
-> On Sat, Apr 20, 2024 at 2:10 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
+Hi,
+
+On Wed, Apr 24, 2024 at 07:15:35PM +0200, Ard Biesheuvel wrote:
+> On Mon, 22 Apr 2024 at 17:22, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
 > >
-> > Allows to test if allocation/free works
+> > On Mon, 22 Apr 2024 at 17:31, James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> > >
+> > > On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
+> > > > Hi James
+> > > >
+> > > > On Mon, 22 Apr 2024 at 16:38, James Bottomley
+> > > > <James.Bottomley@hansenpartnership.com> wrote:
+> > > > >
+> > > > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
+> > > > > > Hi all,
+> > > > > >
+> > > > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
+> > > > > > <mikko.rapeli@linaro.org>
+> > > > > > wrote:
+> > > > > > >
+> > > > > > > Hi,
+> > > > > > >
+> > > > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
+> > > > > > > wrote:
+> > > > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
+> > > > > > > > > Userspace needs to know if TPM kernel drivers need to be
+> > > > > > > > > loaded and related services started early in the boot if
+> > > > > > > > > TPM device is used and available.
+> > > > > > > >
+> > > > > > > > This says what but not why.  We already have module
+> > > > > > > > autoloading that works correctly for TPM devices, so why is
+> > > > > > > > this needed?
+> > > > > > > >
+> > > > > > > > We do have a chicken and egg problem with IMA in that the TPM
+> > > > > > > > driver needs to be present *before* any filesystem, including
+> > > > > > > > the one the TPM modules would be on, is mounted so executions
+> > > > > > > > can be measured into IMA (meaning that if you use IMA the TPM
+> > > > > > > > drivers must be built in) but this sounds to be something
+> > > > > > > > different. However, because of the IMA problem, most
+> > > > > > > > distributions don't end up compiling TPM drivers as modules
+> > > > > > > > anyway.
+> > > > > > > >
+> > > > > > > > Is what you want simply that tpm modules be loaded earlier?
+> > > > > > >
+> > > > > > > Yes, ealier is the problem. In my specific testing case the
+> > > > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
+> > > > > > > boot and TPM support.
+> > > > > > >
+> > > > > > > Firmware uses TPM and does measurements and thus TPM event log
+> > > > > > > is
+> > > > > > > available on this machine and a bunch of other arm64 boards.
+> > > > > > > Visible in early boot dmesg as TPMEventLog lines like:
+> > > > > > >
+> > > > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
+> > > > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
+> > > > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
+> > > > > > >
+> > > > > > > Different boards use different TPM HW and drivers so compiling
+> > > > > > > all these in is possible but a bit ugly. systemd recently
+> > > > > > > gained support for a specific tpm2.target which makes TPM
+> > > > > > > support modular and also works with kernel modules for some TPM
+> > > > > > > use cases but not rootfs encryption.
+> > > > > > >
+> > > > > > > In my test case we have a kernel+initramfs uki binary which is
+> > > > > > > loaded by EFI firmware as a secure boot binary. TPM support on
+> > > > > > > various boards is visible in devicetree but not as ACPI table
+> > > > > > > entries. systemd currently detect TPM2 support either via ACPI
+> > > > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
+> > > > > > > firmware measurement via
+> > > > > > > /sys/kernel/security/tpm0/binary_bios_measurements
+> > > > > > > .
+> > > > > >
+> > > > > > One corner case worth noting here is that scanning the device
+> > > > > > tree won't always work for non-ACPI systems... The reason is that
+> > > > > > a firmware TPM (running in OP-TEE) might or might not have a DT
+> > > > > > entry, since OP-TEE can discover the device dynamically and
+> > > > > > doesn't always rely on a DT entry.
+> > > > > >
+> > > > > > I don't particularly love the idea that an EventLog existence
+> > > > > > automatically means a TPM will be there, but it seems that
+> > > > > > systemd already relies on that and it does solve the problem we
+> > > > > > have.
+> > > > >
+> > > > > Well, quite. That's why the question I was interested in, perhaps
+> > > > > not asked as clearly as it could be is: since all the TPM devices
+> > > > > rely on discovery mechanisms like ACPI or DT or the like which are
+> > > > > ready quite early, should we simply be auto loading the TPM drivers
+> > > > > earlier?
+> > > >
+> > > > This would be an elegant way to solve this and on top of that, we
+> > > > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
+> > > > But to answer that we need more feedback from systemd. What 'earlier'
+> > > > means? Autload it from the kernel before we go into launching the
+> > > > initrd?
+> > >
+> > > Right, so this is another timing problem: we can't autoload modules
+> > > *before* they appear in the filesystem and presumably they're on the
+> > > initrd, so auto loading must be post initrd mount (and init execution)
+> > > but otherwise quite early?
 > >
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > Exactly. But is that enough?
 > >
-> > ---
+> > >
+> > > This might be quite a bit of work.  Logically, just moving the matching
+> > > and loading code earlier might work, but we used to have a
+> > > load_default_modules() at the end of init/main.c and it got removed
+> > > (because it only eventually loaded elevator modules) everything is now
+> > > loaded in it's various init routines, so to get, say, TPM ACPI modules
+> > > loaded earlier, we'd have to run the ACPI device matching code earlier
+> > > and so on for every other subsystem ...
 > >
-> > changes in v2:
-> > - dropped mark_precise checks
-> > ---
-> >  tools/testing/selftests/bpf/bpf_experimental.h  |  1 +
-> >  tools/testing/selftests/bpf/prog_tests/wq.c     |  8 +++
-> >  tools/testing/selftests/bpf/progs/wq.c          | 10 ++++
-> >  tools/testing/selftests/bpf/progs/wq_failures.c | 78 +++++++++++++++++++++++++
-> >  4 files changed, 97 insertions(+)
+> > Being the devil's advocate here and as I stated I don't love this but ...
+> > The kernel isn't technically doing anything wrong. We just expose an
+> > *existing* EFI config table. The kernel also exposes filesystems so
+> > people are free to do rm -rf *.
+> > The fact that applications might use it as a means of "oh there's
+> > probably a TPM" shouldn't be the end of the world. On top of that,
+> > since it's an EFI config table we can keep it around and never break
+> > any ABIs we create to userspace. If in the future we find a better
+> > way, userspace can use that?
 > >
-> > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-> > index 3329ea080865..785b91b629be 100644
-> > --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> > @@ -470,4 +470,5 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
-> >  extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __weak __ksym;
-> >  extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
+> > So perhaps this is ok as long as make sure we understand why systemd
+> > needs it that early?
 > >
-> > +extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
-> >  #endif
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-> > index 9a07b8bc2c52..26ab69796103 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/wq.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-> > @@ -2,6 +2,7 @@
-> >  /* Copyright (c) 2024 Benjamin Tissoires */
-> >  #include <test_progs.h>
-> >  #include "wq.skel.h"
-> > +#include "wq_failures.skel.h"
-> >
-> >  void serial_test_wq(void)
-> >  {
-> > @@ -9,3 +10,10 @@ void serial_test_wq(void)
-> >
-> >         RUN_TESTS(wq);
-> >  }
-> > +
-> > +void serial_test_failures_wq(void)
-> > +{
-> > +       LIBBPF_OPTS(bpf_test_run_opts, topts);
-> > +
 > 
-> unused leftover?
+> What I would like to know is which API systemd is attempting to use,
+> and which -apparently- may never become available if no TPM is exposed
+> by the kernel.
 
-Oops, yeah. Looks like it.
+ACPI TPM table entry, available without TPM drivers.
 
-I'll send a removal of it while fixing 9/16
+TPM PCR bios measurement, available only with working TPM drivers.
 
-Cheers,
-Benjamin
-
+> Ideally, we should be able to take inspiration from the probe deferral
+> work, and return -EAGAIN to convey that it is too early to signal
+> either success or permanent failure.
 > 
-> > +       RUN_TESTS(wq_failures);
-> > +}
-> 
-> [...]
+> Exposing random firmware assets directly to user space to make guesses
+> about this doesn't seem like a very robust approach to this issue.
+
+As I understand, there are two questions which systemd and userspace need aswers to:
+
+1) is there a TPM device
+
+2) was a TPM device used by firmware to measure boot
+
+If answer to 1) is yes, then drivers need to be loaded, but not necessarily
+in early boot before main rootfs mount. If answer to 2) is yes, then
+drivers and userspace components should be setup for TPM in early boot.
+
+The x86 and server grade arm standard for 1) is ACPI table TPM entry, basically
+/sys/firmware/acpi/tables/TPM2. For other HW, like embedded arm boards/SoCs,
+the TPM device can be on discoverable bus (optee firmware TPM etc)
+or in devicetree. These work correctly with udev etc and drivers get loaded
+in normal boot and thus answer 1).
+
+For 2), once kernel side TPM device has been initialized, driver built into the
+kernel or loaded before this check, userspace and systemd can check if
+/sys/firmware/acpi/tables/TPM2 is there, or alternatively if TPM driver
+is already working /sys/kernel/security/tpm0/binary_bios_measurements
+which indicates that firmware was measured with TPM. The latter really requires
+built in TPM drivers or modules which are loaded really early in boot, almost
+as first thing in userspace, before systemd does any checks for the TPM
+device existance. These steps happen in initramfs so that TPM can be used
+to protect main rootfs. systemd implements this with efi_has_tpm2()
+function in https://github.com/systemd/systemd/blob/main/src/shared/efi-api.c#L482
+
+One problem is how to support TPM devices as kernel modules. Linux distros
+should be able to build these drivers too as modules and systemd etc will
+take care to load them once devices are discovered, and then queue in
+other possibly complex userspace services/daemons so that TPM is useful and
+rootfs can be decrypted. /sys/kernel/security/tpm0/binary_bios_measurements is
+available only when the TPM driver is loaded and working. For example, if boot firmware has
+optee and firmware TPM (fTPM) as an early trusted application (early TA), then this
+only works when optee driver is initialized, tee-supplicant userspace daemon runs
+and tpm_ftpm_tee kernel driver for fTPM has been loaded to the kernel. tee-supplicant
+implements RPMB storage if board/HW does not support it directly. The optee and fTPM
+kernel drivers can be built into kernel, but they still need tee-supplicant in
+userspace.
+
+To answer 2), ACPI TPM table entry works without kernel drivers, but what
+about devices without ACPI support, or TPM on a discoverable bus like optee with fTPM?
+
+Parsing devicetree in userspace is really painful, but could possible be done.
+Or kernel could provide a sysfs indicator if there is a devicetree entry
+for TPM. But there are some devices where devicetree does not show a TPM
+device but one exists in the discoverable bus, optee fTPM.
+
+In all, granted limited, arm64 cases which I have seen, when firmare was aware
+of the TPM device and used it for measuring boot, then the TPM Event Log was
+provided to the kernel. The early boot log messages like show this:
+
+arm64 qemu with swtpm, u-boot based EFI firmware, TPM Event Log and TPM
+in devicetree, no ACPI:
+
+https://ledge.validation.linaro.org/scheduler/job/85933
+[    0.000000] efi: TPMFinalLog=0xbd649040 RTPROP=0xbd647040 SMBIOS 3.0=0xbe6a9000 TPMEventLog=0xbd5b0040 INITRD=0xbd5af040 MEMRESERVE=0xbd5ae040
+..
+		tpm_tis@0 {
+			tpm_event_log_size = <0x18f>;
+			compatible = "tcg,tpm-tis-mmio";
+			reg = <0x00 0x5000>;
+			tpm_event_log_addr = <0x00 0x40100000>;
+		};
+
+rockpi4b with firmware TPM, u-boot based EFI firmware, TPM Event Log but
+no TPM in devicetree, no ACPI:
+
+https://ledge.validation.linaro.org/scheduler/job/85936
+[    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040 RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb381040 INITRD=0xeb380040 RNG=0xe5baf040 MEMRESERVE=0xe5bae040
+
+synquacer with firmware TPM and real TPM, u-boot based EFI firmware,
+TPM Event Log using fTPM but only real but disabled TPM in devicetree, no ACPI:
+
+https://ledge.validation.linaro.org/scheduler/job/85934
+[    0.000000] efi: ESRT=0xf9c90040 TPMFinalLog=0xf9c94040 RTPROP=0xf9c92040 SMBIOS=0xf9c8e000 TPMEventLog=0xf9bf7040 INITRD=0xf9bf6040 RNG=0xf9bf5040 MEMRESERVE=0xf9bf4040
+..
+	tpm_tis@10000000 {
+		compatible = "socionext,synquacer-tpm-mmio";
+		status = "disabled";
+		reg = <0x00 0x10000000 0x00 0x5000>;
+	};
+
+kv260/zyncmp-kria-starter with real TPM, u-boot based EFI firmware,
+TPM Event Log using TPM but no devicetree, no ACPI:
+
+https://ledge.validation.linaro.org/scheduler/job/85937
+[    0.000000] efi: ESRT=0x777f8040 TPMFinalLog=0x777fc040 RTPROP=0x777fa040 SMBIOS=0x777f6000 TPMEventLog=0x7775a040 INITRD=0x77759040 MEMRESERVE=0x77758040
+
+Ampere AVA with ACPI TPM entry but support disabled in firmare,
+no TPM Event Log, no devicetree, but an ACPI TPM entry:
+
+https://ledge.validation.linaro.org/scheduler/job/85935
+[    0.000000] ACPI: TPM2 0x00000000FFFEFD18 00004C (v04 Ampere Altra    00000002 AMP. 01000013)
+
+Some of these TPM indicators could be considered firmware bugs, but in all
+cases TPM firmware support can be detected via TPM Event Log
+so that answers question 2).
+
+TPM Event Log is not a random firmware interface. It is an optional interface
+to make TPM usable and in practice most TPM using firmware provide it to the kernel.
+The actual measurement and checks for it require the TPM HW and measurement PCRs,
+but the TPM Event Log is a strong indicator from firmware to the kernel, and userspace,
+that TPM is available and was used.
+
+Kernel already knows about TPM Event Log. The proper interface to read it is from
+securityfs file binary_bios_measurements implemented by loaded TPM driver.
+Existence of this measurement is know before TPM driver is loaded and this change
+only exports that to sysfs so that userspace can queue the TPM driver loading
+and userspace services/daemons in the early initramfs before main rootfs is available.
+
+Hope this helps,
+
+-Mikko
 
