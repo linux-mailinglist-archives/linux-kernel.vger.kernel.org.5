@@ -1,120 +1,70 @@
-Return-Path: <linux-kernel+bounces-158969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101E08B2783
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:19:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 430F98B2789
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 19:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4150F1C20D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:19:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BA1DB26AE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D1814EC72;
-	Thu, 25 Apr 2024 17:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30ED14EC42;
+	Thu, 25 Apr 2024 17:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bUhsoazE"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BKooamEZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18901E864
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EBA12C7FB;
+	Thu, 25 Apr 2024 17:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714065567; cv=none; b=P6J5wbKBX1QRmJuODoGkfBk5LC/GzttGgMMGOhg0KnaxXob1wZc5YXi6e7ef+d5rlg4AOBvVi2Gcb25yjeIOns5mafuWUSqIVmE/Bw+NHxCAw7k+GgPRvhAbcqzYGK3akOufD/955vJ60JzHJnOfrLZsuVNdH5XOSP9381SECdg=
+	t=1714065812; cv=none; b=VewBw2IkLZ9hQKl4Wrg2k7NpW6kmnyxNKVNiC5eniFqH3w0LoQF+pTMTCTiXGufAqawd9HiM7/fxTVaej6u5heTYXvKy9ohoA8NTfZ0e5ZFBBko5w7tgW+XjHPsiQE0xlyeVCAc08DJMd6/x1DG+IEiEIDhmkhXKih38MSAc/CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714065567; c=relaxed/simple;
-	bh=47qf1VJfN1htPuzwcBHn7Dk8utfEzpjninPu15D1DHo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kW4hebDIVT1l85ImSItoFRvqf2Ghqp+/Z8svAb0hT4ZLiBXqZPmMK/HQE8q/l4cuxBRMMGc+k4Z5mjMAjRpNbP/9TlpJtVT5bsOxewDLHqGacue8BH4aHzK2ur+3+QDtRYR27n4Y5bkEwSt6MiuMT95xwg7OIYDNalxtGpdRfXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bUhsoazE; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso661155b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714065565; x=1714670365; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aEArpaPdCkeLMM8e+oCYdabZOyUvDXBNvCNCU3D6sx8=;
-        b=bUhsoazEiKVsAiQqTGzXYanKMj8Pzq27+Zql8Qk9Qqme1aSDIVMMwmgYh2aPydQizn
-         AV5AHN02njPVBwXTqrzFkC2cWU/XmgTZaoMCHDV5drBzA0NZOxv/Xs7I/CXYRjktLV1g
-         TT5g9O0I0JuLSa4mUeRACWnJoMNveeifZgPBU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714065565; x=1714670365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aEArpaPdCkeLMM8e+oCYdabZOyUvDXBNvCNCU3D6sx8=;
-        b=Bxht+85rlNoV7sPsTeS95QIMWd6rEg9Jac9EsbqaOJ8BqVDwWb1J+doGiv3iR9Cqj1
-         t298MKSLMIhaiOjKjmnty0Di+uGa+VPY+9WAiJF7GyGO1ySRkS8u1dKsCzo5nCaM++NT
-         3cHNSwP9VL8U4Zd2tWgODHCKaisxmBDSMSOi61tAFNZLLSgit22ThZ4N65a+SgQ15T8g
-         M1h0qqkpi6YSYvnaGxj446S8p3XYA3chWdGpjmkqF/e25Eq7hlvI9hpPN3l0/5wgkEUY
-         dsuJqCG5GUtHu1VnJXPoLNGXGSLWQMZbdKr3xlJwVkugOVVcCAyyySNuFcj8exgjXBqY
-         2c8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVrfyMS7odp61d6UF5a06A2BNwW+rt6MqNgQue9D6l4U8LA+LJDRfG1TvsTvzA1MaxdQ/VwMobk2fKbCiJRfZ+D4fgbT7qgwjsV0g60
-X-Gm-Message-State: AOJu0YzHSBDuqcvVew50J4CblVMi78gMFiNta5xaWs3jqOUJIXUhKOWM
-	81rvYzLlIhgSwSuUn1ENr0ID/CKAuDvU6o5dFkJsQHMi70ECG1J+i0Het4cyyw==
-X-Google-Smtp-Source: AGHT+IGSQtc03FJYmN67TcOlJEb4jjwUjOrO3E0QvJYydq58tzeFvCMVkx0opll0cr92togJ9vRyLg==
-X-Received: by 2002:a05:6a00:1941:b0:6ea:f05d:d2e9 with SMTP id s1-20020a056a00194100b006eaf05dd2e9mr507849pfk.15.1714065565180;
-        Thu, 25 Apr 2024 10:19:25 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n56-20020a056a000d7800b006e6b7124b33sm13379389pfv.209.2024.04.25.10.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 10:19:24 -0700 (PDT)
-Date: Thu, 25 Apr 2024 10:19:24 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Jakub Kicinski <kuba@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] locking/atomic/x86: Silence intentional wrapping
- addition
-Message-ID: <202404251018.C12E9F23@keescook>
-References: <20240424191225.work.780-kees@kernel.org>
- <20240424191740.3088894-1-keescook@chromium.org>
- <20240424224141.GX40213@noisy.programming.kicks-ass.net>
- <202404241542.6AFC3042C1@keescook>
- <ZiotNVLD3ek-9Lwj@FVFF77S0Q05N>
+	s=arc-20240116; t=1714065812; c=relaxed/simple;
+	bh=71tOg9c3cDHNigwSj/Ul5YCf2hLyj7oeig1kAtxHycI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p4r4qei1dirlFhqGZCq/J8E4y/+qI7CzOIP5KXsxDS2w5JKK8vs4dMrFr/cXDbLMiiF81nCyjj1VHfeE4+xCY5SHrnlVS4jV5ZY2HwtFphLDEfXtmUYBIn+lKr81saTs3WkKhHj8mgMS8JwHt5La46I2DY03wYHEzKCsUOcGqio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BKooamEZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E911C113CC;
+	Thu, 25 Apr 2024 17:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714065811;
+	bh=71tOg9c3cDHNigwSj/Ul5YCf2hLyj7oeig1kAtxHycI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BKooamEZOlQ6f60+YsqA5u3lUvONVwWKx4PaGBKB56EgwBCKB1BmZophqOBS4//A+
+	 RqB/Yqe9ufFN5RMDQE1woldKjGRSwz+VmMAhfcemLfuVBMmmSb6+K3+r0t91NiCZgk
+	 /zVrG61JoxpJrhx5ikyjiX/+S7pWrz6DnRt+IcPHt/XSdR3cZODvWXETcWD/ge0iX0
+	 iyDq+VdQmID5LEN7MYzNYFFPBCtOTg3SLWOaLsyqlUtjj8OR4ZUEJ/CYr6UuFkDeAS
+	 NMFLnyeIMcE8EGavJ4vGi+VfrbUWPqw6S+egbqB1Al7xH8apRiGSXTQm7eLJuOB3FE
+	 9Sdq6PD7E1tLQ==
+Date: Thu, 25 Apr 2024 10:23:30 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Ismael Luceno <iluceno@suse.de>
+Cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>, Andreas
+ Taschner <andreas.taschner@suse.com>, Michal =?UTF-8?B?S3ViZcSNZWs=?=
+ <mkubecek@suse.com>, Simon Horman <horms@verge.net.au>, Julian Anastasov
+ <ja@ssi.bg>, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ netdev@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCH v3] ipvs: Fix checksumming on GSO of SCTP packets
+Message-ID: <20240425102330.700d7124@kernel.org>
+In-Reply-To: <20240425162842.23900-1-iluceno@suse.de>
+References: <20240425162842.23900-1-iluceno@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiotNVLD3ek-9Lwj@FVFF77S0Q05N>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 11:15:17AM +0100, Mark Rutland wrote:
-> To be clear, I dislike the function annotation because then it applies to
-> *everything* within the function, which is overly broad and the intent becomes
-> unclear. That makes it painful to refactor the code (since e.g. if we want to
-> add another operation to the function which *should not* wrap, that gets
-> silenced too).
+On Thu, 25 Apr 2024 18:28:40 +0200 Ismael Luceno wrote:
+>     Changes since v2:
+>     * Use only skb_is_gso, no need to check for GSO type
 
-Yeah, I find that a convincing argument for larger functions, but it
-seemed to me that for these 1-line implementations it was okay. But
-regardless, yup, no function-level annotation here.
-
-> I'm happy with something that applies to specific types/variables or specific
-> operations (which is what these patches do).
-
-Thanks!
-
--- 
-Kees Cook
+v2 is already in the tree, if the change is important you need to send
+an incremental fix.
 
