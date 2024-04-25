@@ -1,234 +1,163 @@
-Return-Path: <linux-kernel+bounces-158666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6022C8B239D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:12:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED558B23A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:12:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB45D1F217C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:12:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3FD31C209BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000D8149E14;
-	Thu, 25 Apr 2024 14:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E0F14A09F;
+	Thu, 25 Apr 2024 14:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="YDqbSUUZ"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qkxol9Yc"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD861494BF;
-	Thu, 25 Apr 2024 14:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5BC149E07
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 14:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054317; cv=none; b=eR/RvYFar9HapuouFNd6HE+I7VnZuEIALFFLphuWi9JhTOvEZ1VyBIV8fyob58NSjpJmsUkZX2kQhnbysY2F8LHuafljxnn45B+LCYdD3fUOnqR6Fi+LHjdffhd76QLf3gzewacFYGPqjUsMsXBHVQ2rSzO7ulp0v8wjIhGa2t0=
+	t=1714054359; cv=none; b=k9KbhPzyJV+JQDeAm/Ol1+PUkyFywjyIO0OcEPoNAJLyzIBEWTXCdhLKiwqn/z+luSzWitHV3yDarO5Pf+7kXqLteTuGjBPfWrLj9M0quLs+qykG1doCtlA8eo4MKl+5cBcm7KzDaJWgi9wzZNsLkPjx+7O8bqLV5kzvwmZD3J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054317; c=relaxed/simple;
-	bh=KauxnHMHBOw91Q6QFJqIYZ6o7dfUdmnOhULj4HLawgM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YB/aWe8NmIxqI6mSzBGNMrBrh0HqQpnhfID5JVKe10N47Hjw0/utbzbDtYBzjJspUN9KBldfrvoItERIp9Przv9C6La8N1clwWSSJJEHKqn0N2OIIOab+y3SAy999WtC/pFw96EWTyGNBI9vkAJcYsp/U7fqLd1Y54TxgLF5CcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=YDqbSUUZ; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 7e8b731d164f542d; Thu, 25 Apr 2024 16:11:53 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id A59F566DF23;
-	Thu, 25 Apr 2024 16:11:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1714054313;
-	bh=KauxnHMHBOw91Q6QFJqIYZ6o7dfUdmnOhULj4HLawgM=;
-	h=From:To:Cc:Subject:Date;
-	b=YDqbSUUZibdd+9YKB0241Ep44y2G2ZSd5sWs99ZJSXIHNDGjWqCwAX0UiFagBKJmS
-	 Um3EEfqvtocF76IO9z8Lo7OnJWfRxUFNjcOgcExwnozp5lHelKnka0v1nm/gFftZ9U
-	 s+Jry418zJoblaW8zqn4/d29dpowt1BvzGtLfeTCGrGC7Kyvonb7OYeAfCeAdlMJNr
-	 rvfQtkNoW6ajIg6KBbP8wu+0hwvJDQrL/xhObbrdBbTqKyC/ySgq1RycZzoP6rF/rX
-	 zex79xkMtMoM/xdyj5K34I+L3BO1nmhVNlARxvd6okHdTVDI2RWkIma3AiLNvg1ohn
-	 DxnTnZy/F1VKw==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v1] thermal: core: Move passive polling management to the core
-Date: Thu, 25 Apr 2024 16:11:52 +0200
-Message-ID: <5938055.MhkbZ0Pkbq@kreacher>
+	s=arc-20240116; t=1714054359; c=relaxed/simple;
+	bh=OXlcNY8pu8S/MyjEy2GLENjCN5qdRSRqTym8qU2je0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAoZ6etRyOdKaRfOeFX3oIkxDHO6oo+ZwwJOpAd2UbgWr3CUm4yCS2U1UHxG0Jr9OvrqHpT8HSSYA9t69ij19B5tmpvKTpP2gKbhdU0+7PVyUKmCzgB5N66JOVQ4IJUW+JaE0c/eN0QHQg5AL4uM7Rj0mELSMRvDXIIx3mT3IkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qkxol9Yc; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso15255991fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 07:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714054356; x=1714659156; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zgj3m/Cw0cxG7wHpYlRihQfjnwxhhxsXHcabhCA3Erw=;
+        b=qkxol9YcHy4N7TFJyEYLH7LFZlNrVSlQMe/1FAbMvE53CxVwyFKPhnJgjgr4SSRS62
+         ond/Iujmcy9zTgDJuDTZpPbK1wI6b0sTqyenMmvo+5VQ4nwOrLJUjv7myToPU52MULoN
+         d+Z4X6AS/W0n9EgbNifYU/HmsVElp/3mEdUdwHw6Qg4db0dEkr20kwe6LcO2VmUNy0MD
+         na+5YVJJChBvnTU7TQ7Hb0+aJtctizCnR0WoDgKG1cy7sG+Hu7u49n7rGCEhxtXqSZ8s
+         /+67fViRi42PttiDXYYEjgHFJwu4hNeTEkjtw82VzqxD2Pp6ZjFE0A5cVeQ7+OsBKMZP
+         xpAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714054356; x=1714659156;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zgj3m/Cw0cxG7wHpYlRihQfjnwxhhxsXHcabhCA3Erw=;
+        b=c4Ti/NhBq0mN14NxNkCz+XcAiyaHPU5oTD6sBWII0H3pfZumuYmHRZFiqc/ihVwqeg
+         8j0wV9PRI/kkU/HT97GPXl8tJAGhBRXx0kx+0MsRka7y9wsR5ujBo8Gvil3OM/Wkc3px
+         8v2KL/L5mo5BT66ecuDvdjg9IT2MLw6Nfv06tIlykCWCmXqZ8+373xqMsVQg/C8OxQlg
+         xXBdUHH8ClLW7tG/plxKKGdGDNrLTT/zPHn7gjAqNlvWwY5CisVUOlL9RsXZmNQqxRYE
+         iQaV6ZTdXNt81g8QcS7vHk3yHvaY3DtZfqs/InEv2phl4v8LWZLjYhmtZch2tySDKs4w
+         +YAw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYfBllvTcAEUGAShTmEsoT5dt786OmBLQJ2idAcieMXiYG45/LulTFP6AGfE0Ipf227jPZgymy5AVriqCiWn7O2LeUEPVBfmk9rFRh
+X-Gm-Message-State: AOJu0Yy/+ZBNC7V4cjRD7g2x4Q3NqBNUtxOu8ZQe6lVyh5En4PUJRJYq
+	1vzHD/3YG1wDzVvE2xgPsuJkGKdxdQsjmV45FPM52KJrqrtkHAf27b54uVkbHkc=
+X-Google-Smtp-Source: AGHT+IG4h73e/VD0OiMdGC2ljHdBFoL8+iSdydmC9vOMTBe1nYjTZzgcSwjFqh+dbSJpqsAZN+aRMQ==
+X-Received: by 2002:a2e:818a:0:b0:2de:4b8d:ee31 with SMTP id e10-20020a2e818a000000b002de4b8dee31mr3860645ljg.37.1714054356205;
+        Thu, 25 Apr 2024 07:12:36 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id hg16-20020a05600c539000b0041aa8ad46d6sm10244618wmb.16.2024.04.25.07.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:12:35 -0700 (PDT)
+Date: Thu, 25 Apr 2024 17:12:31 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Sean Christopherson <seanjc@google.com>, Shuah Khan <shuah@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Anup Patel <anup@brainfault.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Chao Peng <chao.p.peng@linux.intel.com>,
+	Fuad Tabba <tabba@google.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+	Anish Moorthy <amoorthy@google.com>,
+	David Matlack <dmatlack@google.com>,
+	Yu Zhang <yu.c.zhang@linux.intel.com>,
+	Isaku Yamahata <isaku.yamahata@intel.com>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Vishal Annapurve <vannapurve@google.com>,
+	Ackerley Tng <ackerleytng@google.com>,
+	Maciej Szmigiero <mail@maciej.szmigiero.name>,
+	David Hildenbrand <david@redhat.com>,
+	Quentin Perret <qperret@google.com>,
+	Michael Roth <michael.roth@amd.com>, Wang <wei.w.wang@intel.com>,
+	Liam Merwick <liam.merwick@oracle.com>,
+	Isaku Yamahata <isaku.yamahata@gmail.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Benjamin Copeland <ben.copeland@linaro.org>
+Subject: Re: [PATCH v13 25/35] KVM: selftests: Convert lib's mem regions to
+ KVM_SET_USER_MEMORY_REGION2
+Message-ID: <69ae0694-8ca3-402c-b864-99b500b24f5d@moroto.mountain>
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-26-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgjeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghl
- rdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027182217.3615211-26-seanjc@google.com>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Oct 27, 2023 at 11:22:07AM -0700, Sean Christopherson wrote:
+> Use KVM_SET_USER_MEMORY_REGION2 throughout KVM's selftests library so that
+> support for guest private memory can be added without needing an entirely
+> separate set of helpers.
+> 
+> Note, this obviously makes selftests backwards-incompatible with older KVM
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> versions from this point forward.
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Passive polling is enabled by setting the 'passive' field in
-struct thermal_zone_device to a positive value so long as the
-'passive_delay_jiffies' field is greater than zero.  It causes
-the thermal core to actively check the thermal zone temperature
-periodically which in theory should be done after crossing a
-passive trip point on the way up in order to allow governors to
-react more rapidly to temperature changes and adjust mitigation
-more precisely.
+Is there a way we could disable the tests on older kernels instead of
+making them fail?  Check uname or something?  There is probably a
+standard way to do this...  It's these tests which fail.
 
-However, the 'passive' field in struct thermal_zone_device is currently
-managed by governors which is quite problematic.  First of all, only
-two governors, Step-Wise and Power Allocator, update that field at
-all, so the other governors do not benefit from passive polling,
-although in principle they should.  Moreover, if the zone governor is
-changed from, say, Step-Wise to Fair-Share after 'passive' has been
-incremented by the former, it is not going to be reset back to zero by
-the latter even if the zone temperature falls down below all passive
-trip points.
+ kvm_aarch32_id_regs
+ kvm_access_tracking_perf_test
+ kvm_arch_timer
+ kvm_debug-exceptions
+ kvm_demand_paging_test
+ kvm_dirty_log_perf_test
+ kvm_dirty_log_test
+ kvm_guest_print_test
+ kvm_hypercalls
+ kvm_kvm_page_table_test
+ kvm_memslot_modification_stress_test
+ kvm_memslot_perf_test
+ kvm_page_fault_test
+ kvm_psci_test
+ kvm_rseq_test
+ kvm_smccc_filter
+ kvm_steal_time
+ kvm_vgic_init
+ kvm_vgic_irq
+ kvm_vpmu_counter_access
 
-For this reason, make handle_thermal_trip() increment 'passive'
-to enable passive polling for the given thermal zone whenever a
-passive trip point is crossed on the way up and decrement it
-whenever a passive trip point is crossed on the way down.  Also
-remove the 'passive' field updates from governors and additionally
-clear it in thermal_zone_device_init() to prevent passive polling
-from being enabled after a system resume just beacuse it was enabled
-before suspending the system.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-This has been mentioned here:
-
-https://lore.kernel.org/linux-pm/61560bc6-d453-4b0c-a4ea-b375d547b143@linaro.org/
-
-and I need someone to double check if the Power Allocator governor does not
-need to be adjusted more for this change.
-
----
- drivers/thermal/gov_power_allocator.c |   12 +++++++-----
- drivers/thermal/gov_step_wise.c       |   10 ----------
- drivers/thermal/thermal_core.c        |   10 ++++++++--
- 3 files changed, 15 insertions(+), 17 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -389,6 +389,9 @@ static void handle_thermal_trip(struct t
- 		if (tz->temperature < trip->temperature - trip->hysteresis) {
- 			list_add(&td->notify_list_node, way_down_list);
- 			td->notify_temp = trip->temperature - trip->hysteresis;
-+
-+			if (trip->type == THERMAL_TRIP_PASSIVE)
-+				tz->passive--;
- 		} else {
- 			td->threshold -= trip->hysteresis;
- 		}
-@@ -402,8 +405,10 @@ static void handle_thermal_trip(struct t
- 		td->notify_temp = trip->temperature;
- 		td->threshold -= trip->hysteresis;
- 
--		if (trip->type == THERMAL_TRIP_CRITICAL ||
--		    trip->type == THERMAL_TRIP_HOT)
-+		if (trip->type == THERMAL_TRIP_PASSIVE)
-+			tz->passive++;
-+		else if (trip->type == THERMAL_TRIP_CRITICAL ||
-+			 trip->type == THERMAL_TRIP_HOT)
- 			handle_critical_trips(tz, trip);
- 	}
- }
-@@ -444,6 +449,7 @@ static void thermal_zone_device_init(str
- 	INIT_DELAYED_WORK(&tz->poll_queue, thermal_zone_device_check);
- 
- 	tz->temperature = THERMAL_TEMP_INVALID;
-+	tz->passive = 0;
- 	tz->prev_low_trip = -INT_MAX;
- 	tz->prev_high_trip = INT_MAX;
- 	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
-Index: linux-pm/drivers/thermal/gov_step_wise.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_step_wise.c
-+++ linux-pm/drivers/thermal/gov_step_wise.c
-@@ -93,16 +93,6 @@ static void thermal_zone_trip_update(str
- 		if (instance->initialized && old_target == instance->target)
- 			continue;
- 
--		if (trip->type == THERMAL_TRIP_PASSIVE) {
--			/* If needed, update the status of passive polling. */
--			if (old_target == THERMAL_NO_TARGET &&
--			    instance->target != THERMAL_NO_TARGET)
--				tz->passive++;
--			else if (old_target != THERMAL_NO_TARGET &&
--				 instance->target == THERMAL_NO_TARGET)
--				tz->passive--;
--		}
--
- 		instance->initialized = true;
- 
- 		mutex_lock(&instance->cdev->lock);
-Index: linux-pm/drivers/thermal/gov_power_allocator.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_power_allocator.c
-+++ linux-pm/drivers/thermal/gov_power_allocator.c
-@@ -66,6 +66,7 @@ struct power_actor {
-  * struct power_allocator_params - parameters for the power allocator governor
-  * @allocated_tzp:	whether we have allocated tzp for this thermal zone and
-  *			it needs to be freed on unbind
-+ * @update_cdevs:	whether or not update cdevs on the next run
-  * @err_integral:	accumulated error in the PID controller.
-  * @prev_err:	error in the previous iteration of the PID controller.
-  *		Used to calculate the derivative term.
-@@ -84,6 +85,7 @@ struct power_actor {
-  */
- struct power_allocator_params {
- 	bool allocated_tzp;
-+	bool update_cdevs;
- 	s64 err_integral;
- 	s32 prev_err;
- 	u32 sustainable_power;
-@@ -533,7 +535,7 @@ static void reset_pid_controller(struct
- 	params->prev_err = 0;
- }
- 
--static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
-+static void allow_maximum_power(struct thermal_zone_device *tz)
- {
- 	struct power_allocator_params *params = tz->governor_data;
- 	struct thermal_cooling_device *cdev;
-@@ -555,7 +557,7 @@ static void allow_maximum_power(struct t
- 		 */
- 		cdev->ops->get_requested_power(cdev, &req_power);
- 
--		if (update)
-+		if (params->update_cdevs)
- 			__thermal_cdev_update(cdev);
- 
- 		mutex_unlock(&cdev->lock);
-@@ -752,13 +754,13 @@ static void power_allocator_manage(struc
- 
- 	if (trip && tz->temperature < trip->temperature) {
- 		reset_pid_controller(params);
--		allow_maximum_power(tz, tz->passive);
--		tz->passive = 0;
-+		allow_maximum_power(tz);
-+		params->update_cdevs = false;
- 		return;
- 	}
- 
- 	allocate_power(tz, params->trip_max->temperature);
--	tz->passive = 1;
-+	params->update_cdevs = true;
- }
- 
- static struct thermal_governor thermal_gov_power_allocator = {
-
-
+regards,
+dan carpenter
 
 
