@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-158608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEEC8B22E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:33:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D958B22EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C471C208C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:33:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9716FB2963E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FDD149C71;
-	Thu, 25 Apr 2024 13:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05461149C74;
+	Thu, 25 Apr 2024 13:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YBj3zpHJ"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i4oWV0uG"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89103717F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45B3149C41;
+	Thu, 25 Apr 2024 13:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714051963; cv=none; b=KABfx/axGf178rCUjk0cfuwfN5HsTMKwGK2PbUo3EmAR3kRlfZhyDCegEuOrBSfA9nfzU23UwmZ5M5oU6Ir8J2kYW/l0Q5uIWM7DJXF9YEgvhJlKJkQtn1lzo9WJcHZtk5zv9dTqqEjHd4mZvXTG40I+4tYCpXGwao7QHdpHV0I=
+	t=1714052100; cv=none; b=cR9BsHWHzrd0kVuUsw5jmsYSLsJyU6W6yEhpbTRFlRveyHXu7YowPlGDsaOv32DzCWIA79UODxir+Y3zXDe1Kx9rC7aKWg3rck3552jBr+GZ8ihU1KNI9vbMkin9YM2w3XJJguyU1ElHCFjvlMQs4y8Bptf6XGPDIJVOhkrQxsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714051963; c=relaxed/simple;
-	bh=MMomP/8dwSAVkZZmBgm8ZvgmVuByPf1jQVvMWguKpjg=;
+	s=arc-20240116; t=1714052100; c=relaxed/simple;
+	bh=CXlvvOw7amn/D3LVjeiitwj3gydb2VmKSTC9JVNzWYw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U12eLvi7e+80/4N2ZeFu1AfdnYnxmy46shCBG0WZAFuIXjDTdzGX1rjE/ee4eYHShOlOfCLitghcEoZwr1rC4epBWWoNNAHaAhdghjtZ1kF/X9vVfxmoZvj3QMyT+IJ+V7fA+8cBepRCUtM/BagrUySQGeQQKWDnMTEr70RNf30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YBj3zpHJ; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516ced2f94cso226408e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:32:41 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=Z+RGGcpIncUeS8cj/0AwGDL/hVE2BF7Y2WD8kGTspXmMhYgUXIaPLMoRqNZgBmeelH6YKe0fA+jYHLkYpBsPdzQpq3OIr9xI8mh/UyMlmHJk5xDgGpQfmgAb940Oi7IYyYjnUezMfHm5BWulpvQlPwlPVaSHuLy2VVWv9PTHzg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i4oWV0uG; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3ff14f249so7701675ad.1;
+        Thu, 25 Apr 2024 06:34:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714051960; x=1714656760; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HSmqypjIS92fFBtdrRSjnycqWl4CLQIjWTtXUnhGY5g=;
-        b=YBj3zpHJ6GNgV1MLHMMHWN+2uvNQIJkaFSj24Kj39cgVtRji5fbNj9+zyPj0vgEUWa
-         Orza/9xtzFi1Hjc37js7P75xQYEXrUTP11ejGLLvZgMoZDbHd4x9LN7Yh3GBZjNhdaaf
-         D/j9+ED4sQK9lS7u6fevupv2znzLhyZfB+YjQ7oKroFp4ywxydbzqIT9z5Wt7A3wJvjX
-         qTUiqFXon6wKmMVevmQakRRH8J3NiRJ2hMZU9bma9jeJkXDGF3jmM30n4QOK6DrtQPQG
-         jeTVD8Q9ELitj+PcS7Hb0P8KYQWveoE9sVleS0iSzgfDGz/dUQ4uzgjo7FsEz1XrSlaa
-         eJ6w==
+        d=gmail.com; s=20230601; t=1714052098; x=1714656898; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=etQpEKERbtpehlxdQfBjUCZvNiR8yxK2s8OXbhNfsN8=;
+        b=i4oWV0uG8WRK48dY8/cgAMRDNplFUWFkk64B/q9ZFUFLiYYZNc7cZTIb4CJhb7RgBA
+         1CloLWLGDeBWe1f0njVnu3PsOobrUysG99cy7ahhuYvBJPaXmp80GqZkxcfu5s+Jmp6z
+         VlvDY7fKuROgo3ZtMKSdhKgBpbOtgzji2JiHnEvriEquJXAuvBHt+FmVrXGsl5At6GUb
+         /dclwfqpuUHR08zPLbKHCOKtwDXnwzYCCKj08MZ6AFntTcDWXScnBLto3QBsFk/71/k6
+         1QX9y5Zbd2eW/q2B6PG+3j2Lmk9BOONp7PYCsUFwtQtz1w/f6W7nujfcTfHNJj5Te5/2
+         wFyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714051960; x=1714656760;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HSmqypjIS92fFBtdrRSjnycqWl4CLQIjWTtXUnhGY5g=;
-        b=ToLvj3RRgOMR0lBGP2Nv9RhQU4YioT0ZY0J3xIm6f3QzgKUnCmJYiKBO+zFjFN5/TJ
-         x2vGnpj04CvIKx22a0xt015Sqj+oGqEeil/TmdIxTteVWCW48abDfsrn9iLtfJ1O1PA5
-         jLekO/CIeqpSYFzSndctSeo3XnX2Wi22psYvzlvmH3XTpnzL6W7jBYxUvyd+WvPamHpj
-         XIu1rTgD6si8QCjNtlVcnkOfDPem02jAZ4g2cLmkC1Z6ktJv22fDK/fyCI+i2iZkE0rp
-         k3pXeOCwxttOXXvOgKn4/pQdKu+JNeewWuR6dy6Dd1sZZd3SReyRhvgp/81mNd/UFlb1
-         hXiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUrv7/LZY48KQ0UlBP6WmsnGRO3bY1A/mOTl4OpUwFq4lyU2xzWfTXWejbMU/2fMz+LLIBvLa7B9f9og1Y+w6XR/GaGMEXHHxZbAZ/v
-X-Gm-Message-State: AOJu0Yzw2AZL9iW75MDQtEQ0dJWTEAyJY8R4yarhSgFYuEJ1TtoRaIiQ
-	coV5pSZaNPj2V1Q7twvdvnqUjU/DhuGXI45VO6TCsMFKyOeVb88CmtLQ3YtCspA=
-X-Google-Smtp-Source: AGHT+IESWXmXNjDEZEiQeuKXC4gKNDBYg3AhPm/2TqyqsQYsczc5eWsRrAiQSvYsv18t5BVv2SxY6Q==
-X-Received: by 2002:a2e:9855:0:b0:2de:1218:af30 with SMTP id e21-20020a2e9855000000b002de1218af30mr3711383ljj.1.1714051960077;
-        Thu, 25 Apr 2024 06:32:40 -0700 (PDT)
-Received: from [192.168.1.102] (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
-        by smtp.gmail.com with ESMTPSA id x22-20020a2e7c16000000b002d9e3a525bfsm2362152ljc.41.2024.04.25.06.32.39
+        d=1e100.net; s=20230601; t=1714052098; x=1714656898;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=etQpEKERbtpehlxdQfBjUCZvNiR8yxK2s8OXbhNfsN8=;
+        b=wfZh/3lG8GnunazCspj630AQJnBG2pEX6vSLu/PsJ4tHhohh82mcAbSZtZDPLehPtY
+         nCRQYVmJhRkDsACVvI2KJ8T9Vf4zYDztgz1YTzX8s+Y9XinpUmQIbVtKIHJVYmiyAf5X
+         xmv5XTMw6OzQP5xX2HrAcQuuU8T0gtsgql9LUGjzA9eYg7f54L7LggjkSAVl99hX6ZCb
+         wG7ucsGBX9MKzYlNNBHKlqfQROA758IKMlX2pucuOhB3YdjPKeKty+gwyPFoqEhxNJMU
+         kqc1XD9pabDsHwRe18WIvULAaDbdaLBdh1pZSQTz42rBYJ8nlYkyQeyDnm+14MSwDRwY
+         soQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUb8Ln3bMr/k5JWxpTZq4PPHkSytxMsneXJNYnDk19A0dN1Q2MXx1VrP5ygk0rS512SfCD5PaEwATkN8PQzGw6F6tjbuxEnyQc6UJQ4tMipTkrKYw8HMfx+XxI49/pU2kb3rUnCgR42Mdof8Tnkg/p320vn6KwUCMXUO8Jd0UKfvYDztH7UBpgAAp/9Sfhkj8K5+l+8N+0OdI9IoT1VTw==
+X-Gm-Message-State: AOJu0YxdcsNcjtYDeRXnEbua6PRpPK9DIBFg0SbT2oXu83tozeYO2d5B
+	CqYH/zTuqxBbmcMGy4IrHk4brqw40UwhLc9vMauIEbIk3rIlX0At
+X-Google-Smtp-Source: AGHT+IGAGqjOdRbWxSZRzy/APPArvW2TkewoiDKGh4aC1poGNHEUg4f/AScUJv/vthv/M+u2oP0kmQ==
+X-Received: by 2002:a17:902:dac3:b0:1e4:61b:98c6 with SMTP id q3-20020a170902dac300b001e4061b98c6mr4504376plx.4.1714052097949;
+        Thu, 25 Apr 2024 06:34:57 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id mq7-20020a170902fd4700b001e8415d303fsm13820762plb.257.2024.04.25.06.34.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Apr 2024 06:32:39 -0700 (PDT)
-Message-ID: <d160289a-d0c7-498e-88b2-89861ab9fa50@linaro.org>
-Date: Thu, 25 Apr 2024 16:32:20 +0300
+        Thu, 25 Apr 2024 06:34:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <489ccbfd-ccf5-43fa-92a1-3accff9b7c17@roeck-us.net>
+Date: Thu, 25 Apr 2024 06:34:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,156 +77,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 RESEND 1/6] dt-bindings: clock: qcom: Add SM8650 video
- clock controller
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: adm1275: add adm1281
+To: Conor Dooley <conor.dooley@microchip.com>,
+ Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+References: <20240425070948.25788-1-jose.sanbuenaventura@analog.com>
+ <20240425070948.25788-2-jose.sanbuenaventura@analog.com>
+ <20240425-jurist-unpadded-b3cccfc23862@wendy>
 Content-Language: en-US
-To: Jagadeesh Kona <quic_jkona@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
- Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
- Ajit Pandey <quic_ajipan@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-2-quic_jkona@quicinc.com>
- <CAA8EJppsMchthssctEgUf9q45j84cSLQ78Ur+vaA0Z7GEQi8+g@mail.gmail.com>
- <725471b1-46a9-43b0-bede-33f01c953d51@quicinc.com>
- <c3ea22ed-5750-438f-89d5-e56f908ba835@linaro.org>
- <73c5ffca-9275-437c-a49e-ef3251c8d313@quicinc.com>
-From: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-In-Reply-To: <73c5ffca-9275-437c-a49e-ef3251c8d313@quicinc.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240425-jurist-unpadded-b3cccfc23862@wendy>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi Jagadeesh,
-
-On 4/22/24 14:00, Jagadeesh Kona wrote:
+On 4/25/24 00:19, Conor Dooley wrote:
+> On Thu, Apr 25, 2024 at 03:09:47PM +0800, Jose Ramon San Buenaventura wrote:
+>> Add support for the adm1281 Hot-Swap Controller and Digital Power
+>> and Energy Monitor
+>>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> Signed-off-by: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
 > 
-> On 4/19/2024 2:31 AM, Vladimir Zapolskiy wrote:
->> Hello Jagadeesh,
->>
->> On 3/25/24 08:07, Jagadeesh Kona wrote:
->>>
->>>
->>> On 3/21/2024 6:42 PM, Dmitry Baryshkov wrote:
->>>> On Thu, 21 Mar 2024 at 11:26, Jagadeesh Kona <quic_jkona@quicinc.com>
->>>> wrote:
->>>>>
->>>>> Extend device tree bindings of SM8450 videocc to add support
->>>>> for SM8650 videocc. While it at, fix the incorrect header
->>>>> include in sm8450 videocc yaml documentation.
->>>>>
->>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>> ---
->>>>>     .../devicetree/bindings/clock/qcom,sm8450-videocc.yaml    | 4 +++-
->>>>>     include/dt-bindings/clock/qcom,sm8450-videocc.h           | 8
->>>>> +++++++-
->>>>>     2 files changed, 10 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git
->>>>> a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>>> b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>>> index bad8f019a8d3..79f55620eb70 100644
->>>>> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>>> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>>> @@ -8,18 +8,20 @@ title: Qualcomm Video Clock & Reset Controller on
->>>>> SM8450
->>>>>
->>>>>     maintainers:
->>>>>       - Taniya Das <quic_tdas@quicinc.com>
->>>>> +  - Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>
->>>>>     description: |
->>>>>       Qualcomm video clock control module provides the clocks, resets
->>>>> and power
->>>>>       domains on SM8450.
->>>>>
->>>>> -  See also:: include/dt-bindings/clock/qcom,videocc-sm8450.h
->>>>> +  See also:: include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>>
->>>> This almost pleads to go to a separate patch. Fixes generally should
->>>> be separated from the rest of the changes.
->>>>
->>>
->>> Thanks Dmitry for your review.
->>>
->>> Sure, will separate this into a separate patch in next series.
->>>
->>>>>
->>>>>     properties:
->>>>>       compatible:
->>>>>         enum:
->>>>>           - qcom,sm8450-videocc
->>>>>           - qcom,sm8550-videocc
->>>>> +      - qcom,sm8650-videocc
->>>>>
->>>>>       reg:
->>>>>         maxItems: 1
->>>>> diff --git a/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>>> b/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>>> index 9d795adfe4eb..ecfebe52e4bb 100644
->>>>> --- a/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>>> +++ b/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>>> @@ -1,6 +1,6 @@
->>>>>     /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
->>>>>     /*
->>>>> - * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights
->>>>> reserved.
->>>>> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All
->>>>> rights reserved.
->>>>>      */
->>>>>
->>>>>     #ifndef _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8450_H
->>>>> @@ -19,6 +19,11 @@
->>>>>     #define
->>>>> VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC                                9
->>>>>     #define VIDEO_CC_PLL0                                          10
->>>>>     #define VIDEO_CC_PLL1                                          11
->>>>> +#define
->>>>> VIDEO_CC_MVS0_SHIFT_CLK                                        12
->>>>> +#define VIDEO_CC_MVS0C_SHIFT_CLK                               13
->>>>> +#define
->>>>> VIDEO_CC_MVS1_SHIFT_CLK                                        14
->>>>> +#define VIDEO_CC_MVS1C_SHIFT_CLK                               15
->>>>> +#define VIDEO_CC_XO_CLK_SRC                                    16
->>>>
->>>> Are these values applicable to sm8450?
->>>>
->>>
->>> No, the shift clocks above are part of SM8650 only. To reuse the
->>> existing SM8550 videocc driver for SM8650 and to register these shift
->>> clocks for SM8650, I added them here.
->>>
->>
->> In such case I'd strongly suggest to add a new qcom,sm8650-videocc.h file,
->> and do #include qcom,sm8450-videocc.h in it, thus the new header will be
->> really a short one.
->>
->> This will add pristine clarity.
->>
+> I acked this, but I'm having second thoughts. The 1281 follows the same
+> codepaths in the driver as the 1278, why is the 1278 not used as a
+> fallback compatible here?
 > 
-> Thanks Vladimir for your suggestion. I believe adding a comment for
-> these set of clocks should be sufficient to indicate these clocks are
-> applicable only for SM8650, I can add the required comment and post the
-> next series. Please let me know if this works?
 
-Well, I didn't get any new information to abandon my suggestion, what is
-wrong with it or why is it less preferable?
+That is rare for those devices es but true in this case. Technically possible,
+though it would result in a "Device mismatch" notification by the driver
+since it compares the configured vs. actual device IDs. I would prefer to
+avoid that, if for nothing else to avoid having to deal with concerned users.
 
-Even if you add a comment in the header file, it means that for SM8450
-platforms you'll begin to define inapplicable/unrelated macro for the
-platform, which opens a small risk of the misusage, and which can be
-easily avoided. I believe that the clarity is better for maintenance.
+Thanks,
+Guenter
 
---
-Best wishes,
-Vladimir
 
