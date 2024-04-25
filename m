@@ -1,133 +1,94 @@
-Return-Path: <linux-kernel+bounces-159352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB0E8B2D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:10:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A02568B2D7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:17:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF3F71F21B55
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:10:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD60E1C21D06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9265315623B;
-	Thu, 25 Apr 2024 23:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C02156657;
+	Thu, 25 Apr 2024 23:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D5sSIXoq"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Us0d8LYI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB25715667C
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B49B156230;
+	Thu, 25 Apr 2024 23:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714086631; cv=none; b=hhn24C17ea4IT4F0WDfs42oGR1pSrovpOxQ7/ljOqEkF/JD8MKoQYgWmhtWyyqyfFrLTqAcwRkmVWIasydAPJBkSukmG5u+hO8Ic3Qv6fvEOwMln7v3+oftv2/GpyTqml0FtwFiWJH48Rh5sSnrxFStMr5qDvfEDa5kSNqJABKM=
+	t=1714087019; cv=none; b=I37wACBaJw00yTP9mbdWI2Hj0TmMjpnw8G1mgGUkrxQzLHUu2uUukiecui72blCOXYSYXFASCCHlAMil/76OB0mC6vNPGKvUm84T1o1+RRu3QWyxZtrn4u9c9632V3t5ApKCwmOH7GYQYvIqZiETA5Pq09gCsnjaTlzqdiZWa/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714086631; c=relaxed/simple;
-	bh=zTkgFfAHRBc68cUsuLXVtOjsq96hByN4x7hSD1bfdOo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lgDI8dg5An/TqPNYiderFDIebdPowoSxqoe0m1g4O3lIvBQRgoNMgcSa8qFQqKg/TMWuriZHv0v201Yr6O52O/j/Q9ltGVUuzBWfl1XTAPo65zENTacYZGlQfL95nGctbI6aCr/jw+pF5//XLvzZp/2lFLuoowC7kVQF1DmXHTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D5sSIXoq; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ed33476d82so1549653b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714086629; x=1714691429; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DUCYtH/HKWn8ExkVR1X+jCKv2DoEuOQK+l1YHfMHQfI=;
-        b=D5sSIXoqnRr6ulKefBtpEoOHyLPfHzqUmlHk88pZmt3mdxh/kB/Nsz6GsuapNtCmVC
-         dTcnjQ1TohaB89agucwuxvlUvwcQVIcg7rzOZFiBxWoSldVQYnSNzN5c6zF85YPTgL0b
-         hkhTE2yI0zQFc5LzvQkNMDGs8dW77Y5VhzTHwhELr0FCwWgFwpuYT9Nf1E5BYXZvhe7n
-         ztJu/iLbZ8O+zJn9UWxXhQaAbwSiQtO7YJTYynxSw/TpFxYDJ/dHrSEIwgvkNRbn5aDX
-         uoMPVDkwGMvnpOJn4KPHlqsdtr1WRGNATjz8O03zHqLHr14d8GwLm2ICbRYTDWGjm+Fv
-         iL6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714086629; x=1714691429;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DUCYtH/HKWn8ExkVR1X+jCKv2DoEuOQK+l1YHfMHQfI=;
-        b=ILUctpthn88Kr5YI9f5moSxi6Rq+X5n6kJu/fxbJIHEyWQlMhuMX+oLdzIMkvjc0xE
-         LJp+zjJy70J04riBpFKKsBdrKVgvpXKbx3v0rWiJQ+u+XPzI5WaPrlp8gVceF7On47E5
-         9SuKL7DObxDDEav/A4lVMyOPUT+WVGfAcB8c8MJzsT27bo5A8tOaYxzr35o13Z7OrweO
-         Rm9blsoKNh3x2pWkqLMOZZTe6/kH0kdCeKNI15qTKIG6m7w4j+Q9hJgCynl+bwkbtxSV
-         QPJh6xNqITraFJceIaeCGhW9aB7yE5W3A7mYAGRc0V7MloDXVGxbwhLpqyWDBneEzcq+
-         uzqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhl3ODYAuQ8EyY00GAZ52uKDJoYvUASBhbGf3DXaWMsrPSh6NJ29p2P7UTP2a+PtQxISLZTtMuE9xKc/O+o22HftI9HNkfD4LyID70
-X-Gm-Message-State: AOJu0YwSrofJSH8u39//ZDw+eFjpmd/crjLobTvrD7FnCSzQmAL9r4ZR
-	KCBb56IVmvQe3zcbnefOrRiqpylq/kH0pNqCnDWD71Dz1tjGtpPxxp5ONG/VaqCyhCwreZQDHpJ
-	xcA==
-X-Google-Smtp-Source: AGHT+IH0UTRcNBzj9dVGQdexjLGjpnROu9De3Yy6jBzcIynbXQRGZUM1KMZc6bjFlVeH/OJV6ny5L1PLpUc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1708:b0:6ed:95ce:3417 with SMTP id
- h8-20020a056a00170800b006ed95ce3417mr99147pfc.5.1714086628911; Thu, 25 Apr
- 2024 16:10:28 -0700 (PDT)
-Date: Thu, 25 Apr 2024 16:10:27 -0700
-In-Reply-To: <20240415-kvm-selftests-no-sudo-v1-1-95153ad5f470@google.com>
+	s=arc-20240116; t=1714087019; c=relaxed/simple;
+	bh=nvOjsG5VqPWXEiyRE20YY+xwf8zVmtXTntJ6G4y6H7Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vk7AQ5nAHSpG6lbW878NSpcUrQpmeRfYS0ZhP6+cylX0MhxamBheVPJtMwUPk+zSNlJucKgEMrppGUIa0MhDAVXlzRmyvEMAGtJSwPv2r4hgO/YCrxyYEmBxRTKyS3lqdxvNZIpat0MWDBIaXLt4PBwJM9adaIuHQf8SjJKgU/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Us0d8LYI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F1FC113CC;
+	Thu, 25 Apr 2024 23:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714087019;
+	bh=nvOjsG5VqPWXEiyRE20YY+xwf8zVmtXTntJ6G4y6H7Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Us0d8LYI5olvRkRcs+ySMzvA7NvNkty+iIfcZzJuFzHG/C/Da0GjIJgZv/QJWpFe+
+	 DNm0CLQ12UyhSG7/50LDwEeUeKPoof0wjNb0v06RT7k6JhAvMcfIlQAMIk2XZk4sPu
+	 xdv5lOfYqpyOSuJajAaTJl/dy4N101PjIqcGn3x8vaDv6mjDySKNIcfc0pf9ipQLQC
+	 XQ4tis0Uf9pC9xr2kPoo5JtO4FmD4F0SJjGRR4v7Kowd9OPlchJbqbQ+HU9M2obKiE
+	 j+b0kgJfNPvQBB/VFWtDoBu9YKiEjcxfuiNaOMoNy0z00yqRANtmrAupWHV9/Q7Th9
+	 gGU6O4fOzZfFw==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf report: Fix condition in sort__sym_cmp()
+Date: Thu, 25 Apr 2024 16:16:58 -0700
+Message-ID: <20240425231658.1201237-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240415-kvm-selftests-no-sudo-v1-1-95153ad5f470@google.com>
-Message-ID: <Ziri424B_R9GXA9Q@google.com>
-Subject: Re: [PATCH] KVM: selftests: Avoid assuming "sudo" exists
-From: Sean Christopherson <seanjc@google.com>
-To: Brendan Jackman <jackmanb@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024, Brendan Jackman wrote:
-> I ran into a failure running this test on a minimal rootfs.
-> 
-> Can be fixed by just skipping the "sudo" in case we are already root.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
-> index 7cbb409801eea..0e56822e8e0bf 100755
-> --- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
-> +++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
-> @@ -13,10 +13,21 @@ NX_HUGE_PAGES_RECOVERY_RATIO=$(cat /sys/module/kvm/parameters/nx_huge_pages_reco
->  NX_HUGE_PAGES_RECOVERY_PERIOD=$(cat /sys/module/kvm/parameters/nx_huge_pages_recovery_period_ms)
->  HUGE_PAGES=$(cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages)
->  
-> +# If we're already root, the host might not have sudo.
-> +if [ $(whoami) == "root" ]; then
-> +	function maybe_sudo () {
+It's expected that both hist entries are in the same hists when
+comparing two.  But the current code in the function checks one without
+dso sort key and other with the key.  This would make the condition true
+in any case.
 
-Any objection to do_sudo instead of maybe_sudo?  I can fixup when applying if
-that works for you.
+I guess the intention of the original commit was to add '!' for the
+right side too.  But as it should be the same, let's just remove it.
 
-> +		"$@"
-> +	}
-> +else
-> +	function maybe_sudo () {
-> +		sudo "$@"
-> +	}
-> +fi
-> +
->  set +e
->  
->  function sudo_echo () {
-> -	echo "$1" | sudo tee -a "$2" > /dev/null
-> +	echo "$1" | maybe_sudo tee -a "$2" > /dev/null
->  }
->  
->  NXECUTABLE="$(dirname $0)/nx_huge_pages_test"
-> 
-> ---
-> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
-> change-id: 20240415-kvm-selftests-no-sudo-1a55f831f882
-> 
-> Best regards,
-> -- 
-> Brendan Jackman <jackmanb@google.com>
-> 
+Fixes: 69849fc5d2119 ("perf hists: Move sort__has_dso into struct perf_hpp_list")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/sort.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 704664e5b4ea..af845d0d418d 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -333,7 +333,7 @@ sort__sym_cmp(struct hist_entry *left, struct hist_entry *right)
+ 	 * comparing symbol address alone is not enough since it's a
+ 	 * relative address within a dso.
+ 	 */
+-	if (!hists__has(left->hists, dso) || hists__has(right->hists, dso)) {
++	if (!hists__has(left->hists, dso)) {
+ 		ret = sort__dso_cmp(left, right);
+ 		if (ret != 0)
+ 			return ret;
+-- 
+2.44.0.769.g3c40516874-goog
+
 
