@@ -1,134 +1,113 @@
-Return-Path: <linux-kernel+bounces-158571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A03A8B2246
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:12:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 335698B2249
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C722867B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83B01F2673D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F5B149C62;
-	Thu, 25 Apr 2024 13:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0335149C5E;
+	Thu, 25 Apr 2024 13:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JJD6JBgB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bVlE6mk2"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A280A149C44;
-	Thu, 25 Apr 2024 13:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23AC3717F;
+	Thu, 25 Apr 2024 13:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714050727; cv=none; b=TuKUlgihAE+WCMHYbjN0st0Zo5LCleeS+cZRCeCXp3ZLACTnvEfD75kqt88EUCeUGU1+K0m+QNaR5kex++uwc9wiMh+fv3FqN5P86ko06kwbc/+nXXCALa99WbDPQgDypLVL1J2zwlSbTW0mAWbmd6dIXnv3xBqsEHXV3I6+YZc=
+	t=1714050746; cv=none; b=Vw4TnVRkUnQ3tS1wHyoYYal55e3z757YO/rueFMS8627NZTLRH9UaLSFrhBWI0+To+LvKxRqY2E068dSdyMXSBhNdAMWTMOON0JBJk9JDR1SY+1ROMbGyaQZWxjD8zi6FgQJBzSnpP75pce49Dmmwhqdw7DbWDBTigRhWEnkMlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714050727; c=relaxed/simple;
-	bh=6oZ89fNLVqBFlw2FqXYow9IUd50x0ChIAGq7WZrSWb8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vAIbOgKkWZSE/NRVExmdIG9ykJqigN10Li3t5qOOM0dNHsEe+g8I8mGOJOilZB1Juv5ulpKXqE2My4iHvoirSseAZT8Awt9dyrky9Oa0dOkGSugDeXD+Y067G/qwLwkSFi2vpb+bz7InsKAV1s9sj2RcUtc+87qI7ZymmhAQ1Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JJD6JBgB; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714050726; x=1745586726;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6oZ89fNLVqBFlw2FqXYow9IUd50x0ChIAGq7WZrSWb8=;
-  b=JJD6JBgBGFhGEhO0E2Tbaf5masdI2+xUR1EccyJtiHWcoetP0Jv8Xgh2
-   BZpwiaSiXkuRt/0KAjeyxESLMUZOv8bt5f1keWElTgqF8qJJyEVuqm7DM
-   8usw7LKalCq8GG3Vk+nWMeSC8+NWmzetAFFR6z5Lp4sY1L4e+6oye9EVO
-   rmHQCU8qHt53b6x6UT2woqHr9IvQEylVvo1HATeYk4CsCA8WXNyafjtHO
-   rywqBo/8Vfb5PCIMAHNoWagsHTID/S2i3AHJq5FK3gtN2vDQ+nmWfu0AR
-   NIFYgZqGvrVGGWutYBOziQjpoheQrw7+Jl5t/Eo6hsVd4gmYm6n2Ha1Vj
-   w==;
-X-CSE-ConnectionGUID: qGJhRqLnTmqE67o8RNBtPg==
-X-CSE-MsgGUID: you8vt16Q4KW4dBFnUJbeg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="27190441"
-X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="27190441"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 06:12:04 -0700
-X-CSE-ConnectionGUID: gJLLNdAVRh+rRxXktGAXqg==
-X-CSE-MsgGUID: OlnglW8xS+6HlMR2Clurrg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
-   d="scan'208";a="56010371"
-Received: from ehlflashnuc2.fi.intel.com (HELO [10.237.72.57]) ([10.237.72.57])
-  by orviesa002.jf.intel.com with ESMTP; 25 Apr 2024 06:11:59 -0700
-Message-ID: <62e58960-f568-459d-8690-0c9c608a4d9f@linux.intel.com>
-Date: Thu, 25 Apr 2024 16:11:58 +0300
+	s=arc-20240116; t=1714050746; c=relaxed/simple;
+	bh=jwu57ioxDHFHYb2H4BekzE6s7a/+kDgLmSQBk4z/Wck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fcrPVJU12Nif/H4byTWezmGIDTwOmY2d6N4lbz6QyPSfmc3Plz1KqYhnUtew++ZNCfXq01Nc9P3To3s2oAJfT3mX+usp6OyJgR88h8laZqOLoCv4uuhULFipwm31SP1+jlxBjU1BtdsGgz6+WbTsTjadJxxKHinhLHOauVvHHmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bVlE6mk2; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JX9qBQ7VAepgiukLD5OGQzhQEBGgQLKoeCn+uha43Z8=; b=bVlE6mk2ULmgnXAbrNSirOX6s7
+	8jWxcb68KZ0Epcq+T/k3psD6jBs6Dp1obTwaN62VEd+b06EQ8LOLdnt90YRpyKZ6U0jbJKG1+u3qd
+	06SPJ7dH3hNAumGTwYfWgNkn9uVcU2nLaFspepLaxh6TvotJpyVwvCBehu77jrVAMK7iQRNin+mzJ
+	ms6zkzArJ/PaddwRCCmN+TW6lQT+fjMFx405s4d9yGmoBoafHEw5xXTTx/t2tZoKSYFMVcqH7VUWo
+	4foZ3ZDHJxOCv628Jqxh/ILFUbLZLKdf3yIInJyUeELPVVWDld/Y7mqp9wsivxbiJpF5NXW/jieS2
+	j6FICUxg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzytj-00000008QCX-3z5k;
+	Thu, 25 Apr 2024 13:12:23 +0000
+Date: Thu, 25 Apr 2024 06:12:23 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Sam Sun <samsun1006219@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	djwong@kernel.org, chandan.babu@oracle.com,
+	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com,
+	Brian Foster <bfoster@redhat.com>
+Subject: Re: [Linux kernel bug] KASAN: slab-out-of-bounds Read in xlog_cksum
+Message-ID: <ZipWt03PhXs2Yc84@infradead.org>
+References: <CAEkJfYO++C-pxyqzfoXFKEvmMQEnrgkQ2QcG6radAWJMqdXQCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] Define i2c_designware in a header file
-Content-Language: en-US
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
- Lee Jones <lee@kernel.org>, Jiawen Wu <jiawenwu@trustnetic.com>,
- Mengyuan Lou <mengyuanlou@net-swift.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Andrew Lunn <andrew@lunn.ch>, Duanqiang Wen <duanqiangwen@net-swift.com>,
- "open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
- "open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-References: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEkJfYO++C-pxyqzfoXFKEvmMQEnrgkQ2QcG6radAWJMqdXQCQ@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 4/25/24 3:26 AM, Florian Fainelli wrote:
-> This patch series depends upon the following two patches being applied:
-> 
-> https://lore.kernel.org/all/20240422084109.3201-1-duanqiangwen@net-swift.com/
-> https://lore.kernel.org/all/20240422084109.3201-2-duanqiangwen@net-swift.com/
-> 
-> There is no reason why each driver should have to repeat the
-> "i2c_designware" string all over the place, because when that happens we
-> see the reverts like the above being necessary.
-> 
-> Changes in v2:
-> 
-> - avoid changing i2c-designware-pcidrv.c more than necessary
-> - move constant to include/linux/platform_data/i2c-designware.h
-> - add comments as to how this constant is used and why
-> 
-> Florian Fainelli (4):
->    i2c: designware: Create shared header hosting driver name
->    mfd: intel-lpss: Utilize i2c-designware.h
->    mfd: intel_quark_i2c_gpio: Utilize i2c-designware.h
->    net: txgbe: Utilize i2c-designware.h
-> 
->   MAINTAINERS                                    |  1 +
->   drivers/i2c/busses/i2c-designware-pcidrv.c     |  3 ++-
->   drivers/i2c/busses/i2c-designware-platdrv.c    |  5 +++--
->   drivers/mfd/intel-lpss.c                       |  3 ++-
->   drivers/mfd/intel_quark_i2c_gpio.c             |  5 +++--
->   drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c |  7 ++++---
->   include/linux/platform_data/i2c-designware.h   | 11 +++++++++++
->   7 files changed, 26 insertions(+), 9 deletions(-)
->   create mode 100644 include/linux/platform_data/i2c-designware.h
-> 
-I have mixed feeling about this set will it help maintaining and 
-developing new code or do the opposite. Surely misnaming as referenced 
-above can happen but I think it's not too common pattern while having 
-single define header put under include/ feels added burden.
+This triggers the workaround for really old xfsprogs putting in a
+bogus h_size:
 
-Also I personally like explicit strings put into MODULE_ALIAS() since 
-they are easier to grep from sources and modules.alias file when 
-debugging autoloading issues. So change like below makes that debugging 
-one step more labor.
+[   12.101992] XFS (loop0): invalid iclog size (0 bytes), using lsunit (65536 bytes)
 
--MODULE_ALIAS("platform:i2c_designware");
-+MODULE_ALIAS("platform:" I2C_DESIGNWARE_NAME);
+but then calculates the log recovery buffer size based on the actual
+on-disk h_size value.  The patch below open codes xlog_logrec_hblks and
+fixes this particular reproducer.  But I wonder if we should limit the
+workaround.  Brian, you don't happpen to remember how old xfsprogs had
+to be to require your workaround (commit a70f9fe52daa8)?
+
+diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
+index b445e8ce4a7d21..b3ea546508dc93 100644
+--- a/fs/xfs/xfs_log_recover.c
++++ b/fs/xfs/xfs_log_recover.c
+@@ -2999,7 +2999,7 @@ xlog_do_recovery_pass(
+ 	int			error = 0, h_size, h_len;
+ 	int			error2 = 0;
+ 	int			bblks, split_bblks;
+-	int			hblks, split_hblks, wrapped_hblks;
++	int			hblks = 1, split_hblks, wrapped_hblks;
+ 	int			i;
+ 	struct hlist_head	rhash[XLOG_RHASH_SIZE];
+ 	LIST_HEAD		(buffer_list);
+@@ -3055,14 +3055,16 @@ xlog_do_recovery_pass(
+ 		if (error)
+ 			goto bread_err1;
+ 
+-		hblks = xlog_logrec_hblks(log, rhead);
+-		if (hblks != 1) {
+-			kvfree(hbp);
+-			hbp = xlog_alloc_buffer(log, hblks);
++		if ((rhead->h_version & cpu_to_be32(XLOG_VERSION_2)) &&
++		    h_size > XLOG_HEADER_CYCLE_SIZE) {
++			hblks = DIV_ROUND_UP(h_size, XLOG_HEADER_CYCLE_SIZE);
++			if (hblks > 1) {
++				kvfree(hbp);
++				hbp = xlog_alloc_buffer(log, hblks);
++			}
+ 		}
+ 	} else {
+ 		ASSERT(log->l_sectBBsize == 1);
+-		hblks = 1;
+ 		hbp = xlog_alloc_buffer(log, 1);
+ 		h_size = XLOG_BIG_RECORD_BSIZE;
+ 	}
 
