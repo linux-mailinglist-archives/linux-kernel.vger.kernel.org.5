@@ -1,250 +1,262 @@
-Return-Path: <linux-kernel+bounces-158003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610F38B1A02
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:46:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 955558B1A03
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:48:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F0BB22AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:46:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70A4EB24961
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C0639FD6;
-	Thu, 25 Apr 2024 04:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C7739AF0;
+	Thu, 25 Apr 2024 04:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LxyahNoG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fxc8R/yv"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A750235F0C;
-	Thu, 25 Apr 2024 04:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714020394; cv=fail; b=MQk6NwBw5bsHv3XeEhFYh5o4uLhicM4VmWG0Qap17XCBr+hQdDuGm+NXYTK9m55nUdQLI7Blp7BpKY6IjJAF5L78pGJvYWBPK7oH37VEWBLnklSJfzhIRt8htW/bY7QCbVzFJkbn7khjj5YVkhEDeKDk7SEpDJb1zhuy5kLsa5o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714020394; c=relaxed/simple;
-	bh=MQ6uH9WWOfqfADZzZIwOIiY7CsFeHqQqU401C46onxE=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=R6bFih1ILWVkcw91IPqiOt4FkeVzDxFKKxq9Dp5GQWi1Wye4AnLh2ZlrY7XeuQKMWMkQIa31ImhTEXQ9itiBfg3NOYi4nRXWSAnQPvb4lrmmosyVzhN5MDdg1frqTJ1nre3vxHuBRJbvIqara53gnMl8qVN/jQWUYoU4TWmi8CI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LxyahNoG; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714020393; x=1745556393;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=MQ6uH9WWOfqfADZzZIwOIiY7CsFeHqQqU401C46onxE=;
-  b=LxyahNoGBg1+lZf5XSy4DykWJz7XL3PANjAkz+LNSP4Tx8O7kdRm1IZw
-   T4GVzBhwfA8wji4Bifbx+cJZtiQk79RZ+itZ0yAmyI4DjxLSwZud/jbZl
-   5Y23YJwvN3g851NAHGt6Nqxb/RQcf6FEZqIZ44DzDl4XV+ZSnXeIYVKni
-   miDHsa0GOA/P5pcEACeVseaGIMc6/YHQT4R4070HMsMmrX7qneBQgczWn
-   l66ptRqHdIf79Sm1kHRs7wR3g+DmZXSkn6Am7iteVhQ68uySIGGJ1jvcp
-   CnE9rt+Nb/ZwvUHYK30KAdT3uRB+bwOaMRtS1RLN22EUeFjjrlGZe/zeB
-   A==;
-X-CSE-ConnectionGUID: k+ItVWOJRxWN0a5HWwW20A==
-X-CSE-MsgGUID: vq8KqbRwS22qwyqn90jk4g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="27198769"
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="27198769"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 21:46:31 -0700
-X-CSE-ConnectionGUID: P0BzXmcpTfewJxdzqrAeMg==
-X-CSE-MsgGUID: DB4tuvXtRwSQXpC56hGJ1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,228,1708416000"; 
-   d="scan'208";a="29731250"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Apr 2024 21:46:31 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Apr 2024 21:46:30 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Apr 2024 21:46:30 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Apr 2024 21:46:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSChKH3V8u5Sdlla/zAT/F+D/lBUTMDgwbpS+THPikEFwWvXA3x8CinxqArPbvCSZ3gKJStMl5URAaHDlEIcsun28FQWMRuFC65Ya+WNL1JvS2eeK8zK4tyOWZdNqEAm4AuhIvgXFP7gZyqd51gMYpHa0+TOX5Zl3+mR4HoMvtZOkYZ4hCRCDGbxMve9uxDSa+7MPqLCLBatXWG2DO9gL2+NAkx0XO635iVtXttgqwo3PmIkLQoEDqajVKP5vfzZGz645KYNj34kTbl4srdL0NJaNSM27nAA9ccZOQRa3hS15BfCun0p8lqlgIMo3ahw8BirZ4HMvkKIVfDJJfZ0Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K/dWTjBfcnlQZLWo389xuPQDk0y38Sqji4v1NcW3yjk=;
- b=Q+TD0wZQ7RIFe+VaTAVQjOoT3cx59Ash3CUXePHf4euN0iIGF1cYiiLbUWcFXaE/MUrtsJr04uPMfQ2tlkEqDaeZyvBiQbY/GHOGln5/8hVar0L24TFesqqygJ35z81EXbtaF+W9tgGdUFaZbJwhAKMTbU83OqUufTha8mlNZYKklFdVp2mkttS6/2Hl9jqF/XABv+jVAz4d4MdP/TzQs7iBgQfNFGkwXf1vqWAKLW2OQlQRY9w9D08Kcd1o2XfA5646vgd51nj7twt1w8a46YDWWITiMJhqAk1Jb2+9uudoBWD3k7Ag0F99Z1IaAgEXM3wdij8YkfnPAODXkcmgrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SJ0PR11MB5940.namprd11.prod.outlook.com (2603:10b6:a03:42f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
- 2024 04:46:23 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7519.023; Thu, 25 Apr 2024
- 04:46:23 +0000
-Message-ID: <f865d91b-5e1f-45e2-9f1a-cf9feb8c9c59@intel.com>
-Date: Wed, 24 Apr 2024 21:46:20 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/16] selftests/resctrl: resctrl_val() related
- cleanups & improvements
-To: Shuah Khan <skhan@linuxfoundation.org>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
-	<ilpo.jarvinen@linux.intel.com>, <linux-kselftest@vger.kernel.org>, "Shuah
- Khan" <shuah@kernel.org>, Babu Moger <babu.moger@amd.com>,
-	=?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
-CC: Fenghua Yu <fenghua.yu@intel.com>, <linux-kernel@vger.kernel.org>
-References: <20240408163247.3224-1-ilpo.jarvinen@linux.intel.com>
- <cc46c002-c771-499d-96f7-38db978ae975@linuxfoundation.org>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <cc46c002-c771-499d-96f7-38db978ae975@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0125.namprd03.prod.outlook.com
- (2603:10b6:303:8c::10) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA243B781
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714020476; cv=none; b=RhYfPBADQXuGd85MlUmJWwsq6JF7da2KvwKGV5878j2opvRPNsstpDNBcVAVtIwN1YoUTgVUb5F8jox3neJaEowhGM5fy9bHwyyTO8fqn0uLnsS0guyt/cketX71LHBl8cQN05uLnt9J9Bj2J2QI5l/aFneNHgoBPqOChy5UCD0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714020476; c=relaxed/simple;
+	bh=QkHoR9z3dRPqyKAHwrKyU3s1xCzs4/hpk8clqKIK+HI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bp6WEBY0r0R7bo8mw6JOn7lGvp/K4cGxkBMUABY5p9G1djUCsfxuXLwnhh3d+yH0aH0dzRiSstbWAmbIasbO0ZrjzgDtLVXH7pulFHh6AYnXWipihhdgd7Oc0peh13CgMnaKky8yn/AiIznbG3fXcXK8bSuSN8khWLQLzYrMCYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fxc8R/yv; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2dd615b6c44so5842721fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714020473; x=1714625273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jpo5EwUdOC96YukS8QWkRpGkkyVlX6pSgH/vTHIzZok=;
+        b=Fxc8R/yvbGdiolGzb064c6Cz05OCNOKI8+o1ZZM9b2QIb0vo8/w3ll1Uhvqw9iaI6A
+         nttFQi6dQNj6N55GvdqnRDj8B/2d/KuCDR9SpCdAOfNNpiGtS8pV4qCOhZYRpSGNozGc
+         n9T/3h0wdbmZhzTmDIqZ2komjUr9kiR4Fmvq6RRKfAQ55mIxf/bx89o+ZZqD4tKn9FWv
+         NMmIIlYA8rA37r/8XSx8E8SrLZkaDW4Gb1rG/GrCGdcYyxgzzYJbsPpCnppiIDvVsYLP
+         +99sQ7dgfCdLwW8wwu9rX8UqBsaEfaMJKhOaw2nfqLtyyZc+vAtJKkLDGUWow0/0jMZu
+         WNqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714020473; x=1714625273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jpo5EwUdOC96YukS8QWkRpGkkyVlX6pSgH/vTHIzZok=;
+        b=Ld8Ns9e4ZuLm132ork7xVQLO3TlpbdksEhyMDPv6gO/8K7bF1HEv+4Cnw/XZoZLj8T
+         f4D/2gvxiNTaNII4gqwGEnQB/3DGFWRPSUs40LWk3IUs5zKgmk3tna3moH68NPn9PG9f
+         NZg1THHeE97Zvcxm54TfRo9d/HFP0LdiYiZIhsPZbCOUdCbzOrwNUsf2dYERyEofgpw5
+         mlkEiYVkwmbrqCdi3wtP+mkRmUQjeiMMxrBzwecRiw8IdtgRdwCTLHUofQMggCbGKLMT
+         YHwX0az9aMoD06YZwr0vK+vFh0ULkxDFkT7crz9cqv+D0I1SeCZHOEL7v7wTpCLhWaHR
+         9YFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTJ94pz6aj4zYcpNltsG3K4z0MwP7YjY+hQHj2Jw/8kDshxH84WH3q+v4VEWVsbBM9TTTjQwoJ2WQuJ6zSnuQfrMTcg7Kbi6Zic+mv
+X-Gm-Message-State: AOJu0YwHDvEMnot5UV2rllJaEVWrmQVBF8/9ecIS0iytLyV+XDCtZ94n
+	D4IeUBKKGh6JodAlFT2SzSHzWs+5G9oPBRgwGBFb28nm9R1QoFkxeTIL6TTcOrv3zsI8jSmRY4a
+	rjx/QpTlf7Wwu3vYBksUJz5onqb8=
+X-Google-Smtp-Source: AGHT+IEcY1PB98rnhwReQi4sQiaQRD3HiP5OZtKx50yyJPlKlr64VRSTvtpWF+5AibA/pSQcllF/WKGP5xjT3aSQxY8=
+X-Received: by 2002:a2e:2c0c:0:b0:2dd:372c:e7bc with SMTP id
+ s12-20020a2e2c0c000000b002dd372ce7bcmr3030160ljs.31.1714020472863; Wed, 24
+ Apr 2024 21:47:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ0PR11MB5940:EE_
-X-MS-Office365-Filtering-Correlation-Id: a24314d8-5c7b-48b1-922d-08dc64e2a855
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?eHN2RnR6Tzl0LzIxZGpuWFNiNXIzcXJhUjNQekwrNDV4YTZabXJVemZjUFhu?=
- =?utf-8?B?cW5aNFhwSlJhNm9iakZYQVNVRnV2QlprU2dpOHZmNlRPcWtiV1RzcWpaM0NI?=
- =?utf-8?B?d2RaN2hXcDVBUWcwT2ErMlhDL2lKYkdCOW5PWUkySisyYy9tTEg3TUpIbjBC?=
- =?utf-8?B?WHRiS1hFbFY2NXhJNC9tRTYvL3lwOWMrczhlYlUxWHRUZURnZUNqaTFpclh1?=
- =?utf-8?B?R3QzVkx1SjVUZ2Npc0l6M1VlU2M3TmR4ZFFKZDBvMEJsOEx4ai9uUEk3RVlG?=
- =?utf-8?B?c3VFa1dKeGtHZDhMT3hQTlViWVhuM2dodHlUZmt0MzFCc3BLTExiMmxEV2FN?=
- =?utf-8?B?aTNxTlZxZER4L2QwTjgvMVAxblAvVG1MQ3pUQjNSMWgwd2xkdCtrRTNpZ2E5?=
- =?utf-8?B?TXZOQUxxN0VDWGllTkxjVndUT29VSCtWT2J1NmxnL0VvSjhjbXBOc2FGYzhk?=
- =?utf-8?B?ZW4yNHBDWFA2Nm5acnZEeFl2cnZubSt4cXYvdFBWalFzR3FCNDhnZlNQRGNq?=
- =?utf-8?B?S3FwMm42NHAwWlhlTHRyaHNGa2pyVHN3UGdYWEJGV0huUXhXV0NzSWZoa3JY?=
- =?utf-8?B?TXBYNFRRL3Z2YldMNGN5MURyMkd0YlJOY1dlcFRUUUp1ZWFTUURnSHAyYmhi?=
- =?utf-8?B?bTNidnZVTkx6T1hzQTI2eTZKVGVyQkN1MnVsZUFwQTVOa1BjY3JVczVENnVr?=
- =?utf-8?B?MXBJS1h4RVF1dmFOYWtiRWZnN1FjSi8vTmEzTVUzREtIK0NjSkU1TGdjamla?=
- =?utf-8?B?SE4rMnRqOWduQzk1WlhZai9yUXBZMkFma2JDa0VRQWJISDJrMTF2S0gzZkR5?=
- =?utf-8?B?ME15SDlWZ0hUV05TNDlMeVRPcDV2M0RtTVBQYjFEbU1VRlVxdUl1bzFvQWhX?=
- =?utf-8?B?NktxZnZveTREMGpuUDFjUmpkdlM0dWxJTXZERDNNWmRnejExMDdZK1lFQlY1?=
- =?utf-8?B?RExkMkU0UVNNc0F4RTdIeVZSSjFkY1dSWVNwYTBtc2pYOER3NXBDTVd3YXBl?=
- =?utf-8?B?YVZJQ05adXJwK0pPY3hjbEdqRkxBM0g1dFcyQVpkWUtvL0pTUU1nbXR6UEx1?=
- =?utf-8?B?aWJ2UTZQSkQ1cnkrVlN1SkQ5NnJYV0JlT3NibU10SUZ5S1NmY0M2dzU1R0hH?=
- =?utf-8?B?NWNjcUVQN00rZmE0Nkpsam15U2pmRE4vcFVOL0cvNjVhMjY2K2tDRTV0VmxL?=
- =?utf-8?B?ZGU2SFpCa2VsZjZDTnVRNXB3MUxYR0sySVBRODllVVNGRkx3MUZWN0RjYU5F?=
- =?utf-8?B?enExd3d5RmNmVy9uY3lYU1VHOXN0MjA1TVhhQmZUN2Y5bXFMWFpTaXJDZy9i?=
- =?utf-8?B?c2w5ZlMxWHNQTHd2UzdOcUh0WHJRM2ZHaWlvN3pab0xoMEpXWUEwMUxqQlVn?=
- =?utf-8?B?SmtGb3B0aWhxMTc3UXZaS1hhbjZaNHZnUXU1clUvOTJKM0tmNmdCaXljL1lX?=
- =?utf-8?B?MzVTWkJJOTk5dGdTQUltcXNkeEJ4OUJNOHcrdFRCZXhtT0F3WkZKbnZiNFc4?=
- =?utf-8?B?Qm1lVUhVOW54NzVwS2dkME9mdDNUWFRpQUdvSXJWQ2VXZ3hEaCtsK1ZYaUF1?=
- =?utf-8?B?WnVzcmdlTDZ3YWxNeEROTmNqMHJSWklPbWVscGVyMGYrbkFaQTBQVkNZbEpG?=
- =?utf-8?B?V1pZTHFOS3Y4Y2pIRVVGbjJXZlNHMURISWZBWGI4MWh5SVhMRStKTmJqdmh4?=
- =?utf-8?B?aWR3S09hRERwd3dGUnhrNW1sV3hmMEJ4bzMwRi96MkZ6QUN6MGpuRW5RPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UlFYUXplWmxHYkNuajlXbmxjWmJKVi9EcTQ0TDFVNEZnV3ZRVnU1emFmU1Z6?=
- =?utf-8?B?dkJkZWVqR2VOTVBKTjJqQTNadGRoUG9zRUlkSzVrc09qaHp2aTdGdTdFMGlV?=
- =?utf-8?B?elAvcG1ha3NWcEx1cjVQaU9WMlFLdnhsRnFKK3p2dlVvYlZNZDdkSU1JOFA5?=
- =?utf-8?B?NWFJaVA4c1RmQk9VR0N0QWFNS2xiVEphTFdZMVRHQ0FRcEdZRjJHa01Md1NR?=
- =?utf-8?B?ZTNzcWNZYlF3RU8xNHZmamc1Tzl4Wk1QSVNqWHRaQUxXTUhZY2l2eUFMd0Mv?=
- =?utf-8?B?cmZlSUpldmhuU3Frc1U1R3BrOCsxZmdNUElYT05nTnVua2JJbEJRTTd0dkRr?=
- =?utf-8?B?MmlBdUM4Z1hYd0Fqc1FKTXVnZFBEenB4S3VBcnJaZ1F3Q2h5bUQ5ODlaK3NU?=
- =?utf-8?B?blluOXZGemN2azA4TnZGMlY1VjRLeG1wSGNuY0JSZXpjRklBU2o4MTlsZDUw?=
- =?utf-8?B?Y2RBc2dHdFlnYmJnd2ppVUdmQWZGMVUybDFjdkVtbi80cWczTUJRalZUUlBk?=
- =?utf-8?B?TWlCc0ttRUhLQWs3QWdUbm5sVndQMjJBdkNRZ0dybjNvMHZwK3JVWE5zdjFP?=
- =?utf-8?B?eUtzNzljUnBPa3p3aWNMZWNFcHM5ajBMOElaQVF3YS9CclBTVnhSSHV0clQz?=
- =?utf-8?B?cjFZU0ZxZTRuYVRFY0tNUjVoYkxBaFBIMXhPSHNwVlpXV2pLY2hRV2VwVmZw?=
- =?utf-8?B?MGZHOENweVduYUQ0dU9ENXc3bERYUzJoRkN6MEUyb2p2Z2lSWFpiN2E2dGg0?=
- =?utf-8?B?clZtMXIrblJYNVJlWWJhNUFBRXhScnNBVXJqS0M4NzJiSElsTlNCVFRmM0w5?=
- =?utf-8?B?SUwrakRhQjN2REtVbEhDTHpubWxZY0JnTDZ1dytJVElEcG1tM1JBcHpGYjhE?=
- =?utf-8?B?bElEY0R4SzRsRzF0MEtjM0Ixamdqb2ZYclYvNkVOSzlZUnU2UXI3cFl6U0hG?=
- =?utf-8?B?THNjQnJIRzdwbHE1MXdnT09lQTVydDduVlorTHl1NkRzVFp6c05IaDBWZEFT?=
- =?utf-8?B?ckR5NjYwRG0vSFZEdHdzdHh3QlZYQXZZaVdqeHhaNG5yOUw4TVllMGxFN1pk?=
- =?utf-8?B?S09jQUhGZGdCT0hRQUF0Mi9MMU12ZVZEbFJMNDRtT2oySkVqUkpYM0xoZ2F1?=
- =?utf-8?B?dnBDQlYrZFEramMweCtXY3Joa2FuZ3cxeDhrc3gwM25UVy9QMDhUcUw3Ym1x?=
- =?utf-8?B?YTFPcjBqcDhna3hSa2YrNndoT1RpT0pSTllZL2hvQlRtdTlxT2Z6Z0pVb2Rl?=
- =?utf-8?B?V2w1dFdZRVRLbjgzYnNSOHl3SExWM09CdU9zd2xhOWpwSFB1VkFOZDBsOE43?=
- =?utf-8?B?UjNhSGFQL29jbmh4U2dON24vT2owMEFJZWtDK2dsOEJTa3NzU0tnWjY5dS9M?=
- =?utf-8?B?bXBKY0p0cTM1MkNWdDE3T0pHQnpWeGtocTE5UTg1TW03cU9QejBiQThXaWJs?=
- =?utf-8?B?aGtZejhucjU1SmJSeTFLRHNBQ3B6cUZGT0JRWURsZHpzOUpYUEJ4cUJ3MXE3?=
- =?utf-8?B?SWxWejkvdE1aTGhJdm9XbEN0dytDYnUxSm5CMUtEenVFOXhTNUc1ZlRjaWYx?=
- =?utf-8?B?TCtDRGVhSHk5ZXk2SWdUMmV1SXNzcTFtVnpsaTQ2ckhtUE9od1ViY05CVDJU?=
- =?utf-8?B?cWlCMVJSZFg0VHAvYzZacEJ0RElvUDlOMkU0VVRjQ05JMTFlcVE5U2FPdXFy?=
- =?utf-8?B?M1V0UEVxZzFZRWVrQjBPQWhxMHFIOEhIK0VQc25UWmphcnF0U0tUekUzRzhI?=
- =?utf-8?B?SWR2UVo5bm96V3hBamxiWHJmeGlOaUQrdkFHUFRlOUJhRmNGWE4wQ2QyUDFF?=
- =?utf-8?B?VWJZSFdoaStPc09iWCtFdmNreFcrUGl3V3IzMEs5MlcxTFNjK0RzMWtVcE5P?=
- =?utf-8?B?Rm43aHI1M2VWN1BLRDZzYWpnNkRRdTB5TVhYWkkzN0luUkpPYTRrZkVYYXFl?=
- =?utf-8?B?UHV6eU4xaGxNelpqS0o4RC9NVUxoS0NGL3pFSkNwa29ta0FPcmFySnVGQVAv?=
- =?utf-8?B?S1hvbHBEL3Z5bE9NWnBBOG1yUVEvMjgwa2NsL2VaQlpraHVDZFFjaExjSXpi?=
- =?utf-8?B?YXh6N0MwbmplejYwejFUUFp2bEVmSTJwN2lkVkloNXlOam9hTk5IcHUzV3Bn?=
- =?utf-8?B?WTd3NSt1NVdWM3h0U3lEMEtjaWJJaGVVenlVR2JQb2dseXRqdGxUaEc0ZkRQ?=
- =?utf-8?B?VlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a24314d8-5c7b-48b1-922d-08dc64e2a855
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 04:46:23.0648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6m/rL0pXpxiDzJfphDzJVGVm5n12cZCWrcgXwttvFlbi3871B1LSf8yEp4mtLl0py6381OlFLKbiZp4OjgSioZA2V4POpS3RxjJdG3TTwng=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5940
-X-OriginatorOrg: intel.com
+References: <20240424135148.30422-1-ioworker0@gmail.com> <20240424135148.30422-2-ioworker0@gmail.com>
+ <1192295a-5b94-4c1a-b11c-7cd8ef0e62b7@gmail.com> <dfbced2e-487c-413f-bfed-567a852ab1bc@gmail.com>
+In-Reply-To: <dfbced2e-487c-413f-bfed-567a852ab1bc@gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Thu, 25 Apr 2024 12:47:41 +0800
+Message-ID: <CAK1f24m-xV=gxY5D=xevfov=TGfcvbiereTt3ZawVn0Fntnhjg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: add per-order mTHP split counters
+To: Bang Li <libang.linux@gmail.com>
+Cc: akpm@linux-foundation.org, 21cnbao@gmail.com, ryan.roberts@arm.com, 
+	david@redhat.com, baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Shuah and Ilpo,
+Hey Bang,
 
-On 4/24/2024 6:49 AM, Shuah Khan wrote:
-> On 4/8/24 10:32, Ilpo Järvinen wrote:
->> Hi all,
->>
->> This series does a number of cleanups into resctrl_val() and
->> generalizes it by removing test name specific handling from the
->> function.
->>
->> One of the changes improves MBA/MBM measurement by narrowing down the
->> period the resctrl FS derived memory bandwidth numbers are measured
->> over. My feel is it didn't cause noticeable difference into the numbers
->> because they're generally good anyway except for the small number of
->> outliers. To see the impact on outliers, I'd need to setup a test to
->> run large number of replications and do a statistical analysis, which
->> I've not spent my time on. Even without the statistical analysis, the
->> new way to measure seems obviously better and makes sense even if I
->> cannot see a major improvement with the setup I'm using.
->>
->> This series has some conflicts with SNC series from Maciej (Maciej has
->> privately agreed to base his series on top of this series) and also
->> with the MBA/MBM series from Babu.
->>
->> -- 
->>   i.
->>
->> v3:
->> - Rename init functions to <testname>_init()
->> - Replace for loops with READ+WRITE statements for clarity
->> - Don't drop Return: entry from perf_open_imc_mem_bw() func comment
->> - New patch: Fix closing of IMC fds in case of error
->> - New patch: Make "bandwidth" consistent in comments & prints
->> - New patch: Simplify mem bandwidth file code
->> - Remove wrong comment
->> - Changed grp_name check to return -1 on fail (internal sanity check)
->>
-> 
-> I can apply these for Linux 6.10-rc1 once I get an Ack from Reinette.
-> 
+Thanks for taking time to review!
 
-Apologies for the delay in reviewing this. I've now provided feedback for
-consideration.
+On Thu, Apr 25, 2024 at 1:59=E2=80=AFAM Bang Li <libang.linux@gmail.com> wr=
+ote:
+>
+> Hey, sorry for making noise, there was something wrong with the format of
+> the last email.
+>
+> On 2024/4/25 1:12, Bang Li wrote:
+> > Hey Lance,
+> >
+> > On 2024/4/24 21:51, Lance Yang wrote:
+> >
+> >> At present, the split counters in THP statistics no longer include
+> >> PTE-mapped mTHP. Therefore, this commit introduces per-order mTHP spli=
+t
+> >> counters to monitor the frequency of mTHP splits. This will assist
+> >> developers in better analyzing and optimizing system performance.
+> >>
+> >> /sys/kernel/mm/transparent_hugepage/hugepages-<size>/stats
+> >>          split_page
+> >>          split_page_failed
+> >>          deferred_split_page
+> >>
+> >> Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> >> ---
+> >>   include/linux/huge_mm.h |  3 +++
+> >>   mm/huge_memory.c        | 14 ++++++++++++--
+> >>   2 files changed, 15 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> >> index 56c7ea73090b..7b9c6590e1f7 100644
+> >> --- a/include/linux/huge_mm.h
+> >> +++ b/include/linux/huge_mm.h
+> >> @@ -272,6 +272,9 @@ enum mthp_stat_item {
+> >>       MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
+> >>       MTHP_STAT_ANON_SWPOUT,
+> >>       MTHP_STAT_ANON_SWPOUT_FALLBACK,
+> >> +    MTHP_STAT_SPLIT_PAGE,
+> >> +    MTHP_STAT_SPLIT_PAGE_FAILED,
+> >> +    MTHP_STAT_DEFERRED_SPLIT_PAGE,
+> >>       __MTHP_STAT_COUNT
+> >>   };
+> >>   diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >> index 055df5aac7c3..52db888e47a6 100644
+> >> --- a/mm/huge_memory.c
+> >> +++ b/mm/huge_memory.c
+> >> @@ -557,6 +557,9 @@ DEFINE_MTHP_STAT_ATTR(anon_fault_fallback,
+> >> MTHP_STAT_ANON_FAULT_FALLBACK);
+> >>   DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge,
+> >> MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+> >>   DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+> >>   DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback,
+> >> MTHP_STAT_ANON_SWPOUT_FALLBACK);
+> >> +DEFINE_MTHP_STAT_ATTR(split_page, MTHP_STAT_SPLIT_PAGE);
+> >> +DEFINE_MTHP_STAT_ATTR(split_page_failed, MTHP_STAT_SPLIT_PAGE_FAILED)=
+;
+> >> +DEFINE_MTHP_STAT_ATTR(deferred_split_page,
+> >> MTHP_STAT_DEFERRED_SPLIT_PAGE);
+> >>     static struct attribute *stats_attrs[] =3D {
+> >>       &anon_fault_alloc_attr.attr,
+> >> @@ -564,6 +567,9 @@ static struct attribute *stats_attrs[] =3D {
+> >>       &anon_fault_fallback_charge_attr.attr,
+> >>       &anon_swpout_attr.attr,
+> >>       &anon_swpout_fallback_attr.attr,
+> >> +    &split_page_attr.attr,
+> >> +    &split_page_failed_attr.attr,
+> >> +    &deferred_split_page_attr.attr,
+> >>       NULL,
+> >>   };
+> >>   @@ -3083,7 +3089,7 @@ int split_huge_page_to_list_to_order(struct
+> >> page *page, struct list_head *list,
+> >>       XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index,
+> >> new_order);
+> >>       struct anon_vma *anon_vma =3D NULL;
+> >>       struct address_space *mapping =3D NULL;
+> >> -    bool is_thp =3D folio_test_pmd_mappable(folio);
+> >> +    int order =3D folio_order(folio);
+> >>       int extra_pins, ret;
+> >>       pgoff_t end;
+> >>       bool is_hzp;
+> >> @@ -3262,8 +3268,10 @@ int split_huge_page_to_list_to_order(struct
+> >> page *page, struct list_head *list,
+> >>           i_mmap_unlock_read(mapping);
+> >>   out:
+> >>       xas_destroy(&xas);
+> >> -    if (is_thp)
+> >> +    if (order >=3D HPAGE_PMD_ORDER)
+> >>           count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED=
+);
+> >> +    count_mthp_stat(order, !ret ? MTHP_STAT_SPLIT_PAGE :
+> >> +                      MTHP_STAT_SPLIT_PAGE_FAILED);
+> >>       return ret;
+> >>   }
+> >>   @@ -3327,6 +3335,8 @@ void deferred_split_folio(struct folio *folio)
+> >>       if (list_empty(&folio->_deferred_list)) {
+> >>           if (folio_test_pmd_mappable(folio))
+> >>               count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+> >> +        count_mthp_stat(folio_order(folio),
+> >> +                MTHP_STAT_DEFERRED_SPLIT_PAGE);
+> >>           list_add_tail(&folio->_deferred_list, &ds_queue->split_queue=
+);
+> >>           ds_queue->split_queue_len++;
+> >>   #ifdef CONFIG_MEMCG
+> >
+> > My opinion can be ignored :). Would it be better to modify the
+> > deferred_split_folio
+> > function as follows? I'm not sure.
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c index
+> > 055df5aac7c3..e8562e8630b1 100644 --- a/mm/huge_memory.c +++
+> > b/mm/huge_memory.c @@ -3299,12 +3299,13 @@ void
+> > deferred_split_folio(struct folio *folio) struct mem_cgroup *memcg =3D
+> > folio_memcg(folio); #endif unsigned long flags; + int order =3D
+> > folio_order(folio); /* * Order 1 folios have no space for a deferred
+> > list, but we also * won't waste much memory by not adding them to the
+> > deferred list. */ - if (folio_order(folio) <=3D 1) + if (order <=3D 1)
+> > return; /* @@ -3325,8 +3326,9 @@ void deferred_split_folio(struct
+> > folio *folio) spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> > if (list_empty(&folio->_deferred_list)) { - if
+> > (folio_test_pmd_mappable(folio)) + if (order >=3D HPAGE_PMD_ORDER)
+> > count_vm_event(THP_DEFERRED_SPLIT_PAGE); + count_mthp_stat(order,
+> > MTHP_STAT_DEFERRED_SPLIT_PAGE); list_add_tail(&folio->_deferred_list,
+> > &ds_queue->split_queue); ds_queue->split_queue_len++; #ifdef
+> > CONFIG_MEMCG thanks,
+> > bang
+> >
+>
+> My opinion can be ignored :). Would it be better to modify the
+> deferred_split_folio
+> function as follows? I'm not sure.
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 055df5aac7c3..e8562e8630b1 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -3299,12 +3299,13 @@ void deferred_split_folio(struct folio *folio)
+>          struct mem_cgroup *memcg =3D folio_memcg(folio);
+>   #endif
+>          unsigned long flags;
+> +       int order =3D folio_order(folio);
 
-Reinette
+I'll consider storing it in a variable earlier for later reuse.
+
+Thanks,
+Lance
+
+>
+>          /*
+>           * Order 1 folios have no space for a deferred list, but we also
+>           * won't waste much memory by not adding them to the deferred li=
+st.
+>           */
+> -       if (folio_order(folio) <=3D 1)
+> +       if (order <=3D 1)
+>                  return;
+>
+>          /*
+> @@ -3325,8 +3326,9 @@ void deferred_split_folio(struct folio *folio)
+>
+>          spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>          if (list_empty(&folio->_deferred_list)) {
+> -               if (folio_test_pmd_mappable(folio))
+> +               if (order >=3D HPAGE_PMD_ORDER)
+>                          count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+> +               count_mthp_stat(order, MTHP_STAT_DEFERRED_SPLIT_PAGE);
+>                  list_add_tail(&folio->_deferred_list,
+> &ds_queue->split_queue);
+>                  ds_queue->split_queue_len++;
+>   #ifdef CONFIG_MEMCG
+>
+> thanks,
+> bang
 
