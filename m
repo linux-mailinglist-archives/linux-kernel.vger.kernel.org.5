@@ -1,150 +1,217 @@
-Return-Path: <linux-kernel+bounces-159150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 866918B29FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:37:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57D818B2A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B80951C214CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:37:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D502823E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F272E642;
-	Thu, 25 Apr 2024 20:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8459152E0F;
+	Thu, 25 Apr 2024 20:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VG7U1V8a"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gD5UC/7y"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2241C12C7F7
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABA714C591
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:42:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714077468; cv=none; b=dc3obx27d4AnVHbrtPV0+JPL8CGSqQV8BrXe7ABI/85al58rUOXtL498fVdWYsp7jV7Wmby1wJ4qngBxnmLX+5N8N8aPheyuL0XfaJ+NLA1+tu1+XHUM0M7q1LJsntkLAwhY/xHzSq/41/PZfx74lMRl2mR8yl3WSmqpcsiAb88=
+	t=1714077762; cv=none; b=LV3Purjx55pYnyXhqbF90XArKsw9SPdzo7VL6mLQh01cPWkNxVInRFPWnE/dxBrmzvMsoyi3xrIO4LH7BRkqMAxQdOSabfv6WTj5k+rx0dNdBwqvg6xXL/eA3a4976KLs8o8g+F3iTUiYiVQ8EU2poyWagWfm5xX7EGAlW6AExo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714077468; c=relaxed/simple;
-	bh=jAg2VLHgH1tgYvqdC05z+fR+GClul15yoSWcnQ41OgA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lDf3TSev2z9G+FFAQ1yx/N0a/9+Jxg12XkAOqlApO0m7UxH6eRZxTMBfMsnsT1iUIHymKp/6yWoAfBxAY0FT+IoFYjjdwpL1Wmqk9wTLUMTib2GVtoB+Gn8xgNyWAL3E5VuVAxvby7cWxCpPPIQbRvcLWAKzdl+8/0S5OPUzKD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VG7U1V8a; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6184acc1ef3so14249147b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:37:46 -0700 (PDT)
+	s=arc-20240116; t=1714077762; c=relaxed/simple;
+	bh=Edu66Pp361LP1TJKH9qQGwnWCXUz4E51XfhmasI4O5Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zlx128/fQxfkIBxI33IMQ688If0aeKxlkykXSNt2ZTwy6BLUXfmq1n1ORZ4MmnvXtt3RpFIhRBNsv1es3nRU6QhDCAQVzu/Sq3ZU8vT8jJQKuDdR24OP1ZCsgNzxP5JjLgjYk9o3dfnVMLwQFX3duKk6q1bsxCQPvs3ROvnjfd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gD5UC/7y; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a55b93f5540so193125466b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714077465; x=1714682265; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7H8fihR3flAk+5cySZQjU2neMKCr+gYXjQpgANOY1yo=;
-        b=VG7U1V8aCclK4i6un3SrmcMp/odlODPFRSAZPIEyLKVjl4dnFZDD3LLfU9l8EylEkc
-         og7vmoG1RYsX0taGjQWpwRpvs/Oe0rwI/ziyZhg8dDlaJxrbyvzupnofq+ooSBZ7Pmb0
-         ts8P4Qkcu+70pdciV3B57JZ7PTynPD2o/pJes=
+        d=google.com; s=20230601; t=1714077759; x=1714682559; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d8a5q661VPv7YxA4YAbF7nmm8AiOpL1vdq49c/Cxoac=;
+        b=gD5UC/7ycNlP/aZY5PO92oCaovzSljG23i9LpJzzvV+O/QH6c7nA/KovC4FPlGTu/9
+         VLTMkxc0luAZFEUJ2omEg/VS7hdLyEs8GAtrABePsPjvA5sUmDXsTHFV0baMK5wG2ncv
+         NdwHDLnWb6rhuJ8dZ2prpitF6bfKLYIR17M5qkxP3xAFqMxJCi6GlGYbCZe0J8lURtke
+         oihF/hK6U9Do+1fWuSj1VJyRsU02fU6xzIlyaQ7guOXTBrK9eexP0VxsEnuyRb9y23Qt
+         MaTcmQhcqUtATj6H75KltmL91WkQyxYGxMtw2Ia1zvcmx6f0pyK99OSgM5/qbks65il+
+         eWog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714077465; x=1714682265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7H8fihR3flAk+5cySZQjU2neMKCr+gYXjQpgANOY1yo=;
-        b=DCUAM1FhZeC8xgoO9M7O0H84gXZ1rAVYfHWpOPj54vLmQJTByOwprwDkZ1WgWZRlUv
-         nTN+IysWw6FfgrgM/1hL2+Ay9lDhT4oJ6kY5p+NOm/2Ku+Z3Kf/+zrvj1jWuPf6S32lI
-         dCWj0HuUppT3vgaTjos8Dd2Q4B7YrXrnHBzKLz8k50t0hBTjNWw9nrgu04hRaJsvJkiM
-         4n2imoiVBva63vlJDVSso2rI96oupu4mWeCv/9eLcc71EojjDBzzCNwlNmzJQgCJ3+w3
-         0IUOS34eVtWCfS9LYPiE9LU5hkGzKErDvuvpswYGwsqXI6IOdyqguIVjS6c7REZIh2cv
-         Z/FQ==
-X-Gm-Message-State: AOJu0YxGJOj+PzqUpX5S8tdn7+IZUmVvqLv9FOkHbkVaT+dtoAtZJX2l
-	S1h21qfJQbPTpJ1u/za1Jbl5IP6LzEaeACwxCgMtjYDPr/lrEszcxxEOGL1GqTEzQQhN81kvQxQ
-	=
-X-Google-Smtp-Source: AGHT+IHwwnnESpL5zc9UPq7mHXuKXY1TvTit2/7r6Skwh8KurCpi5AxNCfahS7Bg/lfE9pI15hgY1A==
-X-Received: by 2002:a05:690c:6803:b0:61b:1e30:6362 with SMTP id id3-20020a05690c680300b0061b1e306362mr783742ywb.6.1714077465404;
-        Thu, 25 Apr 2024 13:37:45 -0700 (PDT)
-Received: from kramasub2.cros.corp.google.com ([100.107.108.189])
-        by smtp.gmail.com with ESMTPSA id s31-20020a81451f000000b0061adfb01cc2sm3751113ywa.90.2024.04.25.13.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 13:37:44 -0700 (PDT)
-From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Karthikeyan Ramasubramanian <kramasub@chromium.org>,
-	stable@vger.kernel.org,
-	Lalith Rajendran <lalithkraj@chromium.org>,
-	chrome-platform@lists.linux.dev,
-	Benson Leung <bleung@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>
-Subject: [PATCH v1] chrome/cros_ec: Handle events during suspend after resume completion
-Date: Thu, 25 Apr 2024 14:37:11 -0600
-Message-ID: <20240425143710.v1.1.If2e0cef959f1f6df9f4d1ab53a97c54aa54208af@changeid>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+        d=1e100.net; s=20230601; t=1714077759; x=1714682559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d8a5q661VPv7YxA4YAbF7nmm8AiOpL1vdq49c/Cxoac=;
+        b=GfTFL+CdOSRxqxXlfah/MBNDzzxJHkSwNtk16SfkxOCDv4cduwqnD4P5WX+Z0dvPMd
+         tpPvos1alN/4bS+/r5+PmMFgROJNWo3lUJf7OwxV39T/BqyqsJdAvsSd5PLtvRoPNGw6
+         qE92L1Ts1v9DchWepLFxkJkQTppBzGFdjrnCWZlhomUIr1N4MIb477Dz55kKwmU1RlG3
+         Pj/GkSB3k37FTrmezAyVlLZXEcqsBjdfAVSefjq3PjFzWQ4O6dXmt62J4nbkAw02YwkT
+         B+VvJDshXiY/v81kUyljhhBb4gB4gHuGOWVQuUZv6/k7PvdiSvxoa9KIKd83QDJF9Kl+
+         3vzw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYisVyq5+PC8fDt2gk8MC3Yjp401WwVFTm9/h3u4TCSF0aAZuZ2+pAnIsEgpCH3S325hDQyz7NydO3zG+BGBFOiA0f4yXxNrdL2ETF
+X-Gm-Message-State: AOJu0YwNO+Htp6hLD9j98OEgg8bB1Dtx2SCr4AhUdYazQCQWt7L4azxs
+	MPiDRLoWwHQ2+jyadwheSF5wadG97c9uu5ylAofV1HymQorDG/v+RIa1f4HI1H52NVQUPcMYHFr
+	HV9TW7WuBShj9wY0O3Oy00jwR3aiiQ0R6RlrI
+X-Google-Smtp-Source: AGHT+IF8glrQQZXivTHTEdZkivvyewVxG1or4YNFL13C7gDAHUAxcrvQ+LqyKeNL3S/zxBLZ9GrqgEsXW2c3S4x8MCc=
+X-Received: by 2002:a17:906:13c9:b0:a58:8fa6:df18 with SMTP id
+ g9-20020a17090613c900b00a588fa6df18mr483805ejc.41.1714077758402; Thu, 25 Apr
+ 2024 13:42:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240424165646.1625690-2-dtatulea@nvidia.com> <4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
+ <CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
+ <4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
+ <CAHS8izPkRJyLctmyj+Ppc5j3Qq5O1u3aPe5h9mnFNHDU2OxA=A@mail.gmail.com> <63222bf6a298ae38e77b0c0f49d13581dd9d3a74.camel@nvidia.com>
+In-Reply-To: <63222bf6a298ae38e77b0c0f49d13581dd9d3a74.camel@nvidia.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 25 Apr 2024 13:42:24 -0700
+Message-ID: <CAHS8izNyJWhcRro8OFPTqsh9J4LEbm7Le6-CiW_oxi2NopAqeQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from skb_frag_unref
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "davem@davemloft.net" <davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>, 
+	"ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"jacob.e.keller@intel.com" <jacob.e.keller@intel.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
+	Jianbo Liu <jianbol@nvidia.com>, "pabeni@redhat.com" <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On boards where EC IRQ is not wake capable, EC does not trigger IRQ to
-signal any non-wake events until EC receives host resume event.
-Commit 47ea0ddb1f56 ("platform/chrome: cros_ec_lpc: Separate host
-command and irq disable") separated enabling IRQ and sending resume
-event host command into early_resume and resume_complete stages
-respectively. This separation leads to host not handling certain events
-posted during a small time window between early_resume and
-resume_complete stages. This change moves handling all events that
-happened during suspend after sending host resume event.
+On Thu, Apr 25, 2024 at 12:48=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
+m> wrote:
+>
+> On Thu, 2024-04-25 at 12:20 -0700, Mina Almasry wrote:
+> > On Thu, Apr 25, 2024 at 1:17=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia=
+com> wrote:
+> > >
+> > > On Wed, 2024-04-24 at 15:08 -0700, Mina Almasry wrote:
+> > > >  If that doesn't work, I think I prefer
+> > > > reverting a580ea994fd3 ("net: mirror skb frag ref/unref helpers")
+> > > > rather than merging this fix to make sure we removed the underlying
+> > > > cause of the issue.
+> > > This is the safest bet.
+> > >
+> > > So, to recap, I see 2 possibilities:
+> > >
+> > > 1) Revert a580ea994fd3 ("net: mirror skb frag ref/unref helpers"): sa=
+fe, but it
+> > > will probably have to come back in one way or another.
+> > > 2) Drop the recycle checks from skb_frag_ref/unref: this enforces the=
+ rule of
+> > > always referencing/dereferencing pages based on their type (page_pool=
+ or
+> > > normal).
+> > >
+> >
+> > If this works, I would be very happy. I personally think ref/unref
+> > should be done based on the page type. For me the net stack using the
+> > regular {get|put}_page on a pp page isn't great. It requires special
+> > handling to make sure the ref + unref are in sync. Also if the last pp
+> > ref is dropped while there are pending regular refs,
+> > __page_pool_page_can_be_recycled() check will fail and the page will
+> > not be recycled.
+> >
+> > On the other hand, since 0a149ab78ee2 ("page_pool: transition to
+> > reference count management after page draining") I'm not sure there is
+> > any reason to continue to use get/put_page on pp-pages, we can use the
+> > new pp-ref instead.
+> >
+> > I don't see any regressions with this diff (needs cleanup), but your
+> > test setup seems much much better than mine (I think this is the
+> > second reffing issue you manage to repro):
+> >
+> > diff --git a/include/linux/skbuff_ref.h b/include/linux/skbuff_ref.h
+> > index 4dcdbe9fbc5f..4c72227dce1b 100644
+> > --- a/include/linux/skbuff_ref.h
+> > +++ b/include/linux/skbuff_ref.h
+> > @@ -31,7 +31,7 @@ static inline bool napi_pp_get_page(struct page *page=
+)
+> >  static inline void skb_page_ref(struct page *page, bool recycle)
+> >  {
+> >  #ifdef CONFIG_PAGE_POOL
+> > -       if (recycle && napi_pp_get_page(page))
+> > +       if (napi_pp_get_page(page))
+> >                 return;
+> >  #endif
+> >         get_page(page);
+> > @@ -69,7 +69,7 @@ static inline void
+> >  skb_page_unref(struct page *page, bool recycle)
+> >  {
+> >  #ifdef CONFIG_PAGE_POOL
+> > -       if (recycle && napi_pp_put_page(page))
+> > +       if (napi_pp_put_page(page))
+> >                 return;
+> >  #endif
+> >         put_page(page);
+> >
+> >
+> This is option 2. I thought this would fix everything. But I just tested =
+and
+> it's not the case: we are now reaching a negative pp_ref_count. So probab=
+ly
+> somewhere a regular page reference is still being taken...
+>
 
-Fixes: 47ea0ddb1f56 ("platform/chrome: cros_ec_lpc: Separate host command and irq disable")
-Cc: stable@vger.kernel.org
-Cc: Lalith Rajendran <lalithkraj@chromium.org>
-Cc: chrome-platform@lists.linux.dev
-Signed-off-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
----
+I would guess the most likely root cause of this would be a call site
+that does get_page() instead of skb_frag_ref(), right?
 
- drivers/platform/chrome/cros_ec.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+The other possibility would be if something like:
 
-diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
-index badc68bbae8cc..41714df053916 100644
---- a/drivers/platform/chrome/cros_ec.c
-+++ b/drivers/platform/chrome/cros_ec.c
-@@ -432,6 +432,12 @@ static void cros_ec_send_resume_event(struct cros_ec_device *ec_dev)
- void cros_ec_resume_complete(struct cros_ec_device *ec_dev)
- {
- 	cros_ec_send_resume_event(ec_dev);
-+	/*
-+	 * Let the mfd devices know about events that occur during
-+	 * suspend. This way the clients know what to do with them.
-+	 */
-+	cros_ec_report_events_during_suspend(ec_dev);
+- page is not pp_page
+- skb_page_ref(page) // obtains a regular reference.
+- page is converted to pp_page
+- skb_page_unref(page) // drops a pp reference.
+
+But I'm not aware of non-pp pages ever being converted to pp pages.
+
+You probably figured this out already, but if you would like to dig
+further instead of reverting the offending patch, this diff would
+probably catch the get_page() callsite, no? (on my test setup this
+debug code doesn't trigger).
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 7b0ee64225de..a22a676f4b6b 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1473,8 +1473,14 @@ static inline void folio_get(struct folio *folio)
+        folio_ref_inc(folio);
+ }
+
++static inline bool debug_is_pp_page(struct page *page)
++{
++       return (page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE;
++}
 +
- }
- EXPORT_SYMBOL(cros_ec_resume_complete);
- 
-@@ -442,12 +448,6 @@ static void cros_ec_enable_irq(struct cros_ec_device *ec_dev)
- 
- 	if (ec_dev->wake_enabled)
- 		disable_irq_wake(ec_dev->irq);
--
--	/*
--	 * Let the mfd devices know about events that occur during
--	 * suspend. This way the clients know what to do with them.
--	 */
--	cros_ec_report_events_during_suspend(ec_dev);
- }
- 
- /**
-@@ -475,8 +475,9 @@ EXPORT_SYMBOL(cros_ec_resume_early);
-  */
- int cros_ec_resume(struct cros_ec_device *ec_dev)
+ static inline void get_page(struct page *page)
  {
--	cros_ec_enable_irq(ec_dev);
--	cros_ec_send_resume_event(ec_dev);
-+	cros_ec_resume_early(ec_dev);
-+	cros_ec_resume_complete(ec_dev);
-+
- 	return 0;
++       WARN_ON_ONCE(debug_is_pp_page(page));
+        folio_get(page_folio(page));
  }
- EXPORT_SYMBOL(cros_ec_resume);
--- 
-2.44.0.769.g3c40516874-goog
 
+@@ -1569,6 +1575,8 @@ static inline void put_page(struct page *page)
+ {
+        struct folio *folio =3D page_folio(page);
+
++       WARN_ON_ONCE(debug_is_pp_page(page));
++
+        /*
+         * For some devmap managed pages we need to catch refcount transiti=
+on
+         * from 2 to 1:
+
+--=20
+Thanks,
+Mina
 
