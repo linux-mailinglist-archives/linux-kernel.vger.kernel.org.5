@@ -1,115 +1,116 @@
-Return-Path: <linux-kernel+bounces-159294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 956358B2CBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:10:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A08068B2CC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52051287EB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:10:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63285B27FFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 22:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B2A16F836;
-	Thu, 25 Apr 2024 22:02:46 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB93153BD7;
-	Thu, 25 Apr 2024 22:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B95F171679;
+	Thu, 25 Apr 2024 22:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mJvzAyPr"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6986014A0A7
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 22:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714082566; cv=none; b=ZLePe4Zxa81V8a/Z4k59SP6Ix9TlewNK4paZ851RTOxF9sS/INNpzzBZLSjSGq3Ss1DsYD7nj9mUwBeo6ScIqWqeEOJqlVZKGhKTOuUn5pmAwEMUR9DaCjP8luN46IUulNxB/vRtl4Dv6Z6H7tH8V86iYGW1MkvU40DnD03aexc=
+	t=1714082616; cv=none; b=KDS7a7CPlurDESNL78+K9MAsd6ne6c3iZsLT7M5lzjKNv8y++lyvsvzfcB0QBywd+FzfGMXeT2/HOV0FQh4rsdjB/sN3l8NF0RYnBaNArhbpdAkZb6NQhpOZnUxGOAhnxLILOLLyxVbHINHhu2J9ez20PieDP0P3iESUsPareF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714082566; c=relaxed/simple;
-	bh=MF7/MmMr8a4nNSERUdc/jjo1OcVPHWAGSNEofngKwPw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tFB/l0C6jZz9YIDIB3HJpR/BM4cUdObOO0C/cH+/x0bj36SwsENIKpjDeizVcDmJnD8bFBBP4sSNUC28d6ZXxSsIwQjEhFyquEUWSu7suK69Tx3hrMheuS6eiU3/sE07+i/yNP4Is1hsMp2zzTO1IYzQfy46RED5haiXHEKu9bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 149CC2F;
-	Thu, 25 Apr 2024 15:03:08 -0700 (PDT)
-Received: from [10.57.64.58] (unknown [10.57.64.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC46B3F73F;
-	Thu, 25 Apr 2024 15:02:38 -0700 (PDT)
-Message-ID: <fb4e29fa-36e4-45ff-979b-2497ec3d946b@arm.com>
-Date: Thu, 25 Apr 2024 23:02:37 +0100
+	s=arc-20240116; t=1714082616; c=relaxed/simple;
+	bh=L4HyJHm2zmRW8kG0EAfkWOdZb0hKun9yEy1bDfqB/kE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TkCiToqZcJMDtFcCE9Z84mXTj43/ZWvaP3hRhep8G97Q9koRrYKAt1BTk8mUz5/ueP4U22TsVV+nXqPZBCxveiEQqGSnMJJQpQKp7/ogHDlz4hNA8NsrLFCMAoe+pVS7/RHwl5wCdmfhELXFVrGmQf0rBfo5K26EsH9UH9/Q3iM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mJvzAyPr; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a564ca6f67so1362939a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714082614; x=1714687414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FPif3mAhk2mjxY5/ADz9MWVNfAUOyxoP0nyi2kzmfeM=;
+        b=mJvzAyPrhtth2hq/O3F4I9vVcRpHB0vPAmq9nrkcMc1ACIN2jKsvKtWxr4BYNjeB9O
+         HlaRbxKPGmv4IofjcryV8Npzcoso0t1UCdySSSf5BwXOEGfCNo2PqyUClQ2R1RbjODxe
+         MhjXOE7OXBeyIIepQSuWLnCspCSXzPOdV1aoM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714082614; x=1714687414;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FPif3mAhk2mjxY5/ADz9MWVNfAUOyxoP0nyi2kzmfeM=;
+        b=egx3PZaAa3FijzpAgXOcdt3/MMU7QAUeKTl1Zi9EtwWu5A/93IfQrGSz74z4CxpmcS
+         FJGQ/+L71M3fpG8oSOdD7Ozcr3mwFTOoRzUgL3o1+6lOdgUS8DmJBTYnSTtJEgoTkjth
+         9NFPgr5xmnEqws+nZKZ2E8b/+G1oyFB3+nBmokfzdp3wUdSx0J01ERLNEOeae5PPxJGC
+         EtKASGN9rbXDLb24Oaj6IsfwbiNP8m//kL1FTCfzYXD6k8Mj1vHud8nbreDg5Klf9AnX
+         DDYLgr13VPoTN5FWXXlwi3GbNqXQXPbBQyiKADgmZWr62NC0iseCUoDPbzdbKR+0gua+
+         MbjA==
+X-Forwarded-Encrypted: i=1; AJvYcCWtF+aezpd0AzoQUTfAxZK25PVjRvCJdReUEyLswl3Bvim/p4vG3QOIqNxTR/XLbftmsGlbRQwSiZOD6pzoXqeyKKAbV77Uj2hrvTF2
+X-Gm-Message-State: AOJu0YxSM5yQt5guhAyM4Cpfcf6+LoDFP3NRwkEk1rsTgUHqoS+fo6Kg
+	gyOODeFveAFRUBD38rvQ/aKEYwbNmB1h56rQLQ67gJ8ueX7X58T3xLpGZmvMXAWSikhAR0NqbJc
+	=
+X-Google-Smtp-Source: AGHT+IFasn/A+C3DUXeoAtwokegR3Wxvx2HwuaeZtpJ1eb4HcTbF2NtMz/V8UMWj1qVZcQ9FHM/P+A==
+X-Received: by 2002:a17:90a:eb03:b0:2a2:ba9:ba61 with SMTP id j3-20020a17090aeb0300b002a20ba9ba61mr1066092pjz.34.1714082614686;
+        Thu, 25 Apr 2024 15:03:34 -0700 (PDT)
+Received: from localhost (238.76.127.34.bc.googleusercontent.com. [34.127.76.238])
+        by smtp.gmail.com with UTF8SMTPSA id l8-20020a170903244800b001ea9580e6a0sm2574036pls.20.2024.04.25.15.03.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 15:03:34 -0700 (PDT)
+From: jeffxu@chromium.org
+To: aruna.ramakrishna@oracle.com
+Cc: andrew.brownsword@oracle.com,
+	dave.hansen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	matthias.neugschwandtner@oracle.com,
+	tglx@linutronix.de,
+	jeffxu@chromium.org,
+	jeffxu@google.com,
+	jannh@google.com,
+	sroettger@google.com,
+	x86@kernel.org
+Subject: Re: [RFC PATCH v2 1/1] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
+Date: Thu, 25 Apr 2024 22:03:32 +0000
+Message-ID: <20240425220332.3277193-1-jeffxu@chromium.org>
+X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
+In-Reply-To: <Zf1TX3QXjWQsVp2R@gmail.com>
+References: <Zf1TX3QXjWQsVp2R@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] thermal/debugfs: Free all thermal zone debug
- memory on zone removal
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <12427744.O9o76ZdvQC@kreacher> <4918398.31r3eYUQgx@kreacher>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <4918398.31r3eYUQgx@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Jeff Xu <jeffxu@chromium.org>
 
+Resend(previous email sent to the wrong thread)
 
-On 4/25/24 14:49, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Because thermal_debug_tz_remove() does not free all memory allocated for
-> thermal zone diagnostics, some of that memory becomes unreachable after
-> freeing the thermal zone's struct thermal_debugfs object.
-> 
-> Address this by making thermal_debug_tz_remove() free all of the memory
-> in question.
-> 
-> Fixes: 7ef01f228c9f ("thermal/debugfs: Add thermal debugfs information for mitigation episodes")
-> Cc :6.8+ <stable@vger.kernel.org> # 6.8+
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->   drivers/thermal/thermal_debugfs.c |   13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> Index: linux-pm/drivers/thermal/thermal_debugfs.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-> +++ linux-pm/drivers/thermal/thermal_debugfs.c
-> @@ -832,15 +832,28 @@ void thermal_debug_tz_add(struct thermal
->   void thermal_debug_tz_remove(struct thermal_zone_device *tz)
->   {
->   	struct thermal_debugfs *thermal_dbg = tz->debugfs;
-> +	struct tz_episode *tze, *tmp;
-> +	struct tz_debugfs *tz_dbg;
-> +	int *trips_crossed;
->   
->   	if (!thermal_dbg)
->   		return;
->   
-> +	tz_dbg = &thermal_dbg->tz_dbg;
-> +
->   	mutex_lock(&thermal_dbg->lock);
->   
-> +	trips_crossed = tz_dbg->trips_crossed;
-> +
-> +	list_for_each_entry_safe(tze, tmp, &tz_dbg->tz_episodes, node) {
-> +		list_del(&tze->node);
-> +		kfree(tze);
-> +	}
-> +
->   	tz->debugfs = NULL;
->   
->   	mutex_unlock(&thermal_dbg->lock);
->   
->   	thermal_debugfs_remove_id(thermal_dbg);
-> +	kfree(trips_crossed);
->   }
-> 
-> 
-> 
-> 
+>The semantics you've implemented for sigaltstacks are not the only possible 
+>ones. In principle, a signal handler with its own stack might want to have 
+>its own key(s) enabled. In a way a Linux signal handler is a mini-thread 
+>created on the fly, with its own stack and its own attributes. Some thought 
+>& analysis should go into which way to go here, and the best path should be 
+>chosen. Fixing the SIGSEGV you observed should be a happy side effect of 
+>other worthwile improvements.
+>
+This is exactly right. we wants to use altstack with its own pkey. The pkey
+won't be writeable during thread's normal operation, only by signaling
+handling itself.
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Thanks
+-Jeff
+
+>Thanks,
+>
+>	Ingo
+>
 
