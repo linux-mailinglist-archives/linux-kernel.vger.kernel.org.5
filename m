@@ -1,119 +1,100 @@
-Return-Path: <linux-kernel+bounces-158643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A09B8B235E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:01:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F218B234E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA971F2215A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:01:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3310C28AACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E8D14AD03;
-	Thu, 25 Apr 2024 13:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AA2149DF6;
+	Thu, 25 Apr 2024 13:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b="X63ezSel"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="inzWYlpf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA7514A091
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 13:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23B214F78;
+	Thu, 25 Apr 2024 13:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053593; cv=none; b=pHvSrdOoFmO12Lwzw8RQAsLWYylMBuYJul2/Qob8VuuGZ3MeDLy8wIqSw1lK5ol++qi6IHuhYblwonw3bhJhO7I+7hmBM5zhj75EiYFjCQiBOzeLxxY3nk7LUztPE1imB/grbkfcfEdH4NbH7+OLjelAsucaLqGgQnSn7yORhQA=
+	t=1714053563; cv=none; b=qssTDMTbA4LUlYANQR9hsZtjEd9DExCbVsVnqOeZdLm7AidWA4WTIfweG3R9yzOfy6dd6/CD0ZgVo7opLLQhR2GZEg8e2u7jAWypyUfOdab0ka+hbjDEo6ctQMEzxhdSq8z6Afoavp6ygmHg9+wD7S7FyfipGrgq4wCKWECpjGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053593; c=relaxed/simple;
-	bh=mUZACTmIvN9VpSJnu+37t6kjVWpWjqK6pTbjUJgvM2c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l0wr8aD1TTJMpe84MpBQKryFsdmPtbXvP/pcP94+e/NCuSFoUlfB+2GekTr5g1LQYo1fnluJuon7+MynLtF8q+NiOsiWOHSIloEHUlxfVxXbP1skkD6j1kzb2xKbX8cDi7pWipi/fg2bkUD7SFZCorjlLIzpHSXXn2DojhECiJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr; spf=pass smtp.mailfrom=freebox.fr; dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b=X63ezSel; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=freebox.fr
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41adf155cffso7626735e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 06:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1714053589; x=1714658389; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QyGh/Qwq5NmQyuXE/qEzsm92r8+stUz1K4JXovBXMG0=;
-        b=X63ezSeloXRmXYmLesLrM27SmZ1LKGqrzeFCZo0ENlPq1UUApAfPejgVmKqmaE2l5y
-         sQb4jryIocbCAf08vh0xAAP6ntn3DcV+bvlQBKAy8dDSBArXRLHd65VijYJ9w9SAPhny
-         q6o/rfa7cL7iW8GCKemp5cJIIwabxIeEZxn822ogbTHz2vPiiIGyFPvkYsuhgYJWPAaE
-         DJ02yoZE/vuSdceJC89ug4+5BpV5bK7jB3jwqAdeD5pxrnqUM2EjRaUshQnhGePVP+OO
-         GGPalkrxii7qpZ4Fs57lhVEysaHWXaCvCHXU6qGLei7EeuE9vV/FDAYyEo/3sUrtUXbA
-         EEtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714053589; x=1714658389;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QyGh/Qwq5NmQyuXE/qEzsm92r8+stUz1K4JXovBXMG0=;
-        b=QnynpAd65k+QEgkHhrtd4poVJiraL7y3L/7jmsfs3A4T5dYwTTx0GXmwswYQ72mEQ3
-         7f5prtkod+y2RomXKnuKD7fVONuiknAACuc/fkFQ/4ZCISgW05UJLEaT/JuNW2yBwo9x
-         XzpHCEdiphUSNU53jMsFMgzgrZfHpxvmSiu4PUJHr8tBPTtaX0m4BM1HTuz/kro41ELB
-         qtP+d6HM0d9gPLj2FO8NzPRFApT+O7NXR2DSqT9V40RbP24pByVv4R6Uec5QZVi6jGZ+
-         U/4boTd3haiq7G5DLciJFygTd0aT1MEEMbI9o4MZUaCzfo3DWRtfrWviegT972dWFft9
-         gr8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVY3mLux69mdM0bVj7/3JWh1tReKHKl7F7h25ZyePPmHzGaEDGi7+Y5dRgR/keaCWQ+W+Rgk/dvScOXccI/lcOun4areR8HI3ZHRpVG
-X-Gm-Message-State: AOJu0Yw5TVkiysQyBn0ZKjCUgI4HNiZULIZjTTHM5AFVUqRK+Y5GbZjC
-	JRVrEZA6d9/GObfjYQn++fve5YYCchU8BPe7MasTLznWLh9S57wJEwsSX3O9bTw=
-X-Google-Smtp-Source: AGHT+IFYPfy7I3CXLjJMhD1uN28B2VhtrX5AMAV4Szqw3ZykCF+dF8pQtGiVV57q6XpkZbeoQLiaqA==
-X-Received: by 2002:a05:600c:1988:b0:41a:c92:d323 with SMTP id t8-20020a05600c198800b0041a0c92d323mr4457143wmq.10.1714053589161;
-        Thu, 25 Apr 2024 06:59:49 -0700 (PDT)
-Received: from fbxleo.iliad.local (freebox.vlq16.iliad.fr. [213.36.7.13])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05600c4fcc00b00418a6d62ad0sm31479464wmq.34.2024.04.25.06.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 06:59:48 -0700 (PDT)
-From: =?UTF-8?q?L=C3=A9o=20DUBOIN?= <lduboin@freebox.fr>
-To: linus.walleij@linaro.org
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?L=C3=A9o=20DUBOIN?= <lduboin@freebox.fr>
-Subject: [PATCH 2/2] pinctrl: core: reset gpio_device in loop in pinctrl_pins_show()
-Date: Thu, 25 Apr 2024 15:58:02 +0200
-Message-ID: <c40d0634abefa19e689ffd450e0f48a8d63c4fc4.1714049455.git.lduboin@freebox.fr>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1714049455.git.lduboin@freebox.fr>
-References: <cover.1714049455.git.lduboin@freebox.fr>
+	s=arc-20240116; t=1714053563; c=relaxed/simple;
+	bh=7XPwbTtYNJ82q4u31jANKwtM62X1Kmb7YAJriAR2NHU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DsMxYDRAOYAzlaPwfFg90HFroZrvT46BbwiW6ZoOJe2JJBV3sLCGRh3rnrHnyJL+2O97p+e36tp0tk+yr5BRMRrsuQISOegdQLYo5h2xFQBk7Z6KeRSBi5jWtmG69kqMhu9s7PdY5axKh0yWf55qwV9nacYBCjtPLki8dQN4VEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=inzWYlpf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39ED3C113CC;
+	Thu, 25 Apr 2024 13:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714053562;
+	bh=7XPwbTtYNJ82q4u31jANKwtM62X1Kmb7YAJriAR2NHU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=inzWYlpfOB57pGRJsSDZhct7V+z/IFItBEWjlEQo8OMb3Qqh+1dqhcRGgXJmcDt+B
+	 KWXV9NVzg1qptn5NOSFZqPraPbnlnC6sr9YvMPMzVZJjJi4Vm732e/I4Pi3ZIkpob+
+	 4ioA/BAv3uBVx7IriErznyPDi2Mqys0sceuYETW77Meomwv4B2l5lz/2mhMkXGHL3w
+	 vhm1VhJx1dmZGcuolOyvzcWT8pASJyDIXiXyDoXPcrb0EtdU0YtnMATvRwdjJnxYbk
+	 nXzHX2b2w05z/NAS0hehhuV3xpJp7VMKsDxMm2Y/JVIeR9TNPKcAutg3VgJ3qnykOZ
+	 eXVzNEbBP0fsw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH 0/3] bpf_wq followup series
+Date: Thu, 25 Apr 2024 15:59:11 +0200
+Message-Id: <20240425-bpf-next-v1-0-1d8330e6c643@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK9hKmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDEyNT3aSCNN281IoSXSNDQxNjUwNTC/NUYyWg8oKi1LTMCrBR0bG1tQA
+ ogEMaWgAAAA==
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714053558; l=732;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=7XPwbTtYNJ82q4u31jANKwtM62X1Kmb7YAJriAR2NHU=;
+ b=2dcgMFCdGfR+ou2s/eZmMomjgv0RQMXcR4yRwQxvRZ3cGBFTzuTW6Ed5J5tF3ebaKcceEcQTy
+ Gtdu7UCLFq5C0fl43+MGRfwVKou9PU8D3URz09dqvOOZ3JXN1/IHgew
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-We were not resetting the pointer to the associated gpio_device once
-we are done displaying a pin's information.
+Few patches that should have been there from day 1.
 
-This meant that once we reached the end of a gpio-range, if there
-were pins right after it that did not belong to any known range,
-they would be associated with the previous range's gpio device.
+Anyway, they are coming now.
 
-This resulted in those pins appearing as <4294966783:old_gdev> instead
-of the expected <0:?> (due to gpio_num being -1).
-
-Signed-off-by: Léo DUBOIN <lduboin@freebox.fr>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 ---
- drivers/pinctrl/core.c | 1 +
- 1 file changed, 1 insertion(+)
+Benjamin Tissoires (3):
+      bpf: do not walk twice the map on free
+      bpf: do not walk twice the hash map on free
+      selftests/bpf: drop an unused local variable
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 901f2f9bf850..ad878196ada9 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1670,6 +1670,7 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 		seq_printf(s, "pin %d (%s) ", pin, desc->name);
- 
- #ifdef CONFIG_GPIOLIB
-+		gdev = NULL;
- 		gpio_num = -1;
- 		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
- 			if (range->pins != NULL) {
+ kernel/bpf/arraymap.c                       | 15 ++++++++-------
+ kernel/bpf/hashtab.c                        | 16 +++++-----------
+ tools/testing/selftests/bpf/prog_tests/wq.c |  2 --
+ 3 files changed, 13 insertions(+), 20 deletions(-)
+---
+base-commit: 52578f7f53ff8fe3a8f6f3bc8b5956615c07a16e
+change-id: 20240425-bpf-next-2114350587e3
+
+Best regards,
 -- 
-2.42.0
+Benjamin Tissoires <bentiss@kernel.org>
 
 
