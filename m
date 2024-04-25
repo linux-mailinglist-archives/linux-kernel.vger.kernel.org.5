@@ -1,213 +1,151 @@
-Return-Path: <linux-kernel+bounces-158853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5478B25CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:58:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EEA38B25D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:59:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2CD51C20C41
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:58:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4883EB260E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E14F14C59D;
-	Thu, 25 Apr 2024 15:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1008E14C5BE;
+	Thu, 25 Apr 2024 15:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eHnj5UQC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="dezGulnG";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gBx+i3ZL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WNnfGfMb"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ejlIo4Yj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE7C149E05;
-	Thu, 25 Apr 2024 15:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DAA14C581;
+	Thu, 25 Apr 2024 15:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714060706; cv=none; b=MeZ5JqnxNjkDnG7V57Yf2RKWVZVrc1oDpf8Y8z6TrKi6EVbZWMiTH7ALJSDcUeroIzxdZFbf6e7tJqMUPrcBCitHbHWhBO7cy3LHWEw4KkodRqrvwZV3grpZQUeROb55LLxxAbJDM3MfyvJofcOIze/IUC+uVdO38cQ7UbQYrSs=
+	t=1714060727; cv=none; b=E6V3elegFOlK3ZXlOxLDMnwB3WYzbQAC1irxes0CFsWdXZCrOmBOTDLSu0uoKeFBRGUycRbQQaxJa41gyqeWYkgYvdRSDqmabFVSm3nHTHZTlvcZN9nZ/BYBOWwu7zUDtWGgJwQnjxw7NuSCCKRA8Q0PyZdNS6KT/CQf8WwbITc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714060706; c=relaxed/simple;
-	bh=OxG/QwOLFpTqJqioQwvBPSs3kg69DSi3qMbneBAzDeU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YsY5MbIQfPoURwFVYRxkQvUKiSspXUBQxait9NcMxWOZRBjrAmLuIKPMoYDGxo19NOKW3a3JJl7Y5GWAiBTKdM9HOFigBbaqofum3NW1HpUGxvGvecz28zwEdYYQci2fUXHmazlN3zEz1edRJayjKZMM+TGjUsy8BNyiCAS5cRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eHnj5UQC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=dezGulnG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gBx+i3ZL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WNnfGfMb; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3DEB95BF28;
-	Thu, 25 Apr 2024 15:58:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714060703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
-	b=eHnj5UQCzV0zNnpUZ924ax6ZKfd40F7KYQoI8HzJnDEDLW3gASgaxWtXN5PlMdCqrmxkGy
-	emmB7ET2pkVBpLoIyXl72ypf6w7BtuGBk9Xr4OZmiw0B0pjeeVUk0fx9QdIKBN/XgooVGF
-	bmOkC/+aXmCGJrXyFWk+1I6BPrcS/oo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714060703;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
-	b=dezGulnGTk4qBg8G8dYpBDLJyWDu5hsA8Otf+SfM2Ch3UZ6NeItmL8nbc4fLgKbQNT8LsD
-	9PVMRL2Wn6s2WpBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gBx+i3ZL;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=WNnfGfMb
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714060702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
-	b=gBx+i3ZLtMmip8gNfQiPjMMQ0wKkImktVreGs+zMgnqKx8Ll/dCVKKdqU0Cs+OH8UXXgut
-	V9z8G8YtyyBHqvo7K6PglFKDkK9tiriblWJt0WLuaFzE4D/09e31ZnnnTGjhRRsibRdguk
-	Lzo3jy39kRGW3b4P2zjfzYKGKjpK2m8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714060702;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LTL/RRFbpvk/+mxrp2TJpSluJhlsQ2v73kcoSRWVGhE=;
-	b=WNnfGfMbL1lk3g5SDW720qUCxh+Lz9Md4whWA2zq5Dcwe+FfD8EqOq7FpwQ/kKRMSEb3eK
-	I3uES+suPrONTuDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 887691393C;
-	Thu, 25 Apr 2024 15:58:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id N86UGp19KmZBGwAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Thu, 25 Apr 2024 15:58:21 +0000
-Date: Thu, 25 Apr 2024 17:58:19 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] i2c: ali1535: remove printout on handled timeouts
-Message-ID: <20240425175819.20c1d9aa@endymion.delvare>
-In-Reply-To: <20240423121322.28460-3-wsa+renesas@sang-engineering.com>
-References: <20240423121322.28460-1-wsa+renesas@sang-engineering.com>
-	<20240423121322.28460-3-wsa+renesas@sang-engineering.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1714060727; c=relaxed/simple;
+	bh=7DIHRS9/+j8YljOfBYLa5xBIkAhd8xyDYQAK6sxFY8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z2hLRZWD5O92lJDoD9gBSOAE7cpg2qRWin7z8dv/HMg9qwnJJ/RX6w3ynH83m8axTw9wX2zP+lc9jhEGMsDdB8oi59jSYHHlAFifNTf9R7THjIRBnxf6ckhsp7G4TRsE7FtpVgn5IFK7feAsFhjogYtPIsa7qt+n4gyYX8x6fR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ejlIo4Yj; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714060726; x=1745596726;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7DIHRS9/+j8YljOfBYLa5xBIkAhd8xyDYQAK6sxFY8s=;
+  b=ejlIo4Yj7vpP2rmmZt3O+dx5DtVc3NFNCJlnInMv/V6Ajuw8xReHawGV
+   0k8ViPM5v4hL95H4xNvFsLvI/vCJnGRxhIu1YEZ9gIPIDDDyjNQg2zPTz
+   jt0e0EFMHEuFIh3UzwShzM104WaU3G86SklwcyyG+8/AbztO3ZO2pdDkt
+   bVdCQap794e4M24Sl4Eyq3I8vXkmSKKXPpXTuLZsrEO6Imywjx6k5F42E
+   GXTRLm7mWagnql580kigReH8aFIawU2vNdmOpI0PWOcs/s+Dp4vrkT+MZ
+   7MwyGw4o14nTovbGsmy1a3eiCbWyAyw1kyWb/FDHrWo+JsW2AdWmMvSi7
+   A==;
+X-CSE-ConnectionGUID: AV5niXCGTHmycjKeeJbxIQ==
+X-CSE-MsgGUID: IeCczpJxT9GGdAoebTfZ6Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9606334"
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="9606334"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 08:58:44 -0700
+X-CSE-ConnectionGUID: tlc3JDqvR9KvqXD9VoLr6Q==
+X-CSE-MsgGUID: gxjtV0M8Qcy0FU4AszxLQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,229,1708416000"; 
+   d="scan'208";a="25112711"
+Received: from pdkerr-mobl2.amr.corp.intel.com (HELO [10.255.228.33]) ([10.255.228.33])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 08:58:43 -0700
+Message-ID: <62b58fca-26ff-4c86-96a5-a1ec2b541437@intel.com>
+Date: Thu, 25 Apr 2024 08:58:41 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 20/71] perf/x86/intel/pt: Switch to new Intel CPU model
+ defines
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ patches@lists.linux.dev
+References: <20240424181245.41141-1-tony.luck@intel.com>
+ <20240424181500.41538-1-tony.luck@intel.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240424181500.41538-1-tony.luck@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 3DEB95BF28
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[renesas];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sang-engineering.com:email,suse.de:dkim,suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
 
-Hi Wolfram,
+On 4/24/24 11:15, Tony Luck wrote:
+>  	/* model-specific quirks */
+> -	switch (boot_cpu_data.x86_model) {
+> -	case INTEL_FAM6_BROADWELL:
+> -	case INTEL_FAM6_BROADWELL_D:
+> -	case INTEL_FAM6_BROADWELL_G:
+> -	case INTEL_FAM6_BROADWELL_X:
+> +	switch (boot_cpu_data.x86_vfm) {
+> +	case INTEL_BROADWELL:
+> +	case INTEL_BROADWELL_D:
+> +	case INTEL_BROADWELL_G:
+> +	case INTEL_BROADWELL_X:
+>  		/* not setting BRANCH_EN will #GP, erratum BDM106 */
+>  		pt_pmu.branch_en_always_on = true;
+>  		break;
 
-On Tue, 23 Apr 2024 14:13:19 +0200, Wolfram Sang wrote:
-> I2C and SMBus timeouts are not something the user needs to be informed
-> about on controller level. The client driver may know if that really is
-> a problem and give more detailed information to the user. The controller
-> should just pass this information upwards. Remove the printout.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  drivers/i2c/busses/i2c-ali1535.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-ali1535.c b/drivers/i2c/busses/i2c-ali1535.c
-> index 461eb23f9d47..9d7b4efe26ad 100644
-> --- a/drivers/i2c/busses/i2c-ali1535.c
-> +++ b/drivers/i2c/busses/i2c-ali1535.c
-> @@ -285,10 +285,8 @@ static int ali1535_transaction(struct i2c_adapter *adap)
->  		 && (timeout++ < MAX_TIMEOUT));
->  
->  	/* If the SMBus is still busy, we give up */
-> -	if (timeout > MAX_TIMEOUT) {
-> +	if (timeout > MAX_TIMEOUT)
->  		result = -ETIMEDOUT;
-> -		dev_err(&adap->dev, "SMBus Timeout!\n");
-> -	}
->  
->  	if (temp & ALI1535_STS_FAIL) {
->  		result = -EIO;
-> @@ -313,10 +311,8 @@ static int ali1535_transaction(struct i2c_adapter *adap)
->  	}
->  
->  	/* check to see if the "command complete" indication is set */
-> -	if (!(temp & ALI1535_STS_DONE)) {
-> +	if (!(temp & ALI1535_STS_DONE))
->  		result = -ETIMEDOUT;
-> -		dev_err(&adap->dev, "Error: command never completed\n");
-> -	}
->  
->  	dev_dbg(&adap->dev, "Transaction (post): STS=%02x, TYP=%02x, "
->  		"CMD=%02x, ADD=%02x, DAT0=%02x, DAT1=%02x\n",
-
-I'm skeptical about that one, although this might be mainly an issue
-with the code flow rather than your proposed changes.
-
-There are 2 conditions which cause result to be set to -ETIMEDOUT.
-After removing the messages, there's no way to differentiate between
-these two cases, which could make bug investigation more difficult.
-
-Another concern is that it is possible (at least theoretically) to hit
-the first timeout condition and NOT return -TIMEDOUT. This is because
-the code flow tests a number of conditions in a non-exclusive way, so
-errnos may overwrite each other. I don't like this design. The
-consequence is that the calling device driver may not be able to report
-the timeout, while this was the reason you gave for removing the
-message.
-
-That being said, this is a very old driver, maintained in best effort
-mode, I actually very much doubt it has any user left, so there's
-little point in spending too much time on this. My gut feeling is that
-the first "result = -ETIMEDOUT" isn't actually needed in practice and
-will always be overwritten by another errno later in the code flow
-(possibly the second "result = -ETIMEDOUT"). So most likely your change
-is safe.
-
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-
--- 
-Jean Delvare
-SUSE L3 Support
+Hah, and this actually fixes a theoretical bug because there's no check
+for family 6 in this code.
 
