@@ -1,100 +1,111 @@
-Return-Path: <linux-kernel+bounces-157915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62E18B188C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:44:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ADCB8B188F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 575D71F242F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:44:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30EE5B23F2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9487110A22;
-	Thu, 25 Apr 2024 01:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8446C101D4;
+	Thu, 25 Apr 2024 01:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="l192Y4uT"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M14f4sGw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E8410A0A;
-	Thu, 25 Apr 2024 01:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C697D4C98
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 01:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714009450; cv=none; b=SxXfg2DSXtS2IUinH83zg3IQMypDf2q4atZ7czslBtm3B6tkUeq/OAZBBHUQmYf7z9re0000XiLn+7BACvmVbRucgNw1ytGBYqmvCEflNH/s1bbSMlNLn1raAMaNng/ZGgs2DDAI2WWsNz1NcjlxC/5cdXOCPw2vk5B/xUmSB44=
+	t=1714009672; cv=none; b=TsUk6FHRzjb+ijFbZ9h8lVXaqROPGSG+wQHLTUjNk+gehByLRmCvCCwxWOq/VjO3PDMeh7UP6XF0Wz/5aiwz9lwtBjmuIYjNtF3Jae4GsADY1gXAz5AGFtZNpP1SAGLthYkpkfe67zR5H3yhBxBK+xskNEtNAYXniYEB5/33X5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714009450; c=relaxed/simple;
-	bh=rV/A03jIZW1y0g5q45g9NzDUZlMGGsmwEFTnMP9wheQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SmNFIGCmmDq/9Ni+lVlXvoYeLS0m5A4plP/0wr/h9qybartA2n6wTdBuwN1C6UA2P+jTNH6QcIcgLIl6Dsic8nOmqohcR5srQ8IT2JLQ1+DQj5Mns2iLRNCAQWo9+IOtOGJ9FeEJCmBt54Lxk7Pj/XeeaxrYt9YHqt/r0HXKiNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=l192Y4uT; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0QPUxVsvhoTHhWPZA9B73OH+l2QpvxncXISUjO3pjIA=; b=l192Y4uTA9QaUOpENAX93/ZlAf
-	cQ4W9w9FnI+vCPocvnaUvJfDLyChWOKc8zYq2u5gBG1sXvrd6Gtvr2eRQ96LOx14c7kDWx61eRhxH
-	9A6mhpbMOTTQJzG1+KxDO5dMBcNBRjt9UJYdzX3c0OGd5KTYLCE1FDrn1sO249FgU6upKrfrV/4xS
-	IgYOgx0Mxd/AcqdJJqIBObfoDAEvHbSPFVfzvkSmJ+a14E22nmVw7AqDiiM9dv5TE9TmgVywATpV6
-	Jt6VAP+mloeSbSHHxw8beiQGymTAm9tiYVeKFTngaXs+LeUQME2Xw/70Y9uNTu3MOgNqm46OQdr8I
-	y1chXGMg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rzo9W-003GR2-0S;
-	Thu, 25 Apr 2024 01:43:58 +0000
-Date: Thu, 25 Apr 2024 02:43:58 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: stsp <stsp2@yandex.ru>, linux-kernel@vger.kernel.org,
-	Stefan Metzmacher <metze@samba.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Jeff Layton <jlayton@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
-Message-ID: <20240425014358.GG2118490@ZenIV>
-References: <20240423110148.13114-1-stsp2@yandex.ru>
- <4D2A1543-273F-417F-921B-E9F994FBF2E8@amacapital.net>
- <0e2e48be-86a8-418c-95b1-e8ca17469198@yandex.ru>
- <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
+	s=arc-20240116; t=1714009672; c=relaxed/simple;
+	bh=84OBV4AVX5jU21PKxSUDJXv7xn2sKhHvHcieaawC13s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TLAAbuJ3m0m9sLSNQKt5ijIVul0oZ5tcaa4D2vitpD2hEZx828L/0gdKmuCewelgqzPkMzHOLOEYqzCgd84qE/gdWSsvrrdxkCERFIf6PJEV5UDSsWkvmvv5H7BHiniLsEcWrsrylYvmqnY2wL336pZ2pQy+pmurk+g+rcHt04g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M14f4sGw; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714009671; x=1745545671;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=84OBV4AVX5jU21PKxSUDJXv7xn2sKhHvHcieaawC13s=;
+  b=M14f4sGwfVa1ZegwbV3a8wkh1TlgjcvL3W1CIgZ30ay31xbGlqnWNUk/
+   F0Z+IeHRbMxIG17KHb1Snv87KvFsU1HQdWNwJWi8+VoAd/sQpHF/U66OA
+   utN17TZXyWiYUA3ul0NsZn7iKakjRWHU5+AbE6l1T1aKu2RywvrM6f9gA
+   HT+EW2b+rZfLj2ldyr0D2y7AYBAYXvEiBZRBCKHyDTEfOmI0loykhPeuM
+   SoCUHhukzPDT5ZRBgIqfGxRRz2vdXW4xBNfGnAlfSBq7R1xLxGIXQujuE
+   pMT6cYAKCtseShOaBkzgyQVJFQEV3mvSXgY2cMvgEg8JC8Ut3A9nyRuG5
+   Q==;
+X-CSE-ConnectionGUID: s4UbywAsTCuYX2YbpSHfzw==
+X-CSE-MsgGUID: zWBzQAt2StSHMUtUTEZfhQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11054"; a="9499726"
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="9499726"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 18:47:50 -0700
+X-CSE-ConnectionGUID: t74vQwVwTYWHrQmRZeMvaQ==
+X-CSE-MsgGUID: pryjdDcETT+potaQIaxHJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,227,1708416000"; 
+   d="scan'208";a="24945132"
+Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2024 18:47:45 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  linux-mm@kvack.org,
+  linux-kernel@vger.kernel.org,  Hugh Dickins <hughd@google.com>,  Alistair
+ Popple <apopple@nvidia.com>,  Anshuman Khandual
+ <anshuman.khandual@arm.com>,  Mel Gorman <mgorman@techsingularity.net>,
+  Miaohe Lin <linmiaohe@huawei.com>,  Minchan Kim <minchan@kernel.org>,
+  Ryan Roberts <ryan.roberts@arm.com>,  Yang Shi <shy828301@gmail.com>,  Yu
+ Zhao <yuzhao@google.com>,  Kairui Song <kasong@tencent.com>,  Barry Song
+ <v-songbaohua@oppo.com>,  Chris Li <chrisl@kernel.org>,  Yosry Ahmed
+ <yosryahmed@google.com>
+Subject: Re: [PATCH] mm,swap: cleanup VMA based swap readahead window
+ calculation
+In-Reply-To: <49d85e19-feac-417b-9640-ff8059bc8b0b@redhat.com> (David
+	Hildenbrand's message of "Wed, 24 Apr 2024 11:23:10 +0200")
+References: <20240424063042.665018-1-ying.huang@intel.com>
+	<49d85e19-feac-417b-9640-ff8059bc8b0b@redhat.com>
+Date: Thu, 25 Apr 2024 09:45:53 +0800
+Message-ID: <877cgmrz8u.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWswr5jAzD9BkdCqLX=d8vReO8O9dVmZfL7HXdvwkft9g@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=ascii
 
-On Wed, Apr 24, 2024 at 05:43:02PM -0700, Andy Lutomirski wrote:
+David Hildenbrand <david@redhat.com> writes:
 
-> I like that, but you're blocking it the wrong way.  My concern is that
-> someone does dfd = open("/proc/PID/fd/3") and then openat(dfd, ...,
-> OA2_INHERIT_CRED);  IIRC open("/proc/PID/fd/3") is extremely magical
-> and returns the _same open file description_ (struct file) as PID's fd
-> 3.
+> On 24.04.24 08:30, Huang Ying wrote:
+>> When VMA based swap readahead is introduced in commit
+>> ec560175c0b6 ("mm, swap: VMA based swap readahead"), "struct
+>> vma_swap_readahead" is defined to describe the readahead window.
+>> Because we wanted to save the PTE entries in the struct at that time.
+>> But after commit 4f8fcf4ced0b ("mm/swap: swap_vma_readahead() do the
+>> pte_offset_map()"), we no longer save PTE entries in the struct.  The
+>> size of the struct becomes so small, that it's better to use the
+>> fields of the struct directly.  This can simplify the code to improve
+>> the code readability.  The line number of source code reduces too.
+>> No functionality change is expected in this patch.
+>
+> From a quick scan, you perform quite some unrelated changes that make
+> the code harder to review than it should be. Consider separating any
+> cleanups from the core change of removing the struct.
 
-No, it doesn't.  We could implement that, but if we do that'll be
-*not* a part of procfs and it's going to be limited to current task
-only.
+Sure.  Will separate it.
 
-There are two different variants of /dev/fd/* semantics - one is
-"opening /dev/fd/42 is an equivalent of dup(42)", another is
-"opening /dev/fd/42 is an equivalent of opening the same fs object
-that is currently accessed via descriptor 42".  Linux is doing the
-latter, and we can't switch - that would break a lot of userland
-software, including a lot of scripts.
-
-I'm not saying I like the series, but this particular objection is bogus -
-open via procfs symlinks is *not* an equivalent of dup() and that is not
-going to change.
+--
+Best Regards,
+Huang, Ying
 
