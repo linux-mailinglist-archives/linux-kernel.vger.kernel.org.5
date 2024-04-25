@@ -1,113 +1,237 @@
-Return-Path: <linux-kernel+bounces-158836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D19F58B2588
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:46:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAE538B2592
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C9591C21D3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:46:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83DE4284957
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA8914C58A;
-	Thu, 25 Apr 2024 15:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7829F14BFBC;
+	Thu, 25 Apr 2024 15:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="HMZCcv4d"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="hbwfSz8U"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FC614A600;
-	Thu, 25 Apr 2024 15:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4891CF8A;
+	Thu, 25 Apr 2024 15:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059987; cv=none; b=bdHLhNSv/NML4pT/ecpmKLSiiZ+ypXL21HKC80MpCoA5AFxKz6Q4oFdJB5pvO4o4NOlvm4F/GWy5CWtr+ylWeNkFYIdNkMi3a+UdC/LRkbwL7VvzniRUf/GcqRJK4OtaMv3xHnUNdg1IH/TAGdqDFRmFMpRg+vAQDbe9CP8wySg=
+	t=1714060083; cv=none; b=T6hllSw5Sph29pYFvGCzqXxAf1bfwqQExOBE7I9hb7l4i3MtIgZZchkPrTk664miTgMBpJqtsSxPeXvpjnQtOGMXMbdbAJV6TQZr3cAwe0E82SntWlGsBkV20mbqiDgd01lOpVOBHlMaU4T8kzYGkfhHvWc/PeyoQYJ4z75tJ+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059987; c=relaxed/simple;
-	bh=BdnPwz8X5VjIlyxGHTHB1xmygmV3v31FLtNCSVMN0D4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a8IzXX26VG5FoljMm0PUZhyg5jwdhUYBL+FcmU1jCUoTM+keO8JN34qdnDbzaEGNvVUsjUIqfZqQ00evQ5lFcBu9WfQlD61qVVVMoRwMjXXIMmIuLCi2ZoU3tFCToKs8R+Sp/gO4tgYtq/731Kw1x6Sov6sARVpptcq6wsg7L8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=HMZCcv4d; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1714059977; x=1714319177;
-	bh=7jYU4x9SG+HzxaQPBZY9kv9tKEO30Ph+k3fkjG3u5NU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=HMZCcv4d0BzKDpblcZGIwbOk3RmoAhA/+tFRH63hwaUiN4O86P6ylvMu1HKbeE+AU
-	 zHAQgUzL8N5vjrvfWjPFkgEYnyyhHV5d6r04PJAym1bBsX9T7e8adQy0u4bSQtu3BX
-	 bpZbFiu5Hzc4KnKODFcP9smXpANOcclBMQDmNDF0TfxBuHRMxD4szqeHKx8PJXi5nu
-	 C7AO959VexM/iJIJ5YeoFsfGh+kErnwPHeR3Or8pvg0aOkf/BygIY9DER4fGM1Z4Dr
-	 S6ha4tT7WwlKX5BemzU210QuVwlmAV+qregOx2x9knfQ0UdbnngE7U5pJSapoBQShZ
-	 m+IUKkNmNsVGg==
-Date: Thu, 25 Apr 2024 15:46:14 +0000
-To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 2/4] WIP: drm: Introduce rvkms
-Message-ID: <c04294b3-a08a-44af-b74a-27f6b873c6b8@proton.me>
-In-Reply-To: <6a16f0023b62beba4658677bebcc4786da1ea4be.camel@redhat.com>
-References: <20240322221305.1403600-1-lyude@redhat.com> <20240322221305.1403600-3-lyude@redhat.com> <b41f707d-7e06-4c1a-93f0-d74ee242b650@proton.me> <6a16f0023b62beba4658677bebcc4786da1ea4be.camel@redhat.com>
-Feedback-ID: 71780778:user:proton
-X-Pm-Message-ID: 045ae0f74a45c39b91a85c78c275bb36ea47dee4
+	s=arc-20240116; t=1714060083; c=relaxed/simple;
+	bh=vRl3nerpRfMSVNdi2yLByaHezOdTcLaQL5k4oJE5Jx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f2j5VgZwKZP0F0S1yv24qZlhiZ52fQ38czseq4w9s3X+8yf9RuX4suoT4BbvNYdv2LEkGAqtQ4RFMP+XEYG4VIkC4UP38muRahMmdFQXWztcYPIlhIEfqtUAZoPmFItkR1JFCwmMs6ZjkzeK5jzDGVzJk4olMqDPT1oZFIVLKWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=hbwfSz8U reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id af50854ee9ed0a10; Thu, 25 Apr 2024 17:47:58 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3308466DF31;
+	Thu, 25 Apr 2024 17:47:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714060078;
+	bh=vRl3nerpRfMSVNdi2yLByaHezOdTcLaQL5k4oJE5Jx0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=hbwfSz8UspzW8rjFdkmLtLc+FpOwVaJcJDoDJX5jlRmHDixcSCCHcMQqKBElPMAoR
+	 ELou1a6skzjjhL+wLSQBI66gqA8RR10u1twRbCJhIuFbLQeOhhHriR6f/iBt6Unejq
+	 7ztp9wEx3gstD2FCYglWnBNaQ2vnGEiB4aCQxuUuq+f2p9iKx4wPUyOoqWq66SATUu
+	 kysupLnoiHUUTdLnfDoyN362soZb5+a/NamwbGl7sTjlbVV4EdtF+V7VAPFUaYkDqw
+	 Ny5ZY6uoggwt12vnp83TYGXjt9ucy2tWv6lZUI107ObtNZ6rgIFafJLn8qRFZOMuMt
+	 twqwCdyJwa/Lg==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Lukasz Luba <lukasz.luba@arm.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Subject:
+ [Alternative][PATCH v1 2/3] thermal/debugfs: Fix two locking issues with
+ thermal zone debug
+Date: Thu, 25 Apr 2024 17:47:57 +0200
+Message-ID: <5780690.DvuYhMxLoT@kreacher>
+In-Reply-To: <1888579.tdWV9SEqCh@kreacher>
+References: <12427744.O9o76ZdvQC@kreacher> <1888579.tdWV9SEqCh@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeljedgleefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgv
+ rhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-On 22.04.24 03:54, Lyude Paul wrote:
-> On Wed, 2024-03-27 at 21:06 +0000, Benno Lossin wrote:
->> On 22.03.24 23:03, Lyude Paul wrote:
->>> +
->>> +pub(crate) type Connector =3D connector::Connector<DriverConnector>;
->>> +
->>> +impl connector::DriverConnector for DriverConnector {
->>> +    type Initializer =3D impl PinInit<Self, Error>;
->>> +
->>> +    type State =3D ConnectorState;
->>> +
->>> +    type Driver =3D RvkmsDriver;
->>> +
->>> +    type Args =3D ();
->>> +
->>> +    fn new(dev: &Device<Self::Driver>, args: Self::Args) ->
->>> Self::Initializer {
->>
->> And then here just return `Self`.
->>
->> This works, since there is a blanket impl `PinInit<T, E> for T`.
->>
->> Looking at how you use this API, I am not sure if you actually need
->> pin-init for the type that implements `DriverConnector`.
->> Do you need to store eg `Mutex<T>` or something else that needs
->> pin-init in here in a more complex driver?
->=20
-> Most likely yes - a lot of drivers have various private locks contained
-> within their subclassed mode objects. I'm not sure we will in rvkms's
-> connector since vkms doesn't really do much with connectors - but we at
-> a minimum be using pinned types (spinlocks and hrtimers) in our
-> DriverCrtc implementation once I've started implementing support for
-> vblanks[1]
->=20
-> [1]
-> https://www.kernel.org/doc/html/v6.9-rc5/gpu/drm-kms.html?highlight=3Dvbl=
-ank#vertical-blanking
->=20
-> In nova (the main reason I'm working on rvkms in the first place),
-> we'll definitely have locks in our connectors and possibly other types.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I see, in that case it would be a good idea to either have an RFC of
-the nova driver (or something else that needs pinned types) as
-motivation for why it needs to be pin-initialized.
+With the current thermal zone locking arrangement in the debugfs code,
+user space can open the "mitigations" file for a thermal zone before
+the zone's debugfs pointer is set which will result in a NULL pointer
+dereference in tze_seq_start().
 
---=20
-Cheers,
-Benno
+Moreover, thermal_debug_tz_remove() is not called under the thermal
+zone lock, so can run in parallel with the other functions accessing
+the thermal zone's struct thermal_debugfs object.  Then, it may clear
+tz->debugfs after one of those functions has checked it and the
+struct thermal_debugfs object may be freed prematurely.
+
+To address the first problem, pass a pointer to the thermal zone's
+struct thermal_debugfs object to debugfs_create_file() in
+thermal_debug_tz_add() and make tze_seq_start(), tze_seq_next(),
+tze_seq_stop(), and tze_seq_show() retrieve it from s->private
+instead of a pointer to the thermal zone object.  This will ensure
+that tz_debugfs will be valid across the "mitigations" file accesses
+until thermal_debugfs_remove_id() called by thermal_debug_tz_remove()
+removes that file.
+
+To address the second problem, use tz->lock in thermal_debug_tz_remove()
+around the tz->debugfs value check (in case the same thermal zone is
+removed at the same time in two differet threads) and its reset to NULL.
+
+Fixes: 7ef01f228c9f ("thermal/debugfs: Add thermal debugfs information for mitigation episodes")
+Cc :6.8+ <stable@vger.kernel.org> # 6.8+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+This is an alternative fix for the issues addressed by
+
+https://lore.kernel.org/linux-pm/1888579.tdWV9SEqCh@kreacher/
+
+and I slightly prefer it, because it is less intrusive and makes
+the thermal zone debug code more consistent with the analogous code
+for cdevs.
+
+Accordingly, I've replace the above with this patch in the
+thermal-core-next branch in linux-pm.git.
+
+---
+ drivers/thermal/thermal_debugfs.c |   34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_debugfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_debugfs.c
++++ linux-pm/drivers/thermal/thermal_debugfs.c
+@@ -139,11 +139,13 @@ struct tz_episode {
+  * we keep track of the current position in the history array.
+  *
+  * @tz_episodes: a list of thermal mitigation episodes
++ * @tz: thermal zone this object belongs to
+  * @trips_crossed: an array of trip points crossed by id
+  * @nr_trips: the number of trip points currently being crossed
+  */
+ struct tz_debugfs {
+ 	struct list_head tz_episodes;
++	struct thermal_zone_device *tz;
+ 	int *trips_crossed;
+ 	int nr_trips;
+ };
+@@ -710,8 +712,7 @@ out:
+ 
+ static void *tze_seq_start(struct seq_file *s, loff_t *pos)
+ {
+-	struct thermal_zone_device *tz = s->private;
+-	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct thermal_debugfs *thermal_dbg = s->private;
+ 	struct tz_debugfs *tz_dbg = &thermal_dbg->tz_dbg;
+ 
+ 	mutex_lock(&thermal_dbg->lock);
+@@ -721,8 +722,7 @@ static void *tze_seq_start(struct seq_fi
+ 
+ static void *tze_seq_next(struct seq_file *s, void *v, loff_t *pos)
+ {
+-	struct thermal_zone_device *tz = s->private;
+-	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct thermal_debugfs *thermal_dbg = s->private;
+ 	struct tz_debugfs *tz_dbg = &thermal_dbg->tz_dbg;
+ 
+ 	return seq_list_next(v, &tz_dbg->tz_episodes, pos);
+@@ -730,15 +730,15 @@ static void *tze_seq_next(struct seq_fil
+ 
+ static void tze_seq_stop(struct seq_file *s, void *v)
+ {
+-	struct thermal_zone_device *tz = s->private;
+-	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct thermal_debugfs *thermal_dbg = s->private;
+ 
+ 	mutex_unlock(&thermal_dbg->lock);
+ }
+ 
+ static int tze_seq_show(struct seq_file *s, void *v)
+ {
+-	struct thermal_zone_device *tz = s->private;
++	struct thermal_debugfs *thermal_dbg = s->private;
++	struct thermal_zone_device *tz = thermal_dbg->tz_dbg.tz;
+ 	struct thermal_trip_desc *td;
+ 	struct tz_episode *tze;
+ 	const char *type;
+@@ -816,6 +816,8 @@ void thermal_debug_tz_add(struct thermal
+ 
+ 	tz_dbg = &thermal_dbg->tz_dbg;
+ 
++	tz_dbg->tz = tz;
++
+ 	tz_dbg->trips_crossed = kzalloc(sizeof(int) * tz->num_trips, GFP_KERNEL);
+ 	if (!tz_dbg->trips_crossed) {
+ 		thermal_debugfs_remove_id(thermal_dbg);
+@@ -824,20 +826,30 @@ void thermal_debug_tz_add(struct thermal
+ 
+ 	INIT_LIST_HEAD(&tz_dbg->tz_episodes);
+ 
+-	debugfs_create_file("mitigations", 0400, thermal_dbg->d_top, tz, &tze_fops);
++	debugfs_create_file("mitigations", 0400, thermal_dbg->d_top,
++			    thermal_dbg, &tze_fops);
+ 
+ 	tz->debugfs = thermal_dbg;
+ }
+ 
+ void thermal_debug_tz_remove(struct thermal_zone_device *tz)
+ {
+-	struct thermal_debugfs *thermal_dbg = tz->debugfs;
++	struct thermal_debugfs *thermal_dbg;
+ 	struct tz_episode *tze, *tmp;
+ 	struct tz_debugfs *tz_dbg;
+ 	int *trips_crossed;
+ 
+-	if (!thermal_dbg)
++	mutex_lock(&tz->lock);
++
++	thermal_dbg = tz->debugfs;
++	if (!thermal_dbg) {
++		mutex_unlock(&tz->lock);
+ 		return;
++	}
++
++	tz->debugfs = NULL;
++
++	mutex_unlock(&tz->lock);
+ 
+ 	tz_dbg = &thermal_dbg->tz_dbg;
+ 
+@@ -850,8 +862,6 @@ void thermal_debug_tz_remove(struct ther
+ 		kfree(tze);
+ 	}
+ 
+-	tz->debugfs = NULL;
+-
+ 	mutex_unlock(&thermal_dbg->lock);
+ 
+ 	thermal_debugfs_remove_id(thermal_dbg);
+
+
 
 
