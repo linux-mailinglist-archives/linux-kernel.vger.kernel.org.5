@@ -1,125 +1,132 @@
-Return-Path: <linux-kernel+bounces-157958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753678B194E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:16:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EA88B1951
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 287CF1F23124
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:16:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71C51F230E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2D51C6B9;
-	Thu, 25 Apr 2024 03:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9F61D6A5;
+	Thu, 25 Apr 2024 03:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KuzZu7Sc"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="P16Apjv7"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626B8F513
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 03:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE54C1946F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 03:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714014964; cv=none; b=qs3oD3n555tc/CaOFzTWM1JOW0RDNW6mLdNsTUusNLHfy9b5VsTpOQSuiEPCDaAIArX2Lob90xX6feBeB4I0SQEOIeAm+WSDW/m3EeWm6/jTfU/EcKjpO3PisTzsMiZ5x3dl4HxQe/h9LxU2Rc0AcZIdG19c4kYGc3Y45GptrZU=
+	t=1714015036; cv=none; b=iXEL3VWiBfFZkXrzyWmli0hDfD/DgkesUrJM8q2ZApYcZMtxeOCIkv0eUOnssHziVEuu7N2YM3Xo5xDVvowlcusLFAb09LakNavf17eean+L7J5JPARBb9zTMoUROaoSrGCuMp2l9wbVER4Pmy1O/QeI5IqNpq/mQ0bleL5EvRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714014964; c=relaxed/simple;
-	bh=UHDcHhg2SVBsQ5unx72cY0vVFjQtl+lWV7o9LLkDLu8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bqBiSTGCYRQ+kcStB8fN56EuRFv90xuKTA8LymEnp/HwvU1A7bR1BdqO6zreIkTLJ2PAXcy096q0SXT6NXXiV6q7c+EMtr76ecxHr7RGrGkvBNsU8RFm2njEj0FzXhRnx/rsI+nt3Nl7pW5jQxuXUSVzfyEeP1K08fGTDcww32A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KuzZu7Sc; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5c66b093b86so1256913a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:16:03 -0700 (PDT)
+	s=arc-20240116; t=1714015036; c=relaxed/simple;
+	bh=pL8OHOWHZcsyFmPcEjc+fBoaOnXJeZNW3DcIFx6MFus=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=asjMZqGgir/TKpDaeRTkk70AcYskwbcAJemN153Fm3ryx0dd01XmFavANZm1WiD502upHWKqtCmI7nTtMOsUgw2AFsr9kbQfKVl2qykQeDO5OgwFRTK2xHE1DcAV9484FC7ELmgqWxp0RyuI4BNFB4NolREge/QR7gedl/geIiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=P16Apjv7; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f074520c8cso627200b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 20:17:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714014963; x=1714619763; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1714015034; x=1714619834; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1Q1Itnlmg8Ted0k+oi1/NBrIkOL2DiHn2J/5DR1ybvM=;
-        b=KuzZu7SczdzFVqGAdEjKzyAELi6g33S+4oIUmVjkCfgLGjSOQiNgKRY6ehQMa8+dKk
-         UXmEp7cpS8BUBpFz3L7XoyA38ZrzDpCPG5A7ij7tCZREuWBENDhQdR1lF71TP/DPXz1f
-         a70D/TnVud8PR3j67eTeV/c55eus2aNHG2rfWOGajz7rzC8vlyqwIpgcs3EPmdjig9rt
-         LU/aOeyLiCjMkmM4hfHFgkm9Wk7I5H2fpULRwqtqv2bwztKoyGd955T4YFXz2S3uDt00
-         qPJQleOKqVESUhaFa0/BOqJ2HD4LCefKvHgX2YYUgsBpvV5HRat7XCjRe+k7QUpueds8
-         QsUw==
+        bh=rDC6+MkZwtTiyGD4zhDwbs6EKw+Azk2OsJsJxDq9WIg=;
+        b=P16Apjv79ZDKsMeWquK73sSlQg9s8QgWLu0QI/QT0qP8hoMn3Ji5qdzct0Y170RN0V
+         dgBiOxTGZdWGB8Lkm0xtrFNI2fmUm44Q5s/H1Hmh6mSReBjB0U8t1Ix7ZFGiRzyHhYrR
+         /92FG/iQFHLe6Rv4CLdyn26CHZ18sVGZJxlqvcLni8JrDaqLdurYOLMCawMgvaLqUcj7
+         ce2F0rYK5nXlSgxyMEouxx9KXOqPDJqqmvkTzyODyqu92RIJWwIw6fn4P+rDU5pK9dUl
+         RoJyZd2c4ogQNrQS5aYBSoxwITj7rV9ZsrshAgAemNbrV3qamH2UYfwz4Yldb0B5Kr2z
+         F/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714014963; x=1714619763;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Q1Itnlmg8Ted0k+oi1/NBrIkOL2DiHn2J/5DR1ybvM=;
-        b=d4irJneRTltdJGQG9APhlUcnxMsCTXSV4w2G/7vVbojriv83cIgEwsHYTqgP024tJ/
-         QaBker9HgeFb4GBTtUixsbHV+Y95OnglwPH6UgrMmoqz3Vb53hhkAq+n7NOif4YUAD0F
-         Uve/8pr3YO4j7RuevXt8f0KvXbPeyaskfi7sLISU8zCQKio4JgUF4nBO5zkZnNroLBLq
-         Z5DidnmXc5ZmRp0lloHQ3CulNqYKQX37OhwGZ6IugHoLLyIc1v6M7/wIDA4rQYLdb3z2
-         O5s3rqDsZjn2qa56VGzcgLfS/NocJWgjGFqzBXT4FIS8TTSQYcCuITAJUd4NQbtnUEKS
-         9e3g==
-X-Gm-Message-State: AOJu0YwXs6hbgYl05hHFh3fLU81DXOFSSrAuRL0F5yNuyIdZe6euRUzW
-	aDZx/zrFvJ/hS7KSyQUGLpzUdxi4Z/k+5FFrH8l9bPg3JP4PZ+j8zyZaQR0LJH8=
-X-Google-Smtp-Source: AGHT+IGe3ovjFBruF0blZy2Fd4eNgPm9f9jSAj/9qlNJ9vt6+lGlcGjQvYUiiB0xbPRtSFYhA03A2w==
-X-Received: by 2002:a17:90a:17a5:b0:29b:fb23:863e with SMTP id q34-20020a17090a17a500b0029bfb23863emr2326730pja.17.1714014962515;
-        Wed, 24 Apr 2024 20:16:02 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id m14-20020a17090a668e00b002a6e67e197dsm11926206pjj.45.2024.04.24.20.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 20:16:02 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
-Date: Thu, 25 Apr 2024 12:15:58 +0900
-Message-Id: <20240425031558.6181-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000000866ea0616cb082c@google.com>
-References: <0000000000000866ea0616cb082c@google.com>
+        d=1e100.net; s=20230601; t=1714015034; x=1714619834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rDC6+MkZwtTiyGD4zhDwbs6EKw+Azk2OsJsJxDq9WIg=;
+        b=hXEiTmNToS1tWme9KdDsDiUGzMncSR0zkjQbmk25bKoIemaiCPYwXOznegaBwKCidV
+         PFb/8YZYTiLrRKAqqXY+tQka3lWi+XhyuKm8IqyinAwiU3PDHB9R+/cx5OQ7Q1Miw30o
+         ngCULKTBV94HPQ+z3FiZfdcVhongyvJj3vYq34P8DGOxXO2LeVZKtic4frE6TNLfmSI0
+         kBYWQ1xcy/KljhAp2jukzTFrIwjnB3FGgOG+xRFsBTShJVWbKfBmIZOcD1vTAq5JHxJW
+         HlKEyvfOicaBVvhBX2QelT/pGHd1ih0MBmMVYuRr9i2VTq77gR4BCL5u08V/VnYuSLGe
+         ZAaA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8dTLrMuwE7atRIMNO4p2czEF5PAAQ+VfMbk2N+ic7+fWmrI2EsKJpu0BMnrSKsl8K+7Tnszg0EqL2J0Rumjo+WPPgXl2OSS6a+cfx
+X-Gm-Message-State: AOJu0YygTaia2smquMygwjfDIPEB9Ulromlb3doZG4lNrDPXV4ryukaX
+	onxLiUzQnFJRYSGrJxo+VzHpXGZU22y84raNI+Vb+DwD3bASswSEsmoMxeeI2Nk=
+X-Google-Smtp-Source: AGHT+IFsDUKcepwhTMfngbtOJkYdquZcdm/7+0FnSBhsRuUAiazYGUUz8MH7tc0XTEkAcFEoXbsTQw==
+X-Received: by 2002:a05:6a21:3d89:b0:1ac:dead:1370 with SMTP id bj9-20020a056a213d8900b001acdead1370mr4849697pzc.21.1714015034157;
+        Wed, 24 Apr 2024 20:17:14 -0700 (PDT)
+Received: from [10.3.132.118] ([61.213.176.12])
+        by smtp.gmail.com with ESMTPSA id x23-20020a056a00189700b006edadf8058asm12160586pfh.23.2024.04.24.20.17.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 20:17:13 -0700 (PDT)
+Message-ID: <9228a873-8250-4b63-bf75-473e9a87ab80@bytedance.com>
+Date: Thu, 25 Apr 2024 11:17:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/12] cachefiles: remove err_put_fd tag in
+ cachefiles_ondemand_daemon_read()
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
+ <20240424033916.2748488-3-libaokun@huaweicloud.com>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <20240424033916.2748488-3-libaokun@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-please test array-index-out-of-bounds in diFree
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
 
----
- fs/jfs/jfs_dmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> The err_put_fd tag is only used once, so remove it to make the code more
+> readable.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index cb3cda1390ad..773b9263e497 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -206,6 +206,7 @@ int dbMount(struct inode *ipbmap)
- 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
- 	bmp->db_agstart = le32_to_cpu(dbmp_le->dn_agstart);
- 	bmp->db_agl2size = le32_to_cpu(dbmp_le->dn_agl2size);
-+	printk(KERN_DEBUG "dmMount : %d\n",bmp->db_agl2size);
- 	if (bmp->db_agl2size > L2MAXL2SIZE - L2MAXAG ||
- 	    bmp->db_agl2size < 0) {
- 		err = -EINVAL;
-@@ -316,6 +317,7 @@ int dbSync(struct inode *ipbmap)
- 	dbmp_le->dn_agwidth = cpu_to_le32(bmp->db_agwidth);
- 	dbmp_le->dn_agstart = cpu_to_le32(bmp->db_agstart);
- 	dbmp_le->dn_agl2size = cpu_to_le32(bmp->db_agl2size);
-+	printk(KERN_DEBUG "dbSync : %d\n",bmp->db_agl2size);
- 	for (i = 0; i < MAXAG; i++)
- 		dbmp_le->dn_agfree[i] = cpu_to_le64(bmp->db_agfree[i]);
- 	dbmp_le->dn_agsize = cpu_to_le64(bmp->db_agsize);
-@@ -3393,7 +3395,7 @@ int dbExtendFS(struct inode *ipbmap, s64 blkno,	s64 nblocks)
- 
- 	bmp->db_agl2size = l2agsize;
- 	bmp->db_agsize = 1 << l2agsize;
--
-+	printk(KERN_DEBUG "dbExtendFS : %d\n",bmp->db_agl2size);
- 	/* compute new number of AG */
- 	agno = bmp->db_numag;
- 	bmp->db_numag = newsize >> l2agsize;
--- 
-2.34.1
+Reviewed-by: Jia Zhu <zhujia.zj@bytedance.com>
+
+> ---
+>   fs/cachefiles/ondemand.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+> index 4ba42f1fa3b4..fd49728d8bae 100644
+> --- a/fs/cachefiles/ondemand.c
+> +++ b/fs/cachefiles/ondemand.c
+> @@ -347,7 +347,9 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+>   
+>   	if (copy_to_user(_buffer, msg, n) != 0) {
+>   		ret = -EFAULT;
+> -		goto err_put_fd;
+> +		if (msg->opcode == CACHEFILES_OP_OPEN)
+> +			close_fd(((struct cachefiles_open *)msg->data)->fd);
+> +		goto error;
+>   	}
+>   
+>   	/* CLOSE request has no reply */
+> @@ -358,9 +360,6 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+>   
+>   	return n;
+>   
+> -err_put_fd:
+> -	if (msg->opcode == CACHEFILES_OP_OPEN)
+> -		close_fd(((struct cachefiles_open *)msg->data)->fd);
+>   error:
+>   	xa_erase(&cache->reqs, id);
+>   	req->error = ret;
 
