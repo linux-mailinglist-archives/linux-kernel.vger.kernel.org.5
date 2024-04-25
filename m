@@ -1,70 +1,80 @@
-Return-Path: <linux-kernel+bounces-158009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F76C8B1A16
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:58:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A4D38B1A17
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 07:00:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B423F1F22202
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:58:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA88D28397A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 05:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2528039FF3;
-	Thu, 25 Apr 2024 04:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F2539FD8;
+	Thu, 25 Apr 2024 05:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jugf5Skt"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PrFPrU8W"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB5C2C697;
-	Thu, 25 Apr 2024 04:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF47A38398
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714021097; cv=none; b=cAKMxfaZNRsqCD6Y3MFyVed40b3JtHG00jdLO/ppCQBXrdIQP6sRXUzk7cSSKnsJZ+tirkV+gKjfFVZRRP1hmNG+nhEtfvgfJyFuZVpAKmo9KgACmCCWTSCgu6n9l86tOj7EyIn9/6t7Fp1QKne9APj9HwS+7OJkDpFbDQNV/NE=
+	t=1714021200; cv=none; b=q3d0u87XDFFudz06bhzz2SBYjg6N9mWVmeQq8gNr/9tYrMkXaArwEXeUqxGF6msqPrfw5+YhMCqaJuN/BUwac1vdo14L8egnYoMM6xInqKbFLUt1UqDYRK38nU8YYO+deEyrnrBPmJXG+9BQnldERuZb58TLJotHKwQGUUtbQFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714021097; c=relaxed/simple;
-	bh=SXKhmE1mFSWFNXbTgKv60f+ty4UJ3XJhBfkQOjaM7fQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A5JnywAvlsnzi+039vpBruMiPRNK5QKST/XwYtnAR183PmB/pIFdtXhuPYQanYmTYQLXWLtTO09uGHDDLGuYiyCOy1+hmW3BBTz4irHCc1SqrelYrxwRwFoZmuuZTp754nkrIfQhRiH6nr9JoZEBMNSpI8wRpdHIOApDAXll4s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jugf5Skt; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43P2jf4C021788;
-	Thu, 25 Apr 2024 04:58:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=C/eFcRc
-	eePgjWKK1u/9J8UibNSm0qr+7zcLyo0PYzPg=; b=jugf5Skt3xw21Itn8lpJ7Q6
-	ZYnIqid5u9NKRLeCX/a38HITy/7V4nCTAIeKKXm/64FvKcrXZQv37HCHZg2tDgv/
-	wokohLHFcrFSBVwoweETzBDmfVTpOK12PuixjEsl0dscoRklmrt6rQc1ZHbFGf/F
-	jTF5i2MRArZGb//EBc5MdzNkWHJ0eDT2KloG0SWEIcS5CWcUHSopCCa6j+lX3SX2
-	6/yAHKSlW58JaQdqB9AhX7/ajoPoFelK1FVkJyWli4CJbrvSsjzGgN2qrQYsMRHF
-	GlYKHp/WbKEV1gd3XW4TSZ8qU5azePqu5Ez4Wj2EJGMOI8pDexzbD+34AHAoJDQ=
-	=
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqengg8uh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 04:58:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43P4wBgM011738
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 04:58:11 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 24 Apr 2024 21:58:08 -0700
-From: Prashanth K <quic_prashk@quicinc.com>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-CC: Wesley Cheng <quic_wcheng@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, Prashanth K <quic_prashk@quicinc.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] usb: dwc3: Wait unconditionally after issuing EndXfer command
-Date: Thu, 25 Apr 2024 10:27:49 +0530
-Message-ID: <20240425045749.1493541-1-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714021200; c=relaxed/simple;
+	bh=/Idzeob/3VgiaD8N/eZMjeY2vkHnL1zemb4/6yGRVA4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=faN8H0sLNkv+kjinQXAjHEPvKnFXJof/n0IwViVN7NOiXqT+FF3Z2eh40vSIlZLPbI2G3EOfpqtIgDxpA23tmVcPPe3lkhDv534FZxsMdgOaST2FxkDIRKEWaR0054sVmE1Jj43TnxNWkkzIiDFUrbRRGVaFU2xbEQxb5Km/SDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PrFPrU8W; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ee0642f718so1274577b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714021198; x=1714625998; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPqD64kC179CYiaasLh/j7lz8sMbAVUurPZoGZX691U=;
+        b=PrFPrU8Wl9DRUgP+DsmEg6BlfbzPmB8xfuyZxAK63updgjfy7iyh32pGhw2g/hb1hR
+         ELoBwtiriCouccjue6YxzmIugzz4RW3us6umvDVg12iOvQM+gs1SCxwy8YlG67D3Q0SJ
+         qiXhgN3lFDITgw8kGx1lrDK/eyXAQnYCRW6e/HPQVpAnol70oZhpvL738My/U5am16wk
+         fy8aRsLHM0O5eiGdolumWVjaIDAxCzwSaebLUzGuKTMpNccgFI4xpBChPZv14pHsBzto
+         D9sQY5slWazd1O91+TBjkV5CzF90KL2EeXVmux3EGooCFF03yAjr9IYb49WWsHwPkYfl
+         MbJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714021198; x=1714625998;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DPqD64kC179CYiaasLh/j7lz8sMbAVUurPZoGZX691U=;
+        b=uSrXe5vdiSkKnFnDqQ6ACT1H2NwdJIja0R0dvqcITydjA4Kbv7cTPwUvtilG2fliqV
+         zsdORH4iuMMSWUrEaG7qf1NTjBXcqJg2AmEqUxtJW6ajN1y3m8sMSvum2S/vYbvLZRHg
+         wOsD19G7ANEf7jBQunvxHgj7+eMiKY2TXvujs4WuvKB4gCdZzuB4qsRTtHfMw4GtIbCn
+         T7iraiXoF5X9J0iKJld1CY1/rlonDq55pi2VCNW09vY4ei6KnJMv1/ZFq2cs2VR2mgw7
+         /D/CHXBp0wxBVyCljlIOGZ21laxsW0aLLYBIdZ3AZ5Uj9m+PGEOqBTlxt70g+rSFFswA
+         vosg==
+X-Gm-Message-State: AOJu0YxnQ2VIyWdV25O4qV4tc1syOJJcJ0e4SEqqeTmprnp+s+m/ei2h
+	MJf80LWd6IXOlQBQVezotieR+iQTlukiSyAvbdC6Q6NtDVCYQdtNIhg8Iqei8HY=
+X-Google-Smtp-Source: AGHT+IHRMb2o3vW7c223M+RfZSC4DS1dGnW7fRYIZ/r4b/rjzqjPMFQHjLRKYMXApqLT9UNpjp1j2w==
+X-Received: by 2002:a05:6a20:d48f:b0:1a7:48de:b2a4 with SMTP id im15-20020a056a20d48f00b001a748deb2a4mr3321649pzb.6.1714021198031;
+        Wed, 24 Apr 2024 21:59:58 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id j19-20020aa783d3000000b006eaf3fd91a1sm12314258pfn.62.2024.04.24.21.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 21:59:57 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diFree
+Date: Thu, 25 Apr 2024 13:59:53 +0900
+Message-Id: <20240425045953.6360-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000000866ea0616cb082c@google.com>
+References: <0000000000000866ea0616cb082c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,68 +82,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: YMF-tT2R4zSD9GAOEs30f2uw8t60rVhM
-X-Proofpoint-GUID: YMF-tT2R4zSD9GAOEs30f2uw8t60rVhM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_04,2024-04-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=871 priorityscore=1501 mlxscore=0 phishscore=0 adultscore=0
- bulkscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404250032
 
-Currently all controller IP/revisions except DWC3_usb3 >= 310a
-wait 1ms unconditionally for ENDXFER completion when IOC is not
-set. This is because DWC_usb3 controller revisions >= 3.10a
-supports GUCTL2[14: Rst_actbitlater] bit which allows polling
-CMDACT bit to know whether ENDXFER command is completed.
+please test array-index-out-of-bounds in diFree
 
-Consider a case where an IN request was queued, and parallelly
-soft_disconnect was called (due to ffs_epfile_release). This
-eventually calls stop_active_transfer with IOC cleared, hence
-send_gadget_ep_cmd() skips waiting for CMDACT cleared during
-EndXfer. For DWC3 controllers with revisions >= 310a, we don't
-forcefully wait for 1ms either, and we proceed by unmapping the
-requests. If ENDXFER didn't complete by this time, it leads to
-SMMU faults since the controller would still be accessing those
-requests.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ master
 
-Fix this by ensuring ENDXFER completion by adding 1ms delay in
-__dwc3_stop_active_transfer() unconditionally.
-
-Cc: <stable@vger.kernel.org>
-Fixes: b353eb6dc285 ("usb: dwc3: gadget: Skip waiting for CMDACT cleared during endxfer")
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
 ---
-Changes in v2:
-Changed the patch logic from CMDACT polling to 1ms mdelay.
-Updated subject and commit accordingly.
-Link to v1: https://lore.kernel.org/all/20240422090539.3986723-1-quic_prashk@quicinc.com/
+ fs/jfs/jfs_dmap.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- drivers/usb/dwc3/gadget.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 4df2661f6675..666eae94524f 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1724,8 +1724,7 @@ static int __dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force, bool int
- 	dep->resource_index = 0;
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index cb3cda1390ad..773b9263e497 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -206,6 +206,7 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
+ 	bmp->db_agstart = le32_to_cpu(dbmp_le->dn_agstart);
+ 	bmp->db_agl2size = le32_to_cpu(dbmp_le->dn_agl2size);
++	printk("dmMount : %d\n",bmp->db_agl2size);
+ 	if (bmp->db_agl2size > L2MAXL2SIZE - L2MAXAG ||
+ 	    bmp->db_agl2size < 0) {
+ 		err = -EINVAL;
+@@ -316,6 +317,7 @@ int dbSync(struct inode *ipbmap)
+ 	dbmp_le->dn_agwidth = cpu_to_le32(bmp->db_agwidth);
+ 	dbmp_le->dn_agstart = cpu_to_le32(bmp->db_agstart);
+ 	dbmp_le->dn_agl2size = cpu_to_le32(bmp->db_agl2size);
++	printk("dbSync : %d\n",bmp->db_agl2size);
+ 	for (i = 0; i < MAXAG; i++)
+ 		dbmp_le->dn_agfree[i] = cpu_to_le64(bmp->db_agfree[i]);
+ 	dbmp_le->dn_agsize = cpu_to_le64(bmp->db_agsize);
+@@ -3393,7 +3395,7 @@ int dbExtendFS(struct inode *ipbmap, s64 blkno,	s64 nblocks)
  
- 	if (!interrupt) {
--		if (!DWC3_IP_IS(DWC3) || DWC3_VER_IS_PRIOR(DWC3, 310A))
--			mdelay(1);
-+		mdelay(1);
- 		dep->flags &= ~DWC3_EP_TRANSFER_STARTED;
- 	} else if (!ret) {
- 		dep->flags |= DWC3_EP_END_TRANSFER_PENDING;
+ 	bmp->db_agl2size = l2agsize;
+ 	bmp->db_agsize = 1 << l2agsize;
+-
++	printk("dbExtendFS : %d\n",bmp->db_agl2size);
+ 	/* compute new number of AG */
+ 	agno = bmp->db_numag;
+ 	bmp->db_numag = newsize >> l2agsize;
 -- 
-2.25.1
-
+2.34.1
 
