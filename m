@@ -1,204 +1,219 @@
-Return-Path: <linux-kernel+bounces-158412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB648B1F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:47:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75348B1F9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:49:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEC8B286838
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:47:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EBA11F23249
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA43122625;
-	Thu, 25 Apr 2024 10:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="grUwHalg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE41224E8;
+	Thu, 25 Apr 2024 10:49:19 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2134.outbound.protection.partner.outlook.cn [139.219.17.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96581CFA9;
-	Thu, 25 Apr 2024 10:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714042057; cv=none; b=foVWXwpcNiV/MRd/CsG4nZS2xk+ukhboEIaWCEt1L9SyL/+QcJYunNYFE1Ccq2BxVRdKRDXTYc7fWOZ8b6zfpCCrlPIzRLGQqWUj7uM+Ci/mYSceI9d38HMeV/2X0Gjjq8K0zhHt0Kh2iMm2IuNwdXk4NQ1riBOFNxw+Oy6bpMU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714042057; c=relaxed/simple;
-	bh=l2oN0apwOiempgVQoJgZseQpsSAT0VXcChaYnxGf5No=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EdT8w1ZR3bwJ1uYnwnWnvYbWRWnqVsIufb0Tgn+DgWR8I2A6OGb7OwfqUeMgQCnGlcDgyxwqWlr/C+l1EdepmoKQ4IH0rYyHtKfhfXcfnsYBir1SvxGyGqGsmEsvE+u8TX/nYeDsaIr9vQE1aXNgU5AvBSqW2/Ug/+rPuoSbI5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=grUwHalg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8685C2BBFC;
-	Thu, 25 Apr 2024 10:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714042056;
-	bh=l2oN0apwOiempgVQoJgZseQpsSAT0VXcChaYnxGf5No=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=grUwHalgTFeirub4RVOOgYoOFWiFJT7ZuWldcDOCNt/9OhA6Q9AISETZbg+78W3Nh
-	 bqUz4vpDhUmJqN/rkNOAwc/4WmkDGQoD7Y9Bq1pqbGmrG3jqU+9N61epUzUSbslHoi
-	 p4hln/h3yFHopxYsWvz0s2rpQ8py14u5d0aRXAzv+6FAxbmWVhqiobYAz/dy6pFlyB
-	 smPcuITe3RCuIcxgRvzgv5N0Bj+JArZb2GhOgEYRS92kG+IEENBPEQ08jX/6FVWF+p
-	 wJmWkVvBvrfrUaR0v34xA5/agrcXEPWTmiiulr+m1pI32Gt30TsmSHHBZ2mAXsvtBa
-	 UyZVMyl2bdg5A==
-Message-ID: <97b173c3-052f-498c-b0f9-58e60e9f29cf@kernel.org>
-Date: Thu, 25 Apr 2024 12:47:27 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41881D53F;
+	Thu, 25 Apr 2024 10:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.134
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714042159; cv=fail; b=TeKkvhfKGm3aoAh6q4w5Ce5mVsASSbBvJ3GuVGi2w+e1IfnopjQCKKHpCIP02g2l2tWSwefoFinwBNpB1q0VEf/k2+jnsMXFWZua15w1WicL9GvOM/lAmzx/ma1l5CfBTYDBSdGtW1vRrVwNiI7hIWMrwc0UfX1fuODueqyNuqg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714042159; c=relaxed/simple;
+	bh=r/FvD5mzhwtZr3q/59/b2r6HYho0ugaGzs1g/ew49WQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=M/EvCW7+YnBADs1USkl2NbmLL99S70ZauYF3Q4CRvk1iIBF/NiEe/8i3WI26HchB3A+K/MdDzGNQRBUd0nT6MLBnJNZovb+/vZsk+vTJPBfKIUrxJ222iM65RBQjaGITcjy0j3wkgPoRtPlEUerNzUw77Oy4z9Hi9Z0IdPlUNLY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hKowYrrvd/MljGiXqHGO1CRUZsY5M/w93VhTZGfnc6H+YkFVrRB6CgteIbCTYlwSleuc2pioYl9CSePK0HOB1Ewi+KrIVzYx6ROPYKe5ZnNNehQAikGQg+hAn0TvVvyKfUPoqxGGT67JTaY87kknwPKKBZEgg5+VeDw6/L/oszFjHgQQk+vhj0rscAb9gjueCENvYKIYYGZyH3G6eukuv8cZqCZXRHMmiLDIbf7ytzbXulYWmQ3wIJGT0TFDrckDKMjheJHLYIeujn0vORuYbMM2NvI0G1CGTVhx8robNhR/aRoGBlLkiKvTp8wrGWR5wm81jOdv+3mVv9UubDluEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fxIDl4HLV9bJC7hy01jnyiv1VF4IpHjXIeN+QCog/Hg=;
+ b=E9SvDi1unNgBTXlQwgpqxNkfAXMslLs++u6nuaYrQKST7k6n9kgvESdTICbEMStSm7E8ZkqFw/SW3l38W8tVLBglfFUKt1DStp02GwvR6hPeHiVKD6MhCDRTyqPOLFNFkQ++dn7bvBhTCi9QLlBnF5+Uq00rtEJmDouVoGSO4Y2YmYOYySDlAHxQ30OGpvrPnNvSjM2f8lHa8pa9i36rUAYY8pBBlJSDDjiI08yoNfnnLwk3XWXxTnTU6RWKLEs+kPbD4WkuAYePo7Z61eMI7H4P2z3mwR2trRJ4jxf68O/x7xveAj7G1+YSzg4S1xVjiNuW1NfDnM5+2o3PtwfQHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14) by SH0PR01MB0491.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:7::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
+ 2024 10:49:12 +0000
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 10:49:12 +0000
+From: Joshua Yeong <joshua.yeong@starfivetech.com>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	conor@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	joshua.yeong@starfivetech.com,
+	leyfoon.tan@starfivetech.com,
+	jeeheng.sia@starfivetech.com
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v4 2/2] dt-bindings: cache: Add docs for StarFive Starlink cache controller
+Date: Thu, 25 Apr 2024 18:48:41 +0800
+Message-Id: <20240425104841.72379-3-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240425104841.72379-1-joshua.yeong@starfivetech.com>
+References: <20240425104841.72379-1-joshua.yeong@starfivetech.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0023.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:c::19) To SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/14] HSI2, UFS & UFS phy support for Tensor GS101
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org,
- kishon@kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
- bvanassche@acm.org, s.nawrocki@samsung.com, cw00.choi@samsung.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com,
- James.Bottomley@hansenpartnership.com, ebiggers@kernel.org,
- linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com
-References: <20240423205006.1785138-1-peter.griffin@linaro.org>
- <1c6f5984-7f9f-47e3-98c3-3c3671512675@kernel.org>
- <CADrjBPq_0nUYRABKpskRF_dhHu+4K=duPVZX==0pr+cjSL_caQ@mail.gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CADrjBPq_0nUYRABKpskRF_dhHu+4K=duPVZX==0pr+cjSL_caQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SH0PR01MB0841:EE_|SH0PR01MB0491:EE_
+X-MS-Office365-Filtering-Correlation-Id: 47a980ff-09e8-4f92-3d7b-08dc651557d4
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	RmPgWCmxFy6UozOA/0wyyk4uBIcH4LUmbesa+SoFoNav2cqm2oRb2Lll/mx60uNA8tnoo5jSmfe+OpcRoH+NBdRo8H0VHCwpoWRuXfnfJKqy0NT7uP0wlxaP4LkAkUHR/vZqp79/urEzpy65swxh0oNlk9MR+ctEhzI1tU6VieotS44rQNEyPhlvp9Q3m953n5pkdU3/oEW0geMT5vRv+Z80t3rfH0V4AaHDc6RUPFd0upt8EN36j2cGr8jomWtlnDfmNMYFWC6GUsDywqMwX8JjcZPCmkCWt8BR5sPak5Er9kltylWLo4RUYA8bv2WlmiN/1/Yd5OKbJqa9LjxMJ2LmmjFYK2LKWL/X96uNTbXWrOJf6SZ4oNHmpHG+tEpcyKmghrnRlNDED4FsBgv5UOckLIxVR2p9UYqY5eS0gAOLtla4n5WlGDNr4TuBtHTIL/tQNbNRNGR50CgQuckiezheoODBGVW4N1bSOtOP6wtLQdxC2Oq8UNMt6LblSY7GnC/cW60ojnjiDxO4tS3tYx9sUc72PDoEBDG8y6g2nUDD7vtuCkE/zDeTWjRjfg6SNBvysbny9Diuht6Sw6Qmnmwt4eB0hEDUndDDBFlRl3qT16dwYifNnFfOMaEpeWHM01AnuBtP0XQ03K3KCYHwjA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(52116005)(366007)(41320700004)(1800799015)(7416005)(38350700005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?IeLKnNaRUKuZs43fXbG3M42Uu67NMv2LpJ51AtlAtGiMscRlHf6Zac4uT6eg?=
+ =?us-ascii?Q?2UggLZK3Qst6QxSWBLlkMO0vq9g+DXDlRS1vcQRkifTdx/pB+GPJDgL/egJ2?=
+ =?us-ascii?Q?/5S4nuXkbzNkRORbh9jq04bX3ifUxRi6N7DVVN+0TgLUQH00fuwtjVZphQ/l?=
+ =?us-ascii?Q?G8oD+FFxb8Scyx5hDVF8UGtliCe9dcWdgVuA2eRvnwYZugj5968qjCeQ1LYB?=
+ =?us-ascii?Q?PAXP7K23UhhdRkDYCrv+cEeshtZzzxwyDNeAqXNyHyy8Z3WYwEjfToc3wPvm?=
+ =?us-ascii?Q?zF/es1YwGsEkE+90MWRVbnVR8RETTYDsa2VCY7FEvVySRrcVEyBhj/7r/y+O?=
+ =?us-ascii?Q?gSXUuW+S3rx6YR4tWGsZM3tqZ+2/rPUY8eJJ+cF22pero7wqLFmLalvSbG6y?=
+ =?us-ascii?Q?+q7A2f5htxJys4kZnWXhKWHi+Zj+GXz1zlb09BwQCDEBIhhpVSo693iaGmFm?=
+ =?us-ascii?Q?Z5J2L53KianTzio1DiJxfA25TUgP7QkwhvNDaxoI+MJxqhCnJSLghGvg9A4x?=
+ =?us-ascii?Q?NJmyusmX/mH1vZz359XB8y3H5e3mA6yyflyLUPwfrrb3ISGsL424dlciPVJ9?=
+ =?us-ascii?Q?N4kXCLANdNn710suFd13kSlMpN3WDSxxpJGSe5lJpkR5XGFXw0ko3V3zrMUB?=
+ =?us-ascii?Q?3YUyp3Gpeu2GfoRA/gvWXEseKkVzf8RU6/9NTxizAVlgS8TkKQU0iC1+Qbkr?=
+ =?us-ascii?Q?T42DkmwNcuPu5YhD0D8FCcw1iABvscU6N83wwSuh8INtVU1v87jei5/VGw4s?=
+ =?us-ascii?Q?eeE6MnYpgWBETvruh07ReCB/I2MQlQy024mvfEmKh2wa1hZ1d4cMEpo5ReRN?=
+ =?us-ascii?Q?dle7J4p23XjS83ZFn71voxSjvn2Z+b1Wv9H6VIfgpVwRS8jKI07/0spxzqNS?=
+ =?us-ascii?Q?rn62GXJCFXjlVA8qERfj5uavLsSuiLsc6agtufroarF/FmRkLkcO2g4LOR0+?=
+ =?us-ascii?Q?uO216LTVwi8+IcVvDLxQUBsmuseJjDpOjnxpDyPhn970NfRheGb9Jrga9za9?=
+ =?us-ascii?Q?dbO6p9WwG3xEHQWUCWumndXhbsfveNKO54qRKmwgADgXgBtl7xeRYWGCkHQn?=
+ =?us-ascii?Q?Fvhbal1Fq+aFK2igu0RqFiB80S2j8Cy1zaxTDXVQh7QM/BzmGhN+8a3FEEwP?=
+ =?us-ascii?Q?p5YDI7sjHDZD2DVZEjYZsSlFnVMzNi1mZMf8U8FYPcSuNIbbZ7ZkZRrhmn/8?=
+ =?us-ascii?Q?xJAN+nOFISms1IA4vpFaoAchzOiZqgMnXGNGDsM0PUbP29SQBWiip/gX1rnP?=
+ =?us-ascii?Q?2CZ7lDw7D9QGcnSCE/xzMhHrmgnHn9hLs46KHFZxQbNEwUKsmXkzzfRTsFzt?=
+ =?us-ascii?Q?27d3L08WDozx6MauIs+gQoQi4I91RkMS59FZujZqMJZ5v87cpMdGYziVbBst?=
+ =?us-ascii?Q?11MmIvqkJpVdto5aWIeMgJtoaTQHmETWT7QWKXRcCJJaMeyj/08ex+0UhQEF?=
+ =?us-ascii?Q?53WIIQd9Fr1R59pPMm85UY/pGBKbsr33MLT8I7SeeWHRvDmg0ZzPWPMZY8XJ?=
+ =?us-ascii?Q?Wpsp4yP/NQhrhCuIEymf9OORfzMjxDOUENrUftgl0idfkkbScxyhLXAwDbs1?=
+ =?us-ascii?Q?XcyMh4rjoS4eD1GRuHSkldpNLjmLVDPfIx2BiK2RxrEOav0G/jM1MyTKw9fO?=
+ =?us-ascii?Q?Dy0/NK8rj3Q4Ris+C6VUtKg=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47a980ff-09e8-4f92-3d7b-08dc651557d4
+X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 10:49:12.4319
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L/e+yJa3fXDhlR2pWp+jyDvjzTDkAyZnBMaXCkTq6JvEETtXDEbB9TwaZ31uewYQpYaUeqVVgKJPzW3gcdXodk+BL/RqLo6G9js/7S2QMt8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0491
 
-On 25/04/2024 12:31, Peter Griffin wrote:
-> Hi Krzysztof,
-> 
-> On Thu, 25 Apr 2024 at 08:08, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On 23/04/2024 22:49, Peter Griffin wrote:
->>> Hi James, Martin, Alim, Bart, Krzysztof, Vinod, all
->>>
->>> Firstly, many thanks to everyone who reviewed and tested v1.
->>>
->>> This series adds support for the High Speed Interface (HSI) 2 clock
->>> management unit, UFS controller and UFS phy calibration/tuning for GS101
->>> found in Pixel 6.
->>>
->>> With this series applied, UFS is now functional on gs101. The SKhynix
->>> HN8T05BZGKX015 can be enumerated, partitions mounted etc. This allows us to
->>> move away from the initramfs rootfs we have been using for development so far.
->>>
->>> Merge Strategy
->>> 1) UFS driver/bindings via UFS/SCSI tree (James / Martin / Alim)
->>> 2) GS101 DTS/DTSI should go via Krzysztofs Exynos SoC tree
->>> 3) Clock driver/bindings via Clock tree (Krzysztof / Stephen)
->>> 4) PHY driver/bindings via PHY tree (Vinod)
->>>
->>> The v2 series has been rebased on next-20240422, as such all the phy parts
->>> which were already queued by Vinod have been dropped. Two new phy patches
->>> are added to address review feedback received after the patches were queued.
->>>
->>> The series is broadly split into the following parts:
->>> 1) dt-bindings documentation updates
->>> 2) gs101/oriole dts & dtsi updates
->>> 3) Prepatory patches for ufs-exynos driver
->>> 4) GS101 ufs-exynos support
->>> 5) gs101 phy fixes
->>>
->>
->> I asked to split, otherwise please explain why PHY and UFS depends on
->> DTS and clk.
-> 
-> Seems I misunderstood your feedback. I thought you just want me to
-> make clear who was merging what from the series via which tree. But
-> you want separate series?
-> 
-> 1) ufs host dt bindings & driver
-> 2) minor phy fixes series (most patches got applied already for phy)
-> 
-> What do you want for cmu_hsi2 clocks and dts/dtsi? The device tree
-> depends on the clock bindings to compile
+Add DT binding documentation used by StarFive's
+Starlink cache controller.
 
-This is not specific to Samsung Soc, Qualcomm soc or any other arm-soc.
-Independent patches for different subsystems should not be put together
-in one patchset. You create false impression of dependencies, grow CC
-list, cause issues when applying (I cannot just apply entire set with
-one command, but need to run multiple commands (!!!), plus certain
-subsystems will reject your patchset because they take everything or
-nothing) and possible bisection issues (because patches which should be
-tested independently, are put together so testing does not uncover
-undocumented dependencies).
+Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+---
+ .../cache/starfive,jh8100-starlink-cache.yaml | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
 
-Almost never combine independent patches which are targeted to entirely
-different subsystems. There are exceptions, but regular feature work is
-not one of them.
-
-Subsystem is everything in top level of drivers/ and drivers/soc/ (or
-kind of arch/arm64/boot/dts/, but that tricky because
-Tesla/Google/Exynos are one subsystem). Or whatever is there in
-MAINTAINERS file.
-
-I don't know, we keep repeating this over multiple times, so it could be
-added to some docs, but people do not read docs...
-
-1. Drivers and driver bindings go to subsystems.
-2. DTS and board compatibles go to soc.
-a. Any dependency on driver is a near-NAK.
-b. Any dependency on headers must be clearly expressed, because headers
-cannot be back-merged from subsystem tree to DTS tree.
-c. Any usage or usage of bindings from other sets must be clearly
-expressed (linked).
-3. drivers/soc go to soc.
-
-Things from list above targeting the same maintainer tree, can be
-combined in one series, with dependencies expressed in patch changelogs
-or cover letter.
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml b/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+new file mode 100644
+index 000000000000..6d61098e388b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/cache/starfive,jh8100-starlink-cache.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/cache/starfive,jh8100-starlink-cache.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive StarLink Cache Controller
++
++maintainers:
++  - Joshua Yeong <joshua.yeong@starfivetech.com>
++
++description:
++  StarFive's StarLink Cache Controller manages the L3 cache shared between
++  clusters of CPU cores. The cache driver enables RISC-V non-standard cache
++  management as an alternative to instructions in the RISC-V Zicbom extension.
++
++allOf:
++  - $ref: /schemas/cache-controller.yaml#
++
++# We need a select here so we don't match all nodes with 'cache'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - starfive,jh8100-starlink-cache
++
++  required:
++    - compatible
++
++properties:
++  compatible:
++    items:
++      - const: starfive,jh8100-starlink-cache
++      - const: cache
++
++  reg:
++    maxItems: 1
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - cache-block-size
++  - cache-level
++  - cache-sets
++  - cache-size
++  - cache-unified
++
++examples:
++  - |
++      soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        cache-controller@15000000 {
++          compatible = "starfive,jh8100-starlink-cache", "cache";
++          reg = <0x0 0x15000000 0x0 0x278>;
++          cache-block-size = <64>;
++          cache-level = <3>;
++          cache-sets = <8192>;
++          cache-size = <0x400000>;
++          cache-unified;
++        };
++      };
+-- 
+2.25.1
 
 
