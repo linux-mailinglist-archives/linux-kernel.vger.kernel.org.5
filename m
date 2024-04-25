@@ -1,127 +1,152 @@
-Return-Path: <linux-kernel+bounces-158625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9AB8B2333
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:55:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095E38B2335
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:55:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7559287E8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:55:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54366B22BBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 13:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A0B149DE3;
-	Thu, 25 Apr 2024 13:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10285149E0A;
+	Thu, 25 Apr 2024 13:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="Y0bJFXvP"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AWxqf85T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CDB1494D2;
-	Thu, 25 Apr 2024 13:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502DF149DF0;
+	Thu, 25 Apr 2024 13:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053315; cv=none; b=MvOubfZ4ti/3vNix/Z8jVLmcTtk6rabBpSIlvQhSmx9KcGFu1tXAgAsqr8SdUmzebXGg2F4HIqtq8fBfbcLwqWJpLCNf+HkSS0df/YGgvboq1W6jJbpEv63keBdX761sZp3UA7qDEZNhydGWR+oi1SnmqvRPgJ6pRTfpkxEFkB8=
+	t=1714053317; cv=none; b=DykYE5xWhwK9UuZpOO+qFo8FJqYPJRDkd3Iwtc4RJhWR0DcTwvalkLCpy24pV0C6LgHlQYNwaBRwI3NBBsh+5NvFu+VTi+o6Fju2hjNty3a7xOl+1IhG2lRM4zoobFMiWrpbngVbtL9dt6eVwHlg+wtp6yPbfl3obCst0RfVY+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053315; c=relaxed/simple;
-	bh=DMy17TiCyjh/k8annerxF/kUrrwnYDuM432VfQVIIjg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LQ+IThiHKFW8c+dxSSR2dcrWqLCOk62ETxaBYRf/o2vwEEbi9JuLNXaO0F8jNRxpTNLxPT6rCjv21ge/8IafeTXLwJAI/kDG9wl26EfC36fkvesqy93tT3g9qRn8GjGdwFjZJ0+SDY2FOrATtFX9h+L4HRW0j3QXvZJIPXSv6RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=Y0bJFXvP; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43PDZjKu032412;
-	Thu, 25 Apr 2024 15:54:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=qQMU7VYo5fU0zpRtzK2tuitYtZnTvgB4cuzbACisKiA=; b=Y0
-	bJFXvPbZDB44bmNvch6hUZSAAQxVZkqpbz+emUz5lnClsGLFE648hfukePk/lD/D
-	ufuLBuAAjfD70FvnIrTEBx4gK1PX3lpJq1u+vPGcQEXJoGbbDBRSGt/+3tF6LKsO
-	Mq1kdAxih2o/FTgzZ5gDeKSgO2rH6ipw0vKOKGnLSrwZbbZXb88av6Uv2ZCTN3Oz
-	w6skHbWWiVsIGiAn1Kblwnqj7c+azlTgKSt/Y6g/9GKm9sofl7Nl8PqfehxCXqiD
-	VlekJ6Q2thdJ93XbyBYg0JdXaxRh2KE7mqlJa/sbMe1nLSbBqyvgBnWxhFdduXaC
-	lGxChjD1bQyNqg3wHetw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4kbdmmf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 15:54:50 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 83AD640044;
-	Thu, 25 Apr 2024 15:54:46 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A6D00221E9F;
-	Thu, 25 Apr 2024 15:54:08 +0200 (CEST)
-Received: from [10.48.86.112] (10.48.86.112) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 15:54:08 +0200
-Message-ID: <c5d14ef4-15a3-40f1-b9f8-780525b0b172@foss.st.com>
-Date: Thu, 25 Apr 2024 15:54:06 +0200
+	s=arc-20240116; t=1714053317; c=relaxed/simple;
+	bh=rGX1kGwneL3/PGdNllq2QBsrGpesZjG2VX8TcFm1Z98=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ohvPJURszg2InnAyCqfbCdF3/RnjjDV8BOFOAgqUssZ1k+MhnzDE5WnJrS4a0EB6xtTBXo+IvGhDGZHepHOlzz0XyvDldBFz3iN+gdykgRRxZ2kqY13pcB6GuS4P5jECIuWSUa4u5FkC6DWVBoc0TW7o3UpV3cDDNrnWGgL57cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWxqf85T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 934B3C113CC;
+	Thu, 25 Apr 2024 13:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714053316;
+	bh=rGX1kGwneL3/PGdNllq2QBsrGpesZjG2VX8TcFm1Z98=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AWxqf85TcYDGftbtM/0Kcfk4fmo4CNjwsPYu0PmuWTKny7o+fl3+c/jjaGuSvSufV
+	 aIh7134gn8pDD7fKtawkIwmH1rCYasAe082OCPdQkQSFnvkzQOi862di9oCWMxLmSk
+	 360yfty/bLN0il0y9l5OGeCym944lJNNBkUspV5+nVJMxiTZHdo39UnrZbsiUNvocP
+	 PquJHAC0ne/XjmytX5y3WE3qAYcOB4ZxU2BTa6mqsxv7Q9pSTE+usogLueNQrE+PeP
+	 kmNzXub6BLMpNH4Jetkw/HuQ1hmFRGDVqa3MxFZxrbrvpCH+H0yTfXsAVd8OBx+AED
+	 rV0RBRqu1yQSA==
+Date: Thu, 25 Apr 2024 19:25:06 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Qiang Yu <quic_qianyu@quicinc.com>
+Cc: quic_jhugo@quicinc.com, mhi@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_cang@quicinc.com, quic_mrana@quicinc.com
+Subject: Re: [PATCH v4 2/3] bus: mhi: host: Add a new API for getting channel
+ doorbell address
+Message-ID: <20240425135506.GF3449@thinkpad>
+References: <1713868417-37856-1-git-send-email-quic_qianyu@quicinc.com>
+ <1713868417-37856-3-git-send-email-quic_qianyu@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] ARM: dts: st: update the pwr compatible for stm32mp15
-To: Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre TORGUE
-	<alexandre.torgue@foss.st.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime
- Coquelin <mcoquelin.stm32@gmail.com>
-CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20240425074835.760134-1-patrick.delaunay@foss.st.com>
- <20240425094829.3.I493dfe2bde7f40beb48455f8ff8368cc8a869cdc@changeid>
- <b4e60272-cd79-417a-9028-fee243951f4a@kernel.org>
-Content-Language: en-US
-From: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
-In-Reply-To: <b4e60272-cd79-417a-9028-fee243951f4a@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-25_13,2024-04-25_01,2023-05-22_02
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1713868417-37856-3-git-send-email-quic_qianyu@quicinc.com>
 
-Hi,
+On Tue, Apr 23, 2024 at 06:33:36PM +0800, Qiang Yu wrote:
+> Some controllers may want to know the address of a certain doorbell. Hence
+> add a new API where we read CHDBOFF register to get the base address of
+> doorbell, so that the controller can calculate the address of the doorbell
+> it wants by adding additional offset.
+> 
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
 
-On 4/25/24 10:57, Krzysztof Kozlowski wrote:
-> On 25/04/2024 09:48, Patrick Delaunay wrote:
->> Remove the unexpected comma in the compatible "st,stm32mp1,pwr-reg",
->> and use the new supported compatible "st,stm32mp1-pwr-reg" in STM3MP15
->> SoC dtsi.
->>
->> Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
->> ---
->>
->>   arch/arm/boot/dts/st/stm32mp151.dtsi | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
-> This will break the users and is not bisectable, so patch should wait at
-> least one cycle. This will preserve bisectability, although users will
-> be affected anyway.
+One nitpick below. But I'll fix it.
 
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Sorry, I didn't know this constraint
+> ---
+>  drivers/bus/mhi/host/init.c |  6 ++----
+>  drivers/bus/mhi/host/main.c | 16 ++++++++++++++++
+>  include/linux/mhi.h         |  6 ++++++
+>  3 files changed, 24 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+> index 7104c18..6e0fa79 100644
+> --- a/drivers/bus/mhi/host/init.c
+> +++ b/drivers/bus/mhi/host/init.c
+> @@ -541,11 +541,9 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+>  	dev_dbg(dev, "Initializing MHI registers\n");
+>  
+>  	/* Read channel db offset */
+> -	ret = mhi_read_reg(mhi_cntrl, base, CHDBOFF, &val);
+> -	if (ret) {
+> -		dev_err(dev, "Unable to read CHDBOFF register\n");
+> +	ret = mhi_get_channel_doorbell_offset(mhi_cntrl, &val);
+> +	if (ret)
+>  		return -EIO;
 
-But Ok, I remove this patch in serie V2 and push it later.
+	return ret;
 
+- Mani
 
->
-> Best regards,
-> Krzysztof
+> -	}
+>  
+>  	if (val >= mhi_cntrl->reg_len - (8 * MHI_DEV_WAKE_DB)) {
+>  		dev_err(dev, "CHDB offset: 0x%x is out of range: 0x%zx\n",
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 15d657a..4de7567 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -1691,3 +1691,19 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+> +
+> +int mhi_get_channel_doorbell_offset(struct mhi_controller *mhi_cntrl, u32 *chdb_offset)
+> +{
+> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> +	void __iomem *base = mhi_cntrl->regs;
+> +	int ret;
+> +
+> +	ret = mhi_read_reg(mhi_cntrl, base, CHDBOFF, chdb_offset);
+> +	if (ret) {
+> +		dev_err(dev, "Unable to read CHDBOFF register\n");
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(mhi_get_channel_doorbell_offset);
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index d968e1a..cb3b676 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -816,4 +816,10 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, enum dma_data_direction dir,
+>   */
+>  bool mhi_queue_is_full(struct mhi_device *mhi_dev, enum dma_data_direction dir);
+>  
+> +/**
+> + * mhi_get_channel_doorbell_offset - Get the channel doorbell offset
+> + * @mhi_cntrl: MHI controller
+> + * @chdb_offset: Channel doorbell offset
+> + */
+> +int mhi_get_channel_doorbell_offset(struct mhi_controller *mhi_cntrl, u32 *chdb_offset);
+>  #endif /* _MHI_H_ */
+> -- 
+> 2.7.4
+> 
+> 
 
-Regards,
-
-Patrick
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
