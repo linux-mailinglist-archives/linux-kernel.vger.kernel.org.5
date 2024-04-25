@@ -1,330 +1,174 @@
-Return-Path: <linux-kernel+bounces-157908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-157905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FE98B1878
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:34:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7975D8B186E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 03:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD0FB1C2177E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:34:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5A7B1F2182B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 01:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEF7107A6;
-	Thu, 25 Apr 2024 01:33:55 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA86F9F0;
+	Thu, 25 Apr 2024 01:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="am8HRrpH"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2074.outbound.protection.outlook.com [40.107.105.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE90E5672;
-	Thu, 25 Apr 2024 01:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714008834; cv=none; b=WRflkUoBpJ5i8GGwds56xEC+mh7pBFhQKn35OpWdpizJFi6fQ0qgnerTCuOlcJf76D+p0CLuUje64lPcu0aiN0it0Va34cMz/z803ceM3luYA3cVHqPUtYK3Y3QBvKfUmqbnr6eM9efzQMnKx/+7KuhspM+fWgNBZ5/0+HcfB9Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714008834; c=relaxed/simple;
-	bh=DcnxWmmVrEIylMJfh7DRC8qVuxH3wDzB1vf+74ofhAk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rZyLSTUg8hMpW65EsYRBdRlCjtl0tKmeuOMMtqMXkd7Gsqk1bN/Ag7/sPH1pB+HIZrafD4SeJvjGJFt4jSr28Wr/lX1buwzDo1XBFfncYmA+z0bOb67B4Z9HtxQ9OljOqEM2+xeEMcHAv+f6ewagbI8xXFu0OpbxOB5EUX8MTDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VPz0720PBz4f3jZ6;
-	Thu, 25 Apr 2024 09:33:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2699A1A0568;
-	Thu, 25 Apr 2024 09:33:48 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBH4silm_UuKKw--.41818S3;
-	Thu, 25 Apr 2024 09:33:47 +0800 (CST)
-Message-ID: <178d23c8-40cc-f975-7043-68c0d5e15786@huaweicloud.com>
-Date: Thu, 25 Apr 2024 09:33:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A595240;
+	Thu, 25 Apr 2024 01:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714008457; cv=fail; b=d/pF0CUzcUKw6DSLKO9F0RR4y1mXSwPtCtunW3+4qGXVD/7/Bj5l35AWf1z8lbVvrDmtAdhfTEGNjaVTCm+/wADE5/WABHHqLu+QV9Vub3GvDRdoa5EaUmtuQ+rfOxZbriqBz7HDfQsGuozOASfHqghR2Jx3Z2iNRi/gI8ZxksQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714008457; c=relaxed/simple;
+	bh=8wwtbrTjKXJHZi8SvQyy3JlY5gooeIEbp23htY1/ILk=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=pzgKPLii9xKxg6ysSEypr37Leer5Y6vPot5bCRfcG/7/AdQGq+PIDk7dawlGMzBSIF1sIJ65ehCUPx5ugX2mxhUKF3S4qe8TNHVMhmthIY7vY4nWJD+G7ogYs6RmYWPR0FkcTC5IrnZIelOTh8QuGANH5fz318/FUuCCHJoSJ6A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=am8HRrpH; arc=fail smtp.client-ip=40.107.105.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d6ZGIQwFOEuv1W9v17ixQ1+Xv/86Ca5Wf7P9xe2Jh0XYwmB0XMQ7wR2gJTqr/DddqjHb8I16gyUNQ47AsbsCvpxLOQ+80s1TIuIXrl4hyfrt4pvvBAQkD/IulEaVStPvtjY0dnbW/cDSVZ+lVPBkQ4ImU5qdIuf+FJw9i24AmqO5+HZ3euCuCFM3y+AdoQ8JLsKXf4BP8+V6K1kbuOkIGBJ8Y0DlAiQDPmqH9T5OKcLK07B4sGkaO9M9N3CVvsk08Q066F9lm0ED+AQBW1tFPpDJOWDtPJHtY/JfceiHjH9feuY9esnte/duSKJ0gi47oxv/cB3j57QvUZvyME4x3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z2vjy6cbrSjiWVW8OxsSeoimpnYFhGcAtRPiT6YKZ3o=;
+ b=ZJUFMakOLtoPuci2faYq4kirTUqaTnlJGElkNuLMwmRPrb8gcZgGnQdIW5o0PoCMO7lGgatgJb9Jj5UIy86fbdyDsrnIZS0Ws8Z4RrstWdwo3fICBw0/v8w8P2wAknbLNKZR50dskQbV5sW3IC9FCXYBQIxZloYbOtGqbdzVgKvPB+nfuT9mBON2KcmZf+ddoi02Ujd7ueu/LMoimyeBQBhbzNhoD0EUWi8LAE06S7na8H3PjcmRzREhAup5SCqRtujM2fJKO/G3q5Ba+kHe3JTuToH6Y+wjhwM7M2hZdevUSmplneJ7e2azwE/o/MBtNc1ciQHcotYA+W9wfZ4mXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z2vjy6cbrSjiWVW8OxsSeoimpnYFhGcAtRPiT6YKZ3o=;
+ b=am8HRrpHktKAQ8C/2rXIR7eQ3Udn5dsatcQnUC4TQgwS8NqfL3Adh3nfgeB4Z58eE8Xn4JroAwstzyRDj3WWxqONPhTdhcQ6I0agdlqXZGMNat/6+UqehbWeIujvAgxH3HMVq48vxz0LXqMysU0ofryHBHAoT1JjrG7rjinzu7s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS4PR04MB9386.eurprd04.prod.outlook.com (2603:10a6:20b:4e9::8)
+ by VE1PR04MB7277.eurprd04.prod.outlook.com (2603:10a6:800:1b3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 01:27:32 +0000
+Received: from AS4PR04MB9386.eurprd04.prod.outlook.com
+ ([fe80::4f24:3f44:d5b1:70ba]) by AS4PR04MB9386.eurprd04.prod.outlook.com
+ ([fe80::4f24:3f44:d5b1:70ba%7]) with mapi id 15.20.7472.044; Thu, 25 Apr 2024
+ 01:27:32 +0000
+From: Joy Zou <joy.zou@nxp.com>
+To: m.felsch@pengutronix.de,
+	frank.li@nxp.com,
+	ping.bai@nxp.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/1] Add RTC PCF2131 support
+Date: Thu, 25 Apr 2024 09:35:06 +0800
+Message-Id: <20240425013507.2840128-1-joy.zou@nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0035.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::14) To AS4PR04MB9386.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4e9::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 03/12] cachefiles: fix slab-use-after-free in
- cachefiles_ondemand_get_fd()
-Content-Language: en-US
-To: Jia Zhu <zhujia.zj@bytedance.com>, netfs@lists.linux.dev
-Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
- Hou Tao <houtao1@huawei.com>, libaokun@huaweicloud.com
-References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
- <20240424033916.2748488-4-libaokun@huaweicloud.com>
- <34ba3b5c-638c-4622-8bcb-a2ef74b22f69@bytedance.com>
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <34ba3b5c-638c-4622-8bcb-a2ef74b22f69@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnOBH4silm_UuKKw--.41818S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3ZrWDWw48tF4ftw18uF1Utrb_yoWDuryDpF
-	ZayFy7Jry8WrykGr1UJr1UJryrJryUJ3WDXr18XFy8Ar4DAr1Yqr1UXr1jgF1UGr48Ar4U
-	Jr1UGr9rZr17JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWUWVWUuwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR04MB9386:EE_|VE1PR04MB7277:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d7205d1-c4f2-41d9-4c11-08dc64c6e0e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|52116005|1800799015|366007|7416005|376005|38350700005;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?FWv3FKJN5WVAdlncSA5VmSkdhkTkxhW5aRNDQ0GpQL7vlXTqkpIfmcuTAvf6?=
+ =?us-ascii?Q?lm0D0Ve59kYi3rQUvmGyy+zcRINUm208iYmvQsRLi8SbzOBteLD3L4eNpw/e?=
+ =?us-ascii?Q?wzFU3l8yYv/4p7bk2QVNKXMr86H3w2nr5psmqTLhlEgDlerSUQgscrQjhMNw?=
+ =?us-ascii?Q?TWFQVfegkWdNh5513Pzhk+rSTlcJo7D83hh6Wp130lklMlkwipRNHB1VAGSW?=
+ =?us-ascii?Q?W/lVHcT0+qX29G4sGG4FfShUTfaVD3WTiCf/AXbQ1APmw9vAJ6LQUz9yZkYi?=
+ =?us-ascii?Q?ZfXNhsnOjI3ZEYPRTCyBGmSjCREAubFRIuR3OSHxxNxbKJIkmMwEgiq6bF/2?=
+ =?us-ascii?Q?ZYercrhya9/jMZYtleJ01WlNCJ+7IvcP66GXv61J8I9CSHMCFdcogQz6jrm4?=
+ =?us-ascii?Q?VVD2szt1QHQwX0c0Nhjils7Jwxk+iWJv2vO2q1Wm92XqyWK9pXhmEgJ5Aeca?=
+ =?us-ascii?Q?aOi/FvR/1xtbbYnAaOBadYJvfxIoAvKpstNLKX1aDk6X308Bb4ujKf5FyNWK?=
+ =?us-ascii?Q?z0BIO1zioYygmE1nFrLUFefIm8oeisFdKZrBiTvpj1ObE2djbtzyqs6sMzNn?=
+ =?us-ascii?Q?HKzLjQxtEak5M5J8OUsaHWEPCldadIfLqDyEvsLii9qG03bhCOqZyHZp9Mpe?=
+ =?us-ascii?Q?0xDZj3MxgN55yZitImsUcPjPbf6+JjG1b5CTejCybEmnfNcoCgA7knaVcFKG?=
+ =?us-ascii?Q?Gd2wQbMMJ2s/e2obOtX4SsfgYHQHFggDAAY6WRTo+uf1ejt99M5MfJHZyCtF?=
+ =?us-ascii?Q?5+VuUGR22AB5ak6Kjb8zEZm8rIHsNd/dEoV2gr48z3GkLY7yS2FhMUzNG20z?=
+ =?us-ascii?Q?uOiJ2M0S38sjlRxxX9jyr+0gGYna9GYULKY+OxcqeoGIeYvbWIaRAUfR/Uiy?=
+ =?us-ascii?Q?KlWIEl6h9VGILiY15rbmBMXtLvw5WUO376rvH2feE57hA82B5H/NtJgnTGXC?=
+ =?us-ascii?Q?WL4CJzT/tctINzr4/r4gwW1ltgjDAoJIvyFUIBuJVUoa9o0jWdCZebcBWDFE?=
+ =?us-ascii?Q?Pe5cj4hOymei+OInxfgcMT6Nil6PN/UZmATMobuP4BfjiSMaSuWVqjK3S4d+?=
+ =?us-ascii?Q?+aY9N2Rc0nuNbWOulHBHqjg2RCbnPrxVvXQ+IX/oarngqfbKxB7gWtJrHUPn?=
+ =?us-ascii?Q?bOAk+tBll6nlJ9P+RZF/iykrhvQ4nzQ6JJzWH5apbAAlrp2mUgjV6454vyK3?=
+ =?us-ascii?Q?ia4aclA2p3JECpzpAKBmFg3ejOemTKRmeKO5OLdJoISRbcJMVLlfIQ95wZNd?=
+ =?us-ascii?Q?ZyeW8sbhFaT01Y46LflJjrTihGB5RRWP1SsbmnEWXG79CqDVND49z+y2aiw0?=
+ =?us-ascii?Q?2EsBQ94Ppbhi0bg+CD/yeEtrbNOd0SbEpYRXCfP/lvP04w=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR04MB9386.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(366007)(7416005)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?JAjrDDVGa+X+uhKTTkV9bf2ES78xGzc5aO0/RAaugjwnwhXQ5codjD8qFBBq?=
+ =?us-ascii?Q?xJSll5iNXr3m4pO8YGxc39DfNhNl9o/NoBM2xU+27579uIDuhd56NWLlKGRc?=
+ =?us-ascii?Q?ZZZr2Hs3U7rLCzZGKxqT5ED4BBpNyuVl+Dn0ft/W1u9clsYZq3JWWCwfhTnM?=
+ =?us-ascii?Q?fj7lit8LD/AgXmul+MH5tRN8OtvaM9ehajRUlvzeAYGSCtyTKRCEAMbvFW3I?=
+ =?us-ascii?Q?6AReGE0lI+yRJmtFK1Ky4S83TuyLcqs2tcwBbKtLQsOMztU0QUZHVM9Zy8/n?=
+ =?us-ascii?Q?/RHi/6whMQ4PMkxBwiQZkjhZE5wYg2WNRvrM59pK7UrgcqJI8aPobyADcHo7?=
+ =?us-ascii?Q?bwnu1p8hkAGg/FAcUuxvCFFGYIUP9Sf+BjRd9RmORFzcoYXxx2IA3icg31xF?=
+ =?us-ascii?Q?+uWRaoAchcRw8oIvyayUsl9M0OvzvCItC9LDeZ3tckVatz3iYawsT8cqxY6O?=
+ =?us-ascii?Q?2qVkHPKNyCXgSVbBWLZBfIRE7LFl82yK5iF9QiDNXKNMn236bPm/cFDYPiQW?=
+ =?us-ascii?Q?kJDelBdUJTHr9IJfG3+NXcZCDuZ/BYbDmN5wMbp9YCi1AqCAUH4VCWLKzYcy?=
+ =?us-ascii?Q?AiX85DRhMkKp8k/b4s8gdWPs7ybwubjEEHwvYUDa6CF76izyAhyw8e2rStqm?=
+ =?us-ascii?Q?7HBuyzKeak3lLgGzu0e91gE2/pZYP9uo7hB8hHm2pMTP4yx1xJEFbvLWEtql?=
+ =?us-ascii?Q?sQc7gMlYrjZtSc4zEK19w+9xa6sSdM6X6qui5jTSKT0bemkXJJCBydmh3Ipk?=
+ =?us-ascii?Q?Ix8Sepq1Q+es7dzyQl3geQqu+fibmO1GZdkqB378GhW9pUN+DekWt5NkVIk1?=
+ =?us-ascii?Q?0jc2FPq2U0joyhcHharYXARtdTogrbBZdFYG+b8+xN87gWq04KSYrqSf2xJl?=
+ =?us-ascii?Q?GbTMlCkc7B1FdPSI62P1OpRGwN8+LpXU+VO+XUUI6usUuxpZbpgmwJETK8Vj?=
+ =?us-ascii?Q?CXv2Wt/nUiy3qC0FqG+ex5hJYkhK7Enf+PZ1xeQL/HCoUWh9+tJrc3Hc1j5y?=
+ =?us-ascii?Q?sdp1XmwtwUnXUIwRPET/+msgu6q+vO4/dhjyKpAhhevN9aQRuqTqW43Ahsum?=
+ =?us-ascii?Q?CwzXfzvkxCnfvk4KNFD5x7JsyVDX3jX/a2zLb4hPDIPt4epzYzZ12/zCpau8?=
+ =?us-ascii?Q?Gc69h+nLYrAwg7pVkzvCO9C5PG9KpKpGenA/KJndDLY303xdOhGYUMCEeEco?=
+ =?us-ascii?Q?7+G9oUDLKIZeTNejOnr8/c4tKvS6rCPT08VHoQh1xet9UhzrubkbP31K9Yu/?=
+ =?us-ascii?Q?XrCHdPuK0GfLaY/E4idQy5M/kKlmqAO+CROdqGJ2y7HQ9cle5GaDfolB4NCp?=
+ =?us-ascii?Q?uNCMuNssh/Eozpr1+5gMKbRCiH9Gu1R0HvHwcByk/PR3mBySjSeNLZx/7gth?=
+ =?us-ascii?Q?i7L5NysQLdbXCc9+80weBr2TwFb2OHWIavZTNBUH+MJoiY63SHk7mh702elM?=
+ =?us-ascii?Q?lBwEn4ZIZsAwEoOjfXRh5aORqm/OVDkdv5h7SqVnKKi5LrFBORzOw222efoW?=
+ =?us-ascii?Q?Mhq4s6x5i8lX3mCIICZwQqAtZoB/B3T1tzcYzPgZxFcwkc8XvF92Hd+jUwvC?=
+ =?us-ascii?Q?4OGdbzfaduite9bGsY1j4PBuK7mShZbjOfHSwGjS?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d7205d1-c4f2-41d9-4c11-08dc64c6e0e3
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR04MB9386.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 01:27:32.2518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pdeKblc8/gqhI9OitCG0evbAC37Dsz9mjjQrrcAPvMad9s86DAVn6wkgakfCkfno
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7277
 
-Hi Jia,
+The patchset supports RTC PCF2131 on board dts.
+For the details, please check the patch commit log.
 
-On 2024/4/24 22:55, Jia Zhu wrote:
->
->
-> 在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
->> From: Baokun Li <libaokun1@huawei.com>
->>
->> We got the following issue in a fuzz test of randomly issuing the 
->> restore
->> command:
->>
->> ==================================================================
->> BUG: KASAN: slab-use-after-free in 
->> cachefiles_ondemand_daemon_read+0x609/0xab0
->> Write of size 4 at addr ffff888109164a80 by task ondemand-04-dae/4962
->>
->> CPU: 11 PID: 4962 Comm: ondemand-04-dae Not tainted 6.8.0-rc7-dirty #542
->> Call Trace:
->>   kasan_report+0x94/0xc0
->>   cachefiles_ondemand_daemon_read+0x609/0xab0
->>   vfs_read+0x169/0xb50
->>   ksys_read+0xf5/0x1e0
->>
->> Allocated by task 626:
->>   __kmalloc+0x1df/0x4b0
->>   cachefiles_ondemand_send_req+0x24d/0x690
->>   cachefiles_create_tmpfile+0x249/0xb30
->>   cachefiles_create_file+0x6f/0x140
->>   cachefiles_look_up_object+0x29c/0xa60
->>   cachefiles_lookup_cookie+0x37d/0xca0
->>   fscache_cookie_state_machine+0x43c/0x1230
->>   [...]
->>
->> Freed by task 626:
->>   kfree+0xf1/0x2c0
->>   cachefiles_ondemand_send_req+0x568/0x690
->>   cachefiles_create_tmpfile+0x249/0xb30
->>   cachefiles_create_file+0x6f/0x140
->>   cachefiles_look_up_object+0x29c/0xa60
->>   cachefiles_lookup_cookie+0x37d/0xca0
->>   fscache_cookie_state_machine+0x43c/0x1230
->>   [...]
->> ==================================================================
->>
->> Following is the process that triggers the issue:
->>
->>       mount  |   daemon_thread1    |    daemon_thread2
->> ------------------------------------------------------------
->>   cachefiles_ondemand_init_object
->>    cachefiles_ondemand_send_req
->>     REQ_A = kzalloc(sizeof(*req) + data_len)
->>     wait_for_completion(&REQ_A->done)
->>
->>              cachefiles_daemon_read
->>               cachefiles_ondemand_daemon_read
->>                REQ_A = cachefiles_ondemand_select_req
->>                cachefiles_ondemand_get_fd
->>                copy_to_user(_buffer, msg, n)
->>              process_open_req(REQ_A)
->>                                    ------ restore ------
->>                                    cachefiles_ondemand_restore
->>                                    xas_for_each(&xas, req, ULONG_MAX)
->>                                     xas_set_mark(&xas, 
->> CACHEFILES_REQ_NEW);
->>
->>                                    cachefiles_daemon_read
->> cachefiles_ondemand_daemon_read
->>                                      REQ_A = 
->> cachefiles_ondemand_select_req
->>
->>               write(devfd, ("copen %u,%llu", msg->msg_id, size));
->>               cachefiles_ondemand_copen
->>                xa_erase(&cache->reqs, id)
->>                complete(&REQ_A->done)
->>     kfree(REQ_A)
->> cachefiles_ondemand_get_fd(REQ_A)
->>                                       fd = get_unused_fd_flags
->>                                       file = anon_inode_getfile
->>                                       fd_install(fd, file)
->>                                       load = (void *)REQ_A->msg.data;
->>                                       load->fd = fd;
->>                                       // load UAF !!!
->>
->> This issue is caused by issuing a restore command when the daemon is 
->> still
->> alive, which results in a request being processed multiple times thus
->> triggering a UAF. So to avoid this problem, add an additional reference
->> count to cachefiles_req, which is held while waiting and reading, and 
->> then
->> released when the waiting and reading is over.
->
-> Hi Baokun,
-> Thank you for catching this issue. Shall we fix this by following steps:
-> cachefiles_ondemand_fd_release()
->     xas_for_each(req)
->         if req is not CACHEFILES_OP_READ
->             flush
->
-> cachefiles_ondemand_restore()
->     xas_for_each(req)
->         if req is not CACHEFILES_REQ_NEW && op is (OPEN or CLOSE)
->             reset req to CACHEFILES_REQ_NEW
->
-> By implementing these steps:
-> 1. In real daemon failover case： only pending read reqs will be
-> reserved. cachefiles_ondemand_select_req will reopen the object by
-> processing READ req.
-> 2. In daemon alive case： Only read reqs will be reset to
-> CACHEFILES_REQ_NEW.
->
-This way, in the fialover case, some processes that are being mounted
-will fail, which is contrary to our intention of making the user senseless.
-In my opinion, it's better to keep making users senseless.
+Joy Zou (1):
+  arm64: dts: imx93-11x11-evk: add RTC PCF2131 support
 
-Thanks,
-Baokun
->
->>
->> Note that since there is only one reference count for waiting, we 
->> need to
->> avoid the same request being completed multiple times, so we can only
->> complete the request if it is successfully removed from the xarray.
->>
->> Fixes: e73fa11a356c ("cachefiles: add restore command to recover 
->> inflight ondemand read requests")
->> Suggested-by: Hou Tao <houtao1@huawei.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/cachefiles/internal.h |  1 +
->>   fs/cachefiles/ondemand.c | 44 ++++++++++++++++++++++------------------
->>   2 files changed, 25 insertions(+), 20 deletions(-)
->>
->> diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
->> index d33169f0018b..7745b8abc3aa 100644
->> --- a/fs/cachefiles/internal.h
->> +++ b/fs/cachefiles/internal.h
->> @@ -138,6 +138,7 @@ static inline bool 
->> cachefiles_in_ondemand_mode(struct cachefiles_cache *cache)
->>   struct cachefiles_req {
->>       struct cachefiles_object *object;
->>       struct completion done;
->> +    refcount_t ref;
->>       int error;
->>       struct cachefiles_msg msg;
->>   };
->> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
->> index fd49728d8bae..56d12fe4bf73 100644
->> --- a/fs/cachefiles/ondemand.c
->> +++ b/fs/cachefiles/ondemand.c
->> @@ -4,6 +4,12 @@
->>   #include <linux/uio.h>
->>   #include "internal.h"
->>   +static inline void cachefiles_req_put(struct cachefiles_req *req)
->> +{
->> +    if (refcount_dec_and_test(&req->ref))
->> +        kfree(req);
->> +}
->> +
->>   static int cachefiles_ondemand_fd_release(struct inode *inode,
->>                         struct file *file)
->>   {
->> @@ -299,7 +305,6 @@ ssize_t cachefiles_ondemand_daemon_read(struct 
->> cachefiles_cache *cache,
->>   {
->>       struct cachefiles_req *req;
->>       struct cachefiles_msg *msg;
->> -    unsigned long id = 0;
->>       size_t n;
->>       int ret = 0;
->>       XA_STATE(xas, &cache->reqs, cache->req_id_next);
->> @@ -330,41 +335,39 @@ ssize_t cachefiles_ondemand_daemon_read(struct 
->> cachefiles_cache *cache,
->>         xas_clear_mark(&xas, CACHEFILES_REQ_NEW);
->>       cache->req_id_next = xas.xa_index + 1;
->> +    refcount_inc(&req->ref);
->>       xa_unlock(&cache->reqs);
->>   -    id = xas.xa_index;
->> -
->>       if (msg->opcode == CACHEFILES_OP_OPEN) {
->>           ret = cachefiles_ondemand_get_fd(req);
->>           if (ret) {
->> cachefiles_ondemand_set_object_close(req->object);
->> -            goto error;
->> +            goto out;
->>           }
->>       }
->>   -    msg->msg_id = id;
->> +    msg->msg_id = xas.xa_index;
->>       msg->object_id = req->object->ondemand->ondemand_id;
->>         if (copy_to_user(_buffer, msg, n) != 0) {
->>           ret = -EFAULT;
->>           if (msg->opcode == CACHEFILES_OP_OPEN)
->>               close_fd(((struct cachefiles_open *)msg->data)->fd);
->> -        goto error;
->>       }
->> -
->> -    /* CLOSE request has no reply */
->> -    if (msg->opcode == CACHEFILES_OP_CLOSE) {
->> -        xa_erase(&cache->reqs, id);
->> -        complete(&req->done);
->> +out:
->> +    /* Remove error request and CLOSE request has no reply */
->> +    if (ret || msg->opcode == CACHEFILES_OP_CLOSE) {
->> +        xas_reset(&xas);
->> +        xas_lock(&xas);
->> +        if (xas_load(&xas) == req) {
->> +            req->error = ret;
->> +            complete(&req->done);
->> +            xas_store(&xas, NULL);
->> +        }
->> +        xas_unlock(&xas);
->>       }
->> -
->> -    return n;
->> -
->> -error:
->> -    xa_erase(&cache->reqs, id);
->> -    req->error = ret;
->> -    complete(&req->done);
->> -    return ret;
->> +    cachefiles_req_put(req);
->> +    return ret ? ret : n;
->>   }
->>     typedef int (*init_req_fn)(struct cachefiles_req *req, void 
->> *private);
->> @@ -394,6 +397,7 @@ static int cachefiles_ondemand_send_req(struct 
->> cachefiles_object *object,
->>           goto out;
->>       }
->>   +    refcount_set(&req->ref, 1);
->>       req->object = object;
->>       init_completion(&req->done);
->>       req->msg.opcode = opcode;
->> @@ -455,7 +459,7 @@ static int cachefiles_ondemand_send_req(struct 
->> cachefiles_object *object,
->>       wake_up_all(&cache->daemon_pollwq);
->>       wait_for_completion(&req->done);
->>       ret = req->error;
->> -    kfree(req);
->> +    cachefiles_req_put(req);
->>       return ret;
->>   out:
->>       /* Reset the object to close state in error handling path.
+ .../boot/dts/freescale/imx93-11x11-evk.dts    | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
+-- 
+2.37.1
 
 
