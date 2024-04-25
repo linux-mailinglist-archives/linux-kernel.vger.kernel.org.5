@@ -1,111 +1,108 @@
-Return-Path: <linux-kernel+bounces-158375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033F18B1EFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:17:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E67DE8B1EFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 12:18:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5F0286862
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:17:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83C8289EE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 10:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D564B8627D;
-	Thu, 25 Apr 2024 10:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89DC126F06;
+	Thu, 25 Apr 2024 10:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oy+eKMjh"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="gXoWfZaL"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CB886ADE
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74938614D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 10:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714040249; cv=none; b=O9TxZKqf5udhBFmeJ0MJbmafRgUkfsdGiw4PPgHq/ShHabIikHLl2lCJysJv6032+tCJM0lVYX9ViczvBOonVyLMpbXnBznZEW5MYuZ9yXuyulVajrV6zz8BlPpv0EJ2mfIWlHAHUJZtgBZim7Jm+nfr0ESBF9BNsAJodQ7EpTs=
+	t=1714040301; cv=none; b=BfGQs9HLNvZ4uwa9iURDsdf23GFS8LMbusApFLpLYHufvbrKJjtgvOzEdeLgkBfd5ZbJeYhAz5Sgd5rXbuZt5I+/0v/wIqQmHQF3PJagtpLaBbR98EBXU2Dg4Z5Tnrdad19Tt9CldwSMSNS5xVmDdmzGLhvcbNUHkLZL0UgKJWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714040249; c=relaxed/simple;
-	bh=BPeJNPgeuu5yEfnxBU92okYv01EBLJ2vMEzm8JSUpts=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oIkp90pqu0GbQvGU+VL/2oOVgS5HcDaHbelpMIYbJkZ/wtsVVtqcKb2dIT09V7pY5ZgdnaWjSOIWQD3xLWOYCSjr7RTz3B6BgOvF7cP6b+YzYyZCrWIewS75V+2QFMC1xP6nt9GkZDGjU6zu1pWFeL5Hmv967nv50UzRDIdIsjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oy+eKMjh; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5ad28c0b85eso396743eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 03:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714040245; x=1714645045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6fgWl3/LS6xcTJ1My1IOi3hltkpdLJpEDvFYJw1KZLA=;
-        b=oy+eKMjhLlRSjIcb30pEN4R7ya29RGHbBagREnBGXUVYzonkCTxEuxPUGoOe1/jJ2I
-         i3iHcMXnc1Uix8dpw7iXDkjMzJU6j1kKwqmx4nX5EwwPJwFzbED6ZngUAhAcOJgKaxL6
-         Xqkr1n1HyjUuQfKiUh+aJHZFMOg+9ABtRRhqd9vH2HioBkShVE4wOHj8jqhgjnRHBTgT
-         EZ0rJo76U1FLvctqif4uZwf4bxD7nendzevtMeHd3Xom8uP0rFLHjCAOijCKQCSKtaji
-         oZ3iGQYPvBfggg40vffxa+NWj6IDnPnrws12CzaNdb0KQp1g75xQ9reJoskBEJE4we0Z
-         UoEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714040245; x=1714645045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6fgWl3/LS6xcTJ1My1IOi3hltkpdLJpEDvFYJw1KZLA=;
-        b=BQupYwXjGRosj9k5+OVwK0cbJhPA1YeR/LjLXr2XC1lpyBvexAkPGJDPXRZ9cM4G3Z
-         oH/ZBH9mUJc9V8PlvBdh1wmhgW+OCouhK3YLsMF2+PMgn+d6L6oUV3f+Ub+0BgV8JmQJ
-         UGlPsMALP5RGQePc3oPo8m7+3mkuTbbPKeTnXhAPafZPpHORaaST/ilct9bmIoOdilgy
-         5/tVjMJSusBW3iYzBPw5ulg96KgYNpqMAtQ8Rdg2gttMAs/yrXZM+VEK9rg4OC6uVvLf
-         avJ4VEjcIrhx99NPpqUG3zSHBFMy9lP/Ghbfjo8mX6ro3TQxBLaH0j0+dkhTzQZ0PYNl
-         TECg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9LHQtAH0irZvZsl4Hhck2OesgJg0LcNyODhO9h1l3r/t4lvLLvFhjZtAnf7v1jslVIGJwIGP+LPG8qpCf/adxQubUKOcPeie+S/bH
-X-Gm-Message-State: AOJu0Yw31+iAdrn/oeiolEEVDEUrWNSc36JzARPE0nyaSBNeijH1k40Q
-	s4+MYvpVLDvx9ogYe10u6SwNJ2IjrputF786CD8EQP3GIrSYqPcL/alDDmBZAhY5RCzZUP+i0hD
-	YqiY64FQIKqvg3ZcCgfipQVngctiCzgET5Q+sJQ==
-X-Google-Smtp-Source: AGHT+IEtS55U01N1UHgWrnso9WLvSZJG6q6OApUI854HVfe3yLiduHtXnsLcr3c8YSqi3fNxiU17jRDnA4GPIckhyV0=
-X-Received: by 2002:a4a:987:0:b0:5ac:9efc:3b02 with SMTP id
- 129-20020a4a0987000000b005ac9efc3b02mr5567163ooa.8.1714040245481; Thu, 25 Apr
- 2024 03:17:25 -0700 (PDT)
+	s=arc-20240116; t=1714040301; c=relaxed/simple;
+	bh=qpx9spVeO8CkWFjQ72oQekACDvn3i/PHgcVhhu25UTc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oFbQInRBwOKIpNJ0JOsSJgNBaz6/ZNl/owvkFkbXQDSGJdSbe/OGO2SxDLduCcqfXRBNRjzt0NtFJpk24iHtJR9QsEhHk6Qn53UfwdlE+h8lSWsa0xq7AmlWdbjm6mhdVrXORkdzzhknKGHHa+anxXYGKtJqZWSQYDAXlSp06H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=gXoWfZaL; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1714040297; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=QcCGmMZke9wNUqDSX//NGSJSaxDB+PepcH2WxN5WEqo=;
+	b=gXoWfZaLXRG3rQuUUH2JZfgR0/KI3yErqZFobq5FlEzG/5yJc+IgspoH7ffIyY5iCX/tdxEl4+e5wItSbJhZ80PV3g55HsZxYXUhZ2sn5FFX6IOiinl/UATbu3YNA9tN1YxJmaF7tvaCejq1ssD5rrfmVadx/YgMnQxuLAZLMlo=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=llfl@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W5F8.U6_1714040295;
+Received: from localhost(mailfrom:llfl@linux.alibaba.com fp:SMTPD_---0W5F8.U6_1714040295)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Apr 2024 18:18:16 +0800
+From: "Kun(llfl)" <llfl@linux.alibaba.com>
+To: Joerg Roedel <joro@8bytes.org>,
+	Vasant Hegde <vasant.hegde@amd.com>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] iommu/amd: Fix memory leak in alloc_pci_segment()
+Date: Thu, 25 Apr 2024 18:17:20 +0800
+Message-ID: <a06d50c3a82214a82ccb88c22aa4e4a1d595b39c.1714040214.git.llfl@linux.alibaba.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240423-usb-dwc3-gs101-v1-0-2f331f88203f@linaro.org> <20240423-usb-dwc3-gs101-v1-2-2f331f88203f@linaro.org>
-In-Reply-To: <20240423-usb-dwc3-gs101-v1-2-2f331f88203f@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Thu, 25 Apr 2024 11:17:14 +0100
-Message-ID: <CADrjBPoyY2p1pwpO-wgMD_o6o1YjEAt_nmAnaniASHNoimE2EQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb: dwc3: exynos: add support for Google Tensor gs101
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
-	Krzysztof Kozlowski <krzk@kernel.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	Will McVicker <willmcvicker@google.com>, Roy Luo <royluo@google.com>, kernel-team@android.com, 
-	linux-usb@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, 23 Apr 2024 at 21:19, Andr=C3=A9 Draszik <andre.draszik@linaro.org>=
- wrote:
->
-> The Exynos-based Google Tensor gs101 SoC has a DWC3 compatible USB
-> controller and can reuse the existing Exynos glue. Add the
-> google,gs101-dwusb3 compatible and associated driver data. Four clocks
-> are required for USB for this SoC:
->     * bus clock
->     * suspend clock
->     * Link interface AXI clock
->     * Link interface APB clock
->
-> Signed-off-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-> ---
+Fix the memory leak issue that occurs when resource allocation fails in
+alloc_pci_segment(). The dev_table, alias_table, and rlookup_table were
+introduced individually in three commits. But they all fail to release
+allocated resources when other allocations fail.
 
-Reviewed-by:  Peter Griffin <peter.griffin@linaro.org>
+Fixes: 04230c119930 ("iommu/amd: Introduce per PCI segment device table")
+Fixes: 99fc4ac3d297 ("iommu/amd: Introduce per PCI segment alias_table"),
+Fixes: eda797a27795 ("iommu/amd: Introduce per PCI segment rlookup table").
+Reported-by: Xuchun Shang <xuchun.shang@linux.alibaba.com>
+Signed-off-by: Kun(llfl) <llfl@linux.alibaba.com>
+---
+ drivers/iommu/amd/init.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-regards,
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index ac6754a85f35..4ce567f39473 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1642,13 +1642,22 @@ static struct amd_iommu_pci_seg *__init alloc_pci_segment(u16 id,
+ 	list_add_tail(&pci_seg->list, &amd_iommu_pci_seg_list);
+ 
+ 	if (alloc_dev_table(pci_seg))
+-		return NULL;
++		goto alloc_dev_fail;
+ 	if (alloc_alias_table(pci_seg))
+-		return NULL;
++		goto alloc_alias_fail;
+ 	if (alloc_rlookup_table(pci_seg))
+-		return NULL;
++		goto alloc_rlookup_fail;
+ 
+ 	return pci_seg;
++
++alloc_rlookup_fail:
++	free_rlookup_table(pci_seg);
++alloc_alias_fail:
++	free_alias_table(pci_seg);
++alloc_dev_fail:
++	free_dev_table(pci_seg);
++	kfree(pci_seg);
++	return NULL;
+ }
+ 
+ static struct amd_iommu_pci_seg *__init get_pci_segment(u16 id,
+-- 
+2.43.0
 
-Peter
 
