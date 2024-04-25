@@ -1,198 +1,321 @@
-Return-Path: <linux-kernel+bounces-158315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7218B1E35
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:40:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0567C8B1E38
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AD931F211AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:40:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29AD01C21964
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AAD8614D;
-	Thu, 25 Apr 2024 09:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC03384E19;
+	Thu, 25 Apr 2024 09:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tm1GSJi/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZkIVTPyL"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3944485269;
-	Thu, 25 Apr 2024 09:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E5784D2C;
+	Thu, 25 Apr 2024 09:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037972; cv=none; b=MVL4rXEz9okFBN60f8T6W6fKs+M0uRXlcQeoFg37enWG9rdScqCEDPs3Fowbo19GDFMPyNQ4DxcoQ80k6s+DWnWjUNGE/vkGOyUcCPE1DNX8yqGsaj5i24uHg0ssiebulK8sjBLQ17Rc+MrbjH/6i8MeRsSh/oXR+eSowz4vyRs=
+	t=1714037989; cv=none; b=QS146jc+h3HglgzP0MoOYsZgiiIj0UHDh9Wdj/nYfPJK9yskK2AxnDRg3nDNDDQr4NLOJq+pdUPsmLrdy3FEvG/2oO1EXJ14rGvRdyVT0c3bg+0Hi+fM2h6hYyKv/HRs/KSOq9WpKaX01btwTjOGhcnDE/iEzDY+iOozBMRyO0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037972; c=relaxed/simple;
-	bh=T7SvUzXNPNaghOVhRL4B9Uz9WmnB5ZSjgpxjLxrL+5M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a1zUxdzLdCo5Vexhypk8LfoQU1hKwpwk8dKT2CvX18ONTISVeQUGlaMRSheHlTz+0Jm8AefGc773dJeahvdQ/cRDvGuSa0kKcuh/iG2plB/cAH2TAMqiankaBs6gneLs+d8i5kgTWzfzrjvXdGZ+AyuRVMR2ET6yw2ejIBi0pdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tm1GSJi/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F33C113CC;
-	Thu, 25 Apr 2024 09:39:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714037971;
-	bh=T7SvUzXNPNaghOVhRL4B9Uz9WmnB5ZSjgpxjLxrL+5M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tm1GSJi/iuVx4IbFOzTr3vtqSh5XzrLL1XU/Hp4KmTZJlzoTPuQybRrw2ib5hJhzc
-	 hHD8SgemxwTh81dlj2SQeXFrnLDjBUWFRKvm75E7WEnX0zn/Y5bO8wRfjnvJ7+eBwT
-	 yvzWJf7qdSOu2VVBzJigvGMV0Si+ND+/Y750uqbHFL0ol8p7q9Bx1F5ot7a+ifjYYk
-	 I2kvumO5sKxEcvOz8oQERj6KM6CYOuxJiar9e5CUhVzw9daMMhGy2t0Pbwms1fwPuZ
-	 G3ytUWiShsTl+/eT/7NuibyFlGUFmQFM8IJVrhyvldRG0Yeqi0ow4PxnsLP3Fu9oh2
-	 +8zQRvc3EUm9g==
-Message-ID: <bde4884c-117b-4e6e-8c7b-401b8320655b@kernel.org>
-Date: Thu, 25 Apr 2024 11:39:24 +0200
+	s=arc-20240116; t=1714037989; c=relaxed/simple;
+	bh=qzN7MLLBq9f4CvPJfFmQCyWJNSAG003xU4q77TyJx2g=;
+	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=Pr0HHvDX0VA8rQpqC9t+eY2FajLljenXJ7VYrTHn1TdKrIlwdqYU1CzIs+xeBzrXh3TkaOfd6fonv3rvFd1sKmn7Cm3aRLWkjZ5hJe2pT3jMI4GVuJkPD5cLDPRB2LWWJdE1eiZYD5cqcgZjfusmOwX/vuuT7HpXfK7YJ+xupis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZkIVTPyL; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5200202c1bso93479666b.0;
+        Thu, 25 Apr 2024 02:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714037986; x=1714642786; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZeoF2LD/FnGiNx/2NgLwbKv13uzKEYK6tBaU9lBoRUQ=;
+        b=ZkIVTPyLB5Xqlc5TJI9csy0fYxvJPEnNovoWjBM4HWzDkn9mHQQRVe/4Sumc7kyw9L
+         WZW2B8DBhPpqeUOCINdGyFDEqpmBHUU8Od5PDZln15FRa/IrRFYyCqOhQucNWnGqvZv8
+         z1WsWjfgSWqpjlJb/NsSGe7mGzO3y4tB3X0qxQpJA5BJHv4XzISY2WfG6GNnYp4y1Ets
+         qti4mCtArUZSsDAAsvm5j3pk5NuBfn8SE9sx7RnNSDtYWJA7SLEx0OC6nXHGTO1156+Q
+         u/SaYsg7+W/e9OxCi5pjK6gIb48f8hLiilB3tOuJ0IQdpCONi7WgnW8mIyaJaqp8Dsrq
+         u8FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714037986; x=1714642786;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZeoF2LD/FnGiNx/2NgLwbKv13uzKEYK6tBaU9lBoRUQ=;
+        b=HuF+vGuIpIlCt2e589IKiigQ1dS7sKxm+iG78llph7aRRaH2DfV/QsJXBj2h8WKfif
+         ecSHdqclMj4r4IFmYbIFzLQosZgpBK1L2dfTe2AutoJv2KzS6M2yWVtvmOD6UpjNHMsY
+         OQcVclh2rbWQWt6WvzyHKyqpNiI3DE0M2S+6CoSGq3xwzgb7AVNJt/2Xdi7goCbBYOax
+         HKyfNMidb/fB3xO3l2IaGPt1kbWPdiyI5MVL3/NRDx1lD3UxpT+R62poH7W6ly/05Cky
+         6Z5j8BV/Z+LYP8AJQiERqmW5rp9kd14lKfs7iHQ5H8wJydsfV2fedFQvZRmjh3xngYYS
+         Ljwg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLhXXdDomxOw5XuruEy8YetISsRr5OcYlpuryxkdIZq6dhx39+4Gq48NQBNvyaaOBPcLmJJ4RlzbJl9ULCmmiXnWssiWc6W6LT4TmmCW55d417fGJoNQ/FgvCTGsB8AT+LKMUUqgcie1Y=
+X-Gm-Message-State: AOJu0YznaUCg0ThJb59ztAG5lpaHjHuDEvm6MquuJi2dYFIY+5q4ROJD
+	sbYEQcsamz5uLWxiz68qvblOdFTZ44jK8vo7AJnA/2cq18Br9Jfp
+X-Google-Smtp-Source: AGHT+IFc68idvTShi9eRcrAEx83sc450bQhgs6O8zQ7zAp7rnY3edp8EcAC8YYT2edBv37yqvEfJiA==
+X-Received: by 2002:a17:907:2685:b0:a55:a1d4:84f5 with SMTP id bn5-20020a170907268500b00a55a1d484f5mr4896891ejc.43.1714037985945;
+        Thu, 25 Apr 2024 02:39:45 -0700 (PDT)
+Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id gl20-20020a170906e0d400b00a5889ee66d6sm2289894ejb.45.2024.04.25.02.39.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 02:39:45 -0700 (PDT)
+Content-Type: multipart/signed;
+ boundary=11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] dt-bindings: HID: i2c-hid: elan: add
- 'no-reset-on-power-off' property
-To: Johan Hovold <johan@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Douglas Anderson <dianders@chromium.org>, linux-input@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240423134611.31979-1-johan+linaro@kernel.org>
- <20240423134611.31979-4-johan+linaro@kernel.org>
- <2e67e4e6-83a7-4153-b6a7-cdec0ab2c171@kernel.org>
- <Zii2CUeIyBwxzrBu@hovoldconsulting.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <Zii2CUeIyBwxzrBu@hovoldconsulting.com>
+Mime-Version: 1.0
+Date: Thu, 25 Apr 2024 11:39:44 +0200
+Message-Id: <D0T3R7UPFO07.2VR2436TG4N8B@gmail.com>
+Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
+From: "Thierry Reding" <thierry.reding@gmail.com>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Sumit Gupta"
+ <sumitg@nvidia.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
+ <maz@kernel.org>, <mark.rutland@arm.com>, <treding@nvidia.com>,
+ <jonathanh@nvidia.com>
+Cc: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, <amhetre@nvidia.com>, <bbasu@nvidia.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240412130540.28447-1-sumitg@nvidia.com>
+ <20240412130540.28447-2-sumitg@nvidia.com>
+ <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
+ <D0SHRQVCGJBY.2DPLX9K6VXEYM@gmail.com>
+ <D0SILCYU98EV.1XW7NZFC9013K@gmail.com>
+ <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
+In-Reply-To: <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
+
+--11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 24/04/2024 09:34, Johan Hovold wrote:
-> On Tue, Apr 23, 2024 at 06:29:44PM +0200, Krzysztof Kozlowski wrote:
->> On 23/04/2024 15:46, Johan Hovold wrote:
->>> When the power supply is shared with other peripherals the reset line
->>> can be wired in such a way that it can remain deasserted regardless of
->>> whether the supply is on or not.
->>
->> To clarify: the reset line is still present and working in such case?
-> 
-> Yes.
-> 
->>> This is important as it can be used to avoid holding the controller in
->>> reset for extended periods of time when it remains powered, something
->>> which can lead to increased power consumption. Leaving reset deasserted
->>> also avoids leaking current through the reset circuitry pull-up
->>> resistors.
->>>
->>> Add a new 'no-reset-on-power-off' devicetree property which can be used
->>> by the OS to determine when reset needs to be asserted on power down.
->>>
->>> Note that this property can also be used when the supply cannot be
->>> turned off by the OS at all.
-> 
->>>    reset-gpios:
->>>      description: Reset GPIO; not all touchscreens using eKTH6915 hook this up.
->>>  
->>> +  no-reset-on-power-off:
->>
->> Missing vendor prefix. Unless you want to re-use existing property
->> "keep-power-in-suspend", but the case here mentions power off, not suspend.
-> 
-> No, I left out the prefix on purpose as I mentioned in the cover letter.
-> There is nothing vendor specific about this property and I expect it to
-> be reused for other devices.
-> 
-> And "keep-power-in-suspend" is too specific and indeed looks like
-> instruction to the OS rather than hw description (more below), but
-> importantly it is not related to the problem here (which is about
-> reset, not power).
->  
->> Anyway, the property sounds like what the OS should be doing, which is
->> not what we want. You basically instruct driver what to do. We want a
->> described hardware configuration or hardware specifics.
-> 
-> Right, and this was why I at first rejected a property name like this in
-> favour of 'reset-pulled-to-supply' in my first draft. That name
-> obviously does not work as the 'supply' suffix is already claimed, but I
-> also realised that it doesn't really describe the hardware property that
-> allows the reset line to remain asserted.
-> 
-> The key feature in this hardware design is that the reset line will not
-> just be pulled to the supply voltage (what other voltage would it be
-> pulled to), but that it is also pulled to ground when the supply is
-> disabled.
+On Thu Apr 25, 2024 at 9:52 AM CEST, Krzysztof Kozlowski wrote:
+> On 24/04/2024 19:04, Thierry Reding wrote:
+> > On Wed Apr 24, 2024 at 6:26 PM CEST, Thierry Reding wrote:
+> >> On Mon Apr 22, 2024 at 9:02 AM CEST, Krzysztof Kozlowski wrote:
+> >>> On 12/04/2024 15:05, Sumit Gupta wrote:
+> >>>> MC SID and Broadbast channel register access is restricted for Guest=
+ VM.
+> >>>
+> >>> Broadcast
+> >>>
+> >>>> Make both the regions as optional for SoC's from Tegra186 onwards.
+> >>>
+> >>> onward?
+> >>>
+> >>>> Tegra MC driver will skip access to the restricted registers from Gu=
+est
+> >>>> if the respective regions are not present in the memory-controller n=
+ode
+> >>>> of Guest DT.
+> >>>>
+> >>>> Suggested-by: Thierry Reding <treding@nvidia.com>
+> >>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> >>>> ---
+> >>>>  .../nvidia,tegra186-mc.yaml                   | 95 ++++++++++------=
+---
+> >>>>  1 file changed, 49 insertions(+), 46 deletions(-)
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nv=
+idia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controller=
+s/nvidia,tegra186-mc.yaml
+> >>>> index 935d63d181d9..e0bd013ecca3 100644
+> >>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,te=
+gra186-mc.yaml
+> >>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,te=
+gra186-mc.yaml
+> >>>> @@ -34,11 +34,11 @@ properties:
+> >>>>            - nvidia,tegra234-mc
+> >>>> =20
+> >>>>    reg:
+> >>>> -    minItems: 6
+> >>>> +    minItems: 4
+> >>>>      maxItems: 18
+> >>>> =20
+> >>>>    reg-names:
+> >>>> -    minItems: 6
+> >>>> +    minItems: 4
+> >>>>      maxItems: 18
+> >>>> =20
+> >>>>    interrupts:
+> >>>> @@ -151,12 +151,13 @@ allOf:
+> >>>> =20
+> >>>>          reg-names:
+> >>>>            items:
+> >>>> -            - const: sid
+> >>>> -            - const: broadcast
+> >>>> -            - const: ch0
+> >>>> -            - const: ch1
+> >>>> -            - const: ch2
+> >>>> -            - const: ch3
+> >>>> +            enum:
+> >>>> +              - sid
+> >>>> +              - broadcast
+> >>>> +              - ch0
+> >>>> +              - ch1
+> >>>> +              - ch2
+> >>>> +              - ch3
+> >>>
+> >>> I understand why sid and broadcast are becoming optional, but why ord=
+er
+> >>> of the rest is now fully flexible?
+> >>
+> >> The reason why the order of the rest doesn't matter is because we have
+> >> both reg and reg-names properties and so the order in which they appea=
+r
+> >> in the list doesn't matter. The only thing that matters is that the
+> >> entries of the reg and reg-names properties match.
+> >>
+> >>> This does not even make sid/broadcast optional, but ch0!
+> >>
+> >> Yeah, this ends up making all entries optional, which isn't what we
+> >> want. I don't know of a way to accurately express this in json-schema,
+> >> though. Do you?
+> >>
+> >> If not, then maybe we need to resort to something like this and also
+> >> mention explicitly in some comment that it is sid and broadcast that a=
+re
+> >> optional.
+> >=20
+> > Actually, here's another variant that is a bit closer to what we want:
+> >=20
+> > --- >8 ---
+> > diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidi=
+a,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/n=
+vidia,tegra186-mc.yaml
+> > index 935d63d181d9..86f1475926e4 100644
+> > --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
+186-mc.yaml
+> > +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra=
+186-mc.yaml
+> > @@ -34,11 +34,11 @@ properties:
+> >            - nvidia,tegra234-mc
+> > =20
+> >    reg:
+> > -    minItems: 6
+> > +    minItems: 4
+> >      maxItems: 18
+> > =20
+> >    reg-names:
+> > -    minItems: 6
+> > +    minItems: 4
+> >      maxItems: 18
+> > =20
+> >    interrupts:
+> > @@ -146,17 +146,21 @@ allOf:
+> >      then:
+> >        properties:
+> >          reg:
+> > +          minItems: 4
+> >            maxItems: 6
+> >            description: 5 memory controller channels and 1 for stream-i=
+d registers
+> > =20
+> >          reg-names:
+> > -          items:
+> > -            - const: sid
+> > -            - const: broadcast
+> > -            - const: ch0
+> > -            - const: ch1
+> > -            - const: ch2
+> > -            - const: ch3
+> > +          anyOf:
+> > +            - items:
+> > +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3 ]
+> > +              uniqueItems: true
+> > +              minItems: 6
+> > +
+> > +            - items:
+> > +                enum: [ ch0, ch1, ch2, ch3 ]
+> > +              uniqueItems: true
+> > +              minItems: 4
+> > =20
+> >    - if:
+> >        properties:
+> > @@ -165,29 +169,22 @@ allOf:
+> >      then:
+> >        properties:
+> >          reg:
+> > -          minItems: 18
+> > +          minItems: 16
+> >            description: 17 memory controller channels and 1 for stream-=
+id registers
+> > =20
+> >          reg-names:
+> > -          items:
+> > -            - const: sid
+> > -            - const: broadcast
+> > -            - const: ch0
+> > -            - const: ch1
+> > -            - const: ch2
+> > -            - const: ch3
+> > -            - const: ch4
+> > -            - const: ch5
+> > -            - const: ch6
+> > -            - const: ch7
+> > -            - const: ch8
+> > -            - const: ch9
+> > -            - const: ch10
+> > -            - const: ch11
+> > -            - const: ch12
+> > -            - const: ch13
+> > -            - const: ch14
+> > -            - const: ch15
+> > +          anyOf:
+> > +            - items:
+> > +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3, ch4, ch5, =
+ch6, ch7,
+> > +                        ch8, ch9, ch10, ch11, ch12, ch13, ch14, ch15 ]
+> > +              minItems: 18
+> > +              uniqueItems: true
+> > +
+> > +            - items:
+> > +                enum: [ ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, c=
+h9, ch10,
+> > +                        ch11, ch12, ch13, ch14, ch15 ]
+> > +              minItems: 16
+> > +              uniqueItems: true
+>
+> No, because order is strict.
 
-OK, if the property was specific to the hardware, then I would propose
-something more hardware-related, e.g. "reset-supply-tied". However :
+Why? I realize that prior to this the order was indeed strict and it's
+common to have these listed in strict order in the DTS files. However,
+this is an arbitrary restriction that was introduced in the patch that
+added reg-names. However, */*-names properties have always assumed the
+ordering to be non-strict because each entry from the * property gets
+matched up with the corresponding entry in the *-names property, so the
+ordering is completely irrelevant.
 
+Thierry
 
-> Rather than trying to encode this in the property name, I settled on the
-> descriptive 'no-reset-on-power-off' after the seeing the prior art in
-> 'goodix,no-reset-during-suspend' property. The latter is too specific
-> and encodes policy, but the former could still be considered hardware
-> description and would also apply to other designs which have the
-> property that the reset line should be left deasserted.
-> 
-> One such example is when the supply can not be disabled at all (e.g. the
-> Goodix case), but I can imagine there being more than one way to design
-> such reset circuits.
+--11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It seems it is common problem. LEDs have property
-"retain-state-shutdown", to indicate that during system shutdown we
-should not touch them (like power off). Would some variant be applicable
-here? First, do we talk here about power off like system shutdown or
-runtime PM, thus suspend?
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYqJOEACgkQ3SOs138+
+s6Eqtg/7BN1yeZ9CIf1/eTU5EZ9NIerk1mQmCpM/rWLIzVMx25rIypFiE5T5uWOS
+gposhJ8vBKKFwLg94bpJm0+M5zOWxt1B6lZbUXZFQO8WDzPUgGXW0wr63PS0vOfY
+x5fYrNS8XXS1b6UuYofnVIPzSxBoyDMIscN0+Ihejrt5ax9pJLM+6UMIgz9VDAXa
+/JhPUfcq9JMyEQN3VAMddS72pJMkLEEFjKAPYgBxpKQFyS08op+mgdQzBjJ+oouB
+2tx9U1a5bjtcMxvF0wfuCqBhGUz3s1n3SiFkmkjBfh5qc2q9GG9D64g1kKxiFdHI
+HHGcpic7pHUNz4Ym8B1w62PlnK7SLC9J4shF/z/MD0whu5YLyuFspdFeBxcW/Axg
+rMFB8xsFQo5RvsvMrU6WiPSJj4NlMZKqEdCakXjevLvHu7x7Mgsjko96HW/qXCjV
+S51OyulhmqM04emY1t3kqHmO/6F+QcPNvovMP+FrLN2MH1qSY91hamSI0NRVanZB
+TFiK3q1UfeY7fgf+hzXlNhePcisunYo46CzItzZZMD7HhkxamwEEc6olAmO37vFh
+M5igQu/+0pAR3UfWpmAiiG5cjG9diiKibgWYWTlhnTBhc28Zrc/vOP+7aZPlWuOw
+Mv7X2FoZkHr9kYD1vpQ+i/Wl18FIeNMEzAlv33YAZnuoNmJgvnM=
+=gP+z
+-----END PGP SIGNATURE-----
 
-Best regards,
-Krzysztof
-
+--11bf7723ce2ee8c4dc9f5d8a9625e732e4266a15537986345fdef71c5bc5--
 
