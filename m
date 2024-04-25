@@ -1,111 +1,153 @@
-Return-Path: <linux-kernel+bounces-159032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC1A18B2875
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:50:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E508B2879
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 20:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88A4528160D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:50:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 497751F22534
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 18:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3679114EC58;
-	Thu, 25 Apr 2024 18:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00A914EC58;
+	Thu, 25 Apr 2024 18:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qztlQEUz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L+80yaQb"
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792062135A;
-	Thu, 25 Apr 2024 18:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D747112C7FF
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 18:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714071034; cv=none; b=IZWlU84ycwboG4dZXcaDhT8kvftbUqRXiouq3m0e1VujSznS47YojwylBY92KT5YT/nCCSUS1I+E/bnccefidGVn27CzYW7Pc7Spv5y0jy9cn7FnA+mmxb2n/hUmkgA6ug6mXgCRHrKzFiI52mo0p65QvWBBD2IPqN+Lsq3S/mQ=
+	t=1714071215; cv=none; b=gzeY8wk7JaUQkp1L4Gyz58221CpOoUujbb6iBuDZ9Jq++wduvqth54WrF6214qe5+mU+tstcm5yRozR7V3Z+cfXeDyWz4Pmekz9IDNYDa5N2jdVG5/9NOV3Q9TUC7OLPtLLnEfcI3fpapNM7+zFtHxJOpPjkv3OLZY2VsSxYCIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714071034; c=relaxed/simple;
-	bh=kt8WoX1FzFxbm3s2wti1UEz7nEy1w2bo9zkTOhlslRg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=DI+oMgfgzz46v+11PEIS2vt09W38aStH4JbtbrtW3WozRpPKrTM6Lpb6qXUaCGK/WmhQ544y3naqAcPazKOCxUckj8T5ISPDIgD3MzeBwOU3eY9G4hdWPbeDd5xdcxUJlHyCsineC7kRg9ipOukj58vOGACRMF8H2p59yBpNxIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qztlQEUz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EC6E9C2BD10;
-	Thu, 25 Apr 2024 18:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714071034;
-	bh=kt8WoX1FzFxbm3s2wti1UEz7nEy1w2bo9zkTOhlslRg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qztlQEUzIcGecgUOLaJcIw+pwInH4URPwrWfroNrxpprZeKywT1h4/UO1oEPpx2a5
-	 37W5fm8Au5hBjwYAwNCRARExfoqYIqqA1aRu8+yOwHG9/ukbKl3CrKioXVzsn0ugpy
-	 AMWB2mPIwPkb/Ls/tTYW2wC6TS/domdxkwvF1hQPBFAj7AgtYNXcTLqk/6LUINk71q
-	 Q/i8wmdAxPSLx+8INMISQTICl7Nm8YGX+UX4xVs9GSIgO5mXaCuGQL3U9/ZZeAjhzL
-	 PUeyTZcjypSZefDIgKsaIMutWBlsbJWvwyi4cqYm2UwCSYPzixAR4B+gOkTEUtJuTB
-	 CTrVS1zjGmqiw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DF640C43140;
-	Thu, 25 Apr 2024 18:50:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714071215; c=relaxed/simple;
+	bh=re971cS/rGk+4wp+vkc/sEN1VDcEfvgLrnON22YFVwc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=q+IncooqZ3w+1fq8Zf5j2bKeMoBBZrmDgW+E2aN8aLAO0z990Dzep4hvomC+X81LWxETaU7ssQuB8WVi44gheaEUuVOA3DJz4na0+Grf5Tx2YjjxVnAWmsuYuTu+7rxkQq89blHHHRLU+cd5OdwOC4HEBM6pMRYSwxx61NRAq0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L+80yaQb; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714071211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aznp4QsPEUD4ueRh6l09AkRprYe0zqCUY4MqSs3knq0=;
+	b=L+80yaQbJXmGtikX5eolbc2kg73dE+2Wliyg6C1xKn5Vn8P6BJWALMCAPybMmp5IB44/pg
+	IpsFzNoVd2hUhgKgopzlWktU/54ejgClHqTEm+x/6WpQ3V6EsHe2I7KlvZr1pmBBoApEpU
+	0DCiJ0Rlkkn4j6TVo09BrMBXA7NRLv0=
+Date: Fri, 26 Apr 2024 02:53:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
+ <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+Content-Language: en-US
+In-Reply-To: <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/8] net: dsa: b53: Remove adjust_link
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171407103390.26281.405270567595119985.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 18:50:33 +0000
-References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
-In-Reply-To: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: netdev@vger.kernel.org, andrew@lunn.ch, olteanv@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux@armlinux.org.uk, linux-kernel@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+Hi,
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 23 Apr 2024 11:33:31 -0700 you wrote:
-> b53 is now the only remaining driver that uses both PHYLIB's adjust_link
-> and PHYLINK's mac_ops callbacks, convert entirely to PHYLINK.
-> 
-> Florian Fainelli (8):
->   net: dsa: b53: Stop exporting b53_phylink_* routines
->   net: dsa: b53: Introduce b53_adjust_531x5_rgmii()
->   net: dsa: b53: Introduce b53_adjust_5325_mii()
->   net: dsa: b53: Force flow control for BCM5301X CPU port(s)
->   net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
->   net: dsa: b53: Call b53_eee_init() from b53_mac_link_up()
->   net: dsa: b53: Remove b53_adjust_link()
->   net: dsa: b53: provide own phylink MAC operations
-> 
-> [...]
+On 2024/4/26 02:08, Sui Jingfeng wrote:
+> Hi,
+>
+>
+> On 2024/4/25 22:26, Andy Shevchenko wrote:
+>> It seems driver missed the point of proper use of device property APIs.
+>> Correct this by updating headers and calls respectively.
+>
+> You are using the 'seems' here exactly saying that you are not 100% sure.
+>
+Using the word 'seems' here exactly saying that you are not 100% sure.
 
-Here is the summary with links:
-  - [net-next,1/8] net: dsa: b53: Stop exporting b53_phylink_* routines
-    https://git.kernel.org/netdev/net-next/c/65245197ecec
-  - [net-next,2/8] net: dsa: b53: Introduce b53_adjust_531x5_rgmii()
-    https://git.kernel.org/netdev/net-next/c/b3d06dc3707f
-  - [net-next,3/8] net: dsa: b53: Introduce b53_adjust_5325_mii()
-    https://git.kernel.org/netdev/net-next/c/0d18dea4cde6
-  - [net-next,4/8] net: dsa: b53: Force flow control for BCM5301X CPU port(s)
-    https://git.kernel.org/netdev/net-next/c/93a2579ed08c
-  - [net-next,5/8] net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
-    https://git.kernel.org/netdev/net-next/c/536e5b2ecbae
-  - [net-next,6/8] net: dsa: b53: Call b53_eee_init() from b53_mac_link_up()
-    https://git.kernel.org/netdev/net-next/c/888128f360e1
-  - [net-next,7/8] net: dsa: b53: Remove b53_adjust_link()
-    https://git.kernel.org/netdev/net-next/c/600354352cf2
-  - [net-next,8/8] net: dsa: b53: provide own phylink MAC operations
-    https://git.kernel.org/netdev/net-next/c/d0a35d2948ec
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> And this patch is has the risks to be wrong.
+>
+This patch has the risks of to be wrong.
+
+
+> Simple because the "ili9341_probe() ---> ili9341_dbi_prob()" code path
+> is DT dependent.
+>
+Simply because part of the driver is DT dependent, plus its code(implementation)
+is deep(tight) coupling, as a result, it is became total DT dependent.
+
+
+> First of all, the devm_of_find_backlight() is called in 
+> ili9341_dbi_probe()
+,
+> under *non-DT* environment, 
+
+Under *non-DT* environment, the use case probably should take into consideration.
+Since you remove it, then we can't stop imagining. But if we really care about
+the usage case on DT based systems, There is *NO* difference between the
+device_get_match_data() and the of_device_get_match_data(). This is the reason
+why I'm saying that you patch has the *ZERO* effects.
+
+And again, on non-DT systems, if there is no acpi_device_id stuff, calling
+the device_get_match_data() function will just get NULL. Which is nearly a
+undefined behavior. So the 'OF 'removal is don't really make much sense.
+
+But there is a way to save the awkward situation, that is, helps to get
+this patch[1] merged. Then we still tenable both at the practice side
+and at the concept side.
+  
+
+[1] https://patchwork.freedesktop.org/patch/590653/?series=131296&rev=2
+
+> devm_of_find_backlight() is just a just a  no-op and will return NULL. 
+> NULL is not an error code, so ili9341_dbi_probe()
+> won't rage quit. 
+
+[...]
+
+> But the several side effect is that the backlight will NOT works at all.
+>
+s/several/severe
+
+
+> It is actually considered as fatal bug for *panels* if the backlight of
+> it is not light up, 
+
+
+It's fatal error if backlight is not adjustable or not light-up at all.
+
+
+>
+
+[...]
+
+
+> Even though the itself panel is refreshing framebuffers, 
+
+Even though the panel itself is consuming frame-buffers and displaying.
+But if the backlight not work, the screen is extremely dark, we can not
+see as well.
+
+Besides the ili9341_dbi_probe() requires additional device properties to
+able to work very well. Especially on the rotate screen use case.
 
 
 
