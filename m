@@ -1,195 +1,153 @@
-Return-Path: <linux-kernel+bounces-158227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF6E8B1D37
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:00:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 244CF8B1D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:01:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3CADB23F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92B2C1F20F52
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CF282485;
-	Thu, 25 Apr 2024 08:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C56A8249A;
+	Thu, 25 Apr 2024 09:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HIv4KTA/"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2045.outbound.protection.outlook.com [40.107.223.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="K6S6L3sE"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54907F486;
-	Thu, 25 Apr 2024 08:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714035595; cv=fail; b=KYbNu8bfUtrBaphYbQFQGePxFf4FfSZr4lDnZb5PqWOwAf2tnRRnfR1M0J6wfQ1hRqDQt3SmMTfU3yoQBi7RL7KvhPDP4SH4E2xrQF8Tvrh/k62nRNzT7e1aNZxBhONqCe14g4yeanneHMIlB6ZM5hWx/iY+NV10X63/0WW7GBI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714035595; c=relaxed/simple;
-	bh=gzAHYhwIcOL6HP76NjPINIqH/Fb2AhS+nZR73+FI5j4=;
-	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID:Date; b=OoqPivykRQ8yqhLAIXCnx0/5OGr3W9MdV5TxKMjvRaLDyO4BKj91BQOGZVgBUEmj1bCke1vPgpmiWOZM6nHvOBBqvdYkC6LrSq9q0Te0MWehJhA5Ykt6MB1ylh4uY1O0dFeBNfWGIQRv/1RIm91FAd3V/wLah5r/80OPCKodcP8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HIv4KTA/; arc=fail smtp.client-ip=40.107.223.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hj+hNJRhsE/VUUFxm5mNTcDNyD0pLKA/MHuk5qX+MoFdKWyvxJMR2bVxBzbJ4NcUAhMbc2+n5Gcw5U7qVt5O9yBnVK2Cz3NLiG0VFK9xg7gi5w947GhfAaFgow95vYlB0phm+nuzQMvf0CMeb4QJxu44/fv0Kbbh/XB+Z/VBIHFIqe0SFuTXJZWfh0Rx9ytwvPV1zp4gsek/nE+HU7VU398J4IOEoGAzRuK/94RjIuI7yTou1+I4VmTKj+PuSNkql9GlOayUp0cDsIkXICTyCoLWbv60j7JLKxktZmHefP6tsFULyLLj6QTxZdrCXa/H2KEC1OY0DXY4cYXtEu23hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NASeWTM9GKerepBQlDQ3dbCqXR2WcIxKiEEna9FEgAA=;
- b=Yijlc9ajj2c5DFVU51p0W1VNLo3zj/1KfgkSeqdfrUviQUxFwpoU8My5aaPemFm8xBalqlU9VizWzoyemmjS/W2F61UJeA3VHx4YKjvOUwzDCjlx/5ddomYO35pZmjm7/7aTquynAtNETTPwebCw6VR9TdugFudBWuUZL9l9tL66wjFnA5PujzNXko5hy9PhceX6tIt3LpyTdVYEW5o7Hns7dRutdqPFBW8AVp+WkYabXkL98d1dTNtaljrF/1lqOXMEJJgwBcILED5ZRkNRWFOjmpTZMNgvxAJ8T0aMflCw6WLhaGPypNbuBvdNIXFiuqTHqBtNFkSVRQI6AjT4mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NASeWTM9GKerepBQlDQ3dbCqXR2WcIxKiEEna9FEgAA=;
- b=HIv4KTA/vtK4AlCBaklm8fIeWf2I71m/rr8/OddDVzjQsMOzHj1IKkXiYRGZc7HrJf+Ce1hPLmVl+AK61aNW7oeqwbBaEkN3MAhjQ+aalANg4Fw5Maa6mrNyM2rPzfkEDEBccmZqoAjT3ypO+crbks00qSUd4sS7bkeyAQfskgydEXNvylc3AT4O1XsWngb0TtrcUbGlYFweBCJhgxKS+/62icF0vc6UiNNuPGzWNjhZoXo1To+86/htRIsTi6ojZ4n+FYJZuuuDAU/sHbz97MfcWBH1Lp8yqQrOkP54aD/8kZkX/aIiqrFUxWJVffVT8iToxOGktcyfmppUxr8DWA==
-Received: from DS7PR06CA0033.namprd06.prod.outlook.com (2603:10b6:8:54::15) by
- CH0PR12MB8549.namprd12.prod.outlook.com (2603:10b6:610:182::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 25 Apr
- 2024 08:59:51 +0000
-Received: from DS2PEPF00003444.namprd04.prod.outlook.com
- (2603:10b6:8:54:cafe::6b) by DS7PR06CA0033.outlook.office365.com
- (2603:10b6:8:54::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
- Transport; Thu, 25 Apr 2024 08:59:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS2PEPF00003444.mail.protection.outlook.com (10.167.17.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.19 via Frontend Transport; Thu, 25 Apr 2024 08:59:51 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 25 Apr
- 2024 01:59:45 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 25 Apr 2024 01:59:45 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
- Transport; Thu, 25 Apr 2024 01:59:45 -0700
-From: Jon Hunter <jonathanh@nvidia.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
-	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-	<broonie@kernel.org>, <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.15 00/71] 5.15.157-rc1 review
-In-Reply-To: <20240423213844.122920086@linuxfoundation.org>
-References: <20240423213844.122920086@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E33180056
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714035655; cv=none; b=lT3IZv5dTh227/lX6mev1KqVjXZNDhH+L1syMkO6fPnl22F1hX07OgD+23cQEkuVHzgvQYsgKPcT5OuB54C8vP3W8+jKk7Tzvob9t5/bd7iT+R55cmX/Lsy+tiNxnwg8ELVvHTH2iTl7x9ax5vvW+EBpy1Ugxj6b+DeNBo7b6os=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714035655; c=relaxed/simple;
+	bh=hxPa/xW4XemSSh+6kDeb4Xm5EBcoU8VCtmv3JFmprx0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=s0JUL07SPLSDp1azZ/HTfaYLMoTwfjzCWfMlWuS5aNWiKYrQhrPyPdF3na6gGi71Ss2Sm408NCOhgvEGqI/ZjX8bHZJtP/qsw+wA2F327jsqJAard63oTDAavPX4jFH/BfFHkrzuQ/MxmZdFyCHyNaQ+Tcp76F2Ms3smfE7P6X0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=K6S6L3sE; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso1009617a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1714035652; x=1714640452; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvEI4foK1L+IEvRMU+9j0M20skVBYn6iR5gFVtibc6U=;
+        b=K6S6L3sE/hgQ53jCSXJEtfsrfFMOaT7ixm7ZY9B5+94FrHh7v+HO6L3Sz1CA1rd/wE
+         kQE6fTwyPKEd92A4ATGdaAyqW8AeoUK/N+QsEmEOSgy96a3hvOi0HXUlhl0gt/98x9fi
+         GBupEEYnVkz45EyRaCAjxIIOj+dZUHtaLuWufT7ZeHMbiINx8VvDPdWxH+bcpRG46wAI
+         ePAcu9L2BWnKCZo9iRKEva6tjNmd9rroq9R4rtmkGKzNt0hxwveTj6FlEteRKEIob+v4
+         Ty/ic2C26x4MIaL3k3o/oYeqQDDEFAlGieVLLow1LU6Zjlj5XX1GArsl1Dvit4WgiSvs
+         VqHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714035652; x=1714640452;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=uvEI4foK1L+IEvRMU+9j0M20skVBYn6iR5gFVtibc6U=;
+        b=AVmd6vXxhlXa4V3kQ8xUvVfHqyMhaKF6t83sLgvswsL16d8oUqqmSZAlxyeYzwunMR
+         h/BxIGVhNcv5Dnc1NkOsZ2QYPcC/kP6zXO2T/zU0Nrbo8B/cFUkdtl3Wo3+2IqY7QoKD
+         jQUQKVmH0Vp4CDOMKHp60M9MrTgqPywbgk/nIs3vVVkbA56s3uHmAXNAH96B+ZCChwMo
+         Jm5fwaySflVEqbor4fMJm19kjo9LYTmSCoACAa1sJkvqPDsohfTyTbVPJc4mTmxSNCGW
+         ueZAWT66cdCUdwFtE1BunszGIQDAUW7lby4DkVPtj89qDt8Ml+IohaIbCbe7Y9eCir4n
+         8D4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVX1rjgAOEUKqeHX3FqPohx7C8KXB+1nhXz9xqO1aGFVbZKfGTTOEkW3MODa+4htV9kKvrw4XWRVUiisluKzAhZoaIEAd1g3ZKmDy2/
+X-Gm-Message-State: AOJu0YyaRK586pPw62uOjfPkz9/02d8CkWt/i6Pgd3J5AZIay9erdHFH
+	oXcj7NF22+NIZjD2Dq1YYY+urW0D81ci4RcHN4Q9Jc7gInReTf2dYvllI0uxiVI=
+X-Google-Smtp-Source: AGHT+IEPKJB0fifRbgzdg1AP5xzQvJRUxnNuDjffQON6Bb85hb1b2r53VTCuJLLfykdKZy8YCjaamg==
+X-Received: by 2002:a17:906:1b45:b0:a52:30d3:41dd with SMTP id p5-20020a1709061b4500b00a5230d341ddmr3498691ejg.41.1714035651546;
+        Thu, 25 Apr 2024 02:00:51 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id cf5-20020a170906b2c500b00a587868c5d2sm3315093ejb.195.2024.04.25.02.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 02:00:51 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,  Thomas Gleixner
+ <tglx@linutronix.de>,  Miguel Ojeda <ojeda@kernel.org>,  John Stultz
+ <jstultz@google.com>,  Stephen Boyd <sboyd@kernel.org>,  Alex Gaynor
+ <alex.gaynor@gmail.com>,  Wedson Almeida Filho <wedsonaf@gmail.com>,  Gary
+ Guo <gary@garyguo.net>,  bjorn3_gh@protonmail.com,  Benno Lossin
+ <benno.lossin@proton.me>,  Andreas Hindborg <a.hindborg@samsung.com>,
+  rust-for-linux@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
+In-Reply-To: <CAH5fLghL=G-ihevf1_D0aGffmJMtxtSpMDoTGtrmdiDfhwpKnw@mail.gmail.com>
+ (Alice
+	Ryhl's message of "Fri, 12 Apr 2024 15:51:12 +0200")
+References: <20240411230801.1504496-1-boqun.feng@gmail.com>
+	<20240411230801.1504496-3-boqun.feng@gmail.com>
+	<CAH5fLgg0CkZO9KF58boui6Y5ajpXHuGh0OxyNru2aEG5pNObwQ@mail.gmail.com>
+	<Zhk0q-0eM4z5JHqn@Boquns-Mac-mini.home>
+	<CAH5fLghL=G-ihevf1_D0aGffmJMtxtSpMDoTGtrmdiDfhwpKnw@mail.gmail.com>
+User-Agent: mu4e 1.12.4; emacs 29.3
+Date: Thu, 25 Apr 2024 11:00:31 +0200
+Message-ID: <877cgln7f4.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <06ee6f01-6318-43bd-b6a0-ffefb210e654@drhqmail201.nvidia.com>
-Date: Thu, 25 Apr 2024 01:59:45 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003444:EE_|CH0PR12MB8549:EE_
-X-MS-Office365-Filtering-Correlation-Id: d9c17729-6e29-4815-648b-08dc65061135
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cmZjQVFZU0hXYmpqMnEySDVwMEV6WWtSMTQ0VFd3M0tOWFlBLzBsZGoweFk4?=
- =?utf-8?B?SUYvZUNyNDR0M3QyYllZS3NkK0l1QmFyem1Xa2F3TklJN1VBcUxiNGZISEQ5?=
- =?utf-8?B?Y1BzWDMyUHJCcmZDTFhVZUxFNDlyQzBkVVlNb09QVittM3oyRXhyTWFaRXlH?=
- =?utf-8?B?TUE5cE43cDNtOVRUR0lISFJYU3R4aEZvcTJKUDFUeldQeGNaZjRMeDRlaFhi?=
- =?utf-8?B?S05HeUYrbFpCN1lsL1U0dDkwQkFCVDRpYWFubGdDQWd4QnlQcC9PTWdrZjRP?=
- =?utf-8?B?NDRqeVpqOTc4eVladDlmdVhvczhPTnNHSlAwK3NNS1pudkdKLzJCTjJjV0pZ?=
- =?utf-8?B?RkhTQk9SZWNFeEp2WDU4Z2d0T09CbnlwVDh5VHZveCt5b2ZKS08rc3NxY1pZ?=
- =?utf-8?B?Q0loVSt6bmt1NzV5NS9SaEJkdTN5cXppbjlrb2dkTDlnald1Tmh4ZGhWMHEz?=
- =?utf-8?B?d09jZHFXSm43QUFQdDByd2VxdTRrSTM0allkeThHM25ER2tSTkNYODlUWWM1?=
- =?utf-8?B?OW1kaVdpNEVzYTdFSzgxYW9FOE1PNlpHMEZ2R3JmeWdLZXJ6Z3lSb0FZMEVn?=
- =?utf-8?B?NTQwOXVuai9pZVAxaUMvdTB4b0tFWkoyVVFScFJBV1lud1Nhc2xLNmJOaUdU?=
- =?utf-8?B?cEgrL3E4YXRtdUlrRkJ4dW9pazg5R2Q5ZmhvNlphQ05UblRZMTBrcTdpcWor?=
- =?utf-8?B?TjQrdXRINzNvZXFzTm5TTXVpZ1VZNUI5eXJLcmxndzRHbVhjR0ZOSThlRkhp?=
- =?utf-8?B?dE9rWDVxdkE1eW1oM29yTmgyeHFCMERCS2E3ZVlkejY1YWphQ2NKcW9Yemcx?=
- =?utf-8?B?eHJUaXNTcGdFZCtmVi81bkJ6ZTluRUh1MU5tY01rZTR6K2NWWUw1c0JsZFlZ?=
- =?utf-8?B?WU53YmgrMTBMazZiSEx4YnNPd2hBblY5cUlPOGdHRlJsUFFlSzV6TTRteE9u?=
- =?utf-8?B?SndROEY4d1ExQzdWdnIrVDV1SU44dkZOU2V5dFRuUjJMTk4vakFFRUdsbFdC?=
- =?utf-8?B?L3Z1VCtJWmtIVytPQ1dyMDUrWjAxcGNYSWxBb3dxYVMrc1dkdUhOQ3ZjN1VO?=
- =?utf-8?B?dkhyWXlpQzI1NEc4UzJaUHQxM3RmMnN5YysrdDJZQUFDd2FwTVd4Z3FKTGQ4?=
- =?utf-8?B?VTFkZ2JxeDFhM0lvR3U0WEVqc3RCbVBSU3U3S2RDVUV6T1BRMXlFZ0o3dXdM?=
- =?utf-8?B?OG1wR285SUtEeEJaR2hpVWd2MkVkbmFWR3k3d3dlaFpQVVlsY0FQQWpPdjNX?=
- =?utf-8?B?SlNXQi9tNnVuS04xZkw5OFZRU29nVXBmZlp3WURPZUo2Tm5uakJEVEozbHZu?=
- =?utf-8?B?eXdrOHpUM1BQUDJjdUphRk16MVJhbk9vRWV0dUkrZys0bU5wNm8rb1VhaDl0?=
- =?utf-8?B?cUQzOTVKNU5Wdy81WlcxcHRmMXBrODNyQlJ5Y3YwcDFVQVY4MVA1UXB3R0c0?=
- =?utf-8?B?RDVwZFpOdGlJcnZDSTZEUG1DZnM4Vk1FTnJMRTdBOFgyUE9LdHhKZTZLeEF5?=
- =?utf-8?B?YnMvWU9VZTZFWThldHlYWHVLVzhudjJKUkhMMnAxd0dGZEttUUVrQk13K1E0?=
- =?utf-8?B?a3RhYTdDbVNVSDZHUVFsekdEM3RidjNaWHNaVkdlbFlJNlNRMGVLbWdLS1NZ?=
- =?utf-8?B?WkNhUnhTNkZhR1U0UjJWZUpKZU9DaFJmd3NYbzZiOTQ3TW5IOW5oMlBGWEc3?=
- =?utf-8?B?Q2VVc2lRSDdGQ1I3TGVnVHl4WVFTSDBZVEhxQURIY2g4bHBuQVpBSHpyOXBX?=
- =?utf-8?B?YS9MT2ZvckVWNnNhcEUyUThxaTFoa1E2TTRNRmZhTTdmcWo1S1FkRVo3a0JK?=
- =?utf-8?B?V0l6QTdMSWRudXpZbGQzczhTZ2V5c216RUEwT3JiZkR6VHlzZDMvSHloZXV5?=
- =?utf-8?Q?n0OUNEq4+OK6F?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 08:59:51.1282
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9c17729-6e29-4815-648b-08dc65061135
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003444.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8549
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 23 Apr 2024 14:39:13 -0700, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.157 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.157-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Alice Ryhl <aliceryhl@google.com> writes:
 
-All tests passing for Tegra ...
+> On Fri, Apr 12, 2024 at 3:18=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com>=
+ wrote:
+>>
+>> On Fri, Apr 12, 2024 at 10:36:05AM +0200, Alice Ryhl wrote:
+>> > On Fri, Apr 12, 2024 at 1:08=E2=80=AFAM Boqun Feng <boqun.feng@gmail.c=
+om> wrote:
+>> > >
+>> > > Currently since Rust code is compiled with "-Coverflow-checks=3Dy", =
+so a
+>> > > normal substraction may be compiled as an overflow checking and panic
+>> > > if overflow happens:
+>> > >
+>> > >         subq    %rsi, %rdi
+>> > >         jo      .LBB0_2
+>> > >         movq    %rdi, %rax
+>> > >         retq
+>> > > .LBB0_2:
+>> > >         pushq   %rax
+>> > >         leaq    str.0(%rip), %rdi
+>> > >         leaq    .L__unnamed_1(%rip), %rdx
+>> > >         movl    $33, %esi
+>> > >         callq   *core::panicking::panic::h59297120e85ea178@GOTPCREL(=
+%rip)
+>> > >
+>> > > although overflow detection is nice to have, however this makes
+>> > > `Ktime::sub()` behave differently than `ktime_sub()`, moreover it's =
+not
+>> > > clear that the overflow checking is helpful, since for example, the
+>> > > current binder usage[1] doesn't have the checking.
+>> >
+>> > I don't think this is a good idea at all. Any code that triggers an
+>> > overflow in Ktime::sub is wrong, and anyone who enables
+>> > CONFIG_RUST_OVERFLOW_CHECKS does so because they want such bugs to be
+>> > caught. You may have been able to find one example of a subtraction
+>> > that doesn't have a risk of overflow, but overflow bugs really do
+>>
+>> The point is you won't panic the kernel because of an overflow. I
+>> agree that overflow is something we want to catch, but currently
+>> ktime_t doesn't panic if overflow happens.
+>
+> What the CONFIG_RUST_OVERFLOW_CHECKS option does is enable panics on
+> overflow. So I don't understand how "it panics on overflow" is an
+> argument for removing the overflow check. That's what you asked for!
+> One could perhaps argue about whether CONFIG_RUST_OVERFLOW_CHECKS is a
+> good idea (I think it is), but that is orthogonal. When
+> CONFIG_RUST_OVERFLOW_CHECKS is enabled, you should respect the flag.
 
-Test results for stable-v5.15:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    102 tests:	102 pass, 0 fail
+I would agree. If users do not want panics on overflow, they disable
+RUST_OVERFLOW_CHECKS. If the config is enabled, overflows in ktime sub
+should panic, even if it does not do so in equivalent C code.
 
-Linux version:	5.15.157-rc1-g70f39a25a6b8
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
+BR Andreas
 
