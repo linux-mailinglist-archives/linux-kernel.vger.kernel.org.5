@@ -1,130 +1,178 @@
-Return-Path: <linux-kernel+bounces-158303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D64828B1E11
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:33:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CFD98B1E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 11:33:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9881928293A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3A61F21F35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 09:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AA184FCD;
-	Thu, 25 Apr 2024 09:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5539084DE7;
+	Thu, 25 Apr 2024 09:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lJ3D6S2Z"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="U5Ld14Nr"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A99B84FBF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 09:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C14184D0D;
+	Thu, 25 Apr 2024 09:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714037611; cv=none; b=FTnFdf7V1YjvsuPVoCV7g+q+CvrRqyNfAaDQlLQ2VYHcJLJdepnJgQRcHonj29v2yNKALFWazf1HZzlqX4Mzdh8AICR/ihuV6lRCEgQV5BbliIhhAgJtuLLsvLt13ZvV8tf8C/h1MMdaX5qAYzBOHwNPG+jGUG2wMz9aCuU4bqE=
+	t=1714037601; cv=none; b=S+CIHUcEwpsBdA+FSlCGiYkr2iXhtN7ao5si3gizoEE/p9Urx1j1QGY9Zqmgu+7p7Qx6GBM18v0ihTn0vg1SeF2eddzE0D35P4SeymCTd0LuDBQtCp/Q28ozWrXE6brTtLnNkJ9YrymKTmFv91FnXT4HnMXhWY7m5yhgztr3Uys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714037611; c=relaxed/simple;
-	bh=jsWz/PnALIkdN9qUdDwNKDeU0qNvhFKiyrmn/dMkRhk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XwDfnTPF26YutEcvfqOmpB0WHI/8VBReCbb1D+as7x/A1MaMGlfseUbAj9HZcwL3c90OHYIKs8uT3aEP/aUt1J+7rja8zy1BVDK2P0l6Uoe2s4OKNTNkiaU9eOf47YoMb3ivPC3ZvGxpjh1+ichdxkgEburTanTNI7EeQJtDF9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lJ3D6S2Z; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e61a25900cso295784241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 02:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714037609; x=1714642409; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0g8AoNgNK5FpEulQUEfO2DSIFwhKhldAuDagIIonV0I=;
-        b=lJ3D6S2ZVjfVPfaSPDybSMArh7WEVgVxmJsLNyrZ2EwotLtHcAu2dvTZBxG/6iz1AZ
-         ARHTMzW0pWEwToS/UtBMIyiNElsu8MX20CBilt6k3NamxzVsAsFhgQEE7lZmWEK0pYgY
-         rj8TEqx1DZu05lU5D4VYmmttfCBwSHQGmuRjs2gZqB/k64DuQVAykdjhDRyy1WKOHW5v
-         4Caa76J/hBhB7eKpwO1YdbfL2hSer16w3zLObexh3ANlWYxenNENWF7GFrE8oWbHPF5X
-         cDoj3j1LmROMQDNOiLZYXjwYtYKuxRrW3ItZWQxznnvG49N9SBpMuSF/22ZKgZkfutZc
-         Wy7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714037609; x=1714642409;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0g8AoNgNK5FpEulQUEfO2DSIFwhKhldAuDagIIonV0I=;
-        b=oYDEMh87XVq/UMiPKdRWt7bw3h+i9H6OI9sxyTx75qEiLf+qZ8rgtWOpYWzNNNZPzx
-         8ZdtB3VcDDmSk9WM/gJNn5vOZ/BCrDhNu6m+JIejeJg9HVk2h81YiBOQmh+3KV/vXBtP
-         yX09RumTQ6H6o+pDHpO01698KCoHuFNhyYTo5fOXyqeInAXLtymQGphdnbUjbmKtfizZ
-         ibsBjPpVDkp9qVMJ61DiMrJCrVwSpkZ2Y96oG8RrynLGwoHcrEzMm2WQai5jUcb7Lyf7
-         1bCkfZ8or7xdkOBWpOdLLP83f3aH6iLOaAFPhz7K27+tdt1Y5MeWcXPpwOHXBfXl18fb
-         eeuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMdZX2XwIfai58Xyq0H5D//f7pbIuqvjvXoVXYTa1DDQUO8M/uZ4oSfvz2h4kvfhIqAjkxOS4kTQB7MmCeo7KGzrHZuH8j5krBhXJt
-X-Gm-Message-State: AOJu0YzuiEWBMIf+jzWjiKnXblxCcUkeGePdacq/2aTtYFuEiwuHCZ8J
-	UUg/8k8QCRSre4DsexgliBUMg1UOEZmPdkG71R+OWjh3kwQTLuw3lfqcShk+oHQg/N4uAi53TDP
-	QRHJYlBzNuqY3+J1yLZXjGsOLsxzz9cE9Ne/a
-X-Google-Smtp-Source: AGHT+IFCvc0P3gNXdvnyCjs31aqeAWygOeIvfIkXydkJMxbuoBUSKjXhsNxdz1d3QA0O6jeJ/wXF1Kkwtu8TWptzKAM=
-X-Received: by 2002:a67:f74a:0:b0:47c:11ba:fea9 with SMTP id
- w10-20020a67f74a000000b0047c11bafea9mr4095784vso.23.1714037608742; Thu, 25
- Apr 2024 02:33:28 -0700 (PDT)
+	s=arc-20240116; t=1714037601; c=relaxed/simple;
+	bh=bYBBBONI6emX61ioif4BoxQH1QXZYaWJIll/t+Fju9k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kVAj7jYcix4KLdYVUSKqvzBFjZ7Xwv463qOVQLoHV68VV7EgbD2LNpbjqYwkQ5Yq+vBAs4sMD+qY5zQODfT903IWKn7HnXNB6MnkFLCz9OyJBvYEWn5qK9xUU4xrR5jNYST6SL/p/rItuocZeiv3Kmgq91/uEYB8nngbHEaYc3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=U5Ld14Nr; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=mTFvKavRYvl65ZTJWrbvt4xMi66fJbqKJd1ndJa0LB4=;
+	t=1714037599; x=1714469599; b=U5Ld14NrRC69jQ02N/CKP8u2KZ9HQ2pox/W8q66iMBpAMLh
+	+ADoYtyVOcY2TfabpHoikHkjGlQUIvdCbsrppr2n2sCv7BdgMkvUBLTLLg7ZseZx6R7IlZ3JFibgG
+	36+R2TxZ5PSoM+ua1hSlmajMYZ3j3YpphPu3e3TapvlaM2zt1r9jCBP+SoAwJv/GegS25Mx1lqDlO
+	/7mnmtntUNiFiiecuHfD3kZTJlk+ipJXMdFqPO+29i/UpX/aN3RU+XW1T2iEnUPh7xqzEOJuR/h5W
+	oEC2Cjrwb3mZLejnums7umo0+ZTl2ZeCNS2t4++fq0YthYIX7d8FrUcFui+N99bQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rzvTZ-0000vn-6B; Thu, 25 Apr 2024 11:33:09 +0200
+Message-ID: <9fb128b1-d625-477f-8a16-aade00b13bc6@leemhuis.info>
+Date: Thu, 25 Apr 2024 11:33:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425092859.3370297-1-glider@google.com>
-In-Reply-To: <20240425092859.3370297-1-glider@google.com>
-From: Marco Elver <elver@google.com>
-Date: Thu, 25 Apr 2024 11:32:52 +0200
-Message-ID: <CANpmjNPnn-1pr-Sz=xtQB6FwNrF5HJL_X0SMHL8HdMcYohD9ew@mail.gmail.com>
-Subject: Re: [PATCH] kmsan: compiler_types: declare __no_sanitize_or_inline
-To: Alexander Potapenko <glider@google.com>
-Cc: dvyukov@google.com, akpm@linux-foundation.org, ojeda@kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: regression fixes sitting in subsystem git trees for a week or
+ longer
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jiri Kosina <jikos@kernel.org>, Douglas Anderson <dianders@chromium.org>,
+ Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kenny Levinsen <kl@kl.wtf>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <20240331182440.14477-1-kl@kl.wtf>
+ <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
+ <CAO-hwJJtK2XRHK=HGaNUFb3mQhY5XbNGeCQwuAB0nmG2bjHX-Q@mail.gmail.com>
+ <a810561a-14f3-412e-9903-acaba7a36160@leemhuis.info>
+ <CAHk-=wjy_ph9URuFt-pq+2AJ__p7gFDx=yzVSCsx16xAYvNw9g@mail.gmail.com>
+ <87698732-5439-42bd-b2b2-864bb4f3b3ec@leemhuis.info>
+ <qcd5klmhyx23rowpbm4egshm6hemhh4stq7r6soblnuul55524@yyktdlowepw7>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <qcd5klmhyx23rowpbm4egshm6hemhh4stq7r6soblnuul55524@yyktdlowepw7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714037599;69439cdb;
+X-HE-SMSGID: 1rzvTZ-0000vn-6B
 
-On Thu, 25 Apr 2024 at 11:29, Alexander Potapenko <glider@google.com> wrote:
->
-> It turned out that KMSAN instruments READ_ONCE_NOCHECK(), resulting in
-> false positive reports, because __no_sanitize_or_inline enforced inlining.
->
-> Properly declare __no_sanitize_or_inline under __SANITIZE_MEMORY__,
-> so that it does not inline the annotated function.
+On 25.04.24 10:44, Benjamin Tissoires wrote:
+> On Apr 25 2024, Thorsten Leemhuis wrote:
+>> On 24.04.24 20:53, Linus Torvalds wrote:
+>>> On Wed, 24 Apr 2024 at 09:56, Thorsten Leemhuis
+>>> <regressions@leemhuis.info> wrote:
+>> [...]
+>> And the arch linux wiki even documents a workaround:
+>> https://wiki.archlinux.org/title/Lenovo_ThinkPad_Z16_Gen_2#Initialization_failure
+>>
+>> Those are just the reports and discussions I found. And you know how
+>> it is: many people that struggle will never report a problem.
+> 
+> short FYI, (I've Cc-ed you on the PR), but I just sent the PR for HID,
+> which includes this fix.
 
-Maybe worth noting that this is only a problem for __always_inline,
-since that is inlining-by-force, and from the compiler's point of view
-WAI.
+Great, many thx. Saw it right after sending my mail... :-/
 
-> Reported-by: syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
-> Signed-off-by: Alexander Potapenko <glider@google.com>
+>> Is cherry picking from -next as easy for you? Maintainers sometimes
+>> improve small details when merging a fix, so it might be better to
+>> take fixes from there instead of pulling them from lore.
+> 
+> Maybe one suggestion that might help to reduce these kind of situations
+> in the future: can you configure your bot to notify the maintainers
+> after a couple of days that the patch has been merged that it would be
+> nice if they could send the PR to Linus?
 
-Reviewed-by: Marco Elver <elver@google.com>
+Yes, that is an idea in the long run, but I'm not sure if it's wise now
+or later. People easily get annoyed by these mails (which I totally
+understand!) and then will start hating the bot or regression tracking
+in general. That's why I'm really careful here.
 
-> ---
->  include/linux/compiler_types.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 0caf354cb94b5..a6a28952836cb 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -278,6 +278,17 @@ struct ftrace_likely_data {
->  # define __no_kcsan
->  #endif
->
-> +#ifdef __SANITIZE_MEMORY__
-> +/*
-> + * Similarly to KASAN and KCSAN, KMSAN loses function attributes of inlined
-> + * functions, therefore disabling KMSAN checks also requires disabling inlining.
-> + *
-> + * __no_sanitize_or_inline effectively prevents KMSAN from reporting errors
-> + * within the function and marks all its outputs as initialized.
-> + */
-> +# define __no_sanitize_or_inline __no_kmsan_checks notrace __maybe_unused
-> +#endif
-> +
->  #ifndef __no_sanitize_or_inline
->  #define __no_sanitize_or_inline __always_inline
->  #endif
-> --
-> 2.44.0.769.g3c40516874-goog
->
+There are also the subsystems that regularly flush their fixes shortly
+before a new -rc, so they likely never want to see such reminders. And
+sending them right after a new -rc is better than nothing, but not ideal
+either.
+
+IOW: it's complicated. :-/
+
+> In this case I bet Jiri forgot to send it because he was overloaded and
+> so was I.
+
+Understood and no worries. But this became a good opportunity to raise
+the general problem, as that is something that bugs me. Sorry. Hope you
+don't mind to much that I used that chance.
+
+> So a friendly reminder could make things go faster.
+
+I'll already did this occasionally manually, but that of course does not
+scale. Sometimes I wonder if it would be more efficient for nearly all
+of us if subsystems just flushed their -fixes branch shortly before each
+new -rc, as Linus apparently is not bothered by PRs that contain just a
+change or two. But that of course creates work for each of the subsystem
+maintainers, unless they creates scripts to handle that work nearly for
+free (it seems to me the x86 folks have something like that).
+
+Of course that would mean...
+
+> And maybe, before sending the reminder, if you could also check that the
+> target branch hasn't been touched in 2 days that would prevent annoyances
+> when we just added a commit and want to let it stay in for-next for 24h
+> before sending the full branch.
+
+..that nothing big or slightly dangerous should be merged to -fixes
+branches on Fridays.
+
+>> P.S: Wondering if I should team up with the kernel package maintainers
+>> of Arch Linux, Fedora, and openSUSE and start a git tree based on the
+>> latest stable tree with additional fixes and reverts for regressions
+>> not yet fixed upstream...[1] But that feels kinda wrong: it IMHO
+>> would be better to resolve those problems quickly in the proper
+>> upstream trees.
+> 
+> I would also say that this is wrong. Unless all regressions go through
+> your tree and you then send PR to Linus, [...]
+
+Ohh, sorry, I was not clear here, as that would be totally wrong --
+fixes definitely should go through the subsystems trees, as they have
+the knowledge and the infra to check them (hmm, maybe a dedicated tree
+might make sense for the smaller subsystems, but let's ignore that).
+
+What I meant was just a tree those distros could merge into their
+kernels to quickly resolve issues that upstream is slow to fix. But that
+obviously has downsides, too. And is yet more work.
+
+> However, do you have some kind of dashboard that you could share with
+> the package maintainers? This way they could easily compare the not-yet
+> applied fixes with their bugs and decide to backport them themselves.
+
+I have for the kernel overall, but nothing subsystem specific. But that
+is pretty high on my todo list, as...
+
+> In other words: let others do the hard work, you are doing a lot already
+
+..I'm very well aware of this. :-/
+
+Ciao, Thorsten
 
