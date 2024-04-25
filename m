@@ -1,127 +1,353 @@
-Return-Path: <linux-kernel+bounces-158756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E22868B248A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:03:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D01CE8B248E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 17:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20321C20B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:03:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C38DB28B65
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 15:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDA214B061;
-	Thu, 25 Apr 2024 15:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D0714AD1E;
+	Thu, 25 Apr 2024 15:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="TIpy5pPs"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fot1aUMh"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D9E14A603
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 15:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FEF14A615;
+	Thu, 25 Apr 2024 15:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714057419; cv=none; b=KckDQv9cBNot9l7kLhjr4lO4keyIvpwMPZjVOgkneHPBluLgZAvcsONX4VuYdt4oaPVboViERUwhqueFf/seB3QATGwAY2ypa9FxxcA41llgIga7CgRuAaV+j44DxBgutugBnOC5KDW+C379Ic0qBQNfGjl5q87GOX720+AB89w=
+	t=1714057432; cv=none; b=ECw84EoK63AjwtAaKl+gD8159Bf3A2J93nBkoZ/F32FXXtaKhtyYnWyzOiT+UBYaDgdx3yfvNwjCjBrXDa3x/cMe3+VuDE+uHYdCgDs06XjZUcil/vyeUEXI7MBUMbYyB4iiU9OcnJvFPNtKfCPA4k4c6lvhUz32PRtzd4zaR8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714057419; c=relaxed/simple;
-	bh=InEifnlaJ03rA8QgNLlhw6s+Q05Y2oXvccfChwmxIgw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Olmdw8aJM1qwwpgK8LGNWHzaSoMzMhoFrbVzF1sFvbCDpfNKh+81MW/uaZ24BpZlffVLF+ar1E9o7ZjMUmzNCrmUqouM27nipdQmW1q3vHDsd4QyQ4zD4og8hx3LyZiEwSgCYbyBFmp/S9lyjwzJ4lvxGQq98+ar6mpIoHvZbMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=TIpy5pPs; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-22edbef3b4eso386342fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 08:03:37 -0700 (PDT)
+	s=arc-20240116; t=1714057432; c=relaxed/simple;
+	bh=GcRbdXl0rmPhjiuwrZGvFa957/csXHQflpxApSdTgCo=;
+	h=Content-Type:Mime-Version:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=ZYYkMCTnS0COp42Y3Q05oOkh5BO6yHgLpKFkuUoh1y5zkHxYNKdzs1WQSiz6HUMKdJnjMUN+U+0wWrnyGiT7xiRZxjW1yvz33dNtx2nxhPOG1Tiad2R9rKm9l+vsFwDDYZCrizuqxzo+1CnMcNSR3g1hJnaLDbLIrxZZj0+YLHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fot1aUMh; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d895138d0eso9627911fa.1;
+        Thu, 25 Apr 2024 08:03:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714057417; x=1714662217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ALDEBHn1/H2TDQekY233nOtWpDkhb+DBBbFG5htxIm8=;
-        b=TIpy5pPseRhnmR9FLqscjBFlJRI02XbEEfKOTANAFpAwSn6p5pHfYOVnIiUP4/lVR0
-         SCKs5RJgvLEh3rRb0B81op9pcu46ZfsUXwvYnuS/MC5NRTuIvi0+tQ6XV9UL/J1LXUyz
-         aWgVBNUa7mk1f9YLIeCFlhmG9O7et2EdzgopMH5N6yIib3QkFUp+2cAWo5GrSVDJkfW9
-         xEHr32rfuW2DbAQj9sh2djMryNRaUOhRwCptyrPdiVnzNK7xIdemr8RwDenECAQVIwp9
-         AYMicp9POLOtRaLRBcTCcgxqMNXjL86AXoWRMsEe+5/QwdH8VBM5fBvfzA6BY7RHhl0f
-         3bKQ==
+        d=gmail.com; s=20230601; t=1714057429; x=1714662229; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=E5/1Zaj1KusKfv2rAekeWGYR5nnXdf4Irx4EgUVd/wk=;
+        b=fot1aUMhKke8snN7SF6MyLuhqBWZrg+U6A/qTE8Uin9LhzGM0Js7g3Pl6KXhHopQqE
+         w3ptMbNjq21HDaCnVnzsax2ZWE0lR0KeWP+CaByB2g1ENEFF2nOpVOPq16XDgeQ1Egey
+         xOHPU4N7ESz9Vu8bWbQmawNLGoXMSQHW+n8Nxhvydw8J7EbeNJRA5pF5kfTJrOx5EcbP
+         pxbN5ZQ934ssKGBsUr6BQFwOyGZMPkX0BVFGeMDb8nGQ3LK51GWgfCZw18PL/eObVkD7
+         Hiog+Qmp3adgKo3uqQ+fXU5Jc/IBZ9r7LzvLwE7S4+lw9lV4dYv1czG5luNXFwWxXIg8
+         1iaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714057417; x=1714662217;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ALDEBHn1/H2TDQekY233nOtWpDkhb+DBBbFG5htxIm8=;
-        b=RFLOqcTC9sIReDBGzxRCeIbUFPWzTNfx6y0Gztw4gvOAgbVnkuktIN+1R0+q1vqtLs
-         KSCAuIQj8f9P9sQCZC7pnNVJMFsAP7mzasHI8/jtSnryQaTknoYBrhNOfidQ39qiIzBB
-         AauyRfk5jPd6/ETKQ44/3nDmsVvBx795G0nzCu6rFzMow1nG9H1VqIPkRA1mwKs9lX4w
-         mglt0fNeNuUXhx1xL4I+WohOOZMSsNYD8KjdBQB9VCRXHdfQ/nQBj5/J3qr9risIvhsg
-         JgH79kiogtpgtEOXQjrIrTWj0aYnmJlEMl/mkDhrbEdFP81KKw2Dq3h9v6Pbibkk+lSl
-         KMMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV6PKVR1bXtqs8Ug7RQXliQfR4GQFGTr0apXgnVco77OsbATpkPop0PKcOAsHxVDuBzOiri7b6TGuGGqzfeyxHs+XiWpM+h1q6/urpI
-X-Gm-Message-State: AOJu0YyNV2ckp2dsWN4bgVrdLO0FAby3NPVoPPdZMuvxP4EETCo2Xyy9
-	LO2ntAu4o3t8BlE3fh2CzwG+MRCTFToMMs9lt16eXLfZKgUHLu8XLrJr/ncSTrk=
-X-Google-Smtp-Source: AGHT+IF+ytB1gMG5gdlzfQf5qI8kdu3jxsrVIZyaQCoI1mcDdWPMWQNB0NwCuMDh4O5EGMwTLzBV2A==
-X-Received: by 2002:a05:6870:c394:b0:23b:8a59:f5b4 with SMTP id g20-20020a056870c39400b0023b8a59f5b4mr702248oao.2.1714057416777;
-        Thu, 25 Apr 2024 08:03:36 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id mp2-20020a056871328200b0023b6d4723edsm166739oac.14.2024.04.25.08.03.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 08:03:36 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] iio: buffer: initialize masklength accumulator to 0
-Date: Thu, 25 Apr 2024 10:03:29 -0500
-Message-ID: <20240425-b4-iio-masklength-cleanup-v1-3-d3d16318274d@baylibre.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
-References: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
+        d=1e100.net; s=20230601; t=1714057429; x=1714662229;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E5/1Zaj1KusKfv2rAekeWGYR5nnXdf4Irx4EgUVd/wk=;
+        b=Ocqnj/tu/q+z2Y5wFQjB9M+FzKrV4epDyDeB76xU31CwBPOc3PvDynb9b3f+f1QLG6
+         bwUdJplHADHq/b2pOEElYx9uL+Cs3c6BQkwfHVlu1FXcDhjLVnjCAOIPnDWriWJsCm7p
+         S9eWn311WVrXMuzq7HbtTUwPllo0YieCG8IfD3QJqpb9dWZVKfnxV4Tq4zgzKYioTp7a
+         5XExFuPPC2L9wQxwjEBQRT11uWm/BdIVrdGGgJD95pdFgbutgZg6iYLMHKVscf0aosQ+
+         K9Yall7EIcEpDIhLnv32iE0xqeVlN2NHq44hQUX5mGxELRxJh3eYVdIcHsAPdPK0X5jZ
+         DKRg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdlrWdKuQczNE2mfUtRlTaVtW7CuhfSgH916QO5FPVzEYLGpGx5cIzxOlUYFz7XnNNfWZTtbRCuMuVZPLx5exbCbidKeVI3r8/g2DhI+UJLRKtIXGet5FtX902V2Sg2E2/b8FwT3/8yP4=
+X-Gm-Message-State: AOJu0YwKdGhWfbwjYll33vnTWL0S3gHDgnnkmEHR3DvFZV9UALsI6kmT
+	j1aQq464QheVaH1ajcEC+N6HyJv8TScoNZxq3b0mxTtQMopJy7eL
+X-Google-Smtp-Source: AGHT+IFY4RyIf3OHopmsRc7rXC6+GtWgSIZ9vG0woJBF9n/oHB9hlkRPyqMEggdm/LPuWdwx4l18PA==
+X-Received: by 2002:a2e:b60a:0:b0:2da:38e:f809 with SMTP id r10-20020a2eb60a000000b002da038ef809mr3795766ljn.52.1714057428266;
+        Thu, 25 Apr 2024 08:03:48 -0700 (PDT)
+Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id h19-20020a05600c351300b00414659ba8c2sm27910546wmq.37.2024.04.25.08.03.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 08:03:47 -0700 (PDT)
+Content-Type: multipart/signed;
+ boundary=0a003b88e518e591a0130d80c72408215230c45ba769297ac394215a4c0d;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Date: Thu, 25 Apr 2024 17:03:46 +0200
+Message-Id: <D0TANBDMJHH2.5XTXRZ09K4OU@gmail.com>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Sumit Gupta"
+ <sumitg@nvidia.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
+ <maz@kernel.org>, <mark.rutland@arm.com>, <treding@nvidia.com>,
+ <jonathanh@nvidia.com>
+Cc: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, <amhetre@nvidia.com>, <bbasu@nvidia.com>
+Subject: Re: [Patch v3 1/2] dt-bindings: make sid and broadcast reg optional
+From: "Thierry Reding" <thierry.reding@gmail.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240412130540.28447-1-sumitg@nvidia.com>
+ <20240412130540.28447-2-sumitg@nvidia.com>
+ <d26f9661-3e50-4a72-9097-fe63a27503f1@linaro.org>
+ <D0SHRQVCGJBY.2DPLX9K6VXEYM@gmail.com>
+ <D0SILCYU98EV.1XW7NZFC9013K@gmail.com>
+ <9561dede-37d0-4183-8742-448058803f8e@linaro.org>
+ <D0T3R7UPFO07.2VR2436TG4N8B@gmail.com>
+ <d8eb6652-18b5-4ed6-9a44-7c2a0f3bc3bb@linaro.org>
+In-Reply-To: <d8eb6652-18b5-4ed6-9a44-7c2a0f3bc3bb@linaro.org>
 
-Since masklength is marked as [INTERN], no drivers should assign it and
-the value will always be 0. Therefore, the local ml accumulator variable
-in iio_buffers_alloc_sysfs_and_mask() will always start out as 0.
+--0a003b88e518e591a0130d80c72408215230c45ba769297ac394215a4c0d
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-This changes the code to explicitly set ml to 0 to make it clear that
-drivers should not be trying to override the masklength field.
+On Thu Apr 25, 2024 at 11:45 AM CEST, Krzysztof Kozlowski wrote:
+> On 25/04/2024 11:39, Thierry Reding wrote:
+> > On Thu Apr 25, 2024 at 9:52 AM CEST, Krzysztof Kozlowski wrote:
+> >> On 24/04/2024 19:04, Thierry Reding wrote:
+> >>> On Wed Apr 24, 2024 at 6:26 PM CEST, Thierry Reding wrote:
+> >>>> On Mon Apr 22, 2024 at 9:02 AM CEST, Krzysztof Kozlowski wrote:
+> >>>>> On 12/04/2024 15:05, Sumit Gupta wrote:
+> >>>>>> MC SID and Broadbast channel register access is restricted for Gue=
+st VM.
+> >>>>>
+> >>>>> Broadcast
+> >>>>>
+> >>>>>> Make both the regions as optional for SoC's from Tegra186 onwards.
+> >>>>>
+> >>>>> onward?
+> >>>>>
+> >>>>>> Tegra MC driver will skip access to the restricted registers from =
+Guest
+> >>>>>> if the respective regions are not present in the memory-controller=
+ node
+> >>>>>> of Guest DT.
+> >>>>>>
+> >>>>>> Suggested-by: Thierry Reding <treding@nvidia.com>
+> >>>>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> >>>>>> ---
+> >>>>>>  .../nvidia,tegra186-mc.yaml                   | 95 ++++++++++----=
+-----
+> >>>>>>  1 file changed, 49 insertions(+), 46 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/=
+nvidia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controll=
+ers/nvidia,tegra186-mc.yaml
+> >>>>>> index 935d63d181d9..e0bd013ecca3 100644
+> >>>>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,=
+tegra186-mc.yaml
+> >>>>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,=
+tegra186-mc.yaml
+> >>>>>> @@ -34,11 +34,11 @@ properties:
+> >>>>>>            - nvidia,tegra234-mc
+> >>>>>> =20
+> >>>>>>    reg:
+> >>>>>> -    minItems: 6
+> >>>>>> +    minItems: 4
+> >>>>>>      maxItems: 18
+> >>>>>> =20
+> >>>>>>    reg-names:
+> >>>>>> -    minItems: 6
+> >>>>>> +    minItems: 4
+> >>>>>>      maxItems: 18
+> >>>>>> =20
+> >>>>>>    interrupts:
+> >>>>>> @@ -151,12 +151,13 @@ allOf:
+> >>>>>> =20
+> >>>>>>          reg-names:
+> >>>>>>            items:
+> >>>>>> -            - const: sid
+> >>>>>> -            - const: broadcast
+> >>>>>> -            - const: ch0
+> >>>>>> -            - const: ch1
+> >>>>>> -            - const: ch2
+> >>>>>> -            - const: ch3
+> >>>>>> +            enum:
+> >>>>>> +              - sid
+> >>>>>> +              - broadcast
+> >>>>>> +              - ch0
+> >>>>>> +              - ch1
+> >>>>>> +              - ch2
+> >>>>>> +              - ch3
+> >>>>>
+> >>>>> I understand why sid and broadcast are becoming optional, but why o=
+rder
+> >>>>> of the rest is now fully flexible?
+> >>>>
+> >>>> The reason why the order of the rest doesn't matter is because we ha=
+ve
+> >>>> both reg and reg-names properties and so the order in which they app=
+ear
+> >>>> in the list doesn't matter. The only thing that matters is that the
+> >>>> entries of the reg and reg-names properties match.
+> >>>>
+> >>>>> This does not even make sid/broadcast optional, but ch0!
+> >>>>
+> >>>> Yeah, this ends up making all entries optional, which isn't what we
+> >>>> want. I don't know of a way to accurately express this in json-schem=
+a,
+> >>>> though. Do you?
+> >>>>
+> >>>> If not, then maybe we need to resort to something like this and also
+> >>>> mention explicitly in some comment that it is sid and broadcast that=
+ are
+> >>>> optional.
+> >>>
+> >>> Actually, here's another variant that is a bit closer to what we want=
+:
+> >>>
+> >>> --- >8 ---
+> >>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvi=
+dia,tegra186-mc.yaml b/Documentation/devicetree/bindings/memory-controllers=
+/nvidia,tegra186-mc.yaml
+> >>> index 935d63d181d9..86f1475926e4 100644
+> >>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,teg=
+ra186-mc.yaml
+> >>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,teg=
+ra186-mc.yaml
+> >>> @@ -34,11 +34,11 @@ properties:
+> >>>            - nvidia,tegra234-mc
+> >>> =20
+> >>>    reg:
+> >>> -    minItems: 6
+> >>> +    minItems: 4
+> >>>      maxItems: 18
+> >>> =20
+> >>>    reg-names:
+> >>> -    minItems: 6
+> >>> +    minItems: 4
+> >>>      maxItems: 18
+> >>> =20
+> >>>    interrupts:
+> >>> @@ -146,17 +146,21 @@ allOf:
+> >>>      then:
+> >>>        properties:
+> >>>          reg:
+> >>> +          minItems: 4
+> >>>            maxItems: 6
+> >>>            description: 5 memory controller channels and 1 for stream=
+-id registers
+> >>> =20
+> >>>          reg-names:
+> >>> -          items:
+> >>> -            - const: sid
+> >>> -            - const: broadcast
+> >>> -            - const: ch0
+> >>> -            - const: ch1
+> >>> -            - const: ch2
+> >>> -            - const: ch3
+> >>> +          anyOf:
+> >>> +            - items:
+> >>> +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3 ]
+> >>> +              uniqueItems: true
+> >>> +              minItems: 6
+> >>> +
+> >>> +            - items:
+> >>> +                enum: [ ch0, ch1, ch2, ch3 ]
+> >>> +              uniqueItems: true
+> >>> +              minItems: 4
+> >>> =20
+> >>>    - if:
+> >>>        properties:
+> >>> @@ -165,29 +169,22 @@ allOf:
+> >>>      then:
+> >>>        properties:
+> >>>          reg:
+> >>> -          minItems: 18
+> >>> +          minItems: 16
+> >>>            description: 17 memory controller channels and 1 for strea=
+m-id registers
+> >>> =20
+> >>>          reg-names:
+> >>> -          items:
+> >>> -            - const: sid
+> >>> -            - const: broadcast
+> >>> -            - const: ch0
+> >>> -            - const: ch1
+> >>> -            - const: ch2
+> >>> -            - const: ch3
+> >>> -            - const: ch4
+> >>> -            - const: ch5
+> >>> -            - const: ch6
+> >>> -            - const: ch7
+> >>> -            - const: ch8
+> >>> -            - const: ch9
+> >>> -            - const: ch10
+> >>> -            - const: ch11
+> >>> -            - const: ch12
+> >>> -            - const: ch13
+> >>> -            - const: ch14
+> >>> -            - const: ch15
+> >>> +          anyOf:
+> >>> +            - items:
+> >>> +                enum: [ sid, broadcast, ch0, ch1, ch2, ch3, ch4, ch5=
+, ch6, ch7,
+> >>> +                        ch8, ch9, ch10, ch11, ch12, ch13, ch14, ch15=
+ ]
+> >>> +              minItems: 18
+> >>> +              uniqueItems: true
+> >>> +
+> >>> +            - items:
+> >>> +                enum: [ ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8,=
+ ch9, ch10,
+> >>> +                        ch11, ch12, ch13, ch14, ch15 ]
+> >>> +              minItems: 16
+> >>> +              uniqueItems: true
+> >>
+> >> No, because order is strict.
+> >=20
+> > Why? I realize that prior to this the order was indeed strict and it's
+>
+> That's the policy for entire Devicetree. I said why in other email:
+> because any bindings consumer can take it via indices.
+>
+> > common to have these listed in strict order in the DTS files. However,
+> > this is an arbitrary restriction that was introduced in the patch that
+> > added reg-names. However, */*-names properties have always assumed the
+> > ordering to be non-strict because each entry from the * property gets
+> > matched up with the corresponding entry in the *-names property, so the
+> > ordering is completely irrelevant.
+>
+> This was raised so many times... reg-names is just a helper. It does not
+> change the fact that order should be strict and if binding defined the
+> order, it is an ABI.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/iio/industrialio-buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry, but that's not how we've dealt with this in the past. Even though
+this was now ten or more years ago, I distinctly recall that when we
+started adding these *-names properties and at the time it was very much
+implied that the order didn't matter.
 
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 1d950a3e153b..cec58a604d73 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -1744,7 +1744,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
- 
- 	channels = indio_dev->channels;
- 	if (channels) {
--		int ml = indio_dev->masklength;
-+		int ml = 0;
- 
- 		for (i = 0; i < indio_dev->num_channels; i++)
- 			ml = max(ml, channels[i].scan_index + 1);
+The only use-case that I know of where order was always meant to matter
+is backwards-compatibility for devices that used to have a single entry
+(hence drivers couldn't rely on *-names to resolve the index) and then
+had additional entries added. The *-names entry for that previously
+single entry would now obviously have to always be first in the list to
+preserve backwards-compatibility.
 
--- 
-2.43.2
+Besides, if reg-names was really only a helper, then it would also be
+completely redundant. Many device tree bindings have *-names properties
+marked as "required" precisely because of the role that they serve.
 
+Thierry
+
+--0a003b88e518e591a0130d80c72408215230c45ba769297ac394215a4c0d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYqcNMACgkQ3SOs138+
+s6FoSg//Wac2hlyCg8ZwVjTvYTsFfjus5REQ8iUcO81kHtEwiC884J27E5ufC9zu
+Uadobj7eb4YC646DkI/qDwgYMLylrzQAfTTJcRvV+y/BRxH8P5cl3/SJh6gAf2cH
+ER6pspuOwGmmkEGS4Q8JmlgQzZlg4y+SzGDT7YQRUKWa9B4xhRIeerVnZCpu3rmW
+kvGNe0/cvkgYUwbyr1If/hJQN+QtEKIr+wxzRtPourIffXBLaXpJ2mxKltkU2DyO
+hPusV7UJwdF3Mhlpp/G94XdiUDU5hPrZubcSV+iP+LtxZp+pth0HUGdAVypT7HKw
+aaaJ7G7pf0jmgc9UR0WccqkT831B/ambW2LJW63Uy4l0oxcjEfXoFmLo5K4EixCt
+vjxjvYK08T3kTgU0sXg1BBRhZfF3iryPFJQGqlvF4lszUOWQNxOgRZBmI8dn4wud
+PYzz1orsFlOssa6tdhJ11M17cXPJ0xiH7XH3GUhWZZkUFoexqci9xsFYY4LH/n9U
+GADqq3nVsY2hDZDDW8EFZKn82lTb+JWAoD+W9ItunRhzp71CmlzWA59lLd8ba/+n
+NLFaWlt7fw0R2lmNDP/v0De/swQC/Sd3q1nVO9uI4Ymf03Gm1EfuaWD75oDEpbsn
+qJy1EUqvwkh8cHJJDHnzP7i2jWhcEDahUNUwzJ8DZnU4rSKNKns=
+=L5Ll
+-----END PGP SIGNATURE-----
+
+--0a003b88e518e591a0130d80c72408215230c45ba769297ac394215a4c0d--
 
