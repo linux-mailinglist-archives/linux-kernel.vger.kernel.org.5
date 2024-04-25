@@ -1,115 +1,148 @@
-Return-Path: <linux-kernel+bounces-158007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06F68B1A09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:52:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B22F8B1A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 06:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FA8E1F22514
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:52:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2004B22D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 04:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD87B39FDA;
-	Thu, 25 Apr 2024 04:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D08E39FED;
+	Thu, 25 Apr 2024 04:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiaxAdkq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="SIkE3VWH"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255D718E02;
-	Thu, 25 Apr 2024 04:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2B239AE7
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 04:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714020723; cv=none; b=Fm6jIMncQO86JNsr1IpJaGEauh3HGgtts5V3+hR3MJivkUqgZaIrdBll1S65dEDRYwfKrnqdxy0mOMdi+dqfR/IsFuCVbA8hz4n3PWZq5BXiOoyJ6idTl3tGkTvXpCWuSY0qUI9SN4rRfWrrhLyad6UxOfPedz9b5RiceDFHCEw=
+	t=1714021016; cv=none; b=S1X0Vo5OnzmKFTBqUB89RbHK791ZzmMMgseY9hnATYCZCYlaD+ohcpxO67G2y4he9l/gRgx57QKuLfD+9V7yFSdZ95bi3YBzQvBVho4IOdWSKEizkC6tlv6jhsGhjgw5BVhuMxexJkZXsRa2s1+kOZJuZ+uKRAWx6wJRSIPBphE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714020723; c=relaxed/simple;
-	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=YPyInGZu3qzDUzSgbsuyKcKTd3WOmXlTCo0DHQ2TJoATXpwN0BgPQxQqclq+0knqqOsHSPY4nzqinuvrm3o6zIPRwHbJ56XxkIUqUADAVbqrcsq0QkjQPAaPekxS6D375iQaA0+Jbz/s4zE1RfQ51ZnzYHQQfU0xlVfciuQ7r3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiaxAdkq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30FEEC113CC;
-	Thu, 25 Apr 2024 04:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714020722;
-	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=KiaxAdkqqt8DPt6Nx4tssIeQoaNyqm4bSg1T6g8X3IVz3zUBEtkmlWuLfozSxqh4I
-	 F2ToYlUTcWMLnVGmHmqBFOxA+K+/9Bv+gzvLDRcAt9Jj6pABjdGp6AsLqpYZ3Hw3dc
-	 t8VjDL6yYzo/6vmbZtbGx2HCxOHkYtwMxiMR7S07OIk0Z6/p/9vbLYq6ec+S4rA4Dc
-	 vK8+PPe1Hv6CGTBAekkqBJH1kR2PonEWVoNwFdgHH+glGj9cn4xN7B/SL0TzrfflZF
-	 s1w0WYN1lhEguuFjXWHSTFhOFl1KSgesFYSt0jAyE3UtZ9oGSrgVYYcqeLd8AdpbqX
-	 PZW+8UIIOt+Wg==
+	s=arc-20240116; t=1714021016; c=relaxed/simple;
+	bh=Pli5F8AnSKspK5aT0/lVVdtVxvdyhbgTwOdQGvsPv/I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AEjcnMxqti1JvdmTPSQj+LGMXhBY6Z2S0v6cnKumqJ5dNj4n/wmEO+FqZwHuNa6eOEibUFd64AfjOxzbC7oxBQq9F4oj5tbWLsAR29b3alCzNmbj3jq3a+YMYrA5edbJ0gt8NURx1kkOpI0LatDQG5lsGl/hO3WTs/YXGKRZXFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=SIkE3VWH; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso572330b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Apr 2024 21:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1714021014; x=1714625814; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BKeDMR/VAwY6KFTp7q+D4M4FMjxN7DS4mVLtRqQA6Ps=;
+        b=SIkE3VWHuphvLl7NOhjQq7Nkh9WeBBu84dzIf1WYHLMCfhSz6cIo1AAb9gtEEN+V09
+         j3XgFvLtTx4P3kaJzs6PtylnirDue+lnKo7b2F7nCSPQndL4HzG3oPasG2NjjNqvVkCM
+         T+BGd9N2l6xgty705iubHWpa9UJOdIbA43XeCGFjkTfmbrVOF/r4VlEzMurm9QUpGXI3
+         diSOy/n0mkFg1cbGq1yiF6M0gXzrHl+6SUqCAGHD/0txT8SF334h8YrakG/Y61+BYusQ
+         6SY6kVKLZN2NzfpaxNI3cX/yGc7km4phtFbMKBaBtMWlKJepK8WBNy0ErU8uOKTV+p61
+         YO+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714021014; x=1714625814;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BKeDMR/VAwY6KFTp7q+D4M4FMjxN7DS4mVLtRqQA6Ps=;
+        b=co+XeTsPEqFuvB9mm6nvPudx7R2DsgDpYqqsTTNSkVmlRT2OY+aX9oYg5LdiSHXvfR
+         jOgYQvXJCPJSUKdHm1XR1R8yR0tNezp38FqUrZXULn1G2jEz1HheDwhTlQp83mnIq1Wb
+         WGZgUFAGIw0sKeph+ZAdJK62hTlLKPxmVzwD+zulGJkcOZlZh0n4Ax0PcgraeCZ3qojV
+         F6nP9NDvyeI+4HL4Eb9LFEt0j9uIombMw5Lxr1mj0xUqYXCZMusu9WPXh9fpBjjPY1Zi
+         zrVRJVnYBFOVOZ7FLtXUktApU0kvhnOwITx2uS2rNghkJtWPSK7uZ/mdHFbZa42NQ0Do
+         KY1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVVvA4uRR2A2PirxfSvVe0NbH6sBqlNDlOQ1LAOnn4PoPkXAzmE/wAakArh2/e2rVnETur5fqBB41jbZFDM/8UvNX3DlxsQDKClG/sT
+X-Gm-Message-State: AOJu0YzcZ7xcU87JlWutEp2ZCfijNFHarEkhQspKwwQHhI8ecq4T8kUq
+	ScGAx713AGqG6rVZ+WTusPpx+ww07t1ZZ0rd6suip58McsWkAV5eL4F3ljdUonA=
+X-Google-Smtp-Source: AGHT+IFhv2H4/vzmguAbVa1ZZdUzUVWqiOvj6TC3VDCEFSUjKANEKZ1zNzViwGoIP2V0IpdAALwTxQ==
+X-Received: by 2002:a05:6a20:840a:b0:1a7:7818:720e with SMTP id c10-20020a056a20840a00b001a77818720emr5781273pzd.21.1714021013910;
+        Wed, 24 Apr 2024 21:56:53 -0700 (PDT)
+Received: from [10.3.132.118] ([61.213.176.9])
+        by smtp.gmail.com with ESMTPSA id r6-20020a17090a5c8600b002ade3490b4asm6319376pji.22.2024.04.24.21.56.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Apr 2024 21:56:53 -0700 (PDT)
+Message-ID: <32f04cea-1c41-4c16-98fb-86be6ecefc87@bytedance.com>
+Date: Thu, 25 Apr 2024 12:56:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 25 Apr 2024 07:51:56 +0300
-Message-Id: <D0SXMUQP947S.3KBGA0PH06PDX@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
- <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-X-Mailer: aerc 0.17.0
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
- <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
- <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
- <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
- <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/12] cachefiles: Set object to close if ondemand_id < 0
+ in copen
+To: libaokun@huaweicloud.com, netfs@lists.linux.dev
+Cc: dhowells@redhat.com, jlayton@kernel.org, jefflexu@linux.alibaba.com,
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Zizhi Wo <wozizhi@huawei.com>,
+ Baokun Li <libaokun1@huawei.com>, zhujia.zj@bytedance.com
+References: <20240424033916.2748488-1-libaokun@huaweicloud.com>
+ <20240424033916.2748488-11-libaokun@huaweicloud.com>
+From: Jia Zhu <zhujia.zj@bytedance.com>
+In-Reply-To: <20240424033916.2748488-11-libaokun@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed Apr 24, 2024 at 10:42 PM EEST, Haitao Huang wrote:
-> Hi Jarkko
-> On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
-> >> I did declare the configs in the config file but I missed it in my pat=
-ch
-> >> as stated earlier. IIUC, that would not cause this error though.
-> >>
-> >> Maybe I should exit with the skip code if no CGROUP_MISC (no more
-> >> CGROUP_SGX_EPC) is configured?
-> > OK, so I wanted to do a distro kernel test here, and used the default
-> > OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
->
-> I couldn't figure out why this failure you have encountered. I think =20
-> OpenSUSE kernel most likely config CGROUP_MISC.
->
-> Also if CGROUP_MISC not set, then there should be error happen earlier on=
- =20
-> echoing "+misc" to cgroup.subtree_control at line 20. But your log =20
-> indicates only error on echoing "sgx_epc ..." to =20
-> /sys/fs/cgroup/...//misc.max.
->
-> I can only speculate that can could happen (if sgx epc cgroup was compile=
-d =20
-> in) when the cgroup-fs subdirectories in question already have populated =
-=20
-> config that is conflicting with the scripts.
->
-> Could you double check or start from a clean environment?
-> Thanks
-> Haitao
 
-I can re-check next week once I'm back from Estonia. I'm travelling now
-to https://lu.ma/uncloud.
 
-BR, Jarkko
+在 2024/4/24 11:39, libaokun@huaweicloud.com 写道:
+> From: Zizhi Wo <wozizhi@huawei.com>
+> 
+> If copen is maliciously called in the user mode, it may delete the request
+> corresponding to the random id. And the request may have not been read yet.
+> 
+> Note that when the object is set to reopen, the open request will be done
+> with the still reopen state in above case. As a result, the request
+> corresponding to this object is always skipped in select_req function, so
+> the read request is never completed and blocks other process.
+> 
+> Fix this issue by simply set object to close if its id < 0 in copen.
+> 
+> Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+Reviewed-by: Jia Zhu <zhujia.zj@bytedance.com>
+
+> ---
+>   fs/cachefiles/ondemand.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+> index 7c2d43104120..673e7ad52041 100644
+> --- a/fs/cachefiles/ondemand.c
+> +++ b/fs/cachefiles/ondemand.c
+> @@ -182,6 +182,7 @@ int cachefiles_ondemand_copen(struct cachefiles_cache *cache, char *args)
+>   	xas_store(&xas, NULL);
+>   	xa_unlock(&cache->reqs);
+>   
+> +	info = req->object->ondemand;
+>   	/* fail OPEN request if copen format is invalid */
+>   	ret = kstrtol(psize, 0, &size);
+>   	if (ret) {
+> @@ -201,7 +202,6 @@ int cachefiles_ondemand_copen(struct cachefiles_cache *cache, char *args)
+>   		goto out;
+>   	}
+>   
+> -	info = req->object->ondemand;
+>   	spin_lock(&info->lock);
+>   	/* The anonymous fd was closed before copen ? */
+>   	if (info->ondemand_id == CACHEFILES_ONDEMAND_ID_CLOSED) {
+> @@ -222,6 +222,11 @@ int cachefiles_ondemand_copen(struct cachefiles_cache *cache, char *args)
+>   	wake_up_all(&cache->daemon_pollwq);
+>   
+>   out:
+> +	spin_lock(&info->lock);
+> +	/* Need to set object close to avoid reopen status continuing */
+> +	if (info->ondemand_id == CACHEFILES_ONDEMAND_ID_CLOSED)
+> +		cachefiles_ondemand_set_object_close(req->object);
+> +	spin_unlock(&info->lock);
+>   	complete(&req->done);
+>   	return ret;
+>   }
 
