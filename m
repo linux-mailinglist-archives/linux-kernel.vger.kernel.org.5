@@ -1,217 +1,198 @@
-Return-Path: <linux-kernel+bounces-158675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-158678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F4E8B23B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:18:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D358B23BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 16:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 964AB1F236FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B555C28478F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 14:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A46314A096;
-	Thu, 25 Apr 2024 14:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B5B14A0AD;
+	Thu, 25 Apr 2024 14:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ENbR9AJ7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="geuelfvO"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mi+I7ng9"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3941149C67;
-	Thu, 25 Apr 2024 14:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A8E149E0C;
+	Thu, 25 Apr 2024 14:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054689; cv=none; b=H6nupZiCMBMJkjB2g4oZ9HkjCQrN3WHUQWaPkQxkVcvG1A53mtKxG5m6mXcbXFpbud3U/tRirHDZ84X2dORL3uLoxlPDC9XuqloH9+xuoDM/In1GeTO/+3oBzHdCJkZKcZoLu8IkxN8lB7RwXV9Pyb4lGnCFiCphBF2fV80Xj4A=
+	t=1714054716; cv=none; b=TMkHDJHbkov98GX9F7jmqkk5HPA+1pU0XnjqVH7tr3ZX6yLi9aRG5w0bKsVeWZf8AntbEOJ6z4huIG2mRkZV7cpWny1bzNqTxaI30Xe1kww3YHOKPTSCiGDe+tf+fFFB/4MRhcBjBvWiyvSPZuJqgtPoIBRML1o4wdQPTqXZzQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054689; c=relaxed/simple;
-	bh=ngxmY1opm52+AJqMx4m1GyiFhCMC+7ATWYtg3YsNcUk=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=f8Cfwz3FhhIKnWiZRmQESX/dhzF+WCd9+jyDU8z7ibXc9TeVREeKJ6inOl4IqXvOVEt1hw9TsySYj1m/MOKNOAN/6oc8iT6LQqhOqXACcOcECFNkCg/2WP7KaU0d7uOk8gwE6UB8OF/zBUFPQSVZk3/W5j3U9lMTX9S7KvSTmR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ENbR9AJ7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=geuelfvO; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 25 Apr 2024 14:18:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714054686;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERpiYyy6VKUTYmVo9nuH623n9EpUv9W8nfTL91rChmw=;
-	b=ENbR9AJ7x5bFMnl2kRXcoqnTE5P07kK4Nagb8V5BHz2yeFKsd26WanTL/GWgxcea1HzNs/
-	Dbo+qL4n5W2fUuJWdI40fsPs98qydcQgf4RlHMH++JTeCNeUGgNXF1h8LT8dks6qWYQ704
-	BWhV/pFITq20YpJ24QrwyJLMtCTQNQrSXyyl2bfLdeDglHusdnhG8A8Z9lbLFYcQVbbigE
-	1Q1hyzcD3u3wZViA26O1h6XJGDxuUi7UlafjZX1VrajByLXfMQXn0vzrfcbDrVxnwXXaF3
-	BvfvtGbtQJhgV05o2k97giUEF9kBkI/TUbMhaUCoOpu7ZmpIFo5mQkrPp8uXlQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714054686;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERpiYyy6VKUTYmVo9nuH623n9EpUv9W8nfTL91rChmw=;
-	b=geuelfvO0HXQ3t4kMSjWOZJXWSWo/IG1fG06AFpjxNNYWPcbVjagkz+8jyiis0PhNGecdb
-	wUv0bxo0m/A1CHDQ==
-From: "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] cpu: Ignore "mitigations" kernel parameter if
- CPU_MITIGATIONS=n
-Cc: Sean Christopherson <seanjc@google.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240420000556.2645001-3-seanjc@google.com>
-References: <20240420000556.2645001-3-seanjc@google.com>
+	s=arc-20240116; t=1714054716; c=relaxed/simple;
+	bh=nxOjcL0P74qvHOhUa3G1KBblKkFTMO6kAC1ncKWnWeE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jp5HCvq7lzz3JZzrgOEqMgPLHQNOXWke4EdfGvd0mGDFbAEzkT4ZATq+NfHYGQHW3C1RA/hmoarAuFFnHuW+kHdEfNNkBcE/cdc/1F2sD2l9oltRsaXSLbY6rxX657TCoHbrvSvIpNeNWXVF8SSCyBh4nQ0xBAVY7DHT56yu+Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mi+I7ng9; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ead2c5f3f0so107855ad.0;
+        Thu, 25 Apr 2024 07:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714054714; x=1714659514; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SpcFxjVoRf/8zZFpl0pURM6bbS9rd+3CtG1qRJbE4oM=;
+        b=mi+I7ng9P0wPJThgggB3DA6prhhWagplopwMYLvf382EdbmbVYm4tUfV1ZHiTNdMCz
+         ivyaWj6owGJs+KTRU/y//yz7d6tGdPirMW82tG8+MC6bjcfTFU+bozo6lLmiQ0THOnXB
+         pVTi8ZX5JJXEyCUyROCujb1RN1ME611Mpm/zn6G1+Fs1/E1/OqNwP/KNsmeH2Urff4Nx
+         VICQ51CxjcGFNuVE6CeRzTKajI1Tsh27P0kUXiISzN4DtHs4ErRvjBW3F3vkg25fgY+l
+         ijYV2B5f+CnqnYftEnjxXVoYowx9Z6Z4M/qGBxxBZgQ1X46+VE4bXOy0JnHHVb63sjIo
+         llNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714054714; x=1714659514;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SpcFxjVoRf/8zZFpl0pURM6bbS9rd+3CtG1qRJbE4oM=;
+        b=mEcuTSG0syPAKuHLIMVkkXJzf24Iaz9SKRMBLNjwq8ymm0/p6jxwUVcOlngMZgVtup
+         +zAVjLdKKZbjcZ545fLi8xC1a6DyN4MTno/FpJjyeA5C+qW3J48DHWWFtwoTDwh0rhkd
+         kqDa58ry7Y+yI4VQZqk9eklhQuo7UHd9uuVNgWLvMMKY1RBHrEoUeIaPHgzrycqZ4yGa
+         FIGfrvqS90BJM77p26Bmnjt+LNDNQNfYPYsZzczgmwZnwNxY1x/L5F3nWWyVxafD4tt6
+         686JpercvnKXK5flXxEF7UlY9zMqQRq4wkX5g1bB3jEYfBLPWdugGXaYmRYlX2voaoPn
+         MmJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBIcjQ9VQh5URWOWAyhz7wP+Neq5TjwLmzvvhIrBFu4TQ7ffHKzvoVKdjir8BFHw15rQN/UQJsx/CO3WGtPqBi8ioFRslUTwXoDzwbK4WZ1QSa9JFMN7hIP675UD5+LkFqi0RPs+N+oE5DzLsyJsBjJxZkcF1Z3rT1w2j75pDvwqmQx4dt91eWqDzXwrnaCJ4WJYpzP/1WtOf03TNjhVBft3W5LFzRk3xiJI4F
+X-Gm-Message-State: AOJu0YzGi1bbjiOvK2W7ozEgdRHQSoIyIov2mbUrSn7BLhltcOxei7+F
+	IfqGwswHeaulxkZzzxTfZK7gJhCJfA7/EoOYw4Y/gL2OZ+rSRT57
+X-Google-Smtp-Source: AGHT+IFFwWUen0aR7eKwdpRgMzVD+6uL8RAt9TmXJdXVYBDk+NjjHhRAaa/zcyng5BqcXFQvtoTOsA==
+X-Received: by 2002:aa7:8a50:0:b0:6ec:ceb5:e5de with SMTP id n16-20020aa78a50000000b006ecceb5e5demr7018753pfa.0.1714054714442;
+        Thu, 25 Apr 2024 07:18:34 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id go20-20020a056a003b1400b006e6233563cesm13162397pfb.218.2024.04.25.07.18.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 07:18:33 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev,
+	msakai@redhat.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	akpm@linux-foundation.org
+Cc: bfoster@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v4 00/16] treewide: Refactor heap related implementation
+Date: Thu, 25 Apr 2024 22:18:10 +0800
+Message-Id: <20240425141826.840077-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171405468558.10875.5701614476992826261.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The following commit has been merged into the x86/urgent branch of tip:
+This patch series focuses on several adjustments related to heap
+implementation. Firstly, a type-safe interface has been added to the
+min_heap, along with the introduction of several new functions to
+enhance its functionality. Additionally, the heap implementation for
+bcache and bcachefs has been replaced with the generic min_heap
+implementation from include/linux. Furthermore, several typos have been
+corrected.
 
-Commit-ID:     ce0abef6a1d540acef85068e0e82bdf1fbeeb0e9
-Gitweb:        https://git.kernel.org/tip/ce0abef6a1d540acef85068e0e82bdf1fbeeb0e9
-Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Fri, 19 Apr 2024 17:05:55 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 25 Apr 2024 15:47:39 +02:00
+Previous discussion with Kent Overstreet:
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 
-cpu: Ignore "mitigations" kernel parameter if CPU_MITIGATIONS=n
+Regards,
+Kuan-Wei
 
-Explicitly disallow enabling mitigations at runtime for kernels that were
-built with CONFIG_CPU_MITIGATIONS=n, as some architectures may omit code
-entirely if mitigations are disabled at compile time.
-
-E.g. on x86, a large pile of Kconfigs are buried behind CPU_MITIGATIONS,
-and trying to provide sane behavior for retroactively enabling mitigations
-is extremely difficult, bordering on impossible.  E.g. page table isolation
-and call depth tracking require build-time support, BHI mitigations will
-still be off without additional kernel parameters, etc.
-
-  [ bp: Touchups. ]
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240420000556.2645001-3-seanjc@google.com
 ---
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/x86/Kconfig                                |  8 ++++++--
- include/linux/cpu.h                             | 11 +++++++++++
- kernel/cpu.c                                    | 14 ++++++++++----
- 4 files changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 902ecd9..213d071 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3423,6 +3423,9 @@
- 			arch-independent options, each of which is an
- 			aggregation of existing arch-specific options.
- 
-+			Note, "mitigations" is supported if and only if the
-+			kernel was built with CPU_MITIGATIONS=y.
-+
- 			off
- 				Disable all optional CPU mitigations.  This
- 				improves system performance, but it may also
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 619a04d..928820e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2495,9 +2495,13 @@ menuconfig CPU_MITIGATIONS
- 	help
- 	  Say Y here to enable options which enable mitigations for hardware
- 	  vulnerabilities (usually related to speculative execution).
-+	  Mitigations can be disabled or restricted to SMT systems at runtime
-+	  via the "mitigations" kernel parameter.
- 
--	  If you say N, all mitigations will be disabled. You really
--	  should know what you are doing to say so.
-+	  If you say N, all mitigations will be disabled.  This CANNOT be
-+	  overridden at runtime.
-+
-+	  Say 'Y', unless you really know what you are doing.
- 
- if CPU_MITIGATIONS
- 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index 272e4e7..861c3bf 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -221,7 +221,18 @@ void cpuhp_report_idle_dead(void);
- static inline void cpuhp_report_idle_dead(void) { }
- #endif /* #ifdef CONFIG_HOTPLUG_CPU */
- 
-+#ifdef CONFIG_CPU_MITIGATIONS
- extern bool cpu_mitigations_off(void);
- extern bool cpu_mitigations_auto_nosmt(void);
-+#else
-+static inline bool cpu_mitigations_off(void)
-+{
-+	return true;
-+}
-+static inline bool cpu_mitigations_auto_nosmt(void)
-+{
-+	return false;
-+}
-+#endif
- 
- #endif /* _LINUX_CPU_H_ */
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index bb0ff27..63447eb 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -3196,6 +3196,7 @@ void __init boot_cpu_hotplug_init(void)
- 	this_cpu_write(cpuhp_state.target, CPUHP_ONLINE);
- }
- 
-+#ifdef CONFIG_CPU_MITIGATIONS
- /*
-  * These are used for a global "mitigations=" cmdline option for toggling
-  * optional CPU mitigations.
-@@ -3206,9 +3207,7 @@ enum cpu_mitigations {
- 	CPU_MITIGATIONS_AUTO_NOSMT,
- };
- 
--static enum cpu_mitigations cpu_mitigations __ro_after_init =
--	IS_ENABLED(CONFIG_CPU_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
--					     CPU_MITIGATIONS_OFF;
-+static enum cpu_mitigations cpu_mitigations __ro_after_init = CPU_MITIGATIONS_AUTO;
- 
- static int __init mitigations_parse_cmdline(char *arg)
- {
-@@ -3224,7 +3223,6 @@ static int __init mitigations_parse_cmdline(char *arg)
- 
- 	return 0;
- }
--early_param("mitigations", mitigations_parse_cmdline);
- 
- /* mitigations=off */
- bool cpu_mitigations_off(void)
-@@ -3239,3 +3237,11 @@ bool cpu_mitigations_auto_nosmt(void)
- 	return cpu_mitigations == CPU_MITIGATIONS_AUTO_NOSMT;
- }
- EXPORT_SYMBOL_GPL(cpu_mitigations_auto_nosmt);
-+#else
-+static int __init mitigations_parse_cmdline(char *arg)
-+{
-+	pr_crit("Kernel compiled without mitigations, ignoring 'mitigations'; system may still be vulnerable\n");
-+	return 0;
-+}
-+#endif
-+early_param("mitigations", mitigations_parse_cmdline);
+You can preview this patch series on the 'refactor-heap-v4' branch of
+the repository at the following link:
+
+https://github.com/visitorckw/linux.git
+
+Changes in v4:
+- Change struct initializations to use designated initializers.
+- Replace memcpy() with func->swp() in heap_del() due to issues with
+  set_backpointer in bcachefs when setting idx.
+- Fix an error in ec_stripes_heap_swap() where
+  ec_stripes_heap_set_backpointer() should be called after swapping.
+
+Changes in v3:
+- Avoid heap->heap.nr to eliminate the nested types.
+- Add MIN_HEAP_PREALLOCATED macro for preallocating some elements.
+- Use min_heap_sift_up() in min_heap_push().
+- Fix a bug in heap_del() where we should copy the last element to
+  'data + idx * element_size' instead of 'data'.
+- Add testcases for heap_del().
+- Fix bugs in bcache/bcachefs patches where the parameter types in
+  some compare functions should have been 'type **', but were
+  mistakenly written as 'type *'.
+
+Changes in v2:
+- Add attribute __always_unused to the compare and swap functions
+  that do not use the args parameter.
+- Rename min_heapify() to min_heap_sift_down().
+- Update lib/test_min_heap.c to use min_heap_init().
+- Refine the commit message for bcache and bcachefs.
+- Adjust the order of patches in the patch series.
+
+Link to v3: https://lore.kernel.org/20240406164727.577914-1-visitorckw@gmail.com
+Link to v2: https://lore.kernel.org/20240320145417.336208-1-visitorckw@gmail.com
+Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
+
+Kuan-Wei Chiu (16):
+  perf/core: Fix several typos
+  bcache: Fix typo
+  bcachefs: Fix typo
+  lib min_heap: Add type safe interface
+  lib min_heap: Add min_heap_init()
+  lib min_heap: Add min_heap_peek()
+  lib min_heap: Add min_heap_full()
+  lib min_heap: Add args for min_heap_callbacks
+  lib min_heap: Add min_heap_sift_up()
+  lib min_heap: Add min_heap_del()
+  lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+    values
+  lib min_heap: Rename min_heapify() to min_heap_sift_down()
+  lib min_heap: Update min_heap_push() to use min_heap_sift_up()
+  lib/test_min_heap: Add test for heap_del()
+  bcache: Remove heap-related macros and switch to generic min_heap
+  bcachefs: Remove heap-related macros and switch to generic min_heap
+
+ drivers/md/bcache/alloc.c      |  64 ++++++++---
+ drivers/md/bcache/bcache.h     |   2 +-
+ drivers/md/bcache/bset.c       |  84 ++++++++++-----
+ drivers/md/bcache/bset.h       |  14 +--
+ drivers/md/bcache/btree.c      |  17 ++-
+ drivers/md/bcache/extents.c    |  53 ++++++----
+ drivers/md/bcache/movinggc.c   |  41 +++++--
+ drivers/md/bcache/sysfs.c      |   2 +
+ drivers/md/bcache/util.c       |   2 +-
+ drivers/md/bcache/util.h       |  67 +-----------
+ drivers/md/bcache/writeback.c  |   3 +
+ drivers/md/dm-vdo/repair.c     |  19 ++--
+ drivers/md/dm-vdo/slab-depot.c |  14 +--
+ fs/bcachefs/clock.c            |  43 ++++++--
+ fs/bcachefs/clock_types.h      |   2 +-
+ fs/bcachefs/ec.c               |  76 ++++++++-----
+ fs/bcachefs/ec_types.h         |   2 +-
+ fs/bcachefs/util.c             |   2 +-
+ fs/bcachefs/util.h             | 118 +--------------------
+ include/linux/min_heap.h       | 188 +++++++++++++++++++++++++--------
+ kernel/events/core.c           |  29 ++---
+ lib/test_min_heap.c            |  75 +++++++++----
+ 22 files changed, 522 insertions(+), 395 deletions(-)
+
+-- 
+2.34.1
+
 
