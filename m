@@ -1,72 +1,71 @@
-Return-Path: <linux-kernel+bounces-159883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2CDB8B356F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:41:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16F078B3570
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:42:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749DD1F21CA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:41:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49DC41C21D87
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E403143C60;
-	Fri, 26 Apr 2024 10:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21348249E;
+	Fri, 26 Apr 2024 10:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mepckmim"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gGKSthFZ"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84A686AEE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792A0140360
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714128097; cv=none; b=SJ7DyUDYDxCPNv/BjeoRPBJABd5utgg235kwacXGx9G32cq9YdsUNGxNYO9l2Ka2Pa5LWoXKQD6l8jonvfN6x7uZ5dOIsk7POEnE+oI1hGmm8qmP5a5GLyD1np000mU9PlOSDEzeMtGz2Qa12JRjQM5WfNVRWkqSp7l6hY9KrHA=
+	t=1714128099; cv=none; b=GbwKJxKDexTpN1RoeQpEva66BRSDmBMBMX8p9mw15DOxKDf2EDJZotP8zCkD7p0UWngnteNROaV0PQIY4nifd9SgtcvydSe88bPDAAaxQnSU+Xol9ZZh2XUnmwL9L9wMc8abHTXqh2LW9FC6y0BZyDXsPohqp7uaTgvadQT5pwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714128097; c=relaxed/simple;
-	bh=IMYKiq52emn3Dk5Vs4D46brLTo3TfZSVtNkXv8osBGY=;
+	s=arc-20240116; t=1714128099; c=relaxed/simple;
+	bh=n9yKBX8qjigC7/F1M8bGWOMSsRVeFv1nqroVB06gU6s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nEstJVp71nrp1uzm88fm4dvKYouFbZI525S2EhcMWTk6Tt4ElAEuDtkY6nlW1CbjVRt/OusmUJARuNsnN8cwfUYVWmGSl8wUudldHdWYoNS5smtgHLn1T+LJRsdFV0FiDES6aIIRgUmV7Zi2mJaDdEg54hfQ8GZwLyDUHUClpoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mepckmim; arc=none smtp.client-ip=209.85.128.48
+	 MIME-Version; b=OUmlXHtOYFwlcKDZIInvqeASvRBb5tFNCh0JuXQpOAKecHpduHPdwJUxmHxmDa8yeJYH0XppN7AvfD0R+wpG7CHZgXS4AbNPe10fL4okR3GkvI9kAYWSMmRAM9MsH455vLFHU6U31Zfd313uM/4mjibRB2QL8FS957wsEmTGmtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gGKSthFZ; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41ba1ba5591so1692775e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:41:35 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso27630241fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:41:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714128094; x=1714732894; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714128096; x=1714732896; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=InFnIY+p533KdBP4NACQo0sZ0V7hrv1Ldx+BeIELt2w=;
-        b=mepckmimJb+K130JwXXKEFDBtihiAAC0iY2SB0BDi8M/J5t6IlOfEBdisVgMRCUjaa
-         0Y2R4TV99VD2xHkNPelcXGMVVAzs4G2xjxKehw2T51pKIOPplpOl1+l5D4QvqbYbcRun
-         7TiCPmipUeIdNrcHmd7VD5v2+vFBCY35C2dBwY2oxjXBJNZXmbal1fGEEtSStnkmFcJM
-         jYt79RlAEpADGl0+v0qA1qASeSQ4hMU4TekerDWifweTb1Ipime2Jm8WbYzonRC7+Nua
-         wJLSqyO4c2B0g83i0njhY5XGfqQO4QyDJplOzHSpr8yJIwd75weglCggXg8WDtl8caka
-         mjBg==
+        bh=rbXwx/HNBBmagZEhDQ/BaLCRVM/2fRQKE1iroB24Qwo=;
+        b=gGKSthFZvkA+Zib+3mbp41VlANM9omptCOYSOjA479RlBErhZXCDEpbMJXX7qrOFt0
+         oobkbbebp7v6BMFUh+wGtUURdS4ndLfhWn1AP8JZEOy5lvvwAaVyH+Z5krFsY1gJY04L
+         JcC/cnEX1lpzbb9RoUjICQHvhaLPQihaPW933nRmKCjdv3sZZFBapyhq6pnKRVliT9w8
+         bkOAde3yVqpf2eo1X0wzhdiHSGE788tgBxj2kO1lF52aYRfRwP+p0Xv5S/IQbW8SsLdr
+         iahP31LUeNNFeaGSUk6h9DKaiXXv36NOWpa2Tb4BkYrfGajKXCg34Vg1H0U8H86Xm+rN
+         X5BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714128094; x=1714732894;
+        d=1e100.net; s=20230601; t=1714128096; x=1714732896;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=InFnIY+p533KdBP4NACQo0sZ0V7hrv1Ldx+BeIELt2w=;
-        b=kPyHU+em1K+6vxMGf9NzRpRAAnFwET8OxT0OD6PBglvC1XRXa1SPE6ip43I0Nfz6Hh
-         wkScjgEkyxr77On3++hX9cob+n4MjTAF3nAMzI5uwzyl1aUy7fEn40880jL/wD0PnWR7
-         Mm+4kV4pow7MA09Zxjv+JYUJc7FE5YOp2UXx4BfXOiGsBneBu7kvDpwVJNOjXWak4tY+
-         1zqPQTV1exhNWSYO9yIDSlzPXAcylOgnsS+sFwvyeVjzHgn2vaia1qnz/MxpVJm4pw87
-         GnEN+Pon32sJ7Y1qSQWUncoToobNmgFVyihe6VORMg+1FL/s4KbdcYv995MPfW2OHk6q
-         eqbA==
-X-Forwarded-Encrypted: i=1; AJvYcCWpTHPL9Oc63fQ5ws0qH4DSmc7q0A+CtMwqc6E4OnwE+usSSxEgBanF0Iz6QOPXiwepuPD1NoHBSDbuuvVYDqOc4X+gb4s7TPai++QY
-X-Gm-Message-State: AOJu0YyJ2ZBK5LjgXCWo/j4MXmLn4b43Ic1VFC4C6tbLNgfm//JeHOv6
-	KugesCNdrsUBa0JY6MlJDIUIaKurrqEP0n0a245Zj71kRhRgtyDx5rCvlmXlKBKhWyhqma/NSB+
-	UflQ=
-X-Google-Smtp-Source: AGHT+IGzmmRcHxE+Swjg/ipOCc8mvlarSR/aWtWq2ae9ZhH60fFvijHKf6xSwV9kvZ7WJacR0rfTkA==
-X-Received: by 2002:a05:600c:1986:b0:41a:903a:d2f4 with SMTP id t6-20020a05600c198600b0041a903ad2f4mr1778459wmq.2.1714128094263;
-        Fri, 26 Apr 2024 03:41:34 -0700 (PDT)
+        bh=rbXwx/HNBBmagZEhDQ/BaLCRVM/2fRQKE1iroB24Qwo=;
+        b=YqDeUGCZOIDutBQ4JWV1AMVaOlnVJH89J8IsxLgYGDsDlEcnWFXRtd5/uWPqDjtpbq
+         KAJNNSS13ns/r5pCPXxMmju2ktfvBhenazP00cmNid859hedyrRerQPM2slxG635v4qt
+         XHEYCYicW0mn/tLGjn36/wrT3oCOKeM5EYRYmT8qAyHkbEti8ClmooQTPFJ54ybMo2If
+         OSn3b2Y1yBr1nJvilQm1v9Nb/SAB8oxDT7wt0oj8hZiV+4TQZ6rFQV5LijFm+Hq2jvGc
+         us98NVTRr+ESbtCXfmcsSvsPK8RMZqwXGaYwQmHw9Lg4L6D4S/M2eGgTmLOAuHYzAQXy
+         Qhxw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxDt41pHSoXxE+31jGivlyI76L5BbMyIvwtwltpKWV/oxwhjD0lUWcnCDxdGf/Bz4O13V9ARDahwus3AlQ6OjPNm84EQyTzE3NidPg
+X-Gm-Message-State: AOJu0YyF2jBOD421MaEz9C8knReD3sU7s+bEoLuOK61sbBpD96Fde/wl
+	HFcEaZMDj7y+lIVNEYIoZ1OA2HanjDvzru7WlwAzLnkVD/E1lEHJPPyjGXY9HM8=
+X-Google-Smtp-Source: AGHT+IHiylD7VQWD1+ej27FAWnFwoUKQ+ZEhfuiu1lnbA/xYwpsUIFHWtBloSi6kC41eD+L1ByFyIQ==
+X-Received: by 2002:a2e:a1c6:0:b0:2da:36be:1b4a with SMTP id c6-20020a2ea1c6000000b002da36be1b4amr1770332ljm.19.1714128095556;
+        Fri, 26 Apr 2024 03:41:35 -0700 (PDT)
 Received: from gpeter-l.lan ([2a0d:3344:2e8:8510:63cc:9bae:f542:50e4])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c510e00b00419f572671dsm22035335wms.20.2024.04.26.03.41.33
+        by smtp.gmail.com with ESMTPSA id o14-20020a05600c510e00b00419f572671dsm22035335wms.20.2024.04.26.03.41.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 03:41:33 -0700 (PDT)
+        Fri, 26 Apr 2024 03:41:35 -0700 (PDT)
 From: Peter Griffin <peter.griffin@linaro.org>
 To: vkoul@kernel.org,
 	kishon@kernel.org,
@@ -79,9 +78,9 @@ Cc: linux-phy@lists.infradead.org,
 	willmcvicker@google.com,
 	kernel-team@android.com,
 	Peter Griffin <peter.griffin@linaro.org>
-Subject: [PATCH 1/2] phy: samsung-ufs: ufs: remove superfluous mfd/syscon.h header
-Date: Fri, 26 Apr 2024 11:41:28 +0100
-Message-ID: <20240426104129.2211949-2-peter.griffin@linaro.org>
+Subject: [PATCH 2/2] phy: samsung-ufs: ufs: exit on first reported error
+Date: Fri, 26 Apr 2024 11:41:29 +0100
+Message-ID: <20240426104129.2211949-3-peter.griffin@linaro.org>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
 In-Reply-To: <20240426104129.2211949-1-peter.griffin@linaro.org>
 References: <20240426104129.2211949-1-peter.griffin@linaro.org>
@@ -93,27 +92,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-mfd/syscon.h header is no longer required since the update to
-exynos_get_pmu_regmap_by_phandle() api.
+To preserve the err value, exit the loop immediately if an error
+is returned.
 
 Fixes: f2c6d0fa197a ("phy: samsung-ufs: use exynos_get_pmu_regmap_by_phandle() to obtain PMU regmap")
 Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 ---
- drivers/phy/samsung/phy-samsung-ufs.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/phy/samsung/phy-samsung-ufs.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/phy/samsung/phy-samsung-ufs.c b/drivers/phy/samsung/phy-samsung-ufs.c
-index 813bce47121d..ffc46c953ed6 100644
+index ffc46c953ed6..6c5d41552649 100644
 --- a/drivers/phy/samsung/phy-samsung-ufs.c
 +++ b/drivers/phy/samsung/phy-samsung-ufs.c
-@@ -13,7 +13,6 @@
- #include <linux/of.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
--#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
+@@ -99,12 +99,18 @@ static int samsung_ufs_phy_calibrate(struct phy *phy)
+ 
+ 	for_each_phy_lane(ufs_phy, i) {
+ 		if (ufs_phy->ufs_phy_state == CFG_PRE_INIT &&
+-		    ufs_phy->drvdata->wait_for_cal)
++		    ufs_phy->drvdata->wait_for_cal) {
+ 			err = ufs_phy->drvdata->wait_for_cal(phy, i);
++			if (err)
++				goto out;
++		}
+ 
+ 		if (ufs_phy->ufs_phy_state == CFG_POST_PWR_HS &&
+-		    ufs_phy->drvdata->wait_for_cdr)
++		    ufs_phy->drvdata->wait_for_cdr) {
+ 			err = ufs_phy->drvdata->wait_for_cdr(phy, i);
++			if (err)
++				goto out;
++		}
+ 	}
+ 
+ 	/**
 -- 
 2.44.0.769.g3c40516874-goog
 
