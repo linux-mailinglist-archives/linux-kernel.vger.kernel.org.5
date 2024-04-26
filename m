@@ -1,146 +1,269 @@
-Return-Path: <linux-kernel+bounces-159854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26728B3527
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:18:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D1368B3505
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:11:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26A561F21D93
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:18:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81C091C217C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77951448FB;
-	Fri, 26 Apr 2024 10:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAFE142E68;
+	Fri, 26 Apr 2024 10:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="msW2IDHk"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WXAfo2nC"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300D014430A;
-	Fri, 26 Apr 2024 10:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E876014264F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126567; cv=none; b=TNiYNnLtHOT0Um9idrCGQwDh2WPh+OBbzEcV5G0KSdMW5qre4aOXxQFTeQxXYAKjcSdgP/tLvw3+B+ZulLLBubQnYyrrx4vGgg4KqiopD6t2M+Fwn0XntboflBM/R4XFqa9yHHRcvKQeMhZ8qHGO4O8DyyifTQp0YOQQUpsCUMY=
+	t=1714126254; cv=none; b=nP++wbdXeUwya9BZbk5xF7SSYZ0JNZeR5p0SFv/jmc4tpSp2teVVLExAJVh/IPvRSXKnZ9nq9jPoJWe+GCQY2ENY+hRbiKUkXVnLcuy50nUmHZl+HsFIGjtIMjwm9UF4D8bVHmO53LcG1Izs7cVyLlu7NhHOi9OdC1ARorc04xA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126567; c=relaxed/simple;
-	bh=Aaok4akx8+JwelwN/ppsY7WbWfpSN8p1AaPa1nlurvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wy7hX/Is9hEnnXtk6hHBewqkAQWPc2qxlj5Ofi5j78a2PWD0haGXim6atmRsE5NSzUM8R5AwVmGne21imm6mexOfRQDJCGYqm51ftYNom4Cj8+9PnDzcTvqkcLGPtZsq2IVIcQrvzENNDEHtBtOkD/eVEMo6qSU9EA0WxbWhslE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=msW2IDHk; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QA3CRq012436;
-	Fri, 26 Apr 2024 10:15:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Aaok4akx8+JwelwN/ppsY7WbWfpSN8p1AaPa1nlurvo=;
- b=msW2IDHklridPA49V4Yn6HHDnEqXh+aKAz0bWIaNe0idSkv7PvIbkpYeYc9esxhPabzW
- 4X4CMusBRpMEzG4/LmnYXrL8IcwCVKFzFskC5zzdH2qnizCHK2kPsASdowEkMCp76sba
- BPKCL33+JNzpY4IS+CeFNJIpUjIsTAqpHs0bdkzjH+Lu9h7Gyv7Ldlr26w8/ipvnUjha
- VbM2+zZdSp6jDJZiWyk0gzAIth9gkvj65KKHMrf/h6nXkToaBxgJhQtK/N/8afpfZbY1
- N39Pacl5FM+QS2nAxapGZLI981J2wF2FwIZVAOfPxb41EJjC5iqsoWHhwM2T6AGDOpS/ vA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xra62g0uq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 10:15:48 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43QAFllU030841;
-	Fri, 26 Apr 2024 10:15:47 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xra62g0uj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 10:15:47 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q8N5Sn021021;
-	Fri, 26 Apr 2024 10:10:46 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre0f8u9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 10:10:46 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QAAeZn30540508
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 10:10:42 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8446420063;
-	Fri, 26 Apr 2024 10:10:40 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3285C2004D;
-	Fri, 26 Apr 2024 10:10:37 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.4.163])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 26 Apr 2024 10:10:37 +0000 (GMT)
-Date: Fri, 26 Apr 2024 12:10:35 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul M Stillwell Jr <paul.m.stillwell.jr@intel.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Nilesh Javali <nilesh.javali@cavium.com>,
-        Arun Easi <arun.easi@cavium.com>,
-        Manish Rangankar <manish.rangankar@cavium.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Saurav Kashyap <saurav.kashyap@cavium.com>, linux-s390@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 5/6] cio: ensure the copied buf is NUL terminated
-Message-ID: <Zit9myOJp0SYFL1F@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240424-fix-oob-read-v2-0-f1f1b53a10f4@gmail.com>
- <20240424-fix-oob-read-v2-5-f1f1b53a10f4@gmail.com>
- <ZikiZsSTGUUM69GE@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+	s=arc-20240116; t=1714126254; c=relaxed/simple;
+	bh=nuH6tTyBoh/6h3XiGSswwpmypfMdz/CImISnCvU2VFg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L1vPAyb+zGeI5cW3GXXB9sOqPqk0UjoQScOTipsZDc6E0jVS1+yn77UCXZXhbfpk3WfwhWB8wB2G0yMgoPonnjPcQ/i2dv5FVKS4Afk6mtvMSYRkmGBZkIiWbfmNNV6lOPbJwZaQSYPPHgSQlFEAP5wEGGJmuwoVRMSn41UyWLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WXAfo2nC; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2dd64d6fe94so21214121fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714126251; x=1714731051; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LTzf8B5xaF9nwt/4/HviUjeHQGltnTZQ9twI2ClHj4c=;
+        b=WXAfo2nCi1CPthJrPTMkW9gpdqiLp5QslX6IQMV0jHSUXhOJ0vaQ6Rzic73Zol2OPb
+         +KhGAl3zQD/0mSkH08ukaauuwdfRnxgGcgYYYtSo2mzRnOEMK5LGK4PZ2+PLw5KVyQ09
+         YRSNhL6r9qhTYIdfT0Uu9Dhlcv9+c40QtRmUG2cVyP8zUlDTssMv7O0KLWVw/BGT73i9
+         YOwsU8pTKW8CGDCyvs8tBl920XBnnaN0mbW7Q3jXYhhDMThTzLd2p9d4XuM0gHT5puTt
+         oJ5hP2LJ9ne4eSAU9B+ufM2KIVoEhvlMBDpuFAaoCv7ve3uWaFUyQPJX61TK+2+P2/Ze
+         vpng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714126251; x=1714731051;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LTzf8B5xaF9nwt/4/HviUjeHQGltnTZQ9twI2ClHj4c=;
+        b=MPLC40PaW+KnttBSqOmXRjsNRutADqWOniW7zbjwEdkDWED2oSbdxCk2DiDeFMOz/s
+         D+m1+yLyDJOUGxzeqPNqvPkXAFbr/+F2ZWRmgUrEu3aDooAxUn5+BX2MvxsWM8RE5EH9
+         SuLCZ0LnPMmhBBmMwak3tSsnLsO6Web0wRX/jHEIESMW3qww3x+bS5hSP4PSv1Z5gbgT
+         6k68/CGeIvjsvARKJja7EmPWPxEQvV95H33EQmUw6iESbqoT1L0yT7qLEUDXpodKeA+V
+         kFMwL/jej9e99ATNxX+YKcNsiF+q/DQUstM3VkHqH7toLmF0KOHKUM8AcyHgZXqUQsUs
+         OUHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFAG9N3Tqe99iKlsPc9tqsziJ7XSSOEy0zLMuJKJBYNrhDfKe+TGz2WKifA9jd2qw6BDmiFJLNQX8DimBPBBqte1Z3gtHGPYCXAqWz
+X-Gm-Message-State: AOJu0YxgJ4PIMSh31/I1HgliCTYl4NXuW1BTwn7TH1uGyyWuwNHUujxE
+	LJCV7qrGaZGZ3itIf/osgWQh3MK1q5GSO39AvMaah3F2XN5Coqhy4AS9BrPDtcQ=
+X-Google-Smtp-Source: AGHT+IETNBTvduNcSZvQ1UED1Wabzp3E86pe63uLXem5m50jD/68R72SdO0dpZh999FcTtsL3zEqXg==
+X-Received: by 2002:a05:651c:10d4:b0:2dd:987f:f9d7 with SMTP id l20-20020a05651c10d400b002dd987ff9d7mr1239494ljn.25.1714126250958;
+        Fri, 26 Apr 2024 03:10:50 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.100])
+        by smtp.gmail.com with ESMTPSA id v11-20020a05600c470b00b0041a963bf2cdsm14302754wmo.36.2024.04.26.03.10.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 03:10:50 -0700 (PDT)
+Message-ID: <4b6e1399-7b1d-4506-9943-32e76aff22f4@linaro.org>
+Date: Fri, 26 Apr 2024 11:10:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZikiZsSTGUUM69GE@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nwzmHa-XFUQKTaw4oYDH1K-dtAII8FVL
-X-Proofpoint-GUID: fy_d-znjR1XF0iGIbw_36HPeZjIuI1Lh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_09,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
- adultscore=0 mlxscore=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=721 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404260067
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] SPI Nand patch code of SkyHigh Memory
+To: KR Kim <kr.kim@skyhighmemory.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: mika.westerberg@linux.intel.com, michael@walle.cc,
+ acelan.kao@canonical.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, moh.sardi@skyhighmemory.com,
+ zhi.feng@skyhighmemory.com, changsub.shim@skyhighmemory.com
+References: <20240426072033.331212-1-kr.kim@skyhighmemory.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240426072033.331212-1-kr.kim@skyhighmemory.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 05:16:56PM +0200, Alexander Gordeev wrote:
-> Applied, thanks!
++Takahiro, I saw he was quoted as author
 
-Hi Jakub,
+Hi, KR,
 
-I just want to make sure you do not have plans to pull this patch
-via the net tree, right? (I schedulled it for the s390 tree already).
+Thank you for the patch.
 
-Thanks!
+Plese run "./scripts/checkpatch.pl --strict" on your patch and fix the
+errors and warning that are shown.
+
+Subject is wrong, it should follow how other drivers were introduced.
+You may use the following in the next version:
+"mtd: spinand: add support for SkyHigh S35ML flashes"
+
+Other comments below.
+
+On 4/26/24 08:20, KR Kim wrote:
+> The following list shows the additional features that are required to support Skyhighmemory S35ML0xG3 SPI Nand:
+> 
+>     [Always ECC On]
+>        Always keep the ECC On during Bad Block Marking and Bad Block Checking
+>        1. The on-die ECC feature is totally transparent to the host. The ECC parity bits used for this feature do not occupy the NAND spare areas.
+>        2. The host is free to have its own ECC engine by using the spare areas that have standard size. 
+>        3. We provide this patch to enable users who have limited ECC capabilities on the host side to use the NAND flash. This patch has been tested thoroughly on Linux. 
+> 
+>     [Change ECC Status information]
+>        This patch changes the ECC status information as follows to maintain compatibility.
+> 	00 (normal)                               
+> 	01(1-2 errors corrected)          
+> 	10(3-6 errors corrected)          
+> 	11(uncorrectable)
+
+Please read the guide on submitting patches before sending v2:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+It describes how one shall describe the changes. You missed to add your
+Signed-of-by tag.
+
+> ---
+>  drivers/mtd/nand/spi/Makefile  |   2 +-
+>  drivers/mtd/nand/spi/core.c    |  14 +++-
+>  drivers/mtd/nand/spi/skyhigh.c | 145 +++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h    |   3 +
+>  4 files changed, 162 insertions(+), 2 deletions(-)
+>  mode change 100644 => 100755 drivers/mtd/nand/spi/Makefile
+>  mode change 100644 => 100755 drivers/mtd/nand/spi/core.c
+>  create mode 100644 drivers/mtd/nand/spi/skyhigh.c
+>  mode change 100644 => 100755 include/linux/mtd/spinand.h
+
+all these file mode changes are wrong, keep the files as they were.
+
+> 
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> old mode 100644
+> new mode 100755
+> index 19cc77288ebb..1e61ab21893a
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
+> -spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
+> +spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
+>  obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> old mode 100644
+> new mode 100755
+> index e0b6715e5dfe..d09b2bd05284
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -196,6 +196,17 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
+>  static int spinand_ecc_enable(struct spinand_device *spinand,
+>  			      bool enable)
+>  {
+> +	/* 
+> +	 * SkyHigh Memory : always ECC on 
+
+how does the configuration register look like, would you please tell us
+its fields?
+
+> +	 * The on-die ECC feature is totally transparent to the host. 
+
+this line brings no benefit, remove it
+
+> +	 * The ECC parity bits used for this feature do not occupy the NAND spare areas.
+
+its already implied, remove the line
+
+> +	 * The host is free to have its own ECC engine by using the spare areas that have standard size. 
+
+Why would one want to have both the on-die and on-host ecc engine work
+in parallel?
+
+> +	 * We provide this patch to enable users who have limited ECC capabilities on the host side to use the NAND flash. 
+
+remove this line, it brings no value
+
+> +	 * This patch has been tested thoroughly on Linux. 
+
+all code is considered tested, remove this line
+> +	 */
+> +	if (spinand->flags & SPINAND_ON_DIE_ECC_MANDATORY)
+> +		return 0;
+
+the always on on-die ecc shall be discussed in a dedicated patch, as it
+touches the core.
+> +
+>  	return spinand_upd_cfg(spinand, CFG_ECC_ENABLE,
+>  			       enable ? CFG_ECC_ENABLE : 0);
+>  }
+> @@ -561,7 +572,7 @@ static int spinand_reset_op(struct spinand_device *spinand)
+>  			    NULL);
+>  }
+>  
+> -static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+> +int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+>  {
+>  	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
+>  }
+> @@ -945,6 +956,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+>  	&macronix_spinand_manufacturer,
+>  	&micron_spinand_manufacturer,
+>  	&paragon_spinand_manufacturer,
+> +	&skyhigh_spinand_manufacturer,
+>  	&toshiba_spinand_manufacturer,
+>  	&winbond_spinand_manufacturer,
+>  	&xtx_spinand_manufacturer,
+> diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
+> new file mode 100644
+> index 000000000000..f001357b4d85
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/skyhigh.c
+> @@ -0,0 +1,145 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2022 SkyHigh Memory Limited
+
+Copyright followed by (c) is redundant. Update years.
+> + *
+> + * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+
+You shall consider adding Takahiro as author, or co-author, or at least
+specify that the patch is derived from Takahiro's work.
+> + */
+> +
+
+cut
+
+> +static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +					 struct mtd_oob_region *region)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	/* SkyHigh's ecc parity is stored in the internal hidden area */
+> +	region->length = 0;
+
+what happens when length is zero?
+
+> +	region->offset = mtd->oobsize;
+> +
+> +	return 0;
+> +}
+
+cut
+
+> +};
+> +
+> +static int skyhigh_spinand_init(struct spinand_device *spinand)
+> +{
+> +	return spinand_lock_block(spinand, SKYHIGH_CONFIG_PROTECT_EN);
+
+I see the core unlocks all blocks. Thus I assume you can as well remove
+the init method altogether, it brings no functional change.
+
+Cheers,
+ta
 
