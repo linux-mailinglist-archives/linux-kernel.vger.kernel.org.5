@@ -1,138 +1,133 @@
-Return-Path: <linux-kernel+bounces-159391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D6F8B2E14
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:39:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085DB8B2E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:39:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C304F1F231A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:39:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E16285971
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC82EBB;
-	Fri, 26 Apr 2024 00:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C1EA35;
+	Fri, 26 Apr 2024 00:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="w1klMiVW";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GQpLYFUo"
-Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lmoNTEBG"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0393380;
-	Fri, 26 Apr 2024 00:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3593D1877
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714091935; cv=none; b=Dmvwr2TOKBpXdKP85b2ix7jhM6blIY5cz3BwWzvr/rrRPlgIjwSxeWj7Syx7KgrgqIoLEAjPUJUSAQ0K65Z4zQXLpBgoB6AejkTuFUuW67WnGFRKrL779yr7du2y9L4UgNjflmKHuu0qNq42h0ghtVQdI3T1FYxjtrWl4Kxf8ks=
+	t=1714091946; cv=none; b=u6J07T4cgWW8rANvyNKUReS9ydMyyStvS2jyKrudzxUqLd8AZVqiFUXcRNCzXLYY35uPnMULPtylkKNTDpmSRH8dkxRFC/c2cBXZ6TkEjf7CDjSCahnFrarmbm8/zgNaxtQ8V7yjtgFbDvOdd9G9wSuQl7vs0zexr6cfODxXPSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714091935; c=relaxed/simple;
-	bh=6WuPT3KnvxGNm98XUMHDHiNGK0DhGNVKYQ+PLvFq/yQ=;
-	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cjxa338e3vX7BBjmjD6TODnGpn+VHuZry5NtsXZL9Qt9miyDz/mIDI7ksWs6FVRfQzwomQSnTs/hUIaQktM+GouK9xxllQAaaVAIlFLUoMD6a0ZJeGHg55yvLbtRPi9GUGJCQsEKI1y7bScRRlJmB7hBYVl74ut3t3wm+KHtc4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=w1klMiVW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GQpLYFUo; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id BBB0511400AC;
-	Thu, 25 Apr 2024 20:38:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 25 Apr 2024 20:38:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1714091932; x=1714178332; bh=10h3WB31EW
-	lToZuGsEXjKLakOkE9Sz0sCjPh3rFbWmM=; b=w1klMiVWVrX4eCOwm9pQK5q0/M
-	FEIVMi47yYcnYbZJbBsT6jNruszgOcy2LkfPGsQb1ACc7BgDkkuZ3P99LpyU5RAO
-	ta6HcaAsk7VF3VjYg147leKHctvFR7NOLCNPYKeez/83eQNusPXB4aRNoM33eNT+
-	49p0gI56r8D69+/C9eCzGGxD8a2pY0Myv/5pvRS50ODj6ZsUBgxbXskFfa2EXSR0
-	H2FmVxQ022GdJ6RivNLtmhh+vsdJtXHXQq7CDiJNYbZfKVId7kuJ7yoBbKdap/sv
-	Rc0v/ruN7U8wMJMYiO2QIUvdz9vcUM5WDv0wjcBCLnAZtCJThMF9jiAnF6iA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714091932; x=1714178332; bh=10h3WB31EWlToZuGsEXjKLakOkE9
-	Sz0sCjPh3rFbWmM=; b=GQpLYFUo488rTkT/y2UZd+bb/8og0e4c90hV3p6dedP6
-	9wel9WqEndOaPvacGc19ZbkL0tsORWF8OnhLP6glQRaN9BfkzsV/VkaGSdteVnV0
-	Ztq1oeN4HqkUNl3NNwLA/ABAN9CfjvLIF3ScmRQlDrMCTHe55GjDGHjrrpaFF8cV
-	HaVdFODdq0bmum2x2eI6FvB043GY2rbiLGoYtgPPEgAnfqoF7IiU/T4kH+0L7xXc
-	5qI4xCc//t7v/piJMEzHaOPPS4SUgI/uUF5C8a8MQirCu2KFupFk818AvXSGlzU7
-	Q51KTkSu0S6moHFal9RZ3myDQvGk5YzYjASuzYeOGA==
-X-ME-Sender: <xms:m_cqZoaeAEPInh34e1HKVIDCqpttV7ogSYpvjRJ_XplN4MpN1wvZrw>
-    <xme:m_cqZjb_LbWgf3raeURYc_oLiigMc0OaHRr2-jvwIqx8VDzgVRqz9GRpOGG7yrUi1
-    mI0jnRrcpASDO29vp0>
-X-ME-Received: <xmr:m_cqZi-GCIkEeTdupPExjBLqSTWsauBNCQkeGR2XIA1pisA-tNCl6MSAKC3B-qy0JIv09jo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelkedgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfihnhgu
-    ohhnucfurghntghhvgcuoehlshgrnhgthhgvsehlhihnuggvnhhordgtrgeqnecuggftrf
-    grthhtvghrnhepjeffueekgeeijefhvddugedtkeefveevtefghfevfeeufffgvdevleei
-    udfhtddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eplhhsrghntghhvgeslhihnhguvghnohdrtggr
-X-ME-Proxy: <xmx:m_cqZirIZrtdfcQINAinoZpMzlVB4ju7UR4fGYx7-0JE8hglE_AJew>
-    <xmx:m_cqZjq6lFFwGnsWYjeahuGeePcmtAAC22q37jgL2M6Bk_JkcJEoBg>
-    <xmx:m_cqZgQDAtaYQ8JZ6HeP0MydSBAynC9AjDuAFoLT5Sy7VOJI3_Jvfg>
-    <xmx:m_cqZjpy3p8Uxq--3RNF550U4Lvjh7ibS62cwl8Lv7BGfHq18TjtuA>
-    <xmx:nPcqZm1HxvIzvhbXy2chEWST5x8o0SISFip2OMgnI_Shsq6IGRsWPSRZ>
-Feedback-ID: i1719461a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Apr 2024 20:38:46 -0400 (EDT)
-Date: Thu, 25 Apr 2024 18:38:35 -0600
-From: Lyndon Sanche <lsanche@lyndeno.ca>
-Subject: Re: [PATCH] platform/x86: dell-laptop: Implement platform_profile
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>, Matthew Garrett
-	<mjg59@srcf.ucam.org>, Pali =?iso-8859-1?b?Um9o4XI=?= <pali@kernel.org>,
-	Hans de Goede <hdegoede@redhat.com>, Ilpo =?iso-8859-1?q?J=E4rvinen?=
-	<ilpo.jarvinen@linux.intel.com>, platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
-Message-Id: <BSXICS.THI25R7A1N202@lyndeno.ca>
-In-Reply-To: <3cf80056-e62d-4be1-9716-4c843ae2f88c@linux.intel.com>
-References: <20240425172758.67831-1-lsanche@lyndeno.ca>
-	<a6009bed-aa34-4a3f-91f5-23937e915132@amd.com>
-	<24c7a9ea-7755-4270-a338-4701c8e262e2@app.fastmail.com>
-	<ae6a5b66-86e9-44cd-8484-1d218e7bc72c@amd.com>
-	<3cf80056-e62d-4be1-9716-4c843ae2f88c@linux.intel.com>
-X-Mailer: geary/44.1
+	s=arc-20240116; t=1714091946; c=relaxed/simple;
+	bh=UF1k0DTTPn6TCUwLWPXgU3B/ht2pbAkBF2vPrCFb+B4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAjcq4l6R2GuGrF18Bx1d+a/MeBmVHDC8jWI/5QcRCDME7aI8NKOlGhMt9DFIntv71HdFZQAua3Di6NHSxg/Huv4ct5tWRDt3IjS5eHJy1KU3RDViSfy3PcTq7U1hwsojlXtZMjYDwNMCPpwk68CwXV2DUM0jxaKZUTx136CTqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lmoNTEBG; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e5aa82d1f6so18083025ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 17:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714091944; x=1714696744; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xyeyYlhjNPdHyGDZj5zbPNqhK8/HMAhLyRxOSloh5f8=;
+        b=lmoNTEBGqb6LCTSXsjc1lHsqmcUdiKVoo1KrSnRNCJNkspz9ER5uKRg4dLGE5ANeRS
+         GjH0tO4AusXIU+cmftf5WhUy893YFRTQzLcLGhYnLueNHJ9dgo72kMHjh/Pb7v28Vkis
+         /9AodkSd7V9G3n9+UZt1B34ZfbjA1QGo0EDoE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714091944; x=1714696744;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xyeyYlhjNPdHyGDZj5zbPNqhK8/HMAhLyRxOSloh5f8=;
+        b=Tc2kvsQcWgolXidUjKAC3NVJmMTH2/a0g8Iv3pTFOpR5anbHZv18JPW7TLh7E3SvuY
+         dPyOtCrZnMas5MPkD2M+f/IMrEqSn7NNceTt4nSXeoa5TY+AjQl48WZQJ5s/fIVLJMRV
+         VqUKcaIuVyvQIXywx8YgWj4FkAG+2hdk9l0Yzo0ILpoxY0pg8hHBCRcLjHc/puLk10rK
+         jHE4VnfoAT0xvdV1CUiK32KZYbabhWCMO2GsSLNwAVyaJTR2vSu2Unnr+p+u++c4zWMe
+         VutE3fO+QVkN3IrRCCCamy14RlXDuEAWE3VGq0Fqpx1XNrZ/i3pcPi/3FE2XlCvVu5PS
+         0kQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWE9u8aa7G0QwCq3EHnIVOhW7QVFJj5aYxLLVTHMgtpGg3EX8DuCkZaXB4Djbu9vxk/vYtMwH0+bQllI+EQe3QYguYosMmvCTfBGbGn
+X-Gm-Message-State: AOJu0YzMjpx5d+XNrJkj6WOH0uam3kmVS9WcTh5SfygjNxYBj9tfpvy+
+	2e/V2H0o6COJJtQsSkS1fUvkAh8jegScIh2dYCklK+mUDEayEObfj8ReR4lUEg==
+X-Google-Smtp-Source: AGHT+IHuwl3OPPsxNPOtPIxd0SB/ZhDzhbACRb6zBx3eCM0TcAvrfsdWZfXQSNhR2MSNDgZIHy8YNw==
+X-Received: by 2002:a17:903:32c7:b0:1e8:682b:7f67 with SMTP id i7-20020a17090332c700b001e8682b7f67mr1960481plr.29.1714091944586;
+        Thu, 25 Apr 2024 17:39:04 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id w17-20020a170902d11100b001e42f215f33sm14397208plw.85.2024.04.25.17.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 17:39:03 -0700 (PDT)
+Date: Thu, 25 Apr 2024 17:39:03 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Matthew Wilcox <willy@infradead.org>,
+	Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
+Message-ID: <202404251724.47A3F5ADF@keescook>
+References: <20240425200844.work.184-kees@kernel.org>
+ <w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
+ <ZirCbPR1XwX2WJSX@casper.infradead.org>
+ <64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
+ <202404251532.F8860056AE@keescook>
+ <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
 
-
-
-On Thu, Apr 25 2024 at 02:51:42 PM -07:00:00, Srinivas Pandruvada 
-<srinivas.pandruvada@linux.intel.com> wrote:
+On Thu, Apr 25, 2024 at 04:47:18PM -0700, Andrew Morton wrote:
+> On Thu, 25 Apr 2024 15:42:30 -0700 Kees Cook <keescook@chromium.org> wrote:
 > 
-> On 4/25/24 13:28, Mario Limonciello wrote:
->> Yeah it's not say it's a "new" conflict, it would just become a lot 
->> more prevalent since software like GNOME and KDE use 
->> power-profiles-daemon to manipulate the new power profile you're 
->> exporting from the driver.
->> 
->> If there really is no conflict, then great!
->> If there is a conflict then I was just wondering if there needs to 
->> be an easy way to turn on/off the profile support when thermald is 
->> in use.
+> > > The concern about leaking image layout could be addressed by sorting the
+> > > output before returning to userspace.
+> > 
+> > It's trivial to change permissions from the default 0400 at boot time.
+> > It can even have groups and ownership changed, etc. This is why we have
+> > per-mount-namespace /proc instances:
+> > 
+> > # chgrp sysmonitor /proc/allocinfo
+> > # chmod 0440 /proc/allocinfo
+> > 
+> > Poof, instant role-based access control. :)
 > 
-> This shouldn't be in conflict as this should be directly changing 
-> some settings in BIOS. BIOS should send some notification, if it 
-> wants some changes in thermal tables used by thermald.
+> Conversely, the paranoid could set it to 0400 at boot also.
 > 
+> > I'm just trying to make the _default_ safe.
 > 
-> Thanks,
+> Agree with this.
 > 
-> Srinivas
-> 
+> Semi-seriously, how about we set the permissions to 0000 and force
+> distributors/users to make a decision.
 
-If we do not think there is a conflict I can leave it without a toggle.
+That seems an overly unfriendly default, but I guess if you wanted it as
+a Kconfig setting? Just seems easiest to make distros that enable alloc
+profiling safe by default but trivially available to root, and specialized
+monitoring systems can do whatever they want with their /proc file ACLs.
 
-Lyndon
+This is kind of how all of this stuff works. There's nothing unique to
+/proc/allocinfo. We do the same for slabinfo, vmallocinfo, timer_list,
+etc. And I think it's totally reasonable to have paranoid defaults,
+give the kind of outrageous stuff attackers have figured out how to reverse
+engineer. Take for example "we can bypass SLUB randomization for the slab
+from which struct file is allocated [by examining the /proc/$pid/fdinfo/
+file contents]" Jann Horn demonstrated[1].
 
+-Kees
 
+[1] https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html
 
+-- 
+Kees Cook
 
