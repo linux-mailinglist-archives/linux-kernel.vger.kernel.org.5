@@ -1,94 +1,109 @@
-Return-Path: <linux-kernel+bounces-159629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E5128B314A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:28:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B35CF8B3150
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:28:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2C771F2294D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:28:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E430C1C21E4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A34413C3DB;
-	Fri, 26 Apr 2024 07:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39D613C3D2;
+	Fri, 26 Apr 2024 07:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="caNgvyEZ"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h09wgEO5"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9AA13BC2B
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:27:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E8C13AD20;
+	Fri, 26 Apr 2024 07:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714116477; cv=none; b=PaC7W+mjT4N1Bs6QnHj2SXQ+7UoY4RtZZOBZdcKxR0XnxTdd+tFkbTpUokP86iL7788/N/wzpEa1C4g2ojDVWKo/wGS6xvotfL4j38y/QuUCVtrD4DIAhOKBwR5hd/RTrHLqJleRm1mE0bNF0j6u6GXPD1LJXT713wOmP+yy9+g=
+	t=1714116527; cv=none; b=W0TFeEJ8JbD7mP5KdE9B8t6lsspTnJQ4Woz1a9vX+Hg9TIO/NYX5gaiw5JOuXdm8USwVHDsevLaTyTbgfSoMVbCXccGUt/R0nfprxTL6rwXkMZouB/HV2kDjbvbA5LFRdREYc1qXwsBCrayE5Nd93mdeRRXBjVnOsJh2c0o9Cgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714116477; c=relaxed/simple;
-	bh=48Ba5A32Cjl2L/cHDAoV0QpV5Af4tdSMnVjMTBjS/94=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AlmFKc1AFAnptazwLRD4wGC9H0+OoJECoxhruT1bNWo+/Cx1xV7f/F7LePzepuw2nAB0ysvBsTAxMiGM82TKx/wZkxBYMomuBkBiBZyzO/6tfBvBXzN6GU6kpU4E5Dlw/lXJHXSPIKnnygztCYttbOjQffqDQrv5eiky9HwFUzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=caNgvyEZ; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-571b5fba660so6021a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:27:55 -0700 (PDT)
+	s=arc-20240116; t=1714116527; c=relaxed/simple;
+	bh=hMaa9mJBlVjfoxXwH3hpkBbgPedgrK1uBwW7hRR6b7U=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=sp14+jZsPGA0r0pBRjt1l0isp3hFc0ZmZZD1+Ni4+wIcUqDYFxJV7K/0aHV4D1QHbyo31Riev3XlG/Xi5MwXVMqm9/yYTREmqzhMrUFEoqvxtT/ohB8ZHJpjXroQkPlHjLeVbB4SJqZwlYCfBoPrRjFNv1StWPOTkS68Xv9+b9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h09wgEO5; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2dd041acff1so20731311fa.1;
+        Fri, 26 Apr 2024 00:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714116474; x=1714721274; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=48Ba5A32Cjl2L/cHDAoV0QpV5Af4tdSMnVjMTBjS/94=;
-        b=caNgvyEZNso/SyeZ3gZn0PF0kTL1bIMSTmYaDdt/8HDl9KxZYWixg+Ml0RWGd590xc
-         q0v8POQCz8BXCuvzt/TuiLIaXsZFuf85zUHCxyaoA1c3zll4Y+Va1ho0nnZ9XPFWonXQ
-         WjNX4GcqzF3FuIMXquYDtkpfcy1iNCdDzcXwK9x6HRGBwSlrP7JhUJe1B4uUuuLxhVgp
-         YWACfrZMZ++lq7i+in4cmBm2gw5kcj/zI+sK4tgijYCIihKpjb/bKs0xkSICdbHh4wPw
-         XF8KAkHwm5fCyVETFnZO4WN1DuS3T5CGb/BxuWu8YpPefzhqgzNMcBwNLDGaaNGGYpO0
-         ipPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714116474; x=1714721274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1714116523; x=1714721323; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=48Ba5A32Cjl2L/cHDAoV0QpV5Af4tdSMnVjMTBjS/94=;
-        b=TXDEqgH9gWIlRAfJm9ESCFGz0srXXSvUVBfQbGubVDws0bAyYJBq7Uxz5Xn5l9KLr2
-         9GfL1X73+/jyceU3iLDFUsRXyYCdKHrGIvvsmVttbsOar8VaErEMdUctdsHpv7QICZnZ
-         TJuuatIxZ6U6TeFK2+2CNPPTUwTHEc69c00bgv4BCMPOCKzRxsCAUAKvF+JfskAvPKsc
-         mCwdaHZ/8hIwVjT6/Sx3YqkEdIj1T4BkmCwI6re1DJ4rIjKsUAbDjWDSu5A4JhkIoubv
-         +Rvkl46N56mFc/S02zi5nVq4VUD75UD4m35pzhSMpg3LYWeZHMGTVqy9j1uA6MxWr9Mc
-         LX5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX3yaBGs9nPno3ixO2qSxjD2ZWWoP0o7lpx6yWTmofJK5kFImUxDEy8xlWWgYTn0S436eQc4p9h2QfFK+UOu7HmKaUisUWV2CDmErg+
-X-Gm-Message-State: AOJu0YylZTdzdLCMAAHqFZDaKqAjD+Ew0BAr8GfzFA7twQ8Msg4COSly
-	7Via4NTRe/UIyBU79pS6T93qglgDoTML8wO4Tmx01r4o/C7b3/EcMPelpywl/p1RpxjGtlCph1C
-	bdTEXjl1BLLqZNaX6csibTLbbFsEI3yKWEtTA
-X-Google-Smtp-Source: AGHT+IHEn5uOD9GlXoPdHm3uPp4edfxe4KynTFwvW8GmIsgl9y2/YROhvW72ZIDxBxLHIb6M0J27TSxSFjNOrAmpu00=
-X-Received: by 2002:a05:6402:b2a:b0:572:583f:cc4c with SMTP id
- bo10-20020a0564020b2a00b00572583fcc4cmr30849edb.5.1714116474078; Fri, 26 Apr
- 2024 00:27:54 -0700 (PDT)
+        bh=bQN8/UbBy3MmM39EDkYS+s0OQ1C/BvZXG41UzO/WguE=;
+        b=h09wgEO5B8Lnm2Vz7UhwXvLjgO+BYIsf9kypUbtDsaUpEHIRLwOxFJrOebVNmA68E4
+         yySsOfwNNbOr32SK1SZkh9RQnQ+nDirEjVVH5opu826jzwzVeWYxsmXfrpy+Pdekef8A
+         xE5JZ804FIgUM+JDHiMvD1q2VB5vYSDwU7MXVXhl4b+6f+kdE+mXV9e3anZs+hnk5CAE
+         LVtfdc80UeLVC3/gS/6pP/ai/WHL1Ov8Sus8HTx1hVrTXzj+c9VK+yQvkgjGHFBbscHd
+         Vmwo49dr/BRmHYzsTtxNxvCMvtuTxt6bTxYqW6894D4rB+IEvlGqFtuHfDJ38jkgP2P9
+         7Yvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714116523; x=1714721323;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bQN8/UbBy3MmM39EDkYS+s0OQ1C/BvZXG41UzO/WguE=;
+        b=GCWAg0g8NIhpk2blxhUjBaGLPnP7C/VEacIjwJIToorR3jnOAF7iWDAGD4Oy/m5AiN
+         z/GFaZWRUPqLzPApxlRhxr+wmcYTmmbhjikHLaZnjWAW7xynIWx1sU6Buka5Vl1S/IVU
+         8uhSq+SPXhdNtIT3LJn0KTeKVfl8vGC4ZkkwZ0pza2kM15vqDz07Sp5p/GLVHcUadFhb
+         IT/EiGM/e5rsS4eVkl160ZYjAJzE8OEV8z6WCpt/nK65XsaQnhpyeogJJMH2i+ykEjbP
+         LE+R6ea5IF2ru3LwVyaSjhKgPxIeHJJMezX0LGUEZmb9tWvZWRiWS5ABAXj0aDkKM3SO
+         qgTw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXqFtiAWPAYGhtejVRuZauU5u+9ty6R2KccY/uAhZxZtNkj4uDdl4q1lg4nOZJHgIf1WCkDk2MGJFx2DokjShe+7T/UWucUX8rF2SsuS7gavfwciLqyCjLhgIsnBp5e/D0YKy/JC5dYAaG9T1IrzUDpgrg7hBttZ74cHZCPZBo8/H+sKOebmJlf64=
+X-Gm-Message-State: AOJu0YxqxySzKnNyKZ+Lt6MKW0pMGpg/caKmW7UeH5lCKzuDSRgLAv8S
+	/4MA0zQJdiY0XkTGth1wQzy7UjKQp/bEJgS4mrOijTW9xpMArZenMaeK/g==
+X-Google-Smtp-Source: AGHT+IGXonUFOPFh5I2gbId12buogfqlKNkXzpuocg1v+uin6zNh1oqwp54qZtY7Dkp8fhr6cmMG9g==
+X-Received: by 2002:a05:6512:340d:b0:519:796a:26d2 with SMTP id i13-20020a056512340d00b00519796a26d2mr1195502lfr.35.1714116522573;
+        Fri, 26 Apr 2024 00:28:42 -0700 (PDT)
+Received: from [192.168.1.105] ([178.176.74.23])
+        by smtp.gmail.com with ESMTPSA id c7-20020a197607000000b00516c51b3e29sm3061211lff.143.2024.04.26.00.28.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 00:28:42 -0700 (PDT)
+Subject: Re: [PATCH] i2c: smbus: fix NULL function pointer dereference
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-renesas-soc@vger.kernel.org
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240426064408.7372-1-wsa+renesas@sang-engineering.com>
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <e46f56f4-f28f-4fb6-4249-554059f9fc2f@gmail.com>
+Date: Fri, 26 Apr 2024 10:28:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426065143.4667-1-nbd@nbd.name> <20240426065143.4667-6-nbd@nbd.name>
-In-Reply-To: <20240426065143.4667-6-nbd@nbd.name>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 26 Apr 2024 09:27:43 +0200
-Message-ID: <CANn89iKOdbyuaCsU9FhLeWJS1QYMXr7NffAwPbYWApxpQrMTAQ@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next v3 5/6] net: create tcp_gro_header_pull helper function
-To: Felix Fietkau <nbd@nbd.name>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
-	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240426064408.7372-1-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 8:51=E2=80=AFAM Felix Fietkau <nbd@nbd.name> wrote:
->
-> Pull the code out of tcp_gro_receive in order to access the tcp header
-> from tcp4/6_gro_receive.
->
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+On 4/26/24 9:44 AM, Wolfram Sang wrote:
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+> Brauch reported an OOPS when using the designware controller as target
+
+   He's Baruch... :-)
+
+> only. Target-only modes break the assumption of one transfer function
+> always being available. Fix this by always checking the pointer in
+> __i2c_transfer.
+> 
+> Reported-by: Baruch Siach <baruch@tkos.co.il>
+> Closes: https://lore.kernel.org/r/4269631780e5ba789cf1ae391eec1b959def7d99.1712761976.git.baruch@tkos.co.il
+> Fixes: 4b1acc43331d ("i2c: core changes for slave support")
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+[...]
+
+MBR, Sergey
 
