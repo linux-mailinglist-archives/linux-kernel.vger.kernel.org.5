@@ -1,192 +1,150 @@
-Return-Path: <linux-kernel+bounces-159821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CBF8B349C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:54:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FAB8B34A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:55:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E919F1F22E3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:54:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7594F1C21A54
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927A3140381;
-	Fri, 26 Apr 2024 09:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58317140380;
+	Fri, 26 Apr 2024 09:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TmcZtXGo"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fr6jYSwm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399E213F01A;
-	Fri, 26 Apr 2024 09:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3147EF;
+	Fri, 26 Apr 2024 09:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125254; cv=none; b=uy2PPi4JvLssowCqBWmM3NTKVxsigY+rgn8isQXVggl/kMbDwpOidFyjx4cc7sAfgLLGT+pgiw/DcCL/r0LeUxVavP9b2haSyWRSNvptXToviZvKvrcw6CzKF9IBHVPy+AQpso//24h42J/xwOZ5eM4P2baf8+YhYo0iVkemdx0=
+	t=1714125298; cv=none; b=FkoedFZjW5NCC0dT9m3qG1gdoUnoQ7rNCGPDD72RyNFQXLrVgJO5GhEXOX56AORRp+D/mreYk7wGNP+Jar1B4ZmvS0TFQu32snce1w2bYfByYcED9Ca/kLz2905BSkKc42osTjudsLfSFNeFQdMLsYK5vcsJSNJD6miAzXTuOfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125254; c=relaxed/simple;
-	bh=B8iZwl1tSPR7hZn9aDmfmPPvd4dqIX6kZXOjez5f1tw=;
+	s=arc-20240116; t=1714125298; c=relaxed/simple;
+	bh=WiI+XutyNd/nngQLJKLa2onjPd4tP4nDxenYt4ZyDv4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I3caY6ZEdBx5PuJQsJVUNbLa/gD/AaG2mBOnN8KXHFxBYmUZ5lzIjviXoEY0299APXHGflP50KEruMDb35qp72sjmtUpLwh6u+tyIvOBn8nqw1M42iSkC9iJL7sefL8Ph30CFZRXaNYsEvf3iNg7wrAfuXvpXqO1LHbVTDry8qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TmcZtXGo; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4dac19aa9b5so672809e0c.2;
-        Fri, 26 Apr 2024 02:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714125252; x=1714730052; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jv2AnzM+IRnKHtYwA4l3TTkES9QCslE+SVgv6ZpTagM=;
-        b=TmcZtXGosk7TxCw3njLBi6L1mhWBZJN1Qf15nWmHTj//9Q/s1gGj1XnVBrried4dNF
-         9Zec4gwZQa9Psa8bcf6SmrSYFnvXs076kdxisQYCJOkGkTZYpLWD+ekQEa6riKEb6qtS
-         ojlGjxJHliDvCuhjbCSK6D0eremDEIlwFF0+QKtbcLVmK64CQcQdBrV0iQqOF1tK7rvX
-         apnTGk2w7HJZ0kaDooDRF+ybxvocC3EVfY9b4gAXPNXYFkbHTGtiEw262RJ48K7/s/pu
-         69PtplacUrhLf6JBcH4rzEyQndSSp6fw//EJjARjwzoFbiNqyLnVhZ4iYXHVA/P/hzPx
-         Do3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714125252; x=1714730052;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jv2AnzM+IRnKHtYwA4l3TTkES9QCslE+SVgv6ZpTagM=;
-        b=lo4J1fFKUOHFk91kpmB5geLpe/Jau10wdj7K9csVv+d5N1drXSxGCGT4N57KXBwqQN
-         OqsZcez16QxX9E9Vs593S+85kIIGier7pigHou8gQ9ErZFidod+/xd8speCsM0BY245M
-         U6TAm1Ee4FNjaXBpj9+qBgNfFm06NhwWpQZsOprGAjJ3Go5BH2GFaPTfH007qeJcHNjO
-         5dq+1te+WR3LHDEcslMscOsyX4hPUrmU2vjR5FI8HfVWod29/PqJiVRZdSsX/Ek5qr9e
-         6pAb/Lm5QtauQLRuFKGiJWC0ttfWGAYOeDCudxwcGfxPClYnB8YcDDuhuLMyUL1rqoe2
-         XfBg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1Rsfy5iRP9s1VcSzcADq3xbPtoxoiZhmOzyEJ/N3Z8z0K1IGp9HRiVbykWddXoBNAjTRZbCqxPvfzSP/KKz2pKuJQwr+4t0wTmtUJxWxqCuil2Gi6vluNPjwPHB+8X054waNw84+7sSdhAruADYw6LELy/h468TgI1OLuKX3dqGMe
-X-Gm-Message-State: AOJu0Yyxelod29ZLCGiEYPBNh+eZbBUBYQXPDL6AuxowwM6V4zFzJzsv
-	BkQOZM30KInDTVVG01vyuZBIA3YmR0d/6BpeH2ata6kg1NdZ0JY8TJzK+vVlizw8W5czn/iIcyQ
-	2Lww7kKgk9ykN28elzVB7gHiSmlw=
-X-Google-Smtp-Source: AGHT+IG0ipQ4rKvgJihRKb06cwykLATWUBuMR/QaDj4gg4w5nDCDHsUTmMk16VSSdjFOGsP5wdS2W4FDOVlkPfeX96Y=
-X-Received: by 2002:a05:6122:1788:b0:4c0:2d32:612f with SMTP id
- o8-20020a056122178800b004c02d32612fmr2060791vkf.15.1714125252037; Fri, 26 Apr
- 2024 02:54:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=QGYFIMJewFmf6i6ePiMsMLs6Iicz5LJqLWabMt1G69/7mRba++LZ2eL8jQkEv/DvXcRSzXVGS9nWGNY3VkUf0mUuUYcX16W8J8bwC9eKV6V83zvxa8+OVOZO1llNl2K/E/Xi2qBRKagnzxfCg/4s5c5Pb9UGVlnoXAzZvaBfK6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fr6jYSwm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B220C2BD10;
+	Fri, 26 Apr 2024 09:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714125298;
+	bh=WiI+XutyNd/nngQLJKLa2onjPd4tP4nDxenYt4ZyDv4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Fr6jYSwmuB97RzELezZDWf/0xjYFiDejLAK7+3bOviaAmHs3GN6Q0GhIKsmq0Oo7A
+	 2OAbP5QPfDxCE7WF6uO3OYMx7Y6Hfxqr5ClW11Y2EA0WeuFsXhBHPdYX1Je6SpiOGr
+	 b/EN7x4OUSModISNjrTmzIgMDkvrbL6qLNVC9/MTBTc9i8SpvQ2r13KrY437bU9xWT
+	 tIURVUSFBrKMMQjycSWMVvkEoV4PaEyKscwy+MczvhLGOF+ufFXeKZfF1/uqGkcNcC
+	 URo1aT6ffcvmSx65YYffEVMhRrG2oK6Lm2UidQFt6pE66K1sBrWWKSZTbzQEA2y8dX
+	 1r+/eSOlDQuQw==
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea0a6856d7so304379a34.1;
+        Fri, 26 Apr 2024 02:54:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUfFWAlnDrRDpxEkvao/QTwMuz1aftOXAoXsho8Jwev6pRh5R+PuBEdKVlHuI21IpujTMj/bL/furZco6tz11ZYQtAHfacuvSmU7bLih9dMfIlah2NKlfzJICKduQcNXJUgDgUtP/w=
+X-Gm-Message-State: AOJu0YxBC/A2iJ6UKDePFhykRPb2ssl8fEnrArqy971q1uY1/x3Dcmom
+	YeORlRWqKZMp5gepYQb2ZId7AusYr10v5j0/piQWErRzS+wpZRRuKRtg8Ia1k0CWQsXL4FK4FNZ
+	J08V449r5NTYrBtjNDf/NU56qLB4=
+X-Google-Smtp-Source: AGHT+IHW0dqddY+m0h7lHyZU/UoSuqnrvnX6DYZicHntquPNDpIybmzPNcGXUtB/we7sN92JrY5Ltt9rRhsxkaEldko=
+X-Received: by 2002:a4a:ba07:0:b0:5aa:14ff:4128 with SMTP id
+ b7-20020a4aba07000000b005aa14ff4128mr2361789oop.1.1714125297342; Fri, 26 Apr
+ 2024 02:54:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403224254.10313-1-21cnbao@gmail.com> <20240403224254.10313-3-21cnbao@gmail.com>
-In-Reply-To: <20240403224254.10313-3-21cnbao@gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 26 Apr 2024 17:54:00 +0800
-Message-ID: <CAGsJ_4yjf0=5LbytmseCazr8jg-MWYVzY3d6bJc8VcwJsneUEQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-To: akpm@linux-foundation.org, linux-doc@vger.kernel.org, 
-	workflows@vger.kernel.org, joe@perches.com
-Cc: apw@canonical.com, broonie@kernel.org, chenhuacai@loongson.cn, 
-	chris@zankel.net, corbet@lwn.net, dwaipayanray1@gmail.com, 
-	herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org, linux@roeck-us.net, 
-	lukas.bulwahn@gmail.com, mac.xxn@outlook.com, sfr@canb.auug.org.au, 
-	v-songbaohua@oppo.com, Max Filippov <jcmvbkbc@gmail.com>, 
-	Jeff Johnson <quic_jjohnson@quicinc.com>, Charlemagne Lasse <charlemagnelasse@gmail.com>
+References: <12427744.O9o76ZdvQC@kreacher> <13503555.uLZWGnKmhe@kreacher>
+ <2740417.mvXUDI8C0e@kreacher> <4416568e-79d4-465f-8d47-a199b3b69ca4@arm.com>
+In-Reply-To: <4416568e-79d4-465f-8d47-a199b3b69ca4@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 26 Apr 2024 11:54:45 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jBhwL2w7MfBj4g7hV8VqrJYS-Pwr2rgYyWD4qfkQ5F0g@mail.gmail.com>
+Message-ID: <CAJZ5v0jBhwL2w7MfBj4g7hV8VqrJYS-Pwr2rgYyWD4qfkQ5F0g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] thermal/debugfs: Prevent use-after-free from
+ occurring after cdev removal
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Joe,
-any further comment for this ? May this patch get your reviewed / acked?
+On Fri, Apr 26, 2024 at 11:35=E2=80=AFAM Lukasz Luba <lukasz.luba@arm.com> =
+wrote:
+>
+>
+>
+> On 4/26/24 10:28, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Since thermal_debug_cdev_remove() does not run under cdev->lock, it can
+> > run in parallel with thermal_debug_cdev_state_update() and it may free
+> > the struct thermal_debugfs object used by the latter after it has been
+> > checked against NULL.
+> >
+> > If that happens, thermal_debug_cdev_state_update() will access memory
+> > that has been freed already causing the kernel to crash.
+> >
+> > Address this by using cdev->lock in thermal_debug_cdev_remove() around
+> > the cdev->debugfs value check (in case the same cdev is removed at the
+> > same time in two different threads) and its reset to NULL.
+> >
+> > Fixes: 755113d76786 ("thermal/debugfs: Add thermal cooling device debug=
+fs information")
+> > Cc :6.8+ <stable@vger.kernel.org> # 6.8+
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > v1 -> v2: Add missing mutex_unlock() (Lukasz).
+> >
+> > ---
+> >   drivers/thermal/thermal_debugfs.c |   14 +++++++++++---
+> >   1 file changed, 11 insertions(+), 3 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_debugfs.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
+> > +++ linux-pm/drivers/thermal/thermal_debugfs.c
+> > @@ -505,15 +505,23 @@ void thermal_debug_cdev_add(struct therm
+> >    */
+> >   void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
+> >   {
+> > -     struct thermal_debugfs *thermal_dbg =3D cdev->debugfs;
+> > +     struct thermal_debugfs *thermal_dbg;
+> >
+> > -     if (!thermal_dbg)
+> > +     mutex_lock(&cdev->lock);
+> > +
+> > +     thermal_dbg =3D cdev->debugfs;
+> > +     if (!thermal_dbg) {
+> > +             mutex_unlock(&cdev->lock);
+> >               return;
+> > +     }
+> > +
+> > +     cdev->debugfs =3D NULL;
+> > +
+> > +     mutex_unlock(&cdev->lock);
+> >
+> >       mutex_lock(&thermal_dbg->lock);
+> >
+> >       thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
+> > -     cdev->debugfs =3D NULL;
+> >
+> >       mutex_unlock(&thermal_dbg->lock);
+> >
+> >
+> >
+> >
+> >
+>
+> It looks good now
+>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-On Thu, Apr 4, 2024 at 6:43=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrote=
-:
->
-> From: Xining Xu <mac.xxn@outlook.com>
->
-> If function-like macros do not utilize a parameter, it might result in a
-> build warning.  In our coding style guidelines, we advocate for utilizing
-> static inline functions to replace such macros.  This patch verifies
-> compliance with the new rule.
->
-> For a macro such as the one below,
->
->  #define test(a) do { } while (0)
->
-> The test result is as follows.
->
->  WARNING: Argument 'a' is not used in function-like macro
->  #21: FILE: mm/init-mm.c:20:
->  +#define test(a) do { } while (0)
->
->  total: 0 errors, 1 warnings, 8 lines checked
->
-> Signed-off-by: Xining Xu <mac.xxn@outlook.com>
-> Tested-by: Barry Song <v-songbaohua@oppo.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Huacai Chen <chenhuacai@loongson.cn>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Andy Whitcroft <apw@canonical.com>
-> Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-> Cc: Charlemagne Lasse <charlemagnelasse@gmail.com>
-> ---
->  Documentation/dev-tools/checkpatch.rst | 14 ++++++++++++++
->  scripts/checkpatch.pl                  |  6 ++++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-t=
-ools/checkpatch.rst
-> index 127968995847..a9fac978a525 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -906,6 +906,20 @@ Macros, Attributes and Symbols
->
->      See: https://lore.kernel.org/lkml/1399671106.2912.21.camel@joe-AO725=
-/
->
-> +  **MACRO_ARG_UNUSED**
-> +    If function-like macros do not utilize a parameter, it might result
-> +    in a build warning. We advocate for utilizing static inline function=
-s
-> +    to replace such macros.
-> +    For example, for a macro such as the one below::
-> +
-> +      #define test(a) do { } while (0)
-> +
-> +    there would be a warning like below::
-> +
-> +      WARNING: Argument 'a' is not used in function-like macro.
-> +
-> +    See: https://www.kernel.org/doc/html/latest/process/coding-style.htm=
-l#macros-enums-and-rtl
-> +
->    **SINGLE_STATEMENT_DO_WHILE_MACRO**
->      For the multi-statement macros, it is necessary to use the do-while
->      loop to avoid unpredictable code paths. The do-while loop helps to
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 9c4c4a61bc83..9895d7e38a9f 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -6040,6 +6040,12 @@ sub process {
->                                         CHK("MACRO_ARG_PRECEDENCE",
->                                             "Macro argument '$arg' may be=
- better as '($arg)' to avoid precedence issues\n" . "$herectx");
->                                 }
-> +
-> +# check if this is an unused argument
-> +                               if ($define_stmt !~ /\b$arg\b/) {
-> +                                       WARN("MACRO_ARG_UNUSED",
-> +                                               "Argument '$arg' is not u=
-sed in function-like macro\n" . "$herectx");
-> +                               }
->                         }
->
->  # check for macros with flow control, but without ## concatenation
-> --
-> 2.34.1
->
-
-Thanks
-Barry
+Thanks!
 
