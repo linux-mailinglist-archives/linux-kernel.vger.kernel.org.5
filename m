@@ -1,82 +1,275 @@
-Return-Path: <linux-kernel+bounces-160662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7ADF8B40BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:19:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 096F78B40C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713EC1F2296D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:19:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D3011C22659
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F4923772;
-	Fri, 26 Apr 2024 20:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94394250EC;
+	Fri, 26 Apr 2024 20:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Wp0H7bO/"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BDt7XFC5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0160208AF;
-	Fri, 26 Apr 2024 20:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB542562E;
+	Fri, 26 Apr 2024 20:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714162753; cv=none; b=T1LO8f9bFLiTB5bdQRBkQa18+uiUvLTnMN+mMNWQsvK1y9fVOWRzD3WfRbP6+STcMvWHGOVVDi6VKD/LAlQN0Xm8kD3KXW2qyU20hcPy8a9kOnOSFNrBwi6T1+RSEJNSW/ZjvtCo9WfinagS6vZKEdQ206FppzRWP+W41xO8X/U=
+	t=1714162981; cv=none; b=VneV8+tDepOzUPiTOV9Dh35ldG0QJtlAW5vdutevNRf3OOT8z+B2W0cZ6JGz9t3sNNrbuBiHer3Kar7Q+WMZhCPaKvqt+CCCSRQhGipyKRBqccnVbNs2ErW2v3PfR9pH3DPcKzTvmSWhD+u1K/MqHLmKBxG8PwLr/pC7N1wQELI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714162753; c=relaxed/simple;
-	bh=6VdUJV20l4I0zrwsUBPpqBuj20IIVfh/k/cJj3StQ00=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RH6NV9wR2h1k6SQc/lf9iEP8+Gy/aCq5F+EOjrmmDv10oTFMhWwwwpyqqtQBE6e7chgcMwBZh/Mted3N5ySwJlBQDPJPsgyLNng6GbMO3VWtG+h25oOiwvlVz9DRiglFOx9kHlmTSr76Xg1WZ4k0Q/AdqVIy3kGQ0F/7M7jfZec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Wp0H7bO/; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=N90b3/SSxbLK/a2YSgJGW777fnEwBjaan+amMbxn+pM=; b=Wp0H7bO/DEtI8f43tFDIxMMax3
-	wXthZokbrCCYVe2Sgom7cGaHFGTpfFDIDiWNvs3QsrRbJHyVuiHUrFHymToW3eIuRpGYJkX41SULU
-	SDxRUHfroNxbfysEJqySWQvmh51CG3yEBG5qy+OZktOG4FETduammudLfKTJ4+WL2rN7+yvQlhcB0
-	XIXHk/VcBXihUdNnvc5ZSLChwK24CV0gE12Ckbwu595jh3YW6KxEsi4y5I39QtpG/D/6tsEcUJLIB
-	OVkcWkEIXxUEzy1nPSy1SFxBYoGqASVywCyIYq6F4mPvY7jrIG1o9CQ7MsbivSljLnP1HRbtscsPS
-	d7NSruqg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s0S2A-005PJi-1D;
-	Fri, 26 Apr 2024 20:19:02 +0000
-Date: Fri, 26 Apr 2024 21:19:02 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: I Hsin Cheng <richard120310@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] tcp_bbr: replace lambda expression with bitwise
- operation for bit flip
-Message-ID: <20240426201902.GQ2118490@ZenIV>
-References: <20240426152011.37069-1-richard120310@gmail.com>
- <CANn89iKenW5SxMGm753z8eawg+7drUz7oZcTR06habjcFmdqVg@mail.gmail.com>
- <Zivd4agQ8D6rUKvt@vaxr-BM6660-BM6360>
+	s=arc-20240116; t=1714162981; c=relaxed/simple;
+	bh=GbaTYwdZ8id3LPa579gAi+LysdGAYbNVBDYDNoM7P+o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YxrmpfOEDSE46hUS2NRU6RnvK/2qwzfg6MKm94FDv7SMHW3bG2SjVrsJCRrbJjZfol0fhcxlor+fR7YXpb1CcF0Wz4nSI/MvdPSMVAS5PsuApcVzUYTjYyjkryW3v64eopUdOyuDG3N0XG2ZhnzMsnTgxwKSkMoMn69fceAS5ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BDt7XFC5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA3D1C113CD;
+	Fri, 26 Apr 2024 20:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714162981;
+	bh=GbaTYwdZ8id3LPa579gAi+LysdGAYbNVBDYDNoM7P+o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BDt7XFC5+ZlqbRPkXwezHFzXgsKBQ233OU/DL9YQ4CO8IvTo1gw/IpfQXQ2kyd6g7
+	 9Ms/jBsIMGaVM2n7UsxElrXKY+ChUQsNPLXBWXN1suiLlr0KQYBdPYBweG6fVFUja+
+	 zyKACwTXpGSZTjSOkd8B0ob4kTLQBV3TK+vaAXHgB1vZXo4WldQmBM7I4GVTFiZRQH
+	 y/uRsqc2XcZ7OjqpGyV8U9RA+7CRi1E3hlLwXucNJmX4njy26oSR0YpHauNSMcdoEW
+	 aVy3/SoitHOWufMcdRUft+hv6eYaTzPvWyOOKw1/8GBN9Q002HWo5k71l41zLqm8xd
+	 HT2AgHiysMayQ==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-phy@lists.infradead.org,
+	linux-tegra@vger.kernel.org
+Subject: [PATCH] dt-bindings: Drop unnecessary quotes on keys
+Date: Fri, 26 Apr 2024 15:22:37 -0500
+Message-ID: <20240426202239.2837516-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zivd4agQ8D6rUKvt@vaxr-BM6660-BM6360>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 27, 2024 at 01:01:21AM +0800, I Hsin Cheng wrote:
+The yamllint quoted-strings check wasn't checking keys for quotes, but
+support for checking keys was added in 1.34 release. Fix all the errors
+found when enabling the check.
 
-> I see, thanks for your explanation.
-> I thought the compilers behavior might alters due to different 
-> architecture or different compilers.
-> So would you recommend on the proposed changes or we should stick to
->  the original implementation? 
-> Personally I think my version or your proposed change are both more 
-> understandable and elegant than the lambda expression.
+Clean-up the xilinx-versal-cpm formatting while we're here.
 
-Out of curiosity, where do you see any lambda expressions in the entire
-thing?
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/net/sff,sfp.yaml   | 12 ++++++------
+ .../devicetree/bindings/pci/xilinx-versal-cpm.yaml   |  7 +++++--
+ .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml       |  2 +-
+ .../devicetree/bindings/phy/brcm,sata-phy.yaml       |  8 ++++----
+ .../devicetree/bindings/regulator/ti,tps62864.yaml   |  2 +-
+ .../bindings/soc/tegra/nvidia,tegra20-pmc.yaml       |  6 +++---
+ Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml  |  4 ++--
+ 7 files changed, 22 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/sff,sfp.yaml b/Documentation/devicetree/bindings/net/sff,sfp.yaml
+index bf6cbc7c2ba3..90611b598d2b 100644
+--- a/Documentation/devicetree/bindings/net/sff,sfp.yaml
++++ b/Documentation/devicetree/bindings/net/sff,sfp.yaml
+@@ -29,39 +29,39 @@ properties:
+       allowable by a module in the slot, in milli-Watts. Presently, modules can
+       be up to 1W, 1.5W or 2W.
+ 
+-  "mod-def0-gpios":
++  mod-def0-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the MOD-DEF0 (AKA Mod_ABS) module
+       presence input gpio signal, active (module absent) high. Must not be
+       present for SFF modules
+ 
+-  "los-gpios":
++  los-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the Receiver Loss of Signal Indication
+       input gpio signal, active (signal lost) high
+ 
+-  "tx-fault-gpios":
++  tx-fault-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the Module Transmitter Fault input gpio
+       signal, active (fault condition) high
+ 
+-  "tx-disable-gpios":
++  tx-disable-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the Transmitter Disable output gpio
+       signal, active (Tx disable) high
+ 
+-  "rate-select0-gpios":
++  rate-select0-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the Rx Signaling Rate Select (AKA RS0)
+       output gpio signal, low - low Rx rate, high - high Rx rate Must not be
+       present for SFF modules
+ 
+-  "rate-select1-gpios":
++  rate-select1-gpios:
+     maxItems: 1
+     description:
+       GPIO phandle and a specifier of the Tx Signaling Rate Select (AKA RS1)
+diff --git a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+index 4734be456bde..c41344f8a242 100644
+--- a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
++++ b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+@@ -48,13 +48,16 @@ properties:
+   interrupt-controller:
+     description: Interrupt controller node for handling legacy PCI interrupts.
+     type: object
++    additionalProperties: false
++
+     properties:
+       "#address-cells":
+         const: 0
++
+       "#interrupt-cells":
+         const: 1
+-      "interrupt-controller": true
+-    additionalProperties: false
++
++      interrupt-controller: true
+ 
+ required:
+   - reg
+diff --git a/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml b/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
+index 426f90a47f35..cbe832c23dae 100644
+--- a/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml
+@@ -84,7 +84,7 @@ properties:
+       "#interrupt-cells":
+         const: 1
+ 
+-      "interrupt-controller": true
++      interrupt-controller: true
+ 
+     required:
+       - "#address-cells"
+diff --git a/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
+index 8467c8e6368c..439bda142764 100644
+--- a/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
+@@ -59,14 +59,14 @@ patternProperties:
+       "#phy-cells":
+         const: 0
+ 
+-      "brcm,enable-ssc":
++      brcm,enable-ssc:
+         $ref: /schemas/types.yaml#/definitions/flag
+         description: |
+           Use spread spectrum clocking (SSC) on this port
+           This property is not applicable for "brcm,iproc-ns2-sata-phy",
+           "brcm,iproc-nsp-sata-phy" and "brcm,iproc-sr-sata-phy".
+ 
+-      "brcm,rxaeq-mode":
++      brcm,rxaeq-mode:
+         $ref: /schemas/types.yaml#/definitions/string
+         description:
+           String that indicates the desired RX equalizer mode.
+@@ -75,7 +75,7 @@ patternProperties:
+           - auto
+           - manual
+ 
+-      "brcm,rxaeq-value":
++      brcm,rxaeq-value:
+         $ref: /schemas/types.yaml#/definitions/uint32
+         description: |
+             When 'brcm,rxaeq-mode' is set to "manual", provides the RX
+@@ -83,7 +83,7 @@ patternProperties:
+         minimum: 0
+         maximum: 63
+ 
+-      "brcm,tx-amplitude-millivolt":
++      brcm,tx-amplitude-millivolt:
+         description: |
+             Transmit amplitude voltage in millivolt.
+         $ref: /schemas/types.yaml#/definitions/uint32
+diff --git a/Documentation/devicetree/bindings/regulator/ti,tps62864.yaml b/Documentation/devicetree/bindings/regulator/ti,tps62864.yaml
+index 0f29c75f42ea..dddea27596e9 100644
+--- a/Documentation/devicetree/bindings/regulator/ti,tps62864.yaml
++++ b/Documentation/devicetree/bindings/regulator/ti,tps62864.yaml
+@@ -24,7 +24,7 @@ properties:
+     type: object
+ 
+     properties:
+-      "SW":
++      SW:
+         type: object
+         $ref: regulator.yaml#
+         unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/soc/tegra/nvidia,tegra20-pmc.yaml b/Documentation/devicetree/bindings/soc/tegra/nvidia,tegra20-pmc.yaml
+index b86f6f53ca95..7140c312d898 100644
+--- a/Documentation/devicetree/bindings/soc/tegra/nvidia,tegra20-pmc.yaml
++++ b/Documentation/devicetree/bindings/soc/tegra/nvidia,tegra20-pmc.yaml
+@@ -365,9 +365,9 @@ allOf:
+ additionalProperties: false
+ 
+ dependencies:
+-  "nvidia,suspend-mode": ["nvidia,core-pwr-off-time", "nvidia,cpu-pwr-off-time"]
+-  "nvidia,core-pwr-off-time": ["nvidia,core-pwr-good-time"]
+-  "nvidia,cpu-pwr-off-time": ["nvidia,cpu-pwr-good-time"]
++  nvidia,suspend-mode: ["nvidia,core-pwr-off-time", "nvidia,cpu-pwr-off-time"]
++  nvidia,core-pwr-off-time: ["nvidia,core-pwr-good-time"]
++  nvidia,cpu-pwr-off-time: ["nvidia,cpu-pwr-good-time"]
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+index 50a3fd31241c..8b0d3d4be5d8 100644
+--- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
++++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+@@ -33,13 +33,13 @@ properties:
+   reg:
+     maxItems: 1
+ 
+-  'ibm,#dma-address-cells':
++  ibm,#dma-address-cells:
+     description:
+       number of cells that are used to encode the physical address field of
+       dma-window properties
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+ 
+-  'ibm,#dma-size-cells':
++  ibm,#dma-size-cells:
+     description:
+       number of cells that are used to encode the size field of
+       dma-window properties
+-- 
+2.43.0
+
 
