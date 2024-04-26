@@ -1,112 +1,123 @@
-Return-Path: <linux-kernel+bounces-160729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC288B420A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:05:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F9468B420F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:09:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12773B22363
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:05:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001391F227F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A744837708;
-	Fri, 26 Apr 2024 22:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FX0v2uej"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6AD37707;
+	Fri, 26 Apr 2024 22:09:02 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFBF1DA58;
-	Fri, 26 Apr 2024 22:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A8538F82;
+	Fri, 26 Apr 2024 22:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714169120; cv=none; b=CrGBnu4XTw0/xV16wKMSPHpuFgKhvO6hK4Y9k7HvaMtT3ZiJZcvNVpRp2oHj9oVk0a/ROcoPQEL1O1rD/k8O1Ek4XulPR2WZn7ZeaRv/cM5WBDXgJvcA4OEqd6ptUHlGW0IdsfS0+cSxsWq4wfkT4mLyixO5HM8OKCpQF6cPinU=
+	t=1714169341; cv=none; b=LCZemKOUrc2Y9diRUHFMlNO+cWuGFCHj8eSdjJzY01vwSmBhhfwDKTjK62fNhOjJJbs1cm8F7NVDeFBSVYgiTZScAlQELDnv9ZeuNzC+ETQOyW43T+ZlU1HGiADJr0GSv4kFJnT+Y246S6Vkp0ilMXzdcle/MGXoR1yS3tCQi5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714169120; c=relaxed/simple;
-	bh=VyS48PH4ud8RtFzaXZ3ON83gF15PZu0jVfnp77DittY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=o9PuiF0pfHbDAsE+6LCz2Jr6swX4pHn0CRU3nYDiqlAJstZKE3NY5b82Q6jIBfPeMXoJl04/eFLSU1mrZZzqimR5mhutLLGbF+yhUveeVFxRYw99l2IbK1mf2AqFS0ThyJXUkJ16oyVUX38vEaMY+RVFBm7hSKCU6UbxLdQ35Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FX0v2uej; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E6CBC113CD;
-	Fri, 26 Apr 2024 22:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714169119;
-	bh=VyS48PH4ud8RtFzaXZ3ON83gF15PZu0jVfnp77DittY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=FX0v2uejd8DLUN0rvJ9OGxQAv4Exdi1srQY658DvzNnrdxp0arbVZO5pyOZCgMJ1V
-	 bgGJ1Gp9NAGx/5VJK8shPJF6Bd/W9esIkIWA7MGyZ7OpGl5GOSjFN0OdE4OTSQG04o
-	 5zvtrgvLq2dFRIR5vLLFMcUSrh6MzfMVNtoIA4NX8GhVs4zYQrWQt4YxaW+ZRpH0We
-	 l+gtupzUi963nqGn14xYFypXRvvRLQqKjAm6e0L554/RWQGy84mWBlQlKcLD4y77dK
-	 nFINtvzct0zafhqBHUT6uO5JZzxCXmUP78LFp5ISf8GhAq0GPwKgnqgTMB3+EHbxfU
-	 QYYEIIvHeSZFQ==
-Date: Fri, 26 Apr 2024 17:05:17 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v1 1/1] PCI/MSI: Make error path handling follow the
- standard pattern
-Message-ID: <20240426220517.GA609655@bhelgaas>
+	s=arc-20240116; t=1714169341; c=relaxed/simple;
+	bh=XngLk3rh99WGiLHg8bpg5snL+jhoAiLTaMr5zaZSZ6c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ftxxrAM7C9lNx+IjgU7nXAtfNVX6q/uhgKHeFVF4ymde5aZ16+Zm0h0q8xOCCvb1+aAGl4qQOu347AF83nW5SYS/mrDuDTcxA+0uNn1G2FRjkRZC03faczqSxipCo/XZYIIo47n0H2/hSV3eLsyQBHJ+Xrq7bZkz2ZjdAvTytMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from localhost.localdomain (ip5f5af2dd.dynamic.kabel-deutschland.de [95.90.242.221])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A7F4761E5FE06;
+	Sat, 27 Apr 2024 00:08:41 +0200 (CEST)
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
+	Jean Delvare <jdelvare@suse.de>,
+	linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] i2c: smbus: Add (LP)DDR5 types to `i2c_register_spd()`
+Date: Sat, 27 Apr 2024 00:07:48 +0200
+Message-ID: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426144039.557907-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 05:40:39PM +0300, Andy Shevchenko wrote:
-> Make error path handling follow the standard pattern, i.e.
-> checking for errors first. This makes code much more easier
-> to read and understand despite being a bit longer.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On several systems Linux logs:
 
-Applied to pci/msi for v6.10, thanks!
+     i2c i2c-0: Memory type 0x22 not supported yet, not instantiating SPD
 
-I like this style much better too.
+1.  Supermicro Super Server/X13SAE, BIOS 2.0 10/17/2022
+2.  Dell Inc. Precision 3660/0PRR48, BIOS 2.9.3 11/22/2023
+3.  Dell Inc. OptiPlex SFF Plus 7010/0YGWFV, BIOS 1.7.1 08/11/2023
+4.  Run `git grep 'emory type.*supported yet, not instantiating SPD'` in
+    the repository of dmesg reports for various computers collected by
+    Linux users at https://linux-hardware.org. [1]
 
-> ---
->  drivers/pci/msi/msi.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
-> index 682fa877478f..c5625dd9bf49 100644
-> --- a/drivers/pci/msi/msi.c
-> +++ b/drivers/pci/msi/msi.c
-> @@ -86,9 +86,11 @@ static int pcim_setup_msi_release(struct pci_dev *dev)
->  		return 0;
->  
->  	ret = devm_add_action(&dev->dev, pcim_msi_release, dev);
-> -	if (!ret)
-> -		dev->is_msi_managed = true;
-> -	return ret;
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev->is_msi_managed = true;
-> +	return 0;
->  }
->  
->  /*
-> @@ -99,9 +101,10 @@ static int pci_setup_msi_context(struct pci_dev *dev)
->  {
->  	int ret = msi_setup_device_data(&dev->dev);
->  
-> -	if (!ret)
-> -		ret = pcim_setup_msi_release(dev);
-> -	return ret;
-> +	if (ret)
-> +		return ret;
-> +
-> +	return pcim_setup_msi_release(dev);
->  }
->  
->  /*
-> -- 
-> 2.43.0.rc1.1336.g36b5255a03ac
-> 
+Add 0x22 and 0x23 for DDR5 according to section 7.18.2 (Memory Device —
+Type), table 78 in *System Management BIOS (SMBIOS) Reference
+Specification*, version 3.6.0 [2].
+
+The same name *ee1004* as for DDR4 is used.
+
+Successfully tested on Supermicro Super Server/X13SAE, BIOS 2.0 10/17/2022:
+
+    [    5.459383] i801_smbus 0000:00:1f.4: SPD Write Disable is set
+    [    5.465180] i801_smbus 0000:00:1f.4: SMBus using PCI interrupt
+    [    5.465803] intel_pstate: HWP enabled by BIOS
+    [    5.474046] i2c i2c-0: Successfully instantiated SPD at 0x50
+    [    5.475379] intel_pstate: Intel P-state driver initializing
+    [    5.487129] i2c i2c-0: Successfully instantiated SPD at 0x51
+    [    5.487350] intel_pstate: HWP enabled
+    [    5.493288] i2c i2c-0: Successfully instantiated SPD at 0x52
+    [    5.496481] hid: raw HID events driver (C) Jiri Kosina
+    [    5.502695] i2c i2c-0: Successfully instantiated SPD at 0x53
+
+[1]: https://github.com/linuxhw/Dmesg
+[2]: https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.6.0.pdf
+
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jean Delvare <jdelvare@suse.de>
+---
+1.  I have no idea if the name ee1004 is correct.
+2.  Should I test other things besides looking at the Linux messages?
+
+ drivers/i2c/i2c-smbus.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/i2c-smbus.c b/drivers/i2c/i2c-smbus.c
+index 97f338b123b1..0d67a95c0599 100644
+--- a/drivers/i2c/i2c-smbus.c
++++ b/drivers/i2c/i2c-smbus.c
+@@ -308,7 +308,7 @@ EXPORT_SYMBOL_GPL(i2c_free_slave_host_notify_device);
+  * target systems are the same.
+  * Restrictions to automatic SPD instantiation:
+  *  - Only works if all filled slots have the same memory type
+- *  - Only works for DDR, DDR2, DDR3 and DDR4 for now
++ *  - Only works for DDR, DDR2, DDR3, DDR4 and DDR5 for now
+  *  - Only works on systems with 1 to 8 memory slots
+  */
+ #if IS_ENABLED(CONFIG_DMI)
+@@ -380,6 +380,8 @@ void i2c_register_spd(struct i2c_adapter *adap)
+ 		break;
+ 	case 0x1A:	/* DDR4 */
+ 	case 0x1E:	/* LPDDR4 */
++	case 0x22:	/* DDR5 */
++	case 0x23:	/* LPDDR5 */
+ 		name = "ee1004";
+ 		break;
+ 	default:
+-- 
+2.43.0
+
 
