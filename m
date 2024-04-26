@@ -1,159 +1,131 @@
-Return-Path: <linux-kernel+bounces-160232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842818B3AC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:12:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79648B3ADF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:17:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389AD1F26EDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70F81C243BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168BD16130A;
-	Fri, 26 Apr 2024 15:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F005D174EC1;
+	Fri, 26 Apr 2024 15:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0PQW8Kz"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hw6wsS4L"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DBB14901E;
-	Fri, 26 Apr 2024 15:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BD5173336;
+	Fri, 26 Apr 2024 15:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144199; cv=none; b=E+TNw3iSSHsnDmPNiNeiGNyVrKqc5g3bY3Z2Ijras2Vqr6Kf0uBsLIOrK/7VDWvadBbmiorTcQxY3aqsAixK+trkVK0kRWBzP4BSXuLTJbm3VLClo5GQKD6jHvCTT0d0M8vWbnTGBMZtc6tY6ufezCTVk36VXvzKCTmLRPqwBK0=
+	t=1714144256; cv=none; b=WkxpgnoSTajnsWnrb15EZIVTF1AL1Uhju/azZfxRfPHsrFdQ8pJ1LZFhZ4I8uM2sbaJQGIprhNA22ZgB8v9CLzwEBrvsB83WmSzHWG8gZFtvuzPhHWQuH8xNhGmH4HHve19ywFFtQfrPL09bLPlWLkjFSiUPXEUGsCaqWGWWgrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144199; c=relaxed/simple;
-	bh=xAg1rEdSJo2cPRDE/hmbrMFOFTdNt/KfxhhHxARRQXE=;
+	s=arc-20240116; t=1714144256; c=relaxed/simple;
+	bh=BYPOdMsMzE1brBaEX2NM1L90yMA6pQOB3uUsCzFwWGk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m27ajSenVRLeMUGqi7zFdFqbG6IuGdmpLh25NWAWtn1xXV+sTpuV/RMdB2O47Ts9Icy1qT+bjAjad2SRNlj6TtS9W2n4uXAkgxQ030nTRRM3jbV++Xkzb9bzma+9BSzRJjY165wq7lrtR0wV/XxkOjFUaO02qPw7Xhe8tFpJB74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0PQW8Kz; arc=none smtp.client-ip=209.85.208.171
+	 To:Cc:Content-Type; b=eBDJmdmTDllikA3TMzoui3fpB7rIwh7D3/q/qm9KkdBYihJxr7XYS4tX74YPu2aSf0sdnXZnQ1ymJqixkizq8ISg0conekhLjiTPkt0Gy95hjLONUCp1y0gmTDwT1LBkj4kw0Nhlh6QRZKNP0KhJz9dmwQzVMEyqCoMr6hhZ2uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hw6wsS4L; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so28085961fa.1;
-        Fri, 26 Apr 2024 08:09:57 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso316364266b.2;
+        Fri, 26 Apr 2024 08:10:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714144196; x=1714748996; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714144253; x=1714749053; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QM5g5oluFXmlj44Ib9JNWX1cNnZgigxMRLezmSbkjDU=;
-        b=V0PQW8KzuH3bhahxtIJpqGgqKFxTf2LLGDy82CcnHFNm6wgI/NHCh6TY+4vH0+A6NC
-         8t3MbBJl2bHZJIGewqO2VxbeuCoVg5FGdO/MT+DRN1R22qjE7lJ69EH9L1yv4Qy2+aOo
-         I5a96emB2Fl2Akq6kJkXLp/JCH8AEvMZMPFd3KZtsJKti7+28KKUZbhv9S75BRrlXXji
-         RnCtQchVdjhRs8HYZImMLwFNWWIec1dfI2LejMlZ2YKkHj8IVcqc3cgJ/JAhLC2VTLT4
-         lykmqgvIAchF0d9yRzoVcDEw/Hpwx1ZzPUuSctbpcFAQxzi69EISAj45y1JzI0e805nM
-         uc+Q==
+        bh=QQ3U4IOEJf7j3zTFFqacVVA+V6T2ck3l/h8QpFjRr3Q=;
+        b=hw6wsS4LpVyDFu23dUPhbhGU89JYEnaTjH/ORrOai8PEzlkCjlAud9tmLYadZvsEU/
+         d5QB93MYOBg199r//TgGuH4+eZYOfa3sd3txhsgL4tj3ldBWFDOlO6XvgrdTT3yjsGzf
+         tr1q7bPv1KqfKNH8rHluGXVcrf4qxfWlXz3RzBadAosHNkM6V1kT6T9SYe/huMMkX1Xv
+         Y3phCLiYPrmdSWxCDZ6ftnkh96xpt7wPhxe0tpFreaDSJRsMUOg8kezPLB0OWGyfHtDn
+         kTeIee7mhxMB21KqdVXDEp5b/biq3pPGzjfv4ZPHZLvZWTGgx0sx0DhTgwmer1gdAFdF
+         +zSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714144196; x=1714748996;
+        d=1e100.net; s=20230601; t=1714144253; x=1714749053;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QM5g5oluFXmlj44Ib9JNWX1cNnZgigxMRLezmSbkjDU=;
-        b=JQXm571hLnwHCGN0fjdMGinCKMYKn+RVoy9AcqL7yCtCqIllMI7BTtDQ9W2oJGsTXl
-         yFkD0pd4/cC4uREvm18lcpqiscjzYATdRpUxTdgOSkNC9xb2uH3/ejSY/EznINFUmXHV
-         02uyCjYmb1JbPx5npVrJT7U5Z5ZqCPiQj/6Ow2yFwlU/tKAJ7bYfyNUUGNeNVN+p5+De
-         YFGjljykCD7FfkBX0lrLriGQO7zqZTK7NdeBl8oqxgAvvcB3FEDw3RIh4SYcv8NjpZEd
-         19fOTbLl7SyW6LxunO35Sn5RPlqAStOIrI/hntK1D4Ha6c4Cj0q5OdYHMdqdH36k048H
-         FZLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWgBlkLKwHKsFc+zDp6YtKEhUyUiDQHL+3/WDK+TbusxLQTnhAJS/9xwXjawBl/JGyelPnTX6mCDeZGzJvXMssz+V7mXbCCVo5Gl9k7GenQsM0SFMwe8d0AofvoZx/nXZt2IUknWkX7t6nRViRJ
-X-Gm-Message-State: AOJu0YzbUcHZ7lJNKFgsZy6erjbpiw1qLMA6/xvx6kQ2/xpk26LvjGfw
-	cIyp+gNzXKB0upyXzCyL7B8831ZjLTF3r2G8T4UH97uzmVeRVG/bNp87S1BjAJbYZP70T1/5GIO
-	EpEqP252UKdleiaB+LXlZprKpIHg=
-X-Google-Smtp-Source: AGHT+IHjGA+8BSpP9IX601ErZtEjqToo4NRZRL8kUVVAJvuSuM4qoyqiqfzKsueRULrcpzPd8ls4usMH1P6ggmAVLcM=
-X-Received: by 2002:a2e:9684:0:b0:2d6:d351:78ae with SMTP id
- q4-20020a2e9684000000b002d6d35178aemr58304lji.29.1714144195629; Fri, 26 Apr
- 2024 08:09:55 -0700 (PDT)
+        bh=QQ3U4IOEJf7j3zTFFqacVVA+V6T2ck3l/h8QpFjRr3Q=;
+        b=fBu2Cv/MQ6b6icGJP31aO9Jmc5fkfThCn32/EyZSJ+fF5IG+iZujxvEJV9HB+YZv4g
+         /yC0ujLCSlhWTh/jt5z2DZDpD2tuOnTsbZWKyLTLLLsB0Dj79Q+av/PT0KSiCWFpT9NS
+         wbxSo88w3AN3F7HzvECGu7FXgAwOYGMzfxgM/r/p/E+I8ILi2+4CcAG/FRlrPprh3o18
+         IquCzkx1VfbMbYy5W/RIJz6bYBRwtrTfaITfynxfvQNCylrk2z70D79C+DvOYsXHNx8E
+         KRJ7GOVvO/bxCwvRnu8PtYOpKnPnA61mPZVAgPiYCsUFy1N+NLhHAsn7I0LQdiW78JTK
+         1E7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVGotSQJgPUJArupbiEhrbOpmwNDRKjAv3ZNQAKWLbOCs0hqjy1guVqMG7bagOdt7hl4LX/PWI+e0VatH8xqF4bPmS29xMaVnXMgIVVJJj2zJ/BTAdQegXUyVMJGVMyfS94/4xzagvEJNc6
+X-Gm-Message-State: AOJu0Yy15neYHjmB7ex9dO0gp0/XZtImjOZniQTCnK+8QMPnuI5O9MAA
+	fEco1gPe0WqxC9bBpIaog0lMQziBS2A7uNVH09NZesVTB7fPbKu0J0fDoyvEBRFr3MwB+0JPMt9
+	JPlDH84utDZur2xI3Oreq/f3ssJ4=
+X-Google-Smtp-Source: AGHT+IEs+SmQfEqr2BrT/zdK8IF1hlONaksJrfx2Q75r/9u1UGKK7NUtDB3KKZ6gRu+5n0xoQ9OVS2XJWrCeTYgwh6E=
+X-Received: by 2002:a17:907:1b16:b0:a55:5ddd:ec0f with SMTP id
+ mp22-20020a1709071b1600b00a555dddec0fmr2636807ejc.12.1714144252833; Fri, 26
+ Apr 2024 08:10:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424122932.79120-1-brgl@bgdev.pl> <171397322792.12898.8815870206676100532.git-patchwork-notify@kernel.org>
- <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com>
-In-Reply-To: <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Fri, 26 Apr 2024 11:09:42 -0400
-Message-ID: <CABBYNZJOdccb4HKVBnuqK=_xVzViJ2D2+QJPSyyFGE2_Y1VXCg@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: marcel@holtmann.org, krzysztof.kozlowski@linaro.org, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bartosz.golaszewski@linaro.org, wt@penguintechs.org, quic_zijuhu@quicinc.com
+References: <20240425183251.174412-1-rilian.la.te@ya.ru> <20240425183251.174412-2-rilian.la.te@ya.ru>
+ <Ziu7DpoHGLrURI_9@smile.fi.intel.com> <CAF1WSuytbkoMfRotBiQyKHGKacwicSJtkSrbLis9UVwD83WVKQ@mail.gmail.com>
+ <CAHp75Vc9k8-LggzaHO+Qg2MgnmxA3purw9_YcVhAWC=S0eND3Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vc9k8-LggzaHO+Qg2MgnmxA3purw9_YcVhAWC=S0eND3Q@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 26 Apr 2024 18:10:16 +0300
+Message-ID: <CAHp75VeQyZ-WQ3D=T4wLQ46=oQYQPBXg9+8nj6AsXgEop8txgA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/3] serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+To: "Konstantin P." <ria.freelander@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, 
+	conor@kernel.org, lkp@intel.com, vz@mleia.com, robh@kernel.org, 
+	jcmvbkbc@gmail.com, nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, 
+	corbet@lwn.net, ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, 
+	Maarten.Brock@sttls.nl, Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Bartosz,
+On Fri, Apr 26, 2024 at 6:06=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Apr 26, 2024 at 6:00=E2=80=AFPM Konstantin P. <ria.freelander@gma=
+il.com> wrote:
+> > On Fri, Apr 26, 2024 at 5:36=E2=80=AFPM Andy Shevchenko <andy@kernel.or=
+g> wrote:
+> > > On Thu, Apr 25, 2024 at 09:32:33PM +0300, Konstantin Pugin wrote:
 
-On Fri, Apr 26, 2024 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> On Wed, 24 Apr 2024 17:40:27 +0200, patchwork-bot+bluetooth@kernel.org sa=
-id:
-> > Hello:
-> >
-> > This patch was applied to bluetooth/bluetooth-next.git (master)
-> > by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-> >
-> > On Wed, 24 Apr 2024 14:29:32 +0200 you wrote:
-> >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>
-> >> Any return value from gpiod_get_optional() other than a pointer to a
-> >> GPIO descriptor or a NULL-pointer is an error and the driver should
-> >> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_q=
-ca:
-> >> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
-> >> power_ctrl_enabled on NULL-pointer returned by
-> >> devm_gpiod_get_optional(). Restore this behavior but bail-out on error=
-s.
-> >> While at it: also bail-out on error returned when trying to get the
-> >> "swctrl" GPIO.
-> >>
-> >> [...]
-> >
-> > Here is the summary with links:
-> >   - [v2] Bluetooth: qca: set power_ctrl_enabled on NULL returned by gpi=
-od_get_optional()
-> >     https://git.kernel.org/bluetooth/bluetooth-next/c/48a9e64a533b
-> >
-> > You are awesome, thank you!
-> > --
-> > Deet-doot-dot, I am a bot.
-> > https://korg.docs.kernel.org/patchwork/pwbot.html
-> >
-> >
-> >
->
-> Luiz,
->
-> I think patchwork borked when picking up this one, here's what the commit
-> trailer looks like in next:
->
->     Reported-by: Wren Turkal <wt@penguintechs.org>
->     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
->     Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-gi=
-t-send-email-quic_zijuhu@quicinc.com/
->     Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
-> IS_ERR_OR_NULL() with gpiod_get_optional()")
->     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->     Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->     Tested-by: Wren Turkal" <wt@penguintechs.org>
->     Reported-by: Wren Turkal <wt@penguintechs.org>
->     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
->     Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
->     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->     Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
->
-> Reported-by and Reviewed-by tags are duplicated. One of the RB tags is mi=
-ssing
-> a space.
+..
 
-Oh crap, should probably not trust patchwork would pick up the tags
-properly, that said the pull-request was already merged, not sure if
-we can do something about it now?
+> > > Greg KH, who is maintainer of TTY/serial subsystem, usually asks to s=
+eparate
+> > > fixes from new features. So, sending this patch separately may not on=
+ly help
+> > > him, but let's move forward with your stuff.
+> >
+> > Do I need to increase the version number in split send?
+>
+> Nope, the opposite, i.e. drop it to v1 (and mention in the comments
+> area, that's after the cutter '---' line, that it's a split from this
+> series).
+>
+> >  And if I need
+> > to do so, then how I should do it? Only on new driver? Or only on fix?
+> > Should I CC linux-stable in fix patch?
+>
+> Everything else is documented:
+> https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+
+Just to be crystal clear:
+- the split of the fix goes as v1
+- the rest as v10 (or what is the number of the next revision?) after
+you address all review comments, confirmed testing, etc.
 
 --=20
-Luiz Augusto von Dentz
+With Best Regards,
+Andy Shevchenko
 
