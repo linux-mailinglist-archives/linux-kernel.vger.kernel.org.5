@@ -1,160 +1,161 @@
-Return-Path: <linux-kernel+bounces-160499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873338B3E4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:34:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3D38B3E4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:35:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42AA728A3EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:34:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD8A281028
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E13715B579;
-	Fri, 26 Apr 2024 17:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE6315D5A2;
+	Fri, 26 Apr 2024 17:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hn9Z4gVI"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="tfQSsGok"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291E8148854
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E9614AD38
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152884; cv=none; b=nSd5QVROJZ7AH2zVVuHQLntYUDYvJAEYi4qIH/TWCHPsA9xWrUUsdj11ZhAd9rv9SAyxzbP6jiLU1q9UxMIiTrqco9pRSYSzFOIJLifxZtLmW+pEg63irSx1liJQMzponXji3S6ouq6PJiCaobRUvMpn69SggPY0LRl+xi1Sm/8=
+	t=1714152895; cv=none; b=GzgQuuTOqZeLEpzw6FNAHWN3EBduCVFqDR8OH0d9y1ssje+7vg5rQj8NkcneHB5yovckeMXUhoJ3PouR4sA7kvAsl1NKI6tTW7pfaZ4FHSvFWC3xocddNxUdj0lUzBGXa6tU67NYLpiSqSoF0ipOyqESk4c9mdn4saKyNuTuc8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152884; c=relaxed/simple;
-	bh=mRqrrwqCUQE1blvTPKPlca0CB4j+Sib/FmUAKUGcrYQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jzX8h8pMo8l54M7E2s9uOWPbNcg9pJIq+ymQLkEEqfb072dZE5hq3URWT/TnaN/IYIyRlqotUHxgc8ovFXW0WLTnMCe5RLBvtJ1dkOmdUCPWfHu5D/TAJNxXkWml1z0TiDSTIom4GHCM2zbLONvP5JUo/phyqzEWPvAnsm0dwTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hn9Z4gVI; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=UUvYm71fjkEqtSxLHnGtOJW9nzuNwvObOROt5Vq5kDE=; b=hn9Z4gVIqvr6bBM9IEZqJ0TI8o
-	48x4aZu0SVYcFUsy6Cxy8stS0svKwc8tqPOO+gti0aEyxKfYg/AIm2lxzKawlKfXchIMWCEcUhV1P
-	8yFxyH+5DuHxjXsLZ9xZ/mmxIe5Am9vCLUJE1G4I4A+BRlDiYf/kYJt5+lD156c4raXEKREk0Sm8b
-	Nu7D1dEbwoxbSzutsI5wCUCB6jOLZganYUzNajBnEVvGMHkNn/7duLouwqKgXHFtbTx51M81kYs5J
-	crh6KuZ7D00yUEbzDbGWLS4WDkZ2bKp8Pp0oZbAdCyTzdrUN3W7eC66kzft0xiy4tSO7DVCJenCDk
-	IatHAwYg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0PT2-00000005gwQ-3NQu;
-	Fri, 26 Apr 2024 17:34:36 +0000
-Date: Fri, 26 Apr 2024 18:34:36 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	akpm@linux-foundation.org, linmiaohe@huawei.com,
-	jane.chu@oracle.com, nao.horiguchi@gmail.com, osalvador@suse.de
-Subject: Re: [PATCH] mm/memory-failure: remove shake_page()
-Message-ID: <ZivlrMAwRI6xJhc-@casper.infradead.org>
-References: <20240426171511.122887-1-sidhartha.kumar@oracle.com>
+	s=arc-20240116; t=1714152895; c=relaxed/simple;
+	bh=M7MCq3gs44Cfubxbn7R+zLW7YEL4ySsQodTHkHwiDB8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=urN4NUWk+ocfhR0xHehJnQDUbz36pVLNoKa4fQ/XiOIlwG9csdaXZ9HbT4lpnZVdT6Ijkjnmr7kV1zTO0chujIURiayVTg0VZC3iSpzEyQ8gBAs+oXvAYEFBHzYV1aIAk+pa4DQbSqKRglW9uYDLJ2IqoP1mUnIuPo7MAlacSKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tfQSsGok; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36c3a731125so7165ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714152893; x=1714757693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xwnxU0oF0334HTgx3GEo/litvzvaDeyp1NlSPNJ3+zo=;
+        b=tfQSsGokwk9ESMY7pq8gVIHG3tzUiDG9nPsukTPc2402FEsEs+RF16lze96h887mei
+         imcbbtj6tcW/mTF2Eq+TfgcsRKP3xoxzGXhkPOX79LYJXDJebngzfzich0enX+xgh3Bc
+         JSjPH/oSe53z3D1nOaDHRz+SDtI9pWuOQ3JPMtfAFvmHLlMDL1dHN8heOCnKv6SRoZZL
+         b/Y7VctjD3cvcmHoFGvOWu/ONM9QisH8dZyBG4Ldip//yOLjiKMADOtH/dhOkozR3ijy
+         AzoOhRIbGNL3CbLKoTnW+Y2pFAm866K709I0fv1TLxzyXCaotBFinlFFBziguy3LVgPd
+         wlEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714152893; x=1714757693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xwnxU0oF0334HTgx3GEo/litvzvaDeyp1NlSPNJ3+zo=;
+        b=Otq80rLOMoC60p8vNspy/olRYFdlaT6crhjSunVgUKF/Zoh/mCQTdLHpJ7KB9Ni7DL
+         4M8DAqRQMGQgxbr9h5tEfnTE2jf/uql+3fm1K9KWdKG2VjlW1hmyfSVu+ZYWqpYlrkR3
+         MYZ0/8Qnso7N0swR5rmQcriw7pjR4nnv5uZG4W2NJMFrY9Do5zVVK1hJQFX69QCIS6qg
+         U7q4h1VcP8UW6YqjBzvFiObw/HyluYWHsu2bGEJK36a1ctWZEtA2gblindZmU/TorTWj
+         lLc4RcP/kMDP0Rkuj1qaoiNOvBOqbLcPjqAPj/4qDvn8KFs4GcS4h73PfFzw9hAJSXjD
+         uf7A==
+X-Forwarded-Encrypted: i=1; AJvYcCXgW2yFxcAdxrftx1qtYsfC27TfJOaktz5CJIrC+fSdc/G+qv7LZeHNbJ2eTR9Wq7PhHTeHMXkGxVZ6rBYQ/3mJ84n8DmA2SB+YufOl
+X-Gm-Message-State: AOJu0YymCL3eDZ5GUTpeRfs1sOcIWp4vgq0dSIj4VUMrDN4vbYj1iVhg
+	PavlIEf9IIcV6qUEOMjk7bCws20FB4eLPvHfT0piC9hVlJJf/JWsPWNb212jjGYtLXoviz60xYl
+	EK0UyXIz7LrHtTsreMTR2eNIcC6rj05dNT8TU
+X-Google-Smtp-Source: AGHT+IEWKMoGOp9KyRycHyqFobnSOhK4XS18mXMmynUmz8BwO2R+xHvsiU9+bs53UbGjif/7zWdDZqlTXlEY+yg4K5s=
+X-Received: by 2002:a05:6e02:13e1:b0:36b:902:71ec with SMTP id
+ w1-20020a056e0213e100b0036b090271ecmr1670ilj.8.1714152892896; Fri, 26 Apr
+ 2024 10:34:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426171511.122887-1-sidhartha.kumar@oracle.com>
+References: <20240425223406.471120-1-irogers@google.com> <53dfaeae-b4eb-479e-938f-d0022c4f2416@linux.intel.com>
+In-Reply-To: <53dfaeae-b4eb-479e-938f-d0022c4f2416@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 26 Apr 2024 10:34:39 -0700
+Message-ID: <CAP-5=fX520Nvd7V_UNDn5yQV-o0-ADYNe7XqdjHUmRVtEC_5tw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/3] Retirement latency perf stat support
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Ze Gao <zegao2021@gmail.com>, 
+	Leo Yan <leo.yan@linux.dev>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Dmitrii Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>, 
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 10:15:11AM -0700, Sidhartha Kumar wrote:
-> Use a folio in get_any_page() to save 5 calls to compound head and
-> convert the last user of shake_page() to shake_folio(). This allows us
-> to remove the shake_page() definition.
+On Fri, Apr 26, 2024 at 10:22=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.=
+com> wrote:
+>
+> On 2024-04-25 6:34 p.m., Ian Rogers wrote:
+> > Support 'R' as a retirement latency modifier on events. When present
+> > the evsel will fork perf record and perf report commands, parsing the
+> > perf report output as the count value. The intent is to do something
+> > similar to Weilin's series:
+> > https://lore.kernel.org/lkml/20240402214436.1409476-1-weilin.wang@intel=
+com/
+> >
+> > While the 'R' and the retirement latency are Intel specific, in the
+> > future I can imagine more evsel like commands that require child
+> > processes. We can make the logic more generic at that point.
+> >
+>
+> I think in generic what we want is the weight/latency information of the
+> event. 'W' is already occupied by the weak group. Maybe 'L' is a more
+> generic name than 'R'. With the event modifier, perf collects and report
+> the weight/latency information of the event in a perf stat command.
+>
+> Not just changing the evsel, I think a proper output is still required.
+> It's possible that an end user can use it without metrics. E.g.,
+> perf stat -e cycles,instructions:L
+> A possible generic output maybe
+>
+> 1,931,099,931   cycles
+>   801,826,458   instructions    # Avg Weight1 1000
+>                                 # Avg Weight2 800
+>                                 # Avg Weight3 500
 
-So I didn't do this before because I wasn't convinced it was safe.
-We don't have a refcount on the folio, so the page might no longer
-be part of this folio by the time we get the refcount on the folio.
+I think this is good but we need to work toward it. This change is
+opening a separate perf record per CPU, we should really open one perf
+record and then read each counter separately in the perf report
+output. We shouldn't really fork a perf record, we should gather
+multiple weights, and so on.. There isn't a notion in the current
+counts abstraction that you have multiple counts, and that will need
+feeding through into all the aggregation code.
 
-I'd really like to see some argumentation for why this is safe.
+Thanks,
+Ian
 
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> ---
->  mm/memory-failure.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 16ada4fb02b79..273f6fef29f25 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -385,11 +385,6 @@ void shake_folio(struct folio *folio)
->  }
->  EXPORT_SYMBOL_GPL(shake_folio);
->  
-> -static void shake_page(struct page *page)
-> -{
-> -	shake_folio(page_folio(page));
-> -}
-> -
->  static unsigned long dev_pagemap_mapping_shift(struct vm_area_struct *vma,
->  		unsigned long address)
->  {
-> @@ -1433,6 +1428,7 @@ static int get_any_page(struct page *p, unsigned long flags)
->  {
->  	int ret = 0, pass = 0;
->  	bool count_increased = false;
-> +	struct folio *folio = page_folio(p);
->  
->  	if (flags & MF_COUNT_INCREASED)
->  		count_increased = true;
-> @@ -1446,7 +1442,7 @@ static int get_any_page(struct page *p, unsigned long flags)
->  				if (pass++ < 3)
->  					goto try_again;
->  				ret = -EBUSY;
-> -			} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-> +			} else if (!folio_test_hugetlb(folio) && !is_free_buddy_page(p)) {
->  				/* We raced with put_page, retry. */
->  				if (pass++ < 3)
->  					goto try_again;
-> @@ -1459,7 +1455,7 @@ static int get_any_page(struct page *p, unsigned long flags)
->  			 * page, retry.
->  			 */
->  			if (pass++ < 3) {
-> -				shake_page(p);
-> +				shake_folio(folio);
->  				goto try_again;
->  			}
->  			ret = -EIO;
-> @@ -1467,7 +1463,7 @@ static int get_any_page(struct page *p, unsigned long flags)
->  		}
->  	}
->  
-> -	if (PageHuge(p) || HWPoisonHandlable(p, flags)) {
-> +	if (folio_test_hugetlb(folio) || HWPoisonHandlable(p, flags)) {
->  		ret = 1;
->  	} else {
->  		/*
-> @@ -1475,12 +1471,12 @@ static int get_any_page(struct page *p, unsigned long flags)
->  		 * it into something we can handle.
->  		 */
->  		if (pass++ < 3) {
-> -			put_page(p);
-> -			shake_page(p);
-> +			folio_put(folio);
-> +			shake_folio(folio);
->  			count_increased = false;
->  			goto try_again;
->  		}
-> -		put_page(p);
-> +		folio_put(folio);
->  		ret = -EIO;
->  	}
->  out:
-> @@ -1643,7 +1639,7 @@ static bool hwpoison_user_mappings(struct folio *folio, struct page *p,
->  
->  	/*
->  	 * try_to_unmap() might put mlocked page in lru cache, so call
-> -	 * shake_page() again to ensure that it's flushed.
-> +	 * shake_folio() again to ensure that it's flushed.
->  	 */
->  	if (mlocked)
->  		shake_folio(folio);
-> -- 
-> 2.44.0
-> 
+> Thanks,
+> Kan
+>
+> > The code is untested on hardware that supports retirement latency, and
+> > with metrics with retirement latency in them. The record is also of
+> > sleep and various things need tweaking but I think v1 is good enough
+> > for people to give input.
+> >
+> > The first patch stops opening a dummy event for tool events. I came
+> > across this while looking into the issue and we can likely just pick
+> > it first. I kept it in the series for cleanliness sake.
+> >
+> > The code has benefitted greatly from Weilin's work and Namhyung's
+> > great review input.
+> >
+> > Ian Rogers (3):
+> >   perf evsel: Don't open tool events
+> >   perf parse-events: Add a retirement latency modifier
+> >   perf evsel: Add retirement latency event support
+> >
+> >  tools/perf/util/evsel.c        | 186 ++++++++++++++++++++++++++++++++-
+> >  tools/perf/util/evsel.h        |   4 +
+> >  tools/perf/util/parse-events.c |   2 +
+> >  tools/perf/util/parse-events.h |   1 +
+> >  tools/perf/util/parse-events.l |   3 +-
+> >  5 files changed, 192 insertions(+), 4 deletions(-)
+> >
 
