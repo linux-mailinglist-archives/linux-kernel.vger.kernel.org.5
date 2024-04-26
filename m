@@ -1,223 +1,250 @@
-Return-Path: <linux-kernel+bounces-159504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA25B8B2F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:40:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 895758B2F83
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:42:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E16131C21DDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:40:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C4AE1F22993
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48418139D10;
-	Fri, 26 Apr 2024 04:40:38 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608896A8BE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 04:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0788713A253;
+	Fri, 26 Apr 2024 04:42:29 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DE8139CF3
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 04:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714106437; cv=none; b=iWU5giyWcZo6p6i6r2Z3ZkkfRWXff7qyNJRihwHBBmv7LtJiG41OwkEstyCVpSLAlYvmUuUyXdAQQlOLNhYuwrbFRXolkNs0wxmKu2A+CbwlGxca+aC1J0pXRsifdQw5mQIXFK9vL9Uwsf4IOQQhN5b7zkpC0iJYvgRRYbcjD2c=
+	t=1714106548; cv=none; b=kPSnDouSH9eNHS1j4bf1652KVPnLt8YYC8DkbYQY5cZtF9x+PJ1+vcziuCUcfW3EoeKol8Fu+UBdEDpPLidXIbQSkIFuAjfhT+RwUX+CQUgUr/KmfLK/paH5n4xDjJNCc5b3eoW4uaRWATx530sdNOSyMRE+/vSvVd/GTG/sGQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714106437; c=relaxed/simple;
-	bh=LKzAAoMk7CnCMTXuFyijTnjUoxKHqGLXRu1RWK05HS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jmyxa+g24JPuvW+gJsTccSQjV3+FbrrmP5X7K15FW6YQGCaNVKwqsZDYvNTxicbhdgapQ+5GL/5cKCL7oRNgWuEwHQSwsYgdFVF+X0s1+eNCEXRSj0DE0z/QFoRqfegRBhGTQzpJwSh1ZFi2wa36p/qi+qpWXO5ge3NNuefdRdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-12-662b30387bbf
-Date: Fri, 26 Apr 2024 13:40:18 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	jbohac@suse.cz, dyoung@redhat.com
-Cc: kernel_team@skhynix.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/e820: apply 'mem=' boot command while reserving
- memory using boot_params
-Message-ID: <20240426044018.GA24557@system.software.com>
-References: <20240423102320.GA47818@system.software.com>
- <20240424010313.25264-1-byungchul@sk.com>
+	s=arc-20240116; t=1714106548; c=relaxed/simple;
+	bh=ADLRAnQbB9NsvTAX6kpCXcmg8vWXsE/wlaBD0urQNSA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sP2C8josg5a0w5Qn0KkzrvGaywljGkOBIiJ9zmDfux2cvMKdPO1gUFDW6p7oU+s+RGMAjOhKpzLaswnRDEUft796uVPNXwE7eyWevgwqur033xxT/buDvCP2wXqV+C+dpayHffnZA72Umag0tzYTumEikqVC84XzuGhEXhJMCpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7de9b67cdc7so190943739f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 21:42:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714106546; x=1714711346;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YLMyuKda2xPHRkztxdZBggzq4y7PK0nY7x5M6U+fPUQ=;
+        b=kYPXc3EGBqo8YWPAseg5MA8GOeae3nlZ2lebsNX7lJns7IFhRikDEKblEYMaga+l3B
+         PD/xvcvchVUiBbjrCs+Wy800gb7hlDyo0eMXt77T+uo7vrD17BGLybgWfjfG/a7Tibep
+         +uv/SWZoW0AP5bL3BA+dFVSN966PEajJ3N4bgMIWYpCgSPwhsS9p9SxS+vIAl9Tb/sCK
+         9p0ki7Hr2iMzIW6azjBzx6yuzN8ipo/fiOvBB/UtR8mU9x62a/elLIWrKmaA7T39DTf5
+         Z67unMiCVV43xCSnkmeK3OudkFoaxmltKZ9l/IvrlD4Gr/ISgQ3ZnAAEVnZAGJbVZrEe
+         CN4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVUWq6ozCZRbsbNO3r77t/WP7kOCIofRuP5UejjmfvHs7X1kTgLUf4DP0mgoDCbdIqLq7JNpURGpxw/S5mXbIZmfQ4Rvbx0oU/qP5Df
+X-Gm-Message-State: AOJu0YxdxbRzfB6jCj0J6VOMMcGOiTeC70Z7m8qigcslwhWNSGwooRmq
+	boLv7yLIz5YzOo5xfEEcpID3g8nSHJu6SYhiy5ELdLNMQWAZ2azh7GJblT79QBDn6tcLB0QwOtk
+	wqiqIfsV6vW7k0qK3HhMqBXkWNcdds1L4RAWN/fu96coD2i5yoIm5IIs=
+X-Google-Smtp-Source: AGHT+IHwzRlt52Zv/PA1gArMdk0fM9fBC4PiBmIdglpkx/HW7P+MyeODxpT8hYq45Zvz+2Ua8FgMLgz2VUPs1ik8sPL1rSPVKjtm
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424010313.25264-1-byungchul@sk.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDLMWRmVeSWpSXmKPExsXC9ZZnoa6FgXaaQcMCEYvPG/6xWbzY0M5o
-	0TCxgcVi2kZxixsHN7NZXN41h83i0oEFTBabN01ltvix4TGrA6fH99Y+Fo9NqzrZPN6dO8fu
-	Me9koMf7fVfZPM4sOMLu8XmTnMeJli+sARxRXDYpqTmZZalF+nYJXBlnLtxlL9itVrF2tlMD
-	4xO5LkZODgkBE4mVj6Yyw9hdd/+zgdgsAqoSHS8OMILYbALqEjdu/ASq4eIQEZjJKLHpwREW
-	kASzgKXEvFvHmLoYOTiEBdIkZs7kAAnzClhIvGxoBesVEkiR+P1qOTNEXFDi5MwnUK1aEjf+
-	vQRrZRaQllj+D6yVU8BMYu6mTWAniAooSxzYdpwJZK2EwBk2iRlPLzNC3CkpcXDFDZYJjAKz
-	kIydhWTsLISxCxiZVzEKZeaV5SZm5pjoZVTmZVboJefnbmIExsGy2j/ROxg/XQg+xCjAwajE
-	w/siQytNiDWxrLgy9xCjBAezkgjvzY8aaUK8KYmVValF+fFFpTmpxYcYpTlYlMR5jb6VpwgJ
-	pCeWpGanphakFsFkmTg4pRoYe3i0inawf9HSWLKiez/3ZJk8f37npSdO3n3ML+YV4bqee6JT
-	csOcal2JXVw/uQ8dX3/2/pXXaQ+uJH5kvKfStHHLviwFx2jmnNlZFrLTZhm+SphpnSO3wP3F
-	/OIDMpYsLBt+/7/S+edvpOSe8w6Wvxm1j6c9m/Bepo7XvJBDs+GFCXuU309TJZbijERDLeai
-	4kQA+H+qZ38CAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsXC5WfdrGthoJ1msH8Hp8XnDf/YLF5saGe0
-	aJjYwGIxbaO4xY2Dm9ksDs89yWpxedccNotLBxYwWWzeNJXZ4seGx6wOXB7fW/tYPDat6mTz
-	eHfuHLvHvJOBHu/3XWXzWPziA5PHmQVH2D0+b5LzONHyhTWAM4rLJiU1J7MstUjfLoEr48yF
-	u+wFu9Uq1s52amB8ItfFyMkhIWAi0XX3PxuIzSKgKtHx4gAjiM0moC5x48ZP5i5GLg4RgZmM
-	EpseHGEBSTALWErMu3WMqYuRg0NYIE1i5kwOkDCvgIXEy4ZWsF4hgRSJ36+WM0PEBSVOznwC
-	1aolcePfS7BWZgFpieX/wFo5Bcwk5m7aBHaCqICyxIFtx5kmMPLOQtI9C0n3LITuBYzMqxhF
-	MvPKchMzc0z1irMzKvMyK/SS83M3MQKDelntn4k7GL9cdj/EKMDBqMTD+yJDK02INbGsuDL3
-	EKMEB7OSCO/NjxppQrwpiZVVqUX58UWlOanFhxilOViUxHm9wlMThATSE0tSs1NTC1KLYLJM
-	HJxSDYyypXbhhawRDFfXPbjRp+DxaUlj9639mk+TIv5Vn4r/ctBn9v5vt6tZny08tdC5KoWf
-	58C6mWs+LpH+2vH1ZElXVeI3H0uPrNxgj/PLHMslZvyq/Pmv5b//mV/9srtfaU7eUuS++6Vt
-	7XTmHebXPgfcbxRbk7fTb/ruDhFNfvUXE9y3pP/uap2pxFKckWioxVxUnAgACEcMP2YCAAA=
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6638:6d11:b0:487:3b5a:c97c with SMTP id
+ he17-20020a0566386d1100b004873b5ac97cmr90011jab.0.1714106546207; Thu, 25 Apr
+ 2024 21:42:26 -0700 (PDT)
+Date: Thu, 25 Apr 2024 21:42:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cb5a8d0616f8872d@google.com>
+Subject: [syzbot] [input?] [ext4?] possible deadlock in uinput_request_submit
+From: syzbot <syzbot+159077b1355b8cd72757@syzkaller.appspotmail.com>
+To: dmitry.torokhov@gmail.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 24, 2024 at 10:03:13AM +0900, Byungchul Park wrote:
-> I might miss something.  Please lemme know if I go wrong.  Thanks.
+Hello,
 
-I started to work on it since I wanted to limit memory boundary using
-'mem=' boot command but it doesn't work.  However, while looking around
-the code in more detail, I found the issue is about which one should
-have higher priority between:
+syzbot found the following issue on:
 
-   1. boot command limiting memory boundary e.g. 'mem=',
-   2. setup data of memory map from bootloader, boot_params.
+HEAD commit:    7b4f2bc91c15 Add linux-next specific files for 20240418
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12a07f67180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae644165a243bf62
+dashboard link: https://syzkaller.appspot.com/bug?extid=159077b1355b8cd72757
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1273c763180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b59430980000
 
-Based on the current code, setup data from bootloader has higher
-priority than boot command so the setup data can overwrite the user
-defined limit specified in boot command.  Is it inteded?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/524a18e6c5be/disk-7b4f2bc9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/029f1b84d653/vmlinux-7b4f2bc9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c02d1542e886/bzImage-7b4f2bc9.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/95b3c106e235/mount_6.gz
 
-   If yes, I should stop posting.
-   If not, I will keep posting with the following - v3.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+159077b1355b8cd72757@syzkaller.appspotmail.com
 
-	Byungchul
+WARNING: possible circular locking dependency detected
+6.9.0-rc4-next-20240418-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor109/5116 is trying to acquire lock:
+ffff8880117e3870 (&newdev->mutex){+.+.}-{3:3}, at: uinput_request_send drivers/input/misc/uinput.c:151 [inline]
+ffff8880117e3870 (&newdev->mutex){+.+.}-{3:3}, at: uinput_request_submit+0x19c/0x740 drivers/input/misc/uinput.c:182
+
+but task is already holding lock:
+ffff888015fb60b0
+ (&ff->mutex
+){+.+.}-{3:3}
+, at: input_ff_upload+0x3e4/0xb00 drivers/input/ff-core.c:120
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (
+&ff->mutex){+.+.}-{3:3}
+:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       input_ff_flush+0x5e/0x140 drivers/input/ff-core.c:240
+       input_flush_device+0x9c/0xc0 drivers/input/input.c:686
+       evdev_release+0xf9/0x7d0 drivers/input/evdev.c:444
+       __fput+0x406/0x8b0 fs/file_table.c:422
+       __do_sys_close fs/open.c:1555 [inline]
+       __se_sys_close fs/open.c:1540 [inline]
+       __x64_sys_close+0x7f/0x110 fs/open.c:1540
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (
+&dev->mutex
+#2){+.+.}-{3:3}
+:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       input_register_handle+0x6d/0x3b0 drivers/input/input.c:2555
+       kbd_connect+0xbf/0x130 drivers/tty/vt/keyboard.c:1589
+       input_attach_handler drivers/input/input.c:1064 [inline]
+       input_register_device+0xcfa/0x1090 drivers/input/input.c:2396
+       acpi_button_add+0x6c6/0xb90 drivers/acpi/button.c:604
+       acpi_device_probe+0xa5/0x2b0 drivers/acpi/bus.c:1063
+       really_probe+0x2b8/0xad0 drivers/base/dd.c:656
+       __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:798
+       driver_probe_device+0x50/0x430 drivers/base/dd.c:828
+       __driver_attach+0x45f/0x710 drivers/base/dd.c:1214
+       bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
+       bus_add_driver+0x346/0x670 drivers/base/bus.c:673
+       driver_register+0x23a/0x320 drivers/base/driver.c:246
+       do_one_initcall+0x248/0x880 init/main.c:1263
+       do_initcall_level+0x157/0x210 init/main.c:1325
+       do_initcalls+0x3f/0x80 init/main.c:1341
+       kernel_init_freeable+0x435/0x5d0 init/main.c:1574
+       kernel_init+0x1d/0x2b0 init/main.c:1463
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+-> #1 (
+input_mutex){+.+.}-{3:3}
+:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       input_register_device+0xae5/0x1090 drivers/input/input.c:2389
+       uinput_create_device+0x40e/0x630 drivers/input/misc/uinput.c:365
+       uinput_ioctl_handler+0x48b/0x1770 drivers/input/misc/uinput.c:904
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:907 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0
+ (&newdev->mutex
+){+.+.}-{3:3}
+:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       uinput_request_send drivers/input/misc/uinput.c:151 [inline]
+       uinput_request_submit+0x19c/0x740 drivers/input/misc/uinput.c:182
+       uinput_dev_upload_effect+0x199/0x240 drivers/input/misc/uinput.c:257
+       input_ff_upload+0x5df/0xb00 drivers/input/ff-core.c:150
+       evdev_do_ioctl drivers/input/evdev.c:1183 [inline]
+       evdev_ioctl_handler+0x17d0/0x21b0 drivers/input/evdev.c:1272
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:907 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  &newdev->mutex
+ --> &dev->mutex
+#2 --> 
+&ff->mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(
+&ff->mutex);
+                               lock(&dev->mutex
+#2);
+                               lock(&ff->mutex
+);
+  lock(&newdev->mutex
+);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor109/5116:
+ #0: ffff88801cac6110
+ (&evdev->mutex
+){+.+.}-{3:3}
+, at: evdev_ioctl_handler+0x125/0x21b0 drivers/input/evdev.c:1263
+ #1: ffff888015fb60b0
+ (&ff->mutex
+){+.+.}-{3:3}
+
 
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index 6f1b379e3b38..3bc593235b76 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -879,6 +879,7 @@ static void __init early_panic(char *msg)
- }
- 
- static int userdef __initdata;
-+static u64 userdef_mem_limit;
- 
- /* The "mem=nopentium" boot option disables 4MB page tables on 32-bit kernels: */
- static int __init parse_memopt(char *p)
-@@ -905,7 +906,10 @@ static int __init parse_memopt(char *p)
- 	if (mem_size == 0)
- 		return -EINVAL;
- 
--	e820__range_remove(mem_size, ULLONG_MAX - mem_size, E820_TYPE_RAM, 1);
-+	if (userdef_mem_limit)
-+		userdef_mem_limit = min(userdef_mem_limit, mem_size);
-+	else
-+		userdef_mem_limit = mem_size;
- 
- #ifdef CONFIG_MEMORY_HOTPLUG
- 	max_mem_size = mem_size;
-@@ -966,7 +970,10 @@ static int __init parse_memmap_one(char *p)
- 		else
- 			e820__range_remove(start_at, mem_size, 0, 0);
- 	} else {
--		e820__range_remove(mem_size, ULLONG_MAX - mem_size, E820_TYPE_RAM, 1);
-+		if (userdef_mem_limit)
-+			userdef_mem_limit = min(userdef_mem_limit, mem_size);
-+		else
-+			userdef_mem_limit = mem_size;
- 	}
- 
- 	return *p == '\0' ? 0 : -EINVAL;
-@@ -1050,6 +1057,11 @@ void __init e820__reserve_setup_data(void)
- void __init e820__finish_early_params(void)
- {
- 	if (userdef) {
-+		if (userdef_mem_limit)
-+			e820__range_remove(userdef_mem_limit,
-+					ULLONG_MAX - userdef_mem_limit,
-+					E820_TYPE_RAM, 1);
-+
- 		if (e820__update_table(e820_table) < 0)
- 			early_panic("Invalid user supplied memory map");
- 
----
-> 	Byungchul
-> 
-> Changes from v1
-> 	1. before - handle boot_mem_limit assuming the default is U64_MAX.
-> 	   after  - handle boot_mem_limit assuming the default is 0.
-> 
-> --->8---
-> >From e8bf247d6024b35af5300914dcff9135df9c1d66 Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul@sk.com>
-> Date: Wed, 24 Apr 2024 09:55:25 +0900
-> Subject: [PATCH v2] x86/e820: apply 'mem=' boot command while reserving memory using boot_params
-> 
-> When a user specifies 'mem=' boot command, it's expected to limit the
-> maximum address of usable memory for the kernel no matter what the
-> memory map source is.  However, 'mem=' boot command doesn't work since
-> it doesn't respect it when reserving memory using boot_params.
-> 
-> Applied the restriction when reserving memory using boot_params.  While
-> at it, renamed mem_size to a more specific name, boot_mem_limit.
-> 
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  arch/x86/kernel/e820.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> index 6f1b379e3b38..e3f716128caf 100644
-> --- a/arch/x86/kernel/e820.c
-> +++ b/arch/x86/kernel/e820.c
-> @@ -880,11 +880,11 @@ static void __init early_panic(char *msg)
->  
->  static int userdef __initdata;
->  
-> +static u64 boot_mem_limit;
-> +
->  /* The "mem=nopentium" boot option disables 4MB page tables on 32-bit kernels: */
->  static int __init parse_memopt(char *p)
->  {
-> -	u64 mem_size;
-> -
->  	if (!p)
->  		return -EINVAL;
->  
-> @@ -899,16 +899,16 @@ static int __init parse_memopt(char *p)
->  	}
->  
->  	userdef = 1;
-> -	mem_size = memparse(p, &p);
-> +	boot_mem_limit = memparse(p, &p);
->  
->  	/* Don't remove all memory when getting "mem={invalid}" parameter: */
-> -	if (mem_size == 0)
-> +	if (boot_mem_limit == 0)
->  		return -EINVAL;
->  
-> -	e820__range_remove(mem_size, ULLONG_MAX - mem_size, E820_TYPE_RAM, 1);
-> +	e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit, E820_TYPE_RAM, 1);
->  
->  #ifdef CONFIG_MEMORY_HOTPLUG
-> -	max_mem_size = mem_size;
-> +	max_mem_size = boot_mem_limit;
->  #endif
->  
->  	return 0;
-> @@ -1036,6 +1036,9 @@ void __init e820__reserve_setup_data(void)
->  		early_memunmap(data, len);
->  	}
->  
-> +	if (boot_mem_limit)
-> +		e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit,
-> +				E820_TYPE_RESERVED_KERN, 1);
->  	e820__update_table(e820_table);
->  
->  	pr_info("extended physical RAM map:\n");
-> -- 
-> 2.17.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
