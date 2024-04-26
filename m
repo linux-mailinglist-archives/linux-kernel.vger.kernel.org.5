@@ -1,206 +1,219 @@
-Return-Path: <linux-kernel+bounces-160398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A48368B3D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:46:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546AF8B3D12
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 300AC1F238C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:46:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9C8287012
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70A5158D93;
-	Fri, 26 Apr 2024 16:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A92158A22;
+	Fri, 26 Apr 2024 16:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nb1k/G2M"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCtVqu1t"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3E2156864
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39EE24B21;
+	Fri, 26 Apr 2024 16:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714149958; cv=none; b=GqtbQo2MoEZiGwaBvYUwY11uRlZ0ipKh0tHE1kxSV4uTIFn5J6JialFMBo1TS46X/fIThnwA47t+mGWkON32DYYTVlYRZWmNvIfNEMg7rw+n2yV+iKNEU4O48PhXIAMNF5AR0CajeXnDc0HJ0u46Tu/x6Agvpbn+/WIt6yEd9BQ=
+	t=1714150035; cv=none; b=Bu0fB8eFliKhbkUeySGkQ248JaHOO32D8uWXumpDd1/5VSv2umu2e/29bwWS8AiJDsLRL+HdMSOJsW6bknkB/GHe8s2E1065X2l2fH61CTHkstfhC/7nrpqZ8W/LQ4kWfvQZqvjTBvm/gN8Pm4EA1KKfnz81ccnViAS6ut2znYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714149958; c=relaxed/simple;
-	bh=TsW6GTHiTQeGY0lIhBtmL90amY6atH1W3WIzWx9xDaA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Htdn1FFFXrcLVUUgzrEd3b16VX/pqSKrQJIn6bcio/CWn4gnF4TKaa6Vd/c58+cn0poyjDTpDzcasUbPL/eupY7F4dCR1aiORCud+97D6nwlh6+Gt+LOPAWH5KArcQx1Nrk+LyymIUg5rMIWXTk2slkuOpGlVHhsAgi1KBX/qmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nb1k/G2M; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36b34effb04so1155ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:45:57 -0700 (PDT)
+	s=arc-20240116; t=1714150035; c=relaxed/simple;
+	bh=jfWjPGIScqlbTDAnTTHGrdwchCO7+CZVPkoOw2v3wV0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Go+HMbsplFFQcsMwLhQvmIS47YHbgkkG5TWh5M0e7FoWJ8qB0dx+bxCNNj7bGRbnU4DU6pyjqfbEq1vqS811JWAYg4ELoikv3ZkYubVrQpMLltVU9+KcLTXWLAmWMXu6unD5FZCghMHst8KP70hgC77sqQ8MQJorTGqjQ90Lho0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCtVqu1t; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e5715a9ebdso20175625ad.2;
+        Fri, 26 Apr 2024 09:47:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714149956; x=1714754756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iH10hcFVd/zxNn6ShOQRCsj816hnsyk+v3ag974TenE=;
-        b=Nb1k/G2MXiB/ZuLOY3onBlgsEzvobn58IY7qHac3Og9w9qhCQ79WzwrNjNGf6p3vPW
-         3UGZ+qz3mWS8wFQsp9vxjAJj9ix62hj1ElGCC1TyJch/ZrvkinjDkhXsMaiw/dBDGAZt
-         ED00auW81sEnF8gGAh0LIC7ZnXphnxX/BoxYKPhBdsCIdWHZ1QEmzNWPu3OIfeQ/sRtK
-         BTF6aE1ohif60xaAeg+7BPi8ScAjYrR7CB1r/4o+Bil/rZP4S0dYj7YIJRzHQkqFTVXf
-         EkNCwnqcrtQBbjWIZ9oBOnSzxEFhz5xmJl8UJMHU0z0FY+s2bxPx5lUjmr+gcvQIT1S+
-         CZFQ==
+        d=gmail.com; s=20230601; t=1714150033; x=1714754833; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sQn2ppMWd1uOjL7uqzuPwPjat8fxQZ3r4Xgq8M/reJc=;
+        b=RCtVqu1tpAT/QYUfHRyM28M6Tx64es1qhCMcF/lP67ARhgh1/fsqXIqI23eZqjejQV
+         UC6Ad0wrCzIxdcqS4X0sW47Qqi0GoLdqbQaiHlOVzDH2VU3IavN22CFhP7NM5BlQlCSK
+         TdW8A+L4Z5ln0pRpwnbHXk58wc35T+NZBKz3WNb2tnjBcErhcCRjpt8X+Ykpsle+KiVr
+         1K5++DYPNJOjVz9Jv6KvQ+r7GASc4irLIPjmhiehneyNQpM16ZyqtcQ88Zl+GMPMesxj
+         H6z2vNA+8l5HeC/FbKEGUPpLzu92vgvK3Dkt9kKpgxUUg8+ZHuNLt8Hp9914kYSYMGD9
+         zuCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714149956; x=1714754756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iH10hcFVd/zxNn6ShOQRCsj816hnsyk+v3ag974TenE=;
-        b=qsMMjlGs6t/tcE4TSZPUwZ/oEZ0XP+LTi4svDBBtxFbdoFyU3riIZtbjKuH6KwFvVr
-         sIXLEmnkcbSieGLg1A3scjULxRGy9UUAiwhXpZfSGLzeIHr6zuntBJ+NzX96OD3z2iH2
-         N1HuLs0Md3vadrPyd826QL1A+2otvaoBO5wh0hhHC8oboKB9QoavNT5yn26Q4Nk/lOgL
-         ClgBaWztWQKP0gxx5BMpjNFU1wIywrRNvUmbwpT0a7uprCo0084uUDNwuOUbprMKUMWs
-         5f5MUj5kgYB3f3IeyJFHc+I5UqWOwRQx3i/TcShf4a47ExP59hLc5+8OkeyHAgLBQacU
-         9Eaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUwpPkeeWHoMzv0Nm/HEaT75ohPIcm/tQxw8fQdag9UmguT1NT6vQZXezA2ScCG2nIL2Li+ipKny1b3LPEi7O6588pmEj8d1X/vVTmP
-X-Gm-Message-State: AOJu0YzQiuN8Uz3znuK8qOA4woyxPGquzmJlimqOSx8lITQRstQpYHXX
-	JVg2f4hGOg/9wUjPQehuvcPwxxYi+hpu/2yHgmHqoaGuJxMAw9TOiORfs+yMaqFiZiW21M1MbgB
-	9Yfxqzykv5ny1UzIybqEcUiSo81r5MqsPm8dv
-X-Google-Smtp-Source: AGHT+IGyqiUHq+bsq/fcDLWIZFYHRSRwpnnauY5KJb3XD469uS70sYP9EhJoE2ZqedpHAuLk5QeNwVmENstOTUvQIIw=
-X-Received: by 2002:a05:6e02:13f0:b0:36c:3046:a6ef with SMTP id
- w16-20020a056e0213f000b0036c3046a6efmr283307ilj.12.1714149956436; Fri, 26 Apr
- 2024 09:45:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714150033; x=1714754833;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sQn2ppMWd1uOjL7uqzuPwPjat8fxQZ3r4Xgq8M/reJc=;
+        b=lx5V+IVQJZbtK0MTRkJgYN9lVVeghvoI4fZVpVzXcoyRZkmOIgLFoJRW74tfhTOLkO
+         Vbw+hGF/kkZ/kbcnTPp+0XdMdRRbMvdsTdxg0Kyqeu3JHTXA6brcsqr9Ym2S2zKie+MB
+         I3PMnhD8hYNBdj1TkXmJ0zOQBfQrs6u+WYzEX+VCYgAwubPzRZP8fYgnSzhSirvB2i1x
+         yBDTDFGNY8+Afs54LL6PNVWCxGJyDrDZ/qowq6vSOavEk4Ez1Hbp5OfpyE2IN76yPJ97
+         E+80reDCQK4VZ9751wmaIWVLw/+mpqCH2I56874Dj9WQcudlVv/IDm3iKqwQAajSgCE3
+         XOdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWxi3JFwHyEs/snaeTBlh7fkNTMz9y9FdnyqfGZPp+TNOZTH+XVnBZ8XnK1BUFwakbgouWUUAKI2uBMJyaLIPAPd12suE/5cw2JXZcH
+X-Gm-Message-State: AOJu0YwG3dXWadrpZf9h+0BpOeO0LCBsWimP9/dQuPhBB0JChGHGhMPw
+	lLxVNp0BXgdvOJkrX5WghpKWkvnrxhp0dsm06GeJbxJTFFCq/la0
+X-Google-Smtp-Source: AGHT+IFHwuV5UcmP2zAhp9tIF5BJVXGc6sYdl7MFsQgMTTVUUw38ID/F1HlogJCOkDP6ZhPiVFL7gA==
+X-Received: by 2002:a17:902:d492:b0:1dd:2eed:52a5 with SMTP id c18-20020a170902d49200b001dd2eed52a5mr225645plg.37.1714150033037;
+        Fri, 26 Apr 2024 09:47:13 -0700 (PDT)
+Received: from kernel.. ([2402:e280:214c:86:dcce:3490:50a1:90df])
+        by smtp.gmail.com with ESMTPSA id q5-20020a17090311c500b001d8f81ecea1sm15766839plh.172.2024.04.26.09.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 09:47:12 -0700 (PDT)
+From: R Sundar <prosunofficial@gmail.com>
+To: heikki.krogerus@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	neil.armstrong@linaro.org,
+	dmitry.baryshkov@linaro.org,
+	u.kleine-koenig@pengutronix.de,
+	christophe.jaillet@wanadoo.fr
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	R Sundar <prosunofficial@gmail.com>
+Subject: [PATCH v5 linux-next] usb:typec:mux: remove indentation for common path
+Date: Fri, 26 Apr 2024 22:17:05 +0530
+Message-Id: <20240426164705.2717-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301174711.2646944-1-irogers@google.com> <3e54fea7-2a37-4774-8a6a-85f75cc4a9ea@arm.com>
- <88b460e5-ef2f-4b2f-a173-deac34c99788@intel.com>
-In-Reply-To: <88b460e5-ef2f-4b2f-a173-deac34c99788@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 26 Apr 2024 09:45:42 -0700
-Message-ID: <CAP-5=fWk6hMWMy93QgRAWUowRk5LNEkqRVa3u4h0fPRXyE-y+Q@mail.gmail.com>
-Subject: Re: [PATCH v1] perf tests: Run tests in parallel by default
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: James Clark <james.clark@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 8:42=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 26/04/24 18:06, James Clark wrote:
-> >
-> >
-> > On 01/03/2024 17:47, Ian Rogers wrote:
-> >> Switch from running tests sequentially to running in parallel by
-> >> default. Change the opt-in '-p' or '--parallel' flag to '-S' or
-> >> '--sequential'.
-> >>
-> >> On an 8 core tigerlake an address sanitizer run time changes from:
-> >> 326.54user 622.73system 6:59.91elapsed 226%CPU
-> >> to:
-> >> 973.02user 583.98system 3:01.17elapsed 859%CPU
-> >>
-> >> So over twice as fast, saving 4 minutes.
-> >>
-> >
-> > Apologies for not replying earlier before this was applied. But IMO thi=
-s
-> > isn't a good default. Tests that use things like exclusive PMUs
-> > (Coresight for example) can never pass when run in parallel.
->
-> Yes, that is an issue for Intel PT also.
+Nitpick, Mostly common path will not be indented.  so rewritten this
+function to check device_node pointer is null and removed common path
+indentation.
 
-Right, Arnaldo and I discussed this and the safe thing to do for now
-is to keep the default at serial - ie revert this change.
+Signed-off-by: R Sundar <prosunofficial@gmail.com>
+---
 
-My longer term concern is that basically means people won't use
-parallel testing and we'll bitrot in places like synthesis where it's
-easy to make naive assumptions that say /proc won't be changing.
+Fixed nitpicks in code according to comments received on other patch as
+below:
 
-We have these tests set up for continuous testing in my team, and as
-part of that set up each test is run independently to maximize
-parallelism. This means the exclusive PMU thing does make the tests
-flaky so it would be nice to have the tests address this, either by
-skipping or busy waiting (only when the error code from the PMU is
-busy, up to some maximum time period).
+[ Nit, this function should be rewritten to not work like this, the
+"common" path should not be indented, but only the exception (i.e. bail
+if ep is not allocated properly.) ]
+https://lore.kernel.org/all/2024041103-doornail-professor-7c1e@gregkh/
 
-> >
-> > For CI it's arguable whether you'd want to trade stability for speed.
-> > And for interactive sessions there was already the --parallel option
-> > which was easy to add and have it in your bash history.
-> >
-> > Now we've changed the default, any CI will need to be updated to add
-> > --sequential if it wants all the tests to pass.
->
-> Same here.
->
-> >                                                 Maybe we could do some
-> > hack and gate it on interactive vs non interactive sessions, but that
-> > might be getting too clever. (Or a "don't run in parallel" flag on
-> > certain tests)
->
-> Perhaps more attention is needed for the tests that take so long.
-> For example, maybe they could do things in parallel.
+Goal is to get rid of of_node_put,but sending this patch first to do one
+thing at a time.
 
-This is true for the tool in general. The problem is a lack of good
-abstractions. Probably the easiest candidate for this are the shell
-tests.
+Changes since v1 - fixed the typo error for spell from identation to
+indentation
 
-> Also -F option doesn't seem to work.
->
-> $ tools/perf/perf test -F
-> Couldn't find a vmlinux that matches the kernel running on this machine, =
-skipping test
->   1: vmlinux symtab matches kallsyms                                 : Sk=
-ip
->   2: Detect openat syscall event                                     : Ok
->   3: Detect openat syscall event on all cpus                         : Ok
->   4.1: Read samples using the mmap interface                         : Ok
->   4.2: User space counter reading of instructions                    : Ok
->   4.3: User space counter reading of cycles                          : Ok
->   5: Test data source output                                         : Ok
-> WARNING: event 'numpmu' not valid (bits 16-17,20,22 of config '6530160' n=
-ot supported by kernel)!
->   6.1: Test event parsing                                            : Ok
->   6.2: Parsing of all PMU events from sysfs                          : Ok
-> WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by =
-kernel)!
->   6.3: Parsing of given PMU events from sysfs                        : Ok
->   6.4: Parsing of aliased events from sysfs                          : Sk=
-ip (no aliases in sysfs)
->   6.5: Parsing of aliased events                                     : Ok
->   6.6: Parsing of terms (event modifiers)                            : Ok
->   7: Simple expression parser                                        : Ok
->   8: PERF_RECORD_* events & perf_sample fields                       : Ok
->   9: Parse perf pmu format                                           : Ok
->  10.1: PMU event table sanity                                        : Ok
->  10.2: PMU event map aliases                                         : Ok
-> failed: recursion detected for M1
-> failed: recursion detected for M2
-> failed: recursion detected for M3
-> Not grouping metric tma_memory_fence's events.
-> Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constrain=
-t:
->     echo 0 > /proc/sys/kernel/nmi_watchdog
->     perf stat ...
->     echo 1 > /proc/sys/kernel/nmi_watchdog
-> Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constrain=
-t:
->     echo 0 > /proc/sys/kernel/nmi_watchdog
->     perf stat ...
->     echo 1 > /proc/sys/kernel/nmi_watchdog
-> ...
-> ^C
+Changes since v2 - Shifted the indentation to one level left for the
+switch cases as per coding style.
 
-Not working meaning the errors are going to stderr? The issue is that
-pr_err will write to stderr regardless of the verbosity setting and
-some tests deliberately induce errors. We could use debug_set_file
- to set the output to /dev/null, but that could hide trouble. -F
-usually means your debugging so we've not cared in the past.
+Changes since v3 - Added descriptive subject for the patch and checked
+from and sign-off having same name.
 
-Thanks,
-Ian
+Changes since v4 - Fixed name in signed-off-by as in documents.
+
+Patches link:
+------------
+v1  - https://lore.kernel.org/all/20240420145522.15018-1-prosunofficial@gmail.com/
+v2  - https://lore.kernel.org/linux-usb/20240420164927.15290-1-prosunofficial@gmail.com/
+v3  - https://lore.kernel.org/all/20240421011647.3027-1-prosunofficial@gmail.com/
+v4  - https://lore.kernel.org/all/20240424150718.5006-1-prosunofficial@gmail.com/
+
+ drivers/usb/typec/mux/nb7vpq904m.c | 68 +++++++++++++++---------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
+index b17826713753..f7a00b388876 100644
+--- a/drivers/usb/typec/mux/nb7vpq904m.c
++++ b/drivers/usb/typec/mux/nb7vpq904m.c
+@@ -320,47 +320,47 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
+ 	int ret, i, j;
+ 
+ 	ep = of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
++	if (!ep)
++		return 0;
+ 
+-	if (ep) {
+-		ret = of_property_count_u32_elems(ep, "data-lanes");
+-		if (ret == -EINVAL)
+-			/* Property isn't here, consider default mapping */
+-			goto out_done;
+-		if (ret < 0)
+-			goto out_error;
+-
+-		if (ret != DATA_LANES_COUNT) {
+-			dev_err(&nb7->client->dev, "expected 4 data lanes\n");
+-			ret = -EINVAL;
+-			goto out_error;
+-		}
+-
+-		ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
+-		if (ret)
+-			goto out_error;
++	ret = of_property_count_u32_elems(ep, "data-lanes");
++	if (ret == -EINVAL)
++		/* Property isn't here, consider default mapping */
++		goto out_done;
++	if (ret < 0)
++		goto out_error;
++
++	if (ret != DATA_LANES_COUNT) {
++		dev_err(&nb7->client->dev, "expected 4 data lanes\n");
++		ret = -EINVAL;
++		goto out_error;
++	}
+ 
+-		for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
+-			for (j = 0; j < DATA_LANES_COUNT; j++) {
+-				if (data_lanes[j] != supported_data_lane_mapping[i][j])
+-					break;
+-			}
++	ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
++	if (ret)
++		goto out_error;
+ 
+-			if (j == DATA_LANES_COUNT)
++	for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
++		for (j = 0; j < DATA_LANES_COUNT; j++) {
++			if (data_lanes[j] != supported_data_lane_mapping[i][j])
+ 				break;
+ 		}
+ 
+-		switch (i) {
+-		case NORMAL_LANE_MAPPING:
+-			break;
+-		case INVERT_LANE_MAPPING:
+-			nb7->swap_data_lanes = true;
+-			dev_info(&nb7->client->dev, "using inverted data lanes mapping\n");
++		if (j == DATA_LANES_COUNT)
+ 			break;
+-		default:
+-			dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
+-			ret = -EINVAL;
+-			goto out_error;
+-		}
++	}
++
++	switch (i) {
++	case NORMAL_LANE_MAPPING:
++		break;
++	case INVERT_LANE_MAPPING:
++		nb7->swap_data_lanes = true;
++		dev_info(&nb7->client->dev, "using inverted data lanes mapping\n");
++		break;
++	default:
++		dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
++		ret = -EINVAL;
++		goto out_error;
+ 	}
+ 
+ out_done:
+-- 
+2.34.1
+
 
