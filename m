@@ -1,181 +1,232 @@
-Return-Path: <linux-kernel+bounces-160378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B108B3CD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:32:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254A98B3CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A253B23107
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:32:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F3BA1F23B0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CC2147C63;
-	Fri, 26 Apr 2024 16:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0500C15666A;
+	Fri, 26 Apr 2024 16:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=seltendoof.de header.i=@seltendoof.de header.b="U1nKbjcn"
-Received: from server02.seltendoof.de (server02.seltendoof.de [168.119.48.163])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X2QUeRo2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5534A2B9AF;
-	Fri, 26 Apr 2024 16:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.48.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DE2145358;
+	Fri, 26 Apr 2024 16:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714149130; cv=none; b=TlIjW6HirTetfEGaxb8CoEx5tWLBJuJ6lIjqoNGCAHsqmdJjETsQb4TAWuH0zlYti9bpH5wRupvun2SXcCU19wZadFsPBfpZtKySr8XHSsrUC6NGeRf6GFTlgk4HfLT1RYdkcR7o5K+/7UciY1mgTmbZBb2qwWadEn2f8Z+yKbA=
+	t=1714148483; cv=none; b=o9ftEnTVy7+E8P44pQcRHXBbZ0SPY8KmW8jmkOUeHpzdwNeMTV1BeFiaDMNquAvkmPtKh0+LsW+2Jq8OPbNtagpnxHg/0MS2/YmoGFG0L/uj2xLjuC6L3/wlpaqUz1arIu17QRkS7Zk6mm4SghIflDJ45UvgOjwVT1W1UMm+cEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714149130; c=relaxed/simple;
-	bh=fGe0JQqXwScJg7nYQvWsn+u/6hpAOG8C2NbPdKgaIgQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XyKD7TsKUnd1pLPzl/yv6wt25uLb8Y3yGITQps9DbNEpNZTrNwNRkhhbOe22tHraTMY1hzZD5WENxUPE7yRYyPE/0BRdo8Do+qQZllJKYm+JDsFxVrj4vDAyqpp6RjLC/jNNIQjrT47xiPtBbaAhIGW/nuNQVYlw8sL9gTCP2dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seltendoof.de; spf=pass smtp.mailfrom=seltendoof.de; dkim=pass (2048-bit key) header.d=seltendoof.de header.i=@seltendoof.de header.b=U1nKbjcn; arc=none smtp.client-ip=168.119.48.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seltendoof.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seltendoof.de
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgoettsche@seltendoof.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seltendoof.de;
-	s=2023072701; t=1714148463;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cFD0pvg4orrZWH7JCCIWvQcxitlwJBZqeb1sFDYG+1Y=;
-	b=U1nKbjcnG/dajzWMm81Rovn1ZBNp4KKwvZKHpnd1e71VjBKWrgmLZsbKnPBzDpCzVlXXi7
-	hzTrib9bZXcJfBA5DmYzjniFPX6aJ7IOWU+DoaFUNle4H+/ZgBxSVK6n4SLGL6fYLbTC+t
-	ypqv1ZGJm2kVwohG3v34yfEGi6vRrDC9urr/J+/2ckMwXrPaIzVG9mXhlO2p0kkqJRCSA+
-	IJki4rz0+T7VgPXW4lVEF7p2hiAyW1qtWOWEi1nb5Nfa/dgVXj2zoSLX/7DQETYuIrsyaF
-	z3yvB8IbANBk0Mic2y7iIlx4NBKMEHXmBqQlKWb7UGXSNO1CZPNhGuHTksTaxw==
-To: cgzones@googlemail.com
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: [PATCH v3 1/2] fs: rename struct xattr_ctx to kernel_xattr_ctx
-Date: Fri, 26 Apr 2024 18:20:15 +0200
-Message-ID: <20240426162042.191916-2-cgoettsche@seltendoof.de>
-In-Reply-To: <20240426162042.191916-1-cgoettsche@seltendoof.de>
-References: <20240426162042.191916-1-cgoettsche@seltendoof.de>
-Reply-To: cgzones@googlemail.com
+	s=arc-20240116; t=1714148483; c=relaxed/simple;
+	bh=Hn61kMNsNgWegMIQkOGTIDhsBAX/ZE3MuYFJqXsyHb0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UoPg6lw5F4S866ZKvy+TD9J+85/oHtGwsUEyfa20HlLRJ8Yo8KB0Da9AGfcE1JgzjTBnoaiZ9b1dfrzImRy5jKloGJLzudp5jd2PvQ6r0KWpmKycAnbK6THbrW0w1r5fNYrW6aTDjcMpESXloF1RAgBDQX9tWPtBlzkzAGoXS7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X2QUeRo2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3655DC2BD10;
+	Fri, 26 Apr 2024 16:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714148482;
+	bh=Hn61kMNsNgWegMIQkOGTIDhsBAX/ZE3MuYFJqXsyHb0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X2QUeRo29RObmBT2HjfP9+CpfdSFo4Va7UuLo0EUHi7pFuVVGmIU6aFXfepxv8S3L
+	 MsVCiGr3lkN5OoBlh/rmfl+Knh+SKkPhI4Gz7S5a8KkRn8/BRccFi5NonrhAuJGrtJ
+	 ZH4A+V+7sneSC5Z03t8JyNv0TFYlaZBA5H6GfXCUQ8BFw37dw7evzQWeFyuLeVWEjW
+	 nLX1ltHW0QZ6vF1Zs/TNZC+oW7MHNcbaXqRjJANc78VfmvSDpM3YbxNMU/Mna/LWWY
+	 xeZGDrtLL2AlnfmrowVhJbAjR6QWCS+w9sM+pJkY7rsJNLFxEpCgKXeDypFGU7VEL3
+	 8j7LoQaN45t7w==
+Date: Fri, 26 Apr 2024 17:21:16 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] riscv: vector: Use vlenb from DT
+Message-ID: <20240426-unfixed-mournful-0a71fb3972b4@spud>
+References: <20240420-dev-charlie-support_thead_vector_6_9-v3-0-67cff4271d1d@rivosinc.com>
+ <20240420-dev-charlie-support_thead_vector_6_9-v3-4-67cff4271d1d@rivosinc.com>
+ <20240426-unfocused-amount-e4e74e66962f@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Y3AOSiB6kporqE+7"
+Content-Disposition: inline
+In-Reply-To: <20240426-unfocused-amount-e4e74e66962f@spud>
 
-From: Christian Göttsche <cgzones@googlemail.com>
 
-Rename the struct xattr_ctx to increase distinction with the about to be
-added user API struct xattr_args.
+--Y3AOSiB6kporqE+7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No functional change.
+On Fri, Apr 26, 2024 at 04:17:52PM +0100, Conor Dooley wrote:
+> On Sat, Apr 20, 2024 at 06:04:36PM -0700, Charlie Jenkins wrote:
+> > If vlenb is provided in the device tree, prefer that over reading the
+> > vlenb csr.
+> >=20
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/cpufeature.h |  2 ++
+> >  arch/riscv/kernel/cpufeature.c      | 26 ++++++++++++++++++++++++++
+> >  arch/riscv/kernel/vector.c          | 13 +++++++++----
+> >  3 files changed, 37 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/a=
+sm/cpufeature.h
+> > index 347805446151..809f61ffb667 100644
+> > --- a/arch/riscv/include/asm/cpufeature.h
+> > +++ b/arch/riscv/include/asm/cpufeature.h
+> > @@ -31,6 +31,8 @@ DECLARE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
+> >  /* Per-cpu ISA extensions. */
+> >  extern struct riscv_isainfo hart_isa[NR_CPUS];
+> > =20
+> > +extern u32 riscv_vlenb_dt[NR_CPUS];
+> > +
+> >  void riscv_user_isa_enable(void);
+> > =20
+> >  #if defined(CONFIG_RISCV_MISALIGNED)
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
+ure.c
+> > index c6e27b45e192..48874aac4871 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -35,6 +35,8 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) _=
+_read_mostly;
+> >  /* Per-cpu ISA extensions. */
+> >  struct riscv_isainfo hart_isa[NR_CPUS];
+> > =20
+> > +u32 riscv_vlenb_dt[NR_CPUS];
+> > +
+> >  /**
+> >   * riscv_isa_extension_base() - Get base extension word
+> >   *
+> > @@ -656,6 +658,28 @@ static int __init riscv_isa_fallback_setup(char *_=
+_unused)
+> >  early_param("riscv_isa_fallback", riscv_isa_fallback_setup);
+> >  #endif
+> > =20
+> > +static void riscv_set_vlenb_from_dt(void)
+>=20
+> I'd expect to see a name here that had "of" in it, not "dt".
 
-Suggested-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
-v3: added based on feedback
----
- fs/internal.h    |  8 ++++----
- fs/xattr.c       | 10 +++++-----
- io_uring/xattr.c |  2 +-
- 3 files changed, 10 insertions(+), 10 deletions(-)
+Also, "set" - I think "get" is more suitable here given that this
+doesn't actually set the vlen, we only do any setting later on in
+riscv_v_set_vsize().
 
-diff --git a/fs/internal.h b/fs/internal.h
-index 7ca738904e34..1caa6a8f666f 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -260,7 +260,7 @@ struct xattr_name {
- 	char name[XATTR_NAME_MAX + 1];
- };
- 
--struct xattr_ctx {
-+struct kernel_xattr_ctx {
- 	/* Value of attribute */
- 	union {
- 		const void __user *cvalue;
-@@ -276,11 +276,11 @@ struct xattr_ctx {
- 
- ssize_t do_getxattr(struct mnt_idmap *idmap,
- 		    struct dentry *d,
--		    struct xattr_ctx *ctx);
-+		    struct kernel_xattr_ctx *ctx);
- 
--int setxattr_copy(const char __user *name, struct xattr_ctx *ctx);
-+int setxattr_copy(const char __user *name, struct kernel_xattr_ctx *ctx);
- int do_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
--		struct xattr_ctx *ctx);
-+		struct kernel_xattr_ctx *ctx);
- int may_write_xattr(struct mnt_idmap *idmap, struct inode *inode);
- 
- #ifdef CONFIG_FS_POSIX_ACL
-diff --git a/fs/xattr.c b/fs/xattr.c
-index f8b643f91a98..941aab719da0 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -590,7 +590,7 @@ EXPORT_SYMBOL_GPL(vfs_removexattr);
-  * Extended attribute SET operations
-  */
- 
--int setxattr_copy(const char __user *name, struct xattr_ctx *ctx)
-+int setxattr_copy(const char __user *name, struct kernel_xattr_ctx *ctx)
- {
- 	int error;
- 
-@@ -620,7 +620,7 @@ int setxattr_copy(const char __user *name, struct xattr_ctx *ctx)
- }
- 
- int do_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
--		struct xattr_ctx *ctx)
-+		struct kernel_xattr_ctx *ctx)
- {
- 	if (is_posix_acl_xattr(ctx->kname->name))
- 		return do_set_acl(idmap, dentry, ctx->kname->name,
-@@ -636,7 +636,7 @@ setxattr(struct mnt_idmap *idmap, struct dentry *d,
- 	int flags)
- {
- 	struct xattr_name kname;
--	struct xattr_ctx ctx = {
-+	struct kernel_xattr_ctx ctx = {
- 		.cvalue   = value,
- 		.kvalue   = NULL,
- 		.size     = size,
-@@ -719,7 +719,7 @@ SYSCALL_DEFINE5(fsetxattr, int, fd, const char __user *, name,
-  */
- ssize_t
- do_getxattr(struct mnt_idmap *idmap, struct dentry *d,
--	struct xattr_ctx *ctx)
-+	struct kernel_xattr_ctx *ctx)
- {
- 	ssize_t error;
- 	char *kname = ctx->kname->name;
-@@ -754,7 +754,7 @@ getxattr(struct mnt_idmap *idmap, struct dentry *d,
- {
- 	ssize_t error;
- 	struct xattr_name kname;
--	struct xattr_ctx ctx = {
-+	struct kernel_xattr_ctx ctx = {
- 		.value    = value,
- 		.kvalue   = NULL,
- 		.size     = size,
-diff --git a/io_uring/xattr.c b/io_uring/xattr.c
-index 44905b82eea8..28b8f7b1af7c 100644
---- a/io_uring/xattr.c
-+++ b/io_uring/xattr.c
-@@ -18,7 +18,7 @@
- 
- struct io_xattr {
- 	struct file			*file;
--	struct xattr_ctx		ctx;
-+	struct kernel_xattr_ctx		ctx;
- 	struct filename			*filename;
- };
- 
--- 
-2.43.0
+>=20
+> > +{
+> > +	int cpu;
+> > +
+> > +	for_each_possible_cpu(cpu) {
+> > +		struct device_node *cpu_node;
+> > +
+> > +		cpu_node =3D of_cpu_device_node_get(cpu);
+> > +		if (!cpu_node) {
+> > +			pr_warn("Unable to find cpu node\n");
+> > +			continue;
+> > +		}
+> > +
+> > +		if (!of_property_read_u32(cpu_node, "riscv,vlenb", &riscv_vlenb_dt[c=
+pu])) {
+> > +			of_node_put(cpu_node);
+> > +			continue;
+> > +		}
+> > +
+> > +		of_node_put(cpu_node);
+> > +	}
+> > +}
+> > +
+> >  void __init riscv_fill_hwcap(void)
+> >  {
+> >  	char print_str[NUM_ALPHA_EXTS + 1];
+> > @@ -675,6 +699,8 @@ void __init riscv_fill_hwcap(void)
+> >  	} else {
+> >  		int ret =3D riscv_fill_hwcap_from_ext_list(isa2hwcap);
+> > =20
+> > +		riscv_set_vlenb_from_dt();
+>=20
+> Hmm, I think we can go a step further here. We know all of the CPUs
+> widths by the time we get to the first call to riscv_v_setup_vsize(), can
+> we examine the whole list and decide not to enable vector if they do
+> not match, rather than continuing and failing to online CPUs that having
+> the mismatched size?
+>=20
+> I guess that can go into the `if (elf_hwcap & COMPAT_HWCAP_ISA_V)`
+> condition we already have, and would require clearing the bit from the
+> mask we have at the moment.
+>=20
+> Cheers,
+> Conor.
+>=20
+> > +
+> >  		if (ret && riscv_isa_fallback) {
+> >  			pr_info("Falling back to deprecated \"riscv,isa\"\n");
+> >  			riscv_fill_hwcap_from_isa_string(isa2hwcap);
+> > diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+> > index 6727d1d3b8f2..fb7f3ca80d9e 100644
+> > --- a/arch/riscv/kernel/vector.c
+> > +++ b/arch/riscv/kernel/vector.c
+> > @@ -32,11 +32,16 @@ EXPORT_SYMBOL_GPL(riscv_v_vsize);
+> >  int riscv_v_setup_vsize(void)
+> >  {
+> >  	unsigned long this_vsize;
+> > +	int cpu =3D smp_processor_id();
+> > =20
+> > -	/* There are 32 vector registers with vlenb length. */
+> > -	riscv_v_enable();
+> > -	this_vsize =3D csr_read(CSR_VLENB) * 32;
+> > -	riscv_v_disable();
+> > +	if (riscv_vlenb_dt[cpu]) {
+> > +		this_vsize =3D riscv_vlenb_dt[cpu];
+>=20
+> > +	} else {
+> > +		/* There are 32 vector registers with vlenb length. */
+> > +		riscv_v_enable();
+> > +		this_vsize =3D csr_read(CSR_VLENB) * 32;
+> > +		riscv_v_disable();
+> > +	}
+> > =20
+> >  	if (!riscv_v_vsize) {
+> >  		riscv_v_vsize =3D this_vsize;
+> >=20
+> > --=20
+> > 2.44.0
+> >=20
 
+
+
+--Y3AOSiB6kporqE+7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZivUfAAKCRB4tDGHoIJi
+0ja2AP41c5dc/6BG0GZfsJj9ddy8XtTl1UKbZXg4fm3rsjp/iQEA74sw0CHJBYlO
+KyniXTb0643C0HtiMJns75Q4RVazuQA=
+=lLBv
+-----END PGP SIGNATURE-----
+
+--Y3AOSiB6kporqE+7--
 
