@@ -1,118 +1,206 @@
-Return-Path: <linux-kernel+bounces-160396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EBB68B3D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:45:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48368B3D11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:46:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D801286D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:45:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 300AC1F238C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:46:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F3A159594;
-	Fri, 26 Apr 2024 16:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70A5158D93;
+	Fri, 26 Apr 2024 16:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="L9AWgeSI"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nb1k/G2M"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06CB156864;
-	Fri, 26 Apr 2024 16:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3E2156864
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714149944; cv=none; b=tx2JS0LUz4y/n7mJvH/FLxL+3zv17hsq7ByjKZm9ZZ9XfIPlJTq6UGEn0lvD3anLP6ha5qmlDX0uvY6b8zfnnHnGb49ue+Ex0sR6Y5gXbt6LKCRo6elgEOWOJDwcKr5c/1/sIJ/Ec9RnN41CJgS738xZK4M0m6O3mMsyqcuAi5E=
+	t=1714149958; cv=none; b=GqtbQo2MoEZiGwaBvYUwY11uRlZ0ipKh0tHE1kxSV4uTIFn5J6JialFMBo1TS46X/fIThnwA47t+mGWkON32DYYTVlYRZWmNvIfNEMg7rw+n2yV+iKNEU4O48PhXIAMNF5AR0CajeXnDc0HJ0u46Tu/x6Agvpbn+/WIt6yEd9BQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714149944; c=relaxed/simple;
-	bh=BWiNAQR0kk9MlwuLqlIFDUam7QNyQFdGCYiRzpErVZI=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=iA35YmihamHJ+NdhtPjFmEv0yCZjoWNUODFKxn0uX6DI9HaOnp4IeYlTZlIGQsratGyAdwHyzkAiHv6pNPwR3bALiVyEX/s7FOu6Jq2tJXTXFZGHq5b9KtAPZJNJF2FqKCLAPR3JhY97OHGalm5ahki3909py9yQCSCmVgmVD/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=L9AWgeSI; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714149924; x=1714754724; i=markus.elfring@web.de;
-	bh=Ta7iapcZ4MAU6sUXpFC3J1kL+68fZ5RvxKZGHV8GWPU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=L9AWgeSIfNXg4w9sTuDvrY6R4FnGwhv97VenytR2x0iHXzTgyb4W0RL/Mo9JYaWW
-	 hOyqZY9Vg4DrsTZo3ROjpbW1YjpnPeLANIfAQvPounSAWV8sw4dz0t7/iqgN0J8hH
-	 N7Hypg+mBkbqGmLXZUW9Fzmb2PFpgOs/xf41Zzc8uCgxJY+yLeTz/eSHOmWhlyP6U
-	 Y0sI92flOjKmagOCHeQ13twmKtEXgJ9OjfZLfaI8sezWI2GUhxvslERltmnAYP9bk
-	 +lCcPw/Ju0dgE3JkIunFEWqoR9kdciEKxNDpKd2E+TwtdofSmMOhWv9aQ6gvxMZXe
-	 xyCAg4a0IwHNaZUcTA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mm9Zc-1sQh1g1LxA-00i8ug; Fri, 26
- Apr 2024 18:45:24 +0200
-Message-ID: <77a68fbd-5675-45e7-b563-883e5c0643cb@web.de>
-Date: Fri, 26 Apr 2024 18:45:21 +0200
+	s=arc-20240116; t=1714149958; c=relaxed/simple;
+	bh=TsW6GTHiTQeGY0lIhBtmL90amY6atH1W3WIzWx9xDaA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Htdn1FFFXrcLVUUgzrEd3b16VX/pqSKrQJIn6bcio/CWn4gnF4TKaa6Vd/c58+cn0poyjDTpDzcasUbPL/eupY7F4dCR1aiORCud+97D6nwlh6+Gt+LOPAWH5KArcQx1Nrk+LyymIUg5rMIWXTk2slkuOpGlVHhsAgi1KBX/qmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nb1k/G2M; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36b34effb04so1155ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714149956; x=1714754756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iH10hcFVd/zxNn6ShOQRCsj816hnsyk+v3ag974TenE=;
+        b=Nb1k/G2MXiB/ZuLOY3onBlgsEzvobn58IY7qHac3Og9w9qhCQ79WzwrNjNGf6p3vPW
+         3UGZ+qz3mWS8wFQsp9vxjAJj9ix62hj1ElGCC1TyJch/ZrvkinjDkhXsMaiw/dBDGAZt
+         ED00auW81sEnF8gGAh0LIC7ZnXphnxX/BoxYKPhBdsCIdWHZ1QEmzNWPu3OIfeQ/sRtK
+         BTF6aE1ohif60xaAeg+7BPi8ScAjYrR7CB1r/4o+Bil/rZP4S0dYj7YIJRzHQkqFTVXf
+         EkNCwnqcrtQBbjWIZ9oBOnSzxEFhz5xmJl8UJMHU0z0FY+s2bxPx5lUjmr+gcvQIT1S+
+         CZFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714149956; x=1714754756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iH10hcFVd/zxNn6ShOQRCsj816hnsyk+v3ag974TenE=;
+        b=qsMMjlGs6t/tcE4TSZPUwZ/oEZ0XP+LTi4svDBBtxFbdoFyU3riIZtbjKuH6KwFvVr
+         sIXLEmnkcbSieGLg1A3scjULxRGy9UUAiwhXpZfSGLzeIHr6zuntBJ+NzX96OD3z2iH2
+         N1HuLs0Md3vadrPyd826QL1A+2otvaoBO5wh0hhHC8oboKB9QoavNT5yn26Q4Nk/lOgL
+         ClgBaWztWQKP0gxx5BMpjNFU1wIywrRNvUmbwpT0a7uprCo0084uUDNwuOUbprMKUMWs
+         5f5MUj5kgYB3f3IeyJFHc+I5UqWOwRQx3i/TcShf4a47ExP59hLc5+8OkeyHAgLBQacU
+         9Eaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwpPkeeWHoMzv0Nm/HEaT75ohPIcm/tQxw8fQdag9UmguT1NT6vQZXezA2ScCG2nIL2Li+ipKny1b3LPEi7O6588pmEj8d1X/vVTmP
+X-Gm-Message-State: AOJu0YzQiuN8Uz3znuK8qOA4woyxPGquzmJlimqOSx8lITQRstQpYHXX
+	JVg2f4hGOg/9wUjPQehuvcPwxxYi+hpu/2yHgmHqoaGuJxMAw9TOiORfs+yMaqFiZiW21M1MbgB
+	9Yfxqzykv5ny1UzIybqEcUiSo81r5MqsPm8dv
+X-Google-Smtp-Source: AGHT+IGyqiUHq+bsq/fcDLWIZFYHRSRwpnnauY5KJb3XD469uS70sYP9EhJoE2ZqedpHAuLk5QeNwVmENstOTUvQIIw=
+X-Received: by 2002:a05:6e02:13f0:b0:36c:3046:a6ef with SMTP id
+ w16-20020a056e0213f000b0036c3046a6efmr283307ilj.12.1714149956436; Fri, 26 Apr
+ 2024 09:45:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Masami Hiramatsu <mhiramat@kernel.org>, lumingyindetect@126.com,
- linux-trace-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Steven Rostedt <rostedt@goodmis.org>
-References: <20240427001843.84a3d367d3654b624c09defe@kernel.org>
-Subject: Re: tracing/probes: Fix a memory leak in
- traceprobe_parse_probe_arg_body()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240427001843.84a3d367d3654b624c09defe@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+References: <20240301174711.2646944-1-irogers@google.com> <3e54fea7-2a37-4774-8a6a-85f75cc4a9ea@arm.com>
+ <88b460e5-ef2f-4b2f-a173-deac34c99788@intel.com>
+In-Reply-To: <88b460e5-ef2f-4b2f-a173-deac34c99788@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 26 Apr 2024 09:45:42 -0700
+Message-ID: <CAP-5=fWk6hMWMy93QgRAWUowRk5LNEkqRVa3u4h0fPRXyE-y+Q@mail.gmail.com>
+Subject: Re: [PATCH v1] perf tests: Run tests in parallel by default
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: James Clark <james.clark@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5tA2mW2BCdegRfc+c+UzeRIrphlRDEl2l46CUEVublPggoWf4Pt
- 2Ss9IUGmd8vO4yvFmxu3X4nNe1AbONMMyfD7SIr3YQPeh3yYF8H4vvhfg1H/4Wb4PyWt8SE
- 8OMWWbsCFpPVOfK7C7jWC7C+KIr2It2LrG8EN0bB/PJ6jZLsT9FHblpaVdphe/qfAeKhwI4
- 9Et2Y0hyqRVyt9FfL2tIA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Hln/nMIYN3M=;yIlkHUwArz6DBu4ioTjjDvF5YLS
- keoW/Tq4qS7IMfdbeK/33cTmWquD/F745hBhi9/YlVF2SvDuhtYTui4y7M7+FxFwkGIrbhC2I
- lfhTqf1h55/ZjpQBVwD9tMQADD9arE2iY12z+rxqUdcibepGGjkuedYWAo4G43lzO/AFBR2Vm
- r86NHVEY+WbHSzishInUgp51MI4KcRlVUoK//2aWCl2rUGT8m7kYFv80yw1epb+njgylCXesW
- Kp8vAzO5J766VKhTnNCWp2p1anTKl0tfIOEzq5kaHnZqJSszITCPVuFrhhEJhkOZIVhd/c+ty
- WXUWonX//OtOpnMxfH7bAkPJ8ZpUkuMZT9jrVWqT3ZhLqS3c3CsDVVx459E9VX8VxvYA/NlFt
- pFe+0Oe9z+gMastLW/PX4ND0GBVfp0WnfnYjZyuKqF98d3YSsqRsaK/NNIdadZmwkgxTeCUow
- ct4zaJhFjjZcb1pk89FzUFUaqUUqQwCdxQIagVFNrIl9oF4mNuIEdF1VyU2ZJDgH+oaPDD3OS
- n6mhT65I+fI1NnXQjOstJAQ7eqdQQT9mai6yuPSDdakIcezCppY/w2sPmxHDtRVdwI0RwTora
- JBNt8Uy9jcWrtYfNKDQbodDaG6eiMNSLMPZihn9FZ+Q3vF4ebX9wToudHEWjy0SNzRPZoU0E8
- Fqgn0gC4IAGG5SgZIyOosd68z//+6Oa0lnTHB1NZTu9MI5joD8Wrg+42a3jqdaPsA/+STfQbc
- CB9MOqZxtTj5rrbvpTZLOCurK95G5BM6BB0DWJump/uTKO65iqyUeAnwor+BvRMiO5zYaYP4p
- WQsg7qATY++R+Pr0nejOcAWu9zJJTjCjm4LUAb6KURSgc=
 
-=E2=80=A6
-> ----
->  If traceprobe_parse_probe_arg_body() fails to allocate 'parg->fmt', it
->  jumps to 'out' instead of 'fail' by mistake. In the result, in this
->  case the 'tmp' buffer is not freed and leaks its memory.
+On Fri, Apr 26, 2024 at 8:42=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
 >
->  Fix it by jumping to 'fail' in that case.
-> ----
-=E2=80=A6
+> On 26/04/24 18:06, James Clark wrote:
+> >
+> >
+> > On 01/03/2024 17:47, Ian Rogers wrote:
+> >> Switch from running tests sequentially to running in parallel by
+> >> default. Change the opt-in '-p' or '--parallel' flag to '-S' or
+> >> '--sequential'.
+> >>
+> >> On an 8 core tigerlake an address sanitizer run time changes from:
+> >> 326.54user 622.73system 6:59.91elapsed 226%CPU
+> >> to:
+> >> 973.02user 583.98system 3:01.17elapsed 859%CPU
+> >>
+> >> So over twice as fast, saving 4 minutes.
+> >>
+> >
+> > Apologies for not replying earlier before this was applied. But IMO thi=
+s
+> > isn't a good default. Tests that use things like exclusive PMUs
+> > (Coresight for example) can never pass when run in parallel.
+>
+> Yes, that is an issue for Intel PT also.
 
-How do you think about another approach for a more desirable change descri=
-ption?
+Right, Arnaldo and I discussed this and the safe thing to do for now
+is to keep the default at serial - ie revert this change.
 
-   If traceprobe_parse_probe_arg_body() failed to allocate the object =E2=
-=80=9Cparg->fmt=E2=80=9D,
-   it jumps to the label =E2=80=9Cout=E2=80=9D instead of =E2=80=9Cfail=E2=
-=80=9D by mistake.
-   In the result, the buffer =E2=80=9Ctmp=E2=80=9D is not freed in this ca=
-se and leaks its memory.
+My longer term concern is that basically means people won't use
+parallel testing and we'll bitrot in places like synthesis where it's
+easy to make naive assumptions that say /proc won't be changing.
 
-   Thus jump to the label =E2=80=9Cfail=E2=80=9D in that case (so that the=
- exception handling
-   will be improved another bit).
+We have these tests set up for continuous testing in my team, and as
+part of that set up each test is run independently to maximize
+parallelism. This means the exclusive PMU thing does make the tests
+flaky so it would be nice to have the tests address this, either by
+skipping or busy waiting (only when the error code from the PMU is
+busy, up to some maximum time period).
 
+> >
+> > For CI it's arguable whether you'd want to trade stability for speed.
+> > And for interactive sessions there was already the --parallel option
+> > which was easy to add and have it in your bash history.
+> >
+> > Now we've changed the default, any CI will need to be updated to add
+> > --sequential if it wants all the tests to pass.
+>
+> Same here.
+>
+> >                                                 Maybe we could do some
+> > hack and gate it on interactive vs non interactive sessions, but that
+> > might be getting too clever. (Or a "don't run in parallel" flag on
+> > certain tests)
+>
+> Perhaps more attention is needed for the tests that take so long.
+> For example, maybe they could do things in parallel.
 
-Regards,
-Markus
+This is true for the tool in general. The problem is a lack of good
+abstractions. Probably the easiest candidate for this are the shell
+tests.
+
+> Also -F option doesn't seem to work.
+>
+> $ tools/perf/perf test -F
+> Couldn't find a vmlinux that matches the kernel running on this machine, =
+skipping test
+>   1: vmlinux symtab matches kallsyms                                 : Sk=
+ip
+>   2: Detect openat syscall event                                     : Ok
+>   3: Detect openat syscall event on all cpus                         : Ok
+>   4.1: Read samples using the mmap interface                         : Ok
+>   4.2: User space counter reading of instructions                    : Ok
+>   4.3: User space counter reading of cycles                          : Ok
+>   5: Test data source output                                         : Ok
+> WARNING: event 'numpmu' not valid (bits 16-17,20,22 of config '6530160' n=
+ot supported by kernel)!
+>   6.1: Test event parsing                                            : Ok
+>   6.2: Parsing of all PMU events from sysfs                          : Ok
+> WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by =
+kernel)!
+>   6.3: Parsing of given PMU events from sysfs                        : Ok
+>   6.4: Parsing of aliased events from sysfs                          : Sk=
+ip (no aliases in sysfs)
+>   6.5: Parsing of aliased events                                     : Ok
+>   6.6: Parsing of terms (event modifiers)                            : Ok
+>   7: Simple expression parser                                        : Ok
+>   8: PERF_RECORD_* events & perf_sample fields                       : Ok
+>   9: Parse perf pmu format                                           : Ok
+>  10.1: PMU event table sanity                                        : Ok
+>  10.2: PMU event map aliases                                         : Ok
+> failed: recursion detected for M1
+> failed: recursion detected for M2
+> failed: recursion detected for M3
+> Not grouping metric tma_memory_fence's events.
+> Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constrain=
+t:
+>     echo 0 > /proc/sys/kernel/nmi_watchdog
+>     perf stat ...
+>     echo 1 > /proc/sys/kernel/nmi_watchdog
+> Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constrain=
+t:
+>     echo 0 > /proc/sys/kernel/nmi_watchdog
+>     perf stat ...
+>     echo 1 > /proc/sys/kernel/nmi_watchdog
+> ...
+> ^C
+
+Not working meaning the errors are going to stderr? The issue is that
+pr_err will write to stderr regardless of the verbosity setting and
+some tests deliberately induce errors. We could use debug_set_file
+ to set the output to /dev/null, but that could hide trouble. -F
+usually means your debugging so we've not cared in the past.
+
+Thanks,
+Ian
 
