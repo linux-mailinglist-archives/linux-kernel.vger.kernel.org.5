@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-160291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E9A8B3B7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:30:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 606958B3B7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BB8E28920E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:30:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 844FF1C22167
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D23F14B07D;
-	Fri, 26 Apr 2024 15:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7EC152501;
+	Fri, 26 Apr 2024 15:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jjsewEpI"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="2sc9IIH6"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E18148FE6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A5E149C75
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145400; cv=none; b=C7Wj4IBAu2rmtawK6TOiryYm4k9UnEO0Cv6RhD/OtFyL7/gTnlLlx1+4m5OxVGJ4kKnlNwnlv93sivYgzDRk5PdPHNnW4WSJKmx1RUcyMxKsZDtvY8TszHz9Ugj1lpSNqe+MyBhj2HVwozT0WB5SWefDQx7uXQ5NpzhQezM03No=
+	t=1714145402; cv=none; b=G5L5idoNE2jDqkV9KBD8B2QDlw7DLMysajhHzRBQpP0gLlTo+23ajp9disL3AZZML/WENBZNd5Y0HSbTsXPsOi6znqxvdk94exf8sJhR33qwVGT3j26I6xmcF5QxAEr13olR6aPEYF/y9D9MjLLlLUIsbYrDFqZH4lqdlzsYo8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145400; c=relaxed/simple;
-	bh=XL4wNAHbKdLtic6750ztJIoB/ro7CVmirV6b234wNGE=;
+	s=arc-20240116; t=1714145402; c=relaxed/simple;
+	bh=S7RONIxFeXwe67F6fo0qfGrsfEGqrrUtec1UUThnSXQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HWGpijATeLwb10XdNsxElB5moe+l3QzoNLe9jZtWmH16h4PsUj3ETQD1B/Jgl/ettRBYl+qUscY25UiU1n79qgwgDfa3+mOuH86yTM+7+vCY5LWMDpwnHELXUF45OqUW7hUPNIg92C5iVLUfidgydF20QSAK1YjdJ+60g33vNXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jjsewEpI; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=j6/+rspVcJImuMmBYEaLEK6Tu80A0uJjXuKkAN9dj5iVBNrEprzGWOW15sN5T3VncLuiIYQmwdSCKitoB1FNXSwXj7JayonVUkl22qnu93jRlAsUAgEO7xo5BLl7qw6HJLHvKBUZeOcHmHzZDsTaJpoGZerdSkiLeYdOQExPcM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=2sc9IIH6; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41bab13ca81so3892865e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:29:58 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ebso3668025e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714145397; x=1714750197; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714145399; x=1714750199; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LQ4CJQsXVTR1thlbAzx7uixAygG90ZyA723vL1wPyc4=;
-        b=jjsewEpIM9BA/aQ3sktSAb8UzHcmuxtDsZQ2MRbw2uOxEakIRkwhrDKgzRFsgaI71P
-         llbxbU96xo5tGaZUEnke4lTfiNAlYzQnm36mSCLebWxotO3Vz3t47UtrHn94bYob34CI
-         eprpDUbB1OBd4PxskplrROfDGtwYUEvRAjDmyyZIvivHdBr5M9+WWwyGxkbyuONVpuof
-         jBQ4nMskJQ3QHqFcceW+vkiFI+lYON+7jPls/djkJBG94yykUNLvzQTHvSzd1URUdsmf
-         2BEMYDSwWaRk/0XPlUvpPvsxsKrmjTMbgmDYYTpQ9p+9jNTjQMTHnvq83Ylb27e0HThD
-         5OhA==
+        bh=4bQrmumSWoqJQMi/l6xj2yc8RNYXdlpvWVWdoITuaG8=;
+        b=2sc9IIH6oNnxx6qGtFwsu+aNXx9eZ9qb6NAImpYO4wXII/y4GtDZMOKgu65k5sdvEC
+         ZyRdtMiGnxiA4kvcHPwA3kANxOwWb9IPYbCfLvDNVXK/WY/ekNeJ0zTmyeNyNlDZt54+
+         WwvIhKy9whau9fRaVtsUQEUHLXW+we+ask9DvzGQ02Wm1LmQQe0Ru/Ql8+Y403GcFAUB
+         MYcqqs6rWiFhDE+AwUDteQ9OWJwrv6kJXQ2BI0IJ4Nad/N8F3/jesVQmAAHkSGa7EHOR
+         dSb1iSh80mtWjFuqby2mkxkakQ3CR9/HTgaVvcna7+gb5xUONT5KlCskD+Dne4VsvsDQ
+         Igxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145397; x=1714750197;
+        d=1e100.net; s=20230601; t=1714145399; x=1714750199;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LQ4CJQsXVTR1thlbAzx7uixAygG90ZyA723vL1wPyc4=;
-        b=nF3+mfME5SM1dEvF/t3k44Nh8/f0LjOTMRqu6WGFeB6lrmCxrTD+gdWVi6SrMlvC++
-         pZ4/4bkv7An1can+fd390IitFs72lgwYA60pf8oLxMzb7rtgykucImWHF7RF054+SfMC
-         rhCwg4S7i4E5OZdmqgZfxk+oMrTKlj5k2derYcDO2QAKTPMfA1kLKISFQsvmPuzE3oPv
-         3LELf37QTvWzwq/TOYHuqYBc91Q+EmoRom9GKCTtvmUP1hBxdS9xUgblXOv6RGeF+JG+
-         CeO6ZxE+OhNMWu3qBSL9Y1TbB/IecxHNvuBRp+aFKBa0NEh6zh4nL8j709wZFL9czAOS
-         jBLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWORe6j9KyR9V40fA50wgp7R61mfDDnNztybxC8ihk6jrTmQ8zmx98fqu6kHdQzioI90Y+W4eTr34dI40+c8wMubJN5S862V+zhp8Tw
-X-Gm-Message-State: AOJu0YySZItBmFRg9o/uvYq2O+5PRFd+scQeC8b4T6Lpg7TPMvCWFJNB
-	pK+FqHsmyBPqnCB586yKx4MS2tV2//P3Wq+N1XSzeWt/ptBts2RHcFDTvy4y9iM=
-X-Google-Smtp-Source: AGHT+IH1/5s5CRPWdPZqkFw1JsMyITFCO5/+y/SMhOfip3B1nJoETVweJYnD+9vnKbqKCb2dr/aCkw==
-X-Received: by 2002:a05:600c:4508:b0:418:37e1:3f73 with SMTP id t8-20020a05600c450800b0041837e13f73mr3024524wmo.2.1714145397352;
-        Fri, 26 Apr 2024 08:29:57 -0700 (PDT)
+        bh=4bQrmumSWoqJQMi/l6xj2yc8RNYXdlpvWVWdoITuaG8=;
+        b=M9Aa6xXEY3lLR8oSxDxfubdXlAkljGURJ4M1CLS6RBv0NoQayzVfZ6Y9wDyQwErm6Y
+         XwQvOL2NdqGKN6d2pkBIyo7yo7A+GnWlWmfyvlWWp7uk+FRAtC3opWzwly/ZLy/ptS0R
+         v6YQU3wLXDNswbqSVD1Bvi3oqrVaaVeuIcetBhjD8mSmzntmi6Tddgfg5zvw93nhnbZA
+         YS/eSyzuz0XhwTtea7TDOqPSaWA0aWIhv5P9T0/Hd8OXM6eZbOmaZLkE7xCUqIZ3B8LU
+         IrVM8oDz40vsY2nAOoe1VXwHyi+1SbZjNva0fcB/XTfPPJpB7vRNTbjN0lhXWyJ/9zq+
+         5JxA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmsgTf26RkBpdGsllSsrQnV3PyGUhofU54KcPnBccEWVCRJE/FI1TDVjN119ru4ZZyzXhMh6a0E3B5W+LkKbEgC0o5znaO0A7uoMzE
+X-Gm-Message-State: AOJu0Yw2oahgnfVvjkI6EfLAh5/3dAaJNgwCSLXNVqmSvuRHKe+L70ax
+	5HwzUusvu//ABcCWqlroHmfKyV6AA56lRMA33UXAossOe3BQTXuyzpu9bpC3hW4=
+X-Google-Smtp-Source: AGHT+IHMerJdt74ThT9W2AwuFt/nqHhB935A349L3A9erdfLScSRYmjfvTF+QLgGqsuEAmQiV3l5MA==
+X-Received: by 2002:a05:600c:4f11:b0:419:87ab:f6db with SMTP id l17-20020a05600c4f1100b0041987abf6dbmr2369314wmq.23.1714145398045;
+        Fri, 26 Apr 2024 08:29:58 -0700 (PDT)
 Received: from toaster.lan ([2a01:e0a:3c5:5fb1:1926:f73e:8b99:1c0a])
-        by smtp.googlemail.com with ESMTPSA id i13-20020a05600c354d00b00419fba938d8sm22628687wmq.27.2024.04.26.08.29.56
+        by smtp.googlemail.com with ESMTPSA id i13-20020a05600c354d00b00419fba938d8sm22628687wmq.27.2024.04.26.08.29.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 08:29:56 -0700 (PDT)
+        Fri, 26 Apr 2024 08:29:57 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
@@ -73,9 +73,9 @@ Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-amlogic@lists.infradead.org
-Subject: [PATCH 3/4] ASoC: meson: axg-tdm-interface: manage formatters in trigger
-Date: Fri, 26 Apr 2024 17:29:40 +0200
-Message-ID: <20240426152946.3078805-4-jbrunet@baylibre.com>
+Subject: [PATCH 4/4] ASoC: meson: axg-tdm: add continuous clock support
+Date: Fri, 26 Apr 2024 17:29:41 +0200
+Message-ID: <20240426152946.3078805-5-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240426152946.3078805-1-jbrunet@baylibre.com>
 References: <20240426152946.3078805-1-jbrunet@baylibre.com>
@@ -88,82 +88,130 @@ MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 
-So far, the formatters have been reset/enabled using the .prepare()
-callback. This was done in this callback because walking the formatters use
-a mutex. A mutex is used because formatter handling require dealing
-possibly slow clock operation.
+Some devices may need the clocks running, even while paused.
+Add support for this use case.
 
-With the support of non-atomic, .trigger() callback may be used which also
-allows to properly enable and disable formatters on start but also
-pause/resume.
-
-This solve a random shift on TDMIN as well repeated samples on for TDMOUT.
-
-Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-tdm-interface.c | 34 ++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ sound/soc/meson/axg-tdm-formatter.c | 40 +++++++++++++++++++++++++++++
+ sound/soc/meson/axg-tdm-interface.c | 16 +++++++++++-
+ sound/soc/meson/axg-tdm.h           |  5 ++++
+ 3 files changed, 60 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
+index 63333a2b0a9c..a6579efd3775 100644
+--- a/sound/soc/meson/axg-tdm-formatter.c
++++ b/sound/soc/meson/axg-tdm-formatter.c
+@@ -392,6 +392,46 @@ void axg_tdm_stream_free(struct axg_tdm_stream *ts)
+ }
+ EXPORT_SYMBOL_GPL(axg_tdm_stream_free);
+ 
++int axg_tdm_stream_set_cont_clocks(struct axg_tdm_stream *ts,
++				   unsigned int fmt)
++{
++	int ret = 0;
++
++	if (fmt & SND_SOC_DAIFMT_CONT) {
++		/* Clock are already enabled - skipping */
++		if (ts->clk_enabled)
++			return 0;
++
++		ret = clk_prepare_enable(ts->iface->mclk);
++		if (ret)
++			return ret;
++
++		ret = clk_prepare_enable(ts->iface->sclk);
++		if (ret)
++			goto err_sclk;
++
++		ret = clk_prepare_enable(ts->iface->lrclk);
++		if (ret)
++			goto err_lrclk;
++
++		ts->clk_enabled = true;
++		return 0;
++	}
++
++	/* Clocks are already disabled - skipping */
++	if (!ts->clk_enabled)
++		return 0;
++
++	clk_disable_unprepare(ts->iface->lrclk);
++err_lrclk:
++	clk_disable_unprepare(ts->iface->sclk);
++err_sclk:
++	clk_disable_unprepare(ts->iface->mclk);
++	ts->clk_enabled = false;
++	return ret;
++}
++EXPORT_SYMBOL_GPL(axg_tdm_stream_set_cont_clocks);
++
+ MODULE_DESCRIPTION("Amlogic AXG TDM formatter driver");
+ MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+ MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index bf708717635b..8bf3735dedaa 100644
+index 8bf3735dedaa..62057c71f742 100644
 --- a/sound/soc/meson/axg-tdm-interface.c
 +++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -349,26 +349,31 @@ static int axg_tdm_iface_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -309,6 +309,7 @@ static int axg_tdm_iface_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *dai)
+ {
+ 	struct axg_tdm_iface *iface = snd_soc_dai_get_drvdata(dai);
++	struct axg_tdm_stream *ts = snd_soc_dai_get_dma_data(dai, substream);
+ 	int ret;
+ 
+ 	switch (iface->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -346,7 +347,19 @@ static int axg_tdm_iface_hw_params(struct snd_pcm_substream *substream,
+ 			return ret;
+ 	}
+ 
+-	return 0;
++	ret = axg_tdm_stream_set_cont_clocks(ts, iface->fmt);
++	if (ret)
++		dev_err(dai->dev, "failed to apply continuous clock setting\n");
++
++	return ret;
++}
++
++static int axg_tdm_iface_hw_free(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
++{
++	struct axg_tdm_stream *ts = snd_soc_dai_get_dma_data(dai, substream);
++
++	return axg_tdm_stream_set_cont_clocks(ts, 0);
  }
  
--static int axg_tdm_iface_hw_free(struct snd_pcm_substream *substream,
-+static int axg_tdm_iface_trigger(struct snd_pcm_substream *substream,
-+				 int cmd,
- 				 struct snd_soc_dai *dai)
- {
--	struct axg_tdm_stream *ts = snd_soc_dai_get_dma_data(dai, substream);
-+	struct axg_tdm_stream *ts =
-+		snd_soc_dai_get_dma_data(dai, substream);
- 
--	/* Stop all attached formatters */
--	axg_tdm_stream_stop(ts);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		axg_tdm_stream_start(ts);
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		axg_tdm_stream_stop(ts);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	return 0;
- }
- 
--static int axg_tdm_iface_prepare(struct snd_pcm_substream *substream,
--				 struct snd_soc_dai *dai)
--{
--	struct axg_tdm_stream *ts = snd_soc_dai_get_dma_data(dai, substream);
--
--	/* Force all attached formatters to update */
--	return axg_tdm_stream_reset(ts);
--}
--
- static int axg_tdm_iface_remove_dai(struct snd_soc_dai *dai)
- {
- 	int stream;
-@@ -412,8 +417,7 @@ static const struct snd_soc_dai_ops axg_tdm_iface_ops = {
+ static int axg_tdm_iface_trigger(struct snd_pcm_substream *substream,
+@@ -417,6 +430,7 @@ static const struct snd_soc_dai_ops axg_tdm_iface_ops = {
  	.set_fmt	= axg_tdm_iface_set_fmt,
  	.startup	= axg_tdm_iface_startup,
  	.hw_params	= axg_tdm_iface_hw_params,
--	.prepare	= axg_tdm_iface_prepare,
--	.hw_free	= axg_tdm_iface_hw_free,
-+	.trigger	= axg_tdm_iface_trigger,
++	.hw_free	= axg_tdm_iface_hw_free,
+ 	.trigger	= axg_tdm_iface_trigger,
  };
  
- /* TDM Backend DAIs */
+diff --git a/sound/soc/meson/axg-tdm.h b/sound/soc/meson/axg-tdm.h
+index 42f7470b9a7f..daaca10fec9e 100644
+--- a/sound/soc/meson/axg-tdm.h
++++ b/sound/soc/meson/axg-tdm.h
+@@ -58,12 +58,17 @@ struct axg_tdm_stream {
+ 	unsigned int physical_width;
+ 	u32 *mask;
+ 	bool ready;
++
++	/* For continuous clock tracking */
++	bool clk_enabled;
+ };
+ 
+ struct axg_tdm_stream *axg_tdm_stream_alloc(struct axg_tdm_iface *iface);
+ void axg_tdm_stream_free(struct axg_tdm_stream *ts);
+ int axg_tdm_stream_start(struct axg_tdm_stream *ts);
+ void axg_tdm_stream_stop(struct axg_tdm_stream *ts);
++int axg_tdm_stream_set_cont_clocks(struct axg_tdm_stream *ts,
++				   unsigned int fmt);
+ 
+ static inline int axg_tdm_stream_reset(struct axg_tdm_stream *ts)
+ {
 -- 
 2.43.0
 
