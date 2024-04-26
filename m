@@ -1,185 +1,92 @@
-Return-Path: <linux-kernel+bounces-160342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B7DB8B3C28
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 977718B3C22
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:59:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 314FD2829B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:00:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B47287743
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4F114C5BF;
-	Fri, 26 Apr 2024 16:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05D914AD3D;
+	Fri, 26 Apr 2024 15:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6eLPFEi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="h7PHiu1v"
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A19149C5E;
-	Fri, 26 Apr 2024 16:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B75149E17
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714147230; cv=none; b=hdgvbJWuza/qF3bT9r62Jxyhf9MApCDShcmqDdS+UHm9VPDxUjliyBBmdyyyH+RS24w8wNB5XEZ/JW0Jbk/NDjLk881j6XLqM9KquBLHTciMzN3iZ6QDtMIIGs5fUgPPQcxt8RMZSM/iFe306nQBzwhobaePF8NWHpy1Kf7ZyQ0=
+	t=1714147140; cv=none; b=mB9LxoB8JvFrsfqtAPvg4LwlSgxgrUdPtlcHNgOgKwAvsNHQkobB+u5pY4CVHemhrI5x0tnzEv2vgCeLAqaoaKQpdzK2BBq+Ta8TnJ85HlGtgXTphJO9ALoqNB3jLM2pycn0iDbJlnOwpFBZccXnACu9DSvdmiUqaJoCYcJ2Wlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714147230; c=relaxed/simple;
-	bh=uK9h4I1j7rfKSkPKuWAlFuwzANHYKX0M1bFIxX+3AkE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cDM4TOKis2YWIYJSiVYNP0SaupY5g0fDS6HuvJG02I9RYawCdvQx/lbaIsaZgrbaBvqEF/onzxthTLx2NMGa+Q/IPzPilX0jCZ6qsdBDI3WHIuFg1ipMF9sTnfQUmAz6vVFjqMQjDfoUDUXEu2oDrl1kQIH7yMSkbSnp/aR6cx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6eLPFEi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59E78C113CD;
-	Fri, 26 Apr 2024 16:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714147229;
-	bh=uK9h4I1j7rfKSkPKuWAlFuwzANHYKX0M1bFIxX+3AkE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=f6eLPFEiZ6xNNJR3mQ6Qo5xBHM1aC6YKRza2POnm6EEgTvufM6RD2WTbKE5ZfwT4D
-	 sVfWuJBpAr8DBIyiwvZPB18cr67rmn5iMsDHpGKtuOm9+kAIE59IuQnndZwCi32kif
-	 s6Dps+UkIJP4Rvv9VSnh5zsQ1PsR4jQxbmuOG75ywi6D7vjNOizvvcjN6NwU5tUm3D
-	 SS1+FixvkAz5d/a+N20Mynix+Ma0x8+RoXBDBch3hn8cDblQgoYKzAEjes9aeLOkCt
-	 5jGDeOjmdNnbK7grD0vvInoTi9+RcNo68eD7DgSFszh5weqEQFGmLSKFf9xYyqOqh/
-	 14rjkm0Ef9Sjw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1s0Nzz-000000006c4-1Xt8;
-	Fri, 26 Apr 2024 18:00:31 +0200
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org,
-	Doug Anderson <dianders@chromium.org>,
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Subject: [PATCH] Bluetooth: qca: generalise device address check
-Date: Fri, 26 Apr 2024 17:58:01 +0200
-Message-ID: <20240426155801.25277-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1714147140; c=relaxed/simple;
+	bh=p/0DKubwSqncuszHr4u0YEli5l6ZqQLbw+QHZ08ddVM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hQ9KafQVkBMLqYUc1ag3ofzq5FiWAJnWVkfQ12trThy1tISszmBVjxCh1ndgj61LYnJEbjDubWz831xHexDQPs1odfjQ2Rs4Gco5a6Jx56hPtAhPOOKUGQTNBcGlTAQbxrXrYW5XCOVTXIn2+PRdlUm2rRW1aGs9GrMCxucte7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=h7PHiu1v; arc=none smtp.client-ip=209.85.222.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7eb7f34f36dso980439241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714147137; x=1714751937; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=p/0DKubwSqncuszHr4u0YEli5l6ZqQLbw+QHZ08ddVM=;
+        b=h7PHiu1vgM8DDosVZNErQyADNkAe9MNRGVia9ZWA6nXnPliRuX61Olnynob+KX1gav
+         5tYmo7sdcWQekko3QoevJblcl2ydZ0I+vy7kUYKoR22/Gn+c94XLRf0gwXrIwMc5jKlT
+         1UZ6XPCq4kfByjg98Toj1erd16VxCa/bmrCSw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714147137; x=1714751937;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p/0DKubwSqncuszHr4u0YEli5l6ZqQLbw+QHZ08ddVM=;
+        b=oPxvDv9E2ew2bzDqQ+YGIlSrTyZjrWflA4HbVa44tI9bCl/dpGCIIlUQSFtuOtZqRX
+         mbygKfT4pClCW5OqD2uzD3o9Tc0kuN3L2lg12ny+qtjFec5B2tu4JzgavPAQylSIViUG
+         jrSpj+3LuZSbZLZHyZCUMWh82RUsyeCZQd/J6yHkpsqWkW+qqo7bLn7PzJShNMCjgTto
+         hjjWHvuY2H7oDyjtQMsQmPDceNS0+ubTP/izJAkvutSQeyp/FkuKzgdo+MHrC+bbEfId
+         JEO0aobusJGKUUY3clb1AP0+k8X6GBpPVcfXV5UsXPEU6dFu+x/PmQgLZ5+PIdwFMwyG
+         Lkyw==
+X-Forwarded-Encrypted: i=1; AJvYcCXZhH5LiDz0Kxd5PI+uxs1zNkJxFPlPc9k2fgaWODjV3v80MZvw4yAf+Ff23E0BJ1FckykVRlNCjvIrfpT9DZ/MIP8FxUMbxz8Vjgq2
+X-Gm-Message-State: AOJu0Yw00jKLhBGDuXEsuz2/89fCrBRm4eG8iSBmIg9dFD9J4Nxqndif
+	i6bZKTtftGSpDPmZ+jellao8S5i5/zsbjGTlIDOu2osZG/U/OnivzGVTXFFaj3nTDrDRLowKtJN
+	SEDUYcLGDp74rhdMxiiagky8uHzeu7ItfgL2VL7klmy7wOLo=
+X-Google-Smtp-Source: AGHT+IGRy0gu7DJBvWKqWoz9wMaZQl6qm+9GyPL+x14BBkTcpVqF+6SVukjVmu4uMkeojXS8ScmMTTt9kUPIJCorAGg=
+X-Received: by 2002:a05:6122:4113:b0:4bd:32c9:acb with SMTP id
+ ce19-20020a056122411300b004bd32c90acbmr3187376vkb.7.1714147137594; Fri, 26
+ Apr 2024 08:58:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
+ <20240416050353.GI112498@black.fi.intel.com> <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
+ <20240419044945.GR112498@black.fi.intel.com> <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
+ <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com> <20240423053312.GY112498@black.fi.intel.com>
+ <7197b2ce-f815-48a1-a78e-9e139de796b7@amd.com> <20240424085608.GE112498@black.fi.intel.com>
+ <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com> <20240426045207.GI112498@black.fi.intel.com>
+In-Reply-To: <20240426045207.GI112498@black.fi.intel.com>
+From: Esther Shimanovich <eshimanovich@chromium.org>
+Date: Fri, 26 Apr 2024 11:58:46 -0400
+Message-ID: <CA+Y6NJHzr7x-0S0fbgKJyRjvHMSrbyBNert83g_qVZDS=2wA2g@mail.gmail.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The default device address apparently comes from the NVM configuration
-file and can differ quite a bit.
+> This way you can identify the xHCI (well and NHI) that are not behind
+> PCIe tunnel so that should mean they are really part of the host system
+> (being soldered or plugged to the PCIe slot or so). If I understood
+> right this is what you were looking for, correct?
 
-Store the default address when parsing the configuration file and use it
-to determine whether the controller has been provisioned with an
-address.
-
-This makes sure that devices without a unique address start as
-unconfigured unless a valid address has been provided in the devicetree.
-
-Fixes: 00567f70051a ("Bluetooth: qca: fix invalid device address check")
-Cc: stable@vger.kernel.org      # 6.5
-Cc: Doug Anderson <dianders@chromium.org>
-Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/bluetooth/btqca.c | 21 ++++++++++++---------
- drivers/bluetooth/btqca.h |  2 ++
- 2 files changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index cfa71708397b..d7a6738e4691 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -15,9 +15,6 @@
- 
- #define VERSION "0.1"
- 
--#define QCA_BDADDR_DEFAULT (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x00, 0x00 }})
--#define QCA_BDADDR_WCN3991 (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x98, 0x39 }})
--
- int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
- 			 enum qca_btsoc_type soc_type)
- {
-@@ -351,6 +348,11 @@ static void qca_tlv_check_data(struct hci_dev *hdev,
- 
- 			/* Update NVM tags as needed */
- 			switch (tag_id) {
-+			case EDL_TAG_ID_BD_ADDR:
-+				if (tag_len != sizeof(bdaddr_t))
-+					break;
-+				memcpy(&config->bdaddr, tlv_nvm->data, sizeof(bdaddr_t));
-+				break;
- 			case EDL_TAG_ID_HCI:
- 				/* HCI transport layer parameters
- 				 * enabling software inband sleep
-@@ -615,7 +617,7 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
- }
- EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
- 
--static int qca_check_bdaddr(struct hci_dev *hdev)
-+static int qca_check_bdaddr(struct hci_dev *hdev, const struct qca_fw_config *config)
- {
- 	struct hci_rp_read_bd_addr *bda;
- 	struct sk_buff *skb;
-@@ -624,6 +626,9 @@ static int qca_check_bdaddr(struct hci_dev *hdev)
- 	if (bacmp(&hdev->public_addr, BDADDR_ANY))
- 		return 0;
- 
-+	if (!bacmp(&config->bdaddr, BDADDR_ANY))
-+		return 0;
-+
- 	skb = __hci_cmd_sync(hdev, HCI_OP_READ_BD_ADDR, 0, NULL,
- 			     HCI_INIT_TIMEOUT);
- 	if (IS_ERR(skb)) {
-@@ -639,10 +644,8 @@ static int qca_check_bdaddr(struct hci_dev *hdev)
- 	}
- 
- 	bda = (struct hci_rp_read_bd_addr *)skb->data;
--	if (!bacmp(&bda->bdaddr, QCA_BDADDR_DEFAULT) ||
--	    !bacmp(&bda->bdaddr, QCA_BDADDR_WCN3991)) {
-+	if (!bacmp(&bda->bdaddr, &config->bdaddr))
- 		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
--	}
- 
- 	kfree_skb(skb);
- 
-@@ -670,7 +673,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
- 		   const char *firmware_name)
- {
--	struct qca_fw_config config;
-+	struct qca_fw_config config = {};
- 	int err;
- 	u8 rom_ver = 0;
- 	u32 soc_ver;
-@@ -855,7 +858,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 		break;
- 	}
- 
--	err = qca_check_bdaddr(hdev);
-+	err = qca_check_bdaddr(hdev, &config);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-index dc31984f71dc..49ad668d0d0b 100644
---- a/drivers/bluetooth/btqca.h
-+++ b/drivers/bluetooth/btqca.h
-@@ -29,6 +29,7 @@
- #define EDL_PATCH_CONFIG_RES_EVT	(0x00)
- #define QCA_DISABLE_LOGGING_SUB_OP	(0x14)
- 
-+#define EDL_TAG_ID_BD_ADDR		2
- #define EDL_TAG_ID_HCI			(17)
- #define EDL_TAG_ID_DEEP_SLEEP		(27)
- 
-@@ -94,6 +95,7 @@ struct qca_fw_config {
- 	uint8_t user_baud_rate;
- 	enum qca_tlv_dnld_mode dnld_mode;
- 	enum qca_tlv_dnld_mode dnld_type;
-+	bdaddr_t bdaddr;
- };
- 
- struct edl_event_hdr {
--- 
-2.43.2
-
+Yes! Thank you for the explanation.
 
