@@ -1,131 +1,139 @@
-Return-Path: <linux-kernel+bounces-160725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9528B41B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:59:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A72D38B4204
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F9651F2293A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:59:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F4CBB222AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41CA53BBD2;
-	Fri, 26 Apr 2024 21:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761B3376E9;
+	Fri, 26 Apr 2024 22:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JgYyt7u6"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="b8vg+1gk"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473CA39FCE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 21:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC46A37163
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 22:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714168754; cv=none; b=f0+/+4KDDNE8x1aMGtcbwNJ6uOH15OInj80AXEoV1SE+fenWDYae6WmeDXaVcYkZew7KiouLtaFXZfAJoL8j33hBSZZxMz9tZy0ILTghnSYW3J7IqFlFyfXR/AQWQXyArZ1NAX8n1MD2TN3mEYXb6BYDotZH4YHaYvZpsfrl5x8=
+	t=1714168903; cv=none; b=mP5AySoiWxxx4fIqTZxSu86COVphrcxdr58mMRDlgq0IHJxFiWTFDqSfujyjebA1ug4rG3mZdpxyMJB1Qbzg2SPEvRoaIUKq8+FBQo6PaAevpBa4pQjVzEN5v4CHLLka4+cnfQo/MZjJKcEk1VSLp0LvwKtD2jIdMV6uwkg851w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714168754; c=relaxed/simple;
-	bh=zokeLGTCizecBJ0C/S5HawdecIVVpc4P0EAGzps9Dbg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=D3SPSuyKeSNso7thoV4sQf+Yzulhv5xeIGdx8kpiXn1bdOPr0bsKj940Tt1bbEuN2F4tq1xDg6cR/2F1+0OGtGOz6w+iyoZSs3DIMxun+LQkzPYLRwCPPkbjblYJYz7xpdO3VWbymxVdvhoBX3VU9KrKe6YHmmEBCZ50ja2nD6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JgYyt7u6; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so23360195ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:59:13 -0700 (PDT)
+	s=arc-20240116; t=1714168903; c=relaxed/simple;
+	bh=12evQ9RO5KwT8EVOLbTdF0+8edFHUWGZFX3EE3n2bmM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GNizc+HDJveQET7PsVfJGri/+q8rvzENjDOO+V9Gf0Xyol2aR8cmgrZU4uJsiPfmFs8IKQ93ak7oY8BnlSiA0KjDEDovCBeh+6il+oTapGsFC7yuNkhoKw0DAc6xd9IsenzQDQR8Ml75zKz5D6/nIhJ3vs1m0lT7ju7xfm6JzxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=b8vg+1gk; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e37503115so2878659a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714168753; x=1714773553; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TchHp9iPU+jV41Lhl65NNSkSnBIWGzSHLYj+6EVTYis=;
-        b=JgYyt7u6iiaIhbAnLkr1gUnYmeUXkI/aAVSfWn+m2FvFn/SoinEcKXtQX9CdioUryn
-         oYJ88eIMSXvbaD69z3/gvw2FW+w9u2SrTnDyBPiG0UEyHE+Tsz9nhSapfOOoQoQ571It
-         iw12OQkfZhEpYAFkFzRuee7Dyr4wzWJtwMOXKntA09v0XhztUDytcxRcgC6mDPVk3R1v
-         CsxzHs+NBE2v93f4dDkUPxIlFUQktLq5QcpJKe8e0kLxoz0kuRXujP09CZ89EE2i4T4r
-         bcHn8hQ/oZIjp88yaUNM9/XLsFlXuJfEeT9Mno79qNd14Vw22bdCEzZ8l4hUNsbFEieI
-         rE4Q==
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714168900; x=1714773700; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BB2zFTU/erO4wKsgmr35cNULPijutgrXH6T0vxGc6pY=;
+        b=b8vg+1gkvqOc8L3OI2L7c+EiRigjwp6CSe3IZ2XTl2ZFzHI+HNAZ1QSWESTv11WHWk
+         a5p08Kr6lR4WwO09pP9FNvHTnkDnPK7+YM1mscRFe8sl6g6gGyR+0fK1r0wuOEdwkn1N
+         gYb6vAAgEje5hHQFjTzHFh0cvioPYhCyuxWwlz2WPiQasaOKa8A4uT40SSAqLC7w4VeM
+         4QPcM3pRNGzhDT8klzospkG0J72eWO2On22ly/bJZZKZlevUSKBj32yjKZdSiG801GzL
+         scokmcFv+/6p4sdcvCvkBp+/SXvjccoYC9GwBnHu47IoO0QFo8fh/URO/RUWrDf67yJC
+         mTfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714168753; x=1714773553;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TchHp9iPU+jV41Lhl65NNSkSnBIWGzSHLYj+6EVTYis=;
-        b=cMPLHs1Pq4rF/70LDLq864iwj/yWC7amBN2yNwA8zm++zV/EMVkyNNV+OYRor+T/cr
-         V7ny5l1u8xIS/34mWr+EOwNkFawfLK/xNvyaZuEUJnnXAVDTOJ1ibBaCdvSzsV6IMynQ
-         Uo4948UVrUg21Ui16v5njKJn9NLvA5WqoaddLdf03n/Xw33J2kt7yKQtKW59EYZvAJgy
-         gfSV/loe5CUKJF7MH4mDQs4jhms7g5mgq5MbDHRD+p1RU6ZYRn6eYWTqDjvXb1Zv550N
-         PjFMWnrUArTp0r+O8JTKiUK9yAr3z9wB91s8S4eib5m4DYCKe8l7AAGfbJWYQuXuzqJF
-         UQvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWoA2tSeElSBo8zdnuXpwbl6o0MXw0qD5SlPfErdS9yPGxmiy4bWnXyQyq2wyAYnvG46m/v/ZGhcsj4yKD96WXfFxy9zSM/drjSZ1l6
-X-Gm-Message-State: AOJu0YztuqfjT4aNlv05uJBtaPOu9GuG8uGLnCG0GhfG+nuCY7E+G3+Y
-	UGsS8KVuZbKz+2WnXctvshy4VuzArAxFKo6eJChF7yhPcCaQOm2akIzuQkAt5Jc=
-X-Google-Smtp-Source: AGHT+IET9MIfRPVLQ+q19JlPHtZ5UN13lMzn5RxDFBe+dFnHx+VBL/0Yu6aR/OhMxKkAebF8s3aZ0A==
-X-Received: by 2002:a17:902:fc46:b0:1e0:119e:f935 with SMTP id me6-20020a170902fc4600b001e0119ef935mr1210821plb.15.1714168752781;
-        Fri, 26 Apr 2024 14:59:12 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id n1-20020a170902d2c100b001e2a7e90321sm15899787plc.224.2024.04.26.14.59.11
+        d=1e100.net; s=20230601; t=1714168900; x=1714773700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BB2zFTU/erO4wKsgmr35cNULPijutgrXH6T0vxGc6pY=;
+        b=dw/qxt5nzY1RVD2H1eAiK2ujwFjOfhZwJdeu4IleD41ZTuqqAojReLrm5TAz60GrCn
+         lzzMTBaLFFx03CkSY7kWcWFFMtSQ76yxAZfCVa5wxozF+UE225wKgBZ/Vn75s1fPWr2P
+         H5lWP5T8c8LlPuAnF7DWks5HuIJ0bLwf44dhqfrKy/QN4gYPrEZh0P04bUiUMaxWKfZg
+         ycKkyk2wOJqzReuqIkhjovQnSedJtv3kpXr6qC6dMT0V5IRHFgnfKwiSA2QipX4k7o0s
+         vhIHcJSHGWybXSoMsuPNmRP+WarJubpZejaLEsXVs5Fi7dSk5TMZDIbN/VsMULOXNSRl
+         Lj2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWlhRdfP3YihFcAUydSs2p7h1ustONja9mV4bcl7GT1uF3rmErhtBr3NTpdx1wtEhTBtiLoBL7A4VBEdAuwE3GfQmMJpjrbHISjanJq
+X-Gm-Message-State: AOJu0YwnENHMRpJ4jt6rCRnhvPEx9/b9KI9W8xDb9kyk/blllK+jqt8r
+	R11CtzsRB5TpiRGvVftKhqHgSKnl3nXfUAKFTVClZBQ9akQ4XBpXiBk7L9i5GE4=
+X-Google-Smtp-Source: AGHT+IHwJ31F8r0Gkiz3UIjqIwqVvHqBw/6zhyN+VKRD2TKkKzS2KqGxPMJQfVuGryBMrXQQAFyKjA==
+X-Received: by 2002:a50:d4c8:0:b0:570:5e7f:62cb with SMTP id e8-20020a50d4c8000000b005705e7f62cbmr2100446edj.29.1714168899809;
+        Fri, 26 Apr 2024 15:01:39 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id r19-20020aa7cb93000000b00572031756a8sm6560719edt.16.2024.04.26.15.01.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 14:59:11 -0700 (PDT)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Fri, 26 Apr 2024 14:58:55 -0700
-Subject: [PATCH v2 2/2] riscv: cpufeature: Fix extension subset checking
+        Fri, 26 Apr 2024 15:01:39 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>
+Cc: Dave Chinner <dchinner@redhat.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Zhang Tianci <zhangtianci.1997@bytedance.com>,
+	linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] xfs: Use kmemdup() instead of kmalloc() and memcpy()
+Date: Sat, 27 Apr 2024 00:00:47 +0200
+Message-ID: <20240426220046.181251-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240426-cpufeature_fixes-v2-2-7377442b1327@rivosinc.com>
-References: <20240426-cpufeature_fixes-v2-0-7377442b1327@rivosinc.com>
-In-Reply-To: <20240426-cpufeature_fixes-v2-0-7377442b1327@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Guo Ren <guoren@kernel.org>, Conor Dooley <conor@kernel.org>, 
- Conor Dooley <conor.dooley@microchip.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Evan Green <evan@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
- Alexandre Ghiti <alexghiti@rivosinc.com>, 
- Andrew Jones <ajones@ventanamicro.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714168747; l=1173;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=zokeLGTCizecBJ0C/S5HawdecIVVpc4P0EAGzps9Dbg=;
- b=g6HQlFi2r2iw6uPy9CCrKLJWOVB7GKXPFTWeJwWyNyzIvj5uFAh15VfM1hFJcjfczUEmHFAe+
- Jow/gSE7KbxCHuTt6nkCaxYAJsqGghfDwuEHkI6U4tRBKzhfP7i8M/4
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+Content-Transfer-Encoding: 8bit
 
-This loop is supposed to check if ext->subset_ext_ids[j] is valid, rather
-than if ext->subset_ext_ids[i] is valid, before setting the extension
-id ext->subset_ext_ids[j] in isainfo->isa.
+Fixes the following two Coccinelle/coccicheck warnings reported by
+memdup.cocci:
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Fixes: 0d8295ed975b ("riscv: add ISA extension parsing for scalar crypto")
+	xfs_dir2.c:343:15-22: WARNING opportunity for kmemdup
+	xfs_attr_leaf.c:1062:13-20: WARNING opportunity for kmemdup
+
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
- arch/riscv/kernel/cpufeature.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_attr_leaf.c | 5 ++---
+ fs/xfs/libxfs/xfs_dir2.c      | 3 +--
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 500a9bd70f51..e53deac701db 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -606,7 +606,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index ac904cc1a97b..7346ee9aa4ca 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -1059,12 +1059,11 @@ xfs_attr3_leaf_to_shortform(
  
- 			if (ext->subset_ext_size) {
- 				for (int j = 0; j < ext->subset_ext_size; j++) {
--					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
-+					if (riscv_isa_extension_check(ext->subset_ext_ids[j]))
- 						set_bit(ext->subset_ext_ids[j], isainfo->isa);
- 				}
- 			}
-
+ 	trace_xfs_attr_leaf_to_sf(args);
+ 
+-	tmpbuffer = kmalloc(args->geo->blksize, GFP_KERNEL | __GFP_NOFAIL);
++	tmpbuffer = kmemdup(bp->b_addr, args->geo->blksize,
++			GFP_KERNEL | __GFP_NOFAIL);
+ 	if (!tmpbuffer)
+ 		return -ENOMEM;
+ 
+-	memcpy(tmpbuffer, bp->b_addr, args->geo->blksize);
+-
+ 	leaf = (xfs_attr_leafblock_t *)tmpbuffer;
+ 	xfs_attr3_leaf_hdr_from_disk(args->geo, &ichdr, leaf);
+ 	entry = xfs_attr3_leaf_entryp(leaf);
+diff --git a/fs/xfs/libxfs/xfs_dir2.c b/fs/xfs/libxfs/xfs_dir2.c
+index 4821519efad4..3ebb959cdaf0 100644
+--- a/fs/xfs/libxfs/xfs_dir2.c
++++ b/fs/xfs/libxfs/xfs_dir2.c
+@@ -340,12 +340,11 @@ xfs_dir_cilookup_result(
+ 					!(args->op_flags & XFS_DA_OP_CILOOKUP))
+ 		return -EEXIST;
+ 
+-	args->value = kmalloc(len,
++	args->value = kmemdup(name, len,
+ 			GFP_KERNEL | __GFP_NOLOCKDEP | __GFP_RETRY_MAYFAIL);
+ 	if (!args->value)
+ 		return -ENOMEM;
+ 
+-	memcpy(args->value, name, len);
+ 	args->valuelen = len;
+ 	return -EEXIST;
+ }
 -- 
 2.44.0
 
