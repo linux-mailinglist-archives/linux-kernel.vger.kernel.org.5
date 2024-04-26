@@ -1,201 +1,249 @@
-Return-Path: <linux-kernel+bounces-159934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3A98B3679
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:25:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E598B367C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC51E1F2291B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:25:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A681A28720C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F772145327;
-	Fri, 26 Apr 2024 11:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA760145328;
+	Fri, 26 Apr 2024 11:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Shecuw3k"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/QY9Ua3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C4413F01A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A51144D3E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714130728; cv=none; b=UHSgn3t02ZeyiCxxGlid6HE6DpNGIsbEOmpUT2i1b+omJ3jpt36ypJZ/a1SnTeD/pCzPRMRXLYbZkFfQ/OXYaUTX5TgpUj4DzLFvbNO3w5R07BGHYZVSbcSp4YyU4+jwm8ljTLPBXqcUc7C4CM6vpP/a0j6XEkxnC1LpGko4Eh4=
+	t=1714130750; cv=none; b=Q+hXNlOg7Jg6nc5IZ33wwWIalXKFVwzPfOdq1xGpG/KwYP5dkYiVWO/0Ud5f8eGWbz0XrLyPjx+FS+wuJgGBL6jMrsI5nPoE9vn08IcYloY62rWiyGUre5EpBjQzNpFOsE8sjs2fgcsB2jwAw4gRz1etCKFYL2jNsgQRDnK9Js0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714130728; c=relaxed/simple;
-	bh=oQQv8gNjBd3NOr0K9to+egvgpC4579uFTU3SS1qMrn8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F46V0+f8PNBXCWYrFbK1jANjUfbVSbkBYJ1xqs4mY95Ibuf9HkmzC6dzjXyu1cMzzcJuO+851sCuJJAX9Fb5YjavMDzqTK321QvWZfOfgJamyvcFSCSSb3xacpCKBqaFh9gNV4dEtuyVAmX+XXQT6ZD6EneVe7Qz7RpYJAETMPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Shecuw3k; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-343c7fae6e4so1644503f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 04:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714130725; x=1714735525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/KkZVOHUjSvKFzby4LSjkn/O+aGICzD1xt5kzZkffs=;
-        b=Shecuw3kOSR9rORsJI00L/A2UqeOJtU9122vLNtSC5JCEizmYjMC33iuhXYnfMzNgo
-         iyHEimOcFjEGWebT3I5VPBoA2LETRErf23eC6lukKL3eODrvKJvS+EXN50TSH4+u5PnO
-         g46dGMCQPDsij65gZiwljNhlAwVpjyE7jEuJWQZk3vWkltFolExy39Tmes03BketOv+y
-         BdRZ/u/IAuVocAF2hVKiEZdpu4iZ6ogGSVe02d+zF7XNMe7ErxGYhMFtqam5ij8gTDn4
-         6qvwKIkaHMkuxVCgla/t5mx+UhziPEEV5gWBL9IabwH9FNGm/GwtUJQojZlcWlKUF1fT
-         Tzug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714130725; x=1714735525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P/KkZVOHUjSvKFzby4LSjkn/O+aGICzD1xt5kzZkffs=;
-        b=U70RUBsTP7+Yw9ukninioUrBLZz4UPjhWky8KopzTsUoFXUMjw4ul5tEPDUZP2rTu7
-         XeL5ohoMyB8BmXDCnUWub1YgLIU6CXNKdCTOP+W1rfp7jGZCSIQ+C1r1i4D1CLkmQw+1
-         tnQmWxiY09WCh2I78TZ9Cr7W4zT+Qclx68LCfJNnVrqqsp8jHsskIT6lh9TuFqHBQiXY
-         ds6eylQFduRZIEiXyxONx/eE4L0iOnnCw58Elzn1RYa2NaDZIDRBjTyCxyhAXr68n8Kb
-         beh0mKq5BU4GNPr6o+DVFfa2KFYdh2nUF0lh1QAk6jJ18A7Ep99q9g/tC9aVd9RSqOrV
-         d1bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnIatxDA8O2y9jSz9RXeS2GbO7DXDkT9xziY9J65LFmA4MRhh5gERu77IWtf7qiQYA5wdFVcciwe4TaYjpBeI60anAVHfi5BDbonMB
-X-Gm-Message-State: AOJu0YxwwG8slQc4tWOv3GSBXfxBOh19ljVlyL49hdUFDMrMFs2ikFDt
-	swskMOXM6eTsbYGB1vPdEZd6RcYqVZ63m9oLkmaf8tsheaxsy2P+ARvmGIX0rc3mPZjfEhNtTt6
-	nix19iwCzyja1cUiyNli9LRdScPdXjQ==
-X-Google-Smtp-Source: AGHT+IFmuUcYbKho8+oCAuzCYhT5xSf0GYuCMoptOuX1QlBaPGQXvi7ZzpYyiYMeFgxOJH0DtuxDUr1rDCanCcD/iyo=
-X-Received: by 2002:adf:9bd1:0:b0:34a:9be4:4674 with SMTP id
- e17-20020adf9bd1000000b0034a9be44674mr1517772wrc.8.1714130725203; Fri, 26 Apr
- 2024 04:25:25 -0700 (PDT)
+	s=arc-20240116; t=1714130750; c=relaxed/simple;
+	bh=l/c1BUNscJcDyTtyp2HhjNkjHJRw9cY32UUZ3BoilIA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=YRXZFS5w6M9v9d6tv0H+6UkOadb+pSFwl3Jhj99CWPo2aZlUTiDVa26rs0wmWc75CEJBwcYTIbxzemVKv0ImmTIUuIbMN3urNiKsIctQXMRTfNEOHHootw0Kias+apNvhxoOUyur7+Dn00PaZNLBe1kPaCtoZ9wXxDSIDMl2kTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/QY9Ua3; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714130749; x=1745666749;
+  h=date:from:to:cc:subject:message-id;
+  bh=l/c1BUNscJcDyTtyp2HhjNkjHJRw9cY32UUZ3BoilIA=;
+  b=R/QY9Ua3kARRxplW3QTco4mXIhEWx23GRU9huM6BbJZxfVbb4L3B2qte
+   An9r9uNW71xUs2/Z0V17TLprCbMyryfrurMZ8JfukWicDK4tXe0YXO3bH
+   yG6F5pLS3gIV0ImGJzi7Na2fw43MQi1ub6O+FXwjRnh8t5RP6IZGHpLPG
+   8RTaQZLd734aoF1q9FW0sJUhXM3sxSKARRDT8nBuM9pJVM9DdRJLRuJpB
+   rr2BR59TXV5egyILdDqRpLoIXtKCpAg5cxgu8c3Q0vRIJ76cBw+KyHYZ1
+   gGkCfzBNvNzMXO19My+cehZZBAlA1Bxof/Oe9OwHX36VDV/xnHscdPOfu
+   w==;
+X-CSE-ConnectionGUID: ttJ2+fFjQea7KXr+PPDYzg==
+X-CSE-MsgGUID: efW1WKqoQcWe+Q3wICvD2w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="32360464"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="32360464"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:25:48 -0700
+X-CSE-ConnectionGUID: kxRz5zbvS82vv4U/Sa0Wnw==
+X-CSE-MsgGUID: AlgPwj3bRaSh2eVgS84oyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="30033104"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:25:46 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s0Ji4-0003eT-2O;
+	Fri, 26 Apr 2024 11:25:44 +0000
+Date: Fri, 26 Apr 2024 19:25:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/sev] BUILD SUCCESS
+ e2f4c8c319abd1afbedb7a31877cb569265db1b4
+Message-ID: <202404261919.fTduBWnM-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240416072108.5819-1-chao@kernel.org> <20240416072108.5819-2-chao@kernel.org>
- <CAHJ8P3J4Z7QJ=kpd_Nt+TGX2ZD8HH5YQWmbPsbS7+DeN2NrxyA@mail.gmail.com> <235d9db4-2ca5-4d7a-bd2a-36f98d1880a9@kernel.org>
-In-Reply-To: <235d9db4-2ca5-4d7a-bd2a-36f98d1880a9@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Fri, 26 Apr 2024 19:25:14 +0800
-Message-ID: <CAHJ8P3JD4KxSEz0mQF4+Mb8KvupLLwtj4F4ghPpePxTvr23vEg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: remove unnecessary block size check
- in init_f2fs_fs()
-To: Chao Yu <chao@kernel.org>
-Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Fixed!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
+branch HEAD: e2f4c8c319abd1afbedb7a31877cb569265db1b4  x86/sev: Make the VMPL0 checking more straight forward
 
-On Fri, Apr 26, 2024 at 5:37=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/4/16 19:12, Zhiguo Niu wrote:
-> > On Tue, Apr 16, 2024 at 3:22=E2=80=AFPM Chao Yu <chao@kernel.org> wrote=
-:
-> >>
-> >> After commit d7e9a9037de2 ("f2fs: Support Block Size =3D=3D Page Size"=
-),
-> >> F2FS_BLKSIZE equals to PAGE_SIZE, remove unnecessary check condition.
-> >>
-> >> Signed-off-by: Chao Yu <chao@kernel.org>
-> >> ---
-> >>   fs/f2fs/super.c | 6 ------
-> >>   1 file changed, 6 deletions(-)
-> >>
-> >> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> >> index 6d1e4fc629e2..32aa6d6fa871 100644
-> >> --- a/fs/f2fs/super.c
-> >> +++ b/fs/f2fs/super.c
-> >> @@ -4933,12 +4933,6 @@ static int __init init_f2fs_fs(void)
-> >>   {
-> >>          int err;
-> >>
-> >> -       if (PAGE_SIZE !=3D F2FS_BLKSIZE) {
-> >> -               printk("F2FS not supported on PAGE_SIZE(%lu) !=3D BLOC=
-K_SIZE(%lu)\n",
-> >> -                               PAGE_SIZE, F2FS_BLKSIZE);
-> >> -               return -EINVAL;
-> >> -       }
-> >> -
-> >>          err =3D init_inodecache();
-> >>          if (err)
-> >>                  goto fail;
-> > Dear Chao,
-> >
-> > Can you help modify the following  comment msg together with this patch=
-?
-> > They are also related to commit d7e9a9037de2 ("f2fs: Support Block
-> > Size =3D=3D Page Size").
-> > If you think there is a more suitable description, please help modify
-> > it directly.
->
-> Zhiguo,
->
-> I missed to reply this, I guess you can update
-> "f2fs: fix some ambiguous comments".
-Dear Chao,
-OK, I got it.
-thanks!
->
-> > thanks=EF=BC=81
-> >
-> > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> > index a357287..241e7b18 100644
-> > --- a/include/linux/f2fs_fs.h
-> > +++ b/include/linux/f2fs_fs.h
-> > @@ -394,7 +394,8 @@ struct f2fs_nat_block {
-> >
-> >   /*
-> >    * F2FS uses 4 bytes to represent block address. As a result, support=
-ed size of
-> > - * disk is 16 TB and it equals to 16 * 1024 * 1024 / 2 segments.
-> > + * disk is 16 TB for a 4K page size and 64 TB for a 16K page size and =
-it equals
->
-> disk is 16 TB for 4K size block and 64 TB for 16K size block and it equal=
-s
-> to (1 << 32) / 512 segments.
->
-> #define F2FS_MAX_SEGMENT                ((1 << 32) / 512)
->
-> Thanks,
->
-> > + * to 16 * 1024 * 1024 / 2 segments.
-> >    */
-> >   #define F2FS_MAX_SEGMENT       ((16 * 1024 * 1024) / 2)
-> >
-> > @@ -424,8 +425,10 @@ struct f2fs_sit_block {
-> >   /*
-> >    * For segment summary
-> >    *
-> > - * One summary block contains exactly 512 summary entries, which repre=
-sents
-> > - * exactly one segment by default. Not allow to change the basic units=
-.
-> > + * One summary block with 4KB size contains exactly 512 summary entrie=
-s, which
-> > + * represents exactly one segment with 2MB size.
-> > + * Similarly, in the case of 16k block size, it represents one
-> > segment with 8MB size.
-> > + * Not allow to change the basic units.
-> >    *
-> >    * NOTE: For initializing fields, you must use set_summary
-> >    *
-> > @@ -556,6 +559,7 @@ struct f2fs_summary_block {
-> >
-> >   /*
-> >    * space utilization of regular dentry and inline dentry (w/o extra
-> > reservation)
-> > + * when block size is 4KB.
-> >
-> >
-> >
-> >> --
-> >> 2.40.1
-> >>
-> >>
-> >>
-> >> _______________________________________________
-> >> Linux-f2fs-devel mailing list
-> >> Linux-f2fs-devel@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+elapsed time: 1224m
+
+configs tested: 157
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                   randconfig-001-20240426   gcc  
+arc                   randconfig-002-20240426   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                          moxart_defconfig   gcc  
+arm                           omap1_defconfig   gcc  
+arm                   randconfig-002-20240426   gcc  
+arm                   randconfig-003-20240426   gcc  
+arm                   randconfig-004-20240426   gcc  
+arm                        shmobile_defconfig   gcc  
+arm                        vexpress_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240426   gcc  
+arm64                 randconfig-002-20240426   gcc  
+arm64                 randconfig-004-20240426   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240426   gcc  
+csky                  randconfig-002-20240426   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-002-20240426   clang
+i386         buildonly-randconfig-005-20240426   clang
+i386         buildonly-randconfig-006-20240426   clang
+i386                                defconfig   clang
+i386                  randconfig-002-20240426   clang
+i386                  randconfig-006-20240426   clang
+i386                  randconfig-012-20240426   clang
+i386                  randconfig-013-20240426   clang
+i386                  randconfig-014-20240426   clang
+i386                  randconfig-015-20240426   clang
+i386                  randconfig-016-20240426   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240426   gcc  
+loongarch             randconfig-002-20240426   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     decstation_defconfig   gcc  
+mips                           ip27_defconfig   gcc  
+mips                       rbtx49xx_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240426   gcc  
+nios2                 randconfig-002-20240426   gcc  
+openrisc                         alldefconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240426   gcc  
+parisc                randconfig-002-20240426   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     ppa8548_defconfig   gcc  
+powerpc               randconfig-002-20240426   gcc  
+powerpc                      walnut_defconfig   gcc  
+powerpc64             randconfig-001-20240426   gcc  
+powerpc64             randconfig-002-20240426   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-002-20240426   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                          debug_defconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                    randconfig-001-20240426   gcc  
+sh                    randconfig-002-20240426   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                             sh03_defconfig   gcc  
+sh                            shmin_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc32_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240426   gcc  
+sparc64               randconfig-002-20240426   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240426   gcc  
+um                    randconfig-002-20240426   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-002-20240426   gcc  
+x86_64       buildonly-randconfig-005-20240426   gcc  
+x86_64       buildonly-randconfig-006-20240426   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   clang
+x86_64                randconfig-001-20240426   gcc  
+x86_64                randconfig-002-20240426   gcc  
+x86_64                randconfig-003-20240426   gcc  
+x86_64                randconfig-012-20240426   gcc  
+x86_64                randconfig-013-20240426   gcc  
+x86_64                randconfig-014-20240426   gcc  
+x86_64                randconfig-015-20240426   gcc  
+x86_64                randconfig-074-20240426   gcc  
+x86_64                randconfig-075-20240426   gcc  
+x86_64                randconfig-076-20240426   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240426   gcc  
+xtensa                randconfig-002-20240426   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
