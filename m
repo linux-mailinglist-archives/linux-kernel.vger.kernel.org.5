@@ -1,137 +1,180 @@
-Return-Path: <linux-kernel+bounces-160284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3F98B3B67
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:28:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D8B8B3B6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:29:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E391F21415
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:28:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B1962843B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007FA14900B;
-	Fri, 26 Apr 2024 15:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE29149C64;
+	Fri, 26 Apr 2024 15:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PJv+/VHk"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DM4OUv02"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12569824B3
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10911DFFC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145307; cv=none; b=Hq6Lbyu5nRxQnqib8nDxCHh1gZ48gf/0o0KvXLMXHIGPTtfX1QAPqw65tu09d+eAoftxhRLbREieFgWRcjkZBM/+U/FeFzZSVnjfBVtndV1deTkqp4n0A83eWm304MDPWevY7z5ry+vtF944aL/CZGQouhLmIcVOMCStuknZne4=
+	t=1714145331; cv=none; b=oSCxB9M56mx/QuhYN0mNLGWHliJIlBCwKu0tN/JqGdCB5vKZW/jrOAAZCnVNCNyKdwFdjUvpFly7zKWqZ8TPThgHh67oVPC1Hqntq3KyF51fUz1FV66EjCQo8s8p3hlE1tFJDqEM7rQU+MewsSR4btcOtZcCbj6+vxmU0snFd9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145307; c=relaxed/simple;
-	bh=4VyWsxlGEIu53oKuIILv9zWJlbPO/mHfes72GPHmjG4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DmHfyN2dhMPMzmkiuCfwiS53vZ51oZ7QwE/PpOFGHxmjxMmLiF1evKI1D05L6UTRvO/Mejp7LXJM5jCmbkY0f2aDJ/zw6DHPYR0r2fJb2L0r2a+nIWnfgc45V1WXtcPLUh8rYbn4XOBT7Ww2B76n+zDiXyZJZGlYv1Wxkf3erws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PJv+/VHk; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1eb1471c7dbso5511015ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:28:25 -0700 (PDT)
+	s=arc-20240116; t=1714145331; c=relaxed/simple;
+	bh=z3wetYYdH8wk8Em0w+t39MUpCyxIrWZv9/n56pQWjAY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g/tfLWFnjxlrDuA6AkcAfQRqMs6uQ0BY6z+4rfkJASviED9t1GR2aEIxR89E31l20CZCZC7nFH6KGo5qCklVcVC6FbsisGFaHmFF0N2UL5F2Q/IIUQBIQjVXR9H8LD8qEzeICioeHmUPeU3u4tHPSkFbtmyWwoJN4PChZdjD/GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DM4OUv02; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78ef9ce897bso144454485a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714145305; x=1714750105; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+UDqDG3emdl+nwdFJP3bYWMhdA98juEbDMYnX+rP1E=;
-        b=PJv+/VHk4jnQZImQ0D+scqckc/10xbjLetAvmjZrZ0y+lZ+HZWkNuTMDdJB91clNTz
-         ndj7QlYwg4o7ZQPXtDchSF2+0x5l113ZV7g5G9+w2k9YxjdM+XAJNiVMZSZWaXSAmcJa
-         FaCPyn1IUfA6dPEPMbW65EXH3A2cMrrbkGIgFqbW2FQY037IVrwI6e2PxFs+NWl7Odt/
-         DUO/W/MI8RNlcgmwITnLcJj54YmUPmkhOF8R4bZeBYRF6JDSrrFBa7tOfaH7parJZSN/
-         ReR1JRA/KhuyOEr6NOthWdcKXp7vi5AIDcWPfYAvvnwYx/nMduieh4qHeVGqIZkcgSKS
-         gCow==
+        d=chromium.org; s=google; t=1714145327; x=1714750127; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VL2JVp5517IAZMpOsSFYe/avtgfEuaWIXQ+vHOFMkZg=;
+        b=DM4OUv02f5NlrTrhb8EmBrbOEAJdFDev1vsmTJr01j3Rg1eRtD2ligx+FdLejLiB8V
+         gsOvl7vaiqlW+Q29Z5hash7Zr1hDZimy3oR9dWUTml7arbYvQ/IAMF2Mq5QgQlghfWad
+         csH1wSRx113nKTLV/Anek5gGeD+Lpp83Q2n+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145305; x=1714750105;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+UDqDG3emdl+nwdFJP3bYWMhdA98juEbDMYnX+rP1E=;
-        b=Q8CLJUkIcNMji1WZ99NQgQiLRYFIFywP0LBpZMJfY1IzndibNmyfHbI1WvKTRmMIYG
-         KK0Bi+SmY+tn2NofgrX49bsbj0ceXhqULVzw3HPfNaA2z60kayWxbkADEbwR3+IFNTK7
-         LZoz2MvUYAysMFfN40h+JozDBLtxRezeT0Ej1Ra7/2KDrez1IKkj99sJuMopevsc0agf
-         Cvi+w0iDK40O5McaWr3zmIIRtiNC/DnivKvLwyZIhJE7IrLANI1QSAbtWtyJuHyRRIMc
-         tyGct21RbYHOZnhQ/5aKxXfpeLKMzby7PjPWrxR55rqXJEipt36YmoDVcQITCDvgZEyX
-         +l/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUbHmIs4L4hBNJJreFVfrCa6FWjlLkcFT+HkKlkKB8tdmnToYo8g0roqChryvTUyBgEchLPnV+N/CXYeWrrsi4nh8dGsg9gO410+nDv
-X-Gm-Message-State: AOJu0Yxr59b/qIOINMNhKrBEdZ0m/KeWvnSW1vWtk9wMjpjvcTjCRlBS
-	AK5DNc+CHPE8Xghh0WpGZjjPiun1+Pw4Q8yHmEqEyBz92kt+faCIKrP+3jNq+5jPAkdNmi4+I/Y
-	reA==
-X-Google-Smtp-Source: AGHT+IEKAOJy9LE0IASl5+cq5pyOm1jFXSWEx8qeF7jYZYv+R0oJ4OP+XQggJcMl7v+26T8Uy0nO92maOOc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:41c2:b0:1e6:624c:f1b8 with SMTP id
- u2-20020a17090341c200b001e6624cf1b8mr815ple.0.1714145305134; Fri, 26 Apr 2024
- 08:28:25 -0700 (PDT)
-Date: Fri, 26 Apr 2024 08:28:23 -0700
-In-Reply-To: <970c8891af05d0cb3ccb6eab2d67a7def3d45f74.camel@intel.com>
+        d=1e100.net; s=20230601; t=1714145327; x=1714750127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VL2JVp5517IAZMpOsSFYe/avtgfEuaWIXQ+vHOFMkZg=;
+        b=umLR9VGl/IloPEGQIL0N1z0ZzvYhWCz6CH/GDOY1SCAFyzwC9fUCQDIX7iSIlS8ELs
+         S5xHBAGj5tU3Kp5AZgDm/K8A4abl+9ebYIv34Giig4/ZAvNFjO8TwLRBKbyisIeXqPLs
+         ziFoOMbHBYLsXKlDw0vcyQLd0AQyp121MWrRVQZqChj36kW+ffOIQVEZkHxU7yGvs8LC
+         WDIuQnLG84J03aOCPaEyusHucHEVNc2iBez5wc3B5q4/W2XsegrmzmVxVCSPERtUH/a9
+         rIFEn8fOGQTMrET8qGxCWQgobSaN6twMvo3g3fTr1oLVKL0UZsz+eECisvVzYgbmAD9s
+         ha0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXG5QVlM4pN/m39T2R4/6DKoPnQgnF0vCfueaJecm1hk6rMgNr4JCJGLQrFupbmOscbVf6jxKxXCL9AfFx2OGOFrFOo/ovgsN9PnoJm
+X-Gm-Message-State: AOJu0Yy+vCvgzlF0jGBE8s/n+mp3AsbCjEnTgG8e+exeqh4NyAnuUih1
+	IoPZG7zbZu9HqQQYFjrLZ149aFhEtH2RbBo8TUu7ZkAo+lzw8/fxWeUBD3fEF/SJPwGrVM4m5Wk
+	=
+X-Google-Smtp-Source: AGHT+IGjMAAiTTxwZT59QhDOHLYZcngYe6LVhnmMaJBeV1Wbp48UWzr/6rrOUyFGDBZvI9487foe8g==
+X-Received: by 2002:a05:620a:11ae:b0:790:88d6:7982 with SMTP id c14-20020a05620a11ae00b0079088d67982mr2978918qkk.29.1714145327439;
+        Fri, 26 Apr 2024 08:28:47 -0700 (PDT)
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com. [209.85.160.174])
+        by smtp.gmail.com with ESMTPSA id m6-20020ae9e006000000b0078efdcd9aa6sm8010659qkk.127.2024.04.26.08.28.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 08:28:46 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-439b1c72676so447831cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:28:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUMUQho0g/THk0tWPEA8ZOsib9INcOoxoGBc/EToMeBnN8ThQrZgnlxgG0pL/qrRJJ0ZbYBVJpEpNAcTTM8LYWF8XZABkQEgKYkJd6I
+X-Received: by 2002:ac8:72d8:0:b0:434:d055:5b00 with SMTP id
+ o24-20020ac872d8000000b00434d0555b00mr280304qtp.20.1714145326083; Fri, 26 Apr
+ 2024 08:28:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <e324ff5e47e07505648c0092a5370ac9ddd72f0b.1708933498.git.isaku.yamahata@intel.com>
- <2daf03ae-6b5a-44ae-806e-76d09fb5273b@linux.intel.com> <20240313171428.GK935089@ls.amr.corp.intel.com>
- <52bc2c174c06f94a44e3b8b455c0830be9965cdf.camel@intel.com>
- <1d1da229d4bd56acabafd2087a5fabca9f48c6fc.camel@intel.com>
- <20240319215015.GA1994522@ls.amr.corp.intel.com> <CA+EHjTxFZ3kzcMCeqgCv6+UsetAUUH4uSY_V02J1TqakM=HKKQ@mail.gmail.com>
- <970c8891af05d0cb3ccb6eab2d67a7def3d45f74.camel@intel.com>
-Message-ID: <ZivIF9vjKcuGie3s@google.com>
-Subject: Re: [PATCH v19 011/130] KVM: Add new members to struct kvm_gfn_range
- to operate on
-From: Sean Christopherson <seanjc@google.com>
-To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: "tabba@google.com" <tabba@google.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Tina Zhang <tina.zhang@intel.com>, Kai Huang <kai.huang@intel.com>, 
-	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>, Bo2 Chen <chen.bo@intel.com>, 
-	"sagis@google.com" <sagis@google.com>, 
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Erdem Aktas <erdemaktas@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	Hang Yuan <hang.yuan@intel.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
+ <87pludq2g0.fsf@intel.com> <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
+ <8734r85tcf.fsf@intel.com>
+In-Reply-To: <8734r85tcf.fsf@intel.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 26 Apr 2024 08:28:30 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XNbRauayNFNOODm-aaaLy2_vJk8OW-mR_XmLv505RtGA@mail.gmail.com>
+Message-ID: <CAD=FV=XNbRauayNFNOODm-aaaLy2_vJk8OW-mR_XmLv505RtGA@mail.gmail.com>
+Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: dri-devel@lists.freedesktop.org, 
+	Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linus.walleij@linaro.org, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, 
+	lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang <hsinyi@google.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024, Rick P Edgecombe wrote:
-> On Fri, 2024-04-26 at 08:39 +0100, Fuad Tabba wrote:
-> > > I'm fine with those names. Anyway, I'm fine with wither way, two bools or
-> > > enum.
-> > 
-> > I don't have a strong opinion, but I'd brought it up in a previous
-> > patch series. I think that having two bools to encode three states is
-> > less intuitive and potentially more bug prone, more so than the naming
-> > itself (i.e., _only):
+Hi,
 
-Hmm, yeah, I buy that argument.  We could even harded further by poisoning '0'
-to force KVM to explicitly.  Aha!  And maybe use a bitmap?
+On Fri, Apr 26, 2024 at 3:09=E2=80=AFAM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> > 2. Accept that a slightly less efficient handling of the error case
+> > and perhaps a less intuitive API, but avoid the goto.
+> >
+> > Essentially you could pass in "ret" and have the function be a no-op
+> > if an error is already present. Something like this:
+> >
+> > void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi,
+> > const void *data, size_t len, int *accum_ret)
+> > {
+> >   if (*accum_ret)
+> >     return;
+> >
+> >   *accum_ret =3D mipi_dsi_dcs_write_buffer(dsi, data, len);
+>
+> No reason you couldn't do error logging here
+>
+>         if (*accum_ret)
+>                 dev_err(...)
 
-	enum {
-		BUGGY_KVM_INVALIDATION		= 0,
-		PROCESS_SHARED			= BIT(0),
-		PROCESS_PRIVATE			= BIT(1),
-		PROCESS_PRIVATE_AND_SHARED	= PROCESS_SHARED | PROCESS_PRIVATE,
-	};
+Yup, exactly. This is probably best.
 
-> > https://lore.kernel.org/all/ZUO1Giju0GkUdF0o@google.com/
-> 
-> Currently in our internal branch we switched to:
-> exclude_private
-> exclude_shared
-> 
-> It came together bettter in the code that uses it.
 
-If the choice is between an enum and exclude_*, I would strongly prefer the enum.
-Using exclude_* results in inverted polarity for the code that triggers invalidations.
+> > }
+> >
+> > ...and then the caller:
+> >
+> > int ret;
+> >
+> > ret =3D 0;
+> > mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0xcd, &ret);
+> > mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETMIPI, 0x84, &ret);
+> > mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0x3f, &ret);
+> > mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETVDC, 0x1b, 0x04, &ret);
+> > if (ret)
+> >   goto some_cmd_failed;
+> >
+> > This has similar properties to solution #1.
+>
+> I like this option the best, for the simple reason that the caller side
+> is aware of what's going on, there's no magic control flow happening,
+> and they can add error handling in the middle if they so choose.
 
-> But I started to wonder if we actually really need exclude_shared. For TDX
-> zapping private memory has to be done with more care, because it cannot be re-
-> populated without guest coordination. But for shared memory if we are zapping a
-> range that includes both private and shared memory, I don't think it should hurt
-> to zap the shared memory.
+Sounds good to me. I went back and forth a bit between solution #1 and
+this and I see the benefits of both. If folks like this one I think we
+should run with it. Certainly it's better than the current hidden
+return.
 
-Hell no, I am not risking taking on more baggage in KVM where userspace or some
-other subsystem comes to rely on KVM spuriously zapping SPTEs in response to an
-unrelated userspace action.  
+
+
+> I don't find this unintuitive, but if it helps, you could conceivably
+> add a context parameter:
+>
+>         struct mipi_dsi_seq_context context =3D {
+>                 .dsi =3D dsi,
+>         };
+>
+>         mipi_dsi_dcs_write_seq(&context, HX83102_SETSPCCMD, 0xcd);
+>         ...
+>
+>         if (context.ret)
+>                 ...
+>
+> And even have further control in the context whether to log or keep
+> going or whatever.
+
+I agree there are some benefits of adding the extra "context"
+abstraction and we can go that way if you want, but I lean towards the
+simplicity of just passing in the accumulated return value like I did
+in my example.
+
+
+I'll try to write up patches and see if I can post them later today.
+
+-Doug
 
