@@ -1,171 +1,127 @@
-Return-Path: <linux-kernel+bounces-159657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522F38B31A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:47:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035508B31AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:48:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08FC6283CBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:47:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 363F31C21A33
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3115C13C8F1;
-	Fri, 26 Apr 2024 07:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062D813C91D;
+	Fri, 26 Apr 2024 07:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4WXJPV8s"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="xzW49MLD"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D798913C3E1
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09D813C8FB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714117664; cv=none; b=bh5rrYiLPskm5vcjwI6kw8THJE4BANT4fXpXUMAQuz5jIUqNUN4MT3M57ach00E76UP+U0Si/m//BAXmIMl2jwjsTF0b9EQfCpdCS2jxUKst6WslFEDhrgcajVetRHuXS9a1B+xeWIMuSxXYKsO0jd6UMvKdQAdcVubYMJHd9VU=
+	t=1714117689; cv=none; b=dgoIjOt78clX2ShkqzB5BK3JFP+P2hZ/tKjDigmpkmM8Q625dJQgjDVA3RjdHtuibU80UMhgqqo/1vMKhaqYt9Lqg317ziK4iI03HyXYv/A2ovkYTw0M4mU3LOsCX+w0Rv9nfDw7zDVEbsuXVFxqNfN5m/WhXdPYIUu47k8xoo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714117664; c=relaxed/simple;
-	bh=8mSG1fMDjDDohnUwndjQ8rYQ+klC8a+dxukU+MstjXc=;
+	s=arc-20240116; t=1714117689; c=relaxed/simple;
+	bh=vmkeqn3rKHnWqckJmlW6f94yaV5GqJVhMoZZp7s4Y3c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d0jrNiI16nUYJEjjikABEXQHkxWMwphS3P1nNE8XRkths73XC/xGa6s3nTcEofXjHmI5Kx8KvFPHJ+McQeAFbAniFTOFXEZoZZMV9xOH/KNQAuuRwPZG+RlMSEzS+vxbAE0U2cqvRIB7mS680ae5T+YWgTQUvnzLalOBNxChkJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4WXJPV8s; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-571e13cd856so9336a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:47:42 -0700 (PDT)
+	 To:Cc:Content-Type; b=pTBLL3f7x4xTY6Je1luYaOe5rG/rPLZTHOTYNuF6cAMDQpabir2kkOo0QQ+NJh52O79NTRID9a79D1iy8HO6qQT9p4/E/WlWLE/LMp4Nt2ZgVfhDtznECdEaOM505O42JcQ6WhwAzK/MPNco6KoyGDWW8NOh4vN499lEZe6/giU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=xzW49MLD; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36a17999886so8179075ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714117661; x=1714722461; darn=vger.kernel.org;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1714117687; x=1714722487; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jIAWLJTmoesX+sQpDbnk16DWBHfM7w6XqP7pg4sMby0=;
-        b=4WXJPV8sWXMKohoA1wfiejyL3+/UMfZu9mfnjUhDbeb5VQHC9AAtUHb+aPVswJwNPO
-         4azTi7OljRQM40vIO/AwaEnekTFnJAFVgcaKHLe2YH+LUa7TNintT+Zvk7seZ7bf12ao
-         iLrhWNBrNw11JV2E2xXgeWaNwKhlAn/w3WjXBI8F2qiyNMLQ0iC3xloozwnEQgGiwkf5
-         7CRiNlHMi7mF9REpOhgvy0jHJ/RoqoZm69Xooht0LMkENWLM+VzjeQarS/OB5n8h17XJ
-         XWeECDkaqPZj6vFsaET4P3+s5/Ndoc1J7zsx9K2gZtfPTQZk1ZkJLztTa5Ns2HNJeM5P
-         IRrQ==
+        bh=PNEXb7K7k6t0jTc2DZhY7wfuFpObcVhQaJunE5Y0/3Y=;
+        b=xzW49MLDr7tYrmR3gIhDVJSGgG2H2EH0xeKaToJjJbaSQhXx8zBb+ZutGlL1Ujg4q9
+         01KS0AAjmDE7XTnDhDWvfRGIJthmLmaz/3tPIzIdgbWzqvwsCzdWCLQhtGdxq6BeP1f4
+         uvUUqGUPOKOpxXwtypOIubNVjeGk3PB+CznQlA2fbS4iZfgm0q5K96wL61MvIO7kTc0C
+         BZ5rZ/Ko1D0EJD70wdlTn3ZpAgkXJIur68MtRTYNfHKiGfE7gA6GLRHlPQZhz3hklBb8
+         r52ztxbh5K/WkfJRtscj7Ey9wxqDNOEBbRUefyxIydIDxedEJJD8/LdjAuVsBm3PePX+
+         rJLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714117661; x=1714722461;
+        d=1e100.net; s=20230601; t=1714117687; x=1714722487;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jIAWLJTmoesX+sQpDbnk16DWBHfM7w6XqP7pg4sMby0=;
-        b=IAVl/93IepC/+3gFnHI3SE0bCIeiUIBEEYW0jdM6UoeF8iH0Lvi8Yzzrt1XhzxbvzV
-         Uh89aIfApw4hRAtLWefhiLHG8d/BIDWJtFx84r0XIfcLapCyjS+n9tdnDr3goeiGiSWJ
-         rr2cId/4YwR6HNacxisJD3Yd6x7PyyLmMOSNlIk9rzqHiF4ABlQpmMMEM24p3XpCXCAI
-         NIFZWUZwd1HOUwWAv06fVtJGZbwvcGsyuDAPkgF5WnQuMbrgf2+Bb/Ai3sHWUq7lQHJh
-         lm0U3MonfY5PsF5TM01p2j3Dsx/LrQYC26uEb/JIhxNYEYGQNd+OD0CWGhTC8RzSnX78
-         V31Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWZNsaD5jqTA1kZDgmJHe7jGJEmN47G6z0TS07qvoGaKIJQ1+BbFOntsG8Ed/CCVVszou2QBvgrAR84zajGzszA31zXRIaONuujsMVD
-X-Gm-Message-State: AOJu0YzRzTRp6nG0ZAq+8dJTgAUcfYRcEn7YAhPr6K1dirGMsrGEGXht
-	pVK2GRitt5NNcHdJ+gHoK9+jwAkspi8IR8ngp3AbiErZq7+ZTGSTEqbr1FIFNOY8foz4CNJCelv
-	QJDmSkvx6E/2z5Qy42996zRf3V/0jEhx1jhxz
-X-Google-Smtp-Source: AGHT+IFLQr0sMyzpOSJIY4p9nJ8GQ5UqSgfsVWNy79rCWkQWJ+N3qUGVbAAzCKpzk3SQnvP5E/G4ifq2QAYKBlWFbus=
-X-Received: by 2002:a05:6402:309a:b0:572:554b:ec4f with SMTP id
- de26-20020a056402309a00b00572554bec4fmr54744edb.3.1714117660971; Fri, 26 Apr
- 2024 00:47:40 -0700 (PDT)
+        bh=PNEXb7K7k6t0jTc2DZhY7wfuFpObcVhQaJunE5Y0/3Y=;
+        b=YKR2ToTzl4DEddhp/84Y0baPo0GzXUNsLZSOSMU74D52dwxQtskFgRqT92GeMEGjFX
+         mbnpW1nhPKZ6126ZIdeewS2ZWe6GVu8zqI/7G5OnRz/HoccsFg40eMb+/vW1GYmrZddo
+         OFUqIwiN+fxIDzNTgZWekbOk65m/UL6n6Vy2EWt4AcL1cTi0xqVTl0YgIu+jxotnZ6X3
+         tkOP9uGE4pcew35VkQo1Hyz0DxRFE1dylzOQAh29IqxOfGwbFsrM5bykG/dbSrgIEt7v
+         rxUU7Dw8NFzRSHtE2onboz63XpeTz52Z+j64DM+CgAqa0pPdyF+1lSVsn91Ij6itdo69
+         pORw==
+X-Gm-Message-State: AOJu0YxwEtd44VXJSu+tcMwUMv31VPKKXV2/IU4oWAPTFpkvtHymPnyH
+	H/P4WHxklkHEhiGKhVYfIbXFnJIOThF8MVUF3nWHAXL1g8wHuwF3GP9gLxFZRI6OBNEU0IVtQBq
+	K8YqTzcA5AmzrrNHkOcGmdOOu+9+8MHBLO6PWRA==
+X-Google-Smtp-Source: AGHT+IH2kcTnzYfBFJ/vpjEldVVO004BbvrN6JipfMdczlULdyDkCg/N4VNB2dpxRuYiuEQfYrwp5U/HbOfG3wASDPg=
+X-Received: by 2002:a05:6e02:1fc9:b0:36b:239f:c0e with SMTP id
+ dj9-20020a056e021fc900b0036b239f0c0emr2320106ilb.0.1714117686829; Fri, 26 Apr
+ 2024 00:48:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426065143.4667-1-nbd@nbd.name> <20240426065143.4667-4-nbd@nbd.name>
-In-Reply-To: <20240426065143.4667-4-nbd@nbd.name>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 26 Apr 2024 09:47:30 +0200
-Message-ID: <CANn89iL-4CB3-+mMtBQapXV7EaCzOWOU1MRp4X1tUtjaXfbk=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next v3 3/6] net: add code for TCP fraglist GRO
-To: Felix Fietkau <nbd@nbd.name>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+References: <20240426031637.4135544-1-atishp@rivosinc.com>
+In-Reply-To: <20240426031637.4135544-1-atishp@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Fri, 26 Apr 2024 13:17:55 +0530
+Message-ID: <CAAhSdy2xECj3AOBNCVJSsNi==7PdT5riqx7-gsVd-v0MdRU2ag@mail.gmail.com>
+Subject: Re: [PATCH v2 kvm-riscv/for-next 0/2] Fixes for kvm-riscv
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Samuel Holland <samuel.holland@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 8:51=E2=80=AFAM Felix Fietkau <nbd@nbd.name> wrote:
+On Fri, Apr 26, 2024 at 5:18=E2=80=AFAM Atish Patra <atishp@rivosinc.com> w=
+rote:
 >
-> This implements fraglist GRO similar to how it's handled in UDP, however
-> no functional changes are added yet. The next change adds a heuristic for
-> using fraglist GRO instead of regular GRO.
+> Here are two fixes for issues found during review/testing after the
+> series[1] has been queued for 6.10.
 >
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
-> ---
->  net/ipv4/tcp_offload.c   | 22 ++++++++++++++++++++++
->  net/ipv6/tcpv6_offload.c |  9 +++++++++
->  2 files changed, 31 insertions(+)
+> @Anup: Can you please squash them into the original source commit
+> 22f5dac41004 that introduced this ?
 >
-> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-> index c493e95e09a5..ffd6b7a4163a 100644
-> --- a/net/ipv4/tcp_offload.c
-> +++ b/net/ipv4/tcp_offload.c
-> @@ -332,6 +332,19 @@ struct sk_buff *tcp_gro_receive(struct list_head *he=
-ad, struct sk_buff *skb)
->         flush |=3D (ntohl(th2->seq) + skb_gro_len(p)) ^ ntohl(th->seq);
->         flush |=3D skb_cmp_decrypted(p, skb);
+> [1] https://lore.kernel.org/all/20240420151741.962500-1-atishp@rivosinc.c=
+om/
 >
-> +       if (NAPI_GRO_CB(p)->is_flist) {
+> Changes from v1->v2:
+> 1. Added RB tags.
+> 2. Optimized the logic for overflow mask.
+> 3. Update the fixes tag. The cover letter should be enough to indicate th=
+e base
+>    tag for rebasing.
+>
+> Atish Patra (2):
+> drivers/perf: riscv: Remove the warning from stop function
+> drivers/perf: riscv: Fix RV32 snapshot overflow use case
 
+Thanks, I have squashed both fixes into appropriate commit along
+with Samuel's Reviewed-by
 
-Please add unlikely() for all NAPI_GRO_CB(p)->is_flist checks added in
-this patch.
+Regards,
+Anup
 
-> +               flush |=3D (__force int)(flags ^ tcp_flag_word(th2));
-> +               flush |=3D skb->ip_summed !=3D p->ip_summed;
-> +               flush |=3D skb->csum_level !=3D p->csum_level;
-> +               flush |=3D !pskb_may_pull(skb, skb_gro_offset(skb));
-> +               flush |=3D NAPI_GRO_CB(p)->count >=3D 64;
-> +
-> +               if (flush || skb_gro_receive_list(p, skb))
-> +                       mss =3D 1;
-> +
-> +               goto out_check_final;
-> +       }
-> +
->         if (flush || skb_gro_receive(p, skb)) {
->                 mss =3D 1;
->                 goto out_check_final;
-> @@ -398,6 +411,15 @@ INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct=
- sk_buff *skb, int thoff)
->         const struct iphdr *iph =3D ip_hdr(skb);
->         struct tcphdr *th =3D tcp_hdr(skb);
 >
-> +       if (NAPI_GRO_CB(skb)->is_flist) {
-> +               skb_shinfo(skb)->gso_type |=3D SKB_GSO_FRAGLIST | SKB_GSO=
-_TCPV4;
-> +               skb_shinfo(skb)->gso_segs =3D NAPI_GRO_CB(skb)->count;
-> +
-> +               __skb_incr_checksum_unnecessary(skb);
-> +
-> +               return 0;
-> +       }
-> +
->         th->check =3D ~tcp_v4_check(skb->len - thoff, iph->saddr,
->                                   iph->daddr, 0);
+> drivers/perf/riscv_pmu.c       |  2 --
+> drivers/perf/riscv_pmu_sbi.c   | 45 +++++++++++++++++++---------------
+> include/linux/perf/riscv_pmu.h |  2 ++
+> 3 files changed, 27 insertions(+), 22 deletions(-)
 >
-> diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
-> index b3b8e1f6b92a..c97d55cf036f 100644
-> --- a/net/ipv6/tcpv6_offload.c
-> +++ b/net/ipv6/tcpv6_offload.c
-> @@ -32,6 +32,15 @@ INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct s=
-k_buff *skb, int thoff)
->         const struct ipv6hdr *iph =3D ipv6_hdr(skb);
->         struct tcphdr *th =3D tcp_hdr(skb);
->
-> +       if (NAPI_GRO_CB(skb)->is_flist) {
-> +               skb_shinfo(skb)->gso_type |=3D SKB_GSO_FRAGLIST | SKB_GSO=
-_TCPV6;
-> +               skb_shinfo(skb)->gso_segs =3D NAPI_GRO_CB(skb)->count;
-> +
-> +               __skb_incr_checksum_unnecessary(skb);
-> +
-> +               return 0;
-> +       }
-> +
->         th->check =3D ~tcp_v6_check(skb->len - thoff, &iph->saddr,
->                                   &iph->daddr, 0);
->         skb_shinfo(skb)->gso_type |=3D SKB_GSO_TCPV6;
 > --
-> 2.44.0
+> 2.34.1
 >
 
