@@ -1,249 +1,157 @@
-Return-Path: <linux-kernel+bounces-159935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E598B367C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87ED68B367F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:27:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A681A28720C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:25:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9192871D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA760145328;
-	Fri, 26 Apr 2024 11:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940C2145338;
+	Fri, 26 Apr 2024 11:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/QY9Ua3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gQDdbq2i"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A51144D3E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD76143890
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714130750; cv=none; b=Q+hXNlOg7Jg6nc5IZ33wwWIalXKFVwzPfOdq1xGpG/KwYP5dkYiVWO/0Ud5f8eGWbz0XrLyPjx+FS+wuJgGBL6jMrsI5nPoE9vn08IcYloY62rWiyGUre5EpBjQzNpFOsE8sjs2fgcsB2jwAw4gRz1etCKFYL2jNsgQRDnK9Js0=
+	t=1714130821; cv=none; b=iY9wwFYyx/XboDvj2DpMZdzKotmrb9Lb7aZR7MB7BnBAdZ+XX/tdyr92crB66iUayD7STkHhL7+MMBuYx8JbaH3VcdeoSU0r6C2lvr10TfITJ2L5vV7nFnKj2ayOoBexHJdiufPv/wFEqyV18zNk9/JqAv/MDJc6wTodprUo5ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714130750; c=relaxed/simple;
-	bh=l/c1BUNscJcDyTtyp2HhjNkjHJRw9cY32UUZ3BoilIA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=YRXZFS5w6M9v9d6tv0H+6UkOadb+pSFwl3Jhj99CWPo2aZlUTiDVa26rs0wmWc75CEJBwcYTIbxzemVKv0ImmTIUuIbMN3urNiKsIctQXMRTfNEOHHootw0Kias+apNvhxoOUyur7+Dn00PaZNLBe1kPaCtoZ9wXxDSIDMl2kTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/QY9Ua3; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714130749; x=1745666749;
-  h=date:from:to:cc:subject:message-id;
-  bh=l/c1BUNscJcDyTtyp2HhjNkjHJRw9cY32UUZ3BoilIA=;
-  b=R/QY9Ua3kARRxplW3QTco4mXIhEWx23GRU9huM6BbJZxfVbb4L3B2qte
-   An9r9uNW71xUs2/Z0V17TLprCbMyryfrurMZ8JfukWicDK4tXe0YXO3bH
-   yG6F5pLS3gIV0ImGJzi7Na2fw43MQi1ub6O+FXwjRnh8t5RP6IZGHpLPG
-   8RTaQZLd734aoF1q9FW0sJUhXM3sxSKARRDT8nBuM9pJVM9DdRJLRuJpB
-   rr2BR59TXV5egyILdDqRpLoIXtKCpAg5cxgu8c3Q0vRIJ76cBw+KyHYZ1
-   gGkCfzBNvNzMXO19My+cehZZBAlA1Bxof/Oe9OwHX36VDV/xnHscdPOfu
-   w==;
-X-CSE-ConnectionGUID: ttJ2+fFjQea7KXr+PPDYzg==
-X-CSE-MsgGUID: efW1WKqoQcWe+Q3wICvD2w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="32360464"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="32360464"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:25:48 -0700
-X-CSE-ConnectionGUID: kxRz5zbvS82vv4U/Sa0Wnw==
-X-CSE-MsgGUID: AlgPwj3bRaSh2eVgS84oyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="30033104"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:25:46 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0Ji4-0003eT-2O;
-	Fri, 26 Apr 2024 11:25:44 +0000
-Date: Fri, 26 Apr 2024 19:25:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/sev] BUILD SUCCESS
- e2f4c8c319abd1afbedb7a31877cb569265db1b4
-Message-ID: <202404261919.fTduBWnM-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1714130821; c=relaxed/simple;
+	bh=lJH1vAUzuD2xAYeKTWYUa/NPnYuLuV53+qYSGVI77ow=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X/jt82gI037HgyNe4Hz7NCkkQmEl7tEWA3hIgr8WAYkpGEwF9wzM1ge3QwSKcICiT0Gsi5JGHFXRk5VrCBvIDtBOKJoq7dFYn5VoJtSrMvs4y6bnECB25KXnnTfEiU/6ME7EXvp2BVNK4+PRGLOHtdRlgLf6ngQvPH8siqoFPX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gQDdbq2i; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714130819;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=JRBls/m74qSZorjaqM9e4x5+tWNgtnFayg/PS7KECKA=;
+	b=gQDdbq2ibZQbtSgjhqLXfnsuwkTEJn4anlMQXBjQnuPyVYxln3OQ+XSMZgnEa1KC1ez9x9
+	mGsqU86Ua2SH5NMMrzs5mhS6aLfgpjEwjRhDwutqLC2te44myMEvmZOJ0mwGgdvrag1xuM
+	OUJyiI7QfsEwfqFA1DLhvOYDBNOW1lI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-53-pj_AD8ipM7699rgYzgHhTA-1; Fri, 26 Apr 2024 07:26:57 -0400
+X-MC-Unique: pj_AD8ipM7699rgYzgHhTA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a55be723396so122744666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 04:26:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714130816; x=1714735616;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JRBls/m74qSZorjaqM9e4x5+tWNgtnFayg/PS7KECKA=;
+        b=Wi8kka6dK/UEL0i2+MRmxjLmknD+BGcxzjMM/fuHVtkWWh0Mp3k9whrqmxcdrLEMCJ
+         BPdSwMcx+X0Kr502lAt9emudU/5ybnXL5A2geDsKfNh5zlNpOmPGVun9Z3TQvxyJBeAG
+         pHpXMumpaMrkDXxD35m/ixyb5OWhEAz4Ncm8mkEFt5YktAlUXfiSH99I6t0g6hKZs6C5
+         uTWZuspy9HSmYyLVH/KT1KHu0PQUGveJxDHH4giiVQhkM5QJHCLYLxUKAJMyAHeq0Pq3
+         U/J4DbtPlIXU602P4+1v4x0qE6ax2Xy6Zj4fFK0zvak3oVkHXX3pqcikm/GAlLcB081h
+         xmBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVc0ECFN1icV2q0O02AeDxWZnpt/izIHLa05VT7zu12068XYTCzncuRZAwQn9/ktQ9SogTwcv4OtzuNeL8lBPwhmYYxzGRCSa4dEPTx
+X-Gm-Message-State: AOJu0YxukZG1rdQUbwg2KQZOn+w6Eq2pfIE10VHZn8A3BzxRp2mOoDGa
+	5Vy8wp6/tINLtMDP1zKBARVq7wNYh0bmO7aMI6ZnExG9qjLX8ClTsEM9znkmzUrDunUdwm+OFOM
+	luvCqw+Vnr2marckCYF3UPWGPTktBHH/KKCU7DF/w9YRt53uy6BOfh+A9go5HFw==
+X-Received: by 2002:a17:906:2543:b0:a55:be99:60d5 with SMTP id j3-20020a170906254300b00a55be9960d5mr1777776ejb.23.1714130816374;
+        Fri, 26 Apr 2024 04:26:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTmS2RNHwSZo0ZMPFetXxqXDSHWpcVU3RNwabCfGGCM1vM9kw57Jrbn4SH8q65/QjO73PKTg==
+X-Received: by 2002:a17:906:2543:b0:a55:be99:60d5 with SMTP id j3-20020a170906254300b00a55be9960d5mr1777757ejb.23.1714130815956;
+        Fri, 26 Apr 2024 04:26:55 -0700 (PDT)
+Received: from [192.168.0.9] (ip-109-43-179-20.web.vodafone.de. [109.43.179.20])
+        by smtp.gmail.com with ESMTPSA id g10-20020a1709067c4a00b00a4e5866448bsm10422001ejp.155.2024.04.26.04.26.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 04:26:55 -0700 (PDT)
+Message-ID: <c1a69fc4-8bce-4aa6-8641-5d651df0fc33@redhat.com>
+Date: Fri, 26 Apr 2024 13:26:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: selftests: Use TAP interface in the
+ set_memory_region test
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>, kvm@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <shuah@kernel.org>
+References: <20240426085556.619731-1-thuth@redhat.com>
+ <26993de8-0e4f-4d08-9009-730d674b16c7@collabora.com>
+From: Thomas Huth <thuth@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <26993de8-0e4f-4d08-9009-730d674b16c7@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
-branch HEAD: e2f4c8c319abd1afbedb7a31877cb569265db1b4  x86/sev: Make the VMPL0 checking more straight forward
+On 26/04/2024 12.07, Muhammad Usama Anjum wrote:
+> On 4/26/24 1:55 PM, Thomas Huth wrote:
+>> Use the kselftest_harness.h interface in this test to get TAP
+>> output, so that it is easier for the user to see what the test
+>> is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
+>> macro here since these tests are creating their VMs with the
+>> vm_create_barebones() function, not with vm_create_with_one_vcpu())
+> Thank you for the patch. I'm unable to apply the patch on next-20240426.
 
-elapsed time: 1224m
+Ah, I was using the master branch ... it's a context conflict due to 
+https://git.kernel.org/pub/scm/virt/kvm/kvm.git/commit/?id=dfc083a181bac ... 
+I'll send a v2 rebased to the next branch.
 
-configs tested: 157
-configs skipped: 3
+  Thomas
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20240426   gcc  
-arc                   randconfig-002-20240426   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                          moxart_defconfig   gcc  
-arm                           omap1_defconfig   gcc  
-arm                   randconfig-002-20240426   gcc  
-arm                   randconfig-003-20240426   gcc  
-arm                   randconfig-004-20240426   gcc  
-arm                        shmobile_defconfig   gcc  
-arm                        vexpress_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240426   gcc  
-arm64                 randconfig-002-20240426   gcc  
-arm64                 randconfig-004-20240426   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240426   gcc  
-csky                  randconfig-002-20240426   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-002-20240426   clang
-i386         buildonly-randconfig-005-20240426   clang
-i386         buildonly-randconfig-006-20240426   clang
-i386                                defconfig   clang
-i386                  randconfig-002-20240426   clang
-i386                  randconfig-006-20240426   clang
-i386                  randconfig-012-20240426   clang
-i386                  randconfig-013-20240426   clang
-i386                  randconfig-014-20240426   clang
-i386                  randconfig-015-20240426   clang
-i386                  randconfig-016-20240426   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240426   gcc  
-loongarch             randconfig-002-20240426   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                            q40_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                           ip27_defconfig   gcc  
-mips                       rbtx49xx_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240426   gcc  
-nios2                 randconfig-002-20240426   gcc  
-openrisc                         alldefconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240426   gcc  
-parisc                randconfig-002-20240426   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     ppa8548_defconfig   gcc  
-powerpc               randconfig-002-20240426   gcc  
-powerpc                      walnut_defconfig   gcc  
-powerpc64             randconfig-001-20240426   gcc  
-powerpc64             randconfig-002-20240426   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240426   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                    randconfig-001-20240426   gcc  
-sh                    randconfig-002-20240426   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240426   gcc  
-sparc64               randconfig-002-20240426   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240426   gcc  
-um                    randconfig-002-20240426   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-002-20240426   gcc  
-x86_64       buildonly-randconfig-005-20240426   gcc  
-x86_64       buildonly-randconfig-006-20240426   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   clang
-x86_64                randconfig-001-20240426   gcc  
-x86_64                randconfig-002-20240426   gcc  
-x86_64                randconfig-003-20240426   gcc  
-x86_64                randconfig-012-20240426   gcc  
-x86_64                randconfig-013-20240426   gcc  
-x86_64                randconfig-014-20240426   gcc  
-x86_64                randconfig-015-20240426   gcc  
-x86_64                randconfig-074-20240426   gcc  
-x86_64                randconfig-075-20240426   gcc  
-x86_64                randconfig-076-20240426   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240426   gcc  
-xtensa                randconfig-002-20240426   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
