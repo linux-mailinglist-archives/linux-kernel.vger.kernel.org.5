@@ -1,155 +1,217 @@
-Return-Path: <linux-kernel+bounces-160347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D5798B3C42
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:02:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC65B8B3BF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5943228318C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7541C23B90
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F9715B551;
-	Fri, 26 Apr 2024 16:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDCE14A4E9;
+	Fri, 26 Apr 2024 15:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="Bqzr2Sb9"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/gwIiX3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6DD3156674;
-	Fri, 26 Apr 2024 16:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECA7148FE5;
+	Fri, 26 Apr 2024 15:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714147258; cv=none; b=WNU1ss5LBKfyIA7sxWiwqNPHcLc+7BaS10vmirM+SUgX8nMwf9LrPxydW8X167yUmihoaK3wpnX4aAjMghHJQdvIkd6S4XNStVIDuXlY4Yar3SlsldJvBPzeXGkdDSdeBUNGGgdoYYJiRRdGgrE9jrPjB3wkxab5xgJUjBROgSk=
+	t=1714146302; cv=none; b=Cyp4noI2gpt4oLIowWtXufGDVBNoLrU3werm4UwwwC6z9NrO1Aowqe+zvgkLcsrnRC7uvaROR0yEhkER/YFNvq8mk7cfnRC68u9ExiXG4xN18enXa0gixJrUdIxsPyf74J/BTHVBZkIJ3dCHMnm0155RMTh9khQkYjrRKtCS0AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714147258; c=relaxed/simple;
-	bh=pxSUINJRH2avfn2/9DNzlRx7OkoXTWHoZxUg2HQP2ws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FuiwAaFAN16PY4ez586WQkeztmyfT5BP9i9hbSaeEonukmED6Ynxo9IE51LkBS+Ru/5uWGBEgDI/qnXXYBoArsNuGvy4kOohLzRp2of0W3R3tLtsVnD32kRgLp7/BeujGw+pxzAu9IVn/2p3b69CVKZ2dF7vUOiyGr8qzmQn4jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=Bqzr2Sb9; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 621FF884FD;
-	Fri, 26 Apr 2024 18:00:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1714147254;
-	bh=nmPDhDmaIgQDkA6x6HObPcx/r00e6kxLkilPuXIURrI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Bqzr2Sb9yVC8J/dWJRqBSJ4Kf1SRgyZA7YziXD9LhWuIc766fq+iLXU6LTtUw9p+N
-	 4Q05nS1575oJ1S6/4QWX/RWGpPjgNs2SRAmvaqz6d/Hc79i3PbcUaDRwd+IKS1wd/V
-	 7cNRAC0y35AO82v6uM+uXr9kkGa6MxexjNw+2HiCU2uOV+5Amx39uVLM4tChdbuAOq
-	 aVgXL17ZqKUooEQn7N+3L5d7/XNco8HAi8WhChW9myUArTjM3RTv9xRL1dyRWpkxvx
-	 Utezn/ahBqafr5aOtNvnpM4ayBbkGgtgUbdCA5KLPej1pVTeyq8sxG5OCAXmXsrhIw
-	 voCdCOmUU7c8Q==
-Message-ID: <43024130-dcd6-4175-b958-4401edfb5fd8@denx.de>
-Date: Fri, 26 Apr 2024 17:44:21 +0200
+	s=arc-20240116; t=1714146302; c=relaxed/simple;
+	bh=eOP2/U4Vd5DzPmdW0xejV5wEgvRGsN/4+Hk2GtsLxhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EJGJp7ilVWMaQyS9/tfVs8MnVgdy8vSoKwgvMKiZG0LA9hunBCnaDA4jreoErmJZiGepB4UqngMVqzvWPFe+ZbXGouq+IDPmVaQaFl5MIOsA1Z1tchHm6KHeUDPGr2KSztlSEkg4uipPiMy63NeGMgrbGv8u7gpe8IsmLJu9oXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/gwIiX3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86CB2C113CD;
+	Fri, 26 Apr 2024 15:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714146301;
+	bh=eOP2/U4Vd5DzPmdW0xejV5wEgvRGsN/4+Hk2GtsLxhE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m/gwIiX36LDs2I9/Z1NuMFucOvQCei1MAXd+b28yCja93zW8rs3K36b2ifWD+p/sh
+	 YdrablzWIkEWpsiAry8zadTIEddCuvv7yQ/nbH8YPvuCsDQ94Qk/kOeebuV9q6dftB
+	 +5VpqNDteiE6rs4saJM3xoHCaRSOtwrUMC5LgaQ7+j5l2z38oGa7diu7lN+0xvOcu+
+	 4L7x+6SWLJ1PMiP462dzHqxy1woJVywKaa9Uig8xbDl1pI8vIrnWhrUo+6M4wKxQ7T
+	 GoRh0sUP3ne4TeZu3fJNZLK/NrgtxhxZNMpEdNlDLT5PkVifWoBC1KMRHN/igePNyF
+	 M0yn5bBNfR16Q==
+Date: Fri, 26 Apr 2024 10:44:58 -0500
+From: Rob Herring <robh@kernel.org>
+To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <treding@nvidia.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] ASoC: dt-bindings: tegra30-i2s: convert to dt schema
+Message-ID: <20240426154458.GA1964057-robh@kernel.org>
+References: <20240425153045.49939-1-sheharyaar48@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/11] ARM: dts: stm32: add ethernet1 and ethernet2 for
- STM32MP135F-DK board
-To: Christophe Roullier <christophe.roullier@foss.st.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Richard Cochran <richardcochran@gmail.com>, Jose Abreu
- <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240426125707.585269-1-christophe.roullier@foss.st.com>
- <20240426125707.585269-11-christophe.roullier@foss.st.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <20240426125707.585269-11-christophe.roullier@foss.st.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425153045.49939-1-sheharyaar48@gmail.com>
 
-On 4/26/24 2:57 PM, Christophe Roullier wrote:
-> Add dual Ethernet:
-> -Ethernet1: RMII with crystal
-> -Ethernet2: RMII without crystal
-> PHYs used are SMSC (LAN8742A)
+On Thu, Apr 25, 2024 at 09:00:43PM +0530, Mohammad Shehar Yaar Tausif wrote:
+> Convert NVIDIA Tegra30 I2S binding to DT schema and
+> add "clock-names" property used by multiple tegra i2s blocks
+> in arch/arm64/boot/dts/nvidia/tegra132.dtsi. This is not a
+> required property by the binding.
 > 
-> With Ethernet1, we can performed WoL from PHY instead of GMAC point
-> of view.
-> (in this case IRQ for WoL is managed as wakeup pin and configured
-> in OS secure).
-
-How does the Linux PHY driver process such a PHY IRQ ?
-
-Or is Linux unaware of the PHY IRQ ? Doesn't that cause issues ?
-
-> diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-> index 567e53ad285f..3b8eb0ab9ab9 100644
-> --- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-> +++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
-> @@ -19,6 +19,8 @@ / {
->   	compatible = "st,stm32mp135f-dk", "st,stm32mp135";
->   
->   	aliases {
-> +		ethernet0 = &ethernet1;
-> +		ethernet1 = &ethernet2;
->   		serial0 = &uart4;
->   		serial1 = &usart1;
->   		serial2 = &uart8;
-> @@ -141,6 +143,52 @@ &cryp {
->   	status = "okay";
->   };
->   
-> +&ethernet1 {
-> +	status = "okay";
-> +	pinctrl-0 = <&eth1_rmii_pins_a>;
-> +	pinctrl-1 = <&eth1_rmii_sleep_pins_a>;
-> +	pinctrl-names = "default", "sleep";
-> +	phy-mode = "rmii";
-> +	max-speed = <100>;
-> +	phy-handle = <&phy0_eth1>;
-
-Keep the list sorted please (is the max-speed even needed? if not, drop it)
-
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "snps,dwmac-mdio";
+> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+> ---
+> Changes v3->v4:
+> - removed redundant example
+> - defined clock-names property
+> 
+> v3:
+> https://lore.kernel.org/all/20240425090716.176818-1-sheharyaar48@gmail.com/
+> ---
+>  .../bindings/sound/nvidia,tegra30-i2s.txt     | 27 ------
+>  .../bindings/sound/nvidia,tegra30-i2s.yaml    | 83 +++++++++++++++++++
+>  2 files changed, 83 insertions(+), 27 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
+> deleted file mode 100644
+> index 38caa936f6f8..000000000000
+> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
+> +++ /dev/null
+> @@ -1,27 +0,0 @@
+> -NVIDIA Tegra30 I2S controller
+> -
+> -Required properties:
+> -- compatible : For Tegra30, must contain "nvidia,tegra30-i2s".  For Tegra124,
+> -  must contain "nvidia,tegra124-i2s".  Otherwise, must contain
+> -  "nvidia,<chip>-i2s" plus at least one of the above, where <chip> is
+> -  tegra114 or tegra132.
+> -- reg : Should contain I2S registers location and length
+> -- clocks : Must contain one entry, for the module clock.
+> -  See ../clocks/clock-bindings.txt for details.
+> -- resets : Must contain an entry for each entry in reset-names.
+> -  See ../reset/reset.txt for details.
+> -- reset-names : Must include the following entries:
+> -  - i2s
+> -- nvidia,ahub-cif-ids : The list of AHUB CIF IDs for this port, rx (playback)
+> -  first, tx (capture) second. See nvidia,tegra30-ahub.txt for values.
+> -
+> -Example:
+> -
+> -i2s@70080300 {
+> -	compatible = "nvidia,tegra30-i2s";
+> -	reg = <0x70080300 0x100>;
+> -	nvidia,ahub-cif-ids = <4 4>;
+> -	clocks = <&tegra_car 11>;
+> -	resets = <&tegra_car 11>;
+> -	reset-names = "i2s";
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
+> new file mode 100644
+> index 000000000000..13cee366f5b3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/nvidia,tegra30-i2s.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +		phy0_eth1: ethernet-phy@0 {
-> +			compatible = "ethernet-phy-id0007.c131";
-> +			reset-gpios =  <&mcp23017 9 GPIO_ACTIVE_LOW>;
-> +			reg = <0>;
-> +			wakeup-source;
-> +		};
-> +	};
-> +};
+> +title: NVIDIA Tegra30 I2S controller
 > +
-> +&ethernet2 {
-> +	status = "okay";
-> +	pinctrl-0 = <&eth2_rmii_pins_a>;
-> +	pinctrl-1 = <&eth2_rmii_sleep_pins_a>;
-> +	pinctrl-names = "default", "sleep";
-> +	phy-mode = "rmii";
-> +	max-speed = <100>;
-> +	phy-handle = <&phy0_eth2>;
-> +	st,ext-phyclk;
-> +	phy-supply = <&scmi_v3v3_sw>;
+> +maintainers:
+> +  - Thierry Reding <treding@nvidia.com>
+> +  - Jon Hunter <jonathanh@nvidia.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - nvidia,tegra124-i2s
+> +          - nvidia,tegra30-i2s
 
-Sort please
+> +      - items:
+> +          - enum:
+> +              - nvidia,tegra114-i2s
+> +              - nvidia,tegra132-i2s
+> +          - enum:
+> +              - nvidia,tegra124-i2s
+> +              - nvidia,tegra30-i2s
 
-[...]
+This allows 4 possible combinations for 2 SoCs. That may be how the old 
+binding was worded, but that's not valid.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: i2s
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    const: i2s
+> +
+> +  nvidia,ahub-cif-ids:
+> +    description: list of AHUB CIF IDs
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    items:
+> +      - description: rx (playback)
+> +      - description: tx (capture)
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - resets
+> +  - reset-names
+> +  - nvidia,ahub-cif-ids
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/tegra30-car.h>
+> +
+> +    i2s@70080300 {
+> +        compatible = "nvidia,tegra30-i2s";
+> +        reg = <0x70080300 0x100>;
+> +        nvidia,ahub-cif-ids = <4 4>;
+> +        clocks = <&tegra_car TEGRA30_CLK_I2S0>;
+> +        resets = <&tegra_car 30>;
+> +        reset-names = "i2s";
+> +    };
+> +  - |
+> +    #include <dt-bindings/clock/tegra124-car.h>
+> +
+> +    i2s@70301100 {
+> +        compatible = "nvidia,tegra124-i2s";
+> +        reg = <0x70301100 0x100>;
+> +        nvidia,ahub-cif-ids = <5 5>;
+> +        clocks = <&tegra_car TEGRA124_CLK_I2S1>;
+> +        clock-names = "i2s";
+> +        resets = <&tegra_car 11>;
+> +        reset-names = "i2s";
+> +    };
+
+I didn't check what you removed, but this is still 1 example too many. 
+They are almost the same.
 
