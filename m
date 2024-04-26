@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6154E8B3ADA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7002C8B3ADB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1A7AB20D68
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:16:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2389E1F27D6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A263F172BD2;
-	Fri, 26 Apr 2024 15:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA94E173331;
+	Fri, 26 Apr 2024 15:10:51 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63A8172BC1
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B9D148FF6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144248; cv=none; b=U/n/+6JSL2V6szYM3zTPHXgDutt73sG8oxgDFcsTHbLwhiq44dwkeN2cV+KHJ/JjG0otbpyo0yUlayaIm35Wg+9jcvOMF1TorVQZmaNUc49lvSS5nAN829O2jG4rukdxBCB4UU07JPz7tvwSwmuUDsSxn8kMX+7racQMVeSBVl0=
+	t=1714144251; cv=none; b=MvvogvSIN15dSlFg3i/0NcRIyr9nS/XoP4VhhB7VCOdfC/mRmBLg4N4Ik0NZ8eLwak8q4139gtiZwEheCGtaBNHRyoTFdie4ac6ab2pSSk0hTIw6lOeVz/h6Y7Kpny50935/eVqzw5iitu1tOLkBmFqODfz2Fhp4WdavkJRGb3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144248; c=relaxed/simple;
-	bh=hX+Pi0uWtticanANrvdQL8nKhRDqlgNKxiF6qD7pQA4=;
+	s=arc-20240116; t=1714144251; c=relaxed/simple;
+	bh=DNQBOpOSOn3QTnTEG5GsWSOwJfjR4rA2vSKIl4S1DsM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Jb2jbSRcv6UGx7UaHqK/Ddm0XNFAkB22Q8m333QxhTtDwbdhaI8iJ0WubYxCCdy6W6M52CZvNFKdtjOgr4tIG4reYNq5Yp6HJXmnnYXn2SthoCS6eknOenmhblosRsQlThHjj6SlrKYJbpDlGTSDHLW9UHIB3cLgQE+98lBjuyA=
+	 MIME-Version; b=DoOftOmZvmdRYBD651FLspJjR/bKL1ScN69begRKAJJISFKPX72CgOB0ebNUzH5ilTpTz+Ye7mhCR4YbRPlJCihT1ZOjLKa/GboEnAPpEp5z0kARi3shkF8lpm1OoTj/prumePiJN3hNq8sLF5qbByxEY9FpPg3ztKXitAQAfdI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CA841682;
-	Fri, 26 Apr 2024 08:11:14 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A35241007;
+	Fri, 26 Apr 2024 08:11:17 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5561D3F73F;
-	Fri, 26 Apr 2024 08:10:43 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DA3C3F73F;
+	Fri, 26 Apr 2024 08:10:46 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 30/35] x86/resctrl: Squelch whitespace anomalies in resctrl core code
-Date: Fri, 26 Apr 2024 16:08:59 +0100
-Message-Id: <20240426150904.8854-30-Dave.Martin@arm.com>
+Subject: [PATCH v2 31/35] x86/resctrl: Prefer alloc(sizeof(*foo)) idiom in rdt_init_fs_context()
+Date: Fri, 26 Apr 2024 16:09:00 +0100
+Message-Id: <20240426150904.8854-31-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -72,14 +72,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-checkpatch.pl complains about some whitespace anomalies in the
-resctrl core code.
+rdt_init_fs_context() sizes a typed allocation using an explicit
+sizeof(type) expression, which checkpatch.pl complains about.
 
-This doesn't matter, but since this code is about to be factored
-out and made generic, this is a good opportunity to fix these
-issues and so reduce future checkpatch fuzz.
+Since this code is about to be factored out and made generic, this
+is a good opportunity to fix the code to size the allocation based
+on the target pointer instead, to reduce the chance of future mis-
+maintenance.
 
-Fix them.
+Fix it.
 
 No functional change.
 
@@ -91,74 +92,22 @@ Changes in v2:
 
  * New patch.
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index e78fa33c87e2..5cb0d6f805bd 100644
+index 5cb0d6f805bd..b797dc4804d3 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -991,7 +991,7 @@ static int rdt_num_closids_show(struct kernfs_open_file *of,
- }
- 
- static int rdt_default_ctrl_show(struct kernfs_open_file *of,
--			     struct seq_file *seq, void *v)
-+				 struct seq_file *seq, void *v)
+@@ -2860,7 +2860,7 @@ static int rdt_init_fs_context(struct fs_context *fc)
  {
- 	struct resctrl_schema *s = of->kn->parent->priv;
- 	struct rdt_resource *r = s->res;
-@@ -1001,7 +1001,7 @@ static int rdt_default_ctrl_show(struct kernfs_open_file *of,
- }
+ 	struct rdt_fs_context *ctx;
  
- static int rdt_min_cbm_bits_show(struct kernfs_open_file *of,
--			     struct seq_file *seq, void *v)
-+				 struct seq_file *seq, void *v)
- {
- 	struct resctrl_schema *s = of->kn->parent->priv;
- 	struct rdt_resource *r = s->res;
-@@ -1117,7 +1117,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- }
+-	ctx = kzalloc(sizeof(struct rdt_fs_context), GFP_KERNEL);
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
  
- static int rdt_min_bw_show(struct kernfs_open_file *of,
--			     struct seq_file *seq, void *v)
-+			   struct seq_file *seq, void *v)
- {
- 	struct resctrl_schema *s = of->kn->parent->priv;
- 	struct rdt_resource *r = s->res;
-@@ -1152,7 +1152,7 @@ static int rdt_mon_features_show(struct kernfs_open_file *of,
- }
- 
- static int rdt_bw_gran_show(struct kernfs_open_file *of,
--			     struct seq_file *seq, void *v)
-+			    struct seq_file *seq, void *v)
- {
- 	struct resctrl_schema *s = of->kn->parent->priv;
- 	struct rdt_resource *r = s->res;
-@@ -1162,7 +1162,7 @@ static int rdt_bw_gran_show(struct kernfs_open_file *of,
- }
- 
- static int rdt_delay_linear_show(struct kernfs_open_file *of,
--			     struct seq_file *seq, void *v)
-+				 struct seq_file *seq, void *v)
- {
- 	struct resctrl_schema *s = of->kn->parent->priv;
- 	struct rdt_resource *r = s->res;
-@@ -2017,7 +2017,6 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdtgroup_closid_show,
- 		.fflags		= RFTYPE_CTRL_BASE | RFTYPE_DEBUG,
- 	},
--
- };
- 
- static int rdtgroup_add_files(struct kernfs_node *kn, unsigned long fflags)
-@@ -3420,7 +3419,6 @@ static int rdtgroup_init_alloc(struct rdtgroup *rdtgrp)
- 			rdt_last_cmd_puts("Failed to initialize allocations\n");
- 			goto out;
- 		}
--
- 	}
- 
- 	rdtgrp->mode = RDT_MODE_SHAREABLE;
 -- 
 2.34.1
 
