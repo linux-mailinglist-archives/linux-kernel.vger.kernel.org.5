@@ -1,77 +1,54 @@
-Return-Path: <linux-kernel+bounces-160760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EFE8B4271
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:59:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C19D8B426E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:58:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC9841C21A50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:59:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 425D61F224F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34B53C087;
-	Fri, 26 Apr 2024 22:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35BB3A1B7;
+	Fri, 26 Apr 2024 22:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H9Z5yh5K"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cpHqITMH"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFE53BBC5;
-	Fri, 26 Apr 2024 22:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25503987D;
+	Fri, 26 Apr 2024 22:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714172339; cv=none; b=PZ0200aq0T1M0I1FSB5CP+J3uF3fYFmCS3yFH3V2xCgwI3QdpglLWXJSJYUZ5Vk5/akqV5ZBtSimR/gBYGiZuwUU/u4NxRrhZMud1MM6dkIdOt+c4fynASquJRLKyM3TNzIkp07Ln++iVG7/8b4TL+pqDVheopKi7pMnTwCUh+g=
+	t=1714172317; cv=none; b=WDiQ9CYJa8sXymTBnehNCy8nphF/rTZ+wXmjcBYW2054dfvMINdGEL5geShoEaBZNetjwu8xq52jsR8Kc0K1NbolJ1LDeU65ENqNOMr76OyhW+8/TRAUb2lfAGf99HX9ndY2AwmpLM9ueZrK05RVCeSfxI9nZjNG7+HJKFoDEGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714172339; c=relaxed/simple;
-	bh=2VvdgYGJW+J6G/InU4atjUaWGbpVPNUcFdofJqvbrsw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FbEE0VCVnGkCJfpMobNzq4nVlvQvrHtDNE1R9X8mPT7iPaZvHuzOzHlSpc3f3DT9Dr6juvO/LAMxQ3LdDcOsZdHtHmCScgbCy8BkXYC7FPW5XJOya89fG1k/Bb91lT/1Oy6rVdjGO+eRTeW6h5A8pJlMLn5KtN1Gzps/Q2okTjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H9Z5yh5K; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QMeYta022643;
-	Fri, 26 Apr 2024 22:58:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=hfr3SWAqYo+sSiXwwtPj7k1z5GcUrNj2b6ZD4IV+j/k=;
- b=H9Z5yh5K3AXI6v7Vs+HbUnHukYm7SmHEs4a5MyybdAkyk80Gk1fdcttHJyTNJ5axcvjR
- WHSPUk+32GQ2COmghqAoMQ/HfxX1WeoMWSI0uBFFnYz1M0nkl6CG4ncRbz3XpxmF62iI
- SLeJbUvG0uVLUXTN9i4sA8cdfdxqGqqN2PiiGB4XIJdCP6r07Pdivq/ni2qnsKJuuRZR
- VUhJQ7YVWdRfOYkAFamBNVSpVg4oUYeVtk6H4SCzTc/4SnGkkJtCrOhHnrPXNt2rvR6N
- zWgpLI2EMWa5V6b/lWd/wy6TSTaKE/j0AnoDYGwyAgE0BS1z5cwqx2BJ22oll3s/NtQp ug== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrn0fg1kg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 22:58:48 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QLMXfO005328;
-	Fri, 26 Apr 2024 22:56:04 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmx3d10vp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 22:56:04 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QMu2kV11272924
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 22:56:04 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 234B058059;
-	Fri, 26 Apr 2024 22:56:02 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6747658043;
-	Fri, 26 Apr 2024 22:56:01 +0000 (GMT)
-Received: from sbct-3.bos2.lab (unknown [9.47.158.153])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 22:56:01 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, lukas@wunner.de, jarkko@kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH] crypto: ecc - Protect ecc_digits_from_bytes from reading too many bytes
-Date: Fri, 26 Apr 2024 18:55:53 -0400
-Message-ID: <20240426225553.3038070-1-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1714172317; c=relaxed/simple;
+	bh=R0PXi5BpxTvbIeMG6WGSdqMAjrlasJh2Yznaym73TCw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jEWxLQSo4Vvo/NH1qnql+H8NYbekpYvgjtVD5vxlPFY4ZFGRuUIxJym4IdPY/gaOGzxPGG/UWT5jM1jMeB2SQyoVKOlMlZ6eNX2/8MCcE+0TD+HdbqbcetMXNjp7G1MwWopFqv+oyX+xUEwYgAa/LIzCneONCSqEUPW9DCbeC1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cpHqITMH; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 59D14240002;
+	Fri, 26 Apr 2024 22:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714172307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=e5EJs5OFkMMXkOQseHxFbsNg9C5+grICpRc78loD/PQ=;
+	b=cpHqITMHeOEzVRUDjQbpOXDU6jwoQKHRfmG+uy9dodK8w3hWC6V3XKZoYoDUtr07y5E/53
+	Ap9ddkRAofy3uzH2yApsS2SW7Wga5ueYu8SA2JrkBhI0bps/SNk3toDo/F9eRTAUVuYyfS
+	1cAjl/guJk864hVWMJNY7HBWXjlTgZ3LXYSldND/tasOJEBCescevt2SSLTuzYcVCTNola
+	OGa+9oGe+sVGxKpBZG91a8br97veKyw0BErv6nsiP79LR4bRRwHQ2YaGaxpcJTDiACGuBl
+	qViJnWNxUvGOyJLEK15fGLR1sU5wBLkKo1RnBE06S0dgzVR5RLoYM9kjtF8TAQ==
+From: alexandre.belloni@bootlin.com
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] pcf8563: add wakeup-source support
+Date: Sat, 27 Apr 2024 00:58:21 +0200
+Message-ID: <20240426225821.448963-1-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -80,55 +57,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: K5i04VXHYMgKYT3Bmddfj1En5_l8n3IG
-X-Proofpoint-ORIG-GUID: K5i04VXHYMgKYT3Bmddfj1En5_l8n3IG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_20,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxscore=0 clxscore=1011 suspectscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404260162
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-Protect ecc_digits_from_bytes from reading too many bytes from the input
-byte array in case an insufficient number of bytes is provided to fill the
-output digit array of ndigits. Therefore, initialize the most significant
-digits with 0 to avoid trying to read too many bytes later on.
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-If too many bytes are provided on the input byte array the extra bytes
-are ignored since the input variable 'ndigits' limits the number of digits
-that will be filled.
+In some platforms, the RTC is able to wake up the system but is not
+directly connected to an IRQ. Add wakeup-source property support to be able
+to express this in the Device Tree.
 
-Fixes: d67c96fb97b5 ("crypto: ecdsa - Convert byte arrays with key coordinates to digits")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- include/crypto/internal/ecc.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/rtc/rtc-pcf8563.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h
-index 7ca1f463d1ec..56215f14ff96 100644
---- a/include/crypto/internal/ecc.h
-+++ b/include/crypto/internal/ecc.h
-@@ -67,9 +67,16 @@ static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigit
- static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
- 					 u64 *out, unsigned int ndigits)
- {
-+	int diff = ndigits - DIV_ROUND_UP(nbytes, sizeof(u64));
- 	unsigned int o = nbytes & 7;
- 	__be64 msd = 0;
+diff --git a/drivers/rtc/rtc-pcf8563.c b/drivers/rtc/rtc-pcf8563.c
+index ea82b89d8929..1949d7473310 100644
+--- a/drivers/rtc/rtc-pcf8563.c
++++ b/drivers/rtc/rtc-pcf8563.c
+@@ -527,7 +527,6 @@ static int pcf8563_probe(struct i2c_client *client)
  
-+	/* diff > 0: not enough input bytes: set most significant digits to 0 */
-+	while (diff > 0) {
-+		out[--ndigits] = 0;
-+		diff--;
+ 	i2c_set_clientdata(client, pcf8563);
+ 	pcf8563->client = client;
+-	device_set_wakeup_capable(&client->dev, 1);
+ 
+ 	/* Set timer to lowest frequency to save power (ref Haoyu datasheet) */
+ 	buf = PCF8563_TMRC_1_60;
+@@ -553,6 +552,7 @@ static int pcf8563_probe(struct i2c_client *client)
+ 	/* the pcf8563 alarm only supports a minute accuracy */
+ 	set_bit(RTC_FEATURE_ALARM_RES_MINUTE, pcf8563->rtc->features);
+ 	clear_bit(RTC_FEATURE_UPDATE_INTERRUPT, pcf8563->rtc->features);
++	clear_bit(RTC_FEATURE_ALARM, pcf8563->rtc->features);
+ 	pcf8563->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
+ 	pcf8563->rtc->range_max = RTC_TIMESTAMP_END_2099;
+ 	pcf8563->rtc->set_start_time = true;
+@@ -573,7 +573,12 @@ static int pcf8563_probe(struct i2c_client *client)
+ 			return err;
+ 		}
+ 	} else {
+-		clear_bit(RTC_FEATURE_ALARM, pcf8563->rtc->features);
++		client->irq = 0;
 +	}
 +
- 	if (o) {
- 		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
- 		out[--ndigits] = be64_to_cpu(msd);
++	if (client->irq > 0 || device_property_read_bool(&client->dev, "wakeup-source")) {
++		device_init_wakeup(&client->dev, true);
++		set_bit(RTC_FEATURE_ALARM, pcf8563->rtc->features);
+ 	}
+ 
+ 	err = devm_rtc_register_device(pcf8563->rtc);
 -- 
-2.43.0
+2.44.0
 
 
