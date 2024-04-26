@@ -1,200 +1,159 @@
-Return-Path: <linux-kernel+bounces-160491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D3E8B3E2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:31:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261688B3E36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:32:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FCF9285034
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40CF2B2527F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E249A171678;
-	Fri, 26 Apr 2024 17:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3CE172BAD;
+	Fri, 26 Apr 2024 17:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0o+32H/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="bw24h3lc"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C2B15D5B4;
-	Fri, 26 Apr 2024 17:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAC615FD01
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152330; cv=none; b=dRqggqWy/YP7krNoejP6apB72Ck2KW5XeG/z7Nz2cox5kjrsCL9nlbaOarPGeB/LBQFiuuoYu54tYfeQwMwoDQb13J/xyvUmVN9dezzZ0H5IFOJqWtFkHuyk3ycs156KYToLbSyiEF/FYZsYXf6VczRodyLhpOZPK5/MZSFzltQ=
+	t=1714152496; cv=none; b=JSQ1AqGrvQLRWN+4GuJ4P+Y+CnugWKZYs/9OtLQ1ZDAW/3UYSoK38k10j+o2LmHYFJ8PwDPC02xCT71yt4o9+dB4L247NiP9AFjvXsF0fVcNFrZqRH4xgHJQ7VaI0tHCByQkJa931jGiD5166xUgzC9RvYCUEQGfKRylbgUQwns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152330; c=relaxed/simple;
-	bh=Q4NMk1LWHobI2cFlkQGEnn9B9bKM62Lmg3LIQHygs7c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NGuKwhuCUSUc9aqCrROJmAIxikECxJs1/bgH2lBgsuEmOtxl5s0hdNzGFxINURKyqmv4oVFbzM4gddL88mtcCLbtRJ+f257Wu/X8PyOTdXcGs/wf/VOiTByCTFELUwpZARAZj2bcJ1et6J9q7CUJnh7LP5OIxC8MiMdVnFdTXlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0o+32H/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9FEC116B1;
-	Fri, 26 Apr 2024 17:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714152329;
-	bh=Q4NMk1LWHobI2cFlkQGEnn9B9bKM62Lmg3LIQHygs7c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c0o+32H/vJV9bYx5Ho4HsNH5Ndk4QN/uEg+QKnO91w62UW8CFeVOdrRHFabLzOaij
-	 HsVSmxT8f5kcoKAYvFx2dd7mJBuKHclIG73pVihPd6kn1aG0Wcw0mufZv8YlM8sz87
-	 SA+BBvul43pbhxecfdTMRQZoMVUEuNq2rn676ouiqKFGvOxkqaVPUI+/DOX8SAohZS
-	 FvOhA8HCQ23/MzLDi+XMOaGxCG9gXaL6ye24v/61PP4ws0u59DGcGyI0w54iVfk2RG
-	 h/+qs/f1kljLIjHkUpXdn3dFOmLO78ZluCW3sKgA/pjqYi/kCzmChuF6VHG5jeG4b5
-	 sFnVsbH7todtg==
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5ad288442bdso443736eaf.3;
-        Fri, 26 Apr 2024 10:25:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWLclQiRz7CVfhnwqeeMfHe0yofkwmSoLjN/PVP4YUtC7sqAVBIqIqmXzp5JyLbP/wzxM8nt2iLypRV4fxaE3O0b9j0Oaf5Rv9U7YWuBGDCoiaPZUzvYoFu0f5D0XZdBcY0AoTCGt2Rww==
-X-Gm-Message-State: AOJu0YzLv6p2LVwx+WGIsBtt27A87mgbb+Ny3qK/rjqmFMw5I9pm72/I
-	UR5f2ipTrknR4sBpx7e9KcAw4eLfmrbS1juvG2cE/qrUEnicgF1TDEG1CYV7YXI0CeZLGk36BW5
-	3zrcVEEa8td39mPsXSuuUDib/RLQ=
-X-Google-Smtp-Source: AGHT+IHhmE2vUk7aKRQUcQQBItXDTuoDLciySuj2IxP8i7tqtQP+eDPHpHX5Av449I7nF2i0zRt8MaaP1hJJa3e3s/8=
-X-Received: by 2002:a05:6870:781a:b0:229:e46d:763a with SMTP id
- hb26-20020a056870781a00b00229e46d763amr3885833oab.0.1714152328963; Fri, 26
- Apr 2024 10:25:28 -0700 (PDT)
+	s=arc-20240116; t=1714152496; c=relaxed/simple;
+	bh=VGNC3FuUBoY4XLfaPkzu73wiRNiQjMii3/Pcgyeoeas=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=Eguplfr3AaohfDmwXM7LKGykXk9jcLTOX4aNH/ddEqcdxPcsFiNV8k3M76FUFvo7iy6ZcNqJlSVctJE72N8ox0ZmVtFiEMQwyXGlwFO0qAaOZdhhI+JBzEZ+BOphIR5LIrSeJoLohy6WPAcztHJGKX40GsTywV6zQRXyXXrOvo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=bw24h3lc; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so2333431b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1714152494; x=1714757294; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jVaQO4aOOoD5HFv/yuXIkEx3ckF+ESud5GzmK3URHMk=;
+        b=bw24h3lc2dTa9Rt1uIh95D1cTFppfiSKMi11IXIzRCE9AInKdioU9mHMC/7WxNPhqD
+         bX2PO4rM6IXBWqiFTBVQmhTWtGjsvzfF7KCPH8VrOB38nOduML9c43aVT7RXthR2ncUj
+         l0b1VqmvkfuruELygOEDSzSsesVYc0yjtvPELqPl8DhM3UmWZXYJSj6T95ne4ooZL41a
+         G0bUkr5EyCHbYuCKMV/bqkPMvu6Mi5lTiv7QcqlhdJLhzLsdF8znKanWmwovSNp3ajia
+         JOpIF49TgX1OfSjxlv5UnyfZeaaCiWOUTvvA030cKWXh9hzhvw34CH+R0uKDELh75nlh
+         Z1QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714152494; x=1714757294;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jVaQO4aOOoD5HFv/yuXIkEx3ckF+ESud5GzmK3URHMk=;
+        b=gkr8aPB88DXtmZOhgMN5lwLG8fyNh9X+fHQeNcmJZrut79szHRjs7RnoGYDFJkshjr
+         gPMQGctMKAIbmcaG6rr1mT2RB3lFdgkoX4oN+KYThSwK9Z6bpHidZn5qmfpAnXfVesi0
+         y643uYQcUvQs4BZgJJ9nH/UVwJ/4jSieIiH9hp8Sx+552fnlPpxLpARZSeL3keyEOL8k
+         D3xt4iqkaJS35md+J7vykEo41topaXM4yMSxynKSHU0HieqwAr9kcdZ+M7AR0glzUNg3
+         Uhz/ZGMbSHRKapIqxkkW8MyAvoezVTzAp8ZBmz1VHGB3E235btiuGVyTpvpow3o81+Cp
+         E49w==
+X-Forwarded-Encrypted: i=1; AJvYcCUnGv+3/9gDpxmUKSRRi8sjCtxcBFLxcVFuIo3c1UZQw2KBFqtFs4N/6VTkDEG/ZNvVsTXJ1/aFQ8xccQYlcx31hxjBbPlZosFKOTH9
+X-Gm-Message-State: AOJu0YyoyreTNLPl8+XWNQ2Mk9BkxdQ480RpZmiLJAGJ48oDHFZVsWEA
+	TenufbzLHG+taBfkTFFmyTHI0cNj2Y2pE+SRUqFggjbbG6kiPZREpWBX22pK2Gc=
+X-Google-Smtp-Source: AGHT+IF5ZhmO7eX8nkSZYElD9vu5AkgvriEyIvfRabLVo+Eb+eHgs+Ia3e9odQQKRsC00z8QgP072g==
+X-Received: by 2002:a05:6a20:43a9:b0:1aa:5b05:7926 with SMTP id i41-20020a056a2043a900b001aa5b057926mr4853573pzl.39.1714152493907;
+        Fri, 26 Apr 2024 10:28:13 -0700 (PDT)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id fm8-20020a056a002f8800b006ed059cdf02sm15099295pfb.116.2024.04.26.10.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 10:28:13 -0700 (PDT)
+Date: Fri, 26 Apr 2024 10:28:13 -0700 (PDT)
+X-Google-Original-Date: Fri, 26 Apr 2024 10:28:08 PDT (-0700)
+Subject:     Re: [PATCH 1/2] perf daemon: Fix the warning about time_t
+In-Reply-To: <20240305120501.1785084-2-ben717@andestech.com>
+CC: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
+  Mark Rutland <mark.rutland@arm.com>, alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+  adrian.hunter@intel.com, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+  linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+  dylan@andestech.com, tim609@andestech.com, ben717@andestech.com
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: ben717@andestech.com
+Message-ID: <mhng-8fa791ba-8c58-44c9-a4fd-f40ab808042b@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240331051126.10024-1-rithvik.rama@gmail.com>
-In-Reply-To: <20240331051126.10024-1-rithvik.rama@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 26 Apr 2024 19:25:17 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0heV36XbRy8TynZuB_sLTKHQDPTiuG_KxX=yYoF4oU0Yg@mail.gmail.com>
-Message-ID: <CAJZ5v0heV36XbRy8TynZuB_sLTKHQDPTiuG_KxX=yYoF4oU0Yg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI/ADXL: Added function for ADXL DSM Function 3
-To: Rithvik Rama <rithvik.rama@gmail.com>
-Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>, 
-	Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 31, 2024 at 7:11=E2=80=AFAM Rithvik Rama <rithvik.rama@gmail.co=
-m> wrote:
+On Tue, 05 Mar 2024 04:05:00 PST (-0800), ben717@andestech.com wrote:
+> In the 32-bit platform, the size of time_t is still 64 bits. Thus, use
+> PRIu64 to resolve the format problem.
 >
-> Current driver supports only Function Index 1 & 2 as mentioned in the
-> ACPI ADXL DSM Interface. Added a function for ACPI Function Index 3.
-
-What's happened that it has become useful now?
-
-Who's going to use it and for what purpose?
-
-> Signed-off-by: Rithvik Rama <rithvik.rama@gmail.com>
+> Signed-off-by: Ben Zong-You Xie <ben717@andestech.com>
 > ---
->  drivers/acpi/acpi_adxl.c | 54 +++++++++++++++++++++++++++++++++++++++-
->  include/linux/adxl.h     |  1 +
->  2 files changed, 54 insertions(+), 1 deletion(-)
+>  tools/perf/builtin-daemon.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/acpi/acpi_adxl.c b/drivers/acpi/acpi_adxl.c
-> index 13c8f7b50c46..5bf53662b737 100644
-> --- a/drivers/acpi/acpi_adxl.c
-> +++ b/drivers/acpi/acpi_adxl.c
-> @@ -14,6 +14,7 @@
->  #define ADXL_REVISION                  0x1
->  #define ADXL_IDX_GET_ADDR_PARAMS       0x1
->  #define ADXL_IDX_FORWARD_TRANSLATE     0x2
-> +#define ADXL_IDX_REVERSE_TRANSLATE     0X3
->  #define ACPI_ADXL_PATH                 "\\_SB.ADXL"
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 83954af36753..0b6ffd51c475 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -23,6 +23,7 @@
+>  #include <sys/signalfd.h>
+>  #include <sys/wait.h>
+>  #include <poll.h>
+> +#include <inttypes.h>
+>  #include "builtin.h"
+>  #include "perf.h"
+>  #include "debug.h"
+> @@ -688,7 +689,7 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
+>  			/* lock */
+>  			csv_sep, daemon->base, "lock");
 >
->  /*
-> @@ -135,6 +136,56 @@ int adxl_decode(u64 addr, u64 component_values[])
->  }
->  EXPORT_SYMBOL_GPL(adxl_decode);
+> -		fprintf(out, "%c%lu",
+> +		fprintf(out, "%c%" PRIu64 "",
+>  			/* session up time */
+>  			csv_sep, (curr - daemon->start) / 60);
 >
-> +/**
-> + * adxl_reverse_decode - Ask BIOS to decode a memory address to system a=
-ddress
-> + * @component_values: pointer to array of values for each component
-> + * Returns 0 on success, negative error code otherwise
-> + *
-
-Redundant line.
-
-> + */
-> +
-> +int adxl_reverse_decode(u64 component_values[])
-> +{
-> +       union acpi_object *argv4, *results, *r;
-> +       int i, cnt;
-> +
-> +       argv4 =3D kzalloc((adxl_count+1)*sizeof(*argv4), GFP_KERNEL);
-
-kcalloc()?
-
-> +       if (!argv4)
-> +               return -ENOMEM;
-> +
-> +       if (!adxl_component_names)
-> +               return -EOPNOTSUPP;
-
-This could be checked before allocating memory which is now leaked if
-it is NULL.
-
-This function generally leaks the argv4 memory AFAICS.
-
-> +
-> +       argv4[0].type =3D ACPI_TYPE_PACKAGE;
-> +       argv4[0].package.count =3D adxl_count;
-> +       argv4[0].package.elements =3D &argv4[1];
-> +
-> +       /*
-> +        * Loop through supported memory component values
-> +        */
-> +       for (i =3D 1; i <=3D adxl_count; i++) {
-> +               argv4[i].integer.type =3D ACPI_TYPE_INTEGER;
-> +               argv4[i].integer.value =3D component_values[i-1];
-> +       }
-> +
-> +       results =3D adxl_dsm(ADXL_IDX_REVERSE_TRANSLATE, argv4);
-> +       if (!results)
-> +               return -EINVAL;
-> +
-> +       r =3D results->package.elements + 1;
-> +       cnt =3D r->package.count;
-> +       if (cnt !=3D adxl_count) {
-> +               ACPI_FREE(results);
-> +               return -EINVAL;
-> +       }
-> +       r =3D r->package.elements;
-> +       for (i =3D 0; i < cnt; i++)
-> +               component_values[i] =3D r[i].integer.value;
-> +
-> +       ACPI_FREE(results);
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(adxl_reverse_decode);
-
-No users of this are being added.
-
-For this to be applicable, you need to also submit a patch adding a
-caller of adxl_reverse_decode().
-
-> +
->  static int __init adxl_init(void)
->  {
->         char *path =3D ACPI_ADXL_PATH;
-> @@ -155,7 +206,8 @@ static int __init adxl_init(void)
+> @@ -700,7 +701,7 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
+>  				daemon->base, SESSION_OUTPUT);
+>  			fprintf(out, "  lock:    %s/lock\n",
+>  				daemon->base);
+> -			fprintf(out, "  up:      %lu minutes\n",
+> +			fprintf(out, "  up:      %" PRIu64 " minutes\n",
+>  				(curr - daemon->start) / 60);
+>  		}
+>  	}
+> @@ -727,7 +728,7 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
+>  				/* session ack */
+>  				csv_sep, session->base, SESSION_ACK);
 >
->         if (!acpi_check_dsm(handle, &adxl_guid, ADXL_REVISION,
->                             ADXL_IDX_GET_ADDR_PARAMS |
-> -                           ADXL_IDX_FORWARD_TRANSLATE)) {
-> +                           ADXL_IDX_FORWARD_TRANSLATE |
-> +                           ADXL_IDX_REVERSE_TRANSLATE)) {
->                 pr_info("DSM method does not support forward translate\n"=
-);
->                 return -ENODEV;
->         }
-> diff --git a/include/linux/adxl.h b/include/linux/adxl.h
-> index 2a629acb4c3f..f3fea64a270c 100644
-> --- a/include/linux/adxl.h
-> +++ b/include/linux/adxl.h
-> @@ -9,5 +9,6 @@
+> -			fprintf(out, "%c%lu",
+> +			fprintf(out, "%c%" PRIu64 "",
+>  				/* session up time */
+>  				csv_sep, (curr - session->start) / 60);
 >
->  const char * const *adxl_get_component_names(void);
->  int adxl_decode(u64 addr, u64 component_values[]);
-> +int adxl_reverse_decode(u64 component_values[]);
->
->  #endif /* _LINUX_ADXL_H */
-> --
+> @@ -745,7 +746,7 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
+>  				session->base, SESSION_CONTROL);
+>  			fprintf(out, "  ack:     %s/%s\n",
+>  				session->base, SESSION_ACK);
+> -			fprintf(out, "  up:      %lu minutes\n",
+> +			fprintf(out, "  up:      %" PRIu64 " minutes\n",
+>  				(curr - session->start) / 60);
+>  		}
+>  	}
+
+Sorry I missed this earlier, but IIUC this one is actually incorrect: on 
+most 32-bit platforms time_t is 32 bits, it was later extended to 64 
+bits.  RISC-V is special because the work to make time_t 64-bit had 
+started when we submitted the port, so we just jumped straight to the 
+legacy-free uABI (after some headaches).
+
+So IIUC this would introduce a warning for some other targets.  Either 
+way I shouldn't have picked it up as it's not a RISC-V patch (this is a 
+generic perf file), so I'm going to drop it from fixes.
+
+Sorry for the confusion!
 
