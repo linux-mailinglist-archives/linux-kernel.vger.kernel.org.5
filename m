@@ -1,66 +1,61 @@
-Return-Path: <linux-kernel+bounces-159461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526828B2EE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:25:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7F68B2EEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1758B28402D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33DF11C21EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CB3763F2;
-	Fri, 26 Apr 2024 03:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5617640D;
+	Fri, 26 Apr 2024 03:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fPLNukjc"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BuuTDgfw"
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5D82BAE2;
-	Fri, 26 Apr 2024 03:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37942BAE5;
+	Fri, 26 Apr 2024 03:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714101949; cv=none; b=OGKQFQWLQV3omE139f569PU4cqvwZ1JSrIlBavzTtf0jxI2OvVMwYFYawF8M1CszCUz1pVQ8bgKYZ86QFkJCq8Ulr2a7JP87pkwDqSUkrfWJxXJVFgZO44do4jeYBT2nAoOFXXpgyYh59hEIAHkYFMbegSamIMA/Xn0Qp43vWpk=
+	t=1714102067; cv=none; b=O8+zFUSgNXDYJplTN4xi45/F4fnxoCOnE+FgS0Q4vwwlZiAxEWHyqclM0ZBbHim/YTbNkOSFa4/3Stz0/Ygt+SsoKN8t5dr4N1hyAuYqazGvR1S1OyP4igjwh9gb2ivZ3byooyWPiaMZuQSNzMWLR6/55CQOKg9V5Lp+3TBWPOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714101949; c=relaxed/simple;
-	bh=7OgY3E4OhSB7qgee85Fgr8Gin0wCc0ruVkh618+fd2U=;
+	s=arc-20240116; t=1714102067; c=relaxed/simple;
+	bh=ObdL6GZrnYLvFumBWkqwM4roFej+lx1IDQ53cn3DmkI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zi7SdkjwUWESgh/Ax5PebyejRYS+/4PptgnRu2rY4i4IMTtLBLXOyEcDnoAQSodvBqBLHS3GmeijCxMb6M4PSK/ztN/D1WDj+rVfilotr17juV8VJPoTk+Ou1Ttf2oTeBfsWNfC6/2zmYhMstFAKJ7CTN7NYTQjRuQGYuutQ10M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fPLNukjc; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZQuc86pxrfiAyclH+zyxmbKF7ezngm+JqRM+wu/sEUXyhVGTWzECccj/3fWTj+HGGRyFfWaK7+vaXOpBP19nrCMDoplIrK+U1Vll4AZbotl6Lz230rBrZ7YrtarjM9F0TGSo2vIXnOLKVJOkqwpRuNVYIoGWncLqZKpfQ/DTPuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BuuTDgfw; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=C7BGuFax2sLW1Ikgo6D4h4Axnj+rfKZZEdQqdqRze5Y=; b=fPLNukjc5FsxCc70iHDy4iKbYu
-	qUXxEUOVlz5cmhqdpUUaoH7msVoRMATiKpcaEniAdqHIqEmEv4O25Piq6Na4zW9oHP4dJgoCEBNm5
-	h/zgiXWli/nRJQ6kR4VQg9yX6EVZaBOvg/7uZI2Sw9YWCidSA71hc4XDrrINPkl1XA1NTXrAeoI54
-	rAAxHaee1UY5h4r1kbxEyZgSeNfVw3NjsC1UnAybUGFoeExyQ/iZKNWHvfeKsf+yUx7qVFELtvtv0
-	TqrlwZ1UkKAalxlBZFGnuiAbFbDTpvNnKpUQTHeR/icMuTerpH+wBinj9w4QLmhyWjD+sy1Fvfb6p
-	A3XRtMMw==;
+	bh=BruGrpEeGl8Bbb8+2NZYWt0i7WnhcaeFDM/TK8ffawQ=; b=BuuTDgfwOMhAdCpISaRUpEsXy1
+	QG0pECDaaF/LHOZ4e+IvNsCKOBvnbzJ6D58i2S3z1bwYR1KG3SdjcAfSzEP1MZUB+83TT7IJC/Xpc
+	0kTZcERULzGplBdGhF5TIZI16oUgFRfzbOLLtxDbftLsvOYnznBayqZvU2khbbCxdUtZ4IYl+E6gB
+	DRl+yDpJE1epqEsM3K1xot37H2sWZ2QosSBiK9uLsb29u2JlBGdN0N4oAn/UCBb80z9b9MgirdLIX
+	AO4ZQI/vC+YvpCQkuwVs2PMDkHYaxFpfxik0zMdHaeG1a/lBaIpbqzASCZY/cYTHlKZ9H6yMEULkp
+	xmiqxC8Q==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0CDU-00000004NaV-0r81;
-	Fri, 26 Apr 2024 03:25:40 +0000
-Date: Fri, 26 Apr 2024 04:25:40 +0100
+	id 1s0CFQ-00000004Nec-2lek;
+	Fri, 26 Apr 2024 03:27:40 +0000
+Date: Fri, 26 Apr 2024 04:27:40 +0100
 From: Matthew Wilcox <willy@infradead.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
-Message-ID: <ZisetKVI2Lnzucm9@casper.infradead.org>
-References: <20240425200844.work.184-kees@kernel.org>
- <w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
- <ZirCbPR1XwX2WJSX@casper.infradead.org>
- <64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
- <202404251532.F8860056AE@keescook>
- <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
- <sxcyj2gif2avyx2disz62sfe3hot24w4rtszgl2dtqadegtnek@xjkozdbd6yzp>
- <202404251740.81F21E54@keescook>
- <qzi5ss4h4ou6yfbzadoamqocvvzviuh3eeefpv5qfkcvrrejfo@qptmu2y6u7qj>
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: dave.kleikamp@oracle.com, brauner@kernel.org,
+	jfs-discussion@lists.sourceforge.net, jlayton@kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shaggy@kernel.org,
+	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
+Message-ID: <ZisfLI3Va6D5PjT6@casper.infradead.org>
+References: <ZiqNMLWFIvf43Mr-@casper.infradead.org>
+ <20240426023412.52281-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,20 +64,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <qzi5ss4h4ou6yfbzadoamqocvvzviuh3eeefpv5qfkcvrrejfo@qptmu2y6u7qj>
+In-Reply-To: <20240426023412.52281-1-aha310510@gmail.com>
 
-On Thu, Apr 25, 2024 at 08:58:34PM -0400, Kent Overstreet wrote:
-> On Thu, Apr 25, 2024 at 05:43:33PM -0700, Kees Cook wrote:
-> > All this said, I'm still not excited about any of these files living
-> > in /proc at all -- we were supposed to use /sys for this kind of thing,
-> > but its interface wasn't great for this kind of more "free-form" data,
-> > and debugfs isn't good for production interfaces. /proc really should
-> > only have pid information -- we end up exposing these top-level files to
-> > every mount namespace with a /proc mount. :( But that's a yet-to-be-solved
-> > problem...
+On Fri, Apr 26, 2024 at 11:34:12AM +0900, Jeongjun Park wrote:
+> I forgot to add Dave to the cc, so I'm sending it again.
 > 
-> It really wouldn't be that hard to relax the 4k file limit in sysfs.
+> Send final patch. With the patch that modified the location of
+> release_metapage(), out-of-bounds vulnerabilities can now be
+> sufficiently prevented.
 
-It's a lot harder to relax the GregKH opposition to multiple values per
-file in sysfs.
+This is not a good commit message.
+
+> +	if(agno >= MAXAG || agno < 0)
+
+Please follow normal kernel whitespace rules -- one space between 'if'
+and the open paren.
 
