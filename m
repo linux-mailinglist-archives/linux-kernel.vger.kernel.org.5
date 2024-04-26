@@ -1,141 +1,123 @@
-Return-Path: <linux-kernel+bounces-160621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B6E8B4030
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:39:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D8B8B4034
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:40:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABABA1F22D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CC39285D83
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B8918EA5;
-	Fri, 26 Apr 2024 19:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PAxVX7qP"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36F41BC31;
+	Fri, 26 Apr 2024 19:40:49 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96EE0111A8;
-	Fri, 26 Apr 2024 19:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1FA21101
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714160364; cv=none; b=NVYtz/SDTryuEGSrnzg3HW77pEI2LEOZygIqCBpZkAtpW+3TkdTBnI+0fvFBDhvAeycrrKxJ9KUQQh5yxnajW0O0RKhCjByXa71HnKGrcQE8DzU9gbYbeolroX56MJ4R14ekYU2FCm9Cxb1BosMo+fRZ4D2CXa0HQW/DWbYVI18=
+	t=1714160449; cv=none; b=q9YlnTuXpeTur32uCBTp7gtfYlj4+uTGub47GM+AL394g/EKS5HngEHePObllz+K5lTE2iz4tpfPdn8O4baf9eWNpWPb6m4pk0/IWPbxTNZruJmmNSuOwt0t3qEho0e0LgegxSe1vQVvMltrBl29UKMZVGUoVBM6X0baLw1PlI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714160364; c=relaxed/simple;
-	bh=8v8Bl/JNo7K0IhpqbY1MkBPByJZjD4Tjwu3fmu599ng=;
+	s=arc-20240116; t=1714160449; c=relaxed/simple;
+	bh=MJhoBOcKvcAfCqXZ27Dow0kPxI2bLjrCHZ1BhmTfiUs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LDI+GNE+kI8jws00LOo1evUDDRYS7klKdGX6W160BrWCQe0HFnEyVCq3MFoBaQT3rIiC6FyimFT+ime1ufQpYB2XC8T4qyIXMLq7AVOQDdPi2CF+OXVTkpev5abtZ69z51Ou3PFYpqj5sWisPvbricUGFD/c6GausIzlzEpXloQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PAxVX7qP; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=IcQFIAb+DjA34CSrIEaXkKwHCowFIDtU+a9kTz/JhdA=; b=PAxVX7qP8zBfvEtcd5DsTqeqRP
-	6KqPequrKiNcq9tfftLFb063iJbBXxVR5lPQWwRjQUqQ0cPF+0O1gGfEt6QVKqwBXte8V2Mb5LiSI
-	Aqz9wlILClntTHheFeze1bmbmDh/Q0boBakxM+htzJ2ILu+Az4tSbt419IgWW2s29N1To/R0r0MLZ
-	ZOi3qd3Ub8X6qgZEOGCygkc5sDrV5V8ERQh5d9zFmqSJlYNfR+4r0pC7C2XFNGw6ge1WJikuTd/Jf
-	qRDpbYk3zI6H67HQZsvxKtcS7TJ/ZfdK/gRE6G/gS/OzBx4xDYyw4Au8GYI62QPeyCqJlDT954a+Z
-	5c04liCA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0RPe-00000005snl-3bzF;
-	Fri, 26 Apr 2024 19:39:15 +0000
-Date: Fri, 26 Apr 2024 20:39:14 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rientjes@google.com, dwmw2@infradead.org, baolu.lu@linux.intel.com,
-	joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-	iommu@lists.linux.dev
-Subject: Re: [RFC v2 0/3] iommu/intel: Free empty page tables on unmaps
-Message-ID: <ZiwC4snk03ptUQij@casper.infradead.org>
-References: <20240426034323.417219-1-pasha.tatashin@soleen.com>
- <2daf168e-e2b2-4b19-9b39-d58b358c8cd9@redhat.com>
- <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
- <9bf62e97-dfdd-4537-8fb0-b5f293856f59@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YxfotZBAk0dWFsiaQBtbjEfNZiwePLuyhuxkhiljIkAoZZ5DrDWYuLb9+TfWU7iFvJgmmMkpjpke9nRKupn7b6tVvwSH2rvVxsGtGFw//eb+RQnCMY7kLB/MchP3fKhFZZsmY1zaBkd4BOOr6eMtuS88h21Gg/ekM541SF+n0pU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s0RQo-0006P0-27; Fri, 26 Apr 2024 21:40:26 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s0RQn-00EV0n-4J; Fri, 26 Apr 2024 21:40:25 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s0RQn-009ZX2-08;
+	Fri, 26 Apr 2024 21:40:25 +0200
+Date: Fri, 26 Apr 2024 21:40:24 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Russell King <linux@armlinux.org.uk>
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	Alexander Stein <alexander.stein@ew.tq-group.com>, linux-kernel@vger.kernel.org, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 00/49] ARM: dts: imx: Use #pwm-cells = <3> for
+ imx27-pwm device
+Message-ID: <oy4mnbkskyrw5dwkq3rebe2yh4i3fy44rubhvesug7pedzws46@472pzktn5t22>
+References: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6qlyaxmagn4lyfzd"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9bf62e97-dfdd-4537-8fb0-b5f293856f59@redhat.com>
+In-Reply-To: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, Apr 26, 2024 at 04:39:05PM +0200, David Hildenbrand wrote:
-> On 26.04.24 15:49, Pasha Tatashin wrote:
-> > On Fri, Apr 26, 2024 at 2:42 AM David Hildenbrand <david@redhat.com> wrote:
-> > > 
-> > > On 26.04.24 05:43, Pasha Tatashin wrote:
-> > > > Changelog
-> > > > ================================================================
-> > > > v2: Use mapcount instead of refcount
-> > > >       Synchronized with IOMMU Observability changes.
-> > > > ================================================================
-> > > > 
-> > > > This series frees empty page tables on unmaps. It intends to be a
-> > > > low overhead feature.
-> > > > 
-> > > > The read-writer lock is used to synchronize page table, but most of
-> > > > time the lock is held is reader. It is held as a writer for short
-> > > > period of time when unmapping a page that is bigger than the current
-> > > > iova request. For all other cases this lock is read-only.
-> > > > 
-> > > > page->mapcount is used in order to track number of entries at each page
-> > > > table.
-> > > 
-> > > I'm wondering if this will conflict with page_type at some point? We're
-> > > already converting other page table users to ptdesc. CCing Willy.
-> > 
-> > Hi David,
-> 
-> Hi!
-> 
-> > 
-> > This contradicts with the following comment in mm_types.h:
-> >   * If your page will not be mapped to userspace, you can also use the four
-> >   * bytes in the mapcount union, but you must call
-> > page_mapcount_reset()
-> >   * before freeing it.
-> 
-> I think the documentation is a bit outdated, because we now have page types
-> that are: "For pages that are never mapped to userspace"
-> 
-> which includes
-> 
-> #define PG_table
-> 
-> (we should update that comment, because we're now also using it for hugetlb
-> that can be mapped to user space, which is fine.)
-> 
-> Right now, using page->_mapcount would likely still be fine, as long as you
-> cannot end up creating a value that would resemble a type (e.g., PG_offline
-> could be bad).
-> 
-> But staring at users of _mapcount and page_mapcount_reset() ... you'd be
-> pretty much the only user of that.
-> 
-> mm/zsmalloc.c calls page_mapcount_reset(), and I am not completely sure why
-> ... I can see it touch page->index but not page->_mapcount.
-> 
-> 
-> Hopefully Willy can comment.
 
-I feel like I have to say "no" to Pasha far too often ;-(
+--6qlyaxmagn4lyfzd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Agreed the documentation is out of date.
+Hello,
 
-I think there's a lot of space in the struct page that can be used.
-These are iommu page tables, not cpu page tables, so things are a bit
-different for them.  But should they be converted to use ptdesc?  Maybe!
+On Fri, Apr 05, 2024 at 11:41:47PM +0200, Uwe Kleine-K=F6nig wrote:
+> this series addresses many warnings of the type:
+>=20
+> 	arch/arm/boot/dts/nxp/imx/imx6ul-pico-dwarf.dtb: pwm@2088000: #pwm-cells=
+:0:0: 3 was expected
+> 	        from schema : http://devicetree.org/schemas/pwm/imx-pwm.yaml#
+>=20
+> that is emitted when building with CHECK_DTBS=3D1.
+>=20
+> This completes the conversion started with
+>=20
+> 	fa28d8212ede ("ARM: dts: imx: default to #pwm-cells =3D <3> in the SoC d=
+tsi files")
+> 	4c6f19ab2aed ("dt-bindings: pwm: imx-pwm: Unify #pwm-cells for all compa=
+tibles")
 
-I'd suggest putting this into the union with pt_mm and pt_frag_refcount.
-I think it could even go in the union with pt_list, but I think I'd
-rather see it in the pt_mm union.
+Gentle ping! I would expect that Shawn picks up this series.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--6qlyaxmagn4lyfzd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYsAycACgkQj4D7WH0S
+/k76+gf/RTd50w5R0hfdfG8xkZOBeH3rPK6SXQs8zpgJ+/lgFxqquJi95MpCrQiG
+3JRo4kCmPkPbUNjhTGORzRBeh9Gi8uI7FZ1TFEMgiytsVDuJV/lC/CbWAhI/BebL
+N+vBHG3188lpfsfzgbuUnCQk1TxLEeyWrdV/sG5pGR1JaalCudQxwTVODqvRX8T3
+qiuNqZmHG3HWkGVZ21ibdkdfVcArWphKeB2GUpss3MQJDNR8zYPkMgFYWYy3TYie
+ic2z6+LEP/9IA2E5eKz6prVC/zgOjsUMktzs5aNy01uRxiUe1iQ3IPhPuBu/qner
+qlkpR97+TFM8ZGuypO4fRp0bVIG3Aw==
+=sPqb
+-----END PGP SIGNATURE-----
+
+--6qlyaxmagn4lyfzd--
 
