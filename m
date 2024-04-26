@@ -1,115 +1,137 @@
-Return-Path: <linux-kernel+bounces-160287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BE78B3B6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AB28B3B76
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770341F217FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:29:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A2801F223E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3C0149C7B;
-	Fri, 26 Apr 2024 15:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB237149007;
+	Fri, 26 Apr 2024 15:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jE+HT8fE"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="f0i9NmvH"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E197148FF0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9901DFFC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145331; cv=none; b=RYZl1MFOdnftLy+DTE4yiWdppnIfK2yQ/1O9QNyuEgbKZHBR+qSXVTopaxHh9lU6ImyzyLLxTQGO/OBaXESGBhGgMkWvJMAUzoXotvKyKeDnvvr6Y5oFiD+BJA+JkFg8uGNx07TKDwv7gujOiA3lODHDBXENAvh4Q6vexSVu4Jw=
+	t=1714145399; cv=none; b=JWi+ZMVQiwUQsOHfC9oKuUB/gjZvUeJMAHUh3ILeXuG/6AjDvGjj7lF4SmrlUyLy2804Ausc+wHQOgq8O1razeDvTQrWLRtAZSrjZyRSy/c0DIV0xWxdKebFN/sRgz+YTRsYKChhe+K0A5gOTEVAy9oB5XkPjSit/beJuEDMKF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145331; c=relaxed/simple;
-	bh=B9S+VgIc4hHSvEtMfMzv55OnFnUMC5C0EuUCYvhoK+c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EeSMMH+h7SYfj/9F1Br4RLNzd4cR57aMyU50HNYlH/wi0rMXDmy9vM8UHU0ISDyTixQC1eR2Wp7s5Dl87nxKp8A5dN/bIczGFcYxLqzV6sAd8mU/N8yAg0WLOClcqT6JErDxd/Xm54sA2sY14J2s5EkIO6ACDNbVi/D6iEStJYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jE+HT8fE; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=5+JV8nGNDt7Yb0J1C93bew3ffEU+OKReUrVUHx6lRBY=; b=jE+HT8fEk5nk3WgGMTjsyJxmHt
-	RFv/JBKSxfDB7yTJ27NOxG5to192JMyfyKkkZ0bQI/YN4HPRsvQge5CaLYs9sG3IVDRabru6mRDLT
-	ZEwUAzogWDtfsjWnWU2iMlLb217tXbci8JwOA684kwuKr6KCdyyZgPL7Uy8K6YuCcGH9YXz0KYRBJ
-	u93vvpac5T2s4ZJoMXqr7rDlibkgYS8ZZgXjJcPgWmlhEAebwkRbm9ati6SWpQjAxggHEg8hl+TrR
-	5lvTrm+kvXpWlgZewTlHbOaUX+6X6jzS0BTKMt06NzcB3mwvJXzVBE1tsaKjMJftBXXsZqFKA0t7g
-	EmcymXpA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0NVG-00000005U9x-0lSp;
-	Fri, 26 Apr 2024 15:28:46 +0000
-Date: Fri, 26 Apr 2024 16:28:46 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Xu <peterx@redhat.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-Message-ID: <ZivILlyRv7rNMldQ@casper.infradead.org>
-References: <20240410170621.2011171-1-peterx@redhat.com>
- <20240411171319.almhz23xulg4f7op@revolver>
- <ZhhSItiyLYBEdAX3@x1n>
- <ZhhV3PKgEX9d7_vA@casper.infradead.org>
- <ZhhaRXHKk7w_hKgi@x1n>
- <Zhhd-A7w1A8JUadM@casper.infradead.org>
- <ZhinCD-PoblxGFm0@casper.infradead.org>
- <ZiuzikG6-jDpbitv@casper.infradead.org>
- <CAJuCfpH+O0NYtTrGKSY6FjBOcWpyKXB+_4rsSRjcewSXUWVfCQ@mail.gmail.com>
+	s=arc-20240116; t=1714145399; c=relaxed/simple;
+	bh=IkqBB2wtliEK5GnGejTqTQe4Yfs6TKvgKFbT0UeTxrk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ra6BlRZX4mPr3OJ79Bwqa3G3t7LRQfawig6smnYL9GfkD4Sk6fwTgGUtj3RhdceQ/nSUb+xTf8XFqcCTNHSNefhZhU1YHef/2qJqiVImGYQwrk+PYFZAMExSCahbfoO77HmYD0ZLKV2y7aET8celGbxsadBEq5IHjgzfaE9SHME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=f0i9NmvH; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-518931f8d23so2464060e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714145395; x=1714750195; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xUkLsSc4WA93wLtzN5OQsZNRMCNr0FDmpfgqlBr15OA=;
+        b=f0i9NmvHZk9SAx2qle8Ot6CclLx594Q24s6Z0w++GpE/DgZvDQuv2sdSf51x6qUt1S
+         2KoLia//d5Of+XRt5wmZXTz7b7OjMkmFSpIztiMG9ZAGkaMDZ8OU+VYWbFCSvnnqt2Ng
+         4n2LApS0bsObfbhxaBlSC5+NU/9VWrKeeAWGsVObrXZVwHxrJGFTdUcpXTFYKaDGZOqV
+         awFlaTKEIsHpBNcnWiNvIN9vjjEkgCjMgW6nY2iGjLpaJoWH5b8T4VICd0eYZJpFzaPJ
+         bI/T2/3V5uWlS93oJ9ZW+HCt/R0thGxxpG4UvhMuTAuCGJteeQB/1I27yXtVC1j6BLdG
+         LTYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714145395; x=1714750195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xUkLsSc4WA93wLtzN5OQsZNRMCNr0FDmpfgqlBr15OA=;
+        b=Y4AI45AuqAWlcI1uV4HMxAWK9zVB035cnMYYAHBEVogcExrdUVlkqhEmKiVZUNhRpE
+         0uyeyz/JA/XFi2mLp+wclOf+ZZyF7yVyFeqQ5gTZ6xjW1nwwAP4H1ISW+XvMSGwI1fPR
+         zras/7bQE+4EtcfETJ0WMQtfyb/Q9Dxv3MHhgbz47zOdfY85XG9CGEQT0Dr3poohCXsH
+         noCM8TDnIHSOgs3GGu7tth0y3b6xa8ARlASg5+haaxH1s3BAyXZxiEFNNjblTW6dTGfa
+         YtJA7hzXHRfPVXHP7v4jx5cUJ34Erwmk2AX3IDijEikPZWU4Zo5d7psDQAPmLBWjpDxq
+         eUHw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmhKMM1Zlpz4LB8c9UgAgftSH0QFnV1z8CX+IKzbtZ7CGrK/cypcz54ctCm7gTFqIXDXRAWydKhjXHj9SouNP0/78XezEs9p26n937
+X-Gm-Message-State: AOJu0YzEcpHJWWV7k8tStA6N+RqALDWA3jQeeJ8Jih5lDIOQw5LfaG0n
+	28Rg8qr5+aPCdZ3q7M/ueQNoLf8xHEmmlwoGhs1w9kWit1oxfYkShqnkPPoizhS91Gw8OEPTE2k
+	A
+X-Google-Smtp-Source: AGHT+IFMxlBhWe1Oje3VzHCy05U8U/CCJEV92z6GmGIYTbHCedgsiCSp+J0MWzhqi0Ldz9xuDlW6Sw==
+X-Received: by 2002:a19:ac0b:0:b0:51a:f255:ade3 with SMTP id g11-20020a19ac0b000000b0051af255ade3mr1761882lfc.20.1714145395077;
+        Fri, 26 Apr 2024 08:29:55 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:1926:f73e:8b99:1c0a])
+        by smtp.googlemail.com with ESMTPSA id i13-20020a05600c354d00b00419fba938d8sm22628687wmq.27.2024.04.26.08.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 08:29:54 -0700 (PDT)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	linux-amlogic@lists.infradead.org
+Subject: [PATCH 0/4] ASoC: meson: tdm fixes
+Date: Fri, 26 Apr 2024 17:29:37 +0200
+Message-ID: <20240426152946.3078805-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpH+O0NYtTrGKSY6FjBOcWpyKXB+_4rsSRjcewSXUWVfCQ@mail.gmail.com>
 
-On Fri, Apr 26, 2024 at 08:07:45AM -0700, Suren Baghdasaryan wrote:
-> On Fri, Apr 26, 2024 at 7:00 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > Intel's 0day got back to me with data and it's ridiculously good.
-> > Headline figure: over 3x throughput improvement with vm-scalability
-> > https://lore.kernel.org/all/202404261055.c5e24608-oliver.sang@intel.com/
-> >
-> > I can't see why it's that good.  It shouldn't be that good.  I'm
-> > seeing big numbers here:
-> >
-> >       4366 ą  2%    +565.6%      29061        perf-stat.overall.cycles-between-cache-misses
-> >
-> > and the code being deleted is only checking vma->vm_ops and
-> > vma->anon_vma.  Surely that cache line is referenced so frequently
-> > during pagefault that deleting a reference here will make no difference
-> > at all?
-> 
-> That indeed looks overly good. Sorry, I didn't have a chance to run
-> the benchmarks on my side yet because of the ongoing Android bootcamp
-> this week.
+This patchset fixes 2 problems on TDM which both find a solution
+by properly implementing the .trigger() callback for the TDM backend.
 
-No problem.  Darn work getting in the way of having fun ;-)
+ATM, enabling the TDM formatters is done by the .prepare() callback
+because handling the formatter is slow due to necessary calls to CCF.
 
-> > I still don't understand why we have to take the mmap_sem less often.
-> > Is there perhaps a VMA for which we have a NULL vm_ops, but don't set
-> > an anon_vma on a page fault?
-> 
-> I think the only path in either do_anonymous_page() or
-> do_huge_pmd_anonymous_page() that skips calling anon_vma_prepare() is
-> the "Use the zero-page for reads" here:
-> https://elixir.bootlin.com/linux/latest/source/mm/memory.c#L4265. I
-> didn't look into this particular benchmark yet but will try it out
-> once I have some time to benchmark your change.
+The first problem affects the TDMIN. Because .prepare() is called on DPCM
+backend first, the formatter are started before the FIFOs and this may
+cause a random channel shifts if the TDMIN use multiple lanes with more
+than 2 slots per lanes. Using trigger() allows to set the FE/BE order,
+solving the problem.
 
-Yes, Liam and I had just brainstormed that as being a plausible
-explanation too.  I don't know how frequent it is to use anon memory
-read-only.  Presumably it must happen often enough that we've bothered
-to implement the zero-page optimisation.  But probably not nearly as
-often as this benchmark makes it happen ;-)
+There has already been an attempt to fix this 3y ago [1] and reverted [2]
+It triggered a 'sleep in irq' error on the period IRQ. The solution is
+to just use the bottom half of threaded IRQ. This is patch #1. Patch #2
+and #3 remain mostly the same as 3y ago.
+
+For TDMOUT, the problem is on pause. ATM pause only stops the FIFO and
+the TDMOUT just starves. When it does, it will actually repeat the last
+sample continuously. Depending on the platform, if there is no high-pass
+filter on the analog path, this may translate to a constant position of
+the speaker membrane. There is no audible glitch but it may damage the
+speaker coil.
+
+Properly stopping the TDMOUT in pause solves the problem. There is
+behaviour change associated with that fix. Clocks used to be continuous
+on pause because of the problem above. They will now be gated on pause by
+default, as they should. The last change introduce the proper support for
+continuous clocks, if needed.
+
+[1]: https://lore.kernel.org/linux-amlogic/20211020114217.133153-1-jbrunet@baylibre.com
+[2]: https://lore.kernel.org/linux-amlogic/20220421155725.2589089-1-narmstrong@baylibre.com
+
+Jerome Brunet (4):
+  ASoC: meson: axg-fifo: use threaded irq to check periods
+  ASoC: meson: axg-card: make links nonatomic
+  ASoC: meson: axg-tdm-interface: manage formatters in trigger
+  ASoC: meson: axg-tdm: add continuous clock support
+
+ sound/soc/meson/axg-card.c          |  1 +
+ sound/soc/meson/axg-fifo.c          | 29 +++++++++++++--------
+ sound/soc/meson/axg-tdm-formatter.c | 40 +++++++++++++++++++++++++++++
+ sound/soc/meson/axg-tdm-interface.c | 38 +++++++++++++++++++--------
+ sound/soc/meson/axg-tdm.h           |  5 ++++
+ 5 files changed, 93 insertions(+), 20 deletions(-)
+
+-- 
+2.43.0
+
 
