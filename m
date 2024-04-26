@@ -1,123 +1,147 @@
-Return-Path: <linux-kernel+bounces-159739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79088B3382
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:04:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D04F8B3397
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:08:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8143B21377
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:04:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DCC71C21A09
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3A813D291;
-	Fri, 26 Apr 2024 09:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1CF13E043;
+	Fri, 26 Apr 2024 09:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="FpOERp8U"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tf02vT6Q"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F6225605
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F389613D500;
+	Fri, 26 Apr 2024 09:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714122270; cv=none; b=Tzv+P6IhK86eAxWtmc4PwFfkf4CmT//wPGMyilFF8QYkorAejrkUoPTHclqLWy/Y3fpR+vF2uH+2E+JpwLvbXPQPPxDgsfaU1S9iJTJR1Uaeo7pHqVEyoy8IMGACaMLAAa8/4vcHlhq0RzBNoet2IXuwOBvckCAF70BovvAtHJU=
+	t=1714122415; cv=none; b=MT9s4zS+AxQAYQzUQ/6WCksxIbZ5z6wD2dftsze9n/M9yn66Y2tHNJN3SiZuuXJnsv9znKa8AI3rKvfk34WTvRozkyp3lzkMwqeRznC/awI1k3uXxis1/kBtI5EmYhPrTZkmwAMmQIxs6z0Mlnp5lnHEBWnOnnGOK3AOzW6AvLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714122270; c=relaxed/simple;
-	bh=nW7jXvCEvQnb9l7QOm8u/1qQtJrmGBsLapHtsNxqzkU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nY3iYQfj55QwuBF3agmjscaZyN4TFRVhc7WMk4DeBAYP4fCVoLiLEFMTTcvYwYFQikRB1DwlSJUX6oMLCww+MEih7em0U3Ntn+XMMaqEKU5GtIr7n+GfYWni65D2uiPO/6beZ3pyfntiwZ0IdCf4spvejWxbjjLVv4BNFCbjy/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=FpOERp8U; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a55b2f49206so518187866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714122267; x=1714727067; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hzl4Ufo8fPsUKZxQXQJoooQsy8g61GqJ67h+tl5OxfU=;
-        b=FpOERp8UD4XvijQD/Thldx9fZbq4orYkU3NmEDsKgY94lI2MNkyMBMB9w/VSW7WdeP
-         uxjVvzoPZvETVetc4HSFwGDAPeFqzZHTIitL5rMnqP8cwOnoh8LE6cXc5cfI8Sooq5oZ
-         0Ok4nVoDtanPFVchSGavhfOjAEzjXNBth/ysKKQB/dNeBkgXoM9bXFIU0RwPNNmiCDN5
-         6nTC75v9SamhC+71GO1E+L1ae5EBVOvW4mBL/Csuh51A2j2svLIpIUdZNyaYE0rlYW3p
-         53wcafWJUwGe58srp+czumBObuCnYEUCqVDQ6LrtkZcRYDZPxaOeRkRxBvjLmyTmolpd
-         IXoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714122267; x=1714727067;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hzl4Ufo8fPsUKZxQXQJoooQsy8g61GqJ67h+tl5OxfU=;
-        b=YZmhS00kxJYrNIN1f3YYtAAMQZz86cgke/EbSsuZ9LQq/J4b5866Dp6QpLhUE0m3L3
-         f20GCfZSBFaJCe2Tto1OsotjefLAgGa3AldQT+yNf6L8nNZy/PTPkDLZ0yRjV+CsbADJ
-         of4WHDqKKwLDKwdLddC2Z0xrGd1PEvS6cM85suuRZ2IguE0xoEYRCfGiAytNiX4k3KUt
-         PiBhWefIh6SSVNZD9GayulxNdGXh5mb35sPFVEWFycLRgR+DJTgR3QEtxBIUxUoB+J0D
-         6QEzRb4dNdR0wwyug1c1VsIGLbk2ODSO7wFIMlrdQNHVGS19zaQMtc2NfM0rEhsDI9dE
-         6pJA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFcahy1hrTueka0Ott+aH9wwhn+w3xa1lQVjsHskcAcpRKisLWhqSksbAHz38kV2mmi5k0veAkiKMb122n+bxoDe2FJXCracIsLzDh
-X-Gm-Message-State: AOJu0YzutSkWbGM3/H8ACNqM1mG5DSTN43B0ecTlRX8PmNW2cADxIfXL
-	P/G4hMho3M755N5eAMbb6yklAdwZ4Jw8mvNlffRRDCiIt+sN8rR8Z5laOcbpYtY=
-X-Google-Smtp-Source: AGHT+IGGQjMoum6nDXLgZtliFReM/nKG5LCeh8eEH857A0KequuLtsB621jAkhX12QtK6pYL9HvzSQ==
-X-Received: by 2002:a17:906:c10a:b0:a58:a0b8:2a5e with SMTP id do10-20020a170906c10a00b00a58a0b82a5emr2344119ejc.26.1714122266694;
-        Fri, 26 Apr 2024 02:04:26 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id hg7-20020a170906f34700b00a4e5a6b57a2sm10343313ejb.163.2024.04.26.02.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 02:04:26 -0700 (PDT)
-Date: Fri, 26 Apr 2024 11:04:25 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, Evan Green <evan@rivosinc.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [PATCH 2/2] riscv: cpufeature: Fix extension subset checking
-Message-ID: <20240426-e532c061e4929c6e8babcb3b@orel>
-References: <20240424-cpufeature_fixes-v1-0-585e73d2226b@rivosinc.com>
- <20240424-cpufeature_fixes-v1-2-585e73d2226b@rivosinc.com>
+	s=arc-20240116; t=1714122415; c=relaxed/simple;
+	bh=+A+wN+Waa3u+GSAaOXj5u/i6Q2N/50vS3XJI5nCkpCQ=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=fmjlsGu126f0D38ZjLR7WmQmEpQK4sGIxasJDZ1ZOQwMaN6FvfEWOAqa+01mvPq88HfNPr7wiyJrK3rwIx4CH3VdbQ1UvCgCwiAwwYXH24aypJVMOMnOeh4Mk/IFJ6aRfPgQK8NLJGCbnbk6WAYA5TiaaFVXn95eFpegDsI47uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tf02vT6Q; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714122413; x=1745658413;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=+A+wN+Waa3u+GSAaOXj5u/i6Q2N/50vS3XJI5nCkpCQ=;
+  b=Tf02vT6QWJlDCRf6Gzfb3fOT1TSG4++b4TQYIF+Kxgq8SinP4JOPpuZr
+   iK8AvWJsbJVCvOzdVkoxPMVEUzpWdMndIB738vDWmJj4hk0We6WGotKrY
+   W9TEaRDZyY0iQTxu0hBxTOrfa4XVO/JRURL+YSW7NcYMLavNuF2/4UOWx
+   px6Xk0NxedN5Q5WxY2T9iIzbXlvU59nrDmhs8IAMyYEJBKjcl99MU5IoK
+   4xlV8hi928F3uV+gyECiBPyzMTgWEbvSuTji6po46XVDDeomnkclZn7zk
+   4x2X9/+kb8GmZVmf3GcYsNDnc8JHHhWc3VZXQZkXJzMoEPrGykZ+YmbqO
+   w==;
+X-CSE-ConnectionGUID: md4oKigeRzKk8FI8j84qxw==
+X-CSE-MsgGUID: C5+M3sRbQCKuhc6TOHKKgA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="10384430"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="10384430"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:06:52 -0700
+X-CSE-ConnectionGUID: 8CNiV51sRYOLvzTmgMUIcA==
+X-CSE-MsgGUID: KYE62ThXSw6c0mT7w0LGuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="29809989"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.43])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:06:49 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 26 Apr 2024 12:06:45 +0300 (EEST)
+To: lumingyindetect@126.com
+cc: LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, 
+    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, 
+    LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+Subject: Re: [PATCH] "drivers:Fixed memory leak in /linux/drivers/tty/serial/8250/8250_lpss.c
+ file.
+In-Reply-To: <20240426021939.1083521-1-lumingyindetect@126.com>
+Message-ID: <1ed76406-443d-63e2-3b3b-f6528a13f95a@linux.intel.com>
+References: <20240426021939.1083521-1-lumingyindetect@126.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424-cpufeature_fixes-v1-2-585e73d2226b@rivosinc.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Apr 24, 2024 at 09:19:55AM GMT, Charlie Jenkins wrote:
-> This loop is supposed to check if ext->subset_ext_ids[j] is valid, rather
-> than if ext->subset_ext_ids[i] is valid, before setting the extension
-> id ext->subset_ext_ids[j] in isainfo->isa.
-> 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Fixes: 0d8295ed975b ("riscv: add ISA extension parsing for scalar crypto")
+On Fri, 26 Apr 2024, lumingyindetect@126.com wrote:
+
+> From: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+
+Use:
+
+git log --oneline -- drivers/tty/serial/8250/8250_lpss.c
+
+to learn what prefix you should use for shortlog (on the subject line). 
+Beyond the correct prefix, don't use filename in the shortlog at all.
+
+"Fixed" -> "Fix"
+
+"in xx file" is awfully generic, please be more specific where the leak 
+is.
+
+> In the lpss8250_probe function in the file /linux/drivers/tty/serial/8250/8250_lpss.c, there were certain return paths where pci_free_irq_vectors was not called to release memory related to pdev, leading to a memory leak. This commit fixes that issue." 
+
+- Wrap this properly.
+- Don't write full paths like that.
+- Put () into description when talking about functions.
+- Use imperative language, don't use "This patch ...".
+
+- Add Fixes tag
+
+> Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+
 > ---
->  arch/riscv/kernel/cpufeature.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/tty/serial/8250/8250_lpss.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index c6e27b45e192..6dff7bb1db3f 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -607,7 +607,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
+> diff --git a/drivers/tty/serial/8250/8250_lpss.c b/drivers/tty/serial/8250/8250_lpss.c
+> index 776ec1ef29d6..2bb86f9cad5b 100644
+> --- a/drivers/tty/serial/8250/8250_lpss.c
+> +++ b/drivers/tty/serial/8250/8250_lpss.c
+> @@ -344,11 +344,11 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	uart.port.mapbase = pci_resource_start(pdev, 0);
+>  	uart.port.membase = pcim_iomap(pdev, 0, 0);
+>  	if (!uart.port.membase)
+> -		return -ENOMEM;
+> +		goto early_err_exit;
 >  
->  			if (ext->subset_ext_size) {
->  				for (int j = 0; j < ext->subset_ext_size; j++) {
-> -					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
-> +					if (riscv_isa_extension_check(ext->subset_ext_ids[j]))
->  						set_bit(ext->subset_ext_ids[j], isainfo->isa);
->  				}
->  			}
-> 
-> -- 
-> 2.44.0
->
+>  	ret = lpss->board->setup(lpss, &uart.port);
+>  	if (ret)
+> -		return ret;
+> +		goto early_err_exit;
+>  
+>  	dw8250_setup_port(&uart.port);
+>  
+> @@ -367,6 +367,7 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  
+>  err_exit:
+>  	lpss->board->exit(lpss);
+> +early_err_exit:
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+This label could be more specific that it's about freeing the vectors.
+
+>  	pci_free_irq_vectors(pdev);
+>  	return ret;
+>  }
+> 
+
+-- 
+ i.
+
 
