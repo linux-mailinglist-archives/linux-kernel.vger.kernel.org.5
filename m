@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-160386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C57F8B3CEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:34:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 851468B3CEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FECC1C228DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:34:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4B91F22F6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78285146A6B;
-	Fri, 26 Apr 2024 16:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22D6143889;
+	Fri, 26 Apr 2024 16:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Gs/CBO1j"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2075.outbound.protection.outlook.com [40.107.93.75])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="G6myba9X"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2080.outbound.protection.outlook.com [40.107.243.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FDA2B9AF
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6CE82230C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714149276; cv=fail; b=P7w+LdZFpUQSxwUnQD6TNYMiPRGfUabhd+z9iMZI9nhQ9RNgeK5+NmBFC4lkR5WczAWIBpZZq28wxC8uPaqE39STLfdNgFakD8al4ro7kRjlcaCwJyo9OfEozeZUc1zMH9psW9UA9Pv1cIaAo1HnDgEOOdojtdWcnajEvAyBJAk=
+	t=1714149347; cv=fail; b=CaV4cGjmXzANIsAE2We23pg9PqWJahO+vmA/eQBPyToSP1Vdc2j4WmwEKDtJ2sGCj1LdFeaSSbfLDheG2S0XfD79jFOchS71ZgAJohU/pXJDwQHzh47pc7p/ckSL9ad14n5O16LJv6wdZFZVhggOaUdkC1XvE4yWhXXhYNvoCbY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714149276; c=relaxed/simple;
-	bh=oeN3YWhguWxjQNeclQa+IfSOz+Df0i08/eFpNzUjq9o=;
+	s=arc-20240116; t=1714149347; c=relaxed/simple;
+	bh=HjbyeEWVR+iLQgayYETXWRgclt/8PmcXMc2I08W0xCM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MOKQXu+5/ArPmwg4LFZ7NFnOOWoWAzR2J+OPMNgFzFF0i5VaphF7nenfE/IORM9TucQjFac+HDB600+Ik0iyPWUtyXDFn4SuGu4lPCALkTspTpRV08Zjk2F05HiLz41pkn6GBAV8eZtAONe4+8kyCRJkydFSLYV8AbGK1NEZuCs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Gs/CBO1j; arc=fail smtp.client-ip=40.107.93.75
+	 MIME-Version:Content-Type; b=Faw25+34f15NfC4lGP4FuigaCk2q0DSYA1wDTWWVlh/B2bVhn0rWf2mtt0ETfDFGq5tDDqe+QNib2GA6EJs5dZB9AOd/Mlji8TtMbDSbP5S0n5zVTsU56yemLhRvvnOooVxNWJ5RWJkeVL+JF1n5wufKLeMVCvEUNHDwtpZXhBg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=G6myba9X; arc=fail smtp.client-ip=40.107.243.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gNUhQtxPFUVxUybsZU9OuX2vSw7W+Gs/P2O7Kau4z3FQ0kv+HPHL21WoYIju1Gfke483A3kOm5WZGGLV2IHR/yelmiN7MNDsOzDJdCytl9tTbgOEGfWnp1VDN0Cq59XDnP+LKVCRt57SJH6Pt3YB/GSJrG+hFD2RiuMFmdQEkYeiXoaMILQ0EQiq2Epn3EBnm1aBs17HcTwgqUUCsaqMg0H2ooXIVM4nzwbsRpSnCAA71xsOJjI9ZykqqUmMDuUEJiwMzIjFMCIgwM8syKE4CYYsPLJFA95Roaf5Owp24qfgOXoRWV2KCnuCiAorfEPpHEZTZbI1An5hk4cQwA5dbQ==
+ b=H1Wro/x8ezP1EG9QUJAetbHj6Tmi502CNIEkYD3UsNy5qPJSa3V1p0C9IL5FZVS+XS49G+9qY4pn6Wv2bcnuMy7PZ1BABjgFFCOK6KADFsOyh7bpEe2MCoduepmTdTsX0KNus4VJjZJRPb/p0t1bO+qJWfn48h6db57xJY7AA0aaYJLeAgvLWTdd5EyoZeHispIfv3cdw9mHr5HIyar3FYD/YjVhn9jI0uRVnOPIdjefl08mkJ0BrLOtCZXSHgHXqqNeGDHGBfYUTfR9d8dsD3aKSgHaBC8AUum1TMKzaDyknEAz0sjALNWBUVqzAjiN6ncJzsgwypqKfdS0iNCgkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8In1wj4zpxqXng+/MvpIStRWhMMfirb2tsJpUKGbnWE=;
- b=lHfylkTxllkTMN1w0dT0slyNXDu186dQy9SFr4741GE2YY5gbe9Ffd8iSh+wO5oMwUT1Q6fpicniqOVNf7y8nI8ybpAZyFIh8HXjeog9JwPi/C9W4ShGddG7mXlFwvoq5onNFFLF6dHMHOP6Y570i4udqJuF0rpHjqWVstIai8lM1cLeocTNDvBpM7AN4ctGwf5GxZf87r4Q+pMMtbNSUDsPiy+QBD3/jvkJFWIRgNEqTnDkXEErzpiI4xfqXdvLz7Jc2T6bCEb31wrmrzJBdgkjASEj3jSckihMWmgFYlmRD0TtevSt4Bq5FaFa14baVpBGEZ50JNZ6SQ9dZLmidQ==
+ bh=MGjacbaSG0E4Xrc1HaZgxSpSaWSCfPXy//14N/+XCX8=;
+ b=la9rU3uCP1BdFCdNuKSCNK+W2zJP0wUHNdG5pLl5gIGkWQD+4pMCdDbPaIUz3Va0/LGd8Q+SYT5oua9txhN4kgwjh9N1Sky91TPdbTp2zOJQyFgjaZJtEcl/LmF/4pg1qyzpHGZ4z72Kq5wSgJk85ZyiXbZJVp5aE4BRlZt+u3E/OesMHodEBQ7oQ97TA7fj+uXbSJjHLhfFCorVJllmLqWA3zfI62rCubhReEBOFMiav17wiwrrQvhLIKABWuSyBODo9Iy16sOADQDyr2e3TnuLblzWYqCF6O38Pdgqa/J4LSCt17fyj5jCWUsusdrpLlDhd2y9zPAQijv5zulKrw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linutronix.de smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8In1wj4zpxqXng+/MvpIStRWhMMfirb2tsJpUKGbnWE=;
- b=Gs/CBO1jAoOIze3tOeDdwPyPnNT3m4Kr7qYniiaJvm6g1QR8IOZ7+o64Cv9V4TMrlDyCKS0BeEMPjVgXBLcMI1eAvYGrhDnF8EP0vQheMfzTMI5ToRqj1evPWMEp2I/PfsccNzHZ/oCURGeN5fJhdVKnzRLtAS0dUBCWpQAc1QA=
-Received: from MN2PR01CA0051.prod.exchangelabs.com (2603:10b6:208:23f::20) by
- SA1PR12MB5660.namprd12.prod.outlook.com (2603:10b6:806:238::15) with
+ bh=MGjacbaSG0E4Xrc1HaZgxSpSaWSCfPXy//14N/+XCX8=;
+ b=G6myba9XYjR47YJTmSZyUu4UNdt1BShhdWQpVkduJfb7zryDE4lW7w09U5DeMRSW5Q6g5e5jacQKgJaVQLSr1dC87rLQtzVO3jkm1A0MzggBR7wtvJyYSKYFKF2zsRUR34oTwgr8/+kVqef6jyzDfHVR9yGoiq+DMlgQF++AfaA=
+Received: from BLAPR03CA0148.namprd03.prod.outlook.com (2603:10b6:208:32e::33)
+ by MW4PR12MB6952.namprd12.prod.outlook.com (2603:10b6:303:207::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Fri, 26 Apr
- 2024 16:34:32 +0000
-Received: from BL02EPF00021F6F.namprd02.prod.outlook.com
- (2603:10b6:208:23f:cafe::1a) by MN2PR01CA0051.outlook.office365.com
- (2603:10b6:208:23f::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.29 via Frontend
- Transport; Fri, 26 Apr 2024 16:34:32 +0000
+ 2024 16:35:42 +0000
+Received: from BL02EPF00021F6D.namprd02.prod.outlook.com
+ (2603:10b6:208:32e:cafe::bf) by BLAPR03CA0148.outlook.office365.com
+ (2603:10b6:208:32e::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.25 via Frontend
+ Transport; Fri, 26 Apr 2024 16:35:41 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF00021F6F.mail.protection.outlook.com (10.167.249.11) with Microsoft
+ BL02EPF00021F6D.mail.protection.outlook.com (10.167.249.9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 16:34:31 +0000
+ 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 16:35:41 +0000
 Received: from ethanolx7e2ehost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 11:34:30 -0500
+ 2024 11:35:35 -0500
 From: Ashish Kalra <Ashish.Kalra@amd.com>
 To: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
 	<dave.hansen@linux.intel.com>, <x86@kernel.org>
@@ -81,9 +81,9 @@ CC: <rafael@kernel.org>, <hpa@zytor.com>, <peterz@infradead.org>,
 	<anisinha@redhat.com>, <jroedel@suse.de>, <ardb@kernel.org>,
 	<kexec@lists.infradead.org>, <linux-coco@lists.linux.dev>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 2/3] x86/boot/compressed: Skip Video Memory access in Decompressor for SEV-ES/SNP.
-Date: Fri, 26 Apr 2024 16:34:20 +0000
-Message-ID: <4cefecb927ef13cdd2288760037becc398a16f44.1714148366.git.ashish.kalra@amd.com>
+Subject: [PATCH v6 3/3] x86/snp: Convert shared memory back to private on kexec
+Date: Fri, 26 Apr 2024 16:35:17 +0000
+Message-ID: <c24516a4636a36d57186ea90ae26495b3c1cfb8b.1714148366.git.ashish.kalra@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1714148366.git.ashish.kalra@amd.com>
 References: <cover.1712694667.git.ashish.kalra@amd.com> <cover.1714148366.git.ashish.kalra@amd.com>
@@ -99,94 +99,306 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF00021F6F:EE_|SA1PR12MB5660:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48843df4-754d-42ef-c08a-08dc660ec03e
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F6D:EE_|MW4PR12MB6952:EE_
+X-MS-Office365-Filtering-Correlation-Id: 23fd2dd6-5f05-4eb1-9c79-08dc660ee9cf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|1800799015|376005|82310400014|7416005|36860700004;
+	BCL:0;ARA:13230031|7416005|376005|82310400014|1800799015|36860700004;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?pbB3b47Rt209F3O1yzx62+gwz7zpaD0a2fN1OPKadp/IMKBF3xUlXRYuzedo?=
- =?us-ascii?Q?pHh2at2h5HkRZb7/xNq57Ot3YzeEOSkzTPKYntCqhdBTmcrgFoal2aN6Smmx?=
- =?us-ascii?Q?AXw2eT3wgRB0L6UO07SJy4VfwkmJKCETEWoIa4C+ooDK2FpYiKh8Wuo5Js8D?=
- =?us-ascii?Q?fLjgFF3/ykn0LaIuxtqCunQKwLBl1T1E3Cq/JT8/nhsQEZneJwfDGjbZbJZB?=
- =?us-ascii?Q?p9Fsm1f/s67YRgyJJSfg6VX0FtAxnA8y2Po5Row7yAx8DqFruNu60duWYg+r?=
- =?us-ascii?Q?wvJ06a38DHyq+y1mhF2z+nCho9orUaPsmu3zvt3fNq2BB03YOTiqdqVWvA8f?=
- =?us-ascii?Q?d0bf92XbpmMuJZPj0ExxoArWiZvhMfUL+8SVaCaijSEQ2fVLa2RZxaeo6eDR?=
- =?us-ascii?Q?W7vOtRY6Pka2gf743tU8JleenRGcLOdkITHd0sah31zJKt/Coz73CyyAIefS?=
- =?us-ascii?Q?/1xGi/anSkr1wHQaLn5pOs3auyXjNEtJi7ZOD3YkoE2xUqJ41YZyUAf8uVHU?=
- =?us-ascii?Q?A419YqNo4FLTrVfBJZi4RQvw+fDzTdcFJOXpO26DFicP1XzycpL+ReGKR14O?=
- =?us-ascii?Q?kJicwnFD/9svd599QI5wHlPJABD3hPpt+6aHv91s0GpolJ8D6/IS9djuMiVw?=
- =?us-ascii?Q?BI7OmQTwc3TJEvmDjjlmMiiO6ooSxK9jQYU9lGAZaSas7G7WxhLyGkxdlkxY?=
- =?us-ascii?Q?hzClHLkIhFJZoyUymgA1s3buoV4TccEJXfKzRWBlRC9Jgi3AIS4xKa8rvGQ8?=
- =?us-ascii?Q?+YpBPtw3J2mkTTk7F2X6xEP5UjrupHpKEv2k995VhQJTeqfUk0cBSL5eSUU+?=
- =?us-ascii?Q?2PM0zPcSJpJzoUanx0v4EGTcuqR5Jc3oGH8hIvfr94eov013apPDJu7bEC44?=
- =?us-ascii?Q?Mk74sHKxmpt+JLAd9cyXRjINcG0cJAxxYGSdApjswyQJlhE9IejznyE/6oTy?=
- =?us-ascii?Q?72zIey8AvyAFsHXRKJWhDqaowL5GcAgoUYUVI+rsyQ8vbYyCuFwxr8zRrCk3?=
- =?us-ascii?Q?fTkY2uudsnwf4msYm6Fkmi/oOoKYPOzAEl+v9+iFymlStO2rX3FlyPet2Sze?=
- =?us-ascii?Q?h/h+RhuCftNbBgBQIwkBUSsuM+L9iJkm9POaMuyoZAaFy6v4VpNN6a/NsHck?=
- =?us-ascii?Q?XW7qG1nQMxN+PP14vynBI1VMBm2hPV74jIttD4Xbl5Pw2Q0QjCWGbHrz2K4e?=
- =?us-ascii?Q?dHCCiV1YMEyJgZqtRO7q53qWBY9HF7Yw2VNIYhq8+AEOG4wxrBZKvzA5LgdE?=
- =?us-ascii?Q?LUv940d1V/mbqFL/ifFrk4RNEh/QoYzvTxpfiB2Z1bI9PcDIF1cQ0763s4GQ?=
- =?us-ascii?Q?ONPAEDRY7bEaqlXJfr5/56gKnQnx21yWYF7iNbRTzBYTwpLA3N6D61qnU5Kr?=
- =?us-ascii?Q?eLI/5udAUA2Nfnl3m/zCJffeXB7l?=
+	=?us-ascii?Q?JqZmv55s7cWBXtg8cbYKHStZ4T+usyqYdzDzoM9maLrfoO2AfrCfoOiPqTv2?=
+ =?us-ascii?Q?CpOkIiDl2p/xVV21+ioIN3eWtfbQkBczEgJYp1D0ILY0eWrUvZw2cNN8D+DX?=
+ =?us-ascii?Q?qtyGlcHflmLFDpRU2dOt6PP6fRqdI8W4v6sKFjWSFG8vKaJYNDkk99yvjIMC?=
+ =?us-ascii?Q?t/gp182cqQHJ8myWudoMOpJR84nCaxAYBhxUECWtf7k7WCZxXCHMfDaCdSku?=
+ =?us-ascii?Q?9lSrsjYysREY0vd77cmm88d5mVjGQWuOiqW9ram05sHEIkUzlhBnJh2+Swep?=
+ =?us-ascii?Q?SYqbbv6CSNcS/lSQFm/H9yd7syvEPH0B/2N1Xs+az4q8dIACdB3BIvuWT2Xg?=
+ =?us-ascii?Q?GYsS9MGk3m6Z9ETsKVmFDGPxc4n+Do7BbWCF5qZasj9p3FSDMCZMf9JDDTwb?=
+ =?us-ascii?Q?AlibKhLjvGZhPXcS9VMFCyESlsID9SNVtMOWNIo84ab6+G1+YxKoN0jFuzxe?=
+ =?us-ascii?Q?5hXdMaaCXSOzUppXsksFKT54ylgCf2TW9cWXJ/tQF90u1jU0O8RcDcbtIOZs?=
+ =?us-ascii?Q?qVi8KJ3+8ZboL46oC0qMY/9X+HOKw4JxunShWdp6WQZl1RwPDUAxE74mNen7?=
+ =?us-ascii?Q?hObjeSYmHCadPLGyoObxfpk+x/XYSyVuabUK96QXXIegfM9m6BQ43h5HQ8tz?=
+ =?us-ascii?Q?44frAB43JihQ6NQ/WsTLri1u26WuKKgYwYSOFex7IN34pNqUITgJ0JzXKzbO?=
+ =?us-ascii?Q?MOExS5J+Zr3Hbeqst6bvaKcx+jpvCTLV22rQtxclTY1Xrw8Buysu1+jQgwSX?=
+ =?us-ascii?Q?OuPXi8nwRmWP0mGNAwtcrkJ44vXLyShmLoCxEqG6R5vhFgfIGbrmi1Ozvmvn?=
+ =?us-ascii?Q?m0mIxTQY9XkqK1DpxSUX1hivXr4exJd0AjU2ttreCDAsxcYXZzMgfKMMcOMk?=
+ =?us-ascii?Q?fBHTd5kx9/MFHDc7XWqplSkgI9JtWmHpUtS0ieVy4NY/cbOqZ+H361idI/vl?=
+ =?us-ascii?Q?UF+xsLZ46AsTdwdlntTX+MUlBB0TVLdK28mavF+vQcWURr1ihcCLfT2uhR55?=
+ =?us-ascii?Q?xIKoogmUJVmU0WLIWXqdc3ReQdzA78OEXMuq8noQHNdSzJDnPKZNE8wG/w3z?=
+ =?us-ascii?Q?Z4kUdvRSyj8twlPXEzI6jiaYXR+nuovAsQzltoriaMibprFZztTVdDuNhgVf?=
+ =?us-ascii?Q?Ogc7WjP89oCGo3ssoiDVErxjtDVYH/ZJ+bfFuUvl9mgM4nzN1OXrFxxR2zLy?=
+ =?us-ascii?Q?TXDIOX8njobrvspa4iSNCJPmX95JKwSTIq/qpZc8SwfjYxi8eToMSQyzopvQ?=
+ =?us-ascii?Q?RwHByd/D+v65dIzssI7DpQVHB7Oiq7nqhjwQLCadHMAq/BNUKny509gRIByb?=
+ =?us-ascii?Q?TsO29dYYv+BCpvTjraTD4o9yfIe7i1dahBk+CKUfkKqr2bKSzGr8+uW0XxG1?=
+ =?us-ascii?Q?ezTQEZo=3D?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(82310400014)(7416005)(36860700004);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 16:34:31.9743
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 16:35:41.6946
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48843df4-754d-42ef-c08a-08dc660ec03e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23fd2dd6-5f05-4eb1-9c79-08dc660ee9cf
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF00021F6F.namprd02.prod.outlook.com
+	BL02EPF00021F6D.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5660
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6952
 
 From: Ashish Kalra <ashish.kalra@amd.com>
 
-Accessing guest video memory/RAM during kernel decompressor
-causes guest termination as boot stage2 #VC handler for
-SEV-ES/SNP systems does not support MMIO handling.
+SNP guests allocate shared buffers to perform I/O. It is done by
+allocating pages normally from the buddy allocator and converting them
+to shared with set_memory_decrypted().
 
-This issue is observed with SEV-ES/SNP guest kexec as
-kexec -c adds screen_info to the boot parameters
-passed to the kexec kernel, which causes console output to
-be dumped to both video and serial.
+The second kernel has no idea what memory is converted this way. It only
+sees E820_TYPE_RAM.
 
-As the decompressor output gets cleared really fast, it is
-preferable to get the console output only on serial, hence,
-skip accessing video RAM during decompressor stage to
-prevent guest termination.
+Accessing shared memory via private mapping will cause unrecoverable RMP
+page-faults.
 
-Serial console output during decompressor stage works as
-boot stage2 #VC handler already supports handling port I/O.
+On kexec walk direct mapping and convert all shared memory back to
+private. It makes all RAM private again and second kernel may use it
+normally. Additionally for SNP guests convert all bss decrypted section
+pages back to private and switch back ROM regions to shared so that
+their revalidation does not fail during kexec kernel boot.
 
-Suggested-by: Thomas Lendacy <thomas.lendacky@amd.com>
+The conversion occurs in two steps: stopping new conversions and
+unsharing all memory. In the case of normal kexec, the stopping of
+conversions takes place while scheduling is still functioning. This
+allows for waiting until any ongoing conversions are finished. The
+second step is carried out when all CPUs except one are inactive and
+interrupts are disabled. This prevents any conflicts with code that may
+access shared memory.
+
 Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/boot/compressed/misc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/sev.h    |   4 +
+ arch/x86/kernel/sev.c         | 161 ++++++++++++++++++++++++++++++++++
+ arch/x86/mm/mem_encrypt_amd.c |   3 +
+ 3 files changed, 168 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-index b70e4a21c15f..3b9f96b3dbcc 100644
---- a/arch/x86/boot/compressed/misc.c
-+++ b/arch/x86/boot/compressed/misc.c
-@@ -427,8 +427,10 @@ asmlinkage __visible void *extract_kernel(void *rmode, unsigned char *output)
- 		vidport = 0x3d4;
- 	}
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 7f57382afee4..78d40d08d201 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -229,6 +229,8 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+ u64 sev_get_status(void);
+ void sev_show_status(void);
++void snp_kexec_unshare_mem(void);
++void snp_kexec_stop_conversion(bool crash);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+@@ -258,6 +260,8 @@ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+ static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+ static inline u64 sev_get_status(void) { return 0; }
+ static inline void sev_show_status(void) { }
++static inline void snp_kexec_unshare_mem(void) { }
++static inline void snp_kexec_stop_conversion(bool crash) { }
+ #endif
  
--	lines = boot_params_ptr->screen_info.orig_video_lines;
--	cols = boot_params_ptr->screen_info.orig_video_cols;
-+	if (!(sev_status & MSR_AMD64_SEV_ES_ENABLED)) {
-+		lines = boot_params_ptr->screen_info.orig_video_lines;
-+		cols = boot_params_ptr->screen_info.orig_video_cols;
+ #ifdef CONFIG_KVM_AMD_SEV
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 995f94467101..891257fde810 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -42,6 +42,8 @@
+ #include <asm/apic.h>
+ #include <asm/cpuid.h>
+ #include <asm/cmdline.h>
++#include <asm/pgtable.h>
++#include <asm/set_memory.h>
+ 
+ #define DR7_RESET_VALUE        0x400
+ 
+@@ -92,6 +94,9 @@ static struct ghcb *boot_ghcb __section(".data");
+ /* Bitmap of SEV features supported by the hypervisor */
+ static u64 sev_hv_features __ro_after_init;
+ 
++/* Last address to be switched to private during kexec */
++static unsigned long kexec_last_addr_to_make_private;
++
+ /* #VC handler runtime per-CPU data */
+ struct sev_es_runtime_data {
+ 	struct ghcb ghcb_page;
+@@ -913,6 +918,162 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end)
+ 	set_pages_state(vaddr, npages, SNP_PAGE_STATE_PRIVATE);
+ }
+ 
++static bool set_pte_enc(pte_t *kpte, int level, void *va)
++{
++	pte_t new_pte;
++
++	if (pte_none(*kpte))
++		return false;
++
++	/*
++	 * Change the physical page attribute from C=0 to C=1. Flush the
++	 * caches to ensure that data gets accessed with the correct C-bit.
++	 */
++	if (pte_present(*kpte))
++		clflush_cache_range(va, page_level_size(level));
++
++	new_pte = __pte(cc_mkenc(pte_val(*kpte)));
++	set_pte_atomic(kpte, new_pte);
++
++	return true;
++}
++
++static bool make_pte_private(pte_t *pte, unsigned long addr, int pages, int level)
++{
++	struct sev_es_runtime_data *data;
++	struct ghcb *ghcb;
++
++	data = this_cpu_read(runtime_data);
++	ghcb = &data->ghcb_page;
++
++	/* Check for GHCB for being part of a PMD range. */
++	if ((unsigned long)ghcb >= addr &&
++	    (unsigned long)ghcb <= (addr + (pages * PAGE_SIZE))) {
++		/*
++		 * Ensure that the current cpu's GHCB is made private
++		 * at the end of unshared loop so that we continue to use the
++		 * optimized GHCB protocol and not force the switch to
++		 * MSR protocol till the very end.
++		 */
++		pr_debug("setting boot_ghcb to NULL for this cpu ghcb\n");
++		kexec_last_addr_to_make_private = addr;
++		return true;
 +	}
++
++	if (!set_pte_enc(pte, level, (void *)addr))
++		return false;
++
++	snp_set_memory_private(addr, pages);
++
++	return true;
++}
++
++static void unshare_all_memory(void)
++{
++	unsigned long addr, end;
++
++	/*
++	 * Walk direct mapping and convert all shared memory back to private,
++	 */
++
++	addr = PAGE_OFFSET;
++	end  = PAGE_OFFSET + get_max_mapped();
++
++	while (addr < end) {
++		unsigned long size;
++		unsigned int level;
++		pte_t *pte;
++
++		pte = lookup_address(addr, &level);
++		size = page_level_size(level);
++
++		/*
++		 * pte_none() check is required to skip physical memory holes in direct mapped.
++		 */
++		if (pte && pte_decrypted(*pte) && !pte_none(*pte)) {
++			int pages = size / PAGE_SIZE;
++
++			if (!make_pte_private(pte, addr, pages, level)) {
++				pr_err("Failed to unshare range %#lx-%#lx\n",
++				       addr, addr + size);
++			}
++
++		}
++
++		addr += size;
++	}
++	__flush_tlb_all();
++
++}
++
++static void unshare_all_bss_decrypted_memory(void)
++{
++	unsigned long vaddr, vaddr_end;
++	unsigned int level;
++	unsigned int npages;
++	pte_t *pte;
++
++	vaddr = (unsigned long)__start_bss_decrypted;
++	vaddr_end = (unsigned long)__start_bss_decrypted_unused;
++	npages = (vaddr_end - vaddr) >> PAGE_SHIFT;
++	for (; vaddr < vaddr_end; vaddr += PAGE_SIZE) {
++		pte = lookup_address(vaddr, &level);
++		if (!pte || !pte_decrypted(*pte) || pte_none(*pte))
++			continue;
++
++		set_pte_enc(pte, level, (void *)vaddr);
++	}
++	vaddr = (unsigned long)__start_bss_decrypted;
++	snp_set_memory_private(vaddr, npages);
++}
++
++/* Stop new private<->shared conversions */
++void snp_kexec_stop_conversion(bool crash)
++{
++	/*
++	 * Crash kernel reaches here with interrupts disabled: can't wait for
++	 * conversions to finish.
++	 *
++	 * If race happened, just report and proceed.
++	 */
++	bool wait_for_lock = !crash;
++
++	if (!stop_memory_enc_conversion(wait_for_lock))
++		pr_warn("Failed to finish shared<->private conversions\n");
++}
++
++void snp_kexec_unshare_mem(void)
++{
++	if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
++		return;
++
++	unshare_all_memory();
++
++	unshare_all_bss_decrypted_memory();
++
++	if (kexec_last_addr_to_make_private) {
++		unsigned long size;
++		unsigned int level;
++		pte_t *pte;
++
++		/*
++		 * Switch to using the MSR protocol to change this cpu's
++		 * GHCB to private.
++		 * All the per-cpu GHCBs have been switched back to private,
++		 * so can't do any more GHCB calls to the hypervisor beyond
++		 * this point till the kexec kernel starts running.
++		 */
++		boot_ghcb = NULL;
++		sev_cfg.ghcbs_initialized = false;
++
++		pr_debug("boot ghcb 0x%lx\n", kexec_last_addr_to_make_private);
++		pte = lookup_address(kexec_last_addr_to_make_private, &level);
++		size = page_level_size(level);
++		set_pte_enc(pte, level, (void *)kexec_last_addr_to_make_private);
++		snp_set_memory_private(kexec_last_addr_to_make_private, (size / PAGE_SIZE));
++	}
++}
++
+ static int snp_set_vmsa(void *va, bool vmsa)
+ {
+ 	u64 attrs;
+diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
+index e7b67519ddb5..49c40c2ed809 100644
+--- a/arch/x86/mm/mem_encrypt_amd.c
++++ b/arch/x86/mm/mem_encrypt_amd.c
+@@ -468,6 +468,9 @@ void __init sme_early_init(void)
+ 	x86_platform.guest.enc_tlb_flush_required    = amd_enc_tlb_flush_required;
+ 	x86_platform.guest.enc_cache_flush_required  = amd_enc_cache_flush_required;
  
- 	init_default_io_ops();
- 
++	x86_platform.guest.enc_kexec_stop_conversion = snp_kexec_stop_conversion;
++	x86_platform.guest.enc_kexec_unshare_mem     = snp_kexec_unshare_mem;
++
+ 	/*
+ 	 * AMD-SEV-ES intercepts the RDMSR to read the X2APIC ID in the
+ 	 * parallel bringup low level code. That raises #VC which cannot be
 -- 
 2.34.1
 
