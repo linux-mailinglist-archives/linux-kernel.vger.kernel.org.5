@@ -1,157 +1,161 @@
-Return-Path: <linux-kernel+bounces-160391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4AE8B3CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A58518B3CFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CDA81C226FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95E01C221AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D918156F38;
-	Fri, 26 Apr 2024 16:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1970915AD8A;
+	Fri, 26 Apr 2024 16:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MH36pfzL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o3f8wcIh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E211DFED;
-	Fri, 26 Apr 2024 16:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B9F1DFED;
+	Fri, 26 Apr 2024 16:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714149494; cv=none; b=eE4CuLIJXtHzeVrbocEeOZn9WWJtx8QqN9QDpcgCrr+B49WlVrfd0Ad4VcPUz3pnyoR2TbsRvHhJpWfAn2HrijqtgVmk7EdpIo4uEslsONTUgAwwQsmOZIW3CZYjZBzaxWkldmSKDCOU75+CiA9nyYzGzuyjEVsYgSO06d1Sixg=
+	t=1714149498; cv=none; b=B7NTQTa9afGDYGjXlLIsCi8b1o5Z8FtA7UXJY7vqRbHKZVLJFsFeGQhTKxWca2AQCf8Mw3QkME06/Rr+Tb6C6MrWJrY63ocLz9UwIM6eR99AltAiLcic4mcr4MxdKoZc1MSCEHgbj4YgAhlmOunL7RdWh8mKHbdFaUPgl+uJ+28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714149494; c=relaxed/simple;
-	bh=po/3tPrumZXnjowvfQF0vobOIrYbMuIpxi3ty3Z4bsM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oyBRJeshFl4tNlXFoC6zclZZl71Tfd+NIPFUdUyk3SuOJEaDwkiHSokrVWU/Ix/vAieo+Turu+YQdwxucck/7qp45ZRDNHgPr3ZcOJakYyHK3MkaBSrub+JiuuLXiRdDXN0v08l4ABCPXVW5HDwhnieDVNmhh7liDHmaxCFdYAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MH36pfzL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FE92C113CD;
-	Fri, 26 Apr 2024 16:38:12 +0000 (UTC)
+	s=arc-20240116; t=1714149498; c=relaxed/simple;
+	bh=Uecbo/6shl3q0S3AL6aRW8DkOSBrWxej2E2gH1SLHkg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AoOqMRkbJXqkm8V4wh5nfJlOvq9oLRQhzEjhESfOoBTpKTeG1i6yjS9oguOSTXgLzGM/kkMbKlc2qzVujeJNAP6BG2e1nAakopNakL2cXfvZDHehRIvwyXFNBLpd52SFxFd6nRKjLqa9fMQ/mOlW4C9S5yEdOKcOF0KSoLMfu9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o3f8wcIh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E3CC113CD;
+	Fri, 26 Apr 2024 16:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714149494;
-	bh=po/3tPrumZXnjowvfQF0vobOIrYbMuIpxi3ty3Z4bsM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MH36pfzL5D0g8R54Ia7dwcxBhngVinvMwXLHW4/ap4/EgiHy8OaPeWQVork3iJQty
-	 BLCUKNcR7mFVQYIPE0xVhMBMp2l7tKRvJ6BlEbEVFeubLwHBw7teqqZvb7mSum2p2R
-	 LhOxkHfsxW23IxmfKx8VwSGJ4Nn1RYOeLBxSfm0vRCsxgAKpl6AVVwfFFpNdnY+dha
-	 r4wD2roZproVXID2k75H/syTxz0M0ngUgRWaPE3eR1ONrpb5u3pivo6Qsl1Cil9qTs
-	 2a/szL36z7LXJTmvt4L+V/6LgMeZ0PQg5zL3mzYwwZEoVs8EaQ+AwpCZkI332t2rMQ
-	 OoBR7zQA4nLqA==
-Date: Fri, 26 Apr 2024 10:38:10 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] Bluetooth: hci_conn: Use __counted_by() in struct
- hci_cp_le_big_create_sync and avoid -Wfamnae warning
-Message-ID: <ZivYcpzZsc7aIFZ5@neat>
+	s=k20201202; t=1714149497;
+	bh=Uecbo/6shl3q0S3AL6aRW8DkOSBrWxej2E2gH1SLHkg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o3f8wcIhNMPjl1V2HRhlaXZ3i8UJFsDTD1o0/gLChhJeUwCuA/lTpDEtYE2x28su4
+	 8xaoWGIzeghSRFLZRLCigYAzTD6cOQIpBvY3TJ5XoSeLTzE5JTQrncOHk0PimILt71
+	 C3zcL/ioOO0BQuilMLD2+wWedOLmaMD8+q38hA7GC7zA8BK3CO+rwU95EVO1R40kc9
+	 JLMvW6IqzUQdM62cwgq+m0Llvr++moJDd5po+LaABqhU7PkD2gu/FL27SBoLqMfSO7
+	 Sk9KdRxw3tW3IcCY1z+Dw4Uz2rrHLKDZtXrR843Bdxu15hzg2n+59mKVVbEEsEXHXm
+	 K3H8dgVGCK/pQ==
+Date: Fri, 26 Apr 2024 17:38:13 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Cc: linux-kernel@vger.kernel.org, jic23@kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	robh@kernel.org, nuno.sa@analog.com
+Subject: Re: [PATCH 6/7] dt-bindings: iio: imu: Add ADIS1657X family devices
+ compatibles
+Message-ID: <20240426-museum-sanitary-b3dd62191b99@spud>
+References: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
+ <20240426135339.185602-7-ramona.bolboaca13@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rnxiZPdD0LG8bJTm"
+Content-Disposition: inline
+In-Reply-To: <20240426135339.185602-7-ramona.bolboaca13@gmail.com>
+
+
+--rnxiZPdD0LG8bJTm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Prepare for the coming implementation by GCC and Clang of the
-__counted_by attribute. Flexible array members annotated with
-__counted_by can have their accesses bounds-checked at run-time
-via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
-(for strcpy/memcpy-family functions).
+On Fri, Apr 26, 2024 at 04:53:38PM +0300, Ramona Gradinariu wrote:
+> Add ADIS1657X family devices compatibles and specify the according
+> maximum SPI baudrate.
+> Similarly to other ADIS1650X devices, ADIS1657X supports sync-mode
+> values [0,2].
+>=20
+> Signed-off-by: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+> ---
+>  .../bindings/iio/imu/adi,adis16475.yaml       | 29 +++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml=
+ b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+> index db52e7063116..9d185f7bfdcb 100644
+> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+> @@ -37,6 +37,12 @@ properties:
+>        - adi,adis16507-1
+>        - adi,adis16507-2
+>        - adi,adis16507-3
+> +      - adi,adis16575-2
+> +      - adi,adis16575-3
+> +      - adi,adis16576-2
+> +      - adi,adis16576-3
+> +      - adi,adis16577-2
+> +      - adi,adis16577-3
 
-Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
-getting ready to enable it globally.
+I'm not checking all of the structs for these ones against eachother,
+please explain why fallback compatible are not suitable.
 
-So, use the `DEFINE_FLEX()` helper for an on-stack definition of
-a flexible structure where the size of the flexible-array member
-is known at compile-time, and refactor the rest of the code,
-accordingly.
+Thanks,
+Conor.
 
-With these changes, fix the following warning:
-net/bluetooth/hci_conn.c:2116:50: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -98,6 +104,12 @@ allOf:
+>                - adi,adis16507-1
+>                - adi,adis16507-2
+>                - adi,adis16507-3
+> +              - adi,adis16575-2
+> +              - adi,adis16575-3
+> +              - adi,adis16576-2
+> +              - adi,adis16576-3
+> +              - adi,adis16577-2
+> +              - adi,adis16577-3
+> =20
+>      then:
+>        properties:
+> @@ -114,6 +126,23 @@ allOf:
+>        dependencies:
+>          adi,sync-mode: [ clocks ]
+> =20
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - adi,adis16575-2
+> +              - adi,adis16575-3
+> +              - adi,adis16576-2
+> +              - adi,adis16576-3
+> +              - adi,adis16577-2
+> +              - adi,adis16577-3
+> +
+> +    then:
+> +      properties:
+> +        spi-max-frequency:
+> +          maximum: 15000000
+> +
+>  unevaluatedProperties: false
+> =20
+>  examples:
+> --=20
+> 2.34.1
+>=20
 
-Link: https://github.com/KSPP/linux/issues/202
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/net/bluetooth/hci.h |  2 +-
- net/bluetooth/hci_conn.c    | 30 +++++++++++++-----------------
- 2 files changed, 14 insertions(+), 18 deletions(-)
+--rnxiZPdD0LG8bJTm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index 5c12761cbc0e..fe23e862921d 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -2216,7 +2216,7 @@ struct hci_cp_le_big_create_sync {
- 	__u8    mse;
- 	__le16  timeout;
- 	__u8    num_bis;
--	__u8    bis[];
-+	__u8    bis[] __counted_by(num_bis);
- } __packed;
- 
- #define HCI_OP_LE_BIG_TERM_SYNC			0x206c
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 81166a5bc034..4c2efec81995 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -2112,13 +2112,11 @@ int hci_le_big_create_sync(struct hci_dev *hdev, struct hci_conn *hcon,
- 			   struct bt_iso_qos *qos,
- 			   __u16 sync_handle, __u8 num_bis, __u8 bis[])
- {
--	struct _packed {
--		struct hci_cp_le_big_create_sync cp;
--		__u8  bis[0x11];
--	} pdu;
-+	DEFINE_FLEX(struct hci_cp_le_big_create_sync, pdu, bis, num_bis, 0x11);
-+	size_t pdu_size = __struct_size(pdu);
- 	int err;
- 
--	if (num_bis < 0x01 || num_bis > sizeof(pdu.bis))
-+	if (num_bis < 0x01 || num_bis > pdu->num_bis)
- 		return -EINVAL;
- 
- 	err = qos_set_big(hdev, qos);
-@@ -2128,18 +2126,16 @@ int hci_le_big_create_sync(struct hci_dev *hdev, struct hci_conn *hcon,
- 	if (hcon)
- 		hcon->iso_qos.bcast.big = qos->bcast.big;
- 
--	memset(&pdu, 0, sizeof(pdu));
--	pdu.cp.handle = qos->bcast.big;
--	pdu.cp.sync_handle = cpu_to_le16(sync_handle);
--	pdu.cp.encryption = qos->bcast.encryption;
--	memcpy(pdu.cp.bcode, qos->bcast.bcode, sizeof(pdu.cp.bcode));
--	pdu.cp.mse = qos->bcast.mse;
--	pdu.cp.timeout = cpu_to_le16(qos->bcast.timeout);
--	pdu.cp.num_bis = num_bis;
--	memcpy(pdu.bis, bis, num_bis);
--
--	return hci_send_cmd(hdev, HCI_OP_LE_BIG_CREATE_SYNC,
--			    sizeof(pdu.cp) + num_bis, &pdu);
-+	pdu->handle = qos->bcast.big;
-+	pdu->sync_handle = cpu_to_le16(sync_handle);
-+	pdu->encryption = qos->bcast.encryption;
-+	memcpy(pdu->bcode, qos->bcast.bcode, sizeof(pdu->bcode));
-+	pdu->mse = qos->bcast.mse;
-+	pdu->timeout = cpu_to_le16(qos->bcast.timeout);
-+	pdu->num_bis = num_bis;
-+	memcpy(pdu->bis, bis, num_bis);
-+
-+	return hci_send_cmd(hdev, HCI_OP_LE_BIG_CREATE_SYNC, pdu_size, pdu);
- }
- 
- static void create_big_complete(struct hci_dev *hdev, void *data, int err)
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZivYdQAKCRB4tDGHoIJi
+0p4yAPwPb/81Q1NSAN/X2c3n9FKJGnGEQJzfDTgBp192eJfvYQD7B3LGSK50dfTT
+tvUIg3/Cly+rUJ28rhowym1FqAlkUwQ=
+=FWbY
+-----END PGP SIGNATURE-----
+
+--rnxiZPdD0LG8bJTm--
 
