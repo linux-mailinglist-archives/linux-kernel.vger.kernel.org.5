@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-160744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199658B4240
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:40:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE13B8B4242
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADF101F22DC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:40:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F360B21B74
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1818C3987B;
-	Fri, 26 Apr 2024 22:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9CF938FA5;
+	Fri, 26 Apr 2024 22:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QrUgdqLk"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="X8qRlx/5"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82AA374EA;
-	Fri, 26 Apr 2024 22:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA7C38398;
+	Fri, 26 Apr 2024 22:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714171233; cv=none; b=izAi4G8c/0HbTl1r6jRVWQmAUbjHRL/s++D5NEoc6qx3hw4Vdi2c1e/3DYWadF4EtB06SItHSVZBvgLRTcw/C4ogWssUsawAS8A9mmZ5SVBpHQ6L+hIiirSeJczVygdrWqmgTKkJ3t91FhoNlFLRBpWTcu7PC2OncvzsUFM7wyA=
+	t=1714171265; cv=none; b=TALdR22bF43GNGxY5ngtdgA9DNbdbBInd7u4cks637BlfquPcopDMNpzuLBLl9NNMYWWMc37Ky3Fss7nCbdLtrVYczh9p71ymdgsCwjeOtcwVqvQcaMhxEaicg3BC5iduW0JTBOAV4PhOtWKsgCwpdoWvrkF5WMliupXe43QpZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714171233; c=relaxed/simple;
-	bh=DwufAWwzl3vE5QXemZI6/tuCGLYpYegjlOva1p0BUZ8=;
+	s=arc-20240116; t=1714171265; c=relaxed/simple;
+	bh=1qWfrTbwI9N7BbWSy50P/fZAPnGkaCiG+iAtqomjtrQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VBUf+ssQdFjCeikM9+GRynqOAQEYk42GnfxfksCo5jlR2eGtfxiggstE8djG9X8KHBoX30g79VUNsr0LOwju+iUKUnBU87pnwcUsax97ZesNDAqTVFtWjVY9mtO7pOutyffarL0gynWBTjUtj66RlL2qaaYMCClGb4Ux+yzwSGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QrUgdqLk; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=SOKDJTIi9ANG7X5kZD3SVAiZRU/KJuE+LAXCYZuduKRDAPlzVUvVDbhO30lVDQdik+bVwVHqNqOTDskr/FuP4QnxeagU2LjGLkkmXVXkipEM5rC3dGVZxgdbuwaCvSad9T9H7bYvH32l04fH3ZGETmiiT1lyNI6RgiQNUAbrmmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=X8qRlx/5; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QMeO9f009863;
-	Fri, 26 Apr 2024 17:40:24 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QMenHB018164;
+	Fri, 26 Apr 2024 17:40:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714171224;
-	bh=ajxTk5qiU/sLLTXvIiCSu+fG540EarS4BMEfr/DLixQ=;
+	s=ti-com-17Q1; t=1714171249;
+	bh=zH2m7mms7hQ3H+fyOcr+kF1nqwVFHqlN/8tHzga4jQg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=QrUgdqLkwnpt/BkGnlLOc6sQUaxfzqc6jBOh5e97ZD4O5j/R2lz/qXE6/bkRsWMBh
-	 5k3YaLmF9Eij5nI5Xst1ROxq+S/4ohCvSWLVBYvKI/tSBad5WdI4yL9ucruc8v0L3W
-	 m0xKQpAEz0VQj/Q3Pw1lgGI1j7fQtkKiUEMBG41g=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QMeOP9060476
+	b=X8qRlx/5Ia2CqCIucXTD4hFiQc2sApT5KMFO7cUsEk7YLbAzd8s2hkTnTim3VT537
+	 N2ISUaoqjyr79S3Wa/geSjKxlS/P4w5+VBnXBV82LTGCcn45O+Clh3cObc6w7dwLdZ
+	 gZXVVEqdOvIjZCDD/o+M7eNuYj/oH+YF5/YKdsGE=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QMenkt075058
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 26 Apr 2024 17:40:24 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 26 Apr 2024 17:40:49 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
- Apr 2024 17:40:24 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 17:40:49 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 26 Apr 2024 17:40:24 -0500
+ Frontend Transport; Fri, 26 Apr 2024 17:40:49 -0500
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QMeOiu081125;
-	Fri, 26 Apr 2024 17:40:24 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QMenK4081734;
+	Fri, 26 Apr 2024 17:40:49 -0500
 From: Nishanth Menon <nm@ti.com>
 To: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
         <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
@@ -63,12 +63,12 @@ To: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
 CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <upstream@lists.phytec.de>, <w.egorov@phytec.de>
-Subject: Re: [PATCH] arm64: dts: ti: am64-phyboard-electra: Add overlay to enable a GPIO fan
-Date: Fri, 26 Apr 2024 17:40:22 -0500
-Message-ID: <171417121030.3483252.13281191860265108819.b4-ty@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: Enable overlays for the am625-phyboard-lyra
+Date: Fri, 26 Apr 2024 17:40:47 -0500
+Message-ID: <171417123300.3483372.8333985283029101154.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240419193114.3090084-1-nmorrisson@phytec.com>
-References: <20240419193114.3090084-1-nmorrisson@phytec.com>
+In-Reply-To: <20240419193552.3090343-1-nmorrisson@phytec.com>
+References: <20240419193552.3090343-1-nmorrisson@phytec.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,17 +81,17 @@ X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
 Hi Nathan Morrisson,
 
-On Fri, 19 Apr 2024 12:31:14 -0700, Nathan Morrisson wrote:
-> The phyBOARD-Electra has a GPIO fan header. This overlay enables the fan
-> header and sets the fan to turn on at 65C.
+On Fri, 19 Apr 2024 12:35:52 -0700, Nathan Morrisson wrote:
+> Add symbols when building the am625-phyboard-lyra-rdk DTB so
+> overlays can be applied.
 > 
 > 
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: am64-phyboard-electra: Add overlay to enable a GPIO fan
-      commit: 9198fbfc14797a3a39c758ac6fb96a2169cbb70d
+[1/1] arm64: dts: ti: Enable overlays for the am625-phyboard-lyra
+      commit: 5df0679a517edd3fc0784c415e0c47c8395ae213
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
