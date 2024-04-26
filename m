@@ -1,339 +1,188 @@
-Return-Path: <linux-kernel+bounces-160615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDC58B401E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:25:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6908B4023
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22BC8282233
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000161C22338
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3F318643;
-	Fri, 26 Apr 2024 19:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6501BC39;
+	Fri, 26 Apr 2024 19:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IGs4g+0q"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CW11gn7F"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2063.outbound.protection.outlook.com [40.107.223.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BCC1096F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714159534; cv=none; b=nDb7an0o38VlPeAERIzSEuxWQV40wtO/w/1AYZ/ElH7q93dpihL61mefapPioYQO6itjPbvUq5d/4GtgOa6hZLKmpRfnXec9dmpwLO4BKwsPqOCFGZ7s3CD0OWA30TGHpKRFGndfh91dcOhfgNASgDcKjAEV2LmaeD1c5GnpaV8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714159534; c=relaxed/simple;
-	bh=uC1Utehwjep+6gqRRxnkvKpDqpM6YDguBl7NAqG24QA=;
-	h=From:References:In-Reply-To:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PQSCSgYNSZkp2vmub89C5HKQ5epJoog8QD3es/3XtQfXIjbgprBbnhH7+gmV3gAKVNV2xL8GL9GonReHXuVDGgm3vLXCxhX9ayy5hcOjMmJe9VWpu+8l4tv2EvgmFPSK6iAZuyWHPVSyTVpmXUdbu8yyUSfXrSkvEreT+Gv67BE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IGs4g+0q; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2348a5d1584so1247675fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1714159532; x=1714764332; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
-         :references:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HQxkTywT0oafPa8v7d8P+d2tc0CmNmZnmiS4+g+7FcY=;
-        b=IGs4g+0qaPfkd10ZlOjZmCJMRHatO10nsa6vygogrdteauiYIKJ7Gby35OlqFhOeOv
-         qii4R43l/+MQcjOqNDGvMWxLftyZm1PB9umdo8BAITKX2PCvpEuXRBuhHxpExg4/o5xh
-         72qdrRLj6Jc9+/YRZ6wZZPGrxLvtCDw/s+M1I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714159532; x=1714764332;
-        h=cc:to:subject:message-id:date:thread-index:mime-version:in-reply-to
-         :references:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQxkTywT0oafPa8v7d8P+d2tc0CmNmZnmiS4+g+7FcY=;
-        b=ReynMmPhbbTJrSSm7s3WF42ufbApC9NcI78yQYZO8BTekyzcwHX6FxmfubWq7X09oo
-         k8qqj0N3XSf4fxSezCPrRtZqXB28/3LsHUXgz88S34+yb6+X1AjGBofohi+qwD1WO3yD
-         fL3Zovbd6fKyHWozwuWpP2522Sp3X+YtQ31YHk/MrCAGatYMQnSIRE+mxoFp4SAzzpR0
-         Hctw0iNC678Jo+JyBFVXb8aLZgmEn8JjH4L1Bs3IMtjzaoeO4uyhPOCWH8AoSVG658Aa
-         PHk15ZawXRTGSL31jank7TVyj2FzaplMRAyJZLM4415ik6rKgtySPnYiTOi8fQ4knMxj
-         k4xQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXblZ6VhDbKktJVvFi5PCR842X863AXC2rzU/HVPUx8iAGfPqNMNlY2Ix0M5HcbXiF5xCLPuSjU9c/NfHTPNLLyC5Ji1wL3gHES1xNG
-X-Gm-Message-State: AOJu0YxwtkUno+1gWbeQdvawCO0gM7dr328PB9H3WEXZ73IR0JOZ25II
-	Fe1chsz+M+T1TEZ/cU8mGIafwZ0AzhkyiPn98GMMoIEVFUj/GxNjB8BJbWun4C0Bv+L1AjpzNOv
-	IcQXhsz9kaCNb0JbRrwvkpYC13I6nSpBTnBxo97wm60diWJtIoJcl/FRMhyVjSK6zbLDACwPY1r
-	c42tasZUy1nOurKLFblbNMriN25Q==
-X-Google-Smtp-Source: AGHT+IGolhQr3PQiqQRxUyZHK/lDEmlBp55kfr5Ue0BBSt4bXuZMGwMI6aRz/6nhPaa1QsqxYlJltWnW3eQCB73+VBI=
-X-Received: by 2002:a05:6870:f21a:b0:222:570a:72c7 with SMTP id
- t26-20020a056870f21a00b00222570a72c7mr4020266oao.45.1714159532067; Fri, 26
- Apr 2024 12:25:32 -0700 (PDT)
-From: Harold Johnson <harold.johnson@broadcom.com>
-References: <20240321174423.00007e0d@Huawei.com>	<66109191f3d6d_2583ad29468@dwillia2-xfh.jf.intel.com.notmuch>
- <20240410124517.000075f2@Huawei.com>	<66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
- <20240425123344.000001a9@Huawei.com>	<662a826dbeeff_b6e02943c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240425182605.00005f22@Huawei.com>	<662aae2fe4887_a96f294bf@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240426094550.00002e37@Huawei.com>	<662bd36caae55_a96f2943f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240426175341.00002e67@Huawei.com>
-In-Reply-To: <20240426175341.00002e67@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CA51096F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714159688; cv=fail; b=i5u6t+jB3M1imZOFcqlv7nvCUuIattlVR7bGaW6zlzirph9qhyOG/gyObp2/CqnzZxM56MMPnPhp+29Sj5hQ4KcPcf1TIQTbxerVUiSCbml8vMJV+1MlZvo5r1lMxUEH58pmpMIGDyftEd4Bynq5ji17mT5SSNQ4fzuRskcNCvw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714159688; c=relaxed/simple;
+	bh=jZ2RvqSC2w8TQ/kyfa9wQdTZRxcUUbTFnIDMhzL/NBE=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=CoZgUlYm7vztcnOF8iYNz0FjdgpcTlMQs9M+B7ZiC5Mgj8GjbxSkinT1oOWD03mtQceWGfdIShxJJYIBeGSgMmdeCdk86Gu3t106n9CwdmMx7X9VcqZpBVrq1kxUq/Bt4eoV2L4fLMV9A6CDBaN8dwwxKdFZ3DiQ3UIq8H/Wt2Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CW11gn7F; arc=fail smtp.client-ip=40.107.223.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TivsP3+0GspnaYJKeDGtzge2gBwPewQbDacEIJS7A2rB6LrphoHUBAfVX4bpBnYMbq+NuTcD1LGkx7FwzAg9wLVWuJ934ciu3egd4kIexHIZ/FayxZPpKRao9l/fRWC3JTQSXBwtbu5mwXjdHqmTp5mDxAUc0E8amzSD7r/sG+C/QrERNXjb2+amjoNZ7Zuzg68cM5ItHlWgCtb4XL2WguCpHuGPMUsxwTUgexTR1qXhkkCNLp9SgFjvwFX1FmQl3EsNDVHNmufRUxvTQnrw2ChmDzZaJb5nSgoF38s/+6/FmfVcntwdp8aodvjSSfrwhBiVRXGF2Zgx6lSs46pgpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E2nDNxAmvUroGqRWMjZVFbPDVyiueadVFtL0QtP+QIU=;
+ b=mfrCjQkJx3G7avKMbnKEcwgSmh51uRNomvTcTmj1fM/SCghyxCrXiYrgz6aFS5muWZUF6tQLa9NtNr82NKCaJ3SNMYWkzwZFMo+E3BEzm1IaE6aR2X6u0hw8Hh75Ew7jXSB3bjbb4RNZ/B4dHENnPWvyrXGjidAZ2a4xhTu7W1a7TElM5L3QNvV3XeuiRkM43hvg2QsVeAEC41dvjKg7qdR0Od9ozlCdD90pRMm2AGaTs+QoKD/gED4Wkn4LQRpmn2C0SXQKnejd35IVSw9gMd/0LBZ4cqNkHgZpW1w+p08wojjlpmGUsGFN+yVCRfkGAkkFKSKKGBgkZdQ1wwCCUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E2nDNxAmvUroGqRWMjZVFbPDVyiueadVFtL0QtP+QIU=;
+ b=CW11gn7F9JyegOWJwQOxPjgRJKF7WH9oyDWNY1F8q2LemCW9ze05J3hLZTvFRUfytgKEDKRA5b9lzMTjvJtJKkFO1iqIRhEc3HrB0Efc3Le8/bQXFJWyqZ7zj2UD5i58gx/icN63BD3H4hKwpPXfWOIkzhAce9kbWRbBfJLWGzA=
+Received: from CH0PR03CA0117.namprd03.prod.outlook.com (2603:10b6:610:cd::32)
+ by SA3PR12MB8764.namprd12.prod.outlook.com (2603:10b6:806:317::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 19:28:04 +0000
+Received: from DS3PEPF0000C380.namprd04.prod.outlook.com
+ (2603:10b6:610:cd:cafe::a5) by CH0PR03CA0117.outlook.office365.com
+ (2603:10b6:610:cd::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.29 via Frontend
+ Transport; Fri, 26 Apr 2024 19:28:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF0000C380.mail.protection.outlook.com (10.167.23.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 19:28:03 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
+ 2024 14:28:01 -0500
+Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 26 Apr 2024 14:28:00 -0500
+From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Subject: [PATCH v3 0/2] Fix Kernel CI issues
+Date: Fri, 26 Apr 2024 12:27:55 -0700
+Message-ID: <20240426-dp-live-fmt-fix-v3-0-e904b5ae51d7@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQKunZEo8R7Jz4kBtk6k2PvotGU0HgHS0NaiAcYBqoMBlEd6hQI3yNWyAXtbGeoCNAHAQgKHImC+AgG1eBACLtCTCwHsMLvJrzUWuSA=
-Date: Fri, 26 Apr 2024 14:25:29 -0500
-Message-ID: <6351024b5d6206c4e9a8cd98d1a09d43@mail.gmail.com>
-Subject: RE: RFC: Restricting userspace interfaces for CXL fabric management
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams <dan.j.williams@intel.com>
-Cc: linux-cxl@vger.kernel.org, 
-	Sreenivas Bagalkote <sreenivas.bagalkote@broadcom.com>, 
-	Brett Henning <brett.henning@broadcom.com>, 
-	Sumanesh Samanta <sumanesh.samanta@broadcom.com>, linux-kernel@vger.kernel.org, 
-	Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, 
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Ira Weiny <ira.weiny@intel.com>, linuxarm@huawei.com, linux-api@vger.kernel.org, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, "Natu, Mahesh" <mahesh.natu@intel.com>, 
-	gregkh@linuxfoundation.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000004f100061704decf"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADsALGYC/4WNywrCMBBFf0WydiSTRx+u/A9xUZuJHbAPkhKU0
+ n837caVuDwXzrmLiBSYojgfFhEoceRxyKCPB9F2zfAgYJdZKKmMNMqCm+DJicD3M3h+QYPy7su
+ 61LYuRLamQHnei9db5o7jPIb3fpBwW3+3EgKCkdZrq5w2lb00vTu1Yy+2UlJ/bAUSCmkqqlAhO
+ vra67p+AL9HHirqAAAA
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>
+CC: <dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, Anatoliy Klymenko
+	<anatoliy.klymenko@amd.com>, kernel test robot <lkp@intel.com>
+X-Mailer: b4 0.13.0
+Received-SPF: None (SATLEXMB04.amd.com: anatoliy.klymenko@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF0000C380:EE_|SA3PR12MB8764:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20daf20d-85e6-475c-3e75-08dc6626fe53
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bWZpWVEyZjJOUVFDS1FNTGJFZ3dhRW5pTnMybm03MllCT0NsZ3RxOUJOU1dI?=
+ =?utf-8?B?OHovZmpxaE1TL0Jhb1lMNXZmWjROaDdQUkFoQkc0c2g2dTQwV0djeXoyemlK?=
+ =?utf-8?B?YVhKbDljMTQ3ZE93WDZ1dG9NM25MUWd1NTJFbmpjV1dpak5rZ2tYaFd2SERR?=
+ =?utf-8?B?MmlBNVlIT1VEWjB0QjlsQ0dMbDVsaG41M1R2M2cwTEc4S0pLU0lxaXlhT01z?=
+ =?utf-8?B?eUVsWTk5WFdyQ0g3dDBMRmw1ZDBOWXhYb2lEMGdGNXVjRjhWWVlBL0lNa3Zh?=
+ =?utf-8?B?T0l2VWFOb204b0MwY3BrWFVneFJCWkNvU0hlNlBQQzRmYWNRSkxvczE2RklV?=
+ =?utf-8?B?ZTIrTE80Umt3RUdLakRJZ0Rqb3VzMXpKVEV0aVVYZDUzcWtYanRid21HSCtn?=
+ =?utf-8?B?aG5xanhTcm5xbU9sYndJdDVZWjF4SmR1c1B1Z3BSdGE0NEpoL0ZyWlFiV0pD?=
+ =?utf-8?B?dVAxNmRSbXpwTDd3R1NUV1lLYm5od0x1bXl4MEUxTmlxbUlMd1FvMG5WSHFN?=
+ =?utf-8?B?V1d5Wjg2U2duT0l2TWQyV2xtTTUzVktXcHNWeXhVOHE5cUdZS3ZQQ3RvdmdW?=
+ =?utf-8?B?RmJROWFwamx6VTJIOFo5Rmd2cU9mTHQ3dlV6WCtIZlJrN2YvUXpmY3MwY3lS?=
+ =?utf-8?B?eTYyTTEwSFpCSm9XVDQyS3RWWU9VQzN5SDBnbFJrK0VPVUNYczhLOWYxZ2Mr?=
+ =?utf-8?B?NGxwSUdoaU42ZFNBcE1Ba0Y3eHRXamRpaEVINkQ2SHkwMzR0NFZkR2hlNWRY?=
+ =?utf-8?B?RGlxTWV1M01NNFNVenY2Rm5SVndQdFVHNDg2R2dTSmJvSnV2NFhUcTN1VUNw?=
+ =?utf-8?B?TGVVVDhQemV4ZllKMWJ2M0VrNzJhQTRERmlybjQvOTl1SytWNFpCOUl6THBE?=
+ =?utf-8?B?aThpSmRFU0lMYmxmbUp1K0ZVcXQ0Z2k5ZHNzWWh1cldEWVQ4QmliRWNJVHBJ?=
+ =?utf-8?B?RjFNOFFiZTUwZlZJVGN6azZRZFg1c0hQNG16V0g1SW9jbi9TVUVRWW9vZmxP?=
+ =?utf-8?B?THlYbDYwNVE5YytZUXh3TnA2U1FJRWJLT3FnT0dOVnpuc3VMaExYTHlhZi8v?=
+ =?utf-8?B?dFhNVzF1c3p5aVFla3Y0ZjFsYTN5ZzN4aWtNMzBOVDNOWTFoZ0NTbUpaaEgx?=
+ =?utf-8?B?SXNBSTNTUGNyeGE0YURweExqb0syRW5DL2xBSWdkYjhpTVY1K1FoWERoRXVq?=
+ =?utf-8?B?cGhuaFJjaUNqQTN2djZjblZid3NJaklwdTdjUmJEWHV1MHdOeUQ1RTFOZTVC?=
+ =?utf-8?B?dHk0TWlOSWxqNUtrNmdVWVdLbzNCaS9QbVBGR2VOK0Rodlp2N2ltOXVEemph?=
+ =?utf-8?B?OVc4RmFyKzZQcjAwclJoVHRHbjBjY08vMkduOUFGWGdrV1NKLzJna25vMGM3?=
+ =?utf-8?B?UkR3cFFTQjFpaVBDTERlaldtS2M3aHN0MUt1UktLaXROcWNQcHBVQXlZdjB0?=
+ =?utf-8?B?YmtkbFg2S1pnV1dqdFg2TkptRys3RGFLakF5ZmhyOVpXTnNBZkIzSEFCeG9a?=
+ =?utf-8?B?SEFtcUJWYXUrSmpYWk9yN0p6UDZQRHZrOFRheVlhQXdLNkhIcmpGQ2tkWi9I?=
+ =?utf-8?B?eTN4WXE1RjZnRVNtU1FjU1pBRkl5ZlhEeEZMMlNWbzJ3QVFwaE8zekhuOEdT?=
+ =?utf-8?B?aHNPa1ZDOElRYTFLVlFZL2lYbko4MUlLNXozdXJPQ2Q3Y2U1ZHFVbHFKSmRH?=
+ =?utf-8?B?ZUtvMUdHdms3czRsc0Y3RHBZQW5jYVFsU2hxcW9UaXV2NVB4SWgxZjR5dDhx?=
+ =?utf-8?Q?ddpZ7CWYeGPY5eS6Kki2585HT8SAoPj75ul+NS2?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(82310400014)(1800799015)(376005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 19:28:03.9864
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20daf20d-85e6-475c-3e75-08dc6626fe53
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF0000C380.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8764
 
---00000000000004f100061704decf
-Content-Type: text/plain; charset="UTF-8"
+Fix number of CI reported W=1 build issues.
 
-Perhaps a bit more color on a few specifics might be helpful.
+Patch 1/2: Fix function arguments description.
+Closes: https://lore.kernel.org/oe-kbuild-all/202404260616.KFGDpCDN-lkp@intel.com/
 
-I think that there will always be a class of vendor specific APIs/Opcodes
-that are related to an implementation of a standard instead of the
-standard itself.  I've been party to discussion on not creating CXL
-defined API/Opcodes that get into the realm of specifying an
-implementation.  There are also a class of data that can be collected from
-a specific implementation that is helpful for debug, for health
-monitoring, and perhaps performance monitoring where the implementation
-matters and therefore are not easily abstracted to a standard.
+Patch 2/2: Fix clang compilation error.
+Closes: https://lore.kernel.org/oe-kbuild-all/202404260946.4oZXvHD2-lkp@intel.com/
 
-A few examples:
-a) Temperature monitoring of a component or internal chip die
-temperatures.  Could CXL define a standard OpCode to gather temperatures,
-yes it could; but is this really part of CXL?  Then how many temperature
-elements and what does each element mean?  This enters into the
-implementation and therefore is vendor specific.  Unless the CXL spec
-starts to define the implementation, something along the lines of "thou
-shall have an average die temperature, rather than specific temperatures
-across a die", etc.
+Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+---
+Changes in v3:
+- Add Signed-off-by tag.
 
-b) Error counters, metrics, internal counters, etc.  Could CXL define a
-set of common error counters, absolutely.  PCIe has done some of this.
-However, a specific implementation may have counters and error reporting
-that are meaningful only to a specific design and a specific
-implementation rather than a "least common denominator" approach of a
-standard body.
+- Link to v2: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v2-0-6048e81211de@amd.com
 
-c) Performance counters, metric, indicators, etc.  Performance can be very
-implementation specific and tweaking performance is likely to be
-implementation specific.  Yes, generic and a least common denominator
-elements could be created, but are likely to limiting in realizing the
-maximum performance of an implementation.
+Changes in v2:
+- Compilation error fix added.
 
-d) Logs, errors and debug information.  In addition to spec defined
-logging of CXL topology errors, specific designs will have logs, crash
-dumps, debug data that is very specific to a implementation.  There are
-likely to be cases where a product that conforms to a specification like
-CXL, may have features that don't directly have anything to do with CXL,
-but where a standards based management interface can be used to configure,
-manage, and collect data for a non-CXL feature.
+- Link to v1: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v1-1-405f352d3485@amd.com
 
-e) Innovation.  I believe that innovation should be encouraged.  There may
-be designs that support CXL, but that also incorporate unique and
-innovative features or functions that might service a niche market.  The
-AI space is ripe for innovation and perhaps specialized features that may
-not make sense for the overall CXL specification.
+---
+Anatoliy Klymenko (2):
+      drm: xlnx: zynqmp_dpsub: Fix few function comments
+      drm: xlnx: zynqmp_dpsub: Fix compilation error
 
-I think that in most cases Vendor specific opcodes are not used to
-circumvent the standards, but are used when the standards group has no
-interested in driving into the standard certain features that are clearly
-either implementation specific or are vendor specific additions that have
-a specific appeal to a select class of customer, but yet are not relevant
-to a specific standard.
+ drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+---
+base-commit: 2bdb481bf7a93c22b9fea8daefa2834aab23a70f
+change-id: 20240425-dp-live-fmt-fix-a10bf7973596
 
-At the end of the day, customer want products that solve a specific
-problem.  Sometimes vendor can address market segments or niches that a
-standard group has no interest in supporting.  It can also take months,
-and in some cases years to reach an agreement on what standardized feature
-should look like.  I also believe that there can be competitive reasons
-why there might be a group that wants to slow down a vendor's
-implementation for fear of losing market share.
-
-Thanks
-Harold Johnson
-
-
------Original Message-----
-From: Jonathan Cameron [mailto:Jonathan.Cameron@Huawei.com]
-Sent: Friday, April 26, 2024 11:54 AM
-To: Dan Williams
-Cc: linux-cxl@vger.kernel.org; Sreenivas Bagalkote; Brett Henning; Harold
-Johnson; Sumanesh Samanta; linux-kernel@vger.kernel.org; Davidlohr Bueso;
-Dave Jiang; Alison Schofield; Vishal Verma; Ira Weiny;
-linuxarm@huawei.com; linux-api@vger.kernel.org; Lorenzo Pieralisi; Natu,
-Mahesh; gregkh@linuxfoundation.org
-Subject: Re: RFC: Restricting userspace interfaces for CXL fabric
-management
-
-On Fri, 26 Apr 2024 09:16:44 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> Jonathan Cameron wrote:
-> [..]
-> > To give people an incentive to play the standards game we have to
-> > provide an alternative.  Userspace libraries will provide some
-incentive
-> > to standardize if we have enough vendors (we don't today - so they
-will
-> > do their own libraries), but it is a lot easier to encourage if we
-> > exercise control over the interface.
->
-> Yes, and I expect you and I are not far off on what can be done
-> here.
->
-> However, lets cut to a sentiment hanging over this discussion. Referring
-> to vendor specific commands:
->
->     "CXL spec has them for a reason and they need to be supported."
->
-> ...that is an aggressive "vendor specific first" sentiment that
-> generates an aggressive "userspace drivers" reaction, because the best
-> way to get around community discussions about what ABI makes sense is
-> userspace drivers.
->
-> Now, if we can step back to where this discussion started, where typical
-> Linux collaboration shines, and where I think you and I are more aligned
-> than this thread would indicate, is "vendor specific last". Lets
-> carefully consider the vendor specific commands that are candidates to
-> be de facto cross vendor semantics if not de jure standards.
->
-
-Agreed. I'd go a little further and say I generally have much more warm
-and
-fuzzy feelings when what is a vendor defined command (today) maps to more
-or less the same bit of code for a proposed standards ECN.
-
-IP rules prevent us commenting on specific proposals, but there will be
-things we review quicker and with a lighter touch vs others where we
-ask lots of annoying questions about generality of the feature etc.
-Given the effort we are putting in on the kernel side we all want CXL
-to succeed and will do our best to encourage activities that make that
-more likely. There are other standards bodies available... which may
-make more sense for some features.
-
-Command interfaces are not a good place to compete and maintain secrecy.
-If vendors want to do that, then they don't get the pony of upstream
-support. They get to convince distros to do a custom kernel build for
-them:
-Good luck with that, some of those folk are 'blunt' in their responses to
-such requests.
-
-My proposal is we go forward with a bunch of the CXL spec defined commands
-to show the 'how' and consider specific proposals for upstream support
-of vendor defined commands on a case by case basis (so pretty much
-what you say above). Maybe after a few are done we can formalize some
-rules of thumb help vendors makes such proposals, though maybe some
-will figure out it is a better and longer term solution to do 'standards
-first development'.
-
-I think we do need to look at the safety filtering of tunneled
-commands but don't see that as a particularly tricky addition -
-for the simple non destructive commands at least.
-
-Jonathan
-
+Best regards,
 -- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
+Anatoliy Klymenko <anatoliy.klymenko@amd.com>
 
---00000000000004f100061704decf
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQcwYJKoZIhvcNAQcCoIIQZDCCEGACAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3KMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVIwggQ6oAMCAQICDFYxylnKccYkRKUb5zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwOTI1MjNaFw0yNTA5MTAwOTI1MjNaMIGS
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFzAVBgNVBAMTDkhhcm9sZCBKb2huc29uMSowKAYJKoZIhvcN
-AQkBFhtoYXJvbGQuam9obnNvbkBicm9hZGNvbS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
-ggEKAoIBAQDB5WWzvUi2i8wTotEf6r8XSf1fv6jdZRTUzPstot6oRZ6MYHTsYb2fuTHU7Tk/kTkD
-h6qjdQzadNnvYwDKcZvA8yfsdbtwcyjuRap7WMuud/Byrk+iku/cgONoZ1sIFibH51Ukr0caHDEN
-sC4cvn8WDyJ45BSOWcJsfFlJIFTtSXsVEm1e2ycfDxTlLKcxgTG+k8XqHxskZiYFE3nEDGyMhtkJ
-dxEvQsUZzrDYkcbaq0pFKldUHCFlJ40A6mYMamtX+K/dOy8JOPpcsGATQJVvOCowPByerwQ2YA5H
-aVoejByKvh4PX1ZKTHd4T0PI04SW0XhQeOY9Q4MrNrzi2GgJAgMBAAGjggHcMIIB2DAOBgNVHQ8B
-Af8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmds
-b2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYB
-BQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5n
-bG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0
-dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCYG
-A1UdEQQfMB2BG2hhcm9sZC5qb2huc29uQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcD
-BDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUjGUx5P4A0p/XH6QC
-1/fEZlOUtrQwDQYJKoZIhvcNAQELBQADggEBAEaE/q6aHZ15f6d2Mm7iGYaGrKrIsNcfY7lr6YYY
-aEW1RGXYnu07R4eZBYISoKuJN1qKLBN+Onl1+9L8yKo2YuIH3A22iWBzV06uxFnip75Qeujg+0+r
-SH5Mdh6QCregHSSQawF0oHt50q8l5uLY0X/tOe34TxqNigwKJAJ5XE8SnZQauJrCPy5ppMgwJ9JT
-hpG/km0i0PgommCbk4Y0nd6Y84hgbte6DmlyDym+4qaHp8UD2rpXQLHDzcUzlY/JsJPAxsPl0mpT
-uKUgobEhkpp0ZYEWdB5cndcazW23IHRvnCtBG166CIEknolVYuVVbiY+IKNL8mwVqBrX9jizckox
-ggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEw
-LwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxWMcpZynHG
-JESlG+cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINXOgULaISToEgr9m1csddu3
-HPAVkrR3GSPYd3Pz5sY5MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8X
-DTI0MDQyNjE5MjUzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEW
-MAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCG
-SAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA/CilH+vbwSUGgfkD8NuYNxxI4IZUBrf5pl6k8SQTg
-lNGcVBMcP/gOyjbt+wRzCtaLxjobP5Y+CO2Z4t5VxAcBy3g5Qw0gBxCqcpA9MHcRMO59TZZl6M9V
-pNGa9nMNQwmsvyJhavZ1zbwhx1nSh0pBfcuZVWdAdghGR0PbUvgltiFvhrGJSxZKmVsidYSgpvo4
-OT6Dj3zKC7jnJfVMRmWSV5JpafYCPfe+Cu9j6NY/tLqkvuA+SULPyfEaG7ViYYyNj7TsuO5VSUO7
-2WPQCZohhg+Yw7tkBMVSrc64cOo0I8Rb5161GIO7NQq8EZIbukdDzMAivY4MWVwTy6etC5Jp
---00000000000004f100061704decf--
 
