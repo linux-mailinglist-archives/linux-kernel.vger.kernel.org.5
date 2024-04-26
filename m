@@ -1,115 +1,167 @@
-Return-Path: <linux-kernel+bounces-159426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4F88B2E72
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:48:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C41C8B2E69
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:47:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32C481F22D9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:48:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0355D283209
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14BB184D;
-	Fri, 26 Apr 2024 01:47:57 +0000 (UTC)
-Received: from mxde.zte.com.cn (mxde.zte.com.cn [209.9.37.143])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A161877;
+	Fri, 26 Apr 2024 01:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WIk04bDM"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C719CEDC;
-	Fri, 26 Apr 2024 01:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.9.37.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1388717CD;
+	Fri, 26 Apr 2024 01:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714096077; cv=none; b=dy4CaHeCCEvLMkaZTS2fhWgDGT6Y1yepnYZVvqyjKO7z3Ihd1w8w+PWmHLZ+UvHlE1+AtaDfGoNWfenPPJGRfl2278rkDrSGHJsEtGWC8+QTMGLrMp68umlHYfT/9+p6TxnWXgR8z3bJh6GJ4qJwyxofSMh6J/GBm7YUDJVSL5E=
+	t=1714096010; cv=none; b=UgUud2jg6c8BRZy9XbP/fvvyGHd/Q7T9FDbLn9LGEG9bv0ZpqyeDnh5/wqjRmQgRK0cIwJx9JZclRfiMcq7dzAA/8/Ttbs5FJzFeERAIO15v3HXKd3zSMUzcCyVp9fUYfczvu23fU+HW3WjCFkShPMQijAhoH58t+y6HenaSmPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714096077; c=relaxed/simple;
-	bh=nRLNLg/Asrg+hntPItw/WD1R1FN0NMP2xzP/J61TePI=;
-	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=JaZStBomcqUUrOgDNIN+plppsIDO261JmH6ep8j4Eb3VSj8TzNtD5uMyIW9FV2TZFDKzASxcBfHq6HJSycizmpbvDAVSnXenxHzpIQIwP9sXyoZr3DEDi5kwl424sS7PgEnEBWFS1uq//OgfTNl06yzGfo8jdJtEs44edO0348E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=209.9.37.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mxhk.zte.com.cn (unknown [192.168.250.138])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mxde.zte.com.cn (FangMail) with ESMTPS id 4VQbFp2tPWz4xBV4;
-	Fri, 26 Apr 2024 09:47:42 +0800 (CST)
-Received: from mxct.zte.com.cn (unknown [192.168.251.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VQbFc4t9xz4xPBZ;
-	Fri, 26 Apr 2024 09:47:32 +0800 (CST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4VQbF32nhVz50yRx;
-	Fri, 26 Apr 2024 09:47:03 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 43Q1kI9M001841;
-	Fri, 26 Apr 2024 09:46:18 +0800 (+08)
-	(envelope-from xu.xin16@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Fri, 26 Apr 2024 09:46:19 +0800 (CST)
-Date: Fri, 26 Apr 2024 09:46:19 +0800 (CST)
-X-Zmail-TransId: 2af9662b076bffffffff86b-1264c
-X-Mailer: Zmail v1.0
-Message-ID: <20240426094619962AxIC6CSpfpJNeiy8HRA9h@zte.com.cn>
+	s=arc-20240116; t=1714096010; c=relaxed/simple;
+	bh=pvsz6Y7tz8tUTnzdHVdbRBcFs4F7XLbUl6m/bU8Y3GU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BN9XyYnyByENqsaf9BOJiw0NI4zjYUD7v8R0tcjvw7Ur/frpyvfwEcXnOAu0N9p/VGYGK9cwG4P3g49eUx/lelWG65RRM7pCVL1XIuXWF2mEeluF+yOvl6APGVOd75QbqxDqsb01+HP8o/vQW0NaFh/UOd84SA0Dbkbxz9RUM/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WIk04bDM; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714096008; x=1745632008;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=pvsz6Y7tz8tUTnzdHVdbRBcFs4F7XLbUl6m/bU8Y3GU=;
+  b=WIk04bDMU2KLWokv1TvtOp7Bdd6eMrzSi+R4AZPo+HgSaFVi4UKfdl/g
+   bNiongcuzE2WKlLUQcqBY8NYKyKqo4IbgBczUftez5QzqvDsdXMZB6ylp
+   V5b9EevlDccUP+BZ9LiPulrEnuAmezLpIz70rQ6Rhzl/oO5WQLYO1h867
+   fJeFYsktxCKd864TidC1LA83f9gpgFjbYczvz+9VzOqZASfWidhVbmo+X
+   9ZtZ1Xq3alyjIjfnABJ+MmQ8xNniecXZkf77/Uixg4qSp1KYi1Y5lipUV
+   qXTzhCAU3334zNHzdJI4lSi4NY5foIt9B3vxBiR1Pfd8+8SK8ANu9W0aB
+   Q==;
+X-CSE-ConnectionGUID: N/KCDj1xTp25FovZXk7itw==
+X-CSE-MsgGUID: 9k4AQKcdT/2rcBJajNbIfw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="21239943"
+X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
+   d="scan'208";a="21239943"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 18:46:47 -0700
+X-CSE-ConnectionGUID: ovHcXCKTQdu5MWqIjgnzsg==
+X-CSE-MsgGUID: uCATs3BCQFubIHsdmVPbjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
+   d="scan'208";a="56209325"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 18:46:43 -0700
+Message-ID: <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+Date: Fri, 26 Apr 2024 09:46:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <xu.xin16@zte.com.cn>
-To: <akpm@linux-foundation.org>, <david@redhat.com>
-Cc: <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <shr@devkernel.io>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgdjJdIGtzbTogYWRkIGtzbSBpbnZvbHZlbWVudCBpbmZvcm1hdGlvbiBmb3IgZWFjaCBwcm9jZXNz?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 43Q1kI9M001841
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 662B07BD.000/4VQbFp2tPWz4xBV4
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Sean Christopherson <seanjc@google.com>,
+ Kan Liang <kan.liang@linux.intel.com>
+Cc: Mingwei Zhang <mizhang@google.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+ <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
+ <Zikeh2eGjwzDbytu@google.com>
+ <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
+ <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+ <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+ <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
+ <ZirPGnSDUzD-iWwc@google.com>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <ZirPGnSDUzD-iWwc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: xu xin <xu.xin16@zte.com.cn>
 
-In /proc/<pid>/ksm_stat, Add two extra ksm involvement items including
-MMF_VM_MERGEABLE and MMF_VM_MERGE_ANY. It helps administrators to
-better know the system's KSM behavior at process level.
+On 4/26/2024 5:46 AM, Sean Christopherson wrote:
+> On Thu, Apr 25, 2024, Kan Liang wrote:
+>> On 2024-04-25 4:16 p.m., Mingwei Zhang wrote:
+>>> On Thu, Apr 25, 2024 at 9:13 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>> It should not happen. For the current implementation, perf rejects all
+>>>> the !exclude_guest system-wide event creation if a guest with the vPMU
+>>>> is running.
+>>>> However, it's possible to create an exclude_guest system-wide event at
+>>>> any time. KVM cannot use the information from the VM-entry to decide if
+>>>> there will be active perf events in the VM-exit.
+>>> Hmm, why not? If there is any exclude_guest system-wide event,
+>>> perf_guest_enter() can return something to tell KVM "hey, some active
+>>> host events are swapped out. they are originally in counter #2 and
+>>> #3". If so, at the time when perf_guest_enter() returns, KVM will ack
+>>> that and keep it in its pmu data structure.
+>> I think it's possible that someone creates !exclude_guest event after
+> I assume you mean an exclude_guest=1 event?  Because perf should be in a state
+> where it rejects exclude_guest=0 events.
 
-KSM_mergeable: yes/no
-	whether the process'mm is added by madvise() into the candidate list
-	of KSM or not.
-KSM_merge_any: yes/no
-	whether the process'mm is added by prctl() into the candidate list
-	of KSM or not, and fully enabled at process level.
+Suppose should be exclude_guest=1 event, the perf event without 
+exclude_guest attribute would be blocked to create in the v2 patches 
+which we are working on.
 
-Changelog
-=========
-v1 -> v2:
-	replace the internal flag names with straightforward strings.
-	* MMF_VM_MERGEABLE -> KSM_mergeable
-	* MMF_VM_MERGE_ANY -> KSM_merge_any
 
-Signed-off-by: xu xin <xu.xin16@zte.com.cn>
----
- fs/proc/base.c | 4 ++++
- 1 file changed, 4 insertions(+)
+>
+>> the perf_guest_enter(). The stale information is saved in the KVM. Perf
+>> will schedule the event in the next perf_guest_exit(). KVM will not know it.
+> Ya, the creation of an event on a CPU that currently has guest PMU state loaded
+> is what I had in mind when I suggested a callback in my sketch:
+>
+>   :  D. Add a perf callback that is invoked from IRQ context when perf wants to
+>   :     configure a new PMU-based events, *before* actually programming the MSRs,
+>   :     and have KVM's callback put the guest PMU state
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 18550c071d71..50e808ffcda4 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3217,6 +3217,10 @@ static int proc_pid_ksm_stat(struct seq_file *m, struct pid_namespace *ns,
- 		seq_printf(m, "ksm_zero_pages %lu\n", mm->ksm_zero_pages);
- 		seq_printf(m, "ksm_merging_pages %lu\n", mm->ksm_merging_pages);
- 		seq_printf(m, "ksm_process_profit %ld\n", ksm_process_profit(mm));
-+		seq_printf(m, "KSM_mergeable: %s\n",
-+				test_bit(MMF_VM_MERGEABLE, &mm->flags) ? "yes" : "no");
-+		seq_printf(m, "KSM_merge_any: %s\n",
-+				test_bit(MMF_VM_MERGE_ANY, &mm->flags) ? "yes" : "no");
- 		mmput(mm);
- 	}
 
--- 
-2.15.2
+when host creates a perf event with exclude_guest attribute which is 
+used to profile KVM/VMM user space, the vCPU process could work at three 
+places.
+
+1. in guest state (non-root mode)
+
+2. inside vcpu-loop
+
+3. outside vcpu-loop
+
+Since the PMU state has already been switched to host state, we don't 
+need to consider the case 3 and only care about cases 1 and 2.
+
+when host creates a perf event with exclude_guest attribute to profile 
+KVM/VMM user space,  an IPI is triggered to enable the perf event 
+eventually like the following code shows.
+
+event_function_call(event, __perf_event_enable, NULL);
+
+For case 1,  a vm-exit is triggered and KVM starts to process the 
+vm-exit and then run IPI irq handler, exactly speaking 
+__perf_event_enable() to enable the perf event.
+
+For case 2, the IPI irq handler would preempt the vcpu-loop and call 
+__perf_event_enable() to enable the perf event.
+
+So IMO KVM just needs to provide a callback to switch guest/host PMU 
+state, and __perf_event_enable() calls this callback before really 
+touching PMU MSRs.
+
+>
+> It's a similar idea to TIF_NEED_FPU_LOAD, just that instead of a common chunk of
+> kernel code swapping out the guest state (kernel_fpu_begin()), it's a callback
+> into KVM.
 
