@@ -1,159 +1,128 @@
-Return-Path: <linux-kernel+bounces-160594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0483C8B3FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D71408B3FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71F3A1F22F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:04:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 788F01F221FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E454620319;
-	Fri, 26 Apr 2024 19:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C2B10942;
+	Fri, 26 Apr 2024 19:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PclBr43e"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SalqeF2/"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993711D53F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40555BE4E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714158244; cv=none; b=IDazPAR7jTHUle0CmczYCJDvgA7cfFTuMtwyM/lh/p7iCMbhkC04DSB6+73Ck8+lqO93xwS6U0P2uwRI+uepLngF295qq/9BdSIWbaK7bJ0NwJEbJAvyb3RMHoi0wY80j4gs43TNo4azFPafXex4OD2PQh78p+MD2i4N4jAal10=
+	t=1714158326; cv=none; b=GzozDhhiS8wgrBxuX+a7CdSOkeCA3uOCeeaE3Nt3uA6MZPEoQ5Vr35mZwpHMZ5MDIt1iGSwfWW9zgxCt3xJRnyYIScks6I3U7TOhdZcwJnzjVXHlsUYkiS2CIdYzLbqa9qSZtjNpWAB59BvaeCP0IRwwjjxfy27k7BlbOnkzgQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714158244; c=relaxed/simple;
-	bh=CQdNTTJu3j/mg39vJK3C5jXIss3CCLzQnXvMUyqzbOs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rWn9YE5vf8brCJAwL3jYn0900AAP8GCUPpLiCml2StiVFWnc1yTqnwiABBUeDANKIHxel76mXa1Zwbcbblqb3mC/xgXLsGWEsjbfbXesA3ICJKnkDEZZQ0MI0XEg2euZ0yR1vR0CEXcirW3b4EVjvfqu1Z3UCWB54iGcsj9yNKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PclBr43e; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-572229f196cso3101632a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714158241; x=1714763041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m00bEU780KBB1VMtPyI6E3MI0vl8OtQDqHQXttBNFNg=;
-        b=PclBr43eJAbMLPKPuOQhgUrhAnSDMXEjJhPoImLzIVUKrLNE5xuBpYI5Nc3sZ2mVwI
-         YTn4UL9VzaCfb8P6AIEhLkmz76/s2HSdQ22XAXcdWEt0IKnzqYFAW9M+m79Ze7u/GI2k
-         Paq/37hD5l6yD2Pmp6hknzxYe7cXidjL8TulNOZwlEbNEjW2q52zZM5sWEgWSSgOW4gw
-         vrzQUcasv2nBN+EfMTaeepQHHINv7I3eXow1wlvC6pYXcg4QFTlvFZZkulBHIK3J0dPM
-         O7gTa+5KtAuvTMjK3uftF8UE93bZGMP9agTQpSJD97v859Uvry2z76owgQHs4LCaLTE6
-         4vGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714158241; x=1714763041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m00bEU780KBB1VMtPyI6E3MI0vl8OtQDqHQXttBNFNg=;
-        b=LAPuSzYbILZXZqc/NA6AZzUFoNw33e4i5k+wVfAvhJlv0t5g+sdKvuGQCBP53ynvr1
-         mA9fUmqaqNjvttCebhb06AiKLOmDhBuTPvWtGEe/3PDjW22FkHHaD/5NqMBAfpXdtiNq
-         8GHTxetg0nBz8xQ7LyZjDZRxgcC/cXx6dGISFEvV0zlyestfo28GTv5pLCWjIfZddMCw
-         JsTcP2Lgn8X/vi/GlckTVGDpybvicvmde0Ue0HWByByKBItGMNs9nOgPdl6YhBM6YvJm
-         wHGOuDWghBTJu/fuSaSu0A00nH5tCC+ZZH3WJMXjnYNcOcr56NAtZw5eMryfsUiGIm18
-         bVAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWYF5fqXllfP4sEu7mbUWfmbH7d9wXQo5w546/Ifz8gGi35ZXXsqke25iePM+MA/1KTbcv25c0xSCl4TVPzELyoB+ryEcNwoY2WKDZB
-X-Gm-Message-State: AOJu0Yy7mlHk585E8Z+tRWCZmxJlu/xNhb5czVy9bHQmfWoH3bEED94b
-	VH1kYEroMEfzc7h1yWxivb7Sf143Pyq9SFCuoBhSk2RSTmA7aSOXNDFqvyJeNkGUYXDDVZknMTY
-	f9QSk5LE1dj+kFin/Sc6voJdZRiYnMs0ejHF+
-X-Google-Smtp-Source: AGHT+IHC29f8VkEC0j2ntDFfs1/Xgh7oSkE15z+ZaqRDydnhpQDaoumrjx3ub5RHts27HndacKq3GJDbcLuIolCzNUc=
-X-Received: by 2002:a17:906:6048:b0:a58:87d5:b624 with SMTP id
- p8-20020a170906604800b00a5887d5b624mr2572733ejj.20.1714158240548; Fri, 26 Apr
- 2024 12:04:00 -0700 (PDT)
+	s=arc-20240116; t=1714158326; c=relaxed/simple;
+	bh=splLkRiiHzPsaFd1425CF9fQqUGE4dwhc9c1R8aCo1w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHqrxfFpED/3y+R2i+RwccNMqGj0u7R5NDey7FSSUxNkh4Y+q5fW+2hkgxIlh25CyWeBeuvGwT9WY73Loc7ACtDeDI4kZ5EuPwF3KY2kAZcM0zNdXpdEqmN44ElJv2rtFdvw4KpevJTifXnuSahfxbhtaKSEZwbNjwMS8otyPN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SalqeF2/; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=J9hzjQzDOk6bgui0ZQTXguiwfYozRtBaHNSEEFobqG8=; b=SalqeF2/y6+XjXTwdw2qUijjlL
+	YbazM9RYU7erDUktOkFEsLCooaBAJg0Xw3Ce+NJmWAFAGh2IL9trO0IXSCu5uWeMddLj+hMl6Tbqo
+	9FivPMriPCjqktelGcq7wXyuhZY38ZPMtxRGN7wigGJOhBwCmDACZYieCW/bBDwXXSTLEaWoISCdL
+	Es2sL4DEEAFtFq50FAwMAPQ+0pR20uTqA1uRY3Y4wFYAIzCbsB1zpw0ulIaivm3fozFr5GBcKC7U8
+	qTj4E3+O57dIynIli2nRn7x5GPEBxaWKdmtYmuTE1/D0ffFtkQIW90Ei3Ji5s+/urNH2m81TOyjz5
+	GDy67bpQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s0Qsp-00000005pno-0JIt;
+	Fri, 26 Apr 2024 19:05:19 +0000
+Date: Fri, 26 Apr 2024 20:05:18 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	akpm@linux-foundation.org, linmiaohe@huawei.com,
+	jane.chu@oracle.com, nao.horiguchi@gmail.com, osalvador@suse.de
+Subject: Re: [PATCH] mm/memory-failure: remove shake_page()
+Message-ID: <Ziv67sGBi02YCYZ5@casper.infradead.org>
+References: <20240426171511.122887-1-sidhartha.kumar@oracle.com>
+ <ZivlrMAwRI6xJhc-@casper.infradead.org>
+ <d05cbf22-f3e8-414a-a2e3-03e0b857eaca@oracle.com>
+ <ZivyC3vqa2BIBoMj@casper.infradead.org>
+ <c40cfd0b-f045-4887-a955-fee7e0392cf1@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424165646.1625690-2-dtatulea@nvidia.com> <4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
- <CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
- <4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
- <CAHS8izPkRJyLctmyj+Ppc5j3Qq5O1u3aPe5h9mnFNHDU2OxA=A@mail.gmail.com>
- <63222bf6a298ae38e77b0c0f49d13581dd9d3a74.camel@nvidia.com>
- <CAHS8izNyJWhcRro8OFPTqsh9J4LEbm7Le6-CiW_oxi2NopAqeQ@mail.gmail.com> <88222bf4d3b4d142ee227eb56d24fa7a7ca43fe1.camel@nvidia.com>
-In-Reply-To: <88222bf4d3b4d142ee227eb56d24fa7a7ca43fe1.camel@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 26 Apr 2024 12:03:41 -0700
-Message-ID: <CAHS8izOhDknjJFZNstXLg=UvbtKTwjbw+0w+4Xx1p+cnqOKRxw@mail.gmail.com>
-Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from skb_frag_unref
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "davem@davemloft.net" <davem@davemloft.net>, "pabeni@redhat.com" <pabeni@redhat.com>, 
-	"ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"jacob.e.keller@intel.com" <jacob.e.keller@intel.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jianbo Liu <jianbol@nvidia.com>, 
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c40cfd0b-f045-4887-a955-fee7e0392cf1@oracle.com>
 
-On Fri, Apr 26, 2024 at 7:59=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> On Thu, 2024-04-25 at 13:42 -0700, Mina Almasry wrote:
-> > On Thu, Apr 25, 2024 at 12:48=E2=80=AFPM Dragos Tatulea <dtatulea@nvidi=
-a.com> wrote:
-> > >
-> > > On Thu, 2024-04-25 at 12:20 -0700, Mina Almasry wrote:
-> > > > diff --git a/include/linux/skbuff_ref.h b/include/linux/skbuff_ref.=
-h
-> > > > index 4dcdbe9fbc5f..4c72227dce1b 100644
-> > > > --- a/include/linux/skbuff_ref.h
-> > > > +++ b/include/linux/skbuff_ref.h
-> > > > @@ -31,7 +31,7 @@ static inline bool napi_pp_get_page(struct page *=
-page)
-> > > >  static inline void skb_page_ref(struct page *page, bool recycle)
-> > > >  {
-> > > >  #ifdef CONFIG_PAGE_POOL
-> > > > -       if (recycle && napi_pp_get_page(page))
-> > > > +       if (napi_pp_get_page(page))
-> > > >                 return;
-> > > >  #endif
-> > > >         get_page(page);
-> > > > @@ -69,7 +69,7 @@ static inline void
-> > > >  skb_page_unref(struct page *page, bool recycle)
-> > > >  {
-> > > >  #ifdef CONFIG_PAGE_POOL
-> > > > -       if (recycle && napi_pp_put_page(page))
-> > > > +       if (napi_pp_put_page(page))
-> > > >                 return;
-> > > >  #endif
-> > > >         put_page(page);
-> > > >
-> > > >
-> > > This is option 2. I thought this would fix everything. But I just tes=
-ted and
-> > > it's not the case: we are now reaching a negative pp_ref_count.
-> > >
-> I was tired and botched the revert of the code in this RFC when testing.
-> Dropping the recycle flag works as expected. Do we need an RFC v2 or is t=
-his non
-> RFC material?
->
-> Thanks,
-> Dragos
->
+On Fri, Apr 26, 2024 at 11:53:01AM -0700, Sidhartha Kumar wrote:
+> On 4/26/24 11:27 AM, Matthew Wilcox wrote:
+> > On Fri, Apr 26, 2024 at 10:57:31AM -0700, Sidhartha Kumar wrote:
+> > > On 4/26/24 10:34 AM, Matthew Wilcox wrote:
+> > > > On Fri, Apr 26, 2024 at 10:15:11AM -0700, Sidhartha Kumar wrote:
+> > > > > Use a folio in get_any_page() to save 5 calls to compound head and
+> > > > > convert the last user of shake_page() to shake_folio(). This allows us
+> > > > > to remove the shake_page() definition.
+> > > > 
+> > > > So I didn't do this before because I wasn't convinced it was safe.
+> > > > We don't have a refcount on the folio, so the page might no longer
+> > > > be part of this folio by the time we get the refcount on the folio.
+> > > > 
+> > > > I'd really like to see some argumentation for why this is safe.
+> > > 
+> > > If I moved down the folio = page_folio() line to after we verify
+> > > __get_hwpoison_page() has returned 1, which indicates the reference count
+> > > was successfully incremented via foliO_try_get(), that means the folio
+> > > conversion would happen after we have a refcount. In the case we don't call
+> > > __get_hwpoison_page(), that means the MF_COUNT_INCREASED flag is set. This
+> > > means the page has existing users so that path would be safe as well. So I
+> > > think this is safe after moving page_folio() after __get_hwpoison_page().
+> > 
+> > See if you can find a hole in this chain of reasoning ...
+> > 
+> > memory_failure()
+> >          p = pfn_to_online_page(pfn);
+> >          res = try_memory_failure_hugetlb(pfn, flags, &hugetlb);
+> > (not a hugetlb)
+> >          if (TestSetPageHWPoison(p)) {
+> > (not already poisoned)
+> >          if (!(flags & MF_COUNT_INCREASED)) {
+> >                  res = get_hwpoison_page(p, flags);
+> > 
+> > get_hwpoison_page()
+> >                  ret = get_any_page(p, flags);
+> > 
+> > get_any_page()
+> > 	folio = page_folio(page)
+> 
+> That would be unsafe, the safe way would be if we moved page_folio() after
+> the call to __get_hw_poison() in get_any_page() and there would still be one
+> remaining user of shake_page() that we can't convert. A safe version of this
+> patch would result in a removal of one use of PageHuge() and two uses of
+> put_page(), would that be worth submitting?
+> 
+> get_any_page()
+> 	if(__get_hwpoison_page())
+> 		folio = page_folio() /* folio_try_get() returned 1, safe */
 
-IMO, it needs to be cleaned up to remove the bool recycle flag dead
-code, but other than that I think it's good as a non RFC.
+I think we should convert __get_hwpoison_page() to return either the folio
+or an ERR_PTR or NULL.  Also, I think we should delete the "cannot catch
+tail" part and just loop in __get_hwpoison_page() until we do catch it.
+See try_get_folio() in mm/gup.c for inspiration (although you can't use
+it exactly because that code knows that the page is mapped into a page
+table, so has a refcount).
 
-To save you some time I did the said clean up and here is a patch
-passing make allmodconfig build + checkpatch/kdoc checks + tests on my
-end:
-
-https://pastebin.com/bX5KcHTb
-
-I could submit it to the list if you prefer.
-
-FWIW, if this approach shows no regressions, I think we may be able to
-deprecate skb->pp_recycle flag entirely, but I can look into that as a
-separate change.
-
---
-Thanks,
-Mina
+But that's just an immediate assessment; you might find a reason that
+doesn't work.
 
