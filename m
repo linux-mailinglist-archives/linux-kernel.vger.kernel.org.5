@@ -1,124 +1,104 @@
-Return-Path: <linux-kernel+bounces-159638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A2668B3169
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C1518B316E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 233732872D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:33:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DCB1286F76
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1312513C3D2;
-	Fri, 26 Apr 2024 07:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BE813C66D;
+	Fri, 26 Apr 2024 07:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="nwUdAWLC"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6EVUWWW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D9513BC36
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB8313BC2B;
+	Fri, 26 Apr 2024 07:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714116818; cv=none; b=pAdUtm/LkQTe+El30teWKjseGhMdMVucCvoNAPqtcZexujYHaNQ/wMWfZvdVoBPQpIkjjhbX5a5dhVtLkkrLxf0ySfSH1LxAa57Z8R9qCXkgavoA6YMEdKZkul1TDSGViSsw+pg39kC8F+AO6WU4oABpfZqPHNnXz0x7KHqvWaM=
+	t=1714116840; cv=none; b=DxGqRVGP92GH5PlWbKy+xoyHBGoVeohpsLcVO0cU5uTjuizVWX14TsYgGX6GUuEZbmIsdmOomBNzsTv9t5f+KGdxZVDM3mTS+g3t3ITV1vvQOmKuaI1Ydieby3t9k0Fm8iOM9XslsoReeXjFOQjM3aAMAwRxOqKhKhfJnd55RSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714116818; c=relaxed/simple;
-	bh=9ePKGoQQ03Kw1+fDy3bdzYL0h8yQNi0slcWIGi8PPz0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EA1Pi1Cegaej9/Ykril+D2U0A9HoDGlgs+rQJI/YjGBudDo/qo1K2xdRe55RO0jrOXBWl6lELR3pB2eodVjHex5kCbXz+Byajtvy7Wbq2EPGlLJ5GP7oSLPaN46A5ff9IBcWBS90v3xqKYyK1HuKv9LV63h3DE1BZxMlrKeDVE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=nwUdAWLC; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso13911885e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1714116815; x=1714721615; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZHhtC7yB+LEmKe67OSuhKeCGfLVnVMhlXHLt/YBxSQ=;
-        b=nwUdAWLCQAVibxOIv9dBJjOWMuCEynyJf8vmZGTSY1cZGSYEtHfijdiFNxGSsjUnuV
-         5fADZlrt2oxtVDmhZoD2/kDR+dDFGmDsQYgIA68hvgM0/8wkrCVSIMJz1R1gy7yKLbBl
-         FFGBk0aLhRqK56NvVhcmB709dNJXoAlgzkdqCKZZiI8qfKkVZSnIhokh0wOwK4iRPBAG
-         OpOw0GO8uysmQnc5CdNJg3QD1g8BsezYh4muj1bCHfFHsqQpFjOYhDV78RH131PoKxQ/
-         hHox7UA8I+qOrIBZfWDat/UPVTjGp3uOq1j0JPvoqI9/12+MDjIzHt/3ydcHfW9mG7Fe
-         OlnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714116815; x=1714721615;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AZHhtC7yB+LEmKe67OSuhKeCGfLVnVMhlXHLt/YBxSQ=;
-        b=P84Mo/CwSNcGvMW02ljYWKe7CrVwd/uwO+XRUkSXY6F8UajKD1EZdS8dd2ddSXUhfF
-         veegLc/NX85M5RVnaVwNcnFZslWmLydb8XA/rof1c902iLl+BtjRYqZQwY4NPi6bXREA
-         1bofNNnQyFLV/IHeBDKjq4TD2MMNXUBpwtZqZOWUq2HKlGCw9Wq/4JuGPF8xJWwEF8xM
-         L7i1sydkTpBe9IHoBl5rEkIjbABByFx0qMXNsiTAXrB4GhCIg95qihC0NBtA+zXxjQHh
-         OuQScbMxm7QoGzdNknJB4N0PggxRUa1FGRJoYpp0n3PRGC34cBDRG8U7l33kqgmfBERa
-         kzTw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5RSku0lRCw7kWulO/87nnv99nTk/mvN13zljabu3rfuJZ1/gZwfvJYRHg6eIn6VMcvV6lmpDA3W9hlxDqor4rErp1qo56hvNSaNJT
-X-Gm-Message-State: AOJu0Yy3OiFc4+57Y67MsP4yLQdoq8aWq6roJONRxGbcD9NFqBPCJ8Ds
-	H2iRjsfmL5fHriFAFfBO4348amjAQQzleyPf+bPKtkLiJMZDCph/tSlARfkMBvk=
-X-Google-Smtp-Source: AGHT+IFAYmHbznrVYvrFyG3S4RgGzbE1l0SOZYxWBq+xKHGXgg5E4ck93IiPSX+DZnp/DKsyl3rmgw==
-X-Received: by 2002:a05:600c:470f:b0:41a:8374:7eae with SMTP id v15-20020a05600c470f00b0041a83747eaemr1364455wmo.31.1714116815390;
-        Fri, 26 Apr 2024 00:33:35 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:3e63:d6ed:67ba:fbe4])
-        by smtp.gmail.com with ESMTPSA id q15-20020a05600c46cf00b00416e2c8b290sm33935449wmo.1.2024.04.26.00.33.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 00:33:35 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Doug Berger <opendmb@gmail.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Phil Elwell <phil@raspberrypi.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	bcm-kernel-feedback-list@broadcom.com,
-	linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] gpio: brcmstb: add support for gpio-ranges
-Date: Fri, 26 Apr 2024 09:33:33 +0200
-Message-Id: <171411680836.6435.15788506275238936215.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240424185039.1707812-1-opendmb@gmail.com>
-References: <20240424185039.1707812-1-opendmb@gmail.com>
+	s=arc-20240116; t=1714116840; c=relaxed/simple;
+	bh=gksl38yx9eZzDHDXbUKTYhZmDGqlaFTVA8MzoHCjPSQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=hK2bnoeCZoVdT08nfXK04YIJzhD3hdQAngLjqGbpUaF5Vw74jGyPpqimK0QS512Zeuzjk7Tb8wyXf7m3tAMsJehbnhUDlZkS0iIfff1DWOsWfVJkiTsgti5z+n4pK/eQPh0LPM4ECOWo8m9ydm9uE0kPlCiSScUHk+8uZj4usCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6EVUWWW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91A6EC113CD;
+	Fri, 26 Apr 2024 07:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714116839;
+	bh=gksl38yx9eZzDHDXbUKTYhZmDGqlaFTVA8MzoHCjPSQ=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=r6EVUWWWwqWuB2/4TPNdaGpUi5w/svatLiUkQPW7jg/Kqfz+v9PjTsqhHX0V5+EAd
+	 O9Q7MLhBBw+u+yC3YJdVVaI93yGyVAyg60gYgQw+aYYn1jycUg0XiChWp0Iu1VFKMv
+	 DwPywl0dLcmeXRt7ZEBqHGpgzLkfbaLNMsfQI9WfrWSOqgHI+raXZsInlkpmvx5zN2
+	 Aw4iSz/F3PrrMtthz0B2wb3NwCnmeHWiHSYEJZOSeSYq9iQITvYdPXRUZEGz3Zp6OT
+	 dsVslJOA6lLCpSJkkdCeyvYqDh4fWotWkzTVM/CVN72PQmXal5hJg3KuZB1fRSHKNY
+	 lVwcEZNrXTKCg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 26 Apr 2024 10:33:40 +0300
+Message-Id: <D0TVP8ILJMO0.HERRWR4PA7N6@kernel.org>
+Cc: "Dan Carpenter" <dan.carpenter@linaro.org>, "Shuah Khan"
+ <shuah@kernel.org>, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ "Paolo Bonzini" <pbonzini@redhat.com>, "Marc Zyngier" <maz@kernel.org>,
+ "Oliver Upton" <oliver.upton@linux.dev>, "Huacai Chen"
+ <chenhuacai@kernel.org>, "Michael Ellerman" <mpe@ellerman.id.au>, "Anup
+ Patel" <anup@brainfault.org>, "Paul Walmsley" <paul.walmsley@sifive.com>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>, "Christian Brauner"
+ <brauner@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>, <kvm@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+ <linux-mips@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <kvm-riscv@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
+ <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+ <linux-kernel@vger.kernel.org>, "Xiaoyao Li" <xiaoyao.li@intel.com>, "Xu
+ Yilun" <yilun.xu@intel.com>, "Chao Peng" <chao.p.peng@linux.intel.com>,
+ "Fuad Tabba" <tabba@google.com>, "Anish Moorthy" <amoorthy@google.com>,
+ "David Matlack" <dmatlack@google.com>, "Yu Zhang"
+ <yu.c.zhang@linux.intel.com>, "Isaku Yamahata" <isaku.yamahata@intel.com>,
+ =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, "Vlastimil Babka"
+ <vbabka@suse.cz>, "Vishal Annapurve" <vannapurve@google.com>, "Ackerley
+ Tng" <ackerleytng@google.com>, "Maciej Szmigiero"
+ <mail@maciej.szmigiero.name>, "David Hildenbrand" <david@redhat.com>,
+ "Quentin Perret" <qperret@google.com>, "Michael Roth"
+ <michael.roth@amd.com>, "Wang" <wei.w.wang@intel.com>, "Liam Merwick"
+ <liam.merwick@oracle.com>, "Isaku Yamahata" <isaku.yamahata@gmail.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, "Naresh Kamboju"
+ <naresh.kamboju@linaro.org>, "Anders Roxell" <anders.roxell@linaro.org>,
+ "Benjamin Copeland" <ben.copeland@linaro.org>
+Subject: Re: [PATCH v13 25/35] KVM: selftests: Convert lib's mem regions to
+ KVM_SET_USER_MEMORY_REGION2
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Sean Christopherson" <seanjc@google.com>, "Shuah Khan"
+ <skhan@linuxfoundation.org>
+X-Mailer: aerc 0.17.0
+References: <20231027182217.3615211-1-seanjc@google.com>
+ <20231027182217.3615211-26-seanjc@google.com>
+ <69ae0694-8ca3-402c-b864-99b500b24f5d@moroto.mountain>
+ <3848a9ad-07aa-48da-a2b7-264c4a990b5b@linuxfoundation.org>
+ <ZipyPYR8Nv_usoU4@google.com>
+In-Reply-To: <ZipyPYR8Nv_usoU4@google.com>
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Thu Apr 25, 2024 at 6:09 PM EEST, Sean Christopherson wrote:
+> +       __TEST_REQUIRE(kvm_has_cap(KVM_CAP_USER_MEMORY2),
+> +                      "KVM selftests from v6.8+ require KVM_SET_USER_MEM=
+ORY_REGION2");
 
+This would work also for casual (but not seasoned) visitor in KVM code
+as additionl documentation.
 
-On Wed, 24 Apr 2024 11:50:36 -0700, Doug Berger wrote:
-> The Raspberry Pi 5 includes Broadcom STB GPIO IP as well as
-> Broadcom 2712 pin controller IP.
-> 
-> The community has expressed interest in linking the two drivers
-> with the "gpio-ranges" property in device tree. This commit
-> stack implements the necessary changes.
-> 
-> [...]
-
-Applied, thanks!
-
-[1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
-      commit: 7c66f8173360556ac0c3c38a91234af5a0a5a4a9
-[2/3] gpio: of: support gpio-ranges for multiple gpiochip devices
-      commit: e818cd3c8a345c046edff00b5ad0be4d39f7e4d4
-[3/3] gpio: brcmstb: add support for gpio-ranges
-      commit: 5539287ca65686f478e058a1e939294cb5682426
-
-Best regards,
--- 
-Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+BR, Jarkko
 
