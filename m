@@ -1,56 +1,65 @@
-Return-Path: <linux-kernel+bounces-159592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79DE78B30B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:44:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834AF8B30BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:52:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FF3E28656B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:44:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DEF1C21F32
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DC513A889;
-	Fri, 26 Apr 2024 06:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB6013AA32;
+	Fri, 26 Apr 2024 06:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="hNBveKLM"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="nDehk99w"
+Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5E913A865
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37CE13A3ED;
+	Fri, 26 Apr 2024 06:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714113870; cv=none; b=LjX1JcI6x8HNwvuAlbv27tJihxwkby6VGDFERloTPSMrzL6E1LXC1IxaAiJQMLSoQBpiL1P7wPB3b7wJkfbC8Y5AEYzbWEDHjzHFvpy/0NTejiAgEl8e3v/hNbTwHit9r2JX2AFiSsir6YBv3RNCQhm7aEK616mfm2r/EAif/G4=
+	t=1714114313; cv=none; b=mGn0tmoPak/MlHUL2pQxjBKuQrvIirku4/kf3V0XLou/bA4OR3SzUmxYhpOhQ+HLQl30wb9TGejsLu1wgGbPivQoJOc7AX9ESfBjm/rMhsYr7cA7EFeQBFDyIFKX5GyH8S/yctydQ215pmjrJT5v/VAVzrqyl+H6HbvTiSMy8G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714113870; c=relaxed/simple;
-	bh=aCF9YJ/3AVcp7Uo4nJ5GWEg/vMZeJEHnYrSYZ1gdY0s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qf659LzoSo3SwYF7K2I3wkUeTCwoA5MqY5FykIFvexdOs7hILXIChXcoOFY+iLD5hXGmoljRA5utyV4QKDtpeeHa1gW5Fv95lJO1p7+5AY31KKccY9Xsn9QBYuKykFcgeLLAgXB/6eTZXYKkvVAY+9mRYYEOXmJ7+Gr7Y9TWQqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=hNBveKLM; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:mime-version:content-transfer-encoding; s=k1; bh=HMLrUoCgVuOtf+
-	mCDqUTfN9K6VIrEPm+iJ7p/Jm5Smw=; b=hNBveKLMvWmdd10rWkWc9ObrARjlmo
-	qeTnQzbnWKvNvTBUJRp239X1uzAlM0Yg+hw8dC6dxP9TwmFg+N51EFrSGvnY8AB2
-	wn5oWy3t443NX8SlGbPxan04lqvef/0Ip+gtLXC/n9VxMSHLveLDmhId8Bw+oKq0
-	ppXKdqCEDk4lRyG6o8EsIShHN2EB2BlcmDpxAzqWw/qnn56Jgnmg93iH96qsf2a0
-	InRggodGaQ7aenH5KunSdsZVtRLG4pGSIRaDSA+8lKtIABPn75il3GR2WJfiIltG
-	tBNdu1Kn/wsk4zpYb5U4m5r0ii4AETKZ6y3aFKJNA9inB5o1N7aHLKuA==
-Received: (qmail 1204080 invoked from network); 26 Apr 2024 08:44:26 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Apr 2024 08:44:26 +0200
-X-UD-Smtp-Session: l3s3148p1@TPgdPPoWSMIujnvp
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: linux-renesas-soc@vger.kernel.org
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Baruch Siach <baruch@tkos.co.il>,
-	linux-i2c@vger.kernel.org,
+	s=arc-20240116; t=1714114313; c=relaxed/simple;
+	bh=IXZq04hiu+Pn+sF7BKtV+tVHTOSfOBndsfo4YDuDbeo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fF7TQ95yJ+dF8gE8RSaln8khpKx290Ldc7/QJMc8Y8mGrHO7VGzV3G3n/S0KBpWjQgK98TmlKf6IZW7haMKyOH8ULpm8DWsHu9tqVmdHxdUDn6itrJcuHAfc3yjV4xnNUXo4XYnC557Zl1VsP2uB0WWYD+O9z/pr8VXa0pCNtxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=nDehk99w; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=3H6dBRGk+BHU+y8mRcNlZ506UX4DS949WCdH9l5DVuI=; b=nDehk99we7gXeh0IqH5E7Qi4u+
+	yhJCwnI4Q8HCR3USL2X3QHIU4ccbv08REv1p3ck9EWsqhFDMpnQLEILCiUmtp4B2bzCEYAwambnmx
+	L8qjEUg1jJG1Yy9aUcArPUM+ko5afZ0iuQD2ELGQTaVTczYzhU0wIiXhqu5HY5tLpk2o=;
+Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1s0FQv-007ltt-1N;
+	Fri, 26 Apr 2024 08:51:45 +0200
+From: Felix Fietkau <nbd@nbd.name>
+To: netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>
+Cc: willemdebruijn.kernel@gmail.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: smbus: fix NULL function pointer dereference
-Date: Fri, 26 Apr 2024 08:44:08 +0200
-Message-Id: <20240426064408.7372-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.39.2
+Subject: [PATCH v3 net-next v3 1/6] net: move skb_gro_receive_list from udp to core
+Date: Fri, 26 Apr 2024 08:51:35 +0200
+Message-ID: <20240426065143.4667-2-nbd@nbd.name>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240426065143.4667-1-nbd@nbd.name>
+References: <20240426065143.4667-1-nbd@nbd.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,70 +68,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Brauch reported an OOPS when using the designware controller as target
-only. Target-only modes break the assumption of one transfer function
-always being available. Fix this by always checking the pointer in
-__i2c_transfer.
+This helper function will be used for TCP fraglist GRO support
 
-Reported-by: Baruch Siach <baruch@tkos.co.il>
-Closes: https://lore.kernel.org/r/4269631780e5ba789cf1ae391eec1b959def7d99.1712761976.git.baruch@tkos.co.il
-Fixes: 4b1acc43331d ("i2c: core changes for slave support")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
- drivers/i2c/i2c-core-base.c  | 12 ++++++------
- drivers/i2c/i2c-core-smbus.c |  2 +-
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ include/net/gro.h      |  1 +
+ net/core/gro.c         | 27 +++++++++++++++++++++++++++
+ net/ipv4/udp_offload.c | 27 ---------------------------
+ 3 files changed, 28 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index ff5c486a1dbb..db0d1ac82910 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -2200,13 +2200,18 @@ static int i2c_check_for_quirks(struct i2c_adapter *adap, struct i2c_msg *msgs,
-  * Returns negative errno, else the number of messages executed.
-  *
-  * Adapter lock must be held when calling this function. No debug logging
-- * takes place. adap->algo->master_xfer existence isn't checked.
-+ * takes place.
-  */
- int __i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- {
- 	unsigned long orig_jiffies;
- 	int ret, try;
+diff --git a/include/net/gro.h b/include/net/gro.h
+index 50f1e403dbbb..ca8e4b3de044 100644
+--- a/include/net/gro.h
++++ b/include/net/gro.h
+@@ -429,6 +429,7 @@ static inline __wsum ip6_gro_compute_pseudo(const struct sk_buff *skb,
+ }
  
-+	if (!adap->algo->master_xfer) {
-+		dev_dbg(&adap->dev, "I2C level transfers not supported\n");
-+		return -EOPNOTSUPP;
-+	}
+ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb);
++int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb);
+ 
+ /* Pass the currently batched GRO_NORMAL SKBs up to the stack. */
+ static inline void gro_normal_list(struct napi_struct *napi)
+diff --git a/net/core/gro.c b/net/core/gro.c
+index 2459ab697f7f..268c6c826d09 100644
+--- a/net/core/gro.c
++++ b/net/core/gro.c
+@@ -231,6 +231,33 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+ 	return 0;
+ }
+ 
++int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
++{
++	if (unlikely(p->len + skb->len >= 65536))
++		return -E2BIG;
 +
- 	if (WARN_ON(!msgs || num < 1))
- 		return -EINVAL;
++	if (NAPI_GRO_CB(p)->last == p)
++		skb_shinfo(p)->frag_list = skb;
++	else
++		NAPI_GRO_CB(p)->last->next = skb;
++
++	skb_pull(skb, skb_gro_offset(skb));
++
++	NAPI_GRO_CB(p)->last = skb;
++	NAPI_GRO_CB(p)->count++;
++	p->data_len += skb->len;
++
++	/* sk ownership - if any - completely transferred to the aggregated packet */
++	skb->destructor = NULL;
++	skb->sk = NULL;
++	p->truesize += skb->truesize;
++	p->len += skb->len;
++
++	NAPI_GRO_CB(skb)->same_flow = 1;
++
++	return 0;
++}
++
  
-@@ -2273,11 +2278,6 @@ int i2c_transfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ static void napi_gro_complete(struct napi_struct *napi, struct sk_buff *skb)
  {
- 	int ret;
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index 3498dd1d0694..a3cd546a1aea 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -433,33 +433,6 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+ 	return segs;
+ }
  
--	if (!adap->algo->master_xfer) {
--		dev_dbg(&adap->dev, "I2C level transfers not supported\n");
--		return -EOPNOTSUPP;
--	}
+-static int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
+-{
+-	if (unlikely(p->len + skb->len >= 65536))
+-		return -E2BIG;
 -
- 	/* REVISIT the fault reporting model here is weak:
- 	 *
- 	 *  - When we get an error after receiving N bytes from a slave,
-diff --git a/drivers/i2c/i2c-core-smbus.c b/drivers/i2c/i2c-core-smbus.c
-index e3b96fc53b5c..a942c5306a4e 100644
---- a/drivers/i2c/i2c-core-smbus.c
-+++ b/drivers/i2c/i2c-core-smbus.c
-@@ -596,7 +596,7 @@ s32 __i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
- 				break;
- 		}
+-	if (NAPI_GRO_CB(p)->last == p)
+-		skb_shinfo(p)->frag_list = skb;
+-	else
+-		NAPI_GRO_CB(p)->last->next = skb;
+-
+-	skb_pull(skb, skb_gro_offset(skb));
+-
+-	NAPI_GRO_CB(p)->last = skb;
+-	NAPI_GRO_CB(p)->count++;
+-	p->data_len += skb->len;
+-
+-	/* sk ownership - if any - completely transferred to the aggregated packet */
+-	skb->destructor = NULL;
+-	skb->sk = NULL;
+-	p->truesize += skb->truesize;
+-	p->len += skb->len;
+-
+-	NAPI_GRO_CB(skb)->same_flow = 1;
+-
+-	return 0;
+-}
+-
  
--		if (res != -EOPNOTSUPP || !adapter->algo->master_xfer)
-+		if (res != -EOPNOTSUPP)
- 			goto trace;
- 		/*
- 		 * Fall back to i2c_smbus_xfer_emulated if the adapter doesn't
+ #define UDP_GRO_CNT_MAX 64
+ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
 -- 
-2.39.2
+2.44.0
 
 
