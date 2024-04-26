@@ -1,238 +1,165 @@
-Return-Path: <linux-kernel+bounces-160374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825288B3CC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:27:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A998B3CC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CF2028579F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:27:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD231C21DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5096815623B;
-	Fri, 26 Apr 2024 16:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2102156F39;
+	Fri, 26 Apr 2024 16:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YpgAQJLl"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="YXfGWECl"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2018.outbound.protection.outlook.com [40.92.40.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF93C15686F;
-	Fri, 26 Apr 2024 16:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714148816; cv=none; b=t0pBum8hgl9ScCjK4O+TeIiyv3dGjQr8sQDRa8y8cAN4ePdBbnGBD32jpAYLaxHbeMzsct9esgF5VAYXAWFXnzk8RvxVnehRy/8SahbEGjunC6pDeFdXePROivy5LTd18dcoTiG5DRDFa0agxLbsQAGnRlfyOf6sRvp9+sSmYJk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714148816; c=relaxed/simple;
-	bh=lorYvYgo5IXa066vwzcU4pNV6jM1EDwnv91nHO/Ds0M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uP1TW32Iek1qdtscVKn+mdvjHhIrwVv46yehSoisPP2WLqpsfrDwKXuW5cFIwOwPoyxkFDOuwBFCdKT9wt+z1MqDtA4Dr1mXFGvUInJ9MMiF2a+Qkj7kl1JUi6RM5LSuoafPqWSX9iBOUunuLOe05/Dt+CEJz4GktNcIJOcTB/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YpgAQJLl; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a7e19c440dso1826326a91.3;
-        Fri, 26 Apr 2024 09:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714148814; x=1714753614; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
-        b=YpgAQJLljIWPgjBUQWkMa29Ht+Hs/3ve9emVnpmAv/3xzx95e4tyy0S71rI8LQxs7/
-         z6wI6XV/iQM3+1gzAu0Umzkeu0BDba6xevoJw7jLuNH4h/tePDSOxn1xM/Rsue2/oz1T
-         IzaNOU4IWcH6t3GqmEenvJfJ9Mz1FHLxz30RyN3fCr3KP1851KyNxHbsLBYcnJTPylM0
-         ktVWTGAv426kXLf/f2KkCx3tfae6spPlYm+W/i04h0Z8qcHAeF3+6h0lgIgFP0iTe10y
-         GMvmg3a7esFZlrRLaaqA30DYtYBQrm/aLV0lwi7qIj5OlaP+5SCu6iuuek1VtCnXlVjJ
-         cbow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714148814; x=1714753614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
-        b=aEW0kUka/qRnxuHajO5QI5QvZvsAZE2zbls9pwTevTE2+u1bTnNBHvf6VhlGvZqIJM
-         xyObyIPZ9cUXduZ9v7x1VGDlsgJVQ+5ReQC8C9OVYF8ZnNa29Pt8L36mc8GfEJuSBQRV
-         wlsp8yaX32vUBinUA2cp3yW5Vv1icNhIA6mdEJ+huHlh41CQ5pXoFUvTJxy/H2xqoCZr
-         lk70z5rTHRhKLSNtTWKBErOLjRQhSpBdDXRimFAnNuJs47v6HpxNXH/D2xKr45U7AJj4
-         FJpBdlRhSGa5yKBlKDfTaC5brNtF/EuWXUmYmZ7nSp6U2xPPwGcVbit6c1uapL8RxK3K
-         8RjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLmSx9zH6E6/dBSps4t1Tfllm6Jv/ncaSpReNxMoysQa069vaYBUFvVoMUA/gvbZ/hlrmteXETXN4UUTarAZVasZLN/u6ShOv1dPkvf/Bm4omJI1+dHGDIZmgt318x7x6i
-X-Gm-Message-State: AOJu0Yz20udgxBuB2swfzCJqMmj5T0hX/3R8HYlLgGlrvyDIFHwX7dm3
-	e4K3a4jCRgYWoBbRDTdbtT4Z4KtCg9v3bX9MeRvugqw1YMXX12SOrttLBdd3tO+FN9YWzD1qh1X
-	9xYa7gw8ZtiHVtnb3H9jVbshv71s=
-X-Google-Smtp-Source: AGHT+IGu4GRGYVOdPGc3A474j1UuojtMDmM+IwnLOxDpKwjsEPtu6sZypVBrCcksdi4s4CzHpIfUJFJmvdV1m+wY8JI=
-X-Received: by 2002:a17:90b:3692:b0:2af:3088:e36f with SMTP id
- mj18-20020a17090b369200b002af3088e36fmr3049385pjb.7.1714148814036; Fri, 26
- Apr 2024 09:26:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2530118C1F;
+	Fri, 26 Apr 2024 16:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714148979; cv=fail; b=AC2WXYnuldkdJGPrHiGc7bFB08PPoftRoRAOEcp6AwLYdK7R87DcTTcn3j5WEm0xwZL1ztp44XyVSuV6yRVIICKx4iNudBK1KyNxAmf2iMhsrnILefWWJl1FbOw/h9txzJeisn0XT28y4vvK13tqgtanbLHB3X7wuEfXNT/A2DM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714148979; c=relaxed/simple;
+	bh=a0lmqdfOZlymevaO+BzDCdhWvc/QFvn7gqQxkXDvaRQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=eT+7F0F1fwPv2KF/Eji+Qqd+T4qSmt1rMZMXp1xEBVea+BHkK1VKl8773kx9Gp1dpNiej8uhGhnDoJADUIbzEqGr98V2RvRe/T7jlYmSL7j/ciIdUiVmVSZwGi8iSzZlL+4asIcmNQV0ovzWp8ESxpa5RGjB2TQkPNWuw3IRKyE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=YXfGWECl; arc=fail smtp.client-ip=40.92.40.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XZ4pIzoZioP/7G5XZ27I9q4RMP4kB2JIgBkkdQh3EpOXvdUSEvL3oE3qd6vsNWeFa2/eQKRRhzfnxPBZt7ct92nbiRGe6B5sIvx0cdvxeB462bQ630x6WnkmDlwSTcN1ZepdIv4EpgAq06JinFCNf85LnZ6bbYQawsnkMen0bDRtsvMaUgQM/LUU5Xl3vdpAsdYO60izQd259ua4k4CzXNIaGPTSi2nmYrJQLMtcziBnXZ3RiFlascB/mrsFFQs0g9G/y2EV4/MPb78f82d5fBkHDxT6AY78pdCjLDKRjoAzbJrP8qaU5naLpFe0SYSBPIRxE9iEEkupyOvUi0ZhqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZliPVJaz4ZJL7xQ9Z58tYJvxc0YUmiET9/Uly9gG1aM=;
+ b=SBGAR1J9tV0p/MrTfktmXuxcaXx8qdLLLwNMs/suoiI/273KBC+tjvVAqOkYcgQiAZ2ClAEnAXW3udjvWMV/ramA6Mrw7lr5bcTfJqw0OyXNX2JP4M4KVw+GqjGgU3XzNeWO1GsiKiBPhdexYP7gdp+q0EiHC3hwWMiqNLJY7MQVw+0e1qh3irCHBrIWnfg3XSGf2QyDkqPGUos23qXC9TEJbetdZONXldm8qViDsh6BsH/nB46clse+WtRHYiK3ibM9B4fyqJcmabyXLLk0UxC0mMf0rozLW/GG8yf1iUGBOVdliVzgAa9MVaNXuELmSWy3IjZJrubPR4FWkt1fcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZliPVJaz4ZJL7xQ9Z58tYJvxc0YUmiET9/Uly9gG1aM=;
+ b=YXfGWECldM+O09p37Qv0/Y7HIstBZneRJkqWbGgJuxnyAe55rY7yYKjCugp3G7/dRHV0nWB1G0ae1oAq+QnVI7IrsP5fHSNiz0GpQNttvDeU2e/uwTN7s4RYhLB6TF8bDjYLax9uvYwUYYqGriAP63ws5drBytNwQH5PK6mUs0hzdYeGD8gdhrLUeWnG4Rwq/F44KdKeBMTZ5kFiD/+8mgt6rtecWHFUljycQEZF5IxW+YlwtqSionA6XOSvbGJv9tbYeAyf8HyJgyM6lrmz8JAQ7o/8szgICSO+wxD6oMkZnTih/IeDyUkH+4hyc4M3KDS9YgiTcb8K12yjQMQRNQ==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by MN2PR02MB6639.namprd02.prod.outlook.com (2603:10b6:208:15f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.23; Fri, 26 Apr
+ 2024 16:29:35 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
+ 16:29:35 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Christoph Hellwig <hch@lst.de>
+CC: "robin.murphy@arm.com" <robin.murphy@arm.com>, "joro@8bytes.org"
+	<joro@8bytes.org>, "will@kernel.org" <will@kernel.org>,
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, "corbet@lwn.net"
+	<corbet@lwn.net>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "petr@tesarici.cz"
+	<petr@tesarici.cz>, "roberto.sassu@huaweicloud.com"
+	<roberto.sassu@huaweicloud.com>
+Subject: RE: [PATCH v2 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Topic: [PATCH v2 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Index: AQHalliRlUgD/49j1UOuP13GtHeQebF6FoYAgACpi6A=
+Date: Fri, 26 Apr 2024 16:29:35 +0000
+Message-ID:
+ <SN6PR02MB415775F2F7B865162D7A534DD4162@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240424150253.560999-1-mhklinux@outlook.com>
+ <20240426061852.GA5645@lst.de>
+In-Reply-To: <20240426061852.GA5645@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [JBeJ6XqPXkusfbEAgovGSHNCziqL7npO]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|MN2PR02MB6639:EE_
+x-ms-office365-filtering-correlation-id: a14c2a9e-da0c-4f26-e053-08dc660e0f70
+x-microsoft-antispam:
+ BCL:0;ARA:14566002|461199019|102099023|440099019|3412199016;
+x-microsoft-antispam-message-info:
+ BXKQP6sztaeCIsYiMkkRh4+1tKJRRlW4JYEf0N69T5t5BHthtAp3JYZ01sAhTs8VUyjqQd8Tk0Y7bbu7he2YwfkMbG004IBQwLdtXtOxZ0S8o/EnKPzYAQJceId1gg5GmNHjY9C1EoT7M8zvBL/KGG3OU9rfYeOshdWuYFiY5F0Ig/z2tj6nrGDXhFjvnkpyWEToblmfUEg169vNlV5ior/ZPUZzQ0PQKNBhxEUvAfln0f1pdLg83Y8yCPyfjeh77Ah4pZpYNTjt+K7dLbiC4mAGIfF4teIZAHXoet6S2bI4HUdJSGBz2jvBmQ0z1xXjE2aX+cyznyBT/8ax1qMTJ1srhs9E2rN4+sK6x3Vu5ygJUuH+s9h9PRHDvILc2b8XHsxcGjv4JVscty+OW0jkpWR0Hx7lIWof93R7jW0Cqj7NBdmMi7ziYa/yS9MzmpZ1bK5Fhim2vqKSwtxKuxl7gFY77ZXeFQQDKX9YB7XQIUNJjZfOq5T0SwFVVOK3b3xIPQ4s5trNoiaer0M0qP8QssHehHq25ABhrqs2bbqghqllyjhw8WRECDdxmL0wUUEi
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?3c57xacJzM7lM2ogUW7jCKGQ+AlBxtPPrVedYI3Hr9cOZYs1IwMYY8oV1n0C?=
+ =?us-ascii?Q?u5aaNO4MYo0kG+chdfgBA9PSXtUkUYuiEJ2PdckM5JNf+ICVLlww4ceFHT58?=
+ =?us-ascii?Q?lRi7SakxWqQiAWWqFq48hDK3YPGJ3Qn5QVV4TwE65iShlkU2/nTT0tI8iFct?=
+ =?us-ascii?Q?o1IJjtxrbTz1kObvseCGUJxdaX86v/Qp/4gtShYPirJVen7PSd0j3yJuxuur?=
+ =?us-ascii?Q?hPGm+hsZ3tWwKcBIIbE/BerHMuwjaA3brZwi7eLXviHc4KWpDlPXq5cJ97x3?=
+ =?us-ascii?Q?zSBQWcHx3P7fkjyPVXMYzgVRqmxCw9ksdPIKfE3ZozvEjQpU49ffW7PYfEDE?=
+ =?us-ascii?Q?ac+7DQa9BDP/JB/+aKD2aoVkb9OG/c5VmF6iEIOcVLP2rzvNPV7HyM0RrPuP?=
+ =?us-ascii?Q?aCherdgF955awyN8Zu8eEHk+/lh2juy/wIRvLIa5wV89Bd2S1SmOgNERDfoo?=
+ =?us-ascii?Q?tSMrW9E8dfE/gLvoSWmbJ6tY4D3RfaFbp4PyJIZKGGZ+9WAoZFN5y43AMViA?=
+ =?us-ascii?Q?0Y+oxhvxvs3d/yj6YmcgA5NTiT3QkjCmv9y4Du1fFk2N/VA2CJmo2JUmdbnz?=
+ =?us-ascii?Q?e3zjDQ2TKfgNPk0GmIC5oQWkJoXAtk1z/rme8P7wf8QL4x4mKzy0Zpluvyx8?=
+ =?us-ascii?Q?UXkJX/MBw+lF7oiw4btzNOWtwLrhhcy5ym34rp2ntGiSCQrYbEVIunuIUmQh?=
+ =?us-ascii?Q?WNCskkL3DOa4z/k/bEs1f/lo04VWWiZ1oErEhPG0lO80Ug7ADvCDHVuDS12T?=
+ =?us-ascii?Q?rGbWSeH1gQVszR3kNTxWQWIzVtkrEZoQk/Y4LOHkH3i2ZFtmk4A6a1mnVuNS?=
+ =?us-ascii?Q?boyNmu18KZn601rHwtgNkQUXf3QJj4qV3TBDw2UMCkus4Z2g0cSwDCxX3NH5?=
+ =?us-ascii?Q?K8zK24NIvFOELHQLMIkn7H/uI0Sn9M8kcV6r93SbTRNqUqi+WnC0jxIs7BHY?=
+ =?us-ascii?Q?pR2xFrtGu0pktBnvFexJKiYgXViqxw+zm8hC2J+9IwcB4CEbYvWjg1lY/RJH?=
+ =?us-ascii?Q?N3kHf/2L4DHlvpecUPSKCu/+YvRMTukNMuZKXoJllYOpueKrSgsXaw/pF+s/?=
+ =?us-ascii?Q?LKuQlK0y+iZF7v0rAsLVGU7zj6d9fih7X+FwQNSzLtwrkxAGFlsqOtHNn400?=
+ =?us-ascii?Q?ylvRppJsVj5u4de6SmIGmPP/r1uXQeHArwVhLQGJuSY9tMEs5PeGGX58DC7M?=
+ =?us-ascii?Q?OGDaEeMAvc174n04occTrS+PozjrQe8hby0YTQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426121349.97651-1-puranjay@kernel.org> <20240426121349.97651-3-puranjay@kernel.org>
-In-Reply-To: <20240426121349.97651-3-puranjay@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 09:26:42 -0700
-Message-ID: <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: a14c2a9e-da0c-4f26-e053-08dc660e0f70
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2024 16:29:35.4320
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6639
 
-On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
-> wrote:
->
-> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
-> bpf_get_smp_processor_id().
->
-> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->
-> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->
->                                          BPF
->                                         =3D=3D=3D=3D=3D
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
-_processor_id();
-> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
-72008
->                                                 (bf) r0 =3D &(void __perc=
-pu *)(r0)
->                                                 (61) r0 =3D *(u32 *)(r0 +=
-0)
->
->                                       ARM64 JIT
->                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
-_processor_id();
-> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ff=
-ffffff
-> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl =
-#16
-> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
-> blr     x10                                     mrs     x10, tpidr_el1
-> add     x7, x0, #0x0                            add     x7, x7, x10
->                                                 ldr     w7, [x7]
->
-> Performance improvement using benchmark[1]
->
->              BEFORE                                       AFTER
->             --------                                     -------
->
-> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
-=C2=B1 0.027M/s
-> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
-=C2=B1 0.023M/s
-> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
-=C2=B1 0.004M/s
->
-> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 4e474ef44e9c..6ff4e63b2ef2 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_e=
-nv *env)
->                         goto next_insn;
->                 }
->
-> -#ifdef CONFIG_X86_64
->                 /* Implement bpf_get_smp_processor_id() inline. */
->                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
-) {
->                         /* BPF_FUNC_get_smp_processor_id inlining is an
-> -                        * optimization, so if pcpu_hot.cpu_number is eve=
-r
-> +                        * optimization, so if cpu_number_addr is ever
->                          * changed in some incompatible and hard to suppo=
-rt
->                          * way, it's fine to back out this inlining logic
->                          */
-> -                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
-> -                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> -                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> -                       cnt =3D 3;
-> +                       u64 cpu_number_addr;
->
-> +#if defined(CONFIG_X86_64)
-> +                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
-> +#elif defined(CONFIG_ARM64)
-> +                       cpu_number_addr =3D (u64)&cpu_number;
-> +#else
-> +                       goto next_insn;
-> +#endif
-> +                       struct bpf_insn ld_cpu_number_addr[2] =3D {
-> +                               BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
-> +                       };
+From: Christoph Hellwig <hch@lst.de> Sent: Thursday, April 25, 2024 11:19 P=
+M
+>=20
+> On Wed, Apr 24, 2024 at 08:02:53AM -0700, mhkelley58@gmail.com wrote:
+> > From: Michael Kelley <mhklinux@outlook.com>
+> >
+> > There's currently no documentation for the swiotlb. Add documentation
+>=20
+> s/the // ?  (note that this is used in quite a few places)
 
-here we are violating C89 requirement to have a single block of
-variable declarations by mixing variables and statements. I'm
-surprised this is not triggering any build errors on !arm64 &&
-!x86_64.
+OK.  I'll drop using "the" before "swiotlb".
 
-I think we can declare this BPF_LD_IMM64 instruction with zero "addr".
-And then update
+>=20
+> Can you use up the full 80 characters for your text?  As-is it reads a
+> little odd due to the very short lines.
 
-ld_cpu_number_addr[0].imm =3D (u32)cpu_number_addr;
-ld_cpu_number_addr[1].imm =3D (u32)(cpu_number_addr >> 32);
+Will do.
 
-WDYT?
+>=20
+> The other thing that strikes me as odd is the placement in the core-api
+> directory together with other drivers-facing documentation.  Swiotlb
+> is internal to the dma-mapping subsystem and not really what is a core
+> API.  I don't really know where else it should be placed, though - nor
+> do I really understand the "modern" hierarchy in Documentation, but maybe
+> Jon has a good idea?
 
-nit: I'd rename ld_cpu_number_addr to ld_insn or something short like that
+I also wasn't happy with it going under "core-api".  But I agree with Jon's
+comments.  The affinity with the DMA documentation is strong, and in
+the absence of a better place, I'll keep it under core-api.
 
-> +                       insn_buf[0] =3D ld_cpu_number_addr[0];
-> +                       insn_buf[1] =3D ld_cpu_number_addr[1];
-> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> +                       cnt =3D 4;
+Michael
 
-nit: we normally have an empty line here to separate setting up
-replacement instructions from actual patching
-
->                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
->                         if (!new_prog)
->                                 return -ENOMEM;
-> @@ -20296,7 +20307,6 @@ static int do_misc_fixups(struct bpf_verifier_env=
- *env)
->                         insn      =3D new_prog->insnsi + i + delta;
->                         goto next_insn;
->                 }
-> -#endif
->                 /* Implement bpf_get_func_arg inline. */
->                 if (prog_type =3D=3D BPF_PROG_TYPE_TRACING &&
->                     insn->imm =3D=3D BPF_FUNC_get_func_arg) {
-> --
-> 2.40.1
->
+>=20
+> Except for these nitpicks the documentation looks good to me, thanks
+> a lot!
 
