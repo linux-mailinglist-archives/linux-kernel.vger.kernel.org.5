@@ -1,149 +1,114 @@
-Return-Path: <linux-kernel+bounces-159439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61C4A8B2EA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:21:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B388B2EAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 934BD1C2227A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:21:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5AE11C22523
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAE1187F;
-	Fri, 26 Apr 2024 02:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB19F1C3E;
+	Fri, 26 Apr 2024 02:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sOy0j8cl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="j3eU+Xvx"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978E85680;
-	Fri, 26 Apr 2024 02:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A161860;
+	Fri, 26 Apr 2024 02:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714098106; cv=none; b=l8QcQa677wIXbLElqzgmXwPNcxJHcEK8O7NVjKCZP+VxmsDVyW7CKndpBnHy/OWrxwGJFArgQc/lpETMQ2oKxwcJGZ4jKxbdBv/UDeFEyvEha8Nry+iqufPuVfLy0PqL5PtNHMJs0AUy3pNod0HAAiZqNcoa4XJCCLyWs8w++Is=
+	t=1714098163; cv=none; b=p2dnjibi7gw7w/GUX8T6ODdwaFzf4dhQUj+Oa4cSiiEzkHctoAWeI9LjkAQqXn2ZOvvqF2eGR0E1geG7WMhTTxNYz0BUEBUjD5JTw+1MdoDU6uHNyBZlQHbrXd1l25i2iTJ2qUczVq1sauEqfaOvB4/Fwqla8Lk+Fowjgn6P3JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714098106; c=relaxed/simple;
-	bh=1iPYmbu3zcOXLikFX/Z4jFxjQgUlNIn5vII97yn0Mbo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RPQHlAQwWNA7OMExHamDhNZQxFtUnuF0lol+6hH+haulSRGh6hsEhatisHrV1hC0mWxI1Lk5y9W5V4Qd/h+rn2yrGuorsE+S8lH4R7RQ80kIrlVv5Jb8K2Ail55FFG1Eg3IURvjz7FwThn+yR+Cnb7F2UogHksG7QcXGB9imr7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sOy0j8cl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D285FC2BBFC;
-	Fri, 26 Apr 2024 02:21:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714098106;
-	bh=1iPYmbu3zcOXLikFX/Z4jFxjQgUlNIn5vII97yn0Mbo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sOy0j8cldEcVfqXTdtPJ/hKcFG8IVEzggFYOEXbFInmlOKQG5jag3qAqMmp5BkYAk
-	 cH7l24b6BXAGnp7pKYc0wZHSFzlptFthKrQjppHfk1fWCitoSCtC+gmwgEZVWB1nQ+
-	 p3HfLvOBTiRaYeIkJPpESd7L8zC4QULXZ1OgMPTbgmHgpsY3LqvV/Nq5OHnhBEYE+7
-	 fr1m4vCLdF8X1GUU0IwO3cJmQr4nFHyKpYsNRP8TtHYXDfCMLhZ0XirYK7fyCBKQbQ
-	 YkOd5//n9vaCIFQd+K3YlSvul9kcs+IYALQc+BAFQTb7M44FJ8Led51xVVv49vlrWS
-	 tZw+EXmprCL3g==
-Date: Fri, 26 Apr 2024 11:21:42 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
-Message-ID: <ZisPtlj5Y60uu_cr@finisterre.sirena.org.uk>
-References: <20240423213853.356988651@linuxfoundation.org>
+	s=arc-20240116; t=1714098163; c=relaxed/simple;
+	bh=SGYmgklzXAXHDbnGapUv+OP9t2fZ8HQN2L78VH8xfWg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QRFxKqYqIoJkFaPzo8pKhIBl9owfiOsyAXhEuMq3drsmwJi+1pQrTxbv0TKrWpJHYHBqu5H5e/O1wngJhUBstahJeG4A2bFd588hWPt40Hrk2Mpp91tRBXIbHT6UFp6ojCxaSueRWbZc/Plkr3o257YfCneQrELVlpTr6FuV9/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=j3eU+Xvx; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714098158;
+	bh=vCi5NeIBjIy/G8fUon9n+kNojGUZtoR7sj43GA36g60=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=j3eU+XvxnnnBhJkXi7EnOId35O122bgrQY0ZQmU2k4hPAkmBVVjRHeCR0yroLrDEq
+	 9RccHQg7qhAeN/FzLk0Z8efnuaCu9WaETxfzzOfr8a/NdrHVv75ibG2i/Zm/xR/iZk
+	 EAgehT/JElJ2FBrg52Mh4spCMB+Rz70/Y7J1wAxS1RuOOAiVY+3wJqKr1UldMvi3Sl
+	 XwT9n+c+lpADJx5XjsVkuEXNioTaY4ra4ZLMGIE8cb9J2f/JGf4xPZdt3XuiSQLkY6
+	 Z1FPTt516h3xvTUiNz1HIFYuKG4DJyld9PnbnBoeQnfscbRwjHqbsKoa1f+rABaj7b
+	 39B0mq+wp5iWQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQc2632xMz4wbr;
+	Fri, 26 Apr 2024 12:22:38 +1000 (AEST)
+Date: Fri, 26 Apr 2024 12:22:37 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-msm-lumag tree
+Message-ID: <20240426122237.4991a706@canb.auug.org.au>
+In-Reply-To: <20240409120108.2303d0bd@canb.auug.org.au>
+References: <20240409120108.2303d0bd@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ddMruh5/GYQN0n61"
-Content-Disposition: inline
-In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
-X-Cookie: TANSTAAFL
+Content-Type: multipart/signed; boundary="Sig_/mQ9A.ugvWxqRpGSq+vfTx6V";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-
---ddMruh5/GYQN0n61
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/mQ9A.ugvWxqRpGSq+vfTx6V
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 02:37:48PM -0700, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.88 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi all,
 
-I'm seeing boot issues with NFS boots on i.MX8MP-EVK - the boot grinds
-to a halt with=20
+On Tue, 9 Apr 2024 12:01:08 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> After merging the drm-msm-lumag tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+>=20
+> lxml not found, skipping validation
+>=20
+> (lots of these)
+>=20
+> Introduced by commit
+>=20
+>   8f7abf0b86fe ("drm/msm: generate headers on the fly")
 
-[   20.360083] platform 38330000.blk-ctrl: deferred probe pending
-[   20.365958] platform 32f10000.blk-ctrl: deferred probe pending
-[   20.371821] platform 32f10108.usb: deferred probe pending
-[   20.377240] platform 382f0040.usb-phy: deferred probe pending
-[   20.383017] platform 33800000.pcie: deferred probe pending
-[   20.388531] platform 32ec0000.blk-ctrl: deferred probe pending
+I am still seeing these wanrings.  The above commit is now commit
 
-=2E..
+  0fddd045f88e ("drm/msm: generate headers on the fly")
 
-38330000.blk-ctrl	imx8m-blk-ctrl: failed to get noc entries
-32f10000.blk-ctrl	imx8mp-blk-ctrl: failed to get noc entries
-32f10108.usb	platform: supplier 32f10000.blk-ctrl not ready
-382f0040.usb-phy	platform: supplier 32f10000.blk-ctrl not ready
-33800000.pcie	platform: supplier 32f10000.blk-ctrl not ready
-32ec0000.blk-ctrl	imx8m-blk-ctrl: failed to get noc entries
+in the drm-msm tree.
+--=20
+Cheers,
+Stephen Rothwell
 
-in userspace.  A bisect seems to get a bit confused, it lands on
-994b8a6164e700277d0360add4 ("ARM: davinci: Drop unused includes") though
-I do note there are a bunch of PCI commits in stable:
-
-# bad: [cde450ef0f2f55f2c1d63110616bc88f9af5cf38] Linux 6.1.88-rc1
-# good: [6741e066ec7633450d3186946035c1f80c4226b8] Linux 6.1.87
-git bisect start 'cde450ef0f2f55f2c1d63110616bc88f9af5cf38' '6741e066ec7633=
-450d3186946035c1f80c4226b8'
-# bad: [cde450ef0f2f55f2c1d63110616bc88f9af5cf38] Linux 6.1.88-rc1
-git bisect bad cde450ef0f2f55f2c1d63110616bc88f9af5cf38
-# bad: [a355bccd5a9eb683690638e9919179df7346cc54] ASoC: ti: Convert Pandora=
- ASoC to GPIO descriptors
-git bisect bad a355bccd5a9eb683690638e9919179df7346cc54
-# good: [a88f4bc403029938ecf02b9a7c7e399aff38999f] netfilter: nf_tables: Fi=
-x potential data-race in __nft_obj_type_get()
-git bisect good a88f4bc403029938ecf02b9a7c7e399aff38999f
-# good: [68ba80017542c03d7cfc945d11c6dcff2960a035] drm: nv04: Fix out of bo=
-unds access
-git bisect good 68ba80017542c03d7cfc945d11c6dcff2960a035
-# good: [df22a0b3b1614738c37d258546b7cc65838fa845] thunderbolt: Log functio=
-n name of the called quirk
-git bisect good df22a0b3b1614738c37d258546b7cc65838fa845
-# good: [3a11c47c99785089964286bf924ed19f3b158b26] PCI: switchtec: Use norm=
-al comment style
-git bisect good 3a11c47c99785089964286bf924ed19f3b158b26
-# bad: [994b8a6164e700277d0360add4b57d15266164e3] ARM: davinci: Drop unused=
- includes
-git bisect bad 994b8a6164e700277d0360add4b57d15266164e3
-# good: [fadeaa2b2eb578d5c326332758c7935740be954e] PCI: switchtec: Add supp=
-ort for PCIe Gen5 devices
-git bisect good fadeaa2b2eb578d5c326332758c7935740be954e
-# first bad commit: [994b8a6164e700277d0360add4b57d15266164e3] ARM: davinci=
-: Drop unused includes
-
---ddMruh5/GYQN0n61
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/mQ9A.ugvWxqRpGSq+vfTx6V
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYrD7UACgkQJNaLcl1U
-h9AQQgf+Ox7cxfzLz/8+2qc223lPHVIRBuOtrv7hbGQ37q3rZNMRU0tned9z79oz
-2KG0g/OOIr3ujEiP0v3K4YVDVEk0F3cRyCkT9TP0wOcMgdh/H4GMCyx0w+iuqIoB
-rKQAWBKBNUQJkzi1R3VGuY0nFHDX1CYAOQD/lo/gtf9YVeSKlxIh+ZfvNGtuiriO
-hW017zh+NoOcyRIKQoGsFV9to3t2SuThyJznI0ewSATlO83n5CNqyqSWDqqmpCpr
-AT1oKs8Pc1aHfAB8ZsHOMGCHKftFFW8mB7mKe/CVqQhM5DmyMw5At5M/dVETJL5B
-HwI979sqKQoDAweJUzSfVU0J7WRMZA==
-=8jCI
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYrD+0ACgkQAVBC80lX
+0GyoeAf/ZQiUldJfOSBDK3hKj1htCY86Ecb/9rOgzmwtwNowLgPIlBSair75Q7LL
+9GdCPCJ9PYy41tb4jJ4B4JMlRfaH8XhgV71B6wEH32OsvEhjn73eAXINBlLDwpLB
+8Rr85E+D7HUjOR7qTR0yKry/3cXhM4L4SAVHsdpW8l3TfWVwIgNTAN6P4ByYUUvc
+EYu95wLoPFKiJ08Zm8RDXZSfnT0++DdxAVeuBgbOcBpg6fL2gkIf03eR6SuxKTkG
+3fG3D7YUHbXNa1R/dXs/c5OXdXPRBsHlwtCQlCyR46rZkW71dkzA3nj88hXp6WOO
+EbYZ5GljqwIzTO62vPMEnLduuuNEPA==
+=uvM2
 -----END PGP SIGNATURE-----
 
---ddMruh5/GYQN0n61--
+--Sig_/mQ9A.ugvWxqRpGSq+vfTx6V--
 
