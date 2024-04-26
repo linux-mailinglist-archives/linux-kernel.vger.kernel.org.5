@@ -1,276 +1,125 @@
-Return-Path: <linux-kernel+bounces-160318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA61E8B3BDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:42:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277278B3BD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 805E4281E51
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:42:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598A71C23F05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0800149E07;
-	Fri, 26 Apr 2024 15:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SxCUrWIO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA100149C64;
+	Fri, 26 Apr 2024 15:41:35 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D48149018
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC55F1DFFC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714146134; cv=none; b=gvcHSdJfhPGlcAccWaSGBCkDTFVVYlS9MOt+Auo6HazcQnRuP2zk3kz/gvpN4ZIuw5mFzVt0FKS8GrOWvRrls/MEVhBlICXXalm6E6EVh2idVDajeemB1kNSsk2ZzZUlUdFe/oZ7K9ahnQ5pWDP+DRE4lvTAyVY9qmKzyUb0wmQ=
+	t=1714146095; cv=none; b=SAnA/eZQ56PthaTp0ZhyZozblCPwq9t4y9cp4UFmvcnLOTDAB3WP88p0dZufnzCEnnCwfVskxuBQLVkkSBmCuDgHXC3kBk0RmBn70NmnN0QL2Ex92JV6cqmva3tOHj3u2ic4UNVubmOnDO/qeHIffWuIEyDwLcZjOX1UAyNarGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714146134; c=relaxed/simple;
-	bh=AVa0n+Q+W/36rHA/7OFZwLOB2e6TPwhBV7cZLD770n8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fUr+z88/ctjqta4lPzZsjN7p+y51pm+Fi0nkKsNAdeyOha+IltkMkZYd/neHpGngwFGTJ6OML15A0Slom+3Gn5QCNfyPJVHrdvHYSO37jrlIcTYRxkHZQ0vJ5TBhC1Drzpgb+K640L1TfQ2NizX7VBf9l0SiqyKumpDkBQGfud8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SxCUrWIO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714146130;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J6Za5dqP1vNIWZF7RvMAdeAfhQe3W63OGnIUvf5n09o=;
-	b=SxCUrWIOlOeR2P/HLxJI1xb5GOrn+UpaqSU7kt7NqbpuWlscioE3HGkwwripwjQ/3vLAfp
-	5QCbC6Jt10IkeLrRaW5vE5pKX7F73BNACB0ZMj/SFFUT9koVbfIi5d4uJmsrlrDSE673Xy
-	Gpc9IeLELDVmb/RnH5+jtrwg4sVwuT4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-qxmgJdkaO7OcV05bAC6RyA-1; Fri, 26 Apr 2024 11:42:07 -0400
-X-MC-Unique: qxmgJdkaO7OcV05bAC6RyA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7240780021A;
-	Fri, 26 Apr 2024 15:42:06 +0000 (UTC)
-Received: from chopper.lyude.net (unknown [10.22.8.17])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 7B165EC683;
-	Fri, 26 Apr 2024 15:42:05 +0000 (UTC)
-From: Lyude Paul <lyude@redhat.com>
-To: nouveau@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org,
-	stable@vger.kernel.org,
-	Karol Herbst <kherbst@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dave Airlie <airlied@redhat.com>,
-	Ben Skeggs <bskeggs@redhat.com>,
-	Timur Tabi <ttabi@nvidia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/nouveau/gsp: Use the sg allocator for level 2 of radix3
-Date: Fri, 26 Apr 2024 11:41:29 -0400
-Message-ID: <20240426154138.64643-2-lyude@redhat.com>
-In-Reply-To: <20240426154138.64643-1-lyude@redhat.com>
-References: <20240426154138.64643-1-lyude@redhat.com>
+	s=arc-20240116; t=1714146095; c=relaxed/simple;
+	bh=akSXuCsPICaiLz3ncjvxcTIZY/ePkkrqw52xd8vA6sY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Rc+j7pOba7us56ikMMdNPMlbm7f8U6diootEnYqfo/wXpScwKLemp+6jW25lYi7eUGHPFvH2jUwkOIV55etEB65ASih1w7MkRmEg9Kg3yCMT3GqiSXT7iGnm4kvyYWaTxAwo3awGU6W1AU4Ad4TF8z+QfJ9ufLTOr4DojeV33Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQxlg3jhlz6DBLt;
+	Fri, 26 Apr 2024 23:41:19 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 46A21140A36;
+	Fri, 26 Apr 2024 23:41:31 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 16:41:30 +0100
+Date: Fri, 26 Apr 2024 16:41:29 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Junhao He <hejunhao3@huawei.com>
+CC: <will@kernel.org>, <yangyicong@huawei.com>, <shaojijie@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>, <chenhao418@huawei.com>
+Subject: Re: [PATCH 2/3] drivers/perf: hisi: hns3: Fix out-of-bound access
+ when valid event group
+Message-ID: <20240426164129.00004b37@Huawei.com>
+In-Reply-To: <20240425124627.13764-3-hejunhao3@huawei.com>
+References: <20240425124627.13764-1-hejunhao3@huawei.com>
+	<20240425124627.13764-3-hejunhao3@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Currently we allocate all 3 levels of radix3 page tables using
-nvkm_gsp_mem_ctor(), which uses dma_alloc_coherent() for allocating all of
-the relevant memory. This can end up failing in scenarios where the system
-has very high memory fragmentation, and we can't find enough contiguous
-memory to allocate level 2 of the page table.
+On Thu, 25 Apr 2024 20:46:26 +0800
+Junhao He <hejunhao3@huawei.com> wrote:
 
-Currently, this can result in runtime PM issues on systems where memory
-fragmentation is high - as we'll fail to allocate the page table for our
-suspend/resume buffer:
+> The perf tool allows users to create event groups through following
+> cmd [1], but the driver does not check whether the array index is out
+> of bounds when writing data to the event_group array. If the number of
+> events in an event_group is greater than HNS3_PMU_MAX_HW_EVENTS, the
+> memory write overflow of event_group array occurs.
+> 
+> Add array index check to fix the possible array out of bounds violation,
+> and return directly when write new events are written to array bounds.
+> 
+> There are 9 different events in an event_group.
+> [1] perf stat -e '{pmu/event1/, ... ,pmu/event9/}
+> 
+> Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> Signed-off-by: Hao Chen <chenhao418@huawei.com>
 
-  kworker/10:2: page allocation failure: order:7, mode:0xcc0(GFP_KERNEL),
-  nodemask=(null),cpuset=/,mems_allowed=0
-  CPU: 10 PID: 479809 Comm: kworker/10:2 Not tainted
-  6.8.6-201.ChopperV6.fc39.x86_64 #1
-  Hardware name: SLIMBOOK Executive/Executive, BIOS N.1.10GRU06 02/02/2024
-  Workqueue: pm pm_runtime_work
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x64/0x80
-   warn_alloc+0x165/0x1e0
-   ? __alloc_pages_direct_compact+0xb3/0x2b0
-   __alloc_pages_slowpath.constprop.0+0xd7d/0xde0
-   __alloc_pages+0x32d/0x350
-   __dma_direct_alloc_pages.isra.0+0x16a/0x2b0
-   dma_direct_alloc+0x70/0x270
-   nvkm_gsp_radix3_sg+0x5e/0x130 [nouveau]
-   r535_gsp_fini+0x1d4/0x350 [nouveau]
-   nvkm_subdev_fini+0x67/0x150 [nouveau]
-   nvkm_device_fini+0x95/0x1e0 [nouveau]
-   nvkm_udevice_fini+0x53/0x70 [nouveau]
-   nvkm_object_fini+0xb9/0x240 [nouveau]
-   nvkm_object_fini+0x75/0x240 [nouveau]
-   nouveau_do_suspend+0xf5/0x280 [nouveau]
-   nouveau_pmops_runtime_suspend+0x3e/0xb0 [nouveau]
-   pci_pm_runtime_suspend+0x67/0x1e0
-   ? __pfx_pci_pm_runtime_suspend+0x10/0x10
-   __rpm_callback+0x41/0x170
-   ? __pfx_pci_pm_runtime_suspend+0x10/0x10
-   rpm_callback+0x5d/0x70
-   ? __pfx_pci_pm_runtime_suspend+0x10/0x10
-   rpm_suspend+0x120/0x6a0
-   pm_runtime_work+0x98/0xb0
-   process_one_work+0x171/0x340
-   worker_thread+0x27b/0x3a0
-   ? __pfx_worker_thread+0x10/0x10
-   kthread+0xe5/0x120
-   ? __pfx_kthread+0x10/0x10
-   ret_from_fork+0x31/0x50
-   ? __pfx_kthread+0x10/0x10
-   ret_from_fork_asm+0x1b/0x30
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Luckily, we don't actually need to allocate coherent memory for the page
-table thanks to being able to pass the GPU a radix3 page table for
-suspend/resume data. So, let's rewrite nvkm_gsp_radix3_sg() to use the sg
-allocator for level 2. We continue using coherent allocations for lvl0 and
-1, since they only take a single page.
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: stable@vger.kernel.org
----
- .../gpu/drm/nouveau/include/nvkm/subdev/gsp.h |  4 +-
- .../gpu/drm/nouveau/nvkm/subdev/gsp/r535.c    | 71 ++++++++++++-------
- 2 files changed, 47 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/include/nvkm/subdev/gsp.h b/drivers/gpu/drm/nouveau/include/nvkm/subdev/gsp.h
-index 6f5d376d8fcc1..a11d16a16c3b2 100644
---- a/drivers/gpu/drm/nouveau/include/nvkm/subdev/gsp.h
-+++ b/drivers/gpu/drm/nouveau/include/nvkm/subdev/gsp.h
-@@ -15,7 +15,9 @@ struct nvkm_gsp_mem {
- };
- 
- struct nvkm_gsp_radix3 {
--	struct nvkm_gsp_mem mem[3];
-+	struct nvkm_gsp_mem lvl0;
-+	struct nvkm_gsp_mem lvl1;
-+	struct sg_table lvl2;
- };
- 
- int nvkm_gsp_sg(struct nvkm_device *, u64 size, struct sg_table *);
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-index 9858c1438aa7f..2bf9077d37118 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-@@ -1624,7 +1624,7 @@ r535_gsp_wpr_meta_init(struct nvkm_gsp *gsp)
- 	meta->magic = GSP_FW_WPR_META_MAGIC;
- 	meta->revision = GSP_FW_WPR_META_REVISION;
- 
--	meta->sysmemAddrOfRadix3Elf = gsp->radix3.mem[0].addr;
-+	meta->sysmemAddrOfRadix3Elf = gsp->radix3.lvl0.addr;
- 	meta->sizeOfRadix3Elf = gsp->fb.wpr2.elf.size;
- 
- 	meta->sysmemAddrOfBootloader = gsp->boot.fw.addr;
-@@ -1919,8 +1919,9 @@ nvkm_gsp_sg(struct nvkm_device *device, u64 size, struct sg_table *sgt)
- static void
- nvkm_gsp_radix3_dtor(struct nvkm_gsp *gsp, struct nvkm_gsp_radix3 *rx3)
- {
--	for (int i = ARRAY_SIZE(rx3->mem) - 1; i >= 0; i--)
--		nvkm_gsp_mem_dtor(gsp, &rx3->mem[i]);
-+	nvkm_gsp_sg_free(gsp->subdev.device, &rx3->lvl2);
-+	nvkm_gsp_mem_dtor(gsp, &rx3->lvl1);
-+	nvkm_gsp_mem_dtor(gsp, &rx3->lvl0);
- }
- 
- /**
-@@ -1960,36 +1961,52 @@ static int
- nvkm_gsp_radix3_sg(struct nvkm_gsp *gsp, struct sg_table *sgt, u64 size,
- 		   struct nvkm_gsp_radix3 *rx3)
- {
--	u64 addr;
-+	struct sg_dma_page_iter sg_dma_iter;
-+	struct scatterlist *sg;
-+	size_t bufsize;
-+	u64 *pte;
-+	int ret, i, page_idx = 0;
- 
--	for (int i = ARRAY_SIZE(rx3->mem) - 1; i >= 0; i--) {
--		u64 *ptes;
--		size_t bufsize;
--		int ret, idx;
--
--		bufsize = ALIGN((size / GSP_PAGE_SIZE) * sizeof(u64), GSP_PAGE_SIZE);
--		ret = nvkm_gsp_mem_ctor(gsp, bufsize, &rx3->mem[i]);
--		if (ret)
--			return ret;
-+	ret = nvkm_gsp_mem_ctor(gsp, GSP_PAGE_SIZE, &rx3->lvl0);
-+	if (ret)
-+		return ret;
- 
--		ptes = rx3->mem[i].data;
--		if (i == 2) {
--			struct scatterlist *sgl;
-+	ret = nvkm_gsp_mem_ctor(gsp, GSP_PAGE_SIZE, &rx3->lvl1);
-+	if (ret)
-+		goto lvl1_fail;
- 
--			for_each_sgtable_dma_sg(sgt, sgl, idx) {
--				for (int j = 0; j < sg_dma_len(sgl) / GSP_PAGE_SIZE; j++)
--					*ptes++ = sg_dma_address(sgl) + (GSP_PAGE_SIZE * j);
--			}
--		} else {
--			for (int j = 0; j < size / GSP_PAGE_SIZE; j++)
--				*ptes++ = addr + GSP_PAGE_SIZE * j;
-+	// Allocate level 2
-+	bufsize = ALIGN((size / GSP_PAGE_SIZE) * sizeof(u64), GSP_PAGE_SIZE);
-+	ret = nvkm_gsp_sg(gsp->subdev.device, bufsize, &rx3->lvl2);
-+	if (ret)
-+		goto lvl2_fail;
-+
-+	// Write the bus address of level 1 to level 0
-+	pte = rx3->lvl0.data;
-+	*pte = rx3->lvl1.addr;
-+
-+	// Write the bus address of each page in level 2 to level 1
-+	pte = rx3->lvl1.data;
-+	for_each_sgtable_dma_page(&rx3->lvl2, &sg_dma_iter, 0)
-+		*pte++ = sg_page_iter_dma_address(&sg_dma_iter);
-+
-+	// Finally, write the bus address of each page in sgt to level 2
-+	for_each_sgtable_sg(&rx3->lvl2, sg, i) {
-+		pte = sg_virt(sg);
-+		for_each_sgtable_dma_page(sgt, &sg_dma_iter, page_idx) {
-+			*pte++ = sg_page_iter_dma_address(&sg_dma_iter);
-+			page_idx++;
- 		}
-+	}
- 
--		size = rx3->mem[i].size;
--		addr = rx3->mem[i].addr;
-+	if (ret) {
-+lvl2_fail:
-+		nvkm_gsp_mem_dtor(gsp, &rx3->lvl1);
-+lvl1_fail:
-+		nvkm_gsp_mem_dtor(gsp, &rx3->lvl0);
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- int
-@@ -2021,7 +2038,7 @@ r535_gsp_fini(struct nvkm_gsp *gsp, bool suspend)
- 		sr = gsp->sr.meta.data;
- 		sr->magic = GSP_FW_SR_META_MAGIC;
- 		sr->revision = GSP_FW_SR_META_REVISION;
--		sr->sysmemAddrOfSuspendResumeData = gsp->sr.radix3.mem[0].addr;
-+		sr->sysmemAddrOfSuspendResumeData = gsp->sr.radix3.lvl0.addr;
- 		sr->sizeOfSuspendResumeData = len;
- 
- 		mbox0 = lower_32_bits(gsp->sr.meta.addr);
--- 
-2.44.0
+> ---
+>  drivers/perf/hisilicon/hns3_pmu.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+> index 16869bf5bf4c..cbdd53b0a034 100644
+> --- a/drivers/perf/hisilicon/hns3_pmu.c
+> +++ b/drivers/perf/hisilicon/hns3_pmu.c
+> @@ -1085,15 +1085,27 @@ static bool hns3_pmu_validate_event_group(struct perf_event *event)
+>  			return false;
+>  
+>  		for (num = 0; num < counters; num++) {
+> +			/*
+> +			 * If we find a related event, then it's a valid group
+> +			 * since we don't need to allocate a new counter for it.
+> +			 */
+>  			if (hns3_pmu_cmp_event(event_group[num], sibling))
+>  				break;
+>  		}
+>  
+> +		/*
+> +		 * Otherwise it's a new event but if there's no available counter,
+> +		 * fail the check since we cannot schedule all the events in
+> +		 * the group simultaneously.
+> +		 */
+> +		if (num == HNS3_PMU_MAX_HW_EVENTS)
+> +			return false;
+> +
+>  		if (num == counters)
+>  			event_group[counters++] = sibling;
+>  	}
+>  
+> -	return counters <= HNS3_PMU_MAX_HW_EVENTS;
+> +	return true;
+>  }
+>  
+>  static u32 hns3_pmu_get_filter_condition(struct perf_event *event)
 
 
