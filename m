@@ -1,126 +1,245 @@
-Return-Path: <linux-kernel+bounces-159608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA0D8B30ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:59:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF8D18B3105
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:03:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C88F21F23DAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:59:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFCF91C22040
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F0313AD09;
-	Fri, 26 Apr 2024 06:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B06F13B2B0;
+	Fri, 26 Apr 2024 07:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="UK7FKijJ"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eHONCeLC"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141CD567F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D87567F;
+	Fri, 26 Apr 2024 07:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714114777; cv=none; b=mKkWmO+7H0uXlCroh5AV3O4faXCHnyyW2mXuiDAoqpry6S2pVNOHOy15lojDWRNU9W7q/yM5BtD1wtK1j0ek1XgUUOYxeLwTv28ZAcA60lw113/N0zOWh5V3SvXJQe/1JAAIcvbxOOpXb3r5I2Y6xn8LPvQo5QzRywLBhK/IKWk=
+	t=1714114989; cv=none; b=umiyW4Hg/JaDs+teouq2qzZZmr2IgtmwJoCE2e4NVW+tNMYBEOPbr49y2j6y0LosfFvj5pyU/T3NQbusV01eUjABpYbiCG3csZPMFAk1Ea3fnaiKSWmAx89YI7y3tQdqyH7INKtEDseEHdAzMSEgrYBZ7rDb4Fk350KXZ7aMHBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714114777; c=relaxed/simple;
-	bh=G7vXm9ah7dP5SqmGJRXf6C33wHqAfZxN47t8q4zER0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZPse7rMhDJeOJMhDWYIGvw2HD9Akl4iRp/T7bk2bOqkqbcFkp8jQZh5Ubod93S9wxsmfSap4AXeBfQuOKjYkMC/Kqi05RBQhMAf8QmkQymGixNBzDEkuQ9Nwrn3BrRSObGZOufuqYhf7Eg3dO+SkmWz3W67+x0UyyORi3Rh/LcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=UK7FKijJ; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e1bbdb362so2195564a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714114773; x=1714719573; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nJi2B9HW02fkMYGbO8TVAET6hHBVhmmZVgISXMQ1fkk=;
-        b=UK7FKijJ5KsbEi7f2h8gqZ+I0eBa776J6F/MNIEqNFIto/s8ZvcMOAhaTu8rZFdoYM
-         odFdPY0Wl6fGVynCWA415VcF7ukR5/PdKruw6FjrPxCaqQ88vWnsMXAE8cjQw+yc8m8l
-         8uVphq1VUUhckZ36DeuLqZ5IPrS0w1B0KEExIb395vC8B1X/N/2FFsRQ26WhnIPI3Fqd
-         V3LrADD3KMWVbFh3aHx+CkL0QcUShS3SHqQDEznDAv7DOdB2xsKJ8REdySGngkD3+2X+
-         ozzcZ8mnd3RaiwQW8JxQmfjXx5rVnHzYpp+AngsgSdOEkHOPL2aiQd/HV3YLLpUJREmJ
-         zouA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714114773; x=1714719573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nJi2B9HW02fkMYGbO8TVAET6hHBVhmmZVgISXMQ1fkk=;
-        b=i9Vqa/ECwhyoaPBWTejI8enq3YwZF91picJpOv6RrZLBFb2sFO6Xs8fvruT831bvUD
-         CDGXO4PQagRzJO5D4jfzijFiYZf3h2rUeojBQ/Jw9abEKLNp5TsauO/K7UMDaplIYsjL
-         SM1Rf4BM/497d+8wTvNnOKtZ5ixxB7ZpZBGA6sfmlEAOvP31M05Pmvc5MornUuso321S
-         AG3WNrd/nuObTUSHR/xGSZBoeNo8/xP2pNmFVCf436HDmBcvrusJN6FKLY1F2gcdzWnR
-         ehFyCcz7BcxNgNAZ+eRmLRzbcx2R8hr32JmwdjDWV8GNog2eKotVMf+pPXCylA+xjPqj
-         GmQg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3ya1XauYvw8wKcMLAyRRdKDS/Bawxpzt5iXc+AzbSsGDkyN1FIIQxAdWaCx6VJIEsIq/gXIlC/H21SOgSrEX5xKhA2gxvkJrWF5kG
-X-Gm-Message-State: AOJu0YxeG23X07aC8Hokw5fXamLHp7zgwpXeOpe9kDx1lvO72YMcNFVZ
-	qgHSungtDycUCYqcRH7nnJjhFOZ5+XPlLu3uPdFKkXbd2H8BorRluGeUcLKycdk=
-X-Google-Smtp-Source: AGHT+IHUnMU8CxhFO5e0ybUeTeletpTSN8CoDzy9n/qhvKWDBbmouw24d1LdHfZWIXo2JhywDqhFJw==
-X-Received: by 2002:a17:906:3614:b0:a51:de95:f592 with SMTP id q20-20020a170906361400b00a51de95f592mr1758675ejb.63.1714114773338;
-        Thu, 25 Apr 2024 23:59:33 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id m12-20020a1709062b8c00b00a58d438ed2esm183306ejg.139.2024.04.25.23.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 23:59:32 -0700 (PDT)
-Date: Fri, 26 Apr 2024 08:59:31 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Shuah Khan <shuah@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: selftests: Add hwprobe binaries to .gitignore
-Message-ID: <20240426-ffd635ae77cff1868ae99206@orel>
-References: <20240425-gitignore_hwprobe_artifacts-v1-1-dfc5a20da469@rivosinc.com>
+	s=arc-20240116; t=1714114989; c=relaxed/simple;
+	bh=IvTH72RWSEFgKEux7+oDcRKaZa76lkq/3U0lfobgA7E=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=f2Eb6l7e/gl0tVGHB+dCF05vvEi4LY01A1KemjxNwIFX73UND8cagdZcJcaXJGvdRQkd2zO1/ZnjaFbjinZFtnkkk0izcxso+lKKtFmJTtFLkaqpxsWtCYlPuo+NtNaYxJa/YPJgu3QLPB3A4Tmg7OnxMYENKvTKvFiLfU2ZSFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eHONCeLC; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q72RBA006163;
+	Fri, 26 Apr 2024 07:02:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=gn+OA+eWtFQ0TbrlYBUsxOrQSF+lCgWVOrEmHKbpjF0=;
+ b=eHONCeLCatfKXfkK5H/0BHT4T0dp7zr9JqJN80e5/BCSJ/7Ek8ZgzQimbka5puTaBc5R
+ k7j3ToaFJhFo3jpzAB20Lhpk5sn3tydZvkwixCJ/JincYI4j+5C4iDO6Mi621SFyrUOF
+ 7PxG+AniE/S5seInN0c8VQGGjPgA9r7mAyB6fhhK00pOwo5CzUHK1aw5Z4s81oVXnsoN
+ 5BwX/M7vcGap6toqkxG0ZgEzBKNxstmv/pJR2ctw45ySX/Z9jkbdEDeUtWx0oM0DsyP3
+ JFrnZPtY6NtImqF6AbCwxkrbsSxzQ5mITRQR7HuGChYuh37v7Xbv1StgVmpWgr1M7vAa YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr7h8r02h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 07:02:56 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43Q72uPT006995;
+	Fri, 26 Apr 2024 07:02:56 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr7h8r02b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 07:02:56 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q5ZGnM015343;
+	Fri, 26 Apr 2024 07:02:54 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmp6jg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 07:02:54 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43Q72n4x54854034
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 07:02:51 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2B4CC2004F;
+	Fri, 26 Apr 2024 07:02:49 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 00E8C20063;
+	Fri, 26 Apr 2024 07:02:48 +0000 (GMT)
+Received: from [9.171.7.244] (unknown [9.171.7.244])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 07:02:47 +0000 (GMT)
+Message-ID: <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
+Date: Fri, 26 Apr 2024 09:02:47 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 00/11] net/smc: SMC intra-OS shortcut with
+ loopback-ism
+To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
+        twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+References: <20240414040304.54255-1-guwen@linux.alibaba.com>
+From: Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <20240414040304.54255-1-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: S69eD35reIvaQmH81gvuG5azWnZJyWmN
+X-Proofpoint-GUID: VXcwIiokXeiKQzTJsMTZqwouEkYfg2ba
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425-gitignore_hwprobe_artifacts-v1-1-dfc5a20da469@rivosinc.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_07,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 clxscore=1011 phishscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404260043
 
-On Thu, Apr 25, 2024 at 12:58:03PM GMT, Charlie Jenkins wrote:
-> The cbo and which-cpu hwprobe selftests leave their artifacts in the
-> kernel tree and end up being tracked by git. Add the binaries to the
-> hwprobe selftest .gitignore so this no longer happens.
+
+
+On 14/04/2024 06:02, Wen Gu wrote:
+> This patch set acts as the second part of the new version of [1] (The first
+> part can be referred from [2]), the updated things of this version are listed
+> at the end.
 > 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Fixes: a29e2a48afe3 ("RISC-V: selftests: Add CBO tests")
-> Fixes: ef7d6abb2cf5 ("RISC-V: selftests: Add which-cpus hwprobe test")
-> ---
->  tools/testing/selftests/riscv/hwprobe/.gitignore | 2 ++
->  1 file changed, 2 insertions(+)
+> - Background
 > 
-> diff --git a/tools/testing/selftests/riscv/hwprobe/.gitignore b/tools/testing/selftests/riscv/hwprobe/.gitignore
-> index 8113dc3bdd03..6e384e80ea1a 100644
-> --- a/tools/testing/selftests/riscv/hwprobe/.gitignore
-> +++ b/tools/testing/selftests/riscv/hwprobe/.gitignore
-> @@ -1 +1,3 @@
->  hwprobe
-> +cbo
-> +which-cpus
+> SMC-D is now used in IBM z with ISM function to optimize network interconnect
+> for intra-CPC communications. Inspired by this, we try to make SMC-D available
+> on the non-s390 architecture through a software-implemented Emulated-ISM device,
+> that is the loopback-ism device here, to accelerate inter-process or
+> inter-containers communication within the same OS instance.
 > 
-> ---
-> base-commit: ed30a4a51bb196781c8058073ea720133a65596f
-> change-id: 20240425-gitignore_hwprobe_artifacts-fb0f2cd3509c
-> -- 
-> - Charlie
->
+> - Design
+> 
+> This patch set includes 3 parts:
+> 
+>   - Patch #1: some prepare work for loopback-ism.
+>   - Patch #2-#7: implement loopback-ism device and adapt SMC-D for it.
+>     loopback-ism now serves only SMC and no userspace interfaces exposed.
+>   - Patch #8-#11: memory copy optimization for intra-OS scenario.
+> 
+> The loopback-ism device is designed as an ISMv2 device and not be limited to
+> a specific net namespace, ends of both inter-process connection (1/1' in diagram
+> below) or inter-container connection (2/2' in diagram below) can find the same
+> available loopback-ism and choose it during the CLC handshake.
+> 
+>   Container 1 (ns1)                              Container 2 (ns2)
+>   +-----------------------------------------+    +-------------------------+
+>   | +-------+      +-------+      +-------+ |    |        +-------+        |
+>   | | App A |      | App B |      | App C | |    |        | App D |<-+     |
+>   | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
+>   |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
+>   |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
+>   |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
+>   +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
+>                |   |           |                                  |
+>   Kernel       |   |           |                                  |
+>   +----+-------v---+-----------v----------------------------------+---+----+
+>   |    |                            TCP                               |    |
+>   |    |                                                              |    |
+>   |    +--------------------------------------------------------------+    |
+>   |                                                                        |
+>   |                           +--------------+                             |
+>   |                           | smc loopback |                             |
+>   +---------------------------+--------------+-----------------------------+
+> 
+> loopback-ism device creates DMBs (shared memory) for each connection peer.
+> Since data transfer occurs within the same kernel, the sndbuf of each peer
+> is only a descriptor and point to the same memory region as peer DMB, so that
+> the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
+> 
+>   Container 1 (ns1)                              Container 2 (ns2)
+>   +-----------------------------------------+    +-------------------------+
+>   | +-------+                               |    |        +-------+        |
+>   | | App C |-----+                         |    |        | App D |        |
+>   | +-------+     |                         |    |        +-^-----+        |
+>   |               |                         |    |          |              |
+>   |           (2) |                         |    |     (2') |              |
+>   |               |                         |    |          |              |
+>   +---------------|-------------------------+    +----------|--------------+
+>                   |                                         |
+>   Kernel          |                                         |
+>   +---------------|-----------------------------------------|--------------+
+>   | +--------+ +--v-----+                           +--------+ +--------+  |
+>   | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
+>   | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
+>   | +-----|--+    |                                 +-----|--+             |
+>   | | DMB C  |    +---------------------------------| DMB D  |             |
+>   | +--------+                                      +--------+             |
+>   |                                                                        |
+>   |                           +--------------+                             |
+>   |                           | smc loopback |                             |
+>   +---------------------------+--------------+-----------------------------+
+> 
+> - Benchmark Test
+> 
+>   * Test environments:
+>        - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
+>        - SMC sndbuf/DMB size 1MB.
+> 
+>   * Test object:
+>        - TCP: run on TCP loopback.
+>        - SMC lo: run on SMC loopback-ism.
+> 
+> 1. ipc-benchmark (see [3])
+> 
+>   - ./<foo> -c 1000000 -s 100
+> 
+>                              TCP                  SMC-lo
+> Message
+> rate (msg/s)              79693                  148236(+86.01%)
+> 
+> 2. sockperf
+> 
+>   - serv: <smc_run> sockperf sr --tcp
+>   - clnt: <smc_run> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
+> 
+>                              TCP                  SMC-lo
+> Bandwidth(MBps)         4815.18                 8061.77(+67.42%)
+> Latency(us)               6.176                   3.449(-44.15%)
+> 
+> 3. nginx/wrk
+> 
+>   - serv: <smc_run> nginx
+>   - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
+> 
+>                             TCP                   SMC-lo
+> Requests/s           196555.02                263270.95(+33.94%)
+> 
+> 4. redis-benchmark
+> 
+>   - serv: <smc_run> redis-server
+>   - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
+> 
+>                             TCP                   SMC-lo
+> GET(Requests/s)       88711.47                120048.02(+35.32%)
+> SET(Requests/s)       89465.44                123152.71(+37.65%)
+> 
+> 
 
-We can also consider doing what kvm selftests does, which is to just have
-the top-level .gitignore which ignores everything except the code. See
-tools/testing/selftests/kvm/.gitignore
+Hi Wen Gu,
 
-But, until (if at all) we go that way, we can do what this patch does,
+I did run the tests again with the v6 and reviewed the patchset. If you 
+decide to address Simons nit feel free to add my:
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Reviewed-and-tested-by: Jan Karcher <jaka@linux.ibm.com>
 
-Thanks,
-drew
+Thanks for your effort and contribution.
+- J
 
