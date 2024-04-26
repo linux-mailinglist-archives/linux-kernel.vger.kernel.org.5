@@ -1,181 +1,175 @@
-Return-Path: <linux-kernel+bounces-159971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D04358B36FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:14:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3450D8B36FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:15:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8701E1F22362
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:14:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F001B20C29
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4399014533F;
-	Fri, 26 Apr 2024 12:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B308145B0B;
+	Fri, 26 Apr 2024 12:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wqf1Cp+L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="LxwJxAt8"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2DA146A62;
-	Fri, 26 Apr 2024 12:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F84113D244
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714133647; cv=none; b=k4Ym1dIewsUWy2KwJa9yzdnWLUS/3yJqm5kU4gzFj6bnDkcSI2qjFP39ijrmkOGPI5eb6zkhZWd0tZWSpkkTIUiwM59XQw/dvPN9ZPLDnfx9Z2HuiiwxIQsMjkZVi8qsML2FUwnrB0tL198D/zThi5SaQQj3rm4A/NB2KA50UVA=
+	t=1714133698; cv=none; b=qzXCvuiHuxqVtA0YNVOjIbGO9nVmNr5ac/IIx3L7oZVQ9HZBKdS0c1RLRM4JXN4S0o0aoa4R06blIjrW8yQk6KA8wRRousjAYqHlZ+gQdx2NDuf69jQM/FYCwoD7qHiqb6Vv/RA1T+uG7+AGF9a+wR+LIMxMv3bDvFvOk8Fw8/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714133647; c=relaxed/simple;
-	bh=wwOo7Qalbj5LGH+Uol2Kxq1QroiMAQbRn89m80qF1hk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ddF5bfwhIrtO0dzrJkj1imacQJ+ZXzLZvVbTIUv1C/F0SECnUoN1Onm/cK4nE0CbYeq+dppYcIpqMI7z7LGo5Ha4rcqnVj+nDdMLOWlu5Lp2027rgaMWmqp+P8jvTfYr7Jfm6tg9RpqIF+x8fNpld12MWS91X6Ct/ijwbw70XDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wqf1Cp+L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBFA4C113CD;
-	Fri, 26 Apr 2024 12:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714133647;
-	bh=wwOo7Qalbj5LGH+Uol2Kxq1QroiMAQbRn89m80qF1hk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wqf1Cp+LfX9tULU0HyRGnDeMCjKen3b6QQDxRgGRuwAOuj5zbDCwVCKJhd6Auo08o
-	 B8pZrXZMAP5IDBLwE4CD69u9MCDX+5lGz3aytu4cFT6NezNCUyof9nt0CGFJ4LdqqH
-	 OSzFvR0EG1Jq5AwOg97W36gELTUZaDggc9TxZ+cniSes9RMNhAaYl/p/vr7t8VNKRL
-	 Fqm0tEbdObc+W3DUtSF7mCNOR3m/AvCsEvQSaA+VUlsTzIOzkO7SVTB/Ou4VK2ROF9
-	 OQA1ipw7x+LCI+/G2ni7UaGuPcCUc9PlDEZil5BL3pGoMFnQuhkZ4yZSQNnkHzt9Df
-	 1qa2PZ05giUcA==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Florent Revest <revest@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1714133698; c=relaxed/simple;
+	bh=4J9T8dLyYXPXJscrNbpt1oBl/KJlwJW8Y+aBv80jApI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bZERsDevM2410YYiSRC3pGqbkLUpyKJBCT7H7gN7maRQZeB2GoikS2QFesW4Wswwkm10O1cJKJTSYWfQ9cGCtfUIOxUYKutfXdzDtp5O7xRIYmQVyDW1RuvDBasmDgQ+RQbyljPeYPjVeBsRqjklR3e42/Yozloa1vQb80NDTCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=LxwJxAt8; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1714133695;
+	bh=4J9T8dLyYXPXJscrNbpt1oBl/KJlwJW8Y+aBv80jApI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LxwJxAt8/g6M7msXHMHks3zBsv3trPsFTq5Y3GkofG8RSK57Ri0OLsIDpRA3r87Rl
+	 yi3DK/U9VYkVRZe49CUSv4P60KOPSpVdJx4z+9sKWyUs2xWLDKkrr7aZs4jeWb+FBG
+	 tI0pACelksWmzua+P4kgZIyGfJcPFZASACmu3iP4=
+Received: from stargazer.. (unknown [IPv6:240e:358:1105:4a00:dc73:854d:832e:3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 3B6DC659FD;
+	Fri, 26 Apr 2024 08:14:50 -0400 (EDT)
+From: Xi Ruoyao <xry111@xry111.site>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>
+Cc: loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v3 2/2] bpf, arm64: inline bpf_get_smp_processor_id() helper
-Date: Fri, 26 Apr 2024 12:13:49 +0000
-Message-Id: <20240426121349.97651-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240426121349.97651-1-puranjay@kernel.org>
-References: <20240426121349.97651-1-puranjay@kernel.org>
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Xi Ruoyao <xry111@xry111.site>
+Subject: [PATCH] LoongArch: Provide __lshrti3, __ashrti3, and __ashrti3
+Date: Fri, 26 Apr 2024 20:14:42 +0800
+Message-ID: <20240426121442.882029-1-xry111@xry111.site>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
-bpf_get_smp_processor_id().
+After selecting ARCH_SUPPORTS_INT128, when optimizing for size the
+compiler generates calls to __lshrti3, __ashrti3, and __ashrti3 for
+shifting __int128 values, causing a link failure:
 
-ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+    loongarch64-unknown-linux-gnu-ld: kernel/sched/fair.o: in
+    function `mul_u64_u32_shr':
+    <PATH>/include/linux/math64.h:161:(.text+0x5e4): undefined
+    reference to `__lshrti3'
 
-Here is how the BPF and ARM64 JITed assembly changes after this commit:
+Provide the implementation of these functions if ARCH_SUPPORTS_INT128.
 
-                                         BPF
-         		                =====
-              BEFORE                                       AFTER
-             --------                                     -------
-
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-(85) call bpf_get_smp_processor_id#229032       (18) r0 = 0xffff800082072008
-                                                (bf) r0 = &(void __percpu *)(r0)
-                                                (61) r0 = *(u32 *)(r0 +0)
-
-				      ARM64 JIT
-				     ===========
-
-              BEFORE                                       AFTER
-             --------                                     -------
-
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ffffffff
-movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl #16
-movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
-blr     x10                                     mrs     x10, tpidr_el1
-add     x7, x0, #0x0                            add     x7, x7, x10
-                                                ldr     w7, [x7]
-
-Performance improvement using benchmark[1]
-
-             BEFORE                                       AFTER
-            --------                                     -------
-
-glob-arr-inc   :   23.817 ± 0.019M/s      glob-arr-inc   :   24.631 ± 0.027M/s
-arr-inc        :   23.253 ± 0.019M/s      arr-inc        :   23.742 ± 0.023M/s
-hash-inc       :   12.258 ± 0.010M/s      hash-inc       :   12.625 ± 0.004M/s
-
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Reported-by: Huacai Chen <chenhuacai@kernel.org>
+Closes: https://lore.kernel.org/loongarch/CAAhV-H5EZ=7OF7CSiYyZ8_+wWuenpo=K2WT8-6mAT4CvzUC_4g@mail.gmail.com/
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 ---
- kernel/bpf/verifier.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ arch/loongarch/include/asm/asm-prototypes.h |  6 +++
+ arch/loongarch/lib/Makefile                 |  2 +
+ arch/loongarch/lib/tishift.S                | 56 +++++++++++++++++++++
+ 3 files changed, 64 insertions(+)
+ create mode 100644 arch/loongarch/lib/tishift.S
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4e474ef44e9c..6ff4e63b2ef2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
- 
--#ifdef CONFIG_X86_64
- 		/* Implement bpf_get_smp_processor_id() inline. */
- 		if (insn->imm == BPF_FUNC_get_smp_processor_id &&
- 		    prog->jit_requested && bpf_jit_supports_percpu_insn()) {
- 			/* BPF_FUNC_get_smp_processor_id inlining is an
--			 * optimization, so if pcpu_hot.cpu_number is ever
-+			 * optimization, so if cpu_number_addr is ever
- 			 * changed in some incompatible and hard to support
- 			 * way, it's fine to back out this inlining logic
- 			 */
--			insn_buf[0] = BPF_MOV32_IMM(BPF_REG_0, (u32)(unsigned long)&pcpu_hot.cpu_number);
--			insn_buf[1] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
--			insn_buf[2] = BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0);
--			cnt = 3;
-+			u64 cpu_number_addr;
- 
-+#if defined(CONFIG_X86_64)
-+			cpu_number_addr = (u64)&pcpu_hot.cpu_number;
-+#elif defined(CONFIG_ARM64)
-+			cpu_number_addr = (u64)&cpu_number;
-+#else
-+			goto next_insn;
+diff --git a/arch/loongarch/include/asm/asm-prototypes.h b/arch/loongarch/include/asm/asm-prototypes.h
+index cf8e1a4e7c19..51f224bcfc65 100644
+--- a/arch/loongarch/include/asm/asm-prototypes.h
++++ b/arch/loongarch/include/asm/asm-prototypes.h
+@@ -6,3 +6,9 @@
+ #include <asm/page.h>
+ #include <asm/ftrace.h>
+ #include <asm-generic/asm-prototypes.h>
++
++#ifdef CONFIG_ARCH_SUPPORTS_INT128
++__int128_t __ashlti3(__int128_t a, int b);
++__int128_t __ashrti3(__int128_t a, int b);
++__int128_t __lshrti3(__int128_t a, int b);
 +#endif
-+			struct bpf_insn ld_cpu_number_addr[2] = {
-+				BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
-+			};
-+			insn_buf[0] = ld_cpu_number_addr[0];
-+			insn_buf[1] = ld_cpu_number_addr[1];
-+			insn_buf[2] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
-+			insn_buf[3] = BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0);
-+			cnt = 4;
- 			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
- 			if (!new_prog)
- 				return -ENOMEM;
-@@ -20296,7 +20307,6 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			insn      = new_prog->insnsi + i + delta;
- 			goto next_insn;
- 		}
--#endif
- 		/* Implement bpf_get_func_arg inline. */
- 		if (prog_type == BPF_PROG_TYPE_TRACING &&
- 		    insn->imm == BPF_FUNC_get_func_arg) {
+diff --git a/arch/loongarch/lib/Makefile b/arch/loongarch/lib/Makefile
+index a77bf160bfc4..f61af161f16e 100644
+--- a/arch/loongarch/lib/Makefile
++++ b/arch/loongarch/lib/Makefile
+@@ -9,3 +9,5 @@ lib-y	+= delay.o memset.o memcpy.o memmove.o \
+ obj-$(CONFIG_CPU_HAS_LSX) += xor_simd.o xor_simd_glue.o
+ 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
++
++obj-$(CONFIG_ARCH_SUPPORTS_INT128) += tishift.o
+diff --git a/arch/loongarch/lib/tishift.S b/arch/loongarch/lib/tishift.S
+new file mode 100644
+index 000000000000..eb43f29f4d0b
+--- /dev/null
++++ b/arch/loongarch/lib/tishift.S
+@@ -0,0 +1,56 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#include <asm/asmmacro.h>
++#include <linux/linkage.h>
++#include <linux/export.h>
++
++SYM_FUNC_START(__lshrti3)
++	slli.d	t2, a1, 1
++	nor	t3, zero, a2
++	srl.d	t1, a0, a2
++	sll.d	t2, t2, t3
++	andi	t0, a2, 64
++	srl.d	a1, a1, a2
++	or	t1, t2, t1
++	maskeqz	a0, a1, t0
++	masknez	a1, a1, t0
++	masknez	t0, t1, t0
++	or	a0, t0, a0
++	jr	ra
++SYM_FUNC_END(__lshrti3)
++EXPORT_SYMBOL(__lshrti3)
++
++SYM_FUNC_START(__ashrti3)
++	nor	t3, zero, a2
++	slli.d	t2, a1, 1
++	srl.d	t1, a0, a2
++	sll.d	t2, t2, t3
++	andi	t0, a2, 64
++	or	t1, t2, t1
++	sra.d	a2, a1, a2
++	srai.d	a1, a1, 63
++	maskeqz	a0, a2, t0
++	maskeqz	a1, a1, t0
++	masknez	a2, a2, t0
++	masknez	t0, t1, t0
++	or	a1, a1, a2
++	or	a0, t0, a0
++	jr	ra
++SYM_FUNC_END(__ashrti3)
++EXPORT_SYMBOL(__ashrti3)
++
++SYM_FUNC_START(__ashlti3)
++	srli.d	t2, a0, 1
++	nor	t3, zero, a2
++	sll.d	t1, a1, a2
++	srl.d	t2, t2, t3
++	andi	t0, a2, 64
++	sll.d	a0, a0, a2
++	or	t1, t2, t1
++	maskeqz	a1, a0, t0
++	masknez	a0, a0, t0
++	masknez	t0, t1, t0
++	or	a1, t0, a1
++	jr	ra
++SYM_FUNC_END(__ashlti3)
++EXPORT_SYMBOL(__ashlti3)
 -- 
-2.40.1
+2.44.0
 
 
