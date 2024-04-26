@@ -1,257 +1,277 @@
-Return-Path: <linux-kernel+bounces-160718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640498B4186
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:54:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0FCF8B417F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:49:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E76C61F226B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:54:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 632F62833CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2755737703;
-	Fri, 26 Apr 2024 21:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8F5374DB;
+	Fri, 26 Apr 2024 21:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pVMyzeWK"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2082.outbound.protection.outlook.com [40.107.93.82])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C1SxGGXV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3360238396;
-	Fri, 26 Apr 2024 21:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD852C1B6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 21:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714168449; cv=fail; b=cywefEWdraNsQ3gHNxltpH6iM6/83ZquA5FNmy6pMEIqA2AO8W/D4pbs+aPW1RfCyRxr2UuNrtWKXLj69Ea+LnHXMKKY+7oroFQSyz/EzcSiUdbPMCTvgsIYYmup3KGKOxhHAUJl6z7sd5UPOwLXySppd07qqQnbBjMwyeiQC2A=
+	t=1714168150; cv=fail; b=XXnndjxKfVlaA4UUiMkMvBqQoEYpdSunXoKyJNuM2I4rma0G8sFqx0SM0OloavqUkzi6H5mHrpN5cNi+H4z9saSpV9OS2Ot9X5xo2BL7K8D7+WROyJxy6N2x1AuFV/M5J6WtF/7YxpyEKYRQ8h60JnMyJyjsVrTuVyKXfIn0awY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714168449; c=relaxed/simple;
-	bh=gzt3VHJEhs3XMcLynoGCu5LrX+3oEacqgb0HNWIQT5w=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RSrlay8xRk+mX+zpjWXYinAAkfRBqHf8YlmFithRpqAdiJiZ8UkpALbHLevMl2EVc8OaqGtfSJFuwiv1qysJguO5p4K2tiM8OeyX+Ceta6blbCuBTlDMwHuN2w10cPIf3Rj9FR2KJvIo7bjfJw5k9JmZwR0mSy9/mzKNwA89WVQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pVMyzeWK; arc=fail smtp.client-ip=40.107.93.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1714168150; c=relaxed/simple;
+	bh=qFg3/VeD532bBWnGFnYe0gJCr/HmRlUfRGi4xpLbasY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=dslZuFirOFKbAmGDZl6VPQfty5/siqKL8qDZ3tYwIeGHqZBwl2cAicB7Mu0nsP0FZTsKkzEG2RRFgM3XjAxqbWw5pQbSQDk3ePOfOgm4m7PqwN4yd3IrPnybrC//NvCqQ88/LKerpARe8V05/vUXYvSWWRAtWum8U+Ith/+QTXY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C1SxGGXV; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714168148; x=1745704148;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=qFg3/VeD532bBWnGFnYe0gJCr/HmRlUfRGi4xpLbasY=;
+  b=C1SxGGXVZakaaSUcrC2U7QVSOZ0P2Y35tyGCPtrVW7Czhtki/E0kn/0K
+   FF4IQZef0SRxiu7sfYx4HEX0gLyTqVVhfwmfQK1VxvlqAzlRrtoV861BJ
+   wBi08l/fwDbn08Czdh5TDoS83Jx28FFELhoALRQ4KX+R/2wQD64bQCjuS
+   lSSH/coI6DbdXEu2QcXJ/O7y1T9mmv9GLTyqkFAUJovZHor4R+rOBX6sD
+   PffjQeoMzdH1E288tSn0rtiDMHwAtWOsllKcT2AGUCGoXq6cplBlYehr5
+   mhB6LDsXyoprVFhdrFPnKmd/hGZL0QPeLeOglfVBOeUN5ZVjMh++BT/Yn
+   A==;
+X-CSE-ConnectionGUID: +vdb55xuQD2bp7Bk+3lC5Q==
+X-CSE-MsgGUID: 9mfDuS5hRg+3S18SelxuuA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="20471814"
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="20471814"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 14:49:04 -0700
+X-CSE-ConnectionGUID: HQwFbIyjSq+yoy8jpZvbhg==
+X-CSE-MsgGUID: Xtm1RZCzSzyFiOZmFRAiag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="56718523"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Apr 2024 14:49:03 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Apr 2024 14:49:02 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Apr 2024 14:49:02 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 26 Apr 2024 14:49:02 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 26 Apr 2024 14:49:02 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Asnt5NpwX4svE4CI+fC4nbtQf9MokYeBxlj/eXrRhf+GJzrBueHMJK3in8HjAu/nPm5tOw50S00JWcU0INErzZRCTU1UDjQh4RIWNq4yi6+4BxOQHC6R2cvOsjD7WS5Y8dUM1Z5Fds+Wz7CtXisvEd56MYjG0TdSpVUSXH1qBSBPo5v0INwhQZu5fVKGKRhtkYP1O3Z+eO+tlkhPrNaR8mdNMShpCvCBcZkLp0hdw0Pvt2iLrqRfWj1bIF0+5koEYYw56UG1JJOckwj3X+XIOjzuAUUKp8DkGLI5oRgFs2bgO/RXqz4Var2hdK024QHnW2zNRRoM7s7rWIckC4VxEw==
+ b=glfZWso0+qiQ0crzg4TTzHsgC/G0vRSPFWm3ozhALRQEHBtn9hHlspc4yak6kpqR9O+L+7mEbKvdiGvLenRcCF8ERYiN3h7+qPCg899AMaIqFEOqAyGRNjIQxGXp8t7lJ5x7vDh2uV9Ef7oi61IIYm2phQS4wIRaqN5QpxR1Xl7MZzphpNbCUVX+4MJD4lLphpTrAqG52E7bcDEdAe/jRdZdu52vQyhy9BjEnpeUHaSvmmxwldVCA6tkxn8qWDQc/6oy4dfFjed3A13ogpYeLqVzlUk5ieeu2AheUW2VVaHbHOBBc0waPChWTICDrFQC524Uek8GB+3IiOYU/EBfNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=24FoQDV6vqYKAefmG8C3h1XdtlmyVqapga9w7WJzGJM=;
- b=cyuTuuk7rMiDy5vfk5OrD0g9X5X/TGkn0YYN4UJXb5DN6YWaB4Fo1A8EyVbcdTH7/t8N0wSOvpWPf/D0KfxbUZQNMC/2fyhWMVMlP9UcMe2StGfaylnKkoSje8OOY8+geZ7imukMDWz8M0oHbpzaUQ8AIYRtwdaTTrzERxVgzcg7aBqNNVV8oce3W5BpwH7D0pY+fBr2sWPH1iXdwSt4BMGY4Pop8fgNqTSk5RsV4ZsUt+ufRsvP0rVmgf50CRv2UlGKYyYCvLloAi3IcqYyU3lj+ESNmuToak6klUJ97+7cYN0VLplFFgKwh0qQ/O9n2dkcLoRApFn+b3z5oAsQXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=24FoQDV6vqYKAefmG8C3h1XdtlmyVqapga9w7WJzGJM=;
- b=pVMyzeWKlpN4nxERgjbfQOy+uPvLzxuRN6h/CYGELDvKM0RR4hTaNqX2Iu24zAdh9gmkZ+OIQ+Umuexd+vX8Q3hy4jrqu+Y0Cvzot10Hk1bTPxnMCzafX7cfLUAi4jAA2Xi9fipHHQGIClnjWqpJtFh7/tiE8/F8nkOdA1svoBU=
-Received: from BL0PR0102CA0025.prod.exchangelabs.com (2603:10b6:207:18::38) by
- SN7PR12MB6911.namprd12.prod.outlook.com (2603:10b6:806:261::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7472.46; Fri, 26 Apr 2024 21:54:02 +0000
-Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
- (2603:10b6:207:18:cafe::3f) by BL0PR0102CA0025.outlook.office365.com
- (2603:10b6:207:18::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.35 via Frontend
- Transport; Fri, 26 Apr 2024 21:54:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 21:54:02 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 16:54:01 -0500
-Date: Fri, 26 Apr 2024 16:46:33 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <Larry.Dewey@amd.com>
-Subject: Re: [PATCH v14 21/22] crypto: ccp: Add the
- SNP_{PAUSE,RESUME}_ATTESTATION commands
-Message-ID: <20240426214633.myecxgh6ci3qshmi@amd.com>
-References: <20240421180122.1650812-1-michael.roth@amd.com>
- <20240421180122.1650812-22-michael.roth@amd.com>
- <ZimgrDQ_j2QTM6s5@google.com>
- <20240426173515.6pio42iqvjj2aeac@amd.com>
- <ZiwHFMfExfXvqDIr@google.com>
+ bh=rM/aZlalz78c90H4MFXDH9aT12ZoTIarPnYT0KW1CZc=;
+ b=UaYuewL7g4+Z2monkQ05bWz4Rx+jtOdlsaP/NmHEhU1kBUAgFFUx30k7+iP7jAq1bhotTrjJH0M7r9jt3qZb3giZA0nzCkxNHvL+pj9tCoXscCga022Rzltvp6mwHmcix7Q6pHTTn1GTEg3G6qMKWj+3sVfx/JfLWqm5mdCX1JkFGzEwgvq8jXbPflbtyqJCy9JPHzEIYNIMID2QAwBkUKQG0c4Rm3ajwoGAS92H76uCxu3tken4iXg+pYQoTali9y5l6QwwtpyTNXs29Yskqjf9fiBSn4WcPLXg7zlne7/GMItZqTNfGARo89FqDT6HSroLcAHpJ5whe2d5i2HdKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by BY1PR11MB8031.namprd11.prod.outlook.com (2603:10b6:a03:529::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Fri, 26 Apr
+ 2024 21:48:59 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Fri, 26 Apr 2024
+ 21:48:59 +0000
+Date: Fri, 26 Apr 2024 14:48:55 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>, <linux-kernel@vger.kernel.org>,
+	<x86@kernel.org>, <linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
+ Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
+	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 12/15] fs/configfs: Add a callback to determine
+ attribute visibility
+Message-ID: <662c2147c4fa3_b6e02948d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <cover.1713974291.git.thomas.lendacky@amd.com>
+ <53e67e416fb4da085f32d8a3626c5c6e656554f9.1713974291.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <53e67e416fb4da085f32d8a3626c5c6e656554f9.1713974291.git.thomas.lendacky@amd.com>
+X-ClientProxiedBy: MW4PR04CA0119.namprd04.prod.outlook.com
+ (2603:10b6:303:83::34) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZiwHFMfExfXvqDIr@google.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|SN7PR12MB6911:EE_
-X-MS-Office365-Filtering-Correlation-Id: f5f5e0cc-aaa0-4847-e408-08dc663b62c5
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|BY1PR11MB8031:EE_
+X-MS-Office365-Filtering-Correlation-Id: d2e9d478-5c62-4bb3-5e26-08dc663aae02
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HRVovK5l0MvoNkVlQwjriTbugBczjqnWL+RPD0JuEmziE7tM5lm5wvcMWrJS?=
- =?us-ascii?Q?O1Ui1TqtbKvUi0cKaqLZ5P1waYUOG/lIFrB15GQ2+epZLTduPftTm7S7V+R7?=
- =?us-ascii?Q?MX2r5e+23SS88A8hjmc2zIdCT78lmh+5Tnx2V2xVzUfZ0i0K5VF2MhWJclWH?=
- =?us-ascii?Q?L8P0WdGwSUHWlVyWGdMqQ+LBuc84rAKei7x3lwLRw8ZmtrN9dgoU8h5ELHL1?=
- =?us-ascii?Q?NUd1fIlbjJGz44mtHGGLau7O8n3H+hmN/7w1dk5FN+JAnzE0f7+6YbLLW/zj?=
- =?us-ascii?Q?5t8H+SPIVnUMzz7OnjRKvcJ/Owoq/+Hkb625TsqO7mXwZ+bJTNl9Pa0hJ43B?=
- =?us-ascii?Q?jW9BqPfUq5T1lUHcZcf1RX/emYhnw5Nhud22tA0WbwR2oZzFASEBJl37vT2R?=
- =?us-ascii?Q?IVjSzGBpDFPXuexOFMLBNccjGw2F9xw6cB/s+T5eGHsy6XLdCMjC2OzXlz9s?=
- =?us-ascii?Q?WG787Y1XMF8XIPR515woDtVmXvKv6dHAxTOl3/onhQHpdsapj9fPA4hkzmIA?=
- =?us-ascii?Q?7CBlWVh3edFPzuI1VepW3fAXlPdn/AnM1kxHeye9BHkTE00fOmaLnKedzsgf?=
- =?us-ascii?Q?5NKmuqBVXnJshPR7G7mElamB2s0U+7fg1fY57H70mgsbiDzim9sqwqk/dshq?=
- =?us-ascii?Q?r+r1s+te/SVUBSd42MUWeNCP2cQOPaNMx3oK2VJzAL7ur+ZWZdJIT8KoH5lQ?=
- =?us-ascii?Q?rKPfqQFzXWbvzU2S2F+CrFMBlvR8f9msAd0exmw4JYVabVVqbX1i5tWuidVn?=
- =?us-ascii?Q?kggRK813//UB/AsBZoTM86h+DXMarPA5HDo3oJFvE+lN5uukOiX2Rphr5TEM?=
- =?us-ascii?Q?KCmKt1609l2HekonjccAgPG1z2fgafp2UCYkeg/GETjANoIhtU53+A49lhEL?=
- =?us-ascii?Q?QIDaoAzzN56tqJbTGJIh6dLx0msKvppHx6KsPFqEEcvs/LzRCpTv7/GtXnyg?=
- =?us-ascii?Q?Q4epXNFBriFmf0Nc2DC7f1FLZ2JYdVlphxTPnWo1A9JNXmNcn9F4JXhSgFiP?=
- =?us-ascii?Q?7BVZ/KmFelRdukA0WG+1zTSC0VzKT7DHwlBaXaqZaEb8EtEwg51IURSe+w95?=
- =?us-ascii?Q?coQmasOBmVPiAkhc5I0fziWqO8Yjb202sAb1RX+/zh+BfD2sp2UPKOGfRSj9?=
- =?us-ascii?Q?Uhh85orRitGk91PqbiZVZgeD8LNZlXbHNqE9lw3LEuD6Zscj7HGlqjF7bO8j?=
- =?us-ascii?Q?WN3ZRFdYyBy+PMu7ucZQ4hIk96JaFlJ4nMaWWose1PkrKVgbqP6aCrwnxuDy?=
- =?us-ascii?Q?uSJsuzMHlC5epBA4vVNUCAEYajnZmYPvvZjfId7y6Yzjcwxw5eTqeiuuP/9+?=
- =?us-ascii?Q?daqbXUL9c/xbx6uLS19vUhPOQKUmraNVamlTyZRcihspYym+hpw0BXSDNdQf?=
- =?us-ascii?Q?swEznjO6itr1O7HlgPbLMG/BBok0?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 21:54:02.4913
+X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|376005|1800799015|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?WFE64FXF4c3LLDA1e5hxJD2Z/NR9yFvtJ9RFhM4YWXVr2+OMTHK0n7r1geGs?=
+ =?us-ascii?Q?zUDKuVdMDviwUGPPCTinT2wiubW4adm8J/RDyeDXm3rrIcdJCRIiND/ceR38?=
+ =?us-ascii?Q?xnesIB0+xhVLi7OBAIBqndsLnRymQsWiiED37sTVSQzncys0oxcjNUNxZdPF?=
+ =?us-ascii?Q?qANIJU3qnI5u5r7B52kbFsNqpIw2tEjN5Bkez2Bhtbn4hGHPhpYNfxndmzF7?=
+ =?us-ascii?Q?VwZrFfYURjItTk540Uvjy5tTamHAUgHtPjwvVcNAgW+7H55XRrmx+zXRYZE9?=
+ =?us-ascii?Q?QxjwREYhAdzwSx4KPWy6qgx1MapAxfCRs47GtvcAuDobkg/p4Mww3/X7+CzI?=
+ =?us-ascii?Q?PunDJ1rZ5unkibZgJCnxRrpeczfSYCyhPfQkU3VxNxo3kLWrVWSV6nTi4dQb?=
+ =?us-ascii?Q?D1CHt3JPmluSKfbStG3Q0gQQrwuht49KGUZ+0isReMf4bl6jbVPK5OwvMFpw?=
+ =?us-ascii?Q?HgP8i9e1wqXAaIlfLxWWvW0vTzyIrhwfrg7Fp6iu8+ZxerZcyOS4tElv4PBj?=
+ =?us-ascii?Q?OpBVdygaWCiAI+whaVx/CV0gxQJNm+3jcLfzbdm7tc6GBKwrPGp70frdQ4yY?=
+ =?us-ascii?Q?1tadw70KHGbysLMgWWRe/zaq4dqCBV86pQXmfAV9v96b2YbKB+WFzztn33s7?=
+ =?us-ascii?Q?UpfYe7VDSwIRfX7HkE56FclH4DbU9fhCxFTL/JUoJeTr4ROAEieNizndWafo?=
+ =?us-ascii?Q?v3IQ90/WXRoqz6lH4qQMJ4TQg1jh8XGzOUkfS6skcnPMnBfMmiUsyz50GLHJ?=
+ =?us-ascii?Q?UBEGzbLLFP11kYe7GSBlgeb2jODd6e/9bgEotZZBLr/FHht7PrJtcxZ0CoG6?=
+ =?us-ascii?Q?hJ7K5y9DRLpSy1nWRPE0+gks2NwHC4OCV8SESyXVFnRlFnhFaH/MdQj/umB0?=
+ =?us-ascii?Q?cFq/gs90eM61hEuNfbrErxBf+YVVnQIRPGkg+l5D/J+b75V1P+ZkqbOCxMdw?=
+ =?us-ascii?Q?gJMPTjV1xPXZccM7d1WbJNjLjzcl9EulDb2CGQkd5GaJLaRqE/YjzKrPnAGd?=
+ =?us-ascii?Q?h36J7J9i1rTd6kfRnP4EqQ+KyXA7IosijhA0q927zAK3lrFytlDnjqk3eVgF?=
+ =?us-ascii?Q?PFrU5HVSGpOlStNciq0VkB9QO6cYzuKRzLlCwI4ZGEYcB+rEUjv44qnFZ/i0?=
+ =?us-ascii?Q?SxlvkStEOMw3H+c6xpO/aNWxwlVGXINUl0oJi9DEtDDFU4uEB5QCTjDnl7iU?=
+ =?us-ascii?Q?WWtp0d7m+4BCSls8QChW/EHS8AC9QaXJ0gzQtl+4RlNh0GJEqKjypCv2eYY1?=
+ =?us-ascii?Q?sf56PTwnrkV5Mr2kShn5ci5PBul2C+I9b5ks1A+vTQ=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZwqZoQylQduGp4Vcnbo+70d9/Hoz2k5T9ABmB/J/sj0ZtdkuKPf9Ks6DNaVT?=
+ =?us-ascii?Q?zRIv9gBaXLGKteZVgq2dd2y3SU4+of4h7lz5No7MyopgitaDiL6X6lnuLZCH?=
+ =?us-ascii?Q?t/echR0xihmEnU5PV5xqiN0bzY/C+fYni6cww8UC99nIOlazBcmyZy5lMkdQ?=
+ =?us-ascii?Q?VEOWePcq1oJKDFPiAVB+wlJDA+43ZRxZpeT4McfkKJEGWGmvgxSfpckYFP4Z?=
+ =?us-ascii?Q?i6WDS5Wcf+1esrgMSeX4Q6u04Lyt6E71TB5f45husC2qFRXbXWUkYanDq6oE?=
+ =?us-ascii?Q?53XiKxj1yYzpbS2vX6Y2vBKpBqtJVSTybMuTj5H7GCIL2uywl9EvPPDh3ZNj?=
+ =?us-ascii?Q?kGhQ8F1FUMu46DuK6BPW4AWp5I7vHcddoZ5ahYaGsIYsOLjNSgocyyQIlIHR?=
+ =?us-ascii?Q?BH1Plpi8b73/9YbhbIbLZDqpiEN3bC7tUf/Ab+fhj62xOsa7BO2IWoN4+F2a?=
+ =?us-ascii?Q?RVjRCK9zXF3iittZ+ORvnCcJkKsqEMX/I9Cclar6YLs/9cw7IkFePH2zcT4l?=
+ =?us-ascii?Q?crGJrfCxdoQlQVKwMJzg8d3cKnWw+FBjNUti8XEGxBxhhHXDiTEF7jYzjcca?=
+ =?us-ascii?Q?0PU5ysPlazl/GngU+GkmVBpWaU1Um7vgrfcoie5TlGugIZqYP7CUWc/3iytp?=
+ =?us-ascii?Q?l3zsyXcRfJURH+JqQ2zjm+bcXGlkEhwJfvu7urx8YptQ8Atv1cYQyDjhsAOj?=
+ =?us-ascii?Q?Y2oDXnZEIRp6v2bUPNLhdrZqWV4YkjiDwwBHEnq3XNkHbTCJFomnkC0q1JWu?=
+ =?us-ascii?Q?RoR22DtzmDJrrCSDmJPVLokjKdA77FcJHy9zR+lPlZwseRmKvnmm2tBgY8FQ?=
+ =?us-ascii?Q?D6Pntn4/hYvgUJKEmAx4c8TgIRJ3LMGi1TY7WGgxgIQBt9y0D2ltOBpsQ8OS?=
+ =?us-ascii?Q?t9eHfY24I1eZSg8e71999QkgUf14Ae90aIVBzUKox0BbJWIvtHCZ9XT7viyP?=
+ =?us-ascii?Q?jZRYuw8dexCTKTqk6yaBSWuNHSi3v9IeD4JYt0F2U6zxVymxizqxNg4K8Smd?=
+ =?us-ascii?Q?rI4OXnGgibWrTFleA0ZLYprKnNkkOtfPph4+VxkTWPZ4ZagLshXCYmcx43Za?=
+ =?us-ascii?Q?PMflDwnIu7gCj6WWtOd5VAwazOgfLeiD4iV0c78jlCsCzCXIXYi5uqCiOSyP?=
+ =?us-ascii?Q?jaLQsOkKf49oRWVVfYdewcUr3CjlIawYoJZue5mQ1z0CPPw7i8b949Zc6Sm1?=
+ =?us-ascii?Q?XQU/wWO+wVaTgT9i6x5IHfL2t+lk5SlK8u0Pp0P013nQDMvQ/sSf3gik1gMx?=
+ =?us-ascii?Q?y4YH+hKUvDL++mFrEswsVtdZ04qGTKEFMyv/KRrVDlM69Z/+Ejx8sKvDRGjs?=
+ =?us-ascii?Q?hhVMTElvs21nc5n5+RPksESzx/Gk+Qh8Frf0Z9kYGrdFCgo9tdbmLAp0+vu8?=
+ =?us-ascii?Q?9VxPuo7F1zXrU5XMeRk4cgCxYo+7wdaLToqH6L5CqhkgXNffOjy0mbcIjIpt?=
+ =?us-ascii?Q?0/zQOEmf56LFH+5wqWtyE9PaHjIWPLqWTJdx4lrBaP8an9xvHnr/rcn3gTVm?=
+ =?us-ascii?Q?CFeb5suO32tEs2LTUQqAxdzA1fNqRpl2eNZ+ztx9rmBiVcpylWZXYFpTqQGx?=
+ =?us-ascii?Q?27b/rEOgClChuJDEWRYsOXpyO7yFD5rGARdfuyUjd0W1GHShWi/HYTpQNMjl?=
+ =?us-ascii?Q?FA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2e9d478-5c62-4bb3-5e26-08dc663aae02
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 21:48:59.4729
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5f5e0cc-aaa0-4847-e408-08dc663b62c5
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A0FC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6911
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a4OGgPq4ZvAxY2xutFEMhCtIHtgJGpE6pACWPLCHb/kaTKyPa8CNLyc6Zdd1/xJoAjI8VwHFYyPwGXJpqnaEzVFcQc7rQkwp7r+EyHCHX84=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR11MB8031
+X-OriginatorOrg: intel.com
 
-On Fri, Apr 26, 2024 at 12:57:08PM -0700, Sean Christopherson wrote:
-> On Fri, Apr 26, 2024, Michael Roth wrote:
-> > On Wed, Apr 24, 2024 at 05:15:40PM -0700, Sean Christopherson wrote:
-> > > On Sun, Apr 21, 2024, Michael Roth wrote:
-> > > > These commands can be used to pause servicing of guest attestation
-> > > > requests. This useful when updating the reported TCB or signing key with
-> > > > commands such as SNP_SET_CONFIG/SNP_COMMIT/SNP_VLEK_LOAD, since they may
-> > > > in turn require updates to userspace-supplied certificates, and if an
-> > > > attestation request happens to be in-flight at the time those updates
-> > > > are occurring there is potential for a guest to receive a certificate
-> > > > blob that is out of sync with the effective signing key for the
-> > > > attestation report.
-> > > > 
-> > > > These interfaces also provide some versatility with how similar
-> > > > firmware/certificate update activities can be handled in the future.
-> > > 
-> > > Wait, IIUC, this is using the kernel to get two userspace components to not
-> > > stomp over each other.   Why is this the kernel's problem to solve?
-> > 
-> > It's not that they are stepping on each other, but that kernel and
-> > userspace need to coordinate on updating 2 components whose updates need
-> > to be atomic from a guest perspective. Take an update to VLEK key for
-> > instance:
-> > 
-> >  1) management gets a new VLEK endorsement key from KDS along with
+Tom Lendacky wrote:
+> In order to support dynamic decisions as to whether an attribute should be
+> created, add a callback that returns a bool to indicate whether the
+> attribute should be displayed. If no callback is registered, the attribute
+> is displayed by default.
 > 
-> What is "management"?  I assume its some userspace daemon?
-
-It could be a daemon depending on cloud provider, but the main example
-we have in mind is something more basic like virtee[1] being used to
-interactively perform an update at the command-line. E.g. you point it
-at the new VLEK, the new cert, and it will handle updating the certs at
-some known location and issuing the SNP_LOAD_VLEK command. With this
-interface, it can take the additional step of PAUSE'ing attestations
-before performing either update to keep the 2 actions in sync with the
-guest view.
-
-[1] https://github.com/virtee/snphost
-
+> Cc: Joel Becker <jlbec@evilplan.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Co-developed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  fs/configfs/dir.c        | 20 ++++++++++++++++++++
+>  include/linux/configfs.h |  3 +++
+>  2 files changed, 23 insertions(+)
 > 
-> >     associated certificate chain
-> >  2) management uses SNP_VLEK_LOAD to update key
-> >  3) management updates the certs at the path VMM will grab them
-> >     from when the EXT_GUEST_REQUEST userspace exit is issued
-> > 
-> > If an attestation request comes in after 2), but before 3), then the
-> > guest sees an attestation report signed with the new key, but still
-> > gets the old certificate.
-> > 
-> > If you reverse the ordering:
-> > 
-> >  1) management gets a new VLEK endorsement key from KDS along with
-> >     associated certificate chain
-> >  2) management updates the certs at the path VMM will grab them
-> >     from when the EXT_GUEST_REQUEST userspace exit is issued
-> >  3) management uses SNP_VLEK_LOAD to update key
-> > 
-> > then an attestation request between 2) and 3) will result in the guest
-> > getting the new cert, but getting an attestation report signed with an old
-> > endorsement key.
-> > 
-> > Providing a way to pause guest attestation requests prior to 2), and
-> > resume after 3), provides a straightforward way to make those updates
-> > atomic to the guest.
-> 
-> Assuming "management" is a userspace component, I still don't see why this
-> requires kernel involvement.  "management" can tell VMMs to pause attestation
-> without having to bounce through the kernel.  It doesn't even require a push
+> diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+> index 18677cd4e62f..463e66258507 100644
+> --- a/fs/configfs/dir.c
+> +++ b/fs/configfs/dir.c
+> @@ -580,6 +580,7 @@ static void detach_attrs(struct config_item * item)
+>  static int populate_attrs(struct config_item *item)
+>  {
+>  	const struct config_item_type *t = item->ci_type;
+> +	struct configfs_group_operations *ops;
+>  	struct configfs_attribute *attr;
+>  	struct configfs_bin_attribute *bin_attr;
+>  	int error = 0;
+> @@ -587,14 +588,33 @@ static int populate_attrs(struct config_item *item)
+>  
+>  	if (!t)
+>  		return -EINVAL;
+> +
+> +	ops = t->ct_group_ops;
+> +	if (!ops) {
+> +		struct config_group *g = item->ci_group;
+> +
+> +		/*
+> +		 * No item specific group operations, check if the item's group
+> +		 * has group operations.
+> +		 */
+> +		if (g && g->cg_item.ci_type)
+> +			ops = g->cg_item.ci_type->ct_group_ops;
 
-That would mean a tool like virtee above would need to issue kernel
-commands like SNP_LOAD_VLEK to handle key update, then implement some
-VMM-specific hook to pause servicing of EXT_GUEST_REQ (or whatever we
-end up calling it). QEMU could define events for this, and libvirt could
-implement them, and virtee could interact with libvirt to issue them in
-place of the PAUSE/RESUME approach here.
+Oh, I would not have expected to need to consider any alternate group
+ops for attribute visibility beyond t->ct_group_ops. However in my RFC
+example I made this mistake:
 
-But SNP libvirt support is a ways out, QEMU event mechanism for this
-will be a pain to use directly because you'd need some custom way to
-enumerate all guests, to issue them. But then maybe the provider doesn't
-even use QEMU and has to invent something else. Or they just decide to
-pause all guests before performing updates but that still a potential
-significant amount of downtime.
+  static struct configfs_group_operations tsm_report_group_ops = {
+         .make_item = tsm_report_make_item,
++        .is_visible = tsm_report_attr_visible,
++        .is_bin_visible = tsm_report_bin_attr_visible,
+  };
+ 
+Which in retrospect is the wrong level, and I suspect only reachable if
+you do the the above awkward indirection ("ops =
+g->cg_item.ci_type->ct_group_ops"). Instead, I was expecting symmetry
+with sysfs where the object that carries ->attrs also carries
+->is_visible, so something like this:
 
-> without having to bounce through the kernel.  It doesn't even require a push
-> model, e.g. wrap/redirect the certs with a file that has a "pause" flag and a
-> sequence counter.
++ static struct configfs_group_operations tsm_report_attr_group_ops = {
++         .is_visible = tsm_report_attr_visible,
++         .is_bin_visible = tsm_report_bin_attr_visible,
++ };
 
-We could do something like flag the certificate file itself, it does
-sounds less painful than the above. But what defines that spec? GHCB
-completely defines the current format of the certs blob, so if we wrap
-that in another layer we need to extend the GHCB or have something else
-be the authority on what that wrapper looks like and tools like virtee
-would need to be very selective about what VMMs it can claim to support
-based on what file format they support... it just seems like a
-significant and unecessary pain that every userspace implementation
-will need to go through to achieve the same basic functionality.
+  const struct config_item_type tsm_report_type = {
+          .ct_owner = THIS_MODULE,
+          .ct_bin_attrs = tsm_report_bin_attrs,
+          .ct_attrs = tsm_report_attrs,
+          .ct_item_ops = &tsm_report_item_ops,
++         .ct_group_ops = &tsm_report_attr_group_ops
+  };
+  EXPORT_SYMBOL_GPL(tsm_report_default_type);
 
-With PAUSE/RESUME, tools like virtee can be completely VMM-agnostic, and
-more highly-integrated daemon-based approaches can still benefit from a
-common mechanism that doesn't require signficant coordination with VMM
-processes. For something as important and basic as updating endorsement
-keys while guests are running it seems worthwhile to expose this minimal
-level of control to userspace.
+..because is_visible() at the g->cg_item.ci_type->ct_group_ops level
+would seem to mean parent directory visibility which is mismatched.
 
--Mike
+However as I stare at this a bit more it sinks in that configfs "group"
+!= sysfs "group". So I am open to the suggestion that ci_item_ops is the
+right place to house item attribute visibility callbacks, or even a new
+"ci_attr_ops" expressly for this purpose. Either way my expectation is
+that config_item_type can get to the visibilty callbacks for its
+attributes without needing to traverse any other groups or items.
 
