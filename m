@@ -1,217 +1,133 @@
-Return-Path: <linux-kernel+bounces-160727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30FDB8B4207
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:02:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C64558B4208
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:02:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 968E71F22F5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:02:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBC101C220EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88073376E9;
-	Fri, 26 Apr 2024 22:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C9C376E9;
+	Fri, 26 Apr 2024 22:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YkQiD92S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cxY0bmdA"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE67638DD1;
-	Fri, 26 Apr 2024 22:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A639374EB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 22:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714168913; cv=none; b=JfSdQoo0xKnFO4DMDn5ffFsIq4bjJlFpn9Re12J33d0vibnbbJ6q9r2H1rZBpAXR2XpaHadEwhEzjBu5b8mHj4JO9jiquvO71GT+Qihc6DW/GpMMuxxFRlJgBMuQJtNLqNaIrwYpiRBVrI4DI+4ugWM48iLi0Dz8ATytWPqFbNw=
+	t=1714168931; cv=none; b=SOH9PkwPjRf7mbggZ3X1pYCavukL9lLdW+dotCy8gGk9SJjys/XSQy1nL/V/J7D9n5LwqBSdqPRj32br3Zi6C5A9v0qeTGs08iO5sUfzuYlq9yA5YNMqOBPBASbzQqq/LrgqW6IRZq3d7dhFGQtKts6sCNee1jXjpurYp11u0LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714168913; c=relaxed/simple;
-	bh=0B4jfDu2o+/5GzQbm1NwCKmPp21jrNU2xpT2BElWQ/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=aZnRv+2E0h4LMGzo8IGT2yV9xc2iHWVw/RsqOMbxNkAYfbz9/8FCUA6HdOcGh/A9BBl42OPyGrzZCBcJqyhRC6MU8UUB+OWtYs4BQqUkinOEkxAKQWQMZXurQJ9pNmUndFybCacCdS+XYjuADX3FCyTiZ+6jny3+wAfss/ATiIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YkQiD92S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AA96C113CD;
-	Fri, 26 Apr 2024 22:01:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714168913;
-	bh=0B4jfDu2o+/5GzQbm1NwCKmPp21jrNU2xpT2BElWQ/o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=YkQiD92SVD+lguuWqk55xM5wzAVUM8eb1Xt4led/G7bUpt7IYsdxSUWCy7uPIQM+A
-	 CdpkSoyD4tvHAnWI4ErE8OF35yA85h7QNTs/evGc8mNFTSx4Nqf79MwE3WbSBmLonq
-	 +P4clbd9mC7z1aRMOPBRXNKZse7Y6VgAw9pD2jQZM40jC0VzXkx/aHGrjFgSmZrRiW
-	 VRQ1pqpyUL5RTq/5/4taMm0aZiUL9lTbxBN95Ws17krnL+6n73xw9qY8VYUCmgqGG3
-	 QWsFicZCDcg1o2KrPT3B0S4odVPe8W7JpqODcHBdiVE9pF5BNrUmBPvBpwEQbb7jCi
-	 +e35ur+Gws8Ig==
-Date: Fri, 26 Apr 2024 17:01:50 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Sam Ravnborg <sam@ravnborg.org>, dakr@redhat.com,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 00/10] Make PCI's devres API more consistent
-Message-ID: <20240426220150.GA608828@bhelgaas>
+	s=arc-20240116; t=1714168931; c=relaxed/simple;
+	bh=PHlZXvishSCx8p5aQiaYNJK80P/epYgCrzogk/D89Yw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E438GSw4bNBloAwJkg3EXfE2vj9TeZh3QSZ/rEzwTyEc8SQT0cMzvvGIEFuZ573+A68jqlLcHN6mXVaQV75pp5x0nXfNgi+zLpyYfYuQ9BUGYyWxYR1e7LagEGoSck3GK9xgfDxy1FHAvwUKBZhULLraHtiOmZjjHamjBmalk34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cxY0bmdA; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c709e5e4f9so1663357b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714168929; x=1714773729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5nYqAuReYPhHyvG0oPzkahRacQ09qyjEfadJ1sZsoe0=;
+        b=cxY0bmdAy5aabtYHxL3i8sxxp2KPQJK5FB3fKJgOqIO6iyetsMwo3tHN+dPwhIoErg
+         NO8ZNVRKPw9ZKVDcjBZh6eUFF7zRjeTjNcIHjTuhFTYiW0PqZzaLTuBy/CkulVAVMbBC
+         tDuabA4wjxm8arXNS1libTPrSOxaYxslJoBJrhTsT39T9DI1iyhHzFOGiUAT1xli/0ch
+         O6wyQG/EyWbs3q9bvMRWNP2PDnjemFN1ejOuG1NPeenbDJyNpE5o1xnzNbccOu+RWTqK
+         Rn3DWYxCadtG9cM1Qj/w4YBVcXNh36kz/QMW52W0mqHbEgoR19qK5ywlbPSsPd4I6Q2B
+         C+aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714168929; x=1714773729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5nYqAuReYPhHyvG0oPzkahRacQ09qyjEfadJ1sZsoe0=;
+        b=uSzAPB3JSp6w9shVoR7hwZBIncyvnROMm8YUnZlZ6Neq+n+k+0XFcbBJKQtVR9S+e3
+         hIoV5L+nVq08/mymOPOeh22mA47r9mf0+vweI2Wc4FoYM2QTK2ZkBZ8BJjYo3QJAYJKT
+         9IcX/tDyKdt/R+dk2riRNh1QwUcKXLO3pVF//Vw4o4trHoAETDd+qeMnHAZRuOb0zZk0
+         EzIikWvayHrSpZUYWKlyoDKef7rhP9d1m0DVEBBI9rQXydT7L5l+2Us4Lq7eLEIgvkCb
+         +B5KAIB/1BkNpTsrVh9xTOqerbcgV0AVa8HnaBwoWJXQ2EfA/SiFZfnXt/HR7kvY/oyQ
+         4mFg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWR3FX/jib255mV6/K90HKMDvwfOBij87cbVVJ5zs6HvNqtVkLOP5HmALVwG2/C323iylIMknGiVqP7c0ajQdwyW1JV+WDqDsSmtZa
+X-Gm-Message-State: AOJu0Yzyz37iqyLFexYT9v3tYsjvvjzK7oAUzm5wzaJLhhmCXbUCWKy7
+	oap31OhjTsDgdbAb7gZo8qwkjvIvPRx9ag0rq9GIVA29KcYStAymdt7/UVGaRuLBrf+rMiT3uNI
+	4P6yNwvgy0cpHCXU9XDm9BO47L1HkhOBOOweZ
+X-Google-Smtp-Source: AGHT+IEs1ykGyWpd9bWv0zuEtnDD6fLODh+Z8H3PEk3ZDG8Dsx0ZeeH/0Uf9MhgRXy6UD8+Wrar9mYVG/U5ZUTThPBM=
+X-Received: by 2002:a05:6808:18e:b0:3c7:2616:554e with SMTP id
+ w14-20020a056808018e00b003c72616554emr4071966oic.57.1714168929111; Fri, 26
+ Apr 2024 15:02:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77ee27e2f155abd340b166e2856181577fdf08cc.camel@redhat.com>
+References: <20240424155309.1719454-11-ardb+git@google.com>
+ <20240424155309.1719454-13-ardb+git@google.com> <20240424182659.GA2126602@dev-arch.thelio-3990X>
+ <pgsqflimo7d2ozhpmdrmscx25mxs5lypcvwq6mgjs7uixsxvsl@5papnq46mwbs> <20240426215351.GA3278657@dev-arch.thelio-3990X>
+In-Reply-To: <20240426215351.GA3278657@dev-arch.thelio-3990X>
+From: Justin Stitt <justinstitt@google.com>
+Date: Fri, 26 Apr 2024 15:01:56 -0700
+Message-ID: <CAFhGd8pasnTTv87V3LYpzCz=DdS8dXGA8Z9qGEqw=K+C_Xvf=A@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/9] x86/purgatory: Simplify stack handling
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Eric Biederman <ebiederm@xmission.com>, 
+	kexec@lists.infradead.org, Nick Desaulniers <ndesaulniers@google.com>, 
+	Kees Cook <keescook@chromium.org>, Bill Wendling <morbo@google.com>, 
+	Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 10:07:02AM +0200, Philipp Stanner wrote:
-> On Wed, 2024-04-24 at 15:12 -0500, Bjorn Helgaas wrote:
-> > On Mon, Apr 08, 2024 at 10:44:12AM +0200, Philipp Stanner wrote:
-> > > ...
-> > > PCI's devres API suffers several weaknesses:
-> > > 
-> > > 1. There are functions prefixed with pcim_. Those are always
-> > > managed
-> > >    counterparts to never-managed functions prefixed with pci_ – or
-> > > so one
-> > >    would like to think. There are some apparently unmanaged
-> > > functions
-> > >    (all region-request / release functions, and pci_intx()) which
-> > >    suddenly become managed once the user has initialized the device
-> > > with
-> > >    pcim_enable_device() instead of pci_enable_device(). This
-> > > "sometimes
-> > >    yes, sometimes no" nature of those functions is confusing and
-> > >    therefore bug-provoking. In fact, it has already caused a bug in
-> > > DRM.
-> > >    The last patch in this series fixes that bug.
-> > > 2. iomappings: Instead of giving each mapping its own callback, the
-> > >    existing API uses a statically allocated struct tracking one
-> > > mapping
-> > >    per bar. This is not extensible. Especially, you can't create
-> > >    _ranged_ managed mappings that way, which many drivers want.
-> > > 3. Managed request functions only exist as "plural versions" with a
-> > >    bit-mask as a parameter. That's quite over-engineered
-> > > considering
-> > >    that each user only ever mapps one, maybe two bars.
-> > > 
-> > > This series:
-> > > - add a set of new "singular" devres functions that use devres the
-> > > way
-> > >   its intended, with one callback per resource.
-> > > - deprecates the existing iomap-table mechanism.
-> > > - deprecates the hybrid nature of pci_ functions.
-> > > - preserves backwards compatibility so that drivers using the
-> > > existing
-> > >   API won't notice any changes.
-> > > - adds documentation, especially some warning users about the
-> > >   complicated nature of PCI's devres.
-> > 
-> > There's a lot of good work here; thanks for working on it.
-> 
-> Thanks!
-> Good to get some more feedback from you
-> 
-> > 
-> > > Philipp Stanner (10):
-> > >   PCI: Add new set of devres functions
-> > 
-> > This first patch adds some infrastructure and several new exported
-> > interfaces:
-> > 
-> >   void __iomem *pcim_iomap_region(struct pci_dev *pdev, int bar,
-> > const char *name)
-> >   void pcim_iounmap_region(struct pci_dev *pdev, int bar)
-> >   int pcim_request_region(struct pci_dev *pdev, int bar, const char
-> > *name)
-> >   void pcim_release_region(struct pci_dev *pdev, int bar)
-> >   void __iomem *pcim_iomap_range(struct pci_dev *pdev, int bar,
-> >   void __iomem *pcim_iomap_region_range(struct pci_dev *pdev, int
-> > bar,
-> >   void pcim_iounmap_region_range(struct pci_dev *pdev, int bar,
-> > 
-> > >   PCI: Deprecate iomap-table functions
-> > 
-> > This adds a little bit of infrastructure (add/remove to
-> > legacy_table),
-> > reimplements these existing interfaces:
-> > 
-> >   void __iomem *pcim_iomap(struct pci_dev *pdev, int bar, unsigned
-> > long maxlen)
-> >   void pcim_iounmap(struct pci_dev *pdev, void __iomem *addr)
-> >   int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char
-> > *name)
-> >   int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
-> >   void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
-> > 
-> > and adds a couple new exported interfaces:
-> > 
-> >   void pcim_release_all_regions(struct pci_dev *pdev)
-> >   int pcim_request_all_regions(struct pci_dev *pdev, const char
-> > *name)
-> > 
-> > There's a lot going on in these two patches, so they're hard to
-> > review.  I think it would be easier if you could do the fixes to
-> > existing interfaces first,
-> 
-> I agree that the patches can be further split into smaller chunks to
-> make them more atomic and easier to review. I can do that.
-> 
-> BUT I'd need some more details about what you mean by "do the fixes
-> first" – which fixes?
-> The later patches at least in part rely on the new better functions
-> being available.
-> 
-> > followed by adding new things, maybe
-> > something like separate patches that:
-> > 
-> >   - Add pcim_addr_devres_alloc(), pcim_addr_devres_free(),
-> >     pcim_addr_devres_clear().
-> > 
-> >   - Add pcim_add_mapping_to_legacy_table(),
-> >     pcim_remove_mapping_from_legacy_table(),
-> >     pcim_remove_bar_from_legacy_table().
-> > 
-> >   - Reimplement pcim_iomap(), pcim_iomap_regions(), pcim_iounmap().
+On Fri, Apr 26, 2024 at 2:53=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> On Fri, Apr 26, 2024 at 09:32:52PM +0000, Justin Stitt wrote:
+> > Hi,
+> >
+> > On Wed, Apr 24, 2024 at 11:26:59AM -0700, Nathan Chancellor wrote:
+> > > On Wed, Apr 24, 2024 at 05:53:12PM +0200, Ard Biesheuvel wrote:
+> > > >  arch/x86/purgatory/stack.S        | 18 ------------------
+> > >
+> > > This needs a small fix up to build.
+> > >
+> > >   make[6]: *** No rule to make target 'arch/x86/purgatory/stack.o', n=
+eeded by 'arch/x86/purgatory/purgatory.ro'.
+> > >
+> >
+> > I was trying to reproduce this build failure, but to no avail. I am
+> > curious what your build target / build command was.
+> >
+> > It is clear that stack.S has been removed so your change makes sense, I
+> > don't doubt that -- I just cannot get that specific error message you
+>
+> Odd, I was using my distribution configuration for the test but it is
+> easily reproducible with allmodconfig:
+>
+>   $ make -skj"$(nproc)" ARCH=3Dx86_64 LLVM=3D1 allmodconfig arch/x86/purg=
+atory/
+>   make[6]: *** No rule to make target 'arch/x86/purgatory/stack.o', neede=
+d by 'arch/x86/purgatory/purgatory.ro'.
+>   ...
 
-This is the part I meant by "fixes", but maybe it's not so much a fix
-as it is reimplementing based on different infrastructure.  The diffs
-in "PCI: Deprecate iomap-table functions" for pcim_iomap() and
-pcim_iounmap() are fairly straightforward and only depend on the
-above.
+Agh, I was just doing a defconfig followed by a menuconfig to manually
+enable all the kexec and purgatory stuff. I wonder which one I missed.
 
-pcim_iomap_regions() is a bit more complicated and probably needs
-pcim_iomap_region() but not necessarily __pcim_request_region() and
-__pcim_request_region_range().
+allyes/allmodconfig is what I needed here :thumbs_up:
 
-This would be a pretty small patch and defer making them deprecated
-until replacements are added.
-
-> >   - Add new interfaces like pcim_iomap_region(),
-> >     pcim_request_region(), etc.
-> > 
-> >     AFAICS, except for pcim_iomap_range() (used by vbox), these new
-> >     interfaces have no users outside drivers/pci, so ... we might
-> >     defer adding them, or at least defer exposing them via
-> >     include/linux/pci.h, until we have users for them.
-> 
-> Dropping (the export of) functions like pcim_request_region_range() or
-> pcim_request_all_regions() is not a problem.
-> 
-> What I quite fundamentally have to disagree with, however, is not to
-> export the functions 
-> 
->  * pcim_request_region()
->  * pcim_iomap_region()
-> 
-> the main point of this series is to deprecate that hybrid nature of
-> those existing pci_* functions. You can only deprecate something when
-> you provide users with new, better alternatives.
-
-Right.  But the new alternatives are only better when there are actual
-examples in the tree for people to look at.  If there are no users,
-more interfaces are at best confusing and at worst dead code.
-
-Bjorn
+>
+> > encountered (what is a .ro file supposed to be, anyway?).
+>
+> Read only? Relocatable object? *shrug*
+>
+> Cheers,
+> Nathan
 
