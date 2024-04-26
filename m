@@ -1,120 +1,450 @@
-Return-Path: <linux-kernel+bounces-159944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351A68B369F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:42:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 756CF8B369C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:41:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 684AE1C2273B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:41:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BF1728307A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3957A145B11;
-	Fri, 26 Apr 2024 11:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AD3145341;
+	Fri, 26 Apr 2024 11:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="nKQZh/XK"
-Received: from forward500c.mail.yandex.net (forward500c.mail.yandex.net [178.154.239.208])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mrhsGwcR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CF5339A0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC0B144D3F;
 	Fri, 26 Apr 2024 11:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714131706; cv=none; b=a3eMt0kg8Ld0f2sv94uWcx2gQCsdYswMkHNtZDJtE1fqpHx39d5YnBAudfvZD/bkCOo030F+2niALsVlOzRX1mdSZBGm8NuoUuxubhNeHucD5NMGuO2DW9Hvx2ZXnK1VzW059ubvIVu2y5zYZ+aj4GzDkv8efH/3CBXy+T3NLEc=
+	t=1714131701; cv=none; b=o6FVSxPA3KvRq2C3oqSAbGNJY7BE97hImDgf3SApU1QUKTEFaobUaVGrJrLfo6sYo0EubUzOR6oojgTUl1lOT9DC2KOzQL/p09PF/B7UP7LJajEnjBAsUEEPfQml4MtIWsvvP58ix0c8daeQRaCIqqCWS75fRyfoZHdfs19QIlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714131706; c=relaxed/simple;
-	bh=zuhkMVswz3nX9ahbwxLQHhCv51dyDPVtxNyyq5Mwy7o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oA8unY184kUjQPI3HmDIIwXO56obCP0+enX9jm62g1AY0YYBtyGN3w7hsC6PZQJe8n733E2TFOTs8P8pPbU6p8bJ6qZ/NJ3nElkM8lWn89riCdWdSciZlLCiHezSG0bfMvMzZOg4Ws0ry5VBvCxZFch48Jp2hDaY8raamUMdVmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me; spf=pass smtp.mailfrom=maquefel.me; dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b=nKQZh/XK; arc=none smtp.client-ip=178.154.239.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
-Received: from mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net [IPv6:2a02:6b8:c11:49a3:0:640:a0c5:0])
-	by forward500c.mail.yandex.net (Yandex) with ESMTPS id F27FA613FE;
-	Fri, 26 Apr 2024 14:41:36 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id ZfL6gG5Pna60-JEqgUJH4;
-	Fri, 26 Apr 2024 14:41:36 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-	t=1714131696; bh=zuhkMVswz3nX9ahbwxLQHhCv51dyDPVtxNyyq5Mwy7o=;
-	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-	b=nKQZh/XKsBbqRu2leMCnXvz3d+vPP3eFsIK9dNvvmTdRZSZCVb/JU06wJ6jRtXMVk
-	 KiCYQpls8NcEma39p8zlOHcxHPtAT2wH7TAZnlL6MhvZH6N2knIApBvKgpIvakozGl
-	 it2jLW2kjmAASp4El05dG35QTQaxhcq+BFYIT+zE=
-Authentication-Results: mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <65ded0d9629fa0922d58fe230cbfb9ec0c8673f5.camel@maquefel.me>
-Subject: Re: [PATCH v2 0/4] DONOTMERGE: ep93xx-clk from ep93xx device tree
- conversion
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>,  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Linus Walleij
- <linus.walleij@linaro.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>
-Date: Fri, 26 Apr 2024 14:41:35 +0300
-In-Reply-To: <20240408-ep93xx-clk-v2-0-9c5629dec2dd@maquefel.me>
-References: <20240408-ep93xx-clk-v2-0-9c5629dec2dd@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 
+	s=arc-20240116; t=1714131701; c=relaxed/simple;
+	bh=YyiC/xKTo3XyOrHX7I63STVttfSHY4iRfLYrAalRZWo=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=ctd3+zVjeU3Q68mDfuMqZynOGdC0xXtssqDnshPm05iIqlqGoQtdQep3A72tRP7+3bS+Ggdvxfv2pHVHw2wjBSk5sZAB3ZEokrUtKimBD1gExikUXDo/9BGero0jWTUiWgCjIBbgqlEiwcQrAaPOfOMVWZ1/EYTMt2YtrrXHDkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mrhsGwcR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F92C113CE;
+	Fri, 26 Apr 2024 11:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714131700;
+	bh=YyiC/xKTo3XyOrHX7I63STVttfSHY4iRfLYrAalRZWo=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=mrhsGwcR3HpgFGasxnnDrYsBR4l9VQfKS1R0+TB8cP0Ze1By5okzAVjpWiNYBi+3+
+	 i1YvuFAqPWB+vqqZ8yPp5B0mqPJZgnw4LQIEYUVb8Vi1FcPsSv4shjw1lVzpkOiGHp
+	 k3Ss/qOQuMiJ/mHJEtfYwjUw3ZBOKfx7T5jikbR5tq7P3bll9s5nd72lYcaXsVs6Dd
+	 WKF39POd4250TrrHvM5gpKdYweoe1DBuqTsu3AtHSKmHKBo8TyJy6yjYVP7hE2Tmit
+	 V8NxEAV4VuJTQH57dJag/kMKfwM3JHs3VTzDw5WOGiNQ8/zyRaT5+36BnJKD5LZ4kx
+	 arOdZ+O9DoU4g==
+Date: Fri, 26 Apr 2024 06:41:39 -0500
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: "zoie.lin" <zoie.lin@mediatek.com>
+Cc: Project_Global_Chrome_Upstream_Group@mediatek.com, 
+ Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, Bartosz Golaszewski <brgl@bgdev.pl>, 
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, 
+ Mark Brown <broonie@kernel.org>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ devicetree@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In-Reply-To: <20240426102949.23057-3-zoie.lin@mediatek.com>
+References: <20240426102949.23057-1-zoie.lin@mediatek.com>
+ <20240426102949.23057-3-zoie.lin@mediatek.com>
+Message-Id: <171413169824.1152237.3973093428639305133.robh@kernel.org>
+Subject: Re: [PATCH 2/3] dt-bindings: eeprom: at24: Add support for at24c64
 
-SGkgU3RlcGhlbiwKCkNvdWxkIHlvdSBwbGVhc2UgbG9vayBpbnRvIHYyIHNlcmllcyA/CgpPbiBT
-dW4sIDIwMjQtMDQtMTQgYXQgMTM6MDMgKzAzMDAsIE5pa2l0YSBTaHViaW4gdmlhIEI0IFJlbGF5
-IHdyb3RlOgo+IFRoZSBnb2FsIGlzIHRvIHJlY2lldmUgQUNLcy4KPiAKPiBUaGlzIGlzIGEgZnJh
-Y3Rpb24gb2YgdjkgImVwOTN4eCBkZXZpY2UgdHJlZSBjb252ZXJzaW9uIiBzZXJpZXM6Cj4gCj4g
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwMzI2LWVwOTN4eC12OS0wLTE1NmUyYWU1
-ZGZjOEBtYXF1ZWZlbC5tZS8KPiAKPiBUaGUgY2xrIGRyaXZlciBmb3IgZXA5M3h4IHdhcyBjb252
-ZXJ0ZWQgdG8gQVVYIGRldmljZSwgYXMgc3VnZ2VzdGVkCj4gb3JpZ2luYWxseSBieSBTdGVwaGVu
-IEJveWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogTmlraXRhIFNodWJpbiA8bmlraXRhLnNodWJpbkBt
-YXF1ZWZlbC5tZT4KPiAtLS0KPiBDaGFuZ2VzIGluIHYyOgo+IC0gc29jOiBBZGQgU29DIGRyaXZl
-ciBmb3IgQ2lycnVzIGVwOTN4eDoKPiDCoCAtIGFkZGVkIF9faW5pdCBmb3IgZXA5M3h4X2FkZXZf
-YWxsb2MoKSwKPiBlcDkzeHhfY29udHJvbGxlcl9yZWdpc3RlcigpCj4gwqAgLSBhZGRlZCBzdGF0
-aWMsIF9faW5pdGNvbnN0IGZvciBwaW5jdHJsX25hbWVzW10KPiDCoCAtIGNsayByZXZpc2lvbiBm
-b3IgU1BJIGlzIG5vdyByZXNvbHZlZCBoZXJlIHRocm91Z2ggZGlmZmVyZW50bHkKPiBuYW1lZAo+
-IMKgwqDCoCBjbGsgZGV2aWNlCj4gwqAgLSBtb3JlIHZlcmJvc2UgS2NvbmZpZyBkZXNjcmlwdGlv
-bgo+IAo+IMKgIE5PVEU6ICJvZiIgaW5jbHVkZXMgYXJlIHJlcXVpcmVkIHVuZm9ydHVuYXRlbHku
-Cj4gCj4gLSBjbGs6IGVwOTN4eDogYWRkIERUIHN1cHBvcnQgZm9yIENpcnJ1cyBFUDkzeHg6Cj4g
-wqAgLSBkcm9wcGVkIGluY2x1ZGVzCj4gwqAgLSBkcm9wcGVkIGVwOTN4eF9zb2NfdGFibGVbXQo+
-IMKgIC0gYWRkIGRpZmZlcmVudCBuYW1lZCBjbGsgYW5kIGRyb3BwZWQgaW52b2x2ZWQgaW5jbHVk
-ZXMKPiDCoCAtIG1vdmVkIHBsbCdzIGFuZCBmY2xrLCBoY2xrLCBwY2xrIGluaXQgdG8gc2VwYXJh
-dGUgZnVuY3Rpb24KPiDCoCAtIGZpeGVkIGVwOTN4eF9jbGtfaWRzW10gZXhwbGljaXQgbGluZXMK
-PiDCoAo+IMKgIE5PVEU6IGNsa19od19yZWdpc3Rlcl9kaXYoKSBpcyBjbGstZXA5eHggaW50ZXJu
-YWwgZnVuY3Rpb24gd2hpY2gKPiB1c2VzCj4gwqAgZGV2bS4KPiAKPiAtLS0KPiBOaWtpdGEgU2h1
-YmluICg0KToKPiDCoMKgwqDCoMKgIEFSTTogZXA5M3h4OiBhZGQgcmVnbWFwIGF1eF9kZXYKPiDC
-oMKgwqDCoMKgIGNsazogZXA5M3h4OiBhZGQgRFQgc3VwcG9ydCBmb3IgQ2lycnVzIEVQOTN4eAo+
-IMKgwqDCoMKgwqAgZHQtYmluZGluZ3M6IHNvYzogQWRkIENpcnJ1cyBFUDkzeHgKPiDCoMKgwqDC
-oMKgIHNvYzogQWRkIFNvQyBkcml2ZXIgZm9yIENpcnJ1cyBlcDkzeHgKPiAKPiDCoC4uLi9iaW5k
-aW5ncy9hcm0vY2lycnVzL2NpcnJ1cyxlcDkzMDEueWFtbMKgwqDCoMKgwqDCoMKgwqAgfMKgIDM4
-ICsKPiDCoC4uLi9iaW5kaW5ncy9zb2MvY2lycnVzL2NpcnJ1cyxlcDkzMDEtc3lzY29uLnlhbWzC
-oCB8wqAgOTQgKysrCj4gwqBkcml2ZXJzL2Nsay9LY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgOCArCj4gwqBk
-cml2ZXJzL2Nsay9NYWtlZmlsZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAxICsKPiDCoGRyaXZlcnMvY2xrL2Nsay1lcDkz
-eHguY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-fCA4MzQKPiArKysrKysrKysrKysrKysrKysrKysKPiDCoGRyaXZlcnMvc29jL0tjb25maWfCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCB8wqDCoCAxICsKPiDCoGRyaXZlcnMvc29jL01ha2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDEgKwo+IMKgZHJp
-dmVycy9zb2MvY2lycnVzL0tjb25maWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfMKgIDE3ICsKPiDCoGRyaXZlcnMvc29jL2NpcnJ1cy9NYWtlZmlsZcKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMiArCj4g
-wqBkcml2ZXJzL3NvYy9jaXJydXMvc29jLWVwOTN4eC5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfCAyNTIgKysrKysrKwo+IMKgaW5jbHVkZS9kdC1iaW5kaW5ncy9jbG9j
-ay9jaXJydXMsZXA5MzAxLXN5c2Nvbi5owqDCoCB8wqAgNDYgKysKPiDCoGluY2x1ZGUvbGludXgv
-c29jL2NpcnJ1cy9lcDkzeHguaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
-IDI2ICsKPiDCoDEyIGZpbGVzIGNoYW5nZWQsIDEzMjAgaW5zZXJ0aW9ucygrKQo+IC0tLQo+IGJh
-c2UtY29tbWl0OiBmZWM1MGRiNzAzM2VhNDc4NzczYjE1OWUwZTJlZmIxMzUyNzBlM2I3Cj4gY2hh
-bmdlLWlkOiAyMDI0MDQwOC1lcDkzeHgtY2xrLTY1N2ExMzU3ZGU2Nwo+IAo+IEJlc3QgcmVnYXJk
-cywKCg==
+
+On Fri, 26 Apr 2024 18:29:48 +0800, zoie.lin wrote:
+> From: Zoie Lin <zoie.lin@mediatek.com>
+> 
+> Update EEPROM bindings to include Atmel AT24C64
+> 
+> Signed-off-by: Zoie Lin <zoie.lin@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/eeprom/at24.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/misc/idt,89hpesx.example.dtb: idt@74: eeprom@50:compatible: More than one condition true in oneOf schema:
+	{'oneOf': [{'allOf': [{'items': [{'pattern': '^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$'},
+	                                 {'pattern': '^atmel,(24(c|cs|mac)[0-9]+|spd)$'}],
+	                       'maxItems': 2,
+	                       'minItems': 1,
+	                       'type': 'array'},
+	                      {'oneOf': [{'items': {'pattern': 'c00$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac402$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac602$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'spd$'},
+	                                  'type': 'array'}]}]},
+	           {'items': [{'const': 'belling,bl24c16a'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['rohm,br24g01', 'rohm,br24t01']},
+	                      {'const': 'atmel,24c01'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['nxp,se97b', 'renesas,r1ex24002']},
+	                      {'const': 'atmel,24c02'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['onnn,cat24c04',
+	                                'onnn,cat24c05',
+	                                'rohm,br24g04']},
+	                      {'const': 'atmel,24c04'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'renesas,r1ex24016'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'giantec,gt24c32a'},
+	                      {'const': 'atmel,24c32'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'atmel,24c64'}],
+	            'maxItems': 1,
+	            'minItems': 1,
+	            'type': 'array'},
+	           {'items': [{'enum': ['renesas,r1ex24128',
+	                                'samsung,s524ad0xd1']},
+	                      {'const': 'atmel,24c128'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'}]}
+	from schema $id: http://devicetree.org/schemas/misc/idt,89hpesx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/misc/idt,89hpesx.example.dtb: idt@74: eeprom@50: Unevaluated properties are not allowed ('compatible' was unexpected)
+	from schema $id: http://devicetree.org/schemas/misc/idt,89hpesx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/misc/idt,89hpesx.example.dtb: eeprom@50: compatible: More than one condition true in oneOf schema:
+	{'oneOf': [{'allOf': [{'items': [{'pattern': '^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$'},
+	                                 {'pattern': '^atmel,(24(c|cs|mac)[0-9]+|spd)$'}],
+	                       'maxItems': 2,
+	                       'minItems': 1,
+	                       'type': 'array'},
+	                      {'oneOf': [{'items': {'pattern': 'c00$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac402$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac602$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'spd$'},
+	                                  'type': 'array'}]}]},
+	           {'items': [{'const': 'belling,bl24c16a'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['rohm,br24g01', 'rohm,br24t01']},
+	                      {'const': 'atmel,24c01'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['nxp,se97b', 'renesas,r1ex24002']},
+	                      {'const': 'atmel,24c02'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['onnn,cat24c04',
+	                                'onnn,cat24c05',
+	                                'rohm,br24g04']},
+	                      {'const': 'atmel,24c04'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'renesas,r1ex24016'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'giantec,gt24c32a'},
+	                      {'const': 'atmel,24c32'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'atmel,24c64'}],
+	            'maxItems': 1,
+	            'minItems': 1,
+	            'type': 'array'},
+	           {'items': [{'enum': ['renesas,r1ex24128',
+	                                'samsung,s524ad0xd1']},
+	                      {'const': 'atmel,24c128'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'}]}
+	from schema $id: http://devicetree.org/schemas/eeprom/at24.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/misc/idt,89hpesx.example.dtb: eeprom@50: Unevaluated properties are not allowed ('compatible' was unexpected)
+	from schema $id: http://devicetree.org/schemas/eeprom/at24.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/nvmem/layouts/onie,tlv-layout.example.dtb: eeprom@56: compatible: More than one condition true in oneOf schema:
+	{'oneOf': [{'allOf': [{'items': [{'pattern': '^(atmel|catalyst|microchip|nxp|ramtron|renesas|rohm|st),(24(c|cs|lc|mac)[0-9]+|spd)$'},
+	                                 {'pattern': '^atmel,(24(c|cs|mac)[0-9]+|spd)$'}],
+	                       'maxItems': 2,
+	                       'minItems': 1,
+	                       'type': 'array'},
+	                      {'oneOf': [{'items': {'pattern': 'c00$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs01$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs02$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac402$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'mac602$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs04$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs08$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs16$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c32d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs32$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c64d-wl$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs64$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs128$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs256$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs512$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1024$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs1025$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'c2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'cs2048$'},
+	                                  'type': 'array'},
+	                                 {'items': {'pattern': 'spd$'},
+	                                  'type': 'array'}]}]},
+	           {'items': [{'const': 'belling,bl24c16a'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['rohm,br24g01', 'rohm,br24t01']},
+	                      {'const': 'atmel,24c01'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['nxp,se97b', 'renesas,r1ex24002']},
+	                      {'const': 'atmel,24c02'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'enum': ['onnn,cat24c04',
+	                                'onnn,cat24c05',
+	                                'rohm,br24g04']},
+	                      {'const': 'atmel,24c04'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'renesas,r1ex24016'},
+	                      {'const': 'atmel,24c16'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'giantec,gt24c32a'},
+	                      {'const': 'atmel,24c32'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'},
+	           {'items': [{'const': 'atmel,24c64'}],
+	            'maxItems': 1,
+	            'minItems': 1,
+	            'type': 'array'},
+	           {'items': [{'enum': ['renesas,r1ex24128',
+	                                'samsung,s524ad0xd1']},
+	                      {'const': 'atmel,24c128'}],
+	            'maxItems': 2,
+	            'minItems': 2,
+	            'type': 'array'}]}
+	from schema $id: http://devicetree.org/schemas/eeprom/at24.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/nvmem/layouts/onie,tlv-layout.example.dtb: eeprom@56: Unevaluated properties are not allowed ('compatible' was unexpected)
+	from schema $id: http://devicetree.org/schemas/eeprom/at24.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240426102949.23057-3-zoie.lin@mediatek.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
