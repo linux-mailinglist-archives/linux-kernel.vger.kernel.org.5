@@ -1,166 +1,123 @@
-Return-Path: <linux-kernel+bounces-160274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0FA78B3B39
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84BDF8B3B3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:24:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B6D28634F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:23:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41706280EB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACA015ECF1;
-	Fri, 26 Apr 2024 15:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07B8168B1E;
+	Fri, 26 Apr 2024 15:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sAX5Rpaa"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EiLP9smO"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CE514AD02;
-	Fri, 26 Apr 2024 15:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49781607A2;
+	Fri, 26 Apr 2024 15:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144812; cv=none; b=jiQnojQnM2aUlnl/LvLa2vPkI1PN2w0s7A7OSDVK+g85SGTPjRBDaYMqP9xaHlWWBI0WB5zkvNq03d2Rjoren4cWsrhRnV+/JPQVTZQD6Ac7REw3xXB4gwq2KaigZowjOrQ3m3IEwlxRTR73HB9h/SOyuuRrROV9yYlAiwfSZOw=
+	t=1714144820; cv=none; b=LrYGsUO7QSE58JUauuudCovqPZAeRr4D+fqnG+wNNXdsYbSyKwCb+LyPD5tnPRZEoocrcBHwafFmIHgx+UZsFrPAnDXHfbdejVXw1/Uoqe6p8YccZxuI2Fc/wYtuihgrefp0ltVLm3xAtM+qHpqlgO9vefg5JxqGculibMbfDGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144812; c=relaxed/simple;
-	bh=bhFXMkPpW2MuEYm68FHLRT6ke7fFBzv9JlTsYVjL2OQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=eYhdq/jgonk4Mem1y0XmFSgJjFds1yx66OQMuSDVpXC8Q/sqzQ9CoB2Vp+P3se2wW6uJNicGmc+o+ZBpcj4i1mTRtL+U5fQXoVuf2Fnh/WhfITOOjc5VpHoLR5GUXzl88Wau3M52Ib1TvrOaEn1UZDtunU2iEGKUnCpUA+Sf0MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sAX5Rpaa; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QEgQLJ009060;
-	Fri, 26 Apr 2024 15:19:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=utQii5TuFLrp0kELhAiJGIrBnqewjCxQxZOgbabUCLI=;
- b=sAX5RpaaqtSj8wgzes85BYXLOnsRtLd9DtPQ54UpNlYU6p3tSiMCJjn/ncwlHBqD0mUw
- 41t6x6sSiId5TurENEt8kxEhmAeoenBQnEBPEsKrWGzdpj2nPdMMeDJdJQfxdTq5NW6w
- kz9yLSFQNjMSVvcJ0pOGSxtF4WDQ1yWsbPjMb/unN3PDqBseSRNn8yo3Q/+v+QGnsWTe
- DVPzjgujVPdM+C8TgnDL307gIJUj3HyZmpQa+rMSBf0WlqUXxdG3zqySt7dZk71zUuW2
- pvZhER9XhglBTDFDxvmdB2VLkX5esuIz5r3143XinIeESuXY1uGpE0tZxvNqughD1vKA aw== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xre90g2nb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:19:58 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDXZvk015302;
-	Fri, 26 Apr 2024 15:19:57 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmr9q3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:19:57 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QFJsL746727488
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 15:19:56 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AC17358061;
-	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 61C3E58055;
-	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
-Received: from [9.61.156.17] (unknown [9.61.156.17])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
-Message-ID: <8d5cca29-2b4d-40a7-a7dd-c3eff625af95@linux.ibm.com>
-Date: Fri, 26 Apr 2024 10:19:54 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/14] dt-bindings: fsi: Document the FSI Hub
- Controller
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-10-eajames@linux.ibm.com>
- <91d5683b-17a2-466c-ab3d-baf216c97fa3@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <91d5683b-17a2-466c-ab3d-baf216c97fa3@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: j3tQV2O3SV-XuNVzH1E2PY3aKEc1M6if
-X-Proofpoint-ORIG-GUID: j3tQV2O3SV-XuNVzH1E2PY3aKEc1M6if
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714144820; c=relaxed/simple;
+	bh=3zKkRul2jH0sxWqgWVvdE95FmZ1KCe46FuAYXSNuAiY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UqzRJyrcWUlrXy+A7AzaDhzqylJZ1kfWdXgjcKViLVW9/PohRd0ClO7vZwYdQ5JfQQrp0exWdddNh+IY802/J76J3RkYA5kZe3SP5UV2d+bXzvAUSt7UkfgCDiswv/8i7ZIflGQT9fGkAkBxGbTm3KSJfHAEQsH48UmxlrUMUO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EiLP9smO; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1ead2c5f3f0so1208555ad.0;
+        Fri, 26 Apr 2024 08:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714144817; x=1714749617; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XMvpIE0JgEXfII1JTyN/doxgX7dq3PBBUDHJsZLp1kI=;
+        b=EiLP9smOrgB20A8sJuj8a8+8SOEhKxLlYVuRC3hKmmyp/gvlo+Cl0tNS+bnUIgogRJ
+         iCHAv05pKZbVN4nr7Th75pNeNJmVtZFWUe8eZdS/Hk+fsy1isMQIHubKW4O5NlfI5B6N
+         TVGg9lWv3NOXyy13WqdefkQ40Ytpo2zQCxhSGWJ2OPWcv3sFOhonEWjWVLBtpCx/V1/M
+         X9eLSM6tNcdut1gwXOvu9LlpS73Qprm9yJRg3EE9Ky03r5hNa3DyToFq4Ls5HVkqvTQF
+         COeDrltq25jqZmyU4bHdtOHG6mCcpUDtNst+EDqf0gJzw1WYXsp0JxHGKrQVilQbN1Sr
+         nNhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714144817; x=1714749617;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XMvpIE0JgEXfII1JTyN/doxgX7dq3PBBUDHJsZLp1kI=;
+        b=Qz9i2DZ59XnAj8nIvQAkfTij+LlGaxq4vuLpuixAz/YMdDwaKvLPl8Y4GHA0dGvz0L
+         EizCRkdJ5IL2JYZWm1gSmhdljBz1gYFs3CVxclMVmL6qJa+aBEZZdzruO1YM5fhG+KfL
+         POgdQKbAhkNhs+JNctaVDFARTIcObGNDC3hQjAiRiUjQeVhaLKc9FMHGvw2WsF6RiCk2
+         XqdLfwxWKUH46u4bUOsKY4xDp+zy6n4rvFRczDISacOS7mRo3olNhX6IkvBfR+UAdFqc
+         +k2zfhgS+7Hj9tQ2X9Ay8OITlMlMc9zJ4kA6pOTPJx7ICO0BtqqGYq8thREJWFNwU7ZN
+         BLvg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7KmILSlFtGYGmOOPDcWxHnCdINQHXguNTYAZLgRo2A/m3tUK8Hae/VfhC2UO9/BrfeAONZr5sfjby7Us9JhDj/sIPWP3uAqqphdiF7EL6AomRMe4ahiC8a8I5+ECu91nCCaU3hq69774maENh0WoBodcOz3Mje9D+
+X-Gm-Message-State: AOJu0YwFLBcQZ3cC8mr3Cr9l6fioeC0RQzcCwhDIwz0veYgIQ5lWZTaU
+	pCao4C5tb0hE4rC6kO8vAoQxRDEYy4zp0o2XJ/5kiIm1+GsIoS02
+X-Google-Smtp-Source: AGHT+IHFGwMiipoYwzG3pLc3fH7d6bQSZ9zupsh+7LPrphNdqdBqvamdhDNXbAXX96e8tzxgLyrWqQ==
+X-Received: by 2002:a17:902:e747:b0:1e4:397b:492c with SMTP id p7-20020a170902e74700b001e4397b492cmr3232528plf.4.1714144816828;
+        Fri, 26 Apr 2024 08:20:16 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:751f:9418:61f4:229e])
+        by smtp.gmail.com with ESMTPSA id w6-20020a170902e88600b001e4ea358407sm15575142plg.46.2024.04.26.08.20.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 08:20:16 -0700 (PDT)
+From: I Hsin Cheng <richard120310@gmail.com>
+To: edumazet@google.com
+Cc: davem@davemloft.net,
+	dsahern@kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	I Hsin Cheng <richard120310@gmail.com>
+Subject: [PATCH] tcp_bbr: replace lambda expression with bitwise operation for bit flip
+Date: Fri, 26 Apr 2024 23:20:11 +0800
+Message-Id: <20240426152011.37069-1-richard120310@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404260103
+Content-Transfer-Encoding: 8bit
 
+In the origin implementation in function bbr_update_ack_aggregation(),
+we utilize a lambda expression to flip the bit value of
+bbr->extra_acked_win_idx. Since the data type of
+bbr->extra_acked_win_idx is simply a single bit, we are actually trying
+to perform a bit flip operation, under the fact we can simply perform a
+bitwise not operation on bbr->extra_acked_win_idx.
 
-On 4/26/24 01:26, Krzysztof Kozlowski wrote:
-> On 25/04/2024 23:36, Eddie James wrote:
->> Document the FSI Hub Controller CFAM engine.
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> ---
->>   .../bindings/fsi/ibm,hub-fsi-controller.yaml  | 44 +++++++++++++++++++
->>   1 file changed, 44 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml b/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
->> new file mode 100644
->> index 000000000000..d96d777d4d9f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
->> @@ -0,0 +1,44 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/fsi/ibm,hub-fsi-controller.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: IBM FSI-attached FSI Hub Controller
->> +
->> +maintainers:
->> +  - Eddie James <eajames@linux.ibm.com>
->> +
->> +description: |
-> Do not need '|' unless you need to preserve formatting.
+This way we can elimate the need of possible branches which generate by
+the lambda function, they could result in branch misses sometimes.
+Perform a bitwise not operation is more straightforward and wouldn't
+generate branches.
 
+Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
+---
+ net/ipv4/tcp_bbr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Ack.
+diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
+index 146792cd2..75068ba25 100644
+--- a/net/ipv4/tcp_bbr.c
++++ b/net/ipv4/tcp_bbr.c
+@@ -829,8 +829,7 @@ static void bbr_update_ack_aggregation(struct sock *sk,
+ 						bbr->extra_acked_win_rtts + 1);
+ 		if (bbr->extra_acked_win_rtts >= bbr_extra_acked_win_rtts) {
+ 			bbr->extra_acked_win_rtts = 0;
+-			bbr->extra_acked_win_idx = bbr->extra_acked_win_idx ?
+-						   0 : 1;
++			bbr->extra_acked_win_idx = ~(bbr->extra_acked_win_idx);
+ 			bbr->extra_acked[bbr->extra_acked_win_idx] = 0;
+ 		}
+ 	}
+-- 
+2.34.1
 
-
->
->> +  The FSI Hub Controller is an FSI controller, providing a number of FSI links,
->> +  located on a CFAM. Therefore this node will always be a child of an FSI CFAM
->> +  node.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ibm,hub-fsi-controller
-> Again, is it for specific chip? SoC? Aren't you using generic
-> compatibles (not allowed)?
-
-
-This one is fairly universally supported on FSI (any POWER chip will 
-have it) so I didn't add a specific chip... Should i? Do you mean 
-generic compatibles are not allowed? How generic do you mean?
-
-
->
->
->
-> Best regards,
-> Krzysztof
->
 
