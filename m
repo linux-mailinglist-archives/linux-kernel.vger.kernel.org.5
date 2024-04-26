@@ -1,150 +1,253 @@
-Return-Path: <linux-kernel+bounces-160682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA1FF8B4104
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96E798B410A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D4DE284665
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:08:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F3FE28288B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834B32D054;
-	Fri, 26 Apr 2024 21:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623163613E;
+	Fri, 26 Apr 2024 21:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="g8p/odsG"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="btLMldfe"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3275221101;
-	Fri, 26 Apr 2024 21:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9767B2C69A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 21:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714165703; cv=none; b=b+YvAE3pruydzp3Zawezf/N/M/aCELvnboxJzU/ValoZ2kWEgQ02AKY+pvNCLAO4rS9lO7obWGEK6k0QumA0tmXeNUp2PMDe6AgOqvi98A4/smY2I5JdpZxTxZTA3M0DUIpASuKIPCJum1EX3iRovyAElsl5Jci3PlpKQt29PQ8=
+	t=1714166410; cv=none; b=b7KSo3BKxBfUBLag0gjkA0Wxc9KOxdAl9SV3n3xs/6kJbABgNzjHMlwK1u6TEV3kK+whrzqQ0B1aNcnqZPMf22JK8hNQITNkORkVIkQpRvX8yYLwEUTBXhffF23T4F7jnTaTu1O2gxImVVa2e7M0pAP1Nsueru/uFAhf0zWiZTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714165703; c=relaxed/simple;
-	bh=lW/l8KKGYNmqkUhIpCA4l+1y/1J7i0LRaZxS7i9FoSU=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qLdbe1Zvrub6/Z9E5UVE30QIxy09vOTDPqmDTZe4ue3gkSZDoSncMwZ9tcClATOXkAfpJkbaiVsr8R0FNh6XLhVeJYWOoQLxpW1LfUtV4gu0dXOEa2NfhQfwfA/9S4FHzUGpl/X5w9wozqYTUYe6qWa9hJCE2zuw9K9JMM2ngcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=g8p/odsG; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=XU9L50gMutWaXiQoUCnKhAbOZc/erS00yVvgujisH+s=; b=g8p/odsGvImQC9g77//tEJhzbn
-	8neUm1aG0rRZ0Vk/6hl3/j64WgZ1Y9mBrX0Rb1ECxdv96LttbNwy4oTjcX8XsvUpEKo9aCyi5/h8W
-	mpJMQB8EnYR1BxpGgT2vWdNhNec7U9T2CWeX1NB1EaWPlE7tzzhtb6uxhnafzSFb8F4lVVU4GJCAk
-	g5QF/KSwWEYgozMN0A5e/INgn3c3IZVtd/9Le+FI1zxlgc7xqu0dJuCPngUQ3+o2H+gMDRoEFXbo/
-	3iskDU6xOhB8XRX3nEMqbNaCs2+A4VwAWon87FL5NcLRTMMWSEX/8hmgwifUd6K+qT2BHiyKIri71
-	BoDzf5wQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1s0Snl-000K9y-Bo; Fri, 26 Apr 2024 23:08:13 +0200
-Received: from [178.197.249.19] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1s0Snk-000A6x-0v;
-	Fri, 26 Apr 2024 23:08:12 +0200
-Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
-To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>,
- "maze@google.com" <maze@google.com>,
- "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>,
- "kuba@kernel.org" <kuba@kernel.org>,
- =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?=
- <Shiming.Cheng@mediatek.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
- "edumazet@google.com" <edumazet@google.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "yan@cloudflare.com" <yan@cloudflare.com>
-References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
- <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
- <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
- <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
- <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
- <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
- <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
- <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
- <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch>
- <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
- <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
- <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
- <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch>
- <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
- <662a63aeee385_1de39b294fd@willemb.c.googlers.com.notmuch>
- <752468b66d2f5766ea16381a0c5d7b82ab77c5c4.camel@mediatek.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ae0ba22a-049a-49c1-d791-d0e953625904@iogearbox.net>
-Date: Fri, 26 Apr 2024 23:08:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1714166410; c=relaxed/simple;
+	bh=AIkMWWmXISfChN4FCiladEBiD3D0Tf4P66S8V1kaebk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f0MMPfA2esoJmbnuJmGCLGIoj95SBv4v8QJs4/0EHjP/4TQHmOdKMlU/UvTru80wFb5qX66x9aCZHjVUhENyT7lFI4mt2duxZshhbopuTFg6gyMVQSHz0FqOq0FzrtyAl5XDSaOjPEhHH1uSuaG9fN/FR7lmJYTslG/A3cfjTFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=btLMldfe; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed20fb620fso2419989b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714166407; x=1714771207; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7tVzNK4uUjr+QTuz4dYOgYNVPVhfLm2jvPaMneK04Hc=;
+        b=btLMldfeu5n59IihAv2h/K4KoPWZkigYRsI/9FWKxZ76TU1sc9brz7JGkJldqHAcFN
+         MS7lArSiZ2XeSbR00M4l4CzNKCf4F5LE/8gvSLLG6rA1OEanaoZvaMkZf5OBEdCf2zNm
+         1C0RoDwzWjdYhCLDXC3kbLd5QrU7Ji8T041FOSqnY9v3tp4DIbF1tDfcA9Vx6+1rlqgr
+         tBBv+ARLBgZEoMAdii2jIC3TlXunOiWnQhqFU6m6QnN3skJC+BhWSunUFfgJgFcP4dmC
+         oHsuCZ9ejjRFnKbHMR7y8z+y5LryDAcDcLDANNS9jRiZ51ce4eXjfrGI1xwrncbhQg1i
+         D2BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714166407; x=1714771207;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7tVzNK4uUjr+QTuz4dYOgYNVPVhfLm2jvPaMneK04Hc=;
+        b=j9Xvb2tuYVP+R5qUoINztAL+fPfTFx0X0S/A5T8J9zVZjbARDbhpcBvOTAQsb7kgUq
+         RfRUtKprE1AUPLWMX9rfOciui5gZ/Z3ubFmi8Wo4RyOH1206abFHd1HQe+/qrlFveFFK
+         ceAQZdicIQx+OSmJYFAA47Rptc4xQqMMnE18tKHsHRQKfyDSrt08CiQdu7Zu4FWQtNG7
+         WUy9QsH05jos69B1KksSc7YcbeFziVQB3F6thGY9zyUhk62HdUKghvC2cjyx8/lBVVEt
+         mQbGHCsALzD2liAO3HjqNfpXSa+5V3iqOJjS8Mt1vNSaJs/blhc7FcvK4L60LGNluH9d
+         Ij2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXtccz36k16nIl2CFyN7k3HGPYw2BuUjuIpty84m2W0PadwJ7GU1gRbJvB/+gAD7ehoJQdFSaeCSGB1trsKcui+3mXq660X8nrcsNoG
+X-Gm-Message-State: AOJu0Yw3kG3QAdmqvji9R8dkl7oqUT2la2vmfo+7J0oXXb2YJoZLii1k
+	zGd+bjjGp/4ISHQU6ZY5zodmlL9ixeTTxjg3H4xix9RSyXtM8ZDE2sEjW4r8IIJNzsrdtp+dMyT
+	H
+X-Google-Smtp-Source: AGHT+IHy9Iy0EdDWZlyUCOK3+Kb0ToI9DOIrnuCr0zR65zLK7tOKbRa3HTeFMC4u53qQuIJWpz35JA==
+X-Received: by 2002:a05:6a00:a0f:b0:6ec:ebf4:3e8a with SMTP id p15-20020a056a000a0f00b006ecebf43e8amr5035898pfh.15.1714166406757;
+        Fri, 26 Apr 2024 14:20:06 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
+        by smtp.gmail.com with ESMTPSA id g14-20020a62f94e000000b006f2d97c3e87sm9259099pfm.125.2024.04.26.14.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 14:20:06 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s0SzD-00Bzh6-0B;
+	Sat, 27 Apr 2024 07:20:03 +1000
+Date: Sat, 27 Apr 2024 07:20:03 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: syzbot <syzbot+b7e8d799f0ab724876f9@syzkaller.appspotmail.com>,
+	chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, linux-mm@kvack.org,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Subject: Re: [syzbot] [xfs?] possible deadlock in xfs_ilock_data_map_shared
+Message-ID: <Ziwag2++iy62jHik@dread.disaster.area>
+References: <00000000000028dd9a0616ecda61@google.com>
+ <20240426163228.GP360919@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <752468b66d2f5766ea16381a0c5d7b82ab77c5c4.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27257/Fri Apr 26 10:25:03 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426163228.GP360919@frogsfrogsfrogs>
 
-On 4/26/24 11:52 AM, Lena Wang (王娜) wrote:
-[...]
->>>  From 301da5c9d65652bac6091d4cd64b751b3338f8bb Mon Sep 17 00:00:00
->> 2001
->>> From: Shiming Cheng <shiming.cheng@mediatek.com>
->>> Date: Wed, 24 Apr 2024 13:42:35 +0800
->>> Subject: [PATCH net] net: prevent BPF pulling SKB_GSO_FRAGLIST skb
->>>
->>> A SKB_GSO_FRAGLIST skb can't be pulled data
->>> from its fraglist as it may result an invalid
->>> segmentation or kernel exception.
->>>
->>> For such structured skb we limit the BPF pulling
->>> data length smaller than skb_headlen() and return
->>> error if exceeding.
->>>
->>> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
->>> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
->>> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
->>> ---
->>>   net/core/filter.c | 5 +++++
->>>   1 file changed, 5 insertions(+)
->>>
->>> diff --git a/net/core/filter.c b/net/core/filter.c
->>> index 8adf95765cdd..8ed4d5d87167 100644
->>> --- a/net/core/filter.c
->>> +++ b/net/core/filter.c
->>> @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad,
->>> bpf_sp);
->>>   static inline int __bpf_try_make_writable(struct sk_buff *skb,
->>>     unsigned int write_len)
->>>   {
->>> +if (skb_is_gso(skb) &&
->>> +    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
->>> +     write_len > skb_headlen(skb)) {
->>> +return -ENOMEM;
->>> +}
->>>   return skb_ensure_writable(skb, write_len);
+[cc linux-mm@kvack.org]
 
-Dumb question, but should this guard be more generically part of skb_ensure_writable()
-internals, presumably that would be inside pskb_may_pull_reason(), or only if we ever
-see more code instances similar to this?
+On Fri, Apr 26, 2024 at 09:32:28AM -0700, Darrick J. Wong wrote:
+> On Thu, Apr 25, 2024 at 07:46:28AM -0700, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    977b1ef51866 Merge tag 'block-6.9-20240420' of git://git.k..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=126497cd180000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=b7e8d799f0ab724876f9
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/08d7b6e107aa/disk-977b1ef5.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/9c5e543ffdcf/vmlinux-977b1ef5.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/04a6d79d2f69/bzImage-977b1ef5.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+b7e8d799f0ab724876f9@syzkaller.appspotmail.com
+> > 
+> > XFS (loop2): Ending clean mount
+> > ======================================================
+> > WARNING: possible circular locking dependency detected
+> > 6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0 Not tainted
+> > ------------------------------------------------------
+> > syz-executor.2/7915 is trying to acquire lock:
+> > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:312 [inline]
+> > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
+> > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
+> > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: kmalloc_trace+0x47/0x360 mm/slub.c:3992
+> > 
+> > but task is already holding lock:
+> > ffff888056da8118 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_ilock_data_map_shared+0x4f/0x70 fs/xfs/xfs_inode.c:114
+> > 
+> > which lock already depends on the new lock.
+> > 
+> > 
+> > the existing dependency chain (in reverse order) is:
+> > 
+> > -> #1 (&xfs_dir_ilock_class){++++}-{3:3}:
+> >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+> >        down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
+> >        xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
+> >        xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
+> >        xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
+> >        xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
+> >        xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
+> >        super_cache_scan+0x411/0x4b0 fs/super.c:227
+> >        do_shrink_slab+0x707/0x1160 mm/shrinker.c:435
+> >        shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
+> >        shrink_one+0x453/0x880 mm/vmscan.c:4774
+> >        shrink_many mm/vmscan.c:4835 [inline]
+> >        lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+> >        shrink_node+0x3b17/0x4310 mm/vmscan.c:5894
+> >        kswapd_shrink_node mm/vmscan.c:6704 [inline]
+> >        balance_pgdat mm/vmscan.c:6895 [inline]
+> >        kswapd+0x1882/0x38a0 mm/vmscan.c:7164
+> >        kthread+0x2f2/0x390 kernel/kthread.c:388
+> >        ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+> >        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> > 
+> > -> #0 (fs_reclaim){+.+.}-{0:0}:
+> >        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+> >        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+> >        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+> >        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+> >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+> >        __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
+> >        fs_reclaim_acquire+0x88/0x140 mm/page_alloc.c:3712
+> >        might_alloc include/linux/sched/mm.h:312 [inline]
+> >        slab_pre_alloc_hook mm/slub.c:3746 [inline]
+> >        slab_alloc_node mm/slub.c:3827 [inline]
+> >        kmalloc_trace+0x47/0x360 mm/slub.c:3992
+> >        kmalloc include/linux/slab.h:628 [inline]
+> >        add_stack_record_to_list mm/page_owner.c:177 [inline]
+> >        inc_stack_record_count mm/page_owner.c:219 [inline]
+> >        __set_page_owner+0x561/0x810 mm/page_owner.c:334
+> >        set_page_owner include/linux/page_owner.h:32 [inline]
+> >        post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1534
+> >        prep_new_page mm/page_alloc.c:1541 [inline]
+> >        get_page_from_freelist+0x3410/0x35b0 mm/page_alloc.c:3317
+> >        __alloc_pages+0x256/0x6c0 mm/page_alloc.c:4575
+> >        __alloc_pages_bulk+0x729/0xd40 mm/page_alloc.c:4523
+> >        alloc_pages_bulk_array include/linux/gfp.h:202 [inline]
+> >        xfs_buf_alloc_pages+0x1a7/0x860 fs/xfs/xfs_buf.c:398
+> >        xfs_buf_find_insert+0x19a/0x1540 fs/xfs/xfs_buf.c:650
+> >        xfs_buf_get_map+0x149c/0x1ae0 fs/xfs/xfs_buf.c:755
+> >        xfs_buf_read_map+0x111/0xa60 fs/xfs/xfs_buf.c:860
+> >        xfs_trans_read_buf_map+0x260/0xad0 fs/xfs/xfs_trans_buf.c:289
+> >        xfs_da_read_buf+0x2b1/0x470 fs/xfs/libxfs/xfs_da_btree.c:2674
+> >        xfs_dir3_block_read+0x92/0x1a0 fs/xfs/libxfs/xfs_dir2_block.c:145
+> >        xfs_dir2_block_lookup_int+0x109/0x7d0 fs/xfs/libxfs/xfs_dir2_block.c:700
+> >        xfs_dir2_block_lookup+0x19a/0x630 fs/xfs/libxfs/xfs_dir2_block.c:650
+> >        xfs_dir_lookup+0x633/0xaf0 fs/xfs/libxfs/xfs_dir2.c:399
+> 
+> Hm.  We've taken an ILOCK in xfs_dir_lookup, and now we're reading a
+> directory block.  We don't have PF_MEMALLOC_NOFS set, nor do we pass
+> GFP_NOFS when allocating the xfs_buf pages.
+> 
+> Nothing in this code path sets PF_MEMALLOC_NOFS explicitly, nor does it
+> create a xfs_trans_alloc_empty, which would set that.  Prior to the
+> removal of kmem_alloc, I think we were much more aggressive about
+> GFP_NOFS usage.
 
-Thanks,
-Daniel
+This isn't an XFS bug. The XFS code is correct - the callsite in the
+buffer cache is using GFP_KERNEL | __GFP_NOLOCKDEP explicitly to
+avoid these sorts of false positives.
+
+Please take a closer look at the stack trace - there's a second
+memory allocation taking place there way below the XFS memory
+allocation inside the page owner tracking code itself:
+
+static void add_stack_record_to_list(struct stack_record *stack_record,
+                                     gfp_t gfp_mask)
+{
+        unsigned long flags;
+        struct stack *stack;
+
+        /* Filter gfp_mask the same way stackdepot does, for consistency */
+        gfp_mask &= ~GFP_ZONEMASK;
+        gfp_mask &= (GFP_ATOMIC | GFP_KERNEL);
+        gfp_mask |= __GFP_NOWARN;
+
+        set_current_in_page_owner();
+        stack = kmalloc(sizeof(*stack), gfp_mask);
+        if (!stack) {
+                unset_current_in_page_owner();
+                return;
+        }
+        unset_current_in_page_owner();
+....
+
+Look familiar? That exactly the same gfp mask filtering that the
+stackdepot code was doing that caused this issue with KASAN:
+
+https://lore.kernel.org/linux-xfs/000000000000fbf10e06164f3695@google.com/
+
+Which was fixed with this patch:
+
+https://lore.kernel.org/linux-xfs/20240418141133.22950-1-ryabinin.a.a@gmail.com/
+
+Essentially, we're now playing whack-a-mole with internal kernel
+debug code that doesn't honor __GFP_NOLOCKDEP....
+
+MM-people: can you please do an audit of all the nested allocations
+that occur inside the public high level allocation API and ensure
+that they all obey __GFP_NOLOCKDEP so we don't have syzbot keep
+tripping over them one at a time?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
