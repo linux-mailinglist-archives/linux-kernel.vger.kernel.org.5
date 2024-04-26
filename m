@@ -1,201 +1,184 @@
-Return-Path: <linux-kernel+bounces-160659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4228B40B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:11:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3922D8B40B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 461A1B21E00
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:11:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0C591F226D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D9722334;
-	Fri, 26 Apr 2024 20:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB58241E1;
+	Fri, 26 Apr 2024 20:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="LKz5p9fq"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mdB8yNO5"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B11846A4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 20:11:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E09F22EE8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 20:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714162280; cv=none; b=pIshWQDL+FghLYxECtyVZqNsXMp2xf3itKi2pFXF1tqERogL/l07sZJeHRwkEzmqBfKpuTiQ3NCd6FmTP7KRT672pQcRdM54KiQOnnpO0l2FaDpcbOHHYz+sFmZpSxpOwBcd2U5rLGWdAQ1aTsqWDzmlzfKaik0u4BvxzuBHiBY=
+	t=1714162475; cv=none; b=AKSZYqJw5eGJrg0GXNTG5fEsNeW9NrcVkp0USNHSZg9WAbM0xp/vJtambju8kBhZAnHRHTEKk8PU1TE9/xl7DAv4NwF+drdLvcO+b1AleahIM6SqlJmXpnxGL5FQC9A7IXV6oGRJZ4QbLKo15QOsq2Ndt3eTKriX0raxZ2EZW2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714162280; c=relaxed/simple;
-	bh=CCtrDmowOfUzSRgAL6a/caO428RWP0SEeDG7dtLDLu0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3ROFSd2DB+zZySZjNjdnfW4kdLo2YumPFtKrsE+XqGiz5XNxa8J9nzsHLZ/Wx3YM9qrkn+5XO/AYn4zR97QBC3yRkh3T9JIQMrFvSKoXU2MXcATz4RmB1mCWt9Zv+COFzAlr7WArl4CoY0m0putZPJ87IPM5f6jo0D3ucYjltA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=LKz5p9fq; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c751bf249cso1652734b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:11:17 -0700 (PDT)
+	s=arc-20240116; t=1714162475; c=relaxed/simple;
+	bh=Z2Hmk9m0Llx/IUQH/S7TpxHTL0emnGLH/LAZ4N5+s1c=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=DAqRKJBybo+9fmPTBUvgXOWvI1+zISYQLwBgK43+yXzqdnfhZsvAflrcasvRNtwyb+ODGtbC9ylGWTYHzUwCXUwxQPXiOaSVZ698uUI0woSyJzYE5DzH0pf3wJeGbe2Crgi+zPIQLJlQY1cFviVKtr0erRwfY6kHNEqNQSrx8+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mdB8yNO5; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e2b1b90148so25067855ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714162276; x=1714767076; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6CwGplRyVlrAojs0p2Bji7yf6qM7XioPGpQcoYE219Y=;
-        b=LKz5p9fqrQuDYdCfGxq7VMw3zzd2k+fVYbrPnBE49UogwCka8EC7lu+/RyKUFawqJ+
-         XcpN2obHhLp9watFnRtosuTZU8UI+mUktNgiH+1jo4mhs7bcrAp2k+YzV3EMDLh7St8N
-         5uB/cHn7Ab0Cu6ITrxmkSDQLCa++u5cwAHJcRTqCOXspQWBOQCOJRhx8Xr08n/ao+72o
-         Rjwo/psXVmMYnKo30ev5Bl2GSeiyHEs1POHRM2RQYu63R6VYNMn/NXk755+Qf8eWPmsZ
-         kleXOhfKluaqe1pUVvikyNn0y1ovkU98uakFMMxC9N0Ydle9i4ZwjF7Twr86384UYLQ7
-         Le/Q==
+        d=google.com; s=20230601; t=1714162474; x=1714767274; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p6QNNeN/iKbfPmZLz+NRuv/dqoduuTvyudHMEjnn2zM=;
+        b=mdB8yNO5CKZoFfpuHGsyAXXxlHmhbGvcBuxKSId/PUs/VSVC47LQQsRqiR37a/zCmn
+         0RuraAUYS595hgXjw5eCK43FHfXcyVMeobuKz2YO/HQCwY1UfCACZNLDMg04uuUE2swp
+         qQHRwvdfvSqA4ZfwWGpjO2DcM9vZ8tKcgFGi6J85lF1bqr5SRg6a/+PJTo51YRyC28Yn
+         KGm7/quFaVQzWLNU/61vsO8kIrnptf7fY9K7YqIQivCt+roiT4nKafn3i8+7RMZaEOTi
+         OoeXU251K9RNQxo3QvGxSAVMm36yakj+efhidMsI9qp0AFyvlHVFRxqJKbYN2rzBxmc6
+         657w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714162276; x=1714767076;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6CwGplRyVlrAojs0p2Bji7yf6qM7XioPGpQcoYE219Y=;
-        b=Z1GFwzBUL1uF+TsMRvTdIrLXxN5Yo1CzpyiF/SSeL3ELv6j8rpz839Le18G4lmZAPc
-         8QrtlgHw6CogykDOsxqpoKvHH1tXJdoo5iF9iz3x/50x6EunTUn9jpdwy3YYVeXs1d4g
-         t+/JrW7PzHsobQbswl7Zvl9nVbR9QC5lMvHrRmXQIgSWftO8iXfUATW9Ut5LHdP8GjOJ
-         ILiirSeBb487OW3wnOKJT/V0PcJGn+yTbGidLPmDDHIV2lhq9uusxpRyCBgGJx4zZEH5
-         yvoeNDy1UaZloWsWpBwOOKtw8IqwyTxB+C6akbyN3dvMUBdvRv+mVssrBX/yJ8IQbTwX
-         VVBw==
-X-Gm-Message-State: AOJu0YyFzvWosCc7uvx2uN1r0nWSpbVXxLfQvx0jymCLtGZL4EN5ZaN7
-	rK7LSODPLZ0yKoKnQCMZ+H7Oj0mhdMv3oPqrAvHKVtFtxJ3CJi+5J+ccubgNogo=
-X-Google-Smtp-Source: AGHT+IGmGPMXguo4qOP7xmoYacLCC657AcV/qNocAoxOLQZB8ATEhQX5SkqofkF+5cuwjvIkYsjtUA==
-X-Received: by 2002:a05:6808:628e:b0:3c7:546a:33b4 with SMTP id du14-20020a056808628e00b003c7546a33b4mr3467736oib.20.1714162276318;
-        Fri, 26 Apr 2024 13:11:16 -0700 (PDT)
-Received: from [192.168.40.12] (d24-150-219-207.home.cgocable.net. [24.150.219.207])
-        by smtp.gmail.com with ESMTPSA id a7-20020a0cca87000000b006969f5d3159sm8227068qvk.50.2024.04.26.13.11.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 13:11:16 -0700 (PDT)
-Message-ID: <8bc13253-db16-4801-9f69-b06ba4e129be@baylibre.com>
-Date: Fri, 26 Apr 2024 16:11:14 -0400
+        d=1e100.net; s=20230601; t=1714162474; x=1714767274;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p6QNNeN/iKbfPmZLz+NRuv/dqoduuTvyudHMEjnn2zM=;
+        b=L2/ySOc00dpbBxwSw0L1ma4LCS5NDoB9DCXxJihaHFAAH72Fm1UFwS1Lvme1LDzQZc
+         YGo/neisIfBslnUQsYicvkY2ReiwLAkyi1cN96EyjqYC9KL4GeaTg+AxX3RHrML09gax
+         aKHYqRYdWZDxMovXhXUaE1X8PEeug+trcNdL0p24NgI2ED+VCfuU9Zwr8c365KzvTA5n
+         iDSm049Ia2Wcplj2zzccw//kUzc/hY7a+b4V20kNRNNSw5x+b3U4sTyFtsvBqJUYS6Ig
+         vkZY/EUHg3DYAo8Bjtx11ocpoLFEl23Szsotiq9NV27UW7WtDOdkqTb9ax0+2VAlaGql
+         9ItQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNTGbFF4Azgpu9sk5gDgO8oJKJemuPIYXplZtJOHD5y9/PnIEpuA9CsUcWQxfkBwZQ7uSXvb+h2/5ba03U/v0oH+xE49eeYApTryX1
+X-Gm-Message-State: AOJu0Yz5qnTk48cHlRwyZMDmWdmXM8wPUntBG46GkA4hUkh1vmKmn5vI
+	vrtLqiz3UCr6k1uJZjN2MclpY8BbgHAOGvDjS+6Iri2loB6aG6EPhmyfvBDaGoV4vBMmuvSYSWw
+	mcg==
+X-Google-Smtp-Source: AGHT+IHm+XgF6B2SsiuKWzSl3HesgNNUnTRITMzai0EsO8nj/1UyX71FX031Lz6TZHENt4ygoNWm2wDt2xQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:124a:b0:1e2:8bce:b334 with SMTP id
+ u10-20020a170903124a00b001e28bceb334mr11581plh.9.1714162473746; Fri, 26 Apr
+ 2024 13:14:33 -0700 (PDT)
+Date: Fri, 26 Apr 2024 13:14:32 -0700
+In-Reply-To: <20240426171644.r6dvvfvduzvlrv5c@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2 v5] dt-bindings: pwm: Add AXI PWM generator
-To: linux-pwm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de,
- michael.hennerich@analog.com, nuno.sa@analog.com, dlechner@baylibre.com,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org
-References: <20240424125850.4189116-1-tgamblin@baylibre.com>
- <20240424125850.4189116-2-tgamblin@baylibre.com>
-Content-Language: en-US
-From: Trevor Gamblin <tgamblin@baylibre.com>
-In-Reply-To: <20240424125850.4189116-2-tgamblin@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240421180122.1650812-1-michael.roth@amd.com>
+ <20240421180122.1650812-10-michael.roth@amd.com> <ZilyxFnJvaWUJOkc@google.com>
+ <20240425220008.boxnurujlxbx62pg@amd.com> <ZirVlF-zQPNOOahU@google.com> <20240426171644.r6dvvfvduzvlrv5c@amd.com>
+Message-ID: <ZiwLKI_xtZk3BG_B@google.com>
+Subject: Re: [PATCH v14 09/22] KVM: SEV: Add support to handle MSR based Page
+ State Change VMGEXIT
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="us-ascii"
 
+On Fri, Apr 26, 2024, Michael Roth wrote:
+> On Thu, Apr 25, 2024 at 03:13:40PM -0700, Sean Christopherson wrote:
+> > On Thu, Apr 25, 2024, Michael Roth wrote:
+> > > On Wed, Apr 24, 2024 at 01:59:48PM -0700, Sean Christopherson wrote:
+> > > > On Sun, Apr 21, 2024, Michael Roth wrote:
+> > > > > +static int snp_begin_psc_msr(struct kvm_vcpu *vcpu, u64 ghcb_msr)
+> > > > > +{
+> > > > > +	u64 gpa = gfn_to_gpa(GHCB_MSR_PSC_REQ_TO_GFN(ghcb_msr));
+> > > > > +	u8 op = GHCB_MSR_PSC_REQ_TO_OP(ghcb_msr);
+> > > > > +	struct vcpu_svm *svm = to_svm(vcpu);
+> > > > > +
+> > > > > +	if (op != SNP_PAGE_STATE_PRIVATE && op != SNP_PAGE_STATE_SHARED) {
+> > > > > +		set_ghcb_msr(svm, GHCB_MSR_PSC_RESP_ERROR);
+> > > > > +		return 1; /* resume guest */
+> > > > > +	}
+> > > > > +
+> > > > > +	vcpu->run->exit_reason = KVM_EXIT_VMGEXIT;
+> > > > > +	vcpu->run->vmgexit.type = KVM_USER_VMGEXIT_PSC_MSR;
+> > > > > +	vcpu->run->vmgexit.psc_msr.gpa = gpa;
+> > > > > +	vcpu->run->vmgexit.psc_msr.op = op;
+> > > > 
+> > > > Argh, no.
+> > > > 
+> > > > This is the same crud that TDX tried to push[*].  Use KVM's existing user exits,
+> > > > and extend as *needed*.  There is no good reason page state change requests need
+> > > > *two* exit reasons.  The *only* thing KVM supports right now is private<=>shared
+> > > > conversions, and that can be handled with either KVM_HC_MAP_GPA_RANGE or
+> > > > KVM_EXIT_MEMORY_FAULT.
+> > > > 
+> > > > The non-MSR flavor can batch requests, but I'm willing to bet that the overwhelming
+> > > > majority of requests are contiguous, i.e. can be combined into a range by KVM,
+> > > > and that handling any outliers by performing multiple exits to userspace will
+> > > > provide sufficient performance.
+> > > 
+> > > That does tend to be the case. We won't have as much granularity with
+> > > the per-entry error codes, but KVM_SET_MEMORY_ATTRIBUTES would be
+> > > expected to be for the entire range anyway, and if that fails for
+> > > whatever reason then we KVM_BUG_ON() anyway. We do have to have handling
+> > > for cases where the entries aren't contiguous however, which would
+> > > involve multiple KVM_EXIT_HYPERCALLs until everything is satisfied. But
+> > > not a huge deal since it doesn't seem to be a common case.
+> > 
+> > If it was less complex overall, I wouldn't be opposed to KVM marshalling everything
+> > into a buffer, but I suspect it will be simpler to just have KVM loop until the
+> > PSC request is complete.
+> 
+> Agreed. But *if* we decided to introduce a buffer, where would you
+> suggest adding it? The kvm_run union fields are set to 256 bytes, and
+> we'd need close to 4K to handle a full GHCB PSC buffer in 1 go. Would
+> additional storage at the end of struct kvm_run be acceptable?
 
-On 2024-04-24 8:58 a.m., Trevor Gamblin wrote:
-> From: Drew Fustini <dfustini@baylibre.com>
->
-> Add Analog Devices AXI PWM generator.
->
-> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
-> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
-Note that I missed the following two acks from the v4 series when 
-preparing v5:
+Don't even need more memory, just use vcpu->arch.pio_data, which is always
+allocated and is mmap()able by userspace via KVM_PIO_PAGE_OFFSET.
 
-Acked-by: Michael Hennerich<michael.hennerich@analog.com>
-Acked-by: Nuno Sa<nuno.sa@analog.com>
+> > > KVM_HC_MAP_GPA_RANGE seems like a nice option because we'd also have the
+> > > flexibility to just issue that directly within a guest rather than
+> > > relying on SNP/TDX specific hcalls. I don't know if that approach is
+> > > practical for a real guest, but it could be useful for having re-usable
+> > > guest code in KVM selftests that "just works" for all variants of
+> > > SNP/TDX/sw-protected. (though we'd still want stuff that exercises
+> > > SNP/TDX->KVM_HC_MAP_GPA_RANGE translation).
+> > > 
+> > > I think we'd there is some potential baggage there with the previous SEV
+> > > live migration use cases. There's some potential that existing guest kernels
+> > > will use it once it gets advertised and issue them alongside GHCB-based
+> > > page-state changes. It might make sense to use one of the reserved bits
+> > > to denote this flavor of KVM_HC_MAP_GPA_RANGE as being for
+> > > hardware/software-protected VMs and not interchangeable with calls that
+> > > were used for SEV live migration stuff.
+> > 
+> > I don't think I follow, what exactly wouldn't be interchangeable, and why?
+> 
+> For instance, if KVM_FEATURE_MIGRATION_CONTROL is advertised, then when
+> amd_enc_status_change_finish() is triggered as a result of
+> set_memory_encrypted(), we'd see
+> 
+>   1) a GHCB PSC for SNP, which will get forwarded to userspace via
+>      KVM_HC_MAP_GPA_RANGE
+>   2) KVM_HC_MAP_GPA_RANGE issued directly by the guest.
+> 
+> In that case, we'd be duplicating PSCs but it wouldn't necessarily hurt
+> anything. But ideally we'd be able to distinguish the 2 cases so we
+> could rightly treat 1) as only being expected for SNP, and 2) as only
+> being expected for SEV/SEV-ES.
 
-Trevor
-
-> ---
-> v5 changes:
-> * Modify to list only the supported axi-pwmgen-2.00.a version
->
-> v4 changes: None (rebased, added maintainer's previous Reviewed-by)
-> v3 changes: None (rebased, added maintainer's previous Reviewed-by)
->
-> v2 changes:
-> * Address feedback for driver and device tree in v1:
->    * Relocate "unevaluatedProperties" in device tree binding
->    * Remove redundant "bindings for" in description
->
-> ---
->   .../bindings/pwm/adi,axi-pwmgen.yaml          | 48 +++++++++++++++++++
->   MAINTAINERS                                   |  8 ++++
->   2 files changed, 56 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
->
-> diff --git a/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml b/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> new file mode 100644
-> index 000000000000..ec6115d3796b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/adi,axi-pwmgen.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AXI PWM generator
-> +
-> +maintainers:
-> +  - Michael Hennerich <Michael.Hennerich@analog.com>
-> +  - Nuno Sá <nuno.sa@analog.com>
-> +
-> +description:
-> +  The Analog Devices AXI PWM generator can generate PWM signals
-> +  with variable pulse width and period.
-> +
-> +  https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-> +
-> +allOf:
-> +  - $ref: pwm.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: adi,axi-pwmgen-2.00.a
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#pwm-cells":
-> +    const: 2
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +required:
-> +  - reg
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    pwm@44b00000 {
-> +       compatible = "adi,axi-pwmgen-2.00.a";
-> +       reg = <0x44b00000 0x1000>;
-> +       clocks = <&spi_clk>;
-> +       #pwm-cells = <2>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ebf03f5f0619..d02ece54ccf6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3465,6 +3465,14 @@ W:	https://ez.analog.com/linux-software-drivers
->   F:	Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml
->   F:	drivers/spi/spi-axi-spi-engine.c
->   
-> +AXI PWM GENERATOR
-> +M:	Michael Hennerich <michael.hennerich@analog.com>
-> +M:	Nuno Sá <nuno.sa@analog.com>
-> +L:	linux-pwm@vger.kernel.org
-> +S:	Supported
-> +W:	https://ez.analog.com/linux-software-drivers
-> +F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> +
->   AXXIA I2C CONTROLLER
->   M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
->   L:	linux-i2c@vger.kernel.org
+Why would the guest issue both?  That's a guest bug.  Or if supressing the second
+hypercall is an issue, simply don't enumerate MIGRATION_CONTROL for SNP guests.
 
