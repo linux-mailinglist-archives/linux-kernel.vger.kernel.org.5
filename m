@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-159844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266948B3511
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:15:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6806C8B3520
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:17:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6231289B5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:15:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC6CB24068
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BF414389B;
-	Fri, 26 Apr 2024 10:15:32 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC17146D46;
+	Fri, 26 Apr 2024 10:15:37 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC09B142E9F;
-	Fri, 26 Apr 2024 10:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E032145349;
+	Fri, 26 Apr 2024 10:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126531; cv=none; b=G7WSoKiTg2MKZLxjQFoE/LDERAsqihONwc2h1mCa6w41zJLMBtWRz00XHXoFae2A/aab659jigq5oeXpu06gWSEuHacc1A1l5vsT9/hrixprqMM1JxiY/9pI2ls4VEg7yqv6ePER3yYnV4nl6SS3E8caeTe62/V1W+bCfLdJNEE=
+	t=1714126536; cv=none; b=eAVCuXtX46D0BnGWXt835P/bohtm0IijB1dOqo1yY+Olr/zjGTtFsikY3wlckXcuv+BgqxFH9OYAT2BfltBJIj56+bOiPFTo5idBJ6vQVzZR2+K4gRPLLmjIjdXf674X+UAhXG+24O5agyjFyjxegDT8sP+MiU74AIuR8BR3aYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126531; c=relaxed/simple;
-	bh=1PmetgDd52wT5mS6a1c+oHTd+cEgcFwQ5z45836SnVQ=;
+	s=arc-20240116; t=1714126536; c=relaxed/simple;
+	bh=yXo5+Apf42eIyYCkZPbdtCzXh/8stbdaBFZASXo2YQ0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n574oaeeXB2izpRRCAiemcX+60b6ULylSrS+cIjwfWrX0KX5kkb6H2gpHC3I2CQ1TdYxZqABB/UH8PlMUGFKqkLRM8TZ4wy35oRHeITiI7tsl92Qg6Cc+ZatDL+j22zrcXn5dFdZp/W/Kf1npot+t3SVq1EdrzyezhZGvrbYA74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=UFHr05r+enNDJdWssANaHcjVd2exNbECTHWFH8N3yZXVV6wEL8pUt298Eb8PbdHqkBHIBL2XppR56sB+bGnJQpDjsv9q8k3YwdkmEAWMautH6eCbbsZwAEqtWO3zNNMKEf5QLgsrQE6nA3iG1+QP5c3wK1/pOtDVdFNJcfkBM5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VQpRZ0tmQzXmxq;
-	Fri, 26 Apr 2024 18:11:54 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VQpS62bQHzvPsQ;
+	Fri, 26 Apr 2024 18:12:22 +0800 (CST)
 Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8F98418009D;
+	by mail.maildlp.com (Postfix) with ESMTPS id 9ECBA1800C4;
 	Fri, 26 Apr 2024 18:15:26 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
@@ -45,9 +45,9 @@ To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
 	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 4/7] net: hns3: use appropriate barrier function after setting a bit value
-Date: Fri, 26 Apr 2024 18:00:42 +0800
-Message-ID: <20240426100045.1631295-5-shaojijie@huawei.com>
+Subject: [PATCH V2 net 5/7] net: hns3: using user configure after hardware reset
+Date: Fri, 26 Apr 2024 18:00:43 +0800
+Message-ID: <20240426100045.1631295-6-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240426100045.1631295-1-shaojijie@huawei.com>
 References: <20240426100045.1631295-1-shaojijie@huawei.com>
@@ -64,55 +64,118 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
 
 From: Peiyang Wang <wangpeiyang1@huawei.com>
 
-There is a memory barrier in followed case. When set the port down,
-hclgevf_set_timmer will set DOWN in state. Meanwhile, the service task has
-different behaviour based on whether the state is DOWN. Thus, to make sure
-service task see DOWN, use smp_mb__after_atomic after calling set_bit().
+When a reset occurring, it's supposed to recover user's configuration.
+Currently, the port info(speed, duplex and autoneg) is stored in hclge_mac
+and will be scheduled updated. Consider the case that reset was happened
+consecutively. During the first reset, the port info is configured with
+a temporary value cause the PHY is reset and looking for best link config.
+Second reset start and use pervious configuration which is not the user's.
+The specific process is as follows:
 
-          CPU0                        CPU1
-========================== ===================================
-hclgevf_set_timer_task()    hclgevf_periodic_service_task()
-  set_bit(DOWN,state)         test_bit(DOWN,state)
++------+               +----+                +----+
+| USER |               | PF |                | HW |
++---+--+               +-+--+                +-+--+
+    |  ethtool --reset   |                     |
+    +------------------->|    reset command    |
+    |  ethtool --reset   +-------------------->|
+    +------------------->|                     +---+
+    |                    +---+                 |   |
+    |                    |   |reset currently  |   | HW RESET
+    |                    |   |and wait to do   |   |
+    |                    |<--+                 |   |
+    |                    | send pervious cfg   |<--+
+    |                    | (1000M FULL AN_ON)  |
+    |                    +-------------------->|
+    |                    | read cfg(time task) |
+    |                    | (10M HALF AN_OFF)   +---+
+    |                    |<--------------------+   | cfg take effect
+    |                    |    reset command    |<--+
+    |                    +-------------------->|
+    |                    |                     +---+
+    |                    | send pervious cfg   |   | HW RESET
+    |                    | (10M HALF AN_OFF)   |<--+
+    |                    +-------------------->|
+    |                    | read cfg(time task) |
+    |                    |  (10M HALF AN_OFF)  +---+
+    |                    |<--------------------+   | cfg take effect
+    |                    |                     |   |
+    |                    | read cfg(time task) |<--+
+    |                    |  (10M HALF AN_OFF)  |
+    |                    |<--------------------+
+    |                    |                     |
+    v                    v                     v
 
-pf also has this issue.
+To avoid aboved situation, this patch introduced req_speed, req_duplex,
+req_autoneg to store user's configuration and it only be used after
+hardware reset and to recover user's configuration
 
-Fixes: ff200099d271 ("net: hns3: remove unnecessary work in hclgevf_main")
-Fixes: 1c6dfe6fc6f7 ("net: hns3: remove mailbox and reset work in hclge_main")
+Fixes: f5f2b3e4dcc0 ("net: hns3: add support for imp-controlled PHYs")
 Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 3 +--
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 15 +++++++++------
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h   |  3 +++
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index a068cd745eb4..6eda73f1e6ad 100644
+index 6eda73f1e6ad..5dc8593c97be 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -7954,8 +7954,7 @@ static void hclge_set_timer_task(struct hnae3_handle *handle, bool enable)
- 		/* Set the DOWN flag here to disable link updating */
- 		set_bit(HCLGE_STATE_DOWN, &hdev->state);
- 
--		/* flush memory to make sure DOWN is seen by service task */
--		smp_mb__before_atomic();
-+		smp_mb__after_atomic(); /* flush memory to make sure DOWN is seen by service task */
- 		hclge_flush_link_update(hdev);
+@@ -1537,6 +1537,9 @@ static int hclge_configure(struct hclge_dev *hdev)
+ 			cfg.default_speed, ret);
+ 		return ret;
  	}
- }
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index b57111252d07..08db8e84be4e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2181,8 +2181,7 @@ static void hclgevf_set_timer_task(struct hnae3_handle *handle, bool enable)
- 	} else {
- 		set_bit(HCLGEVF_STATE_DOWN, &hdev->state);
++	hdev->hw.mac.req_speed = hdev->hw.mac.speed;
++	hdev->hw.mac.req_autoneg = AUTONEG_ENABLE;
++	hdev->hw.mac.req_duplex = DUPLEX_FULL;
  
--		/* flush memory to make sure DOWN is seen by service task */
--		smp_mb__before_atomic();
-+		smp_mb__after_atomic(); /* flush memory to make sure DOWN is seen by service task */
- 		hclgevf_flush_link_update(hdev);
+ 	hclge_parse_link_mode(hdev, cfg.speed_ability);
+ 
+@@ -3344,9 +3347,9 @@ hclge_set_phy_link_ksettings(struct hnae3_handle *handle,
+ 		return ret;
  	}
- }
+ 
+-	hdev->hw.mac.autoneg = cmd->base.autoneg;
+-	hdev->hw.mac.speed = cmd->base.speed;
+-	hdev->hw.mac.duplex = cmd->base.duplex;
++	hdev->hw.mac.req_autoneg = cmd->base.autoneg;
++	hdev->hw.mac.req_speed = cmd->base.speed;
++	hdev->hw.mac.req_duplex = cmd->base.duplex;
+ 	linkmode_copy(hdev->hw.mac.advertising, cmd->link_modes.advertising);
+ 
+ 	return 0;
+@@ -3364,9 +3367,9 @@ static int hclge_update_tp_port_info(struct hclge_dev *hdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	hdev->hw.mac.autoneg = cmd.base.autoneg;
+-	hdev->hw.mac.speed = cmd.base.speed;
+-	hdev->hw.mac.duplex = cmd.base.duplex;
++	cmd.base.autoneg = hdev->hw.mac.req_autoneg;
++	cmd.base.speed = hdev->hw.mac.req_speed;
++	cmd.base.duplex = hdev->hw.mac.req_duplex;
+ 	linkmode_copy(hdev->hw.mac.advertising, cmd.link_modes.advertising);
+ 
+ 	return 0;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+index 37527b847f2f..3a9186457ad8 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+@@ -279,11 +279,14 @@ struct hclge_mac {
+ 	u8 media_type;	/* port media type, e.g. fibre/copper/backplane */
+ 	u8 mac_addr[ETH_ALEN];
+ 	u8 autoneg;
++	u8 req_autoneg;
+ 	u8 duplex;
++	u8 req_duplex;
+ 	u8 support_autoneg;
+ 	u8 speed_type;	/* 0: sfp speed, 1: active speed */
+ 	u8 lane_num;
+ 	u32 speed;
++	u32 req_speed;
+ 	u32 max_speed;
+ 	u32 speed_ability; /* speed ability supported by current media */
+ 	u32 module_type; /* sub media type, e.g. kr/cr/sr/lr */
 -- 
 2.30.0
 
