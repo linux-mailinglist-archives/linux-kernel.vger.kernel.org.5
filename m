@@ -1,133 +1,135 @@
-Return-Path: <linux-kernel+bounces-160027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 181E78B3805
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:11:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 893568B37FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:11:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CA7FB23220
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:11:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E19F1F22ED0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A88A146D43;
-	Fri, 26 Apr 2024 13:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96757146A95;
+	Fri, 26 Apr 2024 13:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OiFyMw+o"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mYtsuPaQ"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A05147C62;
-	Fri, 26 Apr 2024 13:10:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CCCE146A7C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714137056; cv=none; b=U3w1JQJpZcFgNMc/eFUY6Z3gX4ANCLLqbRrsxebBQIWffNEPjRuZCU++0sGgSGdqS3pYN432DF3pNXR57/WOQRfDMTL+rY5gwtQaal0j+yHEQCsUw5wC2JmfveLnCVO7H0/kzzWjs6pHnNaFhXC7N3EZEW/2WRQ8kzjh6l6wKio=
+	t=1714137052; cv=none; b=tOZT/HBbNA6kucHnTQ/Y6isiF5RVJ5DWRp/0FBlh3D0Bm1DcAY+WhN+76GALK1QebEtXAtYYnHUBBTXyk7Jc2IWSpYXYwBwu9TPsUebG0eavTWBSQKz7LMSH9s7L/8fyqzlMOa2Ih0dqjm5MBMdy11g9zBONQFGddOX37e9Z7ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714137056; c=relaxed/simple;
-	bh=F8Bo2pBp4CBzrWEGtBurDTewnj7beNkSoEBY6dW1Z5Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HUKI8bCdhjDLn7uI+oexz202reU6aMrA/rfu3nPHpj5DdbFWlvOLi7EyxzXKOz8tXlUOfQiZF76Yae67SXloASK212m32KltqeCcyfBvI8s0tFQAVRXN21lpUbMWz7Yotv1KYo1i7qNe9X02j9N+8/iEn02qT5nYW04uP6TtQL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OiFyMw+o; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714137055; x=1745673055;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F8Bo2pBp4CBzrWEGtBurDTewnj7beNkSoEBY6dW1Z5Q=;
-  b=OiFyMw+oWx/YJHP3KGjM3a9lEDl/ORwWondLFVnN4l9o+kIoDfkJAFcg
-   V4UV+a7BHmewYurml6KiPGOOTta/MqHp+TxaLRsn58VGJngHwboOvWCl8
-   NQKt/AUq02/K1nCh2BlJYsEtcsZJyJa9Wi3X9PHzop0mbros9F5opReel
-   9u1YD64GuHoJmaUC0cQWv9REriI3CP/g+wdFZtBrUy1aPj+P2VNXcb5nQ
-   2qrp3N71p6jJnQm9HBbs3gIw5KnqkJj+JENQx5iWOXS/qlNiEcOOZw1uB
-   64yycT/aIcMtkSCXtcTwYfQBt9Tk0qP87TX8UngsmeMGRVIDFqJrquSqJ
-   Q==;
-X-CSE-ConnectionGUID: 2fuaFQWrRR67zmLW6dWjBg==
-X-CSE-MsgGUID: uf5qvRH0T5+UCHRrt64QNQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="32369082"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="32369082"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 06:10:54 -0700
-X-CSE-ConnectionGUID: I91opZe0QOCYr6k80Mwxlg==
-X-CSE-MsgGUID: 7AYKl2cjT4Kk9lDltl+iZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="29863132"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 26 Apr 2024 06:10:49 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0LLj-0003jK-0O;
-	Fri, 26 Apr 2024 13:10:47 +0000
-Date: Fri, 26 Apr 2024 21:10:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Coiby Xu <coxu@redhat.com>, kexec@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, Ondrej Kozina <okozina@redhat.com>,
-	Milan Broz <gmazyland@gmail.com>,
-	Thomas Staudt <tstaudt@de.ibm.com>,
-	Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-	Kairui Song <ryncsn@gmail.com>, dm-devel@redhat.com,
-	Jan Pazdziora <jpazdziora@redhat.com>,
-	Pingfan Liu <kernelfans@gmail.com>, Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	"(open list:KERNEL HARDENING (not covered by other areas):Keyword:b__counted_byb)" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH v3 2/7] crash_dump: make dm crypt keys persist for the
- kdump kernel
-Message-ID: <202404262003.qsWvGwZU-lkp@intel.com>
-References: <20240425100434.198925-3-coxu@redhat.com>
+	s=arc-20240116; t=1714137052; c=relaxed/simple;
+	bh=VE7wD8KokW+7zCXO0HYd2htMwnpzd+jqE5ppA5VzXgs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=r9NDI6f128dP59CPAUNsdIbJWqvX8SzQaNYKKMGOzxBv6AUZnte6TrWbGJcvhEith/lU8VQL3DIQZbraeUfSqAUU9X5gRxjz4NcrTZ+m5Yuwb2r7acG0Csz+qzYBL0BA1NooGOGeuQvC8T7kj5+8IOUYk+T6n+s2B8Roue6j/Js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mYtsuPaQ; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516d4d80d00so2844312e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714137049; x=1714741849; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=up/TvhMZAZY6yPkfNvqYk9mm7CB0BvgIE99o7dPUwOo=;
+        b=mYtsuPaQ0gH2j5OLE9kTsQa5Xi7g8G06kk+9t8fADcEYyG8rjWqsD4SLF6GX8I58a1
+         dL+Ad6SCcG8zEwVqAcI3QHpF6ZE+UStNK1Ur1eZT5pxnJaNhf4WK+XoHmoQm5TR5vo5f
+         6BPQPRPRCL5XQ/RturGRVMC7C9+caBID225aLif00Ss/hFgAmElJzikih2cRQFvVp6V3
+         U3Bw8e+eONY6XhGKgXuSOilr8K+WulprjFJxc81KYDOyU5RAdkDYzAE1KeRjTc19LhoG
+         3tsB6NZ1D2QGSSjjygnW6yOCxOVZnO7Y0sSB1fYSwso9VJypiNNjzPVfE0s2dJ8R3Hjl
+         nREQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714137049; x=1714741849;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=up/TvhMZAZY6yPkfNvqYk9mm7CB0BvgIE99o7dPUwOo=;
+        b=EO+kw7jadQmZc5rf3Eb0cOJcOrhg0LPB+2RbAXdDerw53yxSYzKU1RyYsvx8EXB2WF
+         XV4HYE7LcJf4VEA3JaCxdCbqT2+mo6w/3Bac5drO8U14w81u97DE5i7aVhxSg7hPNHcN
+         DZrFDTYiiiFykS8w2rQGmhgXXw72TaOtowGWA+TGP8A7oS91Kso+Cd8GKCLKS9WRxaQd
+         fAUCB5ICwlytNeTNgeZtVmJRddCZBCa4C7lqq1oYXWZciEzOJQVzAfDFUrfflXUNS8y0
+         xvqGIAgtWeMxSPEZ9QYLDan0o0LGUYYDQS7JlRRIuSW49a+a/1peKuYnQUeSeFZWMztJ
+         DDzA==
+X-Forwarded-Encrypted: i=1; AJvYcCWW2GE5i0BhRlR32nTyytL4wa6DZIeqiSu6lH14eyMNeDgLJS63C5p7dIjOpq4kYk0AOrni+SmEqeGnOpbrJmY1YF1TQf7R4cDzCD30
+X-Gm-Message-State: AOJu0Ywwq09q7u+KXKRHL0Jnh1YK0FG2uaOWUk7pDeMlDH+hk1YU7cvu
+	QFAN9+U3T6R2fp7qObGgXW6he7JGMR9GM4wHriIxeSKdyFs2VhZiv8cTzgVyr1k=
+X-Google-Smtp-Source: AGHT+IHL9UxI1NEY1QMkE6e22sU+Za46bYeedUI48dL8mkZVuEGHt9uH/8OUBtMER64Ua4ymrFeFUw==
+X-Received: by 2002:ac2:4248:0:b0:51a:90dd:698b with SMTP id m8-20020ac24248000000b0051a90dd698bmr1749320lfl.65.1714137049284;
+        Fri, 26 Apr 2024 06:10:49 -0700 (PDT)
+Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
+        by smtp.gmail.com with ESMTPSA id u18-20020a170906c41200b00a58bec2ae2bsm1396948ejz.39.2024.04.26.06.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 06:10:48 -0700 (PDT)
+From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Subject: [PATCH v2 0/2] clock support for Samsung Exynos pin controller
+ (Google Tensor gs101)
+Date: Fri, 26 Apr 2024 14:10:45 +0100
+Message-Id: <20240426-samsung-pinctrl-busclock-v2-0-8dfecaabf020@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425100434.198925-3-coxu@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIANWnK2YC/42NQQ6CMBBFr0K6dkxbAasr72FYlFJhIrZkBoiG9
+ O5WTuDyveS/vwn2hJ7FtdgE+RUZY8igD4Vwgw29B+wyCy11KUtdAdsXL6GHCYObaYR2YTdG9wR
+ VKadP3bk2tRR5PpF/4HtP35vMA/Ic6bM/repn/4iuCiSYi7FaStv62txGDJbiMVIvmpTSF6gIH
+ 9fBAAAA
+To: Krzysztof Kozlowski <krzk@kernel.org>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>, 
+ Peter Griffin <peter.griffin@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Will McVicker <willmcvicker@google.com>, 
+ Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+X-Mailer: b4 0.12.4
 
-Hi Coiby,
+This series enables clock support on the Samsung Exynos pin controller
+driver.
 
-kernel test robot noticed the following build warnings:
+This is required on Socs like Google Tensor gs101, which implement
+fine-grained clock control / gating, and as such a running bus clock is
+required for register access to work.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.9-rc5 next-20240426]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: André Draszik <andre.draszik@linaro.org>
+---
+Changes in v2:
+- propagate clk_enable() errors in samsung_pinmux_setup(), i.e.
+  struct pinmux_ops::set_mux()
+- move clk_enable()/disable() outside bank->slock lock, to avoid
+  possible deadlocks due to locking inversion (Krzysztof)
+- fix some comments (Krzysztof)
+- use 'ret' instead of 'i' in samsung_pinctrl_resume() (Krzysztof)
+- Link to v1: https://lore.kernel.org/r/20240425-samsung-pinctrl-busclock-v1-0-898a200abe68@linaro.org
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Coiby-Xu/kexec_file-allow-to-place-kexec_buf-randomly/20240425-180836
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240425100434.198925-3-coxu%40redhat.com
-patch subject: [PATCH v3 2/7] crash_dump: make dm crypt keys persist for the kdump kernel
-config: x86_64-randconfig-r113-20240426 (https://download.01.org/0day-ci/archive/20240426/202404262003.qsWvGwZU-lkp@intel.com/config)
-compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404262003.qsWvGwZU-lkp@intel.com/reproduce)
+---
+André Draszik (2):
+      dt-bindings: pinctrl: samsung: google,gs101-pinctrl needs a clock
+      pinctrl: samsung: support a bus clock
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404262003.qsWvGwZU-lkp@intel.com/
+ .../bindings/pinctrl/samsung,pinctrl.yaml          |  17 ++++
+ drivers/pinctrl/samsung/pinctrl-exynos.c           | 112 +++++++++++++++++++++
+ drivers/pinctrl/samsung/pinctrl-samsung.c          |  95 ++++++++++++++++-
+ drivers/pinctrl/samsung/pinctrl-samsung.h          |   2 +
+ 4 files changed, 223 insertions(+), 3 deletions(-)
+---
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+change-id: 20240425-samsung-pinctrl-busclock-151c23d76860
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/crash_dump_dm_crypt.c:31:3: sparse: sparse: symbol 'keys_header' was not declared. Should it be static?
-
-vim +/keys_header +31 kernel/crash_dump_dm_crypt.c
-
-    27	
-    28	struct keys_header {
-    29		unsigned int key_count;
-    30		struct dm_crypt_key keys[] __counted_by(key_count);
-  > 31	} *keys_header;
-    32	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+André Draszik <andre.draszik@linaro.org>
+
 
