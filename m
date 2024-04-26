@@ -1,105 +1,132 @@
-Return-Path: <linux-kernel+bounces-160598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A78A8B3FE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:08:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718A68B3FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC005B23D42
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CAA0281017
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBADB156E4;
-	Fri, 26 Apr 2024 19:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F941BC5C;
+	Fri, 26 Apr 2024 19:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XGPqK6Qp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYzwGi5G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82E2125AE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D0A18C36
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714158480; cv=none; b=TEqeqReMn1sJ0HF+pTHjw6zx6K13uzYs8XTxO3bdBMEhczXyLhPYuR4rWE3zUWAzYsY9iFhbLazWyMkRoOIqc6Lil/q6MqazLkPYr/VyWqCtceZRVm+aaFJWcM+CthQCs97X8KdNmWR1iVxRlTuXcu0ryp/vYloWZi/tSD108yM=
+	t=1714158485; cv=none; b=PVHCMKx8d9R8ilz066eaKksjH/YlYwEoNdOQ8wmJlhz8KC7SnAnDDUqNiNVcbJv+D0Dio3Qk0Lor/gvbo+E84dHrXGS1lfh9bxXFPguPRUc5VpUTv5DSusTqdLZlctKBJByYJyu/LfjM4cU/YDxHFnCQ0xhZb77ZawtZA/vZkaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714158480; c=relaxed/simple;
-	bh=UeSxCdJbzGcsS1QJmeuULnQ8iK3ONz8IzPRxX1f/Ppc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QjTFSVyLbg0D+RHY7hW+/VjT8RPEgEVnqW4v2nkzlMEq6GgPksvxui72UZ0BmW/YjYdOOrx1aTihJkhCsfEQuhPYxhfgiGPivlvV3kOOMvcPUwgMw/pGEN8/tyGwrurJGw/XdxOmdGJKOVWsCt2txBp5qkFah/NXVV84uDFjHX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XGPqK6Qp; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714158479; x=1745694479;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UeSxCdJbzGcsS1QJmeuULnQ8iK3ONz8IzPRxX1f/Ppc=;
-  b=XGPqK6QpyL086kuKKagZ4JOV5f9nO7e2Xhd39DfQUKtBiNO1/8sZYl8h
-   aFRCySf2FujEZlmMEGrIiHxqIVaQ1/6uC8a8F1KqaOjMCUo5a/HYzSBas
-   DSQiSaLAE8K5E2lpdipNc4Ipq75fktIeKmk9dOLPGYqb4HL+maBT3Il8V
-   jaZViGO6SoDmCDqdhNgve/817sJL875h2twokep3MRk+1gbLH6krNDBT+
-   8PaMRbCtbi6h3P1BrJRNrJ19F9yEtIxfZ4dRCmolL2qnNK/ZE5mt8Iym8
-   9FWro7Jc9+GUGknk40EjEWpQI5BzDVmCElzuMzXQMAySiJNJZ1JKje/k2
-   g==;
-X-CSE-ConnectionGUID: RUqmjtn5QqmKIUf57nTnEg==
-X-CSE-MsgGUID: q8SiylM5SSmS+N+b2pAFew==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21315007"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="21315007"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 12:07:58 -0700
-X-CSE-ConnectionGUID: de3DcQFlTCqc1GasD9tfMw==
-X-CSE-MsgGUID: jx4p2FM4RlmrEIyfjsPppQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="26006350"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa007.jf.intel.com with ESMTP; 26 Apr 2024 12:07:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 34F561D5; Fri, 26 Apr 2024 22:07:54 +0300 (EEST)
-Date: Fri, 26 Apr 2024 22:07:54 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: alison.schofield@intel.com
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Kai Huang <kai.huang@linux.intel.com>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Remove unneeded MKTME detection
-Message-ID: <wjmqlbz7nw4waifnjcpf666os7k4ghsorbkwovzftawaywxpon@ohsc3wdtehxx>
-References: <cover.1713929290.git.alison.schofield@intel.com>
+	s=arc-20240116; t=1714158485; c=relaxed/simple;
+	bh=dpY8OiyiXN06eVO+/tKwn8ABB6M/597kWqbEZbQ1yxk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=dJrprCQQ2LcLQF91JDfIwEPHgnmnZdTfK7sLS4MCQI8V0ikxV/hgyjLa333PcftHLNbthVohzZNYzWOpzlVvCloEIDiglogYuAerjOou+6d0Hk1A4h/yZd6nmqFUrpt/qcra5JEJNnI6A8GcqLEGI+8b4KB5/mmQ5Sa/KcbSkUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYzwGi5G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 610F2C113CD;
+	Fri, 26 Apr 2024 19:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714158484;
+	bh=dpY8OiyiXN06eVO+/tKwn8ABB6M/597kWqbEZbQ1yxk=;
+	h=Date:To:Cc:From:Subject:From;
+	b=lYzwGi5G07CpiImAEAdt5yVn6OntP6B0IisKUrZuik7Y84U3OTiCWfyxhAfkFpxEN
+	 zuBMYTqEc5gKXgAm4LXFYa/XXWPFzi6DxxVa1u51eHQ19oxjzwUhMXtvy1pZIVxs0d
+	 VnucSDMpIQ0Q+idiQg7oDjQBy44VfMkq0b9GDPsPYsXLl4H25oROAh3eseGW+IFrc/
+	 tP4j9/y1H53v8aItTLXZQ22rmpxiLTroiQjvSs8+Tp6Om4ng9a7EibuQRVIleApotK
+	 c3WrCf1GaxCF++0cog2H0Tm9TVci+O/gJoHAdW2klAi/aVz+1vGa/jVxF/w3Ct2HH/
+	 vB2FEaTazuf8Q==
+Message-ID: <80a2b41e-74da-43cb-8532-fc3b17879201@kernel.org>
+Date: Fri, 26 Apr 2024 12:08:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1713929290.git.alison.schofield@intel.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: lkml <linux-kernel@vger.kernel.org>,
+ arcml <linux-snps-arc@lists.infradead.org>,
+ Alexey Brodkin <abrodkin@synopsys.com>, Bjorn Helgaas <bhelgaas@google.com>
+From: Vineet Gupta <vgupta@kernel.org>
+Subject: [GIT PULL] ARX fixes for 6.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 09:24:51PM -0700, alison.schofield@intel.com wrote:
-> From: Alison Schofield <alison.schofield@intel.com>
-> 
-> MKTME detection was added in anticipation of full kernel support
-> that never followed. Aside from just good housekeeping, this
-> cleanup is inspired by users who are confused by the TME/MKTME
-> messaging during boot.
-> 
-> The first patch cleans up the TME & MKTME detection code and the
-> second patch removes the unused pconfig code.
-> 
-> Testing was done on a platform supporting MKTME using the BIOS
-> option to enable/disable MKTME prior to boot.
-> 
-> 
-> Alison Schofield (2):
->   x86/cpu: Remove useless work in detect_tme_early()
->   x86/pconfig: Remove unused MKTME pconfig code
+Hi Linus,
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+A few fixes for ARC, please pull !
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Thx,
+-Vineet
+--------------------->
+The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
+
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/
+tags/arc-6.9-fixes
+
+for you to fetch changes up to 61231eb8113ce47991f35024f9c20810b37996bf:
+
+  ARC: [plat-hsdk]: Remove misplaced interrupt-cells property
+(2024-04-16 10:45:57 -0700)
+
+----------------------------------------------------------------
+ARC fixes for 6.9
+
+ - Incorrect VIPT aliasing assumption
+
+ - Miscll build warning fixes and some typos
+
+----------------------------------------------------------------
+Alexey Brodkin (1):
+      ARC: [plat-hsdk]: Remove misplaced interrupt-cells property
+
+Bjorn Helgaas (1):
+      ARC: Fix typos
+
+Vineet Gupta (2):
+      ARC: Fix -Wmissing-prototypes warnings
+      ARC: mm: fix new code about cache aliasing
+
+ arch/arc/Kconfig                          |  1 -
+ arch/arc/boot/Makefile                    |  4 ++--
+ arch/arc/boot/dts/axc003.dtsi             |  4 ++--
+ arch/arc/boot/dts/hsdk.dts                |  1 -
+ arch/arc/boot/dts/vdk_axs10x_mb.dtsi      |  2 +-
+ arch/arc/include/asm/cachetype.h          |  9 ---------
+ arch/arc/include/asm/dsp.h                |  2 +-
+ arch/arc/include/asm/entry-compact.h      | 10 +++++-----
+ arch/arc/include/asm/entry.h              |  4 ++--
+ arch/arc/include/asm/irq.h                |  2 +-
+ arch/arc/include/asm/irqflags-compact.h   |  2 +-
+ arch/arc/include/asm/mmu_context.h        |  2 +-
+ arch/arc/include/asm/pgtable-bits-arcv2.h |  2 +-
+ arch/arc/include/asm/ptrace.h             |  2 +-
+ arch/arc/include/asm/shmparam.h           |  2 +-
+ arch/arc/include/asm/smp.h                |  4 ++--
+ arch/arc/include/asm/thread_info.h        |  2 +-
+ arch/arc/include/uapi/asm/swab.h          |  2 +-
+ arch/arc/kernel/entry-arcv2.S             |  8 ++++----
+ arch/arc/kernel/entry.S                   |  4 ++--
+ arch/arc/kernel/head.S                    |  2 +-
+ arch/arc/kernel/intc-arcv2.c              |  2 +-
+ arch/arc/kernel/kprobes.c                 |  7 ++++---
+ arch/arc/kernel/perf_event.c              |  2 +-
+ arch/arc/kernel/setup.c                   |  2 +-
+ arch/arc/kernel/signal.c                  |  7 ++++---
+ arch/arc/kernel/traps.c                   |  2 +-
+ arch/arc/kernel/vmlinux.lds.S             |  4 ++--
+ arch/arc/mm/tlb.c                         |  4 ++--
+ arch/arc/mm/tlbex.S                       |  8 ++++----
+ 30 files changed, 50 insertions(+), 59 deletions(-)
+ delete mode 100644 arch/arc/include/asm/cachetype.h
 
