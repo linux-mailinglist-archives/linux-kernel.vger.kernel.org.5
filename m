@@ -1,116 +1,116 @@
-Return-Path: <linux-kernel+bounces-160305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 865D28B3BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:34:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA6C8B3BB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B68291C238B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:34:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89B21F25066
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440E314C5BF;
-	Fri, 26 Apr 2024 15:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF56F14901F;
+	Fri, 26 Apr 2024 15:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jf13icI6"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="WaOCu6wW"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1331314901A;
-	Fri, 26 Apr 2024 15:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3D7148854
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145617; cv=none; b=Qk3WEdA2qtdRiePqCOnHEUXHGLruymSXexhJC4ErvU5QdWHKNd1unc4+l1JrVLJeTEekVOr0Gn/HuuWxcuNKuUW3wh0639BCtxxjGnk/5V4pf/+O6ZyRl6trYvvY5k2J2wfYWR0ubeRaPoS3kFALEQoUZArUCsAyb8CRNF+5f70=
+	t=1714145706; cv=none; b=ZcbBxr9HiaWszNgtCs62zqOjCGNoxGnkFcCUpg4vgZCxVTgYmAOXvm9qX9A4lQ8pesNBjn3TcYjx5cJevgUFibFWyZmjTtknFl3NtUqGoCJO5y7ZEs1AnoGLIUN/nkxRKYAECozBwqZdu83YaZnxtL6U7tf6MMEB1cLPN/QhNCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145617; c=relaxed/simple;
-	bh=QFRwxMg7frEbNFDwjKYIBUVZgUsQLuyynI1skXq82W8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SnPeNJqY+nSDbauyNyPeGdwUIvBghsp+j1iDMvHrr8ImwOQCRHiWnq6w0AHsPOGUblzom/cl5arTUHspepHlplcD1d2Lzc5UbNJMUXnz3JehmwNRKgvzN2X0YEtmNhz/WPqXIiiw3lLq4+vjl+mhsD8h2yWfEkZd2sIDixcmxl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jf13icI6; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2def8e58471so31421591fa.0;
-        Fri, 26 Apr 2024 08:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714145614; x=1714750414; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BmSvZsYuxSbHXQQ8UGWfhMWdiN9uCl4v3V31oMHoCWA=;
-        b=jf13icI6SxHnOhX+aFYln5AGzn/W3XNiLsvbkEI1+A2ukE2ux11OXE5ACpiCNtGAgY
-         zPENQk8YiXjcqCFJ7xG1/Jy1ZSkdOm2KfDK9zLBDSVJPDzzHsaHsUG/SLpNpfNFBGdxy
-         qpyH50zIQusZ+YFzibR9rkipUfvpqJ4CJHVIyrOMXMozFOFiUasm4KYnZIZQB2YPbjiK
-         4jOX7u4gaWnZQ3Ks7H8YSvRPSIeCu7SqIRTqwv+TB7MHp34I1FxkQc+wU6cDnJablV/r
-         3DSS5xUogEL3LTyuQfXgi5GtXlu1nKnAh92gDJwgs25HbGVGNS/WgjuTICprjMST+ybb
-         n+qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145614; x=1714750414;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BmSvZsYuxSbHXQQ8UGWfhMWdiN9uCl4v3V31oMHoCWA=;
-        b=YQCp140kY5XMH9eOw6p4zmQhWdwY5VKYHQDW1HAwwHPOGFdrwc95aEq+d/+2mA27W8
-         Pdr+F3lOHiQXR7unKgQVOYHY6nlAkmnUciOl2kyrDQKellU2eyan5bvZvoVEwJiE5kJA
-         wrjeKb96nxTfheC+qpa16xQfv2oKc78ByQtJum4Atf+Mg/ATNwTCnxRuHaXtypKOZ9g1
-         zw6/sriQ/AlfTBRKdt6+DVyZszDJnVYvitSsFKTTgSDDRbrWTcvgxjWxZP8DBIKCKdUh
-         aLzcpm1NySHCA116W8Yz+izsZQiAMhw6w2EFDgjvuwWuzQ8ab7wsZ0y0AdmfkPQ+z2T6
-         KDyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUGEV9wxMs9dUTtMI5S30iXSU+T1Ly6ciOfLG5GhI12t1k6zKxxUSkht64kwRongMc1m387Q1m+MsDbN23gVpDAP2cEL1EkqT51waeuWOjZkQ6gbUdHzHZGk9GTYs6BFk5Ti8dkuOYIVr6YRkZQ9epg8OAwgiBZD0hE0ZCj4tweTrGtZfxT
-X-Gm-Message-State: AOJu0YzuLxgDOWoC+oHp7565J83hAx+dIxskrl0xKYJyBmvCkZsLZXkC
-	Au390F0+bdS7NWfI/AyPZBtS8IUqoA/nWC0QvuFHYHNln12WXvKa
-X-Google-Smtp-Source: AGHT+IGYO3LNHjAx3ZhjcpProOx5Njxc6bvdlaBa/MDs4MpbVRPuvd/qE2go3bO7nU7WPG3Ywv530A==
-X-Received: by 2002:a05:651c:211b:b0:2d8:d972:67e3 with SMTP id a27-20020a05651c211b00b002d8d97267e3mr2911193ljq.5.1714145613836;
-        Fri, 26 Apr 2024 08:33:33 -0700 (PDT)
-Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id gc24-20020a170906c8d800b00a55ac217235sm7000671ejb.90.2024.04.26.08.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 08:33:33 -0700 (PDT)
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Cc: stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: tegra: correct Tegra132 I2C alias
-Date: Fri, 26 Apr 2024 17:33:32 +0200
-Message-ID: <171414557704.2298486.5241450837257963145.b4-ty@nvidia.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240401140854.97107-1-krzk@kernel.org>
-References: <20240401140854.97107-1-krzk@kernel.org>
+	s=arc-20240116; t=1714145706; c=relaxed/simple;
+	bh=hyxcIMkRQWAKyBamxAO3Hwum73Pll6GasPpR2BAxOUc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CXRXx9xh1xEk9Gup6IcTIBViI9LndwasUocMZrsBcTjOgjXsMP3JnaVZstXlnbc07YhxxrdBMZ6U7CEeHStOR49iK+zJZXyecgusvLaBvW61vrDmMlKdzNBsdZJ+IZ6xE7QUiZz34sjsTi3X6FIlKjM/BktHwSr3afdpcyNIj7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=WaOCu6wW; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1EA7340E0187;
+	Fri, 26 Apr 2024 15:35:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Y0I0XX85N4vT; Fri, 26 Apr 2024 15:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714145697; bh=075frEUodZiVoP0luxda7AkjREYnqrV4QquOdVqaK9E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WaOCu6wW5+hAYb3VNxSHy0uXO0ug44b8nFbNgfqBeVqUijxNlL60tiulCQhQ656EH
+	 +umGjHofXzVh9uqFUZhD8PV5KIZLQEZdSIfk0ABlNgJV/I8aigPSmigofDXETJF7lR
+	 gYJOAGfZvcVigL0+apZahn53U3qcsU4j3Q0dIlTmw6SWu5+qq7Dc2QO8XMK9GEwPkQ
+	 6BuRFvp0ky49u3y8S+/hVZKpwt60VjVO4ItNVpigpgp6GXaB3yWIazHmBazSIiYojy
+	 FEKirILHy8PfHuIMrPLaAFP4gCnkDWTg6qpoTp8JUFCHWPpHa0BdAizh38aCSDW4rF
+	 RjOSv1IjkuTYwJPqRlfnRJZxAMwYIGyf3CIYQW2DoH+maegwnGFg0v8doQXMKNu2lp
+	 Q/CqXV0jN4JhWy40bAbgTb57rBj2sX1Gr6PAGdWcXZZeqGdcXk59vMC3Ef1RpIOho0
+	 bEgJMA51lZQ3ln3OZBPVDAfV2+uby+yZmg6BHa2Au918k47eN2Yab2M9tNAslboo4C
+	 kyfv0NfZf3zAGIS3/FSRmx1RJDQnmHnu+xoifiFsEB1zmXZuRZX2U+C0Xve+j9Y82d
+	 NxF171TyeoAevmpen5YUYcVil+u1PCg9LFR32ozcOZ6LmsOygjeYnkWjxgG28W7n1+
+	 hGMVkDXmNpz3ysHRMTFacLj4=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1B01540E0177;
+	Fri, 26 Apr 2024 15:34:31 +0000 (UTC)
+Date: Fri, 26 Apr 2024 17:34:25 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, rafael@kernel.org, peterz@infradead.org,
+	adrian.hunter@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	jun.nakajima@intel.com, rick.p.edgecombe@intel.com,
+	thomas.lendacky@amd.com, michael.roth@amd.com, seanjc@google.com,
+	kai.huang@intel.com, bhe@redhat.com,
+	kirill.shutemov@linux.intel.com, bdas@redhat.com,
+	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
+	jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] efi/x86: skip efi_arch_mem_reserve() in case of
+ kexec.
+Message-ID: <20240426153425.GGZivJgbBxzo30ja8V@fat_crate.local>
+References: <cover.1712694667.git.ashish.kalra@amd.com>
+ <cover.1713222642.git.ashish.kalra@amd.com>
+ <a3032e4b7a5406c26aeb66e9380043c410d07e3d.1713222642.git.ashish.kalra@amd.com>
+ <20240424144807.GEZikbp0NjFP5AM_ms@fat_crate.local>
+ <16b34494-7e5f-4feb-8a21-58e7b8fa97e2@amd.com>
+ <20240426142119.GEZiu4X8VPK5He4zH1@fat_crate.local>
+ <a1d80cce-28d1-48e8-bc38-8960d8c90774@amd.com>
+ <20240426152221.GFZivGrY86svE0RZ00@fat_crate.local>
+ <debd333e-6897-476a-97fc-02246e97a24c@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <debd333e-6897-476a-97fc-02246e97a24c@amd.com>
 
-From: Thierry Reding <treding@nvidia.com>
+On Fri, Apr 26, 2024 at 10:28:41AM -0500, Kalra, Ashish wrote:
+> "Chained guest kexec" is when we are in a guest and kexec-ing into a new
+> kernel and then this kernel kexecs into another and so on ...
 
+Make sure to explain your terminology:
 
-On Mon, 01 Apr 2024 16:08:54 +0200, Krzysztof Kozlowski wrote:
-> There is no such device as "as3722@40", because its name is "pmic".  Use
-> phandles for aliases to fix relying on full node path.  This corrects
-> aliases for RTC devices and also fixes dtc W=1 warning:
-> 
->   tegra132-norrin.dts:12.3-36: Warning (alias_paths): /aliases:rtc0: aliases property is not a valid node (/i2c@7000d000/as3722@40)
-> 
-> 
-> [...]
+$ git grep -rE "chained.*kexec"
+$
 
-Applied, thanks!
+and there's nothing "chained" about it - you're simply kexec-ing in
+a loop.
 
-[1/1] arm64: tegra: correct Tegra132 I2C alias
-      (no commit info)
+Please don't make it sound more complicated than it is.
 
-Best regards,
 -- 
-Thierry Reding <treding@nvidia.com>
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
