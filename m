@@ -1,123 +1,162 @@
-Return-Path: <linux-kernel+bounces-160623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D8B8B4034
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:40:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4A38B4032
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:40:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CC39285D83
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:40:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9072C1C22C41
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36F41BC31;
-	Fri, 26 Apr 2024 19:40:49 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1604218C36;
+	Fri, 26 Apr 2024 19:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Hil+eIBn"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1FA21101
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B082231F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:40:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714160449; cv=none; b=q9YlnTuXpeTur32uCBTp7gtfYlj4+uTGub47GM+AL394g/EKS5HngEHePObllz+K5lTE2iz4tpfPdn8O4baf9eWNpWPb6m4pk0/IWPbxTNZruJmmNSuOwt0t3qEho0e0LgegxSe1vQVvMltrBl29UKMZVGUoVBM6X0baLw1PlI0=
+	t=1714160437; cv=none; b=dcz24yNDNsTuTiht9bryXvck4U4x//RMZkrUX1j2TssOiN6pjE6J1rUOY/Aa2NqUNtc8XUl5aVoOleauqQKixn1bPBez9O1k7G8yrHg3aIz+7WNCaOZp/TY6ICTya8MIiNajpvkmYgFc+UU7iSvOJJDjTs82Qy3K2Sh9/hhGafo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714160449; c=relaxed/simple;
-	bh=MJhoBOcKvcAfCqXZ27Dow0kPxI2bLjrCHZ1BhmTfiUs=;
+	s=arc-20240116; t=1714160437; c=relaxed/simple;
+	bh=LcwyKWwPX6z34F0Gb9soBrF9DmV/UB27hHsQADFPmmk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YxfotZBAk0dWFsiaQBtbjEfNZiwePLuyhuxkhiljIkAoZZ5DrDWYuLb9+TfWU7iFvJgmmMkpjpke9nRKupn7b6tVvwSH2rvVxsGtGFw//eb+RQnCMY7kLB/MchP3fKhFZZsmY1zaBkd4BOOr6eMtuS88h21Gg/ekM541SF+n0pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s0RQo-0006P0-27; Fri, 26 Apr 2024 21:40:26 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s0RQn-00EV0n-4J; Fri, 26 Apr 2024 21:40:25 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s0RQn-009ZX2-08;
-	Fri, 26 Apr 2024 21:40:25 +0200
-Date: Fri, 26 Apr 2024 21:40:24 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Russell King <linux@armlinux.org.uk>
-Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, linux-kernel@vger.kernel.org, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 00/49] ARM: dts: imx: Use #pwm-cells = <3> for
- imx27-pwm device
-Message-ID: <oy4mnbkskyrw5dwkq3rebe2yh4i3fy44rubhvesug7pedzws46@472pzktn5t22>
-References: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMJY0ZU/oADhDRYG4BCzvgkSGhsIQBCfjYf5XFUF7vVGFUqfxFMISXgwpDjTzkOrXfOqCVB4ypdBSP0b4iRbng7A9AdesMXiP7t7cBvhsOuIKpPJl+sNo7A7XzbLp3t82bFsNDI/FDql0XO1dkiDAXhtXe4C+9PXYckAfmZqqhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Hil+eIBn; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ecff9df447so2540036b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714160434; x=1714765234; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KLztx8KYJnj7bEhi+e9Rs8Zsig7zBXXhW5ZdjWyfVfw=;
+        b=Hil+eIBn1mLXz4OMGsRwfez3O9X0dkL7bAZBdzqaT8xBBAUOznEMC4VkJjMThUbDi6
+         JyJeyXLFw3+2ojVolbnlEyCs5IVmLnh0qKDyb7Yy3mefTDlcR9J9Q8yUGmBhsi3s2TB9
+         A4HdofcnvmaZF8MjpDxO2PWLmMA/rLchMR6VY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714160434; x=1714765234;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLztx8KYJnj7bEhi+e9Rs8Zsig7zBXXhW5ZdjWyfVfw=;
+        b=KyPIFY8oDu0j2x0Jh86N4pwQGzhQqnLI6eNNDJzYp4kT3ePmLwFvDC+fDAteagz1Ec
+         zVh5oANh9IoWfZT0M0YC2fCkQ9UBWqP7tLWJZvQmooR4A+/UHnwwibavTWk5E77jCT+H
+         Ba5VUTVx3W3lU/A06Hf3MUJ0psvy1WoAKngwafR80+bJC93MBhkD6kstYbQK9oLF55IB
+         WdS3oW+yq6bxgBjxLdRo045MB8SlCgnq7+BnVbTulPZcBqrDooiwxf+R/AMNLv+XSGuC
+         oP9GqfsO9IwPd/+SHJuYx6lFygjT+LWt6vTAx1bKb4kDs8CGJIt49Irei+kBl9KV0oAT
+         ZXPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIPBvSjNtuk29qy2qas6BAFyiwMRL+rTKG0WAxg1owpD6Kiejue+x7aItUQovqwxZRUC2xdsJ5kBgXpedYKLdjvKuDQ4ra7yP0qHzE
+X-Gm-Message-State: AOJu0YxEHBfQFLYY3goUFFGrg7b8a9E0hVSqE2UxIaGIx7BGQ2w1Fl+Y
+	yPAZanS9W4D/iGQO7XVL380NIZh0pU/9FppN99TPIxXLRKvzgwiow1yOph9kJg==
+X-Google-Smtp-Source: AGHT+IEVck8/DhxISBA3th436oPnjrKXPkbS4uqXM8nzquMCPo0gI3q/3yYVFDOH76WDU9eJlzL8Kg==
+X-Received: by 2002:a05:6a00:22ca:b0:6ed:8798:3fa3 with SMTP id f10-20020a056a0022ca00b006ed87983fa3mr4863802pfj.15.1714160433840;
+        Fri, 26 Apr 2024 12:40:33 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fc4-20020a056a002e0400b006eb058b2703sm13561886pfb.187.2024.04.26.12.40.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 12:40:32 -0700 (PDT)
+Date: Fri, 26 Apr 2024 12:40:32 -0700
+From: Kees Cook <keescook@chromium.org>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Will Drewry <wad@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1 3/5] selftests/harness: Fix fixture teardown
+Message-ID: <202404261240.78AD73958@keescook>
+References: <20240426172252.1862930-1-mic@digikod.net>
+ <20240426172252.1862930-4-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6qlyaxmagn4lyfzd"
-Content-Disposition: inline
-In-Reply-To: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---6qlyaxmagn4lyfzd
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240426172252.1862930-4-mic@digikod.net>
 
-Hello,
+On Fri, Apr 26, 2024 at 07:22:50PM +0200, Mickaël Salaün wrote:
+> Make sure fixture teardowns are run when test cases failed, including
+> when _metadata->teardown_parent is set to true.
+> 
+> Make sure only one fixture teardown is run per test case, handling the
+> case where the test child forks.
 
-On Fri, Apr 05, 2024 at 11:41:47PM +0200, Uwe Kleine-K=F6nig wrote:
-> this series addresses many warnings of the type:
->=20
-> 	arch/arm/boot/dts/nxp/imx/imx6ul-pico-dwarf.dtb: pwm@2088000: #pwm-cells=
-:0:0: 3 was expected
-> 	        from schema : http://devicetree.org/schemas/pwm/imx-pwm.yaml#
->=20
-> that is emitted when building with CHECK_DTBS=3D1.
->=20
-> This completes the conversion started with
->=20
-> 	fa28d8212ede ("ARM: dts: imx: default to #pwm-cells =3D <3> in the SoC d=
-tsi files")
-> 	4c6f19ab2aed ("dt-bindings: pwm: imx-pwm: Unify #pwm-cells for all compa=
-tibles")
+I had to go look up __sync_bool_compare_and_swap(). :)
 
-Gentle ping! I would expect that Shawn picks up this series.
+> 
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Shengyu Li <shengyu.li.evgeny@gmail.com>
+> Fixes: 72d7cb5c190b ("selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN")
+> Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> Link: https://lore.kernel.org/r/20240426172252.1862930-4-mic@digikod.net
 
-Best regards
-Uwe
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+-Kees
 
---6qlyaxmagn4lyfzd
-Content-Type: application/pgp-signature; name="signature.asc"
+> ---
+>  tools/testing/selftests/kselftest_harness.h | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+> index ba3ddeda24bf..73491efbae9e 100644
+> --- a/tools/testing/selftests/kselftest_harness.h
+> +++ b/tools/testing/selftests/kselftest_harness.h
+> @@ -383,7 +383,10 @@
+>  		FIXTURE_DATA(fixture_name) self; \
+>  		pid_t child = 1; \
+>  		int status = 0; \
+> -		bool jmp = false; \
+> +		/* Makes sure there is only one teardown, even when child forks again. */ \
+> +		bool *teardown = mmap(NULL, sizeof(*teardown), \
+> +			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
+> +		*teardown = false; \
+>  		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
+>  		if (setjmp(_metadata->env) == 0) { \
+>  			/* Use the same _metadata. */ \
+> @@ -400,15 +403,16 @@
+>  				_metadata->exit_code = KSFT_FAIL; \
+>  			} \
+>  		} \
+> -		else \
+> -			jmp = true; \
+>  		if (child == 0) { \
+> -			if (_metadata->setup_completed && !_metadata->teardown_parent && !jmp) \
+> +			if (_metadata->setup_completed && !_metadata->teardown_parent && \
+> +					__sync_bool_compare_and_swap(teardown, false, true)) \
+>  				fixture_name##_teardown(_metadata, &self, variant->data); \
+>  			_exit(0); \
+>  		} \
+> -		if (_metadata->setup_completed && _metadata->teardown_parent) \
+> +		if (_metadata->setup_completed && _metadata->teardown_parent && \
+> +				__sync_bool_compare_and_swap(teardown, false, true)) \
+>  			fixture_name##_teardown(_metadata, &self, variant->data); \
+> +		munmap(teardown, sizeof(*teardown)); \
+>  		if (!WIFEXITED(status) && WIFSIGNALED(status)) \
+>  			/* Forward signal to __wait_for_test(). */ \
+>  			kill(getpid(), WTERMSIG(status)); \
+> -- 
+> 2.44.0
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYsAycACgkQj4D7WH0S
-/k76+gf/RTd50w5R0hfdfG8xkZOBeH3rPK6SXQs8zpgJ+/lgFxqquJi95MpCrQiG
-3JRo4kCmPkPbUNjhTGORzRBeh9Gi8uI7FZ1TFEMgiytsVDuJV/lC/CbWAhI/BebL
-N+vBHG3188lpfsfzgbuUnCQk1TxLEeyWrdV/sG5pGR1JaalCudQxwTVODqvRX8T3
-qiuNqZmHG3HWkGVZ21ibdkdfVcArWphKeB2GUpss3MQJDNR8zYPkMgFYWYy3TYie
-ic2z6+LEP/9IA2E5eKz6prVC/zgOjsUMktzs5aNy01uRxiUe1iQ3IPhPuBu/qner
-qlkpR97+TFM8ZGuypO4fRp0bVIG3Aw==
-=sPqb
------END PGP SIGNATURE-----
-
---6qlyaxmagn4lyfzd--
+-- 
+Kees Cook
 
