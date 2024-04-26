@@ -1,237 +1,139 @@
-Return-Path: <linux-kernel+bounces-159463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FDA78B2EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:28:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28CB8B2EF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FB45284713
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ABE61F230A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3B3763F7;
-	Fri, 26 Apr 2024 03:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3D176C76;
+	Fri, 26 Apr 2024 03:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gkNsjSu4"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mZ0HtMw9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45C617FF
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEFA762EF;
+	Fri, 26 Apr 2024 03:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714102117; cv=none; b=I12mDbU+5sFCdfiMOw5DLRLWQDBdU6j1n5MJE9Hu1tWrlQ8Bv+i4eF7S+wrow+2gDpXt22mBFaZPcvBDUlKraSRb+bgRzw4+1j0cU3tTJ9uSdx7sCPXtRofUfvc7AvPWsELpaClsezQfznR3wU3ULD0F7w7RMP6SuCw8fFevds0=
+	t=1714102228; cv=none; b=GDNP/kLw9GxSfOqzhPohwnsov16XxNydC2d2lHatyevQZwE6/wiBF52niQNfCxw7+UzFcZO1sbiz4SiaTk9tCvzvJGskIj+reyc8SpSVCzcdI6lqUFySy6tAlsDjnl1I3IK64S5X55uKqO3fifC6Kouq6vAdqfwtfjQJk6CVTmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714102117; c=relaxed/simple;
-	bh=VYhhBchJTr5KyucGYEtHNfSJQ7QKp37QoCKoqzZ4yQ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OzzjXCa0OM17zyZy9H2qRbz3yaAzJe8Wy+NmlRiJ6Kw7r+bqb27HNIyuyhlrHq8u4EEI+FAmzFZDByxC8MW7oh6Yy59gbv4GD2We8HXmPhxK2+AunHTGpL397PpNfzdy5LjcJUXpt7AMc/UXwxelngccVSWrJbJgCBpNb0ZUzrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gkNsjSu4; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4dcf9659603so448345e0c.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714102114; x=1714706914; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CyHxC41lHfusFiTgDcGJmDgmhY96MrkI4VAWat9lk0A=;
-        b=gkNsjSu46CdCoMuf94xBclnlK9nazPEC5zT2ArkD4gMoLIdZaSXR2DeTxHTvmNDZsn
-         8cmE4UW6KOwnIcdEIQki+W0Irpl3vSAR2k+PFpMdrAVx0/W6QQZUAAJ1a1VrK4Cxb/ln
-         liCfIpvfiVnbUBuEdDO6gw+TG7bTWYTvYh/EM4HmoFLFh6k5gTJDcemT8A4+gazkCYRM
-         DhQARK/cMMab3QxS6Ath+DHJmbhOhs4PSiBf6udyJYS0upuiHpnxAbIneUVX2sd1QLdK
-         dDFQrwOvQek5oU2fKucDeLfZa5Sd7QIEydDSeTC4IIWh/Kx0PzfXvTzORbzbN+LotB7o
-         fTJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714102114; x=1714706914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CyHxC41lHfusFiTgDcGJmDgmhY96MrkI4VAWat9lk0A=;
-        b=kEPsdehPYXstqXtJ9qnvnRyx7JOS8CdDLItWMehLdUCpSVdhjVKa9nJbnHcSKzFuKm
-         fdkSxn9jeDjM0LbOY98Ly/94m4HUgHmJqPeerWgXcXX5TbUXpm8U5HRHbkBY7TbNT/FQ
-         bgapYf8Pxbin05+v6C2CEEuDqSGlEFtz7kRJLTgDMYeanyC1ScfrfC5++d/PPPUPZDTy
-         bh88SUr2ST/Sf4ha0X4VF2OrmKVTC+QwrqlKDdqZNuMndD767cBERdu7GNitfxSnz9hO
-         khxnEIhXXNb06p2OScMrEopSnQ6fER3FSZyNobGwxhxYkggYZrQdRaGWH/6qkr4+9AwF
-         RZig==
-X-Forwarded-Encrypted: i=1; AJvYcCXEihIWccNBvPCBPxdcm26ZH4g9otTaJLDUin9mIP5rqu1W8CLMGmyihxFKqtbdVrIXFlQ4jYCSMxfiJFL/g2/entFSE7xELgL60SCJ
-X-Gm-Message-State: AOJu0YznUbxfm5HmvqyF4RjsCi0N0iH9xmlviqDLzWN8dGpIcaLuCNeo
-	KIxVp0uAoesEqzWdwXu6lyY5ix2Sy2+2B9qeiP8orqllC5+Kw6n/FDYyZwZSfMyyDOxJ34ruzjm
-	+VSTzpQKulFU2aj5reyLb2vHhmys=
-X-Google-Smtp-Source: AGHT+IHHV9qmt/bnW4eu4JuN4hMYG1Vu/q/MSh/GsaDPNA2tdn/uecOBpGwt+YPK2O0cHKjTnBIqVgI8Ku77KnE4XGY=
-X-Received: by 2002:a05:6122:3d15:b0:4d4:126b:2c8 with SMTP id
- ga21-20020a0561223d1500b004d4126b02c8mr1537871vkb.9.1714102114546; Thu, 25
- Apr 2024 20:28:34 -0700 (PDT)
+	s=arc-20240116; t=1714102228; c=relaxed/simple;
+	bh=EdgVL+mjeevOY833THEkV8ftpwKHklYo0/miJTIw3KQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Nr5A0G0ar5lvqAir5GOrSzpTvJGGdtsT+JSQUjnMrm7ndau1jSMMxs3nwrUmQlkRl4qVaPrEv7enEyRTKywOXkbCf+9WiPMm/jDKx1Zl3L1Uy9n9gZm+SKJNUnd1OAHj9nPr1ldN21+2R3aZQE6CBo3bf7wkjbiAOIXwYXOg3vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mZ0HtMw9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 13C99C2BD11;
+	Fri, 26 Apr 2024 03:30:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714102228;
+	bh=EdgVL+mjeevOY833THEkV8ftpwKHklYo0/miJTIw3KQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=mZ0HtMw9qHyNqgn5EB/WWtrssN6O887nOeLt4cDOOborhaSqhSA0s74YIjFOlMw/O
+	 voSjMh7bhhqgi7798goJKgWFo/rjO/u0dGqHmKCQYaYhF6wRnFYOFSqGUtNlCY8syV
+	 XLayyNPSNLJyVQ4a+9Qv24qYO3qF/XfWakilaVK4EAu/YEjDTfZzmO7gBvekGfr/6d
+	 UjMbs5MILVQ6cdZpy6fnAgPsFlLrKIEf2KNzSrPQ6lGU5EehnpB3jPL8y9qrSD2kFn
+	 aqInyb7KNnjVBBekJ316yj6Oo1VWz6EUQjFLDmS72Uqbbw/Fyb9DQBvOJZhGsYJZ3K
+	 XsRsPn2wi2/+A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EEEBFC595D2;
+	Fri, 26 Apr 2024 03:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425211136.486184-1-zi.yan@sent.com> <CAGsJ_4wa0LskQkoZf9r5bG5+wEkyfCYveMBSTbuDe0=t1QetTg@mail.gmail.com>
- <6C31DF81-94FB-4D09-A3B8-0CED2AD8EDDB@nvidia.com> <CAGsJ_4xzb8RrEuPEbnvR4GbDWuoGCYL4FsC3TObOifAZ4CHGOA@mail.gmail.com>
- <730660D2-E1BA-4A2E-B99C-2F160F9D9A9B@nvidia.com>
-In-Reply-To: <730660D2-E1BA-4A2E-B99C-2F160F9D9A9B@nvidia.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 26 Apr 2024 11:28:23 +0800
-Message-ID: <CAGsJ_4yNSKdft-G=4X2Dr5HJ-axh-8SohGW7nkUfTYrsNFr9_Q@mail.gmail.com>
-Subject: Re: [PATCH v4] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Yang Shi <shy828301@gmail.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, 
-	Lance Yang <ioworker0@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v11 00/10][pull request] net: intel: start The Great
+ Code Dedup + Page Pool for iavf
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171410222797.8197.8566659158199091850.git-patchwork-notify@kernel.org>
+Date: Fri, 26 Apr 2024 03:30:27 +0000
+References: <20240424203559.3420468-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20240424203559.3420468-1-anthony.l.nguyen@intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, netdev@vger.kernel.org, hawk@kernel.org,
+ linux-mm@kvack.org, przemyslaw.kitszel@intel.com, alexanderduyck@fb.com,
+ ilias.apalodimas@linaro.org, linux-kernel@vger.kernel.org,
+ aleksander.lobakin@intel.com, linyunsheng@huawei.com,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com, cl@linux.com,
+ akpm@linux-foundation.org, vbabka@suse.cz
 
-On Fri, Apr 26, 2024 at 10:50=E2=80=AFAM Zi Yan <ziy@nvidia.com> wrote:
->
-> On 25 Apr 2024, at 22:23, Barry Song wrote:
->
-> > On Fri, Apr 26, 2024 at 9:55=E2=80=AFAM Zi Yan <ziy@nvidia.com> wrote:
-> >>
-> >> On 25 Apr 2024, at 21:45, Barry Song wrote:
-> >>
-> >>> On Fri, Apr 26, 2024 at 5:11=E2=80=AFAM Zi Yan <zi.yan@sent.com> wrot=
-e:
-> >>>>
-> >>>> From: Zi Yan <ziy@nvidia.com>
-> >>>>
-> >>>> In __folio_remove_rmap(), a large folio is added to deferred split l=
-ist
-> >>>> if any page in a folio loses its final mapping. But it is possible t=
-hat
-> >>>> the folio is fully unmapped and adding it to deferred split list is
-> >>>> unnecessary.
-> >>>>
-> >>>> For PMD-mapped THPs, that was not really an issue, because removing =
-the
-> >>>> last PMD mapping in the absence of PTE mappings would not have added=
- the
-> >>>> folio to the deferred split queue.
-> >>>>
-> >>>> However, for PTE-mapped THPs, which are now more prominent due to mT=
-HP,
-> >>>> they are always added to the deferred split queue. One side effect
-> >>>> is that the THP_DEFERRED_SPLIT_PAGE stat for a PTE-mapped folio can =
-be
-> >>>> unintentionally increased, making it look like there are many partia=
-lly
-> >>>> mapped folios -- although the whole folio is fully unmapped stepwise=
-.
-> >>>>
-> >>>> Core-mm now tries batch-unmapping consecutive PTEs of PTE-mapped THP=
-s
-> >>>> where possible starting from commit b06dc281aa99 ("mm/rmap: introduc=
-e
-> >>>> folio_remove_rmap_[pte|ptes|pmd]()"). When it happens, a whole PTE-m=
-apped
-> >>>> folio is unmapped in one go and can avoid being added to deferred sp=
-lit
-> >>>> list, reducing the THP_DEFERRED_SPLIT_PAGE noise. But there will sti=
-ll be
-> >>>> noise when we cannot batch-unmap a complete PTE-mapped folio in one =
-go
-> >>>> -- or where this type of batching is not implemented yet, e.g., migr=
-ation.
-> >>>>
-> >>>> To avoid the unnecessary addition, folio->_nr_pages_mapped is checke=
-d
-> >>>> to tell if the whole folio is unmapped. If the folio is already on
-> >>>> deferred split list, it will be skipped, too.
-> >>>>
-> >>>> Note: commit 98046944a159 ("mm: huge_memory: add the missing
-> >>>> folio_test_pmd_mappable() for THP split statistics") tried to exclud=
-e
-> >>>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does =
-not
-> >>>> fix the above issue. A fully unmapped PTE-mapped order-9 THP was sti=
-ll
-> >>>> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
-> >>>> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
-> >>>> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable(=
-).
-> >>>>
-> >>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> >>>> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> >>>> ---
-> >>>>  mm/rmap.c | 8 +++++---
-> >>>>  1 file changed, 5 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/mm/rmap.c b/mm/rmap.c
-> >>>> index a7913a454028..220ad8a83589 100644
-> >>>> --- a/mm/rmap.c
-> >>>> +++ b/mm/rmap.c
-> >>>> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rm=
-ap(struct folio *folio,
-> >>>>                  * page of the folio is unmapped and at least one pa=
-ge
-> >>>>                  * is still mapped.
-> >>>>                  */
-> >>>> -               if (folio_test_large(folio) && folio_test_anon(folio=
-))
-> >>>> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_p=
-mdmapped)
-> >>>> -                               deferred_split_folio(folio);
-> >>>> +               if (folio_test_large(folio) && folio_test_anon(folio=
-) &&
-> >>>> +                   list_empty(&folio->_deferred_list) &&
-> >>>> +                   ((level =3D=3D RMAP_LEVEL_PTE && atomic_read(map=
-ped)) ||
-> >>>> +                    (level =3D=3D RMAP_LEVEL_PMD && nr < nr_pmdmapp=
-ed)))
-> >>>> +                       deferred_split_folio(folio);
-> >>>
-> >>> Hi Zi Yan,
-> >>> in case a mTHP is mapped by two processed (forked but not CoW yet), i=
-f we
-> >>> unmap the whole folio by pte level in one process only, are we still =
-adding this
-> >>> folio into deferred list?
-> >>
-> >> No. Because the mTHP is still fully mapped by the other process. In te=
-rms of code,
-> >> nr will be 0 in that case and this if condition is skipped. nr is only=
- increased
-> >> from 0 when one of the subpages in the mTHP has no mapping, namely pag=
-e->_mapcount
-> >> becomes negative and last is true in the case RMAP_LEVEL_PTE.
-> >
-> > Ok. i see, so "last" won't be true?
-> >
-> > case RMAP_LEVEL_PTE:
-> > do {
-> > last =3D atomic_add_negative(-1, &page->_mapcount);
-> >    if (last && folio_test_large(folio)) {
-> >        last =3D atomic_dec_return_relaxed(mapped);
-> >        last =3D (last < ENTIRELY_MAPPED);
-> > }
-> >
-> > if (last)
-> >      nr++;
-> > } while (page++, --nr_pages > 0);
-> > break;
->
-> Right, because for every subpage its corresponding
-> last =3D atomic_add_negative(-1, &page->_mapcount); is not true after the=
- unmapping.2
+Hello:
 
-if a mTHP is mapped only by one process, and we unmap it entirely, we will
-get nr > 0, then we are executing adding it into deferred_list? so it seems
-atomic_read(mapped) is preventing this case from adding deferred_list?
+This series was applied to netdev/net-next.git (main)
+by Tony Nguyen <anthony.l.nguyen@intel.com>:
 
-I wonder if  it is possible to fixup nr to 0 from the first place?
-for example
-/* we are doing an entire unmapping */
-if (page=3D=3D&folio->page && nr_pages =3D=3D  folio_nr_pages(folio))
-..
+On Wed, 24 Apr 2024 13:35:47 -0700 you wrote:
+> Alexander Lobakin says:
+> 
+> Here's a two-shot: introduce {,Intel} Ethernet common library (libeth and
+> libie) and switch iavf to Page Pool. Details are in the commit messages;
+> here's a summary:
+> 
+> Not a secret there's a ton of code duplication between two and more Intel
+> ethernet modules. Before introducing new changes, which would need to be
+> copied over again, start decoupling the already existing duplicate
+> functionality into a new module, which will be shared between several
+> Intel Ethernet drivers. The first name that came to my mind was
+> "libie" -- "Intel Ethernet common library". Also this sounds like
+> "lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+> "lib Internet Explorer" :P
+> The "generic", pure-software part is placed separately, so that it can be
+> easily reused in any driver by any vendor without linking to the Intel
+> pre-200G guts. In a few words, it's something any modern driver does the
+> same way, but nobody moved it level up (yet).
+> The series is only the beginning. From now on, adding every new feature
+> or doing any good driver refactoring will remove much more lines than add
+> for quite some time. There's a basic roadmap with some deduplications
+> planned already, not speaking of that touching every line now asks:
+> "can I share this?". The final destination is very ambitious: have only
+> one unified driver for at least i40e, ice, iavf, and idpf with a struct
+> ops for each generation. That's never gonna happen, right? But you still
+> can at least try.
+> PP conversion for iavf lands within the same series as these two are tied
+> closely. libie will support Page Pool model only, so that a driver can't
+> use much of the lib until it's converted. iavf is only the example, the
+> rest will eventually be converted soon on a per-driver basis. That is
+> when it gets really interesting. Stay tech.
+> 
+> [...]
 
->
->
-> --
-> Best Regards,
-> Yan, Zi
+Here is the summary with links:
+  - [net-next,v11,01/10] net: intel: introduce {, Intel} Ethernet common library
+    https://git.kernel.org/netdev/net-next/c/306ec721d043
+  - [net-next,v11,02/10] iavf: kill "legacy-rx" for good
+    https://git.kernel.org/netdev/net-next/c/53844673d555
+  - [net-next,v11,03/10] iavf: drop page splitting and recycling
+    https://git.kernel.org/netdev/net-next/c/920d86f3c552
+  - [net-next,v11,04/10] slab: introduce kvmalloc_array_node() and kvcalloc_node()
+    https://git.kernel.org/netdev/net-next/c/a1d6063d9f2f
+  - [net-next,v11,05/10] page_pool: constify some read-only function arguments
+    https://git.kernel.org/netdev/net-next/c/ef9226cd56b7
+  - [net-next,v11,06/10] page_pool: add DMA-sync-for-CPU inline helper
+    https://git.kernel.org/netdev/net-next/c/ce230f4f8981
+  - [net-next,v11,07/10] libeth: add Rx buffer management
+    https://git.kernel.org/netdev/net-next/c/e6c91556b97f
+  - [net-next,v11,08/10] iavf: pack iavf_ring more efficiently
+    https://git.kernel.org/netdev/net-next/c/97cadd3d3ce3
+  - [net-next,v11,09/10] iavf: switch to Page Pool
+    https://git.kernel.org/netdev/net-next/c/5fa4caff59f2
+  - [net-next,v11,10/10] MAINTAINERS: add entry for libeth and libie
+    https://git.kernel.org/netdev/net-next/c/87a927efa7d9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
