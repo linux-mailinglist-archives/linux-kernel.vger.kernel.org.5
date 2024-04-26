@@ -1,116 +1,118 @@
-Return-Path: <linux-kernel+bounces-160489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68368B3E26
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:30:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B858B3E2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:31:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81BE6281825
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:30:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAED3B21FD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D428116F91A;
-	Fri, 26 Apr 2024 17:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9797C171082;
+	Fri, 26 Apr 2024 17:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wKZ1DFP4"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bTEsCjWA"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941B016EC0B
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDAE16D329
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152281; cv=none; b=Yv50MS7c+iejUoawpGpKn13QzI3Wm0BxOcdAp878e1wmKnvOHoAb2kfd3noptwyYsriPyVCNZIze7ZOoOZTKCXmMil7wqMizpNTGIhpM1ZhLezfOGuTJTfTTBc9NZ0eEa7sEkcyle2gqqtzAfByIH49JcWZ2NXRn1QFi+Zz7NH4=
+	t=1714152309; cv=none; b=twEQQzdWvuiIfqBDsjigVEZjpOMRZHq2N9C7KVtGgrKeiokskJVL4a+cucQkWnx11Q2wbvSUT4UEcucdXY6MS/2a6sNCo8zQUQtmLaxkul4IdKpbZ2OG3dYfISwEmYiAYNKsKNowkbIXtLaSAQ54KslzUc+M8Gk22scQxP8jyRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152281; c=relaxed/simple;
-	bh=qc/JvWpjevARSmtI2Z/SPg5dqcpbBUtwW96LFF9lvso=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=FvQrIe0kgpOkO3ErMxHdM4GH5Pq8JrPbeGbhFE5mA8Pna9yvaNjiMGDNk5psVXqFjQmEPmzftdNATvGTJdVgeXAXWT3WxVu37ak5aPniR9kU4phpalQtDuIfVyMt/WCCt5Yw74yJE3zP6D3dlK60xtxaOHX5d7/5jI6bqGa6m7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wKZ1DFP4; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41ba1ba55e8so4935775e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:24:39 -0700 (PDT)
+	s=arc-20240116; t=1714152309; c=relaxed/simple;
+	bh=oPkhpvPbCU1Wv33arOnKXSw2XoCJOquEb8duMbQ4dZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oz2V+Ou+DvZhL0rc0MXeI8uKxoCxn3+z8bwfM1iGrf1H2600GUbaf7gc3Q+2d/e90Y/MdMbyDNZJgE9y1+hmR230x0mb7sCseWE9xQSHJD1gsHBLXGCAXJkZLFjMifhbx69rZ4CdfrYr0gvyTNEY5oj9TimnHoSvlRBvUcxaiFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bTEsCjWA; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e4266673bbso21237305ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:25:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714152278; x=1714757078; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qqKoN3Cs2CMvL9+4IpXPpoLPFKBjdTNuQHYkWXdJ8k=;
-        b=wKZ1DFP4BVZBkwkt78hcF8rQc3aguqKy7a/3a+XSQl9KdHE3U3bcAMgMHNIYT0ysYD
-         D8YEtRV8h4ICXC3wp3e3U32F30ZNENZ6G3cAnAdWjVGrK93OmthMuNVOjiCg+9+cP+oa
-         tkyknrVzK7bkTF8+o58HjgPAB6nNefGptk/9eV50nO8Nalugrno2QrFZLBwtGnJPjaWd
-         /k5RQkMRW/dUB7AtiNlCDf1Uk2/qTY2eRc+i2KK0RhUM8w9LzcWx+XdWiItLjglTIRSL
-         Iw2I8LBTDweJg2WZowGGUj1xK0tHiE+xWsPBP9OpV2pk2CsncoxwDnSzCOZ4m7C8re32
-         vIig==
+        d=chromium.org; s=google; t=1714152308; x=1714757108; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eIBGyKq1rfo9Eo8YNJRz2sicy53y3cFznRkoeYMePvs=;
+        b=bTEsCjWA1QAmutxnUZ8MaLRya78f06eH6Qb1Q6vVGAjj5GYFyAGHtmmOs3ZkegOCzt
+         gvAvbwIzEWadzyy+m3B4GYfkLOJy9fjQHQFck4z5R3Y1azt+2dJNbCiiizhNtwy05urZ
+         4zGWc0duOTjaU2PoDeMtb9c3cgWGu50SDdGUo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714152278; x=1714757078;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3qqKoN3Cs2CMvL9+4IpXPpoLPFKBjdTNuQHYkWXdJ8k=;
-        b=PzHYx3Ma34+eSNksjbnay1GN0qKyqcIXTVa1GDMARf5A/EyrA+TzMbUUDwZ0YlVNL9
-         FNB+nSxr1WyLznfTVU6zL7eUD/wzhDHO2mYrmCcpMlGxu7PhKEtpf6+YU9mmLbh5El9T
-         +vCys9rcrUB3Xcs6+lUff/RD4DY1PQJSzInAz1Dyo1RkbB5PeWbLecABqNtx2JstHYPN
-         zDE6hQFYgVPpeu7CtOQ5pfIcAsU9V7JJeKnL/cwtkl69c+mNYv/KwrllLDQVjLv4jnWP
-         66wxcdlEhoXs5hdOMc7XJtQx55oiCxOUArY0KHS406fY72CRylxyn/b0esty15hjzL7A
-         TVhw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjwFO4/NGC5YnLXv5sYlLtMtZZIxSMTrAULYHfQqlzmj/xeEs2ttwSa49d3EBh64v5KQ1wZS3D4AyRjaZzRLnAFJDsM7h0gms6fJFR
-X-Gm-Message-State: AOJu0YweePxPjCwlqSlLSvunuRW7dJCt+yFYrFlivJs2ojxUW6xOKl79
-	ryrWWWsF2+dJOVnhJM8JsH0jSLpZ9l1rwhWyziDn5vZmtk9YyAekReJq3srktFEQneLCTXCvqNX
-	afn8=
-X-Google-Smtp-Source: AGHT+IGiLctEE5oagDVIXdCcyOY9hQhgwc3V8m4ovCCyUNb1qls37u6auNYTNu3nuXEcmxVuCzgDxw==
-X-Received: by 2002:a05:600c:1f95:b0:41b:13c4:b9f with SMTP id je21-20020a05600c1f9500b0041b13c40b9fmr2238549wmb.24.1714152277603;
-        Fri, 26 Apr 2024 10:24:37 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id z2-20020adff742000000b00343ca138924sm22893737wrp.39.2024.04.26.10.24.35
+        d=1e100.net; s=20230601; t=1714152308; x=1714757108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eIBGyKq1rfo9Eo8YNJRz2sicy53y3cFznRkoeYMePvs=;
+        b=AN7+2DrKj7zwrXq1e9lcF8rLaFJ4L7KVdyfXmbqgrgUz3jhokoXPJQ5MHSota1rFsI
+         RmhxZB06lRrtWMU7AqaCr7UcBxdpwhNogtYivRj7iuPj+Q6yqFJlqpOWsar0ovWBNtML
+         XRHvftfn3FzfNwKco3zpcCn/dQCyrC3PSfAt1dIpVEMJLkM0VhY72Pl11o2bzlh3qUyV
+         6tinUB3MgRdYU8LPpVyAAYWlU461rq0Oyk0alctsblWk+u++wX1F8zY+EtTrkPTrzCeM
+         yrm7Wnhh1TPqTu2WJRgPXKsZSVUvVMVuik5HsXrdxDl5YPqf9U5AOgWbUweQHjcIa9a5
+         w/7A==
+X-Forwarded-Encrypted: i=1; AJvYcCXNAS01ebY1JOwxYKVxBKi/uuRAuAl7S/CR5i31qIhuQ6uxz8bBthbr991fAnYd507abDiWz27ZYP8rm1lUSnvOQ3pqWPCUep0e10Q3
+X-Gm-Message-State: AOJu0Yy4X5p4imEVXLjhs7OVnXN+vQZj+dC+fn8l/X1Ai1bfMcdFNEOv
+	pDvEMLjF+5dunROec4u67PjlfwBramQIagrjDK3F72hQTySPota0N+JE6I0F4PQME+Jjb082g3w
+	=
+X-Google-Smtp-Source: AGHT+IG0E5Z74FVbDWrRnuadfoaxsxXmigsr6NiBRtQVcDuOGGVB5BQLKeI6EmE850Ti68uW3W5ELg==
+X-Received: by 2002:a17:902:ce84:b0:1e9:5fd6:2b01 with SMTP id f4-20020a170902ce8400b001e95fd62b01mr3798663plg.3.1714152307934;
+        Fri, 26 Apr 2024 10:25:07 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y1-20020a17090322c100b001e503c555afsm10044542plg.97.2024.04.26.10.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 10:24:36 -0700 (PDT)
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Jason Wessel <jason.wessel@windriver.com>, 
- Douglas Anderson <dianders@chromium.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>
-Cc: kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
- linux-serial@vger.kernel.org, Liuye <liu.yeC@h3c.com>, 
- stable@vger.kernel.org
-In-Reply-To: <20240424-kgdboc_fix_schedule_work-v2-1-50f5a490aec5@linaro.org>
-References: <20240424-kgdboc_fix_schedule_work-v2-1-50f5a490aec5@linaro.org>
-Subject: Re: [PATCH v2] serial: kgdboc: Fix NMI-safety problems from
- keyboard reset code
-Message-Id: <171415227582.138568.453198683698011375.b4-ty@linaro.org>
-Date: Fri, 26 Apr 2024 18:24:35 +0100
+        Fri, 26 Apr 2024 10:25:07 -0700 (PDT)
+Date: Fri, 26 Apr 2024 10:25:06 -0700
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] Bluetooth: hci_conn: Use __counted_by() in
+ struct hci_cp_le_big_create_sync and avoid -Wfamnae warning
+Message-ID: <202404261024.1F22CC68@keescook>
+References: <ZivaHUQyDDK9fXEk@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZivaHUQyDDK9fXEk@neat>
 
-
-On Wed, 24 Apr 2024 15:21:41 +0100, Daniel Thompson wrote:
-> Currently, when kdb is compiled with keyboard support, then we will use
-> schedule_work() to provoke reset of the keyboard status.  Unfortunately
-> schedule_work() gets called from the kgdboc post-debug-exception
-> handler.  That risks deadlock since schedule_work() is not NMI-safe and,
-> even on platforms where the NMI is not directly used for debugging, the
-> debug trap can have NMI-like behaviour depending on where breakpoints
-> are placed.
+On Fri, Apr 26, 2024 at 10:45:17AM -0600, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the
+> __counted_by attribute. Flexible array members annotated with
+> __counted_by can have their accesses bounds-checked at run-time
+> via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+> (for strcpy/memcpy-family functions).
 > 
-> [...]
+> Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+> getting ready to enable it globally.
+> 
+> So, use the `DEFINE_FLEX()` helper for an on-stack definition of
+> a flexible structure where the size of the flexible-array member
+> is known at compile-time, and refactor the rest of the code,
+> accordingly.
+> 
+> With these changes, fix the following warning:
+> net/bluetooth/hci_conn.c:2116:50: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> 
+> Link: https://github.com/KSPP/linux/issues/202
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Applied, thanks!
+Looks right to me. Yay for DEFINE_FLEX(). :)
 
-[1/1] serial: kgdboc: Fix NMI-safety problems from keyboard reset code
-      commit: b2aba15ad6f908d1a620fd97f6af5620c3639742
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Best regards,
 -- 
-Daniel Thompson <daniel.thompson@linaro.org>
-
+Kees Cook
 
