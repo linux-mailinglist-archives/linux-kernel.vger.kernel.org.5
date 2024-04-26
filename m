@@ -1,107 +1,111 @@
-Return-Path: <linux-kernel+bounces-160074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E04A98B38B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:41:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 876228B38B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:41:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DCD7288BF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:41:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B88FB1C20884
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8239B14830A;
-	Fri, 26 Apr 2024 13:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCA3147C99;
+	Fri, 26 Apr 2024 13:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="kMhA+QR7"
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.7])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6880D147C95;
-	Fri, 26 Apr 2024 13:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.7
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="vR9Qfkd/"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A6C824B3
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714138871; cv=none; b=g+jBfQ1iydTBX/kLJsabMPmuZ/43AxUIDrZ8G9Xd5xehiV94xNuBtlGk7YfkhenENRHNr1mIl/GWuiCkyp80hDenj9Stgts97P914uIS5biAoLsLGUERrivcLdE+CN0rciVpTXiaEqYQuEF2Z+52ic2aNm6cO0T+PFyTCGI36ao=
+	t=1714138854; cv=none; b=Gd/7o166zZhQs9yY02NIpJHLc05cyvDRD/phXyNpLWFnbvk2HppcKe+6lP9uwW568bbvizSvSvMrGXOLETUqm2QZr6aLN6xCJkKvG0gt7kkRljmlOCm9q4VyeymWyGOH7nJnoqMB0XwTXvaOSu6L2QtAWPDsmqbdYb20PJCQbAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714138871; c=relaxed/simple;
-	bh=UXjzwyHD3xU06AXyGFYmDxIwYgvujORr2saZ8aiLHQY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QiRRV3nWMSz3QGHiq9cc0iAW3jafI5MpR4MYfVMMsolJbEBp52i824GBp8OolV9VhTjp5UEuCpF9G6P/4NUkW0+3dun7p3jQDMoat+KrcSfRnVSWvrm/ICKlYCiERcdgq6XfQHBgO8DMeGPMsiL2fobg5PnOXXCOcdQ/peJ2Nw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=kMhA+QR7; arc=none smtp.client-ip=117.135.210.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=AocrA
-	75mqcRUL0QWSUoM3dEaQjCJ8gV8EQHfgGHvBrE=; b=kMhA+QR7pv2AWw5e3Q7yi
-	qXUpN6oisGUAxmMLrGJZYlPua9etZBOrZpzTVLDhAwsgUUnRG1ueNKZGhLG/uMtD
-	gQKwCT8VwpjRXTDiGLxQUnY7DM1jAftB/rif5mC0Kb9NtNL9Wni6nHijgc/t+Og4
-	elXEy4XbmvMNUB560Q7anc=
-Received: from localhost.localdomain (unknown [111.198.54.11])
-	by gzga-smtp-mta-g1-5 (Coremail) with SMTP id _____wDnL5KwritmM0DuBQ--.25861S2;
-	Fri, 26 Apr 2024 21:40:01 +0800 (CST)
-From: lumingyindetect@126.com
-To: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: ilpo.jarvinen@linux.intel.com,
-	andriy.shevchenko@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.or,
-	LuMingYin <lumingyindetect@126.com>
-Subject: [PATCH] serial: 8250_lpss: Fix memory leak in lpss8250_probe()
-Date: Fri, 26 Apr 2024 14:39:59 +0100
-Message-Id: <20240426133959.1294012-1-lumingyindetect@126.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714138854; c=relaxed/simple;
+	bh=JCJDTBds+a3tbNd3ShHOf/AGk6tUWyo+qW7RdyRA9F8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=OZUp7YVwASI6Vm34crwydZpiHKYDulvIe7CtqAroFazQEXWBflLiZQmy8MYqCWQtrbENz3f+M7TsWB0UYDHGIr/xUlpXnf20x83sn1rz2w47gIn3pU4Qt70Hm6P1wOf6ka/BeLWg/aouT+V0N4xrFifCrgntt/OCzaSx3mTvPsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=vR9Qfkd/; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d9c78cf6d4so17166739f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714138851; x=1714743651; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uQVjNTLjf7VGhqiwo6xWa81d5ljtfH+fLb0sr9Vc0PA=;
+        b=vR9Qfkd/CNfgMqdHA6L1fuVG/Kf179E/6sjmL1tGBGt5/vA6kbfgcDIMBXZF4SeB1V
+         xAiLL0o5yMNjR4sMjl4/n4XdvAbpv/HQGoZMhDGNui5VtrXP9ym0xOVUcigS7bzMM3KI
+         B/hVa9WsyFukuxIX0Enqc/vhqJ4ZkKb6w8dv+GfqU/2+sJl+RBXjAcq3A3vgutfiqk1b
+         QM3ig9HI7PYleDeAa5nZaRzJp2xB7rfLhHgXlp+cgN/XeJcZ3UFNBJbOomQgksG8lJwV
+         cZr7ipv8+9tLOEvjb/zg4FbVGWAwOSH0ZhuxMrSNzFvqgUgUmEpGQokIRnrcoveEE8ei
+         TR4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714138851; x=1714743651;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uQVjNTLjf7VGhqiwo6xWa81d5ljtfH+fLb0sr9Vc0PA=;
+        b=lS3/OVDjWh6fBOQeLU08j6yzxl0xPlsPF5jIv1VRFnjARShXsBixempfD+pJT5DSgr
+         4Kvl0D6qZPMn9+sm88yVi60a2srxHVMzGMO4dc7LlrHXjo7/XnJdbzWVUqB7new6tW7a
+         eWlMrTwAaAJLIV/IM9Ip3g+PYzwhApZVx22xXan1cdEQzkWqYRvAoVCyjLT7wnWCIAm3
+         nrxP7AAGv+2zkFksPD8wMmyqkUp/Lge5MrRLb8BUf6on9EFI7Ovv5IuvPiccbaBl/hu3
+         pp4tYb89c3vvrdXDe8faspiZhuwQ0MVMa2yp+R/lVfSLZ29BkepUe8Nj0awg4XPkxEpR
+         I4tg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKHTI8hLsT91r9cgYnOD3NBQZ3QddNYTqWGmBxX7cZM92bXiW1k0mEZvXp876eMcYWERbyiLDVhiMGH9utX3TKfyrV10CYwU/J59Hr
+X-Gm-Message-State: AOJu0YwVLBV6Z3j8o/HVPB2eIQLyts+ZxI60Ds99qMpzBoYbCv8dY/DN
+	Yusf5stKjICRrfnKXx6mYjf9wzOaGmJh0hOngJVDhhYdRiK0g4M7q2z/FSLEFbg=
+X-Google-Smtp-Source: AGHT+IESz+VVFibB4v7kcRuR07qQ5guc4rVZROLiXv/vGQeFvCRzC594gVmkjdesOS1PumJnF390fQ==
+X-Received: by 2002:a6b:c503:0:b0:7de:b4dc:9b8f with SMTP id v3-20020a6bc503000000b007deb4dc9b8fmr263925iof.2.1714138850823;
+        Fri, 26 Apr 2024 06:40:50 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id j13-20020a0566022ccd00b007dead4fd0efsm255275iow.18.2024.04.26.06.40.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 06:40:50 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linke li <lilinke99@qq.com>
+Cc: xujianhao01@gmail.com, Pavel Begunkov <asml.silence@gmail.com>, 
+ io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_F9B2296C93928D6F68FF0C95C33475C68209@qq.com>
+References: <tencent_F9B2296C93928D6F68FF0C95C33475C68209@qq.com>
+Subject: Re: [PATCH] io_uring/msg_ring: reuse ctx->submitter_task read
+ using READ_ONCE instead of re-reading it
+Message-Id: <171413885012.211722.950447967094465539.b4-ty@kernel.dk>
+Date: Fri, 26 Apr 2024 07:40:50 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnL5KwritmM0DuBQ--.25861S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KryfAFW5WF1UJFW8GF4fuFg_yoW8XFWDpF
-	s0kFsIkFy0q3WIga40yr4jqF15uFWxX347CrZrC3sI9rZIyF97tF1ftFy7tF10grWktFnF
-	ya1UtF45Ca4UXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07js0edUUUUU=
-X-CM-SenderInfo: poxpx0hj1l0vphwhu3a6rslhhfrp/1tbiEBXM9mVLbFpVzQAAs-
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-From: LuMingYin <lumingyindetect@126.com>
 
-The return statements at line 347 and line 351 in the lpss8250_probe() function result in a memory leak of the variable pdev.
-Add a label named free_irq_vectors in the lpss8250_probe() function to release the memory area pointed to by pdev.
-Modify the two return statements mentioned above to jump to the label "free_irq_vectors" instead.
+On Fri, 26 Apr 2024 11:24:37 +0800, linke li wrote:
+> In io_msg_exec_remote(), ctx->submitter_task is read using READ_ONCE at
+> the beginning of the function, checked, and then re-read from
+> ctx->submitter_task, voiding all guarantees of the checks. Reuse the value
+> that was read by READ_ONCE to ensure the consistency of the task struct
+> throughout the function.
+> 
+> 
+> [...]
 
-Fixes: e88c4cfcb7b888ac374916806f86c17d8ecaeb67 ("serial: 8250_lpss: fix memory in lpss8250_probe()")
+Applied, thanks!
 
-Signed-off-by: LuMingYin <lumingyindetect@126.com>
----
- drivers/tty/serial/8250/8250_lpss.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+[1/1] io_uring/msg_ring: reuse ctx->submitter_task read using READ_ONCE instead of re-reading it
+      commit: a4d416dc60980f741f0bfa1f34a1059c498c1b4e
 
-diff --git a/drivers/tty/serial/8250/8250_lpss.c b/drivers/tty/serial/8250/8250_lpss.c
-index c3cd6cb9ac80..fa9fd4dc86c7 100644
---- a/drivers/tty/serial/8250/8250_lpss.c
-+++ b/drivers/tty/serial/8250/8250_lpss.c
-@@ -344,11 +344,11 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	uart.port.mapbase = pci_resource_start(pdev, 0);
- 	uart.port.membase = pcim_iomap(pdev, 0, 0);
- 	if (!uart.port.membase)
--		return -ENOMEM;
-+		goto free_irq_vectors;
- 
- 	ret = lpss->board->setup(lpss, &uart.port);
- 	if (ret)
--		return ret;
-+		goto free_irq_vectors;
- 
- 	dw8250_setup_port(&uart.port);
- 
-@@ -367,6 +367,7 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- err_exit:
- 	lpss->board->exit(lpss);
-+free_irq_vectors:
- 	pci_free_irq_vectors(pdev);
- 	return ret;
- }
+Best regards,
 -- 
-2.25.1
+Jens Axboe
+
+
 
 
