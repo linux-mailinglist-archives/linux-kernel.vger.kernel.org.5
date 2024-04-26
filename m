@@ -1,102 +1,136 @@
-Return-Path: <linux-kernel+bounces-160435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3C4E8B3D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:01:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0848B3D76
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:01:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD5E11C2472C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:01:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8D8289CCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AA515B15D;
-	Fri, 26 Apr 2024 17:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E18115B99D;
+	Fri, 26 Apr 2024 17:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lhPFt+jM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nicMT+aJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23AB2F874;
-	Fri, 26 Apr 2024 17:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DD9159912;
+	Fri, 26 Apr 2024 17:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150833; cv=none; b=BTi7vXC3wPlLUhKJwfqcPOBmK/7Ioca3GA/4Dl8FXAHs7EALNx18AKiWXs1VLbZDziNdGDuD1ZS1t4gUjRBg8xEveBBlcdWV+3ElEBsd/cVQnHHKTDOimnhW/1iGpMApD09bdwtobhjWGrFwliXQAVEA6n8jxrGxHoZGKwbJavE=
+	t=1714150850; cv=none; b=SPxPe/C2jKT0fo+cBxI9oSGoJXH8U+Q/Mrt7MO20x84OyDx2mVx49lkhEsqn9XIPtFBsep2q+IKqmnlVLRNd3Am6EsbXjtE7EtLbu3Zs3tp1Cbtw8d6UnRJ/UZvegq4Q27NbmmQkg31OWhw5gHyKFO3DSZkdiSYmgEP2uE56z68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150833; c=relaxed/simple;
-	bh=D31HKf9xNwf4ZljzcZN/RLqrIKBUyLlxBwINP7IllWM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=eUqf0hq/jWFKjhrn7VPW3KaQdakZ9vx3kRPrCfNzhzz1BbQIP8RXgOkh/mYbKhRux09iUtdiPk/N1EtwRYBISvgMz1na79tcUpyNAtYqW+882/pmrQLInDHE1CxDbwv+B1CIVIfUiOH3Zq8vJadaQodejU6u8Km5Ei5JNZ+uuUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lhPFt+jM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 60DA0C116B1;
-	Fri, 26 Apr 2024 17:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714150832;
-	bh=D31HKf9xNwf4ZljzcZN/RLqrIKBUyLlxBwINP7IllWM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lhPFt+jMM3YX0oCkFWNuyeLtjZcllJLh2VshUJ70rlK8J66dyiqhSXWS5hOGu1T6j
-	 0Rbgu6bD3Wz2VfQsvYsiGzBsIUCKUW+aTHjlKFacaDLec0vyNsF+oXN0LMme1WuGZF
-	 KKaRRyknDPT6iR8pWxvmVnmNgJ2kwZOdaEuyZGwPxTQDMvjKv5pc8NzmuheABfTG68
-	 HnbSve2BTsFyfUMUBh61c9cJHBgXdjfVNBA7fi2ydd18FPskGYbfp/6ksR7EHb6AZk
-	 1qaHv6hW4GQHalM3S2+yqbXHZs59gu4Yk1GUH5Y1XPUAdOfMPxvt3vYFgJX32eo20R
-	 4QpO7Em9EbVSw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4DCEDDF3C9D;
-	Fri, 26 Apr 2024 17:00:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714150850; c=relaxed/simple;
+	bh=tAzT0APZ1gO3qIoBSFeSsXtVfHovkqASueptZpGwCMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BKNx1yLi/sXbxZPzviONKJlBKj2QA9RHaR5Vt9n8GX9C6MoWwdPqv0ai8OO3ZWu5IFDxhsKqpfREf+ly+IgKtwLQBD+gCWt/BEGMbxdtkZy4yVfkw5gt+XAtmsSTkZl8hfdl1pCEnm2mCO4QNHkp3pVK/wdgYf4NJXiC8C17jbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nicMT+aJ; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714150850; x=1745686850;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tAzT0APZ1gO3qIoBSFeSsXtVfHovkqASueptZpGwCMs=;
+  b=nicMT+aJTRZM9BGEIiGx6PdiXawSWUjQ7Dm1ex8EArEWL45WTR+xiZ3e
+   ir2HNNp3QS8/D1CzeHW1rc56l1LIS6ySPpNtie1e3RTP1l7v/uX5OUgTe
+   RtQttfbb4kYKqjTCAFWP7vWay7BsbPZP4c2mLlPbjGVxbl9ABNQPevSyz
+   R40bCIwtZuDmJzPD8jf0LAW8G0MOlftiTlUR8FA1PtgDoVbqPgwpjNFet
+   yuri6vL0+GOfEc7QsPKASB+dN/KfrGqsJtkWbl2l9JzCtdJzMcAaNieFC
+   86j+RX64NyFLKp3wHCFJhS+C3WcAMq731e+5wLp7BOXIhAvs+lsJ6JsFb
+   w==;
+X-CSE-ConnectionGUID: 9C32My+PRG6u1/1VoIxmBg==
+X-CSE-MsgGUID: 4aOMSoDPRwm0CqllrIh8sw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10056659"
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="10056659"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:00:48 -0700
+X-CSE-ConnectionGUID: Nx/4jGLtSSa0MLZrtjk5lg==
+X-CSE-MsgGUID: XxN58ixGR6WpwMcoOG6Opw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="30286732"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:00:46 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1s0OwF-00000001Osy-05jM;
+	Fri, 26 Apr 2024 20:00:43 +0300
+Date: Fri, 26 Apr 2024 20:00:42 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	kotaranov@microsoft.com, sharmaajay@microsoft.com,
+	longli@microsoft.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: fix missing ret value
+Message-ID: <ZivduvnNzGnoAXAs@smile.fi.intel.com>
+References: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
+ <20240423150315.GA891022@nvidia.com>
+ <Zivb7qs4gSywzVsL@smile.fi.intel.com>
+ <20240426165815.GA2876951@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v6 0/3] bpf: prevent userspace memory access
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171415083231.31232.17589661506846576735.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Apr 2024 17:00:32 +0000
-References: <20240424100210.11982-1-puranjay@kernel.org>
-In-Reply-To: <20240424100210.11982-1-puranjay@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, iii@linux.ibm.com, puranjay12@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426165815.GA2876951@dev-arch.thelio-3990X>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hello:
-
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 24 Apr 2024 10:02:07 +0000 you wrote:
-> V5: https://lore.kernel.org/bpf/20240324185356.59111-1-puranjay12@gmail.com/
-> Changes in V6:
-> - Disable the verifier's instrumentation in x86-64 and update the JIT to
->   take care of vsyscall page in addition to userspace addresses.
-> - Update bpf_testmod to test for vsyscall addresses.
+On Fri, Apr 26, 2024 at 09:58:15AM -0700, Nathan Chancellor wrote:
+> On Fri, Apr 26, 2024 at 07:53:02PM +0300, Andy Shevchenko wrote:
+> > On Tue, Apr 23, 2024 at 12:03:15PM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Apr 23, 2024 at 07:15:51AM -0700, Konstantin Taranov wrote:
+> > > > From: Konstantin Taranov <kotaranov@microsoft.com>
+> > > > 
+> > > > Set ret to -ENODEV when netdev_master_upper_dev_get_rcu
+> > > > returns NULL.
+> > > > 
+> > > > Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
+> > > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> > > > ---
+> > > >  drivers/infiniband/hw/mana/device.c | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > 
+> > > Applied to for-next, thanks
+> > 
+> > So, what's wrong with my patch that had been sent _before_ this one?
 > 
-> V4: https://lore.kernel.org/bpf/20240321124640.8870-1-puranjay12@gmail.com/
-> Changes in V5:
-> - Use TASK_SIZE_MAX + PAGE_SIZE, VSYSCALL_ADDR as userspace boundary in
->   x86-64 JIT.
-> - Added Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Was it?
 > 
-> [...]
+> This patch:
+> 
+>   $ date -d 'Tue, 23 Apr 2024 07:15:51 -0700' -u
+>   Tue Apr 23 02:15:51 PM UTC 2024
+> 
+> Your patch: https://lore.kernel.org/20240423204258.3669706-1-andriy.shevchenko@linux.intel.com/
+> 
+>   $ date -d 'Tue, 23 Apr 2024 23:42:58 +0300' -u
+>   Tue Apr 23 08:42:58 PM UTC 2024
+> 
+> Seems like this one beat yours by six hours?
 
-Here is the summary with links:
-  - [bpf,v6,1/3] bpf: verifier: prevent userspace memory access
-    https://git.kernel.org/bpf/bpf/c/66e13b615a0c
-  - [bpf,v6,2/3] bpf, x86: Fix PROBE_MEM runtime load check
-    https://git.kernel.org/bpf/bpf/c/b599d7d26d6a
-  - [bpf,v6,3/3] selftests/bpf: Test PROBE_MEM of VSYSCALL_ADDR on x86-64
-    https://git.kernel.org/bpf/bpf/c/7cd6750d9a56
+Repeating myself from another thread:
 
-You are awesome, thank you!
+"""
+Oh, my... Sorry, I missed PM, it was mine sent after that one!
+I guess time for weekend.
+"""
+
+Sorry for the noise and have a nice weekend!
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+With Best Regards,
+Andy Shevchenko
 
 
 
