@@ -1,141 +1,146 @@
-Return-Path: <linux-kernel+bounces-159982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A998B3725
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:22:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C64F8B3727
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:23:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8087F1F23172
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:22:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 082B52845F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1205145B24;
-	Fri, 26 Apr 2024 12:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B2D145B21;
+	Fri, 26 Apr 2024 12:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cx3ss0ZN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SwK1fSt3"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2A441C6D;
-	Fri, 26 Apr 2024 12:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A83D41C6D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714134135; cv=none; b=SsWXA+JzRiy8yPM1TOlrHDOehuHDmnCS9/5CI6wujnPlhgZRydS5phiXfpsSyKB7AsohmK1RiUvXukmUFSuMg84BFNW0dTEIc8cBycHaX0fw9ePgVcz7kKOtc9rqd8BeoMooTfl1o52gE19yTNR7tR1Rivyx7xJ1IAb8QdOVlcU=
+	t=1714134198; cv=none; b=q9nJy4KLPm+fdLS5uakylfDw3sf++vfCEPjlrkTP0dXqcJGPyDUZjUItK37/VV9OHGGOA49BQ3xzNKEX/IxKzKSBqNbuXvAMZVD9Vx0GGyE0nj7aFq7Sf5O7pCh3ajk6149uzhp03u75Q4CKWeNAKvEdIgIPjt4dYsBEOoFG1Uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714134135; c=relaxed/simple;
-	bh=k5+3WXqfNFaHJ0w6cNgN9K/GEE4MMcXHwbffMB2ahNI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NoPHg7x9o0SDkKnomqohG1D7H+MmLqInDci4x4zOWzyGa3T+klUTqw4l+M6eLvoGJQ1ibTV3esbTijJUjWyiEV9hI/s80PUGOkgPJsv7ge4EUurX/ynn3ObK3K+9QILxTINlWDyn/ZxqA912zV+K434UN1XiYOa7BwvPGq9I3kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cx3ss0ZN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54AB1C113CD;
-	Fri, 26 Apr 2024 12:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714134134;
-	bh=k5+3WXqfNFaHJ0w6cNgN9K/GEE4MMcXHwbffMB2ahNI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Cx3ss0ZN59fQ7WwexOoq9GOjmaSzucJsVsVq88/kWYz4df1E5rFRMb+u1F05b3+Wa
-	 St4WbRznqnG+lwBNvDfzI4KK9+mAUH1Sh4UuGK5brVpx6lxQ0HQaYmNzde/jKOPI31
-	 8qdlEM/O9toQZbGTYRKWZWvkRm0yoEgx1LYT0D/i05lZ7+f3HQ/WD5lpKQQYxQ6I1P
-	 UdCQCB6GaQN0gVws2DS2W4yFBxgefQUrE/yi2fupGdDjBMwB/ZLpBRq0+c+ivYU6tD
-	 rW6yMdpoyWGIbICLsNBeLDZJUFqA3yHgyniG/k3qqr/ncUPTVCUSDKv90xaqRjTguz
-	 Ouz2Ww7KYriOA==
-Message-ID: <5d6b6314-c3f8-412f-850b-651365af4b4c@kernel.org>
-Date: Fri, 26 Apr 2024 14:22:10 +0200
+	s=arc-20240116; t=1714134198; c=relaxed/simple;
+	bh=q42ZCwD8moewXvOv6K4b7tvJjnbBkSMb/0B0m28m9GA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZjVT+CA2sbVrz8BV8DJmnPcx4ri+r7trbG+B6JS0xgxOGZdLRaz/XKBq/YPoga8DnFSVuGc5ciP30EHgl1+PvmnVli03g1TKkeUvNMfpTHrvD7wTl47FE9IHGf1Kuw7Nf8vUXLI9G/6e27UB+vlzql7FXgTcXtod/Su8ZkdKE4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SwK1fSt3; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 85CDAC0002;
+	Fri, 26 Apr 2024 12:23:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714134194;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=25H8oLPo2hioXDZa3XWQH6r/1CP1DR1BEzXpdCWRmVg=;
+	b=SwK1fSt3RJW3evyI512a5q9PmIwv5tsY1bymwqWDRRDtAGvPSDL2/h9KMq+9OfynodgMPU
+	Gvb2n7wT/uglFzdrOm/Fk6g1AszGMWrQlleJ5JD1LQSp36p9CPB6DSQrIDw42uNSh/fFfa
+	OC5jEfW5VEtOBl8CFeH606tTYdFxia6zCiICxr+9xCsNcXpNLzQ4GR986y52wBn4ssw61E
+	jbKgI0WejgtL0EO1X5Fa9h4hhZY20Q7uNOcai3bNCEa7m3Apc4G5nGJaJ4M5JGhPVakDwr
+	jQKYR5846+ximv+zpUlTXiCI9aU49sWMIm9lTYaLQHx4Og3cEsrgZKQTYIZ+cA==
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] Revert "drm/bridge: ti-sn65dsi83: Fix enable error path"
+Date: Fri, 26 Apr 2024 14:22:59 +0200
+Message-Id: <20240426122259.46808-1-luca.ceresoli@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: ti: Add BeagleY-AI
-To: Robert Nelson <robertcnelson@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: Rob Herring <robh@kernel.org>, Andrew Davis <afd@ti.com>,
- Nishanth Menon <nm@ti.com>, Jared McArthur <j-mcarthur@ti.com>,
- Jason Kridner <jkridner@beagleboard.org>,
- Deepak Khatri <lorforlinux@beagleboard.org>,
- Drew Fustini <drew@beagleboard.org>
-References: <20240425162829.2370614-1-robertcnelson@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240425162829.2370614-1-robertcnelson@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-On 25/04/2024 18:28, Robert Nelson wrote:
-> This board is based on ti,j722s family using the am67a variation.
-> 
-> https://beagley-ai.org/
-> https://openbeagle.org/beagley-ai/beagley-ai
-> 
+This reverts commit 8a91b29f1f50ce7742cdbe5cf11d17f128511f3f.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+The regulator_disable() added by the original commit solves one kind of
+regulator imbalance but adds another one as it allows the regulator to be
+disabled one more time than it is enabled in the following scenario:
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+ 1. Start video pipeline -> sn65dsi83_atomic_pre_enable -> regulator_enable
+ 2. PLL lock fails -> regulator_disable
+ 3. Stop video pipeline -> sn65dsi83_atomic_disable -> regulator_disable
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+The reason is clear from the code flow, which looks like this (after
+removing unrelated code):
 
-Please kindly resend and include all necessary To/Cc entries.
+  static void sn65dsi83_atomic_pre_enable()
+  {
+      regulator_enable(ctx->vcc);
 
+      if (PLL failed locking) {
+          regulator_disable(ctx->vcc);  <---- added by patch being reverted
+          return;
+      }
+  }
 
-Best regards,
-Krzysztof
+  static void sn65dsi83_atomic_disable()
+  {
+      regulator_disable(ctx->vcc);
+  }
+
+The use case for introducing the additional regulator_disable() was
+removing the module for debugging (see link below for the discussion). If
+the module is removed after a .atomic_pre_enable, i.e. with an active
+pipeline from the DRM point of view, .atomic_disable is not called and thus
+the regulator would not be disabled.
+
+According to the discussion however there is no actual use case for
+removing the module with an active pipeline, except for
+debugging/development.
+
+On the other hand, the occurrence of a PLL lock failure is possible due to
+any physical reason (e.g. a temporary hardware failure for electrical
+reasons) so handling it gracefully should be supported. As there is no way
+for .atomic[_pre]_enable to report an error to the core, the only clean way
+to support it is calling regulator_disabled() only in .atomic_disable,
+unconditionally, as it was before.
+
+Link: https://lore.kernel.org/all/15244220.uLZWGnKmhe@steina-w/
+Fixes: 8a91b29f1f50 ("drm/bridge: ti-sn65dsi83: Fix enable error path")
+Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+
+Many thanks to Alexander for the discussion.
+---
+ drivers/gpu/drm/bridge/ti-sn65dsi83.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+index 4814b7b6d1fd..57a7ed13f996 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+@@ -478,7 +478,6 @@ static void sn65dsi83_atomic_pre_enable(struct drm_bridge *bridge,
+ 		dev_err(ctx->dev, "failed to lock PLL, ret=%i\n", ret);
+ 		/* On failure, disable PLL again and exit. */
+ 		regmap_write(ctx->regmap, REG_RC_PLL_EN, 0x00);
+-		regulator_disable(ctx->vcc);
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
 
 
