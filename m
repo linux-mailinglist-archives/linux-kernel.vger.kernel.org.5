@@ -1,245 +1,212 @@
-Return-Path: <linux-kernel+bounces-159610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8D18B3105
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:03:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91AA78B3107
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFCF91C22040
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:03:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D061F220B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B06F13B2B0;
-	Fri, 26 Apr 2024 07:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EAD313AD0E;
+	Fri, 26 Apr 2024 07:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eHONCeLC"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="h/YNJVMM"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D87567F;
-	Fri, 26 Apr 2024 07:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB6542040
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714114989; cv=none; b=umiyW4Hg/JaDs+teouq2qzZZmr2IgtmwJoCE2e4NVW+tNMYBEOPbr49y2j6y0LosfFvj5pyU/T3NQbusV01eUjABpYbiCG3csZPMFAk1Ea3fnaiKSWmAx89YI7y3tQdqyH7INKtEDseEHdAzMSEgrYBZ7rDb4Fk350KXZ7aMHBo=
+	t=1714115117; cv=none; b=konnOMTZxpchJnqno5OmW7h3EZZxpcBgo1IBuPka26pwvDDbYG2C+Z1RSTwQl9f3HLKIj00oGn9O/KsonHRKfDdZ2wFODBTBAPGdFqwY2ntpZISKMl2ma1tfm8nersKSOwz5pvpfTy0E3KkbSY5nHSVxjVbWOzXjonmaH3hs4dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714114989; c=relaxed/simple;
-	bh=IvTH72RWSEFgKEux7+oDcRKaZa76lkq/3U0lfobgA7E=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=f2Eb6l7e/gl0tVGHB+dCF05vvEi4LY01A1KemjxNwIFX73UND8cagdZcJcaXJGvdRQkd2zO1/ZnjaFbjinZFtnkkk0izcxso+lKKtFmJTtFLkaqpxsWtCYlPuo+NtNaYxJa/YPJgu3QLPB3A4Tmg7OnxMYENKvTKvFiLfU2ZSFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eHONCeLC; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q72RBA006163;
-	Fri, 26 Apr 2024 07:02:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=gn+OA+eWtFQ0TbrlYBUsxOrQSF+lCgWVOrEmHKbpjF0=;
- b=eHONCeLCatfKXfkK5H/0BHT4T0dp7zr9JqJN80e5/BCSJ/7Ek8ZgzQimbka5puTaBc5R
- k7j3ToaFJhFo3jpzAB20Lhpk5sn3tydZvkwixCJ/JincYI4j+5C4iDO6Mi621SFyrUOF
- 7PxG+AniE/S5seInN0c8VQGGjPgA9r7mAyB6fhhK00pOwo5CzUHK1aw5Z4s81oVXnsoN
- 5BwX/M7vcGap6toqkxG0ZgEzBKNxstmv/pJR2ctw45ySX/Z9jkbdEDeUtWx0oM0DsyP3
- JFrnZPtY6NtImqF6AbCwxkrbsSxzQ5mITRQR7HuGChYuh37v7Xbv1StgVmpWgr1M7vAa YA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr7h8r02h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 07:02:56 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43Q72uPT006995;
-	Fri, 26 Apr 2024 07:02:56 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr7h8r02b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 07:02:56 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q5ZGnM015343;
-	Fri, 26 Apr 2024 07:02:54 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmp6jg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 07:02:54 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43Q72n4x54854034
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 07:02:51 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2B4CC2004F;
-	Fri, 26 Apr 2024 07:02:49 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 00E8C20063;
-	Fri, 26 Apr 2024 07:02:48 +0000 (GMT)
-Received: from [9.171.7.244] (unknown [9.171.7.244])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 07:02:47 +0000 (GMT)
-Message-ID: <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
-Date: Fri, 26 Apr 2024 09:02:47 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
-        twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org
-References: <20240414040304.54255-1-guwen@linux.alibaba.com>
-From: Jan Karcher <jaka@linux.ibm.com>
-Organization: IBM - Network Linux on Z
-In-Reply-To: <20240414040304.54255-1-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: S69eD35reIvaQmH81gvuG5azWnZJyWmN
-X-Proofpoint-GUID: VXcwIiokXeiKQzTJsMTZqwouEkYfg2ba
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714115117; c=relaxed/simple;
+	bh=Qe8Lqqo+ycVRs0Kho6vUc3FzJtZNIGo6l62UG5/3wQM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dz63pmkNvIeMgaXqAo7u6afuPo4K0CKp+fTHdOl7LPDdrdIifQrbWqyhN4DFLXYUAmNw3Gt8QclSsmW2egfWRIufJ5hKh0Vca6UrIoWlactiGf2QY92eqTbF/XlXopcdnVRsPHe5hslu30gF0/c8a0T77JTuui0lvJCb0RksXLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=h/YNJVMM; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1714115112; x=1714374312;
+	bh=y3LYOKqrYRady6hOEaLPtSsj8+WxuMjdGo8/K8WqyFU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=h/YNJVMMU5BVlUUD80e025RXV26uIZ3rrDWUCn6cGAdYmQjoCdjtxGJpu1yidLsld
+	 7+GcX8TfEtJT4xK3iaj1GT0Nyy+TubUjaYWk8MgphLK8cVRGgputQebsp3wXWjLx6Y
+	 L1XWsMLxFxVrQ4eD0aCPQXtpEmRSU5qOVJZK+jcI53CHZPA4+3y4NZ0kmot6abeqH6
+	 mduC0kV27tgMXEuerKoZRbEXvHH/sBfSMoRvi8gobWswIDnLwlpLwxxl6JZ3IW7hzc
+	 GK8/RRZHhcGZLWWqgr2f1TrM9YJV5WpRp4i9jNfqWmjC80rQYPksmD+YDSh58iLcqE
+	 /4z8t8mDHSaBg==
+Date: Fri, 26 Apr 2024 07:05:07 +0000
+To: Matt Gilbride <mattgilbride@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Rob Landley <rob@landley.net>, Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] rust: rbtree: add `RBTree::entry`
+Message-ID: <d243524f-96af-4375-a8c9-44196a110853@proton.me>
+In-Reply-To: <20240418-b4-rbtree-v3-5-323e134390ce@google.com>
+References: <20240418-b4-rbtree-v3-0-323e134390ce@google.com> <20240418-b4-rbtree-v3-5-323e134390ce@google.com>
+Feedback-ID: 71780778:user:proton
+X-Pm-Message-ID: 58ac6332e697b6c130eac39a82b67d3b8298f19a
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_07,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxlogscore=999 clxscore=1011 phishscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404260043
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On 18.04.24 16:15, Matt Gilbride wrote:
+> @@ -332,63 +338,54 @@ pub fn insert(&mut self, RBTreeNode { node }: RBTre=
+eNode<K, V>) -> Option<RBTree
+>          // we store `parent` and `child_field_of_parent`, and the new `n=
+ode` will go somewhere
+>          // in the subtree of `parent` that `child_field_of_parent` point=
+s at. Once
+>          // we find an empty subtree, we can insert the new node using `r=
+b_link_node`.
+> -        let mut parent =3D core::ptr::null_mut();
+>          let mut child_field_of_parent: &mut *mut bindings::rb_node =3D &=
+mut self.root.rb_node;
+> -        while !child_field_of_parent.is_null() {
+> -            parent =3D *child_field_of_parent;
+> +        let mut parent =3D core::ptr::null_mut();
 
+Nit: why are you moving this line below `child_field_of_parent`? Just an
+artifact of rebasing?
 
-On 14/04/2024 06:02, Wen Gu wrote:
-> This patch set acts as the second part of the new version of [1] (The first
-> part can be referred from [2]), the updated things of this version are listed
-> at the end.
-> 
-> - Background
-> 
-> SMC-D is now used in IBM z with ISM function to optimize network interconnect
-> for intra-CPC communications. Inspired by this, we try to make SMC-D available
-> on the non-s390 architecture through a software-implemented Emulated-ISM device,
-> that is the loopback-ism device here, to accelerate inter-process or
-> inter-containers communication within the same OS instance.
-> 
-> - Design
-> 
-> This patch set includes 3 parts:
-> 
->   - Patch #1: some prepare work for loopback-ism.
->   - Patch #2-#7: implement loopback-ism device and adapt SMC-D for it.
->     loopback-ism now serves only SMC and no userspace interfaces exposed.
->   - Patch #8-#11: memory copy optimization for intra-OS scenario.
-> 
-> The loopback-ism device is designed as an ISMv2 device and not be limited to
-> a specific net namespace, ends of both inter-process connection (1/1' in diagram
-> below) or inter-container connection (2/2' in diagram below) can find the same
-> available loopback-ism and choose it during the CLC handshake.
-> 
->   Container 1 (ns1)                              Container 2 (ns2)
->   +-----------------------------------------+    +-------------------------+
->   | +-------+      +-------+      +-------+ |    |        +-------+        |
->   | | App A |      | App B |      | App C | |    |        | App D |<-+     |
->   | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
->   |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
->   |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
->   |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
->   +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
->                |   |           |                                  |
->   Kernel       |   |           |                                  |
->   +----+-------v---+-----------v----------------------------------+---+----+
->   |    |                            TCP                               |    |
->   |    |                                                              |    |
->   |    +--------------------------------------------------------------+    |
->   |                                                                        |
->   |                           +--------------+                             |
->   |                           | smc loopback |                             |
->   +---------------------------+--------------+-----------------------------+
-> 
-> loopback-ism device creates DMBs (shared memory) for each connection peer.
-> Since data transfer occurs within the same kernel, the sndbuf of each peer
-> is only a descriptor and point to the same memory region as peer DMB, so that
-> the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
-> 
->   Container 1 (ns1)                              Container 2 (ns2)
->   +-----------------------------------------+    +-------------------------+
->   | +-------+                               |    |        +-------+        |
->   | | App C |-----+                         |    |        | App D |        |
->   | +-------+     |                         |    |        +-^-----+        |
->   |               |                         |    |          |              |
->   |           (2) |                         |    |     (2') |              |
->   |               |                         |    |          |              |
->   +---------------|-------------------------+    +----------|--------------+
->                   |                                         |
->   Kernel          |                                         |
->   +---------------|-----------------------------------------|--------------+
->   | +--------+ +--v-----+                           +--------+ +--------+  |
->   | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
->   | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
->   | +-----|--+    |                                 +-----|--+             |
->   | | DMB C  |    +---------------------------------| DMB D  |             |
->   | +--------+                                      +--------+             |
->   |                                                                        |
->   |                           +--------------+                             |
->   |                           | smc loopback |                             |
->   +---------------------------+--------------+-----------------------------+
-> 
-> - Benchmark Test
-> 
->   * Test environments:
->        - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
->        - SMC sndbuf/DMB size 1MB.
-> 
->   * Test object:
->        - TCP: run on TCP loopback.
->        - SMC lo: run on SMC loopback-ism.
-> 
-> 1. ipc-benchmark (see [3])
-> 
->   - ./<foo> -c 1000000 -s 100
-> 
->                              TCP                  SMC-lo
-> Message
-> rate (msg/s)              79693                  148236(+86.01%)
-> 
-> 2. sockperf
-> 
->   - serv: <smc_run> sockperf sr --tcp
->   - clnt: <smc_run> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
-> 
->                              TCP                  SMC-lo
-> Bandwidth(MBps)         4815.18                 8061.77(+67.42%)
-> Latency(us)               6.176                   3.449(-44.15%)
-> 
-> 3. nginx/wrk
-> 
->   - serv: <smc_run> nginx
->   - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
-> 
->                             TCP                   SMC-lo
-> Requests/s           196555.02                263270.95(+33.94%)
-> 
-> 4. redis-benchmark
-> 
->   - serv: <smc_run> redis-server
->   - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
-> 
->                             TCP                   SMC-lo
-> GET(Requests/s)       88711.47                120048.02(+35.32%)
-> SET(Requests/s)       89465.44                123152.71(+37.65%)
-> 
-> 
+> +        while !(*child_field_of_parent).is_null() {
+> +            let curr =3D *child_field_of_parent;
+> +            // SAFETY: All links fields we create are in a `Node<K, V>`.
+> +            let node =3D unsafe { container_of!(curr, Node<K, V>, links)=
+ };
 
-Hi Wen Gu,
+[...]
 
-I did run the tests again with the v6 and reviewed the patchset. If you 
-decide to address Simons nit feel free to add my:
+> @@ -1119,3 +1099,177 @@ unsafe impl<K: Send, V: Send> Send for RBTreeNode=
+<K, V> {}
+>  // SAFETY: If K and V can be accessed without synchronization, then it's=
+ also okay to access
+>  // [`RBTreeNode`] without synchronization.
+>  unsafe impl<K: Sync, V: Sync> Sync for RBTreeNode<K, V> {}
+> +
+> +impl<K, V> RBTreeNode<K, V> {
+> +    /// Drop the key and value, but keep the allocation.
+> +    ///
+> +    /// It then becomes a reservation that can be re-initialised into a =
+different node (i.e., with
+> +    /// a different key and/or value).
+> +    ///
+> +    /// The existing key and value are dropped in-place as part of this =
+operation, that is, memory
+> +    /// may be freed (but only for the key/value; memory for the node it=
+self is kept for reuse).
+> +    pub fn into_reservation(self) -> RBTreeNodeReservation<K, V> {
+> +        let raw =3D Box::into_raw(self.node);
+> +        let mut ret =3D RBTreeNodeReservation {
+> +            // SAFETY: The pointer came from a valid `Node`, which has t=
+he same layout as
+> +            // `MaybeUninit<Node>`.
+> +            node: unsafe { Box::from_raw(raw as _) },
+> +        };
+> +        // SAFETY: Although the type is `MaybeUninit<Node>`, we know it =
+has been initialised
+> +        // because it came from a `Node`. So it is safe to drop it.
+> +        unsafe { core::ptr::drop_in_place::<Node<K, V>>(ret.node.as_mut_=
+ptr()) };
+> +        ret
+> +    }
 
-Reviewed-and-tested-by: Jan Karcher <jaka@linux.ibm.com>
+With my patch [1] this can be simplified.
 
-Thanks for your effort and contribution.
-- J
+[1]: https://lore.kernel.org/rust-for-linux/20240425213419.3904105-1-benno.=
+lossin@proton.me/
+
+> +}
+> +
+> +/// A view into a single entry in a map, which may either be vacant or o=
+ccupied.
+> +///
+> +/// This enum is constructed from the [`entry`] method on [`RBTree`].
+
+You could just write [`RBTree::entry`].
+
+> +///
+> +/// [`entry`]: fn@RBTree::entry
+> +pub enum Entry<'a, K, V> {
+> +    /// This [`RBTree`] does not have a node with this key.
+> +    Vacant(VacantEntry<'a, K, V>),
+> +    /// This [`RBTree`] already has a node with this key.
+> +    Occupied(OccupiedEntry<'a, K, V>),
+> +}
+
+[...]
+
+> +impl<'a, K, V> RawVacantEntry<'a, K, V> {
+> +    /// Inserts the given node into the [`RBTree`] at this entry.
+> +    ///
+> +    /// The `node` must have a key such that inserting it here does not =
+break the ordering of this
+> +    /// [`RBTree`].
+> +    fn insert(self, node: RBTreeNode<K, V>) -> &'a mut V {
+> +        let node =3D Box::into_raw(node.node);
+> +
+> +        // SAFETY: `node` is valid at least until we call `Box::from_raw=
+`, which only happens when
+> +        // the node is removed or replaced.
+> +        let node_links =3D unsafe { addr_of_mut!((*node).links) };
+> +
+> +        // INVARIANT: We are linking in a new node, which is valid. It r=
+emains valid because we
+> +        // "forgot" it with `Box::into_raw`.
+> +        // SAFETY: All pointers are null or valid in an appropriate way.
+
+I don't like the formulation "valid in an appropriate way", since if you
+don't know what the appropriate way is, this doesn't help you.
+
+> +        unsafe { bindings::rb_link_node(node_links, self.parent, self.ch=
+ild_field_of_parent) };
+> +
+> +        // SAFETY: All pointers are valid. `node` has just been inserted=
+ into the tree.
+> +        unsafe { bindings::rb_insert_color(node_links, &mut self.rbtree.=
+root) };
+> +
+> +        // SAFETY: The node is valid until we remove it from the tree.
+> +        unsafe { &mut (*node).value }
+> +    }
+> +}
+> +
+> +impl<'a, K, V> VacantEntry<'a, K, V> {
+> +    /// Inserts the given node into the [`RBTree`] at this entry.
+> +    pub fn insert(self, value: V, reservation: RBTreeNodeReservation<K, =
+V>) -> &'a mut V {
+> +        self.raw.insert(reservation.into_node(self.key, value))
+> +    }
+> +}
+> +
+> +/// A view into an occupied entry in a [`RBTree`]. It is part of the [`E=
+ntry`] enum.
+> +///
+> +/// # Invariants
+> +/// - `node_links` is a valid, non-null pointer to a tree node.
+
+It should be the same tree as `self.rbtree`, right? (I see you calling
+`rb_replace_node` below with the rbtree root used)
+
+--=20
+Cheers,
+Benno
+
+> +pub struct OccupiedEntry<'a, K, V> {
+> +    rbtree: &'a mut RBTree<K, V>,
+> +    /// The node that this entry corresponds to.
+> +    node_links: *mut bindings::rb_node,
+> +}
+
 
