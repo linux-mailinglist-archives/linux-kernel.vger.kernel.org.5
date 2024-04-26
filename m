@@ -1,213 +1,309 @@
-Return-Path: <linux-kernel+bounces-159454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0450E8B2ECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:00:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BF98B2ED1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:03:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C38C3B21E8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:00:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91A411F2243F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4394274E26;
-	Fri, 26 Apr 2024 03:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58AD074E3F;
+	Fri, 26 Apr 2024 03:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="RRGhpQ8N"
-Received: from HK2PR02CU002.outbound.protection.outlook.com (mail-eastasiaazon11010000.outbound.protection.outlook.com [52.101.128.0])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oiYO3qrZ"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04B52CA2
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:00:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.0
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714100402; cv=fail; b=SkWRxHP01cJoMHEh8TH0AS18BNuIR2ij45xuCkVAymO/PzB7V5QJhvxC+yKaHqf+l4BpECf7DHUN361p/sR8mXNGZ8qKX4NDdl2i59GubQG+8dZTHrt5eOld+F0j4TYmN44h/yJYU3fNGhn2Z457h2j93mbysPVpeaQ+AawDwSA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714100402; c=relaxed/simple;
-	bh=sAdjm4gJzNdHEqykjijbfAV+QVO/yFsKH+ZLKS4iV1s=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=P2Hk5AqUE67btQ0zo/tCVRt8u7bPlpuQph+yoKGWw/U1fXlliCvuXb1JcvgGXpe73MV9uiLcpz1RtiZUY8hrWXvnHcLXuDpBqgqdrx4Ueh6Mg1FcaFU+s6yaMzpB1A467ang9fYNwUXA3YQvft0lnbPD+bmWxvgME8+A+a8/bqM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=RRGhpQ8N; arc=fail smtp.client-ip=52.101.128.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AJB4R5FzFnbtzlg9T1YycBFEIMOCStNyDL1OV76EBbhsxdzP+YXB6ixMmPDOVOd1/9gtDEkzd0j6/mUX/H8X3cTDes0J9e5grFWRpafdOcv2FGgFiB2UbJHE0DL6u6jW8L4JgfU7peWpxHT0xvC9619RjEngQPQ4C67hUe1gdWX99hJA9a3xaO/LVtj3MS5qJkT2ZowfgD4zb2E5USyTJd4I+9yV3TtSqxUj8aqrsGQ2aFkp3sFOT6ai9eERaPRrF4a6KxhsjL0toqwYMV7S8Wgy4mlsCVXWSjPNiHBZsTK903YN1eZql0lmnht6GxmZ8M057NVWaZB6gIHv4d1g6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CtkQCTKWFmD/RH174VzJT7jvqPZA8afHgm1thGNa6cc=;
- b=TqgDo0LR6Q+y+jH82ssAhZg5x52v9pH7G+gatMV1wdAkrRkMsnAv+ZCedICy+dm00xJXt7AsF5uXJoGFZW47o3kIGU3neGdl+mOgH03RNPO7eVje4d2XWCMXhifA9WqzfHWa79zlClV0jZqlbLgNF2SGaRQXBQD1M/oyN1TIxKjHg5y3c4dTpcThNMMYza8CzyIq17T934e0OzwUQMISThADMc3Y+y73Xklz4f0NUhKq2GmIK5L4PaeSoyQWNwSQR35WcTCX/0hHhnfDp98MoRJvDY3Ix28sR+kWB9S2Vo69vRJJAHxGIEUHmkz4aSp+nSOtS9ZKq8xKMpWyp8t63w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CtkQCTKWFmD/RH174VzJT7jvqPZA8afHgm1thGNa6cc=;
- b=RRGhpQ8NO+7I5anBOmgnqHPxEDQqAAuCbpM5M6huHT34uePO2YfJaehuPplJMugwxFKWVGwHnVIWm3hiI7B5HnoWAhzWEzThpD+dTKksahR3TzwPtQhj2jjdLBp0k/m5xhFg8ASpShdCimcnJ2Cdr2VGKb4ZgHPi4VnzuV7D1gyVSB1Nlf7jAof3LNlIsfo8safPixPkVCuLbqp60oxkLNDgYKNLRLed103dD6XZk01HPAb4nvGCffhofr4fPPXKSWWsjBLvcKPegr4Tm2C6ay9HW2cj9hz+S3mnJ/iCdh3AGIUSt6Q7N/NraL13rpKdArara4h8keQgYaEyKJvoAQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by TY0PR06MB5801.apcprd06.prod.outlook.com (2603:1096:400:27d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
- 2024 02:59:55 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::4fda:1ec1:241d:4634]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::4fda:1ec1:241d:4634%7]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
- 02:59:55 +0000
-Message-ID: <fef9f0e9-33d6-4e64-80b5-095b4794d7c8@vivo.com>
-Date: Fri, 26 Apr 2024 10:59:51 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/page_alloc: fix alloc_pages_bulk/set_page_owner panic
- on irq disabled
-From: Huan Yang <link@vivo.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>, "kernel@vivo.com"
- <kernel@vivo.com>,
- "syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com"
- <syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com>,
- Wang Qing <wangqing@vivo.com>
-References: <AJMANAB3D*gl9w79jvWlvaqZ.3.1626053734064.Hmail.link@vivo.com>
-In-Reply-To: <AJMANAB3D*gl9w79jvWlvaqZ.3.1626053734064.Hmail.link@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TY2PR0101CA0042.apcprd01.prod.exchangelabs.com
- (2603:1096:404:8000::28) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FE2EBE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714100597; cv=none; b=K/VZ0FgHoNsWhyPrEdd7UVjAMQylommDWRqI4tXg307LQloc7Xr6UJ9gu/b1fuAIKT6V3y5TA69f8xp8e/E7ag/26FV0p6UdN95H8H/nSePbPg7rTOHyx+AVDaM+vSQ4e3fmdWgJ7vdya63XpYNB2K8fldp+PxmWcCif5yE/CuM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714100597; c=relaxed/simple;
+	bh=vsLI7TVcpwAvcajVp83qswpofMP2+9uWtTzz/ql0IgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AM+j4jvQTx8TlX1+gx4+qUAKW0U5CdeWXeGK7VyRoFSB2qzIbgeDUF7iERNm5otZLXOFc8JOzoD1ZhZF8iW3tW3CmemBpd4Rz/IY4tCO3VvxTyK+dv5KNxPA1nA59HzzU58tZJDdJScwabwEL7ynvvDe3DA+RYM3zmiTQaHmLlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oiYO3qrZ; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518a56cdc03so1901312e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714100590; x=1714705390; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eerUw8HV77CQtEM68opKn2k+UEnTk4gJflML9gefhwE=;
+        b=oiYO3qrZe3e8yCjLyKYMhoTGJ6opNuH1FG6seRyzPt6wLY6CcQxQFq5gLU+00S5H8y
+         P3luXtqve7tPciSuq1UQM+aGWnlGj7jvCz0BhXstBnoX6VBqGfZXyov2dbZdviYrPQ9F
+         K8V5wV69RqItf0zPp3saRvbbxz8R0w7gkULHeyBu5/OipNnO9ksJkNSTVBUtucvmRN5E
+         ZFsdbn7pZS84ONymlKy8Zf/h6pC3IVDelZ7BHfZNMOX1fZvZ0MvGl9QaeP3Svxdv86oc
+         GrTlVcxNutNqBUdJplJC3LYLcQLuWjyqWDbFIw5hUbOWGjNHiOGhRISGUnfc5o8ML/aJ
+         EGlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714100590; x=1714705390;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eerUw8HV77CQtEM68opKn2k+UEnTk4gJflML9gefhwE=;
+        b=aaDaSPl4LdCsgQkvOpLscQo1ZO5juuOnhuFMq9kMDppAAlkVDjruRuHzUiTnKteTnw
+         BoZO/4xjqYK56rWiIlzBb1fgRT3QX1/XCZWFqK9BV6gpxc5OeFUGxjUjcCaLslmlGYVH
+         IyQiURTwr7vUD/IRbrOBgMH1G1o2QOjQT78VsrE8Qv5VIPJRUxxWHCzksVoALq0YHqKY
+         fH+yNoFIrexP3U2/tTZ4Jl2gaPi7I5q7U/QZY46H9F7cLK8wvDoB9A9pjI4197g4F7/b
+         +a7Qjgwj44Du7vw+vxusJjQGKwFjoNGLcJ90BVHK1ZQHm2SEwhV53H2SmyrdUYAiWRfm
+         ZjDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVSrApkyH7FTaJYZq0k926BYHKpDtUz/J5npuXpjO98e8o8zN7wqXPa98LoF+/38zfNnkKDKfFdnfKzvNIptDsANKMsQkj77urJpiip
+X-Gm-Message-State: AOJu0YyUac0Gz7EZH70BHB2YzA+gTfFWTPtNECmpYA3ArnnvFco2+g4o
+	v7WxmeUIoP33KWKWMoOjw+3xEZMpTa3UvWA1qnlRBaQRd4r5a01M39mNaBJHCoA=
+X-Google-Smtp-Source: AGHT+IF7fC3rK4d2pUEe78+3175lW5ei7plG847JDb4Ai7SjzrmEwSTqyN+4QmSXUWusfc3etJMfTQ==
+X-Received: by 2002:ac2:4e03:0:b0:516:cf0a:9799 with SMTP id e3-20020ac24e03000000b00516cf0a9799mr800810lfr.64.1714100589585;
+        Thu, 25 Apr 2024 20:03:09 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
+        by smtp.gmail.com with ESMTPSA id a13-20020ac2520d000000b00516b07d95c0sm2980341lfl.217.2024.04.25.20.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 20:03:08 -0700 (PDT)
+Date: Fri, 26 Apr 2024 06:03:07 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
+	dri-devel@lists.freedesktop.org, Javier Martinez Canillas <javierm@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, linus.walleij@linaro.org, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Hsin-Yi Wang <hsinyi@google.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of
+ mipi_dsi_*_write_seq()
+Message-ID: <beqsovvdkvn63prt3c6b3epb6tachff35vpaf62dfkwof7kwht@u3p7bkv7owro>
+References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
+ <87pludq2g0.fsf@intel.com>
+ <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TY0PR06MB5801:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4384ed1d-620a-422b-35ca-08dc659cf33b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ekYyM0Rqcy95TmZscGFGSGFmU3UyTS9kZEk4N1hhSnZwdU9OeFJRWXQ5Y3VJ?=
- =?utf-8?B?RTNGbTcvTjFxTmY5dlNkMFZtV3BONzYxRDNxQkRCY09HOTZaQXppQ3VZeTda?=
- =?utf-8?B?eGdwa0I5U0ltbGEwQU1yRjNIc2x5dy9CSVlvZkFJeEtEaTZEcXVlZWFiRWln?=
- =?utf-8?B?WVllME1pREQ1cmVyUnUvT3o4Y0RPZzkyV2ZNMDBZMGo1ci8raWFxeW9WdHln?=
- =?utf-8?B?cnFBRHArMnVleFNYMkd1WDFmS3k3RncvOVhFV01BdHAzRkQ5MUFwVUE2QWp0?=
- =?utf-8?B?UzJKY0M4SEx5YlplelZOTFZpUktKR3RqT2JlWDRLV2hBTVNFemI5NTczcGxR?=
- =?utf-8?B?akNacmNZVmN5ZVhKWWZPZk4rMm9nNEhxR0cwWTFLbFd6bHlMMCs3aXlGdnJW?=
- =?utf-8?B?RS9ZU3k4TmFWb3poaytzeWVEY3o5NGtXL1dtTkQ1Vi9BcWx2TWFjT2FLZGln?=
- =?utf-8?B?bDAwdnR6LzR1c1ZKMW44UmRqRHQza2xFZWZUdW5peEh6UXNxY0UyS3NTL1Qv?=
- =?utf-8?B?SHFzazRzNW9RZFlpemZnOVR6aElhQzFNTEVEbmdYYnNjaVVrSVMzYjAxcGsr?=
- =?utf-8?B?cyswdWxoMWRJV2ZqRFV0aWE0MU5EL25VODN2ZmJFTng1eVRNZXllQ2JlZ3dv?=
- =?utf-8?B?M25wOEpLOHhEaHlBQmd4d1lxa2FsRWEwdE1RNVNSTHp2VzdVd0pQdlhEWENM?=
- =?utf-8?B?RWd0ZkRkMnU1ck1QTzZ3NW1PUS9COTFBdUNFRUtnZXNoUCtXN1huTnNpKzJQ?=
- =?utf-8?B?VUo5TlRuNzNpcm1NSmMyZ1NHMSsydWtVV0tEZXBrNHh3WE43OTdjUElLMzFv?=
- =?utf-8?B?VDg5b2psbUt5NzNuZU8xajVva1FsNzQ3TWJmSTJlMUl2cUkwNXhxUXBGRmVH?=
- =?utf-8?B?QTc3UlBEb3l5NWxXZ0hwUjhwM1dGVUwzOFJ5VEJPL0hQL1l4bHlWb1MvdkVn?=
- =?utf-8?B?MmlQUnpzYU9hR3ZXSzIyNW5oT1hPeEcyelBrM0xEYzdxclhOL3A1aFhieEMx?=
- =?utf-8?B?aGMyRFd6WVJyOW5pYTBUOHlyOExqY1VtRHIzbno2UVlJbURESmYwWmV1cVpC?=
- =?utf-8?B?cFdEZGxHamNJY05TL0V2ckYyUVg2VlBPeXpTSWZQOHpGN0FVTCtNUUNMOVFQ?=
- =?utf-8?B?VVZBcHFyY0NZL1FvVUJnY0E3anNnTDhJaytGNmhucXBoSzEwZDdxTUg1NmQv?=
- =?utf-8?B?WGdveGtxREgwa1AxVkdVM2FYMFBVQVBIMU1od2I1RUhnWWZJVXp0RVE5TU9E?=
- =?utf-8?B?WUh6Q3hHZUtiSm9GRFcyd0xLY3MwYnFMWjBnNEIybVV1bXhxb0xveHoyQmhM?=
- =?utf-8?B?a3JISWpuZG56cjRrYXZjaWpUTEV0clZJcmc5Vk56K3M0NnU3NmpFNlBOR2Zw?=
- =?utf-8?B?MEV1UkdFeUZNaUN0V0p1UkQ2QlJOckNKQ1pNdFZEemtTSFRubDlMTU1vTSsy?=
- =?utf-8?B?eG8vcVllN3pQQkdwQk4vNmNMc0xHdUFhM3d3MG1jRHZLWEZKcE1DQWIwRnMw?=
- =?utf-8?B?dkRRc25MTy9NRnRCd2tRc3lwNW1MLzRNNGhydzBnRmpwaGpOTzU1ZzNHdmFS?=
- =?utf-8?B?aUxtditCNS9JelZkWFhNRldaRXZ6L2RrajZsaDJOR1ZqR01vSEplS0Nnb2Rl?=
- =?utf-8?B?ZE9QWFVvTUNFL0hYQklXci8xNTFPb2h3VE5rdDBVTzZFeDU4cjBsV3liOGlE?=
- =?utf-8?B?ek1BalFXQTZJeGkzVmI5ZE00Q0hSd0xMWG1yMTVheU1KY1ZFS0FWbk1BPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eVZCMEFuSFl5RTZnb2UzMHh4a3JMQVhmbmE4bTdQemZPYk53N3dFZnhRTmJ4?=
- =?utf-8?B?QldmRmt5akRjRURqUi9DOG1VQTBYTUlIOVNMY1lXbmk3b28xV2VabEZiUXMr?=
- =?utf-8?B?S0RzRHJIbExaNTUxc1VENWtSd0swN3BES3FCOTIvSUhRSFlzYWd2VTBYcE54?=
- =?utf-8?B?Z2wzSkw0bHkwV2I3ZlpEKzBvcjI1VUp4VHVXSVdXMHk1dWdoczBzVEFMREY0?=
- =?utf-8?B?NjhtOXNadVN5MTNYRTdzR3RUMlgxNXhGUXpwQTBFWTFMRERrZmpJUHZyclV1?=
- =?utf-8?B?dDgzRjc2cTlCclkwYjhSSVE3bkVieDhjZWRDa3Z5d1J0SmljWUg1T3FIazF6?=
- =?utf-8?B?azRVVVZWaEpZcGJGeXRCMWh4bkZhMTV0MHRMb0x1dFVJblhPQzVuZm9QRG01?=
- =?utf-8?B?cUNHWStnNEluc0d1Z3VIMktKTXpTbjZLRGpqZTh6SVNBMFZNalFFa0h5dG03?=
- =?utf-8?B?U3NjNzdZREI5TVU2KzNRYTRBMDZzOGpJWHRyaXdYZUJzNnAybXVIazB5WjM2?=
- =?utf-8?B?RDhqc010MGQyR2NHY0NCOWFjcTRBN1VNZG8rNkszaU54RDdtMWJ0L2E0S1Ni?=
- =?utf-8?B?dU1qNXBlWjJaRXZUTlNhNXV3alFPOHMybnlPZkgveUR3V1IrRytWRmlQem8r?=
- =?utf-8?B?aG1tSk5hN2lzbEhIZU5uQWtlUnJ2MlladEFFSCtPK0Z3ajBZSnBWTFpUUWRl?=
- =?utf-8?B?MkYvUzZEdnYvaUtoQnhTTUFwNkExT3NUUUpldjlZa1V1ZnFpVVhNZUpwalA3?=
- =?utf-8?B?c0JZSXpoRGVrNXhIcjZVYVhmY0x3VE1YcEV6QVhPdVBINXlmTW16N0licUVU?=
- =?utf-8?B?Q2xXb3FhS2lSZzc5YTdzSGs2NVRmVHViK0ExM0cvbjVneGQyUE82bkJlNCth?=
- =?utf-8?B?M2hmbkFjRmJPVitoUEJFczRtdWp5TElBZ2pSZjZlYVlvR1BjNUdVOGh0Wmxu?=
- =?utf-8?B?RDdmREsrOTZxT3JldXlNQS9mOVVFRmZQNmZCQ0RGNFU2REZyVHpUbGRKeTlB?=
- =?utf-8?B?ejgrMnpTeThmejZaZGlKYms4VU53THRFMnBGeDM1N3BGNEY2Skx5WWtMWFdD?=
- =?utf-8?B?Q3dJcEQyd0VHSFlrdzYwY3lxOHVOeUdBNXZ4aytXOVJIWGYvR2VSSUlDanNQ?=
- =?utf-8?B?eDM4RVRsWkZpS21Ibi9nS21nNjlabkdZY01BMnZMV0JIb2l0TkdWbUxubHlL?=
- =?utf-8?B?NVc3TjQrS2FrcHo5Ym1XNnk5YTEyZTQ4bWwxOWpyUWRSLzBWd2p5a3FTN0tr?=
- =?utf-8?B?WlJuNVd5MHhwV0lrdHFaQTQvZXZhcklNcjE4d2hnN2U0UVNYTXA2b3pCTWhN?=
- =?utf-8?B?S1VXbVZNWUphOXlxNGRsLzdQVnhJaXN1SDNHRjE0MTc5anFXQUl3OUh5U2kr?=
- =?utf-8?B?b2FOR2ZnYlRJTlJsR0tFZWVZQVh2SERoNzVCSHVweGZsVmV5M2I4ZWI2blps?=
- =?utf-8?B?VGE5OUF2UU95QktwNTZ3eDJFcWdiVnc0RHlmYk9GWkVwTXlnQWgxcldlcVdF?=
- =?utf-8?B?aVdDRzYxNGJRcDVKM2QwQU5HSlMxUlNnb0d2Kzk0QlAvY2g1My9heGkweVVy?=
- =?utf-8?B?VE5ZSi9FMGEveUhadlU3aGJuY1ROTkFQK3lMQnF3aGFJRWk2WjVOWHkxRm1H?=
- =?utf-8?B?K0dmYXBkbjdVRytnaE1wZ2V2WjdQR1BnYUJDS0liaEZyUDROZjNDSmJlWndI?=
- =?utf-8?B?bmZXaHgwc24xVEM4SHdreDdXOXNwb09pb1lqVHZlQlc4dkJuS2pJNU1Dc1Yz?=
- =?utf-8?B?aFJ3NEs1dkZnYUhpcFBFVUl4Uk5iS0hJL0J5NVhObWtJYmlaQ0VvaFlNZEVP?=
- =?utf-8?B?QTRYeEZua2pGeXVBWUJmdVQvWmxPZ2lFKzBRT1Nrd2IvVDlhbGhPZC9WSVJS?=
- =?utf-8?B?VW5TYWplUDRCQS9VRW5zUWJNc1ZyZlhxMjlkNkNvQjNhUzJ5NHFldkVyMnhk?=
- =?utf-8?B?NkxEbWkyYzF6RjVSbXkxSGhDMFJGUWZjeUpxc3cyV3VTVk9TRmhnS3g5Q3p3?=
- =?utf-8?B?NzhTbzlJMTdwR1paZU0venNVcXZ2SlRKOUo5Nm9tMXk5NkxZT2NjVUpvOVdw?=
- =?utf-8?B?c20zQ0k1NTU3QVpqWm1QdnNabW1xcTJ2ek5kSjBWUVA0cEliblNEKzFDYVB2?=
- =?utf-8?Q?U70TRgYL2cJB2Ev8fhGs2iA5h?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4384ed1d-620a-422b-35ca-08dc659cf33b
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 02:59:55.1429
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lCCCm4seYYg1ePqx5H4ejBgkSJ/2SB8XfQjN2Pn97PZQohYTuaoGYUFY/ChjFQixdVtPWmEKayBNIgzThmToCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5801
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
 
-HI Andrew
+On Thu, Apr 25, 2024 at 10:04:49AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Apr 25, 2024 at 1:19 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> >
+> > > @@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
+> > >
+> > >  ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
+> > >                                 const void *data, size_t len);
+> > > +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
+> > > +                                      const void *data, size_t len);
+> > >  ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
+> > >                          const void *data, size_t len);
+> > >  ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, void *data,
+> > > @@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
+> > >  #define mipi_dsi_generic_write_seq(dsi, seq...)                                \
+> > >       do {                                                                   \
+> > >               static const u8 d[] = { seq };                                 \
+> > > -             struct device *dev = &dsi->dev;                                \
+> > >               int ret;                                                       \
+> > > -             ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
+> > > -             if (ret < 0) {                                                 \
+> > > -                     dev_err_ratelimited(dev, "transmit data failed: %d\n", \
+> > > -                                         ret);                              \
+> > > +             ret = mipi_dsi_generic_write_chatty(dsi, d, ARRAY_SIZE(d));    \
+> > > +             if (ret < 0)                                                   \
+> > >                       return ret;                                            \
+> > > -             }                                                              \
+> > >       } while (0)
 
-在 2024/4/25 17:52, 杨欢 写道:
->>> The problem is caused by set_page_owner alloc memory to save stack with
->>> GFP_KERNEL in local_riq disabled.
->>> So, we just can't assume that alloc flags should be same with new page,
->>> let's split it. But in most situation, same is ok, in alloc_pages_bulk,
->>> input GFP_ATOMIC when prep_new_pages
->> Please more fully describe the bug which is being fixed.  A link to the
->> sysbot report would be helpful.  I assume there was a stack backtrace
->> available?  Seeing the will help others to understand the bug.
-> Sorry, here is the backtrace:
-> __dump_stack lib/dump_stack.c:79 [inline]
-> dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
-> ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
-> prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
-> __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-> alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-> stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-> save_stack+0x15e/0x1e0 mm/page_owner.c:120
-> __set_page_owner+0x50/0x290 mm/page_owner.c:181
-> prep_new_page mm/page_alloc.c:2445 [inline]
-> __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
 
-Thanks for your reply, but this patch was submitted in 2021, at that 
-time it was believed that bypassing
+Reading the thread makes me wonder whether we should be going into
+slightly other direction:
 
-alloc bulk would suffice when page_owner is enabled, so this patch was 
-not considered.
+Add __must_check() to mipi_dsi_ writing functions,
 
-Have you recently encountered any issues related to this?
+#define mipi_dsi_dcs_whatever_write(dsi, cmd, seq...)	\
+	({						\
+		static const u8 d[] = { cmd, seq };     \
+                mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
+	})
 
-Thanks.
+Then in panel drivers we actually have to explicitly handle the return
+code (either by dropping to the error label or by just returning an
+error).
 
->> And if you are able to identify the patch which introduced the bug, a
->> Fixes: tag would be helpful as well.
->> Thanks.
->>
->
->
->
+
+> >
+> > The one thing that I've always disliked about these macros (even if I've
+> > never actually used them myself) is that they hide control flow from the
+> > caller, i.e. return directly. You don't see that in the code, it's not
+> > documented, and if you wanted to do better error handling yourself,
+> > you're out of luck.
+> 
+> Yeah, I agree that it's not the cleanest. That being said, it is
+> existing code and making the existing code less bloated seems worth
+> doing.
+> 
+> I'd also say that it feels worth it to have _some_ solution so that
+> the caller doesn't need to write error handling after every single cmd
+> sent. If we get rid of / discourage these macros that's either going
+> to end us up with ugly/verbose code or it's going to encourage people
+> to totally skip error handling. IMO neither of those are wonderful
+> solutions.
+> 
+> While thinking about this there were a few ideas I came up with. None
+> of them are amazing, but probably they are better than the hidden
+> "return" like this. Perhaps we could mark the current function as
+> "deprecated" and pick one of these depending on what others opinions
+> are:
+> 
+> 1. Use "goto" and force the caller to give a goto target for error handling.
+> 
+> This is based on an idea that Dmitry came up with, but made a little
+> more explicit. Example usage:
+> 
+> int ret;
+> 
+> ret = 0;
+> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETSPCCMD, 0xcd,
+>                             some_cmd_failed);
+> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETMIPI, 0x84,
+>                             some_cmd_failed);
+> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETSPCCMD, 0x3f,
+>                             some_cmd_failed);
+> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETVDC, 0x1b, 0x04,
+>                             some_cmd_failed);
+> 
+> ...
+> 
+> some_cmd_failed:
+>   pr_err("Commands failed to write: %d", ret);
+>   return ret;
+> }
+> 
+> One downside here is that you can't easily tell which command failed
+> to put it in the error message. A variant of this idea (1a?) could be
+> to hoist the print back into the write command. I'd want to pick one
+> or the other. I guess my preference would be to hoist the print into
+> the write command and if someone really doesn't want the print then
+> they call mipi_dsi_dcs_write_buffer() directly.
+
+Do we really care, which command has failed? I mean, usually either all
+DSI transfers work, or we have an issue with the DSI host.
+
+> 
+> ---
+> 
+> 2. Accept that a slightly less efficient handling of the error case
+> and perhaps a less intuitive API, but avoid the goto.
+> 
+> Essentially you could pass in "ret" and have the function be a no-op
+> if an error is already present. Something like this:
+> 
+> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi,
+> const void *data, size_t len, int *accum_ret)
+> {
+>   if (*accum_ret)
+>     return;
+> 
+>   *accum_ret = mipi_dsi_dcs_write_buffer(dsi, data, len);
+> }
+> 
+> ...and then the caller:
+> 
+> int ret;
+> 
+> ret = 0;
+> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0xcd, &ret);
+> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETMIPI, 0x84, &ret);
+> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0x3f, &ret);
+> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETVDC, 0x1b, 0x04, &ret);
+> if (ret)
+>   goto some_cmd_failed;
+> 
+> This has similar properties to solution #1.
+> 
+> ---
+> 
+> 3. Accept that callers don't want to error handling but just need a print.
+> 
+> I'm not 100% sure we want to encourage this. On the one hand it's
+> unlikely anyone is really going to be able to reliably recover super
+> properly from an error midway through a big long command sequence. On
+> the other hand, this means we can't pass the error back to the caller.
+> In theory the caller _could_ try to handle errors by resetting / power
+> cycling things, so that's a real downside.
+> 
+> Example usage:
+> 
+> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETSPCCMD, 0xcd);
+> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETMIPI, 0x84);
+> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETSPCCMD, 0x3f);
+> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETVDC, 0x1b, 0x04);
+> 
+> ---
+> 
+> I think I'd lean towards #1a (user passes goto label and we include
+> the error print in the helper), but I'd personally be happy with any
+> of #1 or #2. I don't love #3.
+> 
+> > Be that as it may, the combo of ratelimited error printing and return on
+> > errors does not make much sense to me. If there's something to print,
+> > you bail out, that's it. I suspect we never hit the ratelimit.
+> 
+> Yeah, I'm in favor of removing the ratelimit.
+> 
+> 
+> > You might even want to try *only* changing the ratelimited printing to a
+> > regular error message, and see if the compiler can combine the logging
+> > to a single exit point in the callers. Ratelimited it obviously can't
+> > because every single one of them is unique.
+> 
+> It wasn't quite as good. Comparing the "after" solution (AKA applying
+> $SUBJECT patch) vs. _not_ taking $SUBJECT patch and instead changing
+> dev_err_ratelimited() to dev_err().
+> 
+> $ scripts/bloat-o-meter \
+>    .../after/panel-novatek-nt36672e.ko \
+>   .../noratelimit/panel-novatek-nt36672e.ko
+> add/remove: 0/0 grow/shrink: 1/0 up/down: 3404/0 (3404)
+> Function                                     old     new   delta
+> nt36672e_1080x2408_60hz_init                7260   10664   +3404
+> Total: Before=11669, After=15073, chg +29.17%
+> 
+> ...so $SUBJECT patch is still better.
+> 
+> ---
+> 
+> Where does that leave us? IMO:
+> 
+> a) If others agree, we should land $SUBJECT patch. It doesn't change
+> the behavior at all and gives big savings. It adds an extra function
+> hop, but presumably the fact that we have to fetch _a lot_ less stuff
+> from RAM might mean we still get better performance (likely it doesn't
+> matter anyway since this is not hotpath code).
+> 
+> b) Atop this patch, we should consider changing dev_err_ratelimited()
+> to dev_err(). It doesn't seem to make lots of sense to me to ratelimit
+> this error.
+> 
+> c) Atop this patch, we should consider making the two existing macros
+> "deprecated" in favor of a new macro that makes the control flow more
+> obvious.
+> 
+> How does that sound to folks?
+> 
+> -Doug
+
+-- 
+With best wishes
+Dmitry
 
