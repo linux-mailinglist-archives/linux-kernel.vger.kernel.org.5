@@ -1,156 +1,279 @@
-Return-Path: <linux-kernel+bounces-159948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACF988B36AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:43:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 193768B36AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:46:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69008284B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:43:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 881BE1F22C01
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341B9145FE0;
-	Fri, 26 Apr 2024 11:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FF514533D;
+	Fri, 26 Apr 2024 11:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BxW0Hd2d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e5eLt6gm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B039145B21;
-	Fri, 26 Apr 2024 11:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADF013C9A7
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714131801; cv=none; b=VyQbCT3hZ8wrmMqJiAUGBhQdxTjPQAYH/2G61GopPG/I3Soz4eYBmqPS20acA4i3YJMbi2sek2f1+28H9bUXK70kYKULjZCopIzq9VUvB5Tyhj4nAGW7LSSjOFo7irSExhAwEoB2VikdeWhvgZMkdBwbaxctUgitEm1HzoErG7k=
+	t=1714131963; cv=none; b=Hb/eaLHr8L4dysP36WZVbodaVzTUd/128VUj6KONU0P1sTrCLPsN93ICGXl+Z6kw1+9xJGGiqzKB+KEYDutm1QOFAhFjuT9hiECH5d+INlb48CWrBgEOe0SEhojhbmDtA5kPkTNhTWryS0mn+4go3dA/GpYqaJ+VnjfPn6rBgMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714131801; c=relaxed/simple;
-	bh=W2Yi4b8UUflYNjFBhKm+kSTDx5VFRPzQrHLBTed65Eo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=a5jt+07T5f6bC45RpQVxJR46PaXsZcSjeKdVTA2G3vT8bdLZo9L9/izadbj7c7AkQikWzOZWeo+uBVvHiiGjq3gMS1hP7VjeJbYArf0+lCUhgw3tUyOHZmhH0WJn5ShQHJfWczbVJy9gkifAcewK/dLnvysZbwSoeUiHltGH8dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BxW0Hd2d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BCFC113CD;
-	Fri, 26 Apr 2024 11:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714131801;
-	bh=W2Yi4b8UUflYNjFBhKm+kSTDx5VFRPzQrHLBTed65Eo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=BxW0Hd2dK2F/YPPiVT1xiQG5GFCiDj/hJDpVwiGyocQgdwzxvWmYRYTgWcRy9IkbN
-	 5aRPbbergf3asX5vbt3nG/jmaKq5DM6kYtiEEKlQKHHgO/OBH2gUyAh9CG/R09PVdU
-	 WPv/8XRaP0occLuKeiMMsLQ4TheW8WKQQkGABFz7zOpkra4Y1lm0T4iCntWi/6gCj5
-	 /wzXg1efvKb0JjUg8c2/2T3TJKX+ldf8I6IJ2xD1JW97G8HJWIsOugwKTiApeUgkXl
-	 mJHH9LPsbfTmuY4ZCA4l9qz5Gg8b8BHu/gvoKR+DEHRNZv4K3EoHs9FDzjHKS4PMPT
-	 eqHQZMURSPdBQ==
-Message-ID: <873caf750d495a1850839f30fb120be7c6b5fd36.camel@kernel.org>
-Subject: Re: [PATCH] netfs: Fix the pre-flush when appending to a file in
- writethrough mode
-From: Jeffrey Layton <jlayton@kernel.org>
-To: David Howells <dhowells@redhat.com>, Christian Brauner
- <brauner@kernel.org>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>,  Dominique Martinet <asmadeus@codewreck.org>, Christian
- Schoenebeck <linux_oss@crudebyte.com>, Marc Dionne
- <marc.dionne@auristor.com>, netfs@lists.linux.dev, 
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, v9fs@lists.linux.dev, 
- linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Date: Fri, 26 Apr 2024 07:43:18 -0400
-In-Reply-To: <2150448.1714130115@warthog.procyon.org.uk>
-References: <2150448.1714130115@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 (3.52.0-1.fc40app1) 
+	s=arc-20240116; t=1714131963; c=relaxed/simple;
+	bh=BRhNhRa5nUoyvEtCWgA0o5hBNXQs9lcW5HCVxK11thE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h6GWUdlTWkrPtREyVYv1x80CqOjSFSW8IB66U8DCOIw8TfSvBHGX0KShsvaVi3w/YosqM3MNmwLg970M9izz0QkMIXSFc1ETGk0VddGmEc3VjyHryQbFHhaSBZDqaGeY+GYyLfAbxw/+K3WKdIZtMJEW75UUJ0EJldEo+Eetwy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e5eLt6gm; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714131960;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4RdPwyA7wfNaOIr7UmLDrra9JAYl3veQ/lffaIDIODI=;
+	b=e5eLt6gmbUs8RjkJHy7u9Rltdf50o3cGpKl/Rk3j4jgRxDr9R2hgcSZjcYx6D1yDALMhyx
+	ytwN4iwZh80kGMakJGXE358eO5ZgW4/U8FiHGobejH2GuGXHXfyxhdEYg5ALpInTYSqEpk
+	XvU9PU4fnAJ2AyIWl6aX7iZLgJ/oWeI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-xpgkS5RBOImOAAM83bu05w-1; Fri, 26 Apr 2024 07:45:57 -0400
+X-MC-Unique: xpgkS5RBOImOAAM83bu05w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A0D561005D5C;
+	Fri, 26 Apr 2024 11:45:56 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.192.180])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 39EDE1C060D0;
+	Fri, 26 Apr 2024 11:45:53 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: [PATCH v2] KVM: selftests: Use TAP interface in the set_memory_region test
+Date: Fri, 26 Apr 2024 13:45:52 +0200
+Message-ID: <20240426114552.667346-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Fri, 2024-04-26 at 12:15 +0100, David Howells wrote:
-> In netfs_perform_write(), when the file is marked NETFS_ICTX_WRITETHROUGH
-> or O_*SYNC or RWF_*SYNC was specified, write-through caching is performed
-> on a buffered file.  When setting up for write-through, we flush any
-> conflicting writes in the region and wait for the write to complete,
-> failing if there's a write error to return.
->=20
-> The issue arises if we're writing at or above the EOF position because we
-> skip the flush and - more importantly - the wait.  This becomes a problem
-> if there's a partial folio at the end of the file that is being written o=
-ut
-> and we want to make a write to it too.  Both the already-running write an=
-d
-> the write we start both want to clear the writeback mark, but whoever is
-> second causes a warning looking something like:
->=20
->     ------------[ cut here ]------------
->     R=3D00000012: folio 11 is not under writeback
->     WARNING: CPU: 34 PID: 654 at fs/netfs/write_collect.c:105
->     ...
->     CPU: 34 PID: 654 Comm: kworker/u386:27 Tainted: G S ...
->     ...
->     Workqueue: events_unbound netfs_write_collection_worker
->     ...
->     RIP: 0010:netfs_writeback_lookup_folio
->=20
-> Fix this by making the flush-and-wait unconditional.  It will do nothing =
-if
-> there are no folios in the pagecache and will return quickly if there are
-> no folios in the region specified.
->=20
-> Further, move the WBC attachment above the flush call as the flush is goi=
-ng
-> to attach a WBC and detach it again if it is not present - and since we
-> need one anyway we might as well share it.
->=20
-> Fixes: 41d8e7673a77 ("netfs: Implement a write-through caching option")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202404161031.468b84f-oliver.sang@i=
-ntel.com
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Eric Van Hensbergen <ericvh@kernel.org>
-> cc: Latchesar Ionkov <lucho@ionkov.net>
-> cc: Dominique Martinet <asmadeus@codewreck.org>
-> cc: Christian Schoenebeck <linux_oss@crudebyte.com>
-> cc: Marc Dionne <marc.dionne@auristor.com>
-> cc: netfs@lists.linux.dev
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> cc: v9fs@lists.linux.dev
-> cc: linux-afs@lists.infradead.org
-> cc: linux-cifs@vger.kernel.org
-> ---
->  fs/netfs/buffered_write.c |   13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->=20
-> diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
-> index 9a0d32e4b422..07aff231926c 100644
-> --- a/fs/netfs/buffered_write.c
-> +++ b/fs/netfs/buffered_write.c
-> @@ -172,15 +172,14 @@ ssize_t netfs_perform_write(struct kiocb *iocb, str=
-uct iov_iter *iter,
->  	if (unlikely(test_bit(NETFS_ICTX_WRITETHROUGH, &ctx->flags) ||
->  		     iocb->ki_flags & (IOCB_DSYNC | IOCB_SYNC))
->  	    ) {
-> -		if (pos < i_size_read(inode)) {
-> -			ret =3D filemap_write_and_wait_range(mapping, pos, pos + iter->count)=
-;
-> -			if (ret < 0) {
-> -				goto out;
-> -			}
-> -		}
-> -
->  		wbc_attach_fdatawrite_inode(&wbc, mapping->host);
-> =20
-> +		ret =3D filemap_write_and_wait_range(mapping, pos, pos + iter->count);
-> +		if (ret < 0) {
-> +			wbc_detach_inode(&wbc);
-> +			goto out;
-> +		}
-> +
->  		wreq =3D netfs_begin_writethrough(iocb, iter->count);
->  		if (IS_ERR(wreq)) {
->  			wbc_detach_inode(&wbc);
->=20
+Use the kselftest_harness.h interface in this test to get TAP
+output, so that it is easier for the user to see what the test
+is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
+macro here since these tests are creating their VMs with the
+vm_create_barebones() function, not with vm_create_with_one_vcpu())
 
-Reviewed-by: Jeffrey Layton <jlayton@kernel.org>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ v2:
+ - Rebase to linux-next branch
+ - Make "loops" variable static
+ - Added Andrew's Reviewed-by
+
+ .../selftests/kvm/set_memory_region_test.c    | 86 +++++++++----------
+ 1 file changed, 42 insertions(+), 44 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index 68c899d27561..a5c9bee5235a 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -16,6 +16,7 @@
+ #include <test_util.h>
+ #include <kvm_util.h>
+ #include <processor.h>
++#include "kselftest_harness.h"
+ 
+ /*
+  * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
+@@ -38,6 +39,8 @@ extern const uint64_t final_rip_end;
+ 
+ static sem_t vcpu_ready;
+ 
++static int loops;
++
+ static inline uint64_t guest_spin_on_val(uint64_t spin_val)
+ {
+ 	uint64_t val;
+@@ -219,6 +222,13 @@ static void test_move_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
++TEST(move_in_use_region)
++{
++	ksft_print_msg("Testing MOVE of in-use region, %d loops\n", loops);
++	for (int i = 0; i < loops; i++)
++		test_move_memory_region();
++}
++
+ static void guest_code_delete_memory_region(void)
+ {
+ 	uint64_t val;
+@@ -308,12 +318,19 @@ static void test_delete_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
+-static void test_zero_memory_regions(void)
++TEST(delete_in_use_region)
++{
++	ksft_print_msg("Testing DELETE of in-use region, %d loops\n", loops);
++	for (int i = 0; i < loops; i++)
++		test_delete_memory_region();
++}
++
++TEST(zero_memory_regions)
+ {
+ 	struct kvm_vcpu *vcpu;
+ 	struct kvm_vm *vm;
+ 
+-	pr_info("Testing KVM_RUN with zero added memory regions\n");
++	ksft_print_msg("Testing KVM_RUN with zero added memory regions\n");
+ 
+ 	vm = vm_create_barebones();
+ 	vcpu = __vm_vcpu_add(vm, 0);
+@@ -326,7 +343,7 @@ static void test_zero_memory_regions(void)
+ }
+ #endif /* __x86_64__ */
+ 
+-static void test_invalid_memory_region_flags(void)
++TEST(invalid_memory_region_flags)
+ {
+ 	uint32_t supported_flags = KVM_MEM_LOG_DIRTY_PAGES;
+ 	const uint32_t v2_only_flags = KVM_MEM_GUEST_MEMFD;
+@@ -389,7 +406,7 @@ static void test_invalid_memory_region_flags(void)
+  * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
+  * tentative to add further slots should fail.
+  */
+-static void test_add_max_memory_regions(void)
++TEST(add_max_memory_regions)
+ {
+ 	int ret;
+ 	struct kvm_vm *vm;
+@@ -408,13 +425,13 @@ static void test_add_max_memory_regions(void)
+ 	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
+ 	TEST_ASSERT(max_mem_slots > 0,
+ 		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
+-	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
++	ksft_print_msg("Allowed number of memory slots: %i\n", max_mem_slots);
+ 
+ 	vm = vm_create_barebones();
+ 
+ 	/* Check it can be added memory slots up to the maximum allowed */
+-	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
+-		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
++	ksft_print_msg("Adding slots 0..%i, each memory region with %dK size\n",
++		       (max_mem_slots - 1), MEM_REGION_SIZE >> 10);
+ 
+ 	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
+ 		   PROT_READ | PROT_WRITE,
+@@ -455,12 +472,21 @@ static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
+ 	TEST_ASSERT(r == -1 && errno == EINVAL, "%s", msg);
+ }
+ 
+-static void test_add_private_memory_region(void)
++static bool has_cap_guest_memfd(void)
++{
++	return kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
++	       (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
++}
++
++TEST(add_private_memory_region)
+ {
+ 	struct kvm_vm *vm, *vm2;
+ 	int memfd, i;
+ 
+-	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
++	if (!has_cap_guest_memfd())
++		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
++
++	ksft_print_msg("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
+ 
+ 	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
+ 
+@@ -491,13 +517,16 @@ static void test_add_private_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
+-static void test_add_overlapping_private_memory_regions(void)
++TEST(add_overlapping_private_memory_regions)
+ {
+ 	struct kvm_vm *vm;
+ 	int memfd;
+ 	int r;
+ 
+-	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
++	if (!has_cap_guest_memfd())
++		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
++
++	ksft_print_msg("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
+ 
+ 	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
+ 
+@@ -536,46 +565,15 @@ static void test_add_overlapping_private_memory_regions(void)
+ 	close(memfd);
+ 	kvm_vm_free(vm);
+ }
++
+ #endif
+ 
+ int main(int argc, char *argv[])
+ {
+-#ifdef __x86_64__
+-	int i, loops;
+-
+-	/*
+-	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
+-	 * KVM_RUN fails with ENOEXEC or EFAULT.
+-	 */
+-	test_zero_memory_regions();
+-#endif
+-
+-	test_invalid_memory_region_flags();
+-
+-	test_add_max_memory_regions();
+-
+-#ifdef __x86_64__
+-	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+-	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
+-		test_add_private_memory_region();
+-		test_add_overlapping_private_memory_regions();
+-	} else {
+-		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
+-	}
+-
+ 	if (argc > 1)
+ 		loops = atoi_positive("Number of iterations", argv[1]);
+ 	else
+ 		loops = 10;
+ 
+-	pr_info("Testing MOVE of in-use region, %d loops\n", loops);
+-	for (i = 0; i < loops; i++)
+-		test_move_memory_region();
+-
+-	pr_info("Testing DELETE of in-use region, %d loops\n", loops);
+-	for (i = 0; i < loops; i++)
+-		test_delete_memory_region();
+-#endif
+-
+-	return 0;
++	return test_harness_run(argc, argv);
+ }
+-- 
+2.44.0
+
 
