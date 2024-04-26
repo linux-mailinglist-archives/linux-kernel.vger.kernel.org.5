@@ -1,209 +1,228 @@
-Return-Path: <linux-kernel+bounces-160174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468C38B3A34
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:39:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E758B3A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:39:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67752B23639
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B6A5288907
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465A6144D2E;
-	Fri, 26 Apr 2024 14:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA1614885D;
+	Fri, 26 Apr 2024 14:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hGJATSyP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eq51WKjr"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBAD5CDD0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4805B13F43A;
+	Fri, 26 Apr 2024 14:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714142352; cv=none; b=JrYhGfrQQt2L3vkrWUzunrmy6zLfMK2KuDoXkosVVYiNfAkIdr4VUpV3E5HT1/qSqb69oKkoerE8m2bQJe4ke5Qt/+IQow193JZiVLJQ7KwmwTLnWLCNDjiY+/j2YeemqtjlVi4OXXzl1V0kYIOI41s0ST2J8t/2HDQ2xu6Toac=
+	t=1714142367; cv=none; b=H8tZsSPv7387w8ViFNMSDcc+4z7ThSERPx5epDN5729jM7jEU5geqSaOBk0CfZ8OKeW74UU6oC3qOn8UDABF4kzdcBZiOKxNgSIWwOV/5uVgtb48pImx6zF83suV4OkFM8nCE+CJeJIibyS4xOggaYMq2F8a38zcXX/eNkr2TiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714142352; c=relaxed/simple;
-	bh=bcmfNZsY5jzoMPlSHya3R2EV0bnWvPrM9VHEHUhKNgw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QPussQkDI2Hb9I4l4CgvhxZ1wndbzn9Kp5O5hGysxWg7s/3FZPV5/OPAlp05dyFn8dSZRpb7Cy+Y30Kr8jdIzX1xvN4hTKtfBXcVesWzN46blCmmKITd5bbBLyjDagHu7ILenYM2l4zQjmwDWHiUL6rQKy0gUVlI4ZIxFcMg0Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hGJATSyP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714142349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7LAbhJxCY0/OTL2dKRUHH/gZq1bMdRuFQcrvL6xeSh4=;
-	b=hGJATSyP5GEgEqY7Eb9J+eU7pzRFPRvLYgaUPJL/pbcsWMFUaUhjIXreZLPLkh079JYsl0
-	vfQ9loKmal7Q0dfk/IX8nyEpnw8xaUtLUw2yBRSFwVe5Dcs4DcI6QJpZfYAgvQW2T89bL0
-	3e4L6XudL09iRRmHdBzjfZzkGKAMHQ4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-421-DDT5040gNPWzxS-RE95jBQ-1; Fri, 26 Apr 2024 10:39:08 -0400
-X-MC-Unique: DDT5040gNPWzxS-RE95jBQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-418f18458a0so11481535e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:39:08 -0700 (PDT)
+	s=arc-20240116; t=1714142367; c=relaxed/simple;
+	bh=GrYW9CDBavo2dcW9zM8Gw/4eM+v8rP9srC8IHUunxhk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XPRZPVVFaQlpmGFh3876Qz5FZfKHHPhVWxuZR6FG0vzUGk3oVAUK1poieNg4bJ484ciRULJBOGF8aU87eEYRVnRCrO8+y2QYUD/oA6FU0tYOW94Y+Ys1K/LcIS9DSde9pqA59HDmjvZPwv0JQh1Q77eJo28qGYExsbNFnoMiWoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eq51WKjr; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ffso3420465e9.1;
+        Fri, 26 Apr 2024 07:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714142364; x=1714747164; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x6+Pa/hI1y9ZPcsTSA6wG8AnTaAGOiXpZcyJZzX026s=;
+        b=Eq51WKjrouMFwzggvNQc4OiiH9ylm8ionjqrGB0eoVV+sIR7ZZ6up8InCz5SR7A1pF
+         Zj+LdumQxK0ua2eLyb/EXTa2GCimmIrLtQa7WBWAXwAViDk1sVK2LcfAoO4BOfcLveIA
+         SpdS9bTvpKhSw2K+SYZD6y+27WX/m/tEBkuBp+xFwnVm9iz1X2YnReEd8tx9jHfatAFu
+         ejZOxP49iX0HCflvXwor4V/bZAOy5OTBg2Rueia2DN4izhp1vdHYVUp7PyRSlCOF0T/+
+         OPdPYvocz2/CnPxodTlkia8oUapqYlvPUbSaShq0RBGebmg5G5Kpele65NG2ubvNkjmF
+         80bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714142347; x=1714747147;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7LAbhJxCY0/OTL2dKRUHH/gZq1bMdRuFQcrvL6xeSh4=;
-        b=IUX9rPVuuPFyrpLpDmUU0av9lDqPaIf37QJFIPmZcFK8evHjrEZbzAAkZjj3CQmYe3
-         JruJe3I1+75+//V/kPK1eFlMWKHAsZfBy7UblTHOy3t7SzfNRC0tUsvEgUKD+d1OdTnL
-         XTKwvFoGA/2rV3Z3abxOHpDCiiN/9Y/MMJqhzx7fhf3N5klPqt304rmX061cqt6WH+Wq
-         E5YWLaUDErDt6MPQVG/3h9wav11kGs8h9j++Y7MdWEDZfsWzzWFpAo1gpdnmnhOfef4a
-         ver3EDR4zxrSo5JFUeQNRXu6TuQrff7WeSBTNN1VnoRuJI7HaHgZ+fLYYshcVlq4a9yf
-         PKpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUV5GDfPZgY0z6sIXz+yY94ETJaRaZ/9U8+iNTkflQ/xPAoAfAw26QapLH4coM6MSnPRlvK0U78H02fV45QDj4daHPnmoKVTh5ydLcc
-X-Gm-Message-State: AOJu0YxdpKUsqBDdH52xegK7+cGnsR/L1W8rqVj8/GR0uS8+Q1d/LaJO
-	ay0J1m/bAV3rLO7cZUFBsCZjKb/4X5SxLiYKQQoonHptzNrIrpQRkYEdat9w1rM1ibYdp+aTQm8
-	1oagW3CPmKGW9McbA9xmyh+QbLM+5b/MwPqnbN7vmXzVk+fMA94bl7hRXaeJv2g==
-X-Received: by 2002:a05:600c:358f:b0:416:3f85:d49 with SMTP id p15-20020a05600c358f00b004163f850d49mr2362268wmq.18.1714142347307;
-        Fri, 26 Apr 2024 07:39:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9PzaUmVi6q/UvBMMZv0Ud9xDfpTnl9gZMBvkcePNOUk3TFUHV7ndCSVu9IlBQ/73CMWAnrQ==
-X-Received: by 2002:a05:600c:358f:b0:416:3f85:d49 with SMTP id p15-20020a05600c358f00b004163f850d49mr2362243wmq.18.1714142346813;
-        Fri, 26 Apr 2024 07:39:06 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:6100:20f2:6848:5b74:ca82? (p200300cbc726610020f268485b74ca82.dip0.t-ipconnect.de. [2003:cb:c726:6100:20f2:6848:5b74:ca82])
-        by smtp.gmail.com with ESMTPSA id je12-20020a05600c1f8c00b004183edc31adsm34757800wmb.44.2024.04.26.07.39.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 07:39:06 -0700 (PDT)
-Message-ID: <9bf62e97-dfdd-4537-8fb0-b5f293856f59@redhat.com>
-Date: Fri, 26 Apr 2024 16:39:05 +0200
+        d=1e100.net; s=20230601; t=1714142364; x=1714747164;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x6+Pa/hI1y9ZPcsTSA6wG8AnTaAGOiXpZcyJZzX026s=;
+        b=KPAJwdOaYnnops28HlgS81TGUO86SZEF7wlUkFAIl1UmmpackZZ8aW7yRF1kG0M5u/
+         LGGuaN0T1irK6ctkQHpP+n2HP9TBTa6W/8Z/P6ar1wMbyGUISMeGm5nRAgH+0FEGNNze
+         +Evgsvi6EhGEPYp+SJXnPGQ6CSCrxMbysFQMfj+snn2z8fbBPXYJ4s8uHeRG9kMUDZi+
+         VG9s5hujUeb8d1WcFMbm2pdtLr6aweQ3od5yJKTTPwPtYJph1tT0xii5i2F1eScXjXJK
+         eeq7xjp0XCUCtqG6+HlsULrXCDJTia+YW8rwlm62mXde2c9VjVWR1Ym92In7w3bh0v1x
+         o5fw==
+X-Forwarded-Encrypted: i=1; AJvYcCXt/DrIBo0ND9fTK5GB4nJ9QTEt8eO8mCVnmGQI3YSnwN+pKUdW5dLZbCOTUuDhpTyMH38hLaWtJr+7XMOs4ZwtcN/b0JDaUCGQXuy5WVB3YZ4RZR4BEqznYcPY9+18TehZPK63+/UrGlk=
+X-Gm-Message-State: AOJu0YxWxvo9KZYPtdGut54HfBd6r+hcOGX/E6ZX3Kl3yetki7H/apPI
+	tFEADNqsl2XbalXmOe+ekqN3zEvZ/gR6O7ZbP+vKUbBoP7VTJ3IR
+X-Google-Smtp-Source: AGHT+IEeWmdV/an942UKZb0UcElZTOltLZZNCg90qG5k3ACvdMG2TZ2EWCL32aHLDIlkCsd0vGPv5g==
+X-Received: by 2002:a05:600c:3b86:b0:419:618:ade3 with SMTP id n6-20020a05600c3b8600b004190618ade3mr2897823wms.19.1714142363495;
+        Fri, 26 Apr 2024 07:39:23 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b004162d06768bsm35036561wmo.21.2024.04.26.07.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 07:39:23 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, Joao Schim <joao@schimsalabim.eu>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic gains
+Date: Fri, 26 Apr 2024 16:39:22 +0200
+Message-ID: <2262648.iZASKD2KPV@jernej-laptop>
+In-Reply-To: <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
+References:
+ <20240422150213.4040734-1-joao@schimsalabim.eu>
+ <5772237.DvuYhMxLoT@jernej-laptop>
+ <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v2 0/3] iommu/intel: Free empty page tables on unmaps
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rientjes@google.com, dwmw2@infradead.org,
- baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org,
- robin.murphy@arm.com, iommu@lists.linux.dev,
- Matthew Wilcox <willy@infradead.org>
-References: <20240426034323.417219-1-pasha.tatashin@soleen.com>
- <2daf168e-e2b2-4b19-9b39-d58b358c8cd9@redhat.com>
- <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On 26.04.24 15:49, Pasha Tatashin wrote:
-> On Fri, Apr 26, 2024 at 2:42 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 26.04.24 05:43, Pasha Tatashin wrote:
->>> Changelog
->>> ================================================================
->>> v2: Use mapcount instead of refcount
->>>       Synchronized with IOMMU Observability changes.
->>> ================================================================
->>>
->>> This series frees empty page tables on unmaps. It intends to be a
->>> low overhead feature.
->>>
->>> The read-writer lock is used to synchronize page table, but most of
->>> time the lock is held is reader. It is held as a writer for short
->>> period of time when unmapping a page that is bigger than the current
->>> iova request. For all other cases this lock is read-only.
->>>
->>> page->mapcount is used in order to track number of entries at each page
->>> table.
->>
->> I'm wondering if this will conflict with page_type at some point? We're
->> already converting other page table users to ptdesc. CCing Willy.
-> 
-> Hi David,
+Dne =C4=8Detrtek, 25. april 2024 ob 13:03:56 GMT +2 je Joao Schim napisal(a=
+):
+> On 4/24/24 20:42, Jernej =C5=A0krabec wrote:
+> > Hi Joao,
+> Hi Jernej,  thanks for your prompt response.
+> >
+> > Dne ponedeljek, 22. april 2024 ob 17:02:13 GMT +2 je Joao Schim napisal=
+(a):
+> >> The AllWinner H6 and later SoCs that sport a DMIC block contain a set =
+of registers to control
+> >> the gain (left + right) of each of the four supported channels.
+> >>
+> >> Add ASoC controls for changing each of the stereo channel gains using =
+alsamixer and alike
+> > Add SoB tag.
+> Yeah, i realized that too late. Thanks for bringing that to my=20
+> attention. I will add it in v1.
+> >
+> >> ---
+> >>   sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
+> >>   1 file changed, 34 insertions(+)
+> >>
+> >> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dm=
+ic.c
+> >> index c76628bc86c6..f8613d8c3462 100644
+> >> --- a/sound/soc/sunxi/sun50i-dmic.c
+> >> +++ b/sound/soc/sunxi/sun50i-dmic.c
+> >> @@ -14,6 +14,7 @@
+> >>   #include <sound/dmaengine_pcm.h>
+> >>   #include <sound/pcm_params.h>
+> >>   #include <sound/soc.h>
+> >> +#include <sound/tlv.h>
+> >>  =20
+> >>   #define SUN50I_DMIC_EN_CTL			(0x00)
+> >>   	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
+> >> @@ -43,6 +44,17 @@
+> >>   	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
+> >>   #define SUN50I_DMIC_CNT				(0x2c)
+> >>   	#define SUN50I_DMIC_CNT_N				(1 << 0)
+> >> +#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
+> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
+> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
+> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
+> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
+> >> +#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
+> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
+> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
+> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
+> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
+> >> +
+> >>   #define SUN50I_DMIC_HPF_CTRL			(0x38)
+> >>   #define SUN50I_DMIC_VERSION			(0x50)
+> >>  =20
+> >> @@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_m=
+atch[] =3D {
+> >>   };
+> >>   MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
+> >>  =20
+> >> +static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, =
+1);
+> > DECLARE_TLV_DB_SCALE is old name, SNDRV_CTL_TLVD_DECLARE_DB_SCALE shoul=
+d be
+> > used instead.
+> I can't seem to find that define in HEAD. what code-base are you=20
+> referring to that i should checkout ?
 
-Hi!
+Here is define:=20
+https://elixir.bootlin.com/linux/v6.9-rc1/source/include/uapi/sound/tlv.h#L=
+52
 
-> 
-> This contradicts with the following comment in mm_types.h:
->   * If your page will not be mapped to userspace, you can also use the four
->   * bytes in the mapcount union, but you must call
-> page_mapcount_reset()
->   * before freeing it.
+However, I'm not sure if this message means DECLARE_TLV_DB_SCALE is
+deprecated or not:
+https://elixir.bootlin.com/linux/v6.9-rc1/source/include/sound/tlv.h#L12
 
-I think the documentation is a bit outdated, because we now have page 
-types that are: "For pages that are never mapped to userspace"
+Best regards,
+Jernej
 
-which includes
+> >
+> > Other than that, it looks fine.
+>=20
+> Thanks.
+>=20
+> > Best regards,
+> > Jernej
+> >
+> >> +
+> >> +static const struct snd_kcontrol_new sun50i_dmic_controls[] =3D {
+> >> +
+> >> +        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D=
+0D1_VOL_CTR,
+> >> +                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_=
+VOL_CTR_0R,
+> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
+> >> +        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D=
+0D1_VOL_CTR,
+> >> +                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_=
+VOL_CTR_1R,
+> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
+> >> +        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D=
+2D3_VOL_CTR,
+> >> +                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_=
+VOL_CTR_2R,
+> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
+> >> +        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D=
+2D3_VOL_CTR,
+> >> +                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_=
+VOL_CTR_3R,
+> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
+> >> +
+> >> +
+> >> +};
+> >> +
+> >>   static const struct snd_soc_component_driver sun50i_dmic_component =
+=3D {
+> >>   	.name           =3D "sun50i-dmic",
+> >> +	.controls	=3D sun50i_dmic_controls,
+> >> +	.num_controls	=3D ARRAY_SIZE(sun50i_dmic_controls),
+> >>   };
+> >>  =20
+> >>   static int sun50i_dmic_runtime_suspend(struct device *dev)
+> >>
+> >
+> >
+> >
+> Kind regards,
+>=20
+> Joao
+>=20
+>=20
 
-#define PG_table
-
-(we should update that comment, because we're now also using it for 
-hugetlb that can be mapped to user space, which is fine.)
-
-Right now, using page->_mapcount would likely still be fine, as long as 
-you cannot end up creating a value that would resemble a type (e.g., 
-PG_offline could be bad).
-
-But staring at users of _mapcount and page_mapcount_reset() ... you'd be 
-pretty much the only user of that.
-
-mm/zsmalloc.c calls page_mapcount_reset(), and I am not completely sure 
-why ... I can see it touch page->index but not page->_mapcount.
 
 
-Hopefully Willy can comment.
-
--- 
-Cheers,
-
-David / dhildenb
 
 
