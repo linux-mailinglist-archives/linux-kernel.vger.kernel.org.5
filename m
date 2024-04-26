@@ -1,131 +1,161 @@
-Return-Path: <linux-kernel+bounces-159738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7BD8B337E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:02:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D528B3383
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:05:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 723C81C214C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:02:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C98AE1C217E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC7F13D299;
-	Fri, 26 Apr 2024 09:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4126C13D527;
+	Fri, 26 Apr 2024 09:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EkW6CyjQ"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E7nCAB0D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76EE13CF96
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F5213C838;
+	Fri, 26 Apr 2024 09:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714122160; cv=none; b=Hw4yxpejbPYLESZwhgKMh7DkypeOWKARiyd2rsfq6vO+Ju6mvJQ7K2Dp2aoSTZmHGSO+mMeFYyOzQMzoe9opqHOmmsDrj/4G//DF90Krl6H7aDG+5p1HILEIVMJpGjonECP3KkzJSWNOHG+jAvQ90LccImmkfkH8zLEXjfUTujo=
+	t=1714122293; cv=none; b=LQI2EEc0krgGIaIP28VYMGQkgxgq4lMKwtOILbZXjrDmKzMczYgcvS6Pvc3MhRPx6vGNiQ7a3EVj65GFN5lc65+wACpe1z+VWuhu+NR4/lV9vr0VriKcmXa+hrTr98o3CU2QjFkVlODe93siS6Y67McBQDIMIzMjZsPc0is5W80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714122160; c=relaxed/simple;
-	bh=GCv7cleECdS9aeuqWa/FYm7mTZK68TxrmukAAfvgKyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f93cXG/p1M1IjfGQAedNlYftfBnhKGCGih6BUBQGJDskdTRHSb22ixA85o4GeQc6ZtcTiawmzSYRV/YgTE8GnxEZj0ybTdpGq8gROoHYs7vR8O9a7l5x9svpuWk4kO37QH0osM26ejtlUDlhuE8gSyy8zyO6XsTDtY5LhFRJMdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EkW6CyjQ; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a58a36008ceso241797666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714122157; x=1714726957; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5cmdr7rr4QFZS2PzQg0uqFLEwvPrpxobM8THii525BU=;
-        b=EkW6CyjQixi/IsDd61fFzbK4E0TdJbiE/lWOMnDKTUyItrmcX1AiVFeSSvt50reA85
-         NIhqkeYsxPm3Td0Ax5GKDQl+FT8pM47vox/Kabz61U1Sz0jE1xRYFJDqgLDVZdzPJ0KH
-         9c0jsDculRhYTo6/bAz+ik+WqsKQ12XGxmQv0JabC4xJsLo7RkojCDMZjvqM08pMpMrx
-         PYXsSxZu3lnZ5SEpiXpZpxQmvRpBzOIkdSJsFL+q1R5/rfB92thGq7cJQZd+UZ+Z1UsA
-         mXj/SZ1myTUZKtCCfK45tOesapgJhCONtfmNx5dP5P6G902f+hW+a/6Vgdut2T7/gRNA
-         coSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714122157; x=1714726957;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5cmdr7rr4QFZS2PzQg0uqFLEwvPrpxobM8THii525BU=;
-        b=H5k1zUsgeEAoHLYuG160VXO1goHqOSQ24L+JCr2TysQd8bqW97e7O9Y2v+3CBAObUj
-         U4TyOMHcRmlb0e94ann+E7D++v3PNIWW+oj8ETdm1VmFT2ySTYFMgsl78ooWWB/4pvwz
-         D4rXNZUdCiGpsgMkP5wanflxx83nhC85Xd47y+0/ZnHOZ8n4tOW2TIIPK1iVuLMUzJjJ
-         1cnJKulgbPBif6uPpnfUImdX3kEYCxdGR3Xx730ezjsqHqDcq2kU8oAoJwzd4Z91tskF
-         oU+vL8KYXt3PuFG2mK64VF4h5OYGG1wAWpNHdmlJDWE/uUW2vtpBzyDeUA75t1vOpnbl
-         5yqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWR82EMXpE/KCIsd2JAHuxW0j3x5RUuwLMAIf+anxTeFkpyMOobd6SisD2+J3ZARGWI9SC7xA824oayygZtFTgNPsL4px4GYgpOimuT
-X-Gm-Message-State: AOJu0YxxOhrwsvc8xkLphWOzlLSKMe7P3SB6QiMqzvhzESI9bn+Vi/DT
-	YxTxEb93fFA/ix9img7ULb5aeh/1bCEJk/T4kmQ57//OV9G8frkOuABM710GaKg=
-X-Google-Smtp-Source: AGHT+IG63NkJc6p1bxym4HDcpur9jISULVtE0j/y7bASzKsfhFZof8hQmBOhF4j5tAzb0EGQcmN2Zg==
-X-Received: by 2002:a17:906:410a:b0:a58:aea7:df78 with SMTP id j10-20020a170906410a00b00a58aea7df78mr1541901ejk.6.1714122156900;
-        Fri, 26 Apr 2024 02:02:36 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm7714032ejx.107.2024.04.26.02.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 02:02:36 -0700 (PDT)
-Date: Fri, 26 Apr 2024 11:02:30 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, Evan Green <evan@rivosinc.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] riscv: cpufeature: Fix thead vector hwcap removal
-Message-ID: <20240426-d8aba0211e882568ccc761df@orel>
-References: <20240424-cpufeature_fixes-v1-0-585e73d2226b@rivosinc.com>
- <20240424-cpufeature_fixes-v1-1-585e73d2226b@rivosinc.com>
+	s=arc-20240116; t=1714122293; c=relaxed/simple;
+	bh=pm2j1dM2p+8pNOKXWZzVY9FMSNrPURtydALmuvx+siw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DkbSOrUE45tmK98EZ3Q5dc1KG9ozJNVp3PmjNExPtGMUHk8y3Nj7Tu9H2iwM5hjTzdIBIZHkiRmzs8m9Ub+4NO84IS49Lj0ATR1cYWPINAgBj6J1uOKIXWpQ3JdxXkQLqTdLiGHTZNuwEJ6FFKqqoydkxhA+d+s6AGNO33y3umQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E7nCAB0D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131A1C113CE;
+	Fri, 26 Apr 2024 09:04:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714122293;
+	bh=pm2j1dM2p+8pNOKXWZzVY9FMSNrPURtydALmuvx+siw=;
+	h=From:Subject:Date:To:Cc:From;
+	b=E7nCAB0DtLEbFbdOGaX777N0X0XV4k2CNMRL9+fnvIsvomps1P64c/ooLwmWfY+X3
+	 m4okEsxFdK473An+EhcsCqQAFa6HntfG69GzO2Y+yieZYm2DDILswmkgoVloKspdtP
+	 VvsfdKJZQOW0EMHg3mrm5kEAx5VQsQiSbvYkQfT6KClxI1nur6Bn602Kmvhbdg80HO
+	 ulbvVAeDYoUibKbFj7C93WkmLF8czZ4wrBp2DGQljnOy3nS0+JLHVuHrx42omnDqaO
+	 v5gh+OR+aeq+vhAzPL9PdcGUEsLKGaYo+ix57EVrPYF2e8h1i9xO3+f01vnE3kdFcL
+	 aEnMW4yULsazQ==
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 00/14] ASoC: Constify local snd_sof_dsp_ops
+Date: Fri, 26 Apr 2024 11:03:47 +0200
+Message-Id: <20240426-n-const-ops-var-v2-0-e553fe67ae82@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424-cpufeature_fixes-v1-1-585e73d2226b@rivosinc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPRtK2YC/3WNyw6CMBBFf4XM2jH0gYIr/8Ow4DHARNOSKWk0p
+ P9uZe/ynOSeu0MgYQpwK3YQihzYuwz6VMCwdG4m5DEz6FLb0iqLDgfvwoZ+DRg7QWUuk2mq3lx
+ tD3m1Ck38PoqPNvPCYfPyOQ6i+tn/raiwxHqqDFE1NrUa7k8SR6+zlxnalNIX5tzHxa8AAAA=
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, 
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Bard Liao <yung-chuan.liao@linux.intel.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
+ Daniel Baluta <daniel.baluta@nxp.com>, 
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2676; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=pm2j1dM2p+8pNOKXWZzVY9FMSNrPURtydALmuvx+siw=;
+ b=kA0DAAoBwTdm5oaLg9cByyZiAGYrbhyhrRkynmvFIgcWvJC4JAsf1b71Ti8wIkX9f1Kfu/klC
+ 4kCMwQAAQoAHRYhBN3SYig9ERsjO264qME3ZuaGi4PXBQJmK24cAAoJEME3ZuaGi4PXuo0QAIbH
+ d7a92vy0rqiQwWXMMVzg532JOBlhopM0Y5zBK9mU7tQoLdIeMgru6dkEdTZaaWFF97v6z6No6Il
+ FFf1Rb6Q0XfLaD0ZuqMOYPYJ8fFvHxnRxifpZ5xoV5wNFvCz8kiCRKpVOEIm9dN8pGcT1tsFbXK
+ Aw18iCCpB4B8xnH5f8iUfFYLy5JDsRMXlk23fSDyA6s6zNsh3mwz9dzCUpRREJvB/izLBbtTRs/
+ VRr7CJUS0vECgwnjfSC51P0fVt38YKmFIn4U3g+z8fSLu0OzkFwp62t9K7t0jBw9uEqKuWlPEzK
+ /sweW2NQCOVyQ8J1WhP26MIDP7Sv4RlGd0cMIg8QVvOpgcKDF3LlR2HbDaqB/s/918jtWdTiNTo
+ sfC9R7VtDBuHe7e4NppSo/mxHFOb1pwJga5ZAOCe8bc0aT0pAKEpqi5Ng80tYckqkUeG/Oc2C1+
+ JkaJ6E7np1NlsjfbZ/RKDNpoXKox6DqDFrzun0hpeihWUOnB9o3KSla6L+4cjywErQYkaRiaQOu
+ VlFFjkcgNa9nz6SismodUx5myDutbGPKUNTtBXa68P9U+KvwNp/zSIN78Ez+NEUlw6CPT0E3WCL
+ F/23amcVe9o6pDR9ERhoW/A+wg83tnFlGnEJN8gfzCDngQIowdzdEQdYyT4kRsUj5X7Ohu3Uvrn
+ 6O74m
+X-Developer-Key: i=krzk@kernel.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On Wed, Apr 24, 2024 at 09:19:54AM GMT, Charlie Jenkins wrote:
-..
-> +	/*
-> +	 * Naively assume that all harts have the same mvendorid/marchid as the
-> +	 * boot hart.
+Hi,
 
-This comment isn't necessary, since we don't have to assume all harts have
-the same IDs. This information is currently being collected specifically
-for thead. So, we can state in a comment below, where the information is
-used, that we assume when the boot hart is thead, then we don't want to
-enable V on any hart (whatever their IDs are).
+Changes in v2
+=============
+- Only rebase on for-next of broonie/sound.git
+- Add tags.
+- Link to v1: https://lore.kernel.org/r/20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org
 
-Thanks,
-drew
+Description
+===========
+The core code does not modify the 'struct snd_sof_dsp_ops' passed via
+pointer in various places, so this can be made pointer to const in few
+places.  This in turn allows few drivers to have the local (usually
+static) 'struct snd_sof_dsp_ops' as const which increased code safety,
+as it is now part of rodata.
 
-> +	 */
-> +	boot_vendorid = riscv_get_mvendorid();
-> +	boot_archid = riscv_get_marchid();
-> +
->  	for_each_possible_cpu(cpu) {
->  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
->  		unsigned long this_hwcap = 0;
-> @@ -544,8 +553,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
->  		 * CPU cores with the ratified spec will contain non-zero
->  		 * marchid.
->  		 */
-> -		if (acpi_disabled && riscv_cached_mvendorid(cpu) == THEAD_VENDOR_ID &&
-> -		    riscv_cached_marchid(cpu) == 0x0) {
-> +		if (acpi_disabled && boot_vendorid == THEAD_VENDOR_ID && boot_archid == 0x0) {
->  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
->  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
->  		}
-> 
-> -- 
-> 2.44.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Not all drivers can be made safer that way. Intel and AMD rely on
+customizing that 'struct snd_sof_dsp_ops' before passing to SOF, so they
+won't benefit.  They don't lose anything., either.
+
+All further patches depend on the first four patches.
+
+Best regards,
+Krzysztof
+
+---
+Krzysztof Kozlowski (14):
+      ASoC: SOF: debug: Constify local snd_sof_dsp_ops
+      ASoC: SOF: ipc3: Constify local snd_sof_dsp_ops
+      ASoC: SOF: pcm: Constify local snd_sof_dsp_ops
+      ASoC: SOF: Constify stored pointer to snd_sof_dsp_ops
+      ASoC: SOF: intel: pci-tng: Constify snd_sof_dsp_ops
+      ASoC: SOF: intel: hda: Constify snd_sof_dsp_ops
+      ASoC: SOF: amd: acp: Constify snd_sof_dsp_ops
+      ASoC: SOF: imx8: Constify snd_sof_dsp_ops
+      ASoC: SOF: imx8m: Constify snd_sof_dsp_ops
+      ASoC: SOF: imx8ulp: Constify snd_sof_dsp_ops
+      ASoC: SOF: intel: bdw: Constify snd_sof_dsp_ops
+      ASoC: SOF: intel: byt: Constify snd_sof_dsp_ops
+      ASoC: SOF: mediatek: mt8186: Constify snd_sof_dsp_ops
+      ASoC: SOF: mediatek: mt8195: Constify snd_sof_dsp_ops
+
+ include/sound/sof.h                    | 2 +-
+ sound/soc/sof/amd/acp-common.c         | 2 +-
+ sound/soc/sof/amd/acp.h                | 2 +-
+ sound/soc/sof/debug.c                  | 2 +-
+ sound/soc/sof/imx/imx8.c               | 4 ++--
+ sound/soc/sof/imx/imx8m.c              | 2 +-
+ sound/soc/sof/imx/imx8ulp.c            | 2 +-
+ sound/soc/sof/intel/bdw.c              | 2 +-
+ sound/soc/sof/intel/byt.c              | 4 ++--
+ sound/soc/sof/intel/hda-common-ops.c   | 2 +-
+ sound/soc/sof/intel/hda.h              | 2 +-
+ sound/soc/sof/intel/pci-tng.c          | 2 +-
+ sound/soc/sof/intel/shim.h             | 2 +-
+ sound/soc/sof/ipc3-priv.h              | 6 +++---
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 2 +-
+ sound/soc/sof/mediatek/mt8195/mt8195.c | 2 +-
+ sound/soc/sof/pcm.c                    | 2 +-
+ 17 files changed, 21 insertions(+), 21 deletions(-)
+---
+base-commit: efdfbbc4dcc8f98754056971f88af0f7ff906144
+change-id: 20240414-n-const-ops-var-136f395b374b
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzk@kernel.org>
+
 
