@@ -1,251 +1,156 @@
-Return-Path: <linux-kernel+bounces-160216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 230788B3AAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:09:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1138B3AC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:12:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F3591F21581
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:09:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EB50B268D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91EA149009;
-	Fri, 26 Apr 2024 15:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0085214A088;
+	Fri, 26 Apr 2024 15:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IAhOXheB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sCM1FXj8"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D801482F5;
-	Fri, 26 Apr 2024 15:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11309149019;
+	Fri, 26 Apr 2024 15:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144146; cv=none; b=YKbf15Q7k+h6HDa+qUsKSe/IAs7xmRWgYiCOy2KlD/nK71jxUrLYPNuakdU9l69WXU25Mqt9SgrGENn+ETFd8WtumPSa8ZaRiO6y/zXeFVbcHo8UDJ6EZ8PzVmbUvXfWUxdgYtbsHzsrm8cZHyqKsbEiZUcuTAHmek48OwG5Lzg=
+	t=1714144193; cv=none; b=NzeWoY066ktc1TXGuaasji2US8Ig6Fhk6gCBaa7JMtOmvRpfJHvHDUiPMwj5DQPrvpAEdWw2PFFVvfgRpS6S4PBYIIbAG++rCnh2fVYC6R8KTf3P3HErL09yqX/RslCSe8xqi4oNPPGa3OmZAVhOr2s0uiOSz2TFV6KlX1yuj5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144146; c=relaxed/simple;
-	bh=1EfFaT2e5RgbE+xX1x4IG+RRoAmpjsYgLXgHqkDgINc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WATKM7pGM0k9FlVD23qyjLGQm0TOSpFsKBxu0Qa0ZzyfkyFxXdcINiEhr28RuEPUawsRnnyYD+pzM0Q3tdVEByAsQY9uYf+1ftTwRBWswvpLO2uIpm5RBDzvepcuSj64H7GJWOR9hksybsppX3x2XFtJCoxXYUIBL+9R1wF6G4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IAhOXheB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DF4C113CD;
-	Fri, 26 Apr 2024 15:09:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714144146;
-	bh=1EfFaT2e5RgbE+xX1x4IG+RRoAmpjsYgLXgHqkDgINc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IAhOXheBGM++yaYo+e3kZwiwfI79o2O+mL2LPAt4MbZdYEC3+usp6A5WvqG8q6VgY
-	 sNWFG1/roU/lp+Y6JgZH6fQko5jVQZJ7/JUnmuboqcjOJA1is3shxB3J0Gqoq+IgDI
-	 Sz7OkjoSVqHebxZFlPhf7t638z13ZHyD5cZRRe6V/64VITnqh97YHZ097BYzkISUC4
-	 dENjq3lZI0pbolHnBNDOOG7HMnhtmkNxRTDetfuLBe1OqBwvEqnsOJKXMn5TDoj8d6
-	 yLXfDi6vKi08DuoYTLDdZ+6N+oWftN/JrWdhoBNONbz+QXJNcJJApZu1CKKg+No2Sz
-	 WDFekvnZ35GFg==
-Date: Fri, 26 Apr 2024 08:09:05 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 02/11] fs: Allow fine-grained control of folio sizes
-Message-ID: <20240426150905.GC360919@frogsfrogsfrogs>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-3-kernel@pankajraghav.com>
+	s=arc-20240116; t=1714144193; c=relaxed/simple;
+	bh=7iwWC5ZXQovuAiAHz/mYCZpJqUDhrimhennWjXiI63I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WVYFxScJCgG1X97LIffU7JGvU8L440eLBU4rMIza++HaBCAdChfB9HriKpT7ifC+SIHyMAuMiY7Z1AcGy1nLqTzyl2JGWBPn2zvhH2uuefrsqk63nBwSmTHF+vzI5hiWJZASVUaCc7cUrNnFe+AF7w25T05BMnWQ7pGY1hu6uiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sCM1FXj8; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDp3wQ000596;
+	Fri, 26 Apr 2024 15:09:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XQj/Ylfb4d6YBPhBaIsZnSkNdqe2sNrsfE8wIOzq64w=;
+ b=sCM1FXj8xNtQFbAO2YQ9CvtF/vZPcH3UNASfAScc9zjWuvKSW2zksWdA9oZ8yWOPj5SX
+ omt4Aj6CZ/oqfcR4YYVapOC8LdiUajKe7e/cP1w+GCyE0qTxCblyGViJyTFzDYT6RJDv
+ BNilwSEjqrYa0x5mdfSSSmDzYRm1HvMH/L4eWcIrZvk5rkS2Y9Djuh2EkSaerN/4FXjw
+ WY1MQxykhi9vz5xwENLjjZX0L4CtRnF/EPjERVN1blJkNoBUNXCxPURhdjpvasJcw712
+ M2CjQGNqUj1Gm6oyLjexbiMMQGMZh6t4h2skF1VUB9+UGd93JeG0slBRWmUonLjGN9CG Eg== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrdad07q9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:09:39 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QCrdga023042;
+	Fri, 26 Apr 2024 15:09:37 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xms1pgcph-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:09:37 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QF9Zmv1835548
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 15:09:37 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1F48D58061;
+	Fri, 26 Apr 2024 15:09:35 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CD9E95805F;
+	Fri, 26 Apr 2024 15:09:34 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 15:09:34 +0000 (GMT)
+Message-ID: <47c8fd94-6137-4d84-99a9-e8ff86c6dc31@linux.ibm.com>
+Date: Fri, 26 Apr 2024 10:09:34 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425113746.335530-3-kernel@pankajraghav.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/14] dt-bindings: fsi: Document the IBM SBEFIFO
+ engine
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-6-eajames@linux.ibm.com>
+ <5fb62fcf-36a8-4efa-9387-d0af8fcafb18@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <5fb62fcf-36a8-4efa-9387-d0af8fcafb18@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BJC-K6KR8dZCpa4l5BU-e4YHq2kWKUgP
+X-Proofpoint-ORIG-GUID: BJC-K6KR8dZCpa4l5BU-e4YHq2kWKUgP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404260102
 
-On Thu, Apr 25, 2024 at 01:37:37PM +0200, Pankaj Raghav (Samsung) wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Some filesystems want to be able to ensure that folios that are added to
-> the page cache are at least a certain size.
-> Add mapping_set_folio_min_order() to allow this level of control.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Co-developed-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Looks good to me,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+On 4/26/24 01:20, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:36, Eddie James wrote:
+>> The SBEFIFO engine provides an interface to the POWER processor
+>> Self Boot Engine (SBE).
+>>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+>> ---
+>
+>> +description:
+>> +  The SBEFIFO is an FSI CFAM engine that provides an interface to the
+>> +  POWER processor Self Boot Engine (SBE). This node will always be a child
+>> +  of an FSI CFAM node; see fsi.txt for details on FSI slave and CFAM
+>> +  nodes.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - ibm,p9-sbefifo
+>> +      - ibm,odyssey-sbefifo
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: FSI slave address
+>> +
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 0
+>> +
+>> +patternProperties:
+>> +  "^occ(@.*)?":
+> Why unit address is optional?
 
---D
 
-> ---
->  include/linux/pagemap.h | 116 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 96 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 2df35e65557d..2e5612de1749 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -202,13 +202,18 @@ enum mapping_flags {
->  	AS_EXITING	= 4, 	/* final truncate in progress */
->  	/* writeback related tags are not used */
->  	AS_NO_WRITEBACK_TAGS = 5,
-> -	AS_LARGE_FOLIO_SUPPORT = 6,
-> -	AS_RELEASE_ALWAYS,	/* Call ->release_folio(), even if no private data */
-> -	AS_STABLE_WRITES,	/* must wait for writeback before modifying
-> +	AS_RELEASE_ALWAYS = 6,	/* Call ->release_folio(), even if no private data */
-> +	AS_STABLE_WRITES = 7,	/* must wait for writeback before modifying
->  				   folio contents */
-> -	AS_UNMOVABLE,		/* The mapping cannot be moved, ever */
-> +	AS_FOLIO_ORDER_MIN = 8,
-> +	AS_FOLIO_ORDER_MAX = 13, /* Bit 8-17 are used for FOLIO_ORDER */
-> +	AS_UNMOVABLE = 18,		/* The mapping cannot be moved, ever */
->  };
->  
-> +#define AS_FOLIO_ORDER_MIN_MASK 0x00001f00
-> +#define AS_FOLIO_ORDER_MAX_MASK 0x0003e000
-> +#define AS_FOLIO_ORDER_MASK (AS_FOLIO_ORDER_MIN_MASK | AS_FOLIO_ORDER_MAX_MASK)
-> +
->  /**
->   * mapping_set_error - record a writeback error in the address_space
->   * @mapping: the mapping in which an error should be set
-> @@ -344,9 +349,63 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
->  	m->gfp_mask = mask;
->  }
->  
-> +/*
-> + * There are some parts of the kernel which assume that PMD entries
-> + * are exactly HPAGE_PMD_ORDER.  Those should be fixed, but until then,
-> + * limit the maximum allocation order to PMD size.  I'm not aware of any
-> + * assumptions about maximum order if THP are disabled, but 8 seems like
-> + * a good order (that's 1MB if you're using 4kB pages)
-> + */
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +#define MAX_PAGECACHE_ORDER	HPAGE_PMD_ORDER
-> +#else
-> +#define MAX_PAGECACHE_ORDER	8
-> +#endif
-> +
-> +/*
-> + * mapping_set_folio_order_range() - Set the folio order range
-> + * @mapping: The address_space.
-> + * @min: Minimum folio order (between 0-MAX_PAGECACHE_ORDER inclusive).
-> + * @max: Maximum folio order (between @min-MAX_PAGECACHE_ORDER inclusive).
-> + *
-> + * The filesystem should call this function in its inode constructor to
-> + * indicate which base size (min) and maximum size (max) of folio the VFS
-> + * can use to cache the contents of the file.  This should only be used
-> + * if the filesystem needs special handling of folio sizes (ie there is
-> + * something the core cannot know).
-> + * Do not tune it based on, eg, i_size.
-> + *
-> + * Context: This should not be called while the inode is active as it
-> + * is non-atomic.
-> + */
-> +static inline void mapping_set_folio_order_range(struct address_space *mapping,
-> +						 unsigned int min_order,
-> +						 unsigned int max_order)
-> +{
-> +	if (min_order > MAX_PAGECACHE_ORDER)
-> +		min_order = MAX_PAGECACHE_ORDER;
-> +
-> +	if (max_order > MAX_PAGECACHE_ORDER)
-> +		max_order = MAX_PAGECACHE_ORDER;
-> +
-> +	max_order = max(max_order, min_order);
-> +	/*
-> +	 * TODO: max_order is not yet supported in filemap.
-> +	 */
-> +	mapping->flags = (mapping->flags & ~AS_FOLIO_ORDER_MASK) |
-> +			 (min_order << AS_FOLIO_ORDER_MIN) |
-> +			 (max_order << AS_FOLIO_ORDER_MAX);
-> +}
-> +
-> +static inline void mapping_set_folio_min_order(struct address_space *mapping,
-> +					       unsigned int min)
-> +{
-> +	mapping_set_folio_order_range(mapping, min, MAX_PAGECACHE_ORDER);
-> +}
-> +
->  /**
->   * mapping_set_large_folios() - Indicate the file supports large folios.
-> - * @mapping: The file.
-> + * @mapping: The address_space.
->   *
->   * The filesystem should call this function in its inode constructor to
->   * indicate that the VFS can use large folios to cache the contents of
-> @@ -357,7 +416,37 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
->   */
->  static inline void mapping_set_large_folios(struct address_space *mapping)
->  {
-> -	__set_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
-> +	mapping_set_folio_order_range(mapping, 0, MAX_PAGECACHE_ORDER);
-> +}
-> +
-> +static inline unsigned int mapping_max_folio_order(struct address_space *mapping)
-> +{
-> +	return (mapping->flags & AS_FOLIO_ORDER_MAX_MASK) >> AS_FOLIO_ORDER_MAX;
-> +}
-> +
-> +static inline unsigned int mapping_min_folio_order(struct address_space *mapping)
-> +{
-> +	return (mapping->flags & AS_FOLIO_ORDER_MIN_MASK) >> AS_FOLIO_ORDER_MIN;
-> +}
-> +
-> +static inline unsigned long mapping_min_folio_nrpages(struct address_space *mapping)
-> +{
-> +	return 1UL << mapping_min_folio_order(mapping);
-> +}
-> +
-> +/**
-> + * mapping_align_start_index() - Align starting index based on the min
-> + * folio order of the page cache.
-> + * @mapping: The address_space.
-> + *
-> + * Ensure the index used is aligned to the minimum folio order when adding
-> + * new folios to the page cache by rounding down to the nearest minimum
-> + * folio number of pages.
-> + */
-> +static inline pgoff_t mapping_align_start_index(struct address_space *mapping,
-> +						pgoff_t index)
-> +{
-> +	return round_down(index, mapping_min_folio_nrpages(mapping));
->  }
->  
->  /*
-> @@ -367,7 +456,7 @@ static inline void mapping_set_large_folios(struct address_space *mapping)
->  static inline bool mapping_large_folio_support(struct address_space *mapping)
->  {
->  	return IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> -		test_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
-> +	       (mapping_max_folio_order(mapping) > 0);
->  }
->  
->  static inline int filemap_nr_thps(struct address_space *mapping)
-> @@ -528,19 +617,6 @@ static inline void *detach_page_private(struct page *page)
->  	return folio_detach_private(page_folio(page));
->  }
->  
-> -/*
-> - * There are some parts of the kernel which assume that PMD entries
-> - * are exactly HPAGE_PMD_ORDER.  Those should be fixed, but until then,
-> - * limit the maximum allocation order to PMD size.  I'm not aware of any
-> - * assumptions about maximum order if THP are disabled, but 8 seems like
-> - * a good order (that's 1MB if you're using 4kB pages)
-> - */
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -#define MAX_PAGECACHE_ORDER	HPAGE_PMD_ORDER
-> -#else
-> -#define MAX_PAGECACHE_ORDER	8
-> -#endif
-> -
->  #ifdef CONFIG_NUMA
->  struct folio *filemap_alloc_folio(gfp_t gfp, unsigned int order);
->  #else
-> -- 
-> 2.34.1
-> 
-> 
+In this case, it's because we use the reg property (reflecting the unit 
+address) to indicate the processor index of the occ node. However I 
+think I should drop the unit address here, it's meaningless, there is no 
+addressing for the OCC from the SBEFIFO.
+
+
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
 
