@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-160639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A698B4081
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1D38B4082
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:54:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5E9E1C228CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:54:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6D71C219A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E50237707;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36A8383A3;
 	Fri, 26 Apr 2024 19:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DSFNDYcZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FG1/Aps5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD8C3613E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021BD374EB;
 	Fri, 26 Apr 2024 19:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714161184; cv=none; b=hUQl87jsTzzsh9i2CyCf50VKnDOYpLnTj15ZG/pduc8WaQEgXZNlXeTT2i4UjPl/xSwk170WW/vN/Tq974jVJa3soCi333gjZu2PJ1zEgU2SiDl+25+rr8+OOdFWUGcHjKUo1HOSRhC0gS3p97cWSzq/jX8HHLyd7SACQ9ibCBw=
+	t=1714161185; cv=none; b=MX38i297PvQ9Fphs5g4ngqFiTRBy1O0QcS0rpjLVXymhvg+E8Z7MaRnZRHLUaGJtT9aPQSHxpWS/gS7wsxs6VJGD0LX87kcXy6Bnn7AS0XtoAPjpNWhSeF6Jmd6Mixn29BvMscEkgBCiuzAvlfv4bUl/+9NG6k+06Y+mW4QwTTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714161184; c=relaxed/simple;
-	bh=K2q9FissW13tAkvxEMeW2S5JbkJ5qv3UfNIiwo/yV/I=;
+	s=arc-20240116; t=1714161185; c=relaxed/simple;
+	bh=RA6PboPvhcVkcAJe7wxUVuzFYhYpojur65LWu1bwj5g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ffCI8aT8qx6P5Xqmp5lG0vnru2ZvlSI3UXabwvuYUzxsEs6oEou6AsVQzOms3RUYODxZEA1DXAQvFCiKg4dOmLaXSvaATAQkszBCAJq6pQtcXoWZmHor3HIwQCVSuZP9sipDxPU+gyiGz41/3/sUazQKwY+dfNgXfaVCzLI5VdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DSFNDYcZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3142C2BD10;
-	Fri, 26 Apr 2024 19:53:03 +0000 (UTC)
+	 MIME-Version; b=JSbFoHqWX41idCFENU34nZP9FURsECkDKmeXhiv9Q9AKlgBDhtF2sNu2J2YeB3S7qKMJPcVmRzGVthFD7NOaWqckgfXLsznVjTcEk3raHXErnMYCGi9UuUx3XiC7N2wi5zR3ZPQvYUzhIKdZn63rULA5QaWdZx2EPbMEjeg+qqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FG1/Aps5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EEBDC32786;
+	Fri, 26 Apr 2024 19:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714161184;
-	bh=K2q9FissW13tAkvxEMeW2S5JbkJ5qv3UfNIiwo/yV/I=;
+	bh=RA6PboPvhcVkcAJe7wxUVuzFYhYpojur65LWu1bwj5g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DSFNDYcZ5ydHl9BLQEPGlilvTLW2NF0PHASHNaeYYzH/IQkb7TIhayU7DHFGXKWuq
-	 yDnjWbS6g5F/zwAj2dSG84H1DBt9ceqztSEcropReTs4M7kuxPV9TThRzeKu/JuD0U
-	 h2gjAkllDCJQSEr4OWpX16oU+h/cobOIqx/kvuZr/ZPvqRxLsdDz1TWq58Y1uSjTdB
-	 KG2/YRUz3XFQ2lUMj8D4sUDlvXOvo0ZwJYL+Zh8slDqm6FtGDbhgNPxTbZ/CqoMjY7
-	 4C07ybL+Udwe/39rogZpBtUgPe9/Cefr/RZWfqMfcHwYR7QnGWrNRTLKkjCC5eUayp
-	 wgHoLmDGbo8Nw==
+	b=FG1/Aps5GdL0Ks9HkrFAnjcXf1jDcQeMztQLEUxPkyemkrNBlIsivEPFXVcOTghO8
+	 nYfvAmqq/jLd0QJIQ7nJWQhtzoxG+eMN/rkImGY83QwoclWSEY/DowaafLa+0HVTQf
+	 GO9/K0J0GT5WbYUo6R9Y15igkF7m9WVDW/x0amkvWAyoOxkgqKD5FdSFSDToF9Rv3d
+	 DDK8WT1EKG4bulBdxb5t2B3atQrNwwnxI5TBfTtcbYwYs2QhPLQHUFGYqqtq1JOxYc
+	 fuwBZnSGjFPy/RSxgjOPphtBHKV7Tgi0eh7aQEXWKpVV463lTnG0aVDIPqU+DNk87B
+	 X5+ZiaS3UEROA==
 From: SeongJae Park <sj@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: SeongJae Park <sj@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
 	damon@lists.linux.dev,
 	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] Docs/admin-guide/mm/damon/usage: update for young page type DAMOS filter
-Date: Fri, 26 Apr 2024 12:52:45 -0700
-Message-Id: <20240426195247.100306-7-sj@kernel.org>
+Subject: [PATCH 7/7] Docs/ABI/damon: update for 'youg page' type DAMOS filter
+Date: Fri, 26 Apr 2024 12:52:46 -0700
+Message-Id: <20240426195247.100306-8-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240426195247.100306-1-sj@kernel.org>
 References: <20240426195247.100306-1-sj@kernel.org>
@@ -62,51 +60,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update DAMON usage document for the newly added DAMOS filter type,
-'young page'.
+Update DAMON ABI document for the newly added DAMO filter type, 'young
+page'.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 26 ++++++++++----------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ Documentation/ABI/testing/sysfs-kernel-mm-damon | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 6fce035fdbf5c..69bc8fabf3781 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -410,19 +410,19 @@ in the numeric order.
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-damon b/Documentation/ABI/testing/sysfs-kernel-mm-damon
+index dad4d5ffd7865..cef6e1d20b185 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-mm-damon
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-damon
+@@ -314,9 +314,9 @@ Date:		Dec 2022
+ Contact:	SeongJae Park <sj@kernel.org>
+ Description:	Writing to and reading from this file sets and gets the type of
+ 		the memory of the interest.  'anon' for anonymous pages,
+-		'memcg' for specific memory cgroup, 'addr' for address range
+-		(an open-ended interval), or 'target' for DAMON monitoring
+-		target can be written and read.
++		'memcg' for specific memory cgroup, 'young' for young pages,
++		'addr' for address range (an open-ended interval), or 'target'
++		for DAMON monitoring target can be written and read.
  
- Each filter directory contains six files, namely ``type``, ``matcing``,
- ``memcg_path``, ``addr_start``, ``addr_end``, and ``target_idx``.  To ``type``
--file, you can write one of four special keywords: ``anon`` for anonymous pages,
--``memcg`` for specific memory cgroup, ``addr`` for specific address range (an
--open-ended interval), or ``target`` for specific DAMON monitoring target
--filtering.  In case of the memory cgroup filtering, you can specify the memory
--cgroup of the interest by writing the path of the memory cgroup from the
--cgroups mount point to ``memcg_path`` file.  In case of the address range
--filtering, you can specify the start and end address of the range to
--``addr_start`` and ``addr_end`` files, respectively.  For the DAMON monitoring
--target filtering, you can specify the index of the target between the list of
--the DAMON context's monitoring targets list to ``target_idx`` file.  You can
--write ``Y`` or ``N`` to ``matching`` file to filter out pages that does or does
--not match to the type, respectively.  Then, the scheme's action will not be
--applied to the pages that specified to be filtered out.
-+file, you can write one of five special keywords: ``anon`` for anonymous pages,
-+``memcg`` for specific memory cgroup, ``young`` for young pages, ``addr`` for
-+specific address range (an open-ended interval), or ``target`` for specific
-+DAMON monitoring target filtering.  In case of the memory cgroup filtering, you
-+can specify the memory cgroup of the interest by writing the path of the memory
-+cgroup from the cgroups mount point to ``memcg_path`` file.  In case of the
-+address range filtering, you can specify the start and end address of the range
-+to ``addr_start`` and ``addr_end`` files, respectively.  For the DAMON
-+monitoring target filtering, you can specify the index of the target between
-+the list of the DAMON context's monitoring targets list to ``target_idx`` file.
-+You can write ``Y`` or ``N`` to ``matching`` file to filter out pages that does
-+or does not match to the type, respectively.  Then, the scheme's action will
-+not be applied to the pages that specified to be filtered out.
- 
- For example, below restricts a DAMOS action to be applied to only non-anonymous
- pages of all memory cgroups except ``/having_care_already``.::
+ What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/filters/<F>/memcg_path
+ Date:		Dec 2022
 -- 
 2.39.2
 
