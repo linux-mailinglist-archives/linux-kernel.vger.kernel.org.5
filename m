@@ -1,110 +1,122 @@
-Return-Path: <linux-kernel+bounces-160076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEA138B38BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:43:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB0F8B38C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:44:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5F2A1F21FC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:43:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C9D21C2279A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE8E147C95;
-	Fri, 26 Apr 2024 13:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118EB1482E2;
+	Fri, 26 Apr 2024 13:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="FkEAqoYu"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (1024-bit key) header.d=amazon.es header.i=@amazon.es header.b="RJo3fPxA"
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56911F956;
-	Fri, 26 Apr 2024 13:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8A31F956;
+	Fri, 26 Apr 2024 13:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714138989; cv=none; b=SBrt10loVB3O4TdUqV8dSM0K/+cS/ql0tsS1OKM9trfkn/vMFKSHGLZcAVscn6VAxlI/kpBxiZZaelNuVzPfws2kpHWqkfvbVtKu8SLgQ4CcIBO4LGEkZHanL1iHxpMYYJ0p/GhJLo8m3nmUnKuVLPbxk5WdXvbOKRrVKjQHK/8=
+	t=1714139048; cv=none; b=YePP86PWhHa/fRiFyH2R0KKFIULr3tc3al3A3luiHWhg4kKHi2GEfvwCKgrtawmXKkNl9wTSFGck3h4lYyyx1C/RPtKVf1Mmi0i4+kNBZJUcr2mSdqVfUkHjVj4IFXuLJZhXqs5ZfZB9DTM2bWEj8BCkohCz7AXMXwH/x4qo8zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714138989; c=relaxed/simple;
-	bh=LU5jFmly0HlXzC9D1rgqIxvuVT/bLuqB/d/UjXKKmWU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JICuWoDZboiAyIVSrtU05GNc7gkXTiDb1pFtVG+MOEHOKTnOlTw3I3kjac4J8yX2y+niqop61zfOvZ3GRujYCO3adwtgqijIAk7Gc8GEQ2SrG16GeA4PFkuh2Wuoso9XCBH+JExQWYiSWnQOgVT9RPaPXP9Cs1Cq1eThgGlsSp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=FkEAqoYu; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5F6B847C49
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1714138987; bh=/jIYhxL/GvWnAMs1/PbEFqT7J8DDnxxKl+B9NTWtkTs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=FkEAqoYuGD5d2Zajs12NbRSH7pNFVMb4JXGwDEfSs1ooVMNoijpuMpsc8S6X9ufoy
-	 3NteCy8ilJ0gZAEcWXmkaGaiOqB5nIkvFNkU0f5cW7YI5dBgldJ6CPg6LeJvNdysyf
-	 2d38M7cwqvIN11t1kBkwb1ZX2AqtBkoj6hh3Io5HbPxkrDV5cyX754/1CNGvz34TFW
-	 bY07gfyuFBP+ExDWukCtsf5P91/CoKIAU+ZrMykPMKfF0BcfCo6hTBurMCIpu+ZDgm
-	 HPpdQYfUF/vfztHillS1pf/0gphg2UOAghmPvds84VLn1jFUIs4gtaDXQd2ttTRp1K
-	 V0jdYnCBJ18xQ==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 5F6B847C49;
-	Fri, 26 Apr 2024 13:43:07 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: "Bilbao, Carlos" <carlos.bilbao@amd.com>, elena.reshetova@intel.com,
- Akira Yokosawa <akiyks@gmail.com>
-Cc: bilbao@vt.edu, "Naik, Avadhut" <Avadhut.Naik@amd.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Dunlap
- <rdunlap@infradead.org>
-Subject: Re: [PATCH v4] docs/MAINTAINERS: Update my email address
-In-Reply-To: <139b8cab-009c-4688-be41-c4c526532ea1@amd.com>
-References: <97731c94-99b0-46be-8b78-5dac8510f690@amd.com>
- <87cyqetwhh.fsf@meer.lwn.net>
- <139b8cab-009c-4688-be41-c4c526532ea1@amd.com>
-Date: Fri, 26 Apr 2024 07:43:06 -0600
-Message-ID: <87v844nst1.fsf@meer.lwn.net>
+	s=arc-20240116; t=1714139048; c=relaxed/simple;
+	bh=UZi8TXx9a8fjUIlUFGYdMkWm4qzSrLxmXgditYXOGGQ=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=A9v4OOYb4tLQySPIBATOk3FdQ13NrcolksjmS2QhFNVmLZ9vrEsG0SPt/GPe0ZHZwt8fyZvUkdkh53o1sQbFANexck8DwXSG/PTJofMJTs79u8e263p4eFFowDTiwA4aM1Np1siqetoGfgeAT+uamAZLF2CgWbQJxUVEK8bZKmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.es; spf=pass smtp.mailfrom=amazon.es; dkim=pass (1024-bit key) header.d=amazon.es header.i=@amazon.es header.b=RJo3fPxA; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.es
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.es
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.es; i=@amazon.es; q=dns/txt; s=amazon201209;
+  t=1714139047; x=1745675047;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=fIo6JiWpcfuJdP9GV9sCAn384Sgayh04jC6d/BFYW58=;
+  b=RJo3fPxAuoSpOUotwAlANuQ9Jil20slZr1KwbtRTMlP/Go4bFPL48k0u
+   66qVAtC4B293edjuD88CsPsz3hwJko983QAWWu14FiQypyliyFf6dK5Gj
+   o6W2CLyk0OWHYrLoOY1OWAo/5OX2VzqYBZnWXGlLI3/S9tx7TEmnmaAHD
+   0=;
+X-IronPort-AV: E=Sophos;i="6.07,232,1708387200"; 
+   d="scan'208";a="290971147"
+Subject: Re: [REGRESSION] Re: [PATCH] Revert "vmgenid: emit uevent when VMGENID
+ updates"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 13:44:04 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.17.79:48160]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.21.244:2525] with esmtp (Farcaster)
+ id 3e3dc579-38c9-447a-8e7d-ab1368f1c799; Fri, 26 Apr 2024 13:44:02 +0000 (UTC)
+X-Farcaster-Flow-ID: 3e3dc579-38c9-447a-8e7d-ab1368f1c799
+Received: from EX19D037EUB003.ant.amazon.com (10.252.61.119) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 26 Apr 2024 13:44:01 +0000
+Received: from [192.168.28.148] (10.1.213.14) by EX19D037EUB003.ant.amazon.com
+ (10.252.61.119) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 26 Apr
+ 2024 13:43:56 +0000
+Message-ID: <1f09319c-56e6-44d7-9175-c6307089447b@amazon.es>
+Date: Fri, 26 Apr 2024 15:43:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, Alexander Graf <graf@amazon.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>, <linux-kernel@vger.kernel.org>,
+	<stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>, Theodore Ts'o
+	<tytso@mit.edu>, "Cali, Marco" <xmarcalx@amazon.co.uk>, Arnd Bergmann
+	<arnd@arndb.de>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "Christian
+ Brauner" <brauner@kernel.org>, <linux@leemhuis.info>,
+	<regressions@lists.linux.dev>
+References: <20240418114814.24601-1-Jason@zx2c4.com>
+ <e09ce9fd-14cb-47aa-a22d-d295e466fbb4@amazon.com>
+ <CAHmME9qKFraYWmzD9zKCd4oaMg6FyQGP5pL9bzZP4QuqV1O_Qw@mail.gmail.com>
+ <ZieoRxn-On0gD-H2@gardel-login>
+ <b819717c-74ea-4556-8577-ccd90e9199e9@amazon.com>
+ <Ziujox51oPzZmwzA@zx2c4.com>
+Content-Language: en-US
+From: Babis Chalios <bchalios@amazon.es>
+In-Reply-To: <Ziujox51oPzZmwzA@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D036UWC003.ant.amazon.com (10.13.139.214) To
+ EX19D037EUB003.ant.amazon.com (10.252.61.119)
 
-"Bilbao, Carlos" <carlos.bilbao@amd.com> writes:
+Hi Jason,
 
-> In the near future, I will not have access to the email address I used as
-> maintainer of a number of things, mostly in the documentation. Update that
-> address to my personal email address (see Link) so I can continue
-> contributing and update .mailmap.
+On 4/26/24 14:52, Jason A. Donenfeld wrote:
+> I don't think adding UAPI to an individual device driver like this is a
+> good approach especially considering that the virtio changes we
+> discussed some time ago will likely augment this and create another
+> means of a similar notification. And given that this intersects with
+> other userspace-oriented work I hope to get back to pretty soon, I think
+> introducing some adhoc mechanism like this adds clutter and isn't the
+> ideal way forward.
 >
-> Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
-> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
-> ---
->
-> Changes since v3:
-> - Apply on top of docs-next using as base:
->   commit e88c4cfcb7b888ac374916806f86c17d8ecaeb67
->
-> Change since v2:
-> - Fix .mailmap entry from <old-email> <new-email> to <new-email> <old-email>
->
-> Changes since v1:
-> - Update .mailmap
-> ---
->  .mailmap                                                  | 1 +
->  Documentation/security/snp-tdx-threat-model.rst           | 2 +-
->  Documentation/translations/sp_SP/index.rst                | 2 +-
->  Documentation/translations/sp_SP/memory-barriers.txt      | 4 ++--
->  .../translations/sp_SP/process/code-of-conduct.rst        | 2 +-
->  Documentation/translations/sp_SP/process/coding-style.rst | 2 +-
->  .../translations/sp_SP/process/email-clients.rst          | 2 +-
->  Documentation/translations/sp_SP/process/howto.rst        | 2 +-
->  Documentation/translations/sp_SP/process/kernel-docs.rst  | 2 +-
->  .../sp_SP/process/kernel-enforcement-statement.rst        | 2 +-
->  Documentation/translations/sp_SP/process/magic-number.rst | 2 +-
->  .../translations/sp_SP/process/programming-language.rst   | 2 +-
->  .../translations/sp_SP/process/submitting-patches.rst     | 2 +-
->  MAINTAINERS                                               | 8 ++++----
->  14 files changed, 18 insertions(+), 17 deletions(-)
 
-Applied, thanks.
+Correct me if I'm wrong, but the virtio changes were meant to mean "please
+reseed your PRNGs". That's why we wanted to route them via random.c. We
+designed them specifically so that virtio-rng would be only one of the 
+potential
+systems that would emit such notifications, whereas other systems might have
+nothing to do with VM events.
 
-jon
+With that in mind, could you describe how these events would be useful 
+to the
+use case of Lennart? systemd does not need a notification every time the 
+system
+believes PRNGs need to be reseeded. It explicitly needs a notification 
+when a VM
+was cloned. This has nothing to do with PRNGs and I don't believe random.c,
+virtio-rng, or vgetrand() should be responsible for delivering this.
+
+Cheers,
+Babis
 
