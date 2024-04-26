@@ -1,191 +1,186 @@
-Return-Path: <linux-kernel+bounces-160676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228DA8B40F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:43:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D728B40F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C0101F22B95
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:43:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2801CB226D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE992C1A7;
-	Fri, 26 Apr 2024 20:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C452C1B9;
+	Fri, 26 Apr 2024 20:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HmcvHsVC"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AAQAPudp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F4D2907
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 20:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B81528383;
+	Fri, 26 Apr 2024 20:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714164188; cv=none; b=ngpOAZCUN5GgqcFScVIhpbZpYGHg0kaj6so/0DuaR/6GNZ7xRqOb+SbMMHPiY8GnBkLs5mQAxLM9k6VrJjbe7m+W6j0ptip0RBOOhlMU8dY2jh/50NxDQFXdSh357+4lqkBC1EnkJa+6x9P7gBHLAHJLYscsAWR2hZI1xcvS+44=
+	t=1714164401; cv=none; b=SG/tGON0r/OyxEuU5D4rKHvZ4vm4MTcyDdOaZR3lvAZdj91Kdw1oxf6SJx/hc3hQJXGl9iWGg4bASAnGJnU7iU4f0pg2Wo3moXnRyS/5NOL9SvFJCnJgvp++6In/y11axwIGQ57cZGcX4VNHoRUUJUJkhyh1NKuTmI+2B82Vy8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714164188; c=relaxed/simple;
-	bh=BBR96LaW4Vs7bchHlk90vM6AfN08uRrFi9ZABUR8U4Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gvGvIvMoeOeMnjUVk7Hjrm4oA+bd0UkHOwu80AeL2sWrU5yqVMa9EhqGte22dRQVHc2weY1VgEhwN46xwCpSmQXAjsJpq3txAhubqigyShaUQkXtQ/qp/hPN1PVuF7NpCxPs8k4yhCB7OXahq+oUMR2Sx6QXDcX9Ud+cSBhP6ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HmcvHsVC; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5724e69780bso2190413a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714164185; x=1714768985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ueA8BocmTSJNHsyrYj2TNISaWPcMWAXxPevjbN2I4Kk=;
-        b=HmcvHsVCT5OhzpNcYXJ7SU7ENsNwetBD5gKN579hEvySVt7lPO3ULIYHHTO30DWdM5
-         zi+8UL+4FtKSWDeyUVIABZP9pYaG+cOax/1oQYD6+F/1eRLcDnAvfNXCUHFPIzDwZHHG
-         vLA6wren5hPc4Jr+UektUNOmOwvLyr7Mm82sScxfHVk6jt3RLfh4BFLBZL84Qn50FK6k
-         mctwX2jQz9UFniiloszkwyUnGUS1yvBZuNfLznAWaxNlmufHn2QpZ1So6RCVEJAwonbY
-         OiixD596mPeYKfe34nNPBWU7MaKka06cNu8TaHdFyxeByrYJWwlPq4F/2XMQbGMi+9tT
-         9Gpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714164185; x=1714768985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ueA8BocmTSJNHsyrYj2TNISaWPcMWAXxPevjbN2I4Kk=;
-        b=luA4qGA/Ph1gA5XBO3i16JmnYv1dDfc+uV6r+jIAmzw5aLEyD80RBpPcutK78n2nH9
-         6Fo4H876mdjgOUQ28RoV8q9OkjRQ5EoYCtbQ4mqp55WPDUgfwwHy30dtejMLKZfONHb4
-         3ZM2DgjBsNT6Fc2MJVflWwLN0yKzAQsdAbkD79lZXBzCEWomXKRtEzpoJsxbxHv7G1p6
-         XDa4ntS4JcBhhbKRU4gU/pk85Zj5LDEXPYraHI3i2t+v4IY0DnEQ4JxXf/aao7Oud+uy
-         DJ57yea0EREidMSgRDepl4N9TpqsLSoGTpNudY4BH2UQ2w7PtarPdXKtTAQEcCKPGjH6
-         6rwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKoalolbmY/4nIK/FVsGX0uV3Bb+ba8XFHijcJLh7rpzaMl5ma8JWXpA3c0TxFde3xZD3vWPcGYV44eCrDfaIQ29KGmZMlkN3KMaxP
-X-Gm-Message-State: AOJu0YyHp0WB0t2oBVOyM5BA53zT7Ej83OI0KjSpaN/U9qKYnVDTS1H5
-	iV48rV0/zierqEOd7YAKGqD6fThZMjayq7JVkmWkN8h4dnpSgNMYfQexBdS2FtjXEFxS7ndWJNN
-	UxF4rD+sO5bFmsvNw8xDu4Ee3j3g=
-X-Google-Smtp-Source: AGHT+IHtHDw+SuBuLCHF9dQ3rXR8SAurLqm91cNlAtwclmb1U5hypuDEGRG0X0bZJKfBAiNEWJtfqCEAmUnDwh4c7RI=
-X-Received: by 2002:a50:d651:0:b0:572:47be:be36 with SMTP id
- c17-20020a50d651000000b0057247bebe36mr2476472edj.0.1714164185112; Fri, 26 Apr
- 2024 13:43:05 -0700 (PDT)
+	s=arc-20240116; t=1714164401; c=relaxed/simple;
+	bh=FpnES2VzAJAeOqxKGH0lg2Bnjqd4mkcolNpkPfg+scg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hCF8ESKeB/gIWEEnmh0UclMoMdBh6681mISdM6DO7Tfwk8ViO5b4yKJNx6mje4fJLAgFXh6V/z+kgKubb6n+Lv9y8Oj+yRTBXsDOdOJtgF9JuWusrkyzMJ42Wqr3dDBTLTpeEqf7unMvWb88mVeePkJ63KIUxBm8pRKdd39tU8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AAQAPudp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A42C9C113CD;
+	Fri, 26 Apr 2024 20:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714164401;
+	bh=FpnES2VzAJAeOqxKGH0lg2Bnjqd4mkcolNpkPfg+scg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AAQAPudpDakoNEU3GRdPIGAx3jXltg8+z70mavPQj+osxfFlcbSQCoNioaYDQzixc
+	 UDe2Z3W6FQcgSevbm0wq9plVxSDN0Ziw/AfmIBAlejymaPcRmUHZ4sbQ36E07THTjP
+	 9CcBpyoL0MS6Yu2YApMucm7KK2u1Mq449EIoACUlckAtCW/0c6LpA7rUor6NfNjN+h
+	 vkQZlmuW+2ONsIX/3CwbmTtcCtqQ6qG6d5GAzWPh//WH8JO7diTvQet5GXnAIhxJXX
+	 Keb8E/cK36zmHrIXTfnsmQl5729B6N9NNL6Qyt3yl6p3Z5behPJbj5VccYHKx+/1Ht
+	 O9uOf/+wJKbfw==
+Date: Fri, 26 Apr 2024 21:46:34 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 09/17] riscv: drivers: Convert xandespmu to use the
+ vendor extension framework
+Message-ID: <20240426-wackiness-fringe-d296412b0c06@spud>
+References: <20240420-dev-charlie-support_thead_vector_6_9-v3-0-67cff4271d1d@rivosinc.com>
+ <20240420-dev-charlie-support_thead_vector_6_9-v3-9-67cff4271d1d@rivosinc.com>
+ <20240426-venue-maximum-f78ac451b146@spud>
+ <ZiwPyyBK2br8yKei@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426190253.541419-1-zi.yan@sent.com>
-In-Reply-To: <20240426190253.541419-1-zi.yan@sent.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Fri, 26 Apr 2024 13:42:53 -0700
-Message-ID: <CAHbLzkr9t_Kfrjddn2Xu22vSQUO55Z5wHVi8_oz=qL1oEQ9wvg@mail.gmail.com>
-Subject: Re: [PATCH v5] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>, 
-	Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="obfZp8CibtUO+FNM"
+Content-Disposition: inline
+In-Reply-To: <ZiwPyyBK2br8yKei@ghost>
+
+
+--obfZp8CibtUO+FNM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 12:02=E2=80=AFPM Zi Yan <zi.yan@sent.com> wrote:
->
-> From: Zi Yan <ziy@nvidia.com>
->
-> In __folio_remove_rmap(), a large folio is added to deferred split list
-> if any page in a folio loses its final mapping. But it is possible that
-> the folio is fully unmapped and adding it to deferred split list is
-> unnecessary.
->
-> For PMD-mapped THPs, that was not really an issue, because removing the
-> last PMD mapping in the absence of PTE mappings would not have added the
-> folio to the deferred split queue.
->
-> However, for PTE-mapped THPs, which are now more prominent due to mTHP,
-> they are always added to the deferred split queue. One side effect
-> is that the THP_DEFERRED_SPLIT_PAGE stat for a PTE-mapped folio can be
-> unintentionally increased, making it look like there are many partially
-> mapped folios -- although the whole folio is fully unmapped stepwise.
->
-> Core-mm now tries batch-unmapping consecutive PTEs of PTE-mapped THPs
-> where possible starting from commit b06dc281aa99 ("mm/rmap: introduce
-> folio_remove_rmap_[pte|ptes|pmd]()"). When it happens, a whole PTE-mapped
-> folio is unmapped in one go and can avoid being added to deferred split
-> list, reducing the THP_DEFERRED_SPLIT_PAGE noise. But there will still be
-> noise when we cannot batch-unmap a complete PTE-mapped folio in one go
-> -- or where this type of batching is not implemented yet, e.g., migration=
-.
->
-> To avoid the unnecessary addition, folio->_nr_pages_mapped is checked
-> to tell if the whole folio is unmapped. If the folio is already on
-> deferred split list, it will be skipped, too.
->
-> Note: commit 98046944a159 ("mm: huge_memory: add the missing
-> folio_test_pmd_mappable() for THP split statistics") tried to exclude
-> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does not
-> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
-> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
-> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
-> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
+On Fri, Apr 26, 2024 at 01:34:19PM -0700, Charlie Jenkins wrote:
+> On Fri, Apr 26, 2024 at 05:25:20PM +0100, Conor Dooley wrote:
+> > On Sat, Apr 20, 2024 at 06:04:41PM -0700, Charlie Jenkins wrote:
+> > > Migrate xandespmu out of riscv_isa_ext and into a new Andes-specific
+> > > vendor namespace.
+> > > diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sb=
+i.c
+> > > index 8cbe6e5f9c39..84760ce61e03 100644
+> > > --- a/drivers/perf/riscv_pmu_sbi.c
+> > > +++ b/drivers/perf/riscv_pmu_sbi.c
+> > > @@ -24,6 +24,8 @@
+> > >  #include <asm/errata_list.h>
+> > >  #include <asm/sbi.h>
+> > >  #include <asm/cpufeature.h>
+> > > +#include <asm/vendorid_list.h>
+> > > +#include <asm/vendor_extensions/andes.h>
+> > > =20
+> > >  #define ALT_SBI_PMU_OVERFLOW(__ovl)					\
+> > >  asm volatile(ALTERNATIVE_2(						\
+> > > @@ -32,7 +34,7 @@ asm volatile(ALTERNATIVE_2(						\
+> > >  		THEAD_VENDOR_ID, ERRATA_THEAD_PMU,			\
+> > >  		CONFIG_ERRATA_THEAD_PMU,				\
+> > >  	"csrr %0, " __stringify(ANDES_CSR_SCOUNTEROF),			\
+> > > -		0, RISCV_ISA_EXT_XANDESPMU,				\
+> > > +		ANDES_VENDOR_ID, RISCV_ISA_VENDOR_EXT_XANDESPMU,	\
+> > >  		CONFIG_ANDES_CUSTOM_PMU)				\
+> > >  	: "=3Dr" (__ovl) :						\
+> > >  	: "memory")
+> > > @@ -41,7 +43,7 @@ asm volatile(ALTERNATIVE_2(						\
+> > >  asm volatile(ALTERNATIVE(						\
+> > >  	"csrc " __stringify(CSR_IP) ", %0\n\t",				\
+> > >  	"csrc " __stringify(ANDES_CSR_SLIP) ", %0\n\t",			\
+> > > -		0, RISCV_ISA_EXT_XANDESPMU,				\
+> > > +		ANDES_VENDOR_ID, RISCV_ISA_VENDOR_EXT_XANDESPMU,	\
+> > >  		CONFIG_ANDES_CUSTOM_PMU)				\
+> > >  	: : "r"(__irq_mask)						\
+> > >  	: "memory")
+> > > @@ -837,7 +839,7 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu *p=
+mu, struct platform_device *pde
+> > >  		   riscv_cached_mimpid(0) =3D=3D 0) {
+> > >  		riscv_pmu_irq_num =3D THEAD_C9XX_RV_IRQ_PMU;
+> > >  		riscv_pmu_use_irq =3D true;
+> > > -	} else if (riscv_isa_extension_available(NULL, XANDESPMU) &&
+> > > +	} else if (riscv_isa_vendor_extension_available(-1, XANDESPMU) &&
+> >=20
+> > What's the rationale for this not using riscv_has_extension_unlikely()?
+> > Happens once in probe so don't bother? I forget if we discussed it when
+> > the code was added, but it would save us from the NULL/-1 syntax,
+> > neither of which I think is a good interface.
+>=20
+> Doesn't look like something that was ever commented on in the series,
+> but I may have missed it. I can change this to use the alternatives.
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+Yeha, not really a question for you but thinking aloud and wondering if
+someone would remind me. I really don't like
+riscv_isa_extension_available() because it doesn't respect config
+options etc, but ultimately I think the series that Clement is currently
+working on for Zc* is could be the saviour there, as the callbacks his
+most recent version has I think could make it much easier to hook in and
+turn off extensions. Should be helpful for the sort of confusing shit
+that Eric was complaining about last week on Andy's vector series.
 
-> ---
->  mm/rmap.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 2608c40dffad..a9bd64ebdd9a 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1495,6 +1495,7 @@ static __always_inline void __folio_remove_rmap(str=
-uct folio *folio,
->  {
->         atomic_t *mapped =3D &folio->_nr_pages_mapped;
->         int last, nr =3D 0, nr_pmdmapped =3D 0;
-> +       bool partially_mapped =3D false;
->         enum node_stat_item idx;
->
->         __folio_rmap_sanity_checks(folio, page, nr_pages, level);
-> @@ -1515,6 +1516,8 @@ static __always_inline void __folio_remove_rmap(str=
-uct folio *folio,
->                                         nr++;
->                         }
->                 } while (page++, --nr_pages > 0);
-> +
-> +               partially_mapped =3D !!nr && !!atomic_read(mapped);
->                 break;
->         case RMAP_LEVEL_PMD:
->                 atomic_dec(&folio->_large_mapcount);
-> @@ -1532,6 +1535,8 @@ static __always_inline void __folio_remove_rmap(str=
-uct folio *folio,
->                                 nr =3D 0;
->                         }
->                 }
-> +
-> +               partially_mapped =3D nr < nr_pmdmapped;
->                 break;
->         }
->
-> @@ -1553,9 +1558,10 @@ static __always_inline void __folio_remove_rmap(st=
-ruct folio *folio,
->                  * page of the folio is unmapped and at least one page
->                  * is still mapped.
->                  */
-> -               if (folio_test_large(folio) && folio_test_anon(folio))
-> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdmap=
-ped)
-> -                               deferred_split_folio(folio);
-> +               if (folio_test_anon(folio) &&
-> +                   list_empty(&folio->_deferred_list) &&
-> +                   partially_mapped)
-> +                       deferred_split_folio(folio);
->         }
->
->         /*
->
-> base-commit: 3dba658670af22074cc6f26dc92efe0013ac3359
-> --
-> 2.43.0
->
+>=20
+> This also wasn't supposed to be -1, it's supposed to be the id of the
+> vendor.
+>=20
+> >=20
+> > Also, I'd prob drop the "drivers" from $subject.
+> >=20
+> > I'll come back and look at the rest of this Monday, it's a sunny Friday
+> > here and I've still got my devicetree patch queue to clear..
+> >=20
+>=20
+> - Charlie
+>=20
+> > Cheers,
+> > Conor.
+> >=20
+> > >  		   IS_ENABLED(CONFIG_ANDES_CUSTOM_PMU)) {
+> > >  		riscv_pmu_irq_num =3D ANDES_SLI_CAUSE_BASE + ANDES_RV_IRQ_PMOVI;
+> > >  		riscv_pmu_use_irq =3D true;
+> > >=20
+> > > --=20
+> > > 2.44.0
+> > >=20
+>=20
+>=20
+
+--obfZp8CibtUO+FNM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiwSqgAKCRB4tDGHoIJi
+0gNhAQDrHkAfioAOiId8a0oZe9Tp2bWKu1pfHE//przLWplaKAEApP4lOWJpBqcf
+vxWNFoKpgkDlzQEmtSnjR0ttsqkgAwI=
+=M/W8
+-----END PGP SIGNATURE-----
+
+--obfZp8CibtUO+FNM--
 
