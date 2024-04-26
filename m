@@ -1,255 +1,300 @@
-Return-Path: <linux-kernel+bounces-160534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19028B3EE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:07:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B095B8B3EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD651F22DE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 688CC284A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6740116DEC3;
-	Fri, 26 Apr 2024 18:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="edsnHn+t"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370B016DED0;
+	Fri, 26 Apr 2024 18:09:19 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA93A16C84C;
-	Fri, 26 Apr 2024 18:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F661EB5E;
+	Fri, 26 Apr 2024 18:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714154832; cv=none; b=VY9zHtonQZOv4phXMGt9LatVol8B5su/BFlEzUWKA5CCysusBUbIfA1xihe+oHRefcdcyd3J41cqZ0HVuwct06qEmz7imNotRW8kDyjTTN6c5f7GyZWQvGIMuX0M/tQtb44hv2ez79U2f2pE3d1ZAaBeJ5EYMaBUDnYIKOZajCk=
+	t=1714154958; cv=none; b=Mxlb0/584UJX9lsH79B90Yphjc+pQDlezKnjRO1W9roWJoKfV95IlpN2MI6oKBG8YelsdejkjAqYoeu+GsHuPZlieZWDAlYFC+hmhgfn8M/HzpEiWRn/1oKyifGE/1+YjJKmR2JrGQRC3IpfmlxnrPyHiwshkt1OxwVfrgO7xJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714154832; c=relaxed/simple;
-	bh=rim/qOPhMLdWIVLqD7A9/Tid24QAvswR2GR40lKc3PU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=syGVTbSMOjF3NUiTOl+XVxG86L/shS/dz21zCaUKQaYWGQjsbM0WVfTsoJGyZQy7IpLWEgOZOcB7ycKy17sfDfWj24Ifp5twlit/NYY8hAVe8L2lnV4/xrQmm3zbUP8FhheSV0fK2fS9omikHsTxhLPpZpY/0vBEeFcDDSVvyKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=edsnHn+t; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-572229f196bso3076707a12.0;
-        Fri, 26 Apr 2024 11:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714154828; x=1714759628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lceweZHRSnryQgkDij4ZGM28IB4VOVtw3Nwgqfzff9E=;
-        b=edsnHn+tz70ngC2iFuHe1ZNGvD8B8SRCdKu7Y7YNduyEXhuyBX3NnaKzUGlD+j0ZpY
-         pgMhAtu4VsHBUmS4BmXUJDJ3wYanjWbKewVLDwpo83NPguTLDIiHrFLokpAOioGwWTQG
-         FljuSFr3Oe9qGNyzkTR4BGyOrABDgYVpu8mrEyWoR4UqFEWHSywutVMl3MglOnZBhl53
-         KBxPLBOwBgGg/avTm1L/T3/tbFLn1XuUtTqk86c6xLnqoCrZnRdjxLhiRh4Ama+yCYLh
-         qi7fJKAW8PXmSqjPywIRgGWRIRhfaQeBql6pqIBRaPfzcgaxppzM8nv4/BiINgPRMF1Q
-         AWmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714154828; x=1714759628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lceweZHRSnryQgkDij4ZGM28IB4VOVtw3Nwgqfzff9E=;
-        b=s5ZCqVdTOctsHNfkZ/gA6NcVkIJO/u8ELgFn5JZFpwQcrCHKO6HEAZ7nveL+zdp7vg
-         g6PInJBkhlhMQGyipkp799Uk/MA8Nf7pljEU7WDKmOpnLaXrDS9684q7eAAxcTjo8/8M
-         DNqEzbzY4oJ+kYkIDwC5ti/HnCFo+dck/8rL/VF+4HtXH13TxCOlzvDuFyClxBFc6lAR
-         EXfp1jzTDsSGOr7Wf3SJw5oFp0X9K2cEl0gJBMJB+eWS9G6YNK6sHKVlAetjzMThamMq
-         pbvscuPEcQJ5nghoewwUMcgcC9A9hkvV094tN4jrnVtW8YvO8JPqQ+0EtOHLdU5WFkKs
-         YUhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQv6qulUl19Co49ZDLjPD9VWN5kF2UzZ0Fxe6AoVk9qAYlfvNb794MiXOXK2CPwVzdMJPklQxHnJyc3A7OEfFcLd/KTQ4GT3ieckv8NMO0oSD36lL/fgD0CbM9aEK3qYUpWInFTMDM1HaGvaNqmAWj7vMGRhxgL5REsKZCs7OBSdWzGc5Nadr6mg5+Ml8PMHMVTXA5ey0yeuTCpwYcyE6/
-X-Gm-Message-State: AOJu0YxcHQU52mPwY4Hk4QusyjKU5xsfXgdwpaUPpUSZ0pSj4itYJ17m
-	MeBChYFxiiZWshwizpvEQyEaO7SwVHt8iZVKxmJVydKH8dlqcDjZNlIZiN+g9fWDWK/mhMxJxcr
-	Jt4QVGMNjDDEFF9n6TAE+nRIrXPE=
-X-Google-Smtp-Source: AGHT+IFnCgu+gwo+KcuYKTJajtvi0VGhGt5z0L892Y6ykLe+z9IJxoGdXEXt5JX/9knoxs2RzyLAP/kdMrtAql5LBNs=
-X-Received: by 2002:a17:906:1594:b0:a58:7940:69de with SMTP id
- k20-20020a170906159400b00a58794069demr2551641ejd.39.1714154828047; Fri, 26
- Apr 2024 11:07:08 -0700 (PDT)
+	s=arc-20240116; t=1714154958; c=relaxed/simple;
+	bh=vylh6oaMyHYbUe0eNlx6uprvORS7R1/lEC/zt0QqiOQ=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qBiHMao8iv6i7i86FJkZTMRDLbiGb/PWkmHw4//JymUrLhJXa6/mb8iUwC50ZexxAZFMuuImxUR15GAY112eDjZ4hKPE7A2niWWVL+tMnWdbcFUBYODAEYuSG/noDO//LwSF2FKkrQIeOZodP/SUDsM0UtunGdv09fA+uqzurzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VR0zV4n0sz6JBCB;
+	Sat, 27 Apr 2024 02:06:46 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 70BD61408F9;
+	Sat, 27 Apr 2024 02:09:12 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 19:09:11 +0100
+Date: Fri, 26 Apr 2024 19:09:10 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Miguel Luis <miguel.luis@oracle.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, "linux-pm@vger.kernel.org"
+	<linux-pm@vger.kernel.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-arch@vger.kernel.org"
+	<linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, "James
+ Morse" <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
+	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, "linuxarm@huawei.com" <linuxarm@huawei.com>,
+	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com"
+	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
+ Holla" <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 01/16] ACPI: processor: Simplify initial onlining to
+ use same path for cold and hotplug
+Message-ID: <20240426190910.00001dcd@Huawei.com>
+In-Reply-To: <20240426184949.0000506d@Huawei.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+	<20240426135126.12802-2-Jonathan.Cameron@huawei.com>
+	<6347020E-CB49-44ED-87B2-3BB2AA2F59E0@oracle.com>
+	<2E688E98-F57F-444F-B326-5206FB6F5C1E@oracle.com>
+	<20240426184949.0000506d@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-7-jolsa@kernel.org>
-In-Reply-To: <20240421194206.1010934-7-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 11:06:53 -0700
-Message-ID: <CAEf4BzYU-y+vptqXpuALYecJJgPt+CTcbo+=Q9QXnu4vNwem+g@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
-	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
-:
->
-> Adding test that adds return uprobe inside 32 bit task
-> and verify the return uprobe and attached bpf programs
-> get properly executed.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/.gitignore        |  1 +
->  tools/testing/selftests/bpf/Makefile          |  6 ++-
->  .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++++
->  .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
->  4 files changed, 59 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_comp=
-at.c
->
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-> index f1aebabfb017..69d71223c0dd 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -45,6 +45,7 @@ test_cpp
->  /veristat
->  /sign-file
->  /uprobe_multi
-> +/uprobe_compat
->  *.ko
->  *.tmp
->  xskxceiver
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index edc73f8f5aef..d170b63eca62 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_skb_c=
-group_id_user \
->         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metada=
-ta \
->         xdp_features bpf_test_no_cfi.ko
->
-> -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
-ti
-> +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
-ti uprobe_compat
+On Fri, 26 Apr 2024 18:49:49 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-you need to add uprobe_compat to TRUNNER_EXTRA_FILES as well, no?
+> On Fri, 26 Apr 2024 17:21:41 +0000
+> Miguel Luis <miguel.luis@oracle.com> wrote:
+> 
+> > Hi Jonathan, 
+> >   
+> > > On 26 Apr 2024, at 16:05, Miguel Luis <miguel.luis@oracle.com> wrote:
+> > > 
+> > > 
+> > >     
+> > >> On 26 Apr 2024, at 13:51, Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+> > >> 
+> > >> Separate code paths, combined with a flag set in acpi_processor.c to
+> > >> indicate a struct acpi_processor was for a hotplugged CPU ensured that
+> > >> per CPU data was only set up the first time that a CPU was initialized.
+> > >> This appears to be unnecessary as the paths can be combined by letting
+> > >> the online logic also handle any CPUs online at the time of driver load.
+> > >> 
+> > >> Motivation for this change, beyond simplification, is that ARM64
+> > >> virtual CPU HP uses the same code paths for hotplug and cold path in
+> > >> acpi_processor.c so had no easy way to set the flag for hotplug only.
+> > >> Removing this necessity will enable ARM64 vCPU HP to reuse the existing
+> > >> code paths.
+> > >> 
+> > >> Leave noisy pr_info() in place but update it to not state the CPU
+> > >> was hotplugged.    
+> > 
+> > On a second thought, do we want to keep it? Can't we just assume that no 
+> > news is good news while keeping the warn right after __acpi_processor_start ?  
+> 
+> Good question - my inclination was to keep this in place for now as removing
+> it would remove a source of information people may expect on x86 hotplug.
+> 
+> Then maybe propose dropping it as overly noisy kernel as a follow up
+> patch after this series is merged.  Felt like a potential rat hole I didn't
+> want to go down if I could avoid it.
+> 
+> If any x86 experts want to shout that no one cares then I'll happily drop
+> the print.  We've carefully made it so that on arm64 we have no way to tell
+> if this is hotplug or normal cpu bring up so we can't just print it on
+> hotplug.
 
->
->  # Emit succinct information message describing current building step
->  # $1 - generic step name (e.g., CC, LINK, etc);
-> @@ -761,6 +761,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
->         $(call msg,BINARY,,$@)
->         $(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
->
-> +$(OUTPUT)/uprobe_compat:
-> +       $(call msg,BINARY,,$@)
-> +       $(Q)echo "int main() { return 0; }" | $(CC) $(CFLAGS) -xc -m32 -O=
-0 - -o $@
-> +
->  EXTRA_CLEAN :=3D $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)                     =
- \
->         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
->         feature bpftool                                                 \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
-ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> index 9233210a4c33..3770254d893b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> @@ -11,6 +11,7 @@
->  #include <sys/wait.h>
->  #include "uprobe_syscall.skel.h"
->  #include "uprobe_syscall_call.skel.h"
-> +#include "uprobe_syscall_compat.skel.h"
->
->  __naked unsigned long uretprobe_regs_trigger(void)
->  {
-> @@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
->                  "read_trace_pipe_iter");
->         ASSERT_EQ(found, 0, "found");
->  }
-> +
-> +static void trace_pipe_compat_cb(const char *str, void *data)
-> +{
-> +       if (strstr(str, "uretprobe compat") !=3D NULL)
-> +               (*(int *)data)++;
-> +}
-> +
-> +static void test_uretprobe_compat(void)
-> +{
-> +       struct uprobe_syscall_compat *skel =3D NULL;
-> +       int err, found =3D 0;
-> +
-> +       skel =3D uprobe_syscall_compat__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_load"))
-> +               goto cleanup;
-> +
-> +       err =3D uprobe_syscall_compat__attach(skel);
-> +       if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
-> +               goto cleanup;
-> +
-> +       system("./uprobe_compat");
-> +
-> +       ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, 1000=
-),
-> +                "read_trace_pipe_iter");
+I'm being silly. This is just one of the messages shouting out hotplug
+happened and for that matter only occurs at online anyway which is trivially
+detected.
 
-why so complicated? can't you just set global variable that it was called
+There is a much more informative
+  ACPI: CPU3: has been hot-added message
+for example on the actual hotplug event.
 
-> +       ASSERT_EQ(found, 1, "found");
-> +
-> +cleanup:
-> +       uprobe_syscall_compat__destroy(skel);
-> +}
->  #else
->  static void test_uretprobe_regs_equal(void)
->  {
-> @@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
->  {
->         test__skip();
->  }
-> +
-> +static void test_uretprobe_compat(void)
-> +{
-> +       test__skip();
-> +}
->  #endif
->
->  void test_uprobe_syscall(void)
-> @@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
->  {
->         test_uretprobe_syscall_call();
->  }
-> +
-> +void serial_test_uprobe_syscall_compat(void)
+Let's drop it for v9.
 
-and then no need for serial_test?
+There is also a stale comment about a flag being set that is no longer
+the case that I'll drop.
 
-> +{
-> +       test_uretprobe_compat();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c b/=
-tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> new file mode 100644
-> index 000000000000..f8adde7f08e2
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +SEC("uretprobe.multi/./uprobe_compat:main")
-> +int uretprobe_compat(struct pt_regs *ctx)
-> +{
-> +       bpf_printk("uretprobe compat\n");
-> +       return 0;
-> +}
-> --
-> 2.44.0
->
+> 
+> Jonathan
+> 
+> 
+> > 
+> > Miguel
+> >   
+> > >> 
+> > >> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+> > >> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > >> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > >> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > >> 
+> > >> ---
+> > >> v8: No change
+> > >> ---
+> > >> drivers/acpi/acpi_processor.c   |  1 -
+> > >> drivers/acpi/processor_driver.c | 44 ++++++++++-----------------------
+> > >> include/acpi/processor.h        |  2 +-
+> > >> 3 files changed, 14 insertions(+), 33 deletions(-)
+> > >> 
+> > >> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> > >> index 7a0dd35d62c9..7fc924aeeed0 100644
+> > >> --- a/drivers/acpi/acpi_processor.c
+> > >> +++ b/drivers/acpi/acpi_processor.c
+> > >> @@ -216,7 +216,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> > >> * gets online for the first time.
+> > >> */
+> > >> pr_info("CPU%d has been hot-added\n", pr->id);
+> > >> - pr->flags.need_hotplug_init = 1;
+> > >> 
+> > >> out:
+> > >> cpus_write_unlock();
+> > >> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_driver.c
+> > >> index 67db60eda370..55782eac3ff1 100644
+> > >> --- a/drivers/acpi/processor_driver.c
+> > >> +++ b/drivers/acpi/processor_driver.c
+> > >> @@ -33,7 +33,6 @@ MODULE_AUTHOR("Paul Diefenbaugh");
+> > >> MODULE_DESCRIPTION("ACPI Processor Driver");
+> > >> MODULE_LICENSE("GPL");
+> > >> 
+> > >> -static int acpi_processor_start(struct device *dev);
+> > >> static int acpi_processor_stop(struct device *dev);
+> > >> 
+> > >> static const struct acpi_device_id processor_device_ids[] = {
+> > >> @@ -47,7 +46,6 @@ static struct device_driver acpi_processor_driver = {
+> > >> .name = "processor",
+> > >> .bus = &cpu_subsys,
+> > >> .acpi_match_table = processor_device_ids,
+> > >> - .probe = acpi_processor_start,
+> > >> .remove = acpi_processor_stop,
+> > >> };
+> > >> 
+> > >> @@ -115,12 +113,10 @@ static int acpi_soft_cpu_online(unsigned int cpu)
+> > >> * CPU got physically hotplugged and onlined for the first time:
+> > >> * Initialize missing things.
+> > >> */
+> > >> - if (pr->flags.need_hotplug_init) {
+> > >> + if (!pr->flags.previously_online) {
+> > >> int ret;
+> > >> 
+> > >> - pr_info("Will online and init hotplugged CPU: %d\n",
+> > >> - pr->id);
+> > >> - pr->flags.need_hotplug_init = 0;
+> > >> + pr_info("Will online and init CPU: %d\n", pr->id);
+> > >> ret = __acpi_processor_start(device);
+> > >> WARN(ret, "Failed to start CPU: %d\n", pr->id);
+> > >> } else {
+> > >> @@ -167,9 +163,6 @@ static int __acpi_processor_start(struct acpi_device *device)
+> > >> if (!pr)
+> > >> return -ENODEV;
+> > >> 
+> > >> - if (pr->flags.need_hotplug_init)
+> > >> - return 0;
+> > >> -
+> > >> result = acpi_cppc_processor_probe(pr);
+> > >> if (result && !IS_ENABLED(CONFIG_ACPI_CPU_FREQ_PSS))
+> > >> dev_dbg(&device->dev, "CPPC data invalid or not present\n");
+> > >> @@ -185,32 +178,21 @@ static int __acpi_processor_start(struct acpi_device *device)
+> > >> 
+> > >> status = acpi_install_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
+> > >>    acpi_processor_notify, device);
+> > >> - if (ACPI_SUCCESS(status))
+> > >> - return 0;
+> > >> + if (!ACPI_SUCCESS(status)) {
+> > >> + result = -ENODEV;
+> > >> + goto err_thermal_exit;
+> > >> + }
+> > >> + pr->flags.previously_online = 1;
+> > >> 
+> > >> - result = -ENODEV;
+> > >> - acpi_processor_thermal_exit(pr, device);
+> > >> + return 0;
+> > >> 
+> > >> +err_thermal_exit:
+> > >> + acpi_processor_thermal_exit(pr, device);
+> > >> err_power_exit:
+> > >> acpi_processor_power_exit(pr);
+> > >> return result;
+> > >> }
+> > >> 
+> > >> -static int acpi_processor_start(struct device *dev)
+> > >> -{
+> > >> - struct acpi_device *device = ACPI_COMPANION(dev);
+> > >> - int ret;
+> > >> -
+> > >> - if (!device)
+> > >> - return -ENODEV;
+> > >> -
+> > >> - /* Protect against concurrent CPU hotplug operations */
+> > >> - cpu_hotplug_disable();
+> > >> - ret = __acpi_processor_start(device);
+> > >> - cpu_hotplug_enable();
+> > >> - return ret;
+> > >> -}
+> > >> -
+> > >> static int acpi_processor_stop(struct device *dev)
+> > >> {
+> > >> struct acpi_device *device = ACPI_COMPANION(dev);
+> > >> @@ -279,9 +261,9 @@ static int __init acpi_processor_driver_init(void)
+> > >> if (result < 0)
+> > >> return result;
+> > >> 
+> > >> - result = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+> > >> -   "acpi/cpu-drv:online",
+> > >> -   acpi_soft_cpu_online, NULL);
+> > >> + result = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> > >> +   "acpi/cpu-drv:online",
+> > >> +   acpi_soft_cpu_online, NULL);
+> > >> if (result < 0)
+> > >> goto err;
+> > >> hp_online = result;
+> > >> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
+> > >> index 3f34ebb27525..e6f6074eadbf 100644
+> > >> --- a/include/acpi/processor.h
+> > >> +++ b/include/acpi/processor.h
+> > >> @@ -217,7 +217,7 @@ struct acpi_processor_flags {
+> > >> u8 has_lpi:1;
+> > >> u8 power_setup_done:1;
+> > >> u8 bm_rld_set:1;
+> > >> - u8 need_hotplug_init:1;
+> > >> + u8 previously_online:1;    
+> > > 
+> > > Reviewed-by: Miguel Luis <miguel.luis@oracle.com>
+> > > 
+> > > Miguel
+> > >     
+> > >> };
+> > >> 
+> > >> struct acpi_processor {
+> > >> -- 
+> > >> 2.39.2
+> > >>     
+> > >     
+> >   
+> 
+
 
