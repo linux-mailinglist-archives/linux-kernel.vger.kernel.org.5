@@ -1,179 +1,129 @@
-Return-Path: <linux-kernel+bounces-159788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D2F8B340A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:31:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE9F8B340C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:32:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31B5DB214B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 157CA1C2239C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7732613F00B;
-	Fri, 26 Apr 2024 09:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="MN6p59/z"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2518613F422;
+	Fri, 26 Apr 2024 09:32:07 +0000 (UTC)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE2B13EFF4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8471C02;
+	Fri, 26 Apr 2024 09:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123868; cv=none; b=ZHg1wNcDG9D5a4fBboxKYJxiqSIBcHX+dffE5/v7XK3ggrJGn2X/3lJWEILlg1n2lI7zmBGEC+4+5vG5SoxcJaKIxOhPVKhdi5Af2CGOqa4HDhqiaKgGQhtYK7R/Hu3m60KbjkUjq/MU0X24TsyYR03ZwtNKNqKrYEeKGndIa9k=
+	t=1714123926; cv=none; b=GQ7DSHDZQGXpHk5kwZyuuOvVEUpXFIqf/boL2kS7RjKEnfyVs8lu9ZVyIqudCIbUA5ruPZcsN0PwUsSOBo6D6Rcg4Gf7KX+9cckuvP+BtJz6iQti5ikXY7TLswPP9RscQlxTK8EDGO9nR9KsR0edC+wriOPiNuoFaRRN4cnJRSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123868; c=relaxed/simple;
-	bh=gX6ea/DL3JX3y/Prq+oh9EV/8KjABequtXJpx05mLLA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aGn/ypWY0DzQ2wnJxj0euA1slFdIR8m+w3xEnaxaS+Xs+cFOSol3pa2/axVkWbHwJWYsIuK1gBsF3HTP222g5emd7f3byOY5s9fqVrF2tvpA9tYvrMv26pvrCyQ8OZAxiRdZi/B1pMgNOb44LS0km0d4eCxCwyXFDJqZrfQXJFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=MN6p59/z; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 90E3366B;
-	Fri, 26 Apr 2024 11:30:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1714123809;
-	bh=gX6ea/DL3JX3y/Prq+oh9EV/8KjABequtXJpx05mLLA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MN6p59/zeYwcLR+EbRPnzWBVXPx0wiusejHNikK/yqM3bClvQcJCGlJyQ6q2TB6rh
-	 q432bUMQdaOqthrPmsCxsrRXsnFVVJ0sFC2EpZ1K3qxMjGDhjBkEgl9Ong9p/UWGr8
-	 g6Hv3D/TmJAsoO42hb4EldVFthGPD6m4gysv8AJ8=
-Date: Fri, 26 Apr 2024 12:30:53 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Sean Anderson <sean.anderson@linux.dev>,
-	linux-arm-kernel@lists.infradead.org,
-	Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	dri-devel@lists.freedesktop.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH] drm: zynqmp_dpsub: Always register bridge
-Message-ID: <20240426093053.GB4524@pendragon.ideasonboard.com>
-References: <20240308204741.3631919-1-sean.anderson@linux.dev>
- <222c0245-b8bc-48d8-b4e1-a9fb276774ae@ideasonboard.com>
+	s=arc-20240116; t=1714123926; c=relaxed/simple;
+	bh=rWF4T1ptwSPqA7KfHBNu5E0FUQmnrOyU/QxzFxfeU0E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rgh1OQXlJaWmBKrc3RL60algPvEtfnDCLhj9TVWV0MrJZ3cxHxtsVaP/37hlTvH5tm9qpdS9+zRPch4DvRouNtF2DA9uYh+N5OzK4fVYnrhH/dbxICw5MMYeAnBcTFTLoqFZssvYjRhjl/hUe4rDtC99qjLaHjuUgcwGqnGx6Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-572229f196cso2268297a12.2;
+        Fri, 26 Apr 2024 02:32:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714123923; x=1714728723;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8gBPNnUV2Yn9Is2h8W1Y2Sei5FTqscCR/HpPNQnVetk=;
+        b=Y02dI7QcjHStm87Ep2hhhx9VrV+rf6qAPitzHCNTBmt+WuXTPOQxAUDb//sdgyzTEF
+         UnsDERmnQa+ZJRaqiC3wLIvvtA2OvAWLsYwitYjO9wAWTbnqC49pzxb71d0ooLEqreJc
+         IfmwmIOMzbr4nQrwJ92eiGtoOWKWrEqU36ZXmr/sMDyK5zVOC41B/bOZv3O+EEET70Ck
+         JB9OcAwTWVMHEb+Egtf1Tbp4C+6LQqWwz5UMofkw5yL0X+JMrhwRwKnBg/xNPwsFj/w3
+         i/TNS8VrYLWgx7bwabdqiNfDC+/y//+Vr8AhE+H0dfch3Sd+WkrJs82rUf5u6fjb8Cbz
+         VpPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFHKA4jMDKmeLcKDN/c0UVSYc5BTGgwPULNbiTljYtt5+GzMzxeU88Mb6SEz9tzadRdvfgqQN3em/4iKuySZCZz3PVSzie1hOfAVhV
+X-Gm-Message-State: AOJu0YzrYCJPLoXtwWB5FSfJoZgPNA9M2nUh9aAONXm3fEpYmzke8iFh
+	Mt8RfY/4gsdy6zc16VB1t20xZvRylMdPwCKvHwP7eKA3VQfcJ+fK
+X-Google-Smtp-Source: AGHT+IGjErk/3ApxpRPSTqyt/IYR+02NI5iRozuFmjFtbV2BdHu34uBHIEzirvS3Cd+uFy76rSRa8w==
+X-Received: by 2002:a05:6402:229a:b0:572:5f53:816f with SMTP id cw26-20020a056402229a00b005725f53816fmr18669edb.37.1714123923193;
+        Fri, 26 Apr 2024 02:32:03 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cn18-20020a0564020cb200b00571bfc97b79sm9535631edb.55.2024.04.26.02.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 02:32:02 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kvalo@kernel.org,
+	Igor Mitsyanko <imitsyanko@quantenna.com>,
+	Sergey Matyukevich <geomatsi@gmail.com>
+Cc: linux-wireless@vger.kernel.org,
+	kuba@kernel.org,
+	Johannes Berg <johannes.berg@intel.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH wireless 1/2] wifi: qtnfmac: Move stats allocation to core
+Date: Fri, 26 Apr 2024 02:31:48 -0700
+Message-ID: <20240426093156.2002258-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <222c0245-b8bc-48d8-b4e1-a9fb276774ae@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 08:01:44AM +0200, Tomi Valkeinen wrote:
-> On 08/03/2024 22:47, Sean Anderson wrote:
-> > We must always register the DRM bridge, since zynqmp_dp_hpd_work_func
-> > calls drm_bridge_hpd_notify, which in turn expects hpd_mutex to be
-> > initialized. We do this before zynqmp_dpsub_drm_init since that calls
-> > drm_bridge_attach. This fixes the following lockdep warning:
-> > 
-> > [   19.217084] ------------[ cut here ]------------
-> > [   19.227530] DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-> > [   19.227768] WARNING: CPU: 0 PID: 140 at kernel/locking/mutex.c:582 __mutex_lock+0x4bc/0x550
-> > [   19.241696] Modules linked in:
-> > [   19.244937] CPU: 0 PID: 140 Comm: kworker/0:4 Not tainted 6.6.20+ #96
-> > [   19.252046] Hardware name: xlnx,zynqmp (DT)
-> > [   19.256421] Workqueue: events zynqmp_dp_hpd_work_func
-> > [   19.261795] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > [   19.269104] pc : __mutex_lock+0x4bc/0x550
-> > [   19.273364] lr : __mutex_lock+0x4bc/0x550
-> > [   19.277592] sp : ffffffc085c5bbe0
-> > [   19.281066] x29: ffffffc085c5bbe0 x28: 0000000000000000 x27: ffffff88009417f8
-> > [   19.288624] x26: ffffff8800941788 x25: ffffff8800020008 x24: ffffffc082aa3000
-> > [   19.296227] x23: ffffffc080d90e3c x22: 0000000000000002 x21: 0000000000000000
-> > [   19.303744] x20: 0000000000000000 x19: ffffff88002f5210 x18: 0000000000000000
-> > [   19.311295] x17: 6c707369642e3030 x16: 3030613464662072 x15: 0720072007200720
-> > [   19.318922] x14: 0000000000000000 x13: 284e4f5f4e524157 x12: 0000000000000001
-> > [   19.326442] x11: 0001ffc085c5b940 x10: 0001ff88003f388b x9 : 0001ff88003f3888
-> > [   19.334003] x8 : 0001ff88003f3888 x7 : 0000000000000000 x6 : 0000000000000000
-> > [   19.341537] x5 : 0000000000000000 x4 : 0000000000001668 x3 : 0000000000000000
-> > [   19.349054] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffffff88003f3880
-> > [   19.356581] Call trace:
-> > [   19.359160]  __mutex_lock+0x4bc/0x550
-> > [   19.363032]  mutex_lock_nested+0x24/0x30
-> > [   19.367187]  drm_bridge_hpd_notify+0x2c/0x6c
-> > [   19.371698]  zynqmp_dp_hpd_work_func+0x44/0x54
-> > [   19.376364]  process_one_work+0x3ac/0x988
-> > [   19.380660]  worker_thread+0x398/0x694
-> > [   19.384736]  kthread+0x1bc/0x1c0
-> > [   19.388241]  ret_from_fork+0x10/0x20
-> > [   19.392031] irq event stamp: 183
-> > [   19.395450] hardirqs last  enabled at (183): [<ffffffc0800b9278>] finish_task_switch.isra.0+0xa8/0x2d4
-> > [   19.405140] hardirqs last disabled at (182): [<ffffffc081ad3754>] __schedule+0x714/0xd04
-> > [   19.413612] softirqs last  enabled at (114): [<ffffffc080133de8>] srcu_invoke_callbacks+0x158/0x23c
-> > [   19.423128] softirqs last disabled at (110): [<ffffffc080133de8>] srcu_invoke_callbacks+0x158/0x23c
-> > [   19.432614] ---[ end trace 0000000000000000 ]---
-> > 
-> > Fixes: eb2d64bfcc17 ("drm: xlnx: zynqmp_dpsub: Report HPD through the bridge")
-> > Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> > ---
-> > 
-> >   drivers/gpu/drm/xlnx/zynqmp_dpsub.c | 6 ++----
-> >   1 file changed, 2 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
-> > index 88eb33acd5f0..639fff2c693f 100644
-> > --- a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
-> > +++ b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
-> > @@ -256,12 +256,11 @@ static int zynqmp_dpsub_probe(struct platform_device *pdev)
-> >   	if (ret)
-> >   		goto err_dp;
-> >   
-> > +	drm_bridge_add(dpsub->bridge);
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core instead
+of this driver.
 
-A blank line here would be nice.
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-> >   	if (dpsub->dma_enabled) {
-> >   		ret = zynqmp_dpsub_drm_init(dpsub);
-> >   		if (ret)
-> >   			goto err_disp;
-> > -	} else {
-> > -		drm_bridge_add(dpsub->bridge);
-> >   	}
-> >   
-> >   	dev_info(&pdev->dev, "ZynqMP DisplayPort Subsystem driver probed");
-> > @@ -288,9 +287,8 @@ static void zynqmp_dpsub_remove(struct platform_device *pdev)
-> >   
-> >   	if (dpsub->drm)
-> >   		zynqmp_dpsub_drm_cleanup(dpsub);
-> > -	else
-> > -		drm_bridge_remove(dpsub->bridge);
-> >   
-> > +	drm_bridge_remove(dpsub->bridge);
-> >   	zynqmp_disp_remove(dpsub);
-> >   	zynqmp_dp_remove(dpsub);
-> >   
-> 
-> I sent a similar patch:
-> 
-> https://lore.kernel.org/all/20240312-xilinx-dp-lock-fix-v1-1-1698f9f03bac@ideasonboard.com/
-> 
-> I have the drm_bridge_add() call in zynqmp_dp_probe(), as that's where 
-> the bridge is set up, so it felt like a logical place. You add it later, 
-> just before the bridge is used the first time.
-> 
-> I like mine a bit more as it has all the bridge code in the same place, 
-> but I also wonder if there might be some risks in adding the bridge 
-> early (before zynqmp_disp_probe()), although I can't see any issue right 
-> away...
+Move qtnfmac driver to leverage the core allocation.
 
-Seems we have the same concerns :-) I've reviewed your patch and wrote
-pretty much the same. I would be more comfortable with this version,
-even if I like gathering all bridge code in the same location.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/wireless/quantenna/qtnfmac/core.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
-> In any case, as this works for me too:
-> 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+PS: This is compile-tested only due to lack of hardware.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/core.c b/drivers/net/wireless/quantenna/qtnfmac/core.c
+index 677bac835330..0aa4b1d14809 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/core.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/core.c
+@@ -196,22 +196,8 @@ static int qtnf_netdev_port_parent_id(struct net_device *ndev,
+ 	return 0;
+ }
+ 
+-static int qtnf_netdev_alloc_pcpu_stats(struct net_device *dev)
+-{
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-
+-	return dev->tstats ? 0 : -ENOMEM;
+-}
+-
+-static void qtnf_netdev_free_pcpu_stats(struct net_device *dev)
+-{
+-	free_percpu(dev->tstats);
+-}
+-
+ /* Network device ops handlers */
+ const struct net_device_ops qtnf_netdev_ops = {
+-	.ndo_init = qtnf_netdev_alloc_pcpu_stats,
+-	.ndo_uninit = qtnf_netdev_free_pcpu_stats,
+ 	.ndo_open = qtnf_netdev_open,
+ 	.ndo_stop = qtnf_netdev_close,
+ 	.ndo_start_xmit = qtnf_netdev_hard_start_xmit,
+@@ -483,6 +469,7 @@ int qtnf_core_net_attach(struct qtnf_wmac *mac, struct qtnf_vif *vif,
+ 	dev->watchdog_timeo = QTNF_DEF_WDOG_TIMEOUT;
+ 	dev->tx_queue_len = 100;
+ 	dev->ethtool_ops = &qtnf_ethtool_ops;
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 
+ 	if (qtnf_hwcap_is_set(&mac->bus->hw_info, QLINK_HW_CAPAB_HW_BRIDGE))
+ 		dev->needed_tailroom = sizeof(struct qtnf_frame_meta_info);
 -- 
-Regards,
+2.43.0
 
-Laurent Pinchart
 
