@@ -1,246 +1,309 @@
-Return-Path: <linux-kernel+bounces-159427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 762678B2E77
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D9A8B2E7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:56:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6472F1C21EFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:51:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A2611C222B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F831869;
-	Fri, 26 Apr 2024 01:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24BD17EF;
+	Fri, 26 Apr 2024 01:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bX9vhyII"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="F9wveOoF"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2064.outbound.protection.outlook.com [40.107.212.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF23CEDB;
-	Fri, 26 Apr 2024 01:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714096259; cv=none; b=XeLE5LcoIrOC2uC1BWt5Bm/cEsh60dprua10ueoL6M37pZlL0OZ2pAla1iAXy/socdCDiEaaYalAIKF5ISxlj3MFgBl8YIeI6ToMtq3+OFT9CtTkgc/D1bJpK5zfHS8UJzvdiz2pzprb1BW3BHXdDf5HkEs2xnIR7z5j24CKnOI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714096259; c=relaxed/simple;
-	bh=DijMBJtYKcTn6lyH2aQ4zK9TawYHl4zqY8ibfMGuNyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jWNvtCRhtVcPYmoOhITMhk8y7IxZIbVg9hUWLyD80xqVzh1iCq1L6YQonblOAgd2lfWV6RWiIx/AzB9txa0XCN9PjySFP3LuR++Ki1ULW3bppJ9m0/etcaxwY5VES5B+6n6bPvbFsfuc0DGPGceC/I7C6cfqL2bDp7BXlJCxVQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bX9vhyII; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714096258; x=1745632258;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=DijMBJtYKcTn6lyH2aQ4zK9TawYHl4zqY8ibfMGuNyk=;
-  b=bX9vhyIIMCekUSwDR8J7dFTwOWjAS4tTX5dj/0fbHu+BNoh69bhUJpb9
-   1Th3r9q2MNCPSuGPDVysrPogfa6+tYdGSf2LjOTb8mfP1QGcHXmJvyIlF
-   iPNcCmFIbLB/yIGmtQE8/NAnbB0uixlXgik0uWP6NfB4iZPunF33CsECB
-   qNp7mD6SwvFcSK8RFfZdgFf9TOElUB0tLvjHMh5zX5rvL9f+j/0JAAzWm
-   0Y93yDL4c6To8CxWg5zCaIfEZOrsg1tMDaIHYJhqai19DwkyK1ICZs9Rk
-   F0Pzu5Bk6oAK6TNMYUGAxmZ4LbgTYt1xY9YETfydvPL6zQBJyElhszAdq
-   Q==;
-X-CSE-ConnectionGUID: Ni/C6H25SjCEfeNKZI0uXA==
-X-CSE-MsgGUID: b0eTb74LT66ptS6+mM7+SQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20971487"
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="20971487"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 18:50:58 -0700
-X-CSE-ConnectionGUID: MTU6OKoQS4S2S6UHyXUw5Q==
-X-CSE-MsgGUID: oRNlyLgbTtukzca/wMPQZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="25360434"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 18:50:52 -0700
-Message-ID: <bebdafb8-387c-4984-885a-8b22f2d9b9f5@linux.intel.com>
-Date: Fri, 26 Apr 2024 09:50:50 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8C6812
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714096561; cv=fail; b=WMUgrqkz6gi4HVHPsFjx4wPZ/9p0eXwkh+9p1vqgOubYzu0aCE7hm5aHjTOqsRzfEd2aCr+dFzvW7o3OvqJvIAkans7hpko7pis09aSieGxeDK8l6XHco16HZfccgvMA1RPZpqxv9jZxQQZaCHsKkftXRs5CboZJ/nz80NKIN2k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714096561; c=relaxed/simple;
+	bh=wQ7SiuBhIG1PMCCQORf3a2qXjDi/PsOmB1og7E537eQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mTV0CTJqPOrPJSCuBfvPUqXgTzr6gAbT1MrYPZAyoQhvI/Y0e6TSprXUm+kGPwuvTtyAp0DxUAv9MbS0l/idB7mvWZzMIAqfbp94jLqBlzlu/7AlT+vhvthjwIpJVw4sibpm61CJELmtj8mFbmNAMd1Gp15muT8BA1/cRtX3EZA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=F9wveOoF; arc=fail smtp.client-ip=40.107.212.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c84Ssbd4dVYpQUyv7HVwoPh3caSMZFpfycWeulEaSYKdT2rRqATqoiGnDTBqnL8mBJkfj/w9INq2Lxoha4slCuey5UdChBVIEs/0s6zZBod9tlLZhB2aw4cB5YDd6FrxZxpi7BTwRWRv1qnGfvLdBxwpYCN5ef7eB0MT5DnrsnLrkyyiTZRffLQwdjyZS2Ek/RhcEgACKDYwzHmfCzclyYMJlCxlhXQkgdzcjdxZGVXL49TFoXJwN6fDjO27pc7C030PF6rUDd0AeRWwPuKga6KGNhuS8KeeLqklZVizqKC/t3Zupm3ZNSUsRbjpuUxPi6ui2bDZZ1CxrsRHVXcmsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8Vu9cmUIJWS7bftCA0L6/+xe6dpq9Dc82pGuc8T56XI=;
+ b=JpogxaQT9Z69amrmHfiOn63CyWl+tXg736rr7IUb93pnwLWbwOOx77vjwrwyxHwIofLqovtGV7RXgAO2Gq267DSnuek0TtmAum0EWJY1tP6U6fHpJQgT/FHBk1BDPgcP6h4MNpxNZW1jYCFj9h8f56uPt0u+XHwAQdlC4rKIkf5RPJOlUrW/Uk5VeSl4fnjXu2VZAR4co+T5PVy/b73iIe4ogEAMG1AFUNf3x6CSy5vBsWcal3Ajj6miEkF+W/F+BrWJ4nzYwFEiuOk2GqXnhqd9Hovy43/VLdkLgxBhYJUEurS1xZz6GCq1+i7IZE6VNo/SDG35drZ3jHP2o5JVsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Vu9cmUIJWS7bftCA0L6/+xe6dpq9Dc82pGuc8T56XI=;
+ b=F9wveOoFDzccUH+2VC5A6ZUWs80U8qUtnBxD2LnnOVcid8x50TvLSg7V7lY7u8K/DRyIDJsYSKipzMPLBqdVNy4ysuvljYuKCrXtBwACDqqOYoEnlgd+BOVuPtLXzPmHmBPmnxXh1zCuZTrTXLJ9s7VP35UcQ7fzUuTd0TXSv5jqfFFPox3NZoSRmpHuFJrZ2zs5+xtd6rXBP5p/P5NZGTQXNM58yDd/fXsJ5ihTFo64pUad1qVcIitLSZrluZGy98GIQJLaF2K29UOV0o9ZHhpcn9a3uFTBsl2xTbPmhKJoKfwqBoUjQlUx/QVnr+rHiff39sBdrnFVzSEncH6pmg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ IA1PR12MB6236.namprd12.prod.outlook.com (2603:10b6:208:3e4::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 01:55:56 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
+ 01:55:56 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+Date: Thu, 25 Apr 2024 21:55:53 -0400
+X-Mailer: MailMate (1.14r6030)
+Message-ID: <6C31DF81-94FB-4D09-A3B8-0CED2AD8EDDB@nvidia.com>
+In-Reply-To: <CAGsJ_4wa0LskQkoZf9r5bG5+wEkyfCYveMBSTbuDe0=t1QetTg@mail.gmail.com>
+References: <20240425211136.486184-1-zi.yan@sent.com>
+ <CAGsJ_4wa0LskQkoZf9r5bG5+wEkyfCYveMBSTbuDe0=t1QetTg@mail.gmail.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_5B2280AB-7499-4B5A-95DA-0149144A2252_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR06CA0007.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::12) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: "Liang, Kan" <kan.liang@linux.intel.com>,
- Mingwei Zhang <mizhang@google.com>
-Cc: Sean Christopherson <seanjc@google.com>, maobibo <maobibo@loongson.cn>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <ZiaX3H3YfrVh50cs@google.com>
- <d8f3497b-9f63-e30e-0c63-253908d40ac2@loongson.cn>
- <d980dd10-e4c4-4774-b107-77b320cec9f9@linux.intel.com>
- <b5e97aa1-7683-4eff-e1e3-58ac98a8d719@loongson.cn>
- <1ec7a21c-71d0-4f3e-9fa3-3de8ca0f7315@linux.intel.com>
- <5279eabc-ca46-ee1b-b80d-9a511ba90a36@loongson.cn>
- <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
- <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
- <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
- <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
- <Zikeh2eGjwzDbytu@google.com>
- <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
- <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
- <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
- <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
- <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|IA1PR12MB6236:EE_
+X-MS-Office365-Filtering-Correlation-Id: a8c5db43-c686-4fe8-b59d-08dc6594033e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RWtIQlFqSU4rNXI3bGtEdWt2anM0RFhuNnAwV3FuMG03ZW1nTXljTHRNVlA5?=
+ =?utf-8?B?ajFkRUpWUUgrd0Q2dE45S2dTRkFuYmc1SFFZcDNWSUFzaUpyeU9kbnZIRDc3?=
+ =?utf-8?B?MEx3Z2xhdkxscWpkYTYyNXd4aHJkKzUvMkN3Yk15akVSbWN1RUV6QXFBR0tl?=
+ =?utf-8?B?b1dUdDg4Ri9VdUtNM2hvYTZnYjNIL2lGbElDWE1wcXYrUzNIOFhjekg3OE5E?=
+ =?utf-8?B?SXhSaDl5eGFjdDJ6VVhoWU90aEJMcW5KZUFWdFJFRkhiZEJsU2pLTjJRSnd5?=
+ =?utf-8?B?UUkyRnoyNVkyOGtReE9PMUZ3T3JjUHBKR3Vrc0NaVWxxb3Z0YzhLSTZPT3dM?=
+ =?utf-8?B?YXVYbzJtbWM0Uk00VTdUZmFYQnBOaVhiM1hjWU0yUmRzV29lWERTVGdBZ0Fz?=
+ =?utf-8?B?TlBSSkVlUmhwMzdSRnAyanoxY0dHU0lMN3VOYVJOZlY0Q0JxZWtLSzgrRWlY?=
+ =?utf-8?B?WitHK1FxcVEwL0ZvN2N1U0t2ZkFMQ3Y2VExiRnVvR2dZNlVPYTYrS1A3Uktn?=
+ =?utf-8?B?QTFwblJlL0RzWmJSS3JRenArTjRTRkpVVFcxYUd4SW5rVmJqZWdHVk5MM1g3?=
+ =?utf-8?B?Y2IxeHdXeldvUmhjbGlraHlWdkprbU5aUDIzYlJENGpHREhiTUgwMTlpYWtp?=
+ =?utf-8?B?STh5ODd3MU9QWkxJZTdYVVROMThIck1UVksyTG9KSnNkWU9pRGlOOVFZZ1hT?=
+ =?utf-8?B?OStWdGN1WGxCNGJUZEE0MnFkaW40MjJ6dmdWem5rY0o4bWxPMGZKcTFXa25X?=
+ =?utf-8?B?Q0E5dklScjdzSWEramQ1ZGVLc1lhdTdwTGFxb3RKRWJlQlBTeU40RXJpUnZu?=
+ =?utf-8?B?VzFHZkMxczNsRGFOVUNtVjQxWUhyRGQrZDZ4bldYOWZRVWFnL21QQTlGaHE3?=
+ =?utf-8?B?b1dNR3RCcVA3MnZmVWZFSzZEeTJ3eGM5cW9PWkZjZHBBcWNxNnk4dWpNVnBP?=
+ =?utf-8?B?QVFvdGxMZUVFTjlBZXozdVI3bHRTZXRKdENLenBoQzFKdkVtTmE3TnFYc3ZX?=
+ =?utf-8?B?MWw5Zk50NWVQcHpqNWFBVHEzNVl2aUpiYlZHOXBRMmo5RytpbUpIRzY5OWcx?=
+ =?utf-8?B?d0lPenRmdHRyRmJLTStUYXprNGFJVWRqRldOaDBRdkpxSzNBZ3RpTW5kbUJJ?=
+ =?utf-8?B?UFVnYjdkVnFTczc5N2ZBN2NyUmtpdXJqL29CWkcra1o0QkZpbzJucFUwZmJJ?=
+ =?utf-8?B?V0dONkpmQ09iOVdwc1NoRC9uSCt0SjVnaEYxMm1RdFlpd0VLS1Ava2tIeHYz?=
+ =?utf-8?B?cmZhRHcrTGx1Zm9SNDliRWlHdmtJNW5yRXpVTjE0NENFT2twa1VwcEZZOUlG?=
+ =?utf-8?B?T2d3TWtmREZYZlBlMmJjRG1nYVFMUGhnQWl0TlJBb20yN0tLak9kazZWWVd5?=
+ =?utf-8?B?Y29BdnJCRm5hMFFiV04yV2RMeFZpRDdibkpCeERpMnR4VmVzMVY2K0VaUnov?=
+ =?utf-8?B?ZXB1bmcrUHZmZ2h1ZWRJa3B2c1M4S0xKZXJST09vbFJrSGtvN1ZJellnQTl6?=
+ =?utf-8?B?RTZYTlhUSzVldTA4YnFIQ0VqendjdTR5aThRT0d2L0RqaTl3YlE2UHEyanZy?=
+ =?utf-8?B?S2h6L3l3bTJMRCtnZWcraHhqNGdUOU1oWlZPclg0VmZqL0Y1T3NmQUxZNm5K?=
+ =?utf-8?B?aThlRWoxeExmVDVkeTdadjRZMy9mVXQwdmtuR05HQlQwMjJjZ3B1clpNRm83?=
+ =?utf-8?B?VTJtaVU2NURQQTR0UGtPcExoWkRSSitpbmNSejdlcWFkTWJ4RHVLZDZ3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cHpuRmlkT2dzbjE1R3JJQU5KTGdzMm43SktwUEltNTI0aUZNdzRPVkVaWlQr?=
+ =?utf-8?B?Njh1N296by84RjFTUVpka1dqWThDeVJxVXN1WE5VYXlxVFF3OUJjNk90eEt5?=
+ =?utf-8?B?YmVMTDFFWVZkdWxFL3l0WTAzcGFQcTlIaEs4aDNnSVNNUmxsMHpRcVpFUWZm?=
+ =?utf-8?B?QUU2czEyTnZBVFU1N0ZuYTJDTXNsZVF6USsyVTc2aklVeDNWaDUwM1VWR0dD?=
+ =?utf-8?B?YUNwcFpyNTh5RHZKRGxyVUxtbVpaK2NnUWdpUnVhTDR4RXFKRWV4YUNkZHlj?=
+ =?utf-8?B?RmMyb2FtSTZvOGhQbHY2SGU5V2k0cFg4bWtJZVQ4bnRJM1FXalFwUkpHQWU2?=
+ =?utf-8?B?bGpRTGI2aDMxY0ZmcWVaVCs4YXZsRlVzbnRiQTNvN25xaVA4a1A0N0xnTnpG?=
+ =?utf-8?B?d1ZTbWlraFE1NURWeXVOdmNEYXUyRW9kdDJrcUkzQlFNSEUzajNoZmFZTHVH?=
+ =?utf-8?B?RG0vQ2ZIQ0VBcmo2RGY4NldiZlF5YnhhSUhCR283dUROVHFpQlc0K0loeVpy?=
+ =?utf-8?B?VFBjUkVicitQVmc3MG1NNStjZ2l1RU1JYldHZmQ2RkkzMnFuWXd1RWpHYms4?=
+ =?utf-8?B?VFFTeDZMR2V6eUtadWR5YkxOZ2ZUbDcvVGYrd2tUeENTZVVkbitqUXFRTUdy?=
+ =?utf-8?B?OTQzTG84Y1ZVZ1VSeXhlQXIrenZ5b2hxSktJNTRrcjJKdHNseUhIK1RGclJX?=
+ =?utf-8?B?cVZCZ0orREI3QzVOSldvalBETUhFbTFQMGF6K1FiWGN5eTlpS3dOREtBMWtj?=
+ =?utf-8?B?Tkg0U2xBN2VmZHIxRzU3dk1mOEYxb3NQc3RkU3F4alJyZ3RGS3BVaFlwS2pa?=
+ =?utf-8?B?ODRqQUJVMW9SODhBanFPRi8wTGNrRVVReElWN0dtN1ZrbVNBNXd4QnpvYmdt?=
+ =?utf-8?B?UnMxNHg4Z1pOc3ZtRlh6b2tTVjA1aUpFQW1xSlA2OU1xd3NjWjN4Mk9aamVj?=
+ =?utf-8?B?V2ZPTkR4M1ZQemU2NUF5MllrdnF1M3E3K2Q1T044QnVLV2lwUGZ6OWJXelRL?=
+ =?utf-8?B?YlRJeFJISW9FYmI3cmlYS3VIMGw0eUpIaG9xZkV5Z21GSjQ3dHdLVDNhN1Nr?=
+ =?utf-8?B?cklHVlBZam5WaDZobVlvMVNnUnhDK3c2Q2RtZ2VWdU16SUR4RnVCa1c4U2pi?=
+ =?utf-8?B?WENjT0FJRUlQa2w0d0RJWFp2QUFPY0R0R1o3eUI3dk5XSTZoMlFKTzRFdk9s?=
+ =?utf-8?B?clRPeVd6TlY4NFNnc3l0MWtUMnNxRXo2cVltcDUwazZkcGEvQmg2UmJxbGs3?=
+ =?utf-8?B?ejF0L2lISHNZdzV6M3ZDK2lwQmhXdjY0SjhMcitQRzJSTytJTEtLNEUyUjB3?=
+ =?utf-8?B?MlFJU1VZQjdEMVNLWlJlUWp4bCtkWVdpTGo5amt3dzJzbDFHUWZIRjZUZ0E4?=
+ =?utf-8?B?MDN5d3lUSG0wZHFuNE5FQjU3ZGFBMFliSWNXZXJpSDE4dWdIRkxqbk1tUFk4?=
+ =?utf-8?B?WFJ1N1o4Tk1xOGwyUE9wODBMQnE5Mld2QUxjSSsvQ3hCTlhxTE5BN2R4Q3Jn?=
+ =?utf-8?B?VWhlcnNhanNiMVNreVQxbnlndzQyZmwvcGFmcTdUQWJqb2Rxck1DZDlTY0NP?=
+ =?utf-8?B?Tk1UektYSHVTVDhrYnRXTnRJeFBQT3RiR1R1eGlWQ1RUWkJXRVJNWnZLMytH?=
+ =?utf-8?B?ZjZZL3VwQ1k4R0pVZ3pTUko0R3p3SXZsV0ZnV0VXL1oyWkFPaG5hVkxrc2RV?=
+ =?utf-8?B?dlNEN1dnbTYwT3kzTk4valMyRjUyUUFwT2doSHlFLzJROTI0RzdvVFIyRGtI?=
+ =?utf-8?B?MXNZTktFeG5GbFRGT3A0c1h5ZzNWRmRSNFhrOTg2QnY4SnZvMGFXSGdMd2Mx?=
+ =?utf-8?B?OGFod0xJcHJYZ05qSnpQY3dCZ3Exd3NKZXl6WFBwYkkzeW02SGY1QWJIVkpC?=
+ =?utf-8?B?YmdpaEdtd3ZJNkxrdU9wdHZaOUF0aG9LT0lKRnJ0YXRJWGFxWlhNMGZHQWU3?=
+ =?utf-8?B?NWJhRUdzYlBNNXBGYzFoUGlqUTVuc2pEVGxYU1N1L1dPK2o2R1k0cWZ2S3Nv?=
+ =?utf-8?B?T3BEaENDS1RHR3pNMG1rTEg4djRpSm1XRko5enlDbUphd3FWN0ZTOEV6NWIz?=
+ =?utf-8?B?V29CNHFuSWVianpFOFNOU1NHSGZabWRmNFloUWZLWGRrdkdqT1FpOEpPcEZB?=
+ =?utf-8?Q?EDak=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8c5db43-c686-4fe8-b59d-08dc6594033e
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 01:55:56.4767
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ryK0p1Kzz2iZYPs3NtWR15ThkNxPIWcPudMy80xQMnOzXXhnJoDn7/t1XE+F6xmj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6236
 
+--=_MailMate_5B2280AB-7499-4B5A-95DA-0149144A2252_=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/26/2024 4:43 AM, Liang, Kan wrote:
->
-> On 2024-04-25 4:16 p.m., Mingwei Zhang wrote:
->> On Thu, Apr 25, 2024 at 9:13 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>>
->>>
->>> On 2024-04-25 12:24 a.m., Mingwei Zhang wrote:
->>>> On Wed, Apr 24, 2024 at 8:56 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
->>>>>
->>>>> On 4/24/2024 11:00 PM, Sean Christopherson wrote:
->>>>>> On Wed, Apr 24, 2024, Dapeng Mi wrote:
->>>>>>> On 4/24/2024 1:02 AM, Mingwei Zhang wrote:
->>>>>>>>>> Maybe, (just maybe), it is possible to do PMU context switch at vcpu
->>>>>>>>>> boundary normally, but doing it at VM Enter/Exit boundary when host is
->>>>>>>>>> profiling KVM kernel module. So, dynamically adjusting PMU context
->>>>>>>>>> switch location could be an option.
->>>>>>>>> If there are two VMs with pmu enabled both, however host PMU is not
->>>>>>>>> enabled. PMU context switch should be done in vcpu thread sched-out path.
->>>>>>>>>
->>>>>>>>> If host pmu is used also, we can choose whether PMU switch should be
->>>>>>>>> done in vm exit path or vcpu thread sched-out path.
->>>>>>>>>
->>>>>>>> host PMU is always enabled, ie., Linux currently does not support KVM
->>>>>>>> PMU running standalone. I guess what you mean is there are no active
->>>>>>>> perf_events on the host side. Allowing a PMU context switch drifting
->>>>>>>> from vm-enter/exit boundary to vcpu loop boundary by checking host
->>>>>>>> side events might be a good option. We can keep the discussion, but I
->>>>>>>> won't propose that in v2.
->>>>>>> I suspect if it's really doable to do this deferring. This still makes host
->>>>>>> lose the most of capability to profile KVM. Per my understanding, most of
->>>>>>> KVM overhead happens in the vcpu loop, exactly speaking in VM-exit handling.
->>>>>>> We have no idea when host want to create perf event to profile KVM, it could
->>>>>>> be at any time.
->>>>>> No, the idea is that KVM will load host PMU state asap, but only when host PMU
->>>>>> state actually needs to be loaded, i.e. only when there are relevant host events.
->>>>>>
->>>>>> If there are no host perf events, KVM keeps guest PMU state loaded for the entire
->>>>>> KVM_RUN loop, i.e. provides optimal behavior for the guest.  But if a host perf
->>>>>> events exists (or comes along), the KVM context switches PMU at VM-Enter/VM-Exit,
->>>>>> i.e. lets the host profile almost all of KVM, at the cost of a degraded experience
->>>>>> for the guest while host perf events are active.
->>>>> I see. So KVM needs to provide a callback which needs to be called in
->>>>> the IPI handler. The KVM callback needs to be called to switch PMU state
->>>>> before perf really enabling host event and touching PMU MSRs. And only
->>>>> the perf event with exclude_guest attribute is allowed to create on
->>>>> host. Thanks.
->>>> Do we really need a KVM callback? I think that is one option.
->>>>
->>>> Immediately after VMEXIT, KVM will check whether there are "host perf
->>>> events". If so, do the PMU context switch immediately. Otherwise, keep
->>>> deferring the context switch to the end of vPMU loop.
->>>>
->>>> Detecting if there are "host perf events" would be interesting. The
->>>> "host perf events" refer to the perf_events on the host that are
->>>> active and assigned with HW counters and that are saved when context
->>>> switching to the guest PMU. I think getting those events could be done
->>>> by fetching the bitmaps in cpuc.
->>> The cpuc is ARCH specific structure. I don't think it can be get in the
->>> generic code. You probably have to implement ARCH specific functions to
->>> fetch the bitmaps. It probably won't worth it.
->>>
->>> You may check the pinned_groups and flexible_groups to understand if
->>> there are host perf events which may be scheduled when VM-exit. But it
->>> will not tell the idx of the counters which can only be got when the
->>> host event is really scheduled.
->>>
->>>> I have to look into the details. But
->>>> at the time of VMEXIT, kvm should already have that information, so it
->>>> can immediately decide whether to do the PMU context switch or not.
->>>>
->>>> oh, but when the control is executing within the run loop, a
->>>> host-level profiling starts, say 'perf record -a ...', it will
->>>> generate an IPI to all CPUs. Maybe that's when we need a callback so
->>>> the KVM guest PMU context gets preempted for the host-level profiling.
->>>> Gah..
->>>>
->>>> hmm, not a fan of that. That means the host can poke the guest PMU
->>>> context at any time and cause higher overhead. But I admit it is much
->>>> better than the current approach.
->>>>
->>>> The only thing is that: any command like 'perf record/stat -a' shot in
->>>> dark corners of the host can preempt guest PMUs of _all_ running VMs.
->>>> So, to alleviate that, maybe a module parameter that disables this
->>>> "preemption" is possible? This should fit scenarios where we don't
->>>> want guest PMU to be preempted outside of the vCPU loop?
->>>>
->>> It should not happen. For the current implementation, perf rejects all
->>> the !exclude_guest system-wide event creation if a guest with the vPMU
->>> is running.
->>> However, it's possible to create an exclude_guest system-wide event at
->>> any time. KVM cannot use the information from the VM-entry to decide if
->>> there will be active perf events in the VM-exit.
->> Hmm, why not? If there is any exclude_guest system-wide event,
->> perf_guest_enter() can return something to tell KVM "hey, some active
->> host events are swapped out. they are originally in counter #2 and
->> #3". If so, at the time when perf_guest_enter() returns, KVM will ack
->> that and keep it in its pmu data structure.
-> I think it's possible that someone creates !exclude_guest event after
-> the perf_guest_enter(). The stale information is saved in the KVM. Perf
-> will schedule the event in the next perf_guest_exit(). KVM will not know it.
->
->> Now, when doing context switching back to host at just VMEXIT, KVM
->> will check this data and see if host perf context has something active
->> (of course, they are all exclude_guest events). If not, deferring the
->> context switch to vcpu boundary. Otherwise, do the proper PMU context
->> switching by respecting the occupied counter positions on the host
->> side, i.e., avoid doubling the work on the KVM side.
+On 25 Apr 2024, at 21:45, Barry Song wrote:
+
+> On Fri, Apr 26, 2024 at 5:11=E2=80=AFAM Zi Yan <zi.yan@sent.com> wrote:=
+
 >>
->> Kan, any suggestion on the above approach?
-> I think we can only know the accurate event list at perf_guest_exit().
-> You may check the pinned_groups and flexible_groups, which tell if there
-> are candidate events.
->
->> Totally understand that
->> there might be some difficulty, since perf subsystem works in several
->> layers and obviously fetching low-level mapping is arch specific work.
->> If that is difficult, we can split the work in two phases: 1) phase
->> #1, just ask perf to tell kvm if there are active exclude_guest events
->> swapped out; 2) phase #2, ask perf to tell their (low-level) counter
->> indices.
+>> From: Zi Yan <ziy@nvidia.com>
 >>
-> If you want an accurate counter mask, the changes in the arch specific
-> code is required. Two phases sound good to me.
+>> In __folio_remove_rmap(), a large folio is added to deferred split lis=
+t
+>> if any page in a folio loses its final mapping. But it is possible tha=
+t
+>> the folio is fully unmapped and adding it to deferred split list is
+>> unnecessary.
+>>
+>> For PMD-mapped THPs, that was not really an issue, because removing th=
+e
+>> last PMD mapping in the absence of PTE mappings would not have added t=
+he
+>> folio to the deferred split queue.
+>>
+>> However, for PTE-mapped THPs, which are now more prominent due to mTHP=
+,
+>> they are always added to the deferred split queue. One side effect
+>> is that the THP_DEFERRED_SPLIT_PAGE stat for a PTE-mapped folio can be=
+
+>> unintentionally increased, making it look like there are many partiall=
+y
+>> mapped folios -- although the whole folio is fully unmapped stepwise.
+>>
+>> Core-mm now tries batch-unmapping consecutive PTEs of PTE-mapped THPs
+>> where possible starting from commit b06dc281aa99 ("mm/rmap: introduce
+>> folio_remove_rmap_[pte|ptes|pmd]()"). When it happens, a whole PTE-map=
+ped
+>> folio is unmapped in one go and can avoid being added to deferred spli=
+t
+>> list, reducing the THP_DEFERRED_SPLIT_PAGE noise. But there will still=
+ be
+>> noise when we cannot batch-unmap a complete PTE-mapped folio in one go=
+
+>> -- or where this type of batching is not implemented yet, e.g., migrat=
+ion.
+>>
+>> To avoid the unnecessary addition, folio->_nr_pages_mapped is checked
+>> to tell if the whole folio is unmapped. If the folio is already on
+>> deferred split list, it will be skipped, too.
+>>
+>> Note: commit 98046944a159 ("mm: huge_memory: add the missing
+>> folio_test_pmd_mappable() for THP split statistics") tried to exclude
+>> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does no=
+t
+>> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still=
+
+>> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
+>> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
+>> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().=
+
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>> Reviewed-by: Yang Shi <shy828301@gmail.com>
+>> ---
+>>  mm/rmap.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/rmap.c b/mm/rmap.c
+>> index a7913a454028..220ad8a83589 100644
+>> --- a/mm/rmap.c
+>> +++ b/mm/rmap.c
+>> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap=
+(struct folio *folio,
+>>                  * page of the folio is unmapped and at least one page=
+
+>>                  * is still mapped.
+>>                  */
+>> -               if (folio_test_large(folio) && folio_test_anon(folio))=
+
+>> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmd=
+mapped)
+>> -                               deferred_split_folio(folio);
+>> +               if (folio_test_large(folio) && folio_test_anon(folio) =
+&&
+>> +                   list_empty(&folio->_deferred_list) &&
+>> +                   ((level =3D=3D RMAP_LEVEL_PTE && atomic_read(mappe=
+d)) ||
+>> +                    (level =3D=3D RMAP_LEVEL_PMD && nr < nr_pmdmapped=
+)))
+>> +                       deferred_split_folio(folio);
 >
-> Besides perf changes, I think the KVM should also track which counters
-> need to be saved/restored. The information can be get from the EventSel
-> interception.
+> Hi Zi Yan,
+> in case a mTHP is mapped by two processed (forked but not CoW yet), if =
+we
+> unmap the whole folio by pte level in one process only, are we still ad=
+ding this
+> folio into deferred list?
 
-Yes, that's another optimization from guest point view. It's in our 
-to-do list.
+No. Because the mTHP is still fully mapped by the other process. In terms=
+ of code,
+nr will be 0 in that case and this if condition is skipped. nr is only in=
+creased
+from 0 when one of the subpages in the mTHP has no mapping, namely page->=
+_mapcount
+becomes negative and last is true in the case RMAP_LEVEL_PTE.
 
 
->
-> Thanks,
-> Kan
->>> The perf_guest_exit() will reload the host state. It's impossible to
->>> save the guest state after that. We may need a KVM callback. So perf can
->>> tell KVM whether to save the guest state before perf reloads the host state.
->>>
->>> Thanks,
->>> Kan
->>>>>
->>>>>> My original sketch: https://lore.kernel.org/all/ZR3eNtP5IVAHeFNC@googlecom
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_5B2280AB-7499-4B5A-95DA-0149144A2252_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmYrCakPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUGDQP/3KsulRt1LZDlngj5Ml/Zs9sN8F2IyJrBhMe
+px7IDX9JJ/8M5PrKwzo18xfTjvWLyf+9TLtf0+rFtSH2ewsW1JcigXsul/T+Del5
+wXeybrKPvbfQOIf6uMZtgAgsB3abhbGeusqjCUryQVM+HQIwLq1tJ0ukHnLdijAZ
+mFgPb4OAi8T5ocuiC0jOPH//5xkAbat9Wb7Wt+ovjNkGlAssmp3BUSFIWPCTWEYO
+swZc4GKyWhB2xz6gOCF6qdqmrGPcKA+XEVwCXgMX4zPAZaIK5ERv2KWJ8qaj3ggh
+ztap+jayjEbwmIAeOo0yg/v218ue0x5sRbAqHKwD1vujwpuOvdtBRPsowowSTrJm
+mMkNtTQP8uULE4HlzB0T4F5RnSck2iK8pUF8VKT0JijP2EQ/QQ8p0uoffNrIdSiF
+IuwgfAwFtOz40BzzMQR67EFLkOvKgJ2ykStl/Ix6NTCYHeeAlEKxh+KkfeLlJcRo
+RpUz1qC7WgYryu+QknDkIYzgdij7mtXl9SyCSlB3x/MGoJ04COLZx3TeHBIp2F53
+1/vHUedx3HpIh8uRleFlX4+198lqZuNNLHCP+KnGvXfqnwKeAOQUqTHs8lZVpZ+S
+jK2kf7/hj0tWtLRTHzA1lVrovawmRAVyehq9Qa9102LtYtQWe2OVnXZzTYvlUkHT
+V1NtIdfS
+=lI1h
+-----END PGP SIGNATURE-----
+
+--=_MailMate_5B2280AB-7499-4B5A-95DA-0149144A2252_=--
 
