@@ -1,95 +1,182 @@
-Return-Path: <linux-kernel+bounces-159548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAAEC8B301A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9D48B301F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:15:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD0A91C21BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:13:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FC101C22F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2083C13A41B;
-	Fri, 26 Apr 2024 06:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692C213A869;
+	Fri, 26 Apr 2024 06:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ap5js1Vf"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwKw7Ws3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342C92F2F;
-	Fri, 26 Apr 2024 06:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCF22F2F;
+	Fri, 26 Apr 2024 06:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714111987; cv=none; b=Xm7Cm1Tt/SKiYq0SdMJFL8O5ekLuMSA+ot3ozKIbMtmUlccaI0rEths7/tVZy2EJF14s2nFA8sbqrA/Vmgh4YGhfAoDPHBXGyXfEDOiLiFJ8Ze9+wnAeWALeqKQCO4kIYKiPHpj0j8LOqKVOuBEvcT25h5A5iNsTEd1XYm/FpD8=
+	t=1714112106; cv=none; b=hYPa2wuHl/qpJWGsFMs0eIH/CeRiQnHlwm+veSDuqqbpTJBf7qu4aQ4SmCFI+B1Hro2U0sOwPx9EW+kR1z1VZJ1ellAXGdYljZ8WrnXN/pkRnP9p7s63iXir6KA0rRkU2LMjg9KnfrCvM/atSvd/kY0U4VI0hyEtdi0rSXkwfRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714111987; c=relaxed/simple;
-	bh=5fiEOv77X5MtDshrhcX7AT7EaPP4Cfvs3HIW1CqwulY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DBcUE1zdUcIyPFIZqgBnPoYS0LoNgHcgCO32JVHzeOd9sVGs8LfdB+VkPgPriV5vz0YcLE1D3Uid+ZEjvdlB4j4yekJAtDitmty3q8iAYtyVcHJD/I9jqxGQYUp23Ystuov/uNnjq1z+r96VpMZLxZhwd5Gy8FZUUN9GWjixY3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ap5js1Vf; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=bXuxQSeK9EhyAEvn7EIbpyezyLZhRR4SZi6ic3qEHyY=; b=ap5js1VfrH/g8G8XbPp1QnRWe8
-	GNFhL6G/y7S24a7lmUv9ZiTH/d9yipZXWlqNYb1EHFWkmSZSYVaHFWC/ahi6krrscrNJK/cn4lX8E
-	Nld7M7FYXExhEKNd0W79+2Xs6ZrW39Cxkg8I1xd8wSWNXvfIXSsNo5DX65kRktfXtXeFKiDiUcWK+
-	3LPgxS0IqQFOofZx0z25LCImjqQ9EcXVdOMH0C/wnsITtdbiwC+1dFIX4nkjkokGOByPDJYX5+7S1
-	UOgXFfR+uoWt/jrxEwvFom2hyMbJb+L+p/Kt0zIRKZd0uFmCCcva6RnHik0K6l97hnNVikigDoVXS
-	6oEOd5Kg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0EpV-0000000BGaD-0O3G;
-	Fri, 26 Apr 2024 06:13:05 +0000
-Date: Thu, 25 Apr 2024 23:13:05 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Brian Foster <bfoster@redhat.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Sam Sun <samsun1006219@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, djwong@kernel.org,
-	chandan.babu@oracle.com, syzkaller-bugs@googlegroups.com,
-	xrivendell7@gmail.com
-Subject: Re: [Linux kernel bug] KASAN: slab-out-of-bounds Read in xlog_cksum
-Message-ID: <ZitF8eqWEYECruXo@infradead.org>
-References: <CAEkJfYO++C-pxyqzfoXFKEvmMQEnrgkQ2QcG6radAWJMqdXQCQ@mail.gmail.com>
- <ZipWt03PhXs2Yc84@infradead.org>
- <ZiphYrREkQvxkE-U@bfoster>
+	s=arc-20240116; t=1714112106; c=relaxed/simple;
+	bh=2zMjsUSfslciVWlXYRwI/HomcPgj2FUOtYL/1gugbYw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jh6WoNjg62DKaTSIevewG5HP1Vb+ET4l3dSVFd4pmIQ26Z3qoZn/79h0e/3xXWOa1nY91izb3anbjhzfy0dA0hAjsEOZPoSuqwYtKr1zi1Pt2zJbTjfY/eRa+hz19SaVWW/C4i3Rfr6Yva5Ghn0EBPt65FfGkpkoFTGtcDFtHFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwKw7Ws3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8022C113CD;
+	Fri, 26 Apr 2024 06:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714112106;
+	bh=2zMjsUSfslciVWlXYRwI/HomcPgj2FUOtYL/1gugbYw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YwKw7Ws3nJqXx95A035lnkvAL+lLCnq33LBDNlXhHW3n0K4ReQJsZRQqtGixyvgOk
+	 cMMlXKEsEH2/3Y2cnbqrWUMaiePoU6CBxD3QlbvgubjWt5JT0LjzpiPxlGA75lgPni
+	 y+T3wx/4VPktiDD6mK1G8m3z6ZfjAK6w7S6ntTDXr4KhKJCFQDd/e8GpyTtJ4ahIF+
+	 3bzJTu5FlPcPpH8KvtNIgzQsryn4jo/HSUnvW7yMe3K3lTZs5tEnQExUZHmiGijJEm
+	 3lJu4M5ohUyBvL0nuFuMPA3WFPDP9/W0OMgoYOyiSrlhf4Su4U2bkzsoxi5L33LZCL
+	 e4n45cCcP27cA==
+Message-ID: <e2b52bfb-0742-4baf-8269-86075b5cc54e@kernel.org>
+Date: Fri, 26 Apr 2024 08:15:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiphYrREkQvxkE-U@bfoster>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 01/14] dt-bindings: spi: Document the IBM Power SPI
+ controller
+To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-2-eajames@linux.ibm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240425213701.655540-2-eajames@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 09:57:54AM -0400, Brian Foster wrote:
-> On Thu, Apr 25, 2024 at 06:12:23AM -0700, Christoph Hellwig wrote:
-> > This triggers the workaround for really old xfsprogs putting in a
-> > bogus h_size:
-> > 
-> > [   12.101992] XFS (loop0): invalid iclog size (0 bytes), using lsunit (65536 bytes)
-> > 
-> > but then calculates the log recovery buffer size based on the actual
-> > on-disk h_size value.  The patch below open codes xlog_logrec_hblks and
-> > fixes this particular reproducer.  But I wonder if we should limit the
-> > workaround.  Brian, you don't happpen to remember how old xfsprogs had
-> > to be to require your workaround (commit a70f9fe52daa8)?
-> > 
+On 25/04/2024 23:36, Eddie James wrote:
+> The IBM Power chips have a basic SPI controller. Document it.
+
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
 > 
-> No, but a little digging turns up xfsprogs commit 20fbd4593ff2 ("libxfs:
-> format the log with valid log record headers"), which I think is what
-> you're looking for..? That went in around v4.5 or so, so I suppose
-> anything earlier than that is affected.
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
+>  .../devicetree/bindings/spi/ibm,p10-spi.yaml  | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/ibm,p10-spi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/ibm,p10-spi.yaml b/Documentation/devicetree/bindings/spi/ibm,p10-spi.yaml
+> new file mode 100644
+> index 000000000000..9bf57b621c1f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/ibm,p10-spi.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/ibm,p10-spi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IBM SPI Controller
 
-Thanks.  I was kinda hoping we could exclude v5 file systems from that
-workaround, but it is needed way too recent for that.
+IBM P10 SPI Controller
 
-Maybe we can specificly check for the wrongly hardcoded
-XLOG_HEADER_CYCLE_SIZE instead of allowing any value?
+> +
+> +maintainers:
+> +  - Eddie James <eajames@linux.ibm.com>
+> +
+> +description:
+> +  A basic SPI controller found on IBM Power chips, accessed over FSI. This
+> +  node will always be a child node of an ibm,fsi2spi node.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ibm,p10-spi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +allOf:
+> +  - $ref: spi-controller.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    fsi2spi@1c00 {
+> +        compatible = "ibm,fsi2spi";
+> +        reg = <0x1c00 0x400>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+
+Use rather some simple wrapper instead of node causing warnings, e.g.
+fsi {} with only address/size cells.
+
+
+
+Best regards,
+Krzysztof
 
 
