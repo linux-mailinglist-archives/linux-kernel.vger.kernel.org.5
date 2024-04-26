@@ -1,140 +1,140 @@
-Return-Path: <linux-kernel+bounces-159777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A4D8B33D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:23:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0274C8B33D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB326B218C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:23:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3540D1C2210D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0879D13E3E4;
-	Fri, 26 Apr 2024 09:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6752613D53C;
+	Fri, 26 Apr 2024 09:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="arNw8Wrf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZSfzzAQA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A6E13D53D;
-	Fri, 26 Apr 2024 09:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548FB13DDD5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123390; cv=none; b=QBKGIyWwnZXq3pS1k+3g/FsmroWVz9+7MelQvN/b20mwFKPAZyGF39Oy7iXrzuu0v9UiU7E9YWci2YMMmmEqUfLBSrre126IIri+j/3xTfavqdAYwSOKGfo6640id+J8NI3lhxXjAfBLgk3PoH+i+RFC86/1cOX4dsv+wKZZRHQ=
+	t=1714123415; cv=none; b=N1+u0n/Ojiw3p86XX83Dq3LqRPMIRKPcIXvsORR+ARl6/sFRLqSRH+LZERRCIxO4JAmqEWTcS2fiu3wZCMCT2h1TqM3UgrnRzbFmvRiLSvdSItPXVkP04DmXBb8w2ocyzeEPp6GNu+DFtoFO1ifoELJgspWh1lMFY1VfFvGl69A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123390; c=relaxed/simple;
-	bh=+XWdH/l9aGEj66QIAT074n3BMWjgqmF1LBHExf76RPw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=o7DpSznqXYEbWLro7NCkISGT8yiolhiu+D7vYwgCHzznoAISG1aO8yW6i9mzPDnalJpueO5w659nn91A2e5lEZm+RqrldJ0qzpVoLiMKkVumG7vTFxSjyKadS8OK24IDcI+rDMOKrXfq+9d+mgH8qpS1t/gYxzNgcjH5s1rjOAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=arNw8Wrf; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714123389; x=1745659389;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=+XWdH/l9aGEj66QIAT074n3BMWjgqmF1LBHExf76RPw=;
-  b=arNw8WrfrAk51rNkvjh1jEgoldtGADtVqXNywczhzDHKhF3/XNTMXkqQ
-   jBbWobUCC7D5XTaHMiGs38+vh8h5yrsw9fdtp8o38sUww91buCDwgwIG0
-   MTbwPyCJcNx+vmCPgXhjkLfF+4aZu+V0M/E89MpjTTcHr3iEmQdequ2XT
-   cyqNnB3SXr4zqjnQ2b74Soo2axM2a+r+JvE/nNMEJ1AhroiuRK9KIc0Bz
-   Lrs/ekTYaQh/dZdaj4GfQ4whQlyYG7LKbZ3TwouwN7V/+z1yYy4iF1B69
-   rBfQD5tdwUdjIuZx1FZzVR14ClTB8iGU8vJMx4G5RKoUBXnXuDnT9GkXh
-   Q==;
-X-CSE-ConnectionGUID: Gpu8xEi1QpKNJgYMa89Oiw==
-X-CSE-MsgGUID: ih3vMISFQASYb9FvH0Qg7w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="35240892"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="35240892"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:23:08 -0700
-X-CSE-ConnectionGUID: UjfMWm4mRhej13SGmeht3w==
-X-CSE-MsgGUID: PYb66SGeRZy3MOVcsJIQGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="30018953"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.43])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:23:05 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 26 Apr 2024 12:23:00 +0300 (EEST)
-To: Lyndon Sanche <lsanche@lyndeno.ca>
-cc: mario.limonciello@amd.com, pali@kernel.org, W_Armin@gmx.de, 
-    srinivas.pandruvada@linux.intel.com, Matthew Garrett <mjg59@srcf.ucam.org>, 
-    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
-Subject: Re: [PATCH v2] platform/x86: dell-laptop: Implement
- platform_profile
-In-Reply-To: <20240426020448.10862-1-lsanche@lyndeno.ca>
-Message-ID: <e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
-References: <20240425172758.67831-1-lsanche@lyndeno.ca> <20240426020448.10862-1-lsanche@lyndeno.ca>
+	s=arc-20240116; t=1714123415; c=relaxed/simple;
+	bh=Udl46LR7XVoXfrBKhl6mIDBjIxqJOh882IzI0S4UAM4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tbbFaNBtS9zCOsXM9ybhZsyfuwQ2gdJIGmlSpQWH6kD5m3xlkqOoxWj/e/zE3ePmk8MVF0O8sadBYbLYJq/Us0PPrgDIye+OWsN65wwr+TMYTIgkkArq0C/I8K2vkAq9ehiae3Ao5LRXaaYiLpC8oLWqJP+mQTbtIYdo0MfNslw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZSfzzAQA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714123413;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iRAd8wfnSBnkmuLuRNYN/BGd3qvtIlEXRV1WTPss9aM=;
+	b=ZSfzzAQAhgZxujKRSys68q292URUOoGyft6rzm0FWsj8AjanGJnImCJ9fquqF+QBB2kn3a
+	auIT8Hq1RGeG89pk6jOIIhv52DotF6kMMPYP8xFgYeY08t6I2z/tenrEkdit4plEL/XVyd
+	VWMzS7QQwmBQ8tmCuaulartEzrCzLhE=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-Onb4-w-HOmOC0_7pIf1gfg-1; Fri, 26 Apr 2024 05:23:32 -0400
+X-MC-Unique: Onb4-w-HOmOC0_7pIf1gfg-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1e84b809cd7so20135165ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:23:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714123411; x=1714728211;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRAd8wfnSBnkmuLuRNYN/BGd3qvtIlEXRV1WTPss9aM=;
+        b=Pqh4LbRxAehQG6XUr2I20VjsnzleUrCWAcKxoZGPtjkEKWUQ6KNZ+H7/yQG7UChZ+8
+         201ejiWjQP8pSsvM+yWDfw9s36zxeeuub71akqdQyfqlacPc4TviHqnmXTTe8oG+TuHA
+         vaSAGS5+zTSWpOS1nbPAmObcQHTsFdeu6XZoNTiTK1plnwvgf+/lHjY78GmTADxo27df
+         T3Ia0g1xaN3jaQ85Ox5PXbjzKdB0OufxNDuYfHH6hmyj7afMR0iLHv7jigKAqOusg+Wc
+         1wRhqHX6QtQvVZ6CVGHHqVTCVpqjYuqiyfvqFq1Kuj2Iulc2bLT1NDWvzjgbsUN6p7wt
+         dYuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWO43cIjWL6WDwTkHdo8WAJxoPmPiHzhCaIXqPLHo+RxA8EWQThZU8rXI8+0CtShZUV5iDnp3rCs7JzIwslKQYdpuOz2YcnAG6hwc0Z
+X-Gm-Message-State: AOJu0Yxpo0wm9Xf+S0aE/Gbz1A2wVPCOhEm7cJ2S0ZzTfZsPpSEy6u5d
+	jIBC63IWvC8fnKTDQiakCuXhmTJiuPITYO2eXqsor/3Btdb0I5gepD2fqLu2W7IQ8hu0j2pctP0
+	F/CBPwW6Zv1+zo80XtS7pkyEQPSNY6h9B6nesoN1hWleod5Xy0jUkQOUzKFUrjw==
+X-Received: by 2002:a17:903:11c3:b0:1e5:5bd7:87a4 with SMTP id q3-20020a17090311c300b001e55bd787a4mr2283765plh.16.1714123410719;
+        Fri, 26 Apr 2024 02:23:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGTmWdacAorvyOh8QQAQnPNEyl/iXm9VdRYljIzI/YjTWhI47bK72rLeP2m/Hny5DHEF82p7g==
+X-Received: by 2002:a17:903:11c3:b0:1e5:5bd7:87a4 with SMTP id q3-20020a17090311c300b001e55bd787a4mr2283739plh.16.1714123410303;
+        Fri, 26 Apr 2024 02:23:30 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id r3-20020a170902be0300b001e27462b988sm15054500pls.61.2024.04.26.02.23.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 02:23:29 -0700 (PDT)
+Message-ID: <566817ae-90f0-4ec9-b54e-b9fdb635119e@redhat.com>
+Date: Fri, 26 Apr 2024 19:23:19 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 01/16] ACPI: processor: Simplify initial onlining to
+ use same path for cold and hotplug
+Content-Language: en-US
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, x86@kernel.org, Russell King
+ <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
+ Salil Mehta <salil.mehta@huawei.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com,
+ justin.he@arm.com, jianyong.wu@arm.com
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-2-Jonathan.Cameron@huawei.com>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240418135412.14730-2-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Apr 2024, Lyndon Sanche wrote:
-
-> Some Dell laptops support configuration of preset
-> fan modes through smbios tables.
+On 4/18/24 23:53, Jonathan Cameron wrote:
+> Separate code paths, combined with a flag set in acpi_processor.c to
+> indicate a struct acpi_processor was for a hotplugged CPU ensured that
+> per CPU data was only set up the first time that a CPU was initialized.
+> This appears to be unnecessary as the paths can be combined by letting
+> the online logic also handle any CPUs online at the time of driver load.
 > 
-> If the platform supports these fan modes, set up
-> platform_profile to change these modes. If not
-> supported, skip enabling platform_profile.
+> Motivation for this change, beyond simplification, is that ARM64
+> virtual CPU HP uses the same code paths for hotplug and cold path in
+> acpi_processor.c so had no easy way to set the flag for hotplug only.
+> Removing this necessity will enable ARM64 vCPU HP to reuse the existing
+> code paths.
 > 
-> Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
+> Leave noisy pr_info() in place but update it to not state the CPU
+> was hotplugged.
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
 > ---
+> v7: No change.
+> v6: New patch.
+> RFT: I have very limited test resources for x86 and other
+> architectures that may be affected by this change.
+> ---
+>   drivers/acpi/acpi_processor.c   |  1 -
+>   drivers/acpi/processor_driver.c | 44 ++++++++++-----------------------
+>   include/acpi/processor.h        |  2 +-
+>   3 files changed, 14 insertions(+), 33 deletions(-)
+> 
 
-Two things:
-- You're missing patch version history (put it below the --- line)
-- Don't send updates so soon, give people time to comment. When I saw v1 
-  for the first time, you had already posted the next version.
-
-> +void thermal_cleanup(void)
-> +{
-> +	platform_profile_remove();
-> +	kfree(thermal_handler);
-> +}
-> +
->  static struct led_classdev mute_led_cdev = {
->  	.name = "platform::mute",
->  	.max_brightness = 1,
-> @@ -2238,6 +2452,12 @@ static int __init dell_init(void)
->  		goto fail_rfkill;
->  	}
->  
-> +	// Do not fail module if thermal modes not supported,
-> +	// just skip
-> +	ret = thermal_init();
-> +	if (ret)
-> +		goto fail_thermal;
-> +
->  	if (quirks && quirks->touchpad_led)
->  		touchpad_led_init(&platform_device->dev);
->  
-> @@ -2317,6 +2537,8 @@ static int __init dell_init(void)
->  		led_classdev_unregister(&mute_led_cdev);
->  fail_led:
->  	dell_cleanup_rfkill();
-> +fail_thermal:
-> +	thermal_cleanup();
->  fail_rfkill:
->  	platform_device_del(platform_device);
->  fail_platform_device2:
-> @@ -2344,6 +2566,7 @@ static void __exit dell_exit(void)
->  		platform_device_unregister(platform_device);
->  		platform_driver_unregister(&platform_driver);
->  	}
-> +	thermal_cleanup();
-
-This is still not right, you'll still platform_profile_remove() even if 
-the init side call failed.
-
--- 
- i.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
 
