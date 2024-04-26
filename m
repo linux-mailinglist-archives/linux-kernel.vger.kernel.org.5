@@ -1,150 +1,110 @@
-Return-Path: <linux-kernel+bounces-159822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43FAB8B34A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:55:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7898B34A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7594F1C21A54
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:55:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3490C1F21A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58317140380;
-	Fri, 26 Apr 2024 09:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58651140381;
+	Fri, 26 Apr 2024 09:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fr6jYSwm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/nIp3n+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3147EF;
-	Fri, 26 Apr 2024 09:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8077EF;
+	Fri, 26 Apr 2024 09:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125298; cv=none; b=FkoedFZjW5NCC0dT9m3qG1gdoUnoQ7rNCGPDD72RyNFQXLrVgJO5GhEXOX56AORRp+D/mreYk7wGNP+Jar1B4ZmvS0TFQu32snce1w2bYfByYcED9Ca/kLz2905BSkKc42osTjudsLfSFNeFQdMLsYK5vcsJSNJD6miAzXTuOfo=
+	t=1714125328; cv=none; b=N8HF3LocUMrRPj1zHb3d/Zs0vNNSDqB5TVfxqdgEP7WhO6RPmgbCVt0rRg9fzubFQqVQ3vDo/3PQN6KKTHQ/8pewVuiYELtwEg4o+daFpOFPcmArEiPNkBLut3Jgr/9wD7JMGuwtTAQ1URmwuUlz2kWqmzI22czhitrgBVIgOEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125298; c=relaxed/simple;
-	bh=WiI+XutyNd/nngQLJKLa2onjPd4tP4nDxenYt4ZyDv4=;
+	s=arc-20240116; t=1714125328; c=relaxed/simple;
+	bh=nEsffx9NnWCYvdWoWlZutoq9f9SadTTzQv71Jmd4xhE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QGYFIMJewFmf6i6ePiMsMLs6Iicz5LJqLWabMt1G69/7mRba++LZ2eL8jQkEv/DvXcRSzXVGS9nWGNY3VkUf0mUuUYcX16W8J8bwC9eKV6V83zvxa8+OVOZO1llNl2K/E/Xi2qBRKagnzxfCg/4s5c5Pb9UGVlnoXAzZvaBfK6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fr6jYSwm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B220C2BD10;
-	Fri, 26 Apr 2024 09:54:58 +0000 (UTC)
+	 To:Cc:Content-Type; b=doQIrtVSmkulnT3lhyxmDg7+l25/n51qybLksTCzgKDQ18o93TgHcxqmJX5JrVCKROmWDAJKtEHh0OO5dhnow8/F83+/cZ16F0RnNGALy2p90LKVVkNv5EKRDje7JHHTgYxYOfJ0UEVvjLRvUiUn4LGv36lYxPYJYJBrWD8P2pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/nIp3n+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AE54C2BD11;
+	Fri, 26 Apr 2024 09:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714125298;
-	bh=WiI+XutyNd/nngQLJKLa2onjPd4tP4nDxenYt4ZyDv4=;
+	s=k20201202; t=1714125328;
+	bh=nEsffx9NnWCYvdWoWlZutoq9f9SadTTzQv71Jmd4xhE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Fr6jYSwmuB97RzELezZDWf/0xjYFiDejLAK7+3bOviaAmHs3GN6Q0GhIKsmq0Oo7A
-	 2OAbP5QPfDxCE7WF6uO3OYMx7Y6Hfxqr5ClW11Y2EA0WeuFsXhBHPdYX1Je6SpiOGr
-	 b/EN7x4OUSModISNjrTmzIgMDkvrbL6qLNVC9/MTBTc9i8SpvQ2r13KrY437bU9xWT
-	 tIURVUSFBrKMMQjycSWMVvkEoV4PaEyKscwy+MczvhLGOF+ufFXeKZfF1/uqGkcNcC
-	 URo1aT6ffcvmSx65YYffEVMhRrG2oK6Lm2UidQFt6pE66K1sBrWWKSZTbzQEA2y8dX
-	 1r+/eSOlDQuQw==
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea0a6856d7so304379a34.1;
-        Fri, 26 Apr 2024 02:54:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUfFWAlnDrRDpxEkvao/QTwMuz1aftOXAoXsho8Jwev6pRh5R+PuBEdKVlHuI21IpujTMj/bL/furZco6tz11ZYQtAHfacuvSmU7bLih9dMfIlah2NKlfzJICKduQcNXJUgDgUtP/w=
-X-Gm-Message-State: AOJu0YxBC/A2iJ6UKDePFhykRPb2ssl8fEnrArqy971q1uY1/x3Dcmom
-	YeORlRWqKZMp5gepYQb2ZId7AusYr10v5j0/piQWErRzS+wpZRRuKRtg8Ia1k0CWQsXL4FK4FNZ
-	J08V449r5NTYrBtjNDf/NU56qLB4=
-X-Google-Smtp-Source: AGHT+IHW0dqddY+m0h7lHyZU/UoSuqnrvnX6DYZicHntquPNDpIybmzPNcGXUtB/we7sN92JrY5Ltt9rRhsxkaEldko=
-X-Received: by 2002:a4a:ba07:0:b0:5aa:14ff:4128 with SMTP id
- b7-20020a4aba07000000b005aa14ff4128mr2361789oop.1.1714125297342; Fri, 26 Apr
- 2024 02:54:57 -0700 (PDT)
+	b=I/nIp3n+lg4yMg3H2dLiuNHWIRyI/0KUHlR6ruX7wfAMoyf/TNiUc0L8tq5gqXZuS
+	 7xwI/r9KIYexr89Y9l7qUjG0mAgELadNuMxfGKOXLXDj6BNndQqyFxOGK8j2nVkhWa
+	 uObOtqwWMhPmrlg+7CtnBvKgmUht0A6PdvzbXDPkgD9dfT+ZjcWeaCgJNNcJgBbMGc
+	 eLxXNVQMW01dCEc1Vjv/PlmEqi8c024CqKu6s/q3N25iOmq7oLoFp8XAEPYB1Z/C5B
+	 DonygS13XBrdCRHVX+JnBKT1KbkIO+8QlmtLug6AwzusH/k0tUZzq2NqJJGjab7j0y
+	 rvEEMHkGdrOGA==
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5af12f48b72so412270eaf.3;
+        Fri, 26 Apr 2024 02:55:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXy7MJQfuo+M+JqDIbuZzdgSfa1RTNLlZ6uN4Eo4bzYkuNj7VNK+XxkLYyq3sBj42FXB92rohJEf+D2KG67yoAEII0PlAWd4RXxECliJA0OW8WS4e5HynyWmil6KEcNsyBt7hgtNd8=
+X-Gm-Message-State: AOJu0YxyakA7ikZeqeEniHDALgTCRY0KZG4iuPUwc8YGqKnbyZmWmQJA
+	fahXJgH/3DyRvxmo2m2Idyw/gvHXI5MmWiqdjGVogkZyzi+evb4n7Ud7XvCPc8fmH0paAR4iEgU
+	943Ut1j0wHQI0Gm9D5jVCfDJievE=
+X-Google-Smtp-Source: AGHT+IEWhxSPHhTzX2mbfY3Ou49Jgm+donLdT6R5LfI2YS+Jd033qSDJOxZHAvcQu3MebYa2RHrdX1kjH1xO4qPFFX8=
+X-Received: by 2002:a4a:a882:0:b0:5aa:241a:7f4b with SMTP id
+ q2-20020a4aa882000000b005aa241a7f4bmr2722851oom.1.1714125327279; Fri, 26 Apr
+ 2024 02:55:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <12427744.O9o76ZdvQC@kreacher> <13503555.uLZWGnKmhe@kreacher>
- <2740417.mvXUDI8C0e@kreacher> <4416568e-79d4-465f-8d47-a199b3b69ca4@arm.com>
-In-Reply-To: <4416568e-79d4-465f-8d47-a199b3b69ca4@arm.com>
+References: <3297002.44csPzL39Z@kreacher> <8f94bbb8-3cdd-428d-89b9-1ae04c806c73@arm.com>
+In-Reply-To: <8f94bbb8-3cdd-428d-89b9-1ae04c806c73@arm.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 26 Apr 2024 11:54:45 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jBhwL2w7MfBj4g7hV8VqrJYS-Pwr2rgYyWD4qfkQ5F0g@mail.gmail.com>
-Message-ID: <CAJZ5v0jBhwL2w7MfBj4g7hV8VqrJYS-Pwr2rgYyWD4qfkQ5F0g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] thermal/debugfs: Prevent use-after-free from
- occurring after cdev removal
+Date: Fri, 26 Apr 2024 11:55:15 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jpB_2xEbKK_S9AMHELqsjGhLQ60_0gycm8rcphi3ELbQ@mail.gmail.com>
+Message-ID: <CAJZ5v0jpB_2xEbKK_S9AMHELqsjGhLQ60_0gycm8rcphi3ELbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] thermal/debugfs: Fix handling of cdev states and
+ mitigation episodes in progress
 To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux PM <linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Daniel Lezcano <daniel.lezcano@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 11:35=E2=80=AFAM Lukasz Luba <lukasz.luba@arm.com> =
+On Thu, Apr 25, 2024 at 10:55=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> =
 wrote:
 >
+> Hi Rafael,
 >
->
-> On 4/26/24 10:28, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> On 4/25/24 15:01, Rafael J. Wysocki wrote:
+> > Hi Everyone,
 > >
-> > Since thermal_debug_cdev_remove() does not run under cdev->lock, it can
-> > run in parallel with thermal_debug_cdev_state_update() and it may free
-> > the struct thermal_debugfs object used by the latter after it has been
-> > checked against NULL.
+> > This is an update of
 > >
-> > If that happens, thermal_debug_cdev_state_update() will access memory
-> > that has been freed already causing the kernel to crash.
+> > https://lore.kernel.org/linux-pm/5774279.DvuYhMxLoT@kreacher/
 > >
-> > Address this by using cdev->lock in thermal_debug_cdev_remove() around
-> > the cdev->debugfs value check (in case the same cdev is removed at the
-> > same time in two different threads) and its reset to NULL.
+> > and the only non-trivial difference between it and the v1 is a small
+> > rebase of the second patch (the v1 of which didn't apply).
 > >
-> > Fixes: 755113d76786 ("thermal/debugfs: Add thermal cooling device debug=
-fs information")
-> > Cc :6.8+ <stable@vger.kernel.org> # 6.8+
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
+> > It generally has been based on top of
 > >
-> > v1 -> v2: Add missing mutex_unlock() (Lukasz).
+> > https://lore.kernel.org/linux-pm/12427744.O9o76ZdvQC@kreacher/
 > >
-> > ---
-> >   drivers/thermal/thermal_debugfs.c |   14 +++++++++++---
-> >   1 file changed, 11 insertions(+), 3 deletions(-)
+> > but it should apply on top of the linux-next branch in linux-pm.git as =
+well.
 > >
-> > Index: linux-pm/drivers/thermal/thermal_debugfs.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-> > +++ linux-pm/drivers/thermal/thermal_debugfs.c
-> > @@ -505,15 +505,23 @@ void thermal_debug_cdev_add(struct therm
-> >    */
-> >   void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
-> >   {
-> > -     struct thermal_debugfs *thermal_dbg =3D cdev->debugfs;
-> > +     struct thermal_debugfs *thermal_dbg;
+> > It is present in the thermal-core-next branch in that tree, along with =
+the
+> > above series.
 > >
-> > -     if (!thermal_dbg)
-> > +     mutex_lock(&cdev->lock);
-> > +
-> > +     thermal_dbg =3D cdev->debugfs;
-> > +     if (!thermal_dbg) {
-> > +             mutex_unlock(&cdev->lock);
-> >               return;
-> > +     }
-> > +
-> > +     cdev->debugfs =3D NULL;
-> > +
-> > +     mutex_unlock(&cdev->lock);
-> >
-> >       mutex_lock(&thermal_dbg->lock);
-> >
-> >       thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
-> > -     cdev->debugfs =3D NULL;
-> >
-> >       mutex_unlock(&thermal_dbg->lock);
-> >
-> >
+> > Thanks!
 > >
 > >
 > >
 >
-> It looks good now
+> I have also tested the patches, so feel free to add the tag as well:
 >
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Thanks!
+Thank you!
 
