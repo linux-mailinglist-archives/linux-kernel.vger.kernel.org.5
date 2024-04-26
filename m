@@ -1,147 +1,154 @@
-Return-Path: <linux-kernel+bounces-159775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AF58B33CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:21:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7108A8B33D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:22:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 370F2B2301C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:21:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 936BF1C21CFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D567513F011;
-	Fri, 26 Apr 2024 09:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E6213DDC7;
+	Fri, 26 Apr 2024 09:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="ty1yjBR2"
-Received: from nbd.name (nbd.name [46.4.11.11])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bKJY2++g"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD63113E052;
-	Fri, 26 Apr 2024 09:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294CC282EA;
+	Fri, 26 Apr 2024 09:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123287; cv=none; b=U9xonCVcd93Yd/pj6LyAgKJ3xepgYKXKw2uM7wvLcLcr7s00QRQP21j2opYbwanodskfCUOk2yy+sCL1WaL7pya81miqWZZ1vo4YZpToIPWp1/ub/Sn3EubkbxJh6RdasTZlbb+f8L6+IoRwALYF0RjG9gmKkipV6wjdSzsIr4Q=
+	t=1714123335; cv=none; b=CBA6WXL6ETiKbi50v6mjMYhJIfg6UXGFoMEjtKd8W0+QjYIcw94Oh4xUY7GGHIaXjSJ9NA04rr52WTe0l3q4FCNIYvpM/bedXINU4udBHmC8X7I7Mikyw+Vj/K4/JRKfdOGZfFLb9YoB3avtbFBwMxmxFHIAWXyOs4j6SoSihCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123287; c=relaxed/simple;
-	bh=OBW1YwIsE9yd0NZZ//6apOQpHOMIGIMIaIXFyjPK1A4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Du4Hlz9jMR6HRAL3OBhPpedFobfPOtVvojHI8jnZNYUm8b96odv/G0HB0R40CDOrYKXaDYCoCjFsSFATwbtigGq9xEfq56cf0x+blOnosRW3GYMyIr2CnyuS9D5JzdP64N6ibJtCa2iLn1hvYafmyIc0h6GhTSfSyBxtU5X+EyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=ty1yjBR2; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=bUsM/+EFDc2XNhwU4d8yS9gf88wFymspxCgCF26Ujjg=; b=ty1yjBR2CB/66avr6xtuZvub6b
-	k2Wsii5rkoXD0J09gUpdns7dZhb5Tten5XoP6Y0fPTHmzU9B6kUrroC4giEtRSKU7JvCi5+rfywkK
-	8UbVD8LB0ApfJfiq4P1YU9khtXT5JUgGzfgSHXf10jYMlxf37R0iBy5ddWsoE9Xgr7KM=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1s0Hlb-007sLq-1A;
-	Fri, 26 Apr 2024 11:21:15 +0200
-Message-ID: <b7c9f59b-682d-4444-9906-58704f0f0359@nbd.name>
-Date: Fri, 26 Apr 2024 11:21:13 +0200
+	s=arc-20240116; t=1714123335; c=relaxed/simple;
+	bh=Sf+L1xWoaHlAf0nD2PEH3YdAW+88HHm216ZUXqqqUCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UQ5I/da4wNR553V9b88qiStdkvjiUQIDD0ljqgzU0JEBYnXO9RgE2bQn9lztbQGgXRzTBhl+Cmmq57b6T7wzbmjdo+qQE36WTOcCLvgdENZRnZ4ByuFJJ1D8AcFEhZLBDDkRBhQyE3tzHMy51krg+L77bs396j3+izzM0tlq+eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bKJY2++g; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q9KL8T024970;
+	Fri, 26 Apr 2024 09:22:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pvH+FXQvoSZFUAiMdegKZnVOLGNFLl20OwUtG5i6Hbg=;
+ b=bKJY2++gV/a5KFYtAcX3hGcFDmNRxfJruD60GLyXwBN8+OvvsGW+S6dl5sS3P+ep4Ov3
+ Mcv3mWApHAj+LEncbSJG0HU9CK3D+LjKekY7Zsd/3Gh1pCgKuiVxAg2e+8YXPXn0U5RU
+ y4keW2rkzrKgCW0RXnqRi/SU8eAUILbNG8v1PkBQt7KHwKf1HnlRhhJ+TnQwEwC3Jjix
+ 7occQocNL2L9AfrxqLC3CzjzvJWw5joS+UNxFKEHq1VVQacqp8YYEpvJ2gdmTXcSF0T3
+ V/oJPHtIMuK8w/G3O7Sx0I8yjgvqs8Z9PNX8OC/NjOvTJHITWGivrV2OJbn5oLRjbbAr vA== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr9e4g0cs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 09:22:12 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q89r9C020908;
+	Fri, 26 Apr 2024 09:22:11 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre0f284-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 09:22:11 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43Q9M63q45875496
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 09:22:08 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0C1CB2004E;
+	Fri, 26 Apr 2024 09:22:06 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BD5752004B;
+	Fri, 26 Apr 2024 09:22:05 +0000 (GMT)
+Received: from p-imbrenda.boeblingen.de.ibm.com (unknown [9.152.224.66])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 09:22:05 +0000 (GMT)
+Date: Fri, 26 Apr 2024 11:22:04 +0200
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, svens@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, borntraeger@de.ibm.com
+Subject: Re: [PATCH v1 2/2] s390/pgtable: introduce
+ _REGION3_ENTRY_HARDWARE_BITS_LARGE
+Message-ID: <20240426112204.10c00d33@p-imbrenda.boeblingen.de.ibm.com>
+In-Reply-To: <20240426085714.8950-F-hca@linux.ibm.com>
+References: <20240425130555.73132-1-imbrenda@linux.ibm.com>
+	<20240425130555.73132-3-imbrenda@linux.ibm.com>
+	<20240426085714.8950-F-hca@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 net-next v3 6/6] net: add heuristic for enabling TCP
- fraglist GRO
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, willemdebruijn.kernel@gmail.com,
- linux-kernel@vger.kernel.org
-References: <20240426065143.4667-1-nbd@nbd.name>
- <20240426065143.4667-7-nbd@nbd.name>
- <CANn89i+n76MEoQPbj8oxMMEw5N6T8KAP4Xp2YsUYb32fUzAJNg@mail.gmail.com>
-From: Felix Fietkau <nbd@nbd.name>
-Content-Language: en-US
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <CANn89i+n76MEoQPbj8oxMMEw5N6T8KAP4Xp2YsUYb32fUzAJNg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DVhY9Iy4vvXYIHHy1DTfw0r9sV5xVPlw
+X-Proofpoint-GUID: DVhY9Iy4vvXYIHHy1DTfw0r9sV5xVPlw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_09,2024-04-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 spamscore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404260060
 
-On 26.04.24 09:32, Eric Dumazet wrote:
-> On Fri, Apr 26, 2024 at 8:51 AM Felix Fietkau <nbd@nbd.name> wrote:
->>
->> When forwarding TCP after GRO, software segmentation is very expensive,
->> especially when the checksum needs to be recalculated.
->> One case where that's currently unavoidable is when routing packets over
->> PPPoE. Performance improves significantly when using fraglist GRO
->> implemented in the same way as for UDP.
->>
->> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
->> socket in the same netns as the receiving device. While this may not
->> cover all relevant use cases in multi-netns configurations, it should be
->> good enough for most configurations that need this.
->>
->> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
->> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
->> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
->> 1Gbps.
->>
->> rx-gro-list off: 630 Mbit/s, CPU 35% idle
->> rx-gro-list on:  770 Mbit/s, CPU 40% idle
->>
->> Signe-off-by: Felix Fietkau <nbd@nbd.name>
->> ---
->>  net/ipv4/tcp_offload.c   | 30 ++++++++++++++++++++++++++++++
->>  net/ipv6/tcpv6_offload.c | 33 +++++++++++++++++++++++++++++++++
->>  2 files changed, 63 insertions(+)
->>
->> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
->> index ee5403760775..2ae83f4394dc 100644
->> --- a/net/ipv4/tcp_offload.c
->> +++ b/net/ipv4/tcp_offload.c
->> @@ -406,6 +406,34 @@ void tcp_gro_complete(struct sk_buff *skb)
->>  }
->>  EXPORT_SYMBOL(tcp_gro_complete);
->>
->> +static void tcp4_check_fraglist_gro(struct list_head *head, struct sk_buff *skb,
->> +                                   struct tcphdr *th)
->> +{
->> +       const struct iphdr *iph = skb_gro_network_header(skb);
->> +       struct net *net = dev_net(skb->dev);
+On Fri, 26 Apr 2024 10:57:14 +0200
+Heiko Carstens <hca@linux.ibm.com> wrote:
+
+> On Thu, Apr 25, 2024 at 03:05:55PM +0200, Claudio Imbrenda wrote:
+> > For completeness, introduce _REGION3_ENTRY_HARDWARE_BITS_LARGE,
+> > containing the hardware bits used for large puds.
+> > 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > ---
+> >  arch/s390/include/asm/pgtable.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> > index 3da2995fd196..5c0f840eee2a 100644
+> > --- a/arch/s390/include/asm/pgtable.h
+> > +++ b/arch/s390/include/asm/pgtable.h
+> > @@ -262,6 +262,7 @@ static inline int is_module_addr(void *addr)
+> >  #define _REGION3_ENTRY		(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_LENGTH)
+> >  #define _REGION3_ENTRY_EMPTY	(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_INVALID)
+> >  
+> > +#define _REGION3_ENTRY_HARDWARE_BITS_LARGE	0xffffffff8000073cUL  
 > 
-> Could you defer the initializations of iph and net after the
-> NETIF_F_GRO_FRAGLIST check ?
+> _REGION_ENTRY_HARDWARE_BITS is missing too. :)
+
+right, I will fix it
+
 > 
-> dev_net() has an implicit READ_ONCE() ...
+> And this definition also raises the question if the definition of
+> _SEGMENT_ENTRY_HARDWARE_BITS_LARGE should be changed so it also includes
+> the table type bits, which it probably should.
 
-Will do, thanks.
+tbh I agree
 
-- Felix
+> 
+> These masks are really a bit randomly defined and assume that the
+> ACCF-Validity control bit is never set, and therefore the ACC bitfield can
+> be assumed to be software bits (and they are used as such for format 1
+> segment table entries).
+> 
+> But the ACCF bit is also a hardware bit in any case... oh well.
 
+probably the ACCF bit should also be marked as hardware bit (I had
+actually thought about it, but we don't do it for segments and I wanted
+it to be consistent)
+
+I'll send a v2 with:
+
+segment table type bits
+ACCF bit (both for segments and region3
+_REGION3_ENTRY_HARDWARE_BITS
 
