@@ -1,839 +1,150 @@
-Return-Path: <linux-kernel+bounces-160101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E688B391F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 962A58B3925
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:56:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C9352819A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:55:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 543D2286844
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AD514B093;
-	Fri, 26 Apr 2024 13:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D51155752;
+	Fri, 26 Apr 2024 13:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3iLN1TX"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bajOi7Q0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D1C149C5E;
-	Fri, 26 Apr 2024 13:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1A1152DE6;
+	Fri, 26 Apr 2024 13:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714139638; cv=none; b=UJD32aGp7Lxq4MfxNVs+vkUGOXyR/izEhuG0X7LWRmyg2YFEXFGcUGyw+koe9Ai7PKX2zHCK36F5MsApwCoKoLnjzo+bCarauaeoZLlK2dPIbxGmhPau35k2AP8Mwum6LiQUxPWeKXtf8KHWWonJz+Tkf1iyphoC/Z1w7BcJT8M=
+	t=1714139646; cv=none; b=qiXr+/Vtyvw3ek/7lAzlGnVv8SG1+RW8PYQxOXz6e3s/4Nfu7SCYdEjxlS8s77QDrHfA6VLN0vjbimgsvvT6asmIp3g9Rn2gSWtlR15Y+NkXQhsRaAtgCB8IxG4kc4IqHepH1YsdipxvDGgJ207nSYik4bBMOV6xHQKI/zb6jGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714139638; c=relaxed/simple;
-	bh=rJtXjKg6ZWI5a7lo6Xd17omcsIy+jBYVKlQfUedFurM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eQuMynNGpkrLP51p5PPMEItad4oKSeojvFg/yKFgGPRyfGJBmSRonE8xgAT/hUV5p2C3cJiyo7qHubrDOFY+0SnDNeQE04EB2maYzSTikgQv4oA9M0Gg2n1X1BN7aytUIou6CvKIivkKF3pQp89KS3Q//1xWyjUoC1X9RYcnAkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G3iLN1TX; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dd041acff1so24883271fa.1;
-        Fri, 26 Apr 2024 06:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714139634; x=1714744434; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v/LeaNjTWEUw5QtbBfyzBktuvZcdWjgMJOzSv2xaVgQ=;
-        b=G3iLN1TXyOME9TzjdcsEVzjXD51RrdwcOL4mUIPDllK6G5F2JIbl8ETV+IEOBKCzHg
-         7tQrC8639pkD1/RXxWci3XPQArXffacjKrPRnC1Uqn4jcsQENGDPB3oABsMFFaO8XXmt
-         sAO+Bk0LvqjJ738YMKxY9cHPsORVtkHPVOC8TNvBdMa8+hdl5vUZpMDBYYaTGXhl4jZZ
-         jBhmbT6+qyvxvsbED8EYWdvFALjwmfcOKpEpWTHRJxKwqW89aE988XndyV4SCHh+wn/5
-         zsHkGn9vcI/wC+p+RQdHwclAnsShOXwT39cqgOQPLuIVrcwbZynyNPTklr/itW2ifmab
-         SHpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714139634; x=1714744434;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v/LeaNjTWEUw5QtbBfyzBktuvZcdWjgMJOzSv2xaVgQ=;
-        b=ep+NCGO3qpJlFmTPriZSJQmVIsDLpapreFn0yz3isbwp3x4QO/ZrFVWgyhQSh8+qH5
-         6vMp7kEG/0VNszzMcVSEZa5fmsXvWIpwTgI6R9woayVOwgN/WDwEzCnHOVSvNOp82Stc
-         hiUB8iI3dZYTkzGUuVPN2sU6/v5NYGyIpgkmA/aO0eVvxbQp10BX0xC6cRkdfEevEf32
-         cif2G+Kz88PuMRJPI7e+0e67iCsKYn3cb+Cbnds7dfGxtpotMpcEaEgRlpSjtoLUsVfh
-         7hc4mQNkfauHFeNk9/Xm1Kf4icmex/Bo7sg9LQMGtbLnS8uW6H2znEpIK6pyXVnl5EC6
-         6ytg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGuSHQODdF9YzwdhsdmRVmfdSA6lrwoO+4S7UUDuNTBbrKZQv58FsZ7mn0lr46TbuwoUEjUWgveZpXF1fh4VxvN34UtD4Mrx8UQ5b2IEhIbcZ+t1z4O+4Rk1h9UI/3MA6vFas5Ag==
-X-Gm-Message-State: AOJu0Yw2v2FIpAcnKsaFFVXo4iDtuo+/7x9N6SrPDU7gjmrwrCzGFwAA
-	mrEZm2GOzZGjhC5MXPbOTMAtt0BdN79glE9nsXKE7T6JoSRmWXMA6B/1N2Pc
-X-Google-Smtp-Source: AGHT+IHcqQZY6kCnPEwFlENRusJNjO0vmGYjYddT0dYcsiyirDxc6xCBiVdL2nOCFIo0tjE4Mj3DFA==
-X-Received: by 2002:a2e:94c3:0:b0:2da:e7f7:7315 with SMTP id r3-20020a2e94c3000000b002dae7f77315mr1635334ljh.45.1714139633468;
-        Fri, 26 Apr 2024 06:53:53 -0700 (PDT)
-Received: from rbolboac.. ([2a02:2f0e:320d:e800:f4f8:b5e1:d7d4:bf65])
-        by smtp.gmail.com with ESMTPSA id k6-20020a5d6d46000000b003434f526cb5sm22302919wri.95.2024.04.26.06.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 06:53:53 -0700 (PDT)
-From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	jic23@kernel.org,
-	linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	conor+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	robh@kernel.org,
-	nuno.sa@analog.com
-Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Subject: [PATCH 7/7] drivers: iio: imu: Add support for adis1657x family
-Date: Fri, 26 Apr 2024 16:53:39 +0300
-Message-Id: <20240426135339.185602-8-ramona.bolboaca13@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
-References: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
+	s=arc-20240116; t=1714139646; c=relaxed/simple;
+	bh=bAxQvKHPxifR8Q+hfGehNFp9bGXBbIA6BrOH/rfmmCg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IkaXUNESLAYFmvfMpiGWBxU2wDa/hYMSiEqFnS4X1vkRQGsdAay3OFStVAo9Rfb8QWYa2CgBH+cqbGzKqSqDO7tAr493Tj1t+vPP5EyX3jPOuCufDjvhJo/I6IN/rMSXe0wFfQmG8H7Tk5HopXq3Iq/vBvv3Q0lNHseSa8TOYg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bajOi7Q0; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714139645; x=1745675645;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=bAxQvKHPxifR8Q+hfGehNFp9bGXBbIA6BrOH/rfmmCg=;
+  b=bajOi7Q0pcSyNXuFFJt6aHiTZhvwXd/6138yMkwPEAZMLehxCGvF1P5Q
+   1JRXG8ezTqOZk1LnmdcpYzJ7D/WIBQ4UNJdTvv0jDid0vo7Afg6eIiTua
+   ECQPXZ1K96H4lRJxjkbN5F1VFE+kJJVHOpulv6BeQfQ8T2c6sUal//NF4
+   3ENpqmD0Zg1g0vnu4OzkuBBdaeAWOb37OdyU9K3xUfxPx9hGbKGY3vcpC
+   //oxjug7nDKf3wc/KC+LLzkxMAVMXJn8TYUbjXk7ru4tn8XFlgbjINgt/
+   rTd9ei0V/o+3SkBgB16nv4KxzezcC2tljrnLwi47FjuJ4phSRx3hscLYt
+   Q==;
+X-CSE-ConnectionGUID: /pONWJr7SPOXzCDZXDflzA==
+X-CSE-MsgGUID: dnlJfU6PSamyKeeCFrFXAA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21279808"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="21279808"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 06:54:03 -0700
+X-CSE-ConnectionGUID: 1kOa4ofjSCepnR1fziNLxw==
+X-CSE-MsgGUID: 3vqCDBAgR12hvaQWf3DXlw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="25428927"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 06:54:03 -0700
+Received: from [10.212.113.23] (kliang2-mobl1.ccr.corp.intel.com [10.212.113.23])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 1632C20B8CF1;
+	Fri, 26 Apr 2024 06:54:00 -0700 (PDT)
+Message-ID: <a55aca0f-47b0-4c0a-b4dc-089018bd9419@linux.intel.com>
+Date: Fri, 26 Apr 2024 09:53:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Sean Christopherson <seanjc@google.com>
+Cc: Mingwei Zhang <mizhang@google.com>, Dapeng Mi
+ <dapeng1.mi@linux.intel.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+ <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
+ <Zikeh2eGjwzDbytu@google.com>
+ <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
+ <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+ <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+ <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
+ <ZirPGnSDUzD-iWwc@google.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <ZirPGnSDUzD-iWwc@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add support for ADIS1657X family devices in already exiting ADIS16475
-driver.
 
-Signed-off-by: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
----
- drivers/iio/imu/adis16475.c | 536 +++++++++++++++++++++++++++++++++---
- 1 file changed, 499 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 7cfef553f298..c759ec456258 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -14,6 +14,7 @@
- #include <linux/iio/buffer.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/imu/adis.h>
-+#include <linux/iio/sysfs.h>
- #include <linux/iio/trigger_consumer.h>
- #include <linux/irq.h>
- #include <linux/lcm.h>
-@@ -52,6 +53,8 @@
- 				FIELD_PREP(ADIS16475_MSG_CTRL_DR_POL_MASK, x)
- #define ADIS16475_SYNC_MODE_MASK	GENMASK(4, 2)
- #define ADIS16475_SYNC_MODE(x)		FIELD_PREP(ADIS16475_SYNC_MODE_MASK, x)
-+#define ADIS16475_SYNC_4KHZ_MASK	BIT(11)
-+#define ADIS16475_SYNC_4KHZ(x)		FIELD_PREP(ADIS16475_SYNC_4KHZ_MASK, x)
- #define ADIS16475_REG_UP_SCALE		0x62
- #define ADIS16475_REG_DEC_RATE		0x64
- #define ADIS16475_REG_GLOB_CMD		0x68
-@@ -66,14 +69,31 @@
- #define ADIS16500_BURST32(x)		FIELD_PREP(ADIS16500_BURST32_MASK, x)
- /* number of data elements in burst mode */
- #define ADIS16475_BURST32_MAX_DATA	32
-+#define ADIS16575_BURST32_MAX_DATA	34
- #define ADIS16475_BURST_MAX_DATA	20
- #define ADIS16475_MAX_SCAN_DATA		20
- /* spi max speed in brust mode */
- #define ADIS16475_BURST_MAX_SPEED	1000000
-+#define ADIS16575_BURST_MAX_SPEED	8000000
- #define ADIS16475_LSB_DEC_MASK		0
- #define ADIS16475_LSB_FIR_MASK		1
- #define ADIS16500_BURST_DATA_SEL_0_CHN_MASK	GENMASK(5, 0)
- #define ADIS16500_BURST_DATA_SEL_1_CHN_MASK	GENMASK(12, 7)
-+#define ADIS16475_MAX_FIFO_WM		511
-+#define ADIS16475_REG_FIFO_CTRL		0x5A
-+#define ADIS16475_WM_LVL_MASK		GENMASK(15, 4)
-+#define ADIS16475_WM_LVL(x)		FIELD_PREP(ADIS16475_WM_LVL_MASK, x)
-+#define ADIS16475_WM_POL_MASK		BIT(3)
-+#define ADIS16475_WM_POL(x)		FIELD_PREP(ADIS16475_WM_POL_MASK, x)
-+#define ADIS16475_WM_EN_MASK		BIT(2)
-+#define ADIS16475_WM_EN(x)		FIELD_PREP(ADIS16475_WM_EN_MASK, x)
-+#define ADIS16475_OVERFLOW_MASK		BIT(1)
-+#define ADIS16475_STOP_ENQUEUE		FIELD_PREP(ADIS16475_OVERFLOW_MASK, 0)
-+#define ADIS16475_OVERWRITE_OLDEST	FIELD_PREP(ADIS16475_OVERFLOW_MASK, 1)
-+#define ADIS16475_FIFO_EN_MASK		BIT(0)
-+#define ADIS16475_FIFO_EN(x)		FIELD_PREP(ADIS16475_FIFO_EN_MASK, x)
-+#define ADIS16475_FIFO_FLUSH_CMD	BIT(5)
-+#define ADIS16475_REG_FIFO_CNT		0x3C
- 
- enum {
- 	ADIS16475_SYNC_DIRECT = 1,
-@@ -95,6 +115,9 @@ struct adis16475_chip_info {
- 	const char *name;
- #define ADIS16475_HAS_BURST32		BIT(0)
- #define ADIS16475_HAS_BURST_DELTA_DATA	BIT(1)
-+#define ADIS16475_HAS_TIMESTAMP32	BIT(2)
-+#define ADIS16475_NEEDS_BURST_REQUEST	BIT(3)
-+#define ADIS16475_HAS_FIFO		BIT(4)
- 	const long flags;
- 	u32 num_channels;
- 	u32 gyro_max_val;
-@@ -116,6 +139,7 @@ struct adis16475 {
- 	bool burst32;
- 	unsigned long lsb_flag;
- 	u16 sync_mode;
-+	u16 fifo_watermark;
- 	/* Alignment needed for the timestamp */
- 	__be16 data[ADIS16475_MAX_SCAN_DATA] __aligned(8);
- };
-@@ -310,6 +334,9 @@ static int adis16475_set_freq(struct adis16475 *st, const u32 freq)
- 	u16 dec;
- 	int ret;
- 	u32 sample_rate = st->clk_freq;
-+	/* The optimal sample rate for the supported IMUs is between int_clk - 100 and int_clk + 100. */
-+	u32 max_sample_rate =  st->info->int_clk * 1000 + 100000;
-+	u32 min_sample_rate =  st->info->int_clk * 1000 - 100000;
- 
- 	if (!freq)
- 		return -EINVAL;
-@@ -317,8 +344,9 @@ static int adis16475_set_freq(struct adis16475 *st, const u32 freq)
- 	adis_dev_lock(&st->adis);
- 	/*
- 	 * When using sync scaled mode, the input clock needs to be scaled so that we have
--	 * an IMU sample rate between (optimally) 1900 and 2100. After this, we can use the
--	 * decimation filter to lower the sampling rate in order to get what the user wants.
-+	 * an IMU sample rate between (optimally) int_clk - 100 and int_clk + 100.
-+	 * After this, we can use the decimation filter to lower the sampling rate in order
-+	 * to get what the user wants.
- 	 * Optimally, the user sample rate is a multiple of both the IMU sample rate and
- 	 * the input clock. Hence, calculating the sync_scale dynamically gives us better
- 	 * chances of achieving a perfect/integer value for DEC_RATE. The math here is:
-@@ -336,23 +364,25 @@ static int adis16475_set_freq(struct adis16475 *st, const u32 freq)
- 		 * solution. In this case, we get the highest multiple of the input clock
- 		 * lower than the IMU max sample rate.
- 		 */
--		if (scaled_rate > 2100000)
--			scaled_rate = 2100000 / st->clk_freq * st->clk_freq;
-+		if (scaled_rate > max_sample_rate)
-+			scaled_rate = max_sample_rate / st->clk_freq * st->clk_freq;
-+
- 		else
--			scaled_rate = 2100000 / scaled_rate * scaled_rate;
-+			scaled_rate = max_sample_rate / scaled_rate * scaled_rate;
- 
- 		/*
- 		 * This is not an hard requirement but it's not advised to run the IMU
--		 * with a sample rate lower than 1900Hz due to possible undersampling
--		 * issues. However, there are users that might really want to take the risk.
--		 * Hence, we provide a module parameter for them. If set, we allow sample
--		 * rates lower than 1.9KHz. By default, we won't allow this and we just roundup
--		 * the rate to the next multiple of the input clock bigger than 1.9KHz. This
--		 * is done like this as in some cases (when DEC_RATE is 0) might give
--		 * us the closest value to the one desired by the user...
-+		 * with a sample rate lower than internal clock frequency, due to possible
-+		 * undersampling issues. However, there are users that might really want
-+		 * to take the risk. Hence, we provide a module parameter for them. If set,
-+		 * we allow sample rates lower than internal clock frequency.
-+		 * By default, we won't allow this and we just roundup the rate to the next
-+		 *  multiple of the input clock. This is done like this as in some cases
-+		 * (when DEC_RATE is 0) might give us the closest value to the one desired
-+		 * by the user...
- 		 */
--		if (scaled_rate < 1900000 && !low_rate_allow)
--			scaled_rate = roundup(1900000, st->clk_freq);
-+		if (scaled_rate < min_sample_rate && !low_rate_allow)
-+			scaled_rate = roundup(min_sample_rate, st->clk_freq);
- 
- 		sync_scale = scaled_rate / st->clk_freq;
- 		ret = __adis_write_reg_16(&st->adis, ADIS16475_REG_UP_SCALE, sync_scale);
-@@ -437,6 +467,130 @@ static int adis16475_set_filter(struct adis16475 *st, const u32 filter)
- 	return 0;
- }
- 
-+static ssize_t adis16475_get_fifo_enabled(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-+	struct adis16475 *st = iio_priv(indio_dev);
-+	int ret;
-+	u16 val;
-+
-+	ret = adis_read_reg_16(&st->adis, ADIS16475_REG_FIFO_CTRL, &val);
-+	if (ret)
-+		return ret;
-+	val = FIELD_GET(ADIS16475_FIFO_EN_MASK, val);
-+
-+	return sysfs_emit(buf, "%d\n", val);
-+}
-+
-+static ssize_t adis16475_get_fifo_watermark(struct device *dev,
-+					    struct device_attribute *attr,
-+					    char *buf)
-+{
-+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-+	struct adis16475 *st = iio_priv(indio_dev);
-+
-+	int ret;
-+	u16 val;
-+
-+	ret = adis_read_reg_16(&st->adis, ADIS16475_REG_FIFO_CTRL, &val);
-+	if (ret)
-+		return ret;
-+	val = FIELD_GET(ADIS16475_WM_LVL_MASK, val) + 1;
-+
-+	return sysfs_emit(buf, "%d\n", val);
-+}
-+
-+static ssize_t hwfifo_watermark_min_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	return sysfs_emit(buf, "%s\n", "1");
-+}
-+
-+static ssize_t hwfifo_watermark_max_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	return sysfs_emit(buf, "%s\n", __stringify(ADIS16475_MAX_FIFO_WM));
-+}
-+
-+static IIO_DEVICE_ATTR_RO(hwfifo_watermark_min, 0);
-+static IIO_DEVICE_ATTR_RO(hwfifo_watermark_max, 0);
-+static IIO_DEVICE_ATTR(hwfifo_watermark, 0444,
-+		       adis16475_get_fifo_watermark, NULL, 0);
-+static IIO_DEVICE_ATTR(hwfifo_enabled, 0444,
-+		       adis16475_get_fifo_enabled, NULL, 0);
-+
-+static const struct attribute *adis16475_fifo_attributes[] = {
-+	&iio_dev_attr_hwfifo_watermark_min.dev_attr.attr,
-+	&iio_dev_attr_hwfifo_watermark_max.dev_attr.attr,
-+	&iio_dev_attr_hwfifo_watermark.dev_attr.attr,
-+	&iio_dev_attr_hwfifo_enabled.dev_attr.attr,
-+	NULL,
-+};
-+
-+static int adis16475_buffer_postenable(struct iio_dev *indio_dev)
-+{
-+	struct adis16475 *st = iio_priv(indio_dev);
-+	struct adis *adis = &st->adis;
-+	u16 val;
-+
-+	val = ADIS16475_FIFO_EN(1);
-+	return adis_update_bits(adis, ADIS16475_REG_FIFO_CTRL, ADIS16475_FIFO_EN_MASK, val);
-+}
-+
-+static int adis16475_buffer_postdisable(struct iio_dev *indio_dev)
-+{
-+	struct adis16475 *st = iio_priv(indio_dev);
-+	struct adis *adis = &st->adis;
-+	int ret;
-+	u16 val;
-+
-+	adis_dev_lock(&st->adis);
-+
-+	val = ADIS16475_FIFO_EN(0);
-+	ret = __adis_update_bits(adis, ADIS16475_REG_FIFO_CTRL, ADIS16475_FIFO_EN_MASK, val);
-+	if (ret)
-+		goto unlock;
-+
-+	ret = __adis_write_reg_16(adis, ADIS16475_REG_GLOB_CMD,
-+				  ADIS16475_FIFO_FLUSH_CMD);
-+
-+unlock:
-+	adis_dev_unlock(&st->adis);
-+	return ret;
-+}
-+
-+static const struct iio_buffer_setup_ops adis16475_buffer_ops = {
-+	.postenable = adis16475_buffer_postenable,
-+	.postdisable = adis16475_buffer_postdisable,
-+};
-+
-+static int adis16475_set_watermark(struct iio_dev *indio_dev, unsigned int val)
-+{
-+	struct adis16475 *st  = iio_priv(indio_dev);
-+	int ret;
-+	u16 wm_lvl;
-+
-+	adis_dev_lock(&st->adis);
-+
-+	if (val > ADIS16475_MAX_FIFO_WM)
-+		val = ADIS16475_MAX_FIFO_WM;
-+
-+	wm_lvl = ADIS16475_WM_LVL(val - 1);
-+	ret = __adis_update_bits(&st->adis, ADIS16475_REG_FIFO_CTRL, ADIS16475_WM_LVL_MASK, wm_lvl);
-+	if (ret)
-+		goto unlock;
-+
-+	st->fifo_watermark = val;
-+
-+unlock:
-+	adis_dev_unlock(&st->adis);
-+	return ret;
-+}
-+
- static const u32 adis16475_calib_regs[] = {
- 	[ADIS16475_SCAN_GYRO_X] = ADIS16475_REG_X_GYRO_BIAS_L,
- 	[ADIS16475_SCAN_GYRO_Y] = ADIS16475_REG_Y_GYRO_BIAS_L,
-@@ -668,6 +822,12 @@ enum adis16475_variant {
- 	ADIS16507_1,
- 	ADIS16507_2,
- 	ADIS16507_3,
-+	ADIS16575_2,
-+	ADIS16575_3,
-+	ADIS16576_2,
-+	ADIS16576_3,
-+	ADIS16577_2,
-+	ADIS16577_3,
- };
- 
- enum {
-@@ -725,6 +885,12 @@ static const struct adis16475_sync adis16475_sync_mode[] = {
- 	{ ADIS16475_SYNC_PULSE, 1000, 2100 },
- };
- 
-+static const struct adis16475_sync adis16575_sync_mode[] = {
-+	{ ADIS16475_SYNC_OUTPUT },
-+	{ ADIS16475_SYNC_DIRECT, 1900, 4100 },
-+	{ ADIS16475_SYNC_SCALED, 1, 400 },
-+};
-+
- static const struct adis_timeout adis16475_timeouts = {
- 	.reset_ms = 200,
- 	.sw_reset_ms = 200,
-@@ -1156,6 +1322,150 @@ static const struct adis16475_chip_info adis16475_chip_info[] = {
- 					    ADIS16475_BURST32_MAX_DATA,
- 					    ADIS16475_BURST_MAX_SPEED),
- 	},
-+	[ADIS16575_2] = {
-+		.name = "adis16575-2",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
-+		.accel_max_val = 8,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(450),
-+		.deltvel_max_val = 100,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16575, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
-+	[ADIS16575_3] = {
-+		.name = "adis16575-3",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
-+		.accel_max_val = 8,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(2000),
-+		.deltvel_max_val = 100,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16575, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
-+	[ADIS16576_2] = {
-+		.name = "adis16576-2",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
-+		.accel_max_val = 40,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(450),
-+		.deltvel_max_val = 125,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16576, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
-+	[ADIS16576_3] = {
-+		.name = "adis16576-3",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
-+		.accel_max_val = 40,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(2000),
-+		.deltvel_max_val = 125,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16576, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
-+	[ADIS16577_2] = {
-+		.name = "adis16577-2",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(40 << 16),
-+		.accel_max_val = 40,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(450),
-+		.deltvel_max_val = 400,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16577, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
-+	[ADIS16577_3] = {
-+		.name = "adis16577-3",
-+		.num_channels = ARRAY_SIZE(adis16477_channels),
-+		.channels = adis16477_channels,
-+		.gyro_max_val = 1,
-+		.gyro_max_scale = IIO_RAD_TO_DEGREE(10 << 16),
-+		.accel_max_val = 40,
-+		.accel_max_scale = IIO_M_S_2_TO_G(32000 << 16),
-+		.temp_scale = 100,
-+		.deltang_max_val = IIO_DEGREE_TO_RAD(2000),
-+		.deltvel_max_val = 400,
-+		.int_clk = 4000,
-+		.max_dec = 3999,
-+		.sync = adis16575_sync_mode,
-+		.num_sync = ARRAY_SIZE(adis16575_sync_mode),
-+		.flags = ADIS16475_HAS_BURST32 |
-+			 ADIS16475_HAS_BURST_DELTA_DATA |
-+			 ADIS16475_NEEDS_BURST_REQUEST |
-+			 ADIS16475_HAS_TIMESTAMP32 |
-+			 ADIS16475_HAS_FIFO,
-+		.adis_data = ADIS16475_DATA(16577, &adis16475_timeouts,
-+					    ADIS16575_BURST32_MAX_DATA,
-+					    ADIS16575_BURST_MAX_SPEED),
-+	},
- };
- 
- static int adis16475_update_scan_mode(struct iio_dev *indio_dev,
-@@ -1188,17 +1498,14 @@ static const struct iio_info adis16475_info = {
- 	.write_raw = &adis16475_write_raw,
- 	.update_scan_mode = adis16475_update_scan_mode,
- 	.debugfs_reg_access = adis_debugfs_reg_access,
-+	.hwfifo_set_watermark = adis16475_set_watermark,
- };
- 
- static bool adis16475_validate_crc(const u8 *buffer, u16 crc,
--				   const bool burst32)
-+				   u16 burst_size, u16 start_idx)
- {
- 	int i;
--	/* extra 6 elements for low gyro and accel */
--	const u16 sz = burst32 ? ADIS16475_BURST32_MAX_DATA :
--		ADIS16475_BURST_MAX_DATA;
--
--	for (i = 0; i < sz - 2; i++)
-+	for (i = start_idx; i < burst_size - 2; i++)
- 		crc -= buffer[i];
- 
- 	return crc == 0;
-@@ -1226,8 +1533,11 @@ static void adis16475_burst32_check(struct adis16475 *st)
- 		 * In 32-bit mode we need extra 2 bytes for all gyro
- 		 * and accel channels.
- 		 */
--		adis->burst_extra_len = 6 * sizeof(u16);
--		adis->xfer[1].len += 6 * sizeof(u16);
-+		adis->burst_extra_len = (6 + !!(st->info->flags & ADIS16475_HAS_TIMESTAMP32)) *
-+					sizeof(u16);
-+		adis->xfer[1].len += (6 + !!(st->info->flags & ADIS16475_HAS_TIMESTAMP32)) *
-+				     sizeof(u16);
-+
- 		dev_dbg(&adis->spi->dev, "Enable burst32 mode, xfer:%d",
- 			adis->xfer[1].len);
- 
-@@ -1243,7 +1553,8 @@ static void adis16475_burst32_check(struct adis16475 *st)
- 
- 		/* Remove the extra bits */
- 		adis->burst_extra_len = 0;
--		adis->xfer[1].len -= 6 * sizeof(u16);
-+		adis->xfer[1].len -= (6 + !!(st->info->flags & ADIS16475_HAS_TIMESTAMP32)) *
-+				     sizeof(u16);
- 		dev_dbg(&adis->spi->dev, "Disable burst32 mode, xfer:%d\n",
- 			adis->xfer[1].len);
- 	}
-@@ -1258,20 +1569,31 @@ static int adis16475_push_single_sample(struct iio_poll_func *pf)
- 	__be16 *buffer;
- 	u16 crc;
- 	bool valid;
-+	u8 crc_offset = 9;
-+	u16 burst_size = ADIS16475_BURST_MAX_DATA;
-+	u16 start_idx = (st->info->flags & ADIS16475_HAS_TIMESTAMP32) ? 2 : 0;
-+
- 	/* offset until the first element after gyro and accel */
- 	const u8 offset = st->burst32 ? 13 : 7;
- 
-+	if (st->burst32) {
-+		crc_offset = (st->info->flags & ADIS16475_HAS_TIMESTAMP32) ? 16 : 15;
-+		burst_size = (st->info->flags & ADIS16475_HAS_TIMESTAMP32) ?
-+			     ADIS16575_BURST32_MAX_DATA : ADIS16475_BURST32_MAX_DATA;
-+	}
-+
- 	ret = spi_sync(adis->spi, &adis->msg);
- 	if (ret)
--		goto check_burst32;
-+		return ret;
- 
- 	buffer = adis->buffer;
- 
--	crc = be16_to_cpu(buffer[offset + 2]);
--	valid = adis16475_validate_crc(adis->buffer, crc, st->burst32);
-+	crc = be16_to_cpu(buffer[crc_offset]);
-+	valid = adis16475_validate_crc(adis->buffer, crc, burst_size, start_idx);
-+
- 	if (!valid) {
- 		dev_err(&adis->spi->dev, "Invalid crc\n");
--		goto check_burst32;
-+		return ret;
- 	}
- 
- 	for_each_set_bit(bit, indio_dev->active_scan_mask,
-@@ -1332,22 +1654,111 @@ static int adis16475_push_single_sample(struct iio_poll_func *pf)
- 	}
- 
- 	iio_push_to_buffers_with_timestamp(indio_dev, st->data, pf->timestamp);
--check_burst32:
-+
-+	return 0;
-+}
-+
-+static irqreturn_t adis16475_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct adis16475 *st = iio_priv(indio_dev);
-+
-+	adis16475_push_single_sample(pf);
- 	/*
- 	 * We only check the burst mode at the end of the current capture since
- 	 * it takes a full data ready cycle for the device to update the burst
- 	 * array.
- 	 */
- 	adis16475_burst32_check(st);
--	return ret;
-+
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
- }
- 
--static irqreturn_t adis16475_trigger_handler(int irq, void *p)
-+static int adis16575_custom_burst_read(struct iio_poll_func *pf, u8 burst_req)
-+{
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct adis16475 *st = iio_priv(indio_dev);
-+	struct adis *adis = &st->adis;
-+	unsigned int burst_length, burst_max_length;
-+	u8 *tx;
-+
-+	burst_length = adis->data->burst_len + adis->burst_extra_len;
-+
-+	if (adis->data->burst_max_len)
-+		burst_max_length = adis->data->burst_max_len;
-+	else
-+		burst_max_length = burst_length;
-+
-+	tx = adis->buffer + burst_max_length;
-+	tx[0] = ADIS_READ_REG(burst_req);
-+
-+	if (burst_req)
-+		return spi_sync(adis->spi, &adis->msg);
-+
-+	return adis16475_push_single_sample(pf);
-+}
-+
-+/*
-+ * This handler is meant to be used for devices which support burst readings
-+ * from FIFO (namely devices from adis1657x family).
-+ * In order to pop the FIFO the 0x68 0x00 FIFO pop burst request has to be sent.
-+ * If the previous device command was not a FIFO pop burst request, the FIFO pop
-+ * burst request will simply pop the FIFO without returning valid data.
-+ * For the nth consecutive burst request, the
-+ * device will send the data popped with the (n-1)th consecutive burst request.
-+ * In order to read the data which was popped previously, without popping the FIFO,
-+ * the 0x00 0x00 burst request has to be sent.
-+ * If after a 0x68 0x00 FIFO pop burst request, there is any other device access
-+ * different from a 0x68 0x00 or a 0x00 0x00 burst request, the FIFO data popped
-+ * previously will be lost.
-+ */
-+static irqreturn_t adis16475_trigger_handler_with_fifo(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct adis16475 *st = iio_priv(indio_dev);
-+	struct adis *adis = &st->adis;
-+	int ret;
-+	u16 fifo_cnt, i;
- 
--	adis16475_push_single_sample(pf);
-+	adis_dev_lock(&st->adis);
-+
-+	ret = __adis_read_reg_16(adis, ADIS16475_REG_FIFO_CNT, &fifo_cnt);
-+	if (ret || fifo_cnt < 2)
-+		goto unlock;
-+
-+	if (fifo_cnt > st->fifo_watermark)
-+		fifo_cnt = st->fifo_watermark;
-+
-+	/*
-+	 * First burst request - FIFO pop: popped data will be returned in the
-+	 * next burst request.
-+	 */
-+	ret = adis16575_custom_burst_read(pf, adis->data->burst_reg_cmd);
-+	if (ret)
-+		goto unlock;
-+
-+	for (i = 0; i < fifo_cnt - 1; i++) {
-+		ret = adis16475_push_single_sample(pf);
-+		if (ret)
-+			goto unlock;
-+	}
-+
-+	/* FIFO read without popping */
-+	ret = adis16575_custom_burst_read(pf, 0);
-+	if (ret)
-+		goto unlock;
-+
-+unlock:
-+	/*
-+	 * We only check the burst mode at the end of the current capture since
-+	 * reading data from registers will impact the FIFO reading.
-+	 */
-+	adis16475_burst32_check(st);
-+	adis_dev_unlock(&st->adis);
- 	iio_trigger_notify_done(indio_dev->trig);
- 
- 	return IRQ_HANDLED;
-@@ -1359,6 +1770,17 @@ static int adis16475_config_sync_mode(struct adis16475 *st)
- 	struct device *dev = &st->adis.spi->dev;
- 	const struct adis16475_sync *sync;
- 	u32 sync_mode;
-+	u16 max_sample_rate =  st->info->int_clk + 100;
-+	u16 val;
-+
-+	/* if available, enable 4khz internal clock */
-+	if (st->info->int_clk == 4000) {
-+		val = ADIS16475_SYNC_4KHZ(1);
-+		ret = __adis_update_bits(&st->adis, ADIS16475_REG_MSG_CTRL,
-+					 ADIS16475_SYNC_4KHZ_MASK, val);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* default to internal clk */
- 	st->clk_freq = st->info->int_clk * 1000;
-@@ -1398,10 +1820,9 @@ static int adis16475_config_sync_mode(struct adis16475 *st)
- 			/*
- 			 * In sync scaled mode, the IMU sample rate is the clk_freq * sync_scale.
- 			 * Hence, default the IMU sample rate to the highest multiple of the input
--			 * clock lower than the IMU max sample rate. The optimal range is
--			 * 1900-2100 sps...
-+			 * clock lower than the IMU max sample rate.
- 			 */
--			up_scale = 2100 / st->clk_freq;
-+			up_scale = max_sample_rate / st->clk_freq;
- 
- 			ret = __adis_write_reg_16(&st->adis,
- 						  ADIS16475_REG_UP_SCALE,
-@@ -1467,7 +1888,23 @@ static int adis16475_config_irq_pin(struct adis16475 *st)
- 	 */
- 	usleep_range(250, 260);
- 
--	return 0;
-+	/*
-+	 * If the device has FIFO support, configure the watermark polarity
-+	 * pin as well.
-+	 */
-+	if (st->info->flags & ADIS16475_HAS_FIFO) {
-+		val = ADIS16475_WM_POL(polarity);
-+		ret = adis_update_bits(&st->adis, ADIS16475_REG_FIFO_CTRL,
-+				       ADIS16475_WM_POL_MASK, val);
-+		if (ret)
-+			return ret;
-+
-+		/* Enable watermark interrupt pin. */
-+		val = ADIS16475_WM_EN(1);
-+		ret = adis_update_bits(&st->adis, ADIS16475_REG_FIFO_CTRL, ADIS16475_WM_EN_MASK, val);
-+	}
-+
-+	return ret;
- }
- 
- 
-@@ -1509,8 +1946,21 @@ static int adis16475_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
--	ret = devm_adis_setup_buffer_and_trigger(&st->adis, indio_dev,
--						 adis16475_trigger_handler);
-+	if (st->info->flags & ADIS16475_HAS_FIFO) {
-+		ret = devm_adis_setup_buffer_and_trigger_with_attrs(&st->adis, indio_dev,
-+								    adis16475_trigger_handler_with_fifo,
-+								    &adis16475_buffer_ops,
-+								    adis16475_fifo_attributes);
-+		if (ret)
-+			return ret;
-+		/* Update overflow behavior to always overwrite the oldest sample. */
-+		u16 val = ADIS16475_OVERWRITE_OLDEST;
-+
-+		ret = adis_update_bits(&st->adis, ADIS16475_REG_FIFO_CTRL, ADIS16475_OVERFLOW_MASK, val);
-+	} else {
-+		ret = devm_adis_setup_buffer_and_trigger(&st->adis, indio_dev,
-+							 adis16475_trigger_handler);
-+	}
- 	if (ret)
- 		return ret;
- 
-@@ -1566,6 +2016,18 @@ static const struct of_device_id adis16475_of_match[] = {
- 		.data = &adis16475_chip_info[ADIS16507_2] },
- 	{ .compatible = "adi,adis16507-3",
- 		.data = &adis16475_chip_info[ADIS16507_3] },
-+	{ .compatible = "adi,adis16575-2",
-+		.data = &adis16475_chip_info[ADIS16575_2] },
-+	{ .compatible = "adi,adis16575-3",
-+		.data = &adis16475_chip_info[ADIS16575_3] },
-+	{ .compatible = "adi,adis16576-2",
-+		.data = &adis16475_chip_info[ADIS16576_2] },
-+	{ .compatible = "adi,adis16576-3",
-+		.data = &adis16475_chip_info[ADIS16576_3] },
-+	{ .compatible = "adi,adis16577-2",
-+		.data = &adis16475_chip_info[ADIS16577_2] },
-+	{ .compatible = "adi,adis16577-3",
-+		.data = &adis16475_chip_info[ADIS16577_3] },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, adis16475_of_match);
--- 
-2.34.1
+On 2024-04-25 5:46 p.m., Sean Christopherson wrote:
+> On Thu, Apr 25, 2024, Kan Liang wrote:
+>> On 2024-04-25 4:16 p.m., Mingwei Zhang wrote:
+>>> On Thu, Apr 25, 2024 at 9:13 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>> It should not happen. For the current implementation, perf rejects all
+>>>> the !exclude_guest system-wide event creation if a guest with the vPMU
+>>>> is running.
+>>>> However, it's possible to create an exclude_guest system-wide event at
+>>>> any time. KVM cannot use the information from the VM-entry to decide if
+>>>> there will be active perf events in the VM-exit.
+>>>
+>>> Hmm, why not? If there is any exclude_guest system-wide event,
+>>> perf_guest_enter() can return something to tell KVM "hey, some active
+>>> host events are swapped out. they are originally in counter #2 and
+>>> #3". If so, at the time when perf_guest_enter() returns, KVM will ack
+>>> that and keep it in its pmu data structure.
+>>
+>> I think it's possible that someone creates !exclude_guest event after
+> 
+> I assume you mean an exclude_guest=1 event?  Because perf should be in a state
+> where it rejects exclude_guest=0 events.
+>
 
+Right.
+
+>> the perf_guest_enter(). The stale information is saved in the KVM. Perf
+>> will schedule the event in the next perf_guest_exit(). KVM will not know it.
+> 
+> Ya, the creation of an event on a CPU that currently has guest PMU state loaded
+> is what I had in mind when I suggested a callback in my sketch:
+> 
+>  :  D. Add a perf callback that is invoked from IRQ context when perf wants to
+>  :     configure a new PMU-based events, *before* actually programming the MSRs,
+>  :     and have KVM's callback put the guest PMU state
+> 
+> It's a similar idea to TIF_NEED_FPU_LOAD, just that instead of a common chunk of
+> kernel code swapping out the guest state (kernel_fpu_begin()), it's a callback
+> into KVM.
+
+Yes, a callback should be required. I think it should be done right
+before switching back to the host perf events, so there are an accurate
+active event list.
+
+Thanks,
+Kan
 
