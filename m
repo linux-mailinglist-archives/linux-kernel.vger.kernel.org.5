@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-159583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F21938B309A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9139D8B309D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:38:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A325C2850E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:37:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C46E11C20F12
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB8A13A889;
-	Fri, 26 Apr 2024 06:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358EE13A894;
+	Fri, 26 Apr 2024 06:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y5X3Pd/x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XOZEMv1h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E6C139CFF;
-	Fri, 26 Apr 2024 06:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7001913A868;
+	Fri, 26 Apr 2024 06:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714113456; cv=none; b=gNtNQEJEkXikIXihnd0QsgQRzcE6yJrFL4Rxtghr18jpzdgBcjRonwR9zGtlOp3QO441hiF4Q7Y2pr8z/mdAjrFMeeu+YfQeSLG6iJPDo8T352bofBsZfrCunlUY55oSV5O68Wn3DXXYYplBk32yKKe40qbiLfOqq4lteGWw7Wk=
+	t=1714113476; cv=none; b=uBN0grGFtmau2FWwI9jjypxHl5ZxCgfRnzt7IgEJLg3FNnXjDAIsK66n81MJp+/RtcR3vwdYsTyDUetmtpCq8M1o/k99WsADZJvFOyzxXKuTfD5tQR1LvLq1lFuVzip7AjOF2NuxI7cy0276E0unUZDaTJoGSPihaGBqem950SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714113456; c=relaxed/simple;
-	bh=GtFGLKTg+JvNMOZGqXHx0ThjXQud+Q4uyZygnAPI0Yk=;
+	s=arc-20240116; t=1714113476; c=relaxed/simple;
+	bh=Kqv+/dQuHNOj6HdybQunyz+ORJ6ZL5chgk9QCbFLH+Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f856dTQEhviulF7BnLdySKE1ocIDPWwLfmRYErFRGrv0RyQffmK5w4MLOdlj2t8t29IvSRrMpfuICh0+k7Vvu5S+Y7U2x1B0NiMswIJdp28bZU0pDlAA8ctclwzHBlrWnNrIFpH+rkBlq2vz//+GXS51Go6Hp5+csJBG7IkTdQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y5X3Pd/x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8303C113CD;
-	Fri, 26 Apr 2024 06:37:32 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=PTWeiB7GAxct3chJ8UUi2jhRvwk2wO7GvENXFw5yA4suGUTfOYkE7kH3fak0DyjGlKRb/oLzS+68md/yYoUx3doG9EcBwaFSuzqg1qmXOWx0ZMZN1ss4XdgdWd4zd6V+XQWY44tzlnNOkBjeu6qdhmEsiZgnnQEwFI/Ju3arrLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XOZEMv1h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 945B9C113CD;
+	Fri, 26 Apr 2024 06:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714113456;
-	bh=GtFGLKTg+JvNMOZGqXHx0ThjXQud+Q4uyZygnAPI0Yk=;
+	s=k20201202; t=1714113475;
+	bh=Kqv+/dQuHNOj6HdybQunyz+ORJ6ZL5chgk9QCbFLH+Q=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Y5X3Pd/xFOUuOzG9yU8VK8x1NkmvDKRoCDoescnbVVJI5Rz29YjTKQsS+rMYRoNj5
-	 g/fg86kAe7agMLT6lmpCa0L5gJnxwE8O2YmZRT7Ikf1qGoCNt+Y34hEQyI1g7naN+C
-	 WWHQXKCsxtk4mlESk61wpTYKhxCHfDqxsK9tBhbbWgeY1LjgW761Q/dATMm7CenwGS
-	 WpJdlmd4yFkl9Ypielf6TYp6KNH0mOLUh/zHIH/XXRWkrrQnEN8KjBJLMIxpSc4WIs
-	 bXH7C7j3QSE+IGz7VIQg0diktUk80p/C5yJJmhkUcQnhosfPXbUABjdsrGJucd8FrH
-	 fUWAzD39vuPvw==
-Message-ID: <79fb3842-62c9-4e44-ba53-cd66cf332b75@kernel.org>
-Date: Fri, 26 Apr 2024 08:37:30 +0200
+	b=XOZEMv1h3pAZaQsPF5xPbQQbVIgneCcC0P0+BODPU9ZgNPI8r6VW2b29YAdD7r7cr
+	 0ZXW3xn7b52B77o+4BVS4uDuL7MwwOXT8vjJLggq3ejwn50z4GOtRKwTFNyWb/bSPd
+	 1sjDLmv1EQoAexVhJJeZlZOCpp06LJ90dlP3D87AK1PBlGCr1CzU90uqO9qQV/rASC
+	 lyN/j6mppfNTEl5MoSErzjfZVRNs7FoHxX7odBb1QoAt74uERv35bw+Eur07RcvFJ8
+	 nguHvJfFJDrnT77IM6ymD1OF5yUqaxqc+kLW/IGIQv/W6ld2Adaty5mb/XnQ6bjwVq
+	 pIV1pUVfk3whw==
+Message-ID: <1ed4ab4f-4bae-4d27-bc9c-8a0efa191f41@kernel.org>
+Date: Fri, 26 Apr 2024 08:37:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,12 +51,14 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] arm64: dts: qcom: sa8775p: mark ethernet devices as
  DMA-coherent
-To: Sagar Cheluvegowda <quic_scheluve@quicinc.com>,
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>,
+ Sagar Cheluvegowda <quic_scheluve@quicinc.com>,
  Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 Cc: kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240425-mark_ethernet_devices_dma_coherent-v1-1-ad0755044e26@quicinc.com>
+ <c5329e9a-6947-4070-a24b-8985724b9981@quicinc.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,16 +104,21 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240425-mark_ethernet_devices_dma_coherent-v1-1-ad0755044e26@quicinc.com>
+In-Reply-To: <c5329e9a-6947-4070-a24b-8985724b9981@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 26/04/2024 01:07, Sagar Cheluvegowda wrote:
-> Ethernet devices are cache coherent, mark it as such in the dtsi.
+On 26/04/2024 01:20, Abhishek Chauhan (ABC) wrote:
 > 
-> Change-Id: Id180fae617f2e348c0a80c6664b131cc57fcb4d6
+> 
+> On 4/25/2024 4:07 PM, Sagar Cheluvegowda wrote:
+>> Ethernet devices are cache coherent, mark it as such in the dtsi.
+>>
+>> Change-Id: Id180fae617f2e348c0a80c6664b131cc57fcb4d6
+> Remove internal change id. 
+> Not required for upstreaming any changes. 
 
-ALWAYS run checkpatch before sending any patch.
+Please trim your replies from unnecessary context.
 
 Best regards,
 Krzysztof
