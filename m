@@ -1,291 +1,187 @@
-Return-Path: <linux-kernel+bounces-159879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DA68B3569
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E0418B356D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 233941C20DC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:38:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4207F1C2165B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A09A143895;
-	Fri, 26 Apr 2024 10:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49001139D10;
+	Fri, 26 Apr 2024 10:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="L25S+PJp"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2076.outbound.protection.outlook.com [40.107.20.76])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cp8pt4uI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2221E877;
-	Fri, 26 Apr 2024 10:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.76
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714127923; cv=fail; b=mhiEXrvMRaKHS64PdBnNK5xRxKQlAgobcKdjusDhyFoRadrhdcdidCiHHfJm288w0HMGXNOGAxUEybmL54uZOJEf2tXa0lnTUB5LUJix6eNCuFoyjSqybR7FTRN4ttjTCByvuReDbBXgrKCT4sB3aZQ34wPPIWg9ISH34y7H/6s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714127923; c=relaxed/simple;
-	bh=wmIbirnRBrt7VY59K55N9jSEqNzRALmqP2FXX9eicPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=KDUPUVJ8Z6vUx9nn7oth9amDeBEXFTYC4XLhNQK6YzV0xmCVByimURg4n9QqF1z5Dra5EUN0mM6s18d4GsywfzLQbVMp4lbEU0pyFxAextbIKoqdnvcwf8AGdrM+9mPDVF8mxvotcYok2hlOf3fteb37qrEuLPI8FNj0XVTkBFY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=L25S+PJp; arc=fail smtp.client-ip=40.107.20.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qihwog+zDQipEtGEoXEms5GQGGun4TD1fGFHU+JWHs+aNAhhh81/B1foWZNVf49IwzjLMnm9owhQL27J/eyW7MQA3DyduB4DbCsLI6CRxNfGZ+exHHdu3NBAqPnoFuzgdH+rsKNi73qzCrqfVArv6BzZ7DA2c7h2voaa4P8HcqRHqbkKhLZWdYDbxD+T5HbqdDZaz8ail/8TU+OOihR2esprc9HwupNMy6AIHEjL/sulmV/7GIvj0C87c5KFs/LmqmTZBZ5q/vsDHIkMtrEmhXTKEjsxMm4J1HeW9LTlIkMvb8IFYSwW5HKHT9vauzA6feEjseuQftaOXZPWsjRM4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zhuaUSY0UZyULuTPqx0nqwxM1nGUQV6W9C/w1Xlg9gI=;
- b=dIBcaM8n/tyfpFmH76TbXOR2wri/7awkQ59kwMwAJZ0cnNkEH/StqTHwe0cJJlG216EqXT7H+xI4w60XJdlbcxSp5uH4jZ58IghYoT0sMk36GhBNCprJaZSO/VmrkIOwPbeV8tS/cWfuniTbkd/Z0wzUmZAPd3VcRsu0ZW2ENJirO5m2uwqR/PBl/VJgAQ+rYzBf6DltUqkprRFZ9l7fNQ9LxUVd6Xfhst/kTsyah19x2cvkJ70Mfo5VqWkcqSEWdXEablHy6ixQM5dppP9Hju6jGpxOuoTLNZKm8hOlEYaZTKgFB0haYCrzwiYPGbXLXNP2NzHMa+tUynjr8v8uJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zhuaUSY0UZyULuTPqx0nqwxM1nGUQV6W9C/w1Xlg9gI=;
- b=L25S+PJppWK/u4dQKqTMi+C2iVKNARnkPVbDDNf0IMhIhyME4QhKkoVTa3ACp+llU9+S+WUbATk/anmcD+7DJVbN7yudS/eKqzd0R1ch8IEZcC/j5ZdKY3m6OOtJkK9N9w1k9Wm6LkskoYQZzc7I1un5QlEmk9267ew6/I8GZzI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com (2603:10a6:10:2e1::11)
- by PA1PR04MB10225.eurprd04.prod.outlook.com (2603:10a6:102:467::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
- 2024 10:38:38 +0000
-Received: from DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::8d2f:ac7e:966a:2f5f]) by DU2PR04MB8822.eurprd04.prod.outlook.com
- ([fe80::8d2f:ac7e:966a:2f5f%6]) with mapi id 15.20.7519.023; Fri, 26 Apr 2024
- 10:38:38 +0000
-Date: Fri, 26 Apr 2024 18:37:27 +0800
-From: Xu Yang <xu.yang_2@nxp.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, "Darrick J. Wong" <djwong@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <christian@brauner.io>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-	Pankaj Raghav <p.raghav@samsung.com>,
-	Hannes Reinecke <hare@suse.de>, jun.li@nxp.com, haibo.chen@nxp.com,
-	xu.yang_2@nxp.com
-Subject: Re: [PATCH 5/6] block: use iomap for writes to block devices
-Message-ID: <20240426103727.hzzv4hv54an5jzab@hippo>
-References: <20230801172201.1923299-1-hch@lst.de>
- <20230801172201.1923299-6-hch@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801172201.1923299-6-hch@lst.de>
-X-ClientProxiedBy: SG2PR01CA0112.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::16) To DU2PR04MB8822.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85C52AF11
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714128048; cv=none; b=SUEF8MFfAtmeI07RyqaN6m1our/Q0DizU9kpFSZGBZYBLdhTA5d+v36Vyw29jHX0OfKBsGZT6MU1WT/iACRsCu3xvsNh3lSPx1wldPuA6RBFUyjDEpdggE5zs9Cdu7sXFCuOfcbMnicWX3ePU+eT3TITREKexm25MbW9WQgEvL4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714128048; c=relaxed/simple;
+	bh=gpo9fmAotkN0bV2ezUnKswQkQ7spknPD8yt1uTT9AiI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=SLbm+q7c6d7BVTDyMlrlqkFYhjRqO6lSDJP4HggKsmVEFZ8TAbqGxclg8+Yp2t6bkqCmIxUDhrfjsQpVMnoGaXmNqF1Tvmxgvp/mzwvUzCN4PH48E9io9HdDCBZQSPdsdQf7bcioifnwI2ofOGyndn6Hpk17Mtipnm5xG5VBNVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cp8pt4uI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714128045;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=aWdJarjvevrp+sqkeLHrEJaw2ugclz8D4c3/BHgjuSM=;
+	b=cp8pt4uIOG8nBBfsOjVaEnTXJahbEcqQ7Iu4HO9sNGoBGJXaTWDBlkHgXW+ocObe6+3uXB
+	QVLtPWp2Xqtxw02sH4I8mdNPg5EgggFqRVG4XEneXCqNsBGjnkOKwn75uI8fp2IVXdJEYZ
+	wq19ZVggEPtjK4HRFiQ+avrRTa/VTM8=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-520-yKVsdJ_QPHmb6t3DkuugKA-1; Fri, 26 Apr 2024 06:40:43 -0400
+X-MC-Unique: yKVsdJ_QPHmb6t3DkuugKA-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-516ce9afcabso253469e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:40:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714128042; x=1714732842;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aWdJarjvevrp+sqkeLHrEJaw2ugclz8D4c3/BHgjuSM=;
+        b=sfwipojtdt/FQpPGYcR5WlWN9uJKc92wMUawqLGJsc7rLzFqFfsTGamSXV09Xp60H7
+         jQZG8aOKNPucpJp0ND+hZG2kpGhUWCSVHXhxfpuU0j48/i/Fm6YkjJDTeNhzJnp5Sb5n
+         MIDQjkoSysnun7OMHFev/ZkVRoCEDRIaGLMY3RR0WzPZqbjCOlG2mpcgNiwdqcD/HWNu
+         9zVFSpgxbaxuv39Wjf2GoJOgeVDbtv2U5CvrxVJDjfnzJPNqoTFK0KMGb3YUxiB0bnkQ
+         T+shMqwyehuXUbWLpooCDk8QUgMVWhoYyAaITvD4NIPDPen7SF/cVI6DCySBo7hnkQUQ
+         +CCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+Pb75XumvY/vUuq0F2oUcktYMPOY3pfM/hoOXxVYCOmJWL2LZsGh1MDxbAZa5aTVSy8ESk8lxr54i7pVI+X5JFie63NHLN3VhUci6
+X-Gm-Message-State: AOJu0YwNZ9HIEi66M2zbiZQPvGW8Y5SweI0WnMOSp3KBxEyXp3MiddG9
+	LRZdYFieBVIH/0ioSW0wGNFPFIQkBBwIKSXpoiU8XgcqzL1W0+GzMMviK6nAJ/Nvbnw3vPJqpJ6
+	LkBju+jBbERG5Vlg372OcRe959nqga0twbcbWgei/gmJopEtKwdCyiBhpef8+7g==
+X-Received: by 2002:a19:381a:0:b0:513:9d6b:6d6d with SMTP id f26-20020a19381a000000b005139d6b6d6dmr1254309lfa.5.1714128042263;
+        Fri, 26 Apr 2024 03:40:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuMVPvU3AKlyxbmtdx61atPVTT03VJVj3i1e6gYHBAAAg6x/5RnpVB8vzz4nCZ1LgHEthkpg==
+X-Received: by 2002:a19:381a:0:b0:513:9d6b:6d6d with SMTP id f26-20020a19381a000000b005139d6b6d6dmr1254291lfa.5.1714128041789;
+        Fri, 26 Apr 2024 03:40:41 -0700 (PDT)
+Received: from gerbillo.redhat.com ([2a0d:3344:171d:a510::f71])
+        by smtp.gmail.com with ESMTPSA id l25-20020adfa399000000b0034c59263c80sm1148469wrb.89.2024.04.26.03.40.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 03:40:41 -0700 (PDT)
+Message-ID: <869b3dbb8f5c80ead202c6db3ebc61c0007ee5e1.camel@redhat.com>
+Subject: Re: [PATCH v3 net-next v3 2/6] net: add support for segmenting TCP
+ fraglist GSO packets
+From: Paolo Abeni <pabeni@redhat.com>
+To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org, Eric Dumazet
+ <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, David Ahern
+ <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+Date: Fri, 26 Apr 2024 12:40:39 +0200
+In-Reply-To: <9350b6f7-abd8-45c5-931a-62f48a50bee4@nbd.name>
+References: <20240426065143.4667-1-nbd@nbd.name>
+	 <20240426065143.4667-3-nbd@nbd.name>
+	 <5a95fea4156b492eb19124bb33b21be81766c617.camel@redhat.com>
+	 <9350b6f7-abd8-45c5-931a-62f48a50bee4@nbd.name>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8822:EE_|PA1PR04MB10225:EE_
-X-MS-Office365-Filtering-Correlation-Id: a93843b7-c9dd-4eec-8575-08dc65dd0815
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?NlMoacFOfNiXYpxeMyPCw2/8LxU7CZcGoua5WHKoNYMBOp8aAT2WpZJBPaNu?=
- =?us-ascii?Q?xthdB15W2LSx3e1vyeqvMAPB+zb1cz5YX6SFVT5OwNJ7ZOwTRDT9UtBOgbnR?=
- =?us-ascii?Q?8Tm911Zq2HAdmhfPsPlqTTaxl31iEm3mly5ydgiRHxIy0yU8NuUGjbjXWlrg?=
- =?us-ascii?Q?AVtQkRwFyNNxDn9o6hkxPLsnLIxARz3IKz+uMGY4J3odCbwK85gBgktHyN8X?=
- =?us-ascii?Q?iRA6DFMkR00l1ow4J6fe5C4Dlp9Qh4ElaxNgeyoIOGF8xMNIHQ547+4a+cf+?=
- =?us-ascii?Q?cN1SJ7i5qYqivv8F/ChObuvW+NvDPDlETFGXX1Yi9PZTFufLh4BnWpwZglFW?=
- =?us-ascii?Q?WtVuvm4OT/30yXU5y3lziaiWx+1ixHZoxyjcg5iumLiVg7KLfDmAI62YqOMM?=
- =?us-ascii?Q?Bq+WIajGqcBim0jEnGiFLafH3T/Qs5fVKnN6Sq4QvOjucsr+eDKGJafCyLf8?=
- =?us-ascii?Q?VjhVB2WpfFRRWe5QrWBeActwzYh8nIKovSqpzhpFhF9xQy4LR1UUg7rTNRUo?=
- =?us-ascii?Q?LCTqYFClqo5/6Z0Xf0YRASkk4Hj02Ly62aVHcN1v5mp170mjIcsBZgvxILaa?=
- =?us-ascii?Q?auAgqJmCoL4jVVb0wt1oraSgCGoz1JK68lBl50+VLtAYNw7KCuEQoqurpI0D?=
- =?us-ascii?Q?aZrVL9JPuWnx3hNGVn2VlqpDq9QpREeV67zX9E02Q1O4v7j8zQ72Ek/PTKf8?=
- =?us-ascii?Q?4M00wLCZQbHany+O8mE7e57rWfwggnJFgCP5r3UJGfvWfBwm2dM43bMrKdTZ?=
- =?us-ascii?Q?fstlRAm2mJQeRLffygyB60H0KYDb/JjlkVO1EPihhhFtCsa57J1vxJNkjz0N?=
- =?us-ascii?Q?LMY82mfRpnBinuJ0lGjGYPjVJjCIzfq5kQCymjkujH66Di650sXfZRwwsANZ?=
- =?us-ascii?Q?kDPck2wLtmFi/cYqSVZvlMGLF36ssJn2C4U9/EnoDF4JKFeaaIzuAPwDbhU9?=
- =?us-ascii?Q?6VEZJPjRTUIP2NHQ6wLA2MNqQBASA+EvRYNOOuTYS2OfKFfZkSCO9rLUYDa+?=
- =?us-ascii?Q?P8YVqQLoHPGR9oWZ0xVuCicS4JQbqzElN1BYNt9+M2Z8OjmFEfXew2j1puNE?=
- =?us-ascii?Q?mgsFYKBv5EZlL61lKQ4idizbmDlbJtwQINAiJ9wt1FNTIEM9BsqU4DufVLVH?=
- =?us-ascii?Q?pCKAVS29KgDml5rC8CsNFNr8lRcOsGvr+LDhYHWpm3FnNyJpTO+9xRJ3+bsi?=
- =?us-ascii?Q?9fyOjVEjiq4zVhHUeXcKYnrXdLfd1hJLSUlXh6ftiT2yb2V5v50MrU5rF17r?=
- =?us-ascii?Q?IuZsGtLzhfuFkPJMWCW3VwAXDeuB25hIKvrTGM7peaUtjdCHHy9eZ1ZH7CQg?=
- =?us-ascii?Q?Lj3KdwRmjxyzV03Sow9n/7lJoCGrJMjYF/g3NHEGVHiByw=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8822.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(52116005)(1800799015)(376005)(366007)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+s5R28qC/b1d/A/K+m8jq+1usTl0XXrdrkP+soBw1aOSaKSj71yt+lX76Ix2?=
- =?us-ascii?Q?9JgVD826bJx9fnWAo3Nt1DS1iDH8GpCpHVYGS3GLiL+nI1NJzTp3o6NkYCjX?=
- =?us-ascii?Q?AebsRtj3dIReUJXT/ZsGZOST/WbVIJgH7mMEENkdknQ0Q8vb8Go7ahwiAlmj?=
- =?us-ascii?Q?lrs6Z8LVXpW5d9zXstRu7+wjIc9qGoj53wRJprJkq43A+65iWJ4kWJFu4Jy+?=
- =?us-ascii?Q?JhXjgKhSJ4Y236UZXTXRSgEdTEV3ml44RgiJQUABfRqeqn+jk2vV3i4gVf39?=
- =?us-ascii?Q?n0rDSaAe+hW7ewUFOlpJT8nP6cqx50FlUPLnd1POFs6VMx/5s9u8tG13utmc?=
- =?us-ascii?Q?zNhwTuepCKJRm4FO1ansfiVgfCfKV/FIp/+DCKteOTMASZBQPqPlbXJLE0YL?=
- =?us-ascii?Q?87Y0sNAuXj9LGtcbykMlyG52+OOCK4tzS5W3mwSLcXvnupDtDVgFJ2OlvMKO?=
- =?us-ascii?Q?wB8/ZqojgofvJlOPvjV37x5+GtR3fWNy5AAOw2qfgU15uzcVACShGcpPhLLc?=
- =?us-ascii?Q?cotTLaZV8yBwdJGHj10FrEX8cst18JESMjAvYzMUGP/yD8JhOuDCRF4mJNtf?=
- =?us-ascii?Q?SAJAT4h94MfddBmd8kKzz1WPCzdqYjL5ESNu2siw417jiApqeIHzgsj02OdA?=
- =?us-ascii?Q?iiquNbPLm0fM4Kg7SZ8cBr5y7c9MUo5BtKtKou4ibvkPrmW4LXy+aqkd38Po?=
- =?us-ascii?Q?TKZ1jotkaqZEK3FEatq4e14oGERk+uzvYTInHXYfNZvsaLvz2QlBzjipLr7P?=
- =?us-ascii?Q?FMrTh1hlSZvDyEHJQPozntRRFo3asPbkh1VFlXSmwnbSyvuQJaxL8sIUp7gn?=
- =?us-ascii?Q?NsIOExdtL//HTEv+v2XAy04Jp7rg5q4iz/fuDYvA3nnGanHaYJJPFheAyrt3?=
- =?us-ascii?Q?XiMh2oBS0qKbXkAv3Xcyb6L+UAyUZk4XTwCfsGe7sAKEJfH+qobwLf7Kggr8?=
- =?us-ascii?Q?UO4zYKAc0XSa58vBHnq7GDngTAbPebxsYK7T8CCRztZok4W5j6c/89jvd7V1?=
- =?us-ascii?Q?Tko1R1fPQyrSBgi41XkoFjpCxYI91+PZRno8E5H5kWqvSKfe/5ZTFqEtAQKU?=
- =?us-ascii?Q?1OrjbufanoU5L7U1i9hxhNxyK/HVINxnzNelQ16u6r5dQoS6RS96c+lgBgQH?=
- =?us-ascii?Q?ai83fdHo2tl3wLnztVT9GqWrFgexMEXvu/Z779mzM5HzDr7s1Wfg3KeOQUlx?=
- =?us-ascii?Q?KmrAkVu45bKzj2tPxoToYsCbkHLVgagXaJvKLg6XgZ/C+763VwqZ+P7aC1gP?=
- =?us-ascii?Q?3099oxsa4okq23LRqKuAoZMTu/QtNxLcUUoLL7kbL0lYW13o7P2bL06gSJ8L?=
- =?us-ascii?Q?UC52N5H02uPlyeBIimRpXiM6BhfxaZc1MuDY3FOdBdXzdxFTMcenHF4r9xEg?=
- =?us-ascii?Q?/weV7Cgnx4iwenjZQ6sZo2jCWvHY9gaNT+LHNYt1vttN9h0U1neXbbl59NWI?=
- =?us-ascii?Q?03RehLdCwu7msiKFGYLJA81jsQ9r7+EISBPJ/S8Bl8ru+W6UigE/2QTNhmza?=
- =?us-ascii?Q?WmXi78/8CgJrKbKKfE8amTKGdFXOGi6EVdt1btcPEAmr4mIDICKZ04Up2Od9?=
- =?us-ascii?Q?UsnujzoRpf03b1TQ5AyRJZSQ/s2RuWUC6RcQw3wp?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a93843b7-c9dd-4eec-8575-08dc65dd0815
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8822.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 10:38:38.2145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z97VJEY756hBMEmO7EwYtHN5XZnVXSsfhhnrxQjrNVnXI1RXULwNuhAgW4UsT8i3Zfyyk4FKOxGDrlwePPSmnA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR04MB10225
 
-Hi Christoph,
+On Fri, 2024-04-26 at 11:39 +0200, Felix Fietkau wrote:
+> On 26.04.24 10:28, Paolo Abeni wrote:
+> > On Fri, 2024-04-26 at 08:51 +0200, Felix Fietkau wrote:
+> > > Preparation for adding TCP fraglist GRO support. It expects packets t=
+o be
+> > > combined in a similar way as UDP fraglist GSO packets.
+> > > For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
+> > >=20
+> > > Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> > > ---
+> > >  net/ipv4/tcp_offload.c   | 65 ++++++++++++++++++++++++++++++++++++++=
+++
+> > >  net/ipv6/tcpv6_offload.c |  3 ++
+> > >  2 files changed, 68 insertions(+)
+> > >=20
+> > > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> > > index fab0973f995b..c493e95e09a5 100644
+> > > --- a/net/ipv4/tcp_offload.c
+> > > +++ b/net/ipv4/tcp_offload.c
+> > > @@ -28,6 +28,68 @@ static void tcp_gso_tstamp(struct sk_buff *skb, un=
+signed int ts_seq,
+> > >  	}
+> > >  }
+> > > =20
+> > > +static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
+> > > +				     __be32 *oldip, __be32 *newip,
+> > > +				     __be16 *oldport, __be16 *newport)
+> > > +{
+> > > +	struct tcphdr *th;
+> > > +	struct iphdr *iph;
+> > > +
+> > > +	if (*oldip =3D=3D *newip && *oldport =3D=3D *newport)
+> > > +		return;
+> > > +
+> > > +	th =3D tcp_hdr(seg);
+> > > +	iph =3D ip_hdr(seg);
+> > > +
+> > > +	inet_proto_csum_replace4(&th->check, seg, *oldip, *newip, true);
+> > > +	inet_proto_csum_replace2(&th->check, seg, *oldport, *newport, false=
+);
+> > > +	*oldport =3D *newport;
+> > > +
+> > > +	csum_replace4(&iph->check, *oldip, *newip);
+> > > +	*oldip =3D *newip;
+> > > +}
+> > > +
+> > > +static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff =
+*segs)
+> > > +{
+> > > +	struct sk_buff *seg;
+> > > +	struct tcphdr *th, *th2;
+> > > +	struct iphdr *iph, *iph2;
+> > > +
+> > > +	seg =3D segs;
+> > > +	th =3D tcp_hdr(seg);
+> > > +	iph =3D ip_hdr(seg);
+> > > +	th2 =3D tcp_hdr(seg->next);
+> > > +	iph2 =3D ip_hdr(seg->next);
+> > > +
+> > > +	if (!(*(u32 *)&th->source ^ *(u32 *)&th2->source) &&
+> > > +	    iph->daddr =3D=3D iph2->daddr && iph->saddr =3D=3D iph2->saddr)
+> > > +		return segs;
+> >=20
+> > As mentioned in previous revisions, I think a problem with this
+> > approach is that the stack could make other changes to the TCP header
+> > after the GRO stage, that are unnoticed here and could cause csum
+> > corruption, if the egress device does not recompute the packet csum.
+>=20
+> On segmentation, each packet keeps its original TCP header and csum. If=
+=20
+> the stack makes changes, they apply to the first packet only. I don't=20
+> see how we could get csum corruption.
 
-On Tue, Aug 01, 2023 at 07:22:00PM +0200, Christoph Hellwig wrote:
-> Use iomap in buffer_head compat mode to write to block devices.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> Reviewed-by: Pankaj Raghav <p.raghav@samsung.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> ---
->  block/Kconfig |  1 +
->  block/fops.c  | 31 +++++++++++++++++++++++++++++--
->  2 files changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/Kconfig b/block/Kconfig
-> index 86122e459fe046..1a13ef0b1ca10c 100644
-> --- a/block/Kconfig
-> +++ b/block/Kconfig
-> @@ -5,6 +5,7 @@
->  menuconfig BLOCK
->         bool "Enable the block layer" if EXPERT
->         default y
-> +       select FS_IOMAP
->         select SBITMAP
->         help
->  	 Provide block layer support for the kernel.
-> diff --git a/block/fops.c b/block/fops.c
-> index f0b822c28ddfe2..063ece37d44e44 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -15,6 +15,7 @@
->  #include <linux/falloc.h>
->  #include <linux/suspend.h>
->  #include <linux/fs.h>
-> +#include <linux/iomap.h>
->  #include <linux/module.h>
->  #include "blk.h"
->  
-> @@ -386,6 +387,27 @@ static ssize_t blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  	return __blkdev_direct_IO(iocb, iter, bio_max_segs(nr_pages));
->  }
->  
-> +static int blkdev_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> +		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
-> +{
-> +	struct block_device *bdev = I_BDEV(inode);
-> +	loff_t isize = i_size_read(inode);
-> +
-> +	iomap->bdev = bdev;
-> +	iomap->offset = ALIGN_DOWN(offset, bdev_logical_block_size(bdev));
-> +	if (iomap->offset >= isize)
-> +		return -EIO;
-> +	iomap->type = IOMAP_MAPPED;
-> +	iomap->addr = iomap->offset;
-> +	iomap->length = isize - iomap->offset;
-> +	iomap->flags |= IOMAP_F_BUFFER_HEAD;
-> +	return 0;
-> +}
-> +
-> +static const struct iomap_ops blkdev_iomap_ops = {
-> +	.iomap_begin		= blkdev_iomap_begin,
-> +};
-> +
->  static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
->  {
->  	return block_write_full_page(page, blkdev_get_block, wbc);
-> @@ -556,6 +578,11 @@ blkdev_direct_write(struct kiocb *iocb, struct iov_iter *from)
->  	return written;
->  }
->  
-> +static ssize_t blkdev_buffered_write(struct kiocb *iocb, struct iov_iter *from)
-> +{
-> +	return iomap_file_buffered_write(iocb, from, &blkdev_iomap_ops);
-> +}
-> +
->  /*
->   * Write data to the block device.  Only intended for the block device itself
->   * and the raw driver which basically is a fake block device.
-> @@ -605,9 +632,9 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		ret = blkdev_direct_write(iocb, from);
->  		if (ret >= 0 && iov_iter_count(from))
->  			ret = direct_write_fallback(iocb, from, ret,
-> -					generic_perform_write(iocb, from));
-> +					blkdev_buffered_write(iocb, from));
->  	} else {
-> -		ret = generic_perform_write(iocb, from);
-> +		ret = blkdev_buffered_write(iocb, from);
->  	}
->  
->  	if (ret > 0)
+You are right. I did not take in account that such changes (to the
+first skb) are not reflected to the frag_list at segmentation time. The
+end result could be different from what the user/admin is expecting,
+but at least should not impact drops.
 
-I'm testing SSD block device write performance recently. I found the write
-speed descrased greatly on my board (330MB/s -> 130MB/s). Then I spent some
-time to find cause, finally find that it's caused by this patch and if I
-revert this patch, write speed can recover to 330MB/s.
+Side note: alike UDP, this is not supporting IPv6 NAT...
 
-I'm using below command to test write performance:
-dd if=/dev/zero of=/dev/sda bs=4M count=1024
+Thanks,
 
-And I also do more tests to get more findings. In short, I found write
-speed changes with the "bs=" parameter.
+Paolo
 
-I totally write 4GB data to sda for each test, the results as below:
-
- - dd if=/dev/zero of=/dev/sda bs=400K  count=10485  (334 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=800K  count=5242   (278 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=1600K count=2621   (204 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=2200K count=1906   (170 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=3000K count=1398   (150 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=4500K count=932    (139 MB/s)
-
-When this patch reverted, I got below results:
-
- - dd if=/dev/zero of=/dev/sda bs=400K  count=10485  (339 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=800K  count=5242   (330 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=1600K count=2621   (332 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=2200K count=1906   (333 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=3000K count=1398   (333 MB/s)
- - dd if=/dev/zero of=/dev/sda bs=4500K count=932    (333 MB/s)
-
-I just want to know if this results is expected when uses iomap, or it's
-a real issue?
-
-Many thanks in advance!
-
-Best Regards,
-Xu Yang
-
-> -- 
-> 2.39.2
-> 
 
