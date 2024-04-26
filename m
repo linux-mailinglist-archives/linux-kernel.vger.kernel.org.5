@@ -1,193 +1,209 @@
-Return-Path: <linux-kernel+bounces-160173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 477DE8B3A33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:39:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 468C38B3A34
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3A42287FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:39:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67752B23639
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EBD14900A;
-	Fri, 26 Apr 2024 14:38:43 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465A6144D2E;
+	Fri, 26 Apr 2024 14:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hGJATSyP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E667214883C;
-	Fri, 26 Apr 2024 14:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBAD5CDD0
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714142322; cv=none; b=VOAT/5t6pvKRVJXj+bNpBvWcF97u4BJ4Y5TmUqc+7UhN3bf5UoSqXSpR1pa5327k12o3GVHMnmQMh9hj6BmWn09gRkZquHCYe7zapwB0HllfQJGKBLvO/cQg5X3U/JzRl8DLNN1WqSwJlIJyCHkqshwpE/9M3uw7cSTcGzCeEjo=
+	t=1714142352; cv=none; b=JrYhGfrQQt2L3vkrWUzunrmy6zLfMK2KuDoXkosVVYiNfAkIdr4VUpV3E5HT1/qSqb69oKkoerE8m2bQJe4ke5Qt/+IQow193JZiVLJQ7KwmwTLnWLCNDjiY+/j2YeemqtjlVi4OXXzl1V0kYIOI41s0ST2J8t/2HDQ2xu6Toac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714142322; c=relaxed/simple;
-	bh=JMSxd5BKXqrS2nIQ7JUSZYFhBSpIng25jtbCRriXoyc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r3Z7beC3+ycqbMhKVb0a9drSRZnZC8YO2CTKsgq9WAFdu4QExbCBDE+PjIExStTHUTbUjeWS4VeMlLqGT4MKoljOeedBXU8q+OVWei2hmB4ZD6GunogywiizQS+1RXD/0xYO7vg41xG0GvErvCNnvmyt71m9GjOOWCvpEDIZ5K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VQwM403zDz4f3jrn;
-	Fri, 26 Apr 2024 22:38:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A6E171A1002;
-	Fri, 26 Apr 2024 22:38:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5gvCtmAU4WLA--.35655S6;
-	Fri, 26 Apr 2024 22:38:31 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: linux-fsdevel@vger.kernel.org
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	Vivek Goyal <vgoyal@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Bernd Schubert <bernd.schubert@fastmail.fm>,
-	"Michael S . Tsirkin" <mst@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Benjamin Coddington <bcodding@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	houtao1@huawei.com
-Subject: [PATCH v3 2/2] virtiofs: use GFP_NOFS when enqueuing request through kworker
-Date: Fri, 26 Apr 2024 22:39:03 +0800
-Message-Id: <20240426143903.1305919-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240426143903.1305919-1-houtao@huaweicloud.com>
-References: <20240426143903.1305919-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1714142352; c=relaxed/simple;
+	bh=bcmfNZsY5jzoMPlSHya3R2EV0bnWvPrM9VHEHUhKNgw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QPussQkDI2Hb9I4l4CgvhxZ1wndbzn9Kp5O5hGysxWg7s/3FZPV5/OPAlp05dyFn8dSZRpb7Cy+Y30Kr8jdIzX1xvN4hTKtfBXcVesWzN46blCmmKITd5bbBLyjDagHu7ILenYM2l4zQjmwDWHiUL6rQKy0gUVlI4ZIxFcMg0Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hGJATSyP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714142349;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7LAbhJxCY0/OTL2dKRUHH/gZq1bMdRuFQcrvL6xeSh4=;
+	b=hGJATSyP5GEgEqY7Eb9J+eU7pzRFPRvLYgaUPJL/pbcsWMFUaUhjIXreZLPLkh079JYsl0
+	vfQ9loKmal7Q0dfk/IX8nyEpnw8xaUtLUw2yBRSFwVe5Dcs4DcI6QJpZfYAgvQW2T89bL0
+	3e4L6XudL09iRRmHdBzjfZzkGKAMHQ4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-DDT5040gNPWzxS-RE95jBQ-1; Fri, 26 Apr 2024 10:39:08 -0400
+X-MC-Unique: DDT5040gNPWzxS-RE95jBQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-418f18458a0so11481535e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:39:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714142347; x=1714747147;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7LAbhJxCY0/OTL2dKRUHH/gZq1bMdRuFQcrvL6xeSh4=;
+        b=IUX9rPVuuPFyrpLpDmUU0av9lDqPaIf37QJFIPmZcFK8evHjrEZbzAAkZjj3CQmYe3
+         JruJe3I1+75+//V/kPK1eFlMWKHAsZfBy7UblTHOy3t7SzfNRC0tUsvEgUKD+d1OdTnL
+         XTKwvFoGA/2rV3Z3abxOHpDCiiN/9Y/MMJqhzx7fhf3N5klPqt304rmX061cqt6WH+Wq
+         E5YWLaUDErDt6MPQVG/3h9wav11kGs8h9j++Y7MdWEDZfsWzzWFpAo1gpdnmnhOfef4a
+         ver3EDR4zxrSo5JFUeQNRXu6TuQrff7WeSBTNN1VnoRuJI7HaHgZ+fLYYshcVlq4a9yf
+         PKpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUV5GDfPZgY0z6sIXz+yY94ETJaRaZ/9U8+iNTkflQ/xPAoAfAw26QapLH4coM6MSnPRlvK0U78H02fV45QDj4daHPnmoKVTh5ydLcc
+X-Gm-Message-State: AOJu0YxdpKUsqBDdH52xegK7+cGnsR/L1W8rqVj8/GR0uS8+Q1d/LaJO
+	ay0J1m/bAV3rLO7cZUFBsCZjKb/4X5SxLiYKQQoonHptzNrIrpQRkYEdat9w1rM1ibYdp+aTQm8
+	1oagW3CPmKGW9McbA9xmyh+QbLM+5b/MwPqnbN7vmXzVk+fMA94bl7hRXaeJv2g==
+X-Received: by 2002:a05:600c:358f:b0:416:3f85:d49 with SMTP id p15-20020a05600c358f00b004163f850d49mr2362268wmq.18.1714142347307;
+        Fri, 26 Apr 2024 07:39:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF9PzaUmVi6q/UvBMMZv0Ud9xDfpTnl9gZMBvkcePNOUk3TFUHV7ndCSVu9IlBQ/73CMWAnrQ==
+X-Received: by 2002:a05:600c:358f:b0:416:3f85:d49 with SMTP id p15-20020a05600c358f00b004163f850d49mr2362243wmq.18.1714142346813;
+        Fri, 26 Apr 2024 07:39:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c726:6100:20f2:6848:5b74:ca82? (p200300cbc726610020f268485b74ca82.dip0.t-ipconnect.de. [2003:cb:c726:6100:20f2:6848:5b74:ca82])
+        by smtp.gmail.com with ESMTPSA id je12-20020a05600c1f8c00b004183edc31adsm34757800wmb.44.2024.04.26.07.39.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 07:39:06 -0700 (PDT)
+Message-ID: <9bf62e97-dfdd-4537-8fb0-b5f293856f59@redhat.com>
+Date: Fri, 26 Apr 2024 16:39:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 0/3] iommu/intel: Free empty page tables on unmaps
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rientjes@google.com, dwmw2@infradead.org,
+ baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org,
+ robin.murphy@arm.com, iommu@lists.linux.dev,
+ Matthew Wilcox <willy@infradead.org>
+References: <20240426034323.417219-1-pasha.tatashin@soleen.com>
+ <2daf168e-e2b2-4b19-9b39-d58b358c8cd9@redhat.com>
+ <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5gvCtmAU4WLA--.35655S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF4kXrW3Cr4UArykJrWUArb_yoWrXFWDpr
-	WDAa15GFWrJrW2gFWkGF4UCw4Yk3sakFy7Ja4fX34akr1Yqw17CF18ZFy0qrZavrykAF1x
-	Wr4Fqr4DuF47Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Hou Tao <houtao1@huawei.com>
+On 26.04.24 15:49, Pasha Tatashin wrote:
+> On Fri, Apr 26, 2024 at 2:42 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 26.04.24 05:43, Pasha Tatashin wrote:
+>>> Changelog
+>>> ================================================================
+>>> v2: Use mapcount instead of refcount
+>>>       Synchronized with IOMMU Observability changes.
+>>> ================================================================
+>>>
+>>> This series frees empty page tables on unmaps. It intends to be a
+>>> low overhead feature.
+>>>
+>>> The read-writer lock is used to synchronize page table, but most of
+>>> time the lock is held is reader. It is held as a writer for short
+>>> period of time when unmapping a page that is bigger than the current
+>>> iova request. For all other cases this lock is read-only.
+>>>
+>>> page->mapcount is used in order to track number of entries at each page
+>>> table.
+>>
+>> I'm wondering if this will conflict with page_type at some point? We're
+>> already converting other page table users to ptdesc. CCing Willy.
+> 
+> Hi David,
 
-When invoking virtio_fs_enqueue_req() through kworker, both the
-allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
-Considering the size of the sg array may be greater than PAGE_SIZE, use
-GFP_NOFS instead of GFP_ATOMIC to lower the possibility of memory
-allocation failure and to avoid unnecessarily depleting the atomic
-reserves. GFP_NOFS is not passed to virtio_fs_enqueue_req() directly,
-GFP_KERNEL and memalloc_nofs_{save|restore} helpers are used instead.
+Hi!
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- fs/fuse/virtio_fs.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+> 
+> This contradicts with the following comment in mm_types.h:
+>   * If your page will not be mapped to userspace, you can also use the four
+>   * bytes in the mapcount union, but you must call
+> page_mapcount_reset()
+>   * before freeing it.
 
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 36984c0e23d14..096b589ed2fcc 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -91,7 +91,8 @@ struct virtio_fs_req_work {
- };
- 
- static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
--				 struct fuse_req *req, bool in_flight);
-+				 struct fuse_req *req, bool in_flight,
-+				 gfp_t gfp);
- 
- static const struct constant_table dax_param_enums[] = {
- 	{"always",	FUSE_DAX_ALWAYS },
-@@ -430,6 +431,8 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
- 
- 	/* Dispatch pending requests */
- 	while (1) {
-+		unsigned int flags;
-+
- 		spin_lock(&fsvq->lock);
- 		req = list_first_entry_or_null(&fsvq->queued_reqs,
- 					       struct fuse_req, list);
-@@ -440,7 +443,9 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
- 		list_del_init(&req->list);
- 		spin_unlock(&fsvq->lock);
- 
--		ret = virtio_fs_enqueue_req(fsvq, req, true);
-+		flags = memalloc_nofs_save();
-+		ret = virtio_fs_enqueue_req(fsvq, req, true, GFP_KERNEL);
-+		memalloc_nofs_restore(flags);
- 		if (ret < 0) {
- 			if (ret == -ENOMEM || ret == -ENOSPC) {
- 				spin_lock(&fsvq->lock);
-@@ -545,7 +550,7 @@ static void virtio_fs_hiprio_dispatch_work(struct work_struct *work)
- }
- 
- /* Allocate and copy args into req->argbuf */
--static int copy_args_to_argbuf(struct fuse_req *req)
-+static int copy_args_to_argbuf(struct fuse_req *req, gfp_t gfp)
- {
- 	struct fuse_args *args = req->args;
- 	unsigned int offset = 0;
-@@ -559,7 +564,7 @@ static int copy_args_to_argbuf(struct fuse_req *req)
- 	len = fuse_len_args(num_in, (struct fuse_arg *) args->in_args) +
- 	      fuse_len_args(num_out, args->out_args);
- 
--	req->argbuf = kmalloc(len, GFP_ATOMIC);
-+	req->argbuf = kmalloc(len, gfp);
- 	if (!req->argbuf)
- 		return -ENOMEM;
- 
-@@ -1183,7 +1188,8 @@ static unsigned int sg_init_fuse_args(struct scatterlist *sg,
- 
- /* Add a request to a virtqueue and kick the device */
- static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
--				 struct fuse_req *req, bool in_flight)
-+				 struct fuse_req *req, bool in_flight,
-+				 gfp_t gfp)
- {
- 	/* requests need at least 4 elements */
- 	struct scatterlist *stack_sgs[6];
-@@ -1204,8 +1210,8 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
- 	/* Does the sglist fit on the stack? */
- 	total_sgs = sg_count_fuse_req(req);
- 	if (total_sgs > ARRAY_SIZE(stack_sgs)) {
--		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), GFP_ATOMIC);
--		sg = kmalloc_array(total_sgs, sizeof(sg[0]), GFP_ATOMIC);
-+		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), gfp);
-+		sg = kmalloc_array(total_sgs, sizeof(sg[0]), gfp);
- 		if (!sgs || !sg) {
- 			ret = -ENOMEM;
- 			goto out;
-@@ -1213,7 +1219,7 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
- 	}
- 
- 	/* Use a bounce buffer since stack args cannot be mapped */
--	ret = copy_args_to_argbuf(req);
-+	ret = copy_args_to_argbuf(req, gfp);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -1309,7 +1315,7 @@ __releases(fiq->lock)
- 		 fuse_len_args(req->args->out_numargs, req->args->out_args));
- 
- 	fsvq = &fs->vqs[queue_id];
--	ret = virtio_fs_enqueue_req(fsvq, req, false);
-+	ret = virtio_fs_enqueue_req(fsvq, req, false, GFP_ATOMIC);
- 	if (ret < 0) {
- 		if (ret == -ENOMEM || ret == -ENOSPC) {
- 			/*
+I think the documentation is a bit outdated, because we now have page 
+types that are: "For pages that are never mapped to userspace"
+
+which includes
+
+#define PG_table
+
+(we should update that comment, because we're now also using it for 
+hugetlb that can be mapped to user space, which is fine.)
+
+Right now, using page->_mapcount would likely still be fine, as long as 
+you cannot end up creating a value that would resemble a type (e.g., 
+PG_offline could be bad).
+
+But staring at users of _mapcount and page_mapcount_reset() ... you'd be 
+pretty much the only user of that.
+
+mm/zsmalloc.c calls page_mapcount_reset(), and I am not completely sure 
+why ... I can see it touch page->index but not page->_mapcount.
+
+
+Hopefully Willy can comment.
+
 -- 
-2.29.2
+Cheers,
+
+David / dhildenb
 
 
