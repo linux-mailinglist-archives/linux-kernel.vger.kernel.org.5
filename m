@@ -1,202 +1,156 @@
-Return-Path: <linux-kernel+bounces-160508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AAB8B3E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:39:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7772B8B3E61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:38:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667601C215C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:39:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F5B1B22BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DB816D9D1;
-	Fri, 26 Apr 2024 17:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6E115B99D;
+	Fri, 26 Apr 2024 17:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="pE1T08Fu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aqFcdXIb"
-Received: from flow3-smtp.messagingengine.com (flow3-smtp.messagingengine.com [103.168.172.138])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3MiS9GB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE42D145B0F;
-	Fri, 26 Apr 2024 17:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8311C145B0F;
+	Fri, 26 Apr 2024 17:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714153127; cv=none; b=X7a+K6UN4mK0LsKHo0IzL9llPspgTIUJZ8Fe1AjXmUnlu1sn0/Tk/3jqR/oncj07+KBsLX1FIdN56fHw/cLhcvUr4bl9ydfXxUWcBwhht1ZCBJnIV6kbTD08P9a9jiVF1xVV1jy8u3jIAtoya66iSxNSXTFXoNUg6KVzioJ/lvU=
+	t=1714153120; cv=none; b=QNdbrQ0TJKQkpTb2y1JSKp8GKW6duRZB/o8pBmvJVp/A/tLl8Q6VQInG5B53CMiSML+4m5fyUhIWdVxnb5wO6FshD0vTr1j8M0jFIFYx70MAT2ANCjXYpmR1WKGp6lqDf1btkNR1lzCue9N5k3IZzMfS/YEY7q4CzawEyjZ5SjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714153127; c=relaxed/simple;
-	bh=wl2WeNXK9401gewnNEkP62crFh93PXjbpWk6KFoepOg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Y8SGQ32kfI8Kwf0xVrYeacufgyssYCHjxU+kKAQBk4O4/QvJlD8VtfHb2AJUZ2py1HDAxRBaykGIPwuP7dSTM2LxdxIy4pBG3OsLoyhD+DzAklo7ThJQvmGICvw0XbXkF0s4x4+4raW4th9GGKZO9ZPvoNvzYyqoMJTHSMh+FRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=pE1T08Fu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aqFcdXIb; arc=none smtp.client-ip=103.168.172.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.nyi.internal (Postfix) with ESMTP id BDA42200567;
-	Fri, 26 Apr 2024 13:38:43 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 26 Apr 2024 13:38:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1714153123;
-	 x=1714160323; bh=LvCKd10h8SxIpHH2VnKSem369EuCERsZx0vTF5ejpQk=; b=
-	pE1T08FuMVdjjQLWiDkQO7xl56PeI7A1H3IWG3+rFD9emD//4B5RuAiqikq3csH2
-	HcrEwfg47R7YMmaz8Ciyl2cvIz4VVX096uNe1CYFtwsais2/erVg/FW25ZTMJvXr
-	zpR/9AJQ+kMYwmkwNH/UDIyDG/M/RiXZfW1Gpp3WoGzKEMmORD8LrQExf4Uw72vT
-	cf90JKVFYzecW30Y+7oynhwhYveQbKpD0A+7InyVTw6kiDVyu6WAufjR97YB+AAf
-	0ZE2OG1WQzxkmWcmeCmxI8V9AL9FQ/NFoFlVnxKbEzgyPDaqo7Ijv+GlzReYpZG8
-	UpsdbHxgZ38tWGTiNz9nEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714153123; x=
-	1714160323; bh=LvCKd10h8SxIpHH2VnKSem369EuCERsZx0vTF5ejpQk=; b=a
-	qFcdXIb7SbWdXzU54WGeWh/iceHLfbpvJPUdGWHPNnK5IEK/9AtOR5J2UG7I0kdd
-	gA+bX/lBwFYGTyhrH0iOL1YwgOqj4CO02fhLgSpzb0errJKY1KqMkKtdiEMGW0IU
-	avALV8VE2nPoBWWc5kPZjknu85rpxsTco30NFcpJL3ouXip8e9tY6t5C0m3yG4DV
-	i9SMC7BAXFVXlTkQ12jergSGdPKhcHmwu/rclcCs4OnoitPkDQ5s/pDGcdD2HxtV
-	6evA3UfMGPMVusCn1+pAQOhpgJIj12adXuHnNCAk7/cjvkYwvImsSZiLSUZbVdMm
-	WuinBDiPHs317sdol2J0w==
-X-ME-Sender: <xms:ouYrZlQDaCE-0s0WHFCeHepar9j_x9KR9n-h0TbsH_sTOOeSUGEhag>
-    <xme:ouYrZuz-rN1jLTr59v2lbblMmuUk9xavewvaecIEfqOvR0end1N-WP7C8qOmizXin
-    NZnEkLDPhLks8tH0J0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelledgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
-    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
-    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:ouYrZq3qoHAOs6UtEYzZ6Kv2th-k72ltAmHA5-EvubaY_DFzTZHiZA>
-    <xmx:ouYrZtDFuilIk3W0hJ0M4DWNRr0ldDoQ2Q3XrafF-t-T9hsqUZG79w>
-    <xmx:ouYrZujdQoqwaHSJ1S_IBnSUNzyXxkERFFQZf5-Uajue3KXw-499-Q>
-    <xmx:ouYrZhqInTTtQzq1IvTwSb8HCKj4UX1i6i_KpDS_TtRK6OBmlMiQ4w>
-    <xmx:o-YrZpX13ubRldSgrPH3yzrzP3OzJ7dh3_1MWs-FrW6tvLtURlDPgFda>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 324F9B60099; Fri, 26 Apr 2024 13:38:42 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
+	s=arc-20240116; t=1714153120; c=relaxed/simple;
+	bh=9dYAdp7FYAzvqo+YtXaejtQOOLyFel2BTjwOXrzYgIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AQSibZ66ciQAilhFvuY7ufDmGH6N6grlNT4Szej1MdOeB1BVVzNqEo+XIU3yzG62FWt9IIqz4XQRvnJM9fvKsGLPcVwhLnMGid/1R4CUgcNsUdinBjrr+odtAQzTSyxZn8XBXlg1Zl3cvaLAzuk6J2+moRyG6BfZjQSr0nnmBQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3MiS9GB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FFB6C113CD;
+	Fri, 26 Apr 2024 17:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714153120;
+	bh=9dYAdp7FYAzvqo+YtXaejtQOOLyFel2BTjwOXrzYgIw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d3MiS9GBcE02pQF/hUdEhcY8Jrd3HjPDJRoRZYM6P24EiFsuIAlMOpyye+SRee4Ww
+	 mSziF0M5DhgCyyzXRVUSVPAWnWpelqzXho4mmPWelGSkT3dDNGSNo9/UW9P8/KASl6
+	 jpnXzHmxxWNMqFobWEa51GqcyCOVyiT4dGpw1fqVEyDGn+HFeTylDNX03aodoKyjga
+	 YHetRVFCnjAPx5TnX2qspH6JwukVUsje2SucvO/9eh499tT5uwfdz49o5oXuBufQVI
+	 V/O9+R7BBMX7iBbT0AizMdVQUG+/85y0RrS2o2Zs59BXis/FYbD1SHXJPhFh3NdJkJ
+	 EgF6ntP1Q3lhA==
+Date: Fri, 26 Apr 2024 10:38:37 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Marco Elver <elver@google.com>, Erhard Furtner <erhard_f@mailbox.org>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, llvm@lists.linux.dev,
+	kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ubsan: Avoid i386 UBSAN handler crashes with Clang
+Message-ID: <20240426173837.GA2744190@dev-arch.thelio-3990X>
+References: <20240424224026.it.216-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <63ae53af-023d-444c-9571-8aef9e87ebc0@app.fastmail.com>
-In-Reply-To: <20240426162042.191916-1-cgoettsche@seltendoof.de>
-References: <20240426162042.191916-1-cgoettsche@seltendoof.de>
-Date: Fri, 26 Apr 2024 19:38:18 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: cgzones@googlemail.com
-Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, audit@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-api@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
- "Richard Henderson" <richard.henderson@linaro.org>,
- "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
- "Matt Turner" <mattst88@gmail.com>,
- "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Michal Simek" <monstr@monstr.eu>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Helge Deller" <deller@gmx.de>, "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- "Rich Felker" <dalias@libc.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "David S . Miller" <davem@davemloft.net>,
- "Andreas Larsson" <andreas@gaisler.com>,
- "Andy Lutomirski" <luto@kernel.org>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, "Chris Zankel" <chris@zankel.net>,
- "Max Filippov" <jcmvbkbc@gmail.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "Paul Moore" <paul@paul-moore.com>, "Eric Paris" <eparis@redhat.com>,
- "Jens Axboe" <axboe@kernel.dk>,
- "Pavel Begunkov" <asml.silence@gmail.com>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Sohil Mehta" <sohil.mehta@intel.com>,
- "Palmer Dabbelt" <palmer@sifive.com>,
- "Miklos Szeredi" <mszeredi@redhat.com>, "Nhat Pham" <nphamcs@gmail.com>,
- "Casey Schaufler" <casey@schaufler-ca.com>,
- "Florian Fainelli" <florian.fainelli@broadcom.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
- "Mark Rutland" <mark.rutland@arm.com>, io-uring@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] fs/xattr: add *at family syscalls
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424224026.it.216-kees@kernel.org>
 
-On Fri, Apr 26, 2024, at 18:20, Christian G=C3=B6ttsche wrote:
-> From: Christian G=C3=B6ttsche <cgzones@googlemail.com>
->
-> Add the four syscalls setxattrat(), getxattrat(), listxattrat() and
-> removexattrat().  Those can be used to operate on extended attributes,
-> especially security related ones, either relative to a pinned directory
-> or on a file descriptor without read access, avoiding a
-> /proc/<pid>/fd/<fd> detour, requiring a mounted procfs.
->
-> One use case will be setfiles(8) setting SELinux file contexts
-> ("security.selinux") without race conditions and without a file
-> descriptor opened with read access requiring SELinux read permission.
->
-> Use the do_{name}at() pattern from fs/open.c.
->
-> Pass the value of the extended attribute, its length, and for
-> setxattrat(2) the command (XATTR_CREATE or XATTR_REPLACE) via an added
-> struct xattr_args to not exceed six syscall arguments and not
-> merging the AT_* and XATTR_* flags.
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> CC: x86@kernel.org
-> CC: linux-alpha@vger.kernel.org
-> CC: linux-kernel@vger.kernel.org
-> CC: linux-arm-kernel@lists.infradead.org
-> CC: linux-ia64@vger.kernel.org
-> CC: linux-m68k@lists.linux-m68k.org
-> CC: linux-mips@vger.kernel.org
-> CC: linux-parisc@vger.kernel.org
-> CC: linuxppc-dev@lists.ozlabs.org
-> CC: linux-s390@vger.kernel.org
-> CC: linux-sh@vger.kernel.org
-> CC: sparclinux@vger.kernel.org
-> CC: linux-fsdevel@vger.kernel.org
-> CC: audit@vger.kernel.org
-> CC: linux-arch@vger.kernel.org
-> CC: linux-api@vger.kernel.org
-> CC: linux-security-module@vger.kernel.org
-> CC: selinux@vger.kernel.org
+On Wed, Apr 24, 2024 at 03:40:29PM -0700, Kees Cook wrote:
+> When generating Runtime Calls, Clang doesn't respect the -mregparm=3
+> option used on i386. Hopefully this will be fixed correctly in Clang 19:
+> https://github.com/llvm/llvm-project/pull/89707
+> but we need to fix this for earlier Clang versions today. Force the
+> calling convention to use non-register arguments.
+> 
+> Reported-by: Erhard Furtner <erhard_f@mailbox.org>
+> Closes: https://github.com/KSPP/linux/issues/350
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I checked that the syscalls are all well-formed regarding
-argument types, number of arguments and (absence of)
-compat handling, and that they are wired up correctly
-across architectures
+Acked-by: Nathan Chancellor <nathan@kernel.org>
 
-I did not look at the actual implementation in detail.
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Cc: Marco Elver <elver@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Bill Wendling <morbo@google.com>
+> Cc: Justin Stitt <justinstitt@google.com>
+> Cc: llvm@lists.linux.dev
+> Cc: kasan-dev@googlegroups.com
+> Cc: linux-hardening@vger.kernel.org
+>  v2:
+>    - use email address in Reported-by
+>    - link to upstream llvm bug in ubsan.h comment
+>    - drop needless /**/
+>    - explicitly test Clang version
+>  v1: https://lore.kernel.org/lkml/20240424162942.work.341-kees@kernel.org/
+> ---
+>  lib/ubsan.h | 41 +++++++++++++++++++++++++++--------------
+>  1 file changed, 27 insertions(+), 14 deletions(-)
+> 
+> diff --git a/lib/ubsan.h b/lib/ubsan.h
+> index 50ef50811b7c..07e37d4429b4 100644
+> --- a/lib/ubsan.h
+> +++ b/lib/ubsan.h
+> @@ -124,19 +124,32 @@ typedef s64 s_max;
+>  typedef u64 u_max;
+>  #endif
+>  
+> -void __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
+> -void __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
+> -void __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
+> -void __ubsan_handle_negate_overflow(void *_data, void *old_val);
+> -void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
+> -void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr);
+> -void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr);
+> -void __ubsan_handle_out_of_bounds(void *_data, void *index);
+> -void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
+> -void __ubsan_handle_builtin_unreachable(void *_data);
+> -void __ubsan_handle_load_invalid_value(void *_data, void *val);
+> -void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
+> -					 unsigned long align,
+> -					 unsigned long offset);
+> +/*
+> + * When generating Runtime Calls, Clang doesn't respect the -mregparm=3
+> + * option used on i386: https://github.com/llvm/llvm-project/issues/89670
+> + * Fix this for earlier Clang versions by forcing the calling convention
+> + * to use non-register arguments.
+> + */
+> +#if defined(CONFIG_X86_32) && \
+> +    defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION < 190000
+> +# define ubsan_linkage asmlinkage
+> +#else
+> +# define ubsan_linkage
+> +#endif
+> +
+> +void ubsan_linkage __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
+> +void ubsan_linkage __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
+> +void ubsan_linkage __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
+> +void ubsan_linkage __ubsan_handle_negate_overflow(void *_data, void *old_val);
+> +void ubsan_linkage __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
+> +void ubsan_linkage __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr);
+> +void ubsan_linkage __ubsan_handle_type_mismatch_v1(void *_data, void *ptr);
+> +void ubsan_linkage __ubsan_handle_out_of_bounds(void *_data, void *index);
+> +void ubsan_linkage __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
+> +void ubsan_linkage __ubsan_handle_builtin_unreachable(void *_data);
+> +void ubsan_linkage __ubsan_handle_load_invalid_value(void *_data, void *val);
+> +void ubsan_linkage __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
+> +						       unsigned long align,
+> +						       unsigned long offset);
+>  
+>  #endif
+> -- 
+> 2.34.1
+> 
 
