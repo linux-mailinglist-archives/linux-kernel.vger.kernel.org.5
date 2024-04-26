@@ -1,124 +1,183 @@
-Return-Path: <linux-kernel+bounces-159434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5AB48B2E96
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:10:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A63C8B2E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:13:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 174B5B227A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:10:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F43E1C2245A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:13:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4741876;
-	Fri, 26 Apr 2024 02:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FRT4dQh+"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0761379D2;
+	Fri, 26 Apr 2024 02:13:23 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631E16FA8;
-	Fri, 26 Apr 2024 02:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E6663A9
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714097440; cv=none; b=H/FfrpX8ejyBG+jmQvw6cnkrKAtS3MEwHpWjHxm5/b+dyLd5rJx0dL1N3aloPuCOO4CudjKLjs700yctjPWV+TRM0uD4J3WDp9WyrHaAw89DCnsBT3T7keqptzg6v2tWYZUwsh3zZga75UKi7uxhUY4x3ph+xJBHPODaFl4oEuY=
+	t=1714097602; cv=none; b=cyBfuO7mjQc5MBsarOvgEv44EemDTuRMkI3XqXElYxajLEiggh+AAXQgLWXLtFUa0VzFn4zZxAgPvZcbTdMQimk0PNJk1fmVZUnvvJgVMxNunpbhB7+ds49sLsJ4HODE+XdrUqv+bSPeE3YGckvD4/esemr8Q2FKz/wQpBvvz/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714097440; c=relaxed/simple;
-	bh=25wLHrnCq4+o10YPKDMt5BUupNlywHRUzqusiwVyA08=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=KIV/lk7AYKoFVY5Pyn+l4gQVrnT5fl3fTjp+nJ4Z5jf0Yn4PbQMpt9pBwX2LS2FVZ3uC/EO4fqls8gnkR4bPJlkm71MHFfBPjGxWPTJRNxsX8SlUfKQfp4eCJbUXKjWJj4ZFsUtKbK/pe3BFiGQ7mIGJLtpmV9jyTlJgAIYpoGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=FRT4dQh+; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714097429;
-	bh=1ojHsRPiRsoir+Q24y/ktvG1Mk3MRS2GO165P9N7x8Y=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FRT4dQh+esGSDeX4HQBZcy8sf1DcR9wTgS+M9YzHA0H3gSIlF0aGr5VI+LxRaCZwc
-	 mUPj6ZxwlTAPou1JnofUpDb5AeldQ1Etu17O3TBLPeE/6nYLDb97p3xKOMGTUqmRGa
-	 sTurosRmQG733M2gXQgED4UrPVW9LNAbtyZbkZsB4Y+YFqHgXrkmOwo+sGtkFnNbxo
-	 6V+G5aFqgE6q2UvABAQW/de+3rWAao83AivEec/KI4eypJ14pPzQulmud1Z7jsbRVt
-	 u+yv/X6MRrnLbBRgqOViujI9tMfDtn7WXG9/IvxlaZ2169X1wafOv5YMAeZ7a5C7SA
-	 hDYqpYzbvWQdA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQbm43Gzhz4wyQ;
-	Fri, 26 Apr 2024 12:10:28 +1000 (AEST)
-Date: Fri, 26 Apr 2024 12:10:27 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jani Nikula <jani.nikula@intel.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failures after merge of the drm-misc tree
-Message-ID: <20240426121027.2033ddd0@canb.auug.org.au>
+	s=arc-20240116; t=1714097602; c=relaxed/simple;
+	bh=IKyM0RRgp91tpBkkosb3POhPoylTVEXs8xoD7G2L7I8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ah6cALoYrIeWHST58ekCq4mcpxhTSK4Ty5WYyAr2UJI2RAO1/xNo0n8MCqbCzBm95F4DNnfHavZXudOAbCBQ9IaFt9nTmK9PO4ELtDg3N0Bq8ifhBavzMSilbo2ortr8njoeTgmPiMt8J4Wmqnj5w3qcYChJl078TjXo9RMJGHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36afb9ef331so18651485ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 19:13:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714097600; x=1714702400;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Gaf9uHIX188wy87s5s0fm7jlwwFHmUIC3X8hW3n0+40=;
+        b=qCp3FNi5Z+9oRqWn0SEUH/OqZoOK4ic3orT87qd2pEk2ncmKgP1xa+zb1ITwExwL0Z
+         GUt69nqmw8B8Vymu02rGWo/wQZEE0jG53PzzZT3k7SWDw0mkVnaLvumoT+EPynHaLFgD
+         NjGMY6oen8hTIMn8VmWc4dHH7BYCq4G2/kcXLvLtSohStBo3bqCUmn40+7Qtig3tsT28
+         hoowupiencnA6ThBit2mtMrFbAJRabXm3tIITw9X9uF59C8VeFFSOshwJUv4fIiVZpe7
+         eSwZ4w2DcRq2bpM46U1IefSLAEckEG7yxP2M43XbXQ1VPInFn+5+U6sJqgiPayoZ071+
+         4Epg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8U++0J4lkiTVktQWPvw9yVYqY40ql7p06/zsdoj9v6cwP95kIH197Df81dJvZvF7Nt0QnBm+d9g3jxdmMvNyFU3deG2Q3Hw+M2b1J
+X-Gm-Message-State: AOJu0Yw3hQ8jFiPWTxEsvutGPdNpvl/NjJjeJ317ym9LMroNhEcJTtGj
+	a6PQ46J1fqEd3y49NpfNGsUUmkyCyXPy3RQTeWswuvnRYZR6C6nmKt3R6ErhvAWxj6efeI/zwBW
+	mFH48efVTOiZGa13kq48mCh6MdDPEkZUbEAXckBsd5EFpuN9fMs1DLAs=
+X-Google-Smtp-Source: AGHT+IFrB3lnw6BEPuWJpIonFKpdLdEWFcYAzAtghz/5naMW7RN8TmntdUhWPuTdxTTYaEcwqVGg7p10VQzQlNX+bsuipxfOL5gW
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=Ij.CB74ner2v2IZJgS4KBc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6e02:1d10:b0:36b:26df:cce4 with SMTP id
+ i16-20020a056e021d1000b0036b26dfcce4mr72709ila.6.1714097600234; Thu, 25 Apr
+ 2024 19:13:20 -0700 (PDT)
+Date: Thu, 25 Apr 2024 19:13:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009299ad0616f6727a@google.com>
+Subject: [syzbot] [netfs?] WARNING in netfs_pages_written_back
+From: syzbot <syzbot+dbc44fd848d570fc1526@syzkaller.appspotmail.com>
+To: dhowells@redhat.com, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netfs@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/=Ij.CB74ner2v2IZJgS4KBc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-After merging the drm-misc tree, today's linux-next builds (arm
-multi_v7_defconfig and x86_64 allmodconfig) failed like this:
+HEAD commit:    e33c4963bf53 Merge tag 'nfsd-6.9-5' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=118f2c08980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=19891bd776e81b8b
+dashboard link: https://syzkaller.appspot.com/bug?extid=dbc44fd848d570fc1526
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-(from the arm build)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-drivers/gpu/drm/omapdrm/omap_fb.c: In function 'omap_framebuffer_describe':
-drivers/gpu/drm/omapdrm/omap_fb.c:325:9: error: implicit declaration of fun=
-ction 'seq_printf'; did you mean 'drm_printf'? [-Werror=3Dimplicit-function=
--declaration]
-  325 |         seq_printf(m, "fb: %dx%d@%4.4s\n", fb->width, fb->height,
-      |         ^~~~~~~~~~
-      |         drm_printf
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e33c4963.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/af334172fdbc/vmlinux-e33c4963.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9c0bfbadd1ab/bzImage-e33c4963.xz
 
-(from the x86_64 build)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dbc44fd848d570fc1526@syzkaller.appspotmail.com
 
-drivers/gpu/drm/loongson/lsdc_crtc.c: In function 'lsdc_crtc_late_register':
-drivers/gpu/drm/loongson/lsdc_crtc.c:692:9: error: implicit declaration of =
-function 'debugfs_create_file'; did you mean 'bus_create_file'? [-Werror=3D=
-implicit-function-declaration]
-  692 |         debugfs_create_file("ops", 0644, crtc->debugfs_entry, lcrtc,
-      |         ^~~~~~~~~~~~~~~~~~~
-      |         bus_create_file
+------------[ cut here ]------------
+bad 1 @0 page 0 0
+WARNING: CPU: 0 PID: 14804 at fs/netfs/buffered_write.c:653 netfs_pages_written_back+0xe02/0x1320 fs/netfs/buffered_write.c:653
+Modules linked in:
+CPU: 0 PID: 14804 Comm: syz-executor.2 Not tainted 6.9.0-rc5-syzkaller-00053-ge33c4963bf53 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:netfs_pages_written_back+0xe02/0x1320 fs/netfs/buffered_write.c:653
+Code: 48 c1 ee 03 80 3c 06 00 0f 85 d0 04 00 00 48 8b 44 24 18 4d 89 f0 48 c7 c7 80 54 22 8b 48 8b b0 28 01 00 00 e8 8f 0a 21 ff 90 <0f> 0b 90 90 e9 3c f4 ff ff e8 c0 35 5e ff e8 9b cc 44 ff 31 ff 41
+RSP: 0018:ffffc900030a75b8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffea0001522140 RCX: ffffffff81513b29
+RDX: ffff88801e1c2440 RSI: ffffffff81513b36 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000003 R12: dffffc0000000000
+R13: ffff88801fa60040 R14: 0000000000000000 R15: ffff88801fa60138
+FS:  0000000000000000(0000) GS:ffff88802c200000(0063) knlGS:00000000f5ed1b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000eda8fda4 CR3: 00000000468b6000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 00000000872c9164 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ netfs_cleanup_buffered_write+0x7a8/0x9b0 fs/netfs/buffered_write.c:726
+ netfs_write_terminated+0x3c7/0x910 fs/netfs/output.c:121
+ netfs_end_writethrough+0x1a6/0x200 fs/netfs/output.c:468
+ netfs_perform_write+0x1a6c/0x26b0 fs/netfs/buffered_write.c:398
+ netfs_buffered_write_iter_locked+0x213/0x2c0 fs/netfs/buffered_write.c:454
+ netfs_file_write_iter+0x1e0/0x470 fs/netfs/buffered_write.c:493
+ v9fs_file_write_iter+0xa1/0x100 fs/9p/vfs_file.c:407
+ call_write_iter include/linux/fs.h:2110 [inline]
+ do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
+ vfs_writev+0x36f/0xdb0 fs/read_write.c:971
+ do_pwritev+0x1b2/0x260 fs/read_write.c:1072
+ __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
+ __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
+ __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf7300579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5ed15ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
+RAX: ffffffffffffffda RBX: 0000000000000026 RCX: 0000000020000240
+RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000015 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
-Caused by commits
 
-  9e2b84fb6cd7 ("drm/print: drop include seq_file.h")
-  33d5ae6cacf4 ("drm/print: drop include debugfs.h and include where needed=
-")
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I have used the drm-misc tree from next-20240423 for today.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
---=20
-Cheers,
-Stephen Rothwell
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
---Sig_/=Ij.CB74ner2v2IZJgS4KBc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
------BEGIN PGP SIGNATURE-----
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYrDRMACgkQAVBC80lX
-0Gxm3wf+PzMwQe47NtzpGc7OV20UnbDTHUsuVa7yxfjlFoBSlXTjPSnUA6a9zmEM
-AsjgmuA3Iog1k902zOmLAGzZN928mcTskkkYE3sRRZnJSK4rGOcwrTOZ8/ycq6lD
-DqMLIo7SNHaRbaOGVzKhVVVhK6W2mrlohWogu5Ec8goHo1KuIDKESZywaUzmKC8i
-vD6JzLAELe8U4NTAormWzo9RFKGItIJ1zks6NkdrTBA8icKkbxOFP+5A2zwnysx/
-xr1dQzDX7c76toSQIjfqaY1cEcYCPQMFjcDLVpW7d09DwEEThNp3FLXu1165hh1L
-hMEjYQvfxBZbD+AKY6HkanPo1y7tRQ==
-=huZo
------END PGP SIGNATURE-----
-
---Sig_/=Ij.CB74ner2v2IZJgS4KBc--
+If you want to undo deduplication, reply with:
+#syz undup
 
