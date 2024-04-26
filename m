@@ -1,198 +1,138 @@
-Return-Path: <linux-kernel+bounces-159390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D087B8B2E12
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:35:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21D6F8B2E14
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:39:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 407651F22D41
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:35:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C304F1F231A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21309A35;
-	Fri, 26 Apr 2024 00:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC82EBB;
+	Fri, 26 Apr 2024 00:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2HX3Sj3W"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2077.outbound.protection.outlook.com [40.107.95.77])
+	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="w1klMiVW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GQpLYFUo"
+Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13392380
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714091722; cv=fail; b=H2vvBQSvVPAF8mcEwref9gUTBebAzb4P2za8haFIJyCydAU/ZFfuBhS8y4aWt34YHpfQTlvnR+BfGLiJStvhwbizq0X7jTgvcpYJnPwbX1+8D7FM7tI/guH3DWDX2D8gmTQaAF3/iitMTWgA8iGop22YUjhly6moSfeFXEpIXL0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714091722; c=relaxed/simple;
-	bh=AFAcLo+t5QA0nUs3VQuIjC+nVaoewlTwqudb9gOVHl4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=YjMKB0XiMABoBvhxGARDFxgYjd5VssJnqED+l7Z3bp3LM3Bn3bqu6eO0auauMAJwjBgoj+lRyx/wn7eKMe5Th0vIgV2nA77j5eK1z8ofV6N+XDp0/CvEKU7WYlcrZgCZLMx4BeA3LNH64wvVxNE6QI2L19UlLD1sxYQinwZEStw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2HX3Sj3W; arc=fail smtp.client-ip=40.107.95.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=amcgq9VpUZ8jDbUVJk9Jsf/CGhq1MhVvJFmrqxcbrdmpSQbfLixKLNo66Az/jYn5/aGxTU61M7Y/tmH9vsZD3ca2PuhkTMQOFzg16CGZKPdMe/1ny4ExS6J2i0KN+BaHUIdh9W73MUSOLGhyB4RglSg7+42/dGNLAci3BnskO11GA+C8EyptcRZu6dAKBTVqMmkRuibMod0emCktdjI6vQdsbXHj6GICo+C8iLEyywiV+A8p1sJqfL/f1kDKj57z3z/q4vmEw/XFbYHwhm65pqRd0AweAZlms0yC+kqAENeV+7/tWpD6urgxOl8X1RR8B7HoLS/pa9MFhVrnec1/mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e/U2woOTNOSWWS9dGFsA+3kusVaf9XIhvNg5tnwM4y4=;
- b=d0atXFJ2vbAjvdj4eCAfRL1VyGkg7FHmXE83Iz7OKGrh9ddVY/Y//mFSaGXvVmqRt6hj4Gy5OH2SK7FtZTfhkFp8pT2uiFH8Y0foWn7n9D6FpcUd1PebEq74j+3KPkl34igCY2rZ7EmzGaazCtbEz33cRLHtUkqw+bzubaBTEtEmSKUTE9VF6rL2xgJNNRwNteyRIDlwgL9H1fsCJ3I6KH03wfdm7Rc5sQhitLGetI9lfOzjT8JzGmDQwLYG9qn0SPR8FXo1Fui9ywJHfVEZAsxFah0lFIW7xwDERGyyFgkhpuQS7kbCfdKBMqSmLKSZFMyildpd0B0uR4vtonnDxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e/U2woOTNOSWWS9dGFsA+3kusVaf9XIhvNg5tnwM4y4=;
- b=2HX3Sj3WxnqGGTTOy+xynJaHHhNkgq4W209mM1iLpWUDwANUKhnw4HzWug4EOr1EyHUCl1nqGRBXmxajWop+1THFOCqPSDtjgymySQ7qjg9EyyfXg3UNQaQmBU6NO9kXGeI7tS1J5kWWAwfG6smmRoCaH79vMCZfvSmNSIeJKbY=
-Received: from CH2PR11CA0028.namprd11.prod.outlook.com (2603:10b6:610:54::38)
- by BL3PR12MB6596.namprd12.prod.outlook.com (2603:10b6:208:38f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.49; Fri, 26 Apr
- 2024 00:35:16 +0000
-Received: from CH3PEPF0000000B.namprd04.prod.outlook.com
- (2603:10b6:610:54:cafe::db) by CH2PR11CA0028.outlook.office365.com
- (2603:10b6:610:54::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.29 via Frontend
- Transport; Fri, 26 Apr 2024 00:35:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CH3PEPF0000000B.mail.protection.outlook.com (10.167.244.38) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 00:35:15 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 19:35:15 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 25 Apr
- 2024 19:35:15 -0500
-Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 25 Apr 2024 19:35:14 -0500
-From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Date: Thu, 25 Apr 2024 17:35:08 -0700
-Subject: [PATCH] drm: xlnx: zynqmp_dpsub: Fix few function comments
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0393380;
+	Fri, 26 Apr 2024 00:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714091935; cv=none; b=Dmvwr2TOKBpXdKP85b2ix7jhM6blIY5cz3BwWzvr/rrRPlgIjwSxeWj7Syx7KgrgqIoLEAjPUJUSAQ0K65Z4zQXLpBgoB6AejkTuFUuW67WnGFRKrL779yr7du2y9L4UgNjflmKHuu0qNq42h0ghtVQdI3T1FYxjtrWl4Kxf8ks=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714091935; c=relaxed/simple;
+	bh=6WuPT3KnvxGNm98XUMHDHiNGK0DhGNVKYQ+PLvFq/yQ=;
+	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cjxa338e3vX7BBjmjD6TODnGpn+VHuZry5NtsXZL9Qt9miyDz/mIDI7ksWs6FVRfQzwomQSnTs/hUIaQktM+GouK9xxllQAaaVAIlFLUoMD6a0ZJeGHg55yvLbtRPi9GUGJCQsEKI1y7bScRRlJmB7hBYVl74ut3t3wm+KHtc4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=w1klMiVW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GQpLYFUo; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id BBB0511400AC;
+	Thu, 25 Apr 2024 20:38:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 25 Apr 2024 20:38:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1714091932; x=1714178332; bh=10h3WB31EW
+	lToZuGsEXjKLakOkE9Sz0sCjPh3rFbWmM=; b=w1klMiVWVrX4eCOwm9pQK5q0/M
+	FEIVMi47yYcnYbZJbBsT6jNruszgOcy2LkfPGsQb1ACc7BgDkkuZ3P99LpyU5RAO
+	ta6HcaAsk7VF3VjYg147leKHctvFR7NOLCNPYKeez/83eQNusPXB4aRNoM33eNT+
+	49p0gI56r8D69+/C9eCzGGxD8a2pY0Myv/5pvRS50ODj6ZsUBgxbXskFfa2EXSR0
+	H2FmVxQ022GdJ6RivNLtmhh+vsdJtXHXQq7CDiJNYbZfKVId7kuJ7yoBbKdap/sv
+	Rc0v/ruN7U8wMJMYiO2QIUvdz9vcUM5WDv0wjcBCLnAZtCJThMF9jiAnF6iA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714091932; x=1714178332; bh=10h3WB31EWlToZuGsEXjKLakOkE9
+	Sz0sCjPh3rFbWmM=; b=GQpLYFUo488rTkT/y2UZd+bb/8og0e4c90hV3p6dedP6
+	9wel9WqEndOaPvacGc19ZbkL0tsORWF8OnhLP6glQRaN9BfkzsV/VkaGSdteVnV0
+	Ztq1oeN4HqkUNl3NNwLA/ABAN9CfjvLIF3ScmRQlDrMCTHe55GjDGHjrrpaFF8cV
+	HaVdFODdq0bmum2x2eI6FvB043GY2rbiLGoYtgPPEgAnfqoF7IiU/T4kH+0L7xXc
+	5qI4xCc//t7v/piJMEzHaOPPS4SUgI/uUF5C8a8MQirCu2KFupFk818AvXSGlzU7
+	Q51KTkSu0S6moHFal9RZ3myDQvGk5YzYjASuzYeOGA==
+X-ME-Sender: <xms:m_cqZoaeAEPInh34e1HKVIDCqpttV7ogSYpvjRJ_XplN4MpN1wvZrw>
+    <xme:m_cqZjb_LbWgf3raeURYc_oLiigMc0OaHRr2-jvwIqx8VDzgVRqz9GRpOGG7yrUi1
+    mI0jnRrcpASDO29vp0>
+X-ME-Received: <xmr:m_cqZi-GCIkEeTdupPExjBLqSTWsauBNCQkeGR2XIA1pisA-tNCl6MSAKC3B-qy0JIv09jo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelkedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhuffvvefkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfihnhgu
+    ohhnucfurghntghhvgcuoehlshgrnhgthhgvsehlhihnuggvnhhordgtrgeqnecuggftrf
+    grthhtvghrnhepjeffueekgeeijefhvddugedtkeefveevtefghfevfeeufffgvdevleei
+    udfhtddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eplhhsrghntghhvgeslhihnhguvghnohdrtggr
+X-ME-Proxy: <xmx:m_cqZirIZrtdfcQINAinoZpMzlVB4ju7UR4fGYx7-0JE8hglE_AJew>
+    <xmx:m_cqZjq6lFFwGnsWYjeahuGeePcmtAAC22q37jgL2M6Bk_JkcJEoBg>
+    <xmx:m_cqZgQDAtaYQ8JZ6HeP0MydSBAynC9AjDuAFoLT5Sy7VOJI3_Jvfg>
+    <xmx:m_cqZjpy3p8Uxq--3RNF550U4Lvjh7ibS62cwl8Lv7BGfHq18TjtuA>
+    <xmx:nPcqZm1HxvIzvhbXy2chEWST5x8o0SISFip2OMgnI_Shsq6IGRsWPSRZ>
+Feedback-ID: i1719461a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 25 Apr 2024 20:38:46 -0400 (EDT)
+Date: Thu, 25 Apr 2024 18:38:35 -0600
+From: Lyndon Sanche <lsanche@lyndeno.ca>
+Subject: Re: [PATCH] platform/x86: dell-laptop: Implement platform_profile
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>, Matthew Garrett
+	<mjg59@srcf.ucam.org>, Pali =?iso-8859-1?b?Um9o4XI=?= <pali@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>, Ilpo =?iso-8859-1?q?J=E4rvinen?=
+	<ilpo.jarvinen@linux.intel.com>, platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
+Message-Id: <BSXICS.THI25R7A1N202@lyndeno.ca>
+In-Reply-To: <3cf80056-e62d-4be1-9716-4c843ae2f88c@linux.intel.com>
+References: <20240425172758.67831-1-lsanche@lyndeno.ca>
+	<a6009bed-aa34-4a3f-91f5-23937e915132@amd.com>
+	<24c7a9ea-7755-4270-a338-4701c8e262e2@app.fastmail.com>
+	<ae6a5b66-86e9-44cd-8484-1d218e7bc72c@amd.com>
+	<3cf80056-e62d-4be1-9716-4c843ae2f88c@linux.intel.com>
+X-Mailer: geary/44.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240425-dp-live-fmt-fix-v1-1-405f352d3485@amd.com>
-X-B4-Tracking: v=1; b=H4sIALv2KmYC/x2MWwqAIBAAryL73YKZFnWV6KNyrYVeaEQg3j3pc
- wZmIgTyTAE6EcHTw4HPI0NZCJjX8VgI2WYGJZWWWhm0F278ELr9RscvjqWcXNM2lWlryNXlKev
- /2A8pfXj0VFJhAAAA
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Tomi Valkeinen
-	<tomi.valkeinen@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>
-CC: <dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>, "Anatoliy
- Klymenko" <anatoliy.klymenko@amd.com>
-X-Mailer: b4 0.13.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PEPF0000000B:EE_|BL3PR12MB6596:EE_
-X-MS-Office365-Filtering-Correlation-Id: 30294092-fb74-4b1d-0ef1-08dc6588be1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Sm03Ym1SekxTOG45QmZvMUovT0NZckp5dDFQTGtjK0JmR3lVdG1Eak9kSUdH?=
- =?utf-8?B?eHBySzIrUXVNWWR0aHNwd01FVklpMVlTQ3k3czJIVWNkaGFQbXdkbHNXZFJo?=
- =?utf-8?B?OHVZVmx3TkNJSnZiVk5hZmtFSURZY0M1d3JXL0Fqek5ESzFvOXBXY0RPNHN2?=
- =?utf-8?B?SmRwVUNJdlJQZ1o4WFJWbWVBVXAxODJVSW12L0NWdlFJTEJqWDBrKzZlcUV2?=
- =?utf-8?B?Q215NU1oWDc3dVNjbHpETE9NbHk3RUlENVd1SHJFYW1abU9SYkVJQnAxTlFJ?=
- =?utf-8?B?NnJQSHdaV3Nkc0VlK0lvSVZDTUQ2dk5xcWhmSUNYZ1NsREg5QkxwNGNZR085?=
- =?utf-8?B?Zkg4eFZ5VGpLSS9sQ3NCeVNzVXVVZzVqZVFveFNIZzNkRXRVWHB1MVc2S0R4?=
- =?utf-8?B?KzZBaUtQK2RjelhDUzk4QjZHYUwxQVpIUFFNdHNLNFNkQitqNW9aZmZlRmhC?=
- =?utf-8?B?N3RBQjlaaXVYaERXcFBoQXFURjhUT1R3Wm1IeUxXdmFJdElYT3A5UWJuaDIy?=
- =?utf-8?B?djFGa1puN0RLb2dWL2E5cG9IWE1qbGVFSERCOC8wM0NzTHA0SmlCa0FhM2Mv?=
- =?utf-8?B?SVJnck1lZ3l5S3gvWmVuUFU2bWI2RE93WWsrTUdpVWQwd1JVaGllUjZ3eXRW?=
- =?utf-8?B?eVI2MDY1M3hCR0krbXhMZ2U1azFoeWtWajNoOUZZV0E3UThwMmtPck5JUDIr?=
- =?utf-8?B?amxhcWlOREFiRFRMMFp4Wmoyb0dGbFh2YWF6UlFqSk10bVNYdkpmcHJIbXRu?=
- =?utf-8?B?MVhmK1Zhcmp0dndxcXFmRWQ1NThhRklTaTQyTDh3Wll2Z29ndnBubEQyUDRH?=
- =?utf-8?B?ZXUzMDJuQkZGUmc2Z0d0YzRFendjZlZTcDZ6VGJ4K0NYV0FLNkxyVTNnMWVz?=
- =?utf-8?B?RWQ0aHd1TjhBa3VNSldMbU9Oc0wva2N1b3YranB1bFpjUzZJMUppcndzUjB6?=
- =?utf-8?B?U3plaEFOR3h2K1IremFUbUx3dW1XWkxEOHRpUVdtZi9uRnRNRUFpUXNkTFk0?=
- =?utf-8?B?UEhMRXRjcTl0dmlWME4wYWJuWXFlTnQxZGgxTHVDbUtaMlIwdDZBb1FOTkZV?=
- =?utf-8?B?VGJoYzNUeUZpaU5YTURjMysweHh1anNOcFpYeVM1M0VaVHp2eExMSU1WMW5X?=
- =?utf-8?B?WEZlaDZRN3Y3NTZNenk0RVc5ZkthM2Fyb0hkaU1rUWc4d2pzTEl5L2VLOUFZ?=
- =?utf-8?B?eWw4WmM3VllJRmtSblFuNmVXK0dSQnZUb1R6LzhxNHdlQWY0NDc3VXIvVWc1?=
- =?utf-8?B?MXZoWSsxRUVKOExuT0NVWnZkaXJ6cWFSMisyYUV2S3VTaFRXcjh4Qit2SFp5?=
- =?utf-8?B?bTNSemxWMFRranZrcU1uZVh4WmJYamQyQlVQWWFTUkR3eWV1V2IzQzhZNzc0?=
- =?utf-8?B?c3FNVlNrSERsbHlBZTRwYmszd3VzeHlwUXNBRTl4NXBTZXBvWjlqQ0llV2JV?=
- =?utf-8?B?TFp6VHprRlladEtON3lIZDZacEtyOWRZT2J6NnUrSFM4STJULzR2b1JaWnJN?=
- =?utf-8?B?T2V5bWZFMi8wNi94QzEvUjVKNjUxK0ZYYnNoMlJHcEZxM2JTeGd0Z3A2bmIx?=
- =?utf-8?B?RjN6ald3ZG1uUThYR1JCa01KRzBySlM1UlRaT1VLdUJYSXdsK3RGNzQ1L1Ra?=
- =?utf-8?B?T3VOb3ZEL3BycHIvOG5KcFhRbnVJalp2ZG11SEtrd2dDenA5UTBxR1dpK2Ny?=
- =?utf-8?B?N1BES1hkYkhYYkhwWmVUZG1tWExWMVlzT3hMTzU2eDVkY0lnenJ4K1B0cWds?=
- =?utf-8?B?aTFTV0JjU2tDdUZsS1BrdHVGbjJZMWRNZGpXb3FwNm1nNTVXVFNSR05DTFNk?=
- =?utf-8?B?TnJCOWNHL1lLR0U0cEpseUUzWG45M2tYWkY3SHNzSlR4VS9KMzBpWGZJU0g3?=
- =?utf-8?Q?iA/MNpgeLUK+r?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 00:35:15.8585
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30294092-fb74-4b1d-0ef1-08dc6588be1e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH3PEPF0000000B.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6596
+Content-Type: text/plain; charset=us-ascii; format=flowed
 
-Fix arguments description for zynqmp_disp_layer_find_live_format() and
-zynqmp_disp_layer_set_live_format().
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404260616.KFGDpCDN-lkp@intel.com/
 
-Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
----
- drivers/gpu/drm/xlnx/zynqmp_disp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, Apr 25 2024 at 02:51:42 PM -07:00:00, Srinivas Pandruvada 
+<srinivas.pandruvada@linux.intel.com> wrote:
+> 
+> On 4/25/24 13:28, Mario Limonciello wrote:
+>> Yeah it's not say it's a "new" conflict, it would just become a lot 
+>> more prevalent since software like GNOME and KDE use 
+>> power-profiles-daemon to manipulate the new power profile you're 
+>> exporting from the driver.
+>> 
+>> If there really is no conflict, then great!
+>> If there is a conflict then I was just wondering if there needs to 
+>> be an easy way to turn on/off the profile support when thermald is 
+>> in use.
+> 
+> This shouldn't be in conflict as this should be directly changing 
+> some settings in BIOS. BIOS should send some notification, if it 
+> wants some changes in thermal tables used by thermald.
+> 
+> 
+> Thanks,
+> 
+> Srinivas
+> 
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 13157da0089e..423f5f4943cc 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -940,7 +940,7 @@ zynqmp_disp_layer_find_format(struct zynqmp_disp_layer *layer,
-  * zynqmp_disp_layer_find_live_format - Find format information for given
-  * media bus format
-  * @layer: The layer
-- * @drm_fmt: Media bus format to search
-+ * @media_bus_format: Media bus format to search
-  *
-  * Search display subsystem format information corresponding to the given media
-  * bus format @media_bus_format for the @layer, and return a pointer to the
-@@ -1117,7 +1117,7 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
- /**
-  * zynqmp_disp_layer_set_live_format - Set the live video layer format
-  * @layer: The layer
-- * @info: The format info
-+ * @media_bus_format: Media bus format to set
-  *
-  * NOTE: This function should not be used to set format for non-live video
-  * layer. Use zynqmp_disp_layer_set_format() instead.
+If we do not think there is a conflict I can leave it without a toggle.
 
----
-base-commit: 2bdb481bf7a93c22b9fea8daefa2834aab23a70f
-change-id: 20240425-dp-live-fmt-fix-a10bf7973596
+Lyndon
 
-Best regards,
--- 
-Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+
 
 
