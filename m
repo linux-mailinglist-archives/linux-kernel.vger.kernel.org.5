@@ -1,153 +1,127 @@
-Return-Path: <linux-kernel+bounces-160451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EBCF8B3DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:12:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1200A8B3DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 524961F238DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:12:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 754C3B23319
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FDC15B15D;
-	Fri, 26 Apr 2024 17:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D2B15B978;
+	Fri, 26 Apr 2024 17:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KZ7m4PVa"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Fcfc30Nr"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270B915AACD
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D4515B0FB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714151523; cv=none; b=OxgGoVL+59ckNID/l/bJGe5df/Aw/0stmZl9vOWvQxJWQhU9Q+B2eIZZ9qWbjUh08DrADCuHD1oljZmHbD287aVidYSyD2m5zv2go7q8rarO3EXU2mbftyW3Jbpe2u3hLmUlEov6qRdhwqEnPYSq6LHu8nt54gAOKbn4l65usno=
+	t=1714151622; cv=none; b=cQMPMNRoipPI9e1/cNl6ZyplMpAqdxWmjlnBbbUQXMIs1LUuN/ytpKcEFCenvQ9q/SEQeVY/PosXKt3AxwQmnkbcDH2kaqLdiNiw3ni4BiltRR+4htX2AelK6GQ1AMhVVM/AVtkmLuq44no1flw/fpRNWgvwB/jEHKq/EqBCSJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714151523; c=relaxed/simple;
-	bh=3Pd/l/+E5Qm5+7Ld6em+fLyRN0LjhCMbADm7ZQPuL/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=sG3QfWChVTKgW+QJKafhgkKP0A32r5ula/fy1YuLa2fIZUlODpSz+696kPa+1tSrssdH0PUjc5HGlC6+ccyPM/uFVTxnrmEKGDw2hRNR94jEcVqf/CJpksulTDGk1sLLmpGvs6GCwlHxVIRTDr+p/1cqtgV76q6OhemgpEYxiE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KZ7m4PVa; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714151522; x=1745687522;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=3Pd/l/+E5Qm5+7Ld6em+fLyRN0LjhCMbADm7ZQPuL/w=;
-  b=KZ7m4PVaAxVVQNDBQnwBmaMjEl261TCRY/Iycqko/Pyc63UgvFNt26Dl
-   i2KbbOL+EUdfIrM9dk0Dg/5eR5AHCNfWrGWwKtyJuD4RJ/ok8R0jT0b/H
-   IQ6gDX5n2yuYnEfIj86LFImQmTDwLqfj055jYcfqI4MmvS5Gexon3uT8J
-   8QZS9aC6rLD/Y2K0qp1oxLO6SQNE08kal5vB8fbOR4aczh4alSFk7iu80
-   G4u3ar1pzmsIAhtS1hJULWw45GcEgXknskKf8tlZQLwACZrTIMMxQDjQE
-   QEzN80OkqjizIMNWdI2Ynozbwa1Q2+1TqDEZaeqGbvCcDU3yMAFXggKGq
-   g==;
-X-CSE-ConnectionGUID: xYK1N6ntSjSzj4bjCZZz6Q==
-X-CSE-MsgGUID: 4raaSl2nS+GvEbBkROUMOA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="20449274"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="20449274"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:12:02 -0700
-X-CSE-ConnectionGUID: 7A0i5Nk8R1SFT6S1ocLM+Q==
-X-CSE-MsgGUID: YZxipWCARm25Dx49Iw6AIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="25451311"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 26 Apr 2024 10:12:00 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0P77-0003zy-2O;
-	Fri, 26 Apr 2024 17:11:57 +0000
-Date: Sat, 27 Apr 2024 01:11:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: drivers/pci/controller/dwc/pcie-designware.c:898:50: error: '%d'
- directive output may be truncated writing between 1 and 11 bytes into a
- region of size 3
-Message-ID: <202404270143.m5ItVzEF-lkp@intel.com>
+	s=arc-20240116; t=1714151622; c=relaxed/simple;
+	bh=ZymaXvXNkT3MzkG4xrsUcsKIpaYC8/DjG6EPBxwKQ2w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZfpPTpcWr5ruObKi4jPge69gT/cCemu7HpbTeFccEPQc01gEBP8LYpzJnVc8nwZv2eFB0epdgXC37n24AXHRYxVv+eVxZSR9Cd5/TcqXwqKiPRLZPeuyQxY4IL0KkU5omwn9ZxYkdcLOaeLhtynIhi8UXFlMzjA8s2J6W6C8nRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fcfc30Nr; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso355a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714151619; x=1714756419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8M+A6yS65de2kuu5SrHsE8TW+6iIPZa48ZOoxyEAbPY=;
+        b=Fcfc30Nr0CNUwk9FQoMsYbTPajO4ENCV80kDWpCyNqN8l88pDh4loRDuKiFrcsr1xH
+         9jTG744u1rhwTpY5NnRH+J7DLxWlBHOg0z+hKAqA/+ux5jy7WSAFub6tILo/lvgd1Tit
+         g8n5rkO6+OUiIECiegMmkMazxYKTpwLgW/42o9YGswbYw5Ns7qRmEPY6vBd1RKClqZRY
+         dM83ucKVEdhqYCs8G4zkiR2XVDJu33S+4ECxYvntzlqGMhp8ordZcnrei4xuf8j8u6e2
+         +cSC2kkz9DIoIXWxg6XBNQbJpaahEnH4lgczpzbjj+fbqbv0vlvMPFTAP9fbM1VWGvLD
+         MzHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714151619; x=1714756419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8M+A6yS65de2kuu5SrHsE8TW+6iIPZa48ZOoxyEAbPY=;
+        b=Ezdcrk8H6iwJXvuvIKoDfPJNtmUJ7OjegbZqwGKUSG+HhpK2VNDZ9nqkG7RTENeL4V
+         2vVDY8//fzevhx9YMZZd3DYPzc2JD6egkYSMoKa3tVQzrFZ5JViwI7u1QCWicKE6dkFr
+         a2L0mJDooliaJfqh59ZSNjMSOnY9jKg3pi36ZcPQIHzJRilSjFFgDuadxBeNa8Xrdnr7
+         LJhm+j+8a66GaD8963qE3VX6H/JarUZkCXIGZIwwyGSWJ0KVuGBlPIFV3KG+FDpUjTY3
+         wS1GTZhAZpZFohrgyWxbq4umRJ19qFCMt+JmzP2Pv6DEf3FnxhpTsCcOiZj5cCLT2lEl
+         +lZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWr/iZVoPAb9IQvYSsAZ/YEKcm0eDyTNcbIEFpnMczxcaRkbHYIV5v3pohIrMqd+ANxKmFAeWpgzG7LBIAjRRsdx826C2+E/pxjkUuB
+X-Gm-Message-State: AOJu0YxXQ1s0f8bFrNHwaAOjcHsXD809LZH3qLvWprN3E5MHbuBOv+DG
+	vzZh0kGahaD8gEOLBmvbBNyRNG1YUk66VM9pyNpxWuKKhd9N+dXUTIbDWWIzTJ7koDyVKaNN3cI
+	eV56hGry/VGu8W2voIMUzjBZ3SczpCYHuR2ob
+X-Google-Smtp-Source: AGHT+IGsHmt7lJnNnIXuBzRD+sIzjGa7+9dIZFy46+H8i0QT1T3BQ0lJYE2v2KzOjK2ZYfp2u/4YpQ5rSJxT8KvoGYw=
+X-Received: by 2002:a05:6402:5203:b0:572:1486:452 with SMTP id
+ s3-20020a056402520300b0057214860452mr214537edd.1.1714151619176; Fri, 26 Apr
+ 2024 10:13:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240321215622.3396410-2-aruna.ramakrishna@oracle.com>
+ <20240425210540.3265342-1-jeffxu@chromium.org> <7054B528-C603-4EAC-B48D-784480DFE4B6@oracle.com>
+ <CALmYWFsW5XcM8PYwd=SCthfgjC3TxqVz=DjnCuV8TU7k+_jLaQ@mail.gmail.com>
+ <CABi2SkVvGWa0=Q9AEkTGAr6f_hZ54Ekrxw5CdgvrRKWtNPNkng@mail.gmail.com> <d0162c76c25bc8e1c876aebe8e243ff2e6862359.camel@intel.com>
+In-Reply-To: <d0162c76c25bc8e1c876aebe8e243ff2e6862359.camel@intel.com>
+From: Jeff Xu <jeffxu@google.com>
+Date: Fri, 26 Apr 2024 10:13:00 -0700
+Message-ID: <CALmYWFtnquTxBP+072xy1iTK+Qb-YKJ8iwarvQMiGApT9=P8Jw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "jeffxu@chromium.org" <jeffxu@chromium.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"jannh@google.com" <jannh@google.com>, 
+	"andrew.brownsword@oracle.com" <andrew.brownsword@oracle.com>, 
+	"matthias.neugschwandtner@oracle.com" <matthias.neugschwandtner@oracle.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, 
+	"aruna.ramakrishna@oracle.com" <aruna.ramakrishna@oracle.com>, 
+	"sroettger@google.com" <sroettger@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"keescook@chromium.org" <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Serge,
+On Fri, Apr 26, 2024 at 9:33=E2=80=AFAM Edgecombe, Rick P
+<rick.p.edgecombe@intel.com> wrote:
+>
+> On Fri, 2024-04-26 at 09:13 -0700, Jeff Xu wrote:
+> > > > I=E2=80=99m wary about reordering anything here. Also, this code is=
+ not aware of
+> > > > the altstack permissions. I=E2=80=99m wondering if wrpkru(0) is nee=
+ded here too.
+> > > >
+> > > We can't change PKRU after restore_sigcontext,  the calling thread
+> > > would have PKRU 0, not the original PKRU from before handling the
+> > > signal.
+> >
+> > probably putting restore_altstack ahead of restore_sigcontext would be
+> > good enough.
+> > restore_altstack doesn't seem to need to be after restore_sigcontex,
+> > it reads data
+> > from the sigframe and calls do_sigaltstack to update the current struct=
+.
+>
+> Just was CCed, and haven't reviewed the whole thread.
+>
+> But I hit an issue with the ordering in setting up a signal frame. I note=
+d that
+> the ordering in sigreturn was potentially wrong in the same way:
+> https://lore.kernel.org/lkml/20231107182251.91276-1-rick.p.edgecombe@inte=
+l.com/
+>
+> It might be useful analysis.
 
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c942a0cd3603e34dd2d7237e064d9318cb7f9654
-commit: 939fbcd568fd294034c96edc92ff5b9de1a5fce8 PCI: dwc: Add Root Port and Endpoint controller eDMA engine support
-date:   1 year, 2 months ago
-config: x86_64-sof-customedconfig-bpf-defconfig (https://download.01.org/0day-ci/archive/20240427/202404270143.m5ItVzEF-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404270143.m5ItVzEF-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404270143.m5ItVzEF-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/pci/controller/dwc/pcie-designware.c: In function 'dw_pcie_edma_detect':
->> drivers/pci/controller/dwc/pcie-designware.c:898:50: error: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 3 [-Werror=format-truncation=]
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                                                  ^~
-   In function 'dw_pcie_edma_irq_verify',
-       inlined from 'dw_pcie_edma_detect' at drivers/pci/controller/dwc/pcie-designware.c:949:8:
-   drivers/pci/controller/dwc/pcie-designware.c:898:46: note: directive argument in the range [-2147483648, 15]
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                                              ^~~~~~~
-   drivers/pci/controller/dwc/pcie-designware.c:898:17: note: 'snprintf' output between 5 and 15 bytes into a destination of size 6
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +898 drivers/pci/controller/dwc/pcie-designware.c
-
-   878	
-   879	static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
-   880	{
-   881		struct platform_device *pdev = to_platform_device(pci->dev);
-   882		u16 ch_cnt = pci->edma.ll_wr_cnt + pci->edma.ll_rd_cnt;
-   883		char name[6];
-   884		int ret;
-   885	
-   886		if (pci->edma.nr_irqs == 1)
-   887			return 0;
-   888		else if (pci->edma.nr_irqs > 1)
-   889			return pci->edma.nr_irqs != ch_cnt ? -EINVAL : 0;
-   890	
-   891		ret = platform_get_irq_byname_optional(pdev, "dma");
-   892		if (ret > 0) {
-   893			pci->edma.nr_irqs = 1;
-   894			return 0;
-   895		}
-   896	
-   897		for (; pci->edma.nr_irqs < ch_cnt; pci->edma.nr_irqs++) {
- > 898			snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-   899	
-   900			ret = platform_get_irq_byname_optional(pdev, name);
-   901			if (ret <= 0)
-   902				return -EINVAL;
-   903		}
-   904	
-   905		return 0;
-   906	}
-   907	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Great! so it is already noticed. It can be fixed in this patch set.
 
