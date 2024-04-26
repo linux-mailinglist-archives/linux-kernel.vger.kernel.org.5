@@ -1,151 +1,179 @@
-Return-Path: <linux-kernel+bounces-159967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69FCA8B36EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D6158B36F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2C6E1F22E0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:10:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2E7B1F22478
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACC4145B3E;
-	Fri, 26 Apr 2024 12:10:34 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C0B145B0F;
+	Fri, 26 Apr 2024 12:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CEx9IEAU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6702145355
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A58E13D244;
+	Fri, 26 Apr 2024 12:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714133434; cv=none; b=bBEbeN+73R/G/l2ooVNR50lVgifYdXnG/QtQBLgTGOKQC6NG2GLZDfvEFeWuAUHxOcag6wRKZFMWuc/URGOgr1MGRPQxI3z6xFl3djd67JHZUNUH/7MHATNvmLLz/tsaNjNjfwzJ+bFDG0lZXiH+6j1mve9MPWkIuRjrguaF2Yo=
+	t=1714133641; cv=none; b=Tc/ZvjntiZB0FYtJl1/e/Zx9Es/4JDb0FHdlQGYFkD1hA/nX7Ewn+NSXoayR962KyDHjB80RcHn8hqo4pHTkIENI3kel/Yff9efQUeXmUFkRDBbokPZSMYJ/9ryQnMFVkk6SE71H/pufjQGkBO0kc2jBDX4GjzO+wOPQxuNqEC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714133434; c=relaxed/simple;
-	bh=VDak55zfLn9yH98huhlZNYU5hK4qGuSisAUpSY2QKnc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Kgo4ErXA+KuRI5Xp1L0xZoZuhMDpTfxC7AHr+JEC9lrxLdvvU9aOtiP80zcVWjVJJeQWtVrqQaT/X13C4ZpidLPLwfha7wBXdh/bskOE1fK1w+jyGbeiQVMmUyM+Ny2s/de/MQIxxfI86In9gYhske9YAO1OkPYY9nd2A6HIJYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d667dd202cso208113539f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 05:10:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714133432; x=1714738232;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4UdzRBinvaLIUGUBa8Qs3FzTYEcAEXl0i7GmgW4GMdE=;
-        b=E/8H94ZBmdVjSQESKjStGovJBsYeTKFytqprpXZjY3Awn+JKxwbB8N37EwyWVVSRqV
-         xzw0AvF9KNamqsBoYZQckEAZzwIliDCeLZpm0lImCPrqfpWa/WUvnvPyr84BLQJn1J1p
-         aZmgUIXhFSkmdGCwk64vzI6P5F5yHrJ2sb1d0PFGDcdlg2q5zig9SHwV6Xxrc12V/QXN
-         lvuJ8ZCHI1/tV5WSOzI3eeRFABCJIN+PB0Uv45SsikBf6FP+5NGy45H3yFOIuzr+SS2l
-         2Re0Zd8aZmIwQA1eD8WCIUaGV7ecLMSWGDTfKypJPgkdxQ8vtBHHtm6LL0uVJWCS89yS
-         +wdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJ073VkbkYZdom71dfw1ll+QNh7TjMFoUwge9jazFk+ml/SHElsZdJYt0hDVMmAIMjIuXcy01SCFz1mxfnvVIGYmexbcft0PIxIN1B
-X-Gm-Message-State: AOJu0YzQw75atyrzD7bjmEDLikTjr8J6GOOxfVkGwl8zUukeV2FdmQjY
-	lWE4RyOgF1wc2M7pf1oIPqvztiBE/Bt3fQDSGeGYvvCynuZFyRHVDeGgJbMeVskiHh+U4wLvHKY
-	AVduwsXsX0F9gc3myIEDt0PVMbus9WKtFwVLcg04eA7MXuEZ/338iYPQ=
-X-Google-Smtp-Source: AGHT+IFavDCbEhFNVt/bk1n8KNjEVZOqlg4ILJAKbnXFWR+MljzAEqiFXZY+t1oxmWtl55qVTgM50Xik79tvs3G0NHE7Gk1Td9gd
+	s=arc-20240116; t=1714133641; c=relaxed/simple;
+	bh=DxBgaKwTefQF1Qh6WVIH65YwLhtzYLsdLbNUCj6Cxbw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Y3PGll9sdcOoz7BGjkDTWGgdswzgmhTgS3Gtfl1/WStEgVrUGoywaiVHzFQAabHmhvKUmVmvxe1D8uUV2WalBuCSk9l+sNA2S4swqWFZe9BGn6pSD14+HeA7N20coq6yAq6T5hjwagN2ku/YwZKb7TdbSMHuHKCl3/0PdxeDXmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CEx9IEAU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A06C113CD;
+	Fri, 26 Apr 2024 12:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714133641;
+	bh=DxBgaKwTefQF1Qh6WVIH65YwLhtzYLsdLbNUCj6Cxbw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CEx9IEAUBV834qasmxP80Ps5Z5rdkkglCPZFARjcKLNFuI1LOxyRoDg2urrmK0ZRT
+	 XKfc2jX1kM90tB19kZBbOfZo9A60tuFtns5uczMFYtDZd/8zhvJuRY35itosqgchSV
+	 RdOJ4pyx9OfgmRMy/1p/29fTr9mcPEI61SfU/K0DH+hvPlsWTtAjlEAyXYyDY1BCJh
+	 s9xIzWeMn4PGnGJ9zsJ8mbLhzsqu5YkeyZAHBgsQHZ6yL20j9TG+Z/bZbPQJVuEHOx
+	 7uKMZoNcbFD4erfA9eI7com+3hQndmTPO8DQ6jAWIM1uMHIj7aBI084pFOhdZgVpzo
+	 6lJsXa0U8gnyw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>,
+	Florent Revest <revest@chromium.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v3 0/2]  bpf, arm64: Support per-cpu instruction
+Date: Fri, 26 Apr 2024 12:13:47 +0000
+Message-Id: <20240426121349.97651-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:170f:b0:36b:26df:cce0 with SMTP id
- u15-20020a056e02170f00b0036b26dfcce0mr151937ill.0.1714133432185; Fri, 26 Apr
- 2024 05:10:32 -0700 (PDT)
-Date: Fri, 26 Apr 2024 05:10:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052c1d00616feca15@google.com>
-Subject: [syzbot] [bluetooth?] WARNING in hci_recv_frame
-From: syzbot <syzbot+3e07a461b836821ff70e@syzkaller.appspotmail.com>
-To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Changes in v2 -> v3:
+v2: https://lore.kernel.org/all/20240424173550.16359-1-puranjay@kernel.org/
+- Fixed the xlated dump of percpu mov to "r0 = &(void __percpu *)(r0)"
+- Made ARM64 and x86-64 use the same code for inlining. The only difference
+  that remains is the per-cpu address of the cpu_number.
 
-syzbot found the following issue on:
+Changes in v1 -> v2:
+v1: https://lore.kernel.org/all/20240405091707.66675-1-puranjay12@gmail.com/
+- Add a patch to inline bpf_get_smp_processor_id()
+- Fix an issue in MRS instruction encoding as pointed out by Will
+- Remove CONFIG_SMP check because arm64 kernel always compiles with CONFIG_SMP
 
-HEAD commit:    2bd87951de65 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1655ccef180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ced800a6af0f5b0
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e07a461b836821ff70e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+This series adds the support of internal only per-CPU instructions and
+inlines the bpf_get_smp_processor_id() helper call for ARM64 BPF JIT.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Here is an example of calls to bpf_get_smp_processor_id() and
+percpu_array_map_lookup_elem() before and after this series.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/167fa7ed263b/disk-2bd87951.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d5451b036870/vmlinux-2bd87951.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a0d784e076f2/bzImage-2bd87951.xz
+                                         BPF
+                                        =====
+              BEFORE                                       AFTER
+             --------                                     -------
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e07a461b836821ff70e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 14307 at kernel/workqueue.c:2322 __queue_work+0xc6c/0xef0 kernel/workqueue.c:2321
-Modules linked in:
-CPU: 0 PID: 14307 Comm: syz-executor.2 Not tainted 6.9.0-rc5-syzkaller-01160-g2bd87951de65 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:__queue_work+0xc6c/0xef0 kernel/workqueue.c:2321
-Code: ff e8 48 38 36 00 90 0f 0b 90 e9 20 fd ff ff e8 3a 38 36 00 eb 13 e8 33 38 36 00 eb 0c e8 2c 38 36 00 eb 05 e8 25 38 36 00 90 <0f> 0b 90 48 83 c4 68 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc
-RSP: 0018:ffffc900034f78a0 EFLAGS: 00010093
-RAX: ffffffff815fc90d RBX: ffff88802a579e00 RCX: ffff88802a579e00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff815fbdd3 R09: 1ffff1100f64b9ac
-R10: dffffc0000000000 R11: ffffed100f64b9ad R12: ffff888068ebd9c0
-R13: dffffc0000000000 R14: ffff888068ebd800 R15: 0000000000000008
-FS:  000055557f1bb480(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0909aba170 CR3: 0000000079f8e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- queue_work_on+0x14f/0x250 kernel/workqueue.c:2435
- queue_work include/linux/workqueue.h:605 [inline]
- hci_recv_frame+0x489/0x610 net/bluetooth/hci_core.c:2998
- vhci_get_user drivers/bluetooth/hci_vhci.c:521 [inline]
- vhci_write+0x35a/0x480 drivers/bluetooth/hci_vhci.c:617
- do_iter_readv_writev+0x5a4/0x800
- vfs_writev+0x395/0xbb0 fs/read_write.c:971
- do_writev+0x1b1/0x350 fs/read_write.c:1018
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f0909a7dc9d
-Code: 28 89 54 24 1c 48 89 74 24 10 89 7c 24 08 e8 0a 70 02 00 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 14 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 44 24 08 e8 5e 70 02 00 48
-RSP: 002b:00007fffb04b4630 EFLAGS: 00000293 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0909a7dc9d
-RDX: 0000000000000003 RSI: 00007fffb04b4670 RDI: 00000000000000ca
-RBP: 000055557f1bb430 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000008 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f0909bac9d8 R15: 000000000000000c
- </TASK>
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+(85) call bpf_get_smp_processor_id#229032       (18) r0 = 0xffff800082072008
+                                                (bf) r0 = &(void __percpu *)(r0)
+                                                (61) r0 = *(u32 *)(r0 +0)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+(18) r1 = map[id:78]                            (18) r1 = map[id:153]
+(18) r2 = map[id:82][0]+65536                   (18) r2 = map[id:157][0]+65536
+(85) call percpu_array_map_lookup_elem#313512   (07) r1 += 496
+                                                (61) r0 = *(u32 *)(r2 +0)
+                                                (35) if r0 >= 0x1 goto pc+5
+                                                (67) r0 <<= 3
+                                                (0f) r0 += r1
+                                                (79) r0 = *(u64 *)(r0 +0)
+                                                (bf) r0 = &(void __percpu *)(r0)
+                                                (05) goto pc+1
+                                                (b7) r0 = 0
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+                                      ARM64 JIT
+                                     ===========
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+              BEFORE                                       AFTER
+             --------                                     -------
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ffffffff
+movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl #16
+movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
+blr     x10                                     mrs     x10, tpidr_el1
+add     x7, x0, #0x0                            add     x7, x7, x10
+                                                ldr     w7, [x7]
 
-If you want to undo deduplication, reply with:
-#syz undup
+
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+mov     x0, #0xffff0003ffffffff                 mov     x0, #0xffff0003ffffffff
+movk    x0, #0xce5c, lsl #16                    movk    x0, #0xe0f3, lsl #16
+movk    x0, #0xca00                             movk    x0, #0x7c00
+mov     x1, #0xffff8000ffffffff                 mov     x1, #0xffff8000ffffffff
+movk    x1, #0x8bdb, lsl #16                    movk    x1, #0xb0c7, lsl #16
+movk    x1, #0x6000                             movk    x1, #0xe000
+mov     x10, #0xffffffffffff3ed0                add     x0, x0, #0x1f0
+movk    x10, #0x802d, lsl #16                   ldr     w7, [x1]
+movk    x10, #0x8000, lsl #32                   cmp     x7, #0x1
+blr     x10                                     b.cs    0x0000000000000090
+add     x7, x0, #0x0                            lsl     x7, x7, #3
+                                                add     x7, x7, x0
+                                                ldr     x7, [x7]
+                                                mrs     x10, tpidr_el1
+                                                add     x7, x7, x10
+                                                b       0x0000000000000094
+                                                mov     x7, #0x0
+
+              Performance improvement found using benchmark[1]
+
+             BEFORE                                       AFTER
+            --------                                     -------
+
+glob-arr-inc   :   23.817 ± 0.019M/s      glob-arr-inc   :   24.631 ± 0.027M/s
+arr-inc        :   23.253 ± 0.019M/s      arr-inc        :   23.742 ± 0.023M/s
+hash-inc       :   12.258 ± 0.010M/s      hash-inc       :   12.625 ± 0.004M/s
+
+[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+
+Puranjay Mohan (2):
+  arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+  bpf, arm64: inline bpf_get_smp_processor_id() helper
+
+ arch/arm64/include/asm/insn.h |  7 +++++++
+ arch/arm64/lib/insn.c         | 11 +++++++++++
+ arch/arm64/net/bpf_jit.h      |  6 ++++++
+ arch/arm64/net/bpf_jit_comp.c | 14 ++++++++++++++
+ kernel/bpf/verifier.c         | 24 +++++++++++++++++-------
+ 5 files changed, 55 insertions(+), 7 deletions(-)
+
+-- 
+2.40.1
+
 
