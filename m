@@ -1,157 +1,124 @@
-Return-Path: <linux-kernel+bounces-160280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2BCE8B3B52
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:25:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631028B3B5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68281C2133B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:25:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A0421F240BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B72E156F36;
-	Fri, 26 Apr 2024 15:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8850914A617;
+	Fri, 26 Apr 2024 15:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mo097RvY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RNTRe161"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440341494A6;
-	Fri, 26 Apr 2024 15:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97BEE143886;
+	Fri, 26 Apr 2024 15:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145063; cv=none; b=bUPaPeOtLUj96z0t+A3qJ0vtV2ZX32d5vsxMGaQlbn2JNOMjLNVIDsUtvD3C0TQ/bOkfkF9XNcsKUA83S/9e3z7YQIRVOXdi/+re0ffYqW6pkId7GnQbCbEeW+fwDP88CfUna2/tEqHWmBVAxPuHak26xrLZhuE0ErLiCXg0VB4=
+	t=1714145133; cv=none; b=cOwB0ZvrxdYBodz5z82Vr7nyw4BAgBPfPxTadkRa3VbmnXCFfkX5UuiUa4BQ3Rx1X1ww8gCFIsdYoMqjKLADh9bMNCjpkG8V0tQQhDGlaBDT6DEePUBKCzVTOhkP8Xzdad/gid1Dho4F/caqidGJvGhMoV36VuK5opFgqbYzIOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145063; c=relaxed/simple;
-	bh=42Y1zaqOMNGtZMWNMkTmdYkjtCgbc79W1SrHaNbmoks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u7lnDgdWOBOrRkxpk4Dly/5e7QK5bp3oYznWlDj94KMicC1gFJmkYx9JYNiKSV36fxAOQH3WOl8wWZuyOZE7ZoZzWbyTiQHzA9ulDY5YP9RsVkmBsK6ZRjC1/WCwP5E5YLLE3RiEx8YxeOVZcRyUJF3gEuIbWpvudY+U4grLR7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mo097RvY; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1714145133; c=relaxed/simple;
+	bh=IL2++mNo2aq1MBXdWEeDx4hUUCVamp5GSDIQcKWJuhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kxgcp9KRy6ohxOASAHAKkeUdDhZf5JgU6QroeMhQNGrP3ORiGsE35jLHPAmQ3sfR7aP7tl/RrRcNalMbweOl4b1TJxnfVXaCJcLo3lo7a+NawimMxX5ivRD5qdnhZV1/MrNrGFJnOhH0SThYevzjrk1UIeToWO6kS09x6COMmzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RNTRe161; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145061; x=1745681061;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=42Y1zaqOMNGtZMWNMkTmdYkjtCgbc79W1SrHaNbmoks=;
-  b=mo097RvYLxE4JZsm8ySELQW/Ezrh6rUPV4GKfnUktOf999IoPm2tACbn
-   j6zaNmbX4Nch6Q2d6ewbUX42MYqMRj9dzuTHwag/ZEN3jP2JanyVVn6fv
-   r2Y125jvffEJG0xkhapZyw0Oi6b/uDdRJPG6asl/gXY30W4WcgcK+GECt
-   7H7KpL6zeIiS51+PhE5vUfXAYeTZIWo3NGkHiPg7EQhbucpNBBSuBWN62
-   GtudZdWCMQy72Z/YXi/VHl24QFuzIaZCdR/ZuMa3qvSso0shu32oNRrMx
-   hMr74xav9F4pLR6CS5sUd1jf2Poh28ho076dByueIyjy2qhvlZSwmRpap
-   g==;
-X-CSE-ConnectionGUID: LswWAKRtQAigzHqU3S+XHg==
-X-CSE-MsgGUID: nAmUWhzERr+fy3TULGi3jA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9735025"
+  t=1714145133; x=1745681133;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IL2++mNo2aq1MBXdWEeDx4hUUCVamp5GSDIQcKWJuhY=;
+  b=RNTRe161LOr/5ptq90ev0Wa1eq2n2x14GA3vepkNRaWcP27xvUSFuMkZ
+   WLEU6bBvjUvlB5ME77nE1x1EPotLyayErOmIr+o2u/FSA/4S5NpgDN0MM
+   eB0drR6R3+smdeZvpwgLYHXn9+puuXxaO05i+0C9FyMUJpkfx7ZhcNOpJ
+   xPBXjLgYIH78RDxMDhVFe+RfePBvm/pDsFgHffuSMODtmKQNGTaf0Z5Qh
+   4V3BL/kZqT6JL6UdDUkv+jC+7ETrYwuszMkCxWjoxUGepzUZYm/Z82a4C
+   buOBNSv2xptf4SmJA+g6MTe2RJZNzM7Ua8Yicne3Gdi9QWULKBDg6Bq0l
+   A==;
+X-CSE-ConnectionGUID: qCPKZeNpQmSPVepkfKHkLQ==
+X-CSE-MsgGUID: BD/9o2ZLSsa0dQsfB0hIOA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10005888"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="9735025"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:24:20 -0700
-X-CSE-ConnectionGUID: a7khFoWfRY2fnk3XswJp8A==
-X-CSE-MsgGUID: sq3zv2njQhinJjnPwoTh3g==
+   d="scan'208";a="10005888"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:25:32 -0700
+X-CSE-ConnectionGUID: 1bBkQqt7QkSddjdFx/K+hg==
+X-CSE-MsgGUID: AtZdl5jVTUSEYoTRDvhmlw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="62927681"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.48.22])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:24:18 -0700
-Message-ID: <1e2bee89-0a4a-42e3-9f81-bd7296cfb351@intel.com>
-Date: Fri, 26 Apr 2024 18:24:12 +0300
+   d="scan'208";a="30084013"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 08:25:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 1DFF01CB; Fri, 26 Apr 2024 18:25:28 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Samuel Holland <samuel@sholland.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-leds@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH v1 1/1] leds: sun50i-a100: Use match_string() helper to simplify the code
+Date: Fri, 26 Apr 2024 18:25:15 +0300
+Message-ID: <20240426152515.872917-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3] perf scripts python: Add a script to run instances of
- perf script in parallel
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20240423133248.10206-1-adrian.hunter@intel.com>
- <ZihFYbdrnarNFWOd@tassilo> <ZikT69GIsijZajoI@x1> <ZiuiiFdPhJIrjI7k@x1>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <ZiuiiFdPhJIrjI7k@x1>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26/04/24 15:48, Arnaldo Carvalho de Melo wrote:
-> On Wed, Apr 24, 2024 at 11:15:11AM -0300, Arnaldo Carvalho de Melo wrote:
->> On Tue, Apr 23, 2024 at 04:33:53PM -0700, Andi Kleen wrote:
->>> On Tue, Apr 23, 2024 at 04:32:48PM +0300, Adrian Hunter wrote:
->>>> The script is useful for Intel PT traces, that can be efficiently
->>>> decoded by perf script when split by CPU and/or time ranges. Running
->>>> jobs in parallel can decrease the overall decoding time.
-> 
->>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
->>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> 
->> Thanks, applied, and added a note on testing it using:
-> 
-> Plus this, please check.
-> 
-> Committer testing:
-> 
->   Ian reported that shellcheck found some issues, I installed it as there
->   are no warnings about it not being available, but when available it
->   fails the build with:
-> 
->     TEST    /tmp/build/perf-tools-next/tests/shell/script.sh.shellcheck_log
->     CC      /tmp/build/perf-tools-next/util/header.o
-> 
->   In tests/shell/script.sh line 20:
->                   rm -rf "${temp_dir}/"*
->                          ^-------------^ SC2115 (warning): Use "${var:?}" to ensure this never expands to /* .
-> 
-> 
->   In tests/shell/script.sh line 83:
->           output1_dir="${temp_dir}/output1"
->           ^---------^ SC2034 (warning): output1_dir appears unused. Verify use (or export if used externally).
-> 
-> 
->   In tests/shell/script.sh line 84:
->           output2_dir="${temp_dir}/output2"
->           ^---------^ SC2034 (warning): output2_dir appears unused. Verify use (or export if used externally).
-> 
-> 
->   In tests/shell/script.sh line 86:
->           python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
->                               ^-----------^ SC2154 (warning): output_dir is referenced but not assigned (did you mean 'output1_dir'?).
-> 
->   For more information:
->     https://www.shellcheck.net/wiki/SC2034 -- output1_dir appears unused. Verif...
->     https://www.shellcheck.net/wiki/SC2115 -- Use "${var:?}" to ensure this nev...
->     https://www.shellcheck.net/wiki/SC2154 -- output_dir is referenced but not ...
-> 
-> Did these fixes:
-> 
->   -               rm -rf "${temp_dir}/"*
->   +               rm -rf "${temp_dir:?}/"*
-> 
-> And:
-> 
->    @@ -83,8 +83,8 @@ test_parallel_perf()
->           output1_dir="${temp_dir}/output1"
->           output2_dir="${temp_dir}/output2"
->           perf record -o "${perf_data}" --sample-cpu uname
->   -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
->   -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
->   +       python3 "${pp}" -o "${output1_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
->   +       python3 "${pp}" -o "${output2_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
-> 
+match_string() returns the array index of a matching string.
+Use it instead of the open-coded implementation.
 
-Sorry, didn't have shellcheck installed!
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/leds/leds-sun50i-a100.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-Looks good. The shellcheck page refers to bash for "${var:?}"
-but it is POSIX too.
+diff --git a/drivers/leds/leds-sun50i-a100.c b/drivers/leds/leds-sun50i-a100.c
+index 62d21c3a3575..119eff9471f0 100644
+--- a/drivers/leds/leds-sun50i-a100.c
++++ b/drivers/leds/leds-sun50i-a100.c
+@@ -252,18 +252,16 @@ static int sun50i_a100_ledc_parse_format(struct device *dev,
+ 					 struct sun50i_a100_ledc *priv)
+ {
+ 	const char *format = "grb";
+-	u32 i;
++	int i;
+ 
+ 	device_property_read_string(dev, "allwinner,pixel-format", &format);
+ 
+-	for (i = 0; i < ARRAY_SIZE(sun50i_a100_ledc_formats); i++) {
+-		if (!strcmp(format, sun50i_a100_ledc_formats[i])) {
+-			priv->format = i;
+-			return 0;
+-		}
+-	}
++	i = match_string(sun50i_a100_ledc_formats, ARRAY_SIZE(sun50i_a100_ledc_formats), format);
++	if (i < 0)
++		return dev_err_probe(dev, i, "Bad pixel format '%s'\n", format);
+ 
+-	return dev_err_probe(dev, -EINVAL, "Bad pixel format '%s'\n", format);
++	priv->format = i;
++	return 0;
+ }
+ 
+ static void sun50i_a100_ledc_set_format(struct sun50i_a100_ledc *priv)
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
 
