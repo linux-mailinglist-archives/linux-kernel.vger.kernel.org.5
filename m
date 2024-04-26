@@ -1,129 +1,142 @@
-Return-Path: <linux-kernel+bounces-159779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ADC18B33DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:24:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB028B33E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:26:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD891C22735
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:24:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFCBC1C21D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55FF013E8AE;
-	Fri, 26 Apr 2024 09:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8706013EFF4;
+	Fri, 26 Apr 2024 09:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bWeOtios"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576FA13D621
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DriDzvnH"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D654013C838;
+	Fri, 26 Apr 2024 09:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123461; cv=none; b=IylzLr36UjJnwZt35oIhbGGF+SxTADJ2LTK5I40I5YS5LingYFH5CXAngsybOAMRa/yRrAxIO4hpkQiB8ryVk1y5SrjtKIJdQ69LzfrZ3PjzdlX+ROpNmPNdWRhn1uejPPvdzcSR7sG2LAOncIBvqbQAoyqGlY6CYR2/KMBcpN4=
+	t=1714123561; cv=none; b=QEIEYfzJcdykqvEulmo5lEcwQTfCJB7ZkJ+J9+KPIjmgy4wMk2kTJiKah9kgv+LI1id2NX+DCbkeKHewHuJqijDRheDUvnL2RVoaEpl2zvR8L+tiulOe1otm67/gqKaZxmtPOxJCGTDRTJLNXV+o1XxEJQZ3dGEjeMjPLM2Dgq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123461; c=relaxed/simple;
-	bh=3prmVvb4CSFrMQtGQGohzxkB5EGRjQF5LNfCJibjaRE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mf4pX+qzeziJax2uwADUJp6zOHnq3iZLBStsnTfA5Tv9C3yrbpML9QJo9qenOerKB8NJ6o+MavDByQEVtfXpf/vQt5qLqSrhs6c+seyKBp/ufLZmYfRQ5S/1GtcWJAF0X3XY419bgCzH5HVy9SY4mofD+QdjFLy0nqSPVpy/gVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bWeOtios; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714123459;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wDf1iJ0rcFw5r9tjCYtJ1fcG4v1z0nEnImYLXEpzCjM=;
-	b=bWeOtios20C3eqi+Q4VeUWCZXhWTd7xhoCJO6XcYib8pofcXg58PMuBt/wGWhHDsmd7qcm
-	X0JemTsn3VlQxeyN3cPwDoCxkI92oZDfP2ceji57H0/x20hRM5D+uONsZpbB7XYSo4iq9Y
-	kimwgenCglgLBsq4bKVVQiJl2dC5ZSE=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-237-kujds6tZP2uAlyWSXgbGGA-1; Fri, 26 Apr 2024 05:24:17 -0400
-X-MC-Unique: kujds6tZP2uAlyWSXgbGGA-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-6089c86e4d9so2148170a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:24:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714123456; x=1714728256;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wDf1iJ0rcFw5r9tjCYtJ1fcG4v1z0nEnImYLXEpzCjM=;
-        b=Dy8NlMnnzTvRfU173+KWGI02rKKgZUv/0vR9J4aLX9qtgNHnJgSnl6lNORPGb0hJng
-         Z64q/qu1mjs/nFHQ1n67PNhUS8oBWJboPkTOol//zGfufh8MZpY+hlHU7CAUfNL3mPJ7
-         W/X/i0aamq+48qRB5pFa2sbiKz4Xvkpn5Q7gANXEn0eseI8xo9CLO6ZbbCrvKmE7D8UA
-         4lcika5TlxTqH81nuaNSHPbFDr/LuLblJdxOfBfoe+Vnfxhyz9ykOX698w3KR4HxTUSn
-         owzRMAmoVnx9cDsyLOCRu9XvI5xuIvsCaNZ9i6n9pdrr7p6Hy+dWSv098NuPQaeC/fI0
-         iorg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKCzNE0mh0YKyfgRs1H+din3zteNc+hgXoAqA+k8jJ/wNQNj7j3gvW0lzaPz6eaf5yKf8vSpBt52Nj9F4Nk6AmGZUfdq7FSVVD9OUZ
-X-Gm-Message-State: AOJu0YybCoUU7ANqGmCPo3JQIYFCz1m8hZZa9WbgzK53BPr7KOIeb6cl
-	ZNQAvR/W4PM6kEn+mx0lZ7/aKu2vfErlesxXLgkssjJZueb8XFwMLKTbDpPUdXNlIdNieWuPApq
-	q8UqC+sFqtb/RUZDYCUyMf1rV9AcmgKRBkpi/WvJDfeu4bCdU4bA8rvwP9w4hkg==
-X-Received: by 2002:a05:6a21:3a44:b0:1a7:7b92:e0ed with SMTP id zu4-20020a056a213a4400b001a77b92e0edmr2325164pzb.51.1714123456709;
-        Fri, 26 Apr 2024 02:24:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFxVT+GN5mxbf+mMtYjbokc8FhufYwX7eAOxYXMmkBU6lBE5Xi1LluATczohJhaBcs7ECSJrQ==
-X-Received: by 2002:a05:6a21:3a44:b0:1a7:7b92:e0ed with SMTP id zu4-20020a056a213a4400b001a77b92e0edmr2325150pzb.51.1714123456389;
-        Fri, 26 Apr 2024 02:24:16 -0700 (PDT)
-Received: from [192.168.68.50] ([43.252.112.88])
-        by smtp.gmail.com with ESMTPSA id r3-20020a170902be0300b001e27462b988sm15054500pls.61.2024.04.26.02.24.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 02:24:15 -0700 (PDT)
-Message-ID: <e3fb151e-8d79-439d-9eea-131a23f1d48c@redhat.com>
-Date: Fri, 26 Apr 2024 19:24:07 +1000
+	s=arc-20240116; t=1714123561; c=relaxed/simple;
+	bh=rp94rzmBiWYwRT1Xe9//2+dGBGbcwQT69S3QZcWHhbc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NtNwmK+fkjMG498GgYM7fTAAEO1Psn/FROHwRpFarnOqdrqbKBzqdDLAgnByROE/ZN9KfegestAOf2VBmFr+isGdwOsO91kN5ByFb8cGU+J21xGQMiSe+YjUw4pZrE3cNAuJkRlv1MrIoNnam3Kycwr3eX2xpBrIjY5rTCttXWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=DriDzvnH; arc=none smtp.client-ip=45.254.50.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ac8Ot
+	BpdXETb5u8j8PCiiZkMHIEDlMdWPHdK4ooOeGY=; b=DriDzvnHjrY+bGS417Fpf
+	MqinJ2/Lr3xAt/nI9aHCUjJHLhQsvJrFpYu38cEBn1Kv0PrRFdmdJsij2jFh5zgk
+	qn6aIf9q9ewZYsrs7K8EG2Gq8HHi2oxVFXMbeJBQPj9DiUsQWGHLB6ICAL1DCXXc
+	SBPfj5XaheRUIiNyG4x87M=
+Received: from localhost.localdomain (unknown [112.97.48.208])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3v3Tecitm5obCCQ--.37650S2;
+	Fri, 26 Apr 2024 17:24:48 +0800 (CST)
+From: Slark Xiao <slark_xiao@163.com>
+To: loic.poulain@linaro.org,
+	ryazanov.s.a@gmail.com,
+	johannes@sipsolutions.net
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Slark Xiao <slark_xiao@163.com>,
+	Hariprasad Kelam <hkelam@marvell.com>
+Subject: [PATCH net v2] net: wwan: Fix missing net device name for error message print
+Date: Fri, 26 Apr 2024 17:24:44 +0800
+Message-Id: <20240426092444.825735-1-slark_xiao@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 03/16] ACPI: processor: Drop duplicated check on _STA
- (enabled + present)
-Content-Language: en-US
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
- linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, x86@kernel.org, Russell King
- <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
- Salil Mehta <salil.mehta@huawei.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com,
- justin.he@arm.com, jianyong.wu@arm.com
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
- <20240418135412.14730-4-Jonathan.Cameron@huawei.com>
-From: Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20240418135412.14730-4-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3v3Tecitm5obCCQ--.37650S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAF4xCw13Cw45Wr43JF1kKrg_yoW5Cw1Upa
+	y7K3sxZr18Jay7X3WUJrWkZFWFywn5ta47Kry2v3WSvF1ayrWUWa4fJF95uw43ta1rAw17
+	tF4a9anxW3ZrG3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piHa0PUUUUU=
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiowPMZGVODGqReQAAst
 
-On 4/18/24 23:53, Jonathan Cameron wrote:
-> The ACPI bus scan will only result in acpi_processor_add() being called
-> if _STA has already been checked and the result is that the
-> processor is enabled and present.  Hence drop this additional check.
-> 
-> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> ---
-> v7: No change
-> v6: New patch to drop this unnecessary code. Now I think we only
->      need to explicitly read STA to print a warning in the ARM64
->      arch_unregister_cpu() path where we want to know if the
->      present bit has been unset as well.
-> ---
->   drivers/acpi/acpi_processor.c | 6 ------
->   1 file changed, 6 deletions(-)
-> 
+In my local, I got an error print in dmesg like below:
+"sequence number glitch prev=487 curr=0"
+After checking, it belongs to mhi_wwan_mbim.c. Refer to the usage
+of this net_err_ratelimited() API in other files, I think we
+should add net device name print before message context.
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+Fixes: aa730a9905b7 ("net: wwan: Add MHI MBIM network driver")
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
+Reviewed-by: Hariprasad Kelam <hkelam@marvell.com>
+---
+ drivers/net/wwan/mhi_wwan_mbim.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wwan/mhi_wwan_mbim.c b/drivers/net/wwan/mhi_wwan_mbim.c
+index 3f72ae943b29..6cefee25efc4 100644
+--- a/drivers/net/wwan/mhi_wwan_mbim.c
++++ b/drivers/net/wwan/mhi_wwan_mbim.c
+@@ -186,14 +186,14 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 
+ 	if (skb->len < sizeof(struct usb_cdc_ncm_nth16) +
+ 			sizeof(struct usb_cdc_ncm_ndp16)) {
+-		net_err_ratelimited("frame too short\n");
++		net_err_ratelimited("mbim: frame too short\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	nth16 = (struct usb_cdc_ncm_nth16 *)skb->data;
+ 
+ 	if (nth16->dwSignature != cpu_to_le32(USB_CDC_NCM_NTH16_SIGN)) {
+-		net_err_ratelimited("invalid NTH16 signature <%#010x>\n",
++		net_err_ratelimited("mbim: invalid NTH16 signature <%#010x>\n",
+ 				    le32_to_cpu(nth16->dwSignature));
+ 		return -EINVAL;
+ 	}
+@@ -201,7 +201,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 	/* No limit on the block length, except the size of the data pkt */
+ 	len = le16_to_cpu(nth16->wBlockLength);
+ 	if (len > skb->len) {
+-		net_err_ratelimited("NTB does not fit into the skb %u/%u\n",
++		net_err_ratelimited("mbim: NTB does not fit into the skb %u/%u\n",
+ 				    len, skb->len);
+ 		return -EINVAL;
+ 	}
+@@ -209,7 +209,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 	if (mbim->rx_seq + 1 != le16_to_cpu(nth16->wSequence) &&
+ 	    (mbim->rx_seq || le16_to_cpu(nth16->wSequence)) &&
+ 	    !(mbim->rx_seq == 0xffff && !le16_to_cpu(nth16->wSequence))) {
+-		net_err_ratelimited("sequence number glitch prev=%d curr=%d\n",
++		net_err_ratelimited("mbim: sequence number glitch prev=%d curr=%d\n",
+ 				    mbim->rx_seq, le16_to_cpu(nth16->wSequence));
+ 	}
+ 	mbim->rx_seq = le16_to_cpu(nth16->wSequence);
+@@ -222,7 +222,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
+ 	int ret;
+ 
+ 	if (le16_to_cpu(ndp16->wLength) < USB_CDC_NCM_NDP16_LENGTH_MIN) {
+-		net_err_ratelimited("invalid DPT16 length <%u>\n",
++		net_err_ratelimited("mbim: invalid DPT16 length <%u>\n",
+ 				    le16_to_cpu(ndp16->wLength));
+ 		return -EINVAL;
+ 	}
+@@ -233,7 +233,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
+ 
+ 	if (sizeof(struct usb_cdc_ncm_ndp16) +
+ 	     ret * sizeof(struct usb_cdc_ncm_dpe16) > skb->len) {
+-		net_err_ratelimited("Invalid nframes = %d\n", ret);
++		net_err_ratelimited("mbim: Invalid nframes = %d\n", ret);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
 
 
