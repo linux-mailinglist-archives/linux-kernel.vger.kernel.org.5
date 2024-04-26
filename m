@@ -1,98 +1,125 @@
-Return-Path: <linux-kernel+bounces-160345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E338B3C3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D1478B3BC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:40:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 235492832C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:01:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17DAA287ED4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39FB15687B;
-	Fri, 26 Apr 2024 16:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="OlxJiBA4"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC777149C44;
+	Fri, 26 Apr 2024 15:40:30 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DE714AD26;
-	Fri, 26 Apr 2024 16:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F9918C1F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714147256; cv=none; b=ezGVwY4X0u+AsZS8vgIPVpiXaxypaCdv4A9N8pVXxiubYT6J208K9p1gqWSDf66oQtfjDUsjbENs5hGNpg239kR212dWIUf8tJNQadDRJUlnzU3w3bqH/ibbWAe1HVTsnV0VqlZVZaXlPses9gqR88yDRSh+TjSrhyAJptddONM=
+	t=1714146030; cv=none; b=Wt4SYbfdEk5NnYNxiiyrIEpwBWQxags5f10rt8xmStgL5arTkVjU2a6utHARAdakRmMQ6OvKGXsHrJgt0yDVSOjjwrNHCkSZxTlO80YF1klQxtCC+2mIFmXxq+dUtwSrWvGPdHJPVAUNiG7V21BzB4X7Xtd1mnibI+BXr1j2UJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714147256; c=relaxed/simple;
-	bh=e/e/CkS2lyAv5dcyu8k8+s7I4g7ycYx06SZTbh0t75k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dt5LptFg8rk9xenoiocMy1GVrIsJ1dYPjVaJFPO0nl+VdXUH19d8UoD9rSbDz/UXJpqbu1vYs/1RI2AhXnQlWdC0kV2Fxdnavew6Dk/bj6S5zsX1QXhtbxBqqAnE68ZRwG0plNy9S0hiXvC0QJOlVZpwy7fKkFAqQ5isUyd/5Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=OlxJiBA4; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id F101F885A2;
-	Fri, 26 Apr 2024 18:00:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1714147253;
-	bh=KntFSRKKJlXDI5nElDgSk47qflI7G4WWVDhKzJ36saw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OlxJiBA4JqiSkPep5+//Fab0HwkAzF4JpRmBY7MmnztFaBs1CPhfiiJg0ggs186tS
-	 FUPEmouTIVHsld25mVu1cdwPn6C0rqtoPLMk+EYPLrP4ynWAXJuYgAsk7V+AS8/p/O
-	 lQzAOvhn6cmgSjN1NDjb3KFLd27GSD7fp54cDaBx7GfSLF3d7/W5Bthlr66buqjQKX
-	 AtWFuDl14vhYxmjFdnSsEa/4q0BwZp/MfnRAlMtMwF0Hjm35xnePRM2FnAKfRiUvnz
-	 SLFwOy2aphZnlwRhiXWW5PtwXL/WXKdqAWyqe/bx5cR8CBugtQGiJb3WDHRm3kGsYN
-	 FZuYqDTShKRjA==
-Message-ID: <5b8b52cf-bd43-40c0-962a-c6936637b7de@denx.de>
-Date: Fri, 26 Apr 2024 17:40:21 +0200
+	s=arc-20240116; t=1714146030; c=relaxed/simple;
+	bh=+j5dYm4zOwVyCAzMEhO4zgKNYoBBQrAEMaiytKgHRFw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LOPLskHdmcScrohS6SApzvbzxTpV40cQ6+1EyYrxYOnD9HW43GrDaf5JXSgxvwhLstxOelPN2ZHnRFgsGmatxyooJJSMe4SHKQhm+4kKrFKaZmXQpVN5pPdWF+5UIPKauvIuEX3M+GWSl/IEJB+zLMw4bQNqH7wSCDLlB+ZecGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQxgk38drz6F97p;
+	Fri, 26 Apr 2024 23:37:54 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 48CF1140A36;
+	Fri, 26 Apr 2024 23:40:23 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 16:40:22 +0100
+Date: Fri, 26 Apr 2024 16:40:21 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Junhao He <hejunhao3@huawei.com>
+CC: <will@kernel.org>, <yangyicong@huawei.com>, <shaojijie@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>, <chenhao418@huawei.com>
+Subject: Re: [PATCH 1/3] drivers/perf: hisi_pcie: Fix out-of-bound access
+ when valid event group
+Message-ID: <20240426164021.00006f4c@Huawei.com>
+In-Reply-To: <20240425124627.13764-2-hejunhao3@huawei.com>
+References: <20240425124627.13764-1-hejunhao3@huawei.com>
+	<20240425124627.13764-2-hejunhao3@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/11] net: stmmac: dwmac-stm32: clean the way to
- manage wol irqwake
-To: Christophe Roullier <christophe.roullier@foss.st.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Richard Cochran <richardcochran@gmail.com>, Jose Abreu
- <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240426125707.585269-1-christophe.roullier@foss.st.com>
- <20240426125707.585269-7-christophe.roullier@foss.st.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <20240426125707.585269-7-christophe.roullier@foss.st.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 4/26/24 2:57 PM, Christophe Roullier wrote:
-> On STM32 platforms it is no longer needed to use a dedicated wakeup to
-> wake up system from CStop.
+On Thu, 25 Apr 2024 20:46:25 +0800
+Junhao He <hejunhao3@huawei.com> wrote:
 
-This really needs more clarification.
+> The perf tool allows users to create event groups through following
+> cmd [1], but the driver does not check whether the array index is out of
+> bounds when writing data to the event_group array. If the number of events
+> in an event_group is greater than HISI_PCIE_MAX_COUNTERS, the memory write
+> overflow of event_group array occurs.
+> 
+> Add array index check to fix the possible array out of bounds violation,
+> and return directly when write new events are written to array bounds.
+> 
+> There are 9 different events in an event_group.
+> [1] perf stat -e '{pmu/event1/, ... ,pmu/event9/}'
+> 
+> Fixes: 8404b0fbc7fb ("drivers/perf: hisi: Add driver for HiSilicon PCIe PMU")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Why was the code needed before ? Maybe because it was used by some of 
-the older STM32F4/F7/H7 SoCs ? Is it still needed by those SoCs ? Will 
-this patch break those older SoCs ?
+Thanks,
 
-> This patch removes the dedicated wake up usage
-> and clean the way to register the wake up irq.
+> ---
+>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> index 5d1f0e9fdb08..dba399125658 100644
+> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> @@ -350,15 +350,27 @@ static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
+>  			return false;
+>  
+>  		for (num = 0; num < counters; num++) {
+> +			/*
+> +			 * If we find a related event, then it's a valid group
+> +			 * since we don't need to allocate a new counter for it.
+> +			 */
+>  			if (hisi_pcie_pmu_cmp_event(event_group[num], sibling))
+>  				break;
+>  		}
+>  
+> +		/*
+> +		 * Otherwise it's a new event but if there's no available counter,
+> +		 * fail the check since we cannot schedule all the events in
+> +		 * the group simultaneously.
+> +		 */
+> +		if (num == HISI_PCIE_MAX_COUNTERS)
+> +			return false;
+> +
+>  		if (num == counters)
+>  			event_group[counters++] = sibling;
+>  	}
+>  
+> -	return counters <= HISI_PCIE_MAX_COUNTERS;
+> +	return true;
+>  }
+>  
+>  static int hisi_pcie_pmu_event_init(struct perf_event *event)
 
-[...]
 
