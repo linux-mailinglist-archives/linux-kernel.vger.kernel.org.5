@@ -1,312 +1,284 @@
-Return-Path: <linux-kernel+bounces-159624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84EEB8B313A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:19:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283738B313D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:20:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C85F282D26
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:19:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D32BB283085
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A907E13BC26;
-	Fri, 26 Apr 2024 07:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TVc7mFz6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3214613BC2B;
+	Fri, 26 Apr 2024 07:20:29 +0000 (UTC)
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5CA13BAE9
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86888210FF;
+	Fri, 26 Apr 2024 07:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714115961; cv=none; b=Ux5+Vhnfxk9Mv47jNAVCa0w2pKaNGpbTpyGPwll0Eh3/Q6EA4xOHytgjdtBegIQuSE1g7MTaI4pv8SG+8Nxh4yQbJKLAqVnhyTnKNltKNxrMy94qYasYlUubEJLlcxRPyzCVfJPvrFXGRPDBQ8Y+dhOVS6ixRKhMQt858s4YGds=
+	t=1714116028; cv=none; b=SHXRomEqgcc8rzMdngwTqMYQ5Pehfc/uLkDHLhC+lg22c7ijcdKfv85SGLaMx6friQMznFCYihQ+InfiJioKQBvCD+cLdf+DgM9/vu8jW324STJkmgBCrgD6RjaWRzfnTlOXOUU8qK2I8WgnkurN3dG/der2kBe+i9Qqcgm5vCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714115961; c=relaxed/simple;
-	bh=kIjY7hC6gXdgsns5ngMGCPVw08yU9SbKFBz0fNFADQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aEwsKhlJ5aNzUEvAyUt3UreH4RUpYCqwLt+LIrdNjShog0w0Nj+0AwNKx7+buZxXGojcmd3h7CVfFf2C0pXz4oYqDlkdV4+lrgfyrXOSiamgp2iuWkEYbayTFReVZHMfYFvXwaulR9lccm1jIGU+WTYe5eeUGSfsK57/sW0BTWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TVc7mFz6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714115958;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bl8MntV5VcxHO9VKG8Q88/xgI2XsqnYUyfS3p7aHw8k=;
-	b=TVc7mFz6VtgiTC+mAFxaOXygNoOxAiwcN9AWR2byHRdAG91NLG6uu4jr9dzzaPUuh+HPoi
-	6+N1tWU5brCq4eyXHTRw21QkyJvpWKS4iBDKNAECRh3cWjde86UjUTiEmwVBjN6x1SK+Rm
-	mDQ0r3haA9l/VFuYPmUUuv80ehPqQq0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-63-14pDRWnLNEGo0yy5BpYOYw-1; Fri, 26 Apr 2024 03:19:16 -0400
-X-MC-Unique: 14pDRWnLNEGo0yy5BpYOYw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343e46df264so1194192f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:19:16 -0700 (PDT)
+	s=arc-20240116; t=1714116028; c=relaxed/simple;
+	bh=ZLkgAm7OrwCtlXsltCwfJqKUmyX5N3G73Ksssl3/2mE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=md/shAHlqC+76ifLQnneRMV6PfNlfaqQXteh3eIPK/u1mVHoXDIH4PSyXURWbq+fg8Vl3as9bwFhsn/f0Fl/hD6WaQovwRbFche5K3uCLIPCz3jrQCbH13Qd3qqTgH4Tz8K853QKIHD9kfny1+zxzJ7GkwSXC6hHUTe66Agq6w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6a071595d22so9871096d6.3;
+        Fri, 26 Apr 2024 00:20:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714115956; x=1714720756;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bl8MntV5VcxHO9VKG8Q88/xgI2XsqnYUyfS3p7aHw8k=;
-        b=pXCRH46OTQK14DoQceGzWfEyBhUdxUSmn+RIbkO7yKisqTVRw1kbjhmyPQtpwAz8FE
-         ThKsVJTWhkJLs/Gh8jyjF17UW+ksy4FRaFBcMHmAw0ZN/C2UrHS31JjBDEkEJ4vSO4Zy
-         8ZZqsLo2hcqLasMEVmX7AuuYhI8zhe1fCqSOvAR3BNHgD+xwXGPtoRxnc3h0XJhfucuK
-         j5QDgjpNofmj4ZTDaOXIh2yKfZj2ReN3X70PjyOOUwBZoe3Lau56ZY51pf3mD6CC7DpK
-         PiGZ1t4yyjpZkBt/7VNQbrK7Yg1XcV4grCn+pAYVtpbmd8IBecsiuY70eZJHDjtkTE1T
-         wysw==
-X-Forwarded-Encrypted: i=1; AJvYcCU7wOAU6jcs6Fsox3RaVhvleN2iBOStk7wdIqh7fM0Y/tUlOo90kPEx/AhGIBnqbyd/yRoN8BznzeuNkzDIZ+uKV4lZHxG2PqMxUvMi
-X-Gm-Message-State: AOJu0YwVO/X+hq/a1KbG/a9jCPIi6eUyYJ+wswfxLU6tenCvSN+lFvVa
-	MfQ8gTeplayclU3Ov+UmxurdX9pUs2dcBPFrQQVMs8l2+whu2h/baEx40q5PB8tdSKYSG95AOPL
-	A2+lxuljWfzr100PDdEwhvzB+8GCCv+IxM4p5LgknEUWbRmA0fhPNg0xyCcBFQA==
-X-Received: by 2002:a5d:4386:0:b0:34b:8bf:6019 with SMTP id i6-20020a5d4386000000b0034b08bf6019mr1063508wrq.70.1714115955683;
-        Fri, 26 Apr 2024 00:19:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmNarM/+lgHFG/LmjDwFSKC75Bu61cm+rPNgANlY0Fxvb2qyQPAYPuYu24sPzMbxDgDJ9OcQ==
-X-Received: by 2002:a5d:4386:0:b0:34b:8bf:6019 with SMTP id i6-20020a5d4386000000b0034b08bf6019mr1063486wrq.70.1714115955168;
-        Fri, 26 Apr 2024 00:19:15 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:6100:20f2:6848:5b74:ca82? (p200300cbc726610020f268485b74ca82.dip0.t-ipconnect.de. [2003:cb:c726:6100:20f2:6848:5b74:ca82])
-        by smtp.gmail.com with ESMTPSA id t4-20020a5d4604000000b00343826878e8sm21609461wrq.38.2024.04.26.00.19.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 00:19:14 -0700 (PDT)
-Message-ID: <385d3516-95bb-4ff9-9d60-ac4e46104130@redhat.com>
-Date: Fri, 26 Apr 2024 09:19:13 +0200
+        d=1e100.net; s=20230601; t=1714116025; x=1714720825;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xRvU0xUlHTJYvKA7qTgsZecNFP1QfgtH2vvFVAr0EAk=;
+        b=Eh5VPMapYPfQ2mXbVy+lCJxqolzBLFXy6fUSgvJjJCIbMmxf5Znco7Rx2ocmQN+JT6
+         5ii3oaC66w7uODUq3hJkI9ZWFz16oLxit2Rx0CGvopDLS4cOvqWn573RcGfg2/ZCyX1J
+         HYwOiIQ65v4UWgdt+MiIx26YpoTlRmFLj2jL2QqclWz1kIi/IFI4mwNV4y1yhZPz/Twd
+         QbpIfgosZbTRB+8uMhgn1GK8x+iPrc4hGD/2oR5wdmzQjMVTaA3R7hDNq0xiBi+bNwQN
+         zUNAycQqrgD6oCyWXu4dPYc2nwBaTy5xrh0dbfjmWju39xqb2T2HQXGsF4WBBa3I+M/p
+         /g6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXkBpp4s6pzu4ZXhMQdHHOifZGOXPFsb+2qSpS/s94sN+3QvriPUzDMflxx7DaG1PNi70oc6a63mNrcz4UMG3xvkPCAyp4MJ2P1U5VZZf3zjXcOD6oOUwjdgHXEfZpwODBeC+c+4gzoHc5Ehu9P
+X-Gm-Message-State: AOJu0YwD730GCudX9Cjzh8u4Zzn0WK4qZGgiUilVRSh1dcTWJntb6E5V
+	LZ59Nz5XyNNgFN0bE0or0omQ1SUIJTi0BTMUKh7fNgusAeWOQzAr
+X-Google-Smtp-Source: AGHT+IEynjR4BjT04NoxHWMoNQmwIYnX9UW30F3lzWXty1YYzgV3BFuW8OiGdCB85rdrtlc7nBZB4w==
+X-Received: by 2002:a05:6214:48b:b0:6a0:57f1:c536 with SMTP id pt11-20020a056214048b00b006a057f1c536mr2404970qvb.10.1714116024935;
+        Fri, 26 Apr 2024 00:20:24 -0700 (PDT)
+Received: from tofu.cs.purdue.edu ([128.210.0.165])
+        by smtp.gmail.com with ESMTPSA id l2-20020a056214028200b006a0afa5bce3sm222036qvv.55.2024.04.26.00.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 00:20:24 -0700 (PDT)
+From: Sungwoo Kim <iam@sung-woo.kim>
+To: 
+Cc: daveti@purdue.edu,
+	Sungwoo Kim <iam@sung-woo.kim>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: L2CAP: Fix slab-use-after-free in l2cap_send_cmd
+Date: Fri, 26 Apr 2024 03:20:05 -0400
+Message-Id: <20240426072006.358802-1-iam@sung-woo.kim>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
-To: Guillaume Morin <guillaume@morinfr.org>
-Cc: oleg@redhat.com, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, muchun.song@linux.dev
-References: <ZiK50qob9yl5e0Xz@bender.morinfr.org>
- <b70a3d3a-ea8b-4b20-964b-b019c146945a@redhat.com>
- <ZiaoZlGc_8ZV3736@bender.morinfr.org>
- <22fcde31-16c4-42d0-ad99-568173ec4dd0@redhat.com>
- <ZibOQI9kwzE98n12@bender.morinfr.org>
- <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
- <ZilvOi7ceSXmwkNq@bender.morinfr.org>
- <b1cf78f8-8480-4451-bbf8-78694ebd0438@redhat.com>
- <Zip0fEliGeL0qmID@bender.morinfr.org>
- <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
- <Zirw0uINbP6GxFiK@bender.morinfr.org>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <Zirw0uINbP6GxFiK@bender.morinfr.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 26.04.24 02:09, Guillaume Morin wrote:
-> On 25 Apr 21:56, David Hildenbrand wrote:
->>
->> On 25.04.24 17:19, Guillaume Morin wrote:
->>> On 24 Apr 23:00, David Hildenbrand wrote:
->>>>> One issue here is that FOLL_FORCE|FOLL_WRITE is not implemented for
->>>>> hugetlb mappings. However this was also on my TODO and I have a draft
->>>>> patch that implements it.
->>>>
->>>> Yes, I documented it back then and added sanity checks in GUP code to fence
->>>> it off. Shouldn't be too hard to implement (famous last words) and would be
->>>> the cleaner thing to use here once I manage to switch over to
->>>> FOLL_WRITE|FOLL_FORCE to break COW.
->>>
->>> Yes, my patch seems to be working. The hugetlb code is pretty simple.
->>> And it allows ptrace and the proc pid mem file to work on the executable
->>> private hugetlb mappings.
->>>
->>> There is one thing I am unclear about though. hugetlb enforces that
->>> huge_pte_write() is true on FOLL_WRITE in both the fault and
->>> follow_page_mask paths. I am not sure if we can simply assume in the
->>> hugetlb code that if the pte is not writable and this is a write fault
->>> then we're in the FOLL_FORCE|FOLL_WRITE case.  Or do we want to keep the
->>> checks simply not enforce it for FOLL_FORCE|FOLL_WRITE?
->>>
->>> The latter is more complicated in the fault path because there is no
->>> FAULT_FLAG_FORCE flag.
->>>
->>
->> I just pushed something to
->> 	https://github.com/davidhildenbrand/linux/tree/uprobes_cow
->>
->> Only very lightly tested so far. Expect the worst :)
-> 
-> 
-> I'll try it out and send you the hugetlb bits
-> 
->>
->> I still detest having the zapping logic there, but to get it all right I
->> don't see a clean way around that.
->>
->>
->> For hugetlb, we'd primarily have to implement the
->> mm_walk_ops->hugetlb_entry() callback (well, and FOLL_FORCE).
-> 
-> For FOLL_FORCE, heer is my draft. Let me know if this is what you had in
-> mind.
-> 
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 1611e73b1121..ac60e0ae64e8 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1056,9 +1056,6 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->   		if (!(vm_flags & VM_WRITE) || (vm_flags & VM_SHADOW_STACK)) {
->   			if (!(gup_flags & FOLL_FORCE))
->   				return -EFAULT;
-> -			/* hugetlb does not support FOLL_FORCE|FOLL_WRITE. */
-> -			if (is_vm_hugetlb_page(vma))
-> -				return -EFAULT;
->   			/*
->   			 * We used to let the write,force case do COW in a
->   			 * VM_MAYWRITE VM_SHARED !VM_WRITE vma, so ptrace could
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 3548eae42cf9..73f86eddf888 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5941,7 +5941,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
->   		       struct folio *pagecache_folio, spinlock_t *ptl,
->   		       struct vm_fault *vmf)
->   {
-> -	const bool unshare = flags & FAULT_FLAG_UNSHARE;
-> +	const bool make_writable = !(flags & FAULT_FLAG_UNSHARE) &&
-> +		(vma->vm_flags & VM_WRITE);
->   	pte_t pte = huge_ptep_get(ptep);
->   	struct hstate *h = hstate_vma(vma);
->   	struct folio *old_folio;
-> @@ -5959,16 +5960,9 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
->   	 * can trigger this, because hugetlb_fault() will always resolve
->   	 * uffd-wp bit first.
->   	 */
-> -	if (!unshare && huge_pte_uffd_wp(pte))
-> +	if (make_writable && huge_pte_uffd_wp(pte))
->   		return 0;
->   
-> -	/*
-> -	 * hugetlb does not support FOLL_FORCE-style write faults that keep the
-> -	 * PTE mapped R/O such as maybe_mkwrite() would do.
-> -	 */
-> -	if (WARN_ON_ONCE(!unshare && !(vma->vm_flags & VM_WRITE)))
-> -		return VM_FAULT_SIGSEGV;
-> -
->   	/* Let's take out MAP_SHARED mappings first. */
->   	if (vma->vm_flags & VM_MAYSHARE) {
->   		set_huge_ptep_writable(vma, haddr, ptep);
-> @@ -5989,7 +5983,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
->   			folio_move_anon_rmap(old_folio, vma);
->   			SetPageAnonExclusive(&old_folio->page);
->   		}
-> -		if (likely(!unshare))
-> +		if (likely(make_writable))
->   			set_huge_ptep_writable(vma, haddr, ptep);
+Hello, could you review a bug and its fix?
 
-Maybe we want to refactor that similarly into a 
-set_huge_ptep_maybe_writable, and handle the VM_WRITE check internally.
+This is a racy bug. Call stack is as below:
 
-Then, here you'd do
+[free]
+l2cap_conn_del
+┌ mutex_lock(&conn->chan_lock);
+│ foreach chan in conn->chan_l:            ... (2)
+│   l2cap_chan_put(chan);
+│     l2cap_chan_destroy
+│       kfree(chan)                        ... (3)
+└ mutex_unlock(&conn->chan_lock);
 
-if (unshare)
-	set_huge_ptep(vma, haddr, ptep);
-else
-	set_huge_ptep_maybe_writable(vma, haddr, ptep);
+[use]
+l2cap_bredr_sig_cmd
+  l2cap_connect
+  ┌ mutex_lock(&conn->chan_lock);
+  │ chan = pchan->ops->new_connection(pchan); // alloc chan
+  │ __l2cap_chan_add(conn, chan);
+  │   l2cap_chan_hold(chan);
+  │   list_add(&chan->list, &conn->chan_l);   ... (1)
+  └ mutex_unlock(&conn->chan_lock);
+    chan->conf_state // uaf at chan           ... (4)
 
-Something like that.
+To fix this, this patch holds and locks the l2cap channel.
 
+Thanks,
+Sungwoo.
 
+==================================================================
+BUG: KASAN: slab-use-after-free in l2cap_send_cmd+0x5dc/0x830 net/bluetooth/l2cap_core.c:968
+Read of size 1 at addr ffff88810b62c274 by task kworker/0:1/10
 
->   		/* Break COW or unshare */
->   		huge_ptep_clear_flush(vma, haddr, ptep);
-> @@ -6883,6 +6878,17 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
->   }
->   #endif /* CONFIG_USERFAULTFD */
->   
-> +static bool is_force_follow(struct vm_area_struct* vma, unsigned int flags,
-> +			     struct page* page) {
-> +	if (vma->vm_flags & VM_WRITE)
-> +		return false;
-> +
-> +	if (!(flags & FOLL_FORCE))
-> +		return false;
-> +
-> +	return page && PageAnon(page) && page_mapcount(page) == 1;
-> +}
+CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 6.8.0+ #61
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Workqueue: events l2cap_info_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x85/0xb0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x18f/0x560 mm/kasan/report.c:488
+ kasan_report+0xd7/0x110 mm/kasan/report.c:601
+ __asan_report_load1_noabort+0x18/0x20 mm/kasan/report_generic.c:378
+ l2cap_send_cmd+0x5dc/0x830 net/bluetooth/l2cap_core.c:968
+ l2cap_send_conn_req net/bluetooth/l2cap_core.c:1286 [inline]
+ l2cap_start_connection+0x25e/0x530 net/bluetooth/l2cap_core.c:1514
+ l2cap_conn_start+0x952/0xe60 net/bluetooth/l2cap_core.c:1661
+ l2cap_info_timeout+0x5f/0x90 net/bluetooth/l2cap_core.c:1807
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+ worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+ kthread+0x2a9/0x340 kernel/kthread.c:388
+ ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
 
-A couple of points:
+Allocated by task 290:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+ kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:575
+ poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+ __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
+ kasan_kmalloc include/linux/kasan.h:211 [inline]
+ __do_kmalloc_node mm/slub.c:3981 [inline]
+ __kmalloc+0x228/0x4d0 mm/slub.c:3994
+ kmalloc include/linux/slab.h:594 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ hci_alloc_dev_priv+0x30/0x1ea0 net/bluetooth/hci_core.c:2468
+ hci_alloc_dev include/net/bluetooth/hci_core.h:1651 [inline]
+ __vhci_create_device drivers/bluetooth/hci_vhci.c:406 [inline]
+ vhci_create_device+0x10e/0x710 drivers/bluetooth/hci_vhci.c:480
+ vhci_get_user drivers/bluetooth/hci_vhci.c:537 [inline]
+ vhci_write+0x398/0x460 drivers/bluetooth/hci_vhci.c:617
+ call_write_iter include/linux/fs.h:2087 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x9ee/0xd40 fs/read_write.c:590
+ ksys_write+0x103/0x1f0 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __x64_sys_write+0x84/0xa0 fs/read_write.c:652
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x84/0x120 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
 
-a) Don't use page_mapcount(). Either folio_mapcount(), but likely you 
-want to check PageAnonExclusive.
+Freed by task 1158:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+ kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:589
+ poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
+ __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x106/0x2e0 mm/slub.c:4409
+ hci_release_dev+0x1114/0x1250 net/bluetooth/hci_core.c:2799
+ bt_host_release+0x77/0x90 net/bluetooth/hci_sysfs.c:94
+ device_release+0xa4/0x1d0
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1f1/0x410 lib/kobject.c:737
+ put_device+0x28/0x40 drivers/base/core.c:3747
+ hci_free_dev+0x25/0x30 net/bluetooth/hci_core.c:2594
+ vhci_release+0x91/0xe0 drivers/bluetooth/hci_vhci.c:675
+ __fput+0x35b/0x740 fs/file_table.c:376
+ ____fput+0x1e/0x30 fs/file_table.c:404
+ task_work_run+0x1d9/0x270 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x823/0x23e0 kernel/exit.c:871
+ do_group_exit+0x1f1/0x2b0 kernel/exit.c:1020
+ get_signal+0x1387/0x14d0 kernel/signal.c:2893
+ arch_do_signal_or_restart+0x3b/0x650 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+ syscall_exit_to_user_mode+0x71/0x180 kernel/entry/common.c:212
+ do_syscall_64+0x90/0x120 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
 
-b) If you're not following the can_follow_write_pte/_pmd model, you are 
-doing something wrong :)
+Last potentially related work creation:
+ kasan_save_stack+0x2f/0x50 mm/kasan/common.c:47
+ __kasan_record_aux_stack+0xc6/0xe0 mm/kasan/generic.c:551
+ kasan_record_aux_stack_noalloc+0xf/0x20 mm/kasan/generic.c:561
+ insert_work+0x3a/0x1d0 kernel/workqueue.c:1653
+ __queue_work+0xa5b/0xdc0 kernel/workqueue.c:1806
+ queue_work_on+0x74/0xa0 kernel/workqueue.c:1837
+ queue_work include/linux/workqueue.h:548 [inline]
+ hci_recv_frame+0x375/0x490 net/bluetooth/hci_core.c:2947
+ hci_reset_dev+0x126/0x170 net/bluetooth/hci_core.c:2904
+ hci_ncmd_timeout+0xb1/0xd0 net/bluetooth/hci_core.c:1525
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+ worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+ kthread+0x2a9/0x340 kernel/kthread.c:388
+ ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
 
-c) The code was heavily changed in mm/mm-unstable. It was merged with t
-the common code.
+Second to last potentially related work creation:
+ kasan_save_stack+0x2f/0x50 mm/kasan/common.c:47
+ __kasan_record_aux_stack+0xc6/0xe0 mm/kasan/generic.c:551
+ kasan_record_aux_stack_noalloc+0xf/0x20 mm/kasan/generic.c:561
+ insert_work kernel/workqueue.c:1653 [inline]
+ __queue_work+0x8cf/0xdc0 kernel/workqueue.c:1802
+ delayed_work_timer_fn+0x6a/0x90 kernel/workqueue.c:1931
+ call_timer_fn+0x44/0x240 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1746 [inline]
+ __run_timers+0x63a/0x870 kernel/time/timer.c:2038
+ run_timer_softirq+0x26/0x40 kernel/time/timer.c:2051
+ __do_softirq+0x180/0x523 kernel/softirq.c:553
 
-Likely, in mm/mm-unstable, the existing can_follow_write_pte and 
-can_follow_write_pmd checks will already cover what you want in most cases.
+The buggy address belongs to the object at ffff88810b62c000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 628 bytes inside of
+ freed 8192-byte region [ffff88810b62c000, ffff88810b62e000)
 
-We'd need a can_follow_write_pud() to cover follow_huge_pud() and 
-(unfortunately) something to handle follow_hugepd() as well similarly.
+The buggy address belongs to the physical page:
+page:000000007f8eb4fe refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10b628
+head:000000007f8eb4fe order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+page_type: 0xffffffff()
+raw: 0017ffffc0000840 ffff888100042280 0000000000000000 0000000000000001
+raw: 0000000000000000 0000000000020002 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-Copy-pasting what we do in can_follow_write_pte() and adjusting for 
-different PTE types is the right thing to do. Maybe now it's time to 
-factor out the common checks into a separate helper.
+Memory state around the buggy address:
+ ffff88810b62c100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88810b62c180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88810b62c200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                             ^
+ ffff88810b62c280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88810b62c300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
+Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
+---
+ net/bluetooth/l2cap_core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 84fc70862..a8f414ab8 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -3953,6 +3953,9 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+ 	if (!chan)
+ 		goto response;
+ 
++	l2cap_chan_hold(chan);
++	l2cap_chan_lock(chan);
++
+ 	/* For certain devices (ex: HID mouse), support for authentication,
+ 	 * pairing and bonding is optional. For such devices, inorder to avoid
+ 	 * the ACL alive for too long after L2CAP disconnection, reset the ACL
+@@ -4041,6 +4044,11 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+ 		chan->num_conf_req++;
+ 	}
+ 
++	if (chan) {
++		l2cap_chan_unlock(chan);
++		l2cap_chan_put(chan);
++	}
++
+ 	return chan;
+ }
+ 
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
 
