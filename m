@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-160146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D888B39D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 292FE8B39EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:27:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911791C21F73
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:25:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E40E1C2250D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D723414884A;
-	Fri, 26 Apr 2024 14:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD95B155A5F;
+	Fri, 26 Apr 2024 14:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDd5wni6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qir+Mwqb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F4213C9A3;
-	Fri, 26 Apr 2024 14:25:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E04154450;
+	Fri, 26 Apr 2024 14:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714141525; cv=none; b=p4H1qD/Ytott9NoQrOYT7NRTkcxl2KJTXkncSK6ZIn4GFX/tdZ8t3Y2l/iFeL+cNQiZNBsFB34/Hbu30Lr6gSKdITp50qvQk/h3uFdCX8UpN4t6xzpcUEYM9M/2AlU4r0F3MSZ5hqxRYkkjR45+pcwOnoMnLCPGMV0wF+24emFg=
+	t=1714141559; cv=none; b=ky8arRHETacGIBw263iDuEEgHVNrtyenQ4Lo7Umxzeis7Uyotf1qH2puWXcnPkvjhYT/340tP0FYAy1ApjCPte82fyubjBk4lB/cOWrPFoJxPjwlaU9ZmS5lhpJc0UHYmOyaZcfYmfbWhlj72wu46BRqiEzixISdFXu137w0Qf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714141525; c=relaxed/simple;
-	bh=YMyr1veMwYdXQZ/gIClEaA9DHhm0jkElEaC61WPYtzo=;
+	s=arc-20240116; t=1714141559; c=relaxed/simple;
+	bh=JAlZlhRgd43TtcbyzJjboofIoaeMSgpIa90XkM2QRNw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UJK4jwASrB0uN/k5G5ZPjqlMI0uVTzlM+8dcQRYYhLqTPwwAZe7b1PotPIFxLcyzHaPUfWda8NFsGWCwCZntaPWjemcBpDpOqgbHyjogiFmjmdTY78fTY3zYYe1vvnIis53MUPUOh01hvRUVbZUFIUX7dvr63LnIJRwgaVxkuGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDd5wni6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C88C113CD;
-	Fri, 26 Apr 2024 14:25:21 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=bly2ruxqcLl/SomsvDzi2SZie4+A80R/OOOnvuShLmViIyIuLuKL0TFzV6HunMb2m1Hiz08PsnkJ59UXh/MuWJKT0NriD5q4yvsGbDok6BQcRJ4tKeRIsea62vVf7xezFH95xFyWzz9JY2Qz7QueUseKfxQLYKvNPJVWFde25Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qir+Mwqb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DC7BC2BD10;
+	Fri, 26 Apr 2024 14:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714141524;
-	bh=YMyr1veMwYdXQZ/gIClEaA9DHhm0jkElEaC61WPYtzo=;
+	s=k20201202; t=1714141558;
+	bh=JAlZlhRgd43TtcbyzJjboofIoaeMSgpIa90XkM2QRNw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lDd5wni64oD43gUkHMkhBdzC0KaNgvJGP6fdIUGxGE3DICubbaTO645EvcB+yelX5
-	 acaQzUXZialzH8rHUfFSR7fP70M0jviJFiErQ3eZvUHZs3NZC1FkHj6cG8kOPsYfzD
-	 aSpWb2CvKiBQ23epnR/BD1CML+V7WQ0K9sCz4Qbss4ekZXDquV6Plpw5IylxhHmRoP
-	 2v5ldZMRvomRW2es39uwOIEQagkUOSfw0i0VRzC9SsbFAF6xNI9CjaCYEBT583JcS4
-	 8YIBQh1dShJpvZgGCeZFLORPz92V15w7Xl1o6LpaclhMINZmIlWa5IUC6BK75MDAZB
-	 x7lWLYhK04sWA==
-Date: Fri, 26 Apr 2024 15:25:19 +0100
+	b=Qir+Mwqb5Zq5hWmubS/5pJqzYxgn5aTBjTqr0TpgW4AM4iQ+njzAOLQJThbz/7Mpl
+	 PhGYYqgksOCndQzchmi2jKZuYtz0+jq8klFTZr/64s+8NfsEkp/6m0YjcEMHq8IwaT
+	 oekwUamRvgweQ5GN7ZO6cD2rBTYW7QiKD7joaWPgrhoJjo6GFWX9gJruEUfjKSbulb
+	 xRmSnCokz5ttfmiDPFy/Mrfn8AV2uKfP4mFk9/tKObmooSYZV+MYMkBNtsegpmVzoo
+	 oqVvJWWMcmHBV8QRF3kQKQ3tE7DLy8eHjKDTqCGNI/7JV5xYR8KNTAWWZw2FzCLOnr
+	 JEbaKD8KX2esw==
+Date: Fri, 26 Apr 2024 15:25:53 +0100
 From: Simon Horman <horms@kernel.org>
 To: Jijie Shao <shaojijie@huawei.com>
 Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
@@ -48,11 +48,11 @@ Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
 	jiri@resnulli.us, shenjian15@huawei.com, wangjie125@huawei.com,
 	liuyonglong@huawei.com, chenhao418@huawei.com,
 	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 net 5/7] net: hns3: using user configure after
- hardware reset
-Message-ID: <20240426142519.GA513047@kernel.org>
+Subject: Re: [PATCH V2 net 4/7] net: hns3: use appropriate barrier function
+ after setting a bit value
+Message-ID: <20240426142553.GB513047@kernel.org>
 References: <20240426100045.1631295-1-shaojijie@huawei.com>
- <20240426100045.1631295-6-shaojijie@huawei.com>
+ <20240426100045.1631295-5-shaojijie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,126 +61,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240426100045.1631295-6-shaojijie@huawei.com>
+In-Reply-To: <20240426100045.1631295-5-shaojijie@huawei.com>
 
-On Fri, Apr 26, 2024 at 06:00:43PM +0800, Jijie Shao wrote:
+On Fri, Apr 26, 2024 at 06:00:42PM +0800, Jijie Shao wrote:
 > From: Peiyang Wang <wangpeiyang1@huawei.com>
 > 
-> When a reset occurring, it's supposed to recover user's configuration.
-> Currently, the port info(speed, duplex and autoneg) is stored in hclge_mac
-> and will be scheduled updated. Consider the case that reset was happened
-> consecutively. During the first reset, the port info is configured with
-> a temporary value cause the PHY is reset and looking for best link config.
-> Second reset start and use pervious configuration which is not the user's.
-> The specific process is as follows:
+> There is a memory barrier in followed case. When set the port down,
+> hclgevf_set_timmer will set DOWN in state. Meanwhile, the service task has
+> different behaviour based on whether the state is DOWN. Thus, to make sure
+> service task see DOWN, use smp_mb__after_atomic after calling set_bit().
 > 
-> +------+               +----+                +----+
-> | USER |               | PF |                | HW |
-> +---+--+               +-+--+                +-+--+
->     |  ethtool --reset   |                     |
->     +------------------->|    reset command    |
->     |  ethtool --reset   +-------------------->|
->     +------------------->|                     +---+
->     |                    +---+                 |   |
->     |                    |   |reset currently  |   | HW RESET
->     |                    |   |and wait to do   |   |
->     |                    |<--+                 |   |
->     |                    | send pervious cfg   |<--+
->     |                    | (1000M FULL AN_ON)  |
->     |                    +-------------------->|
->     |                    | read cfg(time task) |
->     |                    | (10M HALF AN_OFF)   +---+
->     |                    |<--------------------+   | cfg take effect
->     |                    |    reset command    |<--+
->     |                    +-------------------->|
->     |                    |                     +---+
->     |                    | send pervious cfg   |   | HW RESET
->     |                    | (10M HALF AN_OFF)   |<--+
->     |                    +-------------------->|
->     |                    | read cfg(time task) |
->     |                    |  (10M HALF AN_OFF)  +---+
->     |                    |<--------------------+   | cfg take effect
->     |                    |                     |   |
->     |                    | read cfg(time task) |<--+
->     |                    |  (10M HALF AN_OFF)  |
->     |                    |<--------------------+
->     |                    |                     |
->     v                    v                     v
+>           CPU0                        CPU1
+> ========================== ===================================
+> hclgevf_set_timer_task()    hclgevf_periodic_service_task()
+>   set_bit(DOWN,state)         test_bit(DOWN,state)
 > 
-> To avoid aboved situation, this patch introduced req_speed, req_duplex,
-> req_autoneg to store user's configuration and it only be used after
-> hardware reset and to recover user's configuration
-
-Hi Peiyang Wang and Jijie Shao,
-
-In reviewing this patch it would be helpful if the diagram above could be
-related to driver code.  I'm sure it is obvious enough, but I'm having a
-bit of trouble.  F.e., is it hclge_tp_port_init() where "port info is
-configured with a temporary value cause the PHY is reset and looking for
-best link config." ?
-
+> pf also has this issue.
 > 
-> Fixes: f5f2b3e4dcc0 ("net: hns3: add support for imp-controlled PHYs")
+> Fixes: ff200099d271 ("net: hns3: remove unnecessary work in hclgevf_main")
+> Fixes: 1c6dfe6fc6f7 ("net: hns3: remove mailbox and reset work in hclge_main")
+
+FWIIW, I think it is fine to fix both problems in one patch
+because both the cited patches were included in the same release - v5.6.
+(Actually, they seem to be consecutive patches in git history.)
+
 > Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
 > Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 > ---
->  .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 15 +++++++++------
->  .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h   |  3 +++
->  2 files changed, 12 insertions(+), 6 deletions(-)
+>  drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 3 +--
+>  drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 3 +--
+>  2 files changed, 2 insertions(+), 4 deletions(-)
 > 
 > diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> index 6eda73f1e6ad..5dc8593c97be 100644
+> index a068cd745eb4..6eda73f1e6ad 100644
 > --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
 > +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-> @@ -1537,6 +1537,9 @@ static int hclge_configure(struct hclge_dev *hdev)
->  			cfg.default_speed, ret);
->  		return ret;
+> @@ -7954,8 +7954,7 @@ static void hclge_set_timer_task(struct hnae3_handle *handle, bool enable)
+>  		/* Set the DOWN flag here to disable link updating */
+>  		set_bit(HCLGE_STATE_DOWN, &hdev->state);
+>  
+> -		/* flush memory to make sure DOWN is seen by service task */
+> -		smp_mb__before_atomic();
+> +		smp_mb__after_atomic(); /* flush memory to make sure DOWN is seen by service task */
+
+If you need to post a v2 for some other reason, please consider reworking
+this comment so lines are no longer than 80 columns wide. The previous form
+where the comment was on it's own line looks good to me.
+
+Likewise below.
+
+In any case, this patch looks good to me.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+>  		hclge_flush_link_update(hdev);
 >  	}
-> +	hdev->hw.mac.req_speed = hdev->hw.mac.speed;
-> +	hdev->hw.mac.req_autoneg = AUTONEG_ENABLE;
-> +	hdev->hw.mac.req_duplex = DUPLEX_FULL;
-
-I am curious to know why the initialisation of req_autoneg and req_duplex
-is not:
-
-	hdev->hw.mac.req_autoneg = hdev->hw.mac.autoneg;
-	hdev->hw.mac.req_duplex = hdev->hw.mac.duplex
-
-As it seems to me the value .autoneg is 0 (AUTONEG_DISABLE)
-and the value of .duplex is 0 (DUPLEX_HALF).
-
->  	hclge_parse_link_mode(hdev, cfg.speed_ability);
+>  }
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> index b57111252d07..08db8e84be4e 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> @@ -2181,8 +2181,7 @@ static void hclgevf_set_timer_task(struct hnae3_handle *handle, bool enable)
+>  	} else {
+>  		set_bit(HCLGEVF_STATE_DOWN, &hdev->state);
 >  
-> @@ -3344,9 +3347,9 @@ hclge_set_phy_link_ksettings(struct hnae3_handle *handle,
->  		return ret;
+> -		/* flush memory to make sure DOWN is seen by service task */
+> -		smp_mb__before_atomic();
+> +		smp_mb__after_atomic(); /* flush memory to make sure DOWN is seen by service task */
+>  		hclgevf_flush_link_update(hdev);
 >  	}
->  
-> -	hdev->hw.mac.autoneg = cmd->base.autoneg;
-> -	hdev->hw.mac.speed = cmd->base.speed;
-> -	hdev->hw.mac.duplex = cmd->base.duplex;
-> +	hdev->hw.mac.req_autoneg = cmd->base.autoneg;
-> +	hdev->hw.mac.req_speed = cmd->base.speed;
-> +	hdev->hw.mac.req_duplex = cmd->base.duplex;
->  	linkmode_copy(hdev->hw.mac.advertising, cmd->link_modes.advertising);
->  
->  	return 0;
-> @@ -3364,9 +3367,9 @@ static int hclge_update_tp_port_info(struct hclge_dev *hdev)
->  	if (ret)
->  		return ret;
->  
-> -	hdev->hw.mac.autoneg = cmd.base.autoneg;
-> -	hdev->hw.mac.speed = cmd.base.speed;
-> -	hdev->hw.mac.duplex = cmd.base.duplex;
-> +	cmd.base.autoneg = hdev->hw.mac.req_autoneg;
-> +	cmd.base.speed = hdev->hw.mac.req_speed;
-> +	cmd.base.duplex = hdev->hw.mac.req_duplex;
-
-It is unclear to me why fields of cmd are set here, cmd is a local variable
-and they don't seem to be used for the rest of the function.
-
->  	linkmode_copy(hdev->hw.mac.advertising, cmd.link_modes.advertising);
->  
->  	return 0;
-
-..
+>  }
+> -- 
+> 2.30.0
+> 
+> 
 
