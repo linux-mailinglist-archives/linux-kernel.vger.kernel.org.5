@@ -1,215 +1,532 @@
-Return-Path: <linux-kernel+bounces-160628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FBB68B4052
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:47:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A928B4057
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44D251C22E3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:47:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C44B32880FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA41328DD2;
-	Fri, 26 Apr 2024 19:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405281BC39;
+	Fri, 26 Apr 2024 19:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="sVbFVJJM"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2072.outbound.protection.outlook.com [40.107.244.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kIvvgFLe"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1354A28382
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714160825; cv=fail; b=juqvo1VWFzv2vbX6xT1kMTrfCXj0FC3F8m3/7OT5WmfzTtzjhZPpHHHYea8bOxhuScY0mD+5b2G8FQkawv9kfwyC1NGLCCiqicP0J+CZkXx6WSVD/cAQ4z91/orvQdIeMtAyY6+SdO6gjOLFZZIRIwCy0MeUZB82p0Y2OnbNZXc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714160825; c=relaxed/simple;
-	bh=EkOW1V3iK6j4Kuu0DyZjJF4exk+mpf8vXqyb+Qwkeq8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rnRQyrEbeC/+E7k+WNRUWieHn2CT2p/mD6f9Fl/WTe326nG8emi0Ha2ymh8bkg1EWiDMDQ3DP2KHVOU33s2hkbmi0SyV/enHMZ21XMsFtOF2FRrmUfigTeL1qWToiljUYI/oyy9SNgoBTpWLnV2KwXnFBk1O2Esb2LSjBYyV5+Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=sVbFVJJM; arc=fail smtp.client-ip=40.107.244.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CdwglIwDE41fUHUcev/3gPEM8Cedj6dRPoMlq1EJlimuC+bnT42kbxEzcsGcydS1zdqcIPEDThnpESCQKbQk2xZ4rGYwXh3/3N/ELZpu2J6AxlllAuCc37R9Uz1CX/U+/VaUuNzNDWAG6Sqr8x0yjFvPhNq5Ge2xaR0wlfEdDDPq+tn91oG/8JTAECHWLZwoh5h7d9LrZ7Oc3BSpvT/GTAi6enyWDVeE1FD2H0x5MOMipB7AmimahAM2MRFQarAjI/OrDm2pi4QWrf90qOk0HJeR2vv96XGt0k2IZhK/Ks+WmRejA9o2cAGVfx9Famv1H1pu8+oZWM3EJd6Tq8TXfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EkOW1V3iK6j4Kuu0DyZjJF4exk+mpf8vXqyb+Qwkeq8=;
- b=i+YoCo2EF64mjeA/eFFq6FH/CPiZzCC5B9SinW64s8eQ4dgS62QdKjcqWGS/9rrwGlw2ZCVibssFvPuKWVuoRg/jgrtq6RruOUsUkgSZidL//8aB7bS0Unq/5bjFaNooMXeYUHrDq1+QfeZ0dfJs7aMeBtbaO5YzuTdUQB+DbltKn36887JKxTd0DOCGvookesGppzM1/G1fXqrJk8Mtkh1LNX52O1mAkbf6bf4QPxNKLuZXQTczQG5Ao6d+lNbuQJxBoNttpuC6oZlbXlB7wc+KL7Lwog6UN0ms3BA/ZYqAikfuyRh9UEp2yZj+X9sRvnK9F1uAamkPoUZ2ijHu0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EkOW1V3iK6j4Kuu0DyZjJF4exk+mpf8vXqyb+Qwkeq8=;
- b=sVbFVJJMNAch0mCQx67bIZYLmD/yMpyNynnNjTWF7KD3pnD0QouFwTOpujCOxq5Ws/IWRfsrn+HGmRqQ/wQ2fLjusi/E5wlY44DKbzC74vPmOBpSOawFgodm6wQP0KMSdqwpGEIdP7RXLJLOqhrYYml15Cs94S2yUEEUyDGONvw=
-Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
- by PH7PR12MB7869.namprd12.prod.outlook.com (2603:10b6:510:27e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
- 2024 19:46:56 +0000
-Received: from MW4PR12MB7165.namprd12.prod.outlook.com
- ([fe80::e039:187d:47be:afb7]) by MW4PR12MB7165.namprd12.prod.outlook.com
- ([fe80::e039:187d:47be:afb7%4]) with mapi id 15.20.7472.044; Fri, 26 Apr 2024
- 19:46:56 +0000
-From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, "Simek, Michal" <michal.simek@amd.com>
-Subject: RE: [PATCH v2 2/2] drm: xlnx: zynqmp_dpsub: Fix compilation error
-Thread-Topic: [PATCH v2 2/2] drm: xlnx: zynqmp_dpsub: Fix compilation error
-Thread-Index: AQHal3ut/ICi/zy530OrmkuvCcEGsbF6GSKAgADcyrA=
-Date: Fri, 26 Apr 2024 19:46:56 +0000
-Message-ID:
- <MW4PR12MB716503F7F5668AF9B054C2DDE6162@MW4PR12MB7165.namprd12.prod.outlook.com>
-References: <20240425-dp-live-fmt-fix-v2-0-6048e81211de@amd.com>
- <20240425-dp-live-fmt-fix-v2-2-6048e81211de@amd.com>
- <99218e32-bd37-49d8-bb90-b6ce9a6447ac@ideasonboard.com>
-In-Reply-To: <99218e32-bd37-49d8-bb90-b6ce9a6447ac@ideasonboard.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|PH7PR12MB7869:EE_
-x-ms-office365-filtering-correlation-id: a189fa3e-b667-4a82-a300-08dc6629a174
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- =?utf-8?B?SWJTLzM5eVdxNzZMb0RpSU1HM2h6QTVGVXhkZXlzaVhEUjhSOTJQbTRSL2Nn?=
- =?utf-8?B?ZGdDUHAvc3FZSGJucTc3ZUE1WjhWWGtYbnBXUzlVT1dwMVA4andOQXpZeElZ?=
- =?utf-8?B?MUZVMTRxSXZlbFdWVWQ1RHQ3aVB0NnIwTllVc2pJaDBqamI3eS9OeHFteUQz?=
- =?utf-8?B?Z0UrcGxTZkcvYlp6M3hqWm1qbm9wKzBUTFRoSi9KNmVqSEJHVG5BNkRJcmFU?=
- =?utf-8?B?cExzZ1YreU82SXJaK1RmY1Ntb2tkVURZZno3TmZRMW10U1BvRGtPS3BIemZo?=
- =?utf-8?B?bGVkR21CMjBhbWRNTTA5T0tKbUM5WjVSL1U3U01jeWZyeE5pYkNDMDBDdDNM?=
- =?utf-8?B?bmFZMzYzd2xIS05UV2hNNit4U1FzRzk0TXB5ekUvWC9vcmEyMlo3dXEzUDlv?=
- =?utf-8?B?a0VHcXFuRjlQYmJab0JjMk9IbzhKVlRVUFNzMDlLSWlMQlZSV0tWcHpLeWth?=
- =?utf-8?B?VHFWQ0NKTi9IWExvMWM0a3F3c0dqUlJBbmFDeG5WOFBxbHZMZnBHU0RNRFhO?=
- =?utf-8?B?U3hIaTI0Z0s1QzZFRTNyZ2QxRVpOTXR2RjgyVXoxcFJrZi9iMWE3V0l0QU9m?=
- =?utf-8?B?WVpjcGQzdSsyeXBGWnNPL3FXQ3QxUEduNHF5Wk5MZytxNmU3b3FaLzg3WDM3?=
- =?utf-8?B?SzFoZ0FLVzNpNXJlVC9tT1JNVDNtNk9oRjBhNEpTSGxkZklzNkZFN2N3WDZW?=
- =?utf-8?B?dHlqUXp4a21VdDFybGZyOUxpTXlMT0F3NlA1T21GbzdYZGRMQnU3anRpMW1l?=
- =?utf-8?B?MGhGRjhZNGVXZUh6SXV1Nlg2M1YxQVZVcXA1MWV1UXQxaUlEOTNFQlhYNXgr?=
- =?utf-8?B?M2xaaExXRlZuMitLTEY0NzJWbnlqMzRrZWFwMEF1WER3MHV2M0M4YkRFYUJs?=
- =?utf-8?B?L2dXN0JGK3NWcGMzYkFiVmNxbjVyVVhiT3ZFSVFaK05oWFdHRGROak5zK3Vw?=
- =?utf-8?B?MkFSZENCdkpxMmZmMVFWdkM0S1NjVkdFZmNwb1JHeU5MYmJNd3FaT3B6TUZx?=
- =?utf-8?B?R0puNExtU3JLL3VoOHA4QzhpUndaYWVYMmU4Qzd3UXVNdTlGM3F3alZ1dm0w?=
- =?utf-8?B?MlZmblgrTzNQVHZIc3Yvek41dklBbkcxL2FOYTAxT0lWSGpxZjJSdVRTNmcy?=
- =?utf-8?B?YmxpR2JYYmIwQTMrRzd4REFEQmFDMjRUOEo5SFBYMEhEOFp6ZGszTWplNFRR?=
- =?utf-8?B?dlRjWHB0eXhhaFIvUWxVRUZnZkVaclo3WlVFc1p4U2xuUXlyYVV1U2VKdTgv?=
- =?utf-8?B?a2NkeTVadnhlTTJlMU1QS1Axc3lVRzFKWWJpZHl2Z25QUlNnNnU4eGxpV29X?=
- =?utf-8?B?SEk0ckpscWx0OWtLR2k3Y05MUGsyeVlYNFBRSlZ5MUFNS0xZbEh4L2lyZWht?=
- =?utf-8?B?OVg5bHJDekF4UnlEWm9sM1dJMkNXMjN0blFxd003akJmRjB3M3UyMkp5REdS?=
- =?utf-8?B?c1R2dnZ4T3JZWnNaOTJWaEV2N1RwaC93THdyNElFSE5DbHdlaXFpNXQ3eDBD?=
- =?utf-8?B?SXNVRHI0Z2ZNMExwa0twcFZlSjN1YWNDUUZoMUNMa2NtdTJiWm8xeFV5NnJm?=
- =?utf-8?B?cTJBK0dMVkQ3R2hscEZ4Qjg4SW8yUXdsVUFkL3FJQTlQRUk5cWl0SkV2OG9L?=
- =?utf-8?B?bk1rZDFxYkN5UmJoZGZhRWZERjdiZzluMXRSc3FzRmtWZ2lpRWxKQ0djei9Z?=
- =?utf-8?B?eUxnM2h4K1VwMTI5bmdvWXJvaXFNTVVKQUp6UHpkWWFPT0tqTzJkTndvWjdp?=
- =?utf-8?B?TVJjRHNjYkdhN3MyVnorNlFRTlZybnh1ZjRvR0dWakFxOStONzFXLzQrQXJS?=
- =?utf-8?B?ZEFud3ArWWtrdUlSdmQrZz09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?dzE5WUxBd0M2bGVzVEx0YzBucXQxTWZDemlqUlRtNlZiK2RuSEl1cC9kUGI0?=
- =?utf-8?B?L0V2MEcxV2t4M0gxVFFRUFRpVW1TcDFFU01WWENwZkxLY2JyK0pxQ2wxa2NT?=
- =?utf-8?B?MmJvTWlpVTNqdVc3bEtnejlWZDI3M05TaXFhU3cxKytIWUFaOWlzWlMweXVB?=
- =?utf-8?B?VUlQcU1GZ2grRVpWcEd5SHFTTUxtYXQxRjNRb0d6akd3ODZZZkRiL0FZeDdy?=
- =?utf-8?B?ZnQzNXF5b1RoOXo4aGxUQUIrQmJaSVhlVG82SE82NVF4V3NqREdHOXJpRjZH?=
- =?utf-8?B?YmdqTEpGUi82MVpVZ2taVWw2NXhSeXZGQUxkN0dWaDJMRnN5Q1d4OXNPZzNK?=
- =?utf-8?B?bjBjdWlhUCtNQVhuSEgxcEM2OWkzRWhrdDFQTk10WlkyRGU5Q2RadUYrVUN2?=
- =?utf-8?B?K1B2N1lUdUExT0EwbmY4MWtPTjBxZ1RDNE1wQ2wyY0t2aDRDMHQ4Zkg4Yjlk?=
- =?utf-8?B?OGliTktUYmRKNDBiejJNZDZHaHJnTEJiRlI3VnU0c3p1bWY2U3V1dWJ6eEwz?=
- =?utf-8?B?enN2cGwwWGhQbUszL1RsNk9XT2Iwcy9HbEtMSU1pT1U0L0Rhejl6c1VVRUVY?=
- =?utf-8?B?VzkrdFVkVy9Ib1ZWUTFqc0QvQk55ZXg3VjlGdkR0eGRQTURWMXRpMWRxY09Y?=
- =?utf-8?B?RHplcXlIVTMxU2x2NGtRcG94SWFRS2c2T3Y2SG5mOStKcDc2Y0xVZ2haRE1B?=
- =?utf-8?B?Tm1GMi9CL21tci9FRzcyRERhNnhUL1dqUWh0Z3ZQSGFmNFFuc09yeDBFNmtu?=
- =?utf-8?B?YjIwaUlFWStRMWJCOUd3Y1o2NzBtVEtQZC9IWmVHOFd1WGY1cHFtRUxBb0NX?=
- =?utf-8?B?b1kwdzQvYzRGbjBVK0FJdVFGUzJ4MVhNNnltL2ZKQTIyUGRNNU5LSERrTThQ?=
- =?utf-8?B?bEdMWkpVSk5oSG9pTW03M0tiZGpNSUZvYzVMR3h6MEdPV1NXZkhKaFJ1RXhS?=
- =?utf-8?B?UXorYlRUMFZvYThTdXR4U1UwckpIeEQ5R1VnY3JlT25YQ1JMSGdJWDNOdVhM?=
- =?utf-8?B?Ni9ZNFdsMlZUZDlzMm9uZ2xwMXVHUWlid3lBbm1veExtQ0g5MDQ2Q2NUMEs4?=
- =?utf-8?B?RFpUMHArL3B0MUJRczlzSXRORTNycUhtQVBPazNmUHF4ME42Vm9PNGRhNlIx?=
- =?utf-8?B?WWlXNy8zS2RZdE1jekVmSEQwYmZzWHRMYk1KbTlxa1dzbmh6cnh5dTRvNk1M?=
- =?utf-8?B?Z3d6QXp3ZE5CVXVCTmVKd3RGcWcrVjFsSTFoZnhqa0xPM01XMmVjcDBocnBR?=
- =?utf-8?B?S0pqMWt5bFFjRUEra3pIVFEyVjI5QjhWZkZ3eThqR3NsSS96OW4yNFlPRDd2?=
- =?utf-8?B?eTIwc3lLWmtXdFpYejR5OWNVRWFvS01BZ3BBR1k5T0NzUndOMTFiMlZmUWNi?=
- =?utf-8?B?T2M1aHEzWmZHSU1SaGR5TlRReThzaGtSRU4veU5UeEdINXFlQVZCTDZyd0gr?=
- =?utf-8?B?dmNMZG1JMTNQZzVrUFdmZGFpVzlaWi9kT25IdmFrY1RDeU16T3pySGMwL1Bt?=
- =?utf-8?B?RkFqQk4zQTJ4Skk1dkUvbHVXZzJhd0JuNzlaSHY5T1RnN1NjYXlXYjB3V0xw?=
- =?utf-8?B?OTNBc0licHRJZFZLT0dQM3VwdWpKUFhkYyt1WDdGVnNpaXRVS1d0M1hmeW5O?=
- =?utf-8?B?bUUwTDFLQzNnLzY5cnFNV3VJVXg2aGxJbThMY2luUHh1YTNkODFhMnp3aE15?=
- =?utf-8?B?NUlnMC9QZVdNelp5L3ZBSjh1RkxteW45clNPR0hIKzFIRFpUZGtlRlcvMkd0?=
- =?utf-8?B?eTd5T0FQT3NNdDY0MUh2YmdCa1ZLOXdsL0t5bWhXWGJ6RXg5YnBzcHYybEF2?=
- =?utf-8?B?cUZCSUtkMDgzc1JZSE9xZzVQaENqNUVjcDlodU9XUmZjd3pHOTJPTy9GWVBW?=
- =?utf-8?B?dmY2RzB5dGdodG8xOHF3Mm10NWNnZmJZN08rMzJSbytKVkJhWVZGbk5KeVhT?=
- =?utf-8?B?L0JkaUtZWmFOUml2N01DaUJ1dVc1c1QrR2k4bjRpbjNpUzVzZFhpUStueDF5?=
- =?utf-8?B?ZjFxVkZ6dkF2NjFlZXNOQ0d1TS9BTzlrTUdqU3RrVlJsbUNhUFcyK0p6azA3?=
- =?utf-8?B?R2xuT2p0SXVxNFlMcEE4RnlPdEZRNTVYc29wZ1IvZVdpMnIvYmoxRXRkSFhS?=
- =?utf-8?Q?p7NY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F052C85F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714160841; cv=none; b=RYPLoNeAgJrsQ0+sij/PB17jte7r8OmNndaW4189I2ObXe22cnW67Sl3bOsNrg8lcwem7dIQMpLYLQjLpfw6ppJWK35FLJxLFWsaB87UTgI4NcFn+/8Yooerkt/OEuUiW8Dh4aoqjE+3JXCY23pDciEvAf9GsqQojxWmA89BUes=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714160841; c=relaxed/simple;
+	bh=/FUsKXplFS5G+mv1I9uRwhnH2LAGbeIziLvbqUJgnn4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QUyYgbrx7CkT2yhkH0xIVLTaJjOebmVBHWdsWARCWHEGyYEQlRKEvgjnlOu8bXmasJhpSjyiEa7BK54SC3bse4pHFy+aVEUAd3JDQ/DNsssGxjdxYzlSoI3svOGBnMNc0ezyun2UxNDt4jpHzGJP0IDTKijEJZk0f8oScW6Sz9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kIvvgFLe; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so6889075ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714160837; x=1714765637; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=y1PXJEglPxUxkKUKfy/PB/vy8kF4Fex+GErBWeL36ZQ=;
+        b=kIvvgFLeeT2wohSa/Mp3J9rcU5HWPFLCJ/hiaahgDtxeVI22Owj86do+hzrbbT6kkv
+         vWsdKmh+yaimxmH+EH1eynkciOJMX8fbaP2ih37UC661v4iXaMxTEVM7m7EHXKCEwoUP
+         TtsCEnlYQF79+1TOxJQKUeL/MahDkyra3S8W8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714160837; x=1714765637;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y1PXJEglPxUxkKUKfy/PB/vy8kF4Fex+GErBWeL36ZQ=;
+        b=Q/UvKVYHrhaJeOG6F02/XT3WzquyA6KUTTHrb3QNfl4XN2tKtRJPWVR2WPWQuD+e5X
+         fT2jEQhU9CgifYkrz50gZ91zorwZo53tR+S/YYCKwNNoi6TjLyU4TBrQP+0kx89ZR6ZP
+         uGHULyL5M+2T7g9my9ASbE4rTc1d4O6kCEvhsHz2DMSTcC+HchNLXZKf1+GYZFYCwuFJ
+         HvId/nq9UgDMA+BWFVLJFNDlgLKZld4QixxEe916dGxZvbJOD4iy0GNLrsRMYRv2xx/e
+         clYBU0mQExtU4wHchCe/ZHl0WeinZHhH/hKkva51ftEeagEUnYRpaLZostQrfe+A+4QH
+         Xb7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXYd76APiOJXdK1yjZANjzfnLYi21YcZVJuPmN5l/A1q64isU3mEjdwBiLXy16w7eei+BDYYP09Z53T31fCXBSGxXG2tA976SEJ92B+
+X-Gm-Message-State: AOJu0Yw0kep9GgsdnCh5xUpcn1buYn549apYzU6tC59sdfrX8wNi7E58
+	+Gpx3Y3+7Wo+iEaIQU13J9/xICBEK7Mxb1tVgbmU5J0/DOGQW3+1LZF2vetKBw==
+X-Google-Smtp-Source: AGHT+IF6lSJvrbDQz6rgfKFLfRsKY4KRFFqD1YgE/QSVUbTJHDVBsJx2DrgUL0N0+atnGo1r5FGDdw==
+X-Received: by 2002:a17:902:a518:b0:1e4:51ab:fffb with SMTP id s24-20020a170902a51800b001e451abfffbmr4214061plq.25.1714160837225;
+        Fri, 26 Apr 2024 12:47:17 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p23-20020a1709027ed700b001d8f111804asm16127066plb.113.2024.04.26.12.47.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 12:47:16 -0700 (PDT)
+Date: Fri, 26 Apr 2024 12:47:16 -0700
+From: Kees Cook <keescook@chromium.org>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Will Drewry <wad@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] selftests/harness: Fix vfork() side effects and
+ uncaught errors
+Message-ID: <202404261245.DC9A268FF@keescook>
+References: <20240426172252.1862930-1-mic@digikod.net>
+ <20240426172252.1862930-6-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a189fa3e-b667-4a82-a300-08dc6629a174
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2024 19:46:56.7909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: itoKFyhObY7hkwHnBEMSX5cBY6wp+gZuY2BJnfWjmxCfoWWTFWsCDtlyKtgxZD1zZEldHDM/d7dfY1Bn5J2BGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7869
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240426172252.1862930-6-mic@digikod.net>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVG9taSBWYWxrZWluZW4g
-PHRvbWkudmFsa2VpbmVuQGlkZWFzb25ib2FyZC5jb20+DQo+IFNlbnQ6IFRodXJzZGF5LCBBcHJp
-bCAyNSwgMjAyNCAxMTozNiBQTQ0KPiBUbzogS2x5bWVua28sIEFuYXRvbGl5IDxBbmF0b2xpeS5L
-bHltZW5rb0BhbWQuY29tPg0KPiBDYzogZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsg
-bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnOyBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT47IExhdXJlbnQN
-Cj4gUGluY2hhcnQgPGxhdXJlbnQucGluY2hhcnRAaWRlYXNvbmJvYXJkLmNvbT47IE1hYXJ0ZW4g
-TGFua2hvcnN0DQo+IDxtYWFydGVuLmxhbmtob3JzdEBsaW51eC5pbnRlbC5jb20+OyBNYXhpbWUg
-UmlwYXJkDQo+IDxtcmlwYXJkQGtlcm5lbC5vcmc+OyBUaG9tYXMgWmltbWVybWFubiA8dHppbW1l
-cm1hbm5Ac3VzZS5kZT47DQo+IERhdmlkIEFpcmxpZSA8YWlybGllZEBnbWFpbC5jb20+OyBEYW5p
-ZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+Ow0KPiBTaW1laywgTWljaGFsIDxtaWNoYWwuc2lt
-ZWtAYW1kLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAyLzJdIGRybTogeGxueDogenlu
-cW1wX2Rwc3ViOiBGaXggY29tcGlsYXRpb24NCj4gZXJyb3INCj4gDQo+IENhdXRpb246IFRoaXMg
-bWVzc2FnZSBvcmlnaW5hdGVkIGZyb20gYW4gRXh0ZXJuYWwgU291cmNlLiBVc2UgcHJvcGVyDQo+
-IGNhdXRpb24gd2hlbiBvcGVuaW5nIGF0dGFjaG1lbnRzLCBjbGlja2luZyBsaW5rcywgb3IgcmVz
-cG9uZGluZy4NCj4gDQo+IA0KPiBPbiAyNi8wNC8yMDI0IDA0OjQ2LCBBbmF0b2xpeSBLbHltZW5r
-byB3cm90ZToNCj4gPiBGaXggVz0xIGNsYW5nIDE5IGNvbXBpbGF0aW9uIGVycm9yIGluDQo+IHp5
-bnFtcF9kaXNwX2xheWVyX2RybV9mb3JtYXRzKCkuDQo+ID4NCj4gPiBSZXBvcnRlZC1ieToga2Vy
-bmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4gQ2xvc2VzOiBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIwMjQwNDI2MDk0Ni40b1pYdkhEMi0NCj4gbGtwQGlu
-dGVsLmNvbS8NCj4gPiAtLS0NCj4gDQo+IFRoaXMgaXMgbWlzc2luZyB5b3VyIHNpZ25lZC1vZmYt
-YnkuDQo+IA0KPiAgIFRvbWkNCg0KVGhhbmsgeW91IQ0KDQo+IA0KPiA+ICAgZHJpdmVycy9ncHUv
-ZHJtL3hsbngvenlucW1wX2Rpc3AuYyB8IDIgKy0NCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS94bG54L3p5bnFtcF9kaXNwLmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0veGxueC96eW5x
-bXBfZGlzcC5jDQo+ID4gaW5kZXggNDIzZjVmNDk0M2NjLi5jOWZiNDMyZDRjYmQgMTAwNjQ0DQo+
-ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3hsbngvenlucW1wX2Rpc3AuYw0KPiA+ICsrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS94bG54L3p5bnFtcF9kaXNwLmMNCj4gPiBAQCAtOTgxLDcgKzk4MSw3IEBA
-IHUzMiAqenlucW1wX2Rpc3BfbGF5ZXJfZHJtX2Zvcm1hdHMoc3RydWN0DQo+IHp5bnFtcF9kaXNw
-X2xheWVyICpsYXllciwNCj4gPiAgICAgICB1bnNpZ25lZCBpbnQgaTsNCj4gPiAgICAgICB1MzIg
-KmZvcm1hdHM7DQo+ID4NCj4gPiAtICAgICBpZiAoV0FSTl9PTighbGF5ZXItPm1vZGUgPT0gWllO
-UU1QX0RQU1VCX0xBWUVSX05PTkxJVkUpKSB7DQo+ID4gKyAgICAgaWYgKFdBUk5fT04obGF5ZXIt
-Pm1vZGUgIT0gWllOUU1QX0RQU1VCX0xBWUVSX05PTkxJVkUpKSB7DQo+ID4gICAgICAgICAgICAg
-ICAqbnVtX2Zvcm1hdHMgPSAwOw0KPiA+ICAgICAgICAgICAgICAgcmV0dXJuIE5VTEw7DQo+ID4g
-ICAgICAgfQ0KPiA+DQoNCg==
+On Fri, Apr 26, 2024 at 07:22:52PM +0200, Mickaël Salaün wrote:
+> Setting the time namespace with CLONE_NEWTIME returns -EUSERS if the
+> calling thread shares memory with another thread (because of the shared
+> vDSO), which is the case when it is created with vfork().
+> 
+> Fix pidfd_setns_test by replacing test harness's vfork() call with a
+> clone3() call with CLONE_VFORK, and an explicit sharing of the
+> __test_metadata and self objects.
+> 
+> Replace _metadata->teardown_parent with a new FIXTURE_TEARDOWN_PARENT()
+> helper that can replace FIXTURE_TEARDOWN().  This is a cleaner approach
+> and it enables to selectively share the fixture data between the child
+> process running tests and the parent process running the fixture
+> teardown.  This also avoids updating several tests to not rely on the
+> self object's copy-on-write property (e.g. storing the returned value of
+> a fork() call).
+> 
+> In the Landlock filesystem tests, don't allocate self->dir_path in the
+> test process because this would not be visible in the
+> FIXTURE_TEARDOWN_PARENT() process when not sharing the memory mapping.
+> 
+> Unconditionally share _metadata between all forked processes, which
+> enables to actually catch errors (which were previously ignored).
+> 
+> Replace a wrong EXPECT_GT(self->child_pid_exited, 0) with EXPECT_GE(),
+> which is now actually tested on the parent and child sides.
+> 
+> FIXTURE_VARIANT_ADD() doesn't need to be MAP_SHARED because it should
+> not be modified: it is already passed as const pointers to
+> FIXTURE_TEARDOWN().  Make that explicit by constifying the variants
+> declarations.
+
+This patch makes at least(?) 3 different logical changes. Can you split
+these up a bit; I think it would make review a bit easier.
+
+I don't quite understand why the need for the explicit shared memory
+setup for the fixture metadata? Is this to deal with the vfork?
+
+-Kees
+
+> 
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Günther Noack <gnoack@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Will Drewry <wad@chromium.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
+> Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> Link: https://lore.kernel.org/r/20240426172252.1862930-6-mic@digikod.net
+> ---
+>  tools/testing/selftests/kselftest_harness.h   | 88 +++++++++++++------
+>  tools/testing/selftests/landlock/fs_test.c    | 73 ++++++++-------
+>  .../selftests/pidfd/pidfd_setns_test.c        |  2 +-
+>  3 files changed, 103 insertions(+), 60 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+> index d2dd246a3843..a19d01c0b7a7 100644
+> --- a/tools/testing/selftests/kselftest_harness.h
+> +++ b/tools/testing/selftests/kselftest_harness.h
+> @@ -295,6 +295,32 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+>   * A bare "return;" statement may be used to return early.
+>   */
+>  #define FIXTURE_TEARDOWN(fixture_name) \
+> +	static const bool fixture_name##_teardown_parent = false; \
+> +	__FIXTURE_TEARDOWN(fixture_name)
+> +
+> +/**
+> + * FIXTURE_TEARDOWN_PARENT()
+> + * *_metadata* is included so that EXPECT_*, ASSERT_* etc. work correctly.
+> + *
+> + * @fixture_name: fixture name
+> + *
+> + * .. code-block:: c
+> + *
+> + *     FIXTURE_TEARDOWN_PARENT(fixture_name) { implementation }
+> + *
+> + * Same as FIXTURE_TEARDOWN() but run this code in a parent process.  This
+> + * enables the test process to drop its privileges without impacting the
+> + * related FIXTURE_TEARDOWN_PARENT() (e.g. to remove files from a directory
+> + * where write access was dropped).
+> + *
+> + * To make it possible for the parent process to use *self*, share (MAP_SHARED)
+> + * the fixture data between all forked processes.
+> + */
+> +#define FIXTURE_TEARDOWN_PARENT(fixture_name) \
+> +	static const bool fixture_name##_teardown_parent = true; \
+> +	__FIXTURE_TEARDOWN(fixture_name)
+> +
+> +#define __FIXTURE_TEARDOWN(fixture_name) \
+>  	void fixture_name##_teardown( \
+>  		struct __test_metadata __attribute__((unused)) *_metadata, \
+>  		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self, \
+> @@ -339,7 +365,7 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+>   * variant.
+>   */
+>  #define FIXTURE_VARIANT_ADD(fixture_name, variant_name) \
+> -	extern FIXTURE_VARIANT(fixture_name) \
+> +	extern const FIXTURE_VARIANT(fixture_name) \
+>  		_##fixture_name##_##variant_name##_variant; \
+>  	static struct __fixture_variant_metadata \
+>  		_##fixture_name##_##variant_name##_object = \
+> @@ -351,7 +377,7 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+>  		__register_fixture_variant(&_##fixture_name##_fixture_object, \
+>  			&_##fixture_name##_##variant_name##_object);	\
+>  	} \
+> -	FIXTURE_VARIANT(fixture_name) \
+> +	const FIXTURE_VARIANT(fixture_name) \
+>  		_##fixture_name##_##variant_name##_variant =
+>  
+>  /**
+> @@ -369,10 +395,11 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+>   * Very similar to TEST() except that *self* is the setup instance of fixture's
+>   * datatype exposed for use by the implementation.
+>   *
+> - * The @test_name code is run in a separate process sharing the same memory
+> - * (i.e. vfork), which means that the test process can update its privileges
+> - * without impacting the related FIXTURE_TEARDOWN() (e.g. to remove files from
+> - * a directory where write access was dropped).
+> + * The __test_metadata object is shared (MAP_SHARED) with all the potential
+> + * forked processes, which enables them to use EXCEPT_*() and ASSERT_*().
+> + *
+> + * The *self* object is only shared with the potential forked processes if
+> + * FIXTURE_TEARDOWN_PARENT() is used instead of FIXTURE_TEARDOWN().
+>   */
+>  #define TEST_F(fixture_name, test_name) \
+>  	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT)
+> @@ -393,57 +420,65 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+>  		struct __fixture_variant_metadata *variant) \
+>  	{ \
+>  		/* fixture data is alloced, setup, and torn down per call. */ \
+> -		FIXTURE_DATA(fixture_name) self; \
+> +		FIXTURE_DATA(fixture_name) self_private, *self = NULL; \
+>  		pid_t child = 1; \
+>  		int status = 0; \
+>  		/* Makes sure there is only one teardown, even when child forks again. */ \
+>  		bool *teardown = mmap(NULL, sizeof(*teardown), \
+>  			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
+>  		*teardown = false; \
+> -		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
+> +		if (sizeof(*self) > 0) { \
+> +			if (fixture_name##_teardown_parent) { \
+> +				self = mmap(NULL, sizeof(*self), PROT_READ | PROT_WRITE, \
+> +					MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
+> +			} else { \
+> +				memset(&self_private, 0, sizeof(self_private)); \
+> +				self = &self_private; \
+> +			} \
+> +		} \
+>  		if (setjmp(_metadata->env) == 0) { \
+> -			/* Use the same _metadata. */ \
+> -			child = vfork(); \
+> +			/* _metadata and potentially self are shared with all forks. */ \
+> +			child = clone3_vfork(); \
+>  			if (child == 0) { \
+> -				fixture_name##_setup(_metadata, &self, variant->data); \
+> +				fixture_name##_setup(_metadata, self, variant->data); \
+>  				/* Let setup failure terminate early. */ \
+>  				if (_metadata->exit_code) \
+>  					_exit(0); \
+>  				_metadata->setup_completed = true; \
+> -				fixture_name##_##test_name(_metadata, &self, variant->data); \
+> +				fixture_name##_##test_name(_metadata, self, variant->data); \
+>  			} else if (child < 0 || child != waitpid(child, &status, 0)) { \
+>  				ksft_print_msg("ERROR SPAWNING TEST GRANDCHILD\n"); \
+>  				_metadata->exit_code = KSFT_FAIL; \
+>  			} \
+>  		} \
+>  		if (child == 0) { \
+> -			if (_metadata->setup_completed && !_metadata->teardown_parent && \
+> +			if (_metadata->setup_completed && !fixture_name##_teardown_parent && \
+>  					__sync_bool_compare_and_swap(teardown, false, true)) \
+> -				fixture_name##_teardown(_metadata, &self, variant->data); \
+> +				fixture_name##_teardown(_metadata, self, variant->data); \
+>  			_exit(0); \
+>  		} \
+> -		if (_metadata->setup_completed && _metadata->teardown_parent && \
+> +		if (_metadata->setup_completed && fixture_name##_teardown_parent && \
+>  				__sync_bool_compare_and_swap(teardown, false, true)) \
+> -			fixture_name##_teardown(_metadata, &self, variant->data); \
+> +			fixture_name##_teardown(_metadata, self, variant->data); \
+>  		munmap(teardown, sizeof(*teardown)); \
+> +		if (self && fixture_name##_teardown_parent) \
+> +			munmap(self, sizeof(*self)); \
+>  		if (!WIFEXITED(status) && WIFSIGNALED(status)) \
+>  			/* Forward signal to __wait_for_test(). */ \
+>  			kill(getpid(), WTERMSIG(status)); \
+>  		__test_check_assert(_metadata); \
+>  	} \
+> -	static struct __test_metadata \
+> -		      _##fixture_name##_##test_name##_object = { \
+> -		.name = #test_name, \
+> -		.fn = &wrapper_##fixture_name##_##test_name, \
+> -		.fixture = &_##fixture_name##_fixture_object, \
+> -		.termsig = signal, \
+> -		.timeout = tmout, \
+> -		.teardown_parent = false, \
+> -	 }; \
+>  	static void __attribute__((constructor)) \
+>  			_register_##fixture_name##_##test_name(void) \
+>  	{ \
+> -		__register_test(&_##fixture_name##_##test_name##_object); \
+> +		struct __test_metadata *object = mmap(NULL, sizeof(*object), \
+> +			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
+> +		object->name = #test_name; \
+> +		object->fn = &wrapper_##fixture_name##_##test_name; \
+> +		object->fixture = &_##fixture_name##_fixture_object; \
+> +		object->termsig = signal; \
+> +		object->timeout = tmout; \
+> +		__register_test(object); \
+>  	} \
+>  	static void fixture_name##_##test_name( \
+>  		struct __test_metadata __attribute__((unused)) *_metadata, \
+> @@ -898,7 +933,6 @@ struct __test_metadata {
+>  	bool timed_out;	/* did this test timeout instead of exiting? */
+>  	bool aborted;	/* stopped test due to failed ASSERT */
+>  	bool setup_completed; /* did setup finish? */
+> -	bool teardown_parent; /* run teardown in a parent process */
+>  	jmp_buf env;	/* for exiting out of test early */
+>  	struct __test_results *results;
+>  	struct __test_metadata *prev, *next;
+> diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+> index 46b9effd53e4..27744524df51 100644
+> --- a/tools/testing/selftests/landlock/fs_test.c
+> +++ b/tools/testing/selftests/landlock/fs_test.c
+> @@ -9,6 +9,7 @@
+>  
+>  #define _GNU_SOURCE
+>  #include <fcntl.h>
+> +#include <libgen.h>
+>  #include <linux/landlock.h>
+>  #include <linux/magic.h>
+>  #include <sched.h>
+> @@ -285,8 +286,6 @@ static void prepare_layout_opt(struct __test_metadata *const _metadata,
+>  
+>  static void prepare_layout(struct __test_metadata *const _metadata)
+>  {
+> -	_metadata->teardown_parent = true;
+> -
+>  	prepare_layout_opt(_metadata, &mnt_tmp);
+>  }
+>  
+> @@ -315,7 +314,7 @@ FIXTURE_SETUP(layout0)
+>  	prepare_layout(_metadata);
+>  }
+>  
+> -FIXTURE_TEARDOWN(layout0)
+> +FIXTURE_TEARDOWN_PARENT(layout0)
+>  {
+>  	cleanup_layout(_metadata);
+>  }
+> @@ -378,7 +377,7 @@ FIXTURE_SETUP(layout1)
+>  	create_layout1(_metadata);
+>  }
+>  
+> -FIXTURE_TEARDOWN(layout1)
+> +FIXTURE_TEARDOWN_PARENT(layout1)
+>  {
+>  	remove_layout1(_metadata);
+>  
+> @@ -3691,7 +3690,7 @@ FIXTURE_SETUP(ftruncate)
+>  	create_file(_metadata, file1_s1d1);
+>  }
+>  
+> -FIXTURE_TEARDOWN(ftruncate)
+> +FIXTURE_TEARDOWN_PARENT(ftruncate)
+>  {
+>  	EXPECT_EQ(0, remove_path(file1_s1d1));
+>  	cleanup_layout(_metadata);
+> @@ -3869,7 +3868,7 @@ FIXTURE_SETUP(layout1_bind)
+>  	clear_cap(_metadata, CAP_SYS_ADMIN);
+>  }
+>  
+> -FIXTURE_TEARDOWN(layout1_bind)
+> +FIXTURE_TEARDOWN_PARENT(layout1_bind)
+>  {
+>  	/* umount(dir_s2d2)) is handled by namespace lifetime. */
+>  
+> @@ -4274,7 +4273,7 @@ FIXTURE_SETUP(layout2_overlay)
+>  	clear_cap(_metadata, CAP_SYS_ADMIN);
+>  }
+>  
+> -FIXTURE_TEARDOWN(layout2_overlay)
+> +FIXTURE_TEARDOWN_PARENT(layout2_overlay)
+>  {
+>  	if (self->skip_test)
+>  		SKIP(return, "overlayfs is not supported (teardown)");
+> @@ -4624,7 +4623,6 @@ FIXTURE(layout3_fs)
+>  {
+>  	bool has_created_dir;
+>  	bool has_created_file;
+> -	char *dir_path;
+>  	bool skip_test;
+>  };
+>  
+> @@ -4683,11 +4681,24 @@ FIXTURE_VARIANT_ADD(layout3_fs, hostfs) {
+>  	.cwd_fs_magic = HOSTFS_SUPER_MAGIC,
+>  };
+>  
+> +static char *dirname_alloc(const char *path)
+> +{
+> +	char *dup;
+> +
+> +	if (!path)
+> +		return NULL;
+> +
+> +	dup = strdup(path);
+> +	if (!dup)
+> +		return NULL;
+> +
+> +	return dirname(dup);
+> +}
+> +
+>  FIXTURE_SETUP(layout3_fs)
+>  {
+>  	struct stat statbuf;
+> -	const char *slash;
+> -	size_t dir_len;
+> +	char *dir_path = dirname_alloc(variant->file_path);
+>  
+>  	if (!supports_filesystem(variant->mnt.type) ||
+>  	    !cwd_matches_fs(variant->cwd_fs_magic)) {
+> @@ -4695,27 +4706,15 @@ FIXTURE_SETUP(layout3_fs)
+>  		SKIP(return, "this filesystem is not supported (setup)");
+>  	}
+>  
+> -	_metadata->teardown_parent = true;
+> -
+> -	slash = strrchr(variant->file_path, '/');
+> -	ASSERT_NE(slash, NULL);
+> -	dir_len = (size_t)slash - (size_t)variant->file_path;
+> -	ASSERT_LT(0, dir_len);
+> -	self->dir_path = malloc(dir_len + 1);
+> -	self->dir_path[dir_len] = '\0';
+> -	strncpy(self->dir_path, variant->file_path, dir_len);
+> -
+>  	prepare_layout_opt(_metadata, &variant->mnt);
+>  
+>  	/* Creates directory when required. */
+> -	if (stat(self->dir_path, &statbuf)) {
+> +	if (stat(dir_path, &statbuf)) {
+>  		set_cap(_metadata, CAP_DAC_OVERRIDE);
+> -		EXPECT_EQ(0, mkdir(self->dir_path, 0700))
+> +		EXPECT_EQ(0, mkdir(dir_path, 0700))
+>  		{
+>  			TH_LOG("Failed to create directory \"%s\": %s",
+> -			       self->dir_path, strerror(errno));
+> -			free(self->dir_path);
+> -			self->dir_path = NULL;
+> +			       dir_path, strerror(errno));
+>  		}
+>  		self->has_created_dir = true;
+>  		clear_cap(_metadata, CAP_DAC_OVERRIDE);
+> @@ -4736,9 +4735,11 @@ FIXTURE_SETUP(layout3_fs)
+>  		self->has_created_file = true;
+>  		clear_cap(_metadata, CAP_DAC_OVERRIDE);
+>  	}
+> +
+> +	free(dir_path);
+>  }
+>  
+> -FIXTURE_TEARDOWN(layout3_fs)
+> +FIXTURE_TEARDOWN_PARENT(layout3_fs)
+>  {
+>  	if (self->skip_test)
+>  		SKIP(return, "this filesystem is not supported (teardown)");
+> @@ -4754,16 +4755,17 @@ FIXTURE_TEARDOWN(layout3_fs)
+>  	}
+>  
+>  	if (self->has_created_dir) {
+> +		char *dir_path = dirname_alloc(variant->file_path);
+> +
+>  		set_cap(_metadata, CAP_DAC_OVERRIDE);
+>  		/*
+>  		 * Don't check for error because the directory might already
+>  		 * have been removed (cf. release_inode test).
+>  		 */
+> -		rmdir(self->dir_path);
+> +		rmdir(dir_path);
+>  		clear_cap(_metadata, CAP_DAC_OVERRIDE);
+> +		free(dir_path);
+>  	}
+> -	free(self->dir_path);
+> -	self->dir_path = NULL;
+>  
+>  	cleanup_layout(_metadata);
+>  }
+> @@ -4830,7 +4832,10 @@ TEST_F_FORK(layout3_fs, tag_inode_dir_mnt)
+>  
+>  TEST_F_FORK(layout3_fs, tag_inode_dir_child)
+>  {
+> -	layer3_fs_tag_inode(_metadata, self, variant, self->dir_path);
+> +	char *dir_path = dirname_alloc(variant->file_path);
+> +
+> +	layer3_fs_tag_inode(_metadata, self, variant, dir_path);
+> +	free(dir_path);
+>  }
+>  
+>  TEST_F_FORK(layout3_fs, tag_inode_file)
+> @@ -4857,9 +4862,13 @@ TEST_F_FORK(layout3_fs, release_inodes)
+>  	if (self->has_created_file)
+>  		EXPECT_EQ(0, remove_path(variant->file_path));
+>  
+> -	if (self->has_created_dir)
+> +	if (self->has_created_dir) {
+> +		char *dir_path = dirname_alloc(variant->file_path);
+> +
+>  		/* Don't check for error because of cgroup specificities. */
+> -		remove_path(self->dir_path);
+> +		remove_path(dir_path);
+> +		free(dir_path);
+> +	}
+>  
+>  	ruleset_fd =
+>  		create_ruleset(_metadata, LANDLOCK_ACCESS_FS_READ_DIR, layer1);
+> diff --git a/tools/testing/selftests/pidfd/pidfd_setns_test.c b/tools/testing/selftests/pidfd/pidfd_setns_test.c
+> index 6e2f2cd400ca..47746b0c6acd 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_setns_test.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_setns_test.c
+> @@ -158,7 +158,7 @@ FIXTURE_SETUP(current_nsset)
+>  	/* Create task that exits right away. */
+>  	self->child_pid_exited = create_child(&self->child_pidfd_exited,
+>  					      CLONE_NEWUSER | CLONE_NEWNET);
+> -	EXPECT_GT(self->child_pid_exited, 0);
+> +	EXPECT_GE(self->child_pid_exited, 0);
+>  
+>  	if (self->child_pid_exited == 0)
+>  		_exit(EXIT_SUCCESS);
+> -- 
+> 2.44.0
+> 
+
+-- 
+Kees Cook
 
