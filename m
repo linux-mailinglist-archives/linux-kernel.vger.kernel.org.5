@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-160099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C458B3919
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:55:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588DF8B391C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:55:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31BC41C21CCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:55:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB8891F22816
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59A21494B0;
-	Fri, 26 Apr 2024 13:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1954149E17;
+	Fri, 26 Apr 2024 13:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YFEw7VZj"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jEFbLxFP"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB22148FF1;
-	Fri, 26 Apr 2024 13:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDB1149009;
+	Fri, 26 Apr 2024 13:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714139635; cv=none; b=R7rw5pa7R4h+jOxCHMarqE8s7j+Jy65yfdWbTCp+C1Q/7HuyEkYpzshfp829um52N3MysV5AmLtqp6WDMf4Peh062Siox7dCzEQ0agBbdPpOVNay+8UQzq0bloqJV5qnnbVpwFonnQ0jYaONAbWJsVIDQK+2biSPcpMEsGDCefw=
+	t=1714139636; cv=none; b=MSXTA/WRNac1wSHaoqIxU2IQYBkmhz/6gM49yGsFEjpb0t4vnWe1p+SXW4uTGf8ctcoZw49eC1N9H+fbFcM4sl/tzOBevXOdCs99GDbKVnNozvTUaT/82jGdNwxnRX449C69KB6ffxaM5F7+Owfl+fKXDFRgKKfgaQd8MhUCmwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714139635; c=relaxed/simple;
-	bh=h/Hx+aYZbAbXmbGj0Ik8WkKfgY/vHtn/JI3zEtfWCgY=;
+	s=arc-20240116; t=1714139636; c=relaxed/simple;
+	bh=m2yxV5B405RCZQld4AIwLovxgEUSP5z4fMOhlaEf9yI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cXZ9320Gemrf84EVcS+Izw4yygdTIVG51sN6GD7edCNOU13w46iG4z2M1mfZHmRqH+FC9rur6SrDPGx2hhX4NGa4Q3/2YWRNG5k/354R1Kue+CAoL9ermhbM1ivTXRHUie8h8/AKXx8Z2tAWYnDfMnM2P4j1xeT3dlsDQVVv6+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YFEw7VZj; arc=none smtp.client-ip=209.85.221.49
+	 MIME-Version; b=lcVCk27ZmhOYDmU6IGplrOlAD7Fkt1jZo+dajTE1TWFWcHvD7gL82RpsuN1WuzhqakxOkOI9heM64RvXSPxrKCIV0+CvX/Gjp6GZES4+vHZoXqJduueNxfFS2JglPYfgOfqybTX90BQ9TvPIXbUpNQsUa2gNURBjm3RjW/UT2iE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jEFbLxFP; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-345522f7c32so836287f8f.0;
-        Fri, 26 Apr 2024 06:53:53 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34c1fff534fso1271433f8f.1;
+        Fri, 26 Apr 2024 06:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714139631; x=1714744431; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714139632; x=1714744432; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+MwfIQCOPvC6F/uoQcBOKTeL9AKl1tGcVcVmlDTCJlc=;
-        b=YFEw7VZjRtZ1GKkdv7bdI9Fsb3zqxnQ85m+LRYpIL8XUx+nVSNsAj82ceVRv5B/bMj
-         oeZbAExKcJHg6I5ye3uvokjNcHZO6w2FSbjDx2zfgvVhbPpkNdEtx7ygH0rpON7OZm7o
-         PE4oAV/T+/lb44tPamb/pGE0xhz0R72ChX4T5V2wJr37Ml2u4N3XytgWfRJ6bM5um4YT
-         GHhrimTz1Roa6RmkXQPzvuq3dfPGbDk9pFkKee/VJ4aKWzJivS8KfFq1ReM/bQpzmY66
-         dkNP+zAlawf/fefuRPqJN2Kw3dsILuzU1ZRviW0sDuTXfdFA4DX80ap224TkzJ00NW1D
-         e3uA==
+        bh=bLJ9dsSLK+nY8Hvlsn/3+HI9I2fOpNl7ItjLv5mlK7A=;
+        b=jEFbLxFPPNK9n//JdjmUmawgJ3EzZeK07I1BtlvsTvp9NGZakL678XKzbgZ4HrpA+w
+         T4VrPVzPAM6kLlYqbxMBvgcTh0XxwfISpXu6rFnrJ2vbPuD77iXdMtpiu+lHstftJF1d
+         Sq8nm1Kp7bwHQIpYtCijzHiRvKqAxURq7af55zeg/OPxEpurQe/kxfzdMJXhMjN4fy9Z
+         qcxlZIZKjIrYDurIlYfK0vF55MHaPZj9ZAnmdsbOuwclxzTdmNVyqDm4EB2BeuJFcqfB
+         u5ZJv07NekG4Zj7k9QDcC/qGMMLYei8mnNr6NANOIZxS4UZFH4qjj63AYtWQg/Q3cAZo
+         zpYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714139631; x=1714744431;
+        d=1e100.net; s=20230601; t=1714139632; x=1714744432;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+MwfIQCOPvC6F/uoQcBOKTeL9AKl1tGcVcVmlDTCJlc=;
-        b=hKLpHOh7ES2t1uJFwQ26jdZ/rDniwrdN4uqtmO7GvxtqMP5N5ceXLDu2ul6vWQn/ii
-         TJ8YFX1lHCqJLEgvJ1aJ5XFr5yff9JpSIVQSe9DkFR0stxbK1loZfKPf7fCR7TiSvMmj
-         QgJcVwflGc0Ba4QWtEz+w47iK3Y7JO/n5MmbRkUtBcAPoQpiTlP/rFNxzhuCqg8+sHnF
-         1+SuRmokO++sRNwu9josKuBBAzjAPJIq40zwiOTuekSsQxDShbjEzXHNXxU9rb5/tbfX
-         TttZgRHdE/1OU23Z1rIdUj7d8Ye8pSwzLCr87XRxQzLGJnaNZYsvYU5RoLtQozM68D/n
-         fv9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWQMCXi3CloYof3zm7+0ESNBi1IHMWkNZM1bWan5ZdSPLdKiNHeBJk+PSqUm69WonQV8RmJwAHvMbvQMhEKeahTabPrTbCc2pA4GYcp1wdQc4auVQG0Xh4V7HvVFsucuHj2/vptgA==
-X-Gm-Message-State: AOJu0YyP4e/oSbUDeUj2RsAwp8kGds6Len0gbC9Cj4pFOZO3Z/7T54tI
-	IXVCJfjzQN/jtq4tdQJ3xOuOTMd9Y8yokSk4KkOChA7iZZT5XumNrxnWGIRd
-X-Google-Smtp-Source: AGHT+IEFbchIgRtrmoBqCudsM/hNiimstfW8TKY4Q1h8Ad5JRzvVeFpFEtTF8aJIjZoL4w96eXappA==
-X-Received: by 2002:a5d:60d0:0:b0:347:5f71:9510 with SMTP id x16-20020a5d60d0000000b003475f719510mr2442145wrt.25.1714139631089;
-        Fri, 26 Apr 2024 06:53:51 -0700 (PDT)
+        bh=bLJ9dsSLK+nY8Hvlsn/3+HI9I2fOpNl7ItjLv5mlK7A=;
+        b=Vc8dQPnNHCZCEntGhd8ovJ4ZBlvUfm0QZRKhjamrRKCLNpwGVEDfvZIRHYXJufotVQ
+         rPgNbqICn9TgnzCmbxev1th4FDQ4jYBxDQBf/1kG/2/PmB+DkKfhonNyynQW4BaT7vSD
+         ZG1S7mZi4LrkbikP4Ox6QZufFeXq6NDkbVztC9C51VAaIQZ1JeoEXzLWeV5T+1pBPs7u
+         RbssIFeaUBfNJa0PoDwy25La5XOAj7aLwlF88Ne8pSvBD4IA4fBQKza9wfZmuHH5KsA+
+         ZXtnS58NNlnW0/PY/QQOgaXcG5v/c3GW6wq4HxYy44fvAVoQZS+Pu3SBJA5WESomlBay
+         2QnA==
+X-Forwarded-Encrypted: i=1; AJvYcCVy9LiYpWh54ZYtBKjqsTfFqVLL0ecXXnulVtryWQaVgzkAIsK6ymH13cwTCBhMMDxWvyO3LIQ89GMWF3CoI7JJbLh6FdHErqngrRkzuT4Bb0EUKQKRoQn9c/k5fSuecNm9toMOlg==
+X-Gm-Message-State: AOJu0Yz/29HBrRASGH2eBQTT/N3UqBooYpDcmbhy6gw2QGNW+chcTIHP
+	S3x2zVWfRcpPtfoVAwA8DJcBllOqiAf6phEF4xdLI/UjKb0wKi9tLnahYuZs
+X-Google-Smtp-Source: AGHT+IHEms0dC8ezv3c4Amk0JUZhJpSMYgKLuKKM9jXiTHegW2/Lhl7B/LSPhkV3pnb3KFmE0A3q9w==
+X-Received: by 2002:a5d:4386:0:b0:34b:8bf:6019 with SMTP id i6-20020a5d4386000000b0034b08bf6019mr1733253wrq.70.1714139632252;
+        Fri, 26 Apr 2024 06:53:52 -0700 (PDT)
 Received: from rbolboac.. ([2a02:2f0e:320d:e800:f4f8:b5e1:d7d4:bf65])
-        by smtp.gmail.com with ESMTPSA id k6-20020a5d6d46000000b003434f526cb5sm22302919wri.95.2024.04.26.06.53.50
+        by smtp.gmail.com with ESMTPSA id k6-20020a5d6d46000000b003434f526cb5sm22302919wri.95.2024.04.26.06.53.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 06:53:50 -0700 (PDT)
+        Fri, 26 Apr 2024 06:53:51 -0700 (PDT)
 From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	jic23@kernel.org,
@@ -76,9 +76,9 @@ To: linux-kernel@vger.kernel.org,
 	robh@kernel.org,
 	nuno.sa@analog.com
 Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Subject: [PATCH 5/7] iio: imu: adis16475: Create push single sample API
-Date: Fri, 26 Apr 2024 16:53:37 +0300
-Message-Id: <20240426135339.185602-6-ramona.bolboaca13@gmail.com>
+Subject: [PATCH 6/7] dt-bindings: iio: imu: Add ADIS1657X family devices compatibles
+Date: Fri, 26 Apr 2024 16:53:38 +0300
+Message-Id: <20240426135339.185602-7-ramona.bolboaca13@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
 References: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
@@ -90,47 +90,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Create push single sample API reposnsible for pushing a single
-sample into the buffer.
-This is a preparation patch for FIFO support where more than
-one sample has to be pushed in the trigger handler.
+Add ADIS1657X family devices compatibles and specify the according
+maximum SPI baudrate.
+Similarly to other ADIS1650X devices, ADIS1657X supports sync-mode
+values [0,2].
 
 Signed-off-by: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
 ---
- drivers/iio/imu/adis16475.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ .../bindings/iio/imu/adi,adis16475.yaml       | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 52333772fbe0..7cfef553f298 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1249,9 +1249,8 @@ static void adis16475_burst32_check(struct adis16475 *st)
- 	}
- }
+diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+index db52e7063116..9d185f7bfdcb 100644
+--- a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
++++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+@@ -37,6 +37,12 @@ properties:
+       - adi,adis16507-1
+       - adi,adis16507-2
+       - adi,adis16507-3
++      - adi,adis16575-2
++      - adi,adis16575-3
++      - adi,adis16576-2
++      - adi,adis16576-3
++      - adi,adis16577-2
++      - adi,adis16577-3
  
--static irqreturn_t adis16475_trigger_handler(int irq, void *p)
-+static int adis16475_push_single_sample(struct iio_poll_func *pf)
- {
--	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct adis16475 *st = iio_priv(indio_dev);
- 	struct adis *adis = &st->adis;
-@@ -1340,6 +1339,15 @@ static irqreturn_t adis16475_trigger_handler(int irq, void *p)
- 	 * array.
- 	 */
- 	adis16475_burst32_check(st);
-+	return ret;
-+}
-+
-+static irqreturn_t adis16475_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+
-+	adis16475_push_single_sample(pf);
- 	iio_trigger_notify_done(indio_dev->trig);
+   reg:
+     maxItems: 1
+@@ -98,6 +104,12 @@ allOf:
+               - adi,adis16507-1
+               - adi,adis16507-2
+               - adi,adis16507-3
++              - adi,adis16575-2
++              - adi,adis16575-3
++              - adi,adis16576-2
++              - adi,adis16576-3
++              - adi,adis16577-2
++              - adi,adis16577-3
  
- 	return IRQ_HANDLED;
+     then:
+       properties:
+@@ -114,6 +126,23 @@ allOf:
+       dependencies:
+         adi,sync-mode: [ clocks ]
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - adi,adis16575-2
++              - adi,adis16575-3
++              - adi,adis16576-2
++              - adi,adis16576-3
++              - adi,adis16577-2
++              - adi,adis16577-3
++
++    then:
++      properties:
++        spi-max-frequency:
++          maximum: 15000000
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
 2.34.1
 
