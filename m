@@ -1,171 +1,199 @@
-Return-Path: <linux-kernel+bounces-160485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE2F8B3E1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:29:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C8A68B3E1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:30:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E43631C2220C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:29:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D40681F284DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B31180A95;
-	Fri, 26 Apr 2024 17:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2B8181BAA;
+	Fri, 26 Apr 2024 17:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CX2YRQHZ"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fBqviliE"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABBE180A81
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA5B181B9A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152202; cv=none; b=aZWINx2a2bwxnY+ZsE3K4BYocbsWbW+GH5ycaSMaAxqauFrozpS8Wb5ILto8qCfh9wjOuSF5DM/177djdUy4JgaqHs5EA9264SDZ6SKR0tXJZW7abbAhuItx7GBhHZUQbvCntsBLVz5A35T74nGHhP2naae9A5oq5Uz2y/DybaA=
+	t=1714152216; cv=none; b=I7p3Mq3Qf5eBNLYCOXvy/NcAAakVHTWCMua4GFq5SlHBLwhBDKONvuXGjvk7wgql15V1gGuYQas1MEun/hGQ65LFSel1O7lX+S6e6bhiEG9wH72fyWSd9j2Q2WIxd7ZxxNkfOlSCQJnmo5RWycmkPPO6Cxa7lMfZRmq/nRcxA1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152202; c=relaxed/simple;
-	bh=TbAqAZMa48AEaJa5lPdAp3ni2GqN7/ZGJWpLUJXyUQ4=;
+	s=arc-20240116; t=1714152216; c=relaxed/simple;
+	bh=DoeVH595qsmuQPIQOHZlMJzQnEWVUckuQY6sXPiNVxo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T7MOjZmTuuZ9WP7yGvkwzF9o9CH6gqBnvWqOsc81bc/KUjds3WdZblWFSPcQJesKDq8l4xeM/GpjZ26SocJ2dGFA3mog8eF+bJLs8M/ZvYdrK5mGJmji5EzndY5SKYf70Ec+ksU9IWhnZY2CBDDbO6mXNjBUSKMTaV8sF/daWws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CX2YRQHZ; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de59daab3f3so1729533276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:23:20 -0700 (PDT)
+	 To:Cc:Content-Type; b=EyWsQjTrJJTFgaHqquoSSkj2y0PK7llXSqV+LHTS9Hh/0If18eWK/XLPuB9K1sFttpbqIuzN5aZhNOZf3300F9TVBNSeea9t3NjzPiFCbUofe7Mx/oDB2v01qZnCw9L3eBq5l1fAGv/A/PELAwGWWNTUHTgHF3fGuzqMNvRIkXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fBqviliE; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-43a8246b51dso3902901cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:23:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714152199; x=1714756999; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714152213; x=1714757013; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4UJceFXtAj6qD9Iyu1pCp/3Owr12F1F0llf1/MqSjXo=;
-        b=CX2YRQHZ0XnZ0z6mL4+jRpPpju8zmhm6gWj9wVptAfmANvhZHZg2Wvs+FuFGedK88b
-         HAYyS4busKpDaLfqHFTST4GPkzDGSdNv0t9vYv4xKiJXHHvbVfRqi9EhgqtnCSQDP0ZE
-         pKHJ3vteVcbVjdjuvCq+tcrfHjxLBi/l6J+ijtk9QSLn0aZ/rZzZ36gc0+0NkYUDITf/
-         pYKtKjC9m6532FLREOlMmCbWqyRvoLnug8KF6CTYDuQTCO4ruwRIbU6SW7bdh9vCOtXK
-         KYxYDS3OCgMmdfi4F13r28MQWxm4tWXZG9vB2xddRZJfVY2/1Z4fFAhDjy2RqIpClWtZ
-         IXgQ==
+        bh=BgXARGPALUa9HNkXZ7dJ4KGZjVGqNQ8BWrBEfj+sA+g=;
+        b=fBqviliE2ur33q/zidQcPI+y1dcba0ss4jaVUAICPGmx0exFlJPLayfwsBtXJQstGP
+         NgYLusF4EYISkZ1FmUpuVA/wVeTqhN0y9WSw2BUT/xsRaQEKrN7Lz1D02oEVM5eP6gae
+         G09MM7bmqQjoFgVWSrcLsI8rTWTx0WZaAbvLQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714152199; x=1714756999;
+        d=1e100.net; s=20230601; t=1714152213; x=1714757013;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4UJceFXtAj6qD9Iyu1pCp/3Owr12F1F0llf1/MqSjXo=;
-        b=gaGWRQRkoPLwKYlv2Z3MzC+rUT4MPqcw4AW7IrkrYPwCizbeDVHqt/Jr1XhYOThZea
-         fLszApZvMkBi1TAovVceiLAmPdfp1h3RIO86p/HpOa2n8gMSYWB2mj+5hfnvpiZTcPl1
-         02cv2dzATw2cpcm0lbHKmeY72aM9nCREJG6T9Ox7bmSGIyDKzW8a/+5XNyrW3NioLBrq
-         Wu7XcmRty/JS3LcTEp3KX2tJ9FQiU+7hlGYy93ZMTvOykZxBx4xhJHCx+bgMP622dDtv
-         PQOFOSGg1N788G5veCzlDRgdTyN8t4TLvJ2GqQZcreVvo7zuQtIBLZ5NIxJzvAGlAuJm
-         Y+xg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRbU4lFC8wMJE9sFUuM77lHMJsZksgywRYuTg4QVqYqOXEFDUqSrPIl43ts1kHOeIkdyhgc0lPbj09y5iZlh8Hxxg0dihg8EAOiNvP
-X-Gm-Message-State: AOJu0YzXY2lfqo3x33u/vgbdMe+LR67ajcbj2KRW4dZTUJS5VMsjpy0+
-	LQJo8bRxUiGWDN+A4W6JxJxsX/FQ8kV+E1V8ivijqnSrCS3HNIKi9j4Vj8+1sHg6mvSqro5Jq5W
-	Rs5urDe7jHTXr8y/YYZztieBpjezWM2ZWjZSVKg==
-X-Google-Smtp-Source: AGHT+IGDmBlE4gfNnmV7uJbF2QRoEiDRzqeAQnXvvB4EdKVF0e4x8T6P8C28xhKLIKrDnt4aQk1wZKmN320JvvxlSfQ=
-X-Received: by 2002:a05:6902:4cb:b0:dc6:6307:d188 with SMTP id
- v11-20020a05690204cb00b00dc66307d188mr3324902ybs.25.1714152199442; Fri, 26
- Apr 2024 10:23:19 -0700 (PDT)
+        bh=BgXARGPALUa9HNkXZ7dJ4KGZjVGqNQ8BWrBEfj+sA+g=;
+        b=bKMQ2GQpOSh8c3abqeGZPq5aTmjbrRY+Wi0cGoXL11YoBoHAgEXBt1jshX0y1ZUNiO
+         5tUKAqCLbq0dTV3vksGnBN3Y6BVY3ABztBuvB11upmXLsbjJ6HoC10To8/pK3Abkz1Mq
+         jgIuEztc1i2y4DrKeSo7KLCfBl8DnhssDW5PSXOrrX84v1hOI2BTi9IVV0kCkMi67BPw
+         V2pY63HMseYKuDQYl8Qv27ywoGV0iLDHhZ01D72T+s8BkxX3n/VeDvdI5nygYm3UDSd2
+         ki93vU6/9bZqGRaOOoTLgSXpO8n3SD9OsDVs8TEti5v5U2h4j7VjwaA5n2r5b+jewESk
+         NFtg==
+X-Forwarded-Encrypted: i=1; AJvYcCVrtDGEtMeaq4jQFbYhLK4NG76sN29otJT1E5r1NgWRdSgTgeSPM0c881TfIuPmvrVT6i39ySnrBrcPTj+C4xMUBWcHEojvTPfG6J4t
+X-Gm-Message-State: AOJu0YyvohHgmF3GDLdZgugC4SXya+wZdDFQkvAEQaManLlGPkkFu4RF
+	V5O/ADN2Ean2MRLGrwLYa24P2lZH7acvFW/KegtTaaK+vYIpWPk6xltu/EI2dbRuqm0B2qEtCiA
+	=
+X-Google-Smtp-Source: AGHT+IFHJvPtmFzW16HTn4812iZDmRAOYaNB+mxVZwALXno+1DGmCqgziJTiiFucD+UU7VGAZfVCVg==
+X-Received: by 2002:ac8:7f56:0:b0:439:9222:ca8b with SMTP id g22-20020ac87f56000000b004399222ca8bmr3813046qtk.63.1714152212730;
+        Fri, 26 Apr 2024 10:23:32 -0700 (PDT)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com. [209.85.160.178])
+        by smtp.gmail.com with ESMTPSA id js7-20020a05622a808700b0043936ed09bfsm6592518qtb.27.2024.04.26.10.23.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 10:23:31 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-439b1c72676so24651cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:23:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCViNa4yTZT+yCqiFQ+ZptxFaHHjGmp5fyJ9VJEe7gJ00fTAfFUBMN4OePJunCBkql0In0tcE2VF1AbkkEbvfhUezeMNzYH++YVmHR4k
+X-Received: by 2002:ac8:7493:0:b0:439:891f:bbd2 with SMTP id
+ v19-20020ac87493000000b00439891fbbd2mr373509qtq.28.1714152211256; Fri, 26 Apr
+ 2024 10:23:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424122932.79120-1-brgl@bgdev.pl> <171397322792.12898.8815870206676100532.git-patchwork-notify@kernel.org>
- <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com> <CABBYNZJOdccb4HKVBnuqK=_xVzViJ2D2+QJPSyyFGE2_Y1VXCg@mail.gmail.com>
-In-Reply-To: <CABBYNZJOdccb4HKVBnuqK=_xVzViJ2D2+QJPSyyFGE2_Y1VXCg@mail.gmail.com>
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Fri, 26 Apr 2024 19:23:08 +0200
-Message-ID: <CACMJSetqjsu=zcS9GvtgDnODB__s21FfFxfK7_kVkCLvbKy49Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
- returned by gpiod_get_optional()
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, marcel@holtmann.org, krzysztof.kozlowski@linaro.org, 
+References: <20240426155801.25277-1-johan+linaro@kernel.org>
+In-Reply-To: <20240426155801.25277-1-johan+linaro@kernel.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 26 Apr 2024 10:23:15 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+Message-ID: <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
 	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	wt@penguintechs.org, quic_zijuhu@quicinc.com
+	stable@vger.kernel.org, Janaki Ramaiah Thota <quic_janathot@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Apr 2024 at 17:09, Luiz Augusto von Dentz
-<luiz.dentz@gmail.com> wrote:
->
-> Hi Bartosz,
->
-> On Fri, Apr 26, 2024 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
-pl> wrote:
-> >
-> > On Wed, 24 Apr 2024 17:40:27 +0200, patchwork-bot+bluetooth@kernel.org =
-said:
-> > > Hello:
-> > >
-> > > This patch was applied to bluetooth/bluetooth-next.git (master)
-> > > by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-> > >
-> > > On Wed, 24 Apr 2024 14:29:32 +0200 you wrote:
-> > >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >>
-> > >> Any return value from gpiod_get_optional() other than a pointer to a
-> > >> GPIO descriptor or a NULL-pointer is an error and the driver should
-> > >> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci=
-_qca:
-> > >> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer set=
-s
-> > >> power_ctrl_enabled on NULL-pointer returned by
-> > >> devm_gpiod_get_optional(). Restore this behavior but bail-out on err=
-ors.
-> > >> While at it: also bail-out on error returned when trying to get the
-> > >> "swctrl" GPIO.
-> > >>
-> > >> [...]
-> > >
-> > > Here is the summary with links:
-> > >   - [v2] Bluetooth: qca: set power_ctrl_enabled on NULL returned by g=
-piod_get_optional()
-> > >     https://git.kernel.org/bluetooth/bluetooth-next/c/48a9e64a533b
-> > >
-> > > You are awesome, thank you!
-> > > --
-> > > Deet-doot-dot, I am a bot.
-> > > https://korg.docs.kernel.org/patchwork/pwbot.html
-> > >
-> > >
-> > >
-> >
-> > Luiz,
-> >
-> > I think patchwork borked when picking up this one, here's what the comm=
-it
-> > trailer looks like in next:
-> >
-> >     Reported-by: Wren Turkal <wt@penguintechs.org>
-> >     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> >     Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-=
-git-send-email-quic_zijuhu@quicinc.com/
-> >     Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
-> > IS_ERR_OR_NULL() with gpiod_get_optional()")
-> >     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >     Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >     Tested-by: Wren Turkal" <wt@penguintechs.org>
-> >     Reported-by: Wren Turkal <wt@penguintechs.org>
-> >     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> >     Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
-> >     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >     Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> >
-> > Reported-by and Reviewed-by tags are duplicated. One of the RB tags is =
-missing
-> > a space.
->
-> Oh crap, should probably not trust patchwork would pick up the tags
-> properly, that said the pull-request was already merged, not sure if
-> we can do something about it now?
->
+Hi,
 
-Nope, if it's gone upstream then it's too late.
+On Fri, Apr 26, 2024 at 9:00=E2=80=AFAM Johan Hovold <johan+linaro@kernel.o=
+rg> wrote:
+>
+> The default device address apparently comes from the NVM configuration
+> file and can differ quite a bit.
+>
+> Store the default address when parsing the configuration file and use it
+> to determine whether the controller has been provisioned with an
+> address.
+>
+> This makes sure that devices without a unique address start as
+> unconfigured unless a valid address has been provided in the devicetree.
+>
+> Fixes: 00567f70051a ("Bluetooth: qca: fix invalid device address check")
+> Cc: stable@vger.kernel.org      # 6.5
+> Cc: Doug Anderson <dianders@chromium.org>
+> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  drivers/bluetooth/btqca.c | 21 ++++++++++++---------
+>  drivers/bluetooth/btqca.h |  2 ++
+>  2 files changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> index cfa71708397b..d7a6738e4691 100644
+> --- a/drivers/bluetooth/btqca.c
+> +++ b/drivers/bluetooth/btqca.c
+> @@ -15,9 +15,6 @@
+>
+>  #define VERSION "0.1"
+>
+> -#define QCA_BDADDR_DEFAULT (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x00,=
+ 0x00 }})
+> -#define QCA_BDADDR_WCN3991 (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x98,=
+ 0x39 }})
+> -
+>  int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version =
+*ver,
+>                          enum qca_btsoc_type soc_type)
+>  {
+> @@ -351,6 +348,11 @@ static void qca_tlv_check_data(struct hci_dev *hdev,
+>
+>                         /* Update NVM tags as needed */
+>                         switch (tag_id) {
+> +                       case EDL_TAG_ID_BD_ADDR:
+> +                               if (tag_len !=3D sizeof(bdaddr_t))
+> +                                       break;
+> +                               memcpy(&config->bdaddr, tlv_nvm->data, si=
+zeof(bdaddr_t));
+> +                               break;
+>                         case EDL_TAG_ID_HCI:
 
-BTW As a fresh b4 convert I highly recommend it for managing patches. :)
+nit: blank line after "break" ?
 
-Bart
+Also note that on my firmware I never see this tag and thus your patch
+breaks trogdor. Specifically I put a printout here and it never gets
+hit.
 
-> --
-> Luiz Augusto von Dentz
+I printed all the tags/lengths:
+
+[   17.961087] DOUG: id 0xde02, len 0x0010
+[   17.965081] DOUG: id 0x0000, len 0x0000
+[   17.969050] DOUG: id 0x0000, len 0x0011
+[   17.973025] DOUG: id 0x0000, len 0x0a00
+[   17.976991] DOUG: id 0x0303, len 0x0303
+[   17.981066] DOUG: id 0x0033, len 0x1001
+
+Probably EDL_TAG_ID_BD_ADDR should have been 0xde02, not just 2.
+..but then the size is wrong? When I print out the bytes in ID 0xde02
+I see the address you're looking for 4 bytes in...
+
+[   17.663602] DOUG: 0x00
+[   17.666132] DOUG: 0x00
+[   17.668638] DOUG: 0x00
+[   17.671237] DOUG: 0x00
+[   17.673689] DOUG: 0xad
+[   17.676120] DOUG: 0x5a
+[   17.678551] DOUG: 0x00
+[   17.680980] DOUG: 0x00
+[   17.683409] DOUG: 0x98
+[   17.685846] DOUG: 0x39
+[   17.688278] DOUG: 0x08
+[   17.690704] DOUG: 0x00
+[   17.693137] DOUG: 0x08
+[   17.693139] DOUG: 0x00
+[   17.693139] DOUG: 0x00
+[   17.693140] DOUG: 0x00
+
+
+> @@ -624,6 +626,9 @@ static int qca_check_bdaddr(struct hci_dev *hdev)
+>         if (bacmp(&hdev->public_addr, BDADDR_ANY))
+>                 return 0;
+>
+> +       if (!bacmp(&config->bdaddr, BDADDR_ANY))
+> +               return 0;
+
+The above test feels non-obvious enough to deserve a comment. Could
+you add one? That would also help alleviate my confusion since I
+_think_ your if test is unneeded and maybe wrong? Let's say that the
+firmware didn't have a default address stored in it. It still seems
+like we could try to read the address and then if the firmware gave
+back BDADDR_ANY (0) we should set the `HCI_QUIRK_USE_BDADDR_PROPERTY`
+property, right?
 
