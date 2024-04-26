@@ -1,109 +1,143 @@
-Return-Path: <linux-kernel+bounces-160411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5877B8B3D3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:53:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6311E8B3D3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:53:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 898D81C22C98
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 955E31C230B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A973158D93;
-	Fri, 26 Apr 2024 16:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E4EzyH2i"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D09158D92;
+	Fri, 26 Apr 2024 16:53:50 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A4A1DFED;
-	Fri, 26 Apr 2024 16:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A751DDD6;
+	Fri, 26 Apr 2024 16:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150389; cv=none; b=gxqUSc1w3Yvnr2XbGpMo226XUsovjKspbJ+RxBU0mlikvBNrnTW/Mg2YR87BKlzm9R+cHHrkSWvSis4gXesFLsh+DHKXoPKMHi6plGX2z+u398pJYlaXkWDEeEmJv+dBHrM/D3odfj86Mkdw+Vu1oX90enLZ0sEBz6VPIS6/OWk=
+	t=1714150430; cv=none; b=kjz4KwnDYOl0xkvMeOEsJK6VRFOHZPo2pTXa8kry4LNwC1bABw357EQX/mDN3z8t0JbK66ptiZQpeeh9G1EWIXTPhRKU3VdTrWXJ6WeIcxWWI6ndni8IsLSs+QvYt+jm+KASlEMf57s/UMfDcaG28a09kJI4kJlo9XbYQGMGmqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150389; c=relaxed/simple;
-	bh=veQ+dhE8G1BdzaaEA/HYxIrWBiGfNwdrNrQ2IFkCquU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k9nTfXTwxtaRXWsT6wLzR0d7RkqDFrdBTgF46FpzCnzxx+s9JGzhqxWewLvuxK9KIXmNgQ93T/6S8jD649fmT1n2A0YXQNcNZB0qJMnRtPy7l9iY3GlkodXKhiKj12FTJMPxudkbWW8gg0zFjdA/txqRKwk3uRdqrsjGNm3wbzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E4EzyH2i; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714150388; x=1745686388;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=veQ+dhE8G1BdzaaEA/HYxIrWBiGfNwdrNrQ2IFkCquU=;
-  b=E4EzyH2ih2HB/eS20c6OlyVcevLq/687EBKvNpZeMCQLdqc9W+6AwyWP
-   cUdmQTjPiwKlwFeh9kS+FwswHFR0vwJIb0nyWBF27g/gfW6SRpgtjpalD
-   K7y3c+/QKGdZEjtOu2TGMjrYlP8i5g8ZYYGtRG1bD3B7YnKrOcpNTKlnk
-   WqfwQ4Mi69sE9d6AWl1l1ro1wyfNRkY+RPugaHB7GU2vjryvpP2/AhLox
-   ChDlXNVINvH5IajrS8lUznx4Fw65c5WJiF1rQR5K1x8KdcH+CF+Om6Y+l
-   FLr4dGpUvZgTvFguxOtpni1upnAoiaqse+W/u7hsw0hsVMTxNM37KMQ1m
-   Q==;
-X-CSE-ConnectionGUID: +BmqvzZaRB+gSkPFih7EWw==
-X-CSE-MsgGUID: g48AtrXJS32wmkGcAPTw+A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10055857"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="10055857"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 09:53:08 -0700
-X-CSE-ConnectionGUID: 153tFidVRoqD87XFi/qplw==
-X-CSE-MsgGUID: /LXoW1lLRhiDGJLBRfHgjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="30283579"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 09:53:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1s0Ooo-00000001Odb-2I7z;
-	Fri, 26 Apr 2024 19:53:02 +0300
-Date: Fri, 26 Apr 2024 19:53:02 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>, nathan@kernel.org,
-	kotaranov@microsoft.com, sharmaajay@microsoft.com,
-	longli@microsoft.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: fix missing ret value
-Message-ID: <Zivb7qs4gSywzVsL@smile.fi.intel.com>
-References: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240423150315.GA891022@nvidia.com>
+	s=arc-20240116; t=1714150430; c=relaxed/simple;
+	bh=qBWR0niH5zgeEw2mYz3NYV00URwQJyobXGWPG0AH2zs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t1wz7ObQMB/3Dsb/falXkVftVQfukWbxs+j9DLucVDHH1b/NOnAIryd0GK7uf0NaBWDoFfSrp/NNBryiusmx3C7uquD1LyPcHsEFo5HW+GnQTUoFVmpFjZF2i83RZtBBMDTxW1d7BB64d0SHiw5KElTE6HCJuPvtRfqYqr8NZHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQzJL0WlTz6K6JG;
+	Sat, 27 Apr 2024 00:51:14 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 33455140A70;
+	Sat, 27 Apr 2024 00:53:43 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 17:53:42 +0100
+Date: Fri, 26 Apr 2024 17:53:41 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: <linux-cxl@vger.kernel.org>, Sreenivas Bagalkote
+	<sreenivas.bagalkote@broadcom.com>, Brett Henning
+	<brett.henning@broadcom.com>, Harold Johnson <harold.johnson@broadcom.com>,
+	Sumanesh Samanta <sumanesh.samanta@broadcom.com>,
+	<linux-kernel@vger.kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, "Dave
+ Jiang" <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>, "Ira Weiny" <ira.weiny@intel.com>,
+	<linuxarm@huawei.com>, <linux-api@vger.kernel.org>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, "Natu, Mahesh" <mahesh.natu@intel.com>,
+	<gregkh@linuxfoundation.org>
+Subject: Re: RFC: Restricting userspace interfaces for CXL fabric management
+Message-ID: <20240426175341.00002e67@Huawei.com>
+In-Reply-To: <662bd36caae55_a96f2943f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240321174423.00007e0d@Huawei.com>
+	<66109191f3d6d_2583ad29468@dwillia2-xfh.jf.intel.com.notmuch>
+	<20240410124517.000075f2@Huawei.com>
+	<66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
+	<20240425123344.000001a9@Huawei.com>
+	<662a826dbeeff_b6e02943c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<20240425182605.00005f22@Huawei.com>
+	<662aae2fe4887_a96f294bf@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<20240426094550.00002e37@Huawei.com>
+	<662bd36caae55_a96f2943f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423150315.GA891022@nvidia.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Apr 23, 2024 at 12:03:15PM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 23, 2024 at 07:15:51AM -0700, Konstantin Taranov wrote:
-> > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > 
-> > Set ret to -ENODEV when netdev_master_upper_dev_get_rcu
-> > returns NULL.
-> > 
-> > Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
-> > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > ---
-> >  drivers/infiniband/hw/mana/device.c | 1 +
-> >  1 file changed, 1 insertion(+)
+On Fri, 26 Apr 2024 09:16:44 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
+
+> Jonathan Cameron wrote:
+> [..]
+> > To give people an incentive to play the standards game we have to
+> > provide an alternative.  Userspace libraries will provide some incentive
+> > to standardize if we have enough vendors (we don't today - so they will
+> > do their own libraries), but it is a lot easier to encourage if we
+> > exercise control over the interface.  
 > 
-> Applied to for-next, thanks
+> Yes, and I expect you and I are not far off on what can be done
+> here.
+> 
+> However, lets cut to a sentiment hanging over this discussion. Referring
+> to vendor specific commands:
+> 
+>     "CXL spec has them for a reason and they need to be supported."
+> 
+> ...that is an aggressive "vendor specific first" sentiment that
+> generates an aggressive "userspace drivers" reaction, because the best
+> way to get around community discussions about what ABI makes sense is
+> userspace drivers.
+> 
+> Now, if we can step back to where this discussion started, where typical
+> Linux collaboration shines, and where I think you and I are more aligned
+> than this thread would indicate, is "vendor specific last". Lets
+> carefully consider the vendor specific commands that are candidates to
+> be de facto cross vendor semantics if not de jure standards.
+>
 
-So, what's wrong with my patch that had been sent _before_ this one?
-At bare minimum I would like to see an explanation.
+Agreed. I'd go a little further and say I generally have much more warm and
+fuzzy feelings when what is a vendor defined command (today) maps to more
+or less the same bit of code for a proposed standards ECN.
 
--- 
-With Best Regards,
-Andy Shevchenko
+IP rules prevent us commenting on specific proposals, but there will be
+things we review quicker and with a lighter touch vs others where we
+ask lots of annoying questions about generality of the feature etc.
+Given the effort we are putting in on the kernel side we all want CXL
+to succeed and will do our best to encourage activities that make that
+more likely. There are other standards bodies available... which may
+make more sense for some features.
 
+Command interfaces are not a good place to compete and maintain secrecy.
+If vendors want to do that, then they don't get the pony of upstream
+support. They get to convince distros to do a custom kernel build for them:
+Good luck with that, some of those folk are 'blunt' in their responses to
+such requests.
+
+My proposal is we go forward with a bunch of the CXL spec defined commands
+to show the 'how' and consider specific proposals for upstream support
+of vendor defined commands on a case by case basis (so pretty much
+what you say above). Maybe after a few are done we can formalize some
+rules of thumb help vendors makes such proposals, though maybe some
+will figure out it is a better and longer term solution to do 'standards
+first development'.
+
+I think we do need to look at the safety filtering of tunneled
+commands but don't see that as a particularly tricky addition -
+for the simple non destructive commands at least.
+
+Jonathan
 
 
