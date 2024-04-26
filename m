@@ -1,130 +1,100 @@
-Return-Path: <linux-kernel+bounces-159996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D5F8B376F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:48:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FD18B3777
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:50:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B13C9283380
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:48:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 665BC284830
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94515146A7E;
-	Fri, 26 Apr 2024 12:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9677146A84;
+	Fri, 26 Apr 2024 12:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ecWCkYsd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="F0PBQD5Q"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DF82A1B0;
-	Fri, 26 Apr 2024 12:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307ED146D6E
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714135691; cv=none; b=A/GXBHD9FLeMw1ShOLaWZwefA/aGG9oUiE03/k/E0KfZqb5K1urBHJrwN1ZUG9Vc7u9HuiA7l13n3IQsh6qCLQOeQJixAGz1XAYlgfpqTxi93qcpURD9OhrdJsGEA9GxezcBkHvdmB75P60RBY7XJu/8gWoyAFqdlWxIe19s0Yg=
+	t=1714135804; cv=none; b=QDvChoXWl2Ro32QnHPDfaKedNXFdJJ9gtwZFXhz86mPY0wrNd4dbapGEf0PAtIqfVdy1rMpyKxhNeUDG1BrXt+ztETCU/EhjjkVT/OVMO9x2kRPK/BlfgyJ8cyYt/hd4CkBa+CncMj3dOEc1Cxfcz3CTQfufrnPmJujPYi7zbRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714135691; c=relaxed/simple;
-	bh=FOzFFi+msUeLXNfbb70s5KkbOCz2J/1lKkGOcbc75Vg=;
+	s=arc-20240116; t=1714135804; c=relaxed/simple;
+	bh=PHGATYEBLYbA+WbozEKa4kJ3KxnIU9rKtfDXNDUS3AQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J12L6kqaunsCcTPCUvpN9XxVLfSdFS6uDUHbR71ypR71JHEkRew0NM0il3tTQ67OOEsuaFrSqLCP3EcZHg+V/2Xe1uNcHK5skQmrTsypXusvhceHBfrryMqywSgAY7131ldhe+Ark7ak4V6dH++0QMMDCE+7XgP1ZORIdMvEOsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ecWCkYsd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA065C113CD;
-	Fri, 26 Apr 2024 12:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714135691;
-	bh=FOzFFi+msUeLXNfbb70s5KkbOCz2J/1lKkGOcbc75Vg=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=HchfZX5lsY+zRqlyPOT7VHpojnUcHs3y5xIHn6FG7oc5J4rPUOR3ct41FvGnRGdmh4jxwh6FdZTM/4fG4F9pHJyLJWwVlKhO3QiXl3qe7EPWafB1VfbHKsZs2t4LEOtDr98K2hBHZOu59LKZikDZX4+p+gJkg3DH/RIQVl9uHS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=F0PBQD5Q; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B7B7140E01A1;
+	Fri, 26 Apr 2024 12:49:58 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id I0Uikzg47n9m; Fri, 26 Apr 2024 12:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714135793; bh=qOtmbp3APfOxDRsPvdgSYkbmj3ZiCNd/UFPaUI+VCBk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ecWCkYsduNjS49+qSQh1C9PfkhcSQEE6IyK+p7RSLiL63G45KfKhpPKyvSIAMjfNp
-	 Gphe2ZSFIxP6ouvibgmzqnhI2l2AT85SgrbTll+xnmIXCKGoPKi9VGqT5PO8G8I8QV
-	 9PiSZxvQCmC1dHV38z8xHJpo3QWWvYuAlwPYpXDD/BvlbUM0DIMU4JMbGS648KyHJE
-	 iM4z5I98bkBIEq57JQT+iJlyMC+oFV0IfXIun0yMJmN6MF7yLsbKYbkcNjS44f2wuY
-	 r+gKvc6AmRFZ7ieo2sgIyfLbRwrEl827SQjo+9u3QL9K9lHdDNkYTdNdOn3VYRqkrZ
-	 vAiqgGO+oHm3A==
-Date: Fri, 26 Apr 2024 09:48:08 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Adrian Hunter <adrian.hunter@intel.com>,
-	Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V3] perf scripts python: Add a script to run instances of
- perf script in parallel
-Message-ID: <ZiuiiFdPhJIrjI7k@x1>
-References: <20240423133248.10206-1-adrian.hunter@intel.com>
- <ZihFYbdrnarNFWOd@tassilo>
- <ZikT69GIsijZajoI@x1>
+	b=F0PBQD5QNFiPDRNvfyTQz/oJ2XwWasb+zGuecWbbUHEfzQ1hxugyqaEx+sSw7SpZU
+	 URa4kjnoSxD9qfoTPEs44dq9sjdwmNmMmYZNYRKFw9mggoMODkEvoRrl/1+7LfxGcB
+	 t1qcmGKjAteb/X5fvAYyGsBWIgj4TYbzXPBCw0gEV9DBUxr6TlS6/1y4MIKsu8ru9S
+	 cxGBA25JXyb8p44vkFgcjsJZQ/CDWN6PQV2G+/PoxSbGu7ahHpQBnlsVJvSbVpBZS6
+	 i54F5wSZF5wjnrlaIEfyF0QLUuIrj2Ap3jtADDbI9VIS6XdGwG8Hq3kfK+38G2WXhy
+	 oa78iSwyHZ8PFJM6yqwrK8CWDaGbpEdeaSTGHS9LQkY4ntPNVEPZbYd7RTD1fXS9NL
+	 dUkJY0iq6LRoPfp/K/3ZZD8Wzz5q6nbiL8caG9IMXdXAQ4W16r975WjK5Bbd6cMI21
+	 bwI+GPqmUU4oOjflfAtoWZF0hZBcRpdtKC+aluTYbp7pXHZz/Wi89EB+aZbrmXekW+
+	 Vq5G11qU8YJP6aWbNa5hBXEIY1EYibHFRe6Q0rvUAPNeW97ZMnX8flfi2JvQ07a7vo
+	 JWWYOju5/qNqB2D68FINKe0gVrPf9InSS/NW2knf35zUsgofRXPvFqHu7ZfTwFO565
+	 alJfCrog2MGqdtthVdzdNxJM=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9A42A40E0192;
+	Fri, 26 Apr 2024 12:49:48 +0000 (UTC)
+Date: Fri, 26 Apr 2024 14:49:43 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc: thomas.lendacky@amd.com, michael.roth@amd.com, x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Apply RMP table fixups for kexec.
+Message-ID: <20240426124943.GCZiui5z6Y3zOTxTic@fat_crate.local>
+References: <cover.1713212104.git.ashish.kalra@amd.com>
+ <20240420110812.GLZiOiHNP4Q6YmWOLl@fat_crate.local>
+ <c94d14e6-439d-4126-a44a-10a62ebf7d23@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZikT69GIsijZajoI@x1>
+In-Reply-To: <c94d14e6-439d-4126-a44a-10a62ebf7d23@amd.com>
 
-On Wed, Apr 24, 2024 at 11:15:11AM -0300, Arnaldo Carvalho de Melo wrote:
-> On Tue, Apr 23, 2024 at 04:33:53PM -0700, Andi Kleen wrote:
-> > On Tue, Apr 23, 2024 at 04:32:48PM +0300, Adrian Hunter wrote:
-> > > The script is useful for Intel PT traces, that can be efficiently
-> > > decoded by perf script when split by CPU and/or time ranges. Running
-> > > jobs in parallel can decrease the overall decoding time.
+On Wed, Apr 24, 2024 at 02:10:03PM -0500, Kalra, Ashish wrote:
+> Patch 2/2 - includes the following Fixes tag, do i need to include the Fixes
+> tag in the cover letter too ?
+> 
+> Fixes: c3b86e61b756 ("x86/cpufeatures: Enable/unmask SEV-SNP CPU feature")
 
-> > > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+People slap Fixes tags on pretty much every patch nowadays. I'd prefer
+it if you spell it out in the future what the problem is you're
+encountering so that I can make a decision where to route the patches
+through.
 
-> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Thx.
 
-> Thanks, applied, and added a note on testing it using:
+-- 
+Regards/Gruss,
+    Boris.
 
-Plus this, please check.
-
-Committer testing:
-
-  Ian reported that shellcheck found some issues, I installed it as there
-  are no warnings about it not being available, but when available it
-  fails the build with:
-
-    TEST    /tmp/build/perf-tools-next/tests/shell/script.sh.shellcheck_log
-    CC      /tmp/build/perf-tools-next/util/header.o
-
-  In tests/shell/script.sh line 20:
-                  rm -rf "${temp_dir}/"*
-                         ^-------------^ SC2115 (warning): Use "${var:?}" to ensure this never expands to /* .
-
-
-  In tests/shell/script.sh line 83:
-          output1_dir="${temp_dir}/output1"
-          ^---------^ SC2034 (warning): output1_dir appears unused. Verify use (or export if used externally).
-
-
-  In tests/shell/script.sh line 84:
-          output2_dir="${temp_dir}/output2"
-          ^---------^ SC2034 (warning): output2_dir appears unused. Verify use (or export if used externally).
-
-
-  In tests/shell/script.sh line 86:
-          python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
-                              ^-----------^ SC2154 (warning): output_dir is referenced but not assigned (did you mean 'output1_dir'?).
-
-  For more information:
-    https://www.shellcheck.net/wiki/SC2034 -- output1_dir appears unused. Verif...
-    https://www.shellcheck.net/wiki/SC2115 -- Use "${var:?}" to ensure this nev...
-    https://www.shellcheck.net/wiki/SC2154 -- output_dir is referenced but not ...
-
-Did these fixes:
-
-  -               rm -rf "${temp_dir}/"*
-  +               rm -rf "${temp_dir:?}/"*
-
-And:
-
-   @@ -83,8 +83,8 @@ test_parallel_perf()
-          output1_dir="${temp_dir}/output1"
-          output2_dir="${temp_dir}/output2"
-          perf record -o "${perf_data}" --sample-cpu uname
-  -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
-  -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
-  +       python3 "${pp}" -o "${output1_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
-  +       python3 "${pp}" -o "${output2_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
