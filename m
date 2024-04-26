@@ -1,190 +1,144 @@
-Return-Path: <linux-kernel+bounces-159772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684D88B33C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:20:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF978B33C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:21:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779CB1C21BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:20:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1E4D1C21ABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE4713E8B2;
-	Fri, 26 Apr 2024 09:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3A213E3F0;
+	Fri, 26 Apr 2024 09:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NtUEw5A+"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RoZwsoQD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BFB13C90F;
-	Fri, 26 Apr 2024 09:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA6013D89D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123234; cv=none; b=SSBKXWP22zCQQmkiKsCY9mIYD5jyOrIZM3RZx+2fvavpUo8EK61ZVWxe2RwuQnYb3WMk9dmS/N/PwlyiL+NAUKDW+HOvv6u5sbVrDWcpeR2tDyG2sXZvo2Lqk8UUsRcIOSkC/ug0OWGanoxbpN6RVkcn1+ldhiTsNwgYfxGBJJU=
+	t=1714123245; cv=none; b=MF7zkWfLpcm1Pa+i3uKf1OixnXXwFVodrAGJ6aAmzoXfIm0GpJHs7NbJ7xS79Af2dpRWGC0EaEHDBAH9jiTwCbJ4P6DwIe91FciOaIAvXVpv2w9sMLY4wjy0ABKnDpPBZZwSF9ii+7l5gOt4Nr6RCVxRPfRoWcb9mpFSXxSGptU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123234; c=relaxed/simple;
-	bh=xBUpP3VAjhJdXrYIjPZD0CAQ4mXC99ueDEdcVvn0xbY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YrKe4UIejjFyVfWqUAzzwO57LvdthVhT1vokVOVHr4fGjiiPkyPyM0ClPx/Vf77x4nVx2Ot++okCL/YWSA4SqmbfpRYgbUQM+/OKrjbf9mhiTL5CaaK7+A6AMrvGj+9PAkuB95sYVLOJAH+b3LheM8HJntYIoim96VTb70GEgy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NtUEw5A+; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q41YLU012981;
-	Fri, 26 Apr 2024 09:20:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BUIIFoA4N2ESIijEp2JWqnWgumg1YcDccO7inyej7yI=; b=Nt
-	UEw5A+H8vL4iSQmfnMTb8OIaAEu9zI1irjgkP9JL4s5QPos/EMOutuHwvoBn0uRx
-	ZpR4MsWd/7ksqCHDctVXN/KUFWeO3JLKDxgW2o7gBSpy0ZngQWbCVTGdGRs8n08y
-	SD/atlbO/HLr/HaJUkJRWvb6XMUcnm8Auf4+0zJgblHtTaZue42rbquYLaEPH+gd
-	rhawsOCZiCiW1MAI1t5tdu0Ap2n41fbrfNuYX6bEPbkx6ptiNQ6RNQSTFaEYKm/q
-	ucUzvhf05Jl6IRfgdGr32Jq81Fb6jYPvVzwz8b7WB/qzRW6VT4NYG4bJoaTqo0pO
-	HUarX30L6YOVDZL/BWow==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr3591ctd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 09:20:25 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43Q9KMaN025356
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 09:20:22 GMT
-Received: from [10.218.10.146] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Apr
- 2024 02:20:16 -0700
-Message-ID: <ca017ebf-c099-b436-f062-1341f765a08c@quicinc.com>
-Date: Fri, 26 Apr 2024 14:50:12 +0530
+	s=arc-20240116; t=1714123245; c=relaxed/simple;
+	bh=C3rHTvF9PHfzdrgv16HQit9eIpwFV1aeMPWDWLSjEDM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vDg5aCga5gKEjPo8KjzDJCazasQ5nKj1qDLI9wucYSIPFH7U0cOUCIVgupbAeg04PEv/gtFqj3E1jAv8lHLqqQ3ikqdhQtt5ffMHVPlMUYMdznOKFA/YhZbXU+ivxdJqUgqG5z3Xt/Fi1pQBbZW7Okl+aqcx+8fz0/25IdVIhzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RoZwsoQD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714123242;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8Dmcns0FZ9CNJhWQ+HJ61vRnl0WhR0+EUECBc2kBET0=;
+	b=RoZwsoQDjkBe/Wt/TY1lLYa34TMdhU9v3nrlwKpwR9WCXo61/5nI5jCuzyQzJsFplo6f7P
+	BslR8V3oR/N6gqBCfnON4AzH90Py3mFMDHQi2msooTXimtlNSQenAv68lcDbnnsRzD1IRr
+	y3xQpjRnb4pQPUmrqNpKVNNf/Sp9ODU=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-140-PmAzSEa9O5ihB7DVH_1DGQ-1; Fri, 26 Apr 2024 05:20:41 -0400
+X-MC-Unique: PmAzSEa9O5ihB7DVH_1DGQ-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c82c701f5dso1891141b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:20:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714123240; x=1714728040;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Dmcns0FZ9CNJhWQ+HJ61vRnl0WhR0+EUECBc2kBET0=;
+        b=hzIe0lFtoPJlhTuCv1ewd8Sc2jNRF5As7nald93yKOLI9gmMn/dvVmKcipXfsgCVLl
+         eqDdo4rY63PAQKWiVjCq5+Kst2+2Q8lPTcDizw4LDFpTjpBRCEr9OkiG3pIEyTG5+DWm
+         bpwYFe/ctLdKjbHx1Qg0kkDYqon+GMC6FpY9yRT3+XACUhE4PaopEFxK3EyVU+Kl8jfM
+         i2GeQg1bb+QZjiCQwdecUMVqqBZPzVozqdOM2HG+/3+xXoh123iVOv7By/bXvXyNqw1l
+         WAk9GAsK4Tugk/qYUdbbVYQENfakhQsysTJV9x/dewKXbDj/iXUec9pCfDQuGXh0xNFa
+         RHDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjCFhhls5ONS6vWC4W9tPo24OfkquUIrja8+TEziUs2nbTudtR8m3GaDkQPIWJN+2XCe6dvgaILY9azHHulZYwvHZGrh2HZG4WLiZv
+X-Gm-Message-State: AOJu0YzgIqzU3Xl9ieDYEMr51m0EgU2SS28VNIcX6bYKVqBw46VqAD6z
+	tonRok0oZQvlGn/WnZU2i8Ub4vFrsjSMk/GyOh5+htYHrW7QPVTaplPHXtfzw428h85Kki7Z/AN
+	iJzxencgWuOhiqywWdWx3IC9RD3qDtmiF7EvjayQBScBGexsDAiN2ywGwPUBXAA==
+X-Received: by 2002:a05:6808:1528:b0:3c7:dfb:a295 with SMTP id u40-20020a056808152800b003c70dfba295mr2563876oiw.55.1714123240353;
+        Fri, 26 Apr 2024 02:20:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHkmQHR4xd5DGzRLvfFnAFgkLJtQPF1g3QWZiwSfctnEJmyqeJV0jASxLHf/gm5VeDDfBboyg==
+X-Received: by 2002:a05:6808:1528:b0:3c7:dfb:a295 with SMTP id u40-20020a056808152800b003c70dfba295mr2563855oiw.55.1714123239985;
+        Fri, 26 Apr 2024 02:20:39 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id u9-20020a637909000000b006047eb9c7fcsm5263952pgc.34.2024.04.26.02.20.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 02:20:39 -0700 (PDT)
+Message-ID: <0cf50b2f-999f-4aab-bc32-15549d48af2c@redhat.com>
+Date: Fri, 26 Apr 2024 19:20:29 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH V2 7/8] clk: qcom: Add GPUCC driver support for SM4450
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd
-	<sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vladimir Zapolskiy
-	<vladimir.zapolskiy@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>,
-        "Satya Priya Kakitapalli"
-	<quic_skakitap@quicinc.com>
-References: <20240416182005.75422-1-quic_ajipan@quicinc.com>
- <20240416182005.75422-8-quic_ajipan@quicinc.com>
- <CAA8EJpqwrKcgm7c57=LpxS7+CfrN2UxNg8k_46auBrdZG7vQnA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 02/16] cpu: Do not warn on arch_register_cpu()
+ returning -EPROBE_DEFER
 Content-Language: en-US
-From: Ajit Pandey <quic_ajipan@quicinc.com>
-In-Reply-To: <CAA8EJpqwrKcgm7c57=LpxS7+CfrN2UxNg8k_46auBrdZG7vQnA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, x86@kernel.org, Russell King
+ <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
+ Salil Mehta <salil.mehta@huawei.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com,
+ justin.he@arm.com, jianyong.wu@arm.com
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-3-Jonathan.Cameron@huawei.com>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240418135412.14730-3-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3uiw9dIqgbCoJcFFm8PKZL3HkWEE3PTx
-X-Proofpoint-ORIG-GUID: 3uiw9dIqgbCoJcFFm8PKZL3HkWEE3PTx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_09,2024-04-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
- clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404260060
 
+On 4/18/24 23:53, Jonathan Cameron wrote:
+> For arm64 the CPU registration cannot complete until the ACPI
+> interpreter us up and running so in those cases the arch specific
+               ^^
+I guess it's a typo? s/us/is
 
-
-On 4/17/2024 11:35 AM, Dmitry Baryshkov wrote:
-> On Tue, 16 Apr 2024 at 21:23, Ajit Pandey <quic_ajipan@quicinc.com> wrote:
->>
->> Add Graphics Clock Controller (GPUCC) support for SM4450 platform.
->>
->> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
->> ---
->>   drivers/clk/qcom/Kconfig        |   9 +
->>   drivers/clk/qcom/Makefile       |   1 +
->>   drivers/clk/qcom/gpucc-sm4450.c | 805 ++++++++++++++++++++++++++++++++
->>   3 files changed, 815 insertions(+)
->>   create mode 100644 drivers/clk/qcom/gpucc-sm4450.c
+> arch_register_cpu() will return -EPROBE_DEFER at this stage and the
+> registration will be attempted later.
 > 
-> [skipped]
+> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
->> +
->> +static int gpu_cc_sm4450_probe(struct platform_device *pdev)
->> +{
->> +       struct regmap *regmap;
->> +
->> +       regmap = qcom_cc_map(pdev, &gpu_cc_sm4450_desc);
->> +       if (IS_ERR(regmap))
->> +               return PTR_ERR(regmap);
->> +
->> +       clk_lucid_evo_pll_configure(&gpu_cc_pll0, regmap, &gpu_cc_pll0_config);
->> +       clk_lucid_evo_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
->> +
->> +       /* Keep some clocks always enabled */
->> +       qcom_branch_set_clk_en(regmap, 0x93a4); /* GPU_CC_CB_CLK */
->> +       qcom_branch_set_clk_en(regmap, 0x9004); /* GPU_CC_CXO_AON_CLK */
->> +       qcom_branch_set_clk_en(regmap, 0x900c); /* GPU_CC_DEMET_CLK */
-> 
-> My main concern here is the AON clocks. If we don't model
-> gpu_cc_demet_clk as a leaf clock, then gpu_cc_demet_div_clk_src
-> becomes a clock without children and can be disabled by Linux.
-> Likewise not modelling gpu_cc_cxo_aon_clk removes one of the voters on
-> gpu_cc_xo_clk_src, which can now be turned off by Linux.
-> Our usual recommendation is to model such clocks properly and to use
-> CLK_IS_CRITICAL or CLK_IGNORE_UNUSED to mark then as aon.
-> 
-Thanks for review, actually if leaf (branch) clock is ON, hardware will 
-take care of enabling and keeping the parent ON. So parent clocks won't 
-get turned OFF in HW as long as branch clock is enabled.
-
-For clocks which are fixed rate (19.2MHz) and recommended to be kept ON 
-forever from HW design, modelling and exposing clock structure in kernel 
-will be a redundant code in kernel memory, hence as per earlier 
-suggestion in previous thread such clocks are recommended to be kept 
-enabled from probe.
->> +
->> +       return qcom_cc_really_probe(pdev, &gpu_cc_sm4450_desc, regmap);
->> +}
->> +
->> +static struct platform_driver gpu_cc_sm4450_driver = {
->> +       .probe = gpu_cc_sm4450_probe,
->> +       .driver = {
->> +               .name = "gpucc-sm4450",
->> +               .of_match_table = gpu_cc_sm4450_match_table,
->> +       },
->> +};
->> +
->> +module_platform_driver(gpu_cc_sm4450_driver);
->> +
->> +MODULE_DESCRIPTION("QTI GPUCC SM4450 Driver");
->> +MODULE_LICENSE("GPL");
->> --
->> 2.25.1
->>
->>
-> 
+> ---
+> v7: Fix condition to not print the error message of success (thanks Russell!)
+> ---
+>   drivers/base/cpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
--- 
-Thanks, and Regards
-Ajit
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 56fba44ba391..7b83e9c87d7c 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -558,7 +558,7 @@ static void __init cpu_dev_register_generic(void)
+>   
+>   	for_each_present_cpu(i) {
+>   		ret = arch_register_cpu(i);
+> -		if (ret)
+> +		if (ret && ret != -EPROBE_DEFER)
+>   			pr_warn("register_cpu %d failed (%d)\n", i, ret);
+>   	}
+>   }
+
 
