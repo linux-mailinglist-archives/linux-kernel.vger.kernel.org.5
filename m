@@ -1,131 +1,186 @@
-Return-Path: <linux-kernel+bounces-159912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D078E8B3619
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:55:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47A58B361B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:56:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86B311F22CB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:55:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F83A2836DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72A1143C69;
-	Fri, 26 Apr 2024 10:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4421448DA;
+	Fri, 26 Apr 2024 10:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DuSafFZI"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o7I7amxj"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638A6142E62
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9421442E8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714128903; cv=none; b=PQSIkhbgzmQTx9ODui7br+zikMH9yz7oAnltum+gn0zvb5zLZg8l89Kjh13gGbJesyT/dxf/FzjrCzzkD9Wy1AO7lSkpg3bO47ZL4MW1NkwLLv6aMRor+uKQIidIw7N3cECylHxn+uj9mvfe1+FQo3xbKrvG/pTblSs8L3JbStc=
+	t=1714128986; cv=none; b=noqAPeljinqQGB8ALclJRVg/DmYNS9ixYLHQ+O6Rra62E46jGlOIrJ6fo87hE3yHfdnhR5VoHy8f0YJR2N4gk5ewStmG7fpxPbyfQV8Rzj1NbIXjPafJKsnwGOK1pHc5WTwY7MlXLw7MAqfU9SQVl/KOXvvsBqrPVsEOHGKYrNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714128903; c=relaxed/simple;
-	bh=DIyBYigJJ/qTpLE5EewD87Aphyv6LkbS9QtWMPjRHd0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Shr90tMYg9ItIGv8vHK0SOlzW31rnIqJPuDvygsUH7vvHiR1xvaKFMKqGvDXrVcUfbdE79VFLPmSS42bemCWusC7kL70RZqXsoL6d5B1twtlejiUIuKn+5jvNJ4XPqx5W5J/kCQ7xtxT+aCe8dA6j7ZD9WVVUJfXwOn+g3KfNH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DuSafFZI; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2da08b06e0dso21354951fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714128899; x=1714733699; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DIyBYigJJ/qTpLE5EewD87Aphyv6LkbS9QtWMPjRHd0=;
-        b=DuSafFZIzN52bdTGiaUJXRuSPumFMeA/xpFEKs6SMZaZL/v22SGx2Cu6pVaXyatGYo
-         zWiZzHcO6PusXJcQvQ2BADO7i8rkGcjlbUjPUp5zp3T3etUGonr0XcACuz5wDTvZ3SDN
-         UlHf44D5XXlrp0JlwDrNUFWM7WkpurF/ajL7Mt+Yt/RlSiQO9Z7yox7n7soiiVyv/REG
-         r9pwAKf1tybC35POhsjiKMsgxuKOlO5xpsW+hTi43sc6mbkwMTWErj1zk+7A0YgcDn6K
-         zsggJhgDsf4TRi25aFwPhFRTuqfHUtK6lyl2DjTG1xUaiPz/Gw9FySv+IZ0ZSNLA2iZh
-         BhPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714128899; x=1714733699;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DIyBYigJJ/qTpLE5EewD87Aphyv6LkbS9QtWMPjRHd0=;
-        b=Xh9UAUjPpGqOF+QFTkYC+yAroFUxXR5wEzB/GyE5ARISrOxpP4qpPTfIn5IJ7/QaRp
-         wUWkZjrl25t+LdWqWmUF2wYN0q1r/vM61aooZqHRHT+3kmGbnKfapn9kkGwHl4UKNlNj
-         E8co+Ad6llsJGV46iy4e0Y6i/qI4GBxISbQhVsqM3PJIUwh1REN+N6/k3bU9+nwrDik5
-         MUeTtaWxEd26KGDt+3O5PRE+Ks0uM1M2geJqODm/pTL9WDLS8E1nCaAuTtJu/RuwunGa
-         uQ/TGVFdt+NpRd5S1SfrlZrB1EkBFsYEq3x2Zh+LHbQlt/DJcocbb2hqxlqrp0G437Fp
-         iCOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSrdS22f0q3ieBsm2GnkSUXvABnoWUaL2ssMBJPVEwWoICKZXzFERGejs3YXTXmbuojVVU46/PftZB7cd59EtqcmYsTg9cDhZojFfj
-X-Gm-Message-State: AOJu0YzVCzl84zITQVyICs2MPYP/9bjw/FCK+U2bLFBnjyCIs2IowIo1
-	7DUXq5wrC3oIzEmUOoVzmUs4ATO0mBBLsu+5CW/7osZZXDfhPlITw9gIqvq3UPE=
-X-Google-Smtp-Source: AGHT+IFyC/4QrUfmFma/svm6P7ncU0LS1OeE3p4iwwLxVeaF0tQ3vYyuoA8eoICoNDNcv4AhdWdRLw==
-X-Received: by 2002:a2e:be0f:0:b0:2df:48a:b8d9 with SMTP id z15-20020a2ebe0f000000b002df048ab8d9mr1837667ljq.35.1714128899379;
-        Fri, 26 Apr 2024 03:54:59 -0700 (PDT)
-Received: from [10.1.1.109] ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id n6-20020a05600c3b8600b0041892e839bcsm30822115wms.33.2024.04.26.03.54.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 03:54:59 -0700 (PDT)
-Message-ID: <8023ea8c1eab725baf0389fe34b918bb5dd924c8.camel@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: samsung: google,gs101-pinctrl
- needs a clock
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki
- <s.nawrocki@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>, Linus
- Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, Conor
- Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>, Peter
- Griffin <peter.griffin@linaro.org>, semen.protsenko@linaro.org
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Will McVicker
-	 <willmcvicker@google.com>, kernel-team@android.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Fri, 26 Apr 2024 11:54:57 +0100
-In-Reply-To: <013f2da9-1d91-4b62-b5b7-d603d0c09aef@kernel.org>
-References: <20240425-samsung-pinctrl-busclock-v1-0-898a200abe68@linaro.org>
-	 <20240425-samsung-pinctrl-busclock-v1-1-898a200abe68@linaro.org>
-	 <56a32a2d-2f6f-4f7b-8359-6f3062c010e2@kernel.org>
-	 <013f2da9-1d91-4b62-b5b7-d603d0c09aef@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	s=arc-20240116; t=1714128986; c=relaxed/simple;
+	bh=+rxS8mFuJsj+zibyLrkWSQYzT3KkC9lXrTGuUkFPBh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dkxmswdeJp4Tn5q8ICewZ3E9DFbPwZg0KvA/+LpUlDiP9U9jH9jOgusMclfre9rqxQbEpBQop5AZJ4reNnYYKE6ineLhbBbt4euAndomqEfRvG2liZwSZLqP2XVWY42QxHOH7Bbvr/XB0W/PvcS4OuARSQH4BRuvK2kDuDMNSqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=o7I7amxj; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HIJVNue7WTCe5tgDHMAvFG1PdM9WUeLajLXx6n3t/MM=; b=o7I7amxjjfQJPf0v4ITzeln87h
+	IlljTTKFISnbV5THlm54s+kQZdlid8o+Fr46+3WtrF2Gv0+9p85GMR+WQqx/t4EVIuBZZDkOfOtAO
+	8BrDVa46I07VasCN8jhXa9xLwhxqEafXkEA/uvHY5VZRyw0e0XsT2dUUtiPiZnT3b7ugbxTRTXGJI
+	qsbPwAVw0fUyvF4sd4HujqSbnfqe6JJr26VTZP1lZFyWVfHOiDZun0JuVvgak9C+7KysYTomVucXm
+	a8JE9+I72W/OCBP5mkEVpxPAmFO8lgVedjnZci4W7lsb4y77HflFEvTPkdQAI59trvjIPfCiil/h/
+	0s4rAUBA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s0JFP-000000053Pt-26wM;
+	Fri, 26 Apr 2024 10:56:07 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2947C3003EA; Fri, 26 Apr 2024 12:56:07 +0200 (CEST)
+Date: Fri, 26 Apr 2024 12:56:07 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mike Galbraith <efault@gmx.de>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
+	tglx@linutronix.de, Chen Yu <yu.c.chen@intel.com>,
+	Oliver Sang <oliver.sang@intel.com>
+Subject: Re: [RFC][PATCH 08/10] sched/fair: Implement delayed dequeue
+Message-ID: <20240426105607.GK12673@noisy.programming.kicks-ass.net>
+References: <20240405102754.435410987@infradead.org>
+ <20240405110010.631664251@infradead.org>
+ <557be85d-e1c1-0835-eebd-f76e32456179@amd.com>
+ <ec6f811b9977eeef1b3f1b3fb951fda066fd95f5.camel@gmx.de>
+ <14330cf4-8d9e-1e55-7717-653b800e5cee@amd.com>
+ <747627a1414f1f33d0c237f555494149d6937800.camel@gmx.de>
+ <2b9f7617f2b2130bb6270504ec3858f15d463f1d.camel@gmx.de>
+ <20240425112855.GF21980@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425112855.GF21980@noisy.programming.kicks-ass.net>
 
-On Thu, 2024-04-25 at 20:18 +0200, Krzysztof Kozlowski wrote:
-> On 25/04/2024 20:15, Krzysztof Kozlowski wrote:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 properties:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 contains:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c=
-onst: google,gs101-pinctrl
-> > > +=C2=A0=C2=A0=C2=A0 then:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 required:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - clocks
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - clock-names
-> >=20
-> > else:
-> > =C2=A0 properties:
-> > =C2=A0=C2=A0=C2=A0 clocks: false
-> > =C2=A0=C2=A0=C2=A0 clock-names: false
-> >=20
-> > but anyway this is all a bit fragile, because pinctrl is not a driver
-> > and you rely on initcall ordering.
->=20
-> It is a driver, although initcall ordering is still there. Anyway, it's
-> the first soc requiring clock for pinctrl
+On Thu, Apr 25, 2024 at 01:28:55PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 18, 2024 at 06:24:59PM +0200, Mike Galbraith wrote:
+> > The root cause seems to be doing the delay dequeue business on
+> > exiting tasks. 
+> 
+> > ---
+> >  kernel/sched/fair.c |    5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -5374,6 +5374,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, st
+> >  		update_curr(cfs_rq);
+> > 
+> >  		if (sched_feat(DELAY_DEQUEUE) && sleep &&
+> > +		    !(entity_is_task(se) && (task_of(se)->flags & PF_EXITING)) &&
+> >  		    !entity_eligible(cfs_rq, se)) {
+> >  			if (cfs_rq->next == se)
+> >  				cfs_rq->next = NULL;
+> 
+> So I think this can be easier done in dequeue_task_fair(), where we
+> still know this is a task.
+> 
+> Perhaps something like (I'll test later):
+> 
+> 	if (p->flags & PF_EXITING)
+> 		flags &= ~DEQUEUE_SLEEP;
+> 
+> But now I need to go think about the case of removing a cgroup...
+> *urgh*.
 
-If I see it right, E850 has similar gates, and like on gs101 they're curren=
-tly
-also all marked as CLK_IGNORE_UNUSED in the e850 clock driver with a commen=
-t that
-a driver update is needed. I've added Sam.
+I ended up with the below instead; lemme go run this unixbench spawn on it.
 
-Cheers,
-Andre'
-
+---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 95666034e76c..b5918fa9a0f0 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8429,7 +8431,20 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
+ 
+ static void task_dead_fair(struct task_struct *p)
+ {
+-	remove_entity_load_avg(&p->se);
++	struct sched_entity *se = &p->se;
++
++	if (p->se.sched_delayed) {
++		struct rq_flags rf;
++		struct rq *rq;
++
++		rq = task_rq_lock(p, &rf);
++		update_rq_clock(rq);
++		if (se->sched_delayed)
++			dequeue_entities(rq, se, DEQUEUE_SLEEP | DEQUEUE_DELAYED);
++		task_rq_unlock(rq, p, &rf);
++	}
++
++	remove_entity_load_avg(se);
+ }
+ 
+ /*
+@@ -13089,28 +13104,34 @@ void online_fair_sched_group(struct task_group *tg)
+ 
+ void unregister_fair_sched_group(struct task_group *tg)
+ {
+-	unsigned long flags;
+-	struct rq *rq;
+ 	int cpu;
+ 
+ 	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
+ 
+ 	for_each_possible_cpu(cpu) {
+-		if (tg->se[cpu])
+-			remove_entity_load_avg(tg->se[cpu]);
++		struct cfs_rq *cfs_rq = tg->cfs_rq[cpu];
++		struct sched_entity *se = tg->se[cpu];
++		struct rq *rq = cpu_rq(cpu);
++
++		if (se) {
++			if (se->sched_delayed) {
++				guard(rq_lock_irqsave)(rq);
++				update_rq_clock(rq);
++				if (se->sched_delayed)
++					dequeue_entities(rq, se, DEQUEUE_SLEEP | DEQUEUE_DELAYED);
++				list_del_leaf_cfs_rq(cfs_rq);
++			}
++			remove_entity_load_avg(se);
++		}
+ 
+ 		/*
+ 		 * Only empty task groups can be destroyed; so we can speculatively
+ 		 * check on_list without danger of it being re-added.
+ 		 */
+-		if (!tg->cfs_rq[cpu]->on_list)
+-			continue;
+-
+-		rq = cpu_rq(cpu);
+-
+-		raw_spin_rq_lock_irqsave(rq, flags);
+-		list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);
+-		raw_spin_rq_unlock_irqrestore(rq, flags);
++		if (cfs_rq->on_list) {
++			guard(rq_lock_irqsave)(rq);
++			list_del_leaf_cfs_rq(cfs_rq);
++		}
+ 	}
+ }
+ 
 
