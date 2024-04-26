@@ -1,217 +1,188 @@
-Return-Path: <linux-kernel+bounces-160128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FDD8B3984
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:10:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF6368B397B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2791F2359C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:10:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A031A1C21DB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF86F14831E;
-	Fri, 26 Apr 2024 14:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE491487F3;
+	Fri, 26 Apr 2024 14:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qr/VvY8C"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUK9bVTl"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E6F1465A1;
-	Fri, 26 Apr 2024 14:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714140633; cv=fail; b=nSNp7NjCt+QiXeAvsJ8g68ZP5AMqa7w3gsdxcTS+BVvggagg/kO0VyHdEXf+q9+kXEZ+OUSugzi3m3gjWmiaX2UXsrFM3IXRcYpD/PIpLTvAULlqCjwFF6AWdHfyNHM2FLBNVxatSkmLsOfstj29FyzvLOfTfmTXDQ+r6aYNtaA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714140633; c=relaxed/simple;
-	bh=hJ5IGnR/FNX7PURFcSM6lRIDa4I1E5IPZvLGTr3t6IY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=S9jwR3ZEPAZi99Ab8Bl2amGfGXlas6A29tShOGtRv6W9QSbsmKNdyOlLp9KtTJ+z0iaCuZ8r0lVsXIiwJkZoLQsVI6arPBXePsvxyxanYH2i+wkpz2Ebw0HIsYKb1wTRwQY3T+SHg/BMjdkcfuaQ7RHHM1ekZ1kky2ZqO9l/D30=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qr/VvY8C; arc=fail smtp.client-ip=40.107.92.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J8ISoEdzuSnjPGXc+20hnBS4mvslbiqKy2MGNc6Xu0t6AN/Y+6dUJndAAOpl1yo8HR7Hj9uswt2sTgaRubVUpko7s2meOo2Y2d2+ZCImKxBQnq3wGi/CcOqTmrjgA41quo3M4iT0icmEPZEbWI1X4OEwTAiVxPsCBjW44P04io5bx2FQDRi01dVO1j/MQMbalukvliRh+xqnRPDqTFoxwaEhxEw4cAmM/7OF3ruVHnVFEimD8PuXzevQfd0R9oDKJR7V4phuCmBjr02yOrS9n5w64/qkdlXLZOs8QcZ4aj4M82jAui8KofAzcvhpNdx5V380KD944oBnfmKUnFsGcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m6XtlpwlNdPEnkEfLBh5M4yDjswZsrdJHs1oFRweeKo=;
- b=SkHfRMffeJ/uPAIoXidlt5KJDbbT6xqG7Y823Kti6ClHrai1EHID//ncC6xwe2bJTYCCwEFurWkJ8M9AXDTsG6svhLV1FsABMdmPcu3LOPUHrh9RbdrRUSYOQskoC3GvJrm0N8ZDIXfVW3D+yff9et4F7SrXLUlpHjK/lhxx4fETTjXXUhQrPlYFcigdkJgWuKwMRfBXzBkgeghekONVI7I1i18AnG/RPoRFKZSPu8qKCuIEE5iB6kHYDh9NIexbat8nerH+BixeOHYaTIwGf009Qw0AoyXkXSYCaVOf6KGMFQ/1ubcrGN0qmexrfn/YMfh4ogkZS3RS3L1LMtt+FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m6XtlpwlNdPEnkEfLBh5M4yDjswZsrdJHs1oFRweeKo=;
- b=qr/VvY8CAuLAy4hCp2LVq9sc18sG94Wd8uoM4OMfJvIMSjLIIF28OfUSVuV8Mt1AUpZnjibNa3HhjU+KvWcjMJv75OdmAwx1Lla2i9FXkwtUw4x78qFJWpgLIWe3pHJFVg9IYXCao3tPwaT3Y4pLBlJ4ERnbcyjqo8XEl6u3+X4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS7PR12MB6069.namprd12.prod.outlook.com (2603:10b6:8:9f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
- 2024 14:10:27 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::37ee:a763:6d04:81ca]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::37ee:a763:6d04:81ca%4]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
- 14:10:26 +0000
-Message-ID: <7a756470-49c2-41c6-a3d3-6e819ae93cfa@amd.com>
-Date: Fri, 26 Apr 2024 09:10:24 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 5/6] Documentation: cpufreq: amd-pstate: introduce the
- new cpu boost control method
-To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
- viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
- Borislav.Petkov@amd.com
-Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
- Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1714112854.git.perry.yuan@amd.com>
- <c23d29532a09f9bfd8134eb34f2931b82399b527.1714112854.git.perry.yuan@amd.com>
-Content-Language: en-US
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <c23d29532a09f9bfd8134eb34f2931b82399b527.1714112854.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0104.namprd05.prod.outlook.com
- (2603:10b6:803:42::21) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0982714831E;
+	Fri, 26 Apr 2024 14:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714140492; cv=none; b=Sko1lQ+OPTNSxa3sjA7Wo0LOkHFP5mJnjukJzbp7xmydCLI/noOIa8/m4n85HCie6nAoxxrm2/3VVj7YuTcJhEDfFEzYX23rGkJrp0kwolHq+FOA2g5qSG+MOQsmzWYe16JHJwWCX3eTgZYltgyBGwwKCB8NwsnPBEO1kwEabBw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714140492; c=relaxed/simple;
+	bh=+aTLzk7JOk81DejGi5QpW5fiZbYuHYRSeE08utfOlpM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ezuqWcmmDmLdOr3E6OVf1+dYyFg84IPJtDlE1QcIH9Mp9hm9rPymTFfYnRAZEqmZrG1Gp3TWtCTs8G0UNCCtHBjCqw/rI3V+jg1Z2aB0qqQFxpLpyDDcOYDIzZMsoEnUl2IeM5gVYmfVJ6RN79uYVJtvnBl21WekPdGWOiFPjQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUK9bVTl; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a55ab922260so299403666b.3;
+        Fri, 26 Apr 2024 07:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714140489; x=1714745289; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=COQPJRSVyOS1oi1cYEIQpwZeWRGmcbcrGicpacT17Ik=;
+        b=JUK9bVTlHf27sNHRb1En1e8RbhI5ys1MbR1zs4pc0JK3hqAokQSoKJ5OoNqeyEf0BB
+         dfKJl6GVRwPxB7o4FQdHx8XZ4sVCqIqsCM/0vrlFgcahX01K2CqN6o8GjUrYrVKgClBw
+         ddxrOwIYTLzn8UIZFiXUmEFHDbAC0oAeVS52lLcTydg69Nq30yTC3WEM+18XRecu8X/L
+         /aZ5M9kNpSH+3iAteBSzsDw9By+l5cEfAfpIpoQd1VL4spL7ZhQB6bwJkuZlhIhxVn+S
+         CKJ/oI7wcrx9poTrAqIPJUF8np0ADzH0l8Tn73E41JEI1Skvri92koe1GrElOgg3aooy
+         SAeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714140489; x=1714745289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=COQPJRSVyOS1oi1cYEIQpwZeWRGmcbcrGicpacT17Ik=;
+        b=i0/E6/sbjCFQcqgqfQScsoPNqoz3ISsqXYNOANxFnLOHTNfvnTfoh/MotSR1I/DJHf
+         k3XBagyOfCAIkLQsL+XcHt84dxi/VwnMdIWefeVY+ygxPTNZsDHTpLnBBC9m5au3DsJc
+         fBrABjFTNBTh2JROxrzJBaME3shfWLmFGa444WJt9a5uZblsMNwU3HXs3wXHfRZZp2A8
+         aFnCYzfyJ9JHk+WbrGRTrCiuPZJitTjEo3U96qu6bnFTqyoVJ9b3KwOCpQysTBdtJGPa
+         FY/WDMEJFEPBoT++f1efsG8H4lmhMuMcJt0MMkxYw4L8N+uDV7M8JoC1JukQInSJtIdN
+         ZhKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQkRKk+n7ZXljj4bJ2apFPcnYEYHEL9yVbrLRrMBFjf/Bmi8njTfa/VxavkepvEtFE4GqzLV8+M8Q4zruIE1Wci2R1uvpPG9yP6h/UZButsh15TbQlSzxcxvEczTHxesVnA4lu55u3mxNLyvZlmetJGf11AzC+Y3fMn/GpPPTTdIo+
+X-Gm-Message-State: AOJu0Yze5mvthN26TFu8WfpyxW71MCYomgs3AB+YIkqSs3t5jNW7KApL
+	YsIHGsAPEuUhAzqLNyeyDqkoMmqrrKwdF758CtAzedhK7QrSTo8ud2N9M1KxPJi08V9Z9tn8AZt
+	nofPPJOb9WiKEBBISxHeOn4JjkBinVXPB
+X-Google-Smtp-Source: AGHT+IFrPeGqCdDLMxEk/fY8rJBfvNVTkvVULlYAtdksblzM5U9eSQi9z1SXm8Oa1N1FNroV8Dn/+jnHkliqofKUqB4=
+X-Received: by 2002:a17:906:c182:b0:a55:59e6:13f5 with SMTP id
+ g2-20020a170906c18200b00a5559e613f5mr2151094ejz.26.1714140488963; Fri, 26 Apr
+ 2024 07:08:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6069:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d53bb6d-9174-45d9-996c-08dc65fa9f2b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?M1pBVm1YWkllV1M4bW5MQktsUEQ2VEVsYWtqN21xUWNTY0xuTHFJSjFHTWxG?=
- =?utf-8?B?a0VkcUpSeEFiNytCazd2bjFGZzhpWDdvUUFvM1V0ei9MU0lWUUJnckp1YWJi?=
- =?utf-8?B?Q2l0WHFpQnAveDUreVJHRnIvbDNxQi9tRWlURTVNZmJENVZ5ZDBLT0o0S3Vk?=
- =?utf-8?B?TU5OamhmZGc4Rmh5d0VWL0NtRmo4TTEwNGg1cXRNSzVqM21vWXBkNWU5cmpL?=
- =?utf-8?B?TGpuNm45ZmJ6QWlHWC92eCtRRDE5enFCQWNrRkNyclh2SlI3YStIVUUyRHgx?=
- =?utf-8?B?RHBONDVBaW5Td2U2TTEvZ2Y5SzcyeEo3NmRzRCswdENFWmNHajF3Sm9oRmJ3?=
- =?utf-8?B?SzZ1bWtsVzdDNW93RDNjVEI0NWlKbzd3dW5tSFkzZ2JJL0xKR01iU3V6aytM?=
- =?utf-8?B?bWplWHBLRGJiUUZxWFl2YzhkOTA1WG1reUhyNFhnYmQzQXJEWjg2bVRENHc4?=
- =?utf-8?B?aE5YZFQrOXVRUDgwNzRZUU01U0tmbVd1UHo3N1dXblBhL0lIbncreGxYQjhX?=
- =?utf-8?B?MTJkcDd4YmtGbGNrbFcwcW1VR25uNTRFK0sxbVhjaHl2b2JHeXk5RlJYN2lq?=
- =?utf-8?B?aHpuZVlpcXducmJWRE8rNU53L0ROeU5rNzlmdm55THN4V3RoaXBNbVV4Smht?=
- =?utf-8?B?RUIvcDUwVlVOZFdhLzgwSkpuQXhlelhFZnFSalNMNG1RYy9pS1NpNjJxSXVB?=
- =?utf-8?B?Tk5qZDAzM0lQTTdpdGhHS1JYVkJFeWtyWlhCVi93TXArNWRFbFZhT2xpVUhX?=
- =?utf-8?B?cU15L1d5YjVUQ2FreFhtaUMrN3ViWXFOdG5HY1k4emgxdlliVXJxN3ZiRUUw?=
- =?utf-8?B?eGE4c25ORHd2aWRJSURSWFNReWdINHZEYk9VTGxjbWRvKzRmZytxaFFRV0Jt?=
- =?utf-8?B?NXlhcXRhaUtuU2UyamY1NWNmUGFsNWhhWVZwck5qVUZJMENJTHVCWkNrUlFD?=
- =?utf-8?B?akdYSkplYk55ZEZvbkx4VmtmNVJEc2hkYmMwanFOeGx5WDNjWVNlVUZLaW1L?=
- =?utf-8?B?bUFyaDV1YmtpQWF2em5oZGZFbXQ1M3pCcXZwZkZtcVBpay84MUNTbG9XTFIr?=
- =?utf-8?B?R1BVRkp1eFB4UEoydTJNcDBRbWpQT0xTZXhvc2NRcVZWOHh5ZWkySFZ0RkMw?=
- =?utf-8?B?MTlhTnFRSWJrK3EyMXZ1QldEN0F6VDcvTyt1Smo3bVljdlIyT3AwcUJWK1g3?=
- =?utf-8?B?TTFHWkdZYzdYREZXWjNlNzhMTm90UU0yRWxBZjJJcDlLUCtpZlhtdkIrcStm?=
- =?utf-8?B?NkZVNVFEUFUyVnMwb2pQOXQyVS93Vys0WWpEVVNjZFVWeVBnbC9NY2prOEFj?=
- =?utf-8?B?ZllabUczN0pTbEVRNEhNNVBqOWh6aG9iSVpKVEhSVkhwcGR2M2pUbjBsOFA3?=
- =?utf-8?B?SmUxNFRPdWdKeWVDcGF6RjdqbGRCK3JzZGU1MkdWOU9maWlvajN6R2hjQU1G?=
- =?utf-8?B?a09VRjdpYVBHWlhUM1Y1ZmI5QjlrRXVrMk4wNmdSMGpBSG93YUFuV1oyNkVr?=
- =?utf-8?B?NnBoQUtJQnlJWkRuWE53akxJRGljRTlUc1J6bDJBMXZwa21TMm5wYnhSOVhE?=
- =?utf-8?B?VlBEUHIwWlJnL0dHVWxiTGJJTG42S09qUUxhdFIzRDZUcDZZWTdQdDlXUitH?=
- =?utf-8?B?SEMxYmR5emJoQU9CaVJXK0ZJZFVFMCthMFlQbStkSkJEWU50dmZiTWRWN0Fa?=
- =?utf-8?B?VXZhWThTQU1TNVpjZWkwTDFQbFZobkt6bXlFWXY2T0QxY0dmYjN0V2xnPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WlZOcjZib2pnZm5aVmU1YUFmaE85UUZQMzMwejJqSlcwY0wrWWY1V2VMK2Z2?=
- =?utf-8?B?NXYzaHFsSmszbERIMUxxcE15K3Q3Z0pEOTJVZHdXYkt2K3BLZ2dqdWZPN2pM?=
- =?utf-8?B?akF4ZXljTFJ3ZWFTUlVtbGoxMXQyMm15TzVhaVozcW5DTS9GbmVad1FOa3cz?=
- =?utf-8?B?VEw5NysvYzN5NEEvNzV1UFd1WFZVWlJSemFVMkJYYzVKMlU4SithR3RneldS?=
- =?utf-8?B?Yy9iRzlRUGk4b0hIL0RwOGs2aXR2UmZDeVZ6cy9GQnQzcjN0dG9QUTMwbml4?=
- =?utf-8?B?U1NzL0xPZlkvckFMUTRoMTZ2YnhqdFVNdGsxbnBxME9LengxeVVqVWZMK2FP?=
- =?utf-8?B?MzFJb3Q4V05PV0lDcGUzVDMvSjRmWnAxcERYcXpHU3ZGMTlNcmlQbkozZTVn?=
- =?utf-8?B?bmxFeGRVQzJxbWtyTTJ6UUY5T3BUTFFrZDVCS2tBd3ZXdWREbTRZdXJCSHRM?=
- =?utf-8?B?alJydTFqekNKSUxKWlYyd0gySFVCTW5nL1FyQ3NyREVoVFdvaUJLTlNsYjMx?=
- =?utf-8?B?aVpJOUhWUUpxdnB1dzE0VjF5V0EwN3BJYW84U2Yxam40M2hMQXV0UFZCQ1NZ?=
- =?utf-8?B?Q29hTUEyckZBTnhaRC9GdVA3dzdacVg3R0hmU1lrTjRsWDlWbEJ1T2tkZ2Rm?=
- =?utf-8?B?NFB4RHdxSno4R0piNXdYNEtxbzdDb3NLcW9qSURETEhUaDg5dStVY0hrOUpu?=
- =?utf-8?B?VGZTWmY1MTMrRzFEcHBaY1RvWGlTekptZmRQL3RCY2FPUmlxWmR6Y2ltSjFa?=
- =?utf-8?B?R1FJUzU1Vzd6T3V6RldMcVcrWHVDdGE0b1k2MUsxTDc0a3lkUk02ZUtGb0dv?=
- =?utf-8?B?Q0YxaUc1M2R5RzRLSlR5bEJYaU9qaGNkK1FqbFU5MkpSazNZaFZoRGZKbkdY?=
- =?utf-8?B?REJZRmdDbWdSSGpJWjZkQ200b0FpSGhkMjBrdXMyTEQvbXRxR2JVKzZ5bzJp?=
- =?utf-8?B?ODdacGhiZDJWT0NWS2I5cWtmNzA4N1lnZnJzMDEvcFlMeVo5eXQ5WmlSL0Zw?=
- =?utf-8?B?aE1CcjdlK3oyZW9jdTRYYmhtNDdNTDY3STRnYnFValFCTFowcHVGMndBcWI4?=
- =?utf-8?B?cFFxem94QS96d1dLQ2ZpWG5mSmMvajlZQ0tpaG5FZVJuRWc1MXYvdzZCV1dK?=
- =?utf-8?B?OGNFRnlvMnV2Z3NPUGdoazlLN3UzTFZqNWFQUkV0ZXNWODRmU2dBbXYzQldo?=
- =?utf-8?B?aGJQYTF5dkRkSU1FRnJnYzlXRnh5RlFKT1Fzbk9LUEdRWVdvS2gzRFFqUkF0?=
- =?utf-8?B?STEzWlRnUGRLVlIydGpwVGF1OFRlVkFhdmVETTFxUEZEUWpNTVJrQnlkVS9w?=
- =?utf-8?B?N3RxTU1raUV3M1RSYisyM1NZY2cwN2ZhSkFhNE01dFBIM1ltUmJRWVB1ay8x?=
- =?utf-8?B?WjNSOHZuWHJDaGNwVXNJZklZWUNEWnRIa2pPWnV3K3psVHlNQ1JqNGlDWnFr?=
- =?utf-8?B?dU1PMElnSk5qSis2amhiR3d5bDFzc2hZVFZKRXdmTTFocjJPbThBZ2ZRNTF3?=
- =?utf-8?B?RjQ1SGYvZ3Z4ZXRqOVJaWkdnOEJMTko0UllUNlBFSGRwZGxOUkxEZE4yRUhK?=
- =?utf-8?B?VlUzQmtvdUlSdWt5K25mWEM0clIxbkIxWDZqRlNuUU5MQWpzSWxDMlVBY0ZW?=
- =?utf-8?B?Sk9GVFMyUHp3SjY1OTg0WnJlemh6MnFnUDdKamx1Y2k1UnhWMnd2MUNUUEh6?=
- =?utf-8?B?V25YQzdNcVNNeUpJOHhkWWpESmlZQ0xEeWpsbUVaQmtKajMydzJMRnB4SzRZ?=
- =?utf-8?B?V3NWNkprQ1hya05wVTRHaGRxVU11NWFJbWpLbFNMWTJ0S0hjdGR4OFBoWjd0?=
- =?utf-8?B?T1diaDZndmJCaCtLTjd3YTVZOUs4ZitzTmthWEhKdURmWis2VStvd1RRZTc0?=
- =?utf-8?B?d01OWGptdGpOWHBlZG1ndm1mWGpvTzIwZjFZbVlFWFM0Zks1NmF6cjRHeXdq?=
- =?utf-8?B?REd5cDZJQUFMS2hncUIvZXYzTDAvaFdUUFRTekxEcUdUYlVMd0FEVGExdEpJ?=
- =?utf-8?B?RjNESTRCYjZZWDhqMjVTS2ppUTBsVy9GWWtPaXdzOGlMNlBlWEM3TnV3ZTNS?=
- =?utf-8?B?NkNyTXJwb2ErczFGMm9rcDdQalRabEl6Wml2OEhRN2NqSUJXdWVzSm92eXQ4?=
- =?utf-8?Q?npqkvc/JWTzyMv63joFbqqP8u?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d53bb6d-9174-45d9-996c-08dc65fa9f2b
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 14:10:26.8004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vcjh8anEDxKpCGJg4Kb3mfN4CxqUGOmQgUMDqTkpgexE+hXLS4CSCiDqpFtqYBdD0mv7Ypmp+GeBKvElAbOU0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6069
+References: <20240426135937.3810959-1-hugo@hugovil.com>
+In-Reply-To: <20240426135937.3810959-1-hugo@hugovil.com>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Fri, 26 Apr 2024 17:10:29 +0300
+Message-ID: <CAF1WSuy60hWPX5gnhg+uWYu6E=i6=Gn-wFcYKNrXKSqCZ54LAg@mail.gmail.com>
+Subject: Re: [PATCH] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when
+ using prescaler
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Jon Ringle <jringle@gridpoint.com>, Hugo Villeneuve <hvilleneuve@dimonoff.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/26/2024 01:34, Perry Yuan wrote:
-> From: Perry Yuan <Perry.Yuan@amd.com>
-> 
-> Introduce AMD CPU frequency boosting control sysfs entry which used for
-> switching boost on and boost off.
-> 
-> If core performance boost is disabled while a core is in a boosted P-state,
-> the core automatically transitions to the highest performance non-boosted P-state
-> The highest perf and frequency will be limited by the setting value.
-> 
-> Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+On Fri, Apr 26, 2024 at 4:59=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> =
+wrote:
+>
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>
+> When using a high speed clock with a low baud rate, the 4x prescaler is
+> automatically selected if required. In that case, sc16is7xx_set_baud()
+> properly configures the chip registers, but returns an incorrect baud
+> rate by not taking into account the prescaler value. This incorrect baud
+> rate is then fed to uart_update_timeout().
+>
+> For example, with an input clock of 80MHz, and a selected baud rate of 50=
+,
+> sc16is7xx_set_baud() will return 200 instead of 50.
+>
+> Fix this by first changing the prescaler variable to hold the selected
+> prescaler value instead of the MCR bitfield. Then properly take into
+> account the selected prescaler value in the return value computation.
+>
+> Also add better documentation about the divisor value computation.
+>
+> Fixes: dfeae619d781 ("serial: sc16is7xx")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > ---
->   Documentation/admin-guide/pm/amd-pstate.rst | 11 +++++++++++
->   1 file changed, 11 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-> index 1e0d101b020a..82fbd01da658 100644
-> --- a/Documentation/admin-guide/pm/amd-pstate.rst
-> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
-> @@ -440,6 +440,17 @@ control its functionality at the system level.  They are located in the
->           This attribute is read-only to check the state of preferred core set
->           by the kernel parameter.
->   
-> +``cpb_boost``
-> +        Specifies whether core performance boost is requested to be enabled or disabled
-> +        If core performance boost is disabled while a core is in a boosted P-state, the
-> +        core automatically transitions to the highest performance non-boosted P-state.
-> +        AMD Core Performance Boost(CPB) is controlled by this new attribute file which
+>  drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7x=
+x.c
+> index 03cf30e20b75..dcd6c5615401 100644
+> --- a/drivers/tty/serial/sc16is7xx.c
+> +++ b/drivers/tty/serial/sc16is7xx.c
+> @@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *d=
+ev, unsigned int reg)
+>         return reg =3D=3D SC16IS7XX_RHR_REG;
+>  }
+>
+> +/*
+> + * Configure programmable baud rate generator (divisor) according to the
+> + * desired baud rate.
+> + *
+> + * From the datasheet, the divisor is computed according to:
+> + *
+> + *              XTAL1 input frequency
+> + *             -----------------------
+> + *                    prescaler
+> + * divisor =3D ---------------------------
+> + *            baud-rate x sampling-rate
+> + */
+>  static int sc16is7xx_set_baud(struct uart_port *port, int baud)
+>  {
+>         struct sc16is7xx_one *one =3D to_sc16is7xx_one(port, port);
+>         u8 lcr;
+> -       u8 prescaler =3D 0;
+> +       int prescaler =3D 1;
+>         unsigned long clk =3D port->uartclk, div =3D clk / 16 / baud;
+>
+>         if (div >=3D BIT(16)) {
+> -               prescaler =3D SC16IS7XX_MCR_CLKSEL_BIT;
+> -               div /=3D 4;
+> +               prescaler =3D 4;
+> +               div /=3D prescaler;
+>         }
+>
+>         /* Enable enhanced features */
+> @@ -574,9 +586,10 @@ static int sc16is7xx_set_baud(struct uart_port *port=
+, int baud)
+>                               SC16IS7XX_EFR_ENABLE_BIT);
+>         sc16is7xx_efr_unlock(port);
+>
+> +       /* If bit MCR_CLKSEL is set, the divide by 4 prescaler is activat=
+ed. */
+>         sc16is7xx_port_update(port, SC16IS7XX_MCR_REG,
+>                               SC16IS7XX_MCR_CLKSEL_BIT,
+> -                             prescaler);
+> +                             prescaler =3D=3D 1 ? 0 : SC16IS7XX_MCR_CLKS=
+EL_BIT);
+>
+>         /* Backup LCR and access special register set (DLL/DLH) */
+>         lcr =3D sc16is7xx_port_read(port, SC16IS7XX_LCR_REG);
+> @@ -592,7 +605,7 @@ static int sc16is7xx_set_baud(struct uart_port *port,=
+ int baud)
+>         /* Restore LCR and access to general register set */
+>         sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
+>
+> -       return DIV_ROUND_CLOSEST(clk / 16, div);
+> +       return DIV_ROUND_CLOSEST((clk / prescaler) / 16, div);
+>  }
+>
+>  static void sc16is7xx_handle_rx(struct uart_port *port, unsigned int rxl=
+en,
+>
+> base-commit: 660a708098569a66a47d0abdad998e29e1259de6
+> --
+> 2.39.2
+>
 
-The attribute is currently new, but by the time this is merged it will 
-be old.  Avoid using "new" or "old" in documentation.
-
-> +        allow user to change all cores frequency boosting state. It supports both
-> +        ``active``, ``passive`` and ``guided`` mode control with below value write to it.
-
-How about just say "supports all amd-pstate modes"?
-
-> +
-> +        "0" Disable Core Performance Boosting
-> +        "1" Enable  Core Performance Boosting
-> +
->   ``cpupower`` tool support for ``amd-pstate``
->   ===============================================
->   
-
+For me, looks normal. Does not cause problems on my vendored kernel
+with my XR20M1172 patches. Do I need to integrate those inside my
+patch? Or how should I do?
 
