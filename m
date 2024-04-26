@@ -1,132 +1,178 @@
-Return-Path: <linux-kernel+bounces-159966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C94308B36E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:06:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CFB8B36EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:10:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CA80B21A2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:06:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D92F2842BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5295B14534B;
-	Fri, 26 Apr 2024 12:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5782B14601D;
+	Fri, 26 Apr 2024 12:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/99TpxJ"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="Ee8l6YFJ"
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F32F14533F;
-	Fri, 26 Apr 2024 12:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D35014534B;
+	Fri, 26 Apr 2024 12:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714133143; cv=none; b=i6b0c9jbxEFaB8OXJOYC2+x/CzybjiYVh+ECNS8B+rZ35dsvtcof0KdHQU8hLJ3pFik2vpjRR4vSvb+5Lyrt3e9YMnv0cse99oM/rvmuxjA/rW//d6Q1GrWrr650A3tPI2lMQ0RKQMaG9zL9QEJ7pVDq0APIyslHxx7SfY7hEgU=
+	t=1714133434; cv=none; b=BscJAKSYOrRPU8Nbp4YBtlKThjyGjIDu/910362iJmMcZjOpSwlSBqUm5iORid4sqcnAv7yNA+50ynNlXcZ195cqlrpX5gPq+KUL6yVDzKNfTov0RKfCfioqbUmg+jd+rPbv+5jp/zqSufrye+b17YjiB9l7en49S3LP8hBqi3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714133143; c=relaxed/simple;
-	bh=VZ4dyN6HsEQTrAuuWJizHwgtH2IUGnz23LHLcnDqNXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FNiQf8EvZ0fvdXAZffGL6TxZGA0MgK0U0pKDDjEekNEDAaqs2JkcLHI12H7u9pEUzTh1+5nd6QuQLqn1dzMQqgRFF759I9/EZkfEec0I5lX1wFWlskaugF9Qn4ErqJKnoLkXNCf+MNTRga7jRphUk7ZA1s23EFYaS3KiWHYlz9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T/99TpxJ; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2dd80401e81so4791371fa.3;
-        Fri, 26 Apr 2024 05:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714133140; x=1714737940; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=IFRgbloGhVnIKWuDRlSJQNjAIv7cIETH3l3I8D/RWn0=;
-        b=T/99TpxJQ+o7rKczf5e7s3PcFO1hyjncMqloVg1ECYnr+swynjeq45H4KkyemaEtDN
-         JrFGInHVrqTttNL63shSOeRcXxO7TqHbJGL1Pmy7ekIERifgg+sgpsmfstMeOIPh88ud
-         xvGSK+HH8qaeLRiRBz2NWsUC58D5Rjgl96h1CHAa5QefuO0JFnHqpyhUIHSZqWOGPhKx
-         tehh8Y8Hf238eeGR+5HS0au6ySs7VR/TZynmVnwimcPrkkGElU/jzi02gbfE5fQdxBmy
-         ZZPVtSIBB+u1/m9B1FpRGzEWYYrEynO75LR1lKzFv2muvPMuuZjr0fuOF4ylEPLnN0AV
-         CBdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714133140; x=1714737940;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IFRgbloGhVnIKWuDRlSJQNjAIv7cIETH3l3I8D/RWn0=;
-        b=SJWxFoK0TW2g2iBitbViKC+VM+k4DUSLAr0Fg/+8NnrrO08H9eAQBISrdDv3tVisKh
-         fklvXjp2XFNRtDsRo6XgsgsX5b35O/xSB3hSHCtbxH+KGCeHi2Bkp3KZZtO8bFwqmPDB
-         Eve+WPTYTnC4hne7+X/WRNpPibtWaob74D4QxAjxb/zkk4hMmb1bbdxOKoMg5isAZdIc
-         AgJWVjaIKcsqcfMEQRioBU9Fzthuim3nhXKoYnvTjnskmA+0Ypvb3C96zbXtJIOgilxr
-         SOvuQ6lqLqE9ttASKSIrXILYTU86YN4ksrdD2YpxsKPfvFaVvwK5L5EONt4rVR/YYC1P
-         u2rA==
-X-Forwarded-Encrypted: i=1; AJvYcCUV58/Xui6L7AfEuHx6NewiiNxoEX0ZoIk/lFlX8FVkzxlu5eBF29plLpGakKPQDjECtgvkSoVcTl1oP/PMlQUHTfgE5T07+OSb/Fc5wWwDwwRCZyfroJzD6NPawExeXeA4494PkPCDkJWek7Oo9nBXNl1fwhZJI1PhQIc9jkUC+jA2VwMrFM3tq94=
-X-Gm-Message-State: AOJu0Yyeg1mmqXyaKSg2HBz+oqzHRvpD7qPwK9jyunZ5mDgQbNRLHS2q
-	BNNoa91HiGvce4rWDO6ORfgDcxHFKSrJ9z8zBCb6oh76Mr8Nt4M/
-X-Google-Smtp-Source: AGHT+IEe8mldUM2Wv5ZRNT6Twg6RekMttRFRq1NWmP7m1iCts+MYJNSTfm41RqGdQjLEgw0/c8z1VQ==
-X-Received: by 2002:a2e:b61a:0:b0:2dc:759e:981 with SMTP id r26-20020a2eb61a000000b002dc759e0981mr1615343ljn.4.1714133139789;
-        Fri, 26 Apr 2024 05:05:39 -0700 (PDT)
-Received: from [172.16.102.219] ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id k41-20020a05600c1ca900b00417e8be070csm30937272wms.9.2024.04.26.05.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 05:05:39 -0700 (PDT)
-Message-ID: <81a9e3c2-2c44-406e-af19-90d9dcfe4a92@gmail.com>
-Date: Fri, 26 Apr 2024 13:05:34 +0100
+	s=arc-20240116; t=1714133434; c=relaxed/simple;
+	bh=sk3F8kQlklKnamzgzVwKQ00rlNEpTKcd9WWMXq8UVps=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=atDnJvBvQaCpA8aIfLOVMoIyYeD7M4LxF4NM4+CaFIRHFSABwCwTV7nvASndQBgekkMJbym7CkpUL4fqyt8Y76wna3cTVEWokR5Uj2BUGinkh9dFUHO5RbtrQqfm3jq4Z7c6JjOoQE7M1MY7DyJypW31i4B8DHp1iKuPgEBdoEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=Ee8l6YFJ; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 6674A201AD;
+	Fri, 26 Apr 2024 15:10:29 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS;
+	Fri, 26 Apr 2024 15:10:28 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id C3D63900281;
+	Fri, 26 Apr 2024 15:09:52 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1714133398; bh=sk3F8kQlklKnamzgzVwKQ00rlNEpTKcd9WWMXq8UVps=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=Ee8l6YFJS7RZ24aWwUO+TQ58uAlvKg44da8bN2aXoBnCDabYnu1QZRbWM/YCvMCtm
+	 KCb/TDE1mSM/2m6jLtLrvv6haBRhIsD746J+S3tEsYMKzO87OwtlGyaijhx9Z6novF
+	 rNPRpgWaQyfc0DLkHErLzQp3U+PMcMndbKLDFZiA=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 43QC9jvI068943;
+	Fri, 26 Apr 2024 15:09:47 +0300
+Date: Fri, 26 Apr 2024 15:09:45 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
+To: Joel Granados <j.granados@samsung.com>
+cc: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Ahern <dsahern@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthieu Baerts <matttbe@kernel.org>,
+        Mat Martineau <martineau@kernel.org>,
+        Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>,
+        Remi Denis-Courmont <courmisch@gmail.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+        Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Simon Horman <horms@verge.net.au>, Joerg Reuter <jreuter@yaina.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, bridge@lists.linux.dev,
+        lvs-devel@vger.kernel.org
+Subject: Re: [PATCH v5 6/8] netfilter: Remove the now superfluous sentinel
+ elements from ctl_table array
+In-Reply-To: <20240426-jag-sysctl_remset_net-v5-6-e3b12f6111a6@samsung.com>
+Message-ID: <d78c6353-99b9-41f8-0c54-19eb86e1fce3@ssi.bg>
+References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com> <20240426-jag-sysctl_remset_net-v5-6-e3b12f6111a6@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] ALSA: kunit: make read-only array buf_samples
- static const
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
- Colin Ian King <colin.i.king@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240425160754.114716-1-colin.i.king@gmail.com>
- <20240425232250.GA205425@workstation.local>
-Content-Language: en-US
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <20240425232250.GA205425@workstation.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 4/26/24 00:22, Takashi Sakamoto wrote:
-> Hi,
-> 
-> On Thu, Apr 25, 2024 at 05:07:54PM +0100, Colin Ian King wrote:
->> Don't populate the read-only array buf_samples on the stack at
->> run time, instead make it static const.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
->> ---
->>   sound/core/sound_kunit.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
->> index eb90f62228c0..e34c4317f5eb 100644
->> --- a/sound/core/sound_kunit.c
->> +++ b/sound/core/sound_kunit.c
->> @@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
->>   
->>   static void test_format_fill_silence(struct kunit *test)
->>   {
->> -	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
->> +	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
->>   	u8 *buffer;
->>   	u32 i, j;
-> 
-> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> 
-> We can see the other similar cases in the kunit file. I'll post the fix
-> later.
-> 
 
-Hi Takashi,
+	Hello,
 
-Hmm, correct me if I'm wrong, but I don't see any other significant 
-allocations on the stack in the test.
+On Fri, 26 Apr 2024, Joel Granados via B4 Relay wrote:
 
--- 
-Kind regards,
-Ivan Orlov
+> From: Joel Granados <j.granados@samsung.com>
+> 
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which will
+> reduce the overall build time size of the kernel and run time memory
+> bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> 
+> * Remove sentinel elements from ctl_table structs
+> * Remove instances where an array element is zeroed out to make it look
+>   like a sentinel. This is not longer needed and is safe after commit
+>   c899710fe7f9 ("networking: Update to register_net_sysctl_sz") added
+>   the array size to the ctl_table registration
+> * Remove the need for having __NF_SYSCTL_CT_LAST_SYSCTL as the
+>   sysctl array size is now in NF_SYSCTL_CT_LAST_SYSCTL
+> * Remove extra element in ctl_table arrays declarations
+> 
+> Acked-by: Kees Cook <keescook@chromium.org> # loadpin & yama
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  net/bridge/br_netfilter_hooks.c         | 1 -
+>  net/ipv6/netfilter/nf_conntrack_reasm.c | 1 -
+>  net/netfilter/ipvs/ip_vs_ctl.c          | 5 +----
+>  net/netfilter/ipvs/ip_vs_lblc.c         | 5 +----
+>  net/netfilter/ipvs/ip_vs_lblcr.c        | 5 +----
+>  net/netfilter/nf_conntrack_standalone.c | 6 +-----
+>  net/netfilter/nf_log.c                  | 3 +--
+>  7 files changed, 5 insertions(+), 21 deletions(-)
+
+..
+
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 143a341bbc0a..50b5dbe40eb8 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+
+..
+
+> @@ -4286,10 +4285,8 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns) {
+> -			tbl[0].procname = NULL;
+> +		if (net->user_ns != &init_user_ns)
+>  			ctl_table_size = 0;
+> -		}
+>  	} else
+>  		tbl = vs_vars;
+>  	/* Initialize sysctl defaults */
+
+	We are in process of changing this code (not in trees yet):
+
+https://marc.info/?t=171345219600002&r=1&w=2
+
+	As I'm not sure which patch will win, the end result should
+be this single if-block/hunk to be removed.
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
 
