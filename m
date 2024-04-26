@@ -1,161 +1,114 @@
-Return-Path: <linux-kernel+bounces-159509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D808B2F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:52:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C6EF8B2F92
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:55:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18E571C22079
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC2C1C22C8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8984A13A24A;
-	Fri, 26 Apr 2024 04:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cdv7YVjI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DD313A24C;
+	Fri, 26 Apr 2024 04:55:12 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C5C1E531;
-	Fri, 26 Apr 2024 04:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20911335C7;
+	Fri, 26 Apr 2024 04:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714107133; cv=none; b=UL7XXDlUngRRIcyLEtMWY77vKHITH043WuPvDxjDifiQA+H+ehu1AsHguDhAYD6/1VARijsn+68dk6BJLmeY432OiYaX2mDHdVuHYJ6yGeSyMdjRTKpb8ifDiiicQ98KRJprVRZK22qbUYSbemOA2zB6dXUA2pt0/gVJ6FP+0lY=
+	t=1714107312; cv=none; b=P59sBW5Iv72iJduGrgH02bf62v5rjs7WbePgwC/CoOu3ilkWUFjobaby7Aw/4Ez/9vzweU+FBOALGVvxf7mtmBYRtTVS9ygenuinJSWa4g55//LL9PV0w784i4fJpKEzTmMu8gBznCtzkzjpxI0ev/sLL0vlUkeFq40Q/u0GJS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714107133; c=relaxed/simple;
-	bh=Vf4TKhXDwa13uuOuAtx4yYLb09BGNATMaL4ZQCtSPJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MjLNM+ZH2UvFy1irrZHqwNSpRcZmEwrBlp0YOpl7Ubpc8nHmmSzyKUeYtU9wR35f+eDjB0O1n2N/49gNYnd2OfHDqHBgjapz8e4Nl5vxRUDIlLldk24c2LalRALKv3ASyXyQyFRS9TvIj0kZpW0LDPe9jBN7u08HcR6Lt8cHz+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cdv7YVjI; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714107132; x=1745643132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Vf4TKhXDwa13uuOuAtx4yYLb09BGNATMaL4ZQCtSPJQ=;
-  b=Cdv7YVjI+cCGAn5c/NBwPvXZHjZ+L8Go2I/KXnLDDNid1ex0RYoReAqz
-   6uHCSMh63iC7BlEZHWBEszSPgx2lqaSt1LNYK1USDvbBVJzPzhogzL6Oy
-   To7POLTDq7lKMJe8vwEICko7sEQGQmEKg6Fun8JAqkXodZ0zhO8cpvOJK
-   orxBc+wpSac76+KUr6u4GcCe5xgsOAvwcsSPQPgdgPJIUhhXrP69zUhf1
-   gBp1IqURPhFTBe954eflB6E4iRhMCTlt915OBK6CgOD890iy6SsEd2RG7
-   stcW5MXsOxVadZTmS0zxUszLrf6e9jN4KXN0l8+UA3PULg3uur0oa/2fe
-   g==;
-X-CSE-ConnectionGUID: fSNGvElwRXG6PhqsfNvfEw==
-X-CSE-MsgGUID: UMdq9OzJR36YoxUOYmgTig==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9993141"
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="9993141"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 21:52:11 -0700
-X-CSE-ConnectionGUID: 4EX4sy79QYWPSxIZ9nalHg==
-X-CSE-MsgGUID: tq2qCnrXQga7MLScO4X7CA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="25183122"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa010.jf.intel.com with ESMTP; 25 Apr 2024 21:52:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 7E69D1C5; Fri, 26 Apr 2024 07:52:07 +0300 (EEST)
-Date: Fri, 26 Apr 2024 07:52:07 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240426045207.GI112498@black.fi.intel.com>
-References: <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
- <20240416050353.GI112498@black.fi.intel.com>
- <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
- <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
- <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com>
- <20240423053312.GY112498@black.fi.intel.com>
- <7197b2ce-f815-48a1-a78e-9e139de796b7@amd.com>
- <20240424085608.GE112498@black.fi.intel.com>
- <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com>
+	s=arc-20240116; t=1714107312; c=relaxed/simple;
+	bh=BCoNOVbv1EcALw55loUqG1wks8q6Qvt0feIcYXhLxv4=;
+	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=qa7eYwzX05oy7UeuHVzgGfM2fmAoL5QZumgxvKVShYWD3NLzHAy/uA3IMPrqtrm+CdW/u9KbCSocF1/cW08oreeFEhe4Efq30S+jv1Ocv1ndPRsaAqTfLeCQOiXqYCnBolyvduBqDlXS/KkBSsflbDw8cUi0yPMyF94XvPDDTck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQgM44kNKzNnn1;
+	Fri, 26 Apr 2024 12:52:32 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0062214011D;
+	Fri, 26 Apr 2024 12:55:06 +0800 (CST)
+Received: from [10.67.109.150] (10.67.109.150) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 26 Apr 2024 12:55:05 +0800
+Message-ID: <5b5da2d3-37b3-60ee-5a94-149094cbe9dc@huawei.com>
+Date: Fri, 26 Apr 2024 12:55:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
+ Weiner <hannes@cmpxchg.org>
+CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Lu Jialin <lujialin4@huawei.com>
+Subject: [QUESTION]cgroup mount return -EBUSY
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-Hi,
+Hello
 
-On Thu, Apr 25, 2024 at 05:16:24PM -0400, Esther Shimanovich wrote:
-> Thank you for all your help!
-> 
-> On Tue, Apr 23, 2024 at 1:33 AM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> >
-> > The other way I think is something like this:
-> >
-> >   - If it does not have "usb4-host-interface" property (or behind a port
-> >     that has that). These are all tunneled (e.g virtual).
-> >
-> >   - It is directly connected to a PCIe root port with
-> >     "ExternalFacingPort" and it has sibling device that is "Thunderbolt
-> >     NHI". This is because you can only have "NHI" on a host router
-> >     according to the USB4 spec.
-> >
-> I did find one example of a docking station that uses the DSL6540
-> chip, which has PCI IDs defined in include/linux/pci_ids.h:
-> #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
-> #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
-> It seems like it has an NHI, despite being in an external, removable
-> docking station. This appears to contradict what you say about only
-> having "NHI" on a host router. I am assuming that by host router, you
-> mean the fixed discrete, fixed thunderbolt chip, or the thunderbolt
-> controller upstream to the root port. Please correct me if I got
-> anything wrong!
+I encountered a problem when I try to unmount the subsystem right after
+all it's subcgroups are removed, the cgroup_root would remain. Mounting
+this subsystem to another cgroup_root would return -EBUSY.
 
-So it goes same way with other discrete chips from Intel at least. It is
-the same silicon but the NHI is disabled on device routers.
+The problem could be reproduced with the following script.
 
-That said, it is entirely possible for a "malicious" device to pretend
-to have one so we need to be careful.
+test.sh:
 
-> Looking at 18-241_ThunderboltController_Brief_HI.pdf, it seems like
-> these Alpine Ridge chips can be used either on a computer or a
-> peripheral. (Expected usage: Computer or peripheral)
+mkdir /tmp/test1
+mount -t cgroup -o pids pids /tmp/test1
+mkdir /tmp/test1/test
+rmdir /tmp/test1/test
+umount /tmp/test1
+mkdir /tmp/test
+mount -t cgroup -o pids,cpu none /tmp/test
 
-Yes as above. Most our chips are such.
+test.sh should return this.
+mount: mounting none on /tmp/test failed: Device or resource busy.
 
-> So I'm not sure if finding an NHI would guarantee that the device is
-> not a peripheral. My original question was how to distinguish a
-> Thunderbolt controller that is on a removable peripheral, like a
-> docking station-- from one that is a discrete chip fixed to a computer
-> or upstream to the root port.
+It seems that when unmounting /tmp/test1, the original cgroup_root for
+this PID is not released.
+/test # cat /proc/cgroups
 
-Yes that's the problem. We can figure that out from full USB4 system by
-looking at the "usb4-host-interface" ACPI _DSD properties of the
-tunneled PCIe Root/Downstream ports. But this does not work with the
-pre-USB4 hosts so that requires some sort of heuristics, unfortunately.
+#subsys_name    hierarchy       num_cgroups     enabled
 
-> So unless I am misunderstanding something, it appears that my only
-> option is waiting for Lukas's patches. Please correct me if that is
-> not the case!
+cpuset  0       1       1
 
-I think with Lukas' patches (Lukas please correct me if I got that
-wrong) you can find out the PCIe ports which have their link going over
-a tunnel. His series works with pre-USB4 devices so that should cover
-your case. (In addition to "usb4-host-interface" ACPI _DSD property there
-is a special router operation that allows extracting the same PCIe
-downstream port mapping that Lukas' patches are doing from DROM so this
-should also allow identify all tunneled links.)
+cpu     0       1       1
 
-This way you can identify the xHCI (well and NHI) that are not behind
-PCIe tunnel so that should mean they are really part of the host system
-(being soldered or plugged to the PCIe slot or so). If I understood
-right this is what you were looking for, correct?
+cpuacct 0       1       1
+
+blkio   0       1       1
+
+devices 0       1       1
+
+freezer 0       1       1
+
+net_cls 0       1       1
+
+perf_event      0       1       1
+
+net_prio        0       1       1
+
+hugetlb 0       1       1
+
+pids    1       1       1
+
+rdma    0       1       1
+
+misc    0       1       1
+
+debug   0       1       1
 
