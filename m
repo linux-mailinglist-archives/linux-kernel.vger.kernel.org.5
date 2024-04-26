@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-160040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F9A8B382B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EA28B3833
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:19:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E56A283098
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:17:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE5DE283961
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA0D146D5A;
-	Fri, 26 Apr 2024 13:17:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E685813F436
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA251474AF;
+	Fri, 26 Apr 2024 13:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RQdBV/do"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E8614534D;
+	Fri, 26 Apr 2024 13:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714137468; cv=none; b=dDHzkpxbzZyfNHBnOpSFtergC+BfKKC46yHYnd8tVyhNO+pc+gcSv7lva7EbxHok63lGficxNEiiuQoHIQ1wTTSgpXnLXsi1opQFx1vS2Hdok3RV85mJDyUYjCQzhc70XNFW/xaMe+qfy6ZJCJ1qXUYKoxft2n8+1RPsg5moy4I=
+	t=1714137536; cv=none; b=PpRQBreMLYm53Cpvn8GZNShcWLFKiFsWyyPZ2m8o8ssUycfE8mOIitiEeiV6sPWgobKNy6pj5ZOywNiysPHROXJ/tP0+mDEKB0h6OhyKyFu9ymIpb/GLiqYXHLAsxC2rQBcD1K4e1kKpx6Yb1pD1UegFMWgxY77Qm2gmsOH0dZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714137468; c=relaxed/simple;
-	bh=XAujDe9U2zoAonjlvY4B+dkOrmfQa7ff40A99FvKMFs=;
+	s=arc-20240116; t=1714137536; c=relaxed/simple;
+	bh=yWE+ttufnExZvjogvzn8tpejiQGA2e3xg4IUK5utLwg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rGRdy9y43sz2zm3eTimPN2mJIJXFQvaa7LBr0+EtqsjwDV40O3QX8B5TrKrUb07cOfj6UZVqW+n/4e/s7gdpkt07sMqyXD0gFT4WOeE5LpWIO/L/FGll2X22pT9aBNjPBZI7zmtAoqhI699tW3bH03Ph4wD0vZr1Zif9c+6NWbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EEA051007;
-	Fri, 26 Apr 2024 06:18:12 -0700 (PDT)
-Received: from [10.57.64.176] (unknown [10.57.64.176])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 116FC3F793;
-	Fri, 26 Apr 2024 06:17:42 -0700 (PDT)
-Message-ID: <e0fdf7b9-39d6-4eb3-b740-9c110b75182f@arm.com>
-Date: Fri, 26 Apr 2024 14:17:41 +0100
+	 In-Reply-To:Content-Type; b=ZL6LpjLh+RjLoN3xVgDssOoU5CaK8RNy/jhGWpCVuvXuSMT0ms44j9H1vB6Kyuw1fxhPQ65Iv8u5ZlN8iTcSeTuaCGppjmTjwn5A+BxWQ/m3iJs5zwxFskCPNdEp3jgmzPyiE7fhAW3WO91L5yS+OR9XzkcSYWOlFfPSAjeIJKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RQdBV/do; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QD2P2f001930;
+	Fri, 26 Apr 2024 13:18:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uKWwDy3euRIoufHbpxxpLBVh4pEua2CnzSZQLEb4Da0=;
+ b=RQdBV/doof/uoJZGXgvJ9ODmZQXusXNHDgnw63OH2x/B9hznPk3wPWrlIjCdSihYS1Jp
+ 13acRWgFXY3/6+yiTYrWy/1zfT8KoH9TnsJKegRoRUomPNjdoy3ujkrlOKgKk/vMIMGh
+ rG0ilbPNwRtQDOm+Z+bj8HPili0M51rf0Q9LMQu8sz5narRKPwnwf37C9lmAOvGpOBlC
+ lxgIKm80X7rpTeFw54JEWSzT6a6rtOv0uCx5Vf1Xn46vQ2LgGye57GuRWhY2eh1xDv3w
+ yVykzraxQ3wSgB13unGDiBRw4AnnnljCCffZBULY98ww66TRGcys0HGx2UbZcvrMVGuq Lg== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrct281df-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 13:18:30 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QBGxtR028315;
+	Fri, 26 Apr 2024 13:18:29 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmtr2ydrd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 13:18:29 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QDIRgJ39912114
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 13:18:29 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E8F935806B;
+	Fri, 26 Apr 2024 13:18:26 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A5C885805E;
+	Fri, 26 Apr 2024 13:18:26 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 13:18:26 +0000 (GMT)
+Message-ID: <a608377b-3e51-4b59-bdab-8c4e9938f086@linux.ibm.com>
+Date: Fri, 26 Apr 2024 08:18:26 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,156 +75,151 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] arm64/mm: Add uffd write-protect support
-Content-Language: en-GB
-To: Peter Xu <peterx@redhat.com>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- David Hildenbrand <david@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
- Shivansh Vij <shivanshvij@outlook.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240424111017.3160195-1-ryan.roberts@arm.com>
- <20240424111017.3160195-3-ryan.roberts@arm.com> <Zijzrje2FDXsSojP@x1n>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <Zijzrje2FDXsSojP@x1n>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v3 12/14] ARM: dts: aspeed: Add IBM P11 FSI devices
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-13-eajames@linux.ibm.com>
+ <dc106aa2-8f69-4f71-ad9f-6dfb97c63a50@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <dc106aa2-8f69-4f71-ad9f-6dfb97c63a50@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: nzBF7T9WLVCzq23lSs6Hjb_rIEPJFTGY
+X-Proofpoint-GUID: nzBF7T9WLVCzq23lSs6Hjb_rIEPJFTGY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1011 adultscore=0 impostorscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404260088
 
-+ Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-Hi Peter, Muhammad,
-
-
-On 24/04/2024 12:57, Peter Xu wrote:
-> Hi, Ryan,
-> 
-> On Wed, Apr 24, 2024 at 12:10:17PM +0100, Ryan Roberts wrote:
->> Let's use the newly-free PTE SW bit (58) to add support for uffd-wp.
+On 4/26/24 01:31, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:36, Eddie James wrote:
+>> Add the P11 FSI device tree for use in upcoming BMC systems.
+>> Unlike P10, there is no system with only two processors, so
+>> only the quad processor FSI layout is necessary.
 >>
->> The standard handlers are implemented for set/test/clear for both pte
->> and pmd. Additionally we must also track the uffd-wp state as a pte swp
->> bit, so use a free swap entry pte bit (3).
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> Looks all sane here from userfault perspective, just one comment below.
-> 
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 >> ---
->>  arch/arm64/Kconfig                    |  1 +
->>  arch/arm64/include/asm/pgtable-prot.h |  8 ++++
->>  arch/arm64/include/asm/pgtable.h      | 55 +++++++++++++++++++++++++++
->>  3 files changed, 64 insertions(+)
+>>   .../arm/boot/dts/aspeed/ibm-power11-quad.dtsi | 1696 +++++++++++++++++
+>>   1 file changed, 1696 insertions(+)
+>>   create mode 100644 arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
 >>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index 7b11c98b3e84..763e221f2169 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -255,6 +255,7 @@ config ARM64
->>  	select SYSCTL_EXCEPTION_TRACE
->>  	select THREAD_INFO_IN_TASK
->>  	select HAVE_ARCH_USERFAULTFD_MINOR if USERFAULTFD
->> +	select HAVE_ARCH_USERFAULTFD_WP if USERFAULTFD
->>  	select TRACE_IRQFLAGS_SUPPORT
->>  	select TRACE_IRQFLAGS_NMI_SUPPORT
->>  	select HAVE_SOFTIRQ_ON_OWN_STACK
->> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
->> index ef952d69fd04..f1e1f6306e03 100644
->> --- a/arch/arm64/include/asm/pgtable-prot.h
->> +++ b/arch/arm64/include/asm/pgtable-prot.h
->> @@ -20,6 +20,14 @@
->>  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
->>  #define PTE_PROT_NONE		(PTE_UXN)		 /* Reuse PTE_UXN; only when !PTE_VALID */
->>  
->> +#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
->> +#define PTE_UFFD_WP		(_AT(pteval_t, 1) << 58) /* uffd-wp tracking */
->> +#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 1) << 3)	 /* only for swp ptes */
-
-I've just noticed code in task_mmu.c:
-
-static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
-				  unsigned long end, struct mm_walk *walk)
-{
-	...
-
-	if (!p->arg.category_anyof_mask && !p->arg.category_inverted &&
-	    p->arg.category_mask == PAGE_IS_WRITTEN &&
-	    p->arg.return_mask == PAGE_IS_WRITTEN) {
-		for (addr = start; addr < end; pte++, addr += PAGE_SIZE) {
-			unsigned long next = addr + PAGE_SIZE;
-
-			if (pte_uffd_wp(ptep_get(pte))) <<<<<<
-				continue;
-
-			...
-		}
-	}
-}
-
-As far as I can see, you don't know that the pte is present when you do this. So
-does this imply that the UFFD-WP bit is expected to be in the same position for
-both present ptes and swap ptes? I had assumed pte_uffd_wp() was for present
-ptes and pte_swp_uffd_wp() was for swap ptes.
-
-As you can see, the way I've implemented this for arm64 the bit is in a
-different position for these 2 cases. I've just done a slightly different
-implementation that changes the first patch in this series quite a bit and a
-bunch of pagemap_ioctl mm kselftests are now failing. I think this is the root
-cause, but haven't proven it definitively yet.
-
-I'm inclined towords thinking the above is a bug and should be fixed so that I
-can store the bit in different places. What do you think?
-
-Thanks,
-Ryan
-
->> +#else
->> +#define PTE_UFFD_WP		(_AT(pteval_t, 0))
->> +#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 0))
->> +#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
+>> diff --git a/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi b/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
+>> new file mode 100644
+>> index 000000000000..c3a0ecf12aa0
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
+>> @@ -0,0 +1,1696 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +// Copyright 2024 IBM Corp.
 >> +
->>  /*
->>   * This bit indicates that the entry is present i.e. pmd_page()
->>   * still points to a valid huge page in memory even if the pmd
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index 23aabff4fa6f..3f4748741fdb 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -271,6 +271,34 @@ static inline pte_t pte_mkdevmap(pte_t pte)
->>  	return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
->>  }
->>  
->> +#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
->> +static inline int pte_uffd_wp(pte_t pte)
->> +{
->> +	bool wp = !!(pte_val(pte) & PTE_UFFD_WP);
->> +
->> +#ifdef CONFIG_DEBUG_VM
->> +	/*
->> +	 * Having write bit for wr-protect-marked present ptes is fatal, because
->> +	 * it means the uffd-wp bit will be ignored and write will just go
->> +	 * through. See comment in x86 implementation.
->> +	 */
->> +	WARN_ON_ONCE(wp && pte_write(pte));
->> +#endif
-> 
-> Feel free to drop this line, see:
-> 
-> https://lore.kernel.org/r/20240417212549.2766883-1-peterx@redhat.com
-> 
-> It's still in mm-unstable only.
-> 
-> AFAICT ARM64 also is supported by check_page_table, I also checked ARM's
-> ptep_modify_prot_commit() which uses set_pte_at(), so it should cover
-> everything in a superior way already.
-> 
-> With that dropped, feel free to add:
-> 
-> Acked-by: Peter Xu <peterx@redhat.com>
-> 
-> Thanks,
-> 
+>> +&fsim0 {
+> This does not make sense. You do not include any file here, so what do
+> you want to override?
+>
+> How can you even test this file?
 
+
+This is an include file, to be included in the new device tree files in 
+the next two patches. It will be tested as part of those. Andrew 
+requested I split this up, and I have to add this one first, even though 
+nothing is referencing it yet. The same model is used for the P10 FSI 
+devices.
+
+
+>
+>> +	status = "okay";
+>> +
+>> +	#address-cells = <2>;
+>> +	#size-cells = <0>;
+>> +
+>> +	cfam-reset-gpios = <&gpio0 ASPEED_GPIO(Q, 0) GPIO_ACTIVE_HIGH>;
+>> +
+>
+>> +
+>> +&cfam3_i2c16 {
+>> +	fsi-i2cr@20 {
+>> +		compatible = "ibm,i2cr-fsi-master";
+>> +		reg = <0x20>;
+>> +		#address-cells = <2>;
+>> +		#size-cells = <0>;
+>> +
+>> +		cfam@0,0 {
+>> +			reg = <0 0>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +			chip-id = <0>;
+>> +
+>> +			scom416: scom@1000 {
+>> +				compatible = "ibm,i2cr-scom";
+>> +				reg = <0x1000 0x400>;
+>> +			};
+>> +
+>> +			sbefifo416: sbefifo@2400 {
+>> +				compatible = "ibm,odyssey-sbefifo";
+>> +				reg = <0x2400 0x400>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>> +			};
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&cfam3_i2c17 {
+> This looks randomly ordered.
+
+
+Not sure what you mean. Everything is sequentially ordered?
+
+
+>
+>
+>> +&fsi_occ1 {
+>> +	reg = <2>;
+>> +};
+>> +
+>> +&fsi_occ2 {
+>> +	reg = <3>;
+>> +};
+>> +
+>> +&fsi_occ3 {
+>> +	reg = <4>;
+>> +};
+>> +
+>> +/ {
+> Nope. Root node never goes to end of file. Look at all modern DTS.
+
+
+Ack.
+
+
+>
+>> +	aliases {
+>> +		i2c100 = &cfam0_i2c0;
+>> +		i2c101 = &cfam0_i2c1;
+>> +		i2c110 = &cfam0_i2c10;
+>> +		i2c111 = &cfam0_i2c11;
+>> +		i2c112 = &cfam0_i2c12;
+>> +		i2c113 = &cfam0_i2c13;
+>> +		i2c114 = &cfam0_i2c14;
+>> +		i2c115 = &cfam0_i2c15;
+>> +		i2c202 = &cfam1_i2c2;
+>> +		i2c203 = &cfam1_i2c3;
+>> +		i2c210 = &cfam1_i2c10;
+>
+>
+> Best regards,
+> Krzysztof
+>
 
