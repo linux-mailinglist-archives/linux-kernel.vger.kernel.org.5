@@ -1,123 +1,157 @@
-Return-Path: <linux-kernel+bounces-160279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 335768B3B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:25:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2BCE8B3B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:25:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9EAC1F20FC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:25:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68281C2133B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88B3148FE2;
-	Fri, 26 Apr 2024 15:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B72E156F36;
+	Fri, 26 Apr 2024 15:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AwGvDI4P"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mo097RvY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D733F1494A6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440341494A6;
+	Fri, 26 Apr 2024 15:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145041; cv=none; b=mHM/zbAAg+p+yO4R2UqcaZ4OehznTS++2TMsrp36KrL68EDl5z8AZi1PT2AiP5CSi9Z5tVATRsrh23Io0JjkUTtU9B6ULlkQ5+2q6KMC9IsVkm7y1DZM0lcYCe0uhg+DIpp1YcWX86E365gBacGY3bKBqXKZlyBW6OspvgzmzCM=
+	t=1714145063; cv=none; b=bUPaPeOtLUj96z0t+A3qJ0vtV2ZX32d5vsxMGaQlbn2JNOMjLNVIDsUtvD3C0TQ/bOkfkF9XNcsKUA83S/9e3z7YQIRVOXdi/+re0ffYqW6pkId7GnQbCbEeW+fwDP88CfUna2/tEqHWmBVAxPuHak26xrLZhuE0ErLiCXg0VB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145041; c=relaxed/simple;
-	bh=wSnPTnvBkDWveUNl8oR3u4n9qXzCaCyl8sjSvomXPQU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K7Nl61k0DE0hP1ohiSI4c3J0wb65dqN6pQqekbZJ8hfTIwx+Aj88bQv3wb2FRwXNcAj7HSYmBosgUFt71gZNWCGTq9f7p8thfRp9rBYWvxdrXNwPL15AXMaBIwLDxRDHyRZCae/DBaMcIoeQ4/loAIF2vKYtBSm08+hycupWPVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AwGvDI4P; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de45f3f092bso2785174276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714145039; x=1714749839; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4hbJirFZZks6D1peX1ZQV09gxl4EVMTmWrNyCcPglVE=;
-        b=AwGvDI4P8hbUjHzLsfcCcwxxib8PIYkyAJ6636vMeImwq14K8LPPzrlxPn1NiuoReF
-         mTAG3AzF/pZPhx+ip8fM/n/LM/bi8DtxF9ACjbCERJjKqgmRr4iWwyzUmyKiGkDlMNYk
-         Q+ds5id3suSbP52wQy1aCeTzAIeQyD/U3oqvUyUK7f/SfYHwovnZt1JF30Svs+Yl06u5
-         qe6SI5FVNQxmxOsjzFWxxF/uFXMhcw13Ngw3RjZuaH/FUfaJGKWVzDdShlXsN7B4Zt7S
-         q5WphgKGj0j64T39/pj+7aFodhD9BlMYCMLbJfmrnD4QmR4su+HwfjUhOakXDmceqeKq
-         n67A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145039; x=1714749839;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4hbJirFZZks6D1peX1ZQV09gxl4EVMTmWrNyCcPglVE=;
-        b=E2nLRw07rSAigU9HAGV6rTFwi3ZdB13OeLHSUw1eJ2YjfPYpgRchJ7eFMkyDzQUuvQ
-         XQyXpT3dA9uoPqrWMO4xOP8RL6qwu+iIIz7gfAKZ/aMyObqtqR6h4M5P4wQMiog+GeHY
-         dvQ0odrjnKHqZr8GbyTUdmfARHrKT/0Fl44HKju+Oy7bEkNUbzyH4m/AnARQFbj7CHvq
-         3J7NbQR1DYzwomgFHmPxB9/jOYzXKU4y3R2WZLu7N9pY3CKyUsqvJZ2gyGDtqUgIxMFq
-         8vAfGXhC2DSxGiev9aX+lYMUEtzHM8Wgs3aqXbnwd28z11bmXczIaXp4gcE7izI6XT/r
-         jY2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVYpW9VyLb+gcr3E/zgFU2k0xHib5nvb0woVACYi25iMqzweBeK/7S0UAI0foCoy5rMKQUDBIJdVoQn46wV/WOjFmlHHja34I7+sqbv
-X-Gm-Message-State: AOJu0YzllgkmTAGqAj7XSj1qXn7XBM59qi1wmvaI57ZVVgT0IykvnNLh
-	JfmEt/N+blxtUpMhUw4NhrBqnbWNZFrcSfsFWmd4IBiCEvMnQr3ptnPngN8nFiejmJdzMqsgu9z
-	wmjc6e6+gwS/IVsp6sCGRsuA4PDs05HRhosmgNLbvAdrCcMSHTFBW
-X-Google-Smtp-Source: AGHT+IGo2Tt01/flnCVIP3UkYxgEkPiWuQtGOl0av17cc2y9CCWvB7HgxL/qVSX74Fm6W6kvQ2yBPhxaowjnYufX/Uw=
-X-Received: by 2002:a25:818e:0:b0:de5:6073:2ba4 with SMTP id
- p14-20020a25818e000000b00de560732ba4mr16923ybk.40.1714145038633; Fri, 26 Apr
- 2024 08:23:58 -0700 (PDT)
+	s=arc-20240116; t=1714145063; c=relaxed/simple;
+	bh=42Y1zaqOMNGtZMWNMkTmdYkjtCgbc79W1SrHaNbmoks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u7lnDgdWOBOrRkxpk4Dly/5e7QK5bp3oYznWlDj94KMicC1gFJmkYx9JYNiKSV36fxAOQH3WOl8wWZuyOZE7ZoZzWbyTiQHzA9ulDY5YP9RsVkmBsK6ZRjC1/WCwP5E5YLLE3RiEx8YxeOVZcRyUJF3gEuIbWpvudY+U4grLR7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mo097RvY; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714145061; x=1745681061;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=42Y1zaqOMNGtZMWNMkTmdYkjtCgbc79W1SrHaNbmoks=;
+  b=mo097RvYLxE4JZsm8ySELQW/Ezrh6rUPV4GKfnUktOf999IoPm2tACbn
+   j6zaNmbX4Nch6Q2d6ewbUX42MYqMRj9dzuTHwag/ZEN3jP2JanyVVn6fv
+   r2Y125jvffEJG0xkhapZyw0Oi6b/uDdRJPG6asl/gXY30W4WcgcK+GECt
+   7H7KpL6zeIiS51+PhE5vUfXAYeTZIWo3NGkHiPg7EQhbucpNBBSuBWN62
+   GtudZdWCMQy72Z/YXi/VHl24QFuzIaZCdR/ZuMa3qvSso0shu32oNRrMx
+   hMr74xav9F4pLR6CS5sUd1jf2Poh28ho076dByueIyjy2qhvlZSwmRpap
+   g==;
+X-CSE-ConnectionGUID: LswWAKRtQAigzHqU3S+XHg==
+X-CSE-MsgGUID: nAmUWhzERr+fy3TULGi3jA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9735025"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="9735025"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:24:20 -0700
+X-CSE-ConnectionGUID: a7khFoWfRY2fnk3XswJp8A==
+X-CSE-MsgGUID: sq3zv2njQhinJjnPwoTh3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="62927681"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.48.22])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:24:18 -0700
+Message-ID: <1e2bee89-0a4a-42e3-9f81-bd7296cfb351@intel.com>
+Date: Fri, 26 Apr 2024 18:24:12 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426144506.1290619-1-willy@infradead.org> <20240426144506.1290619-2-willy@infradead.org>
-In-Reply-To: <20240426144506.1290619-2-willy@infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 26 Apr 2024 08:23:47 -0700
-Message-ID: <CAJuCfpH_kyp6vVU5dSx=WJNpGRThmak53wVjSsBfxtqTrNy8TQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Assert the mmap_lock is held in __anon_vma_prepare()
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] perf scripts python: Add a script to run instances of
+ perf script in parallel
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org
+References: <20240423133248.10206-1-adrian.hunter@intel.com>
+ <ZihFYbdrnarNFWOd@tassilo> <ZikT69GIsijZajoI@x1> <ZiuiiFdPhJIrjI7k@x1>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZiuiiFdPhJIrjI7k@x1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 7:45=E2=80=AFAM Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
->
-> Convert the comment into an assertion.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On 26/04/24 15:48, Arnaldo Carvalho de Melo wrote:
+> On Wed, Apr 24, 2024 at 11:15:11AM -0300, Arnaldo Carvalho de Melo wrote:
+>> On Tue, Apr 23, 2024 at 04:33:53PM -0700, Andi Kleen wrote:
+>>> On Tue, Apr 23, 2024 at 04:32:48PM +0300, Adrian Hunter wrote:
+>>>> The script is useful for Intel PT traces, that can be efficiently
+>>>> decoded by perf script when split by CPU and/or time ranges. Running
+>>>> jobs in parallel can decrease the overall decoding time.
+> 
+>>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+>>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> 
+>> Thanks, applied, and added a note on testing it using:
+> 
+> Plus this, please check.
+> 
+> Committer testing:
+> 
+>   Ian reported that shellcheck found some issues, I installed it as there
+>   are no warnings about it not being available, but when available it
+>   fails the build with:
+> 
+>     TEST    /tmp/build/perf-tools-next/tests/shell/script.sh.shellcheck_log
+>     CC      /tmp/build/perf-tools-next/util/header.o
+> 
+>   In tests/shell/script.sh line 20:
+>                   rm -rf "${temp_dir}/"*
+>                          ^-------------^ SC2115 (warning): Use "${var:?}" to ensure this never expands to /* .
+> 
+> 
+>   In tests/shell/script.sh line 83:
+>           output1_dir="${temp_dir}/output1"
+>           ^---------^ SC2034 (warning): output1_dir appears unused. Verify use (or export if used externally).
+> 
+> 
+>   In tests/shell/script.sh line 84:
+>           output2_dir="${temp_dir}/output2"
+>           ^---------^ SC2034 (warning): output2_dir appears unused. Verify use (or export if used externally).
+> 
+> 
+>   In tests/shell/script.sh line 86:
+>           python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
+>                               ^-----------^ SC2154 (warning): output_dir is referenced but not assigned (did you mean 'output1_dir'?).
+> 
+>   For more information:
+>     https://www.shellcheck.net/wiki/SC2034 -- output1_dir appears unused. Verif...
+>     https://www.shellcheck.net/wiki/SC2115 -- Use "${var:?}" to ensure this nev...
+>     https://www.shellcheck.net/wiki/SC2154 -- output_dir is referenced but not ...
+> 
+> Did these fixes:
+> 
+>   -               rm -rf "${temp_dir}/"*
+>   +               rm -rf "${temp_dir:?}/"*
+> 
+> And:
+> 
+>    @@ -83,8 +83,8 @@ test_parallel_perf()
+>           output1_dir="${temp_dir}/output1"
+>           output2_dir="${temp_dir}/output2"
+>           perf record -o "${perf_data}" --sample-cpu uname
+>   -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
+>   -       python3 "${pp}" -o "${output_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
+>   +       python3 "${pp}" -o "${output1_dir}" --jobs 4 --verbose -- perf script -i "${perf_data}"
+>   +       python3 "${pp}" -o "${output2_dir}" --jobs 4 --verbose --per-cpu -- perf script -i "${perf_data}"
+> 
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Sorry, didn't have shellcheck installed!
 
-> ---
->  mm/rmap.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 2608c40dffad..619d4d65d99b 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -182,8 +182,6 @@ static void anon_vma_chain_link(struct vm_area_struct=
- *vma,
->   * for the new allocation. At the same time, we do not want
->   * to do any locking for the common case of already having
->   * an anon_vma.
-> - *
-> - * This must be called with the mmap_lock held for reading.
->   */
->  int __anon_vma_prepare(struct vm_area_struct *vma)
->  {
-> @@ -191,6 +189,7 @@ int __anon_vma_prepare(struct vm_area_struct *vma)
->         struct anon_vma *anon_vma, *allocated;
->         struct anon_vma_chain *avc;
->
-> +       mmap_assert_locked(mm);
->         might_sleep();
->
->         avc =3D anon_vma_chain_alloc(GFP_KERNEL);
-> --
-> 2.43.0
->
+Looks good. The shellcheck page refers to bash for "${var:?}"
+but it is POSIX too.
+
 
