@@ -1,68 +1,53 @@
-Return-Path: <linux-kernel+bounces-159889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1CAC8B357D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:45:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57ACB8B3580
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DE9D284317
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15D4C2840BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7341143C6F;
-	Fri, 26 Apr 2024 10:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C74143C6C;
+	Fri, 26 Apr 2024 10:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="X8cp6vmN"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D9F29CEC;
-	Fri, 26 Apr 2024 10:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="L4xE3tMB"
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F17D14430A;
+	Fri, 26 Apr 2024 10:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714128320; cv=none; b=gU255tEgVVXTaP5nIrRJwRSBb2twhj1Ls6CQ3cPEt30kMaZ/xcXfMhtfw98BN8u8iM9EJzwbnfZqkEhGzcGFmrCPArbLRvjYu2ZlYF/+983PwhbI3Diehi/zG91wVrL/lowjwwhDvqBaA0x6Kc5t8WJyygz33vUPq5sDHnCkMgk=
+	t=1714128368; cv=none; b=uTFKtydSRfdvLGBvk2b/Xc/jWCmX7Ftf8iaArA7Ixtr4rMaLmHx4R1ZYUUht4u0svYRfAewmG10zE7DA3A4p7YhJRthUoOM1KJfiiET2ez3kUhr9+5KzsiiQtu3ozM5K0S0xvP5QWyEKKOiOIT9kEzTrWkXhL7/gIcf2w1U49Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714128320; c=relaxed/simple;
-	bh=1GPTVzQ3RYu+uPM1fHOsgJyMAZBfR2SYv+4tP9n5U+g=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G99ba6Hn33lSuMzS4sRDdhjuEUvuksOonhMHj2Q/m/QT+vt0NuTfg8rc9228qK3z69BBqybSenmMD1GkdWhVEWEN8t8a4pQrcWbpgWg8NtkeF1Jnn2GX7m4145IvSgJtjfEVOatdrs6IyqTx6Y1vdoSGLzodpNny2C94BUBXQKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=X8cp6vmN; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QAj8lt022035;
-	Fri, 26 Apr 2024 05:45:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714128308;
-	bh=+G7hsmNHlWKp3MAGArQvL4SERCA89ndaYO3wLVxnObY=;
-	h=From:To:CC:Subject:Date;
-	b=X8cp6vmNJa9NwO2efNpAA82fO+z0oMnNhH3ZecU0SxbHtSFQ/hiQHlmeJMioI28IB
-	 Wh2sZTytfzzZW9P2woIjLhvYxK/1VzfOB/9aRevj1g7weAv/DfARGZegNi5zipM0zk
-	 HuiBmETAC5nQmWJ3xxaMBAGIS/Bwi8t0Fq3Twi8c=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QAj8bf002628
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 26 Apr 2024 05:45:08 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
- Apr 2024 05:45:07 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 26 Apr 2024 05:45:08 -0500
-Received: from localhost ([10.249.129.12])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QAj790098712;
-	Fri, 26 Apr 2024 05:45:07 -0500
-From: Bhavya Kapoor <b-kapoor@ti.com>
-To: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC: <b-kapoor@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <conor+dt@kernel.org>, <krzk+dt@kernel.org>, <robh@kernel.org>,
-        <kristo@kernel.org>, <vigneshr@ti.com>, <nm@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-j722s-evm: Enable main_uart5 node
-Date: Fri, 26 Apr 2024 16:15:06 +0530
-Message-ID: <20240426104506.29990-1-b-kapoor@ti.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1714128368; c=relaxed/simple;
+	bh=1Pxy5wY6hXj0Y3hhL63SvhatbJuxuuTHhotJyXcqVgk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Nxo/D3ktj8sXGyMo8JtRuXesgInFZaDqmTjaR1BtsBjMjuEhZtm/6wJPu0cpktzI0t1dzr68e1OBbzv7kh5E2Mlcslm7S3de107x/nGFFqfa6i5vNKixvvfDF0UDEfGHLP9c1bUIsifCzlHnnyaruZjbfyJZ1W0ke5Zrtva4e0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=L4xE3tMB; arc=none smtp.client-ip=220.197.31.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JYyZF
+	llG1UFCRZ2iFF/rENG29SUZzw0/ZtGvA7R1+0A=; b=L4xE3tMBjiiMw5Yuv+mvv
+	E3hImT9kngJA1jt9O3Em6nSlGwzOUHoxZxI2iRucdjU44nIxSKlA9vYEaRFvZrwY
+	ZW+A3Zs13us20wbJllFVE0xZ5WZEj6fT0egz8djEtXOZ3N86ZAPJPT6PfUpk+E3O
+	P3eg91OOCjYbhWPFhXvDC0=
+Received: from localhost.localdomain (unknown [111.198.54.11])
+	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3H0rRhStmSuqdAw--.3265S2;
+	Fri, 26 Apr 2024 18:45:38 +0800 (CST)
+From: lumingyindetect@126.com
+To: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: ilpo.jarvinen@linux.intel.com,
+	andriy.shevchenko@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+Subject: [PATCH] Fix a memory leak in the function lpss8250_probe
+Date: Fri, 26 Apr 2024 11:45:35 +0100
+Message-Id: <20240426104535.1238368-1-lumingyindetect@126.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,65 +55,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CM-TRANSID:_____wD3H0rRhStmSuqdAw--.3265S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AF1rKry8Cr48XrWfur4rKrg_yoW8Wr4UpF
+	sIkF90kFyvqa4xWa4jyr4jqr1Fva97Za47GrZrKwnIkrZIkF9IyFyFya4ftF18ZrZ5tF9F
+	va1UAF4UAa4UtaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbJ5rUUUUU=
+X-CM-SenderInfo: poxpx0hj1l0vphwhu3a6rslhhfrp/1tbi6BXM9mVLbDyv5QAAsz
 
-Main_uart5 node defined in the top-level J722S SoC dtsi file is
-incomplete and may not be functional unless it is extended
-with pinmux information.
+From: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
 
-As the pinmux is only known at the board integration level, main_uart5
-node should only be enabled when provided with this information.
+In the lpss8250_probe function in the 8250_lpss.c file, the program may directly return at either line 347 or line 351, without jumping to the error handling label to release the dynamically allocated memory region pointed to by the variable pdev, as done at line 357 or line 361. This fix introduces a new label named free_irq_vectors to release the dynamically allocated memory region pointed to by pdev, thereby fixing the memory leak defect.
 
-Thus, add pinmux for main_uart5 and enable it in the board dts file.
-
-Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
 ---
- arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/tty/serial/8250/8250_lpss.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-index cee3a8661d5e..b92d5c385f13 100644
---- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-@@ -18,6 +18,7 @@ / {
- 	aliases {
- 		serial0 = &wkup_uart0;
- 		serial2 = &main_uart0;
-+		serial3 = &main_uart5;
- 		mmc0 = &sdhci0;
- 		mmc1 = &sdhci1;
- 	};
-@@ -142,6 +143,14 @@ J722S_IOPAD(0x01cc, PIN_OUTPUT, 0)	/* (B22) UART0_TXD */
- 		bootph-all;
- 	};
+diff --git a/drivers/tty/serial/8250/8250_lpss.c b/drivers/tty/serial/8250/8250_lpss.c
+index c3cd6cb9ac80..fa9fd4dc86c7 100644
+--- a/drivers/tty/serial/8250/8250_lpss.c
++++ b/drivers/tty/serial/8250/8250_lpss.c
+@@ -344,11 +344,11 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	uart.port.mapbase = pci_resource_start(pdev, 0);
+ 	uart.port.membase = pcim_iomap(pdev, 0, 0);
+ 	if (!uart.port.membase)
+-		return -ENOMEM;
++		goto free_irq_vectors;
  
-+	main_uart5_pins_default: main-uart5-default-pins {
-+		pinctrl-single,pins = <
-+			J722S_IOPAD(0x0108, PIN_INPUT, 3)	/* (J27) UART5_RXD */
-+			J722S_IOPAD(0x010c, PIN_OUTPUT, 3)	/* (H27) UART5_TXD */
-+		>;
-+		bootph-all;
-+	};
-+
- 	vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
- 		pinctrl-single,pins = <
- 			J722S_IOPAD(0x0120, PIN_INPUT, 7) /* (F27) MMC2_CMD.GPIO0_70 */
-@@ -243,6 +252,13 @@ &main_uart0 {
- 	bootph-all;
- };
+ 	ret = lpss->board->setup(lpss, &uart.port);
+ 	if (ret)
+-		return ret;
++		goto free_irq_vectors;
  
-+&main_uart5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_uart5_pins_default>;
-+	status = "okay";
-+	bootph-all;
-+};
-+
- &mcu_pmx0 {
+ 	dw8250_setup_port(&uart.port);
  
- 	wkup_uart0_pins_default: wkup-uart0-default-pins {
+@@ -367,6 +367,7 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ err_exit:
+ 	lpss->board->exit(lpss);
++free_irq_vectors:
+ 	pci_free_irq_vectors(pdev);
+ 	return ret;
+ }
 -- 
-2.40.1
+2.25.1
 
 
