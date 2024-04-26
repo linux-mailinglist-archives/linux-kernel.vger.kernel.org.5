@@ -1,248 +1,238 @@
-Return-Path: <linux-kernel+bounces-159369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516EB8B2DC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:48:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06DFC8B2DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C4B281E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Apr 2024 23:48:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B8921F22481
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A8C158D94;
-	Thu, 25 Apr 2024 23:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62C764C;
+	Fri, 26 Apr 2024 00:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="EU9i+AOL"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b="cZLMJjDA"
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FF2156C6A
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 23:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F68E364;
+	Fri, 26 Apr 2024 00:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714088906; cv=none; b=mi25k9UuEa0u/QiUHDT2boQptLyCkNVxEb3qycmxWEz5p4b+Ael6nD0CHHo9LeHQIqQe/VtHjkEukMjmVjPzwDQJJtNgdQKE0Bk/lScMTnIhriFlUyag/ZfGG98q5pZkQSswwwTrYlu/vKSnqeEEIlzXt5jwzGr4To1eXX77hwM=
+	t=1714090210; cv=none; b=jFI3Lsne4aa9SnSsa8Ovenpi/HDx3ItQbsFi3yfcMSB1BgrSy9V4ly59oaEPAGRiaAcOhBhE3p+ogYFfyQ5smZ0J+u1lZRWUuScg/D00JEmD82f9qv7BHhNeCr+2xYZoSlnIbA9VAfpt/GWTwGxllDYmO2qeQLw2FF8Q5fR/GMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714088906; c=relaxed/simple;
-	bh=6tcJOvrFV1iMaEVoAqZMacKXa4AyJaINchYn8HitefA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DX5cbNaXAlfMmU87vRZQR7tEP/b//IE85NFO+9MsTZXqdnuWOd5JbimtjgAToukzqIie78SsOkC2cbe3m+Cgshr7F13ci0aNfN5La6SGCMwkYBonoQ3D2YS97nYMDt4weCsP2ppIDjG5hX7Fiqb+OJoQKMHMtRpp75t16q7kBV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=EU9i+AOL; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1eab699fcddso11166435ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 16:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714088903; x=1714693703; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KZ7DvnuhtpSAdZVzlWSG9HvYdyHUjrzZHHo/ISn+uFM=;
-        b=EU9i+AOLNslermU3q/qwldC0XhQEH2zkmqLeDal9esAqTJR64uQVgUT3cMy5sg/u4Q
-         xhbBedqJomQYGacBk9/zrH+fEBFs+6YUiUbYB5UQHIBTCDf8qVwMWF12k0ZRZZtU04aD
-         IW9SnpKKhrZ37QIQHppVI85RnB8VlLVjw6F5sO7cqPahrADTjQXjjEF13nUvHgxr0qb9
-         lca1z7035I8wfP7V/VgSSnlRBcJuftGag8P5SeMNU3Przz+xH0Y6BruIDYtNmmbTGeos
-         AVjX7K24OYwO9eT36COZFoa/BZItDY+Tbfp8W1qmEAJk8foip15ar/ZbaIn0SFCCvGJb
-         UKhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714088903; x=1714693703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KZ7DvnuhtpSAdZVzlWSG9HvYdyHUjrzZHHo/ISn+uFM=;
-        b=Woz0elrHmHOUdGue7eGoEtI/wn/FFigSqYhHfThUjOs/NKJlZfVr2gzIIRZZKyw2ms
-         1Z0dIk9YPx3l3RMtfQW16LKgIzaL1DFx8cvhraMNsvc527Ot42mFLcmilSkCF/t7k/9m
-         4juDV1u2dROTmSOXcSKS07azfcEFUWhpEs2KPQ/rphCM2R+Q9vLpVIjGNEvk9e8wXDkm
-         WwNwUG0nx3VZF0JWTizI0+OvuB5KnLeo98qKZsCUOVKO4itr6GPZufzSpd1M1KecbQ6T
-         4nrkR70yL4nBQEo5XqzDzb82rox/kJolbwNAdDri5NtZ7aHApfEUM8hFljSIWgV8+fjF
-         f2jg==
-X-Gm-Message-State: AOJu0YzMHfAYPYefHL/MLQCXk90yjqCCptEwJCboapFGDEZAswVHBFxy
-	cm743ibAK0ixagqAsxy283gzVgrQMQm21EWCZdMeVr+fzZFkNsyBj0vvZxo/3Y6nlWOshcLzjaz
-	d
-X-Google-Smtp-Source: AGHT+IGpkxpVvMWJQWbQvANCX7WQJuW5fyjePUy9yCGZseGfULFbWEJYzubnJIqYoSm63FBKJq95AA==
-X-Received: by 2002:a17:903:1246:b0:1e4:31e9:83ba with SMTP id u6-20020a170903124600b001e431e983bamr1293736plh.1.1714088903558;
-        Thu, 25 Apr 2024 16:48:23 -0700 (PDT)
-Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id i17-20020a170902c95100b001e0b5eeee41sm14349281pla.38.2024.04.25.16.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 16:48:23 -0700 (PDT)
-From: Atish Patra <atishp@rivosinc.com>
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-riscv@lists.infradead.org,
-	kvm-riscv@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Will Deacon <will@kernel.org>
-Subject: [PATCH v2 kvm-riscv/for-next 2/2] drivers/perf: riscv: Fix RV32 snapshot overflow use case
-Date: Thu, 25 Apr 2024 20:16:37 -0700
-Message-Id: <20240426031637.4135544-3-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240426031637.4135544-1-atishp@rivosinc.com>
-References: <20240426031637.4135544-1-atishp@rivosinc.com>
+	s=arc-20240116; t=1714090210; c=relaxed/simple;
+	bh=dJtI9o4EFtZNVHQ+nTl9snF0td1+s6F3a0x4Z6jvHWg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ue6z+dAE1s/D3OvNS8R3bYu1JIdsJ5tHKeDoIPloSxYl7VRj/C8+M5Pgw5+SabvyiIU4Kg1GI1QAXiZz2R4YuuWNZsSidF7a7doUFKhPZaVmcURKlgNX+VQv9KiKOCMAw2W9ycymU2SMUrviDGuP5p5NjsWSIyLsKVSHNjMWUw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org; spf=pass smtp.mailfrom=morinfr.org; dkim=pass (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b=cZLMJjDA; arc=none smtp.client-ip=212.27.42.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morinfr.org
+Received: from bender.morinfr.org (unknown [82.66.66.112])
+	by smtp2-g21.free.fr (Postfix) with ESMTPS id E31342003B4;
+	Fri, 26 Apr 2024 02:09:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
+	; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=N6MeTijVraZtnAlr4I7UfZ/peAb7am+s8EPeA93kPNI=; b=cZLMJjDArvL10ffE2YMrqTH3Wy
+	JrJA05nUJdSlJgehfNcCMR04i8YZzmsE+saToPPGB+XTxyELSXtExWD5i35JQA9edMTERbl8lXFCq
+	/bG00Ct6upF8odr2ViSIfz+zQ6pYcS/LpCGetlMOaF5ixcCpWIg1PskR38z/929ZDcTE=;
+Received: from guillaum by bender.morinfr.org with local (Exim 4.96)
+	(envelope-from <guillaume@morinfr.org>)
+	id 1s09A2-001c5t-10;
+	Fri, 26 Apr 2024 02:09:54 +0200
+Date: Fri, 26 Apr 2024 02:09:54 +0200
+From: Guillaume Morin <guillaume@morinfr.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Guillaume Morin <guillaume@morinfr.org>, oleg@redhat.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	muchun.song@linux.dev
+Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
+Message-ID: <Zirw0uINbP6GxFiK@bender.morinfr.org>
+References: <ZiK50qob9yl5e0Xz@bender.morinfr.org>
+ <b70a3d3a-ea8b-4b20-964b-b019c146945a@redhat.com>
+ <ZiaoZlGc_8ZV3736@bender.morinfr.org>
+ <22fcde31-16c4-42d0-ad99-568173ec4dd0@redhat.com>
+ <ZibOQI9kwzE98n12@bender.morinfr.org>
+ <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
+ <ZilvOi7ceSXmwkNq@bender.morinfr.org>
+ <b1cf78f8-8480-4451-bbf8-78694ebd0438@redhat.com>
+ <Zip0fEliGeL0qmID@bender.morinfr.org>
+ <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
 
-The shadow copy alogirthm is implemented incorrectly. This patch fixes
-the behavior by keeping a per cpu shadow copy of the counter values to
-avoid clobbering for the cases where system more than XLEN counters and
-the overflown counter index are beyond XLEN. This issue can only be
-observed only in RV32 if an SBI implementation assigns logical counters
-ids greater than XLEN or firmware counter overflow is supported in the
-future.
+On 25 Apr 21:56, David Hildenbrand wrote:
+>
+> On 25.04.24 17:19, Guillaume Morin wrote:
+> > On 24 Apr 23:00, David Hildenbrand wrote:
+> > > > One issue here is that FOLL_FORCE|FOLL_WRITE is not implemented for
+> > > > hugetlb mappings. However this was also on my TODO and I have a draft
+> > > > patch that implements it.
+> > > 
+> > > Yes, I documented it back then and added sanity checks in GUP code to fence
+> > > it off. Shouldn't be too hard to implement (famous last words) and would be
+> > > the cleaner thing to use here once I manage to switch over to
+> > > FOLL_WRITE|FOLL_FORCE to break COW.
+> > 
+> > Yes, my patch seems to be working. The hugetlb code is pretty simple.
+> > And it allows ptrace and the proc pid mem file to work on the executable
+> > private hugetlb mappings.
+> > 
+> > There is one thing I am unclear about though. hugetlb enforces that
+> > huge_pte_write() is true on FOLL_WRITE in both the fault and
+> > follow_page_mask paths. I am not sure if we can simply assume in the
+> > hugetlb code that if the pte is not writable and this is a write fault
+> > then we're in the FOLL_FORCE|FOLL_WRITE case.  Or do we want to keep the
+> > checks simply not enforce it for FOLL_FORCE|FOLL_WRITE?
+> > 
+> > The latter is more complicated in the fault path because there is no
+> > FAULT_FLAG_FORCE flag.
+> > 
+> 
+> I just pushed something to
+> 	https://github.com/davidhildenbrand/linux/tree/uprobes_cow
+> 
+> Only very lightly tested so far. Expect the worst :)
 
-Fixes: 22f5dac41004 ("drivers/perf: riscv: Implement SBI PMU snapshot function")
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- drivers/perf/riscv_pmu_sbi.c   | 45 +++++++++++++++++++---------------
- include/linux/perf/riscv_pmu.h |  2 ++
- 2 files changed, 27 insertions(+), 20 deletions(-)
+I'll try it out and send you the hugetlb bits
 
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index 2694110f1cff..5d699b06dcb6 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -588,6 +588,7 @@ static int pmu_sbi_snapshot_setup(struct riscv_pmu *pmu, int cpu)
- 		return sbi_err_map_linux_errno(ret.error);
- 	}
- 
-+	memset(cpu_hw_evt->snapshot_cval_shcopy, 0, sizeof(u64) * RISCV_MAX_COUNTERS);
- 	cpu_hw_evt->snapshot_set_done = true;
- 
- 	return 0;
-@@ -605,7 +606,7 @@ static u64 pmu_sbi_ctr_read(struct perf_event *event)
- 	union sbi_pmu_ctr_info info = pmu_ctr_list[idx];
- 
- 	/* Read the value from the shared memory directly only if counter is stopped */
--	if (sbi_pmu_snapshot_available() & (hwc->state & PERF_HES_STOPPED)) {
-+	if (sbi_pmu_snapshot_available() && (hwc->state & PERF_HES_STOPPED)) {
- 		val = sdata->ctr_values[idx];
- 		return val;
- 	}
-@@ -769,36 +770,36 @@ static inline void pmu_sbi_stop_hw_ctrs(struct riscv_pmu *pmu)
- 	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
- 	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
- 	unsigned long flag = 0;
--	int i;
-+	int i, idx;
- 	struct sbiret ret;
--	unsigned long temp_ctr_values[64] = {0};
--	unsigned long ctr_val, temp_ctr_overflow_mask = 0;
-+	u64 temp_ctr_overflow_mask = 0;
- 
- 	if (sbi_pmu_snapshot_available())
- 		flag = SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT;
- 
-+	/* Reset the shadow copy to avoid save/restore any value from previous overflow */
-+	memset(cpu_hw_evt->snapshot_cval_shcopy, 0, sizeof(u64) * RISCV_MAX_COUNTERS);
-+
- 	for (i = 0; i < BITS_TO_LONGS(RISCV_MAX_COUNTERS); i++) {
- 		/* No need to check the error here as we can't do anything about the error */
- 		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, i * BITS_PER_LONG,
- 				cpu_hw_evt->used_hw_ctrs[i], flag, 0, 0, 0);
- 		if (!ret.error && sbi_pmu_snapshot_available()) {
- 			/* Save the counter values to avoid clobbering */
--			temp_ctr_values[i * BITS_PER_LONG + i] = sdata->ctr_values[i];
-+			for_each_set_bit(idx, &cpu_hw_evt->used_hw_ctrs[i], BITS_PER_LONG)
-+				cpu_hw_evt->snapshot_cval_shcopy[i * BITS_PER_LONG + idx] =
-+							sdata->ctr_values[idx];
- 			/* Save the overflow mask to avoid clobbering */
--			if (BIT(i) & sdata->ctr_overflow_mask)
--				temp_ctr_overflow_mask |= BIT(i + i * BITS_PER_LONG);
-+			temp_ctr_overflow_mask |= sdata->ctr_overflow_mask << (i * BITS_PER_LONG);
- 		}
- 	}
- 
--	/* Restore the counter values to the shared memory */
-+	/* Restore the counter values to the shared memory for used hw counters */
- 	if (sbi_pmu_snapshot_available()) {
--		for (i = 0; i < 64; i++) {
--			ctr_val = temp_ctr_values[i];
--			if (ctr_val)
--				sdata->ctr_values[i] = ctr_val;
--			if (temp_ctr_overflow_mask)
--				sdata->ctr_overflow_mask = temp_ctr_overflow_mask;
--		}
-+		for_each_set_bit(idx, cpu_hw_evt->used_hw_ctrs, RISCV_MAX_COUNTERS)
-+			sdata->ctr_values[idx] = cpu_hw_evt->snapshot_cval_shcopy[idx];
-+		if (temp_ctr_overflow_mask)
-+			sdata->ctr_overflow_mask = temp_ctr_overflow_mask;
- 	}
- }
- 
-@@ -850,7 +851,7 @@ static inline void pmu_sbi_start_ovf_ctrs_sbi(struct cpu_hw_events *cpu_hw_evt,
- static inline void pmu_sbi_start_ovf_ctrs_snapshot(struct cpu_hw_events *cpu_hw_evt,
- 						   u64 ctr_ovf_mask)
+> 
+> I still detest having the zapping logic there, but to get it all right I
+> don't see a clean way around that.
+> 
+> 
+> For hugetlb, we'd primarily have to implement the
+> mm_walk_ops->hugetlb_entry() callback (well, and FOLL_FORCE).
+
+For FOLL_FORCE, heer is my draft. Let me know if this is what you had in
+mind. 
+
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 1611e73b1121..ac60e0ae64e8 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1056,9 +1056,6 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+ 		if (!(vm_flags & VM_WRITE) || (vm_flags & VM_SHADOW_STACK)) {
+ 			if (!(gup_flags & FOLL_FORCE))
+ 				return -EFAULT;
+-			/* hugetlb does not support FOLL_FORCE|FOLL_WRITE. */
+-			if (is_vm_hugetlb_page(vma))
+-				return -EFAULT;
+ 			/*
+ 			 * We used to let the write,force case do COW in a
+ 			 * VM_MAYWRITE VM_SHARED !VM_WRITE vma, so ptrace could
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3548eae42cf9..73f86eddf888 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5941,7 +5941,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		       struct folio *pagecache_folio, spinlock_t *ptl,
+ 		       struct vm_fault *vmf)
  {
--	int idx = 0;
-+	int i, idx = 0;
- 	struct perf_event *event;
- 	unsigned long flag = SBI_PMU_START_FLAG_INIT_SNAPSHOT;
- 	u64 max_period, init_val = 0;
-@@ -863,7 +864,7 @@ static inline void pmu_sbi_start_ovf_ctrs_snapshot(struct cpu_hw_events *cpu_hw_
- 			hwc = &event->hw;
- 			max_period = riscv_pmu_ctr_get_width_mask(event);
- 			init_val = local64_read(&hwc->prev_count) & max_period;
--			sdata->ctr_values[idx] = init_val;
-+			cpu_hw_evt->snapshot_cval_shcopy[idx] = init_val;
+-	const bool unshare = flags & FAULT_FLAG_UNSHARE;
++	const bool make_writable = !(flags & FAULT_FLAG_UNSHARE) &&
++		(vma->vm_flags & VM_WRITE);
+ 	pte_t pte = huge_ptep_get(ptep);
+ 	struct hstate *h = hstate_vma(vma);
+ 	struct folio *old_folio;
+@@ -5959,16 +5960,9 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	 * can trigger this, because hugetlb_fault() will always resolve
+ 	 * uffd-wp bit first.
+ 	 */
+-	if (!unshare && huge_pte_uffd_wp(pte))
++	if (make_writable && huge_pte_uffd_wp(pte))
+ 		return 0;
+ 
+-	/*
+-	 * hugetlb does not support FOLL_FORCE-style write faults that keep the
+-	 * PTE mapped R/O such as maybe_mkwrite() would do.
+-	 */
+-	if (WARN_ON_ONCE(!unshare && !(vma->vm_flags & VM_WRITE)))
+-		return VM_FAULT_SIGSEGV;
+-
+ 	/* Let's take out MAP_SHARED mappings first. */
+ 	if (vma->vm_flags & VM_MAYSHARE) {
+ 		set_huge_ptep_writable(vma, haddr, ptep);
+@@ -5989,7 +5983,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			folio_move_anon_rmap(old_folio, vma);
+ 			SetPageAnonExclusive(&old_folio->page);
  		}
- 		/*
- 		 * We do not need to update the non-overflow counters the previous
-@@ -871,10 +872,14 @@ static inline void pmu_sbi_start_ovf_ctrs_snapshot(struct cpu_hw_events *cpu_hw_
- 		 */
- 	}
+-		if (likely(!unshare))
++		if (likely(make_writable))
+ 			set_huge_ptep_writable(vma, haddr, ptep);
  
--	for (idx = 0; idx < BITS_TO_LONGS(RISCV_MAX_COUNTERS); idx++) {
-+	for (i = 0; i < BITS_TO_LONGS(RISCV_MAX_COUNTERS); i++) {
-+		/* Restore the counter values to relative indices for used hw counters */
-+		for_each_set_bit(idx, &cpu_hw_evt->used_hw_ctrs[i], BITS_PER_LONG)
-+			sdata->ctr_values[idx] =
-+					cpu_hw_evt->snapshot_cval_shcopy[idx + i * BITS_PER_LONG];
- 		/* Start all the counters in a single shot */
- 		sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, idx * BITS_PER_LONG,
--			  cpu_hw_evt->used_hw_ctrs[idx], flag, 0, 0, 0);
-+			  cpu_hw_evt->used_hw_ctrs[i], flag, 0, 0, 0);
- 	}
+ 		delayacct_wpcopy_end();
+@@ -6094,7 +6088,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	spin_lock(ptl);
+ 	ptep = hugetlb_walk(vma, haddr, huge_page_size(h));
+ 	if (likely(ptep && pte_same(huge_ptep_get(ptep), pte))) {
+-		pte_t newpte = make_huge_pte(vma, &new_folio->page, !unshare);
++		pte_t newpte = make_huge_pte(vma, &new_folio->page,
++					     make_writable);
+ 
+ 		/* Break COW or unshare */
+ 		huge_ptep_clear_flush(vma, haddr, ptep);
+@@ -6883,6 +6878,17 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
  }
+ #endif /* CONFIG_USERFAULTFD */
  
-@@ -898,7 +903,7 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
- 	int lidx, hidx, fidx;
- 	struct riscv_pmu *pmu;
- 	struct perf_event *event;
--	unsigned long overflow;
-+	u64 overflow;
- 	u64 overflowed_ctrs = 0;
- 	struct cpu_hw_events *cpu_hw_evt = dev;
- 	u64 start_clock = sched_clock();
-diff --git a/include/linux/perf/riscv_pmu.h b/include/linux/perf/riscv_pmu.h
-index c3fa90970042..701974639ff2 100644
---- a/include/linux/perf/riscv_pmu.h
-+++ b/include/linux/perf/riscv_pmu.h
-@@ -45,6 +45,8 @@ struct cpu_hw_events {
- 	phys_addr_t snapshot_addr_phys;
- 	/* Boolean flag to indicate setup is already done */
- 	bool snapshot_set_done;
-+	/* A shadow copy of the counter values to avoid clobbering during multiple SBI calls */
-+	u64 snapshot_cval_shcopy[RISCV_MAX_COUNTERS];
- };
++static bool is_force_follow(struct vm_area_struct* vma, unsigned int flags,
++			     struct page* page) {
++	if (vma->vm_flags & VM_WRITE)
++		return false;
++
++	if (!(flags & FOLL_FORCE))
++		return false;
++
++	return page && PageAnon(page) && page_mapcount(page) == 1;
++}
++
+ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
+ 				      unsigned long address, unsigned int flags,
+ 				      unsigned int *page_mask)
+@@ -6907,11 +6913,11 @@ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
  
- struct riscv_pmu {
--- 
-2.34.1
+ 		if (!huge_pte_write(entry)) {
+ 			if (flags & FOLL_WRITE) {
+-				page = NULL;
+-				goto out;
+-			}
+-
+-			if (gup_must_unshare(vma, flags, page)) {
++				if (!is_force_follow(vma, flags, page)) {
++					page = NULL;
++					goto out;
++				}
++			} else if (gup_must_unshare(vma, flags, page)) {
+ 				/* Tell the caller to do unsharing */
+ 				page = ERR_PTR(-EMLINK);
+ 				goto out;
 
+> 
+> Likely vaddr and PAGE_SIZE in uprobe_write_opcode() would have to be
+> expanded to cover the full hugetlb page.
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
+
+-- 
+Guillaume Morin <guillaume@morinfr.org>
 
