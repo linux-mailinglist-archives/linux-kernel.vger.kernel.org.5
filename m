@@ -1,95 +1,153 @@
-Return-Path: <linux-kernel+bounces-160002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93FF08B378A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:54:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE708B378C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:54:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 414D71F22BC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D24C1C21704
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C92146D4C;
-	Fri, 26 Apr 2024 12:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0704145B0D;
+	Fri, 26 Apr 2024 12:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="BTuW3g2S"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="aJ1kbKMr"
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B732213E88A;
-	Fri, 26 Apr 2024 12:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FF613E88A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714136066; cv=none; b=KxGHt6qzLeYXT9ZqpCpMNX2lWexmcci75/A1wG0mQiLCXqX+jLYwR/25MYPitT3Z8xwfL6mpazCndjNcx/vk+UO5rO/XB+cGfGEG10Y60x5HTolgZ28Qq6N/B1bgSYUIRePY9fUHCboLAua24zDLv8u/lnRTJpaXA8l36Pad7vg=
+	t=1714136086; cv=none; b=SPHARv28wqXV9YppFhv/+pIBj0qQO3KV4BXgmRRzdooysBcIxEwLCEyyp/lKhmnmpe8Vj7zeWB8PRywaeP0zQ8lfoNynvHlx0qm5qeiA+7YvwM1aTSEIT0jeFOsESxDwa5XScrm1Xlvlsi0E7bHvfTcZoKEj76nP/0XcCwP3mN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714136066; c=relaxed/simple;
-	bh=PxjWk/DnfndZp7Tnn7yylcFvdTm55zeOL5HaDoGiQmk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obj1MlVzxMKCzOWkkuoldF+OyflLenn5/gMRgu6r4j4mxxhG8mJMUfeI4E56btQEoym8Ny3fC0ny5OoM8Yu83Mj3e1xchap3AGurIRxBxE3qUw5Ini+2QOfLi/O4Y/PVuuVbPiPAhe2wi9OvSSoO/iAeE5E4RIRyAP1LDqK5Zt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=BTuW3g2S; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4VQt2t2hJHz9sWd;
-	Fri, 26 Apr 2024 14:54:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1714136054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gvK113BQiEHRRB+jUoKp4pYoXm1qV6dv7bI+yo26L2s=;
-	b=BTuW3g2SAvenk5ulUQkTFm/sWdNlXv7N24BPmPPBaebmxLqAgsb6/bjYKvZFi1tXEyURDs
-	FFtbT8+qEIgbOeyGBt6/Ck0n5PbnTRU/Kd7YkQauiA/i1GguM1ng3uvFUQQkPwATqo2ltU
-	6Z4HHR9ONyV6D+sa7/PCLEKNuQqk6pNlhb5WAvyO4P/T9su5NU/w8YKk8Zv1ZpkK4xNbX+
-	FbiE6k/QnNgoeVNPla27GvFtpgRdYs8WJRCkI0Wr8sdUqH4vs7BzuLD8ERFRkmPHmdS3mC
-	69dnlhPWlRY9OFVf+HF+kIqZ0A8drq895qT8D/8OIEonLq3EAkTWcA2vYKuiBA==
-Date: Fri, 26 Apr 2024 12:54:10 +0000
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: djwong@kernel.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 06/11] filemap: cap PTE range to be created to i_size
- in folio_map_range()
-Message-ID: <20240426125410.myhl33aewkd6wpzf@quentin>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-7-kernel@pankajraghav.com>
- <Ziq8ATyM_c5zEOkd@casper.infradead.org>
+	s=arc-20240116; t=1714136086; c=relaxed/simple;
+	bh=kxF2Dn/2+RT2PyPXlDva2okUem+fGodZnf9w7kPdU/o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YTk3qFNwfW6S9kNx+wLPT4tZNtXKGBaV0DbSDOfNYzqjxyEHyAx/SiNGLF5yVXo+2BW9oZeU8lFHDTRfQVQ06cddE2isHCILEyZYx2h8BobND+ASAoHjXeODxzSPhrMN+8UUTnqVIk5wVh7Oc/yFZhIdGXsxqsmrIzgbO5lwFUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=aJ1kbKMr; arc=none smtp.client-ip=91.26.50.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1714136075; x=1716728075;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kxF2Dn/2+RT2PyPXlDva2okUem+fGodZnf9w7kPdU/o=;
+	b=aJ1kbKMrzRn0Dzm9x3Q8jzjUxdi3gsqCkuCJRNFBhl2dA9p0F3GrCqKJOLmMf/xK
+	n/Sdt8FDQ8f5QKzqUK1w60W3MWpyDJw22j13sNVf++9uuILyMv4mw8mtuGuUZWge
+	IKIRm5HauH4dQ2EVfcyxgCstID/SDNTQW8WivEGbXP4=;
+X-AuditID: ac14000a-fbefe7000000290d-af-662ba40bcf64
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id B6.13.10509.B04AB266; Fri, 26 Apr 2024 14:54:35 +0200 (CEST)
+Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Fri, 26 Apr
+ 2024 14:54:33 +0200
+Message-ID: <1b87b00f-9fc2-47b2-9e81-4a391458f031@phytec.de>
+Date: Fri, 26 Apr 2024 14:54:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ziq8ATyM_c5zEOkd@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Add USB-C
+To: Garrett Giordano <ggiordano@phytec.com>, <nm@ti.com>, <vigneshr@ti.com>,
+	<kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+	<conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>
+References: <20240425152558.485763-1-ggiordano@phytec.com>
+Content-Language: en-US
+From: Wadim Egorov <w.egorov@phytec.de>
+In-Reply-To: <20240425152558.485763-1-ggiordano@phytec.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWyRpKBR5d7iXaawe39EhZr9p5jsph/5Byr
+	xfotv9ksln+ezW7xctY9NotNj6+xWlzeNYfN4s2Ps0wW//fsYLfofqdu8f/sB3YHbo9NqzrZ
+	PDYvqffo725h9fhz8R2rx/Eb25k8Pm+SC2CL4rJJSc3JLEst0rdL4MrYvX4PY8FP3orGnlfs
+	DYxPuLoYOTgkBEwkOm+wdTFycQgJLGGSOPr7NTuEc5dR4t+/Y0xdjJwcvAI2Ek9vL2cBsVkE
+	VCVav95ihYgLSpyc+QQsLiogL3H/1gx2EFtYwEti1ofFYINEBJYwSkzqXAi2glmgjVHiycMD
+	zCCrhQSsJC4eNwBpYBYQl7j1ZD7YMjYBdYk7G76BLeAUsJaY29DPDFFjIbH4zUF2CFteYvvb
+	OWBxISD7xSWI4ySA7GnnXjND2KESRzatZprAKDwLya2zkKybhWTsLCRjFzCyrGIUys1Mzk4t
+	yszWK8ioLElN1ktJ3cQIijcRBq4djH1zPA4xMnEwHmKU4GBWEuHdNEc7TYg3JbGyKrUoP76o
+	NCe1+BCjNAeLkjjv6o7gVCGB9MSS1OzU1ILUIpgsEwenVAPj1kd3y7Osnkqd566zj7pm+ILz
+	760Fu7hdf2xnPPXoQZX7tQvFi7b9Pn95ge35I+dvMDkfvSW1K3ydVZe67rnyVS1bU89+r9Ms
+	a9Zan18ZsJJpy9WNWW0Mab9ntQkxXtCpdOCbx7tsF+Old8ItN5dunP/0oOXrcxKCXYwSnWUv
+	dTae/B4kpC7DpcRSnJFoqMVcVJwIAHSER+elAgAA
 
-On Thu, Apr 25, 2024 at 09:24:33PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 25, 2024 at 01:37:41PM +0200, Pankaj Raghav (Samsung) wrote:
-> >  	do {
-> >  		unsigned long end;
-> > +		unsigned long i_size;
-> 
-> Usually i_size is the name of a variable that contains an loff_t, not a
-> page count.  Not sure what to call this though.  Also, can't we move
-> this outside the loop?
-You are right, this can move out as i_size is not going to change. I
-will make this change. Thanks!
-> 
-> 	pgoff_t file_end = DIV_ROUND_UP(i_size_read(mapping->host),
-> 					PAGE_SIZE) - 1;
-> 
-> 	if (end_pgoff > file_end)
-> 		end_pgoff = file_end;
+Hi Garrett,
 
---
-Pankaj
+thanks for sending!
+
+It seems like this patch completes the board's support. Every 
+interface/component is now fully supported.
+
+Am 25.04.24 um 17:25 schrieb Garrett Giordano:
+> The USB-C PD manages plug orientation, power delivery, and our endpoint
+> for the USB interface. Add this node and include its endpoint.
+> 
+> Configure USB0 for role-switching and wire it to our USB-C PD endpoint.
+> 
+> Signed-off-by: Garrett Giordano <ggiordano@phytec.com>
+
+Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
+
+> ---
+>   .../dts/ti/k3-am625-phyboard-lyra-rdk.dts     | 26 ++++++++++++++++++-
+>   1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> index dfc78995d30a..fb3bc914a018 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
+> @@ -348,6 +348,24 @@ gpio_exp: gpio-expander@21 {
+>   				  "GPIO6_ETH1_USER_RESET", "GPIO7_AUDIO_USER_RESET";
+>   	};
+>   
+> +	usb-pd@22 {
+> +		compatible = "ti,tps6598x";
+> +		reg = <0x22>;
+> +
+> +		connector {
+> +			compatible = "usb-c-connector";
+> +			label = "USB-C";
+> +			self-powered;
+> +			data-role = "dual";
+> +			power-role = "sink";
+> +			port {
+> +				usb_con_hs: endpoint {
+> +					remote-endpoint = <&typec_hs>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +
+>   	sii9022: bridge-hdmi@39 {
+>   		compatible = "sil,sii9022";
+>   		reg = <0x39>;
+> @@ -449,7 +467,13 @@ &usbss1 {
+>   };
+>   
+>   &usb0 {
+> -	dr_mode = "peripheral";
+> +	usb-role-switch;
+> +
+> +	port {
+> +		typec_hs: endpoint {
+> +			remote-endpoint = <&usb_con_hs>;
+> +		};
+> +	};
+>   };
+>   
+>   &usb1 {
 
