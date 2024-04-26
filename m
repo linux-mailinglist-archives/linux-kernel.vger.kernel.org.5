@@ -1,106 +1,147 @@
-Return-Path: <linux-kernel+bounces-160332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B9A8B3C11
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:50:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A84EC8B3C13
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A801C23D76
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:50:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9CCDB230E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6216B149E0B;
-	Fri, 26 Apr 2024 15:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2BA14A4D4;
+	Fri, 26 Apr 2024 15:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fS3UbrvO"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cS+bGTdF"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDD9148FE5
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3C11DFFC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714146624; cv=none; b=Xns7Ce5CVTqmB5qMByXDBlg7YsmIuJInIjWvo/+Xc7jzB/6dNHAsxPUAyct0fzg7kQhUxsPRHZI+5PV5+kQfjj1MTzGEkU5zUfbIlqncEMk5Uaiwp6iridwGe7+1085cDkJqBsuu9GEb2HBpNmBFfyVOiTK7zHtPsrbk/l6VUXw=
+	t=1714146798; cv=none; b=K1OxcYLoIGH8FTqQ1a4mJWBSZ2cAZERUTDBYZNbTeP34UWQVmxZwkQgAq8/wX9ctlidaZdRFSfp2zH0GPXH31duGI2/V4zx3U148HTkgT/VYxeHbBGUiVOOzKOf47xK+y4nEfs+NFDsnpqM0S/4FKHffkKpsOm/caJF1WtDqH14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714146624; c=relaxed/simple;
-	bh=GdLcr74WLo/Hh0HW8mGcoH4pOw2ZLI4PuPpZEnA9Dso=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t++EwPLbXSr6jINZ3/fHi9hfo+iU+zt/9xqlOXDlIvWzmAsOoGPNyTW6VBlX0XRu8ja3btmgSskBhuGvaEd24w9GV3ccZo1gzPVjIaf+ExxmKuGa+MNZiRnUNv1Oh174P3iKWbBll8Fb3RR7MsWQsxJB1XfvB/zObH2JLyFmX0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fS3UbrvO; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=rmx/bNaH6jOY5MArnPPn/57lIrpuzyHqYg+CoUfdaWI=; b=fS3UbrvOeyZMD2muMoPGGgC1n4
-	IzIDuZX+8heQ3k1uxFxvcXcB82bAyTAwYnrKs72KIo1cykz+yMwIlvsY+z8otw5/hl5CpF8kgtklo
-	muKEndxlm37F9aYgSU1/yqAzKjZ5yQqGAH+tna4spCG+lqJLTNh5pebl7bbxVeH4EvO9s4BSNRHSE
-	2KR21R5zxTLB/tLI5IK+WeQw0hTYz4clqdUAErxQNINBWVjFjzd7gTxvQ06PWxt/T5BvNSSJ8MWCv
-	7O0mGn/tgup6kJm1XOQ+SJ7ePo3j68XdUScyzhSEPV8VzQu3PMLCWzsk0Jptfg1lRYSlvlnJbOtsC
-	5uiu5k1g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0Nq7-00000005W77-24sM;
-	Fri, 26 Apr 2024 15:50:19 +0000
-Date: Fri, 26 Apr 2024 16:50:19 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Xu <peterx@redhat.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-Message-ID: <ZivNOxf06cu0J9OQ@casper.infradead.org>
-References: <20240411171319.almhz23xulg4f7op@revolver>
- <ZhhSItiyLYBEdAX3@x1n>
- <ZhhV3PKgEX9d7_vA@casper.infradead.org>
- <ZhhaRXHKk7w_hKgi@x1n>
- <Zhhd-A7w1A8JUadM@casper.infradead.org>
- <ZhinCD-PoblxGFm0@casper.infradead.org>
- <ZiuzikG6-jDpbitv@casper.infradead.org>
- <CAJuCfpH+O0NYtTrGKSY6FjBOcWpyKXB+_4rsSRjcewSXUWVfCQ@mail.gmail.com>
- <ZivILlyRv7rNMldQ@casper.infradead.org>
- <CAJuCfpEqJV9Lv+36xNK+vnpsR5DhQ0kCK3CW7tLFWbbbSCH8yg@mail.gmail.com>
+	s=arc-20240116; t=1714146798; c=relaxed/simple;
+	bh=IYCeyfV7+Y22lbEJ698coh+qx6ohE4k19gQwII2/pLY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=YOf1p+Tl47PE8iuZrLVUMSuAOY1FWDB51alSbEsllVscvnYmtzE/A9GThS5F+/GJR3AN3P+QAAF92t8VWXTqQv79lyeIH0LhgMMIDsWUMSHVCaHAzOnLjZcGkTY4n1z7xy4YS6OgbSRgQimqgs9VE6+U3pNeUZm24kHeCQdzpQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cS+bGTdF; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so3166292e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714146795; x=1714751595; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XwyPHYo65laLUVyoAnrn3i4ckDikcCisySrk/yWvbuM=;
+        b=cS+bGTdFcF9s/5r1CvOskBMwP6JNBpnoxO0yAbskjIxBLLzM2RtsrcVGy+RwUSakQF
+         ZGsG8QcHsJXykvq3ZcxNX7wd0hLHGcIRUEF0CWqmyPfHUrzqsfXeXCzb+lGQQtwWA/DB
+         uXscx+XVLVOL58esA8SfvZyTAOKR4Q6pz5t49t410uBdK3TDQqJvO0j/V2YXf4Ko94fI
+         A1n6eAatumb0Z7EyfVcavYunShkNn7a+mGm11Bm9qEVWRBx2nuU0lxd55a9Njkb5gqL5
+         R/VtQPzBaNk3/WB1jJUB+ufINF/ws7JALMlOIA4tmNOEohkw97Qs5/EZdSQtIO6eEYnH
+         237Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714146795; x=1714751595;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XwyPHYo65laLUVyoAnrn3i4ckDikcCisySrk/yWvbuM=;
+        b=XSYsSD12kKk4jAulOTqn+uzEbZhpqPB2H5x4q1EnljkuWLyiWNrlNRPoJ7Zq6h/3Oo
+         kLTXFJAWgr6uuBh8PUg1tz0Au5p/1S6gEoR3VTrN8HlS0NZTH4JdwLVxn2IDUnPbRN+m
+         Iiyh7F354CGRLxhwu+HvfDv1Vi5/igV9+y00pIPMj4jhbSqdvkgSWJqqifwgEKpKqoOQ
+         JxO4w1z7THfidrkzKUnZeyNTBLcYKkJMsDqzdyV3MZcdHa0RJqbuiQBPW/c4TIRr8pfR
+         CRWt+/cn+s8m3RcY3rb/IrnNz0OFFzPfYcGKzbDfz0RD3C7nPScnAR89u1zFnGE5ECBw
+         CfFw==
+X-Gm-Message-State: AOJu0Yy3YjWywtlzkmMtfaY98ZNCp7zevmTkbb+b33p099PCRBMQRUW/
+	ip9mQoN+eBSPFII85QxtknHJPZyUvP3n8q9n2nfraRV/xtGkOfioEiZ2yQ==
+X-Google-Smtp-Source: AGHT+IG3ZYjK5XuwSZGbYiI5HmuraJR99briOvmc5X0RLDSRQhbEQLu+YP75d5Nf0c+mLz+VDLVzpA==
+X-Received: by 2002:ac2:5b8b:0:b0:51c:f00c:2243 with SMTP id o11-20020ac25b8b000000b0051cf00c2243mr400492lfn.35.1714146794767;
+        Fri, 26 Apr 2024 08:53:14 -0700 (PDT)
+Received: from ?IPV6:2003:df:bf00:9700:9056:af48:9a78:e564? (p200300dfbf0097009056af489a78e564.dip0.t-ipconnect.de. [2003:df:bf00:9700:9056:af48:9a78:e564])
+        by smtp.gmail.com with ESMTPSA id cf5-20020a170906b2c500b00a587868c5d2sm4737566ejb.195.2024.04.26.08.53.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 08:53:14 -0700 (PDT)
+Message-ID: <1b409e15-7f9a-4e07-bacb-14f71a4bb671@gmail.com>
+Date: Fri, 26 Apr 2024 17:53:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpEqJV9Lv+36xNK+vnpsR5DhQ0kCK3CW7tLFWbbbSCH8yg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: de-AT-frami, en-US
+To: Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Cc: Dirk Behme <dirk.behme@de.bosch.com>
+From: Dirk Behme <dirk.behme@gmail.com>
+Subject: data-race in dev_uevent / really_probe?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 08:32:06AM -0700, Suren Baghdasaryan wrote:
-> On Fri, Apr 26, 2024 at 8:28 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > I think the only path in either do_anonymous_page() or
-> > > do_huge_pmd_anonymous_page() that skips calling anon_vma_prepare() is
-> > > the "Use the zero-page for reads" here:
-> > > https://elixir.bootlin.com/linux/latest/source/mm/memory.c#L4265. I
-> > > didn't look into this particular benchmark yet but will try it out
-> > > once I have some time to benchmark your change.
-> >
-> > Yes, Liam and I had just brainstormed that as being a plausible
-> > explanation too.  I don't know how frequent it is to use anon memory
-> > read-only.  Presumably it must happen often enough that we've bothered
-> > to implement the zero-page optimisation.  But probably not nearly as
-> > often as this benchmark makes it happen ;-)
-> 
-> I also wonder if some of this improvement can be attributed to the
-> last patch in your series
-> (https://lore.kernel.org/all/20240426144506.1290619-5-willy@infradead.org/).
-> I assume it was included in the 0day testing?
+Hi,
 
-Patch 4 was where I expected to see the improvement too.  But I think
-what's going on is that this benchmark evaded all our hard work on
-page fault scalability.  Because it's read-only, it never assigned an
-anon_vma and so all its page faults fell back to taking the mmap_sem.
-So patch 4 will have no effect on this benchmark.
+debugging a NULL pointer crash on a quite old embedded system kernel 
+(4.14.x) we might have found the root cause for
 
-The report from 0day is pretty clear they bisected the performance
-improvement to patch 2.
+https://syzkaller.appspot.com/bug?extid=ffa8143439596313a85a
+https://groups.google.com/g/syzkaller-upstream-moderation/c/xTpwi0C6eSY/m/FqJAQtinAQAJ
+
+Looking at the recent kernel, it looks like the relevant code hasn't 
+changed that much since then. So even in recent kernel code it looks 
+like there is a synchronization issue between dev_uevent() and 
+really_probe():
+
+Thread #1:
+========
+
+really_probe() {
+...
+probe_failed:
+...
+device_unbind_cleanup(dev) {
+      ...
+      dev->driver = NULL;   // <= Failed probe sets dev->driver to NULL
+      ...
+      }
+..
+}
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/dd.c#n552
+
+
+Thread #2:
+========
+
+dev_uevent() {
+..
+if (dev->driver)
+                 // If dev->driver is NULLed from really_probe() from 
+here on,
+                 // after above check, the system crashes
+		add_uevent_var(env, "DRIVER=%s", dev->driver->name);
+..
+}
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/core.c#n2670
+
+The setup is a device driver probe that fails. In our case the probe 
+from an I2C driver. While that failing probe does issue some 
+dev_info() and dev_err() output. What seems to trigger in our case 
+systemd-journal (as given in the groups.google.com link above) which 
+calls via the given call stack dev_uevent().
+
+In the end, dev_uevent() has validated dev->driver successfully. But 
+if, depending on timing, exactly after this the failing 
+(really-)probe() NULLs dev->driver, the system crashes due to using 
+dev->driver being NULL then.
+
+Does that make sense? Or have we missed anything?
+
+Best regards
+
+Dirk
+
 
