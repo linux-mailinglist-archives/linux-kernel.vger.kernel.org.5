@@ -1,47 +1,51 @@
-Return-Path: <linux-kernel+bounces-159563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FAD48B3056
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:25:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2768B3059
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1B4B1F23BF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:25:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E48D1F23BF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1725613A888;
-	Fri, 26 Apr 2024 06:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD2413A889;
+	Fri, 26 Apr 2024 06:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IsqS5wqF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ZxJxTbjJ"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF43282FD;
-	Fri, 26 Apr 2024 06:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7462E282FD;
+	Fri, 26 Apr 2024 06:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714112710; cv=none; b=Byo6Eic/PGEH9Q0/A6wSc+g/kUIuUEPFtjHAXtGsVD/baXEuIfBl/aDDZvWQb/TxdVjLVoxpiCZ3kYjsfWvoSzcuERidGeYcluPyihzDmcAgdsbgn/o5YsSY45Xu7qEDDEjn1jD6pf+3/OR5GoXaB5zFxCF72gA2HhWaYZhIQrQ=
+	t=1714112732; cv=none; b=OAUW96tzmpvMpF181kxV/9e2AYF9F99VoYNIzmrB7j4FHnMKixdzirL869NqyQbAuhMmWHrOOAK9I5d6nxh4ePOMN4ATbBjAe6E85bNsSuBbjIdJhummGBLjrql/Ce4J2R/Rbz3TCW0FMahHbSqlUmH1uMqHUhNKZnOLWs8jkvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714112710; c=relaxed/simple;
-	bh=csyB+IN5F24U2fIUWzQsCV3qp20uV+VUljrHnFIY0XE=;
+	s=arc-20240116; t=1714112732; c=relaxed/simple;
+	bh=xDOqNGbeSe6pXMEwzFpo1cSQcwhLWILxGVo8CczI1Po=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kpmW5+mJ0bbLbiflFh2Wf46a+aBwmziojzVehgbJYaZiZWy97Y3OHmSkRGWPyeIjQ7j5sfBgwz+klytuGEkibx9y8rw4sp1yCONJOAxrZgN6L/spuVqIL/y5ppQOLTY/LH9NuVyyWU/gha1BCfQYj7IZGFD/OU5w1dgUQAIg6jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IsqS5wqF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E37D7C113CD;
-	Fri, 26 Apr 2024 06:25:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714112709;
-	bh=csyB+IN5F24U2fIUWzQsCV3qp20uV+VUljrHnFIY0XE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IsqS5wqFEIVfXN4uzT7K7B7UBuWJRjjTlX1Pckc4McKqkjlkY/oVhH/GpadOScn7/
-	 CwWUCFQFo/e4droS1TM1b13E8JQjNLZm/l4YHu0CRA/hnNbWSs1K2qSaf7Ad6mFvaZ
-	 wdtOLsSX/2rKwY6eTwAP0Tqfe7opSoQH18s/wY/PGEcdJDUgQX3NGRL+54MX+5rbx9
-	 Ht5W4YOy9Pe7fTxAp0L9tWeCq1urP4tUaTyW++czFK+g3DZvzDPutb5QMDpc+1ICME
-	 K6L7qRFGopDuXAniHsSbI31uZDmhu0DVGGXxSKLY8kDYD/HubfGCrr2NV86ZE6nlgK
-	 lvL4eKxICnk0A==
-Message-ID: <5822e000-01d3-442c-bb52-04fab87cb3da@kernel.org>
-Date: Fri, 26 Apr 2024 08:25:03 +0200
+	 In-Reply-To:Content-Type; b=njZIpGBhJPtRb9Gl1YLK2iqHSVWeRcMGcK/1kEc4Wd1u3x58omvBPrlPDiJo0WjaDIh8nYMfwLhSjw0qE0t+hQmdBI6dNSOAFNRTEoJS0vJUMgKyGHamktdg+duzxNH5Qya0W5BWhyGNEOtePjAKwJq/ia37XPEtS5AGRY5aM4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ZxJxTbjJ; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=hBtXuHAJ4otz2hqkKXeXuHHZ4NRvPizZ3qOHTCtx7p4=;
+	t=1714112729; x=1714544729; b=ZxJxTbjJh4W5LLmD6S/3aDdKnkznlhiLuANoti76Yj0rb6P
+	ms4xZlHNL/Z9NNrd32vHDNaXJg1ipqKQB3//sToXYT0AkwpiOILu+hfQ0QgPchHCwlFftoC+ANE2x
+	sj1sQYwlQynckL4stusYNyldduzZwTDAhHS8cE0M+Jyc0XJnhIcL6oim3b5UNfs5O5m0EvwZodtiU
+	fS+g/L+SoNmSxmNZVb529yNsudsW3rz953T0iXlA8qeWl3nnxsBm3wWu2EHMf7r03hCdHpddhkcwj
+	P7Y1utA/BReokEnmq2G5MerAdVlMJuWdwhRiDtL4tcfHtQpjBURCziTNllUtLKQQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1s0F1Q-0002G7-Vx; Fri, 26 Apr 2024 08:25:25 +0200
+Message-ID: <ded3e7ae-6a7d-48b2-8acc-c125874ee09f@leemhuis.info>
+Date: Fri, 26 Apr 2024 08:25:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,164 +53,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 08/14] dt-bindings: fsi: ast2600-fsi-master: Switch to
- yaml format
-To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
- linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
- andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-9-eajames@linux.ibm.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240425213701.655540-9-eajames@linux.ibm.com>
+Subject: Re: [Intel-wired-lan] [PATCH iwl-net v1 1/1] e1000e: change
+ usleep_range to udelay in PHY mdic access
+To: Sasha Neftin <sasha.neftin@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, netdev
+ <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Vitaly Lifshits <vitaly.lifshits@intel.com>, intel-wired-lan@osuosl.org
+References: <20240417190320.3159360-1-vitaly.lifshits@intel.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20240417190320.3159360-1-vitaly.lifshits@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714112729;d19d277f;
+X-HE-SMSGID: 1s0F1Q-0002G7-Vx
 
-On 25/04/2024 23:36, Eddie James wrote:
-> Switch to yaml for the AST2600 FSI master documentation.
+[CCing the maintainers and a few lists]
+
+On 17.04.24 21:03, Vitaly Lifshits wrote:
+> This is a partial revert of commit 6dbdd4de0362 ("e1000e: Workaround
+> for sporadic MDI error on Meteor Lake systems"). The referenced commit
+> introduced an issue on vPro systems, where disconnecting and reconnecting
+> the LAN cable might result in a kernel panic.
 > 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> ---
->  .../fsi/aspeed,ast2600-fsi-master.yaml        | 72 +++++++++++++++++++
->  .../bindings/fsi/fsi-master-aspeed.txt        | 36 ----------
->  2 files changed, 72 insertions(+), 36 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
->  delete mode 100644 Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
-> new file mode 100644
-> index 000000000000..f053e3e1d259
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fsi/aspeed,ast2600-fsi-master.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aspeed FSI master
-> +
-> +maintainers:
-> +  - Eddie James <eajames@linux.ibm.com>
-> +
-> +description:
-> +  The AST2600 and later contain two identical FSI masters. They share a
-> +  clock and have a separate interrupt line and output pins.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - "aspeed,ast2600-fsi-master"
-> +      - "aspeed,ast2700-fsi-master"
+> This was root caused to the usage of usleep_range in an atomic content
+> while trying to access the PHY. Change back the usleep_range calls to
+> udelay.
+>
+> Fixes: 6dbdd4de0362 ("e1000e: Workaround for sporadic MDI error on Meteor Lake systems")
 
-This wasn't tested. No quotes. Do you see any other example like this?
+Hi everyone. What's the status here? It seems like this regression fix
+did not make any progress for about a week. Which is not really ideal,
+as the issue afaics causes quite a few people headaches, as a quick and
+rough search indicates (there might be some false positives in here):
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  cfam-reset-gpios:
-> +    maxItems: 1
-> +    description:
-> +      Output GPIO pin for CFAM reset
-> +
-> +  fsi-routing-gpios:
-> +    maxItems: 1
-> +    description:
-> +      Output GPIO pin for setting the FSI mux (internal or cabled)
-> +
-> +  fsi-mux-gpios:
-> +    maxItems: 1
-> +    description:
-> +      Input GPIO pin for detecting the desired FSI mux state
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +allOf:
-> +  - $ref: fsi-controller.yaml#
+https://bugzilla.kernel.org/show_bug.cgi?id=218740
+https://bugzilla.suse.com/show_bug.cgi?id=1223109
+https://bugzilla.suse.com/show_bug.cgi?id=1222945
+https://bbs.archlinux.org/viewtopic.php?id=294913
+https://bbs.archlinux.org/viewtopic.php?id=294828
+https://forum.manjaro.org/t/networkmanager-stability-issues-since-latest-update/159960
+https://discussion.fedoraproject.org/t/kernel-6-8-5-stops-at-splash-screen/113519
+https://bugzilla.redhat.com/show_bug.cgi?id=2276325
+https://bugzilla.redhat.com/show_bug.cgi?id=2276852
+https://www.reddit.com/r/voidlinux/comments/1c9s8ut/bug_scheduling_while_atomic/
 
-This goes after required:
+Side note: would be nice to add these tags to the patch
+description, too:
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +    #include <dt-bindings/gpio/aspeed-gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    fsi-master@1e79b000 {
-> +        compatible = "aspeed,ast2600-fsi-master";
-> +        reg = <0x1e79b000 0x94>;
-> +        interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_fsi1_default>;
-> +        clocks = <&syscon ASPEED_CLK_GATE_FSICLK>;
-> +        fsi-routing-gpios = <&gpio0 ASPEED_GPIO(Q, 7) GPIO_ACTIVE_HIGH>;
-> +        fsi-mux-gpios = <&gpio0 ASPEED_GPIO(B, 0) GPIO_ACTIVE_HIGH>;
-> +        cfam-reset-gpios = <&gpio0 ASPEED_GPIO(Q, 0) GPIO_ACTIVE_LOW>;
+ Reported-by: Jérôme Carretero <cJ@zougloub.eu>
+ Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218740
+ Closes: https://lore.kernel.org/lkml/a7eb665c74b5efb5140e6979759ed243072cb24a.camel@zougloub.eu/ 
 
-No children?
-
-
-Best regards,
-Krzysztof
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
