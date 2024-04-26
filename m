@@ -1,169 +1,179 @@
-Return-Path: <linux-kernel+bounces-160532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616088B3ED4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:03:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D058A8B3EDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:06:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75F121C223EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:03:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 866282848F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF45016D9D7;
-	Fri, 26 Apr 2024 18:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B8416DEAE;
+	Fri, 26 Apr 2024 18:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9oEdUcP"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="QE+QogRD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cZ16Xyqj"
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA88016C45B;
-	Fri, 26 Apr 2024 18:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865B216D4CE;
+	Fri, 26 Apr 2024 18:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714154624; cv=none; b=d8JdhTKw00GLGtMCH1+vyvv8Mms6E6lpLftsFwAv8QuPc1b3C87Cs3zL1TYLlg+aN+n+T1YniV9WnDBWMCisVOv5HZRT6mC7nL05ADOULBdCXWziXvX8onw0DY59cy9QY9lG594lwmjhrQsZ96hwoe+lxJb1mp0R30Jdim9ve3A=
+	t=1714154753; cv=none; b=P39FA0bZkRsvIpnVBhRKYoUU958hwMHjERr2/6lzrL9qhfyVgY+cCbcESGR9Npy5BIVrlJpAfbP287Fldo0P81SsEa6xJc569f0QxbiBbnNL3jJce2sqkU1+3/l/VReFfun/MT+x3Yltoif5dNIudKlJ81A6cw29BeOmk2TxbK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714154624; c=relaxed/simple;
-	bh=o9C3Y4wKnnAMYR4R4XZ258dS0vNsA42AOcfW24YCujM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A2wmsbI0It+GjnH8SOCR2nY/8Z8eF0PkvHq0cZi/+Hho6xmDDoCOPaU4l7LrglB0Z7P48opNlfd/DOO3kN3DGiiO4dxhUVm46iFTRaTt/zTre5fc7mCH8x5DFoCWOENpeCw3g9KQyfI1/zEljLfFxczUxPByQowIPOnnzV3Gaqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y9oEdUcP; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1eac92f7c74so16277345ad.3;
-        Fri, 26 Apr 2024 11:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714154622; x=1714759422; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+zLMERCAeeJ8zabPFzTQqoiOgb5JxeqVEQwjKBN9mmA=;
-        b=Y9oEdUcP2FqyBOTiYyHOoQphesh8FntxhDTrby3HX8EhCTo0gxPBSM3Ji+X0PWIBx8
-         5lRmvcN8eWdt88UYoH2CBYmnaVKFs0FbsI9iueE/BWuAnCYzb6fFiwKQg0eNTbtaa94Q
-         0Sc1CZ07L2Jx8bGohH2IS03GM9mnvssX9PtUaQvr5dYOUmxChnWWR5FXZISCtBDdln17
-         DDQLugrTiF+HdmtRmatb7vOnwj1A+q3vk96LBFWWxv9t8+JjosS2hffTBvu9FPLJZOSG
-         XtYqu1ow+Uw0PprwHK7aXhj/8s+f7DxYOB5f613rRb6oz+tRGXN1foAnD5sHMdHkdA6i
-         OfUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714154622; x=1714759422;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+zLMERCAeeJ8zabPFzTQqoiOgb5JxeqVEQwjKBN9mmA=;
-        b=Siy3KH8jNzSdrUdV8jnO2HfoG7gLwWCbkC5cvFIdkHQgzU4rxE8bhHPwzLZzbssknO
-         727s6fzApFFVzOH025yJb7JoYqltM16HhaZNkXs/jgivrJ6szZH7NaDCQvaCuK5vZzxu
-         JKFqmxAiVvr1SMWHueOAZQRJUvCAfjcuaHEwA93JDGV+IpvFckJVpAEqDnkxgS7nrYMN
-         1iuqoRn7qH7SlSKhceIV7cuiuGcwXyGeZUQ4kx4Vw2U+XGUfKqw1wgnUEhhrDBtW6fu2
-         Ed1di3JtxzWCD0b43tSCuT3HL0a6mYoSDVW9DY5JOV9HzcuffmZ1KitL/wz24zzjIyOx
-         xPfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUqXco2LhI/nH5BY+iojsVSpM0yjrrCwI0DAAeuRcOjA1zpZsH1qkewjxHrKsv3DqTdvgKr3LZ1uqTgljB4QR4eO/vDTK5RBIfYVUWSeTDl9mH5aLycnWKRet7Zd9tQGRW4/WmSUKtfBKXzZzZk54Ezs+8jA/bLWwfJoH7AbSI4S2G/aDuUKIJwID7KoUZvdK6CL/6ILXOHuMyCwcA/R0M
-X-Gm-Message-State: AOJu0YzK4pbTd1w4Ffvj5NGI98qTBs9QAyODoDxR4oU34pzHxIPCPXjr
-	62j9xl4itWRpfWyonTo911Q5J3+OKoj8ZAg1caX1rBdaTr5dHT8Xr05An/orLSrwwfN5g6j9M3t
-	U63965CrYgaH3Jm53RZ8JoZn7AOU=
-X-Google-Smtp-Source: AGHT+IGyoj0fwtcOLjsvSxBdIcX1FXcslRfQd5W9ezMPzPQU/t+8yhXUOx1RNzzWkY6RiI0QXztWzyy63rXbrwCE1uI=
-X-Received: by 2002:a17:902:c40f:b0:1e9:cf94:5bea with SMTP id
- k15-20020a170902c40f00b001e9cf945beamr4306261plk.35.1714154621816; Fri, 26
- Apr 2024 11:03:41 -0700 (PDT)
+	s=arc-20240116; t=1714154753; c=relaxed/simple;
+	bh=nT/oBBOjjNApvJlf7aRiQoZ6G2VijJYzRaV0cSow35I=;
+	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pu197jDAVTHD0PaAhpJWr5ALUJicfHANd6Sa11vc2J/DoyJvi4yLlagGPaiNJ+a6akn6pQQNXxtuJHBwl8NsCJY/EPslNnH3l6SUtUTzWxP83JTVNaLF5qZD2bTQXNL2COovQmowbJtOL3VDVcJJmiQBe/7ZISGB8eigR9ckqzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=QE+QogRD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cZ16Xyqj; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id B868B180007B;
+	Fri, 26 Apr 2024 14:05:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 26 Apr 2024 14:05:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1714154749;
+	 x=1714241149; bh=nPovvuf7k5MAjZUZqG7ireg2weJG8ZVQLCrzLgnFtK0=; b=
+	QE+QogRDZrHEWEIk7sK+UYjH18TcZqf6JK6vXJW653Vq2EihijYbGHzHpBgEu4VH
+	DdJpZuEphwEXQxtedQJsDl5HVAO2wR4JPpiDlbsRbD/K56/E1ek4pEGOZJO0n4nZ
+	d+MEON6BKAkHTBdL+DY4XVXLgeAL2pZ6tBlDkUoVfSH4EGwg1bobkPa3eMoSMzoF
+	DW4yozLEtDvC2RiLLn5XvkbtNY3vWy7aKDF2lrzSwHDHJg+FIsTAX38EUIxYvLkh
+	dWjW2iu6+f/DF3PdxR865CokJiYyEcFGqwnGjFAKxrkUpE0I/GD+QBwJFag8dyLh
+	4BRcKM9NJTE/lXiJdKsnhA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714154749; x=
+	1714241149; bh=nPovvuf7k5MAjZUZqG7ireg2weJG8ZVQLCrzLgnFtK0=; b=c
+	Z16Xyqjk6QXPSrNSYa9fbl4w2Smfd9B2QYmS64QMVBGiyZpqqKNwaCon6nLB52Qu
+	Rqte/4PMCCCj3NOXadN+xAO2vlRYb9E+IHuND5003I6C2UaXDEfI3NyMi5UZh6oQ
+	Ja0s6h5MODFdeESYZMGiIr/GEmEat3Q3rLXuZT5CF5zvVaha9D5AUI6D2ewdm+0e
+	0uYgquwdJOJ+Zv9W1Ai3TN/TGLAfS9QuFsdUP9FSmGla5zZXFkVjKcXb2HE32Gx8
+	qsc5Y1MdLiNnPghfUX8H+H/ttY68LEHNaXOtiWWHTiV0Pq+dfyey+1FNxO88fqtB
+	AlkzVx9+B8MKAGYR3F2Fw==
+X-ME-Sender: <xms:_OwrZhVxmH5RaDkmPUXMyt5m7bzyM38Y-pP_uPTI1T3A_e5l613xGA>
+    <xme:_OwrZhkg05lDn7v2rhAAXGd1OJFNlVfs--StDoY8V2vwy0h3l3n9frj3Yhf84rtus
+    kJcurg6MSJ5XQHq1og>
+X-ME-Received: <xmr:_OwrZtZ4J2qW6od58rCeQAK65UtFtOU_syc8QTsOcWIxRmgG5X2dpgrPMs_MH_kP3lkhB2ZT3yol0Nmc4E0VXIW2r13z6WwfkXUr0zQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelledguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffuvfevkfgjfhfogggtgfesthhqredtredtudenucfhrhhomhepnfih
+    nhguohhnucfurghntghhvgcuoehlshgrnhgthhgvsehlhihnuggvnhhordgtrgeqnecugg
+    ftrfgrthhtvghrnheptddvfedvteefgeegjeegjedvveetjedvheehtdeuuefglefhueei
+    ffeiheffteehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheplhhsrghntghhvgeslhihnhguvghnohdrtggr
+X-ME-Proxy: <xmx:_OwrZkUjiudZZu876SUQX4EFZGeHdHAE_SbyCgTSyq3y1aFlBizHFA>
+    <xmx:_OwrZrnGYEfFDEY6mA22gTphwUj3jKIPwEsQ4opUJ7yeYB6Fw4FO4Q>
+    <xmx:_OwrZhdvMXjyXVGVXB2oJjmH6MWR58v6qYPc-KzoGcLbA_aBUU73pw>
+    <xmx:_OwrZlGIrGSsxbt114v6rjQVOivKiy7L3b0iUgIodWKei3_5u325mQ>
+    <xmx:_ewrZkd5Wt2020nARb5BvvNuhIncq_4yKEH8iXp6ZMaAX1qh4Re8ay3t>
+Feedback-ID: i1719461a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Apr 2024 14:05:45 -0400 (EDT)
+Date: Fri, 26 Apr 2024 12:05:36 -0600
+From: Lyndon Sanche <lsanche@lyndeno.ca>
+Subject: Re: [PATCH v2] platform/x86: dell-laptop: Implement platform_profile
+To: Ilpo =?iso-8859-1?q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: mario.limonciello@amd.com, pali@kernel.org, W_Armin@gmx.de,
+	srinivas.pandruvada@linux.intel.com, Matthew Garrett <mjg59@srcf.ucam.org>,
+	Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
+Message-Id: <C9AKCS.CKJOJZMUUKSZ1@lyndeno.ca>
+In-Reply-To: <e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
+References: <20240425172758.67831-1-lsanche@lyndeno.ca>
+	<20240426020448.10862-1-lsanche@lyndeno.ca>
+	<e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
+X-Mailer: geary/44.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-6-jolsa@kernel.org>
-In-Reply-To: <20240421194206.1010934-6-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 11:03:29 -0700
-Message-ID: <CAEf4BzbWr9s2HiWU=7=okwH7PR8LHGFj2marmaOxKW61BWKHGg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 5/7] selftests/bpf: Add uretprobe syscall call
- from user space test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
-	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
-:
->
-> Adding test to verify that when called from outside of the
-> trampoline provided by kernel, the uretprobe syscall will cause
-> calling process to receive SIGILL signal and the attached bpf
-> program is no executed.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/uprobe_syscall.c | 92 +++++++++++++++++++
->  .../selftests/bpf/progs/uprobe_syscall_call.c | 15 +++
->  2 files changed, 107 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call=
-c
->
 
-See nits below, but overall LGTM
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-[...]
-
-> @@ -219,6 +301,11 @@ static void test_uretprobe_regs_change(void)
->  {
->         test__skip();
->  }
-> +
-> +static void test_uretprobe_syscall_call(void)
-> +{
-> +       test__skip();
-> +}
->  #endif
->
->  void test_uprobe_syscall(void)
-> @@ -228,3 +315,8 @@ void test_uprobe_syscall(void)
->         if (test__start_subtest("uretprobe_regs_change"))
->                 test_uretprobe_regs_change();
->  }
-> +
-> +void serial_test_uprobe_syscall_call(void)
-
-does it need to be serial? non-serial are still run sequentially
-within a process (there is no multi-threading), it's more about some
-global effects on system.
-
-> +{
-> +       test_uretprobe_syscall_call();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c b/to=
-ols/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> new file mode 100644
-> index 000000000000..5ea03bb47198
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> @@ -0,0 +1,15 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <string.h>
-> +
-> +struct pt_regs regs;
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +SEC("uretprobe//proc/self/exe:uretprobe_syscall_call")
-> +int uretprobe(struct pt_regs *regs)
-> +{
-> +       bpf_printk("uretprobe called");
-
-debugging leftover? we probably don't want to pollute trace_pipe from test
-
-> +       return 0;
-> +}
+On Fri, Apr 26 2024 at 12:23:00 PM +03:00:00, Ilpo J=E4rvinen=20
+<ilpo.jarvinen@linux.intel.com> wrote:
+> On Thu, 25 Apr 2024, Lyndon Sanche wrote:
+>=20
+>>  Some Dell laptops support configuration of preset
+>>  fan modes through smbios tables.
+>>=20
+>>  If the platform supports these fan modes, set up
+>>  platform_profile to change these modes. If not
+>>  supported, skip enabling platform_profile.
+>>=20
+>>  Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
+>>  ---
+>=20
+> Two things:
+> - You're missing patch version history (put it below the --- line)
+> - Don't send updates so soon, give people time to comment. When I saw=20
+> v1
+>   for the first time, you had already posted the next version.
+>=20
+>>  +void thermal_cleanup(void)
+>>  +{
+>>  +	platform_profile_remove();
+>>  +	kfree(thermal_handler);
+>>  +}
+>>  +
+>>   static struct led_classdev mute_led_cdev =3D {
+>>   	.name =3D "platform::mute",
+>>   	.max_brightness =3D 1,
+>>  @@ -2238,6 +2452,12 @@ static int __init dell_init(void)
+>>   		goto fail_rfkill;
+>>   	}
+>>=20
+>>  +	// Do not fail module if thermal modes not supported,
+>>  +	// just skip
+>>  +	ret =3D thermal_init();
+>>  +	if (ret)
+>>  +		goto fail_thermal;
+>>  +
+>>   	if (quirks && quirks->touchpad_led)
+>>   		touchpad_led_init(&platform_device->dev);
+>>=20
+>>  @@ -2317,6 +2537,8 @@ static int __init dell_init(void)
+>>   		led_classdev_unregister(&mute_led_cdev);
+>>   fail_led:
+>>   	dell_cleanup_rfkill();
+>>  +fail_thermal:
+>>  +	thermal_cleanup();
+>>   fail_rfkill:
+>>   	platform_device_del(platform_device);
+>>   fail_platform_device2:
+>>  @@ -2344,6 +2566,7 @@ static void __exit dell_exit(void)
+>>   		platform_device_unregister(platform_device);
+>>   		platform_driver_unregister(&platform_driver);
+>>   	}
+>>  +	thermal_cleanup();
+>=20
+> This is still not right, you'll still platform_profile_remove() even=20
+> if
+> the init side call failed.
+>=20
 > --
-> 2.44.0
->
+>  i.
+>=20
+
+Thank you for your feedback. I agree with your comments and will add=20
+more checking on whether certain cleanup actions are necessary.
+
+Lyndon
+
+
 
