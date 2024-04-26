@@ -1,135 +1,114 @@
-Return-Path: <linux-kernel+bounces-160624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BA48B4039
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:43:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3CA78B403D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:44:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A61E1F239FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:43:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 103581C21BE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DB11D53F;
-	Fri, 26 Apr 2024 19:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516911CD38;
+	Fri, 26 Apr 2024 19:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BTHJ5x2O"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="09/7GHIC"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077C1171A5;
-	Fri, 26 Apr 2024 19:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D5018C19;
+	Fri, 26 Apr 2024 19:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714160601; cv=none; b=Bcn1TToavMtw7SpzPwtz+NbrtCnzI+eNWS5Ty/MqyitrZyfL/5R0c7Cnzq0RbaNBBfIx/iAkCWtrnFfvEqVGQBQfWqau8d4dFQGlxOWtzHxFTvXvfaDmffHoWpTSlJA++HLEoHI/xbabvYWkICiDBiqNP7P67ATXaR+acWqCoKs=
+	t=1714160635; cv=none; b=g3riy1gPEAqbOkFDDjLsxdCEJhEcjWgRHHdVzSg9ALY9I777wgMEsoaZWeVnnEOj4uEbt8Rrq75LhFJrBp8vPoWCuxcq2b00BfSSrmEtNOHoAdjgJcUZazgHtku3KYWLB6MrjQHOgqpssIGvj6pGKEg6jvTe0P+nkqb2ygk4ExU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714160601; c=relaxed/simple;
-	bh=v3VjEtNySaGx4z/ww+NWdgMzt23br0WBt9LqihrhESs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ch40jcedErXtQuxEAR+iJHoBRL2nJRTEeTRpicMTtha3eLbpnBX2psDNmkVzk5HwZeM55hYaAoiDzVfoCx6B82kcau/j/JTHXMZzAw9SeBot8P0bD93a6ZOMXWFT4EXKxVSWjfgCFG15EXGSz3sDUmp0IPrkSjHSQVIRtU22kEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BTHJ5x2O; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c7513a991cso1670904b6e.1;
-        Fri, 26 Apr 2024 12:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714160599; x=1714765399; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ez5dwbz8JSjneNoXon0fw7sPpOdQl15Vv9BQ7RclgZY=;
-        b=BTHJ5x2O1EsLSmD5D3vODATU7hgzOqZzkrpsu9Kk3f+g90Lp6wwAS53jDRE1hrohwf
-         UVKWsO6YV3E3CEY9YJ1nFHYcMg/+bzJXzpVg040Tr1aJjXmdJ0tVbr/3VfW3vjZgpV+Y
-         QSLKsgpWF41lTRmpPzKjvHNdwKbgXZCNfDDpSFAtTvT+5xCgfPuDiDm84gBN4Szsyh3N
-         R+diXQnxdmfKcGHoLhKZ5JKhMcsmTnBAOVY279Su8t4dk4RobtrZ71LC8gcpPrSa+z1j
-         EyJwbSuz4sftO+ZHeZB1RMtq87p/TpZh+FpKDecPHSa5F/nPfCmmkVy+mXrWL1eUjZUE
-         antQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714160599; x=1714765399;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ez5dwbz8JSjneNoXon0fw7sPpOdQl15Vv9BQ7RclgZY=;
-        b=DfS0zSLY0ybQuL5q4APzafwrZoih1iGusYG40qJ97D87BqvrEOezdA/oBmYeZYaDIQ
-         oMYEkf1fgxCq2kG7PojhSXHEbLpjznqe8Q8C0Uqn4mWCE4xMX0NVp2ZpTxbubi9TrqC9
-         MRApw4KzMoVKELpJ4GP9meB8gp2Kb0xlBJD3wrMRq7z2PdPd1o6DqESMvkKBt7iJCN6k
-         9i2JYeJC7o69jcZAi+e6Cts2/7P158UUyRjaNqJgGx/08VSspmOagffyHESRwxHY5ORa
-         DvtuWL/wM2IA49PyHL8h9scFj/zs9BySBKfPe8ekwxCkZqGzMIqM3ibXsluwHRTDBmh9
-         iaeA==
-X-Forwarded-Encrypted: i=1; AJvYcCW17rMPQF3fcKFtz/bN8tkTYZBvp2vtmuPkh56/aR7pT6UPk8ExYHKzt+9GXhHgEAUsmAEam3HhXb6wZsGHJnWL6jlefzLTGvAcMIq3x89l8yHHSkjfP8lEKwWatzP8w74mgXXrMa/pr6p9HaBiopu3FW8hNrbks+iSTXUt
-X-Gm-Message-State: AOJu0YxH0jC1gC8/e1skdceVCbz/OVb2Y/KB1/wEPn+3x6QFJ7MJVl/a
-	Am3KBgtbxuD9qpjrWi/xwAxJTkCtcsBFsGls5C7+17n5RJNJNcC1
-X-Google-Smtp-Source: AGHT+IEzsciE8ILeKhs0ArVzG7BfrvCSt2KeqxyIdeRcj7dPRlFHo4kYggL2paZOpJqzQkT1bDe1tw==
-X-Received: by 2002:a05:6808:43:b0:3c5:e66b:1f79 with SMTP id v3-20020a056808004300b003c5e66b1f79mr4200106oic.16.1714160598936;
-        Fri, 26 Apr 2024 12:43:18 -0700 (PDT)
-Received: from [10.69.55.76] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05620a134c00b0078f0ee3fcfbsm8090095qkl.46.2024.04.26.12.43.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 12:43:18 -0700 (PDT)
-Message-ID: <50522abe-57d0-47df-9917-e0cd6848650f@gmail.com>
-Date: Fri, 26 Apr 2024 12:43:15 -0700
+	s=arc-20240116; t=1714160635; c=relaxed/simple;
+	bh=1m2KZnSkE8Z9rLOvusGPzukGeEbYzq7AQEGoOjvrcvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T5UnbClfUb8oYoHTGxjAQI2kqS/ogeMaW8MDlCeHgxj5dCdx4D6O2YUl1CXfxrdyF9jXuFAWD5WDRqx8ZHKNx//lDgUOpwnlhTc2CfgadiVgYRAJF6dLZ868zOOsHOVfxWd3B9J1hMUKhNJsmq762uD0U9TixvNuI++uy1cwnJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=09/7GHIC; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=o6y2LJ14txpTdXHbp38HomD5dRIYV/HuQPJ4h1ryQbI=; b=09/7GHICi894+Vn1EAB+6+3+A4
+	tQBIFsrsvyf9k1FIR7QcIBJXkc3Gz3u6pitSWD94UQiGtqeY12M2u9AbwMgslV8VAlNw/OPqqN7kg
+	oKOVYcTEFHay4kevOmcCxx0QGPhMT4zca1Z+b3eU+R3c6MBoUicpECCv/JVukM4Ey4tc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s0RTy-00E6Pj-I9; Fri, 26 Apr 2024 21:43:42 +0200
+Date: Fri, 26 Apr 2024 21:43:42 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Josua Mayer <josua@solid-run.com>
+Cc: Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+	Yazan Shhady <yazan.shhady@solid-run.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Message-ID: <053fff95-4a7d-4d00-ad38-17ffe76a4525@lunn.ch>
+References: <20240414-cn9130-som-v3-0-350a67d44e0a@solid-run.com>
+ <20240414-cn9130-som-v3-4-350a67d44e0a@solid-run.com>
+ <3958052d-fc09-4c4c-a9e3-4923871cff44@solid-run.com>
+ <fd466583-3221-4b94-b66b-18840615fb71@lunn.ch>
+ <15b79794-41f4-43e0-888e-286ca1fc4321@solid-run.com>
+ <d0426bb3-1f40-48ed-9032-6ffdce455cd4@lunn.ch>
+ <32ec3ef4-0ecc-4ae2-bf76-c7b10f54a583@solid-run.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 3/3] net: bcmgenet: synchronize UMAC_CMD access
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240425222721.2148899-1-opendmb@gmail.com>
- <20240425222721.2148899-4-opendmb@gmail.com>
- <07b4cb83-08db-449d-9d73-88e84fa570bd@broadcom.com>
-Content-Language: en-US
-From: Doug Berger <opendmb@gmail.com>
-In-Reply-To: <07b4cb83-08db-449d-9d73-88e84fa570bd@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32ec3ef4-0ecc-4ae2-bf76-c7b10f54a583@solid-run.com>
 
-On 4/26/2024 11:19 AM, Florian Fainelli wrote:
-> On 4/25/24 15:27, Doug Berger wrote:
->> The UMAC_CMD register is written from different execution
->> contexts and has insufficient synchronization protections to
->> prevent possible corruption. Of particular concern are the
->> acceses from the phy_device delayed work context used by the
->> adjust_link call and the BH context that may be used by the
->> ndo_set_rx_mode call.
->>
->> A spinlock is added to the driver to protect contended register
->> accesses (i.e. reg_lock) and it is used to synchronize accesses
->> to UMAC_CMD.
->>
->> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Doug Berger <opendmb@gmail.com>
+On Fri, Apr 26, 2024 at 06:51:02PM +0000, Josua Mayer wrote:
+> Am 26.04.24 um 20:18 schrieb Andrew Lunn:
+> >>>> Colours are similar to RJ45 connectors (yellow, green),
+> >>>> and are intended for the same purpose: link, activity.
+> >>> For the switch LEDs you used label = "LED10"; Does the silk screen
+> >>> have similar numbers for these LEDs?
+> >> Correct, on CN9130 Clearfog Pro DSA switch, all LEDs are labeled
+> >> individually on the silk screen.
+> >>
+> >> The SolidWAN SFP leds are dual-colour leds with 3 terminals:
+> >> anode to 3.3V, 2x cathode to gpio-controlled transistors.
+> >> They are labeled on the silk-screen as "LED9", "LED10".
+> >>
+> >> Duplicate labels are not great, is there a better way?
+> >> old style "LED9:green" e.g. ...?
+> > So you have copper LEDs and SFP LEDs, each with the same silk screen
+> > label? Maybe put 'copper' and 'sfp' as a prefix into the label?
 > 
-> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> No, not quite.
 > 
-> As a bug fix this is totally fine. I believe there could be an 
-> improvement made in 'net-next' whereby we introduce an 
-> unimac_rmw_locked() or something that essentially does:
+> We have 2x SFP Connectors.
+> On the bottom side of PCB immediately below each connector is
+> a single LED (as in physical component), each with a silk-screen label.
 > 
-> void unimac_rmw_locked(struct bcmgenet_priv *priv, u32 offset, u32 
-> mask_clear, u32 mask_set)
-> {
->      u32 reg;
->      spin_lock_bh(&priv->reg_lock);
->      reg = bcmgenet_umac_readl(priv, offset);
->      reg &= ~mask_clear;
->      reg |= mask_set;
->      bcmgenet_umac_writel(priv, reg, offset);
->      spin_unlock_bh(&priv->reg_lock);
-> }
+> "J28"/"SFP 0": "LED10"
+> "J42"/"SFP 1": "LED9"
 > 
-> At least a couple of callers could benefit from it. Thanks!
-The only issue I see is enforcing the 2us delay in reset_umac(). A 
-scenario where a different context might attempt to modify UMAC_CMD 
-during that window is admittedly contrived, but the approach of this 
-commit provides better protection.
+> The problem is that these leds are each two leds in single-package,
 
--Doug
+Ah! Sorry, you clearly said they were dual-colour.
+
+> which is why I put 4 led nodes in dts, two labeled "sfp-0",
+> other two "sfp-1".
+> But I don't think this duplication of label in dts is a good idea.
+
+Agreed. Then i would use the colour as a postfix.
+
+	Andrew
 
