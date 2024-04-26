@@ -1,269 +1,220 @@
-Return-Path: <linux-kernel+bounces-159679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E41B8B3214
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:12:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30F78B3217
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:13:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7073A1C2128C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:11:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 992B02830D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52B313C917;
-	Fri, 26 Apr 2024 08:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F72B13C9AE;
+	Fri, 26 Apr 2024 08:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZTR4Q+J"
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WFDCXNM0"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9FD13A3E7
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5B213C915
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714119114; cv=none; b=WIG2R3Ram4e++g26wUHS0DL+SWdv5kCvgMYt3ULnXdVy3pe3Gy/rMOZV8ZlCL7p3sL1BmuaP9Hi9aIusjzJK6UyeNf6rXkZLr9qEU8qw/gQ6mQLnoJHiOrjBLvCAeRKn9eamzLOMnnb6Vs6mTYFPGs5nQmjqgp+e1s8yZyD+TOA=
+	t=1714119192; cv=none; b=qVdlzZk9N3JyYQFqkHPIzg7EY+2ugsynFXb8g0HwJPuTv0VUuVXc2GHRYt5OeBqYnD2lFfZiEdFrL1azmiJ7dMLokpML9pnsHvz/wDcwoBLbuiJomLIBfmwWai2dckSFruNgBHlvi7vMtyN0Hr1TX707mTXAJeXW4wplAVpelI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714119114; c=relaxed/simple;
-	bh=c6GybAW5xsWBD6p5kQ/47/VKRwZV/VPW1JRrhNCmbhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XbMRmTqX9RIrbWIpSEjm76gXLbFwOfHbkc7ta8qNrBJ+1Remm+WAHHkDByNcKjhuD7I+8RmuHplTsLht4tJHLHZMpWqXB7aLyE0teHsvsZua5jbyAtWVQcu1/H/GW+gxK4bCsX0yYsytCKmTmfdrElb7VUsJzUuGCHLUbhqLBhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZTR4Q+J; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2352cc0b076so705099fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714119111; x=1714723911; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Abckr9PsZt6M9XfZKq0N2yL1inDajc/CKDpZfe0fw6I=;
-        b=CZTR4Q+JPuIZa2W+/BUGP8Y7WP96kVcGvXzJDaB86RbVHEipRbF2SFa9Yg049gwQqm
-         lfDZuFkWmrDRopZV5iz2lBIVydbZ5mpS2p6cmh2WXA05oS7PCNzLKLDWeafql+Sm8Lg8
-         x2O228F4k0t5HTL8CYOpAYP32V8rnf1rClWMm/JcgQlny8kSXygVxwkcyauYi4ftwO2V
-         Sjs9M6GQRj4UqBohQFzjKiET85cbagIoOyxI7CaBYWHsuvn0taKCKRojuaGuoYJFV3lK
-         gXin0F5OSmfiG5BZQJFgB4/5HIBS4c+jM+ubph0UiawNZ/nmmVUmXDZJ1CYgBCFOg6Ml
-         OhvA==
+	s=arc-20240116; t=1714119192; c=relaxed/simple;
+	bh=Z5+DZQqeYmXZDLyZej4BSiGJtIi3heNomxLaim50DIk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pMOba6DLHYFBQTKOQ61kYt1odKk1zdo75dn20FMhlyN1nM8uyi1FDLjq80gj6W+sVvDHYZrhEWysUkWbOAeDdiMz8OMQZcQe8b0Es8yqyEh6tbc2STVPpWfaNA8YJfWqwVzWmT2m4JEcQ1Bsa32mUgBEDB+ujo9m/KO6IDmjwOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WFDCXNM0; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714119190;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=4wVvMR9QBthSgGfJ1Yq67tCFimGOYOSeWNl1DqI6ZuU=;
+	b=WFDCXNM0Gp0Ebqyzp+x2JMdotFjtBhFAHIbzRg9GpdUXQzGlnB0/cVGFBxz3/QX0Iqdflj
+	dsoPOhijeyg/KaYq6EIF2ZXOtz4C72Ucfwzkiowej1h7SIV7CUM5qUeiY7wR2SexzFZb3B
+	cHZ5tMSP0ynkfYJ++D/L5ubnjLmdv8c=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-630-iPwwPI3ROxug3xc9ijE0HQ-1; Fri, 26 Apr 2024 04:13:07 -0400
+X-MC-Unique: iPwwPI3ROxug3xc9ijE0HQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-349e1effeb5so1548558f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:13:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714119111; x=1714723911;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1714119186; x=1714723986;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Abckr9PsZt6M9XfZKq0N2yL1inDajc/CKDpZfe0fw6I=;
-        b=ZkvBsvv9ATsWBI6lCzBi+LoanZnD7IAmPQ6qeJZslIiDpINsjMq7SSQlfe+oh5qtKc
-         VmTV0Shqysn6DnAAArYWYL+GQfp1MkHjI641H7zEoIwSnPw+VCtLlSiSA1PYRcHnlVEy
-         Z5M6PDaXN7sucNpyeO/XoMY5syRAbMF9tjTvcTgstlx9cXRQ4/eS/8Q7HMOCYGNko4vl
-         AYaOGBQOpWQwVX4Q8TeTa5R8C8OWMsQReWWt/LGSLsHNEIeJD+ROTaunO22tIsVq0IgS
-         7i2toY7ZK/hH8RnO01/TljCShev5BBM30105cXoLIeQnNiNhIt8rURAVv028YziCOdvD
-         t6uA==
-X-Forwarded-Encrypted: i=1; AJvYcCXV0srTf9RWALKKOVu0QRK1aVBwnZm75hDLPZRX6+J/WCXrLOtkMFqr+qXDX8bb8YCYOMVw9k7X7kn+dT5j2BzZk7CtB0wWQbqSyV25
-X-Gm-Message-State: AOJu0Ywght1Cy9VCLrZZUTR9blhmRsVj0nSY26ce2vT+2PZahdCysjGz
-	mIwhMEKh4+kqlvTVoVCYX89IF6ZPr1YEdfnncegK8iqL4wvChEQZ
-X-Google-Smtp-Source: AGHT+IFc8NisYizEOwGS51vMjf9HgMa6gMziJgQYK6WQXSlM7tU7tZ0BqCZv8yQArgnVcaI5E0okpg==
-X-Received: by 2002:a05:6870:224a:b0:239:5419:bc74 with SMTP id j10-20020a056870224a00b002395419bc74mr2023347oaf.27.1714119110565;
-        Fri, 26 Apr 2024 01:11:50 -0700 (PDT)
-Received: from snowbird ([136.25.84.117])
-        by smtp.gmail.com with ESMTPSA id r10-20020a6560ca000000b005fd74e632f0sm8339769pgv.38.2024.04.26.01.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 01:11:50 -0700 (PDT)
-Date: Fri, 26 Apr 2024 01:11:46 -0700
-From: Dennis Zhou <dennisszhou@gmail.com>
-To: Peng Zhang <zhangpeng362@huawei.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, dennisszhou@gmail.com,
-	shakeelb@google.com, jack@suse.cz, surenb@google.com,
-	kent.overstreet@linux.dev, mhocko@suse.cz, vbabka@suse.cz,
-	yuzhao@google.com, yu.ma@intel.com, wangkefeng.wang@huawei.com,
-	sunnanyong@huawei.com
-Subject: Re: [RFC PATCH v2 1/2] percpu_counter: introduce atomic mode for
- percpu_counter
-Message-ID: <ZithwiPpjke2qbrv@snowbird>
-References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
- <20240418142008.2775308-2-zhangpeng362@huawei.com>
+        bh=4wVvMR9QBthSgGfJ1Yq67tCFimGOYOSeWNl1DqI6ZuU=;
+        b=bwI5UJOt47Lq5XT9s183rWVgEX9v3P8eZvygtfTa3cdeCYHSyh0OKkTQmDhNrDq+y9
+         IHgRrjWZmz7UZuSsEHgmVJJqtN1HM3hGTH0EYgQwg6mhOAeFbeW8y+Ii+zRmnYF7Vu9D
+         f6KrlLBB5lJ04C9hzOduPDBQCloUbkE6gQeBGO+88MgPc74dk9Y0OdKcCD0OI3vpdPGV
+         GWaZGjLjzKZglfVOxZFjvjtt3wY/2d9Z9uL5WOf/YNNvgBed9ditIjIAE7OOCfv60WEj
+         901Qmxg+9ePbnTmDsGMKHWqU7CTyd+3TtHQvhfUiuxEXB4vEH+kN1nQ5/p5wgr6ainpE
+         tj2g==
+X-Gm-Message-State: AOJu0YzTw8oZZWWTR0Dacd+K2Kl9R3yOIcbxwYPOk1yCG2OWWxLst/bO
+	fsCQv5iwADulsIBtz2cUJv88vn5M3vL5dh9Od7zsGIpVezVfMtwbrYLFavS8+pR67Trh4WpcdWG
+	PxA3awnzuMnMEXjbiUiaEx9rgYHCA1iVjWD8qOkx3MV/v2lJtXGoBDQ43gyWGgw==
+X-Received: by 2002:a5d:67cf:0:b0:343:39a6:93bc with SMTP id n15-20020a5d67cf000000b0034339a693bcmr1773574wrw.11.1714119186228;
+        Fri, 26 Apr 2024 01:13:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEb2czMa8mR6OyEp9wFwbNiHxlxk4lIjR2qEOWqpJmdFakLPIpCUHu6wqhuUf5ZSh0+Thy/iQ==
+X-Received: by 2002:a5d:67cf:0:b0:343:39a6:93bc with SMTP id n15-20020a5d67cf000000b0034339a693bcmr1773555wrw.11.1714119185796;
+        Fri, 26 Apr 2024 01:13:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c726:6100:20f2:6848:5b74:ca82? (p200300cbc726610020f268485b74ca82.dip0.t-ipconnect.de. [2003:cb:c726:6100:20f2:6848:5b74:ca82])
+        by smtp.gmail.com with ESMTPSA id p17-20020a5d4591000000b0034658db39d7sm21897137wrq.8.2024.04.26.01.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 01:13:05 -0700 (PDT)
+Message-ID: <bc0e1cdd-2d9d-437c-8fc9-4df0e13c48c0@redhat.com>
+Date: Fri, 26 Apr 2024 10:13:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418142008.2775308-2-zhangpeng362@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next v2] ksm: add ksm involvement information for
+ each process
+To: xu.xin16@zte.com.cn, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ shr@devkernel.io
+References: <20240426094619962AxIC6CSpfpJNeiy8HRA9h@zte.com.cn>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240426094619962AxIC6CSpfpJNeiy8HRA9h@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 10:20:07PM +0800, Peng Zhang wrote:
-> From: ZhangPeng <zhangpeng362@huawei.com>
+On 26.04.24 03:46, xu.xin16@zte.com.cn wrote:
+> From: xu xin <xu.xin16@zte.com.cn>
 > 
-> Depending on whether counters is NULL, we can support two modes:
-> atomic mode and perpcu mode. We implement both modes by grouping
-> the s64 count and atomic64_t count_atomic in a union. At the same time,
-> we create the interface for adding and reading in atomic mode and for
-> switching atomic mode to percpu mode.
+> In /proc/<pid>/ksm_stat, Add two extra ksm involvement items including
+> MMF_VM_MERGEABLE and MMF_VM_MERGE_ANY. It helps administrators to
+> better know the system's KSM behavior at process level.
 > 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> KSM_mergeable: yes/no
+> 	whether the process'mm is added by madvise() into the candidate list
+> 	of KSM or not.
+> KSM_merge_any: yes/no
+> 	whether the process'mm is added by prctl() into the candidate list
+> 	of KSM or not, and fully enabled at process level.
+> 
+
+Thinking about it, we should avoid exposing internal toggles with 
+unclear semantics to the user. See below.
+
+> Changelog
+> =========
+> v1 -> v2:
+> 	replace the internal flag names with straightforward strings.
+> 	* MMF_VM_MERGEABLE -> KSM_mergeable
+> 	* MMF_VM_MERGE_ANY -> KSM_merge_any
+> 
+> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 > ---
->  include/linux/percpu_counter.h | 43 +++++++++++++++++++++++++++++++---
->  lib/percpu_counter.c           | 31 ++++++++++++++++++++++--
->  2 files changed, 69 insertions(+), 5 deletions(-)
+>   fs/proc/base.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
-> index 3a44dd1e33d2..160f9734c0bb 100644
-> --- a/include/linux/percpu_counter.h
-> +++ b/include/linux/percpu_counter.h
-> @@ -21,7 +21,13 @@
->  
->  struct percpu_counter {
->  	raw_spinlock_t lock;
-> -	s64 count;
-> +	/* Depending on whether counters is NULL, we can support two modes,
-> +	 * atomic mode using count_atomic and perpcu mode using count.
-> +	 */
-> +	union {
-> +		s64 count;
-> +		atomic64_t count_atomic;
-> +	};
->  #ifdef CONFIG_HOTPLUG_CPU
->  	struct list_head list;	/* All percpu_counters are on a list */
->  #endif
-> @@ -32,14 +38,14 @@ extern int percpu_counter_batch;
->  
->  int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->  			       gfp_t gfp, u32 nr_counters,
-> -			       struct lock_class_key *key);
-> +			       struct lock_class_key *key, bool switch_mode);
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 18550c071d71..50e808ffcda4 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -3217,6 +3217,10 @@ static int proc_pid_ksm_stat(struct seq_file *m, struct pid_namespace *ns,
+>   		seq_printf(m, "ksm_zero_pages %lu\n", mm->ksm_zero_pages);
+>   		seq_printf(m, "ksm_merging_pages %lu\n", mm->ksm_merging_pages);
+>   		seq_printf(m, "ksm_process_profit %ld\n", ksm_process_profit(mm));
+> +		seq_printf(m, "KSM_mergeable: %s\n",
+> +				test_bit(MMF_VM_MERGEABLE, &mm->flags) ? "yes" : "no");
 
-Nit: the lock_class_key at the end.
->  
->  #define percpu_counter_init_many(fbc, value, gfp, nr_counters)		\
->  	({								\
->  		static struct lock_class_key __key;			\
->  									\
->  		__percpu_counter_init_many(fbc, value, gfp, nr_counters,\
-> -					   &__key);			\
-> +					   &__key, false);		\
->  	})
->  
->  
-> @@ -130,6 +136,20 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
->  	return (fbc->counters != NULL);
->  }
->  
-> +static inline s64 percpu_counter_atomic_read(struct percpu_counter *fbc)
-> +{
-> +	return atomic64_read(&fbc->count_atomic);
-> +}
-> +
-> +static inline void percpu_counter_atomic_add(struct percpu_counter *fbc,
-> +					     s64 amount)
-> +{
-> +	atomic64_add(amount, &fbc->count_atomic);
-> +}
-> +
-> +int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
-> +				       u32 nr_counters);
-> +
->  #else /* !CONFIG_SMP */
->  
->  struct percpu_counter {
-> @@ -260,6 +280,23 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
->  static inline void percpu_counter_sync(struct percpu_counter *fbc)
->  {
->  }
-> +
-> +static inline s64 percpu_counter_atomic_read(struct percpu_counter *fbc)
-> +{
-> +	return fbc->count;
-> +}
-> +
-> +static inline void percpu_counter_atomic_add(struct percpu_counter *fbc,
-> +					     s64 amount)
-> +{
-> +	percpu_counter_add(fbc, amount);
-> +}
-> +
-> +static inline int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
-> +						     u32 nr_counters)
-> +{
-> +	return 0;
-> +}
->  #endif	/* CONFIG_SMP */
->  
->  static inline void percpu_counter_inc(struct percpu_counter *fbc)
-> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-> index 44dd133594d4..95c4e038051a 100644
-> --- a/lib/percpu_counter.c
-> +++ b/lib/percpu_counter.c
-> @@ -153,7 +153,7 @@ EXPORT_SYMBOL(__percpu_counter_sum);
->  
->  int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->  			       gfp_t gfp, u32 nr_counters,
-> -			       struct lock_class_key *key)
-> +			       struct lock_class_key *key, bool switch_mode)
->  {
->  	unsigned long flags __maybe_unused;
->  	size_t counter_size;
-> @@ -174,7 +174,8 @@ int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->  #ifdef CONFIG_HOTPLUG_CPU
->  		INIT_LIST_HEAD(&fbc[i].list);
->  #endif
-> -		fbc[i].count = amount;
-> +		if (likely(!switch_mode))
-> +			fbc[i].count = amount;
->  		fbc[i].counters = (void *)counters + (i * counter_size);
->  
->  		debug_percpu_counter_activate(&fbc[i]);
-> @@ -357,6 +358,32 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
->  	return good;
->  }
->  
-> +/*
-> + * percpu_counter_switch_to_pcpu_many: Converts struct percpu_counters from
-> + * atomic mode to percpu mode.
-> + */
-> +int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
-> +				       u32 nr_counters)
-> +{
-> +	static struct lock_class_key __key;
+All it *currently* means is "we called __ksm_enter()" once. It does not 
+mean that KSM is still enabled for that process and that any VMA would 
+be considered for merging.
 
-This is an improper use of lockdep. Now all of the percpu_counters
-initialized on this path will key off of this lock_class_key.
+I don't think we should expose this.
 
-> +	unsigned long flags;
-> +	bool ret = 0;
-> +
-> +	if (percpu_counter_initialized(fbc))
-> +		return 0;
-> +
-> +	preempt_disable();
-> +	local_irq_save(flags);
-> +	if (likely(!percpu_counter_initialized(fbc)))
-> +		ret = __percpu_counter_init_many(fbc, 0,
-> +					GFP_ATOMIC|__GFP_NOWARN|__GFP_ZERO,
-> +					nr_counters, &__key, true);
-> +	local_irq_restore(flags);
-> +	preempt_enable();
-> +
-> +	return ret;
-> +}
+That information can be more reliably had by looking at
 
-I'm staring at this API and I'm not in love with it. I think it hinges 
-on that there's one user of mm_stats prior hence it's safe. Generically
-though, I can't see why this is safe.
+"/proc/pid/smaps" and looking for "mg".
 
-I need to give this a little more thought, but my gut reaction is I'd
-rather this look like percpu_refcount where we can init dead minus the
-percpu allocation. Maybe that's not quite right, but I'd feel better
-about it than requiring external synchronization on a percpu_counter to
-ensure that it's correct.
+Which tells you exactly if any VMA (and which) is currently applicable 
+to KSM.
 
-> +
->  static int __init percpu_counter_startup(void)
->  {
->  	int ret;
-> -- 
-> 2.25.1
-> 
 
-Thanks,
-Dennis
+> +		seq_printf(m, "KSM_merge_any: %s\n",
+> +				test_bit(MMF_VM_MERGE_ANY, &mm->flags) ? "yes" : "no");
+
+This makes more sense to export. It's the same as reading 
+prctl(PR_GET_MEMORY_MERGE).
+
+The man page [1] calls it simply "KSM has been enabled for this 
+process", so process-wide KSM compared to per-VMA KSM.
+
+"KSM_enabled:"
+
+*might* be more reasonable in the context of PR_SET_MEMORY_MERGE.
+
+It wouldn't tell though if KSM is enabled on the system, though.
+
+
+[1] 
+https://lore.kernel.org/linux-mm/20230227220206.436662-1-shr@devkernel.io/T/
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
