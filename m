@@ -1,174 +1,275 @@
-Return-Path: <linux-kernel+bounces-159846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6098B3514
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1AA38B34EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DE71C21220
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:16:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D14A11C217A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB291448E2;
-	Fri, 26 Apr 2024 10:15:32 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC4F1428EE;
+	Fri, 26 Apr 2024 10:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="V7O9TQ3c"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFDF13D53C;
-	Fri, 26 Apr 2024 10:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F0E13F42F;
+	Fri, 26 Apr 2024 10:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126532; cv=none; b=aAbrmiUZccJcFz0tHqdofRLNIeifT7AfJpTNKYyKoX0O9CBLavpeJi/RLfyd8UCmS6dDnHMGrvx+kkqR+9thKEP4cNevdmzXL/1tSxm3EtWDo/Qmoun89ROoB3Xrlbfvld5wIbvNMjoRQjd5cuWZtMFOWsVIq9YdEcrjgtAQ/zk=
+	t=1714126041; cv=none; b=bPDaR2KrPh9jOih8/jlc1yziY/Y/dKAtSPRma/w6Gbrwk9vo4Aq4bi5uv9ITH9uIYHG3giFgLLNbfhar5wqkqklKbFpgqwSYvT13sdIpH/73rganw2gtNCqZ4EAcGQFjCPw6BTudncx2QPAz2VxI+3YLzSThkGGNLN6k6+2lMdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126532; c=relaxed/simple;
-	bh=jyX1L/rERiq+QII8Y+zvd62RE4J0GUO9h0sIkXf79nM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c66FnfErTD0yRS431YgzcrnRTDXkc4tIB2UH8nEC42oU9EfFnRUJEU76wK46GVI31xX8tDVYzkZJJq4ig9J184cfsBuo9mGWI24H/t6BQiGH3uno2ucbozRSSsZer6VyYGCoZabXyHToB3Bvk9rmd/taitOohl4GyiuU0PuARZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQpSj1QJFzNtt4;
-	Fri, 26 Apr 2024 18:12:53 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id BDA8F1800C4;
-	Fri, 26 Apr 2024 18:15:26 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 26 Apr 2024 18:15:22 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <jiri@resnulli.us>
-CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 7/7] net: hns3: fix kernel crash when devlink reload during initialization
-Date: Fri, 26 Apr 2024 18:00:45 +0800
-Message-ID: <20240426100045.1631295-8-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240426100045.1631295-1-shaojijie@huawei.com>
-References: <20240426100045.1631295-1-shaojijie@huawei.com>
+	s=arc-20240116; t=1714126041; c=relaxed/simple;
+	bh=TFB+DqJ0O72/lmKUerSCxOZChv+hpSK+WLOY6t363cY=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rGMQEA728vD4jplcCn7T3mD0pqBYk2lDM9xDN1SI/rH475H/o4iEplPzk6Ga+OOMyLKl0UnN514rSJCJnRT8JKFA6Xk72Xiw0TENsqWHy6gYwUTyzi+txBZSUO6Wkv4QAal9aY8q1qMHpz/Ysb0qXQtkyb+GJfNTRepK5IILfI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=V7O9TQ3c; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714126036;
+	bh=TFB+DqJ0O72/lmKUerSCxOZChv+hpSK+WLOY6t363cY=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=V7O9TQ3cmcZnFAfFjm5p2s6Rq5l9GZrz2xXJSJdl+AqotqRkT2YFC/9UBaEvDTLK4
+	 +xDBPXlCJvJzDnc+f10AfN1LKHS74sr4FkVB+g9QFoMKpFn3sFkVEABzmKex4AUrxa
+	 P/Wksn7d5iB+wWn30gXAMqyQt8xadg5OJg2iITF93jedHMPNmkDhPSWrRwnAlFevu0
+	 bEttLU2IpvfuTb5p9042Rfy6QSgFKPrddseG9oR4SLk1yg/1Upk/DGT6x2Nc0CQP9w
+	 sT6ikfHlxNcSRf53enJNkA7C1kNvykISmtvI8bIIQOtnuVdREo+iEgDNo74Y2Qo2my
+	 hIbbgXYs2AlAw==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E4ABA3780629;
+	Fri, 26 Apr 2024 10:07:12 +0000 (UTC)
+Message-ID: <26993de8-0e4f-4d08-9009-730d674b16c7@collabora.com>
+Date: Fri, 26 Apr 2024 15:07:43 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] KVM: selftests: Use TAP interface in the
+ set_memory_region test
+To: Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>
+References: <20240426085556.619731-1-thuth@redhat.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240426085556.619731-1-thuth@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Yonglong Liu <liuyonglong@huawei.com>
+On 4/26/24 1:55 PM, Thomas Huth wrote:
+> Use the kselftest_harness.h interface in this test to get TAP
+> output, so that it is easier for the user to see what the test
+> is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
+> macro here since these tests are creating their VMs with the
+> vm_create_barebones() function, not with vm_create_with_one_vcpu())
+Thank you for the patch. I'm unable to apply the patch on next-20240426.
 
-The devlink reload process will access the hardware resources,
-but the register operation is done before the hardware is initialized.
-So, processing the devlink reload during initialization may lead to kernel
-crash.
+> 
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  .../selftests/kvm/set_memory_region_test.c    | 86 +++++++++----------
+>  1 file changed, 42 insertions(+), 44 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+> index bd57d991e27d..4db6a66a3001 100644
+> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
+> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+> @@ -16,6 +16,7 @@
+>  #include <test_util.h>
+>  #include <kvm_util.h>
+>  #include <processor.h>
+> +#include "kselftest_harness.h"
+>  
+>  /*
+>   * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
+> @@ -38,6 +39,8 @@ extern const uint64_t final_rip_end;
+>  
+>  static sem_t vcpu_ready;
+>  
+> +int loops;
+> +
+>  static inline uint64_t guest_spin_on_val(uint64_t spin_val)
+>  {
+>  	uint64_t val;
+> @@ -219,6 +222,13 @@ static void test_move_memory_region(void)
+>  	kvm_vm_free(vm);
+>  }
+>  
+> +TEST(move_in_use_region)
+> +{
+> +	ksft_print_msg("Testing MOVE of in-use region, %d loops\n", loops);
+> +	for (int i = 0; i < loops; i++)
+> +		test_move_memory_region();
+> +}
+> +
+>  static void guest_code_delete_memory_region(void)
+>  {
+>  	uint64_t val;
+> @@ -308,12 +318,19 @@ static void test_delete_memory_region(void)
+>  	kvm_vm_free(vm);
+>  }
+>  
+> -static void test_zero_memory_regions(void)
+> +TEST(delete_in_use_region)
+> +{
+> +	ksft_print_msg("Testing DELETE of in-use region, %d loops\n", loops);
+> +	for (int i = 0; i < loops; i++)
+> +		test_delete_memory_region();
+> +}
+> +
+> +TEST(zero_memory_regions)
+>  {
+>  	struct kvm_vcpu *vcpu;
+>  	struct kvm_vm *vm;
+>  
+> -	pr_info("Testing KVM_RUN with zero added memory regions\n");
+> +	ksft_print_msg("Testing KVM_RUN with zero added memory regions\n");
+>  
+>  	vm = vm_create_barebones();
+>  	vcpu = __vm_vcpu_add(vm, 0);
+> @@ -326,7 +343,7 @@ static void test_zero_memory_regions(void)
+>  }
+>  #endif /* __x86_64__ */
+>  
+> -static void test_invalid_memory_region_flags(void)
+> +TEST(invalid_memory_region_flags)
+>  {
+>  	uint32_t supported_flags = KVM_MEM_LOG_DIRTY_PAGES;
+>  	const uint32_t v2_only_flags = KVM_MEM_GUEST_MEMFD;
+> @@ -389,7 +406,7 @@ static void test_invalid_memory_region_flags(void)
+>   * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
+>   * tentative to add further slots should fail.
+>   */
+> -static void test_add_max_memory_regions(void)
+> +TEST(add_max_memory_regions)
+>  {
+>  	int ret;
+>  	struct kvm_vm *vm;
+> @@ -408,13 +425,13 @@ static void test_add_max_memory_regions(void)
+>  	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
+>  	TEST_ASSERT(max_mem_slots > 0,
+>  		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
+> -	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
+> +	ksft_print_msg("Allowed number of memory slots: %i\n", max_mem_slots);
+>  
+>  	vm = vm_create_barebones();
+>  
+>  	/* Check it can be added memory slots up to the maximum allowed */
+> -	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
+> -		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
+> +	ksft_print_msg("Adding slots 0..%i, each memory region with %dK size\n",
+> +		       (max_mem_slots - 1), MEM_REGION_SIZE >> 10);
+>  
+>  	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
+>  		   PROT_READ | PROT_WRITE,
+> @@ -455,12 +472,21 @@ static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
+>  	TEST_ASSERT(r == -1 && errno == EINVAL, "%s", msg);
+>  }
+>  
+> -static void test_add_private_memory_region(void)
+> +static bool has_cap_guest_memfd(void)
+> +{
+> +	return kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+> +	       (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
+> +}
+> +
+> +TEST(add_private_memory_region)
+>  {
+>  	struct kvm_vm *vm, *vm2;
+>  	int memfd, i;
+>  
+> -	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
+> +	if (!has_cap_guest_memfd())
+> +		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
+> +
+> +	ksft_print_msg("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
+>  
+>  	vm = vm_create_barebones_protected_vm();
+>  
+> @@ -491,13 +517,16 @@ static void test_add_private_memory_region(void)
+>  	kvm_vm_free(vm);
+>  }
+>  
+> -static void test_add_overlapping_private_memory_regions(void)
+> +TEST(add_overlapping_private_memory_regions)
+>  {
+>  	struct kvm_vm *vm;
+>  	int memfd;
+>  	int r;
+>  
+> -	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
+> +	if (!has_cap_guest_memfd())
+> +		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
+> +
+> +	ksft_print_msg("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
+>  
+>  	vm = vm_create_barebones_protected_vm();
+>  
+> @@ -536,46 +565,15 @@ static void test_add_overlapping_private_memory_regions(void)
+>  	close(memfd);
+>  	kvm_vm_free(vm);
+>  }
+> +
+>  #endif
+>  
+>  int main(int argc, char *argv[])
+>  {
+> -#ifdef __x86_64__
+> -	int i, loops;
+> -
+> -	/*
+> -	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
+> -	 * KVM_RUN fails with ENOEXEC or EFAULT.
+> -	 */
+> -	test_zero_memory_regions();
+> -#endif
+> -
+> -	test_invalid_memory_region_flags();
+> -
+> -	test_add_max_memory_regions();
+> -
+> -#ifdef __x86_64__
+> -	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+> -	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
+> -		test_add_private_memory_region();
+> -		test_add_overlapping_private_memory_regions();
+> -	} else {
+> -		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
+> -	}
+> -
+>  	if (argc > 1)
+>  		loops = atoi_positive("Number of iterations", argv[1]);
+>  	else
+>  		loops = 10;
+>  
+> -	pr_info("Testing MOVE of in-use region, %d loops\n", loops);
+> -	for (i = 0; i < loops; i++)
+> -		test_move_memory_region();
+> -
+> -	pr_info("Testing DELETE of in-use region, %d loops\n", loops);
+> -	for (i = 0; i < loops; i++)
+> -		test_delete_memory_region();
+> -#endif
+> -
+> -	return 0;
+> +	return test_harness_run(argc, argv);
+>  }
 
-This patch fixes this by registering the devlink after
-hardware initialization.
-
-Fixes: cd6242991d2e ("net: hns3: add support for registering devlink for VF")
-Fixes: 93305b77ffcb ("net: hns3: fix kernel crash when devlink reload during pf initialization")
-Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 17 +++++------------
- .../hisilicon/hns3/hns3vf/hclgevf_main.c        | 10 ++++------
- 2 files changed, 9 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 018069b12de6..263d75446a41 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -11631,16 +11631,10 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
- 	if (ret)
- 		goto out;
- 
--	ret = hclge_devlink_init(hdev);
--	if (ret)
--		goto err_pci_uninit;
--
--	devl_lock(hdev->devlink);
--
- 	/* Firmware command queue initialize */
- 	ret = hclge_comm_cmd_queue_init(hdev->pdev, &hdev->hw.hw);
- 	if (ret)
--		goto err_devlink_uninit;
-+		goto err_pci_uninit;
- 
- 	/* Firmware command initialize */
- 	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw, &hdev->fw_version,
-@@ -11808,6 +11802,10 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
- 		dev_warn(&pdev->dev,
- 			 "failed to wake on lan init, ret = %d\n", ret);
- 
-+	ret = hclge_devlink_init(hdev);
-+	if (ret)
-+		goto err_ptp_uninit;
-+
- 	hclge_state_init(hdev);
- 	hdev->last_reset_time = jiffies;
- 
-@@ -11815,8 +11813,6 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
- 		 HCLGE_DRIVER_NAME);
- 
- 	hclge_task_schedule(hdev, round_jiffies_relative(HZ));
--
--	devl_unlock(hdev->devlink);
- 	return 0;
- 
- err_ptp_uninit:
-@@ -11830,9 +11826,6 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
- 	pci_free_irq_vectors(pdev);
- err_cmd_uninit:
- 	hclge_comm_cmd_uninit(hdev->ae_dev, &hdev->hw.hw);
--err_devlink_uninit:
--	devl_unlock(hdev->devlink);
--	hclge_devlink_uninit(hdev);
- err_pci_uninit:
- 	pcim_iounmap(pdev, hdev->hw.hw.io_base);
- 	pci_release_regions(pdev);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 08db8e84be4e..43ee20eb03d1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2845,10 +2845,6 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 	if (ret)
- 		return ret;
- 
--	ret = hclgevf_devlink_init(hdev);
--	if (ret)
--		goto err_devlink_init;
--
- 	ret = hclge_comm_cmd_queue_init(hdev->pdev, &hdev->hw.hw);
- 	if (ret)
- 		goto err_cmd_queue_init;
-@@ -2941,6 +2937,10 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 
- 	hclgevf_init_rxd_adv_layout(hdev);
- 
-+	ret = hclgevf_devlink_init(hdev);
-+	if (ret)
-+		goto err_config;
-+
- 	set_bit(HCLGEVF_STATE_SERVICE_INITED, &hdev->state);
- 
- 	hdev->last_reset_time = jiffies;
-@@ -2960,8 +2960,6 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- err_cmd_init:
- 	hclge_comm_cmd_uninit(hdev->ae_dev, &hdev->hw.hw);
- err_cmd_queue_init:
--	hclgevf_devlink_uninit(hdev);
--err_devlink_init:
- 	hclgevf_pci_uninit(hdev);
- 	clear_bit(HCLGEVF_STATE_IRQ_INITED, &hdev->state);
- 	return ret;
 -- 
-2.30.0
-
+BR,
+Muhammad Usama Anjum
 
