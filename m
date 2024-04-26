@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-159828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E409F8B34D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:03:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B7E38B34D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:03:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 127761C20C25
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:03:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D51BF28693C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04AE142E97;
-	Fri, 26 Apr 2024 10:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDAE1442FE;
+	Fri, 26 Apr 2024 10:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="USJDmzH4"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sljorf8a"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D67140E30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054671422C6
 	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125790; cv=none; b=BP6F+JtFl1qAISf0I1wODP84JUt6YHkD6S7ZQTADuS+9y/qjQ53pLm/yeoCIy9G5MqNXJMrbuqlPqQCpqLamr1fxX74fKv9iQX7EhZa4MVEoBrH/BANnVkGt0LEzlGFM/KtmSZpA3T2pOTCgc2xzZmvwbG71a9zRuIewONuxAM0=
+	t=1714125791; cv=none; b=vA4652GAcJgjU/vofarYRd3MAYaq6LKmuymeHnBGrGEomhRteTivSMHDL5YEAxCwjv7PTybrXNmpRSS7nHYG2KfT0InwJg4TrpVeGC5KUj7sJNAIzFCu1NeEenFaOJwBtsTnsEknKi61i3YAJzwOuQ9qil0xpLXg6Nk2s/JXtck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125790; c=relaxed/simple;
-	bh=ryP7QOTYlztIm8nqNij3nVjhL1SYpQUIEozyw+/HVzI=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kv1cxktq9rH2VQQL/dhM6Kw/c6+IcZ1QLZySjX2EHXSpHf36NUckv1ZeML/HyhwARcTh/rkkins/6C4ThtY7HfXbr6HbICH/jt7f5ay6gGZJeaPd+X9S5gvutbr2jsilqRm4vbuM1YEUB7BIQqoP7yrlozSaw0rr3hT/Hmb6m+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=USJDmzH4; arc=none smtp.client-ip=209.85.218.46
+	s=arc-20240116; t=1714125791; c=relaxed/simple;
+	bh=kEIXNWge+gu6r69LP1+LoW5ZL/kMo1721Gar8FYgwE0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=qRiOa9ukRXr7K4SPLbn3Af9sPHOM2p+BQjiJf5TOkc5PxsWwBwkQ1l/3RGnLfelDlaoHdZvxRpH1WjDauI4V6JWyrLF1f5iKXMttB1Mjc+wOVOaGhMMzi/qIduDnMATKbIHgHXoLf5PkXrD0h4ko/bOnfnJlC/SWVI5VsoTWvfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sljorf8a; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a51a7d4466bso234613666b.2
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5723edf0ae5so2098866a12.0
         for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1714125787; x=1714730587; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NZroSo8iMfP3vk8OTX3L1wntYEviDHYNgM+pqywM7tQ=;
-        b=USJDmzH4BOdZ6ax+cjfpiOwTi+m9lMHO0XVE7I3E6se0sNEPhlcPMxunC5fmMKIc4E
-         PG3J6uqniXgd/OclOplVVK9YU28MQbRZJ5fzgYfdelfod3Q/axuJioQIvbd/YmCt4NeL
-         AF2T1jlvKwtRct08LvN26GoorbOcMt2y++kfeSwO/WPFFJs42Yshec115ZIOgPHtgblg
-         aWCLyA87IRKwwQMD4vDWhDNLeVotJYdfTcz+oSR4q1HcYSke0/Mn8HZyycfo7BrEp4js
-         W3szRXeQDGt3TglDIta8ZpL87Rt0VIQfk6KoqIArUImMzgTFqqPDU1V80mVCQJms2gmv
-         pVJQ==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wXVLcsEROWtnozSKM9ibFjZVD9YeGJfdJ8xwiEDpbCA=;
+        b=sljorf8abuXbxliOoFIkZbMZ0KUNYxoCzpmwvJ1PvhBKTdXzaf70grQr3owfp4C75D
+         dJONjyTB8CHK8uQR/tFfFZY40eWUmUUIqr2daX4IJw91FqKCGxlYnyvNyZU3uDsC4ACP
+         9rjrKvY9bswDq6kEhMgm+vdndEzBTt9YetFh1333Nd6CklzPNyLbojTMEqwvZx1PzMTQ
+         XYPNBO5NSUdsIUV5Gy0IzR7Z7NQmEN0+7eq3pHIhRDA5GOgdpqE1vYt5EILyrZ7HhP7N
+         Aha1WZRXgOq/b6haHvUhJFpquxREvVUDNudsIwS+MOm5YpCf+RNKIzJYkbQJAak8+X0Z
+         W8CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714125787; x=1714730587;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NZroSo8iMfP3vk8OTX3L1wntYEviDHYNgM+pqywM7tQ=;
-        b=F43VAD/nZbtWvEAPNzzr0dGEzLD1/QSiqJwcI5JAO8V9SMDvf4lHRnnW+VUA0XC9Ub
-         XfjqVO+G6x+pRb63coWybqvKu8Wz0g/NayWaHLx+/0R0YjVS0eXAHeXXrcxdESgQVFj+
-         SLS1G5AVUQ6kM8W0rtFOrjcmyxFD/NKc9wdM2hee+JkxAAHPvokbYt9jr167jq9FAbI5
-         7Apti/J1sAOuH0LnEnkMf/EKEBs1+9La/JLCdMwWUNg1YHt+uVpZOIbui+irAs31KRXt
-         02SBgHzIbGpNhZQgRZZsdg1Sx7SF7KvnudqqrEuoUuqgUFEDmFRZLhAKirbPQmRUGIn/
-         Wfzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWm3zR5EKptt8RrSGcbLAJfYUK/wxausg2g5LwkE6vT/7A90RAAK4nGoMhV3rOV6cAojM0fNpQzUk8HsD9g7BRHsEHjKlVqMUPjYljZ
-X-Gm-Message-State: AOJu0YzxzK3aWrEVTurhkW3x6TkHR0PyBYYrvx8wMVSrH1hjksX8Ll+B
-	x7BWrE21HOCDODNupiaZcq1hqXzDIFkSiqKu8dd4EVRsZlcCL6QCJziD3brIO1E=
-X-Google-Smtp-Source: AGHT+IFqZI2EX6TGMrhgOaiItUVC4QA3lp6lQjXgOmzliiIzZJRkthk8yLel6nW0qHdN359C7X9+Sg==
-X-Received: by 2002:a17:906:16d7:b0:a58:86c0:1275 with SMTP id t23-20020a17090616d700b00a5886c01275mr1579547ejd.30.1714125786723;
-        Fri, 26 Apr 2024 03:03:06 -0700 (PDT)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXVLcsEROWtnozSKM9ibFjZVD9YeGJfdJ8xwiEDpbCA=;
+        b=cPTgAvqWbGvxEI3aEqcSDfQId7J+xv2Fr7TazKaLZp+XClFUw29w9fBcIuSJzWJU6H
+         htwWETOWYi9NkEgCSkytNm8bPwn7W8UabhdrauxxF524k88DuYLf/V60K15eD292bkRa
+         /7FMMV8uZ1UD6woxlWJb9AU8peUluaMxFItkgCcnbYRnTKiuDJIZiHkybQU2iGFfLFPK
+         v8rQEXioBdeh8dacibX0qYHumckjMtZsSn+tgYE3HmWlNECwoTNIZ6C0lm9snLOJdKr4
+         5ran6+PQwMRbD+bxgfMYD/VVTp5XOGRjeRsqta03R1CVPR24D4ATl29Ocd2YrJA1hikx
+         dGyg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9KDaTX6CcXb80nJU4UOHnNwt34il2a0uQIcxwJdh+t2FADtx6liywml9LQpexzgSJc3rx2FVJAixq0WPRD5rIymDheKRwEw8hNKhQ
+X-Gm-Message-State: AOJu0YywJ8Jznca7CJeJJUyEsXw4G0MYIIPQaJCQYViUCL+cF3qmJX3d
+	zF1v/NaCZOoBWkVKM/QNQNIOCx+2SS4NNPz1v2gH/6SDwXER0wHVCWm38vLqxQQ=
+X-Google-Smtp-Source: AGHT+IHWAn2UwzuKzKX4rvGcf0ZfBBLAyRhZHKgOyrPEhmB6C/M04p2DwE2DH2kIrrp+nKiuxjo6WA==
+X-Received: by 2002:a17:906:1457:b0:a52:2c0e:2e91 with SMTP id q23-20020a170906145700b00a522c0e2e91mr1517888ejc.17.1714125787362;
+        Fri, 26 Apr 2024 03:03:07 -0700 (PDT)
 Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
         by smtp.gmail.com with ESMTPSA id r20-20020a170906705400b00a555ef55ab5sm10417289ejj.218.2024.04.26.03.03.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 03:03:06 -0700 (PDT)
+        Fri, 26 Apr 2024 03:03:07 -0700 (PDT)
 From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Subject: [PATCH v2 0/5] HSI0 and HSI2 support for Google Tensor gs101
-Date: Fri, 26 Apr 2024 11:03:03 +0100
-Message-Id: <20240426-hsi0-gs101-v2-0-2157da8b63e3@linaro.org>
+Date: Fri, 26 Apr 2024 11:03:04 +0100
+Subject: [PATCH v2 1/5] dt-bindings: clock: google,gs101-clock: add HSI2
+ clock management unit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIANd7K2YC/23MQQ7CIBCF4as0sxYzQBXjynuYLqaFwiQGDBiia
- bi72LXL/yXv26C4zK7Addggu8qFU+yhDgMsgaJ3gm1vUKhGHJUWoTAKXyRKQWTMRZ/lvBJBPzy
- zW/m9Y/epd+DySvmz21X+1r9MlQKFWrS18wkXo/D24Eg5HVP2MLXWvrUuOfelAAAA
+Message-Id: <20240426-hsi0-gs101-v2-1-2157da8b63e3@linaro.org>
+References: <20240426-hsi0-gs101-v2-0-2157da8b63e3@linaro.org>
+In-Reply-To: <20240426-hsi0-gs101-v2-0-2157da8b63e3@linaro.org>
 To: Peter Griffin <peter.griffin@linaro.org>, 
  Michael Turquette <mturquette@baylibre.com>, 
  Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
@@ -95,52 +97,142 @@ Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
  =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
 X-Mailer: b4 0.12.4
 
-This patch series enables the HSI0 and HSI2 (high speed interfaces) for
-gs101:
+From: Peter Griffin <peter.griffin@linaro.org>
 
-- HSI0 feeds the USB block and is a prerequisite to get USB working.
-- HSI2 feeds PCIe and UFS
+Add dt schema documentation and clock IDs for the High Speed Interface
+2 (HSI2) clock management unit. This CMU feeds high speed interfaces
+such as PCIe and UFS.
 
-The parts added here have been verified to work OK without the
-clk_ignore_unused kernel command line option.
-
+Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+Reviewed-by: André Draszik <andre.draszik@linaro.org>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+[AD: keep CMUs in google,gs101.h sorted alphabetically, and resolve
+minor merge conflicts in google,gs101-clock.yaml]
 Signed-off-by: André Draszik <andre.draszik@linaro.org>
 ---
-Changes in v2:
-- My v1 just contained HSI0, but due due to changing similar areas in the
-  code, I've also added Peter's HSI2 clock patches from
-  https://lore.kernel.org/all/20240423205006.1785138-1-peter.griffin@linaro.org
-  to this series so as to preempt any merge conflicts. Namely:
-  * hsi2 bindings
-  * hsi2 DT
-  * hsi2 cmu clock driver
-- drop patch 'dt-bindings: clock: google,gs101-clock: add HSI0 clock
-  management unit' as already applied
-- cometic updates to patch 4: 'clk: samsung: gs101: add support for
-  cmu_hsi0' (macro name, a whitespace, subject line)
-- Link to v1: https://lore.kernel.org/r/20240423-hsi0-gs101-v1-0-2c3ddb50c720@linaro.org
+ .../bindings/clock/google,gs101-clock.yaml         | 26 +++++++++
+ include/dt-bindings/clock/google,gs101.h           | 62 ++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
----
-André Draszik (2):
-      arm64: dts: exynos: gs101: enable cmu-hsi0 clock controller
-      clk: samsung: gs101: add support for cmu_hsi0
+diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+index 94dcc4f84c85..6323971e1f2f 100644
+--- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+@@ -31,6 +31,7 @@ properties:
+       - google,gs101-cmu-apm
+       - google,gs101-cmu-misc
+       - google,gs101-cmu-hsi0
++      - google,gs101-cmu-hsi2
+       - google,gs101-cmu-peric0
+       - google,gs101-cmu-peric1
+ 
+@@ -97,6 +98,31 @@ allOf:
+             - const: usb31drd
+             - const: usbdpdbg
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - google,gs101-cmu-hsi2
++
++    then:
++      properties:
++        clocks:
++          items:
++            - description: External reference clock (24.576 MHz)
++            - description: High Speed Interface bus clock (from CMU_TOP)
++            - description: High Speed Interface pcie clock (from CMU_TOP)
++            - description: High Speed Interface ufs clock (from CMU_TOP)
++            - description: High Speed Interface mmc clock (from CMU_TOP)
++
++        clock-names:
++          items:
++            - const: oscclk
++            - const: bus
++            - const: pcie
++            - const: ufs_embd
++            - const: mmc_card
++
+   - if:
+       properties:
+         compatible:
+diff --git a/include/dt-bindings/clock/google,gs101.h b/include/dt-bindings/clock/google,gs101.h
+index 7a2006f0edf1..442f9e9037dc 100644
+--- a/include/dt-bindings/clock/google,gs101.h
++++ b/include/dt-bindings/clock/google,gs101.h
+@@ -367,6 +367,68 @@
+ #define CLK_GOUT_HSI0_XIU_D1_HSI0_ACLK				51
+ #define CLK_GOUT_HSI0_XIU_P_HSI0_ACLK				52
+ 
++/* CMU_HSI2 */
++#define CLK_MOUT_HSI2_BUS_USER						1
++#define CLK_MOUT_HSI2_MMC_CARD_USER					2
++#define CLK_MOUT_HSI2_PCIE_USER						3
++#define CLK_MOUT_HSI2_UFS_EMBD_USER					4
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_003_PHY_REFCLK_IN		5
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_004_PHY_REFCLK_IN		6
++#define CLK_GOUT_HSI2_SSMT_PCIE_IA_GEN4A_1_ACLK				7
++#define CLK_GOUT_HSI2_SSMT_PCIE_IA_GEN4A_1_PCLK				8
++#define CLK_GOUT_HSI2_SSMT_PCIE_IA_GEN4B_1_ACLK				9
++#define CLK_GOUT_HSI2_SSMT_PCIE_IA_GEN4B_1_PCLK				10
++#define CLK_GOUT_HSI2_D_TZPC_HSI2_PCLK					11
++#define CLK_GOUT_HSI2_GPC_HSI2_PCLK					12
++#define CLK_GOUT_HSI2_GPIO_HSI2_PCLK					13
++#define CLK_GOUT_HSI2_HSI2_CMU_HSI2_PCLK				14
++#define CLK_GOUT_HSI2_LHM_AXI_P_HSI2_I_CLK				15
++#define CLK_GOUT_HSI2_LHS_ACEL_D_HSI2_I_CLK				16
++#define CLK_GOUT_HSI2_MMC_CARD_I_ACLK					17
++#define CLK_GOUT_HSI2_MMC_CARD_SDCLKIN					18
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_003_DBI_ACLK_UG			19
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_003_MSTR_ACLK_UG			20
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_003_SLV_ACLK_UG			21
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_003_I_DRIVER_APB_CLK		22
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_004_DBI_ACLK_UG			23
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_004_MSTR_ACLK_UG			24
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_004_SLV_ACLK_UG			25
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCIE_004_I_DRIVER_APB_CLK		26
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCS_PMA_PHY_UDBG_I_APB_PCLK		27
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCS_PMA_PIPE_PAL_PCIE_I_APB_PCLK	28
++#define CLK_GOUT_HSI2_PCIE_GEN4_1_PCS_PMA_PCIEPHY210X2_QCH_I_APB_PCLK	29
++#define CLK_GOUT_HSI2_PCIE_IA_GEN4A_1_I_CLK				30
++#define CLK_GOUT_HSI2_PCIE_IA_GEN4B_1_I_CLK				31
++#define CLK_GOUT_HSI2_PPMU_HSI2_ACLK					32
++#define CLK_GOUT_HSI2_PPMU_HSI2_PCLK					33
++#define CLK_GOUT_HSI2_QE_MMC_CARD_HSI2_ACLK				34
++#define CLK_GOUT_HSI2_QE_MMC_CARD_HSI2_PCLK				35
++#define CLK_GOUT_HSI2_QE_PCIE_GEN4A_HSI2_ACLK				36
++#define CLK_GOUT_HSI2_QE_PCIE_GEN4A_HSI2_PCLK				37
++#define CLK_GOUT_HSI2_QE_PCIE_GEN4B_HSI2_ACLK				38
++#define CLK_GOUT_HSI2_QE_PCIE_GEN4B_HSI2_PCLK				39
++#define CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_ACLK				40
++#define CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_PCLK				41
++#define CLK_GOUT_HSI2_CLK_HSI2_BUS_CLK					42
++#define CLK_GOUT_HSI2_CLK_HSI2_OSCCLK_CLK				43
++#define CLK_GOUT_HSI2_SSMT_HSI2_ACLK					44
++#define CLK_GOUT_HSI2_SSMT_HSI2_PCLK					45
++#define CLK_GOUT_HSI2_SYSMMU_HSI2_CLK_S2				46
++#define CLK_GOUT_HSI2_SYSREG_HSI2_PCLK					47
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4A_DBI_1_ACLK			48
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4A_DBI_1_PCLK			49
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4A_SLV_1_ACLK			50
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4A_SLV_1_PCLK			51
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4B_DBI_1_ACLK			52
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4B_DBI_1_PCLK			53
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4B_SLV_1_ACLK			54
++#define CLK_GOUT_HSI2_UASC_PCIE_GEN4B_SLV_1_PCLK			55
++#define CLK_GOUT_HSI2_UFS_EMBD_I_ACLK					56
++#define CLK_GOUT_HSI2_UFS_EMBD_I_CLK_UNIPRO				57
++#define CLK_GOUT_HSI2_UFS_EMBD_I_FMP_CLK				58
++#define CLK_GOUT_HSI2_XIU_D_HSI2_ACLK					59
++#define CLK_GOUT_HSI2_XIU_P_HSI2_ACLK					60
++
+ /* CMU_MISC */
+ #define CLK_MOUT_MISC_BUS_USER				1
+ #define CLK_MOUT_MISC_SSS_USER				2
 
-Peter Griffin (3):
-      dt-bindings: clock: google,gs101-clock: add HSI2 clock management unit
-      arm64: dts: exynos: gs101: enable cmu-hsi2 clock controller
-      clk: samsung: gs101: add support for cmu_hsi2
-
- .../bindings/clock/google,gs101-clock.yaml         |  26 +
- arch/arm64/boot/dts/exynos/google/gs101.dtsi       |  26 +
- drivers/clk/samsung/clk-gs101.c                    | 976 +++++++++++++++++++++
- include/dt-bindings/clock/google,gs101.h           |  62 ++
- 4 files changed, 1090 insertions(+)
----
-base-commit: bb7a2467e6beef44a80a17d45ebf2931e7631083
-change-id: 20240423-hsi0-gs101-aa778361bfaa
-
-Best regards,
 -- 
-André Draszik <andre.draszik@linaro.org>
+2.44.0.769.g3c40516874-goog
 
 
