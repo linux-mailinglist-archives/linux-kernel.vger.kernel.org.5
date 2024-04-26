@@ -1,114 +1,99 @@
-Return-Path: <linux-kernel+bounces-159871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 711828B3552
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:31:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBDA08B3556
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:31:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26771F211F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70C9F1F214E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A722A144D16;
-	Fri, 26 Apr 2024 10:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E1F140E30;
+	Fri, 26 Apr 2024 10:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="P+wi73+7"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tVssEkSN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092041442F5;
-	Fri, 26 Apr 2024 10:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47E15A109;
+	Fri, 26 Apr 2024 10:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714127453; cv=none; b=uyh3bSIxVZKtEVUFGl088Ez1/LauOZtqvaxpne/Y1XnRIm68eK/a493ci4SedCA7hDMOXbX9StCUiKxdzzVnuriCzM8Wz0kJQh8NlStTJFZFnR7Br071/qADyeG1MiSP9DFmyIEezzs4wOjNZaXNNzl/ZxiPXQiUWafh8WHUF9M=
+	t=1714127482; cv=none; b=GnHEhEDQ/Up0Qu3OU+9dgqFRRtcw7X7bQoFKsBciFMcQrwq/ZdKy/Ivzwj/FKukpT3WJg8f2/pQY9dOStMJt6kCfcR0tJLGz9S2WmoHUh24c1fXBS7/S55jPnvOCTZFd5yQLXE1+G/Sv1+PXzqOpHkgLWx1oHf0KCJBiLUOm2Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714127453; c=relaxed/simple;
-	bh=rg/0VTiRtQxLAJhWTV/+t0EY1c/vG9T2Q18sL8FzcgU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ueiQLvISul+uze3nLBPJuq9xlkbC1NDYm3FaIQhvG8X0QoUBVUj3bywSbmrZEp4yVhmdSJ+zjU8/yrYhMb3i29QyrzIBslCHLK27M6B0ubMlUYzeTyyDb3STn7c0s6Mae21i7fdfperFxBPx+PWa05Os4yyV3EBl8huSKKttSy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=P+wi73+7; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 0a8bc9f803b811efb92737409a0e9459-20240426
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=PLr5dT4jbrf/zNIVr/8qtwms5d+q2N/tPQjH0HzY6AU=;
-	b=P+wi73+7pDPo0ogPZM5EdVtCKpC0IGW6vX9suMLEB1UpHpi2wTDODdtIkZAFjN2K5IpPO9A8gROALCKT0n/JXMHJlGjq/3N8cEIJOwQPGSflWTrhmP8gRmS+9VCjutdoZMdgDKkdWMKYAVH/D1UDBJRMlWHHrKPG0yCqPY377qY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:f843e558-30ba-4fca-9b60-a4969f1a73bc,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:82c5f88,CLOUDID:c34763fb-ed05-4274-9204-014369d201e8,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 0a8bc9f803b811efb92737409a0e9459-20240426
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-	(envelope-from <zoie.lin@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1157151064; Fri, 26 Apr 2024 18:30:45 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 26 Apr 2024 18:30:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 26 Apr 2024 18:30:44 +0800
-From: zoie.lin <zoie.lin@mediatek.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-CC: <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Zoie Lin
-	<zoie.lin@mediatek.com>
-Subject: [PATCH 3/3] dt-bindings: eeprom: at24: Add property dovdd-supply
-Date: Fri, 26 Apr 2024 18:29:49 +0800
-Message-ID: <20240426102949.23057-4-zoie.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240426102949.23057-1-zoie.lin@mediatek.com>
-References: <20240426102949.23057-1-zoie.lin@mediatek.com>
+	s=arc-20240116; t=1714127482; c=relaxed/simple;
+	bh=M9Mk/1LclGdhJWimwogrI2nrrKOT8uLmGIKZSCfYvHI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=odKfZT/9plY1qjaTWuGKjYfXGoKPjkMGqGFrtsD1OSDBfZP2BS5yY67zJwxJHhWG9ObBEBFIc8k8gZLLTV/Yf+IQ+P0ERUFbr1FlLgY6+W8m+8q91sQOV0UxQ2B1cwC1R7BPSeU6GWkAHM+D25jc+Q2gjHC9AChg0q4SE/45uKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tVssEkSN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C935DC113CD;
+	Fri, 26 Apr 2024 10:31:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714127481;
+	bh=M9Mk/1LclGdhJWimwogrI2nrrKOT8uLmGIKZSCfYvHI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=tVssEkSN4mreZLlloFd3oP+7+VkHU/QrDtXMKyNrGD3oLEEbH5Yyd01l6r23qCcAl
+	 0aR+A6vh60gnuc9y0Is43qFML3eigsJL92H5eLrl4tlTtEKWAIwq/3eF8hXeHOkalC
+	 Kd2SG+J5Lc+VFqd0qJHGBP0TN9Ewb4y9GXSAY1FWvAJzwUteJe7+n13KeNsubfIGyu
+	 MIjvMT2g+6VWvayx4EZ1RE+fYF04LG62wtMQv2g+njP7XWH2IXmkPOwiM0l+8FqJPN
+	 mfhddeFoMtzhL/t8Pr2xAfZCtSrmd23fRd3splmKAZxu5qCKqXXAtC1rZ/uyYKPfLC
+	 ypv2zWsYIqTvw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>, Arnaldo Carvalho de Melo
+ <acme@redhat.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc: linux-kernel@vger.kernel.org, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, Nathan
+ Chancellor <nathan@kernel.org>, Nick Desaulniers
+ <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
+ Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev, Jiri Olsa
+ <olsajiri@gmail.com>
+Subject: Re: [PATCH v2] tools/build: Add clang cross-compilation flags to
+ feature detection
+In-Reply-To: <ZUOWcXDpCOzxbFW0@krava>
+References: <20231102103252.247147-1-bjorn@kernel.org> <ZUOWcXDpCOzxbFW0@krava>
+Date: Fri, 26 Apr 2024 12:31:17 +0200
+Message-ID: <87o79wxvnu.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Zoie Lin <zoie.lin@mediatek.com>
+Jiri Olsa <olsajiri@gmail.com> writes:
 
-Include a new property named dovdd-supply to provide an
-additional power supply.
+> On Thu, Nov 02, 2023 at 11:32:52AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+>> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>>=20
+>> When a tool cross-build has LLVM=3D1 set, the clang cross-compilation
+>> flags are not passed to the feature detection build system. This
+>> results in the host's features are detected instead of the targets.
+>>=20
+>> E.g, triggering a cross-build of bpftool:
+>>=20
+>>   cd tools/bpf/bpftool
+>>   make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- LLVM=3D1
+>>=20
+>> would report the host's, and not the target's features.
+>>=20
+>> Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
+>> feature detection makefile.
+>>=20
+>> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
+>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Signed-off-by: Zoie Lin <zoie.lin@mediatek.com>
----
- Documentation/devicetree/bindings/eeprom/at24.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+Waking up the dead!
 
-diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-index 8befd09963be..0ecb7ea76d1d 100644
---- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-+++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-@@ -193,6 +193,10 @@ properties:
-     description:
-       phandle of the regulator that provides the supply voltage.
- 
-+  dovdd-supply:
-+    description:
-+      phandle of the regulator that provides the supply voltage.
-+
- required:
-   - compatible
-   - reg
--- 
-2.18.0
+Arnaldo, Jean-Philippe: I'm still stung by what this patch fixes. LMK
+what you need from me/this patch to pick it up.
 
+
+Cheers,
+Bj=C3=B6rn
 
