@@ -1,236 +1,202 @@
-Return-Path: <linux-kernel+bounces-160506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19FD58B3E5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:38:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44AAB8B3E6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:39:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41D7BB266BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:38:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667601C215C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1051C15B974;
-	Fri, 26 Apr 2024 17:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DB816D9D1;
+	Fri, 26 Apr 2024 17:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScqyGOcZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="pE1T08Fu";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aqFcdXIb"
+Received: from flow3-smtp.messagingengine.com (flow3-smtp.messagingengine.com [103.168.172.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3042D1DDF8;
-	Fri, 26 Apr 2024 17:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE42D145B0F;
+	Fri, 26 Apr 2024 17:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714153089; cv=none; b=l4hyBDoIDqqWOaUeA8XA1Wd/6HE+b5NNH8lyFVgOOQyC5WU+ep7oO1bQO/lncndmvbTI1LVYd746nREGwK5BU4RxJLmYKjaveyRDv2iycOEttj7CoWeKPfeOC2cbGr7kzbIdlWp+tTDk9kPV/5H+y1adH913UlJ0UUOGgM0I2pM=
+	t=1714153127; cv=none; b=X7a+K6UN4mK0LsKHo0IzL9llPspgTIUJZ8Fe1AjXmUnlu1sn0/Tk/3jqR/oncj07+KBsLX1FIdN56fHw/cLhcvUr4bl9ydfXxUWcBwhht1ZCBJnIV6kbTD08P9a9jiVF1xVV1jy8u3jIAtoya66iSxNSXTFXoNUg6KVzioJ/lvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714153089; c=relaxed/simple;
-	bh=oU1tYfYgDpdxfhx+6CCQsyq+5gOrTMC1OgJolal92e4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=glDAxjInH/zpnluCYe8FNWoPRXMiwnypXz3LE9ReX/8l7KxqX+FsvPqX9UhLhfpevZoFbk21Kmj7thMk9pKhpEw5SNOdQKKKUWydMyyEi8aW/fcVDjp6PS3qkA2sRLmyasB2xZ4HWXLzbCHwkF0BuHSEWE5cEumCQpVMxx32w7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScqyGOcZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB58AC4AF07;
-	Fri, 26 Apr 2024 17:38:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714153088;
-	bh=oU1tYfYgDpdxfhx+6CCQsyq+5gOrTMC1OgJolal92e4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ScqyGOcZQeO0mQv8NQf9Yt7ZSVAdcAfx2KNwS6vqOGz28zWrUm/wTeEqt2iC+nPrG
-	 kwPB637OJmjLx+SfQ5eG/+gUO/j7ECMx18MUuZRNAUKd4E/MsPUHsl+Ms66Wr4wk2Z
-	 8Ky5cYQDlXq7Tw0EGXraNNhzkhcqRkSbyPlkujgLEmlN8jB25Tuz0Clh4kMR25xKkK
-	 2WoaqFf9tQ7ixYkS16eHJlCgXo71SiYgm/jsKiid/AFOCn2iWztz04PcGIQ25f28i1
-	 skQoDBvOp46DWpS4+UGzF6lzjLJqC/vrgAqVHpjKdsonqcLx15aMip3BmOlCjVjCv7
-	 RLwoBuLjWOFHw==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5ac4470de3bso481096eaf.0;
-        Fri, 26 Apr 2024 10:38:08 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUgLeT/SdhZC2drBnsZAVMkYNIBQN8J1RBT0z0tV2CeVdYcVBEGlt606tCgUTneK9MQ2ZPVNoUc9P1wa8JOarR3d9mSjoJB3ANTEGQGCojSnjEijE96TS/fu9nLhp7rEFBjEGQXMDY=
-X-Gm-Message-State: AOJu0YxY7s5clG6ke7UVSieg1ogeTGXfaT2Em3xmbqWXbl8hJYi//FlB
-	hDOCLCqxVceU4Y8YznV85DGJLjfGWiBc/vlgDbl2ydKJdXU936fm2EZufxf0QJrUfqxQalFCHP5
-	xtxB3NGzrSOuRVhN9IMAgYreZ8yo=
-X-Google-Smtp-Source: AGHT+IHAFi/UsFgkmPDeflkAaVOV3pUloq6R10MSKx9Susw2khziD/O1W495CEudCqCu6pn4U1q79SyTvSgtdAO9XRw=
-X-Received: by 2002:a4a:a882:0:b0:5aa:241a:7f4b with SMTP id
- q2-20020a4aa882000000b005aa241a7f4bmr4104406oom.1.1714153087944; Fri, 26 Apr
- 2024 10:38:07 -0700 (PDT)
+	s=arc-20240116; t=1714153127; c=relaxed/simple;
+	bh=wl2WeNXK9401gewnNEkP62crFh93PXjbpWk6KFoepOg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Y8SGQ32kfI8Kwf0xVrYeacufgyssYCHjxU+kKAQBk4O4/QvJlD8VtfHb2AJUZ2py1HDAxRBaykGIPwuP7dSTM2LxdxIy4pBG3OsLoyhD+DzAklo7ThJQvmGICvw0XbXkF0s4x4+4raW4th9GGKZO9ZPvoNvzYyqoMJTHSMh+FRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=pE1T08Fu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aqFcdXIb; arc=none smtp.client-ip=103.168.172.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.nyi.internal (Postfix) with ESMTP id BDA42200567;
+	Fri, 26 Apr 2024 13:38:43 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 26 Apr 2024 13:38:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1714153123;
+	 x=1714160323; bh=LvCKd10h8SxIpHH2VnKSem369EuCERsZx0vTF5ejpQk=; b=
+	pE1T08FuMVdjjQLWiDkQO7xl56PeI7A1H3IWG3+rFD9emD//4B5RuAiqikq3csH2
+	HcrEwfg47R7YMmaz8Ciyl2cvIz4VVX096uNe1CYFtwsais2/erVg/FW25ZTMJvXr
+	zpR/9AJQ+kMYwmkwNH/UDIyDG/M/RiXZfW1Gpp3WoGzKEMmORD8LrQExf4Uw72vT
+	cf90JKVFYzecW30Y+7oynhwhYveQbKpD0A+7InyVTw6kiDVyu6WAufjR97YB+AAf
+	0ZE2OG1WQzxkmWcmeCmxI8V9AL9FQ/NFoFlVnxKbEzgyPDaqo7Ijv+GlzReYpZG8
+	UpsdbHxgZ38tWGTiNz9nEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714153123; x=
+	1714160323; bh=LvCKd10h8SxIpHH2VnKSem369EuCERsZx0vTF5ejpQk=; b=a
+	qFcdXIb7SbWdXzU54WGeWh/iceHLfbpvJPUdGWHPNnK5IEK/9AtOR5J2UG7I0kdd
+	gA+bX/lBwFYGTyhrH0iOL1YwgOqj4CO02fhLgSpzb0errJKY1KqMkKtdiEMGW0IU
+	avALV8VE2nPoBWWc5kPZjknu85rpxsTco30NFcpJL3ouXip8e9tY6t5C0m3yG4DV
+	i9SMC7BAXFVXlTkQ12jergSGdPKhcHmwu/rclcCs4OnoitPkDQ5s/pDGcdD2HxtV
+	6evA3UfMGPMVusCn1+pAQOhpgJIj12adXuHnNCAk7/cjvkYwvImsSZiLSUZbVdMm
+	WuinBDiPHs317sdol2J0w==
+X-ME-Sender: <xms:ouYrZlQDaCE-0s0WHFCeHepar9j_x9KR9n-h0TbsH_sTOOeSUGEhag>
+    <xme:ouYrZuz-rN1jLTr59v2lbblMmuUk9xavewvaecIEfqOvR0end1N-WP7C8qOmizXin
+    NZnEkLDPhLks8tH0J0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelledgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:ouYrZq3qoHAOs6UtEYzZ6Kv2th-k72ltAmHA5-EvubaY_DFzTZHiZA>
+    <xmx:ouYrZtDFuilIk3W0hJ0M4DWNRr0ldDoQ2Q3XrafF-t-T9hsqUZG79w>
+    <xmx:ouYrZujdQoqwaHSJ1S_IBnSUNzyXxkERFFQZf5-Uajue3KXw-499-Q>
+    <xmx:ouYrZhqInTTtQzq1IvTwSb8HCKj4UX1i6i_KpDS_TtRK6OBmlMiQ4w>
+    <xmx:o-YrZpX13ubRldSgrPH3yzrzP3OzJ7dh3_1MWs-FrW6tvLtURlDPgFda>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 324F9B60099; Fri, 26 Apr 2024 13:38:42 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1714032153.git.perry.yuan@amd.com>
-In-Reply-To: <cover.1714032153.git.perry.yuan@amd.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 26 Apr 2024 19:37:56 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iF_NUAMhTCaakUi_F+2CrRgiQMXmrVm00+W7vd+H=wjw@mail.gmail.com>
-Message-ID: <CAJZ5v0iF_NUAMhTCaakUi_F+2CrRgiQMXmrVm00+W7vd+H=wjw@mail.gmail.com>
-Subject: Re: [PATCH v12 0/8] AMD Pstate Fixes And Enhancements
-To: Perry Yuan <perry.yuan@amd.com>
-Cc: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com, 
-	viresh.kumar@linaro.org, gautham.shenoy@amd.com, Borislav.Petkov@amd.com, 
-	Ray.Huang@amd.com, Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, 
-	oleksandr@natalenko.name, Xiaojian.Du@amd.com, Li.Meng@amd.com, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <63ae53af-023d-444c-9571-8aef9e87ebc0@app.fastmail.com>
+In-Reply-To: <20240426162042.191916-1-cgoettsche@seltendoof.de>
+References: <20240426162042.191916-1-cgoettsche@seltendoof.de>
+Date: Fri, 26 Apr 2024 19:38:18 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: cgzones@googlemail.com
+Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, audit@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-api@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Michal Simek" <monstr@monstr.eu>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Helge Deller" <deller@gmx.de>, "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+ "Rich Felker" <dalias@libc.org>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "Andy Lutomirski" <luto@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, "Chris Zankel" <chris@zankel.net>,
+ "Max Filippov" <jcmvbkbc@gmail.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
+ "Paul Moore" <paul@paul-moore.com>, "Eric Paris" <eparis@redhat.com>,
+ "Jens Axboe" <axboe@kernel.dk>,
+ "Pavel Begunkov" <asml.silence@gmail.com>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Sohil Mehta" <sohil.mehta@intel.com>,
+ "Palmer Dabbelt" <palmer@sifive.com>,
+ "Miklos Szeredi" <mszeredi@redhat.com>, "Nhat Pham" <nphamcs@gmail.com>,
+ "Casey Schaufler" <casey@schaufler-ca.com>,
+ "Florian Fainelli" <florian.fainelli@broadcom.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
+ "Mark Rutland" <mark.rutland@arm.com>, io-uring@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] fs/xattr: add *at family syscalls
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 10:08=E2=80=AFAM Perry Yuan <perry.yuan@amd.com> wr=
-ote:
+On Fri, Apr 26, 2024, at 18:20, Christian G=C3=B6ttsche wrote:
+> From: Christian G=C3=B6ttsche <cgzones@googlemail.com>
 >
-> The patch series adds some fixes and enhancements to the AMD pstate
-> driver.
+> Add the four syscalls setxattrat(), getxattrat(), listxattrat() and
+> removexattrat().  Those can be used to operate on extended attributes,
+> especially security related ones, either relative to a pinned directory
+> or on a file descriptor without read access, avoiding a
+> /proc/<pid>/fd/<fd> detour, requiring a mounted procfs.
 >
-> It enables CPPC v2 for certain processors in the family 17H, as
-> requested by TR40 processor users who expect improved performance and low=
-er system
-> temperature.
+> One use case will be setfiles(8) setting SELinux file contexts
+> ("security.selinux") without race conditions and without a file
+> descriptor opened with read access requiring SELinux read permission.
 >
-> changes latency and delay values to be read from platform firmware
-> firstly
-> for more accurate timing.
+> Use the do_{name}at() pattern from fs/open.c.
 >
-> A new quirk is introduced for supporting amd-pstate on legacy processors =
-which either lack CPPC capability,
-> or only only have CPPC v2 capability
+> Pass the value of the extended attribute, its length, and for
+> setxattrat(2) the command (XATTR_CREATE or XATTR_REPLACE) via an added
+> struct xattr_args to not exceed six syscall arguments and not
+> merging the AT_* and XATTR_* flags.
 >
-> Testing done with one APU system while cpb boost on:
->
-> amd_pstate_lowest_nonlinear_freq:1701000
-> amd_pstate_max_freq:3501000
-> cpuinfo_max_freq:3501000
-> cpuinfo_min_freq:400000
-> scaling_cur_freq:3084836
-> scaling_max_freq:3501000
-> scaling_min_freq:400000
->
-> analyzing CPU 6:
->   driver: amd-pstate-epp
->   CPUs which run at the same hardware frequency: 6
->   CPUs which need to have their frequency coordinated by software: 6
->   maximum transition latency:  Cannot determine or is not supported.
->   hardware limits: 400 MHz - 3.50 GHz
->   available cpufreq governors: performance powersave
->   current policy: frequency should be within 400 MHz and 3.50 GHz.
->                   The governor "powersave" may decide which speed to use
->                   within this range.
->   current CPU frequency: Unable to call hardware
->   current CPU frequency: 3.50 GHz (asserted by call to kernel)
->   boost state support:
->     Supported: yes
->     Active: yes
->     AMD PSTATE Highest Performance: 255. Maximum Frequency: 3.50 GHz.
->     AMD PSTATE Nominal Performance: 204. Nominal Frequency: 2.80 GHz.
->     AMD PSTATE Lowest Non-linear Performance: 124. Lowest Non-linear Freq=
-uency: 1.70 GHz.
->     AMD PSTATE Lowest Performance: 30. Lowest Frequency: 400 MHz.
->
->
-> I would greatly appreciate any feedbacks.
-> Thank you!
-> Perry.
->
-> Changes from v11:
->  * minmor change for patch 1 "perf" change to "performance"(Huang ray)
->  * rebased to lastest linux-pm/bleeding-edge branch
->
-> Changes from v10:
->  * pick ack-by flags from huang ray for all patches.
->  * run testing on AMD Ryzen 5 7640U without regression issue.
->
-> Changes from v9:
->  * pick review by flag from Meng Li
->  * pick test by flag from Ugwekar Dhananjay
->  * picl review by flag from Gautham R. Shenoy
->
-> Changes from v8:
->  * add commit log for patch 1 and patch 2 (Rafael)
->  * add missing Perry signed-off-by for new patches #1,#2,#4 (Rafael)
->  * rebased to latest linux-pm/bleeding-edge
->
-> Changes from v7:
->  * Gautham helped to invole some new improved patches into the patchset.
->  * Adds comments for cpudata->{min,max}_limit_{perf,freq}, variables [New=
- Patch].
->  * Clarifies that the units for cpudata->*_freq is in khz via comments [N=
-ew Patch].
->  * Implements the unified computation of all cpudata->*_freq
->  * v7 Patch 2/6 was dropped which is not needed any more
->  * moved the quirk check to the amd_pstate_get_freq() function
->  * pick up RB flags from Gautham
->  * After the cleanup in patch 3, we don't need the helpers
->    amd_get_{min,max,nominal,lowest_nonlinear}_freq(). This
->    patch removes it [New Patch].
->  * testing done on APU system as well, no regression found.
->
-> Changes from v6:
->  * add one new patch to initialize capabilities in
->    amd_pstate_init_perf which can avoid duplicate cppc capabilities read
->    the change has been tested on APU system.
->  * pick up RB flags from Gautham
->  * drop the patch 1/6 which has been merged by Rafael
->
-> Changes from v5:
->  * rebased to linux-pm v6.8
->  * pick up RB flag from for patch 6(Mario)
->
-> Changes from v4:
->  * improve the dmi matching rule with zen2 flag only
->
-> Changes from v3:
->  * change quirk matching broken BIOS with family/model ID and Zen2
->    flag to fix the CPPC definition issue
->  * fix typo in quirk
->
-> Changes from v2:
->  * change quirk matching to BIOS version and release (Mario)
->  * pick up RB flag from Mario
->
-> Changes from v1:
->  * pick up the RB flags from Mario
->  * address review comment of patch #6 for amd_get_nominal_freq()
->  * rebased the series to linux-pm/bleeding-edge v6.8.0-rc2
->  * update debug log for patch #5 as Mario suggested.
->  * fix some typos and format problems
->  * tested on 7950X platform
->
->
-> V1: https://lore.kernel.org/lkml/63c2b3d7-083a-4daa-ba40-629b3223a92d@mai=
-lbox.org/
-> V2: https://lore.kernel.org/all/cover.1706863981.git.perry.yuan@amd.com/
-> v3: https://lore.kernel.org/lkml/cover.1707016927.git.perry.yuan@amd.com/
-> v4: https://lore.kernel.org/lkml/cover.1707193566.git.perry.yuan@amd.com/
-> v5: https://lore.kernel.org/lkml/cover.1707273526.git.perry.yuan@amd.com/
-> v6: https://lore.kernel.org/lkml/cover.1707363758.git.perry.yuan@amd.com/
-> v7: https://lore.kernel.org/lkml/cover.1710323410.git.perry.yuan@amd.com/
-> v8: https://lore.kernel.org/lkml/cover.1710754409.git.perry.yuan@amd.com/
-> v9: https://lore.kernel.org/lkml/cover.1710836407.git.perry.yuan@amd.com/
-> v10: https://lore.kernel.org/lkml/cover.1711335714.git.perry.yuan@amd.com=
-/
-> v11: https://lore.kernel.org/lkml/cover.1713858800.git.perry.yuan@amd.com=
-/
->
->
-> Gautham R. Shenoy (3):
->   cpufreq: amd-pstate: Document *_limit_* fields in struct amd_cpudata
->   cpufreq: amd-pstate: Document the units for freq variables in
->     amd_cpudata
->   cpufreq: amd-pstate: Remove
->     amd_get_{min,max,nominal,lowest_nonlinear}_freq()
->
-> Perry Yuan (5):
->   cpufreq: amd-pstate: Unify computation of
->     {max,min,nominal,lowest_nonlinear}_freq
->   cpufreq: amd-pstate: Bail out if min/max/nominal_freq is 0
->   cpufreq: amd-pstate: get transition delay and latency value from ACPI
->     tables
->   cppc_acpi: print error message if CPPC is unsupported
->   cpufreq: amd-pstate: Add quirk for the pstate CPPC capabilities
->     missing
->
->  drivers/acpi/cppc_acpi.c     |   4 +-
->  drivers/cpufreq/amd-pstate.c | 257 +++++++++++++++++++++--------------
->  include/linux/amd-pstate.h   |  20 ++-
->  3 files changed, 174 insertions(+), 107 deletions(-)
->
-> --
+> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> CC: x86@kernel.org
+> CC: linux-alpha@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-ia64@vger.kernel.org
+> CC: linux-m68k@lists.linux-m68k.org
+> CC: linux-mips@vger.kernel.org
+> CC: linux-parisc@vger.kernel.org
+> CC: linuxppc-dev@lists.ozlabs.org
+> CC: linux-s390@vger.kernel.org
+> CC: linux-sh@vger.kernel.org
+> CC: sparclinux@vger.kernel.org
+> CC: linux-fsdevel@vger.kernel.org
+> CC: audit@vger.kernel.org
+> CC: linux-arch@vger.kernel.org
+> CC: linux-api@vger.kernel.org
+> CC: linux-security-module@vger.kernel.org
+> CC: selinux@vger.kernel.org
 
-Whole series applied as 6.10 material, thanks!
+I checked that the syscalls are all well-formed regarding
+argument types, number of arguments and (absence of)
+compat handling, and that they are wired up correctly
+across architectures
+
+I did not look at the actual implementation in detail.
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
