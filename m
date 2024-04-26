@@ -1,138 +1,180 @@
-Return-Path: <linux-kernel+bounces-159785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE42D8B33F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:29:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2922D8B33F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A9371C222EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:29:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D48732844BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4963813E419;
-	Fri, 26 Apr 2024 09:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB23113F420;
+	Fri, 26 Apr 2024 09:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="IUu8nUQ3"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iUqfNMNx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257E013E3F5;
-	Fri, 26 Apr 2024 09:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F6E282EA;
+	Fri, 26 Apr 2024 09:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123739; cv=none; b=DIAR/vqwsEalxte/Y+I09esgAlIxjGzf5R8c0hhXIQK9xfX4CI5eGPLtrpNlJyfkdVgRrYnma0ftmzqwGbJAq3rZ/Rm+6V3ZFtoqZh1hgLRJIMJ+Wl8gdtqYCiD4QJDL6LUZQT41a6cN8AwYbnzUsG+gbJepEG2iTji3MGHsUjs=
+	t=1714123777; cv=none; b=NZw9opJd2mLUZvFn+99J+qEYd6cgaDBMiSbJUbEbSuW/UeLShLl2SZHK7R8DpC5WbGJxtoGAARA0Mqz76kfr5bZjxdO39o7R26de9D574Crcy34yYpyLXmCSLswMmDzFc8LHAwRwo8xknkQs0OTK07rH1odcnrC2YVAq7m/gzzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123739; c=relaxed/simple;
-	bh=/M4fAtIj7fEFz5rRmpHzBh/6ABxKJzdtM1sihXoR3a8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lID7XmG1amYq/cGcrt2BS+TAFGSby7yPXr5wFtmNPXPJExe/CF2ZnPOQ/LwVT7lRG7eokk401GF4U1uhDqRtrKR1+CK6mqYdBtQTYUfvcfveDWZOnCxOuV/bwl9/usseDNsRzW1fhMsSUHRSgC1r6+qIfwqoUk1HXi3xUeQikzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=IUu8nUQ3 reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 803d8b87b1d53edd; Fri, 26 Apr 2024 11:28:53 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 0519566DFC1;
-	Fri, 26 Apr 2024 11:28:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1714123733;
-	bh=/M4fAtIj7fEFz5rRmpHzBh/6ABxKJzdtM1sihXoR3a8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IUu8nUQ39P9qeBS1VyK8+eBytHtImpG0KLbp9j3wwAT997Ql8nXVzlslWkZClngqQ
-	 RVSLrDYwTdrULftNz2XK2a+aH4wxs+Xdls/IzbZUkWNrAvBsxzAvmECXQSdH2lVnn2
-	 vv+5dDogTkxc2iFDzLX+lezdJtrjxSdt7/Y1hC1NgjaoshcQKSrTcD4BtCma3b59JO
-	 R9AbSrzeThK39ab3G8lVk7bxDQSGK/ztrYhhjZm67OigU6k4GtUihe3Fd632haYbIK
-	 +jJMBWXxiIuFfbZwqh/u+Rrio6b/rYNVb4I2kxuK20c66qMtHMLK1dSkQ6JreJfHsi
-	 TMiqVwrvlcTbA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Lukasz Luba <lukasz.luba@arm.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Subject:
- [PATCH v2 3/3] thermal/debugfs: Prevent use-after-free from occurring after
- cdev removal
-Date: Fri, 26 Apr 2024 11:28:52 +0200
-Message-ID: <2740417.mvXUDI8C0e@kreacher>
-In-Reply-To: <13503555.uLZWGnKmhe@kreacher>
-References: <12427744.O9o76ZdvQC@kreacher> <13503555.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1714123777; c=relaxed/simple;
+	bh=G92cwOhiPQS7Q5kYfxITNoEUqeEw92zFYUHW/hjpagc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L38RMI+afYhO4VFneyqOYXFUvRpVL+rtcYZal1mCAqUGd/MUoN1BV7zfWqyjuTtezYNYV42tHsPmmFCvKDEHC3NefepgXjA4igvWjYvVqMIEMiNV1GzyouhKIqULfgHFAaXCJOFkM9LNhLJADsTz3nPQedtcRw13FFCxBNwAMwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iUqfNMNx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FEFFC113CD;
+	Fri, 26 Apr 2024 09:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714123776;
+	bh=G92cwOhiPQS7Q5kYfxITNoEUqeEw92zFYUHW/hjpagc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iUqfNMNx7JSRrAXJvJBDJUeXLvPKDz8+GVpkqVRdxY8z9KaXmz7RK1sJrVTaBoWPN
+	 G6/3K2PysJY3ClJtgvNibwmWEkunQAum87+eIuagiO5CUZrF5DDT9cKB+RY2FwW4Cv
+	 f8BPBuSBFlgwSuXLihSNJVed/2hojzyyvxBz418X2mShdemMwpFL+fcSyy8UbqiDHA
+	 Bg021h3Yb4LJFb+V5xR1wuk+M9V+r1MkPtCjw6shabcUp2tbVUFpgB0ZudWKRC9Uwz
+	 rAOlGqCTRMC6PdBN8+WLgGbOhUZkwGXQomf510wCITZF+dUK9fU6KfynyNlUKkRmzC
+	 dOnPOFUhtjE+g==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s0Htg-000000001bi-4A4q;
+	Fri, 26 Apr 2024 11:29:37 +0200
+Date: Fri, 26 Apr 2024 11:29:36 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 4/6] HID: i2c-hid: elan: fix reset suspend current leakage
+Message-ID: <Zit0ADAycyHp67Ax@hovoldconsulting.com>
+References: <20240423134611.31979-1-johan+linaro@kernel.org>
+ <20240423134611.31979-5-johan+linaro@kernel.org>
+ <CAD=FV=XP8aCjwE3LfgMy4oBL4xftFg5NkgUFso__54zNp_ZWiA@mail.gmail.com>
+ <ZijlZw6zm4R9ULBU@hovoldconsulting.com>
+ <CAD=FV=Vxgu==8Cv3sDydFpEdd6ws2stkZvxvajE1OAFm2BgmXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudelledgudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrrghf
- rggvlheskhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=Vxgu==8Cv3sDydFpEdd6ws2stkZvxvajE1OAFm2BgmXw@mail.gmail.com>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Apr 24, 2024 at 09:24:33AM -0700, Doug Anderson wrote:
+> On Wed, Apr 24, 2024 at 3:56 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Tue, Apr 23, 2024 at 01:37:14PM -0700, Doug Anderson wrote:
+> > > On Tue, Apr 23, 2024 at 6:46 AM Johan Hovold <johan+linaro@kernel.org> wrote:
 
-Since thermal_debug_cdev_remove() does not run under cdev->lock, it can
-run in parallel with thermal_debug_cdev_state_update() and it may free
-the struct thermal_debugfs object used by the latter after it has been
-checked against NULL.
+> > > > @@ -87,12 +104,14 @@ static int i2c_hid_of_elan_probe(struct i2c_client *client)
+> > > >         ihid_elan->ops.power_up = elan_i2c_hid_power_up;
+> > > >         ihid_elan->ops.power_down = elan_i2c_hid_power_down;
+> > > >
+> > > > -       /* Start out with reset asserted */
+> > > > -       ihid_elan->reset_gpio =
+> > > > -               devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
+> > > > +       ihid_elan->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
+> > > > +                                                       GPIOD_ASIS);
+> > >
+> > > I'm not a huge fan of this part of the change. It feels like the GPIO
+> > > state should be initialized by the probe function. Right before we
+> > > call i2c_hid_core_probe() we should be in the state of "powered off"
+> > > and the reset line should be in a consistent state. If
+> > > "no_reset_on_power_off" then it should be de-asserted. Else it should
+> > > be asserted.
 
-If that happens, thermal_debug_cdev_state_update() will access memory
-that has been freed already causing the kernel to crash.
+> > Second, the device is not necessarily in the "powered off" state
+> 
+> Logically, the driver treats it as being in "powered off" state,
+> though. That's why the i2c-hid core makes the call to power it on. IMO
+> we should strive to make it more of a consistent state, not less of
+> one.
 
-Address this by using cdev->lock in thermal_debug_cdev_remove() around
-the cdev->debugfs value check (in case the same cdev is removed at the
-same time in two different threads) and its reset to NULL.
+That's not really true. The device is often in an undefined power state
+and we try to make sure that the hand over is as smooth as possible to
+avoid resetting displays and similar unnecessarily.
 
-Fixes: 755113d76786 ("thermal/debugfs: Add thermal cooling device debugfs information")
-Cc :6.8+ <stable@vger.kernel.org> # 6.8+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+The power-on sequence is what brings the device into a defined power
+state.
 
-v1 -> v2: Add missing mutex_unlock() (Lukasz).
+> > as the
+> > driver leaves the power supplies in whatever state that the boot
+> > firmware left them in.
+> 
+> I guess it depends on the regulator. ;-) For GPIO-regulators they
+> aren't in whatever state the boot firmware left them in. For non-GPIO
+> regulators we (usually) do preserve the state that the boot firmware
+> left them in.
 
----
- drivers/thermal/thermal_debugfs.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Even for GPIO regulators we have the "regulator-boot-on" devicetree
+property which is supposed to be set if the boot firmware has left a
+regulator on so that the regulator initialisation can preserve the
+state.
 
-Index: linux-pm/drivers/thermal/thermal_debugfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-+++ linux-pm/drivers/thermal/thermal_debugfs.c
-@@ -505,15 +505,23 @@ void thermal_debug_cdev_add(struct therm
-  */
- void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
- {
--	struct thermal_debugfs *thermal_dbg = cdev->debugfs;
-+	struct thermal_debugfs *thermal_dbg;
- 
--	if (!thermal_dbg)
-+	mutex_lock(&cdev->lock);
-+
-+	thermal_dbg = cdev->debugfs;
-+	if (!thermal_dbg) {
-+		mutex_unlock(&cdev->lock);
- 		return;
-+	}
-+
-+	cdev->debugfs = NULL;
-+
-+	mutex_unlock(&cdev->lock);
- 
- 	mutex_lock(&thermal_dbg->lock);
- 
- 	thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
--	cdev->debugfs = NULL;
- 
- 	mutex_unlock(&thermal_dbg->lock);
- 
+> > Not immediately asserting reset and instead leaving it in the state that
+> > the boot firmware left it in is also no different from what happens when
+> > a probe function bails out before requesting the reset line.
+> >
+> > > I think GPIOD_ASIS doesn't actually do anything useful for you, right?
+> > > i2c_hid_core_probe() will power on and the first thing that'll happen
+> > > there is that the reset line will be unconditionally asserted.
+> >
+> > It avoids asserting reset before we need to and thus also avoid the need
+> > to deassert it on early probe failures (e.g. if one of the regulator
+> > lookups fails).
+> 
+> I guess so, though I'm of the opinion that we should be robust against
+> the state that firmware left things in. The firmware's job is to boot
+> the kernel and make sure that the system is running in a safe/reliable
+> way, not to optimize the power consumption of the board.
 
+Agreed.
 
+> If the
+> firmware left the line configured as "output low" then you'd let that
+> stand. If it's important for the line to be left in a certain state,
+> isn't it better to make that explicit?
 
+As I pointed out above we already do this for any error paths before
+requesting the reset line. And I also don't think we need to worry too
+much about power consumption in case of errors.
+
+But there is one case I had not considered before, and that is your gpio
+regulator example but where the boot-on flag does not match the actual
+regulator state.
+
+If the supply is on and reset deasserted, but the regulator-boot-on
+flag is not set, then we want to make sure that reset is asserted before
+disabling the supply when requesting the regulator.
+
+> Also note: if we really end up keeping GPIOD_ASIS, which I'm still not
+> convinced is the right move, the docs seem to imply that you need to
+> explicitly set a direction before using it. Your current patch doesn't
+> do that.
+
+You're right. It will work in my case because of the gpiolib open-drain
+implementation, but not generally.
+
+I'll add back the reset during early probe and add error handling for
+deasserting reset on machines like the X13s. On these, the touchscreen
+may now be reset a couple of times in case of probe deferrals, but
+device links should generally prevent that.
+
+Johan
 
