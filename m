@@ -1,180 +1,153 @@
-Return-Path: <linux-kernel+bounces-159974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F54C8B3705
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C24B68B370A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B84D1C219A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:19:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26991C21C0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E868145B11;
-	Fri, 26 Apr 2024 12:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E4F145FED;
+	Fri, 26 Apr 2024 12:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="Jt1MzgHk"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SOX0o0z6"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016192E413
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F550145B09
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714133944; cv=none; b=VsFAZmutH84VF83Wdt+oYYcvm7JekNab4fzbXXtD1+fTXdVnHiXCpbuPsD1floI6W2UqoiZ6eH0tT/g5MshoSPQcaSDZxphLuXLz+ExiKEfrnaS990lTZr4MZTDbvxsfjhFP7FPRsawI9GihZ3b5YLnrdaKhk11j88mAz8t/BLc=
+	t=1714134012; cv=none; b=FCW9Qm/rnyz9nUpn3I3EnUEI3hwKw35PQ1Su/qQsMxaWuEyduJkz2oiO5U2KauTytG6QdnYQ8DpAszOJMksCm1ak4XE5SCGihQfy22dyvSbDTZX+jBrRth0VhQGnt2mVzexTQtm6nAs2fXbLDRP9CLM5h39khYGN1XD3Q3mG9VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714133944; c=relaxed/simple;
-	bh=uSnneEQaaEvjfipQDh1p/g1ZPcENc4X6wosSYwggC0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Oj7TA14LMIq8HEmvme4xvv/bgrU1vBeB4zcouNfL4W1oiNQatsdv6ECbKVvNqqS7UnkEOZQEswzoYZrpSe9NgXgAQ7VYU2ti4j046szY96JtqTfgFDH7VBAf7t6+FsQP8x2exeBTB7YWC1/cUC308baAUfe4aFNqzAjjoHLGEws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=Jt1MzgHk; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E047E000C;
-	Fri, 26 Apr 2024 12:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
-	t=1714133939;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OZPHEVK48lvSJdqJRvIFmii+wGsux+HVonA01m3gj4g=;
-	b=Jt1MzgHk6RoMZ1d10ptxOGXqjAJ/pfY2ZSPUApNXoGzXWymEZGPqkPxSUVIFqc5g/NeXpP
-	zLEUrphD89Ic5FwXn8PnnyItzylS5ZYjJAtV43sJ6IbLlX2xwPIsxDlWKlzF6dBCeVZQCJ
-	gn3qzrpHSuYyGUEJBiHKgiJlNQBh1XaiSDx1X3zkF/KKll6/BTFzfviTkz4AMg4xyaP94E
-	tlXN5vnbXBTB0QeJR8z8E9VuQGVuNsYEoecS8ipfEAAQqZHUG3KLV9AqGDDLyzYZKaw3gp
-	Bn93Z1AIeNnwm6EUdDSCfMswEFth5xOLHTrXCH6vNdmQ8KNZJJem9xOafvZNtQ==
-Message-ID: <47011bf2-4000-4fd8-9dd3-4c6b6a1c4a80@clip-os.org>
-Date: Fri, 26 Apr 2024 14:18:56 +0200
+	s=arc-20240116; t=1714134012; c=relaxed/simple;
+	bh=Dy1L4klZ6E+fyZtM7GjTA+qKnPaR5xUfnO2DtXSeshA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZHn0Fvl+ScACrNBqkJv+eeLiR3gtPPJgRq2yW0ZKUFoeezYV5ka5sYd/ZfX9UC22dMrDwGKoFcMYRDz6UXq+kvBRlqDJ/ekELKGaAwyJAaDBnk1nYA2XHc+PGdQhnnVzti1VuYaJlHmXQcFTGL5l4cI4OW72arVrCTrBJEfUtKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SOX0o0z6; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34b1e35155aso2249119f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 05:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714134008; x=1714738808; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BvGxGr2jzc7HNRAdQ7sDWvGQAeqzlPRu9vORrfxhJ08=;
+        b=SOX0o0z61zdV4+fgRNnMGR2E7G7JnOCaf65es7OJ1W5qMnBXhdGWDzV/gsOe/ZbV5g
+         3FDDmeB58fPGLyT79m71TjRl1yclzXAlR/yzz20VvInyt0vxKYcWm36gbWYgp4npqcNF
+         yVDDUeiy1TDUBD1mXqtQsuBrlW6lBhs2pscX0P77rFWhb0HB2icyw+zeN78h+4iR70hx
+         9QaoO2UjGHKXSco4IwkaGqupDmpca9v25XW6yDcjx8BAf6hAF6mlq4jCfmkJATzEK0MR
+         rhQmfswkaAXRAds4LphvvkHuZ3vnFXR7qEsi612seypUmG2l8iEYtOZiw/0UDvxOqHuz
+         nwxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714134008; x=1714738808;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BvGxGr2jzc7HNRAdQ7sDWvGQAeqzlPRu9vORrfxhJ08=;
+        b=Z5dniWg6JU3Fyuuo5nX7qmzIQCi8BLbUgIUAIH37tvhYlJb08pRnUmP6lPHdLyTTWT
+         zeagg8ksUYSVqYlbzAek8xrNzJwqRbRny61CkN9Yzu2If8J+AWSLqHpxTa1VFIG2Fo3x
+         o71GrIvGHd7IXABT10M7+UDtiFR6nUV7Bu91Z1tq38QCwsZ1IN0lutI+SWvfFpP413Xv
+         MtcRp4R3dC05sx6WqtaftffzM6cHKp5r1E2cecRT9uZzd4PGO+Q27aWsa6kFEbgtSjYg
+         qbvjXFieGP7hvNDWpJxji7iS5cplwgIRivQPO73EvES2b1E5i1tj7h8QGmwphsJD9DAF
+         O/4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUoa0vzyF1WTwe2JKKJn6q7m4GCdT0xlvXBSSEG5yV26QB7TNTi/P/NxwBVDALDWJa0gl6kwhPjFso4QlEAj40YQK65hoCt7ep2oIH/
+X-Gm-Message-State: AOJu0Yzhi77CDaC0DJawUGvwZA2sn4cqQvJRAcPo5L1Oiow+J0mbTOhI
+	NQCd1nF8rq5JP7l88ArQJjLHrwLg4dtQWzMjPIHCodw0BAB1wrepl9B0E6FatP0=
+X-Google-Smtp-Source: AGHT+IEsg35qRGx7lt+VkeY9EjpUvvgqNyRCP2x9AyOQiNHCiXlefq3poByoLhtygl/AAoAgySNIAQ==
+X-Received: by 2002:adf:a457:0:b0:34a:4f1c:3269 with SMTP id e23-20020adfa457000000b0034a4f1c3269mr2072375wra.0.1714134008049;
+        Fri, 26 Apr 2024 05:20:08 -0700 (PDT)
+Received: from gpeter-l.lan ([2a0d:3344:2e8:8510:63cc:9bae:f542:50e4])
+        by smtp.gmail.com with ESMTPSA id q2-20020adff942000000b00346bda84bf9sm22478146wrr.78.2024.04.26.05.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 05:20:07 -0700 (PDT)
+From: Peter Griffin <peter.griffin@linaro.org>
+To: alim.akhtar@samsung.com,
+	avri.altman@wdc.com,
+	bvanassche@acm.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	James.Bottomley@HansenPartnership.com,
+	martin.petersen@oracle.com
+Cc: linux-scsi@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tudor.ambarus@linaro.org,
+	andre.draszik@linaro.org,
+	saravanak@google.com,
+	willmcvicker@google.com,
+	kernel-team@android.com,
+	Peter Griffin <peter.griffin@linaro.org>
+Subject: [PATCH v3 0/6] ufs-exynos support for Tensor GS101
+Date: Fri, 26 Apr 2024 13:19:58 +0100
+Message-ID: <20240426122004.2249178-1-peter.griffin@linaro.org>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] slub: Fixes freepointer encoding for single free
-To: Xiongwei Song <sxwjean@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cl@linux.com,
- penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- 42.hyeyoo@gmail.com
-References: <Zij_fGjRS_rK-65r@archlinux>
- <CAEVVKH8Oagbih8E8YNPpNhyh75fWnBLdod+eEGQm9i8ciNv7sQ@mail.gmail.com>
-Content-Language: en-US
-From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-In-Reply-To: <CAEVVKH8Oagbih8E8YNPpNhyh75fWnBLdod+eEGQm9i8ciNv7sQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: nicolas.bouchinet@clip-os.org
 
-On 4/26/24 11:20, Xiongwei Song wrote:
-> On Wed, Apr 24, 2024 at 8:48 PM Nicolas Bouchinet
-> <nicolas.bouchinet@clip-os.org> wrote:
->> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
->>
->> Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
->> separately") splits single and bulk object freeing in two functions
->> slab_free() and slab_free_bulk() which leads slab_free() to call
->> slab_free_hook() directly instead of slab_free_freelist_hook().
->>
->> If `init_on_free` is set, slab_free_hook() zeroes the object.
->> Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
->> set, the do_slab_free() slowpath executes freelist consistency
->> checks and try to decode a zeroed freepointer which leads to a
->> "Freepointer corrupt" detection in check_object().
->>
->> Object's freepointer thus needs to be properly set using
->> set_freepointer() after init_on_free.
->>
->> To reproduce, set `slub_debug=FU init_on_free=1 log_level=7` on the
->> command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=y`.
->>
->> dmesg sample log:
->> [   10.708715] =============================================================================
->> [   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Freepointer corrupt
->> [   10.712695] -----------------------------------------------------------------------------
->> [   10.712695]
->> [   10.712695] Slab 0xffffd8bdc400d580 objects=32 used=4 fp=0xffff9d9a80356f80 flags=0x200000000000a00(workingset|slab|node=0|zone=2)
->> [   10.716698] Object 0xffff9d9a80356600 @offset=1536 fp=0x7ee4f480ce0ecd7c
-> If init_on_free is set,  slab_free_hook() zeros the object first, then
-> do_slab_free() calls
-> set_freepointer() to set the fp value, so there are 8 bytes non-zero
-> at the moment?
-> Hence, the issue is not related to init_on_free?
->
-> The fp=0x7ee4f480ce0ecd7c here is beyond kernel memory space, is the issue from
-> CONFIG_SLAB_FREELIST_HARDENED enabled?
+Hi Martin, James & Alim,
 
-My understanding of the bug is that slab_free_hook() indeed zeroes the 
-object and its metadata first, then calls do_slab_free() and directly 
-calls __slab_free(), head an tail parameters being set to the object.
+This series adds support to the ufs-exynos driver for Tensor gs101 found
+in Pixel 6. It was send previously in [1] and [2] but included the other
+clock, phy and DTS parts. This series has been split into just the
+ufs-exynos part to hopefully make things easier.
 
-If `slub_debug=F` (SLAB_CONSISTENCY_CHECKS) is set, the following call 
-path can be executed :
+With this series, plus the phy, clock and dts changes UFS is functional
+upstream for Pixel 6. The SKhynix HN8T05BZGKX015 can be enumerated,
+partitions mounted etc.
 
-free_to_partial_list() ->
+The series is split into some prepatory patches for ufs-exynos and a final
+patch that adds the gs101 support.
 
-free_debug_processing() ->
+Note the sysreg clock has been moved to ufs node as fine grained clock
+control around the syscon sysreg register accesses doesn't result in
+functional UFS.
 
-free_consistency_checks() ->
+regards,
 
-check_object() ->
+Peter
 
-check_valid_pointer(get_freepointer())
+Changes since v2:
+ - Split into separate per subsystem/maintainer series
+   (ufs, phy, clock, dts)
+ - Remove ufs_ prefix on clock names (Rob)
 
-When check_valid_pointer() is called, its object parameter is first 
-decoded by get_freepointer(), if CONFIG_SLAB_FREELIST_HARDENED is 
-enabled, zeroed data is then decoded by freelist_ptr_decode() using the 
-(ptr.v ^ s->random ^ swab(ptr_addr)) operation.
+Changes since v1:
+ - collect up tags
+ - re-order samsung,exynos-ufs.yaml as per Krzysztof review
+ - Add sysreg clock to ufs node (Andre)
+
+lore v1: https://lore.kernel.org/linux-clk/20240404122559.898930-1-peter.griffin@linaro.org/
+lore v2: https://lore.kernel.org/linux-kernel/20240423205006.1785138-1-peter.griffin@linaro.org/
 
 
-Does that makes sense to you or do you think I'm missing something ?
+Peter Griffin (6):
+  dt-bindings: ufs: exynos-ufs: Add gs101 compatible
+  scsi: ufs: host: ufs-exynos: Add EXYNOS_UFS_OPT_UFSPR_SECURE option
+  scsi: ufs: host: ufs-exynos: add EXYNOS_UFS_OPT_TIMER_TICK_SELECT
+    option
+  scsi: ufs: host: ufs-exynos: allow max frequencies up to 267Mhz
+  scsi: ufs: host: ufs-exynos: add some pa_dbg_ register offsets into
+    drvdata
+  scsi: ufs: host: ufs-exynos: Add support for Tensor gs101 SoC
 
+ .../bindings/ufs/samsung,exynos-ufs.yaml      |  38 +++-
+ drivers/ufs/host/ufs-exynos.c                 | 197 ++++++++++++++++--
+ drivers/ufs/host/ufs-exynos.h                 |  24 ++-
+ 3 files changed, 241 insertions(+), 18 deletions(-)
 
-Best regards,
+-- 
+2.44.0.769.g3c40516874-goog
 
-Nicolas
-
-> Xiongwei
->
->> [   10.716698]
->> [   10.716698] Bytes b4 ffff9d9a803565f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->> [   10.720703] Object   ffff9d9a80356600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->> [   10.720703] Object   ffff9d9a80356610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->> [   10.724696] Padding  ffff9d9a8035666c: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->> [   10.724696] Padding  ffff9d9a8035667c: 00 00 00 00                                      ....
->> [   10.724696] FIX kmalloc-rnd-05-32: Object at 0xffff9d9a80356600 not freed
->>
->> Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
->> ---
->>   mm/slub.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 3aa12b9b323d9..71dbff9ad8f17 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -4342,10 +4342,16 @@ static __fastpath_inline
->>   void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->>                 unsigned long addr)
->>   {
->> +       bool init = false;
->> +
->>          memcg_slab_free_hook(s, slab, &object, 1);
->> +       init = slab_want_init_on_free(s);
->>
->> -       if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
->> +       if (likely(slab_free_hook(s, object, init))) {
->> +               if (init)
->> +                       set_freepointer(s, object, NULL);
->>                  do_slab_free(s, slab, object, object, 1, addr);
->> +       }
->>   }
->>
->>   static __fastpath_inline
->> --
->> 2.44.0
->>
->>
 
