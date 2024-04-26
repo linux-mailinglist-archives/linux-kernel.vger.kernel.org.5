@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61AE58B3AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:11:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE6198B3ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:11:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18BD9287C43
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:11:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD8441C2313E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213F8155A56;
-	Fri, 26 Apr 2024 15:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8CB15686F;
+	Fri, 26 Apr 2024 15:09:42 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CDC155723
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE90149018
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144178; cv=none; b=p7ZS92BTljVLJxYUdS0Kff1c09kuLHt23HqHCO7Zm3GMq/00PPffqtDjc1Mj0PaQ+BOpb3LB3r+ImVTKQqZ+hlzj4P0MoOTayfaGLwfUunb10Ik/QQ4zpGcNgxnP4eK1UjDVEsJ62umwgxqavetOJu+04hDyBkO7lFG/tvHUeCI=
+	t=1714144181; cv=none; b=LxW889FiK+x8G+l/0dbEABzE5skmKmk5GYCf7t2eBYM+ypYrk2HZjyYARMxiV1qoD6iwn2lwGg0IEZnZ/FxhFUKEQPBoKmp44Z7qwZ82+gVjDiuojJsgXFzpZy3HqqifATXljdDvf06PIcz/29zKh95THGoFbIddkxHmdedw6uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144178; c=relaxed/simple;
-	bh=FpxkIPP9DuGI2+rCk9WCX7J/wgWIVZBykrAyft6wNlQ=;
+	s=arc-20240116; t=1714144181; c=relaxed/simple;
+	bh=zaVKIYlWlH67MVBzRdaf2KncAzvORLUtj1iMETwI+EI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=vEUzEX+pMG4cNeqj8gbISGUqEa+95MqGnWVqTxUC67RbwP5QHZ/F/YMqzAM3OPVZNsrAwvWrAXX2rym/JLwfhmUr8281+61EbxY9gnSbkt+Sz0DLfImMrLjG/mCDGA52Ka3C/6O0pOkYUoyqY62W8QFiHEKLmr7jcI3dysIcO/Q=
+	 MIME-Version; b=m2OA2gC+foUxQ9MtqvdqtxCh0qIz10vjKXEXmH0CbeAKImpDGSLkUZkTdb5kBSrdoo+tZLGoK81vLS1i3V9IPnm19sXvTtuZTB/lvAtOslU+9SJiAXLjqTWFFYm4crws8cYK0SFN0aDXXPM2O/iOnWvapBHPGKEsUrYmx41oPDU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1B181691;
-	Fri, 26 Apr 2024 08:10:04 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7AAB1692;
+	Fri, 26 Apr 2024 08:10:07 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE2553F73F;
-	Fri, 26 Apr 2024 08:09:33 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3E7A3F73F;
+	Fri, 26 Apr 2024 08:09:36 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 08/35] x86/resctrl: Move resctrl types to a separate header
-Date: Fri, 26 Apr 2024 16:08:37 +0100
-Message-Id: <20240426150904.8854-8-Dave.Martin@arm.com>
+Subject: [PATCH v2 09/35] x86/resctrl: Add a resctrl helper to reset all the resources
+Date: Fri, 26 Apr 2024 16:08:38 +0100
+Message-Id: <20240426150904.8854-9-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -74,223 +74,90 @@ Content-Transfer-Encoding: 8bit
 
 From: James Morse <james.morse@arm.com>
 
-When resctrl is fully factored into core and per-arch code, each arch
-will need to use some resctrl common definitions in order to define its
-own specializations and helpers.  Following conventional practice, it
-would be desirable to put the dependent arch definitions in an
-<asm/resctrl.h> header that is included by the common <linux/resctrl.h>
-header.  However, this can make it awkward to avoid a circular
-dependency between <linux/resctrl.h> and the arch header.
+On umount(), resctrl resets each resource back to its default
+configuration. It only ever does this for all resources in one go.
 
-To avoid such dependencies, move the affected common types and
-constants into a new header that does not need to depend on
-<linux/resctrl.h> or on the arch headers.
+reset_all_ctrls() is architecture specific as it works with struct
+rdt_hw_resource.
 
-The same logic applies to the monitor-configuration defines, move these
-too.
-
-The maintainers entry for these headers was missed when resctrl.h was
-created. Add a wildcard entry to match both resctrl.h and
-resctrl_types.h.
+Add an architecture helper to reset all resources.
 
 Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Dave Martin <Dave.Martin@arm.com>
 
 ---
 
-FYI: James Morse (et al.)
+FYI: James Morse:
 
- * This patch needs review to see how many of the x86-specific
-   definitions really ought to be exported...
-
- * The header should have a comment explaining its content and purpose
-   (once we have that nailed down).
+ * Review the v2 change detailed below.  If the original change in v1
+   was intentional, the rationale needs to be spelled out.
 
 Changes in v2:
 
- * [Commit message only] Rewrite commit message to clarify the the
-   rationale for refactoring the headers in this way.
----
- MAINTAINERS                            |  1 +
- arch/x86/kernel/cpu/resctrl/internal.h | 24 ---------
- include/linux/resctrl.h                | 35 +------------
- include/linux/resctrl_types.h          | 68 ++++++++++++++++++++++++++
- 4 files changed, 70 insertions(+), 58 deletions(-)
- create mode 100644 include/linux/resctrl_types.h
+ * Rename the for_each_capable_rdt_resource() introduced in the new
+   function resctrl_arch_reset_resources(), back to
+   for_each_alloc_capable_rdt_resource() as it was in the original code.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 43b39956694a..5621dd823e79 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18543,6 +18543,7 @@ S:	Supported
- F:	Documentation/arch/x86/resctrl*
- F:	arch/x86/include/asm/resctrl.h
- F:	arch/x86/kernel/cpu/resctrl/
-+F:	include/linux/resctrl*.h
- F:	tools/testing/selftests/resctrl/
- 
- READ-COPY UPDATE (RCU)
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 32ade929ea1b..031948322eab 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -32,30 +32,6 @@
+   The change looked unintentional; and presumably a resource that does
+   not support resource allocation doesn't have any properties to
+   reset...
+---
+ arch/x86/include/asm/resctrl.h         |  2 ++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 16 +++++++++++-----
+ 2 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index f61382258743..5f6a5375bb4a 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -15,6 +15,8 @@
   */
- #define MBM_CNTR_WIDTH_OFFSET_MAX (62 - MBM_CNTR_WIDTH_BASE)
+ #define X86_RESCTRL_EMPTY_CLOSID         ((u32)~0)
  
--/* Reads to Local DRAM Memory */
--#define READS_TO_LOCAL_MEM		BIT(0)
--
--/* Reads to Remote DRAM Memory */
--#define READS_TO_REMOTE_MEM		BIT(1)
--
--/* Non-Temporal Writes to Local Memory */
--#define NON_TEMP_WRITE_TO_LOCAL_MEM	BIT(2)
--
--/* Non-Temporal Writes to Remote Memory */
--#define NON_TEMP_WRITE_TO_REMOTE_MEM	BIT(3)
--
--/* Reads to Local Memory the system identifies as "Slow Memory" */
--#define READS_TO_LOCAL_S_MEM		BIT(4)
--
--/* Reads to Remote Memory the system identifies as "Slow Memory" */
--#define READS_TO_REMOTE_S_MEM		BIT(5)
--
--/* Dirty Victims to All Types of Memory */
--#define DIRTY_VICTIMS_TO_ALL_MEM	BIT(6)
--
--/* Max event bits supported */
--#define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
--
++void resctrl_arch_reset_resources(void);
++
  /**
-  * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
-  *			        aren't marked nohz_full
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 1495e03d1f1b..78eea7caf839 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -5,6 +5,7 @@
- #include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/pid.h>
-+#include <linux/resctrl_types.h>
+  * struct resctrl_pqr_state - State cache for the PQR MSR
+  * @cur_rmid:		The cached Resource Monitoring ID
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 997f31ee5de4..2684a863c727 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2858,6 +2858,14 @@ static int reset_all_ctrls(struct rdt_resource *r)
+ 	return 0;
+ }
  
- /* CLOSID, RMID value used by the default control group */
- #define RESCTRL_RESERVED_CLOSID		0
-@@ -24,40 +25,6 @@ int proc_resctrl_show(struct seq_file *m,
- /* max value for struct rdt_domain's mbps_val */
- #define MBA_MAX_MBPS   U32_MAX
++void resctrl_arch_reset_resources(void)
++{
++	struct rdt_resource *r;
++
++	for_each_alloc_capable_rdt_resource(r)
++		reset_all_ctrls(r);
++}
++
+ /*
+  * Move tasks from one to the other group. If @from is NULL, then all tasks
+  * in the systems are moved unconditionally (used for teardown).
+@@ -2967,16 +2975,14 @@ static void rmdir_all_sub(void)
  
--/**
-- * enum resctrl_conf_type - The type of configuration.
-- * @CDP_NONE:	No prioritisation, both code and data are controlled or monitored.
-- * @CDP_CODE:	Configuration applies to instruction fetches.
-- * @CDP_DATA:	Configuration applies to reads and writes.
-- */
--enum resctrl_conf_type {
--	CDP_NONE,
--	CDP_CODE,
--	CDP_DATA,
--};
+ static void rdt_kill_sb(struct super_block *sb)
+ {
+-	struct rdt_resource *r;
 -
--enum resctrl_res_level {
--	RDT_RESOURCE_L3,
--	RDT_RESOURCE_L2,
--	RDT_RESOURCE_MBA,
--	RDT_RESOURCE_SMBA,
--
--	/* Must be the last */
--	RDT_NUM_RESOURCES,
--};
--
--#define CDP_NUM_TYPES	(CDP_DATA + 1)
--
--/*
-- * Event IDs, the values match those used to program IA32_QM_EVTSEL before
-- * reading IA32_QM_CTR on RDT systems.
-- */
--enum resctrl_event_id {
--	QOS_L3_OCCUP_EVENT_ID		= 0x01,
--	QOS_L3_MBM_TOTAL_EVENT_ID	= 0x02,
--	QOS_L3_MBM_LOCAL_EVENT_ID	= 0x03,
--};
--
- /**
-  * struct resctrl_staged_config - parsed configuration to be applied
-  * @new_ctrl:		new ctrl value to be loaded
-diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.h
-new file mode 100644
-index 000000000000..4788bd95dac6
---- /dev/null
-+++ b/include/linux/resctrl_types.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2024 Arm Ltd.
-+ * Based on arch/x86/kernel/cpu/resctrl/internal.h
-+ */
+ 	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	rdt_disable_ctx();
+ 
+-	/*Put everything back to default values. */
+-	for_each_alloc_capable_rdt_resource(r)
+-		reset_all_ctrls(r);
++	/* Put everything back to default values. */
++	resctrl_arch_reset_resources();
 +
-+#ifndef __LINUX_RESCTRL_TYPES_H
-+#define __LINUX_RESCTRL_TYPES_H
-+
-+/* Reads to Local DRAM Memory */
-+#define READS_TO_LOCAL_MEM		BIT(0)
-+
-+/* Reads to Remote DRAM Memory */
-+#define READS_TO_REMOTE_MEM		BIT(1)
-+
-+/* Non-Temporal Writes to Local Memory */
-+#define NON_TEMP_WRITE_TO_LOCAL_MEM	BIT(2)
-+
-+/* Non-Temporal Writes to Remote Memory */
-+#define NON_TEMP_WRITE_TO_REMOTE_MEM	BIT(3)
-+
-+/* Reads to Local Memory the system identifies as "Slow Memory" */
-+#define READS_TO_LOCAL_S_MEM		BIT(4)
-+
-+/* Reads to Remote Memory the system identifies as "Slow Memory" */
-+#define READS_TO_REMOTE_S_MEM		BIT(5)
-+
-+/* Dirty Victims to All Types of Memory */
-+#define DIRTY_VICTIMS_TO_ALL_MEM	BIT(6)
-+
-+/* Max event bits supported */
-+#define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
-+
-+/**
-+ * enum resctrl_conf_type - The type of configuration.
-+ * @CDP_NONE:	No prioritisation, both code and data are controlled or monitored.
-+ * @CDP_CODE:	Configuration applies to instruction fetches.
-+ * @CDP_DATA:	Configuration applies to reads and writes.
-+ */
-+enum resctrl_conf_type {
-+	CDP_NONE,
-+	CDP_CODE,
-+	CDP_DATA,
-+};
-+
-+enum resctrl_res_level {
-+	RDT_RESOURCE_L3,
-+	RDT_RESOURCE_L2,
-+	RDT_RESOURCE_MBA,
-+	RDT_RESOURCE_SMBA,
-+
-+	/* Must be the last */
-+	RDT_NUM_RESOURCES,
-+};
-+
-+#define CDP_NUM_TYPES	(CDP_DATA + 1)
-+
-+/*
-+ * Event IDs, the values match those used to program IA32_QM_EVTSEL before
-+ * reading IA32_QM_CTR on RDT systems.
-+ */
-+enum resctrl_event_id {
-+	QOS_L3_OCCUP_EVENT_ID		= 0x01,
-+	QOS_L3_MBM_TOTAL_EVENT_ID	= 0x02,
-+	QOS_L3_MBM_LOCAL_EVENT_ID	= 0x03,
-+};
-+
-+#endif /* __LINUX_RESCTRL_TYPES_H */
+ 	rmdir_all_sub();
+ 	rdt_pseudo_lock_release();
+ 	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
 -- 
 2.34.1
 
