@@ -1,111 +1,133 @@
-Return-Path: <linux-kernel+bounces-160563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488F58B3F2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:22:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEAB58B3F31
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:23:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3976B23AE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:22:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D171C235E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B851F16EBE4;
-	Fri, 26 Apr 2024 18:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5850C16E888;
+	Fri, 26 Apr 2024 18:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QHiF19UU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="T13clV67";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z1mD2BcG"
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F291C45037;
-	Fri, 26 Apr 2024 18:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB89245037;
+	Fri, 26 Apr 2024 18:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714155765; cv=none; b=Cb6FHhxiWJbZWd/zfdQxMllyx/yFgiveTVOR+Ek9oO+EZ82eH6XX7NH9geOMMlc/EbznlKngCfyyXv2H4pvUi1CiHamNAMqov4et8LCrCnvQxMr8GZYe5VQ8QnO+cZDzBBDbNzU90msk+/KjYnu++F2ZmSI3E8oy33vS0MPgZxE=
+	t=1714155806; cv=none; b=cKCJ7D4d/KgQdSR0YdIr3N8MJdhqJ+t58bX8Umk8XWX+AouavHJFj1/Nx4NnHtztFHmVlHO729vNLBe5O3jU6Rbnv8XutNzDU8JWU7HPBNsK0mo0b0htJuGiWPdZDbuMeNb4+lO0efprGfrwJoj47k0NBRv4SbKKi5SIfrFc1qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714155765; c=relaxed/simple;
-	bh=gpyVvefeP36zHUXRz/u3ksezvgy7WEBLfXm4HyXlxF4=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=JWya7Umnkm4CJnw5n5DdgjEG0wVquqW/x6pRq1cbff6eOuNHefxVCz3gQ/FQaALyA5Go9jBMu8Hrn/mzUHX4kf1tBVdQhlwvc9XUd4v5pvlmyaw2Pjh0Ro7i1/mjrI4oJDl2KTziT8+q4MwxAEgaxy8zezCAvw9exsMYmEKVnk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QHiF19UU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52D08C113CD;
-	Fri, 26 Apr 2024 18:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714155764;
-	bh=gpyVvefeP36zHUXRz/u3ksezvgy7WEBLfXm4HyXlxF4=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=QHiF19UUHS4HQggBpXjB9tUcLKKASvChWcO/TU9ERF03lEFOX55fjOkoKLunY02mh
-	 KVaTfLrzfQHE2FZxc46/LFZd/Z7EudTt+BQyoROaaIM68jtOiIp2yhZ8H7kP6IlUbQ
-	 IdXU89T0jhpxU1J99MeF/qym4SIwazsrlWAgzqZZiQcurclxDkJVZWgljgzVFvIs3v
-	 nbL7qzdw9y5DFrGb4AZHtvWQ1inN3eibcPoD3yl62csWMDUfaSMW+ld2DaWZtyX/R6
-	 B4Q33L3o2z/JFtuGWnqmTOl85SlbO2aEtKeODR7SBYFdHIPG8PEDc6StAFu2yu++D/
-	 EFtpRtBmSvc3g==
-Date: Fri, 26 Apr 2024 13:22:41 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1714155806; c=relaxed/simple;
+	bh=AdSo0Q6YNhJsuAOB1X7CHnljeCBv0U8dMhZm578k/Fs=;
+	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nzo0QuYy0Z+y8QHZZ6c9Pd45n23SMKbjBpWJbsjkX+gIOouU9KVvphue5dkIP0I7ZreYOnbmhiN7V9F3C310CJ9Hs8OYWkb9Y4yb9en2v2rs/2WYkw06acRUc+qqEOzid6Lf1bDeuQpkWOYa/MYf3j8cNL6pyar6sV7a9GuzP5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=T13clV67; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Z1mD2BcG; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 6031E1800090;
+	Fri, 26 Apr 2024 14:23:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 26 Apr 2024 14:23:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1714155801; x=1714242201; bh=F9cSC2Wo0Z
+	/qlYmQgkUvvjtknFVMj+Q6laJAkMRV3y8=; b=T13clV67IZkE+Thx1FXEaP2aua
+	AaiD2rDHXY4I4I/+UL53lWnjvDHiUbhzJ+AVDF+u98FQ9ZmoOzYXbJBZjZfH23sj
+	G6KrPWZigCizkrc1PkJ6kXDeL6nhKE4vtRUXbpyFWtV7SCNdwWPCRQ60GNFA+KaE
+	5kxoJViM2aq1MlHejKiZQD9uKv3g584ED4ZuajKH4Y27xcGRP2cLzzDtRp7iCt4j
+	f8QE7yW1nH617I92ee8lOIQAtYtXyWzuQKyFjTpwL9oBax/ZjXS9L4ucUtkx2r6e
+	7V/j4Ws6jyi9323U80SlPcwAJUw+0LxtD7q0MoxRHECMx/AfZCI4GfnpY/+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714155801; x=1714242201; bh=F9cSC2Wo0Z/qlYmQgkUvvjtknFVM
+	j+Q6laJAkMRV3y8=; b=Z1mD2BcGYp+KiSsYc683qyA9FWTFiH2mo2NZcl2PmJ8W
+	3Ra0zZtE2u/+ujEzTDTeXLqwwuhvMzWPJG31dcG/1e+yGiwnc2vDObgD0zG0cJwD
+	PmYmnEJu6yldSZnh7T75p8RL9AO3ykqdzy32mzyWXKyvHpib4kz7zg0nAvY152zt
+	VD8Lrk+QdS4TV+OIftukUrPcteRAVkBxgGjUsFOaDWHjyifLJY73JgiYpO/kJwSt
+	J+a8ALBfmYddhNsRgW6LGl8HH1Av4I99uxisIB0PNeDKCjxajO7r97qxV2+KCa1o
+	Hzvzt041iY1lZ2fNguyIKYmLnX/P2UhfbDKvumRDsA==
+X-ME-Sender: <xms:GfErZraIHBDKHxc8dx6MeK8senGzDSJAu8sXYcVPJvYAbv2JxAdAgQ>
+    <xme:GfErZqbVt6JaeNfiLNedsAnHSINzlX_Nws6wyU1ZW8_gBdFku2IIIuJ4hvRzxktxB
+    RRgYlDiMNcN01uPygY>
+X-ME-Received: <xmr:GfErZt9zoVJdMGJipF_aPrOiL8DkOz8ZreJ_o1yhdXNr8mZvS85glZq2VFbclpuifIRbEjIyR1VMw8sFm8JRXvkscDhqRO_ZSJWlXn0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelledguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnhihn
+    ughonhcuufgrnhgthhgvuceolhhsrghntghhvgeslhihnhguvghnohdrtggrqeenucggtf
+    frrghtthgvrhhnpeektdeuvddtfeeuueduteehtdeuhfeufedtfeduveelveeiteefheel
+    geekgfelfeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhsrghntghhvgeslhihnhguvghn
+    ohdrtggr
+X-ME-Proxy: <xmx:GfErZhocULUdE0e1CmAZLvd2Z_z6rm_V1IhHdYuhdwUODKDT7YqFGQ>
+    <xmx:GfErZmoXl9wwxzKacbiljPFV7kifHSfw2BPyGvvyHo0-kwLD4ust9w>
+    <xmx:GfErZnTQ_K3eccWRjDTR6FKvgfqknWNU5WlooG7Ao6uHrNELhWC5tQ>
+    <xmx:GfErZuqKem2H2r4JgyS0TcNXw_QXqNt1DIv-UR62vxXl93Bx0w_M3g>
+    <xmx:GfErZl13bEL85tJoqeCxtkS4mTp2jbCBvXdbfX3fATF9H4_UbUULHext>
+Feedback-ID: i1719461a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Apr 2024 14:23:19 -0400 (EDT)
+Date: Fri, 26 Apr 2024 12:23:11 -0600
+From: Lyndon Sanche <lsanche@lyndeno.ca>
+Subject: Re: [PATCH] platform/x86: dell-laptop: Implement platform_profile
+To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>, Matthew Garrett
+	<mjg59@srcf.ucam.org>, Pali =?iso-8859-1?b?Um9o4XI=?= <pali@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>, Ilpo =?iso-8859-1?q?J=E4rvinen?=
+	<ilpo.jarvinen@linux.intel.com>, platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
+Message-Id: <N2BKCS.UBBG0H0KMCYF2@lyndeno.ca>
+In-Reply-To: <13fe0f7c7da2cb6ce52ec34d4648e90e40f2fbc0.camel@linux.intel.com>
+References: <20240425172758.67831-1-lsanche@lyndeno.ca>
+	<a6009bed-aa34-4a3f-91f5-23937e915132@amd.com>
+	<24c7a9ea-7755-4270-a338-4701c8e262e2@app.fastmail.com>
+	<13fe0f7c7da2cb6ce52ec34d4648e90e40f2fbc0.camel@linux.intel.com>
+X-Mailer: geary/44.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-Cc: Andi Shyti <andi.shyti@kernel.org>, linux-rockchip@lists.infradead.org, 
- Wolfram Sang <wsa+renesas@sang-engineering.com>, 
- Quentin Schulz <quentin.schulz@theobroma-systems.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Heiko Stuebner <heiko@sntech.de>, linux-i2c@vger.kernel.org, 
- devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Conor Dooley <conor+dt@kernel.org>
-In-Reply-To: <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
-References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
- <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
-Message-Id: <171415576010.2476476.2469508869846775606.robh@kernel.org>
-Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for
- mule i2c multiplexer
+Content-Type: text/plain; charset=us-ascii; format=flowed
 
 
-On Fri, 26 Apr 2024 18:49:33 +0200, Farouk Bouabid wrote:
-> This patch adds support for the Mule I2C multiplexer.
+
+On Fri, Apr 26 2024 at 09:14:07 AM -07:00:00, srinivas pandruvada 
+<srinivas.pandruvada@linux.intel.com> wrote:
+>> Can you share output of acpidump tool to me? I want to make sure if
+> there is some way the platform will bypass thermal table if you 
+> changed
+> to some profile.
 > 
-> Mule is an mcu that emulates a set of i2c devices which are reacheable
-> through an i2c-mux.
-> 
-> The emulated devices share a single i2c address with the mux itself where
-> the requested register is what determines which logic is executed (mux or
-> device).
-> 
-> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-> ---
->  .../devicetree/bindings/i2c/i2c-mux-mule.yaml      | 80 ++++++++++++++++++++++
->  1 file changed, 80 insertions(+)
-> 
+> Thanks,
+> Srinivas
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Hello Srinivas:
 
-yamllint warnings/errors:
+I used acpidump. For sake of completeness I ran acpidump with each of 
+the thermal modes enabled. The files are too large to provide here so I 
+uploaded them to a public gist:
+https://gist.github.com/Lyndeno/65ade5a15f1f2cd07175256dc021f551
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/i2c-mux-mule.example.dtb: fan@18: '#cooling-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
+Please let me know if there is a more appropriate medium for sharing 
+files like this, and I will remember for next time.
 
-doc reference errors (make refcheckdocs):
+Thank you,
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com
+Lyndon
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
 
 
