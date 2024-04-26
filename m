@@ -1,95 +1,149 @@
-Return-Path: <linux-kernel+bounces-159398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5B58B2E1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:46:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F72B8B2E21
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EBD11F230E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:46:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2B13B228A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91732EBE;
-	Fri, 26 Apr 2024 00:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C05715A8;
+	Fri, 26 Apr 2024 00:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jXXwARaA"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f0+vinsW"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0884380;
-	Fri, 26 Apr 2024 00:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638B8380;
+	Fri, 26 Apr 2024 00:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714092384; cv=none; b=iDSeCC1ccBBdijgNrC9d2Z149ZLAPZSwLW4TXgw6IAAINJ9IBkAGxT6ycw7qZux130ZakbtFMxcRlbJqHQW3ktXofn5DCqn3aGvmN0TQKquA5K7ZMjHg8B1OBwdghwZ/k5o9bOU8p83WWFeX83j9/3wlrwRxMfjwdznJ3GYYPQI=
+	t=1714092453; cv=none; b=MRrdzrqBKu6AFDOgD8SIHwbx+TPy2RbqEZyz93X3niUsymj8/p12426vmwZ6zzojQ94i02Dud1OrEiQoIZbGO82oYi5xc2Yu8Phc2LC4Z+YHJ84u4GZRCToyhMmkJ9b28/XpkRx51SvjC1vaLv4D78ZWytDotEvGmJtjD8smkIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714092384; c=relaxed/simple;
-	bh=iAIwvNanaJfSwyuQdu2iPKAxIDvIcefdxepA2j6RBCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DVS+xhMHrjemmFMTCsEMmznMbJATjgccxZIaQ58AtcPiC/+8AuxWh5uYapA4yOMRll5RhPb3dmzE8Y0AV+YY/HSGRxIt27yWLehjEZQZFoQiyX5cfV0se5BDvr8W8AbSq0XVnq3GpP93xheCnQQpb6BLUmXyWAkoAtgERMa9OPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jXXwARaA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714092379;
-	bh=iAIwvNanaJfSwyuQdu2iPKAxIDvIcefdxepA2j6RBCc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=jXXwARaAwsEQFPZftpORNj18oMtpRngcpUrXGwSLWQHH8N8hmCU4TnCzyS7beVF/F
-	 X0xZZ9mSjbKqUc3u+cJzIgzzDBEEy/T5BVoB0a9QboZcgAelTDZAicyB+5y+WL4KrA
-	 8ADD/CzPdLGAEMPU+IO43iJF6M5rWPTGb0vcz+gY5yVfUEnK4bPtbzgNsW3hrg3hmh
-	 P3+W44L4qzabkB+7s+U8av2wIpuFJCZyXX5mj72Ih9beHyS03jbefyukFP3OXtCCJh
-	 u942cZFISE75FHn8Sr++7WKZgD4Zxbd1nrqK3tcj0aj/LfgZL0if/MX4hRRYXFzT7W
-	 fjnaQJ4fSgtXQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQYtz0tdcz4wcr;
-	Fri, 26 Apr 2024 10:46:19 +1000 (AEST)
-Date: Fri, 26 Apr 2024 10:46:18 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: error fetching the drm-msm-lumag tree
-Message-ID: <20240426104618.43d926d3@canb.auug.org.au>
+	s=arc-20240116; t=1714092453; c=relaxed/simple;
+	bh=C5A9J+Gbrbj/i3IjchhAKHt0ZfALGWbdhp86L8wkEeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bylh/Z1HXsecrhNR1qVBabeg37u/d2nyDscAmtk7E8oXMdXS4wezRBNsay3sB3xirhz8GjIsMDZffgAwcBMi+fNQCUSHIzSX2PRycNh3hBxR7/cdi3yImyN8CT9/DE7DZd5wiPeQeCZ+kclrhscJ7KsVcLJIL0qqzz1s1ZT+i0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f0+vinsW; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=6jnE6LGAE0Ge7rAWbVl9vm4Cu+KrxLEesibskCl1htg=; b=f0+vinsWX0muKf6vaKgTKwJ3aM
+	+DuqXXB3MLam69jGiOjU663h1e9sUMxRNxElfr+tDjGlokyrag0jL2mcN8ZbbcqjrwPxD1buayqVl
+	UoYWexnagnozKyAzskjB+udRYZc3DZDJIiPRS0ntTrnlmyY/Z4RmmBme6dq2D5aL0NQ5GdaXg8YZw
+	DjuORwkpqODS4GMKICRq7fXPJqps+xnze0ZE6HY8P+JzFOOXHwHxqiOFbC9xXpVisUc/zJqFnpqxE
+	UCWk+aZXz+kfClceSFXdTtaQyKtUhgg5UGmZLP+vSa3L1Hxl+A5UO3r4j35dUrWjT/HxavIBNg0Ye
+	tGVH1xCQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s09kN-0000000Ak4J-0KrB;
+	Fri, 26 Apr 2024 00:47:28 +0000
+Date: Thu, 25 Apr 2024 17:47:27 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, djwong@kernel.org,
+	brauner@kernel.org, david@fromorbit.com, chandan.babu@oracle.com,
+	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+	hare@suse.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, gost.dev@samsung.com,
+	p.raghav@samsung.com
+Subject: Re: [PATCH v4 05/11] mm: do not split a folio if it has minimum
+ folio order requirement
+Message-ID: <Zir5n6JNiX14VoPm@bombadil.infradead.org>
+References: <20240425113746.335530-1-kernel@pankajraghav.com>
+ <20240425113746.335530-6-kernel@pankajraghav.com>
+ <Ziq4qAJ_p7P9Smpn@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//Nrr/SGkSmvw=ixDylAFVNw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ziq4qAJ_p7P9Smpn@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
---Sig_//Nrr/SGkSmvw=ixDylAFVNw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 25, 2024 at 09:10:16PM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 25, 2024 at 01:37:40PM +0200, Pankaj Raghav (Samsung) wrote:
+> > From: Pankaj Raghav <p.raghav@samsung.com>
+> > 
+> > Splitting a larger folio with a base order is supported using
+> > split_huge_page_to_list_to_order() API. However, using that API for LBS
+> > is resulting in an NULL ptr dereference error in the writeback path [1].
+> > 
+> > Refuse to split a folio if it has minimum folio order requirement until
+> > we can start using split_huge_page_to_list_to_order() API. Splitting the
+> > folio can be added as a later optimization.
+> > 
+> > [1] https://gist.github.com/mcgrof/d12f586ec6ebe32b2472b5d634c397df
+> 
+> Obviously this has to be tracked down and fixed before this patchset can
+> be merged ... I think I have some ideas.  Let me look a bit.  How
+> would I go about reproducing this?
 
-Hi all,
+Using kdevops this is easy:
 
-Fetching the drm-msm-lumag tree produced this error:
+make defconfig-lbs-xfs-small -j $(nproc)
+make -j $(nproc)
+make fstests
+make linux
+make fstests-baseline TESTS=generic/447 COUNT=10
+tail -f
 
-fatal: couldn't find remote ref refs/heads/msm-next-lumag
+guestfs/*-xfs-reflink-16k-4ks/console.log
+or
+sudo virsh list
+sudo virsh console ${foo}-xfs-reflink-16k-4ks
 
---=20
-Cheers,
-Stephen Rothwell
+Where $foo is the value of CONFIG_KDEVOPS_HOSTS_PREFIX in .config for
+your kdevops run.
 
---Sig_//Nrr/SGkSmvw=ixDylAFVNw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Otherwise if you wanna run things manually the above uses an lbs branch
+called large-block-minorder on kdevops [0] based on v6.9-rc5 with:
 
------BEGIN PGP SIGNATURE-----
+a) Fixes we know we need
+b) this patch series minus this patch
+c) A truncation enablement patch
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYq+VoACgkQAVBC80lX
-0GyDdAf/XHV7XpbwdanzebPFw7Oqm0lZjuG24R7oJbSruGBi8k0R5YUjwWYtLvuN
-EvjrCEqYdfBQ8da2vylQG4Zhv11WYIlFD1ocq38/mhQ+NaiJtnjtzBvWEFq1K4oy
-BrEj9Y3mSJfWRSfH3OOGT1kDI7PKEiqgCfQXmaUF2NTouaZCbVtKATEj0epFzpat
-+CFkbTvqP0Ufj2J8xqf2g00qkRbdZV0owr41AnfGxp1B0TBMMXpPlYv0kBsjbsVU
-RRSVip1Tz4nocRrJbPFi3zZauiUg6UjI/ym2dHAShKkRDSnanWRpRvEC5AdH7f9w
-TP8k8/1AKCeg29aFARZ1Y9/1w9lG4A==
-=35hf
------END PGP SIGNATURE-----
+Note that the above also uses an fstests git tree with the fstests
+changes we also have posted as fixes and some new tests which have been
+posted [1]. You will then want to run:
 
---Sig_//Nrr/SGkSmvw=ixDylAFVNw--
+/check -s xfs_reflink_16k_4ks -I 10 generic/447
+
+The configuration for xfs_reflink_16k_4ks follows:
+
+cat /var/lib/xfstests/configs/min-xfs-reflink-16k-4ks.config
+
+[default]
+FSTYP=xfs
+TEST_DIR=/media/test
+SCRATCH_MNT=/media/scratch
+RESULT_BASE=$PWD/results/$HOST/$(uname -r)
+DUMP_CORRUPT_FS=1
+CANON_DEVS=yes
+RECREATE_TEST_DEV=true
+SOAK_DURATION=9900
+
+[xfs_reflink_16k_4ks]
+TEST_DEV=/dev/loop16
+SCRATCH_DEV_POOL="/dev/loop5 /dev/loop6 /dev/loop7 /dev/loop8 /dev/loop9 /dev/loop10 /dev/loop11 /dev/loop12"
+MKFS_OPTIONS='-f -m reflink=1,rmapbt=1, -i sparse=1, -b size=16384, -s size=4k'
+USE_EXTERNAL=no
+LOGWRITES_DEV=/dev/loop15
+
+I didn't have time to verify if the above commands for kdevops worked but... in
+theory its possible it may, because you know, May is right around the
+corner, and May... the force be with us.
+
+[0] https://github.com/linux-kdevops/linux/tree/large-block-minorder
+[1] https://github.com/linux-kdevops/fstests
+
+  Luis
 
