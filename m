@@ -1,231 +1,102 @@
-Return-Path: <linux-kernel+bounces-159736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429738B3376
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D208B337B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:00:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE0FB281D90
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:59:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EB5282300
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782FB13CFA9;
-	Fri, 26 Apr 2024 08:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCCE13D291;
+	Fri, 26 Apr 2024 09:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WAsGy8Ij"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LRB7pejm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A7F23A8
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E5913C838
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714121943; cv=none; b=n15eLQZpfgLMMbQwhGIbALpRS1nJ7C4n3NNHe8oLCVpcXS6l1iU9nvQmQgaJu5U0003smWzVkHF/Z4y4hbyFOLwv5tADiVYaWEDfbykY/Tcf3cMpYgPakh7iLRHPsNpDJzfb84I8lelM7FcMaNh8vRM2XlDAqLByU3IC0nziouo=
+	t=1714122045; cv=none; b=tzKYtZJmnFVuxQmGCS7EZEj92Um3bSv459CXq3NwfzLQe1Q9JPciZoemF0IJjv6HU2eHWXKktfcM6UYlHUVxfL4ms1H+rERGazu9gsRwiwReu9aP33fV7Nuh1q8nv5nEX8Z0sJA7YExY/P3t5eJShDi3P7+TdAi3l7Il3LuQv3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714121943; c=relaxed/simple;
-	bh=HMamG9MoqMPfhj+TthBpo7UGGso+zE8qisWfdyo8OB4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cgjZjVNO7bg2Gwr9N6jokI1GBCSlXycrGKCfMrJAjhYPTG7qvhurNLHWU1YRlK/8R/HgwESQIh8mwvmtmJ1EAk0eKuRHK+GFmId+JrAlg1hVbmkaBfesp9wb2t4JYci8gULs0X7PrKUCmRPZn9IsOoZp6d6ktyyHxHY8NztB0y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WAsGy8Ij; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714121941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bRPXKQ+KIC0ZxHv4USsHQnv5JvvbpfCYVb/U1bJ6Y7s=;
-	b=WAsGy8IjOXt5D7jJAyYQhlww+4jl/pVQFbNGI0b0UNmF5M1Svr9/6k6W2KO3hFmABiz8U2
-	yAXe79VQxwOM7XUYwnplN+3ahgG8/DOgAhl/dKs1hLhjGW0o4zZiN+nJoBfI2mwgY5WHhM
-	ZmPT4SVCAbySYiH7kYTg2sChRYaX2+4=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-385-xmoWPSJNONCk_w5xjtAhKw-1; Fri, 26 Apr 2024 04:58:59 -0400
-X-MC-Unique: xmoWPSJNONCk_w5xjtAhKw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2dc8418e64cso15498491fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:58:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714121937; x=1714726737;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bRPXKQ+KIC0ZxHv4USsHQnv5JvvbpfCYVb/U1bJ6Y7s=;
-        b=gZFrzAJn79IXqDNujDt+Kf85ij3caw1WKXUZU3BBBmM462MFeaBG2H30Q4DEFJnS+u
-         w6Hug16XNdLSP6Kj59KuwUhfpSjT/AtPv3zni1QYXPe/VE1MDw+8uYEeXk6qeb0foqgC
-         uKp7FmTaehdByGJ+jcWJ4tL2FU87liOBCilf8qEPPc+sfpJ1iSj8cnVTFpMDs8ijc/M9
-         unIlFl/jv+GSqLNKsPkdrpXwKksSTT+5AEOwmaj9SyC/rmL5QUaXgb03O0RobcsMjtsE
-         TuTU0tu6avkky2WWEA1B33s07+bxbyw8fhBoyAES31bYST3PgF5/IHOcN6QVcXqVC9or
-         6Rpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXumUewO5vzxNNNVZjSy3XRs1d3BDccPyKS7yBllNg/pPOaQVAZkuop5WINekT4LftoK0zRRPrrsrLwIFRm3eLKqRlkSUT0AYdhhHln
-X-Gm-Message-State: AOJu0YyvLoSPiZcdNEp6Eb5ImrLn0/LseSFIN09xXpS1vwq9b3hQW+h3
-	b/XfRo+FozZxJ7mk5o3Hp4iFN7PpOZVZSLXsxmceoIZULKfhvBMW3MkwaXpnXOVBmS9OTQffoxe
-	cAenpdQ8BVaLWRg1BsfA8+yNO+Oc3U8fPkQLdlmOwuWxS7IjE4ejaiPeg/muDJQ==
-X-Received: by 2002:a05:651c:14b:b0:2d8:452b:f7af with SMTP id c11-20020a05651c014b00b002d8452bf7afmr1220463ljd.48.1714121937688;
-        Fri, 26 Apr 2024 01:58:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGOXKjCgLhxrflbnYwmKhb8DJCFK6unuwmUTd4j4GAlzdCfQPiB+ZvAYSrIwmpxZAqjBISe4w==
-X-Received: by 2002:a05:651c:14b:b0:2d8:452b:f7af with SMTP id c11-20020a05651c014b00b002d8452bf7afmr1220445ljd.48.1714121937180;
-        Fri, 26 Apr 2024 01:58:57 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:6100:20f2:6848:5b74:ca82? (p200300cbc726610020f268485b74ca82.dip0.t-ipconnect.de. [2003:cb:c726:6100:20f2:6848:5b74:ca82])
-        by smtp.gmail.com with ESMTPSA id v13-20020a05600c444d00b0041a3f700ccesm18313617wmn.40.2024.04.26.01.58.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 01:58:56 -0700 (PDT)
-Message-ID: <30d66f75-60c8-4ebf-8451-839806400dd4@redhat.com>
-Date: Fri, 26 Apr 2024 10:58:56 +0200
+	s=arc-20240116; t=1714122045; c=relaxed/simple;
+	bh=hkvrwq0uWGSiJHO7TTFapyHX4LA/xNXwZasZASBeMAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oB6lMdJgn+tIYvAnMExztbXCRTAPbw5BCVjHRzEVUJ8Nwygx+GtxT2Z3WN84y45h97zhReHtTeHcjvdi6nb8JY0sc6/KoJg8Cc1PlRMeqv267HhO8KhPmokgQN98K2g3CMc+IHijsUqvdsPNBJz4fb5pTqIf/u1EwnVIcX7UsNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LRB7pejm; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714122044; x=1745658044;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hkvrwq0uWGSiJHO7TTFapyHX4LA/xNXwZasZASBeMAI=;
+  b=LRB7pejmnyJdNJvd/7ohFWa/DHIb1OTdQ0CwE1MnPK63CrTfrmQWsFwG
+   WQDA9M3m1Qg1Y7eOsItaAOecMtDXs9fC2Y0Xe4mroICA4gAKvStEJtVNP
+   dWvm2FJVMev3q+OZ4UQRcxISyNg1SHDlsFgO/FdnvBqPSMZi8zXIkGynt
+   5cFKjloWEF8sWD4OzDBQp03Wzv5X1+ZT8YRYAQes9Y8jNDILeQgTw8ZSA
+   qcR0a9m/O5X8gK+Hvl95QphALnhOVA1a/O46oHgzVvnAMoQ28oys9biZE
+   fCrYKJUVIHSQyYm9yMonP9rmymF0aVuM66qiQS3WLnvgRN0yXUASwCCiA
+   A==;
+X-CSE-ConnectionGUID: 0vl8xfy7TXiY+gBwczcO6A==
+X-CSE-MsgGUID: wuBO4aV5QCi4yW6h5yqFpQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9776911"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="9776911"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:00:43 -0700
+X-CSE-ConnectionGUID: +taR4C8mTmGHlYYZ8bvhOQ==
+X-CSE-MsgGUID: PdfGznN8QlilP4Ln48PMfg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="29823933"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 26 Apr 2024 02:00:41 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s0HRf-0003Ve-28;
+	Fri, 26 Apr 2024 09:00:39 +0000
+Date: Fri, 26 Apr 2024 16:59:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Oleg Nesterov <oleg@redhat.com>
+Subject: powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from
+ `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
+Message-ID: <202404261646.RbWtKBhy-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] hv_balloon: Enable hot-add for memblock sizes > 128
- Mbytes
-To: mhklinux@outlook.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, linux-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org
-References: <20240311181238.1241-1-mhklinux@outlook.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240311181238.1241-1-mhklinux@outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 11.03.24 19:12, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> The Hyper-V balloon driver supports hot-add of memory in addition
-> to ballooning. Current code hot-adds in fixed size chunks of
-> 128 Mbytes (fixed constant HA_CHUNK in the code).  While this works
-> in Hyper-V VMs with 64 Gbytes or less or memory where the Linux
-> memblock size is 128 Mbytes, the hot-add fails for larger memblock
-> sizes because add_memory() expects memory to be added in chunks
-> that match the memblock size. Messages like the following are
-> reported when Linux has a 256 Mbyte memblock size:
-> 
-> [  312.668859] Block size [0x10000000] unaligned hotplug range:
->                 start 0x310000000, size 0x8000000
-> [  312.668880] hv_balloon: hot_add memory failed error is -22
-> [  312.668984] hv_balloon: Memory hot add failed
-> 
-> Larger memblock sizes are usually used in VMs with more than
-> 64 Gbytes of memory, depending on the alignment of the VM's
-> physical address space.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c942a0cd3603e34dd2d7237e064d9318cb7f9654
+commit: 5431fdd2c181dd2eac218e45b44deb2925fa48f0 ptrace: Convert ptrace_attach() to use lock guards
+date:   5 months ago
+config: powerpc-randconfig-r033-20230815 (https://download.01.org/0day-ci/archive/20240426/202404261646.RbWtKBhy-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404261646.RbWtKBhy-lkp@intel.com/reproduce)
 
-Right, that's the case since 2018.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404261646.RbWtKBhy-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
 
-> 
-> Fix this problem by having the Hyper-V balloon driver determine
-> the Linux memblock size, and process hot-add requests in that
-> chunk size instead of a fixed 128 Mbytes. Also update the hot-add
-> alignment requested of the Hyper-V host to match the memblock
-> size instead of being a fixed 128 Mbytes.
-
-That way, we should never be getting unaligned ranges IIRC, correct? I 
-think we added ways in QEMU to guarantee that for the HV-balloon 
-implementation as well.
-
-> 
-> The code changes look significant, but in fact are just a
-
-Nah, it's okay :)
-
-> simple text substitution of a new global variable for the
-> previous HA_CHUNK constant. No algorithms are changed except
-> to initialize the new global variable and to calculate the
-> alignment value to pass to Hyper-V. Testing with memblock
-> sizes of 256 Mbytes and 2 Gbytes shows correct operation.
-> 
-> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> ---
->   drivers/hv/hv_balloon.c | 64 ++++++++++++++++++++++++-----------------
->   1 file changed, 37 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-> index e000fa3b9f97..d3bfbf3d274a 100644
-> --- a/drivers/hv/hv_balloon.c
-> +++ b/drivers/hv/hv_balloon.c
-> @@ -425,11 +425,11 @@ struct dm_info_msg {
->    * The range start_pfn : end_pfn specifies the range
->    * that the host has asked us to hot add. The range
->    * start_pfn : ha_end_pfn specifies the range that we have
-> - * currently hot added. We hot add in multiples of 128M
-> - * chunks; it is possible that we may not be able to bring
-> - * online all the pages in the region. The range
-> + * currently hot added. We hot add in chunks equal to the
-> + * memory block size; it is possible that we may not be able
-> + * to bring online all the pages in the region. The range
->    * covered_start_pfn:covered_end_pfn defines the pages that can
-> - * be brough online.
-> + * be brought online.
->    */
->   
->   struct hv_hotadd_state {
-> @@ -505,8 +505,9 @@ enum hv_dm_state {
->   
->   static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
->   static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
-> +static unsigned long ha_chunk_pgs;
-
-Why not stick to PAGES_IN_2M and call this
-
-ha_pages_in_chunk? Much easier to get than "pgs".
-
-Apart from that looks good. Some helper macros to convert size to chunks 
-etc. might make the code even more readable.
+>> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
+>> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
+>> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
 
 -- 
-Cheers,
-
-David / dhildenb
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
