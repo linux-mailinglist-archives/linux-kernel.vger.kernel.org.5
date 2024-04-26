@@ -1,118 +1,118 @@
-Return-Path: <linux-kernel+bounces-160578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4976C8B3F80
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 913278B3F86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:43:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D4921C23687
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:42:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C31B61C22248
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9746FA8;
-	Fri, 26 Apr 2024 18:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AB1AD53;
+	Fri, 26 Apr 2024 18:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUbtxMPa"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pEpZMXqu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C3763AE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 18:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0FF4A23;
+	Fri, 26 Apr 2024 18:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714156917; cv=none; b=ehgjp/EGEg/PEnXdbP0DrGvDKmsEWhoFVKUvUzzefEypRcd+hqc/8X5LFftQZ5+20RjUDXCfy8D3emTomAe/Vqr679Drv4EcNoU4ClJfYryqxY6fpmt8ng2mOLbR3HvZvOG2g5+Dbtcs5wjNssudloGpB/vxMztbOYF3S3/z4HU=
+	t=1714157002; cv=none; b=kspB0dbJ9nkkwYCcEsbu7mRWEyG4fVEeDbQIIV7grsVGuz3Dz63gxUyrYxT7snQnowxfBt1fm1HW1zkzeF28wNcnXoBBtYyPpk/2G/xA3AyaLzjRw0cHBP2tW7taeiACgIwNEBkuBmn2RjzGDEIgVXAwbhyxF6CAkE5m1aC2njY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714156917; c=relaxed/simple;
-	bh=rFfiul7lN3W4ving5spK8bKXhKZAySO3bcWAGeEJCSo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZYo0iQtDbqzyP2ft/rkRmHguprYvZDdy0I8+9klF8B3knlWLqVWw+kB0DrlI4fDcaShvzwE/LIh1+JY79tUVIvN+mGnVk9kLOHSFx0LNuMzj9vVs5iBihyjeaCmAHGcdpP3cIb/iVShTVKcXJr4CqEkyeelC2DSWH4Oo89cR53I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUbtxMPa; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-572669fd9f9so445782a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714156914; x=1714761714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JUJqNR/S6ihu0yVmhT6SDnrwYDU6/B9sR5X5jfrhksU=;
-        b=RUbtxMPaj3xcPgKqcTvpRM8xhg+i9oC488iF9RQrmOjpTN8s3stpcF2psju7ja4mez
-         InFjcg4LXoq+DF3g+ndImVfkldn5nx6rSmc3+jLRBmISlB5nLNUvMJsPxVTEimTs7rl7
-         2vZ9xB5eyqUeD7f7Cdd58acDZLO61JL5U9L2QMvCipJO4viN0hImhCAYMouSm64utD63
-         I+axVgsUvbQTWUoB7bUmoj+WT2By4vVaobtqzccyhYl1oc3XK0aOE+j7n8wbRe+jMDUR
-         OyZDHjHudXFBZNPBOWwe1eAWcLk6vmSnjPRf9FPBPHSHN/VicjmhqWFFFqCZIeBPYiSg
-         sHUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714156914; x=1714761714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JUJqNR/S6ihu0yVmhT6SDnrwYDU6/B9sR5X5jfrhksU=;
-        b=eetNGa6kxZJ/BEDnCpwAFQP0Eq7g8xcSOdnW7qTTjgod4n/wTgTqg+yR9YpfrQG2cF
-         jMk+9CFb2zCHbT0wCutJn4l/tSLhKIdY5iqB/n8Gq5BWL1iYZwU6v3/+x8TgQtDkBvZh
-         fuHhEpN6SQWceZE1DtoqKHD4Fc2AiZtE7am6ctMkr5Eb83Xy+VbX6GtUW8fwx1a3FGWN
-         G8/Gyg50tmmS6RBg7MK0ZXm4vnUBVcZDn3xNA8Bv5WI/JnTF7vk+j1lhJBeu3CwbWWnd
-         XQGPqrQ5YayBFHUl6BOUavfFfkFN14ewlSXwc/0ODgMyjERQruUGXA6ArTgMs4O4gGCC
-         olBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTn5JrRDAaUTEDFUMBxrl/WvsGMYx2W8ots7QiBfj7UyDCnDu8rnO70i9bbDHM5sUERixcmK2w0mdzNdTq2aSwC1tKtMb7tBt0MtNK
-X-Gm-Message-State: AOJu0Yy4+APRUX+AhlO/LhfQsWBkwms57vSdkSlOIc2patbXrA1CZ5/2
-	0I9UXfXa+5zEAI/bIfKWwKMJp0OVvOx4GCTh1UlRy6i0EUvFrPrADWNFZ4gxOhL4ibxFTvTjOOL
-	ZinhakHYR7t7eEd4xq44L2c8Y6LA=
-X-Google-Smtp-Source: AGHT+IHL50vkU5e2FRTV9N/UG5c5QHN1n3fJd/D3N0Z5Di6Ohr+hn6EsKibgn039BfBIv8fUWmKCYqA8nAZGi80X6O4=
-X-Received: by 2002:a50:998a:0:b0:56e:2b0b:58 with SMTP id m10-20020a50998a000000b0056e2b0b0058mr2525093edb.10.1714156913663;
- Fri, 26 Apr 2024 11:41:53 -0700 (PDT)
+	s=arc-20240116; t=1714157002; c=relaxed/simple;
+	bh=//roZ7d56KeyEoiiQbKnxou+fpOtupIebykulRJaAnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAjx++ZR7WLEjmoTnCSR/QE01XoLaS5rUkwSIS8EUHcoU62Z4raSFyl8gLOeVdyecAn0+eKCujBr0043wrzcWDlDb1RVSZUoQfGGqJH7qKkm78TYl/SP4nP5JaMeDvCXfdVWqC48DL3Y0XQrw3jfzl0+70JVFfIKdfLzDt/7+II=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pEpZMXqu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E04B0C113CD;
+	Fri, 26 Apr 2024 18:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714157002;
+	bh=//roZ7d56KeyEoiiQbKnxou+fpOtupIebykulRJaAnk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pEpZMXquU9zZvYVZjS04pb+WnKxoGkbsYMhf9/TGM5BvUTar3e6Lvy52Q748UiPXi
+	 +YMQeYBpomVn/1IK01fDbkBHSwj9PEbMomSkc1J0HisKywT/2EHN6jEPmlQCM0DD5U
+	 y48DtWApNH3E3nHltE3hWBZErpw92MHtOvP/TVTYrxQcbufqXZEdzZcqbQqdG8JniR
+	 vlQQoapcuHOqFyaged4CjkUOwro5cofI1yDjSbICZ7+2TysZw1F6CJp7d/38MsFFAX
+	 rG7xFLtvuKBUcY8ZBh2yWPjubCehAQlfrJOGRB0Vet5TkWuFDEKiP14HcEY96EqFAY
+	 ydH4x1g3aF2Dw==
+Date: Fri, 26 Apr 2024 13:43:19 -0500
+From: Rob Herring <robh@kernel.org>
+To: Eddie James <eajames@linux.ibm.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+	linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, krzk+dt@kernel.org,
+	conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au
+Subject: Re: [PATCH v3 08/14] dt-bindings: fsi: ast2600-fsi-master: Switch to
+ yaml format
+Message-ID: <20240426184319.GA2558853-robh@kernel.org>
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-9-eajames@linux.ibm.com>
+ <5822e000-01d3-442c-bb52-04fab87cb3da@kernel.org>
+ <24e7644e-f9ff-4a4b-8883-33b2f69b36cf@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425211136.486184-1-zi.yan@sent.com> <ec4f9194-9ae3-43b3-8559-0b1f186c1d9d@redhat.com>
- <7c233278-1006-4449-81b2-d473b18a66ca@redhat.com>
-In-Reply-To: <7c233278-1006-4449-81b2-d473b18a66ca@redhat.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Fri, 26 Apr 2024 11:41:42 -0700
-Message-ID: <CAHbLzkqZmd=HGQ8_adjEipp49GEzN45bz=NwJPi9X+qOHnNFZQ@mail.gmail.com>
-Subject: Re: [PATCH v4] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: David Hildenbrand <david@redhat.com>
-Cc: Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>, 
-	Barry Song <21cnbao@gmail.com>, Lance Yang <ioworker0@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24e7644e-f9ff-4a4b-8883-33b2f69b36cf@linux.ibm.com>
 
-On Fri, Apr 26, 2024 at 1:26=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
->
-> > @@ -1553,9 +1557,9 @@ static __always_inline void __folio_remove_rmap(s=
-truct folio *folio,
-> >                    * page of the folio is unmapped and at least one pag=
-e
-> >                    * is still mapped.
-> >                    */
-> > -               if (folio_test_large(folio) && folio_test_anon(folio))
-> > -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdm=
-apped)
-> > -                               deferred_split_folio(folio);
-> > +               if (folio_test_large(folio) && folio_test_anon(folio) &=
-&
-> > +                   list_empty(&folio->_deferred_list) && partially_map=
-ped)
-> > +                       deferred_split_folio(folio);
->
-> And now I realize that we can then even drop the folio_test_large(folio)
-> check here!
+On Fri, Apr 26, 2024 at 10:13:52AM -0500, Eddie James wrote:
+> 
+> On 4/26/24 01:25, Krzysztof Kozlowski wrote:
+> > On 25/04/2024 23:36, Eddie James wrote:
+> > > Switch to yaml for the AST2600 FSI master documentation.
+> > > 
+> > > Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> > > ---
+> > >   .../fsi/aspeed,ast2600-fsi-master.yaml        | 72 +++++++++++++++++++
+> > >   .../bindings/fsi/fsi-master-aspeed.txt        | 36 ----------
+> > >   2 files changed, 72 insertions(+), 36 deletions(-)
+> > >   create mode 100644 Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+> > >   delete mode 100644 Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+> > > new file mode 100644
+> > > index 000000000000..f053e3e1d259
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+> > > @@ -0,0 +1,72 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/fsi/aspeed,ast2600-fsi-master.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Aspeed FSI master
+> > > +
+> > > +maintainers:
+> > > +  - Eddie James <eajames@linux.ibm.com>
+> > > +
+> > > +description:
+> > > +  The AST2600 and later contain two identical FSI masters. They share a
+> > > +  clock and have a separate interrupt line and output pins.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - "aspeed,ast2600-fsi-master"
+> > > +      - "aspeed,ast2700-fsi-master"
+> > This wasn't tested. No quotes. Do you see any other example like this?
+> 
+> 
+> Strangely this passes make dt_binding_check for me... And Rob's bot didn't
+> seem to catch it either. Just an oversight, I'll fix it.
 
-Good idea. This is more understandable.
+Disabled due to yamllint bug. The fix is now released, so that reminds 
+me to go enable it.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Rob
 
