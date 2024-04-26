@@ -1,127 +1,215 @@
-Return-Path: <linux-kernel+bounces-160021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F65A8B37DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:04:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45EC18B3794
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60CBAB235E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:03:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9843B22D87
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680A3147C66;
-	Fri, 26 Apr 2024 13:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6199A146D4F;
+	Fri, 26 Apr 2024 12:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="JiA16M8U"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="irte/VU8"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A16B146D47;
-	Fri, 26 Apr 2024 13:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E51F13D500;
+	Fri, 26 Apr 2024 12:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714136533; cv=none; b=oxBPGI/9BQQXWI+2cE/dFAYkzXYVf8j4bhXY9rfeWvBzuy2uWK+tIyzTa46wJjBq7pin3s2zd+x/xHq9BtIPLc114ROdmb+0Wr64Bnmb5zaH9Sjq4XbYrz6B2uZg3VXMfV6YyFpi2lBmZr+8CBu9/kez8arQpwnnIs1tEHnNaZE=
+	t=1714136263; cv=none; b=fSwML+u4HuycwgQaos22dQ9D1b+4Y/MkPrlkavqdtZKt0fF/9Mw02D+M1/xONMUYmn3hjTdKz0aQipSqWYYUVvSI91fD18/9C0VqAH49pKFe8MGfgybbRl0dgiJx40AcL7vun61gT6QCtwGPWwRTYKBLHPgtL4sUDvM3OE6XmSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714136533; c=relaxed/simple;
-	bh=QZ1jVNYFCjB2s44u+LZOvrIyLKhTU/k/vuakYy5vPmY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dVoIFQ1M8tURk4d9AatPLLwERGuFoAqylDAyCZy6UbCRWe6YyN/2LqfoHlJnDkAP05zsMLOJgL053GS/1EN6GAgoc9WVogfwSf55mLvGx42+RcK8/6jLXKIYhcQwlnK/ed9q24DN9qGwieSnqZqwIp5U/2ZfmzHbI0cr6Vj1zFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=JiA16M8U; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q9HsU5029966;
-	Fri, 26 Apr 2024 15:01:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=q2kYHv8uYrF72tA2YfB8ZxbNq7F2BQFGQbxWsGzIXLo=; b=Ji
-	A16M8UpHE9m/J0dGGQuoWk9L+f8T59Bh52Pb4DddBUAVngRhF7V369TtugJ9QPSY
-	hqzCbsEhBXsYuIqdBEeirQhe+/wwE+WchpsriSiorRoCcP0LMj4TyQVdO20iZrOu
-	FDiJ1+H9O/MM+V4/AXeP37Zu59sKuYLWLXzeXlFAy7ABa3n6BJzEasGU3W9IHi7n
-	LbbxAJ/Y/15QJPIAIqAW6ZZWV5IWHcJjsRJCPfkGTqrqJgRsayhS3mNVgJzLNlAu
-	eLI5P0s+630bInuLm4RqrRIG3c6kBzXZrV7yRHsEIVeOoDMcWeQU7bwvsflW+B61
-	fDDVYexZ7HgPn+SKHwBg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xmrnjfk2v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:01:49 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D0CC240044;
-	Fri, 26 Apr 2024 15:01:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F3D15222CB2;
-	Fri, 26 Apr 2024 15:00:31 +0200 (CEST)
-Received: from localhost (10.252.17.191) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 15:00:31 +0200
-From: Christophe Roullier <christophe.roullier@foss.st.com>
-To: "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark
- Brown <broonie@kernel.org>,
-        Christophe Roullier
-	<christophe.roullier@foss.st.com>,
-        Marek Vasut <marex@denx.de>
-CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 11/11] ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
-Date: Fri, 26 Apr 2024 14:57:07 +0200
-Message-ID: <20240426125707.585269-12-christophe.roullier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240426125707.585269-1-christophe.roullier@foss.st.com>
-References: <20240426125707.585269-1-christophe.roullier@foss.st.com>
+	s=arc-20240116; t=1714136263; c=relaxed/simple;
+	bh=fHszdicZzvlPouapKh0LnGP2m9geUO4FdHcDyOTbn3o=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=E6vFXWaobDoxLkWCW2B8oCHyZKR8FzOvoeXgnKwtQD0j032Uy0RxQStI6Yrs/+HYZ/Md9vVpjDlUvKTKLKvP3OsTycvd1l+9ip7y54ktMmC5+79aM65ulqcv9AxcVXFzahe113O7TrctAN0GHh4m5m8kkhHSd0T8/OhjXY88UdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=irte/VU8; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso1762084a12.3;
+        Fri, 26 Apr 2024 05:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714136261; x=1714741061; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=endWZFs/huUwpiPXnvyhJNr3iwSnVQvC+T17t46UJ4o=;
+        b=irte/VU8y9BjJTSwwf2KYeipvVjTGRIWiVox4HYUuibr3z6KGX0bHzlPaBeF8MN04y
+         twEl6AfSpaGz2B15cOm/ibY90kIA6bkVpWmzNcWoYJ8OxX/MeW8QBJw42pGfCBUXmwLs
+         if7x+g2j5TFnWhhtzU6BunYMwz24qoFPfwhVQgEttkt577HAMl9uYaxmBgU0cu6L40MX
+         NHmKuCMKuA3wEGFsCWhHaUjKMFlZLH5C4z4zeNZffzbSH2BwMppWPxxD/j9NBFqTcay5
+         x1mBdNnF3FKOPm1NtMNzteWZgRAw9IohKdtWPPQtkBaPpnNurdVahFp4iBMvBptUPHIw
+         Mlww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714136261; x=1714741061;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=endWZFs/huUwpiPXnvyhJNr3iwSnVQvC+T17t46UJ4o=;
+        b=WFluaFsIckIb79Fa/zWYHJYjeVrJ32RGxSgmGisKCskVsslBdCLTMIfYocnM1tUELW
+         BQShPTSC7vnESMyh29xAk2Q/02WrFFThFm2GK8cKGsBazBYSsnvk5/7pmRey8HLTYFln
+         8SnrHJmP+WII8HWPaZNrnc5EIkv8i6yiyoVGr/QBs//tKUPFqU4aHC6tj5chpz5lR8uV
+         Qc/BDgrc/OSTPcPle8jS7DJ/Vb15ERkkwPhiD7jwSCKZLl0D9l6ohzhCCOCbv2qjQ5Oi
+         btOS/Ar8Uo39DaW44j8NkV+4CxQ7aPk0MUdwSdN+cS4NIWLb2JSpX80uu8FydJ/EujO1
+         mk8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWI1xe7kjsGgKR/7MfjZvR4oLwZyoXIzqUDJUwOdF+8FG+090VDy7dHExmAYiLzQH3/K0wC75zOlX1H9tGqAr3Pp0opHPaxLZUP65IXOoLmqdCwlXky3CtJyNRs6dg+TmZGeVhEPsHL7Q==
+X-Gm-Message-State: AOJu0YwvkAKAJ2ck5qTWlR3b24kE1MINV9a7PV6junVWLUNWfYAcqm4D
+	ZaNBLvvIjzXBBtIzTZMZBNAI2qEh3SDJIQbrRYL2MVQM08pFfOJh
+X-Google-Smtp-Source: AGHT+IEQAPUV/KA5Lz34E4irpjiyAsv33koqvqCYKYdiaGY5Yw7DPqFcAt70S4/nUSAiR+Zq1QnoMg==
+X-Received: by 2002:a17:90a:67c6:b0:2ae:6e36:af21 with SMTP id g6-20020a17090a67c600b002ae6e36af21mr2412507pjm.25.1714136261420;
+        Fri, 26 Apr 2024 05:57:41 -0700 (PDT)
+Received: from dw-tp ([171.76.87.172])
+        by smtp.gmail.com with ESMTPSA id eu6-20020a17090af94600b002aeb05d6e97sm6334259pjb.21.2024.04.26.05.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 05:57:40 -0700 (PDT)
+Date: Fri, 26 Apr 2024 18:27:30 +0530
+Message-Id: <87frv8z3gl.fsf@gmail.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, yi.zhang@huaweicloud.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v4 02/34] ext4: check the extent status again before inserting delalloc block
+In-Reply-To: <87frv8nw4a.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
 
-Need to enable MCP23S08 I/O expanders to manage Ethernet phy
-reset in STM32MP135F-DK board
-STMMAC driver defer is not silent, need to put this config in
-built-in to avoid huge of Ethernet messages
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> Zhang Yi <yi.zhang@huaweicloud.com> writes:
+>
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Now we lookup extent status entry without holding the i_data_sem before
+>> inserting delalloc block, it works fine in buffered write path and
+>> because it holds i_rwsem and folio lock, and the mmap path holds folio
+>> lock, so the found extent locklessly couldn't be modified concurrently.
+>> But it could be raced by fallocate since it allocate block whitout
+>> holding i_rwsem and folio lock.
+>>
+>> ext4_page_mkwrite()             ext4_fallocate()
+>>  block_page_mkwrite()
+>>   ext4_da_map_blocks()
+>>    //find hole in extent status tree
+>>                                  ext4_alloc_file_blocks()
+>>                                   ext4_map_blocks()
+>>                                    //allocate block and unwritten extent
+>>    ext4_insert_delayed_block()
+>>     ext4_da_reserve_space()
+>>      //reserve one more block
+>>     ext4_es_insert_delayed_block()
+>>      //drop unwritten extent and add delayed extent by mistake
+>>
+>> Then, the delalloc extent is wrong until writeback, the one more
+>> reserved block can't be release any more and trigger below warning:
+>>
+>>  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+>>
+>> Hold i_data_sem in write mode directly can fix the problem, but it's
+>> expansive, we should keep the lockless check and check the extent again
+>> once we need to add an new delalloc block.
+>
+> Hi Zhang, 
+>
+> It's a nice finding. I was wondering if this was caught in any of the
+> xfstests?
+>
+> I have reworded some of the commit message, feel free to use it if you
+> think this version is better. The use of which path uses which locks was
+> a bit confusing in the original commit message.
+>
+> <reworded from your original commit msg>
+>
+> ext4_da_map_blocks(), first looks up the extent status tree for any
+> extent entry with i_data_sem held in read mode. It then unlocks
+> i_data_sem, if it can't find an entry and take this lock in write
+> mode for inserting a new da entry.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index b2955dcb5a53..0abbe00372df 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -469,6 +469,7 @@ CONFIG_SPI_XILINX=y
- CONFIG_SPI_SPIDEV=y
- CONFIG_SPMI=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MCP23S08=y
- CONFIG_PINCTRL_MICROCHIP_SGPIO=y
- CONFIG_PINCTRL_OCELOT=y
- CONFIG_PINCTRL_PALMAS=y
--- 
-2.25.1
+Sorry about this above paragraph. I messed this paragraph.
+Here is the correct version of this.
 
+ext4_da_map_blocks looks up for any extent entry in the extent status
+tree (w/o i_data_sem) and then the looks up for any ondisk extent
+mapping (with i_data_sem in read mode).
+
+If it finds a hole in the extent status tree or if it couldn't find any
+entry at all, it then takes the i_data_sem in write mode to add a da entry
+into the extent status tree. This can actually race with page mkwrite
+& fallocate path. 
+
+Note that this is ok between...  <and the rest can remain same>
+
+>
+> This is ok between -
+> 1. ext4 buffered-write path v/s ext4_page_mkwrite(), because of the
+> folio lock
+> 2. ext4 buffered write path v/s ext4 fallocate because of the inode
+> lock.
+>
+
+
+> But this can race between ext4_page_mkwrite() & ext4 fallocate path - 
+>
+>  ext4_page_mkwrite()             ext4_fallocate()
+>   block_page_mkwrite()
+>    ext4_da_map_blocks()
+>     //find hole in extent status tree
+>                                   ext4_alloc_file_blocks()
+>                                    ext4_map_blocks()
+>                                     //allocate block and unwritten extent
+>     ext4_insert_delayed_block()
+>      ext4_da_reserve_space()
+>       //reserve one more block
+>      ext4_es_insert_delayed_block()
+>       //drop unwritten extent and add delayed extent by mistake
+>
+> Then, the delalloc extent is wrong until writeback and the extra
+> reserved block can't be released any more and it triggers below warning:
+>
+>   EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+>
+> This patch fixes the problem by looking up extent status tree again
+> while the i_data_sem is held in write mode. If it still can't find
+> any entry, then we insert a new da entry into the extent status tree.
+>
+>>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  fs/ext4/inode.c | 19 +++++++++++++++++++
+>>  1 file changed, 19 insertions(+)
+>>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 6a41172c06e1..118b0497a954 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -1737,6 +1737,7 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>>  		if (ext4_es_is_hole(&es))
+>>  			goto add_delayed;
+>>  
+>> +found:
+>>  		/*
+>>  		 * Delayed extent could be allocated by fallocate.
+>>  		 * So we need to check it.
+>> @@ -1781,6 +1782,24 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>>  
+>>  add_delayed:
+>>  	down_write(&EXT4_I(inode)->i_data_sem);
+>> +	/*
+>> +	 * Lookup extents tree again under i_data_sem, make sure this
+>> +	 * inserting delalloc range haven't been delayed or allocated
+>> +	 * whitout holding i_rwsem and folio lock.
+>> +	 */
+>
+> page fault path (ext4_page_mkwrite does not take i_rwsem) and fallocate
+> path (no folio lock) can race. Make sure we lookup the extent status
+> tree here again while i_data_sem is held in write mode, before inserting
+> a new da entry in the extent status tree.
+>
+>
+
+
+-ritesh
 
