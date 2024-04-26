@@ -1,200 +1,193 @@
-Return-Path: <linux-kernel+bounces-160503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B24F78B3E54
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:35:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C848B3E57
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67A0F287321
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:35:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2736B21008
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1783C15FD01;
-	Fri, 26 Apr 2024 17:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF70148854;
+	Fri, 26 Apr 2024 17:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="x1T1Q2+q"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kxi60XLr"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D1D14AD38;
-	Fri, 26 Apr 2024 17:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152942; cv=fail; b=pn7IdDfT1qF+61tFyyBpIwK39vOWVobIJnb8rYsUlurkGFw0yXJWL7f6Z23OvuTIW5YD7D5TxuQtMhdMap5H+7fEMp9HxdFHRouvEbHXkxuLHuigQ9DNRvoq+fZpakXfwuf/TOFhVc4/WJgyre5wYK7MhscYlIDyLmwFE8w0vgM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152942; c=relaxed/simple;
-	bh=WvuzVQ7vyAEGS94a5+Ael6YtTl7X9WQbKHyM377n2Mk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EIsbsIMcxt1j4glSXq2wC8D97SPgKzjZQh3yS9y1jAX80bvil8Dkzb9gVukpSkS/7ieP6J7eAVNocAc76JHWQ4GG/ZexRNIuLmRivApGTTvhIHSd+PN8oK7/h+Eck0IRiKz9RT6GAuGl1K8n5iffG8Kqa1wJo8aZo1EPIwSS1MA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=x1T1Q2+q; arc=fail smtp.client-ip=40.107.223.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HX7ANoK86EgkHUCeEG5y+zPhm6ubWYGHt4B3Pou731BAelgPcIuAQ7Qt9YWg5D8Z2jr4BKK/Gy7aFJZ8NJFJEVrzknKge4AOc5sJxeA2JEoY5eKw7XK1KKJ+uUL3XpaGGgHnL851NqmhKOE/snDAEuW5I6UKBmPGWKkmTiJXGpS2gQggOfAtJOc57gF+6zaGQCOs+bjd8WZnk+rWlwMVctPFROAiWVo2r13rkgnSbhQjYOMcgtMWaUAzOnTzImO/QsrXCO3haojDU2mB3NQAaczTQeJ/bt59tNLIPh6fqZnFwQgmRkDRX1pPqptnsAKn7+J2bbVCUGR7mbpsF6dRFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZQ6aB01tREZRK2BxCUo7YikW7fNwqNQx4adthGUH25A=;
- b=V1La7kZ2AIDTsgJLWCmTOjoX7LSquUeSBgExRchLx4oMJQ1WL2Xo94GHtmUi5viY/j7ilb6+DYZWfP29xE2OIONHV/ojxmMIBIDGUubRy3LiMNQbtASKmFzu6LJUL6UWphu2nNiw4S/1eG5z/OR0sE9/OdO3NG56Ia9NoiM5LYNwvIfyTJO7+IaRfF+vfWjBfaxOGBcyLsBh2uLOJZytoVvxptu2N/Z9NkmFde5V4Zz5RGybCnn8TGkq+cUNYsMZ+vHxedVI5GeAfLTxOa2LtujJnE3fBKakTBsFsrOPhj3Pjl2ID6DqqtwQ62nQCeDCfUPke9mGW+MOgwBhObh+Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZQ6aB01tREZRK2BxCUo7YikW7fNwqNQx4adthGUH25A=;
- b=x1T1Q2+q5LhQ6PvDWpMZkUFOUXJz9FkHwc11tyMj8wLmQKPeDxGlR+43s2xqThh/do/D7wRot3LLKGwgFDTwdqMYq0Agwjvyg9H7ILcmVd4pfPZ//5A416nqtiL3aqtDDPCDmgix6bUcldMK5COZxQi7ZGEtgW1Qc2YLHK74Bg0=
-Received: from BYAPR11CA0066.namprd11.prod.outlook.com (2603:10b6:a03:80::43)
- by CY5PR12MB6178.namprd12.prod.outlook.com (2603:10b6:930:25::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
- 2024 17:35:35 +0000
-Received: from CO1PEPF000044F4.namprd05.prod.outlook.com
- (2603:10b6:a03:80:cafe::2) by BYAPR11CA0066.outlook.office365.com
- (2603:10b6:a03:80::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22 via Frontend
- Transport; Fri, 26 Apr 2024 17:35:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F4.mail.protection.outlook.com (10.167.241.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.19 via Frontend Transport; Fri, 26 Apr 2024 17:35:34 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 12:35:33 -0500
-Date: Fri, 26 Apr 2024 12:35:15 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: Re: [PATCH v14 21/22] crypto: ccp: Add the
- SNP_{PAUSE,RESUME}_ATTESTATION commands
-Message-ID: <20240426173515.6pio42iqvjj2aeac@amd.com>
-References: <20240421180122.1650812-1-michael.roth@amd.com>
- <20240421180122.1650812-22-michael.roth@amd.com>
- <ZimgrDQ_j2QTM6s5@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195A115AAC3;
+	Fri, 26 Apr 2024 17:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714152943; cv=none; b=XNj4aWZxMQA2RJ3CPA/67G7Sv9pArPXsNC1wI8npYeYgVH79/kM+jzPljToQ28zYLxExAEWm4HeUF97CfRN4v60I8W4ecqZUTB0vGQMRehb2gePAXJTib5Obh1iEmIY7+ym8gL8Z1BXxoApndGOjbBRtoDjJ00Nhsnlw+fiQmZc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714152943; c=relaxed/simple;
+	bh=PAf/263nrw/kABvtzmEaTtx8i3mzP5lLmHYjKVIsNZE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ff8OfSCj4ZS6ScBfowe78N+gf8Hq5qhtF1KsmkOv2z+9G0zxDgaWgC7FmgCwH4DBwXwUGW5SAsLVbb1uVKTxHkagU6KAfn0pN+bgxTabpqiDeSQlDWSxhhYQyS7yGPvYotTrl2645dsRhoPlrdoIBx9jCvy20nPGPlakgNvZvOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kxi60XLr; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5f807d941c4so1944605a12.0;
+        Fri, 26 Apr 2024 10:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714152941; x=1714757741; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4fJMTF64jFuyHLBH5JGA8xPvhwH8zh6RJUjITDFFVtA=;
+        b=kxi60XLrJthsM4TpJFAG7CejBFfz6RKozznC0JKdOfkIFqW+6SB2CjKZzMtEMFjr8F
+         Gxq8zhnhUXtIJw9VXFA+E6WwBFcKonlpH1T5/FhRMLITnsq78zY+4XR/1CH8HOJcBXWU
+         +noaVJ1Hm6lX5czJ5f2BAfTG7wTllvPudsduxDWTTMac/PoVlRKBbEzzfFXJcAoJl25a
+         kANhLcY6B4UKS9SrBkjvbNXGJnMkG36qTaZpoL1l/lmzcEiwHNTmLawi7SULLrHemuXp
+         aFxwHmiZX4G6Xr+3GYcSONVAFCkwZlO3Js4q1RdMs3Im0sAiHebD6qiLyaxAfAzhV2aJ
+         349A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714152941; x=1714757741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4fJMTF64jFuyHLBH5JGA8xPvhwH8zh6RJUjITDFFVtA=;
+        b=iFrGUmCCmP+Q6x3PPqMfgB/DyWEpwRXj+mtzkJKeESJO/1zrGYpAy0usfdHYJtpH0u
+         rAhenGLa0FjDZmHZ+x2x1/yGeGfUx8bybAqaMkStUwsdw/6AUMwN1269oh01kaiIUBg7
+         rx2Xqo6AycDFC21dXP72XN4VA2gMlr4nWQqac/rkwjpV9qZf6U/A3XfUwpy+JtNrYDI1
+         KSZuvehv+wt1u4GiPb8YHtCpZQDKEuYxWrqnvfM5/c4QBJ6zQFH8oFc2xFtxqWVfOjSE
+         P8nKDBB1xFajjBuBNKVKHPUqd+ZgOYghffH9O7O5D8RjHkZ2w8HDn9vt/fxotx2z6j66
+         tqSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPm2dob2/BJOFeq+CTMDexzKoszviiASMFKcye6hGGhxisy3enGsfwSNmmpuyXjz6Arfhy/0HY/WyQn5ZQMfSh7C0KlzraixkAWEnfY6fgsuN/vL/nAQvHXRWwsoyqKX3b
+X-Gm-Message-State: AOJu0Yxysiq6IT9ephZ0m3Zh8KJh/mVf0TbvHVIoyYJT45b9C3SmmzAo
+	WYAIPDsB0b68u/JIB0NeSYCD9lmjm5zvZDt18+2PtKwL/Y9CgbhZPTtyVyJixuSv3fKopqndgXV
+	Re/UokaaVtCGEsRJKcpgVoNvksIw=
+X-Google-Smtp-Source: AGHT+IHOJPythzKlh0oMKWUL/9evOI+gfwgln2taU8mn912UoIjEWRPPlBtESYeZ643vcu3w8LX5gI6S89+Q2XmxCuk=
+X-Received: by 2002:a17:902:ea11:b0:1eb:dae:bdab with SMTP id
+ s17-20020a170902ea1100b001eb0daebdabmr3197581plg.46.1714152941245; Fri, 26
+ Apr 2024 10:35:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZimgrDQ_j2QTM6s5@google.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F4:EE_|CY5PR12MB6178:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b72732d-421d-40e6-c104-08dc66174778
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Ohc/yF+0HU04Q5mCL3Uz0J/wvHzGHj6nfmG+TYngFEAOR/M3tHeIMOrzr1/a?=
- =?us-ascii?Q?R+UFGXRdUMkSHT3nffwjqtCePDTNvZW352S68Vx8HgEyOFiikoGrgozlhfFJ?=
- =?us-ascii?Q?H29S7Dh3P8Z3bwy2N7boWxQk9yauoNFFQDj758ux3jAml8ftYfWdB4SENJaw?=
- =?us-ascii?Q?PqYKAiIMybIw3MyIwugmi/VTA0TvnwcfXNHty1xAoitWJm3KjaVG7gLIUdCA?=
- =?us-ascii?Q?PhsUN+Ka48u0KUEjo/09WjKrzsvwOh/maQ9FScxaQ6T/nwgnecOSqa8r8ww6?=
- =?us-ascii?Q?UXv+wPl/0529CYYM1xNuXb5/oMwPa59r/fMTULvOV6cBzqpKst0T0NZdlrcC?=
- =?us-ascii?Q?iP9xgVLCv5g8VCZlvILZBvGXHxxikNDvvHx7qZXM/6GP2bdEM/y7M1A59xit?=
- =?us-ascii?Q?Skg0+LqpwlwL41wp/A1ON50N51U2BFLKuD3V9pdU/bwMfnutrbYNDMD2FM8C?=
- =?us-ascii?Q?ntpgQxzmaKXaFxgQec6erdNbWVEHZhh6Xp3YmBUJefhpL1a67cD7OdSjqx00?=
- =?us-ascii?Q?Zy74+qNI3RwOtgFLHX5Hd+/o7FRbjL56EAXx9WaXSpRsuLpzkoTrH0naDCne?=
- =?us-ascii?Q?aW8O4BBIxA/vIHewVYfQv8yAzTxmbWtJcnCjbAuHDjs0xPrKJCBQVh2P42ql?=
- =?us-ascii?Q?s2/IjgaExe2v5wSfYqB6RZH5cGnSzyWASQqnNGmGZiA/529XhI/xLPq/p728?=
- =?us-ascii?Q?BFY6O2lcxLi50h/UwCCD9V08RdpUrG23PsvRUizrRr777Z5Lz5xOKpIc0p3B?=
- =?us-ascii?Q?KynR7Kk2c4o95+7Ed6+VQp1anDVBKLpNPO4hOAxqSwHEWmwxhRIEYDjc4Nbf?=
- =?us-ascii?Q?gN6/UKlr7jRx9gKhjY8d1fgz+qUeMngATFKcoaxujVrNYSvhp7FgTNxup3wq?=
- =?us-ascii?Q?3KV9BXADTYaZCjHubzB9Wh4QoCtsVl81H6ot7rIcR4QQa6I40KZS+B00iXr1?=
- =?us-ascii?Q?ca+5+2CkCoOUmp3VfCP0SxNaoPf0j02ImylJHTsl//OW5XFmnr/DKMYABCim?=
- =?us-ascii?Q?5lboHhuJTcv8/0tk5hJQ1kcEpU8kT7TiAzsg9RhJjNx1ZMiAXGj8CPZPrhul?=
- =?us-ascii?Q?hAISBps0w6RWdFG/GhROSTr/mUEEkRPt/ggWcUQGCFEV9QWOtAo1lohVAp8I?=
- =?us-ascii?Q?6moJI9RYj1pz2cQERPPV9Kh2AG5J9qZUxIe6mF46lFPKvtUMVmd7ng+G2UYm?=
- =?us-ascii?Q?jOdI0rUrbFhouKWTSPgY6tlAjXTzwGTO1AnOpxp4Rc8XL51LlVAU5LcAuu0R?=
- =?us-ascii?Q?Gp58OdahsePIiHCLLTv5o+6EcNNvhh1aGR73am/jSr4LeiSK2rcbxGlFF3of?=
- =?us-ascii?Q?EsWRSiU4fzkE0PjVmGnFERDAgTEnUFJOga+FBl7Kqr+fPpJ1jTO8I8+qxW+U?=
- =?us-ascii?Q?/55FKWOGMtUUijKZySZVM9XjEAiz?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(36860700004)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 17:35:34.6957
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b72732d-421d-40e6-c104-08dc66174778
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F4.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6178
+References: <20240426121349.97651-1-puranjay@kernel.org> <20240426121349.97651-2-puranjay@kernel.org>
+ <CAEf4BzbBBpsuCGgombEj1N8f97iKrMr2WXSoU8jOUfKSqLXnyw@mail.gmail.com> <mb61psez8vzbu.fsf@kernel.org>
+In-Reply-To: <mb61psez8vzbu.fsf@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Apr 2024 10:35:29 -0700
+Message-ID: <CAEf4BzZejgfw=GiX_LTWVupRzrKVaX5Ky6L3wziSoquEFUju2w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] arm64, bpf: add internal-only MOV
+ instruction to resolve per-CPU addrs
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 05:15:40PM -0700, Sean Christopherson wrote:
-> On Sun, Apr 21, 2024, Michael Roth wrote:
-> > These commands can be used to pause servicing of guest attestation
-> > requests. This useful when updating the reported TCB or signing key with
-> > commands such as SNP_SET_CONFIG/SNP_COMMIT/SNP_VLEK_LOAD, since they may
-> > in turn require updates to userspace-supplied certificates, and if an
-> > attestation request happens to be in-flight at the time those updates
-> > are occurring there is potential for a guest to receive a certificate
-> > blob that is out of sync with the effective signing key for the
-> > attestation report.
-> > 
-> > These interfaces also provide some versatility with how similar
-> > firmware/certificate update activities can be handled in the future.
-> 
-> Wait, IIUC, this is using the kernel to get two userspace components to not
-> stomp over each other.   Why is this the kernel's problem to solve?
+On Fri, Apr 26, 2024 at 9:55=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
+org> wrote:
+> >>
+> >> From: Puranjay Mohan <puranjay12@gmail.com>
+> >>
+> >> Support an instruction for resolving absolute addresses of per-CPU
+> >> data from their per-CPU offsets. This instruction is internal-only and
+> >> users are not allowed to use them directly. They will only be used for
+> >> internal inlining optimizations for now between BPF verifier and BPF
+> >> JITs.
+> >>
+> >> Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
+> >> access using tpidr_el1"), the per-cpu offset for the CPU is stored in
+> >> the tpidr_el1/2 register of that CPU.
+> >>
+> >> To support this BPF instruction in the ARM64 JIT, the following ARM64
+> >> instructions are emitted:
+> >>
+> >> mov dst, src            // Move src to dst, if src !=3D dst
+> >> mrs tmp, tpidr_el1/2    // Move per-cpu offset of the current cpu in t=
+mp.
+> >> add dst, dst, tmp       // Add the per cpu offset to the dst.
+> >>
+> >> To measure the performance improvement provided by this change, the
+> >> benchmark in [1] was used:
+> >>
+> >> Before:
+> >> glob-arr-inc   :   23.597 =C2=B1 0.012M/s
+> >> arr-inc        :   23.173 =C2=B1 0.019M/s
+> >> hash-inc       :   12.186 =C2=B1 0.028M/s
+> >>
+> >> After:
+> >> glob-arr-inc   :   23.819 =C2=B1 0.034M/s
+> >> arr-inc        :   23.285 =C2=B1 0.017M/s
+> >
+> > I still expected a better improvement (global-arr-inc's results
+> > improved more than arr-inc, which is completely different from
+> > x86-64), but it's still a good thing to support this for arm64, of
+> > course.
+> >
+> > ack for generic parts I can understand:
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+>
+> I will have to do more research to find why we don't see very high
+> improvement.
+>
+> But this is what is happening here:
+>
+> This was the complete picture before inlining:
+>
+> int cpu =3D bpf_get_smp_processor_id();
+> mov     x10, #0xffffffffffffd4a8
+> movk    x10, #0x802c, lsl #16
+> movk    x10, #0x8000, lsl #32
+> blr     x10 ---------------------------------------> nop
+>                                                      nop
+>                                                      adrp    x0, 0xffff80=
+0082128000
+>                                                      mrs     x1, tpidr_el=
+1
+>                                                      add     x0, x0, #0x8
+>                                                      ldrsw   x0, [x0, x1]
+>             <----------------------------------------ret
+> add     x7, x0, #0x0
+>
+>
+> Now we have:
+>
+> int cpu =3D bpf_get_smp_processor_id();
+> mov     x7, #0xffff8000ffffffff
+> movk    x7, #0x8212, lsl #16
+> movk    x7, #0x8008
+> mrs     x10, tpidr_el1
+> add     x7, x7, x10
+> ldr     w7, [x7]
+>
+>
+> So, we have removed multiple instructions including a branch and a
+> return. I was expecting to see more improvement. This benchmark is taken
+> from a KVM based virtual machine, maybe if I do it on bare-metal I would
+> see more improvement ?
 
-It's not that they are stepping on each other, but that kernel and
-userspace need to coordinate on updating 2 components whose updates need
-to be atomic from a guest perspective. Take an update to VLEK key for
-instance:
+I see, yeah, I think it might change significantly. I remember back
+from times when I was benchmarking BPF ringbuf, I was getting
+very-very different results from inside QEMU vs bare metal. And I
+don't mean just in absolute numbers. QEMU/KVM seems to change a lot of
+things when it comes to contentions, atomic instructions, etc, etc.
+Anyways, for benchmarking, always try to do bare metal.
 
- 1) management gets a new VLEK endorsement key from KDS along with
-    associated certificate chain
- 2) management uses SNP_VLEK_LOAD to update key
- 3) management updates the certs at the path VMM will grab them
-    from when the EXT_GUEST_REQUEST userspace exit is issued
-
-If an attestation request comes in after 2), but before 3), then the
-guest sees an attestation report signed with the new key, but still
-gets the old certificate.
-
-If you reverse the ordering:
-
- 1) management gets a new VLEK endorsement key from KDS along with
-    associated certificate chain
- 2) management updates the certs at the path VMM will grab them
-    from when the EXT_GUEST_REQUEST userspace exit is issued
- 3) management uses SNP_VLEK_LOAD to update key
-
-then an attestation request between 2) and 3) will result in the guest
-getting the new cert, but getting an attestation report signed with an old
-endorsement key.
-
-Providing a way to pause guest attestation requests prior to 2), and
-resume after 3), provides a straightforward way to make those updates
-atomic to the guest.
-
--Mike
+>
+> Thanks,
+> Puranjay
 
