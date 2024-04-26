@@ -1,243 +1,272 @@
-Return-Path: <linux-kernel+bounces-159732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E34D48B3364
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:56:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF7E78B3366
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:56:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 127611C21CB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:56:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9789128121F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FED813D296;
-	Fri, 26 Apr 2024 08:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6B913D8B6;
+	Fri, 26 Apr 2024 08:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="reLWl8wF"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T3sSrPNH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B465A5B5BE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A894913D291
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714121756; cv=none; b=EMarur8Nar82rGIcr7ujIloqAUXPNQ6QNvqmmGWPDYVASFu2M4GFSkTyMuetDIRA0RMMiZ/HBoRHXDesQKFS+XxIAkhnUcCxmEWIw8ONY7JiX+1ANieZvfQfWFu2osCSg5sybAeOYbJIUH4t1uCZBdMwoutS+aAj9pWNFq1UhEA=
+	t=1714121768; cv=none; b=X+PHU05eZQz+2pF7oODbjYwCbfMHRcVaQuZ7MVWVRXUirZTehdslhs759E+qjjuBy95c1FXnir6i8imoUZNieKYcGOxLASVWf0EJJ3MGlt9dgbCKuIYHMNawDhzPJCu5ZSPUP65nY1R+Ya/P/cQtrDG0EfBsBQ7pm0WDKqXc2B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714121756; c=relaxed/simple;
-	bh=4dCOVkO6+jaZbxpgg0GQvgunFe90UaVu5W4VrEP3Jx0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z4ZlpeeIaCvXE4NVHTl/eNnQKZ5e/PBVJTn2elUiLt2YhGXUR4OUUNY49Ff2aVKHwRS4FUeVIhsCTVPn1j7M5+3iDD8ng5tQivQEeKUgajabsN3jvpkS5C1jnLkWGGaM8CWbJXlN+oaNsmB+Ly3RbeTby2bfKaXpQrCbUwg/RCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=reLWl8wF; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571e13cd856so9977a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714121752; x=1714726552; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fc+ioe2m0sqBtoVQtiXkBUwqMXmEVFtjvfR7brjhWPc=;
-        b=reLWl8wFsimmKcL33xUvB+fXA+4UPNotH8gAJq01TJ7OTkKICq4o5fZaRwhBZA67XM
-         vuohr8/XtS5oOgJTSRGOyiRXbt2Eou3nfNRB6Bu9/GNECBWsC/AYrWdV4+Ylp4JDJGap
-         Um0LbyWA3aGNPbBI4aMBFUuYX20okyWmDZvp1DfwQFUCWo+II+jJLMmkgn/NR1Wt9Ee8
-         TRJg2TAKLVff5Z2CKGE0Qvenz9HzIJfmzUWCgs0gcAMGrZmnTDNVYv+lpTGqP+QXMmi4
-         qkonNyQhZt6mMMZ0SRL894OkYinSGZMsueTF7ypHZIwXhIXrCSSJoo/d5aYp2riGxQlh
-         LHFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714121752; x=1714726552;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fc+ioe2m0sqBtoVQtiXkBUwqMXmEVFtjvfR7brjhWPc=;
-        b=h7y58Ikj/HHRdJra345+xA3qXirpxNStJ9LkBsDwukvtkDXZcwnmQGMzr2s2E2aYbO
-         AE7PGtqMw0rEL4oQyQyF83URe6tta6nr+uRm94rD8YLZlwYK+u4oGCFDrKXg5mzPLyi0
-         VIIEGZXyZHjR+HtW2e9CAmKY0+qt9PLTcY9euZQjac8mmFxyLjD0gaf3anbuz5TptDEf
-         p3rDJ/SUu846ubGW2uvFzKjWpELhlkGQi/RxYsqGeFCMAtrY/DRE7iOgwQV36o6SrGKa
-         4CULLsqHgKIGyGdV9OqjbTzC059S3u1Ui+ufCVkD9kwArc4cKCHppywAkCDW5mkM1Jf8
-         ZnoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWa8GtRiRSPxr5L4+v7jcTpc41KadM/EL4uc0zUPNOerUfSeYq5icnZe2IXK2YihcbKbGkNdqYSv+H+7lJp3Iah7CazDRObSZ0MOs0n
-X-Gm-Message-State: AOJu0YzRp+b3esMdb39VnMxtSYkG1/rZKoL1fDKDrE1t7UO8SYT9FNTa
-	zzhImZ8IJKsWOO07Swnp4aGKLbG4/hFOn4l0VAbUbJTk+9/7h260/jXcvjs/YjncfOleayGphSX
-	onQgk8E4hAoUn3LeA38KTK2N6ORHdB0pVAdNU
-X-Google-Smtp-Source: AGHT+IFmzULTn8UHhnGqRagdDTcH6E0Xj8BhOyQhGLFU8Vp2OPedyL0TLIRL/NA2YMPcOS2A9aGSuI8smzxx5TTeA/4=
-X-Received: by 2002:a05:6402:26cc:b0:572:57d8:4516 with SMTP id
- x12-20020a05640226cc00b0057257d84516mr55281edd.2.1714121751704; Fri, 26 Apr
- 2024 01:55:51 -0700 (PDT)
+	s=arc-20240116; t=1714121768; c=relaxed/simple;
+	bh=GlZ1B8v/0cLbLEAY4J2NVInrTG/rSDZ7UA9AoUhONts=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WGHiWQkMCka7PraZPaCCmDh+G4n3ys1i2QBdAY9ZIc7kWy9DWXEEVXT6Rt8mCMQIW2g5aN5lrgEw5kZZp2GWkJ5oimP2gE3qOjmJHzRb2ZFQvFij3kVOtm3/qPlJEjbJdhI6DtmC5RShLO9meMONjN6xigne6VeKicpHUDotFKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T3sSrPNH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714121765;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=n8zGemF1SfCYbNk1FEg//7LYlxlOkILXpP9ensiSsiY=;
+	b=T3sSrPNHx3wIwSx73RRwxPPThJl0NYo/dmtyQ3i69w9lf37BZL06XUNM+kOaEEf4wxmPSi
+	4aCKqpIvmjoLPnvhhCp+kdrSVZ75Z//dOxl2TPWlI0+MzkpGuX6eszL6tI2bFUNSfHGELH
+	Eyjwj+V5IVq/dbWnA9s2WTOT/68Q4Zc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-138-l2vb6lE1Pl21g1mYn_e7vA-1; Fri, 26 Apr 2024 04:56:00 -0400
+X-MC-Unique: l2vb6lE1Pl21g1mYn_e7vA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 81D1F18065AA;
+	Fri, 26 Apr 2024 08:55:59 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.194.59])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8A3CA1121312;
+	Fri, 26 Apr 2024 08:55:57 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>
+Subject: [PATCH] KVM: selftests: Use TAP interface in the set_memory_region test
+Date: Fri, 26 Apr 2024 10:55:56 +0200
+Message-ID: <20240426085556.619731-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426164730214uXfxoyj3x703nsAdqnGSr@zte.com.cn>
-In-Reply-To: <20240426164730214uXfxoyj3x703nsAdqnGSr@zte.com.cn>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 26 Apr 2024 10:55:40 +0200
-Message-ID: <CANn89iKNtKmN5im8K4dSZGqAV8=e3bZbZ5AhxbcNbjFxk5V1Jw@mail.gmail.com>
-Subject: Re: [PATCH net-next v7] net/ipv4: add tracepoint for icmp_send
-To: xu.xin16@zte.com.cn
-Cc: horms@kernel.org, davem@davemloft.net, rostedt@goodmis.org, 
-	mhiramat@kernel.org, dsahern@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	yang.yang29@zte.com.cn, he.peilin@zte.com.cn, liu.chun2@zte.com.cn, 
-	jiang.xuexin@zte.com.cn, zhang.yunkai@zte.com.cn, kerneljasonxing@gmail.com, 
-	fan.yu9@zte.com.cn, qiu.yutan@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Fri, Apr 26, 2024 at 10:47=E2=80=AFAM <xu.xin16@zte.com.cn> wrote:
->
-> From: Peilin He <he.peilin@zte.com.cn>
->
-> Introduce a tracepoint for icmp_send, which can help users to get more
-> detail information conveniently when icmp abnormal events happen.
->
-> 1. Giving an usecase example:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> When an application experiences packet loss due to an unreachable UDP
-> destination port, the kernel will send an exception message through the
-> icmp_send function. By adding a trace point for icmp_send, developers or
-> system administrators can obtain detailed information about the UDP
-> packet loss, including the type, code, source address, destination addres=
-s,
-> source port, and destination port. This facilitates the trouble-shooting
-> of UDP packet loss issues especially for those network-service
-> applications.
->
-> 2. Operation Instructions:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> Switch to the tracing directory.
->         cd /sys/kernel/tracing
-> Filter for destination port unreachable.
->         echo "type=3D=3D3 && code=3D=3D3" > events/icmp/icmp_send/filter
-> Enable trace event.
->         echo 1 > events/icmp/icmp_send/enable
->
-> 3. Result View:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->  udp_client_erro-11370   [002] ...s.12   124.728002:
->  icmp_send: icmp_send: type=3D3, code=3D3.
->  From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=3D23
->  skbaddr=3D00000000589b167a
->
-> Change log:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> v6->v7:
-> Some fixes according to
-> https://lore.kernel.org/all/20240425081210.720a4cd9@kernel.org/
-> 1. Fix patch format issues.
->
-> v5->v6:
-> Some fixes according to
-> https://lore.kernel.org/all/20240413161319.GA853376@kernel.org/
-> 1.Resubmit patches based on the latest net-next code.
->
-> v4->v5:
-> Some fixes according to
-> https://lore.kernel.org/all/CAL+tcoDeXXh+zcRk4PHnUk8ELnx=3DCE2pc
-> Cqs7sFm0y9aK-Eehg@mail.gmail.com/
-> 1.Adjust the position of trace_icmp_send() to before icmp_push_reply().
->
-> v3->v4:
-> Some fixes according to
-> https://lore.kernel.org/all/CANn89i+EFEr7VHXNdOi59Ba_R1nFKSBJz
-> BzkJFVgCTdXBx=3DYBg@mail.gmail.com/
-> 1.Add legality check for UDP header in SKB.
-> 2.Target this patch for net-next.
->
-> v2->v3:
-> Some fixes according to
-> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
-> 1. Change the tracking directory to/sys/kernel/tracking.
-> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
->
-> v1->v2:
-> Some fixes according to
-> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3DsZtRnKRu_tnUwqHu
-> FQTJvJsv-nz1xPDw@mail.gmail.com/
-> 1. adjust the trace_icmp_send() to more protocols than UDP.
-> 2. move the calling of trace_icmp_send after sanity checks
-> in __icmp_send().
->
-> Signed-off-by: Peilin He <he.peilin@zte.com.cn>
-> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
-> Cc: Yang Yang <yang.yang29@zte.com.cn>
-> Cc: Liu Chun <liu.chun2@zte.com.cn>
-> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
-> ---
->  include/trace/events/icmp.h | 68 +++++++++++++++++++++++++++++++++++++
->  net/ipv4/icmp.c             |  4 +++
->  2 files changed, 72 insertions(+)
->  create mode 100644 include/trace/events/icmp.h
->
-> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-> new file mode 100644
-> index 000000000000..cff33aaee44e
-> --- /dev/null
-> +++ b/include/trace/events/icmp.h
-> @@ -0,0 +1,68 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM icmp
-> +
-> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_ICMP_H
-> +
-> +#include <linux/icmp.h>
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(icmp_send,
-> +
-> +               TP_PROTO(const struct sk_buff *skb, int type, int code),
-> +
-> +               TP_ARGS(skb, type, code),
-> +
-> +               TP_STRUCT__entry(
-> +                       __field(const void *, skbaddr)
-> +                       __field(int, type)
-> +                       __field(int, code)
-> +                       __array(__u8, saddr, 4)
-> +                       __array(__u8, daddr, 4)
-> +                       __field(__u16, sport)
-> +                       __field(__u16, dport)
-> +                       __field(unsigned short, ulen)
-> +               ),
-> +
-> +               TP_fast_assign(
-> +                       struct iphdr *iph =3D ip_hdr(skb);
-> +                       int proto_4 =3D iph->protocol;
-> +                       __be32 *p32;
-> +
-> +                       __entry->skbaddr =3D skb;
-> +                       __entry->type =3D type;
-> +                       __entry->code =3D code;
-> +
-> +                       struct udphdr *uh =3D udp_hdr(skb);
+Use the kselftest_harness.h interface in this test to get TAP
+output, so that it is easier for the user to see what the test
+is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
+macro here since these tests are creating their VMs with the
+vm_create_barebones() function, not with vm_create_with_one_vcpu())
 
-Please move this line up., perhaps after the "struct iphdr *iph =3D
-ip_hdr(skb);" one
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ .../selftests/kvm/set_memory_region_test.c    | 86 +++++++++----------
+ 1 file changed, 42 insertions(+), 44 deletions(-)
 
-We group all variable definitions together, we do not mix code and variable=
-s.
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index bd57d991e27d..4db6a66a3001 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -16,6 +16,7 @@
+ #include <test_util.h>
+ #include <kvm_util.h>
+ #include <processor.h>
++#include "kselftest_harness.h"
+ 
+ /*
+  * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
+@@ -38,6 +39,8 @@ extern const uint64_t final_rip_end;
+ 
+ static sem_t vcpu_ready;
+ 
++int loops;
++
+ static inline uint64_t guest_spin_on_val(uint64_t spin_val)
+ {
+ 	uint64_t val;
+@@ -219,6 +222,13 @@ static void test_move_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
++TEST(move_in_use_region)
++{
++	ksft_print_msg("Testing MOVE of in-use region, %d loops\n", loops);
++	for (int i = 0; i < loops; i++)
++		test_move_memory_region();
++}
++
+ static void guest_code_delete_memory_region(void)
+ {
+ 	uint64_t val;
+@@ -308,12 +318,19 @@ static void test_delete_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
+-static void test_zero_memory_regions(void)
++TEST(delete_in_use_region)
++{
++	ksft_print_msg("Testing DELETE of in-use region, %d loops\n", loops);
++	for (int i = 0; i < loops; i++)
++		test_delete_memory_region();
++}
++
++TEST(zero_memory_regions)
+ {
+ 	struct kvm_vcpu *vcpu;
+ 	struct kvm_vm *vm;
+ 
+-	pr_info("Testing KVM_RUN with zero added memory regions\n");
++	ksft_print_msg("Testing KVM_RUN with zero added memory regions\n");
+ 
+ 	vm = vm_create_barebones();
+ 	vcpu = __vm_vcpu_add(vm, 0);
+@@ -326,7 +343,7 @@ static void test_zero_memory_regions(void)
+ }
+ #endif /* __x86_64__ */
+ 
+-static void test_invalid_memory_region_flags(void)
++TEST(invalid_memory_region_flags)
+ {
+ 	uint32_t supported_flags = KVM_MEM_LOG_DIRTY_PAGES;
+ 	const uint32_t v2_only_flags = KVM_MEM_GUEST_MEMFD;
+@@ -389,7 +406,7 @@ static void test_invalid_memory_region_flags(void)
+  * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
+  * tentative to add further slots should fail.
+  */
+-static void test_add_max_memory_regions(void)
++TEST(add_max_memory_regions)
+ {
+ 	int ret;
+ 	struct kvm_vm *vm;
+@@ -408,13 +425,13 @@ static void test_add_max_memory_regions(void)
+ 	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
+ 	TEST_ASSERT(max_mem_slots > 0,
+ 		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
+-	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
++	ksft_print_msg("Allowed number of memory slots: %i\n", max_mem_slots);
+ 
+ 	vm = vm_create_barebones();
+ 
+ 	/* Check it can be added memory slots up to the maximum allowed */
+-	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
+-		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
++	ksft_print_msg("Adding slots 0..%i, each memory region with %dK size\n",
++		       (max_mem_slots - 1), MEM_REGION_SIZE >> 10);
+ 
+ 	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
+ 		   PROT_READ | PROT_WRITE,
+@@ -455,12 +472,21 @@ static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
+ 	TEST_ASSERT(r == -1 && errno == EINVAL, "%s", msg);
+ }
+ 
+-static void test_add_private_memory_region(void)
++static bool has_cap_guest_memfd(void)
++{
++	return kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
++	       (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
++}
++
++TEST(add_private_memory_region)
+ {
+ 	struct kvm_vm *vm, *vm2;
+ 	int memfd, i;
+ 
+-	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
++	if (!has_cap_guest_memfd())
++		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
++
++	ksft_print_msg("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
+ 
+ 	vm = vm_create_barebones_protected_vm();
+ 
+@@ -491,13 +517,16 @@ static void test_add_private_memory_region(void)
+ 	kvm_vm_free(vm);
+ }
+ 
+-static void test_add_overlapping_private_memory_regions(void)
++TEST(add_overlapping_private_memory_regions)
+ {
+ 	struct kvm_vm *vm;
+ 	int memfd;
+ 	int r;
+ 
+-	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
++	if (!has_cap_guest_memfd())
++		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
++
++	ksft_print_msg("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
+ 
+ 	vm = vm_create_barebones_protected_vm();
+ 
+@@ -536,46 +565,15 @@ static void test_add_overlapping_private_memory_regions(void)
+ 	close(memfd);
+ 	kvm_vm_free(vm);
+ }
++
+ #endif
+ 
+ int main(int argc, char *argv[])
+ {
+-#ifdef __x86_64__
+-	int i, loops;
+-
+-	/*
+-	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
+-	 * KVM_RUN fails with ENOEXEC or EFAULT.
+-	 */
+-	test_zero_memory_regions();
+-#endif
+-
+-	test_invalid_memory_region_flags();
+-
+-	test_add_max_memory_regions();
+-
+-#ifdef __x86_64__
+-	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+-	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
+-		test_add_private_memory_region();
+-		test_add_overlapping_private_memory_regions();
+-	} else {
+-		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
+-	}
+-
+ 	if (argc > 1)
+ 		loops = atoi_positive("Number of iterations", argv[1]);
+ 	else
+ 		loops = 10;
+ 
+-	pr_info("Testing MOVE of in-use region, %d loops\n", loops);
+-	for (i = 0; i < loops; i++)
+-		test_move_memory_region();
+-
+-	pr_info("Testing DELETE of in-use region, %d loops\n", loops);
+-	for (i = 0; i < loops; i++)
+-		test_delete_memory_region();
+-#endif
+-
+-	return 0;
++	return test_harness_run(argc, argv);
+ }
+-- 
+2.44.0
 
-
-
-> +
-> +                       if (proto_4 !=3D IPPROTO_UDP || (u8 *)uh < skb->h=
-ead ||
-> +                               (u8 *)uh + sizeof(struct udphdr)
-> +                               > skb_tail_pointer(skb)) {
-> +                               __entry->sport =3D 0;
-> +                               __entry->dport =3D 0;
-> +                               __entry->ulen =3D 0;
-> +                       } else {
-> +                               __entry->sport =3D ntohs(uh->source);
-> +                               __entry->dport =3D ntohs(uh->dest);
-> +                               __entry->ulen =3D ntohs(uh->len);
-> +                       }
-> +
 
