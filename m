@@ -1,224 +1,142 @@
-Return-Path: <linux-kernel+bounces-160169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6308E8B3A27
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:36:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEB1B8B3A29
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830A21C240A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:36:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CE028328E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C65F146A83;
-	Fri, 26 Apr 2024 14:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3DA143C56;
+	Fri, 26 Apr 2024 14:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mkVPE603"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="BGl4rSA9"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2706EB5C;
-	Fri, 26 Apr 2024 14:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B422BAF6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714142159; cv=none; b=MdGthb8527tv746ZJQveQabsg00mUD+fgqvsQIy5lJvZx4VQYo9wyFnpwCq9+Jf6FGNO3MU4BU04hHHSvO8Z+nYutg/zsWs/Pjt3W9uRnn6O4I8JRqayXE01x8supMnsKPEzx7bCcLKQNJZW/VHqoDR3+hoq5rn6BKtjYsLz0YU=
+	t=1714142251; cv=none; b=fGDFCZXR9gHjfAFie/mQzWp9k4mJ0blY7eDAPiBY0iF1vGM8Dw2VI+BoFq653ePNMMzkxYtEoa5R3pHcEqX3f582BMPZKlEM6OBXTGAxzIsrEzymaLFj3gMRNV+f1OxMrFm2wR0tRkX0hC7VTwsJiYUvWOskts2BHgVBRH6b1ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714142159; c=relaxed/simple;
-	bh=fvWCKMof3QYNLsCaCCHiN9bivg7kkxwrQ3p10OT8TKs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W962lbnOi8JTdTUsp6/9fieP4vrkcJiUV539mmxo3S78IJAM6DAmB/lv/px+ijmLKyarXkHWCmdq8fBDPl1Vm7BqgIkdbD4yfO2T1vOOLKT+fzz0WswYO0zkvVsHOLBYARa6UMMLlKSQaGWL1m5IVMQHog+3VH2/xFD47rUsFLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mkVPE603; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42C4C113CD;
-	Fri, 26 Apr 2024 14:35:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714142159;
-	bh=fvWCKMof3QYNLsCaCCHiN9bivg7kkxwrQ3p10OT8TKs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mkVPE603ro8SVcnyj5gfGayGqBckvi1U15SCiOUS2p//vLtPWOVe4qbxdd/SxRdD3
-	 F0lOcZnmAURdDAddOnOSBLUrPTVdi3bXVcThWbLxddt4hIP5wlYIvn7YXZko3iet54
-	 QH/EeM++arDAydol9fkd3A6Btb173CrgPYfdI5qg6Ojz3h374XKfdj1Hr6hqfYld0i
-	 Hs7amcRkVntlK/wfR/CEUZDafyZUzWL+RO+ffQvOyK10410R/a9k9caOvLFUMBRjGG
-	 9J6ydOQMya87VMl8k3SBZvaGwvzu13gPIH+wkXrGioDhsH8RtKCC2F/ZHk3eFZ+Hu9
-	 rKOyl5d/HxeQQ==
-Date: Fri, 26 Apr 2024 15:35:53 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 03/11] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
-Message-ID: <20240426-pusher-bartender-9a1eddd9a422@spud>
-References: <20240423124326.2532796-1-cleger@rivosinc.com>
- <20240423124326.2532796-4-cleger@rivosinc.com>
+	s=arc-20240116; t=1714142251; c=relaxed/simple;
+	bh=RWkXe7sRC3RxM96qd474TAOzOp5sMO+lDyyEXYj/lek=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B0DRMP46UZIOuQ65Yb06mOUN0FcA18S6HSym5zsat7F3j+/F9D6ZmoVQE1o7Msw2FFJBPyzinuPTTUTYKd4cmmsxJ+ghUDMmsGdN2K4mUcW3blHGanh2wfKNFmGs8YwgkgISZk7nabfCvfuSIQ6rxOTXxHKXGcIVDckdxAXOo9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=BGl4rSA9; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d3a470d5so2717034e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1714142247; x=1714747047; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iyn8nuvs6hv5iFPafXpvUxP0UCsY1jeaxaf4MXYmLH4=;
+        b=BGl4rSA9xihLx1c9X6ysaGOHI6/IMSUCXiKFz9iNvKxUzu9hfEw7fDFafUJF4ossaX
+         Qp311eEWOGyCZ7cvmD8/h8I8jwB3r6gDAijEU/V8hBXvjBabmbknNphil22zTJxXvSG6
+         QTzzOaAeSBoC5Y+s7DWB0ZqCuX7teL1D2SMdXyr2r0+Rbd6wclLfmJbe0KOKddAUfIbM
+         Osb0Z/aE2dl3WqFOUIm3QA2uGAYTgUt0cbPM/p6F5/pyPpSC81BKsQ+cSLbR0QuT+BcR
+         r0oatVlvHS3eairkbZhK0RHIb9Sq498p7c/3jrIaNrWEC4KShzf58bUDcfHHFc4Ltoa7
+         YPeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714142247; x=1714747047;
+        h=cc:to:subject:message-id:date:references:mime-version:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iyn8nuvs6hv5iFPafXpvUxP0UCsY1jeaxaf4MXYmLH4=;
+        b=LHCsOBSd6/5a5r/35ViyX/WbujQEHcQj4QoLkFM3LIYhC6U/IgUK1bCd1wNwNCrisS
+         IMlovwkrr/ZD6+ZLkwVWIVERlzUlQXlp+L1hQQS4WL38kCQLTHBvtpc/xlN3rqiYSd2D
+         wWtGD1XO0+Vq2G1wreB0tbPgRn2QY8zbtUaIMe3ywRw/jx+CxpTnTB4wHyGz0H1wPdmW
+         0G+Q3jfICcfuHMZZf7dw1LSdNwDOU09mLhHnwGyQ/97BMQk8Qi6g3G9Yu09Nb+fRPpP/
+         FmLsqa4uHZM0C+nqIxlKZI+IE+oCic23oi73i1vGQIrF4eljLPmFM7R/VLS6MRE2w6SH
+         tMQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVug+uS+nka/sYSHIVQdvmFiKCodjQyMZafO2tJ4X0P/OQHCK5cRTK8ebrkANAPFue+WI5X4sznRG99DjAAOi8VY/UrfQM8rpsWpYYO
+X-Gm-Message-State: AOJu0YxQk1e5Zef5nf50RhKGjtxP+jQCjW+NilHMZz93+6g9Lk8dQWfz
+	kI89RRTKc08qZcJhI3Qxf3+a29ESWbVIy+8UjgNkQhWSGQryOq6WeFxPTlJtjiByzmTO44BT/hh
+	DfdfObaJcBEVrgSawjnE66d1JZqLL/c/y64QraQ==
+X-Google-Smtp-Source: AGHT+IHrCKfFiPfM30khK14cA/XfmpqBoVCAT8s/zXaG67su5ZKd1ltCu9z1MZd3xSUsZNELz+XLCluNtJmaqkz6rOs=
+X-Received: by 2002:a05:6512:1086:b0:51b:5c9f:992e with SMTP id
+ j6-20020a056512108600b0051b5c9f992emr2424256lfg.14.1714142247112; Fri, 26 Apr
+ 2024 07:37:27 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 26 Apr 2024 07:37:26 -0700
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <171397322792.12898.8815870206676100532.git-patchwork-notify@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ROz/llGSkBkozfg7"
-Content-Disposition: inline
-In-Reply-To: <20240423124326.2532796-4-cleger@rivosinc.com>
+References: <20240424122932.79120-1-brgl@bgdev.pl> <171397322792.12898.8815870206676100532.git-patchwork-notify@kernel.org>
+Date: Fri, 26 Apr 2024 07:37:26 -0700
+Message-ID: <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
+ returned by gpiod_get_optional()
+To: luiz.dentz@gmail.com
+Cc: marcel@holtmann.org, krzysztof.kozlowski@linaro.org, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bartosz.golaszewski@linaro.org, wt@penguintechs.org, quic_zijuhu@quicinc.com, 
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 24 Apr 2024 17:40:27 +0200, patchwork-bot+bluetooth@kernel.org said:
+> Hello:
+>
+> This patch was applied to bluetooth/bluetooth-next.git (master)
+> by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+>
+> On Wed, 24 Apr 2024 14:29:32 +0200 you wrote:
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> Any return value from gpiod_get_optional() other than a pointer to a
+>> GPIO descriptor or a NULL-pointer is an error and the driver should
+>> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_qca:
+>> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+>> power_ctrl_enabled on NULL-pointer returned by
+>> devm_gpiod_get_optional(). Restore this behavior but bail-out on errors.
+>> While at it: also bail-out on error returned when trying to get the
+>> "swctrl" GPIO.
+>>
+>> [...]
+>
+> Here is the summary with links:
+>   - [v2] Bluetooth: qca: set power_ctrl_enabled on NULL returned by gpiod_get_optional()
+>     https://git.kernel.org/bluetooth/bluetooth-next/c/48a9e64a533b
+>
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+>
+>
 
---ROz/llGSkBkozfg7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Luiz,
 
-On Tue, Apr 23, 2024 at 02:43:17PM +0200, Cl=E9ment L=E9ger wrote:
-> The Zc* standard extension for code reduction introduces new extensions.
-> This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
-> are left out of this patch since they are targeting microcontrollers/
-> embedded CPUs instead of application processors.
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+I think patchwork borked when picking up this one, here's what the commit
+trailer looks like in next:
 
-The potential split aside, I think what's here makes sense.
+    Reported-by: Wren Turkal <wt@penguintechs.org>
+    Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+    Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-git-send-email-quic_zijuhu@quicinc.com/
+    Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
+IS_ERR_OR_NULL() with gpiod_get_optional()")
+    Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+    Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+    Tested-by: Wren Turkal" <wt@penguintechs.org>
+    Reported-by: Wren Turkal <wt@penguintechs.org>
+    Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+    Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
+    Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+    Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-Thanks,
-Conor.
+Reported-by and Reviewed-by tags are duplicated. One of the RB tags is missing
+a space.
 
-> ---
->  arch/riscv/include/asm/hwcap.h |  4 +++
->  arch/riscv/kernel/cpufeature.c | 47 +++++++++++++++++++++++++++++++++-
->  2 files changed, 50 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index 543e3ea2da0e..b7551bad341b 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -82,6 +82,10 @@
->  #define RISCV_ISA_EXT_ZACAS		73
->  #define RISCV_ISA_EXT_XANDESPMU		74
->  #define RISCV_ISA_EXT_ZIMOP		75
-> +#define RISCV_ISA_EXT_ZCA		76
-> +#define RISCV_ISA_EXT_ZCB		77
-> +#define RISCV_ISA_EXT_ZCD		78
-> +#define RISCV_ISA_EXT_ZCF		79
-> =20
->  #define RISCV_ISA_EXT_XLINUXENVCFG	127
-> =20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 6d238c8dbccf..24bf3fbc0578 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -107,6 +107,29 @@ static bool riscv_ext_zicboz_validate(const struct r=
-iscv_isa_ext_data *data,
->  	return true;
->  }
-> =20
-> +static bool riscv_ext_zca_depends(const struct riscv_isa_ext_data *data,
-> +				   const unsigned long *isa_bitmap)
-> +{
-> +	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA);
-> +}
-> +static bool riscv_ext_zcd_validate(const struct riscv_isa_ext_data *data,
-> +				   const unsigned long *isa_bitmap)
-> +{
-> +	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA) &&
-> +	       __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_d);
-> +}
-> +
-> +static bool riscv_ext_zcf_validate(const struct riscv_isa_ext_data *data,
-> +				   const unsigned long *isa_bitmap)
-> +{
-> +#ifdef CONFIG_64BIT
-> +	return false;
-> +#else
-> +	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA) &&
-> +	       __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_f);
-> +#endif
-> +}
-> +
->  #define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size,=
- _validate) {	\
->  	.name =3D #_name,									\
->  	.property =3D #_name,								\
-> @@ -118,6 +141,9 @@ static bool riscv_ext_zicboz_validate(const struct ri=
-scv_isa_ext_data *data,
-> =20
->  #define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
- NULL, 0, NULL)
-> =20
-> +#define __RISCV_ISA_EXT_DATA_VALIDATE(_name, _id, _validate) \
-> +			_RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, _validate)
-> +
->  /* Used to declare pure "lasso" extension (Zk for instance) */
->  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
->  	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
-> @@ -209,6 +235,21 @@ static const unsigned int riscv_xlinuxenvcfg_exts[] =
-=3D {
->  	RISCV_ISA_EXT_XLINUXENVCFG
->  };
-> =20
-> +/*
-> + * Zc* spec states that:
-> + * - C always implies Zca
-> + * - C+F implies Zcf (RV32 only)
-> + * - C+D implies Zcd
-> + *
-> + * These extensions will be enabled and then validated depending on the
-> + * availability of F/D RV32.
-> + */
-> +static const unsigned int riscv_c_exts[] =3D {
-> +	RISCV_ISA_EXT_ZCA,
-> +	RISCV_ISA_EXT_ZCF,
-> +	RISCV_ISA_EXT_ZCD,
-> +};
-> +
->  /*
->   * The canonical order of ISA extension names in the ISA string is defin=
-ed in
->   * chapter 27 of the unprivileged specification.
-> @@ -255,7 +296,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(f, RISCV_ISA_EXT_f),
->  	__RISCV_ISA_EXT_DATA(d, RISCV_ISA_EXT_d),
->  	__RISCV_ISA_EXT_DATA(q, RISCV_ISA_EXT_q),
-> -	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
-> +	__RISCV_ISA_EXT_SUPERSET(c, RISCV_ISA_EXT_c, riscv_c_exts),
->  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->  	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_x=
-linuxenvcfg_exts,
-> @@ -274,6 +315,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
->  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
->  	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
-> +	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
-> +	__RISCV_ISA_EXT_DATA_VALIDATE(zcb, RISCV_ISA_EXT_ZCB, riscv_ext_zca_dep=
-ends),
-> +	__RISCV_ISA_EXT_DATA_VALIDATE(zcd, RISCV_ISA_EXT_ZCD, riscv_ext_zcd_val=
-idate),
-> +	__RISCV_ISA_EXT_DATA_VALIDATE(zcf, RISCV_ISA_EXT_ZCF, riscv_ext_zcf_val=
-idate),
->  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
->  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
->  	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
-> --=20
-> 2.43.0
->=20
-
---ROz/llGSkBkozfg7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiu7yQAKCRB4tDGHoIJi
-0gh5AP0cbGNts8eoVZeDItSxQA5RKNgG88ExrmtRhfQLSdNEUwD/b5VaqUNBUM6U
-7zMWwwWvojpz7oLhHEntm9Ys+IamPwE=
-=wMBZ
------END PGP SIGNATURE-----
-
---ROz/llGSkBkozfg7--
+Bartosz
 
