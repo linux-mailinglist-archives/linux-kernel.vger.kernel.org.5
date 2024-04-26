@@ -1,144 +1,109 @@
-Return-Path: <linux-kernel+bounces-160262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4414E8B3B09
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 313E08B3B0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:20:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753E11C2139F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:20:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48ABC1C21A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F015016D9DF;
-	Fri, 26 Apr 2024 15:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACD914D447;
+	Fri, 26 Apr 2024 15:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="km+b6tIq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ti3q8L3p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED9C14BFA2;
-	Fri, 26 Apr 2024 15:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB8B148FE2;
+	Fri, 26 Apr 2024 15:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144481; cv=none; b=ksja+Ouc/0Tp9iH0hwPfIM5ZFXI7RuChDwwTy3Oo6O0jDiKff7cMBn5U9wG1frWVxExyM35JAJZNHDEnE+QEbLXgFyka2rSlBmgDn/6/RHou4DAf0XODFC4XwviiEadCMizi8ICcS6jjit8/W4i4pYM1oCJrZ2NavegELnmGCKo=
+	t=1714144543; cv=none; b=XamIpr65J/XX5KjLqjsBmiA1qm0p2Sjt64xMXbDGNUg36nekBf/WE3KeaWnSKnJXDw+QX/opr+bgLLZ2tSl9Xx3zUwE897Dk6s+HonCMvUKhg+0taPGWfd8MrIlgEHaDVIwBEKm9fWYgqls6ZFNRKm1r8ObDQv4oZzNJ4U1jMn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144481; c=relaxed/simple;
-	bh=//WzziHnNqcmkxi03bLLdDyX60lkCsTbOIScyFVBsNY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Byj8KMK/PIO2p8eN1Ec7Qiup4yaHEhLzknSyWD9J6ugpxS/GnAtvm3WQEzRY/nmUNokUZaAtvNUnwWseTGufKUGYTLw0t0yIZj4nD5jvNYaQl96SNi0uweKbuXRUMdY7Vk1MQ3KrYCTaS/13b82I3epBuol7MGllAlC6CyGExSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=km+b6tIq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B91C113CD;
-	Fri, 26 Apr 2024 15:14:40 +0000 (UTC)
+	s=arc-20240116; t=1714144543; c=relaxed/simple;
+	bh=JtWLiBEE0MYykclQ9qosZ0yssrcJ73QSVvIgrP7pgsY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MbUf8/LKeJyNn90V/4AW/iHxXG0+uljilotpfm2KHMlscF09T/lqga/M83ABxkPXNz1o02Oh/Ag+FIRNJo3IMZdrBcYIhNq91I/mNnqarkPUe0HhbSd7udPrnrswnd1tdOREkMThGIVFxc7lHnWGIVSVIEBMutc4/O2fbboGQsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ti3q8L3p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BADF5C113CD;
+	Fri, 26 Apr 2024 15:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714144480;
-	bh=//WzziHnNqcmkxi03bLLdDyX60lkCsTbOIScyFVBsNY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=km+b6tIq0ulf9lIhA6+EpCgzdNOG8OhZWIPXLRWXb4dyy1CY15QA+tqTPrjCXhSPF
-	 s3A/t2V7K/EXXL55ObKMuTe0KeQkcvL8lHAf4NkYwny/pjKljWKTh8C7w2v3gMCeAP
-	 +WswzMTPVGeA7UyA9Y6xzfLtqAdVD5dHXj95Yw1BdQE7wKSGSeurUWCA1j6ew+Bzgb
-	 Ad+ynfMADgf0ZNJFskgCwWtJAi9oDLJJ8Fuv9eB/08pm+CVJzzdUJtKPAEXyI2Jjjk
-	 rlGFYqo2oE9HD3bFX+O6oE5XSdFmk7VWk5ycyKdK0T7r2s1EZEBRN/cSiVH6vgN6uc
-	 2nZV2F0z/zDMg==
-Received: from 82-132-222-182.dab.02.net ([82.132.222.182] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1s0NHX-008GN9-HC;
-	Fri, 26 Apr 2024 16:14:37 +0100
-Date: Fri, 26 Apr 2024 16:14:29 +0100
-Message-ID: <87jzkktaui.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra
-	<peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>,
-	<x86@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	"Rafael J . Wysocki"
-	<rafael@kernel.org>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	James Morse
-	<james.morse@arm.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe
- Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas
-	<catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave
- Hansen <dave.hansen@linux.intel.com>,
-	<linuxarm@huawei.com>,
-	<justin.he@arm.com>,
-	<jianyong.wu@arm.com>,
-	Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v8 10/16] irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
-In-Reply-To: <20240426135126.12802-11-Jonathan.Cameron@huawei.com>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
-	<20240426135126.12802-11-Jonathan.Cameron@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1714144542;
+	bh=JtWLiBEE0MYykclQ9qosZ0yssrcJ73QSVvIgrP7pgsY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ti3q8L3puZFymuhMqmUVIbsLhYTYUlL7mBfESqoSRiKAsoFFsbdfoXSD2aj5pGpJx
+	 jgAYUQA7bbte0IKNAhmMBy2U3ZI6SVlUZIssgPZ7J6DIaEROICXhhUTTAHjN5/QC4d
+	 RDsfWbUJtAChfuc/XdOGHkmbaf5H1Wrc2hAI0egBna3je2n9M9Drwb4N702Tt9HvpI
+	 yzFOolF2WcRhoNeGOeGvIV6HsW/iUz2ixfGGwX4t/bFzzacF3EP3jXlw424h4IWPB8
+	 nV5o7r38FcX68JD8BmcCBjjmzfR0QyZK+iJJYXw3usS2X6qGz1t7DOivKBHqkDi6/P
+	 em30UbQ32m4ag==
+Date: Fri, 26 Apr 2024 08:15:42 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, hare@suse.de,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
+	p.raghav@samsung.com
+Subject: Re: [PATCH v4 09/11] xfs: expose block size in stat
+Message-ID: <20240426151542.GE360919@frogsfrogsfrogs>
+References: <20240425113746.335530-1-kernel@pankajraghav.com>
+ <20240425113746.335530-10-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 82.132.222.182
-X-SA-Exim-Rcpt-To: Jonathan.Cameron@huawei.com, tglx@linutronix.de, peterz@infradead.org, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, linux@armlinux.org.uk, rafael@kernel.org, miguel.luis@oracle.com, james.morse@arm.com, salil.mehta@huawei.com, jean-philippe@linaro.org, catalin.marinas@arm.com, will@kernel.org, guohanjun@huawei.com, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, linuxarm@huawei.com, justin.he@arm.com, jianyong.wu@arm.com, lpieralisi@kernel.org, sudeep.holla@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425113746.335530-10-kernel@pankajraghav.com>
 
-On Fri, 26 Apr 2024 14:51:20 +0100,
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+On Thu, Apr 25, 2024 at 01:37:44PM +0200, Pankaj Raghav (Samsung) wrote:
+> From: Pankaj Raghav <p.raghav@samsung.com>
 > 
-> From: James Morse <james.morse@arm.com>
+> For block size larger than page size, the unit of efficient IO is
+> the block size, not the page size. Leaving stat() to report
+> PAGE_SIZE as the block size causes test programs like fsx to issue
+> illegal ranges for operations that require block size alignment
+> (e.g. fallocate() insert range). Hence update the preferred IO size
+> to reflect the block size in this case.
 > 
-> gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
-> It should only count the number of enabled redistributors, but it
-> also tries to sanity check the GICC entry, currently returning an
-> error if the Enabled bit is set, but the gicr_base_address is zero.
+> This change is based on a patch originally from Dave Chinner.[1]
 > 
-> Adding support for the online-capable bit to the sanity check will
-> complicate it, for no benefit. The existing check implicitly depends on
-> gic_acpi_count_gicr_regions() previous failing to find any GICR regions
-> (as it is valid to have gicr_base_address of zero if the redistributors
-> are described via a GICR entry).
+> [1] https://lwn.net/ml/linux-fsdevel/20181107063127.3902-16-david@fromorbit.com/
 > 
-> Instead of complicating the check, remove it. Failures that happen at
-> this point cause the irqchip not to register, meaning no irqs can be
-> requested. The kernel grinds to a panic() pretty quickly.
->
-> Without the check, MADT tables that exhibit this problem are still
-> caught by gic_populate_rdist(), which helpfully also prints what went
-> wrong:
-> | CPU4: mpidr 100 has no re-distributor!
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Seems reasonable to me...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-	M.
+--D
 
--- 
-Without deviation from the norm, progress is not possible.
+> ---
+>  fs/xfs/xfs_iops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 66f8c47642e8..77b198a33aa1 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -543,7 +543,7 @@ xfs_stat_blksize(
+>  			return 1U << mp->m_allocsize_log;
+>  	}
+>  
+> -	return PAGE_SIZE;
+> +	return max_t(uint32_t, PAGE_SIZE, mp->m_sb.sb_blocksize);
+>  }
+>  
+>  STATIC int
+> -- 
+> 2.34.1
+> 
+> 
 
