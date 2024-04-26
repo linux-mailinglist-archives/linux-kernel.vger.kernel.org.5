@@ -1,474 +1,167 @@
-Return-Path: <linux-kernel+bounces-159650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265318B3193
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:42:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186918B3182
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF809288D6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:42:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A12DB24567
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9794413C8E2;
-	Fri, 26 Apr 2024 07:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E91713C3FD;
+	Fri, 26 Apr 2024 07:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="lIGd1PW8"
-Received: from smtpcmd11116.aruba.it (smtpcmd11116.aruba.it [62.149.156.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WciCIqmA"
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B552C13C3E7
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FBF42040
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714117297; cv=none; b=ubiJ1Mzjlp5rufEgADWHTFnMZ3xj//TEc960mA7JAHtcw11Vu2ka31CkuXIgtxz6XB82bfGY2kuI6d6V0N7kj/OsdKgNdLxhzeedgtXdKV9PhEfUkfqdBvSY50fvUtC2dBYd6l1U/lyhmiXaracUBGy8O3sQNbMRf1NiZZyWD1Q=
+	t=1714117204; cv=none; b=E2uHQqDjSkS3Ip1J6LuQrW9VegbTe6yg40ZpdJWkbVj/6fGKZIej6C9e2XHOJ/emeQJGLOYT2G6wWVPKgNx6QoIYDHVdT05vtbKho6Ud/CLNYTndS8V1uDpln019wbhDzPYMfeG+JbCsxtkX8Ur63AL1HyFymBgEW2r1Z5PNYFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714117297; c=relaxed/simple;
-	bh=bnhylyzJQWq0Lj3G8nKnfmrMatUQ5Tgl8eddF/amESY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MF2ilIVfHVFhcDU0IR2Sx0r/Ng7zo0Eak0inG9oWxzQd8jlmo4kdiaI6atM1w0yiMzlzdEhSfr9yxRkHx6ytFThEusvFXOa72Kn0I8lG8UhRMcD75YjZzUH2GBIcsIWPdwfeePJqBIZAuJJf/enypxMcGf0eNovjCoAmXtiVzSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=lIGd1PW8; arc=none smtp.client-ip=62.149.156.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam.com ([146.241.21.121])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id 0GA2s5OJj7AmW0GA4sQ99O; Fri, 26 Apr 2024 09:38:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1714117105; bh=bnhylyzJQWq0Lj3G8nKnfmrMatUQ5Tgl8eddF/amESY=;
-	h=From:To:Subject:Date:MIME-Version;
-	b=lIGd1PW8Us7K0W14sMNvY3vHnNCzRLbq9sYVKINus02mVkGHKVd7GmcncKJd7Q6pu
-	 d3gjpd2NYvL/nMkW1nW+tDPNOyAzsA2XeIOW1N6NRjd71UjhV6RBE+EmzamJ96dd48
-	 xsBPm1nO5H9TPkKXdHAu0LvnpbeNdoVQIwRotnLwnMByeJXJwqoGquxOfaKhrkkbJh
-	 8uqcu9ncJVVUS3yfZP4L15zCS5a6iIa4ELLa24APLQLtzXOHGkvHyLvaBfMfHPgVwS
-	 vdMSVzyku1ps69dA0La+o/bg6QawuQczmgYm3VsAZ4X8KV/7ipI7xxo+s4Ar2NfLuq
-	 f6pmsb43ADNYg==
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Fabio Aiuto <fabio.aiuto@engicam.com>,
-	Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH v5 3/3] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
-Date: Fri, 26 Apr 2024 09:38:20 +0200
-Message-Id: <20240426073820.6466-4-fabio.aiuto@engicam.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240426073820.6466-1-fabio.aiuto@engicam.com>
-References: <20240426073820.6466-1-fabio.aiuto@engicam.com>
+	s=arc-20240116; t=1714117204; c=relaxed/simple;
+	bh=kRZeq9J1Lob56Qgd0VoTrORXqmTf6VD/1OjkTqcezPg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JDgrpR/osVo3u9JXoR3alVfzmdWNEvitgxcUO2PE9wPAZVHOPsmdxED/LgOYDbwH26ChbiANAEGAUy0cHlXnWPx2VIhhqTs/3vk7f+M5xuvCws0qTozc2hrTk2KFHpPqAod0IKjeOa0knhakRdz+3G3kJmO4UyX+UBWctBIs/lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WciCIqmA; arc=none smtp.client-ip=209.85.217.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-479c96509e1so650377137.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714117202; x=1714722002; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8jJkFy12YonlPcinlo/Ez/2n2sMJA9nVtlnRSuoAqn0=;
+        b=WciCIqmAeYfU/a19E4GISaA+dX1Tk3PbaAsVw2HO1dMm6/Oyr/jHtAJUqeaeBFXAsa
+         pjFRo0o8Qg7z2ba2KBEuRhFhVqP3jQdyUnpZTkW3H7IhqO8fRoCyBF86DX/vXLdYqcKt
+         JivcPrUPLmp4E0X+7IgjYn2aJUMc/BuZo6qKQYU9QRNXNs7HftuSmkbiTQ+PATXF85Qu
+         WCfUTjXACSbw0+zbi751O0r8SFZD3HzkqEgXRyKleqP+eR1GRggozYVO3H5htasWnQGN
+         ISnqU11ehx3PQfpj5o6JvzFUBCe9rZJbeWjDy69uegETTnFt42WuQjgZl2iUW1D8XjlW
+         FjDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714117202; x=1714722002;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8jJkFy12YonlPcinlo/Ez/2n2sMJA9nVtlnRSuoAqn0=;
+        b=HLNdiqBEXG4WsEuDIllcYTpkbx8avfjwIKqtzkWCdOmyo04M3WHl8E0E4wmaj0mwSF
+         j10Vq5og2qvOR9a4LPnHTnZAn8lCERs0XuyTxBV6FkYqG67ucAkO2A7YLSqayuvARqkq
+         Y3GmjyzByFKawkz+r66mx32ZH84HAJcUKTB9zwtVNB8rlBcVRiUiPPrF1q9V1yOyaY+B
+         Nije7Ted+Zb+IcZLNVcpcPGTCDgZ/+56CTDYzi5KyzElL8K78ZqcRikQVFjryvDA3N6Z
+         0cGpLNfBPBuB37dmzIlTIIuBYXYbaRoWjjnf2msxP3qZWS5mVC+RtS04eQKY0RBulE5q
+         rbrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfD8h5+LJYMGrrtGQj6ayjBjKBljxPFPYKqUwq92mL6etsGlJg9BNcc3gz03RI2KAI6n3QRnZG3s23AYZXBN4gWL+nuHDg8BV5Tz5u
+X-Gm-Message-State: AOJu0YxkS8Ud7IW/Qhj3w7OICqSwjBNwjp2KoTzXG6U+3lnfnF1hErkT
+	lT3oMI4oXLsXnMyqx+yQmLAqwD6nViTkDU1wYoe3EnyEkIq4gqSDQzN051NhaJplS93z8T903Lk
+	iD8u/fskHdI5+nS7eKO+aDj26yf7dDtTGihkd
+X-Google-Smtp-Source: AGHT+IFc8kJ8+D8jOCtw8nMrmAZ493g/im+/HWv9EcKWTwN6D9oveY+Oo0fCC424QZI4ufr7Pl/UQvzvgs3ciGwdXTs=
+X-Received: by 2002:a05:6102:2222:b0:47b:c603:61af with SMTP id
+ d2-20020a056102222200b0047bc60361afmr1859803vsb.14.1714117201862; Fri, 26 Apr
+ 2024 00:40:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfE6sT1BnHKAAg50u46xcOOSREsJ4jETE50uuFKom9m7yBFEDaT/LUiYgvr756yJ+fJIqkFdc/rxAwqTTmaFR9YXnw0alETzhz2RZZSTW6YgU/orhnpZq
- zwsfwOiEKqUDR6Um5TtSaVFUsmtqtd3nqUR5DWDRM4VmDp41DTNJCovL5HPdxmIs3OGcMmzcEycB77ANQpyqT+BjW8mOI8k0p1H/gvStIPq+LksN0yzBNp4t
- nMdICu1JP/Pc9JLt2GCti5uYFnOT3qXXTnjw2jswK4FjpQUkWVNHSUgjYWZSzvPz8GEDU4kFDr9nBWbwcNvSMyVVURgW+P/uExZ9M7bie+vHiZbrUzu7Si+B
- E2GY5OeL9SGVcAlhe5OEJVps0OK/RlCzFOtidvLcX/kgIfDD4yl5oSUrrZAMESg+I1bpTrSfsvOAVCq5Bri+imo8FHBYdUX3+vb72XGe6J0rl1KteNbx/jcS
- +4QI/dt1RkVHuJPqzHTYwV9AAODvNB4lp4VsXcXt0y9VREXxkGJwcOE+MiIP/igcxJC3AOvkGGU5Pl0QGSHdHXgFHWpJSZVKauEFrqA1nx/VsY0Pkvdbm8CN
- m7oP02nbs7aKKDkBCocNfbBKn2YMCwV8Stsf+1dXyXG4sMARtsiX2nN5Rx/nqMzxf8jbj//o6EqdF482DvN9zvit
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <e324ff5e47e07505648c0092a5370ac9ddd72f0b.1708933498.git.isaku.yamahata@intel.com>
+ <2daf03ae-6b5a-44ae-806e-76d09fb5273b@linux.intel.com> <20240313171428.GK935089@ls.amr.corp.intel.com>
+ <52bc2c174c06f94a44e3b8b455c0830be9965cdf.camel@intel.com>
+ <1d1da229d4bd56acabafd2087a5fabca9f48c6fc.camel@intel.com> <20240319215015.GA1994522@ls.amr.corp.intel.com>
+In-Reply-To: <20240319215015.GA1994522@ls.amr.corp.intel.com>
+From: Fuad Tabba <tabba@google.com>
+Date: Fri, 26 Apr 2024 08:39:26 +0100
+Message-ID: <CA+EHjTxFZ3kzcMCeqgCv6+UsetAUUH4uSY_V02J1TqakM=HKKQ@mail.gmail.com>
+Subject: Re: [PATCH v19 011/130] KVM: Add new members to struct kvm_gfn_range
+ to operate on
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, 
+	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>, "Zhang, Tina" <tina.zhang@intel.com>, 
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>, 
+	"Huang, Kai" <kai.huang@intel.com>, "sagis@google.com" <sagis@google.com>, "Chen, Bo2" <chen.bo@intel.com>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "Aktas, Erdem" <erdemaktas@google.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	"Yuan, Hang" <hang.yuan@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which needs to be
-mounted on top of Engicam baseboards.
+Hi,
 
-Add support for EDIMM 2.0 Starter Kit hosting i.Core MX93.
+On Tue, Mar 19, 2024 at 9:50=E2=80=AFPM Isaku Yamahata <isaku.yamahata@inte=
+l.com> wrote:
+>
+> On Tue, Mar 19, 2024 at 02:47:47PM +0000,
+> "Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+>
+> > On Mon, 2024-03-18 at 19:50 -0700, Rick Edgecombe wrote:
+> > > On Wed, 2024-03-13 at 10:14 -0700, Isaku Yamahata wrote:
+> > > > > IMO, an enum will be clearer than the two flags.
+> > > > >
+> > > > >     enum {
+> > > > >         PROCESS_PRIVATE_AND_SHARED,
+> > > > >         PROCESS_ONLY_PRIVATE,
+> > > > >         PROCESS_ONLY_SHARED,
+> > > > >     };
+> > > >
+> > > > The code will be ugly like
+> > > > "if (=3D=3D PRIVATE || =3D=3D PRIVATE_AND_SHARED)" or
+> > > > "if (=3D=3D SHARED || =3D=3D PRIVATE_AND_SHARED)"
+> > > >
+> > > > two boolean (or two flags) is less error-prone.
+> > >
+> > > Yes the enum would be awkward to handle. But I also thought the way
+> > > this is specified in struct kvm_gfn_range is a little strange.
+> > >
+> > > It is ambiguous what it should mean if you set:
+> > >  .only_private=3Dtrue;
+> > >  .only_shared=3Dtrue;
+> > > ...as happens later in the series (although it may be a mistake).
+> > >
+> > > Reading the original conversation, it seems Sean suggested this
+> > > specifically. But it wasn't clear to me from the discussion what the
+> > > intention of the "only" semantics was. Like why not?
+> > >  bool private;
+> > >  bool shared;
+> >
+> > I see Binbin brought up this point on v18 as well:
+> > https://lore.kernel.org/kvm/6220164a-aa1d-43d2-b918-6a6eaad769fb@linux.=
+intel.com/#t
+> >
+> > and helpfully dug up some other discussion with Sean where he agreed
+> > the "_only" is confusing and proposed the the enum:
+> > https://lore.kernel.org/kvm/ZUO1Giju0GkUdF0o@google.com/
+> >
+> > He wanted the default value (in the case the caller forgets to set
+> > them), to be to include both private and shared. I think the enum has
+> > the issues that Isaku mentioned. What about?
+> >
+> >  bool exclude_private;
+> >  bool exclude_shared;
+> >
+> > It will become onerous if more types of aliases grow, but it clearer
+> > semantically and has the safe default behavior.
+>
+> I'm fine with those names. Anyway, I'm fine with wither way, two bools or=
+ enum.
 
-Starter Kit main features:
+I don't have a strong opinion, but I'd brought it up in a previous
+patch series. I think that having two bools to encode three states is
+less intuitive and potentially more bug prone, more so than the naming
+itself (i.e., _only):
+https://lore.kernel.org/all/ZUO1Giju0GkUdF0o@google.com/
 
-2x LVDS interfaces
-HDMI output
-Audio out
-Mic in
-Micro SD card slot
-USB 3.0 A port
-3x USB 2.0 A port
-Gb Ethernet
-2x CAN bus, 3x UART interfaces
-SIM card slot
-M.2 KEY_B slot
+Cheers,
+/fuad
 
-Cc: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Cc: Matteo Lisi <matteo.lisi@engicam.com>
-Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-icore-mx93-edimm2.dts | 343 ++++++++++++++++++
- 2 files changed, 344 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 045250d0a040..d26c0a458a44 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-new file mode 100644
-index 000000000000..ff69decb8bd6
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-@@ -0,0 +1,343 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 NXP
-+ * Copyright 2024 Engicam s.r.l.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx93-icore-mx93.dtsi"
-+
-+/ {
-+	model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-+	compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-+		     "fsl,imx93";
-+
-+	aliases {
-+		rtc1 = &bbnsm_rtc;
-+	};
-+
-+	chosen {
-+		stdout-path = &lpuart1;
-+	};
-+
-+	bt_reg_on: regulator-btregon {
-+		compatible = "regulator-gpio";
-+		regulator-name = "BT_REG_ON";
-+		regulator-min-microvolt = <100000>;
-+		regulator-max-microvolt = <3300000>;
-+		states = <3300000 0x1>, <100000 0x0>;
-+		gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	reg_1v8_sgtl: regulator-1v8-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1v8_sgtl";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_3v3_avdd_sgtl: regulator-3v3-avdd-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_avdd_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_3v3_sgtl: regulator-3v3-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		linux,cma {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			alloc-ranges = <0 0x80000000 0 0x40000000>;
-+			size = <0 0x10000000>;
-+			linux,cma-default;
-+		};
-+
-+		rsc_table: rsc-table@2021f000 {
-+			reg = <0 0x2021f000 0 0x1000>;
-+			no-map;
-+		};
-+
-+		vdevbuffer: vdevbuffer@a4020000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0xa4020000 0 0x100000>;
-+			no-map;
-+		};
-+
-+		vdev0vring0: vdev0vring0@a4000000 {
-+			reg = <0 0xa4000000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@a4008000 {
-+			reg = <0 0xa4008000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0@a4000000 {
-+			reg = <0 0xa4010000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1@a4018000 {
-+			reg = <0 0xa4018000 0 0x8000>;
-+			no-map;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "imx93-sgtl5000";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&dailink_master>;
-+		simple-audio-card,frame-master = <&dailink_master>;
-+		/*simple-audio-card,mclk-fs = <1>;*/
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&sai3>;
-+		};
-+
-+		dailink_master: simple-audio-card,codec {
-+			sound-dai = <&sgtl5000>;
-+			clocks = <&clk IMX93_CLK_SAI3_IPG>;
-+		};
-+	};
-+
-+	usdhc3_pwrseq: usdhc3-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_usdhc3_pwrseq>;
-+		reset-gpios = <&gpio2 22 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&cm33 {
-+	mbox-names = "tx", "rx", "rxdb";
-+	mboxes = <&mu1 0 1>,
-+		 <&mu1 1 1>,
-+		 <&mu1 3 1>;
-+	memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-+			<&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
-+	status = "okay";
-+};
-+
-+&flexcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan1>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&flexcan2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan2>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&lpi2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_lpi2c1>;
-+	pinctrl-1 = <&pinctrl_lpi2c1>;
-+	status = "okay";
-+
-+	sgtl5000: audio-codec@a {
-+		compatible = "fsl,sgtl5000";
-+		reg = <0x0a>;
-+		#sound-dai-cells = <0>;
-+		clocks = <&clk IMX93_CLK_SAI3_GATE>;
-+		VDDA-supply = <&reg_3v3_avdd_sgtl>;
-+		VDDIO-supply = <&reg_3v3_sgtl>;
-+		VDDD-supply = <&reg_1v8_sgtl>;
-+		status = "okay";
-+	};
-+
-+	pcf8523: rtc@68 {
-+		compatible = "nxp,pcf8523";
-+		reg = <0x68>;
-+	};
-+};
-+
-+&lpuart1 { /* console */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&lpuart5 { /* RS485 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart5>;
-+	status = "okay";
-+};
-+
-+&lpuart8 { /* RS232 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart8>;
-+	status = "okay";
-+};
-+
-+&micfil {
-+	#sound-dai-cells = <0>;
-+	assigned-clocks = <&clk IMX93_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <196608000>;
-+	status = "okay";
-+};
-+
-+&mu1 {
-+	status = "okay";
-+};
-+
-+&mu2 {
-+	status = "okay";
-+};
-+
-+&sai1 {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai1>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI1>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <12288000>;
-+	status = "okay";
-+};
-+
-+&sai3 {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai3>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI3>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <24576000>;
-+	fsl,sai-mclk-direction-output;
-+	status = "okay";
-+};
-+
-+&usdhc3 { /* WiFi */
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	pinctrl-1 = <&pinctrl_usdhc3>;
-+	pinctrl-2 = <&pinctrl_usdhc3>;
-+	mmc-pwrseq = <&usdhc3_pwrseq>;
-+	bus-width = <4>;
-+	no-1-8-v;
-+	non-removable;
-+	max-frequency = <25000000>;
-+	status = "okay";
-+
-+	brcmf: bcrmf@1 {
-+		compatible = "brcm,bcm4329-fmac";
-+		reg = <1>;
-+	};
-+};
-+
-+&wdog3 {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_bluetooth: bluetoothgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO19__GPIO2_IO19		0x31e /* BT_REG_ON */
-+		>;
-+	};
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX93_PAD_PDM_CLK__CAN1_TX		0x139e
-+			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX	0x139e
-+		>;
-+	};
-+
-+	pinctrl_flexcan2: flexcan2grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO25__CAN2_TX		0x139e
-+			MX93_PAD_GPIO_IO27__CAN2_RX		0x139e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1: lpi2c1grp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__LPI2C1_SCL		0x40000b9e
-+			MX93_PAD_I2C1_SDA__LPI2C1_SDA		0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_sai1: sai1grp {
-+		fsl,pins = <
-+			MX93_PAD_SAI1_TXC__SAI1_TX_BCLK		0x31e
-+			MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC	0x31e
-+			MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00	0x31e
-+			MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_sai3: sai3grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO26__SAI3_TX_SYNC	0x31e
-+			MX93_PAD_GPIO_IO16__SAI3_TX_BCLK	0x31e
-+			MX93_PAD_GPIO_IO17__SAI3_MCLK		0x31e
-+			MX93_PAD_GPIO_IO21__SAI3_TX_DATA00	0x31e
-+			MX93_PAD_GPIO_IO20__SAI3_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX93_PAD_UART1_RXD__LPUART1_RX		0x31e
-+			MX93_PAD_UART1_TXD__LPUART1_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart5: uart5grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO01__LPUART5_RX		0x31e
-+			MX93_PAD_GPIO_IO00__LPUART5_TX		0x31e
-+			MX93_PAD_GPIO_IO02__LPUART5_CTS_B	0x31e
-+			MX93_PAD_GPIO_IO03__LPUART5_RTS_B	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart8: uart8grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO13__LPUART8_RX		0x31e
-+			MX93_PAD_GPIO_IO12__LPUART8_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX93_PAD_SD3_CLK__USDHC3_CLK		0x17fe
-+			MX93_PAD_SD3_CMD__USDHC3_CMD		0x13fe
-+			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x13fe
-+			MX93_PAD_SD3_DATA1__USDHC3_DATA1        0x13fe
-+			MX93_PAD_SD3_DATA2__USDHC3_DATA2        0x13fe
-+			MX93_PAD_SD3_DATA3__USDHC3_DATA3        0x13fe
-+		>;
-+	};
-+
-+	pinctrl_usdhc3_pwrseq: usdhc3pwrseqgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22		0x31e /* WL_REG_ON */
-+		>;
-+	};
-+};
--- 
-2.34.1
-
+> --
+> Isaku Yamahata <isaku.yamahata@intel.com>
+>
 
