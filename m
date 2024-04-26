@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-160715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C658B4181
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:51:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B698B4183
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:52:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CDB21F227F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:51:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85D81F20F44
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D79381A4;
-	Fri, 26 Apr 2024 21:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68AF376E7;
+	Fri, 26 Apr 2024 21:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HiCRcSnM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o41Woglf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8958374C6;
-	Fri, 26 Apr 2024 21:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19712C68A;
+	Fri, 26 Apr 2024 21:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714168301; cv=none; b=KEyq6wt6iokfmY+icUoyJheKlIzr4bRimKfW/OKk/eQETUX+RoAoy7eQKn+ES6rjWZdmnbLJnInkvK/qqct1CvPZjYK4hEf42CEw3HIRCEkK77uvX1i29AcRib2koD5ZuzzgDORP6T7AXCaVYmcnmmnjMXRinp0NsXg9hvmn2o4=
+	t=1714168315; cv=none; b=E4UO65tDtrwgEZJL+lVmxcUB8+5SdZDVlP7YOlbCP+xU7eJgff6V2fzr9GP1ldTUcSeZUYlDsBIA971FLtkFf5WU4jmlXHO7E/KHGtlF25Rj8TJUU0FHSBeN87+yZeV6J2uB3+07SDX3/TtcQCRVFPFpGoj0P/Gg3JUXBrSgERI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714168301; c=relaxed/simple;
-	bh=ILtUrOVDvMYtd4HDjAPc/XxCz7q3QopNgkfhinc9zBI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HW2u07vwNQSHRLk2YH5NrKOBH6khfaXy3Z579slg/LW/YcxESR/aVFijEm2Xtx357lVOTV9tBb7WFXtLxavHVHELvgJxJdqinv2reNk+kwLtmVwv/NmaCwjN1CmVqPSFVsImbW4qMA6VFeNKVyPW7EBbKtAi/6qPJjbC+8fifDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HiCRcSnM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D629C32781;
-	Fri, 26 Apr 2024 21:51:40 +0000 (UTC)
+	s=arc-20240116; t=1714168315; c=relaxed/simple;
+	bh=LnQUtM/J37UGWUE9G3tzqEynRSFSqZxD5vF2HRp0+DE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R8e5lZKDrUlOORxuDqLsjATx71o+ihCLqSNPp5o2cMH6hvXV7EPkapb6IlQQmQCgTIf5ytXZFsH1yNMpqMp+9bPfjf5q66bpe/vrmBrnCvmBzBII11OdOE1SYImeyELe5ncyxc3LKh5mAA8PBKvnpcCXYWppyl946oxLh/fhfEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o41Woglf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F1E4C113CD;
+	Fri, 26 Apr 2024 21:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714168300;
-	bh=ILtUrOVDvMYtd4HDjAPc/XxCz7q3QopNgkfhinc9zBI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HiCRcSnMUWcNrIUaPcY1Nr4AnVEEsTUuVRWxbzdbXFdfrfk8s13/kcRSCd9RF9qAJ
-	 eO+NuQVEfnRch3atuuatG9F804CIF2s4hpou2jNsTCT0Cff5PI3AzlP58deJ0nFve5
-	 +Gi/eNd5nh7gbUAQRXvY1luLe6yVb8PuRtJPKJo4J96bzAMTWOhmuSDsBd9zsRy0yF
-	 GSEoqm1XpzTAykd0xXL/xWHIs1bePm+n+2lLNSrHKXorWvtdznWoYL5PO+i6WC6Zhf
-	 ZxPrhEGEf2C3Fi5HS19bqitzL59xqntGeYsw51g9WvIWOmgvk9xGSMBFSmzYnf5dKh
-	 nqB2rD5xJehQA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH 2/2] perf symbol: Simplify kernel module checking
-Date: Fri, 26 Apr 2024 14:51:39 -0700
-Message-ID: <20240426215139.1271039-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-In-Reply-To: <20240426215139.1271039-1-namhyung@kernel.org>
-References: <20240426215139.1271039-1-namhyung@kernel.org>
+	s=k20201202; t=1714168314;
+	bh=LnQUtM/J37UGWUE9G3tzqEynRSFSqZxD5vF2HRp0+DE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=o41Woglf8gg8y4NYEnXcC7I2MMcczhaJNoclfmI5vx4Wqv+bsDluC9Bb/PnmQSHSY
+	 UxxtcXE+8O8CAOBrFvkpg+tVni74yApzh0keESOVBwhWNZSgl0QlDevoElSU/PLPJA
+	 56DjgzSnW5tYFxJ0uMcO9Vo1YqAQZmzC31d1tshwXLp/5kQ2WsqgsFpc4ndCuHKCf/
+	 GtNw+pn+W3lWVRbK2DqoVMQaOQKCAJhhXF8JaGdDLtdLOgKXFLfWDbXtX5K4S735RS
+	 TRlNx3+brRmXwK+ji6RIi7gI/UEPTeRpZ0MwAjgObmbFv8urAFNyLr23wbsueLQQux
+	 PsCFyMjDv38qg==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH] regulator: dt-bindings: fixed-regulator: Add a preferred node name
+Date: Fri, 26 Apr 2024 16:51:46 -0500
+Message-ID: <20240426215147.3138211-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,33 +58,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In dso__load(), it checks if the dso is a kernel module by looking the
-symtab type.  Actually dso has 'is_kmod' field to check that easily and
-dso__set_module_info() set the symtab type and the is_kmod bit.  So it
-should have the same result to check the is_kmod bit.
+Define "regulator-[0-9]v[0-9]" as the preferred node name for fixed
+regulators. Other suffixes with names are also accepted. Combined,
+these make up about half of the existing names in use.
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+For now this only serves as documentation as the schema still allows
+anything to avoid lots of additional warnings for something low priority
+to fix. Once a "no deprecated" mode is added to the tools, warnings can
+be enabled selectively.
+
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- tools/perf/util/symbol.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ .../devicetree/bindings/regulator/fixed-regulator.yaml     | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 63936269ec15..50969c687135 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -1811,10 +1811,7 @@ int dso__load(struct dso *dso, struct map *map)
- 		goto out;
- 	}
+diff --git a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+index 9ff9abf2691a..51e2f6fb7a5a 100644
+--- a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+@@ -41,6 +41,13 @@ allOf:
+         - gpios
  
--	kmod = dso__symtab_type(dso) == DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE ||
--		dso__symtab_type(dso) == DSO_BINARY_TYPE__SYSTEM_PATH_KMODULE_COMP ||
--		dso__symtab_type(dso) == DSO_BINARY_TYPE__GUEST_KMODULE ||
--		dso__symtab_type(dso) == DSO_BINARY_TYPE__GUEST_KMODULE_COMP;
-+	kmod = dso__is_kmod(dso);
- 
- 	if (dso__kernel(dso) && !kmod) {
- 		if (dso__kernel(dso) == DSO_SPACE__KERNEL)
+ properties:
++  $nodename:
++    anyOf:
++      - description: Preferred name is 'regulator-[0-9]v[0-9]'
++        pattern: '^regulator(-[0-9]+v[0-9]+|-[0-9a-z-]+)?$'
++      - description: Any name allowed
++        deprecated: true
++
+   compatible:
+     enum:
+       - regulator-fixed
 -- 
-2.44.0.769.g3c40516874-goog
+2.43.0
 
 
