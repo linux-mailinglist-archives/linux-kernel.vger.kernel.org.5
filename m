@@ -1,122 +1,155 @@
-Return-Path: <linux-kernel+bounces-159794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54D108B3423
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:34:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F478B3424
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:34:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A55F3B2306D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:34:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C8D01C22695
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBDD13F446;
-	Fri, 26 Apr 2024 09:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDA314265F;
+	Fri, 26 Apr 2024 09:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHQIXMFT"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jVQjZxoL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B711413F436
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BBB1422C6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714124036; cv=none; b=WeR5U9jn7+OTlnIhi5o/2g5qavn1Nb+LZoVFBRKZoOdFSMORHUoP3937ztPg4dduGd8nnaCb0AA+9Ux+0TrqkOlGZZ/RTOMPpV9e2Q/WJ5d79wJXQ2aUie4DlXt6TKtb4isuKu6UEa8TzJnCy17oV4//DOUgqvCCNM+nm/kQQik=
+	t=1714124038; cv=none; b=Sqw5tmEH6tJZzbudPu1/CvESoJLeXTaej/r+0F3lbHzqW5ohZl51ZPUPQDBMhYMc7sxvZM0krFW/9dGs4ULMoeoYd/AlfTBXPa0IdgKNIQKH5U2HgDDuQwBuWYNs/pBJ/5VL1K9dxvB0gv2ITpXXy5geb8YxGbC46L9DlzbR9iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714124036; c=relaxed/simple;
-	bh=/pMH4enciC7L9Alrpd3tuEENkzHhRgIR4fDOAN+IbQs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gpTDmEoBVZfBZmIH8wvZhMl07qh0coQYRbjuOiOWykqcWLbPKqyAwHQTURAejHZX2GjT1YExVbh8+niAmlKAEM3BYBkNz0s3ZVVYvMiJbYBHTcC3YlojO10K2S9Yn7iV3G4dYiZN6v5BG8YEiWkmwWi+6CDQg32VUAZTrBGAAh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHQIXMFT; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-572229f196bso2358357a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714124033; x=1714728833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cPuH+vBjv5eyQAgbcQ7abdv/zl57lH4J1QFyOBw4iiY=;
-        b=LHQIXMFTykhyOU7VZ1d2A7PPuEYRBLAUcT894E6Ixp+18A/jqro5yt62y4EWxT1KZN
-         IobWW77dKwlSDwPnUPuZ4u0qh2tVj4xpUxHpgj7ou8RhAuq0BYpXYpLEloZynEE/edVQ
-         IfvK2bPthJz7jPLhxqYECA7rB6p+R8ryp02hXGlNRWqRfY3T1yGL64uHjX3pGCrUzLYw
-         TuK9uvDOgGiWCIEQCFDcr6ASWCThxgNTocOQgNOJqnpcfkfhlZN+sI1+r2SKr55KXoR7
-         0sY6WggSREywVnqEygN9P5OQrK+XZuzLLy7QNgzsUmHu0Xf/1rgN161Xx9JJ8nL4o8ra
-         /VZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714124033; x=1714728833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cPuH+vBjv5eyQAgbcQ7abdv/zl57lH4J1QFyOBw4iiY=;
-        b=YWN702T/QlnWrpwJPNXAL8jfRb2mHIiX6p3W/jtQxqnVGbRZiYAgFaMBoR5ZRwA8AJ
-         xBOD6C1aFLIPVH+Yx7Vf/QSgVZSv5OcKYr1dDrcL1blnsM6fj8Xb1j64kdexoCrjxnrR
-         BKqBwyG5o7Sj203LljZ5MSk25u++E/l0dCRWS2J50OxlDfJWD5zK58LLV6o7rQUlpGmZ
-         CkU3yWJPMxdqkt3FlGIfSUqp0tIoSrd1qdKRT5CF6U1ZbJHGPu3tzbotPtV4HjiWkE3z
-         d2AkOl72HDcbNxy0a/Aof3LB8H76v/3z8alMY5OGr6MqeqqqH69poP03CGYFRmyQneFJ
-         jXYA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLlAmAXCU0Q382M3RS9hToYuTKyv+7wH/I4Ee08vdd+f28Kxu+b0j3HWvezM9TxwI8wCgx1VX3AKCWRl/SIykIyYoCi+kanA0z6v/3
-X-Gm-Message-State: AOJu0YzFx+e9Hbmd+SebWprctc5L9cDnZv8xHTsLxk+Ngoe6gQ57+ZZk
-	ZT4buQtsiqbocmUrf4ro1w+J4/wbubZBXWoH+hNsPeYvEuWJNkvYqCLYfU3vRuX8MgEvS33NUNC
-	vOktcvFYe3blBspRtxwHkWHQOc1oPItEz
-X-Google-Smtp-Source: AGHT+IHPezjE+CJztDyYGDoPWkYAoc0JFZBredYxiGUqz91b4Ostfrb6qpSw9Sq9J+ppKcnAjnV98p/aXleUwfeXIEM=
-X-Received: by 2002:a50:950c:0:b0:56d:f47c:5308 with SMTP id
- u12-20020a50950c000000b0056df47c5308mr1351685eda.34.1714124032931; Fri, 26
- Apr 2024 02:33:52 -0700 (PDT)
+	s=arc-20240116; t=1714124038; c=relaxed/simple;
+	bh=HF9FygCkrUCOWv1FRx+lwLlEuJ62OvrqDXz7ynsbe8s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AokXjCdk0rpimrWvMyHhi51yhH/n+Z0yCNH3J+hOwHo42RQ1wsKcCw/eiw4I6vvHKbPXCwAOS2jGizyb4grpjL/EYPetCeFFKu9gxyyXNOCK3ssM8YNTeT6FVsC77ZLnBdzay21038i7HAn0Vtg1Snr8CbNiVcxHcHITkhMstto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jVQjZxoL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 821A3C113CD;
+	Fri, 26 Apr 2024 09:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714124038;
+	bh=HF9FygCkrUCOWv1FRx+lwLlEuJ62OvrqDXz7ynsbe8s=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jVQjZxoL58daYHJEOErMTjYz+2gxxdXEQDbVkU1O+yBl0YDklLpTtxyKQAySLlFdX
+	 lZ5XS2LtUwv1aaf3xZ46QaKH0xD94sScQdmhdWxw/EIVZdwVc8WNE1z6czWGpMjMaD
+	 JDUlWHm3W0CAXueuuKp0XAYcQlbJ3pHO84nS/m08Eu2y4zdUB8RSef/pG2Ude5UOCH
+	 yMj/hYMM/gIIkwimjjO/itS/WyfvfaABPm1ptvfbp3M92Mv+J0KXlVz4QiZLrN/t48
+	 QUxgGinOY9QdRXima3utm8VPqpy1/XslL12yD5KU0x0O+x2hm2pGv4HaCBgHlh8a8Y
+	 JRyuZPb7/ZhvQ==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>,
+	Yunlei He <heyunlei@oppo.com>
+Subject: [PATCH] f2fs: fix to avoid allocating WARM_DATA segment for direct IO
+Date: Fri, 26 Apr 2024 17:33:48 +0800
+Message-Id: <20240426093348.377018-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425211136.486184-1-zi.yan@sent.com> <ec4f9194-9ae3-43b3-8559-0b1f186c1d9d@redhat.com>
- <7c233278-1006-4449-81b2-d473b18a66ca@redhat.com>
-In-Reply-To: <7c233278-1006-4449-81b2-d473b18a66ca@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Fri, 26 Apr 2024 17:33:41 +0800
-Message-ID: <CAK1f24=k0mq_PKKWG9KF4vbfk1xN9MrRoa5=DW-eT1YD-S5Vtg@mail.gmail.com>
-Subject: Re: [PATCH v4] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: David Hildenbrand <david@redhat.com>
-Cc: Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Yang Shi <shy828301@gmail.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 4:26=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
->
-> > @@ -1553,9 +1557,9 @@ static __always_inline void __folio_remove_rmap(s=
-truct folio *folio,
-> >                    * page of the folio is unmapped and at least one pag=
-e
-> >                    * is still mapped.
-> >                    */
-> > -               if (folio_test_large(folio) && folio_test_anon(folio))
-> > -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdm=
-apped)
-> > -                               deferred_split_folio(folio);
-> > +               if (folio_test_large(folio) && folio_test_anon(folio) &=
-&
-> > +                   list_empty(&folio->_deferred_list) && partially_map=
-ped)
-> > +                       deferred_split_folio(folio);
->
-> And now I realize that we can then even drop the folio_test_large(folio)
-> check here!
+If active_log is not 6, we never use WARM_DATA segment, let's
+avoid allocating WARM_DATA segment for direct IO.
 
-+1
+Signed-off-by: Yunlei He <heyunlei@oppo.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/data.c    |  3 ++-
+ fs/f2fs/f2fs.h    |  2 +-
+ fs/f2fs/file.c    |  5 +++--
+ fs/f2fs/segment.c | 11 +++++++++--
+ 4 files changed, 15 insertions(+), 6 deletions(-)
 
-Thanks,
-Lance
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index bee1e45f76b8..0c516c653f05 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -4179,7 +4179,8 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	map.m_lblk = bytes_to_blks(inode, offset);
+ 	map.m_len = bytes_to_blks(inode, offset + length - 1) - map.m_lblk + 1;
+ 	map.m_next_pgofs = &next_pgofs;
+-	map.m_seg_type = f2fs_rw_hint_to_seg_type(inode->i_write_hint);
++	map.m_seg_type = f2fs_rw_hint_to_seg_type(F2FS_I_SB(inode),
++						inode->i_write_hint);
+ 	if (flags & IOMAP_WRITE)
+ 		map.m_may_create = true;
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index e8ff301eaf32..6dd50a6075c0 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3747,7 +3747,7 @@ int f2fs_build_segment_manager(struct f2fs_sb_info *sbi);
+ void f2fs_destroy_segment_manager(struct f2fs_sb_info *sbi);
+ int __init f2fs_create_segment_manager_caches(void);
+ void f2fs_destroy_segment_manager_caches(void);
+-int f2fs_rw_hint_to_seg_type(enum rw_hint hint);
++int f2fs_rw_hint_to_seg_type(struct f2fs_sb_info *sbi, enum rw_hint hint);
+ enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
+ 			enum page_type type, enum temp_type temp);
+ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 856a5d3bd6bf..23601d747716 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4643,7 +4643,8 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
+ 
+ 	map.m_may_create = true;
+ 	if (dio) {
+-		map.m_seg_type = f2fs_rw_hint_to_seg_type(inode->i_write_hint);
++		map.m_seg_type = f2fs_rw_hint_to_seg_type(sbi,
++						inode->i_write_hint);
+ 		flag = F2FS_GET_BLOCK_PRE_DIO;
+ 	} else {
+ 		map.m_seg_type = NO_CHECK_TYPE;
+@@ -4696,7 +4697,7 @@ static void f2fs_dio_write_submit_io(const struct iomap_iter *iter,
+ {
+ 	struct inode *inode = iter->inode;
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+-	int seg_type = f2fs_rw_hint_to_seg_type(inode->i_write_hint);
++	int seg_type = f2fs_rw_hint_to_seg_type(sbi, inode->i_write_hint);
+ 	enum temp_type temp = f2fs_get_segment_temp(seg_type);
+ 
+ 	bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi, DATA, temp);
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 8313d6aeaf41..94f3380be04c 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3358,8 +3358,14 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
+ 	return err;
+ }
+ 
+-int f2fs_rw_hint_to_seg_type(enum rw_hint hint)
++int f2fs_rw_hint_to_seg_type(struct f2fs_sb_info *sbi, enum rw_hint hint)
+ {
++	if (F2FS_OPTION(sbi).active_logs == 2)
++		return CURSEG_HOT_DATA;
++	else if (F2FS_OPTION(sbi).active_logs == 4)
++		return CURSEG_COLD_DATA;
++
++	/* active_log == 6 */
+ 	switch (hint) {
+ 	case WRITE_LIFE_SHORT:
+ 		return CURSEG_HOT_DATA;
+@@ -3499,7 +3505,8 @@ static int __get_segment_type_6(struct f2fs_io_info *fio)
+ 				is_inode_flag_set(inode, FI_HOT_DATA) ||
+ 				f2fs_is_cow_file(inode))
+ 			return CURSEG_HOT_DATA;
+-		return f2fs_rw_hint_to_seg_type(inode->i_write_hint);
++		return f2fs_rw_hint_to_seg_type(F2FS_I_SB(inode),
++						inode->i_write_hint);
+ 	} else {
+ 		if (IS_DNODE(fio->page))
+ 			return is_cold_node(fio->page) ? CURSEG_WARM_NODE :
+-- 
+2.40.1
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
 
