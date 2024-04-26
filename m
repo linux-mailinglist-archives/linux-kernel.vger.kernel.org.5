@@ -1,188 +1,150 @@
-Return-Path: <linux-kernel+bounces-160258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACB98B3AF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:18:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CA2E8B3AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:19:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77C661F24E97
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:18:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C736E1F2571A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DC2159594;
-	Fri, 26 Apr 2024 15:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UW5Mm8BC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550A015EFB4;
+	Fri, 26 Apr 2024 15:14:02 +0000 (UTC)
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E09F148841;
-	Fri, 26 Apr 2024 15:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE28C148841
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144364; cv=none; b=nT1TTdFwte24mvDlg3aeV5hru7VCYY0VWqIIUQIlSl7VBiDhKmqaoUkkDe+SCuINodejjX6+Ou7TPyIh+ADMVlqIKIaEgwaQb2qUChnnok83k72BK1+0N6IibC905h3JJy3vNVKVBQwMXKXs0akxhewfjl8rBJGE3u0HtAGLax8=
+	t=1714144441; cv=none; b=E4eYr588vFdwGs27j5meZAV3jzQMNBbcYroCAbMqBI68vvIrrjbkLOhgYnThtFddWRMuRhsvwkWmpVHcTV9P2EWCwo4r00nCn87sl9B1AF/xgwX5eGT1dUQQWmNgUClYYddvijWafi55d5IupkNPGPmTJiw1pn85ROHLiqa44tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144364; c=relaxed/simple;
-	bh=quc7LSiSVw2TT07uTSXycfAYUCFeYT8rW3NArklrOJQ=;
+	s=arc-20240116; t=1714144441; c=relaxed/simple;
+	bh=/5QVirdnw7ZwA7vkg/j+WG0o2OISZH7RAn/4/rQYtJs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sse7hsad+wxHVXuvjjzDkFKpBTIpj5yXkKW5QQ9RqFfM5PjoH18OEPbA+RmWedkHFnU1z/enMVdp8T2HCQ7avprNEIy76NHlnqiNNdiK+pJZTPOCNO3M9huj18vSB3SxVzBQPFVw5o+hHBXyVerCzFDVatsLt1PyZt2/wyd8cLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UW5Mm8BC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E65AC113CD;
-	Fri, 26 Apr 2024 15:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714144363;
-	bh=quc7LSiSVw2TT07uTSXycfAYUCFeYT8rW3NArklrOJQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UW5Mm8BCg0Roek5VE0mS5z+hU4Rliru5i4lxsEb6rJbZNPG0GNrdQRtkDQxnb70A2
-	 wmpqBhMuWvX5vGpb/2QoMAZMZy21JdccdODDRNV9qwEWubFJPpfan9sSS4Qyj24qlH
-	 88zpKEYRbBIkLYo1GadptPit6L8NfZzsA4kDQ+N6O5EJtsfweFTlyvwJZvMmuQSMEV
-	 pmwDFrf+V1zCLYFN6Mhifq6VU5a6avVs1dtBi5wwRIRZ7u3u0EAMkIeB+2j4h9DIvw
-	 sgRikwxLLz/3cs9yEEkwnKP6YLlXjH1MHlncJkACn31uQsj5kLJVkBkjUJ2b44RNEi
-	 xdA+KkNkUUcYw==
-Date: Fri, 26 Apr 2024 08:12:43 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 03/11] filemap: allocate mapping_min_order folios in
- the page cache
-Message-ID: <20240426151243.GD360919@frogsfrogsfrogs>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-4-kernel@pankajraghav.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GSUyCn5YDt4xPpKUXWPEhQpUfnmLvgPgb0ZBR3qa94QDifE8mnxBgNR8ePFaCz+dlEpYjCaY6FC4pbQDqE/K1pXMmocZXPdcg8Nfh+0dMXTxOqsdQuCwNVwf0QNdJUL4IBEaJEZrFQ06pp7Se8bn8RQFH0hHlmEeq87AjqnhavI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=207.211.30.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-465-w0zvaQ4fM4Wn9feoiW-OqQ-1; Fri, 26 Apr 2024 11:13:48 -0400
+X-MC-Unique: w0zvaQ4fM4Wn9feoiW-OqQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 049EF1049C97;
+	Fri, 26 Apr 2024 15:13:47 +0000 (UTC)
+Received: from hog (unknown [10.39.193.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E8DF2166B31;
+	Fri, 26 Apr 2024 15:13:38 +0000 (UTC)
+Date: Fri, 26 Apr 2024 17:13:37 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	David Ahern <dsahern@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
+	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
+	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, bridge@lists.linux.dev,
+	lvs-devel@vger.kernel.org, Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v5 5/8] net: Remove ctl_table sentinel elements from
+ several networking subsystems
+Message-ID: <ZivEOtGOWVc0W8Th@hog>
+References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
+ <20240426-jag-sysctl_remset_net-v5-5-e3b12f6111a6@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240425113746.335530-4-kernel@pankajraghav.com>
+In-Reply-To: <20240426-jag-sysctl_remset_net-v5-5-e3b12f6111a6@samsung.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Thu, Apr 25, 2024 at 01:37:38PM +0200, Pankaj Raghav (Samsung) wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> filemap_create_folio() and do_read_cache_folio() were always allocating
-> folio of order 0. __filemap_get_folio was trying to allocate higher
-> order folios when fgp_flags had higher order hint set but it will default
-> to order 0 folio if higher order memory allocation fails.
-> 
-> Supporting mapping_min_order implies that we guarantee each folio in the
-> page cache has at least an order of mapping_min_order. When adding new
-> folios to the page cache we must also ensure the index used is aligned to
-> the mapping_min_order as the page cache requires the index to be aligned
-> to the order of the folio.
+2024-04-26, 12:46:57 +0200, Joel Granados via B4 Relay wrote:
+> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
+> index a5946d1b9d60..bd0b7e2f8824 100644
+> --- a/net/smc/smc_sysctl.c
+> +++ b/net/smc/smc_sysctl.c
+> @@ -90,7 +90,6 @@ static struct ctl_table smc_table[] = {
+>  		.extra1		= &conns_per_lgr_min,
+>  		.extra2		= &conns_per_lgr_max,
+>  	},
+> -	{  }
+>  };
 
-If we cannot find a folio of at least min_order size, what error is sent
-back?
+There's an ARRAY_SIZE(smc_table) - 1 in smc_sysctl_net_init, shouldn't
+the -1 be removed like you did in other patches?
 
-If the answer is "the same error that you get if we cannot allocate a
-base page today (aka ENOMEM)", then I think I understand this enough to
-say
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+int __net_init smc_sysctl_net_init(struct net *net)
+{
+	struct ctl_table *table;
 
---D
+	table = smc_table;
+	if (!net_eq(net, &init_net)) {
+		int i;
 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> Co-developed-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> ---
->  mm/filemap.c | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 30de18c4fd28..f0c0cfbbd134 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -858,6 +858,8 @@ noinline int __filemap_add_folio(struct address_space *mapping,
->  
->  	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
->  	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
-> +	VM_BUG_ON_FOLIO(folio_order(folio) < mapping_min_folio_order(mapping),
-> +			folio);
->  	mapping_set_update(&xas, mapping);
->  
->  	if (!huge) {
-> @@ -1895,8 +1897,10 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
->  		folio_wait_stable(folio);
->  no_page:
->  	if (!folio && (fgp_flags & FGP_CREAT)) {
-> -		unsigned order = FGF_GET_ORDER(fgp_flags);
-> +		unsigned int min_order = mapping_min_folio_order(mapping);
-> +		unsigned int order = max(min_order, FGF_GET_ORDER(fgp_flags));
->  		int err;
-> +		index = mapping_align_start_index(mapping, index);
->  
->  		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
->  			gfp |= __GFP_WRITE;
-> @@ -1936,7 +1940,7 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
->  				break;
->  			folio_put(folio);
->  			folio = NULL;
-> -		} while (order-- > 0);
-> +		} while (order-- > min_order);
->  
->  		if (err == -EEXIST)
->  			goto repeat;
-> @@ -2425,13 +2429,16 @@ static int filemap_update_page(struct kiocb *iocb,
->  }
->  
->  static int filemap_create_folio(struct file *file,
-> -		struct address_space *mapping, pgoff_t index,
-> +		struct address_space *mapping, loff_t pos,
->  		struct folio_batch *fbatch)
->  {
->  	struct folio *folio;
->  	int error;
-> +	unsigned int min_order = mapping_min_folio_order(mapping);
-> +	pgoff_t index;
->  
-> -	folio = filemap_alloc_folio(mapping_gfp_mask(mapping), 0);
-> +	folio = filemap_alloc_folio(mapping_gfp_mask(mapping),
-> +				    min_order);
->  	if (!folio)
->  		return -ENOMEM;
->  
-> @@ -2449,6 +2456,8 @@ static int filemap_create_folio(struct file *file,
->  	 * well to keep locking rules simple.
->  	 */
->  	filemap_invalidate_lock_shared(mapping);
-> +	/* index in PAGE units but aligned to min_order number of pages. */
-> +	index = (pos >> (PAGE_SHIFT + min_order)) << min_order;
->  	error = filemap_add_folio(mapping, folio, index,
->  			mapping_gfp_constraint(mapping, GFP_KERNEL));
->  	if (error == -EEXIST)
-> @@ -2509,8 +2518,7 @@ static int filemap_get_pages(struct kiocb *iocb, size_t count,
->  	if (!folio_batch_count(fbatch)) {
->  		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
->  			return -EAGAIN;
-> -		err = filemap_create_folio(filp, mapping,
-> -				iocb->ki_pos >> PAGE_SHIFT, fbatch);
-> +		err = filemap_create_folio(filp, mapping, iocb->ki_pos, fbatch);
->  		if (err == AOP_TRUNCATED_PAGE)
->  			goto retry;
->  		return err;
-> @@ -3708,9 +3716,11 @@ static struct folio *do_read_cache_folio(struct address_space *mapping,
->  repeat:
->  	folio = filemap_get_folio(mapping, index);
->  	if (IS_ERR(folio)) {
-> -		folio = filemap_alloc_folio(gfp, 0);
-> +		folio = filemap_alloc_folio(gfp,
-> +					    mapping_min_folio_order(mapping));
->  		if (!folio)
->  			return ERR_PTR(-ENOMEM);
-> +		index = mapping_align_start_index(mapping, index);
->  		err = filemap_add_folio(mapping, folio, index, gfp);
->  		if (unlikely(err)) {
->  			folio_put(folio);
-> -- 
-> 2.34.1
-> 
-> 
+		table = kmemdup(table, sizeof(smc_table), GFP_KERNEL);
+		if (!table)
+			goto err_alloc;
+
+		for (i = 0; i < ARRAY_SIZE(smc_table) - 1; i++)
+			table[i].data += (void *)net - (void *)&init_net;
+	}
+
+	net->smc.smc_hdr = register_net_sysctl_sz(net, "net/smc", table,
+						  ARRAY_SIZE(smc_table));
+[...]
+
+-- 
+Sabrina
+
 
