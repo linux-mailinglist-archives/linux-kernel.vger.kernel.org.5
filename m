@@ -1,96 +1,114 @@
-Return-Path: <linux-kernel+bounces-160762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C62268B427B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:06:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C688B427D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02C15B21C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:06:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2670B224E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373833B79C;
-	Fri, 26 Apr 2024 23:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5ED33BB38;
+	Fri, 26 Apr 2024 23:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uorwIqEI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QATyuGCd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7980C39FC5;
-	Fri, 26 Apr 2024 23:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398A13A1C4;
+	Fri, 26 Apr 2024 23:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714172759; cv=none; b=LxrsmZv6VKHauEISkGyMsvEpXNgUpONK9oHGMWUhaxEBLQV/WegKxkOAVj7HDlbFlskt0VVPnaO9BbcSo3iUnCX7xFxqH64pfYAj1X7gIfHU/auNUVO0JPDc8X1aDMWrGP8mzjZDgh/QQc/PSDu8ExPx3AUu1ojUf4EXYfRG6bg=
+	t=1714172785; cv=none; b=TzkD84UEFDoXeH/wMiAudjzGf/yLa199slKFtbisZYScG4x3f59H0S+WtCs3A8gqgHVka5DyEeHZeFtBDXfu5dRq8NM7W0323Qr2lfiempNZZxjUOX0yG0AtQH7ADbrKK/evCFvh/taowsWQDJLxdUlZCipDI/9peIlfqUG++Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714172759; c=relaxed/simple;
-	bh=cz81g8dRd8WGS4FfF7yHOLy1Rtt7gsfw9coHC3cgGw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B1GWyjRfTi5YQlrQFs7jiPgFuUeRtMniu0Ja78KpUhbo3a3J1b8XFrtqllODQK9rvOlxz+MvNzYjfiCNSy3q2/2k03SUOPxVQXS2MYHu7pRUUUsi5nZcUxF1gXNiMWjCkzsz7gqfT1bHuMIpeYgXmHuAh6ru1gMGji3iHhtSNIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uorwIqEI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95794C113CD;
-	Fri, 26 Apr 2024 23:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714172759;
-	bh=cz81g8dRd8WGS4FfF7yHOLy1Rtt7gsfw9coHC3cgGw4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=uorwIqEI92m1Q3QTYmc59i0meAi6h5Xwcn0yC4tWv48cgnTDHGurA6BMF/mJQk2Wu
-	 OYrq5jAWsEX5XlWtlbBIesUiuVtAU/XKNa0N5lRudKKCMtLGCub5hl9ZBOM9t8eFgZ
-	 2oUt64s/xDej+8hf32ZrLtfDOKZXey+INgy/VBSVN/mVYd7s87pg47GvKGMp6V0FZ9
-	 tIhdz3bjYtVAcCwU86vtD4dqfTD6GUEl/BcvY0YV5Ncin3srxySNWz52IGG+N0VmOS
-	 z1Mve9M4fbuzSDdVUpn3AswiA6k0zcwjAXrA91zTyWnQdEpa/w+UNTuWMuc4nqaTnt
-	 ovIzbbRIujwNQ==
-Date: Fri, 26 Apr 2024 16:05:57 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "almasrymina@google.com" <almasrymina@google.com>, "davem@davemloft.net"
- <davem@davemloft.net>, "pabeni@redhat.com" <pabeni@redhat.com>,
- "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "jacob.e.keller@intel.com" <jacob.e.keller@intel.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jianbo Liu
- <jianbol@nvidia.com>, "edumazet@google.com" <edumazet@google.com>
-Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from
- skb_frag_unref
-Message-ID: <20240426160557.51de91f9@kernel.org>
-In-Reply-To: <4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
-References: <20240424165646.1625690-2-dtatulea@nvidia.com>
-	<4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
-	<CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
-	<4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
+	s=arc-20240116; t=1714172785; c=relaxed/simple;
+	bh=cKKbL4cjFxBEMaMkwZoYnLJ7hvLWzVbZoU0lhnkwidc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s3nTDId/FSBprnTBMSibQ4kB9pX1Wi05QKa5bVfzs0lO0kFZtAzbGpjsYvLtSL3Q3LhNRHmeYxtB/Y2urz7sU2vh/QUDq8n4iZt0rYyU0QpJDxNeG/3rzFMFNtNiRyf5968zLDXBAG3cgA4p+dq+TKw8eBF0xXjCRRXfTEhJQ+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QATyuGCd; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714172783; x=1745708783;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cKKbL4cjFxBEMaMkwZoYnLJ7hvLWzVbZoU0lhnkwidc=;
+  b=QATyuGCdLK3kqreQ99tR4R2hHLMzADOH458ScRDcOG5SrIoccUn4EoxN
+   h3IDfdGO1MxlTVdXWxvyYpxHZ5CYQR/8uX1fQu5HG18YvNPHekj7NX3Xj
+   e/Qp+xB8eNJ/y6cu8hT0NjUzA88QwC86s9qnIzAUgNyTWl7Zx7fjbkORV
+   UMNasKPDr8wfZK814fc7vbtFys07GR40e5CKQBVidCbRYA98p5+NjKIaR
+   /4t11FEdC6tWEfTBazfA4sYnGQ9Oh8Elh/yy5x/icrFdIRvuf6RjZT1Rd
+   FInQIVMh+cZamxopU0MBcmG8wvubGd/RLD90JgA/7po0GIJqhrsVoCObN
+   A==;
+X-CSE-ConnectionGUID: yx0SJGWiR2m7XyPSOM8uog==
+X-CSE-MsgGUID: 2zAh+vxaSP65Ix9UQcIELQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="12860890"
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="12860890"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 16:06:22 -0700
+X-CSE-ConnectionGUID: uCBuxsRLQTSyNLKx3Rn2Nw==
+X-CSE-MsgGUID: NhqNp2HSRGaicrVXUBYEDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="63036776"
+Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.50]) ([10.24.10.50])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 16:06:23 -0700
+Message-ID: <f5a80896-e1aa-4f23-a739-5835f7430f78@intel.com>
+Date: Fri, 26 Apr 2024 16:06:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 4/4] KVM: selftests: Add test for configure of x86 APIC
+ bus frequency
+To: Reinette Chatre <reinette.chatre@intel.com>, isaku.yamahata@intel.com,
+ pbonzini@redhat.com, erdemaktas@google.com, vkuznets@redhat.com,
+ seanjc@google.com, vannapurve@google.com, jmattson@google.com,
+ mlevitsk@redhat.com, xiaoyao.li@intel.com, chao.gao@intel.com,
+ rick.p.edgecombe@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1714081725.git.reinette.chatre@intel.com>
+ <eac8c5e0431529282e7887aad0ba66506df28e9e.1714081726.git.reinette.chatre@intel.com>
+Content-Language: en-US
+From: "Chen, Zide" <zide.chen@intel.com>
+In-Reply-To: <eac8c5e0431529282e7887aad0ba66506df28e9e.1714081726.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Apr 2024 08:17:28 +0000 Dragos Tatulea wrote:
-> >  The unref path always dropped a regular page
-> > ref, thanks to this commit as you point out:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2cc3aeb5ecccec0d266813172fcd82b4b5fa5803
-> > 
-> > AFAICT the correct fix is to actually revert commit 2cc3aeb5eccc
-> > ("skbuff: Fix a potential race while recycling page_pool packets").
-> > The reason is that now that skb_frag_ref() can grab page-pool refs, we
-> > don't need to make sure there is only 1 SKB that triggers the recycle
-> > path anymore. All the skb and its clones can obtain page-pool refs,
-> > and in the unref path we drop the page-pool refs. page_pool_put_page()
-> > detects correctly that the last page-pool ref is put and recycles the
-> > page only then.
-> >   
-> I don't think this is a good way forward. For example, skb->pp_recycle is used
-> as a hint in skb_gro_receive to avoid coalescing skbs with different pp_recycle
-> flag states. This could interfere with that.
 
-That's a bit speculative, right? The simple invariant we are trying to
-hold is that if skb->pp_recycle && skb_frag_is_pp(skb, i) then the
-reference skb is holding on that frag is a pp reference, not page
-reference.
 
-skb_gro_receive() needs to maintain that invariant, if it doesn't
-we need to fix it..
+On 4/25/2024 3:07 PM, Reinette Chatre wrote:
+> diff --git a/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+> new file mode 100644
+> index 000000000000..5100b28228af
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+> @@ -0,0 +1,166 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Test configure of APIC bus frequency.
+> + *
+> + * Copyright (c) 2024 Intel Corporation
+> + *
+> + * To verify if the APIC bus frequency can be configured this test starts
+
+Nit: some typos here?
+
+> +int main(int argc, char *argv[])
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	struct kvm_vm *vm;
+> +
+> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_X86_APIC_BUS_CYCLES_NS));
+> +
+> +	vm = __vm_create(VM_SHAPE_DEFAULT, 1, 0);
+
+Use vm_create() instead?
 
