@@ -1,57 +1,53 @@
-Return-Path: <linux-kernel+bounces-160642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 811378B4085
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6194F8B4087
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:55:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E7B28A1EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:54:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E4D828A24B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53854208D6;
-	Fri, 26 Apr 2024 19:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4BC2260A;
+	Fri, 26 Apr 2024 19:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esDMTaJX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QiTFUqjJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96954D2F5;
-	Fri, 26 Apr 2024 19:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7FA27711;
+	Fri, 26 Apr 2024 19:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714161257; cv=none; b=CyXJMrPdM638OYF1lXcqrh3gnFS/cnmVjHkfMFDRlbhvFhT2Z8TGyWgblDgryaMc4ZFWC4NrQWyPruKL6AvnLWTAM+MgeihM87ZRDWlPN+HO12B8RWMzDPr5pXKHEDJQTu/YcXLNqg736xaEyNlZHkbld6F2L9F227UlkSoXDKw=
+	t=1714161288; cv=none; b=sQd0UccGWXbH0mGZMoHf28A969HPoTqbSIZm4t5nnSc0u39sECHKK8VvcXdc5M55eTf6iq62N05qODOarF311hnznxCIZGEhBw4iI3ij42LZuT5geP5O36qb1xFckV6BIwwjdxZkohMYm3eue5zlt6czHiJ3ZyD5XekEO/QSDBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714161257; c=relaxed/simple;
-	bh=QPeeDX2DDvQRA6ERB9qQ64tdJOF8dHgBuG6mRv3ZZ6Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rORcU3joCts/sv/puFRVnhWMc2jRm3cGrjE/4gSAEAbhAN7PIFl7lS5k/BvYiefmX7z+9B/WagN1Y5ieaLD75N92BkOzznhhlDH+EnAbn1rPdhcEDE+x8fGjXLvIfpkFIAjhs+YGXw0+SjygViqxm/ozsCYPVcN6Dx3AgtyL67Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esDMTaJX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BF4EC113CD;
-	Fri, 26 Apr 2024 19:54:16 +0000 (UTC)
+	s=arc-20240116; t=1714161288; c=relaxed/simple;
+	bh=DUfvjJb+PNqMl9axV8GlnzUcU+ktIjRBtm2wSJZLRDI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EW4d+h3ytkE6RoK+sIuagvsCSbZcgBI+Pt76QiWR/on7DUUPUiAv4NNjw00CL2ZwBxQb//+Gfz4NhXelvRQmZgk8IC/5T0jUTp9Y+eRzYJRbAWccghMB//0Rk2acX5BPqwsRmR87qnVTeAk9xLVenyOiQrlYaV7im+89IvU/2yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QiTFUqjJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E35BC113CD;
+	Fri, 26 Apr 2024 19:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714161257;
-	bh=QPeeDX2DDvQRA6ERB9qQ64tdJOF8dHgBuG6mRv3ZZ6Y=;
+	s=k20201202; t=1714161287;
+	bh=DUfvjJb+PNqMl9axV8GlnzUcU+ktIjRBtm2wSJZLRDI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=esDMTaJXY14cgL7iUr+SLGpgILhoQ9+wW3SXgu8lu0DhL5iayrLPGTGsjg0SEYWMe
-	 YIrkuEqen1KoD0KOXsRE4gQC9a8k1WqTzqgmmgycY2ie2N8gxvHkhP9cFgmEdn1gnW
-	 1uX69RNBmVHlzctPrNTUWwO56+4iHGKwo+MoL4iNy6qcO+4GHaYTzY22qbQDr7QN7b
-	 NtJ3GX9Sw5jiTZbINQBlpeEvFwzUos6LXUSu19d7LCkx2dywVBokQNq4DX1fuD8LuI
-	 76JTjNXaStT+HEspUHtNuhh8feRTEKTgOpqociyFhC6afGDmKYBCK++rNLda18GM3h
-	 3eCP1mJz1MSZA==
+	b=QiTFUqjJV3VETjvj3fMyEviluO0LJTqE1B9c5OpwXeXr4MwwbLjgU4mEG2kEh9jG3
+	 ALwF//fFD91NsanvkIMj08JL2TNcwZF1b22mIZ/Bv7+FCYrvpQ2Oa/7iU+fTwiA1H2
+	 mg/VIj+XDLUZa+GVfoMndzJw9QRLq4pClMhS9ZROIYuspF8JjhXh2GJx/Q8NQ58MF7
+	 w+19LwgNO2E7BbDuVMFesgMgxPGcw6d92T4vM9/lV3GAXwYAynMnTLVrsGHcqfnNPu
+	 2fOg60xk2nWsSjxidBL1++qTVFevHiveopO96ipfBxnz5pwUNevJp7bpz6n2vi8mKX
+	 xN6MokUkEnwEw==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-kernel@vger.kernel.org,
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Rob Herring <robh@kernel.org>,
 	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] dt-bindings: interrupt-controller: mediatek,mt6577-sysirq: Drop unnecessary quotes
-Date: Fri, 26 Apr 2024 14:54:04 -0500
-Message-ID: <20240426195404.2771046-1-robh@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] yamllint: Drop excluding quoted values with ',' from checks
+Date: Fri, 26 Apr 2024 14:54:37 -0500
+Message-ID: <20240426195438.2771968-1-robh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,29 +57,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Drop unnecessary quotes which aren't needed in yaml. This is checked by
-yamllint, but this case was excluded due to the comma and yamllint's
-mishandling of some cases with commas. That's now fixed in yamllint
-1.34.
+From: Rob Herring <robh@kernel.org>
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+Strings with commas were excluded from checks because yamllint had false
+positives for flow style maps and sequences which need quotes when
+values contain commas. This issue has been fixed as of the 1.34 release,
+so drop the work-around.
+
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml   | 2 +-
+ Documentation/devicetree/bindings/.yamllint | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml b/Documentation/devicetree/bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml
-index e1a379c052e4..123d24b05556 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml
-@@ -48,7 +48,7 @@ properties:
-   interrupt-controller: true
- 
-   "#interrupt-cells":
--    $ref: "arm,gic.yaml#/properties/#interrupt-cells"
-+    $ref: arm,gic.yaml#/properties/#interrupt-cells
- 
- required:
-   - reg
+diff --git a/Documentation/devicetree/bindings/.yamllint b/Documentation/devicetree/bindings/.yamllint
+index 358c88813937..fadbc6ad3c76 100644
+--- a/Documentation/devicetree/bindings/.yamllint
++++ b/Documentation/devicetree/bindings/.yamllint
+@@ -7,7 +7,7 @@ rules:
+   quoted-strings:
+     required: only-when-needed
+     extra-allowed:
+-      - '[$^,[]'
++      - '[$^[]'
+       - '^/$'
+   line-length:
+     # 80 chars should be enough, but don't fail if a line is longer
 -- 
 2.43.0
 
