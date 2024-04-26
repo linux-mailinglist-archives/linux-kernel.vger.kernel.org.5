@@ -1,295 +1,109 @@
-Return-Path: <linux-kernel+bounces-159960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CA78B36D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:00:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE21E8B36D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:03:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5C90B21F52
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:00:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 701361F22D43
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1F8145B05;
-	Fri, 26 Apr 2024 12:00:25 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BC7145B04;
+	Fri, 26 Apr 2024 12:03:50 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C3914533D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E85145358
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714132824; cv=none; b=YikapjsS3UgfBY3w8jTiXPjoSmh1Tod6dQBnKr6gEpzYOIUyZ7X9RHs8AjTNSv8ZX2Cy9dBBDHAdCugkYpIo55FHGHqAVNR8ksRpKIN12YauXCjozov2OV7kEIl+99j3Q+3TiCFZXAil6KqHEpMsv4aiXaAJq1wpmyCjVPZ5gt0=
+	t=1714133030; cv=none; b=SWcJcdwnRPs324os6wSQDaLHgN1wOHhVRZL39aM1QsPY4G7NOSyFdg7uopA6PstDExXLldpiG/w6T9IiWNVrA+szQMytawmGVevulPwVXRTDBPdmNFaGzs/JPPMnV+Ya+vhzj9Kjx4lNrowgvKGDSuGHFFKVaj2BcJ1/h9nW5Zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714132824; c=relaxed/simple;
-	bh=8BO/ZBGEFoIIJdHqnHTSXHBZFlt4YEId1ib9PEjaKkM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aFCKtZfiBPmppFwQVz4ftANl39FWe9lCNYsURg2UoIZUbT2zSn+yeC23Ikf7iyTKMPin7igS5TyGnC/znJngzYYY1IglrCHllibcraqMtXus8oViIHsjGSrW9Sr3zsyrtoBCLY/zFAs2b0sfu15Cmeyknn6eDTaGqFfLNOMxHiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5f08fdba8so223623939f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 05:00:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714132822; x=1714737622;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GlBVU8NhQFDaSrNRdYhDZE6HqqUIChpmecrMdvytvYc=;
-        b=irPUpgRlJw8RGAXZ8lfijThchW2J/WpAQyI6BPB6s4x9EEHWZGt/QA6YrLiYpR+TpO
-         4UOWYYj5MqAWpTl6+R/5psVNTRpp8GLiM89yVPdC6z24WfBL/IuHrEpPVf6qz+E5aU43
-         e2RCzA3SVuN6sbaOPEjYZ/xIN+p06wvW6IjnW3v453bmtRt9IRq/AxUpKN6EZmYdBIzO
-         Hnd6jZ/dch+nh58X2/khFxgsGYdW5WEM6qBPy/gQljlOZS3VGAyPRdBsNozgc6BOU6P9
-         jdWP1CMue8dD055lHpkZlIAQEP8f0DVzNTpwC7ydLfL+Wsks+XtM0eX4531bcwgPZOhR
-         hdAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUfZK6dCLKbs23m2QrdA0TtPG4nSbtZQNFyVmpN/Sih1yJ75vFEz4eaKw32Z6ZEJXCyYJpbGCxbnCIpPM+PNM+enmq1xDcYdjZdDk2W
-X-Gm-Message-State: AOJu0YymsuC5TqOLwWbq9LURA7qBfRqNrEj+ZIeVBP+7YxJol/EwoiuX
-	yBEZcyUBF9DZRRjNlqRKGHs9oimWsQVozSQJU3kpTcxr8dLzdpjhefd/xSjqnrrI/yQt5KIbx48
-	k52eHi0bxrh+jxyCrI23T7tlBgA4xixsj92lWi+N3dQhTecBsJujy3ZY=
-X-Google-Smtp-Source: AGHT+IHWi0X168bsy5DPhMJvl+U8bFNRuUZP409vo+4tPjUlYCKmirvKZzCGUUZhbDGpeLOObUNu2Gy3jedtb7whueE0kGDs0S10
+	s=arc-20240116; t=1714133030; c=relaxed/simple;
+	bh=1YNJVTz06BWFqJ7FQvwgAsfJPj+hF8YmXKjq0iE0r9k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=io1PjlwjOHzvejs4d8PpVdOdQSMBaozRtfKMoO0go3JI3I+PEjIV0zU1jRw1Vipbl9s7ppoqv2MOlGmTi7seQvu86l4C4MD2MFThhCOvOZ8DiPlgJAP/yiyzdf9DTjitU/YyuLquQaRUUqJlp12W5dSEOUsEPzbaD4eM0YEbtBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 43QC1c1w090269;
+	Fri, 26 Apr 2024 20:01:38 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VQrq51X47z2Nr60C;
+	Fri, 26 Apr 2024 19:58:57 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 26 Apr 2024 20:01:37 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <jaegeuk@kernel.org>, <chao@kernel.org>
+CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
+        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
+        <hongyu.jin@unisoc.com>
+Subject: [PATCH V2] f2fs: fix some ambiguous comments
+Date: Fri, 26 Apr 2024 20:01:29 +0800
+Message-ID: <1714132889-9423-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2dc2:b0:7d9:b860:3e54 with SMTP id
- l2-20020a0566022dc200b007d9b8603e54mr39486iow.2.1714132821958; Fri, 26 Apr
- 2024 05:00:21 -0700 (PDT)
-Date: Fri, 26 Apr 2024 05:00:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f386f90616fea5ef@google.com>
-Subject: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in chrdev_open
-From: syzbot <syzbot+5d34cc6474499a5ff516@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 43QC1c1w090269
 
-Hello,
+After commit d7e9a9037de2 ("f2fs: Support Block Size == Page Size"),
+Some comments are confused and just correct with block size is 4KB.
 
-syzbot found the following issue on:
-
-HEAD commit:    e33c4963bf53 Merge tag 'nfsd-6.9-5' of git://git.kernel.or..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=16f9787b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5a05c230e142f2bc
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d34cc6474499a5ff516
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11655ed8980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12499380980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e06aabc50597/disk-e33c4963.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ac50f00a131e/vmlinux-e33c4963.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/21fd2a443e16/bzImage-e33c4963.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9a3efbc77ff7/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5d34cc6474499a5ff516@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in __list_add_valid_or_report+0x4c/0xf0 lib/list_debug.c:29
-Read of size 8 at addr ffff888076eed7c8 by task syz-executor427/5079
-
-CPU: 0 PID: 5079 Comm: syz-executor427 Not tainted 6.9.0-rc5-syzkaller-00053-ge33c4963bf53 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- __list_add_valid_or_report+0x4c/0xf0 lib/list_debug.c:29
- __list_add_valid include/linux/list.h:88 [inline]
- __list_add include/linux/list.h:150 [inline]
- list_add include/linux/list.h:169 [inline]
- chrdev_open+0x2a9/0x630 fs/char_dev.c:396
- do_dentry_open+0x907/0x15a0 fs/open.c:955
- do_open fs/namei.c:3642 [inline]
- path_openat+0x2860/0x3240 fs/namei.c:3799
- do_filp_open+0x235/0x490 fs/namei.c:3826
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f722cb71329
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff23332778 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f722cb71329
-RDX: 0000000000000000 RSI: 0000000020002140 RDI: ffffffffffffff9c
-RBP: 0000000000000000 R08: 00007fff233327b0 R09: 00007fff233327b0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff2333279c
-R13: 0000000000000001 R14: 431bde82d7b634db R15: 00007fff233327d0
- </TASK>
-
-Allocated by task 5077:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- unpoison_slab_object mm/kasan/common.c:312 [inline]
- __kasan_slab_alloc+0x66/0x80 mm/kasan/common.c:338
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3798 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmem_cache_alloc_lru+0x178/0x350 mm/slub.c:3864
- alloc_inode_sb include/linux/fs.h:3091 [inline]
- ntfs_alloc_inode+0x28/0x80 fs/ntfs3/super.c:557
- alloc_inode fs/inode.c:261 [inline]
- new_inode_pseudo+0x69/0x1e0 fs/inode.c:1007
- new_inode+0x22/0x1d0 fs/inode.c:1033
- ntfs_new_inode+0x45/0x100 fs/ntfs3/fsntfs.c:1688
- ntfs_create_inode+0x687/0x3c30 fs/ntfs3/inode.c:1333
- ntfs_mknod+0x41/0x60 fs/ntfs3/namei.c:128
- vfs_mknod+0x36d/0x3b0 fs/namei.c:4001
- do_mknodat+0x3ec/0x5b0
- __do_sys_mknodat fs/namei.c:4079 [inline]
- __se_sys_mknodat fs/namei.c:4076 [inline]
- __x64_sys_mknodat+0xa9/0xc0 fs/namei.c:4076
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Freed by task 0:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:240
- __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kmem_cache_free+0x10b/0x2c0 mm/slub.c:4344
- rcu_do_batch kernel/rcu/tree.c:2196 [inline]
- rcu_core+0xafd/0x1830 kernel/rcu/tree.c:2471
- __do_softirq+0x2c6/0x980 kernel/softirq.c:554
-
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:47
- __kasan_record_aux_stack+0xac/0xc0 mm/kasan/generic.c:541
- __call_rcu_common kernel/rcu/tree.c:2734 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2838
- __dentry_kill+0x20d/0x630 fs/dcache.c:603
- shrink_kill+0xa9/0x2c0 fs/dcache.c:1048
- shrink_dentry_list+0x2c0/0x5b0 fs/dcache.c:1075
- shrink_dcache_parent+0xcb/0x3b0
- do_one_tree+0x23/0xe0 fs/dcache.c:1538
- shrink_dcache_for_umount+0x7d/0x130 fs/dcache.c:1555
- generic_shutdown_super+0x6a/0x2d0 fs/super.c:619
- kill_block_super+0x44/0x90 fs/super.c:1675
- ntfs3_kill_sb+0x44/0x1b0 fs/ntfs3/super.c:1785
- deactivate_locked_super+0xc4/0x130 fs/super.c:472
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1267
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- ptrace_notify+0x2d2/0x380 kernel/signal.c:2404
- ptrace_report_syscall include/linux/ptrace.h:415 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
- syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
- syscall_exit_to_user_mode+0x273/0x370 kernel/entry/common.c:218
- do_syscall_64+0x102/0x240 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff888076eed120
- which belongs to the cache ntfs_inode_cache of size 1760
-The buggy address is located 1704 bytes inside of
- freed 1760-byte region [ffff888076eed120, ffff888076eed800)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x76ee8
-head: order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff80000000840(slab|head|node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 00fff80000000840 ffff888019777dc0 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000110011 00000001ffffffff 0000000000000000
-head: 00fff80000000840 ffff888019777dc0 dead000000000122 0000000000000000
-head: 0000000000000000 0000000000110011 00000001ffffffff 0000000000000000
-head: 00fff80000000003 ffffea0001dbba01 dead000000000122 00000000ffffffff
-head: 0000000800000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Reclaimable, gfp_mask 0xd2050(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_RECLAIMABLE), pid 5077, tgid 1360935967 (syz-executor427), ts 5077, free_ts 25749663853
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1534
- prep_new_page mm/page_alloc.c:1541 [inline]
- get_page_from_freelist+0x3410/0x35b0 mm/page_alloc.c:3317
- __alloc_pages+0x256/0x6c0 mm/page_alloc.c:4575
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2175
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2391
- ___slab_alloc+0xc73/0x1260 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc_lru+0x253/0x350 mm/slub.c:3864
- alloc_inode_sb include/linux/fs.h:3091 [inline]
- ntfs_alloc_inode+0x28/0x80 fs/ntfs3/super.c:557
- alloc_inode fs/inode.c:261 [inline]
- iget5_locked+0xa4/0x280 fs/inode.c:1235
- ntfs_iget5+0xc7/0x3b70 fs/ntfs3/inode.c:525
- ntfs_fill_super+0x2f01/0x49c0 fs/ntfs3/super.c:1300
- get_tree_bdev+0x3f7/0x570 fs/super.c:1614
- vfs_get_tree+0x90/0x2a0 fs/super.c:1779
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-page last free pid 1 tgid 1 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1141 [inline]
- free_unref_page_prepare+0x97b/0xaa0 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- free_contig_range+0x9e/0x160 mm/page_alloc.c:6572
- destroy_args+0x8a/0x890 mm/debug_vm_pgtable.c:1036
- debug_vm_pgtable+0x4be/0x550 mm/debug_vm_pgtable.c:1416
- do_one_initcall+0x248/0x880 init/main.c:1245
- do_initcall_level+0x157/0x210 init/main.c:1307
- do_initcalls+0x3f/0x80 init/main.c:1323
- kernel_init_freeable+0x435/0x5d0 init/main.c:1555
- kernel_init+0x1d/0x2b0 init/main.c:1444
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Memory state around the buggy address:
- ffff888076eed680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888076eed700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888076eed780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                              ^
- ffff888076eed800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888076eed880: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v2: add comments "support 64 TB disk size for 16K page size"
+---
+---
+ include/linux/f2fs_fs.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index a357287..41d1d71 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -394,7 +394,8 @@ struct f2fs_nat_block {
+ 
+ /*
+  * F2FS uses 4 bytes to represent block address. As a result, supported size of
+- * disk is 16 TB and it equals to 16 * 1024 * 1024 / 2 segments.
++ * disk is 16 TB for a 4K page size and 64 TB for a 16K page size and it equals
++ * to 16 * 1024 * 1024 / 2 segments.
+  */
+ #define F2FS_MAX_SEGMENT       ((16 * 1024 * 1024) / 2)
+ 
+@@ -424,8 +425,10 @@ struct f2fs_sit_block {
+ /*
+  * For segment summary
+  *
+- * One summary block contains exactly 512 summary entries, which represents
+- * exactly one segment by default. Not allow to change the basic units.
++ * One summary block with 4KB size contains exactly 512 summary entries, which
++ * represents exactly one segment with 2MB size.
++ * Similarly, in the case of block with 16KB size, it represents one segment with 8MB size.
++ * Not allow to change the basic units.
+  *
+  * NOTE: For initializing fields, you must use set_summary
+  *
+@@ -556,6 +559,7 @@ struct f2fs_summary_block {
+ 
+ /*
+  * space utilization of regular dentry and inline dentry (w/o extra reservation)
++ * when block size is 4KB.
+  *		regular dentry		inline dentry (def)	inline dentry (min)
+  * bitmap	1 * 27 = 27		1 * 23 = 23		1 * 1 = 1
+  * reserved	1 * 3 = 3		1 * 7 = 7		1 * 1 = 1
+-- 
+1.9.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
