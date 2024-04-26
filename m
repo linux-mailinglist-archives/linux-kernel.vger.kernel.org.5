@@ -1,51 +1,73 @@
-Return-Path: <linux-kernel+bounces-159564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2768B3059
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:25:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758618B305C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:26:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E48D1F23BF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:25:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28C181F2398B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD2413A889;
-	Fri, 26 Apr 2024 06:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D87913A879;
+	Fri, 26 Apr 2024 06:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ZxJxTbjJ"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mw8j+EMt"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7462E282FD;
-	Fri, 26 Apr 2024 06:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE0E282FD;
+	Fri, 26 Apr 2024 06:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714112732; cv=none; b=OAUW96tzmpvMpF181kxV/9e2AYF9F99VoYNIzmrB7j4FHnMKixdzirL869NqyQbAuhMmWHrOOAK9I5d6nxh4ePOMN4ATbBjAe6E85bNsSuBbjIdJhummGBLjrql/Ce4J2R/Rbz3TCW0FMahHbSqlUmH1uMqHUhNKZnOLWs8jkvI=
+	t=1714112782; cv=none; b=Y0B206reJ9XhT+OMz/xE85RttAlmWbyvIuvqJf3wSykYOmcfDKJm9fbIIBUOHNLVTPprzRSnqBw8dP6b4SimMxHMWWqbhAw3y1D8CA8aUL7ohD2GsZgaKJfHvVr3SlcpjGAXuS5/VHAF0hpaY7Ofr63RW6ko9z00dlDVAAR1l1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714112732; c=relaxed/simple;
-	bh=xDOqNGbeSe6pXMEwzFpo1cSQcwhLWILxGVo8CczI1Po=;
+	s=arc-20240116; t=1714112782; c=relaxed/simple;
+	bh=K/lLSTmB1r5VdQlAr4SIuQlIKbznnzoX4+gIxqWEcdo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=njZIpGBhJPtRb9Gl1YLK2iqHSVWeRcMGcK/1kEc4Wd1u3x58omvBPrlPDiJo0WjaDIh8nYMfwLhSjw0qE0t+hQmdBI6dNSOAFNRTEoJS0vJUMgKyGHamktdg+duzxNH5Qya0W5BWhyGNEOtePjAKwJq/ia37XPEtS5AGRY5aM4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ZxJxTbjJ; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=hBtXuHAJ4otz2hqkKXeXuHHZ4NRvPizZ3qOHTCtx7p4=;
-	t=1714112729; x=1714544729; b=ZxJxTbjJh4W5LLmD6S/3aDdKnkznlhiLuANoti76Yj0rb6P
-	ms4xZlHNL/Z9NNrd32vHDNaXJg1ipqKQB3//sToXYT0AkwpiOILu+hfQ0QgPchHCwlFftoC+ANE2x
-	sj1sQYwlQynckL4stusYNyldduzZwTDAhHS8cE0M+Jyc0XJnhIcL6oim3b5UNfs5O5m0EvwZodtiU
-	fS+g/L+SoNmSxmNZVb529yNsudsW3rz953T0iXlA8qeWl3nnxsBm3wWu2EHMf7r03hCdHpddhkcwj
-	P7Y1utA/BReokEnmq2G5MerAdVlMJuWdwhRiDtL4tcfHtQpjBURCziTNllUtLKQQ==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1s0F1Q-0002G7-Vx; Fri, 26 Apr 2024 08:25:25 +0200
-Message-ID: <ded3e7ae-6a7d-48b2-8acc-c125874ee09f@leemhuis.info>
-Date: Fri, 26 Apr 2024 08:25:22 +0200
+	 In-Reply-To:Content-Type; b=GtmmdO6qOab2RqE2nmV6+u/CyJDD62IyHYKiaDAistfqKctoXBjt91C2CnSD36Rz8yB9ly2VEuREndbDC7u5ilc2TVnbr+khMXrC2iBukr6oPKbVVVawdnDBbwt4qR+MOMU++4QbH2m1BgtAAP70w2tSR3LnQpjblAPgVZTJLgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mw8j+EMt; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1340197a12.2;
+        Thu, 25 Apr 2024 23:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714112780; x=1714717580; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=akq0FDQRGKYwMJs1Hv8SvLZ2QQx9betP7BmyGgdXjV4=;
+        b=mw8j+EMtvSkYd8vFt/k5aFleWg6NVDh9FhimBhl4udQkGErWsmcSIncYPON4R0Pf2f
+         MTEaPFY83a7HmoLQs79n1uUMJZM+KPQUIroiiVcWvFCDXiizwCRHRXd1oiYWgvKjIK5B
+         cteUw+SaEmji1QVEW8KSqDQf5tzwDxMmXxeN1nSrpucvH2PxIw3JBse3ZjEpjdY9cscp
+         FpTip+4kyGSxjoYfYfrZc6ordQCl0x3MY6KGGim3XP3Ve2alFa9SeTI8F8NYl0aeVrhK
+         g+d/vnnNkrTfI1YvC5xFpHc8bENkpJLnMGrx1aOUT/hFNned5IM3pZhpQ4Uhm2DwHukJ
+         3Lpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714112780; x=1714717580;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=akq0FDQRGKYwMJs1Hv8SvLZ2QQx9betP7BmyGgdXjV4=;
+        b=GHxzEaxfDjaxiwNHCgV233I/G9pvNvkjsR3AG+UEKdZut/G3P5rW1dyk1rHtEmN9Be
+         J5e8a5egesCurr/t4JJs9JbBKUhGxg43kPyQsNe7NHRZhELUkg2FmWEehTabJJeDtxGA
+         HBWTaqDEtcION4HUZ41qK3s9etfyrPYFGfPZgdce3ps5XG5VctuyLG0lN8ve/GNcD1Hr
+         2VdwJb8LpY5qiomdIujIT/3gUC0NaXdRS7KzGRThL4NfeYlJYt5+PGtIqM5Si9uQY254
+         NiVScaTSnWLGDTCjee9Rhc40F+jhXEmB7vKPG8fyY5DQw4VzupBdPoai+hApUSSMbGrc
+         IzPA==
+X-Forwarded-Encrypted: i=1; AJvYcCXw/zD/dcS0D50AknmBwBqabEWZA3+cFp00Brbhgjg7ueEAGiht+xke0tUlRBf7215CpmtJxJrExxyZMGcqp/wEXgEW4HBOlARedreq
+X-Gm-Message-State: AOJu0YygUThGSwTtgDWQ/jYMaiOppdcCDMqmrTeE/OwFrmx+Na72CJ1i
+	yqS7ByF8iT1Sw9I3CHCtqfq9lWyV10v8x3tXa6F7iSZba66Mmyfn
+X-Google-Smtp-Source: AGHT+IEtZOi6hhkuI7OrQ4kBPhgfN1vv2fTVRaLhJdr4hhFHGpJmOgnhcutwsZrkdGezK4r1v3/F7A==
+X-Received: by 2002:a05:6a20:8406:b0:1aa:5b05:7925 with SMTP id c6-20020a056a20840600b001aa5b057925mr2228373pzd.4.1714112780100;
+        Thu, 25 Apr 2024 23:26:20 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id n16-20020a170903111000b001e2a479954dsm14791818plh.181.2024.04.25.23.26.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Apr 2024 23:26:19 -0700 (PDT)
+Message-ID: <63596d91-0a34-4311-9067-e2a125514e1a@gmail.com>
+Date: Fri, 26 Apr 2024 14:26:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,65 +75,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH iwl-net v1 1/1] e1000e: change
- usleep_range to udelay in PHY mdic access
-To: Sasha Neftin <sasha.neftin@intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, netdev
- <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- Vitaly Lifshits <vitaly.lifshits@intel.com>, intel-wired-lan@osuosl.org
-References: <20240417190320.3159360-1-vitaly.lifshits@intel.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20240417190320.3159360-1-vitaly.lifshits@intel.com>
+Subject: Re: [PATCH v4] docs/zh_CN: add process/cve Chinese translation
+To: Dongliang Mu <dzm91@hust.edu.cn>, Alex Shi <alexs@kernel.org>,
+ Yanteng Si <siyanteng@loongson.cn>, Jonathan Corbet <corbet@lwn.net>,
+ Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240422041115.2439166-1-dzm91@hust.edu.cn>
+Content-Language: en-US
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <20240422041115.2439166-1-dzm91@hust.edu.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714112729;d19d277f;
-X-HE-SMSGID: 1s0F1Q-0002G7-Vx
+Content-Transfer-Encoding: 7bit
 
-[CCing the maintainers and a few lists]
+Reviewed-by: Alex Shi <alexs@kernel.org>
 
-On 17.04.24 21:03, Vitaly Lifshits wrote:
-> This is a partial revert of commit 6dbdd4de0362 ("e1000e: Workaround
-> for sporadic MDI error on Meteor Lake systems"). The referenced commit
-> introduced an issue on vPro systems, where disconnecting and reconnecting
-> the LAN cable might result in a kernel panic.
-> 
-> This was root caused to the usage of usleep_range in an atomic content
-> while trying to access the PHY. Change back the usleep_range calls to
-> udelay.
+
+On 4/22/24 12:11 PM, Dongliang Mu wrote:
+> Translate process/cve.rst into Chinese and add it to
+> Documentation/translations/zh_CN directory.
 >
-> Fixes: 6dbdd4de0362 ("e1000e: Workaround for sporadic MDI error on Meteor Lake systems")
-
-Hi everyone. What's the status here? It seems like this regression fix
-did not make any progress for about a week. Which is not really ideal,
-as the issue afaics causes quite a few people headaches, as a quick and
-rough search indicates (there might be some false positives in here):
-
-https://bugzilla.kernel.org/show_bug.cgi?id=218740
-https://bugzilla.suse.com/show_bug.cgi?id=1223109
-https://bugzilla.suse.com/show_bug.cgi?id=1222945
-https://bbs.archlinux.org/viewtopic.php?id=294913
-https://bbs.archlinux.org/viewtopic.php?id=294828
-https://forum.manjaro.org/t/networkmanager-stability-issues-since-latest-update/159960
-https://discussion.fedoraproject.org/t/kernel-6-8-5-stops-at-splash-screen/113519
-https://bugzilla.redhat.com/show_bug.cgi?id=2276325
-https://bugzilla.redhat.com/show_bug.cgi?id=2276852
-https://www.reddit.com/r/voidlinux/comments/1c9s8ut/bug_scheduling_while_atomic/
-
-Side note: would be nice to add these tags to the patch
-description, too:
-
- Reported-by: Jérôme Carretero <cJ@zougloub.eu>
- Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218740
- Closes: https://lore.kernel.org/lkml/a7eb665c74b5efb5140e6979759ed243072cb24a.camel@zougloub.eu/ 
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+> ---
+> v3->v4: revise sentences suggested by Alex Shi
+> v2->v3: remove a trailing space
+> v1->v2: add a newline at then end of cve.rst.
+>  .../translations/zh_CN/process/cve.rst        | 89 +++++++++++++++++++
+>  .../translations/zh_CN/process/index.rst      |  1 +
+>  2 files changed, 90 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/process/cve.rst
+>
+> diff --git a/Documentation/translations/zh_CN/process/cve.rst b/Documentation/translations/zh_CN/process/cve.rst
+> new file mode 100644
+> index 000000000000..e39b796efcec
+> --- /dev/null
 
