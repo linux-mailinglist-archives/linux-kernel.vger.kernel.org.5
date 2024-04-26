@@ -1,110 +1,166 @@
-Return-Path: <linux-kernel+bounces-160273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CEC68B3B31
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:23:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FA78B3B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:23:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD68C287947
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B6D28634F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9861D15B0FB;
-	Fri, 26 Apr 2024 15:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACA015ECF1;
+	Fri, 26 Apr 2024 15:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="mTCujyM0"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sAX5Rpaa"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D64114901C;
-	Fri, 26 Apr 2024 15:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CE514AD02;
+	Fri, 26 Apr 2024 15:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144774; cv=none; b=XQJKDZjRtqSB/1DX+bpgRsBWsUd91yS1+TZG2ZQ9toM6PkPBtA5FPjRkOXEYH61OfpYrLdu2as3DF/S4YjoAZOu8MgiIH23YB933fp0y45EJ8WuDymOt1eb44mSbIvmLdp+fRJ92ugwn4pHq7uh/U66bGfHl1L/D5H+S+8NpL+4=
+	t=1714144812; cv=none; b=jiQnojQnM2aUlnl/LvLa2vPkI1PN2w0s7A7OSDVK+g85SGTPjRBDaYMqP9xaHlWWBI0WB5zkvNq03d2Rjoren4cWsrhRnV+/JPQVTZQD6Ac7REw3xXB4gwq2KaigZowjOrQ3m3IEwlxRTR73HB9h/SOyuuRrROV9yYlAiwfSZOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144774; c=relaxed/simple;
-	bh=vxidtu2EwXjRXAhjK64ieOGkWMabWQIvC6Il/Dcmuwo=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=Ipnd2nqPKV818/4b2aW75Cmj8dLKjJzRwvQ6JUCAwBI1nW/2SJ8P6BAUd/D91PNajD9xQ4As6IY3XRXw3BTIbLgB/rhLiTKAK5P6S7W8ZBhjHcqwv6C/493ZhSSfVDnRjL1MOcfYNZ+HbuHxhQDYslseKD2JbDzKGfjWcapHl4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=mTCujyM0; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714144741; x=1714749541; i=markus.elfring@web.de;
-	bh=vxidtu2EwXjRXAhjK64ieOGkWMabWQIvC6Il/Dcmuwo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=mTCujyM0oewNuoXHvx7VcyZ//4b/QOs7jf8jIT8FQU8GhANIY/BzPbECljQmBWLB
-	 T0PacSl34ZmmdTKRWXxW4mhYiuYm6AyPC7P/jV/TVkhwLOnrYRQ0F6sKHHT46Bg5R
-	 NgeKkTE3WcbTVOS1vKLVgWuPwCa9j+2jVpzKoIuTx0ggIGKZOCwWZabMSVM1NXtgA
-	 edK2qlp9LoHEJQQdNcC5nhS3MoNqMwhSz34Xpm51oVV5idNov/46sW+m4l2qdOFcu
-	 6pTftFSwGD+P7MPlXFdP3YoOGa2DHk+d7aP7OjdX8SP5bry9/WOhe2my13dXenvTj
-	 UX5VIcKSU6DBpaw6gA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9431-1smtAA3783-0169wT; Fri, 26
- Apr 2024 17:19:01 +0200
-Message-ID: <0c3cb2a1-a0b3-4a98-9bfc-3bf540c0eb78@web.de>
-Date: Fri, 26 Apr 2024 17:19:00 +0200
+	s=arc-20240116; t=1714144812; c=relaxed/simple;
+	bh=bhFXMkPpW2MuEYm68FHLRT6ke7fFBzv9JlTsYVjL2OQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eYhdq/jgonk4Mem1y0XmFSgJjFds1yx66OQMuSDVpXC8Q/sqzQ9CoB2Vp+P3se2wW6uJNicGmc+o+ZBpcj4i1mTRtL+U5fQXoVuf2Fnh/WhfITOOjc5VpHoLR5GUXzl88Wau3M52Ib1TvrOaEn1UZDtunU2iEGKUnCpUA+Sf0MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sAX5Rpaa; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QEgQLJ009060;
+	Fri, 26 Apr 2024 15:19:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=utQii5TuFLrp0kELhAiJGIrBnqewjCxQxZOgbabUCLI=;
+ b=sAX5RpaaqtSj8wgzes85BYXLOnsRtLd9DtPQ54UpNlYU6p3tSiMCJjn/ncwlHBqD0mUw
+ 41t6x6sSiId5TurENEt8kxEhmAeoenBQnEBPEsKrWGzdpj2nPdMMeDJdJQfxdTq5NW6w
+ kz9yLSFQNjMSVvcJ0pOGSxtF4WDQ1yWsbPjMb/unN3PDqBseSRNn8yo3Q/+v+QGnsWTe
+ DVPzjgujVPdM+C8TgnDL307gIJUj3HyZmpQa+rMSBf0WlqUXxdG3zqySt7dZk71zUuW2
+ pvZhER9XhglBTDFDxvmdB2VLkX5esuIz5r3143XinIeESuXY1uGpE0tZxvNqughD1vKA aw== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xre90g2nb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:19:58 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDXZvk015302;
+	Fri, 26 Apr 2024 15:19:57 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmr9q3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:19:57 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QFJsL746727488
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 15:19:56 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AC17358061;
+	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 61C3E58055;
+	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 15:19:54 +0000 (GMT)
+Message-ID: <8d5cca29-2b4d-40a7-a7dd-c3eff625af95@linux.ibm.com>
+Date: Fri, 26 Apr 2024 10:19:54 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 09/14] dt-bindings: fsi: Document the FSI Hub
+ Controller
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-10-eajames@linux.ibm.com>
+ <91d5683b-17a2-466c-ab3d-baf216c97fa3@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <91d5683b-17a2-466c-ab3d-baf216c97fa3@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: j3tQV2O3SV-XuNVzH1E2PY3aKEc1M6if
+X-Proofpoint-ORIG-GUID: j3tQV2O3SV-XuNVzH1E2PY3aKEc1M6if
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: lumingyindetect@126.com, linux-trace-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Steven Rostedt <rostedt@goodmis.org>
-References: <20240426091343.1222770-1-lumingyindetect@126.com>
-Subject: Re: [PATCH] tracing/probes: Fix memory leak issues in
- traceprobe_parse_probe_arg_body()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240426091343.1222770-1-lumingyindetect@126.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m6aIXWBUMnVwzLp30Zzzf9uS1KMKRZDZ4MzulBa72/k4CcmUebY
- 4s0Ehh5JSYtre7wZPwQjFdzyTXr+67wIFXa7k1ZDRK+PY4TrcKtvVkNLVMOmjswV2tRKNCh
- K+ubcsXJLD02iDZ+iyfxOHzVTCxPt4Ld1k2PB0cJS7eqrmvirwZqan9FNkjmUIJcn32bv4i
- WcNpBo1+W8ledRrG34HTQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ClBff8ldaUU=;MeOJKjlOUSdZ4oxpAHnlRDxBb2X
- tgV7Dk6mq79k6D5LD/jIl3g5lsLcMGxX0Hxjhhasha2yrbmJNJrFSjg/VLaFJD/4YCufbmJAg
- 4PlCKRNempEXpLyGzMRlNqobBRNXxOuNcY8L+UpUv0k5h67nQqkQ84o+ekHOGG3vMK2EbJrUj
- zLA7ouqu0cEmvEEgvlparnWYPCBNNnC7xSqogsipjGtEXTDDdTNEvUF29gRZ1Ww9avIjZqmbL
- B0Dvkn878Nj4DSKz2dncXqYNL09ZXkjiUnL+ypw6OzJD8J5zRNmYWYjeDDH8R4fx+WYVHyjTJ
- 9LMLBV6MbtV4GuLHMInnFbujEk3CpDSTaA8j/0AvbqrhE7MPIu+/LDO28XKkLkTGZ+5GBLlNW
- 6bGI1ZrKX1OET0B/j3X6Owkr1f9ClKA4+aySNudwBLgj6IAK9K6fSAzdtqyQPoU8vgkHjuwRz
- hMrWv4/0tisuqRsRg8aRRWCjOU+tmUTxG36L9ppeMeH1x2KWGzXUOkTpQeJSwHh68Z5kr4tzx
- B64HuMtnSCamrNNjhqAz0RvwdE/I03W/bMygxQJ2+lURV5zd8RDhOxhFviSsjdw501gy66Jq+
- 6WLHB+xM7C3BoT4BI0252TXx9J0MSk6aOknKgriq4DWCONEvTOx7GKLffP7oiyNuMq0Z1E9c6
- soPiX9UfIuG7zDMl30ncvQ07D/f/kNTBM0uCTWEgJdm71fMw9rBnE301MkVdydE0EJRh3D740
- gEmn/oYu5G68awHk8wS0ef5vxBgjrF3627Exiy9Wk0f2kzilrtXMZ44CdiwCT7WzXsAgcwli2
- 3vQ5PVqZsTU/vvJ65fQBfnaDDw0OhMlsaAGEKa/XdIaSw=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404260103
 
-=E2=80=A6
-> Therefore, the program should jump to the fail label instead of the out =
-label. This commit fixes this bug.
+
+On 4/26/24 01:26, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:36, Eddie James wrote:
+>> Document the FSI Hub Controller CFAM engine.
+>>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> ---
+>>   .../bindings/fsi/ibm,hub-fsi-controller.yaml  | 44 +++++++++++++++++++
+>>   1 file changed, 44 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml b/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
+>> new file mode 100644
+>> index 000000000000..d96d777d4d9f
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/fsi/ibm,hub-fsi-controller.yaml
+>> @@ -0,0 +1,44 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/fsi/ibm,hub-fsi-controller.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: IBM FSI-attached FSI Hub Controller
+>> +
+>> +maintainers:
+>> +  - Eddie James <eajames@linux.ibm.com>
+>> +
+>> +description: |
+> Do not need '|' unless you need to preserve formatting.
+
+
+Ack.
+
+
 >
-> Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+>> +  The FSI Hub Controller is an FSI controller, providing a number of FSI links,
+>> +  located on a CFAM. Therefore this node will always be a child of an FSI CFAM
+>> +  node.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - ibm,hub-fsi-controller
+> Again, is it for specific chip? SoC? Aren't you using generic
+> compatibles (not allowed)?
 
-Please improve your patch attempt considerably.
 
-See also:
-https://kernelnewbies.org/FirstKernelPatch
+This one is fairly universally supported on FSI (any POWER chip will 
+have it) so I didn't add a specific chip... Should i? Do you mean 
+generic compatibles are not allowed? How generic do you mean?
 
 
-Are there further change opportunities to take better into account?
-https://elixir.bootlin.com/linux/v6.9-rc5/source/kernel/trace/trace_probe.=
-c#L1403
-
-Regards,
-Markus
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
 
