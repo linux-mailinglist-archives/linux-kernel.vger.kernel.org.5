@@ -1,207 +1,131 @@
-Return-Path: <linux-kernel+bounces-159683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 290108B3223
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:17:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2802F8B322D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B19281C05
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:17:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5407CB22DB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADCD13C9B3;
-	Fri, 26 Apr 2024 08:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E3713C9C8;
+	Fri, 26 Apr 2024 08:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZCTRv1x4"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="obgQPE2p"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118AB14293;
-	Fri, 26 Apr 2024 08:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6C413C9B2
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714119437; cv=none; b=LWtiK1rW+bE1GF4mqOQ6fGzajCxNOcDE7XMDbx3s8ECEafwPAuVxI6SyhQM8d1IDPuDCbmaFVw1U3VP6qtYIkMACVjYAMPjLVhAs09YS4Ji+OxeTM2Zvk4CgW5QMFvl7CEfRuFIKkLcaOSXlfha1IaJgktyeVxrPecsX6UgL3cI=
+	t=1714119591; cv=none; b=CutvVYEnSvr6fbKkFZexsreEPB6q601qr7mcbuWl5bon/ZKpxQXCU85GQkkbJXwO70ywOxnDdtt6KYSZKNrhnf4e3e+Osf8UlVYx3PKtURjuwtOzwyAc1g5oHvoFM2BcBuhqWfW+wG9yLImlE+irGvVcdq7VEL0wr41cFOxDplA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714119437; c=relaxed/simple;
-	bh=KYXaZjdI+5IkXp0DualbSWgVlbRSytaWokMYpK++Zbc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ElFSAY1x5tnGYLiqT3vGHwpJL+GSs1AlkQbDe7brv/7A150SUjy+xirEcEtINo22rakPZRzOs3jZnQpYhwqXgW+lDYYTFdnLi9ui90m53LGlfkmcdCo6fXScjEnu1XiIfemas+y/cEFWhfR31p58R+cTtqmW37DkOnGVyFvpM/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZCTRv1x4; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1714119431; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=aS7zNkUjp+X466NnRKZw+mwarWr8jMNg/0m58+2vk84=;
-	b=ZCTRv1x46T6wUAiLrn0pjNOLPIZOzryCpGstk4b419L8hjZFwx4ZtXzroSj0I80Wy7Gy+zWpBOArUW96jAl0VDtq1OcmNQdFu4s/wIhoHrYZPzKHS3FskXefbuoDpPtYG/CZa3MF8DCzxAmG9c/D7/doAoHwkcaZfmGpC33jRto=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W5ISEMi_1714119429;
-Received: from 30.221.129.216(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W5ISEMi_1714119429)
-          by smtp.aliyun-inc.com;
-          Fri, 26 Apr 2024 16:17:10 +0800
-Message-ID: <3f2a7456-c310-4fdc-a507-896fcaaad454@linux.alibaba.com>
-Date: Fri, 26 Apr 2024 16:17:08 +0800
+	s=arc-20240116; t=1714119591; c=relaxed/simple;
+	bh=kv3uHgyGw/JZZTNmwog/H4yWnQwcgVscrnTYwyYSk7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V3FUz25/oLrULo5gKCETZYH/Wu36n2h7yuKaS+a298+eawRNOlNSbe+ErRW/79AGy91cg+DPYmGUw7g2K/wvEusKNusqjXM6L2w9idKoCLWYo2uBba0xK12xSu1Z/9gcd2gHxoP+pEgOnPMhaIlCTf6iML6LLzb55IGj2uY1Na8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=obgQPE2p; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso23397131fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714119588; x=1714724388; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EfSdQv6EjCCLdGOmPdycx3ncAagFAEEu4KvAuGFd2XM=;
+        b=obgQPE2p2X+FvV6YaK7ovQQ1WIvjiDxGG9YbiUO8l1kqZh3jWNa6DGBPQXCWlSGM/C
+         3gnOUaRZJz462IVeXrixYLGovItruHj3cftEZ94cs0fh/mVaMl4n/y0MIfZm+hCD08+t
+         zegZrAFJsrLCPufTJaehHPbBk5n3Hg5HB7RBys41i/VlxkAHypQ/DPMXQG9PXHhpTJAa
+         GtMDg/6PJ6jX/DOuo1QZI7+N8Xxq64ts/y8OMYPNWW8oM9/O55UWurpKcDF2cdpKQOSL
+         j4w7+J+ybrhNbampjHh+k7mOsbw0rKJpwZhuYT5vJDBpdcBP16b9E2bX4EUO+0tJ8q5P
+         BjVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714119588; x=1714724388;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EfSdQv6EjCCLdGOmPdycx3ncAagFAEEu4KvAuGFd2XM=;
+        b=fRE4lmIKSovVaMMkLwWbpR16UnvLJuVskRp37Av0aJFRKLHcHpAmOMBaqPzc2s+8PL
+         ttiW9Q5IpueDFA4yRej+HhTjNlk13tRFQIYBJP0ycVJe211KOgXw23adLU0ozsLb5yyF
+         qPVH/aHL2T/YjnnrAybBuujiDOxdSaITm0cYPnBfmnjKD/liYI/FCuU8i6agC5+wtaUA
+         SZFHaOQb/yM0HoAyZ6i07zzOiT414lS6KWFMvwNW383u/9WVilnjnD/Pwr9zjkE5lXWj
+         WJZjoDCNAnxg+6GHW6nHyUXB+b16ZbjS9G6H1xgI6I89RKqJcbpBjlTwJQ0J/AdZeSml
+         aS0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUatHrab9qq6WmPwoHReScNOt4fGTrKYnsTpPJ0B8118kWgS6wY7JXWFHyUNqJfN0/OpdGO13zBqM/Ji9ALGxHkvHKSPmsQwYyHm3rp
+X-Gm-Message-State: AOJu0Yy3cyZgDBYFQYHNzlPQREfjpyJnEg1wKPkqE5+VDmiWfK6ZK2kk
+	na0mp4asN4p8bufMDqz6vVTIKno7x61s0w6uTXt6/5swgfIggvXJbEzX8+111BRinvBJHBxFl0c
+	8k23Lqg==
+X-Google-Smtp-Source: AGHT+IHn3pUNjIBBIMlJ0pok0kVfWRxuRyYjBgVu6C3raaq1xokZeUacw6WmroFVNdIv0/AHQ+7r7w==
+X-Received: by 2002:a2e:9e07:0:b0:2de:4cb4:2601 with SMTP id e7-20020a2e9e07000000b002de4cb42601mr1185461ljk.43.1714119587462;
+        Fri, 26 Apr 2024 01:19:47 -0700 (PDT)
+Received: from nuoska (87-100-245-199.bb.dnainternet.fi. [87.100.245.199])
+        by smtp.gmail.com with ESMTPSA id z1-20020a2e9641000000b002d6bc956deesm2599855ljh.99.2024.04.26.01.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 01:19:46 -0700 (PDT)
+Date: Fri, 26 Apr 2024 11:19:44 +0300
+From: Mikko Rapeli <mikko.rapeli@linaro.org>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Lennart Poettering <mzxreary@0pointer.de>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-integrity@vger.kernel.org
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+Message-ID: <ZitjoLvggYB7vR0O@nuoska>
+References: <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+ <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+ <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+ <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
+ <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
+ <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
+ <ZiopXE6-AucAB9NM@gardel-login>
+ <D0T9BM4E1F5C.2TZMIRSHCKCQ2@kernel.org>
+ <D0TVQWEDNZO0.PN96CXJOTN1B@kernel.org>
+ <D0TVUC3PEG7K.1XYIAGIM2T0UQ@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-To: Jan Karcher <jaka@linux.ibm.com>, wintera@linux.ibm.com,
- twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240414040304.54255-1-guwen@linux.alibaba.com>
- <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D0TVUC3PEG7K.1XYIAGIM2T0UQ@kernel.org>
 
+Hi,
 
+On Fri, Apr 26, 2024 at 10:40:20AM +0300, Jarkko Sakkinen wrote:
+> On Fri Apr 26, 2024 at 10:35 AM EEST, Jarkko Sakkinen wrote:
+> > On Thu Apr 25, 2024 at 5:01 PM EEST, Jarkko Sakkinen wrote:
+> > > On Thu Apr 25, 2024 at 12:58 PM EEST, Lennart Poettering wrote:
+> > > > General purpose distros typically don't build all TPM drivers into the
+> > > > kernel, but ship some in the initrd instead. Then, udev is responsible
+> > > > for iterating all buses/devices and auto-loading the necessary
+> > > > drivers. Each loaded bus driver might make more devices available for
+> > >
+> > > I've had since day 0 that I've worked with TPM driver (i.e. since 2013
+> >
+> > - had the opinion (typo)
+> 
+> Tbh, I have zero idea what this discussion is about anyway because the
+> original thread *was not* CC'd to linux-integrity and I'm not subscribed
+> to linux-efi. So next time put all the relevant mailing lists. I.e.
+> definitive NAK for this patch.
 
-On 2024/4/26 15:02, Jan Karcher wrote:
-> 
-> 
-> On 14/04/2024 06:02, Wen Gu wrote:
->> This patch set acts as the second part of the new version of [1] (The first
->> part can be referred from [2]), the updated things of this version are listed
->> at the end.
->>
->> - Background
->>
->> SMC-D is now used in IBM z with ISM function to optimize network interconnect
->> for intra-CPC communications. Inspired by this, we try to make SMC-D available
->> on the non-s390 architecture through a software-implemented Emulated-ISM device,
->> that is the loopback-ism device here, to accelerate inter-process or
->> inter-containers communication within the same OS instance.
->>
->> - Design
->>
->> This patch set includes 3 parts:
->>
->>   - Patch #1: some prepare work for loopback-ism.
->>   - Patch #2-#7: implement loopback-ism device and adapt SMC-D for it.
->>     loopback-ism now serves only SMC and no userspace interfaces exposed.
->>   - Patch #8-#11: memory copy optimization for intra-OS scenario.
->>
->> The loopback-ism device is designed as an ISMv2 device and not be limited to
->> a specific net namespace, ends of both inter-process connection (1/1' in diagram
->> below) or inter-container connection (2/2' in diagram below) can find the same
->> available loopback-ism and choose it during the CLC handshake.
->>
->>   Container 1 (ns1)                              Container 2 (ns2)
->>   +-----------------------------------------+    +-------------------------+
->>   | +-------+      +-------+      +-------+ |    |        +-------+        |
->>   | | App A |      | App B |      | App C | |    |        | App D |<-+     |
->>   | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
->>   |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
->>   |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
->>   |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
->>   +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
->>                |   |           |                                  |
->>   Kernel       |   |           |                                  |
->>   +----+-------v---+-----------v----------------------------------+---+----+
->>   |    |                            TCP                               |    |
->>   |    |                                                              |    |
->>   |    +--------------------------------------------------------------+    |
->>   |                                                                        |
->>   |                           +--------------+                             |
->>   |                           | smc loopback |                             |
->>   +---------------------------+--------------+-----------------------------+
->>
->> loopback-ism device creates DMBs (shared memory) for each connection peer.
->> Since data transfer occurs within the same kernel, the sndbuf of each peer
->> is only a descriptor and point to the same memory region as peer DMB, so that
->> the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
->>
->>   Container 1 (ns1)                              Container 2 (ns2)
->>   +-----------------------------------------+    +-------------------------+
->>   | +-------+                               |    |        +-------+        |
->>   | | App C |-----+                         |    |        | App D |        |
->>   | +-------+     |                         |    |        +-^-----+        |
->>   |               |                         |    |          |              |
->>   |           (2) |                         |    |     (2') |              |
->>   |               |                         |    |          |              |
->>   +---------------|-------------------------+    +----------|--------------+
->>                   |                                         |
->>   Kernel          |                                         |
->>   +---------------|-----------------------------------------|--------------+
->>   | +--------+ +--v-----+                           +--------+ +--------+  |
->>   | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
->>   | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
->>   | +-----|--+    |                                 +-----|--+             |
->>   | | DMB C  |    +---------------------------------| DMB D  |             |
->>   | +--------+                                      +--------+             |
->>   |                                                                        |
->>   |                           +--------------+                             |
->>   |                           | smc loopback |                             |
->>   +---------------------------+--------------+-----------------------------+
->>
->> - Benchmark Test
->>
->>   * Test environments:
->>        - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
->>        - SMC sndbuf/DMB size 1MB.
->>
->>   * Test object:
->>        - TCP: run on TCP loopback.
->>        - SMC lo: run on SMC loopback-ism.
->>
->> 1. ipc-benchmark (see [3])
->>
->>   - ./<foo> -c 1000000 -s 100
->>
->>                              TCP                  SMC-lo
->> Message
->> rate (msg/s)              79693                  148236(+86.01%)
->>
->> 2. sockperf
->>
->>   - serv: <smc_run> sockperf sr --tcp
->>   - clnt: <smc_run> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
->>
->>                              TCP                  SMC-lo
->> Bandwidth(MBps)         4815.18                 8061.77(+67.42%)
->> Latency(us)               6.176                   3.449(-44.15%)
->>
->> 3. nginx/wrk
->>
->>   - serv: <smc_run> nginx
->>   - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
->>
->>                             TCP                   SMC-lo
->> Requests/s           196555.02                263270.95(+33.94%)
->>
->> 4. redis-benchmark
->>
->>   - serv: <smc_run> redis-server
->>   - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
->>
->>                             TCP                   SMC-lo
->> GET(Requests/s)       88711.47                120048.02(+35.32%)
->> SET(Requests/s)       89465.44                123152.71(+37.65%)
->>
->>
-> 
-> Hi Wen Gu,
-> 
-> I did run the tests again with the v6 and reviewed the patchset. If you decide to address Simons nit feel free to add my:
-> 
-> Reviewed-and-tested-by: Jan Karcher <jaka@linux.ibm.com>
-> 
-> Thanks for your effort and contribution.
-> - J
+Sorry for not including linux-integrity. I added maintainers and lists
+proposed by scripts/get_maintainers.pl for the change which did not touch
+drivers/char/tpm/ though TPM event log APIs are clearly there.
 
-Thank you all for the review and test! I will address Simon's nit and
-collect the Rb tags in the next version.
+The full thread starts from here:
 
-Thanks!
+https://lore.kernel.org/all/20240422112711.362779-1-mikko.rapeli@linaro.org/T/#u
+
+Cheers,
+
+-Mikko
 
