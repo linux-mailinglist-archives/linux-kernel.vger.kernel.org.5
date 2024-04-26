@@ -1,163 +1,288 @@
-Return-Path: <linux-kernel+bounces-159800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DFA8B3441
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:37:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5228B3447
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48BDD1C2100D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:37:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A3951F231E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2D713F450;
-	Fri, 26 Apr 2024 09:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jr9lNuEO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30DF613F434;
+	Fri, 26 Apr 2024 09:38:13 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AD913C9A0
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A3313C9A7;
+	Fri, 26 Apr 2024 09:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714124232; cv=none; b=mPGqQHnkpskVYlZPGWUm7Ev/ABvncmi+p9Rf3Prmk/KeAfyYUI+BcAjsM78U0LON7U6Q6k2hhlY3OaHIW2iBk4SDl6ofK0S53G7cGXn6FZDAamb/XSnorwi8T7oF2aQw0LsieXYRzOOEDNjOAdk6e8d9eyQcoe4iRfUYEN0JdQE=
+	t=1714124292; cv=none; b=rkMLjVytVQ0BO/ToBHhvMCD2QiLASFVFPyzRKr7Pm+WTvzrHvPZALA2Q+q2TfXQiV3/ouCPMfYRIlnkZK0f5uxC1eGJhmISLmJSa6Ca217BQgfYrh0RCKXEYv3sm3jwJQf0BoH65JWxaq7be0bZmMwwa9bYudRbctH9ac12kRJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714124232; c=relaxed/simple;
-	bh=P/GTw1XxjReEuD9Ww1RsUUzrNV6/qF1pdeMu8tj7+48=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LcQB4lcrifv6XQ+RxCjSJ5URGGSACJjqRK+sSvtUPTNXyurDGicHnpvrRJCjGKpX19uV8H/IOs8t/sCMtkL8X0hM0guTaKV+kk6OzQ2rgy0fVdxoOXOog4N1nH/nJk8OFT4DFfwe1RurnoLnwnFJFZNBhu/6K9X0LMmvdjdKcd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jr9lNuEO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0886AC2BD10;
-	Fri, 26 Apr 2024 09:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714124231;
-	bh=P/GTw1XxjReEuD9Ww1RsUUzrNV6/qF1pdeMu8tj7+48=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Jr9lNuEOMS2DqrFPyu5S68MJZ5GqIrU58Lm1iTr7ajshWHlSGu4NSC7S+Wh7qgoLf
-	 nBiDDBAGM7uD1/N1uurBI18fqYwsCxShr/DPNAw27+eZfaWge+whlBUZKmQvoUMUuF
-	 z+/q4AwN0R1eUknJ2+T3+4oEcsQt+Nj5xHII/oA2K9O7fgo069jlMhfgvD2kPfFVDl
-	 sFFOnwBuBm+CsBXL+cQkrIpEA57IadsDMXRoBF3JKF/VggDDu64O02HdINKOrYt8GY
-	 +/q7rvkRZAp/WVrYm/BEAPP+1Z8Spv5lStRB+89Vl8ADJQieJ9Z6RCW1umZXCPlZn2
-	 mphuzlHKnrw5Q==
-Message-ID: <235d9db4-2ca5-4d7a-bd2a-36f98d1880a9@kernel.org>
-Date: Fri, 26 Apr 2024 17:37:07 +0800
+	s=arc-20240116; t=1714124292; c=relaxed/simple;
+	bh=1iMFtZnjk8H0Dg72c9aJ7ZABHqaO+HlPveUZ8X7NXBw=;
+	h=Subject:From:To:CC:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=QuzYdwFChNa0/c4nKsT5Og3ackesYpYej47hgPDxw5pmxPh15GKH3YubFuawso/t0F7f9kRAG1YP/uNIXwLuvnkHb8I2sz5meGfdIo21I2iHr1GvR8u7plq1AmQqS7RN/D82sfW/+nB/HjFBRgspgyZsllPn0byKdgIOqs+dfRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VQncr3VWLzwVGG;
+	Fri, 26 Apr 2024 17:34:52 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 68444140382;
+	Fri, 26 Apr 2024 17:38:05 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 17:38:05 +0800
+Subject: Re: [PATCH net-next v2 09/15] mm: page_frag: reuse MSB of 'size'
+ field for pfmemalloc
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
+References: <20240415131941.51153-1-linyunsheng@huawei.com>
+ <20240415131941.51153-10-linyunsheng@huawei.com>
+ <37d012438d4850c3d7090e784e09088d02a2780c.camel@gmail.com>
+ <8b7361c2-6f45-72e8-5aca-92e8a41a7e5e@huawei.com>
+ <17066b6a4f941eea3ef567767450b311096da22b.camel@gmail.com>
+ <c45fdd75-44be-82a6-8e47-42bbc5ee4795@huawei.com>
+Message-ID: <efd21f1d-8c67-b060-5ad2-0d500fac2ba6@huawei.com>
+Date: Fri, 26 Apr 2024 17:38:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: remove unnecessary block size check
- in init_f2fs_fs()
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240416072108.5819-1-chao@kernel.org>
- <20240416072108.5819-2-chao@kernel.org>
- <CAHJ8P3J4Z7QJ=kpd_Nt+TGX2ZD8HH5YQWmbPsbS7+DeN2NrxyA@mail.gmail.com>
+In-Reply-To: <c45fdd75-44be-82a6-8e47-42bbc5ee4795@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3J4Z7QJ=kpd_Nt+TGX2ZD8HH5YQWmbPsbS7+DeN2NrxyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On 2024/4/16 19:12, Zhiguo Niu wrote:
-> On Tue, Apr 16, 2024 at 3:22 PM Chao Yu <chao@kernel.org> wrote:
+On 2024/4/18 17:39, Yunsheng Lin wrote:
+
+..
+
+> 
+>> combining the pagecnt_bias with the va. I'm wondering if it wouldn't
+>> make more sense to look at putting together the structure something
+>> like:
 >>
->> After commit d7e9a9037de2 ("f2fs: Support Block Size == Page Size"),
->> F2FS_BLKSIZE equals to PAGE_SIZE, remove unnecessary check condition.
+>> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+>> typedef u16 page_frag_bias_t;
+>> #else
+>> typedef u32 page_frag_bias_t;
+>> #endif
 >>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/super.c | 6 ------
->>   1 file changed, 6 deletions(-)
->>
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index 6d1e4fc629e2..32aa6d6fa871 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -4933,12 +4933,6 @@ static int __init init_f2fs_fs(void)
->>   {
->>          int err;
->>
->> -       if (PAGE_SIZE != F2FS_BLKSIZE) {
->> -               printk("F2FS not supported on PAGE_SIZE(%lu) != BLOCK_SIZE(%lu)\n",
->> -                               PAGE_SIZE, F2FS_BLKSIZE);
->> -               return -EINVAL;
->> -       }
->> -
->>          err = init_inodecache();
->>          if (err)
->>                  goto fail;
-> Dear Chao,
+>> struct page_frag_cache {
+>> 	/* page address and offset */
+>> 	void *va;
 > 
-> Can you help modify the following  comment msg together with this patch?
-> They are also related to commit d7e9a9037de2 ("f2fs: Support Block
-> Size == Page Size").
-> If you think there is a more suitable description, please help modify
-> it directly.
+> Generally I am agreed with combining the virtual address with the
+> offset for the reason you mentioned below.
+> 
+>> 	page_frag_bias_t pagecnt_bias;
+>> 	u8 pfmemalloc;
+>> 	u8 page_frag_order;
+>> }
+> 
+> The issue with the 'page_frag_order' I see is that we might need to do
+> a 'PAGE << page_frag_order' to get actual size, and we might also need
+> to do 'size - 1' to get the size_mask if we want to mask out the offset
+> from the 'va'.
+> 
+> For page_frag_order, we need to:
+> size = PAGE << page_frag_order
+> size_mask = size - 1
+> 
+> For size_mask, it seem we only need to do:
+> size = size_mask + 1
+> 
+> And as PAGE_FRAG_CACHE_MAX_SIZE = 32K, which can be fitted into 15 bits
+> if we use size_mask instead of size.
+> 
+> Does it make sense to use below, so that we only need to use bitfield
+> for SIZE < PAGE_FRAG_CACHE_MAX_SIZE in 32 bits system? And 'struct
+> page_frag' is using a similar '(BITS_PER_LONG > 32)' checking trick.
+> 
+> struct page_frag_cache {
+> 	/* page address and offset */
+> 	void *va;
+> 
+> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <= 32)
+> 	u16 pagecnt_bias;
+> 	u16 size_mask:15;
+> 	u16 pfmemalloc:1;
+> #else
+> 	u32 pagecnt_bias;
+> 	u16 size_mask;
+> 	u16 pfmemalloc;
+> #endif
+> };
+> 
 
-Zhiguo,
+After considering a few different layouts for 'struct page_frag_cache',
+it seems the below is more optimized:
 
-I missed to reply this, I guess you can update
-"f2fs: fix some ambiguous comments".
+struct page_frag_cache {
+	/* page address & pfmemalloc & order */
+	void *va;
 
-> thanks！
-> 
-> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> index a357287..241e7b18 100644
-> --- a/include/linux/f2fs_fs.h
-> +++ b/include/linux/f2fs_fs.h
-> @@ -394,7 +394,8 @@ struct f2fs_nat_block {
-> 
->   /*
->    * F2FS uses 4 bytes to represent block address. As a result, supported size of
-> - * disk is 16 TB and it equals to 16 * 1024 * 1024 / 2 segments.
-> + * disk is 16 TB for a 4K page size and 64 TB for a 16K page size and it equals
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <= 32)
+	u16 pagecnt_bias;
+	u16 size;
+#else
+	u32 pagecnt_bias;
+	u32 size;
+#endif
+}
 
-disk is 16 TB for 4K size block and 64 TB for 16K size block and it equals
-to (1 << 32) / 512 segments.
+The lower bits of 'va' is or'ed with the page order & pfmemalloc instead
+of offset or pagecnt_bias, so that we don't have to add more checking
+for handling the problem of not having enough space for offset or
+pagecnt_bias for PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE and 32 bits system.
+And page address & pfmemalloc & order is unchanged for the same page
+in the same 'page_frag_cache' instance, it makes sense to fit them
+together.
 
-#define F2FS_MAX_SEGMENT       		((1 << 32) / 512)
+Also, it seems it is better to replace 'offset' with 'size', which indicates
+the remaining size for the cache in a 'page_frag_cache' instance, and we
+might be able to do a single 'size >= fragsz' checking for the case of cache
+being enough, which should be the fast path if we ensure size is zoro when
+'va' == NULL.
 
-Thanks,
+Something like below:
 
-> + * to 16 * 1024 * 1024 / 2 segments.
->    */
->   #define F2FS_MAX_SEGMENT       ((16 * 1024 * 1024) / 2)
-> 
-> @@ -424,8 +425,10 @@ struct f2fs_sit_block {
->   /*
->    * For segment summary
->    *
-> - * One summary block contains exactly 512 summary entries, which represents
-> - * exactly one segment by default. Not allow to change the basic units.
-> + * One summary block with 4KB size contains exactly 512 summary entries, which
-> + * represents exactly one segment with 2MB size.
-> + * Similarly, in the case of 16k block size, it represents one
-> segment with 8MB size.
-> + * Not allow to change the basic units.
->    *
->    * NOTE: For initializing fields, you must use set_summary
->    *
-> @@ -556,6 +559,7 @@ struct f2fs_summary_block {
-> 
->   /*
->    * space utilization of regular dentry and inline dentry (w/o extra
-> reservation)
-> + * when block size is 4KB.
-> 
-> 
-> 
->> --
->> 2.40.1
->>
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+#define PAGE_FRAG_CACHE_ORDER_MASK	GENMASK(1, 0)
+#define PAGE_FRAG_CACHE_PFMEMALLOC_BIT	BIT(2)
+
+struct page_frag_cache {
+	/* page address & pfmemalloc & order */
+	void *va;
+
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <= 32)
+	u16 pagecnt_bias;
+	u16 size;
+#else
+	u32 pagecnt_bias;
+	u32 size;
+#endif
+};
+
+
+static void *__page_frag_cache_refill(struct page_frag_cache *nc,
+				      unsigned int fragsz, gfp_t gfp_mask,
+				      unsigned int align_mask)
+{
+	gfp_t gfp = gfp_mask;
+	struct page *page;
+	void *va;
+
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+	/* Ensure free_unref_page() can be used to free the page fragment */
+	BUILD_BUG_ON(PAGE_FRAG_CACHE_MAX_ORDER > PAGE_ALLOC_COSTLY_ORDER);
+
+	gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
+		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
+	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
+				PAGE_FRAG_CACHE_MAX_ORDER);
+	if (likely(page)) {
+		nc->size = PAGE_FRAG_CACHE_MAX_SIZE - fragsz;
+		va = page_address(page);
+		nc->va = (void *)((unsigned long)va |
+				  PAGE_FRAG_CACHE_MAX_ORDER |
+				  (page_is_pfmemalloc(page) ?
+				   PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
+		page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
+		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE;
+		return va;
+	}
+#endif
+	page = alloc_pages_node(NUMA_NO_NODE, gfp, 0);
+	if (likely(page)) {
+		nc->size = PAGE_SIZE - fragsz;
+		va = page_address(page);
+		nc->va = (void *)((unsigned long)va |
+				  (page_is_pfmemalloc(page) ?
+				   PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
+		page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
+		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE;
+		return va;
+	}
+
+	nc->va = NULL;
+	nc->size = 0;
+	return NULL;
+}
+
+void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
+				 unsigned int fragsz, gfp_t gfp_mask,
+				 unsigned int align_mask)
+{
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+	unsigned long page_order;
+#endif
+	unsigned long page_size;
+	unsigned long size;
+	struct page *page;
+	void *va;
+
+	size = nc->size & align_mask;
+	va = nc->va;
+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+	page_order = (unsigned long)va & PAGE_FRAG_CACHE_ORDER_MASK;
+	page_size = PAGE_SIZE << page_order;
+#else
+	page_size = PAGE_SIZE;
+#endif
+
+	if (unlikely(fragsz > size)) {
+		if (unlikely(!va))
+			return __page_frag_cache_refill(nc, fragsz, gfp_mask,
+							align_mask);
+
+		/* fragsz is not supposed to be bigger than PAGE_SIZE as we are
+		 * allowing order 3 page allocation to fail easily under low
+		 * memory condition.
+		 */
+		if (WARN_ON_ONCE(fragsz > PAGE_SIZE))
+			return NULL;
+
+		page = virt_to_page(va);
+		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
+			return __page_frag_cache_refill(nc, fragsz, gfp_mask,
+							align_mask);
+
+		if (unlikely((unsigned long)va &
+			     PAGE_FRAG_CACHE_PFMEMALLOC_BIT)) {
+			free_unref_page(page, compound_order(page));
+			return __page_frag_cache_refill(nc, fragsz, gfp_mask,
+							align_mask);
+		}
+
+		/* OK, page count is 0, we can safely set it */
+		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
+
+		/* reset page count bias and offset to start of new frag */
+		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+		size = page_size;
+	}
+
+	va = (void *)((unsigned long)va & PAGE_MASK);
+	va = va + (page_size - size);
+	nc->size = size - fragsz;
+	nc->pagecnt_bias--;
+
+	return va;
+}
+EXPORT_SYMBOL(__page_frag_alloc_va_align);
 
