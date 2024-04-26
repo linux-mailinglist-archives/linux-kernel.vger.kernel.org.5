@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C48E8B3ACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:13:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9338B3ACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D0731C214B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:13:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5331E1F277E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7272416D9DC;
-	Fri, 26 Apr 2024 15:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F50E16F0CD;
+	Fri, 26 Apr 2024 15:10:10 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD8816DEAC
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A359416EC0B
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144207; cv=none; b=nWs39c4P2teDw9rf+J+DlcSwxSDXDISb3BrBMrfm26uAeVnO3rOELjuJaAjKvxXMRT92S70FlKMRg7y4bqN+xXo70mdqob/9WIybEICA3lcze7WZu72wsYsHbYLPJpnwP9EFec8y2DPYWFe2WB4j71Ylksi6yldKy4va4Hgvo0w=
+	t=1714144210; cv=none; b=izPLjwntNaze0TW/iv4voenmj5NJQg0veWbeVqdmvREQmjVAe921dkaJaM6J9ceSBjcpgIWSn9grj8YhwmvmqcxwdAn2tZzr62Xn6jTUG0slEGSYbPr5rGkLpeBujZLy6jdDiGY9DAkYPb7vrsN8O9dq/HyIiLAgJfowXZWpMr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144207; c=relaxed/simple;
-	bh=JB3w90fALHf1e+TEkMMiZKpOwO4/bleEIlZ3LfQUYZQ=;
+	s=arc-20240116; t=1714144210; c=relaxed/simple;
+	bh=fwuE54yTuJ+vdterpl70TBqMp9QNQHFArAwZTmcSjpk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C7l/aVpHAkXeGJvg2TeJHddJbCT0lQsc+XQtq8iZawvRz8IIiNctFCzUulDwflzCOaJ1TD6iOQIexMAFCgz/Cn/E0GcIo4gAWi03DbL8brgVSY2kqwCgbeFD3mYsNyJ6n+NvR7iGC4Z1uYUYBEReb8EY9KZqS5lojtD0c9fFlZI=
+	 MIME-Version; b=K303NmqomQNcIrJ4K7tq2Jm8JrPcunMbflzBZjw9W00zKx+/eUq4xQsu8TXCQsDIMUj/HgRe2Fx9rX3vOXCcVWX7bWrqBhKqsp4uZqWDP80WOfvaoHeG0X5cv5BNfCcP/IXBwVub9kHWNiVoUs9GoDOaNUdqlvU6rpU8GtkKeS0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B3771596;
-	Fri, 26 Apr 2024 08:10:33 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 525CF15A1;
+	Fri, 26 Apr 2024 08:10:36 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 080C93F73F;
-	Fri, 26 Apr 2024 08:10:01 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D10B3F73F;
+	Fri, 26 Apr 2024 08:10:05 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 17/35] x86/resctrl: Move mbm_cfg_mask to struct rdt_resource
-Date: Fri, 26 Apr 2024 16:08:46 +0100
-Message-Id: <20240426150904.8854-17-Dave.Martin@arm.com>
+Subject: [PATCH v2 18/35] x86/resctrl: Allow resctrl_arch_mon_event_config_write() to return an error
+Date: Fri, 26 Apr 2024 16:08:47 +0100
+Message-Id: <20240426150904.8854-18-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -74,116 +74,133 @@ Content-Transfer-Encoding: 8bit
 
 From: James Morse <james.morse@arm.com>
 
-The mbm_cfg_mask field lists the bits that user-space can set when
-configuring an event. This value is output via the last_cmd_status
-file.
+resctrl_arch_mon_event_config_write() writes a bitmap of events provided
+by user-space into the configuration register for the monitors.
 
-Once the filesystem parts of resctrl are moved to live in /fs/, the
-struct rdt_hw_resource is inaccessible to the filesystem code. Because
-this value is output to user-space, it has to be accessible to the
-filesystem code.
+This assumes that all architectures support all the features each bit
+corresponds to.
 
-Move it to struct rdt_resource.
+MPAM can filter monitors based on read, write, or both, but there are
+many more options in the existing bitmap. To allow this interface to
+work for machines with MPAM, allow the architecture helper to return
+an error if an incompatible bitmap is set.
+
+When valid values are provided, there is no change in behaviour. If
+an invalid value is provided, currently it is silently ignored, but
+last_cmd_status is updated. After this change, the parser will stop
+at the first invalid value and return an error to user-space. This
+matches the way changes to the schemata file are made.
 
 Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Dave Martin <Dave.Martin@arm.com>
 
 ---
 
-FYI: Dave Martin (et al.):
+FYI: James Morse (et al.):
 
- * Reword comments to avoid being overly arch-specific.
+ * Can this patch be dropped?
 
-   Is the _content_ of mbm_cfg_mask arch-independent?
+   It looks like the core code will handling checking cfg values
+   gracefully if the arch backend initialises rdt_resource::
+   mbm_cfg_mask to something suitable?
+
+   Is there any reason why we can't detect bad values globally before
+   cross-calling?
 
 Changes in v2:
 
-   (none)
----
- arch/x86/kernel/cpu/resctrl/internal.h | 3 ---
- arch/x86/kernel/cpu/resctrl/monitor.c  | 2 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 5 ++---
- include/linux/resctrl.h                | 3 +++
- 4 files changed, 6 insertions(+), 7 deletions(-)
+ * [Whitespace only] Re-tabbed resctrl_mon_config_info::err field
+   declaration in <linux/resctrl.h> to match the prevailing style.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 46370eafb00f..238b81d3f64a 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -371,8 +371,6 @@ struct msr_param {
-  * @msr_update:		Function pointer to update QOS MSRs
-  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-  * @mbm_width:		Monitor width, to detect and correct for overflow.
-- * @mbm_cfg_mask:	Bandwidth sources that can be tracked when Bandwidth
-- *			Monitoring Event Configuration (BMEC) is supported.
-  * @cdp_enabled:	CDP state of this resource
-  *
-  * Members of this structure are either private to the architecture
-@@ -387,7 +385,6 @@ struct rdt_hw_resource {
- 				 struct rdt_resource *r);
- 	unsigned int		mon_scale;
- 	unsigned int		mbm_width;
--	unsigned int		mbm_cfg_mask;
- 	bool			cdp_enabled;
- };
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 372c35b4f633..403655b49081 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -1068,7 +1068,7 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 
- 		/* Detect list of bandwidth sources that can be tracked */
- 		cpuid_count(0x80000020, 3, &eax, &ebx, &ecx, &edx);
--		hw_res->mbm_cfg_mask = ecx & MAX_EVT_CONFIG_BITS;
-+		r->mbm_cfg_mask = ecx & MAX_EVT_CONFIG_BITS;
- 	}
- 
- 	r->mon_capable = true;
+   No functional change.
+---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 20 ++++++++++++++++----
+ include/linux/resctrl.h                |  1 +
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 590a12df00b3..ef9c30a2eace 100644
+index ef9c30a2eace..38436e4c1741 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1729,7 +1729,6 @@ static void mbm_config_write_domain(struct rdt_resource *r,
+@@ -1683,13 +1683,16 @@ void resctrl_arch_mon_event_config_write(void *info)
+ 	index = mon_event_config_index_get(mon_info->evtid);
+ 	if (index == INVALID_CONFIG_INDEX) {
+ 		pr_warn_once("Invalid event id %d\n", mon_info->evtid);
++		mon_info->err = -EINVAL;
+ 		return;
+ 	}
+ 	wrmsr(MSR_IA32_EVT_CFG_BASE + index, mon_info->mon_config, 0);
++
++	mon_info->err = 0;
+ }
+ 
+-static void mbm_config_write_domain(struct rdt_resource *r,
+-				    struct rdt_domain *d, u32 evtid, u32 val)
++static int mbm_config_write_domain(struct rdt_resource *r,
++				   struct rdt_domain *d, u32 evtid, u32 val)
+ {
+ 	struct resctrl_mon_config_info mon_info = {0};
+ 
+@@ -1702,7 +1705,7 @@ static void mbm_config_write_domain(struct rdt_resource *r,
+ 	mon_info.evtid = evtid;
+ 	mondata_config_read(&mon_info);
+ 	if (mon_info.mon_config == val)
+-		return;
++		return 0;
+ 
+ 	mon_info.mon_config = val;
+ 
+@@ -1714,6 +1717,10 @@ static void mbm_config_write_domain(struct rdt_resource *r,
+ 	 */
+ 	smp_call_function_any(&d->cpu_mask, resctrl_arch_mon_event_config_write,
+ 			      &mon_info, 1);
++	if (mon_info.err) {
++		rdt_last_cmd_puts("Invalid event configuration\n");
++		return mon_info.err;
++	}
+ 
+ 	/*
+ 	 * When an Event Configuration is changed, the bandwidth counters
+@@ -1725,6 +1732,8 @@ static void mbm_config_write_domain(struct rdt_resource *r,
+ 	 * mbm_local and mbm_total counts for all the RMIDs.
+ 	 */
+ 	resctrl_arch_reset_rmid_all(r, d);
++
++	return 0;
+ }
  
  static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
- {
--	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+@@ -1732,6 +1741,7 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
  	char *dom_str = NULL, *id_str;
  	unsigned long dom_id, val;
  	struct rdt_domain *d;
-@@ -1756,9 +1755,9 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
- 	}
++	int err;
  
- 	/* Value from user cannot be more than the supported set of events */
--	if ((val & hw_res->mbm_cfg_mask) != val) {
-+	if ((val & r->mbm_cfg_mask) != val) {
- 		rdt_last_cmd_printf("Invalid event configuration: max valid mask is 0x%02x\n",
--				    hw_res->mbm_cfg_mask);
-+				    r->mbm_cfg_mask);
- 		return -EINVAL;
- 	}
+ 	/* Walking r->domains, ensure it can't race with cpuhp */
+ 	lockdep_assert_cpus_held();
+@@ -1763,7 +1773,9 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
  
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		if (d->id == dom_id) {
+-			mbm_config_write_domain(r, d, evtid, val);
++			err = mbm_config_write_domain(r, d, evtid, val);
++			if (err)
++				return err;
+ 			goto next;
+ 		}
+ 	}
 diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index e8d5f2828415..2f71ae690640 100644
+index 2f71ae690640..63d377e8cb87 100644
 --- a/include/linux/resctrl.h
 +++ b/include/linux/resctrl.h
-@@ -140,6 +140,8 @@ struct resctrl_membw {
-  * @format_str:		Per resource format string to show domain value
-  * @evt_list:		List of monitoring events
-  * @fflags:		flags to choose base and info files
-+ * @mbm_cfg_mask:	Bandwidth sources that can be tracked when Bandwidth
-+ *			Monitoring Event Configuration (BMEC) is supported.
-  * @cdp_capable:	Is the CDP feature available on this resource
-  */
- struct rdt_resource {
-@@ -157,6 +159,7 @@ struct rdt_resource {
- 	const char		*format_str;
- 	struct list_head	evt_list;
- 	unsigned long		fflags;
-+	unsigned int		mbm_cfg_mask;
- 	bool			cdp_capable;
+@@ -200,6 +200,7 @@ struct resctrl_mon_config_info {
+ 	struct rdt_domain	*d;
+ 	u32			evtid;
+ 	u32			mon_config;
++	int			err;
  };
  
+ /**
 -- 
 2.34.1
 
