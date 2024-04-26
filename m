@@ -1,123 +1,203 @@
-Return-Path: <linux-kernel+bounces-159940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D1D58B368A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:33:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79CAD8B368F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:35:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B75681F232CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:33:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089DD1F22E10
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCCA145335;
-	Fri, 26 Apr 2024 11:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A676A145339;
+	Fri, 26 Apr 2024 11:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="HlTQDeFQ"
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ry+sMlxs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D0F13F01A;
-	Fri, 26 Apr 2024 11:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF8A1448DA;
+	Fri, 26 Apr 2024 11:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714131208; cv=none; b=FW3DiN0pwDSSIU59a3zgKweUmohCytMuxVI4LlRBnwRYTm+lnnAcnK9pQuZw2yit+iOMtvA7aO5qAVsaBpqDknuvbMPHmeR2A5jHU9RwB3TFAaVCtjRXlmPFrXiPVkW2babcVw0rSbvjIgJUfJFEUASz6HIfhDivb1nVEAiBEBw=
+	t=1714131342; cv=none; b=hjM9XdHE61JNhsb/66jyTiqaeT9hau6mK6wd5e8OxVFZJEUvfYpeW9wIMBHPZsR4HmZ+Rt3ueazEKREP1UiwGSU1CFSDnrRTQeHCDj0HzyU/oGP18v9czBzle+WbO+M/35mcLyOweJYXSqwOwaTmWEg54cX26okqkgb2Fx+QO/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714131208; c=relaxed/simple;
-	bh=sKbcDZpO43ATbiiPXnkKdb90G7Igiurm3Zwcm7P1scY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OeZmMe5+xNWhz0ep1KvVqKMYw5BIwjcKZp2dJbeDa0YZu6KjzQT/QDC6rbuoHoR1W9u5Sf+tXHFVneJRmUPqwbMUKI5Gav/G1ttiSBA2Ml4cODE+MqlB0Zd6x5h9t2OWdOQBnHPxt3vLbx/NxXwPbOHNsnczoKhf9mwY7LwyZBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=HlTQDeFQ; arc=none smtp.client-ip=99.78.197.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1714131207; x=1745667207;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sKbcDZpO43ATbiiPXnkKdb90G7Igiurm3Zwcm7P1scY=;
-  b=HlTQDeFQ2Onym0s7Ld6OJnixFJt8KvyIUX7bZN46U3vwBY4kSiWtUxdq
-   aFYoVUs+LEm987iNTiM8XMZkUcd/8ApyjyWX5lVpHDATfGllF0XEfsIiv
-   7wCs7d4wfaYqqN0mJtjila2MDvjgeXOxWv4CzxyQi5saCSOUHMWao9Kt3
-   g=;
-X-IronPort-AV: E=Sophos;i="6.07,232,1708387200"; 
-   d="scan'208";a="290945146"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 11:33:26 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:51432]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.16.217:2525] with esmtp (Farcaster)
- id e7b84c28-150d-4661-b2a4-d7d05a6498ed; Fri, 26 Apr 2024 11:33:25 +0000 (UTC)
-X-Farcaster-Flow-ID: e7b84c28-150d-4661-b2a4-d7d05a6498ed
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 26 Apr 2024 11:33:25 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 26 Apr
- 2024 11:33:21 +0000
-Message-ID: <b819717c-74ea-4556-8577-ccd90e9199e9@amazon.com>
-Date: Fri, 26 Apr 2024 13:33:19 +0200
+	s=arc-20240116; t=1714131342; c=relaxed/simple;
+	bh=/QQwxfaRpu9LMwD7lIaSpN/8sAgx3OeT00gXgYnvfNw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BD3gbOU5S6lcaXy5BtZpBBP8iSOZ00Bs4+Smxc9hF2L5ZNeWbC+irVBLywO3vqX64iX870U935q/YhB8RYKNpgEo2TUQVAS/p5M6V5dt40jY7htfTvP0T+KXaie4wUQvN5XHJEm1RlQ01wa1KJgzaILmEfGS+15bDZOA5s/yQ1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ry+sMlxs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8607C113CD;
+	Fri, 26 Apr 2024 11:35:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714131342;
+	bh=/QQwxfaRpu9LMwD7lIaSpN/8sAgx3OeT00gXgYnvfNw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ry+sMlxscR2Rbaic+gim6Q5CbqsWmHIZo8+DmPxKArLoPWCBi6VHdWwja6oLjxLeP
+	 SCLaMrCCtMJvgOPZ+qT3YqysiXWkV4dc0wKUTcmNkIXbiycAMqBm46fFkfXVNFWbSZ
+	 afdnMQ4ctbgkw2DnVJAHTnAkzpXY/RMP9zn3wm9vL03OLzan8y0LWytHXUIkmZbWUR
+	 9bCIknDkxwWkYpkOSfnl80TuiwhgLMqheWT6M/NsBlu7HSHOUPtqv5WzlvWhLjugAE
+	 qME9g+38bVrhZNfE+dxEnJbIee46bATBztHTP8GpklJ1vRmhW2EuZOgPm67tQ3z8+6
+	 zYfY/4oQOhW0w==
+Date: Fri, 26 Apr 2024 13:35:39 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Christian Loehle <christian.loehle@arm.com>,
+	Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com,
+	feng.tang@intel.com, fengwei.yin@intel.com,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	linux-pm@vger.kernel.org
+Subject: Re: [linus:master] [timers] 7ee9887703: stress-ng.uprobe.ops_per_sec
+ -17.1% regression
+Message-ID: <ZiuRiwOZ1eMOZN5J@pavilion.home>
+References: <87zfth3l6y.fsf@somnus>
+ <9272d284-ec2c-4e35-be90-c8852278b648@arm.com>
+ <87h6foig4s.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] Re: [PATCH] Revert "vmgenid: emit uevent when
- VMGENID updates"
-To: Lennart Poettering <mzxreary@0pointer.de>, "Jason A. Donenfeld"
-	<Jason@zx2c4.com>
-CC: <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, Linus Torvalds
-	<torvalds@linux-foundation.org>, Babis Chalios <bchalios@amazon.es>,
-	"Theodore Ts'o" <tytso@mit.edu>, "Cali, Marco" <xmarcalx@amazon.co.uk>, Arnd
- Bergmann <arnd@arndb.de>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"Christian Brauner" <brauner@kernel.org>, <linux@leemhuis.info>,
-	<regressions@lists.linux.dev>
-References: <20240418114814.24601-1-Jason@zx2c4.com>
- <e09ce9fd-14cb-47aa-a22d-d295e466fbb4@amazon.com>
- <CAHmME9qKFraYWmzD9zKCd4oaMg6FyQGP5pL9bzZP4QuqV1O_Qw@mail.gmail.com>
- <ZieoRxn-On0gD-H2@gardel-login>
-Content-Language: en-US
-From: Alexander Graf <graf@amazon.com>
-In-Reply-To: <ZieoRxn-On0gD-H2@gardel-login>
-X-ClientProxiedBy: EX19D031UWC003.ant.amazon.com (10.13.139.252) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h6foig4s.fsf@somnus>
 
-Ck9uIDIzLjA0LjI0IDE0OjIzLCBMZW5uYXJ0IFBvZXR0ZXJpbmcgd3JvdGU6Cj4gT24gRGksIDIz
-LjA0LjI0IDAzOjIxLCBKYXNvbiBBLiBEb25lbmZlbGQgKEphc29uQHp4MmM0LmNvbSkgd3JvdGU6
-Cj4KPiBKYXNvbiEKPgo+IENhbiB5b3UgcGxlYXNlIGV4cGxhaW4gdG8gbWUgd2hhdCB0aGUgcHJl
-Y2lzZSBwcm9ibGVtIGlzIHdpdGggdGhlCj4gdWV2ZW50PyBJdCBkb2Vzbid0IGxlYWsgYW55IGlu
-Zm9ybWF0aW9uIGFib3V0IHRoZSBhY3R1YWwgdm1nZW5pZCwgaXQKPiBqdXN0IGxldHMgdXNlcnNw
-YWNlIGtub3cgdGhhdCB0aGUgbWFjaGluZSB3YXMgY2xvbmVkLAo+IGJhc2ljYWxseS4gV2hhdCdz
-IHRoZSBwcm9ibGVtIHdpdGggdGhhdD8gSSdkIHJlYWxseSBsaWtlIHRvCj4gdW5kZXJzdGFuZD8K
-Pgo+IFRoZXJlIGFyZSBtYW55IHVzZWNhc2VzIGZvciB0aGlzIGluIHRoZSBWTSB3b3JsZCwgZm9y
-IGV4YW1wbGUgd2UnZAo+IGxpa2UgdG8gaG9vayB0aGluZ3MgdXAgc28gdGhhdCB2YXJpb3VzIHVz
-ZXJzcGFjZSBtYW5hZ2VkIGNvbmNlcHRzLAo+IHN1Y2ggYXMgREhDUCBsZWFzZXMsIE1BQyBhZGRy
-ZXNzZXMgYXJlIGF1dG9tYXRpY2FsbHkgcmVmcmVzaGVkLgo+Cj4gVGhpcyBoYXMgbm8gcmVsYXRp
-b25zaGlwIHRvIFJOR3Mgb3IgYW55dGhpbmcgbGlrZSB0aGlzLCBpdCdzIGp1c3QgYW4KPiBldmVu
-dCB3ZSBjYW4gaGFuZGxlIGluIHVzZXJzcGFjZSB0byB0cmlnZ2VyIGFkZHJlc3MgcmVmcmVzaGVz
-IGxpa2UKPiB0aGlzLgo+Cj4gSGVuY2UsIHdoeSBpcyB0aGUgcmV2ZXJ0IG5lY2Vzc2FyeT8gVGhp
-cyB3YXMgYWxyZWFkeSBpbiBhIHJlbGVhc2VkCj4ga2VybmVsLCBhbmQgd2UgaGF2ZSBzdGFydGVk
-IHdvcmsgb24gbWFraW5nIHVzZSBvZiB0aGlzIGluIHN5c3RlbWQsIGFuZAo+IGFmYWljcyB0aGlz
-IGRvZXMgbm90IGNvbXByb21pc2UgdGhlIGtlcm5lbCBSTkcgaW4gZXZlbiB0aGUgcmVtb3Rlc3Qg
-b2YKPiB3YXlzLCBoZW5jZSB3aHkgaXMgYSByZXZlcnQgbmVjZXNzYXJ5PyBGcm9tIG15IHVzZXJz
-YWNlIHBlcnNwZWN0aXZlCj4gaXQncyBqdXN0IHZlcnkgdmVyeSBzYWQsIHRoYXQgdGhpcyBzaW1w
-bGUsIHRyaXZpYWwgaW50ZXJmYWNlIHdlIHdhbnRlZAo+IHRvIHVzZSwgdGhhdCB3YXMgaW4gYSBz
-dGFibGUga2VybmVsIGlzIG5vdyBnb25lIGFnYWluLgo+Cj4gQ2FuIHlvdSBleHBsYWluIHdoYXQg
-dGhlIHByb2JsZW0gd2l0aCB0aGlzIHNpbmdsZS1saW5lIHRyaXZpYWwKPiBpbnRlcmZhY2UgaXM/
-IEkgcmVhbGx5IHdvdWxkIGxpa2UgdG8gdW5kZXJzdGFuZCEKCgpKYXNvbiwgcGluZz8KCklmIEkg
-ZG9uJ3Qgc2VlIHRlY2huaWNhbCByZWFzb25pbmcgZnJvbSB5b3UgaGVyZSwgSSB3aWxsIGFzc3Vt
-ZSB0aGF0IHlvdSAKYWdyZWUgd2l0aCBMZW5uYXJ0IGFuZCBteSBwb2ludHMgb2Ygdmlld3MgYW5k
-IHNlbmQgYSByZXZlcnQgb2YgeW91ciAKcmV2ZXJ0IHNob3J0bHkgdG8gZW5zdXJlIHN5c3RlbWQg
-aGFzIGl0cyB1ZXZlbnQgc3RpbGwgaW4gNi45LgoKCkFsZXgKCgoKCkFtYXpvbiBEZXZlbG9wbWVu
-dCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFl
-ZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJh
-Z2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6
-OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
+Le Fri, Apr 26, 2024 at 12:15:47PM +0200, Anna-Maria Behnsen a écrit :
+> Christian Loehle <christian.loehle@arm.com> writes:
+> 
+> > On 25/04/2024 09:23, Anna-Maria Behnsen wrote:
+> >> Hi,
+> >> 
+> >> (adding cpuidle/power people to cc-list)
+> >> 
+> >> Oliver Sang <oliver.sang@intel.com> writes:
+> >> 
+> >>> hi, Frederic Weisbecker,
+> >>>
+> >>> On Tue, Apr 02, 2024 at 12:46:15AM +0200, Frederic Weisbecker wrote:
+> >>>> Le Wed, Mar 27, 2024 at 04:39:17PM +0800, kernel test robot a écrit :
+> >>>>>
+> >>>>>
+> >>>>> Hello,
+> >>>>>
+> >>>>>
+> >>>>> we reported
+> >>>>> "[tip:timers/core] [timers]  7ee9887703:  netperf.Throughput_Mbps -1.2% regression"
+> >>>>> in
+> >>>>> https://lore.kernel.org/all/202403011511.24defbbd-oliver.sang@intel.com/
+> >>>>>
+> >>>>> now we noticed this commit is in mainline and we captured further results.
+> >>>>>
+> >>>>> still include netperf results for complete. below details FYI.
+> >>>>>
+> >>>>>
+> >>>>> kernel test robot noticed a -17.1% regression of stress-ng.uprobe.ops_per_sec
+> >>>>> on:
+> >>>>
+> >>>> The good news is that I can reproduce.
+> >>>> It has made me spot something already:
+> >>>>
+> >>>>    https://lore.kernel.org/lkml/ZgsynV536q1L17IS@pavilion.home/T/#m28c37a943fdbcbadf0332cf9c32c350c74c403b0
+> >>>>
+> >>>> But that's not enough to fix the regression. Investigation continues...
+> >>>
+> >>> Thanks a lot for information! if you want us test any patch, please let us know.
+> >> 
+> >> Oliver, I would be happy to see, whether the patch at the end of the
+> >> message restores the original behaviour also in your test setup. I
+> >> applied it on 6.9-rc4. This patch is not a fix - it is just a pointer to
+> >> the kernel path, that might cause the regression. I know, it is
+> >> probable, that a warning in tick_sched is triggered. This happens when
+> >> the first timer is alredy in the past. I didn't add an extra check when
+> >> creating the 'defacto' timer thingy. But existing code handles this
+> >> problem already properly. So the warning could be ignored here.
+> >> 
+> >> For the cpuidle people, let me explain what I oberserved, my resulting
+> >> assumption and my request for help:
+> >> 
+> >> cpuidle governors use expected sleep length values (beside other data)
+> >> to decide which idle state would be good to enter. The expected sleep
+> >> length takes the first queued timer of the CPU into account and is
+> >> provided by tick_nohz_get_sleep_length(). With the timer pull model in
+> >> place the non pinned timers are not taken into account when there are
+> >> other CPUs up and running which could handle those timers. This could
+> >> lead to increased sleep length values. On my system during the stress-ng
+> >> uprobes test it was in the range of maximum 100us without the patch set
+> >> and with the patch set the maximum was in a range of 200sec. This is
+> >> intended behaviour, because timers which could expire on any CPU should
+> >> expire on the CPU which is busy anyway and the non busy CPU should be
+> >> able to go idle.
+> >> 
+> >> Those increased sleep length values were the only anomalies I could find
+> >> in the traces with the regression.
+> >> 
+> >> I created the patch below which simply fakes the sleep length values
+> >> that they take all timers of the CPU into account (also the non
+> >> pinned). This patch kind of restores the behavoir of
+> >> tick_nohz_get_sleep_length() before the change but still with the timer
+> >> pull model in place.
+> >> 
+> >> With the patch the regression was gone, at least on my system (using
+> >> cpuidle governor menu but also teo).
+> >
+> > I assume the regression is reproducible for both?
+> > (The original report is using menu for anyone else looking at this)
+> 
+> Yes. (at least in my setup)
+> 
+> >> 
+> >> So my assumption here is, that cpuidle governors assume that a deeper
+> >> idle state could be choosen and selecting the deeper idle state makes an
+> >> overhead when returning from idle. But I have to notice here, that I'm
+> >> still not familiar with cpuidle internals... So I would be happy about
+> >> some hints how I can debug/trace cpuidle internals to falsify or verify
+> >> this assumption.
+> >
+> > I'd say that sounds correct.
+> > Comparing cpu_idle_miss would be interesting for both.
+> 
+> 	total nr	above		below
+> "bad":	2518343		2329072		189271
+> "good":	3016019         2960004		56015
+> 
+> -> this is the result of just a single run using:
+> 
+>   perf script record -a -e power:cpu_idle_miss /home/anna-maria/src/stress-ng/stress-ng --timeout 60  --times --verify --metrics --no-rand-seed --uprobe 112
+> 
+> 
+> 
+> But beside of this, when running this stress-ng test, the cpus seems to
+> be mostly idle (top tells me). So the question here fore me is, what is
+> the stress in this test and what should the numbers tell we are
+> comparing? It is not totally clear to me even after looking at the code.
 
+I can at least help a bit with that since I stared at stress-uprobe for a while.
+
+A single stress-uprobe thread creates a uprobe trace event to fire everytime
+getpid() is called. Then it does a lot of getpid() calls, which creates uprobes
+events in ftrace and then it does a loop reading /sys/kernel/tracing/trace_pipe
+until the end.
+
+The bogomips measured is the total number of uprobes trace events read from
+trace_pipe.
+
+And since there are 112 threads doing all this at the same time, there is
+probably a lot of contention on trace_pipe rwsem: trace_access_lock() ->
+down_write(). Although what I observed with perf was more about mutex contention
+so there could be another lock somewhere I missed...
+
+Christian may correct me if I'm wrong...
+
+Thanks.
+
+> Thanks,
+> 
+> 	Anna-Maria
+> 
 
