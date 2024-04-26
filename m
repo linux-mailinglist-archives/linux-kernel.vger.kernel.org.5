@@ -1,292 +1,139 @@
-Return-Path: <linux-kernel+bounces-159675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79BF8B31FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:07:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA318B3205
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E3A9284F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:07:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EF7A1C22214
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B717A13C90A;
-	Fri, 26 Apr 2024 08:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8351013C91E;
+	Fri, 26 Apr 2024 08:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iUu67gYV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6C742A9B
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jze/LJ6Q"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B33A13A3E7;
+	Fri, 26 Apr 2024 08:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714118831; cv=none; b=OFP4tXDcntgWrjQDuW8p+1c1VEhPd01OGLEFqIn/Xupfr1mLGj6XYcVy+vy9ZajYq7rJoYvZlCyJiZ32GHTOV/To6GCEULL/D7chichVbEQjK3Diz/KIaWiRiODClZbgq5N3+e8og+T8HeLYHSg0Ikge2cw6pHmoFQv7ViPHYIM=
+	t=1714118968; cv=none; b=QfBfk9D7KzZOUwjD+BsObtvi4RwCihGnEPAmOo0NILkjDI07n6p9Z7cDWQ1aoBJMVzJY04VUKp6BOW33eNAMC0x/7gkUraXjHstGCiq0pEff5Vo2UNnyUJ5orjVqi6x7Q1xXJgCXlQ6mXDDAOBWInRpXLXXufuJPt7g5zlV+Feg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714118831; c=relaxed/simple;
-	bh=TGAcZesai+U0xVAWvA7J/MAJQ7c0rregms0Ggpsl5S0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Q3y7k5W+DML/T4GdKeOJtKo9zXhqLR98glDGKSIP2jmKiFy1ABEekdMPFlJTQbOr4HkJLH8n+UBSt7YBpmwk0PIMGy3VGQUEiCkxDNmt7OetilIjjtz/Pgo03rdQrHE5840mogEEF67ohTlvuDqQIpBmYYWR+h7tTFVypFTnGlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iUu67gYV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714118829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TGAcZesai+U0xVAWvA7J/MAJQ7c0rregms0Ggpsl5S0=;
-	b=iUu67gYVsOfcyjG+kN3vXsAneSSnXQkTVp9hfFTqttetZvbqD2FJIP0w/pGLoKykusMSgJ
-	lZm92ZXTg09PD58PrG7IzWi32fqknR0KAfpDVvjz1+KJl88UGqzI+pF6zB0G+s0yE4a+F8
-	No+6drArGznBHC5gFVATD0FULwLFf0Y=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378--I1e8NbVMcym4a1Ad3exWA-1; Fri, 26 Apr 2024 04:07:07 -0400
-X-MC-Unique: -I1e8NbVMcym4a1Ad3exWA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4379bbdc9b4so6614121cf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:07:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714118827; x=1714723627;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TGAcZesai+U0xVAWvA7J/MAJQ7c0rregms0Ggpsl5S0=;
-        b=SjTVEb3NTS5R5zbyp/nnB63dCn0zOko1ibQyDo2W0b22Phwzo/V+wg9JWFq0Q63/8k
-         /Ira1SwjCwUMgmGxDmGw0VOVYCV/qbcHcl3YNu1y50qDC0nxW8XqPJEC+hS8bq3Gc2dc
-         4lbZuV1J5HLByg4f1EKVzFopeBL5KariKaBJ89M0hnvtwLE4gPYBh0+92eiQTq0VnZay
-         u8odDoPIc/PeLcoxgQBlS3X3BnCOISy2uEHqqkseM+fYe0xAWHYEVfZ5PFZk8tQSFSPs
-         JCAzgnBqH9qE2oMHAmQ86KNdPKol8lOPKFsFMc9vSgZRiXVhu3iO8fKbcXnRdgbhd2kN
-         YACQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWM3GMA/q1j+2hN8MrsF7Hru/6QM5zRjnuUpwmbDTHcODRlmQnP+0TwuScctMtFBXMBTILEwfC7ST7vk3CkyEWeU6J3Ytb/HY9IFc0t
-X-Gm-Message-State: AOJu0YzHTegh4+7mRMTZNmDZG+MMyajMJW3sLGiThyoXdsEheB+nLeZ8
-	A3NBSDPSEDO0BPP6Wk69Kb1mheQ8h8wvvg985MbKLLkvV/AhxkSHeD4N1EC+fBB8FuNfOu1ogTI
-	GH0WtktD9EzuGQ6RrAzsfRRNnTf0nuMuBjBjK2p4j7WTVR8ofJsWR7KC2AO64Fg==
-X-Received: by 2002:a05:6214:4008:b0:6a0:b2e4:583c with SMTP id kd8-20020a056214400800b006a0b2e4583cmr268841qvb.3.1714118826879;
-        Fri, 26 Apr 2024 01:07:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH9/G3aBbIJJGde1rRzmHIwatW3ktBZ39Vo5CZV6c+UaHMj1uKk0ppHJzc4RWsj3GbzINlW+w==
-X-Received: by 2002:a05:6214:4008:b0:6a0:b2e4:583c with SMTP id kd8-20020a056214400800b006a0b2e4583cmr268820qvb.3.1714118826480;
-        Fri, 26 Apr 2024 01:07:06 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id y18-20020a0c9a92000000b0069f77a0079fsm7761670qvd.34.2024.04.26.01.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 01:07:06 -0700 (PDT)
-Message-ID: <77ee27e2f155abd340b166e2856181577fdf08cc.camel@redhat.com>
-Subject: Re: [PATCH v6 00/10] Make PCI's devres API more consistent
-From: Philipp Stanner <pstanner@redhat.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Bjorn Helgaas <bhelgaas@google.com>, Sam
- Ravnborg <sam@ravnborg.org>, dakr@redhat.com, 
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- linux-pci@vger.kernel.org
-Date: Fri, 26 Apr 2024 10:07:02 +0200
-In-Reply-To: <20240424201229.GA503230@bhelgaas>
-References: <20240424201229.GA503230@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1714118968; c=relaxed/simple;
+	bh=dqexjYVG/TRkkiRk3X4lAKrAzhWMuPT98yCFL7d1i0M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GwrE+JA1ycyehYPnrErsWDDA4nZ6lLn5I+hvs39ghg2aVKuWAmYVhixynAdCPbg2zSo0xILRiBzfb5hUr3F12C2L9ichZE5cY5fWvmv57VPUUxYNBzfQq00spjIBWpDVU7gAx7PRBLZDbAijOPV3jpKfx8OnQKwFJF6srjQkIzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=jze/LJ6Q; arc=none smtp.client-ip=45.254.50.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4ZX3C
+	2yV/g45GL3DnetD0/tBcmwuj74la9gUgdxLngs=; b=jze/LJ6Q9A3vEKrrQxIoU
+	gW/j8DkkC2mduhZzYHZ4zR1iLvOsk4MYU3CHKzTk27uMZU3GQifvRn50T3Hvjirn
+	r8SPUU+89foHJnloA7zNko9HpfMZSWfCUl9ls061xJ+WncdVxhPSuglyrBWJ2Ix6
+	eWyeiSvEtu3zvEdoIpbtGA=
+Received: from localhost.localdomain (unknown [112.97.48.208])
+	by gzga-smtp-mta-g0-4 (Coremail) with SMTP id _____wDnPprJYCtmjTm8CQ--.11148S2;
+	Fri, 26 Apr 2024 16:07:39 +0800 (CST)
+From: Slark Xiao <slark_xiao@163.com>
+To: loic.poulain@linaro.org,
+	ryazanov.s.a@gmail.com,
+	johannes@sipsolutions.net
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Slark Xiao <slark_xiao@163.com>
+Subject: [PATCH net] net: wwan: Add net device name for error message print
+Date: Fri, 26 Apr 2024 16:07:33 +0800
+Message-Id: <20240426080733.819633-1-slark_xiao@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnPprJYCtmjTm8CQ--.11148S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXry5KFW7XFyrCr15KF1ftFb_yoW5AF4DpF
+	W7K3sxZr1UJay7X3WUJrWkZFWYywn5ta47Kry2v3WSvF1ayrWUWa4fJF95uw43ta1rAr17
+	tF4S9anxW3ZrG3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piH5l8UUUUU=
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiowvLZGVODFttogABs1
 
-On Wed, 2024-04-24 at 15:12 -0500, Bjorn Helgaas wrote:
-> On Mon, Apr 08, 2024 at 10:44:12AM +0200, Philipp Stanner wrote:
-> > ...
-> > PCI's devres API suffers several weaknesses:
-> >=20
-> > 1. There are functions prefixed with pcim_. Those are always
-> > managed
-> > =C2=A0=C2=A0 counterparts to never-managed functions prefixed with pci_=
- =E2=80=93 or
-> > so one
-> > =C2=A0=C2=A0 would like to think. There are some apparently unmanaged
-> > functions
-> > =C2=A0=C2=A0 (all region-request / release functions, and pci_intx()) w=
-hich
-> > =C2=A0=C2=A0 suddenly become managed once the user has initialized the =
-device
-> > with
-> > =C2=A0=C2=A0 pcim_enable_device() instead of pci_enable_device(). This
-> > "sometimes
-> > =C2=A0=C2=A0 yes, sometimes no" nature of those functions is confusing =
-and
-> > =C2=A0=C2=A0 therefore bug-provoking. In fact, it has already caused a =
-bug in
-> > DRM.
-> > =C2=A0=C2=A0 The last patch in this series fixes that bug.
-> > 2. iomappings: Instead of giving each mapping its own callback, the
-> > =C2=A0=C2=A0 existing API uses a statically allocated struct tracking o=
-ne
-> > mapping
-> > =C2=A0=C2=A0 per bar. This is not extensible. Especially, you can't cre=
-ate
-> > =C2=A0=C2=A0 _ranged_ managed mappings that way, which many drivers wan=
-t.
-> > 3. Managed request functions only exist as "plural versions" with a
-> > =C2=A0=C2=A0 bit-mask as a parameter. That's quite over-engineered
-> > considering
-> > =C2=A0=C2=A0 that each user only ever mapps one, maybe two bars.
-> >=20
-> > This series:
-> > - add a set of new "singular" devres functions that use devres the
-> > way
-> > =C2=A0 its intended, with one callback per resource.
-> > - deprecates the existing iomap-table mechanism.
-> > - deprecates the hybrid nature of pci_ functions.
-> > - preserves backwards compatibility so that drivers using the
-> > existing
-> > =C2=A0 API won't notice any changes.
-> > - adds documentation, especially some warning users about the
-> > =C2=A0 complicated nature of PCI's devres.
->=20
-> There's a lot of good work here; thanks for working on it.
+In my local, I got an error print in dmesg like below:
+"sequence number glitch prev=487 curr=0"
+After checking, it belongs to mhi_wwan_mbim.c. Refer to the usage
+of this API in other files, I think we should add net device name
+print before message context.
 
-Thanks!
-Good to get some more feedback from you
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
+---
+ drivers/net/wwan/mhi_wwan_mbim.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
->=20
-> > Philipp Stanner (10):
-> > =C2=A0 PCI: Add new set of devres functions
->=20
-> This first patch adds some infrastructure and several new exported
-> interfaces:
->=20
-> =C2=A0 void __iomem *pcim_iomap_region(struct pci_dev *pdev, int bar,
-> const char *name)
-> =C2=A0 void pcim_iounmap_region(struct pci_dev *pdev, int bar)
-> =C2=A0 int pcim_request_region(struct pci_dev *pdev, int bar, const char
-> *name)
-> =C2=A0 void pcim_release_region(struct pci_dev *pdev, int bar)
-> =C2=A0 void __iomem *pcim_iomap_range(struct pci_dev *pdev, int bar,
-> =C2=A0 void __iomem *pcim_iomap_region_range(struct pci_dev *pdev, int
-> bar,
-> =C2=A0 void pcim_iounmap_region_range(struct pci_dev *pdev, int bar,
->=20
-> > =C2=A0 PCI: Deprecate iomap-table functions
->=20
-> This adds a little bit of infrastructure (add/remove to
-> legacy_table),
-> reimplements these existing interfaces:
->=20
-> =C2=A0 void __iomem *pcim_iomap(struct pci_dev *pdev, int bar, unsigned
-> long maxlen)
-> =C2=A0 void pcim_iounmap(struct pci_dev *pdev, void __iomem *addr)
-> =C2=A0 int pcim_iomap_regions(struct pci_dev *pdev, int mask, const char
-> *name)
-> =C2=A0 int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
-> =C2=A0 void pcim_iounmap_regions(struct pci_dev *pdev, int mask)
->=20
-> and adds a couple new exported interfaces:
->=20
-> =C2=A0 void pcim_release_all_regions(struct pci_dev *pdev)
-> =C2=A0 int pcim_request_all_regions(struct pci_dev *pdev, const char
-> *name)
->=20
-> There's a lot going on in these two patches, so they're hard to
-> review.=C2=A0 I think it would be easier if you could do the fixes to
-> existing interfaces first,
-
-I agree that the patches can be further split into smaller chunks to
-make them more atomic and easier to review. I can do that.
-
-BUT I'd need some more details about what you mean by "do the fixes
-first" =E2=80=93 which fixes?
-The later patches at least in part rely on the new better functions
-being available.
-
-
-> followed by adding new things, maybe
-> something like separate patches that:
->=20
-> =C2=A0 - Add pcim_addr_devres_alloc(), pcim_addr_devres_free(),
-> =C2=A0=C2=A0=C2=A0 pcim_addr_devres_clear().
->=20
-> =C2=A0 - Add pcim_add_mapping_to_legacy_table(),
-> =C2=A0=C2=A0=C2=A0 pcim_remove_mapping_from_legacy_table(),
-> =C2=A0=C2=A0=C2=A0 pcim_remove_bar_from_legacy_table().
->=20
-> =C2=A0 - Reimplement pcim_iomap(), pcim_iomap_regions(), pcim_iounmap().
->=20
-> =C2=A0 - Add new interfaces like pcim_iomap_region(),
-> =C2=A0=C2=A0=C2=A0 pcim_request_region(), etc.
->=20
-> =C2=A0=C2=A0=C2=A0 AFAICS, except for pcim_iomap_range() (used by vbox), =
-these new
-> =C2=A0=C2=A0=C2=A0 interfaces have no users outside drivers/pci, so ... w=
-e might
-> =C2=A0=C2=A0=C2=A0 defer adding them, or at least defer exposing them via
-> =C2=A0=C2=A0=C2=A0 include/linux/pci.h, until we have users for them.
-
-Dropping (the export of) functions like pcim_request_region_range() or
-pcim_request_all_regions() is not a problem.
-
-What I quite fundamentally have to disagree with, however, is not to
-export the functions=C2=A0
-
- * pcim_request_region()
- * pcim_iomap_region()
-
-the main point of this series is to deprecate that hybrid nature of
-those existing pci_* functions. You can only deprecate something when
-you provide users with new, better alternatives.
-
-Not exporting them would inevitably tempt driver programmers into using
-pcim_enable_device() + pci_*() as they did so far, which caused at
-least that leak in vboxvideo and another one that my plan was to
-address after we got this merged.
-
-Once we have those new pcim_ functions exported, we could successively
-port the older drivers which use the aforementioned combination with
-pcim_enable_device().
-Then we could drop the hybrid nature of pci_ functions once and for all
-and would end up with a consistent, clean API.
-
-I intended to do that over the months after we merged this.
-
-So I'd suggest let me cancel the export of the "luxury functions" and
-let's keep the two listed above exported
-
-
-P.
-
->=20
-> > =C2=A0 PCI: Warn users about complicated devres nature
-> > =C2=A0 PCI: Make devres region requests consistent
-> > =C2=A0 PCI: Move dev-enabled status bit to struct pci_dev
-> > =C2=A0 PCI: Move pinned status bit to struct pci_dev
-> > =C2=A0 PCI: Give pcim_set_mwi() its own devres callback
-> > =C2=A0 PCI: Give pci(m)_intx its own devres callback
-> > =C2=A0 PCI: Remove legacy pcim_release()
-> > =C2=A0 drm/vboxvideo: fix mapping leaks
-> >=20
-> > =C2=A0drivers/gpu/drm/vboxvideo/vbox_main.c |=C2=A0=C2=A0 20 +-
-> > =C2=A0drivers/pci/devres.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1011
-> > +++++++++++++++++++++----
-> > =C2=A0drivers/pci/iomap.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0 18 +
-> > =C2=A0drivers/pci/pci.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
-=C2=A0 123 ++-
-> > =C2=A0drivers/pci/pci.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
-=C2=A0=C2=A0 21 +-
-> > =C2=A0include/linux/pci.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0 18 +-
-> > =C2=A06 files changed, 999 insertions(+), 212 deletions(-)
-> >=20
-> > --=20
-> > 2.44.0
-> >=20
->=20
+diff --git a/drivers/net/wwan/mhi_wwan_mbim.c b/drivers/net/wwan/mhi_wwan_mbim.c
+index 3f72ae943b29..6cefee25efc4 100644
+--- a/drivers/net/wwan/mhi_wwan_mbim.c
++++ b/drivers/net/wwan/mhi_wwan_mbim.c
+@@ -186,14 +186,14 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 
+ 	if (skb->len < sizeof(struct usb_cdc_ncm_nth16) +
+ 			sizeof(struct usb_cdc_ncm_ndp16)) {
+-		net_err_ratelimited("frame too short\n");
++		net_err_ratelimited("mbim: frame too short\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	nth16 = (struct usb_cdc_ncm_nth16 *)skb->data;
+ 
+ 	if (nth16->dwSignature != cpu_to_le32(USB_CDC_NCM_NTH16_SIGN)) {
+-		net_err_ratelimited("invalid NTH16 signature <%#010x>\n",
++		net_err_ratelimited("mbim: invalid NTH16 signature <%#010x>\n",
+ 				    le32_to_cpu(nth16->dwSignature));
+ 		return -EINVAL;
+ 	}
+@@ -201,7 +201,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 	/* No limit on the block length, except the size of the data pkt */
+ 	len = le16_to_cpu(nth16->wBlockLength);
+ 	if (len > skb->len) {
+-		net_err_ratelimited("NTB does not fit into the skb %u/%u\n",
++		net_err_ratelimited("mbim: NTB does not fit into the skb %u/%u\n",
+ 				    len, skb->len);
+ 		return -EINVAL;
+ 	}
+@@ -209,7 +209,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
+ 	if (mbim->rx_seq + 1 != le16_to_cpu(nth16->wSequence) &&
+ 	    (mbim->rx_seq || le16_to_cpu(nth16->wSequence)) &&
+ 	    !(mbim->rx_seq == 0xffff && !le16_to_cpu(nth16->wSequence))) {
+-		net_err_ratelimited("sequence number glitch prev=%d curr=%d\n",
++		net_err_ratelimited("mbim: sequence number glitch prev=%d curr=%d\n",
+ 				    mbim->rx_seq, le16_to_cpu(nth16->wSequence));
+ 	}
+ 	mbim->rx_seq = le16_to_cpu(nth16->wSequence);
+@@ -222,7 +222,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
+ 	int ret;
+ 
+ 	if (le16_to_cpu(ndp16->wLength) < USB_CDC_NCM_NDP16_LENGTH_MIN) {
+-		net_err_ratelimited("invalid DPT16 length <%u>\n",
++		net_err_ratelimited("mbim: invalid DPT16 length <%u>\n",
+ 				    le16_to_cpu(ndp16->wLength));
+ 		return -EINVAL;
+ 	}
+@@ -233,7 +233,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
+ 
+ 	if (sizeof(struct usb_cdc_ncm_ndp16) +
+ 	     ret * sizeof(struct usb_cdc_ncm_dpe16) > skb->len) {
+-		net_err_ratelimited("Invalid nframes = %d\n", ret);
++		net_err_ratelimited("mbim: Invalid nframes = %d\n", ret);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
 
 
