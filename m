@@ -1,94 +1,124 @@
-Return-Path: <linux-kernel+bounces-159637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34FB8B3167
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:33:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2668B3169
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F563284401
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:33:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 233732872D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EABF13C3EB;
-	Fri, 26 Apr 2024 07:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1312513C3D2;
+	Fri, 26 Apr 2024 07:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aZqJMYr2"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="nwUdAWLC"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2300713BC36
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D9513BC36
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714116803; cv=none; b=MqIUdOikxNbDam2sHnNDYVisqYHG8DBobKlW+U35sZX3n6ovO0Q/BfI/AIiYtvNDVJhNuGENPEA/fIxPY82vYvStVV1msvFk+pQdfo33ETz+RTtcJ3UESIUOmYDaFYOVPa3zHdBF0QbA4RtN70N/+n1UFtlREZss8ArbEm8WGeA=
+	t=1714116818; cv=none; b=pAdUtm/LkQTe+El30teWKjseGhMdMVucCvoNAPqtcZexujYHaNQ/wMWfZvdVoBPQpIkjjhbX5a5dhVtLkkrLxf0ySfSH1LxAa57Z8R9qCXkgavoA6YMEdKZkul1TDSGViSsw+pg39kC8F+AO6WU4oABpfZqPHNnXz0x7KHqvWaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714116803; c=relaxed/simple;
-	bh=VeXvoXACL25UjHU8k2pGOUmm1D9NjDb4mHfPS5pOncs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RdatANMlsqThAuW0rAjDa8vZ2NqJsP/QgPyZvOXrmJG2zzyKh3FHaIAwTuAxEDEtmxenY9jPXwY5qKKoJORIRPcmR5zrwLLmC2ulW1sUbe+2eabQP+sTn4ECvWBs9AzkQCqME4+5bwIMntgqnTaJMv1SCF/eAPPvThgtvrAfG6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aZqJMYr2; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5722eb4f852so8501a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:33:21 -0700 (PDT)
+	s=arc-20240116; t=1714116818; c=relaxed/simple;
+	bh=9ePKGoQQ03Kw1+fDy3bdzYL0h8yQNi0slcWIGi8PPz0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EA1Pi1Cegaej9/Ykril+D2U0A9HoDGlgs+rQJI/YjGBudDo/qo1K2xdRe55RO0jrOXBWl6lELR3pB2eodVjHex5kCbXz+Byajtvy7Wbq2EPGlLJ5GP7oSLPaN46A5ff9IBcWBS90v3xqKYyK1HuKv9LV63h3DE1BZxMlrKeDVE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=nwUdAWLC; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso13911885e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714116800; x=1714721600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1714116815; x=1714721615; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VeXvoXACL25UjHU8k2pGOUmm1D9NjDb4mHfPS5pOncs=;
-        b=aZqJMYr21PcqwTbYxp/25D8INmiIU1jhE8LUmOz7/Er7K83wPvep94Kx8AT1ahosu8
-         +DVzK6owP73YyBV4Z+Jg8xQWvFunSaU6Kv9rHO4PTZlRvh6BgrorR2Mdyol2mqJqUC1y
-         rGTrMx/yQH1x80hy6duX8XtlMxoov7htpe52o1TIexRdMlh/r3TCfBp+cJ0LBB7ZU4tW
-         7U9LWsYVrx4GRwagSScXeY/Gxf911dsZd5u1qh7BtFXm1tglNERP+FDBPy4NB+8jmWV8
-         FS7LHLdlUttC7kw5mHw3Ctvjr20PbkfTUxxhzfjeI4o5HLE7oGZUXG5cHPe9aE0Fn1Yy
-         +cFA==
+        bh=AZHhtC7yB+LEmKe67OSuhKeCGfLVnVMhlXHLt/YBxSQ=;
+        b=nwUdAWLCQAVibxOIv9dBJjOWMuCEynyJf8vmZGTSY1cZGSYEtHfijdiFNxGSsjUnuV
+         5fADZlrt2oxtVDmhZoD2/kDR+dDFGmDsQYgIA68hvgM0/8wkrCVSIMJz1R1gy7yKLbBl
+         FFGBk0aLhRqK56NvVhcmB709dNJXoAlgzkdqCKZZiI8qfKkVZSnIhokh0wOwK4iRPBAG
+         OpOw0GO8uysmQnc5CdNJg3QD1g8BsezYh4muj1bCHfFHsqQpFjOYhDV78RH131PoKxQ/
+         hHox7UA8I+qOrIBZfWDat/UPVTjGp3uOq1j0JPvoqI9/12+MDjIzHt/3ydcHfW9mG7Fe
+         OlnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714116800; x=1714721600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714116815; x=1714721615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VeXvoXACL25UjHU8k2pGOUmm1D9NjDb4mHfPS5pOncs=;
-        b=s5NIHRAc6QKoNqzQTwfolO4nm9IVH1sG19ypzJS0azxXSgm29/vcHtIYb85Yp6AHkF
-         VCWb0Ti/udRXrLUYKA/E7SfdjxFaj1N0UpHNtAbAS18rn2ktlAiu+8ePYxIKyU9CL5Ka
-         Efo6KAtpoj5CRoLpIpdRcZlZWrAnSBEmbQa1lGXr+3OxQaPR2N5Yyd6fBdyFF/5aVAhv
-         KweZ3qWj3moZ0vDibW3oPslnGAfxu1IV2u8qjV8HY3fnQNo8QhUuLIza3b7wutTdNusU
-         +hQWykVW7W2i42xmdAbCQcQ5MlN0u/pel1tSrEGTfQwCutcxEYSey/u/ikSfl/EWqklg
-         eMGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXljUJaEEO6Bq23nYLloQuhlu1Yt4A0jEFQc9IQ+++DaAPnhfflLR5T9AoHIL0Htvnad7SrNCo1tsNh0LpFkG1VEnPnvvXcGfFbiaum
-X-Gm-Message-State: AOJu0Ywr+G8JF3jcoMF/X0/hXl7eQ+y8/KQnW7woeABBB+RbmfClx2ss
-	RoKce+aOSRnp4joG3krayO8zCCbW6c45W7TL4VwE2ex5QPinh6wL2pkg1FiaEqL8q8lZQzajrcT
-	m6QJxyuJvxImhpTET/QVeug8CM8onkanuMB3HWdSpfHTtnuDPBQ==
-X-Google-Smtp-Source: AGHT+IFThgRtdsQLo9VBTOlpLtMexsuemQAIhrWu83M0GKnW9dcH/4cbcdUtwWVkZ1K4lae/j4Uu+5K95AqiK/dyHWY=
-X-Received: by 2002:a05:6402:2d9:b0:572:336b:31b7 with SMTP id
- b25-20020a05640202d900b00572336b31b7mr116253edx.2.1714116800073; Fri, 26 Apr
- 2024 00:33:20 -0700 (PDT)
+        bh=AZHhtC7yB+LEmKe67OSuhKeCGfLVnVMhlXHLt/YBxSQ=;
+        b=P84Mo/CwSNcGvMW02ljYWKe7CrVwd/uwO+XRUkSXY6F8UajKD1EZdS8dd2ddSXUhfF
+         veegLc/NX85M5RVnaVwNcnFZslWmLydb8XA/rof1c902iLl+BtjRYqZQwY4NPi6bXREA
+         1bofNNnQyFLV/IHeBDKjq4TD2MMNXUBpwtZqZOWUq2HKlGCw9Wq/4JuGPF8xJWwEF8xM
+         L7i1sydkTpBe9IHoBl5rEkIjbABByFx0qMXNsiTAXrB4GhCIg95qihC0NBtA+zXxjQHh
+         OuQScbMxm7QoGzdNknJB4N0PggxRUa1FGRJoYpp0n3PRGC34cBDRG8U7l33kqgmfBERa
+         kzTw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5RSku0lRCw7kWulO/87nnv99nTk/mvN13zljabu3rfuJZ1/gZwfvJYRHg6eIn6VMcvV6lmpDA3W9hlxDqor4rErp1qo56hvNSaNJT
+X-Gm-Message-State: AOJu0Yy3OiFc4+57Y67MsP4yLQdoq8aWq6roJONRxGbcD9NFqBPCJ8Ds
+	H2iRjsfmL5fHriFAFfBO4348amjAQQzleyPf+bPKtkLiJMZDCph/tSlARfkMBvk=
+X-Google-Smtp-Source: AGHT+IFAYmHbznrVYvrFyG3S4RgGzbE1l0SOZYxWBq+xKHGXgg5E4ck93IiPSX+DZnp/DKsyl3rmgw==
+X-Received: by 2002:a05:600c:470f:b0:41a:8374:7eae with SMTP id v15-20020a05600c470f00b0041a83747eaemr1364455wmo.31.1714116815390;
+        Fri, 26 Apr 2024 00:33:35 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:3e63:d6ed:67ba:fbe4])
+        by smtp.gmail.com with ESMTPSA id q15-20020a05600c46cf00b00416e2c8b290sm33935449wmo.1.2024.04.26.00.33.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 00:33:35 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Doug Berger <opendmb@gmail.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Phil Elwell <phil@raspberrypi.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	bcm-kernel-feedback-list@broadcom.com,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] gpio: brcmstb: add support for gpio-ranges
+Date: Fri, 26 Apr 2024 09:33:33 +0200
+Message-Id: <171411680836.6435.15788506275238936215.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240424185039.1707812-1-opendmb@gmail.com>
+References: <20240424185039.1707812-1-opendmb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426065143.4667-1-nbd@nbd.name> <20240426065143.4667-2-nbd@nbd.name>
-In-Reply-To: <20240426065143.4667-2-nbd@nbd.name>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 26 Apr 2024 09:33:09 +0200
-Message-ID: <CANn89iL8VJP4u1daKKN1rC9FE-cJ7M6_JvkfEHd4yOZT91sFAw@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next v3 1/6] net: move skb_gro_receive_list from
- udp to core
-To: Felix Fietkau <nbd@nbd.name>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
-	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 8:51=E2=80=AFAM Felix Fietkau <nbd@nbd.name> wrote:
->
-> This helper function will be used for TCP fraglist GRO support
->
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+On Wed, 24 Apr 2024 11:50:36 -0700, Doug Berger wrote:
+> The Raspberry Pi 5 includes Broadcom STB GPIO IP as well as
+> Broadcom 2712 pin controller IP.
+> 
+> The community has expressed interest in linking the two drivers
+> with the "gpio-ranges" property in device tree. This commit
+> stack implements the necessary changes.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/3] dt-bindings: gpio: brcmstb: add gpio-ranges
+      commit: 7c66f8173360556ac0c3c38a91234af5a0a5a4a9
+[2/3] gpio: of: support gpio-ranges for multiple gpiochip devices
+      commit: e818cd3c8a345c046edff00b5ad0be4d39f7e4d4
+[3/3] gpio: brcmstb: add support for gpio-ranges
+      commit: 5539287ca65686f478e058a1e939294cb5682426
+
+Best regards,
+-- 
+Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
