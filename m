@@ -1,116 +1,177 @@
-Return-Path: <linux-kernel+bounces-160306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA6C8B3BB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:35:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 129A68B3BB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89B21F25066
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:35:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F203AB2501B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF56F14901F;
-	Fri, 26 Apr 2024 15:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D08B14AD3D;
+	Fri, 26 Apr 2024 15:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="WaOCu6wW"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ee0X/xRL"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3D7148854
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001EB14A60A
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145706; cv=none; b=ZcbBxr9HiaWszNgtCs62zqOjCGNoxGnkFcCUpg4vgZCxVTgYmAOXvm9qX9A4lQ8pesNBjn3TcYjx5cJevgUFibFWyZmjTtknFl3NtUqGoCJO5y7ZEs1AnoGLIUN/nkxRKYAECozBwqZdu83YaZnxtL6U7tf6MMEB1cLPN/QhNCM=
+	t=1714145751; cv=none; b=CWUDGWVOkgY8A74VvGFHgPr8LDEmsY+oF1NO9G/48xoVVi1y0zaqB1oNBocKWc66rtPaVuopw2/VhayDmpP5cumUWz+Lcb9qB+l0yWzY+XsXr8kRAVc9lrrKb86EsN/h3XlUoC900s3S3c6khBt3dDWCuBlhq38Q5UT45cAenoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145706; c=relaxed/simple;
-	bh=hyxcIMkRQWAKyBamxAO3Hwum73Pll6GasPpR2BAxOUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CXRXx9xh1xEk9Gup6IcTIBViI9LndwasUocMZrsBcTjOgjXsMP3JnaVZstXlnbc07YhxxrdBMZ6U7CEeHStOR49iK+zJZXyecgusvLaBvW61vrDmMlKdzNBsdZJ+IZ6xE7QUiZz34sjsTi3X6FIlKjM/BktHwSr3afdpcyNIj7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=WaOCu6wW; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1EA7340E0187;
-	Fri, 26 Apr 2024 15:35:03 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Y0I0XX85N4vT; Fri, 26 Apr 2024 15:34:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714145697; bh=075frEUodZiVoP0luxda7AkjREYnqrV4QquOdVqaK9E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WaOCu6wW5+hAYb3VNxSHy0uXO0ug44b8nFbNgfqBeVqUijxNlL60tiulCQhQ656EH
-	 +umGjHofXzVh9uqFUZhD8PV5KIZLQEZdSIfk0ABlNgJV/I8aigPSmigofDXETJF7lR
-	 gYJOAGfZvcVigL0+apZahn53U3qcsU4j3Q0dIlTmw6SWu5+qq7Dc2QO8XMK9GEwPkQ
-	 6BuRFvp0ky49u3y8S+/hVZKpwt60VjVO4ItNVpigpgp6GXaB3yWIazHmBazSIiYojy
-	 FEKirILHy8PfHuIMrPLaAFP4gCnkDWTg6qpoTp8JUFCHWPpHa0BdAizh38aCSDW4rF
-	 RjOSv1IjkuTYwJPqRlfnRJZxAMwYIGyf3CIYQW2DoH+maegwnGFg0v8doQXMKNu2lp
-	 Q/CqXV0jN4JhWy40bAbgTb57rBj2sX1Gr6PAGdWcXZZeqGdcXk59vMC3Ef1RpIOho0
-	 bEgJMA51lZQ3ln3OZBPVDAfV2+uby+yZmg6BHa2Au918k47eN2Yab2M9tNAslboo4C
-	 kyfv0NfZf3zAGIS3/FSRmx1RJDQnmHnu+xoifiFsEB1zmXZuRZX2U+C0Xve+j9Y82d
-	 NxF171TyeoAevmpen5YUYcVil+u1PCg9LFR32ozcOZ6LmsOygjeYnkWjxgG28W7n1+
-	 hGMVkDXmNpz3ysHRMTFacLj4=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1B01540E0177;
-	Fri, 26 Apr 2024 15:34:31 +0000 (UTC)
-Date: Fri, 26 Apr 2024 17:34:25 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, rafael@kernel.org, peterz@infradead.org,
-	adrian.hunter@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	jun.nakajima@intel.com, rick.p.edgecombe@intel.com,
-	thomas.lendacky@amd.com, michael.roth@amd.com, seanjc@google.com,
-	kai.huang@intel.com, bhe@redhat.com,
-	kirill.shutemov@linux.intel.com, bdas@redhat.com,
-	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
-	jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] efi/x86: skip efi_arch_mem_reserve() in case of
- kexec.
-Message-ID: <20240426153425.GGZivJgbBxzo30ja8V@fat_crate.local>
-References: <cover.1712694667.git.ashish.kalra@amd.com>
- <cover.1713222642.git.ashish.kalra@amd.com>
- <a3032e4b7a5406c26aeb66e9380043c410d07e3d.1713222642.git.ashish.kalra@amd.com>
- <20240424144807.GEZikbp0NjFP5AM_ms@fat_crate.local>
- <16b34494-7e5f-4feb-8a21-58e7b8fa97e2@amd.com>
- <20240426142119.GEZiu4X8VPK5He4zH1@fat_crate.local>
- <a1d80cce-28d1-48e8-bc38-8960d8c90774@amd.com>
- <20240426152221.GFZivGrY86svE0RZ00@fat_crate.local>
- <debd333e-6897-476a-97fc-02246e97a24c@amd.com>
+	s=arc-20240116; t=1714145751; c=relaxed/simple;
+	bh=7DxziED0ZQhl0kzXbnS5g+C5iVifnnI6Wue7exIjip4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IkNjZI6LNDUe6ixupOpuCdPcsbkDntkE/ORtPPtGASgGBw8in6LmY1NXA2NfTbPTmuFpcvZNaemNGElj3RQwN3Yro/MwyQDnIXmyNyv0NaxP75YJxhBNDls20ASVSdl+5OtsxFQlFxXRFXYRzMStgmjPsQpA4nngOB3gicbq+Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ee0X/xRL; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-439884be4efso13368991cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714145744; x=1714750544; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y3tPCtKmB8e7QI9Lq/uJ6hWU4RympZM66D1lrj8aR8o=;
+        b=ee0X/xRLHvhcmuO7v5BobSbzJb7MJBMg1XRIzmLQ2+ud/QEqD+O3Bn+gzA1bynb2hs
+         5AOIbW4lrZh4yJmFiaY5Hqxr3OgyXBmQlF9/uW5vYTyT3vlrFZXISh8Gij0SLVZ3mbPu
+         QxQKjf4AFsNsJBq6I4/IC4DVCzKXWtSg6bGj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714145744; x=1714750544;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y3tPCtKmB8e7QI9Lq/uJ6hWU4RympZM66D1lrj8aR8o=;
+        b=ZsK8kFQ2Kqze6Hf7XyOY8GK/ALkMGqMpnnHHmYbnjoGMpUZf3TeXsPnjCILMhsQqFs
+         vFVx09gaeYgyLeUoP4GYNlNeKZr4i5gQSJz2RX4DDGsO2qTvTEYSAUz01qXUma/mG8vc
+         498dtqfjBkgJ48xB97HkVHyz953jw9gxYYn+9sJjWZe1qKCbRghWPNo8EoBzuYi3IoKY
+         Dyw2dbD4tVN/AY0UQ4UIWRrs8wfLB5NnK1vSoAOLWh+PZjBrPBek2CkKl/wN+PHv5kzc
+         mc5nrEp2D6Mm7EpIX3KZCqnprXrOlYpVtYaqakIl/twETX5DrrI91DOQn0spLDPpux8+
+         LwTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXylyFruDW+2gjTszCbZ6bU+H+atKdQfqh1BjPvKa/xKMBRcbabUBXuKQjFfYj9UHDXxtyX6iJztaGQ9hMQFwDhLEofX9DZz/kMx97c
+X-Gm-Message-State: AOJu0YyCPYAhKzWRHBVSySMvaC4Vj5Vh0saHklfIBYLbLcqI2DjPDvml
+	Dh137FmTGk0DhRHZ0qM1Y4nXVCDpwf6jw//r/i0sdfeiqF3LYgJXQ2mvDF8COi7Uu23f1ZA4TxA
+	=
+X-Google-Smtp-Source: AGHT+IHLmb4uI/lkW6z4EZzUcSly7hblCWu2Uefyy2IXJzEzrn9unFD8V57AiHIG9kvRnnz8HSTRpA==
+X-Received: by 2002:a05:622a:30b:b0:437:bec6:733c with SMTP id q11-20020a05622a030b00b00437bec6733cmr3509858qtw.33.1714145743685;
+        Fri, 26 Apr 2024 08:35:43 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id he28-20020a05622a601c00b00437543e5307sm8020763qtb.40.2024.04.26.08.35.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 08:35:43 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-439b1c72676so451851cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:35:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV4A0AokU0WbXgIHmAiQKW8YpqQtb7nDsd/SAMfIG5OJ2oG9fTiMnzxQmc36ABiEYymh/cf2pmsXo5r1CtoQabuN3Cnz6/S7DqHZ7jr
+X-Received: by 2002:ac8:6895:0:b0:437:7a02:d66c with SMTP id
+ m21-20020ac86895000000b004377a02d66cmr225822qtq.25.1714145739600; Fri, 26 Apr
+ 2024 08:35:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <debd333e-6897-476a-97fc-02246e97a24c@amd.com>
+References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
+ <87pludq2g0.fsf@intel.com> <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
+ <beqsovvdkvn63prt3c6b3epb6tachff35vpaf62dfkwof7kwht@u3p7bkv7owro>
+In-Reply-To: <beqsovvdkvn63prt3c6b3epb6tachff35vpaf62dfkwof7kwht@u3p7bkv7owro>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 26 Apr 2024 08:35:24 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WxYoFYefdZ4PQ=QF5aHpeWoC3qM1b5d2vf_qBH90ZMQw@mail.gmail.com>
+Message-ID: <CAD=FV=WxYoFYefdZ4PQ=QF5aHpeWoC3qM1b5d2vf_qBH90ZMQw@mail.gmail.com>
+Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, dri-devel@lists.freedesktop.org, 
+	Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong <neil.armstrong@linaro.org>, linus.walleij@linaro.org, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, 
+	lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang <hsinyi@google.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 10:28:41AM -0500, Kalra, Ashish wrote:
-> "Chained guest kexec" is when we are in a guest and kexec-ing into a new
-> kernel and then this kernel kexecs into another and so on ...
+Hi,
 
-Make sure to explain your terminology:
+On Thu, Apr 25, 2024 at 8:03=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Thu, Apr 25, 2024 at 10:04:49AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Thu, Apr 25, 2024 at 1:19=E2=80=AFAM Jani Nikula <jani.nikula@linux.=
+intel.com> wrote:
+> > >
+> > > > @@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
+> > > >
+> > > >  ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
+> > > >                                 const void *data, size_t len);
+> > > > +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *d=
+si,
+> > > > +                                      const void *data, size_t len=
+);
+> > > >  ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
+> > > >                          const void *data, size_t len);
+> > > >  ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, voi=
+d *data,
+> > > > @@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large=
+(struct mipi_dsi_device *dsi,
+> > > >  #define mipi_dsi_generic_write_seq(dsi, seq...)                   =
+             \
+> > > >       do {                                                         =
+          \
+> > > >               static const u8 d[] =3D { seq };                     =
+            \
+> > > > -             struct device *dev =3D &dsi->dev;                    =
+            \
+> > > >               int ret;                                             =
+          \
+> > > > -             ret =3D mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d))=
+;           \
+> > > > -             if (ret < 0) {                                       =
+          \
+> > > > -                     dev_err_ratelimited(dev, "transmit data faile=
+d: %d\n", \
+> > > > -                                         ret);                    =
+          \
+> > > > +             ret =3D mipi_dsi_generic_write_chatty(dsi, d, ARRAY_S=
+IZE(d));    \
+> > > > +             if (ret < 0)                                         =
+          \
+> > > >                       return ret;                                  =
+          \
+> > > > -             }                                                    =
+          \
+> > > >       } while (0)
+>
+>
+> Reading the thread makes me wonder whether we should be going into
+> slightly other direction:
+>
+> Add __must_check() to mipi_dsi_ writing functions,
+>
+> #define mipi_dsi_dcs_whatever_write(dsi, cmd, seq...)   \
+>         ({                                              \
+>                 static const u8 d[] =3D { cmd, seq };     \
+>                 mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
+>         })
+>
+> Then in panel drivers we actually have to explicitly handle the return
+> code (either by dropping to the error label or by just returning an
+> error).
 
-$ git grep -rE "chained.*kexec"
-$
+Given the sheer number of init commands needed by some panels (see
+j606f_boe_init_sequence() for instance) I'm still convinced that we
+want something that allows people to write their init code in a way
+that's not quite so verbose. It sounds as if Jani is OK w/ the
+proposal of using the "accumulated return value" (proposal #2 I had).
+I'm hoping you're OK w/ that too...
 
-and there's nothing "chained" about it - you're simply kexec-ing in
-a loop.
-
-Please don't make it sound more complicated than it is.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-Doug
 
