@@ -1,139 +1,105 @@
-Return-Path: <linux-kernel+bounces-159613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE60C8B310C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:06:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9BF8B310E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79A1F1F221E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:06:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED5012830C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCD713B298;
-	Fri, 26 Apr 2024 07:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85ACB13B591;
+	Fri, 26 Apr 2024 07:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OMnTjxKx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="kSwFZtrb"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9551567F;
-	Fri, 26 Apr 2024 07:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E74113A898;
+	Fri, 26 Apr 2024 07:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714115208; cv=none; b=leC0RVPtS/1bdnLe0G0UN/2MDsv1c69EVvaVeRh6GQlee/bH90Rg9Vpvkq5fpICw0vNwt/WDds1tplMaC2PyoAqJKpa7brrK96uXg7nIaPjvRkQFHiaTiawMKDEXjgrXToJJzp5nZ6hxMEzQY/s+PL9IzMgaQi5Nol5908D5Olk=
+	t=1714115258; cv=none; b=Gp71nvOz3U+81FkZHrOYG9tfwWB58IRt+38xiS1iefD7X3NJMPs2RKs8cDGejy/p/Db+2Qk9smf5oG07R6K5QZg7d+PdgwTbNqWKVZPphmlxA/SUyxAp3d1664haPfP4wkd+wWlUzR91BO30hIrMSRLieSZ6LpRC4jP5Pa5wemk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714115208; c=relaxed/simple;
-	bh=4Sa4RA3LJOfxMjyEzrT/NkrXuslTZWrRzLjfnRdCUCU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ZxjpmLDWfTUE5Wu7Apl1DL4DZ5XXTc47vL7QDWGvEjeN4NNhaJgNvArPVCWfz5AWDwMhcivvFTulptG7h8GAkQvIcWUk08DMmlvxRvbrgbFJBcNx2PI7w50VmhDIvAL/ZdKRf10QCG1knLUB1fn/aYVjb9eSJxC1JphWC1Ooy2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OMnTjxKx; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1714115258; c=relaxed/simple;
+	bh=NEBKdcFsswo3hwvjczlnLZCT7OYcGHc/4aLeOdQ+4vw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o8g/czoaqWNgW7jwop53IMlTBg0oPhbyL/hk0whEaaM+RQyqlBWjGkB7Ltev2b0CFDdRSSvzW4IornQVw9K+gVynmRXnZ+FMQ11UpxXrT7Aac+KT6y8Hl56Hq37ltPPzMS1nUc6wL76Zee2dL6EaUGK2+513YkFf7nPNREwAeoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=kSwFZtrb; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714115207; x=1745651207;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=4Sa4RA3LJOfxMjyEzrT/NkrXuslTZWrRzLjfnRdCUCU=;
-  b=OMnTjxKx4E0Nbgl3Ai87u24px7E2Xc/gk+2rY0xRfzrm5X0YaUQ7I+aV
-   f65HANIHg/D6A+aAMkk7cyJxdqYI8XM0gi61IzLMSUiNvHvuhtt2bKzG0
-   nmMqfVI03uk5vHLpaT4INjsyruqFlp5kgMgl0rs3Big3451vKRPhGLwL+
-   lnvqwsLSXqMOhUaPvxoFocVkTghEP/sCV440vVO4vszfIkTm26ILmVlj0
-   GoslbCVuY0ZVSQSchP5W8DzeumqfmuYXWy+LpRKvmH9Fy9ZNPUZUNCYuR
-   lU/P8Z82hVg++EBo03a5knS/UhIXtpIVuqyJ48GQrslDcN4Pqo19yzzYH
-   Q==;
-X-CSE-ConnectionGUID: 5a2kPsKGQLSvQ3Ol3XRgWA==
-X-CSE-MsgGUID: vRfQQX1tQDWcXSFZ9hJGMw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="10056330"
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="10056330"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 00:06:46 -0700
-X-CSE-ConnectionGUID: zK4kFKwARTa21PKdeB+cCg==
-X-CSE-MsgGUID: 6IeqhcPeR8Cvw6LQ2Xrg9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="48575584"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.43])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 00:06:42 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 26 Apr 2024 10:06:38 +0300 (EEST)
-To: Babu Moger <babu.moger@amd.com>
-cc: fenghua.yu@intel.com, Reinette Chatre <reinette.chatre@intel.com>, 
-    shuah@kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    linux-kselftest@vger.kernel.org, 
-    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
-    peternewman@google.com, eranian@google.com
-Subject: Re: [PATCH v2 4/4] selftests/resctrl: Enable MBA/MBA tests on AMD
-In-Reply-To: <e3bf1fbbe3ab2d9c2dc1d9669a791de140dea248.1714073751.git.babu.moger@amd.com>
-Message-ID: <911547f7-e952-f771-867a-57c1de738c39@linux.intel.com>
-References: <cover.1708637563.git.babu.moger@amd.com> <cover.1714073751.git.babu.moger@amd.com> <e3bf1fbbe3ab2d9c2dc1d9669a791de140dea248.1714073751.git.babu.moger@amd.com>
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1714115256; x=1745651256;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NEBKdcFsswo3hwvjczlnLZCT7OYcGHc/4aLeOdQ+4vw=;
+  b=kSwFZtrbaKdArdcT0huRhGAJEMAHnafc5ZS6oZSLCy8b9SBCuA8l5HcE
+   NPuvFqRh2dXZfKXifCMlkXI0VI3RG0fYY3DlAsbH2wNTikTWdgfxozdVz
+   PSt+4hC7h4b8SRuOG3XOFzXP/O7r4iqVpb8LLuZOcE5O8pElz8MnEPEf4
+   dm2XbN7GnCBh934jbbEZymq4S2i+ytLw38RpQ4kFAw0UZDoyw2jWGTf/j
+   LBP6F2mq3PJPvwRNySdcOzkzdxTNsrp6xsrGMxGaexa0oeZt9fNjLVpQq
+   lbhUkI3hAijJTGHrvOGCLZxmsfeJyPRMn9vENcOXeXY9tVda8Qzq56A52
+   A==;
+X-CSE-ConnectionGUID: FQK/T8wqQH6Aah4DVsLuQw==
+X-CSE-MsgGUID: IHFoSuOBRYSvjKL3Q/TCJA==
+X-IronPort-AV: E=Sophos;i="6.07,231,1708412400"; 
+   d="scan'208";a="24859171"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Apr 2024 00:07:35 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Apr 2024 00:07:24 -0700
+Received: from localhost (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 26 Apr 2024 00:07:24 -0700
+Date: Fri, 26 Apr 2024 09:07:23 +0200
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+	<davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: phy: micrel: Add support for PTP_PF_EXTTS
+ for lan8814
+Message-ID: <20240426070723.kcwowvv56oojqdm2@DEN-DL-M31836.microchip.com>
+References: <20240423195732.3353522-1-horatiu.vultur@microchip.com>
+ <20240425184457.70d4748e@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20240425184457.70d4748e@kernel.org>
 
-On Thu, 25 Apr 2024, Babu Moger wrote:
+The 04/25/2024 18:44, Jakub Kicinski wrote:
+> 
+> On Tue, 23 Apr 2024 21:57:32 +0200 Horatiu Vultur wrote:
+> > Where the configuration was the following:
+> > ---
+> > [global]
+> > ts2phc.pin_index  3
+> >
+> > [eth0]
+> > ---
+> 
+> You'll have to resend, sorry, the --- lines are "cut-off markers" for
+> git-am. So your commit message will get mangled. Either replace them or
+> indent the config sample by a couple of spaces, that does the trick.
 
-> Enable MBA/MBM tests if UMC (Unified Memory Controller) support is
-> available on the system. Tests will be skipped otherwise.
-> 
-> Update noncont_cat_run_test to check for vendor. AMD supports
-> non contiguous CBM masks but does not report it via CPUID.
-> 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  tools/testing/selftests/resctrl/cat_test.c | 2 +-
->  tools/testing/selftests/resctrl/mba_test.c | 1 -
->  tools/testing/selftests/resctrl/mbm_test.c | 1 -
->  3 files changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> index 4cb991be8e31..b682eaf65bfd 100644
-> --- a/tools/testing/selftests/resctrl/cat_test.c
-> +++ b/tools/testing/selftests/resctrl/cat_test.c
-> @@ -314,7 +314,7 @@ static int noncont_cat_run_test(const struct resctrl_test *test,
->  	else
->  		return -EINVAL;
->  
-> -	if (sparse_masks != ((ecx >> 3) & 1)) {
-> +	if ((get_vendor() == ARCH_INTEL) && sparse_masks != ((ecx >> 3) & 1)) {
+That is true. I will indent the config sample with some spaces.
+Thanks.
 
-This looks independent change to me which should be put into own patch.
+> --
+> pw-bot: cr
 
 -- 
- i.
-
->  		ksft_print_msg("CPUID output doesn't match 'sparse_masks' file content!\n");
->  		return 1;
->  	}
-> diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-> index 7946e32e85c8..353054724fa7 100644
-> --- a/tools/testing/selftests/resctrl/mba_test.c
-> +++ b/tools/testing/selftests/resctrl/mba_test.c
-> @@ -177,7 +177,6 @@ static bool mba_feature_check(const struct resctrl_test *test)
->  struct resctrl_test mba_test = {
->  	.name = "MBA",
->  	.resource = "MB",
-> -	.vendor_specific = ARCH_INTEL,
->  	.feature_check = mba_feature_check,
->  	.run_test = mba_run_test,
->  };
-> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-> index d67ffa3ec63a..f2223315b5b8 100644
-> --- a/tools/testing/selftests/resctrl/mbm_test.c
-> +++ b/tools/testing/selftests/resctrl/mbm_test.c
-> @@ -147,7 +147,6 @@ static bool mbm_feature_check(const struct resctrl_test *test)
->  struct resctrl_test mbm_test = {
->  	.name = "MBM",
->  	.resource = "MB",
-> -	.vendor_specific = ARCH_INTEL,
->  	.feature_check = mbm_feature_check,
->  	.run_test = mbm_run_test,
->  };
-> 
+/Horatiu
 
