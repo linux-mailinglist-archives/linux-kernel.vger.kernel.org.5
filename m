@@ -1,271 +1,225 @@
-Return-Path: <linux-kernel+bounces-160135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D46A8B3998
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:17:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B928B39AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:20:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 814871C226B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:17:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E18288744
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA581487F3;
-	Fri, 26 Apr 2024 14:17:22 +0000 (UTC)
-Received: from mail78-59.sinamail.sina.com.cn (mail78-59.sinamail.sina.com.cn [219.142.78.59])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F378B14882F;
+	Fri, 26 Apr 2024 14:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="2Ljt6MNp"
+Received: from out0-213.mail.aliyun.com (out0-213.mail.aliyun.com [140.205.0.213])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB872147C71
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 14:17:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB173148846;
+	Fri, 26 Apr 2024 14:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.213
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714141041; cv=none; b=efl/vUVLepxVx6sU8igvhjSdIw/s3DiC/PerOExBJrLvCvh6KLrv7DfFZ2Oxx43qOxAlRihKEa7nNtNJI7rgRvoQQqAcCbbBPh0eBy4tXXJZZlzEdoydVYHkulxrBpUKgHY11n7E3ETpdxrQZnQkWhljtvroW17LwjaQTJmRAYw=
+	t=1714141190; cv=none; b=tXgEVcH2UE+zZNHYKPyrJj1Okz96CfyDBLcb9zswQf+q7uz3QUEf7bbH3JNnI/M+4C5UkHlhbVgIsPOOMpVTH+WmmlH2c05lXTbFN2JiAi8VTqqx5cOotZdFa24Fkcoa2eILEdaRYYuAbXEu+zqTQCnpTeVKNURZvSvuqg5amGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714141041; c=relaxed/simple;
-	bh=i3kgqrHHpbXMW27S2FervM6XeCNKONpsKToZKBi58xQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G6ctrnVoxy7yD+mxFRyr+9gpHB3Vm1ma4uP9sfO42Cfyr0XYW7XuNHDsAQ9HnXg6uyRDnNKRpy5rFr76iQFcxbPmAfsLn6VAIy2QtBVyn9mk70x95acLYnAiucm+KJjvjQhyBtr3CmtdlFgBz3ixm69JJNAPBEPA/Uv4kQzpleU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.11.235])
-	by sina.com (172.16.235.25) with ESMTP
-	id 662BB75B00006D3A; Fri, 26 Apr 2024 22:17:03 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 6332034210490
-X-SMAIL-UIID: 5E451C7B22CD492B879366B2EF650F06-20240426-221703-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+705c61d60b091ef42c04@syzkaller.appspotmail.com>
-Cc: edumazet@google.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Boqun Feng <boqun.feng@gmail.com>,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] possible deadlock in team_del_slave (3)
-Date: Fri, 26 Apr 2024 22:17:02 +0800
-Message-Id: <20240426141702.3419-1-hdanton@sina.com>
-In-Reply-To: <000000000000ffc5d80616fea23d@google.com>
-References: 
+	s=arc-20240116; t=1714141190; c=relaxed/simple;
+	bh=7l2TB1EETZioOufQLiaEiEKLYRFbuLo81ICZ7BpyasY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Be14TMmBIGfafoEhxQND45XY/4H+udYr9ZrGD9x+FFizkPGk2QCfBORHyq2ryJZN8ccBjK9vuUylBVeyvm20FvoOlrujqRFS8FMR+rxjAoGO1ICJSu4mgpambonDDPiMEiH0BY/2B5hbNTprmOclbJ28wGb/2/Zszxhf4YjN3nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=2Ljt6MNp; arc=none smtp.client-ip=140.205.0.213
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1714141176; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=TmmJ4dI2976RDaF3GgefK0puZs0XG7mRmHXuXsMM53c=;
+	b=2Ljt6MNpyIdGg8vWvHffW3KxmAQQsFtSofFBgzSt5gvQ5AlNgBuv5zbU8fBJ+DM2ie39QYoWiVSnscIMHv2ZLE/bR72+N5IWl5ewzDDJDbWXgqu4GCuxIN83XX19idzVLGMcBDEnXeP9Y3jlAXATTzlrzjdyN1KTiLPiLveh9gk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047207;MF=zhubojun.zbj@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.XM8zAEm_1714141108;
+Received: from localhost(mailfrom:zhubojun.zbj@antgroup.com fp:SMTPD_---.XM8zAEm_1714141108)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Apr 2024 22:19:34 +0800
+From: "Bojun Zhu" <zhubojun.zbj@antgroup.com>
+To: linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	jarkko@kernel.org,
+	dave.hansen@linux.intel.com
+Cc:  <reinette.chatre@intel.com>,
+  "=?UTF-8?B?5YiY5Y+MKOi9qeWxuSk=?=" <ls123674@antgroup.com>,
+  "Bojun Zhu" <zhubojun.zbj@antgroup.com>
+Subject: [RFC PATCH v2 0/1] x86/sgx: Explicitly give up the CPU in EDMM's ioctl() to avoid softlockup
+Date: Fri, 26 Apr 2024 22:18:22 +0800
+Message-Id: <20240426141823.112366-1-zhubojun.zbj@antgroup.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Apr 2024 04:59:32 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1662179e180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5b814e91787669
-> dashboard link: https://syzkaller.appspot.com/bug?extid=705c61d60b091ef42c04
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1058e7b9180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11919365180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/5f73b6ef963d/disk-480e035f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/46c949396aad/vmlinux-480e035f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/e3b4d0f5a5f8/bzImage-480e035f.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+705c61d60b091ef42c04@syzkaller.appspotmail.com
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.8.0-syzkaller-08073-g480e035fc4c7 #0 Not tainted
-> ------------------------------------------------------
-> syz-executor419/5074 is trying to acquire lock:
-> ffff888023dc4d20 (team->team_lock_key){+.+.}-{3:3}, at: team_del_slave+0x32/0x1d0 drivers/net/team/team.c:1988
-> 
-> but task is already holding lock:
-> ffff88802a210768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_del_interface+0x11a/0x140 net/wireless/nl80211.c:4389
-> 
-> which lock already depends on the new lock.
-> 
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (&rdev->wiphy.mtx){+.+.}-{3:3}:
->        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
->        __mutex_lock_common kernel/locking/mutex.c:608 [inline]
->        __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
->        wiphy_lock include/net/cfg80211.h:5951 [inline]
->        ieee80211_open+0xe7/0x200 net/mac80211/iface.c:449
->        __dev_open+0x2d3/0x450 net/core/dev.c:1430
+Hi forks,
 
-	ASSERT_RTNL();
+This is the second version of the patch to fix the softlockup in EDMM iotcl=
+()[1].
 
->        dev_open+0xae/0x1b0 net/core/dev.c:1466
->        team_port_add drivers/net/team/team.c:1214 [inline]
->        team_add_slave+0x9b3/0x2750 drivers/net/team/team.c:1974
->        do_set_master net/core/rtnetlink.c:2685 [inline]
->        do_setlink+0xe70/0x41f0 net/core/rtnetlink.c:2891
->        rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3185
->        rtnetlink_rcv_msg+0x89b/0x10d0 net/core/rtnetlink.c:6595
->        netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
->        netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
->        netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
->        netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
->        sock_sendmsg_nosec net/socket.c:730 [inline]
->        __sock_sendmsg+0x221/0x270 net/socket.c:745
->        ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
->        ___sys_sendmsg net/socket.c:2638 [inline]
->        __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
->        do_syscall_64+0xfb/0x240
->        entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> -> #0 (team->team_lock_key){+.+.}-{3:3}:
->        check_prev_add kernel/locking/lockdep.c:3134 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
->        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
->        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
->        __mutex_lock_common kernel/locking/mutex.c:608 [inline]
->        __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
->        team_del_slave+0x32/0x1d0 drivers/net/team/team.c:1988
->        team_device_event+0x200/0x5b0 drivers/net/team/team.c:3029
->        notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
->        call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
->        call_netdevice_notifiers net/core/dev.c:2002 [inline]
->        unregister_netdevice_many_notify+0xd96/0x16d0 net/core/dev.c:11096
->        unregister_netdevice_many net/core/dev.c:11154 [inline]
->        unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11033
->        unregister_netdevice include/linux/netdevice.h:3115 [inline]
->        _cfg80211_unregister_wdev+0x162/0x560 net/wireless/core.c:1206
->        ieee80211_if_remove+0x25d/0x3a0 net/mac80211/iface.c:2242
+If we run an enclave equipped with large EPC(30G or greater on my platfrom)
+on the Linux with kernel preemptions disabled(by configuring
+"CONFIG_PREEMPT_NONE=3Dy"), we will get the following softlockup warning=20
+messages being reported in "dmesg" log:
 
-	ASSERT_RTNL();
-	lockdep_assert_wiphy(sdata->local->hw.wiphy);
+The EDMM's ioctl()s (sgx_ioc_enclave_{ modify_types | restrict_permissions =
+|  remove_pages})=20
+interface provided by kernel support batch changing attributes of enclave's=
+ EPC.
+If userspace App requests kernel to handle too many EPC pages, kernel
+may stuck for a long time(with preemption disabled).
 
-Given ASSERT_RTNL() on both sides, difficult to understand the
-deadlock reported.
+The log is as follows:
 
->        ieee80211_del_iface+0x19/0x30 net/mac80211/cfg.c:202
->        rdev_del_virtual_intf net/wireless/rdev-ops.h:62 [inline]
->        cfg80211_remove_virtual_intf+0x230/0x3f0 net/wireless/util.c:2847
->        genl_family_rcv_msg_doit net/netlink/genetlink.c:1113 [inline]
->        genl_family_rcv_msg net/netlink/genetlink.c:1193 [inline]
->        genl_rcv_msg+0xb14/0xec0 net/netlink/genetlink.c:1208
->        netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
->        genl_rcv+0x28/0x40 net/netlink/genetlink.c:1217
->        netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
->        netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
->        netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
->        sock_sendmsg_nosec net/socket.c:730 [inline]
->        __sock_sendmsg+0x221/0x270 net/socket.c:745
->        ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
->        ___sys_sendmsg net/socket.c:2638 [inline]
->        __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
->        do_syscall_64+0xfb/0x240
->        entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> other info that might help us debug this:
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&rdev->wiphy.mtx);
->                                lock(team->team_lock_key);
->                                lock(&rdev->wiphy.mtx);
->   lock(team->team_lock_key);
-> 
->  *** DEADLOCK ***
-> 
-> 3 locks held by syz-executor419/5074:
->  #0: ffffffff8f3f1a30 (cb_lock){++++}-{3:3}, at: genl_rcv+0x19/0x40 net/netlink/genetlink.c:1216
->  #1: ffffffff8f38ce88 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x5f/0x8b0 net/wireless/nl80211.c:16401
->  #2: ffff88802a210768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_del_interface+0x11a/0x140 net/wireless/nl80211.c:4389
-> 
-> stack backtrace:
-> CPU: 1 PID: 5074 Comm: syz-executor419 Not tainted 6.8.0-syzkaller-08073-g480e035fc4c7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
->  check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
->  check_prev_add kernel/locking/lockdep.c:3134 [inline]
->  check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->  validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
->  __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
->  lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
->  __mutex_lock_common kernel/locking/mutex.c:608 [inline]
->  __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
->  team_del_slave+0x32/0x1d0 drivers/net/team/team.c:1988
->  team_device_event+0x200/0x5b0 drivers/net/team/team.c:3029
->  notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
->  call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
->  call_netdevice_notifiers net/core/dev.c:2002 [inline]
->  unregister_netdevice_many_notify+0xd96/0x16d0 net/core/dev.c:11096
->  unregister_netdevice_many net/core/dev.c:11154 [inline]
->  unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11033
->  unregister_netdevice include/linux/netdevice.h:3115 [inline]
->  _cfg80211_unregister_wdev+0x162/0x560 net/wireless/core.c:1206
->  ieee80211_if_remove+0x25d/0x3a0 net/mac80211/iface.c:2242
->  ieee80211_del_iface+0x19/0x30 net/mac80211/cfg.c:202
->  rdev_del_virtual_intf net/wireless/rdev-ops.h:62 [inline]
->  cfg80211_remove_virtual_intf+0x230/0x3f0 net/wireless/util.c:2847
->  genl_family_rcv_msg_doit net/netlink/genetlink.c:1113 [inline]
->  genl_family_rcv_msg net/netlink/genetlink.c:1193 [inline]
->  genl_rcv_msg+0xb14/0xec0 net/netlink/genetlink.c:1208
->  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
->  genl_rcv+0x28/0x40 net/netlink/genetlink.c:1217
->  netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
->  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
->  netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0x221/0x270 net/socket.c:745
->  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
->  ___sys_sendmsg net/socket.c:2638 [inline]
->  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> RIP: 0033:0x7f963cb981a9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffdde1419a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f963cbe53f6 RCX: 00007f963cb981a9
-> RDX: 0000000000000000 RSI: 0000000020000400 RDI: 0000000000000004
-> RBP: 00007f963cc17440 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000031
-> R13: 0000000000000003 R14: 0000000000050012 R15: 00007ffdde141a02
->  </TASK>
-> team0: Port device wlan0 removed
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+------------[ cut here ]------------
+[  901.101294] watchdog: BUG: soft lockup - CPU#92 stuck for 23s! [occlum-r=
+un:4289]
+[  901.109617] Modules linked in: veth xt_conntrack xt_MASQUERADE nf_conntr=
+ack_netlink nfnetlink xfrm_user xfrm_algo iptable_nat nf_nat nf_conntrack n=
+f_defrag_ipv6 nf_defrag_ipv4 libcrc32c xt_addrtype iptable_filter br_netfil=
+ter bridge stp llc overlay nls_iso8859_1 intel_rapl_msr intel_rapl_common i=
+ntel_uncore_frequency intel_uncore_frequency_common i10nm_edac nfit binfmt_=
+misc ipmi_ssif x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm=
+ crct10dif_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha51=
+2_ssse3 sha256_ssse3 pmt_telemetry sha1_ssse3 pmt_class joydev intel_sdsi i=
+nput_leds aesni_intel crypto_simd cryptd dax_hmem cxl_acpi cmdlinepart rapl=
+ cxl_core ast spi_nor intel_cstate drm_shmem_helper einj mtd drm_kms_helper=
+ mei_me idxd isst_if_mmio isst_if_mbox_pci isst_if_common intel_vsec idxd_b=
+us mei acpi_ipmi ipmi_si ipmi_devintf ipmi_msghandler acpi_pad acpi_power_m=
+eter mac_hid sch_fq_codel msr parport_pc ppdev lp parport ramoops reed_solo=
+mon pstore_blk pstore_zone efi_pstore drm ip_tables x_tables
+[  901.109670]  autofs4 mlx5_ib ib_uverbs ib_core hid_generic usbhid hid se=
+s enclosure scsi_transport_sas mlx5_core pci_hyperv_intf mlxfw igb ahci psa=
+mple i2c_algo_bit i2c_i801 spi_intel_pci xhci_pci tls megaraid_sas dca spi_=
+intel crc32_pclmul i2c_smbus i2c_ismt libahci xhci_pci_renesas wmi pinctrl_=
+emmitsburg
+[  901.109691] CPU: 92 PID: 4289 Comm: occlum-run Not tainted 6.9.0-rc5 #3
+[  901.109693] Hardware name: Inspur NF5468-M7-A0-R0-00/NF5468-M7-A0-R0-00,=
+ BIOS 05.02.01 05/08/2023
+[  901.109695] RIP: 0010:sgx_enclave_restrict_permissions+0xba/0x1f0
+[  901.109701] Code: 48 c1 e6 05 48 89 d1 48 8d 5c 24 40 b8 0e 00 00 00 48 =
+2b 8e 70 8e 15 8b 48 c1 e9 05 48 c1 e1 0c 48 03 8e 68 8e 15 8b 0f 01 cf <a9=
+> 00 00 00 40 0f 85 b2 00 00 00 85 c0 0f 85 db 00 00 00 4c 89 ef
+[  901.109702] RSP: 0018:ffffad0ae5d0f8c0 EFLAGS: 00000202
+[  901.109704] RAX: 0000000000000000 RBX: ffffad0ae5d0f900 RCX: ffffad11dfc=
+0e000
+[  901.109705] RDX: ffffad2adcff81c0 RSI: 0000000000000000 RDI: ffff9a12f5f=
+4f000
+[  901.109706] RBP: ffffad0ae5d0f9b0 R08: 0000000000000002 R09: ffff9a1289f=
+57520
+[  901.109707] R10: 000000000000005d R11: 0000000000000002 R12: 00000006d8f=
+f2000
+[  901.109708] R13: ffff9a12f5f4f000 R14: ffffad0ae5d0fa18 R15: ffff9a12f5f=
+4f020
+[  901.109709] FS:  00007fb20ad1d740(0000) GS:ffff9a317fe00000(0000) knlGS:=
+0000000000000000
+[  901.109710] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  901.109711] CR2: 00007f8041811000 CR3: 0000000118530006 CR4: 00000000007=
+70ef0
+[  901.109712] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000000=
+00000
+[  901.109713] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 00000000000=
+00400
+[  901.109714] PKRU: 55555554
+[  901.109714] Call Trace:
+[  901.109716]  <IRQ>
+[  901.109718]  ? show_regs+0x67/0x70
+[  901.109722]  ? watchdog_timer_fn+0x1f3/0x280
+[  901.109725]  ? __pfx_watchdog_timer_fn+0x10/0x10
+[  901.109727]  ? __hrtimer_run_queues+0xc8/0x220
+[  901.109731]  ? hrtimer_interrupt+0x10c/0x250
+[  901.109733]  ? __sysvec_apic_timer_interrupt+0x53/0x130
+[  901.109736]  ? sysvec_apic_timer_interrupt+0x7b/0x90
+[  901.109739]  </IRQ>
+[  901.109740]  <TASK>
+[  901.109740]  ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
+[  901.109745]  ? sgx_enclave_restrict_permissions+0xba/0x1f0
+[  901.109747]  ? aa_file_perm+0x145/0x550
+[  901.109750]  sgx_ioctl+0x1ab/0x900
+[  901.109751]  ? xas_find+0x84/0x200
+[  901.109754]  ? sgx_enclave_etrack+0xbb/0x140
+[  901.109756]  ? sgx_encl_may_map+0x19a/0x240
+[  901.109758]  ? common_file_perm+0x8a/0x1b0
+[  901.109760]  ? obj_cgroup_charge_pages+0xa2/0x100
+[  901.109763]  ? tlb_flush_mmu+0x31/0x1c0
+[  901.109766]  ? tlb_finish_mmu+0x42/0x80
+[  901.109767]  ? do_mprotect_pkey+0x150/0x530
+[  901.109769]  ? __fget_light+0xc0/0x100
+[  901.109772]  __x64_sys_ioctl+0x95/0xd0
+[  901.109775]  x64_sys_call+0x1209/0x20c0
+[  901.109777]  do_syscall_64+0x6d/0x110
+[  901.109779]  ? syscall_exit_to_user_mode+0x86/0x1c0
+[  901.109782]  ? do_syscall_64+0x79/0x110
+[  901.109783]  ? syscall_exit_to_user_mode+0x86/0x1c0
+[  901.109784]  ? do_syscall_64+0x79/0x110
+[  901.109785]  ? free_unref_page+0x10e/0x180
+[  901.109788]  ? __do_fault+0x36/0x130
+[  901.109791]  ? do_pte_missing+0x2e8/0xcc0
+[  901.109792]  ? __pte_offset_map+0x1c/0x190
+[  901.109795]  ? __handle_mm_fault+0x7b9/0xe60
+[  901.109796]  ? __count_memcg_events+0x70/0x100
+[  901.109798]  ? handle_mm_fault+0x256/0x360
+[  901.109799]  ? do_user_addr_fault+0x3c1/0x860
+[  901.109801]  ? irqentry_exit_to_user_mode+0x67/0x190
+[  901.109803]  ? irqentry_exit+0x3b/0x50
+[  901.109804]  ? exc_page_fault+0x89/0x180
+[  901.109806]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[  901.109807] RIP: 0033:0x7fb20b4315cb
+[  901.109810] Code: 0f 1e fa 48 8b 05 c5 78 0d 00 64 c7 00 26 00 00 00 48 =
+c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48=
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 95 78 0d 00 f7 d8 64 89 01 48
+[  901.109811] RSP: 002b:00007ffc0e7af718 EFLAGS: 00000246 ORIG_RAX: 000000=
+0000000010
+[  901.109812] RAX: ffffffffffffffda RBX: 0000000780000000 RCX: 00007fb20b4=
+315cb
+[  901.109813] RDX: 00007ffc0e7af720 RSI: 00000000c028a405 RDI: 00000000000=
+00005
+[  901.109814] RBP: 0000000000000005 R08: 0000000000000000 R09: 00007ffc0e7=
+af794
+[  901.109815] R10: 00007ffc0e7af7c8 R11: 0000000000000246 R12: 00000000c02=
+8a405
+[  901.109815] R13: 00007ffc0e7af720 R14: 0000000780000000 R15: 00007fb20b2=
+ea980
+[  901.109817]  </TASK>
+------------[ end trace ]------------
+
+We suggest to give up CPU in the ioctl() handler explicitly. I have attache=
+d a
+patch which can fix such issue.
+
+Appreciate for your review and thanks for your time!
+
+Regards,
+Bojun Zhu
+
+---
+v1 -> v2:
+  - Make the cond_resched() as a prefix op instead of a postfix op (Jarkko)
+  - Additionly check the pending signal at the begin of every for loop (Jar=
+kko)
+  - Introduce sgx_check_signal_and_resched() to wrap the pending check
+    and reschedule operations (Jarkko)
+  - Refine the trace log in commit() message (Kai)
+
+[1] v1: https://lore.kernel.org/linux-sgx/20240423092550.59297-1-zhubojun.z=
+bj@antgroup.com/
+
+Bojun Zhu (1):
+  x86/sgx: Explicitly give up the CPU in EDMM's ioctl() to avoid
+    softlockup
+
+ arch/x86/kernel/cpu/sgx/ioctl.c | 40 +++++++++++++++++++++++++++++----
+ 1 file changed, 36 insertions(+), 4 deletions(-)
+
+
+base-commit: ed30a4a51bb196781c8058073ea720133a65596f
+--=20
+2.25.1
+
 
