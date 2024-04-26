@@ -1,114 +1,163 @@
-Return-Path: <linux-kernel+bounces-159511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C6EF8B2F92
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:55:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DDC58B2F95
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:55:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC2C1C22C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C4641C22C73
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:55:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DD313A24C;
-	Fri, 26 Apr 2024 04:55:12 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B20D13A260;
+	Fri, 26 Apr 2024 04:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Y0P6pXk9"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20911335C7;
-	Fri, 26 Apr 2024 04:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B6013A253;
+	Fri, 26 Apr 2024 04:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714107312; cv=none; b=P59sBW5Iv72iJduGrgH02bf62v5rjs7WbePgwC/CoOu3ilkWUFjobaby7Aw/4Ez/9vzweU+FBOALGVvxf7mtmBYRtTVS9ygenuinJSWa4g55//LL9PV0w784i4fJpKEzTmMu8gBznCtzkzjpxI0ev/sLL0vlUkeFq40Q/u0GJS8=
+	t=1714107346; cv=none; b=rhT6G/0JrlvK/Rvc4yxMpUe7aTq767yF7PctUT0Y2T4TWi1byHAwI86ZFljIKTAvJ0kvdeqYYICocJYXx+2uTN5BhnjZ+Ww7NNi0rjioItOwPc1oh0SFFlgvxw39IEYwCkZm1RRhUXjPs9YsssOnavfD1SiJJc3SmyQKyVDWlo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714107312; c=relaxed/simple;
-	bh=BCoNOVbv1EcALw55loUqG1wks8q6Qvt0feIcYXhLxv4=;
-	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=qa7eYwzX05oy7UeuHVzgGfM2fmAoL5QZumgxvKVShYWD3NLzHAy/uA3IMPrqtrm+CdW/u9KbCSocF1/cW08oreeFEhe4Efq30S+jv1Ocv1ndPRsaAqTfLeCQOiXqYCnBolyvduBqDlXS/KkBSsflbDw8cUi0yPMyF94XvPDDTck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQgM44kNKzNnn1;
-	Fri, 26 Apr 2024 12:52:32 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0062214011D;
-	Fri, 26 Apr 2024 12:55:06 +0800 (CST)
-Received: from [10.67.109.150] (10.67.109.150) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 26 Apr 2024 12:55:05 +0800
-Message-ID: <5b5da2d3-37b3-60ee-5a94-149094cbe9dc@huawei.com>
-Date: Fri, 26 Apr 2024 12:55:04 +0800
+	s=arc-20240116; t=1714107346; c=relaxed/simple;
+	bh=slhSmPP6A5dL+xFrf9Y3kg/yEYoJ1PgK9pg7XuwiRb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ikhjNR+AtZ87O97GjC6SDSIanLXEpxaNwM092su94CuwVsY9I9V2ngq8wS3oFJt0n4KwwAR3QrFm6+5Gsc1dKlJgo+l1k0FHgTAVU/2O7bf1xtszXD57eUvPHQmGWPw0INus1AH+fHCzPMYg9JtXlli1DTJC6DY0euumKOhF9xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Y0P6pXk9; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714107342;
+	bh=ZgfufWsYb1pKRnL2FziEaT74IVGiiNsUZRHPd8i0rGE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Y0P6pXk93TvLe9+Av9u/BOSgbUd8PFzpHvAZ9vuOkax5WrsX3NdZKoIbQZX4jWyV4
+	 VInnc+H1+eu9T6lDU2IjdcBRR62R+zzg0sSAURtEHy5AuEvebd1Mc54bATCZrhSvES
+	 bPcqc+B3bEU2ZiNdlUe27wxNf+8dmK164tj/8VN6JKiJQb78bj+WMTYpA9FAR8KOaO
+	 MlrXZmQV1QTI58QKQnmdtjWZqtYFaJGuZzDUt3WVoILc8S7dao3Et5yFvomd4J8Muz
+	 N+iRMPvAcUDmTzAADzrF2kIGFFfdMWGiKBvTjOyMt7UnjOuHJmD1dzjrRzapJ2wuw5
+	 ZyB11Wha1/sDg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQgQj3ghSz4wcd;
+	Fri, 26 Apr 2024 14:55:41 +1000 (AEST)
+Date: Fri, 26 Apr 2024 14:55:40 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Greg KH <greg@kroah.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tty tree with the mm tree
+Message-ID: <20240426145540.1593f8f4@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From: Lu Jialin <lujialin4@huawei.com>
-Subject: [QUESTION]cgroup mount return -EBUSY
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+Content-Type: multipart/signed; boundary="Sig_/5ixbUIkBKNp7xwV06/Sd0+1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello
+--Sig_/5ixbUIkBKNp7xwV06/Sd0+1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I encountered a problem when I try to unmount the subsystem right after
-all it's subcgroups are removed, the cgroup_root would remain. Mounting
-this subsystem to another cgroup_root would return -EBUSY.
+Hi all,
 
-The problem could be reproduced with the following script.
+Today's linux-next merge of the tty tree got conflicts in:
 
-test.sh:
+  include/linux/kfifo.h
+  lib/kfifo.c
 
-mkdir /tmp/test1
-mount -t cgroup -o pids pids /tmp/test1
-mkdir /tmp/test1/test
-rmdir /tmp/test1/test
-umount /tmp/test1
-mkdir /tmp/test
-mount -t cgroup -o pids,cpu none /tmp/test
+between commit:
 
-test.sh should return this.
-mount: mounting none on /tmp/test failed: Device or resource busy.
+  a8372870a0ae ("kfifo: don't use "proxy" headers")
 
-It seems that when unmounting /tmp/test1, the original cgroup_root for
-this PID is not released.
-/test # cat /proc/cgroups
+from the mm-nonmm-unstable branch of the mm tree and commit:
 
-#subsys_name    hierarchy       num_cgroups     enabled
+  d52b761e4b1a ("kfifo: add kfifo_dma_out_prepare_mapped()")
 
-cpuset  0       1       1
+from the tty tree.
 
-cpu     0       1       1
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-cpuacct 0       1       1
+--=20
+Cheers,
+Stephen Rothwell
 
-blkio   0       1       1
+diff --cc include/linux/kfifo.h
+index 6b28d642f332,d613748de7ff..000000000000
+--- a/include/linux/kfifo.h
++++ b/include/linux/kfifo.h
+@@@ -36,15 -36,11 +36,16 @@@
+   * to lock the reader.
+   */
+ =20
+ +#include <linux/array_size.h>
++ #include <linux/dma-mapping.h>
+ -#include <linux/kernel.h>
+  #include <linux/spinlock.h>
+  #include <linux/stddef.h>
+ -#include <linux/scatterlist.h>
+ +#include <linux/types.h>
+ +
+ +#include <asm/barrier.h>
+ +#include <asm/errno.h>
+ +
+ +struct scatterlist;
+ =20
+  struct __kfifo {
+  	unsigned int	in;
+diff --cc lib/kfifo.c
+index 15acdee4a8f3,75ce9225548a..000000000000
+--- a/lib/kfifo.c
++++ b/lib/kfifo.c
+@@@ -5,13 -5,14 +5,14 @@@
+   * Copyright (C) 2009/2010 Stefani Seibold <stefani@seibold.net>
+   */
+ =20
+ -#include <linux/kernel.h>
++ #include <linux/dma-mapping.h>
+ -#include <linux/export.h>
+ -#include <linux/slab.h>
+  #include <linux/err.h>
+ -#include <linux/log2.h>
+ -#include <linux/uaccess.h>
+ +#include <linux/export.h>
+  #include <linux/kfifo.h>
+ +#include <linux/log2.h>
+ +#include <linux/scatterlist.h>
+ +#include <linux/slab.h>
+ +#include <linux/uaccess.h>
+ =20
+  /*
+   * internal helper to calculate the unused elements in a fifo
 
-devices 0       1       1
+--Sig_/5ixbUIkBKNp7xwV06/Sd0+1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-freezer 0       1       1
+-----BEGIN PGP SIGNATURE-----
 
-net_cls 0       1       1
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYrM8wACgkQAVBC80lX
+0Gy9NAgApMpBJj/Cf+zFbey4dg/jd06Lu9A8Yx/rgjmDGql3CrAgwxdIdj5x9Reo
+HJ3YEDqf4NcMxt9F4OyZo0qa/K69/0Fy2sfosNWEtZbhHTruU7shWTOOJwDUniDk
+KF83Y8xaC/W2tF3IvGQREdnqjmCIdpbnD+RSgcbfXpxobxyWdgaHNE0XRkun7dWC
+bY206eoKUBfKoZ7vQRq9o2lkbPH6zJV43ZClm4DCK3WSUFp6v3N68yQybuLpMxg+
+mxjNG1UwIyVf3xcxbv1dqqez0lZMRISRf+7pduLDtKRU4tWwGhuVY4i03Ha84X3Q
+i56VNAGEAk3kHC6b5rHMr5Ub3/6n0g==
+=W0Pj
+-----END PGP SIGNATURE-----
 
-perf_event      0       1       1
-
-net_prio        0       1       1
-
-hugetlb 0       1       1
-
-pids    1       1       1
-
-rdma    0       1       1
-
-misc    0       1       1
-
-debug   0       1       1
+--Sig_/5ixbUIkBKNp7xwV06/Sd0+1--
 
