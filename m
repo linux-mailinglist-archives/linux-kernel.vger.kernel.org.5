@@ -1,73 +1,82 @@
-Return-Path: <linux-kernel+bounces-159737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D208B337B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:00:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7BD8B337E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EB5282300
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:00:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 723C81C214C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCCE13D291;
-	Fri, 26 Apr 2024 09:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC7F13D299;
+	Fri, 26 Apr 2024 09:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LRB7pejm"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EkW6CyjQ"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E5913C838
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76EE13CF96
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714122045; cv=none; b=tzKYtZJmnFVuxQmGCS7EZEj92Um3bSv459CXq3NwfzLQe1Q9JPciZoemF0IJjv6HU2eHWXKktfcM6UYlHUVxfL4ms1H+rERGazu9gsRwiwReu9aP33fV7Nuh1q8nv5nEX8Z0sJA7YExY/P3t5eJShDi3P7+TdAi3l7Il3LuQv3w=
+	t=1714122160; cv=none; b=Hw4yxpejbPYLESZwhgKMh7DkypeOWKARiyd2rsfq6vO+Ju6mvJQ7K2Dp2aoSTZmHGSO+mMeFYyOzQMzoe9opqHOmmsDrj/4G//DF90Krl6H7aDG+5p1HILEIVMJpGjonECP3KkzJSWNOHG+jAvQ90LccImmkfkH8zLEXjfUTujo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714122045; c=relaxed/simple;
-	bh=hkvrwq0uWGSiJHO7TTFapyHX4LA/xNXwZasZASBeMAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oB6lMdJgn+tIYvAnMExztbXCRTAPbw5BCVjHRzEVUJ8Nwygx+GtxT2Z3WN84y45h97zhReHtTeHcjvdi6nb8JY0sc6/KoJg8Cc1PlRMeqv267HhO8KhPmokgQN98K2g3CMc+IHijsUqvdsPNBJz4fb5pTqIf/u1EwnVIcX7UsNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LRB7pejm; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714122044; x=1745658044;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hkvrwq0uWGSiJHO7TTFapyHX4LA/xNXwZasZASBeMAI=;
-  b=LRB7pejmnyJdNJvd/7ohFWa/DHIb1OTdQ0CwE1MnPK63CrTfrmQWsFwG
-   WQDA9M3m1Qg1Y7eOsItaAOecMtDXs9fC2Y0Xe4mroICA4gAKvStEJtVNP
-   dWvm2FJVMev3q+OZ4UQRcxISyNg1SHDlsFgO/FdnvBqPSMZi8zXIkGynt
-   5cFKjloWEF8sWD4OzDBQp03Wzv5X1+ZT8YRYAQes9Y8jNDILeQgTw8ZSA
-   qcR0a9m/O5X8gK+Hvl95QphALnhOVA1a/O46oHgzVvnAMoQ28oys9biZE
-   fCrYKJUVIHSQyYm9yMonP9rmymF0aVuM66qiQS3WLnvgRN0yXUASwCCiA
-   A==;
-X-CSE-ConnectionGUID: 0vl8xfy7TXiY+gBwczcO6A==
-X-CSE-MsgGUID: wuBO4aV5QCi4yW6h5yqFpQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="9776911"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="9776911"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:00:43 -0700
-X-CSE-ConnectionGUID: +taR4C8mTmGHlYYZ8bvhOQ==
-X-CSE-MsgGUID: PdfGznN8QlilP4Ln48PMfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="29823933"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 26 Apr 2024 02:00:41 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0HRf-0003Ve-28;
-	Fri, 26 Apr 2024 09:00:39 +0000
-Date: Fri, 26 Apr 2024 16:59:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Oleg Nesterov <oleg@redhat.com>
-Subject: powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from
- `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
-Message-ID: <202404261646.RbWtKBhy-lkp@intel.com>
+	s=arc-20240116; t=1714122160; c=relaxed/simple;
+	bh=GCv7cleECdS9aeuqWa/FYm7mTZK68TxrmukAAfvgKyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f93cXG/p1M1IjfGQAedNlYftfBnhKGCGih6BUBQGJDskdTRHSb22ixA85o4GeQc6ZtcTiawmzSYRV/YgTE8GnxEZj0ybTdpGq8gROoHYs7vR8O9a7l5x9svpuWk4kO37QH0osM26ejtlUDlhuE8gSyy8zyO6XsTDtY5LhFRJMdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EkW6CyjQ; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a58a36008ceso241797666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1714122157; x=1714726957; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5cmdr7rr4QFZS2PzQg0uqFLEwvPrpxobM8THii525BU=;
+        b=EkW6CyjQixi/IsDd61fFzbK4E0TdJbiE/lWOMnDKTUyItrmcX1AiVFeSSvt50reA85
+         NIhqkeYsxPm3Td0Ax5GKDQl+FT8pM47vox/Kabz61U1Sz0jE1xRYFJDqgLDVZdzPJ0KH
+         9c0jsDculRhYTo6/bAz+ik+WqsKQ12XGxmQv0JabC4xJsLo7RkojCDMZjvqM08pMpMrx
+         PYXsSxZu3lnZ5SEpiXpZpxQmvRpBzOIkdSJsFL+q1R5/rfB92thGq7cJQZd+UZ+Z1UsA
+         mXj/SZ1myTUZKtCCfK45tOesapgJhCONtfmNx5dP5P6G902f+hW+a/6Vgdut2T7/gRNA
+         coSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714122157; x=1714726957;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5cmdr7rr4QFZS2PzQg0uqFLEwvPrpxobM8THii525BU=;
+        b=H5k1zUsgeEAoHLYuG160VXO1goHqOSQ24L+JCr2TysQd8bqW97e7O9Y2v+3CBAObUj
+         U4TyOMHcRmlb0e94ann+E7D++v3PNIWW+oj8ETdm1VmFT2ySTYFMgsl78ooWWB/4pvwz
+         D4rXNZUdCiGpsgMkP5wanflxx83nhC85Xd47y+0/ZnHOZ8n4tOW2TIIPK1iVuLMUzJjJ
+         1cnJKulgbPBif6uPpnfUImdX3kEYCxdGR3Xx730ezjsqHqDcq2kU8oAoJwzd4Z91tskF
+         oU+vL8KYXt3PuFG2mK64VF4h5OYGG1wAWpNHdmlJDWE/uUW2vtpBzyDeUA75t1vOpnbl
+         5yqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWR82EMXpE/KCIsd2JAHuxW0j3x5RUuwLMAIf+anxTeFkpyMOobd6SisD2+J3ZARGWI9SC7xA824oayygZtFTgNPsL4px4GYgpOimuT
+X-Gm-Message-State: AOJu0YxxOhrwsvc8xkLphWOzlLSKMe7P3SB6QiMqzvhzESI9bn+Vi/DT
+	YxTxEb93fFA/ix9img7ULb5aeh/1bCEJk/T4kmQ57//OV9G8frkOuABM710GaKg=
+X-Google-Smtp-Source: AGHT+IG63NkJc6p1bxym4HDcpur9jISULVtE0j/y7bASzKsfhFZof8hQmBOhF4j5tAzb0EGQcmN2Zg==
+X-Received: by 2002:a17:906:410a:b0:a58:aea7:df78 with SMTP id j10-20020a170906410a00b00a58aea7df78mr1541901ejk.6.1714122156900;
+        Fri, 26 Apr 2024 02:02:36 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm7714032ejx.107.2024.04.26.02.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 02:02:36 -0700 (PDT)
+Date: Fri, 26 Apr 2024 11:02:30 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
+	Conor Dooley <conor@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, Evan Green <evan@rivosinc.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] riscv: cpufeature: Fix thead vector hwcap removal
+Message-ID: <20240426-d8aba0211e882568ccc761df@orel>
+References: <20240424-cpufeature_fixes-v1-0-585e73d2226b@rivosinc.com>
+ <20240424-cpufeature_fixes-v1-1-585e73d2226b@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,27 +85,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240424-cpufeature_fixes-v1-1-585e73d2226b@rivosinc.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c942a0cd3603e34dd2d7237e064d9318cb7f9654
-commit: 5431fdd2c181dd2eac218e45b44deb2925fa48f0 ptrace: Convert ptrace_attach() to use lock guards
-date:   5 months ago
-config: powerpc-randconfig-r033-20230815 (https://download.01.org/0day-ci/archive/20240426/202404261646.RbWtKBhy-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404261646.RbWtKBhy-lkp@intel.com/reproduce)
+On Wed, Apr 24, 2024 at 09:19:54AM GMT, Charlie Jenkins wrote:
+..
+> +	/*
+> +	 * Naively assume that all harts have the same mvendorid/marchid as the
+> +	 * boot hart.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404261646.RbWtKBhy-lkp@intel.com/
+This comment isn't necessary, since we don't have to assume all harts have
+the same IDs. This information is currently being collected specifically
+for thead. So, we can state in a comment below, where the information is
+used, that we assume when the boot hart is thead, then we don't want to
+enable V on any hart (whatever their IDs are).
 
-All warnings (new ones prefixed by >>):
+Thanks,
+drew
 
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data65' from `kernel/ptrace.o' being placed in section `.bss..Lubsan_data65'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +	 */
+> +	boot_vendorid = riscv_get_mvendorid();
+> +	boot_archid = riscv_get_marchid();
+> +
+>  	for_each_possible_cpu(cpu) {
+>  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
+>  		unsigned long this_hwcap = 0;
+> @@ -544,8 +553,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+>  		 * CPU cores with the ratified spec will contain non-zero
+>  		 * marchid.
+>  		 */
+> -		if (acpi_disabled && riscv_cached_mvendorid(cpu) == THEAD_VENDOR_ID &&
+> -		    riscv_cached_marchid(cpu) == 0x0) {
+> +		if (acpi_disabled && boot_vendorid == THEAD_VENDOR_ID && boot_archid == 0x0) {
+>  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
+>  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+>  		}
+> 
+> -- 
+> 2.44.0
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
