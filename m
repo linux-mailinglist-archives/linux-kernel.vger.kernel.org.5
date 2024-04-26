@@ -1,114 +1,214 @@
-Return-Path: <linux-kernel+bounces-160087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9508B8B38F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:52:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6158B38EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:51:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA628B238E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:51:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C926A285FB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37EA148303;
-	Fri, 26 Apr 2024 13:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="dbft3gR5"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98533148304;
+	Fri, 26 Apr 2024 13:51:33 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4C7147C81;
-	Fri, 26 Apr 2024 13:51:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DA8147C81;
+	Fri, 26 Apr 2024 13:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714139506; cv=none; b=EUmgD6L35YcIZlEkDvxRUQULZniIBrYJCD2oZ9YSZa1/4aDcT+VOD7sH/ywGgqyuM6vQW8e9GnSl+B720hnevDLNtBMRj/wCTPRjrTBZrnUnR5+Lhdflckgvo2aNQ7VWupbPKwT1jhAofMiyUpjnxNYUsH7YA21cER4tHPL0X1U=
+	t=1714139493; cv=none; b=anq7JwScso9iLRtvwdnYStS7ErGwauzzAiyGZNFrTfjBvKYQTYpt+0FuCvPHsZWPIRB7K6sXJAAIocx/Zj75XtG+6NkrCXOjRqC5jw1BbZND8A7lvA5rcVv6URTFS1ZkKzextqylweCmzrN3ZjMdzYh5nclRoBLoT0MsIyyOpd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714139506; c=relaxed/simple;
-	bh=sfPc8vA1asOT4uhPnXFYAb1MYP7/75SGuCAI7eNLkxs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JHuKeyiLatg0gdk1o7ZS/AxJSJ/XUw8yMH0WHmDBndfYSi7bFowEv7YK9nZuq8EM1qghU3uSWJwb2GxuwxfNQ55ZCJeD+L3BJ/2nXq74YZxpNC6aLBc1u73qDKnPTLWvLV4xbGosiC54xkUz0Q99wzWN4Q1Xz8cxWWVQOU3vzUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=dbft3gR5; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714139474; x=1714744274; i=markus.elfring@web.de;
-	bh=sfPc8vA1asOT4uhPnXFYAb1MYP7/75SGuCAI7eNLkxs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=dbft3gR5I9p9ervltEZx+omyOiwLyxFKXShxNiup9mHSMcJ/zHQsGTU0dBH6RNkE
-	 Rw3qZpUt+zG+YEHw7BqN4numkvzMBtU9k/6/Q3cV9Yc+vGsXxrMq0J9UZjXcR8ytQ
-	 y2hU2C2q+xtTVVTlKig80ST1hsWMmAOCGVjyBinfWu6M76QkA77GnVABTAJH8laHC
-	 k3EkqSNPiE4hUsq3Kl3pXLASl7bPrUC3rNPy0OeKX5/uia+bx96MwL+2hVfGlmaQ5
-	 UXDeSJwX8XmMFvxQXUqGtJIMHP8TWGgBo0GkhbKCCCBPHYwDKdGccp9ZLltmofWSd
-	 FGRx5BZrByfzEjDd0Q==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MFayw-1ruGeC2EL0-00H4ZR; Fri, 26
- Apr 2024 15:51:14 +0200
-Message-ID: <801e8f98-7e26-429b-9601-9e42d0e304e7@web.de>
-Date: Fri, 26 Apr 2024 15:51:10 +0200
+	s=arc-20240116; t=1714139493; c=relaxed/simple;
+	bh=QHkwzm7yGBz1ZP6RZARRpVjRm5TBFngEPCESKKI1c/Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FRq0chu8CUCf/FTAFDg+BEXV9xnodWMDkbOqxgvm3nes3sg1aTseHJPbz06qOfWet8VTL+UBR5peORVdrloHXt/c7lLve8hYlBjLOOozBOUsZcaLXzzsV3Mwof1ua+zFMa2jm8P5xcnTKUpx/UjkXwlmfkftqGrYE4rGn1vdEGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQvG10Yj3z6K6Nj;
+	Fri, 26 Apr 2024 21:48:57 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id C5D0C140A34;
+	Fri, 26 Apr 2024 21:51:25 +0800 (CST)
+Received: from SecurePC-101-06.china.huawei.com (10.122.247.231) by
+ lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 26 Apr 2024 14:51:25 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, James Morse
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
+	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>
+Subject: [PATCH v8 00/16] ACPI/arm64: add support for virtual cpu hotplug
+Date: Fri, 26 Apr 2024 14:51:10 +0100
+Message-ID: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: serial: 8250_lpss: Fix memory leak in lpss8250_probe()
-To: lumingyindetect@126.com
-Cc: linux-serial@vger.kernel.org, kernel-janitors@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Jiri Slaby <jirislaby@kernel.org>
-References: <20240426114716.1275085-1-lumingyindetect@126.com>
- <42c5d1f0-d16a-483b-8bb1-4c5768aa3a8c@web.de>
- <4e6966e0.a07e.18f1a7f7863.Coremail.lumingyindetect@126.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <4e6966e0.a07e.18f1a7f7863.Coremail.lumingyindetect@126.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:44/Zkz0wQLU2wdmqoRfUmes0z8Qej6S5BBJmxijUrzSXSpyNFAQ
- +E5Eem4AzytWFighTHTFnb4PMQu8lzwJwYw80dFkexUl9AGGTfHAKZBMewyY1Fu4VfarQVY
- 8MKJR+641KXxt+iz99ddMO3fEwye3/y2T6QJHBccizzd6lbAm4ZHsPUjyF7MxPtpMZ+H0bR
- 9Ai3cJ198zZ75ZUKyOpZw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hrkOPrdjhYQ=;JoqKRc4NrL4MMWqyzGtOVb24Aa3
- YG/73oK/MqpKXnEUjtpn+3lyeU7akHH2X2080bFuXrIWfhRgIV6qE/ok/R5XOWt+3EsPqaWOv
- g2nFBs+aHFd1DwKl1OKsNnLJQjS/6BaCIjiLTNNXnuMOD8rSoYiuJRCnj97kr2juvqrvQnRzg
- nVTRXx0+ynxLiQNmloU2Yb7XFLK8gXQ/fEzZfvx0/bzvAsSAWHwbLUVxDW0jb5eRw4QS1sUyU
- D5nkNYUHaQwjKk3ip2UCcf/kYgjbR/0U4lMGfH5vhtRmjF/d2YjlZgT0xPjEr//xp3Z9ox+kb
- ngzbpViIJtpqHcv2sWBS6Ts9Aw750AULXuCcDCiS4vAztl0/FTqtajjlo8MOkASd7BQdCjTTL
- mosK27aACUBn4FsXAxCjTL9ZZ2olX6MIZeY4wl+JaFhhkDtel7GOsEfMelzmJVfYNlF4hdC5C
- PeUu/aUAbyWpHofEkrTeQcem77DT7Yg/+vTPD1El9dAqRCtwzGuq4K2lg6tQoOKj2fG7q36L8
- CN58dy86BtEZ5/daUhTEd3+3n6QwBpP0wwayhkkrMRdD4FcsA1aNAYxT3Ype+G+jjgW6/za8T
- HAqegjPT0sjnI/XzPjvwxENUtkOLmRCvv62hGJ1hSc3dkyGZD8Q4yCytIeMD6a8fCJgftYAd+
- 9XDYDYJFQZSv/2zImY1EEtjTYmYNbuf54s9Ft7b/vX7tTVrFOPLCmIJaLMQvcEBYK/vUmz7CB
- 4Df+35/FErG/Haz3PUH1tPNhpLJeZhWKr/xn/82paZN8CVtlkpb8GPf6c0zr8PWy0KV6RPhUU
- ALfoATZPUtpYyBk5pu7pVcCoI/cHIguujWGzW3mqxr6Rg=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-> This is my first time submitting a patch, and I haven't fully understood=
- the meaning of "add a commit subject for this tag" yet.
+Thanks to Rafael, Marc, Hanjun and Gavin for reviews of v8 and tags.
 
-Would you like to take available information from published information so=
-urces
-better into account?
+v8: Details and more minor stuff in individual patch descriptions
+  - Rewrite the handling of not enabled redistributors in the gicv3 driver
+    to keep impacts local. Note this needs a dance with a new cpuhp
+    callback that runs before CPU bring up reaches the section that
+    cannot fail. This avoids clearing bits in cpu_present_mask and
+    cpu_possible_mask making the solution much less fragile.
+  - Do not carry on for that CPU if acpi_processor_set_per_cpu() detects
+    a problem, but continue to leave enough in place to perform buggy bios
+    checks.
+  - Protect against a buggy BIOS that has apparently enabled CPUs in DSDT
+    that are not in MADT. The check makes sense anyway as on arm64 we have
+    not way to 'generate' an ID if one isn't present at acpi_map_cpu().
 
-Please take another look also at advices from the section =E2=80=9CDescrib=
-e your changes=E2=80=9D.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n145
+Updated version of James' original introduction.
 
+This series adds what looks like cpuhotplug support to arm64 for use in
+virtual machines. It does this by moving the cpu_register() calls for
+architectures that support ACPI into an arch specific call made from
+the ACPI processor driver.
+ 
+The kubernetes folk really want to be able to add CPUs to an existing VM,
+in exactly the same way they do on x86. The use-case is pre-booting guests
+with one CPU, then adding the number that were actually needed when the
+workload is provisioned.
 
-By the way:
-Did you try the development tool =E2=80=9Cscripts/checkpatch.pl=E2=80=9D o=
-ut for your change approach?
+Wait? Doesn't arm64 support cpuhotplug already!?
+In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
+The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
+has the additional step of physically removing the CPU, so that it isn't
+present anymore.
+ 
+Arm64 doesn't support this, and can't support it: CPUs are really a slice
+of the SoC, and there is not enough information in the existing ACPI tables
+to describe which bits of the slice also got removed. Without a reference
+machine: adding this support to the spec is a wild goose chase.
+ 
+Critically: everything described in the firmware tables must remain present.
+ 
+For a virtual machine this is easy as all the other bits of 'virtual SoC'
+are emulated, so they can (and do) remain present when a vCPU is 'removed'.
 
-Regards,
-Markus
+On a system that supports cpuhotplug the MADT has to describe every possible
+CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
+the guest is started.
+With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
+policy about which CPUs can be brought online.
+ 
+This series adds support for virtual-cpuhotplug as exactly that: firmware
+policy. This may even work on a physical machine too; for a guest the part of
+firmware is played by the VMM. (typically Qemu).
+ 
+PSCI support is modified to return 'DENIED' if the CPU can't be brought
+online/enabled yet. The CPU object's _STA method's enabled bit is used to
+indicate firmware's current disposition. If the CPU has its enabled bit clear,
+it will not be registered with sysfs, and attempts to bring it online will
+fail. The notifications that _STA has changed its value then work in the same
+way as physical hotplug, and firmware can cause the CPU to be registered some
+time later, allowing it to be brought online.
+ 
+This creates something that looks like cpuhotplug to user-space and the
+kernel beyond arm64 architecture specific code, as the sysfs
+files appear and disappear, and the udev notifications look the same.
+ 
+One notable difference is the CPU present mask, which is exposed via sysfs.
+Because the CPUs remain present throughout, they can still be seen in that mask.
+This value does get used by webbrowsers to estimate the number of CPUs
+as the CPU online mask is constantly changed on mobile phones.
+ 
+Linux is tolerant of PSCI returning errors, as its always been allowed to do
+that. To avoid confusing OS that can't tolerate this, we needed an additional
+bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
+appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
+has a different bit position in the GICC.
+ 
+This code is unconditionally enabled for all ACPI architectures, though for
+now only arm64 will have deferred the cpu_register() calls.
+
+If folk want to play along at home, you'll need a copy of Qemu that supports this.
+https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v2
+
+Replace your '-smp' argument with something like:
+ | -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
+ 
+ then feed the following to the Qemu montior;
+ | (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+ | (qemu) device_del cpu1
+ 
+
+James Morse (7):
+  ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
+  ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+  arm64: acpi: Move get_cpu_for_acpi_id() to a header
+  irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+  irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
+    CPUs
+  arm64: document virtual CPU hotplug's expectations
+  cpumask: Add enabled cpumask for present CPUs that can be brought
+    online
+
+Jean-Philippe Brucker (1):
+  arm64: psci: Ignore DENIED CPUs
+
+Jonathan Cameron (8):
+  ACPI: processor: Simplify initial onlining to use same path for cold
+    and hotplug
+  cpu: Do not warn on arch_register_cpu() returning -EPROBE_DEFER
+  ACPI: processor: Drop duplicated check on _STA (enabled + present)
+  ACPI: processor: Move checks and availability of acpi_processor
+    earlier
+  ACPI: processor: Add acpi_get_processor_handle() helper
+  ACPI: scan: switch to flags for acpi_scan_check_and_detach()
+  arm64: arch_register_cpu() variant to check if an ACPI handle is now
+    available.
+  arm64: Kconfig: Enable hotplug CPU on arm64 if ACPI_PROCESSOR is
+    enabled.
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   6 +
+ Documentation/arch/arm64/cpu-hotplug.rst      |  79 ++++++++++++
+ Documentation/arch/arm64/index.rst            |   1 +
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/include/asm/acpi.h                 |  11 ++
+ arch/arm64/kernel/acpi.c                      |  22 ++++
+ arch/arm64/kernel/acpi_numa.c                 |  11 --
+ arch/arm64/kernel/psci.c                      |   2 +-
+ arch/arm64/kernel/smp.c                       |  56 ++++++++-
+ drivers/acpi/acpi_processor.c                 | 115 +++++++++++-------
+ drivers/acpi/processor_driver.c               |  44 ++-----
+ drivers/acpi/scan.c                           |  47 +++++--
+ drivers/base/cpu.c                            |  12 +-
+ drivers/irqchip/irq-gic-v3.c                  |  49 ++++++--
+ include/acpi/acpi_bus.h                       |   1 +
+ include/acpi/processor.h                      |   2 +-
+ include/linux/acpi.h                          |  10 +-
+ include/linux/cpumask.h                       |  25 ++++
+ kernel/cpu.c                                  |   3 +
+ 19 files changed, 383 insertions(+), 114 deletions(-)
+ create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+
+-- 
+2.39.2
+
 
