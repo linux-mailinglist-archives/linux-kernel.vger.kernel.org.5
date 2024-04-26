@@ -1,170 +1,127 @@
-Return-Path: <linux-kernel+bounces-160201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5414E8B3A83
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:01:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958918B3A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:00:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C2AC288486
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:01:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A59B3B25115
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4CE148FE1;
-	Fri, 26 Apr 2024 15:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC71148854;
+	Fri, 26 Apr 2024 15:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rqAdKPnn"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMfGfSnX"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4127824B3;
-	Fri, 26 Apr 2024 15:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E891E52A;
+	Fri, 26 Apr 2024 15:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714143654; cv=none; b=fmjiYr3Rp08u3+xWk0w6etixV+26IQLAm8GU0TXkUTTdgAjcLsa8WUv9bBmwXKfuxWmtdn4HcaQit7MvcpnFl8QUOPAHH/KjTz+ZoSC+xlSjjkM+S2O5TQlcnhSqsxyqP52d1imw5R+5QbwBrpDHj20LdprJTFsnK+qUFrG+dxM=
+	t=1714143629; cv=none; b=LFCGBRjIkmISJ9pTHzxnFVcX7XYIhUvR8ivRQdViuQ0smQlbzlLdEwLRz+KDhWfKojF9Y5ExxYSd57GYqUTSHUN/fO1VcCGlZAVZwpyfkw4+1c58ZbnmfiN/WjtDsPUPUnzyAmHRIUSBAbdsvddPu14jlgYXSXmTzP5oJ8mMt0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714143654; c=relaxed/simple;
-	bh=Krp0ixMO8Z7FJrpDXir2sn7ZJLY3AzyiosM0Mm20ZLU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pfNN1ARb0vrcOGshLtMnVvRCmxFoEKvcpPLheYxQzL5+hE6EWEcBD0VSbUasel7zJOWSiCe+Btsh7RSd06dvyeU7TcSBPPQRGLLzGeQ45YxrTVpV8y3tIZS/pukHaKECOsjX2BgNfitdyq97MKxIB7Tt9MSfHGFnqA/JDEdu9eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rqAdKPnn; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QEpvwN028494;
-	Fri, 26 Apr 2024 15:00:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=qr+2iUUPDNYgObLxDLeS1JVLJzKYCjSVzJhiz1bDJ7Y=;
- b=rqAdKPnn8E+iUHckboXCI1403tWg3F+KFttV21ra8Ohy7COQG9D77t1qvyPMe26of9MW
- wiIlplwT+4/tI1Q0Ln6fXpdIuj1hdvq9Vi8VE7h5ZiCT+xfCunbTbtg5gZZxa6wYh/fH
- Bvno5jFKCbabEpWDJRb1vmuzQBnbufSIpWMgXmrEIqWphoBLSzMmKIc0QjxXvsAAxKIC
- g/s1QWn5iwTTOx37g7CmYX2cAC7nsJEbnxWZk5NAtsC+5HoprCyFI9pujUM0wJ1ffAJa
- /LSC5FJnRO//vZBzVBhUFPP0lR3vPBiMOS2xdAY9IuWVMjriRl0EnZFvdtpFuyL5qUJP FA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xredf80vk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:00:38 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDe2ck015430;
-	Fri, 26 Apr 2024 15:00:37 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmr6t2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:00:37 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QF0YZJ9044632
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 15:00:36 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 520E258069;
-	Fri, 26 Apr 2024 15:00:32 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0AD7458060;
-	Fri, 26 Apr 2024 15:00:32 +0000 (GMT)
-Received: from [9.61.156.17] (unknown [9.61.156.17])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 15:00:31 +0000 (GMT)
-Message-ID: <b89d39d2-ec54-4a88-aee5-7b5c95b3fca7@linux.ibm.com>
-Date: Fri, 26 Apr 2024 10:00:31 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/14] dt-bindings: fsi: Document the FSI2PIB engine
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-4-eajames@linux.ibm.com>
- <3f822b56-8e6a-43e4-afb0-15c964f9474e@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <3f822b56-8e6a-43e4-afb0-15c964f9474e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -v8pjlEPK1p_sMN1TL5NRtVbH9UJS6rn
-X-Proofpoint-GUID: -v8pjlEPK1p_sMN1TL5NRtVbH9UJS6rn
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714143629; c=relaxed/simple;
+	bh=D0JTVPMoItreQXaR98u8YlOOBXWYx6Lk1Qa1JuIAaSQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MKlDbrQbq3wo/pHel62V7lSLyWRGlwjYD4zzzKFVbPxisAMZGVL47QXc0gRtrMFiVGnUDbUDRmpc40OwM44ZeDLOUcneJs0qT7bO70dKg19Yts9/6Hc/qBJwjftatl5b1o/oC6V98KABPqpjbreCV0FSWTnEsEm4Bn5KLEIJY/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMfGfSnX; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51967f75729so2603710e87.0;
+        Fri, 26 Apr 2024 08:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714143626; x=1714748426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RI2DiQ7WK0ETjEb7x2y6HuwkQosPYs9rpRMVtAeop9s=;
+        b=RMfGfSnXsAevX68ExAyv3pObRfsEdEZEI/kx/kmebLl5eNYX7HIOooBVXhS2vZrnVD
+         21awBqdwaY4Sg5zO0u0YSQKglQFb+7qF4cXnhssqGi2cP4pR5MieG8zSLJx2KYk3CtaB
+         KTwtZUejAXZ7Usq3Q8wYexIhQcXjeQljYenOOyZ8dsqffKUKPXGew2tQLSsKiTTILbjj
+         dN7FQ1Oc8uedUADd+oH+jSSIovKZu6uDytEf4a42VKqBgPWvjB4sCiU7A9SQqcvTa8F2
+         uQ79exNqGwykp1/ddF9x7YK2N1HejC5LSIxr1wid7oQV3hFp+GkExHoeIAg6zb+zB/D6
+         A5Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714143626; x=1714748426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RI2DiQ7WK0ETjEb7x2y6HuwkQosPYs9rpRMVtAeop9s=;
+        b=jEhU5byBQra2YdKDHU2VvJRZpTxt6gTGmkdg0gJCX8KXSMr4A2J1RoimqLgvcIjRqu
+         NRqpWkVD4JlFGhxfbdiN/r92adnIIu9WjO/Zv5ypVnCP35EdwRkzktscu0g9miOA0vG1
+         vZNDqsObh0vkQs6KRvE+jtQp6cVdTck1owBueMFwcBuCKocWfR4indinkdAmeO9i6mkS
+         MNhb1VSYoCQtBkrNm4WpcAaoEbVKbkQsI3/0qoOagYsMvjfg7veqqLijW9eis7dm5nZF
+         4a9U1QwznpiMdKOVMt0QBa2m8WVlCtCeb7mER0vJEUayWw8JzY+woWnxbUTUrhB2trl+
+         m/HA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwOMO1wlDmxNZJmw+3KApagT4dUlCOx2lxoWomxaIknYPXwFwXihcfQH2ddACz4aVTG6FfD57FCU9K9DUcjQNliUmXukK6j5neP4Tv8BNpFhc80/LNHk7TP67H6RHnCkt5lixmUlaqq+5L
+X-Gm-Message-State: AOJu0YxurWazZGw5L2/jNZ7pl1p3Nq6+orZYlSmMJbm2/R2s6QadbT6s
+	/6YuxqB4XPlUH9/b44Grg5wihrrF7/p03fQJChUk0ItjH3X0fLQVHyRq1CcnBFfBKzi4xLzPElH
+	jKr2vELGieZvqOJmWiip6o3pE+G0=
+X-Google-Smtp-Source: AGHT+IEwD4iMuIADNunV7sRblpdAQlKFbRFk+5S1HncPH8Y25XFpKIsg9gfDB526o1V5pE7D74cG/adKVGl7SrTmgG4=
+X-Received: by 2002:a05:6512:4012:b0:51c:bc4f:2026 with SMTP id
+ br18-20020a056512401200b0051cbc4f2026mr1606484lfb.51.1714143625992; Fri, 26
+ Apr 2024 08:00:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=990 suspectscore=0
- impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404260100
+References: <20240425183251.174412-1-rilian.la.te@ya.ru> <20240425183251.174412-2-rilian.la.te@ya.ru>
+ <Ziu7DpoHGLrURI_9@smile.fi.intel.com>
+In-Reply-To: <Ziu7DpoHGLrURI_9@smile.fi.intel.com>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Fri, 26 Apr 2024 18:02:48 +0300
+Message-ID: <CAF1WSuytbkoMfRotBiQyKHGKacwicSJtkSrbLis9UVwD83WVKQ@mail.gmail.com>
+Subject: Re: [PATCH v9 1/3] serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, conor@kernel.org, lkp@intel.com, 
+	vz@mleia.com, robh@kernel.org, jcmvbkbc@gmail.com, 
+	nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net, 
+	ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 4/26/24 01:18, Krzysztof Kozlowski wrote:
-> On 25/04/2024 23:36, Eddie James wrote:
->> The FSI2PIB or SCOM engine provides an interface to the POWER processor
->> PIB (Pervasive Interconnect Bus).
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> ---
->>   .../devicetree/bindings/fsi/ibm,fsi2pib.yaml  | 38 +++++++++++++++++++
->>   1 file changed, 38 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
->> new file mode 100644
->> index 000000000000..4d557150c2e3
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
->> @@ -0,0 +1,38 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/fsi/ibm,fsi2pib.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: IBM FSI-attached SCOM engine
->> +
->> +maintainers:
->> +  - Eddie James <eajames@linux.ibm.com>
->> +
->> +description:
->> +  The SCOM engine is an interface to the POWER processor PIB (Pervasive
->> +  Interconnect Bus). This node will always be a child of an FSI CFAM node;
->> +  see fsi.txt for details on FSI slave and CFAM nodes.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ibm,fsi2pib
->> +      - ibm,i2cr-scom
-> Sometimes you call these p9, sometimes p10... what is the system or SoC
-> here? Aren't you adding some generic compatibles? writing-bindings and
-> numerous guides are clear on that.
-
-
-Open source FSI support started with P9 chips so we initially added 
-p9-sbefifo, p9-occ, etc. P10 has all of the same engines as P9 plus the 
-SPI controller, so that's why SPI is p10-spi. P11 has the same engines 
-as P10. For scom/fsi2pib we could call it p9-scom I suppose... This 
-series isn't just documentation for a new system, I'm adding 
-documentation that should have been added for P9. Anyway I'm not sure 
-what you mean about generic compatibles? You mean just add a "scom" or 
-"fsi2pib" compatible? writing-bindings says "DO make 'compatible' 
-properties specific"
-
-
-Thanks,
-
-Eddie
-
-
+On Fri, Apr 26, 2024 at 5:36=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
 >
-> Best regards,
-> Krzysztof
+> On Thu, Apr 25, 2024 at 09:32:33PM +0300, Konstantin Pugin wrote:
+> > From: Konstantin Pugin <ria.freelander@gmail.com>
+> >
+> > When specifying flag SER_RS485_RTS_ON_SEND in RS485 configuration,
+> > we get the following warning after commit 4afeced55baa ("serial: core:
+> > fix sanitizing check for RTS settings"):
+> >
+> >     invalid RTS setting, using RTS_AFTER_SEND instead
+> >
+> > This results in SER_RS485_RTS_AFTER_SEND being set and the
+> > driver always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT=
+,
+> > which breaks some hardware using these chips.
+> >
+> > The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, so fix
+> > this by announcing support for RTS_ON_SEND.
+>
+> Greg KH, who is maintainer of TTY/serial subsystem, usually asks to separ=
+ate
+> fixes from new features. So, sending this patch separately may not only h=
+elp
+> him, but let's move forward with your stuff.
+>
+
+Do I need to increase the version number in split send? And if I need
+to do so, then how I should do it? Only on new driver? Or only on fix?
+Should I CC linux-stable in fix patch?
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
 >
 
