@@ -1,113 +1,115 @@
-Return-Path: <linux-kernel+bounces-159402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C018B2E2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5928B2E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:59:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A48811C21DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:58:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37DE1C21DF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 00:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873D5EDB;
-	Fri, 26 Apr 2024 00:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3BA4A3F;
+	Fri, 26 Apr 2024 00:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MIYMK39u"
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="jZHya2SQ"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99A6620
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C3D4685;
+	Fri, 26 Apr 2024 00:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714093122; cv=none; b=YPvKOcteouurJdPZuDw1hO7u4eMA6NsJ6AnUSKONwaDvzMLIXkisUo6zl6UldRHlSuLEih2TA+nDYjvECaRmOfbwTvkQDDXXnOiu6FTKVIKahhxyTx30ARlpWpl+/MCjiTdLdkgZCmofD0DIFFTRDkHA1opPVk/AJaHBjpf4AzE=
+	t=1714093153; cv=none; b=JdevuRNCuOm4skXg+hJfcrEZl8gw88+wqAz8sksKEz3AaQG/t2UMs7+pi+uatpkv6FksPz7RQ0chgxtJmv7QxMhezieM0ZXjn0Vz4o9kQWCrdcw6FaHP9rlrelBBKFHZNGRA93OXTB2ui/T3Pl8oTQMJXWb9RPkOjEQzDbCXBg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714093122; c=relaxed/simple;
-	bh=lvobPQOIiNfw0n12EkvEBH57AhWUFxbFDYcvxGJw4Hk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOydVosqQDTqJMLW7/yIZUp7k3nv43g12AYMsh8gYEVYENiyJc+kHFIs6E05C0YbscQ9iTDSm13UYw6IDWzyEMkPIDbCCATwWr+3OZRktM4Vd2ZLfEOYxQfmRhT6iIKFznNUpvtgeO3QrcXU1kthxC84pB5vsfE/+x7k9VchOvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MIYMK39u; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 25 Apr 2024 20:58:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714093118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pW2nVZcsWCTaWzRE1USWg5C8N+QQoR9xikgyDPIEVfg=;
-	b=MIYMK39u8yqpjVgHB3ze+cLWiWdTjBb7/6od4z7JDRizvyBKuLEo9FWHdzw1M9O9DGD7Vc
-	YQZTYCuXdgW7U3efY7Eb43U+WsAe7thXCkRpi21BS2IcQbM306ApwpLrgYjNUqVkZhPg6e
-	ClBbl9sDKx/xOj87h6WiPC+Y7Hvb21M=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kees Cook <keescook@chromium.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Matthew Wilcox <willy@infradead.org>, Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
-Message-ID: <qzi5ss4h4ou6yfbzadoamqocvvzviuh3eeefpv5qfkcvrrejfo@qptmu2y6u7qj>
-References: <20240425200844.work.184-kees@kernel.org>
- <w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
- <ZirCbPR1XwX2WJSX@casper.infradead.org>
- <64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
- <202404251532.F8860056AE@keescook>
- <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
- <sxcyj2gif2avyx2disz62sfe3hot24w4rtszgl2dtqadegtnek@xjkozdbd6yzp>
- <202404251740.81F21E54@keescook>
+	s=arc-20240116; t=1714093153; c=relaxed/simple;
+	bh=yOCDZvzSiMgXT1+ANWimx5Yi1spr4PiVR1sfXFbNTcg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kUhoXYCf7w2o+EYrMFCtSJaQ3rZvyYVXveHUcN+lqLQuTSbA9Lz7HyPQRdkqLKbk3Z4DUKhocEwrfPD2k8L85T5WmenaXJTdZFOlNpkpAm2DWhGbWXKtJHhI9rVpvuNty2Mjx5nkS37jJEJg5WI+CgxE1dKdEi9ikHaY9bqteMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=jZHya2SQ; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-127-66.adl-apt-pir-bras32.tpg.internode.on.net [14.2.127.66])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 7711320075;
+	Fri, 26 Apr 2024 08:59:09 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1714093150;
+	bh=MAnTooQ3NWgoEkJO0tXSf39pJZ1lMIpBC5h/JQHXvew=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=jZHya2SQ6YJ7VWUlGZbqB0aMCTZfYXBAsGHhVoMIGiACDXu8l7aI9qVxqPF6RStCa
+	 /trLlmZPQAPAeGw9kVikC96f+Ur0+azQhWR3z3lXgosxtyh/Igijl0xzPTHjX/mv/z
+	 kK77IgFgLZkNAWpa0x+wsDuh0CfA1sbFWhtVczMiwjd1dEYlIfFAJNZZQ6OZV9O/YP
+	 t1CBaTlDYVgRgk1wNcq0eAuw39LeRq8KIl3Pdj7k5fEjGzdl0WJQTs+r92bEuDtBiV
+	 jgAiObK3rdJKlKiRnv6qm98UTa9rW+OnY/rU1VIpEH5P6lET5M70qLCaXpVPPq4sab
+	 oS/3+SJ8rYPWg==
+Message-ID: <cfa6d4071f3789ee6ddef302f685c63d4de0ba36.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v1 2/2] Add nct7363 in yosemite4 dts
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date: Fri, 26 Apr 2024 10:29:08 +0930
+In-Reply-To: <20240425060626.2558515-3-Delphine_CC_Chiu@wiwynn.com>
+References: <20240425060626.2558515-1-Delphine_CC_Chiu@wiwynn.com>
+	 <20240425060626.2558515-3-Delphine_CC_Chiu@wiwynn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404251740.81F21E54@keescook>
-X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 25, 2024 at 05:43:33PM -0700, Kees Cook wrote:
-> On Thu, Apr 25, 2024 at 08:27:05PM -0400, Kent Overstreet wrote:
-> > On Thu, Apr 25, 2024 at 04:47:18PM -0700, Andrew Morton wrote:
-> > > On Thu, 25 Apr 2024 15:42:30 -0700 Kees Cook <keescook@chromium.org> wrote:
-> > > 
-> > > > > The concern about leaking image layout could be addressed by sorting the
-> > > > > output before returning to userspace.
-> > > > 
-> > > > It's trivial to change permissions from the default 0400 at boot time.
-> > > > It can even have groups and ownership changed, etc. This is why we have
-> > > > per-mount-namespace /proc instances:
-> > > > 
-> > > > # chgrp sysmonitor /proc/allocinfo
-> > > > # chmod 0440 /proc/allocinfo
-> > > > 
-> > > > Poof, instant role-based access control. :)
-> > > 
-> > > Conversely, the paranoid could set it to 0400 at boot also.
-> > > 
-> > > > I'm just trying to make the _default_ safe.
-> > > 
-> > > Agree with this.
-> > > 
-> > > Semi-seriously, how about we set the permissions to 0000 and force
-> > > distributors/users to make a decision.
-> > 
-> > I'm ok with 0400 for now since it's consistent with slabinfo, but I'd
-> > really like to see a sysctl for debug info paranoia. We shouldn't be
-> > leaving this to the distros; we're the ones with the expertise to say
-> > what would be covered by that sysctl.
-> 
-> We've not had great luck with sysctls (see userns sysctl discussions)
-> since they don't provide sufficient granularity.
-> 
-> All this said, I'm still not excited about any of these files living
-> in /proc at all -- we were supposed to use /sys for this kind of thing,
-> but its interface wasn't great for this kind of more "free-form" data,
-> and debugfs isn't good for production interfaces. /proc really should
-> only have pid information -- we end up exposing these top-level files to
-> every mount namespace with a /proc mount. :( But that's a yet-to-be-solved
-> problem...
+On Thu, 2024-04-25 at 14:06 +0800, Delphine CC Chiu wrote:
+> ARM: dts: aspeed: yosemite4:
 
-It really wouldn't be that hard to relax the 4k file limit in sysfs.
+This should be in the patch subject, not the commit message body.
+
+> Add nct7363(0x21 and 0x23) in yosemite4.dts
+>=20
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> ---
+>  .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 144 ++++++++++++++++++
+>  1 file changed, 144 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b=
+/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> index e45293762316..06b709b0a706 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> @@ -467,6 +467,42 @@ channel@5 {
+>                                  };
+>  			};
+> =20
+> +			hwmon0: hwmon@21 {
+
+I feel hwmon describes a subsystem in linux more than it does hardware,
+and using it for a node name feels a bit off to me. It's not listed in
+the devicetree spec (v0.4) as a recommended generic name, and is only
+used in a handful of devicetrees - two of which are ancient BMC
+devicetrees:
+
+((v6.9-rc5)) $ git grep -l hwmon@ -- arch/arm/boot/dts/
+arch/arm/boot/dts/aspeed/aspeed-bmc-opp-palmetto.dts
+arch/arm/boot/dts/aspeed/aspeed-bmc-opp-vesnin.dts
+arch/arm/boot/dts/intel/ixp/intel-ixp42x-freecom-fsg-3.dts
+arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateworks-gw2348.dts
+arch/arm/boot/dts/intel/ixp/intel-ixp43x-gateworks-gw2358.dts
+arch/arm/boot/dts/marvell/armada-370-c200-v2.dts
+arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
+arch/arm/boot/dts/microchip/lan966x.dtsi
+arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts
+arch/arm/boot/dts/xilinx/zynq-zc702.dts
+
+> +				compatible =3D "nuvoton,nct7363";
+
+This compatible seems to be undocumented as of v6.9-rc5? Should you
+also send a binding patch?
+
+Andrew
 
