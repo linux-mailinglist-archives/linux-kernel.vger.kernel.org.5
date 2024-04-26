@@ -1,142 +1,149 @@
-Return-Path: <linux-kernel+bounces-159782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB028B33E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:26:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD188B33DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:25:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFCBC1C21D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:26:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FBC5B22232
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8706013EFF4;
-	Fri, 26 Apr 2024 09:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E41A13E052;
+	Fri, 26 Apr 2024 09:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DriDzvnH"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D654013C838;
-	Fri, 26 Apr 2024 09:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="HQTUOZDY"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8040D13C838
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123561; cv=none; b=QEIEYfzJcdykqvEulmo5lEcwQTfCJB7ZkJ+J9+KPIjmgy4wMk2kTJiKah9kgv+LI1id2NX+DCbkeKHewHuJqijDRheDUvnL2RVoaEpl2zvR8L+tiulOe1otm67/gqKaZxmtPOxJCGTDRTJLNXV+o1XxEJQZ3dGEjeMjPLM2Dgq0=
+	t=1714123512; cv=none; b=c8KrZDGqeTl9kqeZYhqy2iGO2tWWqDqw7c2AHX9OllQV0vBn5XujmtVVh5IMWorRhqxg0vLwFHeamQFUJM+HihjOPBvVRSvNr+j2TLeneIbhBioqtQCMVNNVCe2dOjlylNnhpFysdJNJlWve4VJd5K+IQQ479EDnsduDT6bnnZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123561; c=relaxed/simple;
-	bh=rp94rzmBiWYwRT1Xe9//2+dGBGbcwQT69S3QZcWHhbc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NtNwmK+fkjMG498GgYM7fTAAEO1Psn/FROHwRpFarnOqdrqbKBzqdDLAgnByROE/ZN9KfegestAOf2VBmFr+isGdwOsO91kN5ByFb8cGU+J21xGQMiSe+YjUw4pZrE3cNAuJkRlv1MrIoNnam3Kycwr3eX2xpBrIjY5rTCttXWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=DriDzvnH; arc=none smtp.client-ip=45.254.50.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ac8Ot
-	BpdXETb5u8j8PCiiZkMHIEDlMdWPHdK4ooOeGY=; b=DriDzvnHjrY+bGS417Fpf
-	MqinJ2/Lr3xAt/nI9aHCUjJHLhQsvJrFpYu38cEBn1Kv0PrRFdmdJsij2jFh5zgk
-	qn6aIf9q9ewZYsrs7K8EG2Gq8HHi2oxVFXMbeJBQPj9DiUsQWGHLB6ICAL1DCXXc
-	SBPfj5XaheRUIiNyG4x87M=
-Received: from localhost.localdomain (unknown [112.97.48.208])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3v3Tecitm5obCCQ--.37650S2;
-	Fri, 26 Apr 2024 17:24:48 +0800 (CST)
-From: Slark Xiao <slark_xiao@163.com>
-To: loic.poulain@linaro.org,
-	ryazanov.s.a@gmail.com,
-	johannes@sipsolutions.net
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Slark Xiao <slark_xiao@163.com>,
-	Hariprasad Kelam <hkelam@marvell.com>
-Subject: [PATCH net v2] net: wwan: Fix missing net device name for error message print
-Date: Fri, 26 Apr 2024 17:24:44 +0800
-Message-Id: <20240426092444.825735-1-slark_xiao@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714123512; c=relaxed/simple;
+	bh=4sk3SkM9lTZY2JBkhhraAd6ifVIO1oEjvKtMkIamMGs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EsM84CG4IwhLaoDXX2te+s/VqAFULm0LddokO1bPIr0xtcDsaqF7FnfGQqKBtTGHBhilFZVUyrRfGc+nDnjN4DTkYdYT0xmS9yQzC51Kfete7Us6dQF/pe/l6yygirWnt67Mv0fDCr1BuQ2SqgDLzQ7Mwb4g9EWNTGuf8Crj+3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=HQTUOZDY; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 114E466B;
+	Fri, 26 Apr 2024 11:24:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1714123455;
+	bh=4sk3SkM9lTZY2JBkhhraAd6ifVIO1oEjvKtMkIamMGs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HQTUOZDYmjmdlbB0bcbZ2NEqb+R83Hd10+hCsRKTTuc2aXnYepiQVDrzkOdEXdpbe
+	 d2lnDfNujb83VAOOpY4k7/HArtBk6L/7WL5hbogkzkdBm72Uem8gGBt7ditsbS1n7Y
+	 GED8BGTR2J/2mgslVwPguHMUvptabgDXo0R3XAsM=
+Date: Fri, 26 Apr 2024 12:25:00 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Michal Simek <michal.simek@amd.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Vishal Sagar <vishal.sagar@amd.com>,
+	Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Subject: Re: [PATCH] drm: xlnx: zynqmp_dpsub: Fix missing drm_bridge_add()
+ call
+Message-ID: <20240426092500.GA4524@pendragon.ideasonboard.com>
+References: <20240312-xilinx-dp-lock-fix-v1-1-1698f9f03bac@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3v3Tecitm5obCCQ--.37650S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAF4xCw13Cw45Wr43JF1kKrg_yoW5Cw1Upa
-	y7K3sxZr18Jay7X3WUJrWkZFWFywn5ta47Kry2v3WSvF1ayrWUWa4fJF95uw43ta1rAw17
-	tF4a9anxW3ZrG3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piHa0PUUUUU=
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiowPMZGVODGqReQAAst
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240312-xilinx-dp-lock-fix-v1-1-1698f9f03bac@ideasonboard.com>
 
-In my local, I got an error print in dmesg like below:
-"sequence number glitch prev=487 curr=0"
-After checking, it belongs to mhi_wwan_mbim.c. Refer to the usage
-of this net_err_ratelimited() API in other files, I think we
-should add net device name print before message context.
+Hi Tomi,
 
-Fixes: aa730a9905b7 ("net: wwan: Add MHI MBIM network driver")
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
-Reviewed-by: Hariprasad Kelam <hkelam@marvell.com>
----
- drivers/net/wwan/mhi_wwan_mbim.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/net/wwan/mhi_wwan_mbim.c b/drivers/net/wwan/mhi_wwan_mbim.c
-index 3f72ae943b29..6cefee25efc4 100644
---- a/drivers/net/wwan/mhi_wwan_mbim.c
-+++ b/drivers/net/wwan/mhi_wwan_mbim.c
-@@ -186,14 +186,14 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
- 
- 	if (skb->len < sizeof(struct usb_cdc_ncm_nth16) +
- 			sizeof(struct usb_cdc_ncm_ndp16)) {
--		net_err_ratelimited("frame too short\n");
-+		net_err_ratelimited("mbim: frame too short\n");
- 		return -EINVAL;
- 	}
- 
- 	nth16 = (struct usb_cdc_ncm_nth16 *)skb->data;
- 
- 	if (nth16->dwSignature != cpu_to_le32(USB_CDC_NCM_NTH16_SIGN)) {
--		net_err_ratelimited("invalid NTH16 signature <%#010x>\n",
-+		net_err_ratelimited("mbim: invalid NTH16 signature <%#010x>\n",
- 				    le32_to_cpu(nth16->dwSignature));
- 		return -EINVAL;
- 	}
-@@ -201,7 +201,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
- 	/* No limit on the block length, except the size of the data pkt */
- 	len = le16_to_cpu(nth16->wBlockLength);
- 	if (len > skb->len) {
--		net_err_ratelimited("NTB does not fit into the skb %u/%u\n",
-+		net_err_ratelimited("mbim: NTB does not fit into the skb %u/%u\n",
- 				    len, skb->len);
- 		return -EINVAL;
- 	}
-@@ -209,7 +209,7 @@ static int mbim_rx_verify_nth16(struct mhi_mbim_context *mbim, struct sk_buff *s
- 	if (mbim->rx_seq + 1 != le16_to_cpu(nth16->wSequence) &&
- 	    (mbim->rx_seq || le16_to_cpu(nth16->wSequence)) &&
- 	    !(mbim->rx_seq == 0xffff && !le16_to_cpu(nth16->wSequence))) {
--		net_err_ratelimited("sequence number glitch prev=%d curr=%d\n",
-+		net_err_ratelimited("mbim: sequence number glitch prev=%d curr=%d\n",
- 				    mbim->rx_seq, le16_to_cpu(nth16->wSequence));
- 	}
- 	mbim->rx_seq = le16_to_cpu(nth16->wSequence);
-@@ -222,7 +222,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
- 	int ret;
- 
- 	if (le16_to_cpu(ndp16->wLength) < USB_CDC_NCM_NDP16_LENGTH_MIN) {
--		net_err_ratelimited("invalid DPT16 length <%u>\n",
-+		net_err_ratelimited("mbim: invalid DPT16 length <%u>\n",
- 				    le16_to_cpu(ndp16->wLength));
- 		return -EINVAL;
- 	}
-@@ -233,7 +233,7 @@ static int mbim_rx_verify_ndp16(struct sk_buff *skb, struct usb_cdc_ncm_ndp16 *n
- 
- 	if (sizeof(struct usb_cdc_ncm_ndp16) +
- 	     ret * sizeof(struct usb_cdc_ncm_dpe16) > skb->len) {
--		net_err_ratelimited("Invalid nframes = %d\n", ret);
-+		net_err_ratelimited("mbim: Invalid nframes = %d\n", ret);
- 		return -EINVAL;
- 	}
- 
+On Tue, Mar 12, 2024 at 10:51:15AM +0200, Tomi Valkeinen wrote:
+> The driver creates a bridge, but never calls drm_bridge_add() when
+> non-live input is used. This leaves the bridge's hpd_mutex
+> uninitialized, leading to:
+> 
+> WARNING: CPU: 0 PID: 9 at kernel/locking/mutex.c:582 __mutex_lock+0x708/0x840
+> 
+> Add the bridge add & remove calls so that the bridge gets managed
+> correctly.
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Fixes: 561671612394 ("drm: xlnx: zynqmp_dpsub: Add support for live video input")
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c    | 4 ++++
+>  drivers/gpu/drm/xlnx/zynqmp_dpsub.c | 4 ----
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index a0606fab0e22..9f750740dfb8 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1761,6 +1761,8 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+>  
+>  	dpsub->dp = dp;
+>  
+> +	drm_bridge_add(dpsub->bridge);
+> +
+
+This means that the bridge will be exposed to users before
+zynqmp_disp_probe() is called, opening the door to a potential
+use-before-init. The risk is mostly theoretical at this point I believe,
+but it's still not a direction I'd like to that. Could you call
+drm_bridge_add() in zynqmp_dpsub_probe(), between zynqmp_disp_probe()
+and zynqmp_dpsub_drm_init() ?
+
+>  	dev_dbg(dp->dev, "ZynqMP DisplayPort Tx probed with %u lanes\n",
+>  		dp->num_lanes);
+>  
+> @@ -1789,4 +1791,6 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
+>  
+>  	zynqmp_dp_phy_exit(dp);
+>  	zynqmp_dp_reset(dp, true);
+> +
+> +	drm_bridge_remove(dpsub->bridge);
+>  }
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+> index 88eb33acd5f0..3933c4f1a44f 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dpsub.c
+> @@ -260,8 +260,6 @@ static int zynqmp_dpsub_probe(struct platform_device *pdev)
+>  		ret = zynqmp_dpsub_drm_init(dpsub);
+>  		if (ret)
+>  			goto err_disp;
+> -	} else {
+> -		drm_bridge_add(dpsub->bridge);
+>  	}
+>  
+>  	dev_info(&pdev->dev, "ZynqMP DisplayPort Subsystem driver probed");
+> @@ -288,8 +286,6 @@ static void zynqmp_dpsub_remove(struct platform_device *pdev)
+>  
+>  	if (dpsub->drm)
+>  		zynqmp_dpsub_drm_cleanup(dpsub);
+> -	else
+> -		drm_bridge_remove(dpsub->bridge);
+>  
+>  	zynqmp_disp_remove(dpsub);
+>  	zynqmp_dp_remove(dpsub);
+> 
+> ---
+> base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+> change-id: 20240312-xilinx-dp-lock-fix-cf68f43a7bab
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
 
