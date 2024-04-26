@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-159849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0DC8B351A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:16:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6098B3514
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:16:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC9E528A5E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:16:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DE71C21220
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBFE145B24;
-	Fri, 26 Apr 2024 10:15:36 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB291448E2;
+	Fri, 26 Apr 2024 10:15:32 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF0114533F;
-	Fri, 26 Apr 2024 10:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFDF13D53C;
+	Fri, 26 Apr 2024 10:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126535; cv=none; b=e2B7NgzZ0vGUAq0FEMNFtTUPfvm6cEquBUOVjonLyVbDEvHPl7KiF9nI2r2V1v5rnIoi+j4tlef3C4sye7WcSHTvwdKwqWA+qNzAmR0SzC1/mxegI9Wj/aETpB9VsbDwLqXupGN+j2gXTh1SRxoQePLCa1KyFvNVtU919Z9hdAw=
+	t=1714126532; cv=none; b=aAbrmiUZccJcFz0tHqdofRLNIeifT7AfJpTNKYyKoX0O9CBLavpeJi/RLfyd8UCmS6dDnHMGrvx+kkqR+9thKEP4cNevdmzXL/1tSxm3EtWDo/Qmoun89ROoB3Xrlbfvld5wIbvNMjoRQjd5cuWZtMFOWsVIq9YdEcrjgtAQ/zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126535; c=relaxed/simple;
-	bh=G3Wwdo3FPiA96PnLKat2NQ9X0yHFlG8SloyDTzFTpOg=;
+	s=arc-20240116; t=1714126532; c=relaxed/simple;
+	bh=jyX1L/rERiq+QII8Y+zvd62RE4J0GUO9h0sIkXf79nM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZvQeZqgqBgLK4LFC9sD5i/oLaRLbVmRw4DUwTpP6D6hKZNV3ChK+HYA2oNPDy+lWbZOsf8AmpbeVor+iBoRADDyEDCU6q8tr2JwvxJMD5teUxC5ZlD+z9zDnnFm1fmXDXOj6QvTRHfeAJuXW8FO2nGaDkZ+phzVB9v2IB7LPDLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=c66FnfErTD0yRS431YgzcrnRTDXkc4tIB2UH8nEC42oU9EfFnRUJEU76wK46GVI31xX8tDVYzkZJJq4ig9J184cfsBuo9mGWI24H/t6BQiGH3uno2ucbozRSSsZer6VyYGCoZabXyHToB3Bvk9rmd/taitOohl4GyiuU0PuARZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VQpS632V5zvQQS;
-	Fri, 26 Apr 2024 18:12:22 +0800 (CST)
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VQpSj1QJFzNtt4;
+	Fri, 26 Apr 2024 18:12:53 +0800 (CST)
 Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id AE01118009D;
+	by mail.maildlp.com (Postfix) with ESMTPS id BDA8F1800C4;
 	Fri, 26 Apr 2024 18:15:26 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
@@ -45,9 +45,9 @@ To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
 	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 6/7] net: hns3: fix port vlan filter not disabled issue
-Date: Fri, 26 Apr 2024 18:00:44 +0800
-Message-ID: <20240426100045.1631295-7-shaojijie@huawei.com>
+Subject: [PATCH V2 net 7/7] net: hns3: fix kernel crash when devlink reload during initialization
+Date: Fri, 26 Apr 2024 18:00:45 +0800
+Message-ID: <20240426100045.1631295-8-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240426100045.1631295-1-shaojijie@huawei.com>
 References: <20240426100045.1631295-1-shaojijie@huawei.com>
@@ -64,54 +64,110 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
 
 From: Yonglong Liu <liuyonglong@huawei.com>
 
-According to hardware limitation, for device support modify
-VLAN filter state but not support bypass port VLAN filter,
-it should always disable the port VLAN filter. but the driver
-enables port VLAN filter when initializing, if there is no
-VLAN(except VLAN 0) id added, the driver will disable it
-in service task. In most time, it works fine. But there is
-a time window before the service task shceduled and net device
-being registered. So if user adds VLAN at this time, the driver
-will not update the VLAN filter state,  and the port VLAN filter
-remains enabled.
+The devlink reload process will access the hardware resources,
+but the register operation is done before the hardware is initialized.
+So, processing the devlink reload during initialization may lead to kernel
+crash.
 
-To fix the problem, if support modify VLAN filter state but not
-support bypass port VLAN filter, set the port vlan filter to "off".
+This patch fixes this by registering the devlink after
+hardware initialization.
 
-Fixes: 184cd221a863 ("net: hns3: disable port VLAN filter when support function level VLAN filter control")
-Fixes: 2ba306627f59 ("net: hns3: add support for modify VLAN filter state")
+Fixes: cd6242991d2e ("net: hns3: add support for registering devlink for VF")
+Fixes: 93305b77ffcb ("net: hns3: fix kernel crash when devlink reload during pf initialization")
 Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 17 +++++------------
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c        | 10 ++++------
+ 2 files changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 5dc8593c97be..018069b12de6 100644
+index 018069b12de6..263d75446a41 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -9910,6 +9910,7 @@ static int hclge_set_vlan_protocol_type(struct hclge_dev *hdev)
- static int hclge_init_vlan_filter(struct hclge_dev *hdev)
- {
- 	struct hclge_vport *vport;
-+	bool enable = true;
- 	int ret;
- 	int i;
+@@ -11631,16 +11631,10 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ 	if (ret)
+ 		goto out;
  
-@@ -9929,8 +9930,12 @@ static int hclge_init_vlan_filter(struct hclge_dev *hdev)
- 		vport->cur_vlan_fltr_en = true;
- 	}
+-	ret = hclge_devlink_init(hdev);
+-	if (ret)
+-		goto err_pci_uninit;
+-
+-	devl_lock(hdev->devlink);
+-
+ 	/* Firmware command queue initialize */
+ 	ret = hclge_comm_cmd_queue_init(hdev->pdev, &hdev->hw.hw);
+ 	if (ret)
+-		goto err_devlink_uninit;
++		goto err_pci_uninit;
  
-+	if (test_bit(HNAE3_DEV_SUPPORT_VLAN_FLTR_MDF_B, hdev->ae_dev->caps) &&
-+	    !test_bit(HNAE3_DEV_SUPPORT_PORT_VLAN_BYPASS_B, hdev->ae_dev->caps))
-+		enable = false;
+ 	/* Firmware command initialize */
+ 	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw, &hdev->fw_version,
+@@ -11808,6 +11802,10 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ 		dev_warn(&pdev->dev,
+ 			 "failed to wake on lan init, ret = %d\n", ret);
+ 
++	ret = hclge_devlink_init(hdev);
++	if (ret)
++		goto err_ptp_uninit;
 +
- 	return hclge_set_vlan_filter_ctrl(hdev, HCLGE_FILTER_TYPE_PORT,
--					  HCLGE_FILTER_FE_INGRESS, true, 0);
-+					  HCLGE_FILTER_FE_INGRESS, enable, 0);
- }
+ 	hclge_state_init(hdev);
+ 	hdev->last_reset_time = jiffies;
  
- static int hclge_init_vlan_type(struct hclge_dev *hdev)
+@@ -11815,8 +11813,6 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ 		 HCLGE_DRIVER_NAME);
+ 
+ 	hclge_task_schedule(hdev, round_jiffies_relative(HZ));
+-
+-	devl_unlock(hdev->devlink);
+ 	return 0;
+ 
+ err_ptp_uninit:
+@@ -11830,9 +11826,6 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ 	pci_free_irq_vectors(pdev);
+ err_cmd_uninit:
+ 	hclge_comm_cmd_uninit(hdev->ae_dev, &hdev->hw.hw);
+-err_devlink_uninit:
+-	devl_unlock(hdev->devlink);
+-	hclge_devlink_uninit(hdev);
+ err_pci_uninit:
+ 	pcim_iounmap(pdev, hdev->hw.hw.io_base);
+ 	pci_release_regions(pdev);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index 08db8e84be4e..43ee20eb03d1 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2845,10 +2845,6 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = hclgevf_devlink_init(hdev);
+-	if (ret)
+-		goto err_devlink_init;
+-
+ 	ret = hclge_comm_cmd_queue_init(hdev->pdev, &hdev->hw.hw);
+ 	if (ret)
+ 		goto err_cmd_queue_init;
+@@ -2941,6 +2937,10 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
+ 
+ 	hclgevf_init_rxd_adv_layout(hdev);
+ 
++	ret = hclgevf_devlink_init(hdev);
++	if (ret)
++		goto err_config;
++
+ 	set_bit(HCLGEVF_STATE_SERVICE_INITED, &hdev->state);
+ 
+ 	hdev->last_reset_time = jiffies;
+@@ -2960,8 +2960,6 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
+ err_cmd_init:
+ 	hclge_comm_cmd_uninit(hdev->ae_dev, &hdev->hw.hw);
+ err_cmd_queue_init:
+-	hclgevf_devlink_uninit(hdev);
+-err_devlink_init:
+ 	hclgevf_pci_uninit(hdev);
+ 	clear_bit(HCLGEVF_STATE_IRQ_INITED, &hdev->state);
+ 	return ret;
 -- 
 2.30.0
 
