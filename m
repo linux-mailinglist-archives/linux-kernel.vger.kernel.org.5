@@ -1,207 +1,217 @@
-Return-Path: <linux-kernel+bounces-160127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066878B3982
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:10:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7FDD8B3984
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C6E1C2237C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:10:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2791F2359C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736D81487F9;
-	Fri, 26 Apr 2024 14:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF86F14831E;
+	Fri, 26 Apr 2024 14:10:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mVvtQU/m"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qr/VvY8C"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE28B1465A1;
-	Fri, 26 Apr 2024 14:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714140598; cv=none; b=LX/Gj8arHHsryGYWs8cfTVE1/BPCxVoxEiOUalqcF/mEQxmvJIgGoCc5W8mgGuh2ZCU4x9RJncqbzt6g+INBYHG6vmuL8aljQdyfjU0ni85gjKNtGbwmqBQPRvdknRhE2wsZ5YeORxJiYYG3yStqgeQEm5nkLqlh4BjVJNW7A/c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714140598; c=relaxed/simple;
-	bh=q++yybLMckKLiXK6TTH8gaSYPe98nTrzO/fuv8VXCPM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EioW7paoFJQ8AR3LDomEfFoCTq7JFlGzvdJUQc8QFPiLMZwtZ+JBXTcbM514MAx3DnhH0weKvFKtj6lR1em+1n6MH9UWEXfixinephyrbZbqxa47nZ509hTp0Yj8wc9Tze/PzRIvaQMRkmkbsaLQBOq9yBPfeJeAHVmy4bS4bdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mVvtQU/m; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714140597; x=1745676597;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=q++yybLMckKLiXK6TTH8gaSYPe98nTrzO/fuv8VXCPM=;
-  b=mVvtQU/mXuJhvsK9W1eT5qfhI6CO1QMTtMGNnhyWArxjh+In96lryitC
-   xUAPKePSjod9g+kfzHM9eqH6Ehrcg0L+EgQRuU5yWL5IkDUGppfaxN6yg
-   Ca61e9yp3JTEAT03eqUKgROaR5sdBBdW4uB0J05Ha/UnK7qg2Dn8Rgw/K
-   igsInT7BTeL9D1a5fepdzrIBpzoUXyUWYnR7SvkJ7ryY/MAZ++ZO2ZpDk
-   EzLtHuSUwOce8J/AN32Twu8hL7z7Ihweib4YtTU0iT+orlbKkYc7Dc6FU
-   vVlYMNzSQVnQmxSCDsjNHXAjaG2+baySZSCa2OcX19Ic/jMll5TfJsIt7
-   g==;
-X-CSE-ConnectionGUID: Y8STL22nSoig5MytvzUK+g==
-X-CSE-MsgGUID: k0H0Y4C1Q8a355cKfJJSlQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21282381"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="21282381"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 07:09:56 -0700
-X-CSE-ConnectionGUID: RGO9JhZIT1y4czepxixcvQ==
-X-CSE-MsgGUID: VGNph+ncSXCpNsNkns787w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="62908642"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 07:09:56 -0700
-Received: from [10.212.113.23] (kliang2-mobl1.ccr.corp.intel.com [10.212.113.23])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id B65FB20B5739;
-	Fri, 26 Apr 2024 07:09:53 -0700 (PDT)
-Message-ID: <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
-Date: Fri, 26 Apr 2024 10:09:52 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E6F1465A1;
+	Fri, 26 Apr 2024 14:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714140633; cv=fail; b=nSNp7NjCt+QiXeAvsJ8g68ZP5AMqa7w3gsdxcTS+BVvggagg/kO0VyHdEXf+q9+kXEZ+OUSugzi3m3gjWmiaX2UXsrFM3IXRcYpD/PIpLTvAULlqCjwFF6AWdHfyNHM2FLBNVxatSkmLsOfstj29FyzvLOfTfmTXDQ+r6aYNtaA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714140633; c=relaxed/simple;
+	bh=hJ5IGnR/FNX7PURFcSM6lRIDa4I1E5IPZvLGTr3t6IY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=S9jwR3ZEPAZi99Ab8Bl2amGfGXlas6A29tShOGtRv6W9QSbsmKNdyOlLp9KtTJ+z0iaCuZ8r0lVsXIiwJkZoLQsVI6arPBXePsvxyxanYH2i+wkpz2Ebw0HIsYKb1wTRwQY3T+SHg/BMjdkcfuaQ7RHHM1ekZ1kky2ZqO9l/D30=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qr/VvY8C; arc=fail smtp.client-ip=40.107.92.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J8ISoEdzuSnjPGXc+20hnBS4mvslbiqKy2MGNc6Xu0t6AN/Y+6dUJndAAOpl1yo8HR7Hj9uswt2sTgaRubVUpko7s2meOo2Y2d2+ZCImKxBQnq3wGi/CcOqTmrjgA41quo3M4iT0icmEPZEbWI1X4OEwTAiVxPsCBjW44P04io5bx2FQDRi01dVO1j/MQMbalukvliRh+xqnRPDqTFoxwaEhxEw4cAmM/7OF3ruVHnVFEimD8PuXzevQfd0R9oDKJR7V4phuCmBjr02yOrS9n5w64/qkdlXLZOs8QcZ4aj4M82jAui8KofAzcvhpNdx5V380KD944oBnfmKUnFsGcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m6XtlpwlNdPEnkEfLBh5M4yDjswZsrdJHs1oFRweeKo=;
+ b=SkHfRMffeJ/uPAIoXidlt5KJDbbT6xqG7Y823Kti6ClHrai1EHID//ncC6xwe2bJTYCCwEFurWkJ8M9AXDTsG6svhLV1FsABMdmPcu3LOPUHrh9RbdrRUSYOQskoC3GvJrm0N8ZDIXfVW3D+yff9et4F7SrXLUlpHjK/lhxx4fETTjXXUhQrPlYFcigdkJgWuKwMRfBXzBkgeghekONVI7I1i18AnG/RPoRFKZSPu8qKCuIEE5iB6kHYDh9NIexbat8nerH+BixeOHYaTIwGf009Qw0AoyXkXSYCaVOf6KGMFQ/1ubcrGN0qmexrfn/YMfh4ogkZS3RS3L1LMtt+FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m6XtlpwlNdPEnkEfLBh5M4yDjswZsrdJHs1oFRweeKo=;
+ b=qr/VvY8CAuLAy4hCp2LVq9sc18sG94Wd8uoM4OMfJvIMSjLIIF28OfUSVuV8Mt1AUpZnjibNa3HhjU+KvWcjMJv75OdmAwx1Lla2i9FXkwtUw4x78qFJWpgLIWe3pHJFVg9IYXCao3tPwaT3Y4pLBlJ4ERnbcyjqo8XEl6u3+X4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DS7PR12MB6069.namprd12.prod.outlook.com (2603:10b6:8:9f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 14:10:27 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::37ee:a763:6d04:81ca]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::37ee:a763:6d04:81ca%4]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
+ 14:10:26 +0000
+Message-ID: <7a756470-49c2-41c6-a3d3-6e819ae93cfa@amd.com>
+Date: Fri, 26 Apr 2024 09:10:24 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 5/6] Documentation: cpufreq: amd-pstate: introduce the
+ new cpu boost control method
+To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
+ viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
+ Borislav.Petkov@amd.com
+Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
+ Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1714112854.git.perry.yuan@amd.com>
+ <c23d29532a09f9bfd8134eb34f2931b82399b527.1714112854.git.perry.yuan@amd.com>
+Content-Language: en-US
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <c23d29532a09f9bfd8134eb34f2931b82399b527.1714112854.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0501CA0104.namprd05.prod.outlook.com
+ (2603:10b6:803:42::21) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Mingwei Zhang <mizhang@google.com>,
- "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, maobibo <maobibo@loongson.cn>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
- <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
- <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
- <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
- <Zikeh2eGjwzDbytu@google.com>
- <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
- <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
- <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
- <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
- <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
- <ZirPGnSDUzD-iWwc@google.com>
- <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
- <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6069:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d53bb6d-9174-45d9-996c-08dc65fa9f2b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?M1pBVm1YWkllV1M4bW5MQktsUEQ2VEVsYWtqN21xUWNTY0xuTHFJSjFHTWxG?=
+ =?utf-8?B?a0VkcUpSeEFiNytCazd2bjFGZzhpWDdvUUFvM1V0ei9MU0lWUUJnckp1YWJi?=
+ =?utf-8?B?Q2l0WHFpQnAveDUreVJHRnIvbDNxQi9tRWlURTVNZmJENVZ5ZDBLT0o0S3Vk?=
+ =?utf-8?B?TU5OamhmZGc4Rmh5d0VWL0NtRmo4TTEwNGg1cXRNSzVqM21vWXBkNWU5cmpL?=
+ =?utf-8?B?TGpuNm45ZmJ6QWlHWC92eCtRRDE5enFCQWNrRkNyclh2SlI3YStIVUUyRHgx?=
+ =?utf-8?B?RHBONDVBaW5Td2U2TTEvZ2Y5SzcyeEo3NmRzRCswdENFWmNHajF3Sm9oRmJ3?=
+ =?utf-8?B?SzZ1bWtsVzdDNW93RDNjVEI0NWlKbzd3dW5tSFkzZ2JJL0xKR01iU3V6aytM?=
+ =?utf-8?B?bWplWHBLRGJiUUZxWFl2YzhkOTA1WG1reUhyNFhnYmQzQXJEWjg2bVRENHc4?=
+ =?utf-8?B?aE5YZFQrOXVRUDgwNzRZUU01U0tmbVd1UHo3N1dXblBhL0lIbncreGxYQjhX?=
+ =?utf-8?B?MTJkcDd4YmtGbGNrbFcwcW1VR25uNTRFK0sxbVhjaHl2b2JHeXk5RlJYN2lq?=
+ =?utf-8?B?aHpuZVlpcXducmJWRE8rNU53L0ROeU5rNzlmdm55THN4V3RoaXBNbVV4Smht?=
+ =?utf-8?B?RUIvcDUwVlVOZFdhLzgwSkpuQXhlelhFZnFSalNMNG1RYy9pS1NpNjJxSXVB?=
+ =?utf-8?B?Tk5qZDAzM0lQTTdpdGhHS1JYVkJFeWtyWlhCVi93TXArNWRFbFZhT2xpVUhX?=
+ =?utf-8?B?cU15L1d5YjVUQ2FreFhtaUMrN3ViWXFOdG5HY1k4emgxdlliVXJxN3ZiRUUw?=
+ =?utf-8?B?eGE4c25ORHd2aWRJSURSWFNReWdINHZEYk9VTGxjbWRvKzRmZytxaFFRV0Jt?=
+ =?utf-8?B?NXlhcXRhaUtuU2UyamY1NWNmUGFsNWhhWVZwck5qVUZJMENJTHVCWkNrUlFD?=
+ =?utf-8?B?akdYSkplYk55ZEZvbkx4VmtmNVJEc2hkYmMwanFOeGx5WDNjWVNlVUZLaW1L?=
+ =?utf-8?B?bUFyaDV1YmtpQWF2em5oZGZFbXQ1M3pCcXZwZkZtcVBpay84MUNTbG9XTFIr?=
+ =?utf-8?B?R1BVRkp1eFB4UEoydTJNcDBRbWpQT0xTZXhvc2NRcVZWOHh5ZWkySFZ0RkMw?=
+ =?utf-8?B?MTlhTnFRSWJrK3EyMXZ1QldEN0F6VDcvTyt1Smo3bVljdlIyT3AwcUJWK1g3?=
+ =?utf-8?B?TTFHWkdZYzdYREZXWjNlNzhMTm90UU0yRWxBZjJJcDlLUCtpZlhtdkIrcStm?=
+ =?utf-8?B?NkZVNVFEUFUyVnMwb2pQOXQyVS93Vys0WWpEVVNjZFVWeVBnbC9NY2prOEFj?=
+ =?utf-8?B?ZllabUczN0pTbEVRNEhNNVBqOWh6aG9iSVpKVEhSVkhwcGR2M2pUbjBsOFA3?=
+ =?utf-8?B?SmUxNFRPdWdKeWVDcGF6RjdqbGRCK3JzZGU1MkdWOU9maWlvajN6R2hjQU1G?=
+ =?utf-8?B?a09VRjdpYVBHWlhUM1Y1ZmI5QjlrRXVrMk4wNmdSMGpBSG93YUFuV1oyNkVr?=
+ =?utf-8?B?NnBoQUtJQnlJWkRuWE53akxJRGljRTlUc1J6bDJBMXZwa21TMm5wYnhSOVhE?=
+ =?utf-8?B?VlBEUHIwWlJnL0dHVWxiTGJJTG42S09qUUxhdFIzRDZUcDZZWTdQdDlXUitH?=
+ =?utf-8?B?SEMxYmR5emJoQU9CaVJXK0ZJZFVFMCthMFlQbStkSkJEWU50dmZiTWRWN0Fa?=
+ =?utf-8?B?VXZhWThTQU1TNVpjZWkwTDFQbFZobkt6bXlFWXY2T0QxY0dmYjN0V2xnPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WlZOcjZib2pnZm5aVmU1YUFmaE85UUZQMzMwejJqSlcwY0wrWWY1V2VMK2Z2?=
+ =?utf-8?B?NXYzaHFsSmszbERIMUxxcE15K3Q3Z0pEOTJVZHdXYkt2K3BLZ2dqdWZPN2pM?=
+ =?utf-8?B?akF4ZXljTFJ3ZWFTUlVtbGoxMXQyMm15TzVhaVozcW5DTS9GbmVad1FOa3cz?=
+ =?utf-8?B?VEw5NysvYzN5NEEvNzV1UFd1WFZVWlJSemFVMkJYYzVKMlU4SithR3RneldS?=
+ =?utf-8?B?Yy9iRzlRUGk4b0hIL0RwOGs2aXR2UmZDeVZ6cy9GQnQzcjN0dG9QUTMwbml4?=
+ =?utf-8?B?U1NzL0xPZlkvckFMUTRoMTZ2YnhqdFVNdGsxbnBxME9LengxeVVqVWZMK2FP?=
+ =?utf-8?B?MzFJb3Q4V05PV0lDcGUzVDMvSjRmWnAxcERYcXpHU3ZGMTlNcmlQbkozZTVn?=
+ =?utf-8?B?bmxFeGRVQzJxbWtyTTJ6UUY5T3BUTFFrZDVCS2tBd3ZXdWREbTRZdXJCSHRM?=
+ =?utf-8?B?alJydTFqekNKSUxKWlYyd0gySFVCTW5nL1FyQ3NyREVoVFdvaUJLTlNsYjMx?=
+ =?utf-8?B?aVpJOUhWUUpxdnB1dzE0VjF5V0EwN3BJYW84U2Yxam40M2hMQXV0UFZCQ1NZ?=
+ =?utf-8?B?Q29hTUEyckZBTnhaRC9GdVA3dzdacVg3R0hmU1lrTjRsWDlWbEJ1T2tkZ2Rm?=
+ =?utf-8?B?NFB4RHdxSno4R0piNXdYNEtxbzdDb3NLcW9qSURETEhUaDg5dStVY0hrOUpu?=
+ =?utf-8?B?VGZTWmY1MTMrRzFEcHBaY1RvWGlTekptZmRQL3RCY2FPUmlxWmR6Y2ltSjFa?=
+ =?utf-8?B?R1FJUzU1Vzd6T3V6RldMcVcrWHVDdGE0b1k2MUsxTDc0a3lkUk02ZUtGb0dv?=
+ =?utf-8?B?Q0YxaUc1M2R5RzRLSlR5bEJYaU9qaGNkK1FqbFU5MkpSazNZaFZoRGZKbkdY?=
+ =?utf-8?B?REJZRmdDbWdSSGpJWjZkQ200b0FpSGhkMjBrdXMyTEQvbXRxR2JVKzZ5bzJp?=
+ =?utf-8?B?ODdacGhiZDJWT0NWS2I5cWtmNzA4N1lnZnJzMDEvcFlMeVo5eXQ5WmlSL0Zw?=
+ =?utf-8?B?aE1CcjdlK3oyZW9jdTRYYmhtNDdNTDY3STRnYnFValFCTFowcHVGMndBcWI4?=
+ =?utf-8?B?cFFxem94QS96d1dLQ2ZpWG5mSmMvajlZQ0tpaG5FZVJuRWc1MXYvdzZCV1dK?=
+ =?utf-8?B?OGNFRnlvMnV2Z3NPUGdoazlLN3UzTFZqNWFQUkV0ZXNWODRmU2dBbXYzQldo?=
+ =?utf-8?B?aGJQYTF5dkRkSU1FRnJnYzlXRnh5RlFKT1Fzbk9LUEdRWVdvS2gzRFFqUkF0?=
+ =?utf-8?B?STEzWlRnUGRLVlIydGpwVGF1OFRlVkFhdmVETTFxUEZEUWpNTVJrQnlkVS9w?=
+ =?utf-8?B?N3RxTU1raUV3M1RSYisyM1NZY2cwN2ZhSkFhNE01dFBIM1ltUmJRWVB1ay8x?=
+ =?utf-8?B?WjNSOHZuWHJDaGNwVXNJZklZWUNEWnRIa2pPWnV3K3psVHlNQ1JqNGlDWnFr?=
+ =?utf-8?B?dU1PMElnSk5qSis2amhiR3d5bDFzc2hZVFZKRXdmTTFocjJPbThBZ2ZRNTF3?=
+ =?utf-8?B?RjQ1SGYvZ3Z4ZXRqOVJaWkdnOEJMTko0UllUNlBFSGRwZGxOUkxEZE4yRUhK?=
+ =?utf-8?B?VlUzQmtvdUlSdWt5K25mWEM0clIxbkIxWDZqRlNuUU5MQWpzSWxDMlVBY0ZW?=
+ =?utf-8?B?Sk9GVFMyUHp3SjY1OTg0WnJlemh6MnFnUDdKamx1Y2k1UnhWMnd2MUNUUEh6?=
+ =?utf-8?B?V25YQzdNcVNNeUpJOHhkWWpESmlZQ0xEeWpsbUVaQmtKajMydzJMRnB4SzRZ?=
+ =?utf-8?B?V3NWNkprQ1hya05wVTRHaGRxVU11NWFJbWpLbFNMWTJ0S0hjdGR4OFBoWjd0?=
+ =?utf-8?B?T1diaDZndmJCaCtLTjd3YTVZOUs4ZitzTmthWEhKdURmWis2VStvd1RRZTc0?=
+ =?utf-8?B?d01OWGptdGpOWHBlZG1ndm1mWGpvTzIwZjFZbVlFWFM0Zks1NmF6cjRHeXdq?=
+ =?utf-8?B?REd5cDZJQUFMS2hncUIvZXYzTDAvaFdUUFRTekxEcUdUYlVMd0FEVGExdEpJ?=
+ =?utf-8?B?RjNESTRCYjZZWDhqMjVTS2ppUTBsVy9GWWtPaXdzOGlMNlBlWEM3TnV3ZTNS?=
+ =?utf-8?B?NkNyTXJwb2ErczFGMm9rcDdQalRabEl6Wml2OEhRN2NqSUJXdWVzSm92eXQ4?=
+ =?utf-8?Q?npqkvc/JWTzyMv63joFbqqP8u?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d53bb6d-9174-45d9-996c-08dc65fa9f2b
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 14:10:26.8004
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vcjh8anEDxKpCGJg4Kb3mfN4CxqUGOmQgUMDqTkpgexE+hXLS4CSCiDqpFtqYBdD0mv7Ypmp+GeBKvElAbOU0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6069
 
-
-
-On 2024-04-25 11:12 p.m., Mingwei Zhang wrote:
->>>> the perf_guest_enter(). The stale information is saved in the KVM. Perf
->>>> will schedule the event in the next perf_guest_exit(). KVM will not know it.
->>> Ya, the creation of an event on a CPU that currently has guest PMU state loaded
->>> is what I had in mind when I suggested a callback in my sketch:
->>>
->>>   :  D. Add a perf callback that is invoked from IRQ context when perf wants to
->>>   :     configure a new PMU-based events, *before* actually programming the MSRs,
->>>   :     and have KVM's callback put the guest PMU state
->>
->> when host creates a perf event with exclude_guest attribute which is
->> used to profile KVM/VMM user space, the vCPU process could work at three
->> places.
->>
->> 1. in guest state (non-root mode)
->>
->> 2. inside vcpu-loop
->>
->> 3. outside vcpu-loop
->>
->> Since the PMU state has already been switched to host state, we don't
->> need to consider the case 3 and only care about cases 1 and 2.
->>
->> when host creates a perf event with exclude_guest attribute to profile
->> KVM/VMM user space,  an IPI is triggered to enable the perf event
->> eventually like the following code shows.
->>
->> event_function_call(event, __perf_event_enable, NULL);
->>
->> For case 1,  a vm-exit is triggered and KVM starts to process the
->> vm-exit and then run IPI irq handler, exactly speaking
->> __perf_event_enable() to enable the perf event.
->>
->> For case 2, the IPI irq handler would preempt the vcpu-loop and call
->> __perf_event_enable() to enable the perf event.
->>
->> So IMO KVM just needs to provide a callback to switch guest/host PMU
->> state, and __perf_event_enable() calls this callback before really
->> touching PMU MSRs.
-> ok, in this case, do we still need KVM to query perf if there are
-> active exclude_guest events? yes? Because there is an ordering issue.
-> The above suggests that the host-level perf profiling comes when a VM
-> is already running, there is an IPI that can invoke the callback and
-> trigger preemption. In this case, KVM should switch the context from
-> guest to host. What if it is the other way around, ie., host-level
-> profiling runs first and then VM runs?
+On 4/26/2024 01:34, Perry Yuan wrote:
+> From: Perry Yuan <Perry.Yuan@amd.com>
 > 
-> In this case, just before entering the vcpu loop, kvm should check
-> whether there is an active host event and save that into a pmu data
-> structure. 
-
-KVM doesn't need to save/restore the host state. Host perf has the
-information and will reload the values whenever the host events are
-rescheduled. But I think KVM should clear the registers used by the host
-to prevent the value leaks to the guest.
-
-> If none, do the context switch early (so that KVM saves a
-> huge amount of unnecessary PMU context switches in the future).
-> Otherwise, keep the host PMU context until vm-enter. At the time of
-> vm-exit, do the check again using the data stored in pmu structure. If
-> there is an active event do the context switch to the host PMU,
-> otherwise defer that until exiting the vcpu loop. Of course, in the
-> meantime, if there is any perf profiling started causing the IPI, the
-> irq handler calls the callback, preempting the guest PMU context. If
-> that happens, at the time of exiting the vcpu boundary, PMU context
-> switch is skipped since it is already done. Of course, note that the
-> irq could come at any time, so the PMU context switch in all 4
-> locations need to check the state flag (and skip the context switch if
-> needed).
+> Introduce AMD CPU frequency boosting control sysfs entry which used for
+> switching boost on and boost off.
 > 
-> So this requires vcpu->pmu has two pieces of state information: 1) the
-> flag similar to TIF_NEED_FPU_LOAD; 2) host perf context info (phase #1
-> just a boolean; phase #2, bitmap of occupied counters).
+> If core performance boost is disabled while a core is in a boosted P-state,
+> the core automatically transitions to the highest performance non-boosted P-state
+> The highest perf and frequency will be limited by the setting value.
 > 
-> This is a non-trivial optimization on the PMU context switch. I am
-> thinking about splitting them into the following phases:
+> Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+> ---
+>   Documentation/admin-guide/pm/amd-pstate.rst | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
 > 
-> 1) lazy PMU context switch, i.e., wait until the guest touches PMU MSR
-> for the 1st time.
-> 2) fast PMU context switch on KVM side, i.e., KVM checking event
-> selector value (enable/disable) and selectively switch PMU state
-> (reducing rd/wr msrs)
-> 3) dynamic PMU context boundary, ie., KVM can dynamically choose PMU
-> context switch boundary depending on existing active host-level
-> events.
-> 3.1) more accurate dynamic PMU context switch, ie., KVM checking
-> host-level counter position and further reduces the number of msr
-> accesses.
-> 4) guest PMU context preemption, i.e., any new host-level perf
-> profiling can immediately preempt the guest PMU in the vcpu loop
-> (instead of waiting for the next PMU context switch in KVM).
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index 1e0d101b020a..82fbd01da658 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -440,6 +440,17 @@ control its functionality at the system level.  They are located in the
+>           This attribute is read-only to check the state of preferred core set
+>           by the kernel parameter.
+>   
+> +``cpb_boost``
+> +        Specifies whether core performance boost is requested to be enabled or disabled
+> +        If core performance boost is disabled while a core is in a boosted P-state, the
+> +        core automatically transitions to the highest performance non-boosted P-state.
+> +        AMD Core Performance Boost(CPB) is controlled by this new attribute file which
 
-I'm not quit sure about the 4.
-The new host-level perf must be an exclude_guest event. It should not be
-scheduled when a guest is using the PMU. Why do we want to preempt the
-guest PMU? The current implementation in perf doesn't schedule any
-exclude_guest events when a guest is running.
+The attribute is currently new, but by the time this is merged it will 
+be old.  Avoid using "new" or "old" in documentation.
 
-Thanks,
-Kan
+> +        allow user to change all cores frequency boosting state. It supports both
+> +        ``active``, ``passive`` and ``guided`` mode control with below value write to it.
+
+How about just say "supports all amd-pstate modes"?
+
+> +
+> +        "0" Disable Core Performance Boosting
+> +        "1" Enable  Core Performance Boosting
+> +
+>   ``cpupower`` tool support for ``amd-pstate``
+>   ===============================================
+>   
+
 
