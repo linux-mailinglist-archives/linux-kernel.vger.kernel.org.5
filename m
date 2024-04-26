@@ -1,103 +1,123 @@
-Return-Path: <linux-kernel+bounces-159860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 645E38B3533
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:20:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A3988B353A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:23:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23E041F230AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7FB1C2132F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA80143C55;
-	Fri, 26 Apr 2024 10:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26A8143C53;
+	Fri, 26 Apr 2024 10:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvS9qy2R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPPbeAeB"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39546142E64;
-	Fri, 26 Apr 2024 10:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7424B142621;
+	Fri, 26 Apr 2024 10:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126828; cv=none; b=B1E6bRUDR0oGJuREG5fspRHYYFgX+gegZUY+YHPYFeRJEFNgofEGM/bo4hzQLcjK1bjPKdkW7vh1Vr64EZYmn8/R0V2qiHmq1NjnukibqAj6s5MWDNE8vogtk/k0L6Q+bYh1Q4pl1JW50cH02HznsTG0TDJGxPRtxh/kpvGeDp8=
+	t=1714127012; cv=none; b=g35bJbV3fzDNLM312754Zh7tT2cRNULc6fOxR75Z+p6sFzIsLyOSRNpxRlUbQO79lWz2+pA6ngI0Pp6j5Kgoz4ZRlA5CAKkOxTW+CHPishhWLDFrG5YnARB7mZPF/6SzOF9yCyO/C1NlhKF5WJpqSgmg2VEUEhYNM5q/heRYpf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126828; c=relaxed/simple;
-	bh=xvoKNHa/ZpIVIBwyN+89zRcKPdpGyfcVEh9uW/gH6HA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FamuT9Y/T0cpSgt1QIZr/UF2dT/pVD0BW8IthsKds433CA6D90kwkAelx1mXt1uYSjuXY5EiDYnOfqmzhhW+MVdoF5W73BDp0rLImoRQ7uigi7D7wfUXWUxFCd2sRP4+3IKskc7x5qdgUiIdhuPNHLCmLsGSgG81AkeCh2CG6tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvS9qy2R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C0A73C113CE;
-	Fri, 26 Apr 2024 10:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714126827;
-	bh=xvoKNHa/ZpIVIBwyN+89zRcKPdpGyfcVEh9uW/gH6HA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fvS9qy2R1GGUCn82fMLnfoT3DEC/Ri3ki7hPEqFYyo87x6cGv8S0kQMX00zjtTjG9
-	 b71ntpZtED1ZUq2OlwrBYUdnDCx8TXxILmPSv5jZ1GsIva4YdVR3DrBs0TiSabEJni
-	 sVNBy+WYnKb6/qWnJowZoVPTaVbFFHKsWKdYpF7pK1PpvSI8dVQV8W1n6RkP6itPCu
-	 XA4XHdRmjytKLmchQ+EugjWdTQ1n4cCb53u0UgHsdy8+xTgM41SMvwxfYCild/VQ5x
-	 OS0neUSfMIW38JbdlFCD/+Rpn1LlX5UcBjcPw0w1xV9ISGDyLoJqz/xPJdaVsnBXxf
-	 jOqtLYnMIL0yw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ADCBEC54BA8;
-	Fri, 26 Apr 2024 10:20:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714127012; c=relaxed/simple;
+	bh=dSaUlQxpkYSG9t64O77hJy2hL1wLPGYBXMMSLyVDkkE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WCwMTYcqHhJshjgbKYQn8QFylFPRwhtQd7I9A4eAaPDThk1V29t3YpLnkHhGbde65uzldXg5uUcA5zIXmDs8WCMXqZKd/f5MfD3MnFqwhHwGWxpBTHoDgN8cDsNAh5rE1XG+1OFns/Z5qf4wmXti1fwq17Uo54fdInPay4YX5SU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPPbeAeB; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-349a33a9667so309324f8f.3;
+        Fri, 26 Apr 2024 03:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714127009; x=1714731809; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ErKC1DJY0VpHeLwTsb/v59LZhBRdBYfq9YYqdX84OHA=;
+        b=YPPbeAeBdNVCU9bSjdY3GmGdEg3V07I6EqL/RwmPk8ui8ijsa6gCA/2LbXctCh2m5U
+         eFDpdvjz+wraO/P2N9SzXgUuQITOYpp+1+DY7rhMnXKKzqmLkkD+rUwqZfdTg+G0qiZ2
+         y0xCTgTBBCAKXFAXApNt83V3r+D7ksvS3NoLJpZnex/cR7UJkATPvx4btdweOUfvCUoW
+         jwQQp20DTg7TD9UnTKSxnCs0qK5RZljeZWiTuLhA1/RjP4ealr/Fst6xFnp+IECj2ko1
+         jPQtTJHx4jZ58xd4fl0JmBDRn9UIvM9HtguidwlDjKOvzmIbDuR0ThL4tF2OFTuo1o6M
+         oCXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714127009; x=1714731809;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ErKC1DJY0VpHeLwTsb/v59LZhBRdBYfq9YYqdX84OHA=;
+        b=u0FW+ZxV7mQB25beBtLHHCOqR5AlVrGmsZPRyP5kN6eQkSDaw8ftx3yKR9GzdMc2NW
+         XMrTeiYOIW93CDQsGnRSOGmR2xApLVG/eiauqZAEgk8Ep6yfhlaNxrAIfjQ40eokYnqX
+         JTVv+KSposYSgwjJxPLgOD+Z8DE46JB160rsDdq42iI+9fGPMjBTAGFStqOBoVERlJvm
+         1n9kz6Egn/UMBoyfMbyoPzrIF4duOjjWoJRVjoD6lHBskujD/J96dMA0jYLhoyDqwKLW
+         pa4zhL0QM0tJImSt6dZyb+IgjrqvGzbmU5VMUOY2KOUv1fb8zGhdlgvLLQMJBVxjIWtB
+         WcXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ4K9tqZcS6dx30UMiZuU8UzT16LK4hzZyKMbXlNO2waLX1lEFKVgao80oSiyLtik5L22FtTgr9bJkiYOOnfA0/ovaIFZBeSZpe8bT7d+wCMVamqdX6ztbi0nOmWMsLJmXGPdaGEHGZxs=
+X-Gm-Message-State: AOJu0YwJ6Y6aUaW6HvvllO/mi8rejL15X5Xq7Q66UCbUk+h/pX6g989n
+	+Jsr3FwmT0h1wZUkt8xpfWkEKSQDURe3dzNd4WOmZupMTAxxFtb9QENY/g==
+X-Google-Smtp-Source: AGHT+IER+zTu22RykLhtlZnWcnvPrKERAd8cxK+eIm1my+RfqDoYY/RbgcsAD1hSqqNV6o0l69Zbfw==
+X-Received: by 2002:a05:600c:3b96:b0:41a:c4fe:b0a5 with SMTP id n22-20020a05600c3b9600b0041ac4feb0a5mr1494943wms.4.1714127008526;
+        Fri, 26 Apr 2024 03:23:28 -0700 (PDT)
+Received: from [172.16.102.219] ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id q12-20020adfcd8c000000b00343cad2a4d3sm21883976wrj.18.2024.04.26.03.23.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 03:23:28 -0700 (PDT)
+Message-ID: <75e82637-9e09-4bf5-a3d4-c3c2001c63c9@gmail.com>
+Date: Fri, 26 Apr 2024 11:23:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v6 0/5] net: hsr: Add support for HSR-SAN (RedBOX)
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171412682770.25431.50996926778696217.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Apr 2024 10:20:27 +0000
-References: <20240423124908.2073400-1-lukma@denx.de>
-In-Reply-To: <20240423124908.2073400-1-lukma@denx.de>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: netdev@vger.kernel.org, pabeni@redhat.com, casper.casan@gmail.com,
- andrew@lunn.ch, edumazet@google.com, olteanv@gmail.com, davem@davemloft.net,
- kuba@kernel.org, o.rempel@pengutronix.de, Tristram.Ha@microchip.com,
- bigeasy@linutronix.de, r-gunasekaran@ti.com, horms@kernel.org,
- n.zhandarovich@fintech.ru, m-karicheri2@ti.com, jiri@resnulli.us,
- dan.carpenter@linaro.org, william.xuanziyang@huawei.com, syoshida@redhat.com,
- ricardo@marliere.net, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] ALSA: kunit: make read-only array buf_samples
+ static const
+To: Colin Ian King <colin.i.king@gmail.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240425160754.114716-1-colin.i.king@gmail.com>
+Content-Language: en-US
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <20240425160754.114716-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 23 Apr 2024 14:49:03 +0200 you wrote:
-> This patch set provides v6 of HSR-SAN (RedBOX) as well as hsr_redbox.sh
-> test script.
+On 4/25/24 17:07, Colin Ian King wrote:
+> Don't populate the read-only array buf_samples on the stack at
+> run time, instead make it static const.
 > 
-> The most straightforward way to test those patches is to use buildroot
-> (2024.02.01) to create rootfs and QEMU based environment to run x86_64
-> Linux.
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>   sound/core/sound_kunit.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
+> index eb90f62228c0..e34c4317f5eb 100644
+> --- a/sound/core/sound_kunit.c
+> +++ b/sound/core/sound_kunit.c
+> @@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
+>   
+>   static void test_format_fill_silence(struct kunit *test)
+>   {
+> -	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+> +	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+>   	u8 *buffer;
+>   	u32 i, j;
+>   
 
-Here is the summary with links:
-  - [net-next,v6,1/5] net: hsr: Provide RedBox support (HSR-SAN)
-    https://git.kernel.org/netdev/net-next/c/5055cccfc2d1
-  - [net-next,v6,2/5] test: hsr: Remove script code already implemented in lib.sh
-    https://git.kernel.org/netdev/net-next/c/680fda4f6714
-  - [net-next,v6,3/5] test: hsr: Move common code to hsr_common.sh file
-    https://git.kernel.org/netdev/net-next/c/154a82cb64be
-  - [net-next,v6,4/5] test: hsr: Extract version agnostic information from ping command output
-    https://git.kernel.org/netdev/net-next/c/40b90bf60ce1
-  - [net-next,v6,5/5] test: hsr: Add test for HSR RedBOX (HSR-SAN) mode of operation
-    https://git.kernel.org/netdev/net-next/c/542e645c4a4d
+Hi Colin,
 
-You are awesome, thank you!
+Thank you for fixing this issue.
+
+Acked-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Kind regards,
+Ivan Orlov
 
 
