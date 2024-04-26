@@ -1,179 +1,255 @@
-Return-Path: <linux-kernel+bounces-160533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D058A8B3EDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:06:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F19028B3EE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 866282848F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD651F22DE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B8416DEAE;
-	Fri, 26 Apr 2024 18:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6740116DEC3;
+	Fri, 26 Apr 2024 18:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b="QE+QogRD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cZ16Xyqj"
-Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="edsnHn+t"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865B216D4CE;
-	Fri, 26 Apr 2024 18:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA93A16C84C;
+	Fri, 26 Apr 2024 18:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714154753; cv=none; b=P39FA0bZkRsvIpnVBhRKYoUU958hwMHjERr2/6lzrL9qhfyVgY+cCbcESGR9Npy5BIVrlJpAfbP287Fldo0P81SsEa6xJc569f0QxbiBbnNL3jJce2sqkU1+3/l/VReFfun/MT+x3Yltoif5dNIudKlJ81A6cw29BeOmk2TxbK8=
+	t=1714154832; cv=none; b=VY9zHtonQZOv4phXMGt9LatVol8B5su/BFlEzUWKA5CCysusBUbIfA1xihe+oHRefcdcyd3J41cqZ0HVuwct06qEmz7imNotRW8kDyjTTN6c5f7GyZWQvGIMuX0M/tQtb44hv2ez79U2f2pE3d1ZAaBeJ5EYMaBUDnYIKOZajCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714154753; c=relaxed/simple;
-	bh=nT/oBBOjjNApvJlf7aRiQoZ6G2VijJYzRaV0cSow35I=;
-	h=Date:From:Subject:To:Cc:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pu197jDAVTHD0PaAhpJWr5ALUJicfHANd6Sa11vc2J/DoyJvi4yLlagGPaiNJ+a6akn6pQQNXxtuJHBwl8NsCJY/EPslNnH3l6SUtUTzWxP83JTVNaLF5qZD2bTQXNL2COovQmowbJtOL3VDVcJJmiQBe/7ZISGB8eigR9ckqzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca; spf=pass smtp.mailfrom=lyndeno.ca; dkim=pass (2048-bit key) header.d=lyndeno.ca header.i=@lyndeno.ca header.b=QE+QogRD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cZ16Xyqj; arc=none smtp.client-ip=64.147.123.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lyndeno.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lyndeno.ca
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id B868B180007B;
-	Fri, 26 Apr 2024 14:05:49 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Fri, 26 Apr 2024 14:05:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lyndeno.ca; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1714154749;
-	 x=1714241149; bh=nPovvuf7k5MAjZUZqG7ireg2weJG8ZVQLCrzLgnFtK0=; b=
-	QE+QogRDZrHEWEIk7sK+UYjH18TcZqf6JK6vXJW653Vq2EihijYbGHzHpBgEu4VH
-	DdJpZuEphwEXQxtedQJsDl5HVAO2wR4JPpiDlbsRbD/K56/E1ek4pEGOZJO0n4nZ
-	d+MEON6BKAkHTBdL+DY4XVXLgeAL2pZ6tBlDkUoVfSH4EGwg1bobkPa3eMoSMzoF
-	DW4yozLEtDvC2RiLLn5XvkbtNY3vWy7aKDF2lrzSwHDHJg+FIsTAX38EUIxYvLkh
-	dWjW2iu6+f/DF3PdxR865CokJiYyEcFGqwnGjFAKxrkUpE0I/GD+QBwJFag8dyLh
-	4BRcKM9NJTE/lXiJdKsnhA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714154749; x=
-	1714241149; bh=nPovvuf7k5MAjZUZqG7ireg2weJG8ZVQLCrzLgnFtK0=; b=c
-	Z16Xyqjk6QXPSrNSYa9fbl4w2Smfd9B2QYmS64QMVBGiyZpqqKNwaCon6nLB52Qu
-	Rqte/4PMCCCj3NOXadN+xAO2vlRYb9E+IHuND5003I6C2UaXDEfI3NyMi5UZh6oQ
-	Ja0s6h5MODFdeESYZMGiIr/GEmEat3Q3rLXuZT5CF5zvVaha9D5AUI6D2ewdm+0e
-	0uYgquwdJOJ+Zv9W1Ai3TN/TGLAfS9QuFsdUP9FSmGla5zZXFkVjKcXb2HE32Gx8
-	qsc5Y1MdLiNnPghfUX8H+H/ttY68LEHNaXOtiWWHTiV0Pq+dfyey+1FNxO88fqtB
-	AlkzVx9+B8MKAGYR3F2Fw==
-X-ME-Sender: <xms:_OwrZhVxmH5RaDkmPUXMyt5m7bzyM38Y-pP_uPTI1T3A_e5l613xGA>
-    <xme:_OwrZhkg05lDn7v2rhAAXGd1OJFNlVfs--StDoY8V2vwy0h3l3n9frj3Yhf84rtus
-    kJcurg6MSJ5XQHq1og>
-X-ME-Received: <xmr:_OwrZtZ4J2qW6od58rCeQAK65UtFtOU_syc8QTsOcWIxRmgG5X2dpgrPMs_MH_kP3lkhB2ZT3yol0Nmc4E0VXIW2r13z6WwfkXUr0zQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelledguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffuvfevkfgjfhfogggtgfesthhqredtredtudenucfhrhhomhepnfih
-    nhguohhnucfurghntghhvgcuoehlshgrnhgthhgvsehlhihnuggvnhhordgtrgeqnecugg
-    ftrfgrthhtvghrnheptddvfedvteefgeegjeegjedvveetjedvheehtdeuuefglefhueei
-    ffeiheffteehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheplhhsrghntghhvgeslhihnhguvghnohdrtggr
-X-ME-Proxy: <xmx:_OwrZkUjiudZZu876SUQX4EFZGeHdHAE_SbyCgTSyq3y1aFlBizHFA>
-    <xmx:_OwrZrnGYEfFDEY6mA22gTphwUj3jKIPwEsQ4opUJ7yeYB6Fw4FO4Q>
-    <xmx:_OwrZhdvMXjyXVGVXB2oJjmH6MWR58v6qYPc-KzoGcLbA_aBUU73pw>
-    <xmx:_OwrZlGIrGSsxbt114v6rjQVOivKiy7L3b0iUgIodWKei3_5u325mQ>
-    <xmx:_ewrZkd5Wt2020nARb5BvvNuhIncq_4yKEH8iXp6ZMaAX1qh4Re8ay3t>
-Feedback-ID: i1719461a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 26 Apr 2024 14:05:45 -0400 (EDT)
-Date: Fri, 26 Apr 2024 12:05:36 -0600
-From: Lyndon Sanche <lsanche@lyndeno.ca>
-Subject: Re: [PATCH v2] platform/x86: dell-laptop: Implement platform_profile
-To: Ilpo =?iso-8859-1?q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: mario.limonciello@amd.com, pali@kernel.org, W_Armin@gmx.de,
-	srinivas.pandruvada@linux.intel.com, Matthew Garrett <mjg59@srcf.ucam.org>,
-	Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
-Message-Id: <C9AKCS.CKJOJZMUUKSZ1@lyndeno.ca>
-In-Reply-To: <e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
-References: <20240425172758.67831-1-lsanche@lyndeno.ca>
-	<20240426020448.10862-1-lsanche@lyndeno.ca>
-	<e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
-X-Mailer: geary/44.1
+	s=arc-20240116; t=1714154832; c=relaxed/simple;
+	bh=rim/qOPhMLdWIVLqD7A9/Tid24QAvswR2GR40lKc3PU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=syGVTbSMOjF3NUiTOl+XVxG86L/shS/dz21zCaUKQaYWGQjsbM0WVfTsoJGyZQy7IpLWEgOZOcB7ycKy17sfDfWj24Ifp5twlit/NYY8hAVe8L2lnV4/xrQmm3zbUP8FhheSV0fK2fS9omikHsTxhLPpZpY/0vBEeFcDDSVvyKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=edsnHn+t; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-572229f196bso3076707a12.0;
+        Fri, 26 Apr 2024 11:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714154828; x=1714759628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lceweZHRSnryQgkDij4ZGM28IB4VOVtw3Nwgqfzff9E=;
+        b=edsnHn+tz70ngC2iFuHe1ZNGvD8B8SRCdKu7Y7YNduyEXhuyBX3NnaKzUGlD+j0ZpY
+         pgMhAtu4VsHBUmS4BmXUJDJ3wYanjWbKewVLDwpo83NPguTLDIiHrFLokpAOioGwWTQG
+         FljuSFr3Oe9qGNyzkTR4BGyOrABDgYVpu8mrEyWoR4UqFEWHSywutVMl3MglOnZBhl53
+         KBxPLBOwBgGg/avTm1L/T3/tbFLn1XuUtTqk86c6xLnqoCrZnRdjxLhiRh4Ama+yCYLh
+         qi7fJKAW8PXmSqjPywIRgGWRIRhfaQeBql6pqIBRaPfzcgaxppzM8nv4/BiINgPRMF1Q
+         AWmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714154828; x=1714759628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lceweZHRSnryQgkDij4ZGM28IB4VOVtw3Nwgqfzff9E=;
+        b=s5ZCqVdTOctsHNfkZ/gA6NcVkIJO/u8ELgFn5JZFpwQcrCHKO6HEAZ7nveL+zdp7vg
+         g6PInJBkhlhMQGyipkp799Uk/MA8Nf7pljEU7WDKmOpnLaXrDS9684q7eAAxcTjo8/8M
+         DNqEzbzY4oJ+kYkIDwC5ti/HnCFo+dck/8rL/VF+4HtXH13TxCOlzvDuFyClxBFc6lAR
+         EXfp1jzTDsSGOr7Wf3SJw5oFp0X9K2cEl0gJBMJB+eWS9G6YNK6sHKVlAetjzMThamMq
+         pbvscuPEcQJ5nghoewwUMcgcC9A9hkvV094tN4jrnVtW8YvO8JPqQ+0EtOHLdU5WFkKs
+         YUhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQv6qulUl19Co49ZDLjPD9VWN5kF2UzZ0Fxe6AoVk9qAYlfvNb794MiXOXK2CPwVzdMJPklQxHnJyc3A7OEfFcLd/KTQ4GT3ieckv8NMO0oSD36lL/fgD0CbM9aEK3qYUpWInFTMDM1HaGvaNqmAWj7vMGRhxgL5REsKZCs7OBSdWzGc5Nadr6mg5+Ml8PMHMVTXA5ey0yeuTCpwYcyE6/
+X-Gm-Message-State: AOJu0YxcHQU52mPwY4Hk4QusyjKU5xsfXgdwpaUPpUSZ0pSj4itYJ17m
+	MeBChYFxiiZWshwizpvEQyEaO7SwVHt8iZVKxmJVydKH8dlqcDjZNlIZiN+g9fWDWK/mhMxJxcr
+	Jt4QVGMNjDDEFF9n6TAE+nRIrXPE=
+X-Google-Smtp-Source: AGHT+IFnCgu+gwo+KcuYKTJajtvi0VGhGt5z0L892Y6ykLe+z9IJxoGdXEXt5JX/9knoxs2RzyLAP/kdMrtAql5LBNs=
+X-Received: by 2002:a17:906:1594:b0:a58:7940:69de with SMTP id
+ k20-20020a170906159400b00a58794069demr2551641ejd.39.1714154828047; Fri, 26
+ Apr 2024 11:07:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-7-jolsa@kernel.org>
+In-Reply-To: <20240421194206.1010934-7-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Apr 2024 11:06:53 -0700
+Message-ID: <CAEf4BzYU-y+vptqXpuALYecJJgPt+CTcbo+=Q9QXnu4vNwem+g@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
+	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
+:
+>
+> Adding test that adds return uprobe inside 32 bit task
+> and verify the return uprobe and attached bpf programs
+> get properly executed.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/.gitignore        |  1 +
+>  tools/testing/selftests/bpf/Makefile          |  6 ++-
+>  .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++++
+>  .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
+>  4 files changed, 59 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_comp=
+at.c
+>
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index f1aebabfb017..69d71223c0dd 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -45,6 +45,7 @@ test_cpp
+>  /veristat
+>  /sign-file
+>  /uprobe_multi
+> +/uprobe_compat
+>  *.ko
+>  *.tmp
+>  xskxceiver
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index edc73f8f5aef..d170b63eca62 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_skb_c=
+group_id_user \
+>         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metada=
+ta \
+>         xdp_features bpf_test_no_cfi.ko
+>
+> -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
+ti
+> +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
+ti uprobe_compat
 
+you need to add uprobe_compat to TRUNNER_EXTRA_FILES as well, no?
 
-On Fri, Apr 26 2024 at 12:23:00 PM +03:00:00, Ilpo J=E4rvinen=20
-<ilpo.jarvinen@linux.intel.com> wrote:
-> On Thu, 25 Apr 2024, Lyndon Sanche wrote:
->=20
->>  Some Dell laptops support configuration of preset
->>  fan modes through smbios tables.
->>=20
->>  If the platform supports these fan modes, set up
->>  platform_profile to change these modes. If not
->>  supported, skip enabling platform_profile.
->>=20
->>  Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
->>  ---
->=20
-> Two things:
-> - You're missing patch version history (put it below the --- line)
-> - Don't send updates so soon, give people time to comment. When I saw=20
-> v1
->   for the first time, you had already posted the next version.
->=20
->>  +void thermal_cleanup(void)
->>  +{
->>  +	platform_profile_remove();
->>  +	kfree(thermal_handler);
->>  +}
->>  +
->>   static struct led_classdev mute_led_cdev =3D {
->>   	.name =3D "platform::mute",
->>   	.max_brightness =3D 1,
->>  @@ -2238,6 +2452,12 @@ static int __init dell_init(void)
->>   		goto fail_rfkill;
->>   	}
->>=20
->>  +	// Do not fail module if thermal modes not supported,
->>  +	// just skip
->>  +	ret =3D thermal_init();
->>  +	if (ret)
->>  +		goto fail_thermal;
->>  +
->>   	if (quirks && quirks->touchpad_led)
->>   		touchpad_led_init(&platform_device->dev);
->>=20
->>  @@ -2317,6 +2537,8 @@ static int __init dell_init(void)
->>   		led_classdev_unregister(&mute_led_cdev);
->>   fail_led:
->>   	dell_cleanup_rfkill();
->>  +fail_thermal:
->>  +	thermal_cleanup();
->>   fail_rfkill:
->>   	platform_device_del(platform_device);
->>   fail_platform_device2:
->>  @@ -2344,6 +2566,7 @@ static void __exit dell_exit(void)
->>   		platform_device_unregister(platform_device);
->>   		platform_driver_unregister(&platform_driver);
->>   	}
->>  +	thermal_cleanup();
->=20
-> This is still not right, you'll still platform_profile_remove() even=20
-> if
-> the init side call failed.
->=20
+>
+>  # Emit succinct information message describing current building step
+>  # $1 - generic step name (e.g., CC, LINK, etc);
+> @@ -761,6 +761,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
+>         $(call msg,BINARY,,$@)
+>         $(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+>
+> +$(OUTPUT)/uprobe_compat:
+> +       $(call msg,BINARY,,$@)
+> +       $(Q)echo "int main() { return 0; }" | $(CC) $(CFLAGS) -xc -m32 -O=
+0 - -o $@
+> +
+>  EXTRA_CLEAN :=3D $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)                     =
+ \
+>         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
+>         feature bpftool                                                 \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
+ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> index 9233210a4c33..3770254d893b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> @@ -11,6 +11,7 @@
+>  #include <sys/wait.h>
+>  #include "uprobe_syscall.skel.h"
+>  #include "uprobe_syscall_call.skel.h"
+> +#include "uprobe_syscall_compat.skel.h"
+>
+>  __naked unsigned long uretprobe_regs_trigger(void)
+>  {
+> @@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
+>                  "read_trace_pipe_iter");
+>         ASSERT_EQ(found, 0, "found");
+>  }
+> +
+> +static void trace_pipe_compat_cb(const char *str, void *data)
+> +{
+> +       if (strstr(str, "uretprobe compat") !=3D NULL)
+> +               (*(int *)data)++;
+> +}
+> +
+> +static void test_uretprobe_compat(void)
+> +{
+> +       struct uprobe_syscall_compat *skel =3D NULL;
+> +       int err, found =3D 0;
+> +
+> +       skel =3D uprobe_syscall_compat__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_load"))
+> +               goto cleanup;
+> +
+> +       err =3D uprobe_syscall_compat__attach(skel);
+> +       if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
+> +               goto cleanup;
+> +
+> +       system("./uprobe_compat");
+> +
+> +       ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, 1000=
+),
+> +                "read_trace_pipe_iter");
+
+why so complicated? can't you just set global variable that it was called
+
+> +       ASSERT_EQ(found, 1, "found");
+> +
+> +cleanup:
+> +       uprobe_syscall_compat__destroy(skel);
+> +}
+>  #else
+>  static void test_uretprobe_regs_equal(void)
+>  {
+> @@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
+>  {
+>         test__skip();
+>  }
+> +
+> +static void test_uretprobe_compat(void)
+> +{
+> +       test__skip();
+> +}
+>  #endif
+>
+>  void test_uprobe_syscall(void)
+> @@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
+>  {
+>         test_uretprobe_syscall_call();
+>  }
+> +
+> +void serial_test_uprobe_syscall_compat(void)
+
+and then no need for serial_test?
+
+> +{
+> +       test_uretprobe_compat();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c b/=
+tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+> new file mode 100644
+> index 000000000000..f8adde7f08e2
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> +
+> +SEC("uretprobe.multi/./uprobe_compat:main")
+> +int uretprobe_compat(struct pt_regs *ctx)
+> +{
+> +       bpf_printk("uretprobe compat\n");
+> +       return 0;
+> +}
 > --
->  i.
->=20
-
-Thank you for your feedback. I agree with your comments and will add=20
-more checking on whether certain cleanup actions are necessary.
-
-Lyndon
-
-
+> 2.44.0
+>
 
