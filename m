@@ -1,293 +1,387 @@
-Return-Path: <linux-kernel+bounces-160753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371108B425B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:49:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5AE8B4260
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:53:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 298471C22079
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49780282D3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31773B290;
-	Fri, 26 Apr 2024 22:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4290E3B28F;
+	Fri, 26 Apr 2024 22:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="K3F41UGP"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJDm2U99"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B673BBC1;
-	Fri, 26 Apr 2024 22:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714171740; cv=fail; b=bYkOkdNKQ4VtULQn4Nnc1kbWBUTg8Ke4ggLE6e097++OW+zq6N2J3Iz/Qm4VjLzgKguy8AN9dnSoUgjxM4nklqR4VprdH6kyP2+w2BIPDyZ6n+HT2MokIpddU5TcTnsWJZFEEu0bGYEZRB9gflt93deqQ/On/8ydX27h1M2D/P4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714171740; c=relaxed/simple;
-	bh=wA8pBnm8GqboOGhP27o4koppyYQKsrIBzrWzYaI0CJA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ts69Hshy78DlKh9/d2ZHLaZaCNvuRLh9i1wxpkqdJ8P6LKMYk6kU8FVslSbylKd7Dm+S1O+oOix9AyUSpjzTi4t3zqHPco6Pf0sDK/Fx/+wMXN1P6xD9HceZaZI19Uu+7YLf7E46MGpgXuXSxzHMRDA4AjifDdHHNyUgCxUxXKM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=K3F41UGP; arc=fail smtp.client-ip=40.107.220.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P6/kOjsUN89l60kngPEamqdv4XmGZOKsRl0SHf6hnaG1Tkkn2zH+5ZGH4JSKty595KnH0/WbKSzJClHGABuRO2xp7VDl+NOcGKLfDNeDOwzPXWTEYEzLVprg9kXwLKVQymkkpwtJrFaYI6pnFoea2mAi06orIyR6xEI0slK+4DH9i4BegfTPZ+TnuH8uP3UrIjqZAamKVicPUVuOpkXlu7Z0WMJHHKaVhPk9bnd6yVeTbWfRjoXsbC83F0KGiGEQCcKy8y8rm7NgBneIhqyABjvzQr4LaFmaE5oPJTFaiWJx9875K6GpZhC4r03gJ5vzJeAuGcbdzw8pYMWldcWiTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PyXRteb8TGejSxCcD9pkBa6lgrH1J4l6vEFfBSlZ8no=;
- b=frZwboUcCX5scYK24tdAcL3oYyQ+m9Bs8fMRxpLrIo+EEphwc4W1rXHpoWktWXdX6mXp1KU42EyT3kYdo9gp3gPQdj12ICJYI8S7b9cUG3tQ2yAuI/vXWn5Gi6jEIvwdz/YuqMgB4klpnKtjsQzuYrbz/NIfQ91vokEhNorEh/cZEDdYl5SPB5CXRU77CMeZoNATW9AC1NygbmiIfySejfXSBv39gyqiui/zKvE1Tg7jP9LCZoOlPTZH8dsbMFrM6Sn2HNW9y2UbTUqROOk4HBeLrDAvXIfXIhgT7niP2DqEtnQgY2/mqcaJRlIGng5V/g1g30YqQXXab+anS2uMuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PyXRteb8TGejSxCcD9pkBa6lgrH1J4l6vEFfBSlZ8no=;
- b=K3F41UGPbRIdQdxfY3pHWg1MpJdnfUjc8L1gw+c6HsdLCZgKQfbSUsSYeHkgbt7N8jU+uZBaf46nqNnr9MkzJMSd3B0YIsROApH1Xpqtd1B0XomCqYVRplDt4iBhxA/zdPAfm1m5soLIFr9tWA59+/4+16HMP+0TjXaLYlc95eY=
-Received: from MW4PR04CA0282.namprd04.prod.outlook.com (2603:10b6:303:89::17)
- by PH7PR12MB7966.namprd12.prod.outlook.com (2603:10b6:510:274::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.31; Fri, 26 Apr
- 2024 22:48:42 +0000
-Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:303:89:cafe::dc) by MW4PR04CA0282.outlook.office365.com
- (2603:10b6:303:89::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.26 via Frontend
- Transport; Fri, 26 Apr 2024 22:48:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7519.0 via Frontend Transport; Fri, 26 Apr 2024 22:48:42 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 17:48:41 -0500
-Date: Fri, 26 Apr 2024 17:48:26 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, Brijesh Singh
-	<brijesh.singh@amd.com>
-Subject: Re: [PATCH v14 09/22] KVM: SEV: Add support to handle MSR based Page
- State Change VMGEXIT
-Message-ID: <20240426224826.q53obbzjzhp6lrme@amd.com>
-References: <20240421180122.1650812-1-michael.roth@amd.com>
- <20240421180122.1650812-10-michael.roth@amd.com>
- <ZilyxFnJvaWUJOkc@google.com>
- <20240425220008.boxnurujlxbx62pg@amd.com>
- <ZirVlF-zQPNOOahU@google.com>
- <20240426171644.r6dvvfvduzvlrv5c@amd.com>
- <ZiwLKI_xtZk3BG_B@google.com>
- <20240426222457.7yn66athor2jxsrj@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D04821101;
+	Fri, 26 Apr 2024 22:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714171970; cv=none; b=PYdAHyp+nFO/EoupNM9Tr7UWzHovnPLSQwX6ZJNpP/vs6FG686I9j3aPiF/MNPxeINXxvJ9dXPfWCW92nuGgfLWTx2Mb35ybnBLLUDRTSfHaBcYJHQ/MoOLfEFY2/ACSVaJb4yQHJnO8Niat5M5TrsBLbKrodSnLuOq77QgV/sU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714171970; c=relaxed/simple;
+	bh=GGKvZY/aR+pMIP6jcgcCcgx8wajd6k+Nq0JvOWeoq/A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=tZm6yY9+GpEhzq0FSIxTODenVI9Vm4abzKDlXHhmK+EYudKp4fuG8puFvkheiZWY/pJYB1lwHH16nc4M8/kSfvzfMVjf27VTj38gPkLIJlaxq9aGKGEFKEkG1V+n8e5AantGpRQ/2g8PY1g9GmFRLTafBbk8t2VMTVjyt80a3mI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YJDm2U99; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE99C113CD;
+	Fri, 26 Apr 2024 22:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714171969;
+	bh=GGKvZY/aR+pMIP6jcgcCcgx8wajd6k+Nq0JvOWeoq/A=;
+	h=Date:From:To:Cc:Subject:From;
+	b=YJDm2U9985ITJNTGGqD9z04mvBoKHm7XhoD9TMfQ1axuXVQe2yfyDLjgCLCeCNxAg
+	 kifRR3WzkdHd7olWi7Z7cq6Lb9ZKjlx3xWS8Ha7dR4GPNE+4JI+zn2f2wZD58acrLR
+	 dhbLXcwTExWFLNLXotRIy9epW87F9wRp/nl6Pe8va7yImlELjmhPne5F0MQgpBp7Dq
+	 11q0Zl3l9YVTimdHXFsuCqQDQNkvFDo8AaOHq9jIAP7dTqv0Z6ddWYGbLr7SATCli8
+	 apqF5E0ksjadwDcJAPG6xMUCDISuhHIx72Jthda+8dORes6NHpBtAIfGLJNl5KQ9Ft
+	 1QBgRtVpK774w==
+Date: Fri, 26 Apr 2024 16:52:46 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] Bluetooth: hci_conn, hci_sync: Use __counted_by()
+ in multiple structs and avoid -Wfamnae warnings
+Message-ID: <ZiwwPmCvU25YzWek@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240426222457.7yn66athor2jxsrj@amd.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|PH7PR12MB7966:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b1e6cd7-4ba7-4087-2438-08dc664305c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|82310400014|36860700004|1800799015|376005|7416005;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?TkBdWpqlRuHzI9qp+E63HTk/SqMQxuFw03oif1fAKbkiovD8Gw6q2uW25H3v?=
- =?us-ascii?Q?uUkv6SAVh1ht5C9CtAj2fP4nSd9Ge1QmejPnT41Aq1yroXtiq61XNvxYr5eJ?=
- =?us-ascii?Q?C694O3N0ndzGJLODDSyqIY8KT95YZ3X9LPu3Wy3RELmHhC8aGzfqTtVw/d2e?=
- =?us-ascii?Q?bP0iSsi+TAXQYbC218c9ZJd/msbO+aPgbAuAoCIUhWMKvQGzVvJ5qnolBzPi?=
- =?us-ascii?Q?FcXsTl0aYTpozdHXTM9hxpnOcbmSDQOiTrcLhJtgEHOn+RDpwNSQz93ztY/m?=
- =?us-ascii?Q?Zwn5vo9Dg5i1E+iae4ConI+dwBlltt3T+gDSDFM+4UxozlzMPgr5Rsfc+Dt1?=
- =?us-ascii?Q?WmsRG5DO4TrlSxHG4BrAnP210oj7CIAny6juTlk/EwU8xl2d/u/y5/khm1La?=
- =?us-ascii?Q?Szx9AX16J9VN+/07W6ZaOE1SEUowKswvRdFN/F4Np4B3FV/RDhzT5ganNyKk?=
- =?us-ascii?Q?8z4cmBvcVNaFEDWvr4iTuDWV6O22vs8cCQXIOf3Y5gbmVV8kOVDH6e1L37+F?=
- =?us-ascii?Q?y7lSXnQOVwLh2PbJz8rgQzhaQwUJGAbHmbmU5o1j7IxxLZHCVlJ2gXx0lYaQ?=
- =?us-ascii?Q?LhC9IlODJS6mlkhObk+mHSkcOqmdsdeoT6SWASdFdHUm43YZsRPieRSsDduK?=
- =?us-ascii?Q?sn4JbjkiBXei1YdyaYLn+hcTD8IAcTY9D7cK9AAjrKzk8PL2tmkHcREK+4kL?=
- =?us-ascii?Q?m6MwA35+sL5M6hTadx+DP2Zj25hNuIzOWETI4xzxTLqzxjYfjbPIpvxmnUGj?=
- =?us-ascii?Q?WX/eW2AGGjz+P4+MF2cIeeS1hoUK/5V7Qz0tv0m535ldWGy1BQbPmjO2Z+3r?=
- =?us-ascii?Q?AXYRA2CwWNbQqni0zYPmoUH1IkAdWQbiVF0HJpBSgzaybKclo4+HyCM2qoLU?=
- =?us-ascii?Q?f2EEJpZ/gDB16JynxiR7zcO767r1B3EVH6gO7CAZ4uVSVycrY4eTtOnCEpIf?=
- =?us-ascii?Q?9urYI3CbbE5i33IrcTxJcyhmX5VHAdL0Ihnfqs88miar0Si4p1qdDF3apbSP?=
- =?us-ascii?Q?cwdcXXeUz0Q6Liz2jl7YwBJHVP8wUigXFEbyqUJoKWWadK8BQU1hXcOp6uhR?=
- =?us-ascii?Q?7nS4IGxyyEhXuANAIE4LLKNC6dBW1fAoJpwd5t76J8V/LbPXAW0BO9IdInTD?=
- =?us-ascii?Q?xpmURQlPIuQcMEyE7/pq0e88K3wJ0ZgTb5pQkoqS6Fzvyn0XhwrxWXEz1u5u?=
- =?us-ascii?Q?FeY1G6i7urRrf9jDlXG+VE43Asy3dMy+cv9ZmbfAwc187Tfs2YLimAXdmYW9?=
- =?us-ascii?Q?WNNhT3cjVwgPoVV5/Dxosbrnn3oyacBfstKFuiQPz3CdUGfusdtp/TJ9ZbvS?=
- =?us-ascii?Q?g0D+pMOT15qf7tJBhOvSaVxJaoVjIIhTHzIh2x+7bYIWPkj7kuXMOUKTpwZy?=
- =?us-ascii?Q?IJqHi4lH9ayXuZH7usUYwak7CL4x?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 22:48:42.2588
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b1e6cd7-4ba7-4087-2438-08dc664305c0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FA.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7966
 
-On Fri, Apr 26, 2024 at 05:24:57PM -0500, Michael Roth wrote:
-> On Fri, Apr 26, 2024 at 01:14:32PM -0700, Sean Christopherson wrote:
-> > On Fri, Apr 26, 2024, Michael Roth wrote:
-> > > On Thu, Apr 25, 2024 at 03:13:40PM -0700, Sean Christopherson wrote:
-> > > > On Thu, Apr 25, 2024, Michael Roth wrote:
-> > > > > On Wed, Apr 24, 2024 at 01:59:48PM -0700, Sean Christopherson wrote:
-> > > > > > On Sun, Apr 21, 2024, Michael Roth wrote:
-> > > > > > > +static int snp_begin_psc_msr(struct kvm_vcpu *vcpu, u64 ghcb_msr)
-> > > > > > > +{
-> > > > > > > +	u64 gpa = gfn_to_gpa(GHCB_MSR_PSC_REQ_TO_GFN(ghcb_msr));
-> > > > > > > +	u8 op = GHCB_MSR_PSC_REQ_TO_OP(ghcb_msr);
-> > > > > > > +	struct vcpu_svm *svm = to_svm(vcpu);
-> > > > > > > +
-> > > > > > > +	if (op != SNP_PAGE_STATE_PRIVATE && op != SNP_PAGE_STATE_SHARED) {
-> > > > > > > +		set_ghcb_msr(svm, GHCB_MSR_PSC_RESP_ERROR);
-> > > > > > > +		return 1; /* resume guest */
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > > +	vcpu->run->exit_reason = KVM_EXIT_VMGEXIT;
-> > > > > > > +	vcpu->run->vmgexit.type = KVM_USER_VMGEXIT_PSC_MSR;
-> > > > > > > +	vcpu->run->vmgexit.psc_msr.gpa = gpa;
-> > > > > > > +	vcpu->run->vmgexit.psc_msr.op = op;
-> > > > > > 
-> > > > > > Argh, no.
-> > > > > > 
-> > > > > > This is the same crud that TDX tried to push[*].  Use KVM's existing user exits,
-> > > > > > and extend as *needed*.  There is no good reason page state change requests need
-> > > > > > *two* exit reasons.  The *only* thing KVM supports right now is private<=>shared
-> > > > > > conversions, and that can be handled with either KVM_HC_MAP_GPA_RANGE or
-> > > > > > KVM_EXIT_MEMORY_FAULT.
-> > > > > > 
-> > > > > > The non-MSR flavor can batch requests, but I'm willing to bet that the overwhelming
-> > > > > > majority of requests are contiguous, i.e. can be combined into a range by KVM,
-> > > > > > and that handling any outliers by performing multiple exits to userspace will
-> > > > > > provide sufficient performance.
-> > > > > 
-> > > > > That does tend to be the case. We won't have as much granularity with
-> > > > > the per-entry error codes, but KVM_SET_MEMORY_ATTRIBUTES would be
-> > > > > expected to be for the entire range anyway, and if that fails for
-> > > > > whatever reason then we KVM_BUG_ON() anyway. We do have to have handling
-> > > > > for cases where the entries aren't contiguous however, which would
-> > > > > involve multiple KVM_EXIT_HYPERCALLs until everything is satisfied. But
-> > > > > not a huge deal since it doesn't seem to be a common case.
-> > > > 
-> > > > If it was less complex overall, I wouldn't be opposed to KVM marshalling everything
-> > > > into a buffer, but I suspect it will be simpler to just have KVM loop until the
-> > > > PSC request is complete.
-> > > 
-> > > Agreed. But *if* we decided to introduce a buffer, where would you
-> > > suggest adding it? The kvm_run union fields are set to 256 bytes, and
-> > > we'd need close to 4K to handle a full GHCB PSC buffer in 1 go. Would
-> > > additional storage at the end of struct kvm_run be acceptable?
-> > 
-> > Don't even need more memory, just use vcpu->arch.pio_data, which is always
-> > allocated and is mmap()able by userspace via KVM_PIO_PAGE_OFFSET.
-> 
-> Nice, that seems like a good option if needed.
-> 
-> > 
-> > > > > KVM_HC_MAP_GPA_RANGE seems like a nice option because we'd also have the
-> > > > > flexibility to just issue that directly within a guest rather than
-> > > > > relying on SNP/TDX specific hcalls. I don't know if that approach is
-> > > > > practical for a real guest, but it could be useful for having re-usable
-> > > > > guest code in KVM selftests that "just works" for all variants of
-> > > > > SNP/TDX/sw-protected. (though we'd still want stuff that exercises
-> > > > > SNP/TDX->KVM_HC_MAP_GPA_RANGE translation).
-> > > > > 
-> > > > > I think we'd there is some potential baggage there with the previous SEV
-> > > > > live migration use cases. There's some potential that existing guest kernels
-> > > > > will use it once it gets advertised and issue them alongside GHCB-based
-> > > > > page-state changes. It might make sense to use one of the reserved bits
-> > > > > to denote this flavor of KVM_HC_MAP_GPA_RANGE as being for
-> > > > > hardware/software-protected VMs and not interchangeable with calls that
-> > > > > were used for SEV live migration stuff.
-> > > > 
-> > > > I don't think I follow, what exactly wouldn't be interchangeable, and why?
-> > > 
-> > > For instance, if KVM_FEATURE_MIGRATION_CONTROL is advertised, then when
-> > > amd_enc_status_change_finish() is triggered as a result of
-> > > set_memory_encrypted(), we'd see
-> > > 
-> > >   1) a GHCB PSC for SNP, which will get forwarded to userspace via
-> > >      KVM_HC_MAP_GPA_RANGE
-> > >   2) KVM_HC_MAP_GPA_RANGE issued directly by the guest.
-> > > 
-> > > In that case, we'd be duplicating PSCs but it wouldn't necessarily hurt
-> > > anything. But ideally we'd be able to distinguish the 2 cases so we
-> > > could rightly treat 1) as only being expected for SNP, and 2) as only
-> > > being expected for SEV/SEV-ES.
-> > 
-> > Why would the guest issue both?  That's a guest bug.  Or if supressing the second
-> > hypercall is an issue, simply don't enumerate MIGRATION_CONTROL for SNP guests.
-> 
-> At the time of its inception, KVM_HC_MAP_GPA_RANGE was simply
-> KVM_HC_PAGE_ENC_STATUS and got a more generic name over the course of
-> development. But its purpose never changed: to inform the hypervisor of
-> the current encryption status of a GPA range so VMMs could build up a
-> list of shared guest regions that don't need to go through firmware for
-> migration.. And it was and still is asynchronous to a degree, since the
-> the migration control MSRs signals when that list of shared pages is
-> usable.
-> 
-> These are very different semantics the proposal to use KVM_HC_MAP_GPA_RANGE
-> as a means to set memory attributes via KVM_SET_MEMORY_ATTRIBUTES, and
-> the 2 purposes aren't necessarily mutually exclusive to one another. It
-> only really becomes a bug if we begin to interpret the original use-case
-> as something other than it's initial intent in the case of SNP.
-> 
-> But at the same time, it's hard to imagine this older SEV live migration
-> use-case being useful for SNP, since userspace will necessarily have all
-> the information it needs to determine what is/isn't shared with relying
-> on an additional hypercall.
-> 
-> So treating the older use case as specific to non-SNP and disallowing the
-> use of MIGRATION_CONTROL does seems reasonable. But it's really the CPUID
-> bit that advertises it, SEV just happens to only use it for when
-> MIGRATION_CONTROL is also advertised. So we could disable that as well,
-> but I did like the idea of being able to handle guest-issued
-> KVM_HC_MAP_GPA_RANGE calls even with SNP/TDX enabled, which is less of an
-> option if we can't advertised KVM_HC_MAP_GPA_RANGE via cpuid. But I
-> suppose we could do that with KVM selftests which is probably where
-> that's more likely to be useful.
+Prepare for the coming implementation by GCC and Clang of the
+__counted_by attribute. Flexible array members annotated with
+__counted_by can have their accesses bounds-checked at run-time
+via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+(for strcpy/memcpy-family functions).
 
-Hmm, well...assuming SNP/TDX guest agree to make those vCPU registers
-available via VMSA/etc in those cases... So i suppose we'd need some
-additional handling to support advertising KVM_HC_MAP_GPA_RANGE via cpuid
-either way and it is best to disallow guest-issued KVM_HC_MAP_GPA_RANGE
-from being advertised to guests until there's support and a solid use-case
-for it.
+Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+getting ready to enable it globally.
 
--Mike
+So, use the `DEFINE_FLEX()` helper for multiple on-stack definitions
+of a flexible structure where the size of the flexible-array member
+is known at compile-time, and refactor the rest of the code,
+accordingly.
 
-> 
-> -Mike
-> 
+Notice that, due to the use of `__counted_by()` in `struct
+hci_cp_le_create_cis`, the for loop in function `hci_cs_le_create_cis()`
+had to be modified. Once the index `i`, through which `cp->cis[i]` is
+accessed, falls in the interval [0, cp->num_cis), `cp->num_cis` cannot
+be decremented all the way down to zero while accessing `cp->cis[]`:
+
+net/bluetooth/hci_event.c:4310:
+4310    for (i = 0; cp->num_cis; cp->num_cis--, i++) {
+                ...
+4314            handle = __le16_to_cpu(cp->cis[i].cis_handle);
+
+otherwise, only half (one iteration before `cp->num_cis == i`) or half
+plus one (one iteration before `cp->num_cis < i`) of the items in the
+array will be accessed before running into an out-of-bounds issue. So,
+in order to avoid this, set `cp->num_cis` to zero just after the for
+loop.
+
+Also, make use of `aux_num_cis` variable to update `cmd->num_cis` after
+a `list_for_each_entry_rcu()` loop.
+
+With these changes, fix the following warnings:
+net/bluetooth/hci_sync.c:1239:56: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+net/bluetooth/hci_sync.c:1415:51: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+net/bluetooth/hci_sync.c:1731:51: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+net/bluetooth/hci_sync.c:6497:45: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+
+Link: https://github.com/KSPP/linux/issues/202
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Update `cmd->num_cis` after `list_for_each_entry_rcu()` loop.
+
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/ZiwqqZCa7PK9bzCX@neat/
+
+ include/net/bluetooth/hci.h |  8 ++--
+ net/bluetooth/hci_event.c   |  3 +-
+ net/bluetooth/hci_sync.c    | 84 +++++++++++++++----------------------
+ 3 files changed, 40 insertions(+), 55 deletions(-)
+
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index fe23e862921d..c4c6b8810701 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -2026,7 +2026,7 @@ struct hci_cp_le_set_ext_adv_data {
+ 	__u8  operation;
+ 	__u8  frag_pref;
+ 	__u8  length;
+-	__u8  data[];
++	__u8  data[] __counted_by(length);
+ } __packed;
+ 
+ #define HCI_OP_LE_SET_EXT_SCAN_RSP_DATA		0x2038
+@@ -2035,7 +2035,7 @@ struct hci_cp_le_set_ext_scan_rsp_data {
+ 	__u8  operation;
+ 	__u8  frag_pref;
+ 	__u8  length;
+-	__u8  data[];
++	__u8  data[] __counted_by(length);
+ } __packed;
+ 
+ #define HCI_OP_LE_SET_EXT_ADV_ENABLE		0x2039
+@@ -2061,7 +2061,7 @@ struct hci_cp_le_set_per_adv_data {
+ 	__u8  handle;
+ 	__u8  operation;
+ 	__u8  length;
+-	__u8  data[];
++	__u8  data[] __counted_by(length);
+ } __packed;
+ 
+ #define HCI_OP_LE_SET_PER_ADV_ENABLE		0x2040
+@@ -2162,7 +2162,7 @@ struct hci_cis {
+ 
+ struct hci_cp_le_create_cis {
+ 	__u8    num_cis;
+-	struct hci_cis cis[];
++	struct hci_cis cis[] __counted_by(num_cis);
+ } __packed;
+ 
+ #define HCI_OP_LE_REMOVE_CIG			0x2065
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 9a38e155537e..9a7ca084302e 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4307,7 +4307,7 @@ static void hci_cs_le_create_cis(struct hci_dev *hdev, u8 status)
+ 	hci_dev_lock(hdev);
+ 
+ 	/* Remove connection if command failed */
+-	for (i = 0; cp->num_cis; cp->num_cis--, i++) {
++	for (i = 0; i < cp->num_cis; i++) {
+ 		struct hci_conn *conn;
+ 		u16 handle;
+ 
+@@ -4323,6 +4323,7 @@ static void hci_cs_le_create_cis(struct hci_dev *hdev, u8 status)
+ 			hci_conn_del(conn);
+ 		}
+ 	}
++	cp->num_cis = 0;
+ 
+ 	if (pending)
+ 		hci_le_create_cis_pending(hdev);
+diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+index 9092b4d59545..6e15594d3565 100644
+--- a/net/bluetooth/hci_sync.c
++++ b/net/bluetooth/hci_sync.c
+@@ -1235,31 +1235,27 @@ int hci_setup_ext_adv_instance_sync(struct hci_dev *hdev, u8 instance)
+ 
+ static int hci_set_ext_scan_rsp_data_sync(struct hci_dev *hdev, u8 instance)
+ {
+-	struct {
+-		struct hci_cp_le_set_ext_scan_rsp_data cp;
+-		u8 data[HCI_MAX_EXT_AD_LENGTH];
+-	} pdu;
++	DEFINE_FLEX(struct hci_cp_le_set_ext_scan_rsp_data, pdu, data, length,
++		    HCI_MAX_EXT_AD_LENGTH);
+ 	u8 len;
+ 	struct adv_info *adv = NULL;
+ 	int err;
+ 
+-	memset(&pdu, 0, sizeof(pdu));
+-
+ 	if (instance) {
+ 		adv = hci_find_adv_instance(hdev, instance);
+ 		if (!adv || !adv->scan_rsp_changed)
+ 			return 0;
+ 	}
+ 
+-	len = eir_create_scan_rsp(hdev, instance, pdu.data);
++	len = eir_create_scan_rsp(hdev, instance, pdu->data);
+ 
+-	pdu.cp.handle = instance;
+-	pdu.cp.length = len;
+-	pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
+-	pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
++	pdu->handle = instance;
++	pdu->length = len;
++	pdu->operation = LE_SET_ADV_DATA_OP_COMPLETE;
++	pdu->frag_pref = LE_SET_ADV_DATA_NO_FRAG;
+ 
+ 	err = __hci_cmd_sync_status(hdev, HCI_OP_LE_SET_EXT_SCAN_RSP_DATA,
+-				    sizeof(pdu.cp) + len, &pdu.cp,
++				    struct_size(pdu, data, len), pdu,
+ 				    HCI_CMD_TIMEOUT);
+ 	if (err)
+ 		return err;
+@@ -1267,7 +1263,7 @@ static int hci_set_ext_scan_rsp_data_sync(struct hci_dev *hdev, u8 instance)
+ 	if (adv) {
+ 		adv->scan_rsp_changed = false;
+ 	} else {
+-		memcpy(hdev->scan_rsp_data, pdu.data, len);
++		memcpy(hdev->scan_rsp_data, pdu->data, len);
+ 		hdev->scan_rsp_data_len = len;
+ 	}
+ 
+@@ -1411,14 +1407,10 @@ static int hci_set_per_adv_params_sync(struct hci_dev *hdev, u8 instance,
+ 
+ static int hci_set_per_adv_data_sync(struct hci_dev *hdev, u8 instance)
+ {
+-	struct {
+-		struct hci_cp_le_set_per_adv_data cp;
+-		u8 data[HCI_MAX_PER_AD_LENGTH];
+-	} pdu;
++	DEFINE_FLEX(struct hci_cp_le_set_per_adv_data, pdu, data, length,
++		    HCI_MAX_PER_AD_LENGTH);
+ 	u8 len;
+ 
+-	memset(&pdu, 0, sizeof(pdu));
+-
+ 	if (instance) {
+ 		struct adv_info *adv = hci_find_adv_instance(hdev, instance);
+ 
+@@ -1426,14 +1418,14 @@ static int hci_set_per_adv_data_sync(struct hci_dev *hdev, u8 instance)
+ 			return 0;
+ 	}
+ 
+-	len = eir_create_per_adv_data(hdev, instance, pdu.data);
++	len = eir_create_per_adv_data(hdev, instance, pdu->data);
+ 
+-	pdu.cp.length = len;
+-	pdu.cp.handle = instance;
+-	pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
++	pdu->length = len;
++	pdu->handle = instance;
++	pdu->operation = LE_SET_ADV_DATA_OP_COMPLETE;
+ 
+ 	return __hci_cmd_sync_status(hdev, HCI_OP_LE_SET_PER_ADV_DATA,
+-				     sizeof(pdu.cp) + len, &pdu,
++				     struct_size(pdu, data, len), pdu,
+ 				     HCI_CMD_TIMEOUT);
+ }
+ 
+@@ -1727,31 +1719,27 @@ int hci_le_terminate_big_sync(struct hci_dev *hdev, u8 handle, u8 reason)
+ 
+ static int hci_set_ext_adv_data_sync(struct hci_dev *hdev, u8 instance)
+ {
+-	struct {
+-		struct hci_cp_le_set_ext_adv_data cp;
+-		u8 data[HCI_MAX_EXT_AD_LENGTH];
+-	} pdu;
++	DEFINE_FLEX(struct hci_cp_le_set_ext_adv_data, pdu, data, length,
++		    HCI_MAX_EXT_AD_LENGTH);
+ 	u8 len;
+ 	struct adv_info *adv = NULL;
+ 	int err;
+ 
+-	memset(&pdu, 0, sizeof(pdu));
+-
+ 	if (instance) {
+ 		adv = hci_find_adv_instance(hdev, instance);
+ 		if (!adv || !adv->adv_data_changed)
+ 			return 0;
+ 	}
+ 
+-	len = eir_create_adv_data(hdev, instance, pdu.data);
++	len = eir_create_adv_data(hdev, instance, pdu->data);
+ 
+-	pdu.cp.length = len;
+-	pdu.cp.handle = instance;
+-	pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
+-	pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
++	pdu->length = len;
++	pdu->handle = instance;
++	pdu->operation = LE_SET_ADV_DATA_OP_COMPLETE;
++	pdu->frag_pref = LE_SET_ADV_DATA_NO_FRAG;
+ 
+ 	err = __hci_cmd_sync_status(hdev, HCI_OP_LE_SET_EXT_ADV_DATA,
+-				    sizeof(pdu.cp) + len, &pdu.cp,
++				    struct_size(pdu, data, len), pdu,
+ 				    HCI_CMD_TIMEOUT);
+ 	if (err)
+ 		return err;
+@@ -1760,7 +1748,7 @@ static int hci_set_ext_adv_data_sync(struct hci_dev *hdev, u8 instance)
+ 	if (adv) {
+ 		adv->adv_data_changed = false;
+ 	} else {
+-		memcpy(hdev->adv_data, pdu.data, len);
++		memcpy(hdev->adv_data, pdu->data, len);
+ 		hdev->adv_data_len = len;
+ 	}
+ 
+@@ -6496,10 +6484,8 @@ static int hci_le_create_conn_sync(struct hci_dev *hdev, void *data)
+ 
+ int hci_le_create_cis_sync(struct hci_dev *hdev)
+ {
+-	struct {
+-		struct hci_cp_le_create_cis cp;
+-		struct hci_cis cis[0x1f];
+-	} cmd;
++	DEFINE_FLEX(struct hci_cp_le_create_cis, cmd, cis, num_cis, 0x1f);
++	size_t aux_num_cis = 0;
+ 	struct hci_conn *conn;
+ 	u8 cig = BT_ISO_QOS_CIG_UNSET;
+ 
+@@ -6526,8 +6512,6 @@ int hci_le_create_cis_sync(struct hci_dev *hdev)
+ 	 * remains pending.
+ 	 */
+ 
+-	memset(&cmd, 0, sizeof(cmd));
+-
+ 	hci_dev_lock(hdev);
+ 
+ 	rcu_read_lock();
+@@ -6564,7 +6548,7 @@ int hci_le_create_cis_sync(struct hci_dev *hdev)
+ 		goto done;
+ 
+ 	list_for_each_entry_rcu(conn, &hdev->conn_hash.list, list) {
+-		struct hci_cis *cis = &cmd.cis[cmd.cp.num_cis];
++		struct hci_cis *cis = &cmd->cis[aux_num_cis];
+ 
+ 		if (hci_conn_check_create_cis(conn) ||
+ 		    conn->iso_qos.ucast.cig != cig)
+@@ -6573,25 +6557,25 @@ int hci_le_create_cis_sync(struct hci_dev *hdev)
+ 		set_bit(HCI_CONN_CREATE_CIS, &conn->flags);
+ 		cis->acl_handle = cpu_to_le16(conn->parent->handle);
+ 		cis->cis_handle = cpu_to_le16(conn->handle);
+-		cmd.cp.num_cis++;
++		aux_num_cis++;
+ 
+-		if (cmd.cp.num_cis >= ARRAY_SIZE(cmd.cis))
++		if (aux_num_cis >= 0x1f)
+ 			break;
+ 	}
++	cmd->num_cis = aux_num_cis;
+ 
+ done:
+ 	rcu_read_unlock();
+ 
+ 	hci_dev_unlock(hdev);
+ 
+-	if (!cmd.cp.num_cis)
++	if (!aux_num_cis)
+ 		return 0;
+ 
+ 	/* Wait for HCI_LE_CIS_Established */
+ 	return __hci_cmd_sync_status_sk(hdev, HCI_OP_LE_CREATE_CIS,
+-					sizeof(cmd.cp) + sizeof(cmd.cis[0]) *
+-					cmd.cp.num_cis, &cmd,
+-					HCI_EVT_LE_CIS_ESTABLISHED,
++					struct_size(cmd, cis, cmd->num_cis),
++					cmd, HCI_EVT_LE_CIS_ESTABLISHED,
+ 					conn->conn_timeout, NULL);
+ }
+ 
+-- 
+2.34.1
+
 
