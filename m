@@ -1,86 +1,132 @@
-Return-Path: <linux-kernel+bounces-159642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BF68B317A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:36:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5398B318D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:41:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C80EB2158B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:36:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 958022886EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B74D13C3EB;
-	Fri, 26 Apr 2024 07:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A904A13C673;
+	Fri, 26 Apr 2024 07:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GOV5FuHk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="dw96fj/5"
+Received: from smtpcmd11116.aruba.it (smtpcmd11116.aruba.it [62.149.156.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D2842040;
-	Fri, 26 Apr 2024 07:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA6113AD25
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714116957; cv=none; b=amBKyo0I5q4hRCmo5cE7mhz6keeAV7qwOp6qC4O7+a4xm4yzgESVgFtcQa89BcEzviPACdGToB8PLgFTiBW91FDn/EQjlhYDSrZwq6jDvamM/a2NM6c3oOtZgqqmvfowPWBwvF/2iemTsxpRRTvSe70LRuFntLev6pQtG0hmpMc=
+	t=1714117296; cv=none; b=eZGsvAFwKTGqKdNsUhsSleH2xs2QiX7EyWyk7Yh96dOcz/oNIQdHFmIMWp2PS5QX4X+svqZgaVkQ/iUJ8Zc92a2K9Py1Dwimd0F1G8wumDvas1LpBb+OiaaohGPWRWeaDTAK9Uk6hmXe66vmqSba9EqVbNde7ZNJfUvyGKHqWvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714116957; c=relaxed/simple;
-	bh=fKzJqecCQuXBB/Bg3EXO3byJ6b3SOoYHAtjUmZZJkxI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ZIUfLHrhsMaXmE98ULCgDtwX1nITa5cz+e3agnQokba8kOzQXuwcmA95wkLiwqhsqBJofrs/oZYPaCbOAQDTnlxpAO5Wb4i44/RBWF2YPQQ3RX3LfII8B19ZFQqDtFdHrl63vgFNBd2TsNxCPt94X0gIYmKZDJEFF0HfQfOg1KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GOV5FuHk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5EDC113CD;
-	Fri, 26 Apr 2024 07:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714116957;
-	bh=fKzJqecCQuXBB/Bg3EXO3byJ6b3SOoYHAtjUmZZJkxI=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=GOV5FuHk1Mq9fKRra96XmOWnFqnaLzugHbViNkfV7sEZ3jx5o35PNFwy8yb/R19nD
-	 oPYq4j9u1yvN3mAPTBAAZ1i8kj1oY32RgzTN9KfTJFRGZg3+JbrKWHf0F7yIAE7Fx3
-	 PQXwyPUcE+x1mtlX3AnCVrzAahuzug1DcsPp4B92L8MZavkIApi76msAcC5E6nHj6Q
-	 WCzDYLhkrcdgB0Yj8vT1r7S0Mb73eh0W2LdlKa5reFczZCGFgM+ChJXZaaYYvX14Ac
-	 W7kLtjgt6MDg1qHc56OEIvlf3VhYfaskSK1l4VPCaLaryu4GKToGglZXA7bXTswH6T
-	 aS5pp3VnkaRVw==
+	s=arc-20240116; t=1714117296; c=relaxed/simple;
+	bh=kG0sH08nf1lQkdLAh/Se5aSDHgpHWfmeFbkpYB7n+go=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F7MX4fsM2KPkBOkQU7Yoriz8rzewOI716aR6NC7HleZiLVbRpEv0GRo/rLfw9AGmcFWuTBvzQGNJbOPCAcQBfAsbAizrQDHpYtw0M+HLpMhFYuCopMmxJ1mE42X+o/h3xg/xUwuZnFuDYZLKatEWXCxxNxecmux6F2gABzM69zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=dw96fj/5; arc=none smtp.client-ip=62.149.156.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam.com ([146.241.21.121])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id 0GA2s5OJj7AmW0GA2sQ97q; Fri, 26 Apr 2024 09:38:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1714117103; bh=kG0sH08nf1lQkdLAh/Se5aSDHgpHWfmeFbkpYB7n+go=;
+	h=From:To:Subject:Date:MIME-Version;
+	b=dw96fj/5iee+aghzWTOm4dI0qFU3ychT+WtgiicUnxkCjc7g1k5LFmCT3vvwpxNao
+	 dbIhNktoTPo+gn12Q+CEYtb5bo3qv81kvmvdaDT77bw5/ZgnRABu1Scis+1i7EjDvm
+	 pIw67l79aEdBoyvYpWwHXw20uH+srrzYr/iWwrpy57TCOQdhq3fYE3x8fLMdAJ59w7
+	 rID0lcbLV1iTiZWRiLkfzghapud1uiIy4zPEJzEkrUAGOvUY4VNWavF2bPuxYQXXDw
+	 uNIa+ToptAA4VACWTmt64BoF+Bmra/DsPN/1Hc6C+OuK5DbtVP3QhJnq7tPsbiKNBs
+	 4zd6S1SgD9mrg==
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Fabio Aiuto <fabio.aiuto@engicam.com>
+Subject: [PATCH v5 0/3] arm64: dts: imx93: add i.Core MX93 EDIMM 2.0 board
+Date: Fri, 26 Apr 2024 09:38:17 +0200
+Message-Id: <20240426073820.6466-1-fabio.aiuto@engicam.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 26 Apr 2024 10:35:51 +0300
-Message-Id: <D0TVQWEDNZO0.PN96CXJOTN1B@kernel.org>
-Cc: "Ilias Apalodimas" <ilias.apalodimas@linaro.org>, "James Bottomley"
- <James.Bottomley@hansenpartnership.com>, "Mikko Rapeli"
- <mikko.rapeli@linaro.org>, <linux-efi@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Lennart Poettering"
- <mzxreary@0pointer.de>, "Ard Biesheuvel" <ardb@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska>
- <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
- <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
- <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
- <CAMj1kXGHT2wULF2zwNM_QxD29dRW_dtFX2sOvsLahPiRVB61qg@mail.gmail.com>
- <ZiopXE6-AucAB9NM@gardel-login> <D0T9BM4E1F5C.2TZMIRSHCKCQ2@kernel.org>
-In-Reply-To: <D0T9BM4E1F5C.2TZMIRSHCKCQ2@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfOP/R9R9D0dRC011s99UnezOhO224WLuz8m20iBhLh8XM/hLiOX7ktXNTlZyyEDLVmTHEQYTcC0BSZCLfQVotkc8xt9M0NDT47qpeR0DY7eQt0XiR6D0
+ Swp71vIaYH+W8FN/WK5ljcTuXRxFM+Par06q7Nz+k521lVJswF8KNi7XGracgoC6SqJWMSvW7vxjT9cCmckb2hYbikd2CTHkPRCpACGsXRheaFr7xfLOwoH6
+ kgJczQ5r9RXcwzfSKANtQgnEeiDfcE8lFSpk6/1bgQKB8613y/sjP8sVZ3nusuHfnydk5M+R4pnlo91gLmpHLLCrQ8EkSYPkpGUvAlOEMsYEWbw2V+sRWU2g
+ TbqqPRwEw0pD0TwpjmoiifR8fw8fcMnUPy+c8svXhTZ6Cw0DwdiG7WrW4A8iO9Dor5VpXjfOBSi++6Mspx7h52fX9vgBS2B/kLpehLb1cxcdPKtpWz4Js34a
+ /Ik5sEc4IPW1Wbki/e6YM9i0ZGegC74Mbmw8ZCoQkgkTD1QPB9/RNF8CrcEfLXO3KEnE9SZr4/qwBsdk
 
-On Thu Apr 25, 2024 at 5:01 PM EEST, Jarkko Sakkinen wrote:
-> On Thu Apr 25, 2024 at 12:58 PM EEST, Lennart Poettering wrote:
-> > General purpose distros typically don't build all TPM drivers into the
-> > kernel, but ship some in the initrd instead. Then, udev is responsible
-> > for iterating all buses/devices and auto-loading the necessary
-> > drivers. Each loaded bus driver might make more devices available for
->
-> I've had since day 0 that I've worked with TPM driver (i.e. since 2013
+Hello all,
 
-- had the opinion (typo)
+this patchset adds support for i.Core MX93 EDIMM 2.0 Starter Kit,
+a SoM + Evaluation Board combination from Engicam.
 
-BR, Jarkko
+The number of patch has diminished to 3, for I dropped the
+patch introducing a change in nxp,pca9450 binding which has
+been already submitted in regulator tree.
+
+(Dropped also regulator tree maintainers as recipients for
+they aren't anymore involved in this patchset)
+
+This patchset introduces just basic functionality for board.
+
+Thanks in advance,
+
+fabio
+---
+v4 ---> v5:
+	- done some property reorder, indentation fixes,
+	  node rename, drop/add new-lines
+	- fixed line wrap in 2nd patch commit log
+	- added Reviewed-by tag
+v3 ---> v4:
+        - drop wl_reg_on regulator in favor of
+          mmc-pwrseq-simple
+v2 ---> v3:
+        - fixed dtschema warnings
+        - added Acked/Reviewed-by tags
+        - removed regulator-always-on on
+          bt_reg_on
+        - fixed clock rate assignment on
+          sgtl5000 node
+        - added wdog_b-warm-reset; property in pmic
+        - fixed indentation issue
+v1 ---> v2:
+        - dropped patch updating nxp,pca9450 binding
+        - fixed indentation issue
+        - fixed missing space issue
+        - improved naming of regulator nodes
+        - removed unneeded include
+        - fixed email recipients
+
+
+Fabio Aiuto (3):
+  dt-bindings: arm: fsl: add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
+  arm64: dts: imx93: add Engicam i.Core MX93 SoM
+  arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
+
+ .../devicetree/bindings/arm/fsl.yaml          |   7 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/imx93-icore-mx93-edimm2.dts | 343 ++++++++++++++++++
+ .../boot/dts/freescale/imx93-icore-mx93.dtsi  | 269 ++++++++++++++
+ 4 files changed, 620 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi
+
+-- 
+2.34.1
+
 
