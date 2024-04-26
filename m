@@ -1,86 +1,74 @@
-Return-Path: <linux-kernel+bounces-159776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7108A8B33D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:22:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A4D8B33D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 936BF1C21CFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:22:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB326B218C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E6213DDC7;
-	Fri, 26 Apr 2024 09:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0879D13E3E4;
+	Fri, 26 Apr 2024 09:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bKJY2++g"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="arNw8Wrf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294CC282EA;
-	Fri, 26 Apr 2024 09:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A6E13D53D;
+	Fri, 26 Apr 2024 09:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123335; cv=none; b=CBA6WXL6ETiKbi50v6mjMYhJIfg6UXGFoMEjtKd8W0+QjYIcw94Oh4xUY7GGHIaXjSJ9NA04rr52WTe0l3q4FCNIYvpM/bedXINU4udBHmC8X7I7Mikyw+Vj/K4/JRKfdOGZfFLb9YoB3avtbFBwMxmxFHIAWXyOs4j6SoSihCg=
+	t=1714123390; cv=none; b=QBKGIyWwnZXq3pS1k+3g/FsmroWVz9+7MelQvN/b20mwFKPAZyGF39Oy7iXrzuu0v9UiU7E9YWci2YMMmmEqUfLBSrre126IIri+j/3xTfavqdAYwSOKGfo6640id+J8NI3lhxXjAfBLgk3PoH+i+RFC86/1cOX4dsv+wKZZRHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123335; c=relaxed/simple;
-	bh=Sf+L1xWoaHlAf0nD2PEH3YdAW+88HHm216ZUXqqqUCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UQ5I/da4wNR553V9b88qiStdkvjiUQIDD0ljqgzU0JEBYnXO9RgE2bQn9lztbQGgXRzTBhl+Cmmq57b6T7wzbmjdo+qQE36WTOcCLvgdENZRnZ4ByuFJJ1D8AcFEhZLBDDkRBhQyE3tzHMy51krg+L77bs396j3+izzM0tlq+eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bKJY2++g; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q9KL8T024970;
-	Fri, 26 Apr 2024 09:22:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=pvH+FXQvoSZFUAiMdegKZnVOLGNFLl20OwUtG5i6Hbg=;
- b=bKJY2++gV/a5KFYtAcX3hGcFDmNRxfJruD60GLyXwBN8+OvvsGW+S6dl5sS3P+ep4Ov3
- Mcv3mWApHAj+LEncbSJG0HU9CK3D+LjKekY7Zsd/3Gh1pCgKuiVxAg2e+8YXPXn0U5RU
- y4keW2rkzrKgCW0RXnqRi/SU8eAUILbNG8v1PkBQt7KHwKf1HnlRhhJ+TnQwEwC3Jjix
- 7occQocNL2L9AfrxqLC3CzjzvJWw5joS+UNxFKEHq1VVQacqp8YYEpvJ2gdmTXcSF0T3
- V/oJPHtIMuK8w/G3O7Sx0I8yjgvqs8Z9PNX8OC/NjOvTJHITWGivrV2OJbn5oLRjbbAr vA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xr9e4g0cs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 09:22:12 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43Q89r9C020908;
-	Fri, 26 Apr 2024 09:22:11 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre0f284-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 09:22:11 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43Q9M63q45875496
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 09:22:08 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0C1CB2004E;
-	Fri, 26 Apr 2024 09:22:06 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BD5752004B;
-	Fri, 26 Apr 2024 09:22:05 +0000 (GMT)
-Received: from p-imbrenda.boeblingen.de.ibm.com (unknown [9.152.224.66])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 09:22:05 +0000 (GMT)
-Date: Fri, 26 Apr 2024 11:22:04 +0200
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, svens@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, borntraeger@de.ibm.com
-Subject: Re: [PATCH v1 2/2] s390/pgtable: introduce
- _REGION3_ENTRY_HARDWARE_BITS_LARGE
-Message-ID: <20240426112204.10c00d33@p-imbrenda.boeblingen.de.ibm.com>
-In-Reply-To: <20240426085714.8950-F-hca@linux.ibm.com>
-References: <20240425130555.73132-1-imbrenda@linux.ibm.com>
-	<20240425130555.73132-3-imbrenda@linux.ibm.com>
-	<20240426085714.8950-F-hca@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714123390; c=relaxed/simple;
+	bh=+XWdH/l9aGEj66QIAT074n3BMWjgqmF1LBHExf76RPw=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=o7DpSznqXYEbWLro7NCkISGT8yiolhiu+D7vYwgCHzznoAISG1aO8yW6i9mzPDnalJpueO5w659nn91A2e5lEZm+RqrldJ0qzpVoLiMKkVumG7vTFxSjyKadS8OK24IDcI+rDMOKrXfq+9d+mgH8qpS1t/gYxzNgcjH5s1rjOAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=arNw8Wrf; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714123389; x=1745659389;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=+XWdH/l9aGEj66QIAT074n3BMWjgqmF1LBHExf76RPw=;
+  b=arNw8WrfrAk51rNkvjh1jEgoldtGADtVqXNywczhzDHKhF3/XNTMXkqQ
+   jBbWobUCC7D5XTaHMiGs38+vh8h5yrsw9fdtp8o38sUww91buCDwgwIG0
+   MTbwPyCJcNx+vmCPgXhjkLfF+4aZu+V0M/E89MpjTTcHr3iEmQdequ2XT
+   cyqNnB3SXr4zqjnQ2b74Soo2axM2a+r+JvE/nNMEJ1AhroiuRK9KIc0Bz
+   Lrs/ekTYaQh/dZdaj4GfQ4whQlyYG7LKbZ3TwouwN7V/+z1yYy4iF1B69
+   rBfQD5tdwUdjIuZx1FZzVR14ClTB8iGU8vJMx4G5RKoUBXnXuDnT9GkXh
+   Q==;
+X-CSE-ConnectionGUID: Gpu8xEi1QpKNJgYMa89Oiw==
+X-CSE-MsgGUID: ih3vMISFQASYb9FvH0Qg7w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="35240892"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="35240892"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:23:08 -0700
+X-CSE-ConnectionGUID: UjfMWm4mRhej13SGmeht3w==
+X-CSE-MsgGUID: PYb66SGeRZy3MOVcsJIQGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="30018953"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.43])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 02:23:05 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 26 Apr 2024 12:23:00 +0300 (EEST)
+To: Lyndon Sanche <lsanche@lyndeno.ca>
+cc: mario.limonciello@amd.com, pali@kernel.org, W_Armin@gmx.de, 
+    srinivas.pandruvada@linux.intel.com, Matthew Garrett <mjg59@srcf.ucam.org>, 
+    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
+Subject: Re: [PATCH v2] platform/x86: dell-laptop: Implement
+ platform_profile
+In-Reply-To: <20240426020448.10862-1-lsanche@lyndeno.ca>
+Message-ID: <e861d645-0908-d68b-87ad-0b8b8999fc06@linux.intel.com>
+References: <20240425172758.67831-1-lsanche@lyndeno.ca> <20240426020448.10862-1-lsanche@lyndeno.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,67 +76,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DVhY9Iy4vvXYIHHy1DTfw0r9sV5xVPlw
-X-Proofpoint-GUID: DVhY9Iy4vvXYIHHy1DTfw0r9sV5xVPlw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_09,2024-04-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxscore=0 malwarescore=0 spamscore=0 priorityscore=1501 suspectscore=0
- bulkscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404260060
 
-On Fri, 26 Apr 2024 10:57:14 +0200
-Heiko Carstens <hca@linux.ibm.com> wrote:
+On Thu, 25 Apr 2024, Lyndon Sanche wrote:
 
-> On Thu, Apr 25, 2024 at 03:05:55PM +0200, Claudio Imbrenda wrote:
-> > For completeness, introduce _REGION3_ENTRY_HARDWARE_BITS_LARGE,
-> > containing the hardware bits used for large puds.
-> > 
-> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> > ---
-> >  arch/s390/include/asm/pgtable.h | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-> > index 3da2995fd196..5c0f840eee2a 100644
-> > --- a/arch/s390/include/asm/pgtable.h
-> > +++ b/arch/s390/include/asm/pgtable.h
-> > @@ -262,6 +262,7 @@ static inline int is_module_addr(void *addr)
-> >  #define _REGION3_ENTRY		(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_LENGTH)
-> >  #define _REGION3_ENTRY_EMPTY	(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_INVALID)
-> >  
-> > +#define _REGION3_ENTRY_HARDWARE_BITS_LARGE	0xffffffff8000073cUL  
+> Some Dell laptops support configuration of preset
+> fan modes through smbios tables.
 > 
-> _REGION_ENTRY_HARDWARE_BITS is missing too. :)
-
-right, I will fix it
-
+> If the platform supports these fan modes, set up
+> platform_profile to change these modes. If not
+> supported, skip enabling platform_profile.
 > 
-> And this definition also raises the question if the definition of
-> _SEGMENT_ENTRY_HARDWARE_BITS_LARGE should be changed so it also includes
-> the table type bits, which it probably should.
+> Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
+> ---
 
-tbh I agree
+Two things:
+- You're missing patch version history (put it below the --- line)
+- Don't send updates so soon, give people time to comment. When I saw v1 
+  for the first time, you had already posted the next version.
 
-> 
-> These masks are really a bit randomly defined and assume that the
-> ACCF-Validity control bit is never set, and therefore the ACC bitfield can
-> be assumed to be software bits (and they are used as such for format 1
-> segment table entries).
-> 
-> But the ACCF bit is also a hardware bit in any case... oh well.
+> +void thermal_cleanup(void)
+> +{
+> +	platform_profile_remove();
+> +	kfree(thermal_handler);
+> +}
+> +
+>  static struct led_classdev mute_led_cdev = {
+>  	.name = "platform::mute",
+>  	.max_brightness = 1,
+> @@ -2238,6 +2452,12 @@ static int __init dell_init(void)
+>  		goto fail_rfkill;
+>  	}
+>  
+> +	// Do not fail module if thermal modes not supported,
+> +	// just skip
+> +	ret = thermal_init();
+> +	if (ret)
+> +		goto fail_thermal;
+> +
+>  	if (quirks && quirks->touchpad_led)
+>  		touchpad_led_init(&platform_device->dev);
+>  
+> @@ -2317,6 +2537,8 @@ static int __init dell_init(void)
+>  		led_classdev_unregister(&mute_led_cdev);
+>  fail_led:
+>  	dell_cleanup_rfkill();
+> +fail_thermal:
+> +	thermal_cleanup();
+>  fail_rfkill:
+>  	platform_device_del(platform_device);
+>  fail_platform_device2:
+> @@ -2344,6 +2566,7 @@ static void __exit dell_exit(void)
+>  		platform_device_unregister(platform_device);
+>  		platform_driver_unregister(&platform_driver);
+>  	}
+> +	thermal_cleanup();
 
-probably the ACCF bit should also be marked as hardware bit (I had
-actually thought about it, but we don't do it for segments and I wanted
-it to be consistent)
+This is still not right, you'll still platform_profile_remove() even if 
+the init side call failed.
 
-I'll send a v2 with:
+-- 
+ i.
 
-segment table type bits
-ACCF bit (both for segments and region3
-_REGION3_ENTRY_HARDWARE_BITS
 
