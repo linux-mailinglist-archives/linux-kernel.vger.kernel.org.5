@@ -1,160 +1,251 @@
-Return-Path: <linux-kernel+bounces-160253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0F38B3AE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:17:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 230788B3AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2EA1C24BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:17:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F3591F21581
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C942215574F;
-	Fri, 26 Apr 2024 15:11:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2884314900A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91EA149009;
+	Fri, 26 Apr 2024 15:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IAhOXheB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D801482F5;
+	Fri, 26 Apr 2024 15:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144266; cv=none; b=s+P+ZtsPV0zV5a/mts+THdViKlM2iHkSSW7nemidFNXQHbI8wQ4hOeIGucmpIxq4HHzTvGuhSAUQM0S30rCNaw1vIIZ0+yf8IaJeTGyMvfM282iUOcxFuhbTHVcqHrUvTHNlv3GTVmm+/MCHlI5zjpDxgXj0UjuSynDTv1CTne4=
+	t=1714144146; cv=none; b=YKbf15Q7k+h6HDa+qUsKSe/IAs7xmRWgYiCOy2KlD/nK71jxUrLYPNuakdU9l69WXU25Mqt9SgrGENn+ETFd8WtumPSa8ZaRiO6y/zXeFVbcHo8UDJ6EZ8PzVmbUvXfWUxdgYtbsHzsrm8cZHyqKsbEiZUcuTAHmek48OwG5Lzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144266; c=relaxed/simple;
-	bh=XzwbygXB1XLTnLy5KTDvuQn0QpU/+Zp/WcuJJpMI2YE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fa7I3YatNPL7YYu2164/MIzQY5JGvWwFi2459+O729xxn6LXukGmUoVSjohDVKPI8MCCoZEAdbJsS3YwJJnNrvBRCDwjbAGdxE/mbdDKdnd5UTqwyyQKbiXQafF754o3IhWiTdRujNbK2/u9BO5m7gqxXFGbZT5N1EBo8H0VMIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DFF51007;
-	Fri, 26 Apr 2024 08:11:32 -0700 (PDT)
-Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EF8A3F73F;
-	Fri, 26 Apr 2024 08:11:01 -0700 (PDT)
-From: Dave Martin <Dave.Martin@arm.com>
-To: x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: James Morse <james.morse@arm.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>,
-	Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com,
-	lcherian@marvell.com,
-	bobo.shaobowang@huawei.com,
-	"Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>,
-	baolin.wang@linux.alibaba.com,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>,
-	Peter Newman <peternewman@google.com>,
-	dfustini@baylibre.com,
-	amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 35/35] [SQUASHME] x86/resctrl: Move the resctrl filesystem code to /fs/resctrl
-Date: Fri, 26 Apr 2024 16:09:04 +0100
-Message-Id: <20240426150904.8854-35-Dave.Martin@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
-References: <20240426150537.8094-1-Dave.Martin@arm.com>
- <20240426150904.8854-1-Dave.Martin@arm.com>
+	s=arc-20240116; t=1714144146; c=relaxed/simple;
+	bh=1EfFaT2e5RgbE+xX1x4IG+RRoAmpjsYgLXgHqkDgINc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WATKM7pGM0k9FlVD23qyjLGQm0TOSpFsKBxu0Qa0ZzyfkyFxXdcINiEhr28RuEPUawsRnnyYD+pzM0Q3tdVEByAsQY9uYf+1ftTwRBWswvpLO2uIpm5RBDzvepcuSj64H7GJWOR9hksybsppX3x2XFtJCoxXYUIBL+9R1wF6G4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IAhOXheB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DF4C113CD;
+	Fri, 26 Apr 2024 15:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714144146;
+	bh=1EfFaT2e5RgbE+xX1x4IG+RRoAmpjsYgLXgHqkDgINc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IAhOXheBGM++yaYo+e3kZwiwfI79o2O+mL2LPAt4MbZdYEC3+usp6A5WvqG8q6VgY
+	 sNWFG1/roU/lp+Y6JgZH6fQko5jVQZJ7/JUnmuboqcjOJA1is3shxB3J0Gqoq+IgDI
+	 Sz7OkjoSVqHebxZFlPhf7t638z13ZHyD5cZRRe6V/64VITnqh97YHZ097BYzkISUC4
+	 dENjq3lZI0pbolHnBNDOOG7HMnhtmkNxRTDetfuLBe1OqBwvEqnsOJKXMn5TDoj8d6
+	 yLXfDi6vKi08DuoYTLDdZ+6N+oWftN/JrWdhoBNONbz+QXJNcJJApZu1CKKg+No2Sz
+	 WDFekvnZ35GFg==
+Date: Fri, 26 Apr 2024 08:09:05 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, hare@suse.de,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
+	p.raghav@samsung.com
+Subject: Re: [PATCH v4 02/11] fs: Allow fine-grained control of folio sizes
+Message-ID: <20240426150905.GC360919@frogsfrogsfrogs>
+References: <20240425113746.335530-1-kernel@pankajraghav.com>
+ <20240425113746.335530-3-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425113746.335530-3-kernel@pankajraghav.com>
 
-Relax asm #includes identified by checkpatch.pl as satisfiable by a
-<linux/> include in the destination files of this code move.
+On Thu, Apr 25, 2024 at 01:37:37PM +0200, Pankaj Raghav (Samsung) wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> Some filesystems want to be able to ensure that folios that are added to
+> the page cache are at least a certain size.
+> Add mapping_set_folio_min_order() to allow this level of control.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Co-developed-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Signed-off-by: Dave Martin <Dave.Martin@arm.com>
+Looks good to me,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
----
+--D
 
-FYI: James Morse (et al.):
-
- * This patch is kept separate for now so that these changes do not
-   get lost when rebuilding the previous code-movement patch.
-
-   It should be folded into the previous patch or dropped once the
-   series is final.
-
-Changes in v2:
-
- * New patch.
----
- fs/resctrl/internal.h    | 2 --
- fs/resctrl/pseudo_lock.c | 4 ++--
- fs/resctrl/rdtgroup.c    | 2 +-
- 3 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
-index f73267762a87..0e0c70d62c40 100644
---- a/fs/resctrl/internal.h
-+++ b/fs/resctrl/internal.h
-@@ -9,8 +9,6 @@
- #include <linux/jump_label.h>
- #include <linux/tick.h>
- 
--#include <asm/resctrl.h>
--
- /**
-  * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
-  *			        aren't marked nohz_full
-diff --git a/fs/resctrl/pseudo_lock.c b/fs/resctrl/pseudo_lock.c
-index 077c2abb6edd..2a36a2efbd49 100644
---- a/fs/resctrl/pseudo_lock.c
-+++ b/fs/resctrl/pseudo_lock.c
-@@ -11,6 +11,7 @@
- 
- #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
- 
-+#include <linux/cacheflush.h>
- #include <linux/cacheinfo.h>
- #include <linux/cpu.h>
- #include <linux/cpumask.h>
-@@ -19,11 +20,10 @@
- #include <linux/mman.h>
- #include <linux/perf_event.h>
- #include <linux/pm_qos.h>
-+#include <linux/resctrl.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- 
--#include <asm/cacheflush.h>
--#include <asm/resctrl.h>
- #include <asm/perf_event.h>
- 
- #include "internal.h"
-diff --git a/fs/resctrl/rdtgroup.c b/fs/resctrl/rdtgroup.c
-index 8b18224eda35..09f120772c48 100644
---- a/fs/resctrl/rdtgroup.c
-+++ b/fs/resctrl/rdtgroup.c
-@@ -19,6 +19,7 @@
- #include <linux/fs_parser.h>
- #include <linux/sysfs.h>
- #include <linux/kernfs.h>
-+#include <linux/resctrl.h>
- #include <linux/seq_buf.h>
- #include <linux/seq_file.h>
- #include <linux/sched/signal.h>
-@@ -29,7 +30,6 @@
- 
- #include <uapi/linux/magic.h>
- 
--#include <asm/resctrl.h>
- #include "internal.h"
- 
- /* Mutex to protect rdtgroup access. */
--- 
-2.34.1
-
+> ---
+>  include/linux/pagemap.h | 116 +++++++++++++++++++++++++++++++++-------
+>  1 file changed, 96 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 2df35e65557d..2e5612de1749 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -202,13 +202,18 @@ enum mapping_flags {
+>  	AS_EXITING	= 4, 	/* final truncate in progress */
+>  	/* writeback related tags are not used */
+>  	AS_NO_WRITEBACK_TAGS = 5,
+> -	AS_LARGE_FOLIO_SUPPORT = 6,
+> -	AS_RELEASE_ALWAYS,	/* Call ->release_folio(), even if no private data */
+> -	AS_STABLE_WRITES,	/* must wait for writeback before modifying
+> +	AS_RELEASE_ALWAYS = 6,	/* Call ->release_folio(), even if no private data */
+> +	AS_STABLE_WRITES = 7,	/* must wait for writeback before modifying
+>  				   folio contents */
+> -	AS_UNMOVABLE,		/* The mapping cannot be moved, ever */
+> +	AS_FOLIO_ORDER_MIN = 8,
+> +	AS_FOLIO_ORDER_MAX = 13, /* Bit 8-17 are used for FOLIO_ORDER */
+> +	AS_UNMOVABLE = 18,		/* The mapping cannot be moved, ever */
+>  };
+>  
+> +#define AS_FOLIO_ORDER_MIN_MASK 0x00001f00
+> +#define AS_FOLIO_ORDER_MAX_MASK 0x0003e000
+> +#define AS_FOLIO_ORDER_MASK (AS_FOLIO_ORDER_MIN_MASK | AS_FOLIO_ORDER_MAX_MASK)
+> +
+>  /**
+>   * mapping_set_error - record a writeback error in the address_space
+>   * @mapping: the mapping in which an error should be set
+> @@ -344,9 +349,63 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
+>  	m->gfp_mask = mask;
+>  }
+>  
+> +/*
+> + * There are some parts of the kernel which assume that PMD entries
+> + * are exactly HPAGE_PMD_ORDER.  Those should be fixed, but until then,
+> + * limit the maximum allocation order to PMD size.  I'm not aware of any
+> + * assumptions about maximum order if THP are disabled, but 8 seems like
+> + * a good order (that's 1MB if you're using 4kB pages)
+> + */
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +#define MAX_PAGECACHE_ORDER	HPAGE_PMD_ORDER
+> +#else
+> +#define MAX_PAGECACHE_ORDER	8
+> +#endif
+> +
+> +/*
+> + * mapping_set_folio_order_range() - Set the folio order range
+> + * @mapping: The address_space.
+> + * @min: Minimum folio order (between 0-MAX_PAGECACHE_ORDER inclusive).
+> + * @max: Maximum folio order (between @min-MAX_PAGECACHE_ORDER inclusive).
+> + *
+> + * The filesystem should call this function in its inode constructor to
+> + * indicate which base size (min) and maximum size (max) of folio the VFS
+> + * can use to cache the contents of the file.  This should only be used
+> + * if the filesystem needs special handling of folio sizes (ie there is
+> + * something the core cannot know).
+> + * Do not tune it based on, eg, i_size.
+> + *
+> + * Context: This should not be called while the inode is active as it
+> + * is non-atomic.
+> + */
+> +static inline void mapping_set_folio_order_range(struct address_space *mapping,
+> +						 unsigned int min_order,
+> +						 unsigned int max_order)
+> +{
+> +	if (min_order > MAX_PAGECACHE_ORDER)
+> +		min_order = MAX_PAGECACHE_ORDER;
+> +
+> +	if (max_order > MAX_PAGECACHE_ORDER)
+> +		max_order = MAX_PAGECACHE_ORDER;
+> +
+> +	max_order = max(max_order, min_order);
+> +	/*
+> +	 * TODO: max_order is not yet supported in filemap.
+> +	 */
+> +	mapping->flags = (mapping->flags & ~AS_FOLIO_ORDER_MASK) |
+> +			 (min_order << AS_FOLIO_ORDER_MIN) |
+> +			 (max_order << AS_FOLIO_ORDER_MAX);
+> +}
+> +
+> +static inline void mapping_set_folio_min_order(struct address_space *mapping,
+> +					       unsigned int min)
+> +{
+> +	mapping_set_folio_order_range(mapping, min, MAX_PAGECACHE_ORDER);
+> +}
+> +
+>  /**
+>   * mapping_set_large_folios() - Indicate the file supports large folios.
+> - * @mapping: The file.
+> + * @mapping: The address_space.
+>   *
+>   * The filesystem should call this function in its inode constructor to
+>   * indicate that the VFS can use large folios to cache the contents of
+> @@ -357,7 +416,37 @@ static inline void mapping_set_gfp_mask(struct address_space *m, gfp_t mask)
+>   */
+>  static inline void mapping_set_large_folios(struct address_space *mapping)
+>  {
+> -	__set_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
+> +	mapping_set_folio_order_range(mapping, 0, MAX_PAGECACHE_ORDER);
+> +}
+> +
+> +static inline unsigned int mapping_max_folio_order(struct address_space *mapping)
+> +{
+> +	return (mapping->flags & AS_FOLIO_ORDER_MAX_MASK) >> AS_FOLIO_ORDER_MAX;
+> +}
+> +
+> +static inline unsigned int mapping_min_folio_order(struct address_space *mapping)
+> +{
+> +	return (mapping->flags & AS_FOLIO_ORDER_MIN_MASK) >> AS_FOLIO_ORDER_MIN;
+> +}
+> +
+> +static inline unsigned long mapping_min_folio_nrpages(struct address_space *mapping)
+> +{
+> +	return 1UL << mapping_min_folio_order(mapping);
+> +}
+> +
+> +/**
+> + * mapping_align_start_index() - Align starting index based on the min
+> + * folio order of the page cache.
+> + * @mapping: The address_space.
+> + *
+> + * Ensure the index used is aligned to the minimum folio order when adding
+> + * new folios to the page cache by rounding down to the nearest minimum
+> + * folio number of pages.
+> + */
+> +static inline pgoff_t mapping_align_start_index(struct address_space *mapping,
+> +						pgoff_t index)
+> +{
+> +	return round_down(index, mapping_min_folio_nrpages(mapping));
+>  }
+>  
+>  /*
+> @@ -367,7 +456,7 @@ static inline void mapping_set_large_folios(struct address_space *mapping)
+>  static inline bool mapping_large_folio_support(struct address_space *mapping)
+>  {
+>  	return IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> -		test_bit(AS_LARGE_FOLIO_SUPPORT, &mapping->flags);
+> +	       (mapping_max_folio_order(mapping) > 0);
+>  }
+>  
+>  static inline int filemap_nr_thps(struct address_space *mapping)
+> @@ -528,19 +617,6 @@ static inline void *detach_page_private(struct page *page)
+>  	return folio_detach_private(page_folio(page));
+>  }
+>  
+> -/*
+> - * There are some parts of the kernel which assume that PMD entries
+> - * are exactly HPAGE_PMD_ORDER.  Those should be fixed, but until then,
+> - * limit the maximum allocation order to PMD size.  I'm not aware of any
+> - * assumptions about maximum order if THP are disabled, but 8 seems like
+> - * a good order (that's 1MB if you're using 4kB pages)
+> - */
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -#define MAX_PAGECACHE_ORDER	HPAGE_PMD_ORDER
+> -#else
+> -#define MAX_PAGECACHE_ORDER	8
+> -#endif
+> -
+>  #ifdef CONFIG_NUMA
+>  struct folio *filemap_alloc_folio(gfp_t gfp, unsigned int order);
+>  #else
+> -- 
+> 2.34.1
+> 
+> 
 
