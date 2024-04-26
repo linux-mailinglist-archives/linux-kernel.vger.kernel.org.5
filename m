@@ -1,236 +1,147 @@
-Return-Path: <linux-kernel+bounces-159898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873A68B35F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93ECC8B35FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CBED1F22677
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:50:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EBF31F22722
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D448A148FF6;
-	Fri, 26 Apr 2024 10:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C1C145B06;
+	Fri, 26 Apr 2024 10:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kiW0Z0cQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kd/aJxvM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84E714535D;
-	Fri, 26 Apr 2024 10:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FF6145327
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714128431; cv=none; b=o0MkXFj2BIz9qBNB0iVrgOqRRABpBUo539MNig7tk3oB5eZoC3W/J4XAZrrqgDbxWtFHzEvF30oggOhrqyZ4tB0yo4bn3jesRwu1bkwIN4VrsCftdolVcuQ4cpV1HEmbF4ZkrWQ+RIeIYlWI710pnqkZyahR9jm/vcHpGZvDgaU=
+	t=1714128604; cv=none; b=DsYgvFW4HjdcA80AL3IMEQDVcfva+9RlivJC2EB+IaHfG841IHNSAVfwTmqW89GdwMx+O3CtTBrXLt8hgndV5M0NYBkNef2MjZvM5ICc1O2Tbka7SAayCqPy3e1KLbHTjUvplLmOU02yUxWacCdxtcJPS+188zWggvkRhzJzXnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714128431; c=relaxed/simple;
-	bh=GH2bezeza5fhtu1z47o7+tK1nF0tM45eNw6jY53xEPE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SiLYBwxYeIlfLNFJYabrANjp7c1AlzgiUFRRBl8MboaUw6K+ZU/rzDLL7teUvJnTz0Kq0jYi75RLHbtIowNQWDxxAl3u/yI0935gNaPq4Glh9fvybYGkTuLZcmlbTrDbF+1KsBPKoQagIh5xdrckoG5Epx4SHTEAHOPqvFVYlMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kiW0Z0cQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 880CEC4DDFD;
-	Fri, 26 Apr 2024 10:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714128431;
-	bh=GH2bezeza5fhtu1z47o7+tK1nF0tM45eNw6jY53xEPE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=kiW0Z0cQ7WgJZiEdkBZIJwyIs9FJJWesmJJEaKqH3PUZD+r+8eiASo2bq5QA60sYs
-	 fOjDLnkCC3ZMzNkfJvLJyCm7HafCnMGiswi/CvHmRHm1q6DSUzEinXnX+8vZl3Xbjx
-	 g68VikuKB0cl5riAY1SxrxfQSRaXpLWiBNrHsIFQz6AhWLKGHy6dJUfObhqZc1pMta
-	 hCSFc2e9f/PA+KGf79fXLB91SsVLHQrHfApiFpfGnho67Uv0Kl5cIs+xGWg0wnkD4x
-	 h/qb3LpKmoPC8USlaGIJbDPkK9Lc+4PMBnBfJHzudCYhY3uvm3YlM17h9ocXvWXIFf
-	 l7Xh7nkjHQx2Q==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76A85C4345F;
-	Fri, 26 Apr 2024 10:47:11 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Fri, 26 Apr 2024 12:47:00 +0200
-Subject: [PATCH v5 8/8] ax.25: x.25: Remove the now superfluous sentinel
- elements from ctl_table array
+	s=arc-20240116; t=1714128604; c=relaxed/simple;
+	bh=3TP2uHC4mQRfabmD1+dpyNDOj8vwZ4B4oSRmGaqT+Eo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=spwFR8i4y6e40WQzjCOoueGmd2c8XARU9y5Gdiceg0X7qaqaPEY9TYnBlV8bJDJtmvYXPXYkH3MAa0NvAkGmbCi9lfDY0qseyGchAUOHQudV/Zxp8BFgjo9KPagLGpId1ufYig74xubWpNBtU9NI4XPu2GhibNVGN/DhsJj+ptA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kd/aJxvM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714128601;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AySb1TlhVPPrqTACK8fU1SzEo7gL7MLhlk77wlxrmQo=;
+	b=Kd/aJxvMZhKIrBHzN7ysNiBpIeDku4M2bbzsMuMVW68G6vA2I8ux3r/lTmzR7Z8tP5Kvos
+	ck8ZQE08+cUuPgyzK0+kc26g7D5xDJ75iOzt5zjNKXEiARzAL9pM7TH76pr1EuopU3lRl8
+	e5W9ITaWgjegAnLusJFT0AO3wrKIuVA=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-540-jOSv7jo1Pl6NtXb8PjjIuQ-1; Fri, 26 Apr 2024 06:49:55 -0400
+X-MC-Unique: jOSv7jo1Pl6NtXb8PjjIuQ-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c613c1c51eso1887601b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:49:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714128594; x=1714733394;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AySb1TlhVPPrqTACK8fU1SzEo7gL7MLhlk77wlxrmQo=;
+        b=KO7qA80BE+aBJzhsUkUI+nNlD59mFznmQLy0W2+8OsJ8vQGIVbKVZLUxVF3/rXTBxT
+         4r+C9szklWp8gVxCFI7BQiWhv2sYj1awHo8Xj3QxQGer0UZCmgicCzViSE8dqxwrOcMh
+         TeBLNTOQbt3R+6sSHX57qWAA1lM9OZQuChEc/XOLP+7JrK2i2KR9L4CDFN0eTZY/CQN9
+         0axNfPRST3ABCgey3TDeTwihibZ07c0kRkitaRxioPTLslpWcwwKveq2Ake6l8RdtGwv
+         wTBEx0PppFXa595PLVO8Ma01d+ul3wxZJO+C+suk/SceDbD/B1m9RERUa+NhJIsGJNr2
+         FzYw==
+X-Forwarded-Encrypted: i=1; AJvYcCW75arjxKt+EcSqS8YTqTLUVEjRqXwq9z//BN+lqOLwvk3Ip08zS7PBBvLZSqoM6rBu7PdbF4KfEQxDEx9UuVjIp0StffR3A4yA45uW
+X-Gm-Message-State: AOJu0YxbfF5XLJBCFiW5SRVWEmDWxPqsxy6VXGW055MQOiUERDeOEdnU
+	8isl6ca8JBO9VU5zARTHpp5p4uADSZ07zVt4IU2ieZSpZj4BzwoNQMIHqjieKxt5Ff9qo+a5LKN
+	+u324+K/YMDmJmCsCBWGLJOD7/kjBIASnOghbMJtjeLxwBOb1jzOFgBGrXftYdg==
+X-Received: by 2002:a05:6808:bc8:b0:3c6:f7b1:b228 with SMTP id o8-20020a0568080bc800b003c6f7b1b228mr2723694oik.31.1714128594301;
+        Fri, 26 Apr 2024 03:49:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEZsGfT69zsmTCVgTcj+/En2dvpkEVqYiuQXZdoAX6RGBoDOOIyO2jwTtLnAHh1VuafDtHvkA==
+X-Received: by 2002:a05:6808:bc8:b0:3c6:f7b1:b228 with SMTP id o8-20020a0568080bc800b003c6f7b1b228mr2723673oik.31.1714128593932;
+        Fri, 26 Apr 2024 03:49:53 -0700 (PDT)
+Received: from rh.redhat.com (p200300c93f4cc600a5cdf10de606b5e2.dip0.t-ipconnect.de. [2003:c9:3f4c:c600:a5cd:f10d:e606:b5e2])
+        by smtp.gmail.com with ESMTPSA id vv26-20020a05620a563a00b007907b57aa1fsm3888019qkn.12.2024.04.26.03.49.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 03:49:53 -0700 (PDT)
+From: Sebastian Ott <sebott@redhat.com>
+To: linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: [PATCH v2 0/6] KVM: arm64: emulation for CTR_EL0
+Date: Fri, 26 Apr 2024 12:49:44 +0200
+Message-ID: <20240426104950.7382-1-sebott@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240426-jag-sysctl_remset_net-v5-8-e3b12f6111a6@samsung.com>
-References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
-In-Reply-To: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
- Remi Denis-Courmont <courmisch@gmail.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
- Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
- Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
- Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
- Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
- Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
- Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3995;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=NZnJW6XWgopf75vh1g8TgFTlOj8qaKFukPEjDf1p53c=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGYrhixeiGtr0+3cn50MVCpNJqH3pUbctq+W8
- IALAHu076ZyXYkBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJmK4YsAAoJELqXzVK3
- lkFP14IL/RB8B5qMj08F0htyG3GLjxNGZowNF7f8ASmAGyCEJBAo1dwvrVPbWphTkoN0F4w8+69
- kGbOBFemyxiSB9/sU6hGmwbqBzLWGWVlGYoBQaFXmaXTshdupdmxkKyJAdWuvAvfxfoY/dy0yjJ
- swhEKwIONZVtmBlqZwBj7b7EILpjwK6jH3O/rEjU67bWlKPlu9GHoWb2N20nuaiReoU8StYBPot
- S6MsfjOAcaVqBGdtGdzGjeDbOrib3lAqRV8+iiXNPTG93cN67pyf5t+Np+t4HzhBHah9u3lF5Bw
- Qz9HZLtHnUuiU5ISlS2GpfSxRefL1afrN40+uIOGY8EjEZxZcYROoQ9u9ikf71rd4IXLXW8bTHN
- QeAj9nLYPFNQHiOSK4R6agj9tuJv+oTmvbBGndR9eq+KmjnatqxsdG7+30uFoHbQO+MVnuWW8bl
- 3pHTcsCdAFrNme6Mqym7SNGMPypA7b2bPTtnlyRxD2i+c7wV2M/IW2O6hZZLs5XxEyFzDq26WE6
- Tw=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with
- auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: j.granados@samsung.com
+Content-Transfer-Encoding: 8bit
 
-From: Joel Granados <j.granados@samsung.com>
+Hej folks,
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which will
-reduce the overall build time size of the kernel and run time memory
-bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+I'm looking into supporting migration between 2 Ampere Altra (Max)
+machines (using Neoverse-N1). They are almost identical regarding
+their feature id register state except for CTR_EL0.DIC which is set
+on one machine but not the other.
 
-Avoid a buffer overflow when traversing the ctl_table by ensuring that
-AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-done with a BUILD_BUG_ON where ax25_param_table is defined and a
-CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-in the ax25_dev_device_up and ax25_ds_set_timer functions.
+CTR_EL0 is currently marked as invariant and migrating a VM between
+those 2 machines using qemu fails.
 
-The overflow happened when the sentinel was removed from
-ax25_param_table. The sentinel's data element was changed when
-CONFIG_AX25_DAMA_SLAVE was undefined. This had no adverse effects as it
-still stopped on the sentinel's null procname but needed to be addressed
-once the sentinel was removed.
+Changes RFC [0] -> V1 [1]:
+ * store the emulated value per VM and not per VCPU
+ * allow to change more values than just the DIC bit
+ * only trap guest access to that reg when needed
+ * make sure to not present the guest with an inconsistent register set
+Changes V1 -> V2:
+ * implemented Marc's suggestion for keeping registers consistent while
+   not breaking userspace ABI / expectations (I hope correctly this time)
+ * keep the shadowed value valid at all time
+ * unify the code to setup traps
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- include/net/ax25.h         | 2 ++
- net/ax25/ax25_dev.c        | 3 +++
- net/ax25/ax25_ds_timer.c   | 4 ++++
- net/ax25/sysctl_net_ax25.c | 3 +--
- net/x25/sysctl_net_x25.c   | 1 -
- 5 files changed, 10 insertions(+), 3 deletions(-)
+Note:
+* in order to switch off CTR_EL0.IDC userspace first has to set up
+  CLIDR_EL1 accordingly
+* reading CCSIDR before and after changing the cache size in CTR_EL0
+  could result in different values (but only if CCSIDR was not changed
+  from the generated value)
+* I'll prepare a testcase for the next revision
 
-diff --git a/include/net/ax25.h b/include/net/ax25.h
-index 0d939e5aee4e..eb9cee8252c8 100644
---- a/include/net/ax25.h
-+++ b/include/net/ax25.h
-@@ -139,7 +139,9 @@ enum {
- 	AX25_VALUES_N2,		/* Default N2 value */
- 	AX25_VALUES_PACLEN,	/* AX.25 MTU */
- 	AX25_VALUES_PROTOCOL,	/* Std AX.25, DAMA Slave, DAMA Master */
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	AX25_VALUES_DS_TIMEOUT,	/* DAMA Slave timeout */
-+#endif
- 	AX25_MAX_VALUES		/* THIS MUST REMAIN THE LAST ENTRY OF THIS LIST */
- };
- 
-diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-index c5462486dbca..af547e185a94 100644
---- a/net/ax25/ax25_dev.c
-+++ b/net/ax25/ax25_dev.c
-@@ -78,7 +78,10 @@ void ax25_dev_device_up(struct net_device *dev)
- 	ax25_dev->values[AX25_VALUES_N2]        = AX25_DEF_N2;
- 	ax25_dev->values[AX25_VALUES_PACLEN]	= AX25_DEF_PACLEN;
- 	ax25_dev->values[AX25_VALUES_PROTOCOL]  = AX25_DEF_PROTOCOL;
-+
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	ax25_dev->values[AX25_VALUES_DS_TIMEOUT]= AX25_DEF_DS_TIMEOUT;
-+#endif
- 
- #if defined(CONFIG_AX25_DAMA_SLAVE) || defined(CONFIG_AX25_DAMA_MASTER)
- 	ax25_ds_setup_timer(ax25_dev);
-diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-index c4f8adbf8144..8f385d2a7628 100644
---- a/net/ax25/ax25_ds_timer.c
-+++ b/net/ax25/ax25_ds_timer.c
-@@ -49,12 +49,16 @@ void ax25_ds_del_timer(ax25_dev *ax25_dev)
- 
- void ax25_ds_set_timer(ax25_dev *ax25_dev)
- {
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	if (ax25_dev == NULL)		/* paranoia */
- 		return;
- 
- 	ax25_dev->dama.slave_timeout =
- 		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
- 	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-+#else
-+	return;
-+#endif
- }
- 
- /*
-diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
-index db66e11e7fe8..4e593d36d311 100644
---- a/net/ax25/sysctl_net_ax25.c
-+++ b/net/ax25/sysctl_net_ax25.c
-@@ -141,8 +141,6 @@ static const struct ctl_table ax25_param_table[] = {
- 		.extra2		= &max_ds_timeout
- 	},
- #endif
--
--	{ }	/* that's all, folks! */
- };
- 
- int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
-@@ -155,6 +153,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
- 	if (!table)
- 		return -ENOMEM;
- 
-+	BUILD_BUG_ON(ARRAY_SIZE(ax25_param_table) != AX25_MAX_VALUES);
- 	for (k = 0; k < AX25_MAX_VALUES; k++)
- 		table[k].data = &ax25_dev->values[k];
- 
-diff --git a/net/x25/sysctl_net_x25.c b/net/x25/sysctl_net_x25.c
-index e9802afa43d0..643f50874dfe 100644
---- a/net/x25/sysctl_net_x25.c
-+++ b/net/x25/sysctl_net_x25.c
-@@ -71,7 +71,6 @@ static struct ctl_table x25_table[] = {
- 		.mode = 	0644,
- 		.proc_handler = proc_dointvec,
- 	},
--	{ },
- };
- 
- int __init x25_register_sysctl(void)
+Thanks,
+Sebastian
+
+[0]: https://lore.kernel.org/all/20240318111636.10613-1-sebott@redhat.com/T/
+[1]: https://lore.kernel.org/lkml/20240405120108.11844-1-sebott@redhat.com/T/
+
+Sebastian Ott (6):
+  KVM: arm64: change return value in arm64_check_features()
+  KVM: arm64: unify trap setup code
+  KVM: arm64: maintain per VM value for CTR_EL0
+  KVM: arm64: add emulation for CTR_EL0 register
+  KVM: arm64: show writable masks for feature registers
+  KVM: arm64: rename functions for invariant sys regs
+
+ arch/arm64/include/asm/kvm_emulate.h |  37 -----
+ arch/arm64/include/asm/kvm_host.h    |   4 +-
+ arch/arm64/kvm/arm.c                 |   3 +-
+ arch/arm64/kvm/sys_regs.c            | 225 ++++++++++++++++++++-------
+ 4 files changed, 173 insertions(+), 96 deletions(-)
 
 -- 
-2.43.0
-
+2.42.0
 
 
