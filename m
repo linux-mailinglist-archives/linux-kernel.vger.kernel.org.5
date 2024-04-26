@@ -1,284 +1,238 @@
-Return-Path: <linux-kernel+bounces-160373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 855CE8B3CC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:26:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825288B3CC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F87C1C22025
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CF2028579F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36C5156F38;
-	Fri, 26 Apr 2024 16:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5096815623B;
+	Fri, 26 Apr 2024 16:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFWqxDGL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YpgAQJLl"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CEE75810;
-	Fri, 26 Apr 2024 16:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF93C15686F;
+	Fri, 26 Apr 2024 16:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714148794; cv=none; b=HYYk911SZxi2waIp536U8Tzo4JoG64jRmVPeTNMhY+DZt326QwQWRFzWb4cN+fqQlkmpmX/j7oQxO57ZSp4QfY452ZdkEJBBzxnKDIsQPfzLxAKTmZCFN33Rzvwv7zZHLnHuNx7466IOnmBVq8/7B0k1XVovk8rhqy/aiTvYpSo=
+	t=1714148816; cv=none; b=t0pBum8hgl9ScCjK4O+TeIiyv3dGjQr8sQDRa8y8cAN4ePdBbnGBD32jpAYLaxHbeMzsct9esgF5VAYXAWFXnzk8RvxVnehRy/8SahbEGjunC6pDeFdXePROivy5LTd18dcoTiG5DRDFa0agxLbsQAGnRlfyOf6sRvp9+sSmYJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714148794; c=relaxed/simple;
-	bh=dK6kEHqnBd/0mkKOcrKzgBRZZ55RfC+Bv0ytAehgbpQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Nu1fN5bUgrUY51qC+z22N2j51o2Q3uqVRU8nCOBP+WkWEA39+Mq00S8G6c9QOEjs73Al/PaPrpqj7KuBJDoMHkyKsMKbKrf0UM3BxPnd8voOMS8Kw833+A4YgGEPKJxdwT0MzZ8//c3QJjuTM2lXJJZbbqZAkW3T3AO9yJh921M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFWqxDGL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48525C113CD;
-	Fri, 26 Apr 2024 16:26:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714148793;
-	bh=dK6kEHqnBd/0mkKOcrKzgBRZZ55RfC+Bv0ytAehgbpQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RFWqxDGLi/VS44XkgsO8nJ4SjSsgIVT+nSCTdvvYV+c/uNoE1S7/bMD+gqpEIwfzs
-	 0vGS7otQIC39++kYefton6z0I3b0nSxw7HAvPqHeovM1mGzjnxLcdTCD5zGSYHMdZH
-	 tkGlin47truNdtQtfGs2NMBL42RNwuX0tGH+vAneUNoX1HcivhunCWqpG/kYxRF+V3
-	 6tweplRPMFq09qp8l7rEP+c4SQiLcjBmrx+gW14OmOawkl0AOOhbXIp2a3Byd8X6FV
-	 DXmLgfE+JguM7KBvAfnhZckwvJASHsGV6Xv/nGupblRdNuwTuwCvrKw+KI+uzBOYOS
-	 UnGR0S8515+5g==
-Received: from [185.201.63.253] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1s0OP6-008Hsg-Vi;
-	Fri, 26 Apr 2024 17:26:30 +0100
-Date: Fri, 26 Apr 2024 17:26:09 +0100
-Message-ID: <87il04t7j2.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra
-	<peterz@infradead.org>,
-	<linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>,
-	<x86@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	"Rafael J . Wysocki"
-	<rafael@kernel.org>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	James Morse
-	<james.morse@arm.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe
- Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas
-	<catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave
- Hansen <dave.hansen@linux.intel.com>,
-	<linuxarm@huawei.com>,
-	<justin.he@arm.com>,
-	<jianyong.wu@arm.com>,
-	Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v8 11/16] irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs
-In-Reply-To: <20240426135126.12802-12-Jonathan.Cameron@huawei.com>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
-	<20240426135126.12802-12-Jonathan.Cameron@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1714148816; c=relaxed/simple;
+	bh=lorYvYgo5IXa066vwzcU4pNV6jM1EDwnv91nHO/Ds0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uP1TW32Iek1qdtscVKn+mdvjHhIrwVv46yehSoisPP2WLqpsfrDwKXuW5cFIwOwPoyxkFDOuwBFCdKT9wt+z1MqDtA4Dr1mXFGvUInJ9MMiF2a+Qkj7kl1JUi6RM5LSuoafPqWSX9iBOUunuLOe05/Dt+CEJz4GktNcIJOcTB/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YpgAQJLl; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a7e19c440dso1826326a91.3;
+        Fri, 26 Apr 2024 09:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714148814; x=1714753614; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
+        b=YpgAQJLljIWPgjBUQWkMa29Ht+Hs/3ve9emVnpmAv/3xzx95e4tyy0S71rI8LQxs7/
+         z6wI6XV/iQM3+1gzAu0Umzkeu0BDba6xevoJw7jLuNH4h/tePDSOxn1xM/Rsue2/oz1T
+         IzaNOU4IWcH6t3GqmEenvJfJ9Mz1FHLxz30RyN3fCr3KP1851KyNxHbsLBYcnJTPylM0
+         ktVWTGAv426kXLf/f2KkCx3tfae6spPlYm+W/i04h0Z8qcHAeF3+6h0lgIgFP0iTe10y
+         GMvmg3a7esFZlrRLaaqA30DYtYBQrm/aLV0lwi7qIj5OlaP+5SCu6iuuek1VtCnXlVjJ
+         cbow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714148814; x=1714753614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
+        b=aEW0kUka/qRnxuHajO5QI5QvZvsAZE2zbls9pwTevTE2+u1bTnNBHvf6VhlGvZqIJM
+         xyObyIPZ9cUXduZ9v7x1VGDlsgJVQ+5ReQC8C9OVYF8ZnNa29Pt8L36mc8GfEJuSBQRV
+         wlsp8yaX32vUBinUA2cp3yW5Vv1icNhIA6mdEJ+huHlh41CQ5pXoFUvTJxy/H2xqoCZr
+         lk70z5rTHRhKLSNtTWKBErOLjRQhSpBdDXRimFAnNuJs47v6HpxNXH/D2xKr45U7AJj4
+         FJpBdlRhSGa5yKBlKDfTaC5brNtF/EuWXUmYmZ7nSp6U2xPPwGcVbit6c1uapL8RxK3K
+         8RjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLmSx9zH6E6/dBSps4t1Tfllm6Jv/ncaSpReNxMoysQa069vaYBUFvVoMUA/gvbZ/hlrmteXETXN4UUTarAZVasZLN/u6ShOv1dPkvf/Bm4omJI1+dHGDIZmgt318x7x6i
+X-Gm-Message-State: AOJu0Yz20udgxBuB2swfzCJqMmj5T0hX/3R8HYlLgGlrvyDIFHwX7dm3
+	e4K3a4jCRgYWoBbRDTdbtT4Z4KtCg9v3bX9MeRvugqw1YMXX12SOrttLBdd3tO+FN9YWzD1qh1X
+	9xYa7gw8ZtiHVtnb3H9jVbshv71s=
+X-Google-Smtp-Source: AGHT+IGu4GRGYVOdPGc3A474j1UuojtMDmM+IwnLOxDpKwjsEPtu6sZypVBrCcksdi4s4CzHpIfUJFJmvdV1m+wY8JI=
+X-Received: by 2002:a17:90b:3692:b0:2af:3088:e36f with SMTP id
+ mj18-20020a17090b369200b002af3088e36fmr3049385pjb.7.1714148814036; Fri, 26
+ Apr 2024 09:26:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.201.63.253
-X-SA-Exim-Rcpt-To: Jonathan.Cameron@huawei.com, tglx@linutronix.de, peterz@infradead.org, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, linux@armlinux.org.uk, rafael@kernel.org, miguel.luis@oracle.com, james.morse@arm.com, salil.mehta@huawei.com, jean-philippe@linaro.org, catalin.marinas@arm.com, will@kernel.org, guohanjun@huawei.com, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, linuxarm@huawei.com, justin.he@arm.com, jianyong.wu@arm.com, lpieralisi@kernel.org, sudeep.holla@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240426121349.97651-1-puranjay@kernel.org> <20240426121349.97651-3-puranjay@kernel.org>
+In-Reply-To: <20240426121349.97651-3-puranjay@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Apr 2024 09:26:42 -0700
+Message-ID: <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
+ helper
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Apr 2024 14:51:21 +0100,
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-> 
-> From: James Morse <james.morse@arm.com>
-> 
-> To support virtual CPU hotplug, ACPI has added an 'online capable' bit
-> to the MADT GICC entries. This indicates a disabled CPU entry may not
-> be possible to online via PSCI until firmware has set enabled bit in
-> _STA.
-> 
-> This means that a "usable" GIC is one that is marked as either enabled,
-
-nit: "GIC" usually designs the whole HW infrastructure (distributor,
-redistributors, and ITSs). My understanding is that you are only
-referring to the redistributors.
-
-> or online capable. Therefore, change acpi_gicc_is_usable() to check both
-> bits. However, we need to change the test in gic_acpi_match_gicc() back
-> to testing just the enabled bit so the count of enabled distributors is
-> correct.
-> 
-> What about the redistributor in the GICC entry? ACPI doesn't want to say.
-> Assume the worst: When a redistributor is described in the GICC entry,
-> but the entry is marked as disabled at boot, assume the redistributor
-> is inaccessible.
-> 
-> The GICv3 driver doesn't support late online of redistributors, so this
-> means the corresponding CPU can't be brought online either.
-> Rather than modifying cpu masks that may already have been used,
-> register a new cpuhp callback to fail this case. This must run earlier
-> than the main gic_starting_cpu() so that this case can be rejected
-> before the section of cpuhp that runs on the CPU that is coming up as
-> that is not allowed to fail. This solution keeps the handling of this
-> broken firmware corner case local to the GIC driver. As precise ordering
-> of this callback doesn't need to be controlled as long as it is
-> in that initial prepare phase, use CPUHP_BP_PREPARE_DYN.
-> 
-> Systems that want CPU hotplug in a VM can ensure their redistributors
-> are always-on, and describe them that way with a GICR entry in the MADT.
-> 
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
+On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+>
+> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+> bpf_get_smp_processor_id().
+>
+> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+>
+> Here is how the BPF and ARM64 JITed assembly changes after this commit:
+>
+>                                          BPF
+>                                         =3D=3D=3D=3D=3D
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
+72008
+>                                                 (bf) r0 =3D &(void __perc=
+pu *)(r0)
+>                                                 (61) r0 =3D *(u32 *)(r0 +=
+0)
+>
+>                                       ARM64 JIT
+>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ff=
+ffffff
+> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl =
+#16
+> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
+> blr     x10                                     mrs     x10, tpidr_el1
+> add     x7, x0, #0x0                            add     x7, x7, x10
+>                                                 ldr     w7, [x7]
+>
+> Performance improvement using benchmark[1]
+>
+>              BEFORE                                       AFTER
+>             --------                                     -------
+>
+> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
+=C2=B1 0.027M/s
+> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
+=C2=B1 0.023M/s
+> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
+=C2=B1 0.004M/s
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
-> Thanks to Marc for review and suggestions!
-> v8: Change the handling of broken rdists to fail cpuhp rather than
->     modifying the cpu_present and cpu_possible masks.
->     Updated commit text to reflect that.
->     Added a sb tag for Marc given this is more or less what he put
->     in his review comment.
-> ---
->  drivers/irqchip/irq-gic-v3.c | 38 ++++++++++++++++++++++++++++++++++--
->  include/linux/acpi.h         |  3 ++-
->  2 files changed, 38 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 10af15f93d4d..b4685991953e 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -44,6 +44,8 @@
->  
->  #define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
->  
-> +static struct cpumask broken_rdists __read_mostly;
-> +
->  struct redist_region {
->  	void __iomem		*redist_base;
->  	phys_addr_t		phys_base;
-> @@ -1293,6 +1295,18 @@ static void gic_cpu_init(void)
->  #define MPIDR_TO_SGI_RS(mpidr)	(MPIDR_RS(mpidr) << ICC_SGI1R_RS_SHIFT)
->  #define MPIDR_TO_SGI_CLUSTER_ID(mpidr)	((mpidr) & ~0xFUL)
->  
-> +/*
-> + * gic_starting_cpu() is called after the last point where cpuhp is allowed
-> + * to fail. So pre check for problems earlier.
-> + */
-> +static int gic_check_rdist(unsigned int cpu)
-> +{
-> +	if (cpumask_test_cpu(cpu, &broken_rdists))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
->  static int gic_starting_cpu(unsigned int cpu)
->  {
->  	gic_cpu_init();
-> @@ -1384,6 +1398,10 @@ static void __init gic_smp_init(void)
->  	};
->  	int base_sgi;
->  
-> +	cpuhp_setup_state_nocalls(CPUHP_BP_PREPARE_DYN,
-> +				  "irqchip/arm/gicv3:checkrdist",
-> +				  gic_check_rdist, NULL);
-> +
->  	cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_GIC_STARTING,
->  				  "irqchip/arm/gicv3:starting",
->  				  gic_starting_cpu, NULL);
-> @@ -2363,11 +2381,24 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->  				(struct acpi_madt_generic_interrupt *)header;
->  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
->  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
-> +	int cpu = get_cpu_for_acpi_id(gicc->uid);
->  	void __iomem *redist_base;
->  
->  	if (!acpi_gicc_is_usable(gicc))
->  		return 0;
->  
-> +	/*
-> +	 * Capable but disabled CPUs can be brought online later. What about
-> +	 * the redistributor? ACPI doesn't want to say!
-> +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-> +	 * Otherwise, prevent such CPUs from being brought online.
-> +	 */
-> +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
+>  kernel/bpf/verifier.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4e474ef44e9c..6ff4e63b2ef2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_e=
+nv *env)
+>                         goto next_insn;
+>                 }
+>
+> -#ifdef CONFIG_X86_64
+>                 /* Implement bpf_get_smp_processor_id() inline. */
+>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+>                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
+) {
+>                         /* BPF_FUNC_get_smp_processor_id inlining is an
+> -                        * optimization, so if pcpu_hot.cpu_number is eve=
+r
+> +                        * optimization, so if cpu_number_addr is ever
+>                          * changed in some incompatible and hard to suppo=
+rt
+>                          * way, it's fine to back out this inlining logic
+>                          */
+> -                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
+signed long)&pcpu_hot.cpu_number);
+> -                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> -                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+> -                       cnt =3D 3;
+> +                       u64 cpu_number_addr;
+>
+> +#if defined(CONFIG_X86_64)
+> +                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
+> +#elif defined(CONFIG_ARM64)
+> +                       cpu_number_addr =3D (u64)&cpu_number;
+> +#else
+> +                       goto next_insn;
+> +#endif
+> +                       struct bpf_insn ld_cpu_number_addr[2] =3D {
+> +                               BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
+> +                       };
 
-Now this makes the above acpi_gicc_is_usable() very odd. It checks for
-MADT_ENABLED *or* GICC_ONLINE_CAPABLE. But we definitely don't want to
-deal with the lack of MADT_ENABLED.
+here we are violating C89 requirement to have a single block of
+variable declarations by mixing variables and statements. I'm
+surprised this is not triggering any build errors on !arm64 &&
+!x86_64.
 
-So why don't we explicitly check for individual flags and get rid of
-acpi_gicc_is_usable(), as its new definition doesn't tell you anything
-useful?
+I think we can declare this BPF_LD_IMM64 instruction with zero "addr".
+And then update
 
-> +		pr_warn_once("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> +		cpumask_set_cpu(cpu, &broken_rdists);
+ld_cpu_number_addr[0].imm =3D (u32)cpu_number_addr;
+ld_cpu_number_addr[1].imm =3D (u32)(cpu_number_addr >> 32);
 
-Given that get_cpu_for_acpi_id() can return -EINVAL, you'd want to
-check that. Also, I'd like to drop the _once on the warning.
-Indicating all the broken CPUs is useful information, and only happens
-once per boot.
+WDYT?
 
-> +		return 0;
-> +	}
-> +
->  	redist_base = ioremap(gicc->gicr_base_address, size);
->  	if (!redist_base)
->  		return -ENOMEM;
-> @@ -2413,9 +2444,12 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
->  
->  	/*
->  	 * If GICC is enabled and has valid gicr base address, then it means
-> -	 * GICR base is presented via GICC
-> +	 * GICR base is presented via GICC. The redistributor is only known to
-> +	 * be accessible if the GICC is marked as enabled. If this bit is not
-> +	 * set, we'd need to add the redistributor at runtime, which isn't
-> +	 * supported.
->  	 */
-> -	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address)
-> +	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)
->  		acpi_data.enabled_rdists++;
->  
->  	return 0;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 9844a3f9c4e5..fcfb7bb6789e 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -239,7 +239,8 @@ void acpi_table_print_madt_entry (struct acpi_subtable_header *madt);
->  
->  static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
->  {
-> -	return gicc->flags & ACPI_MADT_ENABLED;
-> +	return gicc->flags & (ACPI_MADT_ENABLED |
-> +			      ACPI_MADT_GICC_ONLINE_CAPABLE);
->  }
->  
->  /* the following numa functions are architecture-dependent */
+nit: I'd rename ld_cpu_number_addr to ld_insn or something short like that
 
-Thanks,
+> +                       insn_buf[0] =3D ld_cpu_number_addr[0];
+> +                       insn_buf[1] =3D ld_cpu_number_addr[1];
+> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
+_REG_0, 0);
+> +                       cnt =3D 4;
 
-	M.
+nit: we normally have an empty line here to separate setting up
+replacement instructions from actual patching
 
--- 
-Without deviation from the norm, progress is not possible.
+>                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+>                         if (!new_prog)
+>                                 return -ENOMEM;
+> @@ -20296,7 +20307,6 @@ static int do_misc_fixups(struct bpf_verifier_env=
+ *env)
+>                         insn      =3D new_prog->insnsi + i + delta;
+>                         goto next_insn;
+>                 }
+> -#endif
+>                 /* Implement bpf_get_func_arg inline. */
+>                 if (prog_type =3D=3D BPF_PROG_TYPE_TRACING &&
+>                     insn->imm =3D=3D BPF_FUNC_get_func_arg) {
+> --
+> 2.40.1
+>
 
