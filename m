@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-159667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93658B31CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:59:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EF1F8B31D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29239B21CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:59:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A83311C21A7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9350113C8F6;
-	Fri, 26 Apr 2024 07:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C518213C8F7;
+	Fri, 26 Apr 2024 08:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HmS4ThGG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P0gJc07A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C404542A9B;
-	Fri, 26 Apr 2024 07:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB32013B7AC;
+	Fri, 26 Apr 2024 08:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714118338; cv=none; b=TJCnnSAeiGUPAjNAyDsekh/Q02rUeWTjzmXfy1Tq9A5m+2SWG76pAQtufzxyFmF//AzUMQz1ZnQBdjNFTq37SNOkB3WSNbnFAuuaXvZqp9u+vgRAWnTstV3T9cdY3j1THqSj0QDM7H8FNGwUz+dkkyo/BAeT5/xL8iM9mXoXO28=
+	t=1714118424; cv=none; b=Oe+eZJ2WJTukuBQ4OBvVMFK8AmjxNBFOwZiANFAsSLbD1hMGzg9BCW9iI2rYKpcRhANE4TLV581VwQ1IsguZiBkaRUN6qnr9lzfv236zRxNotnt3U/fAWOyJocrJ6rwdgR4XfhzL2HCN/rB/xQIlYIc2sOTbMHwx64mT9yaZqVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714118338; c=relaxed/simple;
-	bh=PjXM/VHLqOfGEcVAlmekIEtEwKN06QA23qVCed5GPBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cdXhXbxacDe/mgq1XOjh+tCLcpxO0VyS59khtj052DG6ZlymrGZSu9E78UofNGa7b4ohnc1yF6DVo6XZZxbBJElC6TBcqToRn+ppb8dsYiDgU78MpzbNOpHZVyZY1nMlRjL99iyZw6FxD12KNbNBF2AwCuZSCVd0tQpcsUkNB2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HmS4ThGG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98BADC113CE;
-	Fri, 26 Apr 2024 07:58:52 +0000 (UTC)
+	s=arc-20240116; t=1714118424; c=relaxed/simple;
+	bh=X/svuiWiPTm376QCilcIl2dHIT0k4skPoe3RY6fuMC4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=uFkwGpJWvmF0FAennw64f7dDeF2VSH6zxtDvateE64pydcVBabbUsm8X382W4+XFMhMqp8ToH2QrPS22hlEpSjNawBUm+Z8h8mdqSLl1166KGkIL1VqcuPsxnvawlxX88bAHosPt+g37JMCCoDPtkv0fklxI0lgje8z8GdDh+wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P0gJc07A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7F6C113CE;
+	Fri, 26 Apr 2024 08:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714118338;
-	bh=PjXM/VHLqOfGEcVAlmekIEtEwKN06QA23qVCed5GPBI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HmS4ThGGV/w38F/ZOrmODyE6mohgRfsxfBjoWkzG6ha2wTtw+nlSKd7r+EOL0tRJY
-	 0jbjARam1eLs5LoBOvGxr7lUzx/mr2jEfQvQKN94VMU9+0BfktL4W97qFKZssEkTSn
-	 kG6HZYEm17F49h1ShNYUr5ojHKh1tTzELvEEEydk2cfF3bPY82P+tT/1PH/WbfNhhq
-	 0JxZ8AvFbccxP6OJMvmwoN5tWOPvmia9fxzRdsggQMlopMy0xCp67HRW5cWj++iRjo
-	 OmnVdrcITDxphQ9H+jEvyKXXsECQl2eklID4JQbTYxfcEYMR1UHjlSuyRginsT5Tvf
-	 8dN4WACld+jWQ==
-Message-ID: <e24367e8-3c40-4422-8b7e-810e1ba376e7@kernel.org>
-Date: Fri, 26 Apr 2024 09:58:50 +0200
+	s=k20201202; t=1714118423;
+	bh=X/svuiWiPTm376QCilcIl2dHIT0k4skPoe3RY6fuMC4=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=P0gJc07Ara3ifkBH5peeRefhZtITuoyT1VesWHjNBe2xqRztDMHGN8R4CB1RgCxNW
+	 W+wKwf1ozs0sTL+mJrOtQUTZdKpUHdc4HMvReDCe5xT5T33keRiWxXWEFTZjMxvGXu
+	 AGn/EUUAvrmMWy3HhMYxLVaiec93bqaqwdyqm0r5EknI604sCnHyBIL+yNYmsGKA0o
+	 iaqvk0FjV1yZzJW3Mgzx6MLTytMDX3cum7a3UQTQlUgcetclbUP/0sfqZzkbphV2Qw
+	 ZjjkUwTB4aG4ivKh+pvilUP+XIVSm7VdH+V9/EOT11EeRJdwjrvLifPDk7hSYt/8+5
+	 B3dta5fkgGUhA==
+Message-ID: <cabf0c46-6c7a-4ac6-a20a-8b72bb18aecc@kernel.org>
+Date: Fri, 26 Apr 2024 10:00:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,6 +50,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 01/14] ASoC: SOF: debug: Constify local snd_sof_dsp_ops
+From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Mark Brown <broonie@kernel.org>
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>,
@@ -70,7 +71,7 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
  <20240414-n-const-ops-var-v1-1-8f53ee5d981c@kernel.org>
  <ZisMvJORIdqttoeF@finisterre.sirena.org.uk>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <e24367e8-3c40-4422-8b7e-810e1ba376e7@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,24 +116,28 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <ZisMvJORIdqttoeF@finisterre.sirena.org.uk>
+In-Reply-To: <e24367e8-3c40-4422-8b7e-810e1ba376e7@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 26/04/2024 04:09, Mark Brown wrote:
-> On Sun, Apr 14, 2024 at 08:47:26PM +0200, Krzysztof Kozlowski wrote:
->> Constify the pointer to 'struct snd_sof_dsp_ops' to annotate that
->> functioon does not modify pointed data.
+On 26/04/2024 09:58, Krzysztof Kozlowski wrote:
+> On 26/04/2024 04:09, Mark Brown wrote:
+>> On Sun, Apr 14, 2024 at 08:47:26PM +0200, Krzysztof Kozlowski wrote:
+>>> Constify the pointer to 'struct snd_sof_dsp_ops' to annotate that
+>>> functioon does not modify pointed data.
+>>
+>> This doesn't apply against current code, please check and resend.
 > 
-> This doesn't apply against current code, please check and resend.
+> Maybe I am basing on wrong tree. I applied now on for-next of your
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/ and
+> b4 did not complain - no hunk rejects.
+> 
+> I will resend based on that tree, but I expect same result. Let me know
+> if I should use different tree.
 
-Maybe I am basing on wrong tree. I applied now on for-next of your
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/ and
-b4 did not complain - no hunk rejects.
-
-I will resend based on that tree, but I expect same result. Let me know
-if I should use different tree.
-
+Never mind, my bad, the base commit was not public, but a commit from my
+development tree, so b4 properly figured out any conflicts transparently
+in my case.
 
 Best regards,
 Krzysztof
