@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-160208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4058C8B3A9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF4A58B3A9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:06:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F127B2867D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F42286363
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907501494A1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A802149003;
 	Fri, 26 Apr 2024 15:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="sC2BzoKI"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="CKOKiOlu"
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281CA14884A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5405824B3;
 	Fri, 26 Apr 2024 15:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714143994; cv=none; b=HMffYL0C9Ry9cpwnSyS9wFqvgzPqst7a4VpB2DTC2wuOF+FSiSvYCh+XCQzzY7msceyqvBw8XutxwU9SPAys5PlOW/2aqo4c3W/keMdtdJyj4mUJaePIRupDD8KMS/XiMiD0n080oxJAENGAZItqy8WGzQR+RWYLygPBrKYIfx8=
+	t=1714143994; cv=none; b=jU7xAi2aXTL+x/gCxQ1eX8uoGSs0v4yl4hwa7dDjdsoeuB4Om9zTBH33U23TQ6OLnw2WS6ODZej0oQKsP1BmmZgKjDnRYxw2Nop/3ia3uoOM+1rQTXDLxErVWw1e7GbhpxKwMVt37G354N3t/A5BX751GVPp5sVrds89hPuoa8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714143994; c=relaxed/simple;
-	bh=BD0Qf9WPkKr4zJhWMWsk8v9xQAGHzENC8wnnzn1rEdc=;
+	bh=TDe1W95xQ4FIVIvV65yXftySxSZ025TIFy7MIrfyogs=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gg80RIuUzi8cY/HakergsM/1anu0KrtR+Uj/duBYF6+4ky8NO6a5MWics/fa3o3ssFyP5ATZU//92qbp9FTCZotng5K9MGIdtr8d6KVlAgi3luqUBVfg+Jv88IcuDKGB+8h9OweRgZe+XINVKp5RATYBZxxRVp9Qe04yHKOtOXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=sC2BzoKI; arc=none smtp.client-ip=185.132.182.106
+	 MIME-Version:Content-Type; b=rasMnbTYSYZHTiTRS/9PUPTmlSb3so2mNUzG3HamwqXicbkiPUcdsrzNcxxhq0ooGvjYpRKbmBrlinE0Ptor9QP1QD5tNRLMbupkDtCLDeduhqPgn+YioToEgdZ9Li6/kV//GDxYiyZlOdKDsZJM5z+9nCbr8H75mThFTUZtcjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=CKOKiOlu; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43QDIZP5016364;
-	Fri, 26 Apr 2024 17:06:17 +0200
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43QDJ35t019021;
+	Fri, 26 Apr 2024 17:06:15 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=6YrMkwdcMEba37Dr4YOcNaLg4oy1sj3dUWUmxDd/7wk=; b=sC
-	2BzoKIkHpJdQTjnxheJTalipPcLhbYTN9/qNL8iPlXaFUpR8QYz8qLR15zn/8Qqb
-	DDaEA/pkjM63L4D2Vxt4VVbo+0aOJSjz5CFL1ytQF1CNWyWidtaHO5s7e2TR06HL
-	U0sTcHF5wdnwl4S5eqLQ4KwM8At/4/vVJtrrD3+ThGfxziejWNEI+vuKt1ORRl6M
-	9Y+im2/WE8cgAITckTAuARg2Gs2KCvXFtLdwT041KJXBWq9zptgNxXfWmBfu2vmZ
-	t3RA/VeJwagJ7rft976bpShCAwMK3X+FQ7DZC7OiREHGunMmaPyAgfcFh0gCJjan
-	iARO/LT3Rgg4ADT5C6Ww==
+	selector1; bh=owWEwN3frvs+w7rBdunojYWbyC3afbJA5/c/F6xdxWc=; b=CK
+	OKiOlutVwfegPcAx3xCXdMwZz2cxFUfxXyHWH2YCzSUL4SPr9nup4VJsswLryR83
+	ztkvfYYauJewygP/6hGPISDpQ2u2w/fhQUjwFRaw/paah0541H/dhKNHKtr1Odtu
+	1jgbmzwj0lku0BRXSLu0rQ5lTHRBtesSE7DzdHiro7cwdPSLgYVk/0DHwBp7d56+
+	AMbd8iyRSZAN3BK452iELAZxOsv+EkAsRLNc5KWEnoJI0KnrJrgYEDTNORwIbReg
+	GgJvAazdGEQPhUGQcCNZyRXQlQGckdPBvBrA0JNQv6D1ktSUobICH/VxPub5xDMy
+	fNlZZRx5CWwq6Pmxfd3Q==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xmq910mhb-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xm4cnu1xg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 17:06:17 +0200 (MEST)
+	Fri, 26 Apr 2024 17:06:14 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id CE5904002D;
-	Fri, 26 Apr 2024 17:06:13 +0200 (CEST)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 79A7440047;
+	Fri, 26 Apr 2024 17:06:10 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 625C4227F06;
-	Fri, 26 Apr 2024 17:05:41 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 60EDB2207CF;
+	Fri, 26 Apr 2024 17:05:47 +0200 (CEST)
 Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
  (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Apr
- 2024 17:05:41 +0200
+ 2024 17:05:47 +0200
 From: Alain Volmat <alain.volmat@foss.st.com>
 To: Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski
@@ -68,9 +68,9 @@ To: Rob Herring <robh@kernel.org>,
 CC: Alain Volmat <alain.volmat@foss.st.com>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] ARM: dts: stm32: add DCMIPP pinctrl on STM32MP13x SoC family
-Date: Fri, 26 Apr 2024 17:05:24 +0200
-Message-ID: <20240426150526.3094607-2-alain.volmat@foss.st.com>
+Subject: [PATCH 2/2] ARM: dts: stm32: enable camera support on stm32mp135f-dk board
+Date: Fri, 26 Apr 2024 17:05:25 +0200
+Message-ID: <20240426150526.3094607-3-alain.volmat@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240426150526.3094607-1-alain.volmat@foss.st.com>
 References: <20240426150526.3094607-1-alain.volmat@foss.st.com>
@@ -88,57 +88,127 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
 
-Adds DCMIPP pinctrl support and assigns dedicated GPIO pins.
+On STM32MP135F-DK board the camera support is made of the
+CSI based GC2145 sensor, connected to the ST-MIPID02 CSI to parallel
+bridge, connected to the DCMIPP parallel input.
 
 Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 ---
- arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi | 33 +++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ arch/arm/boot/dts/st/stm32mp135f-dk.dts | 87 +++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-index 32c5d8a1e06a..b423d182aefd 100644
---- a/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi
-@@ -13,6 +13,39 @@ pins {
- 		};
+diff --git a/arch/arm/boot/dts/st/stm32mp135f-dk.dts b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+index 567e53ad285f..e43bb9b74b87 100644
+--- a/arch/arm/boot/dts/st/stm32mp135f-dk.dts
++++ b/arch/arm/boot/dts/st/stm32mp135f-dk.dts
+@@ -29,6 +29,20 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
  	};
  
-+	dcmipp_pins_a: dcmi-0 {
-+		pins1 {
-+			pinmux = <STM32_PINMUX('H',  8,  AF13)>,/* DCMI_HSYNC */
-+				 <STM32_PINMUX('G',  9,  AF13)>,/* DCMI_VSYNC */
-+				 <STM32_PINMUX('B',  7,  AF14)>,/* DCMI_PIXCLK */
-+				 <STM32_PINMUX('A',  9,  AF13)>,/* DCMI_D0 */
-+				 <STM32_PINMUX('D',  0,  AF13)>,/* DCMI_D1 */
-+				 <STM32_PINMUX('G', 10,  AF13)>,/* DCMI_D2 */
-+				 <STM32_PINMUX('E',  4,  AF13)>,/* DCMI_D3 */
-+				 <STM32_PINMUX('D', 11,  AF14)>,/* DCMI_D4 */
-+				 <STM32_PINMUX('D',  3,  AF13)>,/* DCMI_D5 */
-+				 <STM32_PINMUX('B',  8,  AF13)>,/* DCMI_D6 */
-+				 <STM32_PINMUX('E', 14,  AF13)>;/* DCMI_D7 */
-+			bias-disable;
++	clocks {
++		clk_ext_camera: clk-ext-camera {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
++		};
++
++		clk_mco1: clk-mco1 {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <24000000>;
 +		};
 +	};
 +
-+	dcmipp_sleep_pins_a: dcmi-sleep-0 {
-+		pins1 {
-+			pinmux = <STM32_PINMUX('H',  8,  ANALOG)>,/* DCMI_HSYNC */
-+				 <STM32_PINMUX('G',  9,  ANALOG)>,/* DCMI_VSYNC */
-+				 <STM32_PINMUX('B',  7,  ANALOG)>,/* DCMI_PIXCLK */
-+				 <STM32_PINMUX('A',  9,  ANALOG)>,/* DCMI_D0 */
-+				 <STM32_PINMUX('D',  0,  ANALOG)>,/* DCMI_D1 */
-+				 <STM32_PINMUX('G', 10,  ANALOG)>,/* DCMI_D2 */
-+				 <STM32_PINMUX('E',  4,  ANALOG)>,/* DCMI_D3 */
-+				 <STM32_PINMUX('D', 11,  ANALOG)>,/* DCMI_D4 */
-+				 <STM32_PINMUX('D',  3,  ANALOG)>,/* DCMI_D5 */
-+				 <STM32_PINMUX('B',  8,  ANALOG)>,/* DCMI_D6 */
-+				 <STM32_PINMUX('E', 14,  ANALOG)>;/* DCMI_D7 */
+ 	memory@c0000000 {
+ 		device_type = "memory";
+ 		reg = <0xc0000000 0x20000000>;
+@@ -141,6 +155,23 @@ &cryp {
+ 	status = "okay";
+ };
+ 
++&dcmipp {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&dcmipp_pins_a>;
++	pinctrl-1 = <&dcmipp_sleep_pins_a>;
++	status = "okay";
++
++	port {
++		dcmipp_0: endpoint {
++			remote-endpoint = <&mipid02_2>;
++			bus-width = <8>;
++			hsync-active = <0>;
++			vsync-active = <0>;
++			pclk-sample = <0>;
++		};
++	};
++};
++
+ &i2c1 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-0 = <&i2c1_pins_a>;
+@@ -201,6 +232,62 @@ &i2c5 {
+ 	/* spare dmas for other usage */
+ 	/delete-property/dmas;
+ 	/delete-property/dma-names;
++
++	stmipi: csi2rx@14 {
++		compatible = "st,st-mipid02";
++		reg = <0x14>;
++		clocks = <&clk_mco1>;
++		clock-names = "xclk";
++		VDDE-supply = <&scmi_v1v8_periph>;
++		VDDIN-supply = <&scmi_v1v8_periph>;
++		reset-gpios = <&mcp23017 2 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++
++				mipid02_0: endpoint {
++					data-lanes = <1 2>;
++					lane-polarities = <0 0 0>;
++					remote-endpoint = <&gc2145_ep>;
++				};
++			};
++			port@2 {
++				reg = <2>;
++
++				mipid02_2: endpoint {
++					bus-width = <8>;
++					hsync-active = <0>;
++					vsync-active = <0>;
++					pclk-sample = <0>;
++					remote-endpoint = <&dcmipp_0>;
++				};
++			};
 +		};
 +	};
 +
- 	i2c1_pins_a: i2c1-0 {
- 		pins {
- 			pinmux = <STM32_PINMUX('D', 12, AF5)>, /* I2C1_SCL */
++	gc2145: camera@3c {
++		compatible = "galaxycore,gc2145";
++		reg = <0x3c>;
++		clocks = <&clk_ext_camera>;
++		iovdd-supply = <&scmi_v3v3_sw>;
++		avdd-supply = <&scmi_v3v3_sw>;
++		dvdd-supply = <&scmi_v3v3_sw>;
++		powerdown-gpios = <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
++		reset-gpios = <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
++		status = "okay";
++
++		port {
++			gc2145_ep: endpoint {
++				remote-endpoint = <&mipid02_0>;
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <120000000 192000000 240000000>;
++			};
++		};
++	};
+ };
+ 
+ &iwdg2 {
 -- 
 2.34.1
 
