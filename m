@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FC08B3AD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3048B3AD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B99EB282A5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81EA11C21E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC85172780;
-	Fri, 26 Apr 2024 15:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934C5172795;
+	Fri, 26 Apr 2024 15:10:45 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E47172764
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743A1172BA4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144242; cv=none; b=h0HJv43Pd1xV0xy83LDzasYx8OZkeVQutehYJ5L4Yn/XhRBJ1LPUpBySYZxASRqNGQNeeq0yFzERveL6XrCc/qgrNflSiMFh40kC+k4aR/2VCD3rbryLZRk4wQc/yrUQ3RR+8rj1zko+oTrXz5z1A8F2Yp1oYS0gVbD3DRJfmgE=
+	t=1714144245; cv=none; b=q5dLBU7mmV1pxDjY6Bu3u+4umZkpYtlYQ8xlaIVjQrn6Gl0PnldcZAqmAeFNPLuGXfbcqIy5iSljw5c+Vynz7NAPqyRcVF5/j857P28X9lmNhb5pspbiTWBwZEtToj2SFyDbxx56nnJmF77Tb/VD14XliFyxNHwg+5/aXox2spw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144242; c=relaxed/simple;
-	bh=OGiTs/KIXjacKSEoGZnK1rlWP0YeiH50gfXOkRW64y0=;
+	s=arc-20240116; t=1714144245; c=relaxed/simple;
+	bh=BGWeY7JMLFjQFIgVkyGj6dZ8aGDMdUiZ0RGZ5oa3prk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M/gZbHp0/xGvE2Ujvk1TCv/kfslOhG48Y236xCZxG2kQgV9uNX16x0l0+lWaTVyEenFzAEbSbAtzH3B2rvT3rwEiIhknmhhEFZRNyJNG0N/ljYdtTpPwvHQT/kyDbzoYyPnpWO30g1zj2xy+cXY6LxEty3huJzr745kUGm4rfjU=
+	 MIME-Version; b=fI0GHMdSC6XZScZelNtfWj1yJeGAJz7JZFxQWbRC/jKSfhp1KwpfEPtNTfWY2HkOqwUX1KZOLiBc5DrKSgVfc92hM7fxc0WypkFFSjaG8ytJ/lTmoanQLOk6TsVh/nKgbkzPJa/J9zu0JhkYS1saCH2Qb1FAIE0GSYF5Mcn/W8c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DDFB1596;
-	Fri, 26 Apr 2024 08:11:08 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 237C715DB;
+	Fri, 26 Apr 2024 08:11:11 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29F3C3F73F;
-	Fri, 26 Apr 2024 08:10:37 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FCAD3F73F;
+	Fri, 26 Apr 2024 08:10:40 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 28/35] x86/resctrl: Drop __init/__exit on assorted symbols
-Date: Fri, 26 Apr 2024 16:08:57 +0100
-Message-Id: <20240426150904.8854-28-Dave.Martin@arm.com>
+Subject: [PATCH v2 29/35] fs/resctrl: Add boiler plate for external resctrl code
+Date: Fri, 26 Apr 2024 16:08:58 +0100
+Message-Id: <20240426150904.8854-29-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -74,120 +74,225 @@ Content-Transfer-Encoding: 8bit
 
 From: James Morse <james.morse@arm.com>
 
-Because ARM's MPAM controls are probed using MMIO, resctrl can't be
-initialised until enough CPUs are online to have determined the
-system-wide supported num_closid. Arm64 also supports 'late onlined
-secondaries', where only a subset of CPUs are online during boot.
-
-These two combine to mean the MPAM driver may not be able to initialise
-resctrl until user-space has brought 'enough' CPUs online.
-
-To allow MPAM to initialise resctrl after __init text has been free'd,
-remove all the __init markings from resctrl.
-
-The existing __exit markings cause these functions to be removed by the
-linker as it has never been possible to build resctrl as a module. MPAM
-has an error interrupt which causes the driver to reset and disable
-itself. Remove the __exit markings to allow the MPAM driver to tear down
-resctrl when an error occurs.
+Add Makefile and Kconfig for fs/resctrl. Add ARCH_HAS_CPU_RESCTRL
+for the common parts of the resctrl interface and make X86_CPU_RESCTRL
+depend on this.
 
 Signed-off-by: James Morse <james.morse@arm.com>
----
- arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
- arch/x86/kernel/cpu/resctrl/monitor.c  | 4 ++--
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 ++++----
- include/linux/resctrl.h                | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+Signed-off-by: Dave Martin <Dave.Martin@arm.com>
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 3a3962736061..56218193a8ba 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -457,7 +457,7 @@ void closid_free(int closid);
- int alloc_rmid(u32 closid);
- void free_rmid(u32 closid, u32 rmid);
- int rdt_get_mon_l3_config(struct rdt_resource *r);
--void __exit resctrl_mon_resource_exit(void);
-+void resctrl_mon_resource_exit(void);
- bool rdt_cpu_has(int flag);
- void mon_event_count(void *info);
- int rdtgroup_mondata_show(struct seq_file *m, void *arg);
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index e6aefed3225b..88634a5bef75 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -954,7 +954,7 @@ static int dom_data_init(struct rdt_resource *r)
- 	return err;
- }
+---
+
+FYI: Dave Martin, James Morse (et al.):
+
+ * Review the new Kconfig RESCTRL_FS help text.
+
+ * Because RESCTRL_FS combines a userspace interface and a kernel
+   library providing services to its own backends, there is a circular
+   dependency between this option and the arch-specific options
+   (CONFIG_X86_RESCTRL and eventually CONFIG_ARM64_MPAM) that
+   nastifies the presentation of these options in Kconfig.
+
+   Can this be improved?
+
+   The current situation works, but is not very user-friendly for
+   menuconfig users.
+
+Changes in v2:
+
+ * Rename new file psuedo_lock.c to pseudo_lock.c, to match the name
+   of the original file (and to be less surprising).
+
+ * [Whitespace only] Under RESCTRL_FS in fs/resctrl/Kconfig, delete
+   alignment space in orphaned select ... if (which has nothing to line
+   up with any more).
+
+ * [Whitespace only] Reflow and re-tab Kconfig additions.
+---
+ MAINTAINERS              |  1 +
+ arch/Kconfig             |  8 ++++++++
+ arch/x86/Kconfig         | 10 +++-------
+ fs/Kconfig               |  1 +
+ fs/Makefile              |  1 +
+ fs/resctrl/Kconfig       | 36 ++++++++++++++++++++++++++++++++++++
+ fs/resctrl/Makefile      |  3 +++
+ fs/resctrl/ctrlmondata.c |  0
+ fs/resctrl/internal.h    |  0
+ fs/resctrl/monitor.c     |  0
+ fs/resctrl/pseudo_lock.c |  0
+ fs/resctrl/rdtgroup.c    |  0
+ include/linux/resctrl.h  |  4 ++++
+ 13 files changed, 57 insertions(+), 7 deletions(-)
+ create mode 100644 fs/resctrl/Kconfig
+ create mode 100644 fs/resctrl/Makefile
+ create mode 100644 fs/resctrl/ctrlmondata.c
+ create mode 100644 fs/resctrl/internal.h
+ create mode 100644 fs/resctrl/monitor.c
+ create mode 100644 fs/resctrl/pseudo_lock.c
+ create mode 100644 fs/resctrl/rdtgroup.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5621dd823e79..c49090e9c777 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18543,6 +18543,7 @@ S:	Supported
+ F:	Documentation/arch/x86/resctrl*
+ F:	arch/x86/include/asm/resctrl.h
+ F:	arch/x86/kernel/cpu/resctrl/
++F:	fs/resctrl/
+ F:	include/linux/resctrl*.h
+ F:	tools/testing/selftests/resctrl/
  
--static void __exit dom_data_exit(struct rdt_resource *r)
-+static void dom_data_exit(struct rdt_resource *r)
- {
- 	if (!r->mon_capable)
- 		return;
-@@ -1076,7 +1076,7 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 	return 0;
- }
+diff --git a/arch/Kconfig b/arch/Kconfig
+index fd18b7db2c77..f163964e6915 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1406,6 +1406,14 @@ config STRICT_MODULE_RWX
+ config ARCH_HAS_PHYS_TO_DMA
+ 	bool
  
--void __exit resctrl_mon_resource_exit(void)
-+void resctrl_mon_resource_exit(void)
- {
- 	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
++config ARCH_HAS_CPU_RESCTRL
++	bool
++	help
++	  An architecture selects this option to indicate that the necessary
++	  hooks are provided to support the common memory system usage
++	  monitoring and control interfaces provided by the 'resctrl'
++	  filesystem (see RESCTRL_FS).
++
+ config HAVE_ARCH_COMPILER_H
+ 	bool
+ 	help
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index e071e564452e..cb043543f088 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -479,8 +479,10 @@ config GOLDFISH
+ config X86_CPU_RESCTRL
+ 	bool "x86 CPU resource control support"
+ 	depends on X86 && (CPU_SUP_INTEL || CPU_SUP_AMD)
++	depends on MISC_FILESYSTEMS
+ 	select KERNFS
+-	select PROC_CPU_RESCTRL		if PROC_FS
++	select ARCH_HAS_CPU_RESCTRL
++	select RESCTRL_FS
+ 	select RESCTRL_FS_PSEUDO_LOCK
+ 	help
+ 	  Enable x86 CPU resource control support.
+@@ -507,12 +509,6 @@ config X86_FRED
+ 	  ring transitions and exception/interrupt handling if the
+ 	  system supports.
  
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 2516b0707269..e78fa33c87e2 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2067,7 +2067,7 @@ static struct rftype *rdtgroup_get_rftype_by_name(const char *name)
- 	return NULL;
- }
- 
--static void __init thread_throttle_mode_init(void)
-+static void thread_throttle_mode_init(void)
- {
- 	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_MBA);
- 	struct rftype *rft;
-@@ -3999,7 +3999,7 @@ static void rdtgroup_destroy_root(void)
- 	rdtgroup_default.kn = NULL;
- }
- 
--static void __init rdtgroup_setup_default(void)
-+static void rdtgroup_setup_default(void)
- {
- 	mutex_lock(&rdtgroup_mutex);
- 
-@@ -4192,7 +4192,7 @@ void resctrl_offline_cpu(unsigned int cpu)
-  *
-  * Return: 0 on success or -errno
-  */
--int __init resctrl_init(void)
-+int resctrl_init(void)
- {
- 	int ret = 0;
- 
-@@ -4246,7 +4246,7 @@ int __init resctrl_init(void)
- 	return ret;
- }
- 
--void __exit resctrl_exit(void)
-+void resctrl_exit(void)
- {
- 	debugfs_remove_recursive(debugfs_resctrl);
- 	unregister_filesystem(&rdt_fs_type);
+-config RESCTRL_FS_PSEUDO_LOCK
+-	bool
+-	help
+-	  Software mechanism to pin data in a cache portion using
+-	  micro-architecture specific knowledge.
+-
+ if X86_32
+ config X86_BIGSMP
+ 	bool "Support for big SMP systems with more than 8 CPUs"
+diff --git a/fs/Kconfig b/fs/Kconfig
+index a46b0cbc4d8f..d8a36383b6dc 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -331,6 +331,7 @@ source "fs/omfs/Kconfig"
+ source "fs/hpfs/Kconfig"
+ source "fs/qnx4/Kconfig"
+ source "fs/qnx6/Kconfig"
++source "fs/resctrl/Kconfig"
+ source "fs/romfs/Kconfig"
+ source "fs/pstore/Kconfig"
+ source "fs/sysv/Kconfig"
+diff --git a/fs/Makefile b/fs/Makefile
+index 6ecc9b0a53f2..da6e2d028722 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
+ obj-$(CONFIG_EROFS_FS)		+= erofs/
+ obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
+ obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
++obj-$(CONFIG_RESCTRL_FS)	+= resctrl/
+diff --git a/fs/resctrl/Kconfig b/fs/resctrl/Kconfig
+new file mode 100644
+index 000000000000..a5fbda54d32f
+--- /dev/null
++++ b/fs/resctrl/Kconfig
+@@ -0,0 +1,36 @@
++config RESCTRL_FS
++	bool "CPU Resource Control Filesystem (resctrl)"
++	depends on ARCH_HAS_CPU_RESCTRL
++	select KERNFS
++	select PROC_CPU_RESCTRL if PROC_FS
++	help
++	  Some architectures provide hardware facilities to group tasks and
++	  monitor and control their usage of memory system resources such as
++	  caches and memory bandwidth.  Examples of such facilities include
++	  Intel's Resource Director Technology (Intel(R) RDT) and AMD's
++	  Platform Quality of Service (AMD QoS).
++
++	  If your system has the necessary support and you want to be able to
++	  assign tasks to groups and manipulate the associated resource
++	  monitors and controls from userspace, say Y here to get a mountable
++	  'resctrl' filesystem that lets you do just that.
++
++	  If nothing mounts or prods the 'resctrl' filesystem, resource
++	  controls and monitors are left in a quiescent, permissive state.
++
++	  If unsure, it is safe to say N.
++
++	  See <file:Documentation/arch/x86/resctrl.rst> for more information.
++
++config RESCTRL_FS_PSEUDO_LOCK
++	bool
++	help
++	  Software mechanism to pin data in a cache portion using
++	  micro-architecture specific knowledge.
++
++config RESCTRL_RMID_DEPENDS_ON_CLOSID
++	bool
++	help
++	  Enable by the architecture when the RMID values depend on the CLOSID.
++	  This causes the closid allocator to search for CLOSID with clean
++	  RMID.
+diff --git a/fs/resctrl/Makefile b/fs/resctrl/Makefile
+new file mode 100644
+index 000000000000..ee8c4463317a
+--- /dev/null
++++ b/fs/resctrl/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_RESCTRL_FS)		+= rdtgroup.o ctrlmondata.o monitor.o
++obj-$(CONFIG_RESCTRL_FS_PSEUDO_LOCK)	+= pseudo_lock.o
+diff --git a/fs/resctrl/ctrlmondata.c b/fs/resctrl/ctrlmondata.c
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/fs/resctrl/monitor.c b/fs/resctrl/monitor.c
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/fs/resctrl/pseudo_lock.c b/fs/resctrl/pseudo_lock.c
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/fs/resctrl/rdtgroup.c b/fs/resctrl/rdtgroup.c
+new file mode 100644
+index 000000000000..e69de29bb2d1
 diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 329f68db38e1..189e6dbce33c 100644
+index 189e6dbce33c..819007e74ad3 100644
 --- a/include/linux/resctrl.h
 +++ b/include/linux/resctrl.h
-@@ -404,7 +404,7 @@ void resctrl_arch_reset_rmid_all(struct rdt_resource *r, struct rdt_domain *d);
- extern unsigned int resctrl_rmid_realloc_threshold;
- extern unsigned int resctrl_rmid_realloc_limit;
+@@ -8,6 +8,10 @@
+ #include <linux/pid.h>
+ #include <linux/resctrl_types.h>
  
--int __init resctrl_init(void);
--void __exit resctrl_exit(void);
-+int resctrl_init(void);
-+void resctrl_exit(void);
- 
- #endif /* _RESCTRL_H */
++#ifdef CONFIG_ARCH_HAS_CPU_RESCTRL
++#include <asm/resctrl.h>
++#endif
++
+ /* CLOSID, RMID value used by the default control group */
+ #define RESCTRL_RESERVED_CLOSID		0
+ #define RESCTRL_RESERVED_RMID		0
 -- 
 2.34.1
 
