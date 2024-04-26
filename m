@@ -1,73 +1,76 @@
-Return-Path: <linux-kernel+bounces-160738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 833868B4233
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:38:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C0F8B4237
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:39:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F361C21043
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:38:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 484501F2238A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A3139856;
-	Fri, 26 Apr 2024 22:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2117638FA5;
+	Fri, 26 Apr 2024 22:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bJ6Yah+K"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BT8uT+2C"
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7933A1B9;
-	Fri, 26 Apr 2024 22:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4C034545;
+	Fri, 26 Apr 2024 22:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714171100; cv=none; b=q4YyNfUtSXwjygoehS0K4pvMJIiyI6sCnC0sn5xoEaPCEoOzo3CRvse5mcDt8UJCCL/jXHlQR/h6dhgRHdSpg3cfxtkA0JsK/+2t0/E1oLCM/885DYmjwvtBW0T4aFm/Vf4e8sfcsUYUydR+NqvF/1bnPg8JdQRMQdPrMR2sHWM=
+	t=1714171136; cv=none; b=EvWyX89sl1ALb3tmEWi8DQBS1KWOWgIwE4U8rm9/Ewz6X+0q8E1qvHFSHRV+zQEGmAskghVwFE4n/FUXxRK4ytdHMSn8ncjyaCPml9hTInYL4thjsjwKu3trAUe+joJz4GUEk2iRwP2m7Re8fj56X4AMwa59h+DDorewUI34vVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714171100; c=relaxed/simple;
-	bh=NVpE+lqzpB7gqeBdiUMvKxg+c+gd9l0VtzWhv5o4jsU=;
+	s=arc-20240116; t=1714171136; c=relaxed/simple;
+	bh=qJ9rw2GU0e1gRvWiEFeq92YCHmCMgPMhYIg1Yr1Xr1I=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NolrJdgI+2rl+OVxJSGBV9aBleLRxjwD7bF32O/C+pDJmb3J3T211WhIKtrIFgrufRR+HzOO18uPouVUvWH1LgYWNsvJZTi96tcP7zM+eclKSMuwPGuI90YVyoXgcxX6EzKHqz4ImvoBt1vahqZtqA2OjTh9/4kwfAoinD1BlRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bJ6Yah+K; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=Mpwfe0DRYM6YBrUE50DfIZtRo6Qwp5CV/p1oA2aalNTvLau9bAiUg3faDJLWqsoQn1oo/PUqRHWxmU/09aAje08LrVT00NGu+3RtsF4HjgfY7ndl213PtIIcKJ9P1FEe9D8DhigZPU61cNod03t4Q+iX6LhWvw8fuyJFuCP/s/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=BT8uT+2C; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QMcAVE009414;
-	Fri, 26 Apr 2024 17:38:10 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QMchgS009482;
+	Fri, 26 Apr 2024 17:38:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714171090;
-	bh=u7cr5QUHs7PdG4qPqhArHoBOdAkpWLy3QY+EFEPZ3QY=;
+	s=ti-com-17Q1; t=1714171123;
+	bh=chaxr6tVE54gEOSPdHPLfgKOoXUaqZ5tQUQrRMi8FNI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=bJ6Yah+KCLkNF0Gn+iAw5zsBlwRrizpNTvTx9WiVQK6/NX5OcPuJOq75nTcISSbG1
-	 OEa48HGfmhg7JMleuA07ikuWohlLq4kvxJMdBxcMsaF95C788M5BmNrUfnmXINRoNT
-	 ai7GFKU0zwmt1WrUugnDzZkyWz+nLwS3uY56qSmY=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QMcA7x003632
+	b=BT8uT+2C8YgrBX2CjH4HSyXvulizNIQdrD7TGoOmdtov00WcZvRKf8BvDTLG0dRd9
+	 MxgX1636kbZ1DZxGgPaITyX0VzFWSb337h3n7+wIiRdz2LB2B5B1QQ5Vwk7LzPG6Rk
+	 ehbG9qJf8SKuBAkTL8GIrNWA2MQ4e0iTCaB1CEKU=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QMch3Z024237
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 26 Apr 2024 17:38:10 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 26 Apr 2024 17:38:43 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
- Apr 2024 17:38:10 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 17:38:42 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 26 Apr 2024 17:38:10 -0500
+ Frontend Transport; Fri, 26 Apr 2024 17:38:42 -0500
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QMcAQh078226;
-	Fri, 26 Apr 2024 17:38:10 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QMcgtH078499;
+	Fri, 26 Apr 2024 17:38:42 -0500
 From: Nishanth Menon <nm@ti.com>
-To: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <w.egorov@phytec.de>, Garrett Giordano <ggiordano@phytec.com>
-CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <upstream@lists.phytec.de>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Add Audio Codec
-Date: Fri, 26 Apr 2024 17:38:09 -0500
-Message-ID: <171417107954.3482467.4331245708656793221.b4-ty@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>
+CC: Nishanth Menon <nm@ti.com>, <afd@ti.com>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>, <b-liu@ti.com>, <francesco@dolcini.it>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62*: Add PHY2 region to USB wrapper node
+Date: Fri, 26 Apr 2024 17:38:40 -0500
+Message-ID: <171417111578.3482723.5915664375435778473.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240404184250.3772829-1-ggiordano@phytec.com>
-References: <20240404184250.3772829-1-ggiordano@phytec.com>
+In-Reply-To: <20240412-for-v6-9-am62-usb-errata-dt-v1-1-ef0d79920f75@kernel.org>
+References: <20240412-for-v6-9-am62-usb-errata-dt-v1-1-ef0d79920f75@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,25 +81,19 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Garrett Giordano,
+Hi Roger Quadros,
 
-On Thu, 04 Apr 2024 11:42:50 -0700, Garrett Giordano wrote:
-> The Audio Codec runs over the MCASP (Multichannel Audio Serial Port).
+On Fri, 12 Apr 2024 14:52:14 +0300, Roger Quadros wrote:
+> Add PHY2 register space to USB wrapper node. This is required
+> to deal with Errata i2409.
 > 
-> Add pinmux for the Audio Reference Clock and MCASP2.
 > 
-> Add DT nodes for Audio Codec, MCASP2, VCC 1v8 and VCC 3v3 regulators.
-> 
-> Additionally, create a sound node that connects our sound card and the
-> MCASP2.
-> 
-> [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Add Audio Codec
-      commit: 641eb61369bb27e4fec76f311aef58e3572d2147
+[1/1] arm64: dts: ti: k3-am62*: Add PHY2 region to USB wrapper node
+      commit: d4fbe9bfc7a110c6700be7fc1484c3ea22b6401d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
