@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC868B3AD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:14:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28C18B3AD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:15:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C17A31F27DA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5849F1F27D1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74987149C43;
-	Fri, 26 Apr 2024 15:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10A9171089;
+	Fri, 26 Apr 2024 15:10:29 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A461716FF5F
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BC916FF5F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144226; cv=none; b=UIIzQR6G3yx9AeR4/ueAxZw1KSA+znNatuJJyfRwBayF9s0J8E0ZkDYy64+4X1JUwsyiY8fReJ76fLtPJTLKB1Zn1iV1AVfZHIgxenTAcE45/WuIDuKclCGiNvEukcuB5WedrMpMt7pCK7EH7Ijj0E+B6MnJ444p/y2Zg86cLvI=
+	t=1714144229; cv=none; b=YVvDuxxgdk4buAF+iStdCievCYCcqTShNSKZnNR+wD9mqh4vYHPAD6H7f2dYVKikFpucJ0i249LuGLGnuZUoIQ6QiW5qUf6TYpodsQam5co0Zhb1naIazVX/iSmsUkYrsFXc7e7pwNy3MvNhCSp3Z0EUODXTaRpw5tcjiiG62m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144226; c=relaxed/simple;
-	bh=Yc/Du8TTACSvFMbPAG+zasNqe/csSB/NLpP9Ig58bBM=;
+	s=arc-20240116; t=1714144229; c=relaxed/simple;
+	bh=fykdwzJzD98BfFk4Jek2Q2DE+vtzqHXdg4p4qfxfTtA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a3/eTbc20I9awGWA6WZzRMGKWZN2GZ3UWRKTmpTaU6ou+8eoNY7TQ6CdB6ZFuEE2goFooiw2SU+Pr6uovDfwHljhqWYcXOaJlC+9K0v88BHiQ+U1bbPjjuCETmZ5n7T5nVX50/Ld5L/ZhaESWSjxSYWUcgJvk5369aBSaiyQPHE=
+	 MIME-Version; b=cCHrzTnX5hyzeHJ6tAk+WEeZdGN4scuaEKMMjfmUolbGffon0XHqJEmuJPVSoVSyjzD7qcn/x0rW0u6m+zruC3WjHxgc6bI2KM3bHWdvWJ+wbobNVjuKwzxVQOHeEnVz261HVRLdpFc66bp5t86DinZwGzhGwHALAWNj8I7Bi7s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 210321682;
-	Fri, 26 Apr 2024 08:10:52 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5B1F15DB;
+	Fri, 26 Apr 2024 08:10:55 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C3013F73F;
-	Fri, 26 Apr 2024 08:10:21 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 530713F73F;
+	Fri, 26 Apr 2024 08:10:24 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 23/35] x86/resctrl: Move thread_throttle_mode_init() to be managed by resctrl
-Date: Fri, 26 Apr 2024 16:08:52 +0100
-Message-Id: <20240426150904.8854-23-Dave.Martin@arm.com>
+Subject: [PATCH v2 24/35] x86/resctrl: Move get_config_index() to a header
+Date: Fri, 26 Apr 2024 16:08:53 +0100
+Message-Id: <20240426150904.8854-24-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -74,79 +74,110 @@ Content-Transfer-Encoding: 8bit
 
 From: James Morse <james.morse@arm.com>
 
-thread_throttle_mode_init() is called from the architecture specific code
-to make the 'thread_throttle_mode' file visible. The architecture specific
-code has already set the membw.throttle_mode in the rdt_resource.
+get_config_index() is used by the architecture specific code to map a
+CLOSID+type pair to an index in the configuration arrays.
 
-This doesn't need to be specific to the architecture, the throttle_mode
-can be used by resctrl to determine if the 'thread_throttle_mode' file
-should be visible.
+MPAM needs to do this too to preserve the ABI to user-space, there is
+no reason to do it differently.
 
-Call thread_throttle_mode_init() from resctrl_setup(), check the
-membw.throttle_mode on the MBA resource. This avoids publishing an
-extra function between the architecture and filesystem code.
+Move the helper to a header file.
 
 Signed-off-by: James Morse <james.morse@arm.com>
----
- arch/x86/kernel/cpu/resctrl/core.c     | 1 -
- arch/x86/kernel/cpu/resctrl/internal.h | 1 -
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 9 ++++++++-
- 3 files changed, 8 insertions(+), 3 deletions(-)
+Signed-off-by: Dave Martin <Dave.Martin@arm.com>
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 824a94593e9d..7cdecd8ac00b 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -227,7 +227,6 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
- 		r->membw.throttle_mode = THREAD_THROTTLE_PER_THREAD;
- 	else
- 		r->membw.throttle_mode = THREAD_THROTTLE_MAX;
--	thread_throttle_mode_init();
- 
- 	r->alloc_capable = true;
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index be4e8f31b127..e849d4407769 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -478,7 +478,6 @@ void cqm_handle_limbo(struct work_struct *work);
- bool has_busy_rmid(struct rdt_domain *d);
- void __check_limbo(struct rdt_domain *d, bool force_free);
- void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
--void __init thread_throttle_mode_init(void);
- void mbm_config_rftype_init(const char *config);
- void rdt_staged_configs_clear(void);
- bool closid_allocated(unsigned int closid);
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 6ca986d3f5f2..ff209ba9176e 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2067,10 +2067,15 @@ static struct rftype *rdtgroup_get_rftype_by_name(const char *name)
- 	return NULL;
+---
+
+Changes in v2:
+
+ * Reindent resctrl_get_config_index() as per coding-style.rst rules.
+
+ * Remove redundant parentheses from arithmetic in
+   resctrl_get_config_index(), so as to match the original source
+   version of this moved code.
+
+   No functional change.
+---
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 19 +++----------------
+ include/linux/resctrl.h                   | 15 +++++++++++++++
+ 2 files changed, 18 insertions(+), 16 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index 3603ade95f1d..b4627ae19291 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -277,19 +277,6 @@ static int parse_line(char *line, struct resctrl_schema *s,
+ 	return -EINVAL;
  }
  
--void __init thread_throttle_mode_init(void)
-+static void __init thread_throttle_mode_init(void)
+-static u32 get_config_index(u32 closid, enum resctrl_conf_type type)
+-{
+-	switch (type) {
+-	default:
+-	case CDP_NONE:
+-		return closid;
+-	case CDP_CODE:
+-		return closid * 2 + 1;
+-	case CDP_DATA:
+-		return closid * 2;
+-	}
+-}
+-
+ static bool apply_config(struct rdt_hw_domain *hw_dom,
+ 			 struct resctrl_staged_config *cfg, u32 idx,
+ 			 cpumask_var_t cpu_mask)
+@@ -311,7 +298,7 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
  {
-+	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_MBA);
- 	struct rftype *rft;
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+-	u32 idx = get_config_index(closid, t);
++	u32 idx = resctrl_get_config_index(closid, t);
+ 	struct msr_param msr_param;
  
-+	if (!r->alloc_capable ||
-+	    r->membw.throttle_mode == THREAD_THROTTLE_UNDEFINED)
-+		return;
+ 	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
+@@ -351,7 +338,7 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 			if (!cfg->have_new_ctrl)
+ 				continue;
+ 
+-			idx = get_config_index(closid, t);
++			idx = resctrl_get_config_index(closid, t);
+ 			if (!apply_config(hw_dom, cfg, idx, cpu_mask))
+ 				continue;
+ 
+@@ -476,7 +463,7 @@ u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
+ 			    u32 closid, enum resctrl_conf_type type)
+ {
+ 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+-	u32 idx = get_config_index(closid, type);
++	u32 idx = resctrl_get_config_index(closid, type);
+ 
+ 	return hw_dom->ctrl_val[idx];
+ }
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 18ef7de0aa47..7bbed5d8a155 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -269,6 +269,21 @@ bool resctrl_arch_is_evt_configurable(enum resctrl_event_id evt);
+ void resctrl_arch_mon_event_config_write(void *info);
+ void resctrl_arch_mon_event_config_read(void *info);
+ 
++/* For use by arch code to remap resctrl's smaller CDP CLOSID range */
++static inline u32 resctrl_get_config_index(u32 closid,
++					   enum resctrl_conf_type type)
++{
++	switch (type) {
++	default:
++	case CDP_NONE:
++		return closid;
++	case CDP_CODE:
++		return closid * 2 + 1;
++	case CDP_DATA:
++		return closid * 2;
++	}
++}
 +
- 	rft = rdtgroup_get_rftype_by_name("thread_throttle_mode");
- 	if (!rft)
- 		return;
-@@ -4196,6 +4201,8 @@ int __init resctrl_init(void)
- 
- 	rdtgroup_setup_default();
- 
-+	thread_throttle_mode_init();
-+
- 	ret = resctrl_mon_resource_init();
- 	if (ret)
- 		return ret;
+ /*
+  * Update the ctrl_val and apply this config right now.
+  * Must be called on one of the domain's CPUs.
 -- 
 2.34.1
 
