@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-160294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B4078B3B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD2D8B3B8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCB8F1C22470
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:31:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7352A28BCE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9729824B3;
-	Fri, 26 Apr 2024 15:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAFB14C5B0;
+	Fri, 26 Apr 2024 15:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="kOuOHeAT"
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="G1FYtMw6"
 Received: from smtpcmd0757.aruba.it (smtpcmd0757.aruba.it [62.149.156.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6ED414901A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6C214901F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:30:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145446; cv=none; b=aW/CflI4OF7G3OzhPGz5XHOOwPYtDcxYpuFtddDNPgoYlU9tJvt2Zpgo86FpG14P5m8uNOZIp1Gd2FaTRwx6NsnRRWx448C2HZntgmnBfAkHqc+XGADta8cvCEhKa98skOWmToYm7GagLOoDhDMmXeQ4Hv1TJJiQ6lPKb0XLm0A=
+	t=1714145446; cv=none; b=BcitdFKnBd8yhQnr2ePOP/jNMGXMxI5Zb+hp/0y8lY6tDNNHiYrWGakxF+s8irdCR93WLd2sChVxXdEB7jHmRzAN/9Yp4+yivy1iaCNILPk3KLMIEk2ymYXsn2HHI2nb6SdtgD24mEvaQNH1EZIv/T4vI3ny8AlJUS+2DM1QXmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714145446; c=relaxed/simple;
-	bh=AL/RIHlDSD7TG5DlDkAMmKi18A+T8P4sO4zdcXPXefU=;
+	bh=jq8VcbPwIv0D1saPBa87tJSgOEKyrHw9hVrzmv0jva4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aXDLzmma739xdLqOQK7OJAgrZxqosWAN+kkPubdv40pzECEnbMtiI6Cz9bt6XUYxSynL2w26D+RjhNz477O5zUTXNhMozM39faThxvg+PCv061zXguBMcUeLauYI56tvjWdvCBX4MDpsfxRSAehdJ4gcK0ARdOpw9zr5NTzo5bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=kOuOHeAT; arc=none smtp.client-ip=62.149.156.57
+	 MIME-Version; b=E9dxb19kJ5OM3Mx1qiBQEsXKqyGUxV7PDVzyESAOgDV4EEoNtUtVFjEzJdGSyDNZV6/76UIPomGXc+gqlOFykWibVUanfF2VDsa3jIecOlOCUUUmS3YT+mjtwiPD7/fc8ElHktbjCumxvu6HganqhtvS9Og5SUg9Z4S6HHCxMWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=G1FYtMw6; arc=none smtp.client-ip=62.149.156.57
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
 Received: from engicam.com ([146.241.23.148])
 	by Aruba Outgoing Smtp  with ESMTPSA
-	id 0NU4sgEVa6epj0NU5seY30; Fri, 26 Apr 2024 17:27:34 +0200
+	id 0NU4sgEVa6epj0NU6seY3S; Fri, 26 Apr 2024 17:27:35 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1714145254; bh=AL/RIHlDSD7TG5DlDkAMmKi18A+T8P4sO4zdcXPXefU=;
+	t=1714145255; bh=jq8VcbPwIv0D1saPBa87tJSgOEKyrHw9hVrzmv0jva4=;
 	h=From:To:Subject:Date:MIME-Version;
-	b=kOuOHeAThuJp/LE1dluXA9fhCl3DfboaH+ZZKpug382AHP6KsB3Iy9GB03WAG9QLn
-	 geeHZ86ot/vMjxPrnr36ogu5xaVS4zLoUnuJ4OJ65IDXKf5GcdtJ6Vd77Uz0cIicz8
-	 y81dTqCEW4n75MbnF5m0zhRr1syxOOoCuvmIRbjpWCQiiJwnxDVNZQJa04L63rdT0U
-	 IAlPWTzpcVw9OQ3WMdhrtYSpDVIlKcdqGl5IFzsj4eLVsAg4dr/oF57mtaJ2Htds9r
-	 Siaf9g09YilJQ7wsV62OGD4fN9IXj9YeBKW+zs6cqEkn4Z1wB5ndkFTT792SvMKH6k
-	 7HKIo8yXLoRZA==
+	b=G1FYtMw6eSw55QRSeSAZa0EI5sQrJ5iCwM5azL1MVk/IJrrymTmCyeL+6Zcrb1R6Y
+	 zZq/yHHn8iUrPpcQGLlE0wRPKLhsHaQNrOhd6aBf/1wPvxi/3Muyo4fN5yjeRxJCG9
+	 M4+bLPUKkUXO7y92stWt8n0oPt/QJ/C7DlVqwVE+tBfUqU5/vFIjKqFcPB/0rjgTBP
+	 tAPtk5CRiifOV/mTBRMabYqF5HaLA+RGeO+I4qgKAmugQ1fL5FoIkZ7UJERLTKIuGB
+	 N8VWLFmKDM3ao/zxtcu8vUgNGeBbKp+G0h/Egxev0HILFpoNIAPwOdT4Kx9nB8qPsr
+	 KidtVt+AAu/3g==
 From: Fabio Aiuto <fabio.aiuto@engicam.com>
 To: Shawn Guo <shawnguo@kernel.org>,
 	Sascha Hauer <s.hauer@pengutronix.de>,
@@ -55,11 +55,10 @@ Cc: devicetree@vger.kernel.org,
 	Fabio Aiuto <fabio.aiuto@engicam.com>,
 	Matteo Lisi <matteo.lisi@engicam.com>,
 	Mirko Ardinghi <mirko.ardinghi@engicam.com>,
-	Krzysztof Kozlowsky <krzk@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v6 1/3] dt-bindings: arm: fsl: add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
-Date: Fri, 26 Apr 2024 17:27:28 +0200
-Message-Id: <20240426152730.9806-2-fabio.aiuto@engicam.com>
+	Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH v6 2/3] arm64: dts: imx93: add Engicam i.Core MX93 SoM
+Date: Fri, 26 Apr 2024 17:27:29 +0200
+Message-Id: <20240426152730.9806-3-fabio.aiuto@engicam.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426152730.9806-1-fabio.aiuto@engicam.com>
 References: <20240426152730.9806-1-fabio.aiuto@engicam.com>
@@ -70,57 +69,326 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfBpXg0R56R6cOqqviDj0eVmGiholy62key5QTgyVk64OidOQYPGH8pVLedjYxirnNH6w/6GZ4Q20PGL/9G4lcxVEb1HqAuHoaiBg3k+uHfCvX0yYs7at
- emkjG2GRa/L83oeTGTAoiARWlNfviUBynjZIIyeHylgRXT80iuGPhtZ7ZpUjseLwoPebJiFJ/95Xip/FdggUI9xdAiT86HmyAPR34qj1+bc0sTgzQbqOJIBS
- REUxZiP187uYRJJ2SQ/bBSf9kvSxO59aqga5U6Or49v6BFH0/+ClIds0hxPaSwgmPXB3weXmUOhuwiSkSf/zA6LGEw5INyOXF27jaYq68xK9yB1/WXAKd4Qc
- qp6ghCVk/x/iWk7GPSWyMTgGT6TCYDt9DvrieVkZc7OtPhtfFuJwaEIr9DOOtu71bSZaKWpa56YqsuBJ4SJXWOYt0tmZf2Q0ijbnmGfJQ9vdwVbThbzpKqdj
- VduN/792uCWTYFA5WlhsRZqgRWVVxBoMzT1BR/NwHjg6pC7xO4UjPixm7y0ttyU41gyuh1sd4ibRQ5mLdGE95LOUkVqNos0tfj8sKtvbYK6/NajfCE86w8QH
- X0LAg0aXWZGMpDpwJZqvhpoy7jcJg98mO1UhVrRKRBfUUxDcPvT+thL1bUtn6Znz9JUbUyU0vqhPiujQBliDldpZ
+X-CMAE-Envelope: MS4xfMTfbUipsuTo9QC65IIra2IWaM0mKsJfDj9zfbXQmRjufylmEzNJehgnSko4fi+/+BklfTDOJ8LsUk2/bUpOsPb7YOFVGeZ36PasM9ez9ca6oOdHZWYN
+ Qu6GRIl9Aioj+iLepDChmzOR5TO6/Yk+mvAvsC91hrZnB64irxlVmMos6C8hLxhv2231IacyhUkhb54I6jhIy1H6/79xBeN3D0t3tXe0EakxdndBNVaKlGYc
+ Nm0bxG127QvDedapSlufF4+2ZkI6f5yHA4tFJB1dR1ky/VjsZPDZqPIUVcLyH+pL9PgC28tvNbFePnNKk/SWR0kDcZOsOM2VOtAai4oEfkKIIA/teRu+4LJF
+ VaaJW/Vi5ERcS7uI4Pdu+cvT5cxbXvDwVy9xWDPD/+RfSJ2uyQirMH8F1f45JxXeARX5RCqWwVemA9wjPfbpP5zew1jylEN7vLmNg5i1CkkMFE7LXrpjLMUr
+ 2k437FZDEpa3imZnVU9l9OWCpNaYU9jBso+Jr7UCLU/w6myzBVYdujo/rbbszYpWJgCjG4A9/YtxI34H8smP8gR8grxU24fhuop1sczi8HaK9tzIv2/KsPpD
+ LMgWAF/f61IVxsuMxC13o/fxhkGVk81odM2RM3IyTpkYjg==
 
 i.Core MX93 is a NXP i.MX93 based EDIMM SoM by Engicam.
 
-EDIMM 2.0 Starter Kit is an EDIMM 2.0 Form Factor Capacitive
-Evaluation Board by Engicam.
+Main features:
 
-i.Core MX93 needs to be mounted on top of EDIMM 2.0 Starter Kit
-to get the full i.Core MX93 EDIMM 2.0 Starter Kit board.
+CPU:   NXP i.MX 93
+MEMORY: Up to 2GB LPDDR4
+NETWORKING: 2x Gb Ethernet
+USB: USB OTG 2.0, USB HOST 2.0
+STORAGE: eMMC starting from 4GB
+PERIPHERALS: UART, I2C, SPI, CAN, SDIO, GPIO
 
-Add bindings for this board.
+The i.Core MX93 needs to be mounted on top of
+Engicam baseboards to work.
+
+Add devicetree include file.
 
 Cc: Matteo Lisi <matteo.lisi@engicam.com>
 Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Reviewed-by: Krzysztof Kozlowsky <krzk@kernel.org>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
 Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
 ---
-v3 ---> v6:
+v5 ---> v6:
+	- no changes
+v4 ---> v5:
+	- added Reviewed-by tag
+	- fixed line wrapping in commit msg
+	- fixed indentation, dropped newlines, reordered property
+v3 ---> v4:
 	- no changes
 v2 ---> v3:
-	- added {Reviewed,Acked}-by tags
+	- added wdog_b-warm-reset property in pmic
 v1 ---> v2:
-	- no changes
+	- remove unneeded include
 
- Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../boot/dts/freescale/imx93-icore-mx93.dtsi  | 269 ++++++++++++++++++
+ 1 file changed, 269 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 0027201e19f8..b497a01c7418 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -1265,6 +1265,13 @@ properties:
-               - fsl,imx93-11x11-evk       # i.MX93 11x11 EVK Board
-           - const: fsl,imx93
- 
-+      - description: Engicam i.Core MX93 based Boards
-+        items:
-+          - enum:
-+              - engicam,icore-mx93-edimm2         # i.MX93 Engicam i.Core MX93 EDIMM 2.0 Starter Kit
-+          - const: engicam,icore-mx93             # i.MX93 Engicam i.Core MX93 Som
-+          - const: fsl,imx93
+diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi b/arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi
+new file mode 100644
+index 000000000000..9c97b620ccfc
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93.dtsi
+@@ -0,0 +1,269 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2022 NXP
++ * Copyright 2024 Engicam s.r.l.
++ */
 +
-       - description: i.MXRT1050 based Boards
-         items:
-           - enum:
++/dts-v1/;
++
++#include "imx93.dtsi"
++
++/ {
++	model = "Engicam i.Core MX93 SoM";
++	compatible = "engicam,icore-mx93", "fsl,imx93";
++
++	reg_vref_1v8: regulator-adc-vref {
++		compatible = "regulator-fixed";
++		regulator-name = "vref_1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++};
++
++&adc1 {
++	vref-supply = <&reg_vref_1v8>;
++	status = "okay";
++};
++
++&eqos {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_eqos>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy1>;
++	status = "okay";
++
++	mdio {
++		compatible = "snps,dwmac-mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy1: ethernet-phy@7 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <7>;
++		};
++	};
++};
++
++&fec {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_fec>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy2>;
++	fsl,magic-packet;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy2: ethernet-phy@7 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <7>;
++		};
++	};
++};
++
++&lpi2c2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	clock-frequency = <400000>;
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_lpi2c2>;
++	pinctrl-1 = <&pinctrl_lpi2c2>;
++	status = "okay";
++
++	pmic@25 {
++		compatible = "nxp,pca9451a";
++		reg = <0x25>;
++		interrupt-parent = <&gpio2>;
++		interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
++		nxp,wdog_b-warm-reset;
++
++		regulators {
++			buck1: BUCK1 {
++				regulator-name = "BUCK1";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <2187500>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck2: BUCK2 {
++				regulator-name = "BUCK2";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <2187500>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck4: BUCK4{
++				regulator-name = "BUCK4";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck5: BUCK5{
++				regulator-name = "BUCK5";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6: BUCK6 {
++				regulator-name = "BUCK6";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1600000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo2: LDO2 {
++				regulator-name = "LDO2";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1150000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo3: LDO3 {
++				regulator-name = "LDO3";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4: LDO4 {
++				regulator-name = "LDO4";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo5: LDO5 {
++				regulator-name = "LDO5";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
++};
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	pinctrl-1 = <&pinctrl_usdhc1>;
++	pinctrl-2 = <&pinctrl_usdhc1>;
++	bus-width = <8>;
++	non-removable;
++	status = "okay";
++};
++
++&usdhc2 {/*SD Card*/
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
++	bus-width = <4>;
++	no-1-8-v;
++	max-frequency = <25000000>;
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl_eqos: eqosgrp {
++		fsl,pins = <
++			MX93_PAD_ENET1_MDC__ENET_QOS_MDC                        0x53e
++			MX93_PAD_ENET1_MDIO__ENET_QOS_MDIO                      0x53e
++			MX93_PAD_ENET1_RD0__ENET_QOS_RGMII_RD0                  0x53e
++			MX93_PAD_ENET1_RD1__ENET_QOS_RGMII_RD1                  0x53e
++			MX93_PAD_ENET1_RD2__ENET_QOS_RGMII_RD2                  0x53e
++			MX93_PAD_ENET1_RD3__ENET_QOS_RGMII_RD3                  0x53e
++			MX93_PAD_ENET1_RXC__CCM_ENET_QOS_CLOCK_GENERATE_RX_CLK  0x53e
++			MX93_PAD_ENET1_RX_CTL__ENET_QOS_RGMII_RX_CTL            0x53e
++			MX93_PAD_ENET1_TD0__ENET_QOS_RGMII_TD0                  0x53e
++			MX93_PAD_ENET1_TD1__ENET_QOS_RGMII_TD1                  0x53e
++			MX93_PAD_ENET1_TD2__ENET_QOS_RGMII_TD2                  0x53e
++			MX93_PAD_ENET1_TD3__ENET_QOS_RGMII_TD3                  0x53e
++			MX93_PAD_ENET1_TXC__CCM_ENET_QOS_CLOCK_GENERATE_TX_CLK  0x53e
++			MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL            0x53e
++		>;
++	};
++
++	pinctrl_fec: fecgrp {
++		fsl,pins = <
++			MX93_PAD_ENET2_MDC__ENET1_MDC                   0x57e
++			MX93_PAD_ENET2_MDIO__ENET1_MDIO                 0x57e
++			MX93_PAD_ENET2_RD0__ENET1_RGMII_RD0             0x57e
++			MX93_PAD_ENET2_RD1__ENET1_RGMII_RD1             0x57e
++			MX93_PAD_ENET2_RD2__ENET1_RGMII_RD2             0x57e
++			MX93_PAD_ENET2_RD3__ENET1_RGMII_RD3             0x57e
++			MX93_PAD_ENET2_RXC__ENET1_RGMII_RXC             0x5fe
++			MX93_PAD_ENET2_RX_CTL__ENET1_RGMII_RX_CTL       0x57e
++			MX93_PAD_ENET2_TD0__ENET1_RGMII_TD0             0x57e
++			MX93_PAD_ENET2_TD1__ENET1_RGMII_TD1             0x57e
++			MX93_PAD_ENET2_TD2__ENET1_RGMII_TD2             0x57e
++			MX93_PAD_ENET2_TD3__ENET1_RGMII_TD3             0x57e
++			MX93_PAD_ENET2_TXC__ENET1_RGMII_TXC             0x5fe
++			MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL       0x57e
++		>;
++	};
++
++	pinctrl_lpi2c2: lpi2c2grp {
++		fsl,pins = <
++			MX93_PAD_I2C2_SCL__LPI2C2_SCL		0x40000b9e
++			MX93_PAD_I2C2_SDA__LPI2C2_SDA		0x40000b9e
++		>;
++	};
++
++	pinctrl_usdhc1: usdhc1grp {
++		fsl,pins = <
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x13fe
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x13fe
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x13fe
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x13fe
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x13fe
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x13fe
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x13fe
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x13fe
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x13fe
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x15fe
++		>;
++	};
++
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x170e
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x130e
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x130e
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1        0x130e
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2        0x130e
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3        0x130e
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
++		>;
++	};
++};
 -- 
 2.34.1
 
