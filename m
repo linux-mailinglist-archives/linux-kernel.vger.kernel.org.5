@@ -1,110 +1,152 @@
-Return-Path: <linux-kernel+bounces-159823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F7898B34A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:55:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D578B34A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:58:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3490C1F21A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:55:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A514B22297
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58651140381;
-	Fri, 26 Apr 2024 09:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/nIp3n+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C601420DB;
+	Fri, 26 Apr 2024 09:57:53 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8077EF;
-	Fri, 26 Apr 2024 09:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BCF140388;
+	Fri, 26 Apr 2024 09:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125328; cv=none; b=N8HF3LocUMrRPj1zHb3d/Zs0vNNSDqB5TVfxqdgEP7WhO6RPmgbCVt0rRg9fzubFQqVQ3vDo/3PQN6KKTHQ/8pewVuiYELtwEg4o+daFpOFPcmArEiPNkBLut3Jgr/9wD7JMGuwtTAQ1URmwuUlz2kWqmzI22czhitrgBVIgOEY=
+	t=1714125472; cv=none; b=ZnsOooNSBcOwuNhMOBQUPlgSiu7A11gOVCVfxfXp9PMl8V7CHEqh8htrW0M257dg/XhKRuWhicGtVxyMJC3gagvn+76zVy6k7+ea/iFkgVOZY5aZ/pJAXJ9Ym5i7jgAfHmn22QoTkJBesV+ZeRy15FnVXA45VgYKj1DwlKO/a8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125328; c=relaxed/simple;
-	bh=nEsffx9NnWCYvdWoWlZutoq9f9SadTTzQv71Jmd4xhE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=doQIrtVSmkulnT3lhyxmDg7+l25/n51qybLksTCzgKDQ18o93TgHcxqmJX5JrVCKROmWDAJKtEHh0OO5dhnow8/F83+/cZ16F0RnNGALy2p90LKVVkNv5EKRDje7JHHTgYxYOfJ0UEVvjLRvUiUn4LGv36lYxPYJYJBrWD8P2pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/nIp3n+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AE54C2BD11;
-	Fri, 26 Apr 2024 09:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714125328;
-	bh=nEsffx9NnWCYvdWoWlZutoq9f9SadTTzQv71Jmd4xhE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=I/nIp3n+lg4yMg3H2dLiuNHWIRyI/0KUHlR6ruX7wfAMoyf/TNiUc0L8tq5gqXZuS
-	 7xwI/r9KIYexr89Y9l7qUjG0mAgELadNuMxfGKOXLXDj6BNndQqyFxOGK8j2nVkhWa
-	 uObOtqwWMhPmrlg+7CtnBvKgmUht0A6PdvzbXDPkgD9dfT+ZjcWeaCgJNNcJgBbMGc
-	 eLxXNVQMW01dCEc1Vjv/PlmEqi8c024CqKu6s/q3N25iOmq7oLoFp8XAEPYB1Z/C5B
-	 DonygS13XBrdCRHVX+JnBKT1KbkIO+8QlmtLug6AwzusH/k0tUZzq2NqJJGjab7j0y
-	 rvEEMHkGdrOGA==
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5af12f48b72so412270eaf.3;
-        Fri, 26 Apr 2024 02:55:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXy7MJQfuo+M+JqDIbuZzdgSfa1RTNLlZ6uN4Eo4bzYkuNj7VNK+XxkLYyq3sBj42FXB92rohJEf+D2KG67yoAEII0PlAWd4RXxECliJA0OW8WS4e5HynyWmil6KEcNsyBt7hgtNd8=
-X-Gm-Message-State: AOJu0YxyakA7ikZeqeEniHDALgTCRY0KZG4iuPUwc8YGqKnbyZmWmQJA
-	fahXJgH/3DyRvxmo2m2Idyw/gvHXI5MmWiqdjGVogkZyzi+evb4n7Ud7XvCPc8fmH0paAR4iEgU
-	943Ut1j0wHQI0Gm9D5jVCfDJievE=
-X-Google-Smtp-Source: AGHT+IEWhxSPHhTzX2mbfY3Ou49Jgm+donLdT6R5LfI2YS+Jd033qSDJOxZHAvcQu3MebYa2RHrdX1kjH1xO4qPFFX8=
-X-Received: by 2002:a4a:a882:0:b0:5aa:241a:7f4b with SMTP id
- q2-20020a4aa882000000b005aa241a7f4bmr2722851oom.1.1714125327279; Fri, 26 Apr
- 2024 02:55:27 -0700 (PDT)
+	s=arc-20240116; t=1714125472; c=relaxed/simple;
+	bh=YnunoMN8nkdnM17N5BzTnP4Rk0EAfSVEPkyuNjEpSow=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z10pMqm01N9HqLmtQ1Eb+SQaMDIgcMxtpyjy/w0fDWWiKtq7IBZl7M6asXHyvSHqw9rERmZv4mN+CEiy6AYtomJoXRQrH5Jn5wmi54ws3Za2ssnx7LSUwED0rydUgzbECVUyA71B0h29rWdGRZyv7y61X3ruSPySIDzYHTLT9eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQp4K2HcZz6K6tS;
+	Fri, 26 Apr 2024 17:55:13 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 82256140B2A;
+	Fri, 26 Apr 2024 17:57:41 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 10:57:40 +0100
+Date: Fri, 26 Apr 2024 10:57:39 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Gavin Shan <gshan@redhat.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, James Morse
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, "Jean-Philippe
+ Brucker" <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v7 12/16] arm64: psci: Ignore DENIED CPUs
+Message-ID: <20240426105739.00007879@huawei.com>
+In-Reply-To: <e4628e32-8e76-4db4-9c85-b1246186f3be@redhat.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+	<20240418135412.14730-13-Jonathan.Cameron@huawei.com>
+	<e4628e32-8e76-4db4-9c85-b1246186f3be@redhat.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3297002.44csPzL39Z@kreacher> <8f94bbb8-3cdd-428d-89b9-1ae04c806c73@arm.com>
-In-Reply-To: <8f94bbb8-3cdd-428d-89b9-1ae04c806c73@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 26 Apr 2024 11:55:15 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jpB_2xEbKK_S9AMHELqsjGhLQ60_0gycm8rcphi3ELbQ@mail.gmail.com>
-Message-ID: <CAJZ5v0jpB_2xEbKK_S9AMHELqsjGhLQ60_0gycm8rcphi3ELbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] thermal/debugfs: Fix handling of cdev states and
- mitigation episodes in progress
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux PM <linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Apr 25, 2024 at 10:55=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> =
-wrote:
->
-> Hi Rafael,
->
-> On 4/25/24 15:01, Rafael J. Wysocki wrote:
-> > Hi Everyone,
-> >
-> > This is an update of
-> >
-> > https://lore.kernel.org/linux-pm/5774279.DvuYhMxLoT@kreacher/
-> >
-> > and the only non-trivial difference between it and the v1 is a small
-> > rebase of the second patch (the v1 of which didn't apply).
-> >
-> > It generally has been based on top of
-> >
-> > https://lore.kernel.org/linux-pm/12427744.O9o76ZdvQC@kreacher/
-> >
-> > but it should apply on top of the linux-next branch in linux-pm.git as =
-well.
-> >
-> > It is present in the thermal-core-next branch in that tree, along with =
-the
-> > above series.
-> >
-> > Thanks!
-> >
-> >
-> >
->
-> I have also tested the patches, so feel free to add the tag as well:
->
-> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+On Fri, 26 Apr 2024 19:36:10 +1000
+Gavin Shan <gshan@redhat.com> wrote:
 
-Thank you!
+> On 4/18/24 23:54, Jonathan Cameron wrote:
+> > From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > 
+> > When a CPU is marked as disabled, but online capable in the MADT, PSCI
+> > applies some firmware policy to control when it can be brought online.
+> > PSCI returns DENIED to a CPU_ON request if this is not currently
+> > permitted. The OS can learn the current policy from the _STA enabled bit.
+> > 
+> > Handle the PSCI DENIED return code gracefully instead of printing an
+> > error.
+> > 
+> > See https://developer.arm.com/documentation/den0022/f/?lang=en page 58.
+> > 
+> > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > [ morse: Rewrote commit message ]
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> > v7: No change
+> > ---
+> >   arch/arm64/kernel/psci.c | 2 +-
+> >   arch/arm64/kernel/smp.c  | 3 ++-
+> >   2 files changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+> > index 29a8e444db83..fabd732d0a2d 100644
+> > --- a/arch/arm64/kernel/psci.c
+> > +++ b/arch/arm64/kernel/psci.c
+> > @@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)
+> >   {
+> >   	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
+> >   	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
+> > -	if (err)
+> > +	if (err && err != -EPERM)
+> >   		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
+> >   
+> >   	return err;
+> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> > index 4ced34f62dab..dc0e0b3ec2d4 100644
+> > --- a/arch/arm64/kernel/smp.c
+> > +++ b/arch/arm64/kernel/smp.c
+> > @@ -132,7 +132,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
+> >   	/* Now bring the CPU into our world */
+> >   	ret = boot_secondary(cpu, idle);
+> >   	if (ret) {
+> > -		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+> > +		if (ret != -EPERM)
+> > +			pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+> >   		return ret;
+> >   	}
+> >     
+> 
+> The changes in smp.c are based the assumption that PSCI is the only backend, which
+> isn't true. So we probably need move this error message to specific backend, which
+> could be PSCI, ACPI parking protocol, or smp_spin_table.
+
+Do we? I'll check but I doubt other options ever return -EPERM so this change should
+not impact those at all.  If they do add support in future for rejecting on the basis
+of not having permission then this is fine anyway.
+
+Jonathan
+
+
+> 
+> Thanks,
+> Gavin
+> 
+
 
