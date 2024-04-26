@@ -1,128 +1,167 @@
-Return-Path: <linux-kernel+bounces-160595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D71408B3FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:05:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2BA8B3FDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 788F01F221FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:05:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1CA1C22540
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C2B10942;
-	Fri, 26 Apr 2024 19:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080CA156E4;
+	Fri, 26 Apr 2024 19:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SalqeF2/"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RGrlB1ut"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40555BE4E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 19:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5BE14287;
+	Fri, 26 Apr 2024 19:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714158326; cv=none; b=GzozDhhiS8wgrBxuX+a7CdSOkeCA3uOCeeaE3Nt3uA6MZPEoQ5Vr35mZwpHMZ5MDIt1iGSwfWW9zgxCt3xJRnyYIScks6I3U7TOhdZcwJnzjVXHlsUYkiS2CIdYzLbqa9qSZtjNpWAB59BvaeCP0IRwwjjxfy27k7BlbOnkzgQ8=
+	t=1714158414; cv=none; b=CntuY6JlhTVE1GQFcBiNspcgwnznM5Y0AczwImWexIUKFLddnd1XUpicczmzdJG2CNWKxmKpm2NSQxeV1wjancfZBUlQCiPcDxjAfFQNvc7dDkwnMDFOqv+rWagnvyIrpWfAERcFU6QBJrGBszMHCXYA6tMNzYKSfphzL4ODs9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714158326; c=relaxed/simple;
-	bh=splLkRiiHzPsaFd1425CF9fQqUGE4dwhc9c1R8aCo1w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHqrxfFpED/3y+R2i+RwccNMqGj0u7R5NDey7FSSUxNkh4Y+q5fW+2hkgxIlh25CyWeBeuvGwT9WY73Loc7ACtDeDI4kZ5EuPwF3KY2kAZcM0zNdXpdEqmN44ElJv2rtFdvw4KpevJTifXnuSahfxbhtaKSEZwbNjwMS8otyPN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SalqeF2/; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=J9hzjQzDOk6bgui0ZQTXguiwfYozRtBaHNSEEFobqG8=; b=SalqeF2/y6+XjXTwdw2qUijjlL
-	YbazM9RYU7erDUktOkFEsLCooaBAJg0Xw3Ce+NJmWAFAGh2IL9trO0IXSCu5uWeMddLj+hMl6Tbqo
-	9FivPMriPCjqktelGcq7wXyuhZY38ZPMtxRGN7wigGJOhBwCmDACZYieCW/bBDwXXSTLEaWoISCdL
-	Es2sL4DEEAFtFq50FAwMAPQ+0pR20uTqA1uRY3Y4wFYAIzCbsB1zpw0ulIaivm3fozFr5GBcKC7U8
-	qTj4E3+O57dIynIli2nRn7x5GPEBxaWKdmtYmuTE1/D0ffFtkQIW90Ei3Ji5s+/urNH2m81TOyjz5
-	GDy67bpQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0Qsp-00000005pno-0JIt;
-	Fri, 26 Apr 2024 19:05:19 +0000
-Date: Fri, 26 Apr 2024 20:05:18 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	akpm@linux-foundation.org, linmiaohe@huawei.com,
-	jane.chu@oracle.com, nao.horiguchi@gmail.com, osalvador@suse.de
-Subject: Re: [PATCH] mm/memory-failure: remove shake_page()
-Message-ID: <Ziv67sGBi02YCYZ5@casper.infradead.org>
-References: <20240426171511.122887-1-sidhartha.kumar@oracle.com>
- <ZivlrMAwRI6xJhc-@casper.infradead.org>
- <d05cbf22-f3e8-414a-a2e3-03e0b857eaca@oracle.com>
- <ZivyC3vqa2BIBoMj@casper.infradead.org>
- <c40cfd0b-f045-4887-a955-fee7e0392cf1@oracle.com>
+	s=arc-20240116; t=1714158414; c=relaxed/simple;
+	bh=m9b6G40kp1afnmm0V5y0dvG81PdgNevnz6Gc/nN0Sf8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rUnX02PPx86lwGqBuWCkeKu52lSGDmXeTTLaJl5drNM/X/HV2AMhCE9AJy1t166DvRu/d5Nly4SgFpRGVgFMKWCkfeGjXPKyRjf65y0OXPHVUuYybIHW6CNX1CtJDjsIg22BimEaJbyh8pk7FQfHBdI1Fi5sJDjXLapOzVelE90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RGrlB1ut; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714158413; x=1745694413;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=m9b6G40kp1afnmm0V5y0dvG81PdgNevnz6Gc/nN0Sf8=;
+  b=RGrlB1utRaXljp6uZQeXSWW/+VMrhLoSUwUNFOA4m3vZ2DdlQUhced0M
+   WP5HySUeLBCQ2YDrGxZwd5HDCugila+F3g7ZKTY3RMg+u5OZFKX8PJqRT
+   iu471pG8aX2KDRQpL/NmycwnKh28KK1Quohv5TlGPZ/VNXmV5UDsr9TTk
+   HgkHJ0hA9PzCVttvnhBxyePinSnCXGCqNkX91V9kroS9yKh3ZcmjAjzbT
+   IlkYzz66e2/5ip967d7oDhJWIalp4bHJeBmioE2gbkAxipLop5+cdFhnM
+   ZbFW3cug21lk7cvOhk9c90XWzfx1DzYS/sa4h43R7yUNPNaKy8nzK47L1
+   A==;
+X-CSE-ConnectionGUID: Kd2e5eS1QeyM+ksOPqqkIg==
+X-CSE-MsgGUID: Oybc3LkXQMiNNpK/ForycA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="20590719"
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="20590719"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 12:06:52 -0700
+X-CSE-ConnectionGUID: X4wpaZ3zSZKqBzol14fJpw==
+X-CSE-MsgGUID: AaoO5+1XSUaac9KrS8UyPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="25910869"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 12:06:51 -0700
+Received: from [10.212.113.23] (kliang2-mobl1.ccr.corp.intel.com [10.212.113.23])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 7382E20B5739;
+	Fri, 26 Apr 2024 12:06:49 -0700 (PDT)
+Message-ID: <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com>
+Date: Fri, 26 Apr 2024 15:06:48 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c40cfd0b-f045-4887-a955-fee7e0392cf1@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>
+Cc: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>,
+ Sean Christopherson <seanjc@google.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
+ <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn>
+ <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
+ <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com>
+ <Zikeh2eGjwzDbytu@google.com>
+ <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com>
+ <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+ <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+ <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
+ <ZirPGnSDUzD-iWwc@google.com>
+ <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+ <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
+ <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
+ <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 11:53:01AM -0700, Sidhartha Kumar wrote:
-> On 4/26/24 11:27 AM, Matthew Wilcox wrote:
-> > On Fri, Apr 26, 2024 at 10:57:31AM -0700, Sidhartha Kumar wrote:
-> > > On 4/26/24 10:34 AM, Matthew Wilcox wrote:
-> > > > On Fri, Apr 26, 2024 at 10:15:11AM -0700, Sidhartha Kumar wrote:
-> > > > > Use a folio in get_any_page() to save 5 calls to compound head and
-> > > > > convert the last user of shake_page() to shake_folio(). This allows us
-> > > > > to remove the shake_page() definition.
-> > > > 
-> > > > So I didn't do this before because I wasn't convinced it was safe.
-> > > > We don't have a refcount on the folio, so the page might no longer
-> > > > be part of this folio by the time we get the refcount on the folio.
-> > > > 
-> > > > I'd really like to see some argumentation for why this is safe.
-> > > 
-> > > If I moved down the folio = page_folio() line to after we verify
-> > > __get_hwpoison_page() has returned 1, which indicates the reference count
-> > > was successfully incremented via foliO_try_get(), that means the folio
-> > > conversion would happen after we have a refcount. In the case we don't call
-> > > __get_hwpoison_page(), that means the MF_COUNT_INCREASED flag is set. This
-> > > means the page has existing users so that path would be safe as well. So I
-> > > think this is safe after moving page_folio() after __get_hwpoison_page().
-> > 
-> > See if you can find a hole in this chain of reasoning ...
-> > 
-> > memory_failure()
-> >          p = pfn_to_online_page(pfn);
-> >          res = try_memory_failure_hugetlb(pfn, flags, &hugetlb);
-> > (not a hugetlb)
-> >          if (TestSetPageHWPoison(p)) {
-> > (not already poisoned)
-> >          if (!(flags & MF_COUNT_INCREASED)) {
-> >                  res = get_hwpoison_page(p, flags);
-> > 
-> > get_hwpoison_page()
-> >                  ret = get_any_page(p, flags);
-> > 
-> > get_any_page()
-> > 	folio = page_folio(page)
+
+
+On 2024-04-26 2:41 p.m., Mingwei Zhang wrote:
+>>> So this requires vcpu->pmu has two pieces of state information: 1) the
+>>> flag similar to TIF_NEED_FPU_LOAD; 2) host perf context info (phase #1
+>>> just a boolean; phase #2, bitmap of occupied counters).
+>>>
+>>> This is a non-trivial optimization on the PMU context switch. I am
+>>> thinking about splitting them into the following phases:
+>>>
+>>> 1) lazy PMU context switch, i.e., wait until the guest touches PMU MSR
+>>> for the 1st time.
+>>> 2) fast PMU context switch on KVM side, i.e., KVM checking event
+>>> selector value (enable/disable) and selectively switch PMU state
+>>> (reducing rd/wr msrs)
+>>> 3) dynamic PMU context boundary, ie., KVM can dynamically choose PMU
+>>> context switch boundary depending on existing active host-level
+>>> events.
+>>> 3.1) more accurate dynamic PMU context switch, ie., KVM checking
+>>> host-level counter position and further reduces the number of msr
+>>> accesses.
+>>> 4) guest PMU context preemption, i.e., any new host-level perf
+>>> profiling can immediately preempt the guest PMU in the vcpu loop
+>>> (instead of waiting for the next PMU context switch in KVM).
+>> I'm not quit sure about the 4.
+>> The new host-level perf must be an exclude_guest event. It should not be
+>> scheduled when a guest is using the PMU. Why do we want to preempt the
+>> guest PMU? The current implementation in perf doesn't schedule any
+>> exclude_guest events when a guest is running.
+> right. The grey area is the code within the KVM_RUN loop, but
+> _outside_ of the guest. This part of the code is on the "host" side.
+> However, for efficiency reasons, KVM defers the PMU context switch by
+> retaining the guest PMU MSR values within the loop. 
+
+I assume you mean the optimization of moving the context switch from
+VM-exit/entry boundary to the vCPU boundary.
+
+> Optimization 4
+> allows the host side to immediately profiling this part instead of
+> waiting for vcpu to reach to PMU context switch locations. Doing so
+> will generate more accurate results.
+
+If so, I think the 4 is a must to have. Otherwise, it wouldn't honer the
+definition of the exclude_guest. Without 4, it brings some random blind
+spots, right?
+
 > 
-> That would be unsafe, the safe way would be if we moved page_folio() after
-> the call to __get_hw_poison() in get_any_page() and there would still be one
-> remaining user of shake_page() that we can't convert. A safe version of this
-> patch would result in a removal of one use of PageHuge() and two uses of
-> put_page(), would that be worth submitting?
+> Do we want to preempt that? I think it depends. For regular cloud
+> usage, we don't. But for any other usages where we want to prioritize
+> KVM/VMM profiling over guest vPMU, it is useful.
 > 
-> get_any_page()
-> 	if(__get_hwpoison_page())
-> 		folio = page_folio() /* folio_try_get() returned 1, safe */
+> My current opinion is that optimization 4 is something nice to have.
+> But we should allow people to turn it off just like we could choose to
+> disable preempt kernel.
 
-I think we should convert __get_hwpoison_page() to return either the folio
-or an ERR_PTR or NULL.  Also, I think we should delete the "cannot catch
-tail" part and just loop in __get_hwpoison_page() until we do catch it.
-See try_get_folio() in mm/gup.c for inspiration (although you can't use
-it exactly because that code knows that the page is mapped into a page
-table, so has a refcount).
+The exclude_guest means everything but the guest. I don't see a reason
+why people want to turn it off and get some random blind spots.
 
-But that's just an immediate assessment; you might find a reason that
-doesn't work.
+Thanks,
+Kan
 
