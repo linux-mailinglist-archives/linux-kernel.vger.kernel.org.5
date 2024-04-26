@@ -1,281 +1,110 @@
-Return-Path: <linux-kernel+bounces-159817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889978B347D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:52:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F4B8B3481
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:52:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DA942838EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:52:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA96B2371D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0300913F454;
-	Fri, 26 Apr 2024 09:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C67113F01A;
+	Fri, 26 Apr 2024 09:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eJmZmVwP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="N7lILEOP"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85F913F45D;
-	Fri, 26 Apr 2024 09:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A0513FD69
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125114; cv=none; b=SW6khAySvfwyhvW/aTgxzw41DibuYZ9dh7Y6U58Om7d+r3WFndsxncI07KbutlOLEDYbG3zcma70pfSMmOwSgsgZ1Q/DGEz7GWitA4W2MtRJvbXAkdw70ZI+4c336ZcHtAtZ2VNzxcpW6ADTP2t513dWjOK5XHN+jmgGvahiqg0=
+	t=1714125141; cv=none; b=M9JUucJgJSWJy95jZpAG0jvdN9EmoA7Pn969dWifuU/deDXRxPc1qYXc3vw1aI4OzpEZUP+jILQFnYGmu4HINaUsvtYg/FK641KDrpISuCneIZHfWLJw7R0nHbjXgomc6msfURO3QjcY5OhY3LYR6fG+sNoC17yAAEVt2zzK+MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125114; c=relaxed/simple;
-	bh=dIDG2iYF5HLaFwFDbKGoDav/c3YPpuOOU31GP40Rv8M=;
+	s=arc-20240116; t=1714125141; c=relaxed/simple;
+	bh=Jm6PL9Z2zz8L7yBYNxpGkwSDbMydJQIDEId4e0qQv3w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JIMhiBzweGJqodULneFIT6Cgsfa83HEYwCCz6SBLO7MnSxAZylHieQocAULnW5iJaOQ5oqyhu/8NQkvFKq40nvztwrYIzWGkPLgzqFf3w+v8gmBSA+KJTQVpUmT2geI0OXNW6LTeFv+41MrZg+WTOVAv0+8+1Welt/w8yNYBm9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eJmZmVwP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73A52C2BD10;
-	Fri, 26 Apr 2024 09:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714125113;
-	bh=dIDG2iYF5HLaFwFDbKGoDav/c3YPpuOOU31GP40Rv8M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eJmZmVwPQJC6JJeQmopKAArEKSHT/1u6oyBQTfjCRiatmfc4EnTFBPeofeh2Sc0+6
-	 0qjYGTQj9qgWd6mbDpBJLesSr46/ai6doM+pUJl6GwAYSI0DqEHdjp17Z89Dva/lT2
-	 ycehrsByxdt4nv1xz/yiFFUYIozkbjOroKeSsAr7UkwC2PPBq1kVv7F/9fGWxe/Td1
-	 J6C651MtP2q6591o9ltaM7rAK9cPeyl73RfxM4v7CDSFafSNOkrIBss2VHCNV96hB/
-	 1aS7w7powVY+H/djq9Oa75eWG24Kfg+RY2JLG4Tz8SKbxlLrX2sXS8iX9OYRwVGzxq
-	 x/AOa5wWhMJUw==
-Date: Fri, 26 Apr 2024 11:51:47 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu
-Subject: Re: [RFC PATCH v2 0/2] ima: Fix detection of read/write violations
- on stacked filesystems
-Message-ID: <20240426-norden-langzeitfolgen-611c816b02c4@brauner>
-References: <20240422150651.2908169-1-stefanb@linux.ibm.com>
- <CAOQ4uxgvHjU-n56ryOp5yWQF=yKz0Cfo0ZieypWJhqsBV4g-2w@mail.gmail.com>
- <a74b1c3c49b74aa6062c57bd99b48bdddc256ebf.camel@huaweicloud.com>
- <CAOQ4uxitkN=Jchmp30RKGMVH-RDR5GGy-7J74vMQt0oecAK2bg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KbiOjuIHGVwpEHV0TyrgaC8s8dBkJG6nKA0epQLD5F6XnDoSbD2EtfCRPxEpqgaIWKBngqujE9BhPU/qE3r+ZJWmh2uw9W4khNs7IEmHD9nHWUpQkDkqlB2544UJPu+fqQKZnSAtDg1+2kxS5rj2EkqWjDM/yushfBPkDHII+DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=N7lILEOP; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=Jm6P
+	L9Z2zz8L7yBYNxpGkwSDbMydJQIDEId4e0qQv3w=; b=N7lILEOP/oDCwlt+wFOW
+	9pDqq5xnixKVLXlkcSc7ZDaNqPhl+zR+BSTQKc4QPScaZRox2JLvuHYCg3R8/cv2
+	lSRsL78sPcmWR4ScwzDypIGssjqrIqOR5SQVEcCoxy8SUNBD3s7dJjPth8m6cKCl
+	4s0CFwHL0yNXgal7ZyZBjDbQ+cCHqbPUfTi5+aMOWmAq6nEEDLIoOAE4uHhRISVX
+	9oj342cK6Yliuzq+90brygoXvrrSCeKjT2DJk3gEabRvds8c/VxZnY2K1KW+RMHI
+	bhoBfoNqEcWaPt9FahN8U6637fDGEXOOH+P6w+2GcW3dHLsHQXQ70m4rzGAeyuOM
+	BQ==
+Received: (qmail 1267830 invoked from network); 26 Apr 2024 11:52:13 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Apr 2024 11:52:13 +0200
+X-UD-Smtp-Session: l3s3148p1@LdSp2/wWgpQujnvp
+Date: Fri, 26 Apr 2024 11:52:13 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: smbus: fix NULL function pointer dereference
+Message-ID: <20240426095213.pgk5tfe35kv6ppwp@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-renesas-soc@vger.kernel.org, Baruch Siach <baruch@tkos.co.il>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240426064408.7372-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xht6wkuqmbe24lqy"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxitkN=Jchmp30RKGMVH-RDR5GGy-7J74vMQt0oecAK2bg@mail.gmail.com>
+In-Reply-To: <20240426064408.7372-1-wsa+renesas@sang-engineering.com>
 
-On Tue, Apr 23, 2024 at 05:30:52PM +0300, Amir Goldstein wrote:
-> On Tue, Apr 23, 2024 at 4:21 PM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> >
-> > On Tue, 2024-04-23 at 09:02 +0300, Amir Goldstein wrote:
-> > > On Mon, Apr 22, 2024 at 6:07 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
-> > > >
-> > > > This series fixes the detection of read/write violations on stacked
-> > > > filesystems. To be able to access the relevant dentries necessary to
-> > > > detect files opened for writing on a stacked filesystem a new d_real_type
-> > > > D_REAL_FILEDATA is introduced that allows callers to access all relevant
-> > > > files involved in a stacked filesystem while traversing the layers.
-> > > >
-> > >
-> > > Stefan,
-> > >
-> > > Both Miklos and myself objected to this solution:
-> > > https://lore.kernel.org/linux-unionfs/CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H8GHGW-0UyKfjgg@mail.gmail.com/
-> > >
-> > > Not sure what you are hoping to achieve from re-posting the same solution.
-> > >
-> > > I stopped counting how many times I already argued that *all* IMA/EVM
-> > > assertions,
-> > > including rw-ro violations should be enforced only on the real inode.
-> >
-> > I have hopefully a better idea. We should detect violations at each
-> > level of the stack independently. And IMA should be invoked each time
-> > overlayfs uses an underlying layer.
-> >
-> > That is currently not easy, from the IMA policy perspective, because
-> > there are filesystem-specific rules, such as fsname= or fsuuid=. At the
-> > moment, I'm not planning to solve this, but I'm thinking to use for
-> > example FMODE_BACKING to ignore the filesystem-specific keywords and
-> > match the rule anyway.
-> >
-> > For now, I'm only addressing the call to underlying layers. To make
-> > sure that IMA evaluates every layer, I added a rule that checks the
-> > inode UID:
-> >
-> > measure fowner=2000 mask=MAY_READ
-> >
-> >
-> > I just investigated a bit, and I made some changes (for now, I'm just
-> > making it work, and you tell me what you think).
-> 
-> I did not examine this up close, but this seems like a change in the right
-> direction.
-> Will need Christian's approval that this does not break any assumptions
-> made on backing files.
 
-In principle I don't care if IMA wants to call yet another security hook
-in the backing file layer. I suspect it will impact performace if IMA is
-enabled. So that's something to keep in mind. But it's certainly better
-than blatantly abusing the dcache to achieve this.
+--xht6wkuqmbe24lqy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > diff --git a/fs/backing-file.c b/fs/backing-file.c
-> > index 740185198db3..8016f62cf770 100644
-> > --- a/fs/backing-file.c
-> > +++ b/fs/backing-file.c
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/backing-file.h>
-> >  #include <linux/splice.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/security.h>
-> >
-> >  #include "internal.h"
-> >
-> > @@ -40,12 +41,16 @@ struct file *backing_file_open(const struct path
-> > *user_path, int flags,
-> >         if (IS_ERR(f))
-> >                 return f;
-> >
-> > +       f->f_mode |= OPEN_FMODE(flags);
-> > +
-> >         path_get(user_path);
-> >         *backing_file_user_path(f) = *user_path;
-> >         error = vfs_open(real_path, f);
-> >         if (error) {
-> >                 fput(f);
-> >                 f = ERR_PTR(error);
-> > +       } else {
-> > +               security_file_post_open(f, ACC_MODE(flags));
-> >         }
-> >
-> >         return f;
-> >
-> >
-> > Setup:
-> >
-> > # mount -t overlay -olowerdir=a,upperdir=b,workdir=c overlay d
-> >
-> > open is a tool with the following syntax:
-> >
-> > open <path> <perm>
-> >
-> > It performs the open, and waits for user input before closing the file.
-> >
-> >
-> >
-> > ToMToU (Time of Measurement - Time of Use):
-> >
-> > Same fs (overlayfs)
-> >
-> > # /root/open /root/test-dir/d/test-file r (terminal 1)
-> > # /root/open /root/test-dir/d/test-file w (terminal 2)
-> >
-> > This works:
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
-> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/d/test-file
-> >
-> > This is the result of calling IMA at both layers, and the violation of
-> > course happens twice.
-> >
-> > This is also confirmed in the logs:
-> >
-> > Apr 23 14:52:45 fedora audit[994]: INTEGRITY_PCR pid=994 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
-> > Apr 23 14:52:45 fedora audit[994]: INTEGRITY_PCR pid=994 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="/root/test-dir/d/test-file" dev="overlay" ino=995512 res=1 errno=0
-> >
-> >
-> > Different fs (overlayfs, btrfs)
-> >
-> > # /root/open /root/test-dir/d/test-file r (terminal 1)
-> > # /root/open /root/test-dir/b/test-file w (terminal 2)
-> >
-> > Again, this works despite the read is in overlayfs, and the write is in
-> > btrfs:
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
-> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/b/test-file
-> >
-> > The difference from the previous example is that now there is only one
-> > violation, which is detected only in the upper layer. The logs have:
-> >
-> > Apr 23 15:01:15 fedora audit[985]: INTEGRITY_PCR pid=985 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="/root/test-dir/b/test-file" dev="sda3" ino=995512 res=1 errno=0
-> >
-> >
-> > Different fs (btrfs, overlayfs)
-> >
-> > # /root/open /root/test-dir/b/test-file r (terminal 2)
-> > # /root/open /root/test-dir/d/test-file w (terminal 1)
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 d7a692e19158820d2755542a8d31b49ac7ac2729 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/b/test-file
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
-> >
-> > Works too. There is only one measurement, since that is done only for
-> > the upper layer.
-> >
-> > Apr 23 15:05:40 fedora audit[982]: INTEGRITY_PCR pid=982 uid=0 auid=0 ses=1 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
-> >
-> >
-> >
-> > Open writers
-> >
-> > Same fs (overlayfs)
-> >
-> > # /root/open /root/test-dir/d/test-file w (terminal 1)
-> > # /root/open /root/test-dir/d/test-file r (terminal 2)
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
-> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/d/test-file
-> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
-> >
-> > Apr 23 15:10:46 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
-> > Apr 23 15:10:46 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="/root/test-dir/d/test-file" dev="overlay" ino=995512 res=1 errno=0
-> >
-> >
-> > Different fs (overlayfs, btrfs)
-> >
-> > # /root/open /root/test-dir/d/test-file w (terminal 1)
-> > # /root/open /root/test-dir/b/test-file r (terminal 2)
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/b/test-file
-> > 10 d7a692e19158820d2755542a8d31b49ac7ac2729 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/b/test-file
-> >
-> > Apr 23 15:12:58 fedora audit[984]: INTEGRITY_PCR pid=984 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="/root/test-dir/b/test-file" dev="sda3" ino=995512 res=1 errno=0
-> >
-> >
-> > Different fs (btrfs, overlayfs)
-> >
-> > # /root/open /root/test-dir/b/test-file w (terminal 1)
-> > # /root/open /root/test-dir/d/test-file r (terminal 2)
-> >
-> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
-> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
-> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
-> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
-> >
-> > Apr 23 15:16:37 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
-> >
-> > Roberto
-> >
-> > > I know this does not work - so you should find out why it does not work and fix
-> > > the problem.
-> > >
-> > > Enforcing IMA/EVM on the overlayfs inode layer is just the wrong way IMO.
-> > > Not once have I heard an argument from IMA/EVM developers why it is really
-> > > needed to enforce IMA/EVM on the overlayfs inode layer and not on the
-> > > real inode.
-> > > I am sorry that we are failing to communicate on this matter, but I am not
-> > > sure how else I can help.
-> > >
-> > > Thanks,
-> > > Amir.
-> >
+On Fri, Apr 26, 2024 at 08:44:08AM +0200, Wolfram Sang wrote:
+> Brauch reported an OOPS when using the designware controller as target
+> only. Target-only modes break the assumption of one transfer function
+> always being available. Fix this by always checking the pointer in
+> __i2c_transfer.
+>=20
+> Reported-by: Baruch Siach <baruch@tkos.co.il>
+> Closes: https://lore.kernel.org/r/4269631780e5ba789cf1ae391eec1b959def7d9=
+9.1712761976.git.baruch@tkos.co.il
+> Fixes: 4b1acc43331d ("i2c: core changes for slave support")
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Fixed the name typo and applied to for-current, thanks!
+
+
+--xht6wkuqmbe24lqy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYreUgACgkQFA3kzBSg
+KbZaLA/+JjcWZKSCI4lls86Wf67FtVWK7t1bbC/I11yecqS/bs9ypx1kiwOJo7O1
+0JVybH4tSOku8x3CP6M0WaIxGWbHfEBPAAX2g9lx9+izvun4xGaLGeRkViesjKnG
+nGOx6LyvTmZh1j6rrGis9gmbh4CWBYszryn39VCrVslmlhqaLVYW8O7NluVEakFE
+ylNdZ+BPPwaePCU3ptUsSdubajzqgLjWpTWxoAhloUWkU08b5Aj8bfA3fXRybEsg
+hAVVg/5Y7sBgljqps5F+7xFf1oBDWVWcKvvidA7Ifj1dBTmRv9HomDhxbQ/2G7RV
+eQeb+v0UlPXfvaJI6EY3JdQaCpbJNTzsGKk5GFbetXpmwt/7T4mmlH5fvXdGMdn9
+hpmB5Ottzfi/LfUgWfdLb3tHJKUAfKb+u2rdcOKtFVp4xMyWKZL49gpTYLYosJw4
+zEkOBCQ4ANfqsZ+ZBgIlfx18NV5vdDLt2EKqjKM1hVtrzqd8TGKbgfJHpo1Ihsrp
+C55LUsZYRIImeJSzaMPwMhU0Mk5mtBLlX9JzCd6nSUO/DKJ48W6Zz+PRsbY3l//U
+9Ol6c3+doo0NiMJwyRXmu6mMYx8vQj2OIKcTqyIdozwEWqVEwJjolT8y+xweXDus
+X4VszIpdA+uejbKUnWOvJ1gLLh+Xoi5WkpjKvXvTkpPoLhsyPpg=
+=HZIj
+-----END PGP SIGNATURE-----
+
+--xht6wkuqmbe24lqy--
 
