@@ -1,144 +1,184 @@
-Return-Path: <linux-kernel+bounces-160773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B6A8B42AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:22:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C007F8B42BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:25:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96BF42826EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1E2E1C21D72
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F613BBF0;
-	Fri, 26 Apr 2024 23:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684313BBF5;
+	Fri, 26 Apr 2024 23:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="enGuhxas"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Frlo/t2R"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17583A29A;
-	Fri, 26 Apr 2024 23:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3FF3A8E4;
+	Fri, 26 Apr 2024 23:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714173753; cv=none; b=H0M78zT9eL8b3pO7SMbpSerzr4nnXoPW73aO29EBtMIX0n0oSt6YKrT8cLVRUBVWfLe59iR1VB42OXf4hy22Z9x+u/Tn1p+hIHzp1nbzvuGluaZOeNbiowI2cVCMhRYzz6b5rd07zFhgUIloeqG7N2FGL1MUKwqoKAlZ48i+vh0=
+	t=1714173939; cv=none; b=YSBWoNsxikzGq2ZY5EJrLVarLU0DGP8GcsSb7SPfhDLFPhz53eZPnyCR2R/i7BN6bv54doCLNf6bU3uPocKN3K8/MTTEr8LKLfUOApZpFi6TfM6YXYE7YT0L08LfcKiSYzyEpqbVJIP7X6J0xYQsvIWVwV9ZvMWafGMwvGHKpXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714173753; c=relaxed/simple;
-	bh=40TMRkC/fuLPx/5ddsriVxpu2/8lWWIfnIWnMa9CuOY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EmTk2hCEywnz/AAI59157sNBGS3ECdRw/cZUptufXEC5SOwc70EaomUURir1zfG/5hzCPH4USoFbolyyMaFIHeXV2yHkK9kBLbUpeNCDlVVjvF/CNuaV6Vwkg8lH7JYYUpJL0CFT9UTStAe5lAclCjAtu+R3S5ACAwZ5ZFsMUZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=enGuhxas; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4188cda2e77so48915e9.2;
-        Fri, 26 Apr 2024 16:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714173750; x=1714778550; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iY/WWi0Cde+1RuQH0g65soHztJhsZe8t9qNdEVQN2vc=;
-        b=enGuhxasl7OaVpWz9IC9C0EKPFa0Wp7J8mA0glJHj7nH/zo0nu3PDLrDMIZ+MiZ44k
-         iuDLuaKWA7gn/YPFr5odbj8PWTECj52ryl3LbhoS0PJMHRYVhEsFaT3QQS+oIGT2fS+L
-         CBAP3H8oWYCOq2QN+puI+S29jr3MYI80Nx/aenOQkZsdEC5n6e4RV7Q/Ezu5LO04Yhrt
-         jIM5XBIMs7VMmXaekZ9z5Ir60gG2tvUZLyBO3KEo5fSfmdK99o1hf1T2YBtyNSlfxCOZ
-         ZZlJZJ/pPRgWY7KCJkOTrccUUJfCAdYcluAco2PTAnyX7XvunDNAgu+AWDM8vNiIIPHj
-         fxmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714173750; x=1714778550;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iY/WWi0Cde+1RuQH0g65soHztJhsZe8t9qNdEVQN2vc=;
-        b=wjeJNeW2kR4PLFT21QCi4KATbg5tkCtbJOI0VP0u+T65lB+LVcQbu/z4WBFiFzrisP
-         phMsDE5dUGsgI0t/8G670aOrBBjsEo4l0/7sOL4aLVmhJQuxMP8+cw6Q5zA9eUUlqr7Z
-         jhvOE2xXu7z44IrTSzTKKWC4dBOz4CFO41HB3bzQmSnMZ2yP9EQMoTnBm0/QWunf4o/M
-         bZp5/HOTNPXHe2i2rcsrk/4w0Jaw0bu/faw7pCZ5bx0MLGyePTC8BFoWIW12GZ3CU8TE
-         wLNxrjpzVDdx5J1eYSUGEtqIO5cZAre/7BggKX6RzXG/mum/At4WauyxvlbBaCKLQxhx
-         uKsA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7MF2me/lJ296h9vRXLmYknCbLsSrqvVjPFmCHfX8h8EXAytoGdjHnkHjGmn4dQp/1c67WnRpkdHM40XK9T/WSwvvbNOJVke/wWBW1SgTVtJSPnTVcBkbJR7zTLTJ2F46TsFQsBIxP/V6UjL1OYGFf/bhD2/XXzxaZpYvqbizzh29wFVRq9ScgobY=
-X-Gm-Message-State: AOJu0Yy6WI7BaG0bRPgSydtGk6WDNGkqxvMt1FpExZih7z0qJj5cZrnH
-	6rD55iIdQuWoM2Hf1YLa5sRZ6+YY6Em4hTXSgyXcivyZQtrqrRjy
-X-Google-Smtp-Source: AGHT+IE89/bvkFG+6ShpcqPuCTvy7/Aglbbu9aLaprfqPHDvl17E4830gcwMAX5pfWZo0/eA/bXuLw==
-X-Received: by 2002:a05:600c:1c9e:b0:419:f4d6:5044 with SMTP id k30-20020a05600c1c9e00b00419f4d65044mr2895218wms.2.1714173749966;
-        Fri, 26 Apr 2024 16:22:29 -0700 (PDT)
-Received: from ?IPV6:2a01:4b00:d20e:7300:f1d3:7133:ba99:885d? ([2a01:4b00:d20e:7300:f1d3:7133:ba99:885d])
-        by smtp.gmail.com with ESMTPSA id k41-20020a05600c1ca900b00417e8be070csm32632799wms.9.2024.04.26.16.22.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 16:22:29 -0700 (PDT)
-Message-ID: <f97f2dfc-38d0-47be-aef2-6d3baf481a5e@gmail.com>
-Date: Sat, 27 Apr 2024 00:22:28 +0100
+	s=arc-20240116; t=1714173939; c=relaxed/simple;
+	bh=Oo3OtoMFZgV8oyBBeZdB6VsYE2VPjoVz9FYqPtF9BJ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gvoR41PXNmd6YrLu3+82eKtJvmh9bg6jvWLIOHFnDL6cZhsDQnrE575gtZ+v4TIjjVFy0nUVBT2abrDanKoKwVw8SSUdJcCUbfisIQsNrjZYxPw50kvWUa/WZbG+ACFfWdOrWPks13HRfFjlWkwTmCLhilZDCFz89GZCA+LC3bA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Frlo/t2R; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43QNMkCt023899;
+	Fri, 26 Apr 2024 23:25:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=XDkUIigcVGqC8gCqZT1/+lGYK1cHWMUguzns/fZY7WU=; b=Fr
+	lo/t2RcNY7/5flTCMi4u2SOlyAMPDSEwsc5QfQXcCIxS/7krFsc6Lq4Iflf9zr6i
+	/KB3S0Ff0e+eKDWwkJ3GaAQEnsFsUlWS3fJuhYBdxQ5ZMhmGEbrhnAje3z17BHkv
+	qBOH1+Ck/IOC1lcMHAd88IE1G24mdO1gTQWp6WD5RuszIw59q6QKhT72fye/w9z+
+	08iaTt495KwEfjPo90H2rQ6h0d7Cl4su0QtW7I/ipP4Ecssd6fOEgJA6tShzDrYO
+	/9RW9FZAy2q0Z4GInnmmSXRjyM2X1DQTcAw/796v579I1WnO7oJyWHBrCULi8pzh
+	+He/KOi+cVVQkF3JXBOw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xranmhfnq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 23:25:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43QNPV1I031896
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 23:25:31 GMT
+Received: from [10.110.11.138] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Apr
+ 2024 16:25:30 -0700
+Message-ID: <6b6298c4-485d-ebe5-fa8d-9edc461467a0@quicinc.com>
+Date: Fri, 26 Apr 2024 16:25:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] ALSA: kunit: make read-only array buf_samples
- static const
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
- Colin Ian King <colin.i.king@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240425160754.114716-1-colin.i.king@gmail.com>
- <20240425232250.GA205425@workstation.local>
- <81a9e3c2-2c44-406e-af19-90d9dcfe4a92@gmail.com>
- <87il042mbn.wl-tiwai@suse.de>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 5/6] soc: qcom: add pd-mapper implementation
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Sibi Sankar
+	<quic_sibis@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Xilin Wu <wuxilin123@gmail.com>,
+        Bryan O'Donoghue
+	<bryan.odonoghue@linaro.org>
+References: <20240424-qcom-pd-mapper-v7-0-05f7fc646e0f@linaro.org>
+ <20240424-qcom-pd-mapper-v7-5-05f7fc646e0f@linaro.org>
 Content-Language: en-US
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <87il042mbn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Chris Lew <quic_clew@quicinc.com>
+In-Reply-To: <20240424-qcom-pd-mapper-v7-5-05f7fc646e0f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: xiSbrLKX4H3KLGrkCGae4cBJFRNzDXEx
+X-Proofpoint-ORIG-GUID: xiSbrLKX4H3KLGrkCGae4cBJFRNzDXEx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_20,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 impostorscore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404260166
 
-On 4/26/24 16:08, Takashi Iwai wrote:
-> On Fri, 26 Apr 2024 14:05:34 +0200,
-> Ivan Orlov wrote:
->>
->> On 4/26/24 00:22, Takashi Sakamoto wrote:
->>> Hi,
->>>
->>> On Thu, Apr 25, 2024 at 05:07:54PM +0100, Colin Ian King wrote:
->>>> Don't populate the read-only array buf_samples on the stack at
->>>> run time, instead make it static const.
->>>>
->>>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
->>>> ---
->>>>    sound/core/sound_kunit.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
->>>> index eb90f62228c0..e34c4317f5eb 100644
->>>> --- a/sound/core/sound_kunit.c
->>>> +++ b/sound/core/sound_kunit.c
->>>> @@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
->>>>      static void test_format_fill_silence(struct kunit *test)
->>>>    {
->>>> -	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
->>>> +	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
->>>>    	u8 *buffer;
->>>>    	u32 i, j;
->>>
->>> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>>
->>> We can see the other similar cases in the kunit file. I'll post the fix
->>> later.
->>>
->>
->> Hi Takashi,
->>
->> Hmm, correct me if I'm wrong, but I don't see any other significant
->> allocations on the stack in the test.
-> 
-> I guess he meant slightly different ones
->    https://lore.kernel.org/r/20240425233653.218434-1-o-takashi@sakamocchi.jp
-> 
 
-Ah, alright, found it. Thank you!
 
--- 
-Kind regards,
-Ivan Orlov
+On 4/24/2024 2:28 AM, Dmitry Baryshkov wrote:
 
+> +static int qcom_pdm_start(void)
+> +{
+> +	const struct of_device_id *match;
+> +	const struct qcom_pdm_domain_data * const *domains;
+> +	struct device_node *root;
+> +	int ret, i;
+> +
+> +	root = of_find_node_by_path("/");
+> +	if (!root)
+> +		return -ENODEV;
+> +
+> +	match = of_match_node(qcom_pdm_domains, root);
+> +	of_node_put(root);
+> +	if (!match) {
+> +		pr_notice("PDM: no support for the platform, userspace daemon might be required.\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	domains = match->data;
+> +	if (!domains) {
+> +		pr_debug("PDM: no domains\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	mutex_lock(&qcom_pdm_mutex);
+> +	for (i = 0; domains[i]; i++) {
+> +		ret = qcom_pdm_add_domain(domains[i]);
+> +		if (ret)
+> +			goto free_domains;
+> +	}
+> +
+> +	ret = qmi_handle_init(&qcom_pdm_handle, 1024,
+> +			      NULL, qcom_pdm_msg_handlers);
+
+1024 here seems arbitrary, I think most other usage of qmi_handle_init 
+has a macro defined for the max message length of the qmi service.
+
+> +	if (ret)
+> +		goto free_domains;
+> +
+> +	ret = qmi_add_server(&qcom_pdm_handle, SERVREG_LOCATOR_SERVICE,
+> +			     SERVREG_QMI_VERSION, SERVREG_QMI_INSTANCE);
+> +	if (ret) {
+> +		pr_err("PDM: error adding server %d\n", ret);
+> +		goto release_handle;
+> +	}
+> +	mutex_unlock(&qcom_pdm_mutex);
+> +
+> +	return 0;
+> +
+> +release_handle:
+> +	qmi_handle_release(&qcom_pdm_handle);
+> +
+> +free_domains:
+> +	qcom_pdm_free_domains();
+> +	mutex_unlock(&qcom_pdm_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static void qcom_pdm_stop(void)
+> +{
+> +	qmi_del_server(&qcom_pdm_handle, SERVREG_LOCATOR_SERVICE,
+> +		       SERVREG_QMI_VERSION, SERVREG_QMI_INSTANCE);
+> +
+> +	qmi_handle_release(&qcom_pdm_handle);
+> +
+
+I don't think doing an explicit qmi_del_server() is necessary. As part 
+of the qmi_handle_release(), the qrtr socket will be closed and the qrtr 
+ns will broadcast a DEL_SERVER and DEL_CLIENT notification as part of 
+the cleanup.
+
+> +	qcom_pdm_free_domains();
+> +}
+> +
 
