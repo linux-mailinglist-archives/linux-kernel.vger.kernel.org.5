@@ -1,154 +1,138 @@
-Return-Path: <linux-kernel+bounces-159784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2768B33F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:28:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE42D8B33F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26045284576
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:28:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A9371C222EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536C713EFF4;
-	Fri, 26 Apr 2024 09:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4963813E419;
+	Fri, 26 Apr 2024 09:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="GFji33As"
-Received: from nbd.name (nbd.name [46.4.11.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="IUu8nUQ3"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD526282EA;
-	Fri, 26 Apr 2024 09:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257E013E3F5;
+	Fri, 26 Apr 2024 09:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123724; cv=none; b=WGGXefQFGjUQgVOpaat5T56yCidpH5rz0md7vvaKsnLeihUzQItYtrY7hDNz71+8nXiTB7/KZb+25IBv2h1KqD/GozaJiyiAMglkdHnmWbFkHLlxQYE96Qh2NEPf2rc9pAmo1kp6LToQSD2C0J9aC3Pw3wZNB2CUOMJ32ApoSvg=
+	t=1714123739; cv=none; b=DIAR/vqwsEalxte/Y+I09esgAlIxjGzf5R8c0hhXIQK9xfX4CI5eGPLtrpNlJyfkdVgRrYnma0ftmzqwGbJAq3rZ/Rm+6V3ZFtoqZh1hgLRJIMJ+Wl8gdtqYCiD4QJDL6LUZQT41a6cN8AwYbnzUsG+gbJepEG2iTji3MGHsUjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123724; c=relaxed/simple;
-	bh=uSg+JsA984ostLXPPYPAUTtsSiyJkCZ6SKROscXhfjc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nlpxt0/hBPS8Kt1tau/E5Pzv6J8Gua0DcGelG91v2cAE/BMc6wdTtTedp5yyXiBkbHRbMey88kJLKQh+Rjodzb1NCO2kVh/dpZxzZclmWw1Dt2hxEgwLL48QKxirJnNx6WUzgQh+GPlSL/DIE6pyY8DUg05EuWL+lnjXTkpOh4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=GFji33As; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AUvRK9BW9RFjx6ktJJTIck1J53QfoMTxbI/6X0yUxxA=; b=GFji33AsQgXWgjzYPkvZWTIrE+
-	YheGbKUOoO2Dqy6g2WtMoW66HTIyQZuXLk+v3m7HtINYx+jcuqUJUI3mQj+L8/4fO3QrT0DIPHTWg
-	NUI+t/0ehHDSTE3Ve2TeVm5JpNZ8d6dSYF9Yl6CbCxmidenNg8XjpxD77gtcKy0DQysM=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1s0Hsh-007sat-2G;
-	Fri, 26 Apr 2024 11:28:35 +0200
-Message-ID: <9f4bc3f2-d66b-42d4-af15-a8b1b1fc696a@nbd.name>
-Date: Fri, 26 Apr 2024 11:28:33 +0200
+	s=arc-20240116; t=1714123739; c=relaxed/simple;
+	bh=/M4fAtIj7fEFz5rRmpHzBh/6ABxKJzdtM1sihXoR3a8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lID7XmG1amYq/cGcrt2BS+TAFGSby7yPXr5wFtmNPXPJExe/CF2ZnPOQ/LwVT7lRG7eokk401GF4U1uhDqRtrKR1+CK6mqYdBtQTYUfvcfveDWZOnCxOuV/bwl9/usseDNsRzW1fhMsSUHRSgC1r6+qIfwqoUk1HXi3xUeQikzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=IUu8nUQ3 reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 803d8b87b1d53edd; Fri, 26 Apr 2024 11:28:53 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 0519566DFC1;
+	Fri, 26 Apr 2024 11:28:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714123733;
+	bh=/M4fAtIj7fEFz5rRmpHzBh/6ABxKJzdtM1sihXoR3a8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=IUu8nUQ39P9qeBS1VyK8+eBytHtImpG0KLbp9j3wwAT997Ql8nXVzlslWkZClngqQ
+	 RVSLrDYwTdrULftNz2XK2a+aH4wxs+Xdls/IzbZUkWNrAvBsxzAvmECXQSdH2lVnn2
+	 vv+5dDogTkxc2iFDzLX+lezdJtrjxSdt7/Y1hC1NgjaoshcQKSrTcD4BtCma3b59JO
+	 R9AbSrzeThK39ab3G8lVk7bxDQSGK/ztrYhhjZm67OigU6k4GtUihe3Fd632haYbIK
+	 +jJMBWXxiIuFfbZwqh/u+Rrio6b/rYNVb4I2kxuK20c66qMtHMLK1dSkQ6JreJfHsi
+	 TMiqVwrvlcTbA==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Lukasz Luba <lukasz.luba@arm.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Subject:
+ [PATCH v2 3/3] thermal/debugfs: Prevent use-after-free from occurring after
+ cdev removal
+Date: Fri, 26 Apr 2024 11:28:52 +0200
+Message-ID: <2740417.mvXUDI8C0e@kreacher>
+In-Reply-To: <13503555.uLZWGnKmhe@kreacher>
+References: <12427744.O9o76ZdvQC@kreacher> <13503555.uLZWGnKmhe@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 net-next v3 2/6] net: add support for segmenting TCP
- fraglist GSO packets
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, willemdebruijn.kernel@gmail.com,
- linux-kernel@vger.kernel.org
-References: <20240426065143.4667-1-nbd@nbd.name>
- <20240426065143.4667-3-nbd@nbd.name>
- <CANn89iJKfgQNNXUL10-7aVZTn+ttqvVNZbnKi6jCdQGwzbFFYQ@mail.gmail.com>
-Content-Language: en-US
-From: Felix Fietkau <nbd@nbd.name>
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <CANn89iJKfgQNNXUL10-7aVZTn+ttqvVNZbnKi6jCdQGwzbFFYQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudelledgudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrrghf
+ rggvlheskhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-On 26.04.24 09:44, Eric Dumazet wrote:
-> On Fri, Apr 26, 2024 at 8:51 AM Felix Fietkau <nbd@nbd.name> wrote:
->>
->> Preparation for adding TCP fraglist GRO support. It expects packets to be
->> combined in a similar way as UDP fraglist GSO packets.
->> For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
->>
->> Signed-off-by: Felix Fietkau <nbd@nbd.name>
->> ---
->>  net/ipv4/tcp_offload.c   | 65 ++++++++++++++++++++++++++++++++++++++++
->>  net/ipv6/tcpv6_offload.c |  3 ++
->>  2 files changed, 68 insertions(+)
->>
->> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
->> index fab0973f995b..c493e95e09a5 100644
->> --- a/net/ipv4/tcp_offload.c
->> +++ b/net/ipv4/tcp_offload.c
->> @@ -28,6 +28,68 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
->>         }
->>  }
->>
->> +static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
->> +                                    __be32 *oldip, __be32 *newip,
->> +                                    __be16 *oldport, __be16 *newport)
-> 
-> 
-> Do we really need pointers for newip and newport ?
-> 
->> +{
->> +       struct tcphdr *th;
->> +       struct iphdr *iph;
->> +
->> +       if (*oldip == *newip && *oldport == *newport)
->> +               return;
->> +
->> +       th = tcp_hdr(seg);
->> +       iph = ip_hdr(seg);
->> +
->> +       inet_proto_csum_replace4(&th->check, seg, *oldip, *newip, true);
->> +       inet_proto_csum_replace2(&th->check, seg, *oldport, *newport, false);
->> +       *oldport = *newport;
->> +
->> +       csum_replace4(&iph->check, *oldip, *newip);
->> +       *oldip = *newip;
->> +}
->> +
->> +static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
->> +{
->> +       struct sk_buff *seg;
->> +       struct tcphdr *th, *th2;
->> +       struct iphdr *iph, *iph2;
-> 
-> I would probably add a const qualifier to th and iph
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Will do, thanks.
+Since thermal_debug_cdev_remove() does not run under cdev->lock, it can
+run in parallel with thermal_debug_cdev_state_update() and it may free
+the struct thermal_debugfs object used by the latter after it has been
+checked against NULL.
 
-- Felix
+If that happens, thermal_debug_cdev_state_update() will access memory
+that has been freed already causing the kernel to crash.
+
+Address this by using cdev->lock in thermal_debug_cdev_remove() around
+the cdev->debugfs value check (in case the same cdev is removed at the
+same time in two different threads) and its reset to NULL.
+
+Fixes: 755113d76786 ("thermal/debugfs: Add thermal cooling device debugfs information")
+Cc :6.8+ <stable@vger.kernel.org> # 6.8+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2: Add missing mutex_unlock() (Lukasz).
+
+---
+ drivers/thermal/thermal_debugfs.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_debugfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_debugfs.c
++++ linux-pm/drivers/thermal/thermal_debugfs.c
+@@ -505,15 +505,23 @@ void thermal_debug_cdev_add(struct therm
+  */
+ void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev)
+ {
+-	struct thermal_debugfs *thermal_dbg = cdev->debugfs;
++	struct thermal_debugfs *thermal_dbg;
+ 
+-	if (!thermal_dbg)
++	mutex_lock(&cdev->lock);
++
++	thermal_dbg = cdev->debugfs;
++	if (!thermal_dbg) {
++		mutex_unlock(&cdev->lock);
+ 		return;
++	}
++
++	cdev->debugfs = NULL;
++
++	mutex_unlock(&cdev->lock);
+ 
+ 	mutex_lock(&thermal_dbg->lock);
+ 
+ 	thermal_debugfs_cdev_clear(&thermal_dbg->cdev_dbg);
+-	cdev->debugfs = NULL;
+ 
+ 	mutex_unlock(&thermal_dbg->lock);
+ 
+
+
 
 
