@@ -1,164 +1,110 @@
-Return-Path: <linux-kernel+bounces-160092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2B38B3903
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:53:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1DD48B390A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9AFD2863DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:53:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D1D1F2393B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957F5148310;
-	Fri, 26 Apr 2024 13:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2E71487C5;
+	Fri, 26 Apr 2024 13:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mzeUyjnD"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QuhOv9UJ"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2FD140389
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD201482EB;
+	Fri, 26 Apr 2024 13:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714139606; cv=none; b=G6clkKznKKZfdwbOUHebEHeYdwIx9z5u3cT+aqZIuLdihSp94woUe8caNQvmtticaeWsVmwxtwX/TyyOuA/q/XP86qcqpWknjdTtXQKMDkDIntzarn2RRug9Qx8HQkClLzh0I8IzdEwRcQblyipb64libpcmjRHEc8ZEIFD6ud0=
+	t=1714139629; cv=none; b=etbS8W0zHvIAbqmlRQDmyQ78rMAf/vqeGMpCYHR6thgAqwaAgESvS7dPOPa48xdzqyjwDPUpGh7Ixf7ScxNdKurXBbKzOe1ohUUyRqs6pwDlB1qt3TXV+DNqdpa5X5In70ZGvFHUxLd9ZAuteQtZjBqoMYtH3kKXBRuY5KIZXow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714139606; c=relaxed/simple;
-	bh=kfoxr5MPT8Y3C1vwEbZQqbvK0Cu7jbe/sUQY8skyjXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jVUANPNWE/iFIX2vJJa2ZyAEXOpYUMabHYm25RE4ByxLtxSxKxbgFVkXI23drycjWYWsEFr5wB/mhkgMFaX+Q3XSNpdLRK7tri4Ts8z1lHpLAmZ2v1LwdoKv/NSfW4ziNVtQzHmN4jigQQcGE1INkV0hIS/P4tkBFzTWenY6Vog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mzeUyjnD; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ebso2944065e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:53:24 -0700 (PDT)
+	s=arc-20240116; t=1714139629; c=relaxed/simple;
+	bh=2diDGfXgoqGZPV0weeNRZMPINUbCViSW6NuyJ9qT79o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G2nelvFRxFmk8iFxcpsMJm9YQh+03x2k54/rFTOlnCCX7sVkposvmr57Oq7M8n3PU4N+JmyMar4GBNFzhX7lKTtsccXFsdTiSJmVIKjNhe3OzA9sbrbvpoMNXr5dMENZg3FqgHX94eORYCfK3oEdv/OrK69ub9Rsu1whMgrQMUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QuhOv9UJ; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-343e46ec237so1731259f8f.2;
+        Fri, 26 Apr 2024 06:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714139603; x=1714744403; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TcMN14IZtAud1SzWuvyCQx4H2upUNwp8wShEfmdsMaU=;
-        b=mzeUyjnDwBpDeAXWorypUmlLrH/Gd1qmU3W4/8w+dVJ8SEgdApiWU/WXsgXnkkjaoI
-         OaRwIIqe3LfuZ+igE1uhhaGaMu6+OUISuDhM884em52UBwhjlossdvl1fntzACjb/OWh
-         7r39KkdwYWrDZDy94xzZapJrdusN4pNe4rwNznLei22AywR9JyLHIMjFErbRi9xP8FN/
-         RZQ5RbDvVeNs6UV4L4tO+EA+O8up3SbkPxG1UaxD8DGRWWQXIrKhzLNFq3ybENTXbmL3
-         E00+qY6KQBWGnMReM3DKvYeQL+/zIgsS/C0Ru8+FfZN28AH4EVK8poz14bOZ09/xpIkW
-         Dqzg==
+        d=gmail.com; s=20230601; t=1714139625; x=1714744425; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwRPVp4IQMXqt/6idnRqfFQtuAI0tlXLTfnP1hSTCQM=;
+        b=QuhOv9UJG5tMvISuMKrzF6RmEaT8HlfjLFxXssjVlCtlTLkka/pNpE6Vk0FT3fT5tc
+         ZeCtuyOK8Qvk+mKJoQV25G/gnq0OaTgTpuMqpI0iFBuWnCNZ7yqKAB/ZhjPq6GhdPLDj
+         K1rmbiq7/WhOyied/5dFJ9Dt8rYyB1rUjoRk7LVjyo7XGJPrV1YEhTNwJ8+mkqmYB2LF
+         DfIn0FofiXdzd+jUnLPmlcUFMxKka6gbCHnn8CGnu9BAsYhn4xdbLuVoGPpyLOcCL4jr
+         dQYNV8dbA1D2+p4px25r5QGWVuC/YCaQr2533FmmyqbOJu5fahXQudjqr/Y95pRFqbPw
+         QOUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714139603; x=1714744403;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TcMN14IZtAud1SzWuvyCQx4H2upUNwp8wShEfmdsMaU=;
-        b=nuwgw50bSn4cX8/kFMnqpCpUbv7GbbrOlFBEEu8f9bAEG9DIt59MUzBaT/ClJDiXJV
-         vFloYlm0JMgLADjUZ0d5eHDsV8gM4AnsiLq3G4QONpl+hMx28mf6iNJ4Tq9n/eYc6ndF
-         VNKI++KTA+z+4B2B5o8E6Ed/iUcvtOgoydioFHkXpP/ZgVJwPuQ8/OB9c1OUGFy8SxA2
-         4lE/QbDT75xC6yhjJ9SquwTJ7jDpGv4hwSYtvFqcwmr8gXPpdOgPsIK3f6VUSrZGEIec
-         lCYDfL8tuUNrs0JdAjhWibBZo4CB5ZuILPiAvE9uj4ouHyZr0V3TTlKF7E5dsWGvam9i
-         CyOA==
-X-Gm-Message-State: AOJu0YzRh5Oo+NXQMv8sgrhOG2SBgX5rC/ZoV9Lz2Rs4EcrtscacexeJ
-	g6vM5DEfUi8lJV7f5/jJ/VCzN4dpH8eJ626F7Rkt7S4uuCJ46ArfAprHlHyGeNE=
-X-Google-Smtp-Source: AGHT+IE83jWZzVOng5zKH0QSGdpbtE4+Wt+APtbatCw3dZ/Qc0dSNlMokp6KwGnYkxFdJsCiBVpVKw==
-X-Received: by 2002:a05:600c:474d:b0:41a:408b:dbd4 with SMTP id w13-20020a05600c474d00b0041a408bdbd4mr2373100wmo.7.1714139603241;
-        Fri, 26 Apr 2024 06:53:23 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id q15-20020a05600c46cf00b00416e2c8b290sm35048249wmo.1.2024.04.26.06.53.22
+        d=1e100.net; s=20230601; t=1714139625; x=1714744425;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZwRPVp4IQMXqt/6idnRqfFQtuAI0tlXLTfnP1hSTCQM=;
+        b=MA4z2b294LNB3PElGFb/Sv+EQyQTRnfxj2bSFXPLVtw6BK9JZJb586KRI7c6KWLF/L
+         8jkrBLGjrCjz8HAJ3NljsBd9hDd3iNC6+w04J0W3DvWHnz7ExxYJNciW7bFGqGY1knSH
+         SqnDH+Nf0J+UUUe1sGF5xqSQypRmipsVNsmR0JrM/4XkpBHBvbmz/m7PL0y+PTMiZldD
+         DQP0ECAUm+lgTkssFpBD2FF9rFsnlDgDCBsHA3H1UItcAKxYcHaJgOSjDPKhQ56SL2HG
+         jlyrDVqo8di0FLkKzAt+5BB4LCDvFf967A6dxs5gGtiMwMexKXk6bo0gMOnLqWjPmjvE
+         cN0A==
+X-Forwarded-Encrypted: i=1; AJvYcCVfsoRrFJD8XuDETZipU0SWJVib5jE4YUb1cagEeoWpD6gFcCJTmIBlFojoOoZCqxMLmpnbspBA9AcKqsJ6hQSL4GC5s3PLcFT6wKSeiGSxYCp26rw6MrtBPdE4J44G01lz+fWL6Q==
+X-Gm-Message-State: AOJu0YwiMv8iMlRMbPzNm7dRzxu3ljooLa3keC20oMSERhSxDS7TjV0d
+	xGbLnOvwaWVKpr4QfcBcAt7jn5dXHOrPsT285E80waLzM65R8MtMzzteJ0vL
+X-Google-Smtp-Source: AGHT+IFs9eB77Zr2ZWpQ6HgnBNShWFrml09IBs/i7NOnwkTqdsCCAu4hDuP7h2aRXvx1yNEvyFT6Zw==
+X-Received: by 2002:a5d:66c3:0:b0:34a:2d0c:4463 with SMTP id k3-20020a5d66c3000000b0034a2d0c4463mr2410851wrw.4.1714139625439;
+        Fri, 26 Apr 2024 06:53:45 -0700 (PDT)
+Received: from rbolboac.. ([2a02:2f0e:320d:e800:f4f8:b5e1:d7d4:bf65])
+        by smtp.gmail.com with ESMTPSA id k6-20020a5d6d46000000b003434f526cb5sm22302919wri.95.2024.04.26.06.53.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 06:53:22 -0700 (PDT)
-Date: Fri, 26 Apr 2024 16:53:18 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: lumingyindetect@126.com
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org,
-	LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
-Subject: Re: [PATCH] serial: 8250_lpss: Fix memory leak in lpss8250_probe()
-Message-ID: <87d376e4-84f1-48c3-8c5d-955f706f3bfb@moroto.mountain>
-References: <20240426114716.1275085-1-lumingyindetect@126.com>
+        Fri, 26 Apr 2024 06:53:45 -0700 (PDT)
+From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	jic23@kernel.org,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh@kernel.org,
+	nuno.sa@analog.com
+Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Subject: [PATCH 0/7] adis16501 and adis1657x support
+Date: Fri, 26 Apr 2024 16:53:32 +0300
+Message-Id: <20240426135339.185602-1-ramona.bolboaca13@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426114716.1275085-1-lumingyindetect@126.com>
+Content-Transfer-Encoding: 8bit
 
-Run scripts/checkpatch.pl --strict on your patch.
+Add adis16501 and adis1657x support in adis16475.
 
-WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
-#15: 
-In the execution logic of the lpss8250_probe() function, the function may directly return via a return statement at either line 347 or line 351.
-WARNING: Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<title line>")' - ie: 'Fixes: 12dadc409c2b ("Linux 6.8.7")'
-#19: 
-Fixes: e88c4cfcb7b888ac374916806f86c17d8ecaeb67
+Ramona Gradinariu (7):
+  dt-bindings: iio: imu: Add ADIS16501 compatibles
+  drivers: iio: imu: Add support for ADIS16501
+  iio: imu: adis16475: Re-define ADIS16475_DATA
+  iio: imu: adis_buffer: Add buffer setup API with buffer attributes
+  iio: imu: adis16475: Create push single sample API
+  dt-bindings: iio: imu: Add ADIS1657X family devices compatibles
+  drivers: iio: imu: Add support for adis1657x family
 
-On Fri, Apr 26, 2024 at 12:47:16PM +0100, lumingyindetect@126.com wrote:
-> From: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Fix this email address.
+ .../bindings/iio/imu/adi,adis16475.yaml       |  31 +
+ drivers/iio/imu/Kconfig                       |   4 +-
+ drivers/iio/imu/adis16475.c                   | 698 ++++++++++++++++--
+ drivers/iio/imu/adis_buffer.c                 |  32 +-
+ include/linux/iio/imu/adis.h                  |  18 +-
+ 5 files changed, 681 insertions(+), 102 deletions(-)
 
-> 
-> In the execution logic of the lpss8250_probe() function, the function may directly return via a return statement at either line 347 or line 351.
-
-The line numbers are not important and they change all the time.
-Instead say "if pcim_iomap() or lpss->board->setup() fail then ...".
-
-> Unlike lines 357 or 361, where the return statement is used directly without releasing the dynamically allocated memory region pointed to by the variable pdev, causing a memory leak of the variable pdev.
-> In the lpss8250_probe() function, I added a label named "free_irq_vectors" to release the dynamically allocated memory region pointed to by the variable pdev, and replaced the two return statements mentioned above with goto statements to this label.
-
-Just say "Use a goto to release this memory".  No need to explain
-further.
-
-> 
-> Fixes: e88c4cfcb7b888ac374916806f86c17d8ecaeb67
-
-This is the wrong hash and the format is wrong.  It should be:
-
-Fixes: 254cc7743e84 ("serial: 8250_lpss: Switch over to MSI interrupts")
-
-> 
-> Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
-> ---
->  drivers/tty/serial/8250/8250_lpss.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_lpss.c b/drivers/tty/serial/8250/8250_lpss.c
-> index c3cd6cb9ac80..fa9fd4dc86c7 100644
-> --- a/drivers/tty/serial/8250/8250_lpss.c
-> +++ b/drivers/tty/serial/8250/8250_lpss.c
-> @@ -344,11 +344,11 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	uart.port.mapbase = pci_resource_start(pdev, 0);
->  	uart.port.membase = pcim_iomap(pdev, 0, 0);
->  	if (!uart.port.membase)
-> -		return -ENOMEM;
-> +		goto free_irq_vectors;
-
-This needs to be:
-
-	if (!uart.port.membase) {
-		ret = -ENOMEM;
-		goto free_irq_vectors;
-	}
-
-regards,
-dan carpenter
-
->  
->  	ret = lpss->board->setup(lpss, &uart.port);
->  	if (ret)
-> -		return ret;
-> +		goto free_irq_vectors;
->  
->  	dw8250_setup_port(&uart.port);
->  
-> @@ -367,6 +367,7 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  
->  err_exit:
->  	lpss->board->exit(lpss);
-> +free_irq_vectors:
->  	pci_free_irq_vectors(pdev);
->  	return ret;
->  }
+--
+2.34.1
 
 
