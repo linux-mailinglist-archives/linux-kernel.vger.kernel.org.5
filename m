@@ -1,76 +1,69 @@
-Return-Path: <linux-kernel+bounces-160331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7FE8B3C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B9A8B3C11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 449871C2301D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:49:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A801C23D76
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF3D14A4D4;
-	Fri, 26 Apr 2024 15:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6216B149E0B;
+	Fri, 26 Apr 2024 15:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eoT/O7Rt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fS3UbrvO"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2997C1494A6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDD9148FE5
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714146593; cv=none; b=qlD/cwNoXihtLujx8R0p33sFCJL2vmI/hZI6TsOeyjlPjJ0J0lING+aGdd24h0EbTEE1rtHByVT4kQXrTmmKxfO0Ovm+2KZ0aS+rI0WAxLLWdtWe9APnZygN7eom2x3wB6ohX3E16Oe1qmjj8UhFP0bjevFxHNNGFxV2ZMaikUg=
+	t=1714146624; cv=none; b=Xns7Ce5CVTqmB5qMByXDBlg7YsmIuJInIjWvo/+Xc7jzB/6dNHAsxPUAyct0fzg7kQhUxsPRHZI+5PV5+kQfjj1MTzGEkU5zUfbIlqncEMk5Uaiwp6iridwGe7+1085cDkJqBsuu9GEb2HBpNmBFfyVOiTK7zHtPsrbk/l6VUXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714146593; c=relaxed/simple;
-	bh=ywp/OHwzcUNSwhcX3iZaKfJFs0VQBPeePi0ku6OXRCQ=;
+	s=arc-20240116; t=1714146624; c=relaxed/simple;
+	bh=GdLcr74WLo/Hh0HW8mGcoH4pOw2ZLI4PuPpZEnA9Dso=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fpJUWtY5rIPP2sQPBAu7nwtSGBYyHGjwq1sE39ixvtSnBiJvKDcRmDqOg8J6EwUM3f5Sw7Vvy2716jUFoExAx4GBAReGpOzWpHTaGCL57jpJe7n4zOd1ws5CzTxsd3c6f80Sg99b8Ao8ruVhgFli3hENZ2qN7MBfnmcQK5HPTis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eoT/O7Rt; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714146592; x=1745682592;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ywp/OHwzcUNSwhcX3iZaKfJFs0VQBPeePi0ku6OXRCQ=;
-  b=eoT/O7RtkoP4uPuu3rj8Lshv38uSNR8chx1Y+pD04HJ8mibVJTtmVDR1
-   2wUdmURr0az5EJjXqKBh75izbJcBk7glxczcg7jaNO6Lu/T5k9tVcp2Lj
-   khdxniRGvnEtPAbGOCTvc/pa3ad21/QtCyIxLXvszi+2jo7TAoqOmz/3M
-   9W7TEto5hcKHTh5PnnR4qV0lCkPo76rNw9TZEi8/gIUK9HEl5RMq0ZUDh
-   jHS8ZDmXoTH/F0ztHLzV/V1UG77URvx4zfYByYXJYChzO2SWrqO49ydF6
-   u5g0V0bVkqun4dMQed4TMFulnXvp+KgWXr7hsRZy25nTB6r+8k6+vWGX5
-   w==;
-X-CSE-ConnectionGUID: N9gjqf1VSG2lVWBV7zJtbg==
-X-CSE-MsgGUID: umpbfrJISdmnobFXpeTLiQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="13675000"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="13675000"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:49:51 -0700
-X-CSE-ConnectionGUID: 1gAbxF31SKeQC4yS/jLQhA==
-X-CSE-MsgGUID: Oz6qWipCRTOkXbdnel6Y1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="25532506"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:49:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s0Npc-00000001Mtj-1hG0;
-	Fri, 26 Apr 2024 18:49:48 +0300
-Date: Fri, 26 Apr 2024 18:49:48 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] zorro: Use helpers from ioport.h
-Message-ID: <ZivNHGjvj-6u4sUl@smile.fi.intel.com>
-References: <20230831121623.36293-1-andriy.shevchenko@linux.intel.com>
- <CAMuHMdVoDDV-VgPJL75u_t3KeAPhb1xEFX2VigVC3oS51pG6wA@mail.gmail.com>
- <ZivJKZ8Pp_bfLcvO@smile.fi.intel.com>
- <CAMuHMdVsYdPnFD_LEdDez7JXYdh67DPoc2GhLNv29B6=65u6+g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t++EwPLbXSr6jINZ3/fHi9hfo+iU+zt/9xqlOXDlIvWzmAsOoGPNyTW6VBlX0XRu8ja3btmgSskBhuGvaEd24w9GV3ccZo1gzPVjIaf+ExxmKuGa+MNZiRnUNv1Oh174P3iKWbBll8Fb3RR7MsWQsxJB1XfvB/zObH2JLyFmX0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fS3UbrvO; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=rmx/bNaH6jOY5MArnPPn/57lIrpuzyHqYg+CoUfdaWI=; b=fS3UbrvOeyZMD2muMoPGGgC1n4
+	IzIDuZX+8heQ3k1uxFxvcXcB82bAyTAwYnrKs72KIo1cykz+yMwIlvsY+z8otw5/hl5CpF8kgtklo
+	muKEndxlm37F9aYgSU1/yqAzKjZ5yQqGAH+tna4spCG+lqJLTNh5pebl7bbxVeH4EvO9s4BSNRHSE
+	2KR21R5zxTLB/tLI5IK+WeQw0hTYz4clqdUAErxQNINBWVjFjzd7gTxvQ06PWxt/T5BvNSSJ8MWCv
+	7O0mGn/tgup6kJm1XOQ+SJ7ePo3j68XdUScyzhSEPV8VzQu3PMLCWzsk0Jptfg1lRYSlvlnJbOtsC
+	5uiu5k1g==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s0Nq7-00000005W77-24sM;
+	Fri, 26 Apr 2024 15:50:19 +0000
+Date: Fri, 26 Apr 2024 16:50:19 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Peter Xu <peterx@redhat.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <ZivNOxf06cu0J9OQ@casper.infradead.org>
+References: <20240411171319.almhz23xulg4f7op@revolver>
+ <ZhhSItiyLYBEdAX3@x1n>
+ <ZhhV3PKgEX9d7_vA@casper.infradead.org>
+ <ZhhaRXHKk7w_hKgi@x1n>
+ <Zhhd-A7w1A8JUadM@casper.infradead.org>
+ <ZhinCD-PoblxGFm0@casper.infradead.org>
+ <ZiuzikG6-jDpbitv@casper.infradead.org>
+ <CAJuCfpH+O0NYtTrGKSY6FjBOcWpyKXB+_4rsSRjcewSXUWVfCQ@mail.gmail.com>
+ <ZivILlyRv7rNMldQ@casper.infradead.org>
+ <CAJuCfpEqJV9Lv+36xNK+vnpsR5DhQ0kCK3CW7tLFWbbbSCH8yg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,35 +73,34 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdVsYdPnFD_LEdDez7JXYdh67DPoc2GhLNv29B6=65u6+g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAJuCfpEqJV9Lv+36xNK+vnpsR5DhQ0kCK3CW7tLFWbbbSCH8yg@mail.gmail.com>
 
-On Fri, Apr 26, 2024 at 05:42:21PM +0200, Geert Uytterhoeven wrote:
-> On Fri, Apr 26, 2024 at 5:33 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Sep 04, 2023 at 11:31:03AM +0200, Geert Uytterhoeven wrote:
-> > > On Thu, Aug 31, 2023 at 2:16 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-
-..
-
-> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > i.e. will queue in the m68k for-v6.7 branch, with the above fixed.
+On Fri, Apr 26, 2024 at 08:32:06AM -0700, Suren Baghdasaryan wrote:
+> On Fri, Apr 26, 2024 at 8:28 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > I think the only path in either do_anonymous_page() or
+> > > do_huge_pmd_anonymous_page() that skips calling anon_vma_prepare() is
+> > > the "Use the zero-page for reads" here:
+> > > https://elixir.bootlin.com/linux/latest/source/mm/memory.c#L4265. I
+> > > didn't look into this particular benchmark yet but will try it out
+> > > once I have some time to benchmark your change.
 > >
-> > Seems never got queued, should I send a v2 with the above fixed?
+> > Yes, Liam and I had just brainstormed that as being a plausible
+> > explanation too.  I don't know how frequent it is to use anon memory
+> > read-only.  Presumably it must happen often enough that we've bothered
+> > to implement the zero-page optimisation.  But probably not nearly as
+> > often as this benchmark makes it happen ;-)
 > 
-> Oops, will queue in the m68k tree for v6.10.
-> No need to resend, I still have a fixed copy in my local tree.
+> I also wonder if some of this improvement can be attributed to the
+> last patch in your series
+> (https://lore.kernel.org/all/20240426144506.1290619-5-willy@infradead.org/).
+> I assume it was included in the 0day testing?
 
-Thank you!
+Patch 4 was where I expected to see the improvement too.  But I think
+what's going on is that this benchmark evaded all our hard work on
+page fault scalability.  Because it's read-only, it never assigned an
+anon_vma and so all its page faults fell back to taking the mmap_sem.
+So patch 4 will have no effect on this benchmark.
 
-It's far from (my personal experience) the record of the time
-from publishing in the mailing list and getting it in upstream,
-so we are all fine :-)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+The report from 0day is pretty clear they bisected the performance
+improvement to patch 2.
 
