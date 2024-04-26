@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-160352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681B38B3C57
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:03:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1069A8B3C58
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:03:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CFAE2876DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:03:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ADB4B280BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00F615217A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4E015219E;
 	Fri, 26 Apr 2024 16:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="utlDPrwG"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="GwNo1iYB"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662C5149C64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11783148FE6
 	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714147402; cv=none; b=cQWQ9z3WkiJjFaiiovkFon9qTEA57nZmTgv1Dm8PkIbNBJNWeLY/lzVCna8qdoK1ZT6UuWAUEXnvLsLze1txRvpaOQMqS7HQW33068+UfgRCegfIoPHiG8+lOttDgpkLU+zPd5z6a3idhW6sM6dH7SWF+XxRryfSfcBAfIWnTJo=
+	t=1714147403; cv=none; b=Y6EyIf3Gxppc62POojRxyn+8XzX6JRWXbuBQPwlMXAZh+96W2JPEDtpFnZQKaBRwlv+u6z6sgE712LwR3t54kCauxh1JC/tNX6YFlQ792iD2faz8MRPoLzwrh15EAPfbfpvHfmycCQf85AZ1mIZ2AEPL+8+3i5ZOWW0wycSD08w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714147402; c=relaxed/simple;
-	bh=UhWU3YDhjhCDZmu7A2apQsuTrQdWtiVU0TH4R8sMQlM=;
+	s=arc-20240116; t=1714147403; c=relaxed/simple;
+	bh=ez7lHK6kpD0AqMQJPIXCWWLHVxu2yzYTOG3RIR1auJQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bcZ/u1YY8GebIFS4Gpeo6u0UOfaS4Zff9tYwEURQw6yOVjBAJFwGXjhDvY9Qod9x5LsgXL3lG3wx3i8i8UkBo8DuS06NgfpJIz9zYAr+h8VYDuCWeC/P3YrAO22fpRNNztrE7mturq0s5YqivrT2EJCeDcCIHlBsk0EBzyXooXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=utlDPrwG; arc=none smtp.client-ip=209.85.208.175
+	 MIME-Version; b=QUd3mwXbrZ61au3yiM2YconJVdnXVnD/lWdfUuUvaUneRtP6vdbdk0CdujYDhrt+73+cew5ZarQk5e5P8t2N6XGPZQP7L7Kv4uBTy9tctTo0ZPia6qhfxAqULigL3IbNGZhd88GIplwFawFKX4fsqakprxcBr7gPudgEPGUZfBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=GwNo1iYB; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2db101c11beso25287581fa.0
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41b79451153so7667995e9.2
         for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:03:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714147398; x=1714752198; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714147399; x=1714752199; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LlYVJCYtRxxPVBcJn9HswhGBQFKRvWfDNGI/lisBMlg=;
-        b=utlDPrwGoehqIcAsfph1Y8eWR7W/kNoHH9vXKSlxkxCg173uZASHs+/BoUn2c5tk2p
-         xnYJSC53oYxwGM3eciJieoRpmi8I/ro9FUS8gSaBuizOSey4eVKJ6F4JfMHIvDCdiUUs
-         zMj/5YpZy12mRxH6vxysuxvT/1pzYUap3EDXxrjwJGwFKYtbOGqXKPbRxM1SSYbhM96f
-         nt0i1rEjtNSiVAF1TcTZqmXGMuZ0lHgLka9lRqL17eqKmcTnlfbxApQHGjVKmBqOSGZj
-         ITNFnVA4+pNJi9Y2XAEUFbP1NGWY+8gwJS6niw5HZvTTdOc76weu4zDYBnLDUbmK9Yzo
-         +Prw==
+        bh=VwWBLD0qVTKGOAoQ6eE14pnlmcdWHx3m3KgGPqRsyL0=;
+        b=GwNo1iYBQ0+Xmvuy1jdD0mu2h3NE+V/9W6pOoXdXT2J5kAS2Fp0NBCEoySI1vQq4nm
+         NJK96m7BebHsyFa1Uv9u8s6+8PwfKrlT0YXZuwAoGYe255VAq5DKfMqT1P+cLUa305Hv
+         LNL0R4dpvPZuIOgLx28O2qcLjJv+i+8yPpeVP9RQWinpT10UtsIENA8meWIKAOh3r5ta
+         OME2OcRdNsvDVg6hfu2X9t/0LrKUPXZfPoRXcUqKW1JcvMqGSwbLb0b8THcRpthscKQ5
+         KhZTsPwwRmlRXWCRjsokgRkj3VI6bx8G0tImS0xM22ZrigTdixAVvuz7LlyH5QGjmXvn
+         Zpkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714147398; x=1714752198;
+        d=1e100.net; s=20230601; t=1714147399; x=1714752199;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LlYVJCYtRxxPVBcJn9HswhGBQFKRvWfDNGI/lisBMlg=;
-        b=hV18L8pIPJfXyCTztqVoMX9lQLPt4W1od9Rbqlkpcck2ebjT9wCiE+DUj2fS2cfcBx
-         2PcBV8t6uY8oFQy/6B4+7REmt53BTfkDBLPKAWksj+12exalRihIdIgRMW8E0pqWlkwz
-         0+gXY9l7cufb3RIneli3r3rsomxl/lwqooU9MnV4ak9Ylt0XdODArm2Ib4T2Ud3PiluW
-         XIV8igf1MydWWkN0naU3EYMT5elgG7DdwFiXTvza72KlmjK8p+82zp+kDyiQcQqq+1lk
-         wIfmsOCOzmFuIM2n6o1bC0OFvXY9q3vOqYEq114+KypvJtvoVwcT7G2leKS35/TVt2PM
-         iQrw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8iuV0OQII2VmqVxIJTeE917VE/t+3MY/3lXw56D5ztElFHgvnhHTT0R4N+gMFoIL1e1CYHtkiiNoWmwsSNlMxNAhNrOs1iny+RFnx
-X-Gm-Message-State: AOJu0Yw14lBzxfJCmac5bi1djRj5z6FJSOMqodJqzAPTmzLA26rOyzIe
-	RwGKJg5CQSebGeWroE2pp30U3WuIQDkeQqCSFFPoMUtkPquwWQ5pbUauQHQA83s=
-X-Google-Smtp-Source: AGHT+IFW14tBfWL7cXos/nSxllpRy5uvA9d7tTy4bPugq4GLaF2Jd9gqDVK0xzBYq2SjTQFT1PuVCA==
-X-Received: by 2002:a05:651c:1a26:b0:2df:7009:63e3 with SMTP id by38-20020a05651c1a2600b002df700963e3mr1496141ljb.29.1714147398483;
-        Fri, 26 Apr 2024 09:03:18 -0700 (PDT)
+        bh=VwWBLD0qVTKGOAoQ6eE14pnlmcdWHx3m3KgGPqRsyL0=;
+        b=ivwVszJVLedTT1qbVhSXAlJXlO8Xk916ZZefuttHxkoIbjLfoOZsAnv5BdlGinl/mP
+         5XiAuEc7ojvBz22yNl0IEnXQMu69sYxNR1QJpnepFs4lL4BQzl9zmuNSpYiEIr9P9eSI
+         IUElFclPB3fQcgfOEtrNlGp9/F9npMtkaH8v8CjG+fpj+7LDkvAx2BuluShrQo85EVoe
+         KUkwEkeIK+6SkYK+zaGMBHDvbjpW3gAlUpvUNeA44pAV95EF4IeCTIxE4VdW4mR5OeCs
+         XwR+TAtMkudPHg7vYjWTSw05RUaw6IQMt2WERwrdrYED9n5+fh9kL1C1sN3HIP2yBICj
+         LYZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoEp+SdPTQIYfJXqcifjHK8dLmdgSaRiflWKM35JqlKFypK8bdFb0OtSsAEY5iCrB0Pc95oxOgP9Xgwmojuo77Y+vtUfYm32K7zeK0
+X-Gm-Message-State: AOJu0Yx1ONWzqATnOlwWdWZiw6iSRLik7MFCyXUIPtklDG2+JYt48+42
+	nSQmFA3xFoj6GOIVvUhhcKQTMtdBkYM6/pZoXGkfQSYb/Ps63lHIO5YovANffxY=
+X-Google-Smtp-Source: AGHT+IHkz1L3NwwxZXGlD2vu7++NI5Hhk5UYu+PbPcgI+aC0ZN9bQl9YHJFAVv+F4MLdLuQUjRV3jw==
+X-Received: by 2002:a05:600c:1913:b0:41b:ab72:3f4d with SMTP id j19-20020a05600c191300b0041bab723f4dmr749759wmq.1.1714147399382;
+        Fri, 26 Apr 2024 09:03:19 -0700 (PDT)
 Received: from toaster.lan ([2a01:e0a:3c5:5fb1:1926:f73e:8b99:1c0a])
-        by smtp.googlemail.com with ESMTPSA id p14-20020a05600c1d8e00b0041bab13cd74sm1271408wms.17.2024.04.26.09.03.17
+        by smtp.googlemail.com with ESMTPSA id p14-20020a05600c1d8e00b0041bab13cd74sm1271408wms.17.2024.04.26.09.03.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 09:03:18 -0700 (PDT)
+        Fri, 26 Apr 2024 09:03:19 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Neil Armstrong <neil.armstrong@linaro.org>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -79,9 +79,9 @@ Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	dri-devel@lists.freedesktop.org,
 	linux-amlogic@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] drm/meson: dw-hdmi: power up phy on device init
-Date: Fri, 26 Apr 2024 18:02:53 +0200
-Message-ID: <20240426160256.3089978-2-jbrunet@baylibre.com>
+Subject: [PATCH 2/2] drm/meson: dw-hdmi: add bandgap setting for g12
+Date: Fri, 26 Apr 2024 18:02:54 +0200
+Message-ID: <20240426160256.3089978-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240426160256.3089978-1-jbrunet@baylibre.com>
 References: <20240426160256.3089978-1-jbrunet@baylibre.com>
@@ -94,98 +94,124 @@ MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 
-The phy is not in a useful state right after init. It will become useful,
-including for auxiliary function such as CEC or ARC, after the first mode
-is set. This is a problem on systems where the display is using another
-interface like DSI or CVBS.
+When no mode is set, the utility pin appears to be grounded. No signal
+is getting through.
 
-This change refactor the init and mode change callback to power up the PHY
-on init and leave only what is necessary for mode changes in the related
-function. This is enough to fix CEC operation when HDMI display is not
-enabled.
+This is problematic because ARC and eARC use this line and may do so even
+if no display mode is set.
 
-Fixes: 3f68be7d8e96 ("drm/meson: Add support for HDMI encoder and DW-HDMI bridge + PHY")
+This change enable the bandgap setting on g12 chip, which fix the problem
+with the utility pin. This is done by restoring init values on PHY init and
+disable.
+
+Fixes: 3b7c1237a72a ("drm/meson: Add G12A support for the DW-HDMI Glue")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- drivers/gpu/drm/meson/meson_dw_hdmi.c | 51 +++++++++------------------
- 1 file changed, 17 insertions(+), 34 deletions(-)
+ drivers/gpu/drm/meson/meson_dw_hdmi.c | 43 ++++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-index 5a9538bc0e26..a83d93078537 100644
+index a83d93078537..5565f7777529 100644
 --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
 +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-@@ -384,26 +384,6 @@ static int dw_hdmi_phy_init(struct dw_hdmi *hdmi, void *data,
- 	    dw_hdmi_bus_fmt_is_420(hdmi))
- 		mode_is_420 = true;
+@@ -106,6 +106,8 @@
+ #define HHI_HDMI_CLK_CNTL	0x1cc /* 0x73 */
+ #define HHI_HDMI_PHY_CNTL0	0x3a0 /* 0xe8 */
+ #define HHI_HDMI_PHY_CNTL1	0x3a4 /* 0xe9 */
++#define  PHY_CNTL1_INIT		0x03900000
++#define  PHY_INVERT		BIT(17)
+ #define HHI_HDMI_PHY_CNTL2	0x3a8 /* 0xea */
+ #define HHI_HDMI_PHY_CNTL3	0x3ac /* 0xeb */
+ #define HHI_HDMI_PHY_CNTL4	0x3b0 /* 0xec */
+@@ -130,6 +132,8 @@ struct meson_dw_hdmi_data {
+ 				    unsigned int addr);
+ 	void		(*dwc_write)(struct meson_dw_hdmi *dw_hdmi,
+ 				     unsigned int addr, unsigned int data);
++	u32 cntl0_init;
++	u32 cntl1_init;
+ };
  
--	/* Enable clocks */
--	regmap_update_bits(priv->hhi, HHI_HDMI_CLK_CNTL, 0xffff, 0x100);
--
--	/* Bring HDMITX MEM output of power down */
--	regmap_update_bits(priv->hhi, HHI_MEM_PD_REG0, 0xff << 8, 0);
--
--	/* Bring out of reset */
--	dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_SW_RESET,  0);
--
--	/* Enable internal pixclk, tmds_clk, spdif_clk, i2s_clk, cecclk */
--	dw_hdmi_top_write_bits(dw_hdmi, HDMITX_TOP_CLK_CNTL,
--			       0x3, 0x3);
--
--	/* Enable cec_clk and hdcp22_tmdsclk_en */
--	dw_hdmi_top_write_bits(dw_hdmi, HDMITX_TOP_CLK_CNTL,
--			       0x3 << 4, 0x3 << 4);
--
--	/* Enable normal output to PHY */
--	dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_BIST_CNTL, BIT(12));
--
- 	/* TMDS pattern setup */
- 	if (mode->clock > 340000 && !mode_is_420) {
- 		dw_hdmi->data->top_write(dw_hdmi, HDMITX_TOP_TMDS_CLK_PTTN_01,
-@@ -425,20 +405,6 @@ static int dw_hdmi_phy_init(struct dw_hdmi *hdmi, void *data,
- 	/* Setup PHY parameters */
- 	meson_hdmi_phy_setup_mode(dw_hdmi, mode, mode_is_420);
+ struct meson_dw_hdmi {
+@@ -458,7 +462,9 @@ static void dw_hdmi_phy_disable(struct dw_hdmi *hdmi,
  
--	/* Setup PHY */
+ 	DRM_DEBUG_DRIVER("\n");
+ 
+-	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0, 0);
++	/* Fallback to init mode */
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1, dw_hdmi->data->cntl1_init);
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0, dw_hdmi->data->cntl0_init);
+ }
+ 
+ static enum drm_connector_status dw_hdmi_read_hpd(struct dw_hdmi *hdmi,
+@@ -576,11 +582,22 @@ static const struct regmap_config meson_dw_hdmi_regmap_config = {
+ 	.fast_io = true,
+ };
+ 
+-static const struct meson_dw_hdmi_data meson_dw_hdmi_gx_data = {
++static const struct meson_dw_hdmi_data meson_dw_hdmi_gxbb_data = {
+ 	.top_read = dw_hdmi_top_read,
+ 	.top_write = dw_hdmi_top_write,
+ 	.dwc_read = dw_hdmi_dwc_read,
+ 	.dwc_write = dw_hdmi_dwc_write,
++	.cntl0_init = 0x0,
++	.cntl1_init = PHY_CNTL1_INIT | PHY_INVERT,
++};
++
++static const struct meson_dw_hdmi_data meson_dw_hdmi_gxl_data = {
++	.top_read = dw_hdmi_top_read,
++	.top_write = dw_hdmi_top_write,
++	.dwc_read = dw_hdmi_dwc_read,
++	.dwc_write = dw_hdmi_dwc_write,
++	.cntl0_init = 0x0,
++	.cntl1_init = PHY_CNTL1_INIT,
+ };
+ 
+ static const struct meson_dw_hdmi_data meson_dw_hdmi_g12a_data = {
+@@ -588,6 +605,8 @@ static const struct meson_dw_hdmi_data meson_dw_hdmi_g12a_data = {
+ 	.top_write = dw_hdmi_g12a_top_write,
+ 	.dwc_read = dw_hdmi_g12a_dwc_read,
+ 	.dwc_write = dw_hdmi_g12a_dwc_write,
++	.cntl0_init = 0x000b4242, /* Bandgap */
++	.cntl1_init = PHY_CNTL1_INIT,
+ };
+ 
+ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
+@@ -626,18 +645,8 @@ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
+ 	meson_dw_hdmi->data->top_write(meson_dw_hdmi, HDMITX_TOP_BIST_CNTL, BIT(12));
+ 
+ 	/* Setup PHY */
 -	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
 -			   0xffff << 16, 0x0390 << 16);
 -
 -	/* BIT_INVERT */
--	if (dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
--	    dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
--	    dw_hdmi_is_compatible(dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
+-	if (dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
+-	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
+-	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
 -		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
 -				   BIT(17), 0);
 -	else
 -		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
 -				   BIT(17), BIT(17));
--
- 	/* Disable clock, fifo, fifo_wr */
- 	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1, 0xf, 0);
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL1, meson_dw_hdmi->data->cntl1_init);
++	regmap_write(priv->hhi, HHI_HDMI_PHY_CNTL0, meson_dw_hdmi->data->cntl0_init);
  
-@@ -656,6 +622,23 @@ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
- 	meson_dw_hdmi->data->top_write(meson_dw_hdmi,
- 				       HDMITX_TOP_CLK_CNTL, 0xff);
- 
-+	/* Enable normal output to PHY */
-+	meson_dw_hdmi->data->top_write(meson_dw_hdmi, HDMITX_TOP_BIST_CNTL, BIT(12));
-+
-+	/* Setup PHY */
-+	regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+			   0xffff << 16, 0x0390 << 16);
-+
-+	/* BIT_INVERT */
-+	if (dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
-+	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
-+	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
-+		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+				   BIT(17), 0);
-+	else
-+		regmap_update_bits(priv->hhi, HHI_HDMI_PHY_CNTL1,
-+				   BIT(17), BIT(17));
-+
  	/* Enable HDMI-TX Interrupt */
  	meson_dw_hdmi->data->top_write(meson_dw_hdmi, HDMITX_TOP_INTR_STAT_CLR,
- 				       HDMITX_TOP_INTR_CORE);
+@@ -848,11 +857,11 @@ static const struct dev_pm_ops meson_dw_hdmi_pm_ops = {
+ 
+ static const struct of_device_id meson_dw_hdmi_of_table[] = {
+ 	{ .compatible = "amlogic,meson-gxbb-dw-hdmi",
+-	  .data = &meson_dw_hdmi_gx_data },
++	  .data = &meson_dw_hdmi_gxbb_data },
+ 	{ .compatible = "amlogic,meson-gxl-dw-hdmi",
+-	  .data = &meson_dw_hdmi_gx_data },
++	  .data = &meson_dw_hdmi_gxl_data },
+ 	{ .compatible = "amlogic,meson-gxm-dw-hdmi",
+-	  .data = &meson_dw_hdmi_gx_data },
++	  .data = &meson_dw_hdmi_gxl_data },
+ 	{ .compatible = "amlogic,meson-g12a-dw-hdmi",
+ 	  .data = &meson_dw_hdmi_g12a_data },
+ 	{ }
 -- 
 2.43.0
 
