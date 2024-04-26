@@ -1,182 +1,190 @@
-Return-Path: <linux-kernel+bounces-159771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB738B33C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:20:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 684D88B33C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 218041F22BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:20:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779CB1C21BAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2473413DB90;
-	Fri, 26 Apr 2024 09:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE4713E8B2;
+	Fri, 26 Apr 2024 09:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K6+f6lgr"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NtUEw5A+"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775BD282EA
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BFB13C90F;
+	Fri, 26 Apr 2024 09:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714123233; cv=none; b=CpX4Lw2DRCsReVnKsxEzHdIf6JJ+HXA6G/2smnKh7ngc7m9S1dj4pH6I+MP4kBqoDdrMbTs7Mcw9N8RrSdQE/G5RYfG+kzWnkKNUkkZCKa3YG+9mN08Jzkff4I8+mpKa1bUZZTarvCHKw9S1EPADeGxq/FQy3EPYVFzrDlpyIVg=
+	t=1714123234; cv=none; b=SSBKXWP22zCQQmkiKsCY9mIYD5jyOrIZM3RZx+2fvavpUo8EK61ZVWxe2RwuQnYb3WMk9dmS/N/PwlyiL+NAUKDW+HOvv6u5sbVrDWcpeR2tDyG2sXZvo2Lqk8UUsRcIOSkC/ug0OWGanoxbpN6RVkcn1+ldhiTsNwgYfxGBJJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714123233; c=relaxed/simple;
-	bh=UXH7vkMVz9Qr8wjk2cH7wap4outoAOPM4GoB7kdUvV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cEd2rUkkYNY7gqCik6gAJdjUJWAUrItHwd80tCMlDr2qV2n5jTQEhygFq+HnszSC6iiFKXAcbHfOGHW634CJPlj5SIeRdMujOQuEEagmLEP68pKJCqckP8a06Xy/12W3Va3xAOE78RePqGzAibtc9Pc8lC0QYqntTwh7nUZ3boY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K6+f6lgr; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-234f5e54446so894401fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714123230; x=1714728030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XEGoLxUkWwDTn+Odyi6lg3eK/cudTzIim330VH70exg=;
-        b=K6+f6lgraaQQnOb/BxI1PJPXCJpn09OoBWIPOmQSbxjEIk91UAl8mSfB0CKokRvP0h
-         7NAnPYNB8GW2W93V8xckklwJkL1J9UvoAdu3MBs5utG3BVTTnWo3t+KCzL40o6eqy5zz
-         RyLgNV+FkxZFPwR1ZxfG74iDPzk2G1R/oDW7qtcpRvaQsFh8ar/g2BqJnr6wkY8LysVt
-         APD7yMmKsvv+H6UUrqUWevOh5i5E4q1AZT1CFQ7xUNFOWpGD0xFJlmer62fQjVuiewrP
-         nSALXT5aKvXLzYdKqCu/P4nE0Mfjw6HqJEwUS1u69VyMUAnw3AsV2sBpjyORuuGX1+pN
-         o4Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714123230; x=1714728030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XEGoLxUkWwDTn+Odyi6lg3eK/cudTzIim330VH70exg=;
-        b=ByczgBdTYKgwXgGFYYZiSj/xOZbcHOquZxQwWzS47PufhMlgo+P6YZfCRYCPfDYQVc
-         Pe5l7M9ME9CUl7Bf8t1c8KYMyaY1o/5aIoH9tz8bRf5ayMnV0pL979XK8rMYA65xyUue
-         ilLeAItVLPqHnrilW3t5HbVM2BfGTcAFG9qieZQpSCoceoutTvERd8umFAbAot6K9ycN
-         zoSJizeP9jfWIRxX0OoGbtTrcuG39DE0Z7nL56Bt6x87KTTGD5JmhLLczrq8gW6mh67z
-         tEG+D/I5yHhkHImexRdJWwC4urQ9BFy2CLvuxWNgEUvch67Kihdj2ohN294goRuGQE0H
-         teQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnloGO7L5uqpBXOHee9HBxAw92ihqefGvJ3/8q7sDQDYCIgVGThE8fWQFmnC7owwqrXF4XcDRj9BC2KYDsWZibUJwRn5XiIUVp5XUw
-X-Gm-Message-State: AOJu0YwEArGNpvWHz56BnMfO/SeUS56kHfEe+0C9nSqVzJuM+JftDGx+
-	obAVws7c1yqsVxwlwDk7gwkt/9dnPyu3QSME6Slx3zhGcCZRPdaTNzBCbQ1K4B4+WogeuV3efEt
-	CSwCKZAabOR8CHQuMUMsBTv9E+s0=
-X-Google-Smtp-Source: AGHT+IGKkWnDPhZbKeVeOePz1PtuqYkJhmTMbe1AbOipYv5BGs5ZkYUUkdQ91bVvtP5fnG6ltjsHXuBfuDGhrdoCiLY=
-X-Received: by 2002:a05:6870:8a0f:b0:235:3e77:49b4 with SMTP id
- p15-20020a0568708a0f00b002353e7749b4mr2567306oaq.0.1714123230026; Fri, 26 Apr
- 2024 02:20:30 -0700 (PDT)
+	s=arc-20240116; t=1714123234; c=relaxed/simple;
+	bh=xBUpP3VAjhJdXrYIjPZD0CAQ4mXC99ueDEdcVvn0xbY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YrKe4UIejjFyVfWqUAzzwO57LvdthVhT1vokVOVHr4fGjiiPkyPyM0ClPx/Vf77x4nVx2Ot++okCL/YWSA4SqmbfpRYgbUQM+/OKrjbf9mhiTL5CaaK7+A6AMrvGj+9PAkuB95sYVLOJAH+b3LheM8HJntYIoim96VTb70GEgy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NtUEw5A+; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q41YLU012981;
+	Fri, 26 Apr 2024 09:20:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=BUIIFoA4N2ESIijEp2JWqnWgumg1YcDccO7inyej7yI=; b=Nt
+	UEw5A+H8vL4iSQmfnMTb8OIaAEu9zI1irjgkP9JL4s5QPos/EMOutuHwvoBn0uRx
+	ZpR4MsWd/7ksqCHDctVXN/KUFWeO3JLKDxgW2o7gBSpy0ZngQWbCVTGdGRs8n08y
+	SD/atlbO/HLr/HaJUkJRWvb6XMUcnm8Auf4+0zJgblHtTaZue42rbquYLaEPH+gd
+	rhawsOCZiCiW1MAI1t5tdu0Ap2n41fbrfNuYX6bEPbkx6ptiNQ6RNQSTFaEYKm/q
+	ucUzvhf05Jl6IRfgdGr32Jq81Fb6jYPvVzwz8b7WB/qzRW6VT4NYG4bJoaTqo0pO
+	HUarX30L6YOVDZL/BWow==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr3591ctd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 09:20:25 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43Q9KMaN025356
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 09:20:22 GMT
+Received: from [10.218.10.146] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Apr
+ 2024 02:20:16 -0700
+Message-ID: <ca017ebf-c099-b436-f062-1341f765a08c@quicinc.com>
+Date: Fri, 26 Apr 2024 14:50:12 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zij_fGjRS_rK-65r@archlinux>
-In-Reply-To: <Zij_fGjRS_rK-65r@archlinux>
-From: Xiongwei Song <sxwjean@gmail.com>
-Date: Fri, 26 Apr 2024 17:20:03 +0800
-Message-ID: <CAEVVKH8Oagbih8E8YNPpNhyh75fWnBLdod+eEGQm9i8ciNv7sQ@mail.gmail.com>
-Subject: Re: [PATCH] slub: Fixes freepointer encoding for single free
-To: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cl@linux.com, 
-	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
-	akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev, 
-	42.hyeyoo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH V2 7/8] clk: qcom: Add GPUCC driver support for SM4450
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Vladimir Zapolskiy
+	<vladimir.zapolskiy@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        "Satya Priya Kakitapalli"
+	<quic_skakitap@quicinc.com>
+References: <20240416182005.75422-1-quic_ajipan@quicinc.com>
+ <20240416182005.75422-8-quic_ajipan@quicinc.com>
+ <CAA8EJpqwrKcgm7c57=LpxS7+CfrN2UxNg8k_46auBrdZG7vQnA@mail.gmail.com>
+Content-Language: en-US
+From: Ajit Pandey <quic_ajipan@quicinc.com>
+In-Reply-To: <CAA8EJpqwrKcgm7c57=LpxS7+CfrN2UxNg8k_46auBrdZG7vQnA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3uiw9dIqgbCoJcFFm8PKZL3HkWEE3PTx
+X-Proofpoint-ORIG-GUID: 3uiw9dIqgbCoJcFFm8PKZL3HkWEE3PTx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_09,2024-04-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404260060
 
-On Wed, Apr 24, 2024 at 8:48=E2=80=AFPM Nicolas Bouchinet
-<nicolas.bouchinet@clip-os.org> wrote:
->
-> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
->
-> Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
-> separately") splits single and bulk object freeing in two functions
-> slab_free() and slab_free_bulk() which leads slab_free() to call
-> slab_free_hook() directly instead of slab_free_freelist_hook().
->
-> If `init_on_free` is set, slab_free_hook() zeroes the object.
-> Afterward, if `slub_debug=3DF` and `CONFIG_SLAB_FREELIST_HARDENED` are
-> set, the do_slab_free() slowpath executes freelist consistency
-> checks and try to decode a zeroed freepointer which leads to a
-> "Freepointer corrupt" detection in check_object().
->
-> Object's freepointer thus needs to be properly set using
-> set_freepointer() after init_on_free.
->
-> To reproduce, set `slub_debug=3DFU init_on_free=3D1 log_level=3D7` on the
-> command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=3Dy`.
->
-> dmesg sample log:
-> [   10.708715] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> [   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Free=
-pointer corrupt
-> [   10.712695] ----------------------------------------------------------=
--------------------
-> [   10.712695]
-> [   10.712695] Slab 0xffffd8bdc400d580 objects=3D32 used=3D4 fp=3D0xffff9=
-d9a80356f80 flags=3D0x200000000000a00(workingset|slab|node=3D0|zone=3D2)
-> [   10.716698] Object 0xffff9d9a80356600 @offset=3D1536 fp=3D0x7ee4f480ce=
-0ecd7c
 
-If init_on_free is set,  slab_free_hook() zeros the object first, then
-do_slab_free() calls
-set_freepointer() to set the fp value, so there are 8 bytes non-zero
-at the moment?
-Hence, the issue is not related to init_on_free?
 
-The fp=3D0x7ee4f480ce0ecd7c here is beyond kernel memory space, is the issu=
-e from
-CONFIG_SLAB_FREELIST_HARDENED enabled?
+On 4/17/2024 11:35 AM, Dmitry Baryshkov wrote:
+> On Tue, 16 Apr 2024 at 21:23, Ajit Pandey <quic_ajipan@quicinc.com> wrote:
+>>
+>> Add Graphics Clock Controller (GPUCC) support for SM4450 platform.
+>>
+>> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+>> ---
+>>   drivers/clk/qcom/Kconfig        |   9 +
+>>   drivers/clk/qcom/Makefile       |   1 +
+>>   drivers/clk/qcom/gpucc-sm4450.c | 805 ++++++++++++++++++++++++++++++++
+>>   3 files changed, 815 insertions(+)
+>>   create mode 100644 drivers/clk/qcom/gpucc-sm4450.c
+> 
+> [skipped]
+> 
+>> +
+>> +static int gpu_cc_sm4450_probe(struct platform_device *pdev)
+>> +{
+>> +       struct regmap *regmap;
+>> +
+>> +       regmap = qcom_cc_map(pdev, &gpu_cc_sm4450_desc);
+>> +       if (IS_ERR(regmap))
+>> +               return PTR_ERR(regmap);
+>> +
+>> +       clk_lucid_evo_pll_configure(&gpu_cc_pll0, regmap, &gpu_cc_pll0_config);
+>> +       clk_lucid_evo_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
+>> +
+>> +       /* Keep some clocks always enabled */
+>> +       qcom_branch_set_clk_en(regmap, 0x93a4); /* GPU_CC_CB_CLK */
+>> +       qcom_branch_set_clk_en(regmap, 0x9004); /* GPU_CC_CXO_AON_CLK */
+>> +       qcom_branch_set_clk_en(regmap, 0x900c); /* GPU_CC_DEMET_CLK */
+> 
+> My main concern here is the AON clocks. If we don't model
+> gpu_cc_demet_clk as a leaf clock, then gpu_cc_demet_div_clk_src
+> becomes a clock without children and can be disabled by Linux.
+> Likewise not modelling gpu_cc_cxo_aon_clk removes one of the voters on
+> gpu_cc_xo_clk_src, which can now be turned off by Linux.
+> Our usual recommendation is to model such clocks properly and to use
+> CLK_IS_CRITICAL or CLK_IGNORE_UNUSED to mark then as aon.
+> 
+Thanks for review, actually if leaf (branch) clock is ON, hardware will 
+take care of enabling and keeping the parent ON. So parent clocks won't 
+get turned OFF in HW as long as branch clock is enabled.
 
-Thanks,
-Xiongwei
+For clocks which are fixed rate (19.2MHz) and recommended to be kept ON 
+forever from HW design, modelling and exposing clock structure in kernel 
+will be a redundant code in kernel memory, hence as per earlier 
+suggestion in previous thread such clocks are recommended to be kept 
+enabled from probe.
+>> +
+>> +       return qcom_cc_really_probe(pdev, &gpu_cc_sm4450_desc, regmap);
+>> +}
+>> +
+>> +static struct platform_driver gpu_cc_sm4450_driver = {
+>> +       .probe = gpu_cc_sm4450_probe,
+>> +       .driver = {
+>> +               .name = "gpucc-sm4450",
+>> +               .of_match_table = gpu_cc_sm4450_match_table,
+>> +       },
+>> +};
+>> +
+>> +module_platform_driver(gpu_cc_sm4450_driver);
+>> +
+>> +MODULE_DESCRIPTION("QTI GPUCC SM4450 Driver");
+>> +MODULE_LICENSE("GPL");
+>> --
+>> 2.25.1
+>>
+>>
+> 
+> 
 
-> [   10.716698]
-> [   10.716698] Bytes b4 ffff9d9a803565f0: 00 00 00 00 00 00 00 00 00 00 0=
-0 00 00 00 00 00  ................
-> [   10.720703] Object   ffff9d9a80356600: 00 00 00 00 00 00 00 00 00 00 0=
-0 00 00 00 00 00  ................
-> [   10.720703] Object   ffff9d9a80356610: 00 00 00 00 00 00 00 00 00 00 0=
-0 00 00 00 00 00  ................
-> [   10.724696] Padding  ffff9d9a8035666c: 00 00 00 00 00 00 00 00 00 00 0=
-0 00 00 00 00 00  ................
-> [   10.724696] Padding  ffff9d9a8035667c: 00 00 00 00                    =
-                  ....
-> [   10.724696] FIX kmalloc-rnd-05-32: Object at 0xffff9d9a80356600 not fr=
-eed
->
-> Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
-> ---
->  mm/slub.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3aa12b9b323d9..71dbff9ad8f17 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4342,10 +4342,16 @@ static __fastpath_inline
->  void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->                unsigned long addr)
->  {
-> +       bool init =3D false;
-> +
->         memcg_slab_free_hook(s, slab, &object, 1);
-> +       init =3D slab_want_init_on_free(s);
->
-> -       if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
-> +       if (likely(slab_free_hook(s, object, init))) {
-> +               if (init)
-> +                       set_freepointer(s, object, NULL);
->                 do_slab_free(s, slab, object, object, 1, addr);
-> +       }
->  }
->
->  static __fastpath_inline
-> --
-> 2.44.0
->
->
+-- 
+Thanks, and Regards
+Ajit
 
