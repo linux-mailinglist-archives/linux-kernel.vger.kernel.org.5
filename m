@@ -1,149 +1,144 @@
-Return-Path: <linux-kernel+bounces-160307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 755938B3BB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:35:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 008C98B3BBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F9A7289223
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 324E41C23954
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6635149C73;
-	Fri, 26 Apr 2024 15:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0EE149C4B;
+	Fri, 26 Apr 2024 15:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z+OVeYhH"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gy4Ip7jz"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F3D824B3;
-	Fri, 26 Apr 2024 15:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DCC18C1F;
+	Fri, 26 Apr 2024 15:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145747; cv=none; b=b7HskuRARzoWCb3QKWn9ynA+y3lyZnx9Rnu/FDt3J8+WWapfaei26p5UGr9TnAA+Jad2MWqemlM7qGMnItw/xFARZgmEpbdXTbfnnpOPZDUuPo+YJYcuKFCK0pmvgiT6gzWKaOd1ah2bIVgRiURpz8YTLBhMnMf8zbfJH3oQBPI=
+	t=1714145866; cv=none; b=P9eaipX2/nI1saqlRTMuI9GGSTpC6TZR51QMcK27dxmZRf2ZnnWIktXM8ydDZN5a4cZ6gXg4hdfRAgD6fkQIWgKr/0Lc/sGi/3pXdrEVFLElF8IzJu64wB1XCypl5aAG00NIOcEEqZOD23asDQFjy6AxXDbH4alAXhoCGs0DBBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145747; c=relaxed/simple;
-	bh=PQFovyCgZ9xdjLJHGbiokcmeJN3T4Q8WKOtc8qPH+4w=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:
-	 References:In-Reply-To; b=SW+olKANlPe4onBDWPVm8UsN5+K7rIzHA/xHCJ4A+g8YaXItLTVarGwPpj6McnuPXL5PnBz9kDAxVnsItl0c7zE/iONsMt3tBOLJ9K8FFpc0LtWa0qepckl3aJtlgrjR+dqM9UcKqxuCsQMzCm8rngKjDv9AhSE9JOwQijoGux8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z+OVeYhH; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1714145866; c=relaxed/simple;
+	bh=Rck3V7A+RmzHoKveKNNk6Uc4pHjWyyyyaJfC/10inZ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=B/slYgDpoaLXgqlopv3EAx1jPqLhFFfcGzj5vbERIfscMEVSUTMXmeYRj/gLUrQETwn6JeUz2u3U3qfY0HKcA0q+tY4105s3NvobaH4AcobNnbA+URRPCspani788BNb5qVKuoTllp2JeTtZU0z76Vyt9a6IAIbXBbmE5xuY4FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gy4Ip7jz; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57225322312so3294370a12.1;
-        Fri, 26 Apr 2024 08:35:45 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41ba1ba55e8so4171695e9.1;
+        Fri, 26 Apr 2024 08:37:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714145744; x=1714750544; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9I5S2+S0bvqZ7UVU6beR6Uqu4fLT1g89R1N7x2rc2tw=;
-        b=Z+OVeYhHLawY2kEMLGkP4Il+9i+/a9bTfqQwOoiqKLA67vuJvC9tF/COQgilTtzTZf
-         5kzXv4u8KbK9554cnM8vmnaU4sT96YWAAHpmSIdeUGuUZeFkQQOEk2D2I54PDEXcDTzy
-         0zi4NMjZaZORSFSPqVjcklbbLcLKZkkn4g7+Fol32PTaZChcnt+1oclaVq/CN78EKtL2
-         HaCdolRaEPa15chHa2AyO2Tvv35ZPpkWe7joykbTJs3aTjo2ZM8XL3QI8uDrF9hT3SHE
-         EPaZyXDfPxrvFT0rMtj0YlTMwCtGj1LkCzPMbdXu4xA2WIPCaoj0K4yaV2YXVrRIkMRz
-         1epA==
+        d=gmail.com; s=20230601; t=1714145863; x=1714750663; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0fnllMvw5rV4aVeEqjprC/GqDGLK/jA5NIktH0d4s7A=;
+        b=gy4Ip7jz77e1Y6+0q7kz7y02BBvpkh4TUXUN4eEoB9d/dPX2qGbD3DGY6Aa6830U/k
+         IaRqgZE7u8AaRNlSCi490ZOwGoDsHBQOFZ9HPCNwrWFOJotAN8MgcXAup0vUDzRoG5sp
+         1L4dYwODrTWR+my9HoHF775qx4DSMpD92aeNUpXKVwgmSucQPao9ClnlSqHjZUi31Qcm
+         ZfzeFNH3jdUHo3d9SmW2BMEvn0gOaBwN6xtNVErhOCljnw4nGuHloqXIadD5AnovKKm5
+         Zknh3lt6E/nJNo7o9ZtU4PyDzhyFTdwM+wf27fMRWlTpZEO4y7IhRR+ZzsTSA7wEuv/x
+         6JDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145744; x=1714750544;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9I5S2+S0bvqZ7UVU6beR6Uqu4fLT1g89R1N7x2rc2tw=;
-        b=IbU6ZhpJSt37iaU48NQfr9KJ5yMFe+q8v+dCnaJHkBvtNeOwfeStxnGSP/DoIsuPVj
-         WCsNAHXrZb9wWprIHVOiTl50849lwk+pL2Ny0dBzqXyR2x8Zz4xVlRGcH2UP+36PepJA
-         N+AnEz9hFVH6u3qlQRW0pojiSKAbQrUtphWOHmI3D77w75/kPn/syLnvR4pvO4gdlV66
-         A1ixOFk06femA6kLpZeTXxsg847FZqAtniLDvgJTh52ckuru4CVCwKpxMsx7i5pm1aox
-         4M2ZIXYzqCt+1oLZMv+oFPhPPndZfU+08XU2KSg3wNkCy1KBgc1uh6WTlbtoaEa8IO1D
-         BIqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUt11JoPmqLOezfxBPzvSLR2+YcNsfwbPfGWBKyAwyIko7qOKKaEpMXfawOn7xx2qzhQxmT813IN/o1Rpil81VpPqeQgk8q8+2YDq/A3h+0kEWKgHPYgVC1wUEdoPV6XL0tU3NXROygXqea/AEPvpm86QSv9q/WH0Gp8dLKSoLUqf8Fr4oYLeqCm4f/fmfsei4PrRd0LIQeMAfAy+BDCxM+Gotn
-X-Gm-Message-State: AOJu0Yw3ljw0NScEPSmtOClTd/B62P5xaiDY7669B2dMQRzfSCiIQIDW
-	f4mceXAbV4P3EjtDyTJsSy2DpsCs5h0XWQ6ZRaJxDHXvNqf9fPzT
-X-Google-Smtp-Source: AGHT+IF2wr8JiWj649TyQijnZJdEN1UK94JbX5L5JoJn/TCKNcaGYJRv/EOu+cxV7gOiqcJ3+t0WFw==
-X-Received: by 2002:a50:9b5b:0:b0:56b:ed78:f58 with SMTP id a27-20020a509b5b000000b0056bed780f58mr1969434edj.33.1714145743428;
-        Fri, 26 Apr 2024 08:35:43 -0700 (PDT)
-Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id fd25-20020a056402389900b00572678527e6sm30568edb.59.2024.04.26.08.35.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 08:35:43 -0700 (PDT)
-Content-Type: multipart/signed;
- boundary=8db9efe2193992169f1855e727000475caf92fc020254d3d8060c6c4c68a;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+        d=1e100.net; s=20230601; t=1714145863; x=1714750663;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0fnllMvw5rV4aVeEqjprC/GqDGLK/jA5NIktH0d4s7A=;
+        b=chI2jZ7mF6k2GkCuGrLyyLE5M9XJL9Nh+6P964qPnKhml68oYvs6Pue4tSDFOP/aoo
+         23ZR1dyKfwW+L1IukUgnqydMIZl4WSpqPUPiJemYr0NRz6EInGu61ABncWoK+FHTCuyf
+         jVKm7kwLzsuQk0G6lQz34TUPs6n8Fap7/gIQgOKiZbuA4Fl3gxQXGNcxXRSkcrfv7xCq
+         DKpy+pTgg2CUvsuT2DGx/HiIe7KTwOxlfRX1rBD1DrogE4qxJ1d3LjUXnpDJE/gGcJ8u
+         wG5FH8Ulb+c7IdCiAxpWMP+2zBXeZnnFNyI6z0GrBS0NlfEH9d+DWgbx5pZGsrmti6gs
+         f3CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFhTIvlvGCPiXmppQpTQ3FTCKe1VN5tYEZ6waLbANVDttc9E/N7BmMRmXlIRzpZOKjDTSMCOEU9Z+eMWVhvNjcBZ/RD8gmq+YU5kfJedVZhFKiYQ0HfKwnjYYHQ25Po4GMneM15RJGjg==
+X-Gm-Message-State: AOJu0YwJ8fbAf+y7mS+0RI87LhhyV2YLOejwVIV+34XntYDTGl0SZWkA
+	mN2fm/pTat9hv+DGJeAYMCscWS3+p9wvpjvIF/P0gfUDq816bpmh
+X-Google-Smtp-Source: AGHT+IF86aCF2y03zjD72DabiUs318EzT1BZ/WTa9OJV2HjgTF93fx7CNQA08TDph3S28W4TYeipuA==
+X-Received: by 2002:a05:600c:1988:b0:41a:7ab1:fd98 with SMTP id t8-20020a05600c198800b0041a7ab1fd98mr2473420wmq.21.1714145863392;
+        Fri, 26 Apr 2024 08:37:43 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b004162d06768bsm35189838wmo.21.2024.04.26.08.37.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 08:37:43 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Samuel Holland <samuel@sholland.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>
+Subject:
+ Re: [PATCH v1 1/1] leds: sun50i-a100: Use match_string() helper to simplify
+ the code
+Date: Fri, 26 Apr 2024 17:37:42 +0200
+Message-ID: <3557566.iIbC2pHGDl@jernej-laptop>
+In-Reply-To: <20240426152515.872917-1-andriy.shevchenko@linux.intel.com>
+References: <20240426152515.872917-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 26 Apr 2024 17:35:42 +0200
-Message-Id: <D0U5YAWTAEXO.1GLSZDY2XKKRV@gmail.com>
-Subject: Re: (subset) [PATCH v7 0/5] Add Tegra Security Engine driver
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Thierry Reding" <thierry.reding@gmail.com>,
- <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
- <jonathanh@nvidia.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
- <mperttunen@nvidia.com>, <airlied@gmail.com>, <daniel@ffwll.ch>,
- <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <dri-devel@lists.freedesktop.org>,
- "Akhil R" <akhilrajeev@nvidia.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240403100039.33146-1-akhilrajeev@nvidia.com>
- <171414552137.2298337.4837480787385115790.b4-ty@nvidia.com>
-In-Reply-To: <171414552137.2298337.4837480787385115790.b4-ty@nvidia.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
---8db9efe2193992169f1855e727000475caf92fc020254d3d8060c6c4c68a
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Dne petek, 26. april 2024 ob 17:25:15 GMT +2 je Andy Shevchenko napisal(a):
+> match_string() returns the array index of a matching string.
+> Use it instead of the open-coded implementation.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/leds/leds-sun50i-a100.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/leds/leds-sun50i-a100.c b/drivers/leds/leds-sun50i-a100.c
+> index 62d21c3a3575..119eff9471f0 100644
+> --- a/drivers/leds/leds-sun50i-a100.c
+> +++ b/drivers/leds/leds-sun50i-a100.c
+> @@ -252,18 +252,16 @@ static int sun50i_a100_ledc_parse_format(struct device *dev,
+>  					 struct sun50i_a100_ledc *priv)
+>  {
+>  	const char *format = "grb";
+> -	u32 i;
+> +	int i;
+>  
+>  	device_property_read_string(dev, "allwinner,pixel-format", &format);
+>  
+> -	for (i = 0; i < ARRAY_SIZE(sun50i_a100_ledc_formats); i++) {
+> -		if (!strcmp(format, sun50i_a100_ledc_formats[i])) {
+> -			priv->format = i;
+> -			return 0;
+> -		}
+> -	}
+> +	i = match_string(sun50i_a100_ledc_formats, ARRAY_SIZE(sun50i_a100_ledc_formats), format);
+> +	if (i < 0)
+> +		return dev_err_probe(dev, i, "Bad pixel format '%s'\n", format);
 
-On Fri Apr 26, 2024 at 5:32 PM CEST, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
->
->
-> On Wed, 03 Apr 2024 15:30:34 +0530, Akhil R wrote:
-> > Add support for Tegra Security Engine which can accelerates various
-> > crypto algorithms. The Engine has two separate instances within for
-> > AES and HASH algorithms respectively.
-> >=20
-> > The driver registers two crypto engines - one for AES and another for
-> > HASH algorithms and these operate independently and both uses the host1=
-x
-> > bus. Additionally, it provides  hardware-assisted key protection for up=
- to
-> > 15 symmetric keys which it can use for the cipher operations.
-> >=20
-> > [...]
->
-> Applied, thanks!
->
-> [4/5] arm64: defconfig: Enable Tegra Security Engine
->       commit: 4d4d3fe6b3cc2a0b2a334a08bb9c64ba1dcbbea4
+I know that old code used dev_err_probe() without reason, but could you change
+it to ordinary dev_err()? dev_err_probe() is useful only when return code could
+be -EPROBE_DEFER. This is clearly not the case here.
 
-For the record, I've also applied patch 5/5 but it didn't apply cleanly
-and so b4 didn't track it properly.
+Best regards,
+Jernej
 
-Thanks,
-Thierry
+>  
+> -	return dev_err_probe(dev, -EINVAL, "Bad pixel format '%s'\n", format);
+> +	priv->format = i;
+> +	return 0;
+>  }
+>  
+>  static void sun50i_a100_ledc_set_format(struct sun50i_a100_ledc *priv)
+> 
 
---8db9efe2193992169f1855e727000475caf92fc020254d3d8060c6c4c68a
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYryc4ACgkQ3SOs138+
-s6EV+g//fbg/7yejJ9Q0Vzf2k0pRHwe88E8Ih0sg9lYjOErhooz3HfGkb3TxbFDD
-DJEoSBRHEdja4WUZ2x3uCjvuw3S7tF/w8LU6goDRnS92uGuPkgt0O+rtoSmaKLfi
-MIZRVkJWtBVbrH9/6Vlvf9TRFq1xCzOunVqByMjFskeZKYxCEHEcfbbDPKfyqwR4
-GChoZzcUc826b1heCZUU+E/fU1WeHBXruo2i3KRtUVQKHwjdjZ+FffLyuUZ3z6RU
-xcqW8hG/PFsMJGDutWJkl5vw9o1ULHv0utkaXJ1zYBIu61pG+SqZpOw7TfAmQ8st
-N7Ga6sf9++3Cmt7b7cR8+0waqdW1pYAVv+jw+c/GYM40n3C8owhSPbQjE5rxxxTS
-7Wy5tvSsURjKsBXOlELeJL9ANI6/nreSrLXVBXfOeBx/+2o6tiyOhOnmW+Asml6u
-PfZvMxj+BW48UETZX/01o0ABmPE+Xibb70igRKdJG/UznWpw/U8wyZcnu65Ac+9a
-R5BMswVYYGJ+iaTCsrJJekr6Oam+LeIei+CQ9sigKEVAN8efZHSY/KbVicLPxFwJ
-QJGOiGl2xuqejC5v6BCmdtMWh3KImuH3gHafe8v98aCc7p5Y1S4q8nBHF0iiti6L
-cZk85PnTaqxFH47Dk/GlyBwCPGm2klmKQN5r85nGVFLUx1Z38yc=
-=AFyx
------END PGP SIGNATURE-----
 
---8db9efe2193992169f1855e727000475caf92fc020254d3d8060c6c4c68a--
 
