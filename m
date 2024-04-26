@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-160419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B0E8B3D52
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:57:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D3E8B3D54
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:57:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2158D28978A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:57:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DE4EB21780
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A39F15D5A2;
-	Fri, 26 Apr 2024 16:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33EC168B12;
+	Fri, 26 Apr 2024 16:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JAaM0W+M"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VwDPhQAJ"
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BF4153BD0;
-	Fri, 26 Apr 2024 16:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28513159585;
+	Fri, 26 Apr 2024 16:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150610; cv=none; b=DNC1Q7c0RDueYX15Xpcp83+O0wmbKoV6IzdVthrlM1sN9TmQezQ7OL2ZmcTUcKDQABJA4WcCCc8OyLYifosiN4Yt+cuxGBTU3F07+1pnvJ6T5mTs0Wgecrz1gLvgf+u1IfKSAnBdJutZ0g88HQMmhrkTnertjB9AWbEyKbz26rQ=
+	t=1714150612; cv=none; b=a7l7S1Bhx91EhQd3yXcW11naiE1J+SKYAbAx1cbKgixiDI2RkpnxeAijzONSI4oZ7FgAVNqqvQU3xQxdMB0y582Z5lyPv37Uv0+YCvrCXpcg4oF4f/dDVPln6iLkegfmq5FaBKXGTFt21FH4rc+NSJiTN0Vx3LPP+Eb8KnygQmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150610; c=relaxed/simple;
-	bh=62bKvUYE91S2dby28hoHAUGeKknkiUpxhGJ4QHGMds8=;
+	s=arc-20240116; t=1714150612; c=relaxed/simple;
+	bh=YsqwMeqwdDsJ998lyOSvKG5ryC2QIwVYJgZEoDxKO9I=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PAiHLynT/RwFLrQJ5Y8HcQcqtzjMKztfw28tp3aUb0W9bpUJOE8hxcFpzzGY5elbeH8N9fVrXpH92z9BT5Kqn1E1eNced+MhvmmSQAm21HISyuHHElZzpCALZy8FM87OzbR08OMm6IKvJ23CATra9zjsK+G6V98nFT0fNvGrBig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JAaM0W+M; arc=none smtp.client-ip=217.70.183.199
+	 In-Reply-To:To:Cc; b=ZEyooE3xxsu0tPBvpug71L71eSG6szO2IjHkXzNNmYn32lRfsUYCYhPRnTPXGT6xpzfVH34pzcX9uMCQ4zF/0XF3UJPiNCyjPaSHCz6giBLAoEKjOWV0k9v+fu7gaEQ3AsASYfqP6Vcoz7QLKVGKGlcxrgSFFlwjuho5LfUyP8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VwDPhQAJ; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4AAF4FF809;
-	Fri, 26 Apr 2024 16:56:46 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66482FF80A;
+	Fri, 26 Apr 2024 16:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714150607;
+	t=1714150608;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wA7CY7GZxU0LmJK2k6Cb1a5Gi/2q8P8/f6Nq8+Ks5JI=;
-	b=JAaM0W+MQEVTc3KdihKxI1ZNHVRMsCDcTQ+5tGA30IdkelmIN+NSiriR0JyVyNg8Dn6GXy
-	2fhzfOZ+DNhINxiPpSdkSdC73e+XmwDOkzuEQKok+rTPvnHhTyFTVM+gneZRpZ1xJS+z+D
-	ZT9oRyne6mnZslix2v6HvOkqOq00b4ArvqHsqrVdQ2Re+DONWR3FpsbjBp5S9dzOqDZ3tK
-	uEkyEtkbcVz1SfJ8w42sPn+U84CUMc1E+mKmbo9S0CaZj696OzuUhKnsl/yR7bevLBCzsO
-	KdgtqUXce735rXUgTkPKcnOWeSejR23SOKzk3szGznQwQJQwoamXynNPHC75Og==
+	bh=zaY0JG+JOkRcg/2G1AMAYAPG5tJyZY3wQkGIRlf2fd8=;
+	b=VwDPhQAJhNUZ3L//VkgfksMsoW3ToDWgZzlmIe31k/m58a6xlCW6GDPAcGlG0B1zV7iUVP
+	uyHBSBVxfO6zBQk/J0CsJg2C1RXqV7Te1bpF1k3W4Ak8WuYIAWSS1ONXo+ujfmQzJ9kOYk
+	VJ0GWx/qPQSAzifTeMq6iSVfsQVoHGNkscUn2kdRkpihmOIyDdqHErcLrFq9pnEfQvFDmG
+	PA8MKjPp8vsSQOwFkziNv72IC5u6gV7qrB9GpZaNk+Rwqw6J1yRlo3SaB4JSG9qdU8/BEU
+	9hSXrn4gZOYkJACVB3nIhjanR+eBavaavdGliws8PWofY6oeMvmQCBITFci1Gg==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Fri, 26 Apr 2024 18:56:35 +0200
-Subject: [PATCH v2 02/12] ASoC: doc: dapm: fix struct name
+Date: Fri, 26 Apr 2024 18:56:36 +0200
+Subject: [PATCH v2 03/12] ASoC: doc: dapm: minor rewording
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240426-dapm-docs-v2-2-87b07547eb5b@bootlin.com>
+Message-Id: <20240426-dapm-docs-v2-3-87b07547eb5b@bootlin.com>
 References: <20240426-dapm-docs-v2-0-87b07547eb5b@bootlin.com>
 In-Reply-To: <20240426-dapm-docs-v2-0-87b07547eb5b@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
@@ -69,27 +69,36 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: luca.ceresoli@bootlin.com
 
-struct snd_soc_codec_dai does not exist.
+Slightly reword for better readability: replace "PM" -> "power management
+frameworks", add missing comma.
 
 Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+
 ---
- Documentation/sound/soc/dapm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Changed in v2:
+ - don't rewrap the whole paragraph (no change to the actual patch content)
+---
+ Documentation/sound/soc/dapm.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
-index 59f65b181828..68ef79f539f2 100644
+index 68ef79f539f2..479c010d2dac 100644
 --- a/Documentation/sound/soc/dapm.rst
 +++ b/Documentation/sound/soc/dapm.rst
-@@ -148,7 +148,7 @@ Stream widgets have the following format:-
-   SND_SOC_DAPM_AIF_IN(name, stream, slot, reg, shift, invert)
+@@ -7,8 +7,8 @@ Description
  
- NOTE: the stream name must match the corresponding stream name in your codec
--snd_soc_codec_dai.
-+snd_soc_dai_driver.
+ Dynamic Audio Power Management (DAPM) is designed to allow portable
+ Linux devices to use the minimum amount of power within the audio
+-subsystem at all times. It is independent of other kernel PM and as
+-such, can easily co-exist with the other PM systems.
++subsystem at all times. It is independent of other kernel power
++management frameworks and, as such, can easily co-exist with them.
  
- e.g. stream widgets for HiFi playback and capture
- ::
+ DAPM is also completely transparent to all user space applications as
+ all power switching is done within the ASoC core. No code changes or
 
 -- 
 2.34.1
