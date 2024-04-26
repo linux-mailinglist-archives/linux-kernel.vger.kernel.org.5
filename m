@@ -1,107 +1,144 @@
-Return-Path: <linux-kernel+bounces-159952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621208B36B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:49:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDFB18B36B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:48:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 193001F22E37
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:49:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7231B212FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC73145B1A;
-	Fri, 26 Apr 2024 11:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="bTqjKFnl"
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.7])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69DC14533F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F000F145340;
 	Fri, 26 Apr 2024 11:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.7
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jc1YRiUI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE7113F01A;
+	Fri, 26 Apr 2024 11:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714132129; cv=none; b=WWhMHRqQHVS7o/onLywucVsOPEUW8t14tQDKSla1uBlKabwFUz2pJTMuik/ahb1g+B8e51wB4CxL09UDXlsgBfhKze4ZmLXDQxC8JUFfcpCqTc2eUYrqxjV0t8fJ3bmUma9zPdnsDC/Q0+d3l2B2gGfsxQAgBWKtI7r6/MFvsIk=
+	t=1714132125; cv=none; b=eDCtvgUMPCLX8wJ+fg1Ctf/rhHziIxwjIBIUlqe8rq/JlzzGvB3GYWnU+kDcU1zy9fFvhPdFHyoLiuCCKNfiz6V3uzYqGcIh82yA3v0/4x0QxYJ8n7AveSckS/oRdGM5iRPLMW9VFLFoFuNdCbCXC9ga2PejgFuqr6fFIir0twI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714132129; c=relaxed/simple;
-	bh=/SN/zjSnuky3OM1kz6zYORox+mvKrXnMtsKEX2ub648=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dJJnq4s0RUWdDg/5iOgKlLIw8XnCfXPaeG4zN5Mi3DSPsP91PtNp6jcZd+Qz/HflkdAYeTC8AoWSVxFDrykVDJfrQM9WrrxkKhL3eITEmVl2IEX6OuyGF4FXJRhv08atW6hmbNKUHjF8wKKZVHjt8pXC5QP2tNXZEYcXUmKJThg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=bTqjKFnl; arc=none smtp.client-ip=117.135.210.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6MWsS
-	mdYALQgj2DpgEGwlSeW/uW9ibfcAZbE4CpfAhE=; b=bTqjKFnlbpEgmyGJD3kez
-	tEyy0qG8mJmp4HY0TM6auVKvLRAhvE3bp+WTpY4CLNP/NvHvxYjbxDX78/zN+Va8
-	Wouq83fnBygu0yRrLYx0dMftaFio5GXshrbyX6CsxB2BT8Zclkr87AK9EwGKj4j8
-	n15ny4dZl0VkbN0rNBj1AU=
-Received: from localhost.localdomain (unknown [111.198.54.11])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wD3f2tGlCtmh+bjBQ--.51640S2;
-	Fri, 26 Apr 2024 19:47:19 +0800 (CST)
-From: lumingyindetect@126.com
-To: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: ilpo.jarvinen@linux.intel.com,
-	andriy.shevchenko@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
-Subject: [PATCH] serial: 8250_lpss: Fix memory leak in lpss8250_probe()
-Date: Fri, 26 Apr 2024 12:47:16 +0100
-Message-Id: <20240426114716.1275085-1-lumingyindetect@126.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714132125; c=relaxed/simple;
+	bh=BQU2RBaoh+BYwZJxNG6MuOnWNxfKhQAz+I7OuG0h14w=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=m/K94qL7bGs6x8V2YGDudxV38rQ5erCnfZyYTua//mttwk5/J43gL2+yPfjBAXgw/IcgZeGxSybbEMySW/EkHSEe8ec/wBm4jx+r5q642hqWnQobP7phNR5HmvqtB18kZyYpe4fKCsVInWrLLVPGdtIEOqdp7CKNaTwwkKtqHWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jc1YRiUI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A52FC113CD;
+	Fri, 26 Apr 2024 11:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714132124;
+	bh=BQU2RBaoh+BYwZJxNG6MuOnWNxfKhQAz+I7OuG0h14w=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=jc1YRiUIsXBhWYGOKSR6jgCIgv+XlHiiqtK6/NnzcjiE8IS2t/qU1yHVH09olJebX
+	 54DVzrcVs3eUA5hJ+/iTF+XPguh0JX9e/hRqrKfcYQVGVFH3uaJV12w77B9NRcd5an
+	 hIEs/GOl3RQ6TvACc65HcYj3tMLTDG4JHCcBjMjf6WNHHinEvUa6KbOqay0bk6+Bhf
+	 S/tvWke82H46+jMgWm8z3bkmrIWm0ZOFtQoDSc4LwGS3QOXkn3tsqwi1fLED//9kMH
+	 0+1UkXw0uVqjWgDoeoDMKwZjwskjo3NbBiQZ9GhopmswJk0259hzGXhdrHPn6fGDtP
+	 D8g2D3JJOAL1g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3f2tGlCtmh+bjBQ--.51640S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Cw45Zr15XFW8CF45tw43Jrb_yoW8Aw1DpF
-	s0kF9IyFyFqFy2gw1UAr4qqr1rAFZ7Xa47CrZrK3sI9FZFyFn3tFn3t34SyF18XrZ5tFy2
-	va1jyF45Aa4UJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbJ5rUUUUU=
-X-CM-SenderInfo: poxpx0hj1l0vphwhu3a6rslhhfrp/1tbiEAfM9mVLbFgvQQABsY
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 26 Apr 2024 14:48:39 +0300
+Message-Id: <D0U14GGWT2AW.XRFW7MB1QZFV@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, "Ilias Apalodimas"
+ <ilias.apalodimas@linaro.org>, "Lennart Poettering"
+ <lennart@poettering.net>
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Mikko Rapeli" <mikko.rapeli@linaro.org>, "Ard Biesheuvel"
+ <ardb@kernel.org>, <linux-efi@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+In-Reply-To: <20240422112711.362779-1-mikko.rapeli@linaro.org>
 
-From: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+On Mon Apr 22, 2024 at 2:27 PM EEST, Mikko Rapeli wrote:
+>  Documentation/ABI/testing/sysfs-firmware-efi | 12 ++++++++++++
+>  drivers/firmware/efi/efi.c                   | 13 +++++++++++++
+>  2 files changed, 25 insertions(+)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-firmware-efi b/Documentation=
+/ABI/testing/sysfs-firmware-efi
+> index 5e4d0b27cdfe..caaff27cc73e 100644
+> --- a/Documentation/ABI/testing/sysfs-firmware-efi
+> +++ b/Documentation/ABI/testing/sysfs-firmware-efi
+> @@ -36,3 +36,15 @@ Description:	Displays the content of the Runtime Confi=
+guration Interface
+>  		Table version 2 on Dell EMC PowerEdge systems in binary format
+>  Users:		It is used by Dell EMC OpenManage Server Administrator tool to
+>  		populate BIOS setup page.
+> +
+> +What:		/sys/firmware/efi/tpm_log
 
-In the execution logic of the lpss8250_probe() function, the function may directly return via a return statement at either line 347 or line 351.
-Unlike lines 357 or 361, where the return statement is used directly without releasing the dynamically allocated memory region pointed to by the variable pdev, causing a memory leak of the variable pdev.
-In the lpss8250_probe() function, I added a label named "free_irq_vectors" to release the dynamically allocated memory region pointed to by the variable pdev, and replaced the two return statements mentioned above with goto statements to this label.
+*Conditional* suggestion: s/tpm_log/tpm_event_log/
 
-Fixes: e88c4cfcb7b888ac374916806f86c17d8ecaeb67
+I.e. if we want this better to use the most popular name.
 
-Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
----
- drivers/tty/serial/8250/8250_lpss.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> +Date:		April 2024
+> +Contact:	Mikko Rapeli <mikko.rapeli@linaro.org>
+> +Description:	If EFI firmware supports TPM device and measurements were d=
+one
+> +		then a TPM event log has very likely been generated and provided
+> +		to the kernel. This serves as indicator for userspace to load
+> +		TPM drivers and to start related service early in the boot sequence,
+> +		e.g. initramfs, where full bus probes and device scans are not yet
+> +		done.
+> +Users:		systemd will use this interface to support TPM drivers as module=
+s also
+> +		for early initramfs
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 4fcda50acfa4..94773e8b8806 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -162,6 +162,13 @@ static ssize_t fw_platform_size_show(struct kobject =
+*kobj,
+>  	return sprintf(buf, "%d\n", efi_enabled(EFI_64BIT) ? 64 : 32);
+>  }
+> =20
+> +static ssize_t tpm_log_show(struct kobject *kobj,
+> +				     struct kobj_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "TPMEventLog=3D0x%lx", efi.tpm_log);
 
-diff --git a/drivers/tty/serial/8250/8250_lpss.c b/drivers/tty/serial/8250/8250_lpss.c
-index c3cd6cb9ac80..fa9fd4dc86c7 100644
---- a/drivers/tty/serial/8250/8250_lpss.c
-+++ b/drivers/tty/serial/8250/8250_lpss.c
-@@ -344,11 +344,11 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	uart.port.mapbase = pci_resource_start(pdev, 0);
- 	uart.port.membase = pcim_iomap(pdev, 0, 0);
- 	if (!uart.port.membase)
--		return -ENOMEM;
-+		goto free_irq_vectors;
- 
- 	ret = lpss->board->setup(lpss, &uart.port);
- 	if (ret)
--		return ret;
-+		goto free_irq_vectors;
- 
- 	dw8250_setup_port(&uart.port);
- 
-@@ -367,6 +367,7 @@ static int lpss8250_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- err_exit:
- 	lpss->board->exit(lpss);
-+free_irq_vectors:
- 	pci_free_irq_vectors(pdev);
- 	return ret;
- }
--- 
-2.25.1
+It is also asymmetric with the log message as we can see here. Why you
+want to put that prefix and not just print the number? Why hex and not
+just %lu?
 
+
+> +}
+> +static struct kobj_attribute efi_attr_tpm_log =3D __ATTR_RO_MODE(tpm_log=
+, 0400);
+> +
+>  extern __weak struct kobj_attribute efi_attr_fw_vendor;
+>  extern __weak struct kobj_attribute efi_attr_runtime;
+>  extern __weak struct kobj_attribute efi_attr_config_table;
+> @@ -459,6 +466,12 @@ static int __init efisubsys_init(void)
+>  		platform_device_register_simple("efi_secret", 0, NULL, 0);
+>  #endif
+> =20
+> +	if (efi.tpm_log !=3D EFI_INVALID_TABLE_ADDR) {
+> +		error =3D sysfs_create_file(efi_kobj, &efi_attr_tpm_log.attr);
+> +		if (error)
+> +			pr_err("sysfs create file failed with error %d.\n", error);
+> +	}
+
+s/err/warn/
+
+Why "sys create file" and not "sys_create_file"?
+
+> +
+>  	return 0;
+> =20
+>  err_remove_group:
+
+BR, Jarkko
 
