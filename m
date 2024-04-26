@@ -1,177 +1,112 @@
-Return-Path: <linux-kernel+bounces-159990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8718B374F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:34:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 074DE8B3749
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 518A2285A6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:34:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39BB11C21F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E717146594;
-	Fri, 26 Apr 2024 12:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1690D77624;
+	Fri, 26 Apr 2024 12:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpIMwmIy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D/wolc9o"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A22F3715E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63F21E87F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714134883; cv=none; b=LycA8JU+8TLqYDT44hcNuySEgrYMM7YcfW9ikpoDu0Xe9c7i231DzyVF7SInINmuXiJjzzy2FuEDvMNc7S0uxUcfw8pkdB1f2aZ9pCVaHZx82crNeTMJo/XBST68QuYFmebExqpId1Yp45Pt5czI2wBZIIKX2rw/c4WBhoTEUbo=
+	t=1714134668; cv=none; b=qmWwvYoF8Tzx45bx0kH6Gls/mUkmvIOf7+FnW8r5btq+Qdvi5ve3T4QX4YTPP0FERIMPomwSdcri1bU7jw/Ctmi7Wvtwvqfrd/oK8uXQaY3V8R9eOhQ1IOMm4zj1Z82glJBtZmtDoc4QGwjV8SdWdo8kwX1bE5y2P7tVml3c++4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714134883; c=relaxed/simple;
-	bh=e6PDpd9m5aNs9GktJ5+u/HJ8JwVHiegREXNQkYESuRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KJ+lZZAH3fHdeHfkkTicCl0vCBVEWvXEOEPRGuAOYBAocxy9yRH1ZBgEY49qUdkwspmtRi6sfYOm8LxDjqIJb3rbFU3FYXg10DyO+deTuLl5cppV0qxyWTvhN9fH5dqjqV59KZ5CKSIHy4U+S3k5mabjjoSLVrEZEmLCKk8eW5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpIMwmIy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A980C113CD;
-	Fri, 26 Apr 2024 12:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714134882;
-	bh=e6PDpd9m5aNs9GktJ5+u/HJ8JwVHiegREXNQkYESuRk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qpIMwmIyoyiZWggw8h4sZWS0KrLfPxF5ZR+sKaUI9LwBk5tgMhX44Dy2Ckm01o0+T
-	 YH3xfg1P8/1Iwb0UszWcSIroApZpv+QxlubysfBHGPBjTYHiJFphsQ6LiiJr6GC/Hc
-	 Oi4HZifg2pJH1MpNXuI67mtK3BJStMWef3RcqVQ6udoPR4Id91FWUUGAoF44ZKmLdF
-	 tdCHBwY9vXbhKJBF54Ca+FJmkzu9k9K71oeHBov9ZVh+HXt4OtATjn1KTq7UFxNZNl
-	 nbYkDShm2DTiWnPiKF31tT395Z6dQi/GxlTtvCRfm9LLda6St1xaG2aWFc/Q/YF8E/
-	 eOJYJXGEGYjeg==
-Date: Fri, 26 Apr 2024 09:29:33 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/1 fyi] tools headers x86 cpufeatures: Sync with the
- kernel sources to pick TDX, Zen, APIC MSR fence changes
-Message-ID: <ZiueLXPqjHGqVcgJ@x1>
-References: <ZirIx4kPtJwGFZS0@x1>
+	s=arc-20240116; t=1714134668; c=relaxed/simple;
+	bh=d/oaR76lqNG7xNtfX839VYSmrqO5K70+zhGXLKbDQnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jmtgb03JO7Ja6pA3QZDd/dP0Gq5QG77iP2tw5dDltbnakk74bjWGn54Z6qSFbSZbHsigLHXbOylgSkcRwPdFXzJpwzFYff5/Jgf+6y8SUXDc+IAmu3+6eLQ+YOLbvBVZgekZrH/9HObrPZWdicIU5l/8ZOzVbyd+LXID2/LJ374=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D/wolc9o; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5723edf0ae5so2272146a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 05:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714134665; x=1714739465; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xiMpqWHu87fDT4J0TWysn4eELCjDaabUFZMQse25vy8=;
+        b=D/wolc9ob4kex3NU5qR5VlNGjy7CycY+dz5VsD9mgF7Gs4EPgIomtoMpTSJs4FowkR
+         DhlUY4/B7gfB4vFV3aX0Hrs9XeTM8GuATK3YtN9dFew72Y7Sr4mPFzi5aICTq+3DGjg8
+         9jMl8XW2mLprfEyJfYx153kyaHdMn0ZubpfodUkaI4DBwtADy60dD4cZXFfqxLGw3Zyb
+         hj+tdIP/V1bD62xYuhg9O+HraPWNqxwclMhSPldhCDMLUz9sfXfhT+G8t7Z4t3tAagXN
+         HGQHFVxIHqwyAbWtnLyavTfDF9p3A4rUEvVL1uX8ip4J/Hw27BFWBS1jaC8Tb9ZgQHEU
+         ilsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714134665; x=1714739465;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xiMpqWHu87fDT4J0TWysn4eELCjDaabUFZMQse25vy8=;
+        b=IvRjSwWj6XpkmXQeAgxGQHHV+Xf5VccRKTH30nH8nIOCozkSGUy2FiKl0scNkaCNaz
+         GZ+iXwNi4MH9BWytFjzM6AOU5MCjChhH8t7kDFOSBiuigjcz5RKGHCQMHrgEYDgMcZUC
+         1u0TP1ybxNRgmzlh9JJYzbhOT5p+/mSAeMS8XSHR2oYLIzgOzdZ5x0+rfX6OCnmowFYd
+         ncMbILimuUw0RaPN/EHipZEgxOT0zg99fi3zk0k8YWVdQfoEX3IedwyYZ13mmQLkZZuR
+         d0mebVg3lxLaZ7duwALf/XZA4vr5507ricczv/f4kjIIbU5C5kDxbWDnWhFI8EvKx+FA
+         z3og==
+X-Forwarded-Encrypted: i=1; AJvYcCUPoIX5jRhnynGyW+ABl0Rq1qkXHJRDZLlafpHwMGjLsHAktMVO/PBiR+9FaECCgnh6oRoLqfGXoSFeqCVWomxPHzyXB19P4BSYAfbJ
+X-Gm-Message-State: AOJu0Yx3Wf/GZ4FkYVwtrUsEbGf1mt3nDG/vPD3Ty7jqiT7SuzLZRKzm
+	/GZChKgi1cItrzstjAW4QEkFPK/Ach2MO/WeLYnotduCUYvVeY15wQe02N8icpE=
+X-Google-Smtp-Source: AGHT+IH/DanPdRwEVdnmt/V0koBH8Pn/HkA087uaLGGXbaFu8Y57wMImmUEd2BZTYXYPKYE5kon+Rw==
+X-Received: by 2002:a50:baaf:0:b0:570:5e7e:474e with SMTP id x44-20020a50baaf000000b005705e7e474emr2039629ede.22.1714134665008;
+        Fri, 26 Apr 2024 05:31:05 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id q25-20020aa7cc19000000b0057203242f31sm6144342edt.11.2024.04.26.05.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 05:31:04 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] arm64: dts: qocm: sdx75: align smem node name with coding style
+Date: Fri, 26 Apr 2024 14:31:01 +0200
+Message-ID: <20240426123101.500676-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZirIx4kPtJwGFZS0@x1>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 06:19:07PM -0300, Arnaldo Carvalho de Melo wrote:
-> tldr; Just FYI, I'm carrying this on the perf tools tree.
+Node names should not have vendor prefixes.
 
-Sorry about the subject line, reused from a previous sync, will fix it
-up.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sdx75.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Arnaldo
+diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+index f58da999a72d..b8b80127079e 100644
+--- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+@@ -405,7 +405,7 @@ hyp_smmu_s2_pt_mem: hyp-smmu-s2-pt@bfc00000 {
+ 		};
+ 	};
  
-> Full explanation:
-> 
-> There used to be no copies, with tools/ code using kernel headers
-> directly. From time to time tools/perf/ broke due to legitimate kernel
-> hacking. At some point Linus complained about such direct usage. Then we
-> adopted the current model.
-> 
-> The way these headers are used in perf are not restricted to just
-> including them to compile something.
-> 
-> There are sometimes used in scripts that convert defines into string
-> tables, etc, so some change may break one of these scripts, or new MSRs
-> may use some different #define pattern, etc.
-> 
-> E.g.:
-> 
->   $ ls -1 tools/perf/trace/beauty/*.sh | head -5
->   tools/perf/trace/beauty/arch_errno_names.sh
->   tools/perf/trace/beauty/drm_ioctl.sh
->   tools/perf/trace/beauty/fadvise.sh
->   tools/perf/trace/beauty/fsconfig.sh
->   tools/perf/trace/beauty/fsmount.sh
->   $
->   $ tools/perf/trace/beauty/fadvise.sh
->   static const char *fadvise_advices[] = {
->         [0] = "NORMAL",
->         [1] = "RANDOM",
->         [2] = "SEQUENTIAL",
->         [3] = "WILLNEED",
->         [4] = "DONTNEED",
->         [5] = "NOREUSE",
->   };
->   $
-> 
-> The tools/perf/check-headers.sh script, part of the tools/ build
-> process, points out changes in the original files.
-> 
-> So its important not to touch the copies in tools/ when doing changes in
-> the original kernel headers, that will be done later, when
-> check-headers.sh inform about the change to the perf tools hackers.
-> 
-> To pick the changes from:
-> 
->   95a6ccbdc7199a14 ("x86/bhi: Mitigate KVM by default")
->   ec9404e40e8f3642 ("x86/bhi: Add BHI mitigation knob")
->   be482ff9500999f5 ("x86/bhi: Enumerate Branch History Injection (BHI) bug")
->   0f4a837615ff925b ("x86/bhi: Define SPEC_CTRL_BHI_DIS_S")
->   7390db8aea0d64e9 ("x86/bhi: Add support for clearing branch history at syscall entry")
-> 
-> This causes these perf files to be rebuilt and brings some X86_FEATURE
-> that will be used when updating the copies of
-> tools/arch/x86/lib/mem{cpy,set}_64.S with the kernel sources:
-> 
->       CC       /tmp/build/perf/bench/mem-memcpy-x86-64-asm.o
->       CC       /tmp/build/perf/bench/mem-memset-x86-64-asm.o
-> 
-> And addresses this perf build warning:
-> 
->   Warning: Kernel ABI header differences:
->     diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
-> 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/arch/x86/include/asm/cpufeatures.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
-> index a38f8f9ba6572912..3c7434329661c66e 100644
-> --- a/tools/arch/x86/include/asm/cpufeatures.h
-> +++ b/tools/arch/x86/include/asm/cpufeatures.h
-> @@ -461,11 +461,15 @@
->  
->  /*
->   * Extended auxiliary flags: Linux defined - for features scattered in various
-> - * CPUID levels like 0x80000022, etc.
-> + * CPUID levels like 0x80000022, etc and Linux defined features.
->   *
->   * Reuse free bits when adding new feature flags!
->   */
->  #define X86_FEATURE_AMD_LBR_PMC_FREEZE	(21*32+ 0) /* AMD LBR and PMC Freeze */
-> +#define X86_FEATURE_CLEAR_BHB_LOOP	(21*32+ 1) /* "" Clear branch history at syscall entry using SW loop */
-> +#define X86_FEATURE_BHI_CTRL		(21*32+ 2) /* "" BHI_DIS_S HW control available */
-> +#define X86_FEATURE_CLEAR_BHB_HW	(21*32+ 3) /* "" BHI_DIS_S HW control enabled */
-> +#define X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT (21*32+ 4) /* "" Clear branch history at vmexit using SW loop */
->  
->  /*
->   * BUG word(s)
-> @@ -515,4 +519,5 @@
->  #define X86_BUG_SRSO			X86_BUG(1*32 + 0) /* AMD SRSO bug */
->  #define X86_BUG_DIV0			X86_BUG(1*32 + 1) /* AMD DIV0 speculation bug */
->  #define X86_BUG_RFDS			X86_BUG(1*32 + 2) /* CPU is vulnerable to Register File Data Sampling */
-> +#define X86_BUG_BHI			X86_BUG(1*32 + 3) /* CPU is affected by Branch History Injection */
->  #endif /* _ASM_X86_CPUFEATURES_H */
-> -- 
-> 2.44.0
-> 
+-	smem: qcom,smem {
++	smem: smem {
+ 		compatible = "qcom,smem";
+ 		memory-region = <&smem_mem>;
+ 		hwlocks = <&tcsr_mutex 3>;
+-- 
+2.43.0
+
 
