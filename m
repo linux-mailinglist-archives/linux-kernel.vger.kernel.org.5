@@ -1,195 +1,142 @@
-Return-Path: <linux-kernel+bounces-159664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F51C8B31C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37C668B31CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8ECA281ECB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:56:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6245281BFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EEF113C8F7;
-	Fri, 26 Apr 2024 07:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F2013C829;
+	Fri, 26 Apr 2024 07:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="wW52gZZu"
-Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U+Ug5mSE"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682BC13A271;
-	Fri, 26 Apr 2024 07:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA95213C8EB
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 07:57:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714118191; cv=none; b=Q8EkFW4LSpxchrI8D6b3D7FyenxbGXL2+vtvqQ4sBE1IGI0Pv5w38q7SbEH+ZQ369VIDVEVF8AJdF9mOCicvBbKqjNR0Tzq5lxc8CsI1p6YYNy3HS+4hvQVCuhVkWnweIT6nCfv/YNCAUfAWP1XGvOmeKpB1+7BsYYn5aqjzOsg=
+	t=1714118254; cv=none; b=TF8w/Upcxzu/fRflsmwiGYwR4+0imSoHFnrGtvazIY9B5UU4GiRCLqNng9oNF+eklUIF59cm9j8iLWX6HBBYpJQHBYAhJLmOTkXUFounKQWz/cfVfppNBY6TTQMatO1gHVSAjouJEvotwq2IbZN4K+BQk9qHDzjluBeDP5vJ/s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714118191; c=relaxed/simple;
-	bh=/oA1gWLJ772cy7dGtf/b943XB9Mt5AyNlRJvMHs+7cQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WTatcABKHwbOQxO0d7zAt/TbjWyu38AP2JYjvhDJtA1U+Uqw+30HUHgPGkQ6lNNDK/asVVX1Okgdg8lQjgG1bwQelDMMerSam/n31M4A9coDTDmXNSOpFKCdVEbYRgvgRMGLGktz9w7GjwGNFjU0QX7Y7q7ntYtq6TUOFrm4x0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=wW52gZZu; arc=none smtp.client-ip=161.97.139.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
-	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1s0GRR-001Fow-2S;
-	Fri, 26 Apr 2024 09:56:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=eN3ukgRV0UMxzWE3czcAWiLOWP8d0N+EaAA0gs4p+vs=; b=wW52gZZuXVW6afGr8W9dJMtSAb
-	F7Bt1AV1GQFfX5W6n9ce6T43GsIkB3/iaXRY0QYDZj/JF3CjWWA+bE3wArpTnRb8o0Ej3RCK1S2HR
-	M5ogkpkh/rhwymhu3xzHMOgkWRoBkKEWyrB1vgy1Lk3bVbCaL1lhrj7bmkAVWhayx6beih6ROKPtc
-	QZm60ESl+JwH0xgVGfWAm3JV9pvGO9yj+o5waDq9vMSjlI3MunlOmk5JW+1nLNN/uraGQ5c5iaNiS
-	5axiVdrtu4nJhHKjmU+u5NORSZoxMJx6Bx6x+Z7RLf1u+W6sUcTD5hRSETzfCtX+SLV4dhjlBVCMi
-	srZlBGQg==;
-Received: from p200300c2071a02001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:c2:71a:200:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1s0GRO-0003kO-1l;
-	Fri, 26 Apr 2024 09:56:19 +0200
-Date: Fri, 26 Apr 2024 09:56:17 +0200
-From: Andreas Kemnade <andreas@kemnade.info>
-To: Felix Kaechele <felix@kaechele.ca>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, dmitry.torokhov@gmail.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- o.rempel@pengutronix.de, u.kleine-koenig@pengutronix.de,
- hdegoede@redhat.com, ye.xingchen@zte.com.cn, p.puschmann@pironex.com,
- linux-input@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, caleb.connolly@linaro.org
-Subject: Re: [PATCH v2 2/2] Input: edt-ft5x06 - add ft5426
-Message-ID: <20240426095617.4e442681@aktux>
-In-Reply-To: <7dd1eb70-b011-4247-aea9-173ddcd17dc7@kaechele.ca>
-References: <20240404222009.670685-1-andreas@kemnade.info>
-	<20240404222009.670685-3-andreas@kemnade.info>
-	<CAHp75VeZ9U_+1rJQjr4KvvzjYQGzfKtk+BK00vqvKcVn2-yP3g@mail.gmail.com>
-	<20240405182832.4e457695@aktux>
-	<CAHp75VckoDheCN-KQ0KcSk9rE_-cXFUujurtA4sK6KAixDttQQ@mail.gmail.com>
-	<20240425185417.0a5f9c19@aktux>
-	<7dd1eb70-b011-4247-aea9-173ddcd17dc7@kaechele.ca>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714118254; c=relaxed/simple;
+	bh=wCiBODES6hYe6uSEsz1rgi057khv4znYREqrSw4IVQM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P3TqIOp4QFBwac362DY5mRT6aTH3zJEydBTUzsNrc47jFweNZ7YJoRFZe1k28ZvhABNe21NXJXb7wgz9QF9HNRSF3a8Kth+Dw5Az25HuO2HGfm8+/PevO1LraT7Rj3F946/gn7HxZPyxxkzQSlJfWozg4OzwlwMmtZbiowxDd+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=U+Ug5mSE; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41b782405bbso5055435e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 00:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714118251; x=1714723051; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=392YvKHUy01C2ane9PlBGjbFseGqGwG2sSPnV1+h06o=;
+        b=U+Ug5mSEWLo0n7L40UGxbwAXnimvCa1dlFUN0LYaqh6jbnK5PP+Jqpff7A/Gxe782f
+         mYsAcx+aPgfP/5Cq/QiiitK9T5+b8Hch8ZAO0DF31ZehIhsVyMeioxk8/B6FvY1KfCLb
+         BMp/kIt9C/lSDQkqekr1kz7TSdpxxSacbRO5mVvz3qnRXo1nudbN6WOIXBM2oNRgowOc
+         nlJHszEAbKJnN2TlN2UNyp8UtFaK0/hOhp2pv6eFhQJMKVdxo8UfOFMSzrHkDFRqy8OL
+         88gGp6m2vG0Z0Z7Nq25hqQZTKyDXnWA9kFNm0chhmKQ0oSJ/9crtzYVibBOgc+702h/D
+         u5WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714118251; x=1714723051;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=392YvKHUy01C2ane9PlBGjbFseGqGwG2sSPnV1+h06o=;
+        b=mhwS6C0NkDhEWL+6J5uZgVZLW1RmSHM3c370QPVARB9XSyxXypvdQxN3gAh5Y3KRJW
+         lTZJ3we2yHMPa2oDZByqp5NKloernhd76FKE6xdJqJwaFjHzHMJcBWusi8b253CLA/Aa
+         azogxsoEYHxcUduTDdNzsNs+L4T97aVYNyzCUja1+ObZCIRHbDAfoVZWoLBPL+/I8qoq
+         dtm1/v32uWClj/9/jgpOigd5RlH7/ZUyALBt0LfIhcY3bXxIGQgpgFRdfaWn7YKAPMgC
+         LZAnZ9Ok+A8Hd3oX8bAHY86PrECksBT1Pl+5e2a61PrPN00QlhXVVtuNGCeiAMXLZPlu
+         VzFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXfGes7ETVB7+oJafETBQI37pKKimMJXEfQh1xQFX3OyNa48YHCgQLYwwhHiK11svVtXBvx5oWI5QMWpxIO9PtpJ9e3b1M/CHwIO5M9
+X-Gm-Message-State: AOJu0Yyc+vQUUltPg3NhgralwGrAUtOAYZTkSLPT4f8R7xWfONRb13EE
+	3OiBvV9FMCOA3FD7jJlC7vSxpJMAj3tPZYyabAD0jEFiGd65D/dkfE6VliiWQrk=
+X-Google-Smtp-Source: AGHT+IHIONkocekx1Nn0xgOaZLdkdZ6ZhZ+MdaNtdhL8VruI6qSiOgyFn8JkOr6Ws3rcaZt3necsIA==
+X-Received: by 2002:a05:600c:19d1:b0:419:f126:a46d with SMTP id u17-20020a05600c19d100b00419f126a46dmr1373777wmq.30.1714118250865;
+        Fri, 26 Apr 2024 00:57:30 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id f7-20020a05600c154700b004190d7126c0sm25350832wmg.38.2024.04.26.00.57.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 00:57:30 -0700 (PDT)
+Message-ID: <35c9dbe9-9166-4358-bfa9-99f205acd8de@linaro.org>
+Date: Fri, 26 Apr 2024 09:57:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] thermal: amlogic: introduce A1 SoC family Thermal
+ Sensor controller
+Content-Language: en-US
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>, neil.armstrong@linaro.org
+Cc: jbrunet@baylibre.com, mturquette@baylibre.com, khilman@baylibre.com,
+ martin.blumenstingl@googlemail.com, glaroque@baylibre.com,
+ rafael@kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ kernel@salutedevices.com, rockosov@gmail.com,
+ linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240328191322.17551-1-ddrokosov@salutedevices.com>
+ <38ba3618-2a67-4e21-b08d-7e382411e51a@linaro.org>
+ <20240417084007.uzg2uc7gwb6mi7bi@CAB-WSD-L081021>
+ <20240426073106.3yl2dplvauper3lg@CAB-WSD-L081021>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240426073106.3yl2dplvauper3lg@CAB-WSD-L081021>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 25 Apr 2024 22:54:13 -0400
-Felix Kaechele <felix@kaechele.ca> wrote:
 
-> On 2024-04-25 12:54, Andreas Kemnade wrote:
-> > On Fri, 5 Apr 2024 20:21:19 +0300
-> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > =20
-> >> On Fri, Apr 5, 2024 at 7:28=E2=80=AFPM Andreas Kemnade <andreas@kemnad=
-e.info> wrote: >>> On Fri, 5 Apr 2024 18:13:45 +0300 =20
-> >>> Andy Shevchenko <andy.shevchenko@gmail.com> wrote: =20
->=20
-> ...
->=20
-> >>>> Why a different vendor prefix? =20
->=20
-> ...
->=20
-> >>> I sorted by the numbers. Looking at datasheets for other controllers =
-I see >>> https://www.displayfuture.com/Display/datasheet/controller/FT5x06=
-pdf
-> >>> it only mentions FocalTech Systems Co., Ltd. =20
-> >>
-> >> But does the driver use that? AFAICS it uses edt. Perhaps it's due to
-> >> a business split, not to my knowledge anyway. =20
->=20
-> I've been looking into this over the past few weeks as I was working on=20
-> mainline support for an Android device.
-> And please forgive me if any of the following is not fully accurate, I'm=
-=20
-> not an industry expert.
->=20
-> After some research, my understanding of this is as follows:
->=20
-> - There are companies that make touch ICs, LCD driver ICs and sometimes=20
-> even ICs that are both. Focaltech or Himax are examples of such companies.
->=20
-> - There are companies that make LCMs. These are complete assemblies of=20
-> panel, backlight, touch layer and driver circuitry PCBs. This is what=20
-> OEMs generally purchase when they design a consumer device. Emerging=20
-> Display Technologies Corp. (EDT) is such a LCM manufacturing company.=20
-> More often than not LCM manufacturers do not make their own driver ICs.
->=20
-> LCM manufacturers include ICs from Focaltech in their LCMs.
-> To my knowledge Focaltech is not a manufacturer of LCMs.
->=20
-> As such, an interpretation of the compatible string "edt,edt-ft5406"=20
-> could be: Unspecified EDT LCM with Focaltech FT5406 IC.
->=20
->  From my perspective, more correct would either be something like=20
-> "edt,etm070001bdh6" (the LCM by EDT that contains this IC, especially if=
-=20
-> it had model specific quirks) or "focaltech,ft5406".
-> But "edt,edt-ft5406" is incorrect if being specific is the goal here.
-> Given that the driver predates much of the DT binding rigour it's what=20
-> we have now though.
->=20
-I think focaltech,ft5406 is better because it is consistent with other driv=
-ers/
-bindings. We do not specify the display it is used on on other touchscreen
-bindings. We do not specify the actual LEDs behind a LED interface chip.
-And often the chip name is more easily to find out than the name of a
-display.
-[...]
+Hi Dmitry,
 
-> I don't think that's how the compatible strings are used today, but it=20
-> is what would make sense in my opinion.
->=20
-> > Looking around I found this:
-> >              if (tsdata->version =3D=3D EV_FT)
-> >                          swap(x, y);
-> > ...
-> >                 case 0x59:  /* Evervision Display with FT5xx6 TS */
-> >                          tsdata->version =3D EV_FT;
-> >
-> > I need swap(x.y), I am using touchscreen-swapped-x-y property now.
-> > So evervision prefix? =20
->=20
-> The compatible string doesn't have any bearing on whether x and y are=20
-> swapped. The driver relies on its device detection heuristic for that=20
-> determination.
+On 26/04/2024 09:31, Dmitry Rokosov wrote:
+> Hello Neil,
+> 
+> I hope you're doing well. I was wondering if you could assist me with
+> below problem.
+> 
+> I'm a bit confused about which kernel repository the series was applied
+> to. I asked Daniel about it, but unfortunately, I didn't receive any
+> feedback from him. Could you provide some clarification on this matter?
+> 
+> Thank you in advance for your help.
 
-Well, I think, yes, it could have a bearing, on some models, maybe x is
-swapped with some pressure value in some record.
+I was OoO the last two weeks.
 
-> Ideally, the driver would allow describing this property
->=20
->    1. in the devicetree using the "touchscreen-swapped-x-y" property=20
-> from the common touchscreen bindings
->=20
-It allows that right now.
-Well, the devicetree should be driver/os independent, so it describes the
-hardware. so the driver should spit out the records specified as x
-in the chip manual as x and the ones specified as y as y.
+Your series is in my tree [1], which is pulled automatically by the 
+linux-pm tree in its bleeding-edge branch.
 
-If the display is then wired up to the controller in an unusual way,
-it can be compensated by the devicetree specification (if we go the
-focaltech,ftxxxx road instead of edt,etm070001bdh6).=20
+Today, this branch will move to the linux-next branch [2] which will 
+also be pulled by the linux-pm/next branch automatically.
 
-But datasheets... where are you? So we need a heuristic. I guess
-the order used most is probably the one used in the data sheet.
+Hope that helps and sorry for the delay to answer
 
->    2. by extending the edt_i2c_chip_data struct to hold that property=20
-> and set it based on the compatible string if it is, in fact, a property=20
-> of that specific IC
->=20
-yes, agreed.
+   -- Daniel
 
-Regards,
-Andreas
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/log/?h=thermal/bleeding-edge
+
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/log/?h=thermal/linux-next
+
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
