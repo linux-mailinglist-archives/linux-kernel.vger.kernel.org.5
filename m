@@ -1,183 +1,126 @@
-Return-Path: <linux-kernel+bounces-160268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699988B3B20
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:22:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5615A8B3B27
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:22:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85331B2667C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:22:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 085851F2570D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B3915696F;
-	Fri, 26 Apr 2024 15:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAD916FF3B;
+	Fri, 26 Apr 2024 15:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZMDFW7a9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNSqnhOC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623A7148FE1;
-	Fri, 26 Apr 2024 15:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BB6158D93;
+	Fri, 26 Apr 2024 15:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144703; cv=none; b=H5DlhG9+nEKYv+xbBdroCLdvEB2AkxWwBL6zGYsA6QCZDiXlSMOilrTL9QmyJsGPy1w8kWfQF7A8yRzZJAkEFjL+L7+c8RViOitbeawtiW+ceoIwasaoK3KlTDB/RlPESQD+yG+Yyvd/8j5i94LoM188L78abvLFVvOYJ4MnH5g=
+	t=1714144728; cv=none; b=IOxGYtk/r7jaVaixKz47+5rtP5GKrcHp2DFBtqzKwLezB2Hn9TyyIoQwVtqNQLjgX9kTSuQxe5pQVgnZ3pBDPIF+efKLD0w+cykSNbAn7QwJynCTpGQDNTPl+neWxzSalLuafyTlvCMTbz6HeL+jFeVy14FiNJqD22NVGnZK3ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144703; c=relaxed/simple;
-	bh=n/v/uLUsQ15WCp2AaJraFNUgoWERD2hobl8xT3E8igw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=igMkZRKalDjubjDS8nQb9G1YKjGnkGvoC/tqc8jQMWU1RzouN3WWkcMeEnj8hGXW6iz954egJxLYC6bYBYBIzxa/f3jJCiLTEHQOq+pskV/FowSUTrtoAUP2IuWEL4D8kPQqy78WRPcvRjmHTQQcm8GacXGLyX8GpjElzymg5hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZMDFW7a9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D90E0C113CD;
-	Fri, 26 Apr 2024 15:18:22 +0000 (UTC)
+	s=arc-20240116; t=1714144728; c=relaxed/simple;
+	bh=1UnZiC3comG4gnEVIiUSo4RJz2Uq3SHSFq173Rv99mU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=sGB3K8KXCnlVDbdPjrq1sVsRlmGhBAsTR4CjVAgmemt6qEm3EZzNK4wBx5WwUdKApS8Y3yjb8o4S1l38I17iHa0hCX3rWzZc5hOhwFPpnlQL0wMAxIidhgwlimF3WnrWCVrL0VGIIDmqMs0OUL0NZI+zg4EOdlpIrPwCZX1tGng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNSqnhOC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D63A7C2BD11;
+	Fri, 26 Apr 2024 15:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714144703;
-	bh=n/v/uLUsQ15WCp2AaJraFNUgoWERD2hobl8xT3E8igw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZMDFW7a9U3o7Y2hUgw/ZUJRmT1py9N3cjjpicuoDHITq/LtsjWsdlwII4Ntim06KA
-	 hbCJnkgI5gv0K0vANuxdpOy9wzDEUDGmmZQkrn/BwMbNe2FCTY+uaTGtfkR7tIr+Go
-	 FvdZH5oi/tK77B3PChSAKg3Z8Ag7E5NAdU7LHLX7qDifRncH2ISkesFkgf/ZVmL3fZ
-	 u+GYlfPu2fw6FDgPp8I2ItSe8swU9yEBeVQwKeCr3YpgR21LaGPVgKQiiRnL+QCT+K
-	 H1/4vCZVYw8jX0TUVa5J6Q8Ju/qsXGsxyNxRpHokjThgG8OK2a9I1LqBbsZyfHXzgd
-	 BcYNLQobOtPhw==
-Date: Fri, 26 Apr 2024 08:18:22 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 11/11] xfs: enable block size larger than page size
- support
-Message-ID: <20240426151822.GG360919@frogsfrogsfrogs>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-12-kernel@pankajraghav.com>
+	s=k20201202; t=1714144727;
+	bh=1UnZiC3comG4gnEVIiUSo4RJz2Uq3SHSFq173Rv99mU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mNSqnhOCvVS96laJVrGaGieiyUBAaw7BIIZlQfWJmTtK+o3CRYgilXqax2Q6jFiHb
+	 Tkr6khA10hRkujz93BoR88ndIAwlrA0cIr29DtMM/oUSb4BbCWO2xFtmfLxyizgcCi
+	 4gZ/C5jQlPnsiBL0F0F4yvbOiva3OAJdCblKfHnnwiVKprBKA7nzRmDRSSlwlLtu64
+	 LN2KpL7Hy+MAZWbwNyKe863P9JI9g21F/w3YZn3KuPgVo0JCuXYwi5a9ah53d1KoFk
+	 t8qQpCyYncg1/PuC40GaaWT23jN9CdLc0JCAYfZzRsVwf+n9QaHNFcS74kWGCAaFff
+	 HgV2PKKVeTjpg==
+Date: Sat, 27 Apr 2024 00:18:43 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: lumingyindetect@126.com
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
+Subject: Re: [PATCH] kernel/trace/trace_probe:Fixed memory leak issues in
+ trace_probe.c.
+Message-Id: <20240427001843.84a3d367d3654b624c09defe@kernel.org>
+In-Reply-To: <20240426091343.1222770-1-lumingyindetect@126.com>
+References: <20240426091343.1222770-1-lumingyindetect@126.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425113746.335530-12-kernel@pankajraghav.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 01:37:46PM +0200, Pankaj Raghav (Samsung) wrote:
-> From: Pankaj Raghav <p.raghav@samsung.com>
+Hi LuMingYin,
+
+Thanks for finding the problem! But please make a commit message
+following Documentation/process/submitting-patches.rst
+
+
+On Fri, 26 Apr 2024 10:13:43 +0100
+lumingyindetect@126.com wrote:
+
+> From: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
 > 
-> Page cache now has the ability to have a minimum order when allocating
-> a folio which is a prerequisite to add support for block size > page
-> size.
+> At line 1408 of the file /linux/kernel/trace/trace_probe.c, pointer variables named code and tmp are defined. At line 1437, a new dynamic memory area is allocated using the function kcalloc. When the if statement at line 1467 evaluates to true, the program jumps to the out label at line 1469. Within this function, there are two labels: out and fail. The difference between these two labels is that fail additionally frees the dynamic memory area pointed to by the variable code. Therefore, the program should jump to the fail label instead of the out label. This commit fixes this bug.
 > 
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Seems reasonable...
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+For example, you must line break after about 70 characters. Also,
+please don't use the line number because the line number is easily
+changed (function name is OK). Since this bug is very clear mistake,
+so you can just explain that as following.
 
---D
+----
+ If traceprobe_parse_probe_arg_body() fails to allocate 'parg->fmt', it
+ jumps to 'out' instead of 'fail' by mistake. In the result, in this
+ case the 'tmp' buffer is not freed and leaks its memory.
 
+ Fix it by jumping to 'fail' in that case.
+----
+The first paragraph explains what happens, and second one to exaplain
+how to fix it.
+
+Also, please add this Fixes tag.
+
+Fixes: 032330abd08b ("tracing/probes: Cleanup probe argument parser")
+
+You can easily find this commit number with git blame.
+
+Thank you,
+
+> Signed-off-by: LuMingYin <11570291+yin-luming@user.noreply.gitee.com>
 > ---
->  fs/xfs/libxfs/xfs_ialloc.c |  5 +++++
->  fs/xfs/libxfs/xfs_shared.h |  3 +++
->  fs/xfs/xfs_icache.c        |  6 ++++--
->  fs/xfs/xfs_mount.c         |  1 -
->  fs/xfs/xfs_super.c         | 10 ++--------
->  5 files changed, 14 insertions(+), 11 deletions(-)
+>  kernel/trace/trace_probe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
-> index e5ac3e5430c4..60005feb0015 100644
-> --- a/fs/xfs/libxfs/xfs_ialloc.c
-> +++ b/fs/xfs/libxfs/xfs_ialloc.c
-> @@ -2975,6 +2975,11 @@ xfs_ialloc_setup_geometry(
->  		igeo->ialloc_align = mp->m_dalign;
->  	else
->  		igeo->ialloc_align = 0;
-> +
-> +	if (mp->m_sb.sb_blocksize > PAGE_SIZE)
-> +		igeo->min_folio_order = mp->m_sb.sb_blocklog - PAGE_SHIFT;
-> +	else
-> +		igeo->min_folio_order = 0;
->  }
->  
->  /* Compute the location of the root directory inode that is laid out by mkfs. */
-> diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
-> index dfd61fa8332e..7d3abd182322 100644
-> --- a/fs/xfs/libxfs/xfs_shared.h
-> +++ b/fs/xfs/libxfs/xfs_shared.h
-> @@ -229,6 +229,9 @@ struct xfs_ino_geometry {
->  	/* precomputed value for di_flags2 */
->  	uint64_t	new_diflags2;
->  
-> +	/* minimum folio order of a page cache allocation */
-> +	unsigned int	min_folio_order;
-> +
->  };
->  
->  #endif /* __XFS_SHARED_H__ */
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index 74f1812b03cb..a2629e00de41 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -89,7 +89,8 @@ xfs_inode_alloc(
->  	/* VFS doesn't initialise i_mode or i_state! */
->  	VFS_I(ip)->i_mode = 0;
->  	VFS_I(ip)->i_state = 0;
-> -	mapping_set_large_folios(VFS_I(ip)->i_mapping);
-> +	mapping_set_folio_min_order(VFS_I(ip)->i_mapping,
-> +				    M_IGEO(mp)->min_folio_order);
->  
->  	XFS_STATS_INC(mp, vn_active);
->  	ASSERT(atomic_read(&ip->i_pincount) == 0);
-> @@ -324,7 +325,8 @@ xfs_reinit_inode(
->  	inode->i_rdev = dev;
->  	inode->i_uid = uid;
->  	inode->i_gid = gid;
-> -	mapping_set_large_folios(inode->i_mapping);
-> +	mapping_set_folio_min_order(inode->i_mapping,
-> +				    M_IGEO(mp)->min_folio_order);
->  	return error;
->  }
->  
-> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-> index 56d71282972a..a451302aa258 100644
-> --- a/fs/xfs/xfs_mount.c
-> +++ b/fs/xfs/xfs_mount.c
-> @@ -131,7 +131,6 @@ xfs_sb_validate_fsb_count(
->  	xfs_sb_t	*sbp,
->  	uint64_t	nblocks)
->  {
-> -	ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
->  	ASSERT(sbp->sb_blocklog >= BBSHIFT);
->  	uint64_t max_index;
->  	uint64_t max_bytes;
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index bce020374c5e..db3b82c2c381 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -1623,16 +1623,10 @@ xfs_fs_fill_super(
->  		goto out_free_sb;
->  	}
->  
-> -	/*
-> -	 * Until this is fixed only page-sized or smaller data blocks work.
-> -	 */
->  	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
->  		xfs_warn(mp,
-> -		"File system with blocksize %d bytes. "
-> -		"Only pagesize (%ld) or less will currently work.",
-> -				mp->m_sb.sb_blocksize, PAGE_SIZE);
-> -		error = -ENOSYS;
-> -		goto out_free_sb;
-> +"EXPERIMENTAL: Filesystem with Large Block Size (%d bytes) enabled.",
-> +			mp->m_sb.sb_blocksize);
->  	}
->  
->  	/* Ensure this filesystem fits in the page cache limits */
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index dfe3ee6035ec..42bc0f362226 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -1466,7 +1466,7 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+>  		parg->fmt = kmalloc(len, GFP_KERNEL);
+>  		if (!parg->fmt) {
+>  			ret = -ENOMEM;
+> -			goto out;
+> +			goto fail;
+>  		}
+>  		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
+>  			 parg->count);
 > -- 
-> 2.34.1
+> 2.25.1
 > 
-> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
