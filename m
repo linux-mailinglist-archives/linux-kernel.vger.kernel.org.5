@@ -1,47 +1,62 @@
-Return-Path: <linux-kernel+bounces-159560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A74D8B304C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:23:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39DEE8B304F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C14EAB23563
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:23:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDCED1F23718
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16AAE13A889;
-	Fri, 26 Apr 2024 06:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010B713A886;
+	Fri, 26 Apr 2024 06:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oahcaZI7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eCBiTbHA"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C28E2F2F;
-	Fri, 26 Apr 2024 06:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01C42F2F;
+	Fri, 26 Apr 2024 06:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714112611; cv=none; b=S7rk1zcLATeyuQEusLD2ajXojI8IWhiF6PfhbpmshhQExu5t6nNQMKMqq96FieA2/Bdv7HJkfGZKxRBopxqlizPhm2smHtfNP0S9G8ahbWnIolB2e3S+GvkMRvxRySSaHp28qKQEkBTEfLeJVYTq5DjzreR4QRvA0WlNQ/t6xPg=
+	t=1714112646; cv=none; b=c3hbU3S/TR5yllBuTHF6j5209qTPUGr5XTucP937/R9E1yn6xzxm30SbSbTOp5infrR5+UZngxHnkWLj9Gyc+fnVT2/ZqwRbZKcTCW/bf77jr+S73280tqTmgyYVSjK6zinsws5Dk6T+k+Uz1lwtTR5IhpAKPuQ4TOwnXSj1tJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714112611; c=relaxed/simple;
-	bh=YtshXLNHd+oeMo09vvuPVWrGyeKWyQJGrt5mDGX3NiM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b2Frl9jCgsb1/zXCme/HJqMKFRhRTtwz3rMY33vNmlcOkFJGF3HSyPITa1rVze+MYgbWKhTneMVqpANta4+YRgNUPRw+TfGc5a/1Vls2f8PmtuFz2QABAah3KjzP/IbBCTptG+e40r/pGZTLRlnYJ+xINnxtxd58YmvUvRBNf/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oahcaZI7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB951C113CD;
-	Fri, 26 Apr 2024 06:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714112610;
-	bh=YtshXLNHd+oeMo09vvuPVWrGyeKWyQJGrt5mDGX3NiM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oahcaZI7flfMnYzZIhm0Js0aQL7aZzyH/L68wKC+ovfKl6M3RyLA1jSMUup6zaZTU
-	 G+NVs+03/Egrn8xU/GvpMirylgYrAeZspGiEhnnIZZsm2I5c6S7RhYfuVjgo3o77bs
-	 pvnrul04Sq6Oqc1LVi4WJeTXzVfrsHwmhN76XHxq0iBOAAzBKvI45yHQuWcUZgpC0h
-	 tPQAkRvyMAOspuMJdSyiB9rAiT0tV3gzw40B5aiuGLpVSmLT5BgoId2wzB6AcODisc
-	 +VoMS3xUnJrFQVlB0zoRLNhWw6LvHsTvHlO1GVCL5lYMT4saK+K+3/hDwlKGRY12ZA
-	 VmB9cZq5o9uYQ==
-Message-ID: <3f381a54-49ce-4a45-a960-00cf2e91b044@kernel.org>
-Date: Fri, 26 Apr 2024 08:23:24 +0200
+	s=arc-20240116; t=1714112646; c=relaxed/simple;
+	bh=b2MZma9l4fy+G4zHh3Z8yNnEeOicyqWTEnp4r3RVNss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mm4i/J9MCNMfCNSPECdBS6b+8+JMHSEG8Z1+CVAGe58F8lR0BbbKhLBEI+405FJ+dPnNBNrmG+uYBIuakEZ0FijeXzNYkWbiN0cPi4uPwtCmOSxiS/FdHDN6pC0FDKezjppjaybWqUaLO3u7NT0V7gXtZC4ofVDABLfTmFR9vJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eCBiTbHA; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q5KETJ015548;
+	Fri, 26 Apr 2024 06:23:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=IYL4Dmml/wM3KshkBFg2RgswGdKMTxaxDmvPZEY115k=; b=eC
+	BiTbHAXbNFa6xXaBTIclmwcGuUZOqdH8sasA0h9I4UBgYTRXIZSE5kB+GJ8F9nL5
+	X3pDZX1tFPeIpD8I0AmYF4q5r7jjJuaDRDOzkghqMRywq0TYSWEGBqARBT+646b1
+	EZT8lTcnl81MvVlsNmdc3AkKye6X+CkOm36MlDw1UO2Z5eYvYdaqVORZsUH6VYIO
+	iutJ8BBDD0QJAyFedlmfFnzbSQSM1e5RvaTmNdiR4QC5x6CXxcg6BENP/uV+/p8p
+	DKCKAdGdFdh6U2By90acoGy9uMpvRfjEbOZ/LHdItcXSJdq3QLAhGqN1AnSampHS
+	ubGdtCSP+LMlYfNs4j0A==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr611gc0q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 06:23:58 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43Q6NvbX002196
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 06:23:57 GMT
+Received: from [10.216.47.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
+ 2024 23:23:51 -0700
+Message-ID: <bb0e1baf-7e64-463a-8638-d403c7a29317@quicinc.com>
+Date: Fri, 26 Apr 2024 11:53:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,122 +64,92 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 06/14] dt-bindings: fsi: Document the FSI controller
- common properties
-To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
- linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
- andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-7-eajames@linux.ibm.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240425213701.655540-7-eajames@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+To: Johan Hovold <johan@kernel.org>
+CC: Doug Anderson <dianders@chromium.org>,
+        Johan Hovold
+	<johan+linaro@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "Luiz
+ Augusto von Dentz" <luiz.dentz@gmail.com>,
+        Matthias Kaehlcke
+	<mka@chromium.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Stephen Boyd
+	<swboyd@chromium.org>,
+        <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>
+References: <20240416091509.19995-1-johan+linaro@kernel.org>
+ <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
+ <Zid6lfQMlDp3HQ67@hovoldconsulting.com>
+ <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
+ <ZioW9IDT7B4sas4l@hovoldconsulting.com>
+ <c9ea5867-2db2-4f64-a1e3-f6c2836dd45d@quicinc.com>
+ <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
+From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+In-Reply-To: <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: WVySy3-XRiWsIXPMrvasnqop4nNmuV3I
+X-Proofpoint-GUID: WVySy3-XRiWsIXPMrvasnqop4nNmuV3I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_06,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404260037
 
-On 25/04/2024 23:36, Eddie James wrote:
-> Since there are multiple FSI controllers documented, the common
-> properties should be documented separately and then referenced
-> from the specific controller documentation.
+
+
+On 4/25/2024 9:28 PM, Johan Hovold wrote:
+> Hi Janaki,
 > 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> ---
+> On Thu, Apr 25, 2024 at 08:31:50PM +0530, Janaki Ramaiah Thota wrote:
+> 
+>> Apologies for the delay. As of now, we have observed the following
+>> values in the upstream firmware files for default BD addresses.
+>> We will confirm ASAP if there are any changes.
+>>
+>> ---------------------------------------------------------
+>> |   BDA	        |      Chipset		               |
+>> ---------------------------------------------------------	
+>> | 20 00 00 10 80 39  | WCN3988 with ROM Version 0x0200	|
+>> ---------------------------------------------------------	
+>> | 00 08 74 12 80 39  |  WCN3988 with ROM Version 0x0201	|
+>> ---------------------------------------------------------	
+>> | 00 07 64 21 90 39  |  WCN3990			        |
+>> ---------------------------------------------------------
+> 
+> Thanks a lot for these. I see now that the default Trogdor address Doug
+> reported (39:98:00:00:5a:ad) appears to comes from the fw too:
+> 
+> 	$ od -x crnv32.bin | grep 5aad
+> 
+> 	0000020 0000 0000 5aad 0000 3998 0008 0008 0000
+> 
+> which means that patch I sent this morning should be all that is needed
+> for those machines at least.
+> 
 
+Yes correct, it will work for Trogdor
 
-> +
-> +  no-scan-on-init:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      The FSI controller cannot scan the bus during initialization.
-> +
-> +patternProperties:
-> +  "cfam@[0-9a-f],[0-9a-f]":
-> +    type: object
-> +    properties:
-> +      chip-id:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
+> Can you please confirm that all the WCN39xx have OTP storage for an
+> address that an OEM can choose to use?
+> 
 
-Missing description
+We are checking with internal FW team, will confirm on it.
 
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 1
-> +
-> +    required:
-> +      - reg
-> +
-> +    additionalProperties: true> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    fsi@3400 {
-> +        #address-cells = <2>;
-> +        #size-cells = <0>;
-> +        compatible = "fsi-controller";
+> If that's not the case then we could simplify things by always marking
+> their addresses as invalid, but I assume that they all have address
+> storage.
+> 
+> Johan
 
-No, there is no such compatible here.
-
-> +        reg = <0x3400 0x400>;
-
-Neither reg.
-
-Also, keep order of properties matching DTS coding style.
-
-
-Best regards,
-Krzysztof
-
+-Janakiram
 
