@@ -1,109 +1,120 @@
-Return-Path: <linux-kernel+bounces-160587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C2308B3FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:53:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB8D8B3FC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C0601C21216
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:53:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD5E1F21FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB818BE47;
-	Fri, 26 Apr 2024 18:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D742125B2;
+	Fri, 26 Apr 2024 18:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="axkDQcPp"
-Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PtIGLkVI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71F47470;
-	Fri, 26 Apr 2024 18:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370C4BE47;
+	Fri, 26 Apr 2024 18:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714157601; cv=none; b=SOQK1UXx2oQCNWW1Sx58gxl8I+HJDifNaLpVwR7WReVwowx4BE7wNtLkbYQ1eqPieXNcYog8808VwZJRs4AHGuwGneQLV2nlX4Gz3RWJZ2KNIxDy/iSu0zIjuaBS4IBFOgDUKk2BmALo3e0F4R+dJgyCTEC8ZnqbXO99SerEhIA=
+	t=1714157659; cv=none; b=iIsS1ltRFP+46ejY/wX+KloXu086hcV88c+P2ejt/NeisOsUlfsblotq/T7it4PWhc98ymhfYpWkbSOueoLQZLGkTd/pkpMk8a/udmxr6nIy7OprHuvf8uFDUsNBggJ6zFJKQThopnIzNmh4WnnQGJFbUNGz8Qgfa1HHqztv+dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714157601; c=relaxed/simple;
-	bh=LYrhv94fXfJc/xrjaftEa5kLjlw/Ms5LsmooEzuSh+Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VkvY9y5uiUcHgiEDGVYEIFd2vxYGJDN3k6mPBdB7Au2ionxGRZPg1HZqmtqQy9kwGr77h2miz9opye2lH4gv3Ty4ZO9RNTYvMAasBlE9Z2xPHg5VLGIjOUs4ZTLmj/yGqCQo6EN4pXBfXZ798tRcJD3syGhF5tj8hfgpNm4nK+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=axkDQcPp; arc=none smtp.client-ip=161.97.139.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
-	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1s0Qh1-002ipf-0T;
-	Fri, 26 Apr 2024 20:53:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=nPehlEQTssGP0G33zMbxlvgJ6Z2DjBR7Px27U6BzRnk=; b=axkDQcPpzxZxap1pRfnjMJ3Bvs
-	SJ0bDsZcQes8UzO6Oq2PTXvieDtFtY2/iJjljFu81inca4zfw1nwEHG2mSeGPTea2726RPnfjW5if
-	9E4fcyg2V8R39/9ragSmJN+jsab5mA8DvKrzgYiwH29rDQCc2CXBPDjpxSq4DdIKDV99pp4l5zbBh
-	thwc6/gkj4vtS5NbbZCof5SqVL1BqaDhqp2DaV9A+09sEWzYRNoJrAKJCKHzs55vqjI74bUG8I2A0
-	AciL7VnUxww0SWxXf1BJ3wjbdK80gC6eMfOKy8L1GP3A5SChDrDZ/wao8yqjtiz95QJxsz68Q3BUC
-	0deG5kdg==;
-Received: from p200300c2071a02001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:c2:71a:200:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1s0Qgx-0005ao-0p;
-	Fri, 26 Apr 2024 20:53:04 +0200
-Date: Fri, 26 Apr 2024 20:53:02 +0200
-From: Andreas Kemnade <andreas@kemnade.info>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Felix Kaechele <felix@kaechele.ca>, dmitry.torokhov@gmail.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- o.rempel@pengutronix.de, u.kleine-koenig@pengutronix.de,
- hdegoede@redhat.com, ye.xingchen@zte.com.cn, p.puschmann@pironex.com,
- linux-input@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, caleb.connolly@linaro.org
-Subject: Re: [PATCH v2 2/2] Input: edt-ft5x06 - add ft5426
-Message-ID: <20240426205302.4acbdb11@aktux>
-In-Reply-To: <CAHp75VdA_peJBWXFWSs-vDxA86y6MG0J7ixzXExqDxJJzfJ7mA@mail.gmail.com>
-References: <20240404222009.670685-1-andreas@kemnade.info>
-	<20240404222009.670685-3-andreas@kemnade.info>
-	<CAHp75VeZ9U_+1rJQjr4KvvzjYQGzfKtk+BK00vqvKcVn2-yP3g@mail.gmail.com>
-	<20240405182832.4e457695@aktux>
-	<CAHp75VckoDheCN-KQ0KcSk9rE_-cXFUujurtA4sK6KAixDttQQ@mail.gmail.com>
-	<20240425185417.0a5f9c19@aktux>
-	<7dd1eb70-b011-4247-aea9-173ddcd17dc7@kaechele.ca>
-	<20240426095617.4e442681@aktux>
-	<CAHp75VdA_peJBWXFWSs-vDxA86y6MG0J7ixzXExqDxJJzfJ7mA@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714157659; c=relaxed/simple;
+	bh=Erw8uuVUeGio0PshYx2zkVsumWpV4GynBPxpYdsctHY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hjaTFsMKPJsd6ECpK5eJQMtHHBBrcQy2bNWholG/aQpWcw5tyLpA0MlqtYWKsy2PKxCaduDlhtwlvHtsEkm2ua6onJ0QLT9zCsP8Xny/LkJyJ+eW98yy2bXfdwQHF10gtW9C1MzTifLqPQozN/DFe85Nx99iJLFUlga+IFlYGHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PtIGLkVI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CD5C2BD10;
+	Fri, 26 Apr 2024 18:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714157658;
+	bh=Erw8uuVUeGio0PshYx2zkVsumWpV4GynBPxpYdsctHY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PtIGLkVIeqBKR9XEnfi6oa2ABiJCHDWkMcxnQH6NsAziRnrm6MjyOXSpNcpzr5Bpj
+	 E/+DTDMfi551f7rzH24rHY27M/wW2GL5thq60UidmW3gekcOw/Lw7WAfRzWyd8GkUc
+	 AMCRC/bEKdhEkcE8BUKVSsq3i6jRXE/rRiDch/q2swRdO1P0u026aiMTpNhht44wJL
+	 UIPWzKzyFzPlmxNLqcd/AT/DShSQyLxRDyOuWXTPLByxMvQzpvRUI5+5WtOVbnGLoN
+	 udeSsSYdjr9fYuzLauYRgGtv2ybIbSepMhbtSmBkkZI6dcFW/TNhf3zMRdYQbw+V8+
+	 QrxzekJFRuwhA==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d3a470d5so3047934e87.3;
+        Fri, 26 Apr 2024 11:54:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVM8ZypdlDMPCN05MdpxMV/6rLXZtcthQG9/QpcKsMGYUW2eevOcSli1y6SfRPpMwlSeJ5Ttu7Q9+dNZhAyBiR4QkZUkqmOumo7kUtTyFxqylnBV8403zaKDMwrz9d+0rzOJ7EeoPir879K7bAePY0UV1X3Kxlt53BrN7nKffn6fBhw5G9GaTPXHR89gjaJnSViXXQK/Z9e9pQHQ8Jt8rSgZR1X6robljV/3F4iOHMlCgBxtP8PhAJFmxUu8Ut/sE1zZ6ZSxabtH2pDjyUvZUbF6bGI5xWFEnY4kJGn4UgnJjaXxnuQz2GIyHVYtA1Dj6npO2OIQvhrvq8Ld93BZeeC6GqDt9Kk3KPka02dfbHrV3kmRYmKQLTzAh8GWguMVXabpy9ArdcBgbOt4RU=
+X-Gm-Message-State: AOJu0YyvMBvKSJznNwb3zf29G4NMrsHTe0pHsgQ0tK6coE0MNUuAnslp
+	82BY0/S5+qI3Zb/qoPqVT2tbiMpbK5Me0kJTbRkyDFC6Z2n9yugCCqm0i+zlRbcVvmtb7ETHP3d
+	5qgcUSYU+VsKePNbi2/nxlYntOHQ=
+X-Google-Smtp-Source: AGHT+IHR8dCzuYaMcfUu9DJ1W7DJuyt98T5r37UenPfdlzP0RlXEYGrXPEenPo3iSsrLDDgw6B5I00dbfOalDiVdMh8=
+X-Received: by 2002:ac2:5202:0:b0:51c:1fb4:2327 with SMTP id
+ a2-20020ac25202000000b0051c1fb42327mr2189866lfl.24.1714157657105; Fri, 26 Apr
+ 2024 11:54:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240426082854.7355-1-rppt@kernel.org> <20240426082854.7355-8-rppt@kernel.org>
+In-Reply-To: <20240426082854.7355-8-rppt@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 26 Apr 2024 11:54:06 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7+wmDA_aaZKhNLfEZ-F1aLpUKssXqu5tUs6s=P9yvB-Q@mail.gmail.com>
+Message-ID: <CAPhsuW7+wmDA_aaZKhNLfEZ-F1aLpUKssXqu5tUs6s=P9yvB-Q@mail.gmail.com>
+Subject: Re: [PATCH v6 07/16] mm/execmem, arch: convert simple overrides of
+ module_alloc to execmem
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Sam Ravnborg <sam@ravnborg.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Apr 26, 2024 at 1:30=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
+te:
+>
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+>
+> Several architectures override module_alloc() only to define address
+> range for code allocations different than VMALLOC address space.
+>
+> Provide a generic implementation in execmem that uses the parameters for
+> address space ranges, required alignment and page protections provided
+> by architectures.
+>
+> The architectures must fill execmem_info structure and implement
+> execmem_arch_setup() that returns a pointer to that structure. This way t=
+he
+> execmem initialization won't be called from every architecture, but rathe=
+r
+> from a central place, namely a core_initcall() in execmem.
+>
+> The execmem provides execmem_alloc() API that wraps __vmalloc_node_range(=
+)
+> with the parameters defined by the architectures.  If an architecture doe=
+s
+> not implement execmem_arch_setup(), execmem_alloc() will fall back to
+> module_alloc().
+>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-On Fri, 26 Apr 2024 16:51:59 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> > I think focaltech,ft5406 is better because it is consistent with other drivers/
-> > bindings. We do not specify the display it is used on on other touchscreen
-> > bindings. We do not specify the actual LEDs behind a LED interface chip.
-> > And often the chip name is more easily to find out than the name of a
-> > display.  
-> 
-> I'm _not_ a DT person, you should clarify this with them. I just
-> pointed out the possible mistake (from Linux / DT perspective), and
-> not hardware / business related one. If they are fine with focaltech
-> prefix, then it's fine to me as well!
-
-as 1/2 is Acked-by DT, I think the compatible is fine, so I will probably
-just send a v3 with a sorted 2/2.
-
-Regards,
-Andreas
+Acked-by: Song Liu <song@kernel.org>
 
