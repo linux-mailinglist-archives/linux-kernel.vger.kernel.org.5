@@ -1,310 +1,133 @@
-Return-Path: <linux-kernel+bounces-160023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FD868B37F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:08:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 181E78B3805
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:11:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A0E5B22F49
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:08:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CA7FB23220
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F812146D43;
-	Fri, 26 Apr 2024 13:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A88A146D43;
+	Fri, 26 Apr 2024 13:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X+N6Y1Zh"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OiFyMw+o"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C75013E88A
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 13:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A05147C62;
+	Fri, 26 Apr 2024 13:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714136901; cv=none; b=PMLNFDF73tRG67Fy2hzM0uVsCWAblh7Xsl67lXOynvY8rxEmPYoi0fb4EB+DBX3D27+1tNTVi9GytGh59JWv3zHKjasP/xlCzn0XU2c56iSf3ki3MMWxmR8QxSetFSwaIkRK0LxL7+KyNogkeviEiB2Ez/zjWMk4di31lA+BUZg=
+	t=1714137056; cv=none; b=U3w1JQJpZcFgNMc/eFUY6Z3gX4ANCLLqbRrsxebBQIWffNEPjRuZCU++0sGgSGdqS3pYN432DF3pNXR57/WOQRfDMTL+rY5gwtQaal0j+yHEQCsUw5wC2JmfveLnCVO7H0/kzzWjs6pHnNaFhXC7N3EZEW/2WRQ8kzjh6l6wKio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714136901; c=relaxed/simple;
-	bh=9QscQIeNlQOp6FRyOQTocCE1OoKiIXfMF2HncBHOV0U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EQWhNCvdp79zkxmH1nrj0nVNeBs9n4F92x/QqYSuXReIh3ULp824sACrdGTSCluDBV6De4cpZD2D2lsgB3K6nrwJGrWFl5D3k6lNAaK64+nKfp+sj9rOBz9R3HqNtTaAd4wjr1jzQGsoMNUNw5CIRU54ci1l/rDtUYjoeWx8CyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X+N6Y1Zh; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-23981fd7947so1240440fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714136898; x=1714741698; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BKDqJ2Iy67r0/04McLSBQtbg7QGH++8ZK48LUb4Ai+8=;
-        b=X+N6Y1ZhWIrUBGqd52+UPfnYcBpeZqVfUFZ7iH8W3JUvNAw8iLi5o2Bwq600803KKZ
-         tXSeEGyEYfrw6V1RSXKS0x/nMTyHph1bwPlOrD9Uu0KwWKG0iYacZwcHFZ4UzjRaHkNt
-         MIKFGKVH+5BSAvCrDgd3m9tMHF7+OYQHftbj/oIAeC2nnlKrTmpK5lh0W+j044BzZDjy
-         TNzKOdgDEDkEyv6W8snFH09bu8rP7Q/hjcFAmTe87lrekzVxKSrhl6PatzdaNWjvaJrQ
-         NPqczcnmgm5fkF0R6D+l36XU3f9HZVu6lQTmmp4HtH6E5bOAugaVd0UMmgKaxY5U31TE
-         3voA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714136898; x=1714741698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BKDqJ2Iy67r0/04McLSBQtbg7QGH++8ZK48LUb4Ai+8=;
-        b=sQJJYyRUOcwQx6HFzN+tMTVoKfovSPgAlbay3F8g5SyXYuT4bUoI9AIMziyag+ysEI
-         C73z5nXBcUYweIoeGYg9NeNXPFBUlU2PafP84qNBM2HhU07I00xEeCnsBCoVY+JQpqhj
-         Jod8xqGD4cJe5yDV/1LhWLpsfPRteboSX/qZUhxrmQam2UZ2xsrQulA9u2esfyW9VOUT
-         qme3j2vhixDTSN8MV28Oj8sKeFnF2xQyAeivDhJ1Zws7hJyafQNxgW6l+a+/Npnt36eH
-         bQwMiAbigcOzqx2GJGUsifE8xkFNWpuxOoaPp79ql9hPZlK5SMsNhK1g0n4YolZN3CC7
-         wR8g==
-X-Gm-Message-State: AOJu0Yw3iWRqLxKWmEYPqk2ZrmnIab7h7liHqGxfmAam341B1PGx4FuS
-	seLGRRYl/857so6wj+JevWnMdIi+wX/3J0IuzoK5DFPLxUaKkug3Lj9Rg0fRyFbMEHKB/zKGzXM
-	FWNRtdGx84XTWt+ofh9SvIhfkaPd9H6t43/qJKw==
-X-Google-Smtp-Source: AGHT+IEKq/8GFPYIuqy4rBivIIKKIIu3DhQ+5ZeHZXiraP9KB/rXTGQYaO0n0mtwRCfjOLqG8pL22JCKugRO8+NE1bw=
-X-Received: by 2002:a05:6870:558c:b0:239:726:7460 with SMTP id
- qj12-20020a056870558c00b0023907267460mr2706578oac.30.1714136898414; Fri, 26
- Apr 2024 06:08:18 -0700 (PDT)
+	s=arc-20240116; t=1714137056; c=relaxed/simple;
+	bh=F8Bo2pBp4CBzrWEGtBurDTewnj7beNkSoEBY6dW1Z5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HUKI8bCdhjDLn7uI+oexz202reU6aMrA/rfu3nPHpj5DdbFWlvOLi7EyxzXKOz8tXlUOfQiZF76Yae67SXloASK212m32KltqeCcyfBvI8s0tFQAVRXN21lpUbMWz7Yotv1KYo1i7qNe9X02j9N+8/iEn02qT5nYW04uP6TtQL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OiFyMw+o; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714137055; x=1745673055;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F8Bo2pBp4CBzrWEGtBurDTewnj7beNkSoEBY6dW1Z5Q=;
+  b=OiFyMw+oWx/YJHP3KGjM3a9lEDl/ORwWondLFVnN4l9o+kIoDfkJAFcg
+   V4UV+a7BHmewYurml6KiPGOOTta/MqHp+TxaLRsn58VGJngHwboOvWCl8
+   NQKt/AUq02/K1nCh2BlJYsEtcsZJyJa9Wi3X9PHzop0mbros9F5opReel
+   9u1YD64GuHoJmaUC0cQWv9REriI3CP/g+wdFZtBrUy1aPj+P2VNXcb5nQ
+   2qrp3N71p6jJnQm9HBbs3gIw5KnqkJj+JENQx5iWOXS/qlNiEcOOZw1uB
+   64yycT/aIcMtkSCXtcTwYfQBt9Tk0qP87TX8UngsmeMGRVIDFqJrquSqJ
+   Q==;
+X-CSE-ConnectionGUID: 2fuaFQWrRR67zmLW6dWjBg==
+X-CSE-MsgGUID: uf5qvRH0T5+UCHRrt64QNQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="32369082"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="32369082"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 06:10:54 -0700
+X-CSE-ConnectionGUID: I91opZe0QOCYr6k80Mwxlg==
+X-CSE-MsgGUID: 7AYKl2cjT4Kk9lDltl+iZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="29863132"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 26 Apr 2024 06:10:49 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s0LLj-0003jK-0O;
+	Fri, 26 Apr 2024 13:10:47 +0000
+Date: Fri, 26 Apr 2024 21:10:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Coiby Xu <coxu@redhat.com>, kexec@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, Ondrej Kozina <okozina@redhat.com>,
+	Milan Broz <gmazyland@gmail.com>,
+	Thomas Staudt <tstaudt@de.ibm.com>,
+	Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+	Kairui Song <ryncsn@gmail.com>, dm-devel@redhat.com,
+	Jan Pazdziora <jpazdziora@redhat.com>,
+	Pingfan Liu <kernelfans@gmail.com>, Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+	x86@kernel.org, Dave Hansen <dave.hansen@intel.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Vivek Goyal <vgoyal@redhat.com>, Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	"(open list:KERNEL HARDENING (not covered by other areas):Keyword:b__counted_byb)" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH v3 2/7] crash_dump: make dm crypt keys persist for the
+ kdump kernel
+Message-ID: <202404262003.qsWvGwZU-lkp@intel.com>
+References: <20240425100434.198925-3-coxu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422091936.3714381-1-jens.wiklander@linaro.org>
- <20240422091936.3714381-2-jens.wiklander@linaro.org> <ZioWLgVJ7Ky4nUxC@mecka.net>
-In-Reply-To: <ZioWLgVJ7Ky4nUxC@mecka.net>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Fri, 26 Apr 2024 15:08:07 +0200
-Message-ID: <CAHUa44EsO9rr2_KsmNcwoUuL_OAO-Oh8gqepUn5Bmo1dfP_LUA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To: Manuel Traut <manut@mecka.net>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	op-tee@lists.trustedfirmware.org, 
-	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Jerome Forissier <jerome.forissier@linaro.org>, 
-	Sumit Garg <sumit.garg@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Bart Van Assche <bvanassche@acm.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
-	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425100434.198925-3-coxu@redhat.com>
 
-On Thu, Apr 25, 2024 at 10:37=E2=80=AFAM Manuel Traut <manut@mecka.net> wro=
-te:
->
-> On Mon, Apr 22, 2024 at 11:19:34AM +0200, Jens Wiklander wrote:
-> > A number of storage technologies support a specialised hardware
-> > partition designed to be resistant to replay attacks. The underlying
-> > HW protocols differ but the operations are common. The RPMB partition
-> > cannot be accessed via standard block layer, but by a set of specific
-> > RPMB commands. Such a partition provides authenticated and replay
-> > protected access, hence suitable as a secure storage.
-> >
-> > The initial aim of this patch is to provide a simple RPMB driver
-> > interface which can be accessed by the optee driver to facilitate early
-> > RPMB access to OP-TEE OS (secure OS) during the boot time.
-> >
-> > A TEE device driver can claim the RPMB interface, for example, via
-> > rpmb_interface_register() or rpmb_dev_find_device(). The RPMB driver
-> > provides a callback to route RPMB frames to the RPMB device accessible
-> > via rpmb_route_frames().
-> >
-> > The detailed operation of implementing the access is left to the TEE
-> > device driver itself.
-> >
-> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> > Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> >  MAINTAINERS              |   7 ++
-> >  drivers/misc/Kconfig     |  10 ++
-> >  drivers/misc/Makefile    |   1 +
-> >  drivers/misc/rpmb-core.c | 232 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/rpmb.h     | 136 +++++++++++++++++++++++
-> >  5 files changed, 386 insertions(+)
-> >  create mode 100644 drivers/misc/rpmb-core.c
-> >  create mode 100644 include/linux/rpmb.h
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8999497011a2..e83152c42499 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -19012,6 +19012,13 @@ T:   git git://linuxtv.org/media_tree.git
-> >  F:   Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-de2-=
-rotate.yaml
-> >  F:   drivers/media/platform/sunxi/sun8i-rotate/
-> >
-> > +RPMB SUBSYSTEM
-> > +M:   Jens Wiklander <jens.wiklander@linaro.org>
-> > +L:   linux-kernel@vger.kernel.org
-> > +S:   Supported
-> > +F:   drivers/misc/rpmb-core.c
-> > +F:   include/linux/rpmb.h
-> > +
-> >  RPMSG TTY DRIVER
-> >  M:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >  L:   linux-remoteproc@vger.kernel.org
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> > index 4fb291f0bf7c..dbff9e8c3a03 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -104,6 +104,16 @@ config PHANTOM
-> >         If you choose to build module, its name will be phantom. If uns=
-ure,
-> >         say N here.
-> >
-> > +config RPMB
-> > +     tristate "RPMB partition interface"
-> > +     depends on MMC
-> > +     help
-> > +       Unified RPMB unit interface for RPMB capable devices such as eM=
-MC and
-> > +       UFS. Provides interface for in-kernel security controllers to a=
-ccess
-> > +       RPMB unit.
-> > +
-> > +       If unsure, select N.
-> > +
-> >  config TIFM_CORE
-> >       tristate "TI Flash Media interface support"
-> >       depends on PCI
-> > diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> > index ea6ea5bbbc9c..8af058ad1df4 100644
-> > --- a/drivers/misc/Makefile
-> > +++ b/drivers/misc/Makefile
-> > @@ -15,6 +15,7 @@ obj-$(CONFIG_LKDTM)         +=3D lkdtm/
-> >  obj-$(CONFIG_TIFM_CORE)              +=3D tifm_core.o
-> >  obj-$(CONFIG_TIFM_7XX1)              +=3D tifm_7xx1.o
-> >  obj-$(CONFIG_PHANTOM)                +=3D phantom.o
-> > +obj-$(CONFIG_RPMB)           +=3D rpmb-core.o
-> >  obj-$(CONFIG_QCOM_COINCELL)  +=3D qcom-coincell.o
-> >  obj-$(CONFIG_QCOM_FASTRPC)   +=3D fastrpc.o
-> >  obj-$(CONFIG_SENSORS_BH1770) +=3D bh1770glc.o
-> > diff --git a/drivers/misc/rpmb-core.c b/drivers/misc/rpmb-core.c
-> > new file mode 100644
-> > index 000000000000..5479469c26f3
-> > --- /dev/null
-> > +++ b/drivers/misc/rpmb-core.c
-> > @@ -0,0 +1,232 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright(c) 2015 - 2019 Intel Corporation. All rights reserved.
-> > + * Copyright(c) 2021 - 2024 Linaro Ltd.
-> > + */
-> > +#include <linux/device.h>
-> > +#include <linux/init.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/list.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/rpmb.h>
-> > +#include <linux/slab.h>
-> > +
-> > +static struct list_head rpmb_dev_list;
-> > +static DEFINE_MUTEX(rpmb_mutex);
-> > +static struct blocking_notifier_head rpmb_interface =3D
-> > +     BLOCKING_NOTIFIER_INIT(rpmb_interface);
-> > +
-> > +/**
-> > + * rpmb_dev_get() - increase rpmb device ref counter
-> > + * @rdev: rpmb device
-> > + */
-> > +struct rpmb_dev *rpmb_dev_get(struct rpmb_dev *rdev)
-> > +{
-> > +     if (rdev)
-> > +             get_device(rdev->parent_dev);
-> > +     return rdev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(rpmb_dev_get);
-> > +
-> > +/**
-> > + * rpmb_dev_put() - decrease rpmb device ref counter
-> > + * @rdev: rpmb device
-> > + */
-> > +void rpmb_dev_put(struct rpmb_dev *rdev)
-> > +{
-> > +     if (rdev)
-> > +             put_device(rdev->parent_dev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rpmb_dev_put);
-> > +
-> > +/**
-> > + * rpmb_route_frames() - route rpmb frames to rpmb device
-> > + * @rdev:    rpmb device
-> > + * @req:     rpmb request frames
-> > + * @req_len: length of rpmb request frames in bytes
-> > + * @rsp:     rpmb response frames
-> > + * @rsp_len: length of rpmb response frames in bytes
-> > + *
-> > + * Returns: < 0 on failure
-> > + */
-> > +int rpmb_route_frames(struct rpmb_dev *rdev, u8 *req,
-> > +                   unsigned int req_len, u8 *rsp, unsigned int rsp_len=
-)
-> > +{
-> > +     if (!req || !req_len || !rsp || !rsp_len)
-> > +             return -EINVAL;
-> > +
-> > +     return rdev->descr.route_frames(rdev->parent_dev, req, req_len,
-> > +                                     rsp, rsp_len);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rpmb_route_frames);
-> > +
-> > +/**
-> > + * rpmb_dev_find_device() - return first matching rpmb device
-> > + * @data: data for the match function
-> > + * @match: the matching function
-> > + *
-> > + * Iterate over registered RPMB devices, and call @match() for each pa=
-ssing
-> > + * it the RPMB device and @data.
-> > + *
-> > + * The return value of @match() is checked for each call. If it return=
-s
-> > + * anything other 0, break and return the found RPMB device.
-> > + *
-> > + * It's the callers responsibility to call rpmb_dev_put() on the retur=
-ned
-> > + * device, when it's done with it.
-> > + *
-> > + * Returns: a matching rpmb device or NULL on failure
-> > + */
-> > +struct rpmb_dev *rpmb_dev_find_device(const void *data,
-> > +                                   const struct rpmb_dev *start,
-> > +                                   int (*match)(struct rpmb_dev *rdev,
-> > +                                                const void *data))
-> > +{
-> > +     struct rpmb_dev *rdev;
-> > +     struct list_head *pos;
-> > +
-> > +     mutex_lock(&rpmb_mutex);
-> > +     if (start)
-> > +             pos =3D start->list_node.next;
-> > +     else
-> > +             pos =3D rpmb_dev_list.next;
-> > +
-> > +     while (pos !=3D &rpmb_dev_list) {
-> > +             rdev =3D container_of(pos, struct rpmb_dev, list_node);
-> > +             if (match(rdev, data)) {
-> > +                     rpmb_dev_get(rdev);
-> > +                     goto out;
-> > +             }
-> > +             pos =3D pos->next;
-> > +     }
-> > +     rdev =3D NULL;
-> > +
-> > +out:
-> > +     mutex_unlock(&rpmb_mutex);
-> > +
-> > +     return rdev;
-> > +}
->
-> EXPORT_SYMBOL_GPL missing?
+Hi Coiby,
 
-You're right, I'll add it.
+kernel test robot noticed the following build warnings:
 
-Thanks,
-Jens
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.9-rc5 next-20240426]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Coiby-Xu/kexec_file-allow-to-place-kexec_buf-randomly/20240425-180836
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20240425100434.198925-3-coxu%40redhat.com
+patch subject: [PATCH v3 2/7] crash_dump: make dm crypt keys persist for the kdump kernel
+config: x86_64-randconfig-r113-20240426 (https://download.01.org/0day-ci/archive/20240426/202404262003.qsWvGwZU-lkp@intel.com/config)
+compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240426/202404262003.qsWvGwZU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404262003.qsWvGwZU-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> kernel/crash_dump_dm_crypt.c:31:3: sparse: sparse: symbol 'keys_header' was not declared. Should it be static?
+
+vim +/keys_header +31 kernel/crash_dump_dm_crypt.c
+
+    27	
+    28	struct keys_header {
+    29		unsigned int key_count;
+    30		struct dm_crypt_key keys[] __counted_by(key_count);
+  > 31	} *keys_header;
+    32	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
