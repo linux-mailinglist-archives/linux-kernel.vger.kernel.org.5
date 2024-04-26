@@ -1,197 +1,205 @@
-Return-Path: <linux-kernel+bounces-160778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 636228B42CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:44:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B14A8B42CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C0ACB21F33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:44:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E931F229C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB653A1CD;
-	Fri, 26 Apr 2024 23:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96B03C087;
+	Fri, 26 Apr 2024 23:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GMB7FAU+"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="PO/Qiv9b"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B434C8C;
-	Fri, 26 Apr 2024 23:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD643839C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 23:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714175069; cv=none; b=sZljz2SBNopdR8k/QhjQTx4nbvjZ491I0dE6dh35+P1XOT0dsdnbwgduVoVtc51NQTTg9qTPNpiAUG9eH8444DWO2K2A1fyS/vEV5zbCu+1dAdkkFLvgoACKV12AHIf0xwranBm6Nb4ucZGX/kuGbpkOchh0yDmqQfncS50Egfc=
+	t=1714175096; cv=none; b=lNE8tHn6wMDrzWs8lmP+WHL8OTTGO0ajzxMG8tPseypCLV4eDhwvn3WpNFZi/2BuS5prvwOHk/Ad7jbCT7CTciHA8YCFlz3s1vMi03J3SrCV36xWawuj0yPwG7DyYmP7SglxECZhbEYoszt9FwjxBUwx3E0oSaJ33ZEVD0gkY90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714175069; c=relaxed/simple;
-	bh=VjnxGuvPOCHw/9I5pDPbvU2HDjwTkVBHsu9VkyFjC2A=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KmXIMmt2/INgBWvorpDmln6E+uaC1WEJZOOxxW/TaAWBkWY7huM5LJXtafRaUmjtrf27BsDcYtKyJnywBuJLxsFI9QMi/zvNFTkNQqLjehopai0tDqiDJRPU+whajE4GznRSo7YQcciyYVm/gvE7RU/Cm7ftC8bf2T/m3KlMkKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GMB7FAU+; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43QMEfta027231;
-	Fri, 26 Apr 2024 23:43:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=
-	qcppdkim1; bh=fvZQEOMEBMhpsqY4aqtd8hxe5+VAEhLT1fCgDKvfvvc=; b=GM
-	B7FAU+45LCPYMJ/MUNgt+1RkhC271XUlinQSe+K54fnKLKN5Gm5o68AygFgTW2oy
-	nMCnKpJVFgdYZL6OztEiWl7Og6suWcaeeSlab6xuR6IJwiWxm+R3yucII8XNZZmn
-	oHH//bZOs//I/hUyrhjU4KjgngGdCEEs8EfJrOAmTjY/3VGT51wRP94qYQE3EP1b
-	lI8B7ABr0T+GRgFwXHiqhZcjKuI94/R7/DMikixvs6ApyFfjhtwhnguyGfpdWhuq
-	JDRrFbdI1jfb7zPzZCV3u3IbET1Mnhvi3GbB/OsNOWcYcwenRpIYDgxyRaD5vAqC
-	URupSEslvpumLE2Bb6Rw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr88fhvmt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 23:43:57 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43QNhutm023766
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 23:43:56 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 26 Apr 2024 16:43:56 -0700
-Date: Fri, 26 Apr 2024 16:43:54 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Johan Hovold <johan@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jaiganesh Narayanan
-	<njaigane@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain
- support
-Message-ID: <Ziw8OrNS55AtyDkI@hu-bjorande-lv.qualcomm.com>
-References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
- <ZipGRl_QC_x83MFt@hovoldconsulting.com>
- <CAN8TOE_Vd9c2eYgomhu_ukofTeO9eK8Yhrtt-8BQckmJnGfj6w@mail.gmail.com>
+	s=arc-20240116; t=1714175096; c=relaxed/simple;
+	bh=gcUr6BaeH4uUeyuBp+5tRaGd5nRW7ROYgouV/rLG4eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wk9Q4XdPn2D25eLL/2KnoXDIpVBrjTimobeanoadtbnv0aMN6zt7NHZnCN4Vh34bq1Gon5IC34hcFDd9q+d+LEDor+Woksjzj6TuP8F6XAjcHJgG6XER0Y/ZR/YxIdDcpqL28x5neruOK7U2TUlNIDVg5jaCJLuone/gQRGqFLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=PO/Qiv9b; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1eb0e08bfd2so8019125ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714175094; x=1714779894; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=10+kG8+suMw5wf1kQMOtM4ixrtygd87W4O6yWN3oIlc=;
+        b=PO/Qiv9bwBUvFKxHCEtO+Iy+D0mGPiZiWoprLwaU8ihyHVkQNyt9N5rYPpuEeK8LP8
+         Su4QEJPfJnS/jO3VuDP4/bVWZTnoIPOGp9Kx44CR60mF4+++jUjPDEOm2SH5vQ3Vjfgu
+         xhpzgar4b8pwG8UadHXQTUiGfpGGNYWLXhMNSQfk1G2XHcfdZihB8udqBb9TECnvInKW
+         jGTyl3b6uuG46I6FFI/hIJdjt2ScGh6M/YE5Kdb8A3haWOQM9UVq7VI/lmM0zpOWAzRI
+         VRoElsgwj0kn7bkpIn/WNwKsB4+V+dzthZVJS3Nu06DtDiCFdr2t3ReyZPC8e41rJoF8
+         8GnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714175094; x=1714779894;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=10+kG8+suMw5wf1kQMOtM4ixrtygd87W4O6yWN3oIlc=;
+        b=b9H42JNj7TZJT0bCAwAcyXP+2T7S4Vp2KkAf1qMaAy4pgRzVVuTwyoQ3lvjvjCm11i
+         wV1nw9dkGAzN8J/AmKsW0PhO4zfM2IA/2jlczVoR1qiKgo3cexsy0CxJidwY9JFwP2JQ
+         x/MfXyf0GxRGSVzihwCiL1+cr+6MP5GmLwQIWEEF2mB5c4GkXaPF9uQzXxRzrBlcAnlm
+         wg80p9GAj094jeUVJvJznkqeURIIHYQwDU3ZXjrrkieJBxCj5TlO+MoAJ3v9yO7RQV7O
+         ji04/FmPAewx14NmwEMgR9WRs6bVbcy2hF5Q8ErrxnFS+PZSafT50hRGCy/VKXLCH/bj
+         mivg==
+X-Forwarded-Encrypted: i=1; AJvYcCWlVrICZkJqSbG2QHR0x7IHU/KYq4gaEighWmhDTrxgectse8rRoUzInz37A8zyTO6qCFRwm1tlCdvjOccwBJrTmrjE3FMqjID6xY9w
+X-Gm-Message-State: AOJu0Yz2sqqAGdnQ7ugJCXuhmES1hRWCnfXRG5TWdwuseK13VoOvoQSz
+	YBXwPNJYk7dD6+EFrsPRwGLcZwdqcTffDtlML2R6E0/7VwZLZTaLQhMHNg4vvkexw0Z4Ahudy2a
+	e
+X-Google-Smtp-Source: AGHT+IGcvjzu0bt6XA9PeX/VVTLN2fLbx6JeHHs9deVeeSpREMfxgrHF5aU2rl341rHMT2bBZ2wf2g==
+X-Received: by 2002:a17:902:7b93:b0:1e3:cce4:bfe8 with SMTP id w19-20020a1709027b9300b001e3cce4bfe8mr3587190pll.65.1714175094555;
+        Fri, 26 Apr 2024 16:44:54 -0700 (PDT)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id c14-20020a170902b68e00b001e97772524asm10657366pls.234.2024.04.26.16.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 16:44:54 -0700 (PDT)
+Date: Fri, 26 Apr 2024 16:44:51 -0700
+From: Deepak Gupta <debug@rivosinc.com>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, Ved Shanbhogue <ved@rivosinc.com>
+Subject: Re: [RFC PATCH 1/7] riscv: kvm: add support for FWFT SBI extension
+Message-ID: <Ziw8c0X0K3mXjJWK@debug.ba.rivosinc.com>
+References: <20240418142701.1493091-1-cleger@rivosinc.com>
+ <20240418142701.1493091-2-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE_Vd9c2eYgomhu_ukofTeO9eK8Yhrtt-8BQckmJnGfj6w@mail.gmail.com>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Ifl1ivFekn3THFMt8QS6P6VNvuH_5K65
-X-Proofpoint-GUID: Ifl1ivFekn3THFMt8QS6P6VNvuH_5K65
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_20,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404260167
+In-Reply-To: <20240418142701.1493091-2-cleger@rivosinc.com>
 
-On Fri, Apr 26, 2024 at 03:08:06PM -0700, Brian Norris wrote:
-> Hi Johan, Bjorn,
-> 
-> On Thu, Apr 25, 2024 at 5:02â€¯AM Johan Hovold <johan@kernel.org> wrote:
-> >
-> > On Wed, Apr 24, 2024 at 08:45:31PM -0700, Bjorn Andersson wrote:
-> > > When a GPIO is configured as OPEN_DRAIN gpiolib will in
-> > > gpiod_direction_output() attempt to configure the open-drain property of
-> > > the hardware and if this fails fall back to software emulation of this
-> > > state.
-> > >
-> > > The TLMM block in most Qualcomm platform does not implement such
-> > > functionality, so this call would be expected to fail. But due to lack
-> > > of checks for this condition, the zero-initialized od_bit will cause
-> > > this request to silently corrupt the lowest bit in the config register
-> > > (which typically is part of the bias configuration) and happily continue
-> > > on.
-> 
-> Apologies if I broke something here.
+On Thu, Apr 18, 2024 at 04:26:40PM +0200, Clément Léger wrote:
+>Add support for FWFT extension in KVM
+>
+>Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>---
+> arch/riscv/include/asm/kvm_host.h          |   5 +
+> arch/riscv/include/asm/kvm_vcpu_sbi.h      |   1 +
+> arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h |  37 ++++++
+> arch/riscv/include/uapi/asm/kvm.h          |   1 +
+> arch/riscv/kvm/Makefile                    |   1 +
+> arch/riscv/kvm/vcpu.c                      |   5 +
+> arch/riscv/kvm/vcpu_sbi.c                  |   4 +
+> arch/riscv/kvm/vcpu_sbi_fwft.c             | 136 +++++++++++++++++++++
+> 8 files changed, 190 insertions(+)
+> create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
+> create mode 100644 arch/riscv/kvm/vcpu_sbi_fwft.c
+>
+>diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
+>index 484d04a92fa6..be60aaa07f57 100644
+>--- a/arch/riscv/include/asm/kvm_host.h
+>+++ b/arch/riscv/include/asm/kvm_host.h
+>@@ -19,6 +19,7 @@
+> #include <asm/kvm_vcpu_fp.h>
+> #include <asm/kvm_vcpu_insn.h>
+> #include <asm/kvm_vcpu_sbi.h>
+>+#include <asm/kvm_vcpu_sbi_fwft.h>
+> #include <asm/kvm_vcpu_timer.h>
+> #include <asm/kvm_vcpu_pmu.h>
+>
+>@@ -169,6 +170,7 @@ struct kvm_vcpu_csr {
+> struct kvm_vcpu_config {
+> 	u64 henvcfg;
+> 	u64 hstateen0;
+>+	u64 hedeleg;
+> };
+>
+> struct kvm_vcpu_smstateen_csr {
+>@@ -261,6 +263,9 @@ struct kvm_vcpu_arch {
+> 	/* Performance monitoring context */
+> 	struct kvm_pmu pmu_context;
+>
+>+	/* Firmware feature SBI extension context */
+>+	struct kvm_sbi_fwft fwft_context;
+>+
+> 	/* 'static' configurations which are set only once */
+> 	struct kvm_vcpu_config cfg;
+>
+>diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+>index b96705258cf9..3a33bbacc233 100644
+>--- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
+>+++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+>@@ -86,6 +86,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_srst;
+> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
+> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_dbcn;
+> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_sta;
+>+extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_fwft;
+> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_experimental;
+> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_vendor;
+>
+>diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h b/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
+>new file mode 100644
+>index 000000000000..7dc1b80c7e6c
+>--- /dev/null
+>+++ b/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
+>@@ -0,0 +1,37 @@
+>+/* SPDX-License-Identifier: GPL-2.0-only */
+>+/*
+>+ * Copyright (c) 2023 Rivos Inc
+>+ *
+>+ * Authors:
+>+ *     Atish Patra <atishp@rivosinc.com>
 
-False alarm on the breakage part, I got lost in the software layers.
+nit: probably need to fix Copyright year and Authors here :-)
+Same in all new files being introduced.
 
-> Both the pinctrl subsystem and
-> the wide world of diverse QCOM chips can be complicated beasts. I
-> definitely could have missed things along the way. (And on first
-> glance, it seems like you may have found one. I definitely did not
-> consider the gpiod_direction_output() "emulation" behavior here when
-> submitting this.)
-> 
-> But I can't tell based on subsequent conversation: are you observing a
-> real problem, or is this a theoretical one that only exists if the
-> gpiochip driver adds set_config() support?
-> 
+>+ */
+>+
+>+#ifndef __KVM_VCPU_RISCV_FWFT_H
+>+#define __KVM_VCPU_RISCV_FWFT_H
+>+
+>+#include <asm/sbi.h>
+>+
+>+#define KVM_SBI_FWFT_FEATURE_COUNT	1
+>+
+>+static int kvm_sbi_fwft_set(struct kvm_vcpu *vcpu,
+>+			    enum sbi_fwft_feature_t feature,
+>+			    unsigned long value, unsigned long flags)
+>+{
+>+	struct kvm_sbi_fwft_config *conf = kvm_sbi_fwft_get_config(vcpu,
+>+								   feature);
+>+	if (!conf)
+>+		return SBI_ERR_DENIED;
 
-There is a problem that if a non-ipq4019 device where to be pinconf'ed
-for open-drain, the outcome would be unexpected and I have a concern
-that someone one day would implement set_config().
+Curious,
+Why denied and not something like NOT_SUPPORTED NOT_AVAILABLE here?
 
-So, I'd like to fix this, but my argumentation is at least wrong.
-
-> > > Fix this by checking if the od_bit value is unspecified and if so fail
-> > > the request to avoid the unexpected state, and to make sure the software
-> > > fallback actually kicks in.
-> >
-> > Fortunately, this is currently not a problem as the gpiochip driver does
-> > not implement the set_config() callback, which means that the attempt to
-> > change the pin configuration currently always fails with -ENOTSUP (see
-> > gpio_do_set_config()).
-> >
-> > Specifically, this means that the software fallback kicks in, which I
-> > had already verified.
-> >
-> > Now, perhaps there is some other path which can allow you to end up
-> > here, but it's at least not via gpiod_direction_output().
-> >
-> > The msm pinctrl binding does not allow 'drive-open-drain' so that path
-> > should also be ok unless you have a non-conformant devicetree.
-> 
-> The ipq4019 binding does:
-> https://git.kernel.org/linus/99d19f5a48ee6fbc647935de458505e9308078e3
-> 
-
-Perhaps we could convert that to yaml?
-
-> This is used in OpenWrt device trees.
-> 
-
-Thanks, I couldn't find a user, so this was helpful input for deciding
-the path forward.
-
-> > > It is assumed for now that no implementation will come into existence
-> > > with BIT(0) being the open-drain bit, simply for convenience sake.
-> > >
-> > > Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
-> >
-> > I guess hardware open-drain mode has never been properly tested on
-> > ipq4019.
-> 
-> It was quite some time ago that I wrote and tested this, and per the
-> above, I easily could have missed things. (Plus, the open drain
-> configuration may not have much practical effect on the systems in
-> question, so certain errors may not even be observable.)
-> 
-> But I do recall seeing the code in question activate. And inspection
-> shows that the pinconf_apply_setting() -> ... msm_config_group_set()
-> path is non-dead code here, for appropriate device trees.
-> 
-
-Thank you for taking a look, Brian. This was valuable input. I will
-rework this to have a valid motivation - at least.
-
-> I can try to fire up my development devices again and see what's up if
-> that helps, but I won't have time to do that in the next few days.
-> 
-
-As my observation was incorrect, I don't think that is urgent.
-
-Regards,
-Bjorn
+>+
+>+	if ((flags & ~SBI_FWFT_SET_FLAG_LOCK) != 0)
+>+		return SBI_ERR_INVALID_PARAM;
+>+
+>+	if (conf->flags & SBI_FWFT_SET_FLAG_LOCK)
+>+		return SBI_ERR_DENIED;
+>+
+>+	conf->flags = flags;
+>+
+>+	return conf->feature->set(vcpu, conf, value);
+>+}
+>+
 
