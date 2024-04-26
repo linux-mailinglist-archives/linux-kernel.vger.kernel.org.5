@@ -1,358 +1,284 @@
-Return-Path: <linux-kernel+bounces-159927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6CC8B3663
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:11:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00888B3664
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A50B6283C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:11:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6959A1F223BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B358144D3A;
-	Fri, 26 Apr 2024 11:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80278144D2E;
+	Fri, 26 Apr 2024 11:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="OmSgCIhL"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="bmNZDAv5";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="bmNZDAv5"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2048.outbound.protection.outlook.com [40.107.13.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEDE1448DA
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714129856; cv=none; b=U0FgcFUnaVId1SwxW4+dgJMngb4R0ymIAGWeMP6eoiCP4/sQMecYfEsGovFUimLnTtAM09jt2kbhacsPjF+upNgM8nGJi+kV413qBbzpA5d+UssMa/+LR9ikcnmcSyv72ovMkhKOMNxe5tnI27X33l8j/y0ebCevle94Qn8DmhA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714129856; c=relaxed/simple;
-	bh=WbhZdoIBj3p0E4VrFE5juiAe7yLSKrqnIW0Ka4pUhGE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=QSzpIPEmjQN0qxSXAr5qUOA7pzk1sAbNL4I5a2ZeRFu2t63YnU+Vxj8yxbHEx5+Gr0720mfB1XC8ctczYu5HDR2CI+xkIFfprauVrvgXDB2dJ9sG0Xbj7DEPYOWVm9L+IAdKPuWq4yWErifxONNBdZgMXN5nprit9xajOfU8NTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=OmSgCIhL; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240426111047euoutp023649192360ad2ce4f2d73caf70920c9b~J0AO2Y5Nf0031200312euoutp02h
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:10:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240426111047euoutp023649192360ad2ce4f2d73caf70920c9b~J0AO2Y5Nf0031200312euoutp02h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1714129847;
-	bh=XSqbdPMuwyK0sHWAYJbKaT5v53vJxjQrzK/zUbpnB+c=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=OmSgCIhLO89IbRgp1yAyg3Eye/AZNeeXbQOt9i1WMwa7VsLHK71ar9mfq3tjzNpyI
-	 6nfwGito8pkkmGrmPBH+sB6TpC9SO7StG0irb4Su4eeQuChWEBdmwlSHxB2vSzYK3L
-	 DYPEB157lBKsv212iG68QYO3ytSZLI/9dQqrmDBA=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240426111047eucas1p1147c2bb08053f732ddc16a03e35603f3~J0AOg-D662877728777eucas1p1k;
-	Fri, 26 Apr 2024 11:10:47 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 92.BD.09624.7BB8B266; Fri, 26
-	Apr 2024 12:10:47 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240426111046eucas1p12a7cbceb3f235edccec0f16645396fdf~J0AOJm_zA0692006920eucas1p1K;
-	Fri, 26 Apr 2024 11:10:46 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240426111046eusmtrp241c92da180f176d63016e2852acbad60~J0AOI_0Za3229532295eusmtrp2N;
-	Fri, 26 Apr 2024 11:10:46 +0000 (GMT)
-X-AuditID: cbfec7f2-bfbff70000002598-0c-662b8bb71109
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id CB.6D.08810.6BB8B266; Fri, 26
-	Apr 2024 12:10:46 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240426111046eusmtip10756d1ac90a6dcce60edbf902fd2c3f5~J0ANiMTxe2561625616eusmtip1h;
-	Fri, 26 Apr 2024 11:10:46 +0000 (GMT)
-Message-ID: <420eec10-d499-4d50-b4c3-44af15b82698@samsung.com>
-Date: Fri, 26 Apr 2024 13:10:45 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7E21448DA;
+	Fri, 26 Apr 2024 11:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.48
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714129922; cv=fail; b=TWs42HsPly+5nUs7WUGR51ugqkNqMKaELV4k9yGQISjFnF5vbMRxjv/AosVBPXoYFGlSXprmEnaj38TeAXW8ZWKIMSZt2YC6M/qGkYMLsMIE7c+zvvFdJVUTJox7b3AWCmzGaQYO5aum+jOdvLVEo1rlJQzm0/lxbZbteCu2H9M=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714129922; c=relaxed/simple;
+	bh=pM9yB6hjtAbRmnQKz47Dzxlg23g/F9IQ1X//iH4Pk54=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=glVoQnY/c9MEb70f9Qk59DkYZyYqsHH1RO4HR/MRvjdCHNfPu9w+CXmOwlR6fdfLJh5SNbXOBfXpmA4ky7k8/v+2HcKtIzrJ6vhpnQdhBDoMkIZ854aE9kCLnGZ9Kee9/BZxA200x3kt9H+Bd23yu1ZkLPxRLGaZnRcOMw5ymiI=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=bmNZDAv5; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=bmNZDAv5; arc=fail smtp.client-ip=40.107.13.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
+ b=luNG2mJ4y/s72mGW8+5x9Io+nJRltfOECvBSQPo4uLZFLR23Y8qhIRh9yCV/e7xa/iuDTZ4YHh9XH7BwMX0I4XAu/9BPHp1R1N/FyLY+PtsFFSQ5GM+pEH5CXpuyJuJyV+0t3mlzmxaFsRPh2zUkBneHf/8agPJ9FjRJwlL/1Oig2y6O9Rgq+rTNr0euL1p1idPED1xxQ487wyMrIzUDon74wAQnrFkO3IyvB7s6crawvP7YlBgjF6LVFkL2Kkf5nPEm/59E5bw8QAH/umLj8NgqkRVjVT3qyXOcmyuJe9Xd2L/WdgthAj0jg50eI90etx6r/wSnYlbicmNgnU79tQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pM9yB6hjtAbRmnQKz47Dzxlg23g/F9IQ1X//iH4Pk54=;
+ b=OgRRtNpihUJ6C43JXGwE4RMzRBSrzJLh8hJG4nGgFD1qr0eyoniG9vgiN5X/zcRs+K7bSJK7mlxla6Ff8D8x9SnAYK3mx9aOs8DnO/RzDdiSdH12+qNvEvG8rGJZO2RHEfukOw02CObUmmhP7aOlIxh4L2Tyxp38V1ib1d2VAoowT/T6eoxTM4z8tfdrlUXOZF5Tx+nW5miMVmuSB6wVjozmNXH723CAryc3imHT8qWi+enlV7TZgklHMd9/KiuteBpyGZ6vTD+hOzP5KIMMYdJKAE6i3LSez5HdsBFzoil9Rwt6+XMhxEaeKmge05qB2Hq6JXNQbF6EL1RS/YFi6w==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 63.35.35.123) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=arm.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
+ dkim=pass (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
+ dmarc=[1,1,header.from=arm.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pM9yB6hjtAbRmnQKz47Dzxlg23g/F9IQ1X//iH4Pk54=;
+ b=bmNZDAv56TnQGYaX+N3Fj9dUuDD0qVrXp0gVm8lmtFEhOw0u8QXlUa7/HLnFAlg+QzNJmxWr/JECJqyK8MyN5UyOnXzH5zpXLVE/LuZyG6M73LV27Da9jJlEAh0MUnmXe98nsi1RtlM0lrgNu67o0VXXICu2U317933U6R8Detc=
+Received: from AS8PR07CA0054.eurprd07.prod.outlook.com (2603:10a6:20b:459::32)
+ by AM0PR08MB5505.eurprd08.prod.outlook.com (2603:10a6:208:18e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 11:11:50 +0000
+Received: from AMS0EPF000001B7.eurprd05.prod.outlook.com
+ (2603:10a6:20b:459:cafe::fa) by AS8PR07CA0054.outlook.office365.com
+ (2603:10a6:20b:459::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.11 via Frontend
+ Transport; Fri, 26 Apr 2024 11:11:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=arm.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AMS0EPF000001B7.mail.protection.outlook.com (10.167.16.171) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.7519.19
+ via Frontend Transport; Fri, 26 Apr 2024 11:11:49 +0000
+Received: ("Tessian outbound ba75727f6dca:v315"); Fri, 26 Apr 2024 11:11:49 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 47514de33016a5a7
+X-CR-MTA-TID: 64aa7808
+Received: from 915da33fab9f.2
+	by 64aa7808-outbound-1.mta.getcheckrecipient.com id 15D0512F-4ABF-41E1-971E-B823D5E71343.1;
+	Fri, 26 Apr 2024 11:11:39 +0000
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 915da33fab9f.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Fri, 26 Apr 2024 11:11:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K/sLI0iWobmWDJMJol26N3IbAUSmhGr7BnR+UClMAM1yfq1xp7OGQllHGNMJ7PVPJ1o/KkTRJoGir+hETJIWidcl/nKCuNN9L+grPwTs/JibBYQIi7/RowVYXli/UKO2fijmPY+I3hhOyVU3RHR+OJJ0lOHF+Jp26dbppUfOA9tDZTfsbnuv0wmbm4vj1XaohPccWw8o5Ox7xLkWaE8LX+WwKRpDb3WE0zfzV03ckKTpGEtWavtNHRoSfNO/B3Y+H9ypvXTzkEnSez7iC2QZP5Y6HThwxSL7XYGc37OmXvpytSBPGoo3CwRY+mReyzLt9hSntRlDjHNhKdfSBpza+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pM9yB6hjtAbRmnQKz47Dzxlg23g/F9IQ1X//iH4Pk54=;
+ b=cqeZOWyaTEbCH2Ak4yAxYiIj9sadek1ZOWeSNKI9IupOupn6aHCwH/obLN1Wfrq7466vJ6xJilK5zCvGK1TLaQjvBl1HhNf2lcTUJGMAUPd5iaFlVstGGdajGWnAN4DF0ycWCehIVmXRhrBZwAma7ly5nhhIFJHAJjN6kphNKuLRcxeRpaclF/reM/nF7B83luXDb2tRleiLM/Hmoo/F/2zAAgGHlSf2Dp5kBeh2eUsLPF75rH09BAukKtI9XXVeRmsu2Clk4PICPey47mx5pgWHEKFupXsPXgbO5ohUtp94ECQwD7uMVJ4RXhlRBLd6vjNwzSsNwYLqYJVWSw/qGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pM9yB6hjtAbRmnQKz47Dzxlg23g/F9IQ1X//iH4Pk54=;
+ b=bmNZDAv56TnQGYaX+N3Fj9dUuDD0qVrXp0gVm8lmtFEhOw0u8QXlUa7/HLnFAlg+QzNJmxWr/JECJqyK8MyN5UyOnXzH5zpXLVE/LuZyG6M73LV27Da9jJlEAh0MUnmXe98nsi1RtlM0lrgNu67o0VXXICu2U317933U6R8Detc=
+Received: from AS8PR08MB6646.eurprd08.prod.outlook.com (2603:10a6:20b:350::15)
+ by PAXPR08MB7490.eurprd08.prod.outlook.com (2603:10a6:102:2b7::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 11:11:36 +0000
+Received: from AS8PR08MB6646.eurprd08.prod.outlook.com
+ ([fe80::9d7d:90fc:df7a:a5a6]) by AS8PR08MB6646.eurprd08.prod.outlook.com
+ ([fe80::9d7d:90fc:df7a:a5a6%4]) with mapi id 15.20.7472.044; Fri, 26 Apr 2024
+ 11:11:32 +0000
+From: Ben Gainey <Ben.Gainey@arm.com>
+To: "ak@linux.intel.com" <ak@linux.intel.com>
+CC: "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, Mark Rutland
+	<Mark.Rutland@arm.com>, "mingo@redhat.com" <mingo@redhat.com>, James Clark
+	<James.Clark@arm.com>, "acme@kernel.org" <acme@kernel.org>,
+	"namhyung@kernel.org" <namhyung@kernel.org>, "jolsa@kernel.org"
+	<jolsa@kernel.org>, "will@kernel.org" <will@kernel.org>, "irogers@google.com"
+	<irogers@google.com>, "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH v2 0/4] A mechanism for efficient support for
+ per-function metrics
+Thread-Topic: [RFC PATCH v2 0/4] A mechanism for efficient support for
+ per-function metrics
+Thread-Index: AQHalKLU1TQf89YFfUas3HRNtUjHP7F2AHsAgARrPAA=
+Date: Fri, 26 Apr 2024 11:11:32 +0000
+Message-ID: <b0580124d8916d523afb98979a24f8108b0e700a.camel@arm.com>
+References: <20240422104929.264241-1-ben.gainey@arm.com>
+	 <ZifW8rZk41t4ukIV@tassilo>
+In-Reply-To: <ZifW8rZk41t4ukIV@tassilo>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.52.0 
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+x-ms-traffictypediagnostic:
+	AS8PR08MB6646:EE_|PAXPR08MB7490:EE_|AMS0EPF000001B7:EE_|AM0PR08MB5505:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4e6370cc-e7e9-4cf0-540b-08dc65e1ab6c
+x-checkrecipientrouted: true
+nodisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ =?utf-8?B?LzQ1OHJGQVhieWJqTnlic3JzSXF4TVVJY245WVdDRnpsL0R2b1VFZGhJR2dG?=
+ =?utf-8?B?eVF0SElxbjhZbVZIVVV4Q3EvWXduT0ZCU3NiQUFCNHg2OGp5OWRJL2kvR2RN?=
+ =?utf-8?B?cU83SDhIcmtWUGJlTGlDVmlYNit3SkFDaDlBWkliTCtyY083Qnk3SkNIN3Fo?=
+ =?utf-8?B?VkljMzh2bXU5TW5EWDVwcXFyMHBNMjI0c2Q2bTNPMzF1b2Z5TnkwTTZ0U0ND?=
+ =?utf-8?B?TklDMWNEUzB1eWJld0M2MmtzMWs2OTVwbGRUWHFlUTdRQ3dJc0g1WkJjajAx?=
+ =?utf-8?B?SXEwWnRwV3dJUmNNblR3RzFoSnY4K0NCaXk0cXNVaG5JM2Z2Ly94SC93cDJu?=
+ =?utf-8?B?WTI3SGtFTEkyYnRPSndkWVZ0WC9NRnFsdE52V0RZL1lDYzJSajFpbGkwSkoz?=
+ =?utf-8?B?Nk9neWhyMFQybmlHYUl3QnZkUUV3SXAzNnQ2bjdTWE0yQzZXbVJxbkpnN2pH?=
+ =?utf-8?B?ZWYyVXBxTWxWdERqS1lnSWZVZGErc1lraUJYbGZLbDFQOUVaWVlMR0RQNWxM?=
+ =?utf-8?B?MUY0YzJ3KzNLd1ZWL2dqNUhtU0xUa0VUMWdoMjg2VVJHVUFoVlRSU3d3R1Jm?=
+ =?utf-8?B?L21UanRvZUN1dTYrTWMyUXl2Q3Jrekw4MjF5NjFvazBFaGw5SXpOLzBBWDNk?=
+ =?utf-8?B?ZkZubDFiU0NBLzJWVXhqWVkvQ1NaTDJteDF5MWp1Z3dmQ0NtVmM5ZkFYam5P?=
+ =?utf-8?B?OUpPdVZxZ0lEK2U4U0ZsYXB3OXI5K2hmcWpSdml1SGo5d1d3bUdSTU9pQm9h?=
+ =?utf-8?B?WmFpN1BIbzlGQTNZdnBTUFJ3bGxXUTNURlhCcmtRN3ZtUVpKUnR5Tnl0cG0v?=
+ =?utf-8?B?Y1FlVysrZUNWQkFtQ2tYTmd1WGpUWHJJbEwyTTJ0VUFTaCs1aGdNM2tUdThq?=
+ =?utf-8?B?MGZYd09Rdnh0NHFLR2pHb05rcG9CMS9SOWFCTkw2aUVLUkhKaTdGbUFIc1Ny?=
+ =?utf-8?B?V2RlWTNqNThrNmJkOWZweXZ4SkRCM3dqTkZKUDJ3OTR6ekU1UWpld1JML3BJ?=
+ =?utf-8?B?OEVJb05VRUVSYWw5bEpNano1Mit3Mk5OY3BsQ0Z4K3pIZTM4bVZXek1hb0V5?=
+ =?utf-8?B?QjRvVGo2N01LaEcyME5wYk1qdTIyWWtCMURjWFV5bk5qNlgwMHlubFNmYWVj?=
+ =?utf-8?B?RGV1YlJqbEIyUmJ5V0dWbktFMXZXMHpIMnUzU2RIRnRmaHJ4ak4vZXJoZzhU?=
+ =?utf-8?B?bUE0Y1NhTnpRZlQyRjd2dXFvRFFZZFFwTGxJRWdpby9ReDNQYjRMTTJlWDNB?=
+ =?utf-8?B?K0J3dlBtcTgyYy91SlRMSGh1RnBBYzcyRnIrZk96RHA5NUpINm5MMUp3aUht?=
+ =?utf-8?B?ZGZKYkI2eERaYWJ0UEVBNHVxdmhCY3lyUnIzWlYwUlJYazNlcHRuQmRyVVNk?=
+ =?utf-8?B?SHJEdFRyUHNrZjJYMXRZQkZSemo2VUZLZG1yK2djbWxtaUVOZjhYdVV4RVMz?=
+ =?utf-8?B?ZEVFNStraFRwZElLdncxVzlLWHBzMURLRGN6eUdkZzYyOHlDajFob3FpYTVR?=
+ =?utf-8?B?Q1cyWDBsNC9TYUpLdStZcXZjajFxenFhSTE5My9pd2NQT29HOWN4akdaUnRS?=
+ =?utf-8?B?S3FubFUybGFScTlEUklzSW45MHgwTHo2VmJHck5VQ25jclZNL1VtK2k3Ujc0?=
+ =?utf-8?B?OUxCTmlaUTZTNFJMbUttU3YxdVJwL1lVZEY2bzhqMzhlR0paZUpzVGRCS1pF?=
+ =?utf-8?B?VlVoSTA3a0FQbEtFWkIwV1lsR3lWeDFiOEg2VkJGUWt6bksrMFdsS0dFZXpQ?=
+ =?utf-8?B?RmxEMDBiL3hmOE5UY1BwVVNsSVFJNlB5Vm5yTXVVY3VqU1lOLzgwSHdvZEpM?=
+ =?utf-8?B?SkNGakJKaU9FR2t3ZE5Mdz09?=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR08MB6646.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(38070700009);DIR:OUT;SFP:1101;
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <024EF7EE505A6648B01CD558037FD8EA@eurprd08.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: HCI: fix slab-use-after-free in
- cmd_sync_work
-To: Sungwoo Kim <iam@sung-woo.kim>
-Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
-	<johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20240425041128.3093970-1-iam@sung-woo.kim>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRmVeSWpSXmKPExsWy7djP87rbu7XTDC6sZrdouTKTxaK9exaT
-	xa6px5gt5lzrY7a4vGsOm8XTz1NYLb59+sXowO6xc9Zddo/1u5eze1xvs/aY9N3V4/MmuQDW
-	KC6blNSczLLUIn27BK6MOVv3MhXc86loPyjVwDjVsYuRk0NCwERi790XrF2MXBxCAisYJU42
-	vmOEcL4wSsx/fBEq8xko834NK0zL5h13oRLLGSUOzjrEBuF8ZJR4e6YTrIpXwE6ivXEFE4jN
-	IqAqcXvWPai4oMTJmU9YQGxRAXmJ+7dmsIPYwgL+Eoe6FoPFRQSUJA79vwk2lFngOtDQ9TuZ
-	QRLMAuISt57MBxvKJmAo0fW2iw3E5hSwkGhqf8gEUSMv0bx1NjNIs4TAAw6JHe1HWCDudpGY
-	P+caG4QtLPHq+BZ2CFtG4v9OkKEgDe2MEgt+34dyJjBKNDy/xQhRZS1x59wvoG4OoBWaEut3
-	6UOEHSU+XvjCCBKWEOCTuPFWEOIIPolJ26YzQ4R5JTrahCCq1SRmHV8Ht/bghUvMExiVZiGF
-	yywkb85C8s4shL0LGFlWMYqnlhbnpqcWG+allusVJ+YWl+al6yXn525iBKag0/+Of9rBOPfV
-	R71DjEwcjIcYJTiYlUR4b37USBPiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5oinyokkJ5Ykpqd
-	mlqQWgSTZeLglGpg6jp/w9HK8m9xicyriEky5/zT/VnPl+s+q7fKeWo8O2qlOKPsT4+gxU28
-	3ldmJIiLLZSM5LoWYpH2afbUHz//f/vytGpyRHO+x+x5yyt2rSh7O0fm7Prcdo28/JRnqdGm
-	vzcoTFZtFd21Sjmrtb3q0/F1kYuj5wsqNcqIW/0VnFwze2vtsnVSL19ncRcz26XkRV5d+iYz
-	K2/66ZbAaXrxk603bFDWKr5y4+SsS8UFJrof2uo2J9iJGSnGL3kzc9tmhQVVy96XslisVO7w
-	nfDyozSHSPGVaAUJKTHOHedEF8a/trP9d4pfpkNXv/TNt+YF0i+axS/cOj5fUEeytqI8JEUl
-	PUPZVWylYmDs1/VKLMUZiYZazEXFiQBNXq5SsAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsVy+t/xu7rburXTDF72aFm0XJnJYtHePYvJ
-	YtfUY8wWc671MVtc3jWHzeLp5ymsFt8+/WJ0YPfYOesuu8f63cvZPa63WXtM+u7q8XmTXABr
-	lJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7GnK17
-	mQru+VS0H5RqYJzq2MXIySEhYCKxecdd1i5GLg4hgaWMEndnX2OGSMhInJzWwAphC0v8udbF
-	BlH0nlHi1ZUNbCAJXgE7ifbGFUwgNouAqsTtWfdYIeKCEidnPmEBsUUF5CXu35rB3sXIwSEs
-	4Ctx7E05SFhEQEni0P+bYDOZBW4ySty6/Y0FpEZIwFxi+RMLkBpmAXGJW0/mg41nEzCU6Hrb
-	BbaWU8BCoqn9IRNEjZlE19YuRghbXqJ562zmCYxCs5BcMQvJqFlIWmYhaVnAyLKKUSS1tDg3
-	PbfYUK84Mbe4NC9dLzk/dxMjMNq2Hfu5eQfjvFcf9Q4xMnEwHmKU4GBWEuG9+VEjTYg3JbGy
-	KrUoP76oNCe1+BCjKTAoJjJLiSbnA+M9ryTe0MzA1NDEzNLA1NLMWEmc17OgI1FIID2xJDU7
-	NbUgtQimj4mDU6qBKfxye8omm6Jb3D9vNDwUX1i1XjJSWGfjhUdqGQF1NfppU+/Jbnmy7cD2
-	7pXSfzu//Erm3/NRr9tf47H3Rr0mudbd31VNrz3itZ2uvWxmmo3pwi1Sxttn9hldrovfbWt3
-	0fgMe9bXuqlPpVK0Nks2/qtTtNjcYzy78An/pX3pee5BimHuk55/4J79eevHw89XnpyzquVi
-	lIdLpuQrYUH3Ow7+x7o2HDyUai1f8tDqkt8qnnMH1zG53WHyLONLfbtN7OYU0fbDS460ZVts
-	0w9fPPGu8hmJ+bk/Jr3fxZDkJ6T/8PfqCEOpknUekfNkDyWrf995Vv3q/YkBpodWyvtb3WKb
-	fGWvRvbr4xdWfZmVE6XEUpyRaKjFXFScCAC+AIXcPwMAAA==
-X-CMS-MailID: 20240426111046eucas1p12a7cbceb3f235edccec0f16645396fdf
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240426111046eucas1p12a7cbceb3f235edccec0f16645396fdf
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240426111046eucas1p12a7cbceb3f235edccec0f16645396fdf
-References: <20240425041128.3093970-1-iam@sung-woo.kim>
-	<CGME20240426111046eucas1p12a7cbceb3f235edccec0f16645396fdf@eucas1p1.samsung.com>
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB7490
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ AMS0EPF000001B7.eurprd05.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	a1eada8e-35c8-412e-6679-08dc65e1a155
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bGJHbUE2QTluUWpMS0hpUlBqVVBuY3lBWTZROEpyNHNnNGovbUNVb2VmS2Vl?=
+ =?utf-8?B?d0RnY0pLZ2M2NUtjaUhocVF3dm1BeDdDQ0JRT0kyV0w1SWdGN3RWMGJMeW5D?=
+ =?utf-8?B?cFZCcEl3dlBXa2NGTkJmWmlUK1lkaERwRnExMlVJNFZwUytHQmxrenVkRFlF?=
+ =?utf-8?B?ZVpaT0xzMUc1Q2F1RjRHQzI1Um5hcmhqalh4UHRWY0JMcGxsSmRQRDNHd2Yr?=
+ =?utf-8?B?azM4RzVGNGdTUWFIYk9iWUdlcVNCbzFOdThKTEozM3BIdG85aldnZXArRjhC?=
+ =?utf-8?B?WnFzOHFQWE5PQ1dOTVBBcnJlUFU5UGM0ZUhmaytRcUI4ZnRpbzdkdU1WM3M1?=
+ =?utf-8?B?c0pzMGQzaFIrT2ZSemFuRlhnNXpvNS8vQU1CYUtCaFBkZUJsNEwxV0dPbTJI?=
+ =?utf-8?B?ZmNPWlhMTmhNZkkvZFhMV1hOZnlEcGxoVDljcG1UYk1zc1EyN0c3SVJlVWVk?=
+ =?utf-8?B?TmZiVUdzanA2cExSQjRETlN2TXNoUXdMVVkzcnR0UXB3ZWdYdnBZSGNxKzFT?=
+ =?utf-8?B?N3ZnajFLcmt0U0pBVTRzT25oV1FzTVR2MXIrTXRSdC85TW9KS2EzTnZBVzYz?=
+ =?utf-8?B?NGtpMzhQOGFSRC9YUUNvMURuN3B5cHhWSytwV3hZWnlucG14eEVCZ0ZtM2Mv?=
+ =?utf-8?B?b1ZzV2JVRFVJSHFjVjYxaGEvejBXVXFMc2RCcWQwa203SWM2bWFSditIS1FL?=
+ =?utf-8?B?NHBvNHI4V3NRRjd2MVdtUm0wa2o3K1Ntd0dwVkJOOXIwVHljN28xTUlsWU52?=
+ =?utf-8?B?cXhtQUFhWGlQRERZL2ZXOHVjdkNQWGtpbHhpbEU4Q1craWFNMitCSXc5bmxR?=
+ =?utf-8?B?aXhlTVZSZWJXaWZEM2YzTkJqd3pncVk0cERTSlB6aDFuSmhkSndmMGZKU2FF?=
+ =?utf-8?B?TTJXcXhmZVdGOTNlQnZNUFJVK3JXTldHem44OXloNTgyUFVhaFJncjFzMnF4?=
+ =?utf-8?B?bGhubXdCSXpHQUhPcEQ0bVh4Zi9Jb1VqbmY1M0s4SjloOUtsZ0x5aEZ5QnAx?=
+ =?utf-8?B?TjFhRmFtTGVBQ0lvVEhZRVdMdWdzemQzbDc2UWxJUnJmd2JWSlpQRWlwc0sr?=
+ =?utf-8?B?dWFYc0VqVFNmQndKREorYWVrSm9lR2svbTlRbUxxTnZqbjM1M0E4Q0ZicWZP?=
+ =?utf-8?B?U2s5S3dzbGFyWTF3NkpMZ3p3VEVNOEIveXJIN056SlVyQzM2S0NTaUNYOXFa?=
+ =?utf-8?B?TzB5UmhLV2xROHl6VTFRQ1FqbElMRnAvMzhlcjNCMkZWeWI0NHNMQWJmZXNO?=
+ =?utf-8?B?RFJKdUlBUGxsdGNDejlLbVA2REREb1VjUWFRR3hueVBxUzRTenVWSERISE1u?=
+ =?utf-8?B?WjZQTUxsaCtSaEhMQnY0b3RoWmxNemhPVHc2WlpGa0ZsZlV2eDZxZlNOYjRY?=
+ =?utf-8?B?enN4aTQ1UHVUTjNCbnJNUW9ZMktaV0tjMG1YTENpelNSazE0WGhzeCtmcGM5?=
+ =?utf-8?B?V2RwV05TMGVYS3kwS1l5QWkvSTFZVHEwNEpuMk1hYmMvd0xyQk5yMFBqam9x?=
+ =?utf-8?B?MktVOXQ4a2RHK2NzZXZlNFdDanVqMGV0U2laMnh4bU5qUlZReGhTaE9aM2Ry?=
+ =?utf-8?B?NWJNVTdpQnoreXZ5QXkwQlphbElsenhrcHNpSXZMOUdONldUQTJxZXRncDNo?=
+ =?utf-8?B?S3dUaVZuTVhCV3VRQnAxUDJPTC9ULytENERteDVPTGhsN0J6MXpSSExhOURJ?=
+ =?utf-8?B?OHFWcWtVT2o3dEc4Zk9kellBUHlNdEF3U3ZaMnMyRXR6MHhUVnpqVGs3bEdE?=
+ =?utf-8?B?S1RaZURDMzVScmgrbHZRS0FIaWEwU21qcTV4bHpyYmk5a2RmbVplZFBjSVZP?=
+ =?utf-8?Q?/uQCbrLuHxaU9TDcypfLDbpRksdeR4tNK7bc0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 11:11:49.6880
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e6370cc-e7e9-4cf0-540b-08dc65e1ab6c
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AMS0EPF000001B7.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB5505
 
-Dear All,
-
-On 25.04.2024 06:11, Sungwoo Kim wrote:
-> Hello, could you review the UAF bug and its fix?
-> The stack trace is at the bottom.
->
-> mgmt sync cmd could be used after freed in this scenario:
->
-> set_local_name()       ... cmd is allocated, set_name_complete() is
->                             queued in cmd_sync_work.
-> hci_error_reset()      ... hci device reset.
->    hci_dev_close_sync() ... close hdev, at this point, cmd is freed.
-> set_name_complete()    ... callback from cmd_sync_work. cmd->param causes UAF.
->
-> To fix this, this patch makes hci_dev_close_sync() call hci_cmd_sync_clear() to clear the cmd_sync_work.
->
-> Thanks,
-> Sungwoo Kim.
-
-This patch landed in today's linux-next as commit 37dd04e4d594 
-("Bluetooth: HCI: fix slab-use-after-free in cmd_sync_work"). I believe 
-it correctly fixes the mentioned problem, but on the other hand it 
-introduces the following kernel's lock dependency checker warning:
-
-============================================
-WARNING: possible recursive locking detected
-6.9.0-rc4-01047-g37dd04e4d594 #14949 Not tainted
---------------------------------------------
-kworker/u9:0/56 is trying to acquire lock:
-c3aba78c ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: 
-__flush_work+0x1e0/0x538
-
-but task is already holding lock:
-f0eb5f18 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: 
-process_scheduled_works+0x328/0x7a8
-
-other info that might help us debug this:
-  Possible unsafe locking scenario:
-
-        CPU0
-        ----
-   lock((work_completion)(&hdev->cmd_sync_work));
-   lock((work_completion)(&hdev->cmd_sync_work));
-
-  *** DEADLOCK ***
-
-  May be due to missing lock nesting notation
-
-4 locks held by kworker/u9:0/56:
-  #0: c3a4e8b4 ((wq_completion)hci0){+.+.}-{0:0}, at: 
-process_scheduled_works+0x2fc/0x7a8
-  #1: f0eb5f18 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, 
-at: process_scheduled_works+0x328/0x7a8
-  #2: c3abab6c (&hdev->req_lock){+.+.}-{3:3}, at: 
-hci_cmd_sync_work+0xa0/0x154 [bluetooth]
-  #3: c137bdfc (rcu_read_lock){....}-{1:2}, at: __flush_work+0x40/0x538
-
-stack backtrace:
-CPU: 0 PID: 56 Comm: kworker/u9:0 Not tainted 
-6.9.0-rc4-01047-g37dd04e4d594 #14949
-Hardware name: Samsung Exynos (Flattened Device Tree)
-Workqueue: hci0 hci_cmd_sync_work [bluetooth]
-Call trace:.
-  unwind_backtrace from show_stack+0x10/0x14
-  show_stack from dump_stack_lvl+0x68/0x88
-  dump_stack_lvl from __lock_acquire+0x152c/0x1744
-  __lock_acquire from lock_acquire+0x21c/0x394
-  lock_acquire from __flush_work+0x20c/0x538
-  __flush_work from __cancel_work_sync+0x12c/0x20c
-  __cancel_work_sync from hci_cmd_sync_clear+0x1c/0x6c [bluetooth]
-  hci_cmd_sync_clear [bluetooth] from hci_dev_close_sync+0x31c/0x5f4 
-[bluetooth]
-  hci_dev_close_sync [bluetooth] from hci_set_powered_sync+0x27c/0x288 
-[bluetooth]
-  hci_set_powered_sync [bluetooth] from hci_cmd_sync_work+0xb0/0x154 
-[bluetooth]
-  hci_cmd_sync_work [bluetooth] from process_scheduled_works+0x390/0x7a8
-  process_scheduled_works from worker_thread+0x150/0x3bc
-  worker_thread from kthread+0x108/0x140
-  kthread from ret_from_fork+0x14/0x28
-Exception stack(0xf0eb5fb0 to 0xf0eb5ff8)
-..
-
-
-Please check if the locking is really correct and if so, add the needed 
-lockdep annotation to the bluetooth code to silence the above warning.
-
-
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in set_name_complete+0x4a/0x330 net/bluetooth/mgmt.c:3815
-> Read of size 8 at addr ffff888107259098 by task kworker/u3:0/66
->
-> CPU: 0 PID: 66 Comm: kworker/u3:0 Not tainted 6.8.0+ #61
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> Workqueue: hci0 hci_cmd_sync_work
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x85/0xb0 lib/dump_stack.c:106
->   print_address_description mm/kasan/report.c:377 [inline]
->   print_report+0x18f/0x560 mm/kasan/report.c:488
->   kasan_report+0xd7/0x110 mm/kasan/report.c:601
->   __asan_report_load8_noabort+0x18/0x20 mm/kasan/report_generic.c:381
->   set_name_complete+0x4a/0x330 net/bluetooth/mgmt.c:3815
->   hci_cmd_sync_work+0x269/0x3e0 net/bluetooth/hci_sync.c:308
->   process_one_work kernel/workqueue.c:2633 [inline]
->   process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
->   worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
->   kthread+0x2a9/0x340 kernel/kthread.c:388
->   ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->   </TASK>
->
-> Allocated by task 308:
->   kasan_save_stack mm/kasan/common.c:47 [inline]
->   kasan_save_track+0x30/0x70 mm/kasan/common.c:68
->   kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:575
->   poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
->   __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
->   kasan_kmalloc include/linux/kasan.h:211 [inline]
->   kmalloc_trace+0x1c9/0x390 mm/slub.c:4012
->   kmalloc include/linux/slab.h:590 [inline]
->   kzalloc include/linux/slab.h:711 [inline]
->   mgmt_pending_new+0x6f/0x230 net/bluetooth/mgmt_util.c:269
->   mgmt_pending_add+0x3f/0x120 net/bluetooth/mgmt_util.c:296
->   set_local_name+0x15a/0x4c0 net/bluetooth/mgmt.c:3892
->   hci_mgmt_cmd+0xb79/0x1190 net/bluetooth/hci_sock.c:1715
->   hci_sock_sendmsg+0x63a/0xf00 net/bluetooth/hci_sock.c:1835
->   sock_sendmsg_nosec net/socket.c:730 [inline]
->   __sock_sendmsg+0x227/0x270 net/socket.c:745
->   sock_write_iter+0x28d/0x3d0 net/socket.c:1160
->   do_iter_readv_writev+0x331/0x4c0
->   vfs_writev+0x2e6/0xa40 fs/read_write.c:971
->   do_writev+0xfd/0x250 fs/read_write.c:1018
->   __do_sys_writev fs/read_write.c:1091 [inline]
->   __se_sys_writev fs/read_write.c:1088 [inline]
->   __x64_sys_writev+0x86/0xa0 fs/read_write.c:1088
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0x84/0x120 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x6e/0x76
->
-> Freed by task 66:
->   kasan_save_stack mm/kasan/common.c:47 [inline]
->   kasan_save_track+0x30/0x70 mm/kasan/common.c:68
->   kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:589
->   poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
->   __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
->   kasan_slab_free include/linux/kasan.h:184 [inline]
->   slab_free_hook mm/slub.c:2121 [inline]
->   slab_free mm/slub.c:4299 [inline]
->   kfree+0x106/0x2e0 mm/slub.c:4409
->   mgmt_pending_free net/bluetooth/mgmt_util.c:309 [inline]
->   mgmt_pending_remove+0x19e/0x1d0 net/bluetooth/mgmt_util.c:315
->   cmd_complete_rsp+0x104/0x1a0
->   mgmt_pending_foreach+0xc7/0x120 net/bluetooth/mgmt_util.c:259
->   __mgmt_power_off+0x137/0x370 net/bluetooth/mgmt.c:9496
->   hci_dev_close_sync+0x4ab/0xe80 net/bluetooth/hci_sync.c:4953
->   hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
->   hci_error_reset+0x150/0x410 net/bluetooth/hci_core.c:1060
->   process_one_work kernel/workqueue.c:2633 [inline]
->   process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
->   worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
->   kthread+0x2a9/0x340 kernel/kthread.c:388
->   ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
->
-> The buggy address belongs to the object at ffff888107259080
->   which belongs to the cache kmalloc-96 of size 96
-> The buggy address is located 24 bytes inside of
->   freed 96-byte region [ffff888107259080, ffff8881072590e0)
->
-> The buggy address belongs to the physical page:
-> page:000000006bdb81a5 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888107259280 pfn:0x107259
-> flags: 0x17ffffc0000a00(workingset|slab|node=0|zone=2|lastcpupid=0x1fffff)
-> page_type: 0xffffffff()
-> raw: 0017ffffc0000a00 ffff888100041780 ffffea0004145510 ffffea0004240190
-> raw: ffff888107259280 000000000020000f 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
->
-> Memory state around the buggy address:
->   ffff888107258f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->   ffff888107259000: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
->> ffff888107259080: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->                              ^
->   ffff888107259100: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->   ffff888107259180: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
-> ==================================================================
->
-> Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
-> ---
->   net/bluetooth/hci_core.c | 2 --
->   net/bluetooth/hci_sync.c | 5 ++++-
->   2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index a7028d38c..c347efc4f 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -2764,8 +2764,6 @@ void hci_unregister_dev(struct hci_dev *hdev)
->   
->   	cancel_work_sync(&hdev->power_on);
->   
-> -	hci_cmd_sync_clear(hdev);
-> -
->   	hci_unregister_suspend_notifier(hdev);
->   
->   	msft_unregister(hdev);
-> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-> index c5d879904..aa8e0c33c 100644
-> --- a/net/bluetooth/hci_sync.c
-> +++ b/net/bluetooth/hci_sync.c
-> @@ -5181,9 +5181,12 @@ int hci_dev_close_sync(struct hci_dev *hdev)
->   		clear_bit(HCI_INIT, &hdev->flags);
->   	}
->   
-> -	/* flush cmd  work */
-> +	/* flush cmd work */
->   	flush_work(&hdev->cmd_work);
->   
-> +	/* flush cmd sync work */
-> +	hci_cmd_sync_clear(hdev);
-> +
->   	/* Drop queues */
->   	skb_queue_purge(&hdev->rx_q);
->   	skb_queue_purge(&hdev->cmd_q);
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+T24gVHVlLCAyMDI0LTA0LTIzIGF0IDA4OjQyIC0wNzAwLCBBbmRpIEtsZWVuIHdyb3RlOg0KPiA+
+IEN1cnNvcnkgdGVzdGluZyBvbiBhIFhlb24oUikgVy0yMTQ1IHdpdGggYSAzMDAgKmluc3RydWN0
+aW9uKiBzYW1wbGUNCj4gPiB3aW5kb3cgKHdpdGggYW5kIHdpdGhvdXQgdGhlIHBhdGNoKSBzdWdn
+ZXN0cyB0aGlzIGFwcHJvYWNoIHdvdWxkDQo+ID4gd29yaw0KPiA+IGZvciBzb21lIGNvdW50ZXJz
+LiBDYWxjdWxhdGluZyBicmFuY2ggbWlzcyByYXRlcyBmb3IgZXhhbXBsZQ0KPiA+IGFwcGVhcnMg
+dG8NCj4gPiBiZSBjb3JyZWN0IHdoZW4gdXNlZCB3aXRoIHRoZSBpbnN0cnVjdGlvbiBjb3VudGVy
+IGFzIHRoZSBzYW1wbGluZw0KPiA+IGV2ZW50LA0KPiA+IG9yIGF0IGxlYXN0IHRoaXMgYXBwcm9h
+Y2ggY29ycmVjdGx5IGlkZW50aWZpZXMgd2hpY2ggZnVuY3Rpb25zIGluDQo+ID4gdGhlDQo+ID4g
+dGVzdCBiZW5jaG1hcmsgYXJlIHByb25lIHRvIHBvb3IgcHJlZGljdGFiaWxpdHkuIE9uIHRoZSBv
+dGhlciBoYW5kDQo+ID4gdGhlDQo+ID4gY29tYmluYXRpb24gY3ljbGUgYW5kIGluc3RydWN0aW9u
+cyBjb3VudGVyIGRvZXMgbm90IGFwcGVhciB0bw0KPiA+IHNhbXBsZQ0KPiA+IGNvcnJlY3RseSBh
+cyBhIHBhaXIuIFdpdGggc29tZXRoaW5nIGxpa2UNCj4gPiANCj4gPiDCoMKgwqAgcGVyZiByZWNv
+cmQgLWUgJ3tjeWNsZXMvcGVyaW9kPTk5OTcwMCxhbHQtDQo+ID4gcGVyaW9kPTMwMC8saW5zdHJ1
+Y3Rpb25zfTp1UycgLi4uIGJlbmNobWFyaw0KPiA+IA0KPiA+IEkgb2Z0ZW4gc2VlIHZlcnkgbGFy
+Z2UgQ1BJLCB0aGUgc2FtZSBhZmZlY3QgaXMgb2JzZXJ2ZWQgd2l0aG91dCB0aGUNCj4gPiBwYXRj
+aCBlbmFibGVkLiBObyBpZGVhIHdoYXRzIGdvaW5nIG9uIHRoZXJlLCBzbyBhbnkgaW5zaWdodA0K
+PiA+IHdlbGNvbWUuLi4NCj4gDQo+IE15IGd1ZXNzIHdvdWxkIGJlIHRoYXQgdGhlIFBNSSBoYW5k
+bGVyIGNsZWFyZWQgTDEgYW5kIHRoZXJlIGFyZQ0KPiBzdGFsbHMNCj4gcmVsb2FkaW5nIHRoZSB3
+b3JraW5nIHNldC4gWW91IGNhbiBjaGVjayBMMSBtaXNzIGV2ZW50cyB0byBjb25maXJtLg0KPiBV
+bmZvcnR1bmF0ZWx5IHdpdGggdGhlIHBlcmlvZCBjaGFuZ2UgaXQgY2Fubm90IHVzZSBtdWx0aS1y
+ZWNvcmQNCj4gUEVCUyB3aGljaCB3b3VsZCBhdm9pZCB0aGUgbmVlZCBmb3IgYSBQTUkuDQo+IA0K
+PiAtQW5kaQ0KDQoNCkhpIEFuZGksDQoNClNwZW50IGEgYml0IG9mIHRpbWUgbG9va2luZyBhdCB0
+aGlzLg0KDQpDb21wYXJpbmcgdGhlIEwxIGNvdW50ZXJzIGFnYWluc3QgdGhlIHZhbHVlcyBmcm9t
+ICdwZXJmIHN0YXQnIGRvZXNuJ3QNCmFwcGVhciB0byBzaG93IHNvbWUgb2J2aW91cyBjYXVzZS4N
+Cg0KSSB0aGluayB0aGlzIGlzIGp1c3QgYSBxdWlyayBzcGVjaWZpYyB0byB1c2luZyB0aGUgY3lj
+bGUgY291bnRlciBhcyB0aGUNCnNhbXBsaW5nIGV2ZW50LCBhbmQgaXMgbm90IHJlbGF0ZWQgdG8g
+dGhlIGFsdC1wZXJpb2QsIGFzIHRoZSBhZmZlY3QgaXMNCnByZXNlbnQgZXZlbiBvbiBhbiB1bnBh
+dGNoZWQga2VybmVsLg0KDQpUaGVyZSBhcHBlYXJzIHRvIGJlIHNvbWUgbm9uLWxpbmVhciBpbmNy
+ZWFzZSBpbiBDUEkgKG92ZXIgdGhlIHNhbXBsZQ0KZGF0YSBhcyBhIHdob2xlKSBmb3IgdGhlIHNt
+YWxsZXN0IHZhbHVlcyBvZiBwZXJpb2QsIGUuZy4gZm9yDQpwZXJpb2Q9MTAwLCBDUEk9fjQ1MDsg
+cGVyZiBzdGF0IHNheXMgaXQgc2hvdWxkIGJlIH4yLjUuIE1hbnVhbA0KaW5zcGVjdGlvbiBvZiB0
+aGUgcmF3IGRhdGEgd2l0aDoNCg0KICAgIHBlcmYgc2NyaXB0IC1GIGV2ZW50LHBlcmlvZCAtaSBw
+ZXJmLmRhdGEuMTAwDQoNClNob3dzIHJlcGVhdGluZyBwYXR0ZXJuIGFsb25nIHRoZSBsaW5lcyBv
+ZjoNCg0KICAgIGN5Y2xlcz00NTANCiAgICBpbnN0cnVjdGlvbnM9MQ0KICAgIC4uLg0KDQpUaGUg
+YWZmZWN0IHF1aWNrbHkgZGVjcmVhc2VzIGFzIHRoZSBwZXJpb2QgaW5jcmVhc2VzLCB3aXRoIHBl
+cmlvZD03NTAsDQp0aGUgQ1BJIGlzIDwyeCAodnMgcGVyZiBzdGF0KS4NCg0KV2hlbiB0aGUgZXZl
+bnRzIGFyZSBzd2FwcGVkIHNvIHRoYXQgdGhlIHNhbXBsaW5nIGV2ZW50IGlzDQpgaW5zdHJ1Y3Rp
+b25zYCByYXRoZXIgdGhhbiBgY3ljbGVzYCwgdGhlIGFmZmVjdCBpcyB2ZXJ5IG11Y2gNCmRpbWlu
+aXNoZWQvZ29uZTsgYXQgUD0xMDAgaXMgc2VlIGFib3V0IDMuNXggb3ZlcmhlYWQgKHZzIHBlcmYg
+c3RhdCksDQphbmQgYXQgUD01MDAgdGhlIG92ZXJoZWFkIGlzIGFib3V0IDEuNXguDQoNCldoZW4g
+YWx0LXBlcmlvZCBpcyB1c2VkIHN1Y2ggdGhhdCAicGVyaW9kPSQoKDEwMDAwMDAtJFApKSxhbHQt
+DQpwZXJpb2Q9JFAiLCB0aGUgYWZmZWN0IGlzIHVuY2hhbmdlZC4gDQoNClJlZ2FyZHMNCkJlbg0K
 
