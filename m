@@ -1,127 +1,135 @@
-Return-Path: <linux-kernel+bounces-160673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB948B40E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:37:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E898B40E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C2F1C21E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:37:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DACC282820
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31062C182;
-	Fri, 26 Apr 2024 20:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530002C1B9;
+	Fri, 26 Apr 2024 20:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XthiEkqp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jdP/+3Ja"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B8F21101;
-	Fri, 26 Apr 2024 20:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FAD11181;
+	Fri, 26 Apr 2024 20:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714163834; cv=none; b=BHoU4mpFKKxwGOgaUN1Ez1nhND2De3Nls/qAjG+yU+B1M46L5jInWRDPIUfX6vvEXnvBx1buoAxXS+pt6rqqG9+v0oDCFQLm0QEImpkU4LDtseHoDC+syVICGePq/m2KAxKn1TozQEPciY856tufWyUn8rAeH+c/+AaVUzuu1vw=
+	t=1714163860; cv=none; b=Yudp/IRRWewUMzUeWkB+6U3EL78+kpYZ6QPC/21ZBm0P8AK4X/y3+tIpzUbBzsbPbJNrHIl14TzHUSYWYtEuUGNVYFew11MLBSTyHkul20xz+a/d7nGHgm5oYfCD/hUTQkhQXLgXYK9uTJ0He1Bbj6MT63DEK7XBSEfKtyaLfTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714163834; c=relaxed/simple;
-	bh=hLa3hegnZIajE1XtRggryRHtZSjgap9uo7nPNwl2HjE=;
-	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=VLQEwjTt0aDu/ASKAthFewf3RJu1z46ud3I64SPU4aNFVgk7rbNlGepV1ScWDsvrmcMoGAw8LKSOOZ3Mq6aUmnsBdWL/6QrTNRMOzUV82IKnLgj+smT6N/xF3Vrujg4MpJlqzNjy4y5Pzg3zkTD3JvQCkfSrsDqcV+a1HJMdd4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XthiEkqp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1526DC113CD;
-	Fri, 26 Apr 2024 20:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1714163834;
-	bh=hLa3hegnZIajE1XtRggryRHtZSjgap9uo7nPNwl2HjE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=XthiEkqp0wgvUfDwvjY6zS1TyOZboFXXi5UKXfe4csqz8XilGvMCHhyeR3Rz1dtmK
-	 fYP6gJFmIORFDvsdcw5V+5QFqJ2tYdd1UCqhBiu3zf7VwJyDH9/PnThJivoT27o8pj
-	 FbcPp+fiEEDoaHjhWzSjtGq56BD2dxuMo+IJ7xwk=
-Date: Fri, 26 Apr 2024 13:37:13 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.9-rc6
-Message-Id: <20240426133713.02b077b1ddbf56bb81989f34@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714163860; c=relaxed/simple;
+	bh=uPLxJVI4MBITKFrKzxGui7Nb96vhOwcYwnCPWnkGezo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPh1HlcILifU88NHbUSbrMCzw7+enVLbiyYqDylMTwvLHSurR/ffevo1EbLm5vHt6ZJyIiaBa+D7As1QggVPOuVf1/UtkjeDuL6wgpRkSdQ+789nitWQf/gXYv4mLb58dlmPxRgLQdZXux7GiHm8jfEWZhri9RkMgckNmLJUu4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jdP/+3Ja; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BE17C113CD;
+	Fri, 26 Apr 2024 20:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714163860;
+	bh=uPLxJVI4MBITKFrKzxGui7Nb96vhOwcYwnCPWnkGezo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jdP/+3JaWnyFfeXTcEwDCT/0UVK9xvUpyYRChjz/YP2ukIknpPm5gg8HZI0MciSAb
+	 R3IlpxmFEjp7qVPox5VmAfGLxhU/PgnyWa+j9gpaQ8nhQ/75nh8tiSO6wsIJiwWZfT
+	 OkOAYc5q0dDbk4lpagTHNbYhhkobHUcUPfJhKbJ6Vs8mmIXvvuRWpWDhDRCc18EoZK
+	 WaPaRL/ccOPpewVsXYy2x7uXzPQIY3616TLEOxf3ApHEhH0ZSktfHLBVKADtreRcuJ
+	 MJpw5R8RlpqNhmgxFJOW3kYyo+ATPJ5+TGQSAaAWvTZRbShOWRLntvaCIfnGobUjzt
+	 YY64xdgrPDC0A==
+Date: Fri, 26 Apr 2024 21:37:33 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 08/17] riscv: Introduce vendor variants of extension
+ helpers
+Message-ID: <20240426-suitable-unsheathe-0c5f5851c891@spud>
+References: <20240420-dev-charlie-support_thead_vector_6_9-v3-0-67cff4271d1d@rivosinc.com>
+ <20240420-dev-charlie-support_thead_vector_6_9-v3-8-67cff4271d1d@rivosinc.com>
+ <20240426-myself-crowbar-99dc0a080cd9@spud>
+ <ZiwIBmlaDbYdmv8f@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="X64VCS2z8liAY+RZ"
+Content-Disposition: inline
+In-Reply-To: <ZiwIBmlaDbYdmv8f@ghost>
 
 
-Linus, pleae merge this batch of hotfixes.
+--X64VCS2z8liAY+RZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There is one trivial conflict in
-tools/testing/selftests/kselftest_harness.h - purely a textual thing.
+On Fri, Apr 26, 2024 at 01:01:10PM -0700, Charlie Jenkins wrote:
+> On Fri, Apr 26, 2024 at 05:19:59PM +0100, Conor Dooley wrote:
+> > On Sat, Apr 20, 2024 at 06:04:40PM -0700, Charlie Jenkins wrote:
+> > > @@ -163,6 +164,8 @@ void thead_errata_patch_func(struct alt_entry *be=
+gin, struct alt_entry *end,
+> > >  	for (alt =3D begin; alt < end; alt++) {
+> > >  		if (alt->vendor_id !=3D THEAD_VENDOR_ID)
+> > >  			continue;
+> > > +		if (alt->patch_id >=3D RISCV_VENDOR_EXT_ALTERNATIVES_BASE)
+> > > +			continue;
+> >=20
+> > >  		if (alt->patch_id >=3D ERRATA_THEAD_NUMBER)
+> >=20
+> > This number is 2, how does the patching actually work for vendor stuff
+> > when the base is always greater than 2?
+> >=20
+>=20
+> Patching is handled through the patcher at the end of cpufeature.c. The
+> vendor_id field is set in the alternatives for errata and now also for
+> vendor extensions. The vendor extension patching is all handled
+> generically.
+>=20
+> This is distinguished by the patch_id being greater than
+> RISCV_VENDOR_EXT_ALTERNATIVES_BASE, which should leave way more than
+> enough room for errata ids. Since the code already checks if the
+> patch_id is greater than the errata number, I can drop the
+> "if (alt->patch_id >=3D RISCV_VENDOR_EXT_ALTERNATIVES_BASE)" check.
 
-Thanks.
+Ah, ye, I was being dumb - I was somehow thinking that you were using
+the errata patch function to patch this, which obviously wouldn't be a
+good design. If that had been the case, you'd never patch anything, but
+you patch the extensions using the cpufeature patch function so it all
+works out.
 
+If anything, I guess there could be an assert here somewhere that
+enforces ERRATA_VENDOR_NUMBER < VENDOR_EXT_BASE.
 
-The following changes since commit c4a7dc9523b59b3e73fd522c73e95e072f876b16:
+--X64VCS2z8liAY+RZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  nilfs2: fix OOB in nilfs_set_de_type (2024-04-16 15:39:52 -0700)
+-----BEGIN PGP SIGNATURE-----
 
-are available in the Git repository at:
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiwQjQAKCRB4tDGHoIJi
+0tMXAQC2Jy5XWBM1FWNAjh7ocF5y/z1Sjb/6AbsEoZ39m4Y8AAEA+Z85d2KbMCvL
+2c+qY4x+XGFCBD5ZSMejeXfez3/DvAs=
+=XikS
+-----END PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-04-26-13-30
-
-for you to fetch changes up to 52ccdde16b6540abe43b6f8d8e1e1ec90b0983af:
-
-  mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when dissolve_free_hugetlb_folio() (2024-04-25 10:07:27 -0700)
-
-----------------------------------------------------------------
-11 hotfixes.  8 are cc:stable and the remaining 3 (nice ratio!) address
-post-6.8 issues or aren't considered suitable for backporting.
-
-All except one of these are for MM.  I see no particular theme - it's
-singletons all over.
-
-----------------------------------------------------------------
-Andrey Ryabinin (1):
-      stackdepot: respect __GFP_NOLOCKDEP allocation flag
-
-Edward Liaw (1):
-      selftests/harness: remove use of LINE_MAX
-
-Johannes Weiner (1):
-      mm: zswap: fix shrinker NULL crash with cgroup_disable=memory
-
-Matthew Wilcox (Oracle) (3):
-      mm: create FOLIO_FLAG_FALSE and FOLIO_TYPE_OPS macros
-      mm: support page_mapcount() on page_has_type() pages
-      mm: turn folio_test_hugetlb into a PageType
-
-Miaohe Lin (1):
-      mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when dissolve_free_hugetlb_folio()
-
-Muhammad Usama Anjum (2):
-      selftests: mm: fix unused and uninitialized variable warning
-      selftests: mm: protection_keys: save/restore nr_hugepages value from launch script
-
-Peter Xu (1):
-      mm/hugetlb: fix missing hugetlb_lock for resv uncharge
-
-Vishal Moola (Oracle) (1):
-      hugetlb: check for anon_vma prior to folio allocation
-
- fs/proc/page.c                                    |   7 +-
- include/linux/mm.h                                |   8 +-
- include/linux/page-flags.h                        | 144 ++++++++++++----------
- include/trace/events/mmflags.h                    |   1 +
- kernel/vmcore_info.c                              |   5 +-
- lib/stackdepot.c                                  |   4 +-
- mm/hugetlb.c                                      |  40 +++---
- mm/zswap.c                                        |  25 ++--
- tools/testing/selftests/kselftest_harness.h       |  12 +-
- tools/testing/selftests/mm/mdwe_test.c            |   1 +
- tools/testing/selftests/mm/protection_keys.c      |  38 ------
- tools/testing/selftests/mm/run_vmtests.sh         |   2 +
- tools/testing/selftests/mm/split_huge_page_test.c |   2 +-
- 13 files changed, 137 insertions(+), 152 deletions(-)
-
+--X64VCS2z8liAY+RZ--
 
