@@ -1,146 +1,225 @@
-Return-Path: <linux-kernel+bounces-160282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 285658B3B5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EE48B3B61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:27:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8B032814DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:27:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF889282455
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD92149004;
-	Fri, 26 Apr 2024 15:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Osh/Kb/s"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8953F14A4D4;
+	Fri, 26 Apr 2024 15:27:26 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BD114882E
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6976BFBC
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145206; cv=none; b=qD2BJjq5hHNBdvlVVuEJWlzkJ8b8UFDWDCIwU27XrkRXxfztQwL2L14S1yIcCBcleRZ1+XKRQa9vP2JNEBZFSTf6G3v3cfLIuJn9H24eDAySEX0CkHQ5M0+DkQHq9ch0GAsGTDiVSB1krqakSpIybFvCU+O/JTDZnjuZQTnzgO4=
+	t=1714145246; cv=none; b=TOAo+gn4U9X+1w6G/HPuU2c+LOzNwP+ByKNvSDV5S/hTv4XcS2LePi1nYOMUf271eLeB0v8LCcgMDDYz6csMcyrm7h8e7/d9XlNUo6Jb8Mc03Nc8F13ProB9w/bO6itQp/xpOFjBAWDUTKdGplPTDRHVOmKdCujTbMNsbjO2Zts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145206; c=relaxed/simple;
-	bh=AVVZ5WrV0O90cPI1zVj+G1z5pclK2g+nTkMkPWRPIUY=;
+	s=arc-20240116; t=1714145246; c=relaxed/simple;
+	bh=ZZ+RnJlJbAkfYlZ7sIg3Yx8WUTcSSyzOy2QNd/ilGJs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GMmPQ6pbagGx95w5dJUs/EUzwZBYJDHBjF3ihkdtJkjPwnOt1dTv34AlsJyDQA0IZhJEdrBVCrs2OZS+NrGYztAkc+R0+qqG5as/j+j+H2Oe8gjmuvK/kavD+MmNeAGppx8YUKhQ3vgQSpHwS6dc/CN1/5exddBBq5sdYDQzaKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Osh/Kb/s; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2def3637f88so19694681fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714145203; x=1714750003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sbd496awCmr7HV9PAhWCpLFPL9uks2P0WpKxk3j3S2c=;
-        b=Osh/Kb/sDUqFHAft7yYxdcP3ROoBfig7TwCiR5gQqrJBIJcqoQU6KBah0RqGPqE4ht
-         7UwMZSbY1QiFUOULO1h17RhetS31VxY5DLWPH2rgcGjvBawlpc7jdrqsLQYNGzMmDqkg
-         m9QJj9MkqHJjsL6b63CBiGg2OfoRFlhrn6c00NTTdPmKVwhpq4mN9Isq2Ns6JjfCSQn0
-         j8+bh2UKW4rlGWVdwQYBOp9wXGuSGy9Ej7twzts+z4P8GfIFHWHoJPMalYx+rrIPWxMw
-         d6iSGsvRAYt4wpqcODcPlsC6eYE+K1IGcOCenLH9VfKZLv0Wyhe3VsyOhJdr5YXiRVt5
-         Vysg==
+	 To:Cc:Content-Type; b=V2KwbzNkS3JOJgZw+/t7Ke09ecXOSlrRLrhUMxU22QWtOYO8eacFVqrxnIwvb2jUDCK87MVjUrCkkeXy1L1VNhbTFGYMOtztaKwyY4Q4Zr51t1k3urIsFUZF0iUnykwqyt8N0YjRMn/5YChYd3QhrPRDgWjN+ObTLN/NLa024Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61ab6faf179so22350767b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:27:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714145203; x=1714750003;
+        d=1e100.net; s=20230601; t=1714145241; x=1714750041;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sbd496awCmr7HV9PAhWCpLFPL9uks2P0WpKxk3j3S2c=;
-        b=I2QwKg9YBOod2rFZX7I6CTluc9mgB1OPbR3Qqy+kNEtS/4bMWeIk37S5gKU8lF8EhC
-         UMg5Skmm3gza4ShsWdawZMEhXGKpR2xha5NFwIYZ8DpsLvpLptd4Ub1rc7FZuDj3Ozz/
-         bX2tGI/XiTnEse7PbpwefmwlQVBVg8fx/EOLd8ekV0IY0UR9j7qFXg7uopEWpaRIhcsl
-         iTeqOVuKYznZ8zTT0lqqQmgaAGsW8myZGLsIpUV579va044RXxSRy+cxNyPqRnHdjVYZ
-         /x99mVNWVmOvVunsau529OxS9SeRvbltBbzDEeKcHcJUA4Eg2S7VTWqSARlEyxM0oi8Y
-         uUvA==
-X-Forwarded-Encrypted: i=1; AJvYcCVdJQLMXMekrvE0AoGgPvFvNYiYlJau5zAQZxc7IzdSIk5UkJkdGwKlhfsVVwGoVb5hSTHRRCuboYKS1B41gMT3e6MmvsfZOCHHAK/s
-X-Gm-Message-State: AOJu0YyiO1KcBJoqm3Zr7Tjp9n3rpHjtOHdCrLIZihoBQ3wbEFdAa7aC
-	QecyM1WIjdlyfDyIYR3/siX3t+hurIsoJkxgnc1rV4AHrK/kBLAs/RJCj89LiRcXN+Ni6JkHHAV
-	uoxp1XgVaK7RygOrhwHAkvfzfFHSE0WvmEG9pAQ==
-X-Google-Smtp-Source: AGHT+IH6bJsIpLONbn6Ung3Qp+BKBgv7mt2AD4Ou/ORighgXlV/9uin6jCJ7tuPKYhAsygqcEvDbEhvhpwLHHZkypR4=
-X-Received: by 2002:a2e:7c0e:0:b0:2dc:f13f:8a96 with SMTP id
- x14-20020a2e7c0e000000b002dcf13f8a96mr1122749ljc.5.1714145202834; Fri, 26 Apr
- 2024 08:26:42 -0700 (PDT)
+        bh=fFoJsTVO578QAmPNPRqBRhs1rZBCXCjYAZQiDdaNowM=;
+        b=Ji6QXA+qcldKJWWPLU8qo4I7BXN6xLToBViLZxAjwSU/tvXBd+7RjCQHs5NIdvo4a/
+         h/7v/qOj9gNfAPxc6eDN2ff5J7ZpTygvCoOqpHYqKoX/zt/BOM4I5wpk9MgNCkr2XEIE
+         mFyGgCZLuhn13vNgQJ2VYDzqFIkzohsdoT6CAHEIQyyFLewK7zLmrq9/2s+zvscXWlbN
+         d6HQquTUwnS6/6XOKshuzUR9wLrN9iTB7xX9U0bBtKUjOENTqtiCjSdCX5hfsAwtKfBw
+         AXj1Ig3xCvyI6gesaKx1Nwy4Nhd3NF2BKVd6LJ4CYcEpoOHdjQwrdnpwBrpY4SsRI4KL
+         f6Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCWECW5pNXHwujbiRZl3EKD4R+8ZUIorcOHrW/7mfJIPz+4m9PPQg+vX3zLQuOqda/q4o9uzWicHdHLHM52T0mnatYsnOgozcr4hAbVI
+X-Gm-Message-State: AOJu0YzNZ/2Y/88w8e3BvwstYHiV1wdADJdqKXMR7H5iwtS3Xr5qQWFk
+	O17ZH93FfnFBqFgHu0iTWY2ldPfwVRXMotOcgA4kR7oTLSkQUJpN9bt7DZX8
+X-Google-Smtp-Source: AGHT+IFD4rR8Esa8BSTO6xQFt89jkDLO1PCl42waXGhFRhVCTgETYMbWjm9ANbz2NbS+WwxOtW+F0w==
+X-Received: by 2002:a05:690c:f88:b0:61a:d455:3dc6 with SMTP id df8-20020a05690c0f8800b0061ad4553dc6mr3929669ywb.11.1714145241258;
+        Fri, 26 Apr 2024 08:27:21 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id o19-20020a0dcc13000000b00617e3c07229sm4062116ywd.20.2024.04.26.08.27.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 08:27:20 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-617cd7bd929so23898827b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:27:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUgHfGl3C3i11orQ6MrOuJXPI+wlfx2hZuzxkmsxGGW9nPKZ/rbQnbRw9mfJ+5TdLsjN7+/eo6IfFBJOjNgOx9nyjiK0htG7PsKWMUG
+X-Received: by 2002:a25:83c6:0:b0:de4:8061:48c5 with SMTP id
+ v6-20020a2583c6000000b00de4806148c5mr3868976ybm.15.1714145240522; Fri, 26 Apr
+ 2024 08:27:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
- <2630ef8c8363b4fa772a2ff2c95cf115ad3c509d.camel@gmail.com>
-In-Reply-To: <2630ef8c8363b4fa772a2ff2c95cf115ad3c509d.camel@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Fri, 26 Apr 2024 10:26:31 -0500
-Message-ID: <CAMknhBGQB4MC8ejEs_uLgb=iKehXkoetgHjZnCvCKQbuua5kfA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] iio: cleanup masklength usage
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org
+References: <ZbFd5TZ_pi7q3hso@casper.infradead.org> <94713e86-30a8-4828-959d-bd95800149e4@rasmusvillemoes.dk>
+In-Reply-To: <94713e86-30a8-4828-959d-bd95800149e4@rasmusvillemoes.dk>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 26 Apr 2024 17:27:08 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUp3fOkAttk2FKJTh5svaiMwgu4JZ8utPeHghU4TQLE-w@mail.gmail.com>
+Message-ID: <CAMuHMdUp3fOkAttk2FKJTh5svaiMwgu4JZ8utPeHghU4TQLE-w@mail.gmail.com>
+Subject: Re: [RFC] Printing numbers in SI units
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Matthew Wilcox <willy@infradead.org>, Petr Mladek <pmladek@suse.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 2:13=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
->
-> On Thu, 2024-04-25 at 10:03 -0500, David Lechner wrote:
-> > While working on other patches I noticed that a few drivers are setting
-> > the masklength field of struct iio_dev even though it is marked as
-> > [INTERN]. It looks like maybe this was not always the case, but we can
-> > safely clean it up now without breaking anything.
-> >
-> > ---
-> > David Lechner (3):
-> >       iio: adc: ad7266: don't set masklength
-> >       iio: adc: mxs-lradc-adc: don't set masklength
-> >       iio: buffer: initialize masklength accumulator to 0
-> >
-> >  drivers/iio/adc/ad7266.c          | 1 -
-> >  drivers/iio/adc/mxs-lradc-adc.c   | 1 -
-> >  drivers/iio/industrialio-buffer.c | 2 +-
-> >  3 files changed, 1 insertion(+), 3 deletions(-)
-> > ---
-> > base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
-> > change-id: 20240425-b4-iio-masklength-cleanup-86b632b19901
-> >
->
-> Hi David,
->
-> Nice cleanup. The patches look good to me but there's one thing missing :=
-). As you
-> correctly noted, the field should be internal to the IIO core and drivers=
- should not
-> touch it. Hence, you need to make sure not driver is using it so we can m=
-ove it into
-> struct iio_dev_opaque [1]. That's the place all the intern fields should,=
- eventually,
-> end up.
->
-> Now, quite some drivers in the trigger handler will read the masklength f=
-or looping
-> with for_each_set_bit(). Hence, the straight thing would be an helper to =
-get it.
-> Maybe there's a clever way...
->
-> I know this is more work than what you had in mind but I think it should =
-be fairly
-> simple (hopefully) and since you started it :), maybe we can get the whol=
-e thing done
-> and remove another [INTERN] member from the iio_dev struct.
->
-> [1]: https://elixir.bootlin.com/linux/latest/source/include/linux/iio/iio=
--opaque.h#L42
->
-> - Nuno S=C3=A1
+Hi Rasmus,
 
-Sounds like fun. :-p
+On Wed, Jan 24, 2024 at 11:43=E2=80=AFPM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+> On 24/01/2024 19.58, Matthew Wilcox wrote:
+> > I was looking at hugetlbfs and it has several snippets of code like
+> > this:
+> >
+> >         string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
+> >         pr_warn("HugeTLB: allocating %u of page size %s failed node%d. =
+ Only allocated %lu hugepages.\n",
+> >                 h->max_huge_pages_node[nid], buf, nid, i);
+> >
+> > That's not terribly ergonomic, so I wondered if I could do better.
+> > Unfortunately, I decided to do it using the SPECIAL flag which GCC
+> > warns about.  But I've written the code now, so I'm sending it out in
+> > case anybody has a better idea for how to incorporate it.
+>
+> Well, something that gcc will warn about with Wformat isn't gonna fly,
+> obviously. But my man page also mentions ' as a possible flag for d
+> conversions:
+>
+>        '      For decimal conversion (i, d, u, f, F, g, G) the output is
+> to be grouped with thousands'
+>               grouping characters if the locale information indicates any=
+.
 
-I will look into it.
+> Obviously, our printf wouldn't implement that, [...]
+
+Why not? ;-)
+
+Old Gmail-white-space-damaged patch below, which I wrote when I got
+fed up with meticulously counting zeros in GHz-range clock
+frequencies...
+
+Author: Geert Uytterhoeven <geert+renesas@glider.be>
+Date:   Thu Aug 11 13:52:46 2016 +0200
+
+    lib/vsprintf.c: Add support for thousands' grouping
+
+    Use an underscore as the grouping character.
+
+    TODO:
+      - Documentation
+      - Self test
+      - Do we want to use this in /sys/kernel/debug/clk/clk_summary ?
+        RFC patch, compatibility was already broken by commit
+        e55a839a7a1c561b ("clk: add clock protection mechanism to clk
+        core")
+
+    Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+    ---
+    Originally I wanted to use grouping by 4 for octal and hexadecimal
+    numbers.  Unfortunately gcc prints a warning when using the grouping
+    character with octal and hexadecimal numbers:
+
+        warning: ''' flag used with '%x' gnu_printf format [-Wformat=3D]
+        warning: ''' flag used with '%o' gnu_printf format [-Wformat=3D]
+
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index f4a8bfacb70befbc..51e516cf4cc68156 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -414,6 +414,9 @@ int num_to_str(char *buf, int size, unsigned long
+long num, unsigned int width)
+ #define ZEROPAD        16              /* pad with zero, must be 16
+=3D=3D '0' - ' ' */
+ #define SMALL  32              /* use lowercase in hex (must be 32 =3D=3D =
+0x20) */
+ #define SPECIAL        64              /* prefix hex with "0x", octal
+with "0" */
++#define GROUP  128             /* thousands' grouping */
++// warning: ''' flag used with '%x' gnu_printf format [-Wformat=3D]
++// warning: ''' flag used with '%o' gnu_printf format [-Wformat=3D]
+
+ static_assert(SIGN =3D=3D 1);
+ static_assert(ZEROPAD =3D=3D ('0' - ' '));
+@@ -462,7 +465,7 @@ char *number(char *buf, char *end, unsigned long long n=
+um,
+        char sign;
+        char locase;
+        int need_pfx =3D ((spec.flags & SPECIAL) && spec.base !=3D 10);
+-       int i;
++       int i, j;
+        bool is_zero =3D num =3D=3D 0LL;
+        int field_width =3D spec.field_width;
+        int precision =3D spec.precision;
+@@ -511,6 +514,11 @@ char *number(char *buf, char *end, unsigned long long =
+num,
+                i =3D put_dec(tmp, num) - tmp;
+        }
+
++       /* take into account grouping characters */
++       j =3D i;
++       if (spec.flags & GROUP)
++               i +=3D (j - 1) / 3;
++
+        /* printing 100 using %2d gives "100", not "00" */
+        if (i > precision)
+                precision =3D i;
+@@ -559,10 +567,16 @@ char *number(char *buf, char *end, unsigned long long=
+ num,
+                ++buf;
+        }
+        /* actual digits of result */
+-       while (--i >=3D 0) {
++       while (--j >=3D 0) {
+                if (buf < end)
+-                       *buf =3D tmp[i];
++                       *buf =3D tmp[j];
+                ++buf;
++               if ((spec.flags & GROUP) && j && !(j % 3)) {
++                       if (buf < end)
++                               // FIXME '\''
++                               *buf =3D '_';
++                       ++buf;
++               }
+        }
+        /* trailing space padding */
+        while (--field_width >=3D 0) {
+@@ -2567,6 +2581,7 @@ int format_decode(const char *fmt, struct
+printf_spec *spec)
+                case ' ': spec->flags |=3D SPACE;   break;
+                case '#': spec->flags |=3D SPECIAL; break;
+                case '0': spec->flags |=3D ZEROPAD; break;
++               case '\'': spec->flags |=3D GROUP;  break;
+                default:  found =3D false;
+                }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
