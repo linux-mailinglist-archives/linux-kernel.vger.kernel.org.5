@@ -1,309 +1,210 @@
-Return-Path: <linux-kernel+bounces-159455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BF98B2ED1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:03:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170938B2ED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:05:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91A411F2243F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:03:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481E01C21A48
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58AD074E3F;
-	Fri, 26 Apr 2024 03:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA56757F8;
+	Fri, 26 Apr 2024 03:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oiYO3qrZ"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="LW+MS2LF"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2072.outbound.protection.outlook.com [40.107.22.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FE2EBE
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714100597; cv=none; b=K/VZ0FgHoNsWhyPrEdd7UVjAMQylommDWRqI4tXg307LQloc7Xr6UJ9gu/b1fuAIKT6V3y5TA69f8xp8e/E7ag/26FV0p6UdN95H8H/nSePbPg7rTOHyx+AVDaM+vSQ4e3fmdWgJ7vdya63XpYNB2K8fldp+PxmWcCif5yE/CuM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714100597; c=relaxed/simple;
-	bh=vsLI7TVcpwAvcajVp83qswpofMP2+9uWtTzz/ql0IgM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AM+j4jvQTx8TlX1+gx4+qUAKW0U5CdeWXeGK7VyRoFSB2qzIbgeDUF7iERNm5otZLXOFc8JOzoD1ZhZF8iW3tW3CmemBpd4Rz/IY4tCO3VvxTyK+dv5KNxPA1nA59HzzU58tZJDdJScwabwEL7ynvvDe3DA+RYM3zmiTQaHmLlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oiYO3qrZ; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518a56cdc03so1901312e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714100590; x=1714705390; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eerUw8HV77CQtEM68opKn2k+UEnTk4gJflML9gefhwE=;
-        b=oiYO3qrZe3e8yCjLyKYMhoTGJ6opNuH1FG6seRyzPt6wLY6CcQxQFq5gLU+00S5H8y
-         P3luXtqve7tPciSuq1UQM+aGWnlGj7jvCz0BhXstBnoX6VBqGfZXyov2dbZdviYrPQ9F
-         K8V5wV69RqItf0zPp3saRvbbxz8R0w7gkULHeyBu5/OipNnO9ksJkNSTVBUtucvmRN5E
-         ZFsdbn7pZS84ONymlKy8Zf/h6pC3IVDelZ7BHfZNMOX1fZvZ0MvGl9QaeP3Svxdv86oc
-         GrTlVcxNutNqBUdJplJC3LYLcQLuWjyqWDbFIw5hUbOWGjNHiOGhRISGUnfc5o8ML/aJ
-         EGlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714100590; x=1714705390;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eerUw8HV77CQtEM68opKn2k+UEnTk4gJflML9gefhwE=;
-        b=aaDaSPl4LdCsgQkvOpLscQo1ZO5juuOnhuFMq9kMDppAAlkVDjruRuHzUiTnKteTnw
-         BoZO/4xjqYK56rWiIlzBb1fgRT3QX1/XCZWFqK9BV6gpxc5OeFUGxjUjcCaLslmlGYVH
-         IyQiURTwr7vUD/IRbrOBgMH1G1o2QOjQT78VsrE8Qv5VIPJRUxxWHCzksVoALq0YHqKY
-         fH+yNoFIrexP3U2/tTZ4Jl2gaPi7I5q7U/QZY46H9F7cLK8wvDoB9A9pjI4197g4F7/b
-         +a7Qjgwj44Du7vw+vxusJjQGKwFjoNGLcJ90BVHK1ZQHm2SEwhV53H2SmyrdUYAiWRfm
-         ZjDA==
-X-Forwarded-Encrypted: i=1; AJvYcCVSrApkyH7FTaJYZq0k926BYHKpDtUz/J5npuXpjO98e8o8zN7wqXPa98LoF+/38zfNnkKDKfFdnfKzvNIptDsANKMsQkj77urJpiip
-X-Gm-Message-State: AOJu0YyUac0Gz7EZH70BHB2YzA+gTfFWTPtNECmpYA3ArnnvFco2+g4o
-	v7WxmeUIoP33KWKWMoOjw+3xEZMpTa3UvWA1qnlRBaQRd4r5a01M39mNaBJHCoA=
-X-Google-Smtp-Source: AGHT+IF7fC3rK4d2pUEe78+3175lW5ei7plG847JDb4Ai7SjzrmEwSTqyN+4QmSXUWusfc3etJMfTQ==
-X-Received: by 2002:ac2:4e03:0:b0:516:cf0a:9799 with SMTP id e3-20020ac24e03000000b00516cf0a9799mr800810lfr.64.1714100589585;
-        Thu, 25 Apr 2024 20:03:09 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id a13-20020ac2520d000000b00516b07d95c0sm2980341lfl.217.2024.04.25.20.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 20:03:08 -0700 (PDT)
-Date: Fri, 26 Apr 2024 06:03:07 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
-	dri-devel@lists.freedesktop.org, Javier Martinez Canillas <javierm@redhat.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, linus.walleij@linaro.org, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, lvzhaoxiong@huaqin.corp-partner.google.com, 
-	Hsin-Yi Wang <hsinyi@google.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of
- mipi_dsi_*_write_seq()
-Message-ID: <beqsovvdkvn63prt3c6b3epb6tachff35vpaf62dfkwof7kwht@u3p7bkv7owro>
-References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
- <87pludq2g0.fsf@intel.com>
- <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55D9EBE;
+	Fri, 26 Apr 2024 03:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714100701; cv=fail; b=qumNT3oxMm6+fi+pm668oL1W0EK+C1zqUO3Yt58cTW1REmK3Hc+qwdTYQh6CHBqZ+HmQot2/P4M6yI0a7s0Ptcfhi8HoPAQV6T8MhBOy/M43NPvrK/TM8QLRH5eLW0cuGOGfpKoORRDmyOLcaTAo3854hjRX2wZo8O2k3tjBKzs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714100701; c=relaxed/simple;
+	bh=dqDp19YMgqfW1gTRtuYyAoC6nHVhSqa+ICgb3e7CpS0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cieMhmglcVLJcWUWo11emN0pWhRIgCLJwzIrCuDMaNpX7yjHqMBhNXFYZVhr1Am7jdq2C9GNRyoIgQo5XPnsqFEkTSJLeMHU5tpmesI/CJIi9AzKJ0d511oGvGJPIGN6Dbo+qfz0djGILkwu3YxIN6sHBuMiJBQPEMocYrvOIEc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=LW+MS2LF; arc=fail smtp.client-ip=40.107.22.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U4yN7+dW/NWbbSG+zwGjgqL1HrGJYo9GThwf0V82VL5EcuIeRLXw2trN1mqXdf1LzbW353WASZOOHvpaORffOMGC0F95UUnRYmEcUOt56hN+VykzDQa9yPE7UaPoKnJRl0CC4pr1kblC26Rs8G1m9uFbahe02wsRDwW1Az4SxiPdyLs1WjcyXNciPVyt7ZDJyFUdo//nK9tUKzqq3v8Jz7H0TxKDgTPS3mlOaEwXmJNcgy5VfZpmgKxz1WCWvuMTFW3q6P/Ng6kR9J0qaHIQHLbnzDR+Q/niKHuFC3IG8jGGEohVne3SOy5wRSakkfVUBhS9RhSA/yoxCGBcO2D03w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dqDp19YMgqfW1gTRtuYyAoC6nHVhSqa+ICgb3e7CpS0=;
+ b=DGzZFRmU315T2x4REIRasebMpoUXWqrdPPwow2OIJwPSJR5Tvr2tKik7WQse4XaSScj0d23jNdYD5TyagNTLAWnaHAi8t58yh4wWZRkiqIX9SNVwooI/JXM7+S/uvvOgERN2k5vmAYewpRE5Yo48nYnhFcLbPOgN/ClE+LaleVrXZAu4xFUCSXChR+bEsk36xgNsQVloLvTt6hhPJXkwsJUhfLmxEJvRncSTQkrg47y7G0hPvHID+AwDMs4MAuj/3u4br9nGrNu8xFFrAIWlJcK4IN1wvPPT9oMX+pebLaXQNTykVjLmyf3nvJTp+DZn+z6y7RCKvFg8W+b4cbclLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dqDp19YMgqfW1gTRtuYyAoC6nHVhSqa+ICgb3e7CpS0=;
+ b=LW+MS2LFYux8IzJSUCJhw84w3cA/SaQMCzNCbkiWWK3lX4p7xXQ9y4Ghm8mFKYBLRlpZtp5IXxOA3QDNNhWmAe2q1JBRHb/U3kdy6vhaycA8QoNYgQ29IuuE6HbiGjBZudGGV+q8C1egv2iJbYNscTzcfY7tV0SyJiAaz9yM1Ww=
+Received: from PA4PR04MB9638.eurprd04.prod.outlook.com (2603:10a6:102:273::20)
+ by PAXPR04MB8783.eurprd04.prod.outlook.com (2603:10a6:102:20e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Fri, 26 Apr
+ 2024 03:04:56 +0000
+Received: from PA4PR04MB9638.eurprd04.prod.outlook.com
+ ([fe80::2274:2bca:7778:b464]) by PA4PR04MB9638.eurprd04.prod.outlook.com
+ ([fe80::2274:2bca:7778:b464%7]) with mapi id 15.20.7472.044; Fri, 26 Apr 2024
+ 03:04:56 +0000
+From: David Lin <yu-hao.lin@nxp.com>
+To: Brian Norris <briannorris@chromium.org>
+CC: Marcel Holtmann <marcel@holtmann.org>, "linux-wireless@vger.kernel.org"
+	<linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Kalle
+ Valo <kvalo@kernel.org>, "francesco@dolcini.it" <francesco@dolcini.it>, Pete
+ Hsieh <tsung-hsien.hsieh@nxp.com>, rafael.beims <rafael.beims@toradex.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: RE: [EXT] [PATCH v10 0/2] wifi: mwifiex: add code to support host
+ mlme
+Thread-Topic: [EXT] [PATCH v10 0/2] wifi: mwifiex: add code to support host
+ mlme
+Thread-Index:
+ AQHakXD8ZSzvjLENHE+cjdiIi3WD9LFu+PhwgAEpDwCAA9ThQIABL2MAgAShB4CAACKgQA==
+Date: Fri, 26 Apr 2024 03:04:56 +0000
+Message-ID:
+ <PA4PR04MB9638228A6867C1844AEDB740D1162@PA4PR04MB9638.eurprd04.prod.outlook.com>
+References: <20240418060626.431202-1-yu-hao.lin@nxp.com>
+ <0ED16BAB-6E7D-487C-BBCA-E63FEF37C60D@holtmann.org>
+ <PA4PR04MB963815B9FDA6119683A28CADD10E2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <6CB59E09-F34E-4986-AA88-8EC4EE5E71DF@holtmann.org>
+ <PA4PR04MB9638B62BC25F773C6922A4BCD10D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <ZiLlPOvKlfCySZwF@google.com>
+ <PA4PR04MB96383D46C1187C237DFC7988D1122@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB96389E67F826216C44FE19FFD1112@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <CA+ASDXODhWc2vhvScov=_vWyocbdks6HeMwKqRGacDogjX2=HA@mail.gmail.com>
+In-Reply-To:
+ <CA+ASDXODhWc2vhvScov=_vWyocbdks6HeMwKqRGacDogjX2=HA@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9638:EE_|PAXPR04MB8783:EE_
+x-ms-office365-filtering-correlation-id: ba34cb8f-3f5f-4406-6802-08dc659da70f
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?a1Q0Qy95eXpxMlE5b3RZYUl4YlIxVDYxWXM2OUtDSjJtd3N4dVJjOG9nS3VZ?=
+ =?utf-8?B?bmNNRE5HQmxQVkdzN0JDLzJEOHBUbStuQWplcENlZzhkaUN0OHdOWHhCWnVi?=
+ =?utf-8?B?djRRZ0g4K1h1a3lUUzMxRHF3Z1l1N0tRZk9NYmRRTWdOT1BFMW13VmpCRnh5?=
+ =?utf-8?B?amlPVXF1TnhibkxQMHg1Z2phem5XZVJOOGpzcllDUVR0bWJUUnR6MkhpREc5?=
+ =?utf-8?B?RkEzMHE0dEpnd0g1cmFCQUdiTytwU2pxUW1HcFFuemt0eUc3anR2d093elA4?=
+ =?utf-8?B?aXo1VDZSODFkUm9KMU8ycHRFQUV5bTZnZ0hSa25KbXFuS2NjQUxpQkRVM0R0?=
+ =?utf-8?B?anpLUlpiK0l2bG9QanpBZHNLeWNJU1hIUzI0S0dweUdUcHBYRTZrOHFjODZy?=
+ =?utf-8?B?MXFzUFY2aUp4bll4TkM1ZTg0NFl5dThHNGVVdFRXVG8xRE1MZlhsNUZTbXlH?=
+ =?utf-8?B?ODhoUkpkUVRMN05ITU94aVBQWmdkR1dCcW94bVplb1o3dUJ2dG5LWGJJSnJ6?=
+ =?utf-8?B?ZXJsVk1XMjJyNDlObGFobFVMMDF2eWhzSlFQaFErVzN4Q2F6ZXAwWGk2UzNo?=
+ =?utf-8?B?QWVUSnYxbjdTT0xNT2F3aTJsZUxOSGxzQXZIaXB6cGFuTVUyRytKVGRoY2pI?=
+ =?utf-8?B?eHFUR0pvNFQyeGk1RzhEUUdpaHB1Z3pwMDdtdmJUUHo5eFoxQXVRZXBodGpW?=
+ =?utf-8?B?OWZuU050TjZoTlNIS3VYQVRTZFdBMzQ0bDN4TGs2ZEh1a3hMaTFQSGoydlpy?=
+ =?utf-8?B?RjI1Vjd2S0d2TjZFcFNnSGdjUCtZdTJjejZxdEd6OGNxZGt4eVgvSjlHMkhV?=
+ =?utf-8?B?aG5wLzY3UHhaMDJmTnE2TWhBSkZ0R2RDYXh3OXdBZHNiay8rZXIvY3lGQkhV?=
+ =?utf-8?B?WVFBZDdVdUxIdnVsRnMzTUZlMDRkVy9IZWE4cFhHajdNQkV1YVdWKzcyOE9O?=
+ =?utf-8?B?N0Y3b2hhelJZeWIxK2RaK0RUMGZMalBLMVU4cENkYXNmWktRcjlxek85anZu?=
+ =?utf-8?B?d3QrVnc1ZDh3akxzK2ZGcThYRWl4WTJCRFBnbDVRcTlSSGV1aktwdm03MWRT?=
+ =?utf-8?B?b3ZLZXN4dGxhVm9tOW5RNjlBYkJmWjVycEJhSjJIRVB2K2NlQUN4V21EdWxN?=
+ =?utf-8?B?OWdWcWtFa3JVRmNBSnlRczBsSHZpalMrVkRpaFIwdmdnalp5eXFQWWIrL2lF?=
+ =?utf-8?B?VWtSWXRzT1Fwb3U5dmxaYWdBNkgvejRHUWRnMHRBTmRqSEtMYUd3eHBsWVc1?=
+ =?utf-8?B?amJ6dndLWEZ2c3lIb2JTWGh6bS9OTWdmckNvN2ZKeE5TOXh3U3M5d2Z5TWdB?=
+ =?utf-8?B?WFBaYmN6N3YwWVRnYmg0ZnFuRjhUeGxHSkpUMHExT3dXVXYydTRqUHJFRkRk?=
+ =?utf-8?B?ZlZpV29qWnI3WFFxQkMzWnViNW1XNUZFYkhCaVdMcittRDhFWTVsK1NqSFdY?=
+ =?utf-8?B?bDlYNFlNTi8vek1FdXhVMGFYNytIVTdVTUtucUdXSElPSzBWOHBBc1F3cTgz?=
+ =?utf-8?B?WCtNOWVZV1U5RUxnK0hhT1VkRy8vdHpUb1AxVWNrRExWU3FWUmE4NnRRRE5C?=
+ =?utf-8?B?TmJzNUkyVzFDdWhtR0t3Sk1FWlBvWFlQaHZTRHAzMDVNU2RCbHBWcXBJc1Zq?=
+ =?utf-8?B?L0VmcnRoeEpyeG14YkZUZUl4cjdYZ3g1MU5Lb1dhNXI0SWJpTlV0NktvenJP?=
+ =?utf-8?B?MW16ZktoVUJMUlZXZElkMGtsS0c5bHEyNWl2cEd2RXZCSnlBYjFZNGFGVktB?=
+ =?utf-8?B?RHpZdko2S3NrSmtQNFhvRHJpaXJSWENLRnZxaFFTb285VW5tNHM5eitmc09u?=
+ =?utf-8?B?OUtJQ25lZWF1OVBOM0VXQT09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:zh-tw;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?QStzTXE3Z0RmcWZNa0lzUmtrVnBwVUdFRmF4dERKVTdXV2htNVNXQWRrTTdX?=
+ =?utf-8?B?bGRuSlV0NTVONEdUR08veGphTG8wNm9odnUwU3pqNTdYSVlWbE9TMEdLVHp3?=
+ =?utf-8?B?RTFUZGdsLzk2SVJidlNGY3RpNUpWWDNYRkd0Yjl1SGI4eFVqMkQ5VVlpMEhL?=
+ =?utf-8?B?dzN0cncwdE0yZCsrVms5b0Myb1RIWVJwN3JLWlltNmRBWllNWkl4aU1tV2Rt?=
+ =?utf-8?B?c0lxT0VSRlZKK04vc24rNkVEaFF4c1BTNWNaYjdIcDhtd3c0bkdsQVlZaDgz?=
+ =?utf-8?B?a2laUEFQS1krWS9ZL3hCZTFYMTFLRGpQVStBQ29sNHgrNVB3c1JWUy9lMXhK?=
+ =?utf-8?B?MWxoajdjdmxkY1hwSEhhdzFRVVdTMnA3VGIrOUFZeXhmTjdJYXkxK01aNlVQ?=
+ =?utf-8?B?R3FaVE9EL3lwTmc1eExBaUl5UkszZDZHeEgwTUZqSGJyeGJiOGhnQitsZ09T?=
+ =?utf-8?B?OTV5Yjl1STVSbUp5RWlCYk9xOGtTVnIxcEc3d2VHZXEyUHRoamU2MmxBbVcw?=
+ =?utf-8?B?MXdHL0hzUGttR1g4dzdBZFRoWDNsMTJOZlU5TUZSVE9WSnZUTm14b0t6SG5y?=
+ =?utf-8?B?SmpzZy94dmt2M2F4RlRBc0U4cWl0V2oxM3RsRXY2eGhkcGU3ajhLNnZHQUpr?=
+ =?utf-8?B?ejlLd1drTzlwajhUNGZIMlloamZacjFWU2ovblA1RXdiRndtQmlUSDFnUWhV?=
+ =?utf-8?B?cmgzOHR4enFlWTB4ekFsNXM2U1lNMDFLUnFlNGlLOWpkWjh4bC9PL0ZTcWVW?=
+ =?utf-8?B?by82dVNDcGsrUzZNT1hHQk5WOU9GTTNQQVJQS1JJcDk2SHdRbVpwMUtkZTVv?=
+ =?utf-8?B?eTZhdmZVN2dmZXQ0MU94ZzB4K3gzeGg5MVkzcDNSM0RkaWd0Y3FLOWNGTzlB?=
+ =?utf-8?B?ZGE4cFliM0FTbW4xeXRqY1IzQ3lVVXprUUowdjJpUCtOVVJDQUV5cEs4dVh5?=
+ =?utf-8?B?UVNRQW43S2htU1pVclNmQjFvcXhtSlhWMWdrZVBmY1VEbE1KMElWTFFQNG1u?=
+ =?utf-8?B?aEdMZmZTL0xuQkJaN3JGVXBaUjNPTWtXb2dVL1doUzd3UUNnNDdtVlZZRS9w?=
+ =?utf-8?B?SFhXRGEwTG5PRnl6cXhrQThNdHlaNHZVcWc1RG5NbnNlc0txajdFdmFUMFBZ?=
+ =?utf-8?B?U1VzSi9WTmNEN0hWNWduRk1peURvNHZhNTFqaGlkU0pyakp4SmRTZEQrc2Nw?=
+ =?utf-8?B?Wmc0Nm5pNGM1MEhzQnRNV0ZJZ3c5a2t3eVBuNGNycVFDMkt5ODRPNk9Rb3RH?=
+ =?utf-8?B?bGRsQ0dOajIzcjdFWGFacHJVZ1J1ZUdzM29VZjZlYktrVll1RkxlcVppdi9h?=
+ =?utf-8?B?a3V3R3dmcXM0K1BhS0liTEhvaGFLbDNLQU9FSlo4UzJVSldLZkxBNHJLVU5h?=
+ =?utf-8?B?TDFyd29od3ovdXVzTmVQRVY3ZC83VTBmV0JFOXdXRWp5QVovenMwK1VRRncv?=
+ =?utf-8?B?NXQ0QzVVYkhQREhNeGF3RnoyZHZlUC9MZzdjQjJheFc5MzVrUllaMHMvaEZT?=
+ =?utf-8?B?UURldnBETlI4T1VpTDN4RVgwMnFoc2ZLR0tZNCt3eDE2eWtzS21YUVM1ck1J?=
+ =?utf-8?B?N1BkRzdQdVhpdXRNcjQxQlA0RDQ4aG52SW5nRjB1dDkwMTRhTmtzM3p5QXJr?=
+ =?utf-8?B?SEtucXNYdmQvWTlMMVM5OXRhMFhYT2dJMmt2b0RNMjd6Q0VnS09nMklrcFpr?=
+ =?utf-8?B?cU9oS251TFhKUHZBNC9KZ1V1b2ZqSUQzSGJFaGsyVkxialFzVXRRdldkdlBx?=
+ =?utf-8?B?VXlvV1h0YUtGN0NMbFZocmxEUFNqaVh1Mkp5ZnhaK3kvSG0vdDZDaHI0ZlBZ?=
+ =?utf-8?B?T29STm9BMUEwWTlNUFZ1QVZkYW82VGZSN3hvdjd6Y25qUUcvZ3psaEtkSFB4?=
+ =?utf-8?B?OW0wMjdTdEdMNGg4ajFOYit1aGRlVTVOUk81MWRrRmc5TzM2SDB5QzdGaVJq?=
+ =?utf-8?B?bHRjdUl4V2QvNUdWTHVhVTl5OXMra1Jja1NIcnR0RUxrZldnUnpBaWU3ZGtN?=
+ =?utf-8?B?RGJSWVd3MldJUVdBcVhscWhaeG9TOWh5WlF4TjhyQTU1ZnRtZHliVk04a2pY?=
+ =?utf-8?B?bzJYV0R0Q0d1V3NOdlQ2bW1tQkhMU1hpVDNwaXpaUmdCYjI2clRXdlJrQVNk?=
+ =?utf-8?Q?tAdQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9638.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba34cb8f-3f5f-4406-6802-08dc659da70f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2024 03:04:56.6727
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ybwIA3FKmrs7jY/6B6WYivs/3RMn6yX5XBjkoonVq6n/i4r/zf1Ih0pL2pf7tpsN6adpu0hFs4ng+FGmXqjiYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8783
 
-On Thu, Apr 25, 2024 at 10:04:49AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Apr 25, 2024 at 1:19 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> >
-> > > @@ -279,6 +281,8 @@ enum mipi_dsi_dcs_tear_mode {
-> > >
-> > >  ssize_t mipi_dsi_dcs_write_buffer(struct mipi_dsi_device *dsi,
-> > >                                 const void *data, size_t len);
-> > > +ssize_t mipi_dsi_dcs_write_buffer_chatty(struct mipi_dsi_device *dsi,
-> > > +                                      const void *data, size_t len);
-> > >  ssize_t mipi_dsi_dcs_write(struct mipi_dsi_device *dsi, u8 cmd,
-> > >                          const void *data, size_t len);
-> > >  ssize_t mipi_dsi_dcs_read(struct mipi_dsi_device *dsi, u8 cmd, void *data,
-> > > @@ -317,14 +321,10 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
-> > >  #define mipi_dsi_generic_write_seq(dsi, seq...)                                \
-> > >       do {                                                                   \
-> > >               static const u8 d[] = { seq };                                 \
-> > > -             struct device *dev = &dsi->dev;                                \
-> > >               int ret;                                                       \
-> > > -             ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
-> > > -             if (ret < 0) {                                                 \
-> > > -                     dev_err_ratelimited(dev, "transmit data failed: %d\n", \
-> > > -                                         ret);                              \
-> > > +             ret = mipi_dsi_generic_write_chatty(dsi, d, ARRAY_SIZE(d));    \
-> > > +             if (ret < 0)                                                   \
-> > >                       return ret;                                            \
-> > > -             }                                                              \
-> > >       } while (0)
-
-
-Reading the thread makes me wonder whether we should be going into
-slightly other direction:
-
-Add __must_check() to mipi_dsi_ writing functions,
-
-#define mipi_dsi_dcs_whatever_write(dsi, cmd, seq...)	\
-	({						\
-		static const u8 d[] = { cmd, seq };     \
-                mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
-	})
-
-Then in panel drivers we actually have to explicitly handle the return
-code (either by dropping to the error label or by just returning an
-error).
-
-
-> >
-> > The one thing that I've always disliked about these macros (even if I've
-> > never actually used them myself) is that they hide control flow from the
-> > caller, i.e. return directly. You don't see that in the code, it's not
-> > documented, and if you wanted to do better error handling yourself,
-> > you're out of luck.
-> 
-> Yeah, I agree that it's not the cleanest. That being said, it is
-> existing code and making the existing code less bloated seems worth
-> doing.
-> 
-> I'd also say that it feels worth it to have _some_ solution so that
-> the caller doesn't need to write error handling after every single cmd
-> sent. If we get rid of / discourage these macros that's either going
-> to end us up with ugly/verbose code or it's going to encourage people
-> to totally skip error handling. IMO neither of those are wonderful
-> solutions.
-> 
-> While thinking about this there were a few ideas I came up with. None
-> of them are amazing, but probably they are better than the hidden
-> "return" like this. Perhaps we could mark the current function as
-> "deprecated" and pick one of these depending on what others opinions
-> are:
-> 
-> 1. Use "goto" and force the caller to give a goto target for error handling.
-> 
-> This is based on an idea that Dmitry came up with, but made a little
-> more explicit. Example usage:
-> 
-> int ret;
-> 
-> ret = 0;
-> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETSPCCMD, 0xcd,
->                             some_cmd_failed);
-> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETMIPI, 0x84,
->                             some_cmd_failed);
-> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETSPCCMD, 0x3f,
->                             some_cmd_failed);
-> mipi_dsi_dcs_write_seq_goto(dsi, &ret, HX83102_SETVDC, 0x1b, 0x04,
->                             some_cmd_failed);
-> 
-> ...
-> 
-> some_cmd_failed:
->   pr_err("Commands failed to write: %d", ret);
->   return ret;
-> }
-> 
-> One downside here is that you can't easily tell which command failed
-> to put it in the error message. A variant of this idea (1a?) could be
-> to hoist the print back into the write command. I'd want to pick one
-> or the other. I guess my preference would be to hoist the print into
-> the write command and if someone really doesn't want the print then
-> they call mipi_dsi_dcs_write_buffer() directly.
-
-Do we really care, which command has failed? I mean, usually either all
-DSI transfers work, or we have an issue with the DSI host.
-
-> 
-> ---
-> 
-> 2. Accept that a slightly less efficient handling of the error case
-> and perhaps a less intuitive API, but avoid the goto.
-> 
-> Essentially you could pass in "ret" and have the function be a no-op
-> if an error is already present. Something like this:
-> 
-> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi,
-> const void *data, size_t len, int *accum_ret)
-> {
->   if (*accum_ret)
->     return;
-> 
->   *accum_ret = mipi_dsi_dcs_write_buffer(dsi, data, len);
-> }
-> 
-> ...and then the caller:
-> 
-> int ret;
-> 
-> ret = 0;
-> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0xcd, &ret);
-> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETMIPI, 0x84, &ret);
-> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETSPCCMD, 0x3f, &ret);
-> mipi_dsi_dcs_write_seq_multi(dsi, HX83102_SETVDC, 0x1b, 0x04, &ret);
-> if (ret)
->   goto some_cmd_failed;
-> 
-> This has similar properties to solution #1.
-> 
-> ---
-> 
-> 3. Accept that callers don't want to error handling but just need a print.
-> 
-> I'm not 100% sure we want to encourage this. On the one hand it's
-> unlikely anyone is really going to be able to reliably recover super
-> properly from an error midway through a big long command sequence. On
-> the other hand, this means we can't pass the error back to the caller.
-> In theory the caller _could_ try to handle errors by resetting / power
-> cycling things, so that's a real downside.
-> 
-> Example usage:
-> 
-> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETSPCCMD, 0xcd);
-> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETMIPI, 0x84);
-> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETSPCCMD, 0x3f);
-> mipi_dsi_dcs_write_seq_chatty(dsi, HX83102_SETVDC, 0x1b, 0x04);
-> 
-> ---
-> 
-> I think I'd lean towards #1a (user passes goto label and we include
-> the error print in the helper), but I'd personally be happy with any
-> of #1 or #2. I don't love #3.
-> 
-> > Be that as it may, the combo of ratelimited error printing and return on
-> > errors does not make much sense to me. If there's something to print,
-> > you bail out, that's it. I suspect we never hit the ratelimit.
-> 
-> Yeah, I'm in favor of removing the ratelimit.
-> 
-> 
-> > You might even want to try *only* changing the ratelimited printing to a
-> > regular error message, and see if the compiler can combine the logging
-> > to a single exit point in the callers. Ratelimited it obviously can't
-> > because every single one of them is unique.
-> 
-> It wasn't quite as good. Comparing the "after" solution (AKA applying
-> $SUBJECT patch) vs. _not_ taking $SUBJECT patch and instead changing
-> dev_err_ratelimited() to dev_err().
-> 
-> $ scripts/bloat-o-meter \
->    .../after/panel-novatek-nt36672e.ko \
->   .../noratelimit/panel-novatek-nt36672e.ko
-> add/remove: 0/0 grow/shrink: 1/0 up/down: 3404/0 (3404)
-> Function                                     old     new   delta
-> nt36672e_1080x2408_60hz_init                7260   10664   +3404
-> Total: Before=11669, After=15073, chg +29.17%
-> 
-> ...so $SUBJECT patch is still better.
-> 
-> ---
-> 
-> Where does that leave us? IMO:
-> 
-> a) If others agree, we should land $SUBJECT patch. It doesn't change
-> the behavior at all and gives big savings. It adds an extra function
-> hop, but presumably the fact that we have to fetch _a lot_ less stuff
-> from RAM might mean we still get better performance (likely it doesn't
-> matter anyway since this is not hotpath code).
-> 
-> b) Atop this patch, we should consider changing dev_err_ratelimited()
-> to dev_err(). It doesn't seem to make lots of sense to me to ratelimit
-> this error.
-> 
-> c) Atop this patch, we should consider making the two existing macros
-> "deprecated" in favor of a new macro that makes the control flow more
-> obvious.
-> 
-> How does that sound to folks?
-> 
-> -Doug
-
--- 
-With best wishes
-Dmitry
+PiBGcm9tOiBCcmlhbiBOb3JyaXMgPGJyaWFubm9ycmlzQGNocm9taXVtLm9yZz4NCj4gU2VudDog
+RnJpZGF5LCBBcHJpbCAyNiwgMjAyNCA5OjAwIEFNDQo+IFRvOiBEYXZpZCBMaW4gPHl1LWhhby5s
+aW5AbnhwLmNvbT4NCj4gQ2M6IE1hcmNlbCBIb2x0bWFubiA8bWFyY2VsQGhvbHRtYW5uLm9yZz47
+IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZzsNCj4gTEtNTCA8bGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZz47IEthbGxlIFZhbG8gPGt2YWxvQGtlcm5lbC5vcmc+Ow0KPiBmcmFuY2Vz
+Y29AZG9sY2luaS5pdDsgUGV0ZSBIc2llaCA8dHN1bmctaHNpZW4uaHNpZWhAbnhwLmNvbT47IHJh
+ZmFlbC5iZWltcw0KPiA8cmFmYWVsLmJlaW1zQHRvcmFkZXguY29tPjsgRnJhbmNlc2NvIERvbGNp
+bmkNCj4gPGZyYW5jZXNjby5kb2xjaW5pQHRvcmFkZXguY29tPg0KPiBTdWJqZWN0OiBSZTogW0VY
+VF0gW1BBVENIIHYxMCAwLzJdIHdpZmk6IG13aWZpZXg6IGFkZCBjb2RlIHRvIHN1cHBvcnQgaG9z
+dA0KPiBtbG1lDQo+IA0KPiBDYXV0aW9uOiBUaGlzIGlzIGFuIGV4dGVybmFsIGVtYWlsLiBQbGVh
+c2UgdGFrZSBjYXJlIHdoZW4gY2xpY2tpbmcgbGlua3Mgb3INCj4gb3BlbmluZyBhdHRhY2htZW50
+cy4gV2hlbiBpbiBkb3VidCwgcmVwb3J0IHRoZSBtZXNzYWdlIHVzaW5nIHRoZSAnUmVwb3J0DQo+
+IHRoaXMgZW1haWwnIGJ1dHRvbg0KPiANCj4gDQo+IEhpIERhdmlkLA0KPiANCj4gT24gTW9uLCBB
+cHIgMjIsIDIwMjQgYXQgNzoyOeKAr1BNIERhdmlkIExpbiA8eXUtaGFvLmxpbkBueHAuY29tPiB3
+cm90ZToNCj4gPiAgICAgICAgIEkgd29uZGVyIGNhbiBwYXRjaCB2MTAgYmUgYWNjZXB0ZWQgYnkg
+eW91Pw0KPiANCj4gSSB0b29rIGFub3RoZXIgc3RlcCBiYWNrIHRvIHNlZSB3aGF0IE1hcmNlbCBo
+YWQgdG8gc2F5IGFib3V0IGV4dGVybmFsX2F1dGgsIGFzDQo+IEkgd2FzIG5vdCBmYW1pbGlhciB3
+aXRoIGl0LCBhbmQgaXQgZGlkbid0IGNvbWUgdXAgaW4gZGlzY3Vzc2lvbiB3aXRoIEpvaGFubmVz
+DQo+IGVhcmxpZXIuIElmIHdlIGhhdmUgYWdyZWVtZW50IGV4dGVybmFsX2F1dGggaXMgaW5hcHBy
+b3ByaWF0ZSwgdGhlbiBJJ2xsIHJldmlzaXQNCj4gdjEwLiBUaGF0IG1heSB0YWtlIHNvbWUgdGlt
+ZSB0aG91Z2gsIGFzIEknbGwgYmUgcHJlb2NjdXBpZWQgbmV4dCB3ZWVrLg0KPiANCj4gQnJpYW4N
+Cg0KVGhhbmtzIGFuZCB0YWtlIHlvdXIgdGltZS4NCg0KRGF2aWQNCg==
 
