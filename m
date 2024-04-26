@@ -1,150 +1,223 @@
-Return-Path: <linux-kernel+bounces-160260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA2E8B3AFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:19:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C27E8B3B05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C736E1F2571A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:19:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A740CB27CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550A015EFB4;
-	Fri, 26 Apr 2024 15:14:02 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46223168AEA;
+	Fri, 26 Apr 2024 15:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DBQ7FmBM"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE28C148841
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D201E157460;
+	Fri, 26 Apr 2024 15:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144441; cv=none; b=E4eYr588vFdwGs27j5meZAV3jzQMNBbcYroCAbMqBI68vvIrrjbkLOhgYnThtFddWRMuRhsvwkWmpVHcTV9P2EWCwo4r00nCn87sl9B1AF/xgwX5eGT1dUQQWmNgUClYYddvijWafi55d5IupkNPGPmTJiw1pn85ROHLiqa44tE=
+	t=1714144450; cv=none; b=Of8VZC3CWa9qLMFqqcCIg+nKYfFBh3NF8/fPNfmH3uQRjN5jR+rNqMtLhTOxcPpG4btt41SHN5+IRXtXLisy4VtO95pqS4ie4cpgfz9sah+IowtDT1ZH4+2bvmqyxCyZW66ZmdlkKdDml/zBtbzJ0mk6ULjeLayPEIVZHrynvUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144441; c=relaxed/simple;
-	bh=/5QVirdnw7ZwA7vkg/j+WG0o2OISZH7RAn/4/rQYtJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GSUyCn5YDt4xPpKUXWPEhQpUfnmLvgPgb0ZBR3qa94QDifE8mnxBgNR8ePFaCz+dlEpYjCaY6FC4pbQDqE/K1pXMmocZXPdcg8Nfh+0dMXTxOqsdQuCwNVwf0QNdJUL4IBEaJEZrFQ06pp7Se8bn8RQFH0hHlmEeq87AjqnhavI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=207.211.30.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-465-w0zvaQ4fM4Wn9feoiW-OqQ-1; Fri, 26 Apr 2024 11:13:48 -0400
-X-MC-Unique: w0zvaQ4fM4Wn9feoiW-OqQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 049EF1049C97;
-	Fri, 26 Apr 2024 15:13:47 +0000 (UTC)
-Received: from hog (unknown [10.39.193.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E8DF2166B31;
-	Fri, 26 Apr 2024 15:13:38 +0000 (UTC)
-Date: Fri, 26 Apr 2024 17:13:37 +0200
-From: Sabrina Dubroca <sd@queasysnail.net>
-To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	David Ahern <dsahern@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
-	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, bridge@lists.linux.dev,
-	lvs-devel@vger.kernel.org, Joel Granados <j.granados@samsung.com>
-Subject: Re: [PATCH v5 5/8] net: Remove ctl_table sentinel elements from
- several networking subsystems
-Message-ID: <ZivEOtGOWVc0W8Th@hog>
-References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
- <20240426-jag-sysctl_remset_net-v5-5-e3b12f6111a6@samsung.com>
+	s=arc-20240116; t=1714144450; c=relaxed/simple;
+	bh=PxYiQVChcGu6Cg9Cv4EGtSRaXxFMnID1zYd6tbfGmU4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Xn4U4vLwqMf02DvKYC2E4+nvZgyICbfHWqW9i4IOgyabpFNHCgj1G2xvfbOXx7OyIL/iKqmweKq1RufjDFjr9E2E5DpkfMTRGcPIen0rvYLwqfQ6P6itM2Ym1yWu879hMx2g6cWdIyiVERpw+pFAQCoiKF8ohxmhNfVUcze4CDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DBQ7FmBM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QFDHrq012308;
+	Fri, 26 Apr 2024 15:13:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=knjPt7riiWcL2lgPDZ/MfxzG+WgZ7apnrjPl9JzlbjA=;
+ b=DBQ7FmBMnBkj858btshj3s5o1eocMSgMw9AVvaZYk4emnjXsEua2K+yhUw0wiFUMhQLk
+ r/AsJWVsnFqV6yohNuR4xI4jgoa3BTiXmGiDH8bfvl1DFKIKbmPxtPCnbsHn/fRaPeLe
+ iqCzmcl2PTOhr8ttq4odEwCi7GVNJJGKUY+qjysyCmNDfPyxShoqx0iFowmNmLQOyQyR
+ unMl3S1LOTWoRja4f+4N05A5HBfchLQJ7neqYr18qO6eiZaeRdo8p/xtTDism0BnatbM
+ 6jP8dxs6wQIgxZCvOQIcd0TD/oKO9gKqIj43YG931CZJX/c3xuHbWSYJzt0zIxFJA9/V VQ== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xreq4001t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:13:56 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QC4WwH023050;
+	Fri, 26 Apr 2024 15:13:56 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xms1pgdby-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:13:56 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QFDrAs39584150
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 15:13:55 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 629455805E;
+	Fri, 26 Apr 2024 15:13:53 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 18D705805D;
+	Fri, 26 Apr 2024 15:13:53 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 15:13:53 +0000 (GMT)
+Message-ID: <24e7644e-f9ff-4a4b-8883-33b2f69b36cf@linux.ibm.com>
+Date: Fri, 26 Apr 2024 10:13:52 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 08/14] dt-bindings: fsi: ast2600-fsi-master: Switch to
+ yaml format
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-9-eajames@linux.ibm.com>
+ <5822e000-01d3-442c-bb52-04fab87cb3da@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <5822e000-01d3-442c-bb52-04fab87cb3da@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I_6OW_C7AvfZQfQhOl_hEsM8Rt2yt3s_
+X-Proofpoint-GUID: I_6OW_C7AvfZQfQhOl_hEsM8Rt2yt3s_
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240426-jag-sysctl_remset_net-v5-5-e3b12f6111a6@samsung.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-
-2024-04-26, 12:46:57 +0200, Joel Granados via B4 Relay wrote:
-> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
-> index a5946d1b9d60..bd0b7e2f8824 100644
-> --- a/net/smc/smc_sysctl.c
-> +++ b/net/smc/smc_sysctl.c
-> @@ -90,7 +90,6 @@ static struct ctl_table smc_table[] = {
->  		.extra1		= &conns_per_lgr_min,
->  		.extra2		= &conns_per_lgr_max,
->  	},
-> -	{  }
->  };
-
-There's an ARRAY_SIZE(smc_table) - 1 in smc_sysctl_net_init, shouldn't
-the -1 be removed like you did in other patches?
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 suspectscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404260102
 
 
-int __net_init smc_sysctl_net_init(struct net *net)
-{
-	struct ctl_table *table;
+On 4/26/24 01:25, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:36, Eddie James wrote:
+>> Switch to yaml for the AST2600 FSI master documentation.
+>>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> ---
+>>   .../fsi/aspeed,ast2600-fsi-master.yaml        | 72 +++++++++++++++++++
+>>   .../bindings/fsi/fsi-master-aspeed.txt        | 36 ----------
+>>   2 files changed, 72 insertions(+), 36 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>>   delete mode 100644 Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>> new file mode 100644
+>> index 000000000000..f053e3e1d259
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>> @@ -0,0 +1,72 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/fsi/aspeed,ast2600-fsi-master.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Aspeed FSI master
+>> +
+>> +maintainers:
+>> +  - Eddie James <eajames@linux.ibm.com>
+>> +
+>> +description:
+>> +  The AST2600 and later contain two identical FSI masters. They share a
+>> +  clock and have a separate interrupt line and output pins.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - "aspeed,ast2600-fsi-master"
+>> +      - "aspeed,ast2700-fsi-master"
+> This wasn't tested. No quotes. Do you see any other example like this?
 
-	table = smc_table;
-	if (!net_eq(net, &init_net)) {
-		int i;
 
-		table = kmemdup(table, sizeof(smc_table), GFP_KERNEL);
-		if (!table)
-			goto err_alloc;
+Strangely this passes make dt_binding_check for me... And Rob's bot 
+didn't seem to catch it either. Just an oversight, I'll fix it.
 
-		for (i = 0; i < ARRAY_SIZE(smc_table) - 1; i++)
-			table[i].data += (void *)net - (void *)&init_net;
-	}
 
-	net->smc.smc_hdr = register_net_sysctl_sz(net, "net/smc", table,
-						  ARRAY_SIZE(smc_table));
-[...]
+>
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  cfam-reset-gpios:
+>> +    maxItems: 1
+>> +    description:
+>> +      Output GPIO pin for CFAM reset
+>> +
+>> +  fsi-routing-gpios:
+>> +    maxItems: 1
+>> +    description:
+>> +      Output GPIO pin for setting the FSI mux (internal or cabled)
+>> +
+>> +  fsi-mux-gpios:
+>> +    maxItems: 1
+>> +    description:
+>> +      Input GPIO pin for detecting the desired FSI mux state
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +allOf:
+>> +  - $ref: fsi-controller.yaml#
+> This goes after required:
 
--- 
-Sabrina
 
+Ack.
+
+
+>
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - interrupts
+>> +
+>> +unevaluatedProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/ast2600-clock.h>
+>> +    #include <dt-bindings/gpio/aspeed-gpio.h>
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    fsi-master@1e79b000 {
+>> +        compatible = "aspeed,ast2600-fsi-master";
+>> +        reg = <0x1e79b000 0x94>;
+>> +        interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&pinctrl_fsi1_default>;
+>> +        clocks = <&syscon ASPEED_CLK_GATE_FSICLK>;
+>> +        fsi-routing-gpios = <&gpio0 ASPEED_GPIO(Q, 7) GPIO_ACTIVE_HIGH>;
+>> +        fsi-mux-gpios = <&gpio0 ASPEED_GPIO(B, 0) GPIO_ACTIVE_HIGH>;
+>> +        cfam-reset-gpios = <&gpio0 ASPEED_GPIO(Q, 0) GPIO_ACTIVE_LOW>;
+> No children?
+
+
+Ack, I'll add one.
+
+
+>
+>
+> Best regards,
+> Krzysztof
+>
 
