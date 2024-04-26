@@ -1,131 +1,116 @@
-Return-Path: <linux-kernel+bounces-159919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084358B362C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 674748B3637
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:03:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A55D1C2088E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:59:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 994ED1C222F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A7A144D22;
-	Fri, 26 Apr 2024 10:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnE57//r"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53721448E2;
+	Fri, 26 Apr 2024 11:03:03 +0000 (UTC)
+Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB9D143C67;
-	Fri, 26 Apr 2024 10:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91C0139D10
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 11:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714129190; cv=none; b=HOrKRc/aBmpn36yvNx8/8humpktiJVRlqDMx+EIDN8GEbcxVwatGD4imojTw4DMXbaEPQ0+a2atHJrX00Oll3OayQQp/w+TcNZS3sxwYgpntCc5K9neL+29YtknqOyQAIxEeYBFy0KcpoxVzwrpdFGfzW4kPjSSJxHalXchnJgQ=
+	t=1714129383; cv=none; b=mRoIiZ/L4lESaXeJqQvFvTvyL652+uhc8i9zPB0MJV8CvTMu+YnnN1/mMXfT/yEmSNHiciLFEImTim+YY+pjxTvfF6Oi8fTZxgpwMmKbCzwtCuzfXK1YnQadNxNQBnpKiV1w5kVdfLOSLYYuCkUKrXlLtUoXHjRhZaS9b6BO9c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714129190; c=relaxed/simple;
-	bh=KaQOrrIRKBegc78ArdoGcbZUFg4f73NCcN2MIPJHubg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ins2uXmZuKJKqzwsz0TGwm0VY/iTNtHUYnlXjodjvpswXSwIbKGbh0s4BVzbyt5b+Z5BE4cFKe3iXyOvf8/4cgyr1z83WYRuhPD8Mh5fEKo94R7TgFP+9SbfACY+gb2+JlRTorUXve+bs+7EeFeQRKYsTNZsRfPyJTii3G/cUMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnE57//r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4479C113CE;
-	Fri, 26 Apr 2024 10:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714129189;
-	bh=KaQOrrIRKBegc78ArdoGcbZUFg4f73NCcN2MIPJHubg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CnE57//r60fYZEt/Pzox+aCqs0Rdt5TI26EedBdvQ8HsCLbrPk2T0DkxEz8eygkF/
-	 3mCdwX6MFg3ytJIrWRPjkENVFP+0TAtRuwPYJsStf0ec78oylATJ6Xl39cC1bdS+yR
-	 KWn4WLf6+gBUO3O+Dd1u+3UM3EJuiDxP6TvALY+v0rsY3DqroK70YqZ3+9aEb2DieX
-	 Sa3sTNRKXFXXb9ca7sM1Tz1L54BwmX6HOTmRs4TFWsGgWyhmEKckUW08tty3RabJGS
-	 ywWnj2o49vBKFgg6OSRt5dyMko1P70AYW6fpAHmF34yRfb0Z8tuiXmtSyMsk9Hcffs
-	 9Ws5mkx0w4pWQ==
-Message-ID: <eec0ccef-17c7-456e-aa5c-58195a06ffb2@kernel.org>
-Date: Fri, 26 Apr 2024 12:59:42 +0200
+	s=arc-20240116; t=1714129383; c=relaxed/simple;
+	bh=SKY8NIXn9wTOCTm1F8TUSlwijVfID6it5MLVkFT2Ars=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=akfg4v6czekvXZwciWV5KipUNJgo1s6nFpGvEa/bXn+7K2OspkqYVLeQpimz7eMwh4hgCrxJcZI6dSEBZLn/sQLYhfMF0AUPpvTMJr2sZLZoiZzhThKztljncGpu18Dx4OuvPz4BE11hptCaZCVIWcf7AkMO9fNNqCb3ZGgwqjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.11.235])
+	by sina.com (10.75.12.45) with ESMTP
+	id 662B89B400003792; Fri, 26 Apr 2024 19:02:14 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 78058831457764
+X-SMAIL-UIID: 432CAA4E330142D89BBD018D7A4A5C10-20240426-190214-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+159077b1355b8cd72757@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [input?] [ext4?] possible deadlock in uinput_request_submit
+Date: Fri, 26 Apr 2024 19:02:15 +0800
+Message-Id: <20240426110215.3361-1-hdanton@sina.com>
+In-Reply-To: <000000000000cb5a8d0616f8872d@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] dt-bindings: eeprom: at24: Add property dovdd-supply
-To: "zoie.lin" <zoie.lin@mediatek.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20240426102949.23057-1-zoie.lin@mediatek.com>
- <20240426102949.23057-4-zoie.lin@mediatek.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240426102949.23057-4-zoie.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 26/04/2024 12:29, zoie.lin wrote:
-> From: Zoie Lin <zoie.lin@mediatek.com>
+On Thu, 25 Apr 2024 21:42:26 -0700
+> syzbot found the following issue on:
 > 
-> Include a new property named dovdd-supply to provide an
-> additional power supply.
+> HEAD commit:    7b4f2bc91c15 Add linux-next specific files for 20240418
+> git tree:       linux-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b59430980000
 
-Which pin is it? Which device? Please write something useful...
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  7b4f2bc91c15
 
-I cannot find such pin on AT24C64, which you are adding support here.
-https://ww1.microchip.com/downloads/en/devicedoc/doc0336.pdf
-
-
-
-Best regards,
-Krzysztof
-
+--- x/drivers/input/misc/uinput.c
++++ y/drivers/input/misc/uinput.c
+@@ -311,8 +311,11 @@ static int uinput_create_device(struct u
+ 	struct input_dev *dev = udev->dev;
+ 	int error, nslot;
+ 
++	lockdep_assert_held(&udev->mutex);
++
+ 	if (udev->state != UIST_SETUP_COMPLETE) {
+ 		printk(KERN_DEBUG "%s: write device info first\n", UINPUT_NAME);
++		mutex_unlock(&udev->mutex);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -362,9 +365,12 @@ static int uinput_create_device(struct u
+ 
+ 	input_set_drvdata(udev->dev, udev);
+ 
++	mutex_unlock(&udev->mutex);
+ 	error = input_register_device(udev->dev);
+-	if (error)
++	if (error) {
++		mutex_lock(&udev->mutex);
+ 		goto fail2;
++	}
+ 
+ 	udev->state = UIST_CREATED;
+ 
+@@ -372,6 +378,7 @@ static int uinput_create_device(struct u
+ 
+  fail2:	input_ff_destroy(dev);
+  fail1: uinput_destroy_device(udev);
++	mutex_unlock(&udev->mutex);
+ 	return error;
+ }
+ 
+@@ -901,8 +908,7 @@ static long uinput_ioctl_handler(struct
+ 		goto out;
+ 
+ 	case UI_DEV_CREATE:
+-		retval = uinput_create_device(udev);
+-		goto out;
++		return uinput_create_device(udev);
+ 
+ 	case UI_DEV_DESTROY:
+ 		uinput_destroy_device(udev);
+--
 
