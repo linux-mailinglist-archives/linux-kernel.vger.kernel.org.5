@@ -1,143 +1,170 @@
-Return-Path: <linux-kernel+bounces-160199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2788B3A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:59:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5414E8B3A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 680621F21CE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:59:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C2AC288486
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEAD14885E;
-	Fri, 26 Apr 2024 14:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4CE148FE1;
+	Fri, 26 Apr 2024 15:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jQt5VTpP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rqAdKPnn"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30362E639;
-	Fri, 26 Apr 2024 14:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4127824B3;
+	Fri, 26 Apr 2024 15:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714143580; cv=none; b=hxlvMnz7Hy5YNRF6APpqEtrMXgdaJMkwOCHIgvff4jDcRAcV95h+KwofAncOX7ZnKd6ftkBxgNx27kHijU2zu+pxPF9lvAI8yDLd/3nKK4XL3Fjwy4XK/bawuba2/dCoDbvx3yzTfIz1xQ0jIZxAHnRUes+FR0i4q+UbwcV/lzg=
+	t=1714143654; cv=none; b=fmjiYr3Rp08u3+xWk0w6etixV+26IQLAm8GU0TXkUTTdgAjcLsa8WUv9bBmwXKfuxWmtdn4HcaQit7MvcpnFl8QUOPAHH/KjTz+ZoSC+xlSjjkM+S2O5TQlcnhSqsxyqP52d1imw5R+5QbwBrpDHj20LdprJTFsnK+qUFrG+dxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714143580; c=relaxed/simple;
-	bh=8sTdnzFkV/UWVm3qk79tjYUivdn/wHW1DtbpmUNARIo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KAlW1Vo3RYALh/+Kj921biwQE+v9d0/GtNRegKmkgufmJm7SRTRXKMjYhesyt58yIMtb+7IFuzTLWNH3Q5eMuV0qDdXreybe9jeqtBddcKPfw+zz+WLDrab+g4tL7q1joLe6QTIpMdmobfPUzcNWNVKvXXOOa6OWxcNz9eAJtY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jQt5VTpP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B9BFC113CD;
-	Fri, 26 Apr 2024 14:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714143580;
-	bh=8sTdnzFkV/UWVm3qk79tjYUivdn/wHW1DtbpmUNARIo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jQt5VTpPsVrPGuGuX9i2Z8ZK9TiOWI6suA8uiqjSR4bcRLz7QgEatzXAKMOW4bDlF
-	 1aOK250ag+vxhe/+Ad8nHXXzu4Bh9Gk8I6w+FpD+kCSMOSLQpP6UGmQGoyRCa9w0FY
-	 Eyx5r8i/OONqd42XPGwXZPx9V4Cr99FA+xaW/vmpMIXPWksaO2g9YyN/NYUUtG/9rL
-	 AlYAUDq3QOC4DtQFVouW8BZtTUveGT3QumPZHkSjn+CbPEnWqY7JctUxsGr3V556j7
-	 NOM2jAF8DBj/P5ayocZ8u3ZVKpXOH95IQZCdbQdlzACULtGdPRHyC34kM4Jy+AtG0G
-	 CtPm6pTrlMvfQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs fixes
-Date: Fri, 26 Apr 2024 16:59:29 +0200
-Message-ID: <20240426-vfs-fixes-20b3a0dd3821@brauner>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714143654; c=relaxed/simple;
+	bh=Krp0ixMO8Z7FJrpDXir2sn7ZJLY3AzyiosM0Mm20ZLU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=pfNN1ARb0vrcOGshLtMnVvRCmxFoEKvcpPLheYxQzL5+hE6EWEcBD0VSbUasel7zJOWSiCe+Btsh7RSd06dvyeU7TcSBPPQRGLLzGeQ45YxrTVpV8y3tIZS/pukHaKECOsjX2BgNfitdyq97MKxIB7Tt9MSfHGFnqA/JDEdu9eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rqAdKPnn; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QEpvwN028494;
+	Fri, 26 Apr 2024 15:00:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=qr+2iUUPDNYgObLxDLeS1JVLJzKYCjSVzJhiz1bDJ7Y=;
+ b=rqAdKPnn8E+iUHckboXCI1403tWg3F+KFttV21ra8Ohy7COQG9D77t1qvyPMe26of9MW
+ wiIlplwT+4/tI1Q0Ln6fXpdIuj1hdvq9Vi8VE7h5ZiCT+xfCunbTbtg5gZZxa6wYh/fH
+ Bvno5jFKCbabEpWDJRb1vmuzQBnbufSIpWMgXmrEIqWphoBLSzMmKIc0QjxXvsAAxKIC
+ g/s1QWn5iwTTOx37g7CmYX2cAC7nsJEbnxWZk5NAtsC+5HoprCyFI9pujUM0wJ1ffAJa
+ /LSC5FJnRO//vZBzVBhUFPP0lR3vPBiMOS2xdAY9IuWVMjriRl0EnZFvdtpFuyL5qUJP FA== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xredf80vk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:00:38 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDe2ck015430;
+	Fri, 26 Apr 2024 15:00:37 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshmr6t2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 15:00:37 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QF0YZJ9044632
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 15:00:36 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 520E258069;
+	Fri, 26 Apr 2024 15:00:32 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0AD7458060;
+	Fri, 26 Apr 2024 15:00:32 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 15:00:31 +0000 (GMT)
+Message-ID: <b89d39d2-ec54-4a88-aee5-7b5c95b3fca7@linux.ibm.com>
+Date: Fri, 26 Apr 2024 10:00:31 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 03/14] dt-bindings: fsi: Document the FSI2PIB engine
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-4-eajames@linux.ibm.com>
+ <3f822b56-8e6a-43e4-afb0-15c964f9474e@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <3f822b56-8e6a-43e4-afb0-15c964f9474e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -v8pjlEPK1p_sMN1TL5NRtVbH9UJS6rn
+X-Proofpoint-GUID: -v8pjlEPK1p_sMN1TL5NRtVbH9UJS6rn
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3008; i=brauner@kernel.org; h=from:subject:message-id; bh=8sTdnzFkV/UWVm3qk79tjYUivdn/wHW1DtbpmUNARIo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRpHwyeWnPTQV9w8aR32//1rljsV2KTF/5XetP3j998P kpWs7wO7ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhI4y2G/wFz5/peZCtw2X5L jLF5ZaTAFoaWhAzVl49ePZZomqKZc52RYcvc0M/fe7qMxGWnSKQ1eBs+qG640es9bx9XK0fsipl tPAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=990 suspectscore=0
+ impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2404260100
 
-Hey Linus,
 
-/* Summary */
-This contains a few small fixes for this merge window and the attempt to handle
-the ntfs removal regression that was reported a little while ago:
+On 4/26/24 01:18, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:36, Eddie James wrote:
+>> The FSI2PIB or SCOM engine provides an interface to the POWER processor
+>> PIB (Pervasive Interconnect Bus).
+>>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> ---
+>>   .../devicetree/bindings/fsi/ibm,fsi2pib.yaml  | 38 +++++++++++++++++++
+>>   1 file changed, 38 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>> new file mode 100644
+>> index 000000000000..4d557150c2e3
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>> @@ -0,0 +1,38 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/fsi/ibm,fsi2pib.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: IBM FSI-attached SCOM engine
+>> +
+>> +maintainers:
+>> +  - Eddie James <eajames@linux.ibm.com>
+>> +
+>> +description:
+>> +  The SCOM engine is an interface to the POWER processor PIB (Pervasive
+>> +  Interconnect Bus). This node will always be a child of an FSI CFAM node;
+>> +  see fsi.txt for details on FSI slave and CFAM nodes.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - ibm,fsi2pib
+>> +      - ibm,i2cr-scom
+> Sometimes you call these p9, sometimes p10... what is the system or SoC
+> here? Aren't you adding some generic compatibles? writing-bindings and
+> numerous guides are clear on that.
 
-* After the removal of the legacy ntfs driver we received reports about
-  regressions for some people that do mount "ntfs" explicitly and expect the
-  driver to be available. Since ntfs3 is a drop-in for legacy ntfs we alias
-  legacy ntfs to ntfs3 just like ext3 is aliased to ext4.
 
-  We also enforce legacy ntfs is always mounted read-only and give it custom
-  file operations to ensure that ioctl()'s can't be abused to perform write
-  operations.
+Open source FSI support started with P9 chips so we initially added 
+p9-sbefifo, p9-occ, etc. P10 has all of the same engines as P9 plus the 
+SPI controller, so that's why SPI is p10-spi. P11 has the same engines 
+as P10. For scom/fsi2pib we could call it p9-scom I suppose... This 
+series isn't just documentation for a new system, I'm adding 
+documentation that should have been added for P9. Anyway I'm not sure 
+what you mean about generic compatibles? You mean just add a "scom" or 
+"fsi2pib" compatible? writing-bindings says "DO make 'compatible' 
+properties specific"
 
-* Fix an unbalanced module_get() in bdev_open().
 
-* Two smaller fixes for the netfs work done earlier in this cycle.
+Thanks,
 
-* Fix the errno returned from the new FS_IOC_GETUUID and FS_IOC_GETFSSYSFSPATH
-  ioctls. Both commands just pull information out of the superblock so there's
-  no need to call into the actual ioctl handlers.
+Eddie
 
-  So instead of returning ENOIOCTLCMD to indicate to fallback we just return
-  ENOTTY directly avoiding that indirection.
 
-/* Testing */
-clang: Debian clang version 16.0.6 (19)
-gcc: (Debian 13.2.0-7) 13.2.0
-
-All patches are based on v6.9-rc3. No build failures or warnings were observed.
-
-/* Conflicts */
-No known conflicts.
-
-The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
-
-  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc6.fixes
-
-for you to fetch changes up to c97f59e276d4e93480f29a70accbd0d7273cf3f5:
-
-  netfs: Fix the pre-flush when appending to a file in writethrough mode (2024-04-26 14:56:18 +0200)
-
-Please consider pulling these changes from the signed vfs-6.9-rc6.fixes tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-vfs-6.9-rc6.fixes
-
-----------------------------------------------------------------
-Christian Brauner (3):
-      ntfs3: serve as alias for the legacy ntfs driver
-      ntfs3: enforce read-only when used as legacy ntfs driver
-      ntfs3: add legacy ntfs file operations
-
-David Howells (2):
-      netfs: Fix writethrough-mode error handling
-      netfs: Fix the pre-flush when appending to a file in writethrough mode
-
-Günther Noack (1):
-      fs: Return ENOTTY directly if FS_IOC_GETUUID or FS_IOC_GETFSSYSFSPATH fail
-
-Yu Kuai (1):
-      block: fix module reference leakage from bdev_open_by_dev error path
-
- block/bdev.c              |  2 +-
- fs/ioctl.c                |  4 +--
- fs/netfs/buffered_write.c | 23 +++++++++--------
- fs/ntfs3/Kconfig          |  9 +++++++
- fs/ntfs3/dir.c            |  7 +++++
- fs/ntfs3/file.c           |  8 ++++++
- fs/ntfs3/inode.c          | 20 ++++++++++++---
- fs/ntfs3/ntfs_fs.h        |  4 +++
- fs/ntfs3/super.c          | 65 ++++++++++++++++++++++++++++++++++++++++++++---
- 9 files changed, 121 insertions(+), 21 deletions(-)
+>
+> Best regards,
+> Krzysztof
+>
 
