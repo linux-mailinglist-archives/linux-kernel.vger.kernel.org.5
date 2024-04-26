@@ -1,166 +1,146 @@
-Return-Path: <linux-kernel+bounces-159618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A46A8B3124
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:13:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADC3C8B3125
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36395283DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:13:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 628E81F242EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 07:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9725813C3D1;
-	Fri, 26 Apr 2024 07:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2017C13C685;
+	Fri, 26 Apr 2024 07:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="qVJjDIg3"
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R8Qy5qk3"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E8513B787;
-	Fri, 26 Apr 2024 07:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714115592; cv=pass; b=PjprR0IQ8IV5VIaZzyy42JET3UlDb1obakf/geqwkLOVyFvjTZQTgTcJIcct+wa8FfYFKpOn57DQuBGN5acb27cbNbDtCoigWF10TfI6ERUXf/5ZTzRmdNq4XlqMQRWAG/UeNsLlce/e4I5TW928A4SWAom9PvzkNbUAq8S62jg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714115592; c=relaxed/simple;
-	bh=cafSks1k89IN6rokLafePAbd3MXzKl3T+33eU3ZDGyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ANX7pkEi6q+TfYAvLezcQnJ/1oKhf/zlhg2E/ykRLT/NvDXRU0gfWhX4vtBSSr07RLc+h1Yvc6nEhQe4s8O4uUBp+fBSR50LlDB61cN9AaT6D81TKO+bzGvGc2ciRroisGnp5oB/rdeGX1W4e+iQ6L17MJmJ6GLMvdmkQ/VRjhE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=qVJjDIg3; arc=pass smtp.client-ip=185.185.170.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4VQkTH19lCz49Pxk;
-	Fri, 26 Apr 2024 10:13:07 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1714115587;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=53jluzU89EQBBFVoMObpH5Ps1oIGuKHOf1ADfGhaN5M=;
-	b=qVJjDIg3HZ5rc2ntHDEOWPR6nFXmt4VEgT6cnUgCHNJaDeRer1p/3czSXvk2KCcQ9KLmF3
-	ieaXJhKYx3f6csVcdPOM5eDEq7fLJtGW1moqysdEbDIAYV5ZazqYAnMg4JIzlU2KefG1WE
-	iTzPH8fi3RIeC9CU3IwjCCTkqZT9189lrUcyX8SQCBmE9qF9SWaSPHJTTFyF0HEh9PPibS
-	3A7rWHChghbr8f0Xvx5qU4GPHMDp37v5dOshr8u/UEnWIic7DvZwoxGupwUNZWNnpWOMxy
-	1TpZanEEimMcXdA6PLkhdcYWWdlAXS9Zz/L7aOf4rCrne9lAydBDVu1XcConAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1714115587;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=53jluzU89EQBBFVoMObpH5Ps1oIGuKHOf1ADfGhaN5M=;
-	b=iyF3vdeF//2nEC10LW4R9knRl8kytK4DrLG7dpbzami/Ygu1zsbtPL+uK95p8hmg5Uqo7h
-	uwOe2E3Z1MFOMRvmI7KZc37is8qtubYpfO6S7F/6RwwWgOKS+W8wWSpeVcaCAthLfFmYSo
-	Ev+awxmFECPTNeXSD9rRoK8sEvCkG9pj5ZTNpbvOnISOEKjZ+OGnOWSaZo0CT8OL0f91FR
-	aIGgLCIdPc/t7Rhv9rzoBm775jA/oqYhLFac5kHYqHcWYMCv9HgghJKio3snMoS7wWWZ0c
-	Ipr5ew2OoqtgQ+OZR1n2c+Gu2BUGhHI3mKcJWm4nuVYB2k5UVK2TKQ+DX572Nw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1714115587; a=rsa-sha256;
-	cv=none;
-	b=cCzT4XqLKaLDDaxQA6f7EWIRqBe7ydRrvYr9KRcu0uYZrhKsWoqVHIkLOo20KjJ+Ytqwpj
-	RuBKSD34X4AUQqlQt2It7roM0YsS8+aGQdeAXnJkBFS8gAUuzi95anC9KB0lV7Y1rQNv7b
-	s+4LWHMGVfeEAI8f4tifAeI0vSg/R6EHPfWFq1nXT6eEYt/2NaOrgyakctZ5gbY3F/j5gP
-	PxleIZzo5XBFV1LflrsLcBEfauLF7bcKN+tBXn1B1xWbyASx0qqXK8X8T61tNNgN8FXmFh
-	qI3r+yG5hcFwlnUYo1fMFSQFm0QIIyUp2FWemwJeWBddNGRhA1/czzdd/RsjOA==
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id CA1C6634C93;
-	Fri, 26 Apr 2024 10:13:06 +0300 (EEST)
-Date: Fri, 26 Apr 2024 07:13:06 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: martin.hecht@avnet.eu, michael.roeder@avnet.eu,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] media: i2c: alvium: Move V4L2_CID_GAIN to
- V4L2_CID_ANALOG_GAIN
-Message-ID: <ZitUAsBgoxLG_vEx@valkosipuli.retiisi.eu>
-References: <20240416141905.454253-1-tomm.merciai@gmail.com>
- <20240416141905.454253-6-tomm.merciai@gmail.com>
- <ZilLThyqHC2xi6tS@valkosipuli.retiisi.eu>
- <ZitTL/IhmuvwF2Qu@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A9C13C67F;
+	Fri, 26 Apr 2024 07:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714115598; cv=none; b=PFXP+pPAhVVXYzep1OwQBzeQ3XVhQyqBgRxKrh6ViytEz6/XYqT6NVLlCNEiSiChL/NqRWrB7hUXTRGmuJtiKEy0PdpNdh70J5KOoKchqMfCljobXcgJAsnB1pXkvSYjwz0YzIKrDY5TJhZ3HwixwtpFDLLtbEq3GIFCOePAOeU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714115598; c=relaxed/simple;
+	bh=rOzcluYKG2hrpYV20L/nT3C1eaey2DRuJJlwnc12FaY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QAeLdUiQBaFGHExGYl2ZezZz9YXG5IHFXfI0dmtAFR04r3uP5YhXvIg9Ji+4rDxaCePEHhpz3dCGsOc1zS7sA0M0GL1p/kCvIFFfh8cixJs+BnYaQmmoPjnHoU1SOyhAo1f7obw6jSuKUvNuE9A5Jkg83wts5+EgZ7paovK327o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R8Qy5qk3; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41b869326daso2367835e9.0;
+        Fri, 26 Apr 2024 00:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714115594; x=1714720394; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rOzcluYKG2hrpYV20L/nT3C1eaey2DRuJJlwnc12FaY=;
+        b=R8Qy5qk3Bw0aoY3WDiTx9Y8qEmza/mBlhRp+Y9SjWpqdQWb+Ly1ff7NN0wGT6FOuZa
+         LXX8DKQlfifQHm0X1mAjO8OwWARG4A5jleUyzDVd7A/lom5j3lVPQAAAhAZCb9Py+K/J
+         jkwGV0PZJlVXyUVdR0gWZ/Ir5TAiCMRnAr62JWHs83KcAcoXbSUQjjT+bn5hbUg3Y/27
+         Z6vrxOKpe8nLb5wcOZvtY9hEOw2VT714U5OElDoYucxwus0kjcYDaDIOGp4nfHH7mUPj
+         D2filwiKv5NP7Ij3cLQ0Ok3rR8hEqOzSwYF9A99oBzTikVCGd7244/36HdMpzaUw24UZ
+         Xr9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714115594; x=1714720394;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rOzcluYKG2hrpYV20L/nT3C1eaey2DRuJJlwnc12FaY=;
+        b=bYfU8IzNVSkR6zcMfBzAkSh8b2gpP5TVbv82IeX/rzYMks3DYRJs9Uuq1MsXXRbCpF
+         32k+ryEaY7tnkZVELg+4VaY4y4ySfzKW0pipTrqKboWtUd/sYGS7X/cQY/wex7zWQu5j
+         WsTPzzbV+BHHpX/1GM3JWoqFR/3fpQgmq3Hs6QA6YIqKjGFobC3RIzPoF3y6m+h4Z4Aa
+         hl40cVsjAc3cM7nwn2tpRsgfvLFXH9gomm+MUscepJiTiKAl5r85OpWxKlS/yducylaX
+         CVlsX9q9oZ2Vh5rHDbUlZzN71ZSEnj+TTWqgLASvp6PGRSre2HDbkGKrgfNCnwicoFvS
+         nuNA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0n8V6felIAEE1jogN8QuZ2bvbt0wln5RC55D/fbpNNkPngOYijTQd19tguzSXh73/XZmQSqs4vV/PiLW1CqmTAEOEyD2Td7QZuXmFDjveDrdoC+lNH049gqjRFsihVWDNn2q3nd0U
+X-Gm-Message-State: AOJu0Yw1xJ94RjZSLOx1IDr2xqoMA9sQa4Hu22pkP6m9Il24M6MRH5iL
+	NNg+dSXUspCSGXxvitJTr6Jb32xqAajs5dI41SZW4wl6tRinpe5+
+X-Google-Smtp-Source: AGHT+IELlRH0sOWJdCsZIYCDl7Yx1dPCBTVH9urrSlrGNcaa6bxDZs6XhcNcgT5jQ3DLLvUE/MRRMg==
+X-Received: by 2002:a05:600c:3553:b0:418:d6f2:a97a with SMTP id i19-20020a05600c355300b00418d6f2a97amr1481428wmq.13.1714115594183;
+        Fri, 26 Apr 2024 00:13:14 -0700 (PDT)
+Received: from ?IPv6:2001:a61:3481:2201:6106:96db:d27b:d2c2? ([2001:a61:3481:2201:6106:96db:d27b:d2c2])
+        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0041638a085d3sm33449748wmq.15.2024.04.26.00.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 00:13:13 -0700 (PDT)
+Message-ID: <2630ef8c8363b4fa772a2ff2c95cf115ad3c509d.camel@gmail.com>
+Subject: Re: [PATCH 0/3] iio: cleanup masklength usage
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: David Lechner <dlechner@baylibre.com>, Jonathan Cameron
+ <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Shawn Guo <shawnguo@kernel.org>, Sascha
+ Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Fabio Estevam <festevam@gmail.com>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Date: Fri, 26 Apr 2024 09:13:13 +0200
+In-Reply-To: <20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
+References: 
+	<20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZitTL/IhmuvwF2Qu@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 
-Hi Tommaso,
+On Thu, 2024-04-25 at 10:03 -0500, David Lechner wrote:
+> While working on other patches I noticed that a few drivers are setting
+> the masklength field of struct iio_dev even though it is marked as
+> [INTERN]. It looks like maybe this was not always the case, but we can
+> safely clean it up now without breaking anything.
+>=20
+> ---
+> David Lechner (3):
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: adc: ad7266: don't set masklength
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: adc: mxs-lradc-adc: don't set masklen=
+gth
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: buffer: initialize masklength accumul=
+ator to 0
+>=20
+> =C2=A0drivers/iio/adc/ad7266.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/iio/adc/mxs-lradc-adc.c=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/iio/industrialio-buffer.c | 2 +-
+> =C2=A03 files changed, 1 insertion(+), 3 deletions(-)
+> ---
+> base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
+> change-id: 20240425-b4-iio-masklength-cleanup-86b632b19901
+>=20
 
-On Fri, Apr 26, 2024 at 09:09:35AM +0200, Tommaso Merciai wrote:
-> Hi Sakari,
-> Thanks for your review.
-> 
-> On Wed, Apr 24, 2024 at 06:11:26PM +0000, Sakari Ailus wrote:
-> > Hi Tommaso,
-> > 
-> > On Tue, Apr 16, 2024 at 04:19:05PM +0200, Tommaso Merciai wrote:
-> > > Into alvium cameras REG_BCRM_GAIN_RW control the analog gain.
-> > > Let's use the right V4L2_CID_ANALOGUE_GAIN ctrl.
-> > > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > > ---
-> > >  drivers/media/i2c/alvium-csi2.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-> > > index 30ef9b905211..56d64f27df72 100644
-> > > --- a/drivers/media/i2c/alvium-csi2.c
-> > > +++ b/drivers/media/i2c/alvium-csi2.c
-> > > @@ -1993,7 +1993,7 @@ static int alvium_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
-> > >  	int val;
-> > >  
-> > >  	switch (ctrl->id) {
-> > > -	case V4L2_CID_GAIN:
-> > > +	case V4L2_CID_ANALOGUE_GAIN:
-> > >  		val = alvium_get_gain(alvium);
-> > >  		if (val < 0)
-> > >  			return val;
-> > > @@ -2025,7 +2025,7 @@ static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
-> > >  		return 0;
-> > >  
-> > >  	switch (ctrl->id) {
-> > > -	case V4L2_CID_GAIN:
-> > > +	case V4L2_CID_ANALOGUE_GAIN:
-> > >  		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
-> > >  		break;
-> > >  	case V4L2_CID_AUTOGAIN:
-> > > @@ -2154,7 +2154,7 @@ static int alvium_ctrl_init(struct alvium_dev *alvium)
-> > >  
-> > >  	if (alvium->avail_ft.gain) {
-> > >  		ctrls->gain = v4l2_ctrl_new_std(hdl, ops,
-> > > -						V4L2_CID_GAIN,
-> > > +						V4L2_CID_ANALOGUE_GAIN,
-> > >  						alvium->min_gain,
-> > >  						alvium->max_gain,
-> > >  						alvium->inc_gain,
-> > 
-> > This looks like a bugfix. Shouldn't it be cc'd to stable as well? A Fixes:
-> > tag would be nice, too.
-> 
-> Fully agree.
-> Plan is to add in v2 Fixes: 0a7af872915e ("media: i2c: Add support for alvium camera")
-> like you suggest and stable@vger.kernel.org in CC.
+Hi David,
 
-Just make sure git send-email won't actually cc the patch to the stable
-e-mail address. Cc: tag is enough. The git config option is
-sendemail.suppresscc.
+Nice cleanup. The patches look good to me but there's one thing missing :).=
+ As you
+correctly noted, the field should be internal to the IIO core and drivers s=
+hould not
+touch it. Hence, you need to make sure not driver is using it so we can mov=
+e it into
+struct iio_dev_opaque [1]. That's the place all the intern fields should, e=
+ventually,
+end up.
 
--- 
-Regards,
+Now, quite some drivers in the trigger handler will read the masklength for=
+ looping
+with for_each_set_bit(). Hence, the straight thing would be an helper to ge=
+t it.
+Maybe there's a clever way...
 
-Sakari Ailus
+I know this is more work than what you had in mind but I think it should be=
+ fairly
+simple (hopefully) and since you started it :), maybe we can get the whole =
+thing done
+and remove another [INTERN] member from the iio_dev struct.
+
+[1]: https://elixir.bootlin.com/linux/latest/source/include/linux/iio/iio-o=
+paque.h#L42
+
+- Nuno S=C3=A1
 
