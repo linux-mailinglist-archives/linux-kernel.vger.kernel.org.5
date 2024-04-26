@@ -1,124 +1,116 @@
-Return-Path: <linux-kernel+bounces-160550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5AD08B3F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:13:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508118B3F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:15:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AE511F235D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:13:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99B79B242D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3DB172BA7;
-	Fri, 26 Apr 2024 18:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CBE16F296;
+	Fri, 26 Apr 2024 18:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZF78jg8G";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3D+0+37Q"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="s0SGDObx"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CFD16F8FC;
-	Fri, 26 Apr 2024 18:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCFC16D9DC;
+	Fri, 26 Apr 2024 18:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714155137; cv=none; b=V86/v7iYoRHPHD3vLz4GGZ/h5D5rd6Ys3RXTcveKrW7q6uWQt75t6QTEiSrCXq7H9OaGX2vaRR/jQB/FnG5GIRLyJ5txQiOVeDCtqNrDanHqVf23k+CT2/bSxbqw+3/SVwYgdkJMioJmKSgvur5FVq+0zz4ctgVor8klzTn5gHs=
+	t=1714155243; cv=none; b=aPebWb/bgZbmSuGeSmSsAmOpxJ415juiVGZPzBabBL2nylL1REoPlN+Bd5VudCYjRPCFgTK9AkICsrUYH4J4mI+LVdGJO7bZhBpXZe5LKGrQXGllsxvtvOID+avmqg0HQEtkiD5yhSVvIk5OFydKrB4qI4DoOuCpikY8CIvR1f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714155137; c=relaxed/simple;
-	bh=jSY0nA+ROhRqTnRhQs/ve/+tyARjxDRZJy8Uj4HGnYs=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=dysJfUKrnvGqfvQT+SBkd+lAa7gJaHknGyvAhwX9P1Zj0gfjRiGFAEXY/thOJGOpjnX4cPnZtLxOaD2Ha0rKUFCMrgAcP4SQtmKC+rqDkw7xq8RHt2Kol5hkHMkCdzKI7lSXWP/gnF1hOofjZ6x66xQ05uwfAAJ9XNzWyxvPjlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZF78jg8G; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3D+0+37Q; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 26 Apr 2024 18:12:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714155131;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=ycy0ZFmdvZj6/8voNpxWj0nxNZyEC+RHC/uTiGiH8fQ=;
-	b=ZF78jg8GLjrUCcsknwUzQ6r9f0N8RGtckQPHgWSQCFGf2JIR3if/z0N4oyp31Wq6aVGD5k
-	qCVwk8gq3OtvDj2BlOs7q6a229bdzto+aX3iaiPaLWio42bUXSopkbYDZKvukM91bMp2l9
-	W1wp8jNcxSpXD2S0PN+rBsK6YBRXhgG+bN54qHkrmiCN6g30MmUO2PPQMEdk+4Ih51YNJk
-	pfUsYAbqOw7kJ+w/6oF/W5Fvtfb26dbFwl2sUE4cAsC6IHRDGlsRIyRkxGsOFxOP13Ao1k
-	KE08h7T3dhbtyiyqyKTyI2+WZdDcyOZWaEM0qpvt0VrGlLP7S0e4yRuILpeVCQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714155131;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=ycy0ZFmdvZj6/8voNpxWj0nxNZyEC+RHC/uTiGiH8fQ=;
-	b=3D+0+37QP47isYVb1frGSRKSTNhainvlurRJ/UEsxukpyuM/g+tH80d6tcNNny+Qgp/4fa
-	j3msJerv/nm+UQDA==
-From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/mce: Switch to new Intel CPU model defines
-Cc: Tony Luck <tony.luck@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1714155243; c=relaxed/simple;
+	bh=aQjaL5v7EZ8Z8sheHSuTK0i8DbEog35lMqyjMZuJSH8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SGNV+Nfog7NNTKlyPolKD+u1SZrGhwPBa5ppUlutxAV8q4A2pbiGfDUuKYRmXrqcVjg+2CYa0YczhmT1iZ3vFYuKGF0l7V3dwUzlJBuq4KS2nbb1M01mrDqqjTNx89SQYXnc8n2gXvLhZ/VGQTZ8cHh25FpXyfxuv66OE/acww4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=s0SGDObx; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Z0WylHOBJi80XW5YVifjTqADU8U9Hi2JH9CbGlTpRYM=; b=s0SGDObxH6/3Xck4YBOF4zBOOG
+	fnpQUiVzrD846i2Wd6hb/iY8DDkplyuhIvX1OkoiBceOFTtt9ppqHNI47PrIkylMuaDy2/00rK467
+	KlBoZS9/H4jRdhfmLworvUxCa5Lg8o0ZoCedMMz1SQY4z0M+7x9vZd8JQqo8D0U+bNIQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s0Q4k-00E62L-4W; Fri, 26 Apr 2024 20:13:34 +0200
+Date: Fri, 26 Apr 2024 20:13:34 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban.Veerasooran@microchip.com
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
+	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 09/12] net: ethernet: oa_tc6: implement
+ receive path to receive rx ethernet frames
+Message-ID: <669541fd-abc5-4461-a92f-af5a09c1e1e6@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-10-Parthiban.Veerasooran@microchip.com>
+ <574fec4d-5a23-490a-ba12-c40432ebe4b8@lunn.ch>
+ <6e529720-3caa-4dc4-b9be-bc6674806ba5@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171415513142.10875.5506937113869096290.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e529720-3caa-4dc4-b9be-bc6674806ba5@microchip.com>
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Fri, Apr 26, 2024 at 01:45:20PM +0000, Parthiban.Veerasooran@microchip.com wrote:
+> Hi Andrew,
+> 
+> On 24/04/24 5:38 am, Andrew Lunn wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> >> +static int oa_tc6_allocate_rx_skb(struct oa_tc6 *tc6)
+> >> +{
+> >> +     tc6->rx_skb = netdev_alloc_skb(tc6->netdev, tc6->netdev->mtu + ETH_HLEN +
+> >> +                                    ETH_FCS_LEN + NET_IP_ALIGN);
+> >> +     if (!tc6->rx_skb) {
+> >> +             tc6->netdev->stats.rx_dropped++;
+> >> +             return -ENOMEM;
+> >> +     }
+> >> +     skb_reserve(tc6->rx_skb, NET_IP_ALIGN);
+> > 
+> > I think you can use netdev_alloc_skb_ip_align() here.
+> Ah OK, then do you mean we can rewrite the function 
+> oa_tc6_allocate_rx_skb() as below?
+> 
+> static int oa_tc6_allocate_rx_skb(struct oa_tc6 *tc6)
+> {
+> 	tc6->rx_skb = netdev_alloc_skb_ip_align(tc6->netdev, tc6->netdev->mtu + 
+> ETH_HLEN + ETH_FCS_LEN);
+> 	if (tc6->rx_skb)
+> 		return 0;
+> 
+> 	tc6->netdev->stats.rx_dropped++;
+> 	return -ENOMEM;
+> }
 
-Commit-ID:     066f54e65e47b3b35ecc79c2fe934e0867ffbe2f
-Gitweb:        https://git.kernel.org/tip/066f54e65e47b3b35ecc79c2fe934e0867ffbe2f
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 24 Apr 2024 11:15:11 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Fri, 26 Apr 2024 08:49:24 -07:00
+Looks about right. But i did say 'I think', meaning i'm not too sure
+about this.
 
-x86/mce: Switch to new Intel CPU model defines
+I generally don't review code actually moving packets around. It is
+what developers focus on, test heavily, and so is generally O.K. It is
+the code around the edges which often needs improvements prompted by
+review, ethtool, PHY handling, statistics.
 
-New CPU #defines encode vendor and family as well as model.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20240424181511.41772-1-tony.luck%40intel.com
----
- arch/x86/kernel/cpu/mce/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 771a9f1..ad0623b 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -47,7 +47,7 @@
- #include <linux/kexec.h>
- 
- #include <asm/fred.h>
--#include <asm/intel-family.h>
-+#include <asm/cpu_device_id.h>
- #include <asm/processor.h>
- #include <asm/traps.h>
- #include <asm/tlbflush.h>
-@@ -1948,14 +1948,14 @@ static int __mcheck_cpu_apply_quirks(struct cpuinfo_x86 *c)
- 		if (c->x86 == 6 && c->x86_model <= 13 && cfg->bootlog < 0)
- 			cfg->bootlog = 0;
- 
--		if (c->x86 == 6 && c->x86_model == 45)
-+		if (c->x86_vfm == INTEL_SANDYBRIDGE_X)
- 			mce_flags.snb_ifu_quirk = 1;
- 
- 		/*
- 		 * Skylake, Cascacde Lake and Cooper Lake require a quirk on
- 		 * rep movs.
- 		 */
--		if (c->x86 == 6 && c->x86_model == INTEL_FAM6_SKYLAKE_X)
-+		if (c->x86_vfm == INTEL_SKYLAKE_X)
- 			mce_flags.skx_repmov_quirk = 1;
- 	}
- 
+	Andrew
 
