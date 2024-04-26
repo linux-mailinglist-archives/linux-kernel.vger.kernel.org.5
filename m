@@ -1,168 +1,281 @@
-Return-Path: <linux-kernel+bounces-160521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47EE48B3EA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:51:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C76F28B3E8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 799F21C223C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:51:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EEA01F22BDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAD2171E69;
-	Fri, 26 Apr 2024 17:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ThgRPWzE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8B016ABC0;
+	Fri, 26 Apr 2024 17:49:58 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B7F171661
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6542214EC4C;
+	Fri, 26 Apr 2024 17:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714153818; cv=none; b=Ts/reYIf4M3XMAJwLR4pB00MXjzennBKtMYDEHdNk1yuoPQVtd+sDJ6zpDceQ1TlTvkSIXiGkT+K54lyU++N8cMMd/6u3LD0dzBWNeyEKwVeEMdIrJcwdS5oTB4bbKm3eLMddpfB4osW5p5WyEl8twjGmvtDiInPtiPZdPn/lYw=
+	t=1714153798; cv=none; b=awyRfxCOWdxsMXHv/T/mHje/T5/5snki4q0e9Sb9Tk01h8n+B4Vb6FKzZhWUoCvQmjKaXfKH9uR2imUP+LGp2xBxYeHYj6Mje2ifpkH3Wr27VgYoZrDM5BiZlRuZhXf+IZ0W4ZOJ8LjIVL5qS9MgUDJVppe8oq8LUUZateoBw8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714153818; c=relaxed/simple;
-	bh=7yrZ8coMikA+E4ydoDYkmPlbqqL6xFJeds4Psv/q0ls=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=joGd/bWF0b9muHrnxw3DIW3edfB95YCpyb4DsUBCr5CUt21IFKstH0PTLdsICPEd79Vv0udzbZjK28/4GdFnY+/ZFf2vjey+hVvP429JXFq3VOjBfKIdJoO1qwUNaS0Y6SolBHmpA37emnEl0A/VF3uP6GM8/i564F9HC8w2Phk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ThgRPWzE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714153816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t02hgqrflAZO/dEUh3M5MYsY6GpRFnEdmslCRhsundQ=;
-	b=ThgRPWzEMYLjQkZSKlP/puqDmLde84cuVmwtBqFc5XgRUDPlRDsv3dd0cc5GQ0tFiqeOW/
-	Q7xMLqBuwikV4hgsb0Urut80z4KvgoBVQFgOUJspdv+Tk+L2aYTIdpDhadRphg8+Mz03RT
-	oBjdS2b85dQGFRXNEC+ui6ED3qoAB6Y=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-284-pbUs6CbUP-arJ2oX6CNT1w-1; Fri,
- 26 Apr 2024 13:50:14 -0400
-X-MC-Unique: pbUs6CbUP-arJ2oX6CNT1w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE4911C04B56;
-	Fri, 26 Apr 2024 17:50:13 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1670AC13FA4;
-	Fri, 26 Apr 2024 17:50:11 +0000 (UTC)
-From: Ivan Vecera <ivecera@redhat.com>
-To: netdev@vger.kernel.org
-Cc: Michal Schmidt <mschmidt@redhat.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v3 7/7] i40e: Add and use helper to reconfigure TC for given VSI
-Date: Fri, 26 Apr 2024 19:49:46 +0200
-Message-ID: <20240426174953.208591-8-ivecera@redhat.com>
-In-Reply-To: <20240426174953.208591-1-ivecera@redhat.com>
-References: <20240426174953.208591-1-ivecera@redhat.com>
+	s=arc-20240116; t=1714153798; c=relaxed/simple;
+	bh=erZZi9wDZX0ZOYNS/RLIvpcm6ff+QRDxGu84IpUs1F4=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mpLKZGcSd5BEVQ+clX5o+JPwEgpxef6iJTlVkBWvcbXK5soj12sGzfJbXnDVEBxjsmqVb2lAKqOqamNnINt2zGI3pUzTqBGj3xCy4Ab3qZ6WIP8YTG09LR8anUC3FGJpIJQbS+aesoDmWPEXv1QZWUuqwAsmue/w+DY8ezRwTy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VR0Y95yrxz6JBFj;
+	Sat, 27 Apr 2024 01:47:25 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8E2B51408F9;
+	Sat, 27 Apr 2024 01:49:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 18:49:50 +0100
+Date: Fri, 26 Apr 2024 18:49:49 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Miguel Luis <miguel.luis@oracle.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, "linux-pm@vger.kernel.org"
+	<linux-pm@vger.kernel.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-arch@vger.kernel.org"
+	<linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, "James
+ Morse" <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
+	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, "linuxarm@huawei.com" <linuxarm@huawei.com>,
+	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com"
+	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
+ Holla" <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 01/16] ACPI: processor: Simplify initial onlining to
+ use same path for cold and hotplug
+Message-ID: <20240426184949.0000506d@Huawei.com>
+In-Reply-To: <2E688E98-F57F-444F-B326-5206FB6F5C1E@oracle.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+	<20240426135126.12802-2-Jonathan.Cameron@huawei.com>
+	<6347020E-CB49-44ED-87B2-3BB2AA2F59E0@oracle.com>
+	<2E688E98-F57F-444F-B326-5206FB6F5C1E@oracle.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Add helper i40e_vsi_reconfig_tc(vsi) that configures TC
-for given VSI using previously stored TC bitmap.
+On Fri, 26 Apr 2024 17:21:41 +0000
+Miguel Luis <miguel.luis@oracle.com> wrote:
 
-Effectively replaces open-coded patterns:
+> Hi Jonathan, 
+> 
+> > On 26 Apr 2024, at 16:05, Miguel Luis <miguel.luis@oracle.com> wrote:
+> > 
+> > 
+> >   
+> >> On 26 Apr 2024, at 13:51, Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+> >> 
+> >> Separate code paths, combined with a flag set in acpi_processor.c to
+> >> indicate a struct acpi_processor was for a hotplugged CPU ensured that
+> >> per CPU data was only set up the first time that a CPU was initialized.
+> >> This appears to be unnecessary as the paths can be combined by letting
+> >> the online logic also handle any CPUs online at the time of driver load.
+> >> 
+> >> Motivation for this change, beyond simplification, is that ARM64
+> >> virtual CPU HP uses the same code paths for hotplug and cold path in
+> >> acpi_processor.c so had no easy way to set the flag for hotplug only.
+> >> Removing this necessity will enable ARM64 vCPU HP to reuse the existing
+> >> code paths.
+> >> 
+> >> Leave noisy pr_info() in place but update it to not state the CPU
+> >> was hotplugged.  
+> 
+> On a second thought, do we want to keep it? Can't we just assume that no 
+> news is good news while keeping the warn right after __acpi_processor_start ?
 
-enabled_tc = vsi->tc_config.enabled_tc;
-vsi->tc_config.enabled_tc = 0;
-i40e_vsi_config_tc(vsi, enabled_tc);
+Good question - my inclination was to keep this in place for now as removing
+it would remove a source of information people may expect on x86 hotplug.
 
-Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
-Reviewed-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 31 +++++++++++++++------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+Then maybe propose dropping it as overly noisy kernel as a follow up
+patch after this series is merged.  Felt like a potential rat hole I didn't
+want to go down if I could avoid it.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 26e5c21df19d..1051dbb1f42e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5917,6 +5917,27 @@ static int i40e_vsi_config_tc(struct i40e_vsi *vsi, u8 enabled_tc)
- 	return ret;
- }
- 
-+/**
-+ * i40e_vsi_reconfig_tc - Reconfigure VSI Tx Scheduler for stored TC map
-+ * @vsi: VSI to be reconfigured
-+ *
-+ * This reconfigures a particular VSI for TCs that are mapped to the
-+ * TC bitmap stored previously for the VSI.
-+ *
-+ * NOTE:
-+ * It is expected that the VSI queues have been quisced before calling
-+ * this function.
-+ **/
-+static int i40e_vsi_reconfig_tc(struct i40e_vsi *vsi)
-+{
-+	u8 enabled_tc;
-+
-+	enabled_tc = vsi->tc_config.enabled_tc;
-+	vsi->tc_config.enabled_tc = 0;
-+
-+	return i40e_vsi_config_tc(vsi, enabled_tc);
-+}
-+
- /**
-  * i40e_get_link_speed - Returns link speed for the interface
-  * @vsi: VSI to be configured
-@@ -14279,7 +14300,6 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	struct i40e_vsi *main_vsi;
- 	u16 alloc_queue_pairs;
- 	struct i40e_pf *pf;
--	u8 enabled_tc;
- 	int ret;
- 
- 	if (!vsi)
-@@ -14312,10 +14332,8 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	 * layout configurations.
- 	 */
- 	main_vsi = i40e_pf_get_main_vsi(pf);
--	enabled_tc = main_vsi->tc_config.enabled_tc;
--	main_vsi->tc_config.enabled_tc = 0;
- 	main_vsi->seid = pf->main_vsi_seid;
--	i40e_vsi_config_tc(main_vsi, enabled_tc);
-+	i40e_vsi_reconfig_tc(main_vsi);
- 
- 	if (vsi->type == I40E_VSI_MAIN)
- 		i40e_rm_default_mac_filter(vsi, pf->hw.mac.perm_addr);
-@@ -15074,11 +15092,8 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acqui
- 		}
- 	} else {
- 		/* force a reset of TC and queue layout configurations */
--		u8 enabled_tc = main_vsi->tc_config.enabled_tc;
--
--		main_vsi->tc_config.enabled_tc = 0;
- 		main_vsi->seid = pf->main_vsi_seid;
--		i40e_vsi_config_tc(main_vsi, enabled_tc);
-+		i40e_vsi_reconfig_tc(main_vsi);
- 	}
- 	i40e_vlan_stripping_disable(main_vsi);
- 
--- 
-2.43.2
+If any x86 experts want to shout that no one cares then I'll happily drop
+the print.  We've carefully made it so that on arm64 we have no way to tell
+if this is hotplug or normal cpu bring up so we can't just print it on
+hotplug.
+
+Jonathan
+
+
+> 
+> Miguel
+> 
+> >> 
+> >> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+> >> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> >> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> >> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >> 
+> >> ---
+> >> v8: No change
+> >> ---
+> >> drivers/acpi/acpi_processor.c   |  1 -
+> >> drivers/acpi/processor_driver.c | 44 ++++++++++-----------------------
+> >> include/acpi/processor.h        |  2 +-
+> >> 3 files changed, 14 insertions(+), 33 deletions(-)
+> >> 
+> >> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> >> index 7a0dd35d62c9..7fc924aeeed0 100644
+> >> --- a/drivers/acpi/acpi_processor.c
+> >> +++ b/drivers/acpi/acpi_processor.c
+> >> @@ -216,7 +216,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> >> * gets online for the first time.
+> >> */
+> >> pr_info("CPU%d has been hot-added\n", pr->id);
+> >> - pr->flags.need_hotplug_init = 1;
+> >> 
+> >> out:
+> >> cpus_write_unlock();
+> >> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_driver.c
+> >> index 67db60eda370..55782eac3ff1 100644
+> >> --- a/drivers/acpi/processor_driver.c
+> >> +++ b/drivers/acpi/processor_driver.c
+> >> @@ -33,7 +33,6 @@ MODULE_AUTHOR("Paul Diefenbaugh");
+> >> MODULE_DESCRIPTION("ACPI Processor Driver");
+> >> MODULE_LICENSE("GPL");
+> >> 
+> >> -static int acpi_processor_start(struct device *dev);
+> >> static int acpi_processor_stop(struct device *dev);
+> >> 
+> >> static const struct acpi_device_id processor_device_ids[] = {
+> >> @@ -47,7 +46,6 @@ static struct device_driver acpi_processor_driver = {
+> >> .name = "processor",
+> >> .bus = &cpu_subsys,
+> >> .acpi_match_table = processor_device_ids,
+> >> - .probe = acpi_processor_start,
+> >> .remove = acpi_processor_stop,
+> >> };
+> >> 
+> >> @@ -115,12 +113,10 @@ static int acpi_soft_cpu_online(unsigned int cpu)
+> >> * CPU got physically hotplugged and onlined for the first time:
+> >> * Initialize missing things.
+> >> */
+> >> - if (pr->flags.need_hotplug_init) {
+> >> + if (!pr->flags.previously_online) {
+> >> int ret;
+> >> 
+> >> - pr_info("Will online and init hotplugged CPU: %d\n",
+> >> - pr->id);
+> >> - pr->flags.need_hotplug_init = 0;
+> >> + pr_info("Will online and init CPU: %d\n", pr->id);
+> >> ret = __acpi_processor_start(device);
+> >> WARN(ret, "Failed to start CPU: %d\n", pr->id);
+> >> } else {
+> >> @@ -167,9 +163,6 @@ static int __acpi_processor_start(struct acpi_device *device)
+> >> if (!pr)
+> >> return -ENODEV;
+> >> 
+> >> - if (pr->flags.need_hotplug_init)
+> >> - return 0;
+> >> -
+> >> result = acpi_cppc_processor_probe(pr);
+> >> if (result && !IS_ENABLED(CONFIG_ACPI_CPU_FREQ_PSS))
+> >> dev_dbg(&device->dev, "CPPC data invalid or not present\n");
+> >> @@ -185,32 +178,21 @@ static int __acpi_processor_start(struct acpi_device *device)
+> >> 
+> >> status = acpi_install_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
+> >>    acpi_processor_notify, device);
+> >> - if (ACPI_SUCCESS(status))
+> >> - return 0;
+> >> + if (!ACPI_SUCCESS(status)) {
+> >> + result = -ENODEV;
+> >> + goto err_thermal_exit;
+> >> + }
+> >> + pr->flags.previously_online = 1;
+> >> 
+> >> - result = -ENODEV;
+> >> - acpi_processor_thermal_exit(pr, device);
+> >> + return 0;
+> >> 
+> >> +err_thermal_exit:
+> >> + acpi_processor_thermal_exit(pr, device);
+> >> err_power_exit:
+> >> acpi_processor_power_exit(pr);
+> >> return result;
+> >> }
+> >> 
+> >> -static int acpi_processor_start(struct device *dev)
+> >> -{
+> >> - struct acpi_device *device = ACPI_COMPANION(dev);
+> >> - int ret;
+> >> -
+> >> - if (!device)
+> >> - return -ENODEV;
+> >> -
+> >> - /* Protect against concurrent CPU hotplug operations */
+> >> - cpu_hotplug_disable();
+> >> - ret = __acpi_processor_start(device);
+> >> - cpu_hotplug_enable();
+> >> - return ret;
+> >> -}
+> >> -
+> >> static int acpi_processor_stop(struct device *dev)
+> >> {
+> >> struct acpi_device *device = ACPI_COMPANION(dev);
+> >> @@ -279,9 +261,9 @@ static int __init acpi_processor_driver_init(void)
+> >> if (result < 0)
+> >> return result;
+> >> 
+> >> - result = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+> >> -   "acpi/cpu-drv:online",
+> >> -   acpi_soft_cpu_online, NULL);
+> >> + result = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> >> +   "acpi/cpu-drv:online",
+> >> +   acpi_soft_cpu_online, NULL);
+> >> if (result < 0)
+> >> goto err;
+> >> hp_online = result;
+> >> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
+> >> index 3f34ebb27525..e6f6074eadbf 100644
+> >> --- a/include/acpi/processor.h
+> >> +++ b/include/acpi/processor.h
+> >> @@ -217,7 +217,7 @@ struct acpi_processor_flags {
+> >> u8 has_lpi:1;
+> >> u8 power_setup_done:1;
+> >> u8 bm_rld_set:1;
+> >> - u8 need_hotplug_init:1;
+> >> + u8 previously_online:1;  
+> > 
+> > Reviewed-by: Miguel Luis <miguel.luis@oracle.com>
+> > 
+> > Miguel
+> >   
+> >> };
+> >> 
+> >> struct acpi_processor {
+> >> -- 
+> >> 2.39.2
+> >>   
+> >   
+> 
 
 
