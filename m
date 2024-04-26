@@ -1,312 +1,175 @@
-Return-Path: <linux-kernel+bounces-160524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422E18B3EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7742E8B3EBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:56:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE073284405
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E7512847BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7AB168B06;
-	Fri, 26 Apr 2024 17:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A2416C854;
+	Fri, 26 Apr 2024 17:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rT13YVuA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWtO+qhu"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC3D762EF;
-	Fri, 26 Apr 2024 17:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84A413F434;
+	Fri, 26 Apr 2024 17:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714154153; cv=none; b=YKjHXvHdb+Nu7pfoSYFfcYbuEZJU1cs0GXqBhnnTvZsljiHVBY8pLgrlK3dqO2Ij9RaaHJ0VbJrQ/55QTMCP2ykB9+IvoKAiCCSZfK/LNxohgvISYADAs2MssSJ6ruXrkqiXuK+bRvJnU5OTH1Njm/Afo9U90QaDDqu8yTziRsE=
+	t=1714154178; cv=none; b=Tro+Dw16MRlNEx/Xdt8r5yjn3aTZ1r6IgkTK1GjHj6G6QOuf3Gn0wYE5ywuWQniG9+ATOcOeVDOti8NwCT1dn/KWUHkC9TjPdZP93ZBu1HgyLzIfgD+8k3LX4bWcQdCX+6EglxW9ctpdVcbuyvf3RMRt6GgxB57hAUD8ndNCLYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714154153; c=relaxed/simple;
-	bh=Pf7pPVZks5xzzNAo26Zws/OeKXgG3gHu4RXtYM46N9A=;
+	s=arc-20240116; t=1714154178; c=relaxed/simple;
+	bh=FS/fPeCZqM6uYcVwbstslOcRGuG+0rgrXoBJg8OYgtY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=djlRHkf7jdjnU4D7eqBVDccazZtovrDCPWpLjhEcdRYgn5rID6GBXSTnp6fEt0WgQJ34cA132S9CxOUGQn3K3d66lbQ1tRyQuD6xdnAwn9kDGGrV7wcDz7kMkR3KOzvl1ab5dSiNGxSV2xB5YP768PvnOqfxAfpDKxPlCG41mfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rT13YVuA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CB3C113CD;
-	Fri, 26 Apr 2024 17:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714154153;
-	bh=Pf7pPVZks5xzzNAo26Zws/OeKXgG3gHu4RXtYM46N9A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rT13YVuAd+8ccqqsaeo+9P3Qc8BDiML7tpLr7wfW9bntsqaw2rdB5xsWWrKvikMqC
-	 eCX9N+G/07ubtvRVIuXLJSU6HUErL29t4evS2P95KiUoQCphl48fRKuDay4W1SbrzS
-	 dsGRN5cG9qgMtMU1ZeMXQWku+C1odaR5jBkY3MwgA4SidP/+SC3qcpHonJ5T8KlNz8
-	 g+Dk+bNhaGz1zzvMf6vVnx10Fp6nzxqw4ripQMV3W5kI96eCtY+L+L0XZ9UkTEkvBP
-	 le+YcR/GiZNvid2rWbhZ+UPc1EgXQgzcg3qiPzRX9UD0I323u0bmEWZSYxa3UVHP3D
-	 SLxi2Pq71NWHA==
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5acf5723325so642551eaf.0;
-        Fri, 26 Apr 2024 10:55:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXXU8P0ed1Wn7DZAerrjOi+txVW7I26NOOCqHDu5tPaUm8JbrS8vIZx2ugcu7eVIHzWO1YEjj4orDLrAu5fCShfJw46pgPQF1ak34RoQbhnkzTteeI0DyEB9aslAptbafRQ/DI+m+4=
-X-Gm-Message-State: AOJu0YzEgtZ52YSmL+lBKSSRIpLCLuJuz4WIcLA0LifQNf8lmRQqcNiC
-	X9NFjzISEBqSd9gbWZuDS43UwEZYeRUD5eDXw6UTmjJd53eSX616Q5OPSno9tbIru6SUwexe/Xu
-	RawnsHJwJUX75tK4PshZ46XqNcmA=
-X-Google-Smtp-Source: AGHT+IGfT0gR3dFwO92Z66hwwW4O5HId7nGuyO2CkkjEns+2cLwSmfAD+s1THu68DSpl6Kxo4Ygbj6QNzDEASHW7q1w=
-X-Received: by 2002:a05:6871:6ac:b0:239:9a:d3a4 with SMTP id
- l44-20020a05687106ac00b00239009ad3a4mr3680726oao.0.1714154152504; Fri, 26 Apr
- 2024 10:55:52 -0700 (PDT)
+	 To:Cc:Content-Type; b=TuajmcVCsxMTH4zo5UYtbN+HwdNuT9mHsITs6qqWpsSZOq68Z8tvDGPHjLRklHJr8/XjOT05iHlJp+sY/GTa24R30QLsNyNuGBXHkCpNHrdwgpTN8v6WhGywGNyIqnUx+jd7PbOWh/ypTDRSqyCTrU41iZABWOR9yNuLz5TQfZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWtO+qhu; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2b07f6b38daso576501a91.1;
+        Fri, 26 Apr 2024 10:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714154176; x=1714758976; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+4911zvgelc4SShJz6n+xWo0jMkp/ZOOV95C3XRNtoY=;
+        b=HWtO+qhu1wPEiUJUYq8bUHAn74jw1id0Kos+x1fjgRvpSrB45LdWJ7WtIvC9yoqZA5
+         aUC7oCE9hSOG7N+J19vOJBzRe2cJ2dBDH1lFlkVamAlkf1UqQsFgwbNR/skvYyWufoyW
+         izg1IGy3Fq0r5FLBEtZ26iHsHmFeXtVHH8uCjs2lQgotxuKHNFYhqyRYfH/ynvcnCXH+
+         EJL18P/xkwhJQYykz+/MCawgH2/hCrSS9eYUjW7oyc6HavVaJs1p6yiSAtW/ibUgDRbZ
+         e9DHKRWttjAUXPkvi9T8fYT3NXCqZIB6O7Q6a1MJun06pCO5Ks3ZD7qL2V7s/zT0qkGq
+         DgEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714154176; x=1714758976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+4911zvgelc4SShJz6n+xWo0jMkp/ZOOV95C3XRNtoY=;
+        b=m/+SP7EoDpHmoviQkK6AIFm/yoLo/f8dh0Y+U5EA2PaXVS6vnt2KxdvsH4HKfSYZ0N
+         ISkbVW0SWikQdvRsX8EQ7NyGnEOc6RboDh+a2JX9CpSXplyzUorMenmaN67cBqQLIdnI
+         vWqDGJAezz/QJt3UMHF3vJQwHppvZQg7m7Xdou+pEGLdmF2tI8QO5H7hKYTKPAaNalaQ
+         kkPyj40sUOv41ekMeDgKwDpajUUjFJEGCHUVkeOkmH7a7qYOzwxGNz0pZ9dogVUj5OO0
+         5Tmz5C/RlimCk+et8Pmrz3jMMBgMVUKiwxrkMo6NI4Z2QIk1anCnX6n+7V6YW9v22rNW
+         DQaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWErzeZpD7wl+HNgWsHcuWH8Yh9hPuY8CBGkVl1wjIAQBcqcFbpIE6K4il69MxJWi98pSJ14MtVLIyoDUE7RGB+/4oCbk2yeoJICbx9TdNumeNNYLP5f9hgwU7PGePZKzOmfIHJScB+OTmfTcJPZA4TiEnUgrElc+zN/JevRhVpj35lbT7VdJlv8OsLBzsykYOAO6PMMb1uR2ZBjfnloYKq
+X-Gm-Message-State: AOJu0YwWY4+zFKBTa8bgI8nRR15zhA89UaQcfbTRrtDCLxs0TfVjM+7p
+	Q7jQOZdud8dKWxgJbA71V+F5OAvITytvXV+910IU8DluvR4iF9Al/e2BLnvZ9RlQioFdnBpBjIH
+	TG/h/V+EPZeG7jJNnu/vZpnrEQ6E=
+X-Google-Smtp-Source: AGHT+IGO7AVMbaD5wNTcZh/Y39bj3rcX2MgtU982+y+WYhFBV1PzIPFWXwXyxF+cGlBEPZndB3YMRpAufQesQNlnGnM=
+X-Received: by 2002:a17:90a:134c:b0:2ad:9382:35be with SMTP id
+ y12-20020a17090a134c00b002ad938235bemr4847590pjf.16.1714154176018; Fri, 26
+ Apr 2024 10:56:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422162040.1502626-1-rui.zhang@intel.com> <20240422162040.1502626-2-rui.zhang@intel.com>
-In-Reply-To: <20240422162040.1502626-2-rui.zhang@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 26 Apr 2024 19:55:40 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iaf8Own=NuHZuYfVpKPBM-ZYHf-SYEgwsjREg-XfuNbA@mail.gmail.com>
-Message-ID: <CAJZ5v0iaf8Own=NuHZuYfVpKPBM-ZYHf-SYEgwsjREg-XfuNbA@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] powercap: intel_rapl: Introduce APIs for PMU support
-To: Zhang Rui <rui.zhang@intel.com>
-Cc: rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, srinivas.pandruvada@intel.com
+References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-2-jolsa@kernel.org>
+In-Reply-To: <20240421194206.1010934-2-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Apr 2024 10:56:03 -0700
+Message-ID: <CAEf4BzZvp_Ka4dpzLzLpba5ks9bubnVWB=61A9qg8HpWf-GKeg@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 1/7] uprobe: Wire up uretprobe system call
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
+	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 6:21=E2=80=AFPM Zhang Rui <rui.zhang@intel.com> wro=
-te:
+On Sun, Apr 21, 2024 at 12:42=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
+:
 >
-> Introduce two new APIs rapl_package_add_pmu()/rapl_package_remove_pmu().
+> Wiring up uretprobe system call, which comes in following changes.
+> We need to do the wiring before, because the uretprobe implementation
+> needs the syscall number.
 >
-> RAPL driver can invoke these APIs to expose its supported energy
-> counters via perf PMU. The new RAPL PMU is fully compatible with current
-> MSR RAPL PMU, including using the same PMU name and events
-> name/id/unit/scale, etc.
+> Note at the moment uretprobe syscall is supported only for native
+> 64-bit process.
 >
-> For example, use below command
->  perf stat -e power/energy-pkg/ -e power/energy-ram/ FOO
-> to get the energy consumption if power/energy-pkg/ and power/energy-ram/
-> events are available in the "perf list" output.
->
-> This does not introduce any conflict because TPMI RAPL is the only user
-> of these APIs currently, and it never co-exists with MSR RAPL.
->
-> Note that RAPL Packages can be probed/removed dynamically, and the
-> events supported by each TPMI RAPL device can be different. Thus the
-> RAPL PMU support is done on demand, which means
-> 1. PMU is registered only if it is needed by a RAPL Package. PMU events
->    for unsupported counters are not exposed.
-> 2. PMU is unregistered and registered when a new RAPL Package is probed
->    and supports new counters that are not supported by current PMU.
->    For example, on a dual-package system using TPMI RAPL, it is possible
->    that Package 1 behaves as TPMI domain root and supports Psys domain.
->    In this case, register PMU without Psys event when probing Package 0,
->    and re-register the PMU with Psys event when probing Package 1.
-> 3. PMU is unregistered when all registered RAPL Packages don't need PMU.
->
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  drivers/powercap/intel_rapl_common.c | 578 +++++++++++++++++++++++++++
->  include/linux/intel_rapl.h           |  32 ++
->  2 files changed, 610 insertions(+)
+>  arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+>  include/linux/syscalls.h               | 2 ++
+>  include/uapi/asm-generic/unistd.h      | 5 ++++-
+>  kernel/sys_ni.c                        | 2 ++
+>  4 files changed, 9 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/inte=
-l_rapl_common.c
-> index c4302caeb631..1fa45ed8ba0b 100644
-> --- a/drivers/powercap/intel_rapl_common.c
-> +++ b/drivers/powercap/intel_rapl_common.c
-> @@ -15,6 +15,8 @@
->  #include <linux/list.h>
->  #include <linux/log2.h>
->  #include <linux/module.h>
-> +#include <linux/nospec.h>
-> +#include <linux/perf_event.h>
->  #include <linux/platform_device.h>
->  #include <linux/powercap.h>
->  #include <linux/processor.h>
-> @@ -1507,6 +1509,582 @@ static int rapl_detect_domains(struct rapl_packag=
-e *rp)
->         return 0;
->  }
+
+LGTM
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/sysc=
+alls/syscall_64.tbl
+> index 7e8d46f4147f..af0a33ab06ee 100644
+> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+> @@ -383,6 +383,7 @@
+>  459    common  lsm_get_self_attr       sys_lsm_get_self_attr
+>  460    common  lsm_set_self_attr       sys_lsm_set_self_attr
+>  461    common  lsm_list_modules        sys_lsm_list_modules
+> +462    64      uretprobe               sys_uretprobe
 >
-> +#ifdef CONFIG_PERF_EVENTS
+>  #
+>  # Due to a historical design error, certain syscalls are numbered differ=
+ently
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index e619ac10cd23..5318e0e76799 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -972,6 +972,8 @@ asmlinkage long sys_lsm_list_modules(u64 *ids, u32 *s=
+ize, u32 flags);
+>  /* x86 */
+>  asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on=
+);
+>
+> +asmlinkage long sys_uretprobe(void);
 > +
-> +/*
-> + * Support for RAPL PMU
-> + *
-> + * Register a PMU if any of the registered RAPL Packages have the requir=
-ement
-> + * of exposing its energy counters via Perf PMU.
-> + *
-> + * PMU Name:
-> + *     power
-> + *
-> + * Events:
-> + *     Name            Event id        RAPL Domain
-> + *     energy_cores    0x01            RAPL_DOMAIN_PP0
-> + *     energy_pkg      0x02            RAPL_DOMAIN_PACKAGE
-> + *     energy_ram      0x03            RAPL_DOMAIN_DRAM
-> + *     energy_gpu      0x04            RAPL_DOMAIN_PP1
-> + *     energy_psys     0x05            RAPL_DOMAIN_PLATFORM
-> + *
-> + * Unit:
-> + *     Joules
-> + *
-> + * Scale:
-> + *     2.3283064365386962890625e-10
-> + *     The same RAPL domain in different RAPL Packages may have differen=
-t
-> + *     energy units. Use 2.3283064365386962890625e-10 (2^-32) Joules as
-> + *     the fixed unit for all energy counters, and covert each hardware
-> + *     counter increase to N times of PMU event counter increases.
-> + *
-> + * This is fully compatible with the current MSR RAPL PMU. This means th=
-at
-> + * userspace programs like turbostat can use the same code to handle RAP=
-L Perf
-> + * PMU, no matter what RAPL Interface driver (MSR/TPMI, etc) is running
-> + * underlying on the platform.
-> + *
-> + * Note that RAPL Packages can be probed/removed dynamically, and the ev=
-ents
-> + * supported by each TPMI RAPL device can be different. Thus the RAPL PM=
-U
-> + * support is done on demand, which means
-> + * 1. PMU is registered only if it is needed by a RAPL Package. PMU even=
-ts for
-> + *    unsupported counters are not exposed.
-> + * 2. PMU is unregistered and registered when a new RAPL Package is prob=
-ed and
-> + *    supports new counters that are not supported by current PMU.
-> + * 3. PMU is unregistered when all registered RAPL Packages don't need P=
-MU.
-> + */
+>  /* pciconfig: alpha, arm, arm64, ia64, sparc */
+>  asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
+>                                 unsigned long off, unsigned long len,
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic=
+/unistd.h
+> index 75f00965ab15..8a747cd1d735 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -842,8 +842,11 @@ __SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_a=
+ttr)
+>  #define __NR_lsm_list_modules 461
+>  __SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
+>
+> +#define __NR_uretprobe 462
+> +__SYSCALL(__NR_uretprobe, sys_uretprobe)
 > +
-> +struct rapl_pmu {
-> +       struct pmu pmu;                 /* Perf PMU structure */
-> +       u64 timer_ms;                   /* Maximum expiration time to avo=
-id counter overflow */
-> +       unsigned long domain_map;       /* Events supported by current re=
-gistered PMU */
-> +       bool registered;                /* Whether the PMU has been regis=
-tered or not */
-> +};
+>  #undef __NR_syscalls
+> -#define __NR_syscalls 462
+> +#define __NR_syscalls 463
+>
+>  /*
+>   * 32 bit systems traditionally used different
+> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+> index faad00cce269..be6195e0d078 100644
+> --- a/kernel/sys_ni.c
+> +++ b/kernel/sys_ni.c
+> @@ -391,3 +391,5 @@ COND_SYSCALL(setuid16);
+>
+>  /* restartable sequence */
+>  COND_SYSCALL(rseq);
 > +
-> +static struct rapl_pmu rapl_pmu;
-> +
-> +/* PMU helpers */
-> +
-> +static int get_pmu_cpu(struct rapl_package *rp)
-> +{
-> +       int cpu;
-> +
-> +       if (!rp->has_pmu)
-> +               return nr_cpu_ids;
-> +
-> +       /* Only TPMI RAPL is supported for now */
-> +       if (rp->priv->type !=3D RAPL_IF_TPMI)
-> +               return nr_cpu_ids;
-> +
-> +       /* TPMI RAPL uses any CPU in the package for PMU */
-> +       for_each_online_cpu(cpu)
-> +               if (topology_physical_package_id(cpu) =3D=3D rp->id)
-> +                       return cpu;
-> +
-> +       return nr_cpu_ids;
-> +}
-> +
-> +static bool is_rp_pmu_cpu(struct rapl_package *rp, int cpu)
-> +{
-> +       if (!rp->has_pmu)
-> +               return false;
-> +
-> +       /* Only TPMI RAPL is supported for now */
-> +       if (rp->priv->type !=3D RAPL_IF_TPMI)
-> +               return nr_cpu_ids;
-
-As per the comment, this should be false, shouldn't it?
-
-> +
-> +       /* TPMI RAPL uses any CPU in the package for PMU */
-> +       return topology_physical_package_id(cpu) =3D=3D rp->id;
-> +}
-> +
-> +static struct rapl_package_pmu_data *event_to_pmu_data(struct perf_event=
- *event)
-> +{
-> +       struct rapl_package *rp =3D event->pmu_private;
-> +
-> +       return &rp->pmu_data;
-> +}
-> +
-> +/* PMU event callbacks */
-> +
-> +static u64 event_read_counter(struct perf_event *event)
-> +{
-> +       struct rapl_package *rp =3D event->pmu_private;
-> +       u64 val;
-> +       int ret;
-> +
-> +       /* Return 0 for unsupported events */
-> +       if (event->hw.idx < 0)
-> +               return 0;
-> +
-> +       ret =3D rapl_read_data_raw(&rp->domains[event->hw.idx], ENERGY_CO=
-UNTER, false, &val);
-> +
-> +       /* Return 0 for failed read */
-> +       if (ret)
-> +               return 0;
-> +
-> +       return val;
-> +}
-> +
-> +static void __rapl_pmu_event_start(struct perf_event *event)
-> +{
-> +       struct rapl_package_pmu_data *data =3D event_to_pmu_data(event);
-> +
-> +       if (WARN_ON_ONCE(!(event->hw.state & PERF_HES_STOPPED)))
-> +               return;
-> +
-> +       event->hw.state =3D 0;
-> +
-> +       list_add_tail(&event->active_entry, &data->active_list);
-> +
-> +       local64_set(&event->hw.prev_count, event_read_counter(event));
-> +       if (++data->n_active =3D=3D 1)
-> +               hrtimer_start(&data->hrtimer, data->timer_interval,
-> +                             HRTIMER_MODE_REL_PINNED);
-> +}
-> +
-> +static void rapl_pmu_event_start(struct perf_event *event, int mode)
-> +{
-> +       struct rapl_package_pmu_data *data =3D event_to_pmu_data(event);
-> +       unsigned long flags;
-> +
-> +       raw_spin_lock_irqsave(&data->lock, flags);
-> +       __rapl_pmu_event_start(event);
-> +       raw_spin_unlock_irqrestore(&data->lock, flags);
-> +}
-> +
-> +static u64 rapl_event_update(struct perf_event *event)
-> +{
-> +       struct hw_perf_event *hwc =3D &event->hw;
-> +       struct rapl_package_pmu_data *data =3D event_to_pmu_data(event);
-> +       u64 prev_raw_count, new_raw_count;
-> +       s64 delta, sdelta;
-> +       s64 tmp;
-> +
-> +       do {
-> +               prev_raw_count =3D local64_read(&hwc->prev_count);
-> +               new_raw_count =3D event_read_counter(event);
-> +               tmp =3D local64_cmpxchg(&hwc->prev_count, prev_raw_count,=
- new_raw_count);
-> +       } while (tmp !=3D prev_raw_count);
-
-I think that it is only safe to call this function for draining an
-event going away, because otherwise the above may turn into an endless
-loop, and the function is called under a spinlock.
-
-I would add a comment (above the loop) explaining that this is about
-draining, so the counter is expected to stop incrementing shortly.
-
-The rest of the patch LGTM.
-
-Thanks!
+> +COND_SYSCALL(uretprobe);
+> --
+> 2.44.0
+>
 
