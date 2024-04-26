@@ -1,118 +1,200 @@
-Return-Path: <linux-kernel+bounces-160490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B858B3E2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:31:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D3E8B3E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAED3B21FD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FCF9285034
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9797C171082;
-	Fri, 26 Apr 2024 17:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E249A171678;
+	Fri, 26 Apr 2024 17:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bTEsCjWA"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0o+32H/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDAE16D329
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C2B15D5B4;
+	Fri, 26 Apr 2024 17:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714152309; cv=none; b=twEQQzdWvuiIfqBDsjigVEZjpOMRZHq2N9C7KVtGgrKeiokskJVL4a+cucQkWnx11Q2wbvSUT4UEcucdXY6MS/2a6sNCo8zQUQtmLaxkul4IdKpbZ2OG3dYfISwEmYiAYNKsKNowkbIXtLaSAQ54KslzUc+M8Gk22scQxP8jyRk=
+	t=1714152330; cv=none; b=dRqggqWy/YP7krNoejP6apB72Ck2KW5XeG/z7Nz2cox5kjrsCL9nlbaOarPGeB/LBQFiuuoYu54tYfeQwMwoDQb13J/xyvUmVN9dezzZ0H5IFOJqWtFkHuyk3ycs156KYToLbSyiEF/FYZsYXf6VczRodyLhpOZPK5/MZSFzltQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714152309; c=relaxed/simple;
-	bh=oPkhpvPbCU1Wv33arOnKXSw2XoCJOquEb8duMbQ4dZ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oz2V+Ou+DvZhL0rc0MXeI8uKxoCxn3+z8bwfM1iGrf1H2600GUbaf7gc3Q+2d/e90Y/MdMbyDNZJgE9y1+hmR230x0mb7sCseWE9xQSHJD1gsHBLXGCAXJkZLFjMifhbx69rZ4CdfrYr0gvyTNEY5oj9TimnHoSvlRBvUcxaiFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bTEsCjWA; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e4266673bbso21237305ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714152308; x=1714757108; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eIBGyKq1rfo9Eo8YNJRz2sicy53y3cFznRkoeYMePvs=;
-        b=bTEsCjWA1QAmutxnUZ8MaLRya78f06eH6Qb1Q6vVGAjj5GYFyAGHtmmOs3ZkegOCzt
-         gvAvbwIzEWadzyy+m3B4GYfkLOJy9fjQHQFck4z5R3Y1azt+2dJNbCiiizhNtwy05urZ
-         4zGWc0duOTjaU2PoDeMtb9c3cgWGu50SDdGUo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714152308; x=1714757108;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eIBGyKq1rfo9Eo8YNJRz2sicy53y3cFznRkoeYMePvs=;
-        b=AN7+2DrKj7zwrXq1e9lcF8rLaFJ4L7KVdyfXmbqgrgUz3jhokoXPJQ5MHSota1rFsI
-         RmhxZB06lRrtWMU7AqaCr7UcBxdpwhNogtYivRj7iuPj+Q6yqFJlqpOWsar0ovWBNtML
-         XRHvftfn3FzfNwKco3zpcCn/dQCyrC3PSfAt1dIpVEMJLkM0VhY72Pl11o2bzlh3qUyV
-         6tinUB3MgRdYU8LPpVyAAYWlU461rq0Oyk0alctsblWk+u++wX1F8zY+EtTrkPTrzCeM
-         yrm7Wnhh1TPqTu2WJRgPXKsZSVUvVMVuik5HsXrdxDl5YPqf9U5AOgWbUweQHjcIa9a5
-         w/7A==
-X-Forwarded-Encrypted: i=1; AJvYcCXNAS01ebY1JOwxYKVxBKi/uuRAuAl7S/CR5i31qIhuQ6uxz8bBthbr991fAnYd507abDiWz27ZYP8rm1lUSnvOQ3pqWPCUep0e10Q3
-X-Gm-Message-State: AOJu0Yy4X5p4imEVXLjhs7OVnXN+vQZj+dC+fn8l/X1Ai1bfMcdFNEOv
-	pDvEMLjF+5dunROec4u67PjlfwBramQIagrjDK3F72hQTySPota0N+JE6I0F4PQME+Jjb082g3w
-	=
-X-Google-Smtp-Source: AGHT+IG0E5Z74FVbDWrRnuadfoaxsxXmigsr6NiBRtQVcDuOGGVB5BQLKeI6EmE850Ti68uW3W5ELg==
-X-Received: by 2002:a17:902:ce84:b0:1e9:5fd6:2b01 with SMTP id f4-20020a170902ce8400b001e95fd62b01mr3798663plg.3.1714152307934;
-        Fri, 26 Apr 2024 10:25:07 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y1-20020a17090322c100b001e503c555afsm10044542plg.97.2024.04.26.10.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 10:25:07 -0700 (PDT)
-Date: Fri, 26 Apr 2024 10:25:06 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] Bluetooth: hci_conn: Use __counted_by() in
- struct hci_cp_le_big_create_sync and avoid -Wfamnae warning
-Message-ID: <202404261024.1F22CC68@keescook>
-References: <ZivaHUQyDDK9fXEk@neat>
+	s=arc-20240116; t=1714152330; c=relaxed/simple;
+	bh=Q4NMk1LWHobI2cFlkQGEnn9B9bKM62Lmg3LIQHygs7c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NGuKwhuCUSUc9aqCrROJmAIxikECxJs1/bgH2lBgsuEmOtxl5s0hdNzGFxINURKyqmv4oVFbzM4gddL88mtcCLbtRJ+f257Wu/X8PyOTdXcGs/wf/VOiTByCTFELUwpZARAZj2bcJ1et6J9q7CUJnh7LP5OIxC8MiMdVnFdTXlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0o+32H/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9FEC116B1;
+	Fri, 26 Apr 2024 17:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714152329;
+	bh=Q4NMk1LWHobI2cFlkQGEnn9B9bKM62Lmg3LIQHygs7c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=c0o+32H/vJV9bYx5Ho4HsNH5Ndk4QN/uEg+QKnO91w62UW8CFeVOdrRHFabLzOaij
+	 HsVSmxT8f5kcoKAYvFx2dd7mJBuKHclIG73pVihPd6kn1aG0Wcw0mufZv8YlM8sz87
+	 SA+BBvul43pbhxecfdTMRQZoMVUEuNq2rn676ouiqKFGvOxkqaVPUI+/DOX8SAohZS
+	 FvOhA8HCQ23/MzLDi+XMOaGxCG9gXaL6ye24v/61PP4ws0u59DGcGyI0w54iVfk2RG
+	 h/+qs/f1kljLIjHkUpXdn3dFOmLO78ZluCW3sKgA/pjqYi/kCzmChuF6VHG5jeG4b5
+	 sFnVsbH7todtg==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5ad288442bdso443736eaf.3;
+        Fri, 26 Apr 2024 10:25:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWLclQiRz7CVfhnwqeeMfHe0yofkwmSoLjN/PVP4YUtC7sqAVBIqIqmXzp5JyLbP/wzxM8nt2iLypRV4fxaE3O0b9j0Oaf5Rv9U7YWuBGDCoiaPZUzvYoFu0f5D0XZdBcY0AoTCGt2Rww==
+X-Gm-Message-State: AOJu0YzLv6p2LVwx+WGIsBtt27A87mgbb+Ny3qK/rjqmFMw5I9pm72/I
+	UR5f2ipTrknR4sBpx7e9KcAw4eLfmrbS1juvG2cE/qrUEnicgF1TDEG1CYV7YXI0CeZLGk36BW5
+	3zrcVEEa8td39mPsXSuuUDib/RLQ=
+X-Google-Smtp-Source: AGHT+IHhmE2vUk7aKRQUcQQBItXDTuoDLciySuj2IxP8i7tqtQP+eDPHpHX5Av449I7nF2i0zRt8MaaP1hJJa3e3s/8=
+X-Received: by 2002:a05:6870:781a:b0:229:e46d:763a with SMTP id
+ hb26-20020a056870781a00b00229e46d763amr3885833oab.0.1714152328963; Fri, 26
+ Apr 2024 10:25:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZivaHUQyDDK9fXEk@neat>
+References: <20240331051126.10024-1-rithvik.rama@gmail.com>
+In-Reply-To: <20240331051126.10024-1-rithvik.rama@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 26 Apr 2024 19:25:17 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0heV36XbRy8TynZuB_sLTKHQDPTiuG_KxX=yYoF4oU0Yg@mail.gmail.com>
+Message-ID: <CAJZ5v0heV36XbRy8TynZuB_sLTKHQDPTiuG_KxX=yYoF4oU0Yg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI/ADXL: Added function for ADXL DSM Function 3
+To: Rithvik Rama <rithvik.rama@gmail.com>
+Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>, 
+	Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 10:45:17AM -0600, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with
-> __counted_by can have their accesses bounds-checked at run-time
-> via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
-> (for strcpy/memcpy-family functions).
-> 
-> Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
-> getting ready to enable it globally.
-> 
-> So, use the `DEFINE_FLEX()` helper for an on-stack definition of
-> a flexible structure where the size of the flexible-array member
-> is known at compile-time, and refactor the rest of the code,
-> accordingly.
-> 
-> With these changes, fix the following warning:
-> net/bluetooth/hci_conn.c:2116:50: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> 
-> Link: https://github.com/KSPP/linux/issues/202
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Sun, Mar 31, 2024 at 7:11=E2=80=AFAM Rithvik Rama <rithvik.rama@gmail.co=
+m> wrote:
+>
+> Current driver supports only Function Index 1 & 2 as mentioned in the
+> ACPI ADXL DSM Interface. Added a function for ACPI Function Index 3.
 
-Looks right to me. Yay for DEFINE_FLEX(). :)
+What's happened that it has become useful now?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Who's going to use it and for what purpose?
 
--- 
-Kees Cook
+> Signed-off-by: Rithvik Rama <rithvik.rama@gmail.com>
+> ---
+>  drivers/acpi/acpi_adxl.c | 54 +++++++++++++++++++++++++++++++++++++++-
+>  include/linux/adxl.h     |  1 +
+>  2 files changed, 54 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/acpi_adxl.c b/drivers/acpi/acpi_adxl.c
+> index 13c8f7b50c46..5bf53662b737 100644
+> --- a/drivers/acpi/acpi_adxl.c
+> +++ b/drivers/acpi/acpi_adxl.c
+> @@ -14,6 +14,7 @@
+>  #define ADXL_REVISION                  0x1
+>  #define ADXL_IDX_GET_ADDR_PARAMS       0x1
+>  #define ADXL_IDX_FORWARD_TRANSLATE     0x2
+> +#define ADXL_IDX_REVERSE_TRANSLATE     0X3
+>  #define ACPI_ADXL_PATH                 "\\_SB.ADXL"
+>
+>  /*
+> @@ -135,6 +136,56 @@ int adxl_decode(u64 addr, u64 component_values[])
+>  }
+>  EXPORT_SYMBOL_GPL(adxl_decode);
+>
+> +/**
+> + * adxl_reverse_decode - Ask BIOS to decode a memory address to system a=
+ddress
+> + * @component_values: pointer to array of values for each component
+> + * Returns 0 on success, negative error code otherwise
+> + *
+
+Redundant line.
+
+> + */
+> +
+> +int adxl_reverse_decode(u64 component_values[])
+> +{
+> +       union acpi_object *argv4, *results, *r;
+> +       int i, cnt;
+> +
+> +       argv4 =3D kzalloc((adxl_count+1)*sizeof(*argv4), GFP_KERNEL);
+
+kcalloc()?
+
+> +       if (!argv4)
+> +               return -ENOMEM;
+> +
+> +       if (!adxl_component_names)
+> +               return -EOPNOTSUPP;
+
+This could be checked before allocating memory which is now leaked if
+it is NULL.
+
+This function generally leaks the argv4 memory AFAICS.
+
+> +
+> +       argv4[0].type =3D ACPI_TYPE_PACKAGE;
+> +       argv4[0].package.count =3D adxl_count;
+> +       argv4[0].package.elements =3D &argv4[1];
+> +
+> +       /*
+> +        * Loop through supported memory component values
+> +        */
+> +       for (i =3D 1; i <=3D adxl_count; i++) {
+> +               argv4[i].integer.type =3D ACPI_TYPE_INTEGER;
+> +               argv4[i].integer.value =3D component_values[i-1];
+> +       }
+> +
+> +       results =3D adxl_dsm(ADXL_IDX_REVERSE_TRANSLATE, argv4);
+> +       if (!results)
+> +               return -EINVAL;
+> +
+> +       r =3D results->package.elements + 1;
+> +       cnt =3D r->package.count;
+> +       if (cnt !=3D adxl_count) {
+> +               ACPI_FREE(results);
+> +               return -EINVAL;
+> +       }
+> +       r =3D r->package.elements;
+> +       for (i =3D 0; i < cnt; i++)
+> +               component_values[i] =3D r[i].integer.value;
+> +
+> +       ACPI_FREE(results);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(adxl_reverse_decode);
+
+No users of this are being added.
+
+For this to be applicable, you need to also submit a patch adding a
+caller of adxl_reverse_decode().
+
+> +
+>  static int __init adxl_init(void)
+>  {
+>         char *path =3D ACPI_ADXL_PATH;
+> @@ -155,7 +206,8 @@ static int __init adxl_init(void)
+>
+>         if (!acpi_check_dsm(handle, &adxl_guid, ADXL_REVISION,
+>                             ADXL_IDX_GET_ADDR_PARAMS |
+> -                           ADXL_IDX_FORWARD_TRANSLATE)) {
+> +                           ADXL_IDX_FORWARD_TRANSLATE |
+> +                           ADXL_IDX_REVERSE_TRANSLATE)) {
+>                 pr_info("DSM method does not support forward translate\n"=
+);
+>                 return -ENODEV;
+>         }
+> diff --git a/include/linux/adxl.h b/include/linux/adxl.h
+> index 2a629acb4c3f..f3fea64a270c 100644
+> --- a/include/linux/adxl.h
+> +++ b/include/linux/adxl.h
+> @@ -9,5 +9,6 @@
+>
+>  const char * const *adxl_get_component_names(void);
+>  int adxl_decode(u64 addr, u64 component_values[]);
+> +int adxl_reverse_decode(u64 component_values[]);
+>
+>  #endif /* _LINUX_ADXL_H */
+> --
 
