@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-159450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603FB8B2EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:40:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217448B2EC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:40:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A98E2827BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:40:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2D4C1F230CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7532749C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A4F79D8;
 	Fri, 26 Apr 2024 02:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XVcse5PH"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PL1uaM3y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15839EDC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137E0EBE;
 	Fri, 26 Apr 2024 02:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714099229; cv=none; b=NXo81JCSPE/vabwuiJ46J9v7Vb9LAiA3iHF/69pI4m9m6C6g+gLGANZfaAigGLD0GhNdpzMY3h1Hh32N+ge4V96mM16LgxpUdu+ixBV5g42dndIG5Du4jnv4hmlcbvgkRBi9xYjMRBmz8TMnqnaYk+n5orm4fhORDxw/lv6k9qo=
+	t=1714099229; cv=none; b=d0gB0Na8eL0NSXm38AOmAiYEmuQLTEvB1GXsPpNApb+p+f8ie6686Jt5yG4pZh+6IiMu0XtvaavW0CJ1FdDoiFcEtmD8Uogp2fKzhFAwySku8udSsrjQkZyosuxhysDNBNIDe0Cq9+jfwpf0A411E21FjBTps6n0ryIv4utlr5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714099229; c=relaxed/simple;
-	bh=MvPasSymwqkOFwVFDn3svyEW2JPPhT92aF/PDKHQVQg=;
+	bh=IigEBOZrzWP8+N4pDGPBdcSxPqUXH9S2u5G+mGyIzAE=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JIrJK68J7metnffVBx+HwGVtPS2cnl3jEncC9DWnZDgtQK8yR9pPzJ7sSmHB5KnsbHq800U2wLbMEdMFUl80jf8koz2a4tWbszj1TGNasIz274+Sd2EeV5MYgkb0B7uQpjX5I78dsrJS6POzByIrUaKI4FjvSHXd+PwdQ3fsZOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XVcse5PH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 95C11C2BBFC;
+	 In-Reply-To:To:Cc; b=TNA+qkbmorg89vBONqaaBf3TbKTksXQqxy17RUuavNJ+OojUTzu4H04CA2FATPIwbR8XoaPAsfpcFiVjX4MXlYcQNw8IGYWk7WMkkFWYf7E4GW+uD6dgDiyUfPSLjsugmwZ7XkWOGF8+nGN6CtJt4ljYr3TKdz/5nUCrhzO4Ljc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PL1uaM3y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A0EFEC3277B;
 	Fri, 26 Apr 2024 02:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714099228;
-	bh=MvPasSymwqkOFwVFDn3svyEW2JPPhT92aF/PDKHQVQg=;
+	bh=IigEBOZrzWP8+N4pDGPBdcSxPqUXH9S2u5G+mGyIzAE=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=XVcse5PHjXRImCPmNxDky7cPAaHsHvWJZ18l2gN+pXEExZzOZfd1oEanlDEZTbCTX
-	 S/3vtAl0lbP57RBNF5Q9qNVfrF8vFKy6G83t888dPJX2vwrqdJ0W4p1+ZfDzmM/L2j
-	 wdtJDg8ZAbZBJKj61/0x5655FZwG7n/PaCGWN836u5n4cZ/1nQwpsejNupSZ72j0Nh
-	 Nbw7zJJ6aHoRTIY81l4ew4TZtaBpz+R/l7rb/db0QXpXPBxaJJeq83jOmp+YwHHFgi
-	 sMikKvCpEtLa6cgvl0kBKqWbGKFeEvosdtzgOoeqpx3ofa/trr3+Q1QaD5AbnOi97J
-	 aWx7l8igfP4rg==
+	b=PL1uaM3y5B9GgPi7XyGvyLStxYDWd4qVgTETgIhdIrbroN6McdyAJU/DJGKWdqb9Q
+	 ImF+XUeXcFgOJrTEJ/4hUIwllYnv8Uapv1i6UqEmCm0I7C5p3ktACfV52NB7MSBesN
+	 nvco0mESwF/K3FPOpskDUAbmWMhRzrnyA1HixJwLcqkU9c844t1oiboLI/aMNuHrhb
+	 f3FHiWi8B1gH9avoi4Ys8R49kGj7/89h43VEdq6Ch/QkTqEb9LQzAP/T0a8zUPGcWq
+	 CI4YyZnSHcuu7YsllxxErn+y5LM9phSEkFvWKxKmriUqSV/wKqQw0yiqnB/NuVbChE
+	 //3uN6c33xAHg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 82337C595CE;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8C831C43140;
 	Fri, 26 Apr 2024 02:40:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,16 +51,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/4] net: sparx5: flower: validate control flags
+Subject: Re: [PATCH net-next v2 0/3] net: lan966x: flower: validate control flags
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171409922852.17911.17168640790224969782.git-patchwork-notify@kernel.org>
+ <171409922857.17911.8111493422367965592.git-patchwork-notify@kernel.org>
 Date: Fri, 26 Apr 2024 02:40:28 +0000
-References: <20240424121632.459022-1-ast@fiberby.net>
-In-Reply-To: <20240424121632.459022-1-ast@fiberby.net>
+References: <20240424125347.461995-1-ast@fiberby.net>
+In-Reply-To: <20240424125347.461995-1-ast@fiberby.net>
 To: =?utf-8?b?QXNiasO4cm4gU2xvdGggVMO4bm5lc2VuIDxhc3RAZmliZXJieS5uZXQ+?=@codeaurora.org
-Cc: netdev@vger.kernel.org, Steen.Hegelund@microchip.com,
- lars.povlsen@microchip.com, daniel.machon@microchip.com,
+Cc: netdev@vger.kernel.org, horatiu.vultur@microchip.com,
  UNGLinuxDriver@microchip.com, davem@davemloft.net, edumazet@google.com,
  kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
  jiri@resnulli.us, horms@kernel.org
@@ -70,25 +69,24 @@ Hello:
 This series was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 24 Apr 2024 12:16:21 +0000 you wrote:
+On Wed, 24 Apr 2024 12:53:37 +0000 you wrote:
 > This series adds flower control flags validation to the
-> sparx5 driver, and changes it from assuming that it handles
+> lan966x driver, and changes it from assuming that it handles
 > all control flags, to instead reject rules if they have
 > masked any unknown/unsupported control flags.
 > 
 > ---
+> Changelog:
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v2,1/4] net: sparx5: flower: only do lookup if fragment flags are set
-    https://git.kernel.org/netdev/net-next/c/bcf303c62c98
-  - [net-next,v2,2/4] net: sparx5: flower: add extack to sparx5_tc_flower_handler_control_usage()
-    https://git.kernel.org/netdev/net-next/c/8cd1b6c0bf31
-  - [net-next,v2,3/4] net: sparx5: flower: remove goto in sparx5_tc_flower_handler_control_usage()
-    https://git.kernel.org/netdev/net-next/c/b92eb1ac13f0
-  - [net-next,v2,4/4] net: sparx5: flower: check for unsupported control flags
-    https://git.kernel.org/netdev/net-next/c/8ef631e9c995
+  - [net-next,v2,1/3] net: lan966x: flower: add extack to lan966x_tc_flower_handler_control_usage()
+    https://git.kernel.org/netdev/net-next/c/505ccf890c21
+  - [net-next,v2,2/3] net: lan966x: flower: rename goto in lan966x_tc_flower_handler_control_usage()
+    https://git.kernel.org/netdev/net-next/c/12b8e129c409
+  - [net-next,v2,3/3] net: lan966x: flower: check for unsupported control flags
+    https://git.kernel.org/netdev/net-next/c/8c65e27b42fc
 
 You are awesome, thank you!
 -- 
