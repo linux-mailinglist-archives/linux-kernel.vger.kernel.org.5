@@ -1,235 +1,207 @@
-Return-Path: <linux-kernel+bounces-159682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B558B321F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:15:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 290108B3223
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:17:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EE6BB227FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:15:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B19281C05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5062B13C9BD;
-	Fri, 26 Apr 2024 08:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADCD13C9B3;
+	Fri, 26 Apr 2024 08:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a8BJ/5Su"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZCTRv1x4"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547BE1E885;
-	Fri, 26 Apr 2024 08:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118AB14293;
+	Fri, 26 Apr 2024 08:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714119339; cv=none; b=EOsW5Wcyd07day8nWD/cG5glZU15QOu+gXnqZtu7LSz9c65FKSUyFeqLiu+wcA9xMbQjiUU1Ns9NVkZzoyL8KMuUgwMqc+687AtAexVUhdNW7yKJhpNh6bnJRUx7lMDwA3p5i6BLJ+kXzB1LHXOECM5RV+4UD+B7jC7ymJQcRvE=
+	t=1714119437; cv=none; b=LWtiK1rW+bE1GF4mqOQ6fGzajCxNOcDE7XMDbx3s8ECEafwPAuVxI6SyhQM8d1IDPuDCbmaFVw1U3VP6qtYIkMACVjYAMPjLVhAs09YS4Ji+OxeTM2Zvk4CgW5QMFvl7CEfRuFIKkLcaOSXlfha1IaJgktyeVxrPecsX6UgL3cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714119339; c=relaxed/simple;
-	bh=1yC+gB+RH39a11ZICGlu8ThPKI65Pnf3tzMu4N3kPwg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f6PyBXqNw32aZlJDj2UmiaUo05RYg6YidFN3zOWjFSsMM13zSRNwIqWRX632+CbIWCkV11OamtJ56eAYW86rfAkxG3z+lnOLgw1R267yzSUljHse1PCd4FTrTx/uuV6TjuFZGVkmotvRVcfhlcBYwwfH1TvsaukaI8wRAYjupFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a8BJ/5Su; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD633C4AF08;
-	Fri, 26 Apr 2024 08:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714119338;
-	bh=1yC+gB+RH39a11ZICGlu8ThPKI65Pnf3tzMu4N3kPwg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=a8BJ/5SucEzuTdrZqKCG21lvJi6LtydPBKHQyO2DEukgWJy5HlA/UJSlxqazfk/43
-	 U6am5yWh6X1UqC5Q6dcn4wxluaIrZyify2W50hZ2XOf7vEwsvqufhDZcSR2eC9KLXe
-	 959zTu6qscNiUWLet+jJaLJ9b9OFKhs5F9pmGt5OVz8OVPr3j+gfcEQF9uYlJLQeSs
-	 CG7a2XjGU5p8751sD7i0M5uxo993BU3sqOcaVePnrqvXXn7EPKXL+uRUmvUu9kJoE3
-	 M5MpXo+WR/+VyaBwYNvw3/+o7+qQSvjx9hrAAvq4l0/U8Yr+CMjvQtd5/NkC7SpPj8
-	 IbauGQRZVS/PQ==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5725cfa2434so81436a12.2;
-        Fri, 26 Apr 2024 01:15:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV2peKlD0BC4adYUoDwIM3tyMv8l9DagYNfbJA/6yMsbheCAdhxV05rnNG3D47qBGmZDJw//AFqTPe2vsdkf2ogNLM78Hab8VLjV+lkRKOvzWm5BG6QUJRJHTYzqVHiiypCw7rikajLnOxg0aX8rONeTmjC/f0BfOKBc9AVFJwSqKrX4UU7nvcLwF//L7iwJS7mccGTt/WMhcYVDS1pVfLTStg1fg==
-X-Gm-Message-State: AOJu0YwGYQkBGiTU6qJCtNGn1Smb2Xjjwc21Se9MFmSzi0aHfKOPHwDt
-	WiqYt/i02t7CsxWy4nU5NpbK8TYHgN5xhxTYf1k0axBoAjygVVKbvbu8rY3E7VpJGFEnfYC95LM
-	Vpf5BhDCaSMlT0WRPoKGqmG1vYck=
-X-Google-Smtp-Source: AGHT+IFdWL+1rtvTdjZLYM58Wr/hUAPW6s+thTjch0dqfysVmrhP+T23KFGnV1/pBKaELJeFZArRbXJifhaQCJxXF9c=
-X-Received: by 2002:a50:99c7:0:b0:572:3f41:25aa with SMTP id
- n7-20020a5099c7000000b005723f4125aamr1644329edb.11.1714119337224; Fri, 26 Apr
- 2024 01:15:37 -0700 (PDT)
+	s=arc-20240116; t=1714119437; c=relaxed/simple;
+	bh=KYXaZjdI+5IkXp0DualbSWgVlbRSytaWokMYpK++Zbc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ElFSAY1x5tnGYLiqT3vGHwpJL+GSs1AlkQbDe7brv/7A150SUjy+xirEcEtINo22rakPZRzOs3jZnQpYhwqXgW+lDYYTFdnLi9ui90m53LGlfkmcdCo6fXScjEnu1XiIfemas+y/cEFWhfR31p58R+cTtqmW37DkOnGVyFvpM/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZCTRv1x4; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1714119431; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=aS7zNkUjp+X466NnRKZw+mwarWr8jMNg/0m58+2vk84=;
+	b=ZCTRv1x46T6wUAiLrn0pjNOLPIZOzryCpGstk4b419L8hjZFwx4ZtXzroSj0I80Wy7Gy+zWpBOArUW96jAl0VDtq1OcmNQdFu4s/wIhoHrYZPzKHS3FskXefbuoDpPtYG/CZa3MF8DCzxAmG9c/D7/doAoHwkcaZfmGpC33jRto=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W5ISEMi_1714119429;
+Received: from 30.221.129.216(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W5ISEMi_1714119429)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Apr 2024 16:17:10 +0800
+Message-ID: <3f2a7456-c310-4fdc-a507-896fcaaad454@linux.alibaba.com>
+Date: Fri, 26 Apr 2024 16:17:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420-dev-charlie-support_thead_vector_6_9-v3-0-67cff4271d1d@rivosinc.com>
- <20240420-dev-charlie-support_thead_vector_6_9-v3-1-67cff4271d1d@rivosinc.com>
-In-Reply-To: <20240420-dev-charlie-support_thead_vector_6_9-v3-1-67cff4271d1d@rivosinc.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Fri, 26 Apr 2024 16:15:25 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTeGBuL4S3cKV87w-TJTa+ZmOaPiT=+uor-PzL9jYTWAg@mail.gmail.com>
-Message-ID: <CAJF2gTTeGBuL4S3cKV87w-TJTa+ZmOaPiT=+uor-PzL9jYTWAg@mail.gmail.com>
-Subject: Re: [PATCH v3 01/17] riscv: cpufeature: Fix thead vector hwcap removal
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Evan Green <evan@rivosinc.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Apr 21, 2024 at 9:04=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> The riscv_cpuinfo struct that contains mvendorid and marchid is not
-> populated until all harts are booted which happens after the DT parsing.
-> Use the vendorid/archid values from the DT if available or assume all
-> harts have the same values as the boot hart as a fallback.
->
-> Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT property on =
-older T-Head CPUs")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  arch/riscv/include/asm/sbi.h   |  2 ++
->  arch/riscv/kernel/cpu.c        | 40 ++++++++++++++++++++++++++++++++++++=
-----
->  arch/riscv/kernel/cpufeature.c | 12 ++++++++++--
->  3 files changed, 48 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 6e68f8dff76b..0fab508a65b3 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -370,6 +370,8 @@ static inline int sbi_remote_fence_i(const struct cpu=
-mask *cpu_mask) { return -1
->  static inline void sbi_init(void) {}
->  #endif /* CONFIG_RISCV_SBI */
->
-> +unsigned long riscv_get_mvendorid(void);
-> +unsigned long riscv_get_marchid(void);
->  unsigned long riscv_cached_mvendorid(unsigned int cpu_id);
->  unsigned long riscv_cached_marchid(unsigned int cpu_id);
->  unsigned long riscv_cached_mimpid(unsigned int cpu_id);
-> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-> index d11d6320fb0d..c1f3655238fd 100644
-> --- a/arch/riscv/kernel/cpu.c
-> +++ b/arch/riscv/kernel/cpu.c
-> @@ -139,6 +139,34 @@ int riscv_of_parent_hartid(struct device_node *node,=
- unsigned long *hartid)
->         return -1;
->  }
->
-> +unsigned long __init riscv_get_marchid(void)
-> +{
-> +       struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
-> +
-> +#if IS_ENABLED(CONFIG_RISCV_SBI)
-> +       ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
-> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> +       ci->marchid =3D csr_read(CSR_MARCHID);
-> +#else
-> +       ci->marchid =3D 0;
-> +#endif
-> +       return ci->marchid;
-> +}
-> +
-> +unsigned long __init riscv_get_mvendorid(void)
-> +{
-> +       struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
-> +
-> +#if IS_ENABLED(CONFIG_RISCV_SBI)
-> +       ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
-> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> +       ci->mvendorid =3D csr_read(CSR_MVENDORID);
-> +#else
-> +       ci->mvendorid =3D 0;
-> +#endif
-> +       return ci->mvendorid;
-> +}
-> +
->  DEFINE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
->
->  unsigned long riscv_cached_mvendorid(unsigned int cpu_id)
-> @@ -170,12 +198,16 @@ static int riscv_cpuinfo_starting(unsigned int cpu)
->         struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
->
->  #if IS_ENABLED(CONFIG_RISCV_SBI)
-> -       ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
-> -       ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
-> +       if (!ci->mvendorid)
-> +               ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendor=
-id();
-> +       if (!ci->marchid)
-> +               ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid()=
-;
->         ci->mimpid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mimpid();
->  #elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> -       ci->mvendorid =3D csr_read(CSR_MVENDORID);
-> -       ci->marchid =3D csr_read(CSR_MARCHID);
-> +       if (!ci->mvendorid)
-> +               ci->mvendorid =3D csr_read(CSR_MVENDORID);
-> +       if (!ci->marchid)
-> +               ci->marchid =3D csr_read(CSR_MARCHID);
->         ci->mimpid =3D csr_read(CSR_MIMPID);
->  #else
->         ci->mvendorid =3D 0;
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 3ed2359eae35..c6e27b45e192 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -490,6 +490,8 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->         struct acpi_table_header *rhct;
->         acpi_status status;
->         unsigned int cpu;
-> +       u64 boot_vendorid;
-> +       u64 boot_archid;
->
->         if (!acpi_disabled) {
->                 status =3D acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
-> @@ -497,6 +499,13 @@ static void __init riscv_fill_hwcap_from_isa_string(=
-unsigned long *isa2hwcap)
->                         return;
->         }
->
-> +       /*
-> +        * Naively assume that all harts have the same mvendorid/marchid =
-as the
-> +        * boot hart.
-> +        */
-> +       boot_vendorid =3D riscv_get_mvendorid();
-> +       boot_archid =3D riscv_get_marchid();
-> +
->         for_each_possible_cpu(cpu) {
->                 struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
->                 unsigned long this_hwcap =3D 0;
-> @@ -544,8 +553,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->                  * CPU cores with the ratified spec will contain non-zero
->                  * marchid.
->                  */
-> -               if (acpi_disabled && riscv_cached_mvendorid(cpu) =3D=3D T=
-HEAD_VENDOR_ID &&
-> -                   riscv_cached_marchid(cpu) =3D=3D 0x0) {
-> +               if (acpi_disabled && boot_vendorid =3D=3D THEAD_VENDOR_ID=
- && boot_archid =3D=3D 0x0) {
-LGTM!
-Reviewed-by: Guo Ren <guoren@kernel.org>
-
->                         this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
->                         clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
->                 }
->
-> --
-> 2.44.0
->
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 00/11] net/smc: SMC intra-OS shortcut with
+ loopback-ism
+To: Jan Karcher <jaka@linux.ibm.com>, wintera@linux.ibm.com,
+ twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240414040304.54255-1-guwen@linux.alibaba.com>
+ <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <5f50bc62-f7d5-4094-94de-a77a103fc111@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---=20
-Best Regards
- Guo Ren
+
+On 2024/4/26 15:02, Jan Karcher wrote:
+> 
+> 
+> On 14/04/2024 06:02, Wen Gu wrote:
+>> This patch set acts as the second part of the new version of [1] (The first
+>> part can be referred from [2]), the updated things of this version are listed
+>> at the end.
+>>
+>> - Background
+>>
+>> SMC-D is now used in IBM z with ISM function to optimize network interconnect
+>> for intra-CPC communications. Inspired by this, we try to make SMC-D available
+>> on the non-s390 architecture through a software-implemented Emulated-ISM device,
+>> that is the loopback-ism device here, to accelerate inter-process or
+>> inter-containers communication within the same OS instance.
+>>
+>> - Design
+>>
+>> This patch set includes 3 parts:
+>>
+>>   - Patch #1: some prepare work for loopback-ism.
+>>   - Patch #2-#7: implement loopback-ism device and adapt SMC-D for it.
+>>     loopback-ism now serves only SMC and no userspace interfaces exposed.
+>>   - Patch #8-#11: memory copy optimization for intra-OS scenario.
+>>
+>> The loopback-ism device is designed as an ISMv2 device and not be limited to
+>> a specific net namespace, ends of both inter-process connection (1/1' in diagram
+>> below) or inter-container connection (2/2' in diagram below) can find the same
+>> available loopback-ism and choose it during the CLC handshake.
+>>
+>>   Container 1 (ns1)                              Container 2 (ns2)
+>>   +-----------------------------------------+    +-------------------------+
+>>   | +-------+      +-------+      +-------+ |    |        +-------+        |
+>>   | | App A |      | App B |      | App C | |    |        | App D |<-+     |
+>>   | +-------+      +---^---+      +-------+ |    |        +-------+  |(2') |
+>>   |     |127.0.0.1 (1')|             |192.168.0.11       192.168.0.12|     |
+>>   |  (1)|   +--------+ | +--------+  |(2)   |    | +--------+   +--------+ |
+>>   |     `-->|   lo   |-` |  eth0  |<-`      |    | |   lo   |   |  eth0  | |
+>>   +---------+--|---^-+---+-----|--+---------+    +-+--------+---+-^------+-+
+>>                |   |           |                                  |
+>>   Kernel       |   |           |                                  |
+>>   +----+-------v---+-----------v----------------------------------+---+----+
+>>   |    |                            TCP                               |    |
+>>   |    |                                                              |    |
+>>   |    +--------------------------------------------------------------+    |
+>>   |                                                                        |
+>>   |                           +--------------+                             |
+>>   |                           | smc loopback |                             |
+>>   +---------------------------+--------------+-----------------------------+
+>>
+>> loopback-ism device creates DMBs (shared memory) for each connection peer.
+>> Since data transfer occurs within the same kernel, the sndbuf of each peer
+>> is only a descriptor and point to the same memory region as peer DMB, so that
+>> the data copy from sndbuf to peer DMB can be avoided in loopback-ism case.
+>>
+>>   Container 1 (ns1)                              Container 2 (ns2)
+>>   +-----------------------------------------+    +-------------------------+
+>>   | +-------+                               |    |        +-------+        |
+>>   | | App C |-----+                         |    |        | App D |        |
+>>   | +-------+     |                         |    |        +-^-----+        |
+>>   |               |                         |    |          |              |
+>>   |           (2) |                         |    |     (2') |              |
+>>   |               |                         |    |          |              |
+>>   +---------------|-------------------------+    +----------|--------------+
+>>                   |                                         |
+>>   Kernel          |                                         |
+>>   +---------------|-----------------------------------------|--------------+
+>>   | +--------+ +--v-----+                           +--------+ +--------+  |
+>>   | |dmb_desc| |snd_desc|                           |dmb_desc| |snd_desc|  |
+>>   | +-----|--+ +--|-----+                           +-----|--+ +--------+  |
+>>   | +-----|--+    |                                 +-----|--+             |
+>>   | | DMB C  |    +---------------------------------| DMB D  |             |
+>>   | +--------+                                      +--------+             |
+>>   |                                                                        |
+>>   |                           +--------------+                             |
+>>   |                           | smc loopback |                             |
+>>   +---------------------------+--------------+-----------------------------+
+>>
+>> - Benchmark Test
+>>
+>>   * Test environments:
+>>        - VM with Intel Xeon Platinum 8 core 2.50GHz, 16 GiB mem.
+>>        - SMC sndbuf/DMB size 1MB.
+>>
+>>   * Test object:
+>>        - TCP: run on TCP loopback.
+>>        - SMC lo: run on SMC loopback-ism.
+>>
+>> 1. ipc-benchmark (see [3])
+>>
+>>   - ./<foo> -c 1000000 -s 100
+>>
+>>                              TCP                  SMC-lo
+>> Message
+>> rate (msg/s)              79693                  148236(+86.01%)
+>>
+>> 2. sockperf
+>>
+>>   - serv: <smc_run> sockperf sr --tcp
+>>   - clnt: <smc_run> sockperf { tp | pp } --tcp --msg-size={ 64000 for tp | 14 for pp } -i 127.0.0.1 -t 30
+>>
+>>                              TCP                  SMC-lo
+>> Bandwidth(MBps)         4815.18                 8061.77(+67.42%)
+>> Latency(us)               6.176                   3.449(-44.15%)
+>>
+>> 3. nginx/wrk
+>>
+>>   - serv: <smc_run> nginx
+>>   - clnt: <smc_run> wrk -t 8 -c 1000 -d 30 http://127.0.0.1:80
+>>
+>>                             TCP                   SMC-lo
+>> Requests/s           196555.02                263270.95(+33.94%)
+>>
+>> 4. redis-benchmark
+>>
+>>   - serv: <smc_run> redis-server
+>>   - clnt: <smc_run> redis-benchmark -h 127.0.0.1 -q -t set,get -n 400000 -c 200 -d 1024
+>>
+>>                             TCP                   SMC-lo
+>> GET(Requests/s)       88711.47                120048.02(+35.32%)
+>> SET(Requests/s)       89465.44                123152.71(+37.65%)
+>>
+>>
+> 
+> Hi Wen Gu,
+> 
+> I did run the tests again with the v6 and reviewed the patchset. If you decide to address Simons nit feel free to add my:
+> 
+> Reviewed-and-tested-by: Jan Karcher <jaka@linux.ibm.com>
+> 
+> Thanks for your effort and contribution.
+> - J
+
+Thank you all for the review and test! I will address Simon's nit and
+collect the Rb tags in the next version.
+
+Thanks!
 
