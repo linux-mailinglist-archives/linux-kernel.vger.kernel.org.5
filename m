@@ -1,284 +1,355 @@
-Return-Path: <linux-kernel+bounces-160122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459638B396F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:03:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89A8F8B3973
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC70281D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:03:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66BEF1C21C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CD01487F5;
-	Fri, 26 Apr 2024 14:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DCC1487F3;
+	Fri, 26 Apr 2024 14:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0YHt8J0+"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="y6FIlB1n"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC27140389;
-	Fri, 26 Apr 2024 14:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C61EC824B3;
+	Fri, 26 Apr 2024 14:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714140176; cv=none; b=R2TqwhQeyoG+hjKmhmc6/kxijheeEfaWZVRyWaznELYAxVacykzu86qtobHSQ4RwJyri38J6T2CKZ0oieH4XMTasczRMx9jUFm2FAciEhQ6nzakmbnYo78ydjpQwpumoU65egD37xQU8gwKCA9vGvgvac0DC4VAT6TpCO46pZzo=
+	t=1714140287; cv=none; b=ThoMLumihlp/AZ0uhlMdsMwF/X4gzejH16BCFrAUtXhUsjQ3Ed5QRociI+2lrmR1eybGdkuLrUkw1zUQUGNQfNXQrtqhznXsqOBoi4ja0FO8xU2JHDJ8F0CIKfLTPtly5e907rX4k4V2f+bXbU63EIpHbpscpzmlpMQ2aYwln7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714140176; c=relaxed/simple;
-	bh=eZLYFV1P7e0RZiUl4fmLeeENBDPeW09hanvBGCLaf/o=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MuPiFzQ2+MQrPXSC3po7/9uCgJPQ9s5UZzrbNp+hDlbGTM+FknF8wln7FfvV717AcedEJB/28xNgIM4FSCFrHdwOoKEhoVw0lzajUtvRKcvV26onZd6J/7W8Y4jVAwsdzLMvrxvTN1fyLVZsW3YVX1pTTCCOfkxWO18Gqajyxw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0YHt8J0+; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714140163;
-	bh=eZLYFV1P7e0RZiUl4fmLeeENBDPeW09hanvBGCLaf/o=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=0YHt8J0+aOVIih2Y/HwA41SaQiuIzX37DtkeopB+08x8R7IH2AKAqG4iIyO9UvN07
-	 I2GTEsOM7i8JIIfUc0bQ/tq3PnggvaKLKUEczH+DasM4GLPgb1wSEF5W9nGXrRuz/J
-	 Hk33LQEOQD+lsoYaSCgqBGomEgStg6ZMjWvNN7ktRN801Mdpr+LGz5d4Qko0cSuRco
-	 3Gg9ZWRww79fol77r2YvFW6tlEbKUxB776U8Kq6K6iYeYy2yYLdBY6DD44OsCQrEU8
-	 usDZNQGyNM69TrWS7au7r+vL2bVz9NQ0ghqmMfzCcT1ozvtbXtAHqH+OfIdpQ5mKYv
-	 TR43WkNF4r9/g==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 45B7437813A4;
-	Fri, 26 Apr 2024 14:02:37 +0000 (UTC)
-Message-ID: <ec789dfb-e447-4cc5-bd72-7ee8bf5a5daa@collabora.com>
-Date: Fri, 26 Apr 2024 19:03:07 +0500
+	s=arc-20240116; t=1714140287; c=relaxed/simple;
+	bh=98JFam+pW6R5J+9cjLMRZ/4fFi3pp4waqix3AhY8j7M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OoqOdaRCddW2tqkDt+W844TbUqaS9N/6Gg6m6BRnMjUbh5jKNWy2lH0fKUZM1fQxzfk2zwQPxAX9LHtkztJHxtnzPWdVmUMR0lV7M/IjYAg9XJLX2CszhLsq4cD+EJlM2M5RGc3usj0bX3OeGWKcXbp2Oe365US58S2LTQdkc5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=y6FIlB1n; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1714140285; x=1745676285;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=98JFam+pW6R5J+9cjLMRZ/4fFi3pp4waqix3AhY8j7M=;
+  b=y6FIlB1nuUU++08Ty4o9dPZAIIO+xdiY3VHC+AgSUTbUcgkL1MMGWKBz
+   A4M0sTTkBZMJzhxnVeojWguWIqSgKaZZr/GleYeYk2JjAoacJHyiGKZPD
+   JJMxl2bjJl8HHd9E5Vfd3EXvcF2j57o8D71MHKpYrJZTjZwFwBZKO3fi6
+   6zti9v+3W7kNe1cXQS7kFY5muTiuzJlZd3atJkOthZGY+XZ/unfWh7dmg
+   MvNoeOcsqbBjoLpoYKzdQT3INEA5xVo4LccW+GSGnT7D+btQ8QZjlhgYj
+   h0QoK0HExoAZ9qr99i4OcwAh5y0apiVfpbtC8hR7xzYnHQsa44xlomq3V
+   g==;
+X-CSE-ConnectionGUID: CuhQwo/ZTjOAvRra8ggIZQ==
+X-CSE-MsgGUID: w9GiJVhaQeGvAHBD+h8Ntw==
+X-IronPort-AV: E=Sophos;i="6.07,232,1708412400"; 
+   d="scan'208";a="253620180"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Apr 2024 07:04:38 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 26 Apr 2024 07:03:57 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Fri, 26 Apr 2024 07:03:54 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <richardcochran@gmail.com>, <vadim.fedorenko@linux.dev>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Horatiu Vultur
+	<horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v2] net: phy: micrel: Add support for PTP_PF_EXTTS for lan8814
+Date: Fri, 26 Apr 2024 16:02:24 +0200
+Message-ID: <20240426140224.2201919-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2] KVM: selftests: Use TAP interface in the
- set_memory_region test
-To: Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org,
- Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>
-References: <20240426114552.667346-1-thuth@redhat.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240426114552.667346-1-thuth@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 4/26/24 4:45 PM, Thomas Huth wrote:
-> Use the kselftest_harness.h interface in this test to get TAP
-> output, so that it is easier for the user to see what the test
-> is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
-> macro here since these tests are creating their VMs with the
-> vm_create_barebones() function, not with vm_create_with_one_vcpu())
-> 
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
-LGTM
+Extend the PTP programmable gpios to implement also PTP_PF_EXTTS
+function. The pins can be configured to capture both of rising
+and falling edge. Once the event is seen, then an interrupt is
+generated and the LTC is saved in the registers.
+On lan8814 only GPIO 3 can be configured for this.
 
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@colabora.com>
-Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+This was tested using:
+ts2phc -m -l 7 -s generic -f ts2phc.cfg
 
-> ---
->  v2:
->  - Rebase to linux-next branch
->  - Make "loops" variable static
->  - Added Andrew's Reviewed-by
-> 
->  .../selftests/kvm/set_memory_region_test.c    | 86 +++++++++----------
->  1 file changed, 42 insertions(+), 44 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-> index 68c899d27561..a5c9bee5235a 100644
-> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
-> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-> @@ -16,6 +16,7 @@
->  #include <test_util.h>
->  #include <kvm_util.h>
->  #include <processor.h>
-> +#include "kselftest_harness.h"
->  
->  /*
->   * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
-> @@ -38,6 +39,8 @@ extern const uint64_t final_rip_end;
->  
->  static sem_t vcpu_ready;
->  
-> +static int loops;
-> +
->  static inline uint64_t guest_spin_on_val(uint64_t spin_val)
->  {
->  	uint64_t val;
-> @@ -219,6 +222,13 @@ static void test_move_memory_region(void)
->  	kvm_vm_free(vm);
->  }
->  
-> +TEST(move_in_use_region)
-> +{
-> +	ksft_print_msg("Testing MOVE of in-use region, %d loops\n", loops);
-> +	for (int i = 0; i < loops; i++)
-> +		test_move_memory_region();
-> +}
-> +
->  static void guest_code_delete_memory_region(void)
->  {
->  	uint64_t val;
-> @@ -308,12 +318,19 @@ static void test_delete_memory_region(void)
->  	kvm_vm_free(vm);
->  }
->  
-> -static void test_zero_memory_regions(void)
-> +TEST(delete_in_use_region)
-> +{
-> +	ksft_print_msg("Testing DELETE of in-use region, %d loops\n", loops);
-> +	for (int i = 0; i < loops; i++)
-> +		test_delete_memory_region();
-> +}
-> +
-> +TEST(zero_memory_regions)
->  {
->  	struct kvm_vcpu *vcpu;
->  	struct kvm_vm *vm;
->  
-> -	pr_info("Testing KVM_RUN with zero added memory regions\n");
-> +	ksft_print_msg("Testing KVM_RUN with zero added memory regions\n");
->  
->  	vm = vm_create_barebones();
->  	vcpu = __vm_vcpu_add(vm, 0);
-> @@ -326,7 +343,7 @@ static void test_zero_memory_regions(void)
->  }
->  #endif /* __x86_64__ */
->  
-> -static void test_invalid_memory_region_flags(void)
-> +TEST(invalid_memory_region_flags)
->  {
->  	uint32_t supported_flags = KVM_MEM_LOG_DIRTY_PAGES;
->  	const uint32_t v2_only_flags = KVM_MEM_GUEST_MEMFD;
-> @@ -389,7 +406,7 @@ static void test_invalid_memory_region_flags(void)
->   * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
->   * tentative to add further slots should fail.
->   */
-> -static void test_add_max_memory_regions(void)
-> +TEST(add_max_memory_regions)
->  {
->  	int ret;
->  	struct kvm_vm *vm;
-> @@ -408,13 +425,13 @@ static void test_add_max_memory_regions(void)
->  	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
->  	TEST_ASSERT(max_mem_slots > 0,
->  		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
-> -	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
-> +	ksft_print_msg("Allowed number of memory slots: %i\n", max_mem_slots);
->  
->  	vm = vm_create_barebones();
->  
->  	/* Check it can be added memory slots up to the maximum allowed */
-> -	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
-> -		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
-> +	ksft_print_msg("Adding slots 0..%i, each memory region with %dK size\n",
-> +		       (max_mem_slots - 1), MEM_REGION_SIZE >> 10);
->  
->  	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
->  		   PROT_READ | PROT_WRITE,
-> @@ -455,12 +472,21 @@ static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
->  	TEST_ASSERT(r == -1 && errno == EINVAL, "%s", msg);
->  }
->  
-> -static void test_add_private_memory_region(void)
-> +static bool has_cap_guest_memfd(void)
-> +{
-> +	return kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
-> +	       (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
-> +}
-> +
-> +TEST(add_private_memory_region)
->  {
->  	struct kvm_vm *vm, *vm2;
->  	int memfd, i;
->  
-> -	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
-> +	if (!has_cap_guest_memfd())
-> +		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
-> +
-> +	ksft_print_msg("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
->  
->  	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
->  
-> @@ -491,13 +517,16 @@ static void test_add_private_memory_region(void)
->  	kvm_vm_free(vm);
->  }
->  
-> -static void test_add_overlapping_private_memory_regions(void)
-> +TEST(add_overlapping_private_memory_regions)
->  {
->  	struct kvm_vm *vm;
->  	int memfd;
->  	int r;
->  
-> -	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
-> +	if (!has_cap_guest_memfd())
-> +		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
-> +
-> +	ksft_print_msg("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
->  
->  	vm = vm_create_barebones_type(KVM_X86_SW_PROTECTED_VM);
->  
-> @@ -536,46 +565,15 @@ static void test_add_overlapping_private_memory_regions(void)
->  	close(memfd);
->  	kvm_vm_free(vm);
->  }
-> +
->  #endif
->  
->  int main(int argc, char *argv[])
->  {
-> -#ifdef __x86_64__
-> -	int i, loops;
-> -
-> -	/*
-> -	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
-> -	 * KVM_RUN fails with ENOEXEC or EFAULT.
-> -	 */
-> -	test_zero_memory_regions();
-> -#endif
-> -
-> -	test_invalid_memory_region_flags();
-> -
-> -	test_add_max_memory_regions();
-> -
-> -#ifdef __x86_64__
-> -	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
-> -	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
-> -		test_add_private_memory_region();
-> -		test_add_overlapping_private_memory_regions();
-> -	} else {
-> -		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
-> -	}
-> -
->  	if (argc > 1)
->  		loops = atoi_positive("Number of iterations", argv[1]);
->  	else
->  		loops = 10;
->  
-> -	pr_info("Testing MOVE of in-use region, %d loops\n", loops);
-> -	for (i = 0; i < loops; i++)
-> -		test_move_memory_region();
-> -
-> -	pr_info("Testing DELETE of in-use region, %d loops\n", loops);
-> -	for (i = 0; i < loops; i++)
-> -		test_delete_memory_region();
-> -#endif
-> -
-> -	return 0;
-> +	return test_harness_run(argc, argv);
->  }
+Where the configuration was the following:
+    ---
+    [global]
+    ts2phc.pin_index  3
 
+    [eth0]
+    ---
+
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+v1->v2:
+- fix commit message by indening the configuration with spaces
+---
+ drivers/net/phy/micrel.c | 182 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 181 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 0e310a5e2bff0..2d11f38cbc243 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -167,6 +167,9 @@
+ #define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
+ #define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
+ 
++#define PTP_COMMON_INT_ENA			0x0204
++#define PTP_COMMON_INT_ENA_GPIO_CAP_EN		BIT(2)
++
+ #define PTP_CLOCK_SET_SEC_HI			0x0205
+ #define PTP_CLOCK_SET_SEC_MID			0x0206
+ #define PTP_CLOCK_SET_SEC_LO			0x0207
+@@ -179,6 +182,27 @@
+ #define PTP_CLOCK_READ_NS_HI			0x022C
+ #define PTP_CLOCK_READ_NS_LO			0x022D
+ 
++#define PTP_GPIO_SEL				0x0230
++#define PTP_GPIO_SEL_GPIO_SEL(pin)		((pin) << 8)
++#define PTP_GPIO_CAP_MAP_LO			0x0232
++
++#define PTP_GPIO_CAP_EN				0x0233
++#define PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(gpio)	BIT(gpio)
++#define PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(gpio)	(BIT(gpio) << 8)
++
++#define PTP_GPIO_RE_LTC_SEC_HI_CAP		0x0235
++#define PTP_GPIO_RE_LTC_SEC_LO_CAP		0x0236
++#define PTP_GPIO_RE_LTC_NS_HI_CAP		0x0237
++#define PTP_GPIO_RE_LTC_NS_LO_CAP		0x0238
++#define PTP_GPIO_FE_LTC_SEC_HI_CAP		0x0239
++#define PTP_GPIO_FE_LTC_SEC_LO_CAP		0x023A
++#define PTP_GPIO_FE_LTC_NS_HI_CAP		0x023B
++#define PTP_GPIO_FE_LTC_NS_LO_CAP		0x023C
++
++#define PTP_GPIO_CAP_STS			0x023D
++#define PTP_GPIO_CAP_STS_PTP_GPIO_RE_STS(gpio)	BIT(gpio)
++#define PTP_GPIO_CAP_STS_PTP_GPIO_FE_STS(gpio)	(BIT(gpio) << 8)
++
+ #define PTP_OPERATING_MODE			0x0241
+ #define PTP_OPERATING_MODE_STANDALONE_		BIT(0)
+ 
+@@ -274,6 +298,7 @@
+ 
+ #define LAN8814_PTP_GPIO_NUM			24
+ #define LAN8814_PTP_PEROUT_NUM			2
++#define LAN8814_PTP_EXTTS_NUM			3
+ 
+ #define LAN8814_BUFFER_TIME			2
+ 
+@@ -3124,12 +3149,102 @@ static int lan8814_ptp_perout(struct ptp_clock_info *ptpci,
+ 	return 0;
+ }
+ 
++static void lan8814_ptp_extts_on(struct phy_device *phydev, int pin, u32 flags)
++{
++	u16 tmp;
++
++	/* Set as gpio input */
++	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin));
++	tmp &= ~LAN8814_GPIO_DIR_BIT(pin);
++	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin), tmp);
++
++	/* Map the pin to ltc pin 0 of the capture map registers */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO);
++	tmp |= pin;
++	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO, tmp);
++
++	/* Enable capture on the edges of the ltc pin */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_EN);
++	if (flags & PTP_RISING_EDGE)
++		tmp |= PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(0);
++	if (flags & PTP_FALLING_EDGE)
++		tmp |= PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(0);
++	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_EN, tmp);
++
++	/* Enable interrupt top interrupt */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_COMMON_INT_ENA);
++	tmp |= PTP_COMMON_INT_ENA_GPIO_CAP_EN;
++	lanphy_write_page_reg(phydev, 4, PTP_COMMON_INT_ENA, tmp);
++}
++
++static void lan8814_ptp_extts_off(struct phy_device *phydev, int pin)
++{
++	u16 tmp;
++
++	/* Set as gpio out */
++	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin));
++	tmp |= LAN8814_GPIO_DIR_BIT(pin);
++	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_DIR_ADDR(pin), tmp);
++
++	/* Enable alternate, 0:for alternate function, 1:gpio */
++	tmp = lanphy_read_page_reg(phydev, 4, LAN8814_GPIO_EN_ADDR(pin));
++	tmp &= ~LAN8814_GPIO_EN_BIT(pin);
++	lanphy_write_page_reg(phydev, 4, LAN8814_GPIO_EN_ADDR(pin), tmp);
++
++	/* Clear the mapping of pin to registers 0 of the capture registers */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO);
++	tmp &= ~GENMASK(3, 0);
++	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_MAP_LO, tmp);
++
++	/* Disable capture on both of the edges */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_EN);
++	tmp &= ~PTP_GPIO_CAP_EN_GPIO_RE_CAPTURE_ENABLE(pin);
++	tmp &= ~PTP_GPIO_CAP_EN_GPIO_FE_CAPTURE_ENABLE(pin);
++	lanphy_write_page_reg(phydev, 4, PTP_GPIO_CAP_EN, tmp);
++
++	/* Disable interrupt top interrupt */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_COMMON_INT_ENA);
++	tmp &= ~PTP_COMMON_INT_ENA_GPIO_CAP_EN;
++	lanphy_write_page_reg(phydev, 4, PTP_COMMON_INT_ENA, tmp);
++}
++
++static int lan8814_ptp_extts(struct ptp_clock_info *ptpci,
++			     struct ptp_clock_request *rq, int on)
++{
++	struct lan8814_shared_priv *shared = container_of(ptpci, struct lan8814_shared_priv,
++							  ptp_clock_info);
++	struct phy_device *phydev = shared->phydev;
++	int pin;
++
++	if (rq->extts.flags & ~(PTP_ENABLE_FEATURE |
++				PTP_EXTTS_EDGES |
++				PTP_STRICT_FLAGS))
++		return -EOPNOTSUPP;
++
++	pin = ptp_find_pin(shared->ptp_clock, PTP_PF_EXTTS,
++			   rq->extts.index);
++	if (pin == -1 || pin != LAN8814_PTP_EXTTS_NUM)
++		return -EINVAL;
++
++	mutex_lock(&shared->shared_lock);
++	if (on)
++		lan8814_ptp_extts_on(phydev, pin, rq->extts.flags);
++	else
++		lan8814_ptp_extts_off(phydev, pin);
++
++	mutex_unlock(&shared->shared_lock);
++
++	return 0;
++}
++
+ static int lan8814_ptpci_enable(struct ptp_clock_info *ptpci,
+ 				struct ptp_clock_request *rq, int on)
+ {
+ 	switch (rq->type) {
+ 	case PTP_CLK_REQ_PEROUT:
+ 		return lan8814_ptp_perout(ptpci, rq, on);
++	case PTP_CLK_REQ_EXTTS:
++		return lan8814_ptp_extts(ptpci, rq, on);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -3148,6 +3263,10 @@ static int lan8814_ptpci_verify(struct ptp_clock_info *ptp, unsigned int pin,
+ 		if (pin >= LAN8814_PTP_PEROUT_NUM || pin != chan)
+ 			return -1;
+ 		break;
++	case PTP_PF_EXTTS:
++		if (pin != LAN8814_PTP_EXTTS_NUM)
++			return -1;
++		break;
+ 	default:
+ 		return -1;
+ 	}
+@@ -3320,6 +3439,64 @@ static void lan8814_handle_ptp_interrupt(struct phy_device *phydev, u16 status)
+ 	}
+ }
+ 
++static int lan8814_gpio_process_cap(struct lan8814_shared_priv *shared)
++{
++	struct phy_device *phydev = shared->phydev;
++	struct ptp_clock_event ptp_event = {0};
++	unsigned long nsec;
++	s64 sec;
++	u16 tmp;
++
++	/* This is 0 because whatever was the input pin it was mapped it to
++	 * ltc gpio pin 0
++	 */
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_SEL);
++	tmp |= PTP_GPIO_SEL_GPIO_SEL(0);
++	lanphy_write_page_reg(phydev, 4, PTP_GPIO_SEL, tmp);
++
++	tmp = lanphy_read_page_reg(phydev, 4, PTP_GPIO_CAP_STS);
++	if (!(tmp & PTP_GPIO_CAP_STS_PTP_GPIO_RE_STS(0)) &&
++	    !(tmp & PTP_GPIO_CAP_STS_PTP_GPIO_FE_STS(0)))
++		return -1;
++
++	if (tmp & BIT(0)) {
++		sec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_SEC_HI_CAP);
++		sec <<= 16;
++		sec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_SEC_LO_CAP);
++
++		nsec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_HI_CAP) & 0x3fff;
++		nsec <<= 16;
++		nsec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_LO_CAP);
++	} else {
++		sec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_SEC_HI_CAP);
++		sec <<= 16;
++		sec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_SEC_LO_CAP);
++
++		nsec = lanphy_read_page_reg(phydev, 4, PTP_GPIO_FE_LTC_NS_HI_CAP) & 0x3fff;
++		nsec <<= 16;
++		nsec |= lanphy_read_page_reg(phydev, 4, PTP_GPIO_RE_LTC_NS_LO_CAP);
++	}
++
++	ptp_event.index = 0;
++	ptp_event.timestamp = ktime_set(sec, nsec);
++	ptp_event.type = PTP_CLOCK_EXTTS;
++	ptp_clock_event(shared->ptp_clock, &ptp_event);
++
++	return 0;
++}
++
++static int lan8814_handle_gpio_interrupt(struct phy_device *phydev, u16 status)
++{
++	struct lan8814_shared_priv *shared = phydev->shared->priv;
++	int ret;
++
++	mutex_lock(&shared->shared_lock);
++	ret = lan8814_gpio_process_cap(shared);
++	mutex_unlock(&shared->shared_lock);
++
++	return ret;
++}
++
+ static int lan8804_config_init(struct phy_device *phydev)
+ {
+ 	int val;
+@@ -3424,6 +3601,9 @@ static irqreturn_t lan8814_handle_interrupt(struct phy_device *phydev)
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
++	if (!lan8814_handle_gpio_interrupt(phydev, irq_status))
++		ret = IRQ_HANDLED;
++
+ 	return ret;
+ }
+ 
+@@ -3541,7 +3721,7 @@ static int lan8814_ptp_probe_once(struct phy_device *phydev)
+ 	snprintf(shared->ptp_clock_info.name, 30, "%s", phydev->drv->name);
+ 	shared->ptp_clock_info.max_adj = 31249999;
+ 	shared->ptp_clock_info.n_alarm = 0;
+-	shared->ptp_clock_info.n_ext_ts = 0;
++	shared->ptp_clock_info.n_ext_ts = LAN8814_PTP_EXTTS_NUM;
+ 	shared->ptp_clock_info.n_pins = LAN8814_PTP_GPIO_NUM;
+ 	shared->ptp_clock_info.pps = 0;
+ 	shared->ptp_clock_info.pin_config = shared->pin_config;
 -- 
-BR,
-Muhammad Usama Anjum
+2.34.1
+
 
