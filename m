@@ -1,199 +1,123 @@
-Return-Path: <linux-kernel+bounces-160278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D4E8B3B4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:25:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 335768B3B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:25:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CE971C21301
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:25:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9EAC1F20FC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AE715572B;
-	Fri, 26 Apr 2024 15:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88B3148FE2;
+	Fri, 26 Apr 2024 15:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iOoM7OFA"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AwGvDI4P"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274011494A7;
-	Fri, 26 Apr 2024 15:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D733F1494A6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145027; cv=none; b=djUyXKiK6IBLC9RrwattSiLd4oS7JhDgecB4miRBI6mTXRfrrfvoAeDJ9iCPy0dAxwh75JlUGduxr9wYohdfMc2+m5TWyDa7nDobjvqlIc99Am4t8FKJfw+/ZR+3ICkN3jHCYGYvL6SjTdQbMb+ySwRwJQqWhgfaYKgIbq0GAIM=
+	t=1714145041; cv=none; b=mHM/zbAAg+p+yO4R2UqcaZ4OehznTS++2TMsrp36KrL68EDl5z8AZi1PT2AiP5CSi9Z5tVATRsrh23Io0JjkUTtU9B6ULlkQ5+2q6KMC9IsVkm7y1DZM0lcYCe0uhg+DIpp1YcWX86E365gBacGY3bKBqXKZlyBW6OspvgzmzCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145027; c=relaxed/simple;
-	bh=cQokOok50FvSBH5f38xOh7Sn6Oft1X7gWWsl8fdB21Y=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=kR0AJIt21RPfAO0GuZKHNsNDBsQc3ZslVta7oeg36JEaPE3Al3Y89oB6tBiKJFt1QcRETcv92xZp6mIVGjGRGAs7EhISKE2DRaTmEdSg4ny4op7S7FldHKQPysYK6Qr23FnTAfYOWzx0Pc3fRqDyCT7cIEPzUpPiWoX6REvBYf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iOoM7OFA; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QFMHT8016235;
-	Fri, 26 Apr 2024 15:23:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=CViDKwrvpIv+cpI7v9ixPLgnbdWhkWZcrv5mb1eXGAg=;
- b=iOoM7OFA7Sckze2DMu6kLFQI/KSC236JyAMdQRD/jxA7fBFSMiEs6sokjWJuDIHp3Q+C
- hbYHvNnqOuzDWswN2T+i9hXI/tqP6sHp3g6in9Z8LRMSqK9fBqno5yVddiRTc4PMKTV5
- 2gImlAcvTVZvo9I5s9G6kiyWROO4j4tZa4KF0kpNU7BT2TOIMyIiOwY6Ms3EnbiPVYrC
- P4Wazhs7XsVMVgKMYC6CbUc38bVe/MQERKHZRPK277rBRlhgiN8u/lOmNgnD7CHCNeYr
- o76nVriHSuB+NZ6HTzovKWM+iMm/B29EK1438FdtcnsTjpYvHdfQYf5zVhnxvhY56XzD Tg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xreuj003j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:23:34 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QCCfr9023065;
-	Fri, 26 Apr 2024 15:23:33 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xms1pgemr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:23:33 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QFNUgm34668922
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 15:23:32 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 93CAF58060;
-	Fri, 26 Apr 2024 15:23:30 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4A11558059;
-	Fri, 26 Apr 2024 15:23:30 +0000 (GMT)
-Received: from [9.61.156.17] (unknown [9.61.156.17])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 15:23:30 +0000 (GMT)
-Message-ID: <bc58a063-9eaf-4bcb-b538-a95d8d03ea24@linux.ibm.com>
-Date: Fri, 26 Apr 2024 10:23:30 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/14] dt-bindings: i2c: i2c-fsi: Switch to yaml format
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-11-eajames@linux.ibm.com>
- <f84ddcdb-8f8a-4cf6-a851-243baa1745ac@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <f84ddcdb-8f8a-4cf6-a851-243baa1745ac@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QQf-aFXFgQZ_OsX9OStiFZp3OJntPtn8
-X-Proofpoint-ORIG-GUID: QQf-aFXFgQZ_OsX9OStiFZp3OJntPtn8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714145041; c=relaxed/simple;
+	bh=wSnPTnvBkDWveUNl8oR3u4n9qXzCaCyl8sjSvomXPQU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K7Nl61k0DE0hP1ohiSI4c3J0wb65dqN6pQqekbZJ8hfTIwx+Aj88bQv3wb2FRwXNcAj7HSYmBosgUFt71gZNWCGTq9f7p8thfRp9rBYWvxdrXNwPL15AXMaBIwLDxRDHyRZCae/DBaMcIoeQ4/loAIF2vKYtBSm08+hycupWPVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AwGvDI4P; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de45f3f092bso2785174276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714145039; x=1714749839; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4hbJirFZZks6D1peX1ZQV09gxl4EVMTmWrNyCcPglVE=;
+        b=AwGvDI4P8hbUjHzLsfcCcwxxib8PIYkyAJ6636vMeImwq14K8LPPzrlxPn1NiuoReF
+         mTAG3AzF/pZPhx+ip8fM/n/LM/bi8DtxF9ACjbCERJjKqgmRr4iWwyzUmyKiGkDlMNYk
+         Q+ds5id3suSbP52wQy1aCeTzAIeQyD/U3oqvUyUK7f/SfYHwovnZt1JF30Svs+Yl06u5
+         qe6SI5FVNQxmxOsjzFWxxF/uFXMhcw13Ngw3RjZuaH/FUfaJGKWVzDdShlXsN7B4Zt7S
+         q5WphgKGj0j64T39/pj+7aFodhD9BlMYCMLbJfmrnD4QmR4su+HwfjUhOakXDmceqeKq
+         n67A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714145039; x=1714749839;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4hbJirFZZks6D1peX1ZQV09gxl4EVMTmWrNyCcPglVE=;
+        b=E2nLRw07rSAigU9HAGV6rTFwi3ZdB13OeLHSUw1eJ2YjfPYpgRchJ7eFMkyDzQUuvQ
+         XQyXpT3dA9uoPqrWMO4xOP8RL6qwu+iIIz7gfAKZ/aMyObqtqR6h4M5P4wQMiog+GeHY
+         dvQ0odrjnKHqZr8GbyTUdmfARHrKT/0Fl44HKju+Oy7bEkNUbzyH4m/AnARQFbj7CHvq
+         3J7NbQR1DYzwomgFHmPxB9/jOYzXKU4y3R2WZLu7N9pY3CKyUsqvJZ2gyGDtqUgIxMFq
+         8vAfGXhC2DSxGiev9aX+lYMUEtzHM8Wgs3aqXbnwd28z11bmXczIaXp4gcE7izI6XT/r
+         jY2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVYpW9VyLb+gcr3E/zgFU2k0xHib5nvb0woVACYi25iMqzweBeK/7S0UAI0foCoy5rMKQUDBIJdVoQn46wV/WOjFmlHHja34I7+sqbv
+X-Gm-Message-State: AOJu0YzllgkmTAGqAj7XSj1qXn7XBM59qi1wmvaI57ZVVgT0IykvnNLh
+	JfmEt/N+blxtUpMhUw4NhrBqnbWNZFrcSfsFWmd4IBiCEvMnQr3ptnPngN8nFiejmJdzMqsgu9z
+	wmjc6e6+gwS/IVsp6sCGRsuA4PDs05HRhosmgNLbvAdrCcMSHTFBW
+X-Google-Smtp-Source: AGHT+IGo2Tt01/flnCVIP3UkYxgEkPiWuQtGOl0av17cc2y9CCWvB7HgxL/qVSX74Fm6W6kvQ2yBPhxaowjnYufX/Uw=
+X-Received: by 2002:a25:818e:0:b0:de5:6073:2ba4 with SMTP id
+ p14-20020a25818e000000b00de560732ba4mr16923ybk.40.1714145038633; Fri, 26 Apr
+ 2024 08:23:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404260103
+References: <20240426144506.1290619-1-willy@infradead.org> <20240426144506.1290619-2-willy@infradead.org>
+In-Reply-To: <20240426144506.1290619-2-willy@infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 26 Apr 2024 08:23:47 -0700
+Message-ID: <CAJuCfpH_kyp6vVU5dSx=WJNpGRThmak53wVjSsBfxtqTrNy8TQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mm: Assert the mmap_lock is held in __anon_vma_prepare()
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 4/26/24 01:29, Krzysztof Kozlowski wrote:
-> On 25/04/2024 23:36, Eddie James wrote:
->> Switch to yaml for the FSI-attached I2C controller.
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> Please use scripts/get_maintainers.pl to get a list of necessary people
-> and lists to CC (and consider --no-git-fallback argument). It might
-> happen, that command when run on an older kernel, gives you outdated
-> entries. Therefore please be sure you base your patches on recent Linux
-> kernel.
+On Fri, Apr 26, 2024 at 7:45=E2=80=AFAM Matthew Wilcox (Oracle)
+<willy@infradead.org> wrote:
 >
-> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-> people, so fix your workflow. Tools might also fail if you work on some
-> ancient tree (don't, instead use mainline), work on fork of kernel
-> (don't, instead use mainline) or you ignore some maintainers (really
-> don't). Just use b4 and everything should be fine, although remember
-> about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+> Convert the comment into an assertion.
 >
->> ---
->>   .../devicetree/bindings/i2c/i2c-fsi.txt       | 40 -------------
->>   .../devicetree/bindings/i2c/ibm,i2c-fsi.yaml  | 59 +++++++++++++++++++
->>   2 files changed, 59 insertions(+), 40 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-fsi.txt
->>   create mode 100644 Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
->>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+
+> ---
+>  mm/rmap.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
->> -    };
->> diff --git a/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml b/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
->> new file mode 100644
->> index 000000000000..473a45de1b6c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
->> @@ -0,0 +1,59 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/i2c/ibm,i2c-fsi.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: IBM FSI-attached I2C controller
->> +
->> +maintainers:
->> +  - Eddie James <eajames@linux.ibm.com>
->> +
->> +description:
->> +  This I2C controller is an FSI CFAM engine, providing access to a number of
->> +  I2C busses. Therefore this node will always be a child of an FSI CFAM node;
->> +  see fsi.txt for details on FSI slave and CFAM nodes.
-> Here and in all other schemas - remove reference to fsi.txt. You are
-> going to drop this file once you convert everything, right?
-
-
-Good point, yes.
-
-
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 2608c40dffad..619d4d65d99b 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -182,8 +182,6 @@ static void anon_vma_chain_link(struct vm_area_struct=
+ *vma,
+>   * for the new allocation. At the same time, we do not want
+>   * to do any locking for the common case of already having
+>   * an anon_vma.
+> - *
+> - * This must be called with the mmap_lock held for reading.
+>   */
+>  int __anon_vma_prepare(struct vm_area_struct *vma)
+>  {
+> @@ -191,6 +189,7 @@ int __anon_vma_prepare(struct vm_area_struct *vma)
+>         struct anon_vma *anon_vma, *allocated;
+>         struct anon_vma_chain *avc;
 >
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ibm,i2c-fsi
->> +
->> +  reg:
->> +    items:
->> +      - description: FSI slave address
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +allOf:
->> +  - $ref: /schemas/i2c/i2c-controller.yaml#
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c@1800 {
-> So no wrapper node is needed. Drop the wrapper node in previous patchset
-> where you introduced one with warning.
-
-
-The other one is actually a child node of the equivalent spi controller, 
-so it does need some sort of wrapper (address-cells and size-cells don't 
-match).
-
-
+> +       mmap_assert_locked(mm);
+>         might_sleep();
 >
->
-> Best regards,
-> Krzysztof
+>         avc =3D anon_vma_chain_alloc(GFP_KERNEL);
+> --
+> 2.43.0
 >
 
