@@ -1,144 +1,111 @@
-Return-Path: <linux-kernel+bounces-159951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFB18B36B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:48:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778068B36B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:49:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7231B212FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:48:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DB0C1F22061
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F000F145340;
-	Fri, 26 Apr 2024 11:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jc1YRiUI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686B2145B0F;
+	Fri, 26 Apr 2024 11:49:03 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE7113F01A;
-	Fri, 26 Apr 2024 11:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7283A1B7;
+	Fri, 26 Apr 2024 11:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714132125; cv=none; b=eDCtvgUMPCLX8wJ+fg1Ctf/rhHziIxwjIBIUlqe8rq/JlzzGvB3GYWnU+kDcU1zy9fFvhPdFHyoLiuCCKNfiz6V3uzYqGcIh82yA3v0/4x0QxYJ8n7AveSckS/oRdGM5iRPLMW9VFLFoFuNdCbCXC9ga2PejgFuqr6fFIir0twI=
+	t=1714132142; cv=none; b=MYH9GDeI2quZz8MQWm8AMg19p+qWDVs7UTU+sz18jv4DEH3g2LPAn781xy5onEpWwVgqEPquw2vVl9OixWrQBTU4Z7hmIZqbcnnSX/3SLx8gyGe9dyQ6n75MLSbl41ft6bIBp3s0ACI+aude7BoapszGoudBX/gxwzUyVYGRwhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714132125; c=relaxed/simple;
-	bh=BQU2RBaoh+BYwZJxNG6MuOnWNxfKhQAz+I7OuG0h14w=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=m/K94qL7bGs6x8V2YGDudxV38rQ5erCnfZyYTua//mttwk5/J43gL2+yPfjBAXgw/IcgZeGxSybbEMySW/EkHSEe8ec/wBm4jx+r5q642hqWnQobP7phNR5HmvqtB18kZyYpe4fKCsVInWrLLVPGdtIEOqdp7CKNaTwwkKtqHWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jc1YRiUI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A52FC113CD;
-	Fri, 26 Apr 2024 11:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714132124;
-	bh=BQU2RBaoh+BYwZJxNG6MuOnWNxfKhQAz+I7OuG0h14w=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=jc1YRiUIsXBhWYGOKSR6jgCIgv+XlHiiqtK6/NnzcjiE8IS2t/qU1yHVH09olJebX
-	 54DVzrcVs3eUA5hJ+/iTF+XPguh0JX9e/hRqrKfcYQVGVFH3uaJV12w77B9NRcd5an
-	 hIEs/GOl3RQ6TvACc65HcYj3tMLTDG4JHCcBjMjf6WNHHinEvUa6KbOqay0bk6+Bhf
-	 S/tvWke82H46+jMgWm8z3bkmrIWm0ZOFtQoDSc4LwGS3QOXkn3tsqwi1fLED//9kMH
-	 0+1UkXw0uVqjWgDoeoDMKwZjwskjo3NbBiQZ9GhopmswJk0259hzGXhdrHPn6fGDtP
-	 D8g2D3JJOAL1g==
+	s=arc-20240116; t=1714132142; c=relaxed/simple;
+	bh=vuIcmnGQq4w4qRhii36oQpxwxZeKTg+NU3UP9tdpmnQ=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h0CLBWABBF+LonSITg0im/YxbcW6xqv//aok8O8i4miyzA7P//LhcuvK3LySuLwgZLRkzCjWHLJGRk3C9xA8LQlStUT7QUuGhSWiv6L66RkwbeCKyjXOpRTgjzmLjlg5/fAlnd/J3tkF+/Fcn/XNeJUpaRIt+0FB+wgPf83L7Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VQrbL5Lklz6DBjc;
+	Fri, 26 Apr 2024 19:48:46 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 46E26140447;
+	Fri, 26 Apr 2024 19:48:58 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
+ 2024 12:48:57 +0100
+Date: Fri, 26 Apr 2024 12:48:55 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "Dave
+ Hansen" <dave.hansen@linux.intel.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v7 08/16] ACPI: Add post_eject to struct
+ acpi_scan_handler for cpu hotplug
+Message-ID: <20240426124836.00006cde@huawei.com>
+In-Reply-To: <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+	<20240418135412.14730-9-Jonathan.Cameron@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 26 Apr 2024 14:48:39 +0300
-Message-Id: <D0U14GGWT2AW.XRFW7MB1QZFV@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, "Ilias Apalodimas"
- <ilias.apalodimas@linaro.org>, "Lennart Poettering"
- <lennart@poettering.net>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Mikko Rapeli" <mikko.rapeli@linaro.org>, "Ard Biesheuvel"
- <ardb@kernel.org>, <linux-efi@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
-In-Reply-To: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon Apr 22, 2024 at 2:27 PM EEST, Mikko Rapeli wrote:
->  Documentation/ABI/testing/sysfs-firmware-efi | 12 ++++++++++++
->  drivers/firmware/efi/efi.c                   | 13 +++++++++++++
->  2 files changed, 25 insertions(+)
->
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-efi b/Documentation=
-/ABI/testing/sysfs-firmware-efi
-> index 5e4d0b27cdfe..caaff27cc73e 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-efi
-> +++ b/Documentation/ABI/testing/sysfs-firmware-efi
-> @@ -36,3 +36,15 @@ Description:	Displays the content of the Runtime Confi=
-guration Interface
->  		Table version 2 on Dell EMC PowerEdge systems in binary format
->  Users:		It is used by Dell EMC OpenManage Server Administrator tool to
->  		populate BIOS setup page.
-> +
-> +What:		/sys/firmware/efi/tpm_log
+On Thu, 18 Apr 2024 14:54:04 +0100
+Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
 
-*Conditional* suggestion: s/tpm_log/tpm_event_log/
+> From: James Morse <james.morse@arm.com>
+> 
+> struct acpi_scan_handler has a detach callback that is used to remove
+> a driver when a bus is changed. When interacting with an eject-request,
+> the detach callback is called before _EJ0.
+> 
+> This means the ACPI processor driver can't use _STA to determine if a
+> CPU has been made not-present, or some of the other _STA bits have been
+> changed. acpi_processor_remove() needs to know the value of _STA after
+> _EJ0 has been called.
+> 
+> Add a post_eject callback to struct acpi_scan_handler. This is called
+> after acpi_scan_hot_remove() has successfully called _EJ0. Because
+> acpi_scan_check_and_detach() also clears the handler pointer,
+> it needs to be told if the caller will go on to call
+> acpi_bus_post_eject(), so that acpi_device_clear_enumerated()
+> and clearing the handler pointer can be deferred.
+> An extra flag is added to flags field introduced in the previous
+> patch to achieve this.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
 
-I.e. if we want this better to use the most popular name.
+Gavin's earlier review showed I can't type.
+Fixed up by dropping this RB seeing as I signed off anyway.
 
-> +Date:		April 2024
-> +Contact:	Mikko Rapeli <mikko.rapeli@linaro.org>
-> +Description:	If EFI firmware supports TPM device and measurements were d=
-one
-> +		then a TPM event log has very likely been generated and provided
-> +		to the kernel. This serves as indicator for userspace to load
-> +		TPM drivers and to start related service early in the boot sequence,
-> +		e.g. initramfs, where full bus probes and device scans are not yet
-> +		done.
-> +Users:		systemd will use this interface to support TPM drivers as module=
-s also
-> +		for early initramfs
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index 4fcda50acfa4..94773e8b8806 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -162,6 +162,13 @@ static ssize_t fw_platform_size_show(struct kobject =
-*kobj,
->  	return sprintf(buf, "%d\n", efi_enabled(EFI_64BIT) ? 64 : 32);
->  }
-> =20
-> +static ssize_t tpm_log_show(struct kobject *kobj,
-> +				     struct kobj_attribute *attr, char *buf)
-> +{
-> +	return sprintf(buf, "TPMEventLog=3D0x%lx", efi.tpm_log);
-
-It is also asymmetric with the log message as we can see here. Why you
-want to put that prefix and not just print the number? Why hex and not
-just %lu?
-
-
-> +}
-> +static struct kobj_attribute efi_attr_tpm_log =3D __ATTR_RO_MODE(tpm_log=
-, 0400);
-> +
->  extern __weak struct kobj_attribute efi_attr_fw_vendor;
->  extern __weak struct kobj_attribute efi_attr_runtime;
->  extern __weak struct kobj_attribute efi_attr_config_table;
-> @@ -459,6 +466,12 @@ static int __init efisubsys_init(void)
->  		platform_device_register_simple("efi_secret", 0, NULL, 0);
->  #endif
-> =20
-> +	if (efi.tpm_log !=3D EFI_INVALID_TABLE_ADDR) {
-> +		error =3D sysfs_create_file(efi_kobj, &efi_attr_tpm_log.attr);
-> +		if (error)
-> +			pr_err("sysfs create file failed with error %d.\n", error);
-> +	}
-
-s/err/warn/
-
-Why "sys create file" and not "sys_create_file"?
-
-> +
->  	return 0;
-> =20
->  err_remove_group:
-
-BR, Jarkko
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
 
