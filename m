@@ -1,232 +1,281 @@
-Return-Path: <linux-kernel+bounces-159458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3AC8B2EDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:12:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7374C8B2EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB5F282AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:12:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFECF1F2294D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C0A76036;
-	Fri, 26 Apr 2024 03:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885607580D;
+	Fri, 26 Apr 2024 03:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W/Dtl/6c"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R8UIKpbj"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE79D757F3
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02334EBE
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714101161; cv=none; b=XeZ+JVvfKBwEC2MEzDcj0FCsYoYCqJtUOk8n4g9f3/6QeP9ndMI4iFBonPD0cHPnz1FF3oLo23vdh0fdF46tRLAkMm8/mIHbjOe1awbThNJDMVFKKZUBngHdWT8EECXhmsXB+iM+aEQW1odqV9+WR3c/5WkGfTY2XOLObpdY96Q=
+	t=1714101138; cv=none; b=B4VmV7E12M+kE4NUX07qlnED+kIPGhbArqoCw2+93DFOxEl7C0CNfhDoBnYOo9BrTQjINXfdOhlwZrom2PrbUCvJ6taE3MOLRho2cmnffIkZkklMldUZurpkKcdDfkCX3lqHqag+IF0vjMV99eNNGWfCXXST2UsentC4q2smNbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714101161; c=relaxed/simple;
-	bh=N6nqUZWK/ft8y3k7S0i7d7O9JqPf9wUGqpFToio4O1A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GzRhTKPW67yPn0fV1qNVY6fyBEGvvn0z73166tErGr/E+mUOtvdmO5txaK/xNpSthhQd1wVsj7O0JJQ34zZyq9+wpzmvpYnpbNvvfxKOR+x/kBf+k56IA0UKAlKSnLKSCLbhLMdEaI2l3qu+mMvuONGoISJKYuzFvRArg653mG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W/Dtl/6c; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a58c09e2187so113593666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:12:39 -0700 (PDT)
+	s=arc-20240116; t=1714101138; c=relaxed/simple;
+	bh=cP0kCvI96rwsPcehcUWq7JTzqJql2pkoDE2HMCeaWeU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=KJ0Bd4H7rdGFSecXdHbqdK5awrCK6S7vfJIuztLI+BTW3SNloT7ycpjR7Lx5/eeKX1vCZ3c0oXNrDZIv8no9vxXjDpaoThVIaSwH6Gt5qpOouV16fujE+hbaKaVg4du2yvgu08iWmYyp+0WdlNlPXIbh5O1Kj5s1rPTbJCX1o3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R8UIKpbj; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-571c22d9de4so2446045a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:12:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714101158; x=1714705958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0gollOxoKKyvw6fTGUWSlbVML5x5LO6G0o13LnZVH94=;
-        b=W/Dtl/6c9K5+nqMJf1VOVmfaMOw1mHQ2yi976imO1DscrJB9QSSQeRuj2BHaIkFgTO
-         epyn4IHKflJN1PNYbYnu6q0rLmIz5bw3hcDp1P9vTz7h8qOZlULfLVrM9+j0hX9e80zM
-         bLd0uHkLoU+x8w7zIyJCVmvZOng4Ngi12OXNG/LpsPQUzCAC/oPBUqldiTJkOCYqQt4P
-         flzVXaTvaGgqKHdvCTFH4DWLDQE3IqkTlka6SwRAT9k3sPYKmcDopqMUnmGSiDKG/UUm
-         +iEK4gaVkV78mRgLRPn5dJGBQ41CrxXTCXX/Qn3+QnTJmI+uGfAcaGfqCi9gwZFMjYdO
-         +a5A==
+        d=gmail.com; s=20230601; t=1714101135; x=1714705935; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lzJxgcz5m8G1EM1ywnq84RC3ba8Z9yxAODKAr5+fyo4=;
+        b=R8UIKpbjIcZtDbWd4EhJNGJFYjRHfch3TvP81P7AzIhb+IHUlAcITkso2sqgYLiePD
+         V1K7uOpGHR5fAuwsHeWC8M+VDKzwJdl60n/u2gCTL8wkGRa0tOKWSFjsJTE2N5xF2SBE
+         j6GCbAvhttlSeWW/ym/vJftDpeuCAv69+IidJpSILbAVKL2xPfPGo4RNOJfJXZ+KP1CQ
+         nivQDWg1u+w5HCXXY7H+hmy1LRCb4MvYI3gzI/H3isc9RJjJpi8keouPqBHdkslD+//+
+         LwPbojr8JG23JmRULnQ6oubdInVf2oDs52k9Q/Fbs6dowwB9lcYa1pARDs6XWH6OA3a4
+         AZtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714101158; x=1714705958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0gollOxoKKyvw6fTGUWSlbVML5x5LO6G0o13LnZVH94=;
-        b=P1pB+cBOTBSQqqCegppkptYWjvT5QEMD5F4pFl8Kn6Jc3Y2R9wd34Czjsw3McKyJTD
-         /4xsJiOkU6+lHzdssP3AvdynnvgrvqQjTZ77eGi0mKWGF/9e7bWsgekD/VncMZzL9Rds
-         szVGIa4AcR9K1rNY731Qhz1Ja6yqberQzCxfhOTYzaczQS2ErUfaPY2EViXsZQYWosBk
-         2ovGdIG8VSs0BLdlqHQQbQvpv4QWT+wbn6g0eUlDZmpqKHuz3GRQ5xwiyuVVae/a18oQ
-         V146FYQm0tUKBD5CbtXbAZuQb2vCFqkWXlHsPYRE4BqrdSc2GQtASLui/nArvmT0hAd+
-         yN2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUmyOUhcFYadffQuk16eo36voI1Q02HWZJm4E4ZQiPpEiDZV4dn+E8SvZixFfFOBihzqKK4VQNTQniNHWccUeu5YAEo5bc69O7BNc/7
-X-Gm-Message-State: AOJu0YxavPUxqG+dkFoU35sA/bDnTlobfdPI3NdzRYrU+B4acHvXx4ui
-	9d5G+4yndA+cWWzanac7IJjMrCTczTvShepwS/HCnq4twIj52dVzuk3R1hPiUTpADPtJZrMLGic
-	DUxe3v3NbUKEnx2yR7uCroNNkRqMGz2Yy+Q3H
-X-Google-Smtp-Source: AGHT+IGDSRPovKtzouGSK3nDRKPqldE8VBP2zT0bWpeDyPOPWmuW7dXXtNaKlOcanQ+TJU3/GWyAZLHUToMGkHXfHtM=
-X-Received: by 2002:a17:906:368e:b0:a58:7fa5:811f with SMTP id
- a14-20020a170906368e00b00a587fa5811fmr782902ejc.69.1714101157761; Thu, 25 Apr
- 2024 20:12:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714101135; x=1714705935;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lzJxgcz5m8G1EM1ywnq84RC3ba8Z9yxAODKAr5+fyo4=;
+        b=fVJSehrb4RFybYkx5RrBnKaBxPg2IwIisM+BzXT4804P2mvEUBeERQQJLQRwI0Xbwi
+         6r6uu+ADqf5+oN2lAdj6jdULQUljro4ORTbZWULtjfQzXWhtB8DX8YzwqHZwF/ys6SoW
+         QwWyzO0dzrSh2gYb6ie3EVBwjGn4zY4srHFMByp+RZJHHQ7SmXGStgRRIrVio+8+8mGm
+         eeOrC3le3h81AWtSGT4iUpYO0dYgIEllWjGSaKrG9WPI72bZKcq5mJ0ooXahYccySpIQ
+         Wu3F6OEA3ymZgeGsEEBD8mFyPZpzHLXVUeBcgbww8dHa1pKliisQ/ZsdnFSl+OakbdzU
+         CFTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLFEM4W5Vi+KlDcjjkcWvjE6oW6n0Jn1YKMVvJXONKAAPA4gdS4OTi5lu4LR91KL9Z7vtf6QkIVQbI58Kwaqa5frjl0IN6uZ1/HFU5
+X-Gm-Message-State: AOJu0YzGXabLRbC3g/USDJ8sMMAZxhttd+foA1EuFNXgUxnYmWGmbe/z
+	NMByCUDxL6XkxzIv/DL6ImDo0fIRie8Btzr+nGQHyRhor9/0a4hfgYwgQFyGS1sqN1akaQxm+Ix
+	FN33M3+UZYNm3FyB/XoptbMjtBhv6daoJ
+X-Google-Smtp-Source: AGHT+IETZzj7+KbUL8RVv/0sv9PH6DI1lOTUGAYPSnXI4E0GBHIUrWfWmHBNHqMLo2MbNCBKiE8BB2UQSeMVrN8YiOQ=
+X-Received: by 2002:a17:906:e17:b0:a52:6c23:fa90 with SMTP id
+ l23-20020a1709060e1700b00a526c23fa90mr1039563eji.1.1714101135116; Thu, 25 Apr
+ 2024 20:12:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAL715WJK893gQd1m9CCAjz5OkxsRc5C4ZR7yJWJXbaGvCeZxQA@mail.gmail.com>
- <b3868bf5-4e16-3435-c807-f484821fccc6@loongson.cn> <CAL715W++maAt2Ujfvmu1pZKS4R5EmAPebTU_h9AB8aFbdLFrTQ@mail.gmail.com>
- <f843298c-db08-4fde-9887-13de18d960ac@linux.intel.com> <Zikeh2eGjwzDbytu@google.com>
- <7834a811-4764-42aa-8198-55c4556d947b@linux.intel.com> <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
- <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com> <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
- <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com> <ZirPGnSDUzD-iWwc@google.com>
- <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
-In-Reply-To: <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Thu, 25 Apr 2024 20:12:01 -0700
-Message-ID: <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
+From: Dave Airlie <airlied@gmail.com>
+Date: Fri, 26 Apr 2024 13:12:03 +1000
+Message-ID: <CAPM=9tzOc8ybNWouvj+Zz2kZy1iXVDgJ9v3yi_Owfz+jp2tqkw@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.8-rc6
+To: Linus Torvalds <torvalds@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: dri-devel <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 6:46=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.intel.=
-com> wrote:
->
->
-> On 4/26/2024 5:46 AM, Sean Christopherson wrote:
-> > On Thu, Apr 25, 2024, Kan Liang wrote:
-> >> On 2024-04-25 4:16 p.m., Mingwei Zhang wrote:
-> >>> On Thu, Apr 25, 2024 at 9:13=E2=80=AFAM Liang, Kan <kan.liang@linux.i=
-ntel.com> wrote:
-> >>>> It should not happen. For the current implementation, perf rejects a=
-ll
-> >>>> the !exclude_guest system-wide event creation if a guest with the vP=
-MU
-> >>>> is running.
-> >>>> However, it's possible to create an exclude_guest system-wide event =
-at
-> >>>> any time. KVM cannot use the information from the VM-entry to decide=
- if
-> >>>> there will be active perf events in the VM-exit.
-> >>> Hmm, why not? If there is any exclude_guest system-wide event,
-> >>> perf_guest_enter() can return something to tell KVM "hey, some active
-> >>> host events are swapped out. they are originally in counter #2 and
-> >>> #3". If so, at the time when perf_guest_enter() returns, KVM will ack
-> >>> that and keep it in its pmu data structure.
-> >> I think it's possible that someone creates !exclude_guest event after
-> > I assume you mean an exclude_guest=3D1 event?  Because perf should be i=
-n a state
-> > where it rejects exclude_guest=3D0 events.
->
-> Suppose should be exclude_guest=3D1 event, the perf event without
-> exclude_guest attribute would be blocked to create in the v2 patches
-> which we are working on.
->
->
-> >
-> >> the perf_guest_enter(). The stale information is saved in the KVM. Per=
-f
-> >> will schedule the event in the next perf_guest_exit(). KVM will not kn=
-ow it.
-> > Ya, the creation of an event on a CPU that currently has guest PMU stat=
-e loaded
-> > is what I had in mind when I suggested a callback in my sketch:
-> >
-> >   :  D. Add a perf callback that is invoked from IRQ context when perf =
-wants to
-> >   :     configure a new PMU-based events, *before* actually programming=
- the MSRs,
-> >   :     and have KVM's callback put the guest PMU state
->
->
-> when host creates a perf event with exclude_guest attribute which is
-> used to profile KVM/VMM user space, the vCPU process could work at three
-> places.
->
-> 1. in guest state (non-root mode)
->
-> 2. inside vcpu-loop
->
-> 3. outside vcpu-loop
->
-> Since the PMU state has already been switched to host state, we don't
-> need to consider the case 3 and only care about cases 1 and 2.
->
-> when host creates a perf event with exclude_guest attribute to profile
-> KVM/VMM user space,  an IPI is triggered to enable the perf event
-> eventually like the following code shows.
->
-> event_function_call(event, __perf_event_enable, NULL);
->
-> For case 1,  a vm-exit is triggered and KVM starts to process the
-> vm-exit and then run IPI irq handler, exactly speaking
-> __perf_event_enable() to enable the perf event.
->
-> For case 2, the IPI irq handler would preempt the vcpu-loop and call
-> __perf_event_enable() to enable the perf event.
->
-> So IMO KVM just needs to provide a callback to switch guest/host PMU
-> state, and __perf_event_enable() calls this callback before really
-> touching PMU MSRs.
+Hi Linus,
 
-ok, in this case, do we still need KVM to query perf if there are
-active exclude_guest events? yes? Because there is an ordering issue.
-The above suggests that the host-level perf profiling comes when a VM
-is already running, there is an IPI that can invoke the callback and
-trigger preemption. In this case, KVM should switch the context from
-guest to host. What if it is the other way around, ie., host-level
-profiling runs first and then VM runs?
+Regular weekly merge request, mostly amdgpu and misc bits in
+xe/etnaviv/gma500 and some core changes. Nothing too outlandish, seems
+to be about normal for this time of release.
 
-In this case, just before entering the vcpu loop, kvm should check
-whether there is an active host event and save that into a pmu data
-structure. If none, do the context switch early (so that KVM saves a
-huge amount of unnecessary PMU context switches in the future).
-Otherwise, keep the host PMU context until vm-enter. At the time of
-vm-exit, do the check again using the data stored in pmu structure. If
-there is an active event do the context switch to the host PMU,
-otherwise defer that until exiting the vcpu loop. Of course, in the
-meantime, if there is any perf profiling started causing the IPI, the
-irq handler calls the callback, preempting the guest PMU context. If
-that happens, at the time of exiting the vcpu boundary, PMU context
-switch is skipped since it is already done. Of course, note that the
-irq could come at any time, so the PMU context switch in all 4
-locations need to check the state flag (and skip the context switch if
-needed).
+Regards,
+Dave.
 
-So this requires vcpu->pmu has two pieces of state information: 1) the
-flag similar to TIF_NEED_FPU_LOAD; 2) host perf context info (phase #1
-just a boolean; phase #2, bitmap of occupied counters).
+drm-fixes-2024-04-26:
+drm fixes for 6.9-rc6
 
-This is a non-trivial optimization on the PMU context switch. I am
-thinking about splitting them into the following phases:
+atomic-helpers:
+- Fix memory leak in drm_format_conv_state_copy()
 
-1) lazy PMU context switch, i.e., wait until the guest touches PMU MSR
-for the 1st time.
-2) fast PMU context switch on KVM side, i.e., KVM checking event
-selector value (enable/disable) and selectively switch PMU state
-(reducing rd/wr msrs)
-3) dynamic PMU context boundary, ie., KVM can dynamically choose PMU
-context switch boundary depending on existing active host-level
-events.
-3.1) more accurate dynamic PMU context switch, ie., KVM checking
-host-level counter position and further reduces the number of msr
-accesses.
-4) guest PMU context preemption, i.e., any new host-level perf
-profiling can immediately preempt the guest PMU in the vcpu loop
-(instead of waiting for the next PMU context switch in KVM).
+fbdev:
+- fbdefio: Fix address calculation
 
-Thanks.
--Mingwei
->
-> >
-> > It's a similar idea to TIF_NEED_FPU_LOAD, just that instead of a common=
- chunk of
-> > kernel code swapping out the guest state (kernel_fpu_begin()), it's a c=
-allback
-> > into KVM.
+amdgpu:
+- Suspend/resume fix
+- Don't expose gpu_od directory if it's empty
+- SDMA 4.4.2 fix
+- VPE fix
+- BO eviction fix
+- UMSCH fix
+- SMU 13.0.6 reset fixes
+- GPUVM flush accounting fix
+- SDMA 5.2 fix
+- Fix possible UAF in mes code
+
+amdkfd:
+- Eviction fence handling fix
+- Fix memory leak when GPU memory allocation fails
+- Fix dma-buf validation
+- Fix rescheduling of restore worker
+- SVM fix
+
+gma500:
+- Fix crash during boot
+
+etnaviv:
+- fix GC7000 TX clock gating
+- revert NPU UAPI changes
+
+xe:
+- Fix error paths on managed allocations
+- Fix PF/VF relay messages
+The following changes since commit ed30a4a51bb196781c8058073ea720133a65596f:
+
+  Linux 6.9-rc5 (2024-04-21 12:35:54 -0700)
+
+are available in the Git repository at:
+
+  https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-04-26
+
+for you to fetch changes up to 3a8534035c0747610312f9552898a0ece10ef8a7:
+
+  Merge tag 'drm-xe-fixes-2024-04-25' of
+https://gitlab.freedesktop.org/drm/xe/kernel into drm-fixes
+(2024-04-26 12:56:58 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.9-rc6
+
+atomic-helpers:
+- Fix memory leak in drm_format_conv_state_copy()
+
+fbdev:
+- fbdefio: Fix address calculation
+
+amdgpu:
+- Suspend/resume fix
+- Don't expose gpu_od directory if it's empty
+- SDMA 4.4.2 fix
+- VPE fix
+- BO eviction fix
+- UMSCH fix
+- SMU 13.0.6 reset fixes
+- GPUVM flush accounting fix
+- SDMA 5.2 fix
+- Fix possible UAF in mes code
+
+amdkfd:
+- Eviction fence handling fix
+- Fix memory leak when GPU memory allocation fails
+- Fix dma-buf validation
+- Fix rescheduling of restore worker
+- SVM fix
+
+gma500:
+- Fix crash during boot
+
+etnaviv:
+- fix GC7000 TX clock gating
+- revert NPU UAPI changes
+
+xe:
+- Fix error paths on managed allocations
+- Fix PF/VF relay messages
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/sdma5.2: use legacy HDP flush for SDMA2/3
+
+Christian Gmeiner (1):
+      Revert "drm/etnaviv: Expose a few more chipspecs to userspace"
+
+Dave Airlie (4):
+      Merge tag 'amd-drm-fixes-6.9-2024-04-24' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-misc-fixes-2024-04-25' of
+https://gitlab.freedesktop.org/drm/misc/kernel into drm-fixes
+      Merge tag 'drm-etnaviv-fixes-2024-04-25' of
+https://git.pengutronix.de/git/lst/linux into drm-fixes
+      Merge tag 'drm-xe-fixes-2024-04-25' of
+https://gitlab.freedesktop.org/drm/xe/kernel into drm-fixes
+
+Derek Foreman (1):
+      drm/etnaviv: fix tx clock gating on some GC7000 variants
+
+Felix Kuehling (3):
+      drm/amdkfd: Fix eviction fence handling
+      drm/amdgpu: Update BO eviction priorities
+      drm/amdkfd: Fix rescheduling of restore worker
+
+Himal Prasad Ghimiray (2):
+      drm/xe: Remove sysfs only once on action add failure
+      drm/xe: call free_gsc_pkt only once on action add failure
+
+Jack Xiao (1):
+      drm/amdgpu/mes: fix use-after-free issue
+
+Joshua Ashton (1):
+      drm/amd/display: Set color_mgmt_changed to true on unsuspend
+
+Lang Yu (2):
+      drm/amdkfd: make sure VM is ready for updating operations
+      drm/amdgpu/umsch: don't execute umsch test when GPU is in reset/suspend
+
+Lijo Lazar (2):
+      drm/amdgpu: Assign correct bits for SDMA HDP flush
+      drm/amd/pm: Restore config space after reset
+
+Lucas Stach (1):
+      drm/atomic-helper: fix parameter order in
+drm_format_conv_state_copy() call
+
+Ma Jun (1):
+      drm/amdgpu/pm: Remove gpu_od if it's an empty directory
+
+Michal Wajdeczko (1):
+      drm/xe/guc: Fix arguments passed to relay G2H handlers
+
+Mukul Joshi (2):
+      drm/amdgpu: Fix leak when GPU memory allocation fails
+      drm/amdkfd: Add VRAM accounting for SVM migration
+
+Nam Cao (1):
+      fbdev: fix incorrect address computation in deferred IO
+
+Patrik Jakobsson (1):
+      drm/gma500: Remove lid code
+
+Peyton Lee (1):
+      drm/amdgpu/vpe: fix vpe dpm setup failed
+
+Prike Liang (1):
+      drm/amdgpu: Fix the ring buffer size for queue VM flush
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   | 35 ++++++----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c            |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c         |  2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_umsch_mm.c       |  3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c            |  2 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  3 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c             |  3 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              |  2 -
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_4_2.c           |  3 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c             | 26 ++++---
+ drivers/gpu/drm/amd/amdgpu/vpe_v6_1.c              | 14 ++--
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c           | 16 ++++-
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           | 15 ++--
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c               |  2 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  1 +
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c                 |  7 ++
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   | 25 +++++++
+ drivers/gpu/drm/drm_gem_atomic_helper.c            |  4 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c              | 24 +------
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h              | 12 ----
+ drivers/gpu/drm/etnaviv/etnaviv_hwdb.c             | 34 ---------
+ drivers/gpu/drm/gma500/Makefile                    |  1 -
+ drivers/gpu/drm/gma500/psb_device.c                |  5 +-
+ drivers/gpu/drm/gma500/psb_drv.h                   |  9 ---
+ drivers/gpu/drm/gma500/psb_lid.c                   | 80 ----------------------
+ drivers/gpu/drm/xe/xe_gt.c                         |  4 +-
+ drivers/gpu/drm/xe/xe_gt_ccs_mode.c                | 19 ++---
+ drivers/gpu/drm/xe/xe_gt_ccs_mode.h                |  2 +-
+ drivers/gpu/drm/xe/xe_guc_ct.c                     |  4 +-
+ drivers/gpu/drm/xe/xe_huc.c                        |  9 +--
+ drivers/video/fbdev/core/fb_defio.c                |  2 +-
+ include/uapi/drm/etnaviv_drm.h                     |  5 --
+ 32 files changed, 131 insertions(+), 243 deletions(-)
+ delete mode 100644 drivers/gpu/drm/gma500/psb_lid.c
 
