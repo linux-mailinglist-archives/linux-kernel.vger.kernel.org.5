@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-159759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7398B33A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:13:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBDC8B33A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D21EB1F22582
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:13:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 590281C21A09
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2037E13E892;
-	Fri, 26 Apr 2024 09:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A73F13FD9B;
+	Fri, 26 Apr 2024 09:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="qRE12cjV"
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="W6B1Df0b"
 Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A07C13D2BF;
-	Fri, 26 Apr 2024 09:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040F3282EA;
+	Fri, 26 Apr 2024 09:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714122804; cv=none; b=kLbu8ZE3IkFx1Juy54QE2jaA+A1vu4gZTxBQwDQb82RzYKQa94bWZtWCwKHUBdYOpA/l48qV3p47EM4k24CWphEcXOGPnAZxiWvoSeutV+/C8M4FcTYUlDS8N3iLTFGMvotQGY647ZGprbvUBLak6I9cGLGgOJrFm/tKIx7RNl0=
+	t=1714122805; cv=none; b=dvq54TXGjvKWmF4dJDmH2bBf0UaZMcLkMsxy+P4FRrvggzpJuVgUJCB6GG5i+BsAGZNin7iLDQY/xbSF/xR4aY4cx50TiV11BWvdgPbj05vJPB/2JN8CcK1FVGbckkixKqqDKHegntLR7OMmWeKXljty8bH/45AhfhxWue9dEBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714122804; c=relaxed/simple;
-	bh=eV33PMxw0Cc21m0h+LKsBOgy4HzT4yeVL9NTNgNOzUg=;
+	s=arc-20240116; t=1714122805; c=relaxed/simple;
+	bh=3ii8rmx58QKPD7NlzblSbXJrF9bHIa8Z3g1LxRb5V34=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jiTdlSMrEAbVz27o9B7peGy3SIf5byuHWEc3y5KIpRZRrKXPp+I4cskeiz0ayBWUihBppkqu4EFyFj6mq/R+eqgDxddYzxFfApvMcxdrU43sZzTWjY2m3wa2LpzlBJuxJUTEuNtRqZ7MGudCnc7hhNc3xtoTViQDFVSc/Ys4nGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=qRE12cjV; arc=none smtp.client-ip=193.104.135.124
+	 MIME-Version:Content-Type; b=PSdGYMefTAkRboC5sGvj79pJRDeWFKYl2AZjr2aX8OKJuIkSJkt6tujDMet5cVABXwXQWgZMDNVOiLWBcY/8n3QOMUXOMMBElFz8SJncOML24ftDgiJDga+d3mDYFdzTFRnNw+J4jZwCeFwDR7JqDyKHR6ZY8uGN/Vq/yif0kJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=W6B1Df0b; arc=none smtp.client-ip=193.104.135.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
 Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 4A1B2600A2;
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 58F0D600A7;
 	Fri, 26 Apr 2024 09:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
 	s=202008; t=1714122793;
-	bh=eV33PMxw0Cc21m0h+LKsBOgy4HzT4yeVL9NTNgNOzUg=;
+	bh=3ii8rmx58QKPD7NlzblSbXJrF9bHIa8Z3g1LxRb5V34=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qRE12cjVZ4Mcz4/uXis4EX/HjYv7KESNpmUUDkna1CHOODlCdCLzVGDlH8z8QEwM0
-	 7bJxthBBffvjqhGEohwNiOVIVpVGV8+cHtN0+Q6g8YVTi82OYjFtr9UCZJkrEDkOUi
-	 9kb/p0eoLm7nCE39hLCOTatwYVd3dwiw8wifA5FFIZAN06UjBcDn5QiCBur8yalR/h
-	 3r5HMzEYQ+RqVp9tzGk8fD6Du65BtqZY/wNisRh3536kwqWdsGu2sdX29pGZpCXRbP
-	 YmG0nsiyKSUoftwLIQZ4k1BXFxII5SV82U+9zBdm7ktmJflxmu/F4qbOK32U9m/O/0
-	 F2EpjEy4KyI4A==
+	b=W6B1Df0bBRIS+HdXLLJ7mdkIpCR4Hb08D7PeltSSSKjp6ABE3HuWqO/ZvAILCJIiv
+	 oSilXzgIeYw6AaRMHL3yWLsK0ZOE7K05oU3ZvcTYomSmHf8c1uLAOwovSxGFeIOWsW
+	 K8i3C2CW08r2SQuCHuVdXnEcrrSiPGfnE1Mfwo2Uzk4IpQkWYqyP6qgRAlYFy3yIn2
+	 J4oxlEOBIrMDVB1D8FvbzMzGNQwOB3lOl4Fj5xogP9NXKjfok1nTxRKDBHFZKP3JQ3
+	 F0fOY8Z8DmRX/dJQ+DOQyDTyxe4tHuNKQgQzBxrXhBPHqT3rKtBujijTLIqF4G/RP3
+	 l4jdnlQBIWnaw==
 Received: by x201s (Postfix, from userid 1000)
-	id B838721BB48; Fri, 26 Apr 2024 09:12:28 +0000 (UTC)
+	id E1B9821BB4A; Fri, 26 Apr 2024 09:12:28 +0000 (UTC)
 From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
 To: netdev@vger.kernel.org
 Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
@@ -57,9 +57,9 @@ Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
 	Manish Chopra <manishc@marvell.com>,
 	Jiri Pirko <jiri@resnulli.us>,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net 3/4] net: qede: use return from qede_parse_flow_attr() for flow_spec
-Date: Fri, 26 Apr 2024 09:12:25 +0000
-Message-ID: <20240426091227.78060-4-ast@fiberby.net>
+Subject: [PATCH net 4/4] net: qede: use return from qede_parse_actions()
+Date: Fri, 26 Apr 2024 09:12:26 +0000
+Message-ID: <20240426091227.78060-5-ast@fiberby.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240426091227.78060-1-ast@fiberby.net>
 References: <20240426091227.78060-1-ast@fiberby.net>
@@ -72,48 +72,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-In qede_flow_spec_to_rule(), when calling
-qede_parse_flow_attr() then the return code
-was only used for a non-zero check, and then
--EINVAL was returned.
+When calling qede_parse_actions() then the
+return code was only used for a non-zero check,
+and then -EINVAL was returned.
 
-qede_parse_flow_attr() can currently fail with:
+qede_parse_actions() can currently fail with:
 * -EINVAL
 * -EOPNOTSUPP
-* -EPROTONOSUPPORT
 
 This patch changes the code to use the actual
 return code, not just return -EINVAL.
 
-The blaimed commit introduced qede_flow_spec_to_rule(),
-and this call to qede_parse_flow_attr(), it looks
-like it just duplicated how it was already used.
+The blaimed commit broke the implicit assumption
+that only -EINVAL would ever be returned.
 
 Only compile tested.
 
-Fixes: 37c5d3efd7f8 ("qede: use ethtool_rx_flow_rule() to remove duplicated parser code")
+Fixes: 319a1d19471e ("flow_offload: check for basic action hw stats type")
 Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 ---
  drivers/net/ethernet/qlogic/qede/qede_filter.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/qlogic/qede/qede_filter.c b/drivers/net/ethernet/qlogic/qede/qede_filter.c
-index 25ef0f4258cb..377d661f70f7 100644
+index 377d661f70f7..cb6b33a228ea 100644
 --- a/drivers/net/ethernet/qlogic/qede/qede_filter.c
 +++ b/drivers/net/ethernet/qlogic/qede/qede_filter.c
-@@ -2002,10 +2002,9 @@ static int qede_flow_spec_to_rule(struct qede_dev *edev,
- 	if (IS_ERR(flow))
- 		return PTR_ERR(flow);
+@@ -1894,10 +1894,9 @@ int qede_add_tc_flower_fltr(struct qede_dev *edev, __be16 proto,
+ 	}
  
--	if (qede_parse_flow_attr(edev, proto, flow->rule, t)) {
--		err = -EINVAL;
-+	err = qede_parse_flow_attr(edev, proto, flow->rule, t);
-+	if (err)
- 		goto err_out;
+ 	/* parse tc actions and get the vf_id */
+-	if (qede_parse_actions(edev, &f->rule->action, f->common.extack)) {
+-		rc = -EINVAL;
++	rc = qede_parse_actions(edev, &f->rule->action, f->common.extack);
++	if (rc)
+ 		goto unlock;
 -	}
  
- 	/* Make sure location is valid and filter isn't already set */
- 	err = qede_flow_spec_validate(edev, &flow->rule->action, t,
+ 	if (qede_flow_find_fltr(edev, &t)) {
+ 		rc = -EEXIST;
 -- 
 2.43.0
 
