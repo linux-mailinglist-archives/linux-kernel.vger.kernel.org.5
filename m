@@ -1,89 +1,84 @@
-Return-Path: <linux-kernel+bounces-159479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 540308B2F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:42:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9BD68B2F32
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 05:43:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46CF4B20FB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:42:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0543EB20EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D862078C7A;
-	Fri, 26 Apr 2024 03:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CB578C78;
+	Fri, 26 Apr 2024 03:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="awl04xo9"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="BYf61GvY"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D4878C63;
-	Fri, 26 Apr 2024 03:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BE57604D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714102925; cv=none; b=V4d3SJs8D4UhBvKD/8aC33wG9y6jX/R+mH8LtRz9BRb8jpa5q/4qXxOKk3PIZzJUgRzBzWm1RL3/Exlm6MIqS2GNKu9rYlTg2r6osDiRjFkFELZtepFgWZlxHgrPc0IprXjDZz8KuUgnv9EgjvI7k3EcFkhZn4f8YdWcuy6onaU=
+	t=1714103009; cv=none; b=sTbpwHqkfzerK92Jj+6LXpLABoN3ij0CjcFZ+shLSA75hjVXmcAu6zRQtx1LRegXocYI5rnfhduMk+WM0d/vXROsARszzi/Q3GxI8wvXKoaR3LduY5n+hmimWmYftDjOtr9TPlbfhCR4KfAlaOpIyAe4/4sP+7do8fs/iVaot5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714102925; c=relaxed/simple;
-	bh=JcYjvFAPEQ+HEHhcQA96VfcqcAMcsCidJ+1ZNnn/zWs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IvgGvXXQX6dXiS0ED1WllEiaE4dXKq6myID6S1bt6rHuTOOs8HQUHZx7rps0x5Fa/7jVj0kgSr+P9W2kR5nzXImxwaS9PXUM7HTBGmxCodsUBdiGgrLCLKNORhJnlk4LlgAlJGKmSSjMWus3zGuCWzkOqxy/7pXq3F4UmCIhgM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=awl04xo9; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6f103b541aeso1520104b3a.3;
-        Thu, 25 Apr 2024 20:42:03 -0700 (PDT)
+	s=arc-20240116; t=1714103009; c=relaxed/simple;
+	bh=tDWeS9EyfVzdb9+b53fsi52JTEQiv3F8/xYZ8HRdDKQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KqaG7p343Mh8OCOn/NYmut3m9vXEB7FlIe0dHzvGqktCvoT9yWBhZgleIq+GW7XPZAFFnpK4cq4bL5f55mhB/xakeiK9qYRPK+SyEB+/lQHkCz9K5E7zUF9nmue+gSMq/nf0wtqvAlqt6o9GQ1nDk7/YD9Ai+TkgW6LqKPHYly0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=BYf61GvY; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4376157292fso11262191cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 20:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714102923; x=1714707723; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vcbSCZ9Y2wGlgtCSSOeITnOlatGFVgCpJ0czBbahZfA=;
-        b=awl04xo9ztlOPbsA+0HGOVQTxE2/MAF0o2mG7MZq4IpQR8W8mN45mSFC92lLUbSc+G
-         p1Xwa+rtArSxLFXQ4ahCvp3AtuXrVAYQXlxi26zGTWIN3+0AEYCJ7/8bArI+HhhmzoTN
-         O8E8rikyifF6/Kb6T3V+XBJILzLwQNqUBvD17SIl9emXrzOmw2c/CaJ9Kj21tztcIqPq
-         pVRboZ/L2y2988afImAhXULopeEXNkG8oVKKbXc38I9vpMZwuzXFyWb+5s/ci8HMFAsM
-         5w+UTTeVb3pMosCpJVODaNh2CB4D4aPG6qUvTi0I5l3sdZINsd109nP4ecH7yW9cF8L5
-         YSrA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1714103006; x=1714707806; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cjep24xOYUjfKLkGIt5Xg15kGd3msBByaQ3pAIEh0mM=;
+        b=BYf61GvYUnF2TTRC814RtCj7Jgt4au0+4X2s48k/PAgcayVMRSoDIYyb7/T2r8+gZk
+         9g+jXcAfqG0aaf+bQvVm+HtgLisCoEVoczDwIt46ENd/qiobLYVmUBVzeC4jHYB6TxHA
+         ahEmsBWWheDlETvzHZ0KHhv0DQamjmogdwdBO1h77jSecm+MDMMC6r6xqG+XckV3I5cs
+         j+BDdQUuBI0HeAPJI9/2r2hP/UxlSYqXn+zSS/UGE/z5x4YIORfseB8cfpjZyyRQokzM
+         QaFy10fSn8vuXAudMO5k7eXs2NKXH3dzKHSe/5WSV0ZG+rK3+zDzSdALX22uZRdmbeRA
+         YLPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714102923; x=1714707723;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vcbSCZ9Y2wGlgtCSSOeITnOlatGFVgCpJ0czBbahZfA=;
-        b=SycvW+fuiFb1ID7Y7ZuaI6PRBUjS+Hboj/rKCq3a3pLCJJx97AonGEsVeU0zxJMspn
-         qiEWNJerrQGOre7K8T0Dw41i+YtWpH8OHCjPmcbyCezaCc4n6BrmRkyF7nW9tb5gXIyV
-         hwNIzdgLHCK7nfWvctAGGa5W7soCiegwjNNy7/E4zSu5I7alSsZYoKsWC/xbZNe5RQaX
-         gkhd3Pp8BKwZWHzr0g+fWT5TBPerPFi63NcnsF8lTw8Z8hTfpOEOpwE7/JBc+9P88yKt
-         pJmxuyYWGiwx30JRur5QHHdNAJ09C4yw976c+wyh3Tkd6TbQECixNHqe0MADOOJ90ouf
-         rf6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUhiYOTysCOC33BOiJlwpeUGQxb6EtH/hCUB8DLn4Gg359a66z/okfaNcTT5r3z22fKJX6V9UgFr7tsC5kVhgL2c96cLIezG8dA5wlIINysHKsPlM7GqK/IWekMPRh/UIb+XT5RfIlWxEQg1Q==
-X-Gm-Message-State: AOJu0YxgDJLZZyszkSaizH1OfZxIS9UJ+Fev1objm/oWNRHkjGOTDR+M
-	OIBlaUJiJ85UhHCkHw6JLTEoS/KGkbuymcpegK1YiqpYMDhabbbD
-X-Google-Smtp-Source: AGHT+IFKVoAcUnC/X1pW0IQ7BDM1mK7tLEYiPCxRztwnL1ODKEXICZa989yrQlNKJNIJTWxMmDDLGA==
-X-Received: by 2002:a05:6a21:271c:b0:1a3:63fa:f760 with SMTP id rm28-20020a056a21271c00b001a363faf760mr1754152pzb.14.1714102923229;
-        Thu, 25 Apr 2024 20:42:03 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id p25-20020aa78619000000b006e647716b6esm14409826pfn.149.2024.04.25.20.42.00
+        d=1e100.net; s=20230601; t=1714103006; x=1714707806;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cjep24xOYUjfKLkGIt5Xg15kGd3msBByaQ3pAIEh0mM=;
+        b=SqBZrVPC7f1cidsARClFSVcKOVHtvs1EWZluydzX7sFnCNi2GAqmt6v/bPC919cYjV
+         7cloaxUIoZ4dyRuEqC7oBaoX8OMu7RvdsDOeSwwoe/BJLmzlb095BNdHyEi8smc8EpVX
+         QvdIyOqJ53mnY31C5441PKympuo6Zui0wS7kF2qeG65WHmDZPgQ8fDz6dugAOUcsgm76
+         cTS1P7337viIQHgTOXlkQzD1IzrjzTqgxLKrUudBBdmcl2FoSPWsWHOHWjCDz2XNbp4D
+         kDkDM7kzCaWua9ToKEHOidQKO7tMO6xOA/WYA17s6PawlnSiGB2WGQkR81Hj1huvBdLs
+         RNQA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0Xh7Y26NqPouPNgHzpFtDCpl3vC9O2sWc3yaa62STJkwWo6QC6xeG3yNQYTumNbYoFAk2eHgIzgdnny8oz1MfMuJr5N1KRqDhJfN9
+X-Gm-Message-State: AOJu0Yzum7YpLgs1M5xAZ2Q6WwOlEXyay6RRd2FiTpxoKIhLuiCYfc14
+	z1Vc29B77Tx35fiwPejXhzacHUGb2Esb2JXvecxDy/YlPjlw6T+duRoyg2qhk4w=
+X-Google-Smtp-Source: AGHT+IFuoNJDhVkOL87F6xMutiaC8xqNWrWB8I1N4j8YVN/IGWVNHKOf3F9BvXbF9SFqhbkbEzFqrA==
+X-Received: by 2002:ac8:7dc1:0:b0:437:9877:333 with SMTP id c1-20020ac87dc1000000b0043798770333mr1787129qte.35.1714103006289;
+        Thu, 25 Apr 2024 20:43:26 -0700 (PDT)
+Received: from soleen.c.googlers.com.com (129.177.85.34.bc.googleusercontent.com. [34.85.177.129])
+        by smtp.gmail.com with ESMTPSA id c6-20020ac80546000000b00436bb57faddsm7540815qth.25.2024.04.25.20.43.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Apr 2024 20:42:02 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: willy@infradead.org
-Cc: brauner@kernel.org,
-	dave.kleikamp@oracle.com,
-	jfs-discussion@lists.sourceforge.net,
-	jlayton@kernel.org,
-	linux-fsdevel@vger.kernel.org,
+        Thu, 25 Apr 2024 20:43:26 -0700 (PDT)
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	pasha.tatashin@soleen.com,
 	linux-kernel@vger.kernel.org,
-	shaggy@kernel.org,
-	syzbot+241c815bda521982cb49@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: Re: [PATCH] jfs: Fix array-index-out-of-bounds in diFree
-Date: Fri, 26 Apr 2024 12:41:56 +0900
-Message-Id: <20240426034156.52928-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZisfLI3Va6D5PjT6@casper.infradead.org>
-References: <ZisfLI3Va6D5PjT6@casper.infradead.org>
+	rientjes@google.com,
+	dwmw2@infradead.org,
+	baolu.lu@linux.intel.com,
+	joro@8bytes.org,
+	will@kernel.org,
+	robin.murphy@arm.com,
+	iommu@lists.linux.dev
+Subject: [RFC v2 0/3] iommu/intel: Free empty page tables on unmaps
+Date: Fri, 26 Apr 2024 03:43:20 +0000
+Message-ID: <20240426034323.417219-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,51 +87,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Matthew Wilcox wrote:
-> This is not a good commit message.
+Changelog
+================================================================
+v2: Use mapcount instead of refcount
+    Synchronized with IOMMU Observability changes.
+================================================================
 
-> > +	if(agno >= MAXAG || agno < 0)
->
-> Please follow normal kernel whitespace rules -- one space between 'if'
-> and the open paren.
+This series frees empty page tables on unmaps. It intends to be a
+low overhead feature.
 
-Has confirmed. This is a patch that re-edited the relevant part to
-comply with the rules.
+The read-writer lock is used to synchronize page table, but most of
+time the lock is held is reader. It is held as a writer for short
+period of time when unmapping a page that is bigger than the current
+iova request. For all other cases this lock is read-only.
 
-Thanks.
+page->mapcount is used in order to track number of entries at each page
+table.
 
-Reported-by: syzbot+241c815bda521982cb49@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/jfs/jfs_imap.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Microbenchmark data using iova_stress[1]:
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 2ec35889ad24..1407feccbc2d 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -290,7 +290,7 @@ int diSync(struct inode *ipimap)
- int diRead(struct inode *ip)
- {
- 	struct jfs_sb_info *sbi = JFS_SBI(ip->i_sb);
--	int iagno, ino, extno, rc;
-+	int iagno, ino, extno, rc, agno;
- 	struct inode *ipimap;
- 	struct dinode *dp;
- 	struct iag *iagp;
-@@ -339,8 +339,11 @@ int diRead(struct inode *ip)
- 
- 	/* get the ag for the iag */
- 	agstart = le64_to_cpu(iagp->agstart);
-+	agno = BLKTOAG(agstart, JFS_SBI(ip->i_sb));
- 
- 	release_metapage(mp);
-+	if (agno >= MAXAG || agno < 0)
-+		return -EIO;
- 
- 	rel_inode = (ino & (INOSPERPAGE - 1));
- 	pageno = blkno >> sbi->l2nbperpage;
+Base:
+$ ./iova_stress -s 16
+dma_size:       4K iova space: 16T iommu: ~  32847M time:   36.074s
+
+Fix:
+$ ./iova_stress -s 16
+dma_size:       4K iova space: 16T iommu: ~     27M time:   38.870s
+
+The test maps/unmaps 4K pages and cycles through the IOVA space in a tight loop.
+Base uses 32G of memory, and test completes in 36.074s
+Fix uses 0G of memory, and test completes in 38.870s.
+
+I believe the proposed fix is a good compromise in terms of complexity/
+scalability. A more scalable solution would be to spread read/writer
+lock per-page table, and user page->private field to store the lock
+itself.
+
+However, since iommu already has some protection: i.e. no-one touches
+the iova space of the request map/unmap we can avoid the extra complexity
+and rely on a single per page table RW lock, and be in a reader mode
+most of the time.
+
+[1] https://github.com/soleen/iova_stress
+
+Pasha Tatashin (3):
+  iommu/intel: Use page->_mapcount to count number of entries in IOMMU
+  iommu/intel: synchronize page table map and unmap operations
+  iommu/intel: free empty page tables on unmaps
+
+ drivers/iommu/intel/iommu.c | 154 ++++++++++++++++++++++++++++--------
+ drivers/iommu/intel/iommu.h |  42 ++++++++--
+ drivers/iommu/iommu-pages.h |  30 +++++--
+ 3 files changed, 180 insertions(+), 46 deletions(-)
+
 -- 
-2.34.1
+2.44.0.769.g3c40516874-goog
+
 
