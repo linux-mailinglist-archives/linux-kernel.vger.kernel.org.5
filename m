@@ -1,165 +1,146 @@
-Return-Path: <linux-kernel+bounces-159885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A548B3574
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:42:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 781EF8B3577
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA401F21CA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:42:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8FF1C20EC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B349F143886;
-	Fri, 26 Apr 2024 10:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CA0143890;
+	Fri, 26 Apr 2024 10:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BMYqoYBg"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gDWHDdDk"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7913977F30;
-	Fri, 26 Apr 2024 10:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AF0208C1;
+	Fri, 26 Apr 2024 10:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714128157; cv=none; b=sYLmdIERL7rd1EFmwzNcuMK22RPUIPFPgvdRXnVxkek46C1NMHVaaBp+TMESgx84woJmtPZGFojK8vCg0xw+Q0GkwxTN/fHcyq9kRAJHDHtXtCNScu61qWECG+qMmvZnKTR2qLw5OrWET6uhvAiPqf7HkMDuWBDkzgYGif2NJzo=
+	t=1714128185; cv=none; b=bLNO8qPdZi493LS5obQkYxdh+l42Y5gJ5kxqd1q4nzt8fvSuGArdbQvEXHq3LuyZ6/0YQqLDkZprsigCO0bmJcmxFY+qH6/wo7dvOGOfzcHojVH0cavOjPzxjiOTZBx/hbC25X765A1s3crbp81uKogSBy/E0zY+pOUy/z0Uhio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714128157; c=relaxed/simple;
-	bh=5jZaOy2PhOKuK73pSktlLzYYq/UWVVx/cSl8pNjughE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=K8zmsSAH3Uklt+sRIlNmcwm0Bsg2WLN1DnYKqPSKcB4svKT6hLYikVx6fVRs6NISN9Z/bUxcx3IwCi+a1qeZv6HMgfgHXbHwU+GPhknQBWbI2EFG9KP9HpHbaZ70P0VjGC8RsaWgGx7npoCxYVTj9MfXyfSXXrOTptg2IH2MhAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BMYqoYBg; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q5dPXV021276;
-	Fri, 26 Apr 2024 10:42:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=y2MVu4mhZFEgMJCbHWI/1+jaRluiMvPd1GS4dy8pZOk=; b=BM
-	YqoYBgh6NVvdOvYfTbMTxTdk3uvrtuOWlz3A45bNkksfyk5xGgf5PuytrLpp0+OW
-	nTjwJpGeqg0P+6c4SMtVxoQ3PF6PZJIQzgFJH6S63EBrpEfzcR+rKHt8kHekjBLb
-	WcW+bzzXKSXVPW2gY+Wza9Ze6BPb2oTAcdv3vvUJDXvM45nCygw2abFXXtGBu1Yz
-	WUwmSoJWef1uSfVFRxEAhiZ/o3kaU003+iTzB0t6BRabSpH8/wgp99r9Yalcv28C
-	8LHKUzR1NTPgueKqsZbz6/tTVExju5cXpMuDdt/h5WcWqs0AvbsG/xl2s2zB6APw
-	Ykg3xjbe2x3Wxil/MFiA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr1ne9r4j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 10:42:22 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43QAgLDZ018475
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 10:42:21 GMT
-Received: from [10.216.47.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Apr
- 2024 03:42:13 -0700
-Message-ID: <c10c94c4-5239-46d3-9b41-95e3c943e969@quicinc.com>
-Date: Fri, 26 Apr 2024 16:12:07 +0530
+	s=arc-20240116; t=1714128185; c=relaxed/simple;
+	bh=l9M9y8mTaldAbg5u0/6ac4j2ZFOV7tnyNBMnzNQAWfI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Y8Etm0YGRDlJ7SE/4yVGMlKfo3K90M6VxAxM0XoGyfjsqiWFvmQUGVA/PgkXTE/Qmgf4efu6yQTyKj2E7dIKXYuEgSDzkdUold1iBlcFYWcjv8NgFiYcKMRHn3w4Pycf/+Xp/C6u4/PmOHWlEnvJOiPAw4228ioeLwNR1cMhaOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gDWHDdDk; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 613AA1BF205;
+	Fri, 26 Apr 2024 10:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714128175;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=L7xhI9ZrjJNWdo2TagCqPAYtwGPHErlpEEibcx2hB4s=;
+	b=gDWHDdDkS7waIwPFEXOxTClYvhS4BmaksN4/b+EBN8J3yuHd4D04fEORMPe4uo0K7os+Km
+	6msw5Jtzlg9/jBBDBNj+LjOesL857sb2pmKtZSjihiUzSDiMd//0uEKM9smMc8/pc8wsrG
+	NUC9nX1o/D1OngRKGJ4GltEYD7AQSVQ5/9GQiM/xL6Lixxy4gujW+9eB7TOTJ9UpcStfg3
+	tc2sRtwdsc2n0QjxFz8bKwgjXFOltJENhse3etX7FwXck7si8oe1VG+nB2lIDzUM0uKCDW
+	m9x7uMGKhkZlrGN1DwpOv5eXbpl43iIi2hRdMzqyKdvTmDDKhQsjdxM0uL2PcQ==
+Date: Fri, 26 Apr 2024 12:42:53 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown
+ <broonie@kernel.org>, Kyle Swenson <kyle.swenson@est.tech>, Liam Girdwood
+ <lgirdwood@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: PoE complex usage of regulator API
+Message-ID: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
-Content-Language: en-US
-From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-To: Johan Hovold <johan@kernel.org>
-CC: Doug Anderson <dianders@chromium.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "Luiz
- Augusto von Dentz" <luiz.dentz@gmail.com>,
-        Matthias Kaehlcke
-	<mka@chromium.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Stephen Boyd
-	<swboyd@chromium.org>,
-        <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
- <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
- <Zid6lfQMlDp3HQ67@hovoldconsulting.com>
- <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
- <ZioW9IDT7B4sas4l@hovoldconsulting.com>
- <c9ea5867-2db2-4f64-a1e3-f6c2836dd45d@quicinc.com>
- <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
- <bb0e1baf-7e64-463a-8638-d403c7a29317@quicinc.com>
-In-Reply-To: <bb0e1baf-7e64-463a-8638-d403c7a29317@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MLPPBesPkqd5KEe_zglqxKt6jhGKWm84
-X-Proofpoint-GUID: MLPPBesPkqd5KEe_zglqxKt6jhGKWm84
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_09,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404260070
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
+Hello Mark, Oleksij,
 
-Hi Johan,
+Now that PoE support has been merged, I am digging more into the PoE featur=
+es.
+We decided to use the regulator API inside the PSE (Power Sourcing Equipmen=
+t)
+API because PSE and regulators are quite similar as exposed by Oleksij in t=
+he ML
+before: https://lore.kernel.org/netdev/20231221174246.GI1697233@pengutronix=
+de/
+We designed it to have one regulator provider registered for each PSE ports
+as described by Oleksij.
 
-Please note BDA values listed below are in the firmware (FW) data
-order, but the actual BDA value should be in the reverse of that order.
+I am not really familiar with the regulator API and regulator controllers s=
+o I
+have few questions and one issue using the API.
 
-On 4/26/2024 11:53 AM, Janaki Ramaiah Thota wrote:
-> 
-> 
-> On 4/25/2024 9:28 PM, Johan Hovold wrote:
->> Hi Janaki,
->>
->> On Thu, Apr 25, 2024 at 08:31:50PM +0530, Janaki Ramaiah Thota wrote:
->>
->>> Apologies for the delay. As of now, we have observed the following
->>> values in the upstream firmware files for default BD addresses.
->>> We will confirm ASAP if there are any changes.
->>>
->>> ---------------------------------------------------------
->>> |   BDA            |      Chipset                       |
->>> ---------------------------------------------------------
->>> | 20 00 00 10 80 39  | WCN3988 with ROM Version 0x0200    |
->>> ---------------------------------------------------------
->>> | 00 08 74 12 80 39  |  WCN3988 with ROM Version 0x0201    |
->>> ---------------------------------------------------------
->>> | 00 07 64 21 90 39  |  WCN3990                    |
->>> ---------------------------------------------------------
->>
->> Thanks a lot for these. I see now that the default Trogdor address Doug
->> reported (39:98:00:00:5a:ad) appears to comes from the fw too:
->>
->>     $ od -x crnv32.bin | grep 5aad
->>
->>     0000020 0000 0000 5aad 0000 3998 0008 0008 0000
->>
->> which means that patch I sent this morning should be all that is needed
->> for those machines at least.
->>
-> 
-> Yes correct, it will work for Trogdor
-> 
->> Can you please confirm that all the WCN39xx have OTP storage for an
->> address that an OEM can choose to use?
->>
-> 
-> We are checking with internal FW team, will confirm on it.
-> 
->> If that's not the case then we could simplify things by always marking
->> their addresses as invalid, but I assume that they all have address
->> storage.
->>
->> Johan
-> 
-> -Janakiram
+Let's begin simple, in PSE world we are more talking about power.
+Would it be ok to add a regulator_get/set_power_limit() and
+regulator_get_power() callback to regulator API. Would regulator API have
+interest to such callbacks?
 
--Janaki Ram
+Port priority, more complex subject:
+Indeed a PSE controller managing several ports may be able to turn off ports
+with low priority if the total power consumption exceed a certain level.
+- There are controller like PD692x0 that can managed this on the hardware s=
+ide.
+  In that case we would have a regulator_get/set_power_limit() callbacks fr=
+om
+  the regulator parent (the PSE contoller) and a regulator_get/set_priory()
+  callbacks for the regulator children (PSE ports).
+- There are controller like TPS23881 or LTC4266 that can set two priorities
+  levels on their ports and a level change in one of their input pin can
+  shutdown all the low priority ports. In that case the same callbacks coul=
+d be
+  used. regulator_get/set_power_limit() from the parent will be only at sof=
+tware
+  level. regulator_get/set_priority() will set the priorities of the ports =
+on
+  hardware level. A polling function have to read frequently the total power
+  used and compare it to the power budget, then it has to call something li=
+ke
+  regulator_shutdown_consumer() in case of power overflow. =20
+- We could also want to manage the regulator priorities fully at software l=
+evel,
+  in that case it will be like above but saving all informations in the dri=
+ver
+  or using regulator generic functions.
+This priority support could bring lots of issue and complexity like unbindi=
+ng
+regulator children driver at runtime if regulator parent overflow its power
+budget. In the other side it could be interesting in the global management =
+of
+power if power supply can vary, like battery or hot-pluggable power supply.
+What do you think? Do you think it is worth adding it to regulator API?
+
+Last point, the PSE issue with regulator counters:
+In regulator world we are using counters to not disable a regulator if chil=
+dren
+are still using it. In the PSE world the regulator providers describing the
+PSE ports do not want such counter to exist. We do want to run enable/disab=
+le
+commands several times without increment/decrement the counter. So I added =
+an
+admin_state_enabled PSE intermediate variable to fix that.
+https://lore.kernel.org/netdev/20240417-feature_poe-v9-10-242293fd1900@boot=
+lin.com/
+But in case the port is enabled from Linux then shutdown from the PSE contr=
+oller
+for any reason, I have to run disable and enable command to enable it again=
+ Not
+really efficient :/
+I am thinking of disabling the usage of counters in case of a
+regulator_get_exclusive(). What do you think? Could it break other usage?
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
