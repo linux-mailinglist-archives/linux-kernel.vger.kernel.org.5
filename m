@@ -1,232 +1,204 @@
-Return-Path: <linux-kernel+bounces-160769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236348B42A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:17:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2AC88B42A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:18:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 874E31F23027
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:17:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DDE1C215ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 23:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B625E3BBF0;
-	Fri, 26 Apr 2024 23:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEDEF3D0C2;
+	Fri, 26 Apr 2024 23:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9gEBB/h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="fRo6YmDY"
+Received: from mx07-001d1705.pphosted.com (mx07-001d1705.pphosted.com [185.132.183.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA56BA4B;
-	Fri, 26 Apr 2024 23:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714173430; cv=none; b=O4uzHf7BdAJvB5i9QYZ3tfrEulJLLalcCBF9UPqIIt3T1KSIh/HrgcIh3hzWLisBDUqrgisGjldkUfadNp/c9ZyPFyUdbaLu8Fpt59x9hPRYLBX+DZi8kL+8FOQ0r+seJhZsoC+q6P4xecX6pMe87Bkp2lefCIlj6V8KGAXCTqE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714173430; c=relaxed/simple;
-	bh=rcMEnyVBn3pKkfcSNlKvp5IFGtJ7Mh/CEE8I3MHF6uE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a6tEfzJK0a95XoI/t7t4kKgU5j16vznKrTpF35zKaqUxaCbDriUcT3aZdrDjVPp2Veoh5cLlFN5rZEOb9n5O4xy52lujAimVmAnXtBs8oVUzfue2lRr2FF03eaORwNpZ/thI4v2qTY31u2VNjOB+4LKZo0qsBE7LTtsnXEmFFEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9gEBB/h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F7AFC113CD;
-	Fri, 26 Apr 2024 23:17:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714173429;
-	bh=rcMEnyVBn3pKkfcSNlKvp5IFGtJ7Mh/CEE8I3MHF6uE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p9gEBB/hpJvW0D7NcGlQ7pnO0GoWzoOY3S5QpN/RanZsD91BUZMPrDnwPwnDNu86q
-	 6muCn+nLV6wnDBkuix+X3gTItIuh9P9pHMeURM8GTgwwAG36SZChTn8xx6w7E+I8zK
-	 krKCa0RvhLZHK14opkYYNAZYTzqYcgn4YVJl6I9/LpXse63ugx3s11bwQ+Pk0L6ChY
-	 XqI+mGm4ePLWu6AqFDEs3Qa5PidssgzU/Ae4DI9O3nHl9rwYWd8NijgsyYv7xTdLSJ
-	 DrLBpV00/XNdYYkar1q12mJKAro+Bx5a9FRwHR5DjWtuicKQlBBl+0ldlI+kwIYjG8
-	 Efxf4Oy0bQOOA==
-Date: Fri, 26 Apr 2024 16:17:08 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: syzbot <syzbot+b7e8d799f0ab724876f9@syzkaller.appspotmail.com>,
-	chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, linux-mm@kvack.org,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Subject: Re: [syzbot] [xfs?] possible deadlock in xfs_ilock_data_map_shared
-Message-ID: <20240426231708.GR360919@frogsfrogsfrogs>
-References: <00000000000028dd9a0616ecda61@google.com>
- <20240426163228.GP360919@frogsfrogsfrogs>
- <Ziwag2++iy62jHik@dread.disaster.area>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8629E3C46B;
+	Fri, 26 Apr 2024 23:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=185.132.183.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714173522; cv=fail; b=YSuIBDkFwVtBISdKqA7oq40zQ9GO3VU7bsGzQAM39x/Bp3bSvsYemv7fM5qkZehTzVNxXzujVI1Ef39RKbPQrmGvGN0quDrIJqO98s3J8TwonsDC+mJJ/Ed2b6ZV8ZV8nVO6OUQFNu4pfR9/bvCyBeZUHh5siRavCklxYI+5Vpc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714173522; c=relaxed/simple;
+	bh=itbhcWH9Tp87Ca8LXErp7Y2nQOVNeK43yZrCGYQ0jZY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oQwzcUv0cxKdyjLnoo9JEHZWksVJA5s50SA6OamYdiOKRCE40EMIKA50ZNDyedAcdyeztHTsPLsb0dH4Em2mTb6uso5J8FYm4cQqnyeRoXSweI5rX8icU/q1t1RsqjHREPxuvmoXZvD1o1U3C0Aenmpf4o9C0FW4X6IkBbreMHM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=pass smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=fRo6YmDY; arc=fail smtp.client-ip=185.132.183.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
+Received: from pps.filterd (m0209326.ppops.net [127.0.0.1])
+	by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QMlQ33010819;
+	Fri, 26 Apr 2024 23:18:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=S1;
+ bh=7XbsT6CcTT1JpmWtU/q3A0R3lxsKKiviJ8s/kaVyQvQ=;
+ b=fRo6YmDYl0aRTMG3FQwuYLSxd/Ctg6wcy7MOc9aFHjAymQzS3jS62UqDaPaEumvErNk/
+ q4G7/mqrLC2AsLZrlkDp0LxAEyLfCZ4tBKZuxCAfRGWoRyulVo7EVubh5F1moacmvA9s
+ 0W+8fxvTQiqJk5oa7wbnax5XFwJDnylc+GO0wiimqtH5KmDrv2SfLa6TlfC882jz7dCl
+ hQZkuVo0maCgnZqHi4KtckYoibYzhgQPvimk+mUH052jSuB9zG07LbgcNkz+mfM6yyga
+ LvtCimhRg8tqEHrkveOXOPwge+/qaxwmdTJxt5ccmfVOq9PqWH/tGbruiPil0So0RTl1 5w== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3xqwmj1b8m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 23:18:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YZV+7UTW/wfmR1ZGP8MrUTlKGlRGvHqjcMBysB4u5fGNRdsSvI2MunsbA07OJ0PYzr9zZlSPo7dsRKO7OGIRXeW60qi/+7zeVIZNf3Ea6+7zh2waYz5L6xnkiLuu+zfQ5XdZegyNQM20ZWjmRbbc1iKGs8HTFX4Qtc/n2ZKWNbWkVJdD9vjZFP6biGLbA2bsuaDKmITnRAlIFDPs3zk6KoUTM6Uaa22d9wTzDJXkNite2OVxX+wzbaAW8XB++cra01DcqlBVkdh9rlD6KszE0IjIi9KmEusY/gPBVLacjCtrm9giVBpXfIAtTMHPALjmw/q/zrbcjlDhkmzova6IDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7XbsT6CcTT1JpmWtU/q3A0R3lxsKKiviJ8s/kaVyQvQ=;
+ b=ICIYbdiISugxNpOpW7wMWyuHcmAKNuKCLQtNd55SEYiPre/h86dO1QhjH4UDtmeu8N/dHEBGJ3RkqFpfJOO12lMQUtaV/OZLQKcnfKqwZZ2ql4MnwmAFclcVo0iNZsjNlxYUo+VDf9RqfqBiQF0os48mCi+T1mAyROxivA98+YAo8D1Az5yjrITiZlnuyw8mr/cVD36YEYAGUSKfo560eqVkJ8JBoRjXd9JU4Kmhlcd8oM2AuJzT8I4/sRO1LP4TMZPUt5rHBngMqHBpD4zPuj+X8dbX7W7wmA3kQB7xe7cyzWRU2n42wqlHf5HbOXQq4FxmHrVud9YE8lIrPugEEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
+ dkim=pass header.d=sony.com; arc=none
+Received: from SA3PR13MB6372.namprd13.prod.outlook.com (2603:10b6:806:37d::13)
+ by PH7PR13MB5594.namprd13.prod.outlook.com (2603:10b6:510:130::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 23:18:15 +0000
+Received: from SA3PR13MB6372.namprd13.prod.outlook.com
+ ([fe80::2dee:b93e:d9f:d7b6]) by SA3PR13MB6372.namprd13.prod.outlook.com
+ ([fe80::2dee:b93e:d9f:d7b6%5]) with mapi id 15.20.7472.044; Fri, 26 Apr 2024
+ 23:18:14 +0000
+From: "Bird, Tim" <Tim.Bird@sony.com>
+To: Greg KroahHartman <gregkh@linuxfoundation.org>,
+        Sasha Levin
+	<sashal@kernel.org>, "corbet@lwn.net" <corbet@lwn.net>
+CC: "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "workflows@vger.kernel.org" <workflows@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] docs: stable-kernel-rules: fix typo sent->send
+Thread-Topic: [PATCH] docs: stable-kernel-rules: fix typo sent->send
+Thread-Index: AdqYL9089+sCb2j3Si+txixVqLkj6w==
+Date: Fri, 26 Apr 2024 23:18:14 +0000
+Message-ID: 
+ <SA3PR13MB63726A746C847D7C0919C25BFD162@SA3PR13MB6372.namprd13.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA3PR13MB6372:EE_|PH7PR13MB5594:EE_
+x-ms-office365-filtering-correlation-id: f2b70fb1-05f6-4de6-b950-08dc66472634
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ =?us-ascii?Q?0QEgeV7vO6iODve+ZS9QgtlsDxd/fIDLeS3PIqNNrrlAA2isD1PZMPWj18oo?=
+ =?us-ascii?Q?cRigobolPggMYtzdLk7m/ekrxNpWDonXOQLyflBsf9HD8LACIeB70ywB7kDz?=
+ =?us-ascii?Q?n0FTLD3FIXUFrHpwLHF7GlTiz0merIt5OzCWF48pZPGjJ3AUkMf8ioE6cixz?=
+ =?us-ascii?Q?D+G59t7Wz+qSaGuPxrTvtXa8paw82KaHT7LinLgyM8ec6k999SJ6I0KcAvKx?=
+ =?us-ascii?Q?bZlficiDnLR919GJ4932Gd/fihrc/hqFbugxGwLMi5BW9rSG5pcP542eu4Ux?=
+ =?us-ascii?Q?EdDMEQ8u2iA4Cc6jA1xo+PCBDpTZ+ZGDrVY3NJSqwPKSYbIJaiEvdSQXelQp?=
+ =?us-ascii?Q?+WS6pX3VARx4G+7h4tJzGk1+WUf5tDon34/cxCyNDvreDmtHvQMfZxPOBzsv?=
+ =?us-ascii?Q?MQDygZ3TaXFRYWs+8ui+gvHvmo5ILsIBTTB7DKbT2HZLHu6YiEjudzr/TYRL?=
+ =?us-ascii?Q?0KthSGhbW6EFSaiVqG7beKJom+p4iGL2vSombNEWcDf0XWBtr8Zp8lfp7kKi?=
+ =?us-ascii?Q?9XdXq0Flyt3NigHnAKTb8iMVSP0VeRj55hr5koIvSsk5BW2Qz85JF5HfdwnZ?=
+ =?us-ascii?Q?0caa2SHjNewbRZNpSQlfVXJdpHo89zWI72YkJM1VzV90egvL++YfwcHl721G?=
+ =?us-ascii?Q?qpggOEOJSP4IXrGekL4RJhD/u/9FcjsIgvVxUgfPGC3VHgXNBLTuzw5C+aeD?=
+ =?us-ascii?Q?RpOrymd8YojXy/2rim99XHtXX7lo9eyIRjPpZ/8xNM3MfpXjsZ+7ho+iT+61?=
+ =?us-ascii?Q?F9Ulu/hqHKhZmvV1ajQXOZ1371Zzajmg0i59A6PBVT7Cmq8G7VR0FvpHdXqv?=
+ =?us-ascii?Q?F91Y1vdDeHr6iZiLIJWaA9jHF++ME5fKQlz8e2H3Q1Dq8cpFxM3oh6/GLX/s?=
+ =?us-ascii?Q?Q6xzbkJBt7IZo8ca0ykfWG/sTrtwZRGxI9j6FF3CiRj7XSluR7RCuSORG6XB?=
+ =?us-ascii?Q?Ry2VBo6Z6ShjivsDSIaLugTImw0KMj84wgwdZplzLkwDqo5Ugk/pyIEzs2UA?=
+ =?us-ascii?Q?dX6INaQTh/hQf3W1/1Tfp1dopT5YxKIqUIUn/2rbtyuEpzAGs3nVobnvnrdW?=
+ =?us-ascii?Q?qjTDaB0FRG3EXzxDMpLydcW4iW5H5fsToFxB8f0ppJIIwMUN9l3PYqHiH3WZ?=
+ =?us-ascii?Q?gO+wtbuYRrRfBmYXgHvxkyGuKp2SriG2COacv9TVy5DEwf+9LaOnbj9Lklgb?=
+ =?us-ascii?Q?JDEFQd/Im1nmXocIAtIaqSnjaNSwZJmJHpUEsGjVSkLCx5XBpAkXQEGRTY8h?=
+ =?us-ascii?Q?kU/z3xmFv9nHRFQV338yiQTFVf26bT/sZNHUi0vS0K6798mNuqDgP7EHmK3J?=
+ =?us-ascii?Q?xjie+TWE4VnKnyz0tl/LXF4fjk52Gmk4Rwh2XNoerzyh9g=3D=3D?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR13MB6372.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?H0+LoZXp9uP0VgWkUw94dE1gvZZkvAT3Ot8XCAjMu4xZ6DM6yp9aLZAmw8u4?=
+ =?us-ascii?Q?IcKX8LOtLbA2xzn7rjhDqZzbsxZzQa+qJqSH+pL2gBNSipNFJZu4OmNRdUGM?=
+ =?us-ascii?Q?qZ8opyCc0emR9H/WY6w1oXpCR/7A5vGW4vzdhuiYgMFGCJGHRaUBjRzW+4QN?=
+ =?us-ascii?Q?+1t5mWmVrLNEzPU0Hv7Tl0/8KCdqJADlLt8FYlPdFndxmL8zALkCwsqThcoB?=
+ =?us-ascii?Q?xyMoGWiLGM6dhHGEuLhHIexohKRaqxEKOomutNoCRv3+xu5plku8hqIwZxWm?=
+ =?us-ascii?Q?nl/cIJGOHD/z+b/GyUsJb44bVtMfe4kPCG7N+FwPdSKQbonvwMwp5lIunAg4?=
+ =?us-ascii?Q?NxOJ3bwl+8TFNWYt7HfxbtkCEAejmbZReybWL1GIhZ7QGewy1W4e77vuIxER?=
+ =?us-ascii?Q?rjohv9SzopZntTMBl3C/M8UMapCIgIM3h1gOU3vg5TL5hTOBKv50C+KqMpT+?=
+ =?us-ascii?Q?tOPq2oAY+Gk7YbCNdqPb69wIglP4yr64SnRNgoJ+dagGzGJ9mOmK7xXt3+Ck?=
+ =?us-ascii?Q?A/lPLpLeYVIy4UYr/k4Sh5BTHzAA2ZcjKrhuUwX/6t9fYmzHMtPKfT+pKpt3?=
+ =?us-ascii?Q?yBwMjZP5w809+fF4Uivvcd2MKQ6pL/euqXBWjM0zf0aygEaM6ZoD3W1RNsII?=
+ =?us-ascii?Q?ysXIi6P2j18lCjDSXGAoZ3+8HCHjN/x9bIbOKoC1qi+ztxzUHs5A2ENycglK?=
+ =?us-ascii?Q?Vc8PlVvk+b6f9F4ZHui6Gn/zMjNIA2UaduW6kERvjAlB4yyYj6juSG/tNVt7?=
+ =?us-ascii?Q?Fzq+NtEHAxypBbqTUSKh/3zphJzmnLeDNTndnZxfTISQ4VFXHS/R8hviv1TZ?=
+ =?us-ascii?Q?4/Bn9pnVD0mYopsNwDSd0vYwB3b3I+l+OoDVPpNc5kbrBc39FILeUrhpuffk?=
+ =?us-ascii?Q?Q/wWk1TMQbKmqVY2yCdWzhQB2MtCerXFxYJXmGI6vkyUBkOViZ5MeO9+Iyuh?=
+ =?us-ascii?Q?WTEOMVaPSVt/l+Bj3C1+OVjTFtHZUp1vnyNWd+C9CyaFUGGS25vU8NLNFdA+?=
+ =?us-ascii?Q?+RkUPWzkmr34UX+qkKA0/3gX1xvsaQKe5UFgncV3DeWK0kTj0Gbqw9t80wVo?=
+ =?us-ascii?Q?G/URDIIkdJwWs8pXVmnPw8D2+Hdb0hdPPhmkWco3UUej3ZKjNUPlf4bu8c9K?=
+ =?us-ascii?Q?cZdo0XWvvWJbvszbw04fq1ufhN33WSMCtuKy6zs5qnwZGn81UUNj5j5fLVqG?=
+ =?us-ascii?Q?rQJ9IM1C/P9ljJCrVG0ByFsd9xZ+Z+DzrR62UVla2tPZlK5xAIXlksrApoJX?=
+ =?us-ascii?Q?sCd930RlrR/LikRsfSjcfc4JUxvtm7j7Q9CyqS/ulZ3F2xPY64cfY6O/rjMa?=
+ =?us-ascii?Q?+GjEvgaXk2OBgzH79QxOKroGSadkI9kuQj3fcdVaHLv4mVmV2Hvd9sTdFp1R?=
+ =?us-ascii?Q?Y5tZmrNT7WtRHNYq4VV+q6hgSGwGU8XOis5HTAVtRbplrp/qut86FHvfIdP1?=
+ =?us-ascii?Q?ha9DQuEU4NYqzZQIhSPSffhcxrPc3httnX4OUi6Hj38rvtiTTP1eQGNU92jZ?=
+ =?us-ascii?Q?Pjgd8Fh3dmXvAqCqZPVmF33JAGJ7pyKNu3HkfbAKdpCJh1esG286VLXu6HKG?=
+ =?us-ascii?Q?LLCmX9F3X30UFOEXqvA=3D?=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ziwag2++iy62jHik@dread.disaster.area>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	CmSQY49FRg9kYijfaU8e1FmMcbxAX2JhNNQjPF396IXGuJZ1Z+9qxBrKNMG15Mrgcw5d5YFApZ9tuCarxSSENfz5k5mIbuHSdCIjcYh3BJM+UcgpqNubVdTo0ah0uwO4uzJQsrZyihNIzXJQZhsxeBGk3c+bfuh33S8C2Jzby+8kNk7szXHnlkTYoUv4X5sWJGmHeJc2OJJgqKv+O9Sjs6vIMMpfwT/xxVEi96RA61AZNam4yYji7BjqZey83hHBgqNY0z3winVf6gRsOFgt+iNlK/IYkFQnX9DdXhhR7FUu/xnz+ws0aHsMCwsRcnFhR5Wj5Vss4Wq0eOV2fq+RZ3gCKO0CiOGAHLMh9nRS2tufo26OeeuTHvW+n7X5mGPkvmaU4T2K9e6lT8zS4sEqApHv4pz62qRZEvClBcL77CakvXw0Nsls65B0bmOmWnhC5l6FxVuDZuXnahETU/vZSk2q96U4bFOMVai1Uol2UsmNQdyLItCEmfRyWH1JC8SSMZGA8QYV7F+VZJo95QHmoVqCNGCFToZf7ZMml+vTQ6kZzJq2tz4p5dY52sllj+WrzXF1Q7CE0HVs2Q/Cp5RafePpwsuhTpAQ36Jv2nsKY0MEGm7x83DCT2+zo3SkkM2e
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR13MB6372.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2b70fb1-05f6-4de6-b950-08dc66472634
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Apr 2024 23:18:14.9425
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3v9YDdm8JF97U4DJAyg4DI30Lf5f2lMY0C1I6eZ6AYkPA6MDN20SqhTyJlzEnMkLUbltbr8y0O9t7YPsWm9isw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB5594
+X-Proofpoint-ORIG-GUID: ohsrkNaTD2Z36_GOXhioY5103Ut9JRwR
+X-Proofpoint-GUID: ohsrkNaTD2Z36_GOXhioY5103Ut9JRwR
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+X-Sony-Outbound-GUID: ohsrkNaTD2Z36_GOXhioY5103Ut9JRwR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_20,2024-04-26_02,2023-05-22_02
 
-On Sat, Apr 27, 2024 at 07:20:03AM +1000, Dave Chinner wrote:
-> [cc linux-mm@kvack.org]
-> 
-> On Fri, Apr 26, 2024 at 09:32:28AM -0700, Darrick J. Wong wrote:
-> > On Thu, Apr 25, 2024 at 07:46:28AM -0700, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following issue on:
-> > > 
-> > > HEAD commit:    977b1ef51866 Merge tag 'block-6.9-20240420' of git://git.k..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=126497cd180000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=b7e8d799f0ab724876f9
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > 
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > 
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/08d7b6e107aa/disk-977b1ef5.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/9c5e543ffdcf/vmlinux-977b1ef5.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/04a6d79d2f69/bzImage-977b1ef5.xz
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+b7e8d799f0ab724876f9@syzkaller.appspotmail.com
-> > > 
-> > > XFS (loop2): Ending clean mount
-> > > ======================================================
-> > > WARNING: possible circular locking dependency detected
-> > > 6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0 Not tainted
-> > > ------------------------------------------------------
-> > > syz-executor.2/7915 is trying to acquire lock:
-> > > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:312 [inline]
-> > > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
-> > > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
-> > > ffffffff8e42a800 (fs_reclaim){+.+.}-{0:0}, at: kmalloc_trace+0x47/0x360 mm/slub.c:3992
-> > > 
-> > > but task is already holding lock:
-> > > ffff888056da8118 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_ilock_data_map_shared+0x4f/0x70 fs/xfs/xfs_inode.c:114
-> > > 
-> > > which lock already depends on the new lock.
-> > > 
-> > > 
-> > > the existing dependency chain (in reverse order) is:
-> > > 
-> > > -> #1 (&xfs_dir_ilock_class){++++}-{3:3}:
-> > >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-> > >        down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
-> > >        xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
-> > >        xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
-> > >        xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
-> > >        xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
-> > >        xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
-> > >        super_cache_scan+0x411/0x4b0 fs/super.c:227
-> > >        do_shrink_slab+0x707/0x1160 mm/shrinker.c:435
-> > >        shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
-> > >        shrink_one+0x453/0x880 mm/vmscan.c:4774
-> > >        shrink_many mm/vmscan.c:4835 [inline]
-> > >        lru_gen_shrink_node mm/vmscan.c:4935 [inline]
-> > >        shrink_node+0x3b17/0x4310 mm/vmscan.c:5894
-> > >        kswapd_shrink_node mm/vmscan.c:6704 [inline]
-> > >        balance_pgdat mm/vmscan.c:6895 [inline]
-> > >        kswapd+0x1882/0x38a0 mm/vmscan.c:7164
-> > >        kthread+0x2f2/0x390 kernel/kthread.c:388
-> > >        ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
-> > >        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> > > 
-> > > -> #0 (fs_reclaim){+.+.}-{0:0}:
-> > >        check_prev_add kernel/locking/lockdep.c:3134 [inline]
-> > >        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-> > >        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-> > >        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-> > >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-> > >        __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
-> > >        fs_reclaim_acquire+0x88/0x140 mm/page_alloc.c:3712
-> > >        might_alloc include/linux/sched/mm.h:312 [inline]
-> > >        slab_pre_alloc_hook mm/slub.c:3746 [inline]
-> > >        slab_alloc_node mm/slub.c:3827 [inline]
-> > >        kmalloc_trace+0x47/0x360 mm/slub.c:3992
-> > >        kmalloc include/linux/slab.h:628 [inline]
-> > >        add_stack_record_to_list mm/page_owner.c:177 [inline]
-> > >        inc_stack_record_count mm/page_owner.c:219 [inline]
-> > >        __set_page_owner+0x561/0x810 mm/page_owner.c:334
-> > >        set_page_owner include/linux/page_owner.h:32 [inline]
-> > >        post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1534
-> > >        prep_new_page mm/page_alloc.c:1541 [inline]
-> > >        get_page_from_freelist+0x3410/0x35b0 mm/page_alloc.c:3317
-> > >        __alloc_pages+0x256/0x6c0 mm/page_alloc.c:4575
-> > >        __alloc_pages_bulk+0x729/0xd40 mm/page_alloc.c:4523
-> > >        alloc_pages_bulk_array include/linux/gfp.h:202 [inline]
-> > >        xfs_buf_alloc_pages+0x1a7/0x860 fs/xfs/xfs_buf.c:398
-> > >        xfs_buf_find_insert+0x19a/0x1540 fs/xfs/xfs_buf.c:650
-> > >        xfs_buf_get_map+0x149c/0x1ae0 fs/xfs/xfs_buf.c:755
-> > >        xfs_buf_read_map+0x111/0xa60 fs/xfs/xfs_buf.c:860
-> > >        xfs_trans_read_buf_map+0x260/0xad0 fs/xfs/xfs_trans_buf.c:289
-> > >        xfs_da_read_buf+0x2b1/0x470 fs/xfs/libxfs/xfs_da_btree.c:2674
-> > >        xfs_dir3_block_read+0x92/0x1a0 fs/xfs/libxfs/xfs_dir2_block.c:145
-> > >        xfs_dir2_block_lookup_int+0x109/0x7d0 fs/xfs/libxfs/xfs_dir2_block.c:700
-> > >        xfs_dir2_block_lookup+0x19a/0x630 fs/xfs/libxfs/xfs_dir2_block.c:650
-> > >        xfs_dir_lookup+0x633/0xaf0 fs/xfs/libxfs/xfs_dir2.c:399
-> > 
-> > Hm.  We've taken an ILOCK in xfs_dir_lookup, and now we're reading a
-> > directory block.  We don't have PF_MEMALLOC_NOFS set, nor do we pass
-> > GFP_NOFS when allocating the xfs_buf pages.
-> > 
-> > Nothing in this code path sets PF_MEMALLOC_NOFS explicitly, nor does it
-> > create a xfs_trans_alloc_empty, which would set that.  Prior to the
-> > removal of kmem_alloc, I think we were much more aggressive about
-> > GFP_NOFS usage.
-> 
-> This isn't an XFS bug. The XFS code is correct - the callsite in the
-> buffer cache is using GFP_KERNEL | __GFP_NOLOCKDEP explicitly to
-> avoid these sorts of false positives.
-> 
-> Please take a closer look at the stack trace - there's a second
-> memory allocation taking place there way below the XFS memory
-> allocation inside the page owner tracking code itself:
-> 
-> static void add_stack_record_to_list(struct stack_record *stack_record,
->                                      gfp_t gfp_mask)
-> {
->         unsigned long flags;
->         struct stack *stack;
-> 
->         /* Filter gfp_mask the same way stackdepot does, for consistency */
->         gfp_mask &= ~GFP_ZONEMASK;
->         gfp_mask &= (GFP_ATOMIC | GFP_KERNEL);
->         gfp_mask |= __GFP_NOWARN;
-> 
->         set_current_in_page_owner();
->         stack = kmalloc(sizeof(*stack), gfp_mask);
->         if (!stack) {
->                 unset_current_in_page_owner();
->                 return;
->         }
->         unset_current_in_page_owner();
-> .....
-> 
-> Look familiar? That exactly the same gfp mask filtering that the
-> stackdepot code was doing that caused this issue with KASAN:
-> 
-> https://lore.kernel.org/linux-xfs/000000000000fbf10e06164f3695@google.com/
-> 
-> Which was fixed with this patch:
-> 
-> https://lore.kernel.org/linux-xfs/20240418141133.22950-1-ryabinin.a.a@gmail.com/
-> 
-> Essentially, we're now playing whack-a-mole with internal kernel
-> debug code that doesn't honor __GFP_NOLOCKDEP....
-> 
-> MM-people: can you please do an audit of all the nested allocations
-> that occur inside the public high level allocation API and ensure
-> that they all obey __GFP_NOLOCKDEP so we don't have syzbot keep
-> tripping over them one at a time?
 
-Ah.  Well.  Given my clear inability to investigate these reports
-sufficiently, I will step back and let the experts handle them from now
-on.
+Change 'sent' to 'send'
 
---D
+Signed-off-by: Tim Bird <tim.bird@sony.com>
+---
+ Documentation/process/stable-kernel-rules.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
+diff --git a/Documentation/process/stable-kernel-rules.rst b/Documentation/=
+process/stable-kernel-rules.rst
+index 1704f1c686d0..3178bef6fca3 100644
+--- a/Documentation/process/stable-kernel-rules.rst
++++ b/Documentation/process/stable-kernel-rules.rst
+@@ -78,7 +78,7 @@ in the sign-off area. Once the patch is mainlined it will=
+ be applied to the
+ stable tree without anything else needing to be done by the author or
+ subsystem maintainer.
+=20
+-To sent additional instructions to the stable team, use a shell-style inli=
+ne
++To send additional instructions to the stable team, use a shell-style inli=
+ne
+ comment:
+=20
+  * To specify any additional patch prerequisites for cherry picking use th=
+e
+--=20
+2.25.1
+
 
