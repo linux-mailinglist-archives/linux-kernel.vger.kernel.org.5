@@ -1,240 +1,684 @@
-Return-Path: <linux-kernel+bounces-160044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 838BB8B383A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 259308B3846
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DE71C22677
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:20:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A9981C21260
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 13:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE13147C91;
-	Fri, 26 Apr 2024 13:19:57 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DDD147C7D;
+	Fri, 26 Apr 2024 13:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="e1NpjMIX"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3BA91474AF;
-	Fri, 26 Apr 2024 13:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4ADE1474BC;
+	Fri, 26 Apr 2024 13:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714137596; cv=none; b=TkYNu8RJp72ROZ1zvfqhpm9qtlRZaSQBcBptyCW0llZFp4nzDvABbzVPjW0eZdNvn4gIsbYUusjHZJafS5yJimaZdVeNOI/fD1D0kwZtzvGDe96OcBN0OAaYXvCYMkSSWIFVlX2GGPt1ANl0M3i/qP2P9Ou+6mHlJ+zeu3OiJUY=
+	t=1714137792; cv=none; b=OR6ATYIlMFYNeEFWZ1eP+KoI6xXLRBqE9/L53T6taS47Oj6mt4IimZtH0f3Aui6jLvxM4yIs0K4g9xUAP3rQanoUJrn0nZfQ2pDwrpLuN1GP3m7c+zuwF837p/fUMHrTuAMi48X75iQKOJK77YINvaGhEO0GZla3h6HrBDElPT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714137596; c=relaxed/simple;
-	bh=NKjz8r5HSyZhQ50FE2JFyZ6dA1RrN866bEN9EqQbW38=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=WFoF2BIb+wXxoDpgeDO+F3GGgw3vi8qlR3m3MMcNWkbL/phYe7EFs6+KdYtlQbHidAeor6EnSumeYkC7LTL3Tk+WRvwP+mY7XRIkqa1biu4NmVjQPXNyvAY4l33hcPmWraIlpv7N5Lr2KtO+EyTkILh7FTosm90d1aZmgFVhIvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VQtcJ65hmz4f3jkL;
-	Fri, 26 Apr 2024 21:19:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id BE7B01A0572;
-	Fri, 26 Apr 2024 21:19:49 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxDzqStmn1MRLA--.12428S3;
-	Fri, 26 Apr 2024 21:19:49 +0800 (CST)
-Subject: Re: [PATCH v4 02/34] ext4: check the extent status again before
- inserting delalloc block
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
- willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
-References: <87frv8z3gl.fsf@gmail.com>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <185a0d75-558e-a1ae-9415-c3eed4def60f@huaweicloud.com>
-Date: Fri, 26 Apr 2024 21:19:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1714137792; c=relaxed/simple;
+	bh=s5rjh2pkj4coWMASwLmnQkHDOqv7JQtCljSF9r/i0dc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Zk/kdfHmIuUgWZt3Tnk6CLBZrIEZUD6Bzc+OH7K8Pv6cIUKtyjCRXASKo8twi8OkSUVqvWOyoJqIe9/umD35GON7EfFH4n8DS3RClLOhzx3pe8icwuJFX7KNX+AojWJaJYlo6qNWRq+4p+w2E+FvaXJWNZ35On+cGm9Me2srd9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=e1NpjMIX; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QD4OkI021284;
+	Fri, 26 Apr 2024 13:22:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5sPoxtulQ7cFa0vgq7qqWjU5XaiBnaPCViXmi0y4pFs=;
+ b=e1NpjMIXGH4nNJU1Xi6PnEs7Lp7vblsGhT2gw2Kik2zYLo9kPoBFFWZaJQic3uiAtlKy
+ JfGy8kkDx3Mr5RUo5Sf5rZX2SX8NzZtqqbIVBitAGCVW8cx1HuyIzVuuLnGQqStpTSgU
+ nE6wTSg/YVJotjGCt4K22BnsBrJVDQE2hP48YmxgtxE9YpG3QQn6GL7+TPf1zgmtm7q4
+ fLqTXej3A/hAFFXzxCn9An1AV2av1TSCRf4ke85/oijJPqhh8TOvjyUM6S/FVlfwzrcS
+ Cu4uQkzjUQg8WW/97Guo8L3DFV1M2rSWosl9ztzSiBrw7gvN155mnDFEztrNP8FdrVKQ Gw== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrctg817j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 13:22:49 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QBGxuU028315;
+	Fri, 26 Apr 2024 13:22:48 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmtr2ye9w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 13:22:48 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QDMjnf37028298
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Apr 2024 13:22:47 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 978D558059;
+	Fri, 26 Apr 2024 13:22:45 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 49AC358043;
+	Fri, 26 Apr 2024 13:22:45 +0000 (GMT)
+Received: from [9.61.156.17] (unknown [9.61.156.17])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 26 Apr 2024 13:22:45 +0000 (GMT)
+Message-ID: <1d236c82-f335-43ad-878d-20a1cafccf81@linux.ibm.com>
+Date: Fri, 26 Apr 2024 08:22:45 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 13/14] ARM: dts: aspeed: Add IBM P11 Blueridge BMC
+ system
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-14-eajames@linux.ibm.com>
+ <b6c54d2e-9906-4607-bc19-e0de077c25b9@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <b6c54d2e-9906-4607-bc19-e0de077c25b9@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: huckSBBMeBLdF50cFa6Degttx0zdQ3Qp
+X-Proofpoint-GUID: huckSBBMeBLdF50cFa6Degttx0zdQ3Qp
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87frv8z3gl.fsf@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDHlxDzqStmn1MRLA--.12428S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw47Ar4UKF4rXw4Dur43GFg_yoW7urykpa
-	9IkF45Grs5Ww1kCanagF1UXr10gw18XrW2gr9xKr1jvFZ0kFyfWF12qFyY9FySkrs7G3W0
-	vF4jqa4xu3WjyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ adultscore=0 spamscore=0 mlxscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2404260089
 
-On 2024/4/26 20:57, Ritesh Harjani (IBM) wrote:
-> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
-> 
->> Zhang Yi <yi.zhang@huaweicloud.com> writes:
->>
->>> From: Zhang Yi <yi.zhang@huawei.com>
->>>
->>> Now we lookup extent status entry without holding the i_data_sem before
->>> inserting delalloc block, it works fine in buffered write path and
->>> because it holds i_rwsem and folio lock, and the mmap path holds folio
->>> lock, so the found extent locklessly couldn't be modified concurrently.
->>> But it could be raced by fallocate since it allocate block whitout
->>> holding i_rwsem and folio lock.
->>>
->>> ext4_page_mkwrite()             ext4_fallocate()
->>>  block_page_mkwrite()
->>>   ext4_da_map_blocks()
->>>    //find hole in extent status tree
->>>                                  ext4_alloc_file_blocks()
->>>                                   ext4_map_blocks()
->>>                                    //allocate block and unwritten extent
->>>    ext4_insert_delayed_block()
->>>     ext4_da_reserve_space()
->>>      //reserve one more block
->>>     ext4_es_insert_delayed_block()
->>>      //drop unwritten extent and add delayed extent by mistake
->>>
->>> Then, the delalloc extent is wrong until writeback, the one more
->>> reserved block can't be release any more and trigger below warning:
->>>
->>>  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
->>>
->>> Hold i_data_sem in write mode directly can fix the problem, but it's
->>> expansive, we should keep the lockless check and check the extent again
->>> once we need to add an new delalloc block.
->>
->> Hi Zhang, 
->>
->> It's a nice finding. I was wondering if this was caught in any of the
->> xfstests?
->>
 
-Hi, Ritesh
-
-I caught this issue when I tested my iomap series in generic/344 and
-generic/346. It's easy to reproduce because the iomap's buffered write path
-doesn't hold folio lock while inserting delalloc blocks, so it could be raced
-by the mmap page fault path. But the buffer_head's buffered write path can't
-trigger this problem, the race between buffered write path and fallocate path
-was discovered while I was analyzing the code, so I'm not sure if it could
-be caught by xfstests now, at least I haven't noticed this problem so far.
-
->> I have reworded some of the commit message, feel free to use it if you
->> think this version is better. The use of which path uses which locks was
->> a bit confusing in the original commit message.
+On 4/26/24 01:35, Krzysztof Kozlowski wrote:
+> On 25/04/2024 23:37, Eddie James wrote:
+>> Add the device tree for the new BMC system. The Blueridge is a
+>> P11 system with four processors.
 >>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> ---
+>>   .../dts/aspeed/aspeed-bmc-ibm-blueridge.dts   | 1711 +++++++++++++++++
+>>   1 file changed, 1711 insertions(+)
+>>   create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-blueridge.dts
+>>
+>> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-blueridge.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-blueridge.dts
+>> new file mode 100644
+>> index 000000000000..8503ce2480b5
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-blueridge.dts
+>> @@ -0,0 +1,1711 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +// Copyright 2024 IBM Corp.
+>> +/dts-v1/;
+>> +
+>> +#include "aspeed-g6.dtsi"
+>> +#include <dt-bindings/gpio/aspeed-gpio.h>
+>> +#include <dt-bindings/i2c/i2c.h>
+>> +#include <dt-bindings/leds/leds-pca955x.h>
+>> +
+>> +/ {
+>> +	model = "Blueridge";
+>> +	compatible = "ibm,blueridge-bmc", "aspeed,ast2600";
+>> +
+>> +	aliases {
+>> +		serial4 = &uart5;
+>> +		i2c16 = &i2c2mux0;
+>> +		i2c17 = &i2c2mux1;
+>> +		i2c18 = &i2c2mux2;
+>> +		i2c19 = &i2c2mux3;
+>> +		i2c20 = &i2c4mux0chn0;
+>> +		i2c21 = &i2c4mux0chn1;
+>> +		i2c22 = &i2c4mux0chn2;
+>> +		i2c23 = &i2c5mux0chn0;
+>> +		i2c24 = &i2c5mux0chn1;
+>> +		i2c25 = &i2c6mux0chn0;
+>> +		i2c26 = &i2c6mux0chn1;
+>> +		i2c27 = &i2c6mux0chn2;
+>> +		i2c28 = &i2c6mux0chn3;
+>> +		i2c29 = &i2c11mux0chn0;
+>> +		i2c30 = &i2c11mux0chn1;
+>> +	};
+>> +
+>> +	chosen {
+>> +		stdout-path = &uart5;
+>> +		bootargs = "console=ttyS4,115200n8 earlycon";
+> Drop bootargs. ALWAYS.
+>
+>
+>> +	};
+>> +
+>> +	memory@80000000 {
+>> +		device_type = "memory";
+>> +		reg = <0x80000000 0x40000000>;
+>> +	};
+>> +
+>> +	reserved-memory {
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		ranges;
+>> +
+>> +		event_log: tcg_event_log@b3d00000 {
+> No underscores.
+>
+> Didn't you already received such basic review?
 
-Thanks for the message improvement, it looks more clear then mine, I will
-use it.
+
+Thanks for your detailed review Krzysztof. These device trees are based 
+off 5 year old device trees that were merged when the rules were much 
+less strict. I will attempt to address all of your comments for these 
+new dts.
+
 
 Thanks,
-Yi.
 
->> <reworded from your original commit msg>
->>
->> ext4_da_map_blocks(), first looks up the extent status tree for any
->> extent entry with i_data_sem held in read mode. It then unlocks
->> i_data_sem, if it can't find an entry and take this lock in write
->> mode for inserting a new da entry.
-> 
-> Sorry about this above paragraph. I messed this paragraph.
-> Here is the correct version of this.
-> 
-> ext4_da_map_blocks looks up for any extent entry in the extent status
-> tree (w/o i_data_sem) and then the looks up for any ondisk extent
-> mapping (with i_data_sem in read mode).
-> 
-> If it finds a hole in the extent status tree or if it couldn't find any
-> entry at all, it then takes the i_data_sem in write mode to add a da entry
-> into the extent status tree. This can actually race with page mkwrite
-> & fallocate path. 
-> 
-> Note that this is ok between...  <and the rest can remain same>
-> 
->>
->> This is ok between -
->> 1. ext4 buffered-write path v/s ext4_page_mkwrite(), because of the
->> folio lock
->> 2. ext4 buffered write path v/s ext4 fallocate because of the inode
->> lock.
->>
-> 
-> 
->> But this can race between ext4_page_mkwrite() & ext4 fallocate path - 
->>
->>  ext4_page_mkwrite()             ext4_fallocate()
->>   block_page_mkwrite()
->>    ext4_da_map_blocks()
->>     //find hole in extent status tree
->>                                   ext4_alloc_file_blocks()
->>                                    ext4_map_blocks()
->>                                     //allocate block and unwritten extent
->>     ext4_insert_delayed_block()
->>      ext4_da_reserve_space()
->>       //reserve one more block
->>      ext4_es_insert_delayed_block()
->>       //drop unwritten extent and add delayed extent by mistake
->>
->> Then, the delalloc extent is wrong until writeback and the extra
->> reserved block can't be released any more and it triggers below warning:
->>
->>   EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
->>
->> This patch fixes the problem by looking up extent status tree again
->> while the i_data_sem is held in write mode. If it still can't find
->> any entry, then we insert a new da entry into the extent status tree.
->>
->>>
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>> ---
->>>  fs/ext4/inode.c | 19 +++++++++++++++++++
->>>  1 file changed, 19 insertions(+)
->>>
->>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->>> index 6a41172c06e1..118b0497a954 100644
->>> --- a/fs/ext4/inode.c
->>> +++ b/fs/ext4/inode.c
->>> @@ -1737,6 +1737,7 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->>>  		if (ext4_es_is_hole(&es))
->>>  			goto add_delayed;
->>>  
->>> +found:
->>>  		/*
->>>  		 * Delayed extent could be allocated by fallocate.
->>>  		 * So we need to check it.
->>> @@ -1781,6 +1782,24 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->>>  
->>>  add_delayed:
->>>  	down_write(&EXT4_I(inode)->i_data_sem);
->>> +	/*
->>> +	 * Lookup extents tree again under i_data_sem, make sure this
->>> +	 * inserting delalloc range haven't been delayed or allocated
->>> +	 * whitout holding i_rwsem and folio lock.
->>> +	 */
->>
->> page fault path (ext4_page_mkwrite does not take i_rwsem) and fallocate
->> path (no folio lock) can race. Make sure we lookup the extent status
->> tree here again while i_data_sem is held in write mode, before inserting
->> a new da entry in the extent status tree.
->>
->>
-> 
-> 
-> -ritesh
-> 
+Eddie
 
+
+>
+>
+>> +			no-map;
+>> +			reg = <0xb3d00000 0x100000>;
+>> +		};
+>> +
+>> +		ramoops@b3e00000 {
+>> +			compatible = "ramoops";
+>> +			reg = <0xb3e00000 0x200000>; /* 16 * (4 * 0x8000) */
+>> +			record-size = <0x8000>;
+>> +			console-size = <0x8000>;
+>> +			ftrace-size = <0x8000>;
+>> +			pmsg-size = <0x8000>;
+>> +			max-reason = <3>; /* KMSG_DUMP_EMERG */
+>> +		};
+>> +
+>> +		/* LPC FW cycle bridge region requires natural alignment */
+>> +		flash_memory: region@b4000000 {
+>> +			no-map;
+>> +			reg = <0xb4000000 0x04000000>; /* 64M */
+>> +		};
+>> +
+>> +		/* VGA region is dictated by hardware strapping */
+>> +		vga_memory: region@bf000000 {
+>> +			no-map;
+>> +			compatible = "shared-dma-pool";
+>> +			reg = <0xbf000000 0x01000000>;  /* 16M */
+>> +		};
+>> +	};
+>> +
+>> +	i2c2mux: i2cmux {
+>> +		compatible = "i2c-mux-gpio";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> ??? Drop
+>
+>
+>> +
+>> +		i2c-parent = <&i2c2>;
+>> +		mux-gpios = <&gpio0 ASPEED_GPIO(G, 4) GPIO_ACTIVE_HIGH>,
+>> +			    <&gpio0 ASPEED_GPIO(G, 5) GPIO_ACTIVE_HIGH>;
+>> +		idle-state = <0>;
+>> +
+>> +		i2c2mux0: i2c@0 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <0>;
+>> +		};
+>> +
+>> +		i2c2mux1: i2c@1 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <1>;
+>> +		};
+>> +
+>> +		i2c2mux2: i2c@2 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <2>;
+>> +		};
+>> +
+>> +		i2c2mux3: i2c@3 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <3>;
+>> +		};
+>> +	};
+>> +
+>> +	leds {
+>> +		compatible = "gpio-leds";
+>> +
+>> +		/* BMC Card fault LED at the back */
+>> +		led-bmc-ingraham0 {
+>> +			gpios = <&gpio0 ASPEED_GPIO(H, 1) GPIO_ACTIVE_LOW>;
+>> +		};
+>> +
+>> +		/* Enclosure ID LED at the back */
+>> +		led-rear-enc-id0 {
+>> +			gpios = <&gpio0 ASPEED_GPIO(H, 2) GPIO_ACTIVE_LOW>;
+>> +		};
+>> +
+>> +		/* Enclosure fault LED at the back */
+>> +		led-rear-enc-fault0 {
+>> +			gpios = <&gpio0 ASPEED_GPIO(H, 3) GPIO_ACTIVE_LOW>;
+>> +		};
+>> +
+>> +		/* PCIE slot power LED */
+>> +		led-pcieslot-power {
+>> +			gpios = <&gpio0 ASPEED_GPIO(P, 4) GPIO_ACTIVE_LOW>;
+>> +		};
+>> +	};
+>> +
+>> +	gpio-keys-polled {
+>> +		compatible = "gpio-keys-polled";
+>> +		poll-interval = <1000>;
+>> +
+>> +		event-fan0-presence {
+>> +			label = "fan0-presence";
+>> +			gpios = <&pca0 6 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <6>;
+>> +		};
+>> +
+>> +		event-fan1-presence {
+>> +			label = "fan1-presence";
+>> +			gpios = <&pca0 7 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <7>;
+>> +		};
+>> +
+>> +		event-fan2-presence {
+>> +			label = "fan2-presence";
+>> +			gpios = <&pca0 8 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <8>;
+>> +		};
+>> +
+>> +		event-fan3-presence {
+>> +			label = "fan3-presence";
+>> +			gpios = <&pca0 9 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <9>;
+>> +		};
+>> +
+>> +		event-fan4-presence {
+>> +			label = "fan4-presence";
+>> +			gpios = <&pca0 10 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <10>;
+>> +		};
+>> +
+>> +		event-fan5-presence {
+>> +			label = "fan5-presence";
+>> +			gpios = <&pca0 11 GPIO_ACTIVE_LOW>;
+>> +			linux,code = <11>;
+>> +		};
+>> +	};
+>> +
+>> +	iio-hwmon {
+>> +		compatible = "iio-hwmon";
+>> +		io-channels = <&adc1 7>;
+>> +	};
+>> +};
+>> +
+>> +&adc1 {
+>> +	status = "okay";
+>> +	aspeed,int-vref-microvolt = <2500000>;
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default
+>> +		&pinctrl_adc10_default &pinctrl_adc11_default
+>> +		&pinctrl_adc12_default &pinctrl_adc13_default
+>> +		&pinctrl_adc14_default &pinctrl_adc15_default>;
+>> +};
+>> +
+>> +&ehci1 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&uhci {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&gpio0 {
+>> +	gpio-line-names =
+>> +	/*A0-A7*/	"","","","","","","","",
+>> +	/*B0-B7*/	"","","","","","","checkstop","",
+>> +	/*C0-C7*/	"","","","","","","","",
+>> +	/*D0-D7*/	"","","","","","","","",
+>> +	/*E0-E7*/	"","","","","","","","",
+>> +	/*F0-F7*/	"","","rtc-battery-voltage-read-enable","reset-cause-pinhole","","","factory-reset-toggle","",
+>> +	/*G0-G7*/	"","","","","","","","",
+>> +	/*H0-H7*/	"","bmc-ingraham0","rear-enc-id0","rear-enc-fault0","","","","",
+>> +	/*I0-I7*/	"","","","","","","bmc-secure-boot","",
+>> +	/*J0-J7*/	"","","","","","","","",
+>> +	/*K0-K7*/	"","","","","","","","",
+>> +	/*L0-L7*/	"","","","","","","","",
+>> +	/*M0-M7*/	"","","","","","","","",
+>> +	/*N0-N7*/	"","","","","","","","",
+>> +	/*O0-O7*/	"","","","usb-power","","","","",
+>> +	/*P0-P7*/	"","","","","pcieslot-power","","","",
+>> +	/*Q0-Q7*/	"cfam-reset","","regulator-standby-faulted","","","","","",
+>> +	/*R0-R7*/	"bmc-tpm-reset","power-chassis-control","power-chassis-good","","","","","",
+>> +	/*S0-S7*/	"presence-ps0","presence-ps1","presence-ps2","presence-ps3",
+>> +	"power-ffs-sync-history","","","",
+>> +	/*T0-T7*/	"","","","","","","","",
+>> +	/*U0-U7*/	"","","","","","","","",
+>> +	/*V0-V7*/	"","","","","","","","",
+>> +	/*W0-W7*/	"","","","","","","","",
+>> +	/*X0-X7*/	"","","","","","","","",
+>> +	/*Y0-Y7*/	"","","","","","","","",
+>> +	/*Z0-Z7*/	"","","","","","","","";
+>> +
+>> +	i2c3_mux_oe_n-hog {
+>> +		gpio-hog;
+>> +		gpios = <ASPEED_GPIO(G, 6) GPIO_ACTIVE_LOW>;
+>> +		output-high;
+>> +		line-name = "I2C3_MUX_OE_N";
+>> +	};
+>> +
+>> +	usb_power-hog {
+>> +		gpio-hog;
+>> +		gpios = <ASPEED_GPIO(O, 3) GPIO_ACTIVE_LOW>;
+>> +		output-high;
+>> +	};
+>> +};
+>> +
+>> +&emmc_controller {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&pinctrl_emmc_default {
+>> +	bias-disable;
+>> +};
+>> +
+>> +&emmc {
+>> +	status = "okay";
+>> +	clk-phase-mmc-hs200 = <180>, <180>;
+>> +};
+>> +
+>> +&ibt {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c0 {
+>> +	status = "okay";
+>> +
+>> +	eeprom@51 {
+>> +		compatible = "atmel,24c64";
+>> +		reg = <0x51>;
+>> +	};
+>> +
+>> +	tca_pres1: tca9554@20{
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+>
+> Also missing space before {
+>
+>
+>> +		compatible = "ti,tca9554";
+>> +		reg = <0x20>;
+>> +		gpio-controller;
+>> +		#gpio-cells = <2>;
+>> +
+>> +		gpio-line-names = "",
+>> +			"RUSSEL_FW_I2C_ENABLE_N",
+>> +			"RUSSEL_OPPANEL_PRESENCE_N",
+>> +			"BLYTH_OPPANEL_PRESENCE_N",
+>> +			"CPU_TPM_CARD_PRESENT_N",
+>> +			"DASD_BP2_PRESENT_N",
+>> +			"DASD_BP1_PRESENT_N",
+>> +			"DASD_BP0_PRESENT_N";
+>> +	};
+>> +};
+>> +
+>> +&i2c1 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c2 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c3 {
+>> +	status = "okay";
+>> +
+>> +	power-supply@68 {
+>> +		compatible = "ibm,cffps";
+>> +		reg = <0x68>;
+>> +	};
+>> +
+>> +	power-supply@69 {
+>> +		compatible = "ibm,cffps";
+>> +		reg = <0x69>;
+>> +	};
+>> +
+>> +	pca_pres1: pca9552@61 {
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+>
+>
+>> +		compatible = "nxp,pca9552";
+>> +		reg = <0x61>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +
+>> +		gpio-controller;
+>> +		#gpio-cells = <2>;
+>> +
+>> +		gpio-line-names =
+>> +			"SLOT0_PRSNT_EN_RSVD", "SLOT1_PRSNT_EN_RSVD",
+>> +			"SLOT2_PRSNT_EN_RSVD", "SLOT3_PRSNT_EN_RSVD",
+>> +			"SLOT4_PRSNT_EN_RSVD", "SLOT0_EXPANDER_PRSNT_N",
+>> +			"SLOT1_EXPANDER_PRSNT_N", "SLOT2_EXPANDER_PRSNT_N",
+>> +			"SLOT3_EXPANDER_PRSNT_N", "SLOT4_EXPANDER_PRSNT_N",
+>> +			"", "", "", "", "", "";
+>> +	};
+>> +};
+>> +
+>> +&i2c4 {
+>> +	status = "okay";
+>> +
+>> +	tmp275@48 {
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+>
+>
+>
+>> +		compatible = "ti,tmp275";
+>> +		reg = <0x48>;
+>> +	};
+>> +
+>> +	tmp275@49 {
+> So it's everywhere...
+>
+>> +		compatible = "ti,tmp275";
+>> +		reg = <0x49>;
+>> +	};
+>> +
+>> +	tmp275@4a {
+>> +		compatible = "ti,tmp275";
+>> +		reg = <0x4a>;
+>> +	};
+>> +
+>> +	i2c-mux@70 {
+>> +		compatible = "nxp,pca9546";
+>> +		reg = <0x70>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> Why? Drop
+>
+>> +		i2c-mux-idle-disconnect;
+>> +
+>> +		i2c4mux0chn0: i2c@0 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <0>;
+>> +
+>> +			eeprom@50 {
+>> +				compatible = "atmel,24c64";
+>> +				reg = <0x50>;
+>> +			};
+>> +
+>> +			pca9551@60 {
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+>
+>
+>> +				compatible = "nxp,pca9551";
+>> +				reg = <0x60>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>> +
+>> +				gpio-controller;
+>> +				#gpio-cells = <2>;
+>> +
+>> +				led@0 {
+>> +					label = "cablecard0-cxp-top";
+>> +					reg = <0>;
+>> +					retain-state-shutdown;
+>> +					default-state = "keep";
+>> +					type = <PCA955X_TYPE_LED>;
+>> +				};
+>> +
+>> +				led@1 {
+>> +					label = "cablecard0-cxp-bot";
+>> +					reg = <1>;
+>> +					retain-state-shutdown;
+>> +					default-state = "keep";
+>> +					type = <PCA955X_TYPE_LED>;
+>> +				};
+>> +			};
+>> +		};
+>> +
+>> +		i2c4mux0chn1: i2c@1 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <1>;
+> reg is after compatible, which means if there is no compatible, reg is
+> always first. This applies you all your DTS patches. This patchset and
+> future.
+>
+>
+>> +
+>> +			eeprom@51 {
+>> +				compatible = "atmel,24c64";
+>> +				reg = <0x51>;
+>> +			};
+>> +		};
+>> +
+>> +		i2c4mux0chn2: i2c@2 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <2>;
+>> +
+>> +			eeprom@52 {
+>> +				compatible = "atmel,24c64";
+>> +				reg = <0x52>;
+>> +			};
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&i2c5 {
+>> +	status = "okay";
+>> +
+>> +	tmp275@48 {
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+>
+>
+>> +		compatible = "ti,tmp275";
+>> +		reg = <0x48>;
+>> +	};
+>> +
+>> +	tmp275@49 {
+>> +		compatible = "ti,tmp275";
+>> +		reg = <0x49>;
+>> +	};
+>> +
+>> +	i2c-mux@70 {
+>> +		compatible = "nxp,pca9546";
+>> +		reg = <0x70>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> Drop
+>
+>
+>> +		i2c-mux-idle-disconnect;
+>> +
+>> +		i2c5mux0chn0: i2c@0 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <0>;
+>> +
+>> +			eeprom@50 {
+>> +				compatible = "atmel,24c64";
+>> +				reg = <0x50>;
+>> +			};
+>> +
+>> +			pca9551@60 {
+>> +				compatible = "nxp,pca9551";
+>> +				reg = <0x60>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>> +
+>> +				gpio-controller;
+>> +				#gpio-cells = <2>;
+>> +
+>> +				led@0 {
+>> +					label = "cablecard3-cxp-top";
+>> +					reg = <0>;
+>> +					retain-state-shutdown;
+>> +					default-state = "keep";
+>> +					type = <PCA955X_TYPE_LED>;
+>> +				};
+>> +
+>> +				led@1 {
+>> +					label = "cablecard3-cxp-bot";
+>> +					reg = <1>;
+>> +					retain-state-shutdown;
+>> +					default-state = "keep";
+>> +					type = <PCA955X_TYPE_LED>;
+>> +				};
+>> +			};
+>> +		};
+>> +
+>> +		i2c5mux0chn1: i2c@1 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <1>;
+>> +
+>> +			eeprom@51 {
+>> +				compatible = "atmel,24c64";
+>> +				reg = <0x51>;
+>> +			};
+>> +
+>> +			pca9551@61 {
+>> +				compatible = "nxp,pca9551";
+>> +				reg = <0x61>;
+>> +				#address-cells = <1>;
+>> +				#size-cells = <0>;
+>
+> And here you have correct order of properties...
+>
+>
+>
+> Best regards,
+> Krzysztof
+>
 
