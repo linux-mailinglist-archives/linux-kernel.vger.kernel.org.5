@@ -1,216 +1,281 @@
-Return-Path: <linux-kernel+bounces-159816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B558B347A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:51:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 889978B347D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4F11C22635
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DA942838EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C89813FD82;
-	Fri, 26 Apr 2024 09:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0300913F454;
+	Fri, 26 Apr 2024 09:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cSA0QZqk"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eJmZmVwP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5086C13F01A;
-	Fri, 26 Apr 2024 09:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85F913F45D;
+	Fri, 26 Apr 2024 09:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714125108; cv=none; b=XaB+UbsVrImRamRM0dMMQtrC0zq2O8NG7UWfe7mu8994QwWK6rTDJZ7g5/aUoJlOldxy19H39nf8KD2iDIaWl4LTGQr4A50bqXfIcuRD+dRP89NxncORp+QdMk84ejT4k3JKRAb6hw/qZkCq5d/ld7aBFGz01nOeU9yC9DtPlq4=
+	t=1714125114; cv=none; b=SW6khAySvfwyhvW/aTgxzw41DibuYZ9dh7Y6U58Om7d+r3WFndsxncI07KbutlOLEDYbG3zcma70pfSMmOwSgsgZ1Q/DGEz7GWitA4W2MtRJvbXAkdw70ZI+4c336ZcHtAtZ2VNzxcpW6ADTP2t513dWjOK5XHN+jmgGvahiqg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714125108; c=relaxed/simple;
-	bh=E8qgf4m07XvrYTj9eR33JxTb531hlL+Mt9Butlmfk3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=BxAm+Palhpi4/3ZzUmhzeCSSRTFa8xv45qb/1szvJvDNUFV0gxmfEVyAUTC2dS3872k7f1hoduYJBIWW1JR9d/DR0fqdb5XJutOiLLvh91BV56DpbXayVOyIwBxBwFT+9lEm5OWagAK2pGZ071EMqVrHw8dhBE4GxyQePcHKmOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cSA0QZqk; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6C1132000C;
-	Fri, 26 Apr 2024 09:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714125103;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=0BgDb0k9EC97zEdXZnKosPq8NNnoO+ShOw0Y/xj2auw=;
-	b=cSA0QZqkfpkijLDCqFGRrkVRUipTHcGuNx2t+VtzHDcXq4+4KFbmWq+MjDjKWEtxEUX613
-	AQgaThFLDlWdZsueWfULGgMQL78XAF4HIdXbkr0O0rth7uP1wE/ij6XMVijpIII6I6Tkgh
-	sKbFcDs05LlrixbrUas28+czy2AEf/cigmozqfTVgQVva2Uv5XdBqBRkod2E+sd2Tp0rXe
-	HCLv+CCiW4xK0saR3REGGFcAKZhTLJTSQXZpxJ9iqMdLP4lE4JYmIAQjfTkI3ntQrVJnNP
-	YyVmCX9TBMqACJOKjL24EoA1JZF4GdZ4AeVtFSlUiDNkiQCqZw+yNDbJMIZXxw==
-Date: Fri, 26 Apr 2024 11:51:41 +0200
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bartosz
- Golaszewski <brgl@bgdev.pl>, Doug Anderson <dianders@chromium.org>, Chen-Yu
- Tsai <wenst@chromium.org>, Matt Coster <Matt.Coster@imgtec.com>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, =?UTF-8?Q?Herv=C3=A9?= Codina
- <herve.codina@bootlin.com>, Rob Herring <robh@kernel.org>, Conor Dooley
- <conor@kernel.org>, Saravana Kannan <saravanak@google.com>,
- linux-kernel@vger.kernel.org
-Subject: Hotplug hardware with (un)loadable DT overlays - unconference
- meeting notes
-Message-ID: <20240426115141.201f257a@booty>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714125114; c=relaxed/simple;
+	bh=dIDG2iYF5HLaFwFDbKGoDav/c3YPpuOOU31GP40Rv8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JIMhiBzweGJqodULneFIT6Cgsfa83HEYwCCz6SBLO7MnSxAZylHieQocAULnW5iJaOQ5oqyhu/8NQkvFKq40nvztwrYIzWGkPLgzqFf3w+v8gmBSA+KJTQVpUmT2geI0OXNW6LTeFv+41MrZg+WTOVAv0+8+1Welt/w8yNYBm9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eJmZmVwP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73A52C2BD10;
+	Fri, 26 Apr 2024 09:51:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714125113;
+	bh=dIDG2iYF5HLaFwFDbKGoDav/c3YPpuOOU31GP40Rv8M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eJmZmVwPQJC6JJeQmopKAArEKSHT/1u6oyBQTfjCRiatmfc4EnTFBPeofeh2Sc0+6
+	 0qjYGTQj9qgWd6mbDpBJLesSr46/ai6doM+pUJl6GwAYSI0DqEHdjp17Z89Dva/lT2
+	 ycehrsByxdt4nv1xz/yiFFUYIozkbjOroKeSsAr7UkwC2PPBq1kVv7F/9fGWxe/Td1
+	 J6C651MtP2q6591o9ltaM7rAK9cPeyl73RfxM4v7CDSFafSNOkrIBss2VHCNV96hB/
+	 1aS7w7powVY+H/djq9Oa75eWG24Kfg+RY2JLG4Tz8SKbxlLrX2sXS8iX9OYRwVGzxq
+	 x/AOa5wWhMJUw==
+Date: Fri, 26 Apr 2024 11:51:47 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zohar@linux.ibm.com, roberto.sassu@huawei.com, miklos@szeredi.hu
+Subject: Re: [RFC PATCH v2 0/2] ima: Fix detection of read/write violations
+ on stacked filesystems
+Message-ID: <20240426-norden-langzeitfolgen-611c816b02c4@brauner>
+References: <20240422150651.2908169-1-stefanb@linux.ibm.com>
+ <CAOQ4uxgvHjU-n56ryOp5yWQF=yKz0Cfo0ZieypWJhqsBV4g-2w@mail.gmail.com>
+ <a74b1c3c49b74aa6062c57bd99b48bdddc256ebf.camel@huaweicloud.com>
+ <CAOQ4uxitkN=Jchmp30RKGMVH-RDR5GGy-7J74vMQt0oecAK2bg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxitkN=Jchmp30RKGMVH-RDR5GGy-7J74vMQt0oecAK2bg@mail.gmail.com>
 
-Hello,
+On Tue, Apr 23, 2024 at 05:30:52PM +0300, Amir Goldstein wrote:
+> On Tue, Apr 23, 2024 at 4:21 PM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> >
+> > On Tue, 2024-04-23 at 09:02 +0300, Amir Goldstein wrote:
+> > > On Mon, Apr 22, 2024 at 6:07 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+> > > >
+> > > > This series fixes the detection of read/write violations on stacked
+> > > > filesystems. To be able to access the relevant dentries necessary to
+> > > > detect files opened for writing on a stacked filesystem a new d_real_type
+> > > > D_REAL_FILEDATA is introduced that allows callers to access all relevant
+> > > > files involved in a stacked filesystem while traversing the layers.
+> > > >
+> > >
+> > > Stefan,
+> > >
+> > > Both Miklos and myself objected to this solution:
+> > > https://lore.kernel.org/linux-unionfs/CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H8GHGW-0UyKfjgg@mail.gmail.com/
+> > >
+> > > Not sure what you are hoping to achieve from re-posting the same solution.
+> > >
+> > > I stopped counting how many times I already argued that *all* IMA/EVM
+> > > assertions,
+> > > including rw-ro violations should be enforced only on the real inode.
+> >
+> > I have hopefully a better idea. We should detect violations at each
+> > level of the stack independently. And IMA should be invoked each time
+> > overlayfs uses an underlying layer.
+> >
+> > That is currently not easy, from the IMA policy perspective, because
+> > there are filesystem-specific rules, such as fsname= or fsuuid=. At the
+> > moment, I'm not planning to solve this, but I'm thinking to use for
+> > example FMODE_BACKING to ignore the filesystem-specific keywords and
+> > match the rule anyway.
+> >
+> > For now, I'm only addressing the call to underlying layers. To make
+> > sure that IMA evaluates every layer, I added a rule that checks the
+> > inode UID:
+> >
+> > measure fowner=2000 mask=MAY_READ
+> >
+> >
+> > I just investigated a bit, and I made some changes (for now, I'm just
+> > making it work, and you tell me what you think).
+> 
+> I did not examine this up close, but this seems like a change in the right
+> direction.
+> Will need Christian's approval that this does not break any assumptions
+> made on backing files.
 
-Last week at the Embedded Linux Conference in Seattle we had an
-"unconference session", which is a free discussion about a topic. The
-topic I had proposed is "Hot-Pluggable Hardware with Device Tree
-Overlays Runtime Loading and Unloading (yes, at runtime)". As suggested
-by Saravana, here is a brief summary of the discussion.
+In principle I don't care if IMA wants to call yet another security hook
+in the backing file layer. I suspect it will impact performace if IMA is
+enabled. So that's something to keep in mind. But it's certainly better
+than blatantly abusing the dcache to achieve this.
 
-15 people were present:
-
-Luca Ceresoli (Bootlin)
-Thomas Petazzoni (Bootlin)
-Alexandre Belloni (Bootlin)
-Maxime Chevallier (Bootlin)
-Krzysztof Kozlowski (Linaro)
-Bartosz Golaszewski (Linaro)
-Doug Anderson (Google)
-Chen-Yu Tsai (Google)
-Matt Coster (Imagination Technologies)
-Martino Facchin (Arduino)
-(5 more, I don't know the names)
-
-The topic is how to implement in Linux using device tree overlays
-runtime (un)loading any hardware add-on that:
-
- - can be plugged and unplugged to a base board at runtime, without
-   notice
- - adds hardware on non-discoverable busses
- - provides a way to detect the add-on model that gets attached.
-
-Cold-plug and discoverable busses (e.g. USB) are not in topic.
-
-We described 2 use cases we are working on at Bootlin.
-
-One use case is for the LAN966x, a classic SoC that can be however be
-started in "endpoint mode", i.e. with the CPU cores deactivated and a
-PCI endpoint that allows an external CPU to access all the peripherals
-over PCIe. In practice the whole SoC would be used as a peripheral chip
-providing lots of devices for another SoC where the OS runs. This use
-case has been described by Rob Herring and Lizhi Hou at LPC 2023 [4][5].
-
-The other use case, which was discussed in more detail, is for an
-industrial product under development by a Bootlin customer, which is a
-regular, self-standing embedded Linux system with a connector allowing
-to connect an add-on with additional peripherals. The add-on
-peripherals are on I2C, MIPI DSI and potentially other non-discoverable
-busses (there are also peripherals on natively hot-pluggable busses
-such as USB and Ethernet, but by their nature they don't need special
-work).
-
-For both use cases (and perhaps others we are unaware of) runtime
-loading/unloading DT overlays appears as the most fitting technique.
-Except it is not yet ready for real usage.
-
-For it to work, we highlighted 3 main areas in need of work in the
-Linux kernel:
-
- 1. how to describe the connector and the add-ons in device tree
-    (bindings etc) -- only relevant for the 2nd use case
- 2. implementation of DT overlays for adding/removing the add-on
-    peripherals
- 3. fixing issues with various subsystems and drivers that don't react
-    well on device removal
-
-* Topic 1: DT description *
-
-I mentioned the DT structure I proposed in [0] which allows decoupling
-the bus segments, so supporting both different add-on models and
-different base boards with different SoCs around the same connector
-definition (think of the Beaglebone family). No objection was raised
-about this approach.
-
-Some mentioned the recently posted patches for Mikrobus support on the
-Beagle Play [1], which I was unaware of. The proposed connector
-description appears similar to our proposal. However I later checked
-the e-mail thread and although the connector description appears
-similar, there is a big difference: in the Beagle Play proposal the
-add-on is not described via DT but rather via a greybus manifest, and
-the connector driver has code to parse it and populate the various
-devices mentioned in the manifest.
-
-* Topic 2: Implementation of the connector and overlay (un)loading *
-
-The proposed idea is to have a connector driver that reacts to plug
-events in two stages.
- - Stage 1: load a "small" overlay common to all add-on models which
-   describes enough to get the add-on model ID, e.g. from an EEPROM on
-   the add-on itself.
- - Stage 2: after getting the model ID, load the model-specific overlay
-   that describes everything else.
-
-Stage 1 could be unnecessary if the model can be detected without
-loading any add-on device drivers, e.g. is defined by pulling some
-GPIOs on the connector.
-
-Overlay (un)loading is well known for triggering several issues, the
-largest one (in terms of lines of code involved) is the memory leaks or
-use-after-free [6] of nodes and especially properties that happen when
-an overlay is removed.
-
-* Topic 3: fixing drivers/subsystems not handling removal correctly *
-
-Bartosz raised the concern that many subsystems crash or hang or are
-otherwise buggy when a device is removed (I think the quote was "are
-you guys going to fix them all?") -- a sound concern indeed.
-
-We plan to address issues as they appear on the busses we use, which is
-already a relevant work and is already in progress here. The
-others (e.g. SPI) can be addressed by whoever needs to hotplug them
-anytime in the future. It's worth mentioning that Bartosz gave a BoF
-[2] and talk [3] on the following day, both with useful information for
-those needing to make a subsystem safe against removals.
-
-* Status *
-
-In the end there are 3 main areas in need of work: DT description, DT
-overlay implementation, fixing drivers and subsystems that don't work
-correctly.
-
-Bootlin is actively working on all of these topics and already sent a
-few patches to fix some issues that were found [7][8][9]. More is under
-work and will be sent as it is ready.
-
-That's all. For those present, please feel free to add any relevant
-details I have missed.
-
-[0] https://lore.kernel.org/all/20240403213327.36d731ec@booty/
-[1] https://lore.kernel.org/all/20240317193714.403132-2-ayushdevel1325@gmail.com/
-[2] https://sched.co/1aBGK
-[3] https://sched.co/1aBGf
-[4] https://www.youtube.com/watch?v=MVGElnZW7BQ
-[5] https://lpc.events/event/17/contributions/1421/
-[6] https://elinux.org/Frank%27s_Evolving_Overlay_Thoughts#issues_and_what_needs_to_be_completed_--_Not_an_exhaustive_list
-[7] https://lore.kernel.org/all/20240325152140.198219-1-herve.codina@bootlin.com
-[8] https://lore.kernel.org/all/20240227113426.253232-1-herve.codina@bootlin.com
-[9] https://lore.kernel.org/all/20240220133950.138452-1-herve.codina@bootlin.com
-
-Best regards,
-Luca
-
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> > diff --git a/fs/backing-file.c b/fs/backing-file.c
+> > index 740185198db3..8016f62cf770 100644
+> > --- a/fs/backing-file.c
+> > +++ b/fs/backing-file.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/backing-file.h>
+> >  #include <linux/splice.h>
+> >  #include <linux/mm.h>
+> > +#include <linux/security.h>
+> >
+> >  #include "internal.h"
+> >
+> > @@ -40,12 +41,16 @@ struct file *backing_file_open(const struct path
+> > *user_path, int flags,
+> >         if (IS_ERR(f))
+> >                 return f;
+> >
+> > +       f->f_mode |= OPEN_FMODE(flags);
+> > +
+> >         path_get(user_path);
+> >         *backing_file_user_path(f) = *user_path;
+> >         error = vfs_open(real_path, f);
+> >         if (error) {
+> >                 fput(f);
+> >                 f = ERR_PTR(error);
+> > +       } else {
+> > +               security_file_post_open(f, ACC_MODE(flags));
+> >         }
+> >
+> >         return f;
+> >
+> >
+> > Setup:
+> >
+> > # mount -t overlay -olowerdir=a,upperdir=b,workdir=c overlay d
+> >
+> > open is a tool with the following syntax:
+> >
+> > open <path> <perm>
+> >
+> > It performs the open, and waits for user input before closing the file.
+> >
+> >
+> >
+> > ToMToU (Time of Measurement - Time of Use):
+> >
+> > Same fs (overlayfs)
+> >
+> > # /root/open /root/test-dir/d/test-file r (terminal 1)
+> > # /root/open /root/test-dir/d/test-file w (terminal 2)
+> >
+> > This works:
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
+> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/d/test-file
+> >
+> > This is the result of calling IMA at both layers, and the violation of
+> > course happens twice.
+> >
+> > This is also confirmed in the logs:
+> >
+> > Apr 23 14:52:45 fedora audit[994]: INTEGRITY_PCR pid=994 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
+> > Apr 23 14:52:45 fedora audit[994]: INTEGRITY_PCR pid=994 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="/root/test-dir/d/test-file" dev="overlay" ino=995512 res=1 errno=0
+> >
+> >
+> > Different fs (overlayfs, btrfs)
+> >
+> > # /root/open /root/test-dir/d/test-file r (terminal 1)
+> > # /root/open /root/test-dir/b/test-file w (terminal 2)
+> >
+> > Again, this works despite the read is in overlayfs, and the write is in
+> > btrfs:
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
+> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/b/test-file
+> >
+> > The difference from the previous example is that now there is only one
+> > violation, which is detected only in the upper layer. The logs have:
+> >
+> > Apr 23 15:01:15 fedora audit[985]: INTEGRITY_PCR pid=985 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="/root/test-dir/b/test-file" dev="sda3" ino=995512 res=1 errno=0
+> >
+> >
+> > Different fs (btrfs, overlayfs)
+> >
+> > # /root/open /root/test-dir/b/test-file r (terminal 2)
+> > # /root/open /root/test-dir/d/test-file w (terminal 1)
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 d7a692e19158820d2755542a8d31b49ac7ac2729 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/b/test-file
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
+> >
+> > Works too. There is only one measurement, since that is done only for
+> > the upper layer.
+> >
+> > Apr 23 15:05:40 fedora audit[982]: INTEGRITY_PCR pid=982 uid=0 auid=0 ses=1 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=ToMToU comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
+> >
+> >
+> >
+> > Open writers
+> >
+> > Same fs (overlayfs)
+> >
+> > # /root/open /root/test-dir/d/test-file w (terminal 1)
+> > # /root/open /root/test-dir/d/test-file r (terminal 2)
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
+> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/d/test-file
+> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
+> >
+> > Apr 23 15:10:46 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
+> > Apr 23 15:10:46 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="/root/test-dir/d/test-file" dev="overlay" ino=995512 res=1 errno=0
+> >
+> >
+> > Different fs (overlayfs, btrfs)
+> >
+> > # /root/open /root/test-dir/d/test-file w (terminal 1)
+> > # /root/open /root/test-dir/b/test-file r (terminal 2)
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 /root/test-dir/b/test-file
+> > 10 d7a692e19158820d2755542a8d31b49ac7ac2729 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/b/test-file
+> >
+> > Apr 23 15:12:58 fedora audit[984]: INTEGRITY_PCR pid=984 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="/root/test-dir/b/test-file" dev="sda3" ino=995512 res=1 errno=0
+> >
+> >
+> > Different fs (btrfs, overlayfs)
+> >
+> > # /root/open /root/test-dir/b/test-file w (terminal 1)
+> > # /root/open /root/test-dir/d/test-file r (terminal 2)
+> >
+> > 10 35435d0858d895b90097306171a2e5fcc7f5da9e ima-ng sha256:0e4acf326a82c6bded9d86f48d272d7a036b6490081bb6466ecc2a0e416b244a boot_aggregate
+> > 10 0000000000000000000000000000000000000000 ima-ng sha256:0000000000000000000000000000000000000000000000000000000000000000 test-file
+> > 10 cef529d5d1032ffb6d3e2154664c83ba18cf2576 ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 test-file
+> > 10 694277487b9753db78446192231b59b7be7c03ad ima-ng sha256:f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2 /root/test-dir/d/test-file
+> >
+> > Apr 23 15:16:37 fedora audit[983]: INTEGRITY_PCR pid=983 uid=0 auid=0 ses=3 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 op=invalid_pcr cause=open_writers comm="open" name="test-file" dev="sda3" ino=995512 res=1 errno=0
+> >
+> > Roberto
+> >
+> > > I know this does not work - so you should find out why it does not work and fix
+> > > the problem.
+> > >
+> > > Enforcing IMA/EVM on the overlayfs inode layer is just the wrong way IMO.
+> > > Not once have I heard an argument from IMA/EVM developers why it is really
+> > > needed to enforce IMA/EVM on the overlayfs inode layer and not on the
+> > > real inode.
+> > > I am sorry that we are failing to communicate on this matter, but I am not
+> > > sure how else I can help.
+> > >
+> > > Thanks,
+> > > Amir.
+> >
 
