@@ -1,274 +1,504 @@
-Return-Path: <linux-kernel+bounces-160143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2BD8B39CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6438B39D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:24:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D5C1F22DC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:23:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05F9E1F22A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01C514900A;
-	Fri, 26 Apr 2024 14:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066F8148848;
+	Fri, 26 Apr 2024 14:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvW7dmnu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/y9jvwZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE88148846;
-	Fri, 26 Apr 2024 14:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB9D1487E6;
+	Fri, 26 Apr 2024 14:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714141370; cv=none; b=fGUkEVHUvlRAzVqYYG0sb3gZL6slbakdbws4WEj2OmJqyxQ/QmXXUM8aZwzn3cm4k707yjjLcreO4JO+h8QcuZV5D9zIb9Jjrfr89HxLDM5Ls8zzapNnt+pG6bcqHjBrnOV5Chmn7od4bLml0LQvqqGe2SRipM8GAZgJanKNuMw=
+	t=1714141430; cv=none; b=ulGJJEgWCfyAMotaU6c1RqIbpwj35v+XqD3n5+KlDXvKtu94Db04UBV6xojNXFGqOH53ZVt70g9yIPP2vFHqvvvH/ki8i5Wru8VqGQkJ25hf/dgTmvj1hvnqOGUDjCiO0upLoBxlhjS6sP4ybYga2kFMi/g/DVDDoASisQ7KAgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714141370; c=relaxed/simple;
-	bh=OP2FrKNIK0HGEK/SFwNeHX+OKX7puCansNoN843N4wo=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=od0Q8FMugfx0aYvEYOZR/GaWcVP7YhZq1ddrkbIT3gmBzy6d/6TF4bxbKcQqj64HE6myvqsxc+I4K66QXeQxcOmDNj2585zJhLAdRfA89LgvudLc4Hqa6X/Hs9dHC9PpwbJXTuviJHo7Lcl+IKkvos64dJHhfFTEprSyFnAmGcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvW7dmnu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4617DC32781;
-	Fri, 26 Apr 2024 14:22:50 +0000 (UTC)
+	s=arc-20240116; t=1714141430; c=relaxed/simple;
+	bh=KcOQVw4toYyZmh0/fqK13hVlrfokyhULnWn7otxxxvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2RyKX9ak02NpczThlFR90TKGrpru9yAQQqV+klqbtW1xIikSvRZCL4NL88Pud710+QqYIEPJBwIq8bdT6NWhIG4FXm63OnXaoMDn3HeqFYQqcmtgEl6tal1U+pefvQo/Y3eb0FUIEM2F5p0l3nuGtJ8lEzUc/HRc9/rXYKdNYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F/y9jvwZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28CF2C113CD;
+	Fri, 26 Apr 2024 14:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714141370;
-	bh=OP2FrKNIK0HGEK/SFwNeHX+OKX7puCansNoN843N4wo=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=TvW7dmnuLmcSzqZoyM8X7UuWuQO2x7wm7dzuKKZ1rLp4c9WGu2QNvcbBsztMsKDae
-	 DC7p/rMQ6K/sAzDnvFSok/vqfoVjrgoFdTKOQ+gl/PxWLTfIzNQLx2uZZSG9CzLaMO
-	 huVmKyYcomaMOyHfA9jrDR5ypuaNby0uHTwQE3lq23WsAWrrzBDZbpDCiLi+AYPXhE
-	 mI3WqVvR8bfU6gz3rmuTlOMgUGJMitK2tWngz/hAHNjIuDDigyAqswRp1V+vmFEeh/
-	 T3d6maziXlYfutlX8HEEgB7IIC3zhnm7g+1c01D5kzDxKwEYvoyLyMi7FpsXdxQajm
-	 5/X0XYPlTyhIw==
-Date: Fri, 26 Apr 2024 09:22:48 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1714141430;
+	bh=KcOQVw4toYyZmh0/fqK13hVlrfokyhULnWn7otxxxvc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F/y9jvwZElxt09BJcHPYl9fsX/1p8mGrTEnqsRkjwfcxuuEDq0cHEDyzyel4twUFC
+	 pdNC91Q5eJKr5jn4huhS4UZqX89vPe3DydfHv/gxfgI0Y0CRzjq8a97GFts+WKZpTa
+	 l/lMl2olDU/jWr9whwmODTPeCwuJ3JL69zky7IQXdUEg49JnfcKONRbHaJXSGWhuBY
+	 lFEmpw5QUqi6vqUQ4VEy0i1ogSDy24kzeovD3buyuekSjELVeN5qejFn0Fre5ltuMY
+	 KnMdfupbCNki4e3fIu4h5KRU/fKmnAlIxXnjxYL00as2ca0ksB209L4Rieph4b/cB+
+	 ul8WnSEx5kr2g==
+Date: Fri, 26 Apr 2024 15:23:45 +0100
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 02/11] riscv: add ISA extensions validation
+Message-ID: <20240426-smugly-jury-e933a4ef035c@spud>
+References: <20240423124326.2532796-1-cleger@rivosinc.com>
+ <20240423124326.2532796-3-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: mazziesaccount@gmail.com, linux-aspeed@lists.ozlabs.org, 
- Andrew Jeffery <andrew@codeconstruct.com.au>, 
- Patrick Rudolph <patrick.rudolph@9elements.com>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Joel Stanley <joel@jms.id.au>, Conor Dooley <conor+dt@kernel.org>, 
- Naresh Solanki <Naresh.Solanki@9elements.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- devicetree@vger.kernel.org
-In-Reply-To: <20240426100909.1351939-1-naresh.solanki@9elements.com>
-References: <20240426100909.1351939-1-naresh.solanki@9elements.com>
-Message-Id: <171414068178.1496548.11661626868802319982.robh@kernel.org>
-Subject: Re: [PATCH] ARM: dts: aspeed: sbp1: IBM sbp1 BMC board
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aM+tyKD3rsXBnYjy"
+Content-Disposition: inline
+In-Reply-To: <20240423124326.2532796-3-cleger@rivosinc.com>
 
 
-On Fri, 26 Apr 2024 15:39:00 +0530, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> Add a device tree for IBM sbp1 BMC board which is based on AST2600 SOC.
-> 
-> sbp1 baseboard has:
-> - support for up to four Sapphire Rapids sockets having 16 DIMMS each.
->   - 240 core/480 threads at maximum
-> - 32x CPU PCIe slots
-> - 2x M.2 PCH PCIe slots
-> - Dual 200Gbit/s NIC
-> - SPI TPM
-> 
-> Added the following:
-> - Indication LEDs
-> - I2C mux & GPIO controller, pin assignments,
-> - Thermister,
-> - Voltage regulator
-> - EEPROM/VPD
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+--aM+tyKD3rsXBnYjy
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Apr 23, 2024 at 02:43:16PM +0200, Cl=E9ment L=E9ger wrote:
+> Since a few extensions (Zicbom/Zicboz) already needs validation and
+> future ones will need it as well (Zc*) add a validate() callback to
+> struct riscv_isa_ext_data. This require to rework the way extensions are
+> parsed and split it in two phases. First phase is isa string or isa
+> extension list parsing and consists in enabling all the extensions in a
+> temporary bitmask without any validation. The second step "resolves" the
+> final isa bitmap, handling potential missing dependencies. The mechanism
+> is quite simple and simply validate each extension described in the
+> temporary bitmap before enabling it in the final isa bitmap. This
+> process takes place until the final isa bitmap reaches a stable state.
+> In order to avoid any potential infinite looping, allow looping a
+> maximum of the number of extension we handle. Zicboz and Zicbom
+> extensions are modified to use this validation mechanism.
+
+Yaknow, seeing the implemtation I'm having second thoughts. I think
+there's two pretty separate actions going on here - the first is things
+like Zicbom or Zicboz where we are looking at the DT to find some extra
+properties which we can do exactly once. The other is the Zc* case,
+where we are making sure that extensions they depend on are enabled.
+I understand that the latter may need to loop, but I don't think there's
+a reason to loop in the Zicbom or Zicboz case.
+
+That said, I do actually like the idea of having specific callbacks for
+extensions that require them, rather than calling extension_check()
+unconditionally.
+
+I've not reviewed the actual code here FWIW, just spent some time
+thinking about the idea. I might do that later on this revision, or on
+another, depending on what you think of splitting the Zicbom and Zicboz
+type extra prop checking from dependency related stuff like Zc*.
+
+Cheers,
+Conor.
+
+>=20
+> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
 > ---
->  arch/arm/boot/dts/aspeed/Makefile             |    1 +
->  .../boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dts   | 6224 +++++++++++++++++
->  2 files changed, 6225 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dts
-> 
+>  arch/riscv/include/asm/cpufeature.h |   1 +
+>  arch/riscv/kernel/cpufeature.c      | 201 ++++++++++++++++------------
+>  2 files changed, 118 insertions(+), 84 deletions(-)
+>=20
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
+/cpufeature.h
+> index 347805446151..328f895f6b8f 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -70,6 +70,7 @@ struct riscv_isa_ext_data {
+>  	const char *property;
+>  	const unsigned int *subset_ext_ids;
+>  	const unsigned int subset_ext_size;
+> +	bool (*validate)(const struct riscv_isa_ext_data *data, const unsigned =
+long *isa_bitmap);
+>  };
+> =20
+>  extern const struct riscv_isa_ext_data riscv_isa_ext[];
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 115ba001f1bc..6d238c8dbccf 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -72,51 +72,62 @@ bool __riscv_isa_extension_available(const unsigned l=
+ong *isa_bitmap, unsigned i
+>  }
+>  EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
+> =20
+> -static bool riscv_isa_extension_check(int id)
+> +static bool riscv_isa_extension_valid(int id)
+>  {
+> -	switch (id) {
+> -	case RISCV_ISA_EXT_ZICBOM:
+> -		if (!riscv_cbom_block_size) {
+> -			pr_err("Zicbom detected in ISA string, disabling as no cbom-block-siz=
+e found\n");
+> -			return false;
+> -		} else if (!is_power_of_2(riscv_cbom_block_size)) {
+> -			pr_err("Zicbom disabled as cbom-block-size present, but is not a powe=
+r-of-2\n");
+> -			return false;
+> -		}
+> -		return true;
+> -	case RISCV_ISA_EXT_ZICBOZ:
+> -		if (!riscv_cboz_block_size) {
+> -			pr_err("Zicboz detected in ISA string, disabling as no cboz-block-siz=
+e found\n");
+> -			return false;
+> -		} else if (!is_power_of_2(riscv_cboz_block_size)) {
+> -			pr_err("Zicboz disabled as cboz-block-size present, but is not a powe=
+r-of-2\n");
+> -			return false;
+> -		}
+> -		return true;
+> -	case RISCV_ISA_EXT_INVALID:
+> +	return id !=3D RISCV_ISA_EXT_INVALID;
+> +}
+> +
+> +static bool riscv_ext_zicbom_validate(const struct riscv_isa_ext_data *d=
+ata,
+> +				      const unsigned long *isa_bitmap)
+> +{
+> +	if (!riscv_cbom_block_size) {
+> +		pr_err_once("Zicbom detected in ISA string,"
+> +			    "disabling as no cbom-block-size found\n");
+> +		return false;
+> +	} else if (!is_power_of_2(riscv_cbom_block_size)) {
+> +		pr_err_once("Zicbom disabled as cbom-block-size present,"
+> +			    "but is not a power-of-2\n");
+>  		return false;
+>  	}
+> +	return true;
+> +}
+> =20
+> +static bool riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *d=
+ata,
+> +				      const unsigned long *isa_bitmap)
+> +{
+> +	if (!riscv_cboz_block_size) {
+> +		pr_err_once("Zicboz detected in ISA string,"
+> +			    "disabling as no cboz-block-size found\n");
+> +		return false;
+> +	} else if (!is_power_of_2(riscv_cboz_block_size)) {
+> +		pr_err_once("Zicboz disabled as cboz-block-size present,"
+> +			    "but is not a power-of-2\n");
+> +		return false;
+> +	}
+>  	return true;
+>  }
+> =20
+> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
+ {	\
+> -	.name =3D #_name,								\
+> -	.property =3D #_name,							\
+> -	.id =3D _id,								\
+> -	.subset_ext_ids =3D _subset_exts,						\
+> -	.subset_ext_size =3D _subset_exts_size					\
+> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size,=
+ _validate) {	\
+> +	.name =3D #_name,									\
+> +	.property =3D #_name,								\
+> +	.id =3D _id,									\
+> +	.subset_ext_ids =3D _subset_exts,							\
+> +	.subset_ext_size =3D _subset_exts_size,						\
+> +	.validate =3D _validate								\
+>  }
+> =20
+> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
+ NULL, 0)
+> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
+ NULL, 0, NULL)
+> =20
+>  /* Used to declare pure "lasso" extension (Zk for instance) */
+>  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
+> -	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_=
+SIZE(_bundled_exts))
+> +	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
+> +			    ARRAY_SIZE(_bundled_exts), NULL)
+> =20
+>  /* Used to declare extensions that are a superset of other extensions (Z=
+vbb for instance) */
+>  #define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
+> -	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
+> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), NULL)
+> +#define __RISCV_ISA_EXT_SUPERSET_VALIDATE(_name, _id, _sub_exts, _valida=
+te) \
+> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), _vali=
+date)
+> =20
+>  static const unsigned int riscv_zk_bundled_exts[] =3D {
+>  	RISCV_ISA_EXT_ZBKB,
+> @@ -247,8 +258,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
+>  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
+>  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
+>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+> -	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvc=
+fg_exts),
+> -	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvc=
+fg_exts),
+> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_x=
+linuxenvcfg_exts,
+> +					  riscv_ext_zicbom_validate),
+> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_x=
+linuxenvcfg_exts,
+> +					  riscv_ext_zicboz_validate),
+>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> @@ -310,33 +323,70 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
+ {
+> =20
+>  const size_t riscv_isa_ext_count =3D ARRAY_SIZE(riscv_isa_ext);
+> =20
+> -static void __init match_isa_ext(const struct riscv_isa_ext_data *ext, c=
+onst char *name,
+> -				 const char *name_end, struct riscv_isainfo *isainfo)
+> +static void riscv_isa_set_ext(const struct riscv_isa_ext_data *ext, unsi=
+gned long *bitmap)
+>  {
+> -	if ((name_end - name =3D=3D strlen(ext->name)) &&
+> -	     !strncasecmp(name, ext->name, name_end - name)) {
+> -		/*
+> -		 * If this is a bundle, enable all the ISA extensions that
+> -		 * comprise the bundle.
+> -		 */
+> -		if (ext->subset_ext_size) {
+> -			for (int i =3D 0; i < ext->subset_ext_size; i++) {
+> -				if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
+> -					set_bit(ext->subset_ext_ids[i], isainfo->isa);
+> -			}
+> +	/*
+> +	 * This is valid even for bundle extensions which uses the RISCV_ISA_EX=
+T_INVALID id
+> +	 * (rejected by riscv_isa_extension_valid()).
+> +	 */
+> +	if (riscv_isa_extension_valid(ext->id))
+> +		set_bit(ext->id, bitmap);
+> +
+> +	for (int i =3D 0; i < ext->subset_ext_size; i++) {
+> +		if (riscv_isa_extension_valid(ext->subset_ext_ids[i]))
+> +			set_bit(ext->subset_ext_ids[i], bitmap);
+> +	}
+> +}
+> +
+> +static void __init riscv_resolve_isa(const unsigned long *isa_bitmap, st=
+ruct riscv_isainfo *isainfo,
+> +				     unsigned long *this_hwcap, unsigned long *isa2hwcap)
+> +{
+> +	const struct riscv_isa_ext_data *ext;
+> +	DECLARE_BITMAP(prev_bitmap, RISCV_ISA_EXT_MAX);
+> +	int max_loop_count =3D riscv_isa_ext_count + 1;
+> +
+> +	do {
+> +		if (max_loop_count-- < 0) {
+> +			pr_err("Failed to reach a stable ISA state\n");
+> +			return;
+>  		}
+> +		memcpy(prev_bitmap, isainfo->isa, sizeof(prev_bitmap));
+> +		for (int i =3D 0; i < riscv_isa_ext_count; i++) {
+> +			ext =3D &riscv_isa_ext[i];
+> +
+> +			/* Bundle extensions ids are invalid*/
+> +			if (!riscv_isa_extension_valid(ext->id))
+> +				continue;
+> +
+> +			if (!test_bit(ext->id, isa_bitmap) || test_bit(ext->id, isainfo->isa))
+> +				continue;
+> +
+> +			if (ext->validate && !ext->validate(ext, isainfo->isa))
+> +				continue;
+> =20
+> -		/*
+> -		 * This is valid even for bundle extensions which uses the RISCV_ISA_E=
+XT_INVALID id
+> -		 * (rejected by riscv_isa_extension_check()).
+> -		 */
+> -		if (riscv_isa_extension_check(ext->id))
+>  			set_bit(ext->id, isainfo->isa);
+> +
+> +			/* Only single letter extensions get set in hwcap */
+> +			if (ext->id < RISCV_ISA_EXT_BASE)
+> +				*this_hwcap |=3D isa2hwcap[ext->id];
+> +		}
+> +	} while (memcmp(prev_bitmap, isainfo->isa, sizeof(prev_bitmap)));
+> +}
+> +
+> +static void __init match_isa_ext(const char *name, const char *name_end,=
+ unsigned long *bitmap)
+> +{
+> +	for (int i =3D 0; i < riscv_isa_ext_count; i++) {
+> +		const struct riscv_isa_ext_data *ext =3D &riscv_isa_ext[i];
+> +
+> +		if ((name_end - name =3D=3D strlen(ext->name)) &&
+> +		    !strncasecmp(name, ext->name, name_end - name)) {
+> +			riscv_isa_set_ext(ext, bitmap);
+> +			break;
+> +		}
+>  	}
+>  }
+> =20
+> -static void __init riscv_parse_isa_string(unsigned long *this_hwcap, str=
+uct riscv_isainfo *isainfo,
+> -					  unsigned long *isa2hwcap, const char *isa)
+> +static void __init riscv_resolve_isa_string(const char *isa, unsigned lo=
+ng *bitmap)
+>  {
+>  	/*
+>  	 * For all possible cpus, we have already validated in
+> @@ -349,7 +399,7 @@ static void __init riscv_parse_isa_string(unsigned lo=
+ng *this_hwcap, struct risc
+>  	while (*isa) {
+>  		const char *ext =3D isa++;
+>  		const char *ext_end =3D isa;
+> -		bool ext_long =3D false, ext_err =3D false;
+> +		bool ext_err =3D false;
+> =20
+>  		switch (*ext) {
+>  		case 's':
+> @@ -389,7 +439,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
+ng *this_hwcap, struct risc
+>  			 * character itself while eliminating the extensions version number.
+>  			 * A simple re-increment solves this problem.
+>  			 */
+> -			ext_long =3D true;
+>  			for (; *isa && *isa !=3D '_'; ++isa)
+>  				if (unlikely(!isalnum(*isa)))
+>  					ext_err =3D true;
+> @@ -469,17 +518,8 @@ static void __init riscv_parse_isa_string(unsigned l=
+ong *this_hwcap, struct risc
+> =20
+>  		if (unlikely(ext_err))
+>  			continue;
+> -		if (!ext_long) {
+> -			int nr =3D tolower(*ext) - 'a';
+> =20
+> -			if (riscv_isa_extension_check(nr)) {
+> -				*this_hwcap |=3D isa2hwcap[nr];
+> -				set_bit(nr, isainfo->isa);
+> -			}
+> -		} else {
+> -			for (int i =3D 0; i < riscv_isa_ext_count; i++)
+> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
+> -		}
+> +		match_isa_ext(ext, ext_end, bitmap);
+>  	}
+>  }
+> =20
+> @@ -501,6 +541,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
+nsigned long *isa2hwcap)
+>  	for_each_possible_cpu(cpu) {
+>  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
+>  		unsigned long this_hwcap =3D 0;
+> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) =3D { 0 };
+> =20
+>  		if (acpi_disabled) {
+>  			node =3D of_cpu_device_node_get(cpu);
+> @@ -523,7 +564,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
+nsigned long *isa2hwcap)
+>  			}
+>  		}
+> =20
+> -		riscv_parse_isa_string(&this_hwcap, isainfo, isa2hwcap, isa);
+> +		riscv_resolve_isa_string(isa, isa_bitmap);
+> =20
+>  		/*
+>  		 * These ones were as they were part of the base ISA when the
+> @@ -531,10 +572,10 @@ static void __init riscv_fill_hwcap_from_isa_string=
+(unsigned long *isa2hwcap)
+>  		 * unconditionally where `i` is in riscv,isa on DT systems.
+>  		 */
+>  		if (acpi_disabled) {
+> -			set_bit(RISCV_ISA_EXT_ZICSR, isainfo->isa);
+> -			set_bit(RISCV_ISA_EXT_ZIFENCEI, isainfo->isa);
+> -			set_bit(RISCV_ISA_EXT_ZICNTR, isainfo->isa);
+> -			set_bit(RISCV_ISA_EXT_ZIHPM, isainfo->isa);
+> +			set_bit(RISCV_ISA_EXT_ZICSR, isa_bitmap);
+> +			set_bit(RISCV_ISA_EXT_ZIFENCEI, isa_bitmap);
+> +			set_bit(RISCV_ISA_EXT_ZICNTR, isa_bitmap);
+> +			set_bit(RISCV_ISA_EXT_ZIHPM, isa_bitmap);
+>  		}
+> =20
+>  		/*
+> @@ -548,9 +589,11 @@ static void __init riscv_fill_hwcap_from_isa_string(=
+unsigned long *isa2hwcap)
+>  		if (acpi_disabled && riscv_cached_mvendorid(cpu) =3D=3D THEAD_VENDOR_I=
+D &&
+>  		    riscv_cached_marchid(cpu) =3D=3D 0x0) {
+>  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
+> -			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> +			clear_bit(RISCV_ISA_EXT_v, isa_bitmap);
+>  		}
+> =20
+> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
+> +
+>  		/*
+>  		 * All "okay" hart should have same isa. Set HWCAP based on
+>  		 * common capabilities of every "okay" hart, in case they don't
+> @@ -579,6 +622,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsi=
+gned long *isa2hwcap)
+>  		unsigned long this_hwcap =3D 0;
+>  		struct device_node *cpu_node;
+>  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
+> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) =3D { 0 };
+> =20
+>  		cpu_node =3D of_cpu_device_node_get(cpu);
+>  		if (!cpu_node) {
+> @@ -598,22 +642,11 @@ static int __init riscv_fill_hwcap_from_ext_list(un=
+signed long *isa2hwcap)
+>  						     ext->property) < 0)
+>  				continue;
+> =20
+> -			if (ext->subset_ext_size) {
+> -				for (int j =3D 0; j < ext->subset_ext_size; j++) {
+> -					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
+> -						set_bit(ext->subset_ext_ids[j], isainfo->isa);
+> -				}
+> -			}
+> -
+> -			if (riscv_isa_extension_check(ext->id)) {
+> -				set_bit(ext->id, isainfo->isa);
+> -
+> -				/* Only single letter extensions get set in hwcap */
+> -				if (strnlen(riscv_isa_ext[i].name, 2) =3D=3D 1)
+> -					this_hwcap |=3D isa2hwcap[riscv_isa_ext[i].id];
+> -			}
+> +			riscv_isa_set_ext(ext, isa_bitmap);
+>  		}
+> =20
+> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
+> +
+>  		of_node_put(cpu_node);
+> =20
+>  		/*
+> --=20
+> 2.43.0
+>=20
 
+--aM+tyKD3rsXBnYjy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
+-----BEGIN PGP SIGNATURE-----
 
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiu41wAKCRB4tDGHoIJi
+0nW3AP4msPLVtiGtPfN8mDJFJsEa8wFhRJ4tUnN5L/FSrB51kwD/fHhafPegS1qZ
+bNRZntFFXMFZdDM3qzyM8Ia2LWHXpwE=
+=CKip
+-----END PGP SIGNATURE-----
 
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y aspeed/aspeed-bmc-ibm-sbp1.dtb' for 20240426100909.1351939-1-naresh.solanki@9elements.com:
-
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /: failed to match any schema with compatible: ['ibm,sbp1-bmc', 'aspeed,ast2600']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: timer: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/timer/arm,arch_timer.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /sdram@1e6e0000: failed to match any schema with compatible: ['aspeed,ast2600-sdram-edac', 'syscon']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: bus@1e600000: compatible: ['aspeed,ast2600-ahbc', 'syscon'] is too long
-	from schema $id: http://devicetree.org/schemas/bus/aspeed,ast2600-ahbc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mdio@1e650010: Unevaluated properties are not allowed ('reset-assert-us', 'reset-deassert-us' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/aspeed,ast2600-mdio.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mdio@1e650018: Unevaluated properties are not allowed ('reset-assert-us', 'reset-deassert-us' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/aspeed,ast2600-mdio.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e660000: $nodename:0: 'ftgmac@1e660000' does not match '^ethernet(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e680000: $nodename:0: 'ftgmac@1e680000' does not match '^ethernet(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e670000: $nodename:0: 'ftgmac@1e670000' does not match '^ethernet(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e670000: Unevaluated properties are not allowed ('#address-cells', '#size-cells' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e690000: $nodename:0: 'ftgmac@1e690000' does not match '^ethernet(@.*)?$'
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ftgmac@1e690000: Unevaluated properties are not allowed ('#address-cells', '#size-cells' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/faraday,ftgmac100.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/usb@1e6b0000: failed to match any schema with compatible: ['aspeed,ast2600-uhci', 'generic-uhci']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/usb@1e6b0000: failed to match any schema with compatible: ['aspeed,ast2600-uhci', 'generic-uhci']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: syscon@1e6e2000: pinctrl: 
-'oneOf' conditional failed, one must be fixed:
-	'aspeed,external-nodes' is a required property
-	'aspeed,ast2400-pinctrl' was expected
-	'aspeed,ast2500-pinctrl' was expected
-	'EMMC' is not one of ['ACPI', 'ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'DDCCLK', 'DDCDAT', 'EXTRST', 'FLACK', 'FLBUSY', 'FLWP', 'GPID', 'GPID0', 'GPID2', 'GPID4', 'GPID6', 'GPIE0', 'GPIE2', 'GPIE4', 'GPIE6', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'LPCPD', 'LPCPME', 'LPCRST', 'LPCSMI', 'MAC1LINK', 'MAC2LINK', 'MDIO1', 'MDIO2', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NDTS4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', 'NRTS2', 'NRTS3', 'OSCCLK', 'PWM0', 'PWM1', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'RGMII1', 'RGMII2', 'RMII1', 'RMII2', 'ROM16', 'ROM8', 'ROMCS1', 'ROMCS2', 'ROMCS3', 'ROMCS4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT2', 'SALT3', 'SALT4', 'SD1', 'SD2', 'SGPMCK', 'SGPMI', 'SGPMLD', 'SGPMO', 'SG
- PSCK', 'SGPSI0', 'SGPSI1', 'SGPSLD', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1DEBUG', 'SPI1PASSTHRU', 'SPICS1', 'TIMER3', 'TIMER4', 'TIMER5', 'TIMER6', 'TIMER7', 'TIMER8', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART6', 'USB11D1', 'USB11H2', 'USB2D1', 'USB2H1', 'USBCKI', 'VGABIOS_ROM', 'VGAHS', 'VGAVS', 'VPI18', 'VPI24', 'VPI30', 'VPO12', 'VPO24', 'WDTRST1', 'WDTRST2']
-	'EMMC' is not one of ['ACPI', 'ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'DDCCLK', 'DDCDAT', 'ESPI', 'FWSPICS1', 'FWSPICS2', 'GPID0', 'GPID2', 'GPID4', 'GPID6', 'GPIE0', 'GPIE2', 'GPIE4', 'GPIE6', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'LAD0', 'LAD1', 'LAD2', 'LAD3', 'LCLK', 'LFRAME', 'LPCHC', 'LPCPD', 'LPCPLUS', 'LPCPME', 'LPCRST', 'LPCSMI', 'LSIRQ', 'MAC1LINK', 'MAC2LINK', 'MDIO1', 'MDIO2', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', 'NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PNOR', 'PWM0', 'PWM1', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'RGMII1', 'RGMII2', 'RMII1', 'RMII2', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10', 'SALT11', 'SALT12', 'SALT13', 'SALT14', 'SALT
- 2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9', 'SCL1', 'SCL2', 'SD1', 'SD2', 'SDA1', 'SDA2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1CS1', 'SPI1DEBUG', 'SPI1PASSTHRU', 'SPI2CK', 'SPI2CS0', 'SPI2CS1', 'SPI2MISO', 'SPI2MOSI', 'TIMER3', 'TIMER4', 'TIMER5', 'TIMER6', 'TIMER7', 'TIMER8', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART6', 'USB11BHID', 'USB2AD', 'USB2AH', 'USB2BD', 'USB2BH', 'USBCKI', 'VGABIOSROM', 'VGAHS', 'VGAVS', 'VPI24', 'VPO', 'WDTRST1', 'WDTRST2']
-..
-	from schema $id: http://devicetree.org/schemas/mfd/aspeed,ast2x00-scu.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: syscon@1e6e2000: 'smp-memram@180' does not match any of the regexes: '^interrupt-controller@[0-9a-f]+$', '^p2a-control@[0-9a-f]+$', '^pinctrl(@[0-9a-f]+)?$', '^silicon-id@[0-9a-f]+$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/mfd/aspeed,ast2x00-scu.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: i3c2_default:function:0: 'I3C2' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMC', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', '
- NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10', 'PWM11', 'PWM12', 'PWM13', 'PWM14', 'PWM15', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8', 'PWM9', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10', 'SALT11', 'SALT12', 'SALT13', 'SALT14', 'SALT15', 'SALT16', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9', 'SD1', 'SD2', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12', 'UART13', 'UART6', 'UART7', 'UART8', 'UART9', 'USBAD', 'USBADP', 'USB2AH', 'USB2AHP', 'USB2BD', 'USB2BH',
-  'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: i3c2_default:groups:0: 'I3C2' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMCG1', 'EMMCG4', 'EMMCG8', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'HVI3C3', 'HVI3C4', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'N
- RI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', 'NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10G0', 'PWM10G1', 'PWM11G0', 'PWM11G1', 'PWM12G0', 'PWM12G1', 'PWM13G0', 'PWM13G1', 'PWM14G0', 'PWM14G1', 'PWM15G0', 'PWM15G1', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8G0', 'PWM8G1', 'PWM9G0', 'PWM9G1', 'QSPI1', 'QSPI2', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10G0', 'SALT10G1', 'SALT11G0', 'SALT11G1', 'SALT12G0', 'SALT12G1', 'SALT13G0', 'SALT13G1', 'SALT14G0', 'SALT14G1', 'SALT15G0', 'SALT15G1', 'SALT16G0', 'SALT16G1', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9G0', 'SALT9G1', 'SD1', 'SD2', 'SD3', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15
- ', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12G0', 'UART12G1', 'UART13G0', 'UART13G1', 'UART6', 'UART7', 'UART8', 'UART9', 'USBA', 'USBB', 'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: usb11bhid_default:function:0: 'USB11BHID' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMC', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 
- 'NRTS1', 'NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10', 'PWM11', 'PWM12', 'PWM13', 'PWM14', 'PWM15', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8', 'PWM9', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10', 'SALT11', 'SALT12', 'SALT13', 'SALT14', 'SALT15', 'SALT16', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9', 'SD1', 'SD2', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12', 'UART13', 'UART6', 'UART7', 'UART8', 'UART9', 'USBAD', 'USBADP', 'USB2AH', 'USB2AHP', 'USB2BD',
-  'USB2BH', 'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: i3c1_default:function:0: 'I3C1' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMC', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', '
- NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10', 'PWM11', 'PWM12', 'PWM13', 'PWM14', 'PWM15', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8', 'PWM9', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10', 'SALT11', 'SALT12', 'SALT13', 'SALT14', 'SALT15', 'SALT16', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9', 'SD1', 'SD2', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12', 'UART13', 'UART6', 'UART7', 'UART8', 'UART9', 'USBAD', 'USBADP', 'USB2AH', 'USB2AHP', 'USB2BD', 'USB2BH',
-  'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: i3c1_default:groups:0: 'I3C1' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMCG1', 'EMMCG4', 'EMMCG8', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'HVI3C3', 'HVI3C4', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'N
- RI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1', 'NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10G0', 'PWM10G1', 'PWM11G0', 'PWM11G1', 'PWM12G0', 'PWM12G1', 'PWM13G0', 'PWM13G1', 'PWM14G0', 'PWM14G1', 'PWM15G0', 'PWM15G1', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8G0', 'PWM8G1', 'PWM9G0', 'PWM9G1', 'QSPI1', 'QSPI2', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10G0', 'SALT10G1', 'SALT11G0', 'SALT11G1', 'SALT12G0', 'SALT12G1', 'SALT13G0', 'SALT13G1', 'SALT14G0', 'SALT14G1', 'SALT15G0', 'SALT15G1', 'SALT16G0', 'SALT16G1', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9G0', 'SALT9G1', 'SD1', 'SD2', 'SD3', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15
- ', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12G0', 'UART12G1', 'UART13G0', 'UART13G1', 'UART6', 'UART7', 'UART8', 'UART9', 'USBA', 'USBB', 'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pinctrl: usb2ad_default:function:0: 'USB2AD' is not one of ['ADC0', 'ADC1', 'ADC10', 'ADC11', 'ADC12', 'ADC13', 'ADC14', 'ADC15', 'ADC2', 'ADC3', 'ADC4', 'ADC5', 'ADC6', 'ADC7', 'ADC8', 'ADC9', 'BMCINT', 'EMMC', 'ESPI', 'ESPIALT', 'FSI1', 'FSI2', 'FWQSPI', 'FWSPIABR', 'FWSPID', 'FWSPIWP', 'GPIT0', 'GPIT1', 'GPIT2', 'GPIT3', 'GPIT4', 'GPIT5', 'GPIT6', 'GPIT7', 'GPIU0', 'GPIU1', 'GPIU2', 'GPIU3', 'GPIU4', 'GPIU5', 'GPIU6', 'GPIU7', 'I2C1', 'I2C10', 'I2C11', 'I2C12', 'I2C13', 'I2C14', 'I2C15', 'I2C16', 'I2C2', 'I2C3', 'I2C4', 'I2C5', 'I2C6', 'I2C7', 'I2C8', 'I2C9', 'I3C3', 'I3C4', 'I3C5', 'I3C6', 'JTAGM', 'LHPD', 'LHSIRQ', 'LPC', 'LPCHC', 'LPCPD', 'LPCPME', 'LPCSMI', 'LSIRQ', 'MACLINK1', 'MACLINK2', 'MACLINK3', 'MACLINK4', 'MDIO1', 'MDIO2', 'MDIO3', 'MDIO4', 'NCTS1', 'NCTS2', 'NCTS3', 'NCTS4', 'NDCD1', 'NDCD2', 'NDCD3', 'NDCD4', 'NDSR1', 'NDSR2', 'NDSR3', 'NDSR4', 'NDTR1', 'NDTR2', 'NDTR3', 'NDTR4', 'NRI1', 'NRI2', 'NRI3', 'NRI4', 'NRTS1
- ', 'NRTS2', 'NRTS3', 'NRTS4', 'OSCCLK', 'PEWAKE', 'PWM0', 'PWM1', 'PWM10', 'PWM11', 'PWM12', 'PWM13', 'PWM14', 'PWM15', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8', 'PWM9', 'RGMII1', 'RGMII2', 'RGMII3', 'RGMII4', 'RMII1', 'RMII2', 'RMII3', 'RMII4', 'RXD1', 'RXD2', 'RXD3', 'RXD4', 'SALT1', 'SALT10', 'SALT11', 'SALT12', 'SALT13', 'SALT14', 'SALT15', 'SALT16', 'SALT2', 'SALT3', 'SALT4', 'SALT5', 'SALT6', 'SALT7', 'SALT8', 'SALT9', 'SD1', 'SD2', 'SGPM1', 'SGPM2', 'SGPS1', 'SGPS2', 'SIOONCTRL', 'SIOPBI', 'SIOPBO', 'SIOPWREQ', 'SIOPWRGD', 'SIOS3', 'SIOS5', 'SIOSCI', 'SPI1', 'SPI1ABR', 'SPI1CS1', 'SPI1WP', 'SPI2', 'SPI2CS1', 'SPI2CS2', 'TACH0', 'TACH1', 'TACH10', 'TACH11', 'TACH12', 'TACH13', 'TACH14', 'TACH15', 'TACH2', 'TACH3', 'TACH4', 'TACH5', 'TACH6', 'TACH7', 'TACH8', 'TACH9', 'THRU0', 'THRU1', 'THRU2', 'THRU3', 'TXD1', 'TXD2', 'TXD3', 'TXD4', 'UART10', 'UART11', 'UART12', 'UART13', 'UART6', 'UART7', 'UART8', 'UART9', 'USBAD', 'USBADP', 'USB2AH', 'USB2AHP', 'USB2BD', 'USB2
- BH', 'VB', 'VGAHS', 'VGAVS', 'WDTRST1', 'WDTRST2', 'WDTRST3', 'WDTRST4']
-	from schema $id: http://devicetree.org/schemas/pinctrl/aspeed,ast2600-pinctrl.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/syscon@1e6e2000/smp-memram@180: failed to match any schema with compatible: ['aspeed,ast2600-smpmem']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/syscon@1e6e2000/interrupt-controller@560: failed to match any schema with compatible: ['aspeed,ast2600-scu-ic0']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/syscon@1e6e2000/interrupt-controller@570: failed to match any schema with compatible: ['aspeed,ast2600-scu-ic1']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/display@1e6e6000: failed to match any schema with compatible: ['aspeed,ast2600-gfx', 'syscon']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/xdma@1e6e7000: failed to match any schema with compatible: ['aspeed,ast2600-xdma']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: adc@1e6e9000: 'interrupts' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/iio/adc/aspeed,ast2600-adc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: adc@1e6e9100: 'interrupts' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/iio/adc/aspeed,ast2600-adc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: crypto@1e6fa000: 'aspeed,ahbc' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/crypto/aspeed,ast2600-acry.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/video@1e700000: failed to match any schema with compatible: ['aspeed,ast2600-video-engine']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: gpio@1e780000: 'gpio-reserved-ranges' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: sgpiom@1e780500: '#interrupt-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/gpio/aspeed,sgpio.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: sgpiom@1e780600: '#interrupt-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/gpio/aspeed,sgpio.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/rtc@1e781000: failed to match any schema with compatible: ['aspeed,ast2600-rtc']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/timer@1e782000: failed to match any schema with compatible: ['aspeed,ast2600-timer']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/watchdog@1e785000: failed to match any schema with compatible: ['aspeed,ast2600-wdt']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/watchdog@1e785040: failed to match any schema with compatible: ['aspeed,ast2600-wdt']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/watchdog@1e785080: failed to match any schema with compatible: ['aspeed,ast2600-wdt']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/watchdog@1e7850c0: failed to match any schema with compatible: ['aspeed,ast2600-wdt']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: lpc@1e789000: lpc-snoop@80: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/mfd/aspeed-lpc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: lpc@1e789000: reg-io-width: [[4]] is not of type 'object'
-	from schema $id: http://devicetree.org/schemas/mfd/aspeed-lpc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: kcs@24: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: kcs@28: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: kcs@2c: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: kcs@114: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/lpc@1e789000/lhc@a0: failed to match any schema with compatible: ['aspeed,ast2600-lhc']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/lpc@1e789000/ibt@140: failed to match any schema with compatible: ['aspeed,ast2600-ibt-bmc']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: sdc@1e740000: sdhci@1e740100:compatible: ['aspeed,ast2600-sdhci', 'sdhci'] is too long
-	from schema $id: http://devicetree.org/schemas/mmc/aspeed,sdhci.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: sdc@1e740000: sdhci@1e740200:compatible: ['aspeed,ast2600-sdhci', 'sdhci'] is too long
-	from schema $id: http://devicetree.org/schemas/mmc/aspeed,sdhci.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/sdc@1e740000/sdhci@1e740100: failed to match any schema with compatible: ['aspeed,ast2600-sdhci', 'sdhci']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/sdc@1e740000/sdhci@1e740200: failed to match any schema with compatible: ['aspeed,ast2600-sdhci', 'sdhci']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_pvcore_nic2@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_pvcore_nic1@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_p3v3_nic@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_p1v2_nic@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_p1v8_nic@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/bus@1e78a000/i2c-bus@280/bmc_slave@10: failed to match any schema with compatible: ['ipmb-dev']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: r38263_p1v05_pch_aux@40: Unevaluated properties are not allowed ('interrupt-parent', 'interrupts', 'regulators' were unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38060_p1v8_pch_aux@40: Unevaluated properties are not allowed ('interrupt-parent', 'interrupts', 'regulators' were unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mux@77: interrupts: False schema does not allow [[44, 4]]
-	from schema $id: http://devicetree.org/schemas/i2c/i2c-mux-pca954x.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pvccinfaon_pvccfa_cpu2@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mp2973_pvccin_pvccfa_cpu2@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pvccinfaon_pvccfa_cpu1@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mp2973_pvccin_pvccfa_cpu1@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pvccinfaon_pvccfa_cpu3@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mp2973_pvccin_pvccfa_cpu3@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_p5v_aux@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: ir38263_p3v3_aux@40: Unevaluated properties are not allowed ('regulators' was unexpected)
-	from schema $id: http://devicetree.org/schemas/regulator/infineon,ir38060.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: regulator@5f: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: regulator@5f: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: regulator@5f: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: regulator@5f: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: pvccinfaon_pvccfa_cpu0@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: mp2973_pvccin_pvccfa_cpu0@58: 'regulators' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/fsi@1e79b000: failed to match any schema with compatible: ['aspeed,ast2600-fsi-master', 'fsi-master']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/fsi@1e79b000: failed to match any schema with compatible: ['aspeed,ast2600-fsi-master', 'fsi-master']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/fsi@1e79b100: failed to match any schema with compatible: ['aspeed,ast2600-fsi-master', 'fsi-master']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/fsi@1e79b100: failed to match any schema with compatible: ['aspeed,ast2600-fsi-master', 'fsi-master']
-arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-sbp1.dtb: /ahb/apb/dma-controller@1e79e000: failed to match any schema with compatible: ['aspeed,ast2600-udma']
-
-
-
-
-
+--aM+tyKD3rsXBnYjy--
 
