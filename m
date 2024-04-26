@@ -1,114 +1,208 @@
-Return-Path: <linux-kernel+bounces-159441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B388B2EAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:22:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8685D8B2EAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:24:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5AE11C22523
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:22:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85AD4B21F28
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 02:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB19F1C3E;
-	Fri, 26 Apr 2024 02:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398E5747F;
+	Fri, 26 Apr 2024 02:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="j3eU+Xvx"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fdr2IVA/"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A161860;
-	Fri, 26 Apr 2024 02:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7AB6FA8
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714098163; cv=none; b=p2dnjibi7gw7w/GUX8T6ODdwaFzf4dhQUj+Oa4cSiiEzkHctoAWeI9LjkAQqXn2ZOvvqF2eGR0E1geG7WMhTTxNYz0BUEBUjD5JTw+1MdoDU6uHNyBZlQHbrXd1l25i2iTJ2qUczVq1sauEqfaOvB4/Fwqla8Lk+Fowjgn6P3JY=
+	t=1714098248; cv=none; b=jrJ9BiS091SPSxt2IRchvGZFqhx+nw7rBTLK7lS1G2Ovuo4yQ/EqXKnzm6eANKaxm7lJSVzN7ceDwe0ynrQ7A/N0ACugT4P2jT5DaFv78GQUCSwb/RaN7LmQbyqWkKcgLdp0kN6EkQXlTjMYmts3M83Nm5psbi+65BrUVX+sMV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714098163; c=relaxed/simple;
-	bh=SGYmgklzXAXHDbnGapUv+OP9t2fZ8HQN2L78VH8xfWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QRFxKqYqIoJkFaPzo8pKhIBl9owfiOsyAXhEuMq3drsmwJi+1pQrTxbv0TKrWpJHYHBqu5H5e/O1wngJhUBstahJeG4A2bFd588hWPt40Hrk2Mpp91tRBXIbHT6UFp6ojCxaSueRWbZc/Plkr3o257YfCneQrELVlpTr6FuV9/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=j3eU+Xvx; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714098158;
-	bh=vCi5NeIBjIy/G8fUon9n+kNojGUZtoR7sj43GA36g60=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j3eU+XvxnnnBhJkXi7EnOId35O122bgrQY0ZQmU2k4hPAkmBVVjRHeCR0yroLrDEq
-	 9RccHQg7qhAeN/FzLk0Z8efnuaCu9WaETxfzzOfr8a/NdrHVv75ibG2i/Zm/xR/iZk
-	 EAgehT/JElJ2FBrg52Mh4spCMB+Rz70/Y7J1wAxS1RuOOAiVY+3wJqKr1UldMvi3Sl
-	 XwT9n+c+lpADJx5XjsVkuEXNioTaY4ra4ZLMGIE8cb9J2f/JGf4xPZdt3XuiSQLkY6
-	 Z1FPTt516h3xvTUiNz1HIFYuKG4DJyld9PnbnBoeQnfscbRwjHqbsKoa1f+rABaj7b
-	 39B0mq+wp5iWQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQc2632xMz4wbr;
-	Fri, 26 Apr 2024 12:22:38 +1000 (AEST)
-Date: Fri, 26 Apr 2024 12:22:37 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm-msm-lumag tree
-Message-ID: <20240426122237.4991a706@canb.auug.org.au>
-In-Reply-To: <20240409120108.2303d0bd@canb.auug.org.au>
-References: <20240409120108.2303d0bd@canb.auug.org.au>
+	s=arc-20240116; t=1714098248; c=relaxed/simple;
+	bh=eoDAHt8ivDKhG0WoqZdZR5asjWvjbITWcz+C132mmc8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KvsV0MeFZOms3MiZg9WPXM7SlFsDXRm7q80k7gmX2DKw8UScZphj49WRPz9FyXf3q4NpLRbMEwkn1zPwPJIwDfwVIzaO5M4hrj9EvQr+n/NvdMScaqrbobklcmca8XtC9J6rVuB6LCJq3MiMh9suPrYhiMXDnRNOgV8bHRba6iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fdr2IVA/; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4dac6802e7aso406692e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 19:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714098246; x=1714703046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Va3i2u53YtnbZkMZaQ2D1OE9VZfq4BKwsKRX5GT8Uk=;
+        b=Fdr2IVA/eX/VnpciqGW+4+EfZuxxnkiw5d8mSGNftCyWUZBKyEvFzQXohC45ZFagG1
+         dOBCVYHCnWGK+k0x9L7Flr7jPgALY1aQlVjBt6NqyfAPIHiwaLb6uAr3SwWQAE9DWrqD
+         4QI3tg/50GD52j+YVQaajeVzSw1SVRMMORKq1/636qVZNJAvX+JlsroIr4lvqhNbKXrK
+         Qekc4JIx4d7ux1IQfkjxCI4Q/1F4J3XqokosEaHJBQxqNuQqwsYSpKxih+IQda30Jn/p
+         BwyDeOZpL5P6lZkddrndRl+RSORLe3m7kbex2fSHFm8GcsXQRq27B/4z+49Ydxpnt1Hs
+         cLAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714098246; x=1714703046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Va3i2u53YtnbZkMZaQ2D1OE9VZfq4BKwsKRX5GT8Uk=;
+        b=Y363cNNb1uSd13d+EIN9fGMV8VyLneTy8p6hs5IY/1p/bjlLYKjNzj8J0Etw7+WZrj
+         p8oMtxDzPTp/C9VEzbZNqyNAxxVDs7Fe74LSMjqZunnYM8KLqz6pjrey8wnfjkhNQ9xX
+         3Mfy2VQGLTdRsY4h25S77eoNLys5ZKzKofEW2z0qigSmR9rPy95t63NsLCLn2UYy6KHG
+         PD4v4NF9P6GqE+kSg6kzPs9EaQpPvNlnAUgtSfKprx/lGqK8FEwz2VacN7FTDFhVkI+o
+         w300f45nbWdvwqEZ0EjR7kfOv5wqg5O/nKHa0NSpqF9Afsuw4VbiCSgL/sJgKyymirqw
+         G/XA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3+MfsDm+wfNNVVAa0O7RAcpc60H5BFy9uDlEMdllgnpPvty0AXqNis7+9UNr2h3iFujnv65ERWH2Cq/O4WxWWY5IXPd4nJorgFJYG
+X-Gm-Message-State: AOJu0Yy14pOUy4+c4dQ53pc/ISEwb7grdNLgu+lWmfAyjxcM+o7dNZla
+	/14RLbYCBU95YLtlfGzlZBt6b+h7WVC4zoXKxeT25FtYd71H2yFQwEcZhEGOr6WietFxUFqpPAK
+	4EHjONPqZ8e5CTLQqHwGxksL9GtI=
+X-Google-Smtp-Source: AGHT+IFCI8cDM7NSN3tGF52wxpWlhL9r7hkVw5VxcV+XVlBe9j1X9yr0KV+NZ95M5SMCLJkcXr0uN6q3TrkKs2EJJhg=
+X-Received: by 2002:a05:6122:a1a:b0:4d4:1cca:1a72 with SMTP id
+ 26-20020a0561220a1a00b004d41cca1a72mr1369489vkn.6.1714098245867; Thu, 25 Apr
+ 2024 19:24:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mQ9A.ugvWxqRpGSq+vfTx6V";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/mQ9A.ugvWxqRpGSq+vfTx6V
-Content-Type: text/plain; charset=US-ASCII
+References: <20240425211136.486184-1-zi.yan@sent.com> <CAGsJ_4wa0LskQkoZf9r5bG5+wEkyfCYveMBSTbuDe0=t1QetTg@mail.gmail.com>
+ <6C31DF81-94FB-4D09-A3B8-0CED2AD8EDDB@nvidia.com>
+In-Reply-To: <6C31DF81-94FB-4D09-A3B8-0CED2AD8EDDB@nvidia.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Fri, 26 Apr 2024 10:23:54 +0800
+Message-ID: <CAGsJ_4xzb8RrEuPEbnvR4GbDWuoGCYL4FsC3TObOifAZ4CHGOA@mail.gmail.com>
+Subject: Re: [PATCH v4] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Zi Yan <ziy@nvidia.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Yang Shi <shy828301@gmail.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, 
+	Lance Yang <ioworker0@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
-
-On Tue, 9 Apr 2024 12:01:08 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On Fri, Apr 26, 2024 at 9:55=E2=80=AFAM Zi Yan <ziy@nvidia.com> wrote:
 >
-> After merging the drm-msm-lumag tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->=20
-> lxml not found, skipping validation
->=20
-> (lots of these)
->=20
-> Introduced by commit
->=20
->   8f7abf0b86fe ("drm/msm: generate headers on the fly")
+> On 25 Apr 2024, at 21:45, Barry Song wrote:
+>
+> > On Fri, Apr 26, 2024 at 5:11=E2=80=AFAM Zi Yan <zi.yan@sent.com> wrote:
+> >>
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> In __folio_remove_rmap(), a large folio is added to deferred split lis=
+t
+> >> if any page in a folio loses its final mapping. But it is possible tha=
+t
+> >> the folio is fully unmapped and adding it to deferred split list is
+> >> unnecessary.
+> >>
+> >> For PMD-mapped THPs, that was not really an issue, because removing th=
+e
+> >> last PMD mapping in the absence of PTE mappings would not have added t=
+he
+> >> folio to the deferred split queue.
+> >>
+> >> However, for PTE-mapped THPs, which are now more prominent due to mTHP=
+,
+> >> they are always added to the deferred split queue. One side effect
+> >> is that the THP_DEFERRED_SPLIT_PAGE stat for a PTE-mapped folio can be
+> >> unintentionally increased, making it look like there are many partiall=
+y
+> >> mapped folios -- although the whole folio is fully unmapped stepwise.
+> >>
+> >> Core-mm now tries batch-unmapping consecutive PTEs of PTE-mapped THPs
+> >> where possible starting from commit b06dc281aa99 ("mm/rmap: introduce
+> >> folio_remove_rmap_[pte|ptes|pmd]()"). When it happens, a whole PTE-map=
+ped
+> >> folio is unmapped in one go and can avoid being added to deferred spli=
+t
+> >> list, reducing the THP_DEFERRED_SPLIT_PAGE noise. But there will still=
+ be
+> >> noise when we cannot batch-unmap a complete PTE-mapped folio in one go
+> >> -- or where this type of batching is not implemented yet, e.g., migrat=
+ion.
+> >>
+> >> To avoid the unnecessary addition, folio->_nr_pages_mapped is checked
+> >> to tell if the whole folio is unmapped. If the folio is already on
+> >> deferred split list, it will be skipped, too.
+> >>
+> >> Note: commit 98046944a159 ("mm: huge_memory: add the missing
+> >> folio_test_pmd_mappable() for THP split statistics") tried to exclude
+> >> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does no=
+t
+> >> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
+> >> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
+> >> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
+> >> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
+> >>
+> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> >> ---
+> >>  mm/rmap.c | 8 +++++---
+> >>  1 file changed, 5 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/mm/rmap.c b/mm/rmap.c
+> >> index a7913a454028..220ad8a83589 100644
+> >> --- a/mm/rmap.c
+> >> +++ b/mm/rmap.c
+> >> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap=
+(struct folio *folio,
+> >>                  * page of the folio is unmapped and at least one page
+> >>                  * is still mapped.
+> >>                  */
+> >> -               if (folio_test_large(folio) && folio_test_anon(folio))
+> >> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmd=
+mapped)
+> >> -                               deferred_split_folio(folio);
+> >> +               if (folio_test_large(folio) && folio_test_anon(folio) =
+&&
+> >> +                   list_empty(&folio->_deferred_list) &&
+> >> +                   ((level =3D=3D RMAP_LEVEL_PTE && atomic_read(mappe=
+d)) ||
+> >> +                    (level =3D=3D RMAP_LEVEL_PMD && nr < nr_pmdmapped=
+)))
+> >> +                       deferred_split_folio(folio);
+> >
+> > Hi Zi Yan,
+> > in case a mTHP is mapped by two processed (forked but not CoW yet), if =
+we
+> > unmap the whole folio by pte level in one process only, are we still ad=
+ding this
+> > folio into deferred list?
+>
+> No. Because the mTHP is still fully mapped by the other process. In terms=
+ of code,
+> nr will be 0 in that case and this if condition is skipped. nr is only in=
+creased
+> from 0 when one of the subpages in the mTHP has no mapping, namely page->=
+_mapcount
+> becomes negative and last is true in the case RMAP_LEVEL_PTE.
 
-I am still seeing these wanrings.  The above commit is now commit
+Ok. i see, so "last" won't be true?
 
-  0fddd045f88e ("drm/msm: generate headers on the fly")
+case RMAP_LEVEL_PTE:
+do {
+last =3D atomic_add_negative(-1, &page->_mapcount);
+   if (last && folio_test_large(folio)) {
+       last =3D atomic_dec_return_relaxed(mapped);
+       last =3D (last < ENTIRELY_MAPPED);
+}
 
-in the drm-msm tree.
---=20
-Cheers,
-Stephen Rothwell
+if (last)
+     nr++;
+} while (page++, --nr_pages > 0);
+break;
 
---Sig_/mQ9A.ugvWxqRpGSq+vfTx6V
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYrD+0ACgkQAVBC80lX
-0GyoeAf/ZQiUldJfOSBDK3hKj1htCY86Ecb/9rOgzmwtwNowLgPIlBSair75Q7LL
-9GdCPCJ9PYy41tb4jJ4B4JMlRfaH8XhgV71B6wEH32OsvEhjn73eAXINBlLDwpLB
-8Rr85E+D7HUjOR7qTR0yKry/3cXhM4L4SAVHsdpW8l3TfWVwIgNTAN6P4ByYUUvc
-EYu95wLoPFKiJ08Zm8RDXZSfnT0++DdxAVeuBgbOcBpg6fL2gkIf03eR6SuxKTkG
-3fG3D7YUHbXNa1R/dXs/c5OXdXPRBsHlwtCQlCyR46rZkW71dkzA3nj88hXp6WOO
-EbYZ5GljqwIzTO62vPMEnLduuuNEPA==
-=uvM2
------END PGP SIGNATURE-----
-
---Sig_/mQ9A.ugvWxqRpGSq+vfTx6V--
+>
+>
+> --
+> Best Regards,
+> Yan, Zi
 
