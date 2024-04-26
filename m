@@ -1,228 +1,123 @@
-Return-Path: <linux-kernel+bounces-160175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E758B3A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:39:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9204F8B3A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B6A5288907
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C099F1C2410E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA1614885D;
-	Fri, 26 Apr 2024 14:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB881474CA;
+	Fri, 26 Apr 2024 14:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eq51WKjr"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l4OaxQCx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4805B13F43A;
-	Fri, 26 Apr 2024 14:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD5713A257;
+	Fri, 26 Apr 2024 14:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714142367; cv=none; b=H8tZsSPv7387w8ViFNMSDcc+4z7ThSERPx5epDN5729jM7jEU5geqSaOBk0CfZ8OKeW74UU6oC3qOn8UDABF4kzdcBZiOKxNgSIWwOV/5uVgtb48pImx6zF83suV4OkFM8nCE+CJeJIibyS4xOggaYMq2F8a38zcXX/eNkr2TiY=
+	t=1714142445; cv=none; b=NU8G20d44y9LySAspvgqK/JbLsxJY4SiwWT6ba/7mRX/pXMZnnRQcCTPX5QqhJ5RyepVXXsjg/0Ad7OY2Ca63ijrn26mPQFRDF5LI3+uKzwkqeh3ZZWvD7K0vMj5UhgzdtzO7KBtIO5Bw48m3M5vdu9Nwz7hmNuP2zogv6bWaR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714142367; c=relaxed/simple;
-	bh=GrYW9CDBavo2dcW9zM8Gw/4eM+v8rP9srC8IHUunxhk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XPRZPVVFaQlpmGFh3876Qz5FZfKHHPhVWxuZR6FG0vzUGk3oVAUK1poieNg4bJ484ciRULJBOGF8aU87eEYRVnRCrO8+y2QYUD/oA6FU0tYOW94Y+Ys1K/LcIS9DSde9pqA59HDmjvZPwv0JQh1Q77eJo28qGYExsbNFnoMiWoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eq51WKjr; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ffso3420465e9.1;
-        Fri, 26 Apr 2024 07:39:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714142364; x=1714747164; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x6+Pa/hI1y9ZPcsTSA6wG8AnTaAGOiXpZcyJZzX026s=;
-        b=Eq51WKjrouMFwzggvNQc4OiiH9ylm8ionjqrGB0eoVV+sIR7ZZ6up8InCz5SR7A1pF
-         Zj+LdumQxK0ua2eLyb/EXTa2GCimmIrLtQa7WBWAXwAViDk1sVK2LcfAoO4BOfcLveIA
-         SpdS9bTvpKhSw2K+SYZD6y+27WX/m/tEBkuBp+xFwnVm9iz1X2YnReEd8tx9jHfatAFu
-         ejZOxP49iX0HCflvXwor4V/bZAOy5OTBg2Rueia2DN4izhp1vdHYVUp7PyRSlCOF0T/+
-         OPdPYvocz2/CnPxodTlkia8oUapqYlvPUbSaShq0RBGebmg5G5Kpele65NG2ubvNkjmF
-         80bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714142364; x=1714747164;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x6+Pa/hI1y9ZPcsTSA6wG8AnTaAGOiXpZcyJZzX026s=;
-        b=KPAJwdOaYnnops28HlgS81TGUO86SZEF7wlUkFAIl1UmmpackZZ8aW7yRF1kG0M5u/
-         LGGuaN0T1irK6ctkQHpP+n2HP9TBTa6W/8Z/P6ar1wMbyGUISMeGm5nRAgH+0FEGNNze
-         +Evgsvi6EhGEPYp+SJXnPGQ6CSCrxMbysFQMfj+snn2z8fbBPXYJ4s8uHeRG9kMUDZi+
-         VG9s5hujUeb8d1WcFMbm2pdtLr6aweQ3od5yJKTTPwPtYJph1tT0xii5i2F1eScXjXJK
-         eeq7xjp0XCUCtqG6+HlsULrXCDJTia+YW8rwlm62mXde2c9VjVWR1Ym92In7w3bh0v1x
-         o5fw==
-X-Forwarded-Encrypted: i=1; AJvYcCXt/DrIBo0ND9fTK5GB4nJ9QTEt8eO8mCVnmGQI3YSnwN+pKUdW5dLZbCOTUuDhpTyMH38hLaWtJr+7XMOs4ZwtcN/b0JDaUCGQXuy5WVB3YZ4RZR4BEqznYcPY9+18TehZPK63+/UrGlk=
-X-Gm-Message-State: AOJu0YxWxvo9KZYPtdGut54HfBd6r+hcOGX/E6ZX3Kl3yetki7H/apPI
-	tFEADNqsl2XbalXmOe+ekqN3zEvZ/gR6O7ZbP+vKUbBoP7VTJ3IR
-X-Google-Smtp-Source: AGHT+IEeWmdV/an942UKZb0UcElZTOltLZZNCg90qG5k3ACvdMG2TZ2EWCL32aHLDIlkCsd0vGPv5g==
-X-Received: by 2002:a05:600c:3b86:b0:419:618:ade3 with SMTP id n6-20020a05600c3b8600b004190618ade3mr2897823wms.19.1714142363495;
-        Fri, 26 Apr 2024 07:39:23 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b004162d06768bsm35036561wmo.21.2024.04.26.07.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 07:39:23 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Joao Schim <joao@schimsalabim.eu>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic gains
-Date: Fri, 26 Apr 2024 16:39:22 +0200
-Message-ID: <2262648.iZASKD2KPV@jernej-laptop>
-In-Reply-To: <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
-References:
- <20240422150213.4040734-1-joao@schimsalabim.eu>
- <5772237.DvuYhMxLoT@jernej-laptop>
- <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
+	s=arc-20240116; t=1714142445; c=relaxed/simple;
+	bh=Qi1xos48u92PTgN9V46JqEiIClxAHAsrNJ9V8CaZ4Gs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eIGjcwvC3MdO3GvHimmpg8S2EG3Awz7JFD+QPjIbOsRpi5tEzMuvpZfgQsNFZgejswwVovCxGwDH1qumywFpIWF/s4vYwjsvLORoe28yVfb3IpV3/8x8rQ3cmMGrSsCFmNakR2GefVCAvBfCKZlCpTlePfp+CBOs4HuFLRS4W8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l4OaxQCx; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714142444; x=1745678444;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Qi1xos48u92PTgN9V46JqEiIClxAHAsrNJ9V8CaZ4Gs=;
+  b=l4OaxQCxQkJeXNqm6pMFp0zFuHjrt5IuQUIyJLeX0ZuLdH4kQ0md7igb
+   Xg/XOkQR3Tt9fyKLq0gqJ4Y7tQOvx6cWn6OHrU0w/9oxOcZyPe2sDQ5Vy
+   xRe8xPtYExDjdPHcxonQmaacRvZwijnksKIAReFjjKz+bWK7DZaf6O5VV
+   pVyEDhR4AH85lM1UdXZ/26hj4F6cJTM9/3TKOt2lzRUJ0fiY49beP76Tp
+   0ZgsrDSsk8zHXRPm/+OkvYkXrEqU+D+aTo7qoAO9AOYAxw6pS68wPVmeN
+   aFPR/REeB6sCOHiV1lUifMPtWUfnaM5g2qXlCJDunU192bOHO0RatTFvI
+   g==;
+X-CSE-ConnectionGUID: Rux980dbSOC3ZK/7mDuMVw==
+X-CSE-MsgGUID: +MWXaCEBTxmLQeX2c1l4Mg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9746319"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="9746319"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 07:40:43 -0700
+X-CSE-ConnectionGUID: 1YGmTji+SNy2dc1F81SCcA==
+X-CSE-MsgGUID: cyeZJljuQGqP9y2oztmNHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="48673627"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa002.fm.intel.com with ESMTP; 26 Apr 2024 07:40:42 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id E84B821A; Fri, 26 Apr 2024 17:40:40 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] PCI/MSI: Make error path handling follow the standard pattern
+Date: Fri, 26 Apr 2024 17:40:39 +0300
+Message-ID: <20240426144039.557907-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Dne =C4=8Detrtek, 25. april 2024 ob 13:03:56 GMT +2 je Joao Schim napisal(a=
-):
-> On 4/24/24 20:42, Jernej =C5=A0krabec wrote:
-> > Hi Joao,
-> Hi Jernej,  thanks for your prompt response.
-> >
-> > Dne ponedeljek, 22. april 2024 ob 17:02:13 GMT +2 je Joao Schim napisal=
-(a):
-> >> The AllWinner H6 and later SoCs that sport a DMIC block contain a set =
-of registers to control
-> >> the gain (left + right) of each of the four supported channels.
-> >>
-> >> Add ASoC controls for changing each of the stereo channel gains using =
-alsamixer and alike
-> > Add SoB tag.
-> Yeah, i realized that too late. Thanks for bringing that to my=20
-> attention. I will add it in v1.
-> >
-> >> ---
-> >>   sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
-> >>   1 file changed, 34 insertions(+)
-> >>
-> >> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dm=
-ic.c
-> >> index c76628bc86c6..f8613d8c3462 100644
-> >> --- a/sound/soc/sunxi/sun50i-dmic.c
-> >> +++ b/sound/soc/sunxi/sun50i-dmic.c
-> >> @@ -14,6 +14,7 @@
-> >>   #include <sound/dmaengine_pcm.h>
-> >>   #include <sound/pcm_params.h>
-> >>   #include <sound/soc.h>
-> >> +#include <sound/tlv.h>
-> >>  =20
-> >>   #define SUN50I_DMIC_EN_CTL			(0x00)
-> >>   	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-> >> @@ -43,6 +44,17 @@
-> >>   	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
-> >>   #define SUN50I_DMIC_CNT				(0x2c)
-> >>   	#define SUN50I_DMIC_CNT_N				(1 << 0)
-> >> +#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
-> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
-> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
-> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
-> >> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
-> >> +#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
-> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
-> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
-> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
-> >> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
-> >> +
-> >>   #define SUN50I_DMIC_HPF_CTRL			(0x38)
-> >>   #define SUN50I_DMIC_VERSION			(0x50)
-> >>  =20
-> >> @@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_m=
-atch[] =3D {
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-> >>  =20
-> >> +static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, =
-1);
-> > DECLARE_TLV_DB_SCALE is old name, SNDRV_CTL_TLVD_DECLARE_DB_SCALE shoul=
-d be
-> > used instead.
-> I can't seem to find that define in HEAD. what code-base are you=20
-> referring to that i should checkout ?
+Make error path handling follow the standard pattern, i.e.
+checking for errors first. This makes code much more easier
+to read and understand despite being a bit longer.
 
-Here is define:=20
-https://elixir.bootlin.com/linux/v6.9-rc1/source/include/uapi/sound/tlv.h#L=
-52
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pci/msi/msi.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-However, I'm not sure if this message means DECLARE_TLV_DB_SCALE is
-deprecated or not:
-https://elixir.bootlin.com/linux/v6.9-rc1/source/include/sound/tlv.h#L12
-
-Best regards,
-Jernej
-
-> >
-> > Other than that, it looks fine.
->=20
-> Thanks.
->=20
-> > Best regards,
-> > Jernej
-> >
-> >> +
-> >> +static const struct snd_kcontrol_new sun50i_dmic_controls[] =3D {
-> >> +
-> >> +        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D=
-0D1_VOL_CTR,
-> >> +                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_=
-VOL_CTR_0R,
-> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> >> +        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D=
-0D1_VOL_CTR,
-> >> +                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_=
-VOL_CTR_1R,
-> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> >> +        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D=
-2D3_VOL_CTR,
-> >> +                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_=
-VOL_CTR_2R,
-> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> >> +        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D=
-2D3_VOL_CTR,
-> >> +                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_=
-VOL_CTR_3R,
-> >> +                       0xFF, 0, sun50i_dmic_vol_scale),
-> >> +
-> >> +
-> >> +};
-> >> +
-> >>   static const struct snd_soc_component_driver sun50i_dmic_component =
-=3D {
-> >>   	.name           =3D "sun50i-dmic",
-> >> +	.controls	=3D sun50i_dmic_controls,
-> >> +	.num_controls	=3D ARRAY_SIZE(sun50i_dmic_controls),
-> >>   };
-> >>  =20
-> >>   static int sun50i_dmic_runtime_suspend(struct device *dev)
-> >>
-> >
-> >
-> >
-> Kind regards,
->=20
-> Joao
->=20
->=20
-
-
-
+diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
+index 682fa877478f..c5625dd9bf49 100644
+--- a/drivers/pci/msi/msi.c
++++ b/drivers/pci/msi/msi.c
+@@ -86,9 +86,11 @@ static int pcim_setup_msi_release(struct pci_dev *dev)
+ 		return 0;
+ 
+ 	ret = devm_add_action(&dev->dev, pcim_msi_release, dev);
+-	if (!ret)
+-		dev->is_msi_managed = true;
+-	return ret;
++	if (ret)
++		return ret;
++
++	dev->is_msi_managed = true;
++	return 0;
+ }
+ 
+ /*
+@@ -99,9 +101,10 @@ static int pci_setup_msi_context(struct pci_dev *dev)
+ {
+ 	int ret = msi_setup_device_data(&dev->dev);
+ 
+-	if (!ret)
+-		ret = pcim_setup_msi_release(dev);
+-	return ret;
++	if (ret)
++		return ret;
++
++	return pcim_setup_msi_release(dev);
+ }
+ 
+ /*
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
 
