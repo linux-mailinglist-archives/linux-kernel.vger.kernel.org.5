@@ -1,121 +1,151 @@
-Return-Path: <linux-kernel+bounces-159717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D948B330E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:38:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0308B3317
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5C22860E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:38:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 274B01C20F9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9BF13C9B3;
-	Fri, 26 Apr 2024 08:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="r1+96Ook"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBAC13A879;
+	Fri, 26 Apr 2024 08:39:10 +0000 (UTC)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4847176026;
-	Fri, 26 Apr 2024 08:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3370420317;
+	Fri, 26 Apr 2024 08:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714120448; cv=none; b=mh+vi8SPfhhijcASN0TyKunV8EZlSZss5mkA8bYtbLsrKvvXmHOidtRuLxl1vZP4oyfb//N3mapLr75ztO5tgtJXbxdPbnGjAPpLCHh8k/xe9Oh0bryMCHmznup3udIF/1gTwe13adZNI3CehqImyKRxiJrtfsf6jT4Yu3eCiks=
+	t=1714120750; cv=none; b=jhBejO/IlJcRI0pIUarNJ7knOR2e4sBckyRLg2hqODLGTizTQh2lGazPQL1C9v7vMDUD6j+7DjRJTMS4aiq0UHEhy9Q8PtB4OJrouCYvB8AiGBU36DpM46027fZxK0htR1rHdZXFH41w5OOmVcsuwuELCrIK7yj/pNYpKMiUDp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714120448; c=relaxed/simple;
-	bh=yCu8QgIgIudWIoFUBIgiPgM1UQ4NtIrnev8l9GHrxR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gFyAG2VQoln5DQnXnYO355//rmTsyGL7pvqnxAIt35uoeZ+I4nRi/Yc2UHWDFXkyfaoAczxJaaHjpvvPVQcV3wyIuoXUuFFUAJ695omzX8z5WErZnWqMUN5AuELf6blZSFtnkXbS2rJwOTiE2XCLuK0fXVHqk77qif2v7YGVe04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=r1+96Ook; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 0EC6F1C0081; Fri, 26 Apr 2024 10:34:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1714120444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QvibUhHYADzPBz5EC0L11wDXL1jTgRw8iSeBq8eHVAM=;
-	b=r1+96OokA5XnKcE0vuf1HJX1Ft1NJRMVXB5Y6SoF6NZ+LhN73MJbxf6L6vZMvey5Kjcj0e
-	9cOjaBw82DXwSN7HFQyB9TyKY1Q/O16uAIueJST+3SO64nnoP8t+r5PZ+EVeT1RVPuI9a7
-	2Vj+jc1gpnbG7eTWMr9PAYK0TEF4RsA=
-Date: Fri, 26 Apr 2024 10:34:03 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] alloc_tag: Tighten file permissions on /proc/allocinfo
-Message-ID: <Zitm+xB1zFmqVQiC@duo.ucw.cz>
-References: <20240425200844.work.184-kees@kernel.org>
- <w6nbxvxt3itugrvtcvnayj5ducoxifwbffd7qh6vcastw77mse@2ugphwusgttz>
- <ZirCbPR1XwX2WJSX@casper.infradead.org>
- <64cngpnwyav4odustofs6hgsh7htpc5nu23tx4lb3vxaltmqf2@sxn63f2gg4gu>
- <202404251532.F8860056AE@keescook>
- <20240425164718.e8e187dd0c5b0a87371d8316@linux-foundation.org>
- <sxcyj2gif2avyx2disz62sfe3hot24w4rtszgl2dtqadegtnek@xjkozdbd6yzp>
- <202404251740.81F21E54@keescook>
- <qzi5ss4h4ou6yfbzadoamqocvvzviuh3eeefpv5qfkcvrrejfo@qptmu2y6u7qj>
- <ZisetKVI2Lnzucm9@casper.infradead.org>
+	s=arc-20240116; t=1714120750; c=relaxed/simple;
+	bh=mxHlfRZVmoVJnUAx5dxOnpcf0RH0ieiocgXdOdOeC9A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QMKZ/WKZAUUQUetyX8alfGZCLi4ibHuMAgY17wuQTIVh0Cq5Y1Kzcv/XGWsfLYg54RCV6iAWoCbkcdjfrjFF/bS8iDliaYUsoPFIXreo85KYkQObaEmYnQ6dqdWaVETpc7o4xsoVSVD8LsgMmgLJUTE5ifg+FQneO47tDWp9kMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2dd6c14d000so21597251fa.0;
+        Fri, 26 Apr 2024 01:39:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714120746; x=1714725546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mxHlfRZVmoVJnUAx5dxOnpcf0RH0ieiocgXdOdOeC9A=;
+        b=ur0IiqPKDmJt4xuRB31jVy60dfRZQMrEeQGmdRyNeDNS3chubWQQsdBikRh70q+f2S
+         sNsx1OW//jvh+eyKnYMxZsnb4gOUduqPyGdrvXGnu5+ILyX3LAgcdOrHLsEv6OZH2/me
+         DJConP1mxnP8kUV8Y3L4VS0QGNgl0IVhb/N7kYeON4AScTYt7ceDx+y2GbfikSO9yp26
+         Alw2/yCsHPrdujwi4LtPC9KnAn8EOp4o2rfYbtjJ/JOcWAPxUyZUuWmp1/7+N/1laHWJ
+         H+yU8UWR2byQ070JjAIVsYoZLyJwwOyjitO0bIcYCKKN0bku9QdjARtC70vWySBFUpfA
+         PgEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXIuCvLRiYKu7erKfcImRHsWW0qXRWVx9VFDqWIXX8xQJhj/msTsnPIqmyEQ6PnUt6GO9c9dF210cn2PN3xpJS297rz9d2BGgySE1b1qNQAcC0e1FngELlycOfzELV3qjR/tXHew++zXZmIIWMi
+X-Gm-Message-State: AOJu0YwBE6qC2U0y+VLMtzJaEMALBrmbALkSAA2mFHLjE22+1fSy3FxN
+	v0NLvo3m1IO9/N8jMYGaX/9HOK+cbtCEJLzht7ToNx8PVx4m30fWHhCPZXvlnaM=
+X-Google-Smtp-Source: AGHT+IG+V9jxBMf/hVt6W9MO2l3EQQSxqIFZDsGtzSg9jvvlGMK/TYHFOJV50rpPKC7rhFvXrfvLRg==
+X-Received: by 2002:a05:651c:150b:b0:2d8:2761:a90f with SMTP id e11-20020a05651c150b00b002d82761a90fmr1429006ljf.33.1714120745853;
+        Fri, 26 Apr 2024 01:39:05 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id k4-20020a2e92c4000000b002d808b86073sm2604511ljh.78.2024.04.26.01.39.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 01:39:05 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51967f75763so2192924e87.2;
+        Fri, 26 Apr 2024 01:39:05 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVaXMUiTXlm7iUJcCmGiwO3U9qH6j5oAdJTKKYaTU8Za4Mjyrvmfc2ftIxNPyi3Sl8ID8+oMwEuM1myozSb83mDsGhakG8klx6K8BWOJTw6Q10qc0LKdtJtFWtOOX9SSZMFPK6iUu/3EZolr5Mj
+X-Received: by 2002:ac2:5104:0:b0:51b:15b:d262 with SMTP id
+ q4-20020ac25104000000b0051b015bd262mr1192105lfb.33.1714120745348; Fri, 26 Apr
+ 2024 01:39:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Hfd8D8Tcgbk/y9Re"
-Content-Disposition: inline
-In-Reply-To: <ZisetKVI2Lnzucm9@casper.infradead.org>
-
-
---Hfd8D8Tcgbk/y9Re
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240426072006.358802-1-iam@sung-woo.kim> <964b0005-3a9d-499b-91d3-171a3c917b4a@web.de>
+In-Reply-To: <964b0005-3a9d-499b-91d3-171a3c917b4a@web.de>
+From: Sungwoo Kim <iam@sung-woo.kim>
+Date: Fri, 26 Apr 2024 04:38:24 -0400
+X-Gmail-Original-Message-ID: <CAJNyHp+WFONaNbZVK3tPcT=9obEiuE3MvQzJK++HP-ffNdfX0w@mail.gmail.com>
+Message-ID: <CAJNyHp+WFONaNbZVK3tPcT=9obEiuE3MvQzJK++HP-ffNdfX0w@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: L2CAP: Fix slab-use-after-free in l2cap_send_cmd
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-bluetooth@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, "Dave (Jing) Tian" <daveti@purdue.edu>, 
+	Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Marcel Holtmann <marcel@holtmann.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri 2024-04-26 04:25:40, Matthew Wilcox wrote:
-> On Thu, Apr 25, 2024 at 08:58:34PM -0400, Kent Overstreet wrote:
-> > On Thu, Apr 25, 2024 at 05:43:33PM -0700, Kees Cook wrote:
-> > > All this said, I'm still not excited about any of these files living
-> > > in /proc at all -- we were supposed to use /sys for this kind of thin=
-g,
-> > > but its interface wasn't great for this kind of more "free-form" data,
-> > > and debugfs isn't good for production interfaces. /proc really should
-> > > only have pid information -- we end up exposing these top-level files=
- to
-> > > every mount namespace with a /proc mount. :( But that's a yet-to-be-s=
-olved
-> > > problem...
-> >=20
-> > It really wouldn't be that hard to relax the 4k file limit in sysfs.
->=20
-> It's a lot harder to relax the GregKH opposition to multiple values per
-> file in sysfs.
+On Fri, Apr 26, 2024 at 4:26=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> I prefer that you would put recipient specifications also into the messag=
+e field =E2=80=9CTo=E2=80=9D
+> (besides =E2=80=9CCc=E2=80=9D).
 
-With all the "vulnerability" files including multiple-files with
-english text, you may be able to renegotiate that :-).
+Okay.
 
-Joking, really the vulnerability files should be fixed.
+>
+>
+> > Hello, could you review a bug and its fix?
+>
+> I suggest to omit such a question from better change descriptions.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n45
 
-									Pavel
+Thank you. I'll thoroughly read this.
 
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
+>
+>
+> =E2=80=A6
+> > To fix this, this patch holds and locks the l2cap channel.
+>
+> Please choose a corresponding imperative wording.
 
---Hfd8D8Tcgbk/y9Re
-Content-Type: application/pgp-signature; name="signature.asc"
+Okay.
 
------BEGIN PGP SIGNATURE-----
+>
+>
+> You would probably like to improve your patch approach further
+> so that provided data will be kept consistent.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZitm+wAKCRAw5/Bqldv6
-8ll4AJ9jdqA72f4HoYEdP44jUJtvFz4NiwCfS7dHjbTz44v8yKIi6pQk9qVCu6s=
-=C7Pf
------END PGP SIGNATURE-----
+I will.
 
---Hfd8D8Tcgbk/y9Re--
+> https://lore.kernel.org/lkml/20240426073142.363876-1-iam@sung-woo.kim/
+>
+> Regards,
+> Markus
+>
+
+On Fri, Apr 26, 2024 at 4:26=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> I prefer that you would put recipient specifications also into the messag=
+e field =E2=80=9CTo=E2=80=9D
+> (besides =E2=80=9CCc=E2=80=9D).
+>
+>
+> > Hello, could you review a bug and its fix?
+>
+> I suggest to omit such a question from better change descriptions.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n45
+>
+>
+> =E2=80=A6
+> > To fix this, this patch holds and locks the l2cap channel.
+>
+> Please choose a corresponding imperative wording.
+>
+>
+> You would probably like to improve your patch approach further
+> so that provided data will be kept consistent.
+> https://lore.kernel.org/lkml/20240426073142.363876-1-iam@sung-woo.kim/
+>
+> Regards,
+> Markus
+>
 
