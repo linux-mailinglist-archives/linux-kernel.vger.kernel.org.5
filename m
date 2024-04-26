@@ -1,140 +1,132 @@
-Return-Path: <linux-kernel+bounces-159964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526758B36DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:05:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94308B36E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D35871F23091
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:05:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CA80B21A2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2AB9145B2B;
-	Fri, 26 Apr 2024 12:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5295B14534B;
+	Fri, 26 Apr 2024 12:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UnOFLeln"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/99TpxJ"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4490014534D;
-	Fri, 26 Apr 2024 12:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F32F14533F;
+	Fri, 26 Apr 2024 12:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714133097; cv=none; b=uhTiPc79HQra6srlPN+VkgiHdymOrYr/UKCPt/bgUH8h7ceu7bucxJEjVGtWWU15GOvNLTA0gwPbCdlZLDZVMsvtZkppr+FXZfm2cczU1bvaeOFOcg6r+Dhs7kNXeYocJmsVpirOgNcwgmNLC4UrNeICrMY3uNwDdBhcCGCpQmo=
+	t=1714133143; cv=none; b=i6b0c9jbxEFaB8OXJOYC2+x/CzybjiYVh+ECNS8B+rZ35dsvtcof0KdHQU8hLJ3pFik2vpjRR4vSvb+5Lyrt3e9YMnv0cse99oM/rvmuxjA/rW//d6Q1GrWrr650A3tPI2lMQ0RKQMaG9zL9QEJ7pVDq0APIyslHxx7SfY7hEgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714133097; c=relaxed/simple;
-	bh=YBR42G0rnWNZq59i3YDxVpGyifaB1mtmlbmI2avgYCE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rmnnZevsWQ7vRZzm75SlwjGDuKHy/XiNEKRe0SAlvcBPJaxA1QRyxDCLDYq1iylJhzLSRmgbCi1tCuZw3zYTBPNr+zYKyu05qQzb+yHD4cyNfxyDizC0YqCJntKRfXdq5kk4fwMossXiHHjg001uKCL9WCsSpobpgJBkOqFTkS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UnOFLeln; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QBwtFn030206;
-	Fri, 26 Apr 2024 12:04:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=nWJ3bcNV7hDM41Mr8ykKMUU4LLC6VcTLRPD4a3TmQew=;
- b=UnOFLelnacEhaTayIu/d7eZOfU5frTlOVHa4gB6O9h1ctiiZ3F4NmVmx12wxHLaiEweH
- 72eeQSOpd2vdMXYukWpqSjHvBQrzVqrBoGB6l7vjULPjRj4ZKOxd5dyJJTOHfrW2+ARl
- Fb3GM9lP3zb55L+J2Bzdl2OA3JXbqBmdDRVV0a7tJcVcXD/BjmbU1gWiJKRTGY6NiP+z
- V5KZ8qOZ8BPe5ie1ThFgqT5fvEmVIgrohSew8koECmYQgVe2d+Zh3Sd+0DyAKnp2NmPV
- LDRk339W1y/2x3kEJX30WDidAEROGsqJffhcFkmNIJU891kay6dHEGfQj5XoK6EB240T Mg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrbusr0ks-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 12:04:54 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QBtA0Y021021;
-	Fri, 26 Apr 2024 12:04:54 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmre0fqh0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 12:04:53 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QC4mM636766090
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 12:04:50 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 565622004E;
-	Fri, 26 Apr 2024 12:04:48 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2692420043;
-	Fri, 26 Apr 2024 12:04:48 +0000 (GMT)
-Received: from p-imbrenda.boeblingen.de.ibm.com (unknown [9.152.224.66])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 12:04:48 +0000 (GMT)
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
-To: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Cc: hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        svens@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        borntraeger@de.ibm.com
-Subject: [PATCH v3 2/2] s390/pgtable: add missing hardware bits for puds, pmds
-Date: Fri, 26 Apr 2024 14:04:47 +0200
-Message-ID: <20240426120447.34318-3-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240426120447.34318-1-imbrenda@linux.ibm.com>
-References: <20240426120447.34318-1-imbrenda@linux.ibm.com>
+	s=arc-20240116; t=1714133143; c=relaxed/simple;
+	bh=VZ4dyN6HsEQTrAuuWJizHwgtH2IUGnz23LHLcnDqNXo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FNiQf8EvZ0fvdXAZffGL6TxZGA0MgK0U0pKDDjEekNEDAaqs2JkcLHI12H7u9pEUzTh1+5nd6QuQLqn1dzMQqgRFF759I9/EZkfEec0I5lX1wFWlskaugF9Qn4ErqJKnoLkXNCf+MNTRga7jRphUk7ZA1s23EFYaS3KiWHYlz9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T/99TpxJ; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2dd80401e81so4791371fa.3;
+        Fri, 26 Apr 2024 05:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714133140; x=1714737940; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IFRgbloGhVnIKWuDRlSJQNjAIv7cIETH3l3I8D/RWn0=;
+        b=T/99TpxJQ+o7rKczf5e7s3PcFO1hyjncMqloVg1ECYnr+swynjeq45H4KkyemaEtDN
+         JrFGInHVrqTttNL63shSOeRcXxO7TqHbJGL1Pmy7ekIERifgg+sgpsmfstMeOIPh88ud
+         xvGSK+HH8qaeLRiRBz2NWsUC58D5Rjgl96h1CHAa5QefuO0JFnHqpyhUIHSZqWOGPhKx
+         tehh8Y8Hf238eeGR+5HS0au6ySs7VR/TZynmVnwimcPrkkGElU/jzi02gbfE5fQdxBmy
+         ZZPVtSIBB+u1/m9B1FpRGzEWYYrEynO75LR1lKzFv2muvPMuuZjr0fuOF4ylEPLnN0AV
+         CBdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714133140; x=1714737940;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFRgbloGhVnIKWuDRlSJQNjAIv7cIETH3l3I8D/RWn0=;
+        b=SJWxFoK0TW2g2iBitbViKC+VM+k4DUSLAr0Fg/+8NnrrO08H9eAQBISrdDv3tVisKh
+         fklvXjp2XFNRtDsRo6XgsgsX5b35O/xSB3hSHCtbxH+KGCeHi2Bkp3KZZtO8bFwqmPDB
+         Eve+WPTYTnC4hne7+X/WRNpPibtWaob74D4QxAjxb/zkk4hMmb1bbdxOKoMg5isAZdIc
+         AgJWVjaIKcsqcfMEQRioBU9Fzthuim3nhXKoYnvTjnskmA+0Ypvb3C96zbXtJIOgilxr
+         SOvuQ6lqLqE9ttASKSIrXILYTU86YN4ksrdD2YpxsKPfvFaVvwK5L5EONt4rVR/YYC1P
+         u2rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUV58/Xui6L7AfEuHx6NewiiNxoEX0ZoIk/lFlX8FVkzxlu5eBF29plLpGakKPQDjECtgvkSoVcTl1oP/PMlQUHTfgE5T07+OSb/Fc5wWwDwwRCZyfroJzD6NPawExeXeA4494PkPCDkJWek7Oo9nBXNl1fwhZJI1PhQIc9jkUC+jA2VwMrFM3tq94=
+X-Gm-Message-State: AOJu0Yyeg1mmqXyaKSg2HBz+oqzHRvpD7qPwK9jyunZ5mDgQbNRLHS2q
+	BNNoa91HiGvce4rWDO6ORfgDcxHFKSrJ9z8zBCb6oh76Mr8Nt4M/
+X-Google-Smtp-Source: AGHT+IEe8mldUM2Wv5ZRNT6Twg6RekMttRFRq1NWmP7m1iCts+MYJNSTfm41RqGdQjLEgw0/c8z1VQ==
+X-Received: by 2002:a2e:b61a:0:b0:2dc:759e:981 with SMTP id r26-20020a2eb61a000000b002dc759e0981mr1615343ljn.4.1714133139789;
+        Fri, 26 Apr 2024 05:05:39 -0700 (PDT)
+Received: from [172.16.102.219] ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id k41-20020a05600c1ca900b00417e8be070csm30937272wms.9.2024.04.26.05.05.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Apr 2024 05:05:39 -0700 (PDT)
+Message-ID: <81a9e3c2-2c44-406e-af19-90d9dcfe4a92@gmail.com>
+Date: Fri, 26 Apr 2024 13:05:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wPnSNjBZH4wI2cGizilVFg6VFYBD3zby
-X-Proofpoint-ORIG-GUID: wPnSNjBZH4wI2cGizilVFg6VFYBD3zby
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 clxscore=1015
- spamscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404260080
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] ALSA: kunit: make read-only array buf_samples
+ static const
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+ Colin Ian King <colin.i.king@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240425160754.114716-1-colin.i.king@gmail.com>
+ <20240425232250.GA205425@workstation.local>
+Content-Language: en-US
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <20240425232250.GA205425@workstation.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add the table type and ACCF validity bits to _SEGMENT_ENTRY_BITS and
-_SEGMENT_ENTRY_HARDWARE_BITS{,_LARGE}.
+On 4/26/24 00:22, Takashi Sakamoto wrote:
+> Hi,
+> 
+> On Thu, Apr 25, 2024 at 05:07:54PM +0100, Colin Ian King wrote:
+>> Don't populate the read-only array buf_samples on the stack at
+>> run time, instead make it static const.
+>>
+>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+>> ---
+>>   sound/core/sound_kunit.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
+>> index eb90f62228c0..e34c4317f5eb 100644
+>> --- a/sound/core/sound_kunit.c
+>> +++ b/sound/core/sound_kunit.c
+>> @@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
+>>   
+>>   static void test_format_fill_silence(struct kunit *test)
+>>   {
+>> -	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+>> +	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+>>   	u8 *buffer;
+>>   	u32 i, j;
+> 
+> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> 
+> We can see the other similar cases in the kunit file. I'll post the fix
+> later.
+> 
 
-For completeness, introduce _REGION3_ENTRY_HARDWARE_BITS_LARGE and
-_REGION3_ENTRY_HARDWARE_BITS, containing the hardware bits used for
-large puds and normal puds.
+Hi Takashi,
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
----
- arch/s390/include/asm/pgtable.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Hmm, correct me if I'm wrong, but I don't see any other significant 
+allocations on the stack in the test.
 
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 3da2995fd196..e2f713fae9c9 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -262,6 +262,8 @@ static inline int is_module_addr(void *addr)
- #define _REGION3_ENTRY		(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_LENGTH)
- #define _REGION3_ENTRY_EMPTY	(_REGION_ENTRY_TYPE_R3 | _REGION_ENTRY_INVALID)
- 
-+#define _REGION3_ENTRY_HARDWARE_BITS_LARGE	0xffffffff8001073cUL
-+#define _REGION3_ENTRY_HARDWARE_BITS		0xfffffffffffff6ffUL
- #define _REGION3_ENTRY_ORIGIN_LARGE ~0x7fffffffUL /* large page address	     */
- #define _REGION3_ENTRY_DIRTY	0x2000	/* SW region dirty bit */
- #define _REGION3_ENTRY_YOUNG	0x1000	/* SW region young bit */
-@@ -278,9 +280,9 @@ static inline int is_module_addr(void *addr)
- #define _REGION_ENTRY_BITS	 0xfffffffffffff22fUL
- 
- /* Bits in the segment table entry */
--#define _SEGMENT_ENTRY_BITS			0xfffffffffffffe33UL
--#define _SEGMENT_ENTRY_HARDWARE_BITS		0xfffffffffffffe30UL
--#define _SEGMENT_ENTRY_HARDWARE_BITS_LARGE	0xfffffffffff00730UL
-+#define _SEGMENT_ENTRY_BITS			0xfffffffffffffe3fUL
-+#define _SEGMENT_ENTRY_HARDWARE_BITS		0xfffffffffffffe3cUL
-+#define _SEGMENT_ENTRY_HARDWARE_BITS_LARGE	0xfffffffffff1073cUL
- #define _SEGMENT_ENTRY_ORIGIN_LARGE ~0xfffffUL /* large page address	    */
- #define _SEGMENT_ENTRY_ORIGIN	~0x7ffUL/* page table origin		    */
- #define _SEGMENT_ENTRY_PROTECT	0x200	/* segment protection bit	    */
 -- 
-2.44.0
+Kind regards,
+Ivan Orlov
 
 
