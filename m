@@ -1,226 +1,212 @@
-Return-Path: <linux-kernel+bounces-160433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBC28B3D70
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:00:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED018B3C86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:13:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05FB1F2366A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:00:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7942B26732
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8646C16D9D7;
-	Fri, 26 Apr 2024 16:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ANHRY97b"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA61215575F;
+	Fri, 26 Apr 2024 16:12:59 +0000 (UTC)
+Received: from mail-m24106.xmail.ntesmail.com (mail-m24106.xmail.ntesmail.com [45.195.24.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F581159585;
-	Fri, 26 Apr 2024 16:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F2815624D;
+	Fri, 26 Apr 2024 16:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.195.24.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150731; cv=none; b=s0NVA9utJwlzam9lVfzoOOyd0Q6ykpP8UhXuikkparGvyXJHSrN3VyAAkgLZh7pYbBoJxauBWK+jUeSxQKvuJFqyBPx3x4BpvMNFWRgjjYwTwOzIOcr/mUZFDyQdAEN4rooh0U1GZAfDFaRcap0UwYur7Q8fKt2Jty7VQ8csBoU=
+	t=1714147979; cv=none; b=HEif2LsGdnZbwq6qfD9ugyllIOcCrNp2FJvBselDEQatic+48EQMZdR4RgmLh9zKokyjYfXED7rClo92r1faa8ZOzScBvK6c3Ke1gr86g2UaGjVyib+4gvltoo4dNEbbp5E+NcFLtKh8LA9SEaCCD4AhMW6feWJj6DV7uQkaBAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150731; c=relaxed/simple;
-	bh=czJKKop2DrqgxYKXJiuw6Oxa2VkgBI8VGFIhqSB6+0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j3FzeLVpUPhC1UyhLnlFxEHh4b1Zx6NHdWY7y1Ca8MgxgDZDAremFzVtOZFUxYymhxNyHtatCmhHgaXnDfAsCrP1G2ty7Kwa8DIIu1aksQJqHuumuT9B4UsVezZI2NCgnZnXFHKHDm7xZhvEGr8IQwz2aKVyQtJim3IfwF5qoqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ANHRY97b; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714150730; x=1745686730;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=czJKKop2DrqgxYKXJiuw6Oxa2VkgBI8VGFIhqSB6+0M=;
-  b=ANHRY97bN7rUnyRXwx8352vx2QOJcW6ygybBlSqf6952TXYRYE1SPrs4
-   BxChhLIuRmuEBzZRQibFz3ewyCPQRmWz6iuU4U+59o+6vKloSWwkrsf8q
-   PqF9zIUWp1Um+uONdK+BukJ+WaCnCzbZcXAK4Ltb1DjHOwnpyanrISBTT
-   kAtghWefuKKNmeyyveKeK9puy9JsKHvPMtK3+45QoM6gmCjzXI3ip0UA3
-   uC+/QYwT9TRRE/0H6Buwc3WGt8oFO8Duw459QYknB7FjN1doQg2RRtL8s
-   KhnGRXD9BRKFegcvlmqTPhkf23y6K1VOm13G2QFYXH5W7U+8aAsMQeUO4
-   A==;
-X-CSE-ConnectionGUID: Vt5jsbszRzyedioS+WjFKA==
-X-CSE-MsgGUID: j2LiS8+PQ7mlQFxzT9WceA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9725608"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="9725608"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 09:58:50 -0700
-X-CSE-ConnectionGUID: eALeRG/SQreIstmVktGfJg==
-X-CSE-MsgGUID: avSTa2EbQBCV4WEez3A1RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="29919576"
-Received: from ainumpud-mobl1.amr.corp.intel.com (HELO peluse-desk5) ([10.212.96.176])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 09:58:48 -0700
-Date: Thu, 25 Apr 2024 02:12:24 -0700
-From: Paul E Luse <paul.e.luse@linux.intel.com>
-To: tada keisuke <keisuke1.tada@kioxia.com>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, "song@kernel.org" <song@kernel.org>,
- "yukuai (C)" <yukuai3@huawei.com>, "linux-raid@vger.kernel.org"
- <linux-raid@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "Luse, Paul E" <paul.e.luse@intel.com>
-Subject: Re: [PATCH v2 08/11] md: add atomic mode switching in RAID 1/10
-Message-ID: <20240425021224.6419ee2c@peluse-desk5>
-In-Reply-To: <4b8f2f7499bd497c9db280775ae4ea81@kioxia.com>
-References: <47c035c3e741418b80eb6b73d96e7e92@kioxia.com>
-	<8d21354c-9e67-b19c-1986-b4c027dff125@huaweicloud.com>
-	<20240416073806.50e3ff5d@peluse-desk5>
-	<20240416154113.114dc42f@peluse-desk5>
-	<4b8f2f7499bd497c9db280775ae4ea81@kioxia.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; aarch64-redhat-linux-gnu)
+	s=arc-20240116; t=1714147979; c=relaxed/simple;
+	bh=N0X94kNzWw2q0Lpb3KDr/8sbEe3G/viabZlzQ8Tfe4c=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=r5Ni1gQfFpHVhsg8TRI13Vu5Js2QtjedgYU5g93acfzit9rH5aytfwuWIHLk8b/LIqkCsls5M42c90t7bm9UJ6tvTV2+QRWKOhBZ7QLKXwng41/2gK3uuHoq7t+xmcjhnbJODfqqkWmkk9C1k5OLCb/sQd0SIzb3kkmQ5ykKdqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=45.195.24.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from [192.168.122.189] (unknown [218.94.118.90])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 235B9860231;
+	Fri, 26 Apr 2024 22:53:45 +0800 (CST)
+Subject: Re: [PATCH RFC 0/7] block: Introduce CBD (CXL Block Device)
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, axboe@kernel.dk,
+ John Groves <John@groves.net>, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org
+References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
+ <66288ac38b770_a96f294c6@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
+ <ZikhwAAIGFG0UU23@memverge.com>
+ <bbf692ec-2109-baf2-aaae-7859a8315025@easystack.cn>
+ <ZiuwyIVaKJq8aC6g@memverge.com>
+From: Dongsheng Yang <dongsheng.yang@easystack.cn>
+Message-ID: <98ae27ff-b01a-761d-c1c6-39911a000268@easystack.cn>
+Date: Fri, 26 Apr 2024 22:53:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZiuwyIVaKJq8aC6g@memverge.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGUgaVk9ITB1MSh5CSUwfTVUZERMWGhIXJBQOD1
+	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
+X-HM-Tid: 0a8f1ae5e640023ckunm235b9860231
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OCo6KDo*MTc8PxQRPy5CMQEK
+	DDIKCRNVSlVKTEpPSk9ISUlOQ0hIVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
+	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBQ0JMTjcG
 
-On Fri, 26 Apr 2024 08:01:55 +0000
-tada keisuke <keisuke1.tada@kioxia.com> wrote:
 
-> > > > Hi,
-> > > >
-> > > > =E5=9C=A8 2024/04/18 13:44, tada keisuke =E5=86=99=E9=81=93:
-> > > > > This patch depends on patch 07.
-> > > > >
-> > > > > All rdevs running in RAID 1/10 switch nr_pending to atomic
-> > > > > mode. The value of nr_pending is read in a normal operation
-> > > > > (choose_best_rdev()). Therefore, nr_pending must always be
-> > > > > consistent.
-> > > > >
-> > > > > Signed-off-by: Keisuke TADA <keisuke1.tada@kioxia.com>
-> > > > > Signed-off-by: Toshifumi OHTAKE <toshifumi.ootake@kioxia.com>
-> > > > > ---
-> > > > >   drivers/md/md.h     | 14 ++++++++++++++
-> > > > >   drivers/md/raid1.c  |  7 +++++++
-> > > > >   drivers/md/raid10.c |  4 ++++
-> > > > >   3 files changed, 25 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/md/md.h b/drivers/md/md.h
-> > > > > index ab09e312c9bb..57b09b567ffa 100644
-> > > > > --- a/drivers/md/md.h
-> > > > > +++ b/drivers/md/md.h
-> > > > > @@ -236,6 +236,20 @@ static inline unsigned long
-> > > > > nr_pending_read(struct md_rdev *rdev) return
-> > > > > atomic_long_read(&rdev->nr_pending.data->count); }
-> > > > >
-> > > > > +static inline bool nr_pending_is_percpu_mode(struct md_rdev
-> > > > > *rdev) +{
-> > > > > +	unsigned long __percpu *percpu_count;
-> > > > > +
-> > > > > +	return __ref_is_percpu(&rdev->nr_pending,
-> > > > > &percpu_count); +}
-> > > > > +
-> > > > > +static inline bool nr_pending_is_atomic_mode(struct md_rdev
-> > > > > *rdev) +{
-> > > > > +	unsigned long __percpu *percpu_count;
-> > > > > +
-> > > > > +	return !__ref_is_percpu(&rdev->nr_pending,
-> > > > > &percpu_count); +}
-> > > > > +
-> > > > >   static inline int is_badblock(struct md_rdev *rdev,
-> > > > > sector_t s, int sectors, sector_t *first_bad, int
-> > > > > *bad_sectors) {
-> > > > > diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> > > > > index 12318fb15a88..c38ae13aadab 100644
-> > > > > --- a/drivers/md/raid1.c
-> > > > > +++ b/drivers/md/raid1.c
-> > > > > @@ -784,6 +784,7 @@ static int choose_best_rdev(struct r1conf
-> > > > > *conf, struct r1bio *r1_bio) if (ctl.readable_disks++ =3D=3D 1)
-> > > > >   			set_bit(R1BIO_FailFast,
-> > > > > &r1_bio->state);
-> > > > >
-> > > > > +
-> > > > > WARN_ON_ONCE(nr_pending_is_percpu_mode(rdev)); pending =3D
-> > > > > nr_pending_read(rdev); dist =3D abs(r1_bio->sector -
-> > > > > conf->mirrors[disk].head_position);
-> > > > > @@ -1930,6 +1931,7 @@ static int raid1_add_disk(struct mddev
-> > > > > *mddev, struct md_rdev *rdev) if (err)
-> > > > >   				return err;
-> > > > >
-> > > > > +
-> > > > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
-> > > > > raid1_add_conf(conf, rdev, mirror, false); /* As all devices
-> > > > > are equivalent, we don't need a full recovery
-> > > > >   			 * if this was recently any drive
-> > > > > of the array @@ -1949,6 +1951,7 @@ static int
-> > > > > raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
-> > > > > set_bit(Replacement, &rdev->flags); raid1_add_conf(conf,
-> > > > > rdev, repl_slot, true); err =3D 0;
-> > > > > +
-> > > > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
-> > > >
-> > > > I don't understand what's the point here, 'nr_pending' will be
-> > > > used when the rdev issuing IO, and it's always used as atomic
-> > > > mode, there is no difference.
-> > > >
-> > > > Consider that 'nr_pending' must be read from IO fast path, use
-> > > > it as atomic is something we must accept. Unless someone comes
-> > > > up with a plan to avoid reading 'inflight' counter from fast
-> > > > path like generic block layer, it's not ok to me to switch to
-> > > > percpu_ref for now.
->=20
-> The main purpose of this patchset is to improve RAID5 performance.
-> In the current RAID 1/10 design, the value of nr_pending is
-> intentionally always in atomic mode because it must be read in IO
-> fast path. Unless the design of reading the value of nr_pending has
-> changed, I believe that this patchset is a reasonable design and
-> RAID1 performance is about the same as atomic_t before this patchset
-> was applied. Paul's results also show that.
->=20
-> Best Regards,
-> Keisuke
 
-I only tested RAID1 and do believe that simpler is better so would
-prefer not to change the RAID1 code.  I can run some RAID5 tests on
-this as well unless you have some wide sweeping results? Would love to
-see more RAID5 performance improvments.  Shushu has another RAID5 perf
-patch out there that I think has some very good potential, it would be
-good if you could take a look at that one.
+在 2024/4/26 星期五 下午 9:48, Gregory Price 写道:
+> On Fri, Apr 26, 2024 at 09:25:53AM +0800, Dongsheng Yang wrote:
+>>
+>>
+>> 在 2024/4/24 星期三 下午 11:14, Gregory Price 写道:
+>>> On Wed, Apr 24, 2024 at 02:33:28PM +0800, Dongsheng Yang wrote:
+>>>>
+>>>>
+>>>> 在 2024/4/24 星期三 下午 12:29, Dan Williams 写道:
+>>>>> Dongsheng Yang wrote:
+>>>>>> From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+>>>>>>
+>>>>>> Hi all,
+>>>>>> 	This patchset introduce cbd (CXL block device). It's based on linux 6.8, and available at:
+>>>>>> 	https://github.com/DataTravelGuide/linux
+>>>>>>
+>>>>> [..]
+>>>>>> (4) dax is not supported yet:
+>>>>>> 	same with famfs, dax device is not supported here, because dax device does not support
+>>>>>> dev_dax_iomap so far. Once dev_dax_iomap is supported, CBD can easily support DAX mode.
+>>>>>
+>>>>> I am glad that famfs is mentioned here, it demonstrates you know about
+>>>>> it. However, unfortunately this cover letter does not offer any analysis
+>>>>> of *why* the Linux project should consider this additional approach to
+>>>>> the inter-host shared-memory enabling problem.
+>>>>>
+>>>>> To be clear I am neutral at best on some of the initiatives around CXL
+>>>>> memory sharing vs pooling, but famfs at least jettisons block-devices
+>>>>> and gets closer to a purpose-built memory semantic.
+>>>>>
+>>>>> So my primary question is why would Linux need both famfs and cbd? I am
+>>>>> sure famfs would love feedback and help vs developing competing efforts.
+>>>>
+>>>> Hi,
+>>>> 	Thanks for your reply, IIUC about FAMfs, the data in famfs is stored in
+>>>> shared memory, and related nodes can share the data inside this file system;
+>>>> whereas cbd does not store data in shared memory, it uses shared memory as a
+>>>> channel for data transmission, and the actual data is stored in the backend
+>>>> block device of remote nodes. In cbd, shared memory works more like network
+>>>> to connect different hosts.
+>>>>
+>>>
+>>> Couldn't you basically just allocate a file for use as a uni-directional
+>>> buffer on top of FAMFS and achieve the same thing without the need for
+>>> additional kernel support? Similar in a sense to allocating a file on
+>>> network storage and pinging the remote host when it's ready (except now
+>>> it's fast!)
+>>
+>> I'm not entirely sure I follow your suggestion. I guess it means that cbd
+>> would no longer directly manage the pmem device, but allocate files on famfs
+>> to transfer data. I didn't do it this way because I considered at least a
+>> few points: one of them is, cbd_transport actually requires a DAX device to
+>> access shared memory, and cbd has very simple requirements for space
+>> management, so there's no need to rely on a file system layer, which would
+>> increase architectural complexity.
+>>
+>> However, we still need cbd_blkdev to provide a block device, so it doesn't
+>> achieve "achieve the same without the need for additional kernel support".
+>>
+>> Could you please provide more specific details about your suggestion?
+> 
+> Fundamentally you're shuffling bits from one place to another, the
+> ultimate target is storage located on another device as opposed to
+> the memory itself.  So you're using CXL as a transport medium.
+> 
+> Could you not do the same thing with a file in FAMFS, and put all of
+> the transport logic in userland? Then you'd just have what looks like
+> a kernel bypass transport mechanism built on top of a file backed by
+> shared memory.
+> 
+> Basically it's unclear to me why this must be done in the kernel.
+> Performance? Explicit bypass? Some technical reason I'm missing?
 
--Paul
 
->=20
-> > > > +CC Paul
-> > > >
-> > > > HI, Paul, perhaps you RR mode doesn't need such 'inflight'
-> > > > counter anymore?
-> > > >
-> > >
-> > > I too am struggling to see the benefit but am curious enough that
-> > > I will run some tests on my own as I have fresh baseline RAID1
-> > > large sweep performance data ready right now.
-> > >
-> > > So my WIP round robin patch won't need nr_pedning for SSDs but I
-> > > think it will for HDD plus I need a new atomic counter for round
-> > > robin for SSDs anyway but I see no perfomrnace impact so far from
-> > > adding it.
-> > >
-> > > -Paul
-> > >
-> >=20
-> > I can run more if others are interested (RAID5 or HDD for example)
-> > but at least for RAID1 there's really no difference.  This was a
-> > quick run, just 40 sec each, 16 jobs and the rest ofthe fio params
-> > are on the charts. 2 disk RAID1. THe baseline is 6.8.0 from the md
-> > repo. Using my favorite drives, of course, KIOXIA KCMYDVUG3T20 :)
-> >=20
-> > Here's the results: https://photos.app.goo.gl/Avyw64eXCqWFWrs78
-> >=20
-> > NOTE:  There are few small randoms where it appears to help but I
-> > assumed that was because these are small randoms with very short run
-> > times.  SO I reran the 4K mixed rw randoms with 5 minute run time
-> > and that chart is at the very bottom and shows that over longer
-> > duration its a wash, there's no clear winner.  I'm sure an even
-> > longer run would show more consistently close results.
->=20
->=20
+In user space, transferring data via FAMFS files poses no problem, but 
+how do we present this data to users? We cannot expect users to revamp 
+all their business I/O methods.
 
+For example, suppose a user needs to run a database on a compute node. 
+As the cloud infrastructure department, we need to allocate a block 
+storage on the storage node and provide it to the database on the 
+compute node through a certain transmission protocol (such as iSCSI, 
+NVMe over Fabrics, or our current solution, cbd). Users can then create 
+any file system they like on the block device and run the database on 
+it. We aim to enhance the performance of this block device with cbd, 
+rather than requiring the business department to adapt their database to 
+fit our shared memory-facing storage node disks.
+
+This is why we need to provide users with a block device. If it were 
+only about data transmission, we wouldn't need a block device. But when 
+it comes to actually running business operations, we need a block 
+storage interface for the upper layer. Additionally, the block device 
+layer offers many other rich features, such as RAID.
+
+If accessing shared memory in user space is mandatory, there's another 
+option: using user space block storage technologies like ublk. However, 
+this would lead to performance issues as data would need to traverse 
+back to the kernel space block device from the user space process.
+
+In summary, we need a block device sharing mechanism, similar to what is 
+provided by NBD, iSCSI, or NVMe over Fabrics, because user businesses 
+rely on the block device interface and ecosystem.
+> 
+> 
+> Also, on a tangential note, you're using pmem/qemu to emulate the
+> behavior of shared CXL memory.  You should probably explain the
+> coherence implications of the system more explicitly.
+> 
+> The emulated system implements what amounts to hardware-coherent
+> memory (i.e. the two QEMU machines run on the same physical machine,
+> so coherency is managed within the same coherence domain).
+> 
+> If there is no explicit coherence control in software, then it is
+> important to state that this system relies on hardware that implements
+> snoop back-invalidate (which is not a requirement of a CXL 3.x device,
+> just a feature described by the spec that may be implemented).
+
+In (5) of the cover letter, I mentioned that cbd addresses cache 
+coherence at the software level:
+
+(5) How do blkdev and backend interact through the channel?
+	a) For reader side, before reading the data, if the data in this 
+channel may be modified by the other party, then I need to flush the 
+cache before reading to ensure that I get the latest data. For example, 
+the blkdev needs to flush the cache before obtaining compr_head because 
+compr_head will be updated by the backend handler.
+	b) For writter side, if the written information will be read by others, 
+then after writing, I need to flush the cache to let the other party see 
+it immediately. For example, after blkdev submits cbd_se, it needs to 
+update cmd_head to let the handler have a new cbd_se. Therefore, after 
+updating cmd_head, I need to flush the cache to let the backend see it.
+
+
+This part of the code is indeed implemented, however, as you pointed 
+out, since I am currently using qemu/pmem for emulation, the effects of 
+this code cannot be observed.
+
+Thanx
+> 
+> ~Gregory
+> .
+> 
 
