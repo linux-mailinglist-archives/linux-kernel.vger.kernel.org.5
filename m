@@ -1,95 +1,126 @@
-Return-Path: <linux-kernel+bounces-160747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513508B4247
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:41:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 194218B4249
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:42:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830691C215E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53075B233A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61B93BBCA;
-	Fri, 26 Apr 2024 22:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BCE39FC5;
+	Fri, 26 Apr 2024 22:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GXA1OfOh"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="iJgeqyKZ"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A953BBC5;
-	Fri, 26 Apr 2024 22:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AAD383BE;
+	Fri, 26 Apr 2024 22:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714171288; cv=none; b=VB49P8naaYzLQ6c+k1U0DTmsKroFjRepoF1dtuTkFVWqlPwvf6UZMfEs2GRlSRN5ebpbFt5wfl5EDCGqdYLQQzIuqgELhXoYWqFQyM9inOcuPFmziUM50cgBgljcPcdTFjX3nAwK0FtdmwJ3lucHSZB8ws1DYb8yXRAkbIejVww=
+	t=1714171350; cv=none; b=gCEBd8H4ZeWn8ju9xTOYKXdwICuFTmn7r9c1jabFtUvGrAdFHHoovUGZ3PmW0noLopoEwLzqMpLUdCfbWTuiaymxtX0U8MjBhnZVRcJ5Pizn1PfDV0vqGLXElDLF342UstX/qF5IcyAAfwPUvkAfGHugVSGSSNP+CBpFW9pXht4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714171288; c=relaxed/simple;
-	bh=vZKtcZYVRAMqBRpL0CJRuYdyohcVXJMTXBSs6eu/1IA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y/rxLYbSN4xoYbvwEFtQEazL1dq/xMeVmSFUQeIUMjmQJMieLxldwMoN9gWJ7FH9I8bDGGKi9lgOUJ7DaZB4WiAVqO/ihb93oKCsOBpjgVA+dfyaJfBX7phfqRVMMmD7vbZnEBoq4JUsSF28EZgF/3Rlxq68MeND4Li9Arwko9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=GXA1OfOh; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=PvZ/i9r3FVZj4alsX5Jepp4+7BJpXMZbt0ExU5aF+ZA=; b=GXA1OfOhyUuYOMS8rX51yQ4NhB
-	z0hxpeeaMdcTn9AximebwffapVKvVhe0+re2LV01QBKHyKpnfNnyAqGLCeIWK81gaKXHGRebrhVlQ
-	KxfQUGehYjbphUEPtYqV20wCd9+ki+82VuPOmUFwau9etZMnCIdc0+1g/lsrT7huCqg4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s0UFr-00E75d-Un; Sat, 27 Apr 2024 00:41:19 +0200
-Date: Sat, 27 Apr 2024 00:41:19 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Kyle Swenson <kyle.swenson@est.tech>,
-	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: PoE complex usage of regulator API
-Message-ID: <57a79abd-722c-4907-b0e7-2396392ae675@lunn.ch>
-References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1714171350; c=relaxed/simple;
+	bh=aR5JmJwVj68lu+Vs9P7gprZK0XkP/8KMDcqphjQteDA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qbIEDrPpPe4yn+bOk3GPAcFDjbfhvzvPHEKpg0pMSw/t9Isoexr7fsOW1Je8kc9s9Mb2qG4+Xfb9Lih0Y9wHLi5cFIOidUCRioZMwJW6vS/L5HiWkmNUIat535B7PeJmhSajiHpnofTNZnU9xm4mrJrtem8Br4DeUQ6WAXB/quw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=iJgeqyKZ; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QMgFaQ018503;
+	Fri, 26 Apr 2024 17:42:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714171335;
+	bh=9XyFwCvc+ipvHtwCu+tqxq5hfhL96pWIbwEWvrv3T6k=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=iJgeqyKZ92w/nvZsLEFsbB016aWPpb9Cgk6oP3blgVM7pn4yF8RLHMUQCge6zCPqw
+	 TQRw5Tnp90bE4VdeSDlbR6L62YIEcA8gmb1vhiYUmL5qyviRrWBvVv7l7NcOKa0F4Q
+	 2NXIceAjXJIpiBcdsj9WaYj2YLQF5BH0qkwBtgXU=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QMgFv5006593
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 26 Apr 2024 17:42:15 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
+ Apr 2024 17:42:15 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 26 Apr 2024 17:42:15 -0500
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QMgFoL085612;
+	Fri, 26 Apr 2024 17:42:15 -0500
+From: Nishanth Menon <nm@ti.com>
+To: <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        Stefan
+ Eichenberger <eichest@gmail.com>
+CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <francesco.dolcini@toradex.com>,
+        Stefan Eichenberger
+	<stefan.eichenberger@toradex.com>
+Subject: Re: [PATCH v1 0/2] arm64: dts: ti: k3-am62-verdin: add sleep-moci support
+Date: Fri, 26 Apr 2024 17:42:13 -0500
+Message-ID: <171417132605.3484246.13145737437782597279.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240301084901.16656-1-eichest@gmail.com>
+References: <20240301084901.16656-1-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-> Let's begin simple, in PSE world we are more talking about power.
-> Would it be ok to add a regulator_get/set_power_limit() and
-> regulator_get_power() callback to regulator API. Would regulator API have
-> interest to such callbacks?
+Hi Stefan Eichenberger,
 
-Could you define this API in more details.
+On Fri, 01 Mar 2024 09:48:59 +0100, Stefan Eichenberger wrote:
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> 
+> This patch series adds support for sleep-moci to the Verdin AM62 in
+> combination with the Dahlia carrier board. sleep-moci is a GPIO that
+> allows the system on module to turn off regulators that are not needed
+> in suspend mode on the carrier board.
+> 
+> [...]
 
-I'm assuming this is mostly about book keeping? When a regulator is
-created, we want to say is can deliver up to X Kilowatts. We then want
-to allocate power to ports. So there needs to be a call asking it to
-allocate part of X to a consumer, which could fail if there is not
-sufficient power budget left. And there needs to be a call to release
-such an allocation.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-We are probably not so much interested in what the actual current
-power draw is, assuming there is no wish to over provision?
+[1/2] arm64: dts: ti: k3-am62-verdin: replace sleep-moci hog with regulator
+      commit: e75f65467e01633afe921acb5742403c86153b48
+[2/2] arm64: dts: ti: k3-am62-verdin-dahlia: support sleep-moci
+      commit: 262b0d3d724dc33c7ae1359bcd89abefbad7a886
 
-There is in theory a potential second user of this. Intel have been
-looking at power control for SFPs. Typically they are guaranteed a
-minimum of 1.5W. However, they can operate at higher power
-classes. You can have boards with multiple SFPs, with a theoretical
-maximum power draw more than what the supply can supply. So you need
-similar sort of power budget book keeping to allocate power to an SFP
-cage before telling the SFP module it can swap to a higher power
-class. I say this is theoretical, because the device Intel is working
-on has this hidden away in firmware. But maybe sometime in the future
-somebody will want Linux doing this.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-      Andrew
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
 
