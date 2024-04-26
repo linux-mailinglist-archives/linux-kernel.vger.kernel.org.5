@@ -1,118 +1,170 @@
-Return-Path: <linux-kernel+bounces-159559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753368B3047
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:23:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A74D8B304C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:23:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 735D82856CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:23:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C14EAB23563
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAED13A865;
-	Fri, 26 Apr 2024 06:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16AAE13A889;
+	Fri, 26 Apr 2024 06:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z5N+I5U8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oahcaZI7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88C413A3F6
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 06:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C28E2F2F;
+	Fri, 26 Apr 2024 06:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714112592; cv=none; b=miXAKLSefD6ox/Hoofm32oXYrEE73DISdeS7S87nlHd4TVln/0ZnfjSU8RV2gbtLlKTlDSUXIZyHIRvaZXKIzJXeyzvetI4beSypQ3JthojDlyyYvC7RCPur43InQljTtDsZaFIud1tWgpIRxwWlbfPSXqUtzWF0JPoscDBV+Tc=
+	t=1714112611; cv=none; b=S7rk1zcLATeyuQEusLD2ajXojI8IWhiF6PfhbpmshhQExu5t6nNQMKMqq96FieA2/Bdv7HJkfGZKxRBopxqlizPhm2smHtfNP0S9G8ahbWnIolB2e3S+GvkMRvxRySSaHp28qKQEkBTEfLeJVYTq5DjzreR4QRvA0WlNQ/t6xPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714112592; c=relaxed/simple;
-	bh=Nfb+0TFJqYbN3lblUgp8OR/OnwjY43BbHiskkc20XKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CSD810ws3/Hg7cUef0UJFb7ghXTc/R0hIx7Pt7KF5QsZZigam2PCIx5lBrjPlTFNCaJGWhVpUgM+sjWELqlrf3iHZp9j4Iuk+C70CyyImNF2cXN9JLVCy8Ee8Lz9x+AWxsgr86dHEx9XUIv1qYX+03NXpzJ/z0UyauM8UMMhR8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z5N+I5U8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24992C113CE;
-	Fri, 26 Apr 2024 06:23:11 +0000 (UTC)
+	s=arc-20240116; t=1714112611; c=relaxed/simple;
+	bh=YtshXLNHd+oeMo09vvuPVWrGyeKWyQJGrt5mDGX3NiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b2Frl9jCgsb1/zXCme/HJqMKFRhRTtwz3rMY33vNmlcOkFJGF3HSyPITa1rVze+MYgbWKhTneMVqpANta4+YRgNUPRw+TfGc5a/1Vls2f8PmtuFz2QABAah3KjzP/IbBCTptG+e40r/pGZTLRlnYJ+xINnxtxd58YmvUvRBNf/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oahcaZI7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB951C113CD;
+	Fri, 26 Apr 2024 06:23:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714112592;
-	bh=Nfb+0TFJqYbN3lblUgp8OR/OnwjY43BbHiskkc20XKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z5N+I5U8LvRKBICc8IVwHVEKZ9uhgtL1KyjLcG4G5dLxUSFeZ6FI4SVkd8+945Dqw
-	 iZjmEMKwP+I3BGg9NpbvZzPGK8bafNtVRdFURirdw/HhKGHh8MJwpu/+GypLP15Pea
-	 7FB6I+AWZe6zryD34I/tToNOSL9IZ87XnFsabqhfzmgD2dmnDhtSeOhk2PR46SQNOw
-	 6TVh8VPfwu0bahqvN0KHOSp6M8Nu+2dSOxa6dgS+2b7deV4MYjH2HeE01OhRJ18SrW
-	 TSnAm9wlC/BEPzM5k3YyTSohkuNRIxEpWcKsS+rK8oi2I3vqx09OIfjhvHTd+l9JKZ
-	 LdZYfpQubMZGQ==
-Date: Fri, 26 Apr 2024 08:23:02 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-Message-ID: <20240426-married-augmented-mantis-ff7edd@penduick>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
- <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
+	s=k20201202; t=1714112610;
+	bh=YtshXLNHd+oeMo09vvuPVWrGyeKWyQJGrt5mDGX3NiM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oahcaZI7flfMnYzZIhm0Js0aQL7aZzyH/L68wKC+ovfKl6M3RyLA1jSMUup6zaZTU
+	 G+NVs+03/Egrn8xU/GvpMirylgYrAeZspGiEhnnIZZsm2I5c6S7RhYfuVjgo3o77bs
+	 pvnrul04Sq6Oqc1LVi4WJeTXzVfrsHwmhN76XHxq0iBOAAzBKvI45yHQuWcUZgpC0h
+	 tPQAkRvyMAOspuMJdSyiB9rAiT0tV3gzw40B5aiuGLpVSmLT5BgoId2wzB6AcODisc
+	 +VoMS3xUnJrFQVlB0zoRLNhWw6LvHsTvHlO1GVCL5lYMT4saK+K+3/hDwlKGRY12ZA
+	 VmB9cZq5o9uYQ==
+Message-ID: <3f381a54-49ce-4a45-a960-00cf2e91b044@kernel.org>
+Date: Fri, 26 Apr 2024 08:23:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="o5swtcdrnu6wvo4w"
-Content-Disposition: inline
-In-Reply-To: <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 06/14] dt-bindings: fsi: Document the FSI controller
+ common properties
+To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-7-eajames@linux.ibm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240425213701.655540-7-eajames@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+On 25/04/2024 23:36, Eddie James wrote:
+> Since there are multiple FSI controllers documented, the common
+> properties should be documented separately and then referenced
+> from the specific controller documentation.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
 
 
---o5swtcdrnu6wvo4w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +
+> +  no-scan-on-init:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The FSI controller cannot scan the bus during initialization.
+> +
+> +patternProperties:
+> +  "cfam@[0-9a-f],[0-9a-f]":
+> +    type: object
+> +    properties:
+> +      chip-id:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
 
-Hi,
+Missing description
 
-On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
-> On 2024/4/26 03:10, Andy Shevchenko wrote:
-> > On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
-> > > On 2024/4/25 22:26, Andy Shevchenko wrote:
-> > > > It seems driver missed the point of proper use of device property A=
-PIs.
-> > > > Correct this by updating headers and calls respectively.
-> > > You are using the 'seems' here exactly saying that you are not 100% s=
-ure.
-> > >=20
-> > > Please allow me to tell you the truth: This patch again has ZERO effe=
-ct.
-> > > It fix nothing. And this patch is has the risks to be wrong.
-> > Huh?! Really, stop commenting the stuff you do not understand.
->=20
-> I'm actually a professional display drivers developer at the downstream
-> in the past, despite my contribution to upstream is less. But I believe
-> that all panel driver developers know what I'm talking about. So please
-> have take a look at my replies.
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 1
+> +
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: true> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    fsi@3400 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        compatible = "fsi-controller";
 
-Most of the interactions you had in this series has been uncalled for.
-You might be against a patch, but there's no need to go to such length.
+No, there is no such compatible here.
 
-As far as I'm concerned, this patch is fine to me in itself, and I don't
-see anything that would prevent us from merging it.
+> +        reg = <0x3400 0x400>;
 
-Maxime
+Neither reg.
 
---o5swtcdrnu6wvo4w
-Content-Type: application/pgp-signature; name="signature.asc"
+Also, keep order of properties matching DTS coding style.
 
------BEGIN PGP SIGNATURE-----
 
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZitIOwAKCRAnX84Zoj2+
-dr1eAX4kt8+oP9QDw8OZ8+bOs5hSPHT1YEkFlVR2do4H+X5sKSBcmsIVc9BIk8Lo
-EZj+dEkBewWPb+S0DuTK2+irs3efvEm8uRMkhJ/XSFB+Wk1eivIEh2L7b3yDHUKM
-UmIpp971tQ==
-=k4n4
------END PGP SIGNATURE-----
+Best regards,
+Krzysztof
 
---o5swtcdrnu6wvo4w--
 
