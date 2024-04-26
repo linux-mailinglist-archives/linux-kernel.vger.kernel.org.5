@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-160219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8393F8B3AB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:10:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF378B3AB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:10:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EECF1C23577
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:10:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12D71B25720
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1077014A4EE;
-	Fri, 26 Apr 2024 15:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCB514C593;
+	Fri, 26 Apr 2024 15:09:26 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2EE314885D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCCB14A636
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144163; cv=none; b=u1zmD18xFuvx4I6DPl9XPoF1j8vH5k9InpudQJS2j+n2gCniA45j+P0cMVt9qtrupLFIB6GqqX7P4cBuldYgN8I4GiRRhnaLVXgFxcrfFGYMfEktqr0sIImIV9GhGnD9qKNJF9Qhcl9jtkAQOukuh5DttDQdhqcWvVX4tiNlnbI=
+	t=1714144166; cv=none; b=r6W+TevwqTKYoS49JqIxt1MGwDPS5w4ncNPaghSOmYt8fUh57O1YLltdHn6OYPFlSuXuZMtNwoM66E+HXwKp+eZ92MOTOUoiQf31ECW6QWdWXDV7PwH6DvwClh1daW5iXM9fLqYfSgdLAJrghyQj09moGBN0CW0pRaCfw09ngfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144163; c=relaxed/simple;
-	bh=dpKO3rdkwJbWj0noG8Erm1PSVz6/i7cvwLDv/m1vmUI=;
+	s=arc-20240116; t=1714144166; c=relaxed/simple;
+	bh=B45DNE5jVciRITycfR1j4r6df7VAf6oBaA+5UtSAlSg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hELdUQiNVx7684j101NBjqkGT8ps79my/gMrs+zKB4QpfNgmUU2jOfr5oRfTgnjj2m4a1yBgyELXfXNHVG/3My5foSfqAQEdAz5L3Pw5gLGjaIagVKMGUrUNTxY1mP3r2gpoKV6QLuLHiaJ9hxDWIn61sHjPn9ZX+tEAwrQHPLE=
+	 MIME-Version; b=GNn0FAdAQ09EOok5GZ5HhiR8CbV3TtXl0vsdPug2bMrMNZEQsV21YX5BxV4dRhn9uoaJtO4OPM3apq9i/yPOs2sDzDL4YSoH/TrrHMFdVqlaIyu9e8HBrs07EUh7im+nZs52QuTp7SjYRvX5r8l3OS8Fka8yJOsWVPWXHFtbQiM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33D7A15DB;
-	Fri, 26 Apr 2024 08:09:49 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 496FC1682;
+	Fri, 26 Apr 2024 08:09:52 -0700 (PDT)
 Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FEDA3F73F;
-	Fri, 26 Apr 2024 08:09:18 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 662C43F73F;
+	Fri, 26 Apr 2024 08:09:21 -0700 (PDT)
 From: Dave Martin <Dave.Martin@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: James Morse <james.morse@arm.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: [PATCH v2 03/35] x86/resctrl: Move ctrlval string parsing policy away from the arch code
-Date: Fri, 26 Apr 2024 16:08:32 +0100
-Message-Id: <20240426150904.8854-3-Dave.Martin@arm.com>
+Subject: [PATCH v2 04/35] x86/resctrl: Add helper for setting CPU default properties
+Date: Fri, 26 Apr 2024 16:08:33 +0100
+Message-Id: <20240426150904.8854-4-Dave.Martin@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240426150904.8854-1-Dave.Martin@arm.com>
 References: <20240426150537.8094-1-Dave.Martin@arm.com>
@@ -74,213 +74,135 @@ Content-Transfer-Encoding: 8bit
 
 From: James Morse <james.morse@arm.com>
 
-The policy for parsing the configuration values as a string from
-user-space is specified by a function pointer the arch code specifies.
+rdtgroup_rmdir_ctrl() and rdtgroup_rmdir_mon() set the per-CPU
+pqr_state for CPUs that were part of the rmdir()'d group.
 
-These strings are part of resctrl's ABI, and the functions and their
-caller both live in the same file. Exporting the parsing functions and
-allowing the architecture to choose how a schema is parsed allows an
-architecture to get this wrong.
+Another architecture might not have a 'pqr_state', its hardware may
+need the values in a different format. MPAM's equivalent of RMID values
+are not unique, and always need the CLOSID to be provided too.
 
-Keep this all in the filesystem parts of resctrl. This should prevent
-any architecture's string-parsing behaviour from varying without core
-code changes. Use the fflags to spot caches and bandwidth resources,
-and use the appropriate helper.
+There is only one caller that modifies a single value,
+(rdtgroup_rmdir_mon()). MPAM always needs both CLOSID and RMID
+for the hardware value as these are written to the same system
+register.
+
+As rdtgroup_rmdir_mon() has the CLOSID on hand, only provide a
+helper to set both values. These values are read by
+__resctrl_sched_in(), but may be written by a different CPU without
+any locking, add READ/WRTE_ONCE() to avoid torn values.
 
 Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Dave Martin <Dave.Martin@arm.com>
 
 ---
-
-FYI: Dave Martin (et al.):
-
- * Needs refactoring to minimise exposure of resctrl internals to arch
-   code, particularly regarding fflags, print format and format parser.
-
-   See discussion thread:
-
-   https://lore.kernel.org/all/e85e7786-7995-42d5-a5ac-1e08a84492fe@intel.com/
 
 Changes in v2:
 
- * [Commit message only] Typo fix:
-   s/flesystem/filesystem/g
----
- arch/x86/kernel/cpu/resctrl/core.c        |  4 ----
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 28 +++++++++++++++++++----
- arch/x86/kernel/cpu/resctrl/internal.h    | 10 --------
- include/linux/resctrl.h                   |  7 ------
- 4 files changed, 23 insertions(+), 26 deletions(-)
+ * In rdtgroup_rmdir_mon(), (re)set CPU default closid based on the
+   parent control group, to avoid the appearance of referencing
+   something that we're in the process of destroying (even if it
+   doesn't make a difference because the victim mon group necessarily
+   has the same closid as the parent control group).
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index b773b3bdebe3..d07eff7d6750 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -75,7 +75,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 			.name			= "L3",
- 			.cache_level		= 3,
- 			.domains		= domain_init(RDT_RESOURCE_L3),
--			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
- 			.fflags			= RFTYPE_RES_CACHE,
- 		},
-@@ -89,7 +88,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 			.name			= "L2",
- 			.cache_level		= 2,
- 			.domains		= domain_init(RDT_RESOURCE_L2),
--			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
- 			.fflags			= RFTYPE_RES_CACHE,
- 		},
-@@ -103,7 +101,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 			.name			= "MB",
- 			.cache_level		= 3,
- 			.domains		= domain_init(RDT_RESOURCE_MBA),
--			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
- 			.fflags			= RFTYPE_RES_MB,
- 		},
-@@ -115,7 +112,6 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 			.name			= "SMBA",
- 			.cache_level		= 3,
- 			.domains		= domain_init(RDT_RESOURCE_SMBA),
--			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
- 			.fflags			= RFTYPE_RES_MB,
- 		},
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index 788ac0395645..72a651671c68 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -23,6 +23,15 @@
+   Update comment to match.
+
+   No (intentional) functional change.
+---
+ arch/x86/include/asm/resctrl.h         | 14 +++++++++++---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 20 ++++++++++++++------
+ 2 files changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 12dbd2588ca7..f61382258743 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -4,8 +4,9 @@
  
- #include "internal.h"
+ #ifdef CONFIG_X86_CPU_RESCTRL
  
-+struct rdt_parse_data {
-+	struct rdtgroup		*rdtgrp;
-+	char			*buf;
-+};
-+
-+typedef int (ctrlval_parser_t)(struct rdt_parse_data *data,
-+			       struct resctrl_schema *s,
-+			       struct rdt_domain *d);
-+
+-#include <linux/sched.h>
+ #include <linux/jump_label.h>
++#include <linux/percpu.h>
++#include <linux/sched.h>
+ 
  /*
-  * Check whether MBA bandwidth percentage value is correct. The value is
-  * checked against the minimum and max bandwidth values specified by the
-@@ -59,8 +68,8 @@ static bool bw_validate(char *buf, unsigned long *data, struct rdt_resource *r)
- 	return true;
+  * This value can never be a valid CLOSID, and is used when mapping a
+@@ -96,8 +97,8 @@ static inline void resctrl_arch_disable_mon(void)
+ static inline void __resctrl_sched_in(struct task_struct *tsk)
+ {
+ 	struct resctrl_pqr_state *state = this_cpu_ptr(&pqr_state);
+-	u32 closid = state->default_closid;
+-	u32 rmid = state->default_rmid;
++	u32 closid = READ_ONCE(state->default_closid);
++	u32 rmid = READ_ONCE(state->default_rmid);
+ 	u32 tmp;
+ 
+ 	/*
+@@ -132,6 +133,13 @@ static inline unsigned int resctrl_arch_round_mon_val(unsigned int val)
+ 	return val * scale;
  }
  
--int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
--	     struct rdt_domain *d)
-+static int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
-+		    struct rdt_domain *d)
- {
- 	struct resctrl_staged_config *cfg;
- 	u32 closid = data->rdtgrp->closid;
-@@ -138,8 +147,8 @@ static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
-  * Read one cache bit mask (hex). Check that it is valid for the current
-  * resource type.
-  */
--int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
--	      struct rdt_domain *d)
-+static int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
-+		     struct rdt_domain *d)
- {
- 	struct rdtgroup *rdtgrp = data->rdtgrp;
- 	struct resctrl_staged_config *cfg;
-@@ -195,6 +204,14 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
- 	return 0;
- }
- 
-+static ctrlval_parser_t *get_parser(struct rdt_resource *res)
++static inline void resctrl_arch_set_cpu_default_closid_rmid(int cpu, u32 closid,
++							    u32 rmid)
 +{
-+	if (res->fflags & RFTYPE_RES_CACHE)
-+		return &parse_cbm;
-+	else
-+		return &parse_bw;
++	WRITE_ONCE(per_cpu(pqr_state.default_closid, cpu), closid);
++	WRITE_ONCE(per_cpu(pqr_state.default_rmid, cpu), rmid);
 +}
 +
- /*
-  * For each domain in this resource we expect to find a series of:
-  *	id=mask
-@@ -204,6 +221,7 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
- static int parse_line(char *line, struct resctrl_schema *s,
- 		      struct rdtgroup *rdtgrp)
+ static inline void resctrl_arch_set_closid_rmid(struct task_struct *tsk,
+ 						u32 closid, u32 rmid)
  {
-+	ctrlval_parser_t *parse_ctrlval = get_parser(s->res);
- 	enum resctrl_conf_type t = s->conf_type;
- 	struct resctrl_staged_config *cfg;
- 	struct rdt_resource *r = s->res;
-@@ -235,7 +253,7 @@ static int parse_line(char *line, struct resctrl_schema *s,
- 		if (d->id == dom_id) {
- 			data.buf = dom;
- 			data.rdtgrp = rdtgrp;
--			if (r->parse_ctrlval(&data, s, d))
-+			if (parse_ctrlval(&data, s, d))
- 				return -EINVAL;
- 			if (rdtgrp->mode ==  RDT_MODE_PSEUDO_LOCKSETUP) {
- 				cfg = &d->staged_config[t];
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 65990def6c79..9048bd32e86f 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -413,11 +413,6 @@ static inline bool is_mbm_event(int e)
- 		e <= QOS_L3_MBM_LOCAL_EVENT_ID);
- }
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 47234562a1dd..98c051ac848d 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3624,14 +3624,21 @@ static int rdtgroup_mkdir(struct kernfs_node *parent_kn, const char *name,
+ static int rdtgroup_rmdir_mon(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
+ {
+ 	struct rdtgroup *prdtgrp = rdtgrp->mon.parent;
++	u32 closid, rmid;
+ 	int cpu;
  
--struct rdt_parse_data {
--	struct rdtgroup		*rdtgrp;
--	char			*buf;
--};
--
- /**
-  * struct rdt_hw_resource - arch private attributes of a resctrl resource
-  * @r_resctrl:		Attributes of the resource used directly by resctrl.
-@@ -455,11 +450,6 @@ static inline struct rdt_hw_resource *resctrl_to_arch_res(struct rdt_resource *r
- 	return container_of(r, struct rdt_hw_resource, r_resctrl);
- }
+ 	/* Give any tasks back to the parent group */
+ 	rdt_move_group_tasks(rdtgrp, prdtgrp, tmpmask);
  
--int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
--	      struct rdt_domain *d);
--int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
--	     struct rdt_domain *d);
--
- extern struct mutex rdtgroup_mutex;
+-	/* Update per cpu rmid of the moved CPUs first */
++	/*
++	 * Update per cpu closid/rmid of the moved CPUs first.
++	 * Note: the closid will not change, but the arch code still needs it.
++	 */
++	closid = prdtgrp->closid;
++	rmid = prdtgrp->mon.rmid;
+ 	for_each_cpu(cpu, &rdtgrp->cpu_mask)
+-		per_cpu(pqr_state.default_rmid, cpu) = prdtgrp->mon.rmid;
++		resctrl_arch_set_cpu_default_closid_rmid(cpu, closid, rmid);
++
+ 	/*
+ 	 * Update the MSR on moved CPUs and CPUs which have moved
+ 	 * task running on them.
+@@ -3664,6 +3671,7 @@ static int rdtgroup_ctrl_remove(struct rdtgroup *rdtgrp)
  
- extern struct rdt_hw_resource rdt_resources_all[];
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 168cc9510069..6e87bc95f5ea 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -157,9 +157,6 @@ struct resctrl_membw {
- 	u32				*mb_map;
- };
+ static int rdtgroup_rmdir_ctrl(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
+ {
++	u32 closid, rmid;
+ 	int cpu;
  
--struct rdt_parse_data;
--struct resctrl_schema;
--
- /**
-  * struct rdt_resource - attributes of a resctrl resource
-  * @rid:		The index of the resource
-@@ -174,7 +171,6 @@ struct resctrl_schema;
-  * @data_width:		Character width of data when displaying
-  * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-  * @format_str:		Per resource format string to show domain value
-- * @parse_ctrlval:	Per resource function pointer to parse control values
-  * @evt_list:		List of monitoring events
-  * @fflags:		flags to choose base and info files
-  * @cdp_capable:	Is the CDP feature available on this resource
-@@ -192,9 +188,6 @@ struct rdt_resource {
- 	int			data_width;
- 	u32			default_ctrl;
- 	const char		*format_str;
--	int			(*parse_ctrlval)(struct rdt_parse_data *data,
--						 struct resctrl_schema *s,
--						 struct rdt_domain *d);
- 	struct list_head	evt_list;
- 	unsigned long		fflags;
- 	bool			cdp_capable;
+ 	/* Give any tasks back to the default group */
+@@ -3674,10 +3682,10 @@ static int rdtgroup_rmdir_ctrl(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
+ 		   &rdtgroup_default.cpu_mask, &rdtgrp->cpu_mask);
+ 
+ 	/* Update per cpu closid and rmid of the moved CPUs first */
+-	for_each_cpu(cpu, &rdtgrp->cpu_mask) {
+-		per_cpu(pqr_state.default_closid, cpu) = rdtgroup_default.closid;
+-		per_cpu(pqr_state.default_rmid, cpu) = rdtgroup_default.mon.rmid;
+-	}
++	closid = rdtgroup_default.closid;
++	rmid = rdtgroup_default.mon.rmid;
++	for_each_cpu(cpu, &rdtgrp->cpu_mask)
++		resctrl_arch_set_cpu_default_closid_rmid(cpu, closid, rmid);
+ 
+ 	/*
+ 	 * Update the MSR on moved CPUs and CPUs which have moved
 -- 
 2.34.1
 
