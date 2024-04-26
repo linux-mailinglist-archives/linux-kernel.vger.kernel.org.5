@@ -1,146 +1,161 @@
-Return-Path: <linux-kernel+bounces-159983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C64F8B3727
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:23:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9C88B3728
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:24:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 082B52845F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:23:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F9911C21E70
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B2D145B21;
-	Fri, 26 Apr 2024 12:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D440145B24;
+	Fri, 26 Apr 2024 12:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SwK1fSt3"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kstsaHIR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A83D41C6D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7355641C6D
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714134198; cv=none; b=q9nJy4KLPm+fdLS5uakylfDw3sf++vfCEPjlrkTP0dXqcJGPyDUZjUItK37/VV9OHGGOA49BQ3xzNKEX/IxKzKSBqNbuXvAMZVD9Vx0GGyE0nj7aFq7Sf5O7pCh3ajk6149uzhp03u75Q4CKWeNAKvEdIgIPjt4dYsBEOoFG1Uo=
+	t=1714134245; cv=none; b=kICsy7qwuva7mRv+XpY3RdGtL7+O2wSKL1tFWINDlqwH3Iov/aKeyVE6f6uwn0jZAr53DQt5YdkXjK/TSZ9TPOiiDSudz7so4gyfhmlrruKKq10V70/c3fqbF2vMWSRQacj9myvi9Y8/V4SK9fMgFi7SQps3mX00D62uAQanvDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714134198; c=relaxed/simple;
-	bh=q42ZCwD8moewXvOv6K4b7tvJjnbBkSMb/0B0m28m9GA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZjVT+CA2sbVrz8BV8DJmnPcx4ri+r7trbG+B6JS0xgxOGZdLRaz/XKBq/YPoga8DnFSVuGc5ciP30EHgl1+PvmnVli03g1TKkeUvNMfpTHrvD7wTl47FE9IHGf1Kuw7Nf8vUXLI9G/6e27UB+vlzql7FXgTcXtod/Su8ZkdKE4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SwK1fSt3; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 85CDAC0002;
-	Fri, 26 Apr 2024 12:23:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714134194;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=25H8oLPo2hioXDZa3XWQH6r/1CP1DR1BEzXpdCWRmVg=;
-	b=SwK1fSt3RJW3evyI512a5q9PmIwv5tsY1bymwqWDRRDtAGvPSDL2/h9KMq+9OfynodgMPU
-	Gvb2n7wT/uglFzdrOm/Fk6g1AszGMWrQlleJ5JD1LQSp36p9CPB6DSQrIDw42uNSh/fFfa
-	OC5jEfW5VEtOBl8CFeH606tTYdFxia6zCiICxr+9xCsNcXpNLzQ4GR986y52wBn4ssw61E
-	jbKgI0WejgtL0EO1X5Fa9h4hhZY20Q7uNOcai3bNCEa7m3Apc4G5nGJaJ4M5JGhPVakDwr
-	jQKYR5846+ximv+zpUlTXiCI9aU49sWMIm9lTYaLQHx4Og3cEsrgZKQTYIZ+cA==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] Revert "drm/bridge: ti-sn65dsi83: Fix enable error path"
-Date: Fri, 26 Apr 2024 14:22:59 +0200
-Message-Id: <20240426122259.46808-1-luca.ceresoli@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714134245; c=relaxed/simple;
+	bh=9cvGgf6hipxxJapz58GN2PB+3Lbpwbf+b3JzQ0ChyHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHtt+t851zsm7brnQshCDEYMQYLFtiY1Y0AM6AOW+SsEu5DNE+Wn77aej+QNaYcN0gpw+S8o4M0htQb7adsaAIehTaJCg5gtNT/lCUZgXIaSNmlWVU0RbnxWWR1KkVF+Yx7J5Cv6h3UMH7FbaT70evEowoAaQQ3GabuBQwsM1Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kstsaHIR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F4BC113CD;
+	Fri, 26 Apr 2024 12:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714134245;
+	bh=9cvGgf6hipxxJapz58GN2PB+3Lbpwbf+b3JzQ0ChyHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kstsaHIRcEF4YJnrfxedsHtMzeMNuTN3bhr0m0pj7Z/E1KFyoYUX/qVGWXq5LfvsK
+	 JGQsrbM6mwGbcBLGU6njOv64v61xwvHtGplegXyoTIw48Ym64U3sqKjqA8O/00ApCA
+	 8zcFOA/+XP+l1IvkoWQo3kjWvXiyXahr3sePob1N9GFVUCW2TQUHkEjzf3aySo30gS
+	 k+wSdzIovXmFjJoE+aruvTftxso74Kxv2CV7bhl7Sn+YWGJDqa5dUrwwI8OB9c/YSc
+	 82zSp1oFy27n+PpMQDwMCp/EusDVTPCiGN+43Y3Vi60rbwqPRjdcJTterTGknr+X+t
+	 EDMj9aEq/Avnw==
+Date: Fri, 26 Apr 2024 08:24:02 -0400
+From: Paul Gortmaker <paulg@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: Intermittent Qemu boot hang/regression traced back to INT 0x80
+ changes
+Message-ID: <20240426122402.GA36092@kernel.org>
+References: <20240424185806.GB101235@kernel.org>
+ <20240424195157.GGZili3b-AxmUDlipA@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424195157.GGZili3b-AxmUDlipA@fat_crate.local>
 
-This reverts commit 8a91b29f1f50ce7742cdbe5cf11d17f128511f3f.
+[Apologies for repeated info; last mail didn't make it to the list]
 
-The regulator_disable() added by the original commit solves one kind of
-regulator imbalance but adds another one as it allows the regulator to be
-disabled one more time than it is enabled in the following scenario:
+[Re: Intermittent Qemu boot hang/regression traced back to INT 0x80 changes] On 24/04/2024 (Wed 21:51) Borislav Petkov wrote:
 
- 1. Start video pipeline -> sn65dsi83_atomic_pre_enable -> regulator_enable
- 2. PLL lock fails -> regulator_disable
- 3. Stop video pipeline -> sn65dsi83_atomic_disable -> regulator_disable
+> On Wed, Apr 24, 2024 at 02:58:06PM -0400, Paul Gortmaker wrote:
+> ...
+> > pci 0000:00:1d.0: [8086:2934] type 00 class 0x0c0300 conventional PCI endpoint
+> > pci 0000:00:1d.0: BAR 4 [io  0xc080-0xc09f]
+> > pci 0000:00:1d.1: [8086:2935] type 00 class 0x0c0300 conventional PCI endpoint
+> > pci 0000:00:1d.1: BAR 4 [io  0xc0a0-0xc0bf]
+> > pci 0000:00:1d.2: [8086:2936] type 00 class 0x0c0300 conventional PCI endpoint
+> > <hang - not always exactly here, but always in this block of PCI printk>
+> 
+> How would those commits have anything to do with such an early hang?!
+> 
+> Nothing that early is issuing INT80 32-bit syscalls, is it?
+> 
+> Btw, can you checkout the Linus tree at...
+> 
+> f35e46631b28 Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> f4116bfc4462 x86/tdx: Allow 32-bit emulation by default
+> 
+> 
+> <-- here and test that commit as the top one?
+> 
+> 55617fb991df x86/entry: Do not allow external 0x80 interrupts 
 
-The reason is clear from the code flow, which looks like this (after
-removing unrelated code):
+They both show the issue, but that really doesn't matter now.  When you
+guys pointed out it really didn't make sense, I did what I should have
+done before - tested the crap out of ^1, the trunk just before the
+INT80 merge:
 
-  static void sn65dsi83_atomic_pre_enable()
-  {
-      regulator_enable(ctx->vcc);
+commit f35e46631b28a63ca3887d7afef1a65a5544da52
+Merge: 55b224d90d44 f4116bfc4462
+       ^^^^^^^^^^^^
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Dec 7 11:56:34 2023 -0800
 
-      if (PLL failed locking) {
-          regulator_disable(ctx->vcc);  <---- added by patch being reverted
-          return;
-      }
-  }
+    Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
 
-  static void sn65dsi83_atomic_disable()
-  {
-      regulator_disable(ctx->vcc);
-  }
+..which would be 55b224d90d44 (parisc merge).  So I left that run
+for near 24h (almost 2000 runs), and got 8 PCI-hang instances.  :(
+Which means INT80 isn't even there yet.
 
-The use case for introducing the additional regulator_disable() was
-removing the module for debugging (see link below for the discussion). If
-the module is removed after a .atomic_pre_enable, i.e. with an active
-pipeline from the DRM point of view, .atomic_disable is not called and thus
-the regulator would not be disabled.
+So I owe you guys an apology for pointing the finger at INT80.  I still
+don't understand how the pseudo bisect on v6.6-stable seems so
+"concrete".  The v6.6.6 worked "fine" (it seemed) and v6.6.7 died fairly
+quickly.  The revert of INT80 on v6.6.7 seemed to "fix" it - but if so,
+it was only because it perturbed something else.
 
-According to the discussion however there is no actual use case for
-removing the module with an active pipeline, except for
-debugging/development.
+I already knew my "good" bisect points were not "proven" good, but only
+statistically "good".  Seems I need to revisit some of those "good" data
+points (both on v6.6-stable) and on mainline and test longer.
 
-On the other hand, the occurrence of a PLL lock failure is possible due to
-any physical reason (e.g. a temporary hardware failure for electrical
-reasons) so handling it gracefully should be supported. As there is no way
-for .atomic[_pre]_enable to report an error to the core, the only clean way
-to support it is calling regulator_disabled() only in .atomic_disable,
-unconditionally, as it was before.
+> 
+> which reminds me - that hang could be actually that guest kernel
+> panicking but the panic not coming out to the console.
+> 
+> When it hangs, can you connect with gdb to qemu and dump stack and
+> registers?
+> 
+> Make sure you have DEBUG_INFO enabled in the guest kernel.
 
-Link: https://lore.kernel.org/all/15244220.uLZWGnKmhe@steina-w/
-Fixes: 8a91b29f1f50 ("drm/bridge: ti-sn65dsi83: Fix enable error path")
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
+I want to try some of these things, but I also don't want to
+accidentally lose the reproducer I have.  Maybe I'll see if I can
+reproduce it at home, since I'll lose use of the current box in a week
+anyway...
 
-Many thanks to Alexander for the discussion.
----
- drivers/gpu/drm/bridge/ti-sn65dsi83.c | 1 -
- 1 file changed, 1 deletion(-)
+Again, sorry for the false positive.  I let the v6.6-stable testing bias
+my mainline conclusions to where I didn't test underneath INT80.  I'll
+follow up with more details once (if?) I manage to properly sort this.
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-index 4814b7b6d1fd..57a7ed13f996 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-@@ -478,7 +478,6 @@ static void sn65dsi83_atomic_pre_enable(struct drm_bridge *bridge,
- 		dev_err(ctx->dev, "failed to lock PLL, ret=%i\n", ret);
- 		/* On failure, disable PLL again and exit. */
- 		regmap_write(ctx->regmap, REG_RC_PLL_EN, 0x00);
--		regulator_disable(ctx->vcc);
- 		return;
- 	}
- 
--- 
-2.34.1
+Paul.
+--
 
+> 
+> Is this even a guest?
+> 
+> I know you had guests last time you reported the alternatives issue.
+> 
+> Right, and then test the tree checked out at this commit:
+> 
+> be5341eb0d43 x86/entry: Convert INT 0x80 emulation to IDTENTRY
+> 
+> The others should be unrelated...
+> 
+> b82a8dbd3d2f x86/coco: Disable 32-bit emulation by default on TDX and SEV
+> 
+> Hmm.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
