@@ -1,220 +1,139 @@
-Return-Path: <linux-kernel+bounces-160605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C348B3FFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:17:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3003A8B400E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 21:19:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 990F8B22725
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3CF11F22F82
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853C418026;
-	Fri, 26 Apr 2024 19:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8400327711;
+	Fri, 26 Apr 2024 19:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WV2aOfp6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="r1J5vK1m"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B545E1096F;
-	Fri, 26 Apr 2024 19:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9CF200D5;
+	Fri, 26 Apr 2024 19:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714159019; cv=none; b=pu++LTDYtwYZrxCNTZg3V4jrjic//2aB6WBjihh354z+6+zKNjhduEGppcZ5SsyWDYp9BRXcZ11i9GP1/yRSzc+wPoZj8Yxpytydt9LDK1joCsUbcNF5D3KrRDS8vCqmPc3uvdg9Zcge7PvA3SYvsef5U0KwDy+ElT8U277zlXk=
+	t=1714159120; cv=none; b=lRqAaVPHmsA8AeiDQ8ndVlo64VYW1DDPuu3/3jK+M3IltVGZPv993HrjHTpwj7c958a09hoEUhAfAOIrcOP5yISWUG0Ty3PiDIUsIHM9V/gYS7MnrQurLWe9f/xg2JLa8jc+yLEwjmCgBdPxykgOSx5Wv8ZKkocQqP7wm4httRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714159019; c=relaxed/simple;
-	bh=Bj2AZaQTqYSdg6fkn6Il92fkgt/C3Q4S+clYDV4u+Ww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oa21AXVohlgFTRMsB6JQHzKQ3o9ISLwh7x7zDIM25wl2v3gpC4dKGldITAVx9GCRS4Sz3XhCDtrr9IjVbCn2AkrzTgOw33We4G4jeQR963lw6XL0RlEo6eGZebDqVHurt0J/EVdK4q1mJ09jNDb3ZWclCXV5I9wgv93JS09NolI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WV2aOfp6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4885C113CD;
-	Fri, 26 Apr 2024 19:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714159019;
-	bh=Bj2AZaQTqYSdg6fkn6Il92fkgt/C3Q4S+clYDV4u+Ww=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WV2aOfp6+5cu/MfFdETRZeOz0ESfZvdTNKnPbuq2lPH+VKfUpsEWIvLAO8tE7HSaq
-	 uS8OG4qXZt++P681yhw1OiTP8C7MVrNYmpN2fmckWGKNEdb5xBlB2pO/r0Px+TznNt
-	 ZicF4qYOMR0xWBctHvVMfxyxIUnNJ45rknVIvoT0NNkn0nk7sx9vjpOlKHTU6GAzBb
-	 ctpAqq+zRqq7Vpo+1jQlnKbqSaOVU7ia4l1zjcHnnsdc5n9F6uvlgUY7tybTI5A38Y
-	 8nFS/5ubW7H2NbBlLBeQNSenpEKkwZpRgNxKRNnCFJdrKr+N4Z5mjNs67c5Xc1uwCb
-	 +Ke7p3B9mVgVw==
-Date: Fri, 26 Apr 2024 14:16:55 -0500
-From: Rob Herring <robh@kernel.org>
-To: Christophe Roullier <christophe.roullier@foss.st.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/11] dt-bindings: net: add STM32MP13 compatible in
- documentation for stm32
-Message-ID: <20240426191655.GA2675331-robh@kernel.org>
-References: <20240426125707.585269-1-christophe.roullier@foss.st.com>
- <20240426125707.585269-2-christophe.roullier@foss.st.com>
+	s=arc-20240116; t=1714159120; c=relaxed/simple;
+	bh=uGwiYVt/DbMYRZxna6pr8UV1w1MMAGhUput4YYCgc9A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F+lhCmEIkFDpvenSOxcMHnEC67gKcEvfnaXmVs4NJ0V4CQijyIOs6Ti6fk0E8WJcdHnhDDp/Q9G3WeUWn8I+JJ6z+48UTc4cir3pkbG4g1qyJ+EjF0ZIRtZ7K2T8Mk4uXzJe2EF/AUo6Kc8ghPR88HejiDNQ6/VWpXcqE3WFWGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=r1J5vK1m; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43QJICL2019118;
+	Fri, 26 Apr 2024 14:18:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714159092;
+	bh=7dBjfJ1mZuQBiogtf4rbNt6K/PfcTrXpxljZm57C46g=;
+	h=From:To:CC:Subject:Date;
+	b=r1J5vK1mrpUecX4e+6ysDuTCC/FijfIy/X6sXlKog6rEiypQsuO0mDwchb5Jfi4p0
+	 VwKHldcz8DG1UE8SnuzqLW6EuOHelD2phSsgYj0xBPAvEO2bty202eePUHEX3fzzUf
+	 FbDfp6g9f+3pSkLLjljJb8GQCh9SlLkUrjjLWcX8=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43QJICjH001738
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 26 Apr 2024 14:18:12 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 26
+ Apr 2024 14:18:11 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 26 Apr 2024 14:18:11 -0500
+Received: from ula0226330.dhcp.ti.com (ula0226330.dhcp.ti.com [128.247.81.8])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43QJIB7J028593;
+	Fri, 26 Apr 2024 14:18:11 -0500
+From: Andrew Davis <afd@ti.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth
+ Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo
+	<kristo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hari Nagalla
+	<hnagalla@ti.com>
+CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH v9 0/5] TI K3 M4F support on AM62 SoCs
+Date: Fri, 26 Apr 2024 14:18:06 -0500
+Message-ID: <20240426191811.32414-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426125707.585269-2-christophe.roullier@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Apr 26, 2024 at 02:56:57PM +0200, Christophe Roullier wrote:
-> New STM32 SOC have 2 GMACs instances.
-> GMAC IP version is SNPS 4.20.
-> 
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
-> ---
->  .../devicetree/bindings/net/stm32-dwmac.yaml  | 76 ++++++++++++++++---
->  1 file changed, 67 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> index f2714b5b6cf4..b901a432dfa9 100644
-> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> @@ -22,18 +22,17 @@ select:
->          enum:
->            - st,stm32-dwmac
->            - st,stm32mp1-dwmac
-> +          - st,stm32mp13-dwmac
->    required:
->      - compatible
->  
-> -allOf:
-> -  - $ref: snps,dwmac.yaml#
-> -
->  properties:
->    compatible:
->      oneOf:
->        - items:
->            - enum:
->                - st,stm32mp1-dwmac
-> +              - st,stm32mp13-dwmac
->            - const: snps,dwmac-4.20a
->        - items:
->            - enum:
-> @@ -74,13 +73,16 @@ properties:
->  
->    st,syscon:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description:
+Hello all,
 
-Why do you move the location of 'description'? It just increases the 
-diff. My preference is description is either 1st or last and not in the 
-middle.
+This is the continuation of the M4F RProc support series from here[0].
+I'm helping out with the upstream task for Hari and so this version(v8)
+is a little different than the previous(v7) postings[0]. Most notable
+change I've introduced being the patches factoring out common support
+from the current K3 R5 and DSP drivers have been dropped. I'd like
+to do that re-factor *after* getting this driver in shape, that way
+we have 3 similar drivers to factor out from vs trying to make those
+changes in parallel with the series adding M4 support.
 
-> +      Should be phandle/offset pair. The phandle to the syscon node which
-> +      encompases the glue register, the offset of the control register and
-> +      the mask to set bitfield in control register
->      items:
-> -      - items:
-> +      - minItems: 2
-> +        items:
->            - description: phandle to the syscon node which encompases the glue register
->            - description: offset of the control register
-> -    description:
-> -      Should be phandle/offset pair. The phandle to the syscon node which
-> -      encompases the glue register, and the offset of the control register
-> +          - description: field to set mask in register
->  
->    st,eth-clk-sel:
->      description:
-> @@ -105,12 +107,38 @@ required:
->  
->  unevaluatedProperties: false
->  
-> +allOf:
-> +  - $ref: snps,dwmac.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - st,stm32mp1-dwmac
-> +              - st,stm32-dwmac
-> +    then:
-> +      properties:
-> +        st,syscon:
-> +          items:
-> +            maxItems: 2
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - st,stm32mp13-dwmac
-> +    then:
-> +      properties:
-> +        st,syscon:
-> +          items:
-> +            minItems: 3
-> +            maxItems: 3
+Anyway, details on our M4F subsystem can be found the
+the AM62 TRM in the section on the same:
 
-Just minItems is needed.
+AM62x Technical Reference Manual (SPRUIV7A – MAY 2022)
+https://www.ti.com/lit/pdf/SPRUIV7A
 
-> +
->  examples:
->    - |
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/clock/stm32mp1-clks.h>
-> -    #include <dt-bindings/reset/stm32mp1-resets.h>
-> -    #include <dt-bindings/mfd/stm32h7-rcc.h>
->      //Example 1
->       ethernet0: ethernet@5800a000 {
->             compatible = "st,stm32mp1-dwmac", "snps,dwmac-4.20a";
-> @@ -165,3 +193,33 @@ examples:
->             snps,pbl = <8>;
->             phy-mode = "mii";
->         };
-> +
-> +  - |
-> +     //Example 4
+Thanks,
+Andrew
 
-I don't think it is worth a whole new example just for 1 property 
-difference.
+[0] https://lore.kernel.org/linux-arm-kernel/20240202175538.1705-5-hnagalla@ti.com/T/
 
-> +     ethernet3: ethernet@5800a000 {
-> +           compatible = "st,stm32mp13-dwmac", "snps,dwmac-4.20a";
-> +           reg = <0x5800a000 0x2000>;
-> +           reg-names = "stmmaceth";
-> +           interrupts-extended = <&intc GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
-> +                                 <&exti 68 IRQ_TYPE_LEVEL_HIGH>;
-> +           interrupt-names = "macirq",
-> +                             "eth_wake_irq";
-> +           clock-names = "stmmaceth",
-> +                         "mac-clk-tx",
-> +                         "mac-clk-rx",
-> +                         "eth-ck",
-> +                         "ptp_ref",
-> +                         "ethstp";
-> +           clocks = <&rcc ETHMAC>,
-> +                    <&rcc ETHTX>,
-> +                    <&rcc ETHRX>,
-> +                    <&rcc ETHCK_K>,
-> +                    <&rcc ETHPTP_K>,
-> +                    <&rcc ETHSTP>;
-> +           st,syscon = <&syscfg 0x4 0xff0000>;
-> +           snps,mixed-burst;
-> +           snps,pbl = <2>;
-> +           snps,axi-config = <&stmmac_axi_config_1>;
-> +           snps,tso;
-> +           phy-mode = "rmii";
-> +     };
-> -- 
-> 2.25.1
-> 
+Changes for v9:
+ - Fixed reserved-memory.yaml text in [1/5]
+ - Split dts patch into one for SoC and one for board enable
+ - Corrected DT property order and formatting [4/5][5/5]
+
+Hari Nagalla (4):
+  dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
+  arm64: dts: ti: k3-am62: Add M4F remoteproc node
+  arm64: dts: ti: k3-am625-sk: Add M4F remoteproc node
+  arm64: defconfig: Enable TI K3 M4 remoteproc driver
+
+Martyn Welch (1):
+  remoteproc: k3-m4: Add a remoteproc driver for M4F subsystem
+
+ .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 125 +++
+ arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi       |  13 +
+ .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  19 +
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/remoteproc/Kconfig                    |  13 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/ti_k3_m4_remoteproc.c      | 785 ++++++++++++++++++
+ 7 files changed, 957 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+ create mode 100644 drivers/remoteproc/ti_k3_m4_remoteproc.c
+
+-- 
+2.39.2
+
 
