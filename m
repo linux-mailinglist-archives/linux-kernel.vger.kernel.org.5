@@ -1,186 +1,124 @@
-Return-Path: <linux-kernel+bounces-159756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2BE08B339A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:09:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD2AC8B339C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 11:09:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E73661C20EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:09:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89BF72870B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 09:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B639B13D8B6;
-	Fri, 26 Apr 2024 09:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D1F13D500;
+	Fri, 26 Apr 2024 09:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Wr1jHtE"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="346Iz2jF"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5CB13D265
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07A6025605
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 09:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714122537; cv=none; b=Vts5cAJHbEpq2i3feOtdf4G69zmwfnyQElRdtXit1aB6nIpCdm8yV+gqpODAn4ca6n2xLNqEH3CLJlmXR5wN5vfzEIUBlBihzPeTMZajBGVTGoZiOqeRazXhv003M7gGdbDXQuGNJVu9/vctd1NEvCjpIu6Wg4MuI/8Y8i6xRGU=
+	t=1714122589; cv=none; b=OiF25BqHQ6UAD8hvvgkD4FQLe/qJIfdlw/99Bj27LFyNVf3gfG6B9WLtcTCSnHvK3UbOia4v1FyQn7OV1Q43oxJ/ufp9d2ylAJqNdqfXEM8PuUuwpfbiS1p3NNd0MNTpDg1Dt4SHNwVjacuqz0eFQHAp3Lo70IX19UO+URA6yjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714122537; c=relaxed/simple;
-	bh=PwJip2bI3d8w1d8xY7szIeXVyb2xY9y6x9ioLdBZf+E=;
+	s=arc-20240116; t=1714122589; c=relaxed/simple;
+	bh=rsKIGIgxZ5oV+PsdIG1IPFpc8yUCBe5/hXp7A/GDheQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TR3EO0hIH+uPkrtVLagUS6orxoBbOzkevthwS7mSqTk3aXBvjxJO27TkLzoJvwjH0tJiyagQjivYlYsQpj2rgjKetvit2MyG4ly/c3MqFhriWYs1z3S6Ui3En6z3QNLWq0WSOVv5taRIKDdFGxmiWycmcWT+G1yrWT0kHQ4NGWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Wr1jHtE; arc=none smtp.client-ip=209.85.208.49
+	 To:Cc:Content-Type; b=cf4oJqLiE4vla8bKEh3LQaqWAFYp5hiIPdskeJAiDj+Tvn/RFfRyCOpg86dMOz029N767QI3AmFWH5fjIYoiQdHDqY5BzQtmh3pGT3D/7zDQSnyiOWhOOXt0cL+5e6oS0j4Wn4tcOmxeLN497g2BnpDzWEJ7yuXh45/epwM+1Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=346Iz2jF; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso5820a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:08:54 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78edc3e7cd9so124645285a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 02:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714122533; x=1714727333; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714122587; x=1714727387; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ja2hNeJD5lpzreFTljFzef74K+wsxiiyhKIsFU5oS/c=;
-        b=4Wr1jHtE5ZUeI4hAwB/3/w+vHyhPBxN8zJK6cxhevx94lHoZbN0Qwna2OiAPhhaiAe
-         5v6c0X5toAedPZE+eF1GPggKgB0PDKgvWQjXOrOAR/TS9YsZbV3G9EtOLLMgS0g49W3T
-         SMFTfv4erAZC1JnuKZKCCfCcxAZlQctUxu81V3PLcIRqKiup1KiZMcwx45p3KAIaCmut
-         EXvi+fNLYFzbbfCVkAwQUF3T83OBY5WLBais42PosFl6OFgZD4z7MIYMQss0pB/aCjhg
-         mAhe9hza0D0CgwlZa9r++boN0y5VNpvoNkcDK+s15XmWsZ+nik+v7VN9jHLa9GfpyxML
-         ZC6w==
+        bh=evtA1oR8ggj4pKATUIFL+5XX/DzANvxLRH/ui3h4FJY=;
+        b=346Iz2jFjOh0Jri5/YBN5Za3hXWECqGob6PZ8O0LGP6MRHseigoN1lzsflgImATpC0
+         zaWtz6EFMUlvOQuGGIckA/srpPoDq37UvWtpGP7/HZienjv1OKsgam3weKTeYdCSNM/M
+         Urv9WzVWddbuQblBi+F0PlMyyqlXf1hBZ1N9GWEsLIe8mssgbEBOifWPnlzBvDTE2cSJ
+         Y/L7abYfBZE9lOBAJ8+xG+Vih5NRBuNuw+lKJO4E7n0VR44HBGhJdzdY6jhnYPsqX2eY
+         o4eBVLdJokKYAoOSXB5YKsU3eTN9P0Tapx6iRDvczrFh44Kz4O+xe5cRPFI91AllcX9J
+         dw0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714122533; x=1714727333;
+        d=1e100.net; s=20230601; t=1714122587; x=1714727387;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ja2hNeJD5lpzreFTljFzef74K+wsxiiyhKIsFU5oS/c=;
-        b=KKroY5cUwQkuzuoyQ26pWpHss4UAi/c+5oFxPF6f6XN1lhwGb7ggzU3Dr84xo2Zdpi
-         /i+cyQLWZKztKbfwkGrHx5dBCeUXD+1wKZtEtP8QvaUaRiVy3mifw/ZEBlRQUa6LcpY9
-         bz/Et8/x9eED/gKGnlTBfPyA1zyI8LKgZz8lrophTqS6LegvI+fK7l7Ldm3o9N3Sc7nn
-         bLzs4UQUMbZNKVTTowVDdsJllcNb+1cZVukVRnd/o4YrmrEfXeRmV8TvdSppNed2Ri+/
-         ZMJmLaOubxBD873UuSAQvxtyvW3k+IxSFr8HYusIg5V5LtWrLkYy3K/i9HJ/7cRebfuc
-         QNHw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9QZEKv9Ivb4up0Cdc1w+7ORFF4oJa7YKXW7J2QsEPOETjFlZIDnhBW7NW13NDfIjs+yOexFqQO3YWZkWGGffz/XmGypYXYixdp5Cq
-X-Gm-Message-State: AOJu0YyOWCUcQ3cvBJDaZcBD8f0EAmkbJGHjMR/Zlo+JRxjT4I+i66jk
-	LzhntJZFSaSd3YdbStElwp4WS/DfJHeRvW3VHsjZoyLok1hbB034gmsfMyNltHSF9acXS58TcqL
-	wOsDULLZ/zh5C1eqg0BqPuYY9zmPoV2/Jq7iV
-X-Google-Smtp-Source: AGHT+IHujQYAqx2B45GLqCBKPuCqaju6NcYLIyZHXLX5p+QiGBrNWGqmIC64DsOoSSioYGIh1X5ZSdiYL+9ZdcrEV/w=
-X-Received: by 2002:aa7:c512:0:b0:572:5d62:7971 with SMTP id
- o18-20020aa7c512000000b005725d627971mr16853edq.0.1714122532540; Fri, 26 Apr
- 2024 02:08:52 -0700 (PDT)
+        bh=evtA1oR8ggj4pKATUIFL+5XX/DzANvxLRH/ui3h4FJY=;
+        b=UpQKbH5SPBVPlo5JtfNhrLD1KqtwJuDwg83MxEwWhNe7QUkYQ8V5UAfUiz+v6ZAb/k
+         ElHEbaZ+gJxZSkSUPmM/bKvOGZkKqa+5wt5zgX7TSCVn1hrj2rkOY9VHBrdZzIwQWr6+
+         Ffdmy8WB2oLQfaRG/LLEeAwoROUiLyreG9load2aFboVm/isxB11JdRKwhOSO7yToWG9
+         eog3/aBfrM2ptwqwiy2nc2rTHp6o08BKS6XjVaedwJarODpL39rsGyuHgfauvyJnDhcm
+         sGyZMsxHIy2OuDtulRFsCfPZakiQq5LkQPIIZhKy9n6PQD9rJ2oLAaSbmWh6dwU4xh/5
+         bfHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWgCb/F5uDGHzbDi0xZg8QgelUHHhmOoPR/QgOaXAT6r7fvRZ8Fg/4bY6YiGfvdIeurQR2qyktxy/RPuWqp09MmHwlnfP4lw4bQmhRe
+X-Gm-Message-State: AOJu0YyMRBmF/tID3VCo2c/Tfmlk4y2UZ7ZJ2DASwJE6I7ICbIg6Z8It
+	gdH6wpYqyRl90V3g1fxMc/Vfgz8mzERHDMBuij6ZI3qsZmutnCBuCSToqK091T0l/4mkam6Pp4L
+	bdHlD8WoeOKlacqHFKiAJrXr92ILnXjmytpxy
+X-Google-Smtp-Source: AGHT+IERDkZYD463N4iRg2JtXIis/lmVdrlEpH8ltkBDFPaGG9UvEH6Km/Em9CcvAFcENWD/0u3nNaEt2Az+kKN/BBo=
+X-Received: by 2002:a05:6214:5084:b0:6a0:949c:4431 with SMTP id
+ kk4-20020a056214508400b006a0949c4431mr2598082qvb.8.1714122586784; Fri, 26 Apr
+ 2024 02:09:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422152500.1.I8939e49084a6fef78496eb73edafdf3c2c4afbf4@changeid>
- <CABBYNZLCjrJUiVzNf53XYM-ZHWL6TZD4yFNtNGOuYi=6s5Q+OA@mail.gmail.com>
-In-Reply-To: <CABBYNZLCjrJUiVzNf53XYM-ZHWL6TZD4yFNtNGOuYi=6s5Q+OA@mail.gmail.com>
-From: Archie Pusaka <apusaka@google.com>
-Date: Fri, 26 Apr 2024 17:08:40 +0800
-Message-ID: <CAJQfnxHUW+MdJUp9VCrF2Nq_-JZrd7mKBR9NdDoo0SOvgH5WUQ@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: btusb: Add debugfs to force toggling remote wakeup
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, Marcel Holtmann <marcel@holtmann.org>, 
-	CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>, 
-	Archie Pusaka <apusaka@chromium.org>, Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
-	linux-kernel@vger.kernel.org
+References: <20240425092859.3370297-1-glider@google.com> <20240425133121.efd1f9da094be454a6366cf2@linux-foundation.org>
+In-Reply-To: <20240425133121.efd1f9da094be454a6366cf2@linux-foundation.org>
+From: Alexander Potapenko <glider@google.com>
+Date: Fri, 26 Apr 2024 11:09:06 +0200
+Message-ID: <CAG_fn=VumGCGWKf7M7HWU5nKDHAcksqjYeBq0hXVd_k=anmn0A@mail.gmail.com>
+Subject: Re: [PATCH] kmsan: compiler_types: declare __no_sanitize_or_inline
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: elver@google.com, dvyukov@google.com, ojeda@kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Luiz,
-
-On Thu, 25 Apr 2024 at 03:05, Luiz Augusto von Dentz
-<luiz.dentz@gmail.com> wrote:
+On Thu, Apr 25, 2024 at 10:31=E2=80=AFPM Andrew Morton
+<akpm@linux-foundation.org> wrote:
 >
-> Hi Archie,
->
-> On Mon, Apr 22, 2024 at 3:25=E2=80=AFAM Archie Pusaka <apusaka@google.com=
+> On Thu, 25 Apr 2024 11:28:59 +0200 Alexander Potapenko <glider@google.com=
 > wrote:
-> >
-> > From: Archie Pusaka <apusaka@chromium.org>
-> >
-> > Sometimes we want the controller to not wake the host up, e.g. to
-> > save the battery. Add some debugfs knobs to force the wake by BT
-> > behavior.
-> >
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@google.com>
-> >
-> > ---
-> >
-> >  drivers/bluetooth/btusb.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> > index 8bede0a335668..846b15fc3c04c 100644
-> > --- a/drivers/bluetooth/btusb.c
-> > +++ b/drivers/bluetooth/btusb.c
-> > @@ -873,6 +873,9 @@ struct btusb_data {
-> >         unsigned cmd_timeout_cnt;
-> >
-> >         struct qca_dump_info qca_dump;
-> > +
-> > +       bool force_enable_remote_wake;
-> > +       bool force_disable_remote_wake;
-> >  };
-> >
-> >  static void btusb_reset(struct hci_dev *hdev)
-> > @@ -4596,6 +4599,10 @@ static int btusb_probe(struct usb_interface *int=
-f,
-> >
-> >         debugfs_create_file("force_poll_sync", 0644, hdev->debugfs, dat=
-a,
-> >                             &force_poll_sync_fops);
-> > +       debugfs_create_bool("force_enable_remote_wake", 0644, hdev->deb=
-ugfs,
-> > +                           &data->force_enable_remote_wake);
-> > +       debugfs_create_bool("force_disable_remote_wake", 0644, hdev->de=
-bugfs,
-> > +                           &data->force_disable_remote_wake);
-> >
-> >         return 0;
-> >
-> > @@ -4702,6 +4709,18 @@ static int btusb_suspend(struct usb_interface *i=
-ntf, pm_message_t message)
-> >                 }
-> >         }
-> >
-> > +       if (!PMSG_IS_AUTO(message)) {
-> > +               if (data->force_enable_remote_wake) {
-> > +                       data->udev->do_remote_wakeup =3D 1;
-> > +                       if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->f=
-lags))
-> > +                               data->udev->reset_resume =3D 0;
-> > +               } else if (data->force_disable_remote_wake) {
-> > +                       data->udev->do_remote_wakeup =3D 0;
-> > +                       if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->f=
-lags))
-> > +                               data->udev->reset_resume =3D 1;
-> > +               }
-> > +       }
-> > +
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.44.0.769.g3c40516874-goog
 >
-> There is a D-Bus interface available to overwrite the wakeup setting:
->
-> https://github.com/bluez/bluez/blob/master/doc/org.bluez.Device.rst#boole=
-an-wakeallowed-readwrite
->
-> Or do you want a master switch for it? On the other hand aren't we
-> getting into the rfkill area if you really want to switch off radio
-> activity while suspended? That seems like a better idea then just
-> disable remote wakeup.
+> > It turned out that KMSAN instruments READ_ONCE_NOCHECK(), resulting in
+> > false positive reports, because __no_sanitize_or_inline enforced inlini=
+ng.
+> >
+> > Properly declare __no_sanitize_or_inline under __SANITIZE_MEMORY__,
+> > so that it does not inline the annotated function.
 
-Yes, the initial idea was a master switch.
-Thanks for your suggestions.
-Let me discuss it with Abhishek.
->
-> --
-> Luiz Augusto von Dentz
+As Marco noted above, we may want to rephrase it as:
 
-Thanks,
-Archie
+  Properly declare __no_sanitize_or_inline under __SANITIZE_MEMORY__,
+  so that it does not __always_inline the annotated function.
+
+Let me know if I need to send a v2.
+
+> > Reported-by: syzbot+355c5bb8c1445c871ee8@syzkaller.appspotmail.com
+>
+> I'll add
+>
+> Link: https://lkml.kernel.org/r/000000000000826ac1061675b0e3@google.com
+>
+> And I think a cc:stable is justifiable.
+
+Agreed.
+
+> A Fixes: target would be nice?
+
+Hmm, the introduction of READ_ONCE_NOCHECK predates KMSAN.
+We could do:
+  Fixes: 5de0ce85f5a4d ("kmsan: mark noinstr as __no_sanitize_memory")
+
+, because that commit should have introduced __no_sanitize_or_inline for KM=
+SAN.
 
