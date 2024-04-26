@@ -1,89 +1,117 @@
-Return-Path: <linux-kernel+bounces-159571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835BF8B3078
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:33:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5500D8B307A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:33:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17980286BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:33:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66028B238AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CC113A868;
-	Fri, 26 Apr 2024 06:33:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA20F7E76D;
+	Fri, 26 Apr 2024 06:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="H8O1GNoV"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="gmHnbQDK"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C0478B4E;
-	Fri, 26 Apr 2024 06:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5E72F2F;
+	Fri, 26 Apr 2024 06:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714113185; cv=none; b=C9n85loFyIOb3QSC8ywWmARCxpc/HQkFrNd9uLq8dNg9Kp0iye9bZ6Gh5Ssr3nt9lRkH/tXhPVkLZljkknyshyZZyP9kbTYgurKlf5dlY0R3T3Eg0WompxOppdfY8ZF+85PGOHCVT0SEO/jzp+9dzh3QYFX5hIQM7djyTM3LwG8=
+	t=1714113204; cv=none; b=eWYpEgMr9vb+upeh4ZmL7Lbz2kOoU8YZepyEtgYvtPXpnL9bGa8Cadkk+I+opDL0xIwHgRaZHQ4PPvPDeHZ7XxBBk17wHOFsjEDEDbDY7suz0yDKSyVVkMoN9zv5TG4Z0a4+2TJrmdvFjMmtZKz2iT92eP6Cf4ts5UHT2yAlm1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714113185; c=relaxed/simple;
-	bh=61TPekQLyaOIOjoKBhnNUMKT5hkW0pS5woJJLrZe9Sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sxGvnYyhJDbiVadhk8MVtpbsMnIdv0k1Hyis8X5eO5eyWMb6/tCWg4Xbd+coLsgOkNLKbX37IMEKejEXypNhHaAdVced4ARYXv7V2UBCNm/uupes7szMI6J5hS0OYlsSXAz59NOY0Mn64uR2NAnjLRHJHlv674pP2alNlVe9HMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=H8O1GNoV; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=bAMm3w5OCb4CaHr+pTFnD6QYi8dnap8rwYOnceQqfgY=; b=H8O1GNoV5d5tOu8ofQ66OvzgnB
-	9zlCjZj3G7pXBTVrJlH3AWeOT08OKaADMHTWQGWNkG+jWPhGP71jJOoMuwIJ92hsTZpC2SW/Mk1CR
-	EK24rdXJWEEdfAn0BYX61Jt0jxIYi3i/T+05WLAjfHYannrIvfEWuC3+JSBINpz0NS2DuoUetd4tF
-	rWYEwLZwvE6+5Oe5fbuzb81Q3N/0S8ZbRFFgW3Ohn4qnuBOQzCYok9Hr2WosOClzOLblSro9dUZFW
-	SIy2vMWWdh75bDLJlbL/psJXrdsO8VU25joJDxV8ZPMzu+jKaId3zciHqRq5zsJQBTpKrqxFWfjoJ
-	kT6Dcr+g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0F8n-0000000BJiq-1cRt;
-	Fri, 26 Apr 2024 06:33:01 +0000
-Date: Thu, 25 Apr 2024 23:33:01 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	hch@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandanbabu@kernel.org, tytso@mit.edu, jack@suse.cz,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
- zeroing post eof blocks
-Message-ID: <ZitKncYr0cCmU0NG@infradead.org>
-References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
- <20240425131335.878454-5-yi.zhang@huaweicloud.com>
- <20240425182904.GA360919@frogsfrogsfrogs>
- <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
+	s=arc-20240116; t=1714113204; c=relaxed/simple;
+	bh=9D055W7RtRvLj82AeRwJBH59kEMFM/MAOc528dNhuWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TsfOx02nEnPJnZU95DZ2TUZ3MwauA+wWApUGUW3lbY9oZYs9bwwrnmyDlYSBXdSN1Q18XIgAHx1/9jgyCa9YyWdZoC63lyOQAVusIO+Du/PH+tbtbNc/S7FfXaGE8An6pYzsJ6C5oi27DHDokEcs7fIFJZerzE4J5JJorq8+EXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=gmHnbQDK; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714113198;
+	bh=6Y3Pvzw551sAs1KbLGSUMWiK/mGngNA5pQ9eJ3QZexA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gmHnbQDKNIPhPiNHxlmWIEd/nQw7EaS2G27TLsj05iV33X07z4JbTtXZ4aTK6DQkU
+	 eQepK8grflZG5lpLqXBxyvX9WzP+drv0ay8ABAFSR5G1zR38EXG54Fq/hRNwcH404H
+	 1+K/mgWm75OwGeTfwZ5Ie2DHSLxWyua4RoUPE5akwWUnLBo91x8FKkX5nSI2HqFbJv
+	 R4Pej7rSnY7BiJ+hXzm6yeOBPljLwhJUycQM07qLqe9/AUmymZGCGS0qA581eiDdAW
+	 IYKn9XSIV4QdKjZxhS2VmXgJDS8AT+qXJcAKwxDtb5RgUDYWfG2O8xS3ASIIfArOWQ
+	 39ZGEkJw1kSFQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VQjbL38fsz4wyh;
+	Fri, 26 Apr 2024 16:33:18 +1000 (AEST)
+Date: Fri, 26 Apr 2024 16:33:17 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: linux-next: boot failure after merge of the modules tree
+Message-ID: <20240426163317.4d908643@canb.auug.org.au>
+In-Reply-To: <ZijNiXzNpfoyokrh@kernel.org>
+References: <20240424183503.2a6ce847@canb.auug.org.au>
+	<ZijNiXzNpfoyokrh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: multipart/signed; boundary="Sig_/kBDTo./6+AX2Nu=yAld2Qcl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Fri, Apr 26, 2024 at 02:24:19PM +0800, Zhang Yi wrote:
-> Yeah, it looks more reasonable. But from the original scene, the
-> xfs_bmap_extsize_align() aligned the new extent that added to the cow fork
-> could overlaps the unreflinked range, IIUC, I guess that spare range is
-> useless exactly, is there any situation that would use it?
+--Sig_/kBDTo./6+AX2Nu=yAld2Qcl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I've just started staring at this (again) half an hour ago, and I fail
-to understand the (pre-existing) logic in xfs_reflink_zero_posteof.
+Hi Mike,
 
-We obviously need to ensure data between i_size and the end of the
-block that i_size sits in is zeroed (but IIRC we already do that
-in write and truncate anyway).  But what is the point of zeroing
-any speculative preallocation beyond the last block that actually
-contains data?  Just truncating the preallocation and freeing
-the delalloc and unwritten blocks seems like it would be way
-more efficient.
+On Wed, 24 Apr 2024 12:14:49 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+>
+> This should fix it for now, I'll rework initialization a bit in v6
+> =20
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 1c4be3373686..bea33bf538e9 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -176,6 +176,7 @@ config PPC
+>  	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+>  	select ARCH_WANT_LD_ORPHAN_WARN
+>  	select ARCH_WANT_OPTIMIZE_DAX_VMEMMAP	if PPC_RADIX_MMU
+> +	select ARCH_WANTS_EXECMEM_EARLY         if EXECMEM
+>  	select ARCH_WANTS_MODULES_DATA_IN_VMALLOC	if PPC_BOOK3S_32 || PPC_8xx
+>  	select ARCH_WEAK_RELEASE_ACQUIRE
+>  	select BINFMT_ELF
 
+I added the above to today's merge of the modules tree and it made the
+boot failure go away.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kBDTo./6+AX2Nu=yAld2Qcl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYrSq0ACgkQAVBC80lX
+0Gw4Jgf/Si1gEOcumL+/if4mFuaMXl46NLK++hY2yB0CEsh9NWe29U+NWSuU8iU8
+hfBkQhpzeBrm34Xp6/vXZK7XWsAxDQBnYosoIQUNFtSzcN6KfOHyb1umpXqod6Wx
+RcTGAJhQucD6bvq0D6/EMMz8DzU6uYjSspJQmlOQ1h/EufdYc80UWkePDLwREsfj
+hKyLonbk8NFQnkHFtHW8OENvWix7KSdQlcWOKINSWdV4eEC7QM+E/LUphGKyjjXf
+CmmqtU85OzcZNEbhVrkfVGxCt65hP0zD+ojuHuEKN/T02CKIYerA4CcntveYlcPU
+M158NQ4XPx7utqeszCXpJbF/IH3bsw==
+=jX/S
+-----END PGP SIGNATURE-----
+
+--Sig_/kBDTo./6+AX2Nu=yAld2Qcl--
 
