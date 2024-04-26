@@ -1,252 +1,159 @@
-Return-Path: <linux-kernel+bounces-160446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A088B3D97
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:07:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A438B3D99
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:07:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4484F1F23115
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:07:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9E781C232F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13CB15CD51;
-	Fri, 26 Apr 2024 17:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06A5C15B15D;
+	Fri, 26 Apr 2024 17:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XcUaN9qs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lHRm1Gg1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE4615A4BE;
-	Fri, 26 Apr 2024 17:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A5615B57B;
+	Fri, 26 Apr 2024 17:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714151214; cv=none; b=G6EqKaWlLDX/az60WElUzdFuBVDWpt4yc1Wu3oFQFLE3YK+UHgjnRH33y+ymahleR5a9KVvIoOeW5tQio6yjOMt3CHgrBCeMhRpPuSD64yclDgpL5GExrvMKw/MmPFojCu0+MZxotELw85WY1ekhucVKtbcL3llqjxLXRgcVJZg=
+	t=1714151220; cv=none; b=cdXzDBdzW5XHOPIoMzMm3sGovdVHSH2CdeR5ET+c/hN9/YUHFLjE8CEOJVVgbtVg8UBxXwRmAjxbuF3hcyTUxFDQlWQNTBDHeDvULphVgwDyUphHhWeveWNXKdj6n+G0E3rbo1udN5GveCGzL2NfVi2n6ze9seni/q6RHj6fRDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714151214; c=relaxed/simple;
-	bh=09NdAbWR/BLtK6lbUCey7vstmTIMgsOSSq3Yz9q528c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TsRWJB6ox4Ve0doRImsPR8x38QUgRTm2Mj+jejywju1LV7SJAViMEYndi3WtO1u/80xkFlL9t9wfR/rYFU3BHAifLXXNNKHeo8PbE5x+XEjSxlM8NOpumZ9Q5ETknNY+NX04wfiyrOV/xvVWfxvkX9Xgh14Hwcj1z1FbNmR0/q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XcUaN9qs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D857C116B1;
-	Fri, 26 Apr 2024 17:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714151214;
-	bh=09NdAbWR/BLtK6lbUCey7vstmTIMgsOSSq3Yz9q528c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=XcUaN9qshZw1p9fPgu+96aFUN619FikB2yN0B0sbB6zqz5ientRrM+j2M6bfYAxDz
-	 jDQmc8jTsMe51HVJH7QrZPSo1yNawnWcnQsmLr1/Rzenjb1669QGNKl7gY5PV+WXIs
-	 X1XlKQoD6jK5OANOk42v3gDLQOGtqlwa7LlAsl029gzhMiFWtS165mtrlyUjwwSB+n
-	 ByJvXQO2YlTq1/xUn63kqrNk42eBPmC+nbgQQx6iBdFV6JPF6rjr6F0g8GZcrFaKmB
-	 XWpDP8neWaOA/cqvabzHOF6WB+6hzBYTZxZ2PS7kMujUFpm52XuSyD0RFl1m7mqAE1
-	 8jZ/nQOnfLPYw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
- <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: inline
- bpf_get_smp_processor_id() helper
-In-Reply-To: <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-References: <20240426121349.97651-1-puranjay@kernel.org>
- <20240426121349.97651-3-puranjay@kernel.org>
- <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-Date: Fri, 26 Apr 2024 17:06:51 +0000
-Message-ID: <mb61pplucvys4.fsf@kernel.org>
+	s=arc-20240116; t=1714151220; c=relaxed/simple;
+	bh=FZ+j+p6hRx9M1MSAAujq4y2aF4Gs0UKvJ2UzLkCl2GY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X6G3jeYO345omiDOsJMe421/4XMGYgRDQtDPQnH28tTrRBy8JrCZBhatym4pHtsUqaGnwh5XP8cUoDoaiPWsg4Ivpt9mJ3UgKXfz99ikDHjs8v8uPM/FE3q5s8nN6ncJZDL0pu+CrISdb82gdfCVPaviNM1meN33mKs5ZPvadbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lHRm1Gg1; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714151218; x=1745687218;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FZ+j+p6hRx9M1MSAAujq4y2aF4Gs0UKvJ2UzLkCl2GY=;
+  b=lHRm1Gg1MbArX8zey/fKLH2KSxlSPy6cqNxicULdjFIk8rLqXj5ZYLVm
+   XLbA0+uFfl5Ic2eANmTvSf227ti+QMMaCFdJ+bIlzRL0KtBSLD7aKsIrW
+   KQ1JIIXknD8K1nPUDJ9JXf+Ecp6uXMnzlmQ7vAzBqwmswdedc9XM0P4AH
+   s9p8VQdvAXXDlxrSNajvFlheiQWmz2tqNa2ECaHVJzqsJDWgwgmh950Se
+   NHkPpSJncI6N0pQWFTtvcpShHuDdaWxr+IcBNh6bS+bF5RJlzNjtDbf4K
+   kitRQjCUHA6y9km9AX/8FwglnA58s/B9PexSt7DL0I6QCHq41MZqCG2XX
+   g==;
+X-CSE-ConnectionGUID: MeMhENLaSG6vKb6DLETqzw==
+X-CSE-MsgGUID: wBj23quGS+iYkE1TZhOz6g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21043099"
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="21043099"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:06:58 -0700
+X-CSE-ConnectionGUID: HQwBPN+eQa+NLVSMFQy0Gw==
+X-CSE-MsgGUID: kgAjj70BTACdtQ+LdSlSoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="25355194"
+Received: from bbaran1x-mobl.amr.corp.intel.com (HELO [10.209.80.70]) ([10.209.80.70])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:06:58 -0700
+Message-ID: <30415ed3-a05a-454d-9077-c8674617f291@intel.com>
+Date: Fri, 26 Apr 2024 10:06:56 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
+ ioctl() to avoid softlockup
+To: Bojun Zhu <zhubojun.zbj@antgroup.com>, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, jarkko@kernel.org, dave.hansen@linux.intel.com
+Cc: reinette.chatre@intel.com, =?UTF-8?B?5YiY5Y+MKOi9qeWxuSk=?=
+ <ls123674@antgroup.com>
+References: <20240426141823.112366-1-zhubojun.zbj@antgroup.com>
+ <20240426141823.112366-2-zhubojun.zbj@antgroup.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240426141823.112366-2-zhubojun.zbj@antgroup.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 4/26/24 07:18, Bojun Zhu wrote:
+>  	for (c = 0 ; c < modp->length; c += PAGE_SIZE) {
+> +		if (sgx_check_signal_and_resched()) {
+> +			if (!c)
+> +				ret = -ERESTARTSYS;
+> +
+> +			goto out;
+> +		}
 
-> On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
->>
->> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
->> bpf_get_smp_processor_id().
->>
->> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->>
->> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->>
->>                                          BPF
->>                                         =3D=3D=3D=3D=3D
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
-p_processor_id();
->> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff800082=
-072008
->>                                                 (bf) r0 =3D &(void __per=
-cpu *)(r0)
->>                                                 (61) r0 =3D *(u32 *)(r0 =
-+0)
->>
->>                                       ARM64 JIT
->>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
-p_processor_id();
->> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000f=
-fffffff
->> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl=
- #16
->> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
->> blr     x10                                     mrs     x10, tpidr_el1
->> add     x7, x0, #0x0                            add     x7, x7, x10
->>                                                 ldr     w7, [x7]
->>
->> Performance improvement using benchmark[1]
->>
->>              BEFORE                                       AFTER
->>             --------                                     -------
->>
->> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631=
- =C2=B1 0.027M/s
->> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742=
- =C2=B1 0.023M/s
->> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625=
- =C2=B1 0.004M/s
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->> ---
->>  kernel/bpf/verifier.c | 24 +++++++++++++++++-------
->>  1 file changed, 17 insertions(+), 7 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 4e474ef44e9c..6ff4e63b2ef2 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_=
-env *env)
->>                         goto next_insn;
->>                 }
->>
->> -#ifdef CONFIG_X86_64
->>                 /* Implement bpf_get_smp_processor_id() inline. */
->>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->>                     prog->jit_requested && bpf_jit_supports_percpu_insn(=
-)) {
->>                         /* BPF_FUNC_get_smp_processor_id inlining is an
->> -                        * optimization, so if pcpu_hot.cpu_number is ev=
-er
->> +                        * optimization, so if cpu_number_addr is ever
->>                          * changed in some incompatible and hard to supp=
-ort
->>                          * way, it's fine to back out this inlining logic
->>                          */
->> -                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(u=
-nsigned long)&pcpu_hot.cpu_number);
->> -                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
-BPF_REG_0);
->> -                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
-F_REG_0, 0);
->> -                       cnt =3D 3;
->> +                       u64 cpu_number_addr;
->>
->> +#if defined(CONFIG_X86_64)
->> +                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
->> +#elif defined(CONFIG_ARM64)
->> +                       cpu_number_addr =3D (u64)&cpu_number;
->> +#else
->> +                       goto next_insn;
->> +#endif
->> +                       struct bpf_insn ld_cpu_number_addr[2] =3D {
->> +                               BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
->> +                       };
->
-> here we are violating C89 requirement to have a single block of
-> variable declarations by mixing variables and statements. I'm
-> surprised this is not triggering any build errors on !arm64 &&
-> !x86_64.
->
-> I think we can declare this BPF_LD_IMM64 instruction with zero "addr".
-> And then update
->
-> ld_cpu_number_addr[0].imm =3D (u32)cpu_number_addr;
-> ld_cpu_number_addr[1].imm =3D (u32)(cpu_number_addr >> 32);
->
-> WDYT?
->
-> nit: I'd rename ld_cpu_number_addr to ld_insn or something short like that
+This construct is rather fugly.  Let's not perpetuate it, please.  Why
+not do:
 
-I agree with you,
-What do you think about the following diff:
+	int ret = -ERESTARTSYS;
 
---- 8< ---
+	...
+	for (c = 0 ; c < modp->length; c += PAGE_SIZE) {
+		if (sgx_check_signal_and_resched())
+			goto out;
 
--#ifdef CONFIG_X86_64
-                /* Implement bpf_get_smp_processor_id() inline. */
-                if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
-                    prog->jit_requested && bpf_jit_supports_percpu_insn()) {
-                        /* BPF_FUNC_get_smp_processor_id inlining is an
--                        * optimization, so if pcpu_hot.cpu_number is ever
-+                        * optimization, so if cpu_number_addr is ever
-                         * changed in some incompatible and hard to support
-                         * way, it's fine to back out this inlining logic
-                         */
--                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(unsi=
-gned long)&pcpu_hot.cpu_number);
--                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
-_REG_0);
--                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
-EG_0, 0);
--                       cnt =3D 3;
-+                       u64 cpu_number_addr;
-+                       struct bpf_insn ld_insn[2] =3D {
-+                               BPF_LD_IMM64(BPF_REG_0, 0)
-+                       };
-+
-+#if defined(CONFIG_X86_64)
-+                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
-+#elif defined(CONFIG_ARM64)
-+                       cpu_number_addr =3D (u64)&cpu_number;
-+#else
-+                       goto next_insn;
-+#endif
-+                       ld_insn[0].imm =3D (u32)cpu_number_addr;
-+                       ld_insn[1].imm =3D (u32)(cpu_number_addr >> 32);
-+                       insn_buf[0] =3D ld_insn[0];
-+                       insn_buf[1] =3D ld_insn[1];
-+                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
-_REG_0);
-+                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
-EG_0, 0);
-+                       cnt =3D 4;
+Then, voila, when c==0 on the first run through the loop, you'll get a
+ret=-ERESTARTSYS.
 
-                        new_prog =3D bpf_patch_insn_data(env, i + delta, in=
-sn_buf, cnt);
-                        if (!new_prog)
-@@ -20296,7 +20310,6 @@ static int do_misc_fixups(struct bpf_verifier_env *=
-env)
-                        insn      =3D new_prog->insnsi + i + delta;
-                        goto next_insn;
-                }
--#endif
-                /* Implement bpf_get_func_arg inline. */
+But honestly, it seems kinda silly to annotate all these loops with
+explicit cond_resched()s.  I'd much rather do this once and, for
+instance, just wrap the enclave locks:
 
---- >8---
+-	  mutex_lock(&encl->lock);
++	  sgx_lock_enclave(encl);
 
-Thanks,
-Puranjay
+and then have the lock function do the rescheds.  I assume that
+mutex_lock() isn't doing this generically for performance reasons.  But
+we don't care in SGX land and can just resched to our heart's content.
+
 
