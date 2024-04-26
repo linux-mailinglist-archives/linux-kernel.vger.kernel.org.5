@@ -1,119 +1,126 @@
-Return-Path: <linux-kernel+bounces-159994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE878B3768
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:45:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47558B375F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:44:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85738B21766
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:45:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C92881C210A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B34A146A9E;
-	Fri, 26 Apr 2024 12:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F684146A80;
+	Fri, 26 Apr 2024 12:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CudDC94N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JomG5SZ/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69C33715E;
-	Fri, 26 Apr 2024 12:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FC5145B0C
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714135525; cv=none; b=pxGtmTy2P1pUczBbjjp9tX7qEQ+8GIF/LnzJj1SkqcjaCtvgzdUVE699OukAVQV2gqDEiUxu7sTKtjpMi0PUyItZb1yfjnqEVBDn4XvxdzhSgAl5wNhjtIuEtHYOsnqm/6vAcrHlIrSiPrZFaxrD2mqE9ffwSlzK6foT9ilh+aE=
+	t=1714135445; cv=none; b=t6u/nswYL7D6qx26zQ5EEXTStKnsOWt9H6DlwD6Gl6G0nAkW/ai+rcaPcZFKwZ1mG9/GMNLwDyc+zuju5gj06JGSjP3Wsvy1kvn+vaLtW6ZE/pPxagXZE02+BN9r9ty5HHOY7cHo+0ZsvOCGEVbB2UhCEGtNuaxEAW+pWcPkc1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714135525; c=relaxed/simple;
-	bh=iS9C+v8odOTK6E1SnSMEn0Se9B5pqsQ8ixkLHQCB1Us=;
+	s=arc-20240116; t=1714135445; c=relaxed/simple;
+	bh=4osWF3z7TVSnKXwxzghbXZwzHfp+R/4Uz9B9jm/RxLI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pl3Jw1ojQDNu422l6RD2bg8EYpX6M80YrS9xidR8WNBa4CGlsx+hfssy+/+2BKu116EHuD6HpV6Y4sJsmNwc3LXTkfiSDnSCiD1dRuC5gyDOHf+5R1OxzJJKmwW86oCwwZHzD+oAzwJtx9x3QT1u2GkA2V/cs1qxTnatpE9gdRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CudDC94N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DBDC116B1;
-	Fri, 26 Apr 2024 12:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714135525;
-	bh=iS9C+v8odOTK6E1SnSMEn0Se9B5pqsQ8ixkLHQCB1Us=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CudDC94N4c2KaoET/lq+RGNVMilmMEq5P4LGB6ER77suK4XenFv/TTEiDhxj6A6JJ
-	 REdW4Mon161EvCE+B1s89JzFrI3i9VyOiZ8HDK1FrRqlEatJDJitnrDKUQTFk5DvvQ
-	 JdTI+GjWSNIIzKlcvMlINe9alDHMEt15g4MhGJUV1mYl1uzy92CdSpPsZFDRXAOJj2
-	 eQhl7c4QuMYdT+j9fPdfkw3VuIt1V5DhrHQB0A4wyanA+O6yV9jAz0LGjMCJuX1K5a
-	 CdgdE807ARIZIqqlu2XmTFg5ZIjP2T/AGv+FibdkZghW6soY4IUsla/XXGWh8i3m2N
-	 9PB83DntvrQFQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s0KxC-000000005fQ-2hYf;
-	Fri, 26 Apr 2024 14:45:26 +0200
-Date: Fri, 26 Apr 2024 14:45:26 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Cc: Doug Anderson <dianders@chromium.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-	quic_mohamull@quicinc.com, quic_hbandi@quicinc.com
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
-Message-ID: <Ziuh5qO94076gT2G@hovoldconsulting.com>
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
- <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
- <Zid6lfQMlDp3HQ67@hovoldconsulting.com>
- <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
- <ZioW9IDT7B4sas4l@hovoldconsulting.com>
- <c9ea5867-2db2-4f64-a1e3-f6c2836dd45d@quicinc.com>
- <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
- <bb0e1baf-7e64-463a-8638-d403c7a29317@quicinc.com>
- <c10c94c4-5239-46d3-9b41-95e3c943e969@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qTS7UVJqdZ2JWLhPF/PFXmN8iINPdhnac/0wTJHrEUoZkZSe6RAKEPCR/lZUng+b3L2DjzIB1I+1wEjyNgbY/z1+ylQ7oLV6HIUfDbGlTnqiv5VoUHtPAg5quEoN+KCgZg3mQQUKLbdGZ24osJ4hGHlbcvx+mXfuVl5XWcA+G4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JomG5SZ/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714135443;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OCVM+mcR/zAidOTS4y72huxA4HPGOw6uU5hpLDITtQk=;
+	b=JomG5SZ/nk6Blimqcva7r25SpBqNcvAdiOU+VpGXwILHJ9HeJMN4nhPqIDAKcG+0fo82rM
+	lrHzJvh3YH9xjXY4htmpkNSpz3DhQ1sEjOKag3UWGiY6Tv8fhSvbaYp0yKAM5vYbJAnPdE
+	QwaO+nWjIx0DJvGvbUWWfa30OF0P21M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-O05rPKkQP2uQT5wmnySeHA-1; Fri, 26 Apr 2024 08:43:59 -0400
+X-MC-Unique: O05rPKkQP2uQT5wmnySeHA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7791A802352;
+	Fri, 26 Apr 2024 12:43:58 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 11904AC6A;
+	Fri, 26 Apr 2024 12:43:58 +0000 (UTC)
+Date: Fri, 26 Apr 2024 08:46:13 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Sam Sun <samsun1006219@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, djwong@kernel.org,
+	chandan.babu@oracle.com, syzkaller-bugs@googlegroups.com,
+	xrivendell7@gmail.com
+Subject: Re: [Linux kernel bug] KASAN: slab-out-of-bounds Read in xlog_cksum
+Message-ID: <ZiuiFfWEOCiO9wVA@bfoster>
+References: <CAEkJfYO++C-pxyqzfoXFKEvmMQEnrgkQ2QcG6radAWJMqdXQCQ@mail.gmail.com>
+ <ZipWt03PhXs2Yc84@infradead.org>
+ <ZiphYrREkQvxkE-U@bfoster>
+ <ZitF8eqWEYECruXo@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c10c94c4-5239-46d3-9b41-95e3c943e969@quicinc.com>
+In-Reply-To: <ZitF8eqWEYECruXo@infradead.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Fri, Apr 26, 2024 at 04:12:07PM +0530, Janaki Ramaiah Thota wrote:
+On Thu, Apr 25, 2024 at 11:13:05PM -0700, Christoph Hellwig wrote:
+> On Thu, Apr 25, 2024 at 09:57:54AM -0400, Brian Foster wrote:
+> > On Thu, Apr 25, 2024 at 06:12:23AM -0700, Christoph Hellwig wrote:
+> > > This triggers the workaround for really old xfsprogs putting in a
+> > > bogus h_size:
+> > > 
+> > > [   12.101992] XFS (loop0): invalid iclog size (0 bytes), using lsunit (65536 bytes)
+> > > 
+> > > but then calculates the log recovery buffer size based on the actual
+> > > on-disk h_size value.  The patch below open codes xlog_logrec_hblks and
+> > > fixes this particular reproducer.  But I wonder if we should limit the
+> > > workaround.  Brian, you don't happpen to remember how old xfsprogs had
+> > > to be to require your workaround (commit a70f9fe52daa8)?
+> > > 
+> > 
+> > No, but a little digging turns up xfsprogs commit 20fbd4593ff2 ("libxfs:
+> > format the log with valid log record headers"), which I think is what
+> > you're looking for..? That went in around v4.5 or so, so I suppose
+> > anything earlier than that is affected.
+> 
+> Thanks.  I was kinda hoping we could exclude v5 file systems from that
+> workaround, but it is needed way too recent for that.
+> 
+> Maybe we can specificly check for the wrongly hardcoded
+> XLOG_HEADER_CYCLE_SIZE instead of allowing any value?
+> 
 
-> Please note BDA values listed below are in the firmware (FW) data
-> order, but the actual BDA value should be in the reverse of that order.
+That seems like a reasonable option to me if you wanted to make it a bit
+more limited to its purpose. You might just want to double check that
+the size used in libxfs hadn't changed at any point previously, because
+that 1. apparently wouldn't have been an issue up until the record
+verification stuff and 2. the existing size-agnostic check in the kernel
+would have still handled it (prior to being broken).
 
-Thanks for clarifying. I realised this when I looked at the hexdump for
-the Trogdor firmware.
+It might also be worth a separately named macro or something in the
+kernel just for extra indication that this particular check is unique
+and warrants extra thought on future changes. Not so much that I'd
+expect the original macro value to change, but just that I suspect
+something like that might have helped flag this logic as semi-special
+and maybe helped avoid breaking it in commit 0c771b99d6c9. In hindsight,
+maybe it would have been a little better even to just put that logic
+into its own special fixup function or something. Anyways, just some
+random thoughts..
 
-> On 4/26/2024 11:53 AM, Janaki Ramaiah Thota wrote:
-> > On 4/25/2024 9:28 PM, Johan Hovold wrote:
-> >>> ---------------------------------------------------------
-> >>> |   BDA            |      Chipset                       |
-> >>> ---------------------------------------------------------
-> >>> | 20 00 00 10 80 39  | WCN3988 with ROM Version 0x0200    |
-> >>> ---------------------------------------------------------
-> >>> | 00 08 74 12 80 39  |  WCN3988 with ROM Version 0x0201    |
-> >>> ---------------------------------------------------------
-> >>> | 00 07 64 21 90 39  |  WCN3990                    |
-> >>> ---------------------------------------------------------
-> >>
-> >> Thanks a lot for these. I see now that the default Trogdor address Doug
-> >> reported (39:98:00:00:5a:ad) appears to comes from the fw too:
-> >>
-> >>     $ od -x crnv32.bin | grep 5aad
-> >>
-> >>     0000020 0000 0000 5aad 0000 3998 0008 0008 0000
+Brian
 
-It seems the most significant bytes here indeed do reflect the hardware
-even if it's not entirely consistent:
-
-	WCN3988		39:80
-
-	WCN3990		39:90
-	WCN3991		39:98
-
-but I guess that doesn't help much unless also the remaining bytes on
-WCN3988 and WCN3990 can be inferred somehow.
-
-Johan
 
