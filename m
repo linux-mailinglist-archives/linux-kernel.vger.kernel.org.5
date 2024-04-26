@@ -1,137 +1,140 @@
-Return-Path: <linux-kernel+bounces-159686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949528B3231
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:21:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C82F8B3236
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:21:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5508B21512
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 687601C22556
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706C513C8F4;
-	Fri, 26 Apr 2024 08:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC71313C9AD;
+	Fri, 26 Apr 2024 08:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UAx6Ppw6"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDOh/Hqc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4984713C912
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 08:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A0B13C912;
+	Fri, 26 Apr 2024 08:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714119660; cv=none; b=r0Ow9JUibhGHncJzOpYGg/U1PqgOgYaAe84DDxAwGtPYaKdNqrZWK8WgSgszj2RtyzcYIw6nI6qB9O5ZpXAx1bKBuSBWYsDpwPRQ+/ws4g0ep5SQ8k/lmjzLReanrfh63BV4XJaCLherde76KigSYoiFaY6XaRJpZmm60tjsBvs=
+	t=1714119667; cv=none; b=a1IBb6RKFRrDJEdwtdCsZhZ7A8Zm1jVA2RiVoDjs6Vgz124Qfk67DI0BljrjzdIwPkpAWiUsBgfH/i6/dm50AZF11OnlCmFzB4uqxeUY/xbHIEYVLBdOYPvrD2XL9wRxYbQLhZtEw1A9n6g0G4nsGblsQK/Yt3o72XnmyGAnYg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714119660; c=relaxed/simple;
-	bh=2QwY/idrWWstb2VS57g5qy6TKTu8YrTelcs1NllY2gE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N//KBj/5egqjgxB8EtatLHycyPB3C57u2XoS37AAZAsryvVn8Etz/xvc7OkesGCPUBwwsqdQbe/5HvlM/v9pkmpFlSfrSxWsUVsZoGhE0vB5HXRZVxhb9h8HnWRe5GscFMS3C8Yz8C08lXERtpPPbEdQKEKFBMPtUtgpFACnUhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UAx6Ppw6; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7d9c2096c29so84712539f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1714119658; x=1714724458; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DOO+Oxe5RqdUN11iHoDt4ydzdK+8AI7NsGcbenw3d/A=;
-        b=UAx6Ppw6A4wbEg9mFet1cI+rY5Tkj7+1UuOPcHdJWHNQR/sdpDoU0fy0F8Y24/QO6T
-         siItHpR3P6Zt7A49GVrqLiJ1UorbTJNshGX86IGrwEKO5olBKed3/+vr6sm1KBLIgxZ+
-         DFs4/V7An5HuM0NI75thEJSwWYnltF0liD+yU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714119658; x=1714724458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DOO+Oxe5RqdUN11iHoDt4ydzdK+8AI7NsGcbenw3d/A=;
-        b=sLHwr3CqFSJzqOFpCCrxilYN6SDU176zc0m+wKMTnVtrKUewBfRR8yME1NjPHl8fYU
-         bI6ty3zbICFl24h7Zxp8nAHL30HKZeM+uA6mQxVjnQAzYGD6Y/wsXcXFF6zz3ahnS0f5
-         3Qkb0PsxF7n6qYNKbRKOQUJQb9akXyKvKCTzjoHSb33oXVRO6+0uUMTtZU4vSe6ruE6y
-         eluaXL6ONz0468l7jGsThKpROmK/rHWhzKIMB4VFpsbEU2xH6+7JTXpdpEt+LWZLXjH9
-         E8woI8DKR/BVRStnBDZfpArJhm6WWsYwTQfYGbcBinL/uIoXbCMYZ8ojgHZczGazjyvJ
-         hoXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHgLCX4MEJDo+Ys9DcHiCk2hxikh30z4rEQ3t7QujIERo51xUnzJbfLDpGVykZujTvOTbFwSm6c3U4p55c0aMUYbNX8PTT80sZouya
-X-Gm-Message-State: AOJu0YwRX+8ckw7QKq8Gk370TLWrbVbNc0CV5DXxYC4SwAKln9wzVLWL
-	+gsfDEiwYsbGfZctwlk3X11Aa6thrZR3pD6x6NQKrhwSypVXUHiGDaAcgpPPDNSnN8WPb8dOTUs
-	697R9BTIiuvGRgYJxaEhtevNIAhqQ/+X+QO5R
-X-Google-Smtp-Source: AGHT+IGpFrMmIiUOGeU8GqDVHvij5e/EHFi3eql6VH19ZiFzL8S3bxOTPVDJXE8//vqh4sKVAKaAYPJDw3yidMK+gL8=
-X-Received: by 2002:a05:6602:f11:b0:7de:9c6b:79de with SMTP id
- hl17-20020a0566020f1100b007de9c6b79demr2387497iob.14.1714119658470; Fri, 26
- Apr 2024 01:20:58 -0700 (PDT)
+	s=arc-20240116; t=1714119667; c=relaxed/simple;
+	bh=da+XBsT3HsI42ooeRyvS7kzGLhnYoAOLHQlDAp+t1AA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t1NyjdMmYZpnmHL39DSWQVBiX89Z/MZtZ9zZlOCdCx8p9zORxtY0GaQNXDesdmhIDxAzK8r250OhlwRDeAbKySk+ouAkXQFuxYNUaYdh68SlQFiZMDTPK3QP/31eMMSMkO+Vxe3qS3RUElsbT9aNmOOSbEBuYyyGNGXKjL+pLVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDOh/Hqc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EB59C113CD;
+	Fri, 26 Apr 2024 08:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714119666;
+	bh=da+XBsT3HsI42ooeRyvS7kzGLhnYoAOLHQlDAp+t1AA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=kDOh/Hqccaa5nzG2xi0zroGXU2rDlkx5dsSaq3+yrHMpvVBDbkkcXhuT/QyCLy19V
+	 d2Gec6xiO+kvRr7Ab6PkTH7hMxGmDoq66gKFEk8FLowwEPP51wBeUw6wpmHGC6PiqF
+	 Pu6cnffPr+4KHKO3mdVSWt5cWMMalg8+yeBbToVN3arJDihHUprxsgEtrofIPSaUN6
+	 RdUihC3gmiSnbveRPdAbmvgWP3E4sxG5z4YkeICEhaI/U7sUf8K6Uvg//C2Yv2X6Vz
+	 o7dsonyK7pb6qMMb1uKDJgG5X5Qm4rQ5ZgzouHSCh1OFg2nvHC2d8vOYBHwobkmeib
+	 evSphbxiKtdrw==
+Message-ID: <d1cc7b23-32e9-4326-851d-88708ba28052@kernel.org>
+Date: Fri, 26 Apr 2024 10:20:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425192748.1761522-1-zack.rusin@broadcom.com>
-In-Reply-To: <20240425192748.1761522-1-zack.rusin@broadcom.com>
-From: Martin Krastev <martin.krastev@broadcom.com>
-Date: Fri, 26 Apr 2024 11:20:47 +0300
-Message-ID: <CAKLwHdVZSRtnCe_=pTw0kUaTEvCRKqypcq-u2f50o=xRQCrASA@mail.gmail.com>
-Subject: Re: [PATCH] drm/vmwgfx: Fix invalid reads in fence signaled events
-To: Zack Rusin <zack.rusin@broadcom.com>
-Cc: dri-devel@lists.freedesktop.org, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, ian.forbes@broadcom.com, 
-	maaz.mombasawala@broadcom.com, zdi-disclosures@trendmicro.com, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: Add infineon xdp710 driver
+ bindings
+To: Chia Hsing Yin <peteryin.openbmc@gmail.com>
+Cc: patrick@stwcx.xyz, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>, Charles Hsu
+ <ythsu0511@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Lukas Wunner <lukas@wunner.de>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20240425153608.4003782-1-peteryin.openbmc@gmail.com>
+ <20240425153608.4003782-3-peteryin.openbmc@gmail.com>
+ <4e329d1b-fad5-416f-b0ca-55e8c6c3394c@kernel.org>
+ <CAPSyxFQcKvpvO2-U7QPjrVTqam_bQ6OP8VoomnSbmEj4g7uDVw@mail.gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CAPSyxFQcKvpvO2-U7QPjrVTqam_bQ6OP8VoomnSbmEj4g7uDVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-LGTM!
+On 26/04/2024 09:12, Chia Hsing Yin wrote:
+> I use b4 download and apply it, I think it is a tool issue, I can fix
+> in the next version.
 
-Reviewed-by: Martin Krastev <martin.krastev@broadcom.com>
+Just did it now:
 
-Regards,
-Martin
+b4 trailers -C -u -F '20240424095604.3425857-1-peteryin.openbmc@gmail.com>'
+Calculating patch-ids from commits, this may take a moment...
+Grabbing thread from
+lore.kernel.org/all/20240424095604.3425857-1-peteryin.openbmc@gmail.com/t.mbox.gz
+Looking for additional code-review trailers on lore.kernel.org
+---
+  dt-bindings: hwmon: Add infineon xdp710 driver bindings
+    + Acked-by: Rob Herring (Arm) <robh@kernel.org> (✓ DKIM/kernel.org)
 
-On Thu, Apr 25, 2024 at 10:27=E2=80=AFPM Zack Rusin <zack.rusin@broadcom.co=
-m> wrote:
->
-> Correctly set the length of the drm_event to the size of the structure
-> that's actually used.
->
-> The length of the drm_event was set to the parent structure instead of
-> to the drm_vmw_event_fence which is supposed to be read. drm_read
-> uses the length parameter to copy the event to the user space thus
-> resuling in oob reads.
->
-> Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
-> Fixes: 8b7de6aa8468 ("vmwgfx: Rework fence event action")
-> Reported-by: zdi-disclosures@trendmicro.com # ZDI-CAN-23566
-> Cc: David Airlie <airlied@gmail.com>
-> CC: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Zack Rusin <zack.rusin@broadcom.com>
-> Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadc=
-om.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: <stable@vger.kernel.org> # v3.4+
-> ---
->  drivers/gpu/drm/vmwgfx/vmwgfx_fence.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c b/drivers/gpu/drm/vmwg=
-fx/vmwgfx_fence.c
-> index 2a0cda324703..5efc6a766f64 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_fence.c
-> @@ -991,7 +991,7 @@ static int vmw_event_fence_action_create(struct drm_f=
-ile *file_priv,
->         }
->
->         event->event.base.type =3D DRM_VMW_EVENT_FENCE_SIGNALED;
-> -       event->event.base.length =3D sizeof(*event);
-> +       event->event.base.length =3D sizeof(event->event);
->         event->event.user_data =3D user_data;
->
->         ret =3D drm_event_reserve_init(dev, file_priv, &event->base, &eve=
-nt->event.base);
-> --
-> 2.40.1
->
+
+And no quotes...
+
+Best regards,
+Krzysztof
+
 
