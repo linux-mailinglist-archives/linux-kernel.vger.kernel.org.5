@@ -1,300 +1,78 @@
-Return-Path: <linux-kernel+bounces-160535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B095B8B3EE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:09:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC288B3EEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:10:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 688CC284A7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:09:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0583BB21707
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370B016DED0;
-	Fri, 26 Apr 2024 18:09:19 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59E116F0E2;
+	Fri, 26 Apr 2024 18:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bRA9/m3p"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F661EB5E;
-	Fri, 26 Apr 2024 18:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3881EB5E;
+	Fri, 26 Apr 2024 18:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714154958; cv=none; b=Mxlb0/584UJX9lsH79B90Yphjc+pQDlezKnjRO1W9roWJoKfV95IlpN2MI6oKBG8YelsdejkjAqYoeu+GsHuPZlieZWDAlYFC+hmhgfn8M/HzpEiWRn/1oKyifGE/1+YjJKmR2JrGQRC3IpfmlxnrPyHiwshkt1OxwVfrgO7xJI=
+	t=1714155000; cv=none; b=kusgN2VUzGAIFEUuZHfNzOjVMH5uhKfm+zjm0yPfgEOkrL1N8NPJWPJjoDzOK3KKfd9eBU/ZbIwZ1m2GobzpCX6v8D1gCOMar8yg6LnaJuVEWK8sNVzlbKz59AtElz0hmXLHDzaMwJkrD9fd353IC4R+ZZumyhFVHko/dccG0Pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714154958; c=relaxed/simple;
-	bh=vylh6oaMyHYbUe0eNlx6uprvORS7R1/lEC/zt0QqiOQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qBiHMao8iv6i7i86FJkZTMRDLbiGb/PWkmHw4//JymUrLhJXa6/mb8iUwC50ZexxAZFMuuImxUR15GAY112eDjZ4hKPE7A2niWWVL+tMnWdbcFUBYODAEYuSG/noDO//LwSF2FKkrQIeOZodP/SUDsM0UtunGdv09fA+uqzurzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VR0zV4n0sz6JBCB;
-	Sat, 27 Apr 2024 02:06:46 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 70BD61408F9;
-	Sat, 27 Apr 2024 02:09:12 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 26 Apr
- 2024 19:09:11 +0100
-Date: Fri, 26 Apr 2024 19:09:10 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Miguel Luis <miguel.luis@oracle.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
-	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, "James
- Morse" <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
-	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, "linuxarm@huawei.com" <linuxarm@huawei.com>,
-	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com"
-	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
- Holla" <sudeep.holla@arm.com>
-Subject: Re: [PATCH v8 01/16] ACPI: processor: Simplify initial onlining to
- use same path for cold and hotplug
-Message-ID: <20240426190910.00001dcd@Huawei.com>
-In-Reply-To: <20240426184949.0000506d@Huawei.com>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
-	<20240426135126.12802-2-Jonathan.Cameron@huawei.com>
-	<6347020E-CB49-44ED-87B2-3BB2AA2F59E0@oracle.com>
-	<2E688E98-F57F-444F-B326-5206FB6F5C1E@oracle.com>
-	<20240426184949.0000506d@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714155000; c=relaxed/simple;
+	bh=sSnYg6mwgrP1noDvEXQPZYS7lBjYgri5Ic/dR1LTyXw=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=c6wEgusJ5G0U1qZ8SxRN/GkwiEI78rzdOnT6BRU8ZOoX8ozlhiY00YVWkN1tmhlxOJ3yEfzhex+sACU9D6MHF2Qj19X3vkLkHUFAVl6v1oMEmZB2SUPq+P8YmkRo5P5cOL7EhM8ERcP/WfZuizw7lBwotlplXr8VVkMiJDBPUys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bRA9/m3p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EF444C113CE;
+	Fri, 26 Apr 2024 18:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714155000;
+	bh=sSnYg6mwgrP1noDvEXQPZYS7lBjYgri5Ic/dR1LTyXw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=bRA9/m3pe5vSZQEMlGadPbLQceJpNliM1290V3jJsb64xVP0v9ANRxVJKhg6Zih2Q
+	 dk0KqBCi1fkcsBI0DwkPdE1Wb00PjI8u5ubg0mm8/YYJi465jQe+BLfu/VaepAUmSM
+	 BUHZowMJMnx7ZGAqvZhAzUXtD5vHEm4dHw7UF1KX+LOMDrHEGuXUuvfoVa0IbIL11J
+	 ii8jlJtHoBvNFK6Wd9zjQK2G0aifnH0axpd9A3fOJ74f3EZHG7pwM6800G8b2ESzmg
+	 QZMo3ciK7HHyoSj8lHHHU6k5UmFs1yPRbDupD/i+QDg5jCeljhLzCn8CBRNIQeyMIN
+	 nXgr5hGI+2Dzg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DFC4CDF3C9D;
+	Fri, 26 Apr 2024 18:09:59 +0000 (UTC)
+Subject: Re: [GIT PULL] vfs fixes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240426-vfs-fixes-20b3a0dd3821@brauner>
+References: <20240426-vfs-fixes-20b3a0dd3821@brauner>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240426-vfs-fixes-20b3a0dd3821@brauner>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc6.fixes
+X-PR-Tracked-Commit-Id: c97f59e276d4e93480f29a70accbd0d7273cf3f5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 52034cae0207d4942eefea5ab0d5d15e5a4342e1
+Message-Id: <171415499991.9216.5389017277272252008.pr-tracker-bot@kernel.org>
+Date: Fri, 26 Apr 2024 18:09:59 +0000
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, 26 Apr 2024 18:49:49 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+The pull request you sent on Fri, 26 Apr 2024 16:59:29 +0200:
 
-> On Fri, 26 Apr 2024 17:21:41 +0000
-> Miguel Luis <miguel.luis@oracle.com> wrote:
-> 
-> > Hi Jonathan, 
-> >   
-> > > On 26 Apr 2024, at 16:05, Miguel Luis <miguel.luis@oracle.com> wrote:
-> > > 
-> > > 
-> > >     
-> > >> On 26 Apr 2024, at 13:51, Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
-> > >> 
-> > >> Separate code paths, combined with a flag set in acpi_processor.c to
-> > >> indicate a struct acpi_processor was for a hotplugged CPU ensured that
-> > >> per CPU data was only set up the first time that a CPU was initialized.
-> > >> This appears to be unnecessary as the paths can be combined by letting
-> > >> the online logic also handle any CPUs online at the time of driver load.
-> > >> 
-> > >> Motivation for this change, beyond simplification, is that ARM64
-> > >> virtual CPU HP uses the same code paths for hotplug and cold path in
-> > >> acpi_processor.c so had no easy way to set the flag for hotplug only.
-> > >> Removing this necessity will enable ARM64 vCPU HP to reuse the existing
-> > >> code paths.
-> > >> 
-> > >> Leave noisy pr_info() in place but update it to not state the CPU
-> > >> was hotplugged.    
-> > 
-> > On a second thought, do we want to keep it? Can't we just assume that no 
-> > news is good news while keeping the warn right after __acpi_processor_start ?  
-> 
-> Good question - my inclination was to keep this in place for now as removing
-> it would remove a source of information people may expect on x86 hotplug.
-> 
-> Then maybe propose dropping it as overly noisy kernel as a follow up
-> patch after this series is merged.  Felt like a potential rat hole I didn't
-> want to go down if I could avoid it.
-> 
-> If any x86 experts want to shout that no one cares then I'll happily drop
-> the print.  We've carefully made it so that on arm64 we have no way to tell
-> if this is hotplug or normal cpu bring up so we can't just print it on
-> hotplug.
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc6.fixes
 
-I'm being silly. This is just one of the messages shouting out hotplug
-happened and for that matter only occurs at online anyway which is trivially
-detected.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/52034cae0207d4942eefea5ab0d5d15e5a4342e1
 
-There is a much more informative
-  ACPI: CPU3: has been hot-added message
-for example on the actual hotplug event.
+Thank you!
 
-Let's drop it for v9.
-
-There is also a stale comment about a flag being set that is no longer
-the case that I'll drop.
-
-> 
-> Jonathan
-> 
-> 
-> > 
-> > Miguel
-> >   
-> > >> 
-> > >> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >> Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-> > >> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > >> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > >> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > >> 
-> > >> ---
-> > >> v8: No change
-> > >> ---
-> > >> drivers/acpi/acpi_processor.c   |  1 -
-> > >> drivers/acpi/processor_driver.c | 44 ++++++++++-----------------------
-> > >> include/acpi/processor.h        |  2 +-
-> > >> 3 files changed, 14 insertions(+), 33 deletions(-)
-> > >> 
-> > >> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> > >> index 7a0dd35d62c9..7fc924aeeed0 100644
-> > >> --- a/drivers/acpi/acpi_processor.c
-> > >> +++ b/drivers/acpi/acpi_processor.c
-> > >> @@ -216,7 +216,6 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> > >> * gets online for the first time.
-> > >> */
-> > >> pr_info("CPU%d has been hot-added\n", pr->id);
-> > >> - pr->flags.need_hotplug_init = 1;
-> > >> 
-> > >> out:
-> > >> cpus_write_unlock();
-> > >> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_driver.c
-> > >> index 67db60eda370..55782eac3ff1 100644
-> > >> --- a/drivers/acpi/processor_driver.c
-> > >> +++ b/drivers/acpi/processor_driver.c
-> > >> @@ -33,7 +33,6 @@ MODULE_AUTHOR("Paul Diefenbaugh");
-> > >> MODULE_DESCRIPTION("ACPI Processor Driver");
-> > >> MODULE_LICENSE("GPL");
-> > >> 
-> > >> -static int acpi_processor_start(struct device *dev);
-> > >> static int acpi_processor_stop(struct device *dev);
-> > >> 
-> > >> static const struct acpi_device_id processor_device_ids[] = {
-> > >> @@ -47,7 +46,6 @@ static struct device_driver acpi_processor_driver = {
-> > >> .name = "processor",
-> > >> .bus = &cpu_subsys,
-> > >> .acpi_match_table = processor_device_ids,
-> > >> - .probe = acpi_processor_start,
-> > >> .remove = acpi_processor_stop,
-> > >> };
-> > >> 
-> > >> @@ -115,12 +113,10 @@ static int acpi_soft_cpu_online(unsigned int cpu)
-> > >> * CPU got physically hotplugged and onlined for the first time:
-> > >> * Initialize missing things.
-> > >> */
-> > >> - if (pr->flags.need_hotplug_init) {
-> > >> + if (!pr->flags.previously_online) {
-> > >> int ret;
-> > >> 
-> > >> - pr_info("Will online and init hotplugged CPU: %d\n",
-> > >> - pr->id);
-> > >> - pr->flags.need_hotplug_init = 0;
-> > >> + pr_info("Will online and init CPU: %d\n", pr->id);
-> > >> ret = __acpi_processor_start(device);
-> > >> WARN(ret, "Failed to start CPU: %d\n", pr->id);
-> > >> } else {
-> > >> @@ -167,9 +163,6 @@ static int __acpi_processor_start(struct acpi_device *device)
-> > >> if (!pr)
-> > >> return -ENODEV;
-> > >> 
-> > >> - if (pr->flags.need_hotplug_init)
-> > >> - return 0;
-> > >> -
-> > >> result = acpi_cppc_processor_probe(pr);
-> > >> if (result && !IS_ENABLED(CONFIG_ACPI_CPU_FREQ_PSS))
-> > >> dev_dbg(&device->dev, "CPPC data invalid or not present\n");
-> > >> @@ -185,32 +178,21 @@ static int __acpi_processor_start(struct acpi_device *device)
-> > >> 
-> > >> status = acpi_install_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
-> > >>    acpi_processor_notify, device);
-> > >> - if (ACPI_SUCCESS(status))
-> > >> - return 0;
-> > >> + if (!ACPI_SUCCESS(status)) {
-> > >> + result = -ENODEV;
-> > >> + goto err_thermal_exit;
-> > >> + }
-> > >> + pr->flags.previously_online = 1;
-> > >> 
-> > >> - result = -ENODEV;
-> > >> - acpi_processor_thermal_exit(pr, device);
-> > >> + return 0;
-> > >> 
-> > >> +err_thermal_exit:
-> > >> + acpi_processor_thermal_exit(pr, device);
-> > >> err_power_exit:
-> > >> acpi_processor_power_exit(pr);
-> > >> return result;
-> > >> }
-> > >> 
-> > >> -static int acpi_processor_start(struct device *dev)
-> > >> -{
-> > >> - struct acpi_device *device = ACPI_COMPANION(dev);
-> > >> - int ret;
-> > >> -
-> > >> - if (!device)
-> > >> - return -ENODEV;
-> > >> -
-> > >> - /* Protect against concurrent CPU hotplug operations */
-> > >> - cpu_hotplug_disable();
-> > >> - ret = __acpi_processor_start(device);
-> > >> - cpu_hotplug_enable();
-> > >> - return ret;
-> > >> -}
-> > >> -
-> > >> static int acpi_processor_stop(struct device *dev)
-> > >> {
-> > >> struct acpi_device *device = ACPI_COMPANION(dev);
-> > >> @@ -279,9 +261,9 @@ static int __init acpi_processor_driver_init(void)
-> > >> if (result < 0)
-> > >> return result;
-> > >> 
-> > >> - result = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-> > >> -   "acpi/cpu-drv:online",
-> > >> -   acpi_soft_cpu_online, NULL);
-> > >> + result = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
-> > >> +   "acpi/cpu-drv:online",
-> > >> +   acpi_soft_cpu_online, NULL);
-> > >> if (result < 0)
-> > >> goto err;
-> > >> hp_online = result;
-> > >> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-> > >> index 3f34ebb27525..e6f6074eadbf 100644
-> > >> --- a/include/acpi/processor.h
-> > >> +++ b/include/acpi/processor.h
-> > >> @@ -217,7 +217,7 @@ struct acpi_processor_flags {
-> > >> u8 has_lpi:1;
-> > >> u8 power_setup_done:1;
-> > >> u8 bm_rld_set:1;
-> > >> - u8 need_hotplug_init:1;
-> > >> + u8 previously_online:1;    
-> > > 
-> > > Reviewed-by: Miguel Luis <miguel.luis@oracle.com>
-> > > 
-> > > Miguel
-> > >     
-> > >> };
-> > >> 
-> > >> struct acpi_processor {
-> > >> -- 
-> > >> 2.39.2
-> > >>     
-> > >     
-> >   
-> 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
