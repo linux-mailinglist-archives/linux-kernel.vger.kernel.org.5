@@ -1,155 +1,224 @@
-Return-Path: <linux-kernel+bounces-159561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39DEE8B304F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:24:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511C58B3052
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 08:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDCED1F23718
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:24:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F32A2285609
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010B713A886;
-	Fri, 26 Apr 2024 06:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eCBiTbHA"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC81013A88A;
+	Fri, 26 Apr 2024 06:24:33 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01C42F2F;
-	Fri, 26 Apr 2024 06:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482382F2F;
+	Fri, 26 Apr 2024 06:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714112646; cv=none; b=c3hbU3S/TR5yllBuTHF6j5209qTPUGr5XTucP937/R9E1yn6xzxm30SbSbTOp5infrR5+UZngxHnkWLj9Gyc+fnVT2/ZqwRbZKcTCW/bf77jr+S73280tqTmgyYVSjK6zinsws5Dk6T+k+Uz1lwtTR5IhpAKPuQ4TOwnXSj1tJc=
+	t=1714112673; cv=none; b=h8jMkIBVpaWqbDM7v60xJdZDrwnly9QbweXxZH0rc/g5eQxdwPDeceIf51Yst8+DWANllZaCbn/SwiYKyzYnms6TmAkvo1arrnCsni4hmvpbg/ILSWq/b8OItkjfpGQ9PageBCFdjlZmIKFu7nXQKCe+G8lp88Wjz3uARgvIyys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714112646; c=relaxed/simple;
-	bh=b2MZma9l4fy+G4zHh3Z8yNnEeOicyqWTEnp4r3RVNss=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mm4i/J9MCNMfCNSPECdBS6b+8+JMHSEG8Z1+CVAGe58F8lR0BbbKhLBEI+405FJ+dPnNBNrmG+uYBIuakEZ0FijeXzNYkWbiN0cPi4uPwtCmOSxiS/FdHDN6pC0FDKezjppjaybWqUaLO3u7NT0V7gXtZC4ofVDABLfTmFR9vJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eCBiTbHA; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43Q5KETJ015548;
-	Fri, 26 Apr 2024 06:23:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=IYL4Dmml/wM3KshkBFg2RgswGdKMTxaxDmvPZEY115k=; b=eC
-	BiTbHAXbNFa6xXaBTIclmwcGuUZOqdH8sasA0h9I4UBgYTRXIZSE5kB+GJ8F9nL5
-	X3pDZX1tFPeIpD8I0AmYF4q5r7jjJuaDRDOzkghqMRywq0TYSWEGBqARBT+646b1
-	EZT8lTcnl81MvVlsNmdc3AkKye6X+CkOm36MlDw1UO2Z5eYvYdaqVORZsUH6VYIO
-	iutJ8BBDD0QJAyFedlmfFnzbSQSM1e5RvaTmNdiR4QC5x6CXxcg6BENP/uV+/p8p
-	DKCKAdGdFdh6U2By90acoGy9uMpvRfjEbOZ/LHdItcXSJdq3QLAhGqN1AnSampHS
-	ubGdtCSP+LMlYfNs4j0A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr611gc0q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 06:23:58 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43Q6NvbX002196
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 06:23:57 GMT
-Received: from [10.216.47.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 25 Apr
- 2024 23:23:51 -0700
-Message-ID: <bb0e1baf-7e64-463a-8638-d403c7a29317@quicinc.com>
-Date: Fri, 26 Apr 2024 11:53:45 +0530
+	s=arc-20240116; t=1714112673; c=relaxed/simple;
+	bh=XQnuMcIYKRdbws5Pv+8e5wtQFLp076vw3Hhu8svUKyo=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=VeMVRTm6e0zoY+jDBU/ZoI02BKzNPcLQ887cmGYKLN9nZj6MDsUAgE+5ksevZJJxTU6hglo3QXH1/PI6jjzLW6w0uN129Qvm2eHkNq3sBOTo4XW1EPGoOxR57cPbbzMw7xA47ZcaqzY5MWswkWHuapQx5tyjkDysjyTO1FmPmDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VQjNq6HpFz4f3mHy;
+	Fri, 26 Apr 2024 14:24:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 29C441A016E;
+	Fri, 26 Apr 2024 14:24:21 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBGTSCtm2W_3Kw--.24233S3;
+	Fri, 26 Apr 2024 14:24:20 +0800 (CST)
+Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
+ david@fromorbit.com, chandanbabu@kernel.org, tytso@mit.edu, jack@suse.cz,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
+ <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+ <20240425182904.GA360919@frogsfrogsfrogs>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
+Date: Fri, 26 Apr 2024 14:24:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
+In-Reply-To: <20240425182904.GA360919@frogsfrogsfrogs>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-CC: Doug Anderson <dianders@chromium.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "Luiz
- Augusto von Dentz" <luiz.dentz@gmail.com>,
-        Matthias Kaehlcke
-	<mka@chromium.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Stephen Boyd
-	<swboyd@chromium.org>,
-        <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
- <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
- <Zid6lfQMlDp3HQ67@hovoldconsulting.com>
- <CAD=FV=XoBwYmYGTdFNYMtJRnm6VAGf+-wq-ODVkxQqN3XeVHBw@mail.gmail.com>
- <ZioW9IDT7B4sas4l@hovoldconsulting.com>
- <c9ea5867-2db2-4f64-a1e3-f6c2836dd45d@quicinc.com>
- <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
-From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-In-Reply-To: <Zip9vMHa2x-uW-pf@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: WVySy3-XRiWsIXPMrvasnqop4nNmuV3I
-X-Proofpoint-GUID: WVySy3-XRiWsIXPMrvasnqop4nNmuV3I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_06,2024-04-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404260037
+X-CM-TRANSID:cCh0CgCXaBGTSCtm2W_3Kw--.24233S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw47Kw4fXr13JFy8WFWDCFg_yoW7Gr43pF
+	Z3K3W5KF4Dtw1avw1Iv3W5Kw1F93Z3Cr47Ary3Xrn3Za4Yyr1fKF17K3Wjgry8CrZ3A3Wj
+	vFWjg3s293s0vFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-
-
-On 4/25/2024 9:28 PM, Johan Hovold wrote:
-> Hi Janaki,
-> 
-> On Thu, Apr 25, 2024 at 08:31:50PM +0530, Janaki Ramaiah Thota wrote:
-> 
->> Apologies for the delay. As of now, we have observed the following
->> values in the upstream firmware files for default BD addresses.
->> We will confirm ASAP if there are any changes.
+On 2024/4/26 2:29, Darrick J. Wong wrote:
+> On Thu, Apr 25, 2024 at 09:13:30PM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
 >>
->> ---------------------------------------------------------
->> |   BDA	        |      Chipset		               |
->> ---------------------------------------------------------	
->> | 20 00 00 10 80 39  | WCN3988 with ROM Version 0x0200	|
->> ---------------------------------------------------------	
->> | 00 08 74 12 80 39  |  WCN3988 with ROM Version 0x0201	|
->> ---------------------------------------------------------	
->> | 00 07 64 21 90 39  |  WCN3990			        |
->> ---------------------------------------------------------
+>> Current clone operation could be non-atomic if the destination of a file
+>> is beyond EOF, user could get a file with corrupted (zeroed) data on
+>> crash.
+>>
+>> The problem is about preallocations. If you write some data into a file:
+>>
+>> 	[A...B)
+>>
+>> and XFS decides to preallocate some post-eof blocks, then it can create
+>> a delayed allocation reservation:
+>>
+>> 	[A.........D)
+>>
+>> The writeback path tries to convert delayed extents to real ones by
+>> allocating blocks. If there aren't enough contiguous free space, we can
+>> end up with two extents, the first real and the second still delalloc:
+>>
+>> 	[A....C)[C.D)
+>>
+>> After that, both the in-memory and the on-disk file sizes are still B.
+>> If we clone into the range [E...F) from another file:
+>>
+>> 	[A....C)[C.D)      [E...F)
+>>
+>> then xfs_reflink_zero_posteof() calls iomap_zero_range() to zero out the
+>> range [B, E) beyond EOF and flush it. Since [C, D) is still a delalloc
+>> extent, its pagecache will be zeroed and both the in-memory and on-disk
+>> size will be updated to D after flushing but before cloning. This is
+>> wrong, because the user can see the size change and read the zeroes
+>> while the clone operation is ongoing.
+>>
+>> We need to keep the in-memory and on-disk size before the clone
+>> operation starts, so instead of writing zeroes through the page cache
+>> for delayed ranges beyond EOF, we convert these ranges to unwritten and
+>> invalidate any cached data over that range beyond EOF.
+>>
+>> Suggested-by: Dave Chinner <david@fromorbit.com>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>> Changes since v4:
+>>
+>> Move the delalloc converting hunk before searching the COW fork. Because
+>> if the file has been reflinked and copied on write,
+>> xfs_bmap_extsize_align() aligned the range of COW delalloc extent, after
+>> the writeback, there might be some unwritten extents left over in the
+>> COW fork that overlaps the delalloc extent we found in data fork.
+>>
+>>   data fork  ...wwww|dddddddddd...
+>>   cow fork          |uuuuuuuuuu...
+>>                     ^
+>>                   i_size
+>>
+>> In my v4, we search the COW fork before checking the delalloc extent,
+>> goto found_cow tag and return unconverted delalloc srcmap in the above
+>> case, so the delayed extent in the data fork will have no chance to
+>> convert to unwritten, it will lead to delalloc extent residue and break
+>> generic/522 after merging patch 6.
 > 
-> Thanks a lot for these. I see now that the default Trogdor address Doug
-> reported (39:98:00:00:5a:ad) appears to comes from the fw too:
-> 
-> 	$ od -x crnv32.bin | grep 5aad
-> 
-> 	0000020 0000 0000 5aad 0000 3998 0008 0008 0000
-> 
-> which means that patch I sent this morning should be all that is needed
-> for those machines at least.
+> Hmmm.  I suppose that works, but it feels a little funny to convert the
+> delalloc mapping in the data fork to unwritten /while/ there's unwritten
+> extents in the cow fork too.  Would it make more sense to remap the cow
+> fork extents here?
 > 
 
-Yes correct, it will work for Trogdor
+Yeah, it looks more reasonable. But from the original scene, the
+xfs_bmap_extsize_align() aligned the new extent that added to the cow fork
+could overlaps the unreflinked range, IIUC, I guess that spare range is
+useless exactly, is there any situation that would use it?
 
-> Can you please confirm that all the WCN39xx have OTP storage for an
-> address that an OEM can choose to use?
+> OTOH unwritten extents in the cow fork get changed to written ones by
+> all the cow remapping functions.  Soooo maybe we don't want to go
+> digging /that/ deep into the system.
 > 
 
-We are checking with internal FW team, will confirm on it.
+Yeah, I think it's okay now unless there's some strong claims.
 
-> If that's not the case then we could simplify things by always marking
-> their addresses as invalid, but I assume that they all have address
-> storage.
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 > 
-> Johan
+> --D
+> 
+>>
+>>  fs/xfs/xfs_iomap.c | 29 +++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>
+>> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+>> index 236ee78aa75b..2857ef1b0272 100644
+>> --- a/fs/xfs/xfs_iomap.c
+>> +++ b/fs/xfs/xfs_iomap.c
+>> @@ -1022,6 +1022,24 @@ xfs_buffered_write_iomap_begin(
+>>  		goto out_unlock;
+>>  	}
+>>  
+>> +	/*
+>> +	 * For zeroing, trim a delalloc extent that extends beyond the EOF
+>> +	 * block.  If it starts beyond the EOF block, convert it to an
+>> +	 * unwritten extent.
+>> +	 */
+>> +	if ((flags & IOMAP_ZERO) && imap.br_startoff <= offset_fsb &&
+>> +	    isnullstartblock(imap.br_startblock)) {
+>> +		xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
+>> +
+>> +		if (offset_fsb >= eof_fsb)
+>> +			goto convert_delay;
+>> +		if (end_fsb > eof_fsb) {
+>> +			end_fsb = eof_fsb;
+>> +			xfs_trim_extent(&imap, offset_fsb,
+>> +					end_fsb - offset_fsb);
+>> +		}
+>> +	}
+>> +
+>>  	/*
+>>  	 * Search the COW fork extent list even if we did not find a data fork
+>>  	 * extent.  This serves two purposes: first this implements the
+>> @@ -1167,6 +1185,17 @@ xfs_buffered_write_iomap_begin(
+>>  	xfs_iunlock(ip, lockmode);
+>>  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
+>>  
+>> +convert_delay:
+>> +	xfs_iunlock(ip, lockmode);
+>> +	truncate_pagecache(inode, offset);
+>> +	error = xfs_bmapi_convert_delalloc(ip, XFS_DATA_FORK, offset,
+>> +					   iomap, NULL);
+>> +	if (error)
+>> +		return error;
+>> +
+>> +	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
+>> +	return 0;
+>> +
+>>  found_cow:
+>>  	seq = xfs_iomap_inode_sequence(ip, 0);
+>>  	if (imap.br_startoff <= offset_fsb) {
+>> -- 
+>> 2.39.2
+>>
+>>
 
--Janakiram
 
