@@ -1,219 +1,250 @@
-Return-Path: <linux-kernel+bounces-160399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546AF8B3D12
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83CC38B3D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A9C8287012
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:47:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A68D282383
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A92158A22;
-	Fri, 26 Apr 2024 16:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C3515AAD0;
+	Fri, 26 Apr 2024 16:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCtVqu1t"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="jU5zA7w1"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2111.outbound.protection.outlook.com [40.107.6.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39EE24B21;
-	Fri, 26 Apr 2024 16:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150035; cv=none; b=Bu0fB8eFliKhbkUeySGkQ248JaHOO32D8uWXumpDd1/5VSv2umu2e/29bwWS8AiJDsLRL+HdMSOJsW6bknkB/GHe8s2E1065X2l2fH61CTHkstfhC/7nrpqZ8W/LQ4kWfvQZqvjTBvm/gN8Pm4EA1KKfnz81ccnViAS6ut2znYU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150035; c=relaxed/simple;
-	bh=jfWjPGIScqlbTDAnTTHGrdwchCO7+CZVPkoOw2v3wV0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Go+HMbsplFFQcsMwLhQvmIS47YHbgkkG5TWh5M0e7FoWJ8qB0dx+bxCNNj7bGRbnU4DU6pyjqfbEq1vqS811JWAYg4ELoikv3ZkYubVrQpMLltVU9+KcLTXWLAmWMXu6unD5FZCghMHst8KP70hgC77sqQ8MQJorTGqjQ90Lho0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCtVqu1t; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e5715a9ebdso20175625ad.2;
-        Fri, 26 Apr 2024 09:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714150033; x=1714754833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQn2ppMWd1uOjL7uqzuPwPjat8fxQZ3r4Xgq8M/reJc=;
-        b=RCtVqu1tpAT/QYUfHRyM28M6Tx64es1qhCMcF/lP67ARhgh1/fsqXIqI23eZqjejQV
-         UC6Ad0wrCzIxdcqS4X0sW47Qqi0GoLdqbQaiHlOVzDH2VU3IavN22CFhP7NM5BlQlCSK
-         TdW8A+L4Z5ln0pRpwnbHXk58wc35T+NZBKz3WNb2tnjBcErhcCRjpt8X+Ykpsle+KiVr
-         1K5++DYPNJOjVz9Jv6KvQ+r7GASc4irLIPjmhiehneyNQpM16ZyqtcQ88Zl+GMPMesxj
-         H6z2vNA+8l5HeC/FbKEGUPpLzu92vgvK3Dkt9kKpgxUUg8+ZHuNLt8Hp9914kYSYMGD9
-         zuCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714150033; x=1714754833;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sQn2ppMWd1uOjL7uqzuPwPjat8fxQZ3r4Xgq8M/reJc=;
-        b=lx5V+IVQJZbtK0MTRkJgYN9lVVeghvoI4fZVpVzXcoyRZkmOIgLFoJRW74tfhTOLkO
-         Vbw+hGF/kkZ/kbcnTPp+0XdMdRRbMvdsTdxg0Kyqeu3JHTXA6brcsqr9Ym2S2zKie+MB
-         I3PMnhD8hYNBdj1TkXmJ0zOQBfQrs6u+WYzEX+VCYgAwubPzRZP8fYgnSzhSirvB2i1x
-         yBDTDFGNY8+Afs54LL6PNVWCxGJyDrDZ/qowq6vSOavEk4Ez1Hbp5OfpyE2IN76yPJ97
-         E+80reDCQK4VZ9751wmaIWVLw/+mpqCH2I56874Dj9WQcudlVv/IDm3iKqwQAajSgCE3
-         XOdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxi3JFwHyEs/snaeTBlh7fkNTMz9y9FdnyqfGZPp+TNOZTH+XVnBZ8XnK1BUFwakbgouWUUAKI2uBMJyaLIPAPd12suE/5cw2JXZcH
-X-Gm-Message-State: AOJu0YwG3dXWadrpZf9h+0BpOeO0LCBsWimP9/dQuPhBB0JChGHGhMPw
-	lLxVNp0BXgdvOJkrX5WghpKWkvnrxhp0dsm06GeJbxJTFFCq/la0
-X-Google-Smtp-Source: AGHT+IFHwuV5UcmP2zAhp9tIF5BJVXGc6sYdl7MFsQgMTTVUUw38ID/F1HlogJCOkDP6ZhPiVFL7gA==
-X-Received: by 2002:a17:902:d492:b0:1dd:2eed:52a5 with SMTP id c18-20020a170902d49200b001dd2eed52a5mr225645plg.37.1714150033037;
-        Fri, 26 Apr 2024 09:47:13 -0700 (PDT)
-Received: from kernel.. ([2402:e280:214c:86:dcce:3490:50a1:90df])
-        by smtp.gmail.com with ESMTPSA id q5-20020a17090311c500b001d8f81ecea1sm15766839plh.172.2024.04.26.09.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 09:47:12 -0700 (PDT)
-From: R Sundar <prosunofficial@gmail.com>
-To: heikki.krogerus@linux.intel.com,
-	gregkh@linuxfoundation.org,
-	neil.armstrong@linaro.org,
-	dmitry.baryshkov@linaro.org,
-	u.kleine-koenig@pengutronix.de,
-	christophe.jaillet@wanadoo.fr
-Cc: linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	R Sundar <prosunofficial@gmail.com>
-Subject: [PATCH v5 linux-next] usb:typec:mux: remove indentation for common path
-Date: Fri, 26 Apr 2024 22:17:05 +0530
-Message-Id: <20240426164705.2717-1-prosunofficial@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA16D156864;
+	Fri, 26 Apr 2024 16:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.111
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714150232; cv=fail; b=bum7V0WdoPqQc6lGDaC3cNy4GlseeHd0cQCu0jNt9+LzUF6OjAwRtFxzeAxzl9tWvcduvhfnsuiWsAtFDqBI1Ixmoq1hEZEa9OnVUklNamYFIPfKBHNNNvX5tbChM1NW9cgFeLH6MlyAs2XZVZ/qXfrKz+K03Vh0QD7GJKIAkTc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714150232; c=relaxed/simple;
+	bh=UPz3MrjtfQd0nueGsYTPxR9knUuvbgyyjD++GFC1t2g=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=o/f1VdamwFAqaEBMxWqBfL58DkU9MnZhhETo6a5WdZP99F2eE2bYDIKVR1q9LWB8O+BM91I1VbFdyZBzfvvc8ED/SiRtHfurWtiqkYRLyxkCWfWlXWs+rbmu0uLWkKHiCbz7RYnyoQC399HfQJhwL5nJXuic6ZLE6IYBx6ka4Cw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=theobroma-systems.com; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=jU5zA7w1; arc=fail smtp.client-ip=40.107.6.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theobroma-systems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZXzgGfSv2+Jz8VdUhPP2WoqVIsz0KLxCjsn4BqE3rK6Rq72nFu55BpUEx3b3be8gB3FUEWWb3a+E86AFvr72BtHUt6/tJDTOdCzDTA/Er2IFAkYbQPPQ9u0sIsGO2rB+Y45IxP0DiGZuE01y8c/xGgi7dgjk+CsLPkouVNzEfrb2Z4Zp0UjgKtAP71p42XHfZdWTqios2+Mqkniotmu8r6QthU6E3hxHE176j+QVBO2UHI3ULpsFcFnivrCcqsdC98ADugNHaHMxi5WIjmPhFcV5LX6HK5IcaqjdtojMOsWhMWntsMls4aUuotd8U0UsBqHd3dKxER6i2EnV2DJQMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vYBRW4r+i9vMVde6VQIjVU7PiC+AYrrmMIzyCRy8XdE=;
+ b=OrnyCoCt9gIP6OJQrBQsV2SMeucAdZqI5/naEmLGDrq1f38+6E7Ua38NTx5Mub85+8iHHXtXi6YF2BtDJrGJOi+bbzAZw4zd6mVdwqTW1dBO/6jVIOd1rROIWY53QIN6TOzKDqeoBe6gMRbOCPDqxl1Tvf9nMrG2xvAHXaWdN3uMuwX5rVbZLI6VFOp00pg4d6qohHr4RCX7HBJPGn/GjH7rfg5Gfdn0No/1Pj8ouhGGaeO1IQER+3SuoQA/iv/lPCA7Cxky/i4Au1uBBnSOjt3/E1nJRZAUkuBSDyN1RKraPnXLOn890Q6inrPXygpTQwNhrj7EaPCrupzAQi+CFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vYBRW4r+i9vMVde6VQIjVU7PiC+AYrrmMIzyCRy8XdE=;
+ b=jU5zA7w16R6UF2LT+fAOOUS6nHb94xQmbS/tmGqWEJda6Id30puJuhxyAQCWyM2c5bUDZ4yB8Me2k5qsuoYZAEfSncddRvbHw4ezzqzPUnJmDudxKimW2yHODRlDcqiNSXP2V/C8n6hWi/9O2ehI88r5XJRFyRma44tAVpeD+acY7ya1pBIEFhkryRwWpWl+HgzI0CJMKUH5fyTA9dXtxxmSBg0G/nM78nGu61CtwzuxK4FsAeCK74A0itCq7fQl3Si/rCXjwTIqof6wX8tmfPjmpP2EE6EC8ieHB/qGVpp/VbKEE06aVjoZYUEmD51XiOtlzSJnckmk9zzcQhtKfw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31)
+ by VI0PR04MB10230.eurprd04.prod.outlook.com (2603:10a6:800:240::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 26 Apr
+ 2024 16:50:23 +0000
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936]) by VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936%4]) with mapi id 15.20.7472.044; Fri, 26 Apr 2024
+ 16:50:23 +0000
+From: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+Subject: [PATCH 0/7] Add Mule I2C multiplexer support
+Date: Fri, 26 Apr 2024 18:49:31 +0200
+Message-Id: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABvbK2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDINRNSS3TzS3NAYobJQMZFbqWhgbGySmpBuYGRoZKQG0FRalpmRVgI6N
+ ja2sBX1N6rmIAAAA=
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>, 
+ Heiko Stuebner <heiko@sntech.de>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, 
+ Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+X-Mailer: b4 0.13.0
+X-ClientProxiedBy: VI1PR08CA0261.eurprd08.prod.outlook.com
+ (2603:10a6:803:dc::34) To VE1PR04MB6382.eurprd04.prod.outlook.com
+ (2603:10a6:803:122::31)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:EE_|VI0PR04MB10230:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b96f515-648e-4859-7057-08dc6610f6de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?U3AwOTUxOWVsU2FJN3FKM0RoRmVzUWZYZVNxSXQvMXpEWU1sWkxrTTVYWVBw?=
+ =?utf-8?B?bWpNNmhFcTlPU2dzMlNhQ3pRRG80dHV0SlQ5cnF0cGwxaW1QVXZkWVFNY3dq?=
+ =?utf-8?B?d0tiTEdSZjdPL2lCV0MwVWNsVTl6bU5UNi9yYXFpR3F3cEZQQnRBdHpXNzNO?=
+ =?utf-8?B?dmV6elkxTWxYbDFFaXJiQXdHU25qTXhtTGtjdTViVmtocm1wODhvY09wbTlF?=
+ =?utf-8?B?MmMzaU1PMjBvU0xhajdRL2N1V2F3NmQybzhuakFnVitZckNnS0d2UUh2WW9k?=
+ =?utf-8?B?T0dYZWxYTDBWTktYUkYxOTNGV3BjYkl1Zmo3RU9NR1kwOGtpcXVHWm51M3Qw?=
+ =?utf-8?B?NCtYRVUydEJMemdxa2JORE8xMlFWbHZtQS8yZ2xtUFFQV0V2clJQTk1YaXJE?=
+ =?utf-8?B?M0RqSjdLRzBFV3FldEl1NEQ0R2hwRUtqQ0E3YVlYekk0MHlmR3RydnNWdGZV?=
+ =?utf-8?B?MElTaXNTZTdic1NORFY4eXdnRk1KMDVVZDhCUkQ0N1RtSkRscDhrWVA1bmxV?=
+ =?utf-8?B?NTBsYWZHK1Q1dDNDMEV0WHp0Unh6Z2R5K3QwWTZPd01xNTZHdUZLaWM5Q2dZ?=
+ =?utf-8?B?TWh2aXlGaXgvNkUwVk9lL3NiSDdXeUkwT3VYRGg5blIvVld4bnR5Ly9ZYXBI?=
+ =?utf-8?B?REZTY2MyVGsyQWVHaHFpSXAwZmVndkszeThCcjM5OTBVNTR6N2h2YmR5dm5l?=
+ =?utf-8?B?WXJibWJRWHJNSDJRZ2d3SXlJZGJOVVFpSzMrc3U2SjRRTU1aNmlLdTRhYThj?=
+ =?utf-8?B?VklMVkZFamU1a2JJdE5FM0w1NE55N2YyU2FQV1FvcTRsL1lqUzh4alpRR3Bl?=
+ =?utf-8?B?Rm13Tk5yUGZtc3U3clg3VkkyYjhJZ0dwQ2lSdzdFNHRTczB0Smdib3VBbThL?=
+ =?utf-8?B?ay9WQUFVUWJqQkY1TUpmUGs1UmlDMlhYRzQrbDdVbEQwc3lLVCtJOVVzTC9B?=
+ =?utf-8?B?VXJpOGtPRm1ady80WnJhUm0yam1wOHNrWGFLSzh6S0kxQmc4LzRmb0pPUU02?=
+ =?utf-8?B?K1RCMy81Z2JISDduek5HcUFrRkdBTTdmVVcyL2tyVEhpbThwK2RUZ3E1U2JS?=
+ =?utf-8?B?bllEOUhCZUhMeG12VVdndXhKNnNKVjByc29aU1FqemJlemZUUkhUcjZPeHVC?=
+ =?utf-8?B?S0dXSTlMdFppeERZSGVuTlZRQitwbHg1UWIyeng1cVZtZFJqdHlsMWZwblR6?=
+ =?utf-8?B?WDNhVWpHVVI2RXBXSmw4K0J6WDQ5eThFUWRNL1lsc01zczVOSjh3cityNEpU?=
+ =?utf-8?B?WFJmQk5hZnBqNlRQQkpOd1pyalkyQWRPZzBMTnpwUngybGNLSGtRM01jOWha?=
+ =?utf-8?B?djRmbmtQdHhVT1NCN1JPQzhKNlZhYk1qWjA5cG1BZGIvQkVMejRTSUMrMWF3?=
+ =?utf-8?B?VG4vbmhFVExDeUZIQ21CRHpmMHMrL1Q4MHJpZEdobHdYTmJ1Nk96bEFhMm9V?=
+ =?utf-8?B?OGFmYzNnbVRrTXNWWFA5T2l1eXY2TVdvRXFCZ0JkT3ZPblhSNk96RU1Ndm1i?=
+ =?utf-8?B?clZNclZNdE9Sb25CMHZjdzNLS2h0NmExVmFMUE5YSnNDSklNTEVxQXlDZGVu?=
+ =?utf-8?B?RmRCVTJpOExtQndXMGFJNXlrL01UMTRkQkMraElHc1hDU0pHcFJpVDM2YUpu?=
+ =?utf-8?B?UzlHSFpIZFhjNHBMVW5IeHBaVjNFWEE0NUlJRnErOTJMU1ZTaEdGUXFGNy9n?=
+ =?utf-8?B?dEhTVmRNeXdxRndqN1VMeXdnVTlLZXVrMTVwTGpLc3RhdWZvTVhkOWl5OWFo?=
+ =?utf-8?B?SjlpZ2RadnpoS05lRFJ1enZlb2VwNWZWdGVzcGs2VlFldHd2bFlYMHJ3TTJV?=
+ =?utf-8?B?ek9ZQ0o5SmgxNGI5cStrQT09?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(7416005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?N1B4R3hqMHNGV2Q2bXhQQUpyOVBhbTI2UUVSOHh1YUdZSXdBNzI0UkhmZ0Vo?=
+ =?utf-8?B?THFHZ2J6L2k2QjFMckJqczZ2Q0lEMTVkN1N2NG9oV0ZXbTkrQXlqWjBSWCtq?=
+ =?utf-8?B?VFhBUXYyNVRXeXJrTGVjRXpyRlJDWHN2NjlBK3F1b0VZZjFvME9kcU9iaTE1?=
+ =?utf-8?B?akRiVmVxNm1CL1lkMHpTUEhSemJma2lTR1QvbW9UMmU3YnBValE3bnIrb3BH?=
+ =?utf-8?B?eGdkNk9ZMWFMQXF2L3lUeHVrdTVvdnViK0FBaGNpbk1KcTQvLzIyc0JiMFZr?=
+ =?utf-8?B?cnVJV1BObUYzMWw0UWhmSHRYcmR6YUxLcGZXc3Y2L1NoY3Y3aGVXYXphUXNQ?=
+ =?utf-8?B?QjZvUVZXeERXalEwSkhybzN1UnVrY2dyTTNZS055YWtERnNzSklJcWtHQUZX?=
+ =?utf-8?B?dXFLaUxwaTAxaVpER05ZL2J3L3lQU1NFOUFIMjNuTCtyQ1Vka0VMZEJaeXg4?=
+ =?utf-8?B?TTdENFhRR0xkUmdyemY0SUx6RkY4NkMyQWlSbmJlUmxIam9OZVNDOFkvRytQ?=
+ =?utf-8?B?U3VNL1dqc3o4ckNNNUo2QTlVa01tNDZuYjhLblEvNE1kWmdKblRBMDgrd2FD?=
+ =?utf-8?B?S3BIVjR4RDFheVpRY3BDZ21RQW44N2hBRXRGbFBzYkJLRTBkdGZMeW9lVzFp?=
+ =?utf-8?B?S3VmMzI4cFY2b0FId1BjWXVicmZ6T0p4UFJQQm5YUHVLWWVYREhyYXVLdXMx?=
+ =?utf-8?B?b3lnQzg2amcyL0ZvelJnaDltaTdXNjJrY3BNSFJzOXVDL2hYYUdIZXVsT3RD?=
+ =?utf-8?B?N0JSZDJqRXVjaFhYUFNUcVpITW5kUWRub05JWExLVlZzbkRRY0pBRlRJbGhq?=
+ =?utf-8?B?Vlp5UkFBeTN1NlV6Y0srYW0yYXc4d2ZUSUl0VmdXVnJEZlNmdGFKRzBIcXpC?=
+ =?utf-8?B?K2p1YlJNeGFXYUlZUzRudFBZeWRNQ0hTWGlDVjhQOEV3d28yUDdvNzBEVDVJ?=
+ =?utf-8?B?NzRYODBaNjgyY3VnTkR1ZGZqSUpmODFOTldtbGNWSW91NnRUVDllQUgrWWdu?=
+ =?utf-8?B?dE5mRlhMSlYwTnJGRG9zK2o3Tld2aWRzeHE4ZE9HQVNKbEFoVk11eGxjSExK?=
+ =?utf-8?B?Q012RjVhYnQvd3ZkUzlMV2EycGNpeS9KMXJJN3JBMWVjTDFySGhsZXJjZHY3?=
+ =?utf-8?B?SkwwZnZMNURiMWx3K3krL2pVcXhjVjFLV1FSRFpsMitHY2NBUCtlb0FCNXpN?=
+ =?utf-8?B?NHFCTEw3WExrVytGemMyN3gxbThyMEtzb2VtbURFdGRwZHNINjMxNWhoOW9z?=
+ =?utf-8?B?U2RuRHJIVkdtdWRJZDhtWTlUOUJ6enlCV0xwODZ1ZlF6VVhsVXlHZW1JRFd3?=
+ =?utf-8?B?MEc4MWU3K1NsNWpIVzB2bzJ0aXJyUFlJYlRBRFZwL3hXcVF3SmpxRTJORzdB?=
+ =?utf-8?B?b09nZkNPQVdWWUt6cXhhMHNmdG5ZL0htQjB5UnZvcTU1dGRYTUlpR3ZGWGV3?=
+ =?utf-8?B?c0NFTFAvWE5makZuL0c4YkhyTDJHRjhHTXdPK0dWckxhRDFPVXBtQTNFczk0?=
+ =?utf-8?B?WnV6eGl5ZTQvYUZ4d1Yyb3lhVjJnVVpLWnBKUU9jYkx0M2lqbFVYN2pnNzBU?=
+ =?utf-8?B?Sk9Ya1gvTWlvdGQ0ejdpNDI4K0ozSFhQK0Z3aW56Nm90UkZ6UXVKQ0o5azJx?=
+ =?utf-8?B?WWtFT251TEhpUWgxbTZNRkd5VUZCRXIydG9GSGczWkdHL3pUZDlCbW5VbTVv?=
+ =?utf-8?B?VkRoRFBtQVlOTUxLdmlUbE93cWQzbXVKL0p2NUQ5VWlVSDRXK1JxK2hSQWhm?=
+ =?utf-8?B?U2hSUi9uM2VOY2dHNXNIU1grbDMzMU5qellWTTl4VVYyZWNZc2dUYjd3eTFu?=
+ =?utf-8?B?QlpUbUFxcTBYb2RmUFgyTXdGWmhzTGhFa3N1cUpmaUh6bTk3OWRxUWZSdm02?=
+ =?utf-8?B?WndKYXRONFF1VkRpRW1adktZMi9YTiswaW1ZN3lybGQzKzBueFBMREZCMXl1?=
+ =?utf-8?B?aUdjVkFPZ2E2NDJ4TjlvcGkwSGhKUm0yc1VpSmdueWVpQU44aStzOVZoRm9q?=
+ =?utf-8?B?dVowWklZbXhnZHliMGcxWHVQb1RKZDRCc0VIL3VHM3FKN0lSK014WnArMDZl?=
+ =?utf-8?B?cVZOME9Kd29rSjBURXhHTktQakFqT2hMcWM5Y2dCQmw4cDEwVGYzOHFQaGF3?=
+ =?utf-8?B?Yk8yU2tWYXlRTktBSXdCc1lvakVzVE9FNWx6RU4wWDNhQno5cU0zN3NmT3N1?=
+ =?utf-8?Q?Vc2U/sUvb6GJLGXSKlgeGBk=3D?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b96f515-648e-4859-7057-08dc6610f6de
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6382.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 16:50:23.2746
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VvvqemZ8njvqR1TvyLgM1KjNznkMp1IBBFXtdQux6Rm20IGUH59nXNtpXEsjXEtF0K3TyW4AaCKAVHzA3RgY7Lc5WImy/FaCdoOLLKqYOBXNhYjH34sGGdieonfZ5Ntx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR04MB10230
 
-Nitpick, Mostly common path will not be indented.  so rewritten this
-function to check device_node pointer is null and removed common path
-indentation.
+Mule is an mcu that emulates a set of i2c devices which are reacheable
+through an i2c-mux.
 
-Signed-off-by: R Sundar <prosunofficial@gmail.com>
+The emulated devices share a single i2c address with the mux itself where
+the requested register is what determines which logic is executed (mux or
+device):
+
+1- The devices on the mux can be selected (mux function) by writing the
+appropriate device number to an i2c config register (0xff) that is not
+used by any device logic.
+
+2- Any access to a register other than the config register will be
+handled by the previously selected device.
+
+      +-------------------------------------------------------+
+      |  Mule                                                 |
+      |        +---------------+                              |
+    ----+-(1)->|Config register|-----+                        |
+      | |      +---------------+     |                        |
+      | |                            V_                       |
+      | |                            |  \          +--------+ |
+      | |                            |   \-------->| dev #0 | |
+      | |                            |   |         +--------+ |
+      | |                            | M |-------->| dev #1 | |
+      | +-----------(2)------------->| U |         +--------+ |
+      |                              | X |-------->| dev #2 | |
+      |                              |   |         +--------+ |
+      |                              |   /-------->| dev #3 | |
+      |                              |__/          +--------+ |
+      +-------------------------------------------------------+
+
+The current i2c-mux implementation does not allow the mux to share the i2c
+address of a child device. As a workaround, when creating each i2c child
+adapter we do not assign the parent adapter to avoid the address-match with
+the mux.
+
+This patch-series adds support for this multiplexer. Mule is integrated
+as part of rk3399-puma, px30-ringneck, rk3588-tiger and rk3588-jaguar
+boards.
+
+Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
 ---
+Farouk Bouabid (7):
+      i2c: mux: add the ability to share mux-address with child nodes
+      dt-bindings: i2c: mux: mule: add dt-bindings for mule i2c multiplexer
+      i2c: muxes: add support for mule i2c multiplexer
+      arm64: dts: rockchip: add mule i2c mux (0x18) on rk3399-puma
+      arm64: dts: rockchip: add mule i2c mux (0x18) on rk3588-tiger
+      arm64: dts: rockchip: add mule i2c mux (0x18) on px30-ringneck
+      arm64: dts: rockchip: add mule i2c mux (0x18) on rk3588-jaguar
 
-Fixed nitpicks in code according to comments received on other patch as
-below:
+ .../devicetree/bindings/i2c/i2c-mux-mule.yaml      |  80 +++++++++++
+ arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi    |  20 ++-
+ arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  20 ++-
+ arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts     |  19 ++-
+ arch/arm64/boot/dts/rockchip/rk3588-tiger.dtsi     |  19 ++-
+ drivers/i2c/i2c-mux.c                              |  10 +-
+ drivers/i2c/muxes/Kconfig                          |  11 ++
+ drivers/i2c/muxes/Makefile                         |   1 +
+ drivers/i2c/muxes/i2c-mux-mule.c                   | 157 +++++++++++++++++++++
+ include/linux/i2c-mux.h                            |   1 +
+ 10 files changed, 327 insertions(+), 11 deletions(-)
+---
+base-commit: c85af715cac0a951eea97393378e84bb49384734
+change-id: 20240404-dev-mule-i2c-mux-9103cde07021
 
-[ Nit, this function should be rewritten to not work like this, the
-"common" path should not be indented, but only the exception (i.e. bail
-if ep is not allocated properly.) ]
-https://lore.kernel.org/all/2024041103-doornail-professor-7c1e@gregkh/
-
-Goal is to get rid of of_node_put,but sending this patch first to do one
-thing at a time.
-
-Changes since v1 - fixed the typo error for spell from identation to
-indentation
-
-Changes since v2 - Shifted the indentation to one level left for the
-switch cases as per coding style.
-
-Changes since v3 - Added descriptive subject for the patch and checked
-from and sign-off having same name.
-
-Changes since v4 - Fixed name in signed-off-by as in documents.
-
-Patches link:
-------------
-v1  - https://lore.kernel.org/all/20240420145522.15018-1-prosunofficial@gmail.com/
-v2  - https://lore.kernel.org/linux-usb/20240420164927.15290-1-prosunofficial@gmail.com/
-v3  - https://lore.kernel.org/all/20240421011647.3027-1-prosunofficial@gmail.com/
-v4  - https://lore.kernel.org/all/20240424150718.5006-1-prosunofficial@gmail.com/
-
- drivers/usb/typec/mux/nb7vpq904m.c | 68 +++++++++++++++---------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
-index b17826713753..f7a00b388876 100644
---- a/drivers/usb/typec/mux/nb7vpq904m.c
-+++ b/drivers/usb/typec/mux/nb7vpq904m.c
-@@ -320,47 +320,47 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
- 	int ret, i, j;
- 
- 	ep = of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
-+	if (!ep)
-+		return 0;
- 
--	if (ep) {
--		ret = of_property_count_u32_elems(ep, "data-lanes");
--		if (ret == -EINVAL)
--			/* Property isn't here, consider default mapping */
--			goto out_done;
--		if (ret < 0)
--			goto out_error;
--
--		if (ret != DATA_LANES_COUNT) {
--			dev_err(&nb7->client->dev, "expected 4 data lanes\n");
--			ret = -EINVAL;
--			goto out_error;
--		}
--
--		ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
--		if (ret)
--			goto out_error;
-+	ret = of_property_count_u32_elems(ep, "data-lanes");
-+	if (ret == -EINVAL)
-+		/* Property isn't here, consider default mapping */
-+		goto out_done;
-+	if (ret < 0)
-+		goto out_error;
-+
-+	if (ret != DATA_LANES_COUNT) {
-+		dev_err(&nb7->client->dev, "expected 4 data lanes\n");
-+		ret = -EINVAL;
-+		goto out_error;
-+	}
- 
--		for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
--			for (j = 0; j < DATA_LANES_COUNT; j++) {
--				if (data_lanes[j] != supported_data_lane_mapping[i][j])
--					break;
--			}
-+	ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
-+	if (ret)
-+		goto out_error;
- 
--			if (j == DATA_LANES_COUNT)
-+	for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
-+		for (j = 0; j < DATA_LANES_COUNT; j++) {
-+			if (data_lanes[j] != supported_data_lane_mapping[i][j])
- 				break;
- 		}
- 
--		switch (i) {
--		case NORMAL_LANE_MAPPING:
--			break;
--		case INVERT_LANE_MAPPING:
--			nb7->swap_data_lanes = true;
--			dev_info(&nb7->client->dev, "using inverted data lanes mapping\n");
-+		if (j == DATA_LANES_COUNT)
- 			break;
--		default:
--			dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
--			ret = -EINVAL;
--			goto out_error;
--		}
-+	}
-+
-+	switch (i) {
-+	case NORMAL_LANE_MAPPING:
-+		break;
-+	case INVERT_LANE_MAPPING:
-+		nb7->swap_data_lanes = true;
-+		dev_info(&nb7->client->dev, "using inverted data lanes mapping\n");
-+		break;
-+	default:
-+		dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
-+		ret = -EINVAL;
-+		goto out_error;
- 	}
- 
- out_done:
+Best regards,
 -- 
-2.34.1
+Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
 
 
