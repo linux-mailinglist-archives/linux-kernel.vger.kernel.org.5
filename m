@@ -1,101 +1,111 @@
-Return-Path: <linux-kernel+bounces-160562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4528B3F2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:22:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488F58B3F2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 20:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D01A288545
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:22:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3976B23AE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9A016DEDC;
-	Fri, 26 Apr 2024 18:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B851F16EBE4;
+	Fri, 26 Apr 2024 18:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="nl4E27/l"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.209])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QHiF19UU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26AD45037;
-	Fri, 26 Apr 2024 18:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F291C45037;
+	Fri, 26 Apr 2024 18:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714155716; cv=none; b=fR1wZUZQeeNNpyeTWLYkrXvJ7iCDZkkwGzW2JnjOsFYN4zjKPoy+peLAeAJD60nqgpqFqCJpXdl5XVeIAtpxV6SkixXwU9Or6kWLWG66wgLiLg/TBaWDxjh2wQc3SmzS2/RwfcNFRIg0/cdSPJ+BvnEtYHcqaNwHyi1OSdZu8x4=
+	t=1714155765; cv=none; b=Cb6FHhxiWJbZWd/zfdQxMllyx/yFgiveTVOR+Ek9oO+EZ82eH6XX7NH9geOMMlc/EbznlKngCfyyXv2H4pvUi1CiHamNAMqov4et8LCrCnvQxMr8GZYe5VQ8QnO+cZDzBBDbNzU90msk+/KjYnu++F2ZmSI3E8oy33vS0MPgZxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714155716; c=relaxed/simple;
-	bh=+rY3/lx41ZeUHmpMN3pJXo/hx1ZdE2dNW5kkVDSOidw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Vbd/Z1H9Fdz9lwSHdFfkHUvBvii5OoxL9JNGgsslqHz39WSY7p6gO8ZBqjFdxpHFnTBuf5wJPRZLJNj9/Y/1pRHeSwHCzeJkuLBMS2RB08x21T0FaxudvyGrGVnkdU+zX3KNXJGI8jiRfZM5BWtqbLbMI34cbParLxag+1XEO2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=nl4E27/l; arc=none smtp.client-ip=192.19.144.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id BE1A4C0000F6;
-	Fri, 26 Apr 2024 11:21:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com BE1A4C0000F6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1714155707;
-	bh=+rY3/lx41ZeUHmpMN3pJXo/hx1ZdE2dNW5kkVDSOidw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nl4E27/lddLEWA/cpJOj8l47wlmdAPMcpbJBAFF9nWJ2dtNSYrGT0MJYZRB2K1OZB
-	 3qMVa/DFHDgJNj/spaJEj9CdXO5mvsWmtqXx7EfJakgMKkY7/R7FOTk+ILc5H4mb8s
-	 cE4EzfAVhZYqvS1IjYaxJ86fs83bQvpUp4TMTuCs=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id B85BF18041CAC4;
-	Fri, 26 Apr 2024 11:21:45 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: bcm-kernel-feedback-list@broadcom.com,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-arm-kernel@lists.infradead.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	andrew@lunn.ch,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Nick Hawkins <nick.hawkins@hpe.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Paul Barker <paul.barker@sancloud.com>,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Uwe =?iso-8859-1?q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-rpi-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] arm: dts: bcm2711: Describe Ethernet LEDs
-Date: Fri, 26 Apr 2024 11:21:46 -0700
-Message-Id: <20240426182146.2131789-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240423191500.1443636-1-florian.fainelli@broadcom.com>
-References: <20240423191500.1443636-1-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1714155765; c=relaxed/simple;
+	bh=gpyVvefeP36zHUXRz/u3ksezvgy7WEBLfXm4HyXlxF4=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=JWya7Umnkm4CJnw5n5DdgjEG0wVquqW/x6pRq1cbff6eOuNHefxVCz3gQ/FQaALyA5Go9jBMu8Hrn/mzUHX4kf1tBVdQhlwvc9XUd4v5pvlmyaw2Pjh0Ro7i1/mjrI4oJDl2KTziT8+q4MwxAEgaxy8zezCAvw9exsMYmEKVnk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QHiF19UU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52D08C113CD;
+	Fri, 26 Apr 2024 18:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714155764;
+	bh=gpyVvefeP36zHUXRz/u3ksezvgy7WEBLfXm4HyXlxF4=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=QHiF19UUHS4HQggBpXjB9tUcLKKASvChWcO/TU9ERF03lEFOX55fjOkoKLunY02mh
+	 KVaTfLrzfQHE2FZxc46/LFZd/Z7EudTt+BQyoROaaIM68jtOiIp2yhZ8H7kP6IlUbQ
+	 IdXU89T0jhpxU1J99MeF/qym4SIwazsrlWAgzqZZiQcurclxDkJVZWgljgzVFvIs3v
+	 nbL7qzdw9y5DFrGb4AZHtvWQ1inN3eibcPoD3yl62csWMDUfaSMW+ld2DaWZtyX/R6
+	 B4Q33L3o2z/JFtuGWnqmTOl85SlbO2aEtKeODR7SBYFdHIPG8PEDc6StAFu2yu++D/
+	 EFtpRtBmSvc3g==
+Date: Fri, 26 Apr 2024 13:22:41 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Rob Herring <robh@kernel.org>
+To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>, linux-rockchip@lists.infradead.org, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Heiko Stuebner <heiko@sntech.de>, linux-i2c@vger.kernel.org, 
+ devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
+ <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+Message-Id: <171415576010.2476476.2469508869846775606.robh@kernel.org>
+Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for
+ mule i2c multiplexer
 
-From: Florian Fainelli <f.fainelli@gmail.com>
 
-On Tue, 23 Apr 2024 12:14:55 -0700, Florian Fainelli <florian.fainelli@broadcom.com> wrote:
-> Describe the Ethernet LEDs for the Raspberry Pi 4 model B board as well
-> as the Raspberry Pi 4 CM board. The Raspberry Pi 400 board does not
-> include RJ45 connector LEDs so the 'leds' node is deleted accordingly.
+On Fri, 26 Apr 2024 18:49:33 +0200, Farouk Bouabid wrote:
+> This patch adds support for the Mule I2C multiplexer.
 > 
-> The Ethernet PHY LEDs are numbered in the PHY package/pin list from LED1
-> through LED4, however their address within the LED registers function
-> selector is 0-indexed.
+> Mule is an mcu that emulates a set of i2c devices which are reacheable
+> through an i2c-mux.
 > 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> The emulated devices share a single i2c address with the mux itself where
+> the requested register is what determines which logic is executed (mux or
+> device).
+> 
+> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
 > ---
+>  .../devicetree/bindings/i2c/i2c-mux-mule.yaml      | 80 ++++++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+> 
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
-Florian
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/i2c-mux-mule.example.dtb: fan@18: '#cooling-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
