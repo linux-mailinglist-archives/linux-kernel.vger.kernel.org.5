@@ -1,164 +1,155 @@
-Return-Path: <linux-kernel+bounces-159491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424BE8B2F56
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:15:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853C38B2F57
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 06:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CE6CB21B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:15:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37D0328500B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 04:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F51D824A1;
-	Fri, 26 Apr 2024 04:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44154824AE;
+	Fri, 26 Apr 2024 04:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BXvM49Xj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RV6jnpJ8"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978AD82499;
-	Fri, 26 Apr 2024 04:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528BBEACD;
+	Fri, 26 Apr 2024 04:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714104949; cv=none; b=YauK7kuP7Jc5CojIzkPOBAL/td98DeWSpjOX5indeKFIJGfRvJC+z0A0wJsvltCSa/0cB/q1vvwe+saDtjU/GZkTeDCZa5FwH/rL8wM/gxNn78yVzawpOJ8XeH6cJRdkStg44m2JvvSRr7GAEodrwE3m4SA4hC1vFDTnSqHMfN4=
+	t=1714104988; cv=none; b=gobzSDkvYJVmPmRHxjvQVpdXh6hBW9UFt1hmeQIU01FsDpLDWCcrk2jqVVQjp8+9dmhEV5sm1U8N+573dCQ3Pew15Yrc9Hl1qrT/DAmHL72+t+pwrjD77bfh2REVMM6ulJhw4QoSCh+XnQ+hjJ1MfJtKAjSZ2MOpmVTBBqmL7cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714104949; c=relaxed/simple;
-	bh=v7mnz/clg1OHc1VYa7IcfhROhQanCvHH2u9lI8vRb6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y7TjDdKdkQzz8dQ95sgJ8fUbxElikMz7AscdzoDnK3ekzGcm6GmrEdmo0y0ya0CbGvemq/nC+mHIltTW9q4NnrE04vOdiPy301DyRWOxVV8E0ufJQ1qilJW95WpS7nxyBxm9VWIV2XdEGemxkXtZKyJK4HRjE/HZAeYPZ25X/KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BXvM49Xj; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714104946; x=1745640946;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=v7mnz/clg1OHc1VYa7IcfhROhQanCvHH2u9lI8vRb6Y=;
-  b=BXvM49XjIRdmaBhjYu7C3nGyq+H9ED7l2c28kDbyDIMiVvaGcETd1IQu
-   Z7K/A5H5/18OtddabuVVJyOJ/Jido9BLyfM/IGy5R2Qr5u+02heFs9trA
-   zrQb7/TikHcio3ZCUDKFNEsW226UJh81tJFOyzXlw+6Oe9h1bz6tVU4LT
-   csdjadAlUzFh3LkOoncywRpZAIkrDLseO7zWSjwUMWxhXCm7hMswXitFm
-   cqZzwytr8R+lLvhw1YYJaw8XR/tgVGdL3W0t6XkfdoCO0RKB/E1F2kIFI
-   tEY+sQaX423bf2d+kF0eK/5Mh5O+fFJ4T9y1lOOzSWOHet+XQh3/nNLmA
-   Q==;
-X-CSE-ConnectionGUID: 0F7mEABcSYa3ctNbvhEIkQ==
-X-CSE-MsgGUID: 6N8RjZGgR/+vhKfs8PApRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="13612676"
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="13612676"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 21:15:46 -0700
-X-CSE-ConnectionGUID: OUIWma01RGeHEEYnNhnerg==
-X-CSE-MsgGUID: jBA13mM8Qy2SwJNhhXecQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,231,1708416000"; 
-   d="scan'208";a="30096926"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa005.jf.intel.com with ESMTP; 25 Apr 2024 21:15:43 -0700
-Date: Fri, 26 Apr 2024 12:10:19 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: Re: [PATCH] fpga: dfl-pci: add PCI subdevice ID for Intel D5005 card
-Message-ID: <ZispK+l5kWCxtfns@yilunxu-OptiPlex-7050>
-References: <20240422230257.1959-1-peter.colberg@intel.com>
+	s=arc-20240116; t=1714104988; c=relaxed/simple;
+	bh=5BrCRh28BJUr6J5THiQ7LAX6u8wTo67DMh4LQ2zpXic=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d0NmpmhtLnTX2MR3V0yyF75Bq0q2aBPm7cpXlrhk6nK7kvJp/b7EuP8woiYs7qR+RzNanEOhUiEKCKS+dULTm5666zd+P/PACKaWy2Kod7e5HJsTKAWXAcEES9NmvdSu/b3V2cTc76o94gIZ0KTdAzfPjvYTZNYxEohrXHEQfTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RV6jnpJ8; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2d248a2e1so2096927a91.0;
+        Thu, 25 Apr 2024 21:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714104986; x=1714709786; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nPxarOGHNi8/phOxHc8/TqNc9y5wB5j9HDUxvMf3rik=;
+        b=RV6jnpJ81/eQdWhhBcVB4VfagUzEXzxY5MYSgRaWJam4yPJoANyr5y/SCy6hnuOYjf
+         TWqvEF3AByH2jI8YlP1uKpJcu4K3Zf78lHEpvMnAQS2On3Q1ix2OcXpJPucWVw2sgRAC
+         +tC3IYsQ9Dg+VzOFSQHCgFHRvm/UNdW/yv4j8tKnF6nRfTvx5WA5zC8eZfZcQacmdeKo
+         HCV2n/T2W0/ALwJGUYUSZrFpvW/UI0Zow8At1tHWCfeFeF39tq/Cgr6zHY2cVFj3LhLC
+         itjfc/BWhOQ7YgxF6kMy9iO449K55lcfdIVK16pNsXxNuX45yYWeQOHOkVhGfDpbj02M
+         xf7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714104986; x=1714709786;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nPxarOGHNi8/phOxHc8/TqNc9y5wB5j9HDUxvMf3rik=;
+        b=oco3k7ztdMGMrbuIF002Du9s/d2+jxwBzAn83pUeDRcrEacqcf5OHGSx5KA75OTifX
+         uv/3NyebvQ815OiENOXlyWudFr3P6W1C/FW5NafpEd3yv8RoJeYSOToYhw5GmChxeSm1
+         2/9jEKMfuk+agzrx8kmzH6sAWlXc6ZOOjCcKE2PSGv9Xp1VsTpY/fmvdTTq7qPCxBs2K
+         w9saEujYn3TafUmQYooR1f5QIWpFXZ1IertmRIbTbVIyAPZGKzyQygrRcSz5O6utyGVl
+         8VdeSqBoXYKVI1Vd4b5KN7nTivdYkIYKyd8H76LPgHaTQ6tFRChbk79FQ6oTdwmL2gfn
+         V72w==
+X-Forwarded-Encrypted: i=1; AJvYcCWMvWOtviYst0QjASznrwySqQA9J+t7JkjRdk7QJXAVz0APw/UCYtD0ag3GsDFgKCEv6SxlC2DsbfGWgySK4zqpjun1qVvjgSVNoEXzA73rH6Mb6810NX7/aXlbkBAA80Sm
+X-Gm-Message-State: AOJu0YxWN6M6ZRSvIT8iN3XpMJoPOm8Hqm2DKgysG4q3yEBwBh6akCQK
+	1MCTfk0Pxr+A6vpXgvTPvv2Y7jLK2sH7a5FEBP56O82fyDssZkbQ
+X-Google-Smtp-Source: AGHT+IHeG8VpdY6v+rRn/4gP6YO95Bc/nPm6EgDbGfMIbAFq60wqlLb284jt5mRC/V16Pq/FkgWw9Q==
+X-Received: by 2002:a17:90a:6fe2:b0:2a4:6ce7:37ad with SMTP id e89-20020a17090a6fe200b002a46ce737admr2778411pjk.5.1714104986454;
+        Thu, 25 Apr 2024 21:16:26 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id x13-20020a170902ec8d00b001e9684b0e07sm9426780plg.173.2024.04.25.21.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 21:16:26 -0700 (PDT)
+From: Yi Wang <up2wing@gmail.com>
+X-Google-Original-From: Yi Wang <foxywang@tencent.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	wanpengli@tencent.com,
+	foxywang@tencent.com,
+	oliver.upton@linux.dev,
+	maz@kernel.org,
+	anup@brainfault.org,
+	atishp@atishpatra.org,
+	borntraeger@linux.ibm.com,
+	frankja@linux.ibm.com,
+	imbrenda@linux.ibm.com,
+	weijiang.yang@intel.com
+Cc: up2wing@gmail.com
+Subject: [v4 RESEND 0/3] KVM: irqchip: synchronize srcu only if needed
+Date: Fri, 26 Apr 2024 12:15:56 +0800
+Message-Id: <20240426041559.3717884-1-foxywang@tencent.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422230257.1959-1-peter.colberg@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 07:02:57PM -0400, Peter Colberg wrote:
-> Add PCI subdevice ID for the Intel D5005 Stratix 10 FPGA card as
-> used with the Open FPGA Stack (OFS) FPGA Interface Manager (FIM).
-> 
-> Unlike the Intel D5005 PAC FIM which exposed a separate PCI device ID,
-> the OFS FIM reuses the same device ID for all DFL-based FPGA cards
-> and differentiates on the subdevice ID. The subdevice ID values were
-> chosen as the numeric part of the FPGA card names in hexadecimal.
-> 
-> Link: https://github.com/OFS/dfl-feature-id/pull/4
+From: Yi Wang <foxywang@tencent.com>
 
-Any reason to put the Link in changelog. I didn't see it provide any
-extra info.
+We found that it may cost more than 20 milliseconds very accidentally
+to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+already.
 
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+The reason is that when vmm(qemu/CloudHypervisor) invokes
+KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+might_sleep and kworker of srcu may cost some delay during this period.
+One way makes sence is setup empty irq routing when creating vm and
+so that x86/s390 don't need to setup empty/dummy irq routing.
 
-Besides,
+Note: I have no s390 machine so this patch has not been tested
+thoroughly on s390 platform. Thanks to Christian for a quick test on
+s390 and it still seems to work[1].
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
+Changelog:
+----------
+v4:
+  - replace loop with memset when setup empty irq routing table.
 
-> ---
-> This patch was applied to Linux v6.9-rc5 and tested on an Intel D5005
-> card flashed with the latest released OFS 2024.1-1 D5005 FIM.
-> 
-> # fpgainfo fme D8:00.0
-> Intel FPGA Programmable Acceleration Card D5005
-> Board Management Controller, MAX10 NIOS FW version: 2.0.12 
-> Board Management Controller, MAX10 Build version: 2.0.8 
-> //****** FME ******//
-> Interface                        : DFL
-> Object Id                        : 0xED00002
-> PCIe s:b:d.f                     : 0000:D8:00.0
-> Vendor Id                        : 0x8086
-> Device Id                        : 0xBCCE
-> SubVendor Id                     : 0x8086
-> SubDevice Id                     : 0x138D
-> Socket Id                        : 0x00
-> Ports Num                        : 01
-> Bitstream Id                     : 0x4010002183C88A9
-> Bitstream Version                : 4.0.1
-> Pr Interface Id                  : a195b6f7-cf23-5a2b-8ef9-1161e184ec4e
-> Boot Page                        : user
-> 
-> Link: https://github.com/OFS/ofs-d5005/releases/tag/ofs-2024.1-1
-> ---
-> The missing subdevice ID 0x138d was noticed while testing the patch
-> series "fpga: dfl: fix kernel warning on port release/assign for SRIOV"
-> applied to v6.9-rc4 on an Intel D5005 card. The absence of the subdevice
-> ID was shadowed by an internal patch in the downstream Linux DFL kernel
-> ("fpga: dfl: Add wildcard sub-device ID for intel DFL devs").
-> 
-> Link: https://github.com/OFS/linux-dfl/commit/27d3d71824f086acae86e41a87b591838b7fa9d1
-> ---
->  drivers/fpga/dfl-pci.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-> index 98b8fd16183e..80cac3a5f976 100644
-> --- a/drivers/fpga/dfl-pci.c
-> +++ b/drivers/fpga/dfl-pci.c
-> @@ -78,6 +78,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
->  #define PCIE_DEVICE_ID_SILICOM_PAC_N5011	0x1001
->  #define PCIE_DEVICE_ID_INTEL_DFL		0xbcce
->  /* PCI Subdevice ID for PCIE_DEVICE_ID_INTEL_DFL */
-> +#define PCIE_SUBDEVICE_ID_INTEL_D5005		0x138d
->  #define PCIE_SUBDEVICE_ID_INTEL_N6000		0x1770
->  #define PCIE_SUBDEVICE_ID_INTEL_N6001		0x1771
->  #define PCIE_SUBDEVICE_ID_INTEL_C6100		0x17d4
-> @@ -101,6 +102,8 @@ static struct pci_device_id cci_pcie_id_tbl[] = {
->  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005_VF),},
->  	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5010),},
->  	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5011),},
-> +	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL,
-> +			PCI_VENDOR_ID_INTEL, PCIE_SUBDEVICE_ID_INTEL_D5005),},
->  	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL,
->  			PCI_VENDOR_ID_INTEL, PCIE_SUBDEVICE_ID_INTEL_N6000),},
->  	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL_VF,
-> -- 
-> 2.44.0
-> 
-> 
+v3:
+  - squash setup empty routing function and use of that into one commit
+  - drop the comment in s390 part
+
+v2:
+  - setup empty irq routing in kvm_create_vm
+  - don't setup irq routing in x86 KVM_CAP_SPLIT_IRQCHIP
+  - don't setup irq routing in s390 KVM_CREATE_IRQCHIP
+
+v1:
+  https://lore.kernel.org/kvm/20240112091128.3868059-1-foxywang@tencent.com/
+
+1. https://lore.kernel.org/lkml/f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com/
+
+
+Yi Wang (3):
+  KVM: setup empty irq routing when create vm
+  KVM: x86: don't setup empty irq routing when KVM_CAP_SPLIT_IRQCHIP
+  KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
+
+ arch/s390/kvm/kvm-s390.c |  9 +--------
+ arch/x86/kvm/irq.h       |  1 -
+ arch/x86/kvm/irq_comm.c  |  5 -----
+ arch/x86/kvm/x86.c       |  3 ---
+ include/linux/kvm_host.h |  1 +
+ virt/kvm/irqchip.c       | 19 +++++++++++++++++++
+ virt/kvm/kvm_main.c      |  4 ++++
+ 7 files changed, 25 insertions(+), 17 deletions(-)
+
+-- 
+2.39.3
+
 
