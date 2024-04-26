@@ -1,161 +1,127 @@
-Return-Path: <linux-kernel+bounces-159984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9C88B3728
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:24:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571168B372D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:26:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F9911C21E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:24:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DBC72845EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D440145B24;
-	Fri, 26 Apr 2024 12:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32693145FFC;
+	Fri, 26 Apr 2024 12:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kstsaHIR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Q/okE3gT"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7355641C6D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 12:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E9114535C;
+	Fri, 26 Apr 2024 12:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714134245; cv=none; b=kICsy7qwuva7mRv+XpY3RdGtL7+O2wSKL1tFWINDlqwH3Iov/aKeyVE6f6uwn0jZAr53DQt5YdkXjK/TSZ9TPOiiDSudz7so4gyfhmlrruKKq10V70/c3fqbF2vMWSRQacj9myvi9Y8/V4SK9fMgFi7SQps3mX00D62uAQanvDQ=
+	t=1714134367; cv=none; b=EISiH7ahcGl5V2lOvHHOfez7SlP1Zh1wP9hibuStpANSkkXfi9dpUF4Vqi4HgtTc6HlQGO7FEEotPIXHi+TeKTBXSEH7lm3NwkgDTHMTkT27qWcqb8+ZggVUB8BJtcQGC3w8mxtuZsaSoguXDsrbCoTrD5DWCTwWD03/MyaBb2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714134245; c=relaxed/simple;
-	bh=9cvGgf6hipxxJapz58GN2PB+3Lbpwbf+b3JzQ0ChyHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHtt+t851zsm7brnQshCDEYMQYLFtiY1Y0AM6AOW+SsEu5DNE+Wn77aej+QNaYcN0gpw+S8o4M0htQb7adsaAIehTaJCg5gtNT/lCUZgXIaSNmlWVU0RbnxWWR1KkVF+Yx7J5Cv6h3UMH7FbaT70evEowoAaQQ3GabuBQwsM1Po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kstsaHIR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F4BC113CD;
-	Fri, 26 Apr 2024 12:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714134245;
-	bh=9cvGgf6hipxxJapz58GN2PB+3Lbpwbf+b3JzQ0ChyHc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kstsaHIRcEF4YJnrfxedsHtMzeMNuTN3bhr0m0pj7Z/E1KFyoYUX/qVGWXq5LfvsK
-	 JGQsrbM6mwGbcBLGU6njOv64v61xwvHtGplegXyoTIw48Ym64U3sqKjqA8O/00ApCA
-	 8zcFOA/+XP+l1IvkoWQo3kjWvXiyXahr3sePob1N9GFVUCW2TQUHkEjzf3aySo30gS
-	 k+wSdzIovXmFjJoE+aruvTftxso74Kxv2CV7bhl7Sn+YWGJDqa5dUrwwI8OB9c/YSc
-	 82zSp1oFy27n+PpMQDwMCp/EusDVTPCiGN+43Y3Vi60rbwqPRjdcJTterTGknr+X+t
-	 EDMj9aEq/Avnw==
-Date: Fri, 26 Apr 2024 08:24:02 -0400
-From: Paul Gortmaker <paulg@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Richard Purdie <richard.purdie@linuxfoundation.org>
-Subject: Re: Intermittent Qemu boot hang/regression traced back to INT 0x80
- changes
-Message-ID: <20240426122402.GA36092@kernel.org>
-References: <20240424185806.GB101235@kernel.org>
- <20240424195157.GGZili3b-AxmUDlipA@fat_crate.local>
+	s=arc-20240116; t=1714134367; c=relaxed/simple;
+	bh=dYh57E6ZQFNHZXIEQC6AnVwy5RS0Foaz8BUdG7uKogU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j02TNXSiUSWtH8fwTLATSsaHHuHWJt617A0tQdqjDykN4ygVI5tkROko3bqdmo2BxD2ynhKg3IfcsgJVXc2/oQR4/sU4ls/6yNnQKeANQovdz9yRRQ175kqaSf1SYcJ4fvCvpLoO36YvVs1OEqLSGFD+hWjhF1PsPE4BydseyvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Q/okE3gT; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43QBdJgL011896;
+	Fri, 26 Apr 2024 12:25:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=fHEAhtk
+	w2wOoewJBYMs/2MEtu56/1mA6pRiADYx7uCk=; b=Q/okE3gTGMdnRj5Q6etX5yv
+	OWmDLBFHKWmhfBMmRImGE0JvHEPulvsghahGPWjUWsA+D/2OVkjimZk8nQimLnIj
+	r5gCIxXMlYlOWVzZZzPFJxs2a5qkE2DcKPfOAaK/1rvPmfR5SUwg1s4YPbyjpyIF
+	oQGXbtucyrk5EFeCSkvjKD8lBEWoMOVFW4BdQIdM+ErOB8v7M6SH6W79cBZ/2Ybq
+	L5Ot9ZqTtmdm5iFJOuafZNIlznc9IxKE+xkO+akwHdgMtQ8AkQA0UDh8WG420dpL
+	GdtSn/03nM1cSMxqAgSF55Ko92TZR5BjMYhF7TJXnyzRDWC0ckG2b3GYNzHk8yg=
+	=
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr3591t0v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 12:25:43 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43QCPf37005147
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Apr 2024 12:25:41 GMT
+Received: from hu-kuruva-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Fri, 26 Apr 2024 05:25:35 -0700
+From: Rajashekar kuruva <quic_kuruva@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>,
+        Rajashekar kuruva <quic_kuruva@quicinc.com>
+Subject: [PATCH] [RFC PATCH] ALSA: usb-audio: endpoint: Prevent NULL pointer deference in snd_usb_endpoint_close
+Date: Fri, 26 Apr 2024 17:55:11 +0530
+Message-ID: <20240426122511.547755-1-quic_kuruva@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424195157.GGZili3b-AxmUDlipA@fat_crate.local>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3qfEpPMRQq5Ur703ay_jX8btNchQt73f
+X-Proofpoint-ORIG-GUID: 3qfEpPMRQq5Ur703ay_jX8btNchQt73f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ clxscore=1011 mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=968
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404260082
 
-[Apologies for repeated info; last mail didn't make it to the list]
+When multiple plug-in and plug-out events occur,
+there is a risk of encountering a NULL pointer dereference
+leading to a kernel panic during a headset use-case.
+this issue arises in the snd_usb_endpoint_close function
 
-[Re: Intermittent Qemu boot hang/regression traced back to INT 0x80 changes] On 24/04/2024 (Wed 21:51) Borislav Petkov wrote:
+To avoid check if ep->iface_ref is not null before decrementing
+its opened count. If ep->iface_ref is null, we skip the decrement
+and the subsequent logic.
 
-> On Wed, Apr 24, 2024 at 02:58:06PM -0400, Paul Gortmaker wrote:
-> ...
-> > pci 0000:00:1d.0: [8086:2934] type 00 class 0x0c0300 conventional PCI endpoint
-> > pci 0000:00:1d.0: BAR 4 [io  0xc080-0xc09f]
-> > pci 0000:00:1d.1: [8086:2935] type 00 class 0x0c0300 conventional PCI endpoint
-> > pci 0000:00:1d.1: BAR 4 [io  0xc0a0-0xc0bf]
-> > pci 0000:00:1d.2: [8086:2936] type 00 class 0x0c0300 conventional PCI endpoint
-> > <hang - not always exactly here, but always in this block of PCI printk>
-> 
-> How would those commits have anything to do with such an early hang?!
-> 
-> Nothing that early is issuing INT80 32-bit syscalls, is it?
-> 
-> Btw, can you checkout the Linus tree at...
-> 
-> f35e46631b28 Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-> f4116bfc4462 x86/tdx: Allow 32-bit emulation by default
-> 
-> 
-> <-- here and test that commit as the top one?
-> 
-> 55617fb991df x86/entry: Do not allow external 0x80 interrupts 
+Signed-off-by: Rajashekar kuruva <quic_kuruva@quicinc.com>
+---
+ sound/usb/endpoint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-They both show the issue, but that really doesn't matter now.  When you
-guys pointed out it really didn't make sense, I did what I should have
-done before - tested the crap out of ^1, the trunk just before the
-INT80 merge:
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 8f65349a06d3..0e3101b7e392 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -950,7 +950,7 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ 	usb_audio_dbg(chip, "Closing EP 0x%x (count %d)\n",
+ 		      ep->ep_num, ep->opened);
+ 
+-	if (!--ep->iface_ref->opened &&
++	if (ep->iface_ref && !--ep->iface_ref->opened &&
+ 		!(chip->quirk_flags & QUIRK_FLAG_IFACE_SKIP_CLOSE))
+ 		endpoint_set_interface(chip, ep, false);
+ 
+-- 
+2.25.1
 
-commit f35e46631b28a63ca3887d7afef1a65a5544da52
-Merge: 55b224d90d44 f4116bfc4462
-       ^^^^^^^^^^^^
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Dec 7 11:56:34 2023 -0800
-
-    Merge tag 'x86-int80-20231207' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-
-..which would be 55b224d90d44 (parisc merge).  So I left that run
-for near 24h (almost 2000 runs), and got 8 PCI-hang instances.  :(
-Which means INT80 isn't even there yet.
-
-So I owe you guys an apology for pointing the finger at INT80.  I still
-don't understand how the pseudo bisect on v6.6-stable seems so
-"concrete".  The v6.6.6 worked "fine" (it seemed) and v6.6.7 died fairly
-quickly.  The revert of INT80 on v6.6.7 seemed to "fix" it - but if so,
-it was only because it perturbed something else.
-
-I already knew my "good" bisect points were not "proven" good, but only
-statistically "good".  Seems I need to revisit some of those "good" data
-points (both on v6.6-stable) and on mainline and test longer.
-
-> 
-> which reminds me - that hang could be actually that guest kernel
-> panicking but the panic not coming out to the console.
-> 
-> When it hangs, can you connect with gdb to qemu and dump stack and
-> registers?
-> 
-> Make sure you have DEBUG_INFO enabled in the guest kernel.
-
-I want to try some of these things, but I also don't want to
-accidentally lose the reproducer I have.  Maybe I'll see if I can
-reproduce it at home, since I'll lose use of the current box in a week
-anyway...
-
-Again, sorry for the false positive.  I let the v6.6-stable testing bias
-my mainline conclusions to where I didn't test underneath INT80.  I'll
-follow up with more details once (if?) I manage to properly sort this.
-
-Paul.
---
-
-> 
-> Is this even a guest?
-> 
-> I know you had guests last time you reported the alternatives issue.
-> 
-> Right, and then test the tree checked out at this commit:
-> 
-> be5341eb0d43 x86/entry: Convert INT 0x80 emulation to IDTENTRY
-> 
-> The others should be unrelated...
-> 
-> b82a8dbd3d2f x86/coco: Disable 32-bit emulation by default on TDX and SEV
-> 
-> Hmm.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
 
