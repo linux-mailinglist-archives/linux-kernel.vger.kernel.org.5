@@ -1,137 +1,99 @@
-Return-Path: <linux-kernel+bounces-159414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A958B2E54
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:26:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE0178B2E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 03:26:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 664131C21B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:26:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A8292840A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 01:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2732517FF;
-	Fri, 26 Apr 2024 01:26:40 +0000 (UTC)
-Received: from mail-m3296.qiye.163.com (mail-m3296.qiye.163.com [220.197.32.96])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14AE4C8C;
+	Fri, 26 Apr 2024 01:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YUheuyL/"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD897F8;
-	Fri, 26 Apr 2024 01:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.32.96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F41EA4
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 01:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714094799; cv=none; b=gCHkub3ucTTIesU3JFQs4gwPrrfU/8uWh6lgJGC16/ekT5cjfwDyorbyNh2KxOIy1zJPbgTReSENtM/rMm+yAllKvhbXmKNdnadL0VmjQRUDwkpQq4WpxWXthnx38L8vtva5CJ69kGyVAXy7pM6AkXBfdTSdcU/3VAAdDeU+ejM=
+	t=1714094801; cv=none; b=tk5C0GS+VLktyA0RjzHTwF7oU2y/9LwiDlHtwPEYHe7kOGSnxrGVjaY6pBiN9bp+pdJaZTnZH31pPwtO0NesJWmEFU05OH2r828YijbXmwkf0+e3Ja+OnOVW9umlTLl3bX5C/mpK15XeutbKJ7lEyco+u4y7fZDQddtvxjswaO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714094799; c=relaxed/simple;
-	bh=3xE+7K7ojONhLEDdZlIdx4TbxDGU7UCPcCuHDWCcDH4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=WyEkKf9kM3Sa+9Bip1uDPbLcZJTjKNKe2Cdbei2HNuusNk2rm3vBpug638GWgHbB1rwNNv3nQTUOodzatXwx085W01/HIQfbWUkw6ORQPRDHKfAflGYHrMyQHDfciTe4+PAVhI6n1OMsZJmR8s5Y3GuI7plpaIIh++FRXM3Cmlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=220.197.32.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from [192.168.122.189] (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 426828601B7;
-	Fri, 26 Apr 2024 09:25:55 +0800 (CST)
-Subject: Re: [PATCH RFC 0/7] block: Introduce CBD (CXL Block Device)
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, axboe@kernel.dk,
- John Groves <John@groves.net>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
- Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
- <66288ac38b770_a96f294c6@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <ef34808b-d25d-c953-3407-aa833ad58e61@easystack.cn>
- <ZikhwAAIGFG0UU23@memverge.com>
-From: Dongsheng Yang <dongsheng.yang@easystack.cn>
-Message-ID: <bbf692ec-2109-baf2-aaae-7859a8315025@easystack.cn>
-Date: Fri, 26 Apr 2024 09:25:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+	s=arc-20240116; t=1714094801; c=relaxed/simple;
+	bh=1q0TtaQtyMdaDuRgZ4Nyk3S/pmz6Klbw2ZPW+55Ew8k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OjLZUnGz6VkslJarY2DIIVAU0iWCBDY2RNiMeUumRqLY/SGL7UwErVwHSjfEy5lL3A3iIX8trQpgIZj95O+KUYOEAlDDbSx0lP0SN765yJsi4BKAGr2f6CpzT7N9SJBEKRCV/iYgZVeK3FE+4dzntm6P6VbJogsdvzXTwyKQDfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YUheuyL/; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-617e6c873f3so16811187b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Apr 2024 18:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714094798; x=1714699598; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9TWcvH5EBDAropkGpa6+CbLQtgma11A46fGKwwuf4k=;
+        b=YUheuyL/5X1gsBAvSaOoT8H6EQWublfBMXNCLJt3EO0OX7JY2kGZGYJse0xd1ToLpA
+         wbaa56WKZ4X8E26I1I8nQ58XryXVrKlgjicPcWDUfSba0+Yo9fgg6T7EY+jPFgbyrvBv
+         ldDVESyrL/FNFq8vWvBh6gcYZaxL9gq4U25v1SyN7uHlfRKKPi5XGozHLMAkIZx0i6sS
+         am6xR3t14iJV5nQ/73pzWCCBR/5MmfHR3o/VpmnzIb18kPDJgJoxiF/Qo1fpvNBQpP6r
+         hrCJ90//ESQ+FKB1ZYEy3zIo62Zt1i1KS+FgzgSB0NTEwPkZpXmDGL6JpfunrKNjkn+H
+         CcEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714094798; x=1714699598;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N9TWcvH5EBDAropkGpa6+CbLQtgma11A46fGKwwuf4k=;
+        b=X5WP3OZ77cpN3NtzONTJrtrCnXyYAX7rNAcmvBb+yJ1D5AjqJM7iyCZ69Us6VrkB7A
+         nM9P5RXv053WRpPfwAyBG23GT0XhkQxKg0yeJTwvAoC2PWXi6RV+FfnXOt4BMtJvNvlz
+         /tbzSRyLHMEba/1ui3RBMWskAVXW5ZPmFyer/gBKxv9Ps5B/k1oDvsvHrAlHRgq9kTtZ
+         c8Tbze2zeuIJ+sWsCO+RBy6ULONRzYY592Y0tGoFLphs0oX8UeGPoImmHpvMxdrvNPg7
+         JZ8kjpFXCUboQXcYjorkMRPpvM1cAb+5ABwtmZYtwhluWDBHNYjP6/sf5X2eV3Kesy5d
+         UGjA==
+X-Gm-Message-State: AOJu0Yx/CbuKOu0Vw3bgAPBWFanwSnEIibYrGDslFToN+QdBMCCoWYW7
+	wFMN4PeGQNmsazqHRRuOnDRjtl7ID9xI0Y85MNA+mytfeQ17UthUUamd008ALlr5THMtcreVsWS
+	NXgV+X2RXxpGsXZZwzbSED86uOeUtQRPVZVdjoQ==
+X-Google-Smtp-Source: AGHT+IHJzHEvKWC4gA7GYM8pPCmbmIkkDpzJGkE+0E4qvqcAPNQ3QfLmUlX5Bc4aSvMtqInOlIdJ5HDmReZ7s5C8YeQ=
+X-Received: by 2002:a05:690c:7201:b0:615:f53:64de with SMTP id
+ jl1-20020a05690c720100b006150f5364demr1245954ywb.29.1714094798725; Thu, 25
+ Apr 2024 18:26:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZikhwAAIGFG0UU23@memverge.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZSB8dVk1CTkMYSUgeQktDGFUZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8f18024efa023ckunm426828601b7
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NDI6TDo*HzcwIxY3GFEcNAlL
-	CEhPFEhVSlVKTEpPS0JPTE5NS09NVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBT0JISTcG
+References: <20240426104618.43d926d3@canb.auug.org.au>
+In-Reply-To: <20240426104618.43d926d3@canb.auug.org.au>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 26 Apr 2024 04:26:26 +0300
+Message-ID: <CAA8EJprYTKSwS+r+u3yVbo7cLVkA+XnBT9UHVt+yM4Qp3u-GnQ@mail.gmail.com>
+Subject: Re: linux-next: error fetching the drm-msm-lumag tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi,
+
+On Fri, 26 Apr 2024 at 03:46, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Fetching the drm-msm-lumag tree produced this error:
+>
+> fatal: couldn't find remote ref refs/heads/msm-next-lumag
+
+Should be fixed now
 
 
 
-在 2024/4/24 星期三 下午 11:14, Gregory Price 写道:
-> On Wed, Apr 24, 2024 at 02:33:28PM +0800, Dongsheng Yang wrote:
->>
->>
->> 在 2024/4/24 星期三 下午 12:29, Dan Williams 写道:
->>> Dongsheng Yang wrote:
->>>> From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
->>>>
->>>> Hi all,
->>>> 	This patchset introduce cbd (CXL block device). It's based on linux 6.8, and available at:
->>>> 	https://github.com/DataTravelGuide/linux
->>>>
->>> [..]
->>>> (4) dax is not supported yet:
->>>> 	same with famfs, dax device is not supported here, because dax device does not support
->>>> dev_dax_iomap so far. Once dev_dax_iomap is supported, CBD can easily support DAX mode.
->>>
->>> I am glad that famfs is mentioned here, it demonstrates you know about
->>> it. However, unfortunately this cover letter does not offer any analysis
->>> of *why* the Linux project should consider this additional approach to
->>> the inter-host shared-memory enabling problem.
->>>
->>> To be clear I am neutral at best on some of the initiatives around CXL
->>> memory sharing vs pooling, but famfs at least jettisons block-devices
->>> and gets closer to a purpose-built memory semantic.
->>>
->>> So my primary question is why would Linux need both famfs and cbd? I am
->>> sure famfs would love feedback and help vs developing competing efforts.
->>
->> Hi,
->> 	Thanks for your reply, IIUC about FAMfs, the data in famfs is stored in
->> shared memory, and related nodes can share the data inside this file system;
->> whereas cbd does not store data in shared memory, it uses shared memory as a
->> channel for data transmission, and the actual data is stored in the backend
->> block device of remote nodes. In cbd, shared memory works more like network
->> to connect different hosts.
->>
-> 
-> Couldn't you basically just allocate a file for use as a uni-directional
-> buffer on top of FAMFS and achieve the same thing without the need for
-> additional kernel support? Similar in a sense to allocating a file on
-> network storage and pinging the remote host when it's ready (except now
-> it's fast!)
-
-I'm not entirely sure I follow your suggestion. I guess it means that 
-cbd would no longer directly manage the pmem device, but allocate files 
-on famfs to transfer data. I didn't do it this way because I considered 
-at least a few points: one of them is, cbd_transport actually requires a 
-DAX device to access shared memory, and cbd has very simple requirements 
-for space management, so there's no need to rely on a file system layer, 
-which would increase architectural complexity.
-
-However, we still need cbd_blkdev to provide a block device, so it 
-doesn't achieve "achieve the same without the need for additional kernel 
-support".
-
-Could you please provide more specific details about your suggestion?
-> 
-> (The point here is not "FAMFS is better" or "CBD is better", simply
-> trying to identify the function that will ultimately dictate the form).
-
-Thank you for your clarification. totally aggree with it, discussions 
-always make the issues clearer.
-
-Thanx
-> 
-> ~Gregory
-> 
+-- 
+With best wishes
+Dmitry
 
