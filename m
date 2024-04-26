@@ -1,112 +1,145 @@
-Return-Path: <linux-kernel+bounces-160454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEFA68B3DAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:16:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C64E8B3DB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 19:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54CFE1F235C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DBAE1C22277
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E5E15CD59;
-	Fri, 26 Apr 2024 17:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDBD15B579;
+	Fri, 26 Apr 2024 17:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RGdUqkNM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZbhFJtxD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD8515B120;
-	Fri, 26 Apr 2024 17:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A64C15AD89
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714151752; cv=none; b=bSqGElZ7Ch6Y+Y79+7BVCPXJoOm6YZlm6YCsSeOYDGlP6sPK6qUylvWkasGVH3312lzrB4QZU5I0/ztiUZDLpe/9hVv0emiioFJPP97wpQwNz2+T4Bh7iHt+XTbWw3ximQLWvHf8c1Uc5mbYHQFeYiLzQiWL4aRHbf93wg8HNoY=
+	t=1714151794; cv=none; b=f1y+3upQR+E3L/galT7VQPWVpRWXUq/BSeJ3JU2O3K2KzpjJBI0vXKV1/ljkWLzE1S5hfipEmSdt/9Xu79Guh1twjHXCOBK+VixSbq1hNuIt50sKLzjxg4JLCGMZFBC2cTTRHkeB4kx2xjiV6MacoP2DGTaw1IYBFg62JbHI2Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714151752; c=relaxed/simple;
-	bh=4mGPU/2ttUbb1akTXtb4be4f9oyI2PMbjIcwedTgQJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m17aH/6xPfMRjVSVT8eovHVNhojy8Kv3U3jhNahrTF2555XXiLjlpJQGitV9Bf5QxpiyHlSLWsA7hPltZTHMqFpO2pFiJFUi9Fb+PmqdG2MVyqZmeJ3p/VPX65nP7MlSnM+OQMy3xdqvYdwWuo4+7FdMRkjSe7ADPzd6c+GiNCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RGdUqkNM; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714151751; x=1745687751;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=4mGPU/2ttUbb1akTXtb4be4f9oyI2PMbjIcwedTgQJM=;
-  b=RGdUqkNMR4UzTqd4awzccFNJbIa8R9TfnDJPbM0gfoDQ6xDlkcOG26Sy
-   Thyj/tgPlZWIqucmgNziOW1a6zooqUxSCzWVNpCV20vFZXTL7GyIZw4Y7
-   kQPCNGx8204j3aPGS2Dr9PK0oqmQOZrU4iAsjuAV9oOCOrS/MIMgIh95j
-   YduziLT3ctwTDWj5ew99rabr6ypEg4DjX9FbdgIF6AxW4jR4jmmKIfELr
-   iR6KwnfxIuI2blvm1rkjb1RE5kEuKj5S/lCT4Obn9qcFDV+UfFcdJocTJ
-   /V7DB7rSdISni7+J/tx3rQ87l7GLNOV+ZL5COrz5tKA9IQkw+4YgCS4Zo
-   g==;
-X-CSE-ConnectionGUID: 0ynKqLBbQvWRTDadmLtSpA==
-X-CSE-MsgGUID: lgescHGkRpqF8Agg1FXsrA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21044173"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="21044173"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:15:50 -0700
-X-CSE-ConnectionGUID: M64mleqJSvC+pOxFXSFl8g==
-X-CSE-MsgGUID: AdDV9kkoQOyTHuDgNG0Faw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="25358639"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:15:47 -0700
-Date: Fri, 26 Apr 2024 10:15:46 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
-	Sean Christopherson <seanjc@google.com>,
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-	michael.roth@amd.com, isaku.yamahata@linux.intel.com,
-	rick.p.edgecombe@intel.com
-Subject: Re: [PATCH 09/11] KVM: guest_memfd: Add interface for populating
- gmem pages with user data
-Message-ID: <20240426171546.GR3596705@ls.amr.corp.intel.com>
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-10-pbonzini@redhat.com>
- <20240423235013.GO3596705@ls.amr.corp.intel.com>
- <ZimGulY6qyxt6ylO@google.com>
- <20240425011248.GP3596705@ls.amr.corp.intel.com>
- <CABgObfY2TOb6cJnFkpxWjkAmbYSRGkXGx=+-241tRx=OG-yAZQ@mail.gmail.com>
- <Zip-JsAB5TIRDJVl@google.com>
- <20240425165144.GQ3596705@ls.amr.corp.intel.com>
- <CABgObfbAzj=OzhfK2zfkQmeJmRUxNqMSHeGgJd+JGjsmwC_f1g@mail.gmail.com>
+	s=arc-20240116; t=1714151794; c=relaxed/simple;
+	bh=5GBgcTHzbOIEDgorcFEzrdXexOgGt8UtgP6HqH2srao=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XVwzERIVfsanOEYGaIedABNrV0vZiml2e7CQYubO1VI+MJS/d7BsQBSL+zxeHd8VfAkf+/jRbmdlTA8vze2xrmY6+jfHM7J8ADBhYlyZuTY5uuh1fRJY5CYNCR+5UBi2VpHHFdIHKAfTs2pfRRuDA0Wn4muaf0+CrD+6YbCCX94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZbhFJtxD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714151791;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5eZ7lmSsHEeWREkE8QMUgqjdRO8mkI1U+zkRl58HfpU=;
+	b=ZbhFJtxDjJV8jC1+tLmD/ja+5EpzUBx1Ed/N1+obFr71uQc8DhbdV8AlWkqwWSg+HEgRLY
+	mt4z7Np11CygE/kDTElwfhvpaTejabyGoahF/GTjqiafke5B8ye/truQR96QHxQgwXyXRW
+	plqT231yqTSsYZc6di8kkDu6keoWK5s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-530-F2z9VHWJOKyN98hUIR0s_Q-1; Fri, 26 Apr 2024 13:16:29 -0400
+X-MC-Unique: F2z9VHWJOKyN98hUIR0s_Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1699F830D37;
+	Fri, 26 Apr 2024 17:16:29 +0000 (UTC)
+Received: from [10.45.225.10] (unknown [10.45.225.10])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7C79A40C6DAE;
+	Fri, 26 Apr 2024 17:16:27 +0000 (UTC)
+Message-ID: <914424cb-d74a-40b3-95e4-03d17d653467@redhat.com>
+Date: Fri, 26 Apr 2024 19:16:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next v2 0/7] i40e: cleanups & refactors
+To: Tony Nguyen <anthony.l.nguyen@intel.com>, intel-wired-lan@lists.osuosl.org
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ mschmidt@redhat.com, aleksandr.loktionov@intel.com,
+ jesse.brandeburg@intel.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+References: <20240327075733.8967-1-ivecera@redhat.com>
+ <3bd08423-18cd-6e12-38ab-4d9656c9ecf1@intel.com>
+Content-Language: en-US
+From: Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <3bd08423-18cd-6e12-38ab-4d9656c9ecf1@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfbAzj=OzhfK2zfkQmeJmRUxNqMSHeGgJd+JGjsmwC_f1g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Fri, Apr 26, 2024 at 07:44:40AM +0200,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
-
-> On Thu, Apr 25, 2024 at 6:51 PM Isaku Yamahata <isaku.yamahata@intel.com> wrote:
-> > > AFAIK, unwinding on failure is completely uninteresting, and arguably undesirable,
-> > > because undoing LAUNCH_UPDATE or PAGE.ADD will affect the measurement, i.e. there
-> > > is no scenario where deleting pages from guest_memfd would allow a restart/resume
-> > > of the build process to truly succeed.
-> >
-> >
-> > Just for record.  With the following twist to kvm_gmem_populate,
-> > KVM_TDX_INIT_MEM_REGION can use kvm_gmem_populate().  For those who are curious,
-> > I also append the callback implementation at the end.
+On 12. 04. 24 23:19, Tony Nguyen wrote:
 > 
-> Nice, thank you very much. Since TDX does not need
-> HAVE_KVM_GMEM_PREPARE, if I get rid of FGP_CREAT_ONLY it will work for
-> you, right?
+> 
+> On 3/27/2024 12:57 AM, Ivan Vecera wrote:
+>> This series do following:
+>> Patch 1 - Removes write-only flags field from i40e_veb structure and
+>>            from i40e_veb_setup() parameters
+>> Patch 2 - Refactors parameter of i40e_notify_client_of_l2_param_changes()
+>>            and i40e_notify_client_of_netdev_close()
+>> Patch 3 - Refactors parameter of i40e_detect_recover_hung()
+>> Patch 4 - Adds helper i40e_pf_get_main_vsi() to get main VSI and uses it
+>>            in existing code
+>> Patch 5 - Consolidates checks whether given VSI is the main one
+>> Patch 6 - Adds helper i40e_pf_get_main_veb() to get main VEB and uses it
+>>            in existing code
+>> Patch 7 - Adds helper i40e_vsi_reconfig_tc() to reconfigure TC for
+>>            particular and uses it to replace existing open-coded pieces
+> 
+> Hi Ivan,
+> 
+> With the new checks on kdoc [1], this now reports issues. Can you fix 
+> those? Feel free to send the new version to 'net-next' as our validation 
+> has finished their testing on this series.
+> 
+> You can add my
+> 
+> Reviewed-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> 
+> Thanks,
+> Tony
 
-Yes, that's right.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Huh, I missed your email. Will send v3.
+
+Thanks,
+Ivan
+
+>> Changes since v1:
+>> - adjusted titles for patches 2 & 3
+>>
+>> Ivan Vecera (8):
+>>    i40e: Remove flags field from i40e_veb
+>>    i40e: Refactor argument of several client notification functions
+>>    i40e: Refactor argument of i40e_detect_recover_hung()
+>>    i40e: Add helper to access main VSI
+>>    i40e: Consolidate checks whether given VSI is main
+>>    i40e: Add helper to access main VEB
+>>    i40e: Add and use helper to reconfigure TC for given VSI
+>>
+>>   drivers/net/ethernet/intel/i40e/i40e.h        |  30 ++-
+>>   drivers/net/ethernet/intel/i40e/i40e_client.c |  28 +--
+>>   drivers/net/ethernet/intel/i40e/i40e_ddp.c    |   3 +-
+>>   .../net/ethernet/intel/i40e/i40e_debugfs.c    |  36 +--
+>>   .../net/ethernet/intel/i40e/i40e_ethtool.c    |  29 ++-
+>>   drivers/net/ethernet/intel/i40e/i40e_main.c   | 205 ++++++++++--------
+>>   drivers/net/ethernet/intel/i40e/i40e_ptp.c    |   6 +-
+>>   .../net/ethernet/intel/i40e/i40e_register.h   |   3 +
+>>   drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  98 ++++++---
+>>   drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   3 +-
+>>   .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  14 +-
+>>   11 files changed, 282 insertions(+), 173 deletions(-)
+> 
+> [1] https://lore.kernel.org/netdev/20240411200608.2fcf7e36@kernel.org/
+> 
+
 
