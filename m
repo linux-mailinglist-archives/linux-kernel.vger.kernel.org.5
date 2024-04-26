@@ -1,141 +1,112 @@
-Return-Path: <linux-kernel+bounces-160366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDF78B3C92
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:15:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB4458B3C71
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2268A1F234E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:15:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B6AB218A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ABA615380E;
-	Fri, 26 Apr 2024 16:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0187914EC5F;
+	Fri, 26 Apr 2024 16:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="VJpqabk5"
-Received: from smtpcmd0642.aruba.it (smtpcmd0642.aruba.it [62.149.156.42])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U5uli2Iz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336ED1FC4
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AA21DDD6
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 16:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714148128; cv=none; b=BehPnAXR9CZnl6lZszYm/IqCJiUs5yxAF4JOBrJ9VoctDwOShU6JLz0cdcKdSU0PcrNb9JScHxoZYkWZwTzex6jOJA8+EUe8/3aC08ChWtOPTrHLhMGii9snSr5w7phwdisO5WOcr7hRo/YkAw6vMNmbDmhuCe0KOnuw9ZY0Tsk=
+	t=1714147754; cv=none; b=Fs0f9BbV4KtO2lejS8gCv22GYLT2CfiRbekV4GkeykoKprm1GixEttfJt3ym886urTa3YOgIBGhPV99/S5ZYysmGpxHluvI8kx6GeSaflFfPmgWHClPKLw7W+ku3IdurETQ/Jr9/iSAqCF0DTvy4ewcMqDlRv+tf7T/N67xxj5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714148128; c=relaxed/simple;
-	bh=pnyXw/ftob25tneROsiaKUILSD4JRB3GjJx1OTH8R2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tkx1keQucClwHhTtAwyv9oTqiBKJ7C36WrkoBCUu29RSbLF5GYz9kHYOjkhCK0De75ukdw1DCxmGzPxlU1ES7MBZjTPqifaUPtDSpRX49tPtEBVsox/kWsPSPTN8V4NJNykxP3K6fx1c00Vv1EO7qmpc3U3DqN3CC1U4A64xJWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=VJpqabk5; arc=none smtp.client-ip=62.149.156.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam ([146.241.23.148])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id 0O7Rsyf2ImFXq0O7SsDdoJ; Fri, 26 Apr 2024 18:08:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1714147695; bh=pnyXw/ftob25tneROsiaKUILSD4JRB3GjJx1OTH8R2U=;
-	h=Date:From:To:Subject:MIME-Version:Content-Type;
-	b=VJpqabk5ECoNvuraq1mYIGZvGuHGXNdrEX1Oq+11FkQs2WDYu516Mj9yVj4GosqtP
-	 LFJrAQJ7TacT5InoM3oI4nhWKgSaymieOXUQuPFNyKXpshkRxbb0Cg4R6XuHCzUemO
-	 zeZol0zfC90C+y+BLq6b4VKNxiOGqCLwW/a/o1K98ju/CFFsilYFKV32q+r3wfgzUw
-	 TEmmGJC8bXOf9NoJpVWiTvae/haubHCuwGpprO2UgCyJrQtfg/O+HhKIeSafstbtLu
-	 vKm/gemZlHaRtdPSFaAmkNRz2lMbDUFfisAoTY0bRBaa9hsS9EQ1dI3rmYva9AtEUw
-	 WMXBXOUHcLERA==
-Date: Fri, 26 Apr 2024 18:08:12 +0200
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Cc: Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v6 3/3] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM
- 2.0 Starter Kit
-Message-ID: <ZivRbM0DiuWijsm0@engicam>
-References: <20240426152730.9806-1-fabio.aiuto@engicam.com>
- <20240426152730.9806-4-fabio.aiuto@engicam.com>
- <CAOMZO5D=Ens3f-FnjEf8SDSTCChdzKW3m7LH+t6y6qUtWsSRZg@mail.gmail.com>
- <CAOf5uwkB7Z7FUt5K8CP3sEoCEahE=ipuXX4MRZYNgDw6eMuEfg@mail.gmail.com>
+	s=arc-20240116; t=1714147754; c=relaxed/simple;
+	bh=iRAHtoHflwcOnUe6sMhMbeG7LceMsW1mwUCMgjDsfeM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=aADBqwg3l+GzY7/94yskZoSOKS0J2yaNJx33tRd9LRwuTUyYxA5j2tDUMF5UWLhQEGKMIIKu//XQUhgf1DjiKh8jzq9qTiHtuqa/vWDei83v0HeqFS7CFvaGPOK+/YdvSo824aS6F2zxsV7ND/Q4YYPGUwrYLVoK8KnBFXkkMNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U5uli2Iz; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714147752; x=1745683752;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=iRAHtoHflwcOnUe6sMhMbeG7LceMsW1mwUCMgjDsfeM=;
+  b=U5uli2IzHdHJMmssJBP0VkMofgk6dQNFgyWBzJcvNZOs2gPAx8uoRaEd
+   aZO7qHFSwz8eoSdcNjf8eicYsxnw2dDho2Ls1GajBJKKYpp/z5jvFj8I2
+   o6dcVhQZsiHK4koGSYujU/pk6IQpRUWv6LdTT6dGQGiDlOCN34ANC3jXG
+   H7DL5JVcEp6eueT10IUnDyR6Cx3rW9tLRquYa5M1ICR2B3cpL8NP/P8mP
+   tjLlpXFmqlz9alTGgU9TwGxEo0OpzB0ED5EVgPBAP+eX46dIZuAsin9Wr
+   9TRaBFAWcuRrRwJ5q0PoS4ZU3taMInvsJit47MXlnUzaNQGWAdZIOVGPq
+   Q==;
+X-CSE-ConnectionGUID: 2KtHswnfTWiMf2KQcdPiwQ==
+X-CSE-MsgGUID: QhheU2FWTfSi4AsYmrQL3w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="12823159"
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="12823159"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 09:08:57 -0700
+X-CSE-ConnectionGUID: +jd/O8cMTnCf65I4ke6Pgg==
+X-CSE-MsgGUID: v6YLQipRQIy1CYwT+OcYaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
+   d="scan'208";a="26095526"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 26 Apr 2024 09:08:56 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s0O85-0003uG-1N;
+	Fri, 26 Apr 2024 16:08:53 +0000
+Date: Sat, 27 Apr 2024 00:08:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrey Konovalov <andreyknvl@google.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>
+Subject: mm/kasan/report.c:143:20: error: unused function
+ 'kasan_kunit_test_suite_executing'
+Message-ID: <202404270029.zLvI9vVQ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOf5uwkB7Z7FUt5K8CP3sEoCEahE=ipuXX4MRZYNgDw6eMuEfg@mail.gmail.com>
-X-CMAE-Envelope: MS4xfEQHJUwPGut5HvpvFPF2pe71cWizGdRVhGS/taAnCGeAc19EvJ8snl1JKqeRzdYmu6JlGUIw/X6E6BKKxbiLt4S4opL8Ey0RE/hM1BJZB8gDGrfW4VYS
- cOWsq+L6/V//Ai30tXoqkv3rbIFViPw2Zv5HoL4pV8eai5aA5FlhSuvldApdGjGH+sNXxQfh/d6R4TQ3tLGM3P4AZC+jgN4/ew2ggZquxcd95ZIKXsNuTgbI
- /9YRbVzGRny3+2jXWTamKsaDpNkyantggycHvOBp+nTw7F24DAxNs0MQ6TAn3NXqbwDDtmw+OZElHeWFHzWySUqMPOs2Q/gpGJv8frNzdJXce/0VNK4zK1ZJ
- 3R95wEK2HsuWDw/z7KPgs/NrApq5v9VDhUVuHsylLlX/PmrdSnJ19RcNkcyEl/OHoDMnSkonv3uphhx32+0qilW9eQ7oW5JSoGPTjX7oYoeM507hJAvb8XKU
- cz6ZWuxiUluQrrQd/Ul60peNWHrxGKDycEnsB09Ela8ZqSo9q6OFXeNdZfDs1obU11ZOgr9F38ZcUd6HVU9Vlop+orI+soF8hbTGFn0vemziWz6aNo3+mcV9
- bGKLtrAatuU/G+5luvYPy1mLW33EnXi83vrNWEUUWHLEHJOLo1lsgcNc7lrtOhq7mwFU3783+GRdQiNN9N4sb21U
 
-Hello Michael,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c942a0cd3603e34dd2d7237e064d9318cb7f9654
+commit: c8c7016f50c85688d71feea2dba1bd955d5f5358 kasan: fail non-kasan KUnit tests on KASAN reports
+date:   1 year, 5 months ago
+config: x86_64-sof-customedconfig-memory-debug-defconfig (https://download.01.org/0day-ci/archive/20240427/202404270029.zLvI9vVQ-lkp@intel.com/config)
+compiler: clang version 18.1.4 (https://github.com/llvm/llvm-project e6c3289804a67ea0bb6a86fadbe454dd93b8d855)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404270029.zLvI9vVQ-lkp@intel.com/reproduce)
 
-Il Fri, Apr 26, 2024 at 05:59:39PM +0200, Michael Nazzareno Trimarchi ha scritto:
-> Hi
-> 
-> On Fri, Apr 26, 2024 at 5:56 PM Fabio Estevam <festevam@gmail.com> wrote:
-> >
-> > Hi Fabio,
-> >
-> > On Fri, Apr 26, 2024 at 12:31 PM Fabio Aiuto <fabio.aiuto@engicam.com> wrote:
-> >
-> > > +&usdhc3 { /* WiFi */
-> > > +       #address-cells = <1>;
-> > > +       #size-cells = <0>;
-> > > +       pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > > +       pinctrl-0 = <&pinctrl_usdhc3>;
-> > > +       pinctrl-1 = <&pinctrl_usdhc3>;
-> > > +       pinctrl-2 = <&pinctrl_usdhc3>;
-> > > +       mmc-pwrseq = <&usdhc3_pwrseq>;
-> > > +       bus-width = <4>;
-> > > +       no-1-8-v;
-> > > +       non-removable;
-> > > +       max-frequency = <25000000>;
-> >
-> > Is this 25MHz limitation correct?
-> 
-> This make the wifi a bit slow ;). You should be able to go to ~50Mhz at
-> 3.3v. BTW the other mux
-> are not needed "state_100mhz", "state_200mhz";
-> 
-> Sorry both Fabio, I did not see before
-> 
-> Michael
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404270029.zLvI9vVQ-lkp@intel.com/
 
-thanks for your comment, will get in touch with my colleagues
-on monday, then I will give a feedback.
+All errors (new ones prefixed by >>):
 
-kr,
+>> mm/kasan/report.c:143:20: error: unused function 'kasan_kunit_test_suite_executing' [-Werror,-Wunused-function]
+     143 | static inline bool kasan_kunit_test_suite_executing(void) { return false; }
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 error generated.
 
-fabio
 
-> 
-> 
-> Michael
-> 
-> 
-> 
-> 
-> --
-> Michael Nazzareno Trimarchi
-> Co-Founder & Chief Executive Officer
-> M. +39 347 913 2170
-> michael@amarulasolutions.com
-> __________________________________
-> 
-> Amarula Solutions BV
-> Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
-> T. +31 (0)85 111 9172
-> info@amarulasolutions.com
-> www.amarulasolutions.com
+vim +/kasan_kunit_test_suite_executing +143 mm/kasan/report.c
+
+   142	
+ > 143	static inline bool kasan_kunit_test_suite_executing(void) { return false; }
+   144	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
