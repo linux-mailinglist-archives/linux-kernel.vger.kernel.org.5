@@ -1,123 +1,168 @@
-Return-Path: <linux-kernel+bounces-159862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A3988B353A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:23:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E13638B353D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:25:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7FB1C2132F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89B8B284DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26A8143C53;
-	Fri, 26 Apr 2024 10:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38150143C55;
+	Fri, 26 Apr 2024 10:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPPbeAeB"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Oe53OgAY"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7424B142621;
-	Fri, 26 Apr 2024 10:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DA813FD6F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714127012; cv=none; b=g35bJbV3fzDNLM312754Zh7tT2cRNULc6fOxR75Z+p6sFzIsLyOSRNpxRlUbQO79lWz2+pA6ngI0Pp6j5Kgoz4ZRlA5CAKkOxTW+CHPishhWLDFrG5YnARB7mZPF/6SzOF9yCyO/C1NlhKF5WJpqSgmg2VEUEhYNM5q/heRYpf4=
+	t=1714127102; cv=none; b=p+ybNk3Hh+h2MSg5Sz85epfOyWOI8LiTdvgSABdlLKtqBTtT3blQez/TjQSE90OKqRefJd+OZl4xNg8KhUD/21FiKccAMGEcdIez8IJrh+PseJ4rwCty5pX6v305juGHMsJqLpQW3gFCp7cjnNoFd6z7iggzqDNIPZwhkezdxqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714127012; c=relaxed/simple;
-	bh=dSaUlQxpkYSG9t64O77hJy2hL1wLPGYBXMMSLyVDkkE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WCwMTYcqHhJshjgbKYQn8QFylFPRwhtQd7I9A4eAaPDThk1V29t3YpLnkHhGbde65uzldXg5uUcA5zIXmDs8WCMXqZKd/f5MfD3MnFqwhHwGWxpBTHoDgN8cDsNAh5rE1XG+1OFns/Z5qf4wmXti1fwq17Uo54fdInPay4YX5SU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPPbeAeB; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-349a33a9667so309324f8f.3;
-        Fri, 26 Apr 2024 03:23:30 -0700 (PDT)
+	s=arc-20240116; t=1714127102; c=relaxed/simple;
+	bh=JUtYLcijeqtGgZ8mfyDZQwp8GVzEzE3g72PvSnGWSH8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=II90clQHFu45BIl2RVeCyzsAGDNs5W6SmtImhs+s3atfxHjbJgmf4cSCF0sa8hS3O8X28HG9HsptASIRyCmp+qiEdmj863LeFZHoRTOp4ihag784sv0BiZ9bRir1jzTs6uRhHUq7Zmk6Hv5AUWydXqwVoVSVFUa73HJ2slvNqb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Oe53OgAY; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso27456601fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 03:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714127009; x=1714731809; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ErKC1DJY0VpHeLwTsb/v59LZhBRdBYfq9YYqdX84OHA=;
-        b=YPPbeAeBdNVCU9bSjdY3GmGdEg3V07I6EqL/RwmPk8ui8ijsa6gCA/2LbXctCh2m5U
-         eFDpdvjz+wraO/P2N9SzXgUuQITOYpp+1+DY7rhMnXKKzqmLkkD+rUwqZfdTg+G0qiZ2
-         y0xCTgTBBCAKXFAXApNt83V3r+D7ksvS3NoLJpZnex/cR7UJkATPvx4btdweOUfvCUoW
-         jwQQp20DTg7TD9UnTKSxnCs0qK5RZljeZWiTuLhA1/RjP4ealr/Fst6xFnp+IECj2ko1
-         jPQtTJHx4jZ58xd4fl0JmBDRn9UIvM9HtguidwlDjKOvzmIbDuR0ThL4tF2OFTuo1o6M
-         oCXA==
+        d=linaro.org; s=google; t=1714127099; x=1714731899; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GjocIOOFPslcP8Raryx3+Znst2AiVINzNQa4zeiKjOg=;
+        b=Oe53OgAY+dB0aXmMA7c9ZnzbLT+ZZfBtAGQFgZHOFqsmy/39RCYZOlZ9VL5ovYe7bt
+         CbQ0uR93upWke5g/2PaCpGPwYvzZXvbTlpxfkkVTADtGgZzHa1B8aNJj30Tb6efB8VY5
+         fh+RHx3axB0EKzVtJaFMBITK2NnTZagmK7Lhc/ce7K1q78EJ49LnBmSQdCV8cm+wvCLQ
+         kVe6HJVbfxav6YPvR9qCs+IicS9xIR9ACk5JFDaGTlsM0HnaTQkoq4VvO8n/XfBXy8kv
+         62EIQWOq8Y7Q0auHE30gU8tVwz/hiWu/xC1XZJLFvVuYRqrnVkzdb7JJzMpztYdcB3KZ
+         JGNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714127009; x=1714731809;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1714127099; x=1714731899;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ErKC1DJY0VpHeLwTsb/v59LZhBRdBYfq9YYqdX84OHA=;
-        b=u0FW+ZxV7mQB25beBtLHHCOqR5AlVrGmsZPRyP5kN6eQkSDaw8ftx3yKR9GzdMc2NW
-         XMrTeiYOIW93CDQsGnRSOGmR2xApLVG/eiauqZAEgk8Ep6yfhlaNxrAIfjQ40eokYnqX
-         JTVv+KSposYSgwjJxPLgOD+Z8DE46JB160rsDdq42iI+9fGPMjBTAGFStqOBoVERlJvm
-         1n9kz6Egn/UMBoyfMbyoPzrIF4duOjjWoJRVjoD6lHBskujD/J96dMA0jYLhoyDqwKLW
-         pa4zhL0QM0tJImSt6dZyb+IgjrqvGzbmU5VMUOY2KOUv1fb8zGhdlgvLLQMJBVxjIWtB
-         WcXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ4K9tqZcS6dx30UMiZuU8UzT16LK4hzZyKMbXlNO2waLX1lEFKVgao80oSiyLtik5L22FtTgr9bJkiYOOnfA0/ovaIFZBeSZpe8bT7d+wCMVamqdX6ztbi0nOmWMsLJmXGPdaGEHGZxs=
-X-Gm-Message-State: AOJu0YwJ6Y6aUaW6HvvllO/mi8rejL15X5Xq7Q66UCbUk+h/pX6g989n
-	+Jsr3FwmT0h1wZUkt8xpfWkEKSQDURe3dzNd4WOmZupMTAxxFtb9QENY/g==
-X-Google-Smtp-Source: AGHT+IER+zTu22RykLhtlZnWcnvPrKERAd8cxK+eIm1my+RfqDoYY/RbgcsAD1hSqqNV6o0l69Zbfw==
-X-Received: by 2002:a05:600c:3b96:b0:41a:c4fe:b0a5 with SMTP id n22-20020a05600c3b9600b0041ac4feb0a5mr1494943wms.4.1714127008526;
-        Fri, 26 Apr 2024 03:23:28 -0700 (PDT)
-Received: from [172.16.102.219] ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id q12-20020adfcd8c000000b00343cad2a4d3sm21883976wrj.18.2024.04.26.03.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 03:23:28 -0700 (PDT)
-Message-ID: <75e82637-9e09-4bf5-a3d4-c3c2001c63c9@gmail.com>
-Date: Fri, 26 Apr 2024 11:23:23 +0100
+        bh=GjocIOOFPslcP8Raryx3+Znst2AiVINzNQa4zeiKjOg=;
+        b=gkrgGMrLyMUemcQIbA4MR9yIh5ydOjrIo3Sq6+KG94DipIdwVUcPA8Fq2zUB/auOD2
+         JO29KaTHk7S4NaNyhLU3ZAg5xqeYEhLPZg6m6J2CG81jRBvBo8elTAjVEV3FJAaqoDX7
+         yIJgpfOvcL7RANLTcMvQqewI7ak3bGiqg6RbWFoEpDCOUV3WOKnvBt6bhUvw4OlgfSwW
+         rphnLl70tGqcxIgMwGNTh/hbPBkhvNs6zKe+i/yHJ+vRASd3ecMdqSe06suAzuj65m0a
+         UiAsf9MoUNy7QBIVMNOIlcNod4NkllTjzzv3Fyk9FTwENOTKQfpuh0qaAsM5SELMwHjy
+         HdYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUupO3rgJhBarC33XDmZ4Eemt5TY6TrnJjevAmJTsEoLP2yog0+vP/Qba30O6xlYRpip+5t14aYuHQywjeTOqUqSCvUm6GYpaKVhjGc
+X-Gm-Message-State: AOJu0Yysl/XHAl6Te3KLp4oBGTQY71T3tNzgRI7x47roM4PRGWFnMgz2
+	gV0VcrzMfEjGhRZjZnk8Cub+7rLB8cf6rjBwDOXv6NMNpJF1LCCXSswRxx5mb04=
+X-Google-Smtp-Source: AGHT+IGgmAfjUIVoeeYSKxjoNIsQG/xY+gLn8l7W0TLaues56cOcGo5fz9ODPKIQ+ni+nA+iuZuBZA==
+X-Received: by 2002:a2e:9792:0:b0:2d8:5e8b:7de4 with SMTP id y18-20020a2e9792000000b002d85e8b7de4mr1773028lji.6.1714127098593;
+        Fri, 26 Apr 2024 03:24:58 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id m15-20020a05600c460f00b0041a964b55ddsm1133147wmo.1.2024.04.26.03.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 03:24:58 -0700 (PDT)
+Date: Fri, 26 Apr 2024 13:24:54 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Sungwoo Kim <iam@sung-woo.kim>
+Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Bluetooth: L2CAP: Fix slab-use-after-free in
+ l2cap_send_cmd
+Message-ID: <5639ab86-2d12-45ce-864c-80fbc0c79094@moroto.mountain>
+References: <20240426072006.358802-1-iam@sung-woo.kim>
+ <cff764c2-a3d1-4a12-9260-54122e7a1fef@moroto.mountain>
+ <CAJNyHp+eCq1p_gTbxAJBKouAw-oQ=j5xwyjk5o-91pf_hGdrAg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] ALSA: kunit: make read-only array buf_samples
- static const
-To: Colin Ian King <colin.i.king@gmail.com>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240425160754.114716-1-colin.i.king@gmail.com>
-Content-Language: en-US
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <20240425160754.114716-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJNyHp+eCq1p_gTbxAJBKouAw-oQ=j5xwyjk5o-91pf_hGdrAg@mail.gmail.com>
 
-On 4/25/24 17:07, Colin Ian King wrote:
-> Don't populate the read-only array buf_samples on the stack at
-> run time, instead make it static const.
+On Fri, Apr 26, 2024 at 05:35:01AM -0400, Sungwoo Kim wrote:
+> > > +
+> > >       return chan;
+> >         ^^^^^^^^^^^^
+> > This doesn't fix the bug because we're returning chan.
+> >
+> > As soon as you call l2cap_chan_put() then chan will be freed by in the
+> > other thread which is doing l2cap_conn_del() resulting in a use after
+> > free in the caller.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->   sound/core/sound_kunit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Thank you for pointing this out.
+> No caller uses the return value of l2cap_connect() if the kernel
+> versions >= v6.9.
+> So, l2cap_connect() can return void.
 > 
-> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
-> index eb90f62228c0..e34c4317f5eb 100644
-> --- a/sound/core/sound_kunit.c
-> +++ b/sound/core/sound_kunit.c
-> @@ -167,7 +167,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
->   
->   static void test_format_fill_silence(struct kunit *test)
->   {
-> -	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
-> +	static const u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
->   	u8 *buffer;
->   	u32 i, j;
->   
+> One caller uses the return value of l2cap_connect() in v4.19 <= the
+> kernel versions <= v6.8.
+> In this case, the caller should unlock and put a channel.
+> 
+> Question: Can different patches be applied for different versions like
+> the above?
 
-Hi Colin,
+Ah...  Very good.  I assumed it was used.  The the commit which stopped
+using the return value, commit e7b02296fb40 ("Bluetooth: Remove BT_HS"),
+has been back ported to earlier kernels as well.
 
-Thank you for fixing this issue.
+Generally, we just write code against the latest kernel and worry about
+backports as a separate issue.  We sometimes re-write patches slightly
+if that's necessary for the backport.
 
-Acked-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+I'm not an expert in bluetooth, but I think your patch seems correct.
+Let's make l2cap_connect() void as well.  Wait for a day or two for
+other comments and then send a v2 patch.
+https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
 
--- 
-Kind regards,
-Ivan Orlov
+Here is how you write the commit message:
+========================================================================
+
+[PATCH v2] Bluetooth: L2CAP: Fix slab-use-after-free in l2cap_connect()
+
+KASAN detected a use after free in l2cap_send_cmd().
+BUG: KASAN: slab-use-after-free in l2cap_send_cmd+0x5dc/0x830 net/bluetooth/l2cap_core.c:968
+
+[free]
+l2cap_conn_del
+┌ mutex_lock(&conn->chan_lock);
+│ foreach chan in conn->chan_l:            ... (2)
+│   l2cap_chan_put(chan);
+│     l2cap_chan_destroy
+│       kfree(chan)                        ... (3)  <-- chan freed
+└ mutex_unlock(&conn->chan_lock);
+
+[use]
+l2cap_bredr_sig_cmd
+  l2cap_connect
+  ┌ mutex_lock(&conn->chan_lock);
+  │ chan = pchan->ops->new_connection(pchan);  <-- allocates chan
+  │ __l2cap_chan_add(conn, chan);
+  │   l2cap_chan_hold(chan);
+  │   list_add(&chan->list, &conn->chan_l);  ... (1)
+  └ mutex_unlock(&conn->chan_lock);
+    chan->conf_state			     ... (4)  <-- use after free
+
+To fix this, this patch holds and locks the l2cap channel.
+
+Also make the l2cap_connect() return type void.  Nothing is using the
+returned value but it is ugly to return a potentially freed pointer.
+Making it void will help with backports because earlier kernels did use
+the return value.  Now the compile will break for kernels where this
+patch is not a complete fix.
+
+Fixes: 73ffa904b782 ("Bluetooth: Move conf_{req,rsp} stuff to struct l2cap_chan")
+Signed-off-by:
+
 
 
