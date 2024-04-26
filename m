@@ -1,156 +1,159 @@
-Return-Path: <linux-kernel+bounces-160229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1138B3AC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:12:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842818B3AC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:12:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EB50B268D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389AD1F26EDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0085214A088;
-	Fri, 26 Apr 2024 15:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168BD16130A;
+	Fri, 26 Apr 2024 15:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sCM1FXj8"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0PQW8Kz"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11309149019;
-	Fri, 26 Apr 2024 15:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DBB14901E;
+	Fri, 26 Apr 2024 15:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714144193; cv=none; b=NzeWoY066ktc1TXGuaasji2US8Ig6Fhk6gCBaa7JMtOmvRpfJHvHDUiPMwj5DQPrvpAEdWw2PFFVvfgRpS6S4PBYIIbAG++rCnh2fVYC6R8KTf3P3HErL09yqX/RslCSe8xqi4oNPPGa3OmZAVhOr2s0uiOSz2TFV6KlX1yuj5U=
+	t=1714144199; cv=none; b=E+TNw3iSSHsnDmPNiNeiGNyVrKqc5g3bY3Z2Ijras2Vqr6Kf0uBsLIOrK/7VDWvadBbmiorTcQxY3aqsAixK+trkVK0kRWBzP4BSXuLTJbm3VLClo5GQKD6jHvCTT0d0M8vWbnTGBMZtc6tY6ufezCTVk36VXvzKCTmLRPqwBK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714144193; c=relaxed/simple;
-	bh=7iwWC5ZXQovuAiAHz/mYCZpJqUDhrimhennWjXiI63I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVYFxScJCgG1X97LIffU7JGvU8L440eLBU4rMIza++HaBCAdChfB9HriKpT7ifC+SIHyMAuMiY7Z1AcGy1nLqTzyl2JGWBPn2zvhH2uuefrsqk63nBwSmTHF+vzI5hiWJZASVUaCc7cUrNnFe+AF7w25T05BMnWQ7pGY1hu6uiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sCM1FXj8; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43QDp3wQ000596;
-	Fri, 26 Apr 2024 15:09:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=XQj/Ylfb4d6YBPhBaIsZnSkNdqe2sNrsfE8wIOzq64w=;
- b=sCM1FXj8xNtQFbAO2YQ9CvtF/vZPcH3UNASfAScc9zjWuvKSW2zksWdA9oZ8yWOPj5SX
- omt4Aj6CZ/oqfcR4YYVapOC8LdiUajKe7e/cP1w+GCyE0qTxCblyGViJyTFzDYT6RJDv
- BNilwSEjqrYa0x5mdfSSSmDzYRm1HvMH/L4eWcIrZvk5rkS2Y9Djuh2EkSaerN/4FXjw
- WY1MQxykhi9vz5xwENLjjZX0L4CtRnF/EPjERVN1blJkNoBUNXCxPURhdjpvasJcw712
- M2CjQGNqUj1Gm6oyLjexbiMMQGMZh6t4h2skF1VUB9+UGd93JeG0slBRWmUonLjGN9CG Eg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xrdad07q9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:09:39 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43QCrdga023042;
-	Fri, 26 Apr 2024 15:09:37 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xms1pgcph-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Apr 2024 15:09:37 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43QF9Zmv1835548
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Apr 2024 15:09:37 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1F48D58061;
-	Fri, 26 Apr 2024 15:09:35 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CD9E95805F;
-	Fri, 26 Apr 2024 15:09:34 +0000 (GMT)
-Received: from [9.61.156.17] (unknown [9.61.156.17])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 26 Apr 2024 15:09:34 +0000 (GMT)
-Message-ID: <47c8fd94-6137-4d84-99a9-e8ff86c6dc31@linux.ibm.com>
-Date: Fri, 26 Apr 2024 10:09:34 -0500
+	s=arc-20240116; t=1714144199; c=relaxed/simple;
+	bh=xAg1rEdSJo2cPRDE/hmbrMFOFTdNt/KfxhhHxARRQXE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m27ajSenVRLeMUGqi7zFdFqbG6IuGdmpLh25NWAWtn1xXV+sTpuV/RMdB2O47Ts9Icy1qT+bjAjad2SRNlj6TtS9W2n4uXAkgxQ030nTRRM3jbV++Xkzb9bzma+9BSzRJjY165wq7lrtR0wV/XxkOjFUaO02qPw7Xhe8tFpJB74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0PQW8Kz; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so28085961fa.1;
+        Fri, 26 Apr 2024 08:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714144196; x=1714748996; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QM5g5oluFXmlj44Ib9JNWX1cNnZgigxMRLezmSbkjDU=;
+        b=V0PQW8KzuH3bhahxtIJpqGgqKFxTf2LLGDy82CcnHFNm6wgI/NHCh6TY+4vH0+A6NC
+         8t3MbBJl2bHZJIGewqO2VxbeuCoVg5FGdO/MT+DRN1R22qjE7lJ69EH9L1yv4Qy2+aOo
+         I5a96emB2Fl2Akq6kJkXLp/JCH8AEvMZMPFd3KZtsJKti7+28KKUZbhv9S75BRrlXXji
+         RnCtQchVdjhRs8HYZImMLwFNWWIec1dfI2LejMlZ2YKkHj8IVcqc3cgJ/JAhLC2VTLT4
+         lykmqgvIAchF0d9yRzoVcDEw/Hpwx1ZzPUuSctbpcFAQxzi69EISAj45y1JzI0e805nM
+         uc+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714144196; x=1714748996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QM5g5oluFXmlj44Ib9JNWX1cNnZgigxMRLezmSbkjDU=;
+        b=JQXm571hLnwHCGN0fjdMGinCKMYKn+RVoy9AcqL7yCtCqIllMI7BTtDQ9W2oJGsTXl
+         yFkD0pd4/cC4uREvm18lcpqiscjzYATdRpUxTdgOSkNC9xb2uH3/ejSY/EznINFUmXHV
+         02uyCjYmb1JbPx5npVrJT7U5Z5ZqCPiQj/6Ow2yFwlU/tKAJ7bYfyNUUGNeNVN+p5+De
+         YFGjljykCD7FfkBX0lrLriGQO7zqZTK7NdeBl8oqxgAvvcB3FEDw3RIh4SYcv8NjpZEd
+         19fOTbLl7SyW6LxunO35Sn5RPlqAStOIrI/hntK1D4Ha6c4Cj0q5OdYHMdqdH36k048H
+         FZLA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgBlkLKwHKsFc+zDp6YtKEhUyUiDQHL+3/WDK+TbusxLQTnhAJS/9xwXjawBl/JGyelPnTX6mCDeZGzJvXMssz+V7mXbCCVo5Gl9k7GenQsM0SFMwe8d0AofvoZx/nXZt2IUknWkX7t6nRViRJ
+X-Gm-Message-State: AOJu0YzbUcHZ7lJNKFgsZy6erjbpiw1qLMA6/xvx6kQ2/xpk26LvjGfw
+	cIyp+gNzXKB0upyXzCyL7B8831ZjLTF3r2G8T4UH97uzmVeRVG/bNp87S1BjAJbYZP70T1/5GIO
+	EpEqP252UKdleiaB+LXlZprKpIHg=
+X-Google-Smtp-Source: AGHT+IHjGA+8BSpP9IX601ErZtEjqToo4NRZRL8kUVVAJvuSuM4qoyqiqfzKsueRULrcpzPd8ls4usMH1P6ggmAVLcM=
+X-Received: by 2002:a2e:9684:0:b0:2d6:d351:78ae with SMTP id
+ q4-20020a2e9684000000b002d6d35178aemr58304lji.29.1714144195629; Fri, 26 Apr
+ 2024 08:09:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/14] dt-bindings: fsi: Document the IBM SBEFIFO
- engine
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au
-References: <20240425213701.655540-1-eajames@linux.ibm.com>
- <20240425213701.655540-6-eajames@linux.ibm.com>
- <5fb62fcf-36a8-4efa-9387-d0af8fcafb18@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <5fb62fcf-36a8-4efa-9387-d0af8fcafb18@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BJC-K6KR8dZCpa4l5BU-e4YHq2kWKUgP
-X-Proofpoint-ORIG-GUID: BJC-K6KR8dZCpa4l5BU-e4YHq2kWKUgP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_12,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 suspectscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404260102
+References: <20240424122932.79120-1-brgl@bgdev.pl> <171397322792.12898.8815870206676100532.git-patchwork-notify@kernel.org>
+ <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com>
+In-Reply-To: <CAMRc=McMMtRid6OaYsc0PO0qsS6z+Ny127YxwNcjbo7R2Mze2Q@mail.gmail.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Fri, 26 Apr 2024 11:09:42 -0400
+Message-ID: <CABBYNZJOdccb4HKVBnuqK=_xVzViJ2D2+QJPSyyFGE2_Y1VXCg@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: qca: set power_ctrl_enabled on NULL
+ returned by gpiod_get_optional()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: marcel@holtmann.org, krzysztof.kozlowski@linaro.org, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bartosz.golaszewski@linaro.org, wt@penguintechs.org, quic_zijuhu@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Bartosz,
 
-On 4/26/24 01:20, Krzysztof Kozlowski wrote:
-> On 25/04/2024 23:36, Eddie James wrote:
->> The SBEFIFO engine provides an interface to the POWER processor
->> Self Boot Engine (SBE).
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
->> ---
+On Fri, Apr 26, 2024 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 >
->> +description:
->> +  The SBEFIFO is an FSI CFAM engine that provides an interface to the
->> +  POWER processor Self Boot Engine (SBE). This node will always be a child
->> +  of an FSI CFAM node; see fsi.txt for details on FSI slave and CFAM
->> +  nodes.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ibm,p9-sbefifo
->> +      - ibm,odyssey-sbefifo
->> +
->> +  reg:
->> +    items:
->> +      - description: FSI slave address
->> +
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 0
->> +
->> +patternProperties:
->> +  "^occ(@.*)?":
-> Why unit address is optional?
-
-
-In this case, it's because we use the reg property (reflecting the unit 
-address) to indicate the processor index of the occ node. However I 
-think I should drop the unit address here, it's meaningless, there is no 
-addressing for the OCC from the SBEFIFO.
-
-
+> On Wed, 24 Apr 2024 17:40:27 +0200, patchwork-bot+bluetooth@kernel.org sa=
+id:
+> > Hello:
+> >
+> > This patch was applied to bluetooth/bluetooth-next.git (master)
+> > by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+> >
+> > On Wed, 24 Apr 2024 14:29:32 +0200 you wrote:
+> >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>
+> >> Any return value from gpiod_get_optional() other than a pointer to a
+> >> GPIO descriptor or a NULL-pointer is an error and the driver should
+> >> abort probing. That being said: commit 56d074d26c58 ("Bluetooth: hci_q=
+ca:
+> >> don't use IS_ERR_OR_NULL() with gpiod_get_optional()") no longer sets
+> >> power_ctrl_enabled on NULL-pointer returned by
+> >> devm_gpiod_get_optional(). Restore this behavior but bail-out on error=
+s.
+> >> While at it: also bail-out on error returned when trying to get the
+> >> "swctrl" GPIO.
+> >>
+> >> [...]
+> >
+> > Here is the summary with links:
+> >   - [v2] Bluetooth: qca: set power_ctrl_enabled on NULL returned by gpi=
+od_get_optional()
+> >     https://git.kernel.org/bluetooth/bluetooth-next/c/48a9e64a533b
+> >
+> > You are awesome, thank you!
+> > --
+> > Deet-doot-dot, I am a bot.
+> > https://korg.docs.kernel.org/patchwork/pwbot.html
+> >
+> >
+> >
 >
+> Luiz,
 >
+> I think patchwork borked when picking up this one, here's what the commit
+> trailer looks like in next:
 >
-> Best regards,
-> Krzysztof
+>     Reported-by: Wren Turkal <wt@penguintechs.org>
+>     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+>     Closes: https://lore.kernel.org/linux-bluetooth/1713449192-25926-2-gi=
+t-send-email-quic_zijuhu@quicinc.com/
+>     Fixes: 56d074d26c58 ("Bluetooth: hci_qca: don't use
+> IS_ERR_OR_NULL() with gpiod_get_optional()")
+>     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>     Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>     Tested-by: Wren Turkal" <wt@penguintechs.org>
+>     Reported-by: Wren Turkal <wt@penguintechs.org>
+>     Reported-by: Zijun Hu <quic_zijuhu@quicinc.com>
+>     Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
+>     Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>     Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 >
+> Reported-by and Reviewed-by tags are duplicated. One of the RB tags is mi=
+ssing
+> a space.
+
+Oh crap, should probably not trust patchwork would pick up the tags
+properly, that said the pull-request was already merged, not sure if
+we can do something about it now?
+
+--=20
+Luiz Augusto von Dentz
 
