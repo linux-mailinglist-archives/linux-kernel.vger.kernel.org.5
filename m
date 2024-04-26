@@ -1,73 +1,53 @@
-Return-Path: <linux-kernel+bounces-160187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F508B3A59
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:47:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C22378B3C3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 18:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 235F31F2447E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 14:47:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F39681C23335
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 16:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C83414884C;
-	Fri, 26 Apr 2024 14:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9264C1581F4;
+	Fri, 26 Apr 2024 16:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+9UVhLq"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="GawWdYvG"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355AC14533D;
-	Fri, 26 Apr 2024 14:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7883215253A;
+	Fri, 26 Apr 2024 16:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714142856; cv=none; b=jlbcVS/DAD/Vdotzucj4hj9tyaKV3WD6sw15q6sFcbBHH/SMj6uIdm7m0vtTf4fD/vzX1Yy/iLl5thb39Loz8Bz2fekm6pX1Zzr3JrRGJcu2VH7AycHyD8t1A01ttq2wukCi9DSaw2RFgBy5hX8hupugcmqkvbYPcWbUuxoZp+E=
+	t=1714147256; cv=none; b=NVW3HYlKD7HrallZMNetPRFzf55OYygJ4gEN3XYySaabI5NEafLKjBdUAZ/S0Sp521Ctth7tAUzT75a5vo/wMAPegfQxCSaX38RlA+nOA4nZD0ox8bB8EJkNLXR/UwmgMLHRFPqu3RcZqhkKQb2RYKIt8CXwfsn3P9+MRDs+0T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714142856; c=relaxed/simple;
-	bh=WChWKfVSRr4sAD+JAYWF7dKNc3cWoPuqEPOa0h33mAQ=;
+	s=arc-20240116; t=1714147256; c=relaxed/simple;
+	bh=9drFnhHve1eoDnzDm5wZyIL+KmFVskjFe01L0XIwe+0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DJXKfuHawVIleDwWpQVQDhBeEvgcXmRFInt6BUEzxrRhcAKT7O006p1kary/ij7HuuP6G0IXzeNm7b1lz8SKMe9lxbkkytmZ2U57PnVOFjFsxWjttmtvH/0FE5ycRf50+bJdbpZeDWZQ1pGRT78muRXJfuU53a9y7H8/1pUnqwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+9UVhLq; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e86d56b3bcso20365805ad.1;
-        Fri, 26 Apr 2024 07:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714142854; x=1714747654; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pxLObEhnyQXMbb7EJHoFbdNmA9PMbFHPQxoSP+h7pjI=;
-        b=R+9UVhLqYMk8ecEK975if/kIWZpTxBeIwJGawds3W5m2x3FG6cpkknLWXbW426N9gx
-         d1ksRKeUEJz9iEMgjd9omDpAfR93nL9JhQT6IH9xo0aM65kTLDe6F1hzpSAkM9zsBoyL
-         Lt/CmC5MtXJ7+jA/xTqbT3Tat9O87LbyDuxT6LpMcWwlxBULjudWBiL1j6eV0Klg3T5f
-         WFYteBfgem0s/0vOOsFHk0wUIbJS6f53J9cEvaxy1HhA9afAQrQmsLgXPJsSmOX+uDkR
-         Mn4FKENP9eA9ecXGWYQugdLCajiGRbGeE25vQlg681b8m/dcIIpzkQeNAqDngTszzbF9
-         y2ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714142854; x=1714747654;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxLObEhnyQXMbb7EJHoFbdNmA9PMbFHPQxoSP+h7pjI=;
-        b=xToyYNvfz27mIv/CNwLjZNdCI6cVqaAh7qnbgVbHePd3hdTeSr8guShus4DqdHbbAq
-         RviGt4TfDX/mBeJyOLtsyVphHsh9anLUHbuJffOF/A6NLG6Ro+h05eRfqVrqdCS8Krg2
-         0Qg0/z1wuaRi5AFyYu0YDLboYUOEMASYIikkjdhJwqdeQIvfyoDL8aM6V3XybGPQVYDP
-         g6cw7xE4IvlQ+3Srd2ztYktbFlltGMj/cebE81bkIcpllp1Y5SKWnuxwK430or/uKi2U
-         zdQUyU0Sup4h2b9Kdt8w4n9Xiurtd5NDS1SvYl59vNmRux0vKjjbTjYIhG/1zsaZCDGV
-         MqEg==
-X-Forwarded-Encrypted: i=1; AJvYcCURMGPN1G32co0WmqapSHbOQMCMQzEwGvkRApsoh1LI7RgFTRVtEFDLDy9WZX+UtngEeWRszBPWQebr31bjcncN1cwscug6OIAd+QnMLhwhj/xd52VrbHTqLd/9TmyRv3dKhOC8gm8h
-X-Gm-Message-State: AOJu0Yx67T3cPHdKcSqHHez4qrS1mqM4kh0099plrygZvInfXROIBxKW
-	s0sNbGjp52nCvNy+A9aB46mj2U7ARyp7P0egksp4Kz662HRcpEw2
-X-Google-Smtp-Source: AGHT+IGVzCCLgd/gTDeQUMOMhwbRj35viRjmadUHYXkLruDzELq38l0EOgMq6hR6dwgRabBVX9jc1Q==
-X-Received: by 2002:a17:902:d48d:b0:1e2:d4da:6c72 with SMTP id c13-20020a170902d48d00b001e2d4da6c72mr3582025plg.0.1714142854400;
-        Fri, 26 Apr 2024 07:47:34 -0700 (PDT)
-Received: from ?IPV6:2402:e280:214c:86:ca6d:d464:fc91:de0a? ([2402:e280:214c:86:ca6d:d464:fc91:de0a])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170902da8c00b001e27557050dsm15619977plx.178.2024.04.26.07.47.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 07:47:33 -0700 (PDT)
-Message-ID: <559deef5-d437-4802-b3ec-78caab87355f@gmail.com>
-Date: Fri, 26 Apr 2024 20:17:29 +0530
+	 In-Reply-To:Content-Type; b=f0INsv0yx0IQJePOcEJbkht2ZOSTeX3JW8OjfCol/hhQyTCaORf51wy0VUX9oWAFKn9x14ZpRR+PICoyfIvszVUlHulgpD/KUWJ+7OmUtCV99YLgH7M02nlqx8FLBbry11QxPdHRfd9pde0/34PfFP74LbvOBnpWtwY5gJwy2a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=GawWdYvG; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id C9C98883D9;
+	Fri, 26 Apr 2024 18:00:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1714147247;
+	bh=6TmpYt1Y+k14rCvdyd0x8WlMRrxMW9ySTfGrm+UopZM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GawWdYvGVOKd6hhZdBfejKQhPR27v5KT8dKKa/t5OKvHgDvZvcmP407jq5zkEm46R
+	 SOZGaRIEernamyi3EqtOIqI4TvxtHdNKMU9z/NFmSkCyhLmU3SQTlDpqUKDoeQSEnC
+	 ZMzg/16GR5UJE2jaEYYNxxU7nWPs8I6cx/vl0O7URNvWxRb76OskSLH0HDh3uHt72B
+	 UFnNaBhrZX+lTPdZexQcbSy4HJdS4dxrJn/mvtyeCyL1p6ZpU1P9mePLWbN8fI+s/v
+	 8z32YSYeEyh+TvNDC7wRdf47LBF9XzuLzKO6iYzTvhoypexp9AREcMyIpQEPWSIM56
+	 IrzZcofsFxkjA==
+Message-ID: <4e03e7a4-c52b-4c68-b7e5-a03721401cdf@denx.de>
+Date: Fri, 26 Apr 2024 16:47:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,61 +55,39 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 linux-next] usb:typec:mux: remove indentation for
- common path
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: gregkh@linuxfoundation.org, neil.armstrong@linaro.org,
- dmitry.baryshkov@linaro.org, u.kleine-koenig@pengutronix.de,
- christophe.jaillet@wanadoo.fr, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
- javier.carrasco.cruz@gmail.com
-References: <20240424172716.3407-1-prosunofficial@gmail.com>
- <ZiosKjYjMG3my5FY@kuha.fi.intel.com>
- <5326cb96-e736-4455-abcf-921576b15be7@gmail.com>
- <ZiukxoDxkLsIVG+Q@kuha.fi.intel.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: net: add phy-supply property for
+ stm32
+To: Christophe Roullier <christophe.roullier@foss.st.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Richard Cochran <richardcochran@gmail.com>, Jose Abreu
+ <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240426125707.585269-1-christophe.roullier@foss.st.com>
+ <20240426125707.585269-3-christophe.roullier@foss.st.com>
 Content-Language: en-US
-From: sundar <prosunofficial@gmail.com>
-In-Reply-To: <ZiukxoDxkLsIVG+Q@kuha.fi.intel.com>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <20240426125707.585269-3-christophe.roullier@foss.st.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-On 26/04/24 18:27, Heikki Krogerus wrote:
-> On Thu, Apr 25, 2024 at 08:15:04PM +0530, sundar wrote:
->> On 25/04/24 15:40, Heikki Krogerus wrote:
->>> On Wed, Apr 24, 2024 at 10:57:16PM +0530, sundar wrote:
->>>> Nitpick, Mostly common path will not be indented.  so rewritten this
->>>> function to check device_node pointer is null and removed common path
->>>> indentation.
->>>>
->>>> Signed-off-by: sundar <prosunofficial@gmail.com>
->>>
->>> I don't think that is your full name, or is it?
->>>
->>> thanks,
->>>
->> Hi Heikki,
->>
->> Sundar is my full name.
->> Previously, I wrote my name in caps.after changing to small,  conflict
->> arises.now I fixed it.
+On 4/26/24 2:56 PM, Christophe Roullier wrote:
+> Phandle to a regulator that provides power to the PHY. This
+> regulator will be managed during the PHY power on/off sequence.
 > 
-> 
-> You need to use your real, full name - what ever your name is in your
-> passport. I find it a bit hard to believe you don't have a family (or
-> given?) name.
-> 
-> Your email returns couple of commits where you're name is "R SUNDAR".
-> What does the "R" stand for?
-> 
-> thanks,
-> 
-Hi Heikki,
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 
-ok, so it will be R Sundar. I will change and send updated patch.
-R is first letter of father's name.
-
-sorry for inconvenience.
-
-Regards,
-Sundar.
+Maybe this entire regulator business should be separate series from the 
+MP13 DWMAC ethernet series ?
 
