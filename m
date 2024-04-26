@@ -1,158 +1,121 @@
-Return-Path: <linux-kernel+bounces-159857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-159858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1028B352F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:20:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF4A8B3530
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 12:20:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BF20B22F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:20:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE097B23ED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 10:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05385145B1E;
-	Fri, 26 Apr 2024 10:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uHKWPnK/"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0833514388F;
+	Fri, 26 Apr 2024 10:19:12 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF89142625;
-	Fri, 26 Apr 2024 10:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D339713F44F
+	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 10:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714126682; cv=none; b=QwxBDothfmGMEJCICncEYDrL9bLMsZ/pePZ5OqWn+RRKvZ7P08lYd/skt6FL/ZCpg3L3K1WpF+Vy5AOSazOROdl27hRFdVhdSy1xCfmJCrsCPCUR1b7UVNFPKdDexj9Fj0HV0qOUKxFTD2++fXuZn+5HpMIJaLnpVIiRtr5x3lM=
+	t=1714126751; cv=none; b=LRVNalUlfikSTBzp+PcVBg8CNnUWg06qrMV7pZK/Xbqdt7bLeNqIJUBtwzp+Ue2KM2wBvgdcLYPf6tBoxZAL8pbKe9/rNbqmDhkMj/2PA213W/mbtGZ33KixTPrRrcNHmkwhuf/nnz+xABoASmn1e/RiqQi9xFWv3qUrDPi79fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714126682; c=relaxed/simple;
-	bh=SuhIwCajet75pBQ8i3LxLuVtlkqvgvktzAYz1G96tqk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NnbBp4MQk22LAJOmxws/aIocO1fTWFkw7g43lmHqGmBjEWGPJ3W99YMjZDIFAoVHF0JRvP6KjheQI13wLNhBWig8lkoFRgU1g7ifIdbwqYIkzg/zqnIeTdhl4T8oZVy0equPGRz0GbK/yF4DJIzhls1A0FSAdr7y4lEg3LXLpYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=uHKWPnK/; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714126679;
-	bh=SuhIwCajet75pBQ8i3LxLuVtlkqvgvktzAYz1G96tqk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=uHKWPnK/aXQOOIlE5fceeGsq+yhHf5pwIEWcwyHiqc1UrPvf08mMn1gVFgARoDHMy
-	 5mU+rLw8++8MwKxyQtW1GoohvIUGJeD9Lq3jEUsvhmmenVFNlncVm3s+6Fdl1HLZq8
-	 8J6Odz5GrRDQ2xIKEuNP4ZaCYqwzKcJIQ0VH9W+bBhB5kGa2sEzjG7HRe4iy0F8/X9
-	 VVdE3DmpqrDvgjt3MV/NBlk2EQBl4WTHcKKICbh/9McFHjE2kuTDr2w2l0nRT5IIeo
-	 FY0oVXeL66EQ6nJya5lJb3PJWAIi2l5cQ3WxQYytjuD+Ir/q7Gp9d8+xubjzNQLr3g
-	 c3XOE9oEwccoQ==
-Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2C5343782156;
-	Fri, 26 Apr 2024 10:17:54 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: "Chang S . Bae" <chang.seok.bae@intel.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	kernel@collabora.com,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests: x86: conform test to TAP format output
-Date: Fri, 26 Apr 2024 15:18:22 +0500
-Message-Id: <20240426101824.2894574-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714126751; c=relaxed/simple;
+	bh=PvlqjU87/D+2kbb2605lAsy6oLHguWugqQjh+UKPNnQ=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uoKv9VbIMQElX1mt97tTLxccmTwfaTeY1PBBgYx9tw4fcaSTWLFuNBldmO6BFFjSUOfHf85sdAEsGBuzEXc90ZE3+uByB+9eQpcMiNKcxKgBt810nJnhf4fIkUKi0ceQR4usJ/dU+mVhttFgWqgj1CqVr/C9wZy4Gn5gnmc1h10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VQpZf0pp7zcZxR;
+	Fri, 26 Apr 2024 18:18:02 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9ABDA180073;
+	Fri, 26 Apr 2024 18:19:07 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 26 Apr 2024 18:19:06 +0800
+Message-ID: <b53fd5c9-616f-4fab-a667-0deb64edd11b@huawei.com>
+Date: Fri, 26 Apr 2024 18:19:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <chenhao418@huawei.com>
+Subject: Re: [PATCH 2/3] drivers/perf: hisi: hns3: Fix out-of-bound access
+ when valid event group
+To: Junhao He <hejunhao3@huawei.com>, <will@kernel.org>,
+	<jonathan.cameron@huawei.com>, <yangyicong@huawei.com>
+References: <20240425124627.13764-1-hejunhao3@huawei.com>
+ <20240425124627.13764-3-hejunhao3@huawei.com>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20240425124627.13764-3-hejunhao3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-Conform the layout, informational and status messages to TAP. No
-functional change is intended other than the layout of output messages.
+Reviewed-by: Jijie Shao<shaojijie@huawei.com>
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- No changes, sending it again as got no response on v1 even after weeks
----
- tools/testing/selftests/x86/vdso_restorer.c | 29 +++++++++------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/vdso_restorer.c b/tools/testing/selftests/x86/vdso_restorer.c
-index fe99f24341554..f621167424a9c 100644
---- a/tools/testing/selftests/x86/vdso_restorer.c
-+++ b/tools/testing/selftests/x86/vdso_restorer.c
-@@ -21,6 +21,7 @@
- #include <unistd.h>
- #include <syscall.h>
- #include <sys/syscall.h>
-+#include "../kselftest.h"
- 
- /* Open-code this -- the headers are too messy to easily use them. */
- struct real_sigaction {
-@@ -44,17 +45,19 @@ static void handler_without_siginfo(int sig)
- 
- int main()
- {
--	int nerrs = 0;
- 	struct real_sigaction sa;
- 
-+	ksft_print_header();
-+	ksft_set_plan(2);
-+
- 	void *vdso = dlopen("linux-vdso.so.1",
- 			    RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
- 	if (!vdso)
- 		vdso = dlopen("linux-gate.so.1",
- 			      RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
- 	if (!vdso) {
--		printf("[SKIP]\tFailed to find vDSO.  Tests are not expected to work.\n");
--		return 0;
-+		ksft_print_msg("[SKIP]\tFailed to find vDSO. Tests are not expected to work.\n");
-+		return KSFT_SKIP;
- 	}
- 
- 	memset(&sa, 0, sizeof(sa));
-@@ -62,21 +65,16 @@ int main()
- 	sa.flags = SA_SIGINFO;
- 	sa.restorer = NULL;	/* request kernel-provided restorer */
- 
--	printf("[RUN]\tRaise a signal, SA_SIGINFO, sa.restorer == NULL\n");
-+	ksft_print_msg("Raise a signal, SA_SIGINFO, sa.restorer == NULL\n");
- 
- 	if (syscall(SYS_rt_sigaction, SIGUSR1, &sa, NULL, 8) != 0)
- 		err(1, "raw rt_sigaction syscall");
- 
- 	raise(SIGUSR1);
- 
--	if (handler_called) {
--		printf("[OK]\tSA_SIGINFO handler returned successfully\n");
--	} else {
--		printf("[FAIL]\tSA_SIGINFO handler was not called\n");
--		nerrs++;
--	}
-+	ksft_test_result(handler_called, "SA_SIGINFO handler returned\n");
- 
--	printf("[RUN]\tRaise a signal, !SA_SIGINFO, sa.restorer == NULL\n");
-+	ksft_print_msg("Raise a signal, !SA_SIGINFO, sa.restorer == NULL\n");
- 
- 	sa.flags = 0;
- 	sa.handler = handler_without_siginfo;
-@@ -86,10 +84,7 @@ int main()
- 
- 	raise(SIGUSR1);
- 
--	if (handler_called) {
--		printf("[OK]\t!SA_SIGINFO handler returned successfully\n");
--	} else {
--		printf("[FAIL]\t!SA_SIGINFO handler was not called\n");
--		nerrs++;
--	}
-+	ksft_test_result(handler_called, "SA_SIGINFO handler returned\n");
-+
-+	ksft_finished();
- }
--- 
-2.39.2
-
+on 2024/4/25 20:46, Junhao He wrote:
+> The perf tool allows users to create event groups through following
+> cmd [1], but the driver does not check whether the array index is out
+> of bounds when writing data to the event_group array. If the number of
+> events in an event_group is greater than HNS3_PMU_MAX_HW_EVENTS, the
+> memory write overflow of event_group array occurs.
+>
+> Add array index check to fix the possible array out of bounds violation,
+> and return directly when write new events are written to array bounds.
+>
+> There are 9 different events in an event_group.
+> [1] perf stat -e '{pmu/event1/, ... ,pmu/event9/}
+>
+> Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> Signed-off-by: Hao Chen <chenhao418@huawei.com>
+> ---
+>   drivers/perf/hisilicon/hns3_pmu.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+> index 16869bf5bf4c..cbdd53b0a034 100644
+> --- a/drivers/perf/hisilicon/hns3_pmu.c
+> +++ b/drivers/perf/hisilicon/hns3_pmu.c
+> @@ -1085,15 +1085,27 @@ static bool hns3_pmu_validate_event_group(struct perf_event *event)
+>   			return false;
+>   
+>   		for (num = 0; num < counters; num++) {
+> +			/*
+> +			 * If we find a related event, then it's a valid group
+> +			 * since we don't need to allocate a new counter for it.
+> +			 */
+>   			if (hns3_pmu_cmp_event(event_group[num], sibling))
+>   				break;
+>   		}
+>   
+> +		/*
+> +		 * Otherwise it's a new event but if there's no available counter,
+> +		 * fail the check since we cannot schedule all the events in
+> +		 * the group simultaneously.
+> +		 */
+> +		if (num == HNS3_PMU_MAX_HW_EVENTS)
+> +			return false;
+> +
+>   		if (num == counters)
+>   			event_group[counters++] = sibling;
+>   	}
+>   
+> -	return counters <= HNS3_PMU_MAX_HW_EVENTS;
+> +	return true;
+>   }
+>   
+>   static u32 hns3_pmu_get_filter_condition(struct perf_event *event)
 
