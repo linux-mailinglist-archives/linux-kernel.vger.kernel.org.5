@@ -1,235 +1,127 @@
-Return-Path: <linux-kernel+bounces-160302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68F38B3B9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 497E08B3B97
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 17:32:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96ECA2839B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:33:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05777282050
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 15:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C518C14901F;
-	Fri, 26 Apr 2024 15:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD08149C44;
+	Fri, 26 Apr 2024 15:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ffYxpWCD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KGWYqeO8"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB47514D29D
-	for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 15:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6D2148854;
+	Fri, 26 Apr 2024 15:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714145577; cv=none; b=ByYzj152phKEqSe6fo/NBG9p1oF67xmOIo4hhFqKjbmnxvruvwsT+wSeI9zzJe5ha8w8/ADuNE6Xtsg87JOkOQqVEjqa+M4maC+tqpKJAsdOlo9HtBh9mzM0xN2N4B0MumAGUYctleAyoxHAtQGmFCsjHosfqSJB+o9BGUNKX+U=
+	t=1714145555; cv=none; b=dM03r3w8OtHRgHPCpa9ykouPVkVikq7Ha5c7XJIIWZyVepNVmlv0aa8Xz7sCPvhDfp99PT6z9yrWNAG+dajnkAALPq+lzeQnT1Y2N/4FcVzuVU3NCRXXigF2HplnjGosas8qM4A7F/CPiB4yp7TrMYCVPPUJ0pcEr085Tz0yDCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714145577; c=relaxed/simple;
-	bh=l0zz0k5IDsNz8dlb4apDWIZ9KkOhy5OHLtXNuGBP0zA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=qat/2Lw8ztiXldRQfKrXaOI0/BxPPpU0W2oeL2GW/qA/uDJXWVkQ9yDYurdyHHBdlup/+q5xYknQxWev0dokSYqs3hCWt5FAj+9w64OY5ABwhobc2HIHvrUyfnSp4kJghzmKfOKRk2PvKO2c2MOtgmJ7USycZMeDuhWN5iyrMYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ffYxpWCD; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145576; x=1745681576;
-  h=date:from:to:cc:subject:message-id;
-  bh=l0zz0k5IDsNz8dlb4apDWIZ9KkOhy5OHLtXNuGBP0zA=;
-  b=ffYxpWCDaUx4JBC9fs3F9kLeNtP8YBkSEMHOwzrFcSMVa/g+D2ZhenkM
-   IJ2Y/C40g3fg6xBg9pSYtkkI0PJAD8waHPM2ONzeP3rtbs+IMUCYqX3+6
-   7ZUTbjzMSPOIfwWU1lfLRrJDv4nniUNjL2WEaBIqJvqqjhcv8pcXFnB1j
-   nN/bC6sTktivE3D83H/ERzSoYz/bOw+fH7tY63gCNySGOg0z6Sfw0HHHs
-   A5UkT9wlwnUkgBwNg1io/EJijA3rpQevmMw84miCzqucL+xIhp22uq+D7
-   vBvZyAVHovM7rVeO5acCa4xdpNVcR2gr+ExxbpcAjL57n/k1zNgKCPwh4
-   w==;
-X-CSE-ConnectionGUID: jLR1vX4wTyCRMb3FGcKUxw==
-X-CSE-MsgGUID: 2nAuMgDATAmbDGRAmuKtBw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="13672641"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="13672641"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 08:32:55 -0700
-X-CSE-ConnectionGUID: L9XsT00aTd21j4UL0IiQog==
-X-CSE-MsgGUID: 3rEW8xvUR3yOszlGAJoxKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="25526206"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 26 Apr 2024 08:32:54 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0NZE-0003ro-0F;
-	Fri, 26 Apr 2024 15:32:52 +0000
-Date: Fri, 26 Apr 2024 23:32:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- e8475a26a94f57f5e6c8e8799dd3f9b936647f0b
-Message-ID: <202404262321.yLpCv5ih-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1714145555; c=relaxed/simple;
+	bh=H17B+6DnZzINO/+Q3sKBERX+XWxjXi63JD9MIzIkFu8=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sFPufLhkqVMih3UEEvieHUKjLcIcAuL3VTZirgjHeC+RRWznD/tbFF1+5861ZsExGrw6DofBm3/ibupzXlSdhjqQwf422jNgglxFuEnEo27TVopObhGv/Jqp4L0cdqrSqisiDkOW8WwhVBPu7+GM+9I+4STpmrzTFflxkdqxDks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KGWYqeO8; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e78970853so5816662a12.0;
+        Fri, 26 Apr 2024 08:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714145552; x=1714750352; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sJXC/5vAoOZwUtcvINfBAZrBvMOr+O+V8uNP31uYJMs=;
+        b=KGWYqeO88kCVTeNxoH3MbKozk3VI54VFvwoWJHmaTcr37ydhff6djqCUtPwTmItYWI
+         5e0LLV6MmE74Vg8r9kOXRBPy8WT/KpysuavHozb4cohCXFEfqMPAyaKozTu1Hr1LqiYq
+         d+V+PLbF6gP/XxNkoStnnuDSSHod48cQBIhqUXzAksk11OcCrQ4k1hQc5ZhrHt8W0/m6
+         JZJawERPAfTSLd64qaP0jXN0cqljIOJrNjIh2GJNTMyVszs/54lRVZ5oMQhgfkpB3K0X
+         Y7hLYcDJt02OQx9pHZeC9PmZOE/OUpTf1veV1egBImYJD+m2nq+aXdwR28VGGJlhWsPr
+         zDdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714145553; x=1714750353;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sJXC/5vAoOZwUtcvINfBAZrBvMOr+O+V8uNP31uYJMs=;
+        b=fXwQBuXx7a1YJiJrOqDni/5LkGDBCYmP7mhZGfPfE6/9D0bX683o7pU9Asz27kOGS7
+         lWxT2m2OciIwN58a8sm69KQfWdGBHZhevy6fnuO7Dz6QoL2B10yZ/f0QnS+9NtXoTJGP
+         j7W1hnlCIEM8RMY65X4F8QLDwmptEL7R56SUYipwNeBsVytW2KKWMuNo5YwDfPUQsVcf
+         hM5BjSVz2T/h6Ok8cpNDX0DypbDzqXAvm9jG6mFZ5UTg6OXbdcf9N28UWslUALmP1HUx
+         xQ8hvG8fZYemaOoSPS5L5+UkgtpF0aXc9ztRbTuQbhtQu456eVY3d37V7AvZ8rvwzTd6
+         ZSHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSxuCH1aAuHwqurIPw2y9whuabD/0MXwElYnBEbfv/bWbGLUhqGTEAsofuyFxaH/sESrUCpV38S09BeVU7d5H4VN8t2YqDOWIBdzDeyxGZFiIISzpIhxbI5yHgCUGR74eLsB8wPza62PruwOoC5YF1GtlSDtXKBT/ohx1idrfskoqtlnHwnqo81zxqTdCzJ5qCp4aFewCr2QzHssSB1lfcyAf3
+X-Gm-Message-State: AOJu0YytUGI8UBIyDNIAvD39TE78KSR6hKx8UhV5NiHRlp3TIwkZcc85
+	ejMA75Rh61/v3wsIfmsrvw/xBay4TUdEW1el3tv0vxdY9AtX9WdZ
+X-Google-Smtp-Source: AGHT+IHULtZbR/4hjUfKh64G2f3BnxFRCTlvgkv414w4u51Jyt7pp+dglbscvZM5LOhe9A6qttVJLA==
+X-Received: by 2002:a50:d6c9:0:b0:572:3b3c:754f with SMTP id l9-20020a50d6c9000000b005723b3c754fmr2680979edj.4.1714145552381;
+        Fri, 26 Apr 2024 08:32:32 -0700 (PDT)
+Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id y43-20020a50bb2e000000b0057000a2cb5bsm10542044ede.18.2024.04.26.08.32.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 08:32:32 -0700 (PDT)
+From: Thierry Reding <thierry.reding@gmail.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	thierry.reding@gmail.com,
+	jonathanh@nvidia.com,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	mperttunen@nvidia.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	dri-devel@lists.freedesktop.org,
+	Akhil R <akhilrajeev@nvidia.com>
+Subject: Re: (subset) [PATCH v7 0/5] Add Tegra Security Engine driver
+Date: Fri, 26 Apr 2024 17:32:30 +0200
+Message-ID: <171414552137.2298337.4837480787385115790.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240403100039.33146-1-akhilrajeev@nvidia.com>
+References: <20240403100039.33146-1-akhilrajeev@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/daveh/devel.git x86/cpu
-branch HEAD: e8475a26a94f57f5e6c8e8799dd3f9b936647f0b  perf/x86/msr: Switch to new Intel CPU model defines
+From: Thierry Reding <treding@nvidia.com>
 
-elapsed time: 1395m
 
-configs tested: 143
-configs skipped: 133
+On Wed, 03 Apr 2024 15:30:34 +0530, Akhil R wrote:
+> Add support for Tegra Security Engine which can accelerates various
+> crypto algorithms. The Engine has two separate instances within for
+> AES and HASH algorithms respectively.
+> 
+> The driver registers two crypto engines - one for AES and another for
+> HASH algorithms and these operate independently and both uses the host1x
+> bus. Additionally, it provides  hardware-assisted key protection for up to
+> 15 symmetric keys which it can use for the cipher operations.
+> 
+> [...]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Applied, thanks!
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240426   gcc  
-arc                   randconfig-002-20240426   gcc  
-arm                           omap1_defconfig   gcc  
-arm                   randconfig-002-20240426   gcc  
-arm                   randconfig-003-20240426   gcc  
-arm                   randconfig-004-20240426   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240426   gcc  
-arm64                 randconfig-002-20240426   gcc  
-arm64                 randconfig-004-20240426   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240426   gcc  
-csky                  randconfig-002-20240426   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240426   gcc  
-i386         buildonly-randconfig-002-20240426   clang
-i386         buildonly-randconfig-003-20240426   gcc  
-i386         buildonly-randconfig-004-20240426   gcc  
-i386         buildonly-randconfig-005-20240426   clang
-i386         buildonly-randconfig-006-20240426   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240426   gcc  
-i386                  randconfig-002-20240426   clang
-i386                  randconfig-003-20240426   gcc  
-i386                  randconfig-004-20240426   gcc  
-i386                  randconfig-005-20240426   gcc  
-i386                  randconfig-006-20240426   clang
-i386                  randconfig-011-20240426   gcc  
-i386                  randconfig-012-20240426   clang
-i386                  randconfig-013-20240426   clang
-i386                  randconfig-014-20240426   clang
-i386                  randconfig-015-20240426   clang
-i386                  randconfig-016-20240426   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240426   gcc  
-loongarch             randconfig-002-20240426   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                       rbtx49xx_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240426   gcc  
-nios2                 randconfig-002-20240426   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240426   gcc  
-parisc                randconfig-002-20240426   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     ppa8548_defconfig   gcc  
-powerpc               randconfig-002-20240426   gcc  
-powerpc64             randconfig-001-20240426   gcc  
-powerpc64             randconfig-002-20240426   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240426   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                                defconfig   clang
-sh                                allnoconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                    randconfig-001-20240426   gcc  
-sh                    randconfig-002-20240426   gcc  
-sh                             sh03_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240426   gcc  
-sparc64               randconfig-002-20240426   gcc  
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240426   gcc  
-um                    randconfig-002-20240426   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240426   clang
-x86_64       buildonly-randconfig-002-20240426   gcc  
-x86_64       buildonly-randconfig-003-20240426   clang
-x86_64       buildonly-randconfig-004-20240426   clang
-x86_64       buildonly-randconfig-005-20240426   gcc  
-x86_64       buildonly-randconfig-006-20240426   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   clang
-x86_64                randconfig-001-20240426   gcc  
-x86_64                randconfig-002-20240426   gcc  
-x86_64                randconfig-003-20240426   gcc  
-x86_64                randconfig-004-20240426   clang
-x86_64                randconfig-005-20240426   clang
-x86_64                randconfig-006-20240426   clang
-x86_64                randconfig-011-20240426   clang
-x86_64                randconfig-012-20240426   gcc  
-x86_64                randconfig-013-20240426   gcc  
-x86_64                randconfig-014-20240426   gcc  
-x86_64                randconfig-015-20240426   gcc  
-x86_64                randconfig-016-20240426   clang
-x86_64                randconfig-071-20240426   clang
-x86_64                randconfig-072-20240426   clang
-x86_64                randconfig-073-20240426   clang
-x86_64                randconfig-074-20240426   gcc  
-x86_64                randconfig-075-20240426   gcc  
-x86_64                randconfig-076-20240426   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240426   gcc  
-xtensa                randconfig-002-20240426   gcc  
+[4/5] arm64: defconfig: Enable Tegra Security Engine
+      commit: 4d4d3fe6b3cc2a0b2a334a08bb9c64ba1dcbbea4
 
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thierry Reding <treding@nvidia.com>
 
