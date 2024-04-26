@@ -1,123 +1,163 @@
-Return-Path: <linux-kernel+bounces-160731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F9468B420F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:09:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 381B68B420D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:08:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001391F227F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:09:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5FA1C21981
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Apr 2024 22:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6AD37707;
-	Fri, 26 Apr 2024 22:09:02 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8DB37714;
+	Fri, 26 Apr 2024 22:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XiAPYb6t"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A8538F82;
-	Fri, 26 Apr 2024 22:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D332C6B7;
+	Fri, 26 Apr 2024 22:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714169341; cv=none; b=LCZemKOUrc2Y9diRUHFMlNO+cWuGFCHj8eSdjJzY01vwSmBhhfwDKTjK62fNhOjJJbs1cm8F7NVDeFBSVYgiTZScAlQELDnv9ZeuNzC+ETQOyW43T+ZlU1HGiADJr0GSv4kFJnT+Y246S6Vkp0ilMXzdcle/MGXoR1yS3tCQi5E=
+	t=1714169300; cv=none; b=V6nkYnDFpb2fcswdQR4bFqDDj4r4Roc3gTfwLBU3bTJ8WQV3LkD0/C23HyhLx7KevSJG2jS/3KSancp00bq8V5c6tbcVg85lrpoy3bby/beEFjFJQhhyOSI0TdizSvLsdNXSDcnjLmVkjSMYcl1k5TIu6sc4984lSGVpul0iQCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714169341; c=relaxed/simple;
-	bh=XngLk3rh99WGiLHg8bpg5snL+jhoAiLTaMr5zaZSZ6c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ftxxrAM7C9lNx+IjgU7nXAtfNVX6q/uhgKHeFVF4ymde5aZ16+Zm0h0q8xOCCvb1+aAGl4qQOu347AF83nW5SYS/mrDuDTcxA+0uNn1G2FRjkRZC03faczqSxipCo/XZYIIo47n0H2/hSV3eLsyQBHJ+Xrq7bZkz2ZjdAvTytMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from localhost.localdomain (ip5f5af2dd.dynamic.kabel-deutschland.de [95.90.242.221])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A7F4761E5FE06;
-	Sat, 27 Apr 2024 00:08:41 +0200 (CEST)
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
-	Jean Delvare <jdelvare@suse.de>,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] i2c: smbus: Add (LP)DDR5 types to `i2c_register_spd()`
-Date: Sat, 27 Apr 2024 00:07:48 +0200
-Message-ID: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714169300; c=relaxed/simple;
+	bh=0khILg54FT/sDBrzWK5mNL6qNVmfbtcLyd+OTVQdtoU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pf7tT9/yTl3JuhjgZRZ6LB05H4bOgsHv2Um+yQIEmrhsZYJfGzfq7Zb++21kW8R4Nl0tWaAW6+zYQSUeoKG08zscuR1lLM7yh4KrGSwBuxrBglBMiM1IoGKsgJdJQNgqjuuBvVT6mhRMq1wIX/vOwQZrK8/u5rHKONMcvAEVaoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XiAPYb6t; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de596c078c2so2316503276.0;
+        Fri, 26 Apr 2024 15:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714169298; x=1714774098; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0khILg54FT/sDBrzWK5mNL6qNVmfbtcLyd+OTVQdtoU=;
+        b=XiAPYb6tRt3fA84i+wAAyzsq8knS7Ik8jZxt5ebiFI9/1vc5xulY36+ie9LN+FxYfo
+         9+q7sFeCgfG2mW+KWY+VsYBushZuxgQ7ChZ3jiZZniGBSruTxR+lZ8m2rBVGCvlMqx8b
+         sM3UhSGyEBzKzHOqrLnkpz9wmtkhSIuHcHbgzAheY/4bVFLxuq3Q4Nc6qj1Xi6mwV7Cd
+         cgobJwi7OZhaltCKcNTnt9Jt2n+Gi+5Au9z1nXv+Ya0fTq5lGZfTu+3U6XBmLyXx3wOs
+         dHpASih3/Z4itkZb5h4OwSZ3Muu5a/jHLiWLZdWCAU+PDI8m879CH0oHUNtJ3dvyMGrA
+         fTeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714169298; x=1714774098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0khILg54FT/sDBrzWK5mNL6qNVmfbtcLyd+OTVQdtoU=;
+        b=xN+cZJbRG3NuP73E8h68eEw1admeA8L8bNz5G1SM/TRMM1fDdcIs/JgN69hoj7Soka
+         47Zuoy7TZ4KYMCuwC1iN/OIu842rK0xRYyAg8qZXevJjOAcaSJMBJd/7kl3sEsbg11DH
+         6z4fAWOM7O9SpZPGBGNqKL10Hci311GaCI4kz6COMeBebINkVxJaTfuoThXoHjaZH+IJ
+         C49vxfQiiRi2JvIRJ0Zf02CK8x8j8/kunSNHxE6fBmu5VFmPQ9o7Xd4++501w0XJZ1Wu
+         EhqPnQsK4DlKjT4v8w2j3xztWEtHRrJ7H42tTE9R7TFedKxbW24PHs8rEvKJbve6xchQ
+         05fg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnlnVZLixhnXTbubdXLWSx9Uk5id0J3UEsv0U3jGGRaJxc5F3w98HZZE53WNN95MNyDLFUej29DJbqfHjSWb3uyOCXpfmhpABh+JSVl54/LSAQLZLF3+AZTspLiNmah+wn3HQ2MDIpJa9R7yJLoyO0wh2gIDm1QRm/ykQ6thhRc0GVycEZiTY=
+X-Gm-Message-State: AOJu0YyiRCzFSBZNmeUV0vkWz1Ii4VVmMcqIcXM/p5R6EyT+RI+15hE4
+	8UKEdsz6ncwOWuNu3y95A7vRe1nI2jlkHyGuq/JbSsdZJtep/s+me0BRYFQfipioJDoArX1qgIr
+	S9ILkLtoB5mIeUiLOUFIhZ4vo/2c=
+X-Google-Smtp-Source: AGHT+IGATzNR3kaBbDpb0EkDU4wV4HvJlDtd4NArx1rLPtzu8SyJ9NkwXfooBm54KAjIyFV9MaKB/H1WtIXS9Q4VarU=
+X-Received: by 2002:a25:d845:0:b0:de5:a15a:7118 with SMTP id
+ p66-20020a25d845000000b00de5a15a7118mr4144739ybg.42.1714169298049; Fri, 26
+ Apr 2024 15:08:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com> <ZipGRl_QC_x83MFt@hovoldconsulting.com>
+In-Reply-To: <ZipGRl_QC_x83MFt@hovoldconsulting.com>
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 26 Apr 2024 15:08:06 -0700
+Message-ID: <CAN8TOE_Vd9c2eYgomhu_ukofTeO9eK8Yhrtt-8BQckmJnGfj6w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain support
+To: Johan Hovold <johan@kernel.org>
+Cc: Bjorn Andersson <quic_bjorande@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Jaiganesh Narayanan <njaigane@codeaurora.org>, 
+	Doug Anderson <dianders@chromium.org>, linux-arm-msm@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On several systems Linux logs:
+Hi Johan, Bjorn,
 
-     i2c i2c-0: Memory type 0x22 not supported yet, not instantiating SPD
+On Thu, Apr 25, 2024 at 5:02=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> On Wed, Apr 24, 2024 at 08:45:31PM -0700, Bjorn Andersson wrote:
+> > When a GPIO is configured as OPEN_DRAIN gpiolib will in
+> > gpiod_direction_output() attempt to configure the open-drain property o=
+f
+> > the hardware and if this fails fall back to software emulation of this
+> > state.
+> >
+> > The TLMM block in most Qualcomm platform does not implement such
+> > functionality, so this call would be expected to fail. But due to lack
+> > of checks for this condition, the zero-initialized od_bit will cause
+> > this request to silently corrupt the lowest bit in the config register
+> > (which typically is part of the bias configuration) and happily continu=
+e
+> > on.
 
-1.  Supermicro Super Server/X13SAE, BIOS 2.0 10/17/2022
-2.  Dell Inc. Precision 3660/0PRR48, BIOS 2.9.3 11/22/2023
-3.  Dell Inc. OptiPlex SFF Plus 7010/0YGWFV, BIOS 1.7.1 08/11/2023
-4.  Run `git grep 'emory type.*supported yet, not instantiating SPD'` in
-    the repository of dmesg reports for various computers collected by
-    Linux users at https://linux-hardware.org. [1]
+Apologies if I broke something here. Both the pinctrl subsystem and
+the wide world of diverse QCOM chips can be complicated beasts. I
+definitely could have missed things along the way. (And on first
+glance, it seems like you may have found one. I definitely did not
+consider the gpiod_direction_output() "emulation" behavior here when
+submitting this.)
 
-Add 0x22 and 0x23 for DDR5 according to section 7.18.2 (Memory Device —
-Type), table 78 in *System Management BIOS (SMBIOS) Reference
-Specification*, version 3.6.0 [2].
+But I can't tell based on subsequent conversation: are you observing a
+real problem, or is this a theoretical one that only exists if the
+gpiochip driver adds set_config() support?
 
-The same name *ee1004* as for DDR4 is used.
+> > Fix this by checking if the od_bit value is unspecified and if so fail
+> > the request to avoid the unexpected state, and to make sure the softwar=
+e
+> > fallback actually kicks in.
+>
+> Fortunately, this is currently not a problem as the gpiochip driver does
+> not implement the set_config() callback, which means that the attempt to
+> change the pin configuration currently always fails with -ENOTSUP (see
+> gpio_do_set_config()).
+>
+> Specifically, this means that the software fallback kicks in, which I
+> had already verified.
+>
+> Now, perhaps there is some other path which can allow you to end up
+> here, but it's at least not via gpiod_direction_output().
+>
+> The msm pinctrl binding does not allow 'drive-open-drain' so that path
+> should also be ok unless you have a non-conformant devicetree.
 
-Successfully tested on Supermicro Super Server/X13SAE, BIOS 2.0 10/17/2022:
+The ipq4019 binding does:
+https://git.kernel.org/linus/99d19f5a48ee6fbc647935de458505e9308078e3
 
-    [    5.459383] i801_smbus 0000:00:1f.4: SPD Write Disable is set
-    [    5.465180] i801_smbus 0000:00:1f.4: SMBus using PCI interrupt
-    [    5.465803] intel_pstate: HWP enabled by BIOS
-    [    5.474046] i2c i2c-0: Successfully instantiated SPD at 0x50
-    [    5.475379] intel_pstate: Intel P-state driver initializing
-    [    5.487129] i2c i2c-0: Successfully instantiated SPD at 0x51
-    [    5.487350] intel_pstate: HWP enabled
-    [    5.493288] i2c i2c-0: Successfully instantiated SPD at 0x52
-    [    5.496481] hid: raw HID events driver (C) Jiri Kosina
-    [    5.502695] i2c i2c-0: Successfully instantiated SPD at 0x53
+This is used in OpenWrt device trees.
 
-[1]: https://github.com/linuxhw/Dmesg
-[2]: https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.6.0.pdf
+> > It is assumed for now that no implementation will come into existence
+> > with BIT(0) being the open-drain bit, simply for convenience sake.
+> >
+> > Fixes: 13355ca35cd1 ("pinctrl: qcom: ipq4019: add open drain support")
+>
+> I guess hardware open-drain mode has never been properly tested on
+> ipq4019.
 
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jean Delvare <jdelvare@suse.de>
----
-1.  I have no idea if the name ee1004 is correct.
-2.  Should I test other things besides looking at the Linux messages?
+It was quite some time ago that I wrote and tested this, and per the
+above, I easily could have missed things. (Plus, the open drain
+configuration may not have much practical effect on the systems in
+question, so certain errors may not even be observable.)
 
- drivers/i2c/i2c-smbus.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+But I do recall seeing the code in question activate. And inspection
+shows that the pinconf_apply_setting() -> ... msm_config_group_set()
+path is non-dead code here, for appropriate device trees.
 
-diff --git a/drivers/i2c/i2c-smbus.c b/drivers/i2c/i2c-smbus.c
-index 97f338b123b1..0d67a95c0599 100644
---- a/drivers/i2c/i2c-smbus.c
-+++ b/drivers/i2c/i2c-smbus.c
-@@ -308,7 +308,7 @@ EXPORT_SYMBOL_GPL(i2c_free_slave_host_notify_device);
-  * target systems are the same.
-  * Restrictions to automatic SPD instantiation:
-  *  - Only works if all filled slots have the same memory type
-- *  - Only works for DDR, DDR2, DDR3 and DDR4 for now
-+ *  - Only works for DDR, DDR2, DDR3, DDR4 and DDR5 for now
-  *  - Only works on systems with 1 to 8 memory slots
-  */
- #if IS_ENABLED(CONFIG_DMI)
-@@ -380,6 +380,8 @@ void i2c_register_spd(struct i2c_adapter *adap)
- 		break;
- 	case 0x1A:	/* DDR4 */
- 	case 0x1E:	/* LPDDR4 */
-+	case 0x22:	/* DDR5 */
-+	case 0x23:	/* LPDDR5 */
- 		name = "ee1004";
- 		break;
- 	default:
--- 
-2.43.0
+I can try to fire up my development devices again and see what's up if
+that helps, but I won't have time to do that in the next few days.
 
+Brian
 
