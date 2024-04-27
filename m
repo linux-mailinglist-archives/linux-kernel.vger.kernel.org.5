@@ -1,102 +1,182 @@
-Return-Path: <linux-kernel+bounces-161192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83F648B4848
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 23:14:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEAD18B484E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 23:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4079E282D3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:14:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6D4EB22356
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA98145B37;
-	Sat, 27 Apr 2024 21:14:34 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83DC145FE5;
+	Sat, 27 Apr 2024 21:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4wz3AAVO"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDC247F63;
-	Sat, 27 Apr 2024 21:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C7533C8;
+	Sat, 27 Apr 2024 21:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714252474; cv=none; b=c9tJW/0QSfaCo6pT+dwcXbyqIPyxRtaFMQCE5Zfey+WIUf6jl5bFd7PxFDhP1nBHop8/a86ZUU7dEq8HyDOOMooLDdxWMRa26nIfqqlJ7S3wZKnX0/qMfeTHQxYfyD3fhO5OSwi1X0Jw+WKtaYZKa1vhVebht+4Majbf2GV2z78=
+	t=1714252673; cv=none; b=irVxm3PDYukU40Cu6O46/ODuv2m12BAskdvZKfPPWzXab1tLDXq47gdd6ZPOzLUOL9EcYKQ+7U6U72vprHx+1tUdXnNpsycJ6ht2qIRIDIMWvhMN5y0bFUVWq9GCoEkP7FpxfSvXNQ1s15eZm8UEJtxg+IJ1aUzGAQ4Kqx7KrXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714252474; c=relaxed/simple;
-	bh=JLb9nkXBuq9tVxjgmesZjvdH2BXz28wXTyP7JHc7zJo=;
+	s=arc-20240116; t=1714252673; c=relaxed/simple;
+	bh=lri6YROTIADX74D4tW59eSZSL8gtWsyE9zcdY7AhXNo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=snrzUWs9IggkyY0Ds3a01bUeqinbgXEIZGnrrw0kqNcC4raVR91LEgvmHY0fnE1T2XzwZkWZuJyxrQR/dBaZXIJ2E9sMgvxxGnw/DFDnfASvM2FOn5h0urkVt31GOn0VbCMC/vg+3k6Of1QVvFjRC6FWTuob0a+OC6iqRQ6bkFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id B9A7C2801371D;
-	Sat, 27 Apr 2024 23:14:28 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 8C896190545; Sat, 27 Apr 2024 23:14:28 +0200 (CEST)
-Date: Sat, 27 Apr 2024 23:14:28 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: gregkh@linuxfoundation.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Marc Herbert <marc.herbert@intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
-Message-ID: <Zi1qtKNwcyydP4c2@wunner.de>
-References: <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
- <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
- <ZiYrzzk9Me1aksmE@wunner.de>
- <662beb6ad280f_db82d29458@dwillia2-xfh.jf.intel.com.notmuch>
- <Ziv9984CJeQ4muZy@wunner.de>
- <662d2ca522cc6_b6e02942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lFFIz8aLHkGsHeddos3/IVUo4SAPD5X0VU7MC/PIfRZsBj8Y7OmwP6u70oNpAoyFEoaWReiTkRcoVPjWJvYIEoF4lqasyiM6S6Rl3U19b2qqyIkVt9grUP8eWcEjPEZaIBQl6aGEp2CO4Se0CrWtbhCPEYlz+g32osMyvLr6Cy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4wz3AAVO; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=wlif7CHx7sEisoS17oJIkYIDPayl4RDiml1kpVEfL/I=; b=4w
+	z3AAVO6ByxmQ08Jcub4NyyGgs1HtWknw4vw4eXMG78e8VSoOkgPGzZXAPUwqSuLNMmklndnfed+3h
+	+Hd1E8tlcmgdRTImfeSmplEIRCtViBaTAfzwH10GPW8Nd3LPp/AzFrjtGcspVyH/u89q/c3QWTWzv
+	A2E3E/sN6X6q2Z4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s0pQP-00EA3g-Ey; Sat, 27 Apr 2024 23:17:37 +0200
+Date: Sat, 27 Apr 2024 23:17:37 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
+ interrupts unmasking
+Message-ID: <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
+ <Zi1Xbz7ARLm3HkqW@builder>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <662d2ca522cc6_b6e02942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zi1Xbz7ARLm3HkqW@builder>
 
-On Sat, Apr 27, 2024 at 09:49:41AM -0700, Dan Williams wrote:
-> Lukas Wunner wrote:
-> > But I want to raise awareness that the inability to hide
-> > empty attribute groups feels awkward.
+On Sat, Apr 27, 2024 at 09:52:15PM +0200, Ramón Nordin Rodriguez wrote:
+> > +static int oa_tc6_unmask_macphy_error_interrupts(struct oa_tc6 *tc6)
+> > +{
+> > +	u32 regval;
+> > +	int ret;
+> > +
+> > +	ret = oa_tc6_read_register(tc6, OA_TC6_REG_INT_MASK0, &regval);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	regval &= ~(INT_MASK0_TX_PROTOCOL_ERR_MASK |
+> > +		    INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK |
+> > +		    INT_MASK0_LOSS_OF_FRAME_ERR_MASK |
+> > +		    INT_MASK0_HEADER_ERR_MASK);
+> > +
+> > +	return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, regval);
+> > +}
+> > +
 > 
-> That is fair, it was definitely some gymnastics to only change user
-> visible behavior for new "invisible aware" attribute groups that opt-in
-> while leaving all the legacy cases alone.
+> This togheter with patch 11 works poorly for me. I get alot of kernel
+> output, dropped packets and lower performance.
+> Below is an example for a run when I curl a 10MB blob
 > 
-> The concern is knowing when it is ok to call an is_visible() callback
-> with a NULL @attr argument, or knowing when an empty array actually
-> means "hide the group directory".
+> time curl 20.0.0.55:8000/rdump -o dump -w '{%speed_download}'
+>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+>                                  Dload  U[  387.944737] net_ratelimit: 38 callbacks suppressed
+> pload   Total   Spent    Left  Sp[  387.944755] eth0: Receive buffer overflow error
+> eed
+>   0     0    0     0    0     0      0      0 --:--:-- --:-[  387.961424] eth0: Receive buffer overflow error
+>   0 10.0M    0  2896    0     0  13031      0  0:13:24 --:--:--  0:13:24 12986[  388.204257] eth0: Receive buffer overflow error
+> [  388.209848] eth0: Receive buffer overflow error
+
+How fast is your SPI bus? Faster than the link speed? Or slower?
+
+It could be different behaviour is needed depending on the SPI bus
+speed. If the SPI bus is faster than the link speed, by some margin,
+the receiver buffer should not overflow, since the CPU can empty the
+buffer faster than it fills.
+
+If however, the SPI bus is slower than the link speed, there will be
+buffer overflows, and a reliance on TCP backing off and slowing down.
+The driver should not be spamming the log, since it is going to happen
+and there is nothing that can be done about it.
+
+> I tried this patch
 > 
-> We could add a sentinel value to indicate "I am an empty attribute list
-> *AND* I want my directory hidden by default". However, that's almost
-> identical to requiring a placeholder attribute in the list just to make
-> __first_visible() happy.
+> diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
+> index 9f17f3712137..bd7bd3ef6897 100644
+> --- a/drivers/net/ethernet/oa_tc6.c
+> +++ b/drivers/net/ethernet/oa_tc6.c
+> @@ -615,21 +615,9 @@ static int oa_tc6_sw_reset_macphy(struct oa_tc6 *tc6)
+>         return oa_tc6_write_register(tc6, OA_TC6_REG_STATUS0, regval);
+>  }
 > 
-> Other ideas?
+> -static int oa_tc6_unmask_macphy_error_interrupts(struct oa_tc6 *tc6)
+> +static int oa_tc6_disable_imask0_interrupts(struct oa_tc6 *tc6)
+>  {
+> -       u32 regval;
+> -       int ret;
+> -
+> -       ret = oa_tc6_read_register(tc6, OA_TC6_REG_INT_MASK0, &regval);
+> -       if (ret)
+> -               return ret;
+> -
+> -       regval &= ~(INT_MASK0_TX_PROTOCOL_ERR_MASK |
+> -                   INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK |
+> -                   INT_MASK0_LOSS_OF_FRAME_ERR_MASK |
+> -                   INT_MASK0_HEADER_ERR_MASK);
+> -
+> -       return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, regval);
+> +       return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, (u32)-1);
 
-Perhaps an optional ->is_group_visible() callback in struct attribute_group
-which gets passed only the struct kobject pointer?
+So this appears to be disabling all error interrupts?
 
-At least for PCI device authentication, that would be sufficient.
-I could get from the kobject to the corresponding struct device,
-then determine whether the device supports authentication or not.
+This is maybe going too far. Overflow errors are going to happen if
+you have a slow SPI bus. So i probably would not enable that. However,
+are the other errors actually expected in normal usage? If not, leave
+them enabled, because they might indicate real problems.
 
-Because it's a new, optional callback, there should be no compatibility
-issues.  The SYSFS_GROUP_INVISIBLE return code from the ->is_visible()
-call for individual attributes would not be needed then, at least in my
-use case.
+> Which results in no log spam, ~5-10% higher throughput and no dropped
+> packets when I look at /sys/class/net/eth0/statistics/rx_dropped
 
-Thanks,
+You cannot trust rx_dropped because you just disabled the code which
+increments it! The device is probably still dropping packets, and they
+are no longer counted.
 
-Lukas
+It could be the performance increase comes from two places:
+
+1) Spending time and bus bandwidth dealing with the buffer overflow
+interrupt
+
+2) Printing out the serial port.
+
+Please could you benchmark a few things:
+
+1) Remove the printk("Receive buffer overflow error"), but otherwise
+keep the code the same. That will give us an idea how much the serial
+port matters.
+
+2) Disable only the RX buffer overflow interrupt
+
+3) Disable all error interrupts.
+
+   Andrew
 
