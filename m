@@ -1,120 +1,87 @@
-Return-Path: <linux-kernel+bounces-160911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083398B446A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:39:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF0B8B4474
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47A75282F66
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:39:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F2C91F22C4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6DB4084E;
-	Sat, 27 Apr 2024 05:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EEE40856;
+	Sat, 27 Apr 2024 06:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WsULUO2u"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F292381C7;
-	Sat, 27 Apr 2024 05:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="XP1msSCN"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97D33613E;
+	Sat, 27 Apr 2024 05:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714196333; cv=none; b=tapBpXwNDoQZ5s8nG16Q/wIYOSlnVtfDT4qq/RUaRhc7teBYjNyv7OWXPOdRw/wUUo8l2Ubh5GkG7crdBS4gCuDcMda+TDoW8XJzANQHdF2gUiVveRmv+Ljxe25B5IoVSm48RlWM7UdI0X1XfTi8U3jzHB4pVGIlUbIH/bDmWh0=
+	t=1714197601; cv=none; b=HJPK/Ya33EI4tBoBWeW7LBht8lYXYGL6Pnl1Uq2LGhDfBHo7yezSYLbVOChY5j8Q16+dyhJS3MFttQDCZ2tPoq9WYNVo2GkvCa1Kd9eh7OeqprO6iI2wWqz9eMSA9VKetODZCI1evSadYQalgKBcqlxlFZKfG4I3IcqZAMsgGhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714196333; c=relaxed/simple;
-	bh=K4EbgByRT7TtstqD4HXOVYBvbr60newEfJFOinghURg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PH3XwcG5QFw08RegimstVu8lgBsrzompxOGpNaT9PWYCS/N/v9UwYREQyVixLDX0qg3x1hJEQt0dPCO+fw7pKcIhYOHKyUNwjOyK5ZygBWrCTFcoFzwjP1m2awkUVlSu+6Ol7Dc5jHXYklQRXfwmfS47oBrjm/RIbBslEgA+/jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WsULUO2u; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714196331; x=1745732331;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=K4EbgByRT7TtstqD4HXOVYBvbr60newEfJFOinghURg=;
-  b=WsULUO2u9s6Xa1/9ZIYCeVyeZGeWzGYFd7FTqSREUsBUkyq4VHqdlenE
-   vKzB0EfHhJ/BFye6kh/Q1VCVT0m2RYYDA23t9TeUkVgR2yR0oy4mK4fI+
-   p5B3Kp0+/5anBdtrUlnFGuLzDO4C4rUBe4XzaNkB5tjWbCqgWaRROKTAS
-   4mKq/p7j/bb6zXg+49qyjMcZtgzajp2DZkZrgFyFZLscbV655wQAEK/jG
-   Fyy+CeBOsnNpLyNlvLCW8zwgzMB7JCW90ObeDnNkD2pJy9eXJRDYtc1WE
-   CwPWtgy+L7hV2KtZn/yj+oepjwMJFiegDD2o3mXIhyr4Lj2IwI8adkKSY
-   Q==;
-X-CSE-ConnectionGUID: bemiSHTFSsuIXRdzsYhDRw==
-X-CSE-MsgGUID: 0MuWYMa2QNSUuMiDdzICEQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="32437623"
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="32437623"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 22:38:51 -0700
-X-CSE-ConnectionGUID: 0FfLCUrISlq89yEGnkD66w==
-X-CSE-MsgGUID: 6Edd325aRAGxni0rsDbMoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="56530661"
-Received: from akalapal-mobl.amr.corp.intel.com (HELO [10.124.149.167]) ([10.124.149.167])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 22:38:50 -0700
-Message-ID: <002340b7-86e2-4be3-8468-71d59233c32e@intel.com>
-Date: Fri, 26 Apr 2024 22:38:49 -0700
+	s=arc-20240116; t=1714197601; c=relaxed/simple;
+	bh=BEP1UJpkxNSXEb7iK6TfpqEbFyfdQwsT3a8nHvQpbrg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=Fnft87jRQWg8vqIndcis5uXHfpUvn2pC72+YiK+Gd0szLRlegzOKnqSnRNtp+3sLIJ301r4VXqJNIJf0WBcAB4/mduVmGJ3egjj1xKsBE+g4i+jYX3rCL2ZkKcia/EMXRPEe2QHk2q8CMoC2ohNbu4nDkg7ZGUQ8ZMyvbdSvFPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=XP1msSCN; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=BEP1UJpkxNSXEb7iK6TfpqEbFyfdQwsT3a8nHvQpbrg=; b=X
+	P1msSCNdY8l98usDKt8qzWoPa9z4OmTinB98jxTdBOu8BurYCQLDcz21pehBR4ch
+	A32Bsmv2cJUpX+Li4048UfLzGHefHKPUlg92JvtL75fr6C1yttMlFBCisMa51/KR
+	XSw71WglAiQ/1PVHq/oVXABbHwvWGUKPsUqUJaM0IU=
+Received: from slark_xiao$163.com ( [223.160.226.109] ) by
+ ajax-webmail-wmsvr-40-115 (Coremail) ; Sat, 27 Apr 2024 13:57:36 +0800
+ (CST)
+Date: Sat, 27 Apr 2024 13:57:36 +0800 (CST)
+From: "Slark Xiao" <slark_xiao@163.com>
+To: "Loic Poulain" <loic.poulain@linaro.org>
+Cc: ryazanov.s.a@gmail.com, johannes@sipsolutions.net, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	"Hariprasad Kelam" <hkelam@marvell.com>
+Subject: Re:Re: [PATCH net v2] net: wwan: Fix missing net device name for
+ error message print
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <CAMZdPi-VNEUJK+AUcyCXii5in6OLfKjxrNM1KHwQf=9QV_cqJA@mail.gmail.com>
+References: <20240426092444.825735-1-slark_xiao@163.com>
+ <CAMZdPi-VNEUJK+AUcyCXii5in6OLfKjxrNM1KHwQf=9QV_cqJA@mail.gmail.com>
+X-NTES-SC: AL_Qu2aBv2SuEwu4CGfYOkfmk8Sg+84W8K3v/0v1YVQOpF8jDzp9yw9XnB5OVHM/OS0Jw6ikSKtURNP8vlFR6BcXZMKdLcRdJpHTKV5VL8XE7Ps7g==
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 4/4] KVM: selftests: Add test for configure of x86 APIC
- bus frequency
-To: Reinette Chatre <reinette.chatre@intel.com>, isaku.yamahata@intel.com,
- pbonzini@redhat.com, erdemaktas@google.com, vkuznets@redhat.com,
- seanjc@google.com, vannapurve@google.com, jmattson@google.com,
- mlevitsk@redhat.com, xiaoyao.li@intel.com, chao.gao@intel.com,
- rick.p.edgecombe@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1714081725.git.reinette.chatre@intel.com>
- <eac8c5e0431529282e7887aad0ba66506df28e9e.1714081726.git.reinette.chatre@intel.com>
- <f5a80896-e1aa-4f23-a739-5835f7430f78@intel.com>
- <12445519-efd9-42e9-a226-60cfa9d2a880@intel.com>
-Content-Language: en-US
-From: "Chen, Zide" <zide.chen@intel.com>
-In-Reply-To: <12445519-efd9-42e9-a226-60cfa9d2a880@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-ID: <7f434e77.2191.18f1e216533.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:_____wD3_5jQkyxmjzgxAA--.45239W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiRwPMZGV4I-vjXQADsU
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
+CkF0IDIwMjQtMDQtMjYgMjA6MDQ6MzksICJMb2ljIFBvdWxhaW4iIDxsb2ljLnBvdWxhaW5AbGlu
+YXJvLm9yZz4gd3JvdGU6Cj5IZWxsbywKPgo+T24gRnJpLCAyNiBBcHIgMjAyNCBhdCAxMToyNSwg
+U2xhcmsgWGlhbyA8c2xhcmtfeGlhb0AxNjMuY29tPiB3cm90ZToKPj4KPj4gSW4gbXkgbG9jYWws
+IEkgZ290IGFuIGVycm9yIHByaW50IGluIGRtZXNnIGxpa2UgYmVsb3c6Cj4+ICJzZXF1ZW5jZSBu
+dW1iZXIgZ2xpdGNoIHByZXY9NDg3IGN1cnI9MCIKPj4gQWZ0ZXIgY2hlY2tpbmcsIGl0IGJlbG9u
+Z3MgdG8gbWhpX3d3YW5fbWJpbS5jLiBSZWZlciB0byB0aGUgdXNhZ2UKPj4gb2YgdGhpcyBuZXRf
+ZXJyX3JhdGVsaW1pdGVkKCkgQVBJIGluIG90aGVyIGZpbGVzLCBJIHRoaW5rIHdlCj4+IHNob3Vs
+ZCBhZGQgbmV0IGRldmljZSBuYW1lIHByaW50IGJlZm9yZSBtZXNzYWdlIGNvbnRleHQuCj4+Cj4+
+IEZpeGVzOiBhYTczMGE5OTA1YjcgKCJuZXQ6IHd3YW46IEFkZCBNSEkgTUJJTSBuZXR3b3JrIGRy
+aXZlciIpCj4KPlRoaXMgaXMgbW9yZSBhIGNvc21ldGljIGNoYW5nZSB0aGFuIGEgYnVnZml4LCB5
+b3Ugc2hvdWxkIHRhcmdldCBuZXQtbmV4dCBJTU8uCj5BbHNvIGFzIHNhaWQgaW4gYW5vdGhlciBm
+ZWVkYmFjaywgdGhlIGNvbW1pdCBtZXNzYWdlIGRvZXMgbm90IG1hdGNoIHRoZSBjaGFuZ2UsCj5z
+aW5jZSB5b3UncmUgbm90IHByaW50aW5nIHRoZSBkZXZpY2UgbmFtZS4KQWdyZWUuIEJ1dCBpbiBz
+b21lIGZ1bmN0aW9ucywgd2UgY2FuJ3QgY2FsbCB0aGUgbmV0IGRldmljZSBuYW1lIGRpcmVjdG9y
+eSBmcm9tIHRoZQpwYXJhbWV0ZXJzIG9mIHRoaXMgZnVuY3Rpb24sIHN1Y2ggYXMgbWJpbV9yeF92
+ZXJpZnlfbmRwMTYoKS4gVGhlcmUgaXMgbm8gKm1iaW0gb3IKKm5kZXYgb3IgKm1oaV9kZXYuIA==
 
-
-On 4/26/2024 4:26 PM, Reinette Chatre wrote:
-> Hi Zide,
-> 
-> On 4/26/2024 4:06 PM, Chen, Zide wrote:
->>
->>
->> On 4/25/2024 3:07 PM, Reinette Chatre wrote:
->>> diff --git a/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
->>> new file mode 100644
->>> index 000000000000..5100b28228af
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
->>> @@ -0,0 +1,166 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Test configure of APIC bus frequency.
->>> + *
->>> + * Copyright (c) 2024 Intel Corporation
->>> + *
->>> + * To verify if the APIC bus frequency can be configured this test starts
->>
->> Nit: some typos here?
-> 
-> Apologies but this is not obvious to me. Could you please help
-> by pointing out all those typos to me?
-
-Do you think it's more readable to add a ","?
-
-- * To verify if the APIC bus frequency can be configured this test starts
-+ * To verify if the APIC bus frequency can be configured, this test starts
-  * by setting the TSC frequency in KVM, and then:
 
