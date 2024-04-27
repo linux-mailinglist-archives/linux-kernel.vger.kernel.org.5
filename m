@@ -1,112 +1,89 @@
-Return-Path: <linux-kernel+bounces-160837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F558B4369
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:09:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF0E8B436B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400291F2267F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:09:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 457E11C21E5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2892E651;
-	Sat, 27 Apr 2024 01:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B352E62C;
+	Sat, 27 Apr 2024 01:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpZDc5iP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NTrlNAsR"
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B0525777;
-	Sat, 27 Apr 2024 01:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943ED2570
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714180167; cv=none; b=R3iuUVhdQgyoTE+vGZGut1QPhdOlrBxHEqVN4qMFk+AGCTCr1p0SySDJTjoM/S0wlU9Qj8ruunpY0CD+aUCaj/lEIHnuOV8uHi1tQ1tzXTVOs2R0nHxbiEaG2ilRgj6eHIDkMEG7Nnkjs8yI8GpzQd/98LYz2iyMTnV1GlQ3A68=
+	t=1714180522; cv=none; b=R7Qe2Ar0IJZBbw70XxG2I5SawmyvFnEZaGQnf4//eF8fxzowU5u0g3CTzMnVEnIQJI70R3ciMGtm66LSUx0zllovXCF5plAB15bKAqwSTWcRiBMzhcULS3N6CjumCrRTAkfgv0wf+HafTr+wUQdyd//ecZVyUqtZtS2PoM6/qfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714180167; c=relaxed/simple;
-	bh=5FyjjO3qI7vbvED0B+ufM1OwjTuy4FUUKvu2jkUC8Mk=;
+	s=arc-20240116; t=1714180522; c=relaxed/simple;
+	bh=LYF/0EjxExzZ7UQI2Z9XnIu4tPB09xytMqOIKCPsi4M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9XRy/suoCMyvZf2dVsOjB4jDuDPSJxlsKMJZDJzr1C+3C+dHNgzB4G1fgSEh+08lJgDKMEZkhEyzhf2TjrVclhRC0iDnAXvNsrgnIoh5OFN3AML8NuR7/tTsKV1eRN8I4gyrvZHLu5YojVziTQmv+GspPOcgCbhrFeKQx9pOps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpZDc5iP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 574C8C113CD;
-	Sat, 27 Apr 2024 01:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714180166;
-	bh=5FyjjO3qI7vbvED0B+ufM1OwjTuy4FUUKvu2jkUC8Mk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UpZDc5iPFzgWaK3TksswV2zJtpSYA08GGt+Noe7CDPoWDJjEgx/2TtebKgiJTGWWS
-	 QZ9YrdtdXwIhrVdL+Sqegl+T9vug5YMSYLyBMcvkGHy8909xIA6waJW7TjhVSYH5Qw
-	 jHCuf2jl5l7gRFlJjhE1Csur7ony81mnev1zV2DWZm2s2ow8jeqGcffC32ugmW7HOj
-	 ne30QdnrdWVkTEGD/59iXq5fwvE9i1ZsqwAvS7RNUKSxnsUCgOcoLyAfmg3vQ84Coi
-	 +YFoZu3kOsNoE8bHBM0nrM3mCu4ikN04DK/ySAjQhlybogh4jY6l4NXSV/vh9U1JVl
-	 666sD/fMDvcQw==
-Date: Fri, 26 Apr 2024 22:09:23 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf annotate: Update dso binary type when try
- build-id
-Message-ID: <ZixQQ_vKtmtvYSjS@x1>
-References: <20240425005157.1104789-1-namhyung@kernel.org>
- <20240425005157.1104789-2-namhyung@kernel.org>
- <Zipk0p08bxO7werD@x1>
- <ZiptiObJxYPeXqK_@x1>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FxMCVLKtbyKoD06R2dXwyPKm+cpZhZF4N8DPB9ly6vTAebzHM5ORq0nBqF4Li/StwGvfNtan/mfqYJkfhOjKLNs6RZ3ohTIa/S85f36uYtb46yfi6nqeLz0KOyfOyyMCqesPqgCG8fUW1m4BkFQatEFi46BEMz/ZgETjKoh1K70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NTrlNAsR; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 26 Apr 2024 18:15:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714180518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7onvPrSnv4zk2ACGNhrsA4mgLdVhUxihzE/0ThcanU8=;
+	b=NTrlNAsRURAWfw5UqZv5+bw43WmHjK6ABGB2u11bVCshH9h87ma5dT/Ybbaf2gmjGCOqdh
+	4Q73lcmI0pobOAT+nNUba+ukZ3Dq3/Nm81/gNhnwoMLE9sbUxl3LL/iJJ428/qqiRjHjlR
+	/kjEMjI1qJRumv0bLfk6WLZ9B9PsXb4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] memcg: reduce memory size of
+ mem_cgroup_events_index
+Message-ID: <lyxw3jphvncnfgenvpocl2srs2vtm4frmv7yyieel544apwaub@mrddepkseafr>
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
+ <20240427003733.3898961-2-shakeel.butt@linux.dev>
+ <CAJD7tkYsz+v9z=3N3dCUFP-9L3RazVkQU_6Cuy0o8-0Ouq-S5g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZiptiObJxYPeXqK_@x1>
+In-Reply-To: <CAJD7tkYsz+v9z=3N3dCUFP-9L3RazVkQU_6Cuy0o8-0Ouq-S5g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 25, 2024 at 11:49:49AM -0300, Arnaldo Carvalho de Melo wrote:
-> On Thu, Apr 25, 2024 at 11:12:40AM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Wed, Apr 24, 2024 at 05:51:57PM -0700, Namhyung Kim wrote:
-> > > +++ b/tools/perf/util/disasm.c
-> > > @@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
-> > >  		mutex_unlock(&dso->lock);
-> > > +	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
-> > > +		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
-> > >  	}
->  
-> > Fixed up to take into account a recent patch by Ian that turned that
-> > &dso->lock into dso__lock(dso):
->  
-> > +++ b/tools/perf/util/disasm.c
-> > @@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
-> >  			}
-> >  		}
-> >  		mutex_unlock(dso__lock(dso));
-> > +	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
-> > +		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
-> >  	}
+On Fri, Apr 26, 2024 at 05:42:48PM -0700, Yosry Ahmed wrote:
+> On Fri, Apr 26, 2024 at 5:37â€¯PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> > mem_cgroup_events_index is a translation table to get the right index of
+> > the memcg relevant entry for the general vm_event_item. At the moment,
+> > it is defined as integer array. However on a typical system the max
+> > entry of vm_event_item (NR_VM_EVENT_ITEMS) is 113, so we don't need to
+> > use int as storage type of the array. For now just use int8_t as type
+> > and add a BUILD_BUG_ON() and will switch to short once NR_VM_EVENT_ITEMS
+> > touches 127.
 > 
-> Nah, I forgot some more stuff, this is what I have now:
+> Any reason not to use uint8_t (or simply u8) and U8_MAX (instead of
+> the hardcoded 127)?
+> 
 
-Nah², I had to remove all these:
-
-pick a58b4da77b40920f perf dsos: Switch backing storage to array from rbtree/list 
-pick 7d91cefd1fb63068 perf dsos: Remove __dsos__addnew()
-pick 80c3ccf05199dbb6 perf dsos: Remove __dsos__findnew_link_by_longname_id()
-pick af3f8dea24f47802 perf dsos: Switch hand code to bsearch()
-pick 7537b92b48318834 perf dso: Add reference count checking and accessor functions
-pick 9bd7c6fe8de22b37 perf dso: Reference counting related fixes
-pick 4de57b46a0cb2027 perf dso: Use container_of() to avoid a pointer in 'struct dso_data'
-
-Due to a bisect that pointed "perf dsos: Switch backing storage to array
-from rbtree/list" as the one where:
-
- 
-root@x1:~# perf test "kernel lock contention analysis test"
- 87: kernel lock contention analysis test                            : FAILED!
-
-- Arnaldo
+Just to keep the error check simple i.e. (index < 0). If we hit 127 then
+we can switch to uint8_t and S8_MAX as error. Though 127 should be
+replaced by S8_MAX. Somehow I was grep'ing for INT8*MAX variants.
+Anyways if there is more support for uint8_t, I will change otherwise I
+will keep as is.
 
