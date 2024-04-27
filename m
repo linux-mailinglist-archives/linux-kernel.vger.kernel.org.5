@@ -1,156 +1,163 @@
-Return-Path: <linux-kernel+bounces-160875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78CA18B43E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE3A8B43E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4A01F22C48
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:05:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16BC1F227F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC333BB22;
-	Sat, 27 Apr 2024 03:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763453BBF9;
+	Sat, 27 Apr 2024 03:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="voTlGHY6"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SSv8HwzL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30EA3A1BE
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 03:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A4F1F93E;
+	Sat, 27 Apr 2024 03:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714187123; cv=none; b=tKf4H9u3mCDpYK4t/dgC3LE7C1x1tbW6OMSJLM0uQRCXfUbgkkRfDuSs55kz7j6yl9LqulBrzilRkJYzxr3BPdFrNBsOjqb8H9UPy1zv7DVHZW4TfV5kgwXd/0cHItMJ5OeTmMJUPMftUhN0g9apZpUongBFoqlRWllkRiZ/Bl4=
+	t=1714187186; cv=none; b=IbbnT/t6pnC+BrFwadMlji6WhMklWHkWb1rN62nothCBuA5M+umX0+IjApGORxuzeUv/4KkE86fNzLpgNCAMaDyZThDgrgLncbYHQ/R2LsdT41oL8J6oSMRPCnHfQLpVweloG3J0bTFdiBehiS/ki8ajYF2fu4ytmiP0HGZTA78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714187123; c=relaxed/simple;
-	bh=cha9/ffLclacPVD18t3NcfWoJYtnsmNrKw5+kqwJzek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YBn1SaRWjMI7y6Mtkk7LHA7RNyJ1f9gbASzfZLa+SKajVhHGWR89GOyhA2OnW5xWHRWQwlBw3+5KNvcN2+iyey8mGcd4woZUt3w17irrg5XI+LNbODyyWUTSNoON5Rp4D5dr5VKRQVCV4mTTHD/8hnCYslP55McPLndl4OH3HkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=voTlGHY6; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51d2047220cso100997e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 20:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714187120; x=1714791920; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/KxZsU8CfmoqVg9nhLSmO6KA2q/B4uRALVgx58uGwIw=;
-        b=voTlGHY6WNTRPZ9TfTButMeOuMUwcNq5SxdPYKrglGQUsUvzcGUUbGHg5tNjo5Oldm
-         z3Do2cIXWc0N4G0ogEAh2PqNlhVBOpQuXvesYHWlBkUDW28XNwYh7jumUCeR+5YyWDBn
-         FzDB1AbuEXZdS3mwxpQwRVUBZX5yCkN9o7eJDsEE/hSRAI5/N32SLzRKVqgH2yQAsoUS
-         ofG8gkthNoRAgcP5PQjmKOgHxciOsT0OT5Mxxv8E54CJiBZ0cKczfh8CUrYWjovIqi85
-         KR90oxrD+0rvylNqHD4ZHTNeGJrni037tpSceMkDcjEA2HRKAFG5ke8oTNQPDSy2fMzm
-         l0hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714187120; x=1714791920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/KxZsU8CfmoqVg9nhLSmO6KA2q/B4uRALVgx58uGwIw=;
-        b=gaJA2eL7p5BWBlLCTnD2YjRd9RnOkxE41pex+D4pp83kexG6V5a3FZiG2ZzIUwuYvh
-         KLFE5KRrrVEhzLrLz/wyJ658ekqSAqPBj10rpgaW/VFkcyjZXvQdumTLoofP5e1m7GYE
-         WIOPSnm2S3XT0obFPIt2aBorppZfxWxGpG2xY0tvnIBqkGvVuQfKa6Xe9TCPNZA26aYW
-         /DQ+5R6SZegIyfnfSc6M7yzyY8sBohdkPplQ3CzfiNz3+EUDmvcMoxMPB7WiC0thD8Hc
-         B/H1nE2Xx0p6hv+wt64LrHtGi7YWbDwxrUdrPYeXIlbPoShnChbgyUTAOib2+oywkqb2
-         nZ+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUNtlzd8+r3lUl6qJ+hKCe4nRSs58Mx5DSbplgIEvQCtEOmzK3d0TvOLgKkR4oDajt0bvY+jkskDtJ1+S1mR8bupHPbe9FFijePM0nq
-X-Gm-Message-State: AOJu0Yw1HO/rpYyQXNdARJpd74RHICvJzPepGANUvQM/YeJromHcmoLV
-	4ih5eIj3isg8+ddG3IMrVUKTxSjTqSRzbzP9IDVnJjEzf2DvSuXR4pxpuZbvJm1UQIuDVAmpP+J
-	Vfxnyt0+2zW9FCOGop8frE5J9o/o7XDdLhxE4
-X-Google-Smtp-Source: AGHT+IH7ZrbbxcIWFPMbr/gIXjFP4VCMqRaA2i6I0HFIVTbw9MBdGrgRXfr/4EcW+YlMTOtyvboEK6FX9s4UKILqlag=
-X-Received: by 2002:a05:6512:684:b0:518:17ad:a6e0 with SMTP id
- t4-20020a056512068400b0051817ada6e0mr2933668lfe.51.1714187119584; Fri, 26 Apr
- 2024 20:05:19 -0700 (PDT)
+	s=arc-20240116; t=1714187186; c=relaxed/simple;
+	bh=5s9RUz2MFkTGAYQJ26h2TnEAa/zhOjqbrB7VANRk3lA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IPHLdEFrUV/G2WfBAyPTDKiJdc61+mqDPfmw5ugnI+xgX6rqFsY/aljqjweNnywKoTWeU9tnip0l4hl1KSXJxpDsY3qBH/1kM+G+ZffrEpSD25GVAMimVyoLMdzYnGJ2Lg0odgND5p9zCylODKp8baY7yMsfMtS3L00aU5SDqVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SSv8HwzL; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714187185; x=1745723185;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5s9RUz2MFkTGAYQJ26h2TnEAa/zhOjqbrB7VANRk3lA=;
+  b=SSv8HwzLvFuZLHaplno6KDuXk542fxOtj4tbNISshFgycwsJDGLgf4ux
+   2XbWZXxbDryD/JWjT+kQ5RgNZUwSgCVxGMjTZUrSCMk9pe8UD5Pp3NlUL
+   pJrXEQZ0w5s5bvdbGywZBpz+7e6XuVoj41iT7Anllu/XVAnm4HDJd9g+s
+   uFsuWETMfXqoJ0b7aICIXsx7ExjWrQNa+Xx5wDaE8nOT+G8VoWnsyoRwv
+   8e1KkILRrieLhaGN3iZfV0RBxjQV2jMfHreWtocuNjc8YV9mcAcKTJCyh
+   InOhG6Mx8iLcACKjeFV9LDXGsDIENs0HL7761v0nHELt4VjqM9nfzIX+E
+   Q==;
+X-CSE-ConnectionGUID: 2Io5EqItQ/uh2atP6tpBDg==
+X-CSE-MsgGUID: 6aqgQIWBTw+JmGktHyDgmg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10468292"
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="10468292"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 20:06:24 -0700
+X-CSE-ConnectionGUID: MynFAFYcTw6hsFAehSytYg==
+X-CSE-MsgGUID: nka30g3MRzqwzZjNc2Gf2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="56778167"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 26 Apr 2024 20:06:21 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s0YOJ-0004ba-1x;
+	Sat, 27 Apr 2024 03:06:19 +0000
+Date: Sat, 27 Apr 2024 11:05:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>,
+	linux-kernel@vger.kernel.org, jic23@kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	robh@kernel.org, nuno.sa@analog.com
+Cc: oe-kbuild-all@lists.linux.dev,
+	Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Subject: Re: [PATCH 4/7] iio: imu: adis_buffer: Add buffer setup API with
+ buffer attributes
+Message-ID: <202404271027.ySHRhuOH-lkp@intel.com>
+References: <20240426135339.185602-5-ramona.bolboaca13@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
- <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com> <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
- <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com> <ZirPGnSDUzD-iWwc@google.com>
- <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com> <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
- <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com> <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
- <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com> <ZiwEoZDIg8l7-uid@google.com>
-In-Reply-To: <ZiwEoZDIg8l7-uid@google.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Fri, 26 Apr 2024 20:04:42 -0700
-Message-ID: <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Sean Christopherson <seanjc@google.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
-	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426135339.185602-5-ramona.bolboaca13@gmail.com>
 
-On Fri, Apr 26, 2024 at 12:46=E2=80=AFPM Sean Christopherson <seanjc@google=
-com> wrote:
->
-> On Fri, Apr 26, 2024, Kan Liang wrote:
-> > > Optimization 4
-> > > allows the host side to immediately profiling this part instead of
-> > > waiting for vcpu to reach to PMU context switch locations. Doing so
-> > > will generate more accurate results.
-> >
-> > If so, I think the 4 is a must to have. Otherwise, it wouldn't honer th=
-e
-> > definition of the exclude_guest. Without 4, it brings some random blind
-> > spots, right?
->
-> +1, I view it as a hard requirement.  It's not an optimization, it's abou=
-t
-> accuracy and functional correctness.
+Hi Ramona,
 
-Well. Does it have to be a _hard_ requirement? no? The irq handler
-triggered by "perf record -a" could just inject a "state". Instead of
-immediately preempting the guest PMU context, perf subsystem could
-allow KVM defer the context switch when it reaches the next PMU
-context switch location.
+kernel test robot noticed the following build errors:
 
-This is the same as the preemption kernel logic. Do you want me to
-stop the work immediately? Yes (if you enable preemption), or No, let
-me finish my job and get to the scheduling point.
+[auto build test ERROR on jic23-iio/togreg]
+[also build test ERROR on linus/master v6.9-rc5 next-20240426]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Implementing this might be more difficult to debug. That's my real
-concern. If we do not enable preemption, the PMU context switch will
-only happen at the 2 pairs of locations. If we enable preemption, it
-could happen at any time.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ramona-Gradinariu/dt-bindings-iio-imu-Add-ADIS16501-compatibles/20240426-215728
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20240426135339.185602-5-ramona.bolboaca13%40gmail.com
+patch subject: [PATCH 4/7] iio: imu: adis_buffer: Add buffer setup API with buffer attributes
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240427/202404271027.ySHRhuOH-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404271027.ySHRhuOH-lkp@intel.com/reproduce)
 
->
-> What _is_ an optimization is keeping guest state loaded while KVM is in i=
-ts
-> run loop, i.e. initial mediated/passthrough PMU support could land upstre=
-am with
-> unconditional switches at entry/exit.  The performance of KVM would likel=
-y be
-> unacceptable for any production use cases, but that would give us motivat=
-ion to
-> finish the job, and it doesn't result in random, hard to diagnose issues =
-for
-> userspace.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404271027.ySHRhuOH-lkp@intel.com/
 
-That's true. I agree with that.
+All errors (new ones prefixed by >>):
 
->
-> > > Do we want to preempt that? I think it depends. For regular cloud
-> > > usage, we don't. But for any other usages where we want to prioritize
-> > > KVM/VMM profiling over guest vPMU, it is useful.
-> > >
-> > > My current opinion is that optimization 4 is something nice to have.
-> > > But we should allow people to turn it off just like we could choose t=
-o
-> > > disable preempt kernel.
-> >
-> > The exclude_guest means everything but the guest. I don't see a reason
-> > why people want to turn it off and get some random blind spots.
+   drivers/iio/imu/adis_buffer.c: In function 'devm_adis_setup_buffer_and_trigger_with_attrs':
+>> drivers/iio/imu/adis_buffer.c:207:51: error: passing argument 7 of 'devm_iio_triggered_buffer_setup_ext' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     207 |                                                   buffer_attrs);
+         |                                                   ^~~~~~~~~~~~
+         |                                                   |
+         |                                                   const struct attribute **
+   In file included from drivers/iio/imu/adis_buffer.c:19:
+   include/linux/iio/triggered_buffer.h:31:69: note: expected 'const struct iio_dev_attr **' but argument is of type 'const struct attribute **'
+      31 |                                         const struct iio_dev_attr **buffer_attrs);
+         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/devm_iio_triggered_buffer_setup_ext +207 drivers/iio/imu/adis_buffer.c
+
+   176	
+   177	/**
+   178	 * devm_adis_setup_buffer_and_trigger_with_attrs() - Sets up buffer and trigger
+   179	 * for the managed adis device with buffer attributes.
+   180	 * @adis: The adis device
+   181	 * @indio_dev: The IIO device
+   182	 * @trigger_handler: Trigger handler: should handle the buffer readings.
+   183	 * @ops: Optional buffer setup functions, may be NULL.
+   184	 * @buffer_attrs: Extra buffer attributes.
+   185	 *
+   186	 * Returns 0 on success, a negative error code otherwise.
+   187	 *
+   188	 * This function sets up the buffer (with buffer setup functions and extra
+   189	 * buffer attributes) and trigger for a adis devices with buffer attributes.
+   190	 */
+   191	int
+   192	devm_adis_setup_buffer_and_trigger_with_attrs(struct adis *adis, struct iio_dev *indio_dev,
+   193						      irq_handler_t trigger_handler,
+   194						      const struct iio_buffer_setup_ops *ops,
+   195						      const struct attribute **buffer_attrs)
+   196	{
+   197		int ret;
+   198	
+   199		if (!trigger_handler)
+   200			trigger_handler = adis_trigger_handler;
+   201	
+   202		ret = devm_iio_triggered_buffer_setup_ext(&adis->spi->dev, indio_dev,
+   203							  &iio_pollfunc_store_time,
+   204							  trigger_handler,
+   205							  IIO_BUFFER_DIRECTION_IN,
+   206							  ops,
+ > 207							  buffer_attrs);
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
