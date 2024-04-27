@@ -1,169 +1,118 @@
-Return-Path: <linux-kernel+bounces-160944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A4A08B44E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:28:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CACF38B44F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FE30B215BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:28:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08B0B1C2141A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2482044C66;
-	Sat, 27 Apr 2024 07:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8422D4596C;
+	Sat, 27 Apr 2024 07:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MzjOeupG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="gEqEbcAY"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFCD4DA05
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38483376EC;
+	Sat, 27 Apr 2024 07:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714202804; cv=none; b=B3zjzkh6iq5Ae8bpykkSqPiu84La5b1f1fPmm1a21lSJ4EVTNvtxy6bWO27p2IMsUqs6Sed3AG2aSo7A8KexbZDg+tbNuTSRrWPQTEEVMLguKGHUy3YwtEM8eHlojpPjBA1am5JWrEOFbHauYpGQKKHDG0MsmFYxnuo1ifo5+So=
+	t=1714203652; cv=none; b=UY1otfYt7LzaThluwcz4PqDrjfBzo61C7gJOuXywvhysJTpledZs9sAClSmpGbrhWsVaDYCRzEAtXTdjuME8dCcDRfEm/qFUQdGYxefw2bjVfD7emapmOtWMAuF3jXo1Vh2z/rLwUjLjEWcjSxcwFcRw3oXQR2lrYtRkq1/TDEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714202804; c=relaxed/simple;
-	bh=s8ighbpejf8qnuSaqj5JK6rbi0eE/M7o+5w2reK7UVY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OtIQ2WKVZJ4kR6V3PIIjE+JsKVpLJCY1+WexyA60Y+uldQwsyKr9iXg26oZfhI10FosDxA9mQWNduSxQdUKR2s1Ynroqdz9ev+ya0bQT0LqQW1fUzt5qURldDY5Xd6/tnJ6PW16TGwr4SqpZ+z8KTIcRTS6TFBztUlv1pATZwQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MzjOeupG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714202802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X91WoFrN3qg460EYcwXb9U+URsgFQoWkr+NpKT94cjw=;
-	b=MzjOeupGYxvGUB+ZhsIaF1BTj7TiZVVNE5lLimp9GZPc6WQT4CK33zW2Sc6ng7vLneqY/5
-	edEoujZ17lYT9d0CFpSjN1AZDrsbPgTEOGGYW6sryJxrAL+LE/E6WPTg8B7yzzfJlNp1Fk
-	nQCB9eYJLXnFwyTHu1zOj43usNZuZZs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-578-l-5YaWpRPJORrv3nHoNRug-1; Sat,
- 27 Apr 2024 03:26:37 -0400
-X-MC-Unique: l-5YaWpRPJORrv3nHoNRug-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D92C3C025C0;
-	Sat, 27 Apr 2024 07:26:36 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DCBA7492BC7;
-	Sat, 27 Apr 2024 07:26:34 +0000 (UTC)
-From: Ivan Vecera <ivecera@redhat.com>
-To: netdev@vger.kernel.org
-Cc: Michal Schmidt <mschmidt@redhat.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v4 7/7] i40e: Add and use helper to reconfigure TC for given VSI
-Date: Sat, 27 Apr 2024 09:26:08 +0200
-Message-ID: <20240427072615.226151-8-ivecera@redhat.com>
-In-Reply-To: <20240427072615.226151-1-ivecera@redhat.com>
-References: <20240427072615.226151-1-ivecera@redhat.com>
+	s=arc-20240116; t=1714203652; c=relaxed/simple;
+	bh=CzgUKxV1DiRGrX9zQXzZL6Gotui8EXJUqYQ3eQT9fT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EldON3TuhubwZAoNWjdObGunaICbj7oTMsx5nhciB0CMEiZ76f/cBRB9AJTeoRbsLyAv6WPgwpS4WlNdUhZ8IP6in0Aflo7GIy7d0cFxduAzBPcQ9JYnLlP5wI90lnkBr/+olVU+D5IPfDqqastftUc2DBKBdaTuhXzRdhnLui4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=gEqEbcAY; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1714203646;
+	bh=CzgUKxV1DiRGrX9zQXzZL6Gotui8EXJUqYQ3eQT9fT4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gEqEbcAYbNH1Cl76LGX0IqteTFz6QZM2G7WkdPY5ve6JFJe7QvQdYePk2UkJVcvTR
+	 6u5FIHxh7+/FsU6vrbi0R0NpqVH+T4CvlFrv7BQ8Kzndu1PmGsnulYTnxUn5nJrEUi
+	 e3WiuV0em4CHQ+eAmWIJfWacyiMhggB7HEWeZqN8=
+Date: Sat, 27 Apr 2024 09:40:43 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Joel Granados <j.granados@samsung.com>
+Cc: Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, 
+	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, 
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <38a87a0f-02c7-4072-9342-8f6697ea1a17@t-8ch.de>
+References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+ <20240424201234.3cc2b509@kernel.org>
+ <9e657181-866a-4626-82d0-e0030051b003@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+In-Reply-To: <9e657181-866a-4626-82d0-e0030051b003@t-8ch.de>
 
-Add helper i40e_vsi_reconfig_tc(vsi) that configures TC
-for given VSI using previously stored TC bitmap.
+On 2024-04-25 09:10:27+0000, Thomas Weißschuh wrote:
+> On 2024-04-24 20:12:34+0000, Jakub Kicinski wrote:
+> > On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
+> > > The series was split from my larger series sysctl-const series [0].
+> > > It only focusses on the proc_handlers but is an important step to be
+> > > able to move all static definitions of ctl_table into .rodata.
+> > 
+> > Split this per subsystem, please.
+> 
+> Unfortunately this would introduce an enormous amount of code churn.
+> 
+> The function prototypes for each callback have to stay consistent.
+> So a another callback member ("proc_handler_new") is needed and users
+> would be migrated to it gradually.
+> 
+> But then *all* definitions of "struct ctl_table" throughout the tree need to
+> be touched.
+> In contrast, the proposed series only needs to change the handler
+> implementations, not their usage sites.
+> 
+> There are many, many more usage sites than handler implementations.
+> 
+> Especially, as the majority of sysctl tables use the standard handlers
+> (proc_dostring, proc_dobool, ...) and are not affected by the proposed
+> aproach at all.
+> 
+> And then we would have introduced a new handler name "proc_handler_new"
+> and maybe have to do the whole thing again to rename it back to
+> the original and well-known "proc_handler".
 
-Effectively replaces open-coded patterns:
+This aproach could be optimized by only migrating the usages of the
+custom handler implementations to "proc_handler_new".
+After this we could move over the core handlers and "proc_handler" in
+one small patch that does not need to touch the usages sites.
 
-enabled_tc = vsi->tc_config.enabled_tc;
-vsi->tc_config.enabled_tc = 0;
-i40e_vsi_config_tc(vsi, enabled_tc);
+Afterwards all non-core usages would be migrated back from
+"proc_handler_new" to "proc_handler" and the _new variant could be
+dropped again.
 
-Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
-Reviewed-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 32 +++++++++++++++------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+It would still be more than twice the churn of my current patch.
+And these patches would be more complex than the current
+"just add a bunch of consts, nothing else".
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 26e5c21df19d..2cc7bec0557b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5917,6 +5917,28 @@ static int i40e_vsi_config_tc(struct i40e_vsi *vsi, u8 enabled_tc)
- 	return ret;
- }
- 
-+/**
-+ * i40e_vsi_reconfig_tc - Reconfigure VSI Tx Scheduler for stored TC map
-+ * @vsi: VSI to be reconfigured
-+ *
-+ * This reconfigures a particular VSI for TCs that are mapped to the
-+ * TC bitmap stored previously for the VSI.
-+ *
-+ * Context: It is expected that the VSI queues have been quisced before
-+ *          calling this function.
-+ *
-+ * Return: 0 on success, negative value on failure
-+ **/
-+static int i40e_vsi_reconfig_tc(struct i40e_vsi *vsi)
-+{
-+	u8 enabled_tc;
-+
-+	enabled_tc = vsi->tc_config.enabled_tc;
-+	vsi->tc_config.enabled_tc = 0;
-+
-+	return i40e_vsi_config_tc(vsi, enabled_tc);
-+}
-+
- /**
-  * i40e_get_link_speed - Returns link speed for the interface
-  * @vsi: VSI to be configured
-@@ -14279,7 +14301,6 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	struct i40e_vsi *main_vsi;
- 	u16 alloc_queue_pairs;
- 	struct i40e_pf *pf;
--	u8 enabled_tc;
- 	int ret;
- 
- 	if (!vsi)
-@@ -14312,10 +14333,8 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 	 * layout configurations.
- 	 */
- 	main_vsi = i40e_pf_get_main_vsi(pf);
--	enabled_tc = main_vsi->tc_config.enabled_tc;
--	main_vsi->tc_config.enabled_tc = 0;
- 	main_vsi->seid = pf->main_vsi_seid;
--	i40e_vsi_config_tc(main_vsi, enabled_tc);
-+	i40e_vsi_reconfig_tc(main_vsi);
- 
- 	if (vsi->type == I40E_VSI_MAIN)
- 		i40e_rm_default_mac_filter(vsi, pf->hw.mac.perm_addr);
-@@ -15074,11 +15093,8 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acqui
- 		}
- 	} else {
- 		/* force a reset of TC and queue layout configurations */
--		u8 enabled_tc = main_vsi->tc_config.enabled_tc;
--
--		main_vsi->tc_config.enabled_tc = 0;
- 		main_vsi->seid = pf->main_vsi_seid;
--		i40e_vsi_config_tc(main_vsi, enabled_tc);
-+		i40e_vsi_reconfig_tc(main_vsi);
- 	}
- 	i40e_vlan_stripping_disable(main_vsi);
- 
--- 
-2.43.2
+Personally I still prefer the original aproach.
 
+
+Thomas
 
