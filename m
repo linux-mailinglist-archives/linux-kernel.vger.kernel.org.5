@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-161061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEDD98B468A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 15:54:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1732B8B4683
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 15:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A565A282823
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:54:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF88F282417
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB81A4F888;
-	Sat, 27 Apr 2024 13:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DD344377;
+	Sat, 27 Apr 2024 13:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b="FxDgcFWs"
+	dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b="vAQruUdX"
 Received: from smtp1.math.uni-bielefeld.de (smtp1.math.uni-bielefeld.de [129.70.45.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431574F618
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 13:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FEC4F1FE
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 13:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.70.45.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714226083; cv=none; b=eXT/ksQe65EeJJbGL475EWjytYHIrULWz/8yrd/T0H7A1GCkdd8XBNJDnjuiXR0/xHW76mmBdm9NmLbNAb869X6ef36dq6vh4Vw3zCARV4PuofiozEWLJyla5FgItsnxE6YvtXHuKDUsTZFPOpDCOc30rqN+Sgcr6swwQ+/5V5Q=
+	t=1714225792; cv=none; b=s7T5u0EgFqNGDk8a6eU52ygIX2NEsYXdFLcrtRl5UZX+c/iUEOvSvkALqxfUzjBCBHZndgM3LNiU8PleUuMITXldTUopbk3JQ5354fIX6ZRIHyLRQiYiMuodhYXDH8lMD9CN0YHeaXgLef42Ud00CcOGwZfR0BR4FfXJobu+jyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714226083; c=relaxed/simple;
-	bh=2Z2cZ2r3ZL3Y/MT8LeagIDIKA+w/N+Zqp6OvwQwmLwI=;
+	s=arc-20240116; t=1714225792; c=relaxed/simple;
+	bh=5hXUy2LfTbscSL/0xWynVggGxCy3JaaitQyDuIUXPYM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b4/TgiVE+3euea+lM5bCUTstD+gC+V1Nt963lQ7xeEFRzxCm/pQzHV2aOC3LaTHGcwf3bdEdPAQPWgAAbSE6D/bvvQG6GngZ2vPLtD/AB9FkMPFq7m74FSEpaEjFJ9aKK1HUMn7CEyoytYA0lw6tai6h+cGwNRydx+3sQBO4Q/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de; spf=pass smtp.mailfrom=math.uni-bielefeld.de; dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b=FxDgcFWs; arc=none smtp.client-ip=129.70.45.10
+	 In-Reply-To:Content-Type; b=uPlCK/6ccnYtB1aq2hRvxfhuQE3ZTMDANXkR5Ija/XBqUC+ZU9FnJ2eBFqWJpp8/K8AM88kN8dy/fWWjBznua0toW0KgDzX4uDxSYxyuE/2bEzEWjUxR6g1JrXuOg5BhBWtTp9kqK8dKZ8tqBflELeRJaD/1Nq347Sw7wL4F6lA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de; spf=pass smtp.mailfrom=math.uni-bielefeld.de; dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b=vAQruUdX; arc=none smtp.client-ip=129.70.45.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=math.uni-bielefeld.de
 Received: from [192.168.0.100] (dslb-084-060-164-146.084.060.pools.vodafone-ip.de [84.60.164.146])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by smtp1.math.uni-bielefeld.de (Postfix) with ESMTPSA id 35D7D602E5;
-	Sat, 27 Apr 2024 15:49:26 +0200 (CEST)
+	by smtp1.math.uni-bielefeld.de (Postfix) with ESMTPSA id A653B60EFF;
+	Sat, 27 Apr 2024 15:49:44 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=math.uni-bielefeld.de; s=default; t=1714225766;
-	bh=2Z2cZ2r3ZL3Y/MT8LeagIDIKA+w/N+Zqp6OvwQwmLwI=;
+	d=math.uni-bielefeld.de; s=default; t=1714225784;
+	bh=5hXUy2LfTbscSL/0xWynVggGxCy3JaaitQyDuIUXPYM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FxDgcFWs5MEv8aGvyMPcUPmUrnkcrUDEGzTyDiPJYz93lPZNAXMVqNYbIKmwcrhn8
-	 h+4qr73/+OnwT480/zXEVHN7zlZaepupTjqYktHFgTCVYwMCFwRjAk04IOxu+oM12u
-	 iBhTWFyEa4378j3dd1IwO09tjZJUdCbeBkP3ehHNOzC/wcD4Em7BaVlBN9Lv4ZK8YE
-	 kBWoxHClYXM+Ted8C6jP/4z8zMjRXVCG40DgkhmiQ9u6uY42hDMA4VxR6cOiN1DlxZ
-	 YPKh65HkUCBXaTBm2Rt5zLRdbJGgtUvXp+Ndloq7d1/gWXTi2/BojMxc0Rll7gGjAG
-	 ttMF39oONZcYg==
-Message-ID: <0782e84f-5fab-4025-ad8e-aa7b56f3fbc6@math.uni-bielefeld.de>
-Date: Sat, 27 Apr 2024 15:49:22 +0200
+	b=vAQruUdXIHLy9Ud75g8XFcveQ2zgiA7pQaHd/xzknV6gHLJsHds+TzKvDF7tA3cf+
+	 XjMkFXdDbqXvpn1KSyNm4yZ9XfRXmAjyFy3I3+PvIxpdZPnXIEd24XH/15X7J9wGhg
+	 NcoI5f3agW2dKWw9N6N4/ALmuh0iuC1QAJLrUkeH6T2njSZYjqrdANMStiYgLyy3VF
+	 225PL4ARrPJOnYd86QWFj2/qnrESKJvC2wfFNb+Cg143wjkrsXQr5t8mLnh6AiXkXT
+	 kR8vOuXLHBhCG2ryUgdn6+SfoLSOnbM88o4iaFgsDIHXYj5qgOg6s1SQgLuQaGjCCW
+	 xljgdKwSznSIg==
+Message-ID: <6acbe83c-bb8d-4076-9784-1dd8f0304608@math.uni-bielefeld.de>
+Date: Sat, 27 Apr 2024 15:49:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,16 +55,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: Add MSF panel to DPCD 0x317 patch list
-To: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240309014732.722139-1-tjakobi@math.uni-bielefeld.de>
+Subject: Re: [PATCH RESEND] drm: panel-orientation-quirks: Add quirk for Aya
+ Neo KUN
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240310220401.895591-1-tjakobi@math.uni-bielefeld.de>
 Content-Language: en-US
 From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 Autocrypt: addr=tjakobi@math.uni-bielefeld.de; keydata=
@@ -111,50 +108,39 @@ Autocrypt: addr=tjakobi@math.uni-bielefeld.de; keydata=
  pC4w+Ho/cC8OJpuwHWXqg9a3Hs6yH+hLjM/M0yk1vhMyYYXubgMv3DgbNuXAURjQ6DkY1o/8
  5jyYIbLNVBjZKDXq8pN13q6/M9q8MAD2qO3VvMjyEkzypg4qB76YLoiWtsanpUBrp9bYQXQ5
  JRHWPGCL3BhOxQ==
-In-Reply-To: <20240309014732.722139-1-tjakobi@math.uni-bielefeld.de>
+In-Reply-To: <20240310220401.895591-1-tjakobi@math.uni-bielefeld.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 3/9/24 02:47, tjakobi@math.uni-bielefeld.de wrote:
+On 3/10/24 23:04, tjakobi@math.uni-bielefeld.de wrote:
 
 > From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 >
-> This 8.4 inch panel is integrated in the Ayaneo Kun handheld
-> device. The panel resolution is 2560×1600, i.e. it has
-> portrait dimensions.
->
-> Decoding the EDID shows:
-> Manufacturer: MSF
-> Model: 4099
-> Display Product Name: 'TV080WUM-NL0 '
->
-> Judging from the product name this might be a clone of a
-> BOE panel, but with larger dimensions.
->
-> Panel frequently shows non-functional backlight control. Adding
-> some debug prints to update_connector_ext_caps() shows that
-> something the OLED bit of ext_caps is set, and then the driver
-> assumes that backlight is controlled via AUX.
->
-> Forcing backlight control to PWM via amdgpu.backlight=0 restores
-> backlight operation.
+> Similar to the other Aya Neo devices this one features
+> again a portrait screen, here with a native resolution
+> of 1600x2560.
 >
 > Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 > ---
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 1 +
->   1 file changed, 1 insertion(+)
+>   drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> index 7a09a72e182f..5a017ba94e3c 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> @@ -68,6 +68,7 @@ static void apply_edid_quirks(struct edid *edid, struct dc_edid_caps *edid_caps)
->   	case drm_edid_encode_panel_id('A', 'U', 'O', 0xE69B):
->   	case drm_edid_encode_panel_id('B', 'O', 'E', 0x092A):
->   	case drm_edid_encode_panel_id('L', 'G', 'D', 0x06D1):
-> +	case drm_edid_encode_panel_id('M', 'S', 'F', 0x1003):
->   		DRM_DEBUG_DRIVER("Clearing DPCD 0x317 on monitor with panel id %X\n", panel_id);
->   		edid_caps->panel_patch.remove_sink_ext_caps = true;
->   		break;
+> diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> index 3d92f66e550c..5d3fb11fd45f 100644
+> --- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> +++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+> @@ -196,6 +196,12 @@ static const struct dmi_system_id orientation_data[] = {
+>   		  DMI_MATCH(DMI_BOARD_NAME, "NEXT"),
+>   		},
+>   		.driver_data = (void *)&lcd800x1280_rightside_up,
+> +	}, {	/* AYA NEO KUN */
+> +		.matches = {
+> +		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
+> +		  DMI_MATCH(DMI_BOARD_NAME, "KUN"),
+> +		},
+> +		.driver_data = (void *)&lcd1600x2560_rightside_up,
+>   	}, {	/* Chuwi HiBook (CWI514) */
+>   		.matches = {
+>   			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
 Another gentle ping!
 
