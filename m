@@ -1,259 +1,256 @@
-Return-Path: <linux-kernel+bounces-161100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2682B8B471F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:27:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734EF8B4720
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:32:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C5CDB21961
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:27:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37571F21CE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00321EA6E;
-	Sat, 27 Apr 2024 16:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC37C13D244;
+	Sat, 27 Apr 2024 16:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="Kle22Bzk";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="NwLgmS9l"
-Received: from mx0b-0068d901.pphosted.com (mx0b-0068d901.pphosted.com [205.220.180.35])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cf+zGAhB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA36DE566;
-	Sat, 27 Apr 2024 16:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.180.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF7E13C8EA
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 16:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714235259; cv=fail; b=TbOlsAPhee8kRWQoFCxFwK91BZ36BeziUCaQ023tXXPWeeSH65q4v3Tkb2uVy/oDyxmrlbEOllHiSCH6eWeJoeBlEbwsagUpfrFvdC6OY7rt6CxGHcE/4lJtQ87cQ3TFC4KeY39zuIZ7VBHeqtAkMdC0Ae61zNnmUsgrTIyByQs=
+	t=1714235530; cv=fail; b=gcfrQbzQUOL00oYYwG/+mLTOXC2qB6eUi5HN/j6pp3BKAvsaWrfjYJVA7Dhy6Z5LOpvd2qgVvcG5oE4QaIwsexgtJPHL5Nagp/47Q1Zw/HzgH/b6tew/EgOV4MXDxF5FLkipcud9tudLaMgtNI7hm9iR07bBzBnX/Cz2Kfmweps=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714235259; c=relaxed/simple;
-	bh=EUhNUMJ3XBBo/qvFwdIqbe06MoyciVlslK7Hc0yoWzQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=pz+BUKshUmX7JnlXmyzn1/ND24YV8jwWyZ+KL5mTnHs+cwp9RftboZ2p5o+jSyUXKj2Ov+6GDFK13BrZC0Ci6l5CB8usCl+jrTxsQYG+DlvIy79sFDEKMC+gfcCxRNzCD0YI1GW82bPmhbymBmbL3pMnFGaGAUYxwl/TsMCe/MI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com; spf=pass smtp.mailfrom=biamp.com; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=Kle22Bzk; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=NwLgmS9l; arc=fail smtp.client-ip=205.220.180.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=biamp.com
-Received: from pps.filterd (m0278265.ppops.net [127.0.0.1])
-	by mx0b-0068d901.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43RFRaHI011554;
-	Sat, 27 Apr 2024 09:27:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com; h=
-	from:to:cc:subject:date:message-id:references:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=
-	proofpoint; bh=4e829LfSEjvG/11ElqP3vVjwxib7IdxH4d93aEadYwo=; b=K
-	le22BzkDK+tIVh/wTq8zbrHaMXYqqK4O6EfXfiYk4gk7DWjrokxz0L0iydOqABvY
-	vfkGgGfsGcGpgZeoOPgRTB0lSzNM1hiHWO0ifAcBMGAfz/5847T6Di6em4NAZwYV
-	dtoG25wXGVaSROXgdjK8nN9rpMNmAo2UMDrxPK8yjS9hS8fET51Md3x5NVaxksGj
-	20aSHIwaf79TGMO0cmTegoD6FioOmp/DQGEKJZ8EoOscmqrGXI+g4P1mpnLwmIqK
-	bX4MgW8en1jchSll+lp9+fHnzJr0KloAKRoeoHh81cQN/ILw81tK6dtJ7jZX7YjJ
-	SAeUb3sMzg0dMK3YZfQkw==
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-	by mx0b-0068d901.pphosted.com (PPS) with ESMTPS id 3xrx2x05kw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Apr 2024 09:27:21 -0700 (PDT)
+	s=arc-20240116; t=1714235530; c=relaxed/simple;
+	bh=dPxX+7So4MC2hgFlO+ffOAoas4zQrE1hWDKRYykcnLY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=EEDfYqKTw3G4GltNusdrNLsSJiY4g6ue6EvBgJBiagM1wpcg6GIUVgzCuxycxCiguQxF88968j3eqowi6Zjwb65CiqFjA3kY4krLrIKmH+zaVAsfhIJNW/jGC058pKX/YJEanFevOy39Huh6+BA7ooi5019vX4wsfIuOLl3cXXI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cf+zGAhB; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714235529; x=1745771529;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=dPxX+7So4MC2hgFlO+ffOAoas4zQrE1hWDKRYykcnLY=;
+  b=Cf+zGAhBbrxsLhqW2JbIJ6Ellp4eHnKJZSt96cc3RPx9re/PMOiOxvf1
+   p3qMF8PucfY2uiA3FY1KbCN7iv4xe0XdD+saXO8LPO33wFFdMuhkhbkC4
+   PGyCp5295okQd25Qkqcma7Y0ihF2AB4NTvwsJNBSGNdeSyKUK6fQi2gHv
+   uVS7Etb0f6xVOk48SmXsAZz8Dmej2Ek17G/1tVrrV3oY9ck+41+xvtJ3b
+   2lyx02KtpHhGEnNUR01caUzfnqLW1zObXILe7dqexKhjmJwEaSPqyV5Sr
+   lC0IAMt3dmt8OttO5b9nNKUa1PP+M4QRkCeOsugTTQwls3JfQhIrQkcX1
+   g==;
+X-CSE-ConnectionGUID: dIi9Fis+T7uo6ZLGDK+nxA==
+X-CSE-MsgGUID: dB6kQd1MQomRSYejtnGHpg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="21366698"
+X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
+   d="scan'208";a="21366698"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 09:32:09 -0700
+X-CSE-ConnectionGUID: DffN4UVtR8iBQuKQxjuroA==
+X-CSE-MsgGUID: o5+KWtffQQWtxmGY+6Y/BQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
+   d="scan'208";a="30507649"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Apr 2024 09:32:08 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 27 Apr 2024 09:32:07 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sat, 27 Apr 2024 09:32:07 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 27 Apr 2024 09:32:07 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0XjIEykWObh/LekqmI7TVRI+9pjraMqovncxAVXr9/9QJ0AM1ZwDYLBzx77k6tTD+mbJhQMJQ3MyKjjTd71/msq70bNqSsIjNEY8PdfHn5aS0trFLYhAnTDxfGrO6LUovYgtpVpSNbP4O/hk2h1MSFCIgKgyRFVZ6WMkB7rt26Z1wRLbG1QPj4baSIszCe8lkKgLPeo2tYLw87p8Mk/Hq5M9NQkI4V59BmiGIWFYbq6c3g+30gQTJQsQE0yFQWYeMwwAxocYdreNica6Wlmi5sRBCrQURe8hh21kgRWyp/FN6UwC3NJSxA1+/8TP0AN7Td1OgdS/6x5mat81s/HUg==
+ b=U1E31zy5BEgxwv6H5ZmiSrO5Q92PEYkOXxSrAA7SAJFKAk4LO4HxpfcuGa1Zsv9jbMska/Oypk9rmdLdQHtBWs/jXBbUHzesK5hOrTcIxe+yiE+Fe3viu4ewzrCjXROfnzibPKguPIveYXs3dcyDJMxpj2B+XY5P0R99wc5Obov7vZk2peFszWpjddKOkhloRXFKKSXPIZmxQ+Wegxu/F8XA3ev9k2+dc1/2NpuB5nx+4xL3NR2ldou7irmIbQh5jFrH517/dgdoblzpGqu6AS/kexVpNIKwLae7QEWsWZWQpogz4msJPwO/w8XERQNq0v9++qDiWCj0KOXaSL3/Aw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4e829LfSEjvG/11ElqP3vVjwxib7IdxH4d93aEadYwo=;
- b=Q+KvsIQBDQ4S5bN43biQ2xB6pXiQQ/CNZje5t4GzAVX/9/WCUoPk3EBw8c362GwEU1ppWvrJJ0TTin9RNrtvobfqjVzLTIh1BxrmlzxIljQaFnoHUyr6TNEgzrwBEp5djiHCgEQ4XbzLyDvTXF/F71m4HfdxlX+P055URLIZoAs6kwfQArBMnivJLPFQe6+Nwz5MEwQYCILy2ZylsRq1drUyrf71kICJUf9A9k4zi+oRf/MsAGs6t3aKAb+LJMWdZAJL+dfa82bcHxhXeOhKaxlRor8GiGrmOJop9X/NYVc+/MavJzB6/5G0/lfS5eZTQOOpLB25U9uyqlRBLzkNPg==
+ bh=Z29IbtT6kZUSN30pWh9gV7BwUSGQRaHo5pqqxJ3/lOo=;
+ b=bgiLWWEULJkC1Rx8gVi4FQvYciE3DGMETA46siT0gnuOmdIFtdsBE+QFj8Oh3y+4a/Ks5RHG9YDigVAEbOLy+aBJkYb7I9BqSsdGgJ0wG4l/A/XCsyfrYfgzaulD6KNhPLPHZxhu1LISJyGyaHFURUooz75IyFnnxzhpYFG2naCYTnSbO2QtYWvI8UmlAFqZ9fdWyJ8r3SWVDb9FmtI/Y/SRrvpBZsxhUSiVhVXcAAHDKYlvFXNAgnhDYs3ypJyT1pO1j/QxVTgjMSvSOSD2xku5PAfcn5uH4q73h3TYm1l2Kq18BVc4Gc4gMw53ULrb8hXTWXb19ltR6PsflVHVWQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=biamp.com; dmarc=pass action=none header.from=biamp.com;
- dkim=pass header.d=biamp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4e829LfSEjvG/11ElqP3vVjwxib7IdxH4d93aEadYwo=;
- b=NwLgmS9ldJKIckUTmCkl1xCmypCDzoVjuU8RgHg0xfYMpIY2e2y4vUzd5Rv90qZzV4nb1SnVAm0ylLPXKRQAw/MYsWgvwYZ4cDHIGQm2tlQLD1er0WMFpcy81bCyS3TJpiOhZufYP0++jwtmQuPE6liuEiBCQoCd1tuW1X1MkYQwUNpzlg9fz5gnpMaVr8DPQtqRcSBaR9mWu7bsZYRXT+ZgZKabK/IfGzR7xckoHdaBNsJ5j9YXFpOnEpQkiuvvkRiirO53Cm3DYu6rVkp4X6CwCZCfTIvDHzuALKu9K46akJ5dG7XNatU8XgUXiemuThwdE1tG8nzqkXmkulTC8Q==
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com (2603:10b6:303:ec::17)
- by BL3PR17MB6162.namprd17.prod.outlook.com (2603:10b6:208:3be::20) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SJ0PR11MB6790.namprd11.prod.outlook.com (2603:10b6:a03:483::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.31; Sat, 27 Apr
- 2024 16:27:18 +0000
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555]) by CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555%4]) with mapi id 15.20.7519.031; Sat, 27 Apr 2024
- 16:27:17 +0000
-From: Chris Wulff <Chris.Wulff@biamp.com>
-To: Pavel Hofman <pavel.hofman@ivitera.com>,
-        "linux-usb@vger.kernel.org"
-	<linux-usb@vger.kernel.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Gruber
-	<jimmyjgruber@gmail.com>, Lee Jones <lee@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: gadget: f_uac2: Expose all string descriptors
- through configfs.
-Thread-Topic: [PATCH v2] usb: gadget: f_uac2: Expose all string descriptors
- through configfs.
-Thread-Index: AQHalYdWgtu02BG/fUykcYHBF1kPmLF1/Y0AgAAPjZuAAQFjgIAFQCVi
-Date: Sat, 27 Apr 2024 16:27:17 +0000
-Message-ID: 
- <CO1PR17MB541942196F9A2F73CF8B5B14E1152@CO1PR17MB5419.namprd17.prod.outlook.com>
-References: 
- <CO1PR17MB54195BE778868AFDFE2DCB36E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
- <c9928edb-8b2d-1948-40b8-c16e34cea3e2@ivitera.com>
- <CO1PR17MB541989646698286B2B13CF23E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
- <9b40e148-f3eb-f8f5-bf2d-37a0a0629417@ivitera.com>
-In-Reply-To: <9b40e148-f3eb-f8f5-bf2d-37a0a0629417@ivitera.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO1PR17MB5419:EE_|BL3PR17MB6162:EE_
-x-ms-office365-filtering-correlation-id: b7535829-20d8-4409-81b0-08dc66d6e7c8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
-x-microsoft-antispam-message-info: 
- =?iso-8859-1?Q?Y2+z9nqJQo9YkAzJ9hDR4ciXHC1RiHF6WZZTPUh2prtdK3uPC7wAAzS477?=
- =?iso-8859-1?Q?1NWbJgp5KPW2fKy+ZSfy7j4uTe1U/4HF+BpTgUCuK5HqyrMCDy8F9mZNaI?=
- =?iso-8859-1?Q?pU7YNnbc4Q/EQMc4poXVkE+ATylRkt70yuN6sOWjBCnWdVnKCzGdrpgunK?=
- =?iso-8859-1?Q?b4jBbCbq6oY7aeXls1EEMJbX9mO4p0eGJCeMOtOYiy1+A9SxaceT43OS34?=
- =?iso-8859-1?Q?EfrsygSUHZj2vYzxdBR5rqtkKpDoaLJcNWZv45ThjkTyZteXKk/GwwtTnK?=
- =?iso-8859-1?Q?avjKC1NWNLEWBwsKMz5Ec+9qgvNzxgHkLLJuO0z8UucujINnl8hnTS1UzT?=
- =?iso-8859-1?Q?hrv/wCQi0Rr80ZuAApR2ZFyXwaxPzzdqyaM/CDHY9HLdqIclcBmxkDCq5l?=
- =?iso-8859-1?Q?fmx4KXmEdTnJBu3ZtvEdGt/t/LET/Y1zmQQZSFu/eY5HMpbgKYJu8UYXOL?=
- =?iso-8859-1?Q?CDBElXsNYoO54AhdyzmwOn1m0YO/QBgQnFGeVBG+Rdf7gaoCnAYKMtBnti?=
- =?iso-8859-1?Q?ZQ3kGELyvF+9ALfxbh4nfmCwZWZK8Rh5oSKemKteIXTezhi40YhG7v/zBQ?=
- =?iso-8859-1?Q?kTrImFm+ulYWTZL7OHTF6u0KkAhnKqPqHogOkCebTc4aulag1ac6C4Zd3H?=
- =?iso-8859-1?Q?T9gMLC7zg/11KfGtmALZDx+JlEiF0YLAgXQyJiecLHqzb4RQGT2i5r+fdE?=
- =?iso-8859-1?Q?99z7y1Rl2ns8/P5OeLjv/vUyiVV+sXCcZxyKcoDK3JPFflc68h8V0zlR2L?=
- =?iso-8859-1?Q?dTQF2dlmwoLrFiuQyWQk4WisD2psK8M5DHbTkrN7aRkpcCsYXgGkFPxMQu?=
- =?iso-8859-1?Q?hQ/VExy281TyZ2TG62IgKMEv6/T/Piq+NwCYc4KBevxOXmIrxyENHS65yX?=
- =?iso-8859-1?Q?PjYZu0qieZxIpEnXscDkIHong6QR0En+Wwi0JPS2GNG0uhf7dJgGI64ChX?=
- =?iso-8859-1?Q?pqlJOOWqOAsmHOvC5Ncoi3VItKMm8bwg2M+nuCjZSIyHuZSdGzAo86DRvO?=
- =?iso-8859-1?Q?C4fYDhlDU5Z4xgjYIA0PWuWd+QRh2dyK3Ao4LFfvBqU1UsKZ7cPyFxYvZW?=
- =?iso-8859-1?Q?vQVSLm/jBqZ7qgBEcrSomwxnXvEIWv53RAoH5mFwIrcecYBvVmfI4j4wnt?=
- =?iso-8859-1?Q?FlKYNC399Wj0gQynw6s30V+WHBkJi9noA8t7ObdkTvkH6BcnFhvzurKGmc?=
- =?iso-8859-1?Q?r5r2DP55+R6twyxuubQzMfl0VDtKxIG8fn/FLReygX5NfhtAsuqYzSGc6V?=
- =?iso-8859-1?Q?UGQRwP7Q6YhXOcvPBRRZBCvcYoi5zG/Z5+do2oEBTzVbiTcYo7XpIBbIar?=
- =?iso-8859-1?Q?t5N3gZvRfNUu9QFBflx5MkqLZzoLgJz8G0bcd1K1tgyhU31GF1GD5SC0Hq?=
- =?iso-8859-1?Q?S5mQcQzV/EMBXxOlAk9bN+Qs3x/UsG8A=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR17MB5419.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?iso-8859-1?Q?sqbym4QBpY7GfUtwF8iCtWLafL8wJeLu1Q0xVWb/bG9RyYKRSZ6T32ArwA?=
- =?iso-8859-1?Q?j2qeTI/VO/PNK6P5Fgf6hhuXVRysudM5fk6lp5vWHqyyhnfwU374432NE5?=
- =?iso-8859-1?Q?Fb/7Bu5Bh5tgGFMGFhaCz5APh1HMUKVlRCuydkTwT/zoPRut/pNszctkPU?=
- =?iso-8859-1?Q?eKDEJQVKC/Wt9GLN4HTxrtKFpdQJhGMuzhOYeCb+Hf2FH+fNL65eVqzJzm?=
- =?iso-8859-1?Q?2xpFVcwvNWqZ5hnGVixO6YZNoMGzZocyShW68Gp8VTlpjhxi6x7eG3TiC4?=
- =?iso-8859-1?Q?xQJuIfj6buea535QaH7VTicOdCQmpV+eYhkyxO3RSycBVysy/3rk2ea+TI?=
- =?iso-8859-1?Q?1Ld9DkKzcLtGd+hQ8RgJ2CBFq9jPbWcPbRfAszJ2gLoWiySeNzGXYSbNDh?=
- =?iso-8859-1?Q?EYXrn6+HL82RhcKUerYYIfvzA2kgUWWSih6bW574j7EMsL8JkSkDqHkgJI?=
- =?iso-8859-1?Q?T4nE2+gdqDjAcIuxSxxQCMeUTQhmq5QfF+MR61sxB2I4IW3n3vo0u/K9U8?=
- =?iso-8859-1?Q?shDAaYrzGIKJRjya7Yhk86kW8FCcElT4T6aP/tXJZXTJUsFgh3hLaGke/K?=
- =?iso-8859-1?Q?lsfwut50jkOpPHGuDMn2qS7g39FVLYcR/cCMHaz4cOt2Teu6mu8lmT8+l5?=
- =?iso-8859-1?Q?FC5etcC7qIWhVcP2PLzh6csN8rUYlcjzjG9pjnKqeCIwjjLWmqGzSGICVD?=
- =?iso-8859-1?Q?D/dHMt2zr6rIad3Dfq3dftL+CjudQdC9T+Tzq3M5B/swtj1L0HmijCR0Hl?=
- =?iso-8859-1?Q?LuRMv9X/namIrkYrSgw0rBtoE5pZw/xqyhjGfOX8imSSJqaHRfzHtxa3vB?=
- =?iso-8859-1?Q?OKx+MemBUK1SdaWBQ9z8O9j5ldYxpuTFutfLvKFj5PFwkSib7O2d4GtJpe?=
- =?iso-8859-1?Q?p++GCFJTkNMNrRLkfwXtlAZxuFYCPhMxI2ixzMoKKtgNB8ySjFnS+swDq1?=
- =?iso-8859-1?Q?iYS3pistoV+MpNKl1+xmdbSzdUsuKEey5ytY0V19nsMtV8fbrqkLU91n6F?=
- =?iso-8859-1?Q?p5WCdVYJZI/pFYtFVGambHkU8neHYaDKjhTZDDmOWZRzGKQuyFsjg3zfZt?=
- =?iso-8859-1?Q?7xeT589ZrmEVudPwqbUjVjUwOo+vDh7isdBA5eeJYcRD3psNQLXuy/Avv/?=
- =?iso-8859-1?Q?kI3BkAebhBSVtbHQQdsHnzKk0Ca1FKnzVQA5jXsZduYLb3yvzkKcL02/Nc?=
- =?iso-8859-1?Q?k3PDo2FwiJQ3hVdx565B2JTgw/BjZw9PfbYiM9zCxapKn2PKXK3TmBVvZQ?=
- =?iso-8859-1?Q?5oMVKoW4phWL67HYnrsBQnrscdlB4UNcehCvpavYXebnRluOMRGXvQz83S?=
- =?iso-8859-1?Q?ab5iHvHIN7uq72eCBKLtcXhao/8fkGZLof3Ov3mxnUml2j4wesEgoMnj2J?=
- =?iso-8859-1?Q?LRiFAVtcHXrbhunYYio+M9o8aV9l4mfv5ijqhHOZu/V9tKdWow2MmYE2m0?=
- =?iso-8859-1?Q?Gee+BZs1NUR8nC6TU40DNeH6JS3NkBpALJ9arPX4DrNhwTAmlC0BmUK08Z?=
- =?iso-8859-1?Q?xZ7pnSOlc9xTVh6+sfUW16IZqCjjPcSSSipDbjIPibT2vfJ3NAFs4a/Qlz?=
- =?iso-8859-1?Q?s3Rrmd3Lom5KXmjj8txMj0B4Tq/ab+HUETB5T5ycD8HiG1/2qJkSHqBL+p?=
- =?iso-8859-1?Q?h7MQxX9kRcTwkvxhCAnubMfqwR/w0mbq8H?=
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.32; Sat, 27 Apr
+ 2024 16:32:04 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.7519.031; Sat, 27 Apr 2024
+ 16:32:04 +0000
+Date: Sat, 27 Apr 2024 09:32:02 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Lukas Wunner <lukas@wunner.de>, Dan Williams <dan.j.williams@intel.com>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, <linux-kernel@vger.kernel.org>, Alan Stern
+	<stern@rowland.harvard.edu>, Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH] sysfs: Allow bin_attributes to be added to groups
+Message-ID: <662d288263cd5_b6e0294b5@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <e140f6bf8dc99c24cc387f7ac3c7908c8830587f.1714030457.git.lukas@wunner.de>
+ <662be72549aaf_db82d294c7@dwillia2-xfh.jf.intel.com.notmuch>
+ <Ziv5p3SMEIw3XZkK@wunner.de>
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Ziv5p3SMEIw3XZkK@wunner.de>
+X-ClientProxiedBy: MW4PR04CA0315.namprd04.prod.outlook.com
+ (2603:10b6:303:82::20) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: biamp.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ0PR11MB6790:EE_
+X-MS-Office365-Filtering-Correlation-Id: f289ed44-09f8-4462-ace1-08dc66d792c7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|376005;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?1+/NkuE2mJ18VzCG+/l6jydG0m11WyGFTDise/Rq7jq3UyLDRTGOMPnkGA?=
+ =?iso-8859-1?Q?IQwkXvvRUqU5vAvnfU2LbhwWzKBg6b3I9Wco3LlDkQOjxxztqnPYDBH0Sr?=
+ =?iso-8859-1?Q?VSuZyoQoFSicAx9S3perjeAl3buIrRutPksju4ktTyGOFX/o9AWKG2EoKp?=
+ =?iso-8859-1?Q?w81dZMIX2zRAOSWZu9QFcxs3IIue8/rXXNK7G5ZgCNqXv1IpgfDrV35Y9P?=
+ =?iso-8859-1?Q?fixHytfoi3Y1RJrvnptd/mIzW+ka65x+i3WOEfRQreuu3pCpHtWIEEqFBR?=
+ =?iso-8859-1?Q?bI4W2Vi1jskg0wqN4WxiQ9NA0uXDC9u4Y3qhTfCU7tPfW36vOWkVWqQl5V?=
+ =?iso-8859-1?Q?gJNrzKvWO8MtU/PPYEx2D7AhvRRwscFYnYX+dpNRE9xSoxmAmHLc/8yS+m?=
+ =?iso-8859-1?Q?HhwBnpupuEQmKl1hkWcDuH2F+fSLoCacgcny7DtiRtk+mrdE2EbPVj2ma/?=
+ =?iso-8859-1?Q?fvxZWvLYm1hvk1p1w1z18/0gcZoVoynTstKbDvtfigU7Qa5/pUA6DrsDOn?=
+ =?iso-8859-1?Q?NWsqBXrE8m90DEGvx3bc/j6wwdOjOd6JZYaRWcCY+a2ALk1NL2EhInkYGD?=
+ =?iso-8859-1?Q?NI3MfmLDlUW+7kknHCRMyuVamSOMrFcKJX7fzcIHXUW/eSpQ4dTZTUWYwN?=
+ =?iso-8859-1?Q?HIFxOlveUnNDJStFcQm9sR6kQk6u4EO72NJ60if+cc9RBWNo4ApfTG1kF+?=
+ =?iso-8859-1?Q?luL3mjNbC2yS+PmIphG54s70AyjO0qQnfAQ3W321JVt6o1Jv3t4yFQHsf+?=
+ =?iso-8859-1?Q?tVwz1hwBoYpD1m0ALxeY/PhGjD47Ualw562/NntbR7KH1mFSreus9X58sU?=
+ =?iso-8859-1?Q?Pi649sESBVM1jk/s3ym6Lg4HuTvCRkF5oU8Qs8EJPXt+e0nEItUe+M9/xU?=
+ =?iso-8859-1?Q?w7J78A1PhGB2YQMgrEaGGJaWaIgkILmA9qFbqzqMsmR2AzeRGg4wNVtcdE?=
+ =?iso-8859-1?Q?aeB000/ZZP1Hc91N8WG9ZsLHnp91HTyKmbVt97faKZMvwl5Or18rioUh3i?=
+ =?iso-8859-1?Q?bNTSBw2eN94thEqqAQKBfdUKmxSjxyHZC/Cqmm+bJ1OZyDNnjsr4JPzgFT?=
+ =?iso-8859-1?Q?NPS1TtGQByWfopLNVe9VTk6McuGXB/C+k3HlXTYZ1qc103LC04MLeCIq5u?=
+ =?iso-8859-1?Q?J2Myj3WZNrfYk1PC1a4Y1exjwNHhFUD/b5J6pRULPmMXXfi9eFGyVzqHpT?=
+ =?iso-8859-1?Q?Xn2ZN4/F8bqzW9bMU5B4s+5dP5jAvSwWAqbacsv7EfuSO7+BJDvgAWnm58?=
+ =?iso-8859-1?Q?adwWER2R5oRl+i9cKYjDXZMxWL/T3TB4F0KNn+6z1rMpotxXnIufVkD4Vg?=
+ =?iso-8859-1?Q?qZffrsY1o9t6tvBocuPNpycppA=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?yaNwrP6Xn9bRdaKSPw4qGE4JFFSakeeqMiKBtXBGb2blwmza30BmRIm44j?=
+ =?iso-8859-1?Q?vM/f+1snh+pqUiwFeGuJCC3eBszh2FamfGHDMzjX02K4BToC3z3rG47+Fe?=
+ =?iso-8859-1?Q?O0PtVEQ4ogznsUcj7j9lPyP7rJVR9qYjW46E1vghbza7NRA1bQra1IFDTo?=
+ =?iso-8859-1?Q?gKp21PWlZRIvV4gq2YDhBVOny9g2nEXPImjWuak2bYotyMoEpJEYlV7BDK?=
+ =?iso-8859-1?Q?4WKZ8IEUflmrAKhqX7vnvujA/k+zogzpq9VWNlVAvhpL7/gnWautlHppLX?=
+ =?iso-8859-1?Q?XHB7JVdQ2cPOlmNKY2Irtji76xiSzWWRb/VJB9dcGyCxwgoysTVgLa7e5C?=
+ =?iso-8859-1?Q?zP+/LHSA0GYCLCCKXYM1OKHbL7kZz75U+KFT2A8Ve1Vlb+g7rwDmioxDtY?=
+ =?iso-8859-1?Q?9ddwK9A1GoBl3NMkAU08sx7Hq2Xq+uJ4Y+4JvD4Ic/JmQEF/7AnNGx7CbP?=
+ =?iso-8859-1?Q?CKZgNWlYLjGPByMyED5V9iz1BttPikiFOCj0h6+BAS0zxXMqy+gEnppu4j?=
+ =?iso-8859-1?Q?w85XOTextuqKHJpIdYaAdRvjEG0Ok58PrjnDSWK6/nPaEnBLYppBYkmD+g?=
+ =?iso-8859-1?Q?fQGryrl8toxaRCH2jIVyVJyJa+VKatCyAdKsspQuGSn80vn/cySNuwi7NQ?=
+ =?iso-8859-1?Q?99E2JGxcWpUAaPAcONL4sN9nW0nOzUUPH7mJ5DhiiNYrrjydmgUY1xhgeN?=
+ =?iso-8859-1?Q?2KQW2S19jncpmoiSbEeBXo6WgwUznWe3CHfZGSNRsy85tqbDhnp1LrghJL?=
+ =?iso-8859-1?Q?41HxfArY1zQ3G8kABTIyMuslV5vK4h9Qx2BJR2/MNxQz0HAWWykjbZhb+W?=
+ =?iso-8859-1?Q?UAN2NzOkI1eQeGx/VsE+LSyqQ6FYD5G/HavpxRHe1CJwYBDY+awcGVmIdx?=
+ =?iso-8859-1?Q?OSQq6BYiEAqoJ1tdPS5uIbPDhclaMfgDQYLmho4BpzJ0KMrVn0YUFQXQ+U?=
+ =?iso-8859-1?Q?nR86f7BWu0zX8KDK0JwkxJSmLNOP9rVXY5NxVVsn7zX6mLn7kUBrUMaaq5?=
+ =?iso-8859-1?Q?Pb8R45K5VF60rMwNG3ORX7+FSlSwaNmUJKPVC1t+nbaQPZbt+15R6eywEB?=
+ =?iso-8859-1?Q?YoBWL6yaymn7TDIdK6ebLcfsovCJflIgdja1KBbpDFl1OA69z7hAyv3YuY?=
+ =?iso-8859-1?Q?eJdE1dW55ARuGGQiKDN9ehZ/CSfH2+621aPuwT72lkE/GTdnaFSr+VYtNx?=
+ =?iso-8859-1?Q?/nQjquX1RP49tAwXtJmfTodoMw/IISMDcFNRqVcRKlqEdnBm1P0mP6aswB?=
+ =?iso-8859-1?Q?m0f+3wZrEtTrtsWP7/UYWNfpx7elddy4El2e7oOkF1K9iHmJfk5nyGsNyY?=
+ =?iso-8859-1?Q?9dFgkgIrJYk/ENZWe3zF8F3S2aZc/LcPgUWcRbLL5IkFXr41gwivGklL6G?=
+ =?iso-8859-1?Q?QHboK3tol/i3NaaSGv6yCWLWflMuYG+AwNdNdCzYXe5NzOF+lQctevubHr?=
+ =?iso-8859-1?Q?vSnJGaYg+H8hxlx+cQx15Z8DYtpvcZL78RJhshHO58REeKfZwP1BgbwYtt?=
+ =?iso-8859-1?Q?e+32ivQaFQSUbyRoPCFs392hswynD2dNuxcdgO04O9hRwEaNzjBA+EVLfF?=
+ =?iso-8859-1?Q?wSzRIzf7MMiavHPQpyYIwIgTNSMvnbX2g5N97PWANAGATFjF+qF16nbQaT?=
+ =?iso-8859-1?Q?qozuRNrTwwUvYZas8n2eLwrxnJX1ussUI7jOq/jtJ4S/bTrZbMb+aFsQ?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f289ed44-09f8-4462-ace1-08dc66d792c7
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR17MB5419.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7535829-20d8-4409-81b0-08dc66d6e7c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2024 16:27:17.7003
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2024 16:32:04.7718
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 341ac572-066c-46f6-bf06-b2d0c7ddf1be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gNRuO/a3ZnBtNkVr+Ve7tEOdje+mE4juRYF12Oa6DVIIOeQ2hOs9ESNr4C4kA0tK+b0GkeueIvIoWng80Izf7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR17MB6162
-X-Proofpoint-ORIG-GUID: V0NyxM40hZH6-j0frNugHiPLXb5cOO5B
-X-Proofpoint-GUID: V0NyxM40hZH6-j0frNugHiPLXb5cOO5B
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d9kJ8v8Ttaxx6ZOmu1TKOANXpryDQivxvTV8K1XaUayJo/phgY/uKvQk3XJWCfiH3/osj6t+WmkZo3e6yEk53s0Hj17V/xMNNxIV/j1TPFk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6790
+X-OriginatorOrg: intel.com
 
->From:=A0Pavel Hofman <pavel.hofman@ivitera.com>=0A=
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p_it_name=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 playback input terminal name=0A=
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p_ot_name=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 playback output terminal name=0A=
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p_fu_name=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 playback function unit name=0A=
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p_alt0_name=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0 playback alt mode 0 name=0A=
->>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p_alt1_name=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0 playback alt mode 1 name=0A=
->>>=0A=
->>> Nacked-by: Pavel Hofman <pavel.hofman@ivitera.com>=0A=
-..=0A=
->If the params in the upper level were to stand as defaults for the=0A=
->altsettings (and for the existing altsetting 1 if no specific altset=0A=
->subdir configs were given), maybe the naming xxx_alt1_xxx could become a=
-=0A=
->bit confusing. E.g. p_altx_name or p_alt_non0_name?=0A=
-=0A=
-I've been prototyping this a bit to see how it will work. My current config=
-fs=0A=
-structure looks something like:=0A=
-=0A=
-(all existing properties)=0A=
-c_it_name=0A=
-c_it_ch_name=0A=
-c_fu_name=0A=
-c_ot_name=0A=
-p_it_name=0A=
-p_it_ch_name=0A=
-p_fu_name=0A=
-p_ot_name=0A=
-num_alt_modes (settable to 2..5 in my prototype)=0A=
-=0A=
-alt.0=0A=
-  c_alt_name=0A=
-  p_alt_name=0A=
-alt.1 (for alt.1, alt.2, etc.)=0A=
-  c_alt_name=0A=
-  p_alt_name=0A=
-  c_ssize=0A=
-  p_ssize=0A=
-  (Additional properties here for other things that are settable for each a=
-lt mode,=0A=
-   but the only one I've implemented in my prototype so far is sample size.=
-)=0A=
-=0A=
-This brings up a few questions:=0A=
-=0A=
-Is a property for setting the number of alt modes preferred, or being able =
-to=0A=
-make directories like some other things (eg, "mkdir alt.5" would add alt mo=
-de 5)?=0A=
-The former is what I started with, but I am leaning towards the latter as i=
-t is a bit=0A=
-more flexible (you could create alt modes of any index, though I'm not enti=
-rely=0A=
-sure why you'd want to.) It does involve a bit more dynamic memory allocati=
-on,=0A=
-but nothing crazy.=0A=
-=0A=
-And second, should the alt.x directories go back to the defaults if you rem=
-ove=0A=
-and re-create them? I'm assuming it makes sense to do that, just putting it=
- out=0A=
-there since my current prototype doesn't work that way.=0A=
-=0A=
-I appreciate your thoughts on this.=0A=
-=0A=
-  -- Chris Wulff=
+Lukas Wunner wrote:
+> On Fri, Apr 26, 2024 at 10:40:53AM -0700, Dan Williams wrote:
+> > Lukas Wunner wrote:
+> > > Commit dfa87c824a9a ("sysfs: allow attributes to be added to groups")
+> > > introduced dynamic addition of sysfs attributes to groups.
+> > > 
+> > > Allow the same for bin_attributes, in support of a forthcoming commit
+> > > which adds various bin_attributes every time a PCI device is
+> > > authenticated.
+> > > 
+> > > Addition of bin_attributes to groups differs from regular attributes in
+> > > that different kernfs_ops are selected by sysfs_add_bin_file_mode_ns()
+> > > vis-à-vis sysfs_add_file_mode_ns().
+> > > 
+> > > So call either of those two functions from sysfs_add_file_to_group()
+> > > based on an additional boolean parameter and add two wrapper functions,
+> > > one for bin_attributes and another for regular attributes.
+> > > 
+> > > Removal of bin_attributes from groups does not require a differentiation
+> > > for bin_attributes and can use the same code path as regular attributes.
+> > > 
+> > > Signed-off-by: Lukas Wunner <lukas@wunner.de>
+> > > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > > ---
+> > > Submitting this ahead of my PCI device authentication v2 patches.
+> > > Not sure if the patch is acceptable without an accompanying user,
+> > > but even if it's not, perhaps someone has early review feedback
+> > > or wants to provide an Acked-by?  Thank you!
+> > 
+> > On the one hand it makes sense from a symmetry perspective, on the other
+> > hand the expectation and the infrastructure for dynamic sysfs visibilty
+> > has increased since 2007.
+> > 
+> > That is why I would like to see the use case to understand why a
+> > dynamically added a bin_attribute is needed compared with a statically
+> > defined attribute with dynamic visibility.
+> 
+> I assume "would like to see" means "on the mailing list", which would
+> (or will) be as part of the PCI device authentication v2 patches.
+
+That works, yeah.
+
+[..]
+> Each signature needs a unique filename and the number of signatures
+> that can be generated is essentially unlimited.  (Though older ones
+> are likely uninteresting and can be culled.)  If you want to expose,
+> say, up to 1000 signatures per device, you'd have to allocate an array
+> of 1000 signatures (for each device!), even though the actual number
+> of signatures received might be much lower.  It would be a waste of
+> memory.  It is much more economical to add signature attributes
+> dynamically on demand.
+
+Ah, yeah. If it was a double-digit number of files then a static array
+would be ok, but once it gets to 1000 potential files, then dynamic
+makes complete sense.
+
+> It has the additional benefit that it allows user space to dynamically
+> adjust the maximum number of signatures retained in the log.
+> That's more difficult to implement with static attributes, as you'd
+> have to reallocate the attributes array and adjust all the pointers
+> pointing to it.
+
+To be clear, and for example, dynamic adjusting an array of attributes
+based on userspace input is what cxl_region_target_group does, but again
+with 1000 potential files the static array would be silly.
+
+Thanks for the details!
 
