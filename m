@@ -1,436 +1,216 @@
-Return-Path: <linux-kernel+bounces-161098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28D228B4711
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:10:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED9708B4718
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:22:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BA2D1C213C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:10:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A38F12824F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DAC51DA23;
-	Sat, 27 Apr 2024 16:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF601DA23;
+	Sat, 27 Apr 2024 16:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="D8x5Epf5"
-Received: from mail-m17233.xmail.ntesmail.com (mail-m17233.xmail.ntesmail.com [45.195.17.233])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qawr9JVN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427D8BA5E;
-	Sat, 27 Apr 2024 16:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.195.17.233
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714234213; cv=none; b=hqGAVtbUkVNjDdxuRKGtDcoJM0M4bUIQgr6QS8k6YJwkbDsbHujk75bJ1t7oPSZBgGURHFwwXPS9aUG2YJ+gtbT+opQ5LBs1P65AEphhkABo7Tbs2gpVFNqbblHEGTPTm5dx53MTorQ+IkhYIZ53IujvgPTU7o8xBbN5MQtWeUA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714234213; c=relaxed/simple;
-	bh=N6qw295Th+8p3y4ZHXSrHDeGFEKXwVtAJkd/pZBBj9s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B4CR6Zl/vXrMD3fxCdMdJJrHLibc4DFImAXMPPOCrlXwtY4zHIx/sLO+qt/840FyfAcQFAWKVokXYdNKRQEaF9RgRfM+0zf7mCfUPGV2od1wLyIZjwWJcpu+Oype81D7Xsn2IaBO2VjGa23R3dcJ+CxycwTNhNrmTtf9suhwycE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=D8x5Epf5; arc=none smtp.client-ip=45.195.17.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-DKIM-Signature: a=rsa-sha256;
-	b=D8x5Epf5ktoQyzGdUGpoIlypfthN/Y75Bgoz4fqy6yYzNignZM7/BlBCTlg/LT1lqlyCQ9JRC8B1MQxMidXe6cI6rr1NiFJaPYQWyM1WKhy5pBVX+GdzRdr/NX3PAYTbpEPZPqWQPLbuTSMT4OJnuMWfT/LCSB3Iog4Opy8YKbg=;
-	c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=41zTvRE2jVBg29HAtbvVhLPeaBIa2sv0X5Jp+BcE0Wc=;
-	h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 9D9C184021D;
-	Sat, 27 Apr 2024 18:12:27 +0800 (CST)
-Message-ID: <bab90a27-b742-4587-aec6-e4e1fdf2d186@rock-chips.com>
-Date: Sat, 27 Apr 2024 18:12:26 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C8C8F77;
+	Sat, 27 Apr 2024 16:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714234950; cv=fail; b=u1x6dCb6YFbhK5lAGrSt9KQG6qOtPum3ltWHXG46xsr8NVQHBGJSTecQK114fOeZM5Y28fc43wTF4KprlMCEHWhbNcDB4304SHJ2SgZTyU0WzHgz8mHy2/lc14wvMEwSv0soiUO6z+Jn9ie7iw3+gouqsbSQyiJGn4UE6y9EPxM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714234950; c=relaxed/simple;
+	bh=DHjZ+QEGfTunoHOgEC31jyovjDg/Z1JKqzpHOQN1QAI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=D1DyyQ4H1ovajGY63vhyPiSKM/g1pFhFSfDoZzZwsZ4Zjew4u1wJywd+5kGzGNQJSPukaPxoUZHzMs7+gF3I1PXbK9/jhaNiLRMKwQAdktv9FWQB9p92v7jM/XJpXtq5RezT91uMTeSn56VHElcWdPs7r2nZagbWIdJAaTSFfUU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qawr9JVN; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714234949; x=1745770949;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=DHjZ+QEGfTunoHOgEC31jyovjDg/Z1JKqzpHOQN1QAI=;
+  b=Qawr9JVNZgmvtVjnRN370Meaqa1yKwiRLqGDSv4Z94RpuPZcQpX7YNPi
+   Ib/3r/wEYNUmIc/0QPSmhpJw2W7zz40faRryUXp3Lhbl6YWAXdw3pTEU1
+   4zUzmOMyn/YKFzD0R5oEQ7+dCWnJDANHjhOLrsHq9+dRth/Jj5yUO1nIZ
+   9//XS6Ej+Qi1D6E5jpUM14eWtuRjm/1W2AFublbowGi8UhLYGFaDMC81w
+   q5tUrIxP2iB3sKrQf5AepGwYOVVyl0OAS10IgEv1WkM/RDwtZf1PZLpjw
+   9kJIlAg/QL2pOzRP487aauU9FUHb0rsXqgLU9+eEoFjqcdk7dzeHkcckH
+   A==;
+X-CSE-ConnectionGUID: 7tnKAvYJRk+NU3TWR/PzRQ==
+X-CSE-MsgGUID: bsyfiz52SRKH64HiTgJOEQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="32454125"
+X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
+   d="scan'208";a="32454125"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 09:22:29 -0700
+X-CSE-ConnectionGUID: DQ3CZlsmSt2DN9ftLWwoeA==
+X-CSE-MsgGUID: VOvhCQTrTc674DAXeMpytQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
+   d="scan'208";a="63174939"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Apr 2024 09:22:28 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 27 Apr 2024 09:22:27 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sat, 27 Apr 2024 09:22:27 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 27 Apr 2024 09:22:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BzQaVAKE4POpK98myPhHo4JijMEnsEMTb4zs22NmQKQ0X+M9Tu6ZhoZaL6Wwo2XfH2swQVwpops73pbhgnfk+hE+oDw/PEV5E+dYr1u/GSgc7OL002ahjEGY1MH5jDlkO/tL2YeZ18py5bCwM6B84rBwndruGkHWJqAiC5/vfIOp/drMYuAe3TSvhwRAb/WwZphbc5B3GxjBj7eRh+ZV5pDpV2fCGOgD/bDiqMK8JO+eHE/MZAhaKprp+ZevvA6WZw0j89crq9jTC1k6dQn1EsfeB5XHHc71JML8/p+WhqVm3Q6mVzT8PBEnsA98clSIOePZeu9+rDbFXT+I6vXCbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ha+uahDiGGfJDoNuBrGY5Lia05aAQj5E+DDipabnKvo=;
+ b=bEOknTZ8QV/0/3ay1ZdzSKFLlj8yQloxvBf3B8yBLysbs1O0SBqqViZNTZyU/ulJ7uIbpIi0P9S1OL/eg7dllKXCZBKrv0kQsc+dXQhbyL4uj5AM0YlakYjV1/wPVHHxOaPKeIKZzxlaiJSsX8xsXogACWGgSvFfKHK8lRpx+Efv9bzPq46ZiYLBNm6jbepASg2+C2pqUxocaFvCzgiyQDmdCalIrsBzMJfynXWhvikBI7jr46FXSlvOEIpFShu1uSDNmSCzPSj4HPCbnrU3QC/MTDTsIwN3e+OptYNM6wX+U3H4YfXcD8h1zaGzLWhMWHGLa2ZETirC2b8lwuQ19A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SA1PR11MB6614.namprd11.prod.outlook.com (2603:10b6:806:255::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.30; Sat, 27 Apr
+ 2024 16:22:25 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.7519.031; Sat, 27 Apr 2024
+ 16:22:25 +0000
+Date: Sat, 27 Apr 2024 09:22:21 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Greg KH <gregkh@linuxfoundation.org>, Harold Johnson
+	<harold.johnson@broadcom.com>
+CC: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams
+	<dan.j.williams@intel.com>, <linux-cxl@vger.kernel.org>, Sreenivas Bagalkote
+	<sreenivas.bagalkote@broadcom.com>, Brett Henning
+	<brett.henning@broadcom.com>, Sumanesh Samanta
+	<sumanesh.samanta@broadcom.com>, <linux-kernel@vger.kernel.org>, "Davidlohr
+ Bueso" <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, "Alison
+ Schofield" <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+	<linuxarm@huawei.com>, <linux-api@vger.kernel.org>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, "Natu, Mahesh" <mahesh.natu@intel.com>
+Subject: Re: RFC: Restricting userspace interfaces for CXL fabric management
+Message-ID: <662d263dd17c7_b6e0294ab@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
+ <20240425123344.000001a9@Huawei.com>
+ <662a826dbeeff_b6e02943c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240425182605.00005f22@Huawei.com>
+ <662aae2fe4887_a96f294bf@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240426094550.00002e37@Huawei.com>
+ <662bd36caae55_a96f2943f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240426175341.00002e67@Huawei.com>
+ <6351024b5d6206c4e9a8cd98d1a09d43@mail.gmail.com>
+ <2024042708-outscore-dreadful-2c21@gregkh>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2024042708-outscore-dreadful-2c21@gregkh>
+X-ClientProxiedBy: MW4PR04CA0272.namprd04.prod.outlook.com
+ (2603:10b6:303:89::7) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 27/28] drm/rockchip: inno_hdmi: Switch to HDMI
- connector
-To: Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240423-kms-hdmi-connector-state-v12-0-3338e4c0b189@kernel.org>
- <20240423-kms-hdmi-connector-state-v12-27-3338e4c0b189@kernel.org>
-Content-Language: en-US
-From: Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20240423-kms-hdmi-connector-state-v12-27-3338e4c0b189@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQx8ZGVZKSx0YSk5CS0JKTEtVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-	kG
-X-HM-Tid: 0a8f1f0abd8f03a4kunm9d9c184021d
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MRQ6SSo*FzNLLikcGlFNLjcf
-	ER4KCixVSlVKTEpPSUpJTE9CSkxIVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSk1JS0I3Bg++
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SA1PR11MB6614:EE_
+X-MS-Office365-Filtering-Correlation-Id: 52873962-d250-4f26-a901-08dc66d63938
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|1800799015|376005;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?/c3GGsXdK75DFDqCSEU1/n3MHh/E0ExrYog3lpcL8DmYU2sDbP8P4y797yKv?=
+ =?us-ascii?Q?VxZ6PHpWGOv3afsEDsdhFiXNNwgu0wxugUFMJ4SZfWwNUjuLPTKeZqe8ULyd?=
+ =?us-ascii?Q?opoB45gr+1ykERCNtVDJoNKo6hhNpoiK1DU83oHp2weCCoQh0Q8ARG+o6TjE?=
+ =?us-ascii?Q?4mg3lqO2quKQMjYdNAasKoD3clX63e4c+ZX0Iyz1ZY4AxN4PZCIvBSigpR8h?=
+ =?us-ascii?Q?DvgkO5jyWFr6hXI/JIPxsJKnpkcHwx8z5q9rJo/k4nvDq2GDtBFdrfwFW9hB?=
+ =?us-ascii?Q?8ynSgiUAV6vtv+z0VUgNi75EewpmOQUlGSq2H2KhY9k8Zm9JCiTUxlh99LXz?=
+ =?us-ascii?Q?Vvq6OOSgjsPuy4StA8rCcVVDJUmdL7i1fOxzQtcmBdk60LSuDdIjodhMNTjl?=
+ =?us-ascii?Q?SDcEu1jnV83OwWXvmYHisxOtuhAAF5pYAPAxBbHc7uSvS02EVYwO7nxLiUZR?=
+ =?us-ascii?Q?LEXSz20bTKuckEZPKGLuwVpAFWtE2VTVvNSR5iAKIc9aX/wkAjd6RY3UU0Fn?=
+ =?us-ascii?Q?yK1CrE6uB6HFj6/6OmkSJ5Qn1JkhmvuBBuPeBZwGt4/BPxTBqLnCJKEDYGmf?=
+ =?us-ascii?Q?QpdB+KRdV3zRuQHId1geSWlR6mDPThMCV+AoQeVuJDC+kvhRAvYXAwPx6ocl?=
+ =?us-ascii?Q?eSllRg4c3sxfwfQsQM90fc8ZGVUgCkmS4kqZPW9zVGpbGzSoKw3yPqqBIVpZ?=
+ =?us-ascii?Q?OtWNzKsYLxrQ4Q18Sb6tTyLfOtJim+DwFTrSw9ISh0E90lSSk4mDKwoMlw/e?=
+ =?us-ascii?Q?QPBLsGWMG1zqVH6G69gD2sJGSSTdq6KgLurMCjVreN+mnzSeqJKbR9zJ75/R?=
+ =?us-ascii?Q?7eSBY80dXJCPF71Auxu0xx4EwPm+H1tLW8v7AohHiepedEze+rw0FzdSPDYR?=
+ =?us-ascii?Q?jMPtFmDoN66M7fAcA8zXYmsyO74fffRerZ/Tx7qJem2b1LD0dq4+V151vj+w?=
+ =?us-ascii?Q?2ov2Fo3mfew8aJi4oGc+VMuw3iRX/eDFM8H8uVV/arCPBbFLJa3DegKAcb8P?=
+ =?us-ascii?Q?wz93wOKR4C/03wlvf1vd/QCD8e4DSnQHNpYIFLU0imvGl1+Ifs66N5VFYN+9?=
+ =?us-ascii?Q?Glldyy82z5GDDKQmG2V6Rr7XEDMPtwtxvE71uvJARAVMrvhy0nDGj38S5MgL?=
+ =?us-ascii?Q?ulAbrOp4o8ILnRvrO6Ln6D4BnthNLfqMYhmUi0dCjK+wRDcGSO2KCWX4RZNw?=
+ =?us-ascii?Q?AzMaP+0EIKUm9DW0PPH9GowMQSVXE0Ui0wVs65b2d5zYK3DEDwYFOS2MPRE4?=
+ =?us-ascii?Q?/0uc9rJiifkgRXiU7Besd2JmMQGS2Ok4vQeSpF3izw=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0c2+z4wcZRuQdqNJsL53Zc9Ijh+bkcFro2/7UPBE7zt85SUGDvFPf4P8+GLr?=
+ =?us-ascii?Q?v3kZxmkoO2Gf9xvw40VMmiMwCX+Dy9WlXLVI8RSaQsdNua6S9D/FSJT1/PY1?=
+ =?us-ascii?Q?zRm8JYJPRR9LKLu/KOA2R5NRQOZk8tI7WtgGPw91MXhCsFDvfkKxQTCzfHIP?=
+ =?us-ascii?Q?xaHUJmDVt1Scf+FNDn+s2WKgEpQYvbfTG5Sh2ZBsSbVgKhDyzSoDmcQPr9zl?=
+ =?us-ascii?Q?h79u3KwYOwlg93yi50SSvPL3IkeARD0U9iOnoOVHO/FIOxpRFfamlwAjshpb?=
+ =?us-ascii?Q?3iHf8Ee/hqoNJoSd3WJqo6vBxzcox63VWfL+Q1Jq+/Uiy28UQAGYto/Uu/Kl?=
+ =?us-ascii?Q?TUp/BxDezkd/aIhzKi5ATVZ1/If8S0cYFr6VGUHSvkLZu+SUyiTtJJ2Wuokh?=
+ =?us-ascii?Q?aj+z0O8VxRTcrJCYYMrlSPw39skI3MRuOJwuYt/YcAg366wVyCLNloFLcBGV?=
+ =?us-ascii?Q?Y+QYbJqp3iX3z4d5zmwk924ufrziS/FWqQP4GTR25KmIvGXbjRP5cfQ+Bjir?=
+ =?us-ascii?Q?9ImWw/vd8JF1Wa2xZVtqMfJvtY5ZhcPKT3Eq5InqLRBcgAO4dmz4ZQs725ZU?=
+ =?us-ascii?Q?8/ESsOK1qrrCWFpp75HdascRZJkhO2+/rVxB+jAMoOF1o+3fxBMkeXKXuKOl?=
+ =?us-ascii?Q?A7tkiAeBeU3kYa9u14LoRROd1CH8IGc4rk4k8+dkrBnufQrRKvpr1t0egf2c?=
+ =?us-ascii?Q?3yECsxesYLcrN9oZ7RQIwPBpwIugdAFFL22FULya7N+Swyn9Cpp99BJvuwZE?=
+ =?us-ascii?Q?7WotSdvqWnYQ1CcBb4tsnaiL5EbWGv1a01/9UBBYJHtD6KNIn69PdzHs8IGq?=
+ =?us-ascii?Q?us0xSNSZbxL2VeDqKhkc35L/qnXt0SfckGrNvzdBf5RtBGSkQoVbxVEGXFEc?=
+ =?us-ascii?Q?4srKRBdGLYKRALLwRqUS0NuWnBbc480gOZna1tMG3MZF7AGZH8ScyUUMXrhd?=
+ =?us-ascii?Q?0/aBWsibWH3BWj7qcRKJoVRBKieLE/ghWuYEN9J4wcsI1I4KElvswT9vnSp5?=
+ =?us-ascii?Q?GReQzSMDGLeZum03qbf2NRsphAxJZAX/DWKeYiQmhzn+/wWgOo3ZLk1ErdPf?=
+ =?us-ascii?Q?iNqIgtJ0RuqzJX34G5nqxP/bQMH3PnF+Y2FgjJQL5szszb8GdO2MXS9GkNhd?=
+ =?us-ascii?Q?/rGlUUU4VRskIplxCv9VRfOjTyT9GkdKxcmF+dEVeci49smFVg74BnMZxDmJ?=
+ =?us-ascii?Q?4jgTpkFuBSARTd34bUhpXwmw5nfUN3FO8P5uGG33hSMXko9mZ2IhkXAa1Zny?=
+ =?us-ascii?Q?nC45tV84GW0JUni0sJux83Dh+Y9Cem8L7SG/Vzh77CiE86Y82RHcOScf9wyU?=
+ =?us-ascii?Q?Wfa0/ZI/8sTRxW5CZa3lUhDlNCn98kMV2FVc+IhVNSa7wrGye+j5Qhuic41w?=
+ =?us-ascii?Q?zhuz4Pc06HzWietxFYF8CsM+v+FvO7bHprbAtyzeQdbDEByX7NRlu/ToGWyh?=
+ =?us-ascii?Q?+5K97HY1gmc6nGlmnM1h5EAAV8IwKSa5p2v8Qby1vBjcWsGmhyAj0SSf26M9?=
+ =?us-ascii?Q?Gebv5QvTcVrNlslLVxJnHWmi7hx3TCi4GwOEx3Q26ohQqZTYG7IntTYsdZQk?=
+ =?us-ascii?Q?wvRa6SxYOh4WQiSFgFg98r0F6rxNqZz7TkKggfKINYxC2HIXDgP6uNownA4H?=
+ =?us-ascii?Q?Fw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52873962-d250-4f26-a901-08dc66d63938
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2024 16:22:25.0907
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jPjC6hnm/XxeJkpvdYAL6jJ+hdoHGhjVQJqshU1UpZ0dDXYS3Y+RWDpq48MJQ0VtWoTZOqGAn5kGwqwa2J0EHhQJedy17dE02DLOR8dYB6Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6614
+X-OriginatorOrg: intel.com
 
-Hi Maxime,
+Greg KH wrote:
+[..]
+> So while innovating at the hardware level is fine, follow the ways that
+> everyone has done this for other specification types (USB, PCI, etc.)
+> and just allow vendor drivers to provide the information.  Don't do this
+> in crazy userspace drivers which will circumvent the whole reason we
+> have standard kernel/user apis in the first place for these types of
+> things.
 
-On 4/23/24 18:45, Maxime Ripard wrote:
-> The new HDMI connector infrastructure allows to remove some boilerplate,
-> especially to generate infoframes. Let's switch to it.
-> 
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-> Acked-by: Heiko Stuebner <heiko@sntech.de>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->   drivers/gpu/drm/rockchip/Kconfig     |   1 +
->   drivers/gpu/drm/rockchip/inno_hdmi.c | 143 +++++++++++++----------------------
->   2 files changed, 53 insertions(+), 91 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/Kconfig b/drivers/gpu/drm/rockchip/Kconfig
-> index 4c7072e6e34e..e2ec20c2e2eb 100644
-> --- a/drivers/gpu/drm/rockchip/Kconfig
-> +++ b/drivers/gpu/drm/rockchip/Kconfig
-> @@ -72,10 +72,11 @@ config ROCKCHIP_DW_MIPI_DSI
->   	  enable MIPI DSI on RK3288 or RK3399 based SoC, you should
->   	  select this option.
->   
->   config ROCKCHIP_INNO_HDMI
->   	bool "Rockchip specific extensions for Innosilicon HDMI"
-> +	depends on 
+Right, standard kernel/user apis is the requirement.
 
-Is this supposed to be  DRM_DISPLAY_HDMI_STATE_HELPER whith you introduced in PATCH 04/28?
-I couldn't find any place where  DRM_HDMI_STATE_HELPER is defined.
-
->   	help
->   	  This selects support for Rockchip SoC specific extensions
->   	  for the Innosilicon HDMI driver. If you want to enable
->   	  HDMI on RK3036 based SoC, you should select this option.
->   
-> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-> index 1d2261643743..3756259bfb10 100644
-> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-> @@ -65,13 +65,11 @@ struct inno_hdmi {
->   	const struct inno_hdmi_variant *variant;
->   };
->   
->   struct inno_hdmi_connector_state {
->   	struct drm_connector_state	base;
-> -	unsigned int			enc_out_format;
->   	unsigned int			colorimetry;
-> -	bool				rgb_limited_range;
->   };
->   
->   static struct inno_hdmi *encoder_to_inno_hdmi(struct drm_encoder *encoder)
->   {
->   	struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
-> @@ -255,90 +253,53 @@ static void inno_hdmi_reset(struct inno_hdmi *hdmi)
->   	hdmi_modb(hdmi, HDMI_SYS_CTRL, msk, val);
->   
->   	inno_hdmi_standby(hdmi);
->   }
->   
-> -static void inno_hdmi_disable_frame(struct inno_hdmi *hdmi,
-> -				    enum hdmi_infoframe_type type)
-> +static int inno_hdmi_disable_frame(struct drm_connector *connector,
-> +				   enum hdmi_infoframe_type type)
->   {
-> -	struct drm_connector *connector = &hdmi->connector;
-> -
-> -	if (type != HDMI_INFOFRAME_TYPE_AVI) {
-> -		drm_err(connector->dev,
-> -			"Unsupported infoframe type: %u\n", type);
-> -		return;
-> -	}
-> -
-> -	hdmi_writeb(hdmi, HDMI_CONTROL_PACKET_BUF_INDEX, INFOFRAME_AVI);
-> -}
-> -
-> -static int inno_hdmi_upload_frame(struct inno_hdmi *hdmi,
-> -				  union hdmi_infoframe *frame, enum hdmi_infoframe_type type)
-> -{
-> -	struct drm_connector *connector = &hdmi->connector;
-> -	u8 packed_frame[HDMI_MAXIMUM_INFO_FRAME_SIZE];
-> -	ssize_t rc, i;
-> +	struct inno_hdmi *hdmi = connector_to_inno_hdmi(connector);
->   
->   	if (type != HDMI_INFOFRAME_TYPE_AVI) {
->   		drm_err(connector->dev,
->   			"Unsupported infoframe type: %u\n", type);
->   		return 0;
->   	}
->   
-> -	inno_hdmi_disable_frame(hdmi, type);
-> +	hdmi_writeb(hdmi, HDMI_CONTROL_PACKET_BUF_INDEX, INFOFRAME_AVI);
->   
-> -	rc = hdmi_infoframe_pack(frame, packed_frame,
-> -				 sizeof(packed_frame));
-> -	if (rc < 0)
-> -		return rc;
-> +	return 0;
-> +}
->   
-> -	for (i = 0; i < rc; i++)
-> +static int inno_hdmi_upload_frame(struct drm_connector *connector,
-> +				  enum hdmi_infoframe_type type,
-> +				  const u8 *buffer, size_t len)
-> +{
-> +	struct inno_hdmi *hdmi = connector_to_inno_hdmi(connector);
-> +	u8 packed_frame[HDMI_MAXIMUM_INFO_FRAME_SIZE];
-> +	ssize_t i;
-> +
-> +	if (type != HDMI_INFOFRAME_TYPE_AVI) {
-> +		drm_err(connector->dev,
-> +			"Unsupported infoframe type: %u\n", type);
-> +		return 0;
-> +	}
-> +
-> +	inno_hdmi_disable_frame(connector, type);
-> +
-> +	for (i = 0; i < len; i++)
->   		hdmi_writeb(hdmi, HDMI_CONTROL_PACKET_ADDR + i,
->   			    packed_frame[i]);
->   
->   	return 0;
->   }
->   
-> -static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
-> -				      struct drm_display_mode *mode)
-> -{
-> -	struct drm_connector *connector = &hdmi->connector;
-> -	struct drm_connector_state *conn_state = connector->state;
-> -	struct inno_hdmi_connector_state *inno_conn_state =
-> -					to_inno_hdmi_conn_state(conn_state);
-> -	union hdmi_infoframe frame;
-> -	int rc;
-> -
-> -	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
-> -						      &hdmi->connector,
-> -						      mode);
-> -	if (rc) {
-> -		inno_hdmi_disable_frame(hdmi, HDMI_INFOFRAME_TYPE_AVI);
-> -		return rc;
-> -	}
-> -
-> -	if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_YUV444)
-> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
-> -	else if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_YUV422)
-> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV422;
-> -	else
-> -		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
-> -
-> -	if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_RGB) {
-> -		drm_hdmi_avi_infoframe_quant_range(&frame.avi,
-> -						   connector, mode,
-> -						   inno_conn_state->rgb_limited_range ?
-> -						   HDMI_QUANTIZATION_RANGE_LIMITED :
-> -						   HDMI_QUANTIZATION_RANGE_FULL);
-> -	} else {
-> -		frame.avi.quantization_range = HDMI_QUANTIZATION_RANGE_DEFAULT;
-> -		frame.avi.ycc_quantization_range =
-> -			HDMI_YCC_QUANTIZATION_RANGE_LIMITED;
-> -	}
-> -
-> -	return inno_hdmi_upload_frame(hdmi, &frame, HDMI_INFOFRAME_TYPE_AVI);
-> -}
-> +static const struct drm_connector_hdmi_funcs inno_hdmi_hdmi_connector_funcs = {
-> +	.clear_infoframe	= inno_hdmi_disable_frame,
-> +	.write_infoframe	= inno_hdmi_upload_frame,
-> +};
->   
->   static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
->   {
->   	struct drm_connector *connector = &hdmi->connector;
->   	struct drm_connector_state *conn_state = connector->state;
-> @@ -359,12 +320,12 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
->   	value = v_VIDEO_INPUT_BITS(VIDEO_INPUT_8BITS) |
->   		v_VIDEO_OUTPUT_COLOR(0) |
->   		v_VIDEO_INPUT_CSP(0);
->   	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL2, value);
->   
-> -	if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_RGB) {
-> -		if (inno_conn_state->rgb_limited_range) {
-> +	if (conn_state->hdmi.output_format == HDMI_COLORSPACE_RGB) {
-> +		if (conn_state->hdmi.is_limited_range) {
->   			csc_mode = CSC_RGB_0_255_TO_RGB_16_235_8BIT;
->   			auto_csc = AUTO_CSC_DISABLE;
->   			c0_c2_change = C0_C2_CHANGE_DISABLE;
->   			csc_enable = v_CSC_ENABLE;
->   
-> @@ -378,18 +339,18 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
->   				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
->   			return 0;
->   		}
->   	} else {
->   		if (inno_conn_state->colorimetry == HDMI_COLORIMETRY_ITU_601) {
-> -			if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_YUV444) {
-> +			if (conn_state->hdmi.output_format == HDMI_COLORSPACE_YUV444) {
->   				csc_mode = CSC_RGB_0_255_TO_ITU601_16_235_8BIT;
->   				auto_csc = AUTO_CSC_DISABLE;
->   				c0_c2_change = C0_C2_CHANGE_DISABLE;
->   				csc_enable = v_CSC_ENABLE;
->   			}
->   		} else {
-> -			if (inno_conn_state->enc_out_format == HDMI_COLORSPACE_YUV444) {
-> +			if (conn_state->hdmi.output_format == HDMI_COLORSPACE_YUV444) {
->   				csc_mode = CSC_RGB_0_255_TO_ITU709_16_235_8BIT;
->   				auto_csc = AUTO_CSC_DISABLE;
->   				c0_c2_change = C0_C2_CHANGE_DISABLE;
->   				csc_enable = v_CSC_ENABLE;
->   			}
-> @@ -460,14 +421,16 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
->   
->   	return 0;
->   }
->   
->   static int inno_hdmi_setup(struct inno_hdmi *hdmi,
-> -			   struct drm_display_mode *mode)
-> +			   struct drm_crtc_state *new_crtc_state,
-> +			   struct drm_connector_state *new_conn_state)
->   {
-> -	struct drm_display_info *display = &hdmi->connector.display_info;
-> -	unsigned long mpixelclock = mode->clock * 1000;
-> +	struct drm_connector *connector = &hdmi->connector;
-> +	struct drm_display_info *display = &connector->display_info;
-> +	struct drm_display_mode *mode = &new_crtc_state->adjusted_mode;
->   
->   	/* Mute video and audio output */
->   	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
->   		  v_AUDIO_MUTE(1) | v_VIDEO_MUTE(1));
->   
-> @@ -477,26 +440,26 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
->   
->   	inno_hdmi_config_video_timing(hdmi, mode);
->   
->   	inno_hdmi_config_video_csc(hdmi);
->   
-> -	if (display->is_hdmi)
-> -		inno_hdmi_config_video_avi(hdmi, mode);
-> +	drm_atomic_helper_connector_hdmi_update_infoframes(connector,
-> +							   new_conn_state->state);
->   
->   	/*
->   	 * When IP controller have configured to an accurate video
->   	 * timing, then the TMDS clock source would be switched to
->   	 * DCLK_LCDC, so we need to init the TMDS rate to mode pixel
->   	 * clock rate, and reconfigure the DDC clock.
->   	 */
-> -	inno_hdmi_i2c_init(hdmi, mpixelclock);
-> +	inno_hdmi_i2c_init(hdmi, new_conn_state->hdmi.tmds_char_rate);
->   
->   	/* Unmute video and audio output */
->   	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
->   		  v_AUDIO_MUTE(0) | v_VIDEO_MUTE(0));
->   
-> -	inno_hdmi_power_up(hdmi, mpixelclock);
-> +	inno_hdmi_power_up(hdmi, new_conn_state->hdmi.tmds_char_rate);
->   
->   	return 0;
->   }
->   
->   static enum drm_mode_status inno_hdmi_display_mode_valid(struct inno_hdmi *hdmi,
-> @@ -544,11 +507,11 @@ static void inno_hdmi_encoder_enable(struct drm_encoder *encoder,
->   
->   	crtc_state = drm_atomic_get_new_crtc_state(state, conn_state->crtc);
->   	if (WARN_ON(!crtc_state))
->   		return;
->   
-> -	inno_hdmi_setup(hdmi, &crtc_state->adjusted_mode);
-> +	inno_hdmi_setup(hdmi, crtc_state, conn_state);
->   }
->   
->   static void inno_hdmi_encoder_disable(struct drm_encoder *encoder,
->   				      struct drm_atomic_state *state)
->   {
-> @@ -561,11 +524,10 @@ static int
->   inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
->   			       struct drm_crtc_state *crtc_state,
->   			       struct drm_connector_state *conn_state)
->   {
->   	struct rockchip_crtc_state *s = to_rockchip_crtc_state(crtc_state);
-> -	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
->   	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
->   	u8 vic = drm_match_cea_mode(mode);
->   	struct inno_hdmi_connector_state *inno_conn_state =
->   					to_inno_hdmi_conn_state(conn_state);
->   
-> @@ -578,16 +540,11 @@ inno_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
->   	    vic == 17 || vic == 18)
->   		inno_conn_state->colorimetry = HDMI_COLORIMETRY_ITU_601;
->   	else
->   		inno_conn_state->colorimetry = HDMI_COLORIMETRY_ITU_709;
->   
-> -	inno_conn_state->enc_out_format = HDMI_COLORSPACE_RGB;
-> -	inno_conn_state->rgb_limited_range =
-> -		drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_LIMITED;
-> -
-> -	return  inno_hdmi_display_mode_valid(hdmi,
-> -				&crtc_state->adjusted_mode) == MODE_OK ? 0 : -EINVAL;
-> +	return 0;
->   }
->   
->   static struct drm_encoder_helper_funcs inno_hdmi_encoder_helper_funcs = {
->   	.atomic_check	= inno_hdmi_encoder_atomic_check,
->   	.atomic_enable	= inno_hdmi_encoder_enable,
-> @@ -660,14 +617,13 @@ static void inno_hdmi_connector_reset(struct drm_connector *connector)
->   	inno_conn_state = kzalloc(sizeof(*inno_conn_state), GFP_KERNEL);
->   	if (!inno_conn_state)
->   		return;
->   
->   	__drm_atomic_helper_connector_reset(connector, &inno_conn_state->base);
-> +	__drm_atomic_helper_connector_hdmi_reset(connector, connector->state);
->   
->   	inno_conn_state->colorimetry = HDMI_COLORIMETRY_ITU_709;
-> -	inno_conn_state->enc_out_format = HDMI_COLORSPACE_RGB;
-> -	inno_conn_state->rgb_limited_range = false;
->   }
->   
->   static struct drm_connector_state *
->   inno_hdmi_connector_duplicate_state(struct drm_connector *connector)
->   {
-> @@ -696,10 +652,11 @@ static const struct drm_connector_funcs inno_hdmi_connector_funcs = {
->   	.atomic_duplicate_state = inno_hdmi_connector_duplicate_state,
->   	.atomic_destroy_state = inno_hdmi_connector_destroy_state,
->   };
->   
->   static struct drm_connector_helper_funcs inno_hdmi_connector_helper_funcs = {
-> +	.atomic_check = drm_atomic_helper_connector_hdmi_check,
->   	.get_modes = inno_hdmi_connector_get_modes,
->   	.mode_valid = inno_hdmi_connector_mode_valid,
->   };
->   
->   static int inno_hdmi_register(struct drm_device *drm, struct inno_hdmi *hdmi)
-> @@ -723,14 +680,18 @@ static int inno_hdmi_register(struct drm_device *drm, struct inno_hdmi *hdmi)
->   
->   	hdmi->connector.polled = DRM_CONNECTOR_POLL_HPD;
->   
->   	drm_connector_helper_add(&hdmi->connector,
->   				 &inno_hdmi_connector_helper_funcs);
-> -	drm_connector_init_with_ddc(drm, &hdmi->connector,
-> -				    &inno_hdmi_connector_funcs,
-> -				    DRM_MODE_CONNECTOR_HDMIA,
-> -				    hdmi->ddc);
-> +	drmm_connector_hdmi_init(drm, &hdmi->connector,
-> +				 "Rockchip", "Inno HDMI",
-> +				 &inno_hdmi_connector_funcs,
-> +				 &inno_hdmi_hdmi_connector_funcs,
-> +				 DRM_MODE_CONNECTOR_HDMIA,
-> +				 hdmi->ddc,
-> +				 BIT(HDMI_COLORSPACE_RGB),
-> +				 8);
->   
->   	drm_connector_attach_encoder(&hdmi->connector, encoder);
->   
->   	return 0;
->   }
-> 
+The suggestion of opaque vendor passthrough tunnels, and every vendor
+ships their custom tool to do what should be common flows, is where this
+discussion went off the rails.
 
