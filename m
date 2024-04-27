@@ -1,84 +1,273 @@
-Return-Path: <linux-kernel+bounces-161009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 781AB8B45B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1D1B8B45BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34C11282BB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68F00282D60
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E517148CC7;
-	Sat, 27 Apr 2024 11:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jAUeqhaf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF8E4C610;
+	Sat, 27 Apr 2024 11:09:25 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B3A481D3
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 11:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780974AECA
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 11:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714216007; cv=none; b=OyCTuf1yTeDLvH//iuC3a5rvX9kwO9QNpqjNjCJcCz22F3SuP7wXJajTyXSzt/n0E+Y/E9BXemMmzXkJpHxdEmxZl4kSJLf/nM8+QgNe0SAimj5c84H5xXdIf3TAo2PxVDYOyDilcWtuBlqY2pHZhDoPlvRFXsrNo8lZAkrC+JA=
+	t=1714216165; cv=none; b=NbPNbLqfUImynsmP/Dcs84xqEB2ky56/Kuc2t5tHn8OBOa7Bu6S8Bk2XpXRm9Kfdt26ZcWAb86QVeEpbOUQJmVeuKTr0KWFljD2wE0T2qkEKOXM3n9WAKkY63ShXbO33ORMvYUNkqIH0bCEb6TBJTmtdlictFH1Sa4zUsipTgmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714216007; c=relaxed/simple;
-	bh=SmN9vxZOsewofREEBZ/JrAcLPTz0x6zlWzel61p0MOc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ncL3JZhrEGk5z+8aoL9npDIQYs5UjbsPw6KdV+dJJPcV9qa/xmkV/H+XD0zj4ma+krJTQKzaE7rmkU57oXgracjurTMnuA34loZJ0RfApjdoD28EIgrNZoJuCXEZm3ZbXSh7cn5MmC3Cb48/j71cglht6MYWgmO1jToP5hz3sCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jAUeqhaf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE1EC113CE;
-	Sat, 27 Apr 2024 11:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714216006;
-	bh=SmN9vxZOsewofREEBZ/JrAcLPTz0x6zlWzel61p0MOc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jAUeqhafAY6+CTWWcJd5qyFdhGvaZoAUJh/MIseVLjqnbSFNlW0rPgcb3USosJH92
-	 8qYQXTU3utSMM/yY1QvOBBMCLaZkiTikl/E2hpyZn5x+81dtwy21Sej3yxqqPwZ1a1
-	 AZ75saMwZL5NTxd94GCrng/3zLiGK6wydEHaFDN0=
-Date: Sat, 27 Apr 2024 13:06:41 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Vamsi Attunuru <vattunuru@marvell.com>
-Cc: arnd@arndb.de, jerinj@marvell.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/1] misc: mrvl-cn10k-dpi: add Octeon CN10K DPI
- administrative driver
-Message-ID: <2024042704-repugnant-extenuate-f775@gregkh>
-References: <2024042501-stargazer-departure-e5b9@gregkh>
- <20240426182011.2156856-1-vattunuru@marvell.com>
+	s=arc-20240116; t=1714216165; c=relaxed/simple;
+	bh=ps0QFqiOcPgLOAiHQX9C6AOho2d/iZk3wEj7WbVsLcE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bt49PY2sTbLcvtF8s/DfJPcm2BvzPtdUGYqx/pxP5x1JnewEVmoip5eYZDyEfWIYpJXMbUJxs/MNmGtPYYFWHzbhOMpgeKe3eFJI8ZLHU2OAn946ttsyyqzMJJoJt14o42HjIgh/zP2wQ8Gft/d83cJ9l3UDTFJPyGDwhAeKo3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7da4360bbacso374046539f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:09:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714216162; x=1714820962;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qSvdmjKcw3FZYrclxf/+dfmFLq159LDn5HIUN66mdVM=;
+        b=YHOTCL6xt2BKvG+ORZoAs3Lw/rQ18PjtLvv1Kz2mjAL/QU4r/pxJw3itDPyViex5oh
+         onxQukyz36p6cNaIMhJ8JVcmEyNQNt8Mvndm+ovWUWSw6e/wN9p3NrpZAM1E9eboh8/j
+         4SRGKexrjVTFGtSO4OxiJZCQTdesajhBn+uds1BhiD8Q4MzDx9sRvvDhBBwaR8OtM8Vj
+         ViJm93zUTb1jjFFrKvDQovPJgKzphgn1fG8OGsQMMCoX1+Qxez4f60MG2udQWaMOu28I
+         pds9Kml/Iz8HBVs9nZEeTmfAf2QvOgZ1g9y/cFRorekHDvT8Q0t0Fr8zvXrPn6bg+Gfw
+         NWkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXovZxN/NSCJ8XBUvQrY5CP9kM52FmmLyEM75+zS0rIqKMt73NMo7WfAfqIfHmnXPfgp/oZ2gmxWQCkV79yR86rdSStSuTY0TujOe1G
+X-Gm-Message-State: AOJu0YyS+7w4E/sa7VU55YYup2im0YjtsmHgh3NJ0i7W445NQ5ePKJxT
+	ty0xPf11AMt2cNRhvWpaP0RlJPPvLT0xNesXfv04wotDda9DMSP8GYbnC/tXH2gnUJylo4DRuO9
+	xdATvGeUvGlr1yA3RKZT2W0h+OSaEm3HTBm4YxdAl4gHWYTiBDcHVZhU=
+X-Google-Smtp-Source: AGHT+IFO4ByM6vPJ8dQS1FfN6XLiRyUrMdiNORijRABxlmL00upCqlX3arz84mQUtAoWdC8GKBt4yjKR2kcvLl+W6vBohhUpLtiX
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426182011.2156856-1-vattunuru@marvell.com>
+X-Received: by 2002:a05:6638:450b:b0:487:4ad0:def3 with SMTP id
+ bs11-20020a056638450b00b004874ad0def3mr215228jab.0.1714216161740; Sat, 27 Apr
+ 2024 04:09:21 -0700 (PDT)
+Date: Sat, 27 Apr 2024 04:09:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006399c80617120daa@google.com>
+Subject: [syzbot] [kernfs?] possible deadlock in kernfs_seq_start
+From: syzbot <syzbot+4c493dcd5a68168a94b2@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 26, 2024 at 11:20:11AM -0700, Vamsi Attunuru wrote:
-> Adds a misc driver for Marvell CN10K DPI(DMA Engine) device's physical
-> function which initializes DPI DMA hardware's global configuration and
-> enables hardware mailbox channels between physical function (PF) and
-> it's virtual functions (VF). VF device drivers (User space drivers) use
-> this hw mailbox to communicate any required device configuration on it's
-> respective VF device. Accordingly, this DPI PF driver provisions the
-> VF device resources.
-> 
-> At the hardware level, the DPI physical function (PF) acts as a management
-> interface to setup the VF device resources, VF devices are only provisioned
-> to handle or control the actual DMA Engine's data transfer capabilities.
-> 
-> Signed-off-by: Vamsi Attunuru <vattunuru@marvell.com>
-> ---
-> Changes V5 -> V6:
-> - Updated documentation
+Hello,
 
-The documentation for where to find the userspace code needs to be in
-the documentation file, not buried in a comment here in a changelog
-section that will never show up anywhere.
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    71b1543c83d6 Merge tag '6.9-rc5-ksmbd-fixes' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=132f3973180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5a05c230e142f2bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=4c493dcd5a68168a94b2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-greg k-h
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c2ffdc70f4f4/disk-71b1543c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3f55cd9df875/vmlinux-71b1543c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c9547057857d/bzImage-71b1543c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4c493dcd5a68168a94b2@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc5-syzkaller-00031-g71b1543c83d6 #0 Not tainted
+------------------------------------------------------
+syz-executor.1/17062 is trying to acquire lock:
+ffff88806b638488 (&of->mutex){+.+.}-{3:3}, at: kernfs_seq_start+0x53/0x3b0 fs/kernfs/file.c:154
+
+but task is already holding lock:
+ffff88806fe359e0 (&p->lock){+.+.}-{3:3}, at: seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #4 (&p->lock){+.+.}-{3:3}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
+       call_read_iter include/linux/fs.h:2104 [inline]
+       copy_splice_read+0x662/0xb60 fs/splice.c:365
+       do_splice_read fs/splice.c:985 [inline]
+       splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
+       do_sendfile+0x515/0xdc0 fs/read_write.c:1301
+       __do_sys_sendfile64 fs/read_write.c:1362 [inline]
+       __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1348
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #3 (&pipe->mutex){+.+.}-{3:3}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       iter_file_splice_write+0x335/0x14e0 fs/splice.c:687
+       do_splice_from fs/splice.c:941 [inline]
+       do_splice+0xd77/0x1880 fs/splice.c:1354
+       __do_splice fs/splice.c:1436 [inline]
+       __do_sys_splice fs/splice.c:1652 [inline]
+       __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (sb_writers#4){.+.+}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1664 [inline]
+       sb_start_write+0x4d/0x1c0 include/linux/fs.h:1800
+       mnt_want_write+0x3f/0x90 fs/namespace.c:409
+       ovl_create_object+0x13b/0x370 fs/overlayfs/dir.c:629
+       lookup_open fs/namei.c:3497 [inline]
+       open_last_lookups fs/namei.c:3566 [inline]
+       path_openat+0x1425/0x3240 fs/namei.c:3796
+       do_filp_open+0x235/0x490 fs/namei.c:3826
+       do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_sys_openat fs/open.c:1437 [inline]
+       __se_sys_openat fs/open.c:1432 [inline]
+       __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+       inode_lock_shared include/linux/fs.h:805 [inline]
+       lookup_slow+0x45/0x70 fs/namei.c:1708
+       walk_component+0x2e1/0x410 fs/namei.c:2004
+       lookup_last fs/namei.c:2461 [inline]
+       path_lookupat+0x16f/0x450 fs/namei.c:2485
+       filename_lookup+0x256/0x610 fs/namei.c:2514
+       kern_path+0x35/0x50 fs/namei.c:2622
+       lookup_bdev+0xc5/0x290 block/bdev.c:1136
+       resume_store+0x1a0/0x710 kernel/power/hibernate.c:1235
+       kernfs_fop_write_iter+0x3a1/0x500 fs/kernfs/file.c:334
+       call_write_iter include/linux/fs.h:2110 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0xa84/0xcb0 fs/read_write.c:590
+       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&of->mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       kernfs_seq_start+0x53/0x3b0 fs/kernfs/file.c:154
+       seq_read_iter+0x3d0/0xd60 fs/seq_file.c:225
+       call_read_iter include/linux/fs.h:2104 [inline]
+       copy_splice_read+0x662/0xb60 fs/splice.c:365
+       do_splice_read fs/splice.c:985 [inline]
+       splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
+       do_sendfile+0x515/0xdc0 fs/read_write.c:1301
+       __do_sys_sendfile64 fs/read_write.c:1362 [inline]
+       __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1348
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  &of->mutex --> &pipe->mutex --> &p->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&p->lock);
+                               lock(&pipe->mutex);
+                               lock(&p->lock);
+  lock(&of->mutex);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.1/17062:
+ #0: ffff88802d049468 (&pipe->mutex){+.+.}-{3:3}, at: splice_file_to_pipe+0x2e/0x500 fs/splice.c:1292
+ #1: ffff88806fe359e0 (&p->lock){+.+.}-{3:3}, at: seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
+
+stack backtrace:
+CPU: 0 PID: 17062 Comm: syz-executor.1 Not tainted 6.9.0-rc5-syzkaller-00031-g71b1543c83d6 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ kernfs_seq_start+0x53/0x3b0 fs/kernfs/file.c:154
+ seq_read_iter+0x3d0/0xd60 fs/seq_file.c:225
+ call_read_iter include/linux/fs.h:2104 [inline]
+ copy_splice_read+0x662/0xb60 fs/splice.c:365
+ do_splice_read fs/splice.c:985 [inline]
+ splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
+ do_sendfile+0x515/0xdc0 fs/read_write.c:1301
+ __do_sys_sendfile64 fs/read_write.c:1362 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1348
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f50be67dea9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f50bf41a0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f50be7ac1f0 RCX: 00007f50be67dea9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000005
+RBP: 00007f50be6ca4a4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f50be7ac1f0 R15: 00007ffe78344d68
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
