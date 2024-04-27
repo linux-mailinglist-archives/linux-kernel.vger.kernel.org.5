@@ -1,198 +1,124 @@
-Return-Path: <linux-kernel+bounces-160882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DE088B43F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:34:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2E28B4402
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D6FE1C21867
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:34:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791CD1F22A9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 04:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7D83E493;
-	Sat, 27 Apr 2024 03:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE783C485;
+	Sat, 27 Apr 2024 04:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LG27BsGx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="OOdDeghY"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5746D3BBF8;
-	Sat, 27 Apr 2024 03:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4241381CC
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714188848; cv=none; b=DxFwVkEelypsuIghtoYR+wGECpaH0G2QhyEk27w6yD/GdWxOrhfqGVv7YLTMylU9GHTdEj/MRwjeIwqdIPXfc5AVV32EKp7PpBcxlVEcfCtFPTmpAjSd3uAs1qPm/bUZ4HrOdEFNA0PADF283ZLasOHN63l1IdM7lEIRPbsShM8=
+	t=1714190433; cv=none; b=t1dbqw5AA75lTt68CxP+7dmq6fy0wU+olQyOpl6UHY3yYTTB5RVoWip5UeQwTqCTzyYFiTH6FTgAJ/CIPSxYYqIakBU2cet0imrKx6XimMG7G2yzjjCajd6c3PrNj7MsrUg8yYdFWGezP5yaewbCixhpjNzizdfmIh0CiRgCDuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714188848; c=relaxed/simple;
-	bh=yakISgSJkVeGETZpCxJ2REBgvyi3LjNiXYh23/SQhB4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TK/eotwvbJtdnet6a7+NXM3DOXgIWvbqiLOLHZjaxW59bx27YU2seVewQ93rj43Nho2P7/CW6u924cVXZ03fZ6lVLyCsFfkrAQDMdqcx3E1Fm5YsYB5CheuRgwGKXTFJDBApDWGhLcAYzgR2/itLCCk/C6fhzp8lo5ssj84b2Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LG27BsGx; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714188847; x=1745724847;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=yakISgSJkVeGETZpCxJ2REBgvyi3LjNiXYh23/SQhB4=;
-  b=LG27BsGxmhsSvG+Ttr3RAeO6MW1kZWCs9LIsMoaj8ftFHGeu+TkOlDQF
-   RfQFIjBol5smoAD/07uw9GGqsZhh0SpmhpIq/4qsnmQb81jaAAQKqS5wc
-   +Y/QDoKqhcdl91cz4k86972xqDMK2Q2D83eKTXr3p/Yj4k2+iq41R6I/G
-   +0xHC9W5Yfuxw+evApfgbngPtSszcJ3cQWg53eY0yrWii3TE3FqLQPhYh
-   B/IlNEYn8TXqQMNLajULTsXV1yMh5AG7LpuQP2o1viJhrlcN68DYtWTC1
-   nKELmRGXDDhVOlwXjBm4VqXOfTRjv9Ih1s4jVp2Epak8WocAFrQCvRE8O
-   g==;
-X-CSE-ConnectionGUID: kpg6tla+SVmbe8k2ypc/Sw==
-X-CSE-MsgGUID: cj3ypI2uRMa1ujb2AqHBYQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="20620073"
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="20620073"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 20:34:05 -0700
-X-CSE-ConnectionGUID: EWzyMmNzT2Kse7R8/H6fcA==
-X-CSE-MsgGUID: l7XurTIXTi6Ht2h+w67V1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="25593991"
-Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.65.80])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 20:34:04 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Fri, 26 Apr 2024 20:34:01 -0700
-Subject: [PATCH v4 2/2] cxl/pci: Process CPER events
+	s=arc-20240116; t=1714190433; c=relaxed/simple;
+	bh=sJtvoDhIP4YEm0QlGbaEJ5BUzGmdsLXCnyaF1NsEp1Y=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:MIME-Version; b=BnKxf314LPswF5Wo5OL3LV7Ezgiww27LdhGH1GOx8nSvt9U0a9koxLIVb8SZo8jgCp6KCQSc3zVsL/0EUEYfqrArI5I3FLussquyeDW96m7Bh58hXCUtPzHN7IfwiQk95b8TeynzxcHNgYgckHAui/qPgbepoJMRxcy1dZ4u53U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=OOdDeghY; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1714190429;
+	bh=sJtvoDhIP4YEm0QlGbaEJ5BUzGmdsLXCnyaF1NsEp1Y=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
+	b=OOdDeghYMYvaUCy+MTrdb7XoT7Zaie53pTl0Huk4DUY4L5ZIAnidGuahtW2mrQ78Q
+	 DrX1nDEdNSVIJr2jazrr6fEnuHjTW11pQ9APrCur2D3kLepNZVgZUDp3wQ7/1ntuPB
+	 aasnR/wzyrxU91CA3BqwnarxJaE9l8f/kHlTy7wI=
+Received: from [IPv6:240e:358:1198:0:dc73:854d:832e:4] (unknown [IPv6:240e:358:1198:0:dc73:854d:832e:4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 9F6B767168;
+	Sat, 27 Apr 2024 00:00:26 -0400 (EDT)
+Message-ID: <dfdc9823a0b89c8582587fa75448bba5c3a7e15e.camel@xry111.site>
+Subject: Re: [PATCH] LoongArch: Provide __lshrti3, __ashrti3, and __ashrti3
+From: Xi Ruoyao <xry111@xry111.site>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>
+In-Reply-To: <CAAhV-H74cQ4XdDez5PipCxUZTpfS=CA6azL5qob=jGGebobD6g@mail.gmail.com>
+References: <20240426121442.882029-1-xry111@xry111.site>
+	 <CAAhV-H74cQ4XdDez5PipCxUZTpfS=CA6azL5qob=jGGebobD6g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 27 Apr 2024 12:00:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240426-cxl-cper3-v4-2-58076cce1624@intel.com>
-References: <20240426-cxl-cper3-v4-0-58076cce1624@intel.com>
-In-Reply-To: <20240426-cxl-cper3-v4-0-58076cce1624@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>, 
- Dan Williams <dan.j.williams@intel.com>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>, 
- Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, 
- Shiju Jose <shiju.jose@huawei.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, 
- Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, Ard Biesheuvel <ardb@kernel.org>, 
- linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-cxl@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714188842; l=2978;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=yakISgSJkVeGETZpCxJ2REBgvyi3LjNiXYh23/SQhB4=;
- b=W4amnZPGdmLSTt51xzju5mfp0cF6ITW+k1xlZ98cF7+XCODqQgvaphlKr3cYgwipg/WTl8tKa
- TvCcAa9FWByAFOxATABkxFUwwdmWbmgzbB7ZBw5dTDZGt1TBenfIwEZ
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+User-Agent: Evolution 3.52.1 
 
-If the firmware has configured CXL event support to be firmware first
-the OS will receive those events through CPER records.  The CXL layer has
-unique DPA to HPA knowledge and existing event trace parsing in
-place.[0]
+On Sat, 2024-04-27 at 10:50 +0800, Huacai Chen wrote:
+> Hi, Ruoyao,
+>=20
+> I don't think #ifdef CONFIG_ARCH_SUPPORTS_INT128 is needed here.
+> S390/ARM64/RISCV all built it unconditionally.
 
-Add a CXL CPER work item and register it with the GHES code to process
-CPER events.
+The problem here is RISCV and ARM64 are using an incorrect prototype for
+these functions in asm-prototypes.h:
 
-Link: http://lore.kernel.org/r/cover.1711598777.git.alison.schofield@intel.com [0]
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
-Changes:
-[iweiny: pick up tag]
-[djbw: use proper link format]
----
- drivers/cxl/pci.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 70 insertions(+), 1 deletion(-)
+long long __lshrti3(long long a, int b);=20
+long long __ashrti3(long long a, int b);=20
+long long __ashlti3(long long a, int b);=20
 
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 2ff361e756d6..74876c9835e8 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -974,6 +974,75 @@ static struct pci_driver cxl_pci_driver = {
- 	},
- };
- 
--module_pci_driver(cxl_pci_driver);
-+#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-+static void cxl_handle_cper_event(enum cxl_event_type ev_type,
-+				  struct cxl_cper_event_rec *rec)
-+{
-+	struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-+	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-+	enum cxl_event_log_type log_type;
-+	struct cxl_dev_state *cxlds;
-+	unsigned int devfn;
-+	u32 hdr_flags;
-+
-+	pr_debug("CPER event %d for device %u:%u:%u.%u\n", ev_type,
-+		 device_id->segment_num, device_id->bus_num,
-+		 device_id->device_num, device_id->func_num);
-+
-+	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-+	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-+					   device_id->bus_num, devfn);
-+	if (!pdev)
-+		return;
-+
-+	guard(device)(&pdev->dev);
-+	if (pdev->driver != &cxl_pci_driver)
-+		return;
-+
-+	cxlds = pci_get_drvdata(pdev);
-+	if (!cxlds)
-+		return;
-+
-+	/* Fabricate a log type */
-+	hdr_flags = get_unaligned_le24(rec->event.generic.hdr.flags);
-+	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-+
-+	cxl_event_trace_record(cxlds->cxlmd, log_type, ev_type,
-+			       &uuid_null, &rec->event);
-+}
-+
-+static void cxl_cper_work_fn(struct work_struct *work)
-+{
-+	struct cxl_cper_work_data wd;
-+
-+	while (cxl_cper_kfifo_get(&wd))
-+		cxl_handle_cper_event(wd.event_type, &wd.rec);
-+}
-+static DECLARE_WORK(cxl_cper_work, cxl_cper_work_fn);
-+
-+static int __init cxl_pci_driver_init(void)
-+{
-+	int rc;
-+
-+	rc = pci_register_driver(&cxl_pci_driver);
-+	if (rc)
-+		return rc;
-+
-+	rc = cxl_cper_register_work(&cxl_cper_work);
-+	if (rc)
-+		pci_unregister_driver(&cxl_pci_driver);
-+
-+	return rc;
-+}
-+
-+static void __exit cxl_pci_driver_exit(void)
-+{
-+	cxl_cper_unregister_work(&cxl_cper_work);
-+	cancel_work_sync(&cxl_cper_work);
-+	pci_unregister_driver(&cxl_pci_driver);
-+}
-+
-+module_init(cxl_pci_driver_init);
-+module_exit(cxl_pci_driver_exit);
- MODULE_LICENSE("GPL v2");
- MODULE_IMPORT_NS(CXL);
+where "long long" is not 128-bit.  Despite this seems working for RISC-V
+and ARM64 I really dislike it.
 
--- 
-2.44.0
+S390 seems assuming CONFIG_ARCH_SUPPORTS_INT128 is always true, but I
+don't think we can assume it too (at least it'll likely to be false for
+LA32, so doing so will cause trouble when we add LA32 support).
 
+So if we don't want to check CONFIG_ARCH_SUPPORTS_INT128 and still use a
+correct prototype, we'll do:
+
+diff --git a/arch/loongarch/include/asm/asm-prototypes.h b/arch/loongarch/i=
+nclude/asm/asm-prototypes.h
+index 51f224bcfc65..0a57db01116d 100644
+--- a/arch/loongarch/include/asm/asm-prototypes.h
++++ b/arch/loongarch/include/asm/asm-prototypes.h
+@@ -7,8 +7,6 @@
+ #include <asm/ftrace.h>
+ #include <asm-generic/asm-prototypes.h>
+=20
+-#ifdef CONFIG_ARCH_SUPPORTS_INT128
+-__int128_t __ashlti3(__int128_t a, int b);
+-__int128_t __ashrti3(__int128_t a, int b);
+-__int128_t __lshrti3(__int128_t a, int b);
+-#endif
++struct { u64 lo, hi; } __ashlti3(u64 lo, u64 hi, int b);
++struct { u64 lo, hi; } __ashrti3(u64 lo, u64 hi, int b);
++struct { u64 lo, hi; } __lshrti3(u64 lo, u64 hi, int b);
+diff --git a/arch/loongarch/lib/Makefile b/arch/loongarch/lib/Makefile
+index f61af161f16e..23600c128e05 100644
+--- a/arch/loongarch/lib/Makefile
++++ b/arch/loongarch/lib/Makefile
+@@ -10,4 +10,4 @@ obj-$(CONFIG_CPU_HAS_LSX) +=3D xor_simd.o xor_simd_glue.o
+=20
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) +=3D error-inject.o
+=20
+-obj-$(CONFIG_ARCH_SUPPORTS_INT128) +=3D tishift.o
++obj-$(CONFIG_64BIT) +=3D tishift.o
+
+Is this really better than checking CONFIG_ARCH_SUPPORTS_INT128?  I
+don't know...
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
