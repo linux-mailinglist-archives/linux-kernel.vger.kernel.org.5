@@ -1,86 +1,183 @@
-Return-Path: <linux-kernel+bounces-160961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65848B4528
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:45:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC148B452C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:47:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4965B220AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:45:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C4281F22635
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F61241C84;
-	Sat, 27 Apr 2024 08:45:06 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316EE3C062;
+	Sat, 27 Apr 2024 08:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="geIda5Gu"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938BD8BFC
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 08:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F1B3D387
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 08:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714207506; cv=none; b=TjKnwKN3UBsf03CpBXS0JfC50s2cABr8MVhKYUhqbf2Uc0QCWpP27Ky9BgBM1y0JYqXv+1PtNkEvwEANU/wW27IkK7VGh1yR4fNYRiwdiPda0IQmIa2nuSZUM3aCiuNdgxTzB5DfxjClt7hwr/dpOw2y9FuTNdaRpOu1k4hliqw=
+	t=1714207646; cv=none; b=b87UR986XPdy4vKwjudJfPPBqkipctkcC5zWcDF2YbbQbdhpcwvDIfzQ2C31j2HH6G6Qi1Qid3rktXpaYO75RG8EAynriWSshigZrp4XT8VTEwy0NqR1lx/1eDDguDaR0L+4SrUUBXYw0zHbUXj80zxy5mXsLcOK7QtM1NDsWKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714207506; c=relaxed/simple;
-	bh=DM9jX6G7gd4KPBusHIWo7AiJ+eVeRcVXrQUk1Khfb20=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Rcd8KVNdzhMVTMIAv08VrCo7iLE09bW2MQI7IZphGHuSQ9nDjR27UFSoP+naw07lc1xBo8enOCY2rrJeTUM3R4Ai08gmsaxM+4DYuCEpluN7lozpUqirkN00EJwIevTngV2W1/He9kAeEMENct+HVqeBQos9O2iGWuIYji4cRWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36c1127c5deso30692285ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:45:04 -0700 (PDT)
+	s=arc-20240116; t=1714207646; c=relaxed/simple;
+	bh=opzsk3KbWdUcsDAGrr0mjmV+Ees95gaFUnLHAk7uYGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dFQJJoEGXOijSwNQnhZFr4JMMkB77vkisUDPFAzzm73+XF9Vglm4c9c3woJtD/B68kDp7fvrLiGhebthCaCbRIoNMIvFIStm82weEnPMoQPbHN8YUaodd17S0u7oi7oj+wfXufuXN7hb+GTSXkzFzDFk4aE+EQzq/fHNiEDLDDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=geIda5Gu; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e3ff14f249so22133995ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714207644; x=1714812444; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RrloM48uDUpeaAw5cm9XDyBz0ypDNTLMvn080FMn1GA=;
+        b=geIda5GutSf1aGdh8HLQn9G1mmZMsXJ24MlRYf6yVorGyGIpdfpDagyNJXCPL8N2pH
+         dcATlkQyywzzLs4T3TSsgG1c64tU/Fifo9PBQfqAC5YdB7xZZNJoLvhrnDbvS6ALLiJZ
+         4ScRydLowlRMG4ETwJn+t9G2goFWXrD3T9PtmbVPO3ht5kJXARDrxysfxxzezwfIHoQu
+         hDaUKs4H09rAlHc6+9ryLZMocpv2PJEeTp/Cvkx8s84Sy20zzkcqdjTKQtZxfGX9xJLF
+         wOARsda8MA/AuFK1q6XNqeXGG9gjec++sdAcGW66dP7INyP2GsyjGjQ71+mntAf3Uy7b
+         ITcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714207503; x=1714812303;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1714207644; x=1714812444;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AVEXpsLW2+IZw0Si3tq/O6jflvI7ZAA2BBSupAQv0ls=;
-        b=lcjum3CpNmbbu4ktjV+0xr1kAbJvpDNsQk5nEZOl9ybrzzyisjsk/lWxZqcAYWyWk/
-         SFaTl1rGcGcJWvPn8JEH+MgjWdzboshBxsiBBEf/Ui6T/J1Yc+5KtQwuclnIT7MkXfmf
-         krRS4KMsR4nZ/fJI88YUVaqJOhtyQwYFCY8GrwhGl4cO/O0pOltsDIyjIuIAisYqjEkg
-         AlNTDSHI8SiJ9V1aGTs4OmbSEt6tcWxJq4J1mNQKAua9JIAxTy8xfpcTOC4lrKLK7/P6
-         uu3wGpJJWSP/nstCvLPvbvxBxAChHBUMvCCnq25QD43ye5dL/E3cqrocV6eob8gVEdJe
-         TnWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWj4aXrfYXkkiBSkeqgw844GXhji3F8lYml4PhHTRuTTlzOpvyXXqi7YJ3wkI04nZTOlsiOUaIoLS9bBNZq2FxQG+QoS5CdS3xAyCfl
-X-Gm-Message-State: AOJu0YzMnkqLSFK5963C4aY64W0pW6Vu13+l8A30wV1ml6DVmGgVyGl6
-	oxQ//3Qg6CC0HlCf6nQjPOKAHYN7uDjxQ+DiTIrmaz0IEK/OtzlsW/eXSMFj2WE4X/xvLytvZK+
-	mbCGF+7qIK4cKCCgDVlmtCN/OcBPHceh/HLevFy9BBBYVJzu+zgkZJ6U=
-X-Google-Smtp-Source: AGHT+IG9wvyJJlVzTozPpPWigGgSs/dKpCCT1lj9or4J1Dyvuq3M5mlz4DUk4K6HROsiojL6x4DHbQNVlSiWQZQDgV2NmZIDMke6
+        bh=RrloM48uDUpeaAw5cm9XDyBz0ypDNTLMvn080FMn1GA=;
+        b=S/EDzz66APqIU+Yv2fGhO18zlQnU/9Ah6oa6F39R5IlzVyRfyCTqxzACvzbgcnHsrW
+         r01UBF6fY9r4FBeemlhx4f3mGyaLKNcdqVypZcAsqOVhPTGNFT6CUv2lv9Ix+DqwQIc7
+         LreRJ8C/dz60HAjWhyez69ViJ3dq7I1Tlv7aDq9emHwd/DT8zSJ1jydF/O7QNL4Uv50w
+         k2MttGGMCjCfSlqXZS1vlImHcQiFNdhEYHVZNlP6Konx8CSWtXpzOWqcj1AfLBmsuM9y
+         Hn13WI+zKJzWXRM5gNKSyf35saC2+ui3QL6IznCAVJvnW7xAeptYwJn1mbFFo1KwIv0q
+         vb9w==
+X-Forwarded-Encrypted: i=1; AJvYcCULFWs2akURsbJCQCXwmZRRqio5nNcIXGRjqmTu1AocNPC68CAV+SLnZfSD47hs926AbifC301g/m6bOjB8+wt7ui6DyhsEj/BQBudD
+X-Gm-Message-State: AOJu0Yxn0WobKp4UYte2bABG8w9QxX/fTkhGRu8eR/mXB7WsyQbXYo2N
+	6ASy3Zqa6pE5hTSWyl6/d3BEXn4PuxCTQGJTb2LF+a/Mpv1BuP7pEVIWsB+naQ==
+X-Google-Smtp-Source: AGHT+IGesKZO5rYvQ6ydH5sTslIBruP1og5SUrJwUccA8/imWknzBveKZuuJwbrYkycK+keVpUpZ5g==
+X-Received: by 2002:a17:903:228a:b0:1e0:b60f:5de3 with SMTP id b10-20020a170903228a00b001e0b60f5de3mr7831646plh.7.1714207644230;
+        Sat, 27 Apr 2024 01:47:24 -0700 (PDT)
+Received: from thinkpad ([120.60.53.237])
+        by smtp.gmail.com with ESMTPSA id j10-20020a17090276ca00b001dd69aca213sm16542547plt.270.2024.04.27.01.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 01:47:23 -0700 (PDT)
+Date: Sat, 27 Apr 2024 14:17:07 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Aleksandr Mishin <amishin@t-argos.ru>
+Cc: Rob Herring <robh@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Niklas Cassel <cassel@kernel.org>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH v2] PCI: dwc: keystone: Fix potential NULL dereference
+Message-ID: <20240427084707.GE1981@thinkpad>
+References: <20240329051947.28900-1-amishin@t-argos.ru>
+ <20240425092135.13348-1-amishin@t-argos.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a4f:b0:36b:1b8b:75f4 with SMTP id
- u15-20020a056e021a4f00b0036b1b8b75f4mr63094ilv.2.1714207503710; Sat, 27 Apr
- 2024 01:45:03 -0700 (PDT)
-Date: Sat, 27 Apr 2024 01:45:03 -0700
-In-Reply-To: <20240427081536.3770-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000548fd70617100951@google.com>
-Subject: Re: [syzbot] [net?] [bpf?] possible deadlock in sock_hash_delete_elem (2)
-From: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240425092135.13348-1-amishin@t-argos.ru>
 
-Hello,
+On Thu, Apr 25, 2024 at 12:21:35PM +0300, Aleksandr Mishin wrote:
+> In ks_pcie_setup_rc_app_regs() resource_list_first_type() may return
+> NULL which is later dereferenced. Fix this bug by adding NULL check.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
+> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> ---
+> v2: Add return code processing
+> 
+>  drivers/pci/controller/dwc/pci-keystone.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 844de4418724..5c6786d9f3e9 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -382,17 +382,22 @@ static void ks_pcie_clear_dbi_mode(struct keystone_pcie *ks_pcie)
+>  	} while (val & DBI_CS2);
+>  }
+>  
+> -static void ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
+> +static int ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
+>  {
+>  	u32 val;
+>  	u32 num_viewport = ks_pcie->num_viewport;
+>  	struct dw_pcie *pci = ks_pcie->pci;
+>  	struct dw_pcie_rp *pp = &pci->pp;
+> -	u64 start, end;
+> +	struct resource_entry *ft;
+>  	struct resource *mem;
+> +	u64 start, end;
+>  	int i;
+>  
+> -	mem = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM)->res;
+> +	ft = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> +	if (!ft)
+> +		return -EINVAL;
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+-ENODEV please.
 
-Reported-and-tested-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
+- Mani
 
-Tested on:
+> +
+> +	mem = ft->res;
+>  	start = mem->start;
+>  	end = mem->end;
+>  
+> @@ -403,7 +408,7 @@ static void ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
+>  	ks_pcie_clear_dbi_mode(ks_pcie);
+>  
+>  	if (ks_pcie->is_am6)
+> -		return;
+> +		return 0;
+>  
+>  	val = ilog2(OB_WIN_SIZE);
+>  	ks_pcie_app_writel(ks_pcie, OB_SIZE, val);
+> @@ -420,6 +425,8 @@ static void ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
+>  	val = ks_pcie_app_readl(ks_pcie, CMD_STATUS);
+>  	val |= OB_XLAT_EN_VAL;
+>  	ks_pcie_app_writel(ks_pcie, CMD_STATUS, val);
+> +
+> +	return 0;
+>  }
+>  
+>  static void __iomem *ks_pcie_other_map_bus(struct pci_bus *bus,
+> @@ -814,7 +821,10 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
+>  		return ret;
+>  
+>  	ks_pcie_stop_link(pci);
+> -	ks_pcie_setup_rc_app_regs(ks_pcie);
+> +	ret = ks_pcie_setup_rc_app_regs(ks_pcie);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	writew(PCI_IO_RANGE_TYPE_32 | (PCI_IO_RANGE_TYPE_32 << 8),
+>  			pci->dbi_base + PCI_IO_BASE);
+>  
+> -- 
+> 2.30.2
+> 
 
-commit:         b2ff42c6 Merge tag 'for-netdev' of https://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=141a3d30980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=118d1937180000
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+மணிவண்ணன் சதாசிவம்
 
