@@ -1,115 +1,111 @@
-Return-Path: <linux-kernel+bounces-160957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8DE8B451D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:21:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D1D8B4521
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55B3C1C21B0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2FC628377F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABC144C6F;
-	Sat, 27 Apr 2024 08:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FED44C6A;
+	Sat, 27 Apr 2024 08:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yOxCDpYc"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mQVVC0bJ"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CA73C087
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 08:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73D31EB2F;
+	Sat, 27 Apr 2024 08:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714206094; cv=none; b=I6fKb3MdPQtqNLAqHTXzYbCiThJlHAoQfm6wORgrkyqo27RGycX2nZToZKClR6XubDnW2IJ+K/swN6ENy1wvZOtWVl6BIAwlS9EE99AAr1uy2hZE0fp9NSK1cQUmXyloiZxGMAZ6ICaa30whqSiSRC2AGiX4wPf7Xb3UYkOZtzA=
+	t=1714206726; cv=none; b=GidF9MTjaKvNBkGQmAx5K3k08niB7nQmEWckrBobyEBCNeKnvMF7dbgbI0K8AZTaXqpq+E8MHvAc3qvaaZ2NBeZGFZyn8bwmbo/23cPOZZBLl2tUl7/Yj5jlCAhtq4OoNspsqLTa0Voi+BQeT8gdOJZYcYVOYxy/LBFzx+zOR5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714206094; c=relaxed/simple;
-	bh=Ej9iEcTeQmONNGUTtMUCi2YDLUx9RZ7O8vx1TcL+y1k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aL3KC/lJFwPLK9lUnb38HJT+gX289Pjf1bcDMkQ0rSnOviBHwdnZYMAOkb3Sdcsw70GQEejoHXfqW6vae/kPgSRlmvJB6JahsKUEm2DiEn78E1TzP6WQsgNeufkmScuCv7t8sgk/FZW4bhaVOre2pFDoZDB2pJ82UfzubqqSEYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yOxCDpYc; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de54b28c3b7so3315418276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:21:32 -0700 (PDT)
+	s=arc-20240116; t=1714206726; c=relaxed/simple;
+	bh=LQKtQFGfICkhWNShCYtxeZrqQ+JxSUjc4rQpjDb6YnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GYRoAtBEiWrjRJMaB/BOYhMNc+lw5ODhdoPiru5wt20GactG2kqg9xseRmCw1TXn7tgewYlqPevfli6blb8VruDXnY6AU2Em7X+7VHlciIbtI+NvdyamhQ1rYwmBQUV7Z2oytmmTmyos6H8Wa7L+ER7oNaIqWZD0dLnX1x4DZeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mQVVC0bJ; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2b0fb1b6acfso43543a91.3;
+        Sat, 27 Apr 2024 01:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714206091; x=1714810891; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Loyri7BNKemKJvKnQBmqOrR6kXCmKWbyQbDcLqDVreY=;
-        b=yOxCDpYc0TBkEzzM37hw8owm4VPlfXl0FAFmvNfQ9hsZ5BD8eRxXAGWEraAxqskYW0
-         l6TphUFf94xujet/w5o52s5yQJTQQjrjiSJ1+rwgzV4TYKTFPww28MiMk3X0D5ZdWx82
-         Q1/OnDSwl76Y3cv1CkS9RpEJDTjMk7QMOcAmW9RttmAdSFNyZviGn6DWJUnOmh6Sm5VW
-         bI3joo7s3Rfte7SzlP8a/m8R89er7o0aalvrtAOgYBgulcwpPwOjh61sb9kGn+tIsRAq
-         LLCuJuPB2WFt6IWQoX/1I+yKWg+Lpx1OI1r8kBkiOCcm5URFjajstdJDty4LFoQYHXmV
-         0DjQ==
+        d=gmail.com; s=20230601; t=1714206724; x=1714811524; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BQaOFc7ubwZ2D96Eqb24S0fATFEthxSZzvObmrxGhMw=;
+        b=mQVVC0bJ2y9cB+bYhlRgntAzA+MUxpSoLxJMIj+chT+5/zuFvaFYMdos8TKnOTKxHx
+         mBOI6r8m0LdNo3HF2dSvbc6Qx+g3QhaCW7oqyTBINMV61WDw6LPhtXUXZgScyqmYKdoy
+         ZtIZSeI2YT7z13baCYhYdh0lYAGyNHf0Hp/rnY0bldr7rWquyuuruMCavpKLxaa5HLW3
+         NYxOqJUinSEyGpS/8vbO6uEmrnM76TmOEa8wXIjYHzEUjuOFgHyQ25cPF23uPm52QQ8f
+         nwCPly17o1GvCkw0X3i7/KGwKt/SYBxZKYhodpiJslzi33ukPFrSuycjHuYS/5WHxrpG
+         MJ4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714206091; x=1714810891;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Loyri7BNKemKJvKnQBmqOrR6kXCmKWbyQbDcLqDVreY=;
-        b=dnNGPATqubO9336Mub+Ae6hBt3GMLTL5B+feGhx2mZVVTo1UDroOnbx7MT5YIEumN+
-         OnKcyufRHz6/2yTh9gxg+HFWW3TuJD+LtOd+krGPjlxwjsnWeVFQUXgyBgCiMxNkja/+
-         6/jLg3zAoSMrn1Onc6sZooIn34wFD80LqBHcK1fdF0UhA4DvRPXEc5U9ByTrw2V/M7QF
-         Bn6csxfe35RWDUtiIDoYBXGTMja24zF5ePKMzIRYlGUGwLDHsb1uI4S1+bxUdUeNJbPQ
-         t1sPgiPVXSNm9E58ocC1DQFoKwPNTJi3fz1y50f66bccLULQlJ0v/4CuuAVGb7lVl3Jf
-         R0jw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvqIjaPQD0IVZfhjP3QCtFxWKeLoNHhOJHH7Zezmw+Ns5ouO/v3qi0J2CuMdkTdIu6+FFflhnQyDHa7R9r5TSag+qf9sf6lMZxUlQG
-X-Gm-Message-State: AOJu0YwQZW3roi/+VCWqU81w5S+xvxk43Yz5D1dGIJ5vPRiwkiC7JDt4
-	d841yl6AT4IsFXZmjAEilXjHrAaa8S+Oyu9vcugy/F9HZlWx3dDxFz8XyUe4XCApBhnGP8tahrE
-	SF2monOHtfMSW3MTg3XqAaJaqjloERMb0En8bahh3gUE3/3eS
-X-Google-Smtp-Source: AGHT+IEn3Ad/ZJHcs2toHD7qGUMCVU/CiYInlTR5yJQDnIsDt7VZa07LmAzWNkSAfs0Qmk/q6FvzgnJYlcv5baycPvY=
-X-Received: by 2002:a25:aa11:0:b0:de5:526d:c9c9 with SMTP id
- s17-20020a25aa11000000b00de5526dc9c9mr4792443ybi.61.1714206091431; Sat, 27
- Apr 2024 01:21:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714206724; x=1714811524;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BQaOFc7ubwZ2D96Eqb24S0fATFEthxSZzvObmrxGhMw=;
+        b=XhvVVaCBDOJQ5H+7ERSFU2/ETskI5hZljUgwWM94Jxh1GNNhhGNRTCF2TeuvPZOknU
+         WAJx97/idkHDbBWXFRAsuY3dRawj+fOWkUjWOjmDn80yKR+bvijJCXiACOHeGBye8tTD
+         pV+2KtK1wgRuf9EUYCC59ChEehuqk27h1dfzSj8hLQvtjURAQiYMLF13IDppKuCmJxgX
+         +16R4a7134rSMpoBd7Ic7jZ1zS9blebj7Szl5zIdN0VWDu2OrJf+/uPVio+9KMd4D+Vu
+         2Yr6LVwC+3hXQFe/dWcntkF1dFvR42Ac17klnDBFOM+qtTgusbm5YZqTxPcka4uLGOcO
+         59jw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFxw+yd1TzhtOI5zPuJbKaJYS9FZdUTvXx/j413tdFF2Vz8Pye3bszPBOZLA8PIJ6ap5tv6weo833JxxPpKa8A0u1JRqTjn6BTuH6NftE1GL+0uh2kNFosGjpEQtBnJshMof4/3/F4ovTa10hyYaq5BLUSNjlKc5dt
+X-Gm-Message-State: AOJu0YzQC9qz0++LSNG/3gisiOj7rHp4ENqG6iMezbcMC6Kw8yAbfpYx
+	qUaBev2kg2qOCVBuvRdNkZokyjTXt6rsIDHmz/wJzKed9T/t8Ca4
+X-Google-Smtp-Source: AGHT+IEZF2Xf+B92YJplkQkqbAqfvWYJPJ6TiiW+JyQHA84zWSjJiIW1kQjXfvXM919Xoqk+2Dr8gA==
+X-Received: by 2002:a17:902:ec89:b0:1e4:344e:768e with SMTP id x9-20020a170902ec8900b001e4344e768emr5647180plg.5.1714206723901;
+        Sat, 27 Apr 2024 01:32:03 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360 ([2001:288:7001:2703:3131:67e1:1ef:12b2])
+        by smtp.gmail.com with ESMTPSA id kf5-20020a17090305c500b001eb0daff646sm2324836plb.109.2024.04.27.01.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 01:32:03 -0700 (PDT)
+Date: Sat, 27 Apr 2024 16:31:58 +0800
+From: I Hsin Cheng <richard120310@gmail.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] tcp_bbr: replace lambda expression with bitwise
+ operation for bit flip
+Message-ID: <Ziy3/k93gBrykA1t@vaxr-BM6660-BM6360>
+References: <20240426152011.37069-1-richard120310@gmail.com>
+ <CANn89iKenW5SxMGm753z8eawg+7drUz7oZcTR06habjcFmdqVg@mail.gmail.com>
+ <Zivd4agQ8D6rUKvt@vaxr-BM6660-BM6360>
+ <20240426201902.GQ2118490@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202404270534.8VgyE2XE-lkp@intel.com> <20240427004819.GA24436@rigel>
-In-Reply-To: <20240427004819.GA24436@rigel>
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Sat, 27 Apr 2024 10:21:20 +0200
-Message-ID: <CACMJSetLpWn5H+Dk9kip5oVu5gG8fKB=PPHDRz901-JeUV1LcQ@mail.gmail.com>
-Subject: Re: WARNING: modpost: vmlinux: section mismatch in reference:
- ip_md_tunnel_xmit+0x9e (section: .text) -> .LBB102 (section: .init.text)
-To: Kent Gibson <warthog618@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426201902.GQ2118490@ZenIV>
 
-On Sat, 27 Apr 2024 at 02:48, Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Sat, Apr 27, 2024 at 05:29:42AM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   3022bf37da50ce0ee3ba443ec5f86fa8c28aacd0
-> > commit: 83092341e15d0dfee1caa8dc502f66c815ccd78a gpio: cdev: fix missed label sanitizing in debounce_setup()
-> > date:   3 weeks ago
-> > config: riscv-randconfig-r021-20230409 (https://download.01.org/0day-ci/archive/20240427/202404270534.8VgyE2XE-lkp@intel.com/config)
-> > compiler: riscv32-linux-gcc (GCC) 13.2.0
-> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404270534.8VgyE2XE-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202404270534.8VgyE2XE-lkp@intel.com/
-> >
-> > All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> >
->
-> Bart,
->
-> does this make any sense to you, cos I'm not seeing any connection
-> between that commit and these warnings?
->
-> Cheers,
-> Kent.
->
+On Fri, Apr 26, 2024 at 09:19:02PM +0100, Al Viro wrote:
+> On Sat, Apr 27, 2024 at 01:01:21AM +0800, I Hsin Cheng wrote:
+> 
+> > I see, thanks for your explanation.
+> > I thought the compilers behavior might alters due to different 
+> > architecture or different compilers.
+> > So would you recommend on the proposed changes or we should stick to
+> >  the original implementation? 
+> > Personally I think my version or your proposed change are both more 
+> > understandable and elegant than the lambda expression.
+> 
+> Out of curiosity, where do you see any lambda expressions in the entire
+> thing?
 
-I think this is a false positive.
+Sorry, it's my fault to address the expression as "lambda expression",
+it should be called as "conditional" or "ternary" operator.
 
-Bart
+Thanks for your remind.
+
+
 
