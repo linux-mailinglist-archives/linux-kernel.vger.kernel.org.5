@@ -1,115 +1,179 @@
-Return-Path: <linux-kernel+bounces-160912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323358B4471
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:58:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CB78B447A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:08:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7BD11F22D0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:58:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D41DB21F3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3C640847;
-	Sat, 27 Apr 2024 05:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cF2sR36W"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F0341744;
+	Sat, 27 Apr 2024 06:08:22 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E671E4A8
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 05:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A604A36AEC
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 06:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714197508; cv=none; b=u83bG98nh2To3hrcc91Cr5pyeQRNCYeQQ6byXChGyb9tyGG/qR4/ZIl77eWh7NgTmWm4vx/JuqHn00Gi4qLHKoUVL4GN7fRIhISO2pP1SCrd9FmxvkAkgHxsYBZzOWm372jN54gJvSTqtf8SzYzwWn/9movxLfzkg8hzIJRc0MY=
+	t=1714198102; cv=none; b=IezDMiAgs+qW6fXIuiUzZehHJ4upweji2NVr0qF0PjyuPt0vO1d7jGt3cL3u6cAU9VZnPNKr67542W54kEIJDqELZKfNBXSq3h5PNzvS7CDLlNJsJvIp4knC2g3vUlW2q+VAzyF+eG7ycw9CwAV1rvYY0LL/wMDTqNLuYUxr/vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714197508; c=relaxed/simple;
-	bh=kXoZjLFn59koFc28BQ9bqNwWral4V6ynyEbfza2RnrQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jnGPJN3YqlqSqlOkmSBMxYPA5b4OoR8oOSJaek4FBwJsbl0Q/KQIHx1UZXlC7dYek9VdUS/xD1ZWbnj/RPyleniEMRypbf2Cag5qIc/L6cub5P8A56DVPf8E9YN8/YVn76C4YQvv8t9EYqYnYMEcP17DzX+khddqrLxr98dGcVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cF2sR36W; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <509b3822-dcf6-45eb-9516-ba8ff2cc4382@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714197503;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pxlklMfBDzUJzfzH3D9A2wRzbh/nwoFGA5lYNX7H0P0=;
-	b=cF2sR36WA5QZw0FBHgOJ0ruxDsHJ0SIZ69AjdZ6LFB6lwTkj0I/zcr1BZkalt9X24iVj+F
-	7xmzjBDQEO8LWg8qk0SR2+hi5FwxcmozZdUCfFwieX+ywOFT3waCBsHeUcJpfDoh/pUlsK
-	fBl47oVHcIW+Lyn3IMvWt/VrKHXSFMw=
-Date: Sat, 27 Apr 2024 13:57:46 +0800
+	s=arc-20240116; t=1714198102; c=relaxed/simple;
+	bh=nyA9/XTxlQcPGTjwj3kf3iu51eo7cB/3xVNnvNV4vlY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Kc2XdS8l7wrHmsyedqjkdWVyji5y/Zu/fM9EBsMowhBrciO0y4lOHkiCNh76WOP2f+rFx8ZcZg5WB3R8D3uGLtddY/xbdmccmG0sUjzWilF6+RG3m+3pwW265MUxtqjSFm8geMK05fnsar/JhvK9b0ypaqPkHlpGbReuQ4mtUb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dd8cd201d6so300604239f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 23:08:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714198100; x=1714802900;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uc/bj6Pb6mpN/D5wfm6HuVO2UjtEKfcC01ViGnC//f0=;
+        b=v9HuUE/fIxOtEWcYpxdsCyX8AW75k+JG4IIvkmmG08pYZ2gH9NeguYTiEWqMXcPlFq
+         OBb/Z//kJdd1Un5J+LmCQDXAYlvCCWklKOgqkXX31mw8fu38KYHFWB2VB0Oy13w4CKRL
+         ZjGG1lF2gcwi4R+goS3p/TAdNZqiaLwLKx429iYs6Pr8rrzIVG3Zgby/7BkgcQo6xaWb
+         Be63QzVsxo7lsr7meRaMFetFnyeUeyy4eYtk4fERlWZpjIfZ9NZ6CG003jCNY+jpBFLa
+         iAjuMpOs5DWlY+cTBdlAq96+UDVER4f8PjpNrCej1lODyQGlym64m+zaPBmGPlPBO8It
+         AAHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX3urcK4/EqJ8o7ygSlILXjDuBrAuuD0S/9WQUCp3iYkcyDIuEjoub7YetVA8izWWTt2E1HB4G0yHiRWVJoyUqf/aBHvSW6b53JCIKe
+X-Gm-Message-State: AOJu0YxLW7Z7EcOykCDkA4uf6glbIq2nq4Q6BHbl4NTaToh9cQfAGXXY
+	3PjqnMX3VSHxAb0SqneQw+HNhN2Qhd2QnJ/5UaREHxghmwOC10h5oeDZR0Dg/zMejcpTLVVLZV1
+	J7ScKy5TfR/vL2f93TDzHeQg9xxwt0WIf+ap+TIVG2R/C9ib431TW9UY=
+X-Google-Smtp-Source: AGHT+IEG3OJfnn94SCS/RcYeqisQrf5NF/CAzxQJMxz6hbX6LQoNMkCMdFxHSsDP0GYHQZc7PjY+fGcomjaerii7y/SzHPuUDlU6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
- <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
- <20240426-married-augmented-mantis-ff7edd@penduick>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20240426-married-augmented-mantis-ff7edd@penduick>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6638:6f0b:b0:487:80f7:c4ee with SMTP id
+ hp11-20020a0566386f0b00b0048780f7c4eemr5675jab.0.1714198099830; Fri, 26 Apr
+ 2024 23:08:19 -0700 (PDT)
+Date: Fri, 26 Apr 2024 23:08:19 -0700
+In-Reply-To: <0000000000000d7c8f0614076733@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d0b87206170dd88f@google.com>
+Subject: Re: [syzbot] [net?] [bpf?] possible deadlock in sock_hash_delete_elem (2)
+From: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    b2ff42c6d3ab Merge tag 'for-netdev' of https://git.kernel...
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=157ea5e8980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145682f8980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c06aa0980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bbdf1d091619/disk-b2ff42c6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4bf7c5b24257/vmlinux-b2ff42c6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/41fcb792fc43/bzImage-b2ff42c6.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+6.9.0-rc5-syzkaller-00171-gb2ff42c6d3ab #0 Not tainted
+--------------------------------------------
+syz-executor361/5090 is trying to acquire lock:
+ffff888022c83260 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888022c83260 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+
+but task is already holding lock:
+ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&htab->buckets[i].lock);
+  lock(&htab->buckets[i].lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by syz-executor361/5090:
+ #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: map_delete_elem+0x388/0x5e0 kernel/bpf/syscall.c:1695
+ #1: ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #1: ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+ #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: sock_map_del_link net/core/sock_map.c:145 [inline]
+ #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: sock_map_unref+0xcc/0x5e0 net/core/sock_map.c:180
+ #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+
+stack backtrace:
+CPU: 1 PID: 5090 Comm: syz-executor361 Not tainted 6.9.0-rc5-syzkaller-00171-gb2ff42c6d3ab #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+ bpf_prog_174bfe9d52de9121+0x4f/0x53
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x2af/0x3a0 mm/slub.c:4377
+ sk_psock_free_link include/linux/skmsg.h:421 [inline]
+ sock_map_del_link net/core/sock_map.c:158 [inline]
+ sock_map_unref+0x3ac/0x5e0 net/core/sock_map.c:180
+ sock_hash_delete_elem+0x392/0x400 net/core/sock_map.c:949
+ map_delete_elem+0x464/0x5e0 kernel/bpf/syscall.c:1696
+ __sys_bpf+0x598/0x810 kernel/bpf/syscall.c:5651
+ __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5765
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f1dbe94ce29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffff608ae88 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1dbe94ce29
+RDX: 0000000000000020 RSI: 0000000020000080 RDI: 0000000000000003
+RBP: 00000000000f4240 R08: 00000000000000a0 R09: 00000000000000a0
+R10: 00000000000000a0 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
 
-On 2024/4/26 14:23, Maxime Ripard wrote:
-> Hi,
->
-> On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
->> On 2024/4/26 03:10, Andy Shevchenko wrote:
->>> On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
->>>> On 2024/4/25 22:26, Andy Shevchenko wrote:
->>>>> It seems driver missed the point of proper use of device property APIs.
->>>>> Correct this by updating headers and calls respectively.
->>>> You are using the 'seems' here exactly saying that you are not 100% sure.
->>>>
->>>> Please allow me to tell you the truth: This patch again has ZERO effect.
->>>> It fix nothing. And this patch is has the risks to be wrong.
->>> Huh?! Really, stop commenting the stuff you do not understand.
->> I'm actually a professional display drivers developer at the downstream
->> in the past, despite my contribution to upstream is less. But I believe
->> that all panel driver developers know what I'm talking about. So please
->> have take a look at my replies.
-> Most of the interactions you had in this series has been uncalled for.
-> You might be against a patch, but there's no need to go to such length.
->
-> As far as I'm concerned, this patch is fine to me in itself, and I don't
-> see anything that would prevent us from merging it.
-
-No one is preventing you, as long as don't misunderstanding what other
-people's technical replies intentionally. I'm just a usual and normal
-contributor, I hope the world will better than yesterday. Saying such
-thing to me may not proper, I guess you may want to talk to peoples
-who has the push rights, just make sure it isn't a insult to the
-professionalism of drm bridge community itself though.
-
-We still grateful for you help and admire you numerous contribution,
-thanks.
-
--- 
-Best regards,
-Sui
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
