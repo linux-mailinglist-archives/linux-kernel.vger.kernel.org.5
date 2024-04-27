@@ -1,186 +1,134 @@
-Return-Path: <linux-kernel+bounces-160994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E5468B458E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:36:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019E78B4591
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:38:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BD91B21BC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:36:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE46A1C20E96
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9669E2744E;
-	Sat, 27 Apr 2024 10:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCC04204B;
+	Sat, 27 Apr 2024 10:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CvvLsVkX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2B3HzAi"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1EC20315
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 10:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81E420315;
+	Sat, 27 Apr 2024 10:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714214191; cv=none; b=RAtD+JC66Xs/SVK/vdvsb+UKuyqHyA9O8x3RIeMO4DU8/y3p6XgCQXqDojtLN1N+SrxyYQRdFe2y17i7Cuj4H+poUokGRa4Rp6OSC6pQCASHfWPRzQRZmFVqkC1kOqVkxpsSTEBGv7yF+msqMFKgviFCcsI/7H1fblZh2kGmBYg=
+	t=1714214320; cv=none; b=IA/plOQGAnJ7+JiqqmRLZLfkvyKw6UldWMU0fzeclT3RgIfNsu3CN00gfj+8sCzQeaz5ou7HNXpULM4hzEVoyCKsayUdNx3BUVXj7tR5GkVi5UQQc43z5xkNGiEI/7LAy7tHPU5knfHNdejd+DeVhH2IVzJz1JIzRMGyyXD+qTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714214191; c=relaxed/simple;
-	bh=oAPdOSh/rjxGtOL6G8o5F47TBLVel6VTqGGDaQAG060=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jUhkb66X7Wd6anklsjkLWVoAgT8+hsakY2Lq0Ak+As8i9DReuti9O3YZVzYOHacqKlNrYcdTlb0y1nJ4pcQqMf9x+8pMx5s2SkwiE1/1yAdUdKySuU3RosZAKUy/dqZJZKiWCu+nUOx/TG3SIv8uskcPgCBDuapACns66TA9uaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CvvLsVkX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714214189;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=AyJe8k+NKSRTclt6v7W5z/MPBrviSINpP3m1bDdfQMM=;
-	b=CvvLsVkXXYgwP1HCGtWYB6BLkLcTh5FOWT95mdxExTwAGWdJpd8eyDx5oD7L4o84tVnEKN
-	THPQppxyuDDNut3MYgrVvFCdfDYpJfXpimzIzaM9a7j190M5G10lL/ld98+3iURgqZ4mN7
-	YQ9zejvQuUTuLhqgDjh+SAiiv+oGhUc=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-2-ZFFzFVhNPwqSBdOGylO9Jg-1; Sat, 27 Apr 2024 06:36:27 -0400
-X-MC-Unique: ZFFzFVhNPwqSBdOGylO9Jg-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2ae9176fa73so3019794a91.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 03:36:27 -0700 (PDT)
+	s=arc-20240116; t=1714214320; c=relaxed/simple;
+	bh=UT0NJhUl3yUFZue60oG3G3YH8EA0gbUMdJK2DTOIcgk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H9rZ9edyiTlfdf/x/qFAJePnVT6V6fuoOIPJ+40BnaAGdSheLr0In8QD8Ulm6gMACYMp642zjVvQd/FrhLejhzmZepPNEPlalnD+b2RaVYg8CuGkb47drlTwSIfPdDxrpZ8XpbZwMQ7nw9YRLVaZQR6SXDXRjBSGw1Jeuj3+cqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2B3HzAi; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so27533375ad.0;
+        Sat, 27 Apr 2024 03:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714214318; x=1714819118; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFayd8WsB8iriwu4+EdgZBiqge+lZHkuxMsZXJFITrk=;
+        b=S2B3HzAiqDOQ2yn3tiFc6znuZ1VLr4RQydi/tteG/9/JNVX1c6D5AB/f24IBo4nnj9
+         pe5M1hVN+sNOlEovVNVjmGeN6P+0aUlE/HUAjF0XSf7tiJjl9FTVpm3NN8/5hDYcWfca
+         8X9nk9C1Xqr7/X/sQfOu9kONvttAapqg2fNoKpXP4rBcAJdFgvwCfaMkQuWFzSTKBEkX
+         RaqhamALuAvQrp6AXc6xyAxsW23/Rwd2AxqdCg/u6gzMlFHFT2FZM/Ic0RgrMPM95yhB
+         qkXEjG2sNh9FXZJxMEeDJ0gaZmmBgPvyhP1PArO13RmPqwD5gTG7gDP6+NzUmmsjy8pg
+         1fjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714214186; x=1714818986;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AyJe8k+NKSRTclt6v7W5z/MPBrviSINpP3m1bDdfQMM=;
-        b=XY6gFe3h1+6JuRg16zS8h61BzaHeCF0xEcnU4bfk0READhgGqUz/IxtlIPOtkaCdKw
-         UgFR5isqx4yoWVOIAuvg2ERqxzby9JF9VAd+WB8x+Y+vgbl2lyuWMwTEsHfACjS+dgCG
-         m07s32O6Gom7VAbwR9jgFkf/nI6i7StMndXTG1R7gwjrlJREJjT7rRWjQ0rNWxfFoJMP
-         Vujkkx6VfhS5yd5n7u7u8dq54+fTv8+33IWKZ7yGhPvIrseOK0neLyJIJTF5RJNzdlhn
-         2b45C7vpefdzAkw9kzU0pASabFdnqd3GWCRNjHhNexTEfcPKr9+iHiULhTQtHV6+NAbQ
-         wNOA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyt4kli6dZpIkR19/6AXdSngKjHwYU1cpJIdhamt92f7TdXZKOxfmRsETSMACa6jimmfBBUC1ROjR2Y7b6RUDc5UbgrU9U5mHu7vnj
-X-Gm-Message-State: AOJu0Yw+KfM/DVBYMyRwWJQ1Ug27LaFwJ9nudxjQ0gHWWOwQWc0WXVAY
-	P7bkXfG3uMV22SW/qPAmYzvMtuXueVQCkIXl6SH3pYOiVorR5oauvCNOB+pvQiJsHB71I1P3HA0
-	WodjiBojTjvs9KmyWBuuaYjBq/qWKa+2bi+EaL1EhUlcoGY88c1jzZ2+GM2rhCQ==
-X-Received: by 2002:a17:902:bc85:b0:1e2:6d57:c1bb with SMTP id bb5-20020a170902bc8500b001e26d57c1bbmr4547972plb.21.1714214186356;
-        Sat, 27 Apr 2024 03:36:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGPhm2AjNWsFzTcfueWhdIMlYbfKnl7zRR2EMxPFfPsRJVtSdfGB+SUmrzXYVW1aA3Ve7C77A==
-X-Received: by 2002:a17:902:bc85:b0:1e2:6d57:c1bb with SMTP id bb5-20020a170902bc8500b001e26d57c1bbmr4547962plb.21.1714214185940;
-        Sat, 27 Apr 2024 03:36:25 -0700 (PDT)
-Received: from zeus.elecom ([240b:10:83a2:bd00:6e35:f2f5:2e21:ae3a])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170902768500b001e4478e9b21sm16838908pll.244.2024.04.27.03.36.23
+        d=1e100.net; s=20230601; t=1714214318; x=1714819118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFayd8WsB8iriwu4+EdgZBiqge+lZHkuxMsZXJFITrk=;
+        b=M+KEXUyEAOLXWjPPJcdIT8rfu5nbYHy0MSW0IKIbvo6EgLzmPpqr2rHDwTiLcjyqx1
+         tN8mx6Is/k2gREAIVQOBa6O+0x/LdhGyPks/weLG/dqbTJeMqX//tBdY1dQc77Bs+9vn
+         5zx9bRS0RNgvfFXcLZxAdc336yfSKiQ7bbK8EBxD3ZPgPEwTR0JdSvQaUjCc/8/MWd42
+         dRolxP8UrkUc4Rfkt8PuIc8Ft9dSVHxei6Jc+Wo+Vgb6FRvZaaMO9OD78YkmF5lvtR96
+         CLjWdRbBu4ynL3rDLT5x1SNcjsayya5XPdm86PZzg6tRqWqUrpc/fDvoZhW6fEbQoQXO
+         /4rg==
+X-Forwarded-Encrypted: i=1; AJvYcCVG43pWZNwVPjs3NR1uq8CwuyNoW2tpX1n4oXbD4ANVb3fdn72pkSui0TIXSe1KBBS3BUbDNxc5gPpmJ0FDqLcAVbXLbuFxe4ZyZZhby52/bg8cqWgubiuE/CZT0uAnHUAFKUUok4FD
+X-Gm-Message-State: AOJu0YwvUsWQID7F/k7hDQVOVPEq4g98U0ge4SB8sWuhs+MTZvYyaBfI
+	3NelYOT1GBYXagcb+8juaz9mzGlix+vt45KBX12qsSmVysq2L2+BGotBfb5E
+X-Google-Smtp-Source: AGHT+IGleDfSPZgWy+4ngyeFVpozjzdXKe8RGpmXemgZkZV+UI4m4zATaCkw0GgvzwLWHknT2pYTGw==
+X-Received: by 2002:a17:902:6509:b0:1e8:5dc6:4060 with SMTP id b9-20020a170902650900b001e85dc64060mr5749859plk.33.1714214318027;
+        Sat, 27 Apr 2024 03:38:38 -0700 (PDT)
+Received: from localhost ([2804:30c:1f6c:5400:ea32:e7c8:5bc0:103])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170903024900b001e8d180766dsm14804058plh.278.2024.04.27.03.38.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 03:36:25 -0700 (PDT)
-From: Ryosuke Yasuoka <ryasuoka@redhat.com>
-To: krzk@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: Ryosuke Yasuoka <ryasuoka@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syoshida@redhat.com,
-	syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-Subject: [PATCH net v2] nfc: nci: Fix uninit-value in nci_rx_work
-Date: Sat, 27 Apr 2024 19:35:54 +0900
-Message-ID: <20240427103558.161706-1-ryasuoka@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        Sat, 27 Apr 2024 03:38:37 -0700 (PDT)
+Date: Sat, 27 Apr 2024 07:39:25 -0300
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To: Gustavo <ogustavo@usp.br>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+	Gustavo <gustavenrique01@gmail.com>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] iio: adc: ad799x: Fix warning generated by checkpatch
+Message-ID: <ZizV3UWWJkyH5kmr@debian-BULLSEYE-live-builder-AMD64>
+References: <20240426012313.2295067-1-gustavenrique01@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426012313.2295067-1-gustavenrique01@gmail.com>
 
-syzbot reported the following uninit-value access issue [1]
+Hi Gustavo, Bruna,
 
-nci_rx_work() parses received packet from ndev->rx_q. It should be
-validated header size, payload size and total packet size before
-processing the packet. If an invalid packet is detected, it should be
-silently discarded.
+The patches look overall good but there are some improvements that can be made.
+First, checkpatch points out email address mismatch. Gustavo address of sign-off
+is different then the address used to send the patches. I think this can
+be solved by adding --from parameter to git format-patch or git send-email.
+Second, Gustavo's sign-off tag is incomplete. The tag must have either first and
+last name or all developer's names.
+For example:
+Signed-off-by: first_name last_name <email_address>
+or
+Signed-off-by: first_name 1st_middle_name 2nd_middle_name ... last_name <email_address>
+I'm pretty sure those actually must be sort out for a patch to be acceptable.
+Some additional tips to improve patch set quality:
+- Don't use file extensions in subjects
+  iio: adc: ad799x.c: ... -> iio: adc: ad799x: ...
+- Also wrap the cover letter text to 75 columns except when it makes text
+  clearly less readable.
+- It should be okay to say in commit message that a change is suggested by
+  checkpatch or fixes some checkpatch warning as long as you also describe
+  what the actual change is. You seem to already be describing the changes
+  so maybe adding that they also cease checkpatch warnings / make code
+  compliant to Linux code style.
+- Maybe have a look at the submitting-patches documentation [1] and
+  tips to write commit messages [2] to help producing patches.
 
-Fixes: d24b03535e5e ("nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet")
-Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534 [1]
-Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
----
-v2
-- The v1 patch only checked whether skb->len is zero. This patch also
-  checks header size, payload size and total packet size.
+[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+[2]: https://cbea.ms/git-commit/#why-not-how
 
-v1
-https://lore.kernel.org/linux-kernel/CANn89iJrQevxPFLCj2P=U+XSisYD0jqrUQpa=zWMXTjj5+RriA@mail.gmail.com/T/
+Regards,
+Marcelo
 
-
- net/nfc/nci/core.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 0d26c8ec9993..ab07b5f69664 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1463,6 +1463,16 @@ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
- 				 ndev->ops->n_core_ops);
- }
- 
-+static bool nci_valid_size(struct sk_buff *skb, unsigned int header_size)
-+{
-+	if (skb->len < header_size ||
-+	    !nci_plen(skb->data) ||
-+	    skb->len < header_size + nci_plen(skb->data)) {
-+		return false;
-+	}
-+	return true;
-+}
-+
- /* ---- NCI TX Data worker thread ---- */
- 
- static void nci_tx_work(struct work_struct *work)
-@@ -1516,30 +1526,36 @@ static void nci_rx_work(struct work_struct *work)
- 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
- 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
- 
--		if (!nci_plen(skb->data)) {
--			kfree_skb(skb);
--			break;
--		}
-+		if (!skb->len)
-+			goto invalid_pkt_free;
- 
- 		/* Process frame */
- 		switch (nci_mt(skb->data)) {
- 		case NCI_MT_RSP_PKT:
-+			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-+				goto invalid_pkt_free;
- 			nci_rsp_packet(ndev, skb);
- 			break;
- 
- 		case NCI_MT_NTF_PKT:
-+			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-+				goto invalid_pkt_free;
- 			nci_ntf_packet(ndev, skb);
- 			break;
- 
- 		case NCI_MT_DATA_PKT:
-+			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
-+				goto invalid_pkt_free;
- 			nci_rx_data_packet(ndev, skb);
- 			break;
- 
- 		default:
- 			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
--			kfree_skb(skb);
--			break;
-+			goto invalid_pkt_free;
- 		}
-+invalid_pkt_free:
-+		kfree_skb(skb);
-+		break;
- 	}
- 
- 	/* check if a data exchange timeout has occurred */
--- 
-2.44.0
-
+On 04/25, Gustavo wrote:
+> Clean code of iio:adc:ad799x to avoid warning messages. These include proper variable declaration 'unsigned' to 'unsigned int', add blank line and use of octal permission instead of symbolic.
+> 
+> Gustavo (3):
+>   iio: adc: ad799x: change 'unsigned' to 'unsigned int' declaration
+>   iio: adc: ad799x.c: add blank line to avoid warning messages
+>   iio: adc: ad799x: Prefer to use octal permission instead of symbolic
+> 
+>  drivers/iio/adc/ad799x.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
+> 
 
