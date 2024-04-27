@@ -1,158 +1,112 @@
-Return-Path: <linux-kernel+bounces-160836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE7258B4368
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:04:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F558B4369
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:09:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 398B4283ECC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:04:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400291F2267F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A4B2E416;
-	Sat, 27 Apr 2024 01:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2892E651;
+	Sat, 27 Apr 2024 01:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Uo8bzQGl"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpZDc5iP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B952D627;
-	Sat, 27 Apr 2024 01:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B0525777;
+	Sat, 27 Apr 2024 01:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714179836; cv=none; b=mEut1vzQ6kkHD8iMaXLcB0GJCZ731Spi3TNYCf8chxpm3navRiudANKjoVYjcrhvvdQIt+3gZ0/XkU5GSEWwlvxHriI8rSRopNFh89UbrGqvEGxqO5BYBAXHygI8v0lY53OtFm6RpnRl+t3I1YKWiOYHShNGkgglelUOB2jxMPM=
+	t=1714180167; cv=none; b=R3iuUVhdQgyoTE+vGZGut1QPhdOlrBxHEqVN4qMFk+AGCTCr1p0SySDJTjoM/S0wlU9Qj8ruunpY0CD+aUCaj/lEIHnuOV8uHi1tQ1tzXTVOs2R0nHxbiEaG2ilRgj6eHIDkMEG7Nnkjs8yI8GpzQd/98LYz2iyMTnV1GlQ3A68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714179836; c=relaxed/simple;
-	bh=wYFR5Jwm6sJT7rAqaF5ytlgZfLgTIhtKlQoOLL4qvGg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Y4wdF2XVaBM6TzTUxhdRsEBVb00kOp0+etjUECrCyq3bD/kObKwiE9bGlCQ3OmEDrIo4yqPapbucH/OQThNjuO9v/kZd9f+o3jreAGB+YpuxDs+yX4N9E5LnbkesbuJeaohAsV13UFgFB4BXsaXs45fdNY1tpg4pEOr4n8czHCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Uo8bzQGl; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43R0guAm002902;
-	Sat, 27 Apr 2024 01:03:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+/vH5sNN1cJT9Kyhu3EW40Dh97RLGyJ0/8gBBv7WljQ=; b=Uo
-	8bzQGld610YvOw+pdW0HPHemdbU/YyEo+DuwAEpk/LXI/IybGB1qbpNXfa+BxAfz
-	jMdurpkmQ69z92iQY9iiYOkpxQ4oTR3uGuPCCCfWSNmMG1uizEqtTS1gXyeDx0vI
-	rlxZwM24bb+ybpy5ZvlnERUrUnxonajJSz0QpS7yZPaY/arlCOBxaKYVzXtVcnxx
-	SfEihrp88ZKPkwLXlxLhbTTCAWTsQbpb7DV31Q2+Qto7HuccE+fFFnYEGnVpzqpM
-	qKXb1N8xlUNncydrjYiS0aaqwBFWLuiO2Eh+hPDaaQ31r4wZehaKXi0UWmCrvjvn
-	BhE8ViSw81MzAAmrLJIQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xr7yg23n3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Apr 2024 01:03:48 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43R13kSx015509
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Apr 2024 01:03:47 GMT
-Received: from [10.110.11.138] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Apr
- 2024 18:03:46 -0700
-Message-ID: <f1ee1fc0-64cb-5610-db92-3a06d477e8b8@quicinc.com>
-Date: Fri, 26 Apr 2024 18:03:45 -0700
+	s=arc-20240116; t=1714180167; c=relaxed/simple;
+	bh=5FyjjO3qI7vbvED0B+ufM1OwjTuy4FUUKvu2jkUC8Mk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s9XRy/suoCMyvZf2dVsOjB4jDuDPSJxlsKMJZDJzr1C+3C+dHNgzB4G1fgSEh+08lJgDKMEZkhEyzhf2TjrVclhRC0iDnAXvNsrgnIoh5OFN3AML8NuR7/tTsKV1eRN8I4gyrvZHLu5YojVziTQmv+GspPOcgCbhrFeKQx9pOps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpZDc5iP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 574C8C113CD;
+	Sat, 27 Apr 2024 01:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714180166;
+	bh=5FyjjO3qI7vbvED0B+ufM1OwjTuy4FUUKvu2jkUC8Mk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UpZDc5iPFzgWaK3TksswV2zJtpSYA08GGt+Noe7CDPoWDJjEgx/2TtebKgiJTGWWS
+	 QZ9YrdtdXwIhrVdL+Sqegl+T9vug5YMSYLyBMcvkGHy8909xIA6waJW7TjhVSYH5Qw
+	 jHCuf2jl5l7gRFlJjhE1Csur7ony81mnev1zV2DWZm2s2ow8jeqGcffC32ugmW7HOj
+	 ne30QdnrdWVkTEGD/59iXq5fwvE9i1ZsqwAvS7RNUKSxnsUCgOcoLyAfmg3vQ84Coi
+	 +YFoZu3kOsNoE8bHBM0nrM3mCu4ikN04DK/ySAjQhlybogh4jY6l4NXSV/vh9U1JVl
+	 666sD/fMDvcQw==
+Date: Fri, 26 Apr 2024 22:09:23 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf annotate: Update dso binary type when try
+ build-id
+Message-ID: <ZixQQ_vKtmtvYSjS@x1>
+References: <20240425005157.1104789-1-namhyung@kernel.org>
+ <20240425005157.1104789-2-namhyung@kernel.org>
+ <Zipk0p08bxO7werD@x1>
+ <ZiptiObJxYPeXqK_@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 6/6] remoteproc: qcom: enable in-kernel PD mapper
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Sibi Sankar
-	<quic_sibis@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Xilin Wu <wuxilin123@gmail.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>
-References: <20240424-qcom-pd-mapper-v7-0-05f7fc646e0f@linaro.org>
- <20240424-qcom-pd-mapper-v7-6-05f7fc646e0f@linaro.org>
-From: Chris Lew <quic_clew@quicinc.com>
-In-Reply-To: <20240424-qcom-pd-mapper-v7-6-05f7fc646e0f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dDFGYWOFj9rGgfhMFqOThmJg_v9db-1p
-X-Proofpoint-ORIG-GUID: dDFGYWOFj9rGgfhMFqOThmJg_v9db-1p
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-26_21,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 suspectscore=0
- spamscore=0 phishscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404270005
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZiptiObJxYPeXqK_@x1>
 
+On Thu, Apr 25, 2024 at 11:49:49AM -0300, Arnaldo Carvalho de Melo wrote:
+> On Thu, Apr 25, 2024 at 11:12:40AM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Wed, Apr 24, 2024 at 05:51:57PM -0700, Namhyung Kim wrote:
+> > > +++ b/tools/perf/util/disasm.c
+> > > @@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
+> > >  		mutex_unlock(&dso->lock);
+> > > +	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
+> > > +		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
+> > >  	}
+>  
+> > Fixed up to take into account a recent patch by Ian that turned that
+> > &dso->lock into dso__lock(dso):
+>  
+> > +++ b/tools/perf/util/disasm.c
+> > @@ -1156,6 +1156,8 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
+> >  			}
+> >  		}
+> >  		mutex_unlock(dso__lock(dso));
+> > +	} else if (dso->binary_type == DSO_BINARY_TYPE__NOT_FOUND) {
+> > +		dso->binary_type = DSO_BINARY_TYPE__BUILD_ID_CACHE;
+> >  	}
+> 
+> Nah, I forgot some more stuff, this is what I have now:
 
+Nah², I had to remove all these:
 
-On 4/24/2024 2:28 AM, Dmitry Baryshkov wrote:
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index 1d24c9b656a8..02d0c626b03b 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -23,6 +23,7 @@
->   #include <linux/remoteproc.h>
->   #include <linux/reset.h>
->   #include <linux/soc/qcom/mdt_loader.h>
-> +#include <linux/soc/qcom/pd_mapper.h>
->   #include <linux/soc/qcom/smem.h>
->   #include <linux/soc/qcom/smem_state.h>
->   
-> @@ -375,10 +376,14 @@ static int adsp_start(struct rproc *rproc)
->   	int ret;
->   	unsigned int val;
->   
-> -	ret = qcom_q6v5_prepare(&adsp->q6v5);
-> +	ret = qcom_pdm_get();
->   	if (ret)
->   		return ret;
+pick a58b4da77b40920f perf dsos: Switch backing storage to array from rbtree/list 
+pick 7d91cefd1fb63068 perf dsos: Remove __dsos__addnew()
+pick 80c3ccf05199dbb6 perf dsos: Remove __dsos__findnew_link_by_longname_id()
+pick af3f8dea24f47802 perf dsos: Switch hand code to bsearch()
+pick 7537b92b48318834 perf dso: Add reference count checking and accessor functions
+pick 9bd7c6fe8de22b37 perf dso: Reference counting related fixes
+pick 4de57b46a0cb2027 perf dso: Use container_of() to avoid a pointer in 'struct dso_data'
 
-Would it make sense to try and model this as a rproc subdev? This 
-section of the remoteproc code seems to be focused on making specific 
-calls to setup and enable hardware resources, where as pd mapper is 
-software.
+Due to a bisect that pointed "perf dsos: Switch backing storage to array
+from rbtree/list" as the one where:
 
-sysmon and ssr are also purely software and they are modeled as subdevs 
-in qcom_common. I'm not an expert on remoteproc organization but this 
-was just a thought.
+ 
+root@x1:~# perf test "kernel lock contention analysis test"
+ 87: kernel lock contention analysis test                            : FAILED!
 
-Thanks!
-Chris
-
->   
-> +	ret = qcom_q6v5_prepare(&adsp->q6v5);
-> +	if (ret)
-> +		goto put_pdm;
-> +
->   	ret = adsp_map_carveout(rproc);
->   	if (ret) {
->   		dev_err(adsp->dev, "ADSP smmu mapping failed\n");
-> @@ -446,6 +451,8 @@ static int adsp_start(struct rproc *rproc)
->   	adsp_unmap_carveout(rproc);
->   disable_irqs:
->   	qcom_q6v5_unprepare(&adsp->q6v5);
-> +put_pdm:
-> +	qcom_pdm_release();
->   
->   	return ret;
->   }
-
+- Arnaldo
 
