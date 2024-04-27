@@ -1,142 +1,156 @@
-Return-Path: <linux-kernel+bounces-161132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF57F8B4779
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:03:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D921B8B477A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:05:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5976D281F84
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A6E628254E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95F03BB20;
-	Sat, 27 Apr 2024 19:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D768D3BB47;
+	Sat, 27 Apr 2024 19:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cQeQtxqW"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="anzltQLf"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CF33A29A
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 19:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F6833C8
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 19:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714244573; cv=none; b=J963p5WR1KVrC85m+PY/GwtmiZTA7w00yqVjV2Ez6CWuB/myGvABeT+rO17r7lWKxE6d4zzWwCuAWF4xtacytog2vHUNUYGNUTcvDfWtYISK4qxIW+NFoKYZqYx+01aqlRZ4VsII00n5TmBe3IK9hdwjlJQU49w0Jm13vR6USJQ=
+	t=1714244721; cv=none; b=AI/udHWA8AHRnbJcUy9EhuuTSr7nAIBmIyQVRcl4hg11OZhCmOoRetlo31HwJRTabo7szFx1OcQkPQWPtIrpgzcesNgqRT2ptRgkOFBz7C4p51m77Z5JWI9qXueBs4WTCOCxQC/1CIYcjspde51z1P0eYx75V+v8BIuaNbB4/bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714244573; c=relaxed/simple;
-	bh=zfMWvuo8KGM0LEUnxsmTmqDiqq2kR44rM6AqbMFn7zw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AtVBIUhi6Q61P1yKdl3LMLvKKa4+7nkBruKex4voXiGwerbpxOXdgXnZ8ay/V1mkhi2118fM2yxhs8hx8KbJ3adsbteMqg3N51pnL0CUE5/adUxY67bNoQs2qOK8ckQUe9l2c4ii6RVtglzPjH4A1E015O9By/KvgTVRtLMphOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cQeQtxqW; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2df9af57b5eso14774181fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:02:51 -0700 (PDT)
+	s=arc-20240116; t=1714244721; c=relaxed/simple;
+	bh=1qHlCwsYaCQ2lRQllbAqblfxjCXjafgdSF5F/OJynjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DD1bZkm+MwA+foLJcjgvxJ8pOrYaDRVEM390LQSQF+mrR0kVqFvjfdqTM5I1nQ2WoPKaTzaQ9ZB2W9m8kdJurtMj9pf1YLyrEwPAHvAdhmt9n4nT83IKEgYUznP3UzOYJLxzKeawklp1RbPyX3AvNOQom15XmSTbeoMoLgpKhkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=anzltQLf; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e2bbc2048eso28616915ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714244570; x=1714849370; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w1GCIdsjWlrVsQk7NNBBmnRhr1gy36n2rmXWCKoP5NE=;
-        b=cQeQtxqWDMYXq7abrC2YMbGj6JElvxPNxQCdTVIWxraETJFaIHxXZ6obDpf/mbAVI1
-         iA+0qVQR1WLXEcLm2JGmtW1ciuwDny5wbWCuAVR6g17YYe0DSfdnYIURXUTZoRLLOg6J
-         rSVofajPO8Zi3g3mu39BBSoXyYZP71IoV39a4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714244570; x=1714849370;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1714244719; x=1714849519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=w1GCIdsjWlrVsQk7NNBBmnRhr1gy36n2rmXWCKoP5NE=;
-        b=HfJHY3I76hN9hE79P5zNJfbaS/w0nB6uS0XBbGAspmyCs44hkSDxR2TaICJbDu87Gn
-         4f+zCo3k9KTx0nPTHYxevvdsWtmFF4tLZdfZ7ZMRla11YDb4VCCVOJ5YW2SFS3stU2ZW
-         GRB6p4x/Y+sgIRX4rbMUyOJjNp2O8cGDThOZxKQw8ZecCoSvQ8o7B3I8aGB8/RK8IrH1
-         tyNVOk1tQAS0kXENUHq2fkRsl3szWeJ3I9nTNVVB4WjMg0ckDh1F+NDcb061vacR/mtU
-         OHXak1WoagfElv13XcJFd9LREngvKGYP1hfbDVo9h4OCszW2zyg7E4zMbVMzQHkUME7t
-         KXDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqMftqDUp3i0KhD2jRW1b3Hoh3eiv7I64ZVaEywdaJSnLeA3IyQhzmCbgN9+wCBa4z3dWVnxRJkfAQNR4k+rpsjayeUIRRw1TOPZkl
-X-Gm-Message-State: AOJu0YxxlnBlEZv/35K8OGJsSG9ofGDNKgchf1h/D9CDb5d6aERqm6/1
-	QfOO799hxV7JDNCn7BbUjtfZp+h8q0qL9tng+lOY4skYy/xY4lEOcipyZuuVqm2nnuwAstXVukU
-	8
-X-Google-Smtp-Source: AGHT+IGyclkti3PvL62BAegyi/GhJ3aI6sRjPXPYl21xYoU8isgELlcvmDZ3Osvovg4VsyPrdoEirw==
-X-Received: by 2002:a05:651c:a0d:b0:2dd:d3a0:e096 with SMTP id k13-20020a05651c0a0d00b002ddd3a0e096mr6006569ljq.31.1714244569890;
-        Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id r8-20020a2eb608000000b002d6b801a863sm3072719ljn.34.2024.04.27.12.02.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51acb95b892so4015331e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUk0dqCB8XAaF+EYDnWL9od+splepmeOcdhUmmHvnQjOqpAcoG3sqvrbW3xrzjLiQjXX4PtSPBC0Myz0/3La1FJaZyV2YT+SgzFo1PO
-X-Received: by 2002:a19:750c:0:b0:519:611f:df49 with SMTP id
- y12-20020a19750c000000b00519611fdf49mr4859014lfe.69.1714244568762; Sat, 27
- Apr 2024 12:02:48 -0700 (PDT)
+        bh=p44pgiFZQovptJOnddSp5qDIAqapsQkYUFKjyJMajl0=;
+        b=anzltQLfiA2Dn/gjv8GcF7wEKH6LeanxgI1fjnMykUxWlUvpbRyAswDW+ND4VxeEjI
+         owJ9OcFuzGa4EyclH6pEDIXg/OY1uDsK2+57CKwtF1VmxgTa+E/SYTtHpndx39eewGvx
+         gg1Ah7I5fkD/+IjlvP1LqsOSp675TTkJ1Vu8yczpKZj8rrjMpoGp75JvAyxcHs7N/F1S
+         WqKfiF+6QYWpb7REQ2WtBL/MMyF3uq0UPo7dpQKWjiL2iNXrND2VRmRFNmtu/Pll25ou
+         uol3hcSJkxlA1fxNFjU4A/d4XLqYgX03zYMrONeel+qPrLq4WxRxuUFGyoNQsQJKDkAI
+         0TnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714244719; x=1714849519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p44pgiFZQovptJOnddSp5qDIAqapsQkYUFKjyJMajl0=;
+        b=YQ0gTVCLF38I4OYz8mrh+tOb+61tSUDcKfmsTu0efh2pXW6R8SZcZtVMu1PFns4jrm
+         rEGHEgSJPS6XtJc5Nsx4B/R78ePOP6JMTdNL1A5pG+Os0QWIEQ4IJ6HGtWqFjRWkTM98
+         Kqx/Ng9UxcDM39ivy8BPDMM8dTOOAqzJfpDOb9nTRHRwACHgDsr5XqIROwcdYfMunPPK
+         W1q2Rdf3OLO+uIfJ0hZhqBQ2laTGu/LXc/Qfvsm2sakyPJ08Mr6wlLeOjTukICkFGKoA
+         hkiklJY5VP3WG44yAMGUZoEKM8MGxcyNodNTwyV6nfa5OjUeVR8Sha2GX8KmF0FkIzXB
+         JPUg==
+X-Forwarded-Encrypted: i=1; AJvYcCU5lYgv+QB9vnkGNnm9YqgdlquI2XFltVz8JKogJWyy4YfyRdLxRc659OCO2vUiJDho+wt+0VgmDLjXcLW+Gra6OK8MVYXDu618i9GP
+X-Gm-Message-State: AOJu0YxeopRXsRoqfs6OZCaiPx6uAFLhe39ffSECPS2mKcIUAbXZGyzB
+	O+binhBwOqngot0dRwhwnzoi6Nlzf0oZOYToFJfhrDKF9lwsbkqX
+X-Google-Smtp-Source: AGHT+IEV+6If6dwEWpp/lUf7r4DALNdnHD8eYWvKrfReaVqmDBg418UtiTMNU9+MN4vJunVxVKwDcw==
+X-Received: by 2002:a17:902:e5d2:b0:1e5:1867:d9fa with SMTP id u18-20020a170902e5d200b001e51867d9famr7289497plf.44.1714244718719;
+        Sat, 27 Apr 2024 12:05:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902dac400b001e3c01dfaf5sm17388384plx.24.2024.04.27.12.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 12:05:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 27 Apr 2024 12:05:16 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Barry Song <21cnbao@gmail.com>
+Cc: chris@zankel.net, jcmvbkbc@gmail.com, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, willy@infradead.org,
+	dennis@kernel.org, alexghiti@rivosinc.com,
+	Barry Song <v-songbaohua@oppo.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] xtensa: remove redundant flush_dcache_page and
+ ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
+Message-ID: <0df6028c-3e7d-461c-85bd-8ba1bf06e2a6@roeck-us.net>
+References: <20240319010920.125192-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
- <20230424004431.GG3390869@ZenIV> <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
- <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
- <20230425160344.GS3390869@ZenIV> <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
- <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
- <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
- <2023053005-alongside-unvisited-d9af@gregkh> <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
-In-Reply-To: <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 27 Apr 2024 12:02:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
-Message-ID: <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319010920.125192-1-21cnbao@gmail.com>
 
-On Fri, 26 Apr 2024 at 23:21, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> syzbot is reporting data race between __tty_hangup() and __fput(), for
-> filp->f_op readers are not holding tty->files_lock.
+Hi,
 
-Hmm. I looked round, and we actually have another case of this:
-snd_card_disconnect() also does
+On Tue, Mar 19, 2024 at 02:09:20PM +1300, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> xtensa's flush_dcache_page() can be a no-op sometimes. There is a
+> generic implementation for this case in include/asm-generic/
+> cacheflush.h.
+>  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+>  static inline void flush_dcache_page(struct page *page)
+>  {
+>  }
+> 
+>  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+>  #endif
+> 
+> So remove the superfluous flush_dcache_page() definition, which also
+> helps silence potential build warnings complaining the page variable
+> passed to flush_dcache_page() is not used.
+> 
+>    In file included from crypto/scompress.c:12:
+>    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
+>    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set but not used [-Wunused-but-set-variable]
+>       76 |                 struct page *page;
+>          |                              ^~~~
+>    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> >> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wunused-variable]
+>      174 |                         struct page *dst_page = sg_page(req->dst);
+>          |
+> 
+> The issue was originally reported on LoongArch by kernel test
+> robot (Huacai fixed it on LoongArch), then reported by Guenter
+> and me on xtensa.
+> 
+> This patch also removes lots of redundant macros which have
+> been defined by asm-generic/cacheflush.h.
+> 
+> Cc: Huacai Chen <chenhuacai@loongson.cn>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202403091614.NeUw5zcv-lkp@intel.com/
+> Reported-by: Barry Song <v-songbaohua@oppo.com>
+> Closes: https://lore.kernel.org/all/CAGsJ_4yDk1+axbte7FKQEwD7X2oxUCFrEc9M5YOS1BobfDFXPA@mail.gmail.com/
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Closes: https://lore.kernel.org/all/aaa8b7d7-5abe-47bf-93f6-407942436472@roeck-us.net/
+> Fixes: 77292bb8ca69 ("crypto: scomp - remove memcpy if sg_nents is 1 and pages are lowmem")
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-                        mfile->file->f_op = &snd_shutdown_f_ops;
+The mainline kernel still fails to build xtensa:allmodconfig.
 
-and I don't think tty->files_lock (or, in the sound case,
-&card->files_lock) is at all relevant, since the users of f_ops don't
-use it or care.
+Building xtensa:allmodconfig ... failed
+--------------
+Error log:
+crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+crypto/scompress.c:174:38: error: unused variable 'dst_page' [-Werror=unused-variable]
+  174 |                         struct page *dst_page = sg_page(req->dst);
 
-That said, I really think we'd be better off just keeping the current
-model, and have the "you get one or the other". For the two cases that
-do this, do that f_op replacement with a WRITE_ONCE(), and just make
-the rule be that you have to have all the same ops in both the
-original and the shutdown version.
+This patch fixes the problem. Is there a chance to get it applied to the
+upstream kernel, or should I just stop build testing xtensa:allmodconfig ?
 
-I do *not* think it's at all better to replace (in two different
-places) the racy f_op thing with another racy 'hungup' flag.
-
-The sound case is actually a bit more involved, since it tries to deal
-with module counts. That looks potentially bogus. It does
-
-                        fops_get(mfile->file->f_op);
-
-after it has installed the snd_shutdown_f_ops, but in snd_open() it
-has done the proper
-
-        replace_fops(file, new_fops);
-
-which actually drops the module count for the old one. So the sound
-case seems to possibly leak a module ref on disconnect. That's a
-separate issue, though.
-
-                      Linus
-
-                    Linus
+Thanks,
+Guenter
 
