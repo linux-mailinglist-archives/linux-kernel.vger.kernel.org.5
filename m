@@ -1,133 +1,119 @@
-Return-Path: <linux-kernel+bounces-160887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56EFF8B440C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:13:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5B38B4411
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:24:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6701F225EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 04:13:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF991C215F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 04:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8833C6BA;
-	Sat, 27 Apr 2024 04:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F1C3D387;
+	Sat, 27 Apr 2024 04:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="WbB+5zsh"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bFGovkoV"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B473BBEC
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4E23C06B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714191217; cv=none; b=F5pTPGSmaAUnvuxFgdkXuoxoMw99xrKM+OUzIV3lOaFa5OBXElyuwym+SanbXUsBfqbBlF2tKSJFJ1BQi16eqbBnJPFsYqumpG3IiVIDn2H6nIkuYHjyZ+73JAmzWXViQsrK8OB6T2VbDr/BSmQ3moGqeGgvqq0Gn6M9UOTlSQQ=
+	t=1714191867; cv=none; b=uvPW6RqdG6hqkGoDRkJkTlo+ct25G1xUpItUxm5FtCZ0IjoJvAbmFFT73VdVdZSklC/JqMpHprWlcagRxzwY3Xl1hF9dcsIUFbusSOLV+wc9oNMMkQO4IJEbbTvYoWprSCBimKM2EKD5WirGOzHMrAhotFeIy2BdVnP42yD3oq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714191217; c=relaxed/simple;
-	bh=L/SdhhR7cp15PtzHTJRI4OjluANgzw2oKI5pziWzQwU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BRyIhOVvPnidVGjsHdIb2zSTA9jhPsPpP5NPl+AR/dXnPIS+EL+7bqfpdNzRCiI7neZQ2dHz5fvcTyqibkc045TZID3h5HPRPpBR+YSzDPcZOU0PMv8rmPDQTnLzi73ZC0ZrG4G+BXM9eNN9LQ+eiyn6gocZo/CKrcrns6sPXYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=WbB+5zsh; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1714191213;
-	bh=L/SdhhR7cp15PtzHTJRI4OjluANgzw2oKI5pziWzQwU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=WbB+5zshh8lGx3TUlvTH9+9y9sU+Jcqd0LicWcF2Zpd54kH+mbNdq6nUBO9yFsMnd
-	 Jsf49g3V88xpeA4ZRCB33YjyMiFR2heDNs3usP7nqB91ka4LZYHBrsdGkkqL8FR960
-	 o+6eEvEpB2hodKlX2i2ZXOjSi9WtkjLghPytUNAE=
-Received: from [IPv6:240e:358:1198:0:dc73:854d:832e:4] (unknown [IPv6:240e:358:1198:0:dc73:854d:832e:4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 77B946591C;
-	Sat, 27 Apr 2024 00:13:31 -0400 (EDT)
-Message-ID: <56414029e179d219442bde9b8eae81fa3e3ceec4.camel@xry111.site>
-Subject: Re: [PATCH] LoongArch: Provide __lshrti3, __ashrti3, and __ashrti3
-From: Xi Ruoyao <xry111@xry111.site>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>
-Date: Sat, 27 Apr 2024 12:13:25 +0800
-In-Reply-To: <dfdc9823a0b89c8582587fa75448bba5c3a7e15e.camel@xry111.site>
-References: <20240426121442.882029-1-xry111@xry111.site>
-	 <CAAhV-H74cQ4XdDez5PipCxUZTpfS=CA6azL5qob=jGGebobD6g@mail.gmail.com>
-	 <dfdc9823a0b89c8582587fa75448bba5c3a7e15e.camel@xry111.site>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.1 
+	s=arc-20240116; t=1714191867; c=relaxed/simple;
+	bh=GF3vuRGY/dMb/2+U/QCXGtAoTBJg+SK/sms8ndt4Nq8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l3c7/TXFetee6OBpja9zUwMQ3SZ25LaSOHhTVzVdL+ViVxEx/myk9d4uup31X+d8EWVNq29pvLTrquM1PdWyvi5zmTbG/32cbIbXskVMlChObQQaGDmFfTEgJLKJmNtSmOfzXH/JkiMCAnK3xeNjXlrWT0w7L909dcg4bq2e+ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bFGovkoV; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2db13ca0363so43815831fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 21:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714191863; x=1714796663; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XNxrgthpetuuJLIByo953//VQpDMU/PX1l8amEjeAbY=;
+        b=bFGovkoVAFazBp8+HC9vaHz7phaaQo0Xqa3TB6AiChFGW7zVBU8DYgI5LZW4kgIoc7
+         e7aDEhil2fnR8aoszNytgKVNzAjjI42FpFA5Hm7x4fORXF5rXfQqJ+qBIAjOuATt471w
+         LW5Tr3BlTb4Dh3bLtHfMaZUJPQT05XXBes8bts+4nCdf+Fk5K+LO+68ZeF8wfcP1wu4d
+         b0y4NyEGsBrRKi0TQq5VNEPPwnm1ILbPEPzMiZuM1XNJPiOaJHYB9QppNmx4h2mgVY5h
+         Ox/U/UtqCPmUtT828F5jtBENejgUAjIHc4RCtqYrMB4nU6WPb85TVRree7OBv4i9sqM1
+         THXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714191863; x=1714796663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XNxrgthpetuuJLIByo953//VQpDMU/PX1l8amEjeAbY=;
+        b=uD3Gr18pK2e0SMShkDS8n/sai0SEbNxyQ5heWsSdF8FPew4kJkFEB3rR+pQ0FXi44n
+         Vs3IwujiAMjoeqkNzyMEgslpupo4rSaANAb5utaRgPl6LmPgjx9EtD5fETp/88RPi2Ik
+         0YGaGDbhKhGlJQanWY5rpyUJp3qwta+1jzrEJVjN5oufL2ETqigYI8GarskcXt1g8bMs
+         CMEa24+WZVAQc8EYW8O0BCWM0kN8TAMzDdBOlXj5kcgehssnxsKWB3EaRMcIjeWw2Lfp
+         +Pt6iMQwP46rTv0lZKcPT9uMudwhV8h7xj/jHhaX/Mk/yIoQ5QXcrbqTOuHKP2znd6e7
+         7A2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUe6wP2Kj9DPjRvVjrntUMxuWIZpIOwCtUw8WotoI69AhDu6G83ZaHjuaOSdkroMVeCksO19k7zXdyzxUmuToJY9HY45PzSVJpqQGpt
+X-Gm-Message-State: AOJu0Yz33yrzQp2ktAM/wAtV8oMHg8wuMdbeZxo2HfmUFNfPv2sIqiX9
+	Kt33AN1+o16r9Rzs6xF110XydivChQFxe5GFLfdJ9uBXtPVTiBmm15Z7KPNqnJfPFHeC+e9M5ij
+	XAjnI7GWXYw+DyO//Tju+2ghWyizzaGzWgkhz
+X-Google-Smtp-Source: AGHT+IHo9p4JF6aSQDhZ+sGs4DSm+21yCY59QKzJAfgfI4cda+xzrQHekeg5PgpFIA651GAjXQtUPVUubZs18Io42GU=
+X-Received: by 2002:a05:6512:20ce:b0:51c:71cf:efc9 with SMTP id
+ u14-20020a05651220ce00b0051c71cfefc9mr3280756lfr.49.1714191863232; Fri, 26
+ Apr 2024 21:24:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240424165646.1625690-2-dtatulea@nvidia.com> <4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
+ <CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
+ <4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
+ <CAHS8izPkRJyLctmyj+Ppc5j3Qq5O1u3aPe5h9mnFNHDU2OxA=A@mail.gmail.com> <20240426160859.0d85908e@kernel.org>
+In-Reply-To: <20240426160859.0d85908e@kernel.org>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 26 Apr 2024 21:24:09 -0700
+Message-ID: <CAHS8izNs-LV=6FE39sjF3V7qVfveOsOAOJ_X62TSzWpvamsS0Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from skb_frag_unref
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, 
+	"ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"jacob.e.keller@intel.com" <jacob.e.keller@intel.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jianbo Liu <jianbol@nvidia.com>, 
+	"edumazet@google.com" <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2024-04-27 at 12:00 +0800, Xi Ruoyao wrote:
-> On Sat, 2024-04-27 at 10:50 +0800, Huacai Chen wrote:
-> > Hi, Ruoyao,
-> >=20
-> > I don't think #ifdef CONFIG_ARCH_SUPPORTS_INT128 is needed here.
-> > S390/ARM64/RISCV all built it unconditionally.
->=20
-> The problem here is RISCV and ARM64 are using an incorrect prototype for
-> these functions in asm-prototypes.h:
->=20
-> long long __lshrti3(long long a, int b);=20
-> long long __ashrti3(long long a, int b);=20
-> long long __ashlti3(long long a, int b);=20
->=20
-> where "long long" is not 128-bit.=C2=A0 Despite this seems working for RI=
-SC-V
-> and ARM64 I really dislike it.
->=20
-> S390 seems assuming CONFIG_ARCH_SUPPORTS_INT128 is always true, but I
-> don't think we can assume it too (at least it'll likely to be false for
-> LA32, so doing so will cause trouble when we add LA32 support).
->=20
-> So if we don't want to check CONFIG_ARCH_SUPPORTS_INT128 and still use a
-> correct prototype, we'll do:
->=20
-> diff --git a/arch/loongarch/include/asm/asm-prototypes.h b/arch/loongarch=
-/include/asm/asm-prototypes.h
-> index 51f224bcfc65..0a57db01116d 100644
-> --- a/arch/loongarch/include/asm/asm-prototypes.h
-> +++ b/arch/loongarch/include/asm/asm-prototypes.h
-> @@ -7,8 +7,6 @@
-> =C2=A0#include <asm/ftrace.h>
-> =C2=A0#include <asm-generic/asm-prototypes.h>
-> =C2=A0
-> -#ifdef CONFIG_ARCH_SUPPORTS_INT128
-> -__int128_t __ashlti3(__int128_t a, int b);
-> -__int128_t __ashrti3(__int128_t a, int b);
-> -__int128_t __lshrti3(__int128_t a, int b);
-> -#endif
-> +struct { u64 lo, hi; } __ashlti3(u64 lo, u64 hi, int b);
-> +struct { u64 lo, hi; } __ashrti3(u64 lo, u64 hi, int b);
-> +struct { u64 lo, hi; } __lshrti3(u64 lo, u64 hi, int b);
+On Fri, Apr 26, 2024 at 4:09=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Thu, 25 Apr 2024 12:20:59 -0700 Mina Almasry wrote:
+> > -       if (recycle && napi_pp_get_page(page))
+> > +       if (napi_pp_get_page(page))
+>
+> Pretty sure you can't do that. The "recycle" here is a concurrency
+> guarantee. A guarantee someone is holding a pp ref on that page,
+> a ref which will not go away while napi_pp_get_page() is executing.
 
-Whoops.  This is still incorrect for LA32.  On LA32 an "int128" (if it
-ever exists) should be passed as a pointer, but this is passing it in 4
-GPRs.  So if we want to keep the prototype correct we need to either use
-"struct { u64 lo, hi; }" in the parameter list too, or guard it with
-#ifdef CONFIG_64BIT.
+I don't mean to argue, but I think the get_page()/put_page() pair we
+do in the page ref path is susceptible to the same issue. AFAIU it's
+not safe to get_page() if another CPU can be dropping the last ref,
+get_page_unless_zero() should be used instead.
 
-So to me checking CONFIG_ARCH_SUPPORTS_INT128 is just easier.
-
-If you insists on not checking CONFIG_ARCH_SUPPORTS_INT128 I'll just use
-an incorrect prototype like RISC-V but put a comment here, like:
-
-/* The prototypes are incorrect but this file is only used by
-   modpost which does not care.  */
-long long __ashlti3(long long a, int b);
-long long __ashrti3(long long a, int b);
-long long __lshrti3(long long a, int b);
-
-How do you think?
+Since get_page() is good in the page ref path without some guarantee,
+it's not obvious to me why we need this guarantee in the pp ref path,
+but I could be missing some subtlety. At any rate, if you prefer us
+going down the road of reverting commit 2cc3aeb5eccc ("skbuff: Fix a
+potential race while recycling page_pool packets"), I think that could
+also fix the issue.
 
 --=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Thanks,
+Mina
 
