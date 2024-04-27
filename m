@@ -1,114 +1,156 @@
-Return-Path: <linux-kernel+bounces-160972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D38CE8B454C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:14:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 134268B454E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:16:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94546281D16
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:14:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 917A2B21D9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9F745959;
-	Sat, 27 Apr 2024 09:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC634597D;
+	Sat, 27 Apr 2024 09:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ZbfoGwnO"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HUMNDpku"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C113613E
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7E440BED;
+	Sat, 27 Apr 2024 09:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714209261; cv=none; b=L/tOF8PfyqRpmZYe2lNgzeS/qQYUXua1z8CQl+lWmaAp5QMsDQBAO8zT1xV8K6E4c3+K1EN+BD/z/8lSjwi32SziloInBEMWVkU0aShziefjyYPGBPI96Zv2TWhgWdsiz6xXnM/06ZJjv503AhcbKgXSbzdBdUuN8Vd7r5GwLWU=
+	t=1714209403; cv=none; b=uA4djM135fkbv7jeosBAHbdJDGX4mh2kZ3i6nh/aucsaCiLM3kQYfLD0tKIFwf0lbzoqB3iwr3MNLnPJVbAC0ixteog382NK3s+EqIZcTJIZbcGVVjopF82ENQTu0yW+bwPwTfWOAeWfFiuJKyvvemuUVE4xeSu573QRDgeSuoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714209261; c=relaxed/simple;
-	bh=vufNbsFjuvsWZANwyY5we69EkOhoysOpuy+LloNbTeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BifR1+RxPkO5Flikj1CbKlzkn/VylpQlB+xoUVyg+oa+0BXFGdCkfSGZzAx1EzIK2q9meLhFadGPRKvIE5gyQhC+/oQPTyccqPRcj1p7ZspqU/4rS6siyKObYCD2eVF/RQRCIn05AO37Nc7icivzbhXojEY5mXE4gn7Dm2YH3VE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=ZbfoGwnO; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=cWs8
-	k+GVFplCjgl9DUc3V0PD20kXbgvT+vO+6jr+fbM=; b=ZbfoGwnOekjjKTHtWJhD
-	nMYp5gvnmij1/BXqjcciz2Bvf1BlIh+QxLyT8JLqjKs/Spcgj5NvmQOTFRN5EGzK
-	Qirli1BSTjM0pZxc/CAihNLDWfh9ZIH9tn6wkJ18oE3tKl2FiK1B/z4xU5MmZwRa
-	yl9O1dt6Cgw8JN9NqJqcwymk17KNAH8mjtqDxxNvQiR+7VNk1mYKN+ejd3Yr/NST
-	Kgi613VBw0BvHTWOcs7W0pLwWWFQfgKSfrerJ7k58vF7D/xJCT1QY3uHgUd+W+Kv
-	9dDJKp2O4y90dcnYm6gNyWSD1cNwO6TZMw8HPSxcg1f9vKqg3+opRzOBMex5DfiQ
-	fQ==
-Received: (qmail 1636660 invoked from network); 27 Apr 2024 11:14:09 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Apr 2024 11:14:09 +0200
-X-UD-Smtp-Session: l3s3148p1@WL5ZcRAXENVehh9l
-Date: Sat, 27 Apr 2024 11:14:08 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: smbus: Add (LP)DDR5 types to `i2c_register_spd()`
-Message-ID: <20240427091408.3gbzxe2rlu2m5wyt@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
+	s=arc-20240116; t=1714209403; c=relaxed/simple;
+	bh=spjxZtU2X9VEEO69NhaiUz7HWIUhY1zMZiiojKMLKJk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fZmhLI2sywKMlWdv7GJrOoyXu8sReCkVpih/HSXBdyY5Ycvoh2awU6DWRg+PBQ807To+lAJapSsRJCwsbgHYqSAV8nWRssU6GZ5CiKhNUeEtWKKXAXXXJHt58GliVGAYA8dd04wX5Wo9PvcdcheZ5tBXCsbyV53h4hNW/A4uw2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HUMNDpku; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88A3AC113CE;
+	Sat, 27 Apr 2024 09:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714209403;
+	bh=spjxZtU2X9VEEO69NhaiUz7HWIUhY1zMZiiojKMLKJk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HUMNDpkuyco7soSPC4Rzf8bKLrCZyn5K6pqb9WdOqdW0PPmw7NluRvmgW2gQ2WNhN
+	 U/l4gJb5hQDVl6DohxW8+u3AGY5WfYVIg/DLDHX7GGfkPOOHbn4UU/XuQBnKyWOvQe
+	 fvFErRstI92CYRG+IEF79gf/RqfNV7fovuG4VRRoPUDqYRUoxPmo42vjyveOTTYKRI
+	 9wYRnwcdTxNNrSFnu/ks7n4pq2NsR2fSl4777y0u294Lb63u8bHuiEFTmlMEnkPtFM
+	 bb5VTrTznU2lK7laxdO4JrFm7k6NcIqIXMJNd5C3NIsEsZndzSiEkkY9WhKE3M2hrF
+	 lvv8QElSuWbDA==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] kconfig: remove SYMBOL_NO_WRITE flag
+Date: Sat, 27 Apr 2024 18:16:38 +0900
+Message-Id: <20240427091638.2722050-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kausmgpaq4p3oq3s"
-Content-Disposition: inline
-In-Reply-To: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
+Content-Transfer-Encoding: 8bit
 
+This flag is set to symbols that are not intended to be written
+to the .config file.
 
---kausmgpaq4p3oq3s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since commit b75b0a819af9 ("kconfig: change defconfig_list option to
+environment variable"), SYMBOL_NO_WRITE is only set to choices.
 
-Hi Paul,
+Therefore, (sym->flags & SYMBOL_NO_WRITE) is equivalent to
+sym_is_choice(sym). This flags is no longer necessary.
 
-> 1.  I have no idea if the name ee1004 is correct.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-I am afraid this won't work. It was tried already in 2023:
+ scripts/kconfig/confdata.c | 4 ++--
+ scripts/kconfig/expr.h     | 1 -
+ scripts/kconfig/gconf.c    | 2 --
+ scripts/kconfig/parser.y   | 2 +-
+ scripts/kconfig/symbol.c   | 3 +--
+ 5 files changed, 4 insertions(+), 8 deletions(-)
 
-https://www.spinics.net/lists/linux-i2c/msg62267.html
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index bcce87658998..5caec434e6f4 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -502,7 +502,7 @@ int conf_read(const char *name)
+ 
+ 	for_all_symbols(sym) {
+ 		sym_calc_value(sym);
+-		if (sym_is_choice(sym) || (sym->flags & SYMBOL_NO_WRITE))
++		if (sym_is_choice(sym))
+ 			continue;
+ 		if (sym_has_value(sym) && (sym->flags & SYMBOL_WRITE)) {
+ 			/* check that calculated value agrees with saved value */
+@@ -1007,7 +1007,7 @@ static int conf_touch_deps(void)
+ 
+ 	for_all_symbols(sym) {
+ 		sym_calc_value(sym);
+-		if ((sym->flags & SYMBOL_NO_WRITE) || !sym->name)
++		if (sym_is_choice(sym))
+ 			continue;
+ 		if (sym->flags & SYMBOL_WRITE) {
+ 			if (sym->flags & SYMBOL_DEF_AUTO) {
+diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+index f646a98de006..d965e427753e 100644
+--- a/scripts/kconfig/expr.h
++++ b/scripts/kconfig/expr.h
+@@ -135,7 +135,6 @@ struct symbol {
+ #define SYMBOL_WRITE      0x0200  /* write symbol to file (KCONFIG_CONFIG) */
+ #define SYMBOL_CHANGED    0x0400  /* ? */
+ #define SYMBOL_WRITTEN    0x0800  /* track info to avoid double-write to .config */
+-#define SYMBOL_NO_WRITE   0x1000  /* Symbol for internal use only; it will not be written */
+ #define SYMBOL_CHECKED    0x2000  /* used during dependency checking */
+ #define SYMBOL_WARNED     0x8000  /* warning has been issued */
+ 
+diff --git a/scripts/kconfig/gconf.c b/scripts/kconfig/gconf.c
+index 13e2449ac83f..67a27c497c40 100644
+--- a/scripts/kconfig/gconf.c
++++ b/scripts/kconfig/gconf.c
+@@ -91,8 +91,6 @@ static const char *dbg_sym_flags(int val)
+ 		strcat(buf, "write/");
+ 	if (val & SYMBOL_CHANGED)
+ 		strcat(buf, "changed/");
+-	if (val & SYMBOL_NO_WRITE)
+-		strcat(buf, "no_write/");
+ 
+ 	buf[strlen(buf) - 1] = '\0';
+ 
+diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+index 69dc0c098acb..613fa8c9c2d0 100644
+--- a/scripts/kconfig/parser.y
++++ b/scripts/kconfig/parser.y
+@@ -222,7 +222,7 @@ config_option: T_MODULES T_EOL
+ choice: T_CHOICE T_EOL
+ {
+ 	struct symbol *sym = sym_lookup(NULL, 0);
+-	sym->flags |= SYMBOL_NO_WRITE;
++
+ 	menu_add_entry(sym);
+ 	menu_add_expr(P_CHOICE, NULL, NULL);
+ 	printd(DEBUG_PARSE, "%s:%d:choice\n", cur_filename, cur_lineno);
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 8b34992ba5ed..b909c64f3bac 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -466,10 +466,9 @@ void sym_calc_value(struct symbol *sym)
+ 			if (sym->flags & SYMBOL_CHANGED)
+ 				sym_set_changed(choice_sym);
+ 		}
+-	}
+ 
+-	if (sym->flags & SYMBOL_NO_WRITE)
+ 		sym->flags &= ~SYMBOL_WRITE;
++	}
+ 
+ 	if (sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES)
+ 		set_all_choice_values(sym);
+-- 
+2.40.1
 
-Especially note Jean's answer here:
-
-https://www.spinics.net/lists/linux-i2c/msg62420.html
-
-So, DDR5 probably needs a new driver.
-
-But thanks for trying!
-
-   Wolfram
-
-
---kausmgpaq4p3oq3s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYswdwACgkQFA3kzBSg
-KbaZrw/44I+MPeOz+tBatSvCkhLS0/rOskhqdsnq0YRMzRIJe/xPSKulvS722t7j
-lCIe1Q+RkzcwE64kFfgbM0nEb+1894uA7jH+Db7DbXe6xyAKJxZ1vgtIjfd87oNn
-ekc7VLX59q6Duv195tZTuBfrhf51/4NVWoStkGw7Zuqpi4gc5cYQRs8nnXio5g54
-TDVvsFwMB9whn7II5NFjEG6A9LYr08VmecJN2g8D1LM05MHE791rRI3zBwjxYzpH
-h8HRjoUn0YM7ZBhvCOSDN+4zF0lY2AqmSGYci4NHmQYtG3i9yrESB9ztt2BeCMnm
-/NyFadF1bFjc+unpCK9KQCfiNL0sktvzj+Ey7mGE5cbE82AxPnCBAXsNPsQegiMP
-ekC1fQmUktNiINwMhe7ho/N8Iba7FQV0Z/jhul26wLdylTGFWspbVbayO5dE13p1
-uxI43FNaJ+CU+MdxQHx3DvBA+knCuKOIUEcxwbzRuxDvAIJwPRumxVLnbbbdUObw
-m7vZlDPg8brI5EYtKGCthzSNkGcDCvYY56c2EVmGgyeOfYfbrZnhlp09JBJ9H0E0
-bKvaBbxghpSkeG1MRsVpMMUzWqRwJzbphEANrpNtL2+obH/9XhGF3WYlml8QCIa7
-n8y93PNhFkFG3WQx+60qjnq4Ivj9X5niIalJV+vUHNzH8ivvyA==
-=ywlY
------END PGP SIGNATURE-----
-
---kausmgpaq4p3oq3s--
 
