@@ -1,200 +1,150 @@
-Return-Path: <linux-kernel+bounces-160979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AF098B455F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 069D88B4563
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:34:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 885571C20FE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:32:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 076DD1C21339
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9805E47A7D;
-	Sat, 27 Apr 2024 09:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53D481BD;
+	Sat, 27 Apr 2024 09:33:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QWQC7TDc"
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uiY1MiDM"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558C946424
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A180D4645B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714210340; cv=none; b=Q5h/s9nNGC0/yNZxiMFM2mSqprjGvtlBLhfklL+026HPqQzIUlkY/F31WOLcFVJZVv7i03/VHshRKNwbaOECdCgWRI8n8lZWS/D6xgdfzUROM8BGVTopbWCAQKRWveW4UA5PZc/848C4P6O2smgWzbObtsfwXmNVD0xm2j8mWoA=
+	t=1714210430; cv=none; b=quSinzp0QszTmklQCvUjMraWalYb301cOaGnYlwawj94NZVlc6HMAoVH2CJ51NBAd+RMyUXOQGwaZ3bGmpvM7OF3QApeu0bVJqweQEnGLKlPVf1GzT8wxzzV/1NC9bSr1XVD/T3/sZuAxVilm4jDGLR3w/nBM0v2cXV3+54/DiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714210340; c=relaxed/simple;
-	bh=gm/k2/7xGLSlKafmjWF+EVOPfqyzb/z2M5ENx0VPP0g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H799OCSQ1d92+Wq69/4D50BwkpQFfPNcDfVULUCGf3iNRhpUochP5iuad9TKG3/8tHW4E/J49SQe8MiHEez0yPj6YSg39+sazsortv8q5yy/YzqI4GyrpuWO8aGaBTmPSWKO5o4kgdWjDXAvrWtvzTs2ScHon2RFpTjW+i1+TGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QWQC7TDc; arc=none smtp.client-ip=209.85.217.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-479d1454cb4so1024052137.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 02:32:19 -0700 (PDT)
+	s=arc-20240116; t=1714210430; c=relaxed/simple;
+	bh=Miw7hc5GB+267q55Huzr5s6mRn9tnVsaVR6HdF6ZL2Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=swC82qxlDHXl6//4Jy2hbwI8MYU02r67uHlMGXO4LvCcqUD6XtNVgH/xqDt5/ec/AwhnO4HSjC2hjg3rUEBBkll06b1S7zfnVRL+T2ICZj9NCiGUaSQyEdMK1FOf6s7WTvajJroDLsn0G1Rw7a9s8/9FajtE8FQQhLwzwUzixdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uiY1MiDM; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e3e84a302eso23069915ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 02:33:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714210338; x=1714815138; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=miy8rObJQOFD7a6RxpdDR5fplId/ZmKxfdplFT7AJPU=;
-        b=QWQC7TDcrWXk3Gra5tTr1ClvLle5Ckc/si0rI0GMG6P78ojFddeoM7WEC9L+qmAufY
-         zLaCdaFecMNjoGEfp2q6wB5EnDvBy0SJsLR4nKA3Nkz03ueViRpw3JvclVQIDYxRo2om
-         h93H5nJNHrvIMuuSZEvhoH2CBXTAg2d64ze103Totv2doA7DNAej/92nWZ8OgAeF1PgI
-         WSzt8gOTOf+4iwxOmG6RYwKNkhRG0qfmgn5X6qtqtKmnapD8ZxKQYIAde52xp2D8oZVG
-         kk6WhFZyyaBmhGKo9StICQy4zMLF2381YzmKuG+cFofiNp+RNZZQMCMmzbNCdmOJRs4O
-         cGBw==
+        d=linaro.org; s=google; t=1714210428; x=1714815228; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xcGWu0Qd+VKYUbfzlOh1vmNPNKKTWpUhtERS9P99/fA=;
+        b=uiY1MiDMTVIBtvO59A932NYxcXD9uUSLbFDy8W42UVBUB+WFL78eIApWHFSn21NHm+
+         dYb8tZBiE/+2CtgutTxJaE3jV5aAzJICsCqxft76ZGyKJWcs0w3HCyLXqd50iAkbQGY3
+         JmhasSBU97Akn2pBbw2KWs0r9WEobCsb0zuCNNHQUQ6EZdhxzFzOfWjxrQl3mDQKKCYS
+         81HOz0q0IcCVXw3q9tMYIP4cj7PDPdRWM87O35mZ+BC7/fR+DBbU+N3tY/rnVB7KKG9U
+         Vk/d6Iiw+lPNj+UO0m4Hips3+ZK0uXBxW6toEkg0u8WyBX72sZ0Z/naxtzoLiHBhzjFb
+         GIuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714210338; x=1714815138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=miy8rObJQOFD7a6RxpdDR5fplId/ZmKxfdplFT7AJPU=;
-        b=SwK3AORsQB2BVHuCk/maY0nOcAS6Ph0T/XWJ63xxkq6e9BB8I4087EF9KvPe1Lpe2U
-         WzQ7exEpxIrdNv7fhCE3ZPkbU7hRBS+6XwfUniqf8upmc5dvr0tu1SSmlfdO7GVxALpl
-         SRSIxBjl/OwcEwD38OMQtEM3k696p5yHN+JE4Zw/B+7QCfe8/8pTrvfIQVhU7APyYOA9
-         WV0H2JL0v4M48DtWezOOWI6/FTrLQQzVueASBEMm8pd15EKews6pdChcYXQIxmioMvk7
-         GSk/GS72ZdGxAAqnuY/HVGbmXubSC6R79mh9KHMnZUWwYoO5jE+QtWSJxZJy/ULmyoTy
-         jWyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXRyVGPgzh1qiF3lV+txty2y3tzTWkwDSGOP/jAXWzGk49M9ZoTPbr90qRNRwHssRXlRSf5brYZPDhKzUoph9KizW7fUgbENstz6ddD
-X-Gm-Message-State: AOJu0YxriNczvt1EF+VhFmUwqarWpa48dIokWK1Ow/IMnOT4x5re9gzg
-	ANJuKAoBvbeDFwMA4VzCfuiI26DzCyDVkczT2g6BGuQtLUIaf65IV3H83xvSmG43BoRdauDUz4e
-	0+zv1nhA37NZZ4dmqIi81klk8l88=
-X-Google-Smtp-Source: AGHT+IGI2EMELholAHRxu2R2Fs8lKaa4cJMxVhzg55OuCrkk7HwFt7DoLKSdDNYH6JZpirbIOCLkUu38yY2kccbCpOs=
-X-Received: by 2002:a67:e947:0:b0:47b:c614:8bd8 with SMTP id
- p7-20020a67e947000000b0047bc6148bd8mr5664441vso.12.1714210336722; Sat, 27 Apr
- 2024 02:32:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714210428; x=1714815228;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xcGWu0Qd+VKYUbfzlOh1vmNPNKKTWpUhtERS9P99/fA=;
+        b=ngCzrWx35f+LPaSWCcJinR1c/A/U8tgmDDM4ElIWQ2mnAZaYhqsJQYx1mPEUJmcREU
+         0m+31VDwksKm0dK2kq5/jJbFGMjihUOaGX0jD97eAuti/5F3EY2eUSsNTDT2tL6Hxfoe
+         WaBIJ3Dw7sm0+tGBWrsoXqkjH7uvnZjB8c9NjVT74SeDYHLALK1mJaEj6b8KksLiQjUS
+         PLLgMg7gjRxQnJTC2cSzVLK0gIEKieBNnWw2nFQZSf3al/QgwQFVgci2pLuS6izR7I4w
+         2qMEhzvRS7g9oJQuPyV5Fd2dnWH78jGkhPYPMhGCT1J86aBWDj+IVqG05luIcLFvnW9A
+         +GKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUAMEUkzQCk5z+h//eWcu0cuMMNzzo101nyBEg5SXMBqc9xMp2fvlHomSqw8tnh87t5o6LeIQUveoVV+iAMtYRVpGEKAEGG9donterl
+X-Gm-Message-State: AOJu0Yx4/l1yaB6AZlMuZYvU1NGaKfdekGGqzxHQgNX3QV9OLrFNq6V/
+	MkZ6XgxfaSAwMyYba1TLBjiO3+IAmEqINm8T/SHcbr/tVZM8hHk9xrTKVQHg0g==
+X-Google-Smtp-Source: AGHT+IHEgFcFYTWrCb8oOy/T7GvDZXiPS2vYVXc1VHEpHHfPR/Jn0v3TSW+ktgEofQzf5auO4mceIw==
+X-Received: by 2002:a17:902:f78d:b0:1eb:527e:a8ad with SMTP id q13-20020a170902f78d00b001eb527ea8admr1948983pln.51.1714210427762;
+        Sat, 27 Apr 2024 02:33:47 -0700 (PDT)
+Received: from thinkpad ([117.213.97.210])
+        by smtp.gmail.com with ESMTPSA id mq8-20020a170902fd4800b001e23fcdebe9sm16790001plb.98.2024.04.27.02.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 02:33:47 -0700 (PDT)
+Date: Sat, 27 Apr 2024 15:03:36 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 05/11] MAINTAINERS: pci: imx: update imx6* to imx*
+ since rename driver file
+Message-ID: <20240427093336.GJ1981@thinkpad>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-5-803414bdb430@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426190253.541419-1-zi.yan@sent.com> <e274ad3b-bbeb-49b0-81bf-24fd33106f05@redhat.com>
- <CB058583-C99A-4897-B3AE-11C56D6E3A59@nvidia.com>
-In-Reply-To: <CB058583-C99A-4897-B3AE-11C56D6E3A59@nvidia.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 27 Apr 2024 17:32:04 +0800
-Message-ID: <CAGsJ_4wEGhL7rRPP_soiEt5bjnpa3zhPnU+8JrNLZvWdcRNuqg@mail.gmail.com>
-Subject: Re: [PATCH v5] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Yang Shi <shy828301@gmail.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Lance Yang <ioworker0@gmail.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240402-pci2_upstream-v3-5-803414bdb430@nxp.com>
 
-On Sat, Apr 27, 2024 at 3:20=E2=80=AFAM Zi Yan <ziy@nvidia.com> wrote:
->
-> On 26 Apr 2024, at 15:08, David Hildenbrand wrote:
->
-> > On 26.04.24 21:02, Zi Yan wrote:
-> >> From: Zi Yan <ziy@nvidia.com>
-> >>
-> >> In __folio_remove_rmap(), a large folio is added to deferred split lis=
-t
-> >> if any page in a folio loses its final mapping. But it is possible tha=
-t
-> >> the folio is fully unmapped and adding it to deferred split list is
-> >> unnecessary.
-> >>
-> >> For PMD-mapped THPs, that was not really an issue, because removing th=
-e
-> >> last PMD mapping in the absence of PTE mappings would not have added t=
-he
-> >> folio to the deferred split queue.
-> >>
-> >> However, for PTE-mapped THPs, which are now more prominent due to mTHP=
-,
-> >> they are always added to the deferred split queue. One side effect
-> >> is that the THP_DEFERRED_SPLIT_PAGE stat for a PTE-mapped folio can be
-> >> unintentionally increased, making it look like there are many partiall=
-y
-> >> mapped folios -- although the whole folio is fully unmapped stepwise.
-> >>
-> >> Core-mm now tries batch-unmapping consecutive PTEs of PTE-mapped THPs
-> >> where possible starting from commit b06dc281aa99 ("mm/rmap: introduce
-> >> folio_remove_rmap_[pte|ptes|pmd]()"). When it happens, a whole PTE-map=
-ped
-> >> folio is unmapped in one go and can avoid being added to deferred spli=
-t
-> >> list, reducing the THP_DEFERRED_SPLIT_PAGE noise. But there will still=
- be
-> >> noise when we cannot batch-unmap a complete PTE-mapped folio in one go
-> >> -- or where this type of batching is not implemented yet, e.g., migrat=
-ion.
-> >>
-> >> To avoid the unnecessary addition, folio->_nr_pages_mapped is checked
-> >> to tell if the whole folio is unmapped. If the folio is already on
-> >> deferred split list, it will be skipped, too.
-> >>
-> >> Note: commit 98046944a159 ("mm: huge_memory: add the missing
-> >> folio_test_pmd_mappable() for THP split statistics") tried to exclude
-> >> mTHP deferred split stats from THP_DEFERRED_SPLIT_PAGE, but it does no=
-t
-> >> fix the above issue. A fully unmapped PTE-mapped order-9 THP was still
-> >> added to deferred split list and counted as THP_DEFERRED_SPLIT_PAGE,
-> >> since nr is 512 (non zero), level is RMAP_LEVEL_PTE, and inside
-> >> deferred_split_folio() the order-9 folio is folio_test_pmd_mappable().
-> >>
-> >> Suggested-by: David Hildenbrand <david@redhat.com>
-> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> >> ---
-> >>   mm/rmap.c | 12 +++++++++---
-> >>   1 file changed, 9 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/mm/rmap.c b/mm/rmap.c
-> >> index 2608c40dffad..a9bd64ebdd9a 100644
-> >> --- a/mm/rmap.c
-> >> +++ b/mm/rmap.c
-> >> @@ -1495,6 +1495,7 @@ static __always_inline void __folio_remove_rmap(=
-struct folio *folio,
-> >>   {
-> >>      atomic_t *mapped =3D &folio->_nr_pages_mapped;
-> >>      int last, nr =3D 0, nr_pmdmapped =3D 0;
-> >> +    bool partially_mapped =3D false;
-> >>      enum node_stat_item idx;
-> >>      __folio_rmap_sanity_checks(folio, page, nr_pages, level);
-> >> @@ -1515,6 +1516,8 @@ static __always_inline void __folio_remove_rmap(=
-struct folio *folio,
-> >>                                      nr++;
-> >>                      }
-> >>              } while (page++, --nr_pages > 0);
-> >> +
-> >> +            partially_mapped =3D !!nr && !!atomic_read(mapped);
-> >
-> > Nit: The && should remove the need for both !!.
->
-> My impression was that !! is needed to convert from int to bool and I do
-> find "!!int && !!int" use in the kernel. If this is unnecessary, Andrew
-> can apply the fixup below. I can send a new version if it is really neede=
-d.
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index a9bd64ebdd9a..c1fd5828409b 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1517,7 +1517,7 @@ static __always_inline void __folio_remove_rmap(str=
-uct folio *folio,
->                         }
->                 } while (page++, --nr_pages > 0);
->
-> -               partially_mapped =3D !!nr && !!atomic_read(mapped);
-> +               partially_mapped =3D nr && atomic_read(mapped
+On Tue, Apr 02, 2024 at 10:33:41AM -0400, Frank Li wrote:
+> Add me to imx pcie driver maintainer.
+> Add mail list imx@lists.linux.dev.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Reviewed-by=EF=BC=9ABarry Song <baohua@kernel.org>
+The driver name changing part should be dropped. But adding a co-maintainer,
+warrants an ACK from previous maintainers.
 
->                 break;
->         case RMAP_LEVEL_PMD:
->                 atomic_dec(&folio->_large_mapcount);
->
-> >
-> > Reviewed-by: David Hildenbrand <david@redhat.com>
->
-> Thanks.
->
-> --
-> Best Regards,
-> Yan, Zi
+- Mani
+
+> ---
+>  MAINTAINERS | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d1052fa6a692..59a409dd604d8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16736,14 +16736,16 @@ F:	drivers/pci/controller/pci-host-generic.c
+>  
+>  PCI DRIVER FOR IMX6
+>  M:	Richard Zhu <hongxing.zhu@nxp.com>
+> +M:	Frank Li <Frank.Li@nxp.com>
+>  M:	Lucas Stach <l.stach@pengutronix.de>
+>  L:	linux-pci@vger.kernel.org
+> +L:	imx@lists.linux.dev
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+>  F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml
+>  F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> -F:	drivers/pci/controller/dwc/*imx6*
+> +F:	drivers/pci/controller/dwc/*imx*
+>  
+>  PCI DRIVER FOR INTEL IXP4XX
+>  M:	Linus Walleij <linus.walleij@linaro.org>
+> 
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
