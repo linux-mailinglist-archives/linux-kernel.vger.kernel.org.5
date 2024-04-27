@@ -1,289 +1,158 @@
-Return-Path: <linux-kernel+bounces-161006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F4F8B45AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:04:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 895E78B45F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44BC51F21C6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:04:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACAD91C22969
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2847F4879B;
-	Sat, 27 Apr 2024 11:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF2354770;
+	Sat, 27 Apr 2024 11:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gwnMSzkV"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vS/M7D5S"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB144644E
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 11:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BD738DD3;
+	Sat, 27 Apr 2024 11:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714215872; cv=none; b=U3m31m2/WjWmLNZnOLD4BwEf6VF6tfj4GomrKTlWYRtR8mz8epsmtGtjJHFwwWYVYOOSWVGIOHOHL6p7yqtmyMeGNDCA5B03K4KhDbXAUrfkS6HIHGIMOQArMo4d5XQzVFvkEDaKA0OZSrcCdvFExcrtMOWrQzbOd7ixbN70TsU=
+	t=1714216787; cv=none; b=uAdDtT52Ht6eCNwrLddas4MC/kRgAOH979T3iYKApfg4gB0RptXDvOfTwzd04PAVF04sv5+X/QsHbJMmXwRKBNkZPqeLjlLIewrgD9MeJf6aAfdMfuSL/uF+qDlXQf81OqyaPAXLk4R5z4E5sAdSNnOlz+qegSmr+a5bqOvtMXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714215872; c=relaxed/simple;
-	bh=Jgs55Yta8j0IjdvCq9qyuW7D53puLLPSH/O281OOKGc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZOWB/xEWDsyOEZXeo+uX+lb4wX+tu+x2FHgSUx3AghjHUzM1sjgK6/c8RvEvMihFLyTpuLZxTrcXnMI0758QuBPjrm72/SWL7HfbuMCnu4H5CKR+yFU1xp1Ur1UAXY/3IGtGs2n7f910C984HKg/S19EgQp0NB6HKBqR7zpPfcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gwnMSzkV; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a556d22fa93so341722666b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1714215868; x=1714820668; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MTsPailerB8pKnIYxWgtzR9tzqjxagTf04yI5tlmVsQ=;
-        b=gwnMSzkVc7cZpzaBa0ywKOfp+tfvunxILaR8n6293WaP3f+HHjYBWCksntwA31zkNY
-         nOURFF9MM/xbnVPjhKVzsAaSJhNOEiY6bupIq6RkiTuCds+RbpvVnWw5Wf6jp++wfSCO
-         Fpddsz+rT7LOwbifB9aFoGei3+1bTe8u3cYpqpqKjvsZCRhKeBs0QYULRNcfcr7o+5Eg
-         B7KOCcV/m4/umpcoSN9d5lvj5xHsUx4m8gHOkbNpTQngatMX8EYFFEHdVwITIW1dM2W5
-         FqGanSalfzlzRXRff/UyN9qOlO1TxmCGHuJ0JQzPaC90QilImXs95Im2T3REOzk5lv2R
-         xivQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714215868; x=1714820668;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MTsPailerB8pKnIYxWgtzR9tzqjxagTf04yI5tlmVsQ=;
-        b=WlIeo9EgFeAcjyKLn5hmcnc+/5N/P23gFV8Mo+VG0dV1H5geK5etDlfAb67w9R2+v7
-         PAS6SkB0/0wyd8G83xugS5777nH1+b7Vkn66xbrZ4WAlTV98IHCDmBFH4+Yv+vSS6gkx
-         k+HTYbsZO8uV/0dI54KUoQIwhPUgtyDynrtvOTLqDG7rB2fyUHAz2Qse+KCqlbcabhYy
-         TjWMrA9hGgOPYuTvH3m1ha+QlyEZFayZcxybUvC50ESGXGt6erIKm6MmhMMQB7AhKJp/
-         aGb3is63rZyCJzCydvhMJ42gfSxWui5J88CLf6rwqKYsPl7z29pv2OtWqgp3tO8KRqc5
-         dvWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjTpqFR18zclSLS3giJbDGBg1XHg4VZr42O2eUTRoLOlezZxHqicF+O6b5wJA9ReXDiQIGjgHOwylz3fu1ZtqpgYPCC7M2Zaoqg6xh
-X-Gm-Message-State: AOJu0YyvCa/ObdMr4MUT1+rFuSRpzJh8J2kNfTqaDkiahE0Wi63T3gWF
-	ttTeA276mgwkDLZ3jfnI3RoG1KneIo2q8riu/BdJT5jLRjdCPiQquqPIOTZwfvk=
-X-Google-Smtp-Source: AGHT+IFqdQo3aUply0IawVy1XS0TvzAAXhp9V7pYLaZp+QjlIW9AtHR3RC5xslW5BHzpCiw9MRj8TQ==
-X-Received: by 2002:a17:906:b80c:b0:a52:3efe:88d3 with SMTP id dv12-20020a170906b80c00b00a523efe88d3mr3206345ejb.67.1714215868564;
-        Sat, 27 Apr 2024 04:04:28 -0700 (PDT)
-Received: from localhost (host-87-1-234-99.retail.telecomitalia.it. [87.1.234.99])
-        by smtp.gmail.com with ESMTPSA id qq22-20020a17090720d600b00a554f6fbb25sm11463605ejb.138.2024.04.27.04.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 04:04:28 -0700 (PDT)
-From: Andrea della Porta <andrea.porta@suse.com>
-X-Google-Original-From: Andrea della Porta <aporta@suse.de>
-Date: Sat, 27 Apr 2024 13:04:29 +0200
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Andrea della Porta <andrea.porta@suse.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kamal Dasu <kamal.dasu@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Jonathan Bell <jonathan@raspberrypi.com>,
-	Phil Elwell <phil@raspberrypi.com>
-Subject: Re: [PATCH 4/6] pinctrl: bcm: Add pinconf/pinmux controller driver
- for BCM2712
-Message-ID: <ZizbvU8IraOYXUfu@apocalypse>
-Mail-Followup-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Andrea della Porta <andrea.porta@suse.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kamal Dasu <kamal.dasu@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Jonathan Bell <jonathan@raspberrypi.com>,
-	Phil Elwell <phil@raspberrypi.com>
-References: <cover.1713036964.git.andrea.porta@suse.com>
- <8fb5dde9404875777587c867e7bdb4f691ab83f2.1713036964.git.andrea.porta@suse.com>
- <66b11910-c6e2-401c-a293-441f6d85bb90@wanadoo.fr>
+	s=arc-20240116; t=1714216787; c=relaxed/simple;
+	bh=Dne5fBR1iIOYX/rPcjbOE3SYHMPYwk167rrQ55hOsLU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qrSPeXl7rrYSWIL/P8qGYMXq4JIQEWJZPtoQEZxuLJn7emWFORdMjj9qVLwgh+hKu8WaYaggUZ6EbzyxziZt/1Y/xmn/EQBp2VWiEkq6zgCBzSGOIbfyw8f6zXxYAXLtH9Hc5CbzEPE9vlHhP3EooI7dcOAac6wMrf5VSLFBfBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=vS/M7D5S; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=Z6fBy03Etm/CSR189UL7iYBAbnioWxrHrZek/W4lxZw=; b=vS/M7D5Sl4CQpsJxN9B544ayJl
+	NsbwfjA7eg/2ImNuB3vQ+FyO6KnYWChQhE9UEVfFRJmRllbf7DUhFzenLUO53LEAv2KInFk8Oyopb
+	9MjFoaiEhjWZejm4EGeYBo+qxV2Fdp1y9QNgkAKlrTFAoVmM8xKunZBtnnuKVSezJCdlERi2FB7//
+	jujUFNSHVAnwubObnsL7ygyYBQ0dIwi7XclXO4znpOewBlKzimiAe6eGE3mQuF7Wwdi4ZQImLLgC8
+	1juHV3lRqr0WEdRDyDptHnhZDzA9XiKwBEPic5gfoaMvn32X6ZBc3pRiqUA3XLJWQ41asQjYvd0XE
+	2ar5/N2A==;
+Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s0g5g-00000007Jwg-1Y9q;
+	Sat, 27 Apr 2024 11:19:36 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s0g5f-000000002b0-2wnU;
+	Sat, 27 Apr 2024 12:19:35 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paul Durrant <paul@xen.org>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	jalliste@amazon.co.uk,
+	sveith@amazon.de,
+	zide.chen@intel.com,
+	Dongli Zhang <dongli.zhang@oracle.com>
+Subject: [RFC PATCH v2] Cleaning up the KVM clock mess
+Date: Sat, 27 Apr 2024 12:04:57 +0100
+Message-ID: <20240427111929.9600-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <66b11910-c6e2-401c-a293-441f6d85bb90@wanadoo.fr>
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-On 09:19 Sun 14 Apr     , Christophe JAILLET wrote:
-> Le 14/04/2024 à 00:14, Andrea della Porta a écrit :
-> > Add a pincontrol driver for BCM2712. BCM2712 allows muxing GPIOs
-> > and setting configuration on pads.
-> > 
-> > Originally-by: Jonathan Bell <jonathan@raspberrypi.com>
-> > Originally-by: Phil Elwell <phil@raspberrypi.com>
-> > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
-> > ---
-> >   drivers/pinctrl/bcm/Kconfig           |    9 +
-> >   drivers/pinctrl/bcm/Makefile          |    1 +
-> >   drivers/pinctrl/bcm/pinctrl-bcm2712.c | 1247 +++++++++++++++++++++++++
-> >   3 files changed, 1257 insertions(+)
-> >   create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm2712.c
-> 
-> ...
-> 
-> > +static int bcm2712_pmx_get_function_groups(struct pinctrl_dev *pctldev,
-> > +		unsigned selector,
-> > +		const char * const **groups,
-> > +		unsigned * const num_groups)
-> > +{
-> > +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-> 
-> Missing empty new line.
-> 
-> > +	/* every pin can do every function */
-> > +	*groups = pc->gpio_groups;
-> > +	*num_groups = pc->pctl_desc.npins;
-> > +
-> > +	return 0;
-> > +}
-> 
-> ...
-> 
-> > +static int bcm2712_pinconf_get(struct pinctrl_dev *pctldev,
-> > +			unsigned pin, unsigned long *config)
-> > +{
-> > +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-> > +	enum pin_config_param param = pinconf_to_config_param(*config);
-> > +	u32 arg;
-> > +
-> > +	switch (param) {
-> > +	case PIN_CONFIG_BIAS_DISABLE:
-> > +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_NONE);
-> > +		break;
-> > +	case PIN_CONFIG_BIAS_PULL_DOWN:
-> > +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_DOWN);
-> > +		break;
-> > +	case PIN_CONFIG_BIAS_PULL_UP:
-> > +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_UP);
-> > +		break;
-> > +	default:
-> > +		return -ENOTSUPP;
-> > +	}
-> > +
-> > +	*config = pinconf_to_config_packed(param, arg);
-> > +
-> > +	return -ENOTSUPP;
-> 
-> Strange.
-> 
-> 	return 0;
-> ?
-> 
-> > +}
-> > +
-> > +static int bcm2712_pinconf_set(struct pinctrl_dev *pctldev,
-> > +			       unsigned int pin, unsigned long *configs,
-> > +			       unsigned int num_configs)
-> > +{
-> > +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-> > +	u32 param, arg;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < num_configs; i++) {
-> > +		param = pinconf_to_config_param(configs[i]);
-> > +		arg = pinconf_to_config_argument(configs[i]);
-> > +
-> > +		switch (param) {
-> > +		case PIN_CONFIG_BIAS_DISABLE:
-> > +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_NONE);
-> > +			break;
-> > +		case PIN_CONFIG_BIAS_PULL_DOWN:
-> > +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_DOWN);
-> > +			break;
-> > +		case PIN_CONFIG_BIAS_PULL_UP:
-> > +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_UP);
-> > +			break;
-> > +		default:
-> > +			return -ENOTSUPP;
-> > +		}
-> > +	} /* for each config */
-> 
-> This comment is not really usefull, IMHO.
+Clean up the KVM clock mess somewhat so that it is either based on the guest
+TSC ("master clock" mode), or on the host CLOCK_MONOTONIC_RAW in cases where
+the TSC isn't usable.
 
-Agreed. Dropped in V2.
+Eliminate the third variant where it was based directly on the *host* TSC,
+due to bugs in e.g. __get_kvmclock().
 
-> 
-> > +
-> > +	return 0;
-> > +}
-> 
-> ...
-> 
-> > +static int bcm2712_pinctrl_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	//struct device_node *np = dev->of_node;
-> > +	const struct bcm_plat_data *pdata;
-> > +	//const struct of_device_id *match;
-> > +	struct bcm2712_pinctrl *pc;
-> > +	const char **names;
-> > +	int num_pins, i;
-> > +
-> > +	pdata = device_get_match_data(&pdev->dev);
-> > +	if (!pdata)
-> > +		return -EINVAL;
-> > +
-> > +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> > +	if (!pc)
-> > +		return -ENOMEM;
-> > +
-> > +	platform_set_drvdata(pdev, pc);
-> > +	pc->dev = dev;
-> > +	spin_lock_init(&pc->lock);
-> > +
-> > +	//pc->base = devm_of_iomap(dev, np, 0, NULL);
-> 
-> Any use for this commented code? (and variable declarations above)
+Kill off the last vestiges of the KVM clock being based on CLOCK_MONOTONIC
+instead of CLOCK_MONOTONIC_RAW and thus being subject to NTP skew.
 
-No, I just forgot to drop the comment. Removed in V2.
+Fix up migration support to allow the KVM clock to be saved/restored as an
+arithmetic function of the guest TSC, since that's what it actually is in
+the *common* case so it can be migrated precisely. Or at least to within
+Â±1 ns which is good enough, as discussed in
+https://lore.kernel.org/kvm/c8dca08bf848e663f192de6705bf04aa3966e856.camel@infradead.org
 
-Many thanks,
-Andrea
+In v2 of this series, TSC synchronization is improved and simplified a bit
+too, and we allow masterclock mode to be used even when the guest TSCs are
+out of sync, as long as they're running at the same *rate*. The different
+*offset* shouldn't matter.
 
-> 
-> CJ
-> 
-> > +	pc->base = devm_platform_ioremap_resource(pdev, 0);
-> > +	if (WARN_ON(IS_ERR(pc->base))) {
-> > +		//dev_err(dev, "could not get IO memory\n");
-> > +		return PTR_ERR(pc->base);
-> > +	}
-> > +
-> > +	pc->pctl_desc = *pdata->pctl_desc;
-> > +	num_pins = pc->pctl_desc.npins;
-> > +	names = devm_kmalloc_array(dev, num_pins, sizeof(const char *),
-> > +				   GFP_KERNEL);
-> > +	if (!names)
-> > +		return -ENOMEM;
-> > +	for (i = 0; i < num_pins; i++)
-> > +		names[i] = pc->pctl_desc.pins[i].name;
-> > +	pc->gpio_groups = names;
-> > +	pc->pin_regs = pdata->pin_regs;
-> > +	pc->pin_funcs = pdata->pin_funcs;
-> > +	pc->pctl_dev = devm_pinctrl_register(dev, &pc->pctl_desc, pc);
-> > +	if (IS_ERR(pc->pctl_dev))
-> > +		return PTR_ERR(pc->pctl_dev);
-> > +
-> > +	pc->gpio_range = *pdata->gpio_range;
-> > +	pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range);
-> > +
-> > +	return 0;
-> > +}
-> 
-> ...
->
- 
+And the kvm_get_time_scale() function annoyed me by being entirely opaque,
+so I studied it until my brain hurt and then added some comments.
+
+In v2 I also dropped the commits which were removing the periodic clock
+syncs. Those are going to be needed still but *only* for non-masterclock
+mode, which I'll do next. Along with ensuring that a masterclock update
+while already in masterclock mode doesn't jump the clock, and just does
+the same as KVM_SET_CLOCK_GUEST does to preserve it.
+
+Needs a *lot* more testing. I think I'm almost done refactoring the code,
+so should focus on building up the tests next.
+
+(I do still hate that we're abusing KVM_GET_CLOCK just to get the tuple
+of {host_tsc, CLOCK_REALTIME} without even *caring* about the eponymous
+KVM clock. Especially as this information is (a) fundamentally what the
+vDSO gettimeofday() exposes to us anyway, (b) using CLOCK_REALTIME not
+TAI, (c) not available on other platforms, for example for migrating
+the Arm arch counter.)
+
+David Woodhouse (13):
+      KVM: x86/xen: Do not corrupt KVM clock in kvm_xen_shared_info_init()
+      KVM: x86: Improve accuracy of KVM clock when TSC scaling is in force
+      KVM: x86: Explicitly disable TSC scaling without CONSTANT_TSC
+      KVM: x86: Add KVM_VCPU_TSC_SCALE and fix the documentation on TSC migration
+      KVM: x86: Avoid NTP frequency skew for KVM clock on 32-bit host
+      KVM: x86: Fix KVM clock precision in __get_kvmclock()
+      KVM: x86: Fix software TSC upscaling in kvm_update_guest_time()
+      KVM: x86: Simplify and comment kvm_get_time_scale()
+      KVM: x86: Remove implicit rdtsc() from kvm_compute_l1_tsc_offset()
+      KVM: x86: Improve synchronization in kvm_synchronize_tsc()
+      KVM: x86: Kill cur_tsc_{nsec,offset,write} fields
+      KVM: x86: Allow KVM master clock mode when TSCs are offset from each other
+      KVM: x86: Factor out kvm_use_master_clock()
+
+Jack Allister (2):
+      KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate KVM clock migration
+      KVM: selftests: Add KVM/PV clock selftest to prove timer correction
+
+ Documentation/virt/kvm/api.rst                    |  37 ++
+ Documentation/virt/kvm/devices/vcpu.rst           | 115 +++-
+ arch/x86/include/asm/kvm_host.h                   |  15 +-
+ arch/x86/include/uapi/asm/kvm.h                   |   6 +
+ arch/x86/kvm/svm/svm.c                            |   3 +-
+ arch/x86/kvm/vmx/vmx.c                            |   2 +-
+ arch/x86/kvm/x86.c                                | 687 +++++++++++++++-------
+ arch/x86/kvm/xen.c                                |   4 +-
+ include/uapi/linux/kvm.h                          |   3 +
+ tools/testing/selftests/kvm/Makefile              |   1 +
+ tools/testing/selftests/kvm/x86_64/pvclock_test.c | 192 ++++++
+ 11 files changed, 822 insertions(+), 243 deletions(-)
+
 
