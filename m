@@ -1,120 +1,135 @@
-Return-Path: <linux-kernel+bounces-160966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBEB8B4539
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:50:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F139E8B452E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1348B21FD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C69EB221A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBECE4594A;
-	Sat, 27 Apr 2024 08:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920444503C;
+	Sat, 27 Apr 2024 08:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rGoAfMZ5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eoqTZyHa"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24DD064C;
-	Sat, 27 Apr 2024 08:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9763E43AA2;
+	Sat, 27 Apr 2024 08:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714207829; cv=none; b=QOqwH+Hc3SY4/R9vjeyWLh3soX2DZdgDOIFGd5hDf+7tbsCOxjoBu9CxF/SRIM6DXU9PKn42Ot8mDszIFIc/g50kB64lFRolQwtJ9wzhRjAIezFGnNqb1y2SkskQ2KLveJdVdWvErazWXr6QPjCrne1UXQXC1HphN12aTGoDQZY=
+	t=1714207712; cv=none; b=r7DU47kh2ywl68MrIrIVseTGo4yu4As9KH+yqd8z/RcUIgOXi6K1yoQNb0ZHxIVDrTKUJpibl32IxVb9B0KXZjidSjsg5qFY+YP9Ga/POp4H5l2bWHflAz3t2PxbI7yADyzJtmSo3XdeBgbY/Tlnv8Nf/zM7hz7T/E+kFlN5DJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714207829; c=relaxed/simple;
-	bh=BuSVg2sIQz4rUwdjp1HPjb4SufNjrq2om93BcT+qtzg=;
+	s=arc-20240116; t=1714207712; c=relaxed/simple;
+	bh=V4NpDnxzjqlT9WYru8l/dQpMschafKVu3wR/Hiqueg0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kZYYiDI+/7xic2zN3cxyjUJFyNdCQeyTaeLmmiArsnNkI22S+Viq36/FPtwBahhTofuBfGsGpIIJ9vFMCaK3QAXdxCkXbVMa1+gjtobW0hlZ8yDVqBSqCQFtpQqKs49g1Rt7Q8/8AVXa1auNacaid9vZaORrXMjXLfSfKkdW0/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rGoAfMZ5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9C8FC113CE;
-	Sat, 27 Apr 2024 08:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714207828;
-	bh=BuSVg2sIQz4rUwdjp1HPjb4SufNjrq2om93BcT+qtzg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rGoAfMZ57VcQEZ97fpBbcG+4RpLHAML9bNmDtpwcyadHjOAb3icpzNDVkwdRy49zs
-	 YXoxSKWHsqbiRYz96MbkBHuZRyXJQnu2g6GgOmFYPf1/1m8J4QywBx/uupsu7lXAo1
-	 1fEeRl4PCJHjHanWu6BD7EjGWsoK8ZaVUwhh/VT12lbj1Rmd3shOkh8AmR3cqDnCry
-	 wn+miUXqUubLMNPl9c5mVDUx7Swx5wfvM4XcKfe10OOrwUARzz/q35o2P2My95v0qB
-	 l+brZsPmkYieLL2cBSoU7YRmRfgMKd6ZY2HIn/1WD681Gw0NlGRTsiSxUzBbsnu+ki
-	 Bg58ogmNj9GzA==
-Date: Sat, 27 Apr 2024 11:49:06 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: DaeRo Lee <skseofh@gmail.com>
-Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Daero Lee <daero_le.lee@samsung.com>
-Subject: Re: [PATCH v2] memblock: add no-map alloc functions
-Message-ID: <Ziy8AsAGZyKCyXX_@kernel.org>
-References: <linux-mm@kvack.org>
- <20240416120635.361838-1-skseofh@gmail.com>
- <20240416120635.361838-2-skseofh@gmail.com>
- <Zh9l_LpThq9aFUR7@kernel.org>
- <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
- <ZiFgYWydIwvnpIIY@kernel.org>
- <CAATEi5kFt8iUeWSkrj_bVTyPO_tfQzG77D719P5dLsr2j6Zkzw@mail.gmail.com>
- <CAATEi5ksY-v7-LEqNZWFV5hsHiegNEtrh4LpMWOQ=vT7hC0Rng@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UwAUkzzkcAxzD3ntTBOAX6z7jXzYM74n8hyoU3TlpLfo5pM+rpzXvn00dTxxjva9HZAhCSfgTLmNWo2US1D+jfYNVUQT0foAISUzS1wh3Oc/1uS6FHHVfumnN5i3GONPPX/8IjU93wKK6G3Sd6a5Y0E47xT7cv2WGiDTbiDdJTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eoqTZyHa; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so2120997a12.0;
+        Sat, 27 Apr 2024 01:48:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714207710; x=1714812510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PXHIbNFrUZ3oIq2rhdb5p0syCAenZ2Q/nUC+x14Dlxc=;
+        b=eoqTZyHaawkjybYL58tlGgfVGMVFyvn+c667tURGccLvW6bhWkw8UoGEtKieUfBFbN
+         umhI+9FZygiEoaop1r6xZwedYGwDxiW4lEkSUyKYp0f/+Ef92jVBY+tBfgicjIwSoQ4X
+         ZuHJ0kDXBml0+RMmuGO/TQtC1ZQC6VhQfSwrBTTT3EgpvCMNbuOCpCryP2D7qnRlvedz
+         Cf09WGMCx6rxHzemuHu3jGA3Bco8O0JjX98jUJnP/cTcpHior0gwaOmurzPh6h+FLHet
+         eFpVsBh4qAKdNeh176B1lDb+HX99hcVnxmNmNkRuSWcZjlHnO9L1R8mlYglES2UvScu5
+         Iu8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714207710; x=1714812510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PXHIbNFrUZ3oIq2rhdb5p0syCAenZ2Q/nUC+x14Dlxc=;
+        b=usB14MyTbh6eUGEDZGcZcOdD+i90uI8laZEnzPXyPcDI1BKK1DVMRz/wIkWyOucilB
+         rPbSprzijxyjzbkPK2V7nX399p3MARiDGOWkuPcfy2tc4BB+ZGS1PRDQ+MDYn/x27fiW
+         Ik51ZpyBeFH4UK1tZswsgEq5cQsdP3cQbPs2MRXUW2dtnt4En9OQrQ2RvUUA/rnpCEei
+         mcKkXzTyT1qke5581kPi97f22jI8e7dOy+/s5nrifFzYGDpQ5Oh1wkLyc1iDwMnngPFh
+         m2EcHZsOZXdCwk/ly9y/iQYF+iVVDnVIhyQJezcT5+tV7Yp0XMji9qgxYXDFSx8I1azi
+         xgsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqu4ev7fEr4NhPYKQ5KLPOOvUotrFh7U+uRFvQkZHFfHruWfdXTsgONRgP4OV7Bu8ml/bxotHaZukccKJL4Cry6fCz3p0T0M9LseMoOdcY50mkeBoR3QtOs8GCPaiiEcU/sHBWVFZV
+X-Gm-Message-State: AOJu0Yyjxm7+mze/lsVefDDuDuZelwHo0KT8a/WI4uI19KX46PFYbGc5
+	hBXjh3+8LSSYrhFjNBsxoi6UXsJKlNATvnj75pkWr8GeAnRJWBQO
+X-Google-Smtp-Source: AGHT+IHR5tbH6MWsLG0qWRbuZ84BDJigIemtA0Lf+Sj/Ld57wPUYzXI0snSmQFCm8kXNUnvTOpHeqQ==
+X-Received: by 2002:a05:6a20:3954:b0:1a9:8251:41ba with SMTP id r20-20020a056a20395400b001a9825141bamr5582525pzg.51.1714207710369;
+        Sat, 27 Apr 2024 01:48:30 -0700 (PDT)
+Received: from localhost ([2804:30c:1f6c:5400:ea32:e7c8:5bc0:103])
+        by smtp.gmail.com with ESMTPSA id k1-20020a17090a590100b002afd65ff881sm3946516pji.44.2024.04.27.01.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 01:48:29 -0700 (PDT)
+Date: Sat, 27 Apr 2024 05:49:18 -0300
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Andrew Hepp <andrew.hepp@ahepp.dev>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
+ negative values
+Message-ID: <Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
+References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAATEi5ksY-v7-LEqNZWFV5hsHiegNEtrh4LpMWOQ=vT7hC0Rng@mail.gmail.com>
+In-Reply-To: <20240424185913.1177127-1-dima.fedrau@gmail.com>
 
-On Fri, Apr 19, 2024 at 10:59:52AM +0900, DaeRo Lee wrote:
-> 2024년 4월 19일 (금) 오전 10:46, DaeRo Lee <skseofh@gmail.com>님이 작성:
-> >
-> > In memmap_init_reserved_pages, we mark memblock.reserved as
-> > PageReserved first and mark the memblock.reserved with nomap flag
-> > also.
-> Sorry. This is my mistake. 'memblock.memory with nomap flag' is right.
+Hi Dimitri,
+
+Interesting patch this one.
+I think this does apply, although, the cold junction register has for sign bits
+so I think we could also have a mask to clear those out.
+Some code suggestions inline.
+
+Regards,
+Marcelo
+
+On 04/24, Dimitri Fedrau wrote:
+> Temperature is stored as 16bit value in two's complement format. Current
+> implementation ignores the sign bit. Make it aware of the sign bit by
+> using sign_extend32.
 > 
-> > -> Isn't this duplicated work? (If we add no-map region to
-> > memblock.reserved 'and' mark in memblock.memory..)
-> > So, I think that for the no-map region, we don't need to add to the
-> > memblock.reserved.
-> > This is what we do now in early_init_dt_reserve_memory. the nomap
-> > region is not added to the memblock.reserved.
-> >
-> > In early_init_dt_alloc_reserved_memory_arch, if 'nomap' is true, we
-> > mark the memblock.memory region as _NOMAP. And if the return value
-> > 'err' is not zero(which is '-ENOMEM' from memblock_isolate_range), we
-> > free the region.
-> > - 'nomap' is true -> memblock_mark_nomap : success -> not free the region
-> >
-> > : fail -> free the region
-> > And it can be said that we add the region to the memblock.reserved
-> > using memblock_phys_alloc_range and if the region is nomap, then we
-> > can free the region from memblock.reserved. But is it necessary to add
-> > it to memblock.reserved? We just need the region in memblock.memory to
-> > mark nomap.
-> >
-> > So, here is what I think:
-> > - reserved-memory w/ nomap region -> mark only to memblock.memory
-> > - reserved-memory w/o nomap region -> add to the memblock.reserved
+> Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF converter")
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> ---
+>  drivers/iio/temperature/mcp9600.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
+> index 46845804292b..7a3eef5d5e75 100644
+> --- a/drivers/iio/temperature/mcp9600.c
+> +++ b/drivers/iio/temperature/mcp9600.c
 
-NOMAP and memblock.reserved are semantically different, and at makes sense
-to have a "reserved nomap" node in fdt recorded in both memblock.memory and
-memblock.reserved.
+#define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
+..
 
-memblock.reserved represents the memory that is used by firmware or early
-kernel allocation, so reserved memory in fdt should be reserved in memblock
-as well. I believe it's an oversight that early_init_dt_reserve_memory()
-does not call memblock_reserve() for nomap memory.
+> @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
+>  
+>  	if (ret < 0)
+>  		return ret;
+> -	*val = ret;
+> +
+> +	*val = sign_extend32(ret, 15);
+	if (chan->address == MCP9600_COLD_JUNCTION)
+		*val &= ~MCP9600_COLD_JUNCTION_SIGN_MSK;
 
-NOMAP is a property of a memory region that says that that region should
-not be mapped in the linear map, it's not necessarily in use.
-
-> > Regards,
-> > DaeRo Lee
-
--- 
-Sincerely yours,
-Mike.
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.39.2
+> 
+> 
 
