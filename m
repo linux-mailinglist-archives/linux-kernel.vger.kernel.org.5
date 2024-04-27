@@ -1,79 +1,87 @@
-Return-Path: <linux-kernel+bounces-160876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE3A8B43E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:06:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FF08B43EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:22:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16BC1F227F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:06:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96C30B21E4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763453BBF9;
-	Sat, 27 Apr 2024 03:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57513BBF9;
+	Sat, 27 Apr 2024 03:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SSv8HwzL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cFS/ULaX"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A4F1F93E;
-	Sat, 27 Apr 2024 03:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB874374C3;
+	Sat, 27 Apr 2024 03:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714187186; cv=none; b=IbbnT/t6pnC+BrFwadMlji6WhMklWHkWb1rN62nothCBuA5M+umX0+IjApGORxuzeUv/4KkE86fNzLpgNCAMaDyZThDgrgLncbYHQ/R2LsdT41oL8J6oSMRPCnHfQLpVweloG3J0bTFdiBehiS/ki8ajYF2fu4ytmiP0HGZTA78=
+	t=1714188119; cv=none; b=ZSsxq0O1CookP+jcISLINHF/EZA+z/wrsmvDI1WtArCHlS9LY3yM/G7jWvJ3MiIHLIxXYZOKOc8lwMXeHUU9G8FNguQ/dPY8qrqc6k3wns/qs6JNJw3yVhWAwAkT0ngQNzMelt/Y3bky+Nztny5LcXyaegPQH75sFZrQFmSkYl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714187186; c=relaxed/simple;
-	bh=5s9RUz2MFkTGAYQJ26h2TnEAa/zhOjqbrB7VANRk3lA=;
+	s=arc-20240116; t=1714188119; c=relaxed/simple;
+	bh=hIwZF+sC085Vr0r9GvhS9ISzHFgm7sRbQ+ivQ3g0R3Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IPHLdEFrUV/G2WfBAyPTDKiJdc61+mqDPfmw5ugnI+xgX6rqFsY/aljqjweNnywKoTWeU9tnip0l4hl1KSXJxpDsY3qBH/1kM+G+ZffrEpSD25GVAMimVyoLMdzYnGJ2Lg0odgND5p9zCylODKp8baY7yMsfMtS3L00aU5SDqVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SSv8HwzL; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714187185; x=1745723185;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5s9RUz2MFkTGAYQJ26h2TnEAa/zhOjqbrB7VANRk3lA=;
-  b=SSv8HwzLvFuZLHaplno6KDuXk542fxOtj4tbNISshFgycwsJDGLgf4ux
-   2XbWZXxbDryD/JWjT+kQ5RgNZUwSgCVxGMjTZUrSCMk9pe8UD5Pp3NlUL
-   pJrXEQZ0w5s5bvdbGywZBpz+7e6XuVoj41iT7Anllu/XVAnm4HDJd9g+s
-   uFsuWETMfXqoJ0b7aICIXsx7ExjWrQNa+Xx5wDaE8nOT+G8VoWnsyoRwv
-   8e1KkILRrieLhaGN3iZfV0RBxjQV2jMfHreWtocuNjc8YV9mcAcKTJCyh
-   InOhG6Mx8iLcACKjeFV9LDXGsDIENs0HL7761v0nHELt4VjqM9nfzIX+E
-   Q==;
-X-CSE-ConnectionGUID: 2Io5EqItQ/uh2atP6tpBDg==
-X-CSE-MsgGUID: 6aqgQIWBTw+JmGktHyDgmg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10468292"
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="10468292"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 20:06:24 -0700
-X-CSE-ConnectionGUID: MynFAFYcTw6hsFAehSytYg==
-X-CSE-MsgGUID: nka30g3MRzqwzZjNc2Gf2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="56778167"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 26 Apr 2024 20:06:21 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0YOJ-0004ba-1x;
-	Sat, 27 Apr 2024 03:06:19 +0000
-Date: Sat, 27 Apr 2024 11:05:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>,
-	linux-kernel@vger.kernel.org, jic23@kernel.org,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	robh@kernel.org, nuno.sa@analog.com
-Cc: oe-kbuild-all@lists.linux.dev,
-	Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Subject: Re: [PATCH 4/7] iio: imu: adis_buffer: Add buffer setup API with
- buffer attributes
-Message-ID: <202404271027.ySHRhuOH-lkp@intel.com>
-References: <20240426135339.185602-5-ramona.bolboaca13@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DgzptsuqWCjisaEJulR/UcVMkeasqMwrctCsV2HumCDRaCQujHvP1iyIJmwtWqrMNg8fdon7e0TTuADc7rASPA+AAZpc/YFvmgYyqBciDT8nR7ldg1RckKKjJN64qaEzUOJz473KzTlgc1fIJj/6pXwEErbCCAzklzK82zEUSak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cFS/ULaX; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61587aa956eso30524837b3.1;
+        Fri, 26 Apr 2024 20:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714188116; x=1714792916; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RUUuVGg/SnTpcYpDAcB9MZTXxuDZ2REJ7oy7ikLy09c=;
+        b=cFS/ULaX7rSagTzi+ayGdDxql2g3ElsoHbeVI+2cLpTifymH5XiI+3ZgH8jWp9zugc
+         aZGIdei4JNPWMJtN8FWeAhMRsT1sH439eCFcABIKApJCYdaVILqqKhARNus6mflTQtSJ
+         h2A55S3PTdBgtxfp7dXzd5T1aCQQZGZxC7I/AsgIy/BqQeYPCdnhoGhRGqPNqQVC6mj+
+         Zw1bbCQdCJqPhSqvDZKL94yU5a3D6nvq1OMQYHCBrNtHSjQjOI6dWP5qAlbKrMRjkUNf
+         b8Lv1gnomILpskFjQf1UGRTfVQvN0fKR+GI5IfuT8kWAiDxlTNPyFznxPjhKTZtUMRP0
+         qI/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714188116; x=1714792916;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RUUuVGg/SnTpcYpDAcB9MZTXxuDZ2REJ7oy7ikLy09c=;
+        b=DbiZ3VbtWZLjs0bMWi6chi/4pk3LjTMN3sX6FTdft07GKyYxqpuhyq8TTlwFSTUAEQ
+         dDGxB/hlTsKECaHdpc3KkpTcBzTy39AXO7AvES1hMCIxUmkvoU7ALMpGdQSyi44uObIq
+         qHXnG81XUktN85YOpob4LAAZXxLtly18Q4BgcoMVA02keXhwIj/EhSieC4catyvHIO/E
+         rjaTlHi95BhQ1qA23+vqgtkbypPSJ+4SPoeoSrI7V6oDYOoJn3ty3CTPD3BsE4Bh5lCl
+         LPj4cS1944jrk6Yk8Kblbh0O7tpRTybFigeFJO4xV34dsCPsRBEXOfHBLh/3nV/B+A2t
+         wG/A==
+X-Forwarded-Encrypted: i=1; AJvYcCU60UEdEntjWqYg1vstgLMlEhb0dgHD5kUg0xouCu+KPFXnuABQkltWoKuBjcBCCFWP0/kxRMP0YBJAgiUxbIlb/Jtjs5POlMYah9jtipGI96BkwtXl2KHVUOui7EOwr2lsN7FgrgKuDOo=
+X-Gm-Message-State: AOJu0YzEzxGDVLVhWtRnw0siAcCySTJ7mO+XvGOXT/39Ax+wR7oK0wD9
+	aqSyayW5XitMxk35lWehTNnamuWXohHip2H/ssu5CWBacgPt/vlO
+X-Google-Smtp-Source: AGHT+IFRCXQq0LR1NVgLKhfkiN+fon7vvAmErPX4sJrlb9HVcw7tWFqTXBKnFQhlftZOhIYXIpKzAA==
+X-Received: by 2002:a05:690c:6089:b0:61a:ccfc:4543 with SMTP id hg9-20020a05690c608900b0061accfc4543mr4233674ywb.47.1714188116469;
+        Fri, 26 Apr 2024 20:21:56 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:f5c4:246f:8229:da0])
+        by smtp.gmail.com with ESMTPSA id d14-20020a0ddb0e000000b0061871ed807fsm4407114ywe.32.2024.04.26.20.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 20:21:56 -0700 (PDT)
+Date: Fri, 26 Apr 2024 20:21:52 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Kenny Levinsen <kl@kl.wtf>
+Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>,
+	Lukasz Majczak <lma@chromium.org>
+Subject: Re: [PATCH v3 1/3] HID: i2c-hid: Rely on HID descriptor fetch to
+ probe
+Message-ID: <ZixvUNooESC02cJK@google.com>
+References: <20240426225739.2166-1-kl@kl.wtf>
+ <20240426225739.2166-2-kl@kl.wtf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,82 +90,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240426135339.185602-5-ramona.bolboaca13@gmail.com>
+In-Reply-To: <20240426225739.2166-2-kl@kl.wtf>
 
-Hi Ramona,
+Hi Kenny, Lukasz,
 
-kernel test robot noticed the following build errors:
+On Sat, Apr 27, 2024 at 12:47:07AM +0200, Kenny Levinsen wrote:
+> To avoid error messages when a device is not present, b3a81b6c4fc6 added
+> an initial bus probe using a dummy i2c_smbus_read_byte() call.
+> 
+> Without this probe, i2c_hid_fetch_hid_descriptor() will fail internally
+> on a bus error and log. Treat the bus error as a missing device and
+> remove the error log so we can do away with the probe.
+> 
+> Tested-by: Lukasz Majczak <lma@chromium.org>
+> Reviewed-by: Lukasz Majczak <lma@chromium.org>
+> Signed-off-by: Kenny Levinsen <kl@kl.wtf>
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 21 ++++++---------------
+>  1 file changed, 6 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index d965382196c6..6ffa43d245b4 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -872,12 +872,11 @@ static int i2c_hid_fetch_hid_descriptor(struct i2c_hid *ihid)
+>  					      ihid->wHIDDescRegister,
+>  					      &ihid->hdesc,
+>  					      sizeof(ihid->hdesc));
+> -		if (error) {
+> -			dev_err(&ihid->client->dev,
+> -				"failed to fetch HID descriptor: %d\n",
+> -				error);
+> -			return -ENODEV;
+> -		}
+> +
+> +		/* The i2c drivers are a bit inconsistent with their error
+> +		 * codes, so treat everything as -ENXIO for now. */
+> +		if (error)
+> +			return -ENXIO;
 
-[auto build test ERROR on jic23-iio/togreg]
-[also build test ERROR on linus/master v6.9-rc5 next-20240426]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I really think we should differentiate the cases "we do not know if
+there is a device" vs "we do known that there is a device and we have
+strong expectation of what that device is, and we do not expect
+communication to fail".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ramona-Gradinariu/dt-bindings-iio-imu-Add-ADIS16501-compatibles/20240426-215728
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20240426135339.185602-5-ramona.bolboaca13%40gmail.com
-patch subject: [PATCH 4/7] iio: imu: adis_buffer: Add buffer setup API with buffer attributes
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240427/202404271027.ySHRhuOH-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404271027.ySHRhuOH-lkp@intel.com/reproduce)
+Because of that I think we should have separate retry for the original
+i2c_smbus_read_byte() (if you want you can make a wrapper around it,
+something like i2c_hid_check_device_present()", and if there is a
+concern that we will run into similar issue on resume (either from
+suspend or from hibernate) then we can have similar retry in
+i2c_hid_fetch_hid_descriptor().
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404271027.ySHRhuOH-lkp@intel.com/
+But I do think that i2c_hid_fetch_hid_descriptor() should not try to
+clobber the error but rather log the true one.
 
-All errors (new ones prefixed by >>):
+>  	}
+>  
+>  	/* Validate the length of HID descriptor, the 4 first bytes:
+> @@ -992,17 +991,9 @@ static int __i2c_hid_core_probe(struct i2c_hid *ihid)
+>  	struct hid_device *hid = ihid->hid;
+>  	int ret;
+>  
+> -	/* Make sure there is something at this address */
+> -	ret = i2c_smbus_read_byte(client);
+> -	if (ret < 0) {
+> -		i2c_hid_dbg(ihid, "nothing at this address: %d\n", ret);
+> -		return -ENXIO;
+> -	}
+> -
+>  	ret = i2c_hid_fetch_hid_descriptor(ihid);
+>  	if (ret < 0) {
+> -		dev_err(&client->dev,
+> -			"Failed to fetch the HID Descriptor\n");
+> +		i2c_hid_dbg(ihid, "failed to fetch HID descriptor: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> -- 
+> 2.44.0
+> 
+> 
 
-   drivers/iio/imu/adis_buffer.c: In function 'devm_adis_setup_buffer_and_trigger_with_attrs':
->> drivers/iio/imu/adis_buffer.c:207:51: error: passing argument 7 of 'devm_iio_triggered_buffer_setup_ext' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     207 |                                                   buffer_attrs);
-         |                                                   ^~~~~~~~~~~~
-         |                                                   |
-         |                                                   const struct attribute **
-   In file included from drivers/iio/imu/adis_buffer.c:19:
-   include/linux/iio/triggered_buffer.h:31:69: note: expected 'const struct iio_dev_attr **' but argument is of type 'const struct attribute **'
-      31 |                                         const struct iio_dev_attr **buffer_attrs);
-         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/devm_iio_triggered_buffer_setup_ext +207 drivers/iio/imu/adis_buffer.c
-
-   176	
-   177	/**
-   178	 * devm_adis_setup_buffer_and_trigger_with_attrs() - Sets up buffer and trigger
-   179	 * for the managed adis device with buffer attributes.
-   180	 * @adis: The adis device
-   181	 * @indio_dev: The IIO device
-   182	 * @trigger_handler: Trigger handler: should handle the buffer readings.
-   183	 * @ops: Optional buffer setup functions, may be NULL.
-   184	 * @buffer_attrs: Extra buffer attributes.
-   185	 *
-   186	 * Returns 0 on success, a negative error code otherwise.
-   187	 *
-   188	 * This function sets up the buffer (with buffer setup functions and extra
-   189	 * buffer attributes) and trigger for a adis devices with buffer attributes.
-   190	 */
-   191	int
-   192	devm_adis_setup_buffer_and_trigger_with_attrs(struct adis *adis, struct iio_dev *indio_dev,
-   193						      irq_handler_t trigger_handler,
-   194						      const struct iio_buffer_setup_ops *ops,
-   195						      const struct attribute **buffer_attrs)
-   196	{
-   197		int ret;
-   198	
-   199		if (!trigger_handler)
-   200			trigger_handler = adis_trigger_handler;
-   201	
-   202		ret = devm_iio_triggered_buffer_setup_ext(&adis->spi->dev, indio_dev,
-   203							  &iio_pollfunc_store_time,
-   204							  trigger_handler,
-   205							  IIO_BUFFER_DIRECTION_IN,
-   206							  ops,
- > 207							  buffer_attrs);
+Thanks.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dmitry
 
