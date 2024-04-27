@@ -1,179 +1,138 @@
-Return-Path: <linux-kernel+bounces-160914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CB78B447A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:08:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6BA8B447E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D41DB21F3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:08:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5C21F228C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F0341744;
-	Sat, 27 Apr 2024 06:08:22 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2614940BE6;
+	Sat, 27 Apr 2024 06:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TQ5ayPCb"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A604A36AEC
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 06:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166503BBF8;
+	Sat, 27 Apr 2024 06:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714198102; cv=none; b=IezDMiAgs+qW6fXIuiUzZehHJ4upweji2NVr0qF0PjyuPt0vO1d7jGt3cL3u6cAU9VZnPNKr67542W54kEIJDqELZKfNBXSq3h5PNzvS7CDLlNJsJvIp4knC2g3vUlW2q+VAzyF+eG7ycw9CwAV1rvYY0LL/wMDTqNLuYUxr/vk=
+	t=1714198725; cv=none; b=lN3zWZEbyS5vLwlsswnodWemfEWwq9+dlF4Wf/rpzLbABnee2bqnv17yzvCKPpFDkRCjwBSB1wN9wM1ZWhuIs/XFRimqGqsXHdDiftHgqrJNSBTQ4+NCF2ZhmsrBo7jFpKwmC34Sve3oZ5HpdeDR0tQYbFRWXOpkiMfQdpT85gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714198102; c=relaxed/simple;
-	bh=nyA9/XTxlQcPGTjwj3kf3iu51eo7cB/3xVNnvNV4vlY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Kc2XdS8l7wrHmsyedqjkdWVyji5y/Zu/fM9EBsMowhBrciO0y4lOHkiCNh76WOP2f+rFx8ZcZg5WB3R8D3uGLtddY/xbdmccmG0sUjzWilF6+RG3m+3pwW265MUxtqjSFm8geMK05fnsar/JhvK9b0ypaqPkHlpGbReuQ4mtUb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dd8cd201d6so300604239f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 23:08:20 -0700 (PDT)
+	s=arc-20240116; t=1714198725; c=relaxed/simple;
+	bh=1xBwb33HlEHKam4na4z1hGgvPpLWrtVUW6QBYk0mW/U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X3+X9FBpFT4agryTV+Fl0gg8tRGv8d7eE+0UHH8CoxBTtEUTEcppXEMQkQM8p7SU0hQtBBgn0pJ/H0swyk5Tnk+rLjrKHEr97qXdhHDRGb7PlxJt+gSCP18TZKPWTRlkFUKOgGTdDCHQp67MKb/P5s8sO/G4hCVR44Q9UseqKfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TQ5ayPCb; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de46da8ced2so3250872276.0;
+        Fri, 26 Apr 2024 23:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714198723; x=1714803523; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1xBwb33HlEHKam4na4z1hGgvPpLWrtVUW6QBYk0mW/U=;
+        b=TQ5ayPCbiLGt26T3w8AAWr2P7efHFOlWcHaXNBcdJJbevBB7Rbry1Tq46yaZ66SuqX
+         dsTzAzIgsqJZPZ5JV/+DP08c3I7lkB0Bmf9Jg9KR5IX34Fxb6xRbcRrXjz6eJ3ReDiz1
+         F1YSlmP5ORnbkH5+tUHKoDvXW2UowVha7afN2z4Z3Yls7anMDNv7r5gC6WD+uwsGcTp6
+         bcJ/JNaRJqPv2nI2bu0TAkO93jK3BGgcSroLeOlbRZMhbRIfni6P3qKJby91WUayzno8
+         wdKJtwK9A1y++HIZc65vYxO6ObahF2kEYqggi0jjnQRQXwxFomWe1O2jcWdHbUJ6uD+T
+         lL6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714198100; x=1714802900;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uc/bj6Pb6mpN/D5wfm6HuVO2UjtEKfcC01ViGnC//f0=;
-        b=v9HuUE/fIxOtEWcYpxdsCyX8AW75k+JG4IIvkmmG08pYZ2gH9NeguYTiEWqMXcPlFq
-         OBb/Z//kJdd1Un5J+LmCQDXAYlvCCWklKOgqkXX31mw8fu38KYHFWB2VB0Oy13w4CKRL
-         ZjGG1lF2gcwi4R+goS3p/TAdNZqiaLwLKx429iYs6Pr8rrzIVG3Zgby/7BkgcQo6xaWb
-         Be63QzVsxo7lsr7meRaMFetFnyeUeyy4eYtk4fERlWZpjIfZ9NZ6CG003jCNY+jpBFLa
-         iAjuMpOs5DWlY+cTBdlAq96+UDVER4f8PjpNrCej1lODyQGlym64m+zaPBmGPlPBO8It
-         AAHg==
-X-Forwarded-Encrypted: i=1; AJvYcCX3urcK4/EqJ8o7ygSlILXjDuBrAuuD0S/9WQUCp3iYkcyDIuEjoub7YetVA8izWWTt2E1HB4G0yHiRWVJoyUqf/aBHvSW6b53JCIKe
-X-Gm-Message-State: AOJu0YxLW7Z7EcOykCDkA4uf6glbIq2nq4Q6BHbl4NTaToh9cQfAGXXY
-	3PjqnMX3VSHxAb0SqneQw+HNhN2Qhd2QnJ/5UaREHxghmwOC10h5oeDZR0Dg/zMejcpTLVVLZV1
-	J7ScKy5TfR/vL2f93TDzHeQg9xxwt0WIf+ap+TIVG2R/C9ib431TW9UY=
-X-Google-Smtp-Source: AGHT+IEG3OJfnn94SCS/RcYeqisQrf5NF/CAzxQJMxz6hbX6LQoNMkCMdFxHSsDP0GYHQZc7PjY+fGcomjaerii7y/SzHPuUDlU6
+        d=1e100.net; s=20230601; t=1714198723; x=1714803523;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1xBwb33HlEHKam4na4z1hGgvPpLWrtVUW6QBYk0mW/U=;
+        b=nEneHyVZ5WR50+GKvQ17xI7ENrrzzFG6W3vLEPN77ecjGBg0StXn/wL2FDbuyOWC1F
+         dR7c2InyIG0pEHQ/Ygxa14gm71eBY9QcDqbyEoBTBRzXsP/RNgMw7MJiirbwAi3A0Fb4
+         /1dvbcH1dJFBQrdVwsqE69C2Nuj0Q41vvZtAQaWF6KBYshN9PlNp79prV7FtjcD7/znh
+         f0IU6XLC9MFibsQCg0IFdksc3WJGNG+rkBdDw8XSwlTSxqZbRwdavEMtMP1+gYPI2M9B
+         jGuZKhWDhLRC4v42NkHzG4E2+5m5r+u21zA/F17vSGDWD2n898VgP12uGq9n1/APUwGV
+         jgyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ/n7GZSXxZhS9p5sONgx0jRUOyZpJ9jwl2Cov/F0tWSps5It3GQAjVhWw9TUWNmUGgD+1/SnhfXecaEUAwtd6VPXqJjY83Sqy9uPYuXRL+VhHnGxeSmLThXmdHNGcPJ5qsTJSM2MUGs8TJcuqYNynj6PRXnmh0POYKR4CPudKPgFKpkCvK9Q=
+X-Gm-Message-State: AOJu0Yyzft87sl0GlycLlx0xwmsTLDXmit9O3JY6pSNFZ9wK0e5NtoiL
+	1a7Iojo3qCptuAdLq4v6KK30FuS4CaMxgqkv5LmjUeIWwKl3XqhNhP0Uc3RcjHWhdBPHOqDkRQI
+	DDL3s4c+xGYNOnl7zz07/vXfT+3s=
+X-Google-Smtp-Source: AGHT+IEVxJ68zZMIzHXBo3PSf4c3WY5+F8RxzZc+WGrryo08YQZtfE5HR2Cm05xzld7nXaGlOWGgAtYPlmEyceHeumc=
+X-Received: by 2002:a25:d68b:0:b0:de4:6046:acb1 with SMTP id
+ n133-20020a25d68b000000b00de46046acb1mr5306938ybg.16.1714198723084; Fri, 26
+ Apr 2024 23:18:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6f0b:b0:487:80f7:c4ee with SMTP id
- hp11-20020a0566386f0b00b0048780f7c4eemr5675jab.0.1714198099830; Fri, 26 Apr
- 2024 23:08:19 -0700 (PDT)
-Date: Fri, 26 Apr 2024 23:08:19 -0700
-In-Reply-To: <0000000000000d7c8f0614076733@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d0b87206170dd88f@google.com>
-Subject: Re: [syzbot] [net?] [bpf?] possible deadlock in sock_hash_delete_elem (2)
-From: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
+References: <20240424-tlmm-open-drain-v1-1-9dd2041f0532@quicinc.com>
+ <ZipGRl_QC_x83MFt@hovoldconsulting.com> <CAN8TOE_Vd9c2eYgomhu_ukofTeO9eK8Yhrtt-8BQckmJnGfj6w@mail.gmail.com>
+ <Ziw8OrNS55AtyDkI@hu-bjorande-lv.qualcomm.com>
+In-Reply-To: <Ziw8OrNS55AtyDkI@hu-bjorande-lv.qualcomm.com>
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 26 Apr 2024 23:18:30 -0700
+Message-ID: <CAN8TOE-o7Sq-ZugRfKEQfkzjozhMS=LZ0Ogj_r3dyUuNO4974A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: Fix behavior in abscense of open-drain support
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Johan Hovold <johan@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Jaiganesh Narayanan <njaigane@codeaurora.org>, 
+	Doug Anderson <dianders@chromium.org>, linux-arm-msm@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+Hi Bjorn,
 
-HEAD commit:    b2ff42c6d3ab Merge tag 'for-netdev' of https://git.kernel...
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=157ea5e8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145682f8980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c06aa0980000
+On Fri, Apr 26, 2024 at 4:44=E2=80=AFPM Bjorn Andersson
+<quic_bjorande@quicinc.com> wrote:
+> On Fri, Apr 26, 2024 at 03:08:06PM -0700, Brian Norris wrote:
+> > Apologies if I broke something here.
+>
+> False alarm on the breakage part, I got lost in the software layers.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bbdf1d091619/disk-b2ff42c6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4bf7c5b24257/vmlinux-b2ff42c6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/41fcb792fc43/bzImage-b2ff42c6.xz
+OK! Glad it's not causing a visible problem.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
+> > But I can't tell based on subsequent conversation: are you observing a
+> > real problem, or is this a theoretical one that only exists if the
+> > gpiochip driver adds set_config() support?
+> >
+>
+> There is a problem that if a non-ipq4019 device where to be pinconf'ed
+> for open-drain, the outcome would be unexpected
 
-============================================
-WARNING: possible recursive locking detected
-6.9.0-rc5-syzkaller-00171-gb2ff42c6d3ab #0 Not tainted
---------------------------------------------
-syz-executor361/5090 is trying to acquire lock:
-ffff888022c83260 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff888022c83260 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+Well as observed elsewhere, that's not permitted in most MSM bindings
+;) But still might be nice to remove the landmine.
 
-but task is already holding lock:
-ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
+> and I have a concern
+> that someone one day would implement set_config().
+>
+> So, I'd like to fix this, but my argumentation is at least wrong.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+Sure.
 
-       CPU0
-       ----
-  lock(&htab->buckets[i].lock);
-  lock(&htab->buckets[i].lock);
+I haven't surveyed the other pinconf types well, but how does this
+driver handle all that? Are all other types supported uniformly by all
+qcom pin blocks? It seems a little weird to be treating bit 0 as a
+NULL choice, but clearly it works for now, with only a single non-zero
+bit user.
 
- *** DEADLOCK ***
+> > https://git.kernel.org/linus/99d19f5a48ee6fbc647935de458505e9308078e3
+>
+> Perhaps we could convert that to yaml?
 
- May be due to missing lock nesting notation
+Ha, sure, perhaps. I don't have time for that soon, but there's a
+chance such a patch could materialize in the future.
 
-4 locks held by syz-executor361/5090:
- #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #0: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: map_delete_elem+0x388/0x5e0 kernel/bpf/syscall.c:1695
- #1: ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
- #1: ffff88807b2af8f8 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
- #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
- #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: sock_map_del_link net/core/sock_map.c:145 [inline]
- #2: ffff88801c2a4290 (&psock->link_lock){+...}-{2:2}, at: sock_map_unref+0xcc/0x5e0 net/core/sock_map.c:180
- #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #3: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+> Thank you for taking a look, Brian. This was valuable input. I will
+> rework this to have a valid motivation - at least.
 
-stack backtrace:
-CPU: 1 PID: 5090 Comm: syz-executor361 Not tainted 6.9.0-rc5-syzkaller-00171-gb2ff42c6d3ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- sock_hash_delete_elem+0x17c/0x400 net/core/sock_map.c:945
- bpf_prog_174bfe9d52de9121+0x4f/0x53
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- trace_kfree include/trace/events/kmem.h:94 [inline]
- kfree+0x2af/0x3a0 mm/slub.c:4377
- sk_psock_free_link include/linux/skmsg.h:421 [inline]
- sock_map_del_link net/core/sock_map.c:158 [inline]
- sock_map_unref+0x3ac/0x5e0 net/core/sock_map.c:180
- sock_hash_delete_elem+0x392/0x400 net/core/sock_map.c:949
- map_delete_elem+0x464/0x5e0 kernel/bpf/syscall.c:1696
- __sys_bpf+0x598/0x810 kernel/bpf/syscall.c:5651
- __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5765
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f1dbe94ce29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffff608ae88 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1dbe94ce29
-RDX: 0000000000000020 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00000000000f4240 R08: 00000000000000a0 R09: 00000000000000a0
-R10: 00000000000000a0 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+You're welcome! Glad it's cleared up enough to help move forward.
 
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Regards,
+Brian
 
