@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-161069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E70A8B46B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:55:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A4B8B46B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CC2281BB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:55:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4B181F22323
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA07BA5E;
-	Sat, 27 Apr 2024 14:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018B81DA24;
+	Sat, 27 Apr 2024 14:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3L+sKIf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FF0gp7fx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB07063B9;
-	Sat, 27 Apr 2024 14:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2126611721;
+	Sat, 27 Apr 2024 14:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714229711; cv=none; b=bOmW9Y4EQrW48sHvm/jqP76LeFh2/z2qpEwxPfnoUkEBGWY7NbcPFH0eUylWjCjSZBfZt26ARiOgIUtFoGbWSNEVCOZ48GSUQ75QtFCz4ue3DrTSsdRuwcS/5zvKiIhfWQ2c0oCxtwvuSbQhsNUDDET/0YmuozzHs6UbqoX4sG0=
+	t=1714229713; cv=none; b=DV1O2iZgHm5FokZqiWhzFhsWJ4mItKT/Xg4wKqaM28DjmCevibD3E/gLspyChLBuiNABJ8KCrnmFS+c6eOR0eW4JXDWqoFzKGkiNo1U7Sn2Ya1RwyYv7sueN+7U31F3dgOhxc9u0+GvCdr4koPA/pYg/+fEuQ7PEaObpsehOyt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714229711; c=relaxed/simple;
-	bh=GY5y1LwEXug5OjsvS3sjYPBnC0ItFxQPdIM67CZ1NL0=;
+	s=arc-20240116; t=1714229713; c=relaxed/simple;
+	bh=sxkO/VNGuHCpY+xaA593lVgtx7OEmQ5zj1XiiuDfS9A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kudqfa6m+yC5aG9VwpqYaSrKEgIKOUySzQTrwnrDFX+FOTXKqWFlE2pwVTGxXQTxRzw9oZEb9qCHK8BARlmKPu0mfquoHQ9G6xgZGHGLD2XsHoLPlJqUvsdoL8Frl+jqp2wm+2fs8LZTp1RtM9/8aVCQalD6Manu9XfP4O+PQgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3L+sKIf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 337AAC2BD11;
-	Sat, 27 Apr 2024 14:55:10 +0000 (UTC)
+	 MIME-Version; b=O6e9+pfHz7dVkyVuR/FgihEZF24GCdna/UKsP6Vr89MWh1VKR3a0ryiSo3kvC342rNAc/82MyExx0Y6fyuyaracp95cSEQp6O/44ogNaQ5JsTSWbfnF+uGpxJLLy+WB3CZ9upm2S1kr/XhwayFXxiVcBwcm7fXdkK4qQPpb1f6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FF0gp7fx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A76CEC2BD10;
+	Sat, 27 Apr 2024 14:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714229711;
-	bh=GY5y1LwEXug5OjsvS3sjYPBnC0ItFxQPdIM67CZ1NL0=;
+	s=k20201202; t=1714229712;
+	bh=sxkO/VNGuHCpY+xaA593lVgtx7OEmQ5zj1XiiuDfS9A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f3L+sKIfX885hrWFH+zy+OLPdyhzTCXNMXZQa2HW2xKVhZhyAuODZaSKWEiM9hRe6
-	 +6Se/U+Q3FiKIiIi41F9eAxan9HaPQXalbKCGG31hSDGeml8yEN6N9XfIFnEDgMuLi
-	 UWsj4XtCQcFPf1Vksu+/Vik2t/wHSoBgNV6Q+LY9MxvmIzG7mQIth3vrR/whjlcZcU
-	 lPy3vqmDkFW3xzL2M4Wfn3lrA7DmzgEUEuhBYXUuwYDwsz5qdaLeow3tnuaThi3SpL
-	 bM3ULpCNPV03vXiaF6So5f0oIeLbJZDlJqVnac82kahogh1Vhtv4kLg4YS8hLE2lZs
-	 yNFNZKzbxZqKg==
+	b=FF0gp7fx6+7X5owHaXgnY2c+n0niE6MF2CwPjVBtN+2Ui676eB3E5o4265uR+MGtL
+	 GRA4sI7BEuRiUIM6bLTRGgqP8ldhtt2wTTcbBcO2T7teYMu+Qum/Zwa3hJVVDJKlUQ
+	 omj0hKaaiqwU/VqNXg5kO0OKKwfkGP+13E4vgWXgo6SLvdQp2G/lw25z3bwTMnzp6z
+	 V0OaiWRY85gORgGxP3qkn5qHpXH7yJslCYjkiTow7pCY3oscQQJTQZAMqwTLozXork
+	 j49sgdB7pA1vcxs6T+8EnevN9zbZL8wUkmN638AAJPZ/kxRmBVdXCUqrZ7Q+rZoMyW
+	 7hisVHcklQwfg==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Masahiro Yamada <masahiroy@kernel.org>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 2/4] kbuild: do not add $(srctree) or $(objtree) to header search paths
-Date: Sat, 27 Apr 2024 23:55:00 +0900
-Message-Id: <20240427145502.2804311-3-masahiroy@kernel.org>
+	Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH v2 3/4] kbuild: use $(obj)/ instead of $(src)/ for common pattern rules
+Date: Sat, 27 Apr 2024 23:55:01 +0900
+Message-Id: <20240427145502.2804311-4-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240427145502.2804311-1-masahiroy@kernel.org>
 References: <20240427145502.2804311-1-masahiroy@kernel.org>
@@ -59,50 +59,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-scripts/Makefile.lib is included not only from scripts/Makefile.build
-but also from scripts/Makefile.{vmlinux,modfinal} for building generated
-C files.
+Kbuild conventionally uses $(obj)/ for generated files, and $(src)/ for
+checked-in source files. It is merely a convention without any functional
+difference. In fact, $(obj) and $(src) are exactly the same, as defined
+in scripts/Makefile.build:
 
-In scripts/Makefile.{vmlinux,modfinal}, $(obj) and $(src) are empty.
+  src := $(obj)
 
-Therefore, the header include paths:
+Before changing the semantics of $(src) in the next commit, this commit
+replaces $(obj)/ with $(src)/ in pattern rules where the prerequisite
+might be a generated file.
 
-    -I $(srctree)/$(src) -I $(objtree)/$(obj)
+C, assembly, and Rust files are sometimes generated by tools, so they
+could be either generated files or real sources. The $(obj)/ prefix
+works for both cases with the help of VPATH.
 
-.. become meaningless code:
+As mentioned above, $(obj) and $(src) are the same at this point, hence
+this commit has no functional change.
 
-    -I $(srctree)/ -I $(objtree)/
+I did not modify scripts/Makefile.userprogs because there is no use
+case where userspace C files are generated.
 
-Add these paths only when 'obj' and 'src' are defined.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202404170634.BlqTaYA0-lkp@intel.com/
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 ---
 
 Changes in v2:
- - New patch to address the build error reported by 0day bot
+  - replace $(src)/%.rs with $(obj)/%.rs because Rust files are
+    also generated
 
- scripts/Makefile.lib | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/Makefile.build | 26 +++++++++++++-------------
+ scripts/Makefile.host  |  4 ++--
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index d1d51e38b55d..e67f066c0cea 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -213,9 +213,9 @@ endif
- # $(objtree)/$(obj) for including generated headers from checkin source files
- ifeq ($(KBUILD_EXTMOD),)
- ifdef building_out_of_srctree
--_c_flags   += -I $(srctree)/$(src) -I $(objtree)/$(obj)
--_a_flags   += -I $(srctree)/$(src) -I $(objtree)/$(obj)
--_cpp_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
-+_c_flags   += $(addprefix -I $(srctree)/,$(src)) $(addprefix -I $(objtree)/,$(obj))
-+_a_flags   += $(addprefix -I $(srctree)/,$(src)) $(addprefix -I $(objtree)/,$(obj))
-+_cpp_flags += $(addprefix -I $(srctree)/,$(src)) $(addprefix -I $(objtree)/,$(obj))
- endif
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index baf86c0880b6..41138346afb0 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -113,13 +113,13 @@ endif
+ quiet_cmd_cc_s_c = CC $(quiet_modtag)  $@
+       cmd_cc_s_c = $(CC) $(filter-out $(DEBUG_CFLAGS) $(CC_FLAGS_LTO), $(c_flags)) -fverbose-asm -S -o $@ $<
+ 
+-$(obj)/%.s: $(src)/%.c FORCE
++$(obj)/%.s: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,cc_s_c)
+ 
+ quiet_cmd_cpp_i_c = CPP $(quiet_modtag) $@
+ cmd_cpp_i_c       = $(CPP) $(c_flags) -o $@ $<
+ 
+-$(obj)/%.i: $(src)/%.c FORCE
++$(obj)/%.i: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,cpp_i_c)
+ 
+ genksyms = scripts/genksyms/genksyms		\
+@@ -133,7 +133,7 @@ cmd_gensymtypes_c = $(CPP) -D__GENKSYMS__ $(c_flags) $< | $(genksyms)
+ quiet_cmd_cc_symtypes_c = SYM $(quiet_modtag) $@
+       cmd_cc_symtypes_c = $(call cmd_gensymtypes_c,true,$@) >/dev/null
+ 
+-$(obj)/%.symtypes : $(src)/%.c FORCE
++$(obj)/%.symtypes : $(obj)/%.c FORCE
+ 	$(call cmd,cc_symtypes_c)
+ 
+ # LLVM assembly
+@@ -141,7 +141,7 @@ $(obj)/%.symtypes : $(src)/%.c FORCE
+ quiet_cmd_cc_ll_c = CC $(quiet_modtag)  $@
+       cmd_cc_ll_c = $(CC) $(c_flags) -emit-llvm -S -fno-discard-value-names -o $@ $<
+ 
+-$(obj)/%.ll: $(src)/%.c FORCE
++$(obj)/%.ll: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,cc_ll_c)
+ 
+ # C (.c) files
+@@ -240,7 +240,7 @@ define rule_as_o_S
+ endef
+ 
+ # Built-in and composite module parts
+-$(obj)/%.o: $(src)/%.c $(recordmcount_source) FORCE
++$(obj)/%.o: $(obj)/%.c $(recordmcount_source) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
+ 
+@@ -257,7 +257,7 @@ quiet_cmd_cc_lst_c = MKLST   $@
+ 		     $(CONFIG_SHELL) $(srctree)/scripts/makelst $*.o \
+ 				     System.map $(OBJDUMP) > $@
+ 
+-$(obj)/%.lst: $(src)/%.c FORCE
++$(obj)/%.lst: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,cc_lst_c)
+ 
+ # Compile Rust sources (.rs)
+@@ -290,7 +290,7 @@ rust_common_cmd = \
+ quiet_cmd_rustc_o_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+       cmd_rustc_o_rs = $(rust_common_cmd) --emit=obj=$@ $<
+ 
+-$(obj)/%.o: $(src)/%.rs FORCE
++$(obj)/%.o: $(obj)/%.rs FORCE
+ 	+$(call if_changed_dep,rustc_o_rs)
+ 
+ quiet_cmd_rustc_rsi_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+@@ -298,19 +298,19 @@ quiet_cmd_rustc_rsi_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+ 	$(rust_common_cmd) -Zunpretty=expanded $< >$@; \
+ 	command -v $(RUSTFMT) >/dev/null && $(RUSTFMT) $@
+ 
+-$(obj)/%.rsi: $(src)/%.rs FORCE
++$(obj)/%.rsi: $(obj)/%.rs FORCE
+ 	+$(call if_changed_dep,rustc_rsi_rs)
+ 
+ quiet_cmd_rustc_s_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+       cmd_rustc_s_rs = $(rust_common_cmd) --emit=asm=$@ $<
+ 
+-$(obj)/%.s: $(src)/%.rs FORCE
++$(obj)/%.s: $(obj)/%.rs FORCE
+ 	+$(call if_changed_dep,rustc_s_rs)
+ 
+ quiet_cmd_rustc_ll_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+       cmd_rustc_ll_rs = $(rust_common_cmd) --emit=llvm-ir=$@ $<
+ 
+-$(obj)/%.ll: $(src)/%.rs FORCE
++$(obj)/%.ll: $(obj)/%.rs FORCE
+ 	+$(call if_changed_dep,rustc_ll_rs)
+ 
+ # Compile assembler sources (.S)
+@@ -336,14 +336,14 @@ cmd_gensymtypes_S =                                                         \
+ quiet_cmd_cc_symtypes_S = SYM $(quiet_modtag) $@
+       cmd_cc_symtypes_S = $(call cmd_gensymtypes_S,true,$@) >/dev/null
+ 
+-$(obj)/%.symtypes : $(src)/%.S FORCE
++$(obj)/%.symtypes : $(obj)/%.S FORCE
+ 	$(call cmd,cc_symtypes_S)
+ 
+ 
+ quiet_cmd_cpp_s_S = CPP $(quiet_modtag) $@
+ cmd_cpp_s_S       = $(CPP) $(a_flags) -o $@ $<
+ 
+-$(obj)/%.s: $(src)/%.S FORCE
++$(obj)/%.s: $(obj)/%.S FORCE
+ 	$(call if_changed_dep,cpp_s_S)
+ 
+ quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+@@ -358,7 +358,7 @@ cmd_gen_symversions_S = $(call gen_symversions,S)
+ 
  endif
  
+-$(obj)/%.o: $(src)/%.S FORCE
++$(obj)/%.o: $(obj)/%.S FORCE
+ 	$(call if_changed_rule,as_o_S)
+ 
+ targets += $(filter-out $(subdir-builtin), $(real-obj-y))
+diff --git a/scripts/Makefile.host b/scripts/Makefile.host
+index 3c17e6ba421c..d35f55e0d141 100644
+--- a/scripts/Makefile.host
++++ b/scripts/Makefile.host
+@@ -112,7 +112,7 @@ endif
+ quiet_cmd_host-csingle 	= HOSTCC  $@
+       cmd_host-csingle	= $(HOSTCC) $(hostc_flags) $(KBUILD_HOSTLDFLAGS) -o $@ $< \
+ 		$(KBUILD_HOSTLDLIBS) $(HOSTLDLIBS_$(target-stem))
+-$(host-csingle): $(obj)/%: $(src)/%.c FORCE
++$(host-csingle): $(obj)/%: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,host-csingle)
+ 
+ # Link an executable based on list of .o files, all plain c
+@@ -129,7 +129,7 @@ $(call multi_depend, $(host-cmulti), , -objs)
+ # host-cobjs -> .o
+ quiet_cmd_host-cobjs	= HOSTCC  $@
+       cmd_host-cobjs	= $(HOSTCC) $(hostc_flags) -c -o $@ $<
+-$(host-cobjs): $(obj)/%.o: $(src)/%.c FORCE
++$(host-cobjs): $(obj)/%.o: $(obj)/%.c FORCE
+ 	$(call if_changed_dep,host-cobjs)
+ 
+ # Link an executable based on list of .o files, a mixture of .c and .cc
 -- 
 2.40.1
 
