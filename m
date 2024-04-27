@@ -1,151 +1,147 @@
-Return-Path: <linux-kernel+bounces-160852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51968B438D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:36:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58E308B4390
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C591282E18
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15130282AEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFE63839D;
-	Sat, 27 Apr 2024 01:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2129B39AF4;
+	Sat, 27 Apr 2024 01:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p94PWi38"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bAczzvLx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378F1381AA
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB9C39ACD;
+	Sat, 27 Apr 2024 01:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714181786; cv=none; b=lhSdLyBbpN7Uq/T0Nxco67QKFGT41hOl4KNr14nGp6v1gZ3r1OK5OGSsDu5J/eg0pD03HiDnlx47Kx+i5LAc3VvK8+j+nVaEJ2IIUyZKLJ2MTYLa+V6s7NwwSaDlhwl11VzPHF5tAr0FtcTy4uKixD9mqboDi05OZ9YVd+gf1Kg=
+	t=1714181794; cv=none; b=o4EcUbJ9Cl3SU3UEbEgwKzKtH7VS3piFurM89qPLzzRfsdrJXoyi6UA+d0EhX6Z3DmVhUbdoSmw0hwLd5BnZzAk+IxOaoGapVGatVFhITC45RPAqlK4JUxIQsEaGwqmJLWnlbcksQqZFzT5JD/fc+RfWnaKatGGmihB2+2jPXS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714181786; c=relaxed/simple;
-	bh=RdoQEjsfDLaQLxmZJ7q6grWn9U77AJJaiBSCfDtS9V4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YG4x6xFTSpJOejOXMpcsSUoCRGy07Y2F8TM2lNvDnqzgsiX/ThOcUS+vPJau4ceE7WJhaeMSf1qmAb5RZ6hG6AggF1WclRGCU4KQSpeQZSJHvkSGcI8hFVOHqp61XxYetOnwF2tNqECywC5sMU1Ywz354pyxofLrDfb4JCzCzBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p94PWi38; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61b6200fcb5so29818907b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 18:36:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714181784; x=1714786584; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DNCnVj1Y2/lmMmkRb2EKBZBX4wqTajwlwp5m2yeDx44=;
-        b=p94PWi38iBSTEVWR/dHuUERmQQewEYrXNycrqB5V2bLkpu4tDtJfDHtZQxTQHKrqmc
-         18Y4oSMelvgYr4obxNFpurT4tmg5aOK5w+5SfM944Md3FbFFGIOgKgahabTtgZN6hU4i
-         Uu53Qc8gXTX9bG9dl/7YPrAzuZYnfik+v7aFKetbXhXbUQ+wDVqf6MpUphQ/Vf3xXzxV
-         zaJ2YDR0xvgY7MWyZVKguI6RR2lTZuXj7vKihi8XsyNBDaUQOZg2pFw8HekV/ZQDU+np
-         yr8q7KL1Evt6CgsHcIESGx4vUXzflilZxR4AOY3HJzIsh9FWIzHVVZzLPiCpAXlIwC3o
-         bUkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714181784; x=1714786584;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DNCnVj1Y2/lmMmkRb2EKBZBX4wqTajwlwp5m2yeDx44=;
-        b=l3vBOuNGItnXDUybHPR2Pao4Lj2OwMm3rLD0TrBOoiuoft+bY7uyFPE1G/214LAdla
-         FbYBD3PHm827mZkvXnC3WpsDyg9b40lrSxxYQZuP/A3IhU0fGV0EdZnvx2gRM+A+b5au
-         JOwSRW2Zm5gNpcVmRYLr4Adu1MYWos6CG5U04QpoA/2/r/4VRUmGme0sVjlOVDPIsqzV
-         DBf+VVRbJi/CmqbHbLlizTGoeXEDZ3/rkKHhLxopbDqiLrMZ/4zfcJJqDDWBMMf7ixMh
-         nr6SO5G/rbFIxeaduVjYkpW9AAZOa/d9RRTt1LAfD3me+TpEKI8HJeNXPEFvis+sGTLE
-         xZnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUVH0MfLUVqaEq8tgguxybp3bQeLmjJS+1XDY/WD4Vem9iscNxz/t8xofXozB+qmtHk/mWn1Z79aA2ztWgvUUjru0r7s9EB/DasH9oZ
-X-Gm-Message-State: AOJu0YxKl4oPZiegQQ7+aeVI1SHOg6mgVMXTVo87M6mbyV0IzVGaAFfk
-	jPvA3D4rQTS3HaG2mAjQm6a5qaFwiC4mxCe1Ko+E7wenCWDcRAY+PtF6qRwdNbzvf2bXQN7RkRd
-	UpePxdmDLTlt8cI850pUl2jUhgHYU4xqx7+ABzA==
-X-Google-Smtp-Source: AGHT+IFisVSHK3bri2d3dp8z+/w4P0d7YMFifFNKBTl5xkxnQFIHLo94xPnn1vjQbgMSAcY7JL1avzEt2+BlPwPhBn4=
-X-Received: by 2002:a05:690c:630d:b0:618:9353:1023 with SMTP id
- ho13-20020a05690c630d00b0061893531023mr5892671ywb.17.1714181784203; Fri, 26
- Apr 2024 18:36:24 -0700 (PDT)
+	s=arc-20240116; t=1714181794; c=relaxed/simple;
+	bh=BudDBwyhpbKB2aXRILMYhmtkIAgfvk+c5Frdnp906+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bR4rSk/vJEg+HyBoBVg9mCba8GqFh8e3Wdcergl1h+5+rsXEH4U8/FK0ObNLqblRDsT7CvBb5xz5hyv4Jh+9tBmxU4AKPxU68JLLX5iTYdQVzaaxTaKub/uEcUTQKq7CmdM6tdkUD4tV1v871FI9QBKKkZKu29yoBH0c9rQcdhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bAczzvLx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87305C113CD;
+	Sat, 27 Apr 2024 01:36:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714181793;
+	bh=BudDBwyhpbKB2aXRILMYhmtkIAgfvk+c5Frdnp906+s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bAczzvLxktMk2sNSoo93ELqiK0WpdVjXHWFX5MYD6Te6nQIYcl4u4gla7J1WcuZj0
+	 uZwHewL5qVsdGKol73/RPbnlGh61otqebH/NveTsr7oS/MgHKuuOb/W+ng/XOndfj1
+	 qTUq+LKWhTkihocBzatd1QE2VbEVyRybRvrpCjuzmrpgbOt2gfN+6dhBT6QeARXCfO
+	 c1+9LHKdeZNrLw9OfTE36RxWtUrVPsWtoszO8vj7y4hLBywZpa60vp7+cZPDrIIjTU
+	 ThuCumqPMEAc2Iv5YyzPNgeVJt8oBkbKTDMiJTytSrP3BWfFC3J4AJnXlnScFTpbXM
+	 ZtBntmIGvouDA==
+Date: Fri, 26 Apr 2024 22:36:31 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
+	Beeman Strong <beeman@rivosinc.com>
+Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for
+ bad numbers
+Message-ID: <ZixWn-ZCBpwH_2xp@x1>
+References: <20240416061533.921723-1-irogers@google.com>
+ <20240416061533.921723-12-irogers@google.com>
+ <ZixWfypP4FtKgv0F@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424-qcom-pd-mapper-v7-0-05f7fc646e0f@linaro.org>
- <20240424-qcom-pd-mapper-v7-6-05f7fc646e0f@linaro.org> <f1ee1fc0-64cb-5610-db92-3a06d477e8b8@quicinc.com>
-In-Reply-To: <f1ee1fc0-64cb-5610-db92-3a06d477e8b8@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 27 Apr 2024 04:36:13 +0300
-Message-ID: <CAA8EJpoDuKyy2_7Lwih6gLW3UO4sduV6Fun6RSzJg6RHSHgMsQ@mail.gmail.com>
-Subject: Re: [PATCH v7 6/6] remoteproc: qcom: enable in-kernel PD mapper
-To: Chris Lew <quic_clew@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Sibi Sankar <quic_sibis@quicinc.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-remoteproc@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>, 
-	Xilin Wu <wuxilin123@gmail.com>, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZixWfypP4FtKgv0F@x1>
 
-On Sat, 27 Apr 2024 at 04:03, Chris Lew <quic_clew@quicinc.com> wrote:
->
->
->
-> On 4/24/2024 2:28 AM, Dmitry Baryshkov wrote:
-> > diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > index 1d24c9b656a8..02d0c626b03b 100644
-> > --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> > +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> > @@ -23,6 +23,7 @@
-> >   #include <linux/remoteproc.h>
-> >   #include <linux/reset.h>
-> >   #include <linux/soc/qcom/mdt_loader.h>
-> > +#include <linux/soc/qcom/pd_mapper.h>
-> >   #include <linux/soc/qcom/smem.h>
-> >   #include <linux/soc/qcom/smem_state.h>
-> >
-> > @@ -375,10 +376,14 @@ static int adsp_start(struct rproc *rproc)
-> >       int ret;
-> >       unsigned int val;
-> >
-> > -     ret = qcom_q6v5_prepare(&adsp->q6v5);
-> > +     ret = qcom_pdm_get();
-> >       if (ret)
-> >               return ret;
->
-> Would it make sense to try and model this as a rproc subdev? This
-> section of the remoteproc code seems to be focused on making specific
-> calls to setup and enable hardware resources, where as pd mapper is
-> software.
->
-> sysmon and ssr are also purely software and they are modeled as subdevs
-> in qcom_common. I'm not an expert on remoteproc organization but this
-> was just a thought.
+On Fri, Apr 26, 2024 at 10:36:02PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Mon, Apr 15, 2024 at 11:15:27PM -0700, Ian Rogers wrote:
+> > Use the error handler from the parse_state to give a more informative
+> > error message.
+> > 
+> > Before:
+> > ```
+> > $ perf stat -e 'cycles/period=99999999999999999999/' true
+> > event syntax error: 'cycles/period=99999999999999999999/'
+> >                                   \___ parser error
+> > Run 'perf list' for a list of valid events
+> > 
+> >  Usage: perf stat [<options>] [<command>]
+> > 
+> >     -e, --event <event>   event selector. use 'perf list' to list available events
+> > ```
+> > 
+> > After:
+> > ```
+> > $ perf stat -e 'cycles/period=99999999999999999999/' true
+> > event syntax error: 'cycles/period=99999999999999999999/'
+> >                                   \___ parser error
+> > 
+> 
+> This ended up in perf-tools-next, will have to look at what this problem
+> is:
+> 
+>    9    11.46 amazonlinux:2                 : FAIL gcc version 7.3.1 20180712 (Red Hat 7.3.1-17) (GCC) 
+>      yy_size_t parse_events_get_leng (yyscan_t yyscanner );
+>                ^~~~~~~~~~~~~~~~~~~~~
+>     util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+>      int parse_events_get_leng(yyscan_t yyscanner);
+>          ^~~~~~~~~~~~~~~~~~~~~
+>      yy_size_t parse_events_get_leng  (yyscan_t yyscanner)
+>                ^~~~~~~~~~~~~~~~~~~~~
+>     util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+>      int parse_events_get_leng(yyscan_t yyscanner);
+>          ^~~~~~~~~~~~~~~~~~~~~
+>     make[3]: *** [util] Error 2
+> 
+> 
+> Unsure if this will appear on the radar on other distros, maybe this is
+> just something that pops up with older distros...
+> 
+> Ran out of time today...
 
-Well, the issue is that the pd-mapper is a global, not a per-remoteproc instance
+Context:
 
->
-> Thanks!
-> Chris
->
-> >
-> > +     ret = qcom_q6v5_prepare(&adsp->q6v5);
-> > +     if (ret)
-> > +             goto put_pdm;
-> > +
-> >       ret = adsp_map_carveout(rproc);
-> >       if (ret) {
-> >               dev_err(adsp->dev, "ADSP smmu mapping failed\n");
-> > @@ -446,6 +451,8 @@ static int adsp_start(struct rproc *rproc)
-> >       adsp_unmap_carveout(rproc);
-> >   disable_irqs:
-> >       qcom_q6v5_unprepare(&adsp->q6v5);
-> > +put_pdm:
-> > +     qcom_pdm_release();
-> >
-> >       return ret;
-> >   }
->
-
-
--- 
-With best wishes
-Dmitry
+perfbuilder@number:~$ export BUILD_TARBALL=http://192.168.86.42/perf/perf-6.9.0-rc5.tar.xz
+perfbuilder@number:~$ time dm
+   1   102.33 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-20) , clang version 16.0.6 (Red Hat 16.0.6-2.module_el8.9.0+3621+df7f7146) flex 2.6.1
+   2   102.44 almalinux:9                   : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 16.0.6 (Red Hat 16.0.6-1.el9) flex 2.6.4
+   3   124.34 alpine:3.15                   : Ok   gcc (Alpine 10.3.1_git20211027) 10.3.1 20211027 , Alpine clang version 12.0.1 flex 2.6.4
+   4   109.42 alpine:3.16                   : Ok   gcc (Alpine 11.2.1_git20220219) 11.2.1 20220219 , Alpine clang version 13.0.1 flex 2.6.4
+   5    90.08 alpine:3.17                   : Ok   gcc (Alpine 12.2.1_git20220924-r4) 12.2.1 20220924 , Alpine clang version 15.0.7 flex 2.6.4
+   6    84.85 alpine:3.18                   : Ok   gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924 , Alpine clang version 16.0.6 flex 2.6.4
+   7    94.18 alpine:3.19                   : Ok   gcc (Alpine 13.2.1_git20231014) 13.2.1 20231014 , Alpine clang version 17.0.5 flex 2.6.4
+   8    95.45 alpine:edge                   : Ok   gcc (Alpine 13.2.1_git20240309) 13.2.1 20240309 , Alpine clang version 17.0.6 flex 2.6.4
+   9    11.46 amazonlinux:2                 : FAIL gcc version 7.3.1 20180712 (Red Hat 7.3.1-17) (GCC) 
+     yy_size_t parse_events_get_leng (yyscan_t yyscanner );
+               ^~~~~~~~~~~~~~~~~~~~~
+    util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+     int parse_events_get_leng(yyscan_t yyscanner);
+         ^~~~~~~~~~~~~~~~~~~~~
+     yy_size_t parse_events_get_leng  (yyscan_t yyscanner)
+               ^~~~~~~~~~~~~~~~~~~~~
+    util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+     int parse_events_get_leng(yyscan_t yyscanner);
+         ^~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [util] Error 2
+  10    88.41 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
+  11    89.72 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+  12   115.65 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 17.0.6 flex 2.6.4
+  13    93.87 centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-21) , clang version 17.0.6 (Red Hat 17.0.6-1.module_el8+767+9fa966b8) flex 2.6.1
 
