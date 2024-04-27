@@ -1,94 +1,60 @@
-Return-Path: <linux-kernel+bounces-161108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2818B4739
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C9D8B473D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1774A1C210BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 17:06:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B46D21C215AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 17:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BA814291B;
-	Sat, 27 Apr 2024 17:06:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FE3142E72;
+	Sat, 27 Apr 2024 17:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jayf9poS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzS+vtzB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8403D1C17
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 17:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A7B4EB39;
+	Sat, 27 Apr 2024 17:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714237603; cv=none; b=qXpkfSroc2M31VhdnnB3oIdssFfTzXvfu8VT5SntviyfaYqCQvDRGJwKu6LL3w/nPENJFcaxjEwnfZdVtM4GdtEm/YstsyHRmgyVtnV01oa8h688LB3my8XVOjQDg8wMu8nUd4Rqbh26AVJ/kd+20d1VeMRI4k3tFbWxTlqvn1E=
+	t=1714238216; cv=none; b=eEVnRtp85XsPzGuMJCvxkUw0nPuVElI2z3UxRhOD+pk0wW01B8zYFvPgSAmLPP71IEuwfq/qipypyqQrbevNSny5rxEOLNI0cqVKUxMTuWFh86ia/lwsUNZZ0Hjf1bA9Q9hY3DtQOBme+lQqZqdIoZJp9Zbh9iFs7XWnlpBJvSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714237603; c=relaxed/simple;
-	bh=IKwboz6unkUuaspdbL5m2QJO18HfYn+ShzYqre7Wt1I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n6tc9yefVwev8FWeeYbRbyN9EwG8KIFge7CRMlNlbu49zO8j3fkl6LUyBZxP0Z9m21S1hEz8RSLlG071faeX7g75Fkj12ZUM5mdR6RlgLGf6NiWqVrK4lvS085Ly5OkDmQEgRqs27q8vpMQ2npIWReoXIbTA/UFQnQiiAbfO44g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jayf9poS; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714237603; x=1745773603;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IKwboz6unkUuaspdbL5m2QJO18HfYn+ShzYqre7Wt1I=;
-  b=jayf9poSUjDvEOuQDc0PJhkgIQDdBlxbteq6PQyGCOfi0kh+C/gP+tS+
-   uBWThkZDf9NqRiTV6yCRM8EzQ5150dRhWRKlnVAREnyujkH6Zu0qq8r5l
-   moHkK3TmaxxEaB5My+H7/12oaIgVoVqUM7S5oVIx5YYXoNWqWWe+sGnak
-   hpIr6mQZT56FsP5japADoBKdu1eWaidh64an6lUOGJCKG0ppxkCQ1hfZJ
-   YE7blVx4R/SQ75s3FqjmTv1kUFvMwV5f2aa6LBt/Vv2c5Nggt3prFqtWr
-   7osCIlyc8cBEzZjIQSJ3t7R/lZmliBWj+ZTyl/0dEstwHvL5Xmhpjr47R
-   Q==;
-X-CSE-ConnectionGUID: TfVDSxU5THauvc4Zxikhwg==
-X-CSE-MsgGUID: oQKOSYLvRuqu2xq8+rEZxQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10063540"
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="10063540"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 10:06:42 -0700
-X-CSE-ConnectionGUID: CF+2/vVlQgucut3jhAcIUQ==
-X-CSE-MsgGUID: b/odNh/XTVue/enrZ7AJgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="25780516"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa010.fm.intel.com with ESMTP; 27 Apr 2024 10:06:37 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 023C8118; Sat, 27 Apr 2024 20:06:35 +0300 (EEST)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: bp@alien8.de
-Cc: adrian.hunter@intel.com,
-	ashish.kalra@amd.com,
-	bhe@redhat.com,
-	dave.hansen@linux.intel.com,
-	elena.reshetova@intel.com,
-	jun.nakajima@intel.com,
-	kai.huang@intel.com,
-	kexec@lists.infradead.org,
-	kirill.shutemov@linux.intel.com,
-	linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	ltao@redhat.com,
-	mingo@redhat.com,
-	nik.borisov@suse.com,
-	peterz@infradead.org,
-	rafael@kernel.org,
-	rick.p.edgecombe@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	seanjc@google.com,
-	tglx@linutronix.de,
-	thomas.lendacky@amd.com,
-	x86@kernel.org
-Subject: [PATCHv10.1 09/18] x86/mm: Adding callbacks to prepare encrypted memory for kexec
-Date: Sat, 27 Apr 2024 20:06:34 +0300
-Message-ID: <20240427170634.2397725-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240427164747.GCZi0sM6HBCBYtgWqF@fat_crate.local>
-References: <20240427164747.GCZi0sM6HBCBYtgWqF@fat_crate.local>
+	s=arc-20240116; t=1714238216; c=relaxed/simple;
+	bh=6C8qc+2nbWsj88zYuaWTC/p/dDWtLVgW0nmBbGPJGvY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t3yNztLUOs+zpbDSsTLEYduK6419VDw6GjJqo2gOnk4wQ4a01h7dFXmnUiZax/8gHQpUlBGfHq/LZU4ES6bwK0Q8x+4iNsoku7fIVWZUZf/MmR4ObedLkHG5SQNbwBKMIcnLbicI83+yywGmm2qKbKzEuYh2lycqhs7fBlkHoHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FzS+vtzB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67861C113CE;
+	Sat, 27 Apr 2024 17:16:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714238216;
+	bh=6C8qc+2nbWsj88zYuaWTC/p/dDWtLVgW0nmBbGPJGvY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FzS+vtzBO8Xah/t/XnEYCDvpvr2I+G+ce0/HeMHRK30W6pOobK/OUXWZC9QokABPk
+	 XDWU9maS10H30JOOvUTxK7OZyEtluAMZMn+Y+hcv2fRb1fp4QNDqxpV3h0Dpy53lT0
+	 ryC6kvMG5Rhg/Go8rk4fQhdL3lx75rXd/2Q9cuESsJQ3VXFo0XUEStcnyOeDueK1eI
+	 naLhnECvvsgKnXLyQLvjq+enwTERS88X0y2KK0xEb5GihAJ10b93UcS0imkQFuC7Pa
+	 XUIG26fBZM0WYT8BAxmHfRiLtArBWFVrp3WOIdOzKQOHciK31qF3pHBLfpsrZVJiqm
+	 c61vSTKRLf6XA==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Rust fixes for 6.9
+Date: Sat, 27 Apr 2024 19:15:49 +0200
+Message-ID: <20240427171549.934651-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,124 +63,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-AMD SEV and Intel TDX guests allocate shared buffers for performing I/O.
-This is done by allocating pages normally from the buddy allocator and
-then converting them to shared using set_memory_decrypted().
+Hi Linus,
 
-On kexec, the second kernel is unaware of which memory has been
-converted in this manner. It only sees E820_TYPE_RAM. Accessing shared
-memory as private is fatal.
+Please pull these fixes for Rust.
 
-Therefore, the memory state must be reset to its original state before
-starting the new kernel with kexec.
+There are a few that I am not sure if they should count as fixes
+(trivial docs rendering, macro example and CONSTRUCTORS), so if you
+prefer to see them in the merge window instead, please let me know.
 
-The process of converting shared memory back to private occurs in two
-steps:
+The spike you will see in the diffstat is due to indentation changes,
+added comments and moved lines -- the actual change is small.
 
-- enc_kexec_stop_conversion() stops new conversions.
+Most have been in linux-next for more than a week, but the last ones
+have been there only for a couple linux-next tags, and I reworded one
+of those a couple days ago to add a tag (no changes otherwise -- the
+original commits can be found starting at 56b70b91a161 in linux-next).
 
-- enc_kexec_unshare_mem() unshares all existing shared memory, reverting
-  it back to private.
+No conflicts expected. No changes to the C side.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>x
-Reviewed-by: Kai Huang <kai.huang@intel.com>
-Tested-by: Tao Liu <ltao@redhat.com>
----
- arch/x86/include/asm/x86_init.h |  2 ++
- arch/x86/kernel/crash.c         |  4 ++++
- arch/x86/kernel/reboot.c        | 12 ++++++++++++
- arch/x86/kernel/x86_init.c      |  4 ++++
- 4 files changed, 22 insertions(+)
+Cheers,
+Miguel
 
-diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
-index 28ac3cb9b987..c731e6bc4343 100644
---- a/arch/x86/include/asm/x86_init.h
-+++ b/arch/x86/include/asm/x86_init.h
-@@ -155,6 +155,8 @@ struct x86_guest {
- 	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
- 	bool (*enc_tlb_flush_required)(bool enc);
- 	bool (*enc_cache_flush_required)(void);
-+	void (*enc_kexec_stop_conversion)(bool crash);
-+	void (*enc_kexec_unshare_mem)(void);
- };
- 
- /**
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index e74d0c4286c1..f1b261be78b4 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -128,6 +128,10 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
- #ifdef CONFIG_HPET_TIMER
- 	hpet_disable();
- #endif
-+
-+	x86_platform.guest.enc_kexec_stop_conversion(true);
-+	x86_platform.guest.enc_kexec_unshare_mem();
-+
- 	crash_save_cpu(regs, safe_smp_processor_id());
- }
- 
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index f3130f762784..c1920ec34f0c 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -12,6 +12,7 @@
- #include <linux/delay.h>
- #include <linux/objtool.h>
- #include <linux/pgtable.h>
-+#include <linux/kexec.h>
- #include <acpi/reboot.h>
- #include <asm/io.h>
- #include <asm/apic.h>
-@@ -716,6 +717,14 @@ static void native_machine_emergency_restart(void)
- 
- void native_machine_shutdown(void)
- {
-+	/*
-+	 * Call enc_kexec_stop_conversion() while all CPUs are still active and
-+	 * interrupts are enabled. This will allow all in-flight memory
-+	 * conversions to finish cleanly.
-+	 */
-+	if (kexec_in_progress)
-+		x86_platform.guest.enc_kexec_stop_conversion(false);
-+
- 	/* Stop the cpus and apics */
- #ifdef CONFIG_X86_IO_APIC
- 	/*
-@@ -752,6 +761,9 @@ void native_machine_shutdown(void)
- #ifdef CONFIG_X86_64
- 	x86_platform.iommu_shutdown();
- #endif
-+
-+	if (kexec_in_progress)
-+		x86_platform.guest.enc_kexec_unshare_mem();
- }
- 
- static void __machine_emergency_restart(int emergency)
-diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
-index a7143bb7dd93..045ce1c70070 100644
---- a/arch/x86/kernel/x86_init.c
-+++ b/arch/x86/kernel/x86_init.c
-@@ -138,6 +138,8 @@ static int enc_status_change_prepare_noop(unsigned long vaddr, int npages, bool
- static int enc_status_change_finish_noop(unsigned long vaddr, int npages, bool enc) { return 0; }
- static bool enc_tlb_flush_required_noop(bool enc) { return false; }
- static bool enc_cache_flush_required_noop(void) { return false; }
-+static void enc_kexec_stop_conversion_noop(bool crash) {}
-+static void enc_kexec_unshare_mem_noop(void) {}
- static bool is_private_mmio_noop(u64 addr) {return false; }
- 
- struct x86_platform_ops x86_platform __ro_after_init = {
-@@ -161,6 +163,8 @@ struct x86_platform_ops x86_platform __ro_after_init = {
- 		.enc_status_change_finish  = enc_status_change_finish_noop,
- 		.enc_tlb_flush_required	   = enc_tlb_flush_required_noop,
- 		.enc_cache_flush_required  = enc_cache_flush_required_noop,
-+		.enc_kexec_stop_conversion = enc_kexec_stop_conversion_noop,
-+		.enc_kexec_unshare_mem     = enc_kexec_unshare_mem_noop,
- 	},
- };
- 
--- 
-2.43.0
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+
+are available in the Git repository at:
+
+  https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.9
+
+for you to fetch changes up to 19843452dca40e28d6d3f4793d998b681d505c7f:
+
+  rust: remove `params` from `module` macro example (2024-04-25 17:34:33 +0200)
+
+----------------------------------------------------------------
+Rust fixes for v6.9
+
+ - Soundness: make internal functions generated by the 'module!' macro
+   inaccessible, do not implement 'Zeroable' for 'Infallible' and
+   require 'Send' for the 'Module' trait.
+
+ - Build: avoid errors with "empty" files and workaround 'rustdoc' ICE.
+
+ - Kconfig: depend on '!CFI_CLANG' and avoid selecting 'CONSTRUCTORS'.
+
+ - Code docs: remove non-existing key from 'module!' macro example.
+
+ - Docs: trivial rendering fix in arch table.
+
+----------------------------------------------------------------
+Alice Ryhl (1):
+      rust: don't select CONSTRUCTORS
+
+Aswin Unnikrishnan (1):
+      rust: remove `params` from `module` macro example
+
+Benno Lossin (1):
+      rust: macros: fix soundness issue in `module!` macro
+
+Bo-Wei Chen (1):
+      docs: rust: fix improper rendering in Arch Support page
+
+Conor Dooley (1):
+      rust: make mutually exclusive with CFI_CLANG
+
+Laine Taffin Altman (1):
+      rust: init: remove impl Zeroable for Infallible
+
+Miguel Ojeda (2):
+      kbuild: rust: remove unneeded `@rustc_cfg` to avoid ICE
+      kbuild: rust: force `alloc` extern to allow "empty" Rust files
+
+Wedson Almeida Filho (2):
+      rust: phy: implement `Send` for `Registration`
+      rust: kernel: require `Send` for `Module` implementations
+
+ Documentation/rust/arch-support.rst |   2 +-
+ init/Kconfig                        |   2 +-
+ rust/Makefile                       |   1 -
+ rust/kernel/init.rs                 |  11 ++-
+ rust/kernel/lib.rs                  |   2 +-
+ rust/kernel/net/phy.rs              |   4 +
+ rust/macros/lib.rs                  |  12 ---
+ rust/macros/module.rs               | 190 ++++++++++++++++++++++--------------
+ scripts/Makefile.build              |   2 +-
+ 9 files changed, 132 insertions(+), 94 deletions(-)
 
