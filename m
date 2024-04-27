@@ -1,202 +1,185 @@
-Return-Path: <linux-kernel+bounces-160986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989618B4571
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:57:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB4428B4576
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:06:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6103282B7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:57:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0BE91C2111F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA900481A6;
-	Sat, 27 Apr 2024 09:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FED147F6B;
+	Sat, 27 Apr 2024 10:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hn4/IQLx"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PtJisH5h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31794597D;
-	Sat, 27 Apr 2024 09:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FC743AA2;
+	Sat, 27 Apr 2024 10:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714211817; cv=none; b=jmM9xya3omMebwTSXokNNfzB/i3SFxb9PMazJaPp4GOpE2yCEiopRGfZA7DhLSj4ow7VMt3wIMlR6LsTFcSMoOzcGX82thsPSCfIn5Pp1FhjpAvWBVgE7y380VpKqaS6PXphe9J20wejtwzz0Hr6MCwPZ+H1dBFI09oSTbZBlzE=
+	t=1714212394; cv=none; b=pWpUMxHgDRxCErWyDMLAkY0SvDxxqBRT3iXUr2vF9Ve2QbRgYXRj14iRgqJ6Z7G+KQjn/qmMSz0wYy0leXmeMGPWtT+np8ploX7V2R3SuEJWVMoS24C26bTRBbZOEvgrxpKOr5lnIRTnKJjlyS8N7q3Wq64oXJ4XHQUNiCn3L24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714211817; c=relaxed/simple;
-	bh=0HEcIOTfzaBktR7t0NC6etqJxV2GQPY8AhiX3O01uQg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AVZgH0aNnXiTSqGbVFLZfr7aXZf6kP0xCdywjre7raIYE1o3p0P2lpNdvXeyt6g4xt7h8IlZD+GyjAPeOWB19/L2c1FIJqwn2syfM6cWtTCAuIh6p1c9PaOkg9cb2wfyHthw8YyyaELrBtzKOSEWcinA++N6CHjCVVQshJJkeME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hn4/IQLx; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6f3e3d789cdso1191097b3a.1;
-        Sat, 27 Apr 2024 02:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714211815; x=1714816615; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=02ZdnG7Kw8AagMUQyEdCYdECl3YVQmndomRdbBYfSEQ=;
-        b=hn4/IQLxzGZB4sPjLhk3nKzh0H2ps/QKVOZ6e63DL5qf+2A/64pQtQv+SyO/kAKBkl
-         /YwdCJlq3usnD0qd0+xTUjV4+pp7Lpw3IlVukXhNPPcxnxLi7O56GJ7Kg0SBJn307D3t
-         8ApiQSL11QID+1jl2XvYwXOS14ifvJVVn6AdZmVQUtaR453Uosf/5OvTSLsZILXGF9bi
-         RgxrJ4YJnCQganNHC5mmumv9BV7b70GXDjxFUChshcupkio2k2lg/3o0aV4w8x41BOnJ
-         CBWC6FQEedBBX0HhDsukCWp4LV7Nyy14KRwnomc2X3uxlA1LJhhyGiZHznHuZhKATk72
-         IA7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714211815; x=1714816615;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=02ZdnG7Kw8AagMUQyEdCYdECl3YVQmndomRdbBYfSEQ=;
-        b=ga1QRPLIl5VA4WPf+Mv/QK8Fv9T57nsgeFd7XaPVUvIvNMpagOTwAZDYdBtYXO8ZsO
-         VR2dw/9t42KuIf1IYZkXZD4olLXN0ap7AfpsQtAOHlUPW499H1f8B+0rrQnwGquEmc0U
-         bWe+MTN8CVzAAmYx2mvWEUfl9ZoKsq56liigVDBiD0zLzyeubmdAuaTq2Ov8UQv15EYV
-         OstOQD8VGhPBGxNQ+LI/oB1BJ9wJy45MXM92SXSXZXJ7Gyca2wS0qWKhJpnIMwNm6zwf
-         A2WwUuVeUCh94p9cWQwNmCh7UXzefhugapdudKXSp1pn70wR1YdKTCte4HVlNyOdPRfX
-         w6NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKHhC0LdEZB8G/qHRpGTQII4xeGV9XobzXhbefRlT8zDbSJWfSwoXJdUyGtXVbk1pbLRhghESOUBNtp78aGQ7/PcNQ9SnX3VjM2PdY
-X-Gm-Message-State: AOJu0YxrfkWQPd+ELSi8lCTIJoPYAa8FSp7rPD06gjpoY36S83l10QJc
-	nNksZ9k3K+TIvpAckBHStBZJhATQRKr/HU3M8Zrvqs/ztg3/KRJC
-X-Google-Smtp-Source: AGHT+IFrQuKV0EnRjdy/TpD4BmECdIY2zSCW+1Nt0zvtVl8zC5WAdFw9W/+c1TKbZPVenzFm/S7CcQ==
-X-Received: by 2002:a05:6a00:4a09:b0:6f3:e720:cead with SMTP id do9-20020a056a004a0900b006f3e720ceadmr3105259pfb.5.1714211814903;
-        Sat, 27 Apr 2024 02:56:54 -0700 (PDT)
-Received: from dev.. ([2402:e280:214c:86:b9a9:7e98:619:b206])
-        by smtp.gmail.com with ESMTPSA id l10-20020a056a00140a00b006ed0d0307aasm16070342pfu.70.2024.04.27.02.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 02:56:54 -0700 (PDT)
-From: R Sundar <prosunofficial@gmail.com>
-To: benjamin.mugnier@foss.st.com,
-	sylvain.petinot@foss.st.com,
-	mchehab@kernel.org
-Cc: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	R Sundar <prosunofficial@gmail.com>,
-	Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH linux-next] media: i2c: st-mipid02: replace of_node_put() with __free
-Date: Sat, 27 Apr 2024 15:26:43 +0530
-Message-Id: <20240427095643.11486-1-prosunofficial@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714212394; c=relaxed/simple;
+	bh=kzKzmjQSLyELOaHx8ENTHOHGtQTuBunSZrFLuoJyHnk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X5zO2Qd6y+HtNv0zNGQsfVzOoXJ8cDXBJdzZmCwwkvV8XWhT7gCF/NmBaTnCcGJH2pvYejKJ01IKOhKav2Bn8EOKv+ffOcH8Q/0Yq7dAeo2GF86VcJ+rGqxKNeBhzpjFwf2bB5bH2HcnR0rIoY0lpTqJJonk+iFfTd42Usgec5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PtJisH5h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4E0C113CE;
+	Sat, 27 Apr 2024 10:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714212393;
+	bh=kzKzmjQSLyELOaHx8ENTHOHGtQTuBunSZrFLuoJyHnk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PtJisH5hVT8OixjBLoL3Gj2RTySvlPbE+VhgeSp8BMrqVG9Z9WbLLW/UczmYXn/eE
+	 ZUxxa70OH/APzPbWTcuKAcJuLc3+8d/075bDbLp+CiFhCWPcHN6/zJvU1O9R/zTPUg
+	 dZnbkATSm51eG0YoNjQE5L+k6OIkKTSDbJBkv/nz1zXpCnrKvVOlmQ3yPRtBSrvzXi
+	 FSLmmyWvbRxBWaDwlvpB+FMZePoDcE4IcXDgA6ufefukkgau66P/7pfDFkH4/2vWMZ
+	 FuJxt88NDnUCIrhmCd+La/Fcdggix0jPdEdlVUgvfU3tgdafrPyXcnshlJwwa/76d9
+	 49Yw/L+sxs2MQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5196c755e82so3598105e87.0;
+        Sat, 27 Apr 2024 03:06:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx453+NsF9OwL6GBGZxcxyr0YkS20QEfm9MeCZsZg5vI9sV4se7
+	cHszCJoW20egU77qQK4VqBIwgBxGaYPW5Y/Jr5dEshMzHIZ9V6ganHFjylvhoK0DAuvm+jpsU5S
+	pAzlwuFp5T0rbFgw66z14DcARJKs=
+X-Google-Smtp-Source: AGHT+IFdQ28uQbTB6Mc/kxguimi9mBy216cOyH+bAt0M6kVKM0KywH9Z71+q4/py0eGtqPwufppjCr3lVkKW/HuRb0w=
+X-Received: by 2002:a19:2d09:0:b0:513:1a9c:ae77 with SMTP id
+ k9-20020a192d09000000b005131a9cae77mr2922235lfj.52.1714212392447; Sat, 27 Apr
+ 2024 03:06:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240427091638.2722050-1-masahiroy@kernel.org>
+In-Reply-To: <20240427091638.2722050-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 27 Apr 2024 19:05:56 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR+PaeaNvWsMWe9BgJdr1-J5kiUJE21U+wfUTnQFaW46g@mail.gmail.com>
+Message-ID: <CAK7LNAR+PaeaNvWsMWe9BgJdr1-J5kiUJE21U+wfUTnQFaW46g@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: remove SYMBOL_NO_WRITE flag
+To: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use the new cleanup magic to replace of_node_put() with
-__free(device_node) marking to auto release and to simplify the error
-paths.
+On Sat, Apr 27, 2024 at 6:16=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> This flag is set to symbols that are not intended to be written
+> to the .config file.
+>
+> Since commit b75b0a819af9 ("kconfig: change defconfig_list option to
+> environment variable"), SYMBOL_NO_WRITE is only set to choices.
+>
+> Therefore, (sym->flags & SYMBOL_NO_WRITE) is equivalent to
+> sym_is_choice(sym). This flags is no longer necessary.
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: R Sundar <prosunofficial@gmail.com>
----
- drivers/media/i2c/st-mipid02.c | 37 +++++++++-------------------------
- 1 file changed, 9 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
-index f250640729ca..d42a306530f3 100644
---- a/drivers/media/i2c/st-mipid02.c
-+++ b/drivers/media/i2c/st-mipid02.c
-@@ -715,31 +715,28 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
- 	struct v4l2_fwnode_endpoint ep = { .bus_type = V4L2_MBUS_CSI2_DPHY };
- 	struct i2c_client *client = bridge->i2c_client;
- 	struct v4l2_async_connection *asd;
--	struct device_node *ep_node;
- 	int ret;
- 
- 	/* parse rx (endpoint 0) */
--	ep_node = of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node,
--						0, 0);
-+	struct device_node *ep_node __free(device_node) =
-+		of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node, 0, 0);
- 	if (!ep_node) {
- 		dev_err(&client->dev, "unable to find port0 ep");
--		ret = -EINVAL;
--		goto error;
-+		return -EINVAL;
- 	}
- 
- 	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), &ep);
- 	if (ret) {
- 		dev_err(&client->dev, "Could not parse v4l2 endpoint %d\n",
- 			ret);
--		goto error_of_node_put;
-+		return ret;
- 	}
- 
- 	/* do some sanity checks */
- 	if (ep.bus.mipi_csi2.num_data_lanes > 2) {
- 		dev_err(&client->dev, "max supported data lanes is 2 / got %d",
- 			ep.bus.mipi_csi2.num_data_lanes);
--		ret = -EINVAL;
--		goto error_of_node_put;
-+		return -EINVAL;
- 	}
- 
- 	/* register it for later use */
-@@ -750,7 +747,6 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
- 	asd = v4l2_async_nf_add_fwnode_remote(&bridge->notifier,
- 					      of_fwnode_handle(ep_node),
- 					      struct v4l2_async_connection);
--	of_node_put(ep_node);
- 
- 	if (IS_ERR(asd)) {
- 		dev_err(&client->dev, "fail to register asd to notifier %ld",
-@@ -764,46 +760,31 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
- 		v4l2_async_nf_cleanup(&bridge->notifier);
- 
- 	return ret;
--
--error_of_node_put:
--	of_node_put(ep_node);
--error:
--
--	return ret;
- }
- 
- static int mipid02_parse_tx_ep(struct mipid02_dev *bridge)
- {
- 	struct v4l2_fwnode_endpoint ep = { .bus_type = V4L2_MBUS_PARALLEL };
- 	struct i2c_client *client = bridge->i2c_client;
--	struct device_node *ep_node;
- 	int ret;
- 
- 	/* parse tx (endpoint 2) */
--	ep_node = of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node,
--						2, 0);
-+	struct device_node *ep_node =
-+		of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node, 2, 0);
- 	if (!ep_node) {
- 		dev_err(&client->dev, "unable to find port1 ep");
--		ret = -EINVAL;
--		goto error;
-+		return -EINVAL;
- 	}
- 
- 	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), &ep);
- 	if (ret) {
- 		dev_err(&client->dev, "Could not parse v4l2 endpoint\n");
--		goto error_of_node_put;
-+		return ret;
- 	}
- 
--	of_node_put(ep_node);
- 	bridge->tx = ep;
- 
- 	return 0;
--
--error_of_node_put:
--	of_node_put(ep_node);
--error:
--
--	return -EINVAL;
- }
- 
- static int mipid02_probe(struct i2c_client *client)
--- 
-2.34.1
+"This flags" -> "This flag"
 
+
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  scripts/kconfig/confdata.c | 4 ++--
+>  scripts/kconfig/expr.h     | 1 -
+>  scripts/kconfig/gconf.c    | 2 --
+>  scripts/kconfig/parser.y   | 2 +-
+>  scripts/kconfig/symbol.c   | 3 +--
+>  5 files changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> index bcce87658998..5caec434e6f4 100644
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -502,7 +502,7 @@ int conf_read(const char *name)
+>
+>         for_all_symbols(sym) {
+>                 sym_calc_value(sym);
+> -               if (sym_is_choice(sym) || (sym->flags & SYMBOL_NO_WRITE))
+> +               if (sym_is_choice(sym))
+>                         continue;
+>                 if (sym_has_value(sym) && (sym->flags & SYMBOL_WRITE)) {
+>                         /* check that calculated value agrees with saved =
+value */
+> @@ -1007,7 +1007,7 @@ static int conf_touch_deps(void)
+>
+>         for_all_symbols(sym) {
+>                 sym_calc_value(sym);
+> -               if ((sym->flags & SYMBOL_NO_WRITE) || !sym->name)
+> +               if (sym_is_choice(sym))
+>                         continue;
+>                 if (sym->flags & SYMBOL_WRITE) {
+>                         if (sym->flags & SYMBOL_DEF_AUTO) {
+> diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+> index f646a98de006..d965e427753e 100644
+> --- a/scripts/kconfig/expr.h
+> +++ b/scripts/kconfig/expr.h
+> @@ -135,7 +135,6 @@ struct symbol {
+>  #define SYMBOL_WRITE      0x0200  /* write symbol to file (KCONFIG_CONFI=
+G) */
+>  #define SYMBOL_CHANGED    0x0400  /* ? */
+>  #define SYMBOL_WRITTEN    0x0800  /* track info to avoid double-write to=
+ .config */
+> -#define SYMBOL_NO_WRITE   0x1000  /* Symbol for internal use only; it wi=
+ll not be written */
+>  #define SYMBOL_CHECKED    0x2000  /* used during dependency checking */
+>  #define SYMBOL_WARNED     0x8000  /* warning has been issued */
+>
+> diff --git a/scripts/kconfig/gconf.c b/scripts/kconfig/gconf.c
+> index 13e2449ac83f..67a27c497c40 100644
+> --- a/scripts/kconfig/gconf.c
+> +++ b/scripts/kconfig/gconf.c
+> @@ -91,8 +91,6 @@ static const char *dbg_sym_flags(int val)
+>                 strcat(buf, "write/");
+>         if (val & SYMBOL_CHANGED)
+>                 strcat(buf, "changed/");
+> -       if (val & SYMBOL_NO_WRITE)
+> -               strcat(buf, "no_write/");
+>
+>         buf[strlen(buf) - 1] =3D '\0';
+>
+> diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+> index 69dc0c098acb..613fa8c9c2d0 100644
+> --- a/scripts/kconfig/parser.y
+> +++ b/scripts/kconfig/parser.y
+> @@ -222,7 +222,7 @@ config_option: T_MODULES T_EOL
+>  choice: T_CHOICE T_EOL
+>  {
+>         struct symbol *sym =3D sym_lookup(NULL, 0);
+> -       sym->flags |=3D SYMBOL_NO_WRITE;
+> +
+>         menu_add_entry(sym);
+>         menu_add_expr(P_CHOICE, NULL, NULL);
+>         printd(DEBUG_PARSE, "%s:%d:choice\n", cur_filename, cur_lineno);
+> diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+> index 8b34992ba5ed..b909c64f3bac 100644
+> --- a/scripts/kconfig/symbol.c
+> +++ b/scripts/kconfig/symbol.c
+> @@ -466,10 +466,9 @@ void sym_calc_value(struct symbol *sym)
+>                         if (sym->flags & SYMBOL_CHANGED)
+>                                 sym_set_changed(choice_sym);
+>                 }
+> -       }
+>
+> -       if (sym->flags & SYMBOL_NO_WRITE)
+>                 sym->flags &=3D ~SYMBOL_WRITE;
+> +       }
+>
+>         if (sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES)
+>                 set_all_choice_values(sym);
+> --
+> 2.40.1
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
