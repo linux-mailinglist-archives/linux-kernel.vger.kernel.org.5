@@ -1,126 +1,148 @@
-Return-Path: <linux-kernel+bounces-160933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE8718B44BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:17:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 086FD8B44C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:21:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17BB71C215B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:17:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A0561F22F62
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C916433C8;
-	Sat, 27 Apr 2024 07:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027C542061;
+	Sat, 27 Apr 2024 07:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8SSWuAY"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="stlKKaU2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286063BB22;
-	Sat, 27 Apr 2024 07:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4601E3BBD2
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714202257; cv=none; b=lSx0gstTx/wZ5IeuFCxplLkzlHGkNNn75UqzP+TWZFfNSzwiEaGiwjHQ4+hWgqdWKlRmx5lwe4sqtB+MffnMCNO2bF7M/LCLJT+Klpo+F0E2DJrtmSwO2iKRtigyQBtWacumf+BaRtPo3FQS2OhrifPXA4Egmwgbvg0uysXXJoY=
+	t=1714202469; cv=none; b=RMJnVrjnPmgaqFVtivnK8RssSLZA0/VB16S0r/vSRXaKgkytIPAI7C2p5Apy5jzTtipZpJGK7bds/kqm0j2kI/fhxe31gJLjMGsu37UmPR6k9q8KUT3YX2nFxqpo3h8et766TP6bv/9YW/EhMgDFQBDySg+m5t1yJX7pJiRsQrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714202257; c=relaxed/simple;
-	bh=KsZOuxYIuzP2B3Mk5ljXHJfuM1664KIpR3QMseySPms=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aVO21Opim6vnE1gn16Yt2ef73dtCUJ5CylG44Npe/kVyCoqdhKriuouLos0Br+cWmnLc5kncYUw3cB1JGbHqXpGfzuAaC3JcNGsI1z2pAlOTjK4B/YIHZhg7JzfPyhdPnTfIN48Yvm4ho+d88W1JiTeKh0rSetVOAbs01ksZAL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8SSWuAY; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2021906a12.3;
-        Sat, 27 Apr 2024 00:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714202255; x=1714807055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8kCB3I1nqc74i13dcnZcbSCBOzeY8bK9si08l2dEgE=;
-        b=a8SSWuAYqRuXEx22RhpRtfrvlHQaZvbzdtq3Mkma6aOnzk5K3Ylxrgv/+DK2A9vfYi
-         vDLYLNbtDMYCVE9cbOWkflf2k/0N5Nw7pWme4XctuWDIrKZA9sOja0WSK2Ac9jzlHHbK
-         2qod/aivwscMbfFLonW0QbxxJ+JN/jCl0KdtqzqrLmOEMufBV4kW2lnLQSLmBvY0q16x
-         LG4ZYKVEZD2Icaz22+SLqTKuygEjORYo7ZiGq1FIhRuPj6+CIAz3fZ+AIr2Ql8ZRaDhj
-         VdDYt75pR5ZDOjgdNhp6FmNZ0fPgZQ84l85xdKNQFssnCkMFFpKtDnofldiefoC4sf4G
-         DHOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714202255; x=1714807055;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8kCB3I1nqc74i13dcnZcbSCBOzeY8bK9si08l2dEgE=;
-        b=VpuD5QQjTQtMJEFBb6Qmxl45HiyzCPPXRMPIn1ghWfVJZBfTz/9QcCr/IlEa2rqdae
-         aUnR3wPhxXxiis346o5DOr0SAtgSI96ghbg4Y3gjkS6DOMnD9tSwsidx8xfx+oV7o22/
-         v7EZFGcdT7ge+4foQODTho9Mcta2O6ksMNcyTCvWIhXc/VArT2ZcVfNko/wYW+HCM7Au
-         Gl8GpdZehGhiFTj2gxS8uIqqnMMNRGaAt+gxzVEHRSGyF29fYo/qZCZanmG/dcxWE2WV
-         1p/ZP/INShiIkeNcgnmavhf90WhYUiMI7rfG9YqwfY16vI9ZY36nWwYk5VUzK1xJn7d8
-         g5VA==
-X-Forwarded-Encrypted: i=1; AJvYcCUzNyMjWs/ZYESzTLoJbAWcPz/FJej7d5JoOPk4znQ4b+pxNTQGOmyQMnRbveCp0N/wIFXnRtEUJV8HA2/ENDR3GYBpOTOMCiKNhqGIlJzKHRX6yyNJb75HBAl1Srx6quLyao5diA3TPEholykHeQ8hr74FNaWdBA0QCp9xXFyOAZc1Wk2y
-X-Gm-Message-State: AOJu0Ywhb1JW9JfuVE79gnwUsdkzifL21v/WR4fSTHnP+ydKuLbbJta3
-	LGt9i/jfLD0smjoL2M8IpBPADJYyTbiq8LQdDJY/BvCnMCpjr+8O
-X-Google-Smtp-Source: AGHT+IHWfWgdcQqxoTVmFJIu2SLzNm3A0qQRERzEXLa7neH1QrNrTJ0T8DF6bh4XJ6eY6mQO553c/Q==
-X-Received: by 2002:a17:90b:1d01:b0:2a2:bd4b:764f with SMTP id on1-20020a17090b1d0100b002a2bd4b764fmr4481541pjb.3.1714202255374;
-        Sat, 27 Apr 2024 00:17:35 -0700 (PDT)
-Received: from toyko-2.5 ([45.32.55.39])
-        by smtp.gmail.com with ESMTPSA id e14-20020a17090ab38e00b002a03456ccabsm17233086pjr.30.2024.04.27.00.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 00:17:34 -0700 (PDT)
-From: Jianfeng Liu <liujianfeng1994@gmail.com>
-To: linkmauve@linkmauve.fr
-Cc: andy.yan@rock-chips.com,
-	conor+dt@kernel.org,
-	cristian.ciocaltea@collabora.com,
-	devicetree@vger.kernel.org,
-	dsimic@manjaro.org,
-	ezequiel@vanguardiasur.com.ar,
-	frattaroli.nicolas@gmail.com,
-	heiko@sntech.de,
-	iommu@lists.linux.dev,
-	joro@8bytes.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	macromorgan@hotmail.com,
-	mchehab@kernel.org,
-	p.zabel@pengutronix.de,
-	robh@kernel.org,
-	robin.murphy@arm.com,
-	sebastian.reichel@collabora.com,
-	shreeya.patel@collabora.com,
-	will@kernel.org,
-	sigmaris@gmail.com,
-	nicolas@ndufresne.ca
-Subject: Re: [PATCH v4 0/2] Enable JPEG encoding on rk3588
-Date: Sat, 27 Apr 2024 15:16:38 +0800
-Message-Id: <20240427071638.79915-1-liujianfeng1994@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418141509.2485053-1-linkmauve@linkmauve.fr>
-References: <20240418141509.2485053-1-linkmauve@linkmauve.fr>
+	s=arc-20240116; t=1714202469; c=relaxed/simple;
+	bh=fIKMQoy1qd6Gq+28Yk3Ch3hYiaG++Dtnw8dmDRpSlkQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sdc5CCyjpNVUHPG4n3t0vQJ1RGSS2hKRezS5Zl8PW6r9wxyiiX3s446RDy69GU/MsPOxijy5+hovrYI5rL+XJuVQdE6VXTecfTYe2QxYB5biI3+B4f7F5E2qI5j078OlnfVCWNiCbkQLOr9J2BXTY5N88IBWfOiTmXPn1WAnjMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=stlKKaU2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1435C116B1
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714202468;
+	bh=fIKMQoy1qd6Gq+28Yk3Ch3hYiaG++Dtnw8dmDRpSlkQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=stlKKaU2j2DjJyYwRzVaqC0juIAcGM+d33oITQw3cy+Zc7YSQlzZ7diR8n3WxvUyX
+	 e5wzdmswmkwiXhdYRu2Hk8k5hSnIB7JqNSVT1s42uUHIOLLeZpRCE4Fxm2PkdFPFtc
+	 oNxkk8sTHSlsuW+hpZSJFDNQwQovKgO4nuhW+S0RspLOAgX8dxf7kq/b4HIK36UKDN
+	 oj3mHBkom6uAInCMYAvtfdLngn0AdgYaD+GgVOVjaX5OolroPrtTxJJUrn2VlQzash
+	 xfZzZPJURQL459Pg7s+tA9u3fKVrtfeq8LNaQK0TGXEs2u8K7VObylbkCkZ61mtbda
+	 cTYDNB7931BGA==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a587831809eso332646666b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 00:21:08 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVFufQ/CBMKjcu8YM1DXeb/s/hndU//A+wAWmKyvCf+VLUoV83BhoxrVhmTDKITG9WiMfW/TIPssaLCIkfZZNEWD7pMRG/gbLnAthXS
+X-Gm-Message-State: AOJu0YzLfabcGaM+QTuIqTJc2qNPmhuKQTT+LKTbcOA9R9uckzMSbpXc
+	SF3ELIZsuek7ih4BcAi0FbRrV8wfSLTp2ZWlDmcV2SbqbPp4BJeKbPDfezrGXVlhG/Yuh25/Jjj
+	bMS6x60X5e3qD42Uhk4M3dFDQYxg=
+X-Google-Smtp-Source: AGHT+IERNGO0O077Rbp+jM0YFOExBijTH2r3fxwSSGP/zOihb5L2+1soR8d5Hjmf0QZ0gefOQxQo01YVKKaB6OplKrc=
+X-Received: by 2002:a17:906:f348:b0:a52:6e3e:c55c with SMTP id
+ hg8-20020a170906f34800b00a526e3ec55cmr3117324ejb.70.1714202467397; Sat, 27
+ Apr 2024 00:21:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240426121442.882029-1-xry111@xry111.site> <CAAhV-H74cQ4XdDez5PipCxUZTpfS=CA6azL5qob=jGGebobD6g@mail.gmail.com>
+ <dfdc9823a0b89c8582587fa75448bba5c3a7e15e.camel@xry111.site> <56414029e179d219442bde9b8eae81fa3e3ceec4.camel@xry111.site>
+In-Reply-To: <56414029e179d219442bde9b8eae81fa3e3ceec4.camel@xry111.site>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Sat, 27 Apr 2024 15:20:55 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5vrCrBFhDKjTXchCGABWHT6Wxz1JK6hNsarOwp+vfHpg@mail.gmail.com>
+Message-ID: <CAAhV-H5vrCrBFhDKjTXchCGABWHT6Wxz1JK6hNsarOwp+vfHpg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Provide __lshrti3, __ashrti3, and __ashrti3
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Emmanuel,
+On Sat, Apr 27, 2024 at 12:13=E2=80=AFPM Xi Ruoyao <xry111@xry111.site> wro=
+te:
+>
+> On Sat, 2024-04-27 at 12:00 +0800, Xi Ruoyao wrote:
+> > On Sat, 2024-04-27 at 10:50 +0800, Huacai Chen wrote:
+> > > Hi, Ruoyao,
+> > >
+> > > I don't think #ifdef CONFIG_ARCH_SUPPORTS_INT128 is needed here.
+> > > S390/ARM64/RISCV all built it unconditionally.
+> >
+> > The problem here is RISCV and ARM64 are using an incorrect prototype fo=
+r
+> > these functions in asm-prototypes.h:
+> >
+> > long long __lshrti3(long long a, int b);
+> > long long __ashrti3(long long a, int b);
+> > long long __ashlti3(long long a, int b);
+> >
+> > where "long long" is not 128-bit.  Despite this seems working for RISC-=
+V
+> > and ARM64 I really dislike it.
+> >
+> > S390 seems assuming CONFIG_ARCH_SUPPORTS_INT128 is always true, but I
+> > don't think we can assume it too (at least it'll likely to be false for
+> > LA32, so doing so will cause trouble when we add LA32 support).
+> >
+> > So if we don't want to check CONFIG_ARCH_SUPPORTS_INT128 and still use =
+a
+> > correct prototype, we'll do:
+> >
+> > diff --git a/arch/loongarch/include/asm/asm-prototypes.h b/arch/loongar=
+ch/include/asm/asm-prototypes.h
+> > index 51f224bcfc65..0a57db01116d 100644
+> > --- a/arch/loongarch/include/asm/asm-prototypes.h
+> > +++ b/arch/loongarch/include/asm/asm-prototypes.h
+> > @@ -7,8 +7,6 @@
+> >  #include <asm/ftrace.h>
+> >  #include <asm-generic/asm-prototypes.h>
+> >
+> > -#ifdef CONFIG_ARCH_SUPPORTS_INT128
+> > -__int128_t __ashlti3(__int128_t a, int b);
+> > -__int128_t __ashrti3(__int128_t a, int b);
+> > -__int128_t __lshrti3(__int128_t a, int b);
+> > -#endif
+> > +struct { u64 lo, hi; } __ashlti3(u64 lo, u64 hi, int b);
+> > +struct { u64 lo, hi; } __ashrti3(u64 lo, u64 hi, int b);
+> > +struct { u64 lo, hi; } __lshrti3(u64 lo, u64 hi, int b);
+>
+> Whoops.  This is still incorrect for LA32.  On LA32 an "int128" (if it
+> ever exists) should be passed as a pointer, but this is passing it in 4
+> GPRs.  So if we want to keep the prototype correct we need to either use
+> "struct { u64 lo, hi; }" in the parameter list too, or guard it with
+> #ifdef CONFIG_64BIT.
+>
+> So to me checking CONFIG_ARCH_SUPPORTS_INT128 is just easier.
+>
+> If you insists on not checking CONFIG_ARCH_SUPPORTS_INT128 I'll just use
+> an incorrect prototype like RISC-V but put a comment here, like:
+>
+> /* The prototypes are incorrect but this file is only used by
+>    modpost which does not care.  */
+> long long __ashlti3(long long a, int b);
+> long long __ashrti3(long long a, int b);
+> long long __lshrti3(long long a, int b);
+>
+> How do you think?
+OK, then just keep the original status.
 
-On Thu, 18 Apr 2024 16:15:04 +0200, Emmanuel Gil Peyrot wrote:
->- Only expose a single VEPU121, since the driver doesn’t yet support
->  exposing them all as a single video node to userspace.
-I'm also doing work with the hantro node on rk3588 which has both vdpu
-and vepu. Discussions can be found here[1]. If I enable the jpeg encoder
-at feb50000, would it cause any side effects if other jpeg encoders in
-your patch are enabled? And what's the disadvantage of enabling multi
-jpeg endoers in devicetree?
 
-[1] https://patchwork.kernel.org/project/linux-rockchip/patch/20240418111002.83015-3-liujianfeng1994@gmail.com/
-
-Best regards,
-Jianfeng
+Huacai
+>
+> --
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
+>
 
