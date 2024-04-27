@@ -1,139 +1,153 @@
-Return-Path: <linux-kernel+bounces-161189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CFFC8B4825
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 23:01:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8731C8B482A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 23:06:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF1FF1C20CFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:01:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A04FEB21693
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A58145B29;
-	Sat, 27 Apr 2024 21:01:33 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D53145B3E;
+	Sat, 27 Apr 2024 21:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="cBUf8wO/"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7689710E6
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 21:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2956145337
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 21:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714251692; cv=none; b=LIAckZuDrwXPqkDcX9M9ra9zBj09NoQv63yjSALHAobRRVG0I773AdnaXeu2M3VROytVFIngm8Aq1C72hG3ro3gomadCmVSr/FEutUmZEq1spozjRMZQhXY1MYGuzoUDW1xMf+q0JRwbT4439ICOjzdOlLysnLo8dZ6owMfRzj8=
+	t=1714251991; cv=none; b=sULD6U5DcZgC8DMMC4RGRA6AVeAtPVJbbqeEcXrutgSF/jUUL3EFKDOrOm6ElTSU4sFWYXkFRpQ/pboOyf8p2tmV+nJP+xRVxXvoknedPEVsWeajaTfMdb0yQ8hyj4yWk22MX7Mn9Bj/UTY3Wb+vMqxBb82LbHuTUNrM+2far9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714251692; c=relaxed/simple;
-	bh=ypscR+3qCxpM1RhQ3YAYgMq1bVR/OwF890AX19OR/fA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=S0S2DugCa4Kfh89uPy5sPnuLsacoe7lcoof6llvxiDxOm6Yhp0BI1GE3P7lbOSgi0rl9aNi089Trc8bNB9z+kdwyeQLwvj78+XBEuN8BC+PJ0oulhCpgl0u6ERRc1K4QnXmcq2dGTN19P7/XcXWe6u5yqRdkU1e7yFJRQQlDAj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-184-vJTZZFxDOK-mjlH1jpPhsQ-1; Sat, 27 Apr 2024 22:01:19 +0100
-X-MC-Unique: vJTZZFxDOK-mjlH1jpPhsQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 27 Apr
- 2024 22:00:48 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 27 Apr 2024 22:00:48 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guenter Roeck' <linux@roeck-us.net>, Alan Stern
-	<stern@rowland.harvard.edu>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Gerd Hoffmann
-	<kraxel@redhat.com>
-Subject: RE: [PATCH v2] usb: ohci: Prevent missed ohci interrupts
-Thread-Topic: [PATCH v2] usb: ohci: Prevent missed ohci interrupts
-Thread-Index: AQHaloHtuZ6Ib4ELhkipVPWjjF4HNLF8nf2w
-Date: Sat, 27 Apr 2024 21:00:48 +0000
-Message-ID: <a1b4bac14c6a4334969cc7d671f3a8eb@AcuMS.aculab.com>
-References: <20240424195951.3749388-1-linux@roeck-us.net>
-In-Reply-To: <20240424195951.3749388-1-linux@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1714251991; c=relaxed/simple;
+	bh=BPGQT9RvHD6dyBXeMZZlYnTR0tD/OFpjhgFM5V7pV48=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F3C4Wsz+qOnxFoLE+UFwF5H/8nthvnkFW0/AOT/aIWxdYe9KNZBb9PvefKiXrqapb/9Tr95sRRZETevKFvL/EJgPzkesd46qmxRlBtsTdNWOx8cAVsKy0dKHnSlWfAUfCHYuGWax73kS+GmbxXwI1nfTBSswwAPFn1ARXql6J1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=cBUf8wO/; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d872102372so32070501fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 14:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714251988; x=1714856788; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EqwxwLHYHSztUcUOAzJULG1B07hY8oWavjqK1Q3m250=;
+        b=cBUf8wO/LuQ+O8DMbFdKOHVch0tZyruv56W47/Vp2sr8J2JwCUpuVygEMNpGGqO+ak
+         XgOYXogt2nUDTKqhjYX/+qq46H0j7MBhIsGZk69/La2fiOfQQu+lYm84JQupeD2xSRJ8
+         cw3/qrmq3dIMqJGSKo4sB09V+Oj2nvqkqhzu8luQCopbvhviAlreQHUv9rwXb2fqV7SK
+         v6FBAFfXU+En/xySlvCKEVnCeGjVBOwjLlI78kmHVxNxTn4Bl8mfIEikvo8bDZlrwlL3
+         nbjEOwvQw1W2cY2P6wVhMahwdT063/E+koXoVufJ1o4UQF4O2V+hi+juLEdrYJr/hpce
+         WpnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714251988; x=1714856788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EqwxwLHYHSztUcUOAzJULG1B07hY8oWavjqK1Q3m250=;
+        b=AOli7PDiD5HO4gVQvLQFctgwv1kxD2cZPody+RjuqmE1/97j/L3Mh83KXIqtcToV3a
+         iDogQmwqK1ND/uy2VSmjyQpwK9MINqnm9M/Wl0NLXdUjHcEr4Zi+uqVNnqSV7AV98RHG
+         WvKWFIU+os8nTRtNkHgO6XZ5cvtVL/EpF5KBWRYovwYYs4ZVUiczV/zaMeGKNf05xfv+
+         3GxEFzUXt0g5nO5A91n27QaccnsE9PzK2bGLhDiAeHYGvG0xaNBhIilZILqq9tIHKxzt
+         DREBklPlNZ5sc9hajYkJMjVQtIQuyJXwO72gAFfxJflDI+EoWRw/VQsd6kjkqZOWjgT/
+         JGjw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfZTOrjaeFklJt4xwjFEEaoe4HY0S+qZa9Ia/LOadqYhStLKMgv8yWmDxQYVxO3NZiZhKfpdH77SIRA67640MMOuaSmchviSjESINC
+X-Gm-Message-State: AOJu0YzRzyHtogjhlxnK9M//dj6JUmMcTX0XkssfPA35+FobNWWDhKNj
+	pICLJk72QxbVTEl/zQ/klvhIrSvYz0t80k7mGYBfntbfc6vcXI/1t70HI7Xl6DA=
+X-Google-Smtp-Source: AGHT+IHgXfI8p97ruv5ETVys/NblWrTLmITHlfHrRMMEOsIzKJV93YK/2ydXEzUpnj4m5gNxN4GtSQ==
+X-Received: by 2002:a19:a411:0:b0:51d:5d33:892 with SMTP id q17-20020a19a411000000b0051d5d330892mr227521lfc.28.1714251987823;
+        Sat, 27 Apr 2024 14:06:27 -0700 (PDT)
+Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
+        by smtp.gmail.com with ESMTPSA id t8-20020a192d48000000b0051971559a52sm623151lft.196.2024.04.27.14.06.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 14:06:27 -0700 (PDT)
+Date: Sat, 27 Apr 2024 23:06:25 +0200
+From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 11/12] microchip: lan865x: add driver support
+ for Microchip's LAN865X MAC-PHY
+Message-ID: <Zi1o0SilOZ5gWMlT@builder>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
+ <Zi1PxgANUWh1S0sO@builder>
+ <e89272b1-7780-4a91-888d-27ae7242f881@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e89272b1-7780-4a91-888d-27ae7242f881@lunn.ch>
 
-From: Guenter Roeck
-> Sent: 24 April 2024 21:00
->=20
-> Testing ohci functionality with qemu's pci-ohci emulation often results
-> in ohci interface stalls, resulting in hung task timeouts.
->=20
-> The problem is caused by lost interrupts between the emulation and the
-> Linux kernel code. Additional interrupts raised while the ohci interrupt
-> handler in Linux is running and before the handler clears the interrupt
-> status are not handled. The fix for a similar problem in ehci suggests
-> that the problem is likely caused by edge-triggered MSI interrupts. See
-> commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
-> edge-triggered MSI") for details.
->=20
-> Ensure that the ohci interrupt code handles all pending interrupts before
-> returning to solve the problem.
->=20
-> Cc: Gerd Hoffmann <kraxel@redhat.com>
-> Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Only repeat if the interface is still active
->=20
->  drivers/usb/host/ohci-hcd.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-> index 4f9982ecfb58..bb6b50b4a356 100644
-> --- a/drivers/usb/host/ohci-hcd.c
-> +++ b/drivers/usb/host/ohci-hcd.c
-> @@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
->  =09/* Check for an all 1's result which is a typical consequence
->  =09 * of dead, unclocked, or unplugged (CardBus...) devices
->  =09 */
-> +again:
->  =09if (ints =3D=3D ~(u32)0) {
->  =09=09ohci->rh_state =3D OHCI_RH_HALTED;
->  =09=09ohci_dbg (ohci, "device removed!\n");
-> @@ -982,6 +983,13 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
->  =09}
->  =09spin_unlock(&ohci->lock);
->=20
-> +=09/* repeat until all enabled interrupts are handled */
-> +=09if (ohci->rh_state !=3D OHCI_RH_HALTED) {
-> +=09=09ints =3D ohci_readl(ohci, &regs->intrstatus);
-> +=09=09if (ints & ohci_readl(ohci, &regs->intrenable))
+Ok this tripped me up.
 
-Doesn't the driver know which interrupts are enabled?
-So it should be able to avoid doing two (likely) slow io reads?
-(PCIe reads are pretty much guaranteed to be high latency.)
+> The device tree binding says:
+> 
+> +  compatible:
+> +    oneOf:
+> +      - const: microchip,lan8650
+> +      - items:
+> +          - const: microchip,lan8651
+> +          - const: microchip,lan8650
+> 
+> So your DT node should either be:
+> 
+> compatible = "microchip,lan8651", "microchip,lan8650";
+> 
+> or
+> 
+> compatible = "microchip,lan8650"
+> 
+> There is no mention of lan865x in the binding, so this patch is
+> clearly wrong.
+> 
+> What do you have in your DT node?
 
-=09David
+Initially I set compatible = "microchip,lan8650", and did not get the
+driver to probe, so I got carried away with adding things that were not
+necessary.
 
-> +=09=09=09goto again;
-> +=09}
-> +
->  =09return IRQ_HANDLED;
->  }
->=20
-> --
-> 2.39.2
->=20
+I dropped my patch and tested again.
+What does work is setting:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+compatible = "microchip,lan8651"
 
+ - or - 
+
+compatible = "microchip,lan8651", "microchip,lan8650"
+
+but just compatible = "lan8650" does not work.
+
+Also I'm getting the output
+[    0.125056] SPI driver lan8650 has no spi_device_id for microchip,lan8651
+
+As Conor pointed out setting the define DRV_NAME to "lan8651" fixes
+that.
+Setting the define to "lan8650" yet gets the spi module to log the 'no spi_device id..'.
+
+I don't really have an opinion here, but I think there is a risk that
+more than one dev might stumble on the same thing as me and expect that
+either or should work.
+
+BR
+R
 
