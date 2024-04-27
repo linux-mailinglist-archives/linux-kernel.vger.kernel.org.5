@@ -1,230 +1,178 @@
-Return-Path: <linux-kernel+bounces-161066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDC18B46AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:54:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102778B46AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:55:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 223841F222DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 392481C2110E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A80EDF;
-	Sat, 27 Apr 2024 14:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3661392;
+	Sat, 27 Apr 2024 14:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aA934PP+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dj83KUhO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA6A376
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 14:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3F61366;
+	Sat, 27 Apr 2024 14:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714229682; cv=none; b=jiHCH8vpDDG+iBipvt6M7C4d9qaFlqlu95+yTKrEoBSAhiujjyVorbG4Bext1H5G+6K8WsE6kCcpdzeastotKfcnP5M5YnocejbRmuAFsEDo7dkYcQVfBJ9ZRamcKe9W5/AKpYPJ8dukG4sm2ASvD1OWsWdIT/286VTr9qyNYOo=
+	t=1714229708; cv=none; b=sPM1TtT9tMiYLq8WhtfC8PNG7SKafN5irUkEMu9Ar7Fq+cKy3rL0ue1bPlEQXUriuBh4lAkrSI4tMom3UR8vkFEpQLXLmzZPUoLqErgZjg2X8f3c74cDm4oze075aHgTwmuicWX8SUp8LbNx+G/CK4lUdf6ymMFGCucynp+juHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714229682; c=relaxed/simple;
-	bh=M7SggkVHaz0Fn5FXvIg6Xmp9Y1iMcrs4OFHTSGkTVvk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Pu74AUq0x+COt1VnPsEj/KzGNU80qXt8A3NMXg0jokhi2rCnefCqiAFkHtnT9Zp87x6SoKpB//YfQKpqRduO9AzdO5+U6Hk1o/Pp6Sxct28QhLQ04JnkVZIjau/v/PrPLAZYyjW7cenYOnjx5LtapYz8XKUl/HKPN9JdBi/Oy88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aA934PP+; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714229681; x=1745765681;
-  h=date:from:to:cc:subject:message-id;
-  bh=M7SggkVHaz0Fn5FXvIg6Xmp9Y1iMcrs4OFHTSGkTVvk=;
-  b=aA934PP+ZHBp7y4BrIcXjAF5vhd4k7y0+I0tCGHLvS1sghZHHOqRidHS
-   VJBsbnTEnUlNw35sjuo/lzMxeROzBDNMxEN9yl6jpPZKGBnRFesNTeEHs
-   wi9EGIdBYXBqgk3cq/I+nyxp4ubbSL5o5Wk5+m2Zb3+A0dokEfYNaJ/a/
-   XOVtDeW8SuxgaLD+EjGgGhngRsY5/eP76l0ov0bWqEgwBXIoQpbgh6rFD
-   aZAxtV9CDACKxSu6bQ4g1O1gmnXErthXvQgpcvtpCglHkFbmWER+P6n+t
-   jGA6l3M/3slGlGjaHOf/mi7IvuoMvM+9Kdr8SSB2qSwnJuJhdZvU90iCR
-   A==;
-X-CSE-ConnectionGUID: n5Y0H0kFSKuLuz98ojysQg==
-X-CSE-MsgGUID: qZPc1VCsRNGUP3ZBFvQ1Wg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9800653"
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="9800653"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 07:54:40 -0700
-X-CSE-ConnectionGUID: PrXulXBSRbyi2clHIqjlbA==
-X-CSE-MsgGUID: R1YXRhoES32f9aoDWi3I6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,235,1708416000"; 
-   d="scan'208";a="30340143"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 27 Apr 2024 07:54:39 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0jRk-00059Q-2v;
-	Sat, 27 Apr 2024 14:54:36 +0000
-Date: Sat, 27 Apr 2024 22:54:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- e063b531d4e83a5bf4f9eb8ca67963df2cc00bc6
-Message-ID: <202404272218.9FJwB80R-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1714229708; c=relaxed/simple;
+	bh=crcqESX/653Pg3zlDPRgRvb7OyyPp302KtgbEzu+PdA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W+YvONNbQg4TeuqQDolttj1PCv9RFCEBmYM+YrDn8G9HOIbE0+xfl6ovLTK6KWuKWOqAVHI6EVhsWQi1RGXoQAZs/ryz32BzIJDDkZmXYKyeGFKsyPUBjwu75AA+hmWd/OdIrQwoneim2EbgMLLrTXjOtR60AMHFFfqbUZ6X8qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dj83KUhO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 166A6C113CE;
+	Sat, 27 Apr 2024 14:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714229708;
+	bh=crcqESX/653Pg3zlDPRgRvb7OyyPp302KtgbEzu+PdA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dj83KUhOYjnUOLfrMq3Pr+znV1JSNNWKQp9QoTQBvxCQzi3vAPrMj60yP2m+04Bmz
+	 nw+XTMicHg4uzq86ZCaeP1UmtS4A00uScrN+kko87L+PVX9dKJLccRdOjIm+Qs8mlk
+	 TScDVnQdUKL9qqHJYzHFvzf+QY6g/Tix1CFskV4f3BlBt8OMJJebQVMh4gcufeIqNY
+	 yNpmG+u8T5VcMWhYky5CqBYO5qB9dEmbupIDDGX+clRriM4lIzMGVnF6rwEKtSddd7
+	 pHi6aeUcGr52f4ob/4r/Rpd+W+ng4kJr3D0Pr+cNia5VF4PGTiihwvGkaY/qYN83Mj
+	 yawXPZ2S4eN/Q==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v2 0/4] kbuild: replace $(srctree)/$(src) with $(src) in Makefiles
+Date: Sat, 27 Apr 2024 23:54:58 +0900
+Message-Id: <20240427145502.2804311-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/daveh/devel.git x86/cpu
-branch HEAD: e063b531d4e83a5bf4f9eb8ca67963df2cc00bc6  x86/mm: Switch to new Intel CPU model defines
 
-elapsed time: 1275m
+This makes upstream/downstream Makefiles look consistent.
 
-configs tested: 138
-configs skipped: 135
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Masahiro Yamada (4):
+  arch: use $(obj)/ instead of $(src)/ for preprocessed linker scripts
+  kbuild: do not add $(srctree) or $(objtree) to header search paths
+  kbuild: use $(obj)/ instead of $(src)/ for common pattern rules
+  kbuild: use $(src) instead of $(srctree)/$(src) for source directory
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240427   gcc  
-arc                   randconfig-002-20240427   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                            mmp2_defconfig   gcc  
-arm                   randconfig-003-20240427   gcc  
-arm                         s5pv210_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-003-20240427   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240427   gcc  
-csky                  randconfig-002-20240427   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240427   clang
-i386         buildonly-randconfig-002-20240427   gcc  
-i386         buildonly-randconfig-003-20240427   clang
-i386         buildonly-randconfig-004-20240427   clang
-i386         buildonly-randconfig-005-20240427   clang
-i386         buildonly-randconfig-006-20240427   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240427   clang
-i386                  randconfig-002-20240427   gcc  
-i386                  randconfig-003-20240427   clang
-i386                  randconfig-004-20240427   gcc  
-i386                  randconfig-005-20240427   gcc  
-i386                  randconfig-006-20240427   clang
-i386                  randconfig-011-20240427   gcc  
-i386                  randconfig-012-20240427   gcc  
-i386                  randconfig-013-20240427   clang
-i386                  randconfig-014-20240427   clang
-i386                  randconfig-015-20240427   gcc  
-i386                  randconfig-016-20240427   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240427   gcc  
-loongarch             randconfig-002-20240427   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240427   gcc  
-nios2                 randconfig-002-20240427   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240427   gcc  
-parisc                randconfig-002-20240427   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     tqm8540_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   gcc  
-powerpc64             randconfig-001-20240427   gcc  
-powerpc64             randconfig-002-20240427   gcc  
-powerpc64             randconfig-003-20240427   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                 randconfig-002-20240427   gcc  
-s390                             allyesconfig   gcc  
-s390                  randconfig-001-20240427   gcc  
-s390                  randconfig-002-20240427   gcc  
-sh                               alldefconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20240427   gcc  
-sh                    randconfig-002-20240427   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7343_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240427   gcc  
-sparc64               randconfig-002-20240427   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-002-20240427   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-003-20240427   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-003-20240427   gcc  
-x86_64                randconfig-005-20240427   gcc  
-x86_64                randconfig-006-20240427   gcc  
-x86_64                randconfig-011-20240427   gcc  
-x86_64                randconfig-015-20240427   gcc  
-x86_64                randconfig-016-20240427   gcc  
-x86_64                randconfig-071-20240427   gcc  
-x86_64                randconfig-076-20240427   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240427   gcc  
-xtensa                randconfig-002-20240427   gcc  
+ Documentation/Makefile                        |  8 +++---
+ Documentation/devicetree/bindings/Makefile    |  6 ++--
+ Documentation/kbuild/makefiles.rst            | 12 ++++----
+ Makefile                                      |  7 +++++
+ arch/arc/boot/dts/Makefile                    |  3 +-
+ arch/arm/Kbuild                               |  2 +-
+ arch/arm/boot/Makefile                        |  3 +-
+ arch/arm/mach-s3c/Makefile                    |  2 +-
+ arch/arm/plat-orion/Makefile                  |  2 +-
+ arch/arm/tools/Makefile                       |  2 +-
+ arch/arm64/kernel/vdso/Makefile               |  2 +-
+ arch/arm64/kernel/vdso32/Makefile             |  2 +-
+ arch/arm64/kvm/Makefile                       |  4 +--
+ arch/arm64/kvm/hyp/Makefile                   |  2 +-
+ arch/csky/boot/dts/Makefile                   |  4 +--
+ arch/csky/kernel/vdso/Makefile                |  4 +--
+ arch/loongarch/kvm/Makefile                   |  2 +-
+ arch/loongarch/vdso/Makefile                  |  2 +-
+ arch/mips/kernel/syscalls/Makefile            |  2 +-
+ arch/mips/vdso/Makefile                       |  4 +--
+ arch/nios2/boot/dts/Makefile                  |  3 +-
+ arch/parisc/kernel/vdso32/Makefile            |  4 +--
+ arch/parisc/kernel/vdso64/Makefile            |  4 +--
+ arch/powerpc/boot/Makefile                    |  6 ++--
+ arch/powerpc/boot/dts/Makefile                |  3 +-
+ arch/powerpc/boot/dts/fsl/Makefile            |  3 +-
+ arch/powerpc/kernel/vdso/Makefile             |  8 +++---
+ arch/riscv/kernel/compat_vdso/Makefile        |  2 +-
+ arch/riscv/kernel/vdso/Makefile               |  2 +-
+ arch/riscv/kvm/Makefile                       |  2 +-
+ arch/s390/kernel/syscalls/Makefile            |  4 +--
+ arch/s390/kernel/vdso32/Makefile              |  4 +--
+ arch/s390/kernel/vdso64/Makefile              |  4 +--
+ arch/sh/kernel/vsyscall/Makefile              |  4 +--
+ arch/sparc/vdso/Makefile                      |  2 +-
+ arch/um/kernel/Makefile                       |  2 +-
+ arch/x86/boot/Makefile                        |  2 +-
+ arch/x86/entry/vdso/Makefile                  |  2 +-
+ arch/x86/kernel/Makefile                      |  2 +-
+ arch/x86/kernel/cpu/Makefile                  |  2 +-
+ arch/x86/mm/Makefile                          |  2 +-
+ arch/x86/um/vdso/Makefile                     |  2 +-
+ arch/xtensa/boot/dts/Makefile                 |  3 +-
+ certs/Makefile                                |  4 +--
+ drivers/Makefile                              |  5 ----
+ drivers/crypto/intel/qat/qat_420xx/Makefile   |  2 +-
+ drivers/crypto/intel/qat/qat_4xxx/Makefile    |  2 +-
+ drivers/crypto/intel/qat/qat_c3xxx/Makefile   |  2 +-
+ drivers/crypto/intel/qat/qat_c3xxxvf/Makefile |  2 +-
+ drivers/crypto/intel/qat/qat_c62x/Makefile    |  2 +-
+ drivers/crypto/intel/qat/qat_c62xvf/Makefile  |  2 +-
+ .../crypto/intel/qat/qat_dh895xcc/Makefile    |  2 +-
+ .../crypto/intel/qat/qat_dh895xccvf/Makefile  |  2 +-
+ drivers/gpu/drm/amd/amdgpu/Makefile           |  2 +-
+ drivers/gpu/drm/arm/display/komeda/Makefile   |  4 +--
+ drivers/gpu/drm/i915/Makefile                 |  4 +--
+ drivers/gpu/drm/imagination/Makefile          |  2 +-
+ drivers/gpu/drm/msm/Makefile                  |  8 +++---
+ drivers/gpu/drm/nouveau/Kbuild                | 10 +++----
+ drivers/gpu/drm/xe/Makefile                   | 10 +++----
+ drivers/hid/amd-sfh-hid/Makefile              |  2 +-
+ drivers/hid/intel-ish-hid/Makefile            |  2 +-
+ drivers/md/dm-vdo/Makefile                    |  2 +-
+ .../net/ethernet/aquantia/atlantic/Makefile   |  2 +-
+ drivers/net/ethernet/chelsio/libcxgb/Makefile |  2 +-
+ drivers/net/ethernet/fungible/funeth/Makefile |  2 +-
+ drivers/net/ethernet/hisilicon/hns3/Makefile  |  2 +-
+ .../broadcom/brcm80211/brcmfmac/Makefile      |  4 +--
+ .../broadcom/brcm80211/brcmfmac/bca/Makefile  |  6 ++--
+ .../broadcom/brcm80211/brcmfmac/cyw/Makefile  |  6 ++--
+ .../broadcom/brcm80211/brcmfmac/wcc/Makefile  |  6 ++--
+ .../broadcom/brcm80211/brcmsmac/Makefile      |  6 ++--
+ .../broadcom/brcm80211/brcmutil/Makefile      |  2 +-
+ .../net/wireless/intel/iwlwifi/dvm/Makefile   |  2 +-
+ .../net/wireless/intel/iwlwifi/mei/Makefile   |  2 +-
+ .../net/wireless/intel/iwlwifi/mvm/Makefile   |  2 +-
+ .../net/wireless/intel/iwlwifi/tests/Makefile |  2 +-
+ .../wireless/realtek/rtl818x/rtl8180/Makefile |  2 +-
+ .../wireless/realtek/rtl818x/rtl8187/Makefile |  2 +-
+ drivers/scsi/aic7xxx/Makefile                 | 12 ++++----
+ drivers/staging/rtl8723bs/Makefile            |  2 +-
+ fs/iomap/Makefile                             |  2 +-
+ fs/unicode/Makefile                           | 14 +++++-----
+ fs/xfs/Makefile                               |  4 +--
+ init/Makefile                                 |  2 +-
+ lib/Makefile                                  |  6 ++--
+ lib/raid6/Makefile                            |  2 +-
+ net/wireless/Makefile                         |  2 +-
+ rust/Makefile                                 |  6 ++--
+ samples/bpf/Makefile                          |  2 +-
+ samples/hid/Makefile                          |  2 +-
+ scripts/Kbuild.include                        |  3 +-
+ scripts/Makefile.asm-generic                  |  6 ++--
+ scripts/Makefile.build                        | 28 +++++++++----------
+ scripts/Makefile.clean                        |  2 +-
+ scripts/Makefile.host                         |  4 +--
+ scripts/Makefile.lib                          | 10 +++----
+ scripts/Makefile.modpost                      |  2 +-
+ scripts/dtc/Makefile                          |  6 ++--
+ scripts/gdb/linux/Makefile                    |  2 +-
+ scripts/genksyms/Makefile                     |  4 +--
+ scripts/kconfig/Makefile                      |  8 +++---
+ security/tomoyo/Makefile                      |  2 +-
+ usr/Makefile                                  |  2 +-
+ usr/include/Makefile                          |  2 +-
+ 105 files changed, 198 insertions(+), 207 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
 
