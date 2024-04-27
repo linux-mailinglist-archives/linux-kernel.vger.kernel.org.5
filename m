@@ -1,149 +1,87 @@
-Return-Path: <linux-kernel+bounces-160950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F179C8B44FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:48:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD238B44FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E96AEB2214F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:48:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6C5B1F229FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D999243AC1;
-	Sat, 27 Apr 2024 07:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899B94438F;
+	Sat, 27 Apr 2024 07:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gbhRgCVz"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="OqG39z5o"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A584C3FE31
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866C441C6A
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714204103; cv=none; b=Mz8XNiDqAdlDKQu91DGSMBc65S+6FNr7MoTsWmADhXDuGr9Px8Y+WLZ4uz9bK3VFEmAOrYS6KMIR0NDn0U5ipK6nfjA6e+QKYFkddEcSCNmQTuxVIFoj9h8RCIhk/1ThRmnmnCT7oMPgGjY1Ep1A2lg/tG0AewE6/CSNz1b8g5A=
+	t=1714204192; cv=none; b=D+cAipXRObqlD4VA8tka6kCW6kA0xC4A55kQikUbS3S/X43VEWOrYWL6oASYs7f1PEctnELmfGNwByqM7K6vMuePwOl+Y+OTD98cCTggVeSeTzuMPDpkbT5wVVdZkASFONICEMGlh/obOW+Mdv9n4TMtfgEWEI2ipj879zM915U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714204103; c=relaxed/simple;
-	bh=pfv70tPdWWuBq5c7oJf2D+B+a+zA7o23QlpVchKSHYs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XpAeQeA8l9aWyuqiaWNdWcwPSZLMYA3wXswKdMb+BI5md++0fyHSlSNaxqG5e/FCOkYUjfD0puGJxAzIMSKNM96azzBQKsNY9meQxc3SRA3WxelJLh4q8bOy39hi7Ylbs7gClvBbUHLT8mB9c2jIueZq+W5PqD1m/UUS/XY6+vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=gbhRgCVz; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 090CD842;
-	Sat, 27 Apr 2024 09:47:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1714204046;
-	bh=pfv70tPdWWuBq5c7oJf2D+B+a+zA7o23QlpVchKSHYs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gbhRgCVzsR8puP8+3m7dk9lqIEnRSmIKPZSdZyHal0XtlhVvlckCKPEo/9lw2c4ZJ
-	 MMslpF2OrB4VFTy7Ui7kJov1/b15fzCMRotK2sW3v2WHsW52vhj4l7glagswzoF7s2
-	 axjFPo08+6u5QQ0bH62Fv4EJXzFOFRZBNjIOCi8I=
-Message-ID: <2a14d8ff-a8f5-4ebe-9f0e-a5554b417f0c@ideasonboard.com>
-Date: Sat, 27 Apr 2024 10:48:16 +0300
+	s=arc-20240116; t=1714204192; c=relaxed/simple;
+	bh=mUxT13d3le/sYzbS13OJP0O8pwkE/1ITfW2MS6a/btg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=M+wR7p9RmmmgszLkkBsPcOh8iB5YVwj4EXbJlxLb8k3OSng8mTlrrIzFk61bLeKNq1DKuQtE9dsPVJv3EprB3FSyctCHsdJCnJ1fBN3XErwyykN1OsMVzw6Bz6ZODNeYBeDrh2NNKS/8kBSej9x+tTwXnokEDp9vYyoRuDwJj7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=OqG39z5o; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1714204184;
+	bh=mUxT13d3le/sYzbS13OJP0O8pwkE/1ITfW2MS6a/btg=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=OqG39z5oVRCPoCX2moeXHv/WSG375Ex9ypc8B6/2HxtangSFMZ8UPwTWD/qeDd16A
+	 Ll+yupcL29vzs5vk1Wg5Ja/oXCRUfbTwQqqTru4hyWCs8usetRUOADVKza6cSjub6C
+	 3BcC373LTeSYTz4W6Zb6XWpfMygGW+Mmsx5xmprw=
+Received: from [192.168.124.11] (unknown [113.200.174.101])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 303E166EA9;
+	Sat, 27 Apr 2024 03:49:42 -0400 (EDT)
+Message-ID: <a3df8ae7ad7c4af447c6143858ae44c3da453704.camel@xry111.site>
+Subject: Re: [PATCH] LoongArch: Provide __lshrti3, __ashrti3, and __ashrti3
+From: Xi Ruoyao <xry111@xry111.site>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>
+Date: Sat, 27 Apr 2024 15:49:40 +0800
+In-Reply-To: <CAAhV-H5vrCrBFhDKjTXchCGABWHT6Wxz1JK6hNsarOwp+vfHpg@mail.gmail.com>
+References: <20240426121442.882029-1-xry111@xry111.site>
+	 <CAAhV-H74cQ4XdDez5PipCxUZTpfS=CA6azL5qob=jGGebobD6g@mail.gmail.com>
+	 <dfdc9823a0b89c8582587fa75448bba5c3a7e15e.camel@xry111.site>
+	 <56414029e179d219442bde9b8eae81fa3e3ceec4.camel@xry111.site>
+	 <CAAhV-H5vrCrBFhDKjTXchCGABWHT6Wxz1JK6hNsarOwp+vfHpg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] Fix Kernel CI issues
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>
-References: <20240426-dp-live-fmt-fix-v3-0-e904b5ae51d7@amd.com>
-Content-Language: en-US
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240426-dp-live-fmt-fix-v3-0-e904b5ae51d7@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 26/04/2024 22:27, Anatoliy Klymenko wrote:
-> Fix number of CI reported W=1 build issues.
-> 
-> Patch 1/2: Fix function arguments description.
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404260616.KFGDpCDN-lkp@intel.com/
-> 
-> Patch 2/2: Fix clang compilation error.
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404260946.4oZXvHD2-lkp@intel.com/
-> 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
-> Changes in v3:
-> - Add Signed-off-by tag.
-> 
-> - Link to v2: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v2-0-6048e81211de@amd.com
-> 
-> Changes in v2:
-> - Compilation error fix added.
-> 
-> - Link to v1: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v1-1-405f352d3485@amd.com
-> 
-> ---
-> Anatoliy Klymenko (2):
->        drm: xlnx: zynqmp_dpsub: Fix few function comments
->        drm: xlnx: zynqmp_dpsub: Fix compilation error
-> 
->   drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> ---
-> base-commit: 2bdb481bf7a93c22b9fea8daefa2834aab23a70f
-> change-id: 20240425-dp-live-fmt-fix-a10bf7973596
-> 
-> Best regards,
+On Sat, 2024-04-27 at 15:20 +0800, Huacai Chen wrote:
+> > /* The prototypes are incorrect but this file is only used by
+> > =C2=A0=C2=A0=C2=A0 modpost which does not care.=C2=A0 */
+> > long long __ashlti3(long long a, int b);
+> > long long __ashrti3(long long a, int b);
+> > long long __lshrti3(long long a, int b);
+> >=20
+> > How do you think?
+> OK, then just keep the original status.
 
-Thanks, pushed to drm-misc-next.
+Then I'll just send a patch squashing the origin version of this patch
+and the patch selecting ARCH_SUPPORTS_INT128 in a day if there are no
+other review comments.
 
-  Tomi
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
