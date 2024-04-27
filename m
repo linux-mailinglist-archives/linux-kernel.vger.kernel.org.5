@@ -1,161 +1,152 @@
-Return-Path: <linux-kernel+bounces-161029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33BC18B460C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:23:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FD388B45B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:06:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C522862E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:23:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B137A1C21052
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0842D52F7C;
-	Sat, 27 Apr 2024 11:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1C6482E1;
+	Sat, 27 Apr 2024 11:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C/3S/7g2"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oJ1I5bvG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177F54D9F9;
-	Sat, 27 Apr 2024 11:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8344C2562E;
+	Sat, 27 Apr 2024 11:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714216889; cv=none; b=hfhi39zbpOnaNSvTXLSs83uyrsNDGXeN+ETMzmXerOgwE5iZUehRO0nuy7/gAoX1mi6hZlwfH+ZP1o3YJKiayItWCfs+wrBkiAATJRsOI+EO8UYp88BCypQkYSKQWvQtnYhLnccMmSEN0yqhwd3NdXzR+hmloCTUDXaDYDxzZXI=
+	t=1714215960; cv=none; b=Rd1MzxyS2x4MvVd3OI8wvR5S3VF5LeLwS4Y4X1QxbunJOmy7xBbTZ2ILZaqcC70273cf912qJY6ncUvS6/JAlk9l2iI8xuWFJFb7Yf+r+SZmhn11kXdLtKWxXVHBfEpo703WRmoRft5M95tAqX+U5ddPMR8JcJzkDJ2AjO8ibIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714216889; c=relaxed/simple;
-	bh=zr1wUci8Xcm3SBmkDautJw+akuAPWZdTnl8cPxx2GoY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BFxhoiU6CXo+zp2/hn9HqES5PpkMogX7TwgH9rEQloZ5Pipwy5RMx+RaDC+13DPtj/WHAKAs0P7mDnyrJrGBWLJzq/4pQIMkGuzyJnoMZC3K2CvQKxCtDMrUMaPR9S+Eopr4sDALn2grDF/jz5w2oFzdRDxSuz+3IH6kbAJV5ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C/3S/7g2; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=5S2tW55GgDiFyBbw9lOzLrSN36Zzgu35eCfjV6r8WLE=; b=C/3S/7g2ZpEyQRx09JvWZeaGRy
-	MstfydVMSKmDzDiNWQsVmHHabx9OQfnIVGuuynHfWhe7zBkqZrWPjQes73h15FdkhnTrE6PNu9LBi
-	b14a6T+iiBXVFXYMoIITDFCnXOq/qlapJsNYPQ6D5yagLsv8JVtf0F1dfuAFc8dvnkGYjNQq558Pj
-	BG4m/Ka0KD//ict8yEwYLWcCwuAqOybLY5jafWitwsG68L44u03utA67Qq97DkEKxNombNr+q3Vo7
-	RdniFSrdGS2PzHBGd0tvRjFWa3WUuvJ++CudOpdwkUgDJ0giXjFwnSRrz/nUKPm/lyjRzdmhy4hhM
-	dyxiJD2w==;
-Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0g5i-0000000FeZk-0pka;
-	Sat, 27 Apr 2024 11:19:46 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0g5g-000000002bx-2nxs;
-	Sat, 27 Apr 2024 12:19:36 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paul Durrant <paul@xen.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	jalliste@amazon.co.uk,
-	sveith@amazon.de,
-	zide.chen@intel.com,
-	Dongli Zhang <dongli.zhang@oracle.com>
-Subject: [PATCH v2 15/15] KVM: x86: Factor out kvm_use_master_clock()
-Date: Sat, 27 Apr 2024 12:05:12 +0100
-Message-ID: <20240427111929.9600-16-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240427111929.9600-1-dwmw2@infradead.org>
-References: <20240427111929.9600-1-dwmw2@infradead.org>
+	s=arc-20240116; t=1714215960; c=relaxed/simple;
+	bh=3qCkGAh64a6yPFeE5dz090gLNk8Qe+mSWwXm0kPl5uM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A1FTAkaLmU7akP3sGneDjzPUGBKn0gc2LtUdrOfBDJ3qoTrnHDNihZLT4QrQakHjU8wFkVScWB7nORSZSghmNA6fMV0FAwnMv/8+zfL43aWOIH3EruseruBAIBXJIqXQ2Vlu6S/t7BLYxArCJFn95Zje4gyZi8GKsHjiSCE9S2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oJ1I5bvG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65671C113CE;
+	Sat, 27 Apr 2024 11:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714215960;
+	bh=3qCkGAh64a6yPFeE5dz090gLNk8Qe+mSWwXm0kPl5uM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oJ1I5bvGDvNW+MP3Bbm9kZ5YSG2e9Oly8mP+AuOrzmp1Lz28Eh+1Sd9ahYi82DY3H
+	 +tNDrca1QS3LcHIPa8ixfGZyoXnh3x5a+yB7IXFhcxBrwLdB8TsvlweMnHKWx81bLr
+	 kqUN1jagoriDRPdw5X6rgG0Mo7/0DB9KmYYiR4Ow=
+Date: Sat, 27 Apr 2024 13:05:50 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Marc Herbert <marc.herbert@intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
+Message-ID: <2024042748-campus-okay-ffff@gregkh>
+References: <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
+ <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
+ <ZiYrzzk9Me1aksmE@wunner.de>
+ <662beb6ad280f_db82d29458@dwillia2-xfh.jf.intel.com.notmuch>
+ <Ziv9984CJeQ4muZy@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ziv9984CJeQ4muZy@wunner.de>
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+On Fri, Apr 26, 2024 at 09:18:15PM +0200, Lukas Wunner wrote:
+> On Fri, Apr 26, 2024 at 10:59:06AM -0700, Dan Williams wrote:
+> > Lukas Wunner wrote:
+> > > > --- a/fs/sysfs/group.c
+> > > > +++ b/fs/sysfs/group.c
+> > > > @@ -33,10 +33,10 @@ static void remove_files(struct kernfs_node *parent,
+> > > >  
+> > > >  static umode_t __first_visible(const struct attribute_group *grp, struct kobject *kobj)
+> > > >  {
+> > > > -	if (grp->attrs && grp->is_visible)
+> > > > +	if (grp->attrs && grp->attrs[0] && grp->is_visible)
+> > > >  		return grp->is_visible(kobj, grp->attrs[0], 0);
+> > > >  
+> > > > -	if (grp->bin_attrs && grp->is_bin_visible)
+> > > > +	if (grp->bin_attrs && grp->bin_attrs[0] && grp->is_bin_visible)
+> > > >  		return grp->is_bin_visible(kobj, grp->bin_attrs[0], 0);
+> > > >  
+> > > >  	return 0;
+> > > 
+> > > I'm wondering why 0 is returned by default and not SYSFS_GROUP_INVISIBLE.
+> > > 
+> > > An empty attribute list (containing just the NULL sentinel) will now
+> > > result in the attribute group being visible as an empty directory.
+> > > 
+> > > I thought the whole point was to hide such empty directories.
+> > > 
+> > > Was it a conscious decision to return 0?
+> > > Did you expect breakage if SYSFS_GROUP_INVISIBLE is returned?
+> > 
+> > Yes, the history is here:
+> > 
+> >     https://lore.kernel.org/all/YwZCPdPl2T+ndzjU@kroah.com/
+> > 
+> > ...where an initial attempt to hide empty group directories resulted in
+> > boot failures. The concern is that there might be user tooling that
+> > depends on that empty directory. So the SYSFS_GROUP_INVISIBLE behavior
+> > can only be enabled by explicit result from an is_visible() handler.
+> > 
+> > That way there is no regression potential for legacy cases where the
+> > empty directory might matter.
+> 
+> The problem is that no ->is_visible() or ->is_bin_visible() callback
+> is ever invoked for an empty attribute group.  So there is nothing
+> that could return SYSFS_GROUP_INVISIBLE.
+> 
+> It is thus impossible to hide them.
+> 
+> Even though an attribute group may be declared empty, attributes may
+> dynamically be added it to it using sysfs_add_file_to_group().
+> 
+> Case in point:  I'm declaring an empty attribute group named
+> "spdm_signatures_group" in this patch, to which attributes are
+> dynamically added:
+> 
+> https://github.com/l1k/linux/commit/ca420b22af05
+> 
+> Because it is impossible to hide the group, every PCI device exposes
+> it as an empty directory in sysfs, even if it doesn't support CMA
+> (PCI device authentication).
+> 
+> Fortunately the next patch in the series adds a single bin_attribute
+> "next_requester_nonce" to the attribute group.  Now I can suddenly
+> hide the group on devices incapable of CMA, because an
+> ->is_bin_visible() callback is executed:
+> 
+> https://github.com/l1k/linux/commit/8248bc34630e
+> 
+> So in this case I'm able to dodge the bullet because the empty
+> signatures/ directory for CMA-incapable devices is only briefly
+> visible in the series.  Nobody will notice unless they apply
+> only a subset of the series.
+> 
+> But I want to raise awareness that the inability to hide
+> empty attribute groups feels awkward.
 
-Both kvm_track_tsc_matching() and pvclock_update_vm_gtod_copy() make a
-decision about whether the KVM clock should be in master clock mode.
+It does, but that's because we can't break existing systems :)
 
-They use *different* criteria for the decision though. This isn't really
-a problem; it only has the potential to cause unnecessary invocations of
-KVM_REQ_MASTERCLOCK_UPDATE if the masterclock was disabled due to TSC
-going backwards, or the guest using the old MSR. But it isn't pretty.
+Documenting this to be more obvious would be great, I'll glady take
+changes for that as I agree, the implementation is "tricky" and took me
+a long time to review/understand it as well, as it is complex to deal
+with (and I thank Dan for getting it all working properly, I had tried
+and failed...)
 
-Factor the decision out to a single function. And document the historical
-reason why it's disabled for guests that use the old MSR_KVM_SYSTEM_TIME.
+thanks,
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/x86/kvm/x86.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d6e4469f531a..680b39f17851 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2518,6 +2518,27 @@ static inline bool gtod_is_based_on_tsc(int mode)
- }
- #endif
- 
-+static bool kvm_use_master_clock(strut kvm *kvm)
-+{
-+	struct kvm_arch *ka = &kvm->arch;
-+
-+	/*
-+	 * The 'old kvmclock' check is a workaround (from 2015) for a
-+	 * SUSE 2.6.16 kernel that didn't boot if the system_time in
-+	 * its kvmclock was too far behind the current time. So the
-+	 * mode of just setting the reference point and allowing time
-+	 * to proceed linearly from there makes it fail to boot.
-+	 * Despite that being kind of the *point* of the way the clock
-+	 * is exposed to the guest. By coincidence, the offending
-+	 * kernels used the old MSR_KVM_SYSTEM_TIME, which was moved
-+	 * only because it resided in the wrong number range. So the
-+	 * workaround is activated for *all* guests using the old MSR.
-+	 */
-+	return ka->all_vcpus_matched_tsc &&
-+		!ka->backwards_tsc_observed &&
-+		!ka->boot_vcpu_runs_old_kvmclock;
-+}
-+
- static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
- {
- #ifdef CONFIG_X86_64
-@@ -2550,7 +2571,7 @@ static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
- 	 * To use the masterclock, the host clocksource must be based on TSC
- 	 * and all vCPUs must have matching TSC frequencies.
- 	 */
--	bool use_master_clock = ka->all_vcpus_matched_tsc &&
-+	bool use_master_clock = kvm_use_master_clock(kvm) &&
- 				gtod_is_based_on_tsc(gtod->clock.vclock_mode);
- 
- 	/*
-@@ -3089,9 +3110,7 @@ static void pvclock_update_vm_gtod_copy(struct kvm *kvm)
- 					&ka->master_cycle_now);
- 
- 	ka->use_master_clock = host_tsc_clocksource
--				&& ka->all_vcpus_matched_tsc
--				&& !ka->backwards_tsc_observed
--				&& !ka->boot_vcpu_runs_old_kvmclock;
-+				&& kvm_use_master_clock(kvm);
- 
- 	/*
- 	 * When TSC scaling is in use (which can thankfully only happen
--- 
-2.44.0
-
+greg k-h
 
