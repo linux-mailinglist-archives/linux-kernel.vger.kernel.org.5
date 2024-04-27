@@ -1,204 +1,195 @@
-Return-Path: <linux-kernel+bounces-161198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09F9E8B48CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 00:05:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29048B48D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 00:18:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3F15281A67
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 22:05:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761871F214B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 22:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6941B1487F2;
-	Sat, 27 Apr 2024 22:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE5C1487D9;
+	Sat, 27 Apr 2024 22:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lzCrTV7t"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCJeSHYp"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7608A1465A5
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 22:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00F33B7A8;
+	Sat, 27 Apr 2024 22:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714255518; cv=none; b=UANO1IzFCmSXlLoTiLiDyvE3dIPdyl3p9W0h9KVUzjgGWNx0l40R4tGsKyue6I4d93Ku1wa9sJ1SFGQ9IXE2dmZqwZtPKzfl6T3iB+elJmiqjNHQUkp+D+rLrAz7sPwCLq7U3TRrYumv5QRazooTuYR/fHwA0QxmQzxN8IYIPl8=
+	t=1714256316; cv=none; b=ZXUbbrksQnE+/QMxruFEC6Wf1+5YkQyKuETyJvqyMlo5MRitHTQx2iAF8vGIt8NDeccEJPboMru1h+97yomRwid4u71WExW+FWewtqQ8S3CdZXeSiruMJCdXgU6UwUNicOX1JIe6oofRK9sux6JxXzuC/fyKCwhmDVi/BrRPRgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714255518; c=relaxed/simple;
-	bh=dL4ZiQXnuAbCs7nRZSmWKa0wsJGikLg3kAIMUDVMbJU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YUJ8o7ds7EmkNZ28pP05W9I2fokZU89WqUj3O/hAzR/W/8DTf3+rG+YtURSvYkEwEFm0J1LczYqdcPEl87Tn4DS9T97OVaMhuvWMQ0dRhzunZ+eGYIYSl27hUFei2fl2m3UcqO9uWv/DPbXSCuRYkddU1ZCZR4iRu4RdioCdd+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lzCrTV7t; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-36b3738f01cso131965ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 15:05:16 -0700 (PDT)
+	s=arc-20240116; t=1714256316; c=relaxed/simple;
+	bh=+pApdBxcNPQesd2fjTKnHDMjVKA5ZKUL/n2W+oHqS+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j69+Iw2hMyKQ9k9NCDnnoUejby4E0BWPDQ9k4kmpH+dXIJHUWYFr+2eQGik+F0hLryvFgoCXGkxrFp4T3BDK0ZvlR2FhtCZ7903yMmb+3bBgwrFKl4gpnHgLZRm5BRwjRoXkv8mQyasnJK53XTt+SGXoAkNRN4fTo6x5gZe6IgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCJeSHYp; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5dca1efad59so2333381a12.2;
+        Sat, 27 Apr 2024 15:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714255515; x=1714860315; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ev2ja+lSmiOzY64QoBLLWUXCoL4iQJQ9t2WV8bOp35Q=;
-        b=lzCrTV7tx+S+YY8j2c3WLhJ0MIBL1KIYXRAeBPSNFSRpgdFue2ZzHvRkyfsOtk6jRw
-         Bu/BHoHjk/q9R1lN9Ft9W0JIdBo3B5EujiR8VBdw9Qkf7BdfiDQaqthKTmWraCqLzPFc
-         s60sT2LaZ1UCRC4UK0ezxh7zuSvmoHkcgXCe3nNPPsqkuXBLkoaOKPhYWHrV5rz9B5hX
-         xkyJKobH4ha2Xqonci5hPdowEQKII7yzIDQtjCSr6ia6pvQ4vkn8kxaHaKjmgpo0fY4P
-         wUSiGWbW8tpR/Ps0wU/1Dovskya9Fz4pUS+Z9VUhDMVWvHIoPUt1qfKpeyzlxpwj24tx
-         PMHw==
+        d=gmail.com; s=20230601; t=1714256314; x=1714861114; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=jbsSBglmscTfODMDILXQbvYXGuw5C6ZoYMDHpVKIqs4=;
+        b=dCJeSHYp21AU91TQuP1mfk5y7uCJSN1CdYE/MR6XU+YHEei+ErANpP2G+OLjZxMyk7
+         PBqxFeUTP531okVMYawnm9WfoIV9wFuQRjTIzIudLwAWPoulJAm1hFtDiF6YsHmwWDwb
+         FDVOb8hn8f76J46QNpYTAimu97XB1nowUzNezISN5hJ5FOadQPkT7TAjDQ0mEFArpJG2
+         gbmhfNiCR7NP7GGMjK14iCm5on3gaiIz2/xZVOzHqSxb6f1eTrUdKt5ZKpwm+jj7Z7WN
+         qpYlbisjTyfvSS8DxYu9GusRyhxg0FRAXKiAjyCU7PMwWvSf4UZ66LHznEllnUaiHc/9
+         oxvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714255515; x=1714860315;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ev2ja+lSmiOzY64QoBLLWUXCoL4iQJQ9t2WV8bOp35Q=;
-        b=SJ0+g92i28mBgDUhuK4pGauvC452r0FUdPmV2tl/9GdJuONF1gvxLWcFUJRDkjBfXZ
-         lEJrFAd0cXNr01t+ae8jyd3J2NUvAhwrmhHyw1IFHT19hovjH0z1MFiscNGKASMXwdPN
-         LpP+owIsxA5dChBRlx2F0RMQ1c0417f8nORjPzVHTRygeyS5BEAHcnTyQ7UVugchhDzS
-         bMCYG6DMqHYe9qLUbNf1//VEXMzactJ8CKJw9HpbwNl16YZ6as7ch1jJ4CJiFaFD65k5
-         aN+XA81A7OtWL3UWywp86Lr+d0/4acXXbnHl65gTGSaPjMnEpQFmLDiusuAs8ePRluHB
-         C0pw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVNQNS/77KfjFj8RPcs954rS8cXJuiDPtTDQCUyWAEIW1EbgKcm19gQQVSEUEf2CtBY42kysZWX4MJXvDnO0C6zEW3AnBlwh9XHmGY
-X-Gm-Message-State: AOJu0YxVqjWrEI3rd/xhQUC0Pijg3sQcCRliyh8qYBaxVrPUbOHlRNM5
-	3yUan9QWr5Bl2wtVDTjQEXACL9tvubkHHmVuMxx2GY1AwEr6Umymryge7L9gUSg+xu1MuM3/mcB
-	k6V4QHj2ustP204/u3jBmCALQ+pXKoj6M40ACrTzmyHYRcIznP3F+GuQ=
-X-Google-Smtp-Source: AGHT+IEO3FABo7bJtP1TZzhuy5KcTdsQQuF8Ot6ogc+4XIRMXJdBlJnjK+wLjTHicCMFRokmznKYolzRrUz6TLlZywU=
-X-Received: by 2002:a92:cb52:0:b0:36c:38c9:c1ab with SMTP id
- f18-20020a92cb52000000b0036c38c9c1abmr210173ilq.26.1714255515191; Sat, 27 Apr
- 2024 15:05:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714256314; x=1714861114;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jbsSBglmscTfODMDILXQbvYXGuw5C6ZoYMDHpVKIqs4=;
+        b=jrauGB7Rz2qiDBMuJ6+m7R2KUJDCCOZDHCyx3ppR4swA34ml5NxUXWERkm8EO+ZvLl
+         rONe9x6sYQEkEaXBO0AwHf2MNT/mPD57D7+IafYWD1HqZi6/E6+F4HVtlXyf3qBK9Kh7
+         I3voKb7a7nVvUnpVwvC0Pjibct65IVq1ts0Dx9V8GWIzSDrCx4OmDKgvD7VD8zp3Fwh0
+         8tgauj/L2AMVreeugVd/8kRwIySj8VfXUdzbvTktdNZMEjOzuBC0XCSI+M2fGt0awvsy
+         ZdPI4L5BnQpwoqHSH6vDBOnlUM/8P4PXpWZir7+gmGnXhidCs7Az6EYdqNJFkWRu/bSC
+         yW6A==
+X-Forwarded-Encrypted: i=1; AJvYcCW+DcElwOZg37dYkBSKMytn6waNdQ65oFUaUuhZ9FvaQEptHFDZuyrcpxZFR6CGFTeJcY7IBU6L3AJr34YMLqo4PY+YK/Ytuo6YjDmSD0tee1n3JVT9nSNaU5NVjxWAcVmc9J5oSGmR
+X-Gm-Message-State: AOJu0YxjMEiNqKjO1A1qbKFvuVNsFRg98OBxVzTumePoNLu+HFcUIR3L
+	sO14spaYCX22/bAgF8QVAgZbVKVAsWs6pVlwF65Cg7onc+fu02iIgU5Z2Q==
+X-Google-Smtp-Source: AGHT+IFQItQjSbREhhk7srgv9U9KKmzMZG0C6d+K19WxQCOauE+0s4V4DAx7slAj9KnCIqeTl8oXig==
+X-Received: by 2002:a17:902:8498:b0:1e2:577:f694 with SMTP id c24-20020a170902849800b001e20577f694mr5623736plo.61.1714256314004;
+        Sat, 27 Apr 2024 15:18:34 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902d30100b001e451abffebsm17585122plc.86.2024.04.27.15.18.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Apr 2024 15:18:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d434c88a-6575-4d45-ab3e-e27ac7684b07@roeck-us.net>
+Date: Sat, 27 Apr 2024 15:18:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com> <20240416061533.921723-12-irogers@google.com>
- <ZixWfypP4FtKgv0F@x1> <ZixWn-ZCBpwH_2xp@x1>
-In-Reply-To: <ZixWn-ZCBpwH_2xp@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 27 Apr 2024 15:05:01 -0700
-Message-ID: <CAP-5=fW-j03Rg9LyJqGJvU9w2Sm5hA+OcOAD=BCUbswKUh7yoA@mail.gmail.com>
-Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for bad numbers
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
-	Beeman Strong <beeman@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] usb: ohci: Prevent missed ohci interrupts
+To: David Laight <David.Laight@ACULAB.COM>,
+ Alan Stern <stern@rowland.harvard.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Gerd Hoffmann <kraxel@redhat.com>
+References: <20240424195951.3749388-1-linux@roeck-us.net>
+ <a1b4bac14c6a4334969cc7d671f3a8eb@AcuMS.aculab.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <a1b4bac14c6a4334969cc7d671f3a8eb@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 6:36=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Fri, Apr 26, 2024 at 10:36:02PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Mon, Apr 15, 2024 at 11:15:27PM -0700, Ian Rogers wrote:
-> > > Use the error handler from the parse_state to give a more informative
-> > > error message.
-> > >
-> > > Before:
-> > > ```
-> > > $ perf stat -e 'cycles/period=3D99999999999999999999/' true
-> > > event syntax error: 'cycles/period=3D99999999999999999999/'
-> > >                                   \___ parser error
-> > > Run 'perf list' for a list of valid events
-> > >
-> > >  Usage: perf stat [<options>] [<command>]
-> > >
-> > >     -e, --event <event>   event selector. use 'perf list' to list ava=
-ilable events
-> > > ```
-> > >
-> > > After:
-> > > ```
-> > > $ perf stat -e 'cycles/period=3D99999999999999999999/' true
-> > > event syntax error: 'cycles/period=3D99999999999999999999/'
-> > >                                   \___ parser error
-> > >
-> >
-> > This ended up in perf-tools-next, will have to look at what this proble=
-m
-> > is:
-> >
-> >    9    11.46 amazonlinux:2                 : FAIL gcc version 7.3.1 20=
-180712 (Red Hat 7.3.1-17) (GCC)
-> >      yy_size_t parse_events_get_leng (yyscan_t yyscanner );
-> >                ^~~~~~~~~~~~~~~~~~~~~
-> >     util/parse-events.l:22:5: note: previous declaration of 'parse_even=
-ts_get_leng' was here
-> >      int parse_events_get_leng(yyscan_t yyscanner);
-> >          ^~~~~~~~~~~~~~~~~~~~~
-> >      yy_size_t parse_events_get_leng  (yyscan_t yyscanner)
-> >                ^~~~~~~~~~~~~~~~~~~~~
-> >     util/parse-events.l:22:5: note: previous declaration of 'parse_even=
-ts_get_leng' was here
-> >      int parse_events_get_leng(yyscan_t yyscanner);
-> >          ^~~~~~~~~~~~~~~~~~~~~
-> >     make[3]: *** [util] Error 2
-> >
-> >
-> > Unsure if this will appear on the radar on other distros, maybe this is
-> > just something that pops up with older distros...
-> >
-> > Ran out of time today...
->
-> Context:
->
-> perfbuilder@number:~$ export BUILD_TARBALL=3Dhttp://192.168.86.42/perf/pe=
-rf-6.9.0-rc5.tar.xz
-> perfbuilder@number:~$ time dm
->    1   102.33 almalinux:8                   : Ok   gcc (GCC) 8.5.0 202105=
-14 (Red Hat 8.5.0-20) , clang version 16.0.6 (Red Hat 16.0.6-2.module_el8.9=
-0+3621+df7f7146) flex 2.6.1
->    2   102.44 almalinux:9                   : Ok   gcc (GCC) 11.4.1 20230=
-605 (Red Hat 11.4.1-2) , clang version 16.0.6 (Red Hat 16.0.6-1.el9) flex 2=
-6.4
->    3   124.34 alpine:3.15                   : Ok   gcc (Alpine 10.3.1_git=
-20211027) 10.3.1 20211027 , Alpine clang version 12.0.1 flex 2.6.4
->    4   109.42 alpine:3.16                   : Ok   gcc (Alpine 11.2.1_git=
-20220219) 11.2.1 20220219 , Alpine clang version 13.0.1 flex 2.6.4
->    5    90.08 alpine:3.17                   : Ok   gcc (Alpine 12.2.1_git=
-20220924-r4) 12.2.1 20220924 , Alpine clang version 15.0.7 flex 2.6.4
->    6    84.85 alpine:3.18                   : Ok   gcc (Alpine 12.2.1_git=
-20220924-r10) 12.2.1 20220924 , Alpine clang version 16.0.6 flex 2.6.4
->    7    94.18 alpine:3.19                   : Ok   gcc (Alpine 13.2.1_git=
-20231014) 13.2.1 20231014 , Alpine clang version 17.0.5 flex 2.6.4
->    8    95.45 alpine:edge                   : Ok   gcc (Alpine 13.2.1_git=
-20240309) 13.2.1 20240309 , Alpine clang version 17.0.6 flex 2.6.4
->    9    11.46 amazonlinux:2                 : FAIL gcc version 7.3.1 2018=
-0712 (Red Hat 7.3.1-17) (GCC)
->      yy_size_t parse_events_get_leng (yyscan_t yyscanner );
->                ^~~~~~~~~~~~~~~~~~~~~
->     util/parse-events.l:22:5: note: previous declaration of 'parse_events=
-_get_leng' was here
->      int parse_events_get_leng(yyscan_t yyscanner);
->          ^~~~~~~~~~~~~~~~~~~~~
->      yy_size_t parse_events_get_leng  (yyscan_t yyscanner)
->                ^~~~~~~~~~~~~~~~~~~~~
->     util/parse-events.l:22:5: note: previous declaration of 'parse_events=
-_get_leng' was here
->      int parse_events_get_leng(yyscan_t yyscanner);
->          ^~~~~~~~~~~~~~~~~~~~~
->     make[3]: *** [util] Error 2
->   10    88.41 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230=
-605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn20=
-23.0.1) flex 2.6.4
->   11    89.72 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221=
-121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn20=
-23.0.2) flex 2.6.4
->   12   115.65 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230=
-801 , clang version 17.0.6 flex 2.6.4
->   13    93.87 centos:stream                 : Ok   gcc (GCC) 8.5.0 202105=
-14 (Red Hat 8.5.0-21) , clang version 17.0.6 (Red Hat 17.0.6-1.module_el8+7=
-67+9fa966b8) flex 2.6.1
+On 4/27/24 14:00, David Laight wrote:
+> From: Guenter Roeck
+>> Sent: 24 April 2024 21:00
+>>
+>> Testing ohci functionality with qemu's pci-ohci emulation often results
+>> in ohci interface stalls, resulting in hung task timeouts.
+>>
+>> The problem is caused by lost interrupts between the emulation and the
+>> Linux kernel code. Additional interrupts raised while the ohci interrupt
+>> handler in Linux is running and before the handler clears the interrupt
+>> status are not handled. The fix for a similar problem in ehci suggests
+>> that the problem is likely caused by edge-triggered MSI interrupts. See
+>> commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
+>> edge-triggered MSI") for details.
+>>
+>> Ensure that the ohci interrupt code handles all pending interrupts before
+>> returning to solve the problem.
+>>
+>> Cc: Gerd Hoffmann <kraxel@redhat.com>
+>> Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>> v2: Only repeat if the interface is still active
+>>
+>>   drivers/usb/host/ohci-hcd.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+>> index 4f9982ecfb58..bb6b50b4a356 100644
+>> --- a/drivers/usb/host/ohci-hcd.c
+>> +++ b/drivers/usb/host/ohci-hcd.c
+>> @@ -888,6 +888,7 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>>   	/* Check for an all 1's result which is a typical consequence
+>>   	 * of dead, unclocked, or unplugged (CardBus...) devices
+>>   	 */
+>> +again:
+>>   	if (ints == ~(u32)0) {
+>>   		ohci->rh_state = OHCI_RH_HALTED;
+>>   		ohci_dbg (ohci, "device removed!\n");
+>> @@ -982,6 +983,13 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>>   	}
+>>   	spin_unlock(&ohci->lock);
+>>
+>> +	/* repeat until all enabled interrupts are handled */
+>> +	if (ohci->rh_state != OHCI_RH_HALTED) {
+>> +		ints = ohci_readl(ohci, &regs->intrstatus);
+>> +		if (ints & ohci_readl(ohci, &regs->intrenable))
+> 
+> Doesn't the driver know which interrupts are enabled?
+> So it should be able to avoid doing two (likely) slow io reads?
+> (PCIe reads are pretty much guaranteed to be high latency.)
+> 
 
-Did RedHat do value add on flex output? yyget_leng is documented to
-have an int return type:
-https://github.com/westes/flex/blob/master/doc/flex.texi#L4613
-This patch just adds a forward declaration in order to use it in a
-helper function.
+No, the driver does not cache intrenable.
 
-Thanks,
-Ian
+Guenter
+
 
