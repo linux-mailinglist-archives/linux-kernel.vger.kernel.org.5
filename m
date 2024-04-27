@@ -1,82 +1,116 @@
-Return-Path: <linux-kernel+bounces-160921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B035B8B448D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD51F8B448F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:37:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11D81C227D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E88E21C2114C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A781340875;
-	Sat, 27 Apr 2024 06:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7644175A;
+	Sat, 27 Apr 2024 06:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="l369HSdO"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CB41EB35;
-	Sat, 27 Apr 2024 06:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="tNag+jeM"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17A039AF9;
+	Sat, 27 Apr 2024 06:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714199802; cv=none; b=A2MtyPM1hwjynczKXuCGuCzso5wQs555oXB0isBoLy8Bm23wp8IF1vaIt3uaQOCYS68PYyFxc9ZuAZhIl/JG83GtXUoDPhC5j5iUQLO82TFS6YepYZFPes/VZeO9sG21z929+Rc9JWZRk94T1iIGw6R1C0BwIc8wcG705mEaPnk=
+	t=1714199818; cv=none; b=LqwVQ9HSmzG5udYoeAVBy99DNyFx9aP/4E/cmc9kGpvmgjnfKteoHic0jU4VexMnw5oj06hVTKQqmjItAO7r7wKXja+wI/XAuacqfd2JChbakLO5V9HKHgAtRhb7iMgKjmlu0euMFQEAmUyLu+fK/nNv0u6HH2pm9eEIWULv6Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714199802; c=relaxed/simple;
-	bh=a1bsn8LeW8WYaCSjhSgQLzRN0bgswEy2GGuv3tEl1t4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=O0jAxtuqSwKwZJNtuMzMDLXS97qkGv4pZif6Gzs2bHl5CgO/js9cdO3IwaBOvU5Pfcl06KveJvcYIpU79eqzkDzRtCij83W6UiBRWaTggxcURASBHZGjLd86meghyYMo/mfPtAEX/ejpXcB++jq/iYRgytM9tmaVzFiNgXAznlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=l369HSdO reason="signature verification failed"; arc=none smtp.client-ip=45.254.50.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=Ph77mHkMAV6EC8WUFVL2f78n/OpbjO5BdB30c0GglaQ=; b=l
-	369HSdOADlKtFv1bAurSuWm9XzoXL6r4uX6RH/XVwvSe4uuR7CwHrBb/uUDsQnUP
-	uWp7imTJ6FXUW185ymadA8Z3RfKxNHeRKIb4s5Sm8VhYoJF0GwZ5M2u/B7EQqLf9
-	CIqJk1VUl0NVuJdeGNyLf7e6nqRbEmf7/2kW1MhNWU=
-Received: from slark_xiao$163.com ( [223.160.226.109] ) by
- ajax-webmail-wmsvr-40-115 (Coremail) ; Sat, 27 Apr 2024 14:35:33 +0800
- (CST)
-Date: Sat, 27 Apr 2024 14:35:33 +0800 (CST)
-From: "Slark Xiao" <slark_xiao@163.com>
-To: "Andrew Lunn" <andrew@lunn.ch>
-Cc: loic.poulain@linaro.org, ryazanov.s.a@gmail.com, johannes@sipsolutions.net, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH net] net: wwan: Add net device name for error message
- print
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-In-Reply-To: <6f7c4b67-a6bd-4fc2-a7da-e4bb0c2b6f50@lunn.ch>
-References: <20240426080733.819633-1-slark_xiao@163.com>
- <6f7c4b67-a6bd-4fc2-a7da-e4bb0c2b6f50@lunn.ch>
-X-NTES-SC: AL_Qu2aBv2Stk8o5SecZukfmk8Sg+84W8K3v/0v1YVQOpF8jDzp9yw9XnB5OVHM/OS0Jw6ikSKtURNP8vlFR6BcXZMKVCnfz0I7ZBXCT/XekeCpMw==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=arc-20240116; t=1714199818; c=relaxed/simple;
+	bh=HSKhQc6ckcGem0dz8qIg/OUHhvnOqChu5U7keQ38ZIg=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=XdvsgHbl8FFg6/VKTx9QFgS91ikxqdfaUzyDPzzAGJs9lUM8yb4VOjFdmyS250Dm4a3WdAyKf/aBgtWZTxVijuo8AmhmptIk4zHkCz2x7YaD4ILwUMR8OasP7XGg7sIZUOasoX+M5DX9QMflHbeYZ8O7fEvRFJ1oCkZXcEmIX0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=tNag+jeM; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714199795; x=1714804595; i=markus.elfring@web.de;
+	bh=Yqjkf7H0JSFQpEQ4/+tdhmqoI63l4XI1RiiuG834KEA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=tNag+jeMgnSNOhv6sovKbWDqS3fEQ/CQwTBgBSL0L43jHbzyFZSPtYXW2XX4qKQl
+	 NL4Y5ykom1G317bseGi/EL5Bqis8ugiLYTrgbMYSkKfmf2X8/Qmy6E4UlBBvrHuSv
+	 U1WGXZrqxbursuTWac+pse/ElyhsU0QJgZq8qPNDlL86xc2HfzikRq9FFBMauWrSh
+	 qVNBZ37FTuMtm7V+h3ULXFCgi3BLZUel+kEbvUnKYpp3SRqdLhEe+hZH8Hm9vkAgu
+	 0dO9JdzwmpM1IVRUVtwWbqUrxiC7fTqVvZesu29TQq7RxjTnDl9ypywDpkZ9/9X1a
+	 Ajf1t9SGoLAwOYhq2w==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9LEG-1slqYp1hDg-00ri4O; Sat, 27
+ Apr 2024 08:36:35 +0200
+Message-ID: <29b2bd7d-303c-4ac9-8638-38959f177316@web.de>
+Date: Sat, 27 Apr 2024 08:36:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <c5a7151.250c.18f1e4425f4.Coremail.slark_xiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:_____wD3H1y1nCxmmPgbAA--.35217W
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiRx-NZGV4JAZFkwABsZ
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+User-Agent: Mozilla Thunderbird
+To: LuMingYin <lumingyindetect@126.com>, linux-trace-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240427025720.1321211-1-lumingyindetect@126.com>
+Subject: Re: [PATCH v2] tracing/probes: Fix memory leak in
+ traceprobe_parse_probe_arg_body
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240427025720.1321211-1-lumingyindetect@126.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uGlf/lKNskOomISg1g58Lnnv79W7jHlElge4NaHOfwNxFN2r9yo
+ HHeX3mGvqhirUz/XKB93Dqn97owdFV70XPcITcCT0rr7VuHp7j4THmyEatGl2ymCj1hjvy3
+ Dv2m8ZF+S+cNPbHM/OT0taTlCguhNtVTgnI5Z1Jl4JTiaMwQN8SXeztkQkO5gZxu0LzkBhF
+ qsNy+QMy+bDuV0S4X9Lew==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:LKMQUbkQfbc=;u43u9kSrPjt8jg0ya98W5ZyQT37
+ UZ3hghvOW+2yrkFPx5LRpGz/Gz+OYLiwXtjR0QAGaBIhnqdoK3eREVPuRoJJ7FVq9/P+04WbT
+ 6kZUIjACYlqoAPgYzLTa5Y79dirTWAqUNB4E5eZloQg2GpyTQGzVhOJghx7LSxq+NPcB2ND16
+ lFffuWnmSYF6bqURjqQMMTFFcIFZV0B9uLryncE09Pvsz45iRtvpKN+xrBcRFAa6UxwaatMFD
+ Az0Vm8/ZBnIV+E9d56Wo06mCFbyfq2vcbcPZCu/u8eLi9BnWMxTn2YLyx8EmEraZKiD/RaDxt
+ T2sl95b/w8+DjFZv/OoWFFi05rOvOr6rnc7963dHBglnipgt3QflDAKEV7Zbi2O9PO3vAzHzG
+ slweGmHo4OHyf30Cp8PyE633RqAC1vcJP3wg5eS5+OmVvv5x64t488BC8wTcSCt/gv5Bqsyro
+ /GmjO2DUGbVwhIynTcYbcmz4iYODHNsTbP2lgVFIW4M6BGAhWkHGKnksuMNxnrMHiCYkTlhie
+ 2syoLl9bmPk+0KOL2AsVPnPljVMjV7FNI+7iOhwe7W7zvgsxDHztgQZR2zfE8Kz+tjwAb8KzM
+ an5YnGxL0Qpf1WtM0iBk0r2q15wljK/DyXfVtmI7hFr9L5f5zKs/gWbxPt4zYug6kfqlq7sk6
+ YhAM/ksaHorpkvIjiUkKDiu+uOgbNdcqapiJbbkg/CK++13cuHhHFINTTN+xAyCVVALhzrQ9J
+ Xw7eQfWQbR8EH0J69NdhPlCPXOd3h32d7BJULon3r3xjjeZrb4Rg/g6rHW1S1fMvhWnOL/AmB
+ NrYRl2JaIvRf0Bn2W5kWYtTEB/iwC688C8CAthp6Hc908=
 
-CgoKCgoKCgoKCgoKCgoKCgpBdCAyMDI0LTA0LTI3IDA2OjIxOjAzLCAiQW5kcmV3IEx1bm4iIDxh
-bmRyZXdAbHVubi5jaD4gd3JvdGU6Cj4+ICAJaWYgKHNrYi0+bGVuIDwgc2l6ZW9mKHN0cnVjdCB1
-c2JfY2RjX25jbV9udGgxNikgKwo+PiAgCQkJc2l6ZW9mKHN0cnVjdCB1c2JfY2RjX25jbV9uZHAx
-NikpIHsKPj4gLQkJbmV0X2Vycl9yYXRlbGltaXRlZCgiZnJhbWUgdG9vIHNob3J0XG4iKTsKPj4g
-KwkJbmV0X2Vycl9yYXRlbGltaXRlZCgibWJpbTogZnJhbWUgdG9vIHNob3J0XG4iKTsKPgo+SSBk
-b24ndCBrbm93IHRoaXMgY29kZSBhdCBhbGwsIGJ1dCBpIHRoaW5rIHlvdSBjYW4gZG8KPgo+ZGV2
-X2Vycl9yYXRlbGltaXRlZCgmbWJpbS0+bWRldi0+ZGV2LCAiZnJhbWUgdG9vIHNob3J0XG4iKTsK
-Pgo+VGhhdCB3YXksIGl0IHRlbGxzIHlvdSB3aGljaCBvZiB0aGUgNDIgbWhpIGRldmljZXMgaGFz
-IHJlY2VpdmVkIHRvbwo+c2hvcnQgYSBmcmFtZS4KPgo+ICAgICAgQW5kcmV3CkkgdHJpZWQgaW4g
-bXkgY2FzZSwgYW5kIGl0IHdpbGwgcHJpbnQ6Cm1oaV93d2FuX21iaW0gbWhpb19JUF9IVzBfTUJJ
-TTogZnJhbWUgdG9vIHNob3J0CgpJIHRoaW5rIGl0J3MgbXVjaCBtb3JlIGNvbXBsaWNhdGVkLCBp
-c24ndCBpdD8KClRoYW5rcw==
+I suggest to append parentheses to the function name in the summary phrase=
+.
+
+
+> If traceprobe_parse_probe_arg_body() fails to allocate 'parg->fmt', it
+> jumps to 'out' instead of 'fail' by mistake. In the result, in this
+> case the 'tmp' buffer is not freed and leaks its memory.
+>
+> Fix it by jumping to 'fail' in that case.
+
+I propose to improve such a change description another bit like the follow=
+ing.
+
+   If traceprobe_parse_probe_arg_body() failed to allocate the object =E2=
+=80=9Cparg->fmt=E2=80=9D,
+   it jumps to the label =E2=80=9Cout=E2=80=9D instead of =E2=80=9Cfail=E2=
+=80=9D by mistake.
+   In the result, the buffer =E2=80=9Ctmp=E2=80=9D is not freed in this ca=
+se and leaks its memory.
+
+   Thus jump to the label =E2=80=9Cfail=E2=80=9D in that error case.
+
+
+Regards,
+Markus
 
