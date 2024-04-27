@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-160855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D195B8B4393
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:49:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACFEC8B4395
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:50:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D36528426D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F1A284278
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A25383A1;
-	Sat, 27 Apr 2024 01:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E1C383A1;
+	Sat, 27 Apr 2024 01:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEy5ISWN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVNysz/y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161D02D627
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7023E8488
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714182565; cv=none; b=KgOHQTyaPafN6IH/9w/+bJy87Tvjoc2lsXGto94cBupnP4eioZWV25enTPUw+0UUZMevakXWcFWbPBzfVfsftfZTlmfw5XNpEBVbCPi41ohNSSKY6XhvU/1PNqnVdOx30bnByx54MEoSV1Tn/1abXoqe/EgTp67eIyS0yEgytxI=
+	t=1714182631; cv=none; b=bTbx2nluDihX0uO4rMBsXyJ6mg0suCn0Ls5oDhQuXMN/DnlX3PsQfzx1I8T5XnYTdSanp+nChcAEJGStazhsxiRM3NVMth/A6JchiTR38LzAhn5DEWRPUt3jza1BWL7AJg0/gJwrZKmKvOzMZsp/UydQs+YzyHTeqh236lmEINc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714182565; c=relaxed/simple;
-	bh=ApuNmjFgojFljBuMmz4JnZ1XqXgd90G4vsgN0MGa/rM=;
+	s=arc-20240116; t=1714182631; c=relaxed/simple;
+	bh=VjxiUJcsHiSDZaL1ImaAyDNDa7t3ac8l/dqpSVw+d9E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k8QJipOA6lVgPTVMwdLVo6u74P9Y08RGkCJR9GuflR/mpj0hRcLTjmapvw1ipjBsMmAkef5N44EWhGmWJ+Z9bPMcg/NeDzB11NmYXZj8yZG8CfpXl5lcPKzbx/ibjoQ6E2BLdzuDWgaLJ92gtIczFQV7qpbyM6n+JlF1jekaBhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEy5ISWN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB91FC113CD;
-	Sat, 27 Apr 2024 01:49:23 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=eaPf2xk+anYtHZU9ViNnzV3CLiy5BrtZS7H1bghC6t6bfNnoB0Y2PEEMS9s18wIY5353lqai5S0l/Ns9A8L0iG2P1AS8RnMDd0PD+TsX8ajImG0K6E31LTF0mzptW0Bt+WBGmu0uUwtIavZn/DpDN+6FeQX9+2MTSQ5FgmNv/z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVNysz/y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28ED9C113CD;
+	Sat, 27 Apr 2024 01:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714182564;
-	bh=ApuNmjFgojFljBuMmz4JnZ1XqXgd90G4vsgN0MGa/rM=;
+	s=k20201202; t=1714182631;
+	bh=VjxiUJcsHiSDZaL1ImaAyDNDa7t3ac8l/dqpSVw+d9E=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UEy5ISWNdc0Di8uBUD2ZEWqhhMrSCzr7vMPQygFci0M04z10CPXpQJQXmSLNI/XEr
-	 wLQu1SXwjlG2k6ahSGOsyanf7pHFnyeB1g+ugVK5PyN/PmORpHOf4oLtIsCzjul+Sj
-	 iNr2+vtec3nPAva0JoHB/j7eCRdViglZWOQtDiJ++dw3mqdYYZBkmFjRHJOUeH90fA
-	 Xml+PNE9FV3XwN1FXj6PEJAG6GfTvJUMdUxX/4wwfJSC+782ytqB8q3edVRxGg2P27
-	 BwKIA5y79bIPMfSb4JVlL5axdQIIm4hX0jbLoKkRDXo32y8+RPt4HepmDkNkFKaHlF
-	 t/xaQEQfrzlIA==
-Message-ID: <a08a091b-78d1-4fb1-982c-c51d9dff8f06@kernel.org>
-Date: Sat, 27 Apr 2024 09:49:35 +0800
+	b=AVNysz/yMkWz9NFYvfRhyNXJNzea87BHraWdrjeCJaOac2qqtm/jNz9UIKSA4ykLX
+	 OnXFMdTOPSNUmVx99f7C5dlJfitIRCw7qnZJcBpLfUbKefpW36f5dU1W/7XPcDAlZ7
+	 gPbhNql3KkIFIQo9jK1MkdRUnBUdfCU1tOVIaolnWSrzLWD1nsa9z5LDCR+Vw7CUi4
+	 GM33uuMSQ67fU9lnNmcZrodKRaWw2SVOK/mSLDFiv6DxtOmPMpRgkXbKyk2RhU9exY
+	 Wpjo/ZKjSxck9RSsWgVS+B8NCRftL1kFAxxuYE9drxgxoTZx/zK+hrAjvvi63EiePN
+	 5zDv0xzAiC7pw==
+Message-ID: <ef4788ca-1336-4adf-ac82-b5f2619bb83f@kernel.org>
+Date: Sat, 27 Apr 2024 09:50:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,13 +49,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: zone: fix to don't trigger OPU on pinfile for
- direct IO
-To: Daeho Jeong <daeho43@gmail.com>
-Cc: jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH] f2fs: zone: fix to don't trigger OPU on
+ pinfile for direct IO
+To: Zhiguo Niu <niuzhiguo84@gmail.com>
+Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
 References: <20240426103528.406063-1-chao@kernel.org>
- <CACOAw_xiC08JTanBSLaBED8_zveCEhoaDWeJ3YVU0h9+dNkQUg@mail.gmail.com>
+ <CAHJ8P3+G8ooBt7Atw62wkSWBS0Xzx7J5eE4tPOKWd8_rjp=KNg@mail.gmail.com>
 Content-Language: en-US
 From: Chao Yu <chao@kernel.org>
 Autocrypt: addr=chao@kernel.org; keydata=
@@ -100,12 +100,14 @@ Autocrypt: addr=chao@kernel.org; keydata=
  92Qh98hAj3cMFKtEVbLKJvrc2AO+mQlS7zl1qWblEhpZnXi05S1AoT0gDW2lwe54VfT3ySon
  8Klpbp5W4eEoY21tLwuNzgUMxmycfM4GaJWNCncKuMT4qGVQO9SPFs0vgUrdBUC5Pn5ZJ46X
  mZA0DUz0S8BJtYGI0DUC/jAKhIgy1vAx39y7sAshwu2VILa71tXJ
-In-Reply-To: <CACOAw_xiC08JTanBSLaBED8_zveCEhoaDWeJ3YVU0h9+dNkQUg@mail.gmail.com>
+In-Reply-To: <CAHJ8P3+G8ooBt7Atw62wkSWBS0Xzx7J5eE4tPOKWd8_rjp=KNg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2024/4/26 22:14, Daeho Jeong wrote:
-> On Fri, Apr 26, 2024 at 3:35 AM Chao Yu <chao@kernel.org> wrote:
+On 2024/4/26 19:30, Zhiguo Niu wrote:
+> Dear Chao,
+> 
+> On Fri, Apr 26, 2024 at 6:37 PM Chao Yu <chao@kernel.org> wrote:
 >>
 >> Otherwise, it breaks pinfile's sematics.
 >>
@@ -126,33 +128,24 @@ On 2024/4/26 22:14, Daeho Jeong wrote:
 >> -           (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
 >> +           (is_hole || (flag == F2FS_GET_BLOCK_DIO && (f2fs_lfs_mode(sbi) &&
 >> +           (!f2fs_sb_has_blkzoned(sbi) || !f2fs_is_pinned_file(inode)))))) {
+> Excuse me I a little question， should pin files not be written in OPU
+> mode regardless of device type(conventional or  zone)?
+
+Agreed, so it looks we need remove !f2fs_sb_has_blkzoned condition here...
+
+Thanks,
+
+> thanks!
 >>                  if (unlikely(f2fs_cp_error(sbi))) {
 >>                          err = -EIO;
 >>                          goto sync_out;
 >> --
 >> 2.40.1
-> 
-> So, we block overwrite io for the pinfile here.
-
-I guess you mean we blocked append write for pinfile, right?
-
-> 
-> static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> 
-> {
-> ...
->          if (f2fs_is_pinned_file(inode) &&
->              !f2fs_overwrite_io(inode, pos, count)) {
-
-If !f2fs_overwrite_io() is true, it means it may trigger append write on
-pinfile?
-
-Thanks,
-
->                  ret = -EIO;
->                  goto out_unlock;
->          }
-> 
-> 
 >>
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
