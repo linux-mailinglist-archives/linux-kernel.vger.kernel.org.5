@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-160896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EBEA8B443F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 237E28B4442
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A1A1282381
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:12:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEC8F28210F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 05:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5E34086A;
-	Sat, 27 Apr 2024 05:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF1842047;
+	Sat, 27 Apr 2024 05:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mA3DRrB7"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daACo6GI"
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F0F40855;
-	Sat, 27 Apr 2024 05:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AC541C77;
+	Sat, 27 Apr 2024 05:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714194715; cv=none; b=RoRFtHik1HH2b5r3x6OJyOqL6cngRNi1750DJ5khD5XbKlcZoR3/u0fiRCt46MDghYeJ0icm8sDLj71o5tx3qRcTkcWEYZMDRl2lf0nLkDQgZSHWVmdKzcEsfN/6MXotEEw6EYoFjUmabfP/pf2W+oExEiTJowBxrERx4CXhJbc=
+	t=1714194722; cv=none; b=fMq/J5QHqYDoadWn6C/J3+nWjI7GBv16mnzVyLCRDQY7Mawx2eRavU/zxd7RqB4fu+3dGDXijhfq1qmxDFRhk5BvgHyx0xMYUv9dyVxva4zBghw5jlEArbr8kD4bUFkKt8bQfksOlpH28fRKnIjPWPgvxuLAS/x/bVR1WedDFsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714194715; c=relaxed/simple;
-	bh=9ZKWPMfna0jwv6fGXFjbpfO9PS9iN4T7q95CeiGCuwg=;
+	s=arc-20240116; t=1714194722; c=relaxed/simple;
+	bh=unEu2ov0/p061boxS/jHeqd8/98Q4YNURM7psfpSEsI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LmEQ+rfVwIHpo98E0BX4k/0Lh5BEGoN0afQJ/ZivwWR6zNbZQIkMoFfsMjnuz7Tr0pLz82zrxtiaAa8cFG1BkkkEjb5z4+S6NebY603pA8nqlr7amx2XzKwt5bcHZgte8wZ5NaJvNvha9km0w2d1jEccqtzhed8HXP6zPj3CPfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mA3DRrB7; arc=none smtp.client-ip=209.85.161.44
+	 In-Reply-To:To:Cc; b=V2zLXzdcu7Pk2AwiAiIP/pU1lKygnEaiFWYfXD8M465hks842xekBieSBHb2YL9WxV1Il3zTyTS2F0P8Osim1CWGcPHvA/pzeQEZQnEOpadf+rUVL9PaE+7hPwb6+E0bC7q/gEmQNL8k4Xq8NUkpubbgA/+2FiZIoKlxr6p6sWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=daACo6GI; arc=none smtp.client-ip=209.85.160.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5aa2551d33dso1876859eaf.0;
-        Fri, 26 Apr 2024 22:11:54 -0700 (PDT)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2330f85c2ebso1804267fac.1;
+        Fri, 26 Apr 2024 22:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714194713; x=1714799513; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714194719; x=1714799519; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9F4InxFahtIzBCiasX92apB/V4CV7bosSvWP44yKEb4=;
-        b=mA3DRrB7Eo8cTwHt+TZnLKQWA+d3PD89SPdSqWEkAWcwlquGas9cEqb4Wvm7ES0yC6
-         YgdBK7L1O8vt7bn1G1rkE2ol9nlaOxIXBGpIBBEg7NHLbedJWvEjsbymYGq/j3DCHpHr
-         uc8pRTepnE4+/NiEwlMdgHGEwoDfQfCoXHmwhp3AGgKBeK8PAJXJ0jY41Hg0OMJcwdWV
-         An0EAeCIvDgxx4AIiv5zl5wom2J8o/H2VwVJ7WgjmgU9zRKcvcdUz4oKTf0P/l7gIyxf
-         i2tV6qrS0+k5JnPEuTcnsB2H1iFjjkOd6Rh18IasVfSsv+bOMLrN80EG7SQLenXpitHw
-         tQaQ==
+        bh=v1tFFOM2BNNcF6kFjAZAYzjxKXqPKbwgTTfL8YgC9R0=;
+        b=daACo6GIe+tHnxY1HxZuq7zcTqc4UE4qMzmDwIsIwhkNgJNVNl7rAN7PSZpDiAYXOl
+         j9IgV1PaLUq0ORmoBbi56r3awreatXqiVs6WzHnWUHIp8Pi6Fc0yH79p4eP+D2ehU8Cx
+         rn3IqUDoOExi5ovQqK5Q6Bwl0r+FSUgkIosvEdHerLZP/u7wO4y5C4pFJgAw2hqTT/eJ
+         TkYsLJgWndMRjzPq+dTXnwzTpaGPu4TOTe+xYTC1dqEZ+OAnXPCTyLcaUC961sYopvxV
+         7zmhvSX7x62cU43mDEs0WkD8sjtOolIfdp+WH+XU2eenFFvwMEMrr/GNgMh78Q92Nxrf
+         jNpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714194713; x=1714799513;
+        d=1e100.net; s=20230601; t=1714194719; x=1714799519;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9F4InxFahtIzBCiasX92apB/V4CV7bosSvWP44yKEb4=;
-        b=DLMx3kLkULC5N2sXGl+ev6ZsNcTBjC0jxmMazckeUqNUFVivxCCH683oDPNcIe12rA
-         TBJRI44s52SIXy6k1KHBkAfVkHOZG2y4zN1IppoeFw2c93V8vubO1NQLMdVAz9OlLJBp
-         Sh0hk7quIzkfMacwo4fHzz015MxunsfJ9HsXQstPVaTTZQ93ea01FGUq+C10nouZtFYn
-         8XwFefFd8WSiltCONzWqxGF3P8x78AhawZdRxCCLq+H5VLwy174KY5V2RvsSsxnZu2FT
-         3DDNbdUbG7W84bMB5RXvvAdsetX/6NxFNe9KQ17iK6+rUUZA7f9CpEkUD1AWjy7iC623
-         WrdA==
-X-Forwarded-Encrypted: i=1; AJvYcCUO0VVdXbPngrE6nmIOiMUzltpexp4125MTEnF4xLPT33PxH3lciH+TKIgZd+NeOpkvaBUqryJa9vK3PhObyaqiK3aZ47QsmdlwMLjQa6MrhmecQ0UtoOulPy20EnBYCCK8V+MyUfli6g==
-X-Gm-Message-State: AOJu0YwdjDOFxBKuUPXrbnMk4b6rrjPRBnzZSItZFycZkQNBwyVLOxDM
-	WeUzbAcv2Wkn4q6ej5jytGhEZRy3CETgi7LJ0nz2y/VSAhxWJOnvCA8+2UaO
-X-Google-Smtp-Source: AGHT+IE4bqioLoCGV+jzLhQAaIUbw7Dc8kiVDJrn5V2zZm+LA6pJOaXRtr0eZA54kNM1E4aqo9TKTA==
-X-Received: by 2002:a05:6359:4294:b0:183:7f41:8c10 with SMTP id kp20-20020a056359429400b001837f418c10mr4776508rwb.31.1714194712723;
-        Fri, 26 Apr 2024 22:11:52 -0700 (PDT)
+        bh=v1tFFOM2BNNcF6kFjAZAYzjxKXqPKbwgTTfL8YgC9R0=;
+        b=tHpBMg9WVg2QzK7VkhcxAh0jWnAnToouRSEY1t4VDCPaI5nl9kq0Xm7QkgRVyCQlv9
+         1TCpNMQp+EbINMC4V6IWAFAUJyZrFaACIh9DHa2GfzOWhBQo775a551Eiy2fKPjIUB4c
+         tz9Bk4jJ1CWiS9cz6hObkmzJMAvmh5Q8sVZZuDzd9FvCrRQuSu/+u9LpemFcuPXFhwlw
+         j5nv7fQRwmmMcf3RCnaeE9BWOxVaWWAO/ZzdxGmdObv0laEyFmM6npJCqAoc27nOEJHm
+         kri0crjVttipPtop743YUvD8Bd8TyUcYK5LsTHhzcXZpZtvbdhiC4bbsZkL0VuV6b07a
+         zF7A==
+X-Forwarded-Encrypted: i=1; AJvYcCV3MesX3BITdj3Anq1waeU933m5Pqik1hvOBF81Ufj8DFC0XoppTbeIE+2T61SRIxtlzCynJEvKyHU+/CeMF7enTsDjOu1IE7E5wPp/cdXtqRQe41wN6xixEA6HMG+JZtbQi7399icaaQ==
+X-Gm-Message-State: AOJu0YzJIU1Gjn7ti1hs+DBYsW1BQVj887x6Jmqnh8gC78CrRn64GaAV
+	68r12RB5ssR/yvNnAKXQKySZrKXvLn20CTVaPdOtWIdZIwX6KjlUUCnmrueG
+X-Google-Smtp-Source: AGHT+IEPMu04DKORokflJnBxOev89wV/M8ptjbRUBGMwGMHV+llPN+FusnJP3/iQOauZdFA3o04FsQ==
+X-Received: by 2002:a05:6870:a7a1:b0:23c:49b:7fb7 with SMTP id x33-20020a056870a7a100b0023c049b7fb7mr1511258oao.13.1714194719241;
+        Fri, 26 Apr 2024 22:11:59 -0700 (PDT)
 Received: from tresc054937.tre-sc.gov.br ([189.34.32.15])
-        by smtp.gmail.com with ESMTPSA id cb17-20020a056a02071100b0060063c4be3bsm8108513pgb.14.2024.04.26.22.11.46
+        by smtp.gmail.com with ESMTPSA id cb17-20020a056a02071100b0060063c4be3bsm8108513pgb.14.2024.04.26.22.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 22:11:52 -0700 (PDT)
+        Fri, 26 Apr 2024 22:11:58 -0700 (PDT)
 From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Sat, 27 Apr 2024 02:11:28 -0300
-Subject: [PATCH net-next v2 1/3] net: dsa: realtek: keep default LED state
- in rtl8366rb
+Date: Sat, 27 Apr 2024 02:11:29 -0300
+Subject: [PATCH net-next v2 2/3] net: dsa: realtek: do not assert reset on
+ remove
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240427-realtek-led-v2-1-5abaddc32cf6@gmail.com>
+Message-Id: <20240427-realtek-led-v2-2-5abaddc32cf6@gmail.com>
 References: <20240427-realtek-led-v2-0-5abaddc32cf6@gmail.com>
 In-Reply-To: <20240427-realtek-led-v2-0-5abaddc32cf6@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -93,197 +93,59 @@ To: Linus Walleij <linus.walleij@linaro.org>,
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  devicetree@vger.kernel.org, Luiz Angelo Daros de Luca <luizluca@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6278; i=luizluca@gmail.com;
- h=from:subject:message-id; bh=9ZKWPMfna0jwv6fGXFjbpfO9PS9iN4T7q95CeiGCuwg=;
- b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBmLIkLMef9uX5o5VyYCAREndzz27xiW68szjmjh
- PaKiXSrgFmJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZiyJCwAKCRC7Edu60Qc7
- Vi4YB/9TgcRLUrU8mlHtt1MMiLgR4y/xp/ysUsPNJWrQ+kbrYuJ05BaM8qxHoYuK+6rIWvoKcRD
- sdmll/wLVIg8sOW4oBY+FI1WbkxEVoY4avEEE++1tvRLP8Y206nOq3BtX5Or02nbqXDsxcy0IZM
- 10iYQ5kChGk+WXpHG2kuBJCJx6kwkokTZoiox1BH+J/HW8D9w4XRGl6BUPWA8gFCjk0EMEi7Lfi
- 6Rg5V2qTjfJxaI8u1FZjFDmGITOFcH4vfotL5TOT9QNxIs5QNgtr6tTaU7CbpsC21i6dYbgjrBJ
- Fk+xTL15wTCJN4dv2DhUnV9NlfcuHto5AErvkvhXpsVKBhVx
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1651; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=unEu2ov0/p061boxS/jHeqd8/98Q4YNURM7psfpSEsI=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBmLIkLL1IdWPzzEGXHuoHyo7kfcSM7oI7H8/9rH
+ 23nMrszd4qJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZiyJCwAKCRC7Edu60Qc7
+ VjCxB/48YvcKOG5mCRFWHEpsT3pIGK8wRCcEwTsmofJppI7asXvytlavkDz795QXBzxSAof/orx
+ hdPc3kVkr8COdRjMfEU0Wp9wkoHQvZ+ZdIUGtPAQBS5f4/m/Y7jwr4UfeedUU6AVSTx8/9iaxL5
+ +NUTSfL62SPvm+HYPw0xX9Rte/M4zHxrUfegAyAj11wjqcw/6bwaPkcm/9jvDSM/3kj4tWmFaNn
+ tC68x/+CPGgxNgOVd03rZnHAUy3ri5DGoANu4L8RCBXX0IBVkjv21J10VFrczYRmfT1j9r+XrMc
+ k/wlIPlfewPOxlzoUf6JiJ5AOxQ3yT55GJcze9tziROVcM0F
 X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
  fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-This switch family supports four LEDs for each of its six ports. Each
-LED group is composed of one of these four LEDs from all six ports. LED
-groups can be configured to display hardware information, such as link
-activity, or manually controlled through a bitmap in registers
-RTL8366RB_LED_0_1_CTRL_REG and RTL8366RB_LED_2_3_CTRL_REG.
+The necessity of asserting the reset on removal was previously
+questioned, as DSA's own cleanup methods should suffice to prevent
+traffic leakage[1].
 
-After a reset, the default LED group configuration for groups 0 to 3
-indicates, respectively, link activity, link at 1000M, 100M, and 10M, or
-RTL8366RB_LED_CTRL_REG as 0x5432. These configurations are commonly used
-for LED indications. However, the driver was replacing that
-configuration to use manually controlled LEDs (RTL8366RB_LED_FORCE)
-without providing a way for the OS to control them. The default
-configuration is deemed more useful than fixed, uncontrollable turned-on
-LEDs.
+When a driver has subdrivers controlled by devres, they will be
+unregistered after the main driver's .remove is executed. If it asserts
+a reset, the subdrivers will be unable to communicate with the hardware
+during their cleanup. For LEDs, this means that they will fail to turn
+off, resulting in a timeout error.
 
-The driver was enabling/disabling LEDs during port_enable/disable.
-However, these events occur when the port is administratively controlled
-(up or down) and are not related to link presence. Additionally, when a
-port N was disabled, the driver was turning off all LEDs for group N,
-not only the corresponding LED for port N in any of those 4 groups. In
-such cases, if port 0 was brought down, the LEDs for all ports in LED
-group 0 would be turned off. As another side effect, the driver was
-wrongly warning that port 5 didn't have an LED ("no LED for port 5").
-Since showing the administrative state of ports is not an orthodox way
-to use LEDs, it was not worth it to fix it and all this code was
-dropped.
-
-The code to disable LEDs was simplified only changing each LED group to
-the RTL8366RB_LED_OFF state. Registers RTL8366RB_LED_0_1_CTRL_REG and
-RTL8366RB_LED_2_3_CTRL_REG are only used when the corresponding LED
-group is configured with RTL8366RB_LED_FORCE and they don't need to be
-cleaned. The code still references an LED controlled by
-RTL8366RB_INTERRUPT_CONTROL_REG, but as of now, no test device has
-actually used it. Also, some magic numbers were replaced by macros.
+[1] https://lore.kernel.org/r/20240123215606.26716-9-luizluca@gmail.com/
 
 Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/net/dsa/realtek/rtl8366rb.c | 87 +++++++++----------------------------
- 1 file changed, 20 insertions(+), 67 deletions(-)
+ drivers/net/dsa/realtek/rtl83xx.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/dsa/realtek/rtl8366rb.c b/drivers/net/dsa/realtek/rtl8366rb.c
-index e10ae94cf771..5ccb1a3a149d 100644
---- a/drivers/net/dsa/realtek/rtl8366rb.c
-+++ b/drivers/net/dsa/realtek/rtl8366rb.c
-@@ -185,7 +185,12 @@
- #define RTL8366RB_LED_BLINKRATE_222MS		0x0004
- #define RTL8366RB_LED_BLINKRATE_446MS		0x0005
- 
-+/* LED trigger event for each group */
- #define RTL8366RB_LED_CTRL_REG			0x0431
-+#define RTL8366RB_LED_CTRL_OFFSET(led_group)	\
-+	(4 * (led_group))
-+#define RTL8366RB_LED_CTRL_MASK(led_group)	\
-+	(0xf << RTL8366RB_LED_CTRL_OFFSET(led_group))
- #define RTL8366RB_LED_OFF			0x0
- #define RTL8366RB_LED_DUP_COL			0x1
- #define RTL8366RB_LED_LINK_ACT			0x2
-@@ -202,6 +207,11 @@
- #define RTL8366RB_LED_LINK_TX			0xd
- #define RTL8366RB_LED_MASTER			0xe
- #define RTL8366RB_LED_FORCE			0xf
-+
-+/* The RTL8366RB_LED_X_X registers are used to manually set the LED state only
-+ * when the corresponding LED group in RTL8366RB_LED_CTRL_REG is
-+ * RTL8366RB_LED_FORCE. Otherwise, it is ignored.
-+ */
- #define RTL8366RB_LED_0_1_CTRL_REG		0x0432
- #define RTL8366RB_LED_1_OFFSET			6
- #define RTL8366RB_LED_2_3_CTRL_REG		0x0433
-@@ -1001,28 +1011,20 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
- 	 */
- 	if (priv->leds_disabled) {
- 		/* Turn everything off */
--		regmap_update_bits(priv->map,
--				   RTL8366RB_LED_0_1_CTRL_REG,
--				   0x0FFF, 0);
--		regmap_update_bits(priv->map,
--				   RTL8366RB_LED_2_3_CTRL_REG,
--				   0x0FFF, 0);
- 		regmap_update_bits(priv->map,
- 				   RTL8366RB_INTERRUPT_CONTROL_REG,
- 				   RTL8366RB_P4_RGMII_LED,
- 				   0);
--		val = RTL8366RB_LED_OFF;
--	} else {
--		/* TODO: make this configurable per LED */
--		val = RTL8366RB_LED_FORCE;
--	}
--	for (i = 0; i < 4; i++) {
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_LED_CTRL_REG,
--					 0xf << (i * 4),
--					 val << (i * 4));
--		if (ret)
--			return ret;
-+
-+		for (i = 0; i < RTL8366RB_NUM_LEDGROUPS; i++) {
-+			val = RTL8366RB_LED_OFF << RTL8366RB_LED_CTRL_OFFSET(i);
-+			ret = regmap_update_bits(priv->map,
-+						 RTL8366RB_LED_CTRL_REG,
-+						 RTL8366RB_LED_CTRL_MASK(i),
-+						 val);
-+			if (ret)
-+				return ret;
-+		}
- 	}
- 
- 	ret = rtl8366_reset_vlan(priv);
-@@ -1167,52 +1169,6 @@ rtl8366rb_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
- 	}
+diff --git a/drivers/net/dsa/realtek/rtl83xx.c b/drivers/net/dsa/realtek/rtl83xx.c
+index d2e876805393..a9c1702431ef 100644
+--- a/drivers/net/dsa/realtek/rtl83xx.c
++++ b/drivers/net/dsa/realtek/rtl83xx.c
+@@ -290,16 +290,13 @@ EXPORT_SYMBOL_NS_GPL(rtl83xx_shutdown, REALTEK_DSA);
+  * rtl83xx_remove() - Cleanup a realtek switch driver
+  * @priv: realtek_priv pointer
+  *
+- * If a method is provided, this function asserts the hard reset of the switch
+- * in order to avoid leaking traffic when the driver is gone.
++ * Placehold for common cleanup procedures.
+  *
+- * Context: Might sleep if priv->gdev->chip->can_sleep.
++ * Context: Any
+  * Return: nothing
+  */
+ void rtl83xx_remove(struct realtek_priv *priv)
+ {
+-	/* leave the device reset asserted */
+-	rtl83xx_reset_assert(priv);
  }
+ EXPORT_SYMBOL_NS_GPL(rtl83xx_remove, REALTEK_DSA);
  
--static void rb8366rb_set_port_led(struct realtek_priv *priv,
--				  int port, bool enable)
--{
--	u16 val = enable ? 0x3f : 0;
--	int ret;
--
--	if (priv->leds_disabled)
--		return;
--
--	switch (port) {
--	case 0:
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_LED_0_1_CTRL_REG,
--					 0x3F, val);
--		break;
--	case 1:
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_LED_0_1_CTRL_REG,
--					 0x3F << RTL8366RB_LED_1_OFFSET,
--					 val << RTL8366RB_LED_1_OFFSET);
--		break;
--	case 2:
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_LED_2_3_CTRL_REG,
--					 0x3F, val);
--		break;
--	case 3:
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_LED_2_3_CTRL_REG,
--					 0x3F << RTL8366RB_LED_3_OFFSET,
--					 val << RTL8366RB_LED_3_OFFSET);
--		break;
--	case 4:
--		ret = regmap_update_bits(priv->map,
--					 RTL8366RB_INTERRUPT_CONTROL_REG,
--					 RTL8366RB_P4_RGMII_LED,
--					 enable ? RTL8366RB_P4_RGMII_LED : 0);
--		break;
--	default:
--		dev_err(priv->dev, "no LED for port %d\n", port);
--		return;
--	}
--	if (ret)
--		dev_err(priv->dev, "error updating LED on port %d\n", port);
--}
--
- static int
- rtl8366rb_port_enable(struct dsa_switch *ds, int port,
- 		      struct phy_device *phy)
-@@ -1226,7 +1182,6 @@ rtl8366rb_port_enable(struct dsa_switch *ds, int port,
- 	if (ret)
- 		return ret;
- 
--	rb8366rb_set_port_led(priv, port, true);
- 	return 0;
- }
- 
-@@ -1241,8 +1196,6 @@ rtl8366rb_port_disable(struct dsa_switch *ds, int port)
- 				 BIT(port));
- 	if (ret)
- 		return;
--
--	rb8366rb_set_port_led(priv, port, false);
- }
- 
- static int
 
 -- 
 2.44.0
