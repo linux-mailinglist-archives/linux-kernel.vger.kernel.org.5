@@ -1,177 +1,149 @@
-Return-Path: <linux-kernel+bounces-161151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E43518B47B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:37:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3B08B47B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D52A11C20C8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:36:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47E3D1C20CA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0051442F1;
-	Sat, 27 Apr 2024 19:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6C644C88;
+	Sat, 27 Apr 2024 19:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="JMy7jO/8"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IMy1wOW+"
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA3B128365
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 19:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E935017C96
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 19:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714246511; cv=none; b=CM4CpzzNDHgOdgwbzmYi/toaRK4HhrRLDfdTBO5ArMngHkv7kad6CXrNnhUy/v/LK1fRRGrW3TTCo4qm2gNTQF0H1kpQ0FXldBiz0PsPS4GPx5Ppe1p7VHFzEXzdiuWl+fjjmtvG0E0oaQ7Cv5hm/JBbdEkNbdUX01U6vgve42g=
+	t=1714247462; cv=none; b=ohl5+kv7Gu4+Ysis/52mIdVTHm6MfhFwrBKSy/flMWvYv9qiAazrvSOghquxUH0XImASZHH6DSyjPjOxhXnPWXSIjcgxr1t1dM/kmqPOxx2iq7d84zOJK4UTZ94GNkAxuTCR+Uh/FmVuWjIsFOP4xLostpHy76rqCN9lrCOACKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714246511; c=relaxed/simple;
-	bh=3z8Zh7U9QP1/ViV0+8coj4+NlZaD7ONwEi0b3r4n5cQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aM6hY9tvcMK3GNMMS2rekRpaqJYS2rQxWN6vWHV0kcL4sZXeOiE5MKnKQhzyejj27qah8Fu7TBO50pecrS/5qsrwAEgcq56ir0v4O2FdUTOKj4lM0AO7OICcxBNMUwMBtPB4vL7wRkv6wQSHVWfvVYzjD9PTnQrWOCxs7ZUawag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=JMy7jO/8; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so43406901fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:35:10 -0700 (PDT)
+	s=arc-20240116; t=1714247462; c=relaxed/simple;
+	bh=1vsosJBKgv5N1iIGtdZokDSg5iYoOImnmDW8Lg3/+fs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tKEBdtkx97YMBEYxnO9Wo/irwFvP/+gfGP59tK5SmB7y9gePqtosWh46hDosc0OXAwhI9Zs1STQLHTmLACCWfqJEIA/EguEr2sW/Pqreuv//QHlpS6EDWRSyM7Kls7lEZfMzz/vg2//Ju7KqhUUaswmcW278+GZgO9hP3seCQ8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IMy1wOW+; arc=none smtp.client-ip=209.85.222.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7f06c86bf87so101278241.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:51:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714246508; x=1714851308; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Stx8L8fGNoLmhu7uwssiRKsIuNsvkM32vbRcX+64kfs=;
-        b=JMy7jO/8UnXM2iKz4Iz7z7uztnzbYcpx2LcJ2QY9/v8mV4F2LEQXeAnnWrgr0loauo
-         pkbGuNidlcvuMONqaUkjdCi+Bna3KIZqCV3GexZhv41nmDAv5tX1jaHQoQSSsSCBBpjP
-         XhSZ23aq4Qwv1yQehsyiTsC+oB1R3Wlk6w9mSUtTBxSnX8JtIL+frnvt8RJN9RSOgOwn
-         iSVr7zxzs/IhQ2ga5gcTvO/jQE0JLnDauh6aV5RXAET1vjAO7lunBJft14+lxu0myvZ0
-         xXWOGD8toC+lqFzYahpTsMMvg2wlDGWz+FfK5GBUWa2dHv3+3RGHbelewZIfAKDmu+py
-         rGKQ==
+        d=gmail.com; s=20230601; t=1714247460; x=1714852260; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mx+TZI+AhJhXc5nDbpJ3HSmPLnjW2+afsuYEIVpKobg=;
+        b=IMy1wOW+MKl7zwpL0YGQ/x1bVvxY5WDDrl3yPAVG7rCuSEBOErtMhVCnLsobkEcPvR
+         u0H67wUpELphW4RrUqvoFKHUrPbVS5BC6k2O3bfvBY31TCdrphDPL0HGtt8CfpKcOMJ/
+         75AeguncGQ6x/CGdL7045G0y2ge52FcbnPY2lIy1mFEdllryijdGpeWPv50rJUTXx9NW
+         ATvz1Tp4+SzxePX9KzbMhnJpe3/oL4SlViYKPcG+i8NEX/1lkNVs7scaF9xqySUloVFC
+         1IJppZTCVcgjIZ4YGjNg6Vzm9Rwso06Wm4rO0Kf5OGGdQ+mctM+HH1pDM4Gsclytzpqx
+         7oTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714246508; x=1714851308;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Stx8L8fGNoLmhu7uwssiRKsIuNsvkM32vbRcX+64kfs=;
-        b=mImKKHkPC22AFexNcQ+lQND2CaKX/PqOm3pXr9pKVJE6rWlX8Yf6QungnqNWXpG+0q
-         WkUs8fKZnmK+5MjvkoIm4xZVHIJWEyoOqV4R1GkOCGcRWVUyUEFWT0kVHbBO7sOWqcrg
-         +IpUKKfjtdSJDcpQGad/lOVqDPwZ6mSDAEmUbF26hpxOUItC+uyVkR1nvyd7sU83yw53
-         3kp+l0UYhlcpA1j6UHZ0ONHqcaoo5o/pXZJnsNC5HpLYoNCz6e1zFW4gnFFXGAsr6QbP
-         gNZpKdvJ9Z8dk+a7swxSaRMzlWR+sR66xxMjSu+0Zdv9s+KlLzEvJVQWS88c3l+mdqwD
-         mb+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUbIcFwXB9yXi0XkjLkUHUWxlK9ZdJFvgMelh+xkLNPblH5+shCMe4ZzwljRuDPhXgXYp7QS7uoBWAS0VoAn+R5gjxv49ZScw8vtYAc
-X-Gm-Message-State: AOJu0YyIaK0iKcb4CHQYP3gArfcFnL1AjafIXWLh3a1JSnyhF7WuYeEr
-	ED1idXImKO/LyzBoj+IwSMX0HGvtuWka+GNUmd9dXIUQov5XfZE4joBykJqtudE=
-X-Google-Smtp-Source: AGHT+IES5MUiJ9OraOakB9jf7NP4P4rHXIOSA7qspSCjNVFlnKT+Q6NTqcrIAU2hiEKur9kyJBoOOw==
-X-Received: by 2002:ac2:5f62:0:b0:51c:d6c9:e964 with SMTP id c2-20020ac25f62000000b0051cd6c9e964mr1729562lfc.50.1714246508455;
-        Sat, 27 Apr 2024 12:35:08 -0700 (PDT)
-Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
-        by smtp.gmail.com with ESMTPSA id k2-20020a05651239c200b0051ba2fb069dsm1665427lfu.37.2024.04.27.12.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 12:35:08 -0700 (PDT)
-Date: Sat, 27 Apr 2024 21:35:06 +0200
-From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 11/12] microchip: lan865x: add driver support
- for Microchip's LAN865X MAC-PHY
-Message-ID: <Zi1Tang5RQMmEFdx@builder>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
+        d=1e100.net; s=20230601; t=1714247460; x=1714852260;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mx+TZI+AhJhXc5nDbpJ3HSmPLnjW2+afsuYEIVpKobg=;
+        b=BpurMf5G1+BxhtNwV219xqo5MwLK3wyjPZbVpwXisHR7qVAEaOKlEuEOKQP61DZ/t8
+         LQnNzAlrFhO9hDHPif3FCX//lnGwSAjSuuBIC13Ofl2FvSM5Rzdc0FpcK8IGuK4d63pi
+         i4/WRZpl8HgaqYgEdbbl1hbXbjIV4I5vyDn38+jp0z3ZHMUbdMqX0rBTpzi0wOwENPSd
+         X0G+G+WDxNXmJSj67c2zM5AtP+I8iYFL4IVZ4s4zqXJE1nqShBrPi9iA2FlZQzJX14Mu
+         IpMPwGzRoG2cSi9yUU9CKefAzWd49O43IgbL5rQ2VDve8nUjNtSCKkssVrNMKZSteFb9
+         UIWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEkEwi6PC5zOlIF5LiYRxqZ2lNOkBjf04EGtwHRNpUtV37YKt/fAjiDAReCIqx6lckwPIYv0miyVKpW/s9ueYJFaoD3ledrv+h3yfr
+X-Gm-Message-State: AOJu0YyzONZFhO5H7Os2hB15e+T4Jli4U6wQN2WQwTVIUcnh9MI7//Q0
+	H7U9NmYSVhthtnke0RlNt60RVGXWSs4OIR4F29giqGG7/VnuPJZeCQ/FeY6So/Bvy3ftnr9vqDU
+	F/mKDfBI+Ep7JZQLnJwtJohqjWs0=
+X-Google-Smtp-Source: AGHT+IFkMsW89n1NQE8ZtjKKjwlrH4uCQQHVEgxNy01+vSTtZrZ2k22q04dE2BBrobvMdnaVsTw+xerI/NTKXm+2ao0=
+X-Received: by 2002:a67:e8d1:0:b0:47b:fe0b:a92e with SMTP id
+ y17-20020a67e8d1000000b0047bfe0ba92emr6582019vsn.16.1714247459742; Sat, 27
+ Apr 2024 12:50:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
+References: <20240426103528.406063-1-chao@kernel.org> <CACOAw_xiC08JTanBSLaBED8_zveCEhoaDWeJ3YVU0h9+dNkQUg@mail.gmail.com>
+ <a08a091b-78d1-4fb1-982c-c51d9dff8f06@kernel.org>
+In-Reply-To: <a08a091b-78d1-4fb1-982c-c51d9dff8f06@kernel.org>
+From: Daeho Jeong <daeho43@gmail.com>
+Date: Sat, 27 Apr 2024 12:50:48 -0700
+Message-ID: <CACOAw_xuX-J=J5zYwK5kVxPGZWPa+KXBxQA2i-taPwzS2ds-aQ@mail.gmail.com>
+Subject: Re: [PATCH] f2fs: zone: fix to don't trigger OPU on pinfile for
+ direct IO
+To: Chao Yu <chao@kernel.org>
+Cc: jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm running a dual lan8650 setup, neither IC passed the sw reset in the
-oa_tc.c module, I need to pull the reset pin low to reset the pin before
-the rest of the init stuff happens.
+On Fri, Apr 26, 2024 at 6:49=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2024/4/26 22:14, Daeho Jeong wrote:
+> > On Fri, Apr 26, 2024 at 3:35=E2=80=AFAM Chao Yu <chao@kernel.org> wrote=
+:
+> >>
+> >> Otherwise, it breaks pinfile's sematics.
+> >>
+> >> Cc: Daeho Jeong <daeho43@gmail.com>
+> >> Signed-off-by: Chao Yu <chao@kernel.org>
+> >> ---
+> >>   fs/f2fs/data.c | 3 ++-
+> >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> >> index bee1e45f76b8..e29000d83d52 100644
+> >> --- a/fs/f2fs/data.c
+> >> +++ b/fs/f2fs/data.c
+> >> @@ -1596,7 +1596,8 @@ int f2fs_map_blocks(struct inode *inode, struct =
+f2fs_map_blocks *map, int flag)
+> >>
+> >>          /* use out-place-update for direct IO under LFS mode */
+> >>          if (map->m_may_create &&
+> >> -           (is_hole || (f2fs_lfs_mode(sbi) && flag =3D=3D F2FS_GET_BL=
+OCK_DIO))) {
+> >> +           (is_hole || (flag =3D=3D F2FS_GET_BLOCK_DIO && (f2fs_lfs_m=
+ode(sbi) &&
+> >> +           (!f2fs_sb_has_blkzoned(sbi) || !f2fs_is_pinned_file(inode)=
+))))) {
+> >>                  if (unlikely(f2fs_cp_error(sbi))) {
+> >>                          err =3D -EIO;
+> >>                          goto sync_out;
+> >> --
+> >> 2.40.1
+> >
+> > So, we block overwrite io for the pinfile here.
+>
+> I guess you mean we blocked append write for pinfile, right?
+>
+> >
+> > static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter=
+ *from)
+> >
+> > {
+> > ...
+> >          if (f2fs_is_pinned_file(inode) &&
+> >              !f2fs_overwrite_io(inode, pos, count)) {
+>
+> If !f2fs_overwrite_io() is true, it means it may trigger append write on
+> pinfile?
 
-The datasheet recommends not doing a sw reset, excerpt from section
-4.1.1.3 Software Reset
-"Note: The SW_RESET bit of the Clause 22 Basic Control register will reset only the internal PHY, not
-the entire device. This PHY only reset is not recommended for use. If such a reset is detected, by
-reading the RESETC bit of the STS2 register, reset the entire device."
+Yes, I missed it. Thanks~
 
-Doing a hw reset followed by a sw reset seems to work fine though. I
-added the folloing patch to get things moving.
-
-diff --git a/drivers/net/ethernet/microchip/lan865x/lan865x.c b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-index 72a663f14f50..993c4f9dec7e 100644
---- a/drivers/net/ethernet/microchip/lan865x/lan865x.c
-+++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-@@ -9,6 +9,7 @@
- #include <linux/kernel.h>
- #include <linux/phy.h>
- #include <linux/oa_tc6.h>
-+#include <linux/gpio/driver.h>
-
- #define DRV_NAME                       "lan865x"
-
-@@ -36,6 +37,7 @@ struct lan865x_priv {
-        struct net_device *netdev;
-        struct spi_device *spi;
-        struct oa_tc6 *tc6;
-+       struct gpio_desc *reset_gpio;
- };
-
- static int lan865x_set_hw_macaddr_low_bytes(struct oa_tc6 *tc6, const u8 *mac)
-@@ -283,6 +285,29 @@ static int lan865x_set_zarfe(struct lan865x_priv *priv)
-        return oa_tc6_write_register(priv->tc6, OA_TC6_REG_CONFIG0, regval);
- }
-
-+static int lan865x_probe_reset_gpio(struct lan865x_priv *priv)
-+{
-+       priv->reset_gpio = devm_gpiod_get_optional(&priv->spi->dev,
-+                                           "reset",
-+                                           GPIOD_OUT_HIGH);
-+       if (IS_ERR(priv->reset_gpio)) {
-+               dev_err(&priv->spi->dev, "failed to parse reset gpio from dt");
-+               return PTR_ERR(priv->reset_gpio);
-+       }
-+
-+       return 0;
-+}
-+
-+static void lan865x_hw_reset(struct lan865x_priv *priv)
-+{
-+       dev_info(&priv->spi->dev, "resetting device");
-+       gpiod_set_value(priv->reset_gpio, 1);
-+       // the datasheet specifies a minimum 5µs hold time
-+       usleep_range(5,10);
-+       gpiod_set_value(priv->reset_gpio, 0);
-+       dev_info(&priv->spi->dev, "reset completed");
-+}
-+
- static int lan865x_probe(struct spi_device *spi)
- {
-        struct net_device *netdev;
-@@ -297,6 +322,9 @@ static int lan865x_probe(struct spi_device *spi)
-        priv->netdev = netdev;
-        priv->spi = spi;
-        spi_set_drvdata(spi, priv);
-+       lan865x_probe_reset_gpio(priv);
-+       if(priv->reset_gpio)
-+               lan865x_hw_reset(priv);
-        INIT_WORK(&priv->multicast_work, lan865x_multicast_work_handler);
-
-        priv->tc6 = oa_tc6_init(spi, netdev);
-
-Since the chip does have a HW reset pin I think it would be nice to
-at least expose this as an optional dt binding.
-Maybe ignore the prints I forgot to remove :)
+>
+> Thanks,
+>
+> >                  ret =3D -EIO;
+> >                  goto out_unlock;
+> >          }
+> >
+> >
+> >>
 
