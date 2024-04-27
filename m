@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-160808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E1E8B431B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:14:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04C608B431D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:15:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5FD21F255E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:14:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13588B217F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32546FD5;
-	Sat, 27 Apr 2024 00:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF5B8F66;
+	Sat, 27 Apr 2024 00:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAwpVyia"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrumP7qu"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F2B6116;
-	Sat, 27 Apr 2024 00:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540C5611B;
+	Sat, 27 Apr 2024 00:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714176887; cv=none; b=Ctbr+Tp9eLJlwleBdcBymsPQNg/pV4uWcuRZre5jdoPwHPjcZ8XUAcI7euQAQMlreRn9cmcgs68LQwPQTMf/PD89RmqRTmcxWP3M24Ce/i/Qs8Cb1GfiBVTzLoSgTN0hCXeqjyiy08JAo+nmfOG7ypNLiNhbfvGrBCCXV9WsI/o=
+	t=1714176887; cv=none; b=rpC9oOCUTDYugpdjAddUJx0ci3TqFor4Ke83N8jIxynyxFhSjwUeB9PlgT8nojZ8mw2EAHcfgpPOAFVH5djKCWWYzuGSEhco/40sB9fZfUrIqxNYCWL9vqMbVdkyc0a/s/8KssVHwdKnXZ3wJj3fZ6I7wYNuTYhR6wo7DtkGwwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714176887; c=relaxed/simple;
-	bh=hcJaJfLMJFfzCLe9qFLyr3XZcJLOUaXp0xpxmscAAAU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BlTbcQTj+Vt5g+2G1O7dvNk9vk6nBMPOulzkBTMrvoCj22Lwm/ZrxIcdMKTwYgOWUCasXrz2MNyXlqpgYBfA9feNuJkjXI+NZDhEbp30q9YZLHnvyVx45Zp78hCA50Gp6CSAMP/nPzq5l62NdsIwswy/qlf4lG3rgLTY82OlBVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gAwpVyia; arc=none smtp.client-ip=209.85.221.45
+	bh=NU1d+mluF9avwg/CVEuJoMhXuuG/d8undlE9kBOzvM0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=rClXJBxi2Et5QaliZq+g68u6VDEaznZqX7w5qUgvpvNwMTIIMP1m+YTfM1+oSkaTwwoxwnC6ZejJOJ0wkevsxHhECCghr07vhLg+RWbcRhpDQek/4VXcEGtpwkGlGkNeqQrZEpKSG8XgmWZE4iNi6CIQ91qgizmYHxAR+FtlkaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RrumP7qu; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34be34b3296so1971972f8f.1;
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-34782453ffdso2514221f8f.1;
         Fri, 26 Apr 2024 17:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1714176884; x=1714781684; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YV6AybQpNM5L7BmGh7OKWpSwXS2G3KXKiGflHVOVNWA=;
-        b=gAwpVyia5JBgGKAxiTV1vrMcQlYeqZBRLWZUMMVAA1JxaI1W9Rrq/q/zSkhV4OfW2Y
-         1jV/+qkB+6xHJGHqcUwbDRp/Nlb/SZftktLDYBCgzBYn6gimOW3jLidiDST7/UVEHXr0
-         JVtxNAzNId4sr0jQeyfrrX7fyhL4LU7O9flYjf8atqkjZSVFIAWC6S1apzDAIGbz9TKd
-         /8P9QhFBhAoWkjMC91UabLRVpvmf/JSX5jMXWH4pFDnNRn3pDrPDewF+otqKvt1fUMxy
-         uAnzO6hhRybySQjIwCa6M5Bpg7vnU3e+uA4VqJWVQRbusiDRZ/Msaz4HSh9uS7TOruww
-         op1w==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bjCfCCeucpD7gDkmMDMuXuqpCswmNACU1GJc5lMp4Mg=;
+        b=RrumP7quN+heHAg2oLXoX7s90VG1E9ckrSDTSAVgg3qPGahS/V5H2SEtpSBdSjZtHb
+         0GH4AEAmuhbehFI37zGop6kT8OGjSf09W9P4t3e++x1TdJlky/QrxH1feKGLprG8qz+4
+         ocqiiNdSPpzbL7wKBncP1Ql7sMpyCzkghuLf9TuAUrV/UCAjvqKpBYk9dKhRGemweumU
+         QM0IqF+L+P8jNafCjMztZTx2jugFC98jPdC8Icx/SlD/+R6FUhD0kpqqc0djKkCXkOCZ
+         8wtQgDPofu/s6kYilf7ilNvUF6viqA6A05Ul9fVzlnhTeNubIublI3re/ni2kDLheR8/
+         44XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714176884; x=1714781684;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YV6AybQpNM5L7BmGh7OKWpSwXS2G3KXKiGflHVOVNWA=;
-        b=Kyy0UEfZAyc2+YaA2U8r0GBZ8yKtC2s+CliXaQaA0QuLu9lzEdGPycDL0cJnosh83Z
-         ymX7n69ClgmA1i9KOykdkPIUfduSBi2Hfg+iR4e2pf17tgAvDmDI7pZp9SvxGbkKhN5K
-         lGJ2+vuCoX/oJQT5V6Szi8Twt4s16hQqq6g49EojV2xZ65t5j0WYQDNSW5ytJMOyroSk
-         fu5lo8vvKHtyqIM4Ct4ka2F0rNQkXnKeJcT5dpS8LFauR0Fh4s/JO6JnQZVCWg7eqV9P
-         6bnqe2zc50UFLXVbBnesOGgdoTHcDVMLv1ClLke/Ra5pcylkDqd2zDTq7O+nhtblHYwo
-         6T4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVIHWK3DL4qb22UmewgaEFDo9KSJ5gxutFJGNdimCxKrpVqGvf3S90i6u1AoR0CE2Zcnm/Gco6xLOGlwrK2ZUE0u1uceHXUGBDV35ODbLz8rNdvuDFwhWdv0gLrt8E844IvoZVmHrWETK5o
-X-Gm-Message-State: AOJu0YxyFyEspGoJt10sYvxsqjHv+NAg9av/RPBzn95m6mcALnhM7usM
-	Z0QakR39KJnsi8+PewPQmMcSbWmsXwiCqa2kNPTe413XthHiKdEM
-X-Google-Smtp-Source: AGHT+IGL5dxWGqVeotM/Lk06XoKolWNj02U23g6RMrYPs/XMCqXFfCjzQfg4i39C52BMjACbLqFwrg==
-X-Received: by 2002:adf:f5c7:0:b0:34a:d1d4:cb3c with SMTP id k7-20020adff5c7000000b0034ad1d4cb3cmr3481888wrp.39.1714176883758;
-        Fri, 26 Apr 2024 17:14:43 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bjCfCCeucpD7gDkmMDMuXuqpCswmNACU1GJc5lMp4Mg=;
+        b=wrD4BcqYf3DN5k7TQCqYxzURJ9FYThXSPHlVdSoNppVRrGlC6N+8BjpXRj0dVfIDfP
+         dykQPkmqPsLdpq5tb9PbLAmEAKocKLpsBddnClT0fuZOaAbxFtvu58aQxL2P6dgmU+2B
+         aor6nUy5v1l9w8+IoxYrjwLyffWTP3AUoB5XuALI2TZNrUbCjC5agdZuLOgBJi8KrHn0
+         dSaNqgi7t3pTAZtjFoUKOXdWETfKlmi0ru5zqrAsXgbQiEVZ2OfnZlJY8TOMOd8cOhjP
+         bcqQltYkYHotCg3dDeit+359sUGXswM3OCJNfZrjZEaDYGYyQrTuQ+9vXR+EYP6ZnMx3
+         TYKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVVZYfMDxbraBE7xZSlAwzfkk2GV3nj5mcPtTTNSTsG7HdzQ7ybPDrShsSERGoBGgCFPMBmvwC0o9Wr6lLMLTWONUT+uM+kZQFgOO0JjHeeFAF9VW1xE5pU/keGfxYMFJlJxRtY+1dFBD83
+X-Gm-Message-State: AOJu0YzrLr3pQRgx0O8SWfLYOm4ZhQrXclYAH+Y2CPJKp+ZtmdxqBJLe
+	Z1grdrrWhvXFuQDJsNHFyxCJ9FSSha9ripkmdGklXaBetYsJEyOU
+X-Google-Smtp-Source: AGHT+IHbbjw4s9G62DgHBPWcgS73Ei+GWQ+p5oOBA6ZFjffoNABr4s2scObXnnCnCLYEfmbzk+pRPQ==
+X-Received: by 2002:adf:9dc7:0:b0:34c:924e:14d3 with SMTP id q7-20020adf9dc7000000b0034c924e14d3mr619514wre.30.1714176884662;
+        Fri, 26 Apr 2024 17:14:44 -0700 (PDT)
 Received: from 2116bb4b8996.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
-        by smtp.gmail.com with ESMTPSA id e7-20020a5d65c7000000b00349eb6eae3esm23748079wrw.4.2024.04.26.17.14.42
+        by smtp.gmail.com with ESMTPSA id e7-20020a5d65c7000000b00349eb6eae3esm23748079wrw.4.2024.04.26.17.14.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 17:14:43 -0700 (PDT)
+        Fri, 26 Apr 2024 17:14:44 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: herbert@gondor.apana.org.au,
 	davem@davemloft.net
@@ -74,10 +76,12 @@ Cc: nicolas.ferre@microchip.com,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	l.rubusch@gmail.com
-Subject: [PATCH 0/5] crypto: atmel-sha204a - read out otp zone
-Date: Sat, 27 Apr 2024 00:14:34 +0000
-Message-Id: <20240427001439.12726-1-l.rubusch@gmail.com>
+Subject: [PATCH 1/5] crypto: atmel-i2 - add missing arg description
+Date: Sat, 27 Apr 2024 00:14:35 +0000
+Message-Id: <20240427001439.12726-2-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240427001439.12726-1-l.rubusch@gmail.com>
+References: <20240427001439.12726-1-l.rubusch@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,31 +90,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Read out otp memory zone of this secure eeprom and rng chip. The chip
-has an otp zone and data zone, both still not accessed. The otp zone
-can be used to store persistently serial numbers or similar, if externally
-pre-configured. In any way the Atmel SHA204a needs to be preconfgured and
-fuse locked in order to be useful also for the already implemented RNG
-functionality. Placing data into the otp zone is optional. If empty, the
-chip returns 0xff on all field. The implementation passes the content to
-a new sysfs handle to userspace. If the chip is locked or not accessible
-no sysfs handle is set.
+Add missing description for argument hwrng.
 
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
+ drivers/crypto/atmel-i2c.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Lothar Rubusch (5):
-  crypto: atmel-i2 - add missing arg description
-  crypto: atmel-sha204a - remove unused includes
-  crypto: atmel-i2c - rename read function
-  crypto: atmel-sha204a - add reading from otp zone
-  crypto: atmel-sha204a - provide the otp content
-
- drivers/crypto/atmel-i2c.c     | 30 +++++++++++--
- drivers/crypto/atmel-i2c.h     |  8 +++-
- drivers/crypto/atmel-sha204a.c | 77 ++++++++++++++++++++++++++++++----
- 3 files changed, 102 insertions(+), 13 deletions(-)
-
+diff --git a/drivers/crypto/atmel-i2c.h b/drivers/crypto/atmel-i2c.h
+index c0bd429ee..a442b47a4 100644
+--- a/drivers/crypto/atmel-i2c.h
++++ b/drivers/crypto/atmel-i2c.h
+@@ -124,6 +124,7 @@ struct atmel_ecc_driver_data {
+  * @wake_token          : wake token array of zeros
+  * @wake_token_sz       : size in bytes of the wake_token
+  * @tfm_count           : number of active crypto transformations on i2c client
++ * @hwrng               : hold the hardware generated rng
+  *
+  * Reads and writes from/to the i2c client are sequential. The first byte
+  * transmitted to the device is treated as the byte size. Any attempt to send
 -- 
 2.39.2
 
