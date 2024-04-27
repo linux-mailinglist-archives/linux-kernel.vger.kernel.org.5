@@ -1,140 +1,230 @@
-Return-Path: <linux-kernel+bounces-160799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7B88B42FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:01:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A32D8B42FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080B21C21FB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:01:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 792F21F26527
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18FDA945;
-	Sat, 27 Apr 2024 00:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C421C3D;
+	Sat, 27 Apr 2024 00:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RoFKTmWG"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I2sDE8Np"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32E9A932
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 00:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52742376;
+	Sat, 27 Apr 2024 00:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714176103; cv=none; b=GEzny4izUWLkZMhPmx4tHFxbUG7We+muGGd4Lh6SS3YuTJGaDw3EeyRnODZLY0XsUfzlBUtjDDIbomCanAHnJPz5prKGLyHGGJp2g+1VMgYiqKxhRNfExwJXij7wNVfSIlM+XmWIAHVW5zH66nVb6+s/L/y7Pp32EFXljyAyKCA=
+	t=1714176187; cv=none; b=XfHVm3biDHh0WEUPLXmKstHrAIEICCOI6FbYL3BfITThindEdKslpuLSlChBjzKinXIIcPygCP5BH3FNhdc93fB7texbNv2NvuJ+goBL4xOZoOlIsiNgnjangYDz8FnOHOgfJhA3coF+AKEl5lcihQ5Zei21P6RZFlfxb6e4U6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714176103; c=relaxed/simple;
-	bh=SJmbE3eXeLvztipjrT54XQtMBojunhusAaRnAI/OrPQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FtBW/FP6lzEJTSI6a6e3YIvJQsloA1hgqaqqr/wux114bvir4MuzqU5KCljrB0qiXSxGS9Beaxv76DNwQlXtcs987494AcBp2GaanEiGvGqarBXp3AevYsDzhoh/PrXBQwIEAhKY01ACowTEyHRU5TJ65DpaYx24bA/SnHAfcO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RoFKTmWG; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-439656c1b3eso16436291cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714176099; x=1714780899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9qkev+9t48kVKKfN+OMtp3Q7S6ESNoKoLQUe43MCWOA=;
-        b=RoFKTmWGWDGhkgYPQDxiH+1tkXzhUZ3EekALw3HEl5hDtiEyprF78xBjn3x717Na94
-         Ni3Dpt+k3u1u38UP8WL5dIWPv7MsIw5Sl1bzjmVvEGJm8x60XIgk4ayKTrmbVetI/EN4
-         fbZldo15vKigBOIZBBG+BBJ5Y/IxIHpFNx9Wo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714176099; x=1714780899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qkev+9t48kVKKfN+OMtp3Q7S6ESNoKoLQUe43MCWOA=;
-        b=VEzMpwAqFUWvjRCq2HWEc9HlfggZTrVpWq3edqLvMW7MzAWo6R8+UlitXInKFBPbaD
-         xGNYlvOzHWM9UKl3blXUxej1c+aRslLt/l+1wvKVvvJxnRuKhc+gWHw9jUducNwu/T+i
-         PQ6cPgf8rD7GjgY2ZCTLaEkTKLOVN9cuQIo1HysBrOHt13tZMQo4sHOmFTtMGZl4yGlb
-         dnJO61StyIz6T++PmDLYpLT9m8xR5EC0Yinks2+qmaXA2SzRF7R6kpqvi6rPuJien1SI
-         x7ESUkOLy5J8+0pBkykG+c10RUBsPAvxY/9V0gaMlwgD/y5iimzPUdvKiUJpLP2CUeSX
-         1dxA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzHtbEb8zQvzECyU7CKXnbb8VMMKeZL0C6RHxwYfkWA4rlStbfshOVFtk9ybafG+cd+4BLxel9PvVGwmwj7nT84hqAUW1WfCNcWbCW
-X-Gm-Message-State: AOJu0Yx12/sKxwjPbBLIAaqc128HuoPj+oJp/Ni1mV7Vbzg2XIkz2Ts7
-	ipsbQKUNtKBbAvOSfkQaYqI50h5oGHT9NNDY1b/VfOEGB37fJlj1eZIqrEkz5UF7MKVUWz6ljM0
-	=
-X-Google-Smtp-Source: AGHT+IFuqZM7JwZVXVTroojABSybE8+8RRyuNc05NKOl1wz0zH3pMH5U6g2bGetxDiEIgn42ymuycQ==
-X-Received: by 2002:ac8:7f83:0:b0:43a:357b:4682 with SMTP id z3-20020ac87f83000000b0043a357b4682mr1392354qtj.55.1714176098738;
-        Fri, 26 Apr 2024 17:01:38 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id kg25-20020a05622a761900b00436eacea78fsm8342035qtb.65.2024.04.26.17.01.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Apr 2024 17:01:37 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-43989e6ca42so69341cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:01:37 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVlpHLRNcIn5Cp87sblX6m4MrL4ij/Ul6kf0QRq7mI/aluXRS5vH0yRP6zBL8Ks3+nCVT5rPvuB0KPTpm8h/BpSejs+GF+3a9EOFT3f
-X-Received: by 2002:ac8:5a92:0:b0:43a:5f02:bbe2 with SMTP id
- c18-20020ac85a92000000b0043a5f02bbe2mr116908qtc.24.1714176097206; Fri, 26 Apr
- 2024 17:01:37 -0700 (PDT)
+	s=arc-20240116; t=1714176187; c=relaxed/simple;
+	bh=eEy9hWrcjmaRZAADOiXkvcSV7CKAi438k7HWQoSN2y4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ACcA9oJXG9SsCjqkLdtcAYfP1DEYlinciXs+F//UdQ8SnqNaUnN44dnWJh0tHI94IKNuMgeCAXDUQzxbmML2PJ58XnYBlEhMV9zUZ4eZgXhgfClsLpRIByIot1f56lrS30YbrAM8RVw5nfISv7CvUrqJMe4+/wIxf0qPmA+AwiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I2sDE8Np; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714176186; x=1745712186;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=eEy9hWrcjmaRZAADOiXkvcSV7CKAi438k7HWQoSN2y4=;
+  b=I2sDE8Np8AkL3SR2+fncpTTmwoIabrubJwgoJ+494whneJe58QmRzm3V
+   9i6f3gJG41OYVD8PS5RV+xRMYwTHUTLoTYfqub3MwMC0XXLQpi/nsz4iz
+   fDv1+X4I1KqGtrhjFPbMyJCgJRAjLafr2yBCMBDWpA/cov44oethPCsEU
+   JO5T+OaHC1i+CGNnWQoCZfoLJPfeC5Nc7QV0cvRmOvds8aC7dCfCrXk3s
+   WgMjuT4/kvwUy1UrQ5MsIdKOctMk3dJAyYgj+j3TSxOX4X6sz5/L9qCjB
+   QVOmRrhiAzYRgIjWmC8TEN8fjR/qexcQWCe+c1GxCTGSJKpSbYRj4QtyV
+   A==;
+X-CSE-ConnectionGUID: brr9kpbTT1+5I7/uU4pCOw==
+X-CSE-MsgGUID: gDSScBprSdmoy1F4gUBXyg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10461550"
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="10461550"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 17:03:05 -0700
+X-CSE-ConnectionGUID: B7O9s9ezT0+ZAPtXeeLvSQ==
+X-CSE-MsgGUID: lBPjA/mLQruJFssuD9Lc5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
+   d="scan'208";a="30382898"
+Received: from ckshirot-mobl1.amr.corp.intel.com ([10.209.32.101])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 17:03:04 -0700
+Message-ID: <f111371300624b6f94f0746dbae66bd49f405eea.camel@linux.intel.com>
+Subject: Re: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link
+ state
+From: "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To: Jian-Hong Pan <jhp@endlessos.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc: Johan Hovold <johan@kernel.org>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>, Kuppuswamy Sathyanarayanan
+ <sathyanarayanan.kuppuswamy@linux.intel.com>, Mika Westerberg
+ <mika.westerberg@linux.intel.com>, Damien Le Moal <dlemoal@kernel.org>, 
+ Nirmal Patel <nirmal.patel@linux.intel.com>, Jonathan Derrick
+ <jonathan.derrick@linux.dev>,  linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Fri, 26 Apr 2024 17:03:03 -0700
+In-Reply-To: <20240424110223.21799-2-jhp@endlessos.org>
+References: <20240424110223.21799-2-jhp@endlessos.org>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid>
- <87pludq2g0.fsf@intel.com> <CAD=FV=W+Pcr+voBkcfeE_UC+ukN_hLXgoqMk0watROWRXe_2dg@mail.gmail.com>
- <8734r85tcf.fsf@intel.com> <CAD=FV=XNbRauayNFNOODm-aaaLy2_vJk8OW-mR_XmLv505RtGA@mail.gmail.com>
-In-Reply-To: <CAD=FV=XNbRauayNFNOODm-aaaLy2_vJk8OW-mR_XmLv505RtGA@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 26 Apr 2024 17:01:21 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V4DAUGEapnre1C0HJ80ooHJU=7fy+JESbRtnJEiL3gCA@mail.gmail.com>
-Message-ID: <CAD=FV=V4DAUGEapnre1C0HJ80ooHJU=7fy+JESbRtnJEiL3gCA@mail.gmail.com>
-Subject: Re: [PATCH] drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: dri-devel@lists.freedesktop.org, 
-	Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linus.walleij@linaro.org, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, 
-	lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang <hsinyi@google.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Jian-Hong,
 
-On Fri, Apr 26, 2024 at 8:28=E2=80=AFAM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> > I don't find this unintuitive, but if it helps, you could conceivably
-> > add a context parameter:
-> >
-> >         struct mipi_dsi_seq_context context =3D {
-> >                 .dsi =3D dsi,
-> >         };
-> >
-> >         mipi_dsi_dcs_write_seq(&context, HX83102_SETSPCCMD, 0xcd);
-> >         ...
-> >
-> >         if (context.ret)
-> >                 ...
-> >
-> > And even have further control in the context whether to log or keep
-> > going or whatever.
->
-> I agree there are some benefits of adding the extra "context"
-> abstraction and we can go that way if you want, but I lean towards the
-> simplicity of just passing in the accumulated return value like I did
-> in my example.
->
->
-> I'll try to write up patches and see if I can post them later today.
+On Wed, 2024-04-24 at 19:02 +0800, Jian-Hong Pan wrote:
+> Currently, when enable link's L1.2 features with __pci_enable_link_state(=
+),
+> it configs the link directly without ensuring related L1.2 parameters, su=
+ch
+> as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have been
+> programmed.
+>=20
+> This leads the link's L1.2 between PCIe Root Port and child device gets
+> wrong configs when a caller tries to enabled it.
+>=20
+> Here is a failed example on ASUS B1400CEAE with enabled VMD:
+>=20
+> 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor PCIe
+> Controller (rev 01) (prog-if 00 [Normal decode])
+> =C2=A0=C2=A0=C2=A0 ...
+> =C2=A0=C2=A0=C2=A0 Capabilities: [200 v1] L1 PM Substates
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_=
+L1.1+ ASPM_L1.2+ ASPM_L1.1+
+> L1_PM_Substates+
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us PortTPowerO=
+nTime=3D50us
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM=
+_L1.1- ASPM_L1.2+ ASPM_L1.1-
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Threshold=
+=3D101376ns
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D50us
+>=20
+> 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue SN550 =
+NVMe
+> SSD (rev 01) (prog-if 02 [NVM Express])
+> =C2=A0=C2=A0=C2=A0 ...
+> =C2=A0=C2=A0=C2=A0 Capabilities: [900 v1] L1 PM Substates
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_=
+L1.1- ASPM_L1.2+ ASPM_L1.1-
+> L1_PM_Substates+
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPowerO=
+nTime=3D10us
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM=
+_L1.1- ASPM_L1.2+ ASPM_L1.1-
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=3D=
+0ns
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D10us
+>=20
+> According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on the PCI=
+e
+> Root Port and the child NVMe, they should be programmed with the same
+> LTR1.2_Threshold value. However, they have different values in this case.
+>=20
+> Invoke aspm_calc_l12_info() to program the L1.2 parameters properly befor=
+e
+> enable L1.2 bits of L1 PM Substates Control Register in
+> __pci_enable_link_state().
+>=20
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218394
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> ---
+> v2:
+> - Prepare the PCIe LTR parameters before enable L1 Substates
+>=20
+> v3:
+> - Only enable supported features for the L1 Substates part
+>=20
+> v4:
+> - Focus on fixing L1.2 parameters, instead of re-initializing whole L1SS
+>=20
+> v5:
+> - Fix typo and commit message
+> - Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
+> =C2=A0 aspm_get_l1ss_cap()"
+>=20
+> =C2=A0drivers/pci/pcie/aspm.c | 12 ++++++++++++
+> =C2=A01 file changed, 12 insertions(+)
+>=20
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index c55ac11faa73..553327dee991 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
+> =C2=A0static int __pci_enable_link_state(struct pci_dev *pdev, int state,=
+ bool
+> locked)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pcie_link_state *l=
+ink =3D pcie_aspm_get_link(pdev);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pci_dev *child =3D link=
+->downstream, *parent =3D link->pdev;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 parent_l1ss_cap, child_l1s=
+s_cap;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!link)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
+> @@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct pci_dev
+> *pdev, int state, bool locked)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_1_PCIPM | ASP=
+M_STATE_L1;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STA=
+TE_L1_2_PCIPM)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_2_PCIPM | ASP=
+M_STATE_L1;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure L1.2 parameters: Com=
+mon_Mode_Restore_Times, T_POWER_ON and
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * LTR_L1.2_THRESHOLD are prog=
+rammed properly before enable bits for
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * L1.2, per PCIe r6.0, sec 5.=
+5.4.
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_capable=
+ & ASPM_STATE_L1_2_MASK) {
 
-FWIW, I went with your "context" idea. In the end, I liked how it
-looked and the icing on the cake was that it generated even smaller
-code! :-)
+This is still mixing PCIE_LINK_STATE flags with ASPM_STATE flags. 'state' s=
+hould
+not even matter. The timings should always be calculated and programmed as =
+long
+as L1_2 is capable. That way the timings are ready even if L1_2 isn't being
+enabled now (in case the user enables it later).
 
-My v2 series (now 8 patches long) is at:
+David
 
-https://lore.kernel.org/r/20240426235857.3870424-1-dianders@chromium.org
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0parent_l1ss_cap =3D aspm_get_l1ss_cap(parent);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0child_l1ss_cap =3D aspm_get_l1ss_cap(child);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap)=
+;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_config_aspm_link(lin=
+k, policy_to_aspm_state(link));
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->clkpm_default =3D (=
+state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
 
-
--Doug
 
