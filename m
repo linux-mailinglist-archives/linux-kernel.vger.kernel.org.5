@@ -1,109 +1,172 @@
-Return-Path: <linux-kernel+bounces-161118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 471E18B475A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:03:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296758B4760
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C70282466
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:03:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0AFCB219E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6217A1419BA;
-	Sat, 27 Apr 2024 18:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED205145B05;
+	Sat, 27 Apr 2024 18:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="bzq+JO3y"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="WW8EEfZS"
+Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE2213C83D
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 18:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEDA1772F;
+	Sat, 27 Apr 2024 18:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714241027; cv=none; b=pY7th0gVd7HE+zCE3ZPVmreBz0wB93rYcloEprCdm/Sk4XvjOmKsROgQmp6WnFdJ9Z5vIpPS9C3aKakRzjXSfrJVFdNMYblnWHNXbcvkwdK3gAKb1wZFwEwrzwxDEJoB4Ul7+uefOo/cjDaRPhkrzIEbuKW/GzcHu2/JxP0vwek=
+	t=1714242197; cv=none; b=ps2VBClmiZj9BScZhzI1ig9vLFS/nhFE3mAmll5CCyWK4mYHzUYP6H4k9N+bIE2DOspX5+zL6Ony41EqhJJ6sqm3giecBV8pZi27b7o4KzJahej0ChmEZtQZrUyUbJ1+IfbFCwzC4fAiGhDM5DdH40hdcPJTq7PSBlDtEDdnrKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714241027; c=relaxed/simple;
-	bh=8iVei5xGXrW0hT05cj2YRsXH6i/FR3dHY8M9IRQFA5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xska1bxLN8NEGeaigYJuBxu730jQUFgBiFsR4fIZb1WSl+dxv12gXEJzfORACitE5K3JUzMX75rTcu7hbUBsS5xf8UBOUzSYSBkz2hU5+paBCqeHWfr7EgrRrFo9UOqwEodORvdwbW4/7fgTxrjWs2zJN9Yd+ORluKo0sLgoskE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=bzq+JO3y; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=8iVe
-	i5xGXrW0hT05cj2YRsXH6i/FR3dHY8M9IRQFA5k=; b=bzq+JO3yD1dPLPi+NSMn
-	wjBeeB9a4vObiSjdv8wTBBq1Oronttl+/1OiymDH7cSgKu3V24uyOxSELEuIdFb7
-	j1gmM6MYI1Z91i4h+6Z3sPg9KOgII60hFQt9G7hC9dW56UE7Ht5Iaxqsx0HTE8ER
-	yzSkrdMknbSd+EuEGj4GgrFkcEltadfP5xXn2EocSaZsOmMRFHW266/fBuNVpDga
-	t60yWRzXkIhZpSUoUkwnkgvJQBdDeC228q1+8ClvgHUbr+/NLqplRJSRYzm+Q4gs
-	VQxx7rPe5VE6pnb+2SSR/z7tkLrhTPtyNnSrZhHIjMKdELfGbYoyKj7keuXhZpLz
-	Hg==
-Received: (qmail 1744437 invoked from network); 27 Apr 2024 20:03:37 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Apr 2024 20:03:37 +0200
-X-UD-Smtp-Session: l3s3148p1@HHbi1hcX9Jxehh9l
-Date: Sat, 27 Apr 2024 20:03:36 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 00/18] i2c: remove printout on handled timeouts
-Message-ID: <dizevhnog7moz5qajkdkghwurza6ewobo5htavlbizqxlgnqwx@7f53mbpwu7o6>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <ZihNbtiVDkxgUDGk@surfacebook.localdomain>
- <sbkymvjmrufouqqscpmrui5kcd466gj6yn2bqwf3lhfk55mjos@n4ydx6wzyq4k>
- <CAHp75VfEvifLjPRQ+xsKipjwXA-APR7m_au6OJjafeXp6Wiyxg@mail.gmail.com>
- <CAHp75VdqcYn9RDVf63N7HL=nQLvFRt8cSO3EfbzAxLKNkwF-Kg@mail.gmail.com>
+	s=arc-20240116; t=1714242197; c=relaxed/simple;
+	bh=YmEyf6SItFd5CxZHd4mM08KlmULEDODxPglVfQj0qOk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=F2InsdzOFwynvovgIxvE3ropwfWxXswqQkZV6jM4GVu2sWzt0u03gQYSzFuIqxc0bom4gsRf8Bh6qmSjg7jyrDbbYuphWvAZf9InJtjt3yR2s3sGV4ns/I+cbSpYzrw54shPLJqGGisDnefIVcSjmr4jQhX/00+DJTJAAOlXzEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=WW8EEfZS; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=Cq8n8jrG14bmuzs7U9Y1DCj9OT+YXwhjK7j49hc1cBM=; b=WW8EEfZSpI8MhLpcAVmByhNtbP
+	2QUdLf7si37LXRwNGKqyjbbQYVFmwx2PBMsfe31ZELt46A75VS31C1hHJbvkUWh1am2Epe2o2KPGi
+	npvKlDARWfk/klqh0gQQHff11nwLbyfT2fehrcKzTpuznqRVu+U7+YwEIfCPOnWBehEc=;
+Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1s0mhX-008hH3-0g;
+	Sat, 27 Apr 2024 20:23:07 +0200
+From: Felix Fietkau <nbd@nbd.name>
+To: netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>
+Cc: willemdebruijn.kernel@gmail.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 net-next v4 1/6] net: move skb_gro_receive_list from udp to core
+Date: Sat, 27 Apr 2024 20:22:57 +0200
+Message-ID: <20240427182305.24461-2-nbd@nbd.name>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240427182305.24461-1-nbd@nbd.name>
+References: <20240427182305.24461-1-nbd@nbd.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ur2627yprz3xmq7n"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdqcYn9RDVf63N7HL=nQLvFRt8cSO3EfbzAxLKNkwF-Kg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+This helper function will be used for TCP fraglist GRO support
 
---ur2627yprz3xmq7n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+---
+ include/net/gro.h      |  1 +
+ net/core/gro.c         | 27 +++++++++++++++++++++++++++
+ net/ipv4/udp_offload.c | 27 ---------------------------
+ 3 files changed, 28 insertions(+), 27 deletions(-)
 
+diff --git a/include/net/gro.h b/include/net/gro.h
+index 50f1e403dbbb..ca8e4b3de044 100644
+--- a/include/net/gro.h
++++ b/include/net/gro.h
+@@ -429,6 +429,7 @@ static inline __wsum ip6_gro_compute_pseudo(const struct sk_buff *skb,
+ }
+ 
+ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb);
++int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb);
+ 
+ /* Pass the currently batched GRO_NORMAL SKBs up to the stack. */
+ static inline void gro_normal_list(struct napi_struct *napi)
+diff --git a/net/core/gro.c b/net/core/gro.c
+index 2459ab697f7f..268c6c826d09 100644
+--- a/net/core/gro.c
++++ b/net/core/gro.c
+@@ -231,6 +231,33 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
+ 	return 0;
+ }
+ 
++int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
++{
++	if (unlikely(p->len + skb->len >= 65536))
++		return -E2BIG;
++
++	if (NAPI_GRO_CB(p)->last == p)
++		skb_shinfo(p)->frag_list = skb;
++	else
++		NAPI_GRO_CB(p)->last->next = skb;
++
++	skb_pull(skb, skb_gro_offset(skb));
++
++	NAPI_GRO_CB(p)->last = skb;
++	NAPI_GRO_CB(p)->count++;
++	p->data_len += skb->len;
++
++	/* sk ownership - if any - completely transferred to the aggregated packet */
++	skb->destructor = NULL;
++	skb->sk = NULL;
++	p->truesize += skb->truesize;
++	p->len += skb->len;
++
++	NAPI_GRO_CB(skb)->same_flow = 1;
++
++	return 0;
++}
++
+ 
+ static void napi_gro_complete(struct napi_struct *napi, struct sk_buff *skb)
+ {
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index 3498dd1d0694..a3cd546a1aea 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -433,33 +433,6 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+ 	return segs;
+ }
+ 
+-static int skb_gro_receive_list(struct sk_buff *p, struct sk_buff *skb)
+-{
+-	if (unlikely(p->len + skb->len >= 65536))
+-		return -E2BIG;
+-
+-	if (NAPI_GRO_CB(p)->last == p)
+-		skb_shinfo(p)->frag_list = skb;
+-	else
+-		NAPI_GRO_CB(p)->last->next = skb;
+-
+-	skb_pull(skb, skb_gro_offset(skb));
+-
+-	NAPI_GRO_CB(p)->last = skb;
+-	NAPI_GRO_CB(p)->count++;
+-	p->data_len += skb->len;
+-
+-	/* sk ownership - if any - completely transferred to the aggregated packet */
+-	skb->destructor = NULL;
+-	skb->sk = NULL;
+-	p->truesize += skb->truesize;
+-	p->len += skb->len;
+-
+-	NAPI_GRO_CB(skb)->same_flow = 1;
+-
+-	return 0;
+-}
+-
+ 
+ #define UDP_GRO_CNT_MAX 64
+ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+-- 
+2.44.0
 
-> about a problem without expecting it to happen. Is that -ETIMEDOUT
-> being converted to some message somewhere?
-
-As said initially, the place for that is the client driver, I'd say.
-
-
---ur2627yprz3xmq7n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYtPfQACgkQFA3kzBSg
-KbZazxAAlDDyQT8XTqNFoRYUjr2e6FAw93vAgrmRIjaq7YDf1MjoVF5i9k4F1+7S
-zQXcXT9O65VNBaxvzkhNJVODcSUxdTuuGGRtABpkHHE9e0u5LezU2GbbJA/NE+im
-sQP1Sr13FAcNQxc/Fj7Nkr+9NmzFQh6UruPTqITcV/tx0tukhGJlr1WT9HhJQOH8
-z3vFdrZBZ+gRJ0luT8NWI+o8gYV4wY1q+nMvtOthOHyjHh68fvk83oXSTKEES6ip
-8XKSzBfV6ZhPLNF8kaQIcZzzvhlMpEiiRVxmJV8qrYDN/+NeOLImVWxF0+oBwZSi
-FnD+W5ueMM7hsVE+vVy2UkpsY3JQOHaTYHAIGGk6RVnrjjl7VysK7qFV2KO9Edb2
-guyjzypfaL9IWTogLaznXxJt5oSvLfBNqv7ev400HhCRxKLrmm2OOihe5G76fZOn
-v5/cEk4SmoA61+sW7PuaEkIahQLNpDlr/VzzBg/HqEZ5maGPYxedZ2E+afDF3TNT
-hQvH4ycoe4+PLB256GmrNh5PZWZmYYdNvcwjW6nUTr/8ZjKfzsuIzqthQJqxztcA
-e8EUYo4Gby5hW+V2A8xBXOmFHrcW88+5nXTfv9XNoFCIfZ1hKLuwoG1d4td0dZ1Y
-IIj3nxl0MdHqFhXdoLvHWjBbErwzl0blkA/5zPNW3QanuolJstE=
-=fHd8
------END PGP SIGNATURE-----
-
---ur2627yprz3xmq7n--
 
