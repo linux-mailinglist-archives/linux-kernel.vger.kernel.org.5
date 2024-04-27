@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-160842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843CA8B4372
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 918708B4373
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 03:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FD19283CEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:19:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1680E282D82
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 01:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC38738DC7;
-	Sat, 27 Apr 2024 01:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946AB2E852;
+	Sat, 27 Apr 2024 01:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bHm3kNt8"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C8T9ZS3C"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABE4383A0
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3D363A9
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 01:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714180772; cv=none; b=HcGIeNIzO+9sHaU82HjEJPhJy4EXl1BUlEiQEgpLDVKfXZteJjpalax28/GKwDEvYlC6WLUWjOr2wbnLs5fheOYKrg0jZnvyQMNySgy2EJot6LlaypDEHkE7RrwxwBUzBNilchozXDhvIeyB2uBONM5nKhBdft1X5r1kSIZOkoY=
+	t=1714181069; cv=none; b=qnwLAZdBMNm11A11rKEYDFa5SkDUF8hdFPnx5mkeTpI/5GENTN3FVAYU+wtaeuhrey1o07EO99uBIsHS+0JbU56WViZh92hQWolQWA+qMWwYax4vrotvH33bs741i9tT7OI/wzSgPT1tBtMSJYv/KXTE+qU4wCyFkdCDq21Ny04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714180772; c=relaxed/simple;
-	bh=F8/x6WYm3mQ7WVqeZZcGcM1pO3CXxx3F+6ucXZwlnGY=;
+	s=arc-20240116; t=1714181069; c=relaxed/simple;
+	bh=QPOrYGhIxzwlhZ4E7M894ekrxNFr3zBjHzoW3zvscoY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qQO+Nvml8Ks+v/gcQWfAUUG0rRMWVAblZEPGVsr2lEDr0voTBKFq9IKFml1oHcD56MjmL5ZFBndW3Stnl5SSzRcW1RdDQMkB2mF5/HBN5sNDQAPX3d/ZGr1GpfWIHNhBySBfuX5KFGHX52+4tLS+UGs/Ot9pJYla8j4IJTKvx50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bHm3kNt8; arc=none smtp.client-ip=209.85.218.41
+	 To:Cc:Content-Type; b=h+ZQxHW8z2+OUGUQePRPEb0HQKuu5DVfkToxVIH+P/TBWPKuHVecQCjPbh/Z/pY84/CpBTmMKSPHYIleK6Rgcqm5zRzxjT5GRI79yqU6GRRkEvcB6AdfCjMsipXBRPINsiEYn3YS+tCVHabkwYS+cSKrHKREuuEuk6uXI5LDkAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C8T9ZS3C; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58e2740cd7so55401066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 18:19:30 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a55bf737cecso331444166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 18:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714180769; x=1714785569; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714181067; x=1714785867; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F8/x6WYm3mQ7WVqeZZcGcM1pO3CXxx3F+6ucXZwlnGY=;
-        b=bHm3kNt8H14XWShuRMXV+T+TPO/goGmo6VT7DRsx6EanYdqbKvuXkjsd+o9ujxzy9u
-         nyhmcVCLvLu5CQQI3CJPfMTGHS3kGu3/Yap9b4H6BKs5jMBOfV/k8La0CmbgGbto3FJ/
-         usyRT8GhnWX+S+vruKhotvz69vhW17UI7fBMvJRz/glR3/kMTroGtaH7hevlJxXOHYnO
-         Hp+kSqyZHiuDZTap8vJvZOwwT+jyetcf8ruPTd35LY111xqm7mF6RWvBjeJ/jrKghqts
-         TuUedxxL1jMywTIGJACu5yghZV20ojGlpTAPTv4ESMTSMtycbMnBi11GKoEXMUWtcqKu
-         hC3Q==
+        bh=QPOrYGhIxzwlhZ4E7M894ekrxNFr3zBjHzoW3zvscoY=;
+        b=C8T9ZS3Ct/Hd4xlQZCWUeD7F8vfukZs/O+31jJl+3WY66d3BpI0N+1roqnqYoPtFHG
+         oYz/ViScrl+U5SqBVpZjr7SKgnYRrL254tVuw9cJUYnBCIYO7ikWwP7Cby8kmXoLxp7F
+         320lgec1a2SNfQA6BWacLWhaKyAxcsCPMBeEj+opiQBEKy3aIALE8nEykWTzwchAH+KU
+         7LWfV5+ZB416sDxaqoqD2w+KKPudHWxaFpnPUkZtIASu19GZJmCka39Dbo5mfkDQ8cuk
+         Olo/nsuzu7tSiMoTiNGTD2Bj5i3Fp0U+6K6Iu8WWesfaSLE2UlzDNm9HhODkb752FFEQ
+         Qftw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714180769; x=1714785569;
+        d=1e100.net; s=20230601; t=1714181067; x=1714785867;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F8/x6WYm3mQ7WVqeZZcGcM1pO3CXxx3F+6ucXZwlnGY=;
-        b=D5gBfTBuUlXTDcIQk9VLrCWKa0Bz4IUEF/aGOPyDbvWWpcckE+YSXJ2qHIsw72yeQP
-         vqbFULgw+sEnzpq5fLX+K9OXQ2oFw9FX+YChTIABV81eSSQfsgRccGAAd19CvCsHrkOZ
-         vDNIiG38AnZB5IfsK0DKypfERT9T1aFaoSQZ7F/6O6XKqRfFqiFcCxMuXhXP9IU8t5M7
-         X5jcz6cDj9iffh3j4Pep4S/Hz3RcqDPqEAhjPhT/1b10421kZS3VLZfYbOubg+x46mLy
-         OQB7WGFQr+3R5+gBpVPm3dvwU64zbrB6Fn8u8s6ZDzOCGnWx4t5RI7lNBRmK96BsCLqL
-         plJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXREObHfIcft8Izm8+I2R4K7gBaPy/5p1zj1lm2xKdiPym1SDj+P9ph0bfpXtOoGVwWE23J0YrhFZz1BxbCqKWQg81bsPjPKLPtl1yY
-X-Gm-Message-State: AOJu0Yylwt0wMFalmcYB0iw2I1eIyx+WIga5x4igKIjbTkPl1TFXGFDy
-	sttg4GPXVUlyLo9Vs8j4z9fsnv1nolCEyot3lf/+46xfTGxwUJR/hGBde6HrnkAmeMmQrd6yQ1U
-	+ghrFH7LsN37Fmsy34qDgmdn0FpF5ujCEa9ng
-X-Google-Smtp-Source: AGHT+IG0f9S4ycgs6mnMWIYUkxy6HkdXLaCSm8YGZNVaE99RGDxlclwkVJR5scPSkfl9vXt65rgn3OiQEijC1VLK9TY=
-X-Received: by 2002:a17:906:4945:b0:a58:e3d5:87bd with SMTP id
- f5-20020a170906494500b00a58e3d587bdmr653470ejt.26.1714180768557; Fri, 26 Apr
- 2024 18:19:28 -0700 (PDT)
+        bh=QPOrYGhIxzwlhZ4E7M894ekrxNFr3zBjHzoW3zvscoY=;
+        b=PM1QqC5t1EiWYixZinTOTyxd37tPoJH7Ihl9zR4yOklboCrEAxQTZ8yq3igftP5zGF
+         m1M+lp6y+k7zk9+CNMl4EvulJheE2GLXxmqwrIMY6+DGfOg+FzTtsjtooJoPK4DFnEaX
+         BWe/qWYCIwvQLX7HOuFcDgGRZxGE9gjFYH5EVc1YM5xlmR0uic3AXHS9FhcGcsuQwxRU
+         hTTGXRe1/O74jyBy+RATsNDGlKcb2qkQ9wj7UzGifAR4px30+CE0iT7Sp+09eORIwRX3
+         ovVwBeKga7eHuVOYY9RGiIpaT4goJxD6+VDGNcrgoylxm7m7LWswh0v95WdTOW2j+0iI
+         v5YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVK02Bmi0Ai4nrYzP+gXzpxpp5DLw0/OOsSi05mBNjJVN0uAvMgeZsPHIgGOQeU1+K/C4KTzCwTcT7ytwJVFXQjcLVBYVhNRHG9etpL
+X-Gm-Message-State: AOJu0Yx658i9lXPhjv5RgXvMWaMDYzJ0cH6ndY+fTx1yDGrIZk3wy9kB
+	aCF2mdDIpcCH2FAX4SZ8hCi3RKLBgwBnOJ2ffPHrieOmYWZ5H7jKIODKJgvEwsSItzt8ID9B1BG
+	n+JfAGOA8VSVz813koVJLXUOqmoZXFVFE6r9K
+X-Google-Smtp-Source: AGHT+IHMHh3vDt9Vf++CgWt0Tj2F+IjHbZYoX2LXqXK7v5vHl6VOAm9u1APSfc5GnEQiuUn2FQVDtaZWsgiqfa6p218=
+X-Received: by 2002:a17:906:ff52:b0:a58:8864:b3e9 with SMTP id
+ zo18-20020a170906ff5200b00a588864b3e9mr2896185ejb.30.1714181066484; Fri, 26
+ Apr 2024 18:24:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
- <20240427003733.3898961-4-shakeel.butt@linux.dev> <CAJD7tkY2EwtOHh3w=e0+OC3gOPb9xCC7C36BhM0RHYPv184U+Q@mail.gmail.com>
- <uewheydidpkiqywtc4m6dcmvlfj7raocpngtbqocksxvf4nyz4@srxnazpqxvzy>
-In-Reply-To: <uewheydidpkiqywtc4m6dcmvlfj7raocpngtbqocksxvf4nyz4@srxnazpqxvzy>
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev> <20240427003733.3898961-3-shakeel.butt@linux.dev>
+In-Reply-To: <20240427003733.3898961-3-shakeel.butt@linux.dev>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 26 Apr 2024 18:18:50 -0700
-Message-ID: <CAJD7tkbj1hdka1wJiRZA+nOXFb3YW3adN=CENp2F+FACm7N+Tg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] memcg: reduce memory for the lruvec and memcg stats
+Date: Fri, 26 Apr 2024 18:23:50 -0700
+Message-ID: <CAJD7tkYULhoexWe-wCbOJ9uH7ES5bksCNp7G2-YGV6c03-0_JQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] memcg: dynamically allocate lruvec_stats
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -85,29 +83,16 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.o
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 6:16=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+On Fri, Apr 26, 2024 at 5:37=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
 v> wrote:
 >
-> On Fri, Apr 26, 2024 at 05:51:23PM -0700, Yosry Ahmed wrote:
-> > On Fri, Apr 26, 2024 at 5:37=E2=80=AFPM Shakeel Butt <shakeel.butt@linu=
-x.dev> wrote:
-> > >
-> > > At the moment, the amount of memory allocated for stats related struc=
-ts
-> > > in the mem_cgroup corresponds to the size of enum node_stat_item.
-> > > However not all fields in enum node_stat_item has corresponding memcg
-> > > stats. So, let's use indirection mechanism similar to the one used fo=
-r
-> > > memcg vmstats management.
-> >
-> > Just curious, does the indirection table cause any noticeable
-> > performance impact? My guess is no, but the update paths are usually
-> > very performance sensitive.
-> >
-> > I guess lkp will shout at us if there are any noticeable regressions.
+> To decouple the dependency of lruvec_stats on NR_VM_NODE_STAT_ITEMS, we
+> need to dynamically allocate lruvec_stats in the mem_cgroup_per_node
+> structure. Also move the definition of lruvec_stats_percpu and
+> lruvec_stats and related functions to the memcontrol.c to facilitate
+> later patches. No functional changes in the patch.
 >
-> Yeah and that is the reason I made the indirection table smaller (i.e.
-> int8_t) to keep more entries in a single cacheline.
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Thanks for pointing this out, probably worth including in the commit log :)
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
