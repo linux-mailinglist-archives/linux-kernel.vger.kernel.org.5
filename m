@@ -1,134 +1,260 @@
-Return-Path: <linux-kernel+bounces-161041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813B28B4637
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:40:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FFC38B463A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:47:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 375FC1F264FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:40:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45655281B49
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87C64EB36;
-	Sat, 27 Apr 2024 11:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A804D58E;
+	Sat, 27 Apr 2024 11:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="dXILapqo"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kLyEM9zr"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA834EB30;
-	Sat, 27 Apr 2024 11:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5A84AECA
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 11:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714218037; cv=none; b=jBlARM9TIb3H3euhdE1I+5WFpvunSAHtIrki18IbtCxwFVwsImnbO4UBLSGtjAVBxlOsWh7xbLHPkSq9qReiqpMBYW9a3PIX/ryw9VNGr6yjEpHPW+U+NaabWGR6RB5vCG5D9hBTHb/BBkjyoLEYDfJ2Ih2q++W73tJeE0PGWqg=
+	t=1714218469; cv=none; b=gy9FkIdXconNFy5r0D2yh3u9/P4lbpSD5sXWW3IfZslKymHhaBMMEZQ/ZaeXbVztLEyOtOGdrHfpYAfTjshdK6xDqzbxZGVqQEb0/Rg/OYrzWuwQC4OjoJ1ZXgP4QcfJqT7kC5cPHo3RYL1vZnaRAjcYa1CDXEXhGdGuKtL5S+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714218037; c=relaxed/simple;
-	bh=qHnjax+wVI8Hd0+8rGo+MaTwitn/56tGJ2azAOki7Mg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sa8M7CP/zo8gumlgngm9oMU/t6NL9zUOWw5Ry9wtIUpallUqDtPVJHoyfEwOQo2kan3plSh/8zVCeu+5oW7ve+P1diA2VFGNXi5t2bFJYCPtVfvOQvqwCZWiS9z60VfRzkj+SNVIgfv+Ya9aMKEpiEXMhRcXvSIzmwsfbkPaRnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=dXILapqo; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 531CAFF808;
-	Sat, 27 Apr 2024 11:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1714218032;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Th/jadybDrg9puHNEAFgBTKzp4XwtZa5abxeCTq37w=;
-	b=dXILapqokkWTzyMm9VzvUN0Z6dDfxO9bU7rAgTMNYEXK7vDiqfCJOABQZ4wsL8UcT7QWRN
-	jHStMUmtR4NGqxAIVmKyYQCTm7kYSJyyFbBGgmO8xQ6a8llHGyGM0/M7dIWsZx3SmJ+dVM
-	jfwSs6oJIXKl9GDK3XXR9ZLcYyjhZWQJL4gRAASonKr8RLzzIup0GeZ769avxKj/8A+BN6
-	plqCU1JU/CgzUCLIzCPLAbyN3s1mM9zFbyRqpY8UNsytedIj1B/uivC67tjUDfM06txK7s
-	27Zqd4MZnhMSpciumma0VibwqY9aZ9/ZDzUu3w4C8djBGmBVdLoGKTU0/q8pwA==
-Message-ID: <f7af9006-492c-473a-bc77-054d85c6284a@arinc9.com>
-Date: Sat, 27 Apr 2024 14:40:01 +0300
+	s=arc-20240116; t=1714218469; c=relaxed/simple;
+	bh=m64OPA49saGqYh5NGoDkpU02HfGnplA/FI6YB5a3TLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J8FmMg/xp/arVKNbd6LXU8dYBcI6N5ODs5OEDJZdqgGxwGY6X70ppWscolspkgyUbMK+MKcxwCWNF584RbMEQRAktnmkxgIphP/028OtJz7x0AlqMmtOL4zuc9Lj/IkzT8hTsA/X0x2kHiuAKh74I6qLqKDCjo8tTVJHvode8mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kLyEM9zr; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed627829e6so3608939b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 04:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714218467; x=1714823267; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HcfbaR8kZq8OLnUAT2pXDqoM8fNnWHLJf3IpXP9uecY=;
+        b=kLyEM9zrTI5eK+RrsFYCyZNfXnKslK8ea/a25GIFfydplVvzKyR0Md5/lP5ykk5oSN
+         Jla/CYOtU4BRZGno2UpHQDiNlYhZlV6BywABDhxhycRQN1ho/RwspwP662vtNSeBLfN7
+         MtOdtSd9Kwmv0bn+MkrK4N6TAVoxN+JJaD72cOW532e/nzTSz8PBGN+bYJRnzYKuigq3
+         KbMAGZyKFeLq5EFtDWMpO97KFib46La12GRkhe1eOoZ0oywWmauBCz77xD/WwsqCLtMt
+         3fRrX7QsZ8z5R4AsVq/V3VUMTKZEB5WlUgLkw2JVc130GynaS7xDR8W/YgX1wtHEo/rj
+         HeVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714218467; x=1714823267;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HcfbaR8kZq8OLnUAT2pXDqoM8fNnWHLJf3IpXP9uecY=;
+        b=FBJcd1ApDfsXXZbDrik2QkAYqpgEN0l7GY6xdtlynU6TyYilPePYm6UMbbRWuy+Qcb
+         MHe/wHAOEAxMU910pPsG+ohc1+HGc3jiiZzaXWvdfW396lVFqUbNVZT0prqv0nmijyvB
+         QL7LICP4CErm8QWp6/FSDuEnHJQvcWW6aWJSUEB7qOfnXbtGSeb5uwiYNOdkW+Nyxntt
+         qSsF4wXvqMB5TujX0SeOjFasFI+WiqD0k20gZgj6PPNLEzK8tdDXDcClQXmJEue6GpE1
+         eoRKKTkxtMJdfyzx3pbyI1n18sjJJXFQxcdzIDNxi+adR6sVvzsB0EpU7cEnibOHTCRZ
+         uewg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3jj0X3Rr0vLRXCNc3NI+q7EU/RDaQewll4cI5PhlXAjRtULH5vQcyPzNpHvrpYl08M/uM4udeQIC9yUI3d2B/UnPuvVcbvj87mFJ0
+X-Gm-Message-State: AOJu0YzwpgOxUBHoCM86X0fpvJsD6xygsOmjSCMVZOLgKN7OqtWbJuuO
+	8k43ib329aNbRMsPEscaFku/0v6ftd272QFfZi+rMpZ050g7fUfR2DudU+mMXg==
+X-Google-Smtp-Source: AGHT+IGeS2NJ9XxwhqftWfQ5PmQrFQpYK3kdhK248fghwiiRxIGhENovfD8acLiKv+RBllo0edUJtw==
+X-Received: by 2002:a17:90a:5d0e:b0:2af:f382:158b with SMTP id s14-20020a17090a5d0e00b002aff382158bmr4524138pji.49.1714218466853;
+        Sat, 27 Apr 2024 04:47:46 -0700 (PDT)
+Received: from thinkpad ([117.213.97.210])
+        by smtp.gmail.com with ESMTPSA id l9-20020a17090a070900b002a528a1f907sm19257945pjl.56.2024.04.27.04.47.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 04:47:46 -0700 (PDT)
+Date: Sat, 27 Apr 2024 17:17:36 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] PCI: imx6: Add i.MX8Q PCIe support
+Message-ID: <20240427114736.GO1981@thinkpad>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-11-803414bdb430@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 07/15] net: dsa: mt7530: move MT753X_MTRAP
- operations for MT7530
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Russell King <linux@armlinux.org.uk>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240422-for-netnext-mt7530-improvements-4-v2-0-a75157ba76ad@arinc9.com>
- <20240422-for-netnext-mt7530-improvements-4-v2-7-a75157ba76ad@arinc9.com>
- <Zixh0qsQat3ypqFp@makrotopia.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <Zixh0qsQat3ypqFp@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+In-Reply-To: <20240402-pci2_upstream-v3-11-803414bdb430@nxp.com>
 
-On 27.04.2024 05:24, Daniel Golle wrote:
-> Hi Arınç,
+On Tue, Apr 02, 2024 at 10:33:47AM -0400, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
 > 
-> On Mon, Apr 22, 2024 at 10:15:14AM +0300, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> On MT7530, the media-independent interfaces of port 5 and 6 are controlled
->> by the MT7530_P5_DIS and MT7530_P6_DIS bits of the hardware trap. Deal with
->> these bits only when the relevant port is being enabled or disabled. This
->> ensures that these ports will be disabled when they are not in use.
->>
->> Do not set MT7530_CHG_TRAP on mt7530_setup_port5() as that's already being
->> done on mt7530_setup().
+> Add i.MX8Q (i.MX8QM, i.MX8QXP and i.MX8DXL) PCIe support.
 > 
-> Multiple users reported ([1], [2]) that after I've imported the series
-> to OpenWrt they noticed that WAN connection on MT7621 boards using
-> PHY-muxing to hook up either port 0 or port 4 to GMAC1 no longer works.
-> 
-> The link still seems to come up, but no data flows. I went ahead and
-> confirmed the bug, then started bisecting the patches of this series,
-> and ended up identifying this very patch being the culprit.
-> 
-> I can't exclude that what ever the issue may be is caused by other
-> downstream patches we have, but can confirm that removing this patch of
-> your series [3] in OpenWrt fixes the issue. Please take a look and as
-> the cover letter states you have tested this on some MT7621 board,
-> please make sure traffic actually flows on the PHY-muxed port on that
-> board after this patch is applied, and if not, please figure out why and
-> repost a fixed version of this patch.
-> 
-> 
-> Cheers
-> 
-> 
-> Daniel
-> 
-> [1]: https://github.com/openwrt/openwrt/issues/15273
-> [2]: https://github.com/openwrt/openwrt/issues/15279
-> [3]: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=a8dde7e5bd6d289db6485cf57d3512ea62eaa827
 
-Thanks for reporting this Daniel. I am not happy that I've caused all this
-fuss. My testing as described on the cover letter did not include the
-hardware design with PHY muxing. Lesson learned; next time, I'll make sure
-to test the specific hardware design when I work on the part of the code
-that would affect that hardware design.
+Add some info like IP version, PCIe Gen, how different the code support
+comparted to previous SoCs etc...
 
-That said, I've submitted a patch that fixes this issue [1]. I have tested
-the hardware design with PHY muxing with this fix applied and I don't
-experience this issue anymore.
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-imx.c | 54 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-imx.c b/drivers/pci/controller/dwc/pcie-imx.c
+> index 378808262d16b..af7c79e869e70 100644
+> --- a/drivers/pci/controller/dwc/pcie-imx.c
+> +++ b/drivers/pci/controller/dwc/pcie-imx.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/reset.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/phy/pcie.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/pm_runtime.h>
+>  
+> @@ -81,6 +82,7 @@ enum imx_pcie_variants {
+>  	IMX8MQ,
+>  	IMX8MM,
+>  	IMX8MP,
+> +	IMX8Q,
+>  	IMX95,
+>  	IMX8MQ_EP,
+>  	IMX8MM_EP,
+> @@ -96,6 +98,7 @@ enum imx_pcie_variants {
+>  #define IMX_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
+>  #define IMX_PCIE_FLAG_HAS_SERDES		BIT(6)
+>  #define IMX_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
+> +#define IMX_PCIE_FLAG_CPU_ADDR_FIXUP		BIT(8)
+>  
+>  #define imx_check_flag(pci, val)     (pci->drvdata->flags & val)
+>  
+> @@ -132,6 +135,7 @@ struct imx_pcie {
+>  	struct regmap		*iomuxc_gpr;
+>  	u16			msi_ctrl;
+>  	u32			controller_id;
+> +	u32			local_addr;
+>  	struct reset_control	*pciephy_reset;
+>  	struct reset_control	*apps_reset;
+>  	struct reset_control	*turnoff_reset;
+> @@ -402,6 +406,10 @@ static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
+>  	if (!drvdata->mode_mask[id])
+>  		id = 0;
+>  
+> +	/* If mode_mask is 0, means use phy driver to set mode */
+> +	if (!drvdata->mode_mask[id])
+> +		return;
 
-[1] https://lore.kernel.org/netdev/20240427-for-netnext-mt7530-do-not-disable-port5-when-phy-muxing-v1-1-793cdf9d7707@arinc9.com/
+There is already a check above for 0 mode_mask. Please consolidate.
 
-Arınç
+> +
+>  	mask = drvdata->mode_mask[id];
+>  	val = mode << (ffs(mask) - 1);
+>  
+> @@ -957,6 +965,7 @@ static void imx_pcie_ltssm_enable(struct device *dev)
+>  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
+>  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+>  
+> +	phy_set_speed(imx_pcie->phy, PCI_EXP_LNKCAP_SLS_2_5GB);
+>  	if (drvdata->ltssm_mask)
+>  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off, drvdata->ltssm_mask,
+>  				   drvdata->ltssm_mask);
+> @@ -969,6 +978,7 @@ static void imx_pcie_ltssm_disable(struct device *dev)
+>  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
+>  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+>  
+> +	phy_set_speed(imx_pcie->phy, 0);
+>  	if (drvdata->ltssm_mask)
+>  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off,
+>  				   drvdata->ltssm_mask, 0);
+> @@ -1104,6 +1114,12 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+>  			goto err_clk_disable;
+>  		}
+>  
+> +		ret = phy_set_mode_ext(imx_pcie->phy, PHY_MODE_PCIE, PHY_MODE_PCIE_RC);
+> +		if (ret) {
+> +			dev_err(dev, "unable to set pcie PHY mode\n");
+> +			goto err_phy_off;
+> +		}
+
+This is not i.MX8Q specific. Please add it in a separate patch.
+
+> +
+>  		ret = phy_power_on(imx_pcie->phy);
+>  		if (ret) {
+>  			dev_err(dev, "waiting for PHY ready timeout!\n");
+> @@ -1154,6 +1170,28 @@ static void imx_pcie_host_exit(struct dw_pcie_rp *pp)
+>  		regulator_disable(imx_pcie->vpcie);
+>  }
+>  
+> +static u64 imx_pcie_cpu_addr_fixup(struct dw_pcie *pcie, u64 cpu_addr)
+> +{
+> +	struct imx_pcie *imx_pcie = to_imx_pcie(pcie);
+> +	struct dw_pcie_ep *ep = &pcie->ep;
+> +	struct dw_pcie_rp *pp = &pcie->pp;
+> +	struct resource_entry *entry;
+> +	unsigned int offset;
+> +
+> +	if (!(imx_pcie->drvdata->flags & IMX_PCIE_FLAG_CPU_ADDR_FIXUP))
+
+This flag should be documented in the commit message.
+
+> +		return cpu_addr;
+> +
+> +	if (imx_pcie->drvdata->mode == DW_PCIE_EP_TYPE) {
+> +		offset = ep->phys_base;
+> +	} else {
+> +		entry = resource_list_first_type(&pp->bridge->windows,
+> +						 IORESOURCE_MEM);
+
+Check for NULL entry.
+
+> +		offset = entry->res->start;
+> +	}
+> +
+> +	return (cpu_addr + imx_pcie->local_addr - offset);
+> +}
+> +
+>  static const struct dw_pcie_host_ops imx_pcie_host_ops = {
+>  	.init = imx_pcie_host_init,
+>  	.deinit = imx_pcie_host_exit,
+> @@ -1162,6 +1200,7 @@ static const struct dw_pcie_host_ops imx_pcie_host_ops = {
+>  static const struct dw_pcie_ops dw_pcie_ops = {
+>  	.start_link = imx_pcie_start_link,
+>  	.stop_link = imx_pcie_stop_link,
+> +	.cpu_addr_fixup = imx_pcie_cpu_addr_fixup,
+>  };
+>  
+>  static void imx_pcie_ep_init(struct dw_pcie_ep *ep)
+> @@ -1481,6 +1520,12 @@ static int imx_pcie_probe(struct platform_device *pdev)
+>  					     "Failed to get PCIEPHY reset control\n");
+>  	}
+>  
+> +	if (imx_check_flag(imx_pcie, IMX_PCIE_FLAG_CPU_ADDR_FIXUP)) {
+> +		ret = of_property_read_u32(node, "fsl,local-address", &imx_pcie->local_addr);
+> +		if (ret)
+> +			return dev_err_probe(dev, ret, "Failed to get local-address");
+
+Is it OK to continue?
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
