@@ -1,146 +1,138 @@
-Return-Path: <linux-kernel+bounces-161011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152C38B45C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:12:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6AF8B45C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:13:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AFE1B213FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:12:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6641C20D6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC3C495CC;
-	Sat, 27 Apr 2024 11:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95DB482D8;
+	Sat, 27 Apr 2024 11:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LqqAeS9U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NjVQcemr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBC244C8D;
-	Sat, 27 Apr 2024 11:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D3F48CC6;
+	Sat, 27 Apr 2024 11:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714216358; cv=none; b=bQ5v2VFvxy8oOaFT6YsQamlYXcrud0ECPUNDGtK/A+PtMoMrFUlviIpj1w659lXLfMaYD277767RG30160uKUWs/paWCK6opItN6r6evrS84ZT9UbsDgNd8bO8IxjJFQufCtqNGtY4Jdu4YqhlKbfsPt/hlil7mR9u1mPFS2Qbo=
+	t=1714216400; cv=none; b=Pjyjv2w4NQ8tyt+XeRFYy+tI4JdVmF/UIWHAM6oPcSEGg3JpjZvGYd65LVI4BwaRkwj3r7ifFYAcklt68KwpS8yAjvpXDGrqMEWDaHIOk+yAEZVydFEwYPNBv4jKwDSxhMSzjvWmlzxAVPJFNeb+aDQR6GXwzoHD+DhX8hYeMvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714216358; c=relaxed/simple;
-	bh=tr79Artks8dAf9QK673sxTgZ9h7swDRJ+v3dL9mwHDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jOnJ/78hRI0vazPtiGMiuV7WEDsYSP8Jx+sD5wvWIG2yErrtLhNYEmI83tYgvTxQcXiGrMTDNpOMnjOj2tqr5TB/HK1uXYDzrUo8i8ov3zok/lECGmiobJLcR6tyPO8/DwVDk9PuxTSr+t+d/Quu8a8W4Exrh+GvE9JDtvNQeP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LqqAeS9U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 630C2C113CE;
-	Sat, 27 Apr 2024 11:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714216357;
-	bh=tr79Artks8dAf9QK673sxTgZ9h7swDRJ+v3dL9mwHDE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LqqAeS9UqZArFJv9wFxwNbNEYqtnYI+JWc9J4k6bQp633ND4Q80LzxyWTuvLGtXpZ
-	 h9GsDQ6bAmDlL+Edfn8198q1drntIrka1pMykjFmjBRMHzorwJ9smAZMs/FqurMhS4
-	 Qtj9YT+0GBolm8u4MlwLdCGnmL1yqjxDmFwAGTfA=
-Date: Sat, 27 Apr 2024 13:12:33 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Harold Johnson <harold.johnson@broadcom.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
-	Sreenivas Bagalkote <sreenivas.bagalkote@broadcom.com>,
-	Brett Henning <brett.henning@broadcom.com>,
-	Sumanesh Samanta <sumanesh.samanta@broadcom.com>,
-	linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>, linuxarm@huawei.com,
-	linux-api@vger.kernel.org,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Natu, Mahesh" <mahesh.natu@intel.com>
-Subject: Re: RFC: Restricting userspace interfaces for CXL fabric management
-Message-ID: <2024042708-outscore-dreadful-2c21@gregkh>
-References: <20240410124517.000075f2@Huawei.com>
- <66284d5e8ac01_690a29431@dwillia2-xfh.jf.intel.com.notmuch>
- <20240425123344.000001a9@Huawei.com>
- <662a826dbeeff_b6e02943c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240425182605.00005f22@Huawei.com>
- <662aae2fe4887_a96f294bf@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240426094550.00002e37@Huawei.com>
- <662bd36caae55_a96f2943f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240426175341.00002e67@Huawei.com>
- <6351024b5d6206c4e9a8cd98d1a09d43@mail.gmail.com>
+	s=arc-20240116; t=1714216400; c=relaxed/simple;
+	bh=ymBpIlkzIlQEK4Ww4HzCrur/CoKjo8sLVsaWkEO0DNE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IP4YQk9YZGnq+Dg+56426E8Xi0KPzswbw4dlFD8vt248BiSHrxEr2utrsgpZ3rrrjdboc7qTtQyrCtVNQ3xYxV0sL2F4GSrS393uYUt245E2phf77GQS5BUYDujttu8b9cfWtcgK9IkZux2fKCoUeW7HnQ244eQS0+wAHBMQItk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NjVQcemr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA729C113CE;
+	Sat, 27 Apr 2024 11:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714216399;
+	bh=ymBpIlkzIlQEK4Ww4HzCrur/CoKjo8sLVsaWkEO0DNE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=NjVQcemr4PkvmgMpWd0w/AJ9vsJYLXcXpfJ9CON87eTdDUuYvriG973QgQpGwNFP/
+	 icRUvgisPnGTQv7V72lDY2Fmou+FV7lwUsMyAJevsviJHY3NNvI9hvCdfdkTl/kFzo
+	 xm2j4dcbEW7pFI2aJjY02Ts2GbRIuAGwMDxSv18lQ7BpGaikOS4Gls6eAm0c8tyw29
+	 SV930nthwBa65OmSakXi8x1gQoOm7TnqHunooEQg21rkjf7uJJlyfdooLj6RUmldtR
+	 k40aQTSmPYb2J1FveyVGOmoGa7QZxqf6VCQYNu0qo1skKVnmKV6ab2fwwDDuDUEQ88
+	 +uwgncXNU2Mzw==
+Date: Sat, 27 Apr 2024 13:13:16 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.9-rc6
+Message-ID: <ZizdzEvh4juwfQCb@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zCb115SNB6s3iyBd"
+Content-Disposition: inline
+
+
+--zCb115SNB6s3iyBd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6351024b5d6206c4e9a8cd98d1a09d43@mail.gmail.com>
 
-On Fri, Apr 26, 2024 at 02:25:29PM -0500, Harold Johnson wrote:
-> A few examples:
-> a) Temperature monitoring of a component or internal chip die
-> temperatures.  Could CXL define a standard OpCode to gather temperatures,
-> yes it could; but is this really part of CXL?  Then how many temperature
-> elements and what does each element mean?  This enters into the
-> implementation and therefore is vendor specific.  Unless the CXL spec
-> starts to define the implementation, something along the lines of "thou
-> shall have an average die temperature, rather than specific temperatures
-> across a die", etc.
-> 
-> b) Error counters, metrics, internal counters, etc.  Could CXL define a
-> set of common error counters, absolutely.  PCIe has done some of this.
-> However, a specific implementation may have counters and error reporting
-> that are meaningful only to a specific design and a specific
-> implementation rather than a "least common denominator" approach of a
-> standard body.
-> 
-> c) Performance counters, metric, indicators, etc.  Performance can be very
-> implementation specific and tweaking performance is likely to be
-> implementation specific.  Yes, generic and a least common denominator
-> elements could be created, but are likely to limiting in realizing the
-> maximum performance of an implementation.
-> 
-> d) Logs, errors and debug information.  In addition to spec defined
-> logging of CXL topology errors, specific designs will have logs, crash
-> dumps, debug data that is very specific to a implementation.  There are
-> likely to be cases where a product that conforms to a specification like
-> CXL, may have features that don't directly have anything to do with CXL,
-> but where a standards based management interface can be used to configure,
-> manage, and collect data for a non-CXL feature.
+The following changes since commit ed30a4a51bb196781c8058073ea720133a65596f:
 
-All of the above should be able to be handled by vendor-specific KERNEL
-drivers that feed the needed information to the proper user/kernel apis
-that the kernel already provides.
+  Linux 6.9-rc5 (2024-04-21 12:35:54 -0700)
 
-So while innovating at the hardware level is fine, follow the ways that
-everyone has done this for other specification types (USB, PCI, etc.)
-and just allow vendor drivers to provide the information.  Don't do this
-in crazy userspace drivers which will circumvent the whole reason we
-have standard kernel/user apis in the first place for these types of
-things.
+are available in the Git repository at:
 
-> e) Innovation.  I believe that innovation should be encouraged.  There may
-> be designs that support CXL, but that also incorporate unique and
-> innovative features or functions that might service a niche market.  The
-> AI space is ripe for innovation and perhaps specialized features that may
-> not make sense for the overall CXL specification.
-> 
-> I think that in most cases Vendor specific opcodes are not used to
-> circumvent the standards, but are used when the standards group has no
-> interested in driving into the standard certain features that are clearly
-> either implementation specific or are vendor specific additions that have
-> a specific appeal to a select class of customer, but yet are not relevant
-> to a specific standard.
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.9-rc6
 
-Then fight this out in the specification groups, which are highly
-political, and do not push that into the kernel space please.  Again,
-this is nothing new, we have all done this for specs for decades now,
-allow vendor additions to the spec and handle that in the kernel and all
-should be ok, right?
+for you to fetch changes up to 91811a31b68d3765b3065f4bb6d7d6d84a7cfc9f:
 
-Or am I missing something obvious here where we would NOT want to do
-what all other specs have done?
+  i2c: smbus: fix NULL function pointer dereference (2024-04-27 12:57:57 +0200)
 
-thanks,
+----------------------------------------------------------------
+Fix a race condition in the at24 eeprom handler, a NULL pointer
+exception in the I2C core for controllers only using target modes,
+drop a MAINTAINERS entry, and fix an incorrect DT binding for at24.
 
-greg k-h
+----------------------------------------------------------------
+Daniel Okazaki (1):
+      eeprom: at24: fix memory corruption race condition
+
+Guenter Roeck (1):
+      MAINTAINERS: Drop entry for PCA9541 bus master selector
+
+Rob Herring (1):
+      dt-bindings: eeprom: at24: Fix ST M24C64-D compatible schema
+
+Wolfram Sang (2):
+      Merge tag 'at24-fixes-for-v6.9-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux into i2c/for-current
+      i2c: smbus: fix NULL function pointer dereference
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Baruch Siach (1):
+      (Test) i2c: smbus: fix NULL function pointer dereference
+
+Marek Vasut (1):
+      (Rev.) dt-bindings: eeprom: at24: Fix ST M24C64-D compatible schema
+
+ Documentation/devicetree/bindings/eeprom/at24.yaml |  5 +----
+ MAINTAINERS                                        |  6 ------
+ drivers/i2c/i2c-core-base.c                        | 12 ++++++------
+ drivers/misc/eeprom/at24.c                         | 18 +++++++++---------
+ 4 files changed, 16 insertions(+), 25 deletions(-)
+
+--zCb115SNB6s3iyBd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYs3cwACgkQFA3kzBSg
+KbY8KA//dRuXImb+3TnElPBfzdHftpg9QNjNOGahE8RA4QakR62eAHNNO7VMq8ND
+1aXhjpJvVrUlQR9EkdVugOQ3is1vTWxQThsQ7Sa8Wfpx9Cz13fwDkW5MeL55oECa
+/D0zq1X6yhuwocde/B0E9PunLxUzCqck6OmTBKneGgGf4HxUr3A7GLKLjrvB7iwh
+QsL0VOmeT2V3O6T3lyAuxOp3RJT82okqRESRc5XF54Q6lnDvQWDNMS0GzPU6Qz8Q
+6sTU1jjPGhmjgccvNI7W6xIqWMuP5dRqY4s3OKTftj0OhxGQxDsAA0DhR+fHOcA3
+kknypXAxO7MZBbywPmuk8dy8yJdvcqrQaTQkzpscYuAcnxmEmY53KRmvKPdhI4B+
+t8EHv8HADWGsq3Kt1y1eNsKV8Yt0CUip2mqezuaL+0rWofQ6kc2Qsxj66+Dn5ecy
+lm1VNKi4eP4VjriNfUxHkQhcN2ZKwB/zMU1XKcKbMysKcW1PXOVac3fBejKXEcf/
+RBSrV5/vdrMxwi/aIkNGO34f8nb0nv39gOY36hiV9uwI+EjV9v+9dqej2Xe4Vtu1
+av26kSQYeGp/SbeK8OXcxPlONLaSqaSrpJh/lLQsfzSiXhk2mWkvG+PbAxn/hEJh
+ZaqCtyOLh1lHMy4und4K+fc2/CZ6gBeEE4X9kUZA0HrUF/gcF3k=
+=kj5l
+-----END PGP SIGNATURE-----
+
+--zCb115SNB6s3iyBd--
 
