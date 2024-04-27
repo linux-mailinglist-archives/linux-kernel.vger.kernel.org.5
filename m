@@ -1,155 +1,98 @@
-Return-Path: <linux-kernel+bounces-161001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A70248B459D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:47:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D94A8B459F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A69621C20F7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40F841F21B88
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B4F4316B;
-	Sat, 27 Apr 2024 10:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76E34594A;
+	Sat, 27 Apr 2024 10:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="rNeuQu1P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b="BMOgbUMh"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905C5482C3
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 10:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CF43FE47;
+	Sat, 27 Apr 2024 10:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714214837; cv=none; b=SUQsiCRjVn9vBvv9i59t1H4ChNQPYZsMCIpoGrbTKKJq1DwHq14kiuVHqNJqlcJGuojTRkppc6p1hUVoFPwitTbDnhWZ1b9am4x8ddNKUCHbu7NOIY7/9Clz/cxSoKzylLYcG+EbV7kj0UYtSCWjyEeTmKu8opQXFpbxRk8cj9k=
+	t=1714215272; cv=none; b=TUVE5ziUXkXqzWgqsWfCUv8XC5PBCrSzOZ4xGyx6ZOkRy3dh2ZQKB09skVsV2YyvHMQSeSRCRpOsAnblMbkB/WO/X50T9NW/dnLihlfjnUuRXZkc9hQZod3LukAXwLYNvnkPeVG6F7WzRzCz+B+dC3Ha5qIgg6tubJUTC2j8sno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714214837; c=relaxed/simple;
-	bh=V/KsT2l1lLKaNucqtbUkHPoat4/H53QLyxsOCUw6n2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hbo1eirkI/xymmuCoD1toGjQl6DWQGqDG9b0iNwaAh5TzZEpQBN9ow3fOXejVhkoDG3dsAyPTfPeevBLyT/Il8mEsuKAF+RhTetzSL1aPartCDklqz3oeIToT1QXwsJx7gQIhv8xg8iFtbdG+6WBWQw3Pf7LXlIUW/zpjX6KlNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=rNeuQu1P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DB6FC113CE;
-	Sat, 27 Apr 2024 10:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714214837;
-	bh=V/KsT2l1lLKaNucqtbUkHPoat4/H53QLyxsOCUw6n2A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rNeuQu1PPnk7Z3rctJZ9paFPkHUt/8b4Y/QyMA1uFsGpFEj6A32E4wmPtYUF5cwNK
-	 gKlAwHWAzTFpj4Vjc7MWcRNsA3YQACT2bTfVXHoHc6YdAckvraj4r2h7s8NeA0Q3ir
-	 e74MkBaeCTDheAUGjt9NKJyqeoy/Mtbv/a4akiNs=
-Date: Sat, 27 Apr 2024 12:47:11 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH] sysfs: Allow bin_attributes to be added to groups
-Message-ID: <2024042736-radiance-unaired-c69c@gregkh>
-References: <e140f6bf8dc99c24cc387f7ac3c7908c8830587f.1714030457.git.lukas@wunner.de>
- <662be72549aaf_db82d294c7@dwillia2-xfh.jf.intel.com.notmuch>
- <Ziv5p3SMEIw3XZkK@wunner.de>
+	s=arc-20240116; t=1714215272; c=relaxed/simple;
+	bh=nIM0kF53eMsKebnB69nMRQDFX/NcTU//w1F0rF/SQRg=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=owUR1nRrIsXvJ4r3ceTWChMcYQ4qW554+XWFRvD1BVw7HMqhG+yznbJcxGnJ00oUbBDvfw7ZPIeszPz5PhAzQpKnSbnSCzCHJZlefitXPqJf612UwnnCkVvtGbxipLMH2zDS+h6bkDD6niCMAf53monVRG1b5anNVdamZN8iAmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b=BMOgbUMh; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1714215266; x=1714820066; i=aros@gmx.com;
+	bh=nIM0kF53eMsKebnB69nMRQDFX/NcTU//w1F0rF/SQRg=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=BMOgbUMhKKTlbilwnxSvpk31OIneoKREofnUEoFUEIQwsb4FxMUemulpbKq4diZf
+	 dXAYIbagtP5xbocuFtOCUPixkxSm6HqEAGqeK/uW7g00/a8Ey2a+Dhc+qlEmeM6ny
+	 bM2hfv/UPTTAOjFZwTyrnQLEoQKyuti/cu3RgT7y8Y0WsjhsT9Y4vSEqW665Xhipx
+	 D86dnH1x8sTPvx+KxjvXv16IU063O5+xr73iRmziyVl5SARUACuhkck6HaQxVN6hW
+	 NK14FuanYbuNsPR7HCrK9ppYMAFY+5ftNU7Lczj25ATfYGO+lqfECg2RRWfTThMMz
+	 HY5vnxkGFASDiK/aaA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.25.110.37] ([98.159.234.26]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mq2jC-1sVtyd2ozq-00niar; Sat, 27
+ Apr 2024 12:54:25 +0200
+Message-ID: <2330c23c-e99b-454a-b195-32c5b4332071@gmx.com>
+Date: Sat, 27 Apr 2024 10:54:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Ziv5p3SMEIw3XZkK@wunner.de>
+User-Agent: Mozilla Thunderbird
+To: gregkh@linuxfoundation.org
+Cc: intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <2024042328-footprint-enrage-2db3@gregkh>
+Subject: Re: [Intel-wired-lan] [BUG] e1000e, scheduling while atomic (stable)
+Content-Language: en-US
+From: "Artem S. Tashkinov" <aros@gmx.com>
+In-Reply-To: <2024042328-footprint-enrage-2db3@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:rYE8ntWQoWfPXtJcQSmSMLornpL74RVw50TEcun9H6wYBruDar9
+ 20//qEowj3Bmqe1jd6rweWraI7/DlwppyjZc/uF9m/L2CpEYJFvLO47a3Rgl3skbVU+/C/X
+ BXzONwUACKQ9jb/q+A8T0Lo5UpqS6a9fszZaIHn19jZcubsuAAszrxTdHwwBg4hbOcZf0Xm
+ ig1x1KWwjX/vwc+24dWkQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:c3PofOWbFJA=;MkBOarjUdOXWIKcMz+jr/AJv3Lf
+ zu/7HpVayyQ3UI6tsYjmtrSgyKno0fdV14P+Z39+8cEuvAxTIrncnYLbonRmpqYSZC0A2Pmte
+ mu73kfnYUOAArwi1mz+1zhaUJBoOhB8bIDdPuRHaTRQMlwCyAREjl/cUPTzYCNPRlWKXFkK6I
+ 1elhvfI7TebjoTQ1+l+7bdGlANnYIpkNMmennAIADhIQt9rRmLQlRIqWgaGm+6xhuIolFHJYY
+ xFJlyGi1lzXGYapcip/YCHmBwxeekRqszFjXfYLsryjedlMmaVsZvmNPihH3VJzbl1mFBP4ZP
+ hKDYF9kJddiYxIk2HA7l7WR0yYYG0JOLqOJWKf4WdB7TKdCIFKfn2Q1zHnNEp+/V7inbciGR5
+ mDbhPL6rB9IfZwPjm1D9wzl4J1ApKnsuYAgKdlrX99KR0ChoMIPBNB0mbYjcZLDZ0y/8Amu70
+ z9NnnBElNV55GRchX6sIix6g60RudkibhrtwXDK9Q49RkrPZ8jBu4AoOipTz/9QOW7JQWl3x2
+ 94Bva5kvpHMJ8ysF0Wlrm00sKU+lUrIBuhGr9NEQ33fsO8fYcVFXF6NjDmrwLyfOqnPCHQwCk
+ JshCHOrcL539LvJtTQe5TpEL08OGbqBg8vmayNnWriYPJ48C1tJs6ksQFLWTeqAsah6uTzz/6
+ +CjwrqViNEFpBeLPOSB90nxjS5CfrK6yiUEKY/KOdN4pbCZ8hqA65cjtwvpvmESWG3cC2AsBs
+ XDUvzgV0Qeer1JD0mEvqN2YX1PupAxqx5KMByM79XMZLO+Q0Bf/aNUutAHnx0rpxK9SdV5LNx
+ Owj/CdCpS/MG8cnAt0wg35fkXgMA7ONxUfLMKZhkp7CpY=
 
-On Fri, Apr 26, 2024 at 08:59:51PM +0200, Lukas Wunner wrote:
-> On Fri, Apr 26, 2024 at 10:40:53AM -0700, Dan Williams wrote:
-> > Lukas Wunner wrote:
-> > > Commit dfa87c824a9a ("sysfs: allow attributes to be added to groups")
-> > > introduced dynamic addition of sysfs attributes to groups.
-> > > 
-> > > Allow the same for bin_attributes, in support of a forthcoming commit
-> > > which adds various bin_attributes every time a PCI device is
-> > > authenticated.
-> > > 
-> > > Addition of bin_attributes to groups differs from regular attributes in
-> > > that different kernfs_ops are selected by sysfs_add_bin_file_mode_ns()
-> > > vis-à-vis sysfs_add_file_mode_ns().
-> > > 
-> > > So call either of those two functions from sysfs_add_file_to_group()
-> > > based on an additional boolean parameter and add two wrapper functions,
-> > > one for bin_attributes and another for regular attributes.
-> > > 
-> > > Removal of bin_attributes from groups does not require a differentiation
-> > > for bin_attributes and can use the same code path as regular attributes.
-> > > 
-> > > Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> > > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > > ---
-> > > Submitting this ahead of my PCI device authentication v2 patches.
-> > > Not sure if the patch is acceptable without an accompanying user,
-> > > but even if it's not, perhaps someone has early review feedback
-> > > or wants to provide an Acked-by?  Thank you!
-> > 
-> > On the one hand it makes sense from a symmetry perspective, on the other
-> > hand the expectation and the infrastructure for dynamic sysfs visibilty
-> > has increased since 2007.
-> > 
-> > That is why I would like to see the use case to understand why a
-> > dynamically added a bin_attribute is needed compared with a statically
-> > defined attribute with dynamic visibility.
-> 
-> I assume "would like to see" means "on the mailing list", which would
-> (or will) be as part of the PCI device authentication v2 patches.
-> 
-> But in case you're curious, the use case is the log of signatures
-> presented by the device.  Each signature is exposed as a bin_attribute
-> in a signatures/ directory below a PCI device's sysfs directory,
-> for verification by a remote attester (or user space in general).
-> 
-> Here's the code:
-> 
-> https://github.com/l1k/linux/commit/ca420b22af05
-> 
-> The signature's bin_attribute is accompanied by several other
-> bin_attributes containing ancillary data, such as nonces
-> (to allow user space to ascertain that a fresh nonce has been used).
-> 
-> The signatures/ directory is an empty attribute group to which the
-> signatures received from the device are dynamically added using
-> sysfs_add_bin_file_to_group() (introduced by the present patch).
-> 
-> All of that was done to address an objection raised by James Bottomley
-> at Plumbers that it is "not good enough" if the kernel keeps the
-> challenge-response received from the device to itself and doesn't
-> allow a remote attester to verify it.
-> 
-> Here is the recording, in his own words:
-> 
-> https://www.youtube.com/watch?v=ZqMIlZ5lPAw&t=2345s
-> 
-> A static attribute with dynamic visibility doesn't cut it in this case:
-> 
-> Each signature needs a unique filename and the number of signatures
-> that can be generated is essentially unlimited.  (Though older ones
-> are likely uninteresting and can be culled.)  If you want to expose,
-> say, up to 1000 signatures per device, you'd have to allocate an array
-> of 1000 signatures (for each device!), even though the actual number
-> of signatures received might be much lower.  It would be a waste of
-> memory.  It is much more economical to add signature attributes
-> dynamically on demand.
-> 
-> It has the additional benefit that it allows user space to dynamically
-> adjust the maximum number of signatures retained in the log.
-> That's more difficult to implement with static attributes, as you'd
-> have to reallocate the attributes array and adjust all the pointers
-> pointing to it.
+Hello,
 
-Thanks for the details, that makes sense.
+This fix is still not queued in 6.8 stable:
 
-And overall, the patch also looks good, so just include it in the patch
-series that uses it and I'll be glad to ack it then.
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-6.8
 
-thanks,
+Why?
 
-greg k-h
+Regards,
+Artem
 
