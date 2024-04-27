@@ -1,132 +1,127 @@
-Return-Path: <linux-kernel+bounces-160834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C4288B4364
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:56:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1398B4365
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:59:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218AA1C224CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:56:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EC53B213F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85782E403;
-	Sat, 27 Apr 2024 00:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75122D052;
+	Sat, 27 Apr 2024 00:58:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGwFRBVL"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nw7zDSBq"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADB725777;
-	Sat, 27 Apr 2024 00:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0A7320B
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 00:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714179409; cv=none; b=NXMNGUkE1iXMsDhC58E5p8QOoN4r6nXOgwH4ZcAFdkyrLy6Cj3CiPPwURW93kaS4ofBo/lqiQYtzWGb2IC6foG+avohKtDFHw0GFCDGlEksbDnHeJS5a+6wN4cCOgdW7JjqWbuPbVNSQXK1csrsMRDmvQDlyB4gtAOocyZ5qcnw=
+	t=1714179536; cv=none; b=iYV0oHJ/Ml15ztVUbtVezkLNFu08PZO8GH+UkBj80wp9nOAn89gtB4VtySwaLsM/pZEmo5EikLISG4GptbS0EuuzS+o5Tc+U3jMcMmGJz5xKJqZDbpUAYbmaQVYCV/wnjM1cclw25u/h4tkciLWGgja5GQssGCNbwX+ALkACisw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714179409; c=relaxed/simple;
-	bh=GnDwmsqjw2gFexBSuJVJeSDwlc8LJOSAPfHh9x1k0TE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h5T9YoSYTW5KumG15hMElGPIsygs1SbZaRD2JUFz8jJShKcmbgvg669oxytGiaSPIm3iCgRV0RHzOOtYaFgwqhDmXXsUd2vcNchZLKtlBExVv2xEQcDS7NMujvgYnGcnclYjSOXKJo1HAAyxuMemHZgcW8ccKpDmkWRf110eoWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGwFRBVL; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so8807105ad.1;
-        Fri, 26 Apr 2024 17:56:47 -0700 (PDT)
+	s=arc-20240116; t=1714179536; c=relaxed/simple;
+	bh=6ouwrM0c0aq5btYyMAv8dDhjILu6rbOiMes8jZbrJXA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K4qV3qFXdNLTvjAfeJkoGB6e/PPnw5j7bDzEoOCiOzNMFPhtHnE2uysNcDdAIn3Lw+iQSmPN2DdKwH7OJ7dpEqqNmKQ6LX1uhRe5W0ISID85B4yUQIObKqsQFUUbUzOjWJ287Rvm+jEBbxQW7l1Z/feVzWUWV8q6zU0pXOj/rOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nw7zDSBq; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-572669fd9f9so693374a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:58:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714179407; x=1714784207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
-        b=FGwFRBVLoklOcjab11V7OFvhhzuR/ot4IptOeXXN9zgW1+9EkpLR/x05PJ3LesPchZ
-         bCP+EKFrJ/T4ivnEBhgmyoYxXc7HagtueeCBwDvbp9m3MzCilIOmnRM+Raa5w/mQXlAk
-         9aF9MdK1aaHMEBFKN/4FGBrdZgmPhHrb2sG31G58PV/Zv5eIEXoQ2fhuQyrKc/4O1nU4
-         E0oZ+HK8VgisB6Xz8iAMLh+0rcU9ejzhlyLFcT/9nt1aI4uJppVpZhDR2akywCyfNUp7
-         Rh6rNjJE4CVdRBObtBrJ7gJF/7Zcj5LRPthU/lwTdyeMrHnVzDbOi1G/XjKFWRv7vgQo
-         WkmA==
+        d=google.com; s=20230601; t=1714179533; x=1714784333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HSat3VRqn3nH22+jIzgZ3SLdh3nYoy1+0NoyZK+oZTo=;
+        b=nw7zDSBqcFdE1zlhL9uTB0mmRSpnFy0/Y9aLEfuwzr2OD7mFsF50S7Rezw/6cTDWp1
+         vKTInRw/Vchgrq971x7wJBqY5c8yf/zowdRF1/pFErlf6wRE37XXjCSyah2+/WpIhqbG
+         UtxUdZa+S+XpgffbfgzExzKccJDg7R+yJH+gxgQJTLvQqQJkjnLaQuODZVgVQz6nkpBl
+         Qx1H/xy5gDSJAZo63D6TaR92/eZspuc5QcCB/xAsEvDQA30cGtYXVQFFmu/b/o82Q9ba
+         rGz+ouT0ekrPJdLV7aD1wHE+7c2lmaSoGgGGSAWiMz9Rza3IKeb8rsVY6FmH3vVIi2Uv
+         csBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714179407; x=1714784207;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
-        b=Fsqo1KcJ27s705QUAr3jUqfj6qBzqxsNQfgOZYThXyvwOrscQgUvLfS3zQM0qYmYvn
-         m6NRepdW5d0qvqRbnFxRXu7Fjd0E33PfeXMsKdraHgVreifwdcItNcRjZHHoT96YcyVV
-         duvNKAKb9M7WrYooKuj0ehA/4PJpv6DXuIYXuJp8JMG7PvMYUBkZmDyusyN/qC/iH2QK
-         dJVVPJsv8Ke3wRKjK6E+QIPckjHxwwNAfPY8ni3wyvUcs4KMVA2Z+wmCI6KjBT/Fx1k0
-         LPomQ2kB0R+x+0RU9eVLANA+RxZoAtWY9YySB9/RVRUt/cMu0JrQtnFWyLsLCDzMpAga
-         AMUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWLVRn4EG7PUSfc/d9mwnYCb/xXDbLcC4d1ZJfsqnh1RJmzlT3HmGHf3YRzmzjrQyfPflLdKSGUhzbcBtJ6eUKxKXYA
-X-Gm-Message-State: AOJu0Yyc/dd1QDt6RWmtbSsc6ERTut5QkbWcj8gsq4bcVuEKyuRKsUYy
-	gBPzyY2z/sqjRXe3C4zsl95aJWZLMsWsqi+JNwDzuUYm0mjv4adnJ41G4VtZ
-X-Google-Smtp-Source: AGHT+IEuVHn3L7YCYGc8lyexE5wSS3enuQd1OF24X1QYCkhQvikdYwbmp88ie3iTFEmPjThszvKYiQ==
-X-Received: by 2002:a17:902:778a:b0:1e5:4f5:7fa7 with SMTP id o10-20020a170902778a00b001e504f57fa7mr4022755pll.21.1714179406933;
-        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
-Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
-        by smtp.gmail.com with ESMTPSA id t2-20020a170902a5c200b001e26d572f9esm16018476plq.242.2024.04.26.17.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	paulmck@kernel.org,
-	frederic@kernel.org,
-	boqun.feng@gmail.com,
-	joel@joelfernandes.org,
-	neeraj.upadhyay@amd.com,
-	qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	lance@osuosl.org
-Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH] x86/rcutorture move CONFIG_HYPERVISOR_GUEST to kvm-test-1-run.sh
-Date: Sat, 27 Apr 2024 00:56:26 +0000
-Message-Id: <20240427005626.1365935-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1714179533; x=1714784333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HSat3VRqn3nH22+jIzgZ3SLdh3nYoy1+0NoyZK+oZTo=;
+        b=kMHT50vLgumS8lPdkpyp+K9+mddkz7R22KqZHy1uhTyb312EA7IipFW7758OzBsR1A
+         Wj7TAJmdA7U8VxVaL1oIKWMDRQg2t1x1NwOwXxqp2B7RURLRMdtyr8IFhfHH20S/6wT+
+         3noBJKgUpJtg2UFv53XAS6Z0ccfTLoFaoHPfsNUJx8/1dkY3swoVTV7+8jrxjLAOoYjI
+         qLij7q68uf1PF8eKr6OWi6Zrq9reHvSY5xYQvuQg96JhCnNdm7vlgjkwsncCvl92Oeoa
+         5tjC3vpruST5Qkx8iErp2tfw7fk0GIAu+yEDvqM5vV2a0TvqiUBtM/n8yoTmdsmbFs0U
+         w9mg==
+X-Forwarded-Encrypted: i=1; AJvYcCX2WAXDTP8AbwfD0v0LIp81Bg3AU7FlvNsGhfuUycUduedV1zkYmXhs0Sd5ZxFXQHbEzI8xawRTDir64Fbd9VUERB1PRZrlG1HpWMll
+X-Gm-Message-State: AOJu0Yzakp0q0nr46ZQFh8iOu/KQ3CxRh1rMiFOUMUerDJY2r5jhPGgi
+	EzuoxnSQ+vFn/xgJSbxjCc6joQxGuRSeBj0KT7BDI5aSDUMOhEdRNPzg2L/vCj8C39ACVeR/LpY
+	vlKNDuxrC66magIgeMJznIDakXq8vN+QYDCGN
+X-Google-Smtp-Source: AGHT+IHrFjX5wTmKi7PvniaysCkDbK8sy8DKFkZ1UTsDu9YwftHSAjROVe4NnE5YpzMZ3uQIIP5NMmN0u2N+0w0uihw=
+X-Received: by 2002:a17:906:7f03:b0:a52:6435:ef09 with SMTP id
+ d3-20020a1709067f0300b00a526435ef09mr2951843ejr.76.1714179532735; Fri, 26 Apr
+ 2024 17:58:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev> <20240427003733.3898961-6-shakeel.butt@linux.dev>
+In-Reply-To: <20240427003733.3898961-6-shakeel.butt@linux.dev>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 26 Apr 2024 17:58:16 -0700
+Message-ID: <CAJD7tkZJBBOfhHXfweJu367ov0GnppLTiUMLdoq=TcWnqu2q5w@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] memcg: pr_warn_once for unexpected events and stats
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-CONFIG_HYPERVISOR_GUEST is a x86 specific kernel option, move to
-kvm-test-1-run.sh to avoid ConfigFragment.diags in non-x86 platforms.
+On Fri, Apr 26, 2024 at 5:38=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> To reduce memory usage by the memcg events and stats, the kernel uses
+> indirection table and only allocate stats and events which are being
+> used by the memcg code. To make this more robust, let's add warnings
+> where unexpected stats and events indexes are used.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 43 ++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 34 insertions(+), 9 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 103e0e53e20a..36145089dcf5 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -671,9 +671,11 @@ unsigned long lruvec_page_state(struct lruvec *lruve=
+c, enum node_stat_item idx)
+>                 return node_page_state(lruvec_pgdat(lruvec), idx);
+>
+>         i =3D memcg_stats_index(idx);
+> -       if (i >=3D 0) {
+> +       if (likely(i >=3D 0)) {
+>                 pn =3D container_of(lruvec, struct mem_cgroup_per_node, l=
+ruvec);
+>                 x =3D READ_ONCE(pn->lruvec_stats->state[i]);
+> +       } else {
+> +               pr_warn_once("%s: stat item index: %d\n", __func__, idx);
+>         }
 
-Tested in both PPC VM of Open Source lab of Oregon State University and
-local x86_64 server.
+Can we make these more compact by using WARN_ON_ONCE() instead:
 
-Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 ++++
- tools/testing/selftests/rcutorture/configs/rcu/CFcommon  | 1 -
- 2 files changed, 4 insertions(+), 1 deletion(-)
+if (WARN_ON_ONCE(i < 0))
+         return 0;
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index b33cd8753689..75774bc70be7 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -68,6 +68,10 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
- config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
- config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
- config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
-+if uname -a | grep -q x86
-+then
-+	config_override_param "x86 specific option" KcList "CONFIG_HYPERVISOR_GUEST=y"
-+fi
- cp $T/KcList $resdir/ConfigFragment
- 
- base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-index 0e92d85313aa..cf0387ae5358 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-@@ -1,6 +1,5 @@
- CONFIG_RCU_TORTURE_TEST=y
- CONFIG_PRINTK_TIME=y
--CONFIG_HYPERVISOR_GUEST=y
- CONFIG_PARAVIRT=y
- CONFIG_KVM_GUEST=y
- CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
--- 
-2.34.1
+I guess the advantage of using pr_warn_once() is that we get to print
+the exact stat index, but the stack trace from WARN_ON_ONCE() should
+make it obvious in most cases AFAICT.
 
+No strong opinions either way.
 
