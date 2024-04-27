@@ -1,133 +1,78 @@
-Return-Path: <linux-kernel+bounces-161125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA5698B476C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB0748B4770
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:28:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE3A61C21000
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:25:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17CFC1C20C4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFC6145359;
-	Sat, 27 Apr 2024 18:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965A914535E;
+	Sat, 27 Apr 2024 18:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="biur4J6z"
-Received: from nbd.name (nbd.name [46.4.11.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+HAZ9Gk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6EE1F19A;
-	Sat, 27 Apr 2024 18:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9A2143C59
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 18:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714242271; cv=none; b=OW5HkuX3onk/eeJfY+NZjKxquxxN78/JwJ6VOi9iuxPzfkoAQ7ss7tUicnVvkO0otxuM2F+zCuLGeOIkBl4MEEQw76otWg5UOIBrm6gyJ1u7yIVJ/ZiEJam/CLWNXPQtDab9r+LoHWA/hBejLsAb+FU/9B1COEHxaYt5nHB3+vI=
+	t=1714242490; cv=none; b=DnmLb/Rmx3+rlSt+3Htu5gcJ54JwXlZa1DbMZ8Grudb9prPQCHuqylWTgjbDpZX6982Q+4YGfYH7k+nd7DOviTexeqUfzZoSZVH4kmbnOsWs2xRi3yo6ea6ABZrNpG21jweXtuc9yl+mryRQM8mZNiMWACqbE2pYD0+eGIFzu7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714242271; c=relaxed/simple;
-	bh=TGmQ90K9LgkbDUX9pFF2mber4vODF+ZtEEldYc47C4M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BhpYccae1Z//4CZQUDv6UKbbLRIklmLOE7pgFgveLPEElM/yezOpraF9fbXveAKQ6db3YxSK7W+Sn02CEMfHn0CxXs2IFgPvw+IsK3Z5ETQeAQe3dhf++3ch4M/Qi3B3SCWo+7T1eXrnz2wSlcVW24QGoZ6VlyVyWKs7Vu/t0KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=biur4J6z; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=M8uzoOllrZUh31+ptzWzx2PkzBC/tgOjkKHQHqcA99s=; b=biur4J6z54z/klcNpeqTZ0OjwD
-	O3Y3rjkGIK7UX1BHW3WS2KArYUefHTrDeQc+HWuRhbe4HRBg5ngYL2pZAdMKNX9OvJVYAowQ4mVrZ
-	gmrY+40mZ08XiXtnaBB5qyjLj6ArI/fJkyuLv3N/7oDE5JqfTCHcuvGSjUm9CKCsnsBs=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1s0mil-008hL3-0x;
-	Sat, 27 Apr 2024 20:24:23 +0200
-From: Felix Fietkau <nbd@nbd.name>
-To: netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Willem de Bruijn <willemb@google.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net: core: reject skb_copy(_expand) for fraglist GSO skbs
-Date: Sat, 27 Apr 2024 20:24:19 +0200
-Message-ID: <20240427182420.24673-2-nbd@nbd.name>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240427182420.24673-1-nbd@nbd.name>
-References: <20240427182420.24673-1-nbd@nbd.name>
+	s=arc-20240116; t=1714242490; c=relaxed/simple;
+	bh=GX7YkXipqVvNhapHqOCOlqcYy8wJxMpuPUZiPlNALwY=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ddGgoOiqsYH900RI9ACNB5VLvyTF4WQmwrTXk4LzRq6G8F9WloSQ6uZQnv+5gOvVonrb1C5aEhMR+W9zEQj+u0vy194OrN4BvBNMMgSqH93fbsSbBxbLH+aF+sddGk2VYjZdXe9k7lm1RAoOhf3Lm8Fu9pMHV3H9hM2sJSpAq54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A+HAZ9Gk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B819FC32782;
+	Sat, 27 Apr 2024 18:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714242490;
+	bh=GX7YkXipqVvNhapHqOCOlqcYy8wJxMpuPUZiPlNALwY=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=A+HAZ9Gk5EAgN4jvi09arXDE5YjN+Q2DRHv3lRvsg25c34gfN7QdFwmJK5GWZWMRA
+	 GWvsE4Kp/Pao7+LTwOgyXHDzK6o8PAWIuRjLuYkxfoT2hoJRXnqCPZSNo1W5KkOQFF
+	 hcGhj/WcI2MjPQ8bBVedJ+Z94kW2TqUE32D3ANhudjX5mRliyNBYBfnTMq/zZUUVMK
+	 xQ0Rv1BHQgwEh7q9UyAGzUrSEqsZYruf1AdtC/bFn5H1l4GJWJQmgz1gdKpYGISb13
+	 JjkOQagGcaeXbLcldilAPEUfg0VN7BBcE9z71HfJwKdNpW3QrsUPCAy69VZoBhe5pJ
+	 57mgfTDUtDOtQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9B63C433F2;
+	Sat, 27 Apr 2024 18:28:10 +0000 (UTC)
+Subject: Re: [GIT PULL]: soundwire fixes for v6.9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ZiyOGDeHrj9d4r80@matsya>
+References: <ZiyOGDeHrj9d4r80@matsya>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZiyOGDeHrj9d4r80@matsya>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-6.9-fixes
+X-PR-Tracked-Commit-Id: 63dc588e7af1392576071a1841298198c9cddee3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8a5c3ef7dbf3f271cd4cb8f603dba749f0720651
+Message-Id: <171424249069.21148.15670611428959239469.pr-tracker-bot@kernel.org>
+Date: Sat, 27 Apr 2024 18:28:10 +0000
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-SKB_GSO_FRAGLIST skbs must not be linearized, otherwise they become
-invalid. Return NULL if such an skb is passed to skb_copy or
-skb_copy_expand, in order to prevent a crash on a potential later
-call to skb_gso_segment.
+The pull request you sent on Sat, 27 Apr 2024 11:03:12 +0530:
 
-Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
----
- net/core/skbuff.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-6.9-fixes
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index b99127712e67..4096e679f61c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2123,11 +2123,17 @@ static inline int skb_alloc_rx_flag(const struct sk_buff *skb)
- 
- struct sk_buff *skb_copy(const struct sk_buff *skb, gfp_t gfp_mask)
- {
--	int headerlen = skb_headroom(skb);
--	unsigned int size = skb_end_offset(skb) + skb->data_len;
--	struct sk_buff *n = __alloc_skb(size, gfp_mask,
--					skb_alloc_rx_flag(skb), NUMA_NO_NODE);
-+	struct sk_buff *n;
-+	unsigned int size;
-+	int headerlen;
-+
-+	if (WARN_ON_ONCE(skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST))
-+		return NULL;
- 
-+	headerlen = skb_headroom(skb);
-+	size = skb_end_offset(skb) + skb->data_len;
-+	n = __alloc_skb(size, gfp_mask,
-+			skb_alloc_rx_flag(skb), NUMA_NO_NODE);
- 	if (!n)
- 		return NULL;
- 
-@@ -2455,12 +2461,17 @@ struct sk_buff *skb_copy_expand(const struct sk_buff *skb,
- 	/*
- 	 *	Allocate the copy buffer
- 	 */
--	struct sk_buff *n = __alloc_skb(newheadroom + skb->len + newtailroom,
--					gfp_mask, skb_alloc_rx_flag(skb),
--					NUMA_NO_NODE);
--	int oldheadroom = skb_headroom(skb);
- 	int head_copy_len, head_copy_off;
-+	struct sk_buff *n;
-+	int oldheadroom;
-+
-+	if (WARN_ON_ONCE(skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST))
-+		return NULL;
- 
-+	oldheadroom = skb_headroom(skb);
-+	n = __alloc_skb(newheadroom + skb->len + newtailroom,
-+			gfp_mask, skb_alloc_rx_flag(skb),
-+			NUMA_NO_NODE);
- 	if (!n)
- 		return NULL;
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8a5c3ef7dbf3f271cd4cb8f603dba749f0720651
+
+Thank you!
+
 -- 
-2.44.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
