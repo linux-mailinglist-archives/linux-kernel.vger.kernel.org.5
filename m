@@ -1,150 +1,145 @@
-Return-Path: <linux-kernel+bounces-161063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B27C8B469E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:22:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D25968B46A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76A4E1C2178D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:22:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 697A21F23670
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EFC50260;
-	Sat, 27 Apr 2024 14:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEBF50A6C;
+	Sat, 27 Apr 2024 14:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="2sOhvJeI"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QljWQy1j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94B84F8A0
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 14:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AED14F888;
+	Sat, 27 Apr 2024 14:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714227763; cv=none; b=OfqtwwmA8aT1nFO/+NpqcMgEovgasyXrO8hRXGiZ9E3//Tseax0fcdPHvxTeFqeLVr15VxuPm2P4n1tuR+2fSm8paMqPGYWxAdOfepQLv9aLUpDMXGjQzzoVp/Y+9pNbVa8SetyIrThsVnHbvw1K+D2DijgKjaYrHPCqfgOK2r8=
+	t=1714227967; cv=none; b=FEhH26UaBsM3nk2wPSTLvBhbGSkJuAtZiBkv1WgIgDs3/hdKlpe4y+cqLkcLc0P2Kve4vYA4T2khAuZHV8gwXdR6FCCou985NaOFYLeI5dAohBqqSuK5Bq15dlt6kL6LemM6/D3a2JiQBSB0BGzmRzpIRP8UG8JEWlLVMfAuG+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714227763; c=relaxed/simple;
-	bh=nTwNWxEsxbK6ttMKH6RkgIHZODyzl7FbYPFbXctiX3o=;
+	s=arc-20240116; t=1714227967; c=relaxed/simple;
+	bh=t/apW+NTFNF4ubyJBw+vwSAslJlVBGHf0Ykms0SIwzE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IDFDNZYaw1VSz1vpoBKxO0s9AhpMhbvpE/htdzpiw9Fw+NW3KNSi6xCeUax4HDbm6jQVC3gQwimHAv3yGUTslTI/kASdVbgjQUw1+ghY7o3DVS/NNeriPDT54/FtgDP6oUE4M1A3R8ivg8pHTEqb8DW/wPE5OdnqAo+S5WK5RN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=2sOhvJeI; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c85a9b9143so823370b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1714227759; x=1714832559; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=my9A5bfRcuk8Vub7UGZ+fWvF69oRVjwTLMcPliiDick=;
-        b=2sOhvJeILVS4NS5Cwe7xWykq1hpBIkpt9I/oD3H1GTPGg3QQGGwMgTRqBTgQsCG4Jj
-         cHx5W7lrOz+fQkZRtlAzcppzNtU5bpn0hNqttyJu11feIe2Iy0Zcdj7D8qbXmVLEpbVY
-         RW2y5XhflnE/PrvfdGGD9NWTVt2z2I0oyU9ljlhyFOjxLWYEJtu4Arzmg2BDrV6dUo4Y
-         ZXPoKeDRZ0D5G+BMty3b2LJ2z8ybV3/Q/eejq3KQv6bNTDVypEXJuqarZdv4YZqPSJI8
-         fpjD1U1+wROLIHCuOd/NhMFJXax54LC/EVLRsuJcKFQ/jcUf/KodwUenmRbU3S1VAAS0
-         i6LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714227759; x=1714832559;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=my9A5bfRcuk8Vub7UGZ+fWvF69oRVjwTLMcPliiDick=;
-        b=gEEVmPyQ/UzWJbwVxGwShxnvdaxV9SD1SSsV7CBSKIjT7gWizo4bK0mPWLY7NnmPEA
-         pzyFykQCj6wqytsK5ITtWiV6sfKEo06nJkSrQkKTDwm6BmZ1HQbTTruurG5XlE4kPVkC
-         GvxPXkPvphzHP3FgrPCsk4yoNk6T8tB2edYl/PlPnN3l9bjjs4hIWrVtSwE6YgLcyjAA
-         xZjTMWETXPLPq/DOQ/VhhgH+0IEBh48XSznlu3d4Rthbc9WhRy8vXGKl33dWAXxuU39z
-         5oW95ZNKqlSIjVPFOQAJFuq9ZF0KBppeLpRieP7GUy85JY1zBZ+vP9qTXyem9056FrIc
-         xX7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXOyBxrAk1q0TZrlHA1EsRgmZMqGYN0EU9g+gufCPL4u6q1AuxOVFrXWeMIp948YgRxocsADWVGJ2XmSGvybYMqvQQfBmpgzAeWJ2wM
-X-Gm-Message-State: AOJu0Yy/kOszlRYDMlfUgHLgL5igL0VlXvq7LcWDue9TMOU4T+dqNr70
-	Bh05rVEgDCj/v1cKGkkNiQ5uTyfhk1IqVmBOSTYz3CgGKyUdY8NpcA6NZRjQGxPrC8IcmfmwkI3
-	H
-X-Google-Smtp-Source: AGHT+IGlXUiLHaSxK/O81O0idYFAzC3VKjq1uq3uVPy3u/Opul3t1XhcpmxelrF849KjN41z3KT0Og==
-X-Received: by 2002:a05:6808:a88:b0:3c8:47a3:3d01 with SMTP id q8-20020a0568080a8800b003c847a33d01mr5963751oij.34.1714227759436;
-        Sat, 27 Apr 2024 07:22:39 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id y13-20020ad445ad000000b0069b4f48003bsm1847901qvu.100.2024.04.27.07.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 07:22:38 -0700 (PDT)
-Date: Sat, 27 Apr 2024 10:22:34 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Yosry Ahmed <yosryahmed@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] memcg: pr_warn_once for unexpected events and
- stats
-Message-ID: <20240427142234.GA1155473@cmpxchg.org>
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
- <20240427003733.3898961-6-shakeel.butt@linux.dev>
- <CAJD7tkZJBBOfhHXfweJu367ov0GnppLTiUMLdoq=TcWnqu2q5w@mail.gmail.com>
- <dsxeqlmrxyxfi2i7yzhdrukwiczh7sjcwfobaytdgkckjez36b@u6ooikkgyyf4>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YRAkr1ZRH5WaNcE8le1Ubo9XITeDW6IAh6EnoY1IVPhi3PEvJpAW5rqqXQmmYSAEvJVuhvjJpOU7oZLr+a+gbb5tTE8YtXewFCFml+A4NGt455Gf/HIGDsFGbQApRxP7NzNmGr6rqjcyMgO5H0u3986BAuQTtjl9T2FEsu5Mp4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QljWQy1j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C63DEC113CE;
+	Sat, 27 Apr 2024 14:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714227967;
+	bh=t/apW+NTFNF4ubyJBw+vwSAslJlVBGHf0Ykms0SIwzE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QljWQy1j6T1fBvnrVOQ0OTHQltI9XvKWK8WO9LbKVYCDgJ1VyIk2jlJP0NeWoJwJ9
+	 6ksVP9DX/QhwT53mY74+g8J3Xu03mNpnn+bfUkIZGIfTlqJ4OAgZSGxznZ7T0xMCba
+	 xXELV103kWwCMPk/T11BXOs2gHxHKKiW4zPE6jrI=
+Date: Sat, 27 Apr 2024 16:26:04 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, broonie@kernel.org,
+	linux-s390@vger.kernel.org,
+	Alexandra Winter <wintera@linux.ibm.com>
+Subject: Re: [PATCH 5.15 00/71] 5.15.157-rc1 review
+Message-ID: <2024042757--e526@gregkh>
+References: <20240423213844.122920086@linuxfoundation.org>
+ <CA+G9fYsm9OYUh+H9X2kpJWXsPdde36=WbSWc+mU0vO0i-QaWOw@mail.gmail.com>
+ <3b6b4973-0973-40e4-a107-4c81840c9ed3@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dsxeqlmrxyxfi2i7yzhdrukwiczh7sjcwfobaytdgkckjez36b@u6ooikkgyyf4>
+In-Reply-To: <3b6b4973-0973-40e4-a107-4c81840c9ed3@linux.ibm.com>
 
-On Fri, Apr 26, 2024 at 06:18:13PM -0700, Shakeel Butt wrote:
-> On Fri, Apr 26, 2024 at 05:58:16PM -0700, Yosry Ahmed wrote:
-> > On Fri, Apr 26, 2024 at 5:38 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > >
-> > > To reduce memory usage by the memcg events and stats, the kernel uses
-> > > indirection table and only allocate stats and events which are being
-> > > used by the memcg code. To make this more robust, let's add warnings
-> > > where unexpected stats and events indexes are used.
-> > >
-> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > ---
-> > >  mm/memcontrol.c | 43 ++++++++++++++++++++++++++++++++++---------
-> > >  1 file changed, 34 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 103e0e53e20a..36145089dcf5 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -671,9 +671,11 @@ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
-> > >                 return node_page_state(lruvec_pgdat(lruvec), idx);
-> > >
-> > >         i = memcg_stats_index(idx);
-> > > -       if (i >= 0) {
-> > > +       if (likely(i >= 0)) {
-> > >                 pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> > >                 x = READ_ONCE(pn->lruvec_stats->state[i]);
-> > > +       } else {
-> > > +               pr_warn_once("%s: stat item index: %d\n", __func__, idx);
-> > >         }
+On Wed, Apr 24, 2024 at 11:21:05AM +0200, Peter Oberparleiter wrote:
+> On 24.04.2024 09:57, Naresh Kamboju wrote:
+> > On Wed, 24 Apr 2024 at 03:16, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >>
+> >> This is the start of the stable review cycle for the 5.15.157 release.
+> >> There are 71 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, please
+> >> let me know.
+> >>
+> >> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.157-rc1.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
 > > 
-> > Can we make these more compact by using WARN_ON_ONCE() instead:
 > > 
-> > if (WARN_ON_ONCE(i < 0))
-> >          return 0;
+> > The s390 defconfig build failed with gcc-12 and clang-17 on the Linux
+> > stable-rc linux.5.15.y branch.
 > > 
-> > I guess the advantage of using pr_warn_once() is that we get to print
-> > the exact stat index, but the stack trace from WARN_ON_ONCE() should
-> > make it obvious in most cases AFAICT.
-
-if (WARN_ONCE(i < 0, "stat item %d not in memcg_node_stat_items\n", i))
-	return 0;
-
-should work?
-
-> > No strong opinions either way.
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Build log:
+> > ---
+> > drivers/s390/cio/qdio_main.c: In function 'qdio_int_handler':
+> > drivers/s390/cio/qdio_main.c:761:52: error: incompatible type for
+> > argument 2 of 'ccw_device_start'
+> >   761 |                 rc = ccw_device_start(cdev, irq_ptr->ccw,
+> > intparm, 0, 0);
+> >       |                                             ~~~~~~~^~~~~
+> >       |                                                    |
+> >       |                                                    struct ccw1
+> > In file included from arch/s390/include/asm/qdio.h:13,
+> >                  from drivers/s390/cio/qdio_main.c:18:
+> > arch/s390/include/asm/ccwdev.h:172:50: note: expected 'struct ccw1 *'
+> > but argument is of type 'struct ccw1'
+> >   172 | extern int ccw_device_start(struct ccw_device *, struct ccw1 *,
+> >       |                                                  ^~~~~~~~~~~~~
+> > make[3]: *** [scripts/Makefile.build:289: drivers/s390/cio/qdio_main.o] Error 1
+> > 
+> > 
+> > Suspected commit:
+> > --------
+> > s390/qdio: handle deferred cc1
+> >   [ Upstream commit 607638faf2ff1cede37458111496e7cc6c977f6f ]
 > 
-> One reason I used pr_warn_once() over WARN_ON_ONCE() is the syzbot
-> trigger. No need to trip the bot over this error condition.
+> This is due to a type change of field 'ccw' in 'struct qdio_irq' that
+> was introduced in v5.17 via commit 718ce9e10171 ("s390/qdio: avoid
+> allocating the qdio_irq with GFP_DMA").
+> 
+> The following change to commit 607638faf2ff ("s390/qdio: handle deferred
+> cc1") fixes the compile error on v5.15:
+> 
+> --- a/drivers/s390/cio/qdio_main.c
+> +++ b/drivers/s390/cio/qdio_main.c
+> @@ -758,7 +758,7 @@ void qdio_int_handler(struct ccw_device *cdev, unsigned long intparm,
+> 
+>  	if (rc == -EAGAIN) {
+>  		DBF_DEV_EVENT(DBF_INFO, irq_ptr, "qint retry");
+> -		rc = ccw_device_start(cdev, irq_ptr->ccw, intparm, 0, 0);
+> +		rc = ccw_device_start(cdev, &irq_ptr->ccw, intparm, 0, 0);
+>  		if (!rc)
+>  			return;
+>  		DBF_ERROR("%4x RETRY ERR", irq_ptr->schid.sch_no);
+> 
+> 
 
-The warn splat is definitely quite verbose. But I think that would
-only be annoying initially, in case a site was missed. Down the line,
-it seems helpful to have this stand out to somebody who is trying to
-add a new cgroup stat and forgets to update the right enums.
+Fix now made, thanks for this!
+
+greg k-h
 
