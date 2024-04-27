@@ -1,168 +1,115 @@
-Return-Path: <linux-kernel+bounces-161102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3D18B4726
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:34:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE628B472E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA031F21F8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:34:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0CE51C20C2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A905142E6A;
-	Sat, 27 Apr 2024 16:34:25 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD961411F4;
+	Sat, 27 Apr 2024 16:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AlvXRVdc"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBB2127E3B
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 16:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C528C11;
+	Sat, 27 Apr 2024 16:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714235664; cv=none; b=iPb0RFOVQRe+yKcDfuSdPAwCaTIrMbUuO/0HVY1S2fzoS4KBoZQCnOKk+byMJ99xj618JUfXyI+W7LvTGPjPmP24AT5rpJtLsZ/OLSDD5t50v8Fc6QMD6lYTjY4F593CgIP9Q+bJ8C3UM/jkfxn9IOFLGNPUrZhuCFK6SJ7qlFE=
+	t=1714236319; cv=none; b=GIE1boE01iTMdaZ09Hb91qtLrBIpj474DZdgqWUH8zjxYgmY8nkGSzXLMpvSIJ6g9jkPqmsyg9eMy45OwDXKiAV2tNNgpyL9nL0iWrehw4FRszWADV+sxy7NoBbq0hiFZnlKWMjHN/cI1pDsT5gsu+i/NjGxyxFjEvO+YqSsF8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714235664; c=relaxed/simple;
-	bh=DSQzEtjdiV9L38k/iBL62Zbm6QxwkG8HuNYK/0HvFKc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=oni5O4qwubyPMmjcpEeORg++CCx+iLaXQGH17fLQpGy61qWXsrj31VwrPGRvfoIuV610xE5uyi7OXEIcY7ltz99tpFVNbdL4pdFxTrCXVpRgjHRBZ8r+IfnZHRGYy0TgtJ95xlki71jSnhlHVdGPwPjjWRAa6e7K0ybeTrJOhZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dec211a706so18398339f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:34:23 -0700 (PDT)
+	s=arc-20240116; t=1714236319; c=relaxed/simple;
+	bh=AK8Jk7phL3mTytSw5obD0mYNwkMdEy/HNfhMr8DLIBw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=WIE9cgypUYnfLzgyXsVLbxZAp564f55PELyp5n0JOwWRjcSJ97ue0OHvPX+PfnrRt5ahUDywOdoMuj0VQxTY62Nx+3xuhUZCy0rXowhEC78ql/6makTtmb5DIkZr0TZQHaeMnSEGuAih5mOpf52EdJ/5T0BLz4s44mUEvajvW8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AlvXRVdc; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516ef30b16eso3589295e87.3;
+        Sat, 27 Apr 2024 09:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714236316; x=1714841116; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JhEfRurz6bxQo7nPFIdFapmeHOyGD4f5KO0BLw+ShI8=;
+        b=AlvXRVdcqKHfF/a29Eijgqc+ZzTFUK2D2kpFrMuhpNa37qJtXCMevupAbKzcXbdJ6X
+         E/1ptftH5pGIVLI7HpNmW+1wJGJAa+P3wihrWBOrib0kLz058+VrmkTpy7jSKfkUtVmd
+         174Sz1PekviTAcsHC7/4OXVChS9aapiQTKK4RJPqdssNrUJU6XchAUiLPA1qR2MrfHBR
+         V6YvzhEL3BRtHf4uar5zzC6o9uYascxDeDk7WFnPuPmBPoh49wTigUwq5lbljYn5cqOV
+         HpX8bRooSX9thXIR/yjlQSQuiUcvNDxjphgD+nSdadzwx+nQh9TBDuGurrWLo6EGnN9o
+         V8Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714235662; x=1714840462;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1714236316; x=1714841116;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wpRqneg+RHTIAQAnzCc2/4zGaXEdYFQTEmwzqVG2kf8=;
-        b=cbF/scl2V23dfTwTilzsO0eaTWhznn9HzinhLbBxCcXNq5lA7CF5F8KZaKMVhBGyr0
-         roGTt6SFJnDMSbkLp0ZBczpQ4Oa948byR5hvhub5PgcZtxqCH6YjN0XoYulphqyIAcE+
-         KLEsSSDScYlVF/qWofmowzCfwxqoCZ5pzkisY5NCmiCfkKcv4unxBsd/YLlanPSxHyos
-         Ggp/YIkrMDmsYqBykwIGETjKzypx0/8v868y2ufzhODIhjfCrq1nf7gJkS4wqibwQNes
-         fFF5PDJyO/3VaMSW3Vrdva6f8ntfhxZCnreqQN9/M4/vilMS0TuixYQ8drxUgOTXQ2Gr
-         FxQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWd3nL6FHBdec//Ch5PL1X8uW72XpoNGJvp1k9yYuQNW47OYkL1m4gS/TXff8jM3TV6j1VlsLzbAh2E725+Jjj7XRSshsWs13yiI2Uz
-X-Gm-Message-State: AOJu0YxVGq+qKZwi3rl6kDSZcQqGQWs+51DftrVOOVnDsZMmPa4g22MK
-	N3AtdKdqSu3KEMqSxfxiBafIqY1G1IRlHzG52VdZh9geObV5v+qDVyB6j8TRvjvm9s5syYbSjVL
-	7vkibC7LfFWVLJ35ecZlDT/2JOG0a3eE3DX783nfwWsBJHhZzaGHKiNM=
-X-Google-Smtp-Source: AGHT+IFRY/nLU64numjqUj3x0/g4x3W0dBUWdbcyBhm7Kw38xnC3k3XNvPQe/8jBlQlZDeYevFxwyu+hv9xtCyec6aMftESzEvNQ
+        bh=JhEfRurz6bxQo7nPFIdFapmeHOyGD4f5KO0BLw+ShI8=;
+        b=DJxdgF7RAX+d6jWvYU5np9+l3YZV7RSGvTFS2zIU1YBMu0Bz4s0k1DQ8VKMshmLNq4
+         OvtlMHK3xZBaQ3NzkKuu+q5lKe+HxjfPtuitCn2QCcD5MILbbgAviv4JIr1vRcuFfKZ4
+         LVfBmGvgnPa5wKFHFSSlVlHbWQ6wVVnZqLnoyJugLXtOzwXoKk5H16Uv98qxKqLMnSOV
+         SPO2UVS5hhIiXgVwXVESgzDqylQkUYzBug4PJV0LJ/DhxG/CNfgVwLmfINpS3USMXoEQ
+         4Wfrup1t9rsH5Ra3dO9AFfIWvnjOkkSAG1OXMUBe0eQOi0KodeoM7ytJddrKIouGCZ6e
+         vsOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJz4vX2FCcAzWaccIkcWSyqJeCaIaCPfTuXFuQLAxqVn9wzlbbGuAcRh/EkS/Zg/zNOQiFL5vdKIw1iLohvqmMThrym5R5I+a45Q==
+X-Gm-Message-State: AOJu0YzPi/mpZXmWkQeWlrDiR9EC9hgtrNOUzaAVrfPRsOeadyTAsFnS
+	8HllFpqAwKuLVIQY9X2BSHSAdkAKKo6ckZUpFfnrLHn9d22PnpSRTvVljPDTSaQtwwVtoKPyS7a
+	PcFCxE++OipULdMt48ZeX9mEEL9eBpR3S
+X-Google-Smtp-Source: AGHT+IG1moZlk1t7Lo09tpyc5qg2v89QLmKjBDgtsKQqvNMOG4PVyGOPJJydcZQO8hOE6LUgRLRSZruk7I5t1Z14qTw=
+X-Received: by 2002:a05:6512:3196:b0:51d:3675:6a08 with SMTP id
+ i22-20020a056512319600b0051d36756a08mr1180454lfe.66.1714236315799; Sat, 27
+ Apr 2024 09:45:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:870f:b0:486:e390:16a5 with SMTP id
- iw15-20020a056638870f00b00486e39016a5mr334115jab.3.1714235662670; Sat, 27 Apr
- 2024 09:34:22 -0700 (PDT)
-Date: Sat, 27 Apr 2024 09:34:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc2d38061716975e@google.com>
-Subject: [syzbot] [bpf?] [trace?] WARNING in group_send_sig_info
-From: syzbot <syzbot+1902c6d326478ce2dfb0@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, 
-	netdev@vger.kernel.org, rostedt@goodmis.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+From: Steve French <smfrench@gmail.com>
+Date: Sat, 27 Apr 2024 11:45:04 -0500
+Message-ID: <CAH2r5muJvf713EeXf81FaVyU9mA9bqLAgXLe036aCHbYKZ3ZCw@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Please pull the following changes since commit
+9d1ddab261f3e2af7c384dc02238784ce0cf9f98:
 
-syzbot found the following issue on:
+  Merge tag '6.9-rc5-smb-client-fixes' of
+git://git.samba.org/sfrench/cifs-2.6 (2024-04-23 09:37:32 -0700)
 
-HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ca8fe7180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=1902c6d326478ce2dfb0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+are available in the Git repository at:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.9-rc5-cifs-fixes-part2
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
+for you to fetch changes up to 8861fd5180476f45f9e8853db154600469a0284f:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1902c6d326478ce2dfb0@syzkaller.appspotmail.com
+  smb3: fix lock ordering potential deadlock in cifs_sync_mid_result
+(2024-04-25 12:49:50 -0500)
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 1 PID: 7785 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x40 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 1 PID: 7785 Comm: syz-executor.3 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:warn_bogus_irq_restore+0x29/0x40 kernel/locking/irqflag-debug.c:10
-Code: 90 f3 0f 1e fa 90 80 3d de 59 01 04 00 74 06 90 c3 cc cc cc cc c6 05 cf 59 01 04 01 90 48 c7 c7 20 ba aa 8b e8 f8 d5 e7 f5 90 <0f> 0b 90 90 90 c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
-RSP: 0018:ffffc9000399fbb8 EFLAGS: 00010246
+----------------------------------------------------------------
+Three smb3 client fixes, all also for stable
+- two small locking fixes spotted by Coverity
+- FILE_ALL_INFO and network_open_info packing fix
 
-RAX: 4aede97b00455d00 RBX: 1ffff92000733f7c RCX: ffff88802a129e00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000399fc50 R08: ffffffff8157cc12 R09: 1ffff110172a51a2
-R10: dffffc0000000000 R11: ffffed10172a51a3 R12: dffffc0000000000
-R13: 1ffff92000733f78 R14: ffffc9000399fbe0 R15: 0000000000000246
-FS:  000055557ae76480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc27e190f8 CR3: 000000006cb50000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
- _raw_spin_unlock_irqrestore+0x120/0x140 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
- unlock_task_sighand include/linux/sched/signal.h:754 [inline]
- do_send_sig_info kernel/signal.c:1302 [inline]
- group_send_sig_info+0x2e0/0x310 kernel/signal.c:1453
- bpf_send_signal_common+0x2dd/0x430 kernel/trace/bpf_trace.c:881
- ____bpf_send_signal kernel/trace/bpf_trace.c:886 [inline]
- bpf_send_signal+0x19/0x30 kernel/trace/bpf_trace.c:884
- bpf_prog_8cc4ff36b5985b6a+0x1d/0x1f
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:650 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x375/0x420 kernel/trace/bpf_trace.c:2420
- trace_sys_exit include/trace/events/syscalls.h:44 [inline]
- syscall_exit_work+0x153/0x170 kernel/entry/common.c:163
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:194 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:199 [inline]
- syscall_exit_to_user_mode+0x273/0x360 kernel/entry/common.c:212
- do_syscall_64+0x10a/0x240 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f8e47e7dc0b
-Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
-RSP: 002b:00007ffd999e9950 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: fffffffffffffffa RBX: 0000000000000003 RCX: 00007f8e47e7dc0b
-RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000003
-RBP: 00007ffd999e9a0c R08: 0000000000000000 R09: 00007ffd999e96f7
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 000000000004757a R14: 000000000004754c R15: 000000000000000f
- </TASK>
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      smb: client: Fix struct_group() usage in __packed structs
 
+Steve French (2):
+      smb3: missing lock when picking channel
+      smb3: fix lock ordering potential deadlock in cifs_sync_mid_result
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/smb/client/cifspdu.h   | 4 ++--
+ fs/smb/client/smb2pdu.h   | 2 +-
+ fs/smb/client/transport.c | 7 ++++++-
+ 3 files changed, 9 insertions(+), 4 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Thanks,
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Steve
 
