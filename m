@@ -1,168 +1,218 @@
-Return-Path: <linux-kernel+bounces-160869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C9F8B43CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 04:13:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E370A8B43D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 04:24:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C567BB224B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:13:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 555A31F22869
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6C93A267;
-	Sat, 27 Apr 2024 02:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iu7eeWHu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FDB3A1B9;
+	Sat, 27 Apr 2024 02:24:41 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3796B38DD3;
-	Sat, 27 Apr 2024 02:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF83848E;
+	Sat, 27 Apr 2024 02:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714184008; cv=none; b=lo0oHMiCGayxhiye/ZAH72vk66y3QkX6D3E390CQdBSzVrl2TsMlzRwHpLZR2psd/1LKIj16rYT7m6cRSR3HemuC51RJgLVRKMzNBeU6TxdbtRw/z6Vq86txWvewEP0RoSDm1aPmSBYutg4ZplvYWjXflmwcFAlr4ytOfzHx3vM=
+	t=1714184681; cv=none; b=OoeuOFDi5+PxTZUC45LUvOxbOhD+OiKuge24Hw2rRSgiDsbhoD1suIMODfgPGUlQhPB0/TvsMrPNe6QE4CcjG5lNudKqoclng8CBD6csJDIXTDt5y6YTtbpy7Rk7qQAmQbtSvNR1RXQcvHS5stoHeK1IKztgAjIQQFBWyNVSuOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714184008; c=relaxed/simple;
-	bh=mUMUrbQLiUpX9NYt2dA5/tf55Sg+3Kcz3fQlfMcnBZc=;
+	s=arc-20240116; t=1714184681; c=relaxed/simple;
+	bh=1g27sArCdxbgAlOBIQTYU/aDJvTnXRH0RTbjbh4Bvxo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WCjQKJ138w1RUPpKAJU8tnAO0hJP9hUedcjh+bz8npnCMt1yFrB/IvId3Y5GXFlHlASxxhGfmr4WDrcRFJwzGIkobXW+UklO1Oj4Kq0f4z+fIVLMBLEtpwZfCOFIvuNBK2pJJpfJld07fK1UimWuX8AuWhtP6RyWnZaBav0KYZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iu7eeWHu; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714184007; x=1745720007;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mUMUrbQLiUpX9NYt2dA5/tf55Sg+3Kcz3fQlfMcnBZc=;
-  b=Iu7eeWHuRCx0cAlUwMw+Z/IA75Qh64rw+x2aaQrtNOkfFtUvFfIni3th
-   QOHYrw7PMy1KkefpuFitBSQp2jQLNSfyiuz6Qhm3jNVIJRp7fSRe3B8bg
-   VcJO8pNrVi2jf2BK14RMZD2jDZPbm06fWSf/p9rjplGvyqmHH/SZS/H68
-   vt+xI1M5xNFYaAIUMwBvb/Nj5LocboQ+LsebdQtapIIKqahaXnn6ZomOo
-   XuQ3DsiOI0FqeHc7QNUPQzAPfR9+K6sYx77ta4vPAMl0JWfuzws3Wwv1y
-   by+2AFs3QOmts0W80xgwP8azuWmE32DPisjW9pa5PKj5v4qrlyQ5JJcHC
-   A==;
-X-CSE-ConnectionGUID: t2MQr63tSvy+4NQFLLcaBg==
-X-CSE-MsgGUID: LioEa0Y1TyWit1hvYBa/UQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9807451"
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="9807451"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 19:13:26 -0700
-X-CSE-ConnectionGUID: wFzIK+9URxC4/DWnIoBvmQ==
-X-CSE-MsgGUID: 8TidxXTOQ6KewX51Jb2KBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="30228341"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 19:13:21 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s0XZ0-0004ZK-1O;
-	Sat, 27 Apr 2024 02:13:18 +0000
-Date: Sat, 27 Apr 2024 10:12:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Stas Sergeev <stsp2@yandex.ru>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Stas Sergeev <stsp2@yandex.ru>,
-	Stefan Metzmacher <metze@samba.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andy Lutomirski <luto@kernel.org>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Jeff Layton <jlayton@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	David Laight <David.Laight@aculab.com>,
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Eric Dumazet <edumazet@google.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=mLXHk69iKzBqEg5xcC6uhbCxqw70u5InVzAkmNG4DP9mxXe4AbmNN+fMklgMECyMaJPo1UyRT81o4QKMEglTEp8XEsog4fz7k1yMDe1rFbsfOLqtkSlqsHs1iM+LqFln4JXKzbbLP2NQ11d3GBoSjW8LoP5Uu+4SjTqcLFv36pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.97.1)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1s0Xjl-000000006AF-2noj;
+	Sat, 27 Apr 2024 02:24:25 +0000
+Date: Sat, 27 Apr 2024 03:24:18 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: arinc.unal@arinc9.com
+Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>, Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] open: add O_CRED_ALLOW flag
-Message-ID: <202404270923.bAeBIJt1-lkp@intel.com>
-References: <20240426133310.1159976-3-stsp2@yandex.ru>
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v2 07/15] net: dsa: mt7530: move MT753X_MTRAP
+ operations for MT7530
+Message-ID: <Zixh0qsQat3ypqFp@makrotopia.org>
+References: <20240422-for-netnext-mt7530-improvements-4-v2-0-a75157ba76ad@arinc9.com>
+ <20240422-for-netnext-mt7530-improvements-4-v2-7-a75157ba76ad@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240426133310.1159976-3-stsp2@yandex.ru>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240422-for-netnext-mt7530-improvements-4-v2-7-a75157ba76ad@arinc9.com>
 
-Hi Stas,
+Hi Arınç,
 
-kernel test robot noticed the following build errors:
+On Mon, Apr 22, 2024 at 10:15:14AM +0300, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> On MT7530, the media-independent interfaces of port 5 and 6 are controlled
+> by the MT7530_P5_DIS and MT7530_P6_DIS bits of the hardware trap. Deal with
+> these bits only when the relevant port is being enabled or disabled. This
+> ensures that these ports will be disabled when they are not in use.
+> 
+> Do not set MT7530_CHG_TRAP on mt7530_setup_port5() as that's already being
+> done on mt7530_setup().
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.9-rc5 next-20240426]
-[cannot apply to arnd-asm-generic/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Multiple users reported ([1], [2]) that after I've imported the series
+to OpenWrt they noticed that WAN connection on MT7621 boards using
+PHY-muxing to hook up either port 0 or port 4 to GMAC1 no longer works.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stas-Sergeev/fs-reorganize-path_openat/20240426-214030
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240426133310.1159976-3-stsp2%40yandex.ru
-patch subject: [PATCH v5 2/3] open: add O_CRED_ALLOW flag
-config: parisc-allnoconfig (https://download.01.org/0day-ci/archive/20240427/202404270923.bAeBIJt1-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240427/202404270923.bAeBIJt1-lkp@intel.com/reproduce)
+The link still seems to come up, but no data flows. I went ahead and
+confirmed the bug, then started bisecting the patches of this series,
+and ended up identifying this very patch being the culprit.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404270923.bAeBIJt1-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:
-   fs/fcntl.c: In function 'fcntl_init':
->> include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert_297' declared with attribute error: BUILD_BUG_ON failed: 22 - 1 != HWEIGHT32( (VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) | __FMODE_EXEC | __FMODE_NONOTIFY)
-     449 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:430:25: note: in definition of macro '__compiletime_assert'
-     430 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:449:9: note: in expansion of macro '_compiletime_assert'
-     449 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   fs/fcntl.c:1042:9: note: in expansion of macro 'BUILD_BUG_ON'
-    1042 |         BUILD_BUG_ON(22 - 1 /* for O_RDONLY being 0 */ !=
-         |         ^~~~~~~~~~~~
+I can't exclude that what ever the issue may be is caused by other
+downstream patches we have, but can confirm that removing this patch of
+your series [3] in OpenWrt fixes the issue. Please take a look and as
+the cover letter states you have tested this on some MT7621 board,
+please make sure traffic actually flows on the PHY-muxed port on that
+board after this patch is applied, and if not, please figure out why and
+repost a fixed version of this patch.
 
 
-vim +/__compiletime_assert_297 +449 include/linux/compiler_types.h
+Cheers
 
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  435  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  436  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  437  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  438  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  439  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  440   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  441   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  442   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  443   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  444   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  445   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  446   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  447   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  448  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @449  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  450  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Daniel
+
+[1]: https://github.com/openwrt/openwrt/issues/15273
+[2]: https://github.com/openwrt/openwrt/issues/15279
+[3]: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=a8dde7e5bd6d289db6485cf57d3512ea62eaa827
+
+> 
+> Instead of globally setting MT7530_P5_MAC_SEL, clear it, then set it only
+> on the appropriate case.
+> 
+> If PHY muxing is detected, clear MT7530_P5_DIS before calling
+> mt7530_setup_port5().
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>  drivers/net/dsa/mt7530.c | 38 +++++++++++++++++++++++++++-----------
+>  1 file changed, 27 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 606516206fb9..83436723cb16 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -880,8 +880,7 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+>  
+>  	val = mt7530_read(priv, MT753X_MTRAP);
+>  
+> -	val |= MT7530_CHG_TRAP | MT7530_P5_MAC_SEL | MT7530_P5_DIS;
+> -	val &= ~MT7530_P5_RGMII_MODE & ~MT7530_P5_PHY0_SEL;
+> +	val &= ~MT7530_P5_PHY0_SEL & ~MT7530_P5_MAC_SEL & ~MT7530_P5_RGMII_MODE;
+>  
+>  	switch (priv->p5_mode) {
+>  	/* MUX_PHY_P0: P0 -> P5 -> SoC MAC */
+> @@ -891,15 +890,13 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+>  
+>  	/* MUX_PHY_P4: P4 -> P5 -> SoC MAC */
+>  	case MUX_PHY_P4:
+> -		val &= ~MT7530_P5_MAC_SEL & ~MT7530_P5_DIS;
+> -
+>  		/* Setup the MAC by default for the cpu port */
+>  		mt7530_write(priv, MT753X_PMCR_P(5), 0x56300);
+>  		break;
+>  
+>  	/* GMAC5: P5 -> SoC MAC or external PHY */
+>  	default:
+> -		val &= ~MT7530_P5_DIS;
+> +		val |= MT7530_P5_MAC_SEL;
+>  		break;
+>  	}
+>  
+> @@ -1193,6 +1190,14 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
+>  
+>  	mutex_unlock(&priv->reg_mutex);
+>  
+> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+> +		return 0;
+> +
+> +	if (port == 5)
+> +		mt7530_clear(priv, MT753X_MTRAP, MT7530_P5_DIS);
+> +	else if (port == 6)
+> +		mt7530_clear(priv, MT753X_MTRAP, MT7530_P6_DIS);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1211,6 +1216,14 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
+>  		   PCR_MATRIX_CLR);
+>  
+>  	mutex_unlock(&priv->reg_mutex);
+> +
+> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+> +		return;
+> +
+> +	if (port == 5)
+> +		mt7530_set(priv, MT753X_MTRAP, MT7530_P5_DIS);
+> +	else if (port == 6)
+> +		mt7530_set(priv, MT753X_MTRAP, MT7530_P6_DIS);
+>  }
+>  
+>  static int
+> @@ -2401,11 +2414,11 @@ mt7530_setup(struct dsa_switch *ds)
+>  		mt7530_rmw(priv, MT7530_TRGMII_RD(i),
+>  			   RD_TAP_MASK, RD_TAP(16));
+>  
+> -	/* Enable port 6 */
+> -	val = mt7530_read(priv, MT753X_MTRAP);
+> -	val &= ~MT7530_P6_DIS & ~MT7530_PHY_INDIRECT_ACCESS;
+> -	val |= MT7530_CHG_TRAP;
+> -	mt7530_write(priv, MT753X_MTRAP, val);
+> +	/* Allow modifying the trap and directly access PHY registers via the
+> +	 * MDIO bus the switch is on.
+> +	 */
+> +	mt7530_rmw(priv, MT753X_MTRAP, MT7530_CHG_TRAP |
+> +		   MT7530_PHY_INDIRECT_ACCESS, MT7530_CHG_TRAP);
+>  
+>  	if ((val & MT7530_XTAL_MASK) == MT7530_XTAL_40MHZ)
+>  		mt7530_pll_setup(priv);
+> @@ -2488,8 +2501,11 @@ mt7530_setup(struct dsa_switch *ds)
+>  			break;
+>  		}
+>  
+> -		if (priv->p5_mode == MUX_PHY_P0 || priv->p5_mode == MUX_PHY_P4)
+> +		if (priv->p5_mode == MUX_PHY_P0 ||
+> +		    priv->p5_mode == MUX_PHY_P4) {
+> +			mt7530_clear(priv, MT753X_MTRAP, MT7530_P5_DIS);
+>  			mt7530_setup_port5(ds, interface);
+> +		}
+>  	}
+>  
+>  #ifdef CONFIG_GPIOLIB
+> 
+> -- 
+> 2.40.1
+> 
+> 
 
