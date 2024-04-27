@@ -1,164 +1,160 @@
-Return-Path: <linux-kernel+bounces-161057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA448B467E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 15:48:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEDD98B468A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 15:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EB151F231BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:48:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A565A282823
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880B54F616;
-	Sat, 27 Apr 2024 13:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB81A4F888;
+	Sat, 27 Apr 2024 13:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Z8L6Xtlu"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2071.outbound.protection.outlook.com [40.92.90.71])
+	dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b="FxDgcFWs"
+Received: from smtp1.math.uni-bielefeld.de (smtp1.math.uni-bielefeld.de [129.70.45.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5BA4D5AC;
-	Sat, 27 Apr 2024 13:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714225686; cv=fail; b=O7X9L7MKhSdEev2Y44DSp6B75czTh4f6YRHTkxIjRnHVeYxEvbUaV/TER5QxpNJ9CkUY5gL4dReszyeuXC5sn9Nbzw5dKm33cR1EDf9BTVcenvTC+Yc81nwwNkIufARd2QcdjaGdG/WxmfgaPymcdCMT0EjilHpRg6J3eE4yzLo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714225686; c=relaxed/simple;
-	bh=o47XltJlQDmFSNvSHULmF7lh/D75shUp0ue62dTz8Q0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Y/u/E2MGLKdkaOxBatpcrApj6HKNioUaF6bw8hU6wLURNLZ8NRMiN1lbaFyHPGDDHMGwxIqg1JntTNWdeVd5zZtekXC6ayafmzd05WhmUiA/1UQVsziPk40Ywe6/u8CfSNOgvhlG5zv9JZqubtQdF68ucplM6Jmh7s9nURWi+l8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Z8L6Xtlu; arc=fail smtp.client-ip=40.92.90.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XWmTlqVrpEgjlOzX+K8HsJ92TVKw38wtNazyWG1WOZgGDQHhUlB1o5nrydK7aDzHfUQNnXnAXltmA7g+ji4mP/XH33g+qUU0d7buEUvheL7s2aMlCNgNHzn4WxNE0IRVcyZUTsMmW/WfXuWDi8/X4gwG0WRXsVGr5m9UCuJef9vcbgYB3brPnvpvQOkHVt76OfKstujSKDnX2l9zDe+om8lZOlaIbhXG4NeXUwocNgLMkUliHWkSni4xSj+gwPATn5/A+vP68p1ULBxUMHpA7+kTuvc6ULvkQZ+yt6Nd95qYjvDwSGxfzc2N7Km4HUGJXF2YretiZ9sVdwxRjsX0xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e8EivwSD21Y6PH4ZYZB/K414e3hqNm4AP78Om/A6Cb0=;
- b=JdfXaXO8FQ+9gJexeNYMMXTRjhEz1MDMX4wtrrT5Fzmof/eMCEJ3ewS1+nUJKooZqNeilqhr6kT+KVrgiCT0RbqHnO0Fo9LeMhhCFkGAO08RMTUnSy02hNxiL6xlvmwcyXUsh004IUhyKA3dML3SG4N+EqsPdz9TGwzgesMB+SJBetrj2n32+UhAQ4oBvfbjPY8zpuOXOslFbTqW5fKpbHn8Mocwtr7D3mzJP9eVOQGyGKjxUnDj/araS4gMTBywa4cZrLvEakjAacsBFXFNeTSjXLlguU3rhimCV3vIM5NehHYaKAVlseYD5yl8zFBY44cwlpoJqadMEZwbI59GTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e8EivwSD21Y6PH4ZYZB/K414e3hqNm4AP78Om/A6Cb0=;
- b=Z8L6XtluRPAmZQM9Wmst0HrtTHPC1M7C7RVlQ14ekXKzr4czKb6WNNi3vPAUUJ6N7ZjqpiLHG+F/WHRTlAvJ9DEoBOwme4qXjoNHDlUXhKOTWNGXePzVcENA1HxhZoEuSQNwSQ9QgAy0+crY02b+GIoycKCMHzib6ApksQd9/bvdzD+LfVWUTz0Ls1FHgJ12VuruLiqrmr6BmRoc3SKSjrG0nbS8qn/8rhMXhS/KrkUyQoqkb7BfL7cLVCHK+uoAiEVXBBnUQ0QGd0+SQgGPmnrcolh3aFQ47RgGpdjP0t9kqxXzwFfWomMu79Xhb0qFFk7slTkJpUCeWoTxbHrcYQ==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by AM7PR02MB5784.eurprd02.prod.outlook.com (2603:10a6:20b:de::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.31; Sat, 27 Apr
- 2024 13:48:02 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::409b:1407:979b:f658]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::409b:1407:979b:f658%5]) with mapi id 15.20.7519.030; Sat, 27 Apr 2024
- 13:48:02 +0000
-Date: Sat, 27 Apr 2024 15:47:50 +0200
-From: Erick Archer <erick.archer@outlook.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@outlook.com>, x86@kernel.org,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] perf/x86/intel/uncore: Prefer struct_size over open
- coded arithmetic
-Message-ID:
- <AS8PR02MB72373EC62275356B5FC03DAB8B152@AS8PR02MB7237.eurprd02.prod.outlook.com>
-References: <AS8PR02MB7237F4D39BF6AA0FF40E91638B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS8PR02MB7237F4D39BF6AA0FF40E91638B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
-X-TMN: [kyLYUGfwyyr3H5IPHF0bO7S04yoch820]
-X-ClientProxiedBy: MA2P292CA0018.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::8)
- To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID: <20240427134750.GA2476@titan>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431574F618
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 13:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.70.45.10
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714226083; cv=none; b=eXT/ksQe65EeJJbGL475EWjytYHIrULWz/8yrd/T0H7A1GCkdd8XBNJDnjuiXR0/xHW76mmBdm9NmLbNAb869X6ef36dq6vh4Vw3zCARV4PuofiozEWLJyla5FgItsnxE6YvtXHuKDUsTZFPOpDCOc30rqN+Sgcr6swwQ+/5V5Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714226083; c=relaxed/simple;
+	bh=2Z2cZ2r3ZL3Y/MT8LeagIDIKA+w/N+Zqp6OvwQwmLwI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b4/TgiVE+3euea+lM5bCUTstD+gC+V1Nt963lQ7xeEFRzxCm/pQzHV2aOC3LaTHGcwf3bdEdPAQPWgAAbSE6D/bvvQG6GngZ2vPLtD/AB9FkMPFq7m74FSEpaEjFJ9aKK1HUMn7CEyoytYA0lw6tai6h+cGwNRydx+3sQBO4Q/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de; spf=pass smtp.mailfrom=math.uni-bielefeld.de; dkim=pass (2048-bit key) header.d=math.uni-bielefeld.de header.i=@math.uni-bielefeld.de header.b=FxDgcFWs; arc=none smtp.client-ip=129.70.45.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=math.uni-bielefeld.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=math.uni-bielefeld.de
+Received: from [192.168.0.100] (dslb-084-060-164-146.084.060.pools.vodafone-ip.de [84.60.164.146])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp1.math.uni-bielefeld.de (Postfix) with ESMTPSA id 35D7D602E5;
+	Sat, 27 Apr 2024 15:49:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=math.uni-bielefeld.de; s=default; t=1714225766;
+	bh=2Z2cZ2r3ZL3Y/MT8LeagIDIKA+w/N+Zqp6OvwQwmLwI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FxDgcFWs5MEv8aGvyMPcUPmUrnkcrUDEGzTyDiPJYz93lPZNAXMVqNYbIKmwcrhn8
+	 h+4qr73/+OnwT480/zXEVHN7zlZaepupTjqYktHFgTCVYwMCFwRjAk04IOxu+oM12u
+	 iBhTWFyEa4378j3dd1IwO09tjZJUdCbeBkP3ehHNOzC/wcD4Em7BaVlBN9Lv4ZK8YE
+	 kBWoxHClYXM+Ted8C6jP/4z8zMjRXVCG40DgkhmiQ9u6uY42hDMA4VxR6cOiN1DlxZ
+	 YPKh65HkUCBXaTBm2Rt5zLRdbJGgtUvXp+Ndloq7d1/gWXTi2/BojMxc0Rll7gGjAG
+	 ttMF39oONZcYg==
+Message-ID: <0782e84f-5fab-4025-ad8e-aa7b56f3fbc6@math.uni-bielefeld.de>
+Date: Sat, 27 Apr 2024 15:49:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|AM7PR02MB5784:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff9d9b4a-924d-4d13-a78e-08dc66c0a7e3
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199019|440099019|3412199016|1602099003|1710799017;
-X-Microsoft-Antispam-Message-Info:
-	zi3HcDV0SnIx/8R5zCQIvDMdBdUfdbr92drDkTUw8NiSmP+cFTjvuT4Mrry9mVpUbMX27Ezk+d1ZYDP1Txoz5/Z5K48BZSQ6miIr7cLYtZ9YEVxmD7k2W2p2Gv03IvWy0QZt8+1ZhQr++XGhJWE1gHqDJ+ewT34j7twxBHDy0gCK462qb2trlPota3TehOaLj/O0cjgwdEw7C56guSNCWI9DtmQ5xdSyyIHapalXfHsE9TVskzxRQ/0ohQijls2n0u2L4RZ2708rpPgTR/9BiaI9xDBJoA2USiqB5LGFzHiRLwVFbbQ4iaA9AFfcPf+tPiTNHATuMW3CPr8pazsIflfSha3MTn2F92qC9iHjQ5HhWFNDZ+34oC/YrNZu7ZgownzekeSBr9gCyjovhW5PrA7SUkyGHcLNiY9GAaBzdH0vUZVOYkb4b8Gu5ER4iWMdOL2DlPaYMTgoZvHMif8lU2dW3Ey7gBt5TtWK7jrTqoPBIADaym+EPe+q2BBiPz6bxxbfxIysNy15KQb26TMjNsqkE0Q4RDwaYlfju6t0LhzFhB5SQ0w7g2Vl7IlNIobmDfK58UBL+BxDVyBupKukiuc9LqTQpIiBjKEHBd/l4WLwJu8I/1sqzGZq4Vr7Hmj+Jwli9inUdYNxT7AmwBUGIFts3Dd2ppq5tEM0VjLFmDCfGGOA137jgobrBJS7cJi9YXvPsI/XLoBACwtoJ/kw+g==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?trYTtSNTwmrMpgOaJihzdUtNJq7BnWS9kIUYuUPjP6Ph9svRvPdz58JRoXxC?=
- =?us-ascii?Q?HIh8JDwLm+7cHJzSiuB9pE+2wN5hKriJ4LVYXtf9qtenW033Ivr5kOJ/b/Rp?=
- =?us-ascii?Q?KTa116sQKmYuwiz1vuITnkRXr1e7vw92pHgqvgb6N0mf/9yHgI0ObWWxEceD?=
- =?us-ascii?Q?7C3ztLthR4HrMHwBzWyxuvF/1vGi1vP1GH+y5Yvu57B0ViUyITI4ZwApqxml?=
- =?us-ascii?Q?YNLydkok5mkrR/1isb0J7ypXcObMAQlpRgdv/3+yXP07XUx92h9SzopkPIET?=
- =?us-ascii?Q?c7+B45bS1Q0PHWJxWiydnHXW8L91zYwh342Jv7sXj1uAoVonqGbaMytCmNy2?=
- =?us-ascii?Q?lzwQLNYh6WaR0UIbztzALv3QBvVYv/SzZ6V1qMECAWfJn/RKlWSvvYuTp4mL?=
- =?us-ascii?Q?gQDis56HwppLs4AWqHn8GfRTAjlMeUZS/eisD9TJs/wa6dVfsl8xk4jU8Wne?=
- =?us-ascii?Q?oERQ8d4wnyBK8A0Rg/6Hp1Cen/rcKl3s6sUB/WMuXp2tjnLWHezYzLL8E4Qq?=
- =?us-ascii?Q?wZCSORtmto2lvcSa8t74opDqc+abVqAfNQ7BOl5GQnlT7n1iFVysaRjG8Ul1?=
- =?us-ascii?Q?hxptK7Fl8x8dspFLKS1Po08RRuY508GdHI8QOrH7TIVjqewvB+WJ0S561cw3?=
- =?us-ascii?Q?CsiaDQLQMLYoMFHkfEvdPHKu1yh1/D+VoedQ/ddxm2f6ytdE01kroXW4PzG+?=
- =?us-ascii?Q?JbkaORIjSfDXgpob7OextEUeEp2knaurXVPeZd8O84CVKAm8vuHF+EJV078p?=
- =?us-ascii?Q?AE/cQEL96c9CUP7GHm9NgSUC4giLoRhHbxA51qmXZkf/S7wonmuniQHQdrON?=
- =?us-ascii?Q?UjArztSV5tyCKBbxeqHuWAFi7i6KtlLsHap0lusRMhGCXL4SeTLbUD6NR3vo?=
- =?us-ascii?Q?IMI+N1Wr7+xemEsKJztm9fhAWTUeDofblNUgQqbfXBNBaOiKu64yCXisXVe0?=
- =?us-ascii?Q?hNXaruiKWyel7rJDB9vApTD+MGQSPyT2X5+YE8BODir4kp/mNtpat/H66f6H?=
- =?us-ascii?Q?t4VHGwRVLIIhYK0nXVqZKyVDIzqEwWEW8z9TP7WtpWe0ShcWXm8VapcRfn+b?=
- =?us-ascii?Q?S2UCBBgK9wYSerGvINjaEhPybkt2RVfsmCn4wmEFWSgqVOSW0Bi8s/YkyWl8?=
- =?us-ascii?Q?T7ziKE2IcUCsflhNvZw0OLaH5Ng2lbt2l1TxHQlaFbA4WpFo0pg2FreQ+Mvy?=
- =?us-ascii?Q?xf0FoeRJrkQRfxX7JZuk1E/e1YWD2aVkWoPrR9cIyj0jH9/FukwHbZQCDiK5?=
- =?us-ascii?Q?Q56JRGzJ3C6sLrWilLeR?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff9d9b4a-924d-4d13-a78e-08dc66c0a7e3
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2024 13:48:01.9438
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR02MB5784
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: Add MSF panel to DPCD 0x317 patch list
+To: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240309014732.722139-1-tjakobi@math.uni-bielefeld.de>
+Content-Language: en-US
+From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
+Autocrypt: addr=tjakobi@math.uni-bielefeld.de; keydata=
+ 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
+ JRHWPGCL3BhOxQ==
+In-Reply-To: <20240309014732.722139-1-tjakobi@math.uni-bielefeld.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 30, 2024 at 03:32:59PM +0100, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
-> 
-> As the "box" variable is a pointer to "struct intel_uncore_box" and
-> this structure ends in a flexible array:
-> 
-> struct intel_uncore_box {
-> 	[...]
-> 	struct intel_uncore_extra_reg shared_regs[];
-> };
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the calculation "size + count * size" in
-> the kzalloc_node() function.
-> 
-> This way, the code is more readable and safer.
-> 
-> This code was detected with the help of Coccinelle, and audited and
-> modified manually.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+On 3/9/24 02:47, tjakobi@math.uni-bielefeld.de wrote:
 
-Friendly ping. Any comments?
-
-Regards,
-Erick
+> From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
+>
+> This 8.4 inch panel is integrated in the Ayaneo Kun handheld
+> device. The panel resolution is 2560×1600, i.e. it has
+> portrait dimensions.
+>
+> Decoding the EDID shows:
+> Manufacturer: MSF
+> Model: 4099
+> Display Product Name: 'TV080WUM-NL0 '
+>
+> Judging from the product name this might be a clone of a
+> BOE panel, but with larger dimensions.
+>
+> Panel frequently shows non-functional backlight control. Adding
+> some debug prints to update_connector_ext_caps() shows that
+> something the OLED bit of ext_caps is set, and then the driver
+> assumes that backlight is controlled via AUX.
+>
+> Forcing backlight control to PWM via amdgpu.backlight=0 restores
+> backlight operation.
+>
+> Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
+> ---
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+> index 7a09a72e182f..5a017ba94e3c 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+> @@ -68,6 +68,7 @@ static void apply_edid_quirks(struct edid *edid, struct dc_edid_caps *edid_caps)
+>   	case drm_edid_encode_panel_id('A', 'U', 'O', 0xE69B):
+>   	case drm_edid_encode_panel_id('B', 'O', 'E', 0x092A):
+>   	case drm_edid_encode_panel_id('L', 'G', 'D', 0x06D1):
+> +	case drm_edid_encode_panel_id('M', 'S', 'F', 0x1003):
+>   		DRM_DEBUG_DRIVER("Clearing DPCD 0x317 on monitor with panel id %X\n", panel_id);
+>   		edid_caps->panel_patch.remove_sink_ext_caps = true;
+>   		break;
+Another gentle ping!
 
