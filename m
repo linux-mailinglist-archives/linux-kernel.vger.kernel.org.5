@@ -1,116 +1,126 @@
-Return-Path: <linux-kernel+bounces-160932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284A18B44B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:08:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE8718B44BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:17:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B07431F230CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:08:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17BB71C215B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 07:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133F042059;
-	Sat, 27 Apr 2024 07:08:49 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C916433C8;
+	Sat, 27 Apr 2024 07:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8SSWuAY"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3274F41A8F;
-	Sat, 27 Apr 2024 07:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286063BB22;
+	Sat, 27 Apr 2024 07:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714201728; cv=none; b=RbQoa67RatuR86XP1d5xauIdeHdefPmE1BI7m/KifRh89LnwnKE8NVkl0BUn9O6S17U7F3UPheucMRPdIPqc9niwQy0+1K2o7+xXYL13ObQmVzrschNl01fHCw6v82Mj1nCoH33LDaX9kA1AXAB+/hNGnXF8MNImlYJrzC73Lso=
+	t=1714202257; cv=none; b=lSx0gstTx/wZ5IeuFCxplLkzlHGkNNn75UqzP+TWZFfNSzwiEaGiwjHQ4+hWgqdWKlRmx5lwe4sqtB+MffnMCNO2bF7M/LCLJT+Klpo+F0E2DJrtmSwO2iKRtigyQBtWacumf+BaRtPo3FQS2OhrifPXA4Egmwgbvg0uysXXJoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714201728; c=relaxed/simple;
-	bh=ZlzmiTcSFW6jE908jpUQW7NesItFn4P1MlIpIrUce/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DW4LF2jOS0SdtydMGQV8JtI6su+Rzk/+CjKQ/QQ3ViDtX5Sbrk++AWoqjKvcE7MBGVF21UJ7NC5HuhJJ7nzIYz6CyotIBXBF5yXz81zx20hZa+iXkyDkNnQ9tqS4pWsneoI7jQp+8HSOnGRUz5anHvjIa+ZnQw0q7s3sQOaRC9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 05D182800B485;
-	Sat, 27 Apr 2024 09:08:43 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id DB1641EC347; Sat, 27 Apr 2024 09:08:42 +0200 (CEST)
-Date: Sat, 27 Apr 2024 09:08:42 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <ZiykekCe-rFe-a5G@wunner.de>
-References: <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
- <20240416050353.GI112498@black.fi.intel.com>
- <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
- <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
- <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com>
- <20240423053312.GY112498@black.fi.intel.com>
- <7197b2ce-f815-48a1-a78e-9e139de796b7@amd.com>
- <20240424085608.GE112498@black.fi.intel.com>
- <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com>
+	s=arc-20240116; t=1714202257; c=relaxed/simple;
+	bh=KsZOuxYIuzP2B3Mk5ljXHJfuM1664KIpR3QMseySPms=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aVO21Opim6vnE1gn16Yt2ef73dtCUJ5CylG44Npe/kVyCoqdhKriuouLos0Br+cWmnLc5kncYUw3cB1JGbHqXpGfzuAaC3JcNGsI1z2pAlOTjK4B/YIHZhg7JzfPyhdPnTfIN48Yvm4ho+d88W1JiTeKh0rSetVOAbs01ksZAL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8SSWuAY; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2021906a12.3;
+        Sat, 27 Apr 2024 00:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714202255; x=1714807055; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X8kCB3I1nqc74i13dcnZcbSCBOzeY8bK9si08l2dEgE=;
+        b=a8SSWuAYqRuXEx22RhpRtfrvlHQaZvbzdtq3Mkma6aOnzk5K3Ylxrgv/+DK2A9vfYi
+         vDLYLNbtDMYCVE9cbOWkflf2k/0N5Nw7pWme4XctuWDIrKZA9sOja0WSK2Ac9jzlHHbK
+         2qod/aivwscMbfFLonW0QbxxJ+JN/jCl0KdtqzqrLmOEMufBV4kW2lnLQSLmBvY0q16x
+         LG4ZYKVEZD2Icaz22+SLqTKuygEjORYo7ZiGq1FIhRuPj6+CIAz3fZ+AIr2Ql8ZRaDhj
+         VdDYt75pR5ZDOjgdNhp6FmNZ0fPgZQ84l85xdKNQFssnCkMFFpKtDnofldiefoC4sf4G
+         DHOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714202255; x=1714807055;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X8kCB3I1nqc74i13dcnZcbSCBOzeY8bK9si08l2dEgE=;
+        b=VpuD5QQjTQtMJEFBb6Qmxl45HiyzCPPXRMPIn1ghWfVJZBfTz/9QcCr/IlEa2rqdae
+         aUnR3wPhxXxiis346o5DOr0SAtgSI96ghbg4Y3gjkS6DOMnD9tSwsidx8xfx+oV7o22/
+         v7EZFGcdT7ge+4foQODTho9Mcta2O6ksMNcyTCvWIhXc/VArT2ZcVfNko/wYW+HCM7Au
+         Gl8GpdZehGhiFTj2gxS8uIqqnMMNRGaAt+gxzVEHRSGyF29fYo/qZCZanmG/dcxWE2WV
+         1p/ZP/INShiIkeNcgnmavhf90WhYUiMI7rfG9YqwfY16vI9ZY36nWwYk5VUzK1xJn7d8
+         g5VA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzNyMjWs/ZYESzTLoJbAWcPz/FJej7d5JoOPk4znQ4b+pxNTQGOmyQMnRbveCp0N/wIFXnRtEUJV8HA2/ENDR3GYBpOTOMCiKNhqGIlJzKHRX6yyNJb75HBAl1Srx6quLyao5diA3TPEholykHeQ8hr74FNaWdBA0QCp9xXFyOAZc1Wk2y
+X-Gm-Message-State: AOJu0Ywhb1JW9JfuVE79gnwUsdkzifL21v/WR4fSTHnP+ydKuLbbJta3
+	LGt9i/jfLD0smjoL2M8IpBPADJYyTbiq8LQdDJY/BvCnMCpjr+8O
+X-Google-Smtp-Source: AGHT+IHWfWgdcQqxoTVmFJIu2SLzNm3A0qQRERzEXLa7neH1QrNrTJ0T8DF6bh4XJ6eY6mQO553c/Q==
+X-Received: by 2002:a17:90b:1d01:b0:2a2:bd4b:764f with SMTP id on1-20020a17090b1d0100b002a2bd4b764fmr4481541pjb.3.1714202255374;
+        Sat, 27 Apr 2024 00:17:35 -0700 (PDT)
+Received: from toyko-2.5 ([45.32.55.39])
+        by smtp.gmail.com with ESMTPSA id e14-20020a17090ab38e00b002a03456ccabsm17233086pjr.30.2024.04.27.00.16.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 00:17:34 -0700 (PDT)
+From: Jianfeng Liu <liujianfeng1994@gmail.com>
+To: linkmauve@linkmauve.fr
+Cc: andy.yan@rock-chips.com,
+	conor+dt@kernel.org,
+	cristian.ciocaltea@collabora.com,
+	devicetree@vger.kernel.org,
+	dsimic@manjaro.org,
+	ezequiel@vanguardiasur.com.ar,
+	frattaroli.nicolas@gmail.com,
+	heiko@sntech.de,
+	iommu@lists.linux.dev,
+	joro@8bytes.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	macromorgan@hotmail.com,
+	mchehab@kernel.org,
+	p.zabel@pengutronix.de,
+	robh@kernel.org,
+	robin.murphy@arm.com,
+	sebastian.reichel@collabora.com,
+	shreeya.patel@collabora.com,
+	will@kernel.org,
+	sigmaris@gmail.com,
+	nicolas@ndufresne.ca
+Subject: Re: [PATCH v4 0/2] Enable JPEG encoding on rk3588
+Date: Sat, 27 Apr 2024 15:16:38 +0800
+Message-Id: <20240427071638.79915-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240418141509.2485053-1-linkmauve@linkmauve.fr>
+References: <20240418141509.2485053-1-linkmauve@linkmauve.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 25, 2024 at 05:16:24PM -0400, Esther Shimanovich wrote:
-> So unless I am misunderstanding something, it appears that my only
-> option is waiting for Lukas's patches.
+Hi Emmanuel,
 
-I've just pushed this branch:
+On Thu, 18 Apr 2024 16:15:04 +0200, Emmanuel Gil Peyrot wrote:
+>- Only expose a single VEPU121, since the driver doesn’t yet support
+>  exposing them all as a single video node to userspace.
+I'm also doing work with the hantro node on rk3588 which has both vdpu
+and vepu. Discussions can be found here[1]. If I enable the jpeg encoder
+at feb50000, would it cause any side effects if other jpeg encoders in
+your patch are enabled? And what's the disadvantage of enabling multi
+jpeg endoers in devicetree?
 
-https://github.com/l1k/linux/commits/thunderbolt_associate_v1
+[1] https://patchwork.kernel.org/project/linux-rockchip/patch/20240418111002.83015-3-liujianfeng1994@gmail.com/
 
-But it's not even compile-tested yet.  0-day is crunching through it now
-and I'll force-push if/when fixing bugs.  It also doesn't contain support
-yet for the "Get PCIe Downstream Entry" functionality that's apparently
-needed for USB4.
-
-The branch marks PCIe Downstream Adapters on a Root Switch as fixed and
-external_facing.
-
-However that doesn't appear to be sufficient:  I notice that in your
-patch, you're also clearing the external_facing bit on the Root Port
-above the discrete host controller.
-
-Additionally you're marking the bridges leading to the NHI and XHCI
-as fixed.  You're also marking the NHI and XHCI themselves as fixed
-and external_facing.
-
-I just want to confirm whether all of this is actually necessary.
-At least marking the NHI and XHCI as external_facing seems nonsensical.
-I need to know the *minimal* set of attribute changes to fix the problem.
-
-I also need to know exactly what the user-visible issue is and how
-it comes about.  Your commit message merely says "the build-in USB-C
-ports stop working at all".  Does that mean that no driver is bound
-to the NHI or XHCI?
-
-The solution implemented by the above-linked branch hinges on the
-NHI driver fixing up the device attributes.  But if the NHI driver
-is not bound, it can't fix up the attributes.
-
-I notice that commit 86eaf4a5b431 ("thunderbolt: Make iommu_dma_protection
-more accurate") bemoans the inability to determine external_facing ports
-clearly.  The above-linked branch may solve that, so it seems there may
-be overlap between the issue discussed here and the one that the commit
-sought to solve.
-
-Thanks,
-
-Lukas
+Best regards,
+Jianfeng
 
