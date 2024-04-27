@@ -1,146 +1,148 @@
-Return-Path: <linux-kernel+bounces-160917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F2C8B4482
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:22:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0896B8B4487
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 08:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85E701F2290F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C41C1C224F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 06:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE46440867;
-	Sat, 27 Apr 2024 06:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="Y9mcYoAG";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="+oB1trl1"
-Received: from mailrelay4-1.pub.mailoutpod3-cph3.one.com (mailrelay4-1.pub.mailoutpod3-cph3.one.com [46.30.211.243])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2314086F;
+	Sat, 27 Apr 2024 06:28:04 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F113D575
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 06:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.243
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EB440855
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 06:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714198941; cv=none; b=V0h5G5peBVL4oQAbMvRUQqOtdqiRgaILObUWfWwCfLRIDYOJhuo4AgFsJKzrWaUZdaZM6ShLofhL3VgekZA/eKEVrgQBGcbQF86JRkcpHIdcdQDioYrlI47nL/FakGBERIAKIgYxz7jZjyPlxl7KplT3UpsJ4tpOznVi77BMmF4=
+	t=1714199284; cv=none; b=Aj9Gzgyqy/kVoOhLQEVxsIhfJcpljiOdlR5tbw+OY4L4BNuI1qTInp+ACMqkxxDp22tO/UW1dcxo7GuMCe/qIJjzumL5iyLX8FLBcKg2iwtC1lQVyqmu9mFP9NsZ2KymJv5GLG21YuCE17anD3Gl1vVjAS4Wr3OMYfad4kq3JNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714198941; c=relaxed/simple;
-	bh=F960iJ3WrYrS7d7Tp2tGCfXy1flvTjEooXmW1N7d9BM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gPE0QZXbqTWgTr/n4xo1lpj+XLlLqbGht/wK7EW4miiE3HpfwBnTMIbsBVw44IaIse9gygExKeSrX6vsfkLHPNIJSfWGcsSDqCTN7X5NpSgwf+P2oO32nTidpic0xKuWaVxCVcZIHjdSaIYtAlkmmJo4jEfI13BUetX51AE13fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=Y9mcYoAG; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=+oB1trl1; arc=none smtp.client-ip=46.30.211.243
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=o3ztep49Ehxc1xACAdWujM2rDNv4v9W5wVN14aJWpYI=;
-	b=Y9mcYoAGUZoEpJWZ6llUKEQdpvh2klBCROuKOzWUgxSccEdlIzGO4qrToBJGeKlqU5o1MBJ0T1IZj
-	 a44jqfUcSgMqUCzF17sPULSqVYklnyb60Fm40K1coT5Vfr4kvPv8xc6RYOUsCBAkRvVYH8tW7rVqb0
-	 4yQxOCz+IMT5j9grCYwGX/F/kYl79FI4lBhk6RjB5mz/PES8Y0xWVZj3qF3M9C+wAhR+OLih6Qqubn
-	 vPS8M0MJH+Aa7Iuic+Am9NxhZSi3DUsTM7JL8GTcXzqmNr5gE8ekPSRwiWTdxru9+yM04KEP0CyAMO
-	 3kxVV/pc/CgoaiK3yMmCEA1tmCnwn5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=o3ztep49Ehxc1xACAdWujM2rDNv4v9W5wVN14aJWpYI=;
-	b=+oB1trl1r5wfA2halqR7rs3G6kyYMFkHyGPhOfrJoRa1G04kKkBVgVWBkbVvzkVyIR4DiREUdAjsl
-	 O17LwuPAw==
-X-HalOne-ID: 75b798e8-045e-11ef-ae42-591fce59e039
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay4.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 75b798e8-045e-11ef-ae42-591fce59e039;
-	Sat, 27 Apr 2024 06:22:05 +0000 (UTC)
-Date: Sat, 27 Apr 2024 08:22:02 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>,
-	dri-devel@lists.freedesktop.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	lvzhaoxiong@huaqin.corp-partner.google.com,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Hsin-Yi Wang <hsinyi@google.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Joel Selvaraj <jo@jsfamily.in>,
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/8] drm/mipi-dsi: Fix theoretical int overflow in
- mipi_dsi_dcs_write_seq()
-Message-ID: <20240427062202.GA1137299@ravnborg.org>
-References: <20240426235857.3870424-1-dianders@chromium.org>
- <20240426165839.v2.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
- <CAA8EJpog5yn5kiabJOZRipTx--onH9cepPe0dD4nA=Hm0aZS+g@mail.gmail.com>
+	s=arc-20240116; t=1714199284; c=relaxed/simple;
+	bh=74zgsD+K4hbxZJfPiMlMmjIhlv6PEV2ZQUe9KNJk/MM=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=JWreOgsQcXzvIiGJJc9SeJ5vMLNFy71QL2ukD8TSn3lqJcoI2MMTzFady+haTNVSfYfhxuTYCErsSY/fBmsy4zIkDn/bezV0IRB5NtnloemASsd0sx/bWQYL9jQb+qDnyYdTVzc6S8mfjBcNl8mg15nRS1GAeY1EguMTQT03X1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav413.sakura.ne.jp (fsav413.sakura.ne.jp [133.242.250.112])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43R6RwIU096705;
+	Sat, 27 Apr 2024 15:27:58 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav413.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp);
+ Sat, 27 Apr 2024 15:27:58 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav413.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43R6RwO9096702
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 27 Apr 2024 15:27:58 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <0be742a5-bfe5-489b-8ceb-efd99306bdcd@I-love.SAKURA.ne.jp>
+Date: Sat, 27 Apr 2024 15:27:58 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpog5yn5kiabJOZRipTx--onH9cepPe0dD4nA=Hm0aZS+g@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH ORPHANED] profiling: Remove create_prof_cpu_mask().
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Apr 27, 2024 at 04:44:33AM +0300, Dmitry Baryshkov wrote:
-> On Sat, 27 Apr 2024 at 02:59, Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > The mipi_dsi_dcs_write_seq() macro makes a call to
-> > mipi_dsi_dcs_write_buffer() which returns a type ssize_t. The macro
-> > then stores it in an int and checks to see if it's negative. This
-> > could theoretically be a problem if "ssize_t" is larger than "int".
-> >
-> > To see the issue, imagine that "ssize_t" is 32-bits and "int" is
-> > 16-bits, you could see a problem if there was some code out there that
-> > looked like:
-> >
-> >   mipi_dsi_dcs_write_seq(dsi, cmd, <32767 bytes as arguments>);
-> >
-> > ...since we'd get back that 32768 bytes were transferred and 32768
-> > stored in a 16-bit int would look negative.
-> >
-> > Though there are no callsites where we'd actually hit this (even if
-> > "int" was only 16-bit), it's cleaner to make the types match so let's
-> > fix it.
-> >
-> > Fixes: 2a9e9daf7523 ("drm/mipi-dsi: Introduce mipi_dsi_dcs_write_seq macro")
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> >
-> > Changes in v2:
-> > - New
-> >
-> >  include/drm/drm_mipi_dsi.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> > index 82b1cc434ea3..b3576be22bfa 100644
-> > --- a/include/drm/drm_mipi_dsi.h
-> > +++ b/include/drm/drm_mipi_dsi.h
-> > @@ -337,12 +337,12 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
-> >         do {                                                               \
-> >                 static const u8 d[] = { cmd, seq };                        \
-> >                 struct device *dev = &dsi->dev;                            \
-> > -               int ret;                                                   \
-> > +               ssize_t ret;                                               \
-> >                 ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
-> >                 if (ret < 0) {                                             \
-> >                         dev_err_ratelimited(                               \
-> >                                 dev, "sending command %#02x failed: %d\n", \
-> > -                               cmd, ret);                                 \
-> > +                               cmd, (int)ret);                            \
-> 
-> Please consider using %zd instead
+create_prof_cpu_mask() is no longer used after commit 1f44a225777e ("s390:
+convert interrupt handling to use generic hardirq").
 
-Hi Douglas,
-please consider the above for all the pathces, there are more places
-where a cast can be dropped.
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+Since nobody can respond, sending to Linus, as per "THE REST" rule
+in MAINTAINERS file.
 
-	Sam
+ include/linux/profile.h |  5 -----
+ kernel/profile.c        | 43 -----------------------------------------
+ 2 files changed, 48 deletions(-)
+
+diff --git a/include/linux/profile.h b/include/linux/profile.h
+index 11db1ec516e2..04ae5ebcb637 100644
+--- a/include/linux/profile.h
++++ b/include/linux/profile.h
+@@ -18,13 +18,8 @@ struct proc_dir_entry;
+ struct notifier_block;
+ 
+ #if defined(CONFIG_PROFILING) && defined(CONFIG_PROC_FS)
+-void create_prof_cpu_mask(void);
+ int create_proc_profile(void);
+ #else
+-static inline void create_prof_cpu_mask(void)
+-{
+-}
+-
+ static inline int create_proc_profile(void)
+ {
+ 	return 0;
+diff --git a/kernel/profile.c b/kernel/profile.c
+index 7575747e2ac6..1a6c1cf98485 100644
+--- a/kernel/profile.c
++++ b/kernel/profile.c
+@@ -342,49 +342,6 @@ void profile_tick(int type)
+ #include <linux/seq_file.h>
+ #include <linux/uaccess.h>
+ 
+-static int prof_cpu_mask_proc_show(struct seq_file *m, void *v)
+-{
+-	seq_printf(m, "%*pb\n", cpumask_pr_args(prof_cpu_mask));
+-	return 0;
+-}
+-
+-static int prof_cpu_mask_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, prof_cpu_mask_proc_show, NULL);
+-}
+-
+-static ssize_t prof_cpu_mask_proc_write(struct file *file,
+-	const char __user *buffer, size_t count, loff_t *pos)
+-{
+-	cpumask_var_t new_value;
+-	int err;
+-
+-	if (!zalloc_cpumask_var(&new_value, GFP_KERNEL))
+-		return -ENOMEM;
+-
+-	err = cpumask_parse_user(buffer, count, new_value);
+-	if (!err) {
+-		cpumask_copy(prof_cpu_mask, new_value);
+-		err = count;
+-	}
+-	free_cpumask_var(new_value);
+-	return err;
+-}
+-
+-static const struct proc_ops prof_cpu_mask_proc_ops = {
+-	.proc_open	= prof_cpu_mask_proc_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= single_release,
+-	.proc_write	= prof_cpu_mask_proc_write,
+-};
+-
+-void create_prof_cpu_mask(void)
+-{
+-	/* create /proc/irq/prof_cpu_mask */
+-	proc_create("irq/prof_cpu_mask", 0600, NULL, &prof_cpu_mask_proc_ops);
+-}
+-
+ /*
+  * This function accesses profiling information. The returned data is
+  * binary: the sampling step and the actual contents of the profile
+-- 
+2.18.4
+
 
