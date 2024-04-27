@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-161178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF368B4807
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 22:39:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C4C8B4808
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 22:39:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE34BB22506
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:39:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8BF28117A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3977515B557;
-	Sat, 27 Apr 2024 20:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D1115B968;
+	Sat, 27 Apr 2024 20:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="YmZgHe7y"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="SQfDD+nq"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C022415AD91
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 20:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE9E15B111
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 20:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714250196; cv=none; b=c9iqbTHHYSrZ483sgSl9eLX3WM66oWdmk+ufq6B/0uuLeniXUkcLmDOm0TsTwUzJssAcPdvDQXs3vzgshP9xlCRPHcebX3FHmaOC+oCPcOLMJskXmZjLb1yZWB4vrPg2zOOlTEA4XQTQUtsabged54ny040N7TrlNJE8OjWYCdc=
+	t=1714250197; cv=none; b=RR0srVBP8+G6bNo2iQIC0M77Wyp8Nl7600J9jAFPBNadUdnGhvgmBqQR/ryDXnM9PKnNP/5wdNF6eIZoztQRC9gXV1Cq8vsjouM4iFBtnqTMq8jVN1zBvrzoyGCvVSvZCmU6JMFtnMQ+d1jE3dIgtWvB+kbTsosaQEtEBuOgwZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714250196; c=relaxed/simple;
-	bh=PQbfVr0szfKuLV1vCwfI/knNOPEEk21YgZvjweSPPWE=;
+	s=arc-20240116; t=1714250197; c=relaxed/simple;
+	bh=9xH6xQ0iM5hWBrxXUfKOBqLqw+/88LiBx0LmN8wQM+4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXv7sYEc+qKcWhYQh9JQCaNP10yhbJfo5XFNfkvvVYZBDh/WLFJXMiVaa7omFM2Bpv2/WUxnHuzWXu/4yO5sorb7J8H80kM0cu0g5nNdxIdVUtcSaM0k+8KZSRIq8p7qYiYcTP5eV7OIwWN2M1Qrp7bXkyK0Wzmnvwhs+XUJ4iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=YmZgHe7y; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=QVaJWTpomae7qsfxUfpBbG9eg6EhBF0WREyqN6netOSc6gtomII1a0az5NAUctyU5cRfBkr/Kz8+76qXHu1xkKZXJYbPWKqWQjmosXew26j+o1v3bTyJ2m9YQWzx597qs5SwOb9AjxH21oeJpkf2pawx6vZ/h0d6Cj8k8YtYoFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=SQfDD+nq; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=J5GXIPR6fCe0wVIwusYLH0113fTOigxkr/KOK1nav1s=; b=YmZgHe
-	7yYTYd8mRqA590uEXPCeTXuthPUUa4WtfNzpuRFPoBHZ7c46clNLgJo9Mtu8CyZJ
-	G9ejf2k6+RBeMI0l4gW3v8PFLfIKub4w/OHEROYkgSRrsMLFnmSOFVRNhc4tD3KQ
-	mvsCQSnevfR7VFTIzRUfMenKgNSXuz/aAj1kjIIMtDzOi5UlrnWR2jaTpUPXeU5g
-	bkoqo+Y3CZPfhVkioFqoyhr/FimbSUOUqUQG4g7zYzcjSpd9B0mwmQVm9c868Cr7
-	W860VfecVpB7nIADJWSSMsAgw9j2ebLU5kGu+TAghroFWrtEOsG/XyyD6yddtHR0
-	FnV5DepsZEsxJVzw==
-Received: (qmail 1782065 invoked from network); 27 Apr 2024 22:36:23 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Apr 2024 22:36:23 +0200
-X-UD-Smtp-Session: l3s3148p1@B0g3+RkX6s9ehh9l
+	 s=k1; bh=cTlq5+NeurWDjBC43r6sTnS6ae5jK95Gz2jK8PwGMpI=; b=SQfDD+
+	nqamKv0HLFYg+o9mTGxdZI99eK8DpiOQXl2bwmqlDEzxaLvDil0CuTKV/f+4K2Hr
+	O+FfuoVmtMXuvI5cB3472PyEZmWA6rKaEN66Sr64/Cx/OKbKxTPRDqS4nPPdZVZi
+	M1e/O2g+pHDavELKX/Ms800bRXRGkHfgZKIQMhuzox7TmE2MG8eyR3ezOTd6kLDy
+	H4r4z+ZotMno2uiIi+cP3T0RlzY7kGWjnFkooO7+mCcx6j3ofkvGPq9ra6vTIOD+
+	IVCWx4AKXPZAuUzOf7zlvXp4TfC7r9MjEDtM/SpkCyknsxc+/p4W/76VzenzjwFE
+	0Nio/4WWwheNDxnA==
+Received: (qmail 1782081 invoked from network); 27 Apr 2024 22:36:24 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Apr 2024 22:36:24 +0200
+X-UD-Smtp-Session: l3s3148p1@beZD+RkX8M9ehh9l
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Paul Cercueil <paul@crapouillou.net>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Andi Shyti <andi.shyti@kernel.org>,
-	linux-mips@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 11/15] i2c: jz4780: use 'time_left' variable with wait_for_completion_timeout()
-Date: Sat, 27 Apr 2024 22:36:03 +0200
-Message-ID: <20240427203611.3750-12-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 12/15] i2c: qcom-geni: use 'time_left' variable with wait_for_completion_timeout()
+Date: Sat, 27 Apr 2024 22:36:04 +0200
+Message-ID: <20240427203611.3750-13-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
 References: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
@@ -77,74 +78,34 @@ Fix to the proper variable type 'unsigned long' while here.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-jz4780.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/i2c/busses/i2c-qcom-geni.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-jz4780.c b/drivers/i2c/busses/i2c-jz4780.c
-index 55035cca0ae5..7951891d6b97 100644
---- a/drivers/i2c/busses/i2c-jz4780.c
-+++ b/drivers/i2c/busses/i2c-jz4780.c
-@@ -565,7 +565,7 @@ static inline int jz4780_i2c_xfer_read(struct jz4780_i2c *i2c,
- 				       int idx)
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index 090b4846ed62..0a8b95ce35f7 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -586,7 +586,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
  {
- 	int ret = 0;
--	long timeout;
+ 	struct dma_slave_config config = {};
+ 	struct gpi_i2c_config peripheral = {};
+-	int i, ret = 0, timeout;
++	int i, ret = 0;
 +	unsigned long time_left;
- 	int wait_time = JZ4780_I2C_TIMEOUT * (len + 5);
- 	unsigned short tmp;
- 	unsigned long flags;
-@@ -600,10 +600,10 @@ static inline int jz4780_i2c_xfer_read(struct jz4780_i2c *i2c,
+ 	dma_addr_t tx_addr, rx_addr;
+ 	void *tx_buf = NULL, *rx_buf = NULL;
+ 	const struct geni_i2c_clk_fld *itr = gi2c->clk_fld;
+@@ -629,8 +630,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
  
- 	spin_unlock_irqrestore(&i2c->lock, flags);
+ 		dma_async_issue_pending(gi2c->tx_c);
  
--	timeout = wait_for_completion_timeout(&i2c->trans_waitq,
--					      msecs_to_jiffies(wait_time));
-+	time_left = wait_for_completion_timeout(&i2c->trans_waitq,
-+						msecs_to_jiffies(wait_time));
+-		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+-		if (!timeout)
++		time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
++		if (!time_left)
+ 			gi2c->err = -ETIMEDOUT;
  
--	if (!timeout) {
-+	if (!time_left) {
- 		dev_err(&i2c->adap.dev, "irq read timeout\n");
- 		dev_dbg(&i2c->adap.dev, "send cmd count:%d  %d\n",
- 			i2c->cmd, i2c->cmd_buf[i2c->cmd]);
-@@ -627,7 +627,7 @@ static inline int jz4780_i2c_xfer_write(struct jz4780_i2c *i2c,
- {
- 	int ret = 0;
- 	int wait_time = JZ4780_I2C_TIMEOUT * (len + 5);
--	long timeout;
-+	unsigned long time_left;
- 	unsigned short tmp;
- 	unsigned long flags;
- 
-@@ -655,14 +655,14 @@ static inline int jz4780_i2c_xfer_write(struct jz4780_i2c *i2c,
- 
- 	spin_unlock_irqrestore(&i2c->lock, flags);
- 
--	timeout = wait_for_completion_timeout(&i2c->trans_waitq,
--					      msecs_to_jiffies(wait_time));
--	if (timeout && !i2c->stop_hold) {
-+	time_left = wait_for_completion_timeout(&i2c->trans_waitq,
-+						msecs_to_jiffies(wait_time));
-+	if (time_left && !i2c->stop_hold) {
- 		unsigned short i2c_sta;
- 		int write_in_process;
- 
--		timeout = JZ4780_I2C_TIMEOUT * 100;
--		for (; timeout > 0; timeout--) {
-+		time_left = JZ4780_I2C_TIMEOUT * 100;
-+		for (; time_left > 0; time_left--) {
- 			i2c_sta = jz4780_i2c_readw(i2c, JZ4780_I2C_STA);
- 
- 			write_in_process = (i2c_sta & JZ4780_I2C_STA_MSTACT) ||
-@@ -673,7 +673,7 @@ static inline int jz4780_i2c_xfer_write(struct jz4780_i2c *i2c,
- 		}
- 	}
- 
--	if (!timeout) {
-+	if (!time_left) {
- 		dev_err(&i2c->adap.dev, "write wait timeout\n");
- 		ret = -EIO;
- 	}
+ 		if (gi2c->err) {
 -- 
 2.43.0
 
