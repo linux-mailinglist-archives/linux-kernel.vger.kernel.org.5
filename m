@@ -1,118 +1,132 @@
-Return-Path: <linux-kernel+bounces-160833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5858B4363
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:54:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C4288B4364
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:56:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CB8283479
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:54:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218AA1C224CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616112C861;
-	Sat, 27 Apr 2024 00:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85782E403;
+	Sat, 27 Apr 2024 00:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x7AAPu1Z"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGwFRBVL"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F9F63BF
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 00:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADB725777;
+	Sat, 27 Apr 2024 00:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714179248; cv=none; b=O/3UaYDXpaEyDrvfLqOI34zsJNtw77NIBniRaM1kVfDom2n+MXxWlIr4nBLeQnCoLxEK5+kb6cZLHr1dml6w4I/8HlpgY4V9uvYBscDYyeI5nRd3IIZqEv/DvRNVSbofWIW+JN4miEvQoQkdgjWOE6djhTkhKrkM8Luze6wlbdE=
+	t=1714179409; cv=none; b=NXMNGUkE1iXMsDhC58E5p8QOoN4r6nXOgwH4ZcAFdkyrLy6Cj3CiPPwURW93kaS4ofBo/lqiQYtzWGb2IC6foG+avohKtDFHw0GFCDGlEksbDnHeJS5a+6wN4cCOgdW7JjqWbuPbVNSQXK1csrsMRDmvQDlyB4gtAOocyZ5qcnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714179248; c=relaxed/simple;
-	bh=XdWP+Ws8G6X0WoLcorahyHKH/OfVVPQHJgQ8LO7nJYE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E/AmLOCwSAojkD+GMprfovgf/eMIBXqQUD7RCcrGAwjsZVBnnm83Qon4rh8nYRYywJmfzCDTbShsOkHbSHX5Lfgday8rZg9TY3k7F7RqE82iq4qiz5cEps2P6CzzkRNw9imcAthhIUmTXsPgJTppOvGv6xyleezkLLuErfjqLYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x7AAPu1Z; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso4178746e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:54:06 -0700 (PDT)
+	s=arc-20240116; t=1714179409; c=relaxed/simple;
+	bh=GnDwmsqjw2gFexBSuJVJeSDwlc8LJOSAPfHh9x1k0TE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h5T9YoSYTW5KumG15hMElGPIsygs1SbZaRD2JUFz8jJShKcmbgvg669oxytGiaSPIm3iCgRV0RHzOOtYaFgwqhDmXXsUd2vcNchZLKtlBExVv2xEQcDS7NMujvgYnGcnclYjSOXKJo1HAAyxuMemHZgcW8ccKpDmkWRf110eoWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGwFRBVL; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so8807105ad.1;
+        Fri, 26 Apr 2024 17:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714179245; x=1714784045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+CEIqz3rmh2iubHOxS8JkJvUfvEGVm+LnxGZutLpHYk=;
-        b=x7AAPu1ZGRdlDyocFqCCy+lx1OHJ6eVTStvEVbG/iVzv4S0+ZCOO+5rynVDEEUaaEn
-         3qXBuDCQEM2jZZjjKFZwpNoZ9MuSC2gp6WWmfW5m9cuKocGANQS5Z0esNczDJu/H0Vx4
-         NXAt3bPiLczoEdeOcdAhCPJfleIGy7acn6vN1ZXR5M0RP3eR/WTGtcKx8u7F5TNrjqI4
-         QIIwitYXRLvTfkZ7LEa57vfUwPlF1DnvgVH1rZQSrVOT5hUThufP5qeL/ITiXdrJFL1w
-         Zu+j5mLo7n+le0CxSY6eV3sbbw5DgRuUQQjUS7x61D5DCkMnPc2o/CWDl/IJ7DEnilHR
-         0Ytg==
+        d=gmail.com; s=20230601; t=1714179407; x=1714784207; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
+        b=FGwFRBVLoklOcjab11V7OFvhhzuR/ot4IptOeXXN9zgW1+9EkpLR/x05PJ3LesPchZ
+         bCP+EKFrJ/T4ivnEBhgmyoYxXc7HagtueeCBwDvbp9m3MzCilIOmnRM+Raa5w/mQXlAk
+         9aF9MdK1aaHMEBFKN/4FGBrdZgmPhHrb2sG31G58PV/Zv5eIEXoQ2fhuQyrKc/4O1nU4
+         E0oZ+HK8VgisB6Xz8iAMLh+0rcU9ejzhlyLFcT/9nt1aI4uJppVpZhDR2akywCyfNUp7
+         Rh6rNjJE4CVdRBObtBrJ7gJF/7Zcj5LRPthU/lwTdyeMrHnVzDbOi1G/XjKFWRv7vgQo
+         WkmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714179245; x=1714784045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+CEIqz3rmh2iubHOxS8JkJvUfvEGVm+LnxGZutLpHYk=;
-        b=SBlRU+iRxS2YKF9IDsEs2cvVYpvA2zQaw+E6KoJHsS+IQIl+j8eyu00F1BIDj6yunM
-         CxZML4LpWJx2eYudTVHhYyreec+UjrGclc5PmXUG2vSoGsLACLe87s9BXS67+pjySjeh
-         olejWKvL0RTuf7fcOrSVdi2Wpg+l0+094F/QxMMKi/Nfr/n7dYSvqrxvbmkfk5CgH7xe
-         gXUaPrI0ryXAcXxf6R+dM3fCvU29KNslfPmDicNHf0bsYd1aUiLaHuhC6CRqefI0eXbF
-         4Z+M2M9SDE5HzV2EqfDg+5PYqFKKoX2ghg/smbxjU9BmaS6xJ98PBZS9IjotxGM39l64
-         fj5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU+HsN+iIFgo8Fs7V4XD5MJ5csGWWO7t61X5ef8yBDQgJSnEga9v0FO+jOdzEaXBr452q1063vpZp6fiy1lw2PkpGau8/hyGdk3LS4S
-X-Gm-Message-State: AOJu0YyTE/jrcbuWVC39VSj10M0lkeq6ZMDokzIHSTzk6dcmjTikg5rL
-	YOZB51HXWa1ntY/CYQxUpGiW5dsRJxVLvb6GbL3aqXsiQhHHkJuLruKflpJ7qsIaHQmZWViMd0E
-	pjWJMrQyw8ttRCEWtHRhdd1Jh0MUVaSgXSAkB
-X-Google-Smtp-Source: AGHT+IH33jn2znwyrxRHKKv4ph3YkibD90xJSbJ3dZFe7grEgK0acZVtb0LBNdCXJts6dyeDEayeKUfZVGdmUnCBcB4=
-X-Received: by 2002:a19:8c1a:0:b0:51b:e707:74dd with SMTP id
- o26-20020a198c1a000000b0051be70774ddmr3117973lfd.33.1714179244845; Fri, 26
- Apr 2024 17:54:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714179407; x=1714784207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
+        b=Fsqo1KcJ27s705QUAr3jUqfj6qBzqxsNQfgOZYThXyvwOrscQgUvLfS3zQM0qYmYvn
+         m6NRepdW5d0qvqRbnFxRXu7Fjd0E33PfeXMsKdraHgVreifwdcItNcRjZHHoT96YcyVV
+         duvNKAKb9M7WrYooKuj0ehA/4PJpv6DXuIYXuJp8JMG7PvMYUBkZmDyusyN/qC/iH2QK
+         dJVVPJsv8Ke3wRKjK6E+QIPckjHxwwNAfPY8ni3wyvUcs4KMVA2Z+wmCI6KjBT/Fx1k0
+         LPomQ2kB0R+x+0RU9eVLANA+RxZoAtWY9YySB9/RVRUt/cMu0JrQtnFWyLsLCDzMpAga
+         AMUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLVRn4EG7PUSfc/d9mwnYCb/xXDbLcC4d1ZJfsqnh1RJmzlT3HmGHf3YRzmzjrQyfPflLdKSGUhzbcBtJ6eUKxKXYA
+X-Gm-Message-State: AOJu0Yyc/dd1QDt6RWmtbSsc6ERTut5QkbWcj8gsq4bcVuEKyuRKsUYy
+	gBPzyY2z/sqjRXe3C4zsl95aJWZLMsWsqi+JNwDzuUYm0mjv4adnJ41G4VtZ
+X-Google-Smtp-Source: AGHT+IEuVHn3L7YCYGc8lyexE5wSS3enuQd1OF24X1QYCkhQvikdYwbmp88ie3iTFEmPjThszvKYiQ==
+X-Received: by 2002:a17:902:778a:b0:1e5:4f5:7fa7 with SMTP id o10-20020a170902778a00b001e504f57fa7mr4022755pll.21.1714179406933;
+        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
+Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
+        by smtp.gmail.com with ESMTPSA id t2-20020a170902a5c200b001e26d572f9esm16018476plq.242.2024.04.26.17.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	paulmck@kernel.org,
+	frederic@kernel.org,
+	boqun.feng@gmail.com,
+	joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com,
+	qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] x86/rcutorture move CONFIG_HYPERVISOR_GUEST to kvm-test-1-run.sh
+Date: Sat, 27 Apr 2024 00:56:26 +0000
+Message-Id: <20240427005626.1365935-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev> <20240427003733.3898961-5-shakeel.butt@linux.dev>
-In-Reply-To: <20240427003733.3898961-5-shakeel.butt@linux.dev>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 26 Apr 2024 17:53:28 -0700
-Message-ID: <CAJD7tkbzCMpBeM1hgi6SX4SB7W7e5UZ-Akw6f76PLr4PaR5uWg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] memcg: cleanup __mod_memcg_lruvec_state
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 5:38=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> There are no memcg specific stats for NR_SHMEM_PMDMAPPED and
-> NR_FILE_PMDMAPPED. Let's remove them.
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+CONFIG_HYPERVISOR_GUEST is a x86 specific kernel option, move to
+kvm-test-1-run.sh to avoid ConfigFragment.diags in non-x86 platforms.
 
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Tested in both PPC VM of Open Source lab of Oregon State University and
+local x86_64 server.
 
-> ---
->  mm/memcontrol.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c164bc9b8ed6..103e0e53e20a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1009,8 +1009,6 @@ static void __mod_memcg_lruvec_state(struct lruvec =
-*lruvec,
->                 case NR_ANON_MAPPED:
->                 case NR_FILE_MAPPED:
->                 case NR_ANON_THPS:
-> -               case NR_SHMEM_PMDMAPPED:
-> -               case NR_FILE_PMDMAPPED:
->                         if (WARN_ON_ONCE(!in_task()))
->                                 pr_warn("stat item index: %d\n", idx);
->                         break;
-> --
-> 2.43.0
->
->
+Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 ++++
+ tools/testing/selftests/rcutorture/configs/rcu/CFcommon  | 1 -
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index b33cd8753689..75774bc70be7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -68,6 +68,10 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
+ config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
+ config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
+ config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
++if uname -a | grep -q x86
++then
++	config_override_param "x86 specific option" KcList "CONFIG_HYPERVISOR_GUEST=y"
++fi
+ cp $T/KcList $resdir/ConfigFragment
+ 
+ base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+index 0e92d85313aa..cf0387ae5358 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+@@ -1,6 +1,5 @@
+ CONFIG_RCU_TORTURE_TEST=y
+ CONFIG_PRINTK_TIME=y
+-CONFIG_HYPERVISOR_GUEST=y
+ CONFIG_PARAVIRT=y
+ CONFIG_KVM_GUEST=y
+ CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
+-- 
+2.34.1
+
 
