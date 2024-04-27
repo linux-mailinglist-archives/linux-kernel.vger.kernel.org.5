@@ -1,112 +1,114 @@
-Return-Path: <linux-kernel+bounces-160971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B89638B4549
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D38CE8B454C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73998281407
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:12:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94546281D16
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A885746424;
-	Sat, 27 Apr 2024 09:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9F745959;
+	Sat, 27 Apr 2024 09:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="MTobUfBT"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="ZbfoGwnO"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F20C653;
-	Sat, 27 Apr 2024 09:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C113613E
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714209152; cv=none; b=UmwRgF57Z73Xv7cKCqBU3VzMfaVML0g3f/7s/5+cQGHqxp1FwuRf1baqbs3VZogG/LQW047zyp3ZpG6eorKvLHm82+Xn/TWHjHB7eH/V9D4aTBMI672YOUATZ4Jl/ElRzZQUWIFkQUpSY91/QpEWeD00sus781YgEuzg+kS+YYo=
+	t=1714209261; cv=none; b=L/tOF8PfyqRpmZYe2lNgzeS/qQYUXua1z8CQl+lWmaAp5QMsDQBAO8zT1xV8K6E4c3+K1EN+BD/z/8lSjwi32SziloInBEMWVkU0aShziefjyYPGBPI96Zv2TWhgWdsiz6xXnM/06ZJjv503AhcbKgXSbzdBdUuN8Vd7r5GwLWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714209152; c=relaxed/simple;
-	bh=/xUk67PN/piLmYuiK8bKqr13B/hDGBvoKwdPCUFkcB8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=tX8XI087iFbweLkiWII6G9eZQupzlzX/0o38XJ+ye1PdhV+7XGsePyxsViFfz3M3Dd5uPEfVctDgxHwwt12LSmVhjqGltqKhZP1DU6+aO/UrqpWj0pwKwZASYXZW7YqMhpgmjq/XHpp+T7U4YY+VSzQrZuIX/OgNIZtnuIaX31c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=MTobUfBT; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714209108; x=1714813908; i=markus.elfring@web.de;
-	bh=bGYRi4hDpraTh6L96Bqc9vwhRnZcF9ttS5i++hemawk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=MTobUfBTQdxdpqyAvUGudIE6VMHg9DZt/tMxsB8wNadfPrY9F2BHB5BYAEdxOHW8
-	 IYPpRculOWRjnbvIFaFzhPUUqeVC+1hugwQDyzATe5T/RS5ahMh5beezqX33PfpkF
-	 UNhQ5fptNUIqs/32PwHgk5t+ZDoZ7LOW+oBPvIJWC7Lf6JvWzEY3lHB25DoNhYMFd
-	 Y0jG32ei7EG34GbyIUK0opci/dpAx/jF2AW3gJaECaBwZOF/5ETCZ9FdirHYKv33x
-	 U7gOyRLVEP2Do15o/FcAhHtWlU3dnR0kX7lkY1um3z0PC+A3HzGz5viXIQA6+JjtM
-	 Cc0N1KgovzJL4HpVTQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MZSFY-1sDHfO0MTO-00Wnc6; Sat, 27
- Apr 2024 11:11:48 +0200
-Message-ID: <d1ff7c50-7810-45ef-b31b-9189348fa09b@web.de>
-Date: Sat, 27 Apr 2024 11:11:44 +0200
+	s=arc-20240116; t=1714209261; c=relaxed/simple;
+	bh=vufNbsFjuvsWZANwyY5we69EkOhoysOpuy+LloNbTeQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BifR1+RxPkO5Flikj1CbKlzkn/VylpQlB+xoUVyg+oa+0BXFGdCkfSGZzAx1EzIK2q9meLhFadGPRKvIE5gyQhC+/oQPTyccqPRcj1p7ZspqU/4rS6siyKObYCD2eVF/RQRCIn05AO37Nc7icivzbhXojEY5mXE4gn7Dm2YH3VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=ZbfoGwnO; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=cWs8
+	k+GVFplCjgl9DUc3V0PD20kXbgvT+vO+6jr+fbM=; b=ZbfoGwnOekjjKTHtWJhD
+	nMYp5gvnmij1/BXqjcciz2Bvf1BlIh+QxLyT8JLqjKs/Spcgj5NvmQOTFRN5EGzK
+	Qirli1BSTjM0pZxc/CAihNLDWfh9ZIH9tn6wkJ18oE3tKl2FiK1B/z4xU5MmZwRa
+	yl9O1dt6Cgw8JN9NqJqcwymk17KNAH8mjtqDxxNvQiR+7VNk1mYKN+ejd3Yr/NST
+	Kgi613VBw0BvHTWOcs7W0pLwWWFQfgKSfrerJ7k58vF7D/xJCT1QY3uHgUd+W+Kv
+	9dDJKp2O4y90dcnYm6gNyWSD1cNwO6TZMw8HPSxcg1f9vKqg3+opRzOBMex5DfiQ
+	fQ==
+Received: (qmail 1636660 invoked from network); 27 Apr 2024 11:14:09 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Apr 2024 11:14:09 +0200
+X-UD-Smtp-Session: l3s3148p1@WL5ZcRAXENVehh9l
+Date: Sat, 27 Apr 2024 11:14:08 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: smbus: Add (LP)DDR5 types to `i2c_register_spd()`
+Message-ID: <20240427091408.3gbzxe2rlu2m5wyt@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+References: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: LuMingYin <lumingyindetect@126.com>, linux-trace-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240427072347.1421053-1-lumingyindetect@126.com>
-Subject: Re: [PATCH v3] tracing/probes: Fix memory leak in
- traceprobe_parse_probe_arg_body()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240427072347.1421053-1-lumingyindetect@126.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3aCTPfz1dpBnXB33+rL9kND9c3ORiQ5rZM12p8HdfHGENMgrPv+
- Z+QTZVXdS+wyF1fOSJWBNa2GB/sHSPH/0fb0bBcwLdrYAYo1LsBxxoHByC+Ojl6tWNwz3ta
- QEnqarjVscY5IRkqY072mGY9mYTSGDgxtDmnCfDdkwQ84HfYyV5hxFUQ6e9T+cEBa5LMfJ1
- BStiO9P/ZyoXKLky245yA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:w7Cxg2AAj9I=;MwCHZFhO6hZnCo+5SjFy+Grky69
- zp4OIak+X7dizzbj1m1mbD1CUlCo6ZqGbnsG9ama6+Pf56jZFiF3T37cqPFqsvmfqou51UCvp
- J5ymLWIATymIUwb6JtMGyb9uHPxwJ9Twp6VqIVUVnbShFpo3jk/2/VinPzQ2+NzDA68RSyuEK
- UQ2l10Rba3x7lqOZFpXMDqG9vlAxjF62pqlg8hAzguwHG5CQNKYIIKQYf9opCtUYREsLIZaVQ
- ty9zGLC93kSX1E8vutKnhwzh+WW/wjj2revIx7Kf+8qthbCj3ypP6PC5N4yeSVSPheWmahQ7x
- D1sN8hzkCmT8ShibGD2NNWAdbB9JLPJVJtjuqcH3eUzvtH7u15duTnsrfLdbEAjCditN9kHNW
- rJezN9qa+mrqXqGh/I+XvnSjHmYks7kxJCYLQMP4yxZMx8N+/17vE4RWgi60RVjBwYXODl609
- KU72gX5MSH7PFfdbHCWxx9uhHmEUUhAU0PNC1hfrmkb6yuIm5XHsItTsr38EIEA4pqenYF/dH
- 8LOWOquyMGiAeAU2iJ/r3Im1Q4n9M7xrQKd/QggCOeUFf8bgOCY2kjrmbtfLwUlkEeSPQ8lkC
- swE9PZjFcaR4OJALxRQwRcbUJ1pQje5Ub3Uy9mctMHb+ax7Aul8YfYQOnd7G1RaEeeVWcN4yv
- Qcej+hpbvr93zbOrzVAGz3HKWiwSISlYgoncD70jJCBIDC35Bt3tVdJ3nsPdyXaAVGg/1EJ+h
- X1ONviOAae0Zc2rwmlE6MoglMXvw3WHWuC3qjCGx2Fc+CqmEDvPgfgr/1Z2GNUqMABo4hxMRo
- QpqD9UzJHsllNJ2i8kOeSZovJNaSGR58eSNYX8qN7O0ds=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kausmgpaq4p3oq3s"
+Content-Disposition: inline
+In-Reply-To: <20240426220748.28184-2-pmenzel@molgen.mpg.de>
 
->                                             =E2=80=A6 by mistake.In the =
-result,
-=E2=80=A6
 
-I propose once more to start the second sentence of this change descriptio=
-n
-on a subsequent line.
+--kausmgpaq4p3oq3s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
-> kernel/trace/trace_probe.c | 2 +-
-=E2=80=A6
+Hi Paul,
 
-Unfortunately, you overlooked to add patch version descriptions behind the=
- marker line.
+> 1.  I have no idea if the name ee1004 is correct.
 
-See also:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n713
+I am afraid this won't work. It was tried already in 2023:
 
-Regards,
-Markus
+https://www.spinics.net/lists/linux-i2c/msg62267.html
+
+Especially note Jean's answer here:
+
+https://www.spinics.net/lists/linux-i2c/msg62420.html
+
+So, DDR5 probably needs a new driver.
+
+But thanks for trying!
+
+   Wolfram
+
+
+--kausmgpaq4p3oq3s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIyBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYswdwACgkQFA3kzBSg
+KbaZrw/44I+MPeOz+tBatSvCkhLS0/rOskhqdsnq0YRMzRIJe/xPSKulvS722t7j
+lCIe1Q+RkzcwE64kFfgbM0nEb+1894uA7jH+Db7DbXe6xyAKJxZ1vgtIjfd87oNn
+ekc7VLX59q6Duv195tZTuBfrhf51/4NVWoStkGw7Zuqpi4gc5cYQRs8nnXio5g54
+TDVvsFwMB9whn7II5NFjEG6A9LYr08VmecJN2g8D1LM05MHE791rRI3zBwjxYzpH
+h8HRjoUn0YM7ZBhvCOSDN+4zF0lY2AqmSGYci4NHmQYtG3i9yrESB9ztt2BeCMnm
+/NyFadF1bFjc+unpCK9KQCfiNL0sktvzj+Ey7mGE5cbE82AxPnCBAXsNPsQegiMP
+ekC1fQmUktNiINwMhe7ho/N8Iba7FQV0Z/jhul26wLdylTGFWspbVbayO5dE13p1
+uxI43FNaJ+CU+MdxQHx3DvBA+knCuKOIUEcxwbzRuxDvAIJwPRumxVLnbbbdUObw
+m7vZlDPg8brI5EYtKGCthzSNkGcDCvYY56c2EVmGgyeOfYfbrZnhlp09JBJ9H0E0
+bKvaBbxghpSkeG1MRsVpMMUzWqRwJzbphEANrpNtL2+obH/9XhGF3WYlml8QCIa7
+n8y93PNhFkFG3WQx+60qjnq4Ivj9X5niIalJV+vUHNzH8ivvyA==
+=ywlY
+-----END PGP SIGNATURE-----
+
+--kausmgpaq4p3oq3s--
 
