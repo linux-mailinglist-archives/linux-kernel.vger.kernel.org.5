@@ -1,135 +1,150 @@
-Return-Path: <linux-kernel+bounces-161154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E3B8B47BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9ADC8B47BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:58:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D751282358
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:58:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8520B28236C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B499C1428ED;
-	Sat, 27 Apr 2024 19:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F57312836B;
+	Sat, 27 Apr 2024 19:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GrEfZI9q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TgAZY5dv"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD5B13AF2;
-	Sat, 27 Apr 2024 19:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC847E58D;
+	Sat, 27 Apr 2024 19:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714247871; cv=none; b=LqVoLa6Hc/pq+uFSHMWx0LpeU2aHYJZBHzQIRd7nldQ1xknB+7VfzbQPG/dHR7BQ/iH4KYkuLJob8vFMO+iJNiCQFzDJWJEkMXhFwjCKNzPpwpPam8qHtu2q4wu5lcQDMQPKr67V1+YzA1M6yWjXh/4bk0woXJhg+cBNYw0JVw8=
+	t=1714247884; cv=none; b=aM0pca/o1jEjmcNm1ZTz9ZCkF20afZyy2oXVW5eKGWspj1Z31Ue2xQJBf5wsHy+9b3ZderrjB7eOcj4jEiwgzoQaFMMvETVgsTx8JN+vbNeYD0VFYhqvAduwmn4THP0wSY6MpWeH6DPfV6hBd6oxElZipL8/np1s4VOIplu4Luw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714247871; c=relaxed/simple;
-	bh=piZR/V7gBmjDb0FCJkOygfPzOUBnbSC9+MC1K8f+Oro=;
+	s=arc-20240116; t=1714247884; c=relaxed/simple;
+	bh=Ui61Kqd3H/BG3qyUqZGqtcVNhOr6wTkCK+eT94OQAKo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pR2bQAL+BAxdPAY7Ya80jDz8Q2yrIdHxMAcd0/0kuLzZu1JOyYNvfvwV9WNw4Ig9JjWEF2MM1DLx/dvlI0qm9NYYq3qvO/yUL8VzPsjvtsht5ErWeaLi2hz0KMChnwAH85JFu+0V9yN6SM9yDNhNrBVRi0GHLmnTNEwcoYObHe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GrEfZI9q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34864C113CE;
-	Sat, 27 Apr 2024 19:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714247870;
-	bh=piZR/V7gBmjDb0FCJkOygfPzOUBnbSC9+MC1K8f+Oro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GrEfZI9qE7myQAFFIg/eesizzArEkgx4yGhY/KAkqTp/AWLV+MRUUArkn66MsCjKj
-	 1n8Jsm5QNFiqndihwFa8TMBYMiP+fRZhp4vJu6Mfyu0gVs+ckH2OtZdnJFsY1HPXgT
-	 cnaElj5s/cTmZDm5kqP8UT61bmCHbR39iwH1G3SuUwttOiuOz8EigkZL+4OJvP53H+
-	 jEA7YOD4PXhjkCuy4PYG2dv0xTskpy1wtkG3pzddfYRokBXhcOSmlaEsuoo13M6SC+
-	 SmAoPPXJzdAQm029xCzLerWWRBsSRtuXLdgC7fBdGBVsXwEsO+DOzcn5npOx9nHEaO
-	 ZA+Itw+yQaadw==
-Date: Sat, 27 Apr 2024 20:57:43 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 11/12] microchip: lan865x: add driver support
- for Microchip's LAN865X MAC-PHY
-Message-ID: <20240427-vaporizer-pencil-be6a25030f08@spud>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
- <Zi1PxgANUWh1S0sO@builder>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ncB6kYdhbStIrO714DuYKSRPy2buGhGmaw4A6FDKeXhTqli+CctVWW8fEfet561zqvVWJ/KGC0LuUppody3ccsxo/2sAk24j7/8CuwmczXKrpFKYyRxfE0aLhG09fHyWl6iQUU/lSi2IhsWvTjHsTjwv9pdvOkvjlcvEM2hs6f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TgAZY5dv; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-343b7c015a8so2510898f8f.1;
+        Sat, 27 Apr 2024 12:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714247881; x=1714852681; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6sLeaB1FlBRZ70pzjbPaLXI6rhtbdR12bImC9yVAPfs=;
+        b=TgAZY5dvMK9iS+wRFxPHsUMDwaMa6YtHrHBV908+UpE2anJKGzuJbqmUEyK3l7dQUE
+         nBY+1QmkHCJS1gAP0IoBXr4HTHL/G/vCNZ3zzYplcPghsu7v/Q4Aey7q5s1iqgLLtWJP
+         CJ9q/G8MZ0nxsGhq/PtAGUeNGig1xCMNhFzJZPJyi2RCoonEVoFyTyYL0S1+OdTnqqld
+         3DEfwWvogNXwjaJwyx8PV+sWc1FH++Q5OBhkG2ATXjW47iBBy0rso4+lfQYbAQaBY60l
+         CjvPR/5sK63YWateSuRtc5XeGp7hwi/rEsDSd1EfXX+6b4qpWETGsyyy7/EPqBJe+j2m
+         h9eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714247881; x=1714852681;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6sLeaB1FlBRZ70pzjbPaLXI6rhtbdR12bImC9yVAPfs=;
+        b=QGhjr0MMNXnICJ45zRKrtpSyyPoBMYk8v2WZw4BllSEit7XcZ5i5cxc//nX5EdlARu
+         xAbIFXpm5zqTOrXpl0K9Pu0RHPwPYcR1pJnLYiu67cOJdLfj2Vjz9wPbSOjKgJVwYGMs
+         KHLb/f2DYeoqwKQIhTtDJ2rVUF4ZizNQLhIyXhimIp8T1zu/DzJ3j0+mtQ30wLpXCwEd
+         siYCxnbwCddrhH9F4vbI5TCWG3/CsdAArOTXb5pNLdKUM+WK1o89Ukhsd5swsZzvDbDg
+         gzVf/P0wMGw4k+RE8veBaJcef+35qvxoX0AzWNJzTpHJzryig3a+Zo9KNCXE87OHd/wF
+         vMwA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHczEWqvVgk7uSwjx4iXYqkPBI+iLSxLFsDgLuMFoMJ0hqYLJV/4ceH/fhmUjdGL7JUt5S/ZBZ5NKyCa/NpYqd5Syugf4OfU+zWNZqTz/ZWfxm5/P1Wizkw4FDhFgOAm6IL9V8z6DV
+X-Gm-Message-State: AOJu0Yz9BoZLofs7F+yKQd8dYLmy6pSwrIpN1Pd8JGem3/sDdFd6lLqe
+	dpw57tLC2qNkSAkYOJaa/8KARs8YibsNZwGytAsBMHZCOmjvCL92
+X-Google-Smtp-Source: AGHT+IEHBtMOONwaosJYo1TPf0ytlANQY24e1iMM9bzaAv6Y38WscQM2pqvXe5+AgipOgj89ILTiyQ==
+X-Received: by 2002:a05:600c:358c:b0:41b:13a3:6183 with SMTP id p12-20020a05600c358c00b0041b13a36183mr4430923wmq.24.1714247881124;
+        Sat, 27 Apr 2024 12:58:01 -0700 (PDT)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id ay24-20020a05600c1e1800b0041bf29ab003sm1870718wmb.30.2024.04.27.12.58.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 12:58:00 -0700 (PDT)
+Date: Sat, 27 Apr 2024 21:57:58 +0200
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Andrew Hepp <andrew.hepp@ahepp.dev>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
+ negative values
+Message-ID: <20240427195758.GA3350@debian>
+References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
+ <Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1p94+/8YvCoa5Wnz"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zi1PxgANUWh1S0sO@builder>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
 
+Am Sat, Apr 27, 2024 at 05:49:18AM -0300 schrieb Marcelo Schmitt:
+> Hi Dimitri,
+> 
+> Interesting patch this one.
+> I think this does apply, although, the cold junction register has for sign bits
+> so I think we could also have a mask to clear those out.
+> Some code suggestions inline.
+>
+Hi Marcelo,
 
---1p94+/8YvCoa5Wnz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+the temperature bits are in two’s complement format for hot and cold
+junction. Equations to calculate the temperature are also the same in
+the datasheet. There should be no difference when handling them. I don't
+think we need to do anything more with the value except sign_extend it to
+the appropriate data type. If the sign bits aren't right, there is a bug
+in the chip, until then futher processing of it is unneeded. I could add
+a comment here if it helps.
 
-On Sat, Apr 27, 2024 at 09:19:34PM +0200, Ram=F3n Nordin Rodriguez wrote:
-> Hi,
->=20
-> For me the mac driver fails to probe with the following log
-> [    0.123325] SPI driver lan865x has no spi_device_id for microchip,lan8=
-651
->=20
-> With this change the driver probes
->=20
-> diff --git a/drivers/net/ethernet/microchip/lan865x/lan865x.c b/drivers/n=
-et/ethernet/microchip/lan865x/lan865x.c
-> index 9abefa8b9d9f..72a663f14f50 100644
-> --- a/drivers/net/ethernet/microchip/lan865x/lan865x.c
-> +++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-> @@ -364,7 +364,7 @@ static void lan865x_remove(struct spi_device *spi)
->  }
->=20
->  static const struct of_device_id lan865x_dt_ids[] =3D {
-> -       { .compatible =3D "microchip,lan8651", "microchip,lan8650" },
-
-Huh, that's very strange. I don't see a single instance in the tree of a
-of_device_id struct like this with two compatibles like this (at least
-with a search of `rg "\.compatible.*\", \"" drivers/`.
-
-Given the fallbacks in the binding, only "microchip,lan8650" actually
-needs to be here.
-
-> +       { .compatible =3D "microchip,lan865x", "microchip,lan8650" },
->         { /* Sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, lan865x_dt_ids);
->=20
-> Along with compatible =3D "microchip,lan865x" in the dts
-
-Just to be clear, the compatible w/ an x is unacceptable due to the
-wildcard and the binding should stay as-is. Whatever probing bugs
-the code has need to be resolved instead :)
-
-Thanks,
-Conor.
-
---1p94+/8YvCoa5Wnz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZi1YtgAKCRB4tDGHoIJi
-0tz9AQC+se3qP4Xf+bSZv6Anj1MBfYBu4gBWnoQdzdMtEWnkBgEA99wmPr+F+lEm
-pyaHN52IFUeFvWwcIQ0Tb94yB22V4AE=
-=XWBf
------END PGP SIGNATURE-----
-
---1p94+/8YvCoa5Wnz--
+> On 04/24, Dimitri Fedrau wrote:
+> > Temperature is stored as 16bit value in two's complement format. Current
+> > implementation ignores the sign bit. Make it aware of the sign bit by
+> > using sign_extend32.
+> > 
+> > Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF converter")
+> > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> > ---
+> >  drivers/iio/temperature/mcp9600.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
+> > index 46845804292b..7a3eef5d5e75 100644
+> > --- a/drivers/iio/temperature/mcp9600.c
+> > +++ b/drivers/iio/temperature/mcp9600.c
+> 
+> #define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
+> ...
+> 
+> > @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
+> >  
+> >  	if (ret < 0)
+> >  		return ret;
+> > -	*val = ret;
+> > +
+> > +	*val = sign_extend32(ret, 15);
+> 	if (chan->address == MCP9600_COLD_JUNCTION)
+> 		*val &= ~MCP9600_COLD_JUNCTION_SIGN_MSK;
+>
+This won't work. Assuming int is 32-bit ret = 0xfffe and *val = -2 after
+sign_extends32, this would result in *val = -61442 which is wrong.
+> >  
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.39.2
+> > 
+> > 
+Best regards,
+Dimitri Fedrau
 
