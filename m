@@ -1,195 +1,221 @@
-Return-Path: <linux-kernel+bounces-161060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D3C8B4689
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 15:53:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C288B4694
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 16:13:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0487A1C217F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 13:53:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6C71F247C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 14:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5B34F896;
-	Sat, 27 Apr 2024 13:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB484F8A3;
+	Sat, 27 Apr 2024 14:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aSWa5snQ"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HyH488HP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5FF4F61D;
-	Sat, 27 Apr 2024 13:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714225992; cv=fail; b=DPwFu54gv0S/Wx8oUeqCzFbBnC7DV5rDJ1RSf1xLKhjQb75/R7Q9GxJ8Y3C+Qyq+QU2gBPdJNSaLhbK7RQtZBcT8kNDWP15Z/v4obrLCRlmpCoMM2tUU7uFPzpvVBafC6T/kRuS8wTGG/Ff/3B4AVyHTJBZs6MTtxpGkk1Qp4WY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714225992; c=relaxed/simple;
-	bh=3KzZir9ZebkkfwcvdVMfJAyjKSnxrIkdoOZq39YMsqo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d3FabPuGPgSY+91VaLx1p5oe6oLTcInoWW4M8zbE4DJaGYnzcCXC6kCIaF97+mbxQP4eQGgbxl6FksbcRh3k5rfEwtgqGdxUm617e97j2DYjkiWu15bGeT+i0/j4IDuQgOiBU26A3Vs3oe4GyjxBWesBXuihKiaMmsdkC+eWcHw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aSWa5snQ; arc=fail smtp.client-ip=40.107.237.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g29Lje0u6vzTJulUvq8EZppZbodJG7h9cc7kU2qg5ea07Y8yuo/rUPxW7nXXAP0/dtdc1FTOvg/cWC0mvvue5EQs9mJJC9uMPKxfIiXfcTfIexyw4L0R3DGyexXRXfFTl9gfFuMhLwxKXRjNSHpSedGcbwkzTQ8N2Vd4e1MV0DR+o0A+9w2/qTku+bxwMR5xZAQt/VsTXIONtAexq0XUHdDAuyQ1qdwC2z2EJ3tBV3Fh3/eygziinrNpvR2nTNy61lWMzgBEdC0DJ+RLndWXRbpelKueL5MWyPX5ovVkij/CuNQRwAQ0pBUV8yXBpavtv0dgTDDvIBWauYYv9AyICg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H2bS/o2FdF909UMNdNgWxw74U42UcCPJjHvrtArdOp0=;
- b=YsF+lzHht8jhktuIXCiQZ+eyaIFk2vmyBYuL/8tXILNJOdfDVGZ644bgLSlNLtxhB3aKVy4msatmiW1N4jhXr+qixCeT2tsScQdGENaJY9yF//zv3EIiDNjZmt+TG3JDR8TQ+GMiMisxPX/5Cezd4BF8xADFxLwBbU2GaN6CQt4F5ldUL+zKmvVrmu0cHImEvhDQEH2w+KveFQlZ2r7eusD9TGfXUh1qyK4P/mjLU/zcWRgIQttCKeMIFu3TI+lPV+hBHYy54jgZM8uhHXydnjyXGk+p9Xq4ngK4wNs2lkw1pZzNIGWakBAx539WsrSHJnEEoghfsK/xEcodMd3+VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H2bS/o2FdF909UMNdNgWxw74U42UcCPJjHvrtArdOp0=;
- b=aSWa5snQgZu6bNDp8JChDfjFiizHcbisMaFZFZIQrZV0uqe8U7iEtSUUloPawTmDZ7PG3w1dP6Zd4W53j/k2GjyJ0995imN6LR1/YehIGC0q16GjkrFr55iwdghqYiN068k9qLDb/YZAQhJWzmdiBrXawUQnXoTfRGtKBCP5y4o=
-Received: from SJ2PR07CA0021.namprd07.prod.outlook.com (2603:10b6:a03:505::23)
- by BL1PR12MB5970.namprd12.prod.outlook.com (2603:10b6:208:399::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.32; Sat, 27 Apr
- 2024 13:53:06 +0000
-Received: from DS2PEPF00003439.namprd02.prod.outlook.com
- (2603:10b6:a03:505:cafe::da) by SJ2PR07CA0021.outlook.office365.com
- (2603:10b6:a03:505::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.32 via Frontend
- Transport; Sat, 27 Apr 2024 13:53:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003439.mail.protection.outlook.com (10.167.18.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Sat, 27 Apr 2024 13:53:05 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 27 Apr 2024 08:53:01 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>, <Ray.Huang@amd.com>, <Alexander.Deucher@amd.com>
-CC: <Xinmei.Huang@amd.com>, <oleksandr@natalenko.name>, <Xiaojian.Du@amd.com>,
-	<Li.Meng@amd.com>, <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpufreq: amd-pstate: fix code format problems
-Date: Sat, 27 Apr 2024 21:52:49 +0800
-Message-ID: <20240427135249.2160493-1-perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D022032A
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 14:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714227229; cv=none; b=P80GzpR4j0ajbHXqcWPN8+gAZ5kRYE63Fx45oVt89kU6md+qmOAzj02/AOL5cOQdqRXUKUSuyFvonwz+5twlALDWsZeLqcKJAJYb1F0eWPwnSZXzs1bi0JVvt1JWwYd759WQDexxy07XS6ZaIj4pOP7kH46E5FS37Rbkxcj7Tsg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714227229; c=relaxed/simple;
+	bh=d+3n9UZfA+VHX1B+2z7z9tf7+zE4wxd4K78Oea2WZ/8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aMx7Vk1LqtTUW5fI4iZL/ES++kWZL8Ar3VwbTmB4ocsyNJ1iBJGgzX8UgJL1S2SjzgCB1GPa876dWAOjd4XyUGHezdzIKIU9+rdhQfjFPmcYx90RxYh2xg/SIrEQhZulDqZzZjfAaapTbc9eZ4rpZaedDjXah2z2Gmyk5VNgpI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HyH488HP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714227227;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WXMypIwiegUqOtpslqLpUy8xSEb8Llb9TidhERCUP+M=;
+	b=HyH488HPNu5QclA6YE3uKkNo6kBQHszfAZJBnWpDGPBglCTu8QRuveeNd1khlEmg2TvqDa
+	rFWfzpE9EyXS6Nd3YUa13QLxale+Tkkxi42SFGiaeQWdU+RDSCvTK7TlU+h3v4pGtDuXTJ
+	g+nCjXLaoLZFgJpgWft5l94AewkinDA=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-478-g48KcNn0NMe4O9_uliiI5w-1; Sat, 27 Apr 2024 10:13:42 -0400
+X-MC-Unique: g48KcNn0NMe4O9_uliiI5w-1
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-de5823bd7eeso6435401276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 07:13:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714227222; x=1714832022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WXMypIwiegUqOtpslqLpUy8xSEb8Llb9TidhERCUP+M=;
+        b=k85q2PwW4DPoCKLrBk3jWkmIyx+v239unWZlpvU6egFFRvYaGYaL/eHgm2ekYCdmkJ
+         A4nHpOrHfWPB4dzoeG6KAwiF2GjQy4M3bkOdneu5euVqMK4F1kMEs4L09flmTcvn+Pce
+         dv0ZBDXjaqJlF+Uur52v+7DHEr8iU2uggJ9bqxFNtRL6RlBs8SLBLle54O478jhEjPI3
+         v0EbWRG85owC3oG/Q6Zk9KYFsAH7xsZu/MWsd9S2g7D4F6+Jd9tenfoKs1Urekwb/Nbu
+         02wywTelpMCKOoKR7nttaS/BOf4GXmsP0/19BZOM3/6oCSyT/o9qGZXMyGPVL2QThnrc
+         op+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWjejP86m6JnR7FVtKqNSoiJzv3oN7ldqvQ53gz29Bg2UhM9knSnskD9wzB4M/wzKQvru/kCrRwyLfY1ToU5KIY7+bagiqsD2JF9KCg
+X-Gm-Message-State: AOJu0YwcZ36aSIVQueUOsDGBRWmcDmG4uwBKPMwt/s7k+/phQ75TRAah
+	NNBTEetNKIFRcWisozxawOBiYUetQ6nL8MHeNItaGxrPW3QjOmdiwpU47qFakNHDu6yXvAy2HcH
+	0rzbmSE8294KcAnbnGCcatbDE80zpgE1g2Q6MthrSujgaCBNzL8lTmN5GPu4sH7LOneUe8yeyYC
+	JAII3+muUA1erhKzeLYgc8AQUVmynI/4GceVzc
+X-Received: by 2002:a05:6902:1611:b0:dc6:e1ed:bd1c with SMTP id bw17-20020a056902161100b00dc6e1edbd1cmr2046679ybb.21.1714227221973;
+        Sat, 27 Apr 2024 07:13:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHOaakH4d+LaeLNo52h6Gxinx2ybJegK2Mwwom9kD+jJ+azyRkUfpoyYFCx3mWohB2H42zgnIbu8s/UEv/e7Yo=
+X-Received: by 2002:a05:6902:1611:b0:dc6:e1ed:bd1c with SMTP id
+ bw17-20020a056902161100b00dc6e1edbd1cmr2046668ybb.21.1714227221686; Sat, 27
+ Apr 2024 07:13:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003439:EE_|BL1PR12MB5970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48ca6fed-549c-4e80-1500-08dc66c15d05
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|36860700004|1800799015|376005|82310400014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?DNJy2YEG63dcbeR/WLm2ESpM4CSfLO/un6iEQ5NSWwLAGOdV8LkI1TKzCcT3?=
- =?us-ascii?Q?exqdHYBMDL0sGLqhx1yBgRD5zUVn3aCcTbAM3t8s00t6z88uGgX1g0T7wnDB?=
- =?us-ascii?Q?9U953B2Mx/h96KBbae50BFfFAbgMX/7zf58mjT3D8gRVp9fJf56GFF7zNlI7?=
- =?us-ascii?Q?RMoq/RKrh4QM92Amvek1SElE48cCUMxpgLH0uV6PDxJfBUhlXTPYTx4fc12U?=
- =?us-ascii?Q?mhm/U9dBEDV8D5qipfHw7fcbuEcq1b3lHjYh4mMAbL63Dr3mOMdGhfmgoUuf?=
- =?us-ascii?Q?E7JZFlgYwX8vGIvaGWCiGLQuWKGleUwQiSkdKuhap7YItbhrqSsY0K/lNvHd?=
- =?us-ascii?Q?IeqA4MHS+iqEKUuPoAB9b3jHOxkAhtRilSoCaasUcJAdRuA2MCCvC3aH7EaK?=
- =?us-ascii?Q?/+1rw+GgDwoUSHziaH2Z2pARuEe2rgHDslngeb30xjE3ZxaqWHqD0AQSn2cZ?=
- =?us-ascii?Q?x7GjjQhNDS72JW6UAWXenEbAAIiFzy161g0KiHYHRJJ8kEHnQmPvsfGFv67O?=
- =?us-ascii?Q?6VWOabaQnD7R2mSbPvH5+CEkhqB6BdetDHXdfiaqKFOf9Zw01x4fo9e/ZiBe?=
- =?us-ascii?Q?/5ICpWGix9h2CXpEhPWRNJ1N5Fy/TKcxq95fWGHfDVL0UrQBhb7l9hlRKDef?=
- =?us-ascii?Q?SAGD3RprBX16msKB8bYhGNefb4rdynlPj4Jk37oahuy9fc1osVktaLzgtRkF?=
- =?us-ascii?Q?eHektS1swyVsfY1wjlVCQUTHfwqx1zXUi3dtrpLd7kqsdZLiwQKzfUsrYMeR?=
- =?us-ascii?Q?q++ceYq15SIXNobmh2AugytrMFR9K8cpHbZzU48Zx/D2ORnuC6vEVkquRpSP?=
- =?us-ascii?Q?p3l1jrnTG+Fy/XRQ03IMuzplXvGhO4XFlf4mwILJ2fYruhRMpeL5K8vTj+Aq?=
- =?us-ascii?Q?gHheAaS56X6ydP8q2bP5XJVI/Ca8Exnj9a+SJDzVngR79pgKAE8DjnAGmNLc?=
- =?us-ascii?Q?PJSEBMnyoiF+q/szPaxOb0aXnBmww6Uno9enWno1RSlzAVGYIQ8wrTdOfT68?=
- =?us-ascii?Q?ghVOmsOHGCJQFibH5VlQd909JYudm4miYx2RETozJQL8Dz6udi2cczmw/vK7?=
- =?us-ascii?Q?bT/7frLBgh3wM4OE8x5o0+95weETVCT6Ye6Oo7dLY8wDWLUNrl08dX/dQsnH?=
- =?us-ascii?Q?LiKEtoaSikOg1dZ7yH1jAhovHm3oFSlxcK2qBEBF8kmrrBdeeSgRbe+2VsDt?=
- =?us-ascii?Q?OTw90r4/t5PEnSw0OnopUVxbA6DK0BJeRnnRqIW3+gzVSWNZdScshIs7C0eb?=
- =?us-ascii?Q?aa+ShwlU4LD1oVmamKZ3CprDx22CSIzlF39yDsdqJDLJVJd8QNkbFE36z3+G?=
- =?us-ascii?Q?1xFdqu5PGTeXOOrMpxYNvb021F3yIKFZvpuKHReaxItBv69XP3FBKQbfJ61q?=
- =?us-ascii?Q?L5tRN5rjXhiem323GK9RC6nth4Nl?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2024 13:53:05.3540
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48ca6fed-549c-4e80-1500-08dc66c15d05
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003439.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5970
+References: <20240405164920.2844-1-mcassell411@gmail.com> <CAHrQN1xuLfc0sfe1kMHmHrBzKQLMD-6PNEakA=EDdabEv4ATnQ@mail.gmail.com>
+ <CANiscBDGqwMvbNUXydKMMgXdwSNeXDQOGy=jgdOJCNh7+WaSvg@mail.gmail.com>
+In-Reply-To: <CANiscBDGqwMvbNUXydKMMgXdwSNeXDQOGy=jgdOJCNh7+WaSvg@mail.gmail.com>
+From: Vratislav Bendel <vbendel@redhat.com>
+Date: Sat, 27 Apr 2024 16:13:25 +0200
+Message-ID: <CAHrQN1ximY20i9EiOgbmTQcgdEpfsZarjKczE15pyUp0Zc7=2g@mail.gmail.com>
+Subject: Re: [PATCH] Documentation/admin-guide/sysctl/vm.rst adding the
+ importance of NUMA-node count to documentation
+To: Matthew Cassell <mcassell411@gmail.com>
+Cc: corbet@lwn.net, akpm@linux-foundation.org, rppt@kernel.org, 
+	linux-mm@kvack.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-get some code format problems fixed in the amd-pstate driver.
+(plain text resend)
 
-Changes Made:
+IMHO you went too encyclopedia-style this time. :)
+My extra point was just to elaborate on what the "additional actions" means=
+,
+but I would suggest keeping it as concise as possible.
+Also the bit values are already explained - no need to repeat that.
 
-- Fixed incorrect comment format in the functions.
 
-- Removed unnecessary blank line.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404271148.HK9yHBlB-lkp@intel.com/
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index 83a29b257794..85656342a101 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -792,7 +792,7 @@ static void amd_pstate_update_limits(unsigned int cpu)
- 	mutex_unlock(&amd_pstate_driver_lock);
- }
- 
--/**
-+/*
-  * Get pstate transition delay time from ACPI tables that firmware set
-  * instead of using hardcode value directly.
-  */
-@@ -807,7 +807,7 @@ static u32 amd_pstate_get_transition_delay_us(unsigned int cpu)
- 	return transition_delay_ns / NSEC_PER_USEC;
- }
- 
--/**
-+/*
-  * Get pstate transition latency value from ACPI tables that firmware
-  * set instead of using hardcode value directly.
-  */
-@@ -822,7 +822,7 @@ static u32 amd_pstate_get_transition_latency(unsigned int cpu)
- 	return transition_latency;
- }
- 
--/**
-+/*
-  * amd_pstate_init_freq: Initialize the max_freq, min_freq,
-  *                       nominal_freq and lowest_nonlinear_freq for
-  *                       the @cpudata object.
-@@ -843,7 +843,6 @@ static int amd_pstate_init_freq(struct amd_cpudata *cpudata)
- 	u32 boost_ratio, lowest_nonlinear_ratio;
- 	struct cppc_perf_caps cppc_perf;
- 
--
- 	ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
- 	if (ret)
- 		return ret;
--- 
-2.34.1
+On Fri, Apr 12, 2024 at 10:48=E2=80=AFPM Matthew Cassell <mcassell411@gmail=
+com> wrote:
+>
+> Thanks for the feedback. Here is a quick outline I came up with on your
+> advice:
+>
+> [...] (original content)
+>
+> Keep in mind enabling bits in zone_reclaim_mode makes the most sense
+> for topologies consisting of multiple NUMA nodes. In addition to vanilla
+> zone_reclaim (clean and unmapped pages), there exist additional bits that
+> expand which pages are eligible to be reclaimed and dictate scan_control
+> policy during the reclaim process. The page allocator will attempt to rec=
+laim
+> memory locally in accordance with these bits before attempting to allocat=
+e
+> on remote nodes.
+>
+> Allow dirty pages to become candidates for memory reclaim::
+>
+>         echo 2 > /proc/sys/vm/zone_reclaim_mode
+>
+> [...] (original content)
+>
+> Allow mapped pages to become candidates for memory reclaim::
+>
+>         echo 4 > /proc/sys/vm/zone_reclaim_mode
+>
+> [...] (original content)
+>
+> I'm trying to balance between keeping the original content, being descrip=
+tive,
+> and not going into encyclopedia-mode. My motivation was to stress the imp=
+ortance
+> of NUMA-node count and describe the additional bits more per your advice.
+> I added the echo snippets to better segue the aggressive options. Any tho=
+ughts
+> on the above?
+>
+> On Thu, Apr 11, 2024 at 2:54=E2=80=AFAM Vratislav Bendel <vbendel@redhat.=
+com> wrote:
+> >
+> > On Fri, Apr 5, 2024 at 6:49=E2=80=AFPM Matthew Cassell <mcassell411@gma=
+il.com> wrote:
+> > >
+> > > If any bits are set in node_reclaim_mode (tunable via
+> > > /proc/sys/vm/zone_reclaim_mode) within get_pages_from_freelist(), the=
+n
+> > > page allocations start getting early access to reclaim via the
+> > > node_reclaim() code path when memory pressure increases. This behavio=
+r
+> > > provides the most optimization for multiple NUMA node machines. The a=
+bove
+> > > is mentioned in:
+> > >
+> > > Commit 9eeff2395e3cfd05c9b2e6 ("[PATCH] Zone reclaim: Reclaim logic")
+> > > states "Zone reclaim is of particular importance for NUMA machines. I=
+t
+> > > can be more beneficial to reclaim a page than taking the performance
+> > > penalties that come with allocating a page on a REMOTE zone."
+> > >
+> > > While the pros/cons of staying on node versus allocating remotely are
+> > > mentioned in commit histories and mailing lists. It isn't specificall=
+y
+> > > mentioned in Documentation/ and isn't possible with a lone node. Imag=
+ine a
+> > > situation where CONFIG_NUMA=3Dy (the default on most major distributi=
+ons)
+> > > and only a single NUMA node exists. The latter is an oxymoron
+> > > (single-node =3D=3D uniform memory access). Informing the user via vm=
+rst that
+> > > the most bang for their buck is when multiple nodes exist seems helpf=
+ul.
+> > >
+> >
+> > I agree that the documentation could be improved to better express the
+> > implications
+> > and relevance of setting zone_reclaim_mode bits.
+> >
+> > Though I would suggest to go a step further and also elaborate on
+> > those "additional actions",
+> > for example something like:
+> > "The page allocator will attempt to reclaim memory within the zone,
+> > depending on the bits set,
+> > before looking for free pages in other zones, namely on remote memory n=
+odes."
+> >
+> > > Signed-off-by: Matthew Cassell <mcassell411@gmail.com>
+> > > ---
+> > >  Documentation/admin-guide/sysctl/vm.rst | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/=
+admin-guide/sysctl/vm.rst
+> > > index c59889de122b..10270548af2a 100644
+> > > --- a/Documentation/admin-guide/sysctl/vm.rst
+> > > +++ b/Documentation/admin-guide/sysctl/vm.rst
+> > > @@ -1031,7 +1031,8 @@ Consider enabling one or more zone_reclaim mode=
+ bits if it's known that the
+> > >  workload is partitioned such that each partition fits within a NUMA =
+node
+> > >  and that accessing remote memory would cause a measurable performanc=
+e
+> > >  reduction.  The page allocator will take additional actions before
+> > > -allocating off node pages.
+> > > +allocating off node pages. Keep in mind enabling bits in zone_reclai=
+m_mode
+> > > +makes the most sense for topologies consisting of multiple NUMA node=
+s.
+> > >
+> > >  Allowing zone reclaim to write out pages stops processes that are
+> > >  writing large amounts of data from dirtying pages on other nodes. Zo=
+ne
+> > > --
+> > > 2.34.1
+> > >
+> >
+>
 
 
