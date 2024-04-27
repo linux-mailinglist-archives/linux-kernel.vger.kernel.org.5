@@ -1,151 +1,117 @@
-Return-Path: <linux-kernel+bounces-160975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7C88B4552
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:23:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91D48B4556
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 11:27:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 806541F223C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:23:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24CEB1C2122A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 09:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4D447F57;
-	Sat, 27 Apr 2024 09:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01514645B;
+	Sat, 27 Apr 2024 09:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X14pPsHG"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QiPa9/+3"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F8545C18
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1288BFC
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 09:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714209795; cv=none; b=hXilaf95XTSxvgS29g072+9tNGmxA/Bja+vTZerWpc7LKq8YqKgj+vYMaHljClSPbb1DqZdp8h/w0NzEcaIqkfvpZ4QXISUbfk9IiZ2wzyMNWCde9iU+buk2BlRMvBjQ8QEF6WF1uRD69WTmn1ElItXNEWnSfSZ7Sl41dhaG2Qg=
+	t=1714210069; cv=none; b=HfRo7eL3p72WTavuv4zy0urLOPeKQrGu8/7X8Fm44WQkt5Nh2WFWsGBUXJLbIHlOSmIM0Dp6oZEOBpiVRZz1AKGLZo8PR/3w73WT0jaLG+2cRrcZpO2UxuVohEhVCv31qAR3UbI3vJKrFtENLoyE7Xj+YqKUBLBQVpJUjqaa768=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714209795; c=relaxed/simple;
-	bh=ul1FhTW7c8B0pI49fHW4jc0yMuX5lzfvSpesH5uhEZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KBbvTSNdCk5SKSUB0QL8XLtwKac5BwCtCj0xDRvP5a/RTZCOdCEQlJZiSqyDswC5cmjBQZvb5sYk6zZ+Q8aBDTJDQd+zIq+Gz2HXROme9Cv6jPTQYogkC8SGJSI39HNqhkSFnffn+2K+AYHV92Fxrg5ehp4OaUuI4F1Mkmc3zn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X14pPsHG; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e2b137d666so22897095ad.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 02:23:14 -0700 (PDT)
+	s=arc-20240116; t=1714210069; c=relaxed/simple;
+	bh=XgEgUI7ErWK/JeyKa2xwDIBHe9mB7sfhnipyV6AhvZ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=huuHRWReSQ3GmW50tdtPcc9c1/hRsjszpXmLf7ko7uy6jMPDGK5tDGo0Ah9Je8S7g6IOAj+UhNI2rosQrWdT7ZHTVRcSKDz/y+f7/m8O/zJTmNfgnASoR+kar+9aWSbapXbFnAs9+UblJe/SxHMSQXky2frsdjbw+PRj+n8URpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QiPa9/+3; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2b0fb1b6acfso50562a91.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 02:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714209793; x=1714814593; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1uIcEMzayP/6fZPxv4DuexUPxwxg9JGcxelfjHeE1sI=;
-        b=X14pPsHG0pDxTwWKQKhAHP6w7GCmbCjjfR+0wFvC0SQjWEucAJA1NetyomNihohWuA
-         7p6Ld0/6QUuyXUIcEgMFUTXBbinIcF3kye6sxN5Ip0EFfCtVqEHSh95ID5+XyfMV+1Wv
-         POrgcBSyq9yZs7p+ia8CdKFeDA+vfEm9n7X5xn1HLcx0QyCfi6SgNZmL2i9jjDy/0Kr2
-         ekN39BpK2yE/JTWwL69kAax3E+Iq6k7/bARe/ucpsa+iqJR9KzL4k2JqQUlbChk6JFh1
-         DvGP4JRTjjA/x4ZXnbJimokXISqXpJZEv0Mz5KjxmcKsmGyTgxniDUn3hlLtnI/2+eDa
-         aSeg==
+        d=linuxfoundation.org; s=google; t=1714210067; x=1714814867; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HC+DEWqPr/SHJQELXAMN85jRxEJor1SyjNScMksjbwY=;
+        b=QiPa9/+3BhfNoxm0VbTrscmhIUphKwMSXo54Ecv9p/1woLMnOlhQPyhcor5aLKNXFb
+         Q8VsqWbQcKC0SZxJHvIWoL6tYrrAe5aqdszYeiZw3acWOkpqSyR8s2MXy7PEJ3A26dhp
+         GtZpACab7o1hrjWuIxb+QuUGVf8RKS9MFyaW4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714209793; x=1714814593;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1714210067; x=1714814867;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1uIcEMzayP/6fZPxv4DuexUPxwxg9JGcxelfjHeE1sI=;
-        b=CLfPoad9HrPyV+JF61OL6zrxemxpyYJeqxyfhz2dZmHGMU/UaN5s09YxIH8qTuSdwZ
-         Gsk129AKIDD5nEOW0iNDQTNmCkJD0qdQeteHRGoBDJUuk+cKezTgld041KLEZS4MLzY/
-         79ht6o/o+9vtq/F7WrgrVWCY+jMC40kKHczqn8RDecPFtpKuByuBlWovyXuJ8SNBbFIF
-         asRpEoaXUkuFUb4VIzPrvO1NoDT5fTRxz8MCq1y/CKsWtYQbZ8RA+WSfhRl0fQ85uqop
-         wx3pHTq2CxISlSNj0TIrPocC3orwQjD5X+eJpeN/zFKhELjKJY7zJe3o4Y40tGPE2f1d
-         v8cA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyzAcVsCnc+vVopkyc1l8p6IwiT8P5ElwvccZKOT7wdjC4HFJX+9IfBTSMaVcyXevCsuUmFW68h3xpx6B6jKuwISKfJ3IL6tOtlt9h
-X-Gm-Message-State: AOJu0Yzs0ltIm/fij5batnOJQ2PpF2MEGMZvcijn4ul5ZHjAMfWBWyWF
-	ZkGzRa5BuzhTz5zxhxphNS11Ka02vXAk7E0dG4x/m9Ycfo5m05PhfaVQngZj7g==
-X-Google-Smtp-Source: AGHT+IHI9b4GXVPRNRKKViZzgQgyiBNt6NE3ezIewkxreKd8/BhI/Anp1b4JbkcwgsxxnXj43VBHCg==
-X-Received: by 2002:a17:903:2445:b0:1eb:538e:6c6e with SMTP id l5-20020a170903244500b001eb538e6c6emr1443898pls.33.1714209793362;
-        Sat, 27 Apr 2024 02:23:13 -0700 (PDT)
-Received: from thinkpad ([117.213.97.210])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b001e668c1060bsm16712930plh.122.2024.04.27.02.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 02:23:12 -0700 (PDT)
-Date: Sat, 27 Apr 2024 14:53:03 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>
-Subject: Re: [PATCH v3 02/11] PCI: imx6: Fix i.MX8MP PCIe EP can not trigger
- MSI
-Message-ID: <20240427092303.GG1981@thinkpad>
-References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
- <20240402-pci2_upstream-v3-2-803414bdb430@nxp.com>
+        bh=HC+DEWqPr/SHJQELXAMN85jRxEJor1SyjNScMksjbwY=;
+        b=svF+85cI2b7qrDTHlJDyjd5Nto5o4MFWEPAurTrcd18YTWYQSV0q7UYBiNOsmnTsSu
+         KTx3m/lvz42MT/WPzwIYOxJiGkO3ILFppaAWGLw8WKRzuHmj5eaw92LLyeAjygbFMLw1
+         L2uFerVD5HFWFmH7+D1gK81jAmB2SL1suHSCVcVBO2Munj9inBKjHeGatYnHA0siPyhw
+         MJcHO8SYjW1cYj5OYTRHHWP5wOcP+E4xf/t97ruLnokNrSZ9n33/38VHIt5BrcBVJqJ5
+         D1NhhKhfMf6yoS3xxnPYCokja9m5C9r1xYmj+xTlU2JvsOwsypH1+/Gtc9mdvO8g3JZk
+         Mdrg==
+X-Gm-Message-State: AOJu0YxJ6NN0ZN11+Vy07Lkxs4eb787dlHdGFyx4xWjoyT3TPETrl7fO
+	0aKDHlmMn3XiEFCdQAba+2VBly6Ud2hZq8jg3plJ36Abi+kS+evee6Ob1tJgKyk=
+X-Google-Smtp-Source: AGHT+IG5YITf8M8bO/7UKrWIc1Fu3ECl/f6FxkHT9butXm/uHItwUrpt9os6XRbpSFM1U6DjZtA66A==
+X-Received: by 2002:a05:6a20:7207:b0:1a3:c621:da8d with SMTP id y7-20020a056a20720700b001a3c621da8dmr4528692pzb.1.1714210067142;
+        Sat, 27 Apr 2024 02:27:47 -0700 (PDT)
+Received: from [192.168.43.82] ([223.185.79.208])
+        by smtp.gmail.com with ESMTPSA id e16-20020aa79810000000b006ea6ca5295bsm16024707pfl.164.2024.04.27.02.27.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Apr 2024 02:27:46 -0700 (PDT)
+Message-ID: <f872c56b-ed45-4b45-8c40-52ddb3f2c809@linuxfoundation.org>
+Date: Sat, 27 Apr 2024 03:27:41 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402-pci2_upstream-v3-2-803414bdb430@nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the kselftest tree with the mm tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Shuah Khan <shuah@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Ryan Roberts <ryan.roberts@arm.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240426154414.4d408fd7@canb.auug.org.au>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240426154414.4d408fd7@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 10:33:38AM -0400, Frank Li wrote:
-> From: Richard Zhu <hongxing.zhu@nxp.com>
+On 4/25/24 23:44, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Fix i.MX8MP PCIe EP can't trigger MSI issue.
-> There is one 64Kbytes minimal requirement on i.MX8M PCIe outbound
-> region configuration.
+> Today's linux-next merge of the kselftest tree got a conflict in:
 > 
-> EP uses Bar0 to set the outboud region to configure the MSI setting.
-
-I don't understand this statement. How EP can use BAR0 for MSI? MSIs are
-triggered using outbound window memory while BARs are mapped as inbound.
-
-- Mani
-
-> Set the page_size to "epc_features->align" to meet the requirement,
-> let the MSI can be triggered successfully.
+>    tools/testing/selftests/mm/soft-dirty.c
 > 
-> Fixes: 1bd0d43dcf3b ("PCI: imx6: Clean up addr_space retrieval code")
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Acked-by: Jason Liu <jason.hui.liu@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 2 ++
->  1 file changed, 2 insertions(+)
+> between commit:
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index e43eda6b33ca7..6c4d25b92225e 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1118,6 +1118,8 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->  	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
->  		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
->  
-> +	ep->page_size = imx6_pcie->drvdata->epc_features->align;
-> +
->  	ret = dw_pcie_ep_init(ep);
->  	if (ret) {
->  		dev_err(dev, "failed to initialize endpoint\n");
+>    258ff696db6b ("selftests/mm: soft-dirty should fail if a testcase fails")
 > 
-> -- 
-> 2.34.1
+> from the mm-unstable branch of the mm tree and commit:
+> 
+>    e6162a96c81d ("selftests/mm: ksft_exit functions do not return")
+> 
+> from the kselftest tree.
+> 
+> I fixed it up (I used the former) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 > 
 
--- 
-மணிவண்ணன் சதாசிவம்
+Thank you Stephen. I will keep track of this when I send pull request to Linus.
+
+thanks,
+-- Shuah
 
