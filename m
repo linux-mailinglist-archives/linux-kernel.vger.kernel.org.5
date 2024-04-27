@@ -1,230 +1,113 @@
-Return-Path: <linux-kernel+bounces-160800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A32D8B42FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C1B8B4303
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 02:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 792F21F26527
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:03:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64EA21F267DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 00:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C421C3D;
-	Sat, 27 Apr 2024 00:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3662ECC;
+	Sat, 27 Apr 2024 00:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I2sDE8Np"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="Xhhec6hw"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52742376;
-	Sat, 27 Apr 2024 00:03:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8F7C139
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 00:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714176187; cv=none; b=XfHVm3biDHh0WEUPLXmKstHrAIEICCOI6FbYL3BfITThindEdKslpuLSlChBjzKinXIIcPygCP5BH3FNhdc93fB7texbNv2NvuJ+goBL4xOZoOlIsiNgnjangYDz8FnOHOgfJhA3coF+AKEl5lcihQ5Zei21P6RZFlfxb6e4U6Y=
+	t=1714176312; cv=none; b=jMGBJg8V7RftVpFh2tVz+M33cewrtEQobJOYJ/YQhNblGQf/eCiMBq53giXq7CvOmdXGDVpgT5ew0qPw+LzEX7i6IGfsGFd3MBwS34i38eEVBoVi+zmdqbVcw83htRpRIrU6Nkwa9i4oNhJ+ThmUXxXarDxfgn+ylUd8HGEBH88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714176187; c=relaxed/simple;
-	bh=eEy9hWrcjmaRZAADOiXkvcSV7CKAi438k7HWQoSN2y4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ACcA9oJXG9SsCjqkLdtcAYfP1DEYlinciXs+F//UdQ8SnqNaUnN44dnWJh0tHI94IKNuMgeCAXDUQzxbmML2PJ58XnYBlEhMV9zUZ4eZgXhgfClsLpRIByIot1f56lrS30YbrAM8RVw5nfISv7CvUrqJMe4+/wIxf0qPmA+AwiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I2sDE8Np; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714176186; x=1745712186;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=eEy9hWrcjmaRZAADOiXkvcSV7CKAi438k7HWQoSN2y4=;
-  b=I2sDE8Np8AkL3SR2+fncpTTmwoIabrubJwgoJ+494whneJe58QmRzm3V
-   9i6f3gJG41OYVD8PS5RV+xRMYwTHUTLoTYfqub3MwMC0XXLQpi/nsz4iz
-   fDv1+X4I1KqGtrhjFPbMyJCgJRAjLafr2yBCMBDWpA/cov44oethPCsEU
-   JO5T+OaHC1i+CGNnWQoCZfoLJPfeC5Nc7QV0cvRmOvds8aC7dCfCrXk3s
-   WgMjuT4/kvwUy1UrQ5MsIdKOctMk3dJAyYgj+j3TSxOX4X6sz5/L9qCjB
-   QVOmRrhiAzYRgIjWmC8TEN8fjR/qexcQWCe+c1GxCTGSJKpSbYRj4QtyV
-   A==;
-X-CSE-ConnectionGUID: brr9kpbTT1+5I7/uU4pCOw==
-X-CSE-MsgGUID: gDSScBprSdmoy1F4gUBXyg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10461550"
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="10461550"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 17:03:05 -0700
-X-CSE-ConnectionGUID: B7O9s9ezT0+ZAPtXeeLvSQ==
-X-CSE-MsgGUID: lBPjA/mLQruJFssuD9Lc5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,234,1708416000"; 
-   d="scan'208";a="30382898"
-Received: from ckshirot-mobl1.amr.corp.intel.com ([10.209.32.101])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 17:03:04 -0700
-Message-ID: <f111371300624b6f94f0746dbae66bd49f405eea.camel@linux.intel.com>
-Subject: Re: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link
- state
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Jian-Hong Pan <jhp@endlessos.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: Johan Hovold <johan@kernel.org>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Kuppuswamy Sathyanarayanan
- <sathyanarayanan.kuppuswamy@linux.intel.com>, Mika Westerberg
- <mika.westerberg@linux.intel.com>, Damien Le Moal <dlemoal@kernel.org>, 
- Nirmal Patel <nirmal.patel@linux.intel.com>, Jonathan Derrick
- <jonathan.derrick@linux.dev>,  linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Fri, 26 Apr 2024 17:03:03 -0700
-In-Reply-To: <20240424110223.21799-2-jhp@endlessos.org>
-References: <20240424110223.21799-2-jhp@endlessos.org>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714176312; c=relaxed/simple;
+	bh=/fd/N7v3qro9nza0VrndytUPmzZi7jlSVwjA4rio/DY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qVeW2f6Lw2RjeICAx2qdwH7yis/2SLJa3FryQistOXGoP26GE+hwKsfOsnUJXJs86LJYjx93BLlAJ3Rg4nM8VWRGo2Eib6kBLlWeEcNaG1hyk/sE4VViNAB4feFCFOOxDTnL52DO776405UJmCX6hOKt9/XgGoNBZgk3curDPPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=Xhhec6hw; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so26305355ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Apr 2024 17:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1714176309; x=1714781109; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lRc2kHVSDrDvqQGDE2B5fMNzoZg6D0PSUdf9JLW6aCI=;
+        b=Xhhec6hw769ekVwKoZMZZHsTFAvdFBUYSfIqexVVDLpFIgII/LrTXF5FcVb8HHrbmB
+         UBbl8EBptLAhFVL4GYWCZRNBQV0xwUBitta1ci21BI5mspqzLpuYB2SD1QRXGH6WSn6h
+         mvrDn6h5Y9Dv6rZn31fqAz0tH306aL90dhdC8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714176309; x=1714781109;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lRc2kHVSDrDvqQGDE2B5fMNzoZg6D0PSUdf9JLW6aCI=;
+        b=fpGPpUXZe05S4o41R93BsfmpzCOgZCBMb3/prgqj9dO2yRWkFfFntFbSjdvKmYhWqV
+         81jpIceG04wohp9G6ZhrLh0uSxdOMaPJwjE4B0zcXdvspiojdeYrpQ57T82JDYI2NKWu
+         Zy7FxX8ykBEW9WNe4aE8TR4YlzGMGGLft2vmuiiIWEQGRYM88x7JPgFurMsC4CFnFNG4
+         YtrvAPevpA2HHGi0lq3pcQ2SBEvmi1Ogj75Del+IrH+vgN1HDaz7enwW1hsnY0ouE+NQ
+         IYQwkS/zN33rqYi8tof2CW3lG5uHPY2W9XOUcR+PPk/W3BkmPnjMllxwxGO/Azo5nN3A
+         WLCQ==
+X-Gm-Message-State: AOJu0Ywr6YNuO2LAFKgzlwD6xk5z9oYnipH7uoxZ9FLZM5c27Qv20OCt
+	wUfe+Gv2Df6by9rbaCwBFvtkFCx/pkSoB37hj4N2g+YI4nT7DnEG4in+Ahe/R+A=
+X-Google-Smtp-Source: AGHT+IFN27qWIbdvnvs9eKXT4KClDm7VytA2q/XzZf3cRRyIQdpg9N4Tfs4AOsINPgBeX9k7ZKTCaQ==
+X-Received: by 2002:a17:902:dad2:b0:1e4:9bce:adcf with SMTP id q18-20020a170902dad200b001e49bceadcfmr5001638plx.63.1714176308979;
+        Fri, 26 Apr 2024 17:05:08 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id jc14-20020a17090325ce00b001e50dff6527sm15992243plb.269.2024.04.26.17.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 17:05:08 -0700 (PDT)
+Date: Fri, 26 Apr 2024 17:05:05 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+	saeedm@nvidia.com, mkarsten@uwaterloo.ca, gal@nvidia.com,
+	nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 3/3] net/mlx4: support per-queue statistics
+ via netlink
+Message-ID: <ZixBMZLq5nPl9kU9@LQ3V64L9R2>
+References: <20240426183355.500364-1-jdamato@fastly.com>
+ <20240426183355.500364-4-jdamato@fastly.com>
+ <20240426130116.7c265f8f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426130116.7c265f8f@kernel.org>
 
-Hi Jian-Hong,
+On Fri, Apr 26, 2024 at 01:01:16PM -0700, Jakub Kicinski wrote:
+> On Fri, 26 Apr 2024 18:33:55 +0000 Joe Damato wrote:
+> > Make mlx4 compatible with the newly added netlink queue stats API.
+> > 
+> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
+> 
+> Not sure what the "master" and "port_up" things are :) 
+> but the rest looks good:
 
-On Wed, 2024-04-24 at 19:02 +0800, Jian-Hong Pan wrote:
-> Currently, when enable link's L1.2 features with __pci_enable_link_state(=
-),
-> it configs the link directly without ensuring related L1.2 parameters, su=
-ch
-> as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have been
-> programmed.
->=20
-> This leads the link's L1.2 between PCIe Root Port and child device gets
-> wrong configs when a caller tries to enabled it.
->=20
-> Here is a failed example on ASUS B1400CEAE with enabled VMD:
->=20
-> 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor PCIe
-> Controller (rev 01) (prog-if 00 [Normal decode])
-> =C2=A0=C2=A0=C2=A0 ...
-> =C2=A0=C2=A0=C2=A0 Capabilities: [200 v1] L1 PM Substates
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_=
-L1.1+ ASPM_L1.2+ ASPM_L1.1+
-> L1_PM_Substates+
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us PortTPowerO=
-nTime=3D50us
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM=
-_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Threshold=
-=3D101376ns
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D50us
->=20
-> 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue SN550 =
-NVMe
-> SSD (rev 01) (prog-if 02 [NVM Express])
-> =C2=A0=C2=A0=C2=A0 ...
-> =C2=A0=C2=A0=C2=A0 Capabilities: [900 v1] L1 PM Substates
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_=
-L1.1- ASPM_L1.2+ ASPM_L1.1-
-> L1_PM_Substates+
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPowerO=
-nTime=3D10us
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM=
-_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=3D=
-0ns
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D10us
->=20
-> According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on the PCI=
-e
-> Root Port and the child NVMe, they should be programmed with the same
-> LTR1.2_Threshold value. However, they have different values in this case.
->=20
-> Invoke aspm_calc_l12_info() to program the L1.2 parameters properly befor=
-e
-> enable L1.2 bits of L1 PM Substates Control Register in
-> __pci_enable_link_state().
->=20
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218394
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> ---
-> v2:
-> - Prepare the PCIe LTR parameters before enable L1 Substates
->=20
-> v3:
-> - Only enable supported features for the L1 Substates part
->=20
-> v4:
-> - Focus on fixing L1.2 parameters, instead of re-initializing whole L1SS
->=20
-> v5:
-> - Fix typo and commit message
-> - Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
-> =C2=A0 aspm_get_l1ss_cap()"
->=20
-> =C2=A0drivers/pci/pcie/aspm.c | 12 ++++++++++++
-> =C2=A01 file changed, 12 insertions(+)
->=20
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index c55ac11faa73..553327dee991 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
-> =C2=A0static int __pci_enable_link_state(struct pci_dev *pdev, int state,=
- bool
-> locked)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pcie_link_state *l=
-ink =3D pcie_aspm_get_link(pdev);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pci_dev *child =3D link=
-->downstream, *parent =3D link->pdev;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 parent_l1ss_cap, child_l1s=
-s_cap;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!link)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
-> @@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct pci_dev
-> *pdev, int state, bool locked)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_1_PCIPM | ASP=
-M_STATE_L1;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STA=
-TE_L1_2_PCIPM)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_2_PCIPM | ASP=
-M_STATE_L1;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure L1.2 parameters: Com=
-mon_Mode_Restore_Times, T_POWER_ON and
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * LTR_L1.2_THRESHOLD are prog=
-rammed properly before enable bits for
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * L1.2, per PCIe r6.0, sec 5.=
-5.4.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_capable=
- & ASPM_STATE_L1_2_MASK) {
+So in mlx4_en_DUMP_ETH_STATS, the driver calls mlx4_en_fold_software_stats
+which does the same "port_up" / "master" check and bails out... so I figured
+for these stats I should do the same.
 
-This is still mixing PCIE_LINK_STATE flags with ASPM_STATE flags. 'state' s=
-hould
-not even matter. The timings should always be calculated and programmed as =
-long
-as L1_2 is capable. That way the timings are ready even if L1_2 isn't being
-enabled now (in case the user enables it later).
+Was hoping Mellanox would give us a hint, but glancing at the code where the
+MLX4_FLAG_MASTER bit is set, it looks like sriov ? maybe "master" means pf and
+"slave" means "vf" ?
 
-David
+Not sure why the stats code bails on is_master but not is_slave, though.
 
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0parent_l1ss_cap =3D aspm_get_l1ss_cap(parent);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0child_l1ss_cap =3D aspm_get_l1ss_cap(child);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap)=
-;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_config_aspm_link(lin=
-k, policy_to_aspm_state(link));
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->clkpm_default =3D (=
-state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 
+I'll add your reviewed-by to my v3 and wait until sometime mid next week to
+send the v3. Hopefully we'll hear back from the Mellanox folks by then if they
+have thoughts/opinions on the stats code.
 
