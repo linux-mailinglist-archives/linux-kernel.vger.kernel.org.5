@@ -1,167 +1,186 @@
-Return-Path: <linux-kernel+bounces-160993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-160994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECAE8B458D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:28:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E5468B458E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087981F21BB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:28:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BD91B21BC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB3C482C2;
-	Sat, 27 Apr 2024 10:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9669E2744E;
+	Sat, 27 Apr 2024 10:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dzhLjUl+"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CvvLsVkX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9E1481A8;
-	Sat, 27 Apr 2024 10:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1EC20315
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 10:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714213700; cv=none; b=HstXSTziujlhlLh3wQ8QnxnJNfKs5J85DyOh75r6Z++xvX+YsNHwfSWxBtmuetsoqCKT7vmssB3oJ7JLj5SV21Ynwde24FFgTaQrjHS9k32zlkrVsD0jgGKYmbXZtTUMfVzgrdTgp8/EBlNosbbne98WgRlHCVe3xVbg8gng9EI=
+	t=1714214191; cv=none; b=RAtD+JC66Xs/SVK/vdvsb+UKuyqHyA9O8x3RIeMO4DU8/y3p6XgCQXqDojtLN1N+SrxyYQRdFe2y17i7Cuj4H+poUokGRa4Rp6OSC6pQCASHfWPRzQRZmFVqkC1kOqVkxpsSTEBGv7yF+msqMFKgviFCcsI/7H1fblZh2kGmBYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714213700; c=relaxed/simple;
-	bh=N/b5DpSzKkfD8U7Qhdg29sDer1L62s9oh/XW1K5lrqI=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=O3VLQ+VYzzdMNQD4lIffQly3Au0Ialcd9KQte6yf+TEex3ErTK+qfs7gpnNXLTEG1wVZJsSU6xR+DHToOBPFBPL9zMdE11k19rlllRDNjRr8i73yBDWuB9FGaU3i8X3jiq2Ty7QzP23G+Bwg41EpLKfYMsXY/STZ59POMTsRXrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dzhLjUl+; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e9320c2ef6so21460445ad.2;
-        Sat, 27 Apr 2024 03:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714213699; x=1714818499; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Lsen2Jh93GdgDkNshamkOVa5/H5pA7PUKli5agUeu4=;
-        b=dzhLjUl+hlqqTnYF5r8V/UkZvP6nFMfvEhxzeiDRZWJGo1s+NfF7LNkK0Sb7RN32DZ
-         FYGp+7+gDzNSMmyRmdwZ6MOOZfro+pRGMoz+UWdv6eqycR00EUXgmZ8EuA61i2Aqwfyg
-         xu1y20yIvjVwf6Iz0zEj/HSji/D1GZkH374v1y0rjItyCqHJ6LOpd9d2Fv+O1zsHGMl9
-         oFBvAIruAJm6skLD2zeywCuakkfRkRS2wWj8OeYQoOUyUk29XOpypCnRQ2AyidNnyjua
-         oso3F/chzNH8Qv0wapLRIetfhwFtBgdRdqi8B7Xz0WCO2rsAWfIL7E92rxQ4/G2doF24
-         GCgA==
+	s=arc-20240116; t=1714214191; c=relaxed/simple;
+	bh=oAPdOSh/rjxGtOL6G8o5F47TBLVel6VTqGGDaQAG060=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jUhkb66X7Wd6anklsjkLWVoAgT8+hsakY2Lq0Ak+As8i9DReuti9O3YZVzYOHacqKlNrYcdTlb0y1nJ4pcQqMf9x+8pMx5s2SkwiE1/1yAdUdKySuU3RosZAKUy/dqZJZKiWCu+nUOx/TG3SIv8uskcPgCBDuapACns66TA9uaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CvvLsVkX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714214189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AyJe8k+NKSRTclt6v7W5z/MPBrviSINpP3m1bDdfQMM=;
+	b=CvvLsVkXXYgwP1HCGtWYB6BLkLcTh5FOWT95mdxExTwAGWdJpd8eyDx5oD7L4o84tVnEKN
+	THPQppxyuDDNut3MYgrVvFCdfDYpJfXpimzIzaM9a7j190M5G10lL/ld98+3iURgqZ4mN7
+	YQ9zejvQuUTuLhqgDjh+SAiiv+oGhUc=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-2-ZFFzFVhNPwqSBdOGylO9Jg-1; Sat, 27 Apr 2024 06:36:27 -0400
+X-MC-Unique: ZFFzFVhNPwqSBdOGylO9Jg-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2ae9176fa73so3019794a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 03:36:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714213699; x=1714818499;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Lsen2Jh93GdgDkNshamkOVa5/H5pA7PUKli5agUeu4=;
-        b=n3+MnAzOVr80zpCHL4qC7TXaBLwdKRQy974i809gHbJ87vMdikJJcGaFCCmezRcUKq
-         r8yoXcHhNmoCiOO1MSTsMahiEhSnQCBj3DdZHP6/KEoGV/fgGnLpWGF1/atOxDh4rYgn
-         cNifyihBSJoN5pPnwMPhvEWSftGvFswokK20eIevShWmMZEskEVpRWYCC/Xq2pjCkDIQ
-         PDywEZE3rgBCyHS+yFyhKIsaDgjW6v6iqgc9F8WxoqR7aSgJrpGJuwsa6Em6PEjWg5sb
-         FFW0lVHpGGam3gMOwckCjcbat6V8DYuiBIvGrlNgs49jMU7GB6oP5dzBFxz8azaGAuWU
-         5e5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU5UWIIzxr+6awoS4pqFqOwxck008JZ5Uv9l+dZNan6PWKuYXKamxZO7SRA6peCkuvIamkLlVe8XZSQBQLwA/nIUO28SyRfkzd48XO4k/TD/ljQMiWpHEgfcjbfiu7MemaV
-X-Gm-Message-State: AOJu0Yw/QpnZoixQ833vpI9oK8ywPsHYYb+d6zp5spYB7bG/gKtGK7jQ
-	H897SKy292l3v0OAAStCGd4nLOOLCAdvOBIS3jTCAFp7LIPD28th79n87w==
-X-Google-Smtp-Source: AGHT+IEpg2tJ1zZJTLXkw19Actvjcq76/czJyPfB/0NpY0GxWoReDmsakjKAuEW5BcLumAI4tqPNyA==
-X-Received: by 2002:a17:902:d50d:b0:1eb:e1b:737a with SMTP id b13-20020a170902d50d00b001eb0e1b737amr4560900plg.44.1714213698693;
-        Sat, 27 Apr 2024 03:28:18 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.141.185])
-        by smtp.gmail.com with ESMTPSA id t20-20020a170902b21400b001e3e081dea1sm16878152plr.0.2024.04.27.03.28.14
+        d=1e100.net; s=20230601; t=1714214186; x=1714818986;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AyJe8k+NKSRTclt6v7W5z/MPBrviSINpP3m1bDdfQMM=;
+        b=XY6gFe3h1+6JuRg16zS8h61BzaHeCF0xEcnU4bfk0READhgGqUz/IxtlIPOtkaCdKw
+         UgFR5isqx4yoWVOIAuvg2ERqxzby9JF9VAd+WB8x+Y+vgbl2lyuWMwTEsHfACjS+dgCG
+         m07s32O6Gom7VAbwR9jgFkf/nI6i7StMndXTG1R7gwjrlJREJjT7rRWjQ0rNWxfFoJMP
+         Vujkkx6VfhS5yd5n7u7u8dq54+fTv8+33IWKZ7yGhPvIrseOK0neLyJIJTF5RJNzdlhn
+         2b45C7vpefdzAkw9kzU0pASabFdnqd3GWCRNjHhNexTEfcPKr9+iHiULhTQtHV6+NAbQ
+         wNOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUyt4kli6dZpIkR19/6AXdSngKjHwYU1cpJIdhamt92f7TdXZKOxfmRsETSMACa6jimmfBBUC1ROjR2Y7b6RUDc5UbgrU9U5mHu7vnj
+X-Gm-Message-State: AOJu0Yw+KfM/DVBYMyRwWJQ1Ug27LaFwJ9nudxjQ0gHWWOwQWc0WXVAY
+	P7bkXfG3uMV22SW/qPAmYzvMtuXueVQCkIXl6SH3pYOiVorR5oauvCNOB+pvQiJsHB71I1P3HA0
+	WodjiBojTjvs9KmyWBuuaYjBq/qWKa+2bi+EaL1EhUlcoGY88c1jzZ2+GM2rhCQ==
+X-Received: by 2002:a17:902:bc85:b0:1e2:6d57:c1bb with SMTP id bb5-20020a170902bc8500b001e26d57c1bbmr4547972plb.21.1714214186356;
+        Sat, 27 Apr 2024 03:36:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPhm2AjNWsFzTcfueWhdIMlYbfKnl7zRR2EMxPFfPsRJVtSdfGB+SUmrzXYVW1aA3Ve7C77A==
+X-Received: by 2002:a17:902:bc85:b0:1e2:6d57:c1bb with SMTP id bb5-20020a170902bc8500b001e26d57c1bbmr4547962plb.21.1714214185940;
+        Sat, 27 Apr 2024 03:36:25 -0700 (PDT)
+Received: from zeus.elecom ([240b:10:83a2:bd00:6e35:f2f5:2e21:ae3a])
+        by smtp.gmail.com with ESMTPSA id m5-20020a170902768500b001e4478e9b21sm16838908pll.244.2024.04.27.03.36.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 03:28:18 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	tglx@linutronix.de,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Fix suspicious RCU usage in __do_softirq()
-Date: Sat, 27 Apr 2024 18:28:08 +0800
-Message-Id: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 27 Apr 2024 03:36:25 -0700 (PDT)
+From: Ryosuke Yasuoka <ryasuoka@redhat.com>
+To: krzk@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: Ryosuke Yasuoka <ryasuoka@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syoshida@redhat.com,
+	syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
+Subject: [PATCH net v2] nfc: nci: Fix uninit-value in nci_rx_work
+Date: Sat, 27 Apr 2024 19:35:54 +0900
+Message-ID: <20240427103558.161706-1-ryasuoka@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Currently, the condition "__this_cpu_read(ksoftirqd) == current" is
-checked to ensure the rcu_softirq_qs() is invoked in ksoftirqd tasks
-context for non-RT kernels. however, in some scenarios, this condition
-will be broken.
+syzbot reported the following uninit-value access issue [1]
 
-     ksoftirqd/0
-->finish_task_switch
-  ->put_task_struct_rcu_user
-    ->call_rcu(&task->rcu, delayed_put_task_struct)
-      ->__kasan_record_aux_stack
-        ->pfn_valid
-          ->rcu_read_lock_sched()
-            <interrupt>
-             __irq_exit_rcu
-             ->__do_softirq
-               -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-                   __this_cpu_read(ksoftirqd) == current)
-                   ->rcu_softirq_qs
-                     ->RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
+nci_rx_work() parses received packet from ndev->rx_q. It should be
+validated header size, payload size and total packet size before
+processing the packet. If an invalid packet is detected, it should be
+silently discarded.
 
-The rcu quiescent states is reported occurs in the rcu-read critical
-section, so the lockdep warning is triggered. this commit therefore
-remove "__this_cpu_read(ksoftirqd) == current" condition check, generate
-new "handle_softirqs(bool kirqd)" function to replace __do_softirq() in
-run_ksoftirqdt(), and set parameter kirqd to true, make rcu_softirq_qs()
-be invoked only in ksofirqd tasks context for non-RT kernels.
-
-Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/lkml/8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop/T/#mea8aba4abfcb97bbf499d169ce7f30c4cff1b0e3
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Fixes: d24b03535e5e ("nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet")
+Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534 [1]
+Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
 ---
- kernel/softirq.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+v2
+- The v1 patch only checked whether skb->len is zero. This patch also
+  checks header size, payload size and total packet size.
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index b315b21fb28c..e991d735be0d 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
- static inline void lockdep_softirq_end(bool in_hardirq) { }
- #endif
- 
--asmlinkage __visible void __softirq_entry __do_softirq(void)
-+static void handle_softirqs(bool kirqd)
- {
- 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
- 	unsigned long old_flags = current->flags;
-@@ -563,8 +563,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		pending >>= softirq_bit;
- 	}
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
--	    __this_cpu_read(ksoftirqd) == current)
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kirqd)
- 		rcu_softirq_qs();
- 
- 	local_irq_disable();
-@@ -584,6 +583,11 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 	current_restore_flags(old_flags, PF_MEMALLOC);
+v1
+https://lore.kernel.org/linux-kernel/CANn89iJrQevxPFLCj2P=U+XSisYD0jqrUQpa=zWMXTjj5+RriA@mail.gmail.com/T/
+
+
+ net/nfc/nci/core.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 0d26c8ec9993..ab07b5f69664 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1463,6 +1463,16 @@ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
+ 				 ndev->ops->n_core_ops);
  }
  
-+asmlinkage __visible void __softirq_entry __do_softirq(void)
++static bool nci_valid_size(struct sk_buff *skb, unsigned int header_size)
 +{
-+	handle_softirqs(false);
++	if (skb->len < header_size ||
++	    !nci_plen(skb->data) ||
++	    skb->len < header_size + nci_plen(skb->data)) {
++		return false;
++	}
++	return true;
 +}
 +
- /**
-  * irq_enter_rcu - Enter an interrupt context with RCU watching
-  */
-@@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
- 		 * We can safely run softirq on inline stack, as we are not deep
- 		 * in the task stack here.
- 		 */
--		__do_softirq();
-+		handle_softirqs(true);
- 		ksoftirqd_run_end();
- 		cond_resched();
- 		return;
+ /* ---- NCI TX Data worker thread ---- */
+ 
+ static void nci_tx_work(struct work_struct *work)
+@@ -1516,30 +1526,36 @@ static void nci_rx_work(struct work_struct *work)
+ 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
+ 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
+ 
+-		if (!nci_plen(skb->data)) {
+-			kfree_skb(skb);
+-			break;
+-		}
++		if (!skb->len)
++			goto invalid_pkt_free;
+ 
+ 		/* Process frame */
+ 		switch (nci_mt(skb->data)) {
+ 		case NCI_MT_RSP_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rsp_packet(ndev, skb);
+ 			break;
+ 
+ 		case NCI_MT_NTF_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_ntf_packet(ndev, skb);
+ 			break;
+ 
+ 		case NCI_MT_DATA_PKT:
++			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rx_data_packet(ndev, skb);
+ 			break;
+ 
+ 		default:
+ 			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
+-			kfree_skb(skb);
+-			break;
++			goto invalid_pkt_free;
+ 		}
++invalid_pkt_free:
++		kfree_skb(skb);
++		break;
+ 	}
+ 
+ 	/* check if a data exchange timeout has occurred */
 -- 
-2.17.1
+2.44.0
 
 
