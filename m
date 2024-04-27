@@ -1,235 +1,142 @@
-Return-Path: <linux-kernel+bounces-161131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAC2C8B4775
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 20:43:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF57F8B4779
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 21:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE6211F21866
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 18:43:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5976D281F84
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 19:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B556F3A8EF;
-	Sat, 27 Apr 2024 18:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95F03BB20;
+	Sat, 27 Apr 2024 19:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="R8WxDvkx"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cQeQtxqW"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF1933C8
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 18:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CF33A29A
+	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 19:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714243417; cv=none; b=fO1ChwhTANq6CzLFnzOCQ0DwlGHcFiG78o282OfQ2KqU0dt0TFfallN05akIczpdMYcr4NY1DIAPN1zt8IvCi5eUWHkpCTmG5ZAMqR6oEdtl2DzCjJgfjpFTvG4A4bglqB1YpUBoRypCFfxUsTEN4/ZK/liAbAz1Oz8oSvXDbxo=
+	t=1714244573; cv=none; b=J963p5WR1KVrC85m+PY/GwtmiZTA7w00yqVjV2Ez6CWuB/myGvABeT+rO17r7lWKxE6d4zzWwCuAWF4xtacytog2vHUNUYGNUTcvDfWtYISK4qxIW+NFoKYZqYx+01aqlRZ4VsII00n5TmBe3IK9hdwjlJQU49w0Jm13vR6USJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714243417; c=relaxed/simple;
-	bh=oy47Cu0P1Sjhd1RueSFUdcxgxnOThp+ciKW02oAgErc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sZfjIQtwlvQPSyWwwLbloIGatI50wI9ky23AUquZS2E5sVZyJHp0XRxRpEvQ7WZ6cRXZNp+og4wYpQ7ybpkJOtRFI82OjdkARB/F1PK8ZZBZmvrv6jqIK5XwzoY7UuS0o7JQOm8STTJAL03TmHdMb5VfM001oiJgaU1CMvPnaRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=R8WxDvkx; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <da04552a-9466-4df9-8754-399b47dcbd5c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714243412;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UOhXo5EjGdx33Wt6C3d2r2+E77VdrxWCqdRaAFDAJcs=;
-	b=R8WxDvkxBRS/13UkJJzRrvuwuy5IHBtUb59zzW6HWKPUJYjqmQztVAdEPqUKaQV6PKVJYz
-	rkRxIO6NEL+7MgavRdkJavIgQzqjQpJlGm8eTi8ziv5YGLJ7Fqy1k3VuvWtdu9q+OBk954
-	fkIvWe0aTp5Up0H+0Z6mrTUhYDvRDII=
-Date: Sun, 28 Apr 2024 02:43:20 +0800
+	s=arc-20240116; t=1714244573; c=relaxed/simple;
+	bh=zfMWvuo8KGM0LEUnxsmTmqDiqq2kR44rM6AqbMFn7zw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AtVBIUhi6Q61P1yKdl3LMLvKKa4+7nkBruKex4voXiGwerbpxOXdgXnZ8ay/V1mkhi2118fM2yxhs8hx8KbJ3adsbteMqg3N51pnL0CUE5/adUxY67bNoQs2qOK8ckQUe9l2c4ii6RVtglzPjH4A1E015O9By/KvgTVRtLMphOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cQeQtxqW; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2df9af57b5eso14774181fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1714244570; x=1714849370; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=w1GCIdsjWlrVsQk7NNBBmnRhr1gy36n2rmXWCKoP5NE=;
+        b=cQeQtxqWDMYXq7abrC2YMbGj6JElvxPNxQCdTVIWxraETJFaIHxXZ6obDpf/mbAVI1
+         iA+0qVQR1WLXEcLm2JGmtW1ciuwDny5wbWCuAVR6g17YYe0DSfdnYIURXUTZoRLLOg6J
+         rSVofajPO8Zi3g3mu39BBSoXyYZP71IoV39a4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714244570; x=1714849370;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w1GCIdsjWlrVsQk7NNBBmnRhr1gy36n2rmXWCKoP5NE=;
+        b=HfJHY3I76hN9hE79P5zNJfbaS/w0nB6uS0XBbGAspmyCs44hkSDxR2TaICJbDu87Gn
+         4f+zCo3k9KTx0nPTHYxevvdsWtmFF4tLZdfZ7ZMRla11YDb4VCCVOJ5YW2SFS3stU2ZW
+         GRB6p4x/Y+sgIRX4rbMUyOJjNp2O8cGDThOZxKQw8ZecCoSvQ8o7B3I8aGB8/RK8IrH1
+         tyNVOk1tQAS0kXENUHq2fkRsl3szWeJ3I9nTNVVB4WjMg0ckDh1F+NDcb061vacR/mtU
+         OHXak1WoagfElv13XcJFd9LREngvKGYP1hfbDVo9h4OCszW2zyg7E4zMbVMzQHkUME7t
+         KXDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqMftqDUp3i0KhD2jRW1b3Hoh3eiv7I64ZVaEywdaJSnLeA3IyQhzmCbgN9+wCBa4z3dWVnxRJkfAQNR4k+rpsjayeUIRRw1TOPZkl
+X-Gm-Message-State: AOJu0YxxlnBlEZv/35K8OGJsSG9ofGDNKgchf1h/D9CDb5d6aERqm6/1
+	QfOO799hxV7JDNCn7BbUjtfZp+h8q0qL9tng+lOY4skYy/xY4lEOcipyZuuVqm2nnuwAstXVukU
+	8
+X-Google-Smtp-Source: AGHT+IGyclkti3PvL62BAegyi/GhJ3aI6sRjPXPYl21xYoU8isgELlcvmDZ3Osvovg4VsyPrdoEirw==
+X-Received: by 2002:a05:651c:a0d:b0:2dd:d3a0:e096 with SMTP id k13-20020a05651c0a0d00b002ddd3a0e096mr6006569ljq.31.1714244569890;
+        Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id r8-20020a2eb608000000b002d6b801a863sm3072719ljn.34.2024.04.27.12.02.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51acb95b892so4015331e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 12:02:49 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUk0dqCB8XAaF+EYDnWL9od+splepmeOcdhUmmHvnQjOqpAcoG3sqvrbW3xrzjLiQjXX4PtSPBC0Myz0/3La1FJaZyV2YT+SgzFo1PO
+X-Received: by 2002:a19:750c:0:b0:519:611f:df49 with SMTP id
+ y12-20020a19750c000000b00519611fdf49mr4859014lfe.69.1714244568762; Sat, 27
+ Apr 2024 12:02:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 8/9] drm/bridge: tfp410: Use fwnode API to acquire
- device properties
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss
- <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-9-sui.jingfeng@linux.dev>
- <gwpgunhe3frumjtxjapdw3nxlavrhseleddqqn6qpqeqg2ku56@ec6log4zl6ds>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <gwpgunhe3frumjtxjapdw3nxlavrhseleddqqn6qpqeqg2ku56@ec6log4zl6ds>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
+ <20230424004431.GG3390869@ZenIV> <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
+ <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
+ <20230425160344.GS3390869@ZenIV> <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
+ <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
+ <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
+ <2023053005-alongside-unvisited-d9af@gregkh> <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
+ <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+In-Reply-To: <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 27 Apr 2024 12:02:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+Message-ID: <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
-
-
-On 2024/4/23 04:08, Dmitry Baryshkov wrote:
-> On Tue, Apr 23, 2024 at 03:19:02AM +0800, Sui Jingfeng wrote:
->> Make this driver DT-independent by calling the freshly created helpers,
->> which reduce boilerplate and open the door for otherwise use cases. No
->> functional changes for DT based systems.
->>
->> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
->> ---
->>   drivers/gpu/drm/bridge/ti-tfp410.c | 41 +++++++++++++++---------------
->>   1 file changed, 21 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/ti-tfp410.c b/drivers/gpu/drm/bridge/ti-tfp410.c
->> index c7bef5c23927..58dc7492844f 100644
->> --- a/drivers/gpu/drm/bridge/ti-tfp410.c
->> +++ b/drivers/gpu/drm/bridge/ti-tfp410.c
->> @@ -266,8 +266,9 @@ static const struct drm_bridge_timings tfp410_default_timings = {
->>   
->>   static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
->>   {
->> +	struct fwnode_handle *fwnode = dev_fwnode(dvi->dev);
->>   	struct drm_bridge_timings *timings = &dvi->timings;
->> -	struct device_node *ep;
->> +	struct fwnode_handle *ep;
->>   	u32 pclk_sample = 0;
->>   	u32 bus_width = 24;
->>   	u32 deskew = 0;
->> @@ -288,14 +289,14 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
->>   	 * and EDGE pins. They are specified in DT through endpoint properties
->>   	 * and vendor-specific properties.
->>   	 */
->> -	ep = of_graph_get_endpoint_by_regs(dvi->dev->of_node, 0, 0);
->> +	ep = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
->>   	if (!ep)
->>   		return -EINVAL;
->>   
->>   	/* Get the sampling edge from the endpoint. */
->> -	of_property_read_u32(ep, "pclk-sample", &pclk_sample);
->> -	of_property_read_u32(ep, "bus-width", &bus_width);
->> -	of_node_put(ep);
->> +	fwnode_property_read_u32(ep, "pclk-sample", &pclk_sample);
->> +	fwnode_property_read_u32(ep, "bus-width", &bus_width);
->> +	fwnode_handle_put(ep);
->>   
->>   	timings->input_bus_flags = DRM_BUS_FLAG_DE_HIGH;
->>   
->> @@ -324,7 +325,7 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
->>   	}
->>   
->>   	/* Get the setup and hold time from vendor-specific properties. */
->> -	of_property_read_u32(dvi->dev->of_node, "ti,deskew", &deskew);
->> +	fwnode_property_read_u32(fwnode, "ti,deskew", &deskew);
->>   	if (deskew > 7)
->>   		return -EINVAL;
->>   
->> @@ -336,12 +337,12 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
->>   
->>   static int tfp410_init(struct device *dev, bool i2c)
->>   {
->> -	struct device_node *node;
->> +	struct fwnode_handle *fwnode = dev_fwnode(dev);
->>   	struct tfp410 *dvi;
->>   	int ret;
->>   
->> -	if (!dev->of_node) {
->> -		dev_err(dev, "device-tree data is missing\n");
->> +	if (!fwnode) {
->> +		dev_err(dev, "firmware data is missing\n");
->>   		return -ENXIO;
->>   	}
->>   
->> @@ -352,8 +353,8 @@ static int tfp410_init(struct device *dev, bool i2c)
->>   	dvi->dev = dev;
->>   	dev_set_drvdata(dev, dvi);
->>   
->> +	drm_bridge_set_node(&dvi->bridge, fwnode);
->>   	dvi->bridge.funcs = &tfp410_bridge_funcs;
->> -	dvi->bridge.of_node = dev->of_node;
->>   	dvi->bridge.timings = &dvi->timings;
->>   	dvi->bridge.type = DRM_MODE_CONNECTOR_DVID;
->>   
->> @@ -362,15 +363,15 @@ static int tfp410_init(struct device *dev, bool i2c)
->>   		return ret;
->>   
->>   	/* Get the next bridge, connected to port@1. */
->> -	node = of_graph_get_remote_node(dev->of_node, 1, -1);
->> -	if (!node)
->> -		return -ENODEV;
->> -
->> -	dvi->next_bridge = of_drm_find_bridge(node);
->> -	of_node_put(node);
->> -
->> -	if (!dvi->next_bridge)
->> +	dvi->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
->> +	if (IS_ERR(dvi->next_bridge)) {
->> +		ret = PTR_ERR(dvi->next_bridge);
->> +		dev_err(dev, "Error in founding the next bridge: %d\n", ret);
->> +		return ret;
-> Same comment regarding dev_err_probe().
+On Fri, 26 Apr 2024 at 23:21, Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
-> LGTM otherwise.
+> syzbot is reporting data race between __tty_hangup() and __fput(), for
+> filp->f_op readers are not holding tty->files_lock.
 
+Hmm. I looked round, and we actually have another case of this:
+snd_card_disconnect() also does
 
-My drm_bridge_find_next_bridge_by_fwnode() function won't return -EPROBE_DEFER,
-this is known for sure. this can be used as a prior(priori) knowledge. This is
-intentionally by design.
+                        mfile->file->f_op = &snd_shutdown_f_ops;
 
+and I don't think tty->files_lock (or, in the sound case,
+&card->files_lock) is at all relevant, since the users of f_ops don't
+use it or care.
 
-Calling the dev_err_probe() just introduce extra overhead on non EPROBE_DEFER
-cases. Hence, It is useless to use dev_err_probe() at here.
+That said, I really think we'd be better off just keeping the current
+model, and have the "you get one or the other". For the two cases that
+do this, do that f_op replacement with a WRITE_ONCE(), and just make
+the rule be that you have to have all the same ops in both the
+original and the shutdown version.
 
+I do *not* think it's at all better to replace (in two different
+places) the racy f_op thing with another racy 'hungup' flag.
 
->> +	} else if (!dvi->next_bridge) {
->> +		dev_dbg(dev, "Next bridge not found, deferring probe\n");
->>   		return -EPROBE_DEFER;
-> Looking at the bolerplate code, I think it would be better to make
-> drm_bridge_find_next_bridge_by_fwnode() reutrn -EPROBE_DEFER on its own.
->
-The drm_bridge_find_next_bridge_by_fwnode() function itself can not
-reliable detect if the driver(the remote bridge) already probed or not.
+The sound case is actually a bit more involved, since it tries to deal
+with module counts. That looks potentially bogus. It does
 
-Hence, as a core helper function, we can not guarantee that return
--EPROBE_DEFER is always correct.
+                        fops_get(mfile->file->f_op);
 
-While, return NULL is always correct. The NULL can stand for two meanings.
-One is that the next bridge is really don't exist, may happen when the
-caller provided a wrong fwnode argument.
+after it has installed the snd_shutdown_f_ops, but in snd_open() it
+has done the proper
 
-Another case is that the next bridge exists but not probed yet, and
-drm_bridge_find_next_bridge_by_fwnode() can return NULL when it gets called
-too early.
+        replace_fops(file, new_fops);
 
-Therefore, it is better to left to the users of this function to process
-the NULL return value. As driver instances has some extra prior knowledge.
-And can be controlled by drm bridge driver author.
+which actually drops the module count for the old one. So the sound
+case seems to possibly leak a module ref on disconnect. That's a
+separate issue, though.
 
->> +	}
->>   
->>   	/* Get the powerdown GPIO. */
->>   	dvi->powerdown = devm_gpiod_get_optional(dev, "powerdown",
->> @@ -422,10 +423,10 @@ static struct platform_driver tfp410_platform_driver = {
->>   /* There is currently no i2c functionality. */
->>   static int tfp410_i2c_probe(struct i2c_client *client)
->>   {
->> +	struct fwnode_handle *fwnode = dev_fwnode(&client->dev);
->>   	int reg;
->>   
->> -	if (!client->dev.of_node ||
->> -	    of_property_read_u32(client->dev.of_node, "reg", &reg)) {
->> +	if (!fwnode || fwnode_property_read_u32(fwnode, "reg", &reg)) {
->>   		dev_err(&client->dev,
->>   			"Can't get i2c reg property from device-tree\n");
->>   		return -ENXIO;
->> -- 
->> 2.34.1
->>
--- 
-Best regards,
-Sui
+                      Linus
 
+                    Linus
 
