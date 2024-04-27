@@ -1,119 +1,137 @@
-Return-Path: <linux-kernel+bounces-160999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF838B459A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:44:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0BBC8B459C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 12:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9892A282486
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:44:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25AAFB21681
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Apr 2024 10:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C1A43AA2;
-	Sat, 27 Apr 2024 10:44:34 +0000 (UTC)
-Received: from mail115-118.sinamail.sina.com.cn (mail115-118.sinamail.sina.com.cn [218.30.115.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3922A347B6
-	for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 10:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9636B4204C;
+	Sat, 27 Apr 2024 10:45:03 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499C4405FC;
+	Sat, 27 Apr 2024 10:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714214674; cv=none; b=ssE+RYtnwLt7p8Z9lSYmQHjMCPvXoqMn88jBM/CvyxXUx/b9jXTEnv8nl3anCTsie7nwRGJXdBKiCwAupYA8KTzn3BOItCIkc9d4x7G852elHvZ8djezngyJlaYARy/EqSn5GCaU2OeXUn8plFmf4evFQ2FmdG0HmKPGeBmR0rE=
+	t=1714214703; cv=none; b=VMhBj4o5OBOWNIHoCYRepbSGdborZFOjD/Zpim4pZrGYazpbjNjGfV4qzJse/0qtvWp0r1cDpea/yMOb6Eb9RW62DDyeimVmDAlvpH+EOytcFFX77Pg9WeV5w599KC2PWdpKTXSjyxSZcGB8LixyiIuOyfBZZLp5etRDZ9p4ODU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714214674; c=relaxed/simple;
-	bh=f5LFMIxtIn4Rb0vSwTaO9c6vSDOK8fB6BXUCWnoX2BM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ia567cOeQriRJra9If4K+J3PkRw6ZKhzzOOSPpCACWvuW+goikGXbdDRsox3Exn4JI//v2+iyTIDsK33UtoS/y45T7f5hxzk9pgBWxSmEtoJhx55vt7tpsuKuWTRfGlS3MZsbdg+WuUUpYZ3sK6a5ldeJJFFJgPRfBm57KvrJgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.50.155])
-	by sina.com (172.16.235.25) with ESMTP
-	id 662CD70600001F62; Sat, 27 Apr 2024 18:44:26 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 43268034210304
-X-SMAIL-UIID: 23A085A6FDF24E87B8BBFAAE0EA0B55B-20240427-184426-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+5d34cc6474499a5ff516@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in chrdev_open
-Date: Sat, 27 Apr 2024 18:44:25 +0800
-Message-Id: <20240427104425.3926-1-hdanton@sina.com>
-In-Reply-To: <000000000000f386f90616fea5ef@google.com>
-References: 
+	s=arc-20240116; t=1714214703; c=relaxed/simple;
+	bh=MLacY6aG8bo9wwwwbKKlBJEsS83ygocXS1Ntn3xYnC4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uZHyEE6Edk7yUyG9w07mYtlSPrFVdHwshORA8+OqJrD9YO9Hy/kkbKa4RYlZZ2TtjW0yvO+m3SlV7CtAVkEwNTKZWQOPE4iGMZP04ZOeyWfn9GXorEOyjMpBA9HSpE4jHGBW4hRlzKNt43exj74ez1wgW7FVWGYcnAqkSjp1tts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [112.20.112.218])
+	by gateway (Coremail) with SMTP id _____8AxaOkn1yxmme8DAA--.2815S3;
+	Sat, 27 Apr 2024 18:44:55 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.112.218])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxnlcl1yxm4E8HAA--.16414S3;
+	Sat, 27 Apr 2024 18:44:55 +0800 (CST)
+Message-ID: <4ef9835e-b3dd-4b05-b09a-047f941a0870@loongson.cn>
+Date: Sat, 27 Apr 2024 18:44:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scripts: add `check-trans-update.py`
+To: Cheng Ziqiu <chengziqiu@hust.edu.cn>, Alex Shi <alexs@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: Dongliang Mu <dzm91@hust.edu.cn>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hust-os-kernel-patches@googlegroups.com
+References: <20240422065822.1441611-1-chengziqiu@hust.edu.cn>
+Content-Language: en-US
+From: Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20240422065822.1441611-1-chengziqiu@hust.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bxnlcl1yxm4E8HAA--.16414S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Ww48Cw17GrW8Ary3XryrGrX_yoW8Kw17pa
+	909rsIya1UGF1xWw13Gr18XFs0kF95J398Wrnrta4Iqrs7tF1kWrsIyFsIy3WUCryrXa43
+	uF4UAry2ka1FkFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
+	wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr
+	1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8yrW7UU
+	UUU==
 
-On Fri, 26 Apr 2024 05:00:21 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e33c4963bf53 Merge tag 'nfsd-6.9-5' of git://git.kernel.or..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12499380980000
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  e33c4963bf53
+在 2024/4/22 14:58, Cheng Ziqiu 写道:
+> The `check-trans-update.py` scripts check whether a translated version
+> of a documentation is up-to-date with the english version.
+>
+> The scripts use `git log` commit to find the latest english commit from
+> the translation commit (order by author date) and the latest english
+> commits from HEAD. If differences occurs, report the file and commits
+> need to be updated.
+>
+> Signed-off-by: Cheng Ziqiu <chengziqiu@hust.edu.cn>
+> ---
+>   scripts/check-trans-update.py | 176 ++++++++++++++++++++++++++++++++++
 
---- x/fs/char_dev.c
-+++ y/fs/char_dev.c
-@@ -377,6 +377,9 @@ static int chrdev_open(struct inode *ino
- 	struct cdev *new = NULL;
- 	int ret = 0;
- 
-+	if (!igrab(inode))
-+		return -ENXIO;
-+
- 	spin_lock(&cdev_lock);
- 	p = inode->i_cdev;
- 	if (!p) {
-@@ -384,8 +387,10 @@ static int chrdev_open(struct inode *ino
- 		int idx;
- 		spin_unlock(&cdev_lock);
- 		kobj = kobj_lookup(cdev_map, inode->i_rdev, &idx);
--		if (!kobj)
-+		if (!kobj) {
-+			iput(inode);
- 			return -ENXIO;
-+		}
- 		new = container_of(kobj, struct cdev, kobj);
- 		spin_lock(&cdev_lock);
- 		/* Check i_cdev again in case somebody beat us to it while
-@@ -401,8 +406,10 @@ static int chrdev_open(struct inode *ino
- 		ret = -ENXIO;
- 	spin_unlock(&cdev_lock);
- 	cdev_put(new);
--	if (ret)
-+	if (ret) {
-+		iput(inode);
- 		return ret;
-+	}
- 
- 	ret = -ENXIO;
- 	fops = fops_get(p->ops);
-@@ -416,10 +423,12 @@ static int chrdev_open(struct inode *ino
- 			goto out_cdev_put;
- 	}
- 
-+	iput(inode);
- 	return 0;
- 
-  out_cdev_put:
- 	cdev_put(p);
-+	iput(inode);
- 	return ret;
- }
- 
---
+Because we'll be typing its name a lot, it's important to consider 
+tabulating the
+
+name. If it's easy to understand, choose a name that will slow down the tab
+
+button's wear.
+
+
+I gave your script a quick test and got the following output:
+
+[siyanteng@kernelserver linux-next]$ ./scripts/check-trans-update.py 
+Documentation/translations/zh_CN/process/1.Intro.rst 
+[siyanteng@kernelserver linux-next]$
+
+It seems that your script can't handle documents that never get updated. 
+You need to print a warning or hint.
+
+[siyanteng@kernelserver linux-next]$ ./scripts/check-trans-update.py 
+Documentation/translations/zh_CN/rust/arch-support.rst 
+Documentation/translations/zh_CN/rust/arch-support.rst (8 commits) 
+2f4fe71fdd25ebb4e41aee3b467b54fbef332643
+
+This seems to be just a merge, try to drop it?
+
+81889e8523e63395b388f285c77ff0c98ea04556 
+01848eee20c6396e5a96cfbc9061dc37481e06fd 
+724a75ac9542fe1f8aaa587da4d3863d8ea292fc 
+90868ff9cadecd46fa2a4f5501c66bfea8ade9b7 
+e5e86572e3f20222b5d308df9ae986c06f229321 
+04df97e150c83d4640540008e95d0229cb188135 
+0438aadfa69a345136f5ba4f582e0f769450ee0d
+
+Hmmm, How about printing it this way?
+
+We need to update the following commits.
+
+commit 81889e8523e6 ("RISC-V: enable building 64-bit kernels with rust support")
+commit 01848eee20c6 ("docs: rust: fix improper rendering in Arch Supportpage")
+commit 724a75ac9542 ("arm64: rust: Enable Rust support for AArch64")
+commit 90868ff9cade ("LoongArch: Enable initial Rust support")
+commit e5e86572e3f2 ("rust: sort uml documentation arch support table")
+commit 04df97e150c8 ("Documentation: rust: Fix arch support table")
+commit 0438aadfa69a ("rust: arch/um: Add support for CONFIG_RUST under x86_64 UML")
+
+
+Thanks,
+Yanteng
+
 
