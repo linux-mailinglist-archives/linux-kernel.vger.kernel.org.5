@@ -1,93 +1,180 @@
-Return-Path: <linux-kernel+bounces-161462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1E78B4C4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:00:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E47CD8B4C51
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A77C2B210DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CF7F1F212C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5256B6EB41;
-	Sun, 28 Apr 2024 14:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FE66EB59;
+	Sun, 28 Apr 2024 15:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="raNQShi9"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bj9My2hP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F621EB2C;
-	Sun, 28 Apr 2024 14:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8486A8A0;
+	Sun, 28 Apr 2024 15:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714316394; cv=none; b=bRv/9YTS8SA1niNPlaIeAMmFEUId5z8OkqEO67wvjvEGpuOGYbFL1WwsKZV2acn+AOW5Lqm8FK93od9ENtI0lfTr+9BLLlwgY5KktiYH9nf9j1UbsClPZjBk/sxoRbGny1X2asgpFgtLAN+eTQyjaCRsPJMBvaMLqNOkVvZePNk=
+	t=1714316688; cv=none; b=eGoyLj9SEto9yqJuJTQX8QJ/O/6EOcsG/xW0t2eo7Ii4f94eiq9f016UKc5+Nm8Oak2RRDczg0GV+TwGrIy4Zu9ctD2Q6FfLa3wdmKJCuzM08bC2lYN3wyLanPMIgqnKTW7SNbYEQaQoy79pJ+RDd0on5Cy2gIL+xWIBk+dyOFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714316394; c=relaxed/simple;
-	bh=2HXWv+oO6mi7iiAFeXK5e3ntyuc98kfi34Ka5nCyn3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CQJEs3HuXdPzfJ8Qy8a+VHrZtr617i5lHym45Vupy9HbZ3FOuccfGQtvSqVlqT+ktM8sLT0rF/634q/DkppfZ8jlmC1D3TQSWcUzFv1kFGZgaa/Gaux0ERWB932Dw1NGKf57wPiEkkY55v48urVBQn87xiUEA+q/0AswdwP34S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=raNQShi9; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=YLxb0x4FrND/0FR9KaFczjg3H4SAZkyUWJ+1D4HM91c=; b=raNQShi92LlU5lNoq8qXwThBcX
-	VQQwRqf2fhlhVGRjqBXYeGVwIXYfEkSD3ch1gatPiP8pb+0XFbddRs/geUGdOcLft8amJDqgcEb7u
-	YyHIQ4Fwmn4IJ4n2+w09i5kKx/uFeQM8airzcTbB1wIg0jcRdJ2QCJ0LcrjV5z8gNmgk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s160C-00EC2M-TB; Sun, 28 Apr 2024 16:59:40 +0200
-Date: Sun, 28 Apr 2024 16:59:40 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
- interrupts unmasking
-Message-ID: <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
- <Zi1Xbz7ARLm3HkqW@builder>
- <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
- <Zi4czGX8jlqSdNrr@builder>
+	s=arc-20240116; t=1714316688; c=relaxed/simple;
+	bh=+GqHU7a9ra3T6Y0nb2mmVQSYhBd/G4kHj/saCxthdzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ccRuHRVMXosQ7ZF3qtev+0z+XmR3FGp6rq01fEmsceik/0ZzVicHMZI7SwR7dsk7V3jekSc8P598bALpHdNdofIf89Rng/lllOmqB9wl9MsR/jGhcVNi1S60qSWSpeaD7w1nrLqz4qosP8EPvluJsdsfLnQvpcRPAhomvbrc6TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bj9My2hP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4016BC113CC;
+	Sun, 28 Apr 2024 15:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714316688;
+	bh=+GqHU7a9ra3T6Y0nb2mmVQSYhBd/G4kHj/saCxthdzg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=bj9My2hPIKGtcZ90jAdKkFF1W7yQoSLxJCvsgsRPYoAC77clALC2I/hIjt5qD89Ng
+	 RfxS/KA1dUaVxGrQw29jXlko5ECweMvEka7HpC2bvLwsXJ4gLqT5LECttdul7u1B9Q
+	 1q08aY8jztg8OEYiVOrgYV0xLGUCjn/1PeAlAgy6jAgwZIZhoMDGlpz9J25Pc1ALkO
+	 KPlle+INMF1DTGnTJSyOA2Vien7JlPQ9NZjVPNyYvCCDDZhDznY0hveS/IFST9vWj8
+	 TsIHj7FxhoEdVQHEj5gZbw9u5K/MyAS9hbKO/h9l0Bu+Gq2f7ILsIuW++7FhClj9cw
+	 XlgejYj0N3IKQ==
+Date: Sun, 28 Apr 2024 16:04:38 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, corbet@lwn.net,
+ conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, robh@kernel.org,
+ Ramona Gradinariu <ramona.gradinariu@analog.com>
+Subject: Re: [PATCH 2/5] iio: imu: adis16480.c: Add delta angle and delta
+ velocity channels
+Message-ID: <20240428160438.424e33d2@jic23-huawei>
+In-Reply-To: <20240423084210.191987-3-ramona.gradinariu@analog.com>
+References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
+	<20240423084210.191987-3-ramona.gradinariu@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zi4czGX8jlqSdNrr@builder>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> n  |  name     |  min  |  avg  |  max  |  rx dropped  |  samples
-> 1  |  no mod   |  827K |  846K |  891K |      945     |     5
-> 2  |  no log   |  711K |  726K |  744K |      562     |     5
-> 3  |  less irq |  815K |  833K |  846K |      N/A     |     5
-> 4  |  no irq   |  914K |  924K |  931K |      N/A     |     5
-> 5  |  simple   |  857K |  868K |  879K |      615     |     5
+On Tue, 23 Apr 2024 11:42:07 +0300
+Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
 
-That is odd.
+> Add support for delta angle and delta velocity raw readings to
+> adis16480 driver.
 
-Side question: What CONFIG_HZ= do you have? 100, 250, 1000?  Try
-1000. I've seen problems where the driver wants to sleep for a short
-time, but the CONFIG_HZ value limits how short a time it can actually
-sleep. It ends up sleeping much longer than it wants.
+Why are these not allowed via the buffer interface?   Normally
+my expectation of delta values is they are more or less useless
+without buffered capture. The intent of providing those channels
+is that they are gathered over time and summed up to give the
+angle difference (for example) between start of capture and now.
+Note the formula on the datasheet 
+https://www.analog.com/media/en/technical-documentation/data-sheets/adis16545-16547.pdf
+looks wrong (formula 3) as it's adding the signals at time
+nD + d and at nD + D - 1 whereas for a delta you'd subtract those
+(maybe I'm reading that wrong).
 
-	Andrew
+If we are providing these values as raw readings I'd expect them
+to be presented as delta_angle / time (e.g. rate of change of angle) and
+delta_velocity / time = acceleration (be it slightly distorted vs
+the acceleration measured as a result of oversampling.).
+So basically spot measurements of delta values are normally pretty
+useless.
+
+My guess is that you did this because the device either seems
+to allow burst reads of the main channels or of these delta
+values?
+
+If so consider using available_scan_masks to allow one or the
+other set of channels rather than not allowing capture of these
+via the buffered interfaces.
+
+Jonathan
+
+
+
+> 
+> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+> ---
+>  drivers/iio/imu/adis16480.c | 78 ++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 76 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
+> index bc6cbd00cd4b..4adc2244a4ef 100644
+> --- a/drivers/iio/imu/adis16480.c
+> +++ b/drivers/iio/imu/adis16480.c
+> @@ -140,6 +140,8 @@ struct adis16480_chip_info {
+>  	unsigned int accel_max_val;
+>  	unsigned int accel_max_scale;
+>  	unsigned int temp_scale;
+> +	unsigned int deltang_max_val;
+> +	unsigned int deltvel_max_val;
+>  	unsigned int int_clk;
+>  	unsigned int max_dec_rate;
+>  	const unsigned int *filter_freqs;
+> @@ -445,6 +447,12 @@ enum {
+>  	ADIS16480_SCAN_MAGN_Z,
+>  	ADIS16480_SCAN_BARO,
+>  	ADIS16480_SCAN_TEMP,
+> +	ADIS16480_SCAN_DELTANG_X,
+> +	ADIS16480_SCAN_DELTANG_Y,
+> +	ADIS16480_SCAN_DELTANG_Z,
+> +	ADIS16480_SCAN_DELTVEL_X,
+> +	ADIS16480_SCAN_DELTVEL_Y,
+> +	ADIS16480_SCAN_DELTVEL_Z,
+>  };
+>  
+>  static const unsigned int adis16480_calibbias_regs[] = {
+> @@ -688,6 +696,14 @@ static int adis16480_read_raw(struct iio_dev *indio_dev,
+>  			*val = 131; /* 1310mbar = 131 kPa */
+>  			*val2 = 32767 << 16;
+>  			return IIO_VAL_FRACTIONAL;
+> +		case IIO_DELTA_ANGL:
+> +			*val = st->chip_info->deltang_max_val;
+> +			*val2 = 31;
+> +			return IIO_VAL_FRACTIONAL_LOG2;
+> +		case IIO_DELTA_VELOCITY:
+> +			*val = st->chip_info->deltvel_max_val;
+> +			*val2 = 31;
+> +			return IIO_VAL_FRACTIONAL_LOG2;
+>  		default:
+>  			return -EINVAL;
+>  		}
+> @@ -761,6 +777,30 @@ static int adis16480_write_raw(struct iio_dev *indio_dev,
+>  	BIT(IIO_CHAN_INFO_CALIBSCALE), \
+>  	32)
+>  
+> +#define ADIS16480_DELTANG_CHANNEL(_mod) \
+> +	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
+> +	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, ADIS16480_SCAN_DELTANG_ ## _mod, \
+> +	0, \
+
+Trivial but why this line wrap?  I'd push 32 onto the line above at least.
+
+> +	32)
+> +
+> +#define ADIS16480_DELTANG_CHANNEL_NO_SCAN(_mod) \
+> +	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
+> +	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, -1, \
+> +	0, \
+> +	32)
+> +
+> +#define ADIS16480_DELTVEL_CHANNEL(_mod) \
+> +	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
+> +	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, ADIS16480_SCAN_DELTVEL_ ## _mod, \
+> +	0, \
+> +	32)
+> +
+> +#define ADIS16480_DELTVEL_CHANNEL_NO_SCAN(_mod) \
+> +	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
+> +	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, -1, \
+> +	0, \
+> +	32)
+
 
