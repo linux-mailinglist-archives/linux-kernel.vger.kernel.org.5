@@ -1,111 +1,171 @@
-Return-Path: <linux-kernel+bounces-161531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99398B4D42
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:33:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C188B4D45
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:37:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1673A1C20B42
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A05C281561
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660C873513;
-	Sun, 28 Apr 2024 17:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651877351A;
+	Sun, 28 Apr 2024 17:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gwVC9LZB"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EOzbiPHs"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EC871B39
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 17:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6AE79F0;
+	Sun, 28 Apr 2024 17:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714325582; cv=none; b=FQ70S6GuXQTrPb5uk4/eGGYKuOLZUpi+2mdbNvs8ZdMTJTVX2xqYfPSWOXEEGG6KtZlwY4y/Sd1WD5Z0BO+Pz0D9poV0NIKNh28gdj72zKKll5kfvk43yGcmEHqp+f9O7UTQlGvW3T7AkN7IMlnWZoswqC4YR5/bGbY5KJsKye4=
+	t=1714325844; cv=none; b=DlkBwL/J60om7GdUJ673RJQvaOlOmxY0dDjezSTzrYkjQjOhY1Tn/PEpEorC/WL/VUCbWSlUKb7U6dS9RwKt/OAh814KnogZprlNIoE2Fz41Kqd3DhifF8IvJAqLXg9rnP3IGgVl/Ni21MVTG+6LczhjyWgGg9VkPk/amU+IQo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714325582; c=relaxed/simple;
-	bh=u9J6lO2NJacHQtxP14GpMZjLUCM+3kKhh/6Dchva6X0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=L5ZPP3hR4lUVs6kIy3H7xoYdPtnTGpSbOh3JzjSkObbNHmgtVq1nK9EX03bqDbbWErC7fpnD6211qQHTaKIeaP7A2PhB1onGByD1rp4gUt6lyTbOAaXrtFO+61MOEGXeshV6MK4ofi2YtcMTti9QTionA9olhsvkeoswQRKGBNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gwVC9LZB; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1714325844; c=relaxed/simple;
+	bh=k/p0+piWbqFxV0/iw58pgAaRMUt66R+LBwhDr0aqIVE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WLMeSVOab1BjMiIceQHU05diXdEot+M5uQJoYB/GVs8XdAO1lZeJBumouDRB2nvwgc8+MbZqYDnyGzvPodGoo3xcplOMjioeoSFbgdhuGv2F2JAqgZUBSQ7JeN7t20H7ToRUwCqKwDkZvhmKu0/JvTtjlh1ukP1NF78O5UHO2r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EOzbiPHs; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41b79451128so18875825e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:33:00 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dd6c14d000so45175261fa.0;
+        Sun, 28 Apr 2024 10:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714325579; x=1714930379; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jcplmvIQk+FcUwOQ5qYRmNSxvLe0nIBjbwTuOkEX+S4=;
-        b=gwVC9LZBvy/WE65DxsER683kAV2TllMVrz18iq9u6dtWaF6ZWaRUb5xFLQyR/ZwU4f
-         pbQdnfoaTuTkI2LTNC1MfUKe7hlKh7XF+h4b6x1SopCPrCYMGQMNR8/cd/T2QIOXfac8
-         uvXOv7fFT8yKunFrskmuDdiWA2QJ3Sf4Dmw/lp6QrvLqXAhsu531gEhuJUMgx5P74Yki
-         YR+mNdKuHiX2OByZDRZqchAoRmRHWXlzGHZFUI5RSkeVWSUzPx2osmXwdgToqKqtad9q
-         IBurxB5t8A1TRwxF2iU9wF7QWrzhSE7wK0jSIziZ3NbDivp77+Wq0dxYFCkdXZKOr36C
-         iDMA==
+        d=gmail.com; s=20230601; t=1714325841; x=1714930641; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2M+7SXqqUCz3AMb8S+u8A0bUNwyf95ASvG0+qysyKfY=;
+        b=EOzbiPHsJA8Gpknno4b55KEoTi0FAuy5FsXkqSo/zExyHjcGGGRmaLZFdYgL4HE+VH
+         8YrZ+VtvRHRTFLGHnL3ZtXR1IsjarVYGDRCpK1oQVYMxPwXJ0ODHZKC5DSlgDlSSOeix
+         OKIii5q2p71jor1xslh7df2h2ypH1/vlP4z5ku0IlWyMi9rgCNmr2nIm83fknI3Q+VV3
+         Utuuzv95/YfWYqQu0qZrBU1t00oCxVUfquyzCmqsA/AkyNzOC8vTfWsCCDVFReDcryYf
+         sjpNc4NQOuR2eYPm/dpnts/BNTnX+4yUAyFLz+ALn+hbsmlppVEJLCa74Dsu8RnYB3bn
+         3lxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714325579; x=1714930379;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jcplmvIQk+FcUwOQ5qYRmNSxvLe0nIBjbwTuOkEX+S4=;
-        b=NoMCtMXvi8EtdkKTJ++W6qfRQ5GTOpaoLKVbznKqYHkMu1UN0dBkb2pIvRM9p+nUwH
-         ZlwxsTZYqvVne7QE5JgZmPZHrLjKVXszIB4mFDl9Ry98nkIi9Bx34XPaBglthQVImqJY
-         zjCdbz336iEuXEM8WK6FoGSJ/sU6+cg0gZz7SH5QzFmoy/XJFV/F+bU9cc03bYezVuG5
-         hrGXfVSoxn4h39RHREvA1Bq1BUk06NIijgWoZLBya451uP/cXPv5EgtbmMII1JpPMxL1
-         lUGlBI1KuRomNCTkiAXLL3e3FRpy2JNocii3Zd6NoIQNIBOv2EI6iD455cf/1uuHsDee
-         3Kew==
-X-Forwarded-Encrypted: i=1; AJvYcCX/SfGtUM8bvU89bBvisuMRIgLp4abAvr3GPI/ySpeCNXuTiv5XL7ZTknjEcJBt3s7sNMdHQLdorszmfIehrnVkz27b310bVMuX71G+
-X-Gm-Message-State: AOJu0YwPahb5Rymi+3usO51tks57NMxr7imZL1rTQTKagTIfAOypfw/3
-	h+3fA2WkhLTGn6yoc1ejSA23HKOZzY2IiLTCFXYHAewFNjrAzgM=
-X-Google-Smtp-Source: AGHT+IEB7N4wpUh+4ZTj3qXztX0OIxn4UYxrw5TE1QO6fIgkuWuvQXx6BtRbjarjoC3UujdC8l4r3w==
-X-Received: by 2002:a05:600c:45cd:b0:41a:a521:9699 with SMTP id s13-20020a05600c45cd00b0041aa5219699mr6367992wmo.4.1714325579392;
-        Sun, 28 Apr 2024 10:32:59 -0700 (PDT)
-Received: from octinomon.home (182.179.147.147.dyn.plus.net. [147.147.179.182])
-        by smtp.gmail.com with ESMTPSA id a9-20020a05600c348900b0041bb11ff5a7sm8139463wmq.8.2024.04.28.10.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 10:32:59 -0700 (PDT)
-Date: Sun, 28 Apr 2024 18:32:57 +0100
-From: Jules Irenge <jbi.octave@gmail.com>
-To: mingo@redgat.com
-Cc: tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	peterz@infradead.org, rdunlap@infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] x86/tsc: Use div64_64 instead of do_div()
-Message-ID: <Zi6ISSkMLzM-C4yk@octinomon.home>
+        d=1e100.net; s=20230601; t=1714325841; x=1714930641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2M+7SXqqUCz3AMb8S+u8A0bUNwyf95ASvG0+qysyKfY=;
+        b=Lcd8RMe2dnsU4H54Iqmrcj5lrI/kF2zyldFRQMEhKTSNS6vpXfnEQGTWg8aTFYZQXy
+         hyDpiBecQEHpfmVQaMItVuB3AvULQRDxrrpIv2+X8yaIBPZlCTyx+zmzBLGEAh7/bvpy
+         Wpz/rFit+lje3RvNnF6BnpruqPToKik80V4XuOphS/z6zQg9R6UN0E07WnYzCJL4KyKe
+         ts+MZAkU5NbX3dRdwoKaDMa1cx/VoTXQ3kf1GZrLoLKw1Hy+LJD60PQ3QdqGiOH9d8Iy
+         CSHPLFQ/JKyf+nWLN2HCJdp+tFG3Z9+mYAOGSqp4zUiNjXMWSYbQR3/oduy1flxmh6pd
+         vChg==
+X-Forwarded-Encrypted: i=1; AJvYcCWgOUx7rMGVg6oRT0wlCJKOwModajlBpiiE/jVqHKbt3vvPH4D+8JZkEx6tMrv5HhWtaejvqQYzYGnCDfB8JwDVeqSFlAZGjlsdqBG1lENaTJ6c7YxWIMoeQf5nJWMe2oyfIa1GW7LY9XzdSQ==
+X-Gm-Message-State: AOJu0YyBN0wVMYNRVcDhh7FUSgbUmXibwjTyOUPvrjIJivGurjQB5a0k
+	2DZQG6q5m+V4jwYOQhm5FUAE2y2dhY1RTT/OAdbHNOwO8IES+5EQ/uLTjJy4xceHFeiqdt/0Z4O
+	AjcUrxzE1Scltx2kuBJ5FJMGwSyI=
+X-Google-Smtp-Source: AGHT+IETOZuoJd/xz6aIGmwIsw9yXSQIJCM4rWPYbEALodfeYov81CKqQggfN1JeZG0fTBDgM6yKkiGNkU+PuSxgCiI=
+X-Received: by 2002:a2e:9d10:0:b0:2db:ef48:ea38 with SMTP id
+ t16-20020a2e9d10000000b002dbef48ea38mr5486201lji.45.1714325840835; Sun, 28
+ Apr 2024 10:37:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240417160842.76665-1-ryncsn@gmail.com> <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <Zico_U_i5ZQu9a1N@casper.infradead.org> <87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com>
+In-Reply-To: <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Mon, 29 Apr 2024 01:37:04 +0800
+Message-ID: <CAMgjq7AD=n0T8C=pn_NM2nr-njNKXOxLh49GRrnP0ugGvuATcA@mail.gmail.com>
+Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
+To: Chris Li <chrisl@kernel.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Barry Song <v-songbaohua@oppo.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>, 
+	Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-do_div() truncates a u64 divisor to 32 bit.
-This can lead to non-zero being truncated to zero for division.
+On Sat, Apr 27, 2024 at 7:16=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+>
+> Hi Ying,
+>
+> On Tue, Apr 23, 2024 at 7:26=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+> >
+> > Hi, Matthew,
+> >
+> > Matthew Wilcox <willy@infradead.org> writes:
+> >
+> > > On Mon, Apr 22, 2024 at 03:54:58PM +0800, Huang, Ying wrote:
+> > >> Is it possible to add "start_offset" support in xarray, so "index"
+> > >> will subtract "start_offset" before looking up / inserting?
+> > >
+> > > We kind of have that with XA_FLAGS_ZERO_BUSY which is used for
+> > > XA_FLAGS_ALLOC1.  But that's just one bit for the entry at 0.  We cou=
+ld
+> > > generalise it, but then we'd have to store that somewhere and there's
+> > > no obvious good place to store it that wouldn't enlarge struct xarray=
+,
+> > > which I'd be reluctant to do.
+> > >
+> > >> Is it possible to use multiple range locks to protect one xarray to
+> > >> improve the lock scalability?  This is why we have multiple "struct
+> > >> address_space" for one swap device.  And, we may have same lock
+> > >> contention issue for large files too.
+> > >
+> > > It's something I've considered.  The issue is search marks.  If we de=
+lete
+> > > an entry, we may have to walk all the way up the xarray clearing bits=
+ as
+> > > we go and I'd rather not grab a lock at each level.  There's a conven=
+ient
+> > > 4 byte hole between nr_values and parent where we could put it.
+> > >
+> > > Oh, another issue is that we use i_pages.xa_lock to synchronise
+> > > address_space.nrpages, so I'm not sure that a per-node lock will help=
+.
+> >
+> > Thanks for looking at this.
+> >
+> > > But I'm conscious that there are workloads which show contention on
+> > > xa_lock as their limiting factor, so I'm open to ideas to improve all
+> > > these things.
+> >
+> > I have no idea so far because my very limited knowledge about xarray.
+>
+> For the swap file usage, I have been considering an idea to remove the
+> index part of the xarray from swap cache. Swap cache is different from
+> file cache in a few aspects.
+> For one if we want to have a folio equivalent of "large swap entry".
+> Then the natural alignment of those swap offset on does not make
+> sense. Ideally we should be able to write the folio to un-aligned swap
+> file locations.
+>
 
-Fix coccinelle warning
-WARNING: do_div() does a 64-by-32 division, please consider using div64_64 instead
+Hi Chris,
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- arch/x86/kernel/tsc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This sound interesting, I have a few questions though...
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 2ed154a2642c..9106069f18b2 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -401,7 +401,7 @@ static unsigned long calc_pmtimer_ref(u64 deltatsc, u64 pm1, u64 pm2)
- 	pm2 -= pm1;
- 	tmp = pm2 * 1000000000LL;
- 	do_div(tmp, PMTMR_TICKS_PER_SEC);
--	do_div(deltatsc, tmp);
-+	div64_u64(deltatsc, tmp);
- 
- 	return (unsigned long) deltatsc;
- }
--- 
-2.43.2
+Are you suggesting we handle swap on file and swap on device
+differently? Swap on file is much less frequently used than swap on
+device I think.
 
+And what do you mean "index part of the xarray"? If we need a cache,
+xarray still seems one of the best choices to hold the content.
+
+> The other aspect for swap files is that, we already have different
+> data structures organized around swap offset, swap_map and
+> swap_cgroup. If we group the swap related data structure together. We
+> can add a pointer to a union of folio or a shadow swap entry. We can
+> use atomic updates on the swap struct member or breakdown the access
+> lock by ranges just like swap cluster does.
+>
+> I want to discuss those ideas in the upcoming LSF/MM meet up as well.
+
+Looking forward to it!
+
+>
+> Chris
 
