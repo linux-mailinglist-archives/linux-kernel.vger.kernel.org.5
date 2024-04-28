@@ -1,176 +1,175 @@
-Return-Path: <linux-kernel+bounces-161501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5787F8B4CD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:42:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125228B4CD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E0F5B2146F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:41:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35B151C20A5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70956FE07;
-	Sun, 28 Apr 2024 16:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DDE71B47;
+	Sun, 28 Apr 2024 16:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="NW6/8fqJ"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JwqSkNv7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C18A73177
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 16:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61416138C;
+	Sun, 28 Apr 2024 16:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714322495; cv=none; b=jgWX8w2P8mkMPBP24jCeh7Cosi37jjNiL/75W+ORFWRYn4zdbi25bdDJ+Gj6DmFzOl3uVW0w/lHb22kRVSxZkPbqQarmjdL9+HFnQBsM0lbUbXdHXyATOXyLbquBuXG/oPA4qF65XGEmGFgdCcja/mFLrCvvucRmezylfQFkQWk=
+	t=1714322490; cv=none; b=u99t/Mu0s/ZggxIA8ykyrWld3+EKpLTrEqKZYyWZ2eTFyFuRn7h+5zPJvtesX3lX9XRnankWMjLOfqaSwDNOpmRbw8QJsnPRjbfyjnXPsasbf9IGc4BnNBq1qChU8LZEFikgodnNaV1sq7XflLhterF74WFAMhBkikJ8TBPsmM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714322495; c=relaxed/simple;
-	bh=e9kozUVYrHIwrCQGcfpV/ZYobiatodQ1z9SiykSi/TI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kdp5RKjBVRtvl1E1sJMwcNsrRrv6+zqRIRWyHzyxITw81b8oolGr6tqrw0WWUzZ0tHJMh8oHO0p6KvXU9c5IFyfStRRm+4ak7uoC48hT60DCRbb7yMuhu34ZCNqW8JB3myLLXiraypYpEOi7qbd8PtzWr3EJpK/lh9rWgNZsQXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=NW6/8fqJ; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dcf9659603so961177e0c.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714322491; x=1714927291; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=34jZPs9Eiu4Qw7ZtmIIlooQKHvZkQc1XBH5UVUDjhOE=;
-        b=NW6/8fqJ+KdO/DzZrbNCTHib82w9uzAfVxzbzF5B174BLRoEJo1OlmWTErs4rBQI1Z
-         r00CQkONj79FwD5v3l1P2uOvR3yX4Tbo79HOZw1svG64XX7ksPBYy7E4HlsQb2xJG6QT
-         BnkLBfFkT9qz3L6gM3Rb6YN9BQjWQof4fCOnR9DloKu7i0fBMKV+cbCiOGQbjaIO+6oF
-         4VLTPAkYRktWEJmAHsJUOg1mS2scXHK1k/kr2lDgRkHbjfyBY/sTKrZjNw1eYOe36Oej
-         PhcMckUbpvccKIUrq1v08nnAt5jFpYfnABQr3IOLxePNRj1mzC34SUPxgK+KWOvAQlXS
-         M38g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714322491; x=1714927291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=34jZPs9Eiu4Qw7ZtmIIlooQKHvZkQc1XBH5UVUDjhOE=;
-        b=hQK5G9fVkbDQKiXJ6c6NvTdkSfduP01VVitrpazKIQbWbboBC9aD6x6u1XcWcx2IzD
-         mSZnZYb+ADVfV48BIfBYuMXbWAHPn8ELnh/oCkvbRZaxVaL7e8+mYSmn5x5ZQalfd6ds
-         P7h3yUFxWw9bICYhC+8HNZuuOBR1AauMnlfamEQPmwxndVQ8aVaB8aWV4t/N4MsxZ2vG
-         XOM8tIZAYkpin36w4NnZXwhNYdTbrBwf/a7YpKzeKi9uf1VUPxo2jgA7FttGDQFSO8j0
-         3b4fBYNgqtca+wRb77qY8SXdBetjBoFzSLGhe7xLolrZsI6qzuEv9rl2a/kGUz6D/HxP
-         Z7Ww==
-X-Gm-Message-State: AOJu0Yw16s5V+hKvuBKRG9nd+26rF0i6AWkLhMnjVLT68qx+J+23zSFh
-	oPkJUTg4dxJ6WyAUmwuSfbyvvZHwupa3amFWGU5tt59mbkWVpQJRgMMrSWcWIUQybGtaYwyb8Pv
-	2htAjsQAef1/AFgRxkFPQD63DYjZZSN07F1LM+tw1q1urmGg=
-X-Google-Smtp-Source: AGHT+IHLdpt/9XWo4+d0fq5u+aGoe2Xweu2bbEMtHa8Q4gbQxrfJ/vnch45Ynf8rpTHz6dgnxhOkWQ1+y1wLqy+FQw8=
-X-Received: by 2002:a05:6122:251e:b0:4da:704f:7fc6 with SMTP id
- cl30-20020a056122251e00b004da704f7fc6mr8248281vkb.15.1714322491304; Sun, 28
- Apr 2024 09:41:31 -0700 (PDT)
+	s=arc-20240116; t=1714322490; c=relaxed/simple;
+	bh=Lv37Gg/npKIgGnyNYYv9foJSbP38xlfXbSo0dGpIkVg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cfsKBP4cko5Sm9o6dliMSrZKdyAOLATBXzbLwu3uF78KjIger4rc7W497vyVNv6NHwQD4nnWMh3hbiLcM+S+VTPCqQGP8bEiO86z+B8q3NdyA31uFkUwkzIyVdraqZ1Szce2oaKCZ5J7EDZqDisp2mIxBL5nUh8SwfNYNwQJw3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JwqSkNv7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F16B5C113CC;
+	Sun, 28 Apr 2024 16:41:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714322489;
+	bh=Lv37Gg/npKIgGnyNYYv9foJSbP38xlfXbSo0dGpIkVg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JwqSkNv7BLw9SFwlgFoNeAtv1rwZZ5Jp234UkBz2nsHrKPCVytptg1KKOb2FEqky+
+	 dZIS3nGkLt1y9KDvKAtcGiQDv6YgAzEIC3v3392RaxW5Ts2KVHwq/froYagP62lHKw
+	 VaITJZ4btJLK3BsUNSVjm5tZetIz6hzsmuzK0pkvLOuBdH9nPtguwASFbhvXbZO6jn
+	 t3RmfyHecx2sdd7KiktAz/wCbMPdZ/zJVh8TxmxFIywBYA1HbRV4HDNrmer4iV3L4U
+	 Fo/1QOseFRv6wf7wW649u16q9kdR5IV4WM4qy1+dLGFvFMiahtuzvCQqY0THD0p7ZJ
+	 BaKHXhHy7vMLw==
+Message-ID: <5ef318a3-7fc9-47e8-9944-07365c9e377f@kernel.org>
+Date: Sun, 28 Apr 2024 18:41:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426133310.1159976-1-stsp2@yandex.ru>
-In-Reply-To: <20240426133310.1159976-1-stsp2@yandex.ru>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Sun, 28 Apr 2024 09:41:20 -0700
-Message-ID: <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
-To: Stas Sergeev <stsp2@yandex.ru>, Aleksa Sarai <cyphar@cyphar.com>, 
-	"Serge E. Hallyn" <serge@hallyn.com>
-Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>, 
-	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Andy Lutomirski <luto@kernel.org>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
-	Alexander Aring <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>, 
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 03/14] dt-bindings: fsi: Document the FSI2PIB engine
+To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-4-eajames@linux.ibm.com>
+ <3f822b56-8e6a-43e4-afb0-15c964f9474e@kernel.org>
+ <b89d39d2-ec54-4a88-aee5-7b5c95b3fca7@linux.ibm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <b89d39d2-ec54-4a88-aee5-7b5c95b3fca7@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> On Apr 26, 2024, at 6:39=E2=80=AFAM, Stas Sergeev <stsp2@yandex.ru> wrote=
-:
-> =EF=BB=BFThis patch-set implements the OA2_CRED_INHERIT flag for openat2(=
-) syscall.
-> It is needed to perform an open operation with the creds that were in
-> effect when the dir_fd was opened, if the dir was opened with O_CRED_ALLO=
-W
-> flag. This allows the process to pre-open some dirs and switch eUID
-> (and other UIDs/GIDs) to the less-privileged user, while still retaining
-> the possibility to open/create files within the pre-opened directory set.
->
+On 26/04/2024 17:00, Eddie James wrote:
+> 
+> On 4/26/24 01:18, Krzysztof Kozlowski wrote:
+>> On 25/04/2024 23:36, Eddie James wrote:
+>>> The FSI2PIB or SCOM engine provides an interface to the POWER processor
+>>> PIB (Pervasive Interconnect Bus).
+>>>
+>>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>>> ---
+>>>   .../devicetree/bindings/fsi/ibm,fsi2pib.yaml  | 38 +++++++++++++++++++
+>>>   1 file changed, 38 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>>> new file mode 100644
+>>> index 000000000000..4d557150c2e3
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/fsi/ibm,fsi2pib.yaml
+>>> @@ -0,0 +1,38 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/fsi/ibm,fsi2pib.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: IBM FSI-attached SCOM engine
+>>> +
+>>> +maintainers:
+>>> +  - Eddie James <eajames@linux.ibm.com>
+>>> +
+>>> +description:
+>>> +  The SCOM engine is an interface to the POWER processor PIB (Pervasive
+>>> +  Interconnect Bus). This node will always be a child of an FSI CFAM node;
+>>> +  see fsi.txt for details on FSI slave and CFAM nodes.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - ibm,fsi2pib
+>>> +      - ibm,i2cr-scom
+>> Sometimes you call these p9, sometimes p10... what is the system or SoC
+>> here? Aren't you adding some generic compatibles? writing-bindings and
+>> numerous guides are clear on that.
+> 
+> 
+> Open source FSI support started with P9 chips so we initially added 
+> p9-sbefifo, p9-occ, etc. P10 has all of the same engines as P9 plus the 
+> SPI controller, so that's why SPI is p10-spi. P11 has the same engines 
+> as P10. For scom/fsi2pib we could call it p9-scom I suppose... This 
+> series isn't just documentation for a new system, I'm adding 
+> documentation that should have been added for P9. Anyway I'm not sure 
+> what you mean about generic compatibles? You mean just add a "scom" or 
+> "fsi2pib" compatible? writing-bindings says "DO make 'compatible' 
+> properties specific"
 
-I=E2=80=99ve been contemplating this, and I want to propose a different sol=
-ution.
+Usually it means that parts of SoC must have the name of the SoC, as
+first component of the name. Your boards are a bit different here,
+because I suppose no one will ever make a product except you, but still
+code could follow same set of rules.
 
-First, the problem Stas is solving is quite narrow and doesn=E2=80=99t
-actually need kernel support: if I want to write a user program that
-sandboxes itself, I have at least three solutions already.  I can make
-a userns and a mountns; I can use landlock; and I can have a separate
-process that brokers filesystem access using SCM_RIGHTS.
+Best regards,
+Krzysztof
 
-But what if I want to run a container, where the container can access
-a specific host directory, and the contained application is not aware
-of the exact technology being used?  I recently started using
-containers in anger in a production setting, and =E2=80=9Canger=E2=80=9D wa=
-s
-definitely the right word: binding part of a filesystem in is
-*miserable*.  Getting the DAC rules right is nasty.  LSMs are worse.
-Podman=E2=80=99s =E2=80=9Cbind,relabel=E2=80=9D feature is IMO utterly disg=
-usting.  I think I
-actually gave up on making one of my use cases work on a Fedora
-system.
-
-Here=E2=80=99s what I wanted to do, logically, in production: pick a host
-directory, pick a host *principal* (UID, GID, label, etc), and have
-the *entire container* access the directory as that principal. This is
-what happens automatically if I run the whole container as a userns
-with only a single UID mapped, but I don=E2=80=99t really want to do that f=
-or
-a whole variety and of reasons.
-
-So maybe reimagining Stas=E2=80=99 feature a bit can actually solve this
-problem.  Instead of a special dirfd, what if there was a special
-subtree (in the sense of open_tree) that captures a set of creds and
-does all opens inside the subtree using those creds?
-
-This isn=E2=80=99t a fully formed proposal, but I *think* it should be
-generally fairly safe for even an unprivileged user to clone a subtree
-with a specific flag set to do this. Maybe a capability would be
-needed (CAP_CAPTURE_CREDS?), but it would be nice to allow delegating
-this to a daemon if a privilege is needed, and getting the API right
-might be a bit tricky.
-
-Then two different things could be done:
-
-1. The subtree could be used unmounted or via /proc magic links. This
-would be for programs that are aware of this interface.
-
-2. The subtree could be mounted, and accessed through the mount would
-use the captured creds.
-
-(Hmm. What would a new open_tree() pointing at this special subtree do?)
-
-
-With all this done, if userspace wired it up, a container user could
-do something like:
-
-=E2=80=94bind-capture-creds source=3Ddest
-
-And the contained program would access source *as the user who started
-the container*, and this would just work without relabeling or
-fiddling with owner uids or gids or ACLs, and it would continue to
-work even if the container has multiple dynamically allocated subuids
-mapped (e.g. one for =E2=80=9Croot=E2=80=9D and one for the actual applicat=
-ion).
-
-Bonus points for the ability to revoke the creds in an already opened
-subtree. Or even for the creds to automatically revoke themselves when
-the opener exits (or maybe when a specific cred-pinning fd goes away).
-
-(This should work for single files as well as for directories.)
-
-New LSM hooks or extensions of existing hooks might be needed to make
-LSMs comfortable with this.
-
-What do you all think?
 
