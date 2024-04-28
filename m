@@ -1,120 +1,148 @@
-Return-Path: <linux-kernel+bounces-161473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B9E8B4C7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:50:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17CF8B4C7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:50:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DA581F21675
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:50:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78199281AC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A1B6F53D;
-	Sun, 28 Apr 2024 15:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE50F1C2D;
+	Sun, 28 Apr 2024 15:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZTDbZQ+"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="axnkbvwQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5614B1C2D;
-	Sun, 28 Apr 2024 15:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1114A6BFB8;
+	Sun, 28 Apr 2024 15:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714319398; cv=none; b=Re8B7K0aHt7KyFO2z/DruYM4LrJb9qh+SKVXq9NxriFT9nKAqDTD3fj7PuyrJTp+7onHb2Ih4MN1QVKgvMctcxAXj6DgMgXzrwNJu8bgaFWM8860t6ge9WPgelziqzsHwYMY3f65/dQiGuvonMgUYkJY0vafth1zvxFuUzmlTcw=
+	t=1714319424; cv=none; b=SxvSpq/h18NxvEnCO80fHBMFrbLCfZPtKIk9Z/wd1lB4jMduqWEGFPHT7EE7tX20vTv1PV6cds1n3n/UvcLwbVHsu9y/mrWH1Qp1JSyvUXgt/3XSctzzBnetx8dbk07qjWFFXeBVX+QiPBXwoPs5Yeqpj7f+/XOuci0RGbI18dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714319398; c=relaxed/simple;
-	bh=07TZqXoPnXo6kvi3NcZOLkjhzi/ng8HAmR/yQB8pKds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ib7qHTZIpys6L44N2c3GO7UKLuSdt8nsEVGkbkX0xGmdbvYvDQyDiZ9We2CnHYcy1OQdXSsOcoEj9fXAW3veaZJO/I6DA5LIdk+LqkhX1I/FxThHS8sd7DCt3ecGasANJFlHk94g6Td0JK0ltmALBiYP1jC5FVxCs6PCnXMMsl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZTDbZQ+; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so36642745ad.1;
-        Sun, 28 Apr 2024 08:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714319396; x=1714924196; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6z2sPI3J7JXbse3qp8S6MNg8FiyBd8jGuDwTFMs0lPg=;
-        b=lZTDbZQ+wps5usKdMOUmTQmVHCUPVp2fOfQDWbg8qf7S13sNniZzSngwMoEidyMwg9
-         V3Zz0AdRBpY1+2Gfi88YB53NJn1nbqq1jOuWRSfMdNV1JrK+EAF5UzzQ9bzlMevxkDmH
-         NtUVl5AqI4oqCQP9XD7gcIWjjcKsKp1KxDYsRPDkgzBvWvpXHvrPD/a3RsrKJgiRPSc0
-         AZHIkXENNwww+OsXi0JGWAnE9pJiImD7ZfyqfIoXT7Nn9W1bmkQmrBhyrNLNp/c97FjM
-         NLbPl16FkIIEDx6peIEN1mK0OPACLowhZuQTZ0CNKR0vAUoD5KFX1yqh8yxdPcEcpfBN
-         TWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714319396; x=1714924196;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6z2sPI3J7JXbse3qp8S6MNg8FiyBd8jGuDwTFMs0lPg=;
-        b=VXEY8z3tkGkEKXAfRNcjdn1qLCCDr1+eY7mh/MwRJLP/4QjeLMUOsCbww+jQuTdR0b
-         W63SvNTBqBkA0Un/jEYK++rwQRUzEaQGIP8ioM9jSDzfYsA1zQKelAWGzOIF4c4a2jKr
-         CNvOv21u3zAb5GtjKrnj4WoPFDZIdryhcfSrYiuXlwnD0kUO/FJPAw3r8B9j9lXlgQr3
-         sEzHBxl1M9PAYUwHY5PcDdA+ct3new3zOnJ2O/dq3LmQ0DcfANZVACHtGKW2laRC8GuY
-         J9JjnAT0dr3E4XCmvRHKsIz25fe2JESJ8U3KRLwK4Djo2BaWvbFNGOC1zcG3oanlod62
-         zc2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWTGVM9XYgrfvVH4t9DYqZzGuHP1X5Q2R9IJsTQ2KDGcDexO1kE7XWityefBNoefgujS9CjP7USwQmJq2eLlbwE3Wan+1PlEKEjnd1uhJc5+9rycKd3phfBXyPdHDXwI5q9zAYz+8/Z3Y4VeAVeat5cSD2HeePb7NmpFwIx2efMqST9ZOhyuqfGRmgiGsiWPdIvWiad+A==
-X-Gm-Message-State: AOJu0YyadDUhiWFsK3NaiZjsPrLNZ/mmLP5yqk+v5/GKHP0Fy0+9Zf/Y
-	Ufh4Y5wZgmO5dhLyvyFXZOSrmj7SmXVV1Dm5f4A2WTGDw5KECgKa
-X-Google-Smtp-Source: AGHT+IEjMGzGw4T9qC+hSir5dxMIK2/kRy04CEQiCSlSQWKiQDmLyfZX7FxhwB7vdagjvmCJow6BIQ==
-X-Received: by 2002:a17:902:7285:b0:1e7:e7ed:7787 with SMTP id d5-20020a170902728500b001e7e7ed7787mr8145663pll.51.1714319396545;
-        Sun, 28 Apr 2024 08:49:56 -0700 (PDT)
-Received: from localhost ([2601:647:6881:9060:89bd:330c:30be:6758])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170902d34500b001dd578121d4sm18592101plk.204.2024.04.28.08.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 08:49:55 -0700 (PDT)
-Date: Sun, 28 Apr 2024 08:49:54 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Wen Gu <guwen@linux.alibaba.com>
-Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
-	svens@linux.ibm.com, alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v7 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-Message-ID: <Zi5wIrf3nAeJh1u5@pop-os.localdomain>
-References: <20240428060738.60843-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1714319424; c=relaxed/simple;
+	bh=6SLtj4qlM6RC/B1QjEfYRprkd6q1YdCM//V6eFsX8yM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YtVi4ELW0CuH97ZdzrH1jdd6tRgDKwWBhV0z9LbiYK4RxRjqGlw9uXiODnpflVzHGob8UAEBBfqBymAchWNkoajeEUdwp5OKfVS/NckpxADNsneCmmni/lx5N9FVgACXb1j4KlErDbYLjjkKrA7/Rfum1zfhcwbmZ9DIFYJV++4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=axnkbvwQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826B9C116B1;
+	Sun, 28 Apr 2024 15:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714319423;
+	bh=6SLtj4qlM6RC/B1QjEfYRprkd6q1YdCM//V6eFsX8yM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=axnkbvwQOy/I1hPjbRSjfOh9Xc5Q2sMjVgLpEUBoGx5IbtIRU2hAY0ImYhgz0vRvl
+	 xsK7DJubie/ym2Jl0lwGJZlKv9R4FwbC5H2d/VPCCsVzN026fO906AhadF9y5nSZBS
+	 T+cWOznZc4Hi4lHi7Li+4GFAavKUgiPkbsp8CLmC+A+D80Et5S69SZRdP9tvjFpY3e
+	 SnhY1ch7snsgIf7vcyu2ximnxbosjRCe9xXrVNV9mNIkKulpRmUL7nmnaZjo/fmNxK
+	 8STQoqMuPXVBkn5v4D6oeWYWaYhlLYw219v7yfpuaLdPiaORJcK8X3Zbg1BY7TFjQV
+	 w/zweK0utvGKA==
+Message-ID: <3377917b-556f-4502-888d-a0032b195833@kernel.org>
+Date: Sun, 28 Apr 2024 17:50:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428060738.60843-1-guwen@linux.alibaba.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] arm64: dts: exynos: gs101: Add ufs and ufs-phy dt
+ nodes
+To: Peter Griffin <peter.griffin@linaro.org>, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, alim.akhtar@samsung.com
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
+ willmcvicker@google.com, kernel-team@android.com
+References: <20240426133824.2283144-1-peter.griffin@linaro.org>
+ <20240426133824.2283144-4-peter.griffin@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240426133824.2283144-4-peter.griffin@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 28, 2024 at 02:07:27PM +0800, Wen Gu wrote:
-> This patch set acts as the second part of the new version of [1] (The first
-> part can be referred from [2]), the updated things of this version are listed
-> at the end.
+On 26/04/2024 15:38, Peter Griffin wrote:
+> Add the ufs controller node and phy node for gs101.
 > 
-> - Background
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> Acked-by: André Draszik <andre.draszik@linaro.org>
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 36 ++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
 > 
-> SMC-D is now used in IBM z with ISM function to optimize network interconnect
-> for intra-CPC communications. Inspired by this, we try to make SMC-D available
-> on the non-s390 architecture through a software-implemented Emulated-ISM device,
-> that is the loopback-ism device here, to accelerate inter-process or
-> inter-containers communication within the same OS instance.
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index 09044deede63..4679ca33c6a0 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -1277,6 +1277,42 @@ pinctrl_hsi2: pinctrl@14440000 {
+>  			interrupts = <GIC_SPI 503 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		};
+>  
+> +		ufs_0_phy: phy@17e04000 {
+> +			compatible = "google,gs101-ufs-phy";
+> +			reg = <0x14704000 0x3000>;
+> +			reg-names = "phy-pma";
+> +			samsung,pmu-syscon = <&pmu_system_controller>;
+> +			#phy-cells = <0>;
+> +			clocks = <&ext_24_5m>;
+> +			clock-names = "ref_clk";
+> +			status = "disabled";
+> +		};
+> +
+> +		ufs_0: ufs@14700000 {
 
-Just FYI:
+Unit-address order got broken here.
 
-Cilium has implemented this kind of shortcut with sockmap and sockops.
-In fact, for intra-OS case, it is _very_ simple. The core code is less
-than 50 lines. Please take a look here:
-https://github.com/cilium/cilium/blob/v1.11.4/bpf/sockops/bpf_sockops.c
 
-Like I mentioned in my LSF/MM/BPF proposal, we plan to implement
-similiar eBPF things for inter-OS (aka VM) case.
 
-More importantly, even LD_PRELOAD is not needed for this eBPF approach.
-:)
+Best regards,
+Krzysztof
 
-Thanks.
 
