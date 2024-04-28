@@ -1,141 +1,145 @@
-Return-Path: <linux-kernel+bounces-161443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E7798B4C07
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:47:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C4C8B4C05
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFADE1C20DB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:47:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D805B28165A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90D26E5EC;
-	Sun, 28 Apr 2024 13:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90E96D1CE;
+	Sun, 28 Apr 2024 13:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OuUC0+eZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JYZIobLc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D5958129;
-	Sun, 28 Apr 2024 13:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D416BFBD;
+	Sun, 28 Apr 2024 13:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714312020; cv=none; b=t8bnsfohNUyqpkNO33mJjjFNmhcl3il4eDZP6yNO7pvD0uLE4Ko8bIgOIGp6+ia4/usJ3g0onHLPqxhszZ5d4aosEIyerC7y8DvtQlgb9Ow7HsYwDN5qoPoamqxyH35/G7G2Et/Rj917rOv153jEEiUswaPQdQTDwz5eG5RpESA=
+	t=1714311977; cv=none; b=QaTBy+eOdLwXRHv7T6upYJ432DIaaw4QQdXBMipryTJ7gQd987OZwYycLEP6ZbhX+umvgXBR9ABvCrmRSwEVrputqgNbX2mQSsl3OkUGMmCS2mBDdD5kEDVR75uFzKz4vV+zPb0JCgLFNMlSCw9b3z0otG28C55d+0bSV+v8f6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714312020; c=relaxed/simple;
-	bh=YDduc+eKhwGtciAitQ824o01nS0wAlvW8mM2dYp14hc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UFKjKnVAFVAVt6G3isknNCmYZvlB4Q28Pwv4M8UGm1SGujO8eKj0uSXnCKCHC6yp4RHl8MYfB/A894HG8fNmbJhL3mVo7nGWKEiSN7FgqePMSL62sUbZLmLjZFW/g2cDO2mNE0Kw1FO3iEBM7ddQ/2k0vCb92Hu3C8TzKAjkY90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OuUC0+eZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3534C113CC;
-	Sun, 28 Apr 2024 13:46:57 +0000 (UTC)
+	s=arc-20240116; t=1714311977; c=relaxed/simple;
+	bh=XGeSlMdeDD1Qsf+xehzikrE+33otHTVL2krpJMt5DKk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JDFCaDYbjkKRViadbJuNND941s+htHztf/tCCl16PqLr/70m4Owfr3uriulAaGceEpzNCZp5+v1j21qb+xX9EvgXuKZo7QWTrUppyQyEDXyReKA8UNxizT851uNRtWTxTj8Q6bc/UFEw2jD7zbRd+MdGgRsaC9ZUhywX3LNdnpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JYZIobLc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB8DC113CC;
+	Sun, 28 Apr 2024 13:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714312019;
-	bh=YDduc+eKhwGtciAitQ824o01nS0wAlvW8mM2dYp14hc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OuUC0+eZZCcbMxaf2eSnsmMUSNGJBG2qeXj7T3a/KsR2b0QBMRO/30GTJafb3LJaF
-	 qPqmpX/42N2DRzOin+nvcihd3rbYZ9ql+j58DlMTqRVIsYkqBm+ZhjXm+3qSLL6P3A
-	 aXdF3DIjKVBsYi/t+pERXdnXqrpGSdzB1RCTO8K1T90dwREWC2oDBk4HLFZ60b2Tnp
-	 3TyMBOFjIzFsGsDayl5oEdN4Jr98L6VenkPbDbCKtPrafrW+0rjxBvXnrVvHYzBuFH
-	 msWi/hbgUeZhTVXOzgBCmzZmwZU/mzBu8BhmPJ6a5EI0IiiFGlg2lztNr/XbnJE9Ho
-	 Pdk/A4TP7AOow==
-Date: Sun, 28 Apr 2024 14:45:25 +0100
-From: Simon Horman <horms@kernel.org>
-To: Ryosuke Yasuoka <ryasuoka@redhat.com>
-Cc: krzk@kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syoshida@redhat.com,
-	syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2] nfc: nci: Fix uninit-value in nci_rx_work
-Message-ID: <20240428134525.GW516117@kernel.org>
-References: <20240427103558.161706-1-ryasuoka@redhat.com>
+	s=k20201202; t=1714311976;
+	bh=XGeSlMdeDD1Qsf+xehzikrE+33otHTVL2krpJMt5DKk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JYZIobLcbB6cD1kT4ntLrXTtY7O2WhUy0BSeOJjbeRKtt5tvpipAr2izMNopXdQyk
+	 pPVqDColO/fTFJDJMqv1+tt7X1vhnjD/Upx/e6Po+iqrP+FPSytbleMeFkoN6ykTP9
+	 g/De7HCVuuFJWvG67VTBPqLhGcGN0uDxl+V3+juw0s39ZUXI2ocGhdLt0FHR5XVhQ+
+	 Yibiu7BWlHRCnopbQf0LAZfsPsNTHga9NwKb0XiMPH6wpWfYY+kGuzv2WgfnBFvvWt
+	 oIjOD+Hrly1XGAZQEgV85DGtyJbMfNPMzNYVKwiNwjG+q5PRc4iMVTf+vJ7g26V6QJ
+	 35Mxn7ob0mxfQ==
+Date: Sun, 28 Apr 2024 14:46:06 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Marcelo Schmitt <marcelo.schmitt1@gmail.com>, Lars-Peter Clausen
+ <lars@metafoo.de>, Andrew Hepp <andrew.hepp@ahepp.dev>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
+ negative values
+Message-ID: <20240428144606.5b3d9a7e@jic23-huawei>
+In-Reply-To: <20240427195758.GA3350@debian>
+References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
+	<Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
+	<20240427195758.GA3350@debian>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240427103558.161706-1-ryasuoka@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 27, 2024 at 07:35:54PM +0900, Ryosuke Yasuoka wrote:
-> syzbot reported the following uninit-value access issue [1]
-> 
-> nci_rx_work() parses received packet from ndev->rx_q. It should be
-> validated header size, payload size and total packet size before
-> processing the packet. If an invalid packet is detected, it should be
-> silently discarded.
-> 
-> Fixes: d24b03535e5e ("nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet")
-> Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534 [1]
-> Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
+On Sat, 27 Apr 2024 21:57:58 +0200
+Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
 
-..
+> Am Sat, Apr 27, 2024 at 05:49:18AM -0300 schrieb Marcelo Schmitt:
+> > Hi Dimitri,
+> >=20
+> > Interesting patch this one.
+> > I think this does apply, although, the cold junction register has for s=
+ign bits
+> > so I think we could also have a mask to clear those out.
+> > Some code suggestions inline.
+> > =20
+> Hi Marcelo,
+>=20
+> the temperature bits are in two=E2=80=99s complement format for hot and c=
+old
+> junction. Equations to calculate the temperature are also the same in
+> the datasheet. There should be no difference when handling them. I don't
+> think we need to do anything more with the value except sign_extend it to
+> the appropriate data type. If the sign bits aren't right, there is a bug
+> in the chip, until then futher processing of it is unneeded. I could add
+> a comment here if it helps.
 
-> @@ -1516,30 +1526,36 @@ static void nci_rx_work(struct work_struct *work)
->  		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
->  				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
->  
-> -		if (!nci_plen(skb->data)) {
-> -			kfree_skb(skb);
-> -			break;
-> -		}
-> +		if (!skb->len)
-> +			goto invalid_pkt_free;
->  
->  		/* Process frame */
->  		switch (nci_mt(skb->data)) {
->  		case NCI_MT_RSP_PKT:
-> +			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-> +				goto invalid_pkt_free;
+Agreed - by my reading the original patch is correct. Maybe it would act
+as cleaner 'documentation' to have the sign_extend32() for the cold junctio=
+n be
+from bit 12 rather than 15, but I'm not sure it's worth the effort.
 
-Hi Yasuoka-san,
+Andrew, would be great if you can review this fix in case we are all missing
+something!
 
-My reading is that this will jump to the label invalid_pkt_free,
-which is intended.
+Jonathan
 
->  			nci_rsp_packet(ndev, skb);
->  			break;
+>=20
+> > On 04/24, Dimitri Fedrau wrote: =20
+> > > Temperature is stored as 16bit value in two's complement format. Curr=
+ent
+> > > implementation ignores the sign bit. Make it aware of the sign bit by
+> > > using sign_extend32.
+> > >=20
+> > > Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF =
+converter")
+> > > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> > > ---
+> > >  drivers/iio/temperature/mcp9600.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperat=
+ure/mcp9600.c
+> > > index 46845804292b..7a3eef5d5e75 100644
+> > > --- a/drivers/iio/temperature/mcp9600.c
+> > > +++ b/drivers/iio/temperature/mcp9600.c =20
+> >=20
+> > #define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
+> > ...
+> >  =20
+> > > @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
+> > > =20
+> > >  	if (ret < 0)
+> > >  		return ret;
+> > > -	*val =3D ret;
+> > > +
+> > > +	*val =3D sign_extend32(ret, 15); =20
+> > 	if (chan->address =3D=3D MCP9600_COLD_JUNCTION)
+> > 		*val &=3D ~MCP9600_COLD_JUNCTION_SIGN_MSK;
+> > =20
+> This won't work. Assuming int is 32-bit ret =3D 0xfffe and *val =3D -2 af=
+ter
+> sign_extends32, this would result in *val =3D -61442 which is wrong.
+> > > =20
+> > >  	return 0;
+> > >  }
+> > > --=20
+> > > 2.39.2
+> > >=20
+> > >  =20
+> Best regards,
+> Dimitri Fedrau
 
-But this will exit the switch statement, which lands
-at the label invalid_pkt_free, where skb is kfreed.
-This doesn't seem to be intended.
-
->  
->  		case NCI_MT_NTF_PKT:
-> +			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-> +				goto invalid_pkt_free;
->  			nci_ntf_packet(ndev, skb);
->  			break;
->  
->  		case NCI_MT_DATA_PKT:
-> +			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
-> +				goto invalid_pkt_free;
->  			nci_rx_data_packet(ndev, skb);
->  			break;
->  
->  		default:
->  			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
-> -			kfree_skb(skb);
-> -			break;
-> +			goto invalid_pkt_free;
->  		}
-
-If so, then one solution may be to add the following here:
-
-		continue;
-
-> +invalid_pkt_free:
-> +		kfree_skb(skb);
-> +		break;
->  	}
->  
->  	/* check if a data exchange timeout has occurred */
-> -- 
-> 2.44.0
-> 
-> 
 
