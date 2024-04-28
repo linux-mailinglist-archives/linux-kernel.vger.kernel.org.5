@@ -1,124 +1,135 @@
-Return-Path: <linux-kernel+bounces-161491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EED08B4CB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E388B4CB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8B9EB21392
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:33:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFCAFB21270
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF05373164;
-	Sun, 28 Apr 2024 16:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DA671B27;
+	Sun, 28 Apr 2024 16:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h28YFcoo"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKnGjU7D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13784433DA
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 16:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E642A10F1;
+	Sun, 28 Apr 2024 16:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714322007; cv=none; b=XEf6QTB1oR0TqD+rWDOiLMjRFf3iDsGt0FoVKeMTcT+HpN3Oi4zIT3V0+Qj547ZT0R92Wp3pcDxRlITg9vgqhPya+wfArfYf6ATS3LegWtizZstT2jK6ZpSPVF/sBjc88nE9UXN8hwVdEVyfl1Var20tIIfb3aU8nwFlvofwPPc=
+	t=1714322075; cv=none; b=MFz3LchyMXqHwn6gapW5c/5ThN2nMf5ZAIGIPuMkIQefCgieAj+uNTaOXfLS+dAisAG9kWFVU2yVjwFn7m0wsaEhnXPjcgq/ACC5XnhuhP6xw2RP2Wvhlc7i6+ZarnKpLzcKUw95Oq441VrQn8gK1I3hMehrZZJLzJ2ZOZsZ8og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714322007; c=relaxed/simple;
-	bh=88rTqj5+Fqw2jJzBssNoetZI6xLcmbWmkGRmH4jzlMQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TWrRzsCO0C2Z6uAzxh1xg2M1EutbBAdCQbhFcw7vAEjiSgpBewR8L5rokwa8wHmG1k8PPoUIektjGDkq4WfzPt+l9cEv6x8T/+NainjQP0uYVDD8o53fOGBW69K4QFT7TEgxD8tqqb2b1JmIao7v3n9FP/IhsqUlhGkuMYMwdtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h28YFcoo; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516ef30b16eso4131723e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714322002; x=1714926802; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DIvwFd+6dBRNz3tx998sp/xJQSPWwbglBJ/Us19tEPs=;
-        b=h28YFcooJeJDAXydQOSmLVqUc6QUqo4PTYT6dBXceXm4NQYO9EquQ0SRYkrwPfz1Iz
-         LQW8Jf12/7LYNHBr5cFyabhPNTMSWuMKpdWmrcGgEd5FQRh6euhJ6UyOAPWUOgE903sB
-         1RuWKsaf6pk4YJEHmxPhyH9cumfA6N69mK73ZVGhJmjq+gdihIqveB5A6rxLg67dDYyS
-         LODRXBw+sxstpJxCoUe89BLX3osMFoIZ6V/yLPdESaBTu9/z3iSZAfME/ebS8AEljW23
-         BVSzRRtNVlxiF3CTlNGbO7GYer0i+cmyPH0SpkJkoqogjRNFcYle69MtvnSuNyA+HygU
-         DqLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714322002; x=1714926802;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DIvwFd+6dBRNz3tx998sp/xJQSPWwbglBJ/Us19tEPs=;
-        b=fQ+JG3EOv+UoJyA6FBAqt9i+LaMK2hkyoZzrK9HyZ1K5mdeaEmYtqP5r7L8iokeCKA
-         UsRKof2wEXvMm++cXBAXUUv32xbYdbxR0VTantfT+756c5J77b99oedqR5G9BaesDsiM
-         m4VR5ylvethGic0OHs5wveRSU0DRXSwRQzpASJB/SHgS+UrMWiZ6gpCAC1mOMwvu74Zz
-         MjJarcjkvkFFcwnNPtOrttHjnN7yuwoNMpgH5umidXrRTGQpXYW/Tfi4NwvG36hsSzFA
-         LRLtEzY8UtJh5Ls0ZbcR+damn4TF8Ht+ZdYTivXbYpISzosqgqH3o4XvDzYN4vHQLdO8
-         rFTA==
-X-Forwarded-Encrypted: i=1; AJvYcCXppRaQR2IT2viaNyE6woDNfl87v4xr7NkJiNz4Z2UwIVKdtrqgnvFOvspic3LsvDP8V5N15sBetcsnBEQ32YqjtjHPiwqEb9k50DXO
-X-Gm-Message-State: AOJu0YyIqHYi3OciOooxfeo531DErwtjNtVOrwJc6AHXIob81kaEuc6l
-	W5dTHKCp3lAPE/GlvQviNnFTcphW7zi2pdtR9wjGRNbe0gIdKwtwS5cni3r++Gg=
-X-Google-Smtp-Source: AGHT+IGj/4CvRzNe03RJhSdckWN1v7eKR6DFdwXQ54NmI3ZsptGolRM+QbPy2Y04B05+jtOGJKazTw==
-X-Received: by 2002:ac2:5b8d:0:b0:51d:3c79:547 with SMTP id o13-20020ac25b8d000000b0051d3c790547mr2031285lfn.27.1714322002207;
-        Sun, 28 Apr 2024 09:33:22 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id lb2-20020a170906adc200b00a58f4b3661asm1173623ejb.0.2024.04.28.09.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 09:33:21 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Olof Johansson <olof@lixom.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	arm@kernel.org,
-	soc@kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL 2/2] ARM: dts: cleanup for v6.10
-Date: Sun, 28 Apr 2024 18:33:14 +0200
-Message-ID: <20240428163316.28955-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240428163316.28955-1-krzysztof.kozlowski@linaro.org>
-References: <20240428163316.28955-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1714322075; c=relaxed/simple;
+	bh=/ZnkzW7mgNGMkQEi2367jg8Z87SujBjczjx+Ing/UQY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sgGVk3/JnKbdYfHoqBD5cG5xgEMXyZ+IWgNkQXFrv4nEALwpDce/rYp//l8bDjKNjnZHzLoVu9evgLKHSa/2n0AEPb+mMJh+erJRlQPLSD1c54gAPxa568kN7e9xmdbmeWY0++h5hJJBTUsYNOOpZDouG7yEPAVLBUa73Mp2uGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKnGjU7D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD75FC113CC;
+	Sun, 28 Apr 2024 16:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714322074;
+	bh=/ZnkzW7mgNGMkQEi2367jg8Z87SujBjczjx+Ing/UQY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tKnGjU7DWR6jT6vZ3c9NEvLAOdJ+s4gzSvSfuvVpF96zgCj/+y5dj+3U6JMAjj8cI
+	 yMiKUyUFH1PJN0yDqxsE1t5Qlt2iusd6aNWE23PM8ZPlvFtkEi755TryAKfOjcgyMD
+	 Hoekex1uxqA27b3r39Yxjz8AAWsnDyiszKe+bZOvbUD416nbDi+zA6j8THL/ACsVSr
+	 1AYrtje6/73VYuFpios3t8ZwpVnaS56sRKvIPI7chDd8TREcgX/1amK/Uz3gzbPhZL
+	 KJwE157MOzWPjZbEqG4j2+zqRSCAI9ZskqkrGzsZ7CahmxLRkQIUCTXI4/nUSccZ3h
+	 9cAVhbLqTj/XA==
+Date: Sun, 28 Apr 2024 17:34:22 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Aren Moynihan <aren@peacevolution.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, Uwe
+ =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>,
+ linux-iio@vger.kernel.org, phone-devel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, Willow
+ Barraco <contact@willowbarraco.fr>
+Subject: Re: [PATCH v2 2/6] iio: light: stk3310: Implement vdd supply and
+ power it off during suspend
+Message-ID: <20240428173422.7c0f44cf@jic23-huawei>
+In-Reply-To: <CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
+References: <20240423223309.1468198-2-aren@peacevolution.org>
+	<20240423223309.1468198-4-aren@peacevolution.org>
+	<CAHp75VeRDSPvpmSbUyZPp0RMoTOE193U2ma18qxv_qZQKLCq8g@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+On Wed, 24 Apr 2024 02:16:06 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+> On Wed, Apr 24, 2024 at 1:41=E2=80=AFAM Aren Moynihan <aren@peacevolution=
+org> wrote:
+> >
+> > From: Ondrej Jirman <megi@xff.cz>
+> >
+> > VDD power input can be used to completely power off the chip during
+> > system suspend. Do so if available. =20
+>=20
+> ...
+>=20
+> >         ret =3D stk3310_init(indio_dev);
+> >         if (ret < 0)
+> > -               return ret;
+> > +               goto err_vdd_disable; =20
+>=20
+> This is wrong. You will have the regulator being disabled _before_
+> IRQ. Note, that the original code likely has a bug which sets states
+> before disabling IRQ and removing a handler.
+>=20
+> Side note, you may make the driver neater with help of
+>=20
+>   struct device *dev =3D &client->dev;
+>=20
+> defined in this patch.
+>=20
+> ...
+>=20
+> >  static int stk3310_suspend(struct device *dev)
+> >  {
+> >         struct stk3310_data *data; =20
+>=20
+> >         data =3D iio_priv(i2c_get_clientdata(to_i2c_client(dev))); =20
+>=20
+> Side note: This may be updated (in a separate change) to use
+> dev_get_drvdata() directly.
+>=20
+> Jonathan, do we have something like iio_priv_from_drvdata(struct
+> device *dev)? Seems many drivers may utilise it.
 
-are available in the Git repository at:
+Not yet, but I'm not sure it's a good idea as there is no inherent
+reason to assume the drvdata is a struct iio_dev.  It often is but
+adding a function that assumes that is a path to subtle bugs.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-dt.git tags/dt-cleanup-6.10
+Jonathan
 
-for you to fetch changes up to 5e0705a74f8075dbefcb0ad18d6bbf909c72ebf3:
+>=20
+> >  } =20
+>=20
+> ...
+>=20
+> >  static int stk3310_resume(struct device *dev) =20
+>=20
+> Ditto.
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-  ARM: dts: aspeed: Add vendor prefixes to lm25066 compat strings (2024-04-24 09:25:22 +0200)
-
-----------------------------------------------------------------
-Minor improvements in ARM DTS for v6.10
-
-1. TI: add missing white-spaces for code readability.
-2. Aspeed: add vendor prefix to compatibles, to properly describe
-   hardware, even though Linux drivers match by device name.
-
-----------------------------------------------------------------
-Krzysztof Kozlowski (1):
-      ARM: dts: ti: omap: minor whitespace cleanup
-
-Zev Weiss (1):
-      ARM: dts: aspeed: Add vendor prefixes to lm25066 compat strings
-
- arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts | 4 ++--
- arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts    | 2 +-
- arch/arm/boot/dts/ti/omap/am33xx.dtsi                    | 8 ++++----
- arch/arm/boot/dts/ti/omap/am4372.dtsi                    | 2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
 
