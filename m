@@ -1,82 +1,85 @@
-Return-Path: <linux-kernel+bounces-161322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE8C08B4AAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:13:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60BCB8B4AAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:14:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF60D1C20D41
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:13:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A712B20F6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601C5524AF;
-	Sun, 28 Apr 2024 08:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7441524B1;
+	Sun, 28 Apr 2024 08:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZdDV4fD"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b51gWh+o"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6C023DE;
-	Sun, 28 Apr 2024 08:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B0B51C48;
+	Sun, 28 Apr 2024 08:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714292004; cv=none; b=IN6/W8DZskR4sBwwTDsRlct/fY3LON3jE1GNrpRE6DqCEmgugmlK24ztdkKpdRCOPTajQieBoBJQPu76h/SIQ+nCcIQQCvyuSvTudnpKa0xy8E5/DLhlVkd7//lRbrJLQYnW+6rpBmcvgWK3SDhEJJ97PjhLvHAgrgIv2B8gDtM=
+	t=1714292077; cv=none; b=GedSyL87szzj7HDy7FLoR2UfGiQMvFMxHKIb81NPoTS+UXwx9HRDJohmeyLoY8D3BUp86/wSkkPpnQDzI/sRWn3/xzih+gj3yYfazqHglz9Ev81ZjADw4arLxY1MJ3LQu9EYKTOU/w4IFXlDWo9YvCmNxr8TGFmeo1aQcmN19+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714292004; c=relaxed/simple;
-	bh=cHNvbidJD/XF0dsQm6FL1s2RtNKPzmHuykBLedwjSl4=;
+	s=arc-20240116; t=1714292077; c=relaxed/simple;
+	bh=LV4aEmiVjP794rtnAhBxklaJMvVHFawodaRn4ccpTZA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JUa6MAHtF/rJpg0IK7tW9IrQZZLC1IlZwpaL7i7A/ZMhlooJ6FMW3NWFvat1IA7Ngg3zjuzH0oQh1UGZx56w0HF1Dtxu9ORI5Q0nxkKrcl8qzf5wvZvUH+DqjTOg0u5cO7K0OOpB5M3TlJNKW6VC01txBmELPQxtS/zdhF4CsxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fZdDV4fD; arc=none smtp.client-ip=209.85.221.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=u2o5bB053AW6nI96lvvDhl6796avuRH1ka50/1NoxgnYK9wpfnf2C73hDktTsWzKbyFhQTopxMlSt0Dxju+3kJhrR/J0MQyRp0qt+UB3lNOMK1ghXwqpYmGIPobhMvh5vmoYmfdvaaftViMHf208ql9d2RyXKMlqUwsaczEdUm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b51gWh+o; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-347c197a464so2650616f8f.2;
-        Sun, 28 Apr 2024 01:13:22 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ddc2ea2091so31399391fa.1;
+        Sun, 28 Apr 2024 01:14:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714292001; x=1714896801; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714292074; x=1714896874; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yRkNie6sOvoPrIKey0CE+VC9dg5CI8noygkEt7aEQHU=;
-        b=fZdDV4fD6rF8R0vl6xJsvqKK0k1lulZ/vUWY9GhbHOeB6c/WXkZuDdhTMkEkzOw50a
-         1jUZw623UrY6wxFUHx5a/iw84/j/O3lNbUXVv1fn7M8nCIKWe8raMWqgdoTu02uiQgpj
-         TYIvue4gsSYTd1XMNzQBFDZRRv8gvNrqdNTjZTsgZAx7/eU+88UgwaV9KQ0k2GD40W13
-         HzHYPKq4lPh9M46EqwMsnJ2satp5Hg991iB/lakJK2hl9hgqLE2xCEvybqBt5Wj28KvC
-         3QE4DhtXORxA2k6/aC6JpuSfA73TMDFRetlcl1BaxEs/UnYr4jWbSIIsezU3ZaxMjM2c
-         0W8A==
+        bh=8n/BOjV6NMBaVWQY3lF6dsBughZBy/B7nsgbqTsw0Ik=;
+        b=b51gWh+oSIdh23+B+Bt2jXTYumlFdavSSHl9oQ1fPRZX7YbuEw4Ne19te4xxMoLnVe
+         3Jtx6bJEf7U1TmDQWTQo7CtDcT66DOLz3vEIi2iMfw9jJd7+nEufZq6WAGzOLKoJmR5R
+         b7yXP6MGc6EEH0ISDwazD46QqGAAWKewZnFoJv4OrAZvy19mJh0m3ZPq3HpuGm7LnDO5
+         UaPhCAcoe3ozhww9WfTm4bnvdfHlACkelkPZr61wKrTbd/yUkfpMbnW/yr5vZF2iGp/2
+         8Cs2VHOSoqXWdNnyEjYYVQswZoJSjGmPx+AImUbrRQRShDUvCDhivL2iyNBfoDeWDPWh
+         sRPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714292001; x=1714896801;
+        d=1e100.net; s=20230601; t=1714292074; x=1714896874;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yRkNie6sOvoPrIKey0CE+VC9dg5CI8noygkEt7aEQHU=;
-        b=WQsl9gjSLPzP7ETii2K2wx0/XCJWWUm1jvVuiGeUca4TbyOM9TWmNCC/QFlmX11IhW
-         l76H2rC/N5RVANvSeZlBpbvr9TXLzQes+a19Eh+KlLqB9SGP1NxyIOU2zdeB5w42tULd
-         Se5aOnT766fvQ1hE3bPe6QlLrmAd4H9k44LWZ1Y2Aa2Q4+ZeTmGmI+CdexsE4pSKh89s
-         F03QnN4dvRQFjSfVr3GLYFtKPUwD68jTY2HV42xnejZzB2s5MzfPEwBi4uO3upVNn8Yc
-         t7+T/rG5+pKem8apTVjCVoMLwaW8TYmowJGjjAsHiSGjY0q/UJqrAY36Mz0H5HPEgZj0
-         rD2Q==
-X-Gm-Message-State: AOJu0YxQ8wfTgjUlFYEity/dsdReRS+rbrjOgwLlRb/96pgXOvWlJtsa
-	IRSjhuQBYejn41ab+MY1X+49f0jKNymn9P4K2dwC/IpdI6B3TIJJlntUvR+f
-X-Google-Smtp-Source: AGHT+IF4o2mDxQEZaJAQAFe0e8PuZQJsqA/5KurjSBqtod/of8BVDAjoewXRzwJxQ8gslNieBIZufg==
-X-Received: by 2002:a5d:6108:0:b0:34c:719e:67a5 with SMTP id v8-20020a5d6108000000b0034c719e67a5mr3604714wrt.9.1714292001175;
-        Sun, 28 Apr 2024 01:13:21 -0700 (PDT)
+        bh=8n/BOjV6NMBaVWQY3lF6dsBughZBy/B7nsgbqTsw0Ik=;
+        b=QLyyxtVk0bJoFqrcR722b6qAfgbIgq/tyC01ItUgnzcaNfAGA0OZl4Y4NDsJpZ2X92
+         f2+aVCfN662vDSfhOCokahrl3q7CmOUogBAx1+fl4dsno4WWjXZP6C0XhjlF8hq394iZ
+         W2BMMzj9UEhXnhw56V8Uj7uaXdeXDC5HzEK5pB7s1FJCim1Z4bWYb+dYE/Z0hd7DTopc
+         bkgF+164VEqDDAKOtlcIZI2G+dkoq2PBLVmHxtwBCWaNO48jTWqz88tUoiwntyUQgcS9
+         2fZFYBHD8kOyKXtgScld/TJoSDmqPNdV+CVcAVnOhHfsrJfxuCHUUIF2a3TZhTXqkvp+
+         3ELQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFiX4iLI54AswiYNL+3gzdhwQ7EbXkKD0zMR+fQs/Q4JWTNjT74BzJzpMrfkvcMkJrlalaw7amiRtTRmeZKo2WpxNWcVeMu38i6TXhLDOPyOOBHycvkbv5jKOm/6IfsXbvxRckkNdFL7XDh/2SUpg=
+X-Gm-Message-State: AOJu0Yyd6aECz+2So0VI6L7ANdfDSl2eGwhs2OuXlRoGJkL4UJPB3A+t
+	k+ZB+yzWsuiL2nSn8XgeXTaa1nmVfpwRjy4Ltpg0mLmT/YDL2Qf2
+X-Google-Smtp-Source: AGHT+IEM4RSjpZkevd+0XnjLifYgd9LCEyZS2tonnUGUleii2wKQ6huuCup406xlehv6ahb4RV10fQ==
+X-Received: by 2002:a2e:9b8d:0:b0:2df:55a3:43af with SMTP id z13-20020a2e9b8d000000b002df55a343afmr4223245lji.41.1714292073286;
+        Sun, 28 Apr 2024 01:14:33 -0700 (PDT)
 Received: from gmail.com (1F2EF175.nat.pool.telekom.hu. [31.46.241.117])
-        by smtp.gmail.com with ESMTPSA id e37-20020a5d5965000000b0034ca55b8e61sm3202736wri.20.2024.04.28.01.13.20
+        by smtp.gmail.com with ESMTPSA id g7-20020a05600c4ec700b0041c24321934sm855008wmq.41.2024.04.28.01.14.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 01:13:20 -0700 (PDT)
+        Sun, 28 Apr 2024 01:14:32 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 28 Apr 2024 10:13:18 +0200
+Date: Sun, 28 Apr 2024 10:14:30 +0200
 From: Ingo Molnar <mingo@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: linux-tip-commits@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Phil Auld <pauld@redhat.com>,
+To: Phil Auld <pauld@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-tip-commits@vger.kernel.org,
+	Chris von Recklinghausen <crecklin@redhat.com>,
+	Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
 	Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org
-Subject: Re: [tip: sched/urgent] sched/isolation: Fix boot crash when maxcpus
- < first housekeeping CPU
-Message-ID: <Zi4FHsc51wNhdSW4@gmail.com>
-References: <20240413141746.GA10008@redhat.com>
- <171398910207.10875.4426725644764756607.tip-bot2@tip-bot2>
+Subject: Re: [tip: sched/urgent] sched/isolation: {revent boot crash when the
+ boot CPU is nohz_full
+Message-ID: <Zi4FZsjmq7FxaoSe@gmail.com>
+References: <20240411143905.GA19288@redhat.com>
+ <171398910227.10875.3649946025664504959.tip-bot2@tip-bot2>
+ <20240424204124.GA36310@lorien.usersys.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,26 +88,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <171398910207.10875.4426725644764756607.tip-bot2@tip-bot2>
+In-Reply-To: <20240424204124.GA36310@lorien.usersys.redhat.com>
 
 
-* tip-bot2 for Oleg Nesterov <tip-bot2@linutronix.de> wrote:
+* Phil Auld <pauld@redhat.com> wrote:
 
-> Another corner case is "nohz_full=0" on a machine with a single CPU or with
-> the maxcpus=1 kernel argument. In this case non_housekeeping_mask is empty
-> and tick_nohz_full_setup() makes no sense. And indeed, the kernel hits the
-> WARN_ON(tick_nohz_full_running) in tick_sched_do_timer().
+> On Wed, Apr 24, 2024 at 08:05:02PM -0000 tip-bot2 for Oleg Nesterov wrote:
+> > The following commit has been merged into the sched/urgent branch of tip:
+> > 
+> > Commit-ID:     8e3101b38dfc20848a23525b1e6e80bd1641d44c
+> > Gitweb:        https://git.kernel.org/tip/8e3101b38dfc20848a23525b1e6e80bd1641d44c
+> > Author:        Oleg Nesterov <oleg@redhat.com>
+> > AuthorDate:    Thu, 11 Apr 2024 16:39:05 +02:00
+> > Committer:     Thomas Gleixner <tglx@linutronix.de>
+> > CommitterDate: Wed, 24 Apr 2024 21:53:34 +02:00
+> > 
+> > sched/isolation: {revent boot crash when the boot CPU is nohz_full
+> >
 > 
-> And how should the kernel interpret the "nohz_full=" parameter? It should
-> be silently ignored, but currently cpulist_parse() happily returns the
-> empty cpumask and this leads to the same problem.
-> 
-> Change housekeeping_setup() to check cpumask_empty(non_housekeeping_mask)
-> and do nothing in this case.
+> Thanks Thomas, Typo in the reworded description :)
 
-So arguably the user meant NOHZ_FULL to be turned off - but it is de-facto 
-already turned off by the fact that there's only a single CPU available, 
-right?
+Ok, so normally we wouldn't rebase just for a typo in a changelog, but 
+that's an annoying typo that will show up in shortlogs - so I fixed it all 
+up in tip:sched/urgent.
 
 Thanks,
 
