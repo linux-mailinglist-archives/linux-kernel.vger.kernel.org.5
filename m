@@ -1,151 +1,113 @@
-Return-Path: <linux-kernel+bounces-161241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFA88B4961
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:25:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1528E8B4964
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA8FC2824BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474A91C20DE7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AC22907;
-	Sun, 28 Apr 2024 03:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S5N24bS+"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080AF3C24;
+	Sun, 28 Apr 2024 03:26:09 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25BB15A4;
-	Sun, 28 Apr 2024 03:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5805A1854;
+	Sun, 28 Apr 2024 03:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714274736; cv=none; b=sFQGO9A7fmtLWX5MYmTR5qjTl5wxt4B+NEnTshbH/piNY6ETVcc9vRclHin6R+CShy1N1EOFBNzLkrW5XlvHSs2PgZ/eY47M6vDh5RNuWgD7a5m8modRAK86eRkpaozAXYyA4RH9z+cNFNQWeihGPsTA09X9Ohs4j+OFELiWAhI=
+	t=1714274768; cv=none; b=G6dXRwcGYpbq7VjpHEHxBHdBvi91ywGeY9JAfksdv480mJ01k6X0JRAwyhOM7xaHbR1qYVo/oKVURosohX2RLodTTtWMCQ9fULgbooM5U+Q8dICqqgoS6FhIuMfSbgRCpcbJfVKoqlk3ohUUJeWBjF0Y8kHnULMNy9DWXq15+dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714274736; c=relaxed/simple;
-	bh=OcskZBciLjsORKdfrVamfRMlfN8PTbCSuVeVFP5J418=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CfGosJPoLoiSsdt+Fh2OYhV6uG8/0tmQwTR4MzrC+y/fWdvZoiLGkYlWtVUnv6OhsAxcYjGBapVP1rhsHd+lXOBl5UbqXW/jQsZUR02Kx9ty/0EW/tgMMOW8n5VAkRk9pCgSo6FysOUl6LmZaInCvXvmMQOeAaZ19ZKMNdn5KbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S5N24bS+; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2af800ff18dso2849564a91.1;
-        Sat, 27 Apr 2024 20:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714274734; x=1714879534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lLIp3eAfQD8CQMCKFDKg8uIvyN0SEXktzvJZCsva1y4=;
-        b=S5N24bS+z4vparNBzBBtmLS5XzplBasU6yz4vWTU0j4s6KSeIpgDIo8lVtlTQy8EeZ
-         2WBwyMlzwjH92j8BY8eAKbLMuogCKSINPrAHafDXIus+fBcboSdLvunlT4OgAnWpShZV
-         rrIzBFbVZMjyl/zcvV2HIHzosCUCft6KwsD2WqWlhhzEryGgWiywukUeDwPEvl/BHMMx
-         P1f7tc6F5TVN9zq4xsYSASQKYCW/sl+Ul6iRCTsk7m2Fayly59WtQDrUz9qV3NPURFmM
-         nU7gPFKTgGSz535ihvRw+eYCvn3oC+V2z4ySUDmMBx8V5ozHzjFBQV3SIRDNBuMzhLOy
-         D9zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714274734; x=1714879534;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lLIp3eAfQD8CQMCKFDKg8uIvyN0SEXktzvJZCsva1y4=;
-        b=gGCf7Zocg0McsvHP9SSmbfbu+tY9S6weW0OwSiOum6upYpeiZWEoO1ZpE7Kthf4OTJ
-         8vY+vLJyV7p9GUYfnWQoDIdllPo80elHMVzWYdvexRl8xV5AOOkI6kY8uZvUqb1FEQNm
-         yGc6KWcLQOA1nsDQQlxW0Hvk63GtwAc0AwQ1vAYow3Zma7lqxsVIxrfxWyKXTKkC+GjY
-         aSQYLz4tXeFX3TxxrCiE0Tuq7l9EH6j3N5kZeI3Na7Ys0SMNRnboaQ4eKDJizSkplQdu
-         pXRHka0jk+Y4OyJF4SVU4CvdL9oiMr2iR0lWz7X0qk7M+lS4ifZNvND8FxyQltecjUoX
-         Uw9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUvHqglVh3Jgu36cwE+kouf9T2wA5v7qD4esqjtY0PN8yuYS3BRgLKJB7WYbSYpOkPSbVkqEm5vdshFbvGyySj+ZXH2FKpHXq75XiiNjRnc2JBHJuDURqjMgjEeSAgpVu9r3A8pK+xTM8i96jug9eD3+/AsRN2ZubqMFzwZFomaBMQ2EaEzrgbnPYlnB3GsZ9lSJiZrLPpA8iK5UGXW+KGb6qQ=
-X-Gm-Message-State: AOJu0Yy8mpTBlJVhNNih8Jt/eVNtUKk+ZFYHkeFBq5Z5aIVA9YQaH5Ul
-	IAy9JWP3xha/1TuCDni3fXPjUlhVjCl5Iyp6Dx5yRt3SW+/PEwVz
-X-Google-Smtp-Source: AGHT+IHix91u6ZSVql6QvYGRpmSFoZAiVGl8I7Ra5uHUolRC1CoBqUEI9EePwejfhWQ0cSao0pGHag==
-X-Received: by 2002:a17:90b:8d1:b0:2ae:78cd:59fe with SMTP id ds17-20020a17090b08d100b002ae78cd59femr6972814pjb.31.1714274734037;
-        Sat, 27 Apr 2024 20:25:34 -0700 (PDT)
-Received: from [0.0.0.0] (42-3-109-144.ptr.netvigator.com. [42.3.109.144])
-        by smtp.gmail.com with ESMTPSA id pa5-20020a17090b264500b002b113ad5f10sm1189336pjb.12.2024.04.27.20.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Apr 2024 20:25:33 -0700 (PDT)
-Message-ID: <cb1ac16b-3491-425d-95d0-91fba64d78e6@gmail.com>
-Date: Sun, 28 Apr 2024 11:25:26 +0800
+	s=arc-20240116; t=1714274768; c=relaxed/simple;
+	bh=dRbYW5r1aha79uQUUDDP7FX0PER5xuIeZ/k7nBZKlQs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cmY6WszkunThFlqRB8YjiNfj6VDXTp1XdOAjMbCo4Lvi/69vvIpH0zudJ3nakWdFUKA1mlOtSnC7mJpSwDv14uqdQIoPM0sit3U4ydCRahgZc1TWViN4yOL0cwIbgQ1jdfduzl6OShJub5QBqBXZKBS9Q5D/pHsXsFj+vzSYiY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VRsLF1V3tz4f3k6h;
+	Sun, 28 Apr 2024 11:25:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 2D14A1A0568;
+	Sun, 28 Apr 2024 11:26:02 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgBXfA_IwS1m1qSpLQ--.48414S3;
+	Sun, 28 Apr 2024 11:26:01 +0800 (CST)
+Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+To: Christoph Hellwig <hch@infradead.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+ tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
+References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
+ <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+ <20240425182904.GA360919@frogsfrogsfrogs>
+ <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
+ <ZitKncYr0cCmU0NG@infradead.org>
+ <5b6228ce-c553-3387-dfc4-2db78e3bd810@huaweicloud.com>
+ <ZiyiNzQ6oY3ZAohg@infradead.org>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
+Date: Sun, 28 Apr 2024 11:26:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/10] dt-bindings: display: panel: Add Synaptics TD4328
-To: Rob Herring <robh@kernel.org>
-Cc: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Tengfei Fan <quic_tengfan@quicinc.com>,
- Molly Sophia <mollysophia379@gmail.com>, linux-pwm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
-References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
- <20240424-ayn-odin2-initial-v1-3-e0aa05c991fd@gmail.com>
- <20240425161134.GA2695912-robh@kernel.org>
+In-Reply-To: <ZiyiNzQ6oY3ZAohg@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-From: Xilin Wu <wuxilin123@gmail.com>
-In-Reply-To: <20240425161134.GA2695912-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgBXfA_IwS1m1qSpLQ--.48414S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7GryDZF1ftw1DXw47uF1UAwb_yoWDCrbEg3
+	9Yv39rCr4kAa13AF45Kw15Jrs2kr1rKr1rXrZ8Xrs7JrW8AFykJas5ur93Z3y7Xa1Yyr1a
+	9F9av3W7Z3sFvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/4/26 0:11, Rob Herring wrote:
-> On Wed, Apr 24, 2024 at 11:29:08PM +0800, Xilin Wu wrote:
->> Synaptics TD4328 is a display driver IC used to drive LCD DSI panels.
+On 2024/4/27 14:59, Christoph Hellwig wrote:
+> On Fri, Apr 26, 2024 at 03:18:17PM +0800, Zhang Yi wrote:
+>> I've had the same idea before, I asked Dave and he explained that Linux
+>> could leak data beyond EOF page for some cases, e.g. mmap() can write to
+>> the EOF page beyond EOF without failing, and the data in that EOF page
+>> could be non-zeroed by mmap(), so the zeroing is still needed now.
 >>
->> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
->> ---
->>   .../bindings/display/panel/synaptics,td4328.yaml   | 69 ++++++++++++++++++++++
->>   1 file changed, 69 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/display/panel/synaptics,td4328.yaml b/Documentation/devicetree/bindings/display/panel/synaptics,td4328.yaml
->> new file mode 100644
->> index 000000000000..216f2fb22b88
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/display/panel/synaptics,td4328.yaml
->> @@ -0,0 +1,69 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/display/panel/synaptics,td4328.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Synaptics TD4328-based DSI display panels
->> +
->> +maintainers:
->> +  - Xilin Wu <wuxilin123@gmail.com>
->> +
->> +description:
->> +  The Synaptics TD4328 is a generic DSI Panel IC used to control
->> +  LCD panels.
->> +
->> +allOf:
->> +  - $ref: panel-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    contains:
->> +      const: syna,td4328
+>> OTOH, if we free the delalloc and unwritten blocks beyond EOF blocks, he
+>> said it could lead to some performance problems and make thinks
+>> complicated to deal with the trimming of EOF block. Please see [1]
+>> for details and maybe Dave could explain more.
 > 
-> You need a compatible specific to a panel. This can be a fallback
-> though.
+> Oh well.  Given that we're full in on the speculative allocations
+> we might as well deal with it.
 > 
 
-Unfortunately I have no idea what is the model name of the display 
-assembly. I wonder how the compatible should be named in such case.
+Let me confirm, so you also think the preallocations in the COW fork that
+overlaps the unreflinked range is useless, we should avoid allocating
+this range, is that right? If so, I suppose we can do this improvement in
+another patch(set), this one works fine now.
 
---
 Thanks,
-Xilin Wu
+Yi.
+
 
