@@ -1,150 +1,240 @@
-Return-Path: <linux-kernel+bounces-161353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07E828B4B10
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:54:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0357A8B4B0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B98811F21631
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:54:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DB891F215D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D388356477;
-	Sun, 28 Apr 2024 09:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4562856B6A;
+	Sun, 28 Apr 2024 09:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="GmK7mhrS"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="uZwkVbrQ"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE0158119;
-	Sun, 28 Apr 2024 09:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E87954FAB
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714298074; cv=none; b=uFpTpL1IbOoDr84tAF1yGr2jphO0iHkXD+nyczqBS/gyWChJ2IGsScAHO9RqzWXYnBKbJaWpFqJedLDUmWdzu/acZyepldnXzfgbUw35/bMmbSnQklhd9LQ1BOWFYAlQRZe6mpUneoPovt2VDYUg+SJM+yA+GpKW7gOOcbhuhOw=
+	t=1714298066; cv=none; b=fBfydWeCXyW7Ik2G6O3H1q0RnSuSy3no5TDtwVgJAOz2XXCTaQmwp+Zj3lqafqm3xF+ePaQG4fX5vUHZETiYTdXrNFQCHsey8n5e9aF6QhLchncjeZrP32D+7fCZ1bOb8yFFT2nxOZ/wleSLm/qjsbKdJAjB4G03je+RdJEJSi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714298074; c=relaxed/simple;
-	bh=ZKEooElUNK3TkVRIspPkZo1HoG4K7qCTaSSjuc4fCYI=;
+	s=arc-20240116; t=1714298066; c=relaxed/simple;
+	bh=XfwPvtFVa37rQ9j0JNfy5Q8xawgeFhod/zhdXWAvcW0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=njJUJB7Acl3NhXzX7B2hLV3cwlvJsZcse4f0XM0XmE9FVISMMGURP85A5wXcZ0zPUtNa2Zs0gu1ROEpunevZf3dOSBo01pfqqSApWSaszZESrCpvTJxViTRvgohrKA+f3oJ4KgPQhQr9EXpQs39LkgL/PKkMk43XB+dvV3XSduE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=GmK7mhrS; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6962F40E0249;
-	Sun, 28 Apr 2024 09:54:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 3htPu7eUVqiK; Sun, 28 Apr 2024 09:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714298063; bh=QAK+F1n6YdN369aP1zf89r+8yaJQmtbbGPXiaMt5ELs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GmK7mhrSsZBpkV+ab9wViW9V16BnUrWOEC7YO+apnie+WJek9EflrygCI+tj7f6Fv
-	 8RbUbmILO9Vl5HFT0pjaM0fioHkcJy8J/yCvfb5i/fxHoWF6UI5msEFdNOdSRYUmBt
-	 a41tce2npDjJqWjmeT+OV/Y3nrzLkzwwu+IR9fYMDkFVjKfAw4F5wAGig8epmZXUVK
-	 MTNteNq7XVeBVYTQdBPTZzHquWghccYIU8FBYE0DWTC5mlWE/1HM3dt4JWMc1Jh+/v
-	 nlyKvwse1gh9EKbVgFMsABJeFW8SR0YcIeRJfLQE/k7Rc9ogFNiDG5iJlBJ2M4yBoi
-	 NKZfUYs0t1Hj3enL3AuGveuswS7anf0dZLJcsCfCshiflBrv5f0fVZk4k6owEW0zbV
-	 gSiFTAaUpNh3ygusQE3imuqS7v9CChtpPl02V6LShskxUwVToljDE9fLdHjN+ebOZR
-	 yuVFWOM3JAmXbBXbs24XkrWmA6584iloHPU7MjocglWFlle3hXGwTc1aw3qSfnJ5lx
-	 Fsloi7jr/ajPIy8AzNw/PcnzUSb5vOqIwqQTspRk2Fv0A6TAps3TfDEQVqh1j94RQC
-	 cU+oacjEfbT5gv5rPjkykM8i/nT5KSb06YmNyd74rvJ5+vzgWq/n7CaBE97QUnCgWp
-	 nsqCcBYd9lvZGMuvIws/I5Jg=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F19440E016B;
-	Sun, 28 Apr 2024 09:54:16 +0000 (UTC)
-Date: Sun, 28 Apr 2024 11:54:09 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Xiaojian Du <Xiaojian.Du@amd.com>
-Cc: linux-pm@vger.kernel.org, gautham.shenoy@amd.com,
-	mario.limonciello@amd.com, ray.huang@amd.com, Perry.Yuan@amd.com,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/cpufeatures: Add AMD FAST CPPC feature flag
-Message-ID: <20240428095409.GAZi4cwYxRwQGW_WFq@fat_crate.local>
-References: <20240428091133.592333-1-Xiaojian.Du@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gUbtOuE6t5OInrx5ijljPo1qD4tRzuwQS170h3DEV7/BUrZ84f9PX+FJgVQAcFkN2/sQJEmrr+YJ4TPl93UU9sJepUKsnadl7k2FUnuJK3ZdbHWNiaodcqtHt2+DOb8Sk+DYEq/pqZlwOKxTa5MMmJ2BxKOmg7sPkkQ4NMtk4Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=uZwkVbrQ; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d2600569so4239997e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 02:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714298063; x=1714902863; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lMrhY6/jdHr+5rbk2vYpIblfqORgrZnbq6o4kFL2leY=;
+        b=uZwkVbrQlvguK8Wt+X9Ta4u9WiSuOKwvIgRL4/CiWxXVEke52BTXTXSIemT64bhvpC
+         d6XYuSg+af72JcIQ3uE6oKGT8E/pX8fhgU1NQUGYUAytvvZzePh6+UiizmfVRQg/Sj4b
+         /6Nqrd1U2CkFqSv2cdwXsigAX83Uj9/42SetQazhsqg/9Z5rJYrVV6J6m5iZv1vLuLgD
+         4srN3znNw7yh2lCcUfQ9pHMP3qFrNmQ/TqBYtrQcYUM+YBRYTVm9DdPCISsKPymw4nRP
+         RrBy1CTaRvEzJdc36zwjDjFRRnsuH+qa2NWk7jFKViEYZjxELTplcuGbbg8MAdNd4Hzv
+         GP5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714298063; x=1714902863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lMrhY6/jdHr+5rbk2vYpIblfqORgrZnbq6o4kFL2leY=;
+        b=w8V9QftcQl2ga9ZrAJNfgkpPhGmrCUNUk9/CsKO3NuOKqno4gKNaKRgMVh6a5sOrAi
+         oPkiCOFpQj/JGNlU2dTqL2AmBC9SvlIZn4u5Pgy0HHvhhk0JfVc445xiwbG15AAmwBxI
+         cmqGuey9JopFW6FZ2lylLbOW4/68AU8FN+FrsXvufkq/KdDeqU9OhtBiVB/CaHUKJJFa
+         se7ZosLCqGw+tkQppRKvA5cWTHmi1sW/E87zIG4P9em7dr40MJ5j9igwRD1WTcWHsmLQ
+         AQJXEQNQqmpz6xD403pwZ7eeet+PgQDMJYJzbvNJ1Ixs8nEgSI01z4/lZDjJnZibKMEt
+         COrg==
+X-Forwarded-Encrypted: i=1; AJvYcCU5UEBygAkrVDFeyR3Ky3eIVUW5IomA+BIQ/WdB8kvVFugbjG3H3MbcHXqeTeYa1qFSol7wElEt4Zji8DalFOdkZ63XwefNt8ht7XRv
+X-Gm-Message-State: AOJu0Yy0DtBVCLldrn/UmjDKTlEV6RrRDlJJN5wvnj2hnRBU7pO+5/6R
+	JQ5rhXh9NEW4E8TDMS8AnXalQJNpTrEPCVR3qUk9T7t/+f4VNWKm/6oja1gcE/I=
+X-Google-Smtp-Source: AGHT+IGn32KqwhwvFwaFNH1nncKg1jRLmaHfbV2LvHlzEopH2e+yZMzEFTLRlpSlHe3WAJQd/h2+Lw==
+X-Received: by 2002:a05:6512:46c:b0:518:ce4b:17ef with SMTP id x12-20020a056512046c00b00518ce4b17efmr2768833lfd.60.1714298062439;
+        Sun, 28 Apr 2024 02:54:22 -0700 (PDT)
+Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
+        by smtp.gmail.com with ESMTPSA id l17-20020ac24a91000000b005196e3e8a84sm3719795lfp.177.2024.04.28.02.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 02:54:22 -0700 (PDT)
+Date: Sun, 28 Apr 2024 11:54:20 +0200
+From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
+ interrupts unmasking
+Message-ID: <Zi4czGX8jlqSdNrr@builder>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
+ <Zi1Xbz7ARLm3HkqW@builder>
+ <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240428091133.592333-1-Xiaojian.Du@amd.com>
+In-Reply-To: <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
 
-+ lkml
-
-On Sun, Apr 28, 2024 at 05:11:32PM +0800, Xiaojian Du wrote:
-> From: Perry Yuan <perry.yuan@amd.com>
+> It could be the performance increase comes from two places:
 > 
-> Some AMD Zen 4 processors support a new feature FAST CPPC which
-> allows for a faster CPPC loop due to internal architectual
-> enhancements. The goal of this faster loop is higher performance
-> at the same power consumption.
+> 1) Spending time and bus bandwidth dealing with the buffer overflow
+> interrupt
 > 
-> Reference:
-> Page 99 of PPR for AMD Family 19h Model 61h rev.B1
-> https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/56713-B1_3_05.zip
-
-This should say "See the PPR for AMD Family 19h Model 61h rev.B1, docID
-56713" so that people can actually find it.
-
-The URLs are flaky and change regularly so can't use them.
-
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-> Signed-off-by: Xiaojian Du <Xiaojian.Du@amd.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/kernel/cpu/scattered.c    | 1 +
->  2 files changed, 2 insertions(+)
-
-Always use ./scripts/get_maintainer.pl when sending a patch to know who
-to Cc.
-
-Also, have a look at those to get an idea how the process works:
-
-https://kernel.org/doc/html/latest/process/development-process.html
-https://kernel.org/doc/html/latest/process/submitting-patches.html
-
+> 2) Printing out the serial port.
 > 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 3c7434329661..6c128d463a14 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -470,6 +470,7 @@
->  #define X86_FEATURE_BHI_CTRL		(21*32+ 2) /* "" BHI_DIS_S HW control available */
->  #define X86_FEATURE_CLEAR_BHB_HW	(21*32+ 3) /* "" BHI_DIS_S HW control enabled */
->  #define X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT (21*32+ 4) /* "" Clear branch history at vmexit using SW loop */
-> +#define X86_FEATURE_FAST_CPPC		(21*32 + 5) /* "" AMD Fast CPPC */
->  
->  /*
->   * BUG word(s)
-> diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
-> index af5aa2c754c2..9c273c231f56 100644
-> --- a/arch/x86/kernel/cpu/scattered.c
-> +++ b/arch/x86/kernel/cpu/scattered.c
-> @@ -51,6 +51,7 @@ static const struct cpuid_bit cpuid_bits[] = {
->  	{ X86_FEATURE_PERFMON_V2,	CPUID_EAX,  0, 0x80000022, 0 },
->  	{ X86_FEATURE_AMD_LBR_V2,	CPUID_EAX,  1, 0x80000022, 0 },
->  	{ X86_FEATURE_AMD_LBR_PMC_FREEZE,	CPUID_EAX,  2, 0x80000022, 0 },
-> +	{ X86_FEATURE_FAST_CPPC,	CPUID_EDX,  15, 0x80000007, 0 },
->  	{ 0, 0, 0, 0, 0 }
->  };
->  
+> Please could you benchmark a few things:
+> 
+> 1) Remove the printk("Receive buffer overflow error"), but otherwise
+> keep the code the same. That will give us an idea how much the serial
+> port matters.
+> 
+> 2) Disable only the RX buffer overflow interrupt
+> 
+> 3) Disable all error interrupts.
+> 
 
-With the above addressed:
 
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 
--- 
-Regards/Gruss,
-    Boris.
+Test setup
+- Server side - 
+PC with a lan8670 usb eval board running a http server that serves
+a 10MB binary blob. The http server is just python3 -m http.server
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- Client side -
+iMX8mn board (quad core arm64) with lan8650 mac-phy (25MHz spi)
+running curl to download the blob from the server and writing to
+a ramfs (ddr4 1.xGHz, so should not be a bottleneck)
+
+Below are a collection of samples of different test runs. All of the
+test runs have run a minor patch for hw reset (else nothing works for me).
+Using curl is not the most scientific approach here, but iperf has
+not exposed any problems for me earlier with overflows.
+So sticking with curl since it's easy and definetly gets the overflows.
+
+n  |  name     |  min  |  avg  |  max  |  rx dropped  |  samples
+1  |  no mod   |  827K |  846K |  891K |      945     |     5
+2  |  no log   |  711K |  726K |  744K |      562     |     5
+3  |  less irq |  815K |  833K |  846K |      N/A     |     5
+4  |  no irq   |  914K |  924K |  931K |      N/A     |     5
+5  |  simple   |  857K |  868K |  879K |      615     |     5
+
+Description of each scenario
+
+1 - no mod
+So this just runs a hw reset to get the chip working (described in earlier posts)
+
+2 - no log
+This scenario just removes the logging when handling the irq state
+--- a/drivers/net/ethernet/oa_tc6.c
++++ b/drivers/net/ethernet/oa_tc6.c
+@@ -688,8 +688,6 @@ static int oa_tc6_process_extended_status(struct oa_tc6 *tc6)
+        if (FIELD_GET(STATUS0_RX_BUFFER_OVERFLOW_ERROR, value)) {
+                tc6->rx_buf_overflow = true;
+                oa_tc6_cleanup_ongoing_rx_skb(tc6);
+-               net_err_ratelimited("%s: Receive buffer overflow error\n",
+-                                   tc6->netdev->name);
+                return -EAGAIN;
+        }
+        if (FIELD_GET(STATUS0_TX_PROTOCOL_ERROR, value)) {
+
+3 - less irq
+This scenario disables the overflow interrupt but keeps the others
+
+--- a/drivers/net/ethernet/oa_tc6.c
++++ b/drivers/net/ethernet/oa_tc6.c
+@@ -625,10 +625,10 @@ static int oa_tc6_unmask_macphy_error_interrupts(struct oa_tc6 *tc6)
+                return ret;
+
+        regval &= ~(INT_MASK0_TX_PROTOCOL_ERR_MASK |
+-                   INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK |
+                    INT_MASK0_LOSS_OF_FRAME_ERR_MASK |
+                    INT_MASK0_HEADER_ERR_MASK);
+
++       regval |= INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK;
+        return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, regval);
+ }
+
+4 - no irq
+This scenario disables all imask0 interrupts with the following change
+
+diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
+index 9f17f3712137..88a9c6ccb37a 100644
+--- a/drivers/net/ethernet/oa_tc6.c
++++ b/drivers/net/ethernet/oa_tc6.c
+@@ -624,12 +624,7 @@ static int oa_tc6_unmask_macphy_error_interrupts(struct oa_tc6 *tc6)
+        if (ret)
+                return ret;
+
+-       regval &= ~(INT_MASK0_TX_PROTOCOL_ERR_MASK |
+-                   INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK |
+-                   INT_MASK0_LOSS_OF_FRAME_ERR_MASK |
+-                   INT_MASK0_HEADER_ERR_MASK);
+-
+-       return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, regval);
++       return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, (u32)-1);
+ }
+
+ static int oa_tc6_enable_data_transfer(struct oa_tc6 *tc6)
+
+
+5 - simple
+This keeps the interrupt but does not log or drop the socket buffer on irq
+Moving the rx dropped increment here makes it more of a irq counter I guess,
+so maybe not relevant.
+
+diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
+index 9f17f3712137..cbc20a725ad0 100644
+--- a/drivers/net/ethernet/oa_tc6.c
++++ b/drivers/net/ethernet/oa_tc6.c
+@@ -687,10 +687,7 @@ static int oa_tc6_process_extended_status(struct oa_tc6 *tc6)
+
+        if (FIELD_GET(STATUS0_RX_BUFFER_OVERFLOW_ERROR, value)) {
+                tc6->rx_buf_overflow = true;
+-               oa_tc6_cleanup_ongoing_rx_skb(tc6);
+-               net_err_ratelimited("%s: Receive buffer overflow error\n",
+-                                   tc6->netdev->name);
+-               return -EAGAIN;
++               tc6->netdev->stats.rx_dropped++;
+        }
+        if (FIELD_GET(STATUS0_TX_PROTOCOL_ERROR, value)) {
+                netdev_err(tc6->netdev, "Transmit protocol error\n");
+
+
+- postamble -
+
+Removing the logging made things considerably slower which probably
+indicates that there is a timing dependent behaviour in the driver.
+
+I have a hard time explaining why there is a throughput difference
+between scenario 3 and 4 since I did not get the logs that any of the
+other interrupts happened.
+Maybe the irq handling adds some unexpected context switching overhead.
+
+My recommendation going forward would be to disable the rx buffer
+overlow interrupt and removing any code related to handling of it.
+
+R
 
