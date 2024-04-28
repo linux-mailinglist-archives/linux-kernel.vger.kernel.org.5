@@ -1,118 +1,146 @@
-Return-Path: <linux-kernel+bounces-161431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D128B4BE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:07:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D50548B4BE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:10:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D7DB1F21551
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16415281CE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697FC6CDB1;
-	Sun, 28 Apr 2024 13:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34E56CDB4;
+	Sun, 28 Apr 2024 13:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NScmQQYc"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="md3BQSOT"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FCF56B67;
-	Sun, 28 Apr 2024 13:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8519222064;
+	Sun, 28 Apr 2024 13:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714309671; cv=none; b=bXEkxdJaUjnrlP9qzydwATMQmUdB7r/9uYbjCBXFTHdHOVZlcjaxPuhFnI0deMrb2FQb7WaHmfQUSgyk1uGEojqiQ34o3l1wzO+zSqw5r9mWwg1UOQ7nCGzSjicCDulVOJAo7fvRyjny3f3UiUn1bSwVaH7KQarXRdVotKcsW0M=
+	t=1714309832; cv=none; b=nFK8kWHh6QbKGNkA8TGeSayZo9EXCDnsc6DpNyKV9b2HnG9PNwseFmH3DvsWeXL1Nm+io7dI0rDJzEXtT3kOMxv9WpiJ+mMteN68iV710A5zSis9vo9XyZPbq5WZapdvaHDVMMKeAE2pq0pIbMj9tXz8kwUHCLhIiWDaDZ5O9RI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714309671; c=relaxed/simple;
-	bh=qJiPzaCHgpBOVM6yCV+xmpVFt9aLiLDftr3YDd+v0ds=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gKnWO8SOCyFIaDtaW6vLT9WgIveR3yPPBsep7PkkLkCNqf333Oq0EhyZShzm2yu+RlEjrAg3DTjd7juN9UgkvM9f4ZqaWxPncyCppmwml3pB6CxhkrJKB26wJf5sc0W+CkUZpRMyOil2S/WJz8NRUWL0GcA6QMRzWOem7Zurei8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NScmQQYc; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1714309832; c=relaxed/simple;
+	bh=lpiHaZYM8+2Y3uyoOmqD9y7aDSEx9LkyS3ICJpEoe0U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aaiDtaOMAoinVS9fe/KRCi/OILnKtHHLPyI2nie8lSbyR00PeVSXbW0AsM+qat3G6cerIfK7kZyP2lt4VxYLid1MWOsSyLCxB6h6GvrZqwaa6CQezEJpk24Suotpx/mEeDSlOF2t1Lr/XGkTZNdhF0Acp0SUZpjvVxZrLrQUO70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=md3BQSOT; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ebso13881815e9.1;
-        Sun, 28 Apr 2024 06:07:49 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41adf155cffso26701745e9.2;
+        Sun, 28 Apr 2024 06:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714309668; x=1714914468; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E9ZvuRd4f88ObhLFiN+dWlmTukj+GNweC07d13EWQyc=;
-        b=NScmQQYcJXOxhtg5+gan/JomJJECcAXuyYKA1ianjRs09sQIxWtoAUwXXUwjZIZncT
-         JaFdiqlH9xNrk4c6UvFdwKirgpKRRa345kwIdVY9EaAyiTb4GVsCnMEBfZ4QqvtiLWRW
-         sRRC+bRCDHi6DnL6cLXs/gYEgbjAnCYnTDQvCVtlDQzjvcYLkYfF8PjkdNpQjzf1Ziex
-         Ie1Pq05V01QLUm5B5w5bfRdBPRXuA789E2pxIbWo3fFI1v8IkwuOfQAPLd5/6TZ95dJq
-         9lyDQYqZzptaCg04qGYmnlKmtZbIVnTw39nq7mkhxUsCkFzQiBVAJZ7ZJ975VeVaBh9D
-         oYhg==
+        d=gmail.com; s=20230601; t=1714309829; x=1714914629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NhgCnJKPmb4AsGDiMaLDS91P6nngDSMLvYORDn1dWMg=;
+        b=md3BQSOT/BuhGAqsgYYNRT5/NUfQH+SRm8msLIx0eKf3Yicg9jnJzaAhGu2WeLzx3J
+         rwItg2ee2ZTiFTDNqZlLi9+f3CgRr5S00WZb4FJWp+K14Sd6kT+R5VajGLYlfmHHyYxb
+         SBvPaZ2N3VY6mw++dhl8TGTGSz0OV2AD2mpJGpmtR/mjw+m2r6zRBvRYt1RikE0/Fjtp
+         6eS3r8Ik1e8bVw6q09jKE9uf+XqtqIArEaoG0XfnjbvaMG9iMcI2uP5L9kIk4ejoyT3h
+         sv74Wl5FR0+L0kqvfayxRiQkB0yzDrNq3Pu/AxzbA2ur3WnevrharB68oUwjrPn+saaH
+         OFNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714309668; x=1714914468;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E9ZvuRd4f88ObhLFiN+dWlmTukj+GNweC07d13EWQyc=;
-        b=UvgmZc+ArJL5spG6IfeAtcPLVWhSUKkyvhBxfBcAhCrmQEK+4QX66RC7JpIcma9nje
-         xJIp0y6thUlbQlV4wK8nt6UAFdWyfntvwat6Ksht/k1n9/g8EbPDy+M1UX6iKmDarw3T
-         l1UXslZp0rCdwtdGt1/RiRQ+m56VnPLCMxme6LXF460fI910fLLfGJ6GU8N7vEbZNba1
-         OKYPblEdkowh6U2stZafA1EP5ZawzDAS+hkE/J7RZ+N2BxgDbH7hxZCUuhgplUpg1C9U
-         ZUkfv1p0/vCN1loCnrjPo2WbiG25pY03rU8NSIcWwjxztZGKhLW2Ihl2oFpgxuACm8Fd
-         du3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUJYM3zgdUwbFRtBcjKr2EELSty3OxLrokNo1zL5TBb7qvHlBYZlymrkqX3BuYOl+jlhPXINFDHo7PEIOh0s5mAbgIzVw/R4+c/hesk
-X-Gm-Message-State: AOJu0Yz/xXmU8Nhya0O9+8wKGkdZoymI/7vJYq+ntZ1yGfOFkukBPTg/
-	dpMhArHkDtIz8+K3wKMymgbDJkRzLd/78f3/9pqEEW+6dD7Pt/b2
-X-Google-Smtp-Source: AGHT+IFl9PLyWAf9UGyn9+0VvGAYZp4lWlEyMOeuf/EUWbihkMw5bmJGK5uVxDjoe8u1aFafeHZ7yQ==
-X-Received: by 2002:a05:600c:1d2a:b0:419:f630:57c2 with SMTP id l42-20020a05600c1d2a00b00419f63057c2mr7257986wms.37.1714309668373;
-        Sun, 28 Apr 2024 06:07:48 -0700 (PDT)
-Received: from fedora.. ([2a01:e0a:a9f:60f0:5d0b:d730:cb58:674c])
-        by smtp.gmail.com with ESMTPSA id c7-20020a05600c0a4700b0041b434e5869sm12827996wmq.43.2024.04.28.06.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 06:07:48 -0700 (PDT)
-From: Thomas GENTY <tomlohave@gmail.com>
-To: hdegoede@redhat.com
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tomlohave@gmail.com
-Subject: [PATCH] bytcr_rt5640 : inverse jack detect for Archos 101 cecium
-Date: Sun, 28 Apr 2024 15:07:36 +0200
-Message-ID: <20240428130736.877917-1-tomlohave@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1714309829; x=1714914629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NhgCnJKPmb4AsGDiMaLDS91P6nngDSMLvYORDn1dWMg=;
+        b=h3Wnzl68GZxTGPhnFV53ZpJNOts4TQISFZyemRQWAk/6i3nb3EmYn30ktJwXFV029U
+         ZaedUfn5IkONhEdZ/M7Uqy/F50sNTFk6nyv6RAn0IPTYScg5KEe3cjgUWLwHcez5xbN+
+         pRzIsm31iXbIZk5RsqiwuHKwj2+AGHT6wvDO6VynDOTPLysQsH5vmQPiX10ET8XTpJpD
+         2rnAa5Kcemdk+jCgvS6xUvsCsW4jW7xeM+NRpd7P69V5w9TVxjPWzUx+zlvZl4pziaLF
+         6i0FDkgBs+4yZU6M3IZLBkOG/dzSgsG+apVEB68KURbF4xWfNBxSrGwI5ql0Z6afBxf5
+         558g==
+X-Forwarded-Encrypted: i=1; AJvYcCVD7Qeq1aBQGjfeH0F4bi0ldTU/RLakzZ2kaS9RRGwSFQWTPJe+Hb0C87Gk8SVbR1eIIpOMxNejA6YGOK6ADrVyI5RrlNB63GmBKVlN
+X-Gm-Message-State: AOJu0YzKtlkyhlKBKlXwOQIUyBYC3AD65HUXeiaKsdBZeqKpD0zHfluR
+	a3DD5gP1bU+cw1ZLEIBhuWp2gkyuxemBgh8Rbgi4keMaMat5DlX9RgdBWdCxo9LW/VqVj4OmLws
+	AgHzB1iDjp7RGC+x4C3g5VTzjYGcZA0FVLfI=
+X-Google-Smtp-Source: AGHT+IGEr1rIQGPa8PZm/eTLozJ+byjMjb58FS8WqwrAqnBspFu22WHkm6gbo6Q6KFIu3tcLzDtyiYk7OLnU3UHsU0U=
+X-Received: by 2002:a05:600c:1988:b0:418:f826:58c3 with SMTP id
+ t8-20020a05600c198800b00418f82658c3mr6752323wmq.15.1714309828506; Sun, 28 Apr
+ 2024 06:10:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240428125505.434962-1-skseofh@gmail.com>
+In-Reply-To: <20240428125505.434962-1-skseofh@gmail.com>
+From: DaeRo Lee <skseofh@gmail.com>
+Date: Sun, 28 Apr 2024 22:10:17 +0900
+Message-ID: <CAATEi5kd-XeZ359De36oLJeVvALsEM7oJ9zez_M=zivwrQw5yA@mail.gmail.com>
+Subject: Re: [PATCH] of: of_reserved_mem: clean-up reserved memory with no-map
+To: robh@kernel.org, saravanak@google.com, rppt@kernel.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Daero Lee <daero_le.lee@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When headphones are plugged in, they appear absent; when they are removed,
-they appear present.
-Add a specific entry in bytcr_rt5640 for this device
+2024=EB=85=84 4=EC=9B=94 28=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 9:55, <=
+skseofh@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> From: Daero Lee <daero_le.lee@samsung.com>
+>
+> In early_init_dt_reserve_memory we only add memory w/o no-map flag to
+> memblock.reserved. But we need to add memory w/ no-map flag to
+> memblock.reserved, because NOMAP and memblock.reserved are semantically
+> different.
+>
+> Signed-off-by: Daero Lee <daero_le.lee@samsung.com>
+> ---
+>  drivers/of/of_reserved_mem.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 8236ecae2953..1c916da8adaf 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -91,7 +91,8 @@ static int __init early_init_dt_reserve_memory(phys_add=
+r_t base,
+>                     memblock_is_region_reserved(base, size))
+>                         return -EBUSY;
+>
+> -               return memblock_mark_nomap(base, size);
+> +               if (memblock_mark_nomap(base, size))
+> +                       return;
+Sorry. The return value is wrong.
 
-Signed-off-by: Thomas GENTY <tomlohave@gmail.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Here is what I want to do:
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 05f38d1f7d82..12c90cb2a782 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -610,6 +610,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 101 CESIUM"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_JD_NOT_INV |
-+					BYT_RT5640_DIFF_MIC |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
--- 
-2.44.0
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -81,6 +81,7 @@ static void __init
+fdt_reserved_mem_save_node(unsigned long node, const char *un
+ static int __init early_init_dt_reserve_memory(phys_addr_t base,
+                                               phys_addr_t size, bool nomap=
+)
+ {
++       int err =3D 0;
+        if (nomap) {
+                /*
+                 * If the memory is already reserved (by another region), w=
+e
+@@ -91,7 +92,10 @@ static int __init
+early_init_dt_reserve_memory(phys_addr_t base,
+                    memblock_is_region_reserved(base, size))
+                        return -EBUSY;
 
+-               return memblock_mark_nomap(base, size);
++
++               err =3D memblock_mark_nomap(base, size);
++               if (err)
++                       return err;
+        }
+        return memblock_reserve(base, size);
+ }
+
+
+Regards,
+DaeRo Lee
 
