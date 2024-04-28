@@ -1,255 +1,166 @@
-Return-Path: <linux-kernel+bounces-161219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A028B492C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:06:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 864088B492D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:08:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899BC282A8D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:06:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61B24B220C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA8710FF;
-	Sun, 28 Apr 2024 02:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pe5lSJYR"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B783E10FA;
+	Sun, 28 Apr 2024 02:08:42 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217CCEC3;
-	Sun, 28 Apr 2024 02:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF68A59
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 02:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714269971; cv=none; b=DXNGpD+oU2QoWH3uWqW06KWL6nzLTcN9VD6w9dQxUG8uUzs8B9PJdC0EeIhXy17dEv/K6fOLcT00kx1dGoms5xNG0sLIZ2z7SXDwLpRWk8w9QjTz7JjFSBhUJzUFvYeI6dbcI9IXB9x5vhWCUG4GPhngdGBqFRzFltp87wVbLRk=
+	t=1714270122; cv=none; b=JnZNkK0TBVHOqWxo1Ov8UNKauFfdLlfwHsM5yJv8uai7RZokETF2Bubm3aYa0R8EHqrTOGi1e+3fJw+eMhiPCNMxpvCpfuIEcyam6lbt49Ft5Ijs73DX6mVc5vvohnx/dobL27a87ajMW4/1EDqswilOq8SXZHX2h/cgmNuoXfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714269971; c=relaxed/simple;
-	bh=ng7UA1wMkoX0EkfTSyYAoFSCY+qn4UjiAXy3rtO3t8A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JgUk3RPEreNxlhuGxhVokK+nQTUWQyNqE7wgI7knPGw/w+hbgfw1v9Eu4jc+o78nfKG4wrle9WMIfdfLtskSsL74g7npkJNuv8Zv3Or0UkbEKt6Qxw8uUKM29ISXYOdi8p6KJpWcRCD7gxaqXCh61N9Qjh1CCwS+mT9icJJvWXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pe5lSJYR; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so31234215ad.0;
-        Sat, 27 Apr 2024 19:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714269969; x=1714874769; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UVr/DsPFcrO1zzvU0JwqUmPsGbHr+7DKpdqoMyfPVh8=;
-        b=Pe5lSJYRyRt2cF08AXULExQECgw3bv+pe6v+CMOqfDM/LYfv/GfvVAQkDH0+tMjGKr
-         l9Vd3wQiU/rLtpmXoJmWB9tOOTJONMqUgZvw022/BEePftuTHiBtGlcfHXJ7OgcN/xgZ
-         sOTnPqQGl8nwAqCnU6eUpxS6UsKAlC7wNjE8+HwRsqlyTgDFtJ3LynHE3dVCAhk5GMTB
-         puV45Hh2zDjzXLVBxQdXAIMt47LstVrz1wxRv80qIaIbX/M0qBlM4fvhU25kYQVgcFRF
-         yKyQml2NEX4ae8OkqbIl1mwvGZhaaTM/bxUPZvJe6jGFbyPJhNUa351ExsjwajYi2XqW
-         H5cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714269969; x=1714874769;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UVr/DsPFcrO1zzvU0JwqUmPsGbHr+7DKpdqoMyfPVh8=;
-        b=fW7ekJu953MH91vhK7bP/tJR5luh/uJIYzGTEj5Pc407im2uRNfiIHSQKoxupyDtw2
-         gHNBS2NvDd6UeGKZA7dDmWaZsf/1kxx4cjjZA3c8cH6m8CARElaVeni38dQyonshKrWq
-         RcTKG9YqVXVazwRIuM6eQpTU3AHu9955wyxUlMAPJ5W/DsL7GmKGa4/EBY8BvYtndVyV
-         /0Sieyb1UkW24KVCzwTjwYwMQJ1bNo4cn4+ktjTHNFDJikK2FMtddIwHmXjgf83ICwJJ
-         PM4eIcL4G1pkNFw/jerzxzaeZ+4j1JmIY7qAxy+H3lR0lqjOVqlGtIBfjKB6GvSBaemQ
-         dOxw==
-X-Forwarded-Encrypted: i=1; AJvYcCWyriamwFfKrEw3Jc1lLYGjl7h9S42AZOlGjU4ZA/ZahhuOecZ40UzUIqKtJyJvehQSAZjcuZhbXLGGrJy4wcXTcs9C7V+JnvK+WV+4
-X-Gm-Message-State: AOJu0YxtYwgwOdgRnUD2XDaxF2dQ++jisBRkq8AlY1K6mTmmamLywtV5
-	AniFkmE8T6tR13oQSxlp0YELQE9OU8dLh5w+30j1CKl20DalpnVhaOo1cQ==
-X-Google-Smtp-Source: AGHT+IEI5Ioi6VZREHu6xMA6dF8tohoFLcfdd3XXsgDg1psejZCJgNTvO5LXrzCV3vUQJ4JI/BbLjQ==
-X-Received: by 2002:a17:902:a9c5:b0:1e3:d0fd:236c with SMTP id b5-20020a170902a9c500b001e3d0fd236cmr7263411plr.37.1714269968848;
-        Sat, 27 Apr 2024 19:06:08 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:5ae9:912b:8980:d67c])
-        by smtp.gmail.com with ESMTPSA id i5-20020a170902c94500b001eb3dae7ef1sm2246243pla.16.2024.04.27.19.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 19:06:08 -0700 (PDT)
-Date: Sat, 27 Apr 2024 19:06:05 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: linux-input@vger.kernel.org
-Cc: Jason Andryuk <jandryuk@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: try trimming too long modalias strings
-Message-ID: <Zi2vDUZuVAEh4-yS@google.com>
+	s=arc-20240116; t=1714270122; c=relaxed/simple;
+	bh=sY9d7iZCWewJZB0o112OpLu+XuXr4aUcGYostfUNVDU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=sYl04kQqq7fzMNe4IWknOI3ZQp0Re6LTvlHxQx7+iRYHOTr72HTlwLxuAKchNBTQRXn0v+2sy/HifiIhmaZAmRw5BAqtFaYkdcDlXmEIP66vhiKHf757v84Xez6Afq5oCbxckpYoZQ3pAo1zNVAkBZHZf6mJK1p83YpBacxdzOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VRqcl2pfLz4f3khk
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:08:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 21F491A08C4
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:08:31 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+RGcry1mQyydLA--.54849S3;
+	Sun, 28 Apr 2024 10:08:30 +0800 (CST)
+Subject: Re: [PATCH V3 0/2] iommu/arm-smmu-v3: Add support for ECMDQ register
+ mode
+To: Tanmay Jagdale <tanmay@marvell.com>, will@kernel.org,
+ robin.murphy@arm.com, joro@8bytes.org, nicolinc@nvidia.com,
+ mshavit@google.com, baolu.lu@linux.intel.com, thunder.leizhen@huawei.com,
+ set_pte_at@outlook.com, smostafa@google.com
+Cc: sgoutham@marvell.com, gcherian@marvell.com, jcm@jonmasters.org,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240425144152.52352-1-tanmay@marvell.com>
+From: "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <b1706177-051d-8a82-97a8-3b482be353af@huaweicloud.com>
+Date: Sun, 28 Apr 2024 10:08:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20240425144152.52352-1-tanmay@marvell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAn+RGcry1mQyydLA--.54849S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4UAF18trW7AF4DAr1DKFg_yoW5GrWfpw
+	4fWrZIkr45JFn7AwnxX34kZr98Xr48uFy7tw45W39Yqw1qyry0gr1xKa4rW34kCryaqFnx
+	AwnFqayDCr43AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UZ18PUUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 
-If an input device declares too many capability bits then modalias
-string for such device may become too long and not fit into uevent
-buffer, resulting in failure of sending said uevent. This, in turn,
-may prevent userspace from recognizing existence of such devices.
 
-This is typically not a concern for real hardware devices as they have
-limited number of keys, but happen with synthetic devices such as
-ones created by xen-kbdfront driver, which creates devices as being
-capable of delivering all possible keys, since it doesn't know what
-keys the backend may produce.
 
-To deal with such devices input core will attempt to trim key data,
-in the hope that the rest of modalias string will fit in the given
-buffer. When trimming key data it will indicate that it is not
-complete by placing "+," sign, resulting in conversions like this:
+On 2024/4/25 22:41, Tanmay Jagdale wrote:
+> Resending the patches by Zhen Lei <thunder.leizhen@huawei.com> that add
+> support for SMMU ECMDQ feature.
+> 
+> Tested this feature on a Marvell SoC by implementing a smmu-test driver.
+> This test driver spawns a thread per CPU and each thread keeps sending
+> map, table-walk and unmap requests for a fixed duration.
+> 
+> Using this test driver, we compared ECMDQ vs SMMU with software batching
+> support and saw ~5% improvement with ECMDQ. Performance numbers are
 
-old: k71,72,73,74,78,7A,7B,7C,7D,8E,9E,A4,AD,E0,E1,E4,F8,174,
-new: k71,72,73,74,78,7A,7B,7C,+,
+This data is similar to the performance simulated by our EMU.
 
-This should allow existing udev rules continue to work with existing
-devices, and will also allow writing more complex rules that would
-recognize trimmed modalias and check input device characteristics by
-other means (for example by parsing KEY= data in uevent or parsing
-input device sysfs attributes).
+> mentioned below:
+> 
+>                    Total Requests  Average Requests  Difference
+>                                       Per CPU         wrt ECMDQ
+> -----------------------------------------------------------------
+> ECMDQ                 239286381       2991079
+> CMDQ Batch Size 1     228232187       2852902         -4.62%
+> CMDQ Batch Size 32    233465784       2918322         -2.43%
+> CMDQ Batch Size 64    231679588       2895994         -3.18%
+> CMDQ Batch Size 128   233189030       2914862         -2.55%
+> CMDQ Batch Size 256   230965773       2887072         -3.48%
+> 
+> 
+> v2 --> v3:
+> 1. Rebased on linux 6.9-rc5
+> 
+> v1 --> v2:
 
-Reported-by: Jason Andryuk <jandryuk@gmail.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/input.c | 85 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 15 deletions(-)
+Thanks.
 
-diff --git a/drivers/input/input.c b/drivers/input/input.c
-index b04bcdeee557..947b514174e4 100644
---- a/drivers/input/input.c
-+++ b/drivers/input/input.c
-@@ -1338,19 +1338,19 @@ static int input_print_modalias_bits(char *buf, int size,
- 				     char name, const unsigned long *bm,
- 				     unsigned int min_bit, unsigned int max_bit)
- {
--	int len = 0, i;
-+	int bit = min_bit;
-+	int len = 0;
- 
- 	len += snprintf(buf, max(size, 0), "%c", name);
--	for (i = min_bit; i < max_bit; i++)
--		if (bm[BIT_WORD(i)] & BIT_MASK(i))
--			len += snprintf(buf + len, max(size - len, 0), "%X,", i);
-+	for_each_set_bit_from(bit, bm, max_bit)
-+		len += snprintf(buf + len, max(size - len, 0), "%X,", bit);
- 	return len;
- }
- 
--static int input_print_modalias(char *buf, int size, const struct input_dev *id,
--				int add_cr)
-+static int input_print_modalias_parts(char *buf, int size, int full_len,
-+				      const struct input_dev *id)
- {
--	int len;
-+	int len, klen, remainder, space;
- 
- 	len = snprintf(buf, max(size, 0),
- 		       "input:b%04Xv%04Xp%04Xe%04X-",
-@@ -1359,8 +1359,48 @@ static int input_print_modalias(char *buf, int size, const struct input_dev *id,
- 
- 	len += input_print_modalias_bits(buf + len, size - len,
- 				'e', id->evbit, 0, EV_MAX);
--	len += input_print_modalias_bits(buf + len, size - len,
-+
-+	/*
-+	 * Calculate the remaining space in the buffer making sure we
-+	 * have place for the terminating 0.
-+	 */
-+	space = max(size - (len + 1), 0);
-+
-+	klen = input_print_modalias_bits(buf + len, size - len,
- 				'k', id->keybit, KEY_MIN_INTERESTING, KEY_MAX);
-+	len += klen;
-+
-+	/*
-+	 * If we have more data than we can fit in the buffer, check
-+	 * if we can trim key data to fit in the rest. We will indicate
-+	 * that key data is incomplete by adding "+" sign at the end, like
-+	 * this: * "k1,2,3,45,+,".
-+	 *
-+	 * Note that we shortest key info (if present) is "k+," so we
-+	 * can only try to trim if key data is longer than that.
-+	 */
-+	if (full_len && size < full_len + 1 && klen > 3) {
-+		remainder = full_len - len;
-+		/*
-+		 * We can only trim if we have space for the remainder
-+		 * and also for at least "k+," which is 3 more characters.
-+		 */
-+		if (remainder <= space - 3) {
-+			/*
-+			 * We are guaranteed to have 'k' in the buffer, so
-+			 * we need at least 3 additional bytes for storing
-+			 * "+," in addition to the remainder.
-+			 */
-+			for (int i = size - 1 - remainder - 3; i >= 0; i--) {
-+				if (buf[i] == 'k' || buf[i] == ',') {
-+					strcpy(buf + i + 1, "+,");
-+					len = i + 3; /* Not counting '\0' */
-+					break;
-+				}
-+			}
-+		}
-+	}
-+
- 	len += input_print_modalias_bits(buf + len, size - len,
- 				'r', id->relbit, 0, REL_MAX);
- 	len += input_print_modalias_bits(buf + len, size - len,
-@@ -1376,22 +1416,37 @@ static int input_print_modalias(char *buf, int size, const struct input_dev *id,
- 	len += input_print_modalias_bits(buf + len, size - len,
- 				'w', id->swbit, 0, SW_MAX);
- 
--	if (add_cr)
--		len += snprintf(buf + len, max(size - len, 0), "\n");
--
- 	return len;
- }
- 
-+static int input_print_modalias(char *buf, int size, const struct input_dev *id)
-+{
-+	int full_len;
-+
-+	/*
-+	 * Printing is done in 2 passes: first one figures out total length
-+	 * needed for the modalias string, second one will try to trim key
-+	 * data in case when buffer is too small for the entire modalias.
-+	 * If the buffer is too small regardless, it will fill as much as it
-+	 * can (without trimming key data) into the buffer and leave it to
-+	 * the caller to figure out what to do with the result.
-+	 */
-+	full_len = input_print_modalias_parts(NULL, 0, 0, id);
-+	return input_print_modalias_parts(buf, size, full_len, id);
-+}
-+
- static ssize_t input_dev_show_modalias(struct device *dev,
- 				       struct device_attribute *attr,
- 				       char *buf)
- {
- 	struct input_dev *id = to_input_dev(dev);
--	ssize_t len;
-+	size_t len;
- 
--	len = input_print_modalias(buf, PAGE_SIZE, id, 1);
-+	len = input_print_modalias(buf, PAGE_SIZE, id);
-+	if (len < PAGE_SIZE - 2)
-+		len += snprintf(buf + len, PAGE_SIZE - len, "\n");
- 
--	return min_t(int, len, PAGE_SIZE);
-+	return min(len, PAGE_SIZE);
- }
- static DEVICE_ATTR(modalias, S_IRUGO, input_dev_show_modalias, NULL);
- 
-@@ -1611,7 +1666,7 @@ static int input_add_uevent_modalias_var(struct kobj_uevent_env *env,
- 
- 	len = input_print_modalias(&env->buf[env->buflen - 1],
- 				   sizeof(env->buf) - env->buflen,
--				   dev, 0);
-+				   dev);
- 	if (len >= (sizeof(env->buf) - env->buflen))
- 		return -ENOMEM;
- 
--- 
-2.44.0.769.g3c40516874-goog
-
+> 1. Drop patch "iommu/arm-smmu-v3: Add arm_smmu_ecmdq_issue_cmdlist() for
+> non-shared ECMDQ" in v1
+> 2. Drop patch "iommu/arm-smmu-v3: Add support for less than one ECMDQ
+> per core" in v1
+> 3. Replace rwlock with IPI to support lockless protection against the
+> write operation to bit
+>    'ERRACK' during error handling and the read operation to bit 'ERRACK'
+> during command insertion. 
+> 4. Standardize variable names.
+> -	struct arm_smmu_ecmdq *__percpu	*ecmdq;
+> +	struct arm_smmu_ecmdq *__percpu	*ecmdqs;
+> 
+> 5. Add member 'iobase' to struct arm_smmu_device to record the start
+> physical
+>    address of the SMMU, to replace translation operation
+> (vmalloc_to_pfn(smmu->base) << PAGE_SHIFT)
+> +	phys_addr_t			iobase;
+> -	smmu_dma_base = (vmalloc_to_pfn(smmu->base) << PAGE_SHIFT);
+> 
+> 6. Cancel below union. Whether ECMDQ is enabled is determined only based
+> on 'ecmdq_enabled'.
+> -	union {
+> -		u32			nr_ecmdq;
+> -		u32			ecmdq_enabled;
+> -	};
+> +	u32				nr_ecmdq;
+> +	bool				ecmdq_enabled;
+> 
+> 7. Eliminate some sparse check warnings. For example.
+> -	struct arm_smmu_ecmdq *ecmdq;
+> +	struct arm_smmu_ecmdq __percpu *ecmdq;
+> 
+> 
+> Zhen Lei (2):
+>   iommu/arm-smmu-v3: Add support for ECMDQ register mode
+>   iommu/arm-smmu-v3: Ensure that a set of associated commands are
+>     inserted in the same ECMDQ
+> 
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 261 +++++++++++++++++++-
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  33 +++
+>  2 files changed, 286 insertions(+), 8 deletions(-)
+> 
 
 -- 
-Dmitry
+Regards,
+  Zhen Lei
+
 
