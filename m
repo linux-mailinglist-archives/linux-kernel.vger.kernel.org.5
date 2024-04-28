@@ -1,109 +1,101 @@
-Return-Path: <linux-kernel+bounces-161540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E868B4D74
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:30:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C4B8B4D76
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6A48281412
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:30:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75ABE1C20953
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EE756B60;
-	Sun, 28 Apr 2024 18:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD4956B60;
+	Sun, 28 Apr 2024 18:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SpxPAdDH"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="G8WY07E2"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90E8637;
-	Sun, 28 Apr 2024 18:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131DF637;
+	Sun, 28 Apr 2024 18:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714329051; cv=none; b=aOn1IHNx87zfISCnPio+Hn3TdNWhCHnlTkCuXWiM0tX+xSc3/3m2o8UZKIJgfADrAmka5uzSEsfLaAJcPfF321BJulB0XavwTSwZh9/b8jnuqe6O7zJFs7fqwmykvoAOeFPVVH1UacukB9jkMHv1jeY8kO5uVpjRoaNT6RHBB6M=
+	t=1714329115; cv=none; b=mJmA9PZKwmW7KNcsqtRPv2Eu/ezwUisnWLQkyOGUpJd+9stLfWJVyd9QA/TDiNFVqrbEfnplHACo0biUM36un6L/jqLMolK+ptLMldtUoYpgnA/0vV7UYOp+0ZhEZ+jlrmpDv2/X6QKDrLzJ43wLZ6WeHotG4vRxkyla3tyyDRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714329051; c=relaxed/simple;
-	bh=sP/twd66uXEgebXmHlwxIAgQKR/4gJkbXzqxNukJMAY=;
+	s=arc-20240116; t=1714329115; c=relaxed/simple;
+	bh=nKhYVMPF3dLb3WTODieun1LiiOpjngfOtKCLBKA0jfI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jlsNM+6puX9HsAabsl6UVgj64A30GWwE8mskZSJoLE7BYnlBivlrZYF4EuWfWB6eS7pFHrXWIgwEQyAO75VquZjy0Zyq6ohvXyp763LJqezIVAntCIzQBv+UXao1jLnRP74N+0GN9z+9dfVTYHkr8ys3t7ZbCo54LCZi9jvSKbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SpxPAdDH; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso3421845b3a.2;
-        Sun, 28 Apr 2024 11:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714329049; x=1714933849; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6PthvQh7l5HpiOMPvQkb1YYiy3S5ERgRUU01bN/c3Q8=;
-        b=SpxPAdDHGAR8x010gtYm0oUaLHWsL6M73p4FGSi56ljb9A/ByW2ZEZ4NQj8a1n4Vsi
-         rcSQ61mb6kXDC+uCyo9zduYaw3FkITXywdJ7vo09my41RZuMtyuy9EC1VeAOo46sOW5V
-         EVOBwJKh9kVf+sOGUwurLR3vK82LjKzLnyxbQWZrexWFZ9HTmArn27uwN++cnxzowWw+
-         2vvMrxpmiz6DzpJZKdJGCP0vo95kMwyFkZPnKRLnQdp6Rwuah9Dwn4Lm+bnO4pnY8Liw
-         3yzIafXeWSXcBX8O+eS46eigGZR0LiFJ9BsQj8mTSRxP8ox8cy2P0jKLQNIouklvycWd
-         tStg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714329049; x=1714933849;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6PthvQh7l5HpiOMPvQkb1YYiy3S5ERgRUU01bN/c3Q8=;
-        b=b/7f2DFXp0sSByNXTcRcLMvQ2vXu1Nr9p+psV5NBIqJIYzl0D2j0gpRuLZYgDr2gGD
-         SaWk+NLIV38EnAUiE7cnB8Qv4vk7oDRhpGqqsAzRnC1xQE4MiJiqV1Lq7JkjSDJM+2B4
-         0v+Lu9lDzmeozlhRiZQDaYhDI7ChcJfyqqX7mwnSMvxxKoPXF23tEWQ6bUhA/JthR5tv
-         fxK6pKOxhl/kpHG9uV8vWp8dLLMhfOCHQVtGAc7Gn4mhWz6U9sAhDU3sk8LhQl7COUnJ
-         4UP3U4KVvS1ATArY628ff7udYWsar7oX00hZjHXcROJtXpVymbQgt5uScKE1gfGVWBB+
-         x31Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVSocGp95wfFSj6c5JSmiBq8+n2ImLPK1UX15/KZ33XUTlOPlROz5rcSWAB7g7K5Z82iBgt/WCeoPVBXS1ENHC7jv+OLvTq+4l9zyotK8ED1Ju3fBBTQ+akjyFg5cFCtTa6RXbn0m7VYlw=
-X-Gm-Message-State: AOJu0YyekioIx1Tl7EiygvVv4rkdqx39IVqoK8YqS4XRjz+KZWvxEK6e
-	zG5eQSwUZx5I8hAaRu3xtPcK+9vNDtF9SLZ2lzSjziaRYvvStBDK
-X-Google-Smtp-Source: AGHT+IGov+XxEOPRES7Nu4koLBIFk0zX+XPhCzGajRQdYcpIoxx8KHrMNwK/MzPsyZ4+P9OAmoJPSg==
-X-Received: by 2002:a05:6a00:2315:b0:6ea:f4ad:7298 with SMTP id h21-20020a056a00231500b006eaf4ad7298mr11998670pfh.34.1714329048968;
-        Sun, 28 Apr 2024 11:30:48 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k4-20020aa79984000000b006f3e3d928fesm3918086pfh.220.2024.04.28.11.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 11:30:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 28 Apr 2024 11:30:47 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc: patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: max31790: revise the scale to write pwm
-Message-ID: <062ac1a4-7cf2-454c-ba4f-b19695f1c2b4@roeck-us.net>
-References: <20240416022211.859483-1-Delphine_CC_Chiu@wiwynn.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=N8t2N1KSYv4pjC5me+WSY8PVF5oVorZQ+kIcR520mmqwj/XkLeH0zuu5cKXQyAzBjiW3/J1mVLRzc6sEV5eNpvOvepcCfxN2WrrthT2DAnjdGRovJofaxV8Y4YnxhggXTeONdxMKLxt7mD095f6JvEmVR9pnctI5a5CPPK1A/Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=G8WY07E2; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 141AC40E0205;
+	Sun, 28 Apr 2024 18:31:52 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NeroCGrJ4vxC; Sun, 28 Apr 2024 18:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714329108; bh=NgizXzri5JvSwG7gvqwUSh/z+pZkn8saouSm8FOp+W4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G8WY07E2ilwRSqqOqKldIdcINt0qIEjhDjT0mz18dzJvVh0i5NHRRbnLF1bAr+CvA
+	 g2OSSxxYj9lyb9n5D7axBNqZUNf6yzuJxt644F6AK0Rd+poxtlXEXSVT1fpynz0sGR
+	 P9EhYrao/0Z8xQ7kED7cil7UcSHfuWmsVXk8iPiRfTm++fHuMwIcERc6Z6Geom2HP9
+	 3pngWNJBc2U6gzuzkhrJJnetQbGw9z/Dpi2KJ+1HCEyst7dQ0xWDbrnnH0iEp3OcFk
+	 F42beFd5TmfGQg50HdV6uC1ExEXoxc3L4x8BknItikdU7dl39IdopnQoKafbgczbT+
+	 1M/N+uKie+mDqdykEpMd2bxAg4IXGcRyXtdmNeNFBF5oKNQ7951iIKPNLX1gCE9yci
+	 7kkdBCdElg73K3+WrqwZs4d9ZCD9O4DsOXdMq4AUyE95ysQI/Ye8bJgPmAEd4xHDqT
+	 yV4uJ8/rLO+uGhGlnolVinAv8BTQdK3CBmt0d9WZhFb9dUUnmvrIDevkr97zJf/MDx
+	 W+HJWo7tuqHu7U/uu8RUFRA0rbX06tIAlZCjKDssAQ4AdepX8eSNdQufwxG97lE5bN
+	 zu474ZJouDoSihK1VnnLPjGs2bldHs+xpEukfUw6pVvXXiX0+ADfM0nKWKXeI/vLP+
+	 SFU9wzZYHY/8bxR6fZSeW2lA=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D91E40E0187;
+	Sun, 28 Apr 2024 18:31:43 +0000 (UTC)
+Date: Sun, 28 Apr 2024 20:31:42 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Tony Luck <tony.luck@intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Subject: Re: [tip: x86/cpu] x86/mce: Switch to new Intel CPU model defines
+Message-ID: <20240428183142.GHZi6WDu5nbmJJ_BcH@fat_crate.local>
+References: <171415513118.10875.11391783217612357854.tip-bot2@tip-bot2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240416022211.859483-1-Delphine_CC_Chiu@wiwynn.com>
+In-Reply-To: <171415513118.10875.11391783217612357854.tip-bot2@tip-bot2>
 
-On Tue, Apr 16, 2024 at 10:22:11AM +0800, Delphine CC Chiu wrote:
-> Since the value for PWMOUT Target Duty Cycle register is a 9 bit
-> left-justified value that ranges from 0 to 511 and is contained in 2
-> bytes.
-> 
-> There is an issue that the PWM signal recorded by oscilloscope would
-> not be on consistently if we set PWM to 100% to the driver.
-> 
-> It is because the LSB of the 9 bit would always be zero if it just
-> left shift 8 bit for the value that write to PWMOUT Target Duty
-> Cycle register.
-> 
-> Therefore, revise the scale of the value that was written to pwm input
-> from 255 to 511 and modify the value to left-justified value.
-> 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+On Fri, Apr 26, 2024 at 06:12:11PM -0000, tip-bot2 for Tony Luck wrote:
+> @@ -398,7 +398,7 @@ static noinstr int mce_severity_intel(struct mce *m, struct pt_regs *regs, char 
+>  			continue;
+>  		if (s->excp && excp != s->excp)
+>  			continue;
+> -		if (s->cpu_model && boot_cpu_data.x86_model != s->cpu_model)
+> +		if (s->cpu_vfm && boot_cpu_data.x86_model != s->cpu_vfm)
 
-Applied.
+Hold on, isn't this supposed to be:
 
-Thanks,
-Guenter
+		if (s->cpu_vfm && boot_cpu_data.cpu_vfm != s->cpu_vfm)
+
+?
+
+You're getting rid of the ->x86_model checking altogether...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
