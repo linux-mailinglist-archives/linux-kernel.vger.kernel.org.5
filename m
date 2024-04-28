@@ -1,128 +1,119 @@
-Return-Path: <linux-kernel+bounces-161405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42EA78B4B98
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:59:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECDFE8B4B9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:01:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7AEE1F21667
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:59:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3C9B1C20A74
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE6665E02;
-	Sun, 28 Apr 2024 11:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B85169DF5;
+	Sun, 28 Apr 2024 12:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXT0KNyV"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qUHwloOm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9572F29;
-	Sun, 28 Apr 2024 11:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6D167C43;
+	Sun, 28 Apr 2024 12:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714305550; cv=none; b=IP1otd5V7lDPJXKoilff7X0L5350aUw5/MvUr/PwriVPLO/KDuwQrwivhYEFcUvfizA0b9M8jC984jbXm0efSpiyGl5Dor0OfwTHIYlE63EjyLg3XNQBwBFflbfV62WOyXsKeJ/DjliIORcE1SqaxsCjQsrU64qwtMLbmXp3HL0=
+	t=1714305708; cv=none; b=OD9zK1rHaInCV6MQbuXjhPjCfDw0m2SYnylq/ZEeI4WkitU7NjbBBzfYjRsu/1lmAYBcA8si9KhXtRN5j51nmeb1tGURWp5qzjO+5E+lUKcJ7YEs/R6ZiSpdHv1vi2Gui0zi19r7S+um0LFJH9jywE8w/A7jByPD5sNBaPoiM8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714305550; c=relaxed/simple;
-	bh=7dEusFxZFJ1Y5U18wib9rq2M+q9J2wbC2q2//EWKbio=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pAbHWp78wV8/VB9c+sJD3cDhITD9ccOVKcpIBixa68u5CRYKd+pnxZExEA69SI+zbBWe+zhsIiS/30rf3pFsMQnN90jY/Pv/kY54tlD4H6suq4SLcn+iLnrWVrJoS7zQTxJ6jc+LjibOBXqAg+KVjuMW/VuVEay4FARg+2bvb9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LXT0KNyV; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed9fc77bbfso2866132b3a.1;
-        Sun, 28 Apr 2024 04:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714305548; x=1714910348; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BOsaocwjFT1pz2ngVnKxeRZbtnK8Ubq+Yt8uQGBS4j4=;
-        b=LXT0KNyVpGzwDhjg5IvqjJV5H/LqzItNwyp9SC0b/CBTt1eRnQPzKM8dpKCeEOVsHQ
-         DO4n++YGw2mKyVvznULeSPWxRXpKIq5uviuC9gsKFzbxOE/HOdygq9CTtyk90YdeFgI5
-         U6iAcHM/rjF4y7tuaowUzmfZdOlTEoH4Vg7mQKSmjYSUpB0Da+urc0rXIIU2/CTZQ/DR
-         NiG/ZwU18pvHztNzJlNs87833yqW1143xp6RRMelXNuaJ5jooAYAOE4UqzUHrsDX7Bd9
-         RHDFjXHIrYnyuD5qX5MQZ2KZam1BtYm/Fp1t55hSWBkHXDMzwLXwP3UhBHMC50xKDH7u
-         QF+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714305548; x=1714910348;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BOsaocwjFT1pz2ngVnKxeRZbtnK8Ubq+Yt8uQGBS4j4=;
-        b=DjQedJ03+elgdVaREMsdd0wB4C5bltsobTqqJKqE46eyDhGNDWLh3JlVyzBa1amCk4
-         TI4cMrv9I9yLC1H6fGATAbQ54yxkzgdEO+bWCxeC8V4rRKzJIAxj49MpXgGP/c1SvkeV
-         bhppd41dBIhJ12vUSD+EjkvK4U1fxqNQfcXsRUr8DqLRqcU0G+eEWa2Oy4Sk3JCyzlMF
-         RZCzeNfcjp+KJBUViTm0rlzIUlFF0xzOHav5QHrVI3YB5jbGqHeSC1otQ8VgZNWhd0JQ
-         kIAij/UiGGwCRFRuasoUzZyEe0WxIJvRtofWR3Uf1g+Xz4c0lmzL6jSRJh9mdPePXFT4
-         dALQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/qdiVB4lQ3XKNZRg3zzGEuOmSkiKgTrrALLH9UfHGMUPHxA0w+fbCrnuK2UHOIYrYgX4EsgqBuckTh6wkZ73H9ZyVcopzOwaEsYUu
-X-Gm-Message-State: AOJu0YxyRtGfpNbtyTLSWb9mUQs7ThcMTPCECoPl72bE6iZRqfxMTAK3
-	W2+IsfPxGNBdFI+AeZuUWz8XN7+uNJ0dm+eLwGMuMHp3mKC9P4Nz
-X-Google-Smtp-Source: AGHT+IF1zETYOo1e1RYilJpjwP/DCPA3/FY8ol+QqaxDXzQmLI6VS8l1ku1pJ7AlQg1Mbu5xEsqsUA==
-X-Received: by 2002:a05:6a20:979a:b0:1a9:c3ac:c6d4 with SMTP id hx26-20020a056a20979a00b001a9c3acc6d4mr7078163pzc.62.1714305548036;
-        Sun, 28 Apr 2024 04:59:08 -0700 (PDT)
-Received: from localhost.localdomain ([122.161.51.221])
-        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001e431fb1336sm18341187plk.31.2024.04.28.04.59.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 04:59:07 -0700 (PDT)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: robh@kernel.org,
-	saravanak@google.com
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	javier.carrasco.cruz@gmail.com,
-	skhan@linuxfoundation.org,
-	Shresth Prasad <shresthprasad7@gmail.com>,
-	Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH][next] of: property: Use scope based cleanup on port_node
-Date: Sun, 28 Apr 2024 17:22:27 +0530
-Message-ID: <20240428115226.41345-2-shresthprasad7@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714305708; c=relaxed/simple;
+	bh=xQA0aeIVCOl9cvhNh35c+pjMwnZaLPISTQQzeLHDgxU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N9ZC1Q5OPWO+JerkaZ6VqQlxTHfKirm55A5aSm0IvI+TrdryGBCeqUYMG6ZmWn5ww53ejrGq4v6Y8FXnK/UdC/WRLXH2scchOSxMzefu2724ZQHRiGfSQY9XZWOyz9WtewN6vA19Cd+AnD3dfAUItOp8kEeiNE/4F/r8+CIulEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qUHwloOm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6FEC113CC;
+	Sun, 28 Apr 2024 12:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714305708;
+	bh=xQA0aeIVCOl9cvhNh35c+pjMwnZaLPISTQQzeLHDgxU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qUHwloOmhu/Cl4Rnk3U4Kiqr72C27OEJ51SLFwtFAOCmcMKqCfGoXgbJkb4zMmXiP
+	 DuSGUed+qZj/L3OiFbnseekaGbVmZqvIqnyKyi9BBePeMlxZr3z4eH3UI+THbKGiAt
+	 A+NkqPjThCvwdQ1jv+7/MC93b/MUTRke0bJQvZU5mmXiiehIaO+6TFHi6WqegQE4kt
+	 kpd9KeGEqNpv19ohU+81Q0V0oYbOJDqDEq+UrXCXneiw7A2hQgvt4PbigECnneuXoo
+	 sq+I43d+FUmaGsVlNBC5OG5/RtyMnTUIsKIV/MHsyOnxFIqqA1LC1QqwoYXLBbEKaM
+	 2M1WYZssXOzOQ==
+Date: Sun, 28 Apr 2024 15:00:26 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: DaeRo Lee <skseofh@gmail.com>
+Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, Daero Lee <daero_le.lee@samsung.com>
+Subject: Re: [PATCH v2] memblock: add no-map alloc functions
+Message-ID: <Zi46Wri1mPTiEArU@kernel.org>
+References: <20240416120635.361838-2-skseofh@gmail.com>
+ <Zh9l_LpThq9aFUR7@kernel.org>
+ <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
+ <ZiFgYWydIwvnpIIY@kernel.org>
+ <CAATEi5kFt8iUeWSkrj_bVTyPO_tfQzG77D719P5dLsr2j6Zkzw@mail.gmail.com>
+ <CAATEi5ksY-v7-LEqNZWFV5hsHiegNEtrh4LpMWOQ=vT7hC0Rng@mail.gmail.com>
+ <Ziy8AsAGZyKCyXX_@kernel.org>
+ <CAATEi5=Z0qirM-fyGJL_UPcr7-iyCFtOW9d3XsdN50Tkhpm0iA@mail.gmail.com>
+ <Zi3twYLGvhtJa9Yh@kernel.org>
+ <CAATEi5nOQE7xi5ztV0BFO6MRqSGwUPT4V9dqpMT+p4r7iZQwRQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAATEi5nOQE7xi5ztV0BFO6MRqSGwUPT4V9dqpMT+p4r7iZQwRQ@mail.gmail.com>
 
-Use __free cleanup handler which ensures that the resource is freed when
-it goes out of scope, thus removing the need to manually clean it up
-using of_node_put.
+On Sun, Apr 28, 2024 at 07:36:40PM +0900, DaeRo Lee wrote:
+> 2024년 4월 28일 (일) 오후 3:35, Mike Rapoport <rppt@kernel.org>님이 작성:
+> >
+> > On Sat, Apr 27, 2024 at 07:24:23PM +0900, DaeRo Lee wrote:
+> > > 2024년 4월 27일 (토) 오후 5:50, Mike Rapoport <rppt@kernel.org>님이 작성:
+> > > > > >
+> > > > > > So, here is what I think:
+> > > > > > - reserved-memory w/ nomap region -> mark only to memblock.memory
+> > > > > > - reserved-memory w/o nomap region -> add to the memblock.reserved
+> > > >
+> > > > NOMAP and memblock.reserved are semantically different, and at makes sense
+> > > > to have a "reserved nomap" node in fdt recorded in both memblock.memory and
+> > > > memblock.reserved.
+> > > >
+> > > > memblock.reserved represents the memory that is used by firmware or early
+> > > > kernel allocation, so reserved memory in fdt should be reserved in memblock
+> > > > as well. I believe it's an oversight that early_init_dt_reserve_memory()
+> > > > does not call memblock_reserve() for nomap memory.
+> > > >
+> > > > NOMAP is a property of a memory region that says that that region should
+> > > > not be mapped in the linear map, it's not necessarily in use.
+> > >
+> > > I agree that the NOMAP region should be added to memblock.reserved.
+> > >
+> > > So, I think we need to clean-up memmap_init_reserved_pages, because in
+> > > this function we call reserve_bootmem_region for memblock.reserved and
+> > > memblock.memory with nomap. We don't need to call
+> > > reserve_bootmem_region for nomap.
+> >
+> > Read the comment about memblock_mark_nomap()
+> I read the comment about memblock_mark_nomap() and understood that
+> regions with nomap flags should be treated as PageReserved.
+> But, if we add this nomap region to memblock.reserved, the region with
+> nomap flag will be processed in the first for-loop in
+> memmap_init_reserved_pages.
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
----
-Rob Herring <robh@kernel.org> sent a patch fixing similar cases in
-property.c but seems to have missed this one. Please let me know if this
-is mistake, or if it was left unchanged for a reason.
-
- drivers/of/property.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 6d5ae58a7ac9..abc8613b471f 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -576,7 +576,8 @@ EXPORT_SYMBOL_GPL(of_prop_next_string);
- int of_graph_parse_endpoint(const struct device_node *node,
- 			    struct of_endpoint *endpoint)
- {
--	struct device_node *port_node = of_get_parent(node);
-+	struct device_node *port_node __free(device_node) =
-+			    of_get_parent(node);
+memblock still must make sure that pages in nomap regions get PG_Reserved
+to be robust against potential errors and bugs in firmware parsing.
  
- 	WARN_ONCE(!port_node, "%s(): endpoint %pOF has no parent node\n",
- 		  __func__, node);
-@@ -591,8 +592,6 @@ int of_graph_parse_endpoint(const struct device_node *node,
- 	of_property_read_u32(port_node, "reg", &endpoint->port);
- 	of_property_read_u32(node, "reg", &endpoint->id);
- 
--	of_node_put(port_node);
--
- 	return 0;
- }
- EXPORT_SYMBOL(of_graph_parse_endpoint);
+> Am I thinking wrong?
+> 
+> Regards,
+> DaeRo Lee
+
 -- 
-2.44.0
-
+Sincerely yours,
+Mike.
 
