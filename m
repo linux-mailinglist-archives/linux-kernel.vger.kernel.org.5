@@ -1,66 +1,58 @@
-Return-Path: <linux-kernel+bounces-161336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4104E8B4ACB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:59:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6353C8B4ACC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02015281CF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:59:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98E93B2123D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FD456B6A;
-	Sun, 28 Apr 2024 08:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C8258118;
+	Sun, 28 Apr 2024 08:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwMuYQiM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HiNvf6gd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F91556742
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6990257339
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714294771; cv=none; b=ddytoLbctSseoyMXB72t2jO/r+bCyo6SQS8GwAw3ToHAs6rwxSDj3PkQThMTJUFw5Cva8AzkAkmmTHt9NzaTdutfOcH36uJWIDB0BOw5Nd+5xiA3i1UAGcBdXlOfRVki2Gl+Pz97XRLndhE5Ce6wcGI1Whf/snMJo42jl3JXfvw=
+	t=1714294773; cv=none; b=GkyNx9IKBYnwyAsmXinbloCFPub3p3q0pqbSU24PaAbYjKwUEKomnwDjzlw4BUPHnt3VGs912rBnitnji0tfkXWq9dryBXYzUgT0AW8+b9q7vbOaEmR3s1nEzfZgqbB8tauJvggcwt6W8t2rmMQulO2VuMq8leL+UUtzOKPYoZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714294771; c=relaxed/simple;
-	bh=rW3sx+iJ4Wx7OjptAWofT0yBM2c/NmQi4Zu3B2fvcw0=;
+	s=arc-20240116; t=1714294773; c=relaxed/simple;
+	bh=3RPBJnEa8F9ju/oZNf/uVJ98wZNleuMeT/hp6KLEqdw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kq0NcxydONf+YPghl3bguWTpTWZza0bUx6ml8NYviLsWr9vcD6OHB8B9anSDoPohWVsMQ2t3RBJW6SiCbHe4riH4V2gU+Se68e0PCc9+5NEGtlIt0QkmnHNr7C1w0Y+izDK1dDRMquD8NxWVW+7zV8Ivd7QH5EJvPJAzAfxOcF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwMuYQiM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77D53C4AF17;
-	Sun, 28 Apr 2024 08:59:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RM13+oUg2EU5jOFw2eOooMuiGgB9R6YVvuf7rPhdFgyoRePW3k45uywTlJqzFq6xckNCbN9lEdqHHVRovTW0WqDJtTTePJZUC3BndGA6ONmAnVUn1qLHim4LyRM6k3VgGb5T2CGfqcRZ1PQar+CqA+2v7A/02KhlNPqxfPs+i/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HiNvf6gd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95406C4AF1B;
+	Sun, 28 Apr 2024 08:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714294771;
-	bh=rW3sx+iJ4Wx7OjptAWofT0yBM2c/NmQi4Zu3B2fvcw0=;
+	s=k20201202; t=1714294772;
+	bh=3RPBJnEa8F9ju/oZNf/uVJ98wZNleuMeT/hp6KLEqdw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EwMuYQiMBMnQ9VAT4/jAyFaNRVbd+75f3LOyU+Dx4uBMGnV+HWD1jgnhGPXFVy4v9
-	 PRJgDT0KbSptaltPv6jCbJkADAf/6hnnk51Gy83lTmGSjIs1qnujC4dl6k9BJoQKzc
-	 Olwi5ao+8XkGUOhnDsd5oQfed2izk7LTDoLmVg6O+fjfPdueajLPnOGADTw9Ry51G9
-	 bVpHTEEM2mQ9N2DMloeBnhE3OW39drS16Cps/FOyO24qg6hdZHhoWPtxbo13HGI9cB
-	 VmkkqoxlgkeBm4RyYwnektaTH2637nesJDqfzdB1jFSn97bEXoBvfuI+/v65e2UbcH
-	 nyQCYJFkp3Rig==
+	b=HiNvf6gdS3rJ5xQ4dxCpeZ76MTCK3Bq1YgXCylQ5E6WXXyv3C8y4Im7tvrz0fvDwK
+	 3GT79HNlMdXQMXmyqwP8S/M/M2E3D0BeVfUXtVGtZqZS29+UeXClPpwMr9EZ1Gh41e
+	 meoPcRUelOSOxA44D5KtjEpl/BDQnolGMvnYmGcOa9we49Ehu2qsAmHYoZGRX6eHvM
+	 QTMJVMlxeHB0e4E69KtskV6y0NzQV8znEvEIzRf4OA6JQ7XN6bY7FonD5P7O1aUWRq
+	 MSdnbRyNwifJ/t8sUaZHr5KsQLXdBLmG+jgOLiVMpNYjvTfBZuZOQc/AsFSGYbHbQl
+	 3QWlWmQS2DJTQ==
 From: Will Deacon <will@kernel.org>
 To: catalin.marinas@arm.com,
-	Shiqi Liu <shiqiliu@hust.edu.cn>
+	shuah@kernel.org,
+	xieming <xieming@kylinos.cn>
 Cc: kernel-team@android.com,
 	Will Deacon <will@kernel.org>,
-	broonie@kernel.org,
-	anshuman.khandual@arm.com,
-	maz@kernel.org,
-	suzuki.poulose@arm.com,
-	miguel.luis@oracle.com,
-	joey.gouly@arm.com,
-	oliver.upton@linux.dev,
-	jingzhangos@google.com,
-	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sysreg: Update PIE permission encodings
-Date: Sun, 28 Apr 2024 09:59:16 +0100
-Message-Id: <171428930771.1715055.15946640761283385227.b4-ty@kernel.org>
+Subject: Re: [PATCH] kselftest/arm64: Remove unused parameters in abi test
+Date: Sun, 28 Apr 2024 09:59:17 +0100
+Message-Id: <171428922245.1714704.824188321990470965.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
-References: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
+In-Reply-To: <20240422015730.89805-1-xieming@kylinos.cn>
+References: <20240422015730.89805-1-xieming@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,18 +62,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Sun, 21 Apr 2024 14:33:28 +0800, Shiqi Liu wrote:
-> Fix left shift overflow issue when the parameter idx is greater than or
-> equal to 8 in the calculation of perm in PIRx_ELx_PERM macro.
-> 
-> Fix this by modifying the encoding to use a long integer type.
+On Mon, 22 Apr 2024 09:57:30 +0800, xieming wrote:
+> Remove unused parameter i in tpidr2.c main function.
 > 
 > 
 
-Applied to arm64 (for-next/misc), thanks!
+Applied to arm64 (for-next/selftests), thanks!
 
-[1/1] arm64/sysreg: Update PIE permission encodings
-      https://git.kernel.org/arm64/c/12d712dc8e4f
+[1/1] kselftest/arm64: Remove unused parameters in abi test
+      https://git.kernel.org/arm64/c/b7fab1b69b9c
 
 Cheers,
 -- 
