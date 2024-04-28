@@ -1,237 +1,140 @@
-Return-Path: <linux-kernel+bounces-161465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34F318B4C5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:26:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481228B4C61
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5F16B21085
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:26:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9871C209B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3866F062;
-	Sun, 28 Apr 2024 15:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35276F060;
+	Sun, 28 Apr 2024 15:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iTKl7RpH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U2pnp+G/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290746E616;
-	Sun, 28 Apr 2024 15:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590E86EB5D
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714317969; cv=none; b=VKuSD3aD4Za56vI1uC7og/69QJL553gQniuHZSmgXV9a1e61WrxDIoUs66Glm8czis6ol2qnQqRKVxpc5vfq0pzSjXgAXzTULjMFzfZrneOud/r+Y4+5o5qcT1r50nziPgD/1LidaaK9iEyQZUZKXk2Vd+3k0ueNOjwLCqCq4mo=
+	t=1714318329; cv=none; b=jB7WJDzoXDB5K6QFqmlrPc4k2xeLOZFE1bX1xulePqGKanS0wpKAYgUxvxFCMART62eROMPJEXcGRctPU3oCbSsZmwmNfztv2YryhUb1Fak4nixeJ7MEFxCxZH+EUOPZZfdlgVRoHdU54TeREhafIQL6mf5qR2TGkXeBG8x595w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714317969; c=relaxed/simple;
-	bh=7ovo8rsd82tkHk6P6i/ksXhOuXVKwHzQD4qs3EERarA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G6V1blaHOn+GqmjrOtTuZgo8GqFj5g96ICaWdsoPnKpNmJlO2ZA5qPURzMOQFNclV3HZKmNwHzu0oQbEbFV9i3FMoa5tG2fFOIGhpp9iz8iuISDDikFXxaxwUOskwYpf3QpKTY9FxQq8AlEKDW2WIvwRZcKxJZ4PlXB2P8cKzA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iTKl7RpH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA48C113CC;
-	Sun, 28 Apr 2024 15:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714317968;
-	bh=7ovo8rsd82tkHk6P6i/ksXhOuXVKwHzQD4qs3EERarA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iTKl7RpHY8krA3pNcehJIOymFdvWn8r3BIzglF7UZvIEIhwSk6rMYM2zBphX32e+j
-	 qK9IUG9Vw1mZr+w70QO0VlbVt6s+fWbpPbuYfCs1rMDJMQAZ5Ucmmwr9UlXjt//wvj
-	 myyVmuh3SpIm46Lmc3Ac5jTRmgVFrfF7RQfnTn7bIFn7ogh6V3B7qVBXtSAbmXXFVE
-	 f4zGU+VfV6oHaEIECIHfVmygEDri4RHAjpj9t/IoxxN5BmFKo0afHlMBIfedAVeQih
-	 USsa2/B4Psw059MTH6KpIOacWA155BcVRnMkCRB7RF2DgNVywAK2hqwgdLo3Hv58Ao
-	 KTS6bDgzoXG6g==
-Date: Sun, 28 Apr 2024 16:25:55 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-doc@vger.kernel.org, devicetree@vger.kernel.org, corbet@lwn.net,
- conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, robh@kernel.org,
- Ramona Gradinariu <ramona.gradinariu@analog.com>, Nuno =?UTF-8?B?U8Oh?=
- <nuno.sa@analog.com>
-Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7
- families
-Message-ID: <20240428162555.3ddf31ea@jic23-huawei>
-In-Reply-To: <20240423084210.191987-5-ramona.gradinariu@analog.com>
-References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
-	<20240423084210.191987-5-ramona.gradinariu@analog.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714318329; c=relaxed/simple;
+	bh=fBeYTF/ok3UxBtPwI+q3QQsrFXPmBVBnjuiX8J3VMQo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WSwvCnJea+ikSBFtuPG76JPIy/gaTboy/9CakRtWGs0RKTNiisjneLpMaVmVSSnyBFShtJZi9366D6YFV0B/C77Sk2vNSdvrU3fX+wsJLplr7IRQdAprfjWay75Ia+9+3XzSAFL0yWOL6F8pAQ5huH4zzb8glhFZ0IbOX5PBdzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U2pnp+G/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714318326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p2rk3b82daJR4aYDGTiBOVZojg+15MWPW8M7QHsi7Yo=;
+	b=U2pnp+G/pD8QtAwK6Il1GL4lHigEs2hVDiRrleSN3hiNj6qJwyj/+rF4EmhGIDj9fe8VKM
+	n37NOLAJhYb2MG3N2cfNtF9HM3K2WIMcYzMhr+0afQN94y4hnOogcohJ60cJ9tYz5zbQpY
+	cHah0gQQOHndrW4yfRuiZ6K4dFjsZvU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-34-TrBplk7wOlOIlyx3ZaLNYQ-1; Sun, 28 Apr 2024 11:32:04 -0400
+X-MC-Unique: TrBplk7wOlOIlyx3ZaLNYQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a555af96dd5so213919866b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:32:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714318323; x=1714923123;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p2rk3b82daJR4aYDGTiBOVZojg+15MWPW8M7QHsi7Yo=;
+        b=J9/G0Htunl5YlcBq37UBVfVcK+3bBm5aAVMiAYPASeTtEhAYKDrmwsqM+d8CiJYh75
+         1hDGlPQ+GVFH03abvD874c+HmtfqctzRoob7YFoBalU9ieln9L53sRQ0+WGlqf1k5wpt
+         bgC1mNpX0x4Jqb1WNUn6uuQkPaTyYtKSX6zXRnaYbbCeSixUEzhtp4y19IyfjelxD43v
+         B+KQcFF7gISW++FLxGDUnW8Wd4uSnmxunKs1T4tuSLfBdMweWzJGw6p6rwBFSEdBp3Hc
+         J4Te9mPhL5G/9SL+K7xMe1pa+kPvRkv22zIKJE6QY8/v+/ONCwvkRi5cxhnPzNNfwIuK
+         pTZA==
+X-Forwarded-Encrypted: i=1; AJvYcCWocijgkCwpsda3PcC9LY4PiFVB5Sz+MCDX2znTDyHWJ+XSretCJ5zOZzmnh66nHbvJymlzMdsLXtdkftdip1hVhv8JMkhjRPiGZaJd
+X-Gm-Message-State: AOJu0YzT7GTaE4cNXv/HkOwdn5/iSj4PoTQ4jzm9YRPCwPzswSos3q9j
+	V8KBjSZbqMn6H0Ich8Xss23HYTX993/l1WV+rANlgK+zT02CpNPJHIjxivCVGz03xdcIDypo8rD
+	NaG5XH1MResb3895VBakyJ/KVwNXPXpsckOlDReZARMfPPREpWrDylN0+BlAjRwlNJsKDBQ==
+X-Received: by 2002:a17:906:b349:b0:a55:6f69:a939 with SMTP id cd9-20020a170906b34900b00a556f69a939mr7066712ejb.41.1714318323497;
+        Sun, 28 Apr 2024 08:32:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGSqo1+9e38+j2Yobyx4qaDwbP/uzsPiGry1td2UWbf6KNEhx420b/YNJS3ifJw2jXvgysT+Q==
+X-Received: by 2002:a17:906:b349:b0:a55:6f69:a939 with SMTP id cd9-20020a170906b34900b00a556f69a939mr7066700ejb.41.1714318323150;
+        Sun, 28 Apr 2024 08:32:03 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id q10-20020a170906388a00b00a46aba003eesm12830416ejd.215.2024.04.28.08.32.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 08:32:02 -0700 (PDT)
+Message-ID: <6027e255-0bd1-4be2-ab69-19cb91ed3db4@redhat.com>
+Date: Sun, 28 Apr 2024 17:32:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bytcr_rt5640 : inverse jack detect for Archos 101 cecium
+To: Thomas GENTY <tomlohave@gmail.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240428130736.877917-1-tomlohave@gmail.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240428130736.877917-1-tomlohave@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Tue, 23 Apr 2024 11:42:09 +0300
-Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
+Hi,
 
-> The ADIS16545 and ADIS16547 are a complete inertial system that
-> includes a triaxis gyroscope and a triaxis accelerometer.
-> The serial peripheral interface (SPI) and register structure provide a
-> simple interface for data collection and configuration control.
->=20
-> These devices are similar to the ones already supported in the driver,
-> with changes in the scales, timings and the max spi speed in burst
-> mode.
-> Also, they support delta angle and delta velocity readings in burst
-> mode, for which support was added in the trigger handler.
->=20
-> Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>
+On 4/28/24 3:07 PM, Thomas GENTY wrote:
+> When headphones are plugged in, they appear absent; when they are removed,
+> they appear present.
+> Add a specific entry in bytcr_rt5640 for this device
+> 
+> Signed-off-by: Thomas GENTY <tomlohave@gmail.com>
 
-What is Nuno's relationship to this patch?  You are author and the sender
-which is fine, but in that case you need to make Nuno's involvement explici=
-t.
-Perhaps a Co-developed-by or similar is appropriate?
+Thanks, patch looks good to me:
 
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-A few comments inline.  Biggest one is I'd like a clear statement of why you
-can't do a burst of one type, then a burst of other.  My guess is that the
-transition is very time consuming?  If so, that is fine, but you should be =
-able
-to let available_scan_masks handle the disjoint channel sets.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-=46rom what I recall a similar case was why that got added in the first place.
-The uses in optimizing for devices that 'want' to grab lots of channels was
-a later use case.
+Regards,
 
-Jonathan
+Hans
 
 
 
-> =20
->  static bool adis16480_validate_crc(const u16 *buf, const u8 n_elem, cons=
-t u32 crc)
-> @@ -1200,7 +1355,7 @@ static irqreturn_t adis16480_trigger_handler(int ir=
-q, void *p)
->  	struct adis16480 *st =3D iio_priv(indio_dev);
->  	struct adis *adis =3D &st->adis;
->  	struct device *dev =3D &adis->spi->dev;
-> -	int ret, bit, offset, i =3D 0;
-> +	int ret, bit, offset, i =3D 0, buff_offset =3D 0;
->  	__be16 *buffer;
->  	u32 crc;
->  	bool valid;
-> @@ -1233,8 +1388,8 @@ static irqreturn_t adis16480_trigger_handler(int ir=
-q, void *p)
->  	 * 16-bit responses containing the BURST_ID depending on the sclk. If
->  	 * clk > 3.6MHz, then we will have two BURST_ID in a row. If clk < 3MHZ,
->  	 * we have only one. To manage that variation, we use the transition fr=
-om the
-> -	 * BURST_ID to the SYS_E_FLAG register, which will not be equal to 0xA5=
-A5. If
-> -	 * we not find this variation in the first 4 segments, then the data sh=
-ould
-> +	 * BURST_ID to the SYS_E_FLAG register, which will not be equal to 0xA5=
-A5/0xC3C3.
-> +	 * If we not find this variation in the first 4 segments, then the data=
- should
->  	 * not be valid.
->  	 */
->  	buffer =3D adis->buffer;
-> @@ -1242,7 +1397,7 @@ static irqreturn_t adis16480_trigger_handler(int ir=
-q, void *p)
->  		u16 curr =3D be16_to_cpu(buffer[offset]);
->  		u16 next =3D be16_to_cpu(buffer[offset + 1]);
-> =20
-> -		if (curr =3D=3D ADIS16495_BURST_ID && next !=3D ADIS16495_BURST_ID) {
-> +		if (curr =3D=3D st->burst_id && next !=3D st->burst_id) {
->  			offset++;
->  			break;
->  		}
-> @@ -1269,11 +1424,22 @@ static irqreturn_t adis16480_trigger_handler(int =
-irq, void *p)
->  		switch (bit) {
->  		case ADIS16480_SCAN_TEMP:
->  			st->data[i++] =3D buffer[offset + 1];
-> +			/*
-> +			 * The temperature channel has 16-bit storage size.
-> +			 * We need to perform the padding to have the buffer
-> +			 * elements naturally aligned in case there are any
-> +			 * 32-bit storage size channels enabled which have a
-> +			 * scan index higher than the temperature channel scan
-> +			 * index.
-> +			 */
-> +			if (*indio_dev->active_scan_mask &
-> +			    GENMASK(ADIS16480_SCAN_DELTVEL_Z, ADIS16480_SCAN_DELTANG_X))
-> +				st->data[i++] =3D 0;
-
-I think it is harmless to always do this. If there is no data after this ch=
-annel
-then we are writing data that won't be copied anywhere. If there is data af=
-ter
-it is needed.
-
-So I think you can drop the condition but do add a comment on it being nece=
-ssary
-if there is data afterwards and harmless if there isn't.
-=09
-
->  			break;
->  		case ADIS16480_SCAN_GYRO_X ... ADIS16480_SCAN_ACCEL_Z:
->  			/* The lower register data is sequenced first */
-> -			st->data[i++] =3D buffer[2 * bit + offset + 3];
-> -			st->data[i++] =3D buffer[2 * bit + offset + 2];
-> +			st->data[i++] =3D buffer[2 * (bit - buff_offset) + offset + 3];
-> +			st->data[i++] =3D buffer[2 * (bit - buff_offset) + offset + 2];
->  			break;
->  		}
->  	}
-> @@ -1285,10 +1451,38 @@ static irqreturn_t adis16480_trigger_handler(int =
-irq, void *p)
->  	return IRQ_HANDLED;
->  }
-> =20
-> +static int adis16480_update_scan_mode(struct iio_dev *indio_dev,
-> +				      const unsigned long *scan_mask)
-> +{
-> +	u16 en;
-> +	int ret;
-> +	struct adis16480 *st =3D iio_priv(indio_dev);
-> +
-> +	if (st->chip_info->has_burst_delta_data) {
-> +		if ((*scan_mask & ADIS16545_BURST_DATA_SEL_0_CHN_MASK) &&
-> +		    (*scan_mask & ADIS16545_BURST_DATA_SEL_1_CHN_MASK))
-> +			return -EINVAL;
-
-Use available scan_masks to enforce this.  That can have mutually exclusive
-sets like you have here.
-
-However, what stops 2 burst reads - so do them one after the other if neede=
-d.
-You'd still want available_scan_masks to have the subsets though but added
-to that the combination of the two.
-
-> +		if (*scan_mask & ADIS16545_BURST_DATA_SEL_0_CHN_MASK) {
-> +			en =3D FIELD_PREP(ADIS16545_BURST_DATA_SEL_MASK, 0);
-> +			st->burst_id =3D 0xA5A5;
-
-Give the magic value a name via a define.
-
-> +		} else {
-> +			en =3D FIELD_PREP(ADIS16545_BURST_DATA_SEL_MASK, 1);
-> +			st->burst_id =3D 0xC3C3;
-> +		}
-> +
-> +		ret =3D __adis_update_bits(&st->adis, ADIS16480_REG_CONFIG,
-> +					 ADIS16545_BURST_DATA_SEL_MASK, en);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return adis_update_scan_mode(indio_dev, scan_mask);
-> +}
-
-> =20
-> @@ -1498,6 +1692,8 @@ static int adis16480_probe(struct spi_device *spi)
->  	if (ret)
->  		return ret;
-> =20
-> +	st->burst_id =3D ADIS16495_BURST_ID;
-
-Why this default? Probably wants an explanatory comment.
-
-> +
+> ---
+>  sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index 05f38d1f7d82..12c90cb2a782 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -610,6 +610,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>  					BYT_RT5640_SSP0_AIF1 |
+>  					BYT_RT5640_MCLK_EN),
+>  	},
+> +	{
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 101 CESIUM"),
+> +		},
+> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
+> +					BYT_RT5640_JD_NOT_INV |
+> +					BYT_RT5640_DIFF_MIC |
+> +					BYT_RT5640_SSP0_AIF1 |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>  	{
+>  		.matches = {
+>  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
 
 
