@@ -1,131 +1,188 @@
-Return-Path: <linux-kernel+bounces-161628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F5EF8B4ECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:26:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D2748B4ECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:33:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8320B20ED4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:26:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F9AD1C208EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA541CF90;
-	Sun, 28 Apr 2024 23:25:53 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE27F208D1;
+	Sun, 28 Apr 2024 23:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIdA54SQ"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597781426C;
-	Sun, 28 Apr 2024 23:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FD98F59;
+	Sun, 28 Apr 2024 23:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714346753; cv=none; b=AkUgfGuCqCVwpxYYtBKlUxRHF0pBJ50FsNNOjnfBtEjCmX31PByKKnuu04IBVptMa0VTrdeNf3cUPdas3GK5ljgZCbB2zGP5VINUv+IIIyULr6mHTDZ0MFKN3ucz+ZudxsqsBQbEkA22V+2C7n8lgFizQjgloBLAVkiYMB1cZ0U=
+	t=1714347199; cv=none; b=S9wEqZkRUgNERSo52v11FSRr9IwO8o0tbjV3r/qFlK7svYecy07fpCyuycp05t6l/FEuFqV1mTXKOrKWgBi5fmqQ+5eIVYdyJ+hRWsF6Uul9QubljJG+hO2m/UG2cO0fZ1cRrTuui669PJe686NXDQOWqOat9pLPSQUvGcRAo0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714346753; c=relaxed/simple;
-	bh=yDrUOwB6HaFx72kB39jjAMjhpY5LUydTGFTQOH7bIO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ayaZCymykBgm/dSJ4Hyj0KTxKrFJ3Lo9j49hyOr+jrgdr75T7f7olGsVOg4w2xvcvo6E4ZTMqynE34V78HoePfh6+RLNhxCHbOi7E7LdxuCcadTY3fl3KMaRjDuqTtclrUJqb2dFXH82MhWDY9MxWSbcAZfJkwnKYBVNuvdqajY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FF42C113CC;
-	Sun, 28 Apr 2024 23:25:51 +0000 (UTC)
-Date: Sun, 28 Apr 2024 19:25:49 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph:
- Multi-function graph and fprobe on fgraph
-Message-ID: <20240428192549.7898bf6b@rorschach.local.home>
-In-Reply-To: <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-	<CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714347199; c=relaxed/simple;
+	bh=xDaba65KckNGBSBw/5AkYIu31Tz1T5W9rXAMjCi+Wyc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gMsl+3uZYjHfot8kyAawb5qQG5pPYCZeQ43XT/NlHyr9N+3tOIuh1odvrMJo8Uj4pz7SrH+qyCYVvqR03JAqI3aZIoMjNfUjfQlnzGMqEvfaaY2grEA/2tqoOJgq8Tf6s1AJLOGi+uppbnLmJQTFZyk8lMjqa/EH/oUFLE2iP4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIdA54SQ; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7decd9851dfso30234239f.3;
+        Sun, 28 Apr 2024 16:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714347197; x=1714951997; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ctrf2NTRu/52wNcPKKuuzrfv0/JstMQrnj9zQHxr5yI=;
+        b=VIdA54SQYLagKzpI1tW5MneGbuNCZYOzdcmoosBW4Ctom37oflgfop9u3B6L7kuUq5
+         70lYiP3JAP/Tpaiksmw5uE56shJIkaucYJ/PK53ztJ8fiptW86gM/Sk+qEPuBMf6TiZR
+         TmCWTb+4Qv7sV42UydImv7IhtnQR08VDEUVy42R5vyewUKcHG/LhTxgfLxN408zlL8Wu
+         XOt08+dImLfW++QvDoT7XMYpzSbwEdQAPsf8vj/YQanSmEVBjGHi0ugGFO022HZdOIff
+         QoU2SVBblUoLWdEe7Yt3amDLv2zOxD/KSScjogPiZD8liuc1KES7ZBPVZtqasJrXkPG7
+         g8pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714347197; x=1714951997;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ctrf2NTRu/52wNcPKKuuzrfv0/JstMQrnj9zQHxr5yI=;
+        b=urapqv+JcYnLG7ZtTAUR3OQXopp0SkiM2rK81oUE7b6dWMAMSYDXvTkjoW5C7nvGMD
+         c8PfyqmxMPe4nzR+dzI5m37nLZim4/86K7UJS3HUgyhVG5q3nGEP7bOMZR0G2R1NrG/n
+         DDsRiDICGtTVxNH4aEGfsLqvUiQ5WD0XYYSdGowCZva8ntA8n/1xnbq9NO352wW5R3VX
+         0u7nw81EXsBsYB6Ca4t8kfJI9IRF4o4r7vyIt7R1qBxOKy4L/M9lAcTNNutRNUhI3WIs
+         APK+XhsHIrPVhqmJKUsTlAo5WdDEuySqn/qjCzB8Fsdxn2nWT6gQTbpWEaXqeqIfKPmV
+         7h4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWkLT/3PzdPd94B15HiXZK0XmqAygCSPY4X/7GeS1kg3UdGt3ywqy+h1GZbndlygan2wKagUAAAwv6zyGYPr1bJLx2Ga+/mOhLWo8n78wC0TWEGU1/howCsKSwBfbnX79yDM93pJGFfrWctYhW1vCN9Xq4RjR4iUmYRGmkVZ0hfFkUzx86x6d9qMpke8VcXUTMjOp532Fb6caWaSRrYJp15YA==
+X-Gm-Message-State: AOJu0YyjFl1xbUEfBLmAmUCWzAc+WDfEp939ZYLI4UJ9xhzlN/jJ6rol
+	L+MAW6AMqC63nJncBSaNq2doluJxpI01T/q3lVCqhjn/2hKCvSaKOXvdq6VuxdYwAOi66aG5Tuc
+	k4arHz5Y2DgXfLIDgsljoTLUXdXw=
+X-Google-Smtp-Source: AGHT+IHHboIpq9hG3uegI72AijSqf6Woq7uvAYi4N65G/zY61OPhRDfGRaFbk5fCPCiiBTciWRN+CiBfumCTX0cJvRQ=
+X-Received: by 2002:a05:6e02:1aaf:b0:36c:4c5b:cd3 with SMTP id
+ l15-20020a056e021aaf00b0036c4c5b0cd3mr2471381ilv.11.1714347196843; Sun, 28
+ Apr 2024 16:33:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+In-Reply-To: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+From: Xin Long <lucien.xin@gmail.com>
+Date: Sun, 28 Apr 2024 19:33:05 -0400
+Message-ID: <CADvbK_fzB3z-f-SJz+E6Q6hac5UyyqDPMB4r8GnCwYK8N8f=2g@mail.gmail.com>
+Subject: Re: [PATCH] sctp: prefer struct_size over open coded arithmetic
+To: Erick Archer <erick.archer@outlook.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	Justin Stitt <justinstitt@google.com>, linux-sctp@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 25 Apr 2024 13:31:53 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-I'm just coming back from Japan (work and then a vacation), and
-catching up on my email during the 6 hour layover in Detroit.
-
-> Hey Masami,
->=20
-> I can't really review most of that code as I'm completely unfamiliar
-> with all those inner workings of fprobe/ftrace/function_graph. I left
-> a few comments where there were somewhat more obvious BPF-related
-> pieces.
->=20
-> But I also did run our BPF benchmarks on probes/for-next as a baseline
-> and then with your series applied on top. Just to see if there are any
-> regressions. I think it will be a useful data point for you.
->=20
-> You should be already familiar with the bench tool we have in BPF
-> selftests (I used it on some other patches for your tree).
-
-I should get familiar with your tools too.
-
->=20
-> BASELINE
-> =3D=3D=3D=3D=3D=3D=3D=3D
-> kprobe         :   24.634 =C2=B1 0.205M/s
-> kprobe-multi   :   28.898 =C2=B1 0.531M/s
-> kretprobe      :   10.478 =C2=B1 0.015M/s
-> kretprobe-multi:   11.012 =C2=B1 0.063M/s
->=20
-> THIS PATCH SET ON TOP
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
-> kprobe-multi   :   28.909 =C2=B1 0.074M/s
-> kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
-> kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
->=20
-> These numbers are pretty stable and look to be more or less representativ=
-e.
-
-Thanks for running this.
-
->=20
-> As you can see, kprobes got a bit faster, kprobe-multi seems to be
-> about the same, though.
->=20
-> Then (I suppose they are "legacy") kretprobes got quite noticeably
-> slower, almost by 10%. Not sure why, but looks real after re-running
-> benchmarks a bunch of times and getting stable results.
->=20
-> On the other hand, multi-kretprobes got significantly faster (+24%!).
-> Again, I don't know if it is expected or not, but it's a nice
-> improvement.
->=20
-> If you have any idea why kretprobes would get so much slower, it would
-> be nice to look into that and see if you can mitigate the regression
-> somehow. Thanks!
-
-My guess is that this patch set helps generic use cases for tracing the
-return of functions, but will likely add more overhead for single use
-cases. That is, kretprobe is made to be specific for a single function,
-but kretprobe-multi is more generic. Hence the generic version will
-improve at the sacrifice of the specific function. I did expect as much.
-
-That said, I think there's probably a lot of low hanging fruit that can
-be done to this series to help improve the kretprobe performance. I'm
-not sure we can get back to the baseline, but I'm hoping we can at
-least make it much better than that 10% slowdown.
-
-I'll be reviewing this patch set this week as I recover from jetlag.
-
--- Steve
+On Sat, Apr 27, 2024 at 1:23=E2=80=AFPM Erick Archer <erick.archer@outlook.=
+com> wrote:
+>
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1][2].
+>
+> As the "ids" variable is a pointer to "struct sctp_assoc_ids" and this
+> structure ends in a flexible array:
+>
+> struct sctp_assoc_ids {
+>         [...]
+>         sctp_assoc_t    gaids_assoc_id[];
+> };
+>
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the calculation "size + size * count" in
+> the kmalloc() function.
+>
+> Also, refactor the code adding the "ids_size" variable to avoid sizing
+> twice.
+>
+> This way, the code is more readable and safer.
+>
+> This code was detected with the help of Coccinelle, and audited and
+> modified manually.
+>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open=
+-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/160 [2]
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+> ---
+> Hi,
+>
+> The Coccinelle script used to detect this code pattern is the following:
+>
+> virtual report
+>
+> @rule1@
+> type t1;
+> type t2;
+> identifier i0;
+> identifier i1;
+> identifier i2;
+> identifier ALLOC =3D~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|=
+vzalloc|kvmalloc|kvzalloc";
+> position p1;
+> @@
+>
+> i0 =3D sizeof(t1) + sizeof(t2) * i1;
+> ...
+> i2 =3D ALLOC@p1(..., i0, ...);
+>
+> @script:python depends on report@
+> p1 << rule1.p1;
+> @@
+>
+> msg =3D "WARNING: verify allocation on line %s" % (p1[0].line)
+> coccilib.report.print_report(p1[0],msg)
+>
+> Regards,
+> Erick
+> ---
+>  net/sctp/socket.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+> index e416b6d3d270..64196b1dce1d 100644
+> --- a/net/sctp/socket.c
+> +++ b/net/sctp/socket.c
+> @@ -7119,6 +7119,7 @@ static int sctp_getsockopt_assoc_ids(struct sock *s=
+k, int len,
+>         struct sctp_sock *sp =3D sctp_sk(sk);
+>         struct sctp_association *asoc;
+>         struct sctp_assoc_ids *ids;
+> +       size_t ids_size;
+>         u32 num =3D 0;
+>
+>         if (sctp_style(sk, TCP))
+> @@ -7131,11 +7132,11 @@ static int sctp_getsockopt_assoc_ids(struct sock =
+*sk, int len,
+>                 num++;
+>         }
+>
+> -       if (len < sizeof(struct sctp_assoc_ids) + sizeof(sctp_assoc_t) * =
+num)
+> +       ids_size =3D struct_size(ids, gaids_assoc_id, num);
+> +       if (len < ids_size)
+>                 return -EINVAL;
+>
+> -       len =3D sizeof(struct sctp_assoc_ids) + sizeof(sctp_assoc_t) * nu=
+m;
+> -
+> +       len =3D ids_size;
+>         ids =3D kmalloc(len, GFP_USER | __GFP_NOWARN);
+>         if (unlikely(!ids))
+>                 return -ENOMEM;
+> --
+> 2.25.1
+>
+Acked-by: Xin Long <lucien.xin@gmail.com>
 
