@@ -1,80 +1,85 @@
-Return-Path: <linux-kernel+bounces-161556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695FB8B4DAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:44:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A538B4DAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:44:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC001C2095F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:44:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C3351F211AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB960745C9;
-	Sun, 28 Apr 2024 19:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB72E74BFC;
+	Sun, 28 Apr 2024 19:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b="wIdxwk2X"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b="hU/7ZS2T"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16368F9D9
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 19:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F7D7350E
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 19:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714333443; cv=none; b=hPKoQJ6FpedIseH/vhQpdzPPH1Me38UBWAWviw2YrpvS5yAjlI1VvrdY8DFLw04tw2Q6f8qpz/k8Q9/ckHA9iPJD2hjwy+fN26zNggstGd26M4nIzKvW+cV/cEIEOlAKTiEPykcyyqNShfvVZVLakQi65ZKUjjt00NMusAkZmfI=
+	t=1714333449; cv=none; b=nOBPYGh8EOMJxtGVhq9BRnVvmuuDj0Ua++YgEqGDJJStr/fat/BJ9doIN4nodZ6KHki5JHPWT8rXEnCOfm9QDau6aeqwvE1r5kcgl4Kk8OmnF0Ly5u4UcCIpuY0aPTGNc8Mv+CR29vC8QcEktl8/BTLtsOAnFOMBORbjwcMvV90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714333443; c=relaxed/simple;
-	bh=cERXvdIZCVS7B1mKykHRycZHT2z+/YgshBbc+TNkg6M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LDfJpHBGT1FAuK5i0HEm4JfixeQIxsljK4+QOTDxvmvbsvnyfOWxM8CFdMGzPkUJwVV+Ak1RZlZqKpJh1fbxT6LNY2NrTVFu1IUuTNHPUdaEVmBbrU3NXjkROooK4XUDDaLoShuoDq5EJOn03g/PzOYB/DKQ2AdzdjGKXp52buc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br; spf=pass smtp.mailfrom=usp.br; dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b=wIdxwk2X; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1714333449; c=relaxed/simple;
+	bh=DqWJXZc22bMbhLDJy3EvCTZBjymTMxLye39RhiRxrow=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=DObwfVdfVxceraveduSEtndyuvSWB43A1tovnId2CNBzvXQsdA2IeKgucWji2pg4oGegq80X7rIxMBj/0VoZ7uMlCjGv+6Mcq4zBtSabXls9oAemrAiuLLFYOd1AT3qhpV6JKEiwi+h0jBpvq6DNEJWY7MTqIl37f58/VLIqnLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br; spf=pass smtp.mailfrom=usp.br; dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b=hU/7ZS2T; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=usp.br
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so17626895ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:44:00 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5e8470c1cb7so2546751a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:44:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google; t=1714333440; x=1714938240; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AEVCsk7X+1CbRmIA7FbTrG9aCtrrBiXW5C9er5WvmSg=;
-        b=wIdxwk2XZxRvJHQ6r9um2vd1C6RYY0hytTZh4HwkYR0zq6CJ72M7sEOl9EBm1RJukv
-         eQybokjt/esVGILhqR5gJYVDz6HgK07UilSAvJ/zoZRvHmSalez0wGpXBVOgJ1V9HtFO
-         mRQ+FlGeudyh/e1Wkl3jZM5RFDUtjneYgXNWDgeVilZDAEPIQrqiIF8epfoJCjR3QNJV
-         HsPVDfcwo14W2uwKqxNCgTK7hENGzSeSrCQukeUuwSMfITyDSeSvJFrviE2stX9iasDJ
-         LnCUtJjSQ7AkkhKcyPoyCCxms+Qo2X/LYUJoIu5tejMlmffut7yMHSgBPH+8alppWY0X
-         cdMw==
+        d=usp.br; s=usp-google; t=1714333447; x=1714938247; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EJIFdCuYT6rurkmLwGidbFknKPMgcfbkVZjdpfCNHrs=;
+        b=hU/7ZS2T0fw80aP4kMShJXyAjBQPPCBSCN5lFKGEyWcenbvAYr73sTwiNehM9bAizl
+         5mwLs3jl55rShSvNnHBnXR8g4p2OXMxR3T5nAmqleFg/igTYglFgg1jtIR9ELOvve2nN
+         kv6ffb60Toa+Xa0xEiScgDtVAgTLVS+oAiAPCxCVBPzbLCKP0dybSxFLnIGnqgl2jbeD
+         TuwDTLBxWTVUVqj60wHmDa+WbjYv1qr1PUFgYxOVc6tFj2bkWy0VpXPUGaVPOf6dt7bn
+         8C+kww1wj/1+YGLLqZpPEgkSHcfqfNOuPotvmRAV3NKbDbrU6To1UdpT1ayS0ysxRXBU
+         +slQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714333440; x=1714938240;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AEVCsk7X+1CbRmIA7FbTrG9aCtrrBiXW5C9er5WvmSg=;
-        b=JHFX7lgzcPvWawNYKqlj33jzCLMUti9WNQOEDSeehWEXSzGeSw5QgbIsN9HeUWvjJF
-         u+FVz7Hko5EmvP4VDD39nx57J2MIDT7Rat512eqPo6nJcJXbyzl66yZ2SAfaVAhYQ4tF
-         YWX2O7ktLvoz4WXdRTBVlchIUEKt4xoMn6NtwaVy4RlaJyz0rromiEZVF6X+x3PF7Q2W
-         O3wndcNGlaDLVsMq8gGE3weG+vVJliq9rSJHmkt32hAGz+Cv5KwXOnOtVbyiwWGPaQ/E
-         c1MyleqmPI+88iIJ7fzpx8UH5rp7NB8nMLxhwXBCtJ/+Aw7KnF431yqMX2n1g1UfVGNz
-         zBeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJUzI4f0L7l0/KpA5N/tBdD7yvejcQVfKQyyAziqOFsuv/a42z0ePAH3CHjkf2x22BpAymghsjnB6+gNpnXCgR7FdSR2IUk1chX9lJ
-X-Gm-Message-State: AOJu0Yw0/T+b9zvjlA6/zmWrk1gZlOWlihCtTpAE6XumlgUam25Bep5n
-	AbAIIIDB/SeJ8IGfqg0IlTTGBUOVeol9kYZbVPg4V0bDf3JqsWZId1wPUOmUOEE=
-X-Google-Smtp-Source: AGHT+IEpPw4PDVMY3qVTyN1eVi6fYZcrKm085urilL8So+NO4n14eGtEjL4LW+6Pwdfby/3wINeceQ==
-X-Received: by 2002:a17:903:2312:b0:1eb:3df4:e63b with SMTP id d18-20020a170903231200b001eb3df4e63bmr8747571plh.7.1714333440389;
-        Sun, 28 Apr 2024 12:44:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714333447; x=1714938247;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EJIFdCuYT6rurkmLwGidbFknKPMgcfbkVZjdpfCNHrs=;
+        b=ulbVPUnkpO4wZ6JzUacnlD24OoPGDQrf+FYItWRdWpcqmmylgQdLgiZbLI8Sa9U+P9
+         upfoqdHjka2rGqStcMcFePz006bsiIw5e52YtIp/O/mlqEa/dRvDq+xqPvuzyDJEVg34
+         U8TLe9rXb0GJNg0+7BtyIRq1T0eaELr5w86Ysj+qjL5TZ1LRd87JZXGFS9Cto7692m0t
+         UkNjLOxAHRcsksp64SpNWairsup3DNs8h1QADcfrn2/+oqeJpP2p8JMNwM6gfMTCeEtU
+         CW7sLV2J5VHa3L92wWt9RqHO1abXMfjHJMi4Vf1AO0SDlK+rFm1SRnD4YcuZ4Ia2RbWo
+         x7ag==
+X-Forwarded-Encrypted: i=1; AJvYcCVBWjMRBCEYT17vyb9zS6HIcC9FAjEjOhVj7OYypFQDMq60gCckvxsMPo1RcnBqU+b7jYIYWWpRHGKS4wDJG+JlJa1IuSZH5hw+DRcN
+X-Gm-Message-State: AOJu0YxhIZK0dJaDMi3K7xRIWvA1B8H0KEyOvOGaydn/xNWzQvWPFBTQ
+	yveUOFlxBVwm4XuIZJy4EHMEo/G6v8L49JiL5OGsq+q3z3rY1bhHFK3cAzp615E=
+X-Google-Smtp-Source: AGHT+IHR308ZaGEspAqgP81t4VcZnbrHzQuAvq2kTrqo5fl5Ooc3oS+Xs8YEpIAd9Z+hKeDIfW6QTQ==
+X-Received: by 2002:a05:6a20:6a0d:b0:1a7:242a:cb69 with SMTP id p13-20020a056a206a0d00b001a7242acb69mr5648165pzk.40.1714333447066;
+        Sun, 28 Apr 2024 12:44:07 -0700 (PDT)
 Received: from ASUSLaptop-X513EAN.. ([2804:14c:81:903a:a3f3:f05c:11d1:1d76])
-        by smtp.gmail.com with ESMTPSA id l15-20020a170903120f00b001e45b3539dbsm18826374plh.41.2024.04.28.12.43.57
+        by smtp.gmail.com with ESMTPSA id l15-20020a170903120f00b001e45b3539dbsm18826374plh.41.2024.04.28.12.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 12:43:59 -0700 (PDT)
+        Sun, 28 Apr 2024 12:44:06 -0700 (PDT)
 From: ogustavo@usp.br
 To: lars@metafoo.de,
 	Michael.Hennerich@analog.com,
 	jic23@kernel.org
 Cc: Gustavo Rodrigues <ogustavo@usp.br>,
 	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] iio: adc: ad799x: Fix warning generated by checkpatch
-Date: Sun, 28 Apr 2024 16:43:23 -0300
-Message-Id: <20240428194326.2836387-1-ogustavo@usp.br>
+	linux-kernel@vger.kernel.org,
+	Bruna Lopes <brunaafl@usp.br>
+Subject: [PATCH 1/3] iio: adc: ad799x: change 'unsigned' to 'unsigned int'  declaration
+Date: Sun, 28 Apr 2024 16:43:24 -0300
+Message-Id: <20240428194326.2836387-2-ogustavo@usp.br>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240428194326.2836387-1-ogustavo@usp.br>
+References: <20240428194326.2836387-1-ogustavo@usp.br>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,19 +90,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Gustavo Rodrigues <ogustavo@usp.br>
 
-Clean code of iio:adc:ad799x to cease warning messages pointed by
-checkpatch. These include proper variable declaration 'unsigned' to 
-'unsigned int', add blank line and use of octal permission instead of 
-symbolic.
+Prefer 'unsigned int' instead of bare use of 'unsigned' declarations to
+to improve code readbility. This ceases one of the warning messages
+pointed by checkpatch.
 
-Gustavo (3):
-  iio: adc: ad799x: change 'unsigned' to 'unsigned int' declaration
-  iio: adc: ad799x.c: add blank line to avoid warning messages
-  iio: adc: ad799x: Prefer to use octal permission instead of symbolic
+Co-developed-by: Bruna Lopes <brunaafl@usp.br>
+Signed-off-by: Bruna Lopes <brunaafl@usp.br>
+Signed-off-by: Gustavo Rodrigues <ogustavo@usp.br>
+---
+ drivers/iio/adc/ad799x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/iio/adc/ad799x.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/iio/adc/ad799x.c b/drivers/iio/adc/ad799x.c
+index b757cc45c4de..3040575793a2 100644
+--- a/drivers/iio/adc/ad799x.c
++++ b/drivers/iio/adc/ad799x.c
+@@ -128,7 +128,7 @@ struct ad799x_state {
+ 	struct regulator		*vref;
+ 	/* lock to protect against multiple access to the device */
+ 	struct mutex			lock;
+-	unsigned			id;
++	unsigned int			id;
+ 	u16				config;
+ 
+ 	u8				*rx_buf;
+@@ -253,7 +253,7 @@ static int ad799x_update_scan_mode(struct iio_dev *indio_dev,
+ 	}
+ }
+ 
+-static int ad799x_scan_direct(struct ad799x_state *st, unsigned ch)
++static int ad799x_scan_direct(struct ad799x_state *st, unsigned int ch)
+ {
+ 	u8 cmd;
+ 
 -- 
 2.34.1
 
