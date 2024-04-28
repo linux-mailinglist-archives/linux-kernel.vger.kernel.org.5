@@ -1,115 +1,137 @@
-Return-Path: <linux-kernel+bounces-161452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955A48B4C28
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:29:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEC28B4C2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43A1E281999
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 744412819E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849256EB65;
-	Sun, 28 Apr 2024 14:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B7E1BC40;
+	Sun, 28 Apr 2024 14:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="sXwpeMVa"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ld4cb47W"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A5A1C32;
-	Sun, 28 Apr 2024 14:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C9115CB;
+	Sun, 28 Apr 2024 14:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714314567; cv=none; b=uRpA8SrhYnkV9Bu3HpF7MU0BT1Mf0+demejSL2G5SutWb4jETT7jF+LAWsr4fE28ymkkyqViwYrxCegz4zyzTHqoyqWgOAaVLELf5z0sBOyR8ivPPo0AWwIqfGxp9hXvIYYqFccT+K4fYfZiAoj+sSCUL+s+0flYhCq++YbWDEQ=
+	t=1714314703; cv=none; b=AiKahFsa3HYOpcdcLyjqaMoHcExphKCK+ij4H1+y9uvzTTL2X3iyeWZAKeLzxAsc2jHWQY8JK/NKNSHWj0yiqsuNVGxVVQiWVDbDAfMG0RHyIBWP//iH81t07p24/UUWAbn2acBsWVY+18PDIZMrTKw6z1UpUvu8UQB70Radpzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714314567; c=relaxed/simple;
-	bh=pEOEFwml9g9Ku1dfnMgPeNijnvjb2rGfZrouDU5XDvs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O+7ARqPXee4yxe4nzttFbcAViYqK3diKFRoZnHworYNvTYmWfj5N3/nl3Kc1n3wZPPw6IlaZivOqSwyUpCLHCmqIL/yyagX2vWnUkdqOyh152OW9JGFsLGJ4rQ6g61yIdcfy3Sg2TkVk3tlfIH4BGDFJRCn3gESpdL8/Zp1kKZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=sXwpeMVa; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: b2522164056b11efb92737409a0e9459-20240428
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=+AJLIaBitYxpEmHqEZ77HT8/gK2VQB6rWKd5c7RlOhA=;
-	b=sXwpeMVaadQuhbwLlpl8riuhQtqjOyMbj8n9tZlrkBbxt9Y4ZPnbF0fnqheyAzzcU8MzU3MLv+LlqPSx/xThANZj3sxqIPVSS2Nu6tSJFkUhBfcnMH5KNKKZhqdrmAN+zBRfm5E9TazusmfGvB7Ita7Ml12Ycb+XLXIot2ezQoo=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:a218aa2d-9b93-4571-bfc4-a000bf3160cd,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:82c5f88,CLOUDID:010ab166-72bc-4ae0-ab39-a531fe78e0a5,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: b2522164056b11efb92737409a0e9459-20240428
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-	(envelope-from <shiming.cheng@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1209379289; Sun, 28 Apr 2024 22:29:18 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Sun, 28 Apr 2024 22:29:17 +0800
-Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Sun, 28 Apr 2024 22:29:16 +0800
-From: <shiming.cheng@mediatek.com>
-To: <willemdebruijn.kernel@gmail.com>, <edumazet@google.com>,
-	<davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<matthias.bgg@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<shiming.cheng@mediatek.com>, Lena Wang <lena.wang@mediatek.com>
-Subject: [PATCH net] net: prevent pulling SKB_GSO_FRAGLIST skb
-Date: Sun, 28 Apr 2024 22:29:13 +0800
-Message-ID: <20240428142913.18666-1-shiming.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1714314703; c=relaxed/simple;
+	bh=RyHWL+XRGVS0rZg5h5NCb1i3rPQiPd34sfifnrFYfOg=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=pnn6/vibFqbcp0nwIeHUMsmPzuDr96U55bHnuEb9Q3c1GFsxxP4kozVSVPHW6CzTKoPB3K8tSzfU2jOB3nBMBlIrys4ZDnWM/OgPUc8U9+oYWwj7d5C32QDGgIq1AjQZKTGUGZ/onLhONuE0D28IJvt5tItF/711KBGYXL/cQUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ld4cb47W; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso3446630b3a.1;
+        Sun, 28 Apr 2024 07:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714314701; x=1714919501; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=59EuPpmQZ2ij22OGvTjuvfEIHIx/+kEAdk6lJgaolM0=;
+        b=ld4cb47WEc5JJoHZt6Nxozx2BXnZptd7ysmgD9HRZ/8VRZ/mZ3wgypSMK3AP1u/wbW
+         RmVcwaNQY8HDNbzv9etAhYf+gFzVgxwZhetdWwhw5zzoiM9XHFcO1oRn4UjaxzM0dC0G
+         sQNQ3011YHbG33YexhIzahstvDGrj4x1JifsfJami/+4uwKztLjqsL7cFwP+qYqbwPMD
+         81SQ6u13U/5ti2Vwfbdcs3rpG1xgO8KNQEPetMTB2+P/JWbfVsXdD0uAUwbJ6ss20dkl
+         9VUTma2hVIvZq+X26WS1Xj+aZwtOF6JiBfxVVUufdewzLzZRoU7Ak87FvrMQHd/uQZa8
+         7j4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714314701; x=1714919501;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=59EuPpmQZ2ij22OGvTjuvfEIHIx/+kEAdk6lJgaolM0=;
+        b=Smoz/pHL4PgCBEnqOHR132MFSj0gPanq2IXOlr17QqDsRsvXZdXtxxtGdwQBlpwBD2
+         ji5DZeulhrxJT88B98NSLM5Dk+39One9Y39gB1P4Wb/zyPoL7E/Q+XiRZMR6CDKtKGB5
+         G3AoflzbJzP2SMfXzCVoWf4+m7T814REmHXsLvtp5kk20PqEzAdGrS90S0WU6jzqtcjq
+         2SX9u6NjO2xwFbuIIv1c7/vgpgKqA0KzB43CRfgryyO+z/DJFo/ek4wPrwXNllweI0H3
+         +gJmALmCS7U9rL+ZOb+e4ga6KP7KePgEXf4Zm00dkxZWJHY7KKmaW62nAb9svzKojeoD
+         PZXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLDUkpbkXLYQuhAhf+Rn7vqscbczYw/2/F53/hPpKbCrZqBYHDmlRuUIDl9gABcX23Peg5awXR9pElpBq0ryVKI7DuIEx5w1yZflqR7EoAchcqgNM4qHMPCs3bWWdBi1mwEkvtJWLuD6X7nsw=
+X-Gm-Message-State: AOJu0Yw/r3OFQoSno4MsaNF2ZvAv1ZK0ZO+m4P1o/exNEyrvo9yl20ub
+	eIfJCwPVRLvQ+34c85hp/voqP62JrS0nZEhFH91S2hNfbw4qy54D
+X-Google-Smtp-Source: AGHT+IF8P9xi3Y/OKCRwo4517T0rc2kzeu7K9T9yHbVaapsQ6rwWWUZLFHeMRWJrF/Apg+3rTcbhgA==
+X-Received: by 2002:a05:6a20:5528:b0:1aa:a421:4239 with SMTP id ko40-20020a056a20552800b001aaa4214239mr6779394pzb.15.1714314700978;
+        Sun, 28 Apr 2024 07:31:40 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id h6-20020a636c06000000b00612dc2ec375sm1034834pgc.16.2024.04.28.07.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 07:31:40 -0700 (PDT)
+From: Peter Yin <peteryin.openbmc@gmail.com>
+To: patrick@stwcx.xyz,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	linux-watchdog@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/1] drivers: watchdog: revise watchdog bootstatus
+Date: Sun, 28 Apr 2024 22:29:35 +0800
+Message-Id: <20240428142937.785925-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Transfer-Encoding: 8bit
 
-From: Shiming Cheng <shiming.cheng@mediatek.com>
+Regarding the AST2600 specification, the WDTn Timeout Status Register
+(WDT10) has bit 1 reserved. Bit 1 of the status register indicates
+on ast2500 if the boot was from the second boot source.
+It does not indicate that the most recent reset was triggered by
+the watchdog. The code should just be changed to set WDIOF_CARDRESET
+if bit 0 of the status register is set. However, this bit can be clear when
+watchdog register 0x0c bit1(Reset System after timeout) is enabled.
+Thereforce include SCU register to veriy WDIOF_EXTERN1 and WDIOF_CARDRESET
+in ast2600 SCU74 or ast2400/ast2500 SCU3C.
 
-BPF or TC callers may pull in a length longer than skb_headlen()
-for a SKB_GSO_FRAGLIST skb. The data in fraglist will be pulled
-into the linear space. However it destroys the skb's structure
-and may result in an invalid segmentation or kernel exception.
+Change Log:
 
-So we should add protection to stop the operation and return
-error to remind callers.
+v7 -> v8
+   - Simplify the code.
 
-Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
-Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+v6 -> v7
+   - To use syscon_regmap_lookup_by_compatibleys to get scu base
+   - Power on reset is set when triggered by AC or SRSRST.
+     Thereforce, we clear flag to ensure next boot cause is a real watchdog case.
+     We use the external reset flag to determine
+     if it is an external reset or card reset.
+
+v5 -> v6
+  - Fixed missing WDT_TIMEOUT_STATUS_EVENT.
+
+v4 -> v5
+  - Revert indentation.
+
+v3 -> v4
+  - Add error handling for syscon_regmap_lookup_by_phandle and
+  regmap_read.
+
+v2 -> v3
+  - Fixed WDIOF_CARDRESET status bit check and added support
+  for WDIOF_EXTERN1 on ast2500 and ast2600.
+
+v1 -> v2
+  - Add comment and support WDIOF_CARDRESET in ast2600
+
+v1
+  - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
 ---
- net/core/skbuff.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f68f2679b086..2d35e009e814 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -6100,6 +6100,12 @@ EXPORT_SYMBOL(skb_vlan_untag);
- 
- int skb_ensure_writable(struct sk_buff *skb, unsigned int write_len)
- {
-+	if (skb_is_gso(skb) &&
-+	    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
-+	     write_len > skb_headlen(skb)) {
-+		return -ENOMEM;
-+	}
-+
- 	if (!pskb_may_pull(skb, write_len))
- 		return -ENOMEM;
- 
+ drivers/watchdog/aspeed_wdt.c | 109 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 103 insertions(+), 6 deletions(-)
+
 -- 
-2.18.0
+2.25.1
 
 
