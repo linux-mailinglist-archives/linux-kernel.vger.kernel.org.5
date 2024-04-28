@@ -1,54 +1,47 @@
-Return-Path: <linux-kernel+bounces-161496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CEE88B4CC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:39:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B0FB8B4CC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:39:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD57228174E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:39:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E44B1C20B25
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B67A71B48;
-	Sun, 28 Apr 2024 16:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0ACB71B3B;
+	Sun, 28 Apr 2024 16:39:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="RmNTbBV6"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YMhhfGfr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DA06F083;
-	Sun, 28 Apr 2024 16:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A971EB45;
+	Sun, 28 Apr 2024 16:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714322335; cv=none; b=ejUj9UEvWPQhxe5Aumh3qEbjoucJTMzpxk5OO5jxcZkFnswIgGRqM15ExeXZDuSWe2oA7EW6mN/xPSDJAl2BxA4UUPnaWDLQwB6hfSarmwCArJUtHKM5/4wdrHJlhv0UItAr0dUlOJ7sZrZuXG4xLenOCdEc/FNu8RPF2Wxd1qY=
+	t=1714322371; cv=none; b=WpRxJ7ctBJsEfwego9mMQOd4gBfcz5xYysJ72zkKCevjZxLAgq17jwIJA+okFtlA0MS0/oQQ/Yv4FYJgxotetIZZJ3+Dg5XDjnbpmUwl/wj2YcbWTW2uSRkS1Ijz8hY0QO465oCnZQH/DfmyYWD+lc4+9oCTDCWkF2Yw6HeuoHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714322335; c=relaxed/simple;
-	bh=F9IAuojiJRJBdMfdXolE1CKZT+516XOdcs3LxcFaXlQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=aSmZW/kTBL+yo/ryaHp8kmqr4ezhjnkArFAfeb3n9VNStQdHCx4fEfkoAiMx0c/fZqr1Jr9+KOkvY1X0Va9kF52+lsBM31ZlrF51ooQKQrFqoDPWxKH61glErqE8V5kKjzwu7aP0BzIMqreN//VQ+PIPPAPRxyVmRFiBwY1YgF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=RmNTbBV6; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714322317; x=1714927117; i=markus.elfring@web.de;
-	bh=F9IAuojiJRJBdMfdXolE1CKZT+516XOdcs3LxcFaXlQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=RmNTbBV6emQQxkKqg0S1hFN72jQ6StcSvpnc882kBNBj0LiasbzhmWtcgYcL6hog
-	 jBf3wG3C8wOBaATeNyegYOZ6FsNSb6ysehGgwdTw0IqrHWaSXvWVa10TLjHqxxYjf
-	 cvZ3GIMVG37yrPsXibS4nhfYiLSDO6xEBZRD/6qqcbPAyYEm8Oy6llzU03T47L0lo
-	 QZMVAKW0+2j9vSzjC0QDsqg3zrB2oFwVTuO8BxaFqRoxfxE91kFYqpkjkWmQZkqZm
-	 t52ahIncuxl6hqB9J22LpmL3rte4t4yYnLHCQ6pois6k2tCwLLknRh5TAsdOE2gwh
-	 YpncIYl+HdUJuCS3Lw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M4sbr-1rzkMs37zz-00DNys; Sun, 28
- Apr 2024 18:38:37 +0200
-Message-ID: <c9bd5c39-ce8d-4c4b-8a1d-ae90298c4f92@web.de>
-Date: Sun, 28 Apr 2024 18:38:36 +0200
+	s=arc-20240116; t=1714322371; c=relaxed/simple;
+	bh=SIZKViSNjizw0o7ThbfK+/r8xNr2Wxhp6xFyqgOjvEA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QVTa3iXaZ9FkOffi3dzqZf7YkL5HobJjMMeZo7w3qEp6LEw/359TVFFajygrhQmuXIASPiTyhnj3QBTBWBaRn8I8JN7qRBuzLmH1dvmAjgVVkDUzurrC5I59ux39HqtVxBrTmEwHYiv30l+qAdrrQlnr2oC7dBTLTJ7F5v7FVeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YMhhfGfr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E47C113CC;
+	Sun, 28 Apr 2024 16:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714322370;
+	bh=SIZKViSNjizw0o7ThbfK+/r8xNr2Wxhp6xFyqgOjvEA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YMhhfGfr8dqc5oSubxEB3Ui5hDl31xRjNiv1N6q+/wM/nZiCCeX1xnm1gKJzLR5/f
+	 Gp3v0qbXvA9pvgSySw1KVA/YAGHU9kIn6oPSEJwp1N6OCp9stdknV25ZWl5b5GRWMl
+	 o5stou5Pm82HkP3LtoKEayagUCN8NgB6vMEbs+afDGt6lEDRfoToqGRnP5JqX8Huzt
+	 RGnjBemiNj8F3PE2lfeX/uHCKJ6Qdhj9uF+SbpPOtrQPGaOkppH3xDd3Dud3wsm85t
+	 SXhnnawuM2ZiP4vRHcz/MVLO8klw5G1I99akcfjPr/BHTe5lMwyLi6DMa140GeoPW7
+	 QdtOSqY1qsBrA==
+Message-ID: <1d82580c-43fb-4510-8eb3-585007fba430@kernel.org>
+Date: Sun, 28 Apr 2024 18:39:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,53 +49,152 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Sungwoo Kim <iam@sung-woo.kim>, linux-bluetooth@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Marcel Holtmann <marcel@holtmann.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, "Dave (Jing) Tian"
- <daveti@purdue.edu>
-References: <20240428015834.2485653-1-iam@sung-woo.kim>
-Subject: Re: [PATCH v2] Bluetooth: msft: fix slab-use-after-free in
- msft_do_close()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240428015834.2485653-1-iam@sung-woo.kim>
+Subject: Re: [PATCH v3 12/14] ARM: dts: aspeed: Add IBM P11 FSI devices
+To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au
+References: <20240425213701.655540-1-eajames@linux.ibm.com>
+ <20240425213701.655540-13-eajames@linux.ibm.com>
+ <dc106aa2-8f69-4f71-ad9f-6dfb97c63a50@kernel.org>
+ <a608377b-3e51-4b59-bdab-8c4e9938f086@linux.ibm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <a608377b-3e51-4b59-bdab-8c4e9938f086@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:KgATldkKNdd0yMfd/hsnoSA3khz4WDL7eZ1c45p78WC4Se1AaAj
- P9LodVlemdun9GSJCHLkVYTdsLRiVVzIlhtd00WOvIfvkXCzhFKxrEPfDjvyyXmLCpURju/
- 8KZauxsqG/dmQ+FsUMlrvfy3Ek8JCU9uB5Vzk2ss70r9u6tvvDY2z3NpTg24A9+GXMVWOhZ
- PDSR6Ws10psFmd/PDBgVw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:+wVU6gULitE=;kmnn2v4nHZT0auwpAOQM25RTioh
- dcUiA/naPB7nnWm+4mFrrjILOP7VwKPsgNa/fHW9MxfM+PVCvgvRUwtB3Me4x6YYuvLqnAoUp
- 3PA37tLJdvsPwKK/ynWiuO4RAjlK3UooWEoNLm4gHGm3JG8UTnlmgTeIvxfzuUF2UhBWnNff5
- X3PkiBPYuVVnv8ODORmJVYyAxoYqk0HE1JAqEXWN7z/pHOjeDHSJipwfawtzpI3izUEqndFNb
- xkN4diRLDA8j9dAMB7UH9Idn71sAiFrfE0AT1cu/GwINcQNwDMgLWWmFrHXowagCUTj9ox6tC
- HNIxW3HvYnmDYTL9jF+KuDgeQqyG8d8wSDg49GHDe7cXhlwGU6kvMrYnaQSZ9mgicdWkzE5df
- bF/PujDUiOQfXTeWPrWPEzN9FvbjCdF8uvyJPCzaOzoub1rRLq1zB1wkBEkFHHHN1acD0h6eh
- 83s2T2eqZFosxeHzuZTY9ZfmKiQxG4YyMP59E3MUuVRfFoyYfA+Vw+W3uz4wIxa8LJ/D5J4F7
- HxI/uybwbDlCc6Iejia4pdu2e3LQtH+mDQlz3CeTD0ZVqXDBKuSfzPv48qfR3JdM7wEV/NvdY
- z2qjfMFsz+4lIu7v19O8Ys3J6sxY6jpFyDBlA2qOX++8olTBTiEZM7VB2ns7kdRymFmMYIQEl
- 226nvTJlXCYyGRuGOVP4NUMY0/NoJa3CPF3hQVmLb5GuiLQutT33RqDTL7G3LknQJG4PTf58w
- Cxg9PWdckLAg2+27jl4NtA8ODaK1X6Sl4J2LXnbIIye2R55oRmD1tQVq6SYYs4TqSKfZCZSnh
- Sbm/68HBAUgbc/ig3xteyKBT00qJTBzvLsMjOtIhNUPFk=
 
-Will an other distribution of email addresses over recipient lists be more helpful?
+On 26/04/2024 15:18, Eddie James wrote:
+> 
+> On 4/26/24 01:31, Krzysztof Kozlowski wrote:
+>> On 25/04/2024 23:36, Eddie James wrote:
+>>> Add the P11 FSI device tree for use in upcoming BMC systems.
+>>> Unlike P10, there is no system with only two processors, so
+>>> only the quad processor FSI layout is necessary.
+>>>
+>>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>>> ---
+>>>   .../arm/boot/dts/aspeed/ibm-power11-quad.dtsi | 1696 +++++++++++++++++
+>>>   1 file changed, 1696 insertions(+)
+>>>   create mode 100644 arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
+>>>
+>>> diff --git a/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi b/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
+>>> new file mode 100644
+>>> index 000000000000..c3a0ecf12aa0
+>>> --- /dev/null
+>>> +++ b/arch/arm/boot/dts/aspeed/ibm-power11-quad.dtsi
+>>> @@ -0,0 +1,1696 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>> +// Copyright 2024 IBM Corp.
+>>> +
+>>> +&fsim0 {
+>> This does not make sense. You do not include any file here, so what do
+>> you want to override?
+>>
+>> How can you even test this file?
+> 
+> 
+> This is an include file, to be included in the new device tree files in 
+> the next two patches. It will be tested as part of those. Andrew 
+> requested I split this up, and I have to add this one first, even though 
+> nothing is referencing it yet. The same model is used for the P10 FSI 
+> devices.
+> 
+> 
+>>
+>>> +	status = "okay";
+>>> +
+>>> +	#address-cells = <2>;
+>>> +	#size-cells = <0>;
+>>> +
+>>> +	cfam-reset-gpios = <&gpio0 ASPEED_GPIO(Q, 0) GPIO_ACTIVE_HIGH>;
+>>> +
+>>
+>>> +
+>>> +&cfam3_i2c16 {
+>>> +	fsi-i2cr@20 {
+>>> +		compatible = "ibm,i2cr-fsi-master";
+>>> +		reg = <0x20>;
+>>> +		#address-cells = <2>;
+>>> +		#size-cells = <0>;
+>>> +
+>>> +		cfam@0,0 {
+>>> +			reg = <0 0>;
+>>> +			#address-cells = <1>;
+>>> +			#size-cells = <1>;
+>>> +			chip-id = <0>;
+>>> +
+>>> +			scom416: scom@1000 {
+>>> +				compatible = "ibm,i2cr-scom";
+>>> +				reg = <0x1000 0x400>;
+>>> +			};
+>>> +
+>>> +			sbefifo416: sbefifo@2400 {
+>>> +				compatible = "ibm,odyssey-sbefifo";
+>>> +				reg = <0x2400 0x400>;
+>>> +				#address-cells = <1>;
+>>> +				#size-cells = <0>;
+>>> +			};
+>>> +		};
+>>> +	};
+>>> +};
+>>> +
+>>> +&cfam3_i2c17 {
+>> This looks randomly ordered.
+> 
+> 
+> Not sure what you mean. Everything is sequentially ordered?
 
+So what is the order for all Aspeed DTS? Is it sequential like in DTSI?
+What does it even mean sequential?  There are two preferred orderings,
+as expressed in DTS coding style.
 
-> Hi, could you review this patch?
+Best regards,
+Krzysztof
 
-I suggest to reconsider such a question once for the final commit message.
-
-
-> Now *not static* msft functions hold and put hdev->msft_data.
-> It prevents from potential and real use-after-free bugs.
-
-Is another corresponding imperative wording desirable for an improved change description?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.9-rc5#n94
-
-Regards,
-Markus
 
