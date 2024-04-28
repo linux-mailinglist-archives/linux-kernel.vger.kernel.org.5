@@ -1,396 +1,134 @@
-Return-Path: <linux-kernel+bounces-161226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF688B493C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:33:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88CA48B493E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F0D2822AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:32:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96C59B216C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC88020E3;
-	Sun, 28 Apr 2024 02:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10152566;
+	Sun, 28 Apr 2024 02:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Um0/PXBQ"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iXVAM2bv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1BD10E5;
-	Sun, 28 Apr 2024 02:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD3215A4;
+	Sun, 28 Apr 2024 02:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714271572; cv=none; b=hGdy5zIF9EpbaOzq+NkiqSfdTmGi6DyPHJMRNUEAoBs7jjU/M/gxEZAMM9pSf1ubOEXWM3rz80bCVxahSxXmchIKvoHSlxgydoN2BJf3d195Yb/b2jtrzrdbCzaPaRTzgDOy0OhxN+0YMmKR5GFklSdcEtYIOIk7t3WCDSyGpbQ=
+	t=1714272214; cv=none; b=S7fRK/WiO9A/D9Oa9RFG1oqHM0ZM8JDFNXV91irT0VcdwcHEFzH6BlZTK9i9uV8GGe2s7T+MNHtqeE3DPargmI8lgzTGN221FINwK2XBEZ07/AG7vv2gh1T6070SX5donh33MOQbNU3O24iu/giY3/RCid5BAWmvb+iYrBa/Ars=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714271572; c=relaxed/simple;
-	bh=jkfQyD4TSkFPGgGvB9E0MlJqk8S0PJAcVXyJnrTR7N0=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oVdXe+kTjtDQG9ux3kawN9k+alIBh0knG8dibm7UlpIk+Fmz/npDDMjTS+jB8FJ4U84YANU2wSUHUPHqUvy/wCSaW4mnVgmJuQk4bcRN6/TgcnKuZ6fTaMaXELq5gSK7MxQWwt+r8HIoNcN+6iVz+k4BcII9XPbwdywxv389WKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Um0/PXBQ; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c7513a991cso2367260b6e.1;
-        Sat, 27 Apr 2024 19:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714271570; x=1714876370; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2Tm/X7jVaLOZHx4cX2r/MaUF1ehy4+INd54krGuf2Rw=;
-        b=Um0/PXBQTrESCfhyQv6dEyto/fqnoTdrsPJOyBO2JVD4Jdn7Nw8H+yTErmvWQ8Sc3y
-         XFMXhYD01Ie+jqIessffM1C9GBGN52z3BL+U1KNx1EkFcOz4zm+ZQASx/zQo4H4Lr4Z5
-         YfddU96nQe+WyRTlwJyTuJhofJ4bKeDq9iEojl7oD48xIdBwvl2GGpMUBPg7JxPZGfyI
-         ZQIzksyVrH4z9bm/8yAr+h/5OXpdBYw9BVWr1ukUdlpEfgtXUjxWzqj+ayOcPt7PxtSp
-         95x9O5aOHlEbE4mDAwg5ohis1lYWc8aVGWcvNP3GZ135oLlZ8jzwcVRHSfZv/JbQeOQH
-         mvSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714271570; x=1714876370;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Tm/X7jVaLOZHx4cX2r/MaUF1ehy4+INd54krGuf2Rw=;
-        b=qhiu+Cl9kYHI+TkislHjolhCO7nQ+JSSc1qGO098+JtXSgDSD97MG09Vo56NLD5bFp
-         egqJ80g6+am29/7FNK1bivbY3/t0m0OZmH16RwKo0FvswIkfX8iZhcucDpmFnag12dRp
-         IIDHrZm7p01c3nzGPs9UM0oIPbj+L5UY21uBb7Hq40RmFCAxiHS2UWcANOwNal6bJp56
-         Q7Ydpyr6ttWFe031yAm3C40S8TtETxzGG3Ow+Mvc87RIVWRxjXlUwsN5u3kLaF4Gw5I1
-         wGsNwR3DAkBEfXm+GPnJKtYH4j4EasY04k4T/FFZMVaeTLXbcSDgnjk8wqRpTPZwQPUF
-         gQSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVripeoP01LIu6Vu2O4tqTHW9BHnoMeCI1SF9zDCcYHMQuOJFqCia3A5jbwJ6YfqokF8mYD6/r9m9E0Ydx93UFmMknHAY6ZB5lAuW//lxEXEXE0fXfU/xQdLhAi9lO8hqyN1OIxTFl6
-X-Gm-Message-State: AOJu0YxqpDyQe1FMSPl2a9OfP97q0qtK7HcosNMUocTM56YRPzC+ro8V
-	hqLbkrXzf+ROMinQQ9MnRu0TvDW6ZjyUhALtmi3G6/vznCKxXT30
-X-Google-Smtp-Source: AGHT+IG4ZVEXtRXCsLLDIK0vYRLFFOM+zWvT6N9TjdhceLPVevaCSZut0JYdHEKpzR8SR1WNuDB0cg==
-X-Received: by 2002:a05:6808:114d:b0:3c8:5da4:5f7d with SMTP id u13-20020a056808114d00b003c85da45f7dmr5528858oiu.25.1714271570188;
-        Sat, 27 Apr 2024 19:32:50 -0700 (PDT)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id cp22-20020a056808359600b003c60bc31ed9sm2963912oib.17.2024.04.27.19.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 19:32:49 -0700 (PDT)
-From: Chen Wang <unicornxw@gmail.com>
-To: adrian.hunter@intel.com,
-	ulf.hansson@linaro.org,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jszhang@kernel.org,
-	dfustini@baylibre.com,
-	yifeng.zhao@rock-chips.com,
-	shawn.lin@rock-chips.com,
-	chao.wei@sophgo.com,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	tingzhu.wang@sophgo.com,
-	guoren@kernel.org,
-	inochiama@outlook.com,
-	unicorn_wang@outlook.com
-Subject: [PATCH v2 1/1] mmc: sdhci-of-dwcmshc: add callback functions for dwcmshc_priv
-Date: Sun, 28 Apr 2024 10:32:41 +0800
-Message-Id: <5bb708cc830684676dede5f44ee22c7fd03300b7.1714270290.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1714270290.git.unicorn_wang@outlook.com>
-References: <cover.1714270290.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1714272214; c=relaxed/simple;
+	bh=HFYmYFkOJcs1UWSCZYbi2D5Ua/FNF/Ysbr0h8olyrCU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=auWJvhFV2L0AkNUDpGHsV0x6RfEmN4eAxeEb5u0nNwoUEP3nSkcxN1KJ1BGLn0amc6DLDs+DECQN1HQwtTTS7v96UZhDkgW74eisDtzoPF6Q7xcWRnr9X/FND64Y8sitWFUku2sU6q2tdgk/SHyb2LcUZrjHn987wYFYCWhzMSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iXVAM2bv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFE29C4AF0B;
+	Sun, 28 Apr 2024 02:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714272213;
+	bh=HFYmYFkOJcs1UWSCZYbi2D5Ua/FNF/Ysbr0h8olyrCU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iXVAM2bvQ4QN3T+HmWeAabZGCZ4i1IlmMKfdarRhBok4Sm5fs/vb+yOLl6Y7n454t
+	 3bTrXO6lYcBiu9Il+aFtNLwBPZDNzzdXc/HmaLso+r1A/ZQd73SmgQlL6yHz259nX/
+	 UHynHroMuuSxnQhrfioFQlbBEBQ5EBWqsOwSVnFOUxzs+NssrSYfVqQHhY2sDOfC7R
+	 ot/nYotLa6XOtM1UznO4U10TsI07KwUk41VgZ2Q7fjuJ2301o21QlTlzobPK/pGmO0
+	 ODUodxtQ6UEIyQYPHcTHhG4KhhVhCoAjaoZThkfI+BXafgoerVnf2BJQub0fdbedW1
+	 luz2GbSqxS56g==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so45161511fa.3;
+        Sat, 27 Apr 2024 19:43:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWZFSF0Op9M/yQ9RQ8DH1+qov3FDDtOvtBAOFtmoKKESix+lHfin4lsi5zqmO09OsREayuFMmbLeXxXfNoLhTb18+nIvSHTAYhG2MyEIG+yFRKAYyIzT+01gaO+C3SLl++U8mcjvXAH989unw==
+X-Gm-Message-State: AOJu0YxhFw/+tORrg/ZRtxMuCTF+xykSGQ07b10G1AYnkZvVNINavzoN
+	nN+9FCT0pbTYt8viPkXBK7fEs2I46lzlQYDaI+C9Gym9cUncCesAZYnNrZwqbRVSq6CLuWb1nij
+	uxlbuGiSYehXsQidTuoHR5jhEhg==
+X-Google-Smtp-Source: AGHT+IF75nQX/dWyajS5NVAD4ViXSOpii6Cd6eRPc+A/veNE/1VqvZTVL4PkmA9WDbIYXX+57ig2aQaECW/3iwavFMU=
+X-Received: by 2002:a05:6512:313c:b0:51d:aca:4b06 with SMTP id
+ p28-20020a056512313c00b0051d0aca4b06mr2055891lfd.39.1714272212358; Sat, 27
+ Apr 2024 19:43:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240417160842.76665-1-ryncsn@gmail.com> <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <Zico_U_i5ZQu9a1N@casper.infradead.org> <87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com> <87bk5uqoem.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87bk5uqoem.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Sat, 27 Apr 2024 19:43:20 -0700
+X-Gmail-Original-Message-ID: <CANeU7QknjZrRXH71Uejs1BCKHsmFe5X=neK7D1d1fyos0sAb9Q@mail.gmail.com>
+Message-ID: <CANeU7QknjZrRXH71Uejs1BCKHsmFe5X=neK7D1d1fyos0sAb9Q@mail.gmail.com>
+Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org, 
+	Kairui Song <kasong@tencent.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On Sat, Apr 27, 2024 at 6:16=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Chris Li <chrisl@kernel.org> writes:
+>
+> > Hi Ying,
+> >
+> > For the swap file usage, I have been considering an idea to remove the
+> > index part of the xarray from swap cache. Swap cache is different from
+> > file cache in a few aspects.
+> > For one if we want to have a folio equivalent of "large swap entry".
+> > Then the natural alignment of those swap offset on does not make
+> > sense. Ideally we should be able to write the folio to un-aligned swap
+> > file locations.
+> >
+> > The other aspect for swap files is that, we already have different
+> > data structures organized around swap offset, swap_map and
+> > swap_cgroup. If we group the swap related data structure together. We
+> > can add a pointer to a union of folio or a shadow swap entry.
+>
+> The shadow swap entry may be freed.  So we need to prepare for that.
 
-The current framework is not easily extended to support new SOCs.
-For example, in the current code we see that the SOC-level
-structure `rk35xx_priv` and related logic are distributed in
-functions such as dwcmshc_probe/dwcmshc_remove/dwcmshc_suspend/......,
-which is inappropriate.
+Free the shadow swap entry will just set the pointer to NULL.
+Are you concerned that the memory allocated for the pointer is not
+free to the system after the shadow swap entry is free?
 
-The solution is to abstract some possible common operations of soc
-into virtual members of `dwcmshc_priv`. Each soc implements its own
-corresponding callback function and registers it in init function.
-dwcmshc framework is responsible for calling these callback functions
-in those dwcmshc_xxx functions.
+It will be subject to fragmentation on the free swap entry.
+In that regard, xarray is also subject to fragmentation. It will not
+free the internal node if the node has one xa_index not freed. Even if
+the xarray node is freed to slab, at slab level there is fragmentation
+as well, the backing page might not free to the system.
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- drivers/mmc/host/sdhci-of-dwcmshc.c | 152 +++++++++++++++++-----------
- 1 file changed, 91 insertions(+), 61 deletions(-)
+> And, in current design, only swap_map[] is allocated if the swap space
+> isn't used.  That needs to be considered too.
 
-diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-index 39edf04fedcf..525f954bcb65 100644
---- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-+++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-@@ -214,6 +214,10 @@ struct dwcmshc_priv {
- 	void *priv; /* pointer to SoC private stuff */
- 	u16 delay_line;
- 	u16 flags;
-+
-+	void (*soc_postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-+	int (*soc_clks_enable)(struct dwcmshc_priv *dwc_priv);
-+	void (*soc_clks_disable)(struct dwcmshc_priv *dwc_priv);
- };
- 
- /*
-@@ -1033,10 +1037,40 @@ static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *
- 	host->mmc->caps2 &= ~(MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD);
- }
- 
--static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-+static int dwcmshc_rk35xx_clks_enable(struct dwcmshc_priv *dwc_priv)
- {
--	int err;
- 	struct rk35xx_priv *priv = dwc_priv->priv;
-+	int ret = 0;
-+
-+	if (priv)
-+		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, priv->rockchip_clks);
-+	return ret;
-+}
-+
-+static void dwcmshc_rk35xx_clks_disable(struct dwcmshc_priv *dwc_priv)
-+{
-+	struct rk35xx_priv *priv = dwc_priv->priv;
-+
-+	if (priv)
-+		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-+					   priv->rockchip_clks);
-+}
-+
-+static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-+static int dwcmshc_rk35xx_init(struct device *dev,
-+			       struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-+{
-+	int err;
-+	struct rk35xx_priv *priv;
-+
-+	priv = devm_kzalloc(dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	if (of_device_is_compatible(dev->of_node, "rockchip,rk3588-dwcmshc"))
-+		priv->devtype = DWCMSHC_RK3588;
-+	else
-+		priv->devtype = DWCMSHC_RK3568;
- 
- 	priv->reset = devm_reset_control_array_get_optional_exclusive(mmc_dev(host->mmc));
- 	if (IS_ERR(priv->reset)) {
-@@ -1071,6 +1105,11 @@ static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
- 	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
- 	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
- 
-+	dwc_priv->priv = priv;
-+	dwc_priv->soc_postinit = dwcmshc_rk35xx_postinit;
-+	dwc_priv->soc_clks_enable = dwcmshc_rk35xx_clks_enable;
-+	dwc_priv->soc_clks_disable = dwcmshc_rk35xx_clks_disable;
-+
- 	return 0;
- }
- 
-@@ -1088,6 +1127,35 @@ static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv
- 	}
- }
- 
-+static int dwcmshc_th1520_init(struct device *dev,
-+			       struct sdhci_host *host,
-+			       struct dwcmshc_priv *dwc_priv)
-+{
-+	dwc_priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
-+
-+	if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
-+	    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
-+	    device_property_read_bool(dev, "mmc-hs400-1_8v"))
-+		dwc_priv->flags |= FLAG_IO_FIXED_1V8;
-+	else
-+		dwc_priv->flags &= ~FLAG_IO_FIXED_1V8;
-+
-+	/*
-+	 * start_signal_voltage_switch() will try 3.3V first
-+	 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
-+	 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
-+	 * in sdhci_start_signal_voltage_switch().
-+	 */
-+	if (dwc_priv->flags & FLAG_IO_FIXED_1V8) {
-+		host->flags &= ~SDHCI_SIGNALING_330;
-+		host->flags |=  SDHCI_SIGNALING_180;
-+	}
-+
-+	sdhci_enable_v4_mode(host);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
- 	{
- 		.compatible = "rockchip,rk3588-dwcmshc",
-@@ -1134,7 +1202,6 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 	struct sdhci_pltfm_host *pltfm_host;
- 	struct sdhci_host *host;
- 	struct dwcmshc_priv *priv;
--	struct rk35xx_priv *rk_priv = NULL;
- 	const struct sdhci_pltfm_data *pltfm_data;
- 	int err;
- 	u32 extra, caps;
-@@ -1191,46 +1258,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 	host->mmc_host_ops.execute_tuning = dwcmshc_execute_tuning;
- 
- 	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
--		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
--		if (!rk_priv) {
--			err = -ENOMEM;
--			goto err_clk;
--		}
--
--		if (of_device_is_compatible(pdev->dev.of_node, "rockchip,rk3588-dwcmshc"))
--			rk_priv->devtype = DWCMSHC_RK3588;
--		else
--			rk_priv->devtype = DWCMSHC_RK3568;
--
--		priv->priv = rk_priv;
--
--		err = dwcmshc_rk35xx_init(host, priv);
-+		err = dwcmshc_rk35xx_init(dev, host, priv);
- 		if (err)
- 			goto err_clk;
- 	}
- 
- 	if (pltfm_data == &sdhci_dwcmshc_th1520_pdata) {
--		priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
--
--		if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
--		    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
--		    device_property_read_bool(dev, "mmc-hs400-1_8v"))
--			priv->flags |= FLAG_IO_FIXED_1V8;
--		else
--			priv->flags &= ~FLAG_IO_FIXED_1V8;
--
--		/*
--		 * start_signal_voltage_switch() will try 3.3V first
--		 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
--		 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
--		 * in sdhci_start_signal_voltage_switch().
--		 */
--		if (priv->flags & FLAG_IO_FIXED_1V8) {
--			host->flags &= ~SDHCI_SIGNALING_330;
--			host->flags |=  SDHCI_SIGNALING_180;
--		}
--
--		sdhci_enable_v4_mode(host);
-+		err = dwcmshc_th1520_init(dev, host, priv);
-+		if (err)
-+			goto err_clk;
- 	}
- 
- #ifdef CONFIG_ACPI
-@@ -1260,8 +1296,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 		dwcmshc_cqhci_init(host, pdev);
- 	}
- 
--	if (rk_priv)
--		dwcmshc_rk35xx_postinit(host, priv);
-+	if (priv->soc_postinit)
-+		priv->soc_postinit(host, priv);
- 
- 	err = __sdhci_add_host(host);
- 	if (err)
-@@ -1279,9 +1315,9 @@ static int dwcmshc_probe(struct platform_device *pdev)
- err_clk:
- 	clk_disable_unprepare(pltfm_host->clk);
- 	clk_disable_unprepare(priv->bus_clk);
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
-+
- free_pltfm:
- 	sdhci_pltfm_free(pdev);
- 	return err;
-@@ -1303,7 +1339,6 @@ static void dwcmshc_remove(struct platform_device *pdev)
- 	struct sdhci_host *host = platform_get_drvdata(pdev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 
- 	pm_runtime_get_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-@@ -1315,9 +1350,9 @@ static void dwcmshc_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(pltfm_host->clk);
- 	clk_disable_unprepare(priv->bus_clk);
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
-+
- 	sdhci_pltfm_free(pdev);
- }
- 
-@@ -1327,7 +1362,6 @@ static int dwcmshc_suspend(struct device *dev)
- 	struct sdhci_host *host = dev_get_drvdata(dev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 	int ret;
- 
- 	pm_runtime_resume(dev);
-@@ -1346,9 +1380,8 @@ static int dwcmshc_suspend(struct device *dev)
- 	if (!IS_ERR(priv->bus_clk))
- 		clk_disable_unprepare(priv->bus_clk);
- 
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
- 
- 	return ret;
- }
-@@ -1358,7 +1391,6 @@ static int dwcmshc_resume(struct device *dev)
- 	struct sdhci_host *host = dev_get_drvdata(dev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 	int ret;
- 
- 	ret = clk_prepare_enable(pltfm_host->clk);
-@@ -1371,29 +1403,27 @@ static int dwcmshc_resume(struct device *dev)
- 			goto disable_clk;
- 	}
- 
--	if (rk_priv) {
--		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
--					      rk_priv->rockchip_clks);
-+	if (priv->soc_clks_enable) {
-+		ret = priv->soc_clks_enable(priv);
- 		if (ret)
- 			goto disable_bus_clk;
- 	}
- 
- 	ret = sdhci_resume_host(host);
- 	if (ret)
--		goto disable_rockchip_clks;
-+		goto disable_soc_clks;
- 
- 	if (host->mmc->caps2 & MMC_CAP2_CQE) {
- 		ret = cqhci_resume(host->mmc);
- 		if (ret)
--			goto disable_rockchip_clks;
-+			goto disable_soc_clks;
- 	}
- 
- 	return 0;
- 
--disable_rockchip_clks:
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+disable_soc_clks:
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
- disable_bus_clk:
- 	if (!IS_ERR(priv->bus_clk))
- 		clk_disable_unprepare(priv->bus_clk);
--- 
-2.25.1
+I am aware of that. I want to make the swap_map[] not static allocated
+any more either.
+The swap_map static allocation forces the rest of the swap data
+structure to have other means to sparsely allocate their data
+structure, repeating the fragmentation elsewhere, in different
+ways.That is also the one major source of the pain point hacking on
+the swap code. The data structure is spread into too many different
+places.
 
+> > We can use atomic updates on the swap struct member or breakdown the
+> > access lock by ranges just like swap cluster does.
+>
+> The swap code uses xarray in a simple way.  That gives us opportunity to
+> optimize.  For example, it makes it easy to use multiple xarray
+
+The fixed swap offset range makes it like an array. There are many
+ways to shard the array like swap entry, e.g. swap cluster is one way
+to shard it. Multiple xarray is another way. We can also do multiple
+xarray like sharding, or even more fancy ones.
+
+Chris
 
