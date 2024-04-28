@@ -1,143 +1,157 @@
-Return-Path: <linux-kernel+bounces-161494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A96918B4CBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:37:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE818B4CBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:38:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EAB41F212C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:37:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49D811F211C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDB57175B;
-	Sun, 28 Apr 2024 16:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE0370CC8;
+	Sun, 28 Apr 2024 16:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r4lC9jU+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SNQp9fCz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6793B1EB45;
-	Sun, 28 Apr 2024 16:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F8A433DA;
+	Sun, 28 Apr 2024 16:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714322246; cv=none; b=U3tU+pGbY0Ex58wsBXFhRIkaiclDI0Vxq1mwzmvoRtSeNtOPrt1spRECI2s3sW3NAckD05pHxHIAjcgSOmVCfmOMFz+GxkE1e+w5j0EQkHIpf3LLlH/vwOlab137rC/Q+YclAwzieSt4DIR4PBLmAXGtGv42fxD5tmz4gGqCBJU=
+	t=1714322322; cv=none; b=aUCoUFcwsIUdcOBTNLTIyo+aj7dw5MCUwmWBN1phG0jseBM2UZ2duqzLJmcWV9iBZsX1jFDY3mx8HHcPzeGJ5rXkXJdwq6X6nTlzPrVum9sVvBBl0NICLXJlbc/n2Bfkog3Ttiy/vdvySngb25H35kHBKJOxypSyW8AepabZH7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714322246; c=relaxed/simple;
-	bh=29Oi24t42BCHQZBWHZWH4KcYZY+ptNGYhrotR962KwQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=huAgrwe+shgxY3sE+MwyJyBCz7NJrqBNBsSq2+Xi/Ue3Y21/yON53ijIU7lzRTm+MZGNSTBU3MLf/zQ/QwZmZlMS0WPFHsVmwfnc8jvBglyoFScvNbWoYMP5FERxi9ugScC/1U/+dxdeSlxo0Go5mcC0ANaAkbvvXShUaLBf4Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r4lC9jU+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A502C113CC;
-	Sun, 28 Apr 2024 16:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714322245;
-	bh=29Oi24t42BCHQZBWHZWH4KcYZY+ptNGYhrotR962KwQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=r4lC9jU+F02URldR+zQ+zq5EJ5EkkGtK7gLFuaSruZdQSCi1P0QjLiG9mWr3vNhBB
-	 ibMLI6Fiv1nf/0OnpIR1j1N9QnBRwEg+XFDTexe2btjmYt5DrQ+Pma58iihKvjVOv6
-	 ptKuMbtptvo0SwevZ1Wg+dodtNY2tDTUHzN/5hinQhfc22g7KbSrwJz+U1h5xovdba
-	 55hKEPMrzDdSxRPnBBGszScrwr3mEs0B4jyVnuEcesPYrM9rWltU52hcSJANA2b2uD
-	 /nwWAbhIprfQXC9WF/kPLiDYjdqiZtX/opLDlq+/wSVxQkXlUmvdbhd22lqdbWOSdy
-	 CyGMvZpAL1XQQ==
-Message-ID: <d6004beb-2e7d-4f26-a202-0c5baabd4023@kernel.org>
-Date: Sun, 28 Apr 2024 18:37:20 +0200
+	s=arc-20240116; t=1714322322; c=relaxed/simple;
+	bh=WSj7lu2b4X/UglnfYC8ObjrLUSF53g3nGeBhb8ymiJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=proUnxhE+9Y6Wghe5VIpSYcwrlwoEfcv3zbfLbBhZTEeh1ZZL0fTT0WhrNhyQDAc9ODQ4vyBcu99qvjuXuzSWV2T7cBgYl6Jo1IMbO3Aj34SCnjx/Ya0BVawShPLcoU6B+VvbvKWWvS1FLWJypRa4dcZCCfNaoZOI0cQJz0DmjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SNQp9fCz; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714322321; x=1745858321;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WSj7lu2b4X/UglnfYC8ObjrLUSF53g3nGeBhb8ymiJQ=;
+  b=SNQp9fCzcERy5ol1k3spTGbe5+wk+UTIIatQtKQQVoYm16CN7Mlv/go2
+   pYcV0HjWP/N3P2YOySp0KSJ62QzYp6NhEkTNQNDQuZi7ZUfOEUagEzNx5
+   wJ4HueNxHIDvVJWmGz8e/4O65FsdutV+WtGLskfUcnzzn6A6OuwPH9oGK
+   8q6vdFnTtSNDwOPyZXaz3t0ffhUXsQmnayLxkmAj0YpAs0/xugoNpZ8tK
+   vJ6ARhadtJTP0q9S0BjEmV3ZI+85lWhr50eZSL81+nsee8fvY0JnHZm2J
+   VRc8CmXIshjzbPrssc+SQbtY6kswpuEHPn2MP8AwEbOCyi8/l5k2aXVIF
+   g==;
+X-CSE-ConnectionGUID: oiYNMPxySYed0r4k6xcZ6g==
+X-CSE-MsgGUID: lhKnAcIcQHa0nxSdNiSf1A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="27508324"
+X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
+   d="scan'208";a="27508324"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 09:38:40 -0700
+X-CSE-ConnectionGUID: 1lt0aqshR62GFUHxtdZWqw==
+X-CSE-MsgGUID: CKEGUDIXSTuDOL2KFztXMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
+   d="scan'208";a="26522158"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 28 Apr 2024 09:38:38 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s17Xv-0006Ue-1C;
+	Sun, 28 Apr 2024 16:38:35 +0000
+Date: Mon, 29 Apr 2024 00:38:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Juergen Gross <jgross@suse.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: oe-kbuild-all@lists.linux.dev, loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: Re: [PATCH v8 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+Message-ID: <202404290016.T9p5GhVr-lkp@intel.com>
+References: <20240428100518.1642324-4-maobibo@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: rockchip: add Radxa ROCK 3C
-To: Chukun Pan <amadeus@jmu.edu.cn>, Heiko Stuebner <heiko@sntech.de>
-Cc: Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
- <20240428123618.72170-2-amadeus@jmu.edu.cn>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240428123618.72170-2-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428100518.1642324-4-maobibo@loongson.cn>
 
-On 28/04/2024 14:36, Chukun Pan wrote:
-> The Radxa ROCK 3C is a similar board to the
-> Radxa ROCK 3A with the Rockchip RK3566 SoC.
-> Add devicetree binding documentation for it.
+Hi Bibo,
 
-For future:
+kernel test robot noticed the following build warnings:
 
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+[auto build test WARNING on 5eb4573ea63d0c83bf58fb7c243fc2c2b6966c02]
 
-> 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> index 1bbbaf81134b..e04c213a0dee 100644
-> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> @@ -799,6 +799,11 @@ properties:
->            - const: radxa,rock3a
->            - const: rockchip,rk3568
->  
-> +      - description: Radxa ROCK 3C
+url:    https://github.com/intel-lab-lkp/linux/commits/Bibo-Mao/LoongArch-smp-Refine-some-ipi-functions-on-LoongArch-platform/20240428-180850
+base:   5eb4573ea63d0c83bf58fb7c243fc2c2b6966c02
+patch link:    https://lore.kernel.org/r/20240428100518.1642324-4-maobibo%40loongson.cn
+patch subject: [PATCH v8 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20240429/202404290016.T9p5GhVr-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240429/202404290016.T9p5GhVr-lkp@intel.com/reproduce)
 
-There was some big renaming of these boards. I assume you are using
-correct naming?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404290016.T9p5GhVr-lkp@intel.com/
 
-Best regards,
-Krzysztof
+All warnings (new ones prefixed by >>):
 
+   arch/loongarch/kvm/exit.c: In function 'kvm_emu_cpucfg':
+>> arch/loongarch/kvm/exit.c:213:23: warning: variable 'plv' set but not used [-Wunused-but-set-variable]
+     213 |         unsigned long plv;
+         |                       ^~~
+
+
+vim +/plv +213 arch/loongarch/kvm/exit.c
+
+   208	
+   209	static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
+   210	{
+   211		int rd, rj;
+   212		unsigned int index;
+ > 213		unsigned long plv;
+   214	
+   215		rd = inst.reg2_format.rd;
+   216		rj = inst.reg2_format.rj;
+   217		++vcpu->stat.cpucfg_exits;
+   218		index = vcpu->arch.gprs[rj];
+   219	
+   220		/*
+   221		 * By LoongArch Reference Manual 2.2.10.5
+   222		 * Return value is 0 for undefined cpucfg index
+   223		 *
+   224		 * Disable preemption since hw gcsr is accessed
+   225		 */
+   226		preempt_disable();
+   227		plv = kvm_read_hw_gcsr(LOONGARCH_CSR_CRMD) >> CSR_CRMD_PLV_SHIFT;
+   228		switch (index) {
+   229		case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
+   230			vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+   231			break;
+   232		case CPUCFG_KVM_SIG:
+   233			/* Cpucfg emulation between 0x40000000 -- 0x400000ff */
+   234			vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
+   235			break;
+   236		default:
+   237			vcpu->arch.gprs[rd] = 0;
+   238			break;
+   239		}
+   240	
+   241		preempt_enable();
+   242		return EMULATE_DONE;
+   243	}
+   244	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
