@@ -1,140 +1,137 @@
-Return-Path: <linux-kernel+bounces-161466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 481228B4C61
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:32:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E8048B4C65
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9871C209B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:32:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B769B20F28
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35276F060;
-	Sun, 28 Apr 2024 15:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F5A6F072;
+	Sun, 28 Apr 2024 15:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U2pnp+G/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PmUUQhvK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590E86EB5D
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2801B58105;
+	Sun, 28 Apr 2024 15:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714318329; cv=none; b=jB7WJDzoXDB5K6QFqmlrPc4k2xeLOZFE1bX1xulePqGKanS0wpKAYgUxvxFCMART62eROMPJEXcGRctPU3oCbSsZmwmNfztv2YryhUb1Fak4nixeJ7MEFxCxZH+EUOPZZfdlgVRoHdU54TeREhafIQL6mf5qR2TGkXeBG8x595w=
+	t=1714318425; cv=none; b=UtNt6TUJ6DFALv0SI8rx1UtrXBjGJI5xX26I/LIAch4C7M0EkH/Yh0jFDon42lkq120wIB95IN242PHfudEzW91nWNPqgfwDmOwee1IePbbkjhrgqGP/FIEwK7Twc9x/QNXpwdL+NF92OsrMRc4RmBG4lV7nb/ERa/kb4xiJheE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714318329; c=relaxed/simple;
-	bh=fBeYTF/ok3UxBtPwI+q3QQsrFXPmBVBnjuiX8J3VMQo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WSwvCnJea+ikSBFtuPG76JPIy/gaTboy/9CakRtWGs0RKTNiisjneLpMaVmVSSnyBFShtJZi9366D6YFV0B/C77Sk2vNSdvrU3fX+wsJLplr7IRQdAprfjWay75Ia+9+3XzSAFL0yWOL6F8pAQ5huH4zzb8glhFZ0IbOX5PBdzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U2pnp+G/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714318326;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p2rk3b82daJR4aYDGTiBOVZojg+15MWPW8M7QHsi7Yo=;
-	b=U2pnp+G/pD8QtAwK6Il1GL4lHigEs2hVDiRrleSN3hiNj6qJwyj/+rF4EmhGIDj9fe8VKM
-	n37NOLAJhYb2MG3N2cfNtF9HM3K2WIMcYzMhr+0afQN94y4hnOogcohJ60cJ9tYz5zbQpY
-	cHah0gQQOHndrW4yfRuiZ6K4dFjsZvU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-TrBplk7wOlOIlyx3ZaLNYQ-1; Sun, 28 Apr 2024 11:32:04 -0400
-X-MC-Unique: TrBplk7wOlOIlyx3ZaLNYQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a555af96dd5so213919866b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:32:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714318323; x=1714923123;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p2rk3b82daJR4aYDGTiBOVZojg+15MWPW8M7QHsi7Yo=;
-        b=J9/G0Htunl5YlcBq37UBVfVcK+3bBm5aAVMiAYPASeTtEhAYKDrmwsqM+d8CiJYh75
-         1hDGlPQ+GVFH03abvD874c+HmtfqctzRoob7YFoBalU9ieln9L53sRQ0+WGlqf1k5wpt
-         bgC1mNpX0x4Jqb1WNUn6uuQkPaTyYtKSX6zXRnaYbbCeSixUEzhtp4y19IyfjelxD43v
-         B+KQcFF7gISW++FLxGDUnW8Wd4uSnmxunKs1T4tuSLfBdMweWzJGw6p6rwBFSEdBp3Hc
-         J4Te9mPhL5G/9SL+K7xMe1pa+kPvRkv22zIKJE6QY8/v+/ONCwvkRi5cxhnPzNNfwIuK
-         pTZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWocijgkCwpsda3PcC9LY4PiFVB5Sz+MCDX2znTDyHWJ+XSretCJ5zOZzmnh66nHbvJymlzMdsLXtdkftdip1hVhv8JMkhjRPiGZaJd
-X-Gm-Message-State: AOJu0YzT7GTaE4cNXv/HkOwdn5/iSj4PoTQ4jzm9YRPCwPzswSos3q9j
-	V8KBjSZbqMn6H0Ich8Xss23HYTX993/l1WV+rANlgK+zT02CpNPJHIjxivCVGz03xdcIDypo8rD
-	NaG5XH1MResb3895VBakyJ/KVwNXPXpsckOlDReZARMfPPREpWrDylN0+BlAjRwlNJsKDBQ==
-X-Received: by 2002:a17:906:b349:b0:a55:6f69:a939 with SMTP id cd9-20020a170906b34900b00a556f69a939mr7066712ejb.41.1714318323497;
-        Sun, 28 Apr 2024 08:32:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGSqo1+9e38+j2Yobyx4qaDwbP/uzsPiGry1td2UWbf6KNEhx420b/YNJS3ifJw2jXvgysT+Q==
-X-Received: by 2002:a17:906:b349:b0:a55:6f69:a939 with SMTP id cd9-20020a170906b34900b00a556f69a939mr7066700ejb.41.1714318323150;
-        Sun, 28 Apr 2024 08:32:03 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id q10-20020a170906388a00b00a46aba003eesm12830416ejd.215.2024.04.28.08.32.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 08:32:02 -0700 (PDT)
-Message-ID: <6027e255-0bd1-4be2-ab69-19cb91ed3db4@redhat.com>
-Date: Sun, 28 Apr 2024 17:32:01 +0200
+	s=arc-20240116; t=1714318425; c=relaxed/simple;
+	bh=Bl5Jt/Gi7pD86ZXdSpC6cHLOrRDvkB2Iphv+mf7NzoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O9f7+Y35ZrtW5/HqoSE/0D/GxROEsWteTJzYRfaWEZECB9X9SE9alp6iSDNHknpOh4C6O5LWXQBt1tMgHI3r/dL7BtGFAN2fFcS1iY1K6dmr8Vs6jn4yp4fIR+K9eciyWLKceB1RENS28MBdktuH+7O1QzpcqcbO4kSvCQnOqdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PmUUQhvK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A3C2C113CC;
+	Sun, 28 Apr 2024 15:33:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714318424;
+	bh=Bl5Jt/Gi7pD86ZXdSpC6cHLOrRDvkB2Iphv+mf7NzoI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PmUUQhvKtrxhIlQp/UKL4HJOiswhX6tkK0FAOBtPixvX/Z9miUuXKtKMy7Q05t/Oa
+	 BxZx7hkMROIasX2LlDZAxnOCVNyIorBLDnjI1wE4WvQRfbWeNehkWqlsSXMnnNciOr
+	 VN7ojjAuEAp0iQOqdNKzCw02zlBe9MSFijV6sLUjAfLLIUBvnWc3EBjvpNU+Tvu+cf
+	 2UjEkrdac4heopF6i+fpNw3Lp+3UWtZjI/iVK3q3LZXUM/IW2p33cLSLo64DY6nnKg
+	 alf8IUhqLcuI8IWRGsJBuplLytdwt+y/9esz1ZOJfw2Vt2uQ0mYmGaSiKGikfVrqd4
+	 WuZC50+B6Zi8A==
+Date: Sun, 28 Apr 2024 16:33:32 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, corbet@lwn.net,
+ conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, robh@kernel.org,
+ Ramona Gradinariu <ramona.gradinariu@analog.com>
+Subject: Re: [PATCH 5/5] docs: iio: add documentation for adis16480 driver
+Message-ID: <20240428163332.1e1327d6@jic23-huawei>
+In-Reply-To: <20240423084210.191987-6-ramona.gradinariu@analog.com>
+References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
+	<20240423084210.191987-6-ramona.gradinariu@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bytcr_rt5640 : inverse jack detect for Archos 101 cecium
-To: Thomas GENTY <tomlohave@gmail.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240428130736.877917-1-tomlohave@gmail.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240428130736.877917-1-tomlohave@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Hi,
+On Tue, 23 Apr 2024 11:42:10 +0300
+Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
 
-On 4/28/24 3:07 PM, Thomas GENTY wrote:
-> When headphones are plugged in, they appear absent; when they are removed,
-> they appear present.
-> Add a specific entry in bytcr_rt5640 for this device
+> Add documentation for adis16480 driver which describes the driver
+> device files and shows how the user may use the ABI for various
+> scenarios (configuration, measurement, etc.).
 > 
-> Signed-off-by: Thomas GENTY <tomlohave@gmail.com>
+> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
 
-Thanks, patch looks good to me:
+LGTM.  A few minor comments, and the final section feels to me like
+it belongs somewhere more generic.  I don't want to see much duplication
+in these files and that sort of set of pointers to software stacks is
+something that either needs to be in some higher level docs, or would
+get duplicated.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+..
 
-Regards,
+>
+> +
+> +3. Device buffers
+> +=================
+> +
+> +This driver supports IIO buffers.
+> +
+> +All devices support retrieving the raw acceleration, gyroscope and temperature
+> +measurements using buffers.
+> +
+> +The following device families also support retrieving the delta velocity, delta
+> +angle and temperature measurements using buffers:
+> +
+> +- ADIS16545
+> +- ADIS16547
+> +
+> +However, when retrieving acceleration or gyroscope data using buffers, delta
+> +readings will not be available and vice versa.
 
-Hans
+I would add a sentence here on why.
 
 
+> +
+> +See ``Documentation/iio/iio_devbuf.rst`` for more information about how buffered
+> +data is structured.
+> +
+> +4. IIO Interfacing Tools
+> +========================
 
-> ---
->  sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 05f38d1f7d82..12c90cb2a782 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -610,6 +610,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->  					BYT_RT5640_SSP0_AIF1 |
->  					BYT_RT5640_MCLK_EN),
->  	},
-> +	{
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 101 CESIUM"),
-> +		},
-> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-> +					BYT_RT5640_JD_NOT_INV |
-> +					BYT_RT5640_DIFF_MIC |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->  	{
->  		.matches = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
+This bit looks general.  Good to have, but given we don't want to repeat it in lots
+of drivers, perhaps move it somewhere more general?
+
+> +
+> +Linux Kernel Tools
+> +------------------
+> +
+> +Linux Kernel provides some userspace tools that can be used to retrieve data
+> +from IIO sysfs:
+> +
+> +* lsiio: example application that provides a list of IIO devices and triggers
+> +* iio_event_monitor: example application that reads events from an IIO device
+> +  and prints them
+> +* iio_generic_buffer: example application that reads data from buffer
+> +* iio_utils: set of APIs, typically used to access sysfs files.
+> +
+> +LibIIO
+> +------
+> +
+> +LibIIO is a C/C++ library that provides generic access to IIO devices. The
+> +library abstracts the low-level details of the hardware, and provides a simple
+> +yet complete programming interface that can be used for advanced projects.
+> +
+> +For more information about LibIIO, please see:
+> +https://github.com/analogdevicesinc/libiio
 
 
