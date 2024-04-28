@@ -1,106 +1,257 @@
-Return-Path: <linux-kernel+bounces-161521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A228B4D22
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:21:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3AB8B4D24
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:22:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E60328148A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:21:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7AF1F21309
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A935F7319A;
-	Sun, 28 Apr 2024 17:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E08773199;
+	Sun, 28 Apr 2024 17:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dlfERago"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiRJdwxz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A874A6F065;
-	Sun, 28 Apr 2024 17:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAD87317F;
+	Sun, 28 Apr 2024 17:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714324882; cv=none; b=ciin4prVnuW2eLkBpkG3G1iYKDr3Yk49VzQZmG+BSzb+HN7VwlrMcoXb/Vu9mad3li+FnEvmiWBKuN5uvCTJLal/34j2nzSC0sftB+vLqbPYjwU6RNfB4Kk9ihHaSmM/aDNJh+bdcusV4z8Yok7qtdPHoaNBeD3ZbFREMtO5QME=
+	t=1714324924; cv=none; b=iRZAiCpxwDf92JncjDezQRp7Vxf+VMGSMtzt9wV2HGPAYHA8IXK9J+FM56KKBGLRWGhnmTdbLqZxkfeO5UCyW6QBvFTAOTo6505D8KOLgApoyz92DJEekdpXXUOvE4QX1nd/9LfNXOy2FLopBeErsfMg5Lks4secPTRgv9L2e3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714324882; c=relaxed/simple;
-	bh=l+TRwc4SK57hrCFqHKsjP/S3s1bJJILdySwK7QAC4SA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qzvDA5hETuC47CMAlV2UGu1+3QJbSjq5N3Bmn5XPvHxmNAK9ti9ZR44XexOv6cxo/nvHNnjE4ZOtwM8klO78Z13yVW3kJN3vL7zlvR4g6UvNp4PDVZEL+2ioiTxASG21s3IsglecxUDR4XX1kCA+PPH/V7o7VexI+BvwlnxhYV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dlfERago; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so3517387b3a.2;
-        Sun, 28 Apr 2024 10:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714324879; x=1714929679; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4JLevVTxq6ZZOLTNMIkGE22eEmTvnawbgYiIB/nO72M=;
-        b=dlfERagoGF9RS9dO2tJnZZGvfAIktH7DNwRFaUI+ZHs1bq1wal0IbZ7Dy17juNfOxw
-         T/DXetjFW1np6Ed39VRpS/lU8O59mUvwTQ8qXuNMJymCl7JurM6+liGDdUdc+kOIvItO
-         gwlxKFqgu+39040dXiXdhLmd+8/jdQbzNudPVCZuJzfFfe1bHNRZG+tt2+2Z8tHLegTi
-         C46c+X+EWjdC0ZfETFJHhEEK9lkyuuq36mcezF40peT7Op/FyQWSbeyTd4qkXIdLlfE1
-         Yv9YuUc20ZfMhH6/TTk4jVdusuH/Yl8VW3VWdyhk5fgfM9F1J+9MLqcRIqQa/IQV1tUA
-         bxdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714324879; x=1714929679;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4JLevVTxq6ZZOLTNMIkGE22eEmTvnawbgYiIB/nO72M=;
-        b=Iotk3GBogYxINUgK8Aqok7tEj+TKWouUMoIUWY9ufSq/5sV78950TwtwZ3B4Jsm7yt
-         xmtPL7RvdmEcUx4E6Xo2JZej1K+xGBDbVt82MdrHWA7vATwPkMzQm3qtZbm+q02ihkIo
-         GSwoMWR+tuvlMI7PflQk+Z8e1CPja9HOgeAmlmth1S3HgpcxxwmjOT/9J0MkMvjD0bes
-         HnhB/niKXK1mFeFwsx30/ER2dmcjr6cvHXiYwTFcP/vjIP7xTahjOg8bA2eiUNjrmQrv
-         YMj6BjMxQQOhggJanM+ORdBOd3P0gW2HVe+CLDw16rBaUYyNdVgYLbsQzWwRx+JC4BL6
-         tVrw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1Lwcky79mJVau0gZxtRzATozIZN02vMHV9mxBMxGdfUeK7Kwkq84uR9+X3LPRu4fDQUDLQi3ocDFr16AjHs9tetmLPJMR5XxaPtZ2FJcV/GK7Ih9PKyZcU2gZNNUTJg72YlfxIziJ
-X-Gm-Message-State: AOJu0YxZrj8N1mZ8Y9PkFFJZugoHBbk4PUaQC0KWtOefHJTAn5GOLtvz
-	u5WYNIjOiHjCw4Q9EXQnDWqf9fETk0Xvu78PUTcWoLe8RMKJX3li
-X-Google-Smtp-Source: AGHT+IF7BsPAFHnzNOThRrbh3h5F9XsQXvHByAPJbG8lwEiQCfjWq7mPa0aFpUtvhL/bPqv7YoISpA==
-X-Received: by 2002:a05:6a00:3a0b:b0:6e6:970f:a809 with SMTP id fj11-20020a056a003a0b00b006e6970fa809mr9601786pfb.20.1714324878996;
-        Sun, 28 Apr 2024 10:21:18 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h17-20020aa79f51000000b006e71aec34a8sm17800432pfr.167.2024.04.28.10.21.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 10:21:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 28 Apr 2024 10:21:17 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Aleksa Savic <savicaleksa83@gmail.com>
-Cc: linux-hwmon@vger.kernel.org,
-	David Flemstrom <david.flemstrom@gmail.com>,
-	Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwmon: (aquacomputer_d5next) Add support for Octo
- flow sensor pulses
-Message-ID: <284e3b0f-2cad-47ea-9ad3-f699b2bc04f1@roeck-us.net>
-References: <20240417175037.32499-1-savicaleksa83@gmail.com>
- <20240417175037.32499-3-savicaleksa83@gmail.com>
+	s=arc-20240116; t=1714324924; c=relaxed/simple;
+	bh=+bsskYGfCWvxKP1+KcEgdEE4RVFr4Cuo7dOCEdkYM7A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OLE93N0305+91HeOYfeVtVb2rPKouLMywj6iVpLnwuZgyNp9qbtAGM2TcumRQlwwhfFXG/Q91h9bEXFz090C3ZQFnbDZoS8AyeRYE4qD5q3RTI2BLdOG0eeW82uZT1yBTZAAQ2Xhytz0eTktUX/0oQOAprY75ajZncgLu8PQXkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiRJdwxz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D150C113CC;
+	Sun, 28 Apr 2024 17:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714324924;
+	bh=+bsskYGfCWvxKP1+KcEgdEE4RVFr4Cuo7dOCEdkYM7A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KiRJdwxzQUUOaa1kmGXyfynLm45NLbxnR+bYVhI2GFCNNb16FaO2WWkFKvUKI+eMn
+	 uubZVFnwnAlaPE575s8aS91WgJCh1uVg2qB/fKz/Xb2pBDZghvqm4LEFHrbSZ5pJhK
+	 xZzWHXL5vSifuHiotbBfQy7xTnpY9K5sXpc/d7Pfx6tMdPj36uhpbaqrN0xy2zGMRH
+	 je7PSZl7Nbr3kx3xMp3t7XjZy4Hq3giKBTcXLZC4ODY/tfj0imEXnhyunfBHzrukXl
+	 BnL9n3U9M7NO2BcBXTmkR2C8GVxsaLnSUamwgOxsMq7XgwYhAMqBsYGAUNLsCFPEhm
+	 h65jTCRyIclAg==
+Date: Sun, 28 Apr 2024 18:21:52 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Paul Geurts <paul_geurts@live.nl>
+Cc: "lars@metafoo.de" <lars@metafoo.de>, "Michael.Hennerich@analog.com"
+ <Michael.Hennerich@analog.com>, "linux-iio@vger.kernel.org"
+ <linux-iio@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: accel: adxl345: Added buffered read support
+Message-ID: <20240428182152.7349129c@jic23-huawei>
+In-Reply-To: <a1d0f85d-2ea7-4966-b842-c6e0028b61b2@live.nl>
+References: <AM0PR09MB26757E9F7575A2357E318C50950F2@AM0PR09MB2675.eurprd09.prod.outlook.com>
+	<20240420135438.03f17072@jic23-huawei>
+	<a1d0f85d-2ea7-4966-b842-c6e0028b61b2@live.nl>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417175037.32499-3-savicaleksa83@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 07:50:36PM +0200, Aleksa Savic wrote:
-> Add support for reading and writing the flow sensor pulses on
-> the Aquacomputer Octo. Implemented by David Flemstrom [1].
+On Mon, 22 Apr 2024 15:17:47 +0000
+Paul Geurts <paul_geurts@live.nl> wrote:
+
+> On 20-04-2024 14:54, Jonathan Cameron wrote:
+> > On Wed, 17 Apr 2024 10:28:34 +0200
+> > Paul Geurts <paul_geurts@live.nl> wrote:
+> >
+> > Hi Paul, various comments inline.
+> >
+> >  
+> >> This implements buffered reads for the accelerometer data. A buffered
+> >> IIO device is created containing 3 channels. The device FIFO is used for
+> >> sample buffering to reduce the IRQ load on the host system.
+> >>
+> >> Reading of the device is triggered by a FIFO waterlevel interrupt. The
+> >> waterlevel settings are dependent on the sampling frequency to leverage
+> >> IRQ load against responsiveness.  
+> > I'm unconvinced that trade off belongs in the driver. Until now we
+> > have exposed all the relevant controls to userspace via bufferX/watermark.
+> > Set that to 0 or 1 if you don't want a fifo and appropriate level for whatever
+> > responsiveness is needed for a particular application.
+> >
+> > The need to manually disable / enable interrupts is also normally something
+> > that needs a close look. Very very occasionally this is necessary but for most
+> > devices IRQF_ONESHOT should provide suitable masking.
+> >
+> > It's also not clear that a trigger is appropriate here. For FIFO equipped devices
+> > like this, the trigger abstraction often doesn't work as we don't have one interrupt
+> > per 'scan' of data.  In these cases it is not necessary to use a trigger at all
+> > and that can simplify things considerably.
+> >
+> > Jonathan  
 > 
-> [1] https://github.com/aleksamagicka/aquacomputer_d5next-hwmon/pull/95
+> This was my first interaction with the IIO subsystem, So these changes were somewhat of a
+> learning experience. Your review comments indicate major refactoring of my patch is in
+> order. I will see when I have time to get to it and resend it at some point.
+
+Great that I didn't put you off too much and I should have said welcome!
+As someone who has a v9 patch set to send out tomorrow (for another area of the kernel),
+I'm well aware there can be quite a learning curve.
+
+
+A few follow up comments below, but mostly guessing what might have made
+things trickier rather than anything useful.
+
+Jonathan
+
+
+> >  
+> >> +	if (ret < 0)
+> >> +		goto out;  
+> > return ret;  
+> >> +	while (regval & ADXL345_INT_DATA_READY) {
+> >> +		ret = regmap_bulk_read(map, ADXL345_REG_DATA_AXIS(0), &axis_data,
+> >> +				       sizeof(axis_data));
+> >> +		if (ret < 0)
+> >> +			goto out;  
+> > The datasheet puts a timing requirement on repeat reads that you need to enforce..
+> > 5 usec.
+> >
+> > return ret;  
 > 
-> Originally-from: David Flemstrom <david.flemstrom@gmail.com>
-> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
+> I didn't find this requirement in the datasheet. I did however write this for ADXL343, which seems
+> to be compatible with ADXL345. But maybe I missed something here?
 
-Applied.
+It's a slow bus, maybe the delay is above that anyway.
 
-Thanks,
-Guenter
+> 
+> >> +		ret = regmap_read(map, ADXL345_REG_INT_SOURCE, &regval);
+> >> +		if (ret < 0)
+> >> +			goto out;  
+> > return directly - going to a label that does nothing makes a reviewer
+> > following code paths have to go see that nothing happens.
+> >
+> > 			return ret;
+> >  
+> >> +	}
+> >> +
+> >> +out:
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +static int adxl345_buffer_preenable(struct iio_dev *indio_dev)
+> >> +{
+> >> +	struct adxl345_data *data = iio_priv(indio_dev);
+> >> +	int ret;
+> >> +
+> >> +	mutex_lock(&data->lock);
+> >> +	/* Disable measurement mode to setup everything */
+> >> +	ret = regmap_clear_bits(data->regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_MEASURE);
+> >> +	if (ret < 0)
+> >> +		goto out;
+> >> +
+> >> +	ret = adxl345_flush_fifo(data->regmap);
+> >> +	if (ret < 0)
+> >> +		goto out_enable;
+> >> +
+> >> +	/*
+> >> +	 * Set the FIFO up in streaming mode so the chip keeps sampling.
+> >> +	 * Waterlevel is set by the sample frequency functions as it is dynamic  
+> > This I don't follow.  Why is it dynamic?  It's fixed for a given run at a given
+> > frequency. I can sort of see a true dynamic adjustment might make sense, but that
+> > would be complex and isn't obviously a problem for the kernel.
+> >
+> > I'd prefer to see this done like the majority of other fifo handling drivers:
+> > Make setting the watermark vs frequency a userspace problem.  
+> 
+> So having an interrupt coming in for every sample on 3200Hz sampling rate completely overloaded my
+> i.MX8M Mini CPU (1600MHz) I was testing this on. This was the main reason to be using the internal
+> FIFO in the accelerometer. But when doing that, the device becomes somewhat unresponsive on the
+> lower frequencies, as it first needs to fill the FIFO before actually firing an interrupt towards
+> the CPU. Therefore I created this, which only uses the water level interrupt on highter frequencies
+> to try to have best of both worlds. But I agree that this should be a userspace choice.
+
+It's a neat bit of code and maybe one day worth considering if we should try to auto
+tune, but definitely not something to do in a driver alongside the initial
+enablement.
+
+> 
+> >  
+> >> +	 */
+> >> +	ret = regmap_update_bits(data->regmap, ADXL345_REG_FIFO_CTL,
+> >> +				 (int)~(ADXL345_FIFO_CTL_SAMPLES_MASK),
+> >> +				 ADXL345_FIFO_CTL_MODE_STREAM);
+> >> +	if (ret < 0)
+> >> +		goto out_enable;
+> >> +
+> >> +	/* Enable the Watermark and Overrun interrupt */
+> >> +	ret = regmap_write(data->regmap, ADXL345_REG_INT_ENABLE, (ADXL345_INT_WATERMARK |
+> >> +			   ADXL345_INT_OVERRUN));
+> >> +	if (ret < 0)
+> >> +		goto out_enable;
+> >> +
+> >> +	/* Re-enable measurement mode */
+> >> +	ret = regmap_set_bits(data->regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_MEASURE);
+> >> +	goto out;  
+> > Don't do this as it makes for messy control flow to review
+> >
+> > 	if (ret)
+> > 		goto out_enabled;
+> >
+> > 	mutex_unlock(&data->lock)
+> > 	return 0;
+> >
+> > out_enable:
+> > ...
+> > Can use guard(mutex)(&data->lock) to avoid need to unlock manually and allow at least
+> > some paths to return directly.  
+> 
+> I am very pleased to find out scoped locking is finally possible in the Linux kernel :-). I didn't know this.
+> 
+
+Pretty new + the more complex corners of what can be done are still
+controversial.  Thankfully mutexes are a simple case.
+
+> >> +	int ret, data_available;
+> >> +
+> >> +	mutex_lock(&data->lock);
+> >> +
+> >> +	/* Disable the IRQ before reading the FIFO */  
+> > This needs a lot more explanation.  Disabling interrupts like
+> > this can be very expensive and can be hard to reason about
+> > + it's not necessary most of the time because of IRQF_ONESHOT.  
+> 
+> I did experience some issues with the interrupts, hence the disabling. But I might have just
+> implemented it badly. I will take a look into why things go bad and try to make it so that
+> disabling IRQs is not needed anymore.
+> 
+
+Often it's a type issue for interrupts - particularly level vs edge.
+Thankfully it's fairly rare to get interrupt controllers that only
+do one or the other these days - that used to be really painful to
+try and handle in a driver.
+
+> >> +
+> >> +	mutex_init(&data->lock);
+> >> +
+> >>  	indio_dev->name = data->info->name;
+> >>  	indio_dev->info = &adxl345_info;
+> >> -	indio_dev->modes = INDIO_DIRECT_MODE;
+> >> +	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_TRIGGERED;  
+> > No need as INDIO_BUFFER_TRIGGERED is set when you register the buffer.  
+> 
+> Didn't know that!
+> 
+
+It's relatively recent (few years ago) so if you are on an older tree
+it might not have been true.
+
+Jonathan
+
 
