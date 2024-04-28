@@ -1,66 +1,58 @@
-Return-Path: <linux-kernel+bounces-161569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD96C8B4DD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:07:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 664E58B4DF9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA1D1B20DEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:06:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0A51C20846
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A612AB663;
-	Sun, 28 Apr 2024 21:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="hWtochC6"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4559B660;
+	Sun, 28 Apr 2024 21:45:19 +0000 (UTC)
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [5.144.164.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A4C389;
-	Sun, 28 Apr 2024 21:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2B617D2
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.164
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714338406; cv=none; b=H40kCCaNxlfLHGzmaWnVL0h6Jy2yFfzFMPNCPGN/eqFQQDttFOuc4KnrSJr3I5pMwsPZR7i0i5/rlfK1lslhzq11EUwB8reJGRB1fcKRHh8ZBZ4LQ1S5T+QVjVSoU8KrJ/kxiDCMCFMYFOoaTZE6DR6xBVzhUUZpsUGFqMI8mj8=
+	t=1714340719; cv=none; b=XLlY+otXjj68TjNQOgJdl9QbCO2WPw+skupGE0PbOjEg6axdawHYwkBLsi19x/1YeVcYtThPImtaN7+GseiBWyqRgTbzuiiWzGJebyEHZuABXTtBkSdmx9iaco9vDjEXtY7S8p1w77fuWqQeM0aycZgKjiTVV67+MrRYue749+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714338406; c=relaxed/simple;
-	bh=qVoyDKva76pyHWAnpgXS+CNDH7/QfVHQPMFgQ33N1Q8=;
+	s=arc-20240116; t=1714340719; c=relaxed/simple;
+	bh=kAVP55YO4U/ubSBWbaDMVA8lpzhP6ZAkZbi2R0GkA5E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V+ova6HX/JBsOisqX76mgniQQFtaBbNlW7dQQC1rUBT465szq79H6KdFBgVwpAQgPHAvrrTAzzVGlUncboWlw8ksKDXmUvHfK6nTKNn5wNWwlgd7EANcV9Utkr7qv2t4lJ+LLwdQX7+qptnQoSXQr993dPjEp5y7JVgTH4euXFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=hWtochC6; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	 Content-Type:Content-Disposition:In-Reply-To; b=B6ntfPdwebzJ+kBCic2afhMuXlixnp0PmgbkqMKTFRKkb4fiWNcqgG/RtNvG5xEr1fV2p7sSQz9y/7e/ln+5WQiXgTv0qJEK0rg2O7IsIIofhVyKn9kcfzNIDDy2fT1WRhA5wZKYKW74QD9i5lyy0aUW8E24Qr2Evyukjom5O+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4VSJt66fNZz9swb;
-	Sun, 28 Apr 2024 23:06:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1714338398;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7yxstpfnkO3d6ouRSTqsWyefS+SUn2WUJo5CNc78Tx4=;
-	b=hWtochC67R8d8LjON5739UYFSl2qdlo+HPeyQ93kCeiu27w1Hc5kL+WNPD3wkURNOl/BFr
-	0AEX3XZygq/wqsMafbK7aJFuzVrgqcAtYLW4J63F9ClE5twZb3i/+vA6fb8YRMx5eLRFja
-	Sw0QfZAGYZorDd6m5SwYqs2X+FxS6GleGpstNtaA4qOA2re3AplSgIKKvFygBLfccJFc7H
-	O21RkqZHP7OR0vDmRJxJbLfvG7envg7eTtQSZ7EKlfmU8NZn6hVOfrVBAx9bs+J667iWHx
-	DJejx6o/LhM10+X0A5pzYxvafEMWb+1J8U0GN6mQwPV4APY+1E+hVkkbspxBpg==
-Date: Sun, 28 Apr 2024 21:06:34 +0000
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: willy@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandan.babu@oracle.com, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, hare@suse.de,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com, Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH v4 08/11] xfs: use kvmalloc for xattr buffers
-Message-ID: <20240428210634.bkarwrwi6rdr6ywx@quentin>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-9-kernel@pankajraghav.com>
- <20240426151844.GH360919@frogsfrogsfrogs>
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 9A1D21F62F;
+	Sun, 28 Apr 2024 23:06:35 +0200 (CEST)
+Date: Sun, 28 Apr 2024 23:06:34 +0200
+From: Marijn Suijten <marijn.suijten@somainline.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, 
+	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Archit Taneja <architt@codeaurora.org>, 
+	Chandan Uddaraju <chandanu@codeaurora.org>, Vinod Koul <vkoul@kernel.org>, 
+	Sravanthi Kollukuduru <skolluku@codeaurora.org>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
+	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>
+Subject: Re: [PATCH 5/7] drm/msm/dpu: Correct dual-ctl -> dual-intf typo in
+ comment
+Message-ID: <mrg3m7awzvozhyg2zwwbawfa6cb6xo7obzooiq3iph6mu3ybfc@b5h2pzxvcjvf>
+References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
+ <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-5-78ae3ee9a697@somainline.org>
+ <76hjmo4sq6sfjgmnvjoienc5aij74pfjtwevnnls65kxinyaxu@y3yydacvcflm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,123 +61,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240426151844.GH360919@frogsfrogsfrogs>
+In-Reply-To: <76hjmo4sq6sfjgmnvjoienc5aij74pfjtwevnnls65kxinyaxu@y3yydacvcflm>
 
-On Fri, Apr 26, 2024 at 08:18:44AM -0700, Darrick J. Wong wrote:
-> On Thu, Apr 25, 2024 at 01:37:43PM +0200, Pankaj Raghav (Samsung) wrote:
-> > From: Dave Chinner <dchinner@redhat.com>
+On 2024-04-18 02:30:59, Dmitry Baryshkov wrote:
+> On Wed, Apr 17, 2024 at 01:57:45AM +0200, Marijn Suijten wrote:
+> > This comment one line down references a single, "same CTL" that controls
+> > two interfaces, so the comment should clearly describe two interfaces
+> > used with a single active CTL and not "two CTLs".
 > > 
-> > Pankaj Raghav reported that when filesystem block size is larger
-> > than page size, the xattr code can use kmalloc() for high order
-> > allocations. This triggers a useless warning in the allocator as it
-> > is a __GFP_NOFAIL allocation here:
-> > 
-> > static inline
-> > struct page *rmqueue(struct zone *preferred_zone,
-> >                         struct zone *zone, unsigned int order,
-> >                         gfp_t gfp_flags, unsigned int alloc_flags,
-> >                         int migratetype)
-> > {
-> >         struct page *page;
-> > 
-> >         /*
-> >          * We most definitely don't want callers attempting to
-> >          * allocate greater than order-1 page units with __GFP_NOFAIL.
-> >          */
-> > >>>>    WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
-> > ...
-> > 
-> > Fix this by changing all these call sites to use kvmalloc(), which
-> > will strip the NOFAIL from the kmalloc attempt and if that fails
-> > will do a __GFP_NOFAIL vmalloc().
-> > 
-> > This is not an issue that productions systems will see as
-> > filesystems with block size > page size cannot be mounted by the
-> > kernel; Pankaj is developing this functionality right now.
-> > 
-> > Reported-by: Pankaj Raghav <kernel@pankajraghav.com>
-> > Fixes: f078d4ea8276 ("xfs: convert kmem_alloc() to kmalloc()")
-> > Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> 
-> Didn't this already go in for-next?
-
-I don't think so. I think Christoph suggested to have it in the LBS
-series and see if MM folks can fix the issue upstream.[1]
-
-[1] https://www.spinics.net/lists/linux-xfs/msg83130.html
-> 
-> If not,
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> 
-> --D
-> 
+> > Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 > > ---
-> >  fs/xfs/libxfs/xfs_attr_leaf.c | 15 ++++++---------
-> >  1 file changed, 6 insertions(+), 9 deletions(-)
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> > diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
-> > index ac904cc1a97b..969abc6efd70 100644
-> > --- a/fs/xfs/libxfs/xfs_attr_leaf.c
-> > +++ b/fs/xfs/libxfs/xfs_attr_leaf.c
-> > @@ -1059,10 +1059,7 @@ xfs_attr3_leaf_to_shortform(
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > index d9e7dbf0499c..7e849fe74801 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > @@ -428,7 +428,7 @@ static void dpu_encoder_phys_vid_enable(struct dpu_encoder_phys *phys_enc)
+> >  	dpu_encoder_phys_vid_setup_timing_engine(phys_enc);
 > >  
-> >  	trace_xfs_attr_leaf_to_sf(args);
-> >  
-> > -	tmpbuffer = kmalloc(args->geo->blksize, GFP_KERNEL | __GFP_NOFAIL);
-> > -	if (!tmpbuffer)
-> > -		return -ENOMEM;
-> > -
-> > +	tmpbuffer = kvmalloc(args->geo->blksize, GFP_KERNEL | __GFP_NOFAIL);
-> >  	memcpy(tmpbuffer, bp->b_addr, args->geo->blksize);
-> >  
-> >  	leaf = (xfs_attr_leafblock_t *)tmpbuffer;
-> > @@ -1125,7 +1122,7 @@ xfs_attr3_leaf_to_shortform(
-> >  	error = 0;
-> >  
-> >  out:
-> > -	kfree(tmpbuffer);
-> > +	kvfree(tmpbuffer);
-> >  	return error;
-> >  }
-> >  
-> > @@ -1533,7 +1530,7 @@ xfs_attr3_leaf_compact(
-> >  
-> >  	trace_xfs_attr_leaf_compact(args);
-> >  
-> > -	tmpbuffer = kmalloc(args->geo->blksize, GFP_KERNEL | __GFP_NOFAIL);
-> > +	tmpbuffer = kvmalloc(args->geo->blksize, GFP_KERNEL | __GFP_NOFAIL);
-> >  	memcpy(tmpbuffer, bp->b_addr, args->geo->blksize);
-> >  	memset(bp->b_addr, 0, args->geo->blksize);
-> >  	leaf_src = (xfs_attr_leafblock_t *)tmpbuffer;
-> > @@ -1571,7 +1568,7 @@ xfs_attr3_leaf_compact(
+> >  	/*
+> > -	 * For single flush cases (dual-ctl or pp-split), skip setting the
+> > +	 * For single flush cases (dual-intf or pp-split), skip setting the
+> 
+> It should be fixed, but in the other way: it's 'single-ctl'. See
+> sde_encoder_phys_needs_single_flush().
+
+As written in the cover letter I was unsure about this comment.
+
+You are right that sde_encoder_phys_needs_single_flush() is supposed to return
+true in pp-split or single-ctl.  However, the second part of the comment (right
+below) is in conflict with another patch that I've sent as part of these series:
+on a single-ctl setup with dual interfaces, the second INTF needs to be marked
+for flushing.
+
+While that observation and fix is for CMD-mode, the exact same comment is found
+downstream for video mode:
+
+https://git.codelinaro.org/clo/la/platform/vendor/opensource/display-drivers/-/blob/display-kernel.lnx.5.4.r1-rel/msm/sde/sde_encoder_phys_vid.c?ref_type=heads#L794-804
+
+You were fixing exactly that in one of your preliminary Active-CTL patches by
+making dpu_encoder_phys_vid_needs_single_flush() return for Active-CTL, so we
+should probably update this comment in the same patch when you send it?
+
+(that is: the flush bit needs to be set for the slave intf in Active-CTL. Before
+Active-CTL, a slave encoder would actually have two CTLs and two INTFs where the
+flush bit was probably skipped on both slaves?)
+
+On a side-note, since the needs_single_flush callback is used elsehwere, I'm
+unsure if that patch affects things in the wrong way since the downstream file
+linked above applies the check for CTL_ACTIVE_CFG directly in-line without
+affecting the callback.
+
+- Marijn
+
+> >  	 * flush bit for the slave intf, since both intfs use same ctl
+> >  	 * and HW will only flush the master.
 > >  	 */
-> >  	xfs_trans_log_buf(trans, bp, 0, args->geo->blksize - 1);
-> >  
-> > -	kfree(tmpbuffer);
-> > +	kvfree(tmpbuffer);
-> >  }
-> >  
-> >  /*
-> > @@ -2250,7 +2247,7 @@ xfs_attr3_leaf_unbalance(
-> >  		struct xfs_attr_leafblock *tmp_leaf;
-> >  		struct xfs_attr3_icleaf_hdr tmphdr;
-> >  
-> > -		tmp_leaf = kzalloc(state->args->geo->blksize,
-> > +		tmp_leaf = kvzalloc(state->args->geo->blksize,
-> >  				GFP_KERNEL | __GFP_NOFAIL);
-> >  
-> >  		/*
-> > @@ -2291,7 +2288,7 @@ xfs_attr3_leaf_unbalance(
-> >  		}
-> >  		memcpy(save_leaf, tmp_leaf, state->args->geo->blksize);
-> >  		savehdr = tmphdr; /* struct copy */
-> > -		kfree(tmp_leaf);
-> > +		kvfree(tmp_leaf);
-> >  	}
-> >  
-> >  	xfs_attr3_leaf_hdr_to_disk(state->args->geo, save_leaf, &savehdr);
+> > 
 > > -- 
-> > 2.34.1
+> > 2.44.0
 > > 
-> > 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
