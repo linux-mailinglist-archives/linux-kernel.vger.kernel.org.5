@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-161442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C4C8B4C05
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:46:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A644B8B4C0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:50:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D805B28165A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:46:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F13C7B21232
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90E96D1CE;
-	Sun, 28 Apr 2024 13:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E63C6E613;
+	Sun, 28 Apr 2024 13:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JYZIobLc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KRbtsykE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D416BFBD;
-	Sun, 28 Apr 2024 13:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426866CDA9;
+	Sun, 28 Apr 2024 13:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714311977; cv=none; b=QaTBy+eOdLwXRHv7T6upYJ432DIaaw4QQdXBMipryTJ7gQd987OZwYycLEP6ZbhX+umvgXBR9ABvCrmRSwEVrputqgNbX2mQSsl3OkUGMmCS2mBDdD5kEDVR75uFzKz4vV+zPb0JCgLFNMlSCw9b3z0otG28C55d+0bSV+v8f6E=
+	t=1714312206; cv=none; b=GTDUqi7YPSZOblF8/yU6qXQJinS87MSLnQOJJMZleakkV+HBq4iT9LJQ1D/WrqquDW9AXp6rGLOou8mh65NgqdLemtT9zA3UP2lGik886FJ9DSLyoRaefScKpG0JVra5+4soNSwPwjnhUIPyu28NJ2VtIFZr1apDUchguaWzVGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714311977; c=relaxed/simple;
-	bh=XGeSlMdeDD1Qsf+xehzikrE+33otHTVL2krpJMt5DKk=;
+	s=arc-20240116; t=1714312206; c=relaxed/simple;
+	bh=GzXNV2+6fujuS9z/eEQVtBqOWZlr/UHD92MQ+jbSz1M=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JDFCaDYbjkKRViadbJuNND941s+htHztf/tCCl16PqLr/70m4Owfr3uriulAaGceEpzNCZp5+v1j21qb+xX9EvgXuKZo7QWTrUppyQyEDXyReKA8UNxizT851uNRtWTxTj8Q6bc/UFEw2jD7zbRd+MdGgRsaC9ZUhywX3LNdnpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JYZIobLc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB8DC113CC;
-	Sun, 28 Apr 2024 13:46:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Bi9evQ4chJlmiHPkvRYBM5QTCBYE5zT/hvdO75f7CmWbRQhgEwWQp8VIU6YhnbWHQYEvbEji1mnPW/BG9wPrI2yJ5yqPEtdn3SjTZTVVKXlcdpD84xX9b9ZAwKKU0EO3u1+UIgt3U2QQpj3sbRMF0fdy7chI3p3Fc5BaDQzZgVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KRbtsykE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC11C113CC;
+	Sun, 28 Apr 2024 13:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714311976;
-	bh=XGeSlMdeDD1Qsf+xehzikrE+33otHTVL2krpJMt5DKk=;
+	s=k20201202; t=1714312205;
+	bh=GzXNV2+6fujuS9z/eEQVtBqOWZlr/UHD92MQ+jbSz1M=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JYZIobLcbB6cD1kT4ntLrXTtY7O2WhUy0BSeOJjbeRKtt5tvpipAr2izMNopXdQyk
-	 pPVqDColO/fTFJDJMqv1+tt7X1vhnjD/Upx/e6Po+iqrP+FPSytbleMeFkoN6ykTP9
-	 g/De7HCVuuFJWvG67VTBPqLhGcGN0uDxl+V3+juw0s39ZUXI2ocGhdLt0FHR5XVhQ+
-	 Yibiu7BWlHRCnopbQf0LAZfsPsNTHga9NwKb0XiMPH6wpWfYY+kGuzv2WgfnBFvvWt
-	 oIjOD+Hrly1XGAZQEgV85DGtyJbMfNPMzNYVKwiNwjG+q5PRc4iMVTf+vJ7g26V6QJ
-	 35Mxn7ob0mxfQ==
-Date: Sun, 28 Apr 2024 14:46:06 +0100
+	b=KRbtsykEpqyA+5jvtbu5T1xBhEVuA0m6B1xUcvSbuEGO3IPUwg7hCAJ7oW++DSNYB
+	 DQqPkh29dezgoZ5YUTBSmKZsNKTPkpDJ9PoSUOyLF2FCn7AHBBkVcesO8D2BbrtnQ8
+	 Cjv4H19AC0mdezi9hjVdFM7YsFroUdGWwpPHWWcfZfkurb4ikKbGoExCVLcEx/IlSW
+	 l5IMi5Qo/CKbbF/G1HMgCS2Gul7lJbbiEqdYT0hLTlHE8FZSNonIIsTf8v8czpcrBO
+	 RzRcKE1+Oj46CkW6eiAE1P3W9xR+Tu0nNaBMAA1vEcmXnSqp1FnGIST3RDLwPk0UHx
+	 fU7VtfQKVbATw==
+Date: Sun, 28 Apr 2024 14:49:53 +0100
 From: Jonathan Cameron <jic23@kernel.org>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Marcelo Schmitt <marcelo.schmitt1@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Andrew Hepp <andrew.hepp@ahepp.dev>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
- negative values
-Message-ID: <20240428144606.5b3d9a7e@jic23-huawei>
-In-Reply-To: <20240427195758.GA3350@debian>
-References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
-	<Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
-	<20240427195758.GA3350@debian>
+To: kernel test robot <lkp@intel.com>
+Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, conor+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, robh@kernel.org, nuno.sa@analog.com,
+ oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 3/7] iio: imu: adis16475: Re-define ADIS16475_DATA
+Message-ID: <20240428144953.1486da0d@jic23-huawei>
+In-Reply-To: <202404270958.43fSMp4J-lkp@intel.com>
+References: <20240426135339.185602-4-ramona.bolboaca13@gmail.com>
+	<202404270958.43fSMp4J-lkp@intel.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,83 +63,65 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 27 Apr 2024 21:57:58 +0200
-Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
+On Sat, 27 Apr 2024 10:00:49 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-> Am Sat, Apr 27, 2024 at 05:49:18AM -0300 schrieb Marcelo Schmitt:
-> > Hi Dimitri,
-> >=20
-> > Interesting patch this one.
-> > I think this does apply, although, the cold junction register has for s=
-ign bits
-> > so I think we could also have a mask to clear those out.
-> > Some code suggestions inline.
-> > =20
-> Hi Marcelo,
+> Hi Ramona,
 >=20
-> the temperature bits are in two=E2=80=99s complement format for hot and c=
-old
-> junction. Equations to calculate the temperature are also the same in
-> the datasheet. There should be no difference when handling them. I don't
-> think we need to do anything more with the value except sign_extend it to
-> the appropriate data type. If the sign bits aren't right, there is a bug
-> in the chip, until then futher processing of it is unneeded. I could add
-> a comment here if it helps.
+> kernel test robot noticed the following build warnings:
+>=20
+> [auto build test WARNING on jic23-iio/togreg]
+> [also build test WARNING on linus/master v6.9-rc5 next-20240426]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>=20
+> url:    https://github.com/intel-lab-lkp/linux/commits/Ramona-Gradinariu/=
+dt-bindings-iio-imu-Add-ADIS16501-compatibles/20240426-215728
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git tog=
+reg
+> patch link:    https://lore.kernel.org/r/20240426135339.185602-4-ramona.b=
+olboaca13%40gmail.com
+> patch subject: [PATCH 3/7] iio: imu: adis16475: Re-define ADIS16475_DATA
+> config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/202404=
+27/202404270958.43fSMp4J-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240427/202404270958.43fSMp4J-lkp@intel.com/reproduce)
+>=20
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404270958.43fSMp4J-lkp=
+@intel.com/
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+> >> drivers/iio/imu/adis16475.c:734:34: warning: 'adis1650x_timeouts' defi=
+ned but not used [-Wunused-const-variable=3D] =20
+>      734 | static const struct adis_timeout adis1650x_timeouts =3D {
+>          |                                  ^~~~~~~~~~~~~~~~~~
+>=20
 
-Agreed - by my reading the original patch is correct. Maybe it would act
-as cleaner 'documentation' to have the sign_extend32() for the cold junctio=
-n be
-from bit 12 rather than 15, but I'm not sure it's worth the effort.
+I missed that entirely when reading.  Indeed, looks like a cut and paste
+issue where some entries should still be using this structure and got
+accidentally modified.
 
-Andrew, would be great if you can review this fix in case we are all missing
-something!
+A case of robots saving the day :)
 
 Jonathan
-
 >=20
-> > On 04/24, Dimitri Fedrau wrote: =20
-> > > Temperature is stored as 16bit value in two's complement format. Curr=
-ent
-> > > implementation ignores the sign bit. Make it aware of the sign bit by
-> > > using sign_extend32.
-> > >=20
-> > > Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF =
-converter")
-> > > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> > > ---
-> > >  drivers/iio/temperature/mcp9600.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperat=
-ure/mcp9600.c
-> > > index 46845804292b..7a3eef5d5e75 100644
-> > > --- a/drivers/iio/temperature/mcp9600.c
-> > > +++ b/drivers/iio/temperature/mcp9600.c =20
-> >=20
-> > #define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
-> > ...
-> >  =20
-> > > @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
-> > > =20
-> > >  	if (ret < 0)
-> > >  		return ret;
-> > > -	*val =3D ret;
-> > > +
-> > > +	*val =3D sign_extend32(ret, 15); =20
-> > 	if (chan->address =3D=3D MCP9600_COLD_JUNCTION)
-> > 		*val &=3D ~MCP9600_COLD_JUNCTION_SIGN_MSK;
-> > =20
-> This won't work. Assuming int is 32-bit ret =3D 0xfffe and *val =3D -2 af=
-ter
-> sign_extends32, this would result in *val =3D -61442 which is wrong.
-> > > =20
-> > >  	return 0;
-> > >  }
-> > > --=20
-> > > 2.39.2
-> > >=20
-> > >  =20
-> Best regards,
-> Dimitri Fedrau
+> vim +/adis1650x_timeouts +734 drivers/iio/imu/adis16475.c
+>=20
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  733 =20
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13 @734  static const struct adis_tim=
+eout adis1650x_timeouts =3D {
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  735  	.reset_ms =3D 260,
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  736  	.sw_reset_ms =3D 260,
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  737  	.self_test_ms =3D 30,
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  738  };
+> fff7352bf7a3ce Nuno S=C3=A1 2020-04-13  739 =20
+>=20
 
 
