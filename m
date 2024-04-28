@@ -1,104 +1,164 @@
-Return-Path: <linux-kernel+bounces-161575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37998B4DEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:25:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 514468B4DEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:31:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77F9D1F210CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07DE428136F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B274DB647;
-	Sun, 28 Apr 2024 21:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A34B676;
+	Sun, 28 Apr 2024 21:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MMVBtUMS"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="T46qo4nu"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEFB8F7A;
-	Sun, 28 Apr 2024 21:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B5DA937
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714339550; cv=none; b=Vi6TYwML1OHNKoe+pJ6ZQPG2JOAPWwgdzlsbo8JzEw9GFyexAfsHQjQienGCSa+oeRMWfHXbW3y9aN9JTwWzagZXpy0TpNVerf6XjAQNTX9AMQszBmlLsmTXAiBYdYVrnPyPqA56vLdj6em8gVEKOOM92LHLB2LarS3CbwtOjAk=
+	t=1714339854; cv=none; b=ZcrXO7zRI6Ag5Yl/RNFps1+KQWuND5HQIDWFHPdB4/jtqNuy7iPdCwjS3BeEcFXaatXsgjYggRAe6JmZf2Nn/UaIdo5c/2ltsF00W0Gd5cOXWCBzrgv1NfGpNl6L1hQemRYrXa1W7vtwvSyl+i7yrL3AOLFa5+GJVgK/n+0M5uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714339550; c=relaxed/simple;
-	bh=0NtjuzCB6VMMDSqVidiBsCYkBIdFo0n0n0CZImHiAmc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Vt4uLWSM1IqvudfNO3AyHlMiSVF/Ni6DG5r7HK2sFZk7FUakx8wWXJxSBcwL5iwsOQH9arMaN1lHAfnNO37Jen3gWaNsAH77T0EJDWYvT3Q9jGMC9azvdCYs5BY0F0CZj62aYNWcfyJ4gj2xXJrZqGf0CV+JfyXCEQlNl1DV4K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MMVBtUMS; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714339536;
-	bh=BCxazszJXPCHZtxZt5gmgHk4ZPfx+7MiooArslteiyE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MMVBtUMSlGQcbstEb1Tcmw+F2rWJNxe4Pw8vjGYXXVansGmH1pz9WaqUesdiKlgny
-	 R1Rr4ruhRRQHod5pzmbFe6maO1lxMV4C8Mg7d+i2zgbIluWdqLC9DurGXw0EvJk1+K
-	 TnKb0CRxYK8uS8rXK5ucvjpSfjJaO32DbjBV7jTfEkAG6EtBWpj8yyrd64F9/H7xly
-	 Igm3htfiNcXbmu249DgEe1+B+eeIvXL7Zf0TBX2XPRmk28X4TEokqzugAwtmld8O+S
-	 mxzwqb1lfERTPma+ZALj159nOlCspqoZT/LHS4cJWHI4I7bQJpK5LxDqhP6uGQASNU
-	 6i1HOYV1TFvKA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VSKJ05Rlzz4wcd;
-	Mon, 29 Apr 2024 07:25:36 +1000 (AEST)
-Date: Mon, 29 Apr 2024 07:25:34 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the mm-nonmm-stable tree
-Message-ID: <20240429072534.7c2cccbd@canb.auug.org.au>
+	s=arc-20240116; t=1714339854; c=relaxed/simple;
+	bh=iGTiqLpUAG8tJk0tZZXhVpkv3sDrq4xQk2Vsf0SnG0c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UkPVr9inEy7oH5dyuFXuCuDoHgTMD8OUrSjsjMjYvmHuX1EZZYHiHjV4Lip5nj5r+eWjgO+UtUPs6MWu8WewW6rIcwYD+MktblQO1H/gy2PqfRF1oGMxSZ3NYOT+T8HxdtobSOj+rcIGfJd8Ojw1NhcL+FXTd1MMEPyLlPo/h4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=T46qo4nu; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7f01c265ab6so417839241.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 14:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714339851; x=1714944651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uJJ35N4q0VyKFRaZhKEeRutim4StKWKCGfhx+lo+8WU=;
+        b=T46qo4nuLxB/m8R1EzSBwQiyztMf4/wQbuFE0yGSPR3DlrA8GwtAEBHQ8KJhtz1StC
+         TfiPbAQb/M08wrLTbSS7JT6S6uhIzfwvlW4Zbf2SZStO7u5U/GRs0N39qwCGK+8tnttv
+         TW15AQx8gmyHloHohM9bVuV2GfLx/yFOEqCeiVpeWbPmSgTrwg4eMGJLqtLkVM+2veru
+         XrcXqq88Sj/Nbjn2cMDgI34excSxccFRFAMHkK3pdeCE5oC++yo8MmZKmRI/2vu7g3eP
+         BW/JzZ1Y3XSl0bTdpurE1tyGsabsoXyllaEFoXEbXMUIyjuIGxmO0Qg6L/iDbvloHuwA
+         qtUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714339851; x=1714944651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uJJ35N4q0VyKFRaZhKEeRutim4StKWKCGfhx+lo+8WU=;
+        b=SY+HqunMLDyEmA8PS+BhCHmhn8M4lCI7IrLqrzg21dPc4+e+VAt9cAZhYTSBomz8f0
+         OLnmGzlogc3FEbSYDnx7D3YH/P4Zf364UXb2i1LmlDG7Shz8XFipIbB6Tbvm7bC9WDg3
+         bk3uRuslYOgiSKAtsXhRGeheKLZ6sun5rX9g+by+qwWlHwrgdVxcMaemKAQ98AV1QcLM
+         sUUSRiTz40d+vZYJlMqkYH1b/tMfBoyN5ZWzZyOau8nqlcIKvloweO+nt3fdTozQvad9
+         //3U6ObbHb1Eoz8qxALGCnXGx/rnw6P95OM7kldPCbIpAYudqLrV1c9WTY9yCaDTkThy
+         XvhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWFrASYOo9FaxElVk4N7/rEvDOyVWZwWF+Tz0HthVVMUuplwoYR2Xm8gCDO6UCaeI+9/8J3TFNe1p4EbEoAi9c5Cmh6AWypK+Zj+tZ5
+X-Gm-Message-State: AOJu0Yxhi0Iensd9Ith3xqQk2CuvsOW32UCwPMqZuuFDr7HKaa/2QfI+
+	Ru3bi2LkntnNCnX4dH7UETGLZqUJOw1CCmXfyh0WvF651Wk0/xJrRc3cyseDQd8du6//eLvqkgs
+	tZsCUU9KpvVrm2wGuSO4JnyvPWi6BboiEKVTb
+X-Google-Smtp-Source: AGHT+IF8s3jPedCe069Eq93UJ1szjQ8DEEkODSmOra+9QpZeoqVtaQCCYqCnnCYq10+dMd4Mf9SVZZ7nuqKSS4JjZ6Q=
+X-Received: by 2002:a05:6122:369f:b0:4c0:24e6:f49d with SMTP id
+ ec31-20020a056122369f00b004c024e6f49dmr9623078vkb.1.1714339851513; Sun, 28
+ Apr 2024 14:30:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kUAQAe_0TJ2JH5=KbyKbdJy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/kUAQAe_0TJ2JH5=KbyKbdJy
-Content-Type: text/plain; charset=US-ASCII
+References: <20240426133310.1159976-1-stsp2@yandex.ru> <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+ <8e186307-bed2-4b5c-9bc6-bdc70171cc93@yandex.ru> <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
+ <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
+In-Reply-To: <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Sun, 28 Apr 2024 14:30:40 -0700
+Message-ID: <CALCETrXPgabERgWAru7PNz6A5rc6BTG9k2RRmjU71kQs4rSsPQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
+To: stsp <stsp2@yandex.ru>
+Cc: Aleksa Sarai <cyphar@cyphar.com>, "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	Stefan Metzmacher <metze@samba.org>, Eric Biederman <ebiederm@xmission.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
+	David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org, 
+	linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	=?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, Apr 28, 2024 at 2:15=E2=80=AFPM stsp <stsp2@yandex.ru> wrote:
+>
+> 28.04.2024 23:19, Andy Lutomirski =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> Doesn't this have the same problem
+> >> that was pointed to me? Namely (explaining
+> >> my impl first), that if someone puts the cred
+> >> fd to an unaware process's fd table, such
+> >> process can't fully drop its privs. He may not
+> >> want to access these dirs, but once its hacked,
+> >> the hacker will access these dirs with the
+> >> creds came from an outside.
+> > This is not a real problem. If I have a writable fd for /etc/shadow or
+> > an fd for /dev/mem, etc, then I need close them to fully drop privs.
+>
+> But isn't that becoming a problem once
+> you are (maliciously) passed such fds via
+> exec() or SCM_RIGHTS? You may not know
+> about them (or about their creds), so you
+> won't close them. Or?
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+Wait, who's the malicious party?  Anyone who can open a directory has,
+at the time they do so, permission to do so.  If you send that fd to
+someone via SCM_RIGHTS, all you accomplish is that they now have the
+fd.
 
-  14c7095a68e0 ("LoongArch/tlb: fix "error: parameter 'ptep' set but not us=
-ed" due to __tlb_remove_tlb_entry()")
+In my scenario, the malicious party attacks an *existing* program that
+opens an fd for purposes that it doesn't think are dangerous.  And
+then it gives the fd *to the malicious program* by whatever means
+(could be as simple as dropping privs then doing dlopen).  Then the
+malicious program does OA2_INHERIT_CREDS and gets privileges it
+shouldn't have.
 
-This is commit
+But if the *whole point* of opening the fd was to capture privileges
+and preserve them across a privilege drop, and the program loads
+malicious code after dropping privs, then that's a risk that's taken
+intentionally.  This is like how, if you do curl
+http://whatever.com/foo.sh | bash, you are granting all kinds of
+permissions to unknown code.
 
-  7ab22b5c2af5 ("LoongArch: Fix a build error due to __tlb_remove_tlb_entry=
-()")
+> >> My solution was to close such fds on
+> >> exec and disallowing SCM_RIGHTS passage.
+> > I don't see what problem this solves.
+>
+> That the process that received them,
+> doesn't know they have O_CRED_ALLOW
+> within. So it won't deduce to close them
+> in time.
 
-in Linus' tree.
+Hold on -- what exactly are you talking about?  A process does
+recvmsg() and doesn't trust the party at the other end.  Then it
+doesn't close the received fd.  Then it does setuid(getuid()).  Then
+it does dlopen or exec of an untrusted program.
 
---=20
-Cheers,
-Stephen Rothwell
+Okay, so the program now has a completely unknown fd.  This is already
+part of the thread model.  It could be a cred-capturing fd, it could
+be a device node, it could be a socket, it could be a memfd -- it
+could be just about anything.  How do any of your proposals or my
+proposals cause an actual new problem here?
 
---Sig_/kUAQAe_0TJ2JH5=KbyKbdJy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> > This is fundamental to the whole model. If I stick a FAT formatted USB
+> > drive in the system and mount it, then any process that can find its
+> > way to the mountpoint can write to it.  And if I open a dirfd, any
+> > process with that dirfd can write it.  This is old news and isn't a
+> > problem.
+>
+> But IIRC O_DIRECTORY only allows O_RDONLY.
+> I even re-checked now, and O_DIRECTORY|O_RDWR
+> gives EISDIR. So is it actually true that
+> whoever has dir_fd, can write to it?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYuvs4ACgkQAVBC80lX
-0Gx0dQf/Tm4tELjrriq/ZQ3Vv+K4028D4aeFZ7pyVobxbSRKg2sWFiDFAf3DvV0s
-7DE2qK+ZYSCGjsJuFHZo/lKOBl879P5pzNdjBHnXhAxLcv4jvtoUd9rQtFGyvtqh
-SXAurxXZ6OccWo2hdRQ2xfRbiNLDGthzHgEPcmlSPH7czhCs9ZEIadLL3qbepY5D
-jv80V+sJYfWgy7B5W1/C96x/7vZKVB63b088E8W0VRKu6lYXGafKSGzrUZvHJ5jF
-yBNzfOONnKx+PhadsCX5Vw6x5RfWETjE1J6ClRShHs+id+y22Xjmut1nJZnxXZm+
-GkeAshGI49cOlUxDl8X2rt259DrJPA==
-=uE62
------END PGP SIGNATURE-----
-
---Sig_/kUAQAe_0TJ2JH5=KbyKbdJy--
+If the filesystem grants that UID permission to write, then it can write.
 
