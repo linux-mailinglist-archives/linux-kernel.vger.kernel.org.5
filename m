@@ -1,109 +1,148 @@
-Return-Path: <linux-kernel+bounces-161346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2AD8B4AFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6B418B4B02
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E34C1C209CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB9C11C20EDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:33:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0815354F8A;
-	Sun, 28 Apr 2024 09:30:36 +0000 (UTC)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378CF5576D;
+	Sun, 28 Apr 2024 09:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXgk+ZaC"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244C854BCB
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AD554904;
+	Sun, 28 Apr 2024 09:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714296635; cv=none; b=eA0Hp58YleH4+6CUz2/uMP/PSjjtbdmTFMEA8x1vjUMSeyLtli8lUu7H3PO7Rd5KbWJIG/vr8ZhdYFrjVIhk7qsPp/IQ/qImH2UKIqrR5fbq5DdA40gt6ifhjvRo2ZmeK9j332QLKAd8YqAnhIhG7IoUSgmd7+g3GQBMuonvrKY=
+	t=1714296825; cv=none; b=Dj7Wy7HTABvquxg31CJRD5AvQk7Imw1YVJE1imLbuKkamETOrO/1ByMGdZP23fz5rhU+Yri95RZnP5EXp1OzOejCCjpQisaT8Q0SPtTT5grbUkWBSokU4GXYBatAdZjg3G6SgXjeyiE/CUJNbbfMu/8nAiyEYnTlE6QArtctp7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714296635; c=relaxed/simple;
-	bh=hnUAp2WDKyiObcMdsrFeo3ocN7uAoYQ8xV318g1ejRk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e2NBKcoHddGWhqF5GTZbf+m32+aJLfX3D9JoKZsE6s7KKRxJFfVIu7Vh+piPEi7gsiIyVm1GZoTuC3ijOduVq+V3QY/78+JYueeTcFLC4F0/JL1DTf4107Nq2yqClM7BmwARZ7JEgKqlQLHeSx5MqPu9l8CUbgiVhg0DmDmnajM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+	s=arc-20240116; t=1714296825; c=relaxed/simple;
+	bh=9/H4hIcmfu3JjOnIknoqVVHVuWndxPUkScSTTOjWtG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rW0PxVdwZz3+lN679IMlUBpHHU41f/63cNBWc3ly6DSXzq49NrD9PC/7JcedrhyAhdMAZSUtWk9KHlSnJPfoIxRqASmsaNkZ+KHTWTs364Q3dLYY6YxiwXruJCcmpJak70Yv6Ql7R1FBd8Plb4Mr1qkrHetfgtcY8nyMR4fv250=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXgk+ZaC; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-349bd110614so653840f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 02:30:33 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e5715a9ebdso29934785ad.2;
+        Sun, 28 Apr 2024 02:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714296823; x=1714901623; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8y4J2jKG4zMmITnzKwBDxurX5+DaqJx/4k4xBWp5hO0=;
+        b=EXgk+ZaCl+3bGpJ2C7A0ZIR8drscLI/4k97m8HeskipOVmmbf8SqmWNc31qCC508m7
+         3Y7YbqWiYZ2OINXnufQ5LSkiYsplF/Xf03193/DkTciTbe1F7AWbyNzLSHfNh41+P9MU
+         LtUAu796OO3rT3OOF+CVJ3jhdUhDR89ZZ4noscO57r71bFmjO0V+rx6MphyCJyIkHDHG
+         QLentiqDwocZM4vTBOF3yKGbCfzuChl4D6zw45HbB7KLSXfsMKqehV4QfxrNbCOkNaQf
+         bqygTaGSMStwOCg2vUuDt0NJVpgYswIHqVNxENokl8wC6aswB24ytHBdywH6mY3MWut4
+         9GMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714296632; x=1714901432;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fiKNDgQsfHZbm+O/UaLu7MdhwiG+0tZh6lGdIYblQQg=;
-        b=XkaX2GPbXuWPy002KKyyyy8iQiRRKIhIqVC05IwWHjtdZJJA3NDhwN/AH2+kkES134
-         vQ3X/DvRlYe2GSw3MMBSbxm5DV3s5cEFOFhhfbMhX0jSM7ccD8XlnpqpBH0xvOiSa0+3
-         MexZmOdhzKcDAMIgTFKR7aGj+lfWFbDDaBgnpIDC15jMMuAvi2pVyMHnFaCmQniiXbSI
-         TLWT7U+vubNrZPZbUASalTfluOwFdkixgnHMTFBqUepqi9J6tqDXis1SJk1WsdTcg+lS
-         gbmIg9aaxsWdgGYY8Nwhs8/Ro3MrdTgtkTR9dWDL3pQO6dN+hwZpxNRbNdCGh6faXzQT
-         VUSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVB/xSof1i5/Dg3syU9eJVLQRZYJL8BwDV/WqFh53/VZiZIs+cHFWLEqN0iMEosjVyIKIIDow7MQTx8sU5D96SpzaSG9JXPajcdMcjG
-X-Gm-Message-State: AOJu0YyjhHHj8u/aC2jQ9zEfOwiId1rrjaHFkMMWGqnnU46fn0813maU
-	k1P96wXwz5PFratJBET6hm6vAGnRQ0CdwxYMLX6aqku2JnBrpTFv
-X-Google-Smtp-Source: AGHT+IGUUB4NZod29j0kMAukLhnu1vGK5/0QbtkzyfX+BfXcXARP3X/rtYYP16Z/G6kmP2SlXRbtoQ==
-X-Received: by 2002:a05:600c:3b04:b0:41a:3150:cc83 with SMTP id m4-20020a05600c3b0400b0041a3150cc83mr5327499wms.2.1714296632291;
-        Sun, 28 Apr 2024 02:30:32 -0700 (PDT)
-Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
-        by smtp.gmail.com with ESMTPSA id k29-20020a05600c1c9d00b00418948a5eb0sm41394558wms.32.2024.04.28.02.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 02:30:31 -0700 (PDT)
-Message-ID: <d206c1d0-5935-476e-be19-9bec537af1b8@grimberg.me>
-Date: Sun, 28 Apr 2024 12:30:30 +0300
+        d=1e100.net; s=20230601; t=1714296823; x=1714901623;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8y4J2jKG4zMmITnzKwBDxurX5+DaqJx/4k4xBWp5hO0=;
+        b=JQV6oHQORGkn3zzQIyAIxvJ7/dk9wSYnMTiKlihRqKfJwkRSxWkvO7hg9hyCY8aN1K
+         OP8ltKqvOBXlpr1UQQjNntk+4HB6SQlim5LKiHeahiBrg28nouC5xCOqQBYoa/ki2p03
+         GfjYTO9dqxXl0FJNG3UckbX3S4c/BWws4JJQARUC/p1PMvd6GB+Jm82+ddDFp1HvE15k
+         nsWIcYjXWNSZY5/L2ZZOKMIv5fITR2bY1N6Umtsb4Kv386SrGF5prLz5hUJc1Udztm2A
+         3vMwwr0KcLXs9HtZb39u5RTbapu16vd/U5XKSpXsraIUf6Qa7p/BvFc/GDRAJU83M4dM
+         tPYg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHhXQe/e13LyOGTfM4/rtKMvKEYY7/MKyilp0bhodmfemOeGTfkQSybJ26mOCUSzVQIxW/8/QzJOmJlK52jr+HfGBHBpy+0pS1AWvY/+PxEdHKrj2s31NtZMVflbRbh2YmqagW6UMNDuIPdrq8grcJ0fk554A0xxsafn72zAQ4TkA/b1vtY9EaE4JzFtUVmY/XSe/lkw8C1zQQhg==
+X-Gm-Message-State: AOJu0YyJzGg3y6J34AN4SlFX64rZKMWPkHIhUXIlA7WQBPnlNNO5jv3a
+	3LOULX57KB/aMULPGt8DoD1U2tRdNPA1eYdEcTqNxQsHLjF2gzIx
+X-Google-Smtp-Source: AGHT+IGY8wQOviArarfgPhxPvt9bnQiBDGjv4NNlhGEdkQKoEG2Trea3tp+JYSu9ILqwtee0EG7LMA==
+X-Received: by 2002:a17:902:bb83:b0:1de:fbc8:53af with SMTP id m3-20020a170902bb8300b001defbc853afmr3761373pls.25.1714296823253;
+        Sun, 28 Apr 2024 02:33:43 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id l18-20020a170903005200b001e85cf937ffsm18171609pla.101.2024.04.28.02.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 02:33:42 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id A981B184692DC; Sun, 28 Apr 2024 16:33:36 +0700 (WIB)
+Date: Sun, 28 Apr 2024 16:33:36 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com
+Cc: UNGLinuxDriver@microchip.com, Thorsten.Kummermehr@microchip.com,
+	Pier.Beruto@onsemi.com, Selvamani.Rajagopal@onsemi.com,
+	Nicolas.Ferre@microchip.com, benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 01/12] Documentation: networking: add OPEN
+ Alliance 10BASE-T1x MAC-PHY serial interface
+Message-ID: <Zi4X8NO9SkhffJ98@archie.me>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-2-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Bug Report] nvme connect deadlock in allocating tag
-To: Wangbing Kuang <wangbing.kuang@shopee.com>
-Cc: james.smart@broadcom.com, kbusch@kernel.org, axboe@fb.com, hch@lst.de,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
- chunguang.xu@shopee.com
-References: <20240428063147.88058-1-wangbing.kuang@shopee.com>
- <d200fc7c-c781-49f1-8277-bdb5d537b1f4@grimberg.me>
- <CAG89T6Yyx4f6Dt__L=Ku4AwCzuEUhEOOEjuXbdE+GSSqVJVZ-g@mail.gmail.com>
-Content-Language: he-IL, en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <CAG89T6Yyx4f6Dt__L=Ku4AwCzuEUhEOOEjuXbdE+GSSqVJVZ-g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5Fqs5imMNEU2vqXw"
+Content-Disposition: inline
+In-Reply-To: <20240418125648.372526-2-Parthiban.Veerasooran@microchip.com>
 
 
+--5Fqs5imMNEU2vqXw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 28/04/2024 12:16, Wangbing Kuang wrote:
-> "The error_recovery work should unquiesce the admin_q, which should fail
-> fast all pending admin commands,
-> so it is unclear to me how the connect process gets stuck."
-> I think the reason is: the command can be unquiesce but the tag cannot be
-> return until command success.
+On Thu, Apr 18, 2024 at 06:26:37PM +0530, Parthiban Veerasooran wrote:
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 04e5f7c20e30..79fa7abb4ec9 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16400,6 +16400,12 @@ L:	linux-rdma@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/infiniband/ulp/opa_vnic
+> =20
+> +OPEN ALLIANCE 10BASE-T1S MACPHY SERIAL INTERFACE FRAMEWORK
+> +M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+> +L:	netdev@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/networking/oa-tc6-framework.rst
+> +
+>  OPEN FIRMWARE AND FLATTENED DEVICE TREE
+>  M:	Rob Herring <robh+dt@kernel.org>
+>  M:	Frank Rowand <frowand.list@gmail.com>
 
-The error recovery also cancels all pending requests. See 
-nvme_cancel_admin_tagset
+I can't apply this series on top of current net-next due to MAINTAINERS diff
+above (on context line 16400 I have Omnivision entries). Care to reroll?
+(Hint: also specify --base=3D to git-send-email(1) so that I and other
+reviewers know where to apply this series.)
 
->
-> "What is step (2) - make nvme io timeout to recover the connection?"
-> I use spdk-nvmf-target for backend.  It is easy to set read/write
-> nvmf-target io  hang and unhang.  So I just set the io hang for over 30
-> seconds, then trigger linux-nvmf-host trigger io timeout event. then io
-> timeout will trigger connection recover.
-> by the way, I use multipath=0
+Confused...
 
-Interesting, does this happen with multipath=Y ?
-I didn't expect people to be using multipath=0 for fabrics in the past few
-years.
+--=20
+An old man doll... just what I always wanted! - Clara
 
->
-> "Is this reproducing with upstream nvme? or is this some distro kernel
-> where this happens?"
-> it is reproduced in a kernel based from v5.15, but I think this is common
-> error.
+--5Fqs5imMNEU2vqXw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It would be beneficial to verify this.
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZi4X5gAKCRD2uYlJVVFO
+o1AvAP4nLo1+SkG4LHoDx0UG7x2GO8EAVGWa2xA0bfEy+LmYZwD+Nkv8oXNIABg7
+t7tyeXn5/fcA0D6fn+xGvTd0RKT37g0=
+=jFZ9
+-----END PGP SIGNATURE-----
+
+--5Fqs5imMNEU2vqXw--
 
