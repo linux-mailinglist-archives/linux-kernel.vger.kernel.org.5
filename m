@@ -1,125 +1,179 @@
-Return-Path: <linux-kernel+bounces-161543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C64A48B4D85
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:50:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F3A8B4D88
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:52:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5D832816FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:50:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089C41F2143A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50047352D;
-	Sun, 28 Apr 2024 18:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C00374418;
+	Sun, 28 Apr 2024 18:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AYtvcu5X"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ddgEG4UF"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA29EEC6
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 18:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B95EEC6;
+	Sun, 28 Apr 2024 18:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714330236; cv=none; b=tb2BVvPKZiyweXbhJxc6Hrsn+jsU/I80GB4ZSKnP8y5SlK+Psd0VxItejl4xg+Jva8uL5A2DwF4cVO0Ix9+DLA8o8DmT7d7SptberRW0ok9HB7CSxwtXBus09viuvMqLgRb4PYQooqvT60B0RzpVTzxkrGICNNfPODu/U3ZbYQY=
+	t=1714330346; cv=none; b=KOKbG3/mj86aoRWHhjvJjVIXXFgPMPRX6wC4FYtizzavwn04oMeQn50i2AtcJokMWeoi5X1vJLnVcPLNCalvuPGRiKLCvOAJXlgewcPYtzlP8rBEpaKWehW+1aAOmu4z8tVyJx9Pu+mQY+bvExfwZipghsfIphpZFxmpD2lk+Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714330236; c=relaxed/simple;
-	bh=VMI+ua0sL2L95bgyIs5dyIDlZ/AGAU1djmVqBeGNFVo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yfu51IIDbluz3I17jk1ix8Kx/Sbcy5ACI1lj6GJgayLlMy2vyF2aJdUATchkQh7hvaPpiEdRmbbKhHwKGKJcosiz7Pg+HGAxLGX6dPeDWCYLKBvSAKLIyjlFuq4aK1ohTUC7I8xxC5VSbp56VjQx2kWD0Aoa+qpXXi7mdAfj25A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=AYtvcu5X; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2deecd35088so34557391fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 11:50:34 -0700 (PDT)
+	s=arc-20240116; t=1714330346; c=relaxed/simple;
+	bh=i08qcoe0Ph/eFDId2t+79a+VFYuTrFN+dA4Nd0o9YeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qD0Bku+Rt1gIIEALRR/nMMAOhYZt9qbPUqy/x6KLnAF1ft9aHBJ7RiZHAYATyBpils7Q1DlQJkvXgCZygHlk6xXShzdspewCS39V8uyZ8mGEaZnI966tkxm4KvL1dal+oBywOtfffbO2p6IR0dT/1tQlotGW3E1yfvikUzVl9vU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ddgEG4UF; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4266673bbso33233415ad.2;
+        Sun, 28 Apr 2024 11:52:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714330232; x=1714935032; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BAlC94M7he/5/Z9dYzwoM4nnjSgK1MGblRHi8mBcmD8=;
-        b=AYtvcu5XqeS2npyYOdOEv6BWjDnXn8b5kKrzhBENCvx+AA8xRqmoJxVJC3a0ytdbYL
-         stLeDWXS8wUptLaC4wJaQYzkc+tW0OqFh51fuqe/LqdiW2j/lRlhmN4ekDrizg6Jk0pe
-         9bjW8A3waU/TJG4HBsSZ74daD4CHp1omYkUNw=
+        d=gmail.com; s=20230601; t=1714330344; x=1714935144; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=A50txbCSTHM0D9aUPO2eeX6hnGYpoz3AvNJN0jmEZFI=;
+        b=ddgEG4UFBlL60nY5qGtxacJcI3Y/Sqom5BI9T6Xw8BvhsCX3DNgDCHVCFJrHi4zdaA
+         A9xkWLMKaVR7WhLPad/BkqkBzhl+e5ngEJ40yVMy4Wbuk2nalwOqxl0mzhSRfmVJZWdt
+         wagoxe2SWADg4wE6dYet7dgP3pGUIbAyeumaOTTd3hObJkAfgcyLdild4yBe2xrKhOHp
+         4+kCPILWqtLIlfUpMoCDnAPx538Sey2WNYF/3qBEDNNyMcEksZfZhQbXtPxYaCzpJD54
+         CauHsUxHIfI7rAaqwXW6j4miDwRZ+asKOqYYvipmDxqv/cVUNZkYvb8ZsbioQ0JehPhq
+         Qezg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714330232; x=1714935032;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BAlC94M7he/5/Z9dYzwoM4nnjSgK1MGblRHi8mBcmD8=;
-        b=tGb3yZ7Cyd/zfP8ufcYbSc3nphcwrPuqzRl45/kfR9Pt/5SJ664NR9tdQNH2Ne0yVt
-         vlGZj2w/o2mu9iMUxZK4TwGZnZi1UERm1tucwWuL2P6GiO3v0Q2Sxf2nPRP3XUWlcLJk
-         4PbBvc5Nw1XPzJz3nTOqDWA9OgHtySxCV9X5AII01oviA2vymfkVZXGNikTOWyEusj/2
-         Hxefw+yF55t2p8kndZwX3HwVX7cFU4LGuPALleyZDiYy/fvG3hPpZCZ0sSHBrUlYVkxs
-         2nQhbSRTyBYlQMBW45R/jQPJrfT3ISXsvNk955FKoG/3aI9O+6ZUIBOFUn6FHI6PLouh
-         OClg==
-X-Forwarded-Encrypted: i=1; AJvYcCXUl3nx0j21nMzmMzzuGOMD0tnVZsMtYi+AaZm5/ESZ7EFZXlLPpjlgvGiKzDiaAMiKoSZDbKtdQgw4WtnL5rOuhOjUAP4RwCsQ1W1j
-X-Gm-Message-State: AOJu0YztF10r9EVwH6v3yyCBdCFtT+KqSjk3CBKtlDZkyPqMtIgB+2mj
-	wvL779YYmBT8ACah8r32Lm++0UsMnrtniAq5mnu/gLyrTdUTvkpngM9IUyhATxDG+nTnbknaLni
-	1t4judQ==
-X-Google-Smtp-Source: AGHT+IE3gC1DJDRvUD+RkmR/KHAkJ4a6pTYDLBV1MomI6uJ+mOq8U3ICyzmiZprek5cw1jQDSvXtNw==
-X-Received: by 2002:a05:6512:1156:b0:51b:ebe0:a91a with SMTP id m22-20020a056512115600b0051bebe0a91amr3947222lfg.36.1714330232254;
-        Sun, 28 Apr 2024 11:50:32 -0700 (PDT)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
-        by smtp.gmail.com with ESMTPSA id r6-20020a170906704600b00a58e0d1d5bfsm2277783ejj.221.2024.04.28.11.50.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 11:50:31 -0700 (PDT)
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a58fbbcd77aso53756766b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 11:50:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU58HTgLvZheZPDYMFtw0LfX93mgs1mQRcfn3FsHhujWc4awhO+0BoOhjg5Yt/KZzL0mq2WxhnRVALjdBnsN59UT/kyPLnSF9sKr23A
-X-Received: by 2002:a17:906:25d7:b0:a52:13ff:5317 with SMTP id
- n23-20020a17090625d700b00a5213ff5317mr3659858ejb.38.1714330231089; Sun, 28
- Apr 2024 11:50:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714330344; x=1714935144;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A50txbCSTHM0D9aUPO2eeX6hnGYpoz3AvNJN0jmEZFI=;
+        b=J6vGR3k62d1B14VjUK1c0QoPYDQJzMxSQhnj3D+HiQVag+/G8c3HF0bC8dt/E9Rd92
+         lkmIHwZ002inrRQKuPPJdgVnLF8kJeNvNabyfY6dIOl1vV3ZVy82q7jnI8Vy/e9uvXiW
+         HAEHho+hpRqz2zoycMTSUW17Y76614bxj3fsBOez7JKk/LMGEFU/G2a7OHkKSNOhaWn5
+         +MN7SC4dgrHboYVWVGpMwTfJ+QKULXIsz7D+zFQx7BvGn+ZNeU2IzZpStGHxzlq3bUgE
+         gnJck36zi9D9VloxLFd57M5+86L1KvWDZQe2bVPHYMTR5syKT2pG4NUvXnlps44RP2wd
+         N7rw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfGiMSMl8acuk/ickWXv0+sAT6k4CdgW2V67HwEbkj4Jw74NXujzf0BqwaWIl+ofbPVYIXQalPsjGuc1oF/sYTXsRaUIsBIsyM3wjJvQKjsEPRdCuVCs3FDqLcOGaOw3FiSXIqkH3+
+X-Gm-Message-State: AOJu0YxWFcq8q9Y3IMzeeVXjtjdCWZiK5KJbTi89Td3U1V9x9uHPop42
+	Dfbz/FQWSD0T8HkpsXEQpFtlzi17nwLSV4XM1JC6RJkqrJFuvLkR9+8vPA==
+X-Google-Smtp-Source: AGHT+IHIr0ifpryJ3EV2/HqCQDfzc/+8MNeGNvg9Mo+9XDrJrdOekj30XZkKOI6ZJ9iIEL5E3F7oQA==
+X-Received: by 2002:a17:902:8483:b0:1e9:6609:37d5 with SMTP id c3-20020a170902848300b001e9660937d5mr6919400plo.27.1714330344472;
+        Sun, 28 Apr 2024 11:52:24 -0700 (PDT)
+Received: from localhost ([2804:30c:1f6c:5400:ea32:e7c8:5bc0:103])
+        by smtp.gmail.com with ESMTPSA id p10-20020a170902b08a00b001e2c1e56f3bsm18667469plr.104.2024.04.28.11.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 11:52:23 -0700 (PDT)
+Date: Sun, 28 Apr 2024 15:53:12 -0300
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Andrew Hepp <andrew.hepp@ahepp.dev>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
+ negative values
+Message-ID: <Zi6bGN70PFGl4UJ_@debian-BULLSEYE-live-builder-AMD64>
+References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
+ <Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
+ <20240427195758.GA3350@debian>
+ <20240428144606.5b3d9a7e@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
- <20230424004431.GG3390869@ZenIV> <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
- <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
- <20230425160344.GS3390869@ZenIV> <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
- <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
- <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
- <2023053005-alongside-unvisited-d9af@gregkh> <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com> <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
-In-Reply-To: <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Apr 2024 11:50:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
-Message-ID: <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240428144606.5b3d9a7e@jic23-huawei>
 
-On Sun, 28 Apr 2024 at 03:20, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
->
-> If we keep the current model, WRITE_ONCE() is not sufficient.
->
-> My understanding is that KCSAN's report like
+On 04/28, Jonathan Cameron wrote:
+> On Sat, 27 Apr 2024 21:57:58 +0200
+> Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
+> 
+> > Am Sat, Apr 27, 2024 at 05:49:18AM -0300 schrieb Marcelo Schmitt:
+> > > Hi Dimitri,
+> > > 
+> > > Interesting patch this one.
+> > > I think this does apply, although, the cold junction register has for sign bits
+> > > so I think we could also have a mask to clear those out.
+> > > Some code suggestions inline.
+> > >  
+> > Hi Marcelo,
+> > 
+> > the temperature bits are in two’s complement format for hot and cold
+> > junction. Equations to calculate the temperature are also the same in
+> > the datasheet. There should be no difference when handling them. I don't
+> > think we need to do anything more with the value except sign_extend it to
+> > the appropriate data type. If the sign bits aren't right, there is a bug
+> > in the chip, until then futher processing of it is unneeded. I could add
+> > a comment here if it helps.
 
-I find it obnoxious that these are NOT REAL PROBLEMS.
+Ah yes, I missed the fact that other bits need to be set to make the value
+smaller (closer to zero) when the MSB of two's complement number is set.
 
-It's KCSAN that is broken and doesn't allow us to just tell it to
-sanely ignore things.
+> 
+> Agreed - by my reading the original patch is correct. Maybe it would act
+> as cleaner 'documentation' to have the sign_extend32() for the cold junction be
+> from bit 12 rather than 15, but I'm not sure it's worth the effort.
 
-I don't want to add stupid and pointless annotations for a broken tooling.
+Yes, the original patch should be correct.
+Yeah, no practical difference using bit 12 or 15 to sign extend the number so
+probably not worth changing that.
 
-Can you instead just ask the KCSAN people to have some mode where we
-can annotate a pointer as a "use one or the other", and just shut that
-thing up that way?
+> 
+> Andrew, would be great if you can review this fix in case we are all missing
+> something!
+> 
+> Jonathan
+> 
+> > 
+> > > On 04/24, Dimitri Fedrau wrote:  
+> > > > Temperature is stored as 16bit value in two's complement format. Current
+> > > > implementation ignores the sign bit. Make it aware of the sign bit by
+> > > > using sign_extend32.
+> > > > 
 
-Because no, we're not adding some idiotic "f_op()" wrapper just to
-shut KCSAN up about a non-issue.
+Reviewed-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
 
-                     Linus
+> > > > Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF converter")
+> > > > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> > > > ---
+> > > >  drivers/iio/temperature/mcp9600.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
+> > > > index 46845804292b..7a3eef5d5e75 100644
+> > > > --- a/drivers/iio/temperature/mcp9600.c
+> > > > +++ b/drivers/iio/temperature/mcp9600.c  
+> > > 
+> > > #define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
+> > > ...
+> > >   
+> > > > @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
+> > > >  
+> > > >  	if (ret < 0)
+> > > >  		return ret;
+> > > > -	*val = ret;
+> > > > +
+> > > > +	*val = sign_extend32(ret, 15);  
+> > > 	if (chan->address == MCP9600_COLD_JUNCTION)
+> > > 		*val &= ~MCP9600_COLD_JUNCTION_SIGN_MSK;
+> > >  
+> > This won't work. Assuming int is 32-bit ret = 0xfffe and *val = -2 after
+> > sign_extends32, this would result in *val = -61442 which is wrong.
+> > > >  
+> > > >  	return 0;
+> > > >  }
+> > > > -- 
+> > > > 2.39.2
+> > > > 
+> > > >   
+> > Best regards,
+> > Dimitri Fedrau
+> 
 
