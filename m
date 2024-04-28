@@ -1,109 +1,145 @@
-Return-Path: <linux-kernel+bounces-161523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E88638B4D29
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:23:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB7118B4D2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A27AC281587
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:23:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33F40B20FB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CBF7350E;
-	Sun, 28 Apr 2024 17:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C990C73502;
+	Sun, 28 Apr 2024 17:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GE078V1m"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="RUQiBFDe"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAC36FE21;
-	Sun, 28 Apr 2024 17:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F7031A81;
+	Sun, 28 Apr 2024 17:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714324989; cv=none; b=ZnQbyizxWZDDV+yKVfsEFlSh+UeEpACwFAiMVMLTKVDbeDdN3nVjWKVlVVZMEZHffC+DFFJdBnhzX7EtXEcKuAGDycrrwufrkxAa9BLIemOSO/Y3Bof4lOC2OPff3VvY45/cE4JEFNSzmXHUGs6UJwaxw7YAhu1//SMM1pBgJQ0=
+	t=1714325201; cv=none; b=ArGAAhK+u/W4fvThMqGiVdAxdRccKhCQl529PiTK7Qj0RghyvEt9pKcs27xUnxVZL65hlZqmmUz/gu5546ZNiXf45M2IwwTTmJ9ym/IsQDQvkdOjuC6W4ixTLa5oIGTjvJXxNNHMYie6gtFky2UJir7iKBguGUO3MOsVuIIVINc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714324989; c=relaxed/simple;
-	bh=PYFz5HTWMutlt0eTPiwR2RA99TqHVcOULCpVwL8wV44=;
+	s=arc-20240116; t=1714325201; c=relaxed/simple;
+	bh=JEvW1NTvAodacPcdsV+8rSNHzXnu7DiMn8JDRUV0KUs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ie0YbtpPGdQ9knw/8B1lZWIHbidUN0AfQELAa6If9s3II8vJnxfd7W2Xn68VbqiHu08NVq5AwfZdUh3q+LV7Alw8s+DEiQf5k4GNbGG+Iedkb3YwbntmNSnAHT2AwiTnoBObvRjaNyJpxwmGZO2873gCMi0/EsQCNgBBLWwFRpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GE078V1m; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so3660177b3a.0;
-        Sun, 28 Apr 2024 10:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714324987; x=1714929787; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WkZp8j5EtMWXXwQU8xtuxveb6JUFMfZuYsQT9nlHj4U=;
-        b=GE078V1mygz7aY8mhZR4k2GQ6ja1YgU1dxj7xEIwtXeNo7mWo1eGuQu5Y7Fp91DEtA
-         gGU7ocFaLNAnLOOor7Q8jpyL3ZOVR5WfZ6ttYGgYqTF+3hyL70hH80ee62EoI5n4PI/Q
-         diUEsQPx2gnA/RFQSbsfTMtAPj51nxig1Sk9lSiHDMA99jPC/+pTViQN3znykRycFT4H
-         g3gdgDOsBPZT91eN4i1Ar2OXIiMJQOpo7opukrsWm5FBtZNb7ZjIyFhT389UJjZcU0O6
-         nEuy9l/Lrw8VB1M8BcIij6+XMx3BRHWXA9ECx0yO1lC0P5GWfTJaQYQYQ1agn5kjdQEL
-         oskQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714324987; x=1714929787;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WkZp8j5EtMWXXwQU8xtuxveb6JUFMfZuYsQT9nlHj4U=;
-        b=CVtxKQSUSvd2zUg5Ab+ZKPiQbY2C0xGjt3T95xiog71ejv5eYhyCQUD1G52zMST7aK
-         gTD8t4I2yLDavFG1Uz6oa1nukbshKRETcMm7THLKtkHLiUaFOlrKH2JqiH1vpHt7B+9Q
-         UzT7Hp9c9IDNrii9iherKrRLTJ90QNtBwMgZdGDTbtdanB+PNFT0Mk/bnF+DbuMrWtXO
-         YTepaGALHNsHNbaBxNlSj/L71P/3KUc1D/w6LItNcDu0fxzB2uMz8EJMjLY7DalrPJdj
-         4tmt3zakb1vxVRZ3bESAIoJZxbhx7s3u2xYgsXhnQHcTP7rT94aLc6PbuezB/v8h1pp/
-         k90Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXq9qLdKhIzMwaYByC8YT9RhUlSyndgLkKlH8+JO8p0yMYGuXVMHGx/47q31E4dSHFdyZQ4DJO9HLWICZ/PPsO0MZxF7RA/QcGcX/KGbpk9uMU5iS/6OBwRp+jca9OdRhoZxlbUIJsiflsa8jXSZ5YkDPRS2LQYsN0EoxISsJWPLa0YRGKI9gnthtCAnl0djDiYQSOHRQjRcOHN8K2Yu8fnsr16O+XuL/dlRaBcEK9B0QklauEP29kWdxfM
-X-Gm-Message-State: AOJu0YzscXDaU1acbx3zwCYtRAKrnkqOKmQ5pud5lf02ZMhSw5tS6Hhy
-	LxwRFiXT+evVXD0utqxSdBpf5NCvKV+KWxj4qypJl4H67dpndnup
-X-Google-Smtp-Source: AGHT+IFknSQ2W4h+jW2irM7chqU+6+Gh0g7OpxMZOnhRTTvSUweYDfHBuIe/cSEyZorYMbZ9fOhJZA==
-X-Received: by 2002:a05:6a21:3a43:b0:1a9:3e7a:b0fc with SMTP id zu3-20020a056a213a4300b001a93e7ab0fcmr10728714pzb.51.1714324987560;
-        Sun, 28 Apr 2024 10:23:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w13-20020a63d74d000000b0060cc76aab72sm4628983pgi.46.2024.04.28.10.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 10:23:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 28 Apr 2024 10:23:05 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Peter Yin <peteryin.openbmc@gmail.com>
-Cc: patrick@stwcx.xyz, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Charles Hsu <ythsu0511@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, Lukas Wunner <lukas@wunner.de>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: Add infineon xdp710 driver
- bindings
-Message-ID: <e16ae555-3c10-48eb-94e1-e4ee77c2f521@roeck-us.net>
-References: <20240425153608.4003782-1-peteryin.openbmc@gmail.com>
- <20240425153608.4003782-3-peteryin.openbmc@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CYHanlpgp/sVhseRfxbQ5LP0frRuw4BfVqh6q6KnFuONmYR3eAafItZTwWqOKcixxvPDGCKM+FcskmtbRkpC7LqKGwe+LRKqWvSL1aWSyns+kQbPdOT9YgbcyF2N+jdr46XqsedANajZqG46xCXOVk1Xsd9xxdvWhe4PPBDuQi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=RUQiBFDe; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7CF0B40E0187;
+	Sun, 28 Apr 2024 17:26:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id DS8HxuSXsenB; Sun, 28 Apr 2024 17:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714325191; bh=AF8W5OpNeob6gkJBdYGpZUOpvF721UDovoNC7CvPOHk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RUQiBFDe6dDNPHrCSly4pEgY8TtrM8DbCwhUr+mxNl3Lm8ocQxCYt9/mYcR5YHQx2
+	 uvweoaTlWfeD3iIEAGsvWR2pBXOfQczb237pnxPwBSHT/PkDiQUxSvbHgdKEoIa/wN
+	 q3k3VxIhmUboThxtYAcJCh9gBqStlMXe/EdEX5THho6000MBHxZhGBt5nJu8KNFAC1
+	 UY+VEWkQeMVJBvujL8td3illvcSw81wjz+5DUM/YgtnzVLUT6Usrbd+ljDGCY3Kvi1
+	 QBx/KCEFBHMsBGVUM36n9UbNV9/ToBMGVMvw977DDG/Ld+ZMP4uqATXfVv3Oo0VzwT
+	 IYmsFSkyMgqFVcg2xgPYM7lx6+2FD+Ia7RARnO/uqb+jlr75G904vEHbY23Y68AG+o
+	 KdCtX3Pb74t+ofbOFnPuLLdNss/oYGrDuDZyNGqd5EaXz4zMWRLThSnhxMHVdkZzvE
+	 ZYuPSB6VnJteiNT4QE2RtrMmsgDVFtaatl2Bxv9+Ir9wTbg5C2i+uwLkOzZdEH5oFJ
+	 5fvE/YWQ1BMsRycDcbKcBFhhd9j7VobrUTkvEX551lrDD+q4k4aa820sX2I6AvuT1K
+	 Dab7a/zyCk+Oh5NJIPuAdehS3vflkdDSg7Q0OWkuklZ1LFSxOrPEMeuCPuD2mdTo0W
+	 azDtrM/cYn0ny3rwBRhZb0k8=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 28CB040E0205;
+	Sun, 28 Apr 2024 17:26:04 +0000 (UTC)
+Date: Sun, 28 Apr 2024 19:25:57 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+	Tao Liu <ltao@redhat.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	linux-hyperv@vger.kernel.org
+Subject: Re: [PATCHv10 06/18] x86/mm: Make
+ x86_platform.guest.enc_status_change_*() return errno
+Message-ID: <20240428172557.GLZi6GpTaSBj-DphCL@fat_crate.local>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-7-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240425153608.4003782-3-peteryin.openbmc@gmail.com>
+In-Reply-To: <20240409113010.465412-7-kirill.shutemov@linux.intel.com>
 
-On Thu, Apr 25, 2024 at 11:36:02PM +0800, Peter Yin wrote:
-> Add a device tree bindings for xdp710 device
+On Tue, Apr 09, 2024 at 02:29:58PM +0300, Kirill A. Shutemov wrote:
+> TDX is going to have more than one reason to fail
+> enc_status_change_prepare().
 > 
-> Acked-by: "Rob Herring (Arm)" <robh@kernel.org>
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> Change the callback to return errno instead of assuming -EIO;
+> enc_status_change_finish() changed too to keep the interface symmetric.
 
-Applied, after fixing the tag.
+"Change enc_status_change_finish() too... "
 
-Guenter
+"Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+to do frotz", as if you are giving orders to the codebase to change
+its behaviour."
+
+You should know this by now...
+
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> Tested-by: Tao Liu <ltao@redhat.com>
+> ---
+>  arch/x86/coco/tdx/tdx.c         | 20 +++++++++++---------
+>  arch/x86/hyperv/ivm.c           | 22 ++++++++++------------
+>  arch/x86/include/asm/x86_init.h |  4 ++--
+>  arch/x86/kernel/x86_init.c      |  4 ++--
+>  arch/x86/mm/mem_encrypt_amd.c   |  8 ++++----
+>  arch/x86/mm/pat/set_memory.c    |  8 +++++---
+>  6 files changed, 34 insertions(+), 32 deletions(-)
+
+Another thing you should long know by now: get_maintainer.pl. You do
+know that when you send a patch which touches multiple different
+"places", you run it through get_maintainer.pl to get some hints as to
+who to CC, right?
+
+Because you're touching HyperV code and yet none of the HyperV folks are
+CCed.
+
+Do I need to give you the spiel I give to kernel newbies? :)
+
+Lemme Cc them for you now.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
