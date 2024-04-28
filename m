@@ -1,138 +1,119 @@
-Return-Path: <linux-kernel+bounces-161222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DDA8B4934
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:19:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8602F8B4935
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:25:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24734282023
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:19:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C85A4B211B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3365110FF;
-	Sun, 28 Apr 2024 02:19:36 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C65910FA;
+	Sun, 28 Apr 2024 02:25:00 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB0BEC3
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 02:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46390EC3
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 02:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714270775; cv=none; b=MCu8uvu2iNlDuMl5xf4CJYSOy0RTHKugWSWOfFyURDZlByji7I6eU9xGA9OxAAi+Z2d3+pSx8EUIOz0dH7MuhfKnl3J+2Z0zYLNt1CUT1VQYbdY59qoPbCsv7xFeRdYw1Xm/zy7D6Avn7wNPPdlpEyNlz2cBWkgAowtWpus643I=
+	t=1714271099; cv=none; b=eZmxI/7IiuuqjvEzEDbqCZc8BA8x3L1lB60M17NL0O29UDyqoKzD0yNhRGqF7ZqLbX0jFD3W0FSI9UJjJsdb0cU5WftAO3bivi+oGTy/vuGASFK2S4Bj0m+cF5/zz7Vg35iq/yS3VVbN1Ri208mb8oTSJhO3nE0/q9RMEofmBHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714270775; c=relaxed/simple;
-	bh=tuczu2NeyudK1aZ8g+d3ndX+N2EeGuqQz9kCkH5dAjE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MijaV2Flm0racR1umI1poluchpSEhTky8AexhY0DfZSwb2aDbuvL67SoTmZwcv691UwmZ3Wff8ve8nRRmJX5xSyDtm+4j+4olOkAhVHg1ruDGqpmW566iCt32EUJkUe4ioD691l2rldwv2F4KoLIke3ffZOajwNwtsVS1UHsWGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VRqsM4zCBz4f3m7P
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:19:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1374C1A017A
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:19:29 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBEusi1mIt2dLA--.32197S3;
-	Sun, 28 Apr 2024 10:19:28 +0800 (CST)
-Subject: Re: [PATCH V3 1/2] iommu/arm-smmu-v3: Add support for ECMDQ register
- mode
-To: Tanmay Jagdale <tanmay@marvell.com>, will@kernel.org,
- robin.murphy@arm.com, joro@8bytes.org, nicolinc@nvidia.com,
- mshavit@google.com, baolu.lu@linux.intel.com, thunder.leizhen@huawei.com,
- set_pte_at@outlook.com, smostafa@google.com
-Cc: sgoutham@marvell.com, gcherian@marvell.com, jcm@jonmasters.org,
- linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240425144152.52352-1-tanmay@marvell.com>
- <20240425144152.52352-2-tanmay@marvell.com>
-From: "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <85f8d4df-4e4b-0460-4e34-d38588f18639@huaweicloud.com>
-Date: Sun, 28 Apr 2024 10:19:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+	s=arc-20240116; t=1714271099; c=relaxed/simple;
+	bh=qgDNso/QLmtFHaMGuIWeebX7Mu5rFMWi21QdjM2z4Oc=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ENYOAKBgImdKDJrZzqrV/k3vZKLLIpe+mDW/annQFLr/cqlHUP5YLfAOx1HLkr/Wz0MhBjTjV61hbFFYlOD2WhfQI+2P5a4pur7KSMKcBg3A+bLFIhsOlwbpAOY/brXMYeS736NY7+EvfSV8U0VY3qBC/Fz/4SlIyL58qF0XUtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VRqw34lxTz1RDMh;
+	Sun, 28 Apr 2024 10:21:39 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id 70ECA180045;
+	Sun, 28 Apr 2024 10:24:47 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 28 Apr 2024 10:24:46 +0800
+Subject: Re: [PATCH] mm/memory-failure: remove shake_page()
+To: Jane Chu <jane.chu@oracle.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<akpm@linux-foundation.org>, <nao.horiguchi@gmail.com>, <osalvador@suse.de>,
+	Matthew Wilcox <willy@infradead.org>, Sidhartha Kumar
+	<sidhartha.kumar@oracle.com>
+References: <20240426171511.122887-1-sidhartha.kumar@oracle.com>
+ <ZivlrMAwRI6xJhc-@casper.infradead.org>
+ <d05cbf22-f3e8-414a-a2e3-03e0b857eaca@oracle.com>
+ <ZivyC3vqa2BIBoMj@casper.infradead.org>
+ <c40cfd0b-f045-4887-a955-fee7e0392cf1@oracle.com>
+ <Ziv67sGBi02YCYZ5@casper.infradead.org>
+ <47614f5d-0942-4b2c-a51a-451f6bc9c802@oracle.com>
+ <d19e1033-285f-474b-af1f-ae4c32e32e21@oracle.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <6048a36d-6bb2-2e74-1d20-228f0486d965@huawei.com>
+Date: Sun, 28 Apr 2024 10:24:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240425144152.52352-2-tanmay@marvell.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <d19e1033-285f-474b-af1f-ae4c32e32e21@oracle.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBnOBEusi1mIt2dLA--.32197S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw13CF47GrW7Kry3XrW3GFg_yoW8Xrykpr
-	93Ka9rJFy8tF1xZw1FqF1UXF15tw1UJ3W8Gr4UGF93Xw18C34xur4UGw4Fy347Jry7Jr47
-	C34jqasrua1DJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUo0eHDUUUU
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
+On 2024/4/27 4:33, Jane Chu wrote:
+> My apology for the gobbled message earlier.
+> 
+> On 4/26/2024 12:52 PM, Jane Chu wrote:
+>> On 4/26/2024 12:05 PM, Matthew Wilcox wrote:
+>> [..]
+>>> That would be unsafe, the safe way would be if we moved page_folio() after
+>>>> the call to __get_hw_poison() in get_any_page() and there would still be one
+>>>> remaining user of shake_page() that we can't convert. A safe version of this
+>>>> patch would result in a removal of one use of PageHuge() and two uses of
+>>>> put_page(), would that be worth submitting?
+>>>>
+>>>> get_any_page()
+>>>>     if(__get_hwpoison_page())
+>>>>         folio = page_folio() /* folio_try_get() returned 1, safe */
+>>> I think we should convert __get_hwpoison_page() to return either the folio
+>>> or an ERR_PTR or NULL.  Also, I think we should delete the "cannot catch
+>>> tail" part and just loop in __get_hwpoison_page() until we do catch it.
+>>> See try_get_folio() in mm/gup.c for inspiration (although you can't use
+>>> it exactly because that code knows that the page is mapped into a page
+>>> table, so has a refcount).
+>>>
+>>> But that's just an immediate assessment; you might find a reason that
+>>> doesn't work.
+>>
+> Besides, in a possible hugetlb demote scenario, it seems to me that we should retry
+> get_hwpoison_hugetlb_folio() instead of falling thru to folio_try_get().
+> 
+> static int __get_hwpoison_page(struct page *page, unsigned long flags)
+> {
+>         struct folio *folio = page_folio(page);
+>         int ret = 0;
+>         bool hugetlb = false;
+> 
+>         ret = get_hwpoison_hugetlb_folio(folio, &hugetlb, false);
+>         if (hugetlb) {
+>                 /* Make sure hugetlb demotion did not happen from under us. */
+>                 if (folio == page_folio(page))
+>                         return ret;
+>                 if (ret > 0) {      <===== still hugetlb, don't fall thru, retry
 
-
-On 2024/4/25 22:41, Tanmay Jagdale wrote:
-> +static int arm_smmu_ecmdq_probe(struct arm_smmu_device *smmu)
-> +{
-> +	int ret, cpu;
-> +	u32 i, nump, numq, gap;
-> +	u32 reg, shift_increment;
-> +	u64 offset;
-> +	void __iomem *cp_regs, *cp_base;
-> +
-> +	/* IDR6 */
-> +	reg = readl_relaxed(smmu->base + ARM_SMMU_IDR6);
-> +	nump = 1 << FIELD_GET(IDR6_LOG2NUMP, reg);
-> +	numq = 1 << FIELD_GET(IDR6_LOG2NUMQ, reg);
-> +	smmu->nr_ecmdq = nump * numq;
-> +	gap = ECMDQ_CP_RRESET_SIZE >> FIELD_GET(IDR6_LOG2NUMQ, reg);
-> +
-> +	cp_regs = ioremap(smmu->iobase + ARM_SMMU_ECMDQ_CP_BASE, PAGE_SIZE);
-> +	if (!cp_regs)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < nump; i++) {
-> +		u64 val, pre_addr = 0;
-
-This is my mistake. The 'pre_addr' should be defined out of this 'for' loop. Or, you
-can remove all 'pre_addr' related statements, commercially available chips that have
-been tested cannot have such errors.
-
-> +
-> +		val = readq_relaxed(cp_regs + 32 * i);
-> +		if (!(val & ECMDQ_CP_PRESET)) {
-> +			iounmap(cp_regs);
-> +			dev_err(smmu->dev, "ecmdq control page %u is memory mode\n", i);
-> +			return -EFAULT;
-> +		}
-> +
-
-                                                     <---------------------------------------------
-> +		if (i && ((val & ECMDQ_CP_ADDR) != (pre_addr + ECMDQ_CP_RRESET_SIZE))) {           |
-> +			iounmap(cp_regs);                                                          |
-> +			dev_err(smmu->dev, "ecmdq_cp memory region is not contiguous\n");          |
-> +			return -EFAULT;                                                            |
-> +		}                                                                                  |
-> +                                                                                                |
-> +		pre_addr = val & ECMDQ_CP_ADDR;                                                    |
-                                                      <--------------------------------------------   feel free remove these
-> +	}
-
--- 
-Regards,
-  Zhen Lei
-
+I tend to agree we should retry get_hwpoison_hugetlb_folio() because folio is still hugetlb in this case.
+Below folio_try_get() won't do the right things. This is on my TODO list but as you mentioned this, please
+feel free to submit the corresponding patch.
+Thanks.
+.
 
