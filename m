@@ -1,73 +1,51 @@
-Return-Path: <linux-kernel+bounces-161344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97ABD8B4AFA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:25:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C15B8B4AFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:30:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5382F2818A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:25:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D11B1C20B7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8D956B70;
-	Sun, 28 Apr 2024 09:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fG1z85dd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D55B54F95;
+	Sun, 28 Apr 2024 09:30:05 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD12B55E44;
-	Sun, 28 Apr 2024 09:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3500133C8;
+	Sun, 28 Apr 2024 09:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714296285; cv=none; b=n5ZI5+lnne5keSflFkCpA0kvrOlDj7EMZyjXb/5DqhOsvEg8MKy6wdDvmTjBILR88FRtVabN3EvLVLNMDn8Vr+mPlIPkl832+yo8Y38tafveHXdi5v2Mgk2tfOJ2Vb0X0D+6jSsoPQtvQy/byra/ZpVo2nfTneIVzrGGG11tptU=
+	t=1714296605; cv=none; b=t8kCS2jmbG2rl1HxHdxYC5FBJ3ua7txwmOu0j1alcVjVWfYTx88TMbk+swPI+hagjKzU1JWZDRCYiN9ZnncOdq1taYnnpQhZqlzteRYenj+McJTWLJEu3WCZZ3sSGitabGakXVyZskukzfXOW2f6tZ24XNhxGmD3Gw8LcNSyar4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714296285; c=relaxed/simple;
-	bh=b99iJg1A5bvxRUOumWSxLIxtvCLHK+sA+lw4WRmUyxA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pck/d82gxnCiDszHJfmR/liSsgk9gZavNjGQP/7gyyLp/ZZC88OGoOKaG0e+w1ksd8jcD01Ch2A9jLelfeGyRG2/ayxaq4+kmyZ33JmzJoExOUipZULao5p7K/piNtEEZ8NQ1SiReQXZXroelcUgCfcljhVyMYcXkF4rqAffQxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fG1z85dd; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714296284; x=1745832284;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=b99iJg1A5bvxRUOumWSxLIxtvCLHK+sA+lw4WRmUyxA=;
-  b=fG1z85ddBL60eGRQfQ75jPadQjp71JFtKVAtzyCZFIOZX0S7q7cT8lZ1
-   pu8s3YRZ1CCkz2vJxeyfYBBcfyoLa5aHJajpgLvOFJQtEc5StLGroUH/W
-   SrDrSVR3pKu6IddQv5C27LzdHfyjstk8c2769pBCm598W1cn/oc+O7ZVQ
-   d4TICgMNpcIcG5+gQCxxfdObyjBbxtU0MtBuuPSotz/2vklRAUdhMzauI
-   e9D4VKC7Ihwq1BtRWhTVr27i2ckEtUgTqjxhXMVvWoodwaqoVDvZ93Lgz
-   FL0yJy4wEpd8LIwvvmNtMQ+Dl12q3hebf1w94dNAlUV1cqWYcNRmzx8wg
-   w==;
-X-CSE-ConnectionGUID: mAYSY7uLTWiVYKJ+BoppCg==
-X-CSE-MsgGUID: K4hRrW0VRDyL1wecwcdQdA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="21127808"
-X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
-   d="scan'208";a="21127808"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 02:24:43 -0700
-X-CSE-ConnectionGUID: fMNH5MR1Tnq19pG9plIG+g==
-X-CSE-MsgGUID: LXgfmWeETViRf/KcoJgHFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
-   d="scan'208";a="63303784"
-Received: from xingyeyu-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.249.169.4])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 02:24:41 -0700
-From: Zhang Rui <rui.zhang@intel.com>
-To: rafael.j.wysocki@intel.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	srinivas.pandruvada@intel.com
-Subject: [PATCH V4 2/2] powercap: intel_rapl_tpmi: Enable PMU support
-Date: Sun, 28 Apr 2024 17:24:27 +0800
-Message-Id: <20240428092427.24959-3-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240428092427.24959-1-rui.zhang@intel.com>
-References: <20240428092427.24959-1-rui.zhang@intel.com>
+	s=arc-20240116; t=1714296605; c=relaxed/simple;
+	bh=9YXrwAzLWYxtUHdEbVOHPNVwCl6S2Vz6RCw8juixITQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J3O/ITgsJCeaNbWLcl+RmlyPHWa3vEgc5BSOlJnQ9LAV2B/4aMxwQjCfIyCMH7COJVVRVmnx5ARwCHYC0jJRpCCDd9Obgv4UNZ561z8alx+b2LLuXEwht5toplfAwou6lSMS4+njTpd9oYrLxH0nENauDZFOvVZVKZCpu+eQEik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VS1Lf5DFkzvQ45;
+	Sun, 28 Apr 2024 17:26:50 +0800 (CST)
+Received: from dggpemm500018.china.huawei.com (unknown [7.185.36.111])
+	by mail.maildlp.com (Postfix) with ESMTPS id 91773180080;
+	Sun, 28 Apr 2024 17:29:57 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by dggpemm500018.china.huawei.com
+ (7.185.36.111) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sun, 28 Apr
+ 2024 17:29:57 +0800
+From: liwei <liwei728@huawei.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>
+CC: <al.stone@linaro.org>, <ashwin.chaugule@linaro.org>,
+	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<liwei391@huawei.com>, <liwei728@huawei.com>, <liaoyu15@huawei.com>
+Subject: [PATCH] cpufreq/cppc: changing highest_perf to nominal_perf in cppc_cpufreq_cpu_init()
+Date: Sun, 28 Apr 2024 17:28:52 +0800
+Message-ID: <20240428092852.1588188-1-liwei728@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,36 +53,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500018.china.huawei.com (7.185.36.111)
 
-Enable RAPL PMU support for TPMI RAPL driver.
+When turning on turbo, if frequency configuration takes effect slowly,
+the updated policy->cur may be equal to the frequency configured in
+governor->limits(), performance governor will not adjust the frequency,
+configured frequency will remain at turbo-freq.
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Simplified call stack looks as follows:
+cpufreq_register_driver(&cppc_cpufreq_driver)
+	...
+	cppc_cpufreq_cpu_init()
+		cppc_get_perf_caps()
+		policy->max = cppc_perf_to_khz(caps, caps->nominal_perf)
+			cppc_set_perf(highest_perf) // set highest_perf
+			policy->cur = cpufreq_driver->get() // if cur == policy->max
+	cpufreq_init_policy()
+		...
+		cpufreq_start_governor() // governor: performance
+			new_freq = cpufreq_driver->get() // if new_freq == policy->max
+			if (policy->cur != new_freq)
+			cpufreq_out_of_sync(policy, new_freq)
+				...
+				policy->cur = new_freq
+			...
+			policy->governor->limits()
+				__cpufreq_driver_target(policy->max)
+					if (policy->cur==target)
+					// generate error, keep set highest_perf
+						ret
+					cppc_set_perf(target)
+
+Fix this by changing highest_perf to nominal_perf in cppc_cpufreq_cpu_init().
+
+Fixes: 5477fb3bd1e8 ("ACPI / CPPC: Add a CPUFreq driver for use with CPPC")
+Signed-off-by: liwei <liwei728@huawei.com>
 ---
- drivers/powercap/intel_rapl_tpmi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/cpufreq/cppc_cpufreq.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/powercap/intel_rapl_tpmi.c b/drivers/powercap/intel_rapl_tpmi.c
-index f6b7f085977c..947544e4d229 100644
---- a/drivers/powercap/intel_rapl_tpmi.c
-+++ b/drivers/powercap/intel_rapl_tpmi.c
-@@ -302,6 +302,8 @@ static int intel_rapl_tpmi_probe(struct auxiliary_device *auxdev,
- 		goto err;
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index 64420d9cfd1e..db04a82b8a97 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -669,14 +669,14 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 	if (caps->highest_perf > caps->nominal_perf)
+ 		boost_supported = true;
+ 
+-	/* Set policy->cur to max now. The governors will adjust later. */
+-	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
+-	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
++	/* Set policy->cur to norm now. */
++	policy->cur = cppc_perf_to_khz(caps, caps->nominal_perf);
++	cpu_data->perf_ctrls.desired_perf =  caps->nominal_perf;
+ 
+ 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+ 	if (ret) {
+ 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+-			 caps->highest_perf, cpu, ret);
++			 caps->nominal_perf, cpu, ret);
+ 		goto out;
  	}
  
-+	rapl_package_add_pmu(trp->rp);
-+
- 	auxiliary_set_drvdata(auxdev, trp);
- 
- 	return 0;
-@@ -314,6 +316,7 @@ static void intel_rapl_tpmi_remove(struct auxiliary_device *auxdev)
- {
- 	struct tpmi_rapl_package *trp = auxiliary_get_drvdata(auxdev);
- 
-+	rapl_package_remove_pmu(trp->rp);
- 	rapl_remove_package(trp->rp);
- 	trp_release(trp);
- }
 -- 
-2.34.1
+2.25.1
 
 
