@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-161464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FF18B4C56
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:07:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F318B4C5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:26:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61867281991
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:07:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5F16B21085
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1F86EB5C;
-	Sun, 28 Apr 2024 15:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3866F062;
+	Sun, 28 Apr 2024 15:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AYW8fSX2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iTKl7RpH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3728831A81;
-	Sun, 28 Apr 2024 15:07:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290746E616;
+	Sun, 28 Apr 2024 15:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714316850; cv=none; b=oq9cD/i+aw3CNrP3X4bTwULqS3CpCadpDembSD8bmlSPODybHFFC4mdlvraiu3ixhmwQPBlGPxiLKv5Ju5oQPGUnh5hj4YurpEeiM8SruYc+JRnIXsmC1oEQIR1dPxLoQKeesI+q/sRP8UshU3eUyGn1ok/F/UQU7Dm7oDNOrRM=
+	t=1714317969; cv=none; b=VKuSD3aD4Za56vI1uC7og/69QJL553gQniuHZSmgXV9a1e61WrxDIoUs66Glm8czis6ol2qnQqRKVxpc5vfq0pzSjXgAXzTULjMFzfZrneOud/r+Y4+5o5qcT1r50nziPgD/1LidaaK9iEyQZUZKXk2Vd+3k0ueNOjwLCqCq4mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714316850; c=relaxed/simple;
-	bh=3vofxZ5dOxVgjGw9YNeLDNWOQwfjkT8OukmW+wWJ3tU=;
+	s=arc-20240116; t=1714317969; c=relaxed/simple;
+	bh=7ovo8rsd82tkHk6P6i/ksXhOuXVKwHzQD4qs3EERarA=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UL7rgo4pOw8xaMzbh8AFSDlbc5+FI5WtN8W6ZHUoGPXFrtx86hYm/+NZDXqeol7uPjfQc71SdtLbvqOMdkZXTWmacaa9FfGwoF/iIqbMLrLt98hPZK9rbXwVl/UP5bsfXGPEpZieBJhMSEEEX3LjczqfRQxQDxaJ/Cv5/dWALSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AYW8fSX2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D16F3C113CC;
-	Sun, 28 Apr 2024 15:07:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=G6V1blaHOn+GqmjrOtTuZgo8GqFj5g96ICaWdsoPnKpNmJlO2ZA5qPURzMOQFNclV3HZKmNwHzu0oQbEbFV9i3FMoa5tG2fFOIGhpp9iz8iuISDDikFXxaxwUOskwYpf3QpKTY9FxQq8AlEKDW2WIvwRZcKxJZ4PlXB2P8cKzA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iTKl7RpH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA48C113CC;
+	Sun, 28 Apr 2024 15:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714316849;
-	bh=3vofxZ5dOxVgjGw9YNeLDNWOQwfjkT8OukmW+wWJ3tU=;
+	s=k20201202; t=1714317968;
+	bh=7ovo8rsd82tkHk6P6i/ksXhOuXVKwHzQD4qs3EERarA=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AYW8fSX2tJBFRvWSNzRyXgIvE10icGBTmyY4jCGqK7+G9+ATVgHNez9MXM/XTX1LB
-	 QXgzykZU8A2OSJUUC7utVS97V+yyNgpdN9oDBGeapjKe287IeB4I/C+oQ0jg7CGuRf
-	 8M1W1VyTCJOwy6H6nxZV6wMwbf95VlBcg6EhTFFKtaqArtGa7NaSGuzZaLNM3C8qRi
-	 1OeHVq5RSRe6p5JaSI5bjxN5r81oxf5jOsBvmD9pj8Zys7jNLV96geSndMSSEU6Ou1
-	 gLv58S5ST3GEtoZHTXaztgomdWhYI923r3FiwiK93xljp8/9AJCzf8luc8Ie06ypdT
-	 RkpTToJkwp1eA==
-Date: Sun, 28 Apr 2024 16:07:18 +0100
+	b=iTKl7RpHY8krA3pNcehJIOymFdvWn8r3BIzglF7UZvIEIhwSk6rMYM2zBphX32e+j
+	 qK9IUG9Vw1mZr+w70QO0VlbVt6s+fWbpPbuYfCs1rMDJMQAZ5Ucmmwr9UlXjt//wvj
+	 myyVmuh3SpIm46Lmc3Ac5jTRmgVFrfF7RQfnTn7bIFn7ogh6V3B7qVBXtSAbmXXFVE
+	 f4zGU+VfV6oHaEIECIHfVmygEDri4RHAjpj9t/IoxxN5BmFKo0afHlMBIfedAVeQih
+	 USsa2/B4Psw059MTH6KpIOacWA155BcVRnMkCRB7RF2DgNVywAK2hqwgdLo3Hv58Ao
+	 KTS6bDgzoXG6g==
+Date: Sun, 28 Apr 2024 16:25:55 +0100
 From: Jonathan Cameron <jic23@kernel.org>
 To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
 Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
  linux-doc@vger.kernel.org, devicetree@vger.kernel.org, corbet@lwn.net,
  conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, robh@kernel.org,
- Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: Re: [PATCH 2/5] iio: imu: adis16480.c: Add delta angle and delta
- velocity channels
-Message-ID: <20240428160718.45480db8@jic23-huawei>
-In-Reply-To: <20240428160438.424e33d2@jic23-huawei>
+ Ramona Gradinariu <ramona.gradinariu@analog.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>
+Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7
+ families
+Message-ID: <20240428162555.3ddf31ea@jic23-huawei>
+In-Reply-To: <20240423084210.191987-5-ramona.gradinariu@analog.com>
 References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
-	<20240423084210.191987-3-ramona.gradinariu@analog.com>
-	<20240428160438.424e33d2@jic23-huawei>
+	<20240423084210.191987-5-ramona.gradinariu@analog.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,136 +61,177 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 28 Apr 2024 16:04:38 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+On Tue, 23 Apr 2024 11:42:09 +0300
+Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
 
-> On Tue, 23 Apr 2024 11:42:07 +0300
-> Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
-> 
-> > Add support for delta angle and delta velocity raw readings to
-> > adis16480 driver.  
-> 
-> Why are these not allowed via the buffer interface?   Normally
-> my expectation of delta values is they are more or less useless
-> without buffered capture. The intent of providing those channels
-> is that they are gathered over time and summed up to give the
-> angle difference (for example) between start of capture and now.
-> Note the formula on the datasheet 
-> https://www.analog.com/media/en/technical-documentation/data-sheets/adis16545-16547.pdf
-> looks wrong (formula 3) as it's adding the signals at time
-> nD + d and at nD + D - 1 whereas for a delta you'd subtract those
-> (maybe I'm reading that wrong).
-> 
-> If we are providing these values as raw readings I'd expect them
-> to be presented as delta_angle / time (e.g. rate of change of angle) and
-> delta_velocity / time = acceleration (be it slightly distorted vs
-> the acceleration measured as a result of oversampling.).
-> So basically spot measurements of delta values are normally pretty
-> useless.
-> 
-> My guess is that you did this because the device either seems
-> to allow burst reads of the main channels or of these delta
-> values?
-> 
-> If so consider using available_scan_masks to allow one or the
-> other set of channels rather than not allowing capture of these
-> via the buffered interfaces.
+> The ADIS16545 and ADIS16547 are a complete inertial system that
+> includes a triaxis gyroscope and a triaxis accelerometer.
+> The serial peripheral interface (SPI) and register structure provide a
+> simple interface for data collection and configuration control.
+>=20
+> These devices are similar to the ones already supported in the driver,
+> with changes in the scales, timings and the max spi speed in burst
+> mode.
+> Also, they support delta angle and delta velocity readings in burst
+> mode, for which support was added in the trigger handler.
+>=20
+> Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>
 
-I see from later patch that this was adding support to parts that
-don't support grabbing these in burst mode.  Please make that clearer
-in this patch description and list the parts to which this support
-applied.
+What is Nuno's relationship to this patch?  You are author and the sender
+which is fine, but in that case you need to make Nuno's involvement explici=
+t.
+Perhaps a Co-developed-by or similar is appropriate?
 
-I'm a bit dubious of it being a useful feature, but maybe it is
-worth supporting.
+> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+A few comments inline.  Biggest one is I'd like a clear statement of why you
+can't do a burst of one type, then a burst of other.  My guess is that the
+transition is very time consuming?  If so, that is fine, but you should be =
+able
+to let available_scan_masks handle the disjoint channel sets.
+
+=46rom what I recall a similar case was why that got added in the first place.
+The uses in optimizing for devices that 'want' to grab lots of channels was
+a later use case.
 
 Jonathan
 
-> 
-> Jonathan
-> 
-> 
-> 
-> > 
-> > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> > ---
-> >  drivers/iio/imu/adis16480.c | 78 ++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 76 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
-> > index bc6cbd00cd4b..4adc2244a4ef 100644
-> > --- a/drivers/iio/imu/adis16480.c
-> > +++ b/drivers/iio/imu/adis16480.c
-> > @@ -140,6 +140,8 @@ struct adis16480_chip_info {
-> >  	unsigned int accel_max_val;
-> >  	unsigned int accel_max_scale;
-> >  	unsigned int temp_scale;
-> > +	unsigned int deltang_max_val;
-> > +	unsigned int deltvel_max_val;
-> >  	unsigned int int_clk;
-> >  	unsigned int max_dec_rate;
-> >  	const unsigned int *filter_freqs;
-> > @@ -445,6 +447,12 @@ enum {
-> >  	ADIS16480_SCAN_MAGN_Z,
-> >  	ADIS16480_SCAN_BARO,
-> >  	ADIS16480_SCAN_TEMP,
-> > +	ADIS16480_SCAN_DELTANG_X,
-> > +	ADIS16480_SCAN_DELTANG_Y,
-> > +	ADIS16480_SCAN_DELTANG_Z,
-> > +	ADIS16480_SCAN_DELTVEL_X,
-> > +	ADIS16480_SCAN_DELTVEL_Y,
-> > +	ADIS16480_SCAN_DELTVEL_Z,
-> >  };
-> >  
-> >  static const unsigned int adis16480_calibbias_regs[] = {
-> > @@ -688,6 +696,14 @@ static int adis16480_read_raw(struct iio_dev *indio_dev,
-> >  			*val = 131; /* 1310mbar = 131 kPa */
-> >  			*val2 = 32767 << 16;
-> >  			return IIO_VAL_FRACTIONAL;
-> > +		case IIO_DELTA_ANGL:
-> > +			*val = st->chip_info->deltang_max_val;
-> > +			*val2 = 31;
-> > +			return IIO_VAL_FRACTIONAL_LOG2;
-> > +		case IIO_DELTA_VELOCITY:
-> > +			*val = st->chip_info->deltvel_max_val;
-> > +			*val2 = 31;
-> > +			return IIO_VAL_FRACTIONAL_LOG2;
-> >  		default:
-> >  			return -EINVAL;
-> >  		}
-> > @@ -761,6 +777,30 @@ static int adis16480_write_raw(struct iio_dev *indio_dev,
-> >  	BIT(IIO_CHAN_INFO_CALIBSCALE), \
-> >  	32)
-> >  
-> > +#define ADIS16480_DELTANG_CHANNEL(_mod) \
-> > +	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
-> > +	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, ADIS16480_SCAN_DELTANG_ ## _mod, \
-> > +	0, \  
-> 
-> Trivial but why this line wrap?  I'd push 32 onto the line above at least.
-> 
-> > +	32)
-> > +
-> > +#define ADIS16480_DELTANG_CHANNEL_NO_SCAN(_mod) \
-> > +	ADIS16480_MOD_CHANNEL(IIO_DELTA_ANGL, IIO_MOD_ ## _mod, \
-> > +	ADIS16480_REG_ ## _mod ## _DELTAANG_OUT, -1, \
-> > +	0, \
-> > +	32)
-> > +
-> > +#define ADIS16480_DELTVEL_CHANNEL(_mod) \
-> > +	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
-> > +	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, ADIS16480_SCAN_DELTVEL_ ## _mod, \
-> > +	0, \
-> > +	32)
-> > +
-> > +#define ADIS16480_DELTVEL_CHANNEL_NO_SCAN(_mod) \
-> > +	ADIS16480_MOD_CHANNEL(IIO_DELTA_VELOCITY, IIO_MOD_ ## _mod, \
-> > +	ADIS16480_REG_ ## _mod ## _DELTAVEL_OUT, -1, \
-> > +	0, \
-> > +	32)  
-> 
+
+
+> =20
+>  static bool adis16480_validate_crc(const u16 *buf, const u8 n_elem, cons=
+t u32 crc)
+> @@ -1200,7 +1355,7 @@ static irqreturn_t adis16480_trigger_handler(int ir=
+q, void *p)
+>  	struct adis16480 *st =3D iio_priv(indio_dev);
+>  	struct adis *adis =3D &st->adis;
+>  	struct device *dev =3D &adis->spi->dev;
+> -	int ret, bit, offset, i =3D 0;
+> +	int ret, bit, offset, i =3D 0, buff_offset =3D 0;
+>  	__be16 *buffer;
+>  	u32 crc;
+>  	bool valid;
+> @@ -1233,8 +1388,8 @@ static irqreturn_t adis16480_trigger_handler(int ir=
+q, void *p)
+>  	 * 16-bit responses containing the BURST_ID depending on the sclk. If
+>  	 * clk > 3.6MHz, then we will have two BURST_ID in a row. If clk < 3MHZ,
+>  	 * we have only one. To manage that variation, we use the transition fr=
+om the
+> -	 * BURST_ID to the SYS_E_FLAG register, which will not be equal to 0xA5=
+A5. If
+> -	 * we not find this variation in the first 4 segments, then the data sh=
+ould
+> +	 * BURST_ID to the SYS_E_FLAG register, which will not be equal to 0xA5=
+A5/0xC3C3.
+> +	 * If we not find this variation in the first 4 segments, then the data=
+ should
+>  	 * not be valid.
+>  	 */
+>  	buffer =3D adis->buffer;
+> @@ -1242,7 +1397,7 @@ static irqreturn_t adis16480_trigger_handler(int ir=
+q, void *p)
+>  		u16 curr =3D be16_to_cpu(buffer[offset]);
+>  		u16 next =3D be16_to_cpu(buffer[offset + 1]);
+> =20
+> -		if (curr =3D=3D ADIS16495_BURST_ID && next !=3D ADIS16495_BURST_ID) {
+> +		if (curr =3D=3D st->burst_id && next !=3D st->burst_id) {
+>  			offset++;
+>  			break;
+>  		}
+> @@ -1269,11 +1424,22 @@ static irqreturn_t adis16480_trigger_handler(int =
+irq, void *p)
+>  		switch (bit) {
+>  		case ADIS16480_SCAN_TEMP:
+>  			st->data[i++] =3D buffer[offset + 1];
+> +			/*
+> +			 * The temperature channel has 16-bit storage size.
+> +			 * We need to perform the padding to have the buffer
+> +			 * elements naturally aligned in case there are any
+> +			 * 32-bit storage size channels enabled which have a
+> +			 * scan index higher than the temperature channel scan
+> +			 * index.
+> +			 */
+> +			if (*indio_dev->active_scan_mask &
+> +			    GENMASK(ADIS16480_SCAN_DELTVEL_Z, ADIS16480_SCAN_DELTANG_X))
+> +				st->data[i++] =3D 0;
+
+I think it is harmless to always do this. If there is no data after this ch=
+annel
+then we are writing data that won't be copied anywhere. If there is data af=
+ter
+it is needed.
+
+So I think you can drop the condition but do add a comment on it being nece=
+ssary
+if there is data afterwards and harmless if there isn't.
+=09
+
+>  			break;
+>  		case ADIS16480_SCAN_GYRO_X ... ADIS16480_SCAN_ACCEL_Z:
+>  			/* The lower register data is sequenced first */
+> -			st->data[i++] =3D buffer[2 * bit + offset + 3];
+> -			st->data[i++] =3D buffer[2 * bit + offset + 2];
+> +			st->data[i++] =3D buffer[2 * (bit - buff_offset) + offset + 3];
+> +			st->data[i++] =3D buffer[2 * (bit - buff_offset) + offset + 2];
+>  			break;
+>  		}
+>  	}
+> @@ -1285,10 +1451,38 @@ static irqreturn_t adis16480_trigger_handler(int =
+irq, void *p)
+>  	return IRQ_HANDLED;
+>  }
+> =20
+> +static int adis16480_update_scan_mode(struct iio_dev *indio_dev,
+> +				      const unsigned long *scan_mask)
+> +{
+> +	u16 en;
+> +	int ret;
+> +	struct adis16480 *st =3D iio_priv(indio_dev);
+> +
+> +	if (st->chip_info->has_burst_delta_data) {
+> +		if ((*scan_mask & ADIS16545_BURST_DATA_SEL_0_CHN_MASK) &&
+> +		    (*scan_mask & ADIS16545_BURST_DATA_SEL_1_CHN_MASK))
+> +			return -EINVAL;
+
+Use available scan_masks to enforce this.  That can have mutually exclusive
+sets like you have here.
+
+However, what stops 2 burst reads - so do them one after the other if neede=
+d.
+You'd still want available_scan_masks to have the subsets though but added
+to that the combination of the two.
+
+> +		if (*scan_mask & ADIS16545_BURST_DATA_SEL_0_CHN_MASK) {
+> +			en =3D FIELD_PREP(ADIS16545_BURST_DATA_SEL_MASK, 0);
+> +			st->burst_id =3D 0xA5A5;
+
+Give the magic value a name via a define.
+
+> +		} else {
+> +			en =3D FIELD_PREP(ADIS16545_BURST_DATA_SEL_MASK, 1);
+> +			st->burst_id =3D 0xC3C3;
+> +		}
+> +
+> +		ret =3D __adis_update_bits(&st->adis, ADIS16480_REG_CONFIG,
+> +					 ADIS16545_BURST_DATA_SEL_MASK, en);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return adis_update_scan_mode(indio_dev, scan_mask);
+> +}
+
+> =20
+> @@ -1498,6 +1692,8 @@ static int adis16480_probe(struct spi_device *spi)
+>  	if (ret)
+>  		return ret;
+> =20
+> +	st->burst_id =3D ADIS16495_BURST_ID;
+
+Why this default? Probably wants an explanatory comment.
+
+> +
 
 
