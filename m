@@ -1,109 +1,97 @@
-Return-Path: <linux-kernel+bounces-161585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E69DF8B4E10
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:58:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 597C98B4E65
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:01:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2CD228108E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:58:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FCFF1C203F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960ADBE49;
-	Sun, 28 Apr 2024 21:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E062E40C;
+	Sun, 28 Apr 2024 22:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="bIJNctnC"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCkCXnmI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BDEB664
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81893C144;
+	Sun, 28 Apr 2024 22:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714341490; cv=none; b=nTt7MzXBIC4HYA5MN7hSGxMcl9Z/6lb+qu9cdZCwhvwDtcuKyE2/A4g1hslS/D+CxXxF+x6xOKROrN7Pz+DaU5YXVZgcRlxi0I3B5z03WzTn+k5KJjLEJNw0wcDLXKTB5AZiKfFB+zABScG9mA+XwuPj2uWerqBveDn/bj/p5Zc=
+	t=1714341635; cv=none; b=Wkpw64tDFmIj2SZRCT4QEbVnLTCzuExaLzsDIbwcUs6EB+FEjZYAnm+lcB2CVEzfY01w/9RjIBHVlNUe0ERNxOVncXsjeLMsV5NLEhkU6zHsps+pEyOAy9IJIyXfeW4BVfU7jZYj0CKxuj7wDHV9j+j6WHiFXFt53kSzD7oqEgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714341490; c=relaxed/simple;
-	bh=tdAhCl7mjJa8RjUt4m4/7T2fZ2dVw3IwCO8GrNawYNc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkHU70GpVBRJtd96gn7GX2mPfV+RwuVLiAe/xV3cA3RF/d6AeIiQfPIV97U1P5NCE1fHkS2GQ9hOIsRpFGFarYrZjGBqbibdAOPEVyLylnR+pubDTTAa0Rvh3TiCKEkQ3CpU/gm8PbjIMnzXeHzjckXaHyRzRFPTlW0fDgLPzqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=bIJNctnC; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed01c63657so3699508b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 14:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714341489; x=1714946289; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eXuV7csRtJz4GGD7tR7/rDnQZRyGku0WW8DuEX0XcjY=;
-        b=bIJNctnCWEY9lV3LZntTmI5WvDBMx1KFZkm9CIn25Et6vGQpLxi5cUC+JVyK3btS1w
-         ep8CNfUn1x+UPTsLHKczGOmLnhdLQ6rd4E5Y438D3aqEf2thRdILmeXpGtMtdM76Sa7m
-         ENQJW3e0n/sjT0g8v4cvtq+s6GjVV19WWqxH1UPvGuQoah7irri5JfOGuJZr/OOcUttO
-         6pObWAZl+nmnPzzoxuanQA/YCPUoTfK5dJrKutlodSPvaTaa6Eg7Xovs7pBSkyIlYH9D
-         hqqMl+HNCsp+grtDj0iMebnR3Ctug9eu6ZPlqmXTDBRV5Yt7PqLvrJPZjKIaMVDPIIvE
-         cqog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714341489; x=1714946289;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eXuV7csRtJz4GGD7tR7/rDnQZRyGku0WW8DuEX0XcjY=;
-        b=ZlFiPWV1q9JWdVtdKDedxuNQLatOYzDwHXvVk0hdi2fWbeLd9Cy5BJ/2uLc/lijlI6
-         fXw1RYg/POWEk1EdPgVNO9epgVb1Ll6iPrbvcZRjCwtRFuuIqAVr5iWke2nfuMXLlU8h
-         qArtDUGeK/YkW+V/7Svfwj25Joh7/3CnOW5tS6FcSlJbndb4K+hYn/N0BN9fJenT1sy1
-         aFhleyTssCN+fWIrXSgT9GINugUxakrA6meUgxTW2g5oE1mqWXO3agMw0AgmkcSdTvXc
-         +xTuza4t33JVBwDgNh/ppMXK8QArnqDslGTHgTD8FLhDNzJo7gA5eWNbfAVIDpgQM+ut
-         wLkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3BIc4fZSmhdgFy/+aKeBBcOi97i5i+qvbSwI6VV9HMoYx/1X/qWUQzlwkQiIcZkCNCdsFQRjtcBfNF3oYU+rTCOf7bFoDrHNsJw0N
-X-Gm-Message-State: AOJu0YySKLvawQDKMjXpRbQNb8VLID7RxagqsndaAPu1FTyjb0lTHzIr
-	d8GhvFSzci/1BkBEPW1tKtfCOIKt3Z7FBnTkjMGq/EB+nYuiYzmpZML90yhzLLcyE38IP4bZn11
-	M
-X-Google-Smtp-Source: AGHT+IGye1ehSZZt4yT2nFPbQ7vud3lFr2xIjqVEFKvhITtSxlMsboN0QCMiyts7aBjcuVaOJTfFww==
-X-Received: by 2002:a05:6a00:4fc3:b0:6ed:5f64:2fef with SMTP id le3-20020a056a004fc300b006ed5f642fefmr6735175pfb.17.1714341488792;
-        Sun, 28 Apr 2024 14:58:08 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-29-7.pa.nsw.optusnet.com.au. [49.181.29.7])
-        by smtp.gmail.com with ESMTPSA id n7-20020a635907000000b0061236221eeesm1876214pgb.21.2024.04.28.14.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 14:58:08 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1s1CX7-00EKuy-0J;
-	Mon, 29 Apr 2024 07:58:05 +1000
-Date: Mon, 29 Apr 2024 07:58:05 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+7766d4a620956dfe7070@syzkaller.appspotmail.com>
-Cc: chandan.babu@oracle.com, djwong@kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [xfs?] possible deadlock in xfs_icwalk_ag
-Message-ID: <Zi7GbdillYG7gSB6@dread.disaster.area>
-References: <000000000000a1ce0006144f7533@google.com>
+	s=arc-20240116; t=1714341635; c=relaxed/simple;
+	bh=hvDaSGrdUfrxihrtEy8f7ZRBMYbrTI8GonchTutnack=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=aC7aC/U6XAGEOiJZuVlBDhIvvoAEj0t6KJhAtcxTKX0g5qXRpKZGKJ1QsB7SbDl2ek9N4pu75DY0gOACSEfTn866ImUDWARn4055ymYdBkRWOOtCQpLzP6Ee/1hOGjcCBYXWK/bNoySwaglvDBrm02xGAjvmfkSHTun49L/5w1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uCkCXnmI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B635C4AF4D;
+	Sun, 28 Apr 2024 22:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714341635;
+	bh=hvDaSGrdUfrxihrtEy8f7ZRBMYbrTI8GonchTutnack=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=uCkCXnmI4MTKNlX+GeicRK53ttSjQCUQ/uM+AYE3MgiN/PJMWaE42g9J+Rb+4zW7P
+	 auUxs1C72m5ezXgMdgaAzEEhvrnC8+M+3mRToUvljeFOS5ZwpnZkM2CPJRdCsuAnks
+	 8Y6XntuKf2ZkC9zdpHqc6QnqugRPZyJw1PPPdlMuzmtLBhasral9GLDvwPPDQbVgEX
+	 P+iLu62rfa3KvSTVVW21970E8c6yH6nr5fMxHZ58mrDGHFW5wrAvW8P3fr5BK8PZ3/
+	 wwmv/0a7wHF0h02wz62CwUHBU9QqCZzTEUze2FrktXtL0CszMjgcOrp61gIPCB7IJW
+	 LeS2CKq+NrQWg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0142BC43614;
+	Sun, 28 Apr 2024 22:00:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000a1ce0006144f7533@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/2] riscv: fix patching with IPI
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <171434163499.22130.13571396411882252090.git-patchwork-notify@kernel.org>
+Date: Sun, 28 Apr 2024 22:00:34 +0000
+References: <20240229121056.203419-1-alexghiti@rivosinc.com>
+In-Reply-To: <20240229121056.203419-1-alexghiti@rivosinc.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, andrea@rivosinc.com,
+ samuel.holland@sifive.com, anup@brainfault.org, rostedt@goodmis.org,
+ mhiramat@kernel.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
 
-On Sat, Mar 23, 2024 at 01:09:28AM -0700, syzbot wrote:
-> Hello,
+Hello:
+
+This series was applied to riscv/linux.git (for-next)
+by Palmer Dabbelt <palmer@rivosinc.com>:
+
+On Thu, 29 Feb 2024 13:10:54 +0100 you wrote:
+> patch 1 removes a useless memory barrier and patch 2 actually fixes the
+> issue with IPI in the patching code.
 > 
-> syzbot found the following issue on:
+> Changes in v3:
+> - Remove wrong cleanup as noted by Samuel
+> - Enhance comment about usage of release semantics as suggested by
+>   Andrea
+> - Add RBs from Andrea
 > 
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11525d81180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7766d4a620956dfe7070
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> [...]
 
-#syz dup: possible deadlock in xfs_ilock_data_map_shared
+Here is the summary with links:
+  - [v3,1/2] riscv: Remove superfluous smp_mb()
+    https://git.kernel.org/riscv/c/29cee75fb66e
+  - [v3,2/2] riscv: Fix text patching when IPI are used
+    https://git.kernel.org/riscv/c/c97bf629963e
 
+You are awesome, thank you!
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
