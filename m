@@ -1,139 +1,165 @@
-Return-Path: <linux-kernel+bounces-161208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C148D8B4904
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:14:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06EBF8B4906
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E44311C21222
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:14:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BADA72829A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92292EC3;
-	Sun, 28 Apr 2024 01:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646ED10F9;
+	Sun, 28 Apr 2024 01:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b="lY0O6FPk"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jl7vdDFf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6837E8
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D16764A;
+	Sun, 28 Apr 2024 01:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714266847; cv=none; b=oZoX6Tavv8LrS3T7qO2+PXlglzf3mypAkGx7yLa0PR7kRgKzjlFiISgYTM1ihcsnA/ivnU5LCg5J/6C2LE8uUpw4ZAlkdPhabkszDI5vvii6WVC8Mo8m3C1fR1BKUxfr3Ie+fuzA6LisOZxLLuYOoItKdHY7bFzLcetk+A1/aFw=
+	t=1714266983; cv=none; b=iQfW0iF8MfrHWcWNN80P681wEHjXL5+LWWG/7TYmDGLk9aAxsbpjOA6ByvVaI/O0FIbeGzjskSlcpI8CK+kGa+18j3p4BYOEjwpD+bMOFFZFk2ViY9MjfHg2iwtuXA6UTp7SBhWmFy0nnUezrB9KeKujL8tyh/PsNxgQ83soEQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714266847; c=relaxed/simple;
-	bh=MkxjFPe/XjzQO2U1RPZYV5iizyM+ETgFkRJ4AhpEyAY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oDH6Z0gor9nn/iXrsmbpdMHti1ix4XFYO75QFp686yt4pFlzgSu5Ujz4KhbpibqtYTkXgB7l5h+S56ULdv7keWYCfUbgAQXICnx6LLVSLQqzNF6Z95Z9lKujBYEkktMltI1glfdMjhxC8QgMCqSoZXmFzQeFaX4uN3Z7Xut6t3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu; spf=pass smtp.mailfrom=uci.edu; dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b=lY0O6FPk; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uci.edu
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ad8fb779d2so2833054a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 18:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uci.edu; s=google; t=1714266845; x=1714871645; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zQqecslNvADeDtDMc6gN3wUzor0w8dFqE6x2ITjMuoM=;
-        b=lY0O6FPksDlKEqBi7YQhBa71zOSubjB4k3/yHz57SheFGSPDZV2vFrAlpp6QucoEHx
-         tJ1iut3N7UCweSFlca+ql6hMIU5k4jIKi67ueZlsE3eGub1YFsWezYxH0ZzyYHokALTg
-         DouHR2dfZRuo6sFBIZz5oaKog3gSnSs0hRKiQe18+kEalM6dbCTq2olqnERHVqW3uYkJ
-         2J8v8hBDwKIVN8bATiI1Wb9cDyuFGE11m90/AGToL4OgWM4SmSLca7Ts7RYID7Y0N3zc
-         ppDeTjRJVNFYJ4sRFa/rWSr6S+ayrPv5fiwlManCapkVlhNeDfQCKOxKH6NQegaFYv8j
-         BOlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714266845; x=1714871645;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zQqecslNvADeDtDMc6gN3wUzor0w8dFqE6x2ITjMuoM=;
-        b=j0y6i1AzMxVx8HpCVBJMCEjx+j/Axu7W1NrFiTvBxsn5Qzi6Bl4Ej33GcCqXOSM20t
-         /sQQyuUTTJzW8cSCBBM/Eh4C2Yd1AP3zW0LEtUjpXlFIr9UOD6gWyxmeMFxKSvBPS5AW
-         a41iU5MIKq9+uHh9lfLd5oSUvMpcELkfqAw4EgdqW52+5glkgWAM357y+prTV2DiIu6f
-         eq5S7Qs23KWWNR0xA0//EAYQhrLJDDNOHvQZbOLLckHlTKX9Zp6NJrZbSIoqfVXZ/Jry
-         J74W2MTrWfc1rTir+FWItSrrOniV20oTKkn5aLJIca5GTIR5ZqZdlvLiTievOoUb4Dh/
-         ePWw==
-X-Gm-Message-State: AOJu0YyLUxTfGkU194meFvS+6iojk+97cy/EBAyln5gg0uJs3VADGJpX
-	ae4I6W9giYMnn8mdGd1xU8QVEWD5iMMRI7DcLK/9VQYMsj4mCSNhhueFeFmpoDE=
-X-Google-Smtp-Source: AGHT+IHpvftOvAeVZEr2PEgqKQpq01jDhDnbfGc94f5IGcuYhKxBuBao7tHzZ9+WZFt3dc1/5bu8Wg==
-X-Received: by 2002:a17:90b:3901:b0:2ac:23ec:6a57 with SMTP id ob1-20020a17090b390100b002ac23ec6a57mr6228811pjb.39.1714266845541;
-        Sat, 27 Apr 2024 18:14:05 -0700 (PDT)
-Received: from alpha.mshome.net (ip68-4-168-191.oc.oc.cox.net. [68.4.168.191])
-        by smtp.gmail.com with ESMTPSA id t24-20020a17090ad51800b002b0696a21a4sm3214662pju.32.2024.04.27.18.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 18:14:05 -0700 (PDT)
-From: Remington Brasga <rbrasga@uci.edu>
-To: suzuki.poulose@arm.com,
-	mike.leach@linaro.org,
-	james.clark@arm.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	coresight@lists.linaro.org,
-	Remington Brasga <rbrasga@uci.edu>
-Subject: [PATCH] Docs/ABI/testing/sysfs-bus-coresight-devices: typos/spelling
-Date: Sun, 28 Apr 2024 01:14:01 +0000
-Message-Id: <20240428011401.1080-1-rbrasga@uci.edu>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714266983; c=relaxed/simple;
+	bh=T37KaSyUuWuW85l2ruCLx2uNwdP395EJMwHfBNBUsPg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XkNA2QMV33KxhNoCO5I+kRgfs3H0oXuAl3hb0i5PaGUQGSQrhj+A54jSK4CWSdo4FiOxPyXrE9j/43KY3HTB/PqBm1bVWoN3toFx45LVs8F2c6dty82fjtLF3XZQ2UyUShCDyWTvRBYy9LE7pbQQI+yKGp7B8uF2LZPCrzWjj4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jl7vdDFf; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714266982; x=1745802982;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=T37KaSyUuWuW85l2ruCLx2uNwdP395EJMwHfBNBUsPg=;
+  b=Jl7vdDFftVx5UTxyXB0KQMO3abyhF3/izh97yvVnUdKzDd1fJLnBi+Qv
+   KJ6HpKL7mXAlIlc4HmT/kY+UtN634Wmgd0uhOW0qUlS1SErPcgh7aBNb/
+   ASziOvFfj2d92nvAphHf9hoRukne5A8sq24fBwE3a+itLD3PLn0LPffla
+   O1pBrw9WMu/7CtWZQH6Zky4TCdIRcNDI+GD6xnDQ/4wHN8w3Ak9xyr0Ws
+   Mv+2qCHdS3Chk4u1yuLQQqSyhdVpLShViCxLVqsm7tZjQB9C1j4WEEXfJ
+   z08mS/mO75BNeA8KP9bvpWsEpW3tsqvzoinG5VL4QYp+Q5qNQpfemISIO
+   Q==;
+X-CSE-ConnectionGUID: aBhIBntCT1us6HoyvG8wMQ==
+X-CSE-MsgGUID: i2o3lF+9QlKhYeOC3eoy9w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="27419755"
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="27419755"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 18:16:22 -0700
+X-CSE-ConnectionGUID: Z9PtG/FCQ3mjkxBgoTxZ/A==
+X-CSE-MsgGUID: /usw1doHTVC2NDoUvemriw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="30574669"
+Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 18:16:17 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>,  Kairui Song <ryncsn@gmail.com>,
+  linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Barry Song <v-songbaohua@oppo.com>,  Ryan
+ Roberts <ryan.roberts@arm.com>,  Neil Brown <neilb@suse.de>,  Minchan Kim
+ <minchan@kernel.org>,  Hugh Dickins <hughd@google.com>,  David Hildenbrand
+ <david@redhat.com>,  Yosry Ahmed <yosryahmed@google.com>,
+  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
+In-Reply-To: <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com>
+	(Chris Li's message of "Fri, 26 Apr 2024 16:16:01 -0700")
+References: <20240417160842.76665-1-ryncsn@gmail.com>
+	<87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<Zico_U_i5ZQu9a1N@casper.infradead.org>
+	<87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com>
+Date: Sun, 28 Apr 2024 09:14:25 +0800
+Message-ID: <87bk5uqoem.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Fix spelling and gramatical errors
+Chris Li <chrisl@kernel.org> writes:
 
-Signed-off-by: Remington Brasga <rbrasga@uci.edu>
----
-Fixed typos in the descriptions.
+> Hi Ying,
+>
+> On Tue, Apr 23, 2024 at 7:26=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Hi, Matthew,
+>>
+>> Matthew Wilcox <willy@infradead.org> writes:
+>>
+>> > On Mon, Apr 22, 2024 at 03:54:58PM +0800, Huang, Ying wrote:
+>> >> Is it possible to add "start_offset" support in xarray, so "index"
+>> >> will subtract "start_offset" before looking up / inserting?
+>> >
+>> > We kind of have that with XA_FLAGS_ZERO_BUSY which is used for
+>> > XA_FLAGS_ALLOC1.  But that's just one bit for the entry at 0.  We could
+>> > generalise it, but then we'd have to store that somewhere and there's
+>> > no obvious good place to store it that wouldn't enlarge struct xarray,
+>> > which I'd be reluctant to do.
+>> >
+>> >> Is it possible to use multiple range locks to protect one xarray to
+>> >> improve the lock scalability?  This is why we have multiple "struct
+>> >> address_space" for one swap device.  And, we may have same lock
+>> >> contention issue for large files too.
+>> >
+>> > It's something I've considered.  The issue is search marks.  If we del=
+ete
+>> > an entry, we may have to walk all the way up the xarray clearing bits =
+as
+>> > we go and I'd rather not grab a lock at each level.  There's a conveni=
+ent
+>> > 4 byte hole between nr_values and parent where we could put it.
+>> >
+>> > Oh, another issue is that we use i_pages.xa_lock to synchronise
+>> > address_space.nrpages, so I'm not sure that a per-node lock will help.
+>>
+>> Thanks for looking at this.
+>>
+>> > But I'm conscious that there are workloads which show contention on
+>> > xa_lock as their limiting factor, so I'm open to ideas to improve all
+>> > these things.
+>>
+>> I have no idea so far because my very limited knowledge about xarray.
+>
+> For the swap file usage, I have been considering an idea to remove the
+> index part of the xarray from swap cache. Swap cache is different from
+> file cache in a few aspects.
+> For one if we want to have a folio equivalent of "large swap entry".
+> Then the natural alignment of those swap offset on does not make
+> sense. Ideally we should be able to write the folio to un-aligned swap
+> file locations.
+>
+> The other aspect for swap files is that, we already have different
+> data structures organized around swap offset, swap_map and
+> swap_cgroup. If we group the swap related data structure together. We
+> can add a pointer to a union of folio or a shadow swap entry.
 
- Documentation/ABI/testing/sysfs-bus-coresight-devices-etm3x | 2 +-
- Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc   | 2 +-
- Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+The shadow swap entry may be freed.  So we need to prepare for that.
+And, in current design, only swap_map[] is allocated if the swap space
+isn't used.  That needs to be considered too.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-etm3x b/Documentation/ABI/testing/sysfs-bus-coresight-devices-etm3x
-index 3acf7fc31659..271b57c571aa 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-etm3x
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-etm3x
-@@ -22,7 +22,7 @@ Contact:	Mathieu Poirier <mathieu.poirier@linaro.org>
- Description:	(RW) Used in conjunction with @addr_idx.  Specifies
- 		characteristics about the address comparator being configure,
- 		for example the access type, the kind of instruction to trace,
--		processor contect ID to trigger on, etc.  Individual fields in
-+		processor context ID to trigger on, etc.  Individual fields in
- 		the access type register may vary on the version of the trace
- 		entity.
- 
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-index 96aafa66b4a5..339cec3b2f1a 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
-@@ -97,7 +97,7 @@ Date:		August 2023
- KernelVersion:	6.7
- Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
- Description:	(Read) Shows all supported Coresight TMC-ETR buffer modes available
--		for the users to configure explicitly. This file is avaialble only
-+		for the users to configure explicitly. This file is available only
- 		for TMC ETR devices.
- 
- What:		/sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
-diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-index b4d0fc8d319d..bf710ea6e0ef 100644
---- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-+++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-@@ -244,7 +244,7 @@ KernelVersion	6.9
- Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
- Description:
- 		(RW) Read or write the status of timestamp upon all interface.
--		Only value 0 and 1  can be written to this node. Set this node to 1 to requeset
-+		Only value 0 and 1  can be written to this node. Set this node to 1 to request
- 		timestamp to all trace packet.
- 		Accepts only one of the 2 values -  0 or 1.
- 		0 : Disable the timestamp of all trace packets.
--- 
-2.34.1
+> We can use atomic updates on the swap struct member or breakdown the
+> access lock by ranges just like swap cluster does.
 
+The swap code uses xarray in a simple way.  That gives us opportunity to
+optimize.  For example, it makes it easy to use multiple xarray
+instances for one swap device.
+
+> I want to discuss those ideas in the upcoming LSF/MM meet up as well.
+
+Good!
+
+--
+Best Regards,
+Huang, Ying
 
