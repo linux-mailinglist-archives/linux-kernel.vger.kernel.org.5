@@ -1,54 +1,51 @@
-Return-Path: <linux-kernel+bounces-161469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCC58B4C6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 775CB8B4C6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:39:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907371F21382
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 181211F21352
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002096F079;
-	Sun, 28 Apr 2024 15:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF256FE06;
+	Sun, 28 Apr 2024 15:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="QHSaNfVF"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D8FbD4xf"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A51E48A;
-	Sun, 28 Apr 2024 15:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC3F3BBCA
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714318756; cv=none; b=m62tnnLRzeIH2KIF1ctSTSwKkrdrVqlXmNo+dOve3rU78JgZimYqpr7hnFoV80upD3/OQZZYCu4l/wHHq5KnZyLdSVCn6agWHx2W/vu+kyfY1W/qihT+/YkGKdv9GLyBRlsrgJwYuVyvfMu4tVv8WwcIHKJe6WCE+1H965CIyrs=
+	t=1714318758; cv=none; b=d8Qwm/chx438+jMeBQ7a7OHTX2yC6iWAVMefEkSPcCRPFyh+gNdMzTRUlqOK8d6leQA8XToyV5D/wHikyHHdVw6wfrm6aiBLEd8KCO5Pj6yYNAy9BpYUMSkxVdTXVOIE12RxucPWAKgRTDdyEEUxKDSGMw6XqlFyPDgP+jFmJbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714318756; c=relaxed/simple;
-	bh=ViyQZTMIcF5v+1IYQTvuXRzOzG85wmh4Y3HOHwhO5gY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=NjyQRgXfgBSv2ykHPLRPlNWc45WDUnU1KyXQun5VicjxDyFHbt15h35r3a7nVdqnDwxmrY/pzlKlqmI3EngEAoCTSD1asjdryauo+CTQ/+hYTyElMNQbo0nv7a0LORLAQQ+7d5f7ACH4AnTwZMsqSBtGg1FtNBYcrIgoejvcn9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=QHSaNfVF; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714318718; x=1714923518; i=markus.elfring@web.de;
-	bh=g4JtHB0LA6rj2gdM0a7dzQ25Ozs54psB2cq0Nnk5tUs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=QHSaNfVFBHPPh6QlbqU+9gPPj6bEDthUZd7Dpp0YrSmhPme/e0Oc6+N6bugbjUF2
-	 HQJdTl9d5tMomQ17HRA0yzbvyo1NDHzO8IODYZITJGzQ2AWyC3vsmNNnbzHskBktU
-	 DUdmc9k8pEjOQzzMs6E5fhvO58y9U9auXFyjwH//PA0aC3rKh+ylBUqGoDAdsTZxL
-	 BHSU1AlbSchjgPR5CKaseiaIPZEzGyLMBUDOZqv04dC8CQBnk2zV/UJiiRsE4VTYK
-	 7+Af6WLVDzKDzEBk6Vmpb/qExS2w1JLmBXZB+OF/P4m8AeivgqfhIkp+HbzwzEj5J
-	 gThzWZCkiLOWbNqYcg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MNORC-1sKIPn3wR0-00UEVD; Sun, 28
- Apr 2024 17:38:38 +0200
-Message-ID: <d3f389e2-7a72-4ce0-9f05-245c4f34f829@web.de>
-Date: Sun, 28 Apr 2024 17:38:35 +0200
+	s=arc-20240116; t=1714318758; c=relaxed/simple;
+	bh=oansF5MIgCFtn6hkXlADfUpOEDpEBLvdw3XwMNsorcU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UDvHkDLDPFzLEfUs9Ui1ynFtAp2KmdXVoK7E24C78DvoVEnD/uFgHuZwNQp1d0qpK1kPP9iFCNvg5lYMLpR26CJfpuCf7JgIt8CNgez4rA5/tjaCm9UYRk1zru1YVbi4Gty6fTtpt/AdKZVUiieMObnp2CTfQKpfxHjBHfNYSyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D8FbD4xf; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=K70N6/R4ukNLVBkgfael6/yLfHOMQbEihyRPODmbhMI=; b=D8FbD4xf9u5zA95aGofW2iShhY
+	czXO6IInF+iL3Q84Gz8c9X30SYHrcFDyxGiPqaSKkM/0kjWq9iuMFSMw/qGaWF07j7wa+YS3rxmsZ
+	HSNE0uyGlpsrpFArzzM+5q30XN2hxEGKKOEIRBIoW3MVSQzXuUBLBcJdD9xpZ/oZI3lIfoefCVJIp
+	R6Nmr/dQbBFSRMo1vo6G4BjRqZYJy5LLUhwsUbgg41/36t7BVqwh21wXHyD7Iefgg2MyDFKmlbpu4
+	tlivMLzLVux1hNrwC3mW7xjYMxiQeSUMMjgWdbUbp07Ty9cCouH6Ofd0L3dm2YF7PvbUzj1zpJqWQ
+	GJJH6pIQ==;
+Received: from [50.53.4.147] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s16cS-00000000CuZ-2Lkm;
+	Sun, 28 Apr 2024 15:39:12 +0000
+Message-ID: <e482db56-e63e-4165-89de-e460fb2b8d08@infradead.org>
+Date: Sun, 28 Apr 2024 08:39:09 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,60 +53,73 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, Will Deacon <will@kernel.org>,
- linux-kselftest@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
- Kunwu Chan <kunwu.chan@hotmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Shuah Khan <shuah@kernel.org>
-References: <171429017935.1716809.10906291781915903062.b4-ty@kernel.org>
-Subject: Re: kselftest: arm64: Add a null pointer check
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <171429017935.1716809.10906291781915903062.b4-ty@kernel.org>
+Subject: Re: [PATCH] clocksource: Make the int help prompt unit readable in
+ ncurses
+To: Borislav Petkov <bp@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Waiman Long <longman@redhat.com>
+References: <20240428102143.26764-1-bp@kernel.org>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240428102143.26764-1-bp@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OPEqQzbV7tCKfsZZw9Vc6Y9TOgOxLJenJ4U/zPHrydyN5r+4bVD
- 9VMg1yI2DNsetpNcFGGaRR0mJYV2rK/HLnRoo7P5Y8E479Oj8CzsY5yfUA+AyI7txW/0u80
- T+4HgJB13Rhz4cy4Q+wwcP3sQpPvSNosVJom4hTKg0qgPkcyvPg4+WDLcDmHDIU1kW4QIl9
- nEyt4QCfKytD3iPPA2x1g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ohnDtBiNdL8=;gPBrqtU8Z9IHlSkwLLAp9xiAZvd
- W6Ux4CMAEPEQs5QZKO1ETdkfczDxIJZh81DXWIb9LsS4nUESIEnMIA+B1Ho+PJmYW0j0ExWfm
- kcEcDNmZt560gyijImr4jfjivl2Gb8bIT3IPpahVWquRTE5oKSqEKTHcJ3nUHye0YrL1IaEYe
- 0yf7FHpJq4UAPCwb5VDL5S6E39PJLxQoc9yqS9kFQTzzuQFrYZKsqcxIodR3Iylgr2FSzrcP8
- ++pWvOv6ZTdQXhB145021a0wP84PIUUYYUfcK7INs89g1Se/x1r0hRaAICmcHyD11GwemTdjJ
- 1lrnJY844dIpF5puNdfeFFYi16PeTv1O+Upy8Ivh6A4/14djFbWw0ZbKPubAW97Q4KAtOcRSI
- 4o8WMPQIXXw0LewsgH97qhpdT7BiyHIHIig4epfbWkNwmnZvViC6MMZfC6cP3oKvJUdg/7zC2
- tABA0V5Cp+XHce7vtqTTbtUPXWqQ2Y8sZGpBB3+1NnNZgMQBRSwn3nYqpFnl/I9Msr5Hwltq2
- A06fpQJ00IGowo/YBZGGI0aufyDem/F2eBx5AUNp3GW9kmbuymRfuWIE7yqSdnBXQhNN+/iCj
- skgoGigwuu2PsHqvsR70ABTMLKFQzg6ueStZoy+sntgxlF040H/ST/50A6XjuliKAhYvwgc9p
- 9fmYph0mZzp9KTeFdgLy2XyAiFvV4Q6xLPdP+/YDMuPjl34V4zD5QyMSYIHSjTE/ZOjRE0TvG
- 9Tj2wsZW+i5MJdywmQ/Zve6J0uQrNPy+fXdmae7OP6uCKjPVYR+RRhrWEjW0acIUKd1iPSBiy
- uEdzHHs+ELIHKPO2sP+VKM3r34fAlWYfTFfhf6SBE9biI=
-
-> > There is a 'malloc' call, which can be unsuccessful.
-> > This patch will add the malloc failure checking
-> > to avoid possible null dereference and give more information
-> > about test fail reasons.
->
-> Applied to arm64 (for-next/selftests), thanks!
->
-> [1/1] kselftest: arm64: Add a null pointer check
->       https://git.kernel.org/arm64/c/80164282b362
-
-Why did you not adhere to known requirements for such a change description=
-?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n94
-
-* Imperative mood
-
-* Addition of the tag =E2=80=9CFixes=E2=80=9D
+Content-Transfer-Encoding: 8bit
 
 
-Regards,
-Markus
+
+On 4/28/24 3:21 AM, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> 
+> When doing
+> 
+>   make menuconfig
+> 
+> and searching for the CLOCKSOURCE_WATCHDOG_MAX_SKEW_US config item, the
+> help says:
+> 
+>   │ Symbol: CLOCKSOURCE_WATCHDOG_MAX_SKEW_US [=125]
+>   │ Type  : integer
+>   │ Range : [50 1000]
+>   │ Defined at kernel/time/Kconfig:204
+>   │   Prompt: Clocksource watchdog maximum allowable skew (in   s)
+>   							     ^^^^^
+> 
+>   │   Depends on: GENERIC_CLOCKEVENTS [=y] && CLOCKSOURCE_WATCHDOG [=y]
+> 
+> because on some terminals, it cannot display the 'μ' char, unicode
+> number 0x3bc.
+> 
+> So simply write it out so that there's no trouble.
+> 
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  kernel/time/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+> index fc3b1a06c981..8ebb6d5a106b 100644
+> --- a/kernel/time/Kconfig
+> +++ b/kernel/time/Kconfig
+> @@ -202,7 +202,7 @@ config HIGH_RES_TIMERS
+>  	  the size of the kernel image.
+>  
+>  config CLOCKSOURCE_WATCHDOG_MAX_SKEW_US
+> -	int "Clocksource watchdog maximum allowable skew (in μs)"
+> +	int "Clocksource watchdog maximum allowable skew (in microseconds)"
+>  	depends on CLOCKSOURCE_WATCHDOG
+>  	range 50 1000
+>  	default 125
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
