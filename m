@@ -1,116 +1,175 @@
-Return-Path: <linux-kernel+bounces-161600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653998B4E7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:12:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7D38B4E7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:13:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3654B20BA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:12:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFD841F21193
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A405DDD5;
-	Sun, 28 Apr 2024 22:12:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9920610958;
+	Sun, 28 Apr 2024 22:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSSrUNLQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="LsyOqxLS"
+Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A757AB642;
-	Sun, 28 Apr 2024 22:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DB6B642;
+	Sun, 28 Apr 2024 22:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714342324; cv=none; b=kemuYxVjNpLjtiGrKMoiV/ztcZqUCAjz4n+7F5AkC5JE1jx58JLkekTGIptadDIp+M4aJkCSGmQ6mePQQvlb5Bf/IRDOg24UDrO4Rzpp8liRYeAPjVxjd9XsW/cauDkoaD4V+WLU42UfwHCyv4Ja4G81ucSQRdaQl6guPePC73k=
+	t=1714342388; cv=none; b=rn5YsOC/LfycICS2MVyjlzpM9svLjEQhR1dXdmInak/BtlZk7jfZyXwPeTRHxPdsMijTMXLFvpnZOtbCJ8zfi+IzRTCgtxp4r5lS31D/o6mUVPIrRbrofvHCWO/MUBx4Y+6MK7Do4sRoU0djsI73+tEHhBpHkfFFkmzO8Fs+uN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714342324; c=relaxed/simple;
-	bh=5/HmLgYaIl6Qw0pfF2mfRVGsR2bfSD7HkC+xSN0x8XQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=uyC5idD/oJ0Vnr8uBnlpMHg0RWPB8frXcMWCf+A20lU6uGUHzHiDFjpoYqGSzwToZOLh/NNqyFjNHeZBhS0KErYW6DV7qp5XRHkqcluPBcj/19qMBrTGBV1DjnBLLic09ke89qCUxVKP/Y9gVCEKjQPvXNkDU39Pg+TwA/R66oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSSrUNLQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73190C113CC;
-	Sun, 28 Apr 2024 22:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714342323;
-	bh=5/HmLgYaIl6Qw0pfF2mfRVGsR2bfSD7HkC+xSN0x8XQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=eSSrUNLQ5J7nCxu0tuwy+uEz2bUzSgJexohBJ8kRdMGOBHhMHk9iM7D19Q2eLFgIa
-	 eR55nhgXksxQcPjxqjNPyUqn9gUUtbOJNHEbmECbC1aqAYras+0jGJRGQ5z4zTuSm0
-	 /s+faBCOAI5vzFpK3zchFSVBqud3UGlEHLMSHqEVN5kaHDsf1Rc2vwS/AUts2UC80s
-	 v+HuBatK+vS4kBXBoGgYhdcq3ci0tZJ5OGSAVacpjVYK63qjcWhZC3O7Hf+d9ptdEZ
-	 b5p0DD+XXdEQ9TJIBJ+Vd3guItALFqxdnB3cFb9ueAs+JPmXsU6LJ24E8f9YJOBpwc
-	 gXawTKHhdyvWA==
+	s=arc-20240116; t=1714342388; c=relaxed/simple;
+	bh=v+x60Em69Y3V15yKVtpLHgKkcW8An+47dIIafknn1Ek=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bWATB4jWPHVQ1ZZhEymdEh7xka/D7I+KXw7TqQLL0pV2XUd5IGlupvD/rAmrSZdl1yhem7pxEJe20Xzh9fYr4/5agSnOd8gSi8Ns714+2aN1d2On5jJcFd3z5Ws0ETH7Xkw1xvyqqa82O8DRBPH62cAq2Q0DaC5mjAvlw2Rn2rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=LsyOqxLS; arc=none smtp.client-ip=178.154.239.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:28a2:0:640:9f07:0])
+	by forward502c.mail.yandex.net (Yandex) with ESMTPS id A818360E39;
+	Mon, 29 Apr 2024 01:13:01 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id wCYcLSYpCSw0-neCwgFvP;
+	Mon, 29 Apr 2024 01:13:00 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1714342380; bh=c9Y0BivHdjPKZY5c2XXTa9ws62jwT30YMQALX3hKUgU=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=LsyOqxLSL+upd6hnVyorcANpJaN3+4rBG+WC9FGO2DJNOLJqiBFKcdVbORF/YVI6k
+	 k1c9E5X7wsizm3X+SBFEdRVCBDXzZSSBjrxGZvnDpE/C7KRJRjBYSRLtWBzTSdxa+m
+	 JVb5ceF0eM55CN/tzh31ttIGaTAnZwuLtTnuIMGc=
+Authentication-Results: mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <eae8e7e6-9c03-4c8e-ab61-cf7060d74d6d@yandex.ru>
+Date: Mon, 29 Apr 2024 01:12:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 29 Apr 2024 01:12:00 +0300
-Message-Id: <D0W3MTR0CY08.Q2UIYE4N274L@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <lukas@wunner.de>
-Subject: Re: [PATCH] crypto: ecc - Protect ecc_digits_from_bytes from
- reading too many bytes
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240426225553.3038070-1-stefanb@linux.ibm.com>
-In-Reply-To: <20240426225553.3038070-1-stefanb@linux.ibm.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
+Content-Language: en-US
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Aleksa Sarai <cyphar@cyphar.com>, "Serge E. Hallyn" <serge@hallyn.com>,
+ linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Aring <alex.aring@gmail.com>,
+ David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org,
+ linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240426133310.1159976-1-stsp2@yandex.ru>
+ <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+ <8e186307-bed2-4b5c-9bc6-bdc70171cc93@yandex.ru>
+ <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
+ <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
+ <CALCETrXPgabERgWAru7PNz6A5rc6BTG9k2RRmjU71kQs4rSsPQ@mail.gmail.com>
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <CALCETrXPgabERgWAru7PNz6A5rc6BTG9k2RRmjU71kQs4rSsPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat Apr 27, 2024 at 1:55 AM EEST, Stefan Berger wrote:
-> Protect ecc_digits_from_bytes from reading too many bytes from the input
-> byte array in case an insufficient number of bytes is provided to fill th=
-e
-> output digit array of ndigits. Therefore, initialize the most significant
-> digits with 0 to avoid trying to read too many bytes later on.
+29.04.2024 00:30, Andy Lutomirski пишет:
+> On Sun, Apr 28, 2024 at 2:15 PM stsp <stsp2@yandex.ru> wrote:
+>> But isn't that becoming a problem once
+>> you are (maliciously) passed such fds via
+>> exec() or SCM_RIGHTS? You may not know
+>> about them (or about their creds), so you
+>> won't close them. Or?
+> Wait, who's the malicious party?
+
+Someone who opens an fd with O_CRED_ALLOW
+and passes it to an unsuspecting process. This
+is at least how I understood the Christian Brauner's
+point about "unsuspecting userspace".
+
+
+>    Anyone who can open a directory has,
+> at the time they do so, permission to do so.  If you send that fd to
+> someone via SCM_RIGHTS, all you accomplish is that they now have the
+> fd.
+
+Normally yes.
+But fd with O_CRED_ALLOW prevents the
+receiver from fully dropping his privs, even
+if he doesn't want to deal with it.
+
+> In my scenario, the malicious party attacks an *existing* program that
+> opens an fd for purposes that it doesn't think are dangerous.  And
+> then it gives the fd *to the malicious program* by whatever means
+> (could be as simple as dropping privs then doing dlopen).  Then the
+> malicious program does OA2_INHERIT_CREDS and gets privileges it
+> shouldn't have.
+
+But what about an inverse scenario?
+Malicious program passes an fd to the
+"unaware" program, putting it under a
+risk. That program probably never cared
+about security, since it doesn't play with
+privs. But suddenly it has privs, passed
+out of nowhere (via exec() for example),
+and someone who hacks it, takes them.
+
+>>>> My solution was to close such fds on
+>>>> exec and disallowing SCM_RIGHTS passage.
+>>> I don't see what problem this solves.
+>> That the process that received them,
+>> doesn't know they have O_CRED_ALLOW
+>> within. So it won't deduce to close them
+>> in time.
+> Hold on -- what exactly are you talking about?  A process does
+> recvmsg() and doesn't trust the party at the other end.  Then it
+> doesn't close the received fd.  Then it does setuid(getuid()).  Then
+> it does dlopen or exec of an untrusted program.
 >
-> If too many bytes are provided on the input byte array the extra bytes
-> are ignored since the input variable 'ndigits' limits the number of digit=
-s
-> that will be filled.
->
-> Fixes: d67c96fb97b5 ("crypto: ecdsa - Convert byte arrays with key coordi=
-nates to digits")
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  include/crypto/internal/ecc.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.=
-h
-> index 7ca1f463d1ec..56215f14ff96 100644
-> --- a/include/crypto/internal/ecc.h
-> +++ b/include/crypto/internal/ecc.h
-> @@ -67,9 +67,16 @@ static inline void ecc_swap_digits(const void *in, u64=
- *out, unsigned int ndigit
->  static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbyt=
-es,
->  					 u64 *out, unsigned int ndigits)
->  {
-> +	int diff =3D ndigits - DIV_ROUND_UP(nbytes, sizeof(u64));
->  	unsigned int o =3D nbytes & 7;
->  	__be64 msd =3D 0;
-> =20
-> +	/* diff > 0: not enough input bytes: set most significant digits to 0 *=
-/
-> +	while (diff > 0) {
-> +		out[--ndigits] =3D 0;
-> +		diff--;
-> +	}
+> Okay, so the program now has a completely unknown fd.  This is already
+> part of the thread model.  It could be a cred-capturing fd, it could
+> be a device node, it could be a socket, it could be a memfd -- it
+> could be just about anything.  How do any of your proposals or my
+> proposals cause an actual new problem here?
 
-Could be just trivial for-loop:
+I am not actually sure how widely
+does this spread. I.e. /dev/mem is
+restricted these days, but if you can
+freely pass device nodes around, then
+perhaps the ability to pass an r/o dir fd
+that can suddenly give creds, is probably
+not something new...
+But I really don't like to add to this
+particular set of cases. I don't think
+its safe, I just think its legacy, so while
+it is done that way currently, doesn't
+mean I can do the same thing and
+call it "secure" just because something
+like this was already possible.
+Or is this actually completely safe?
+Does it hurt to have O_CRED_ALLOW
+non-passable?
 
-for (i =3D 0; i < diff; i++)
-	out[--ndigits] =3D 0;
+>>> This is fundamental to the whole model. If I stick a FAT formatted USB
+>>> drive in the system and mount it, then any process that can find its
+>>> way to the mountpoint can write to it.  And if I open a dirfd, any
+>>> process with that dirfd can write it.  This is old news and isn't a
+>>> problem.
+>> But IIRC O_DIRECTORY only allows O_RDONLY.
+>> I even re-checked now, and O_DIRECTORY|O_RDWR
+>> gives EISDIR. So is it actually true that
+>> whoever has dir_fd, can write to it?
+> If the filesystem grants that UID permission to write, then it can write.
 
-Or also simpler while-loop could work:
+Which to me sounds like owning an
+O_DIRECTORY fd only gives you the
+ability to skip the permission checks
+of the outer path components, but not
+the inner ones. So passing it w/o O_CRED_ALLOW
+was quite safe and didn't give you any
+new abilities.
 
-while (diff-- > 0)
-	out[--ndigits] =3D 0;
-
-BR, Jarkko
 
