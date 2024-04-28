@@ -1,143 +1,123 @@
-Return-Path: <linux-kernel+bounces-161341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF778B4AF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:20:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A89318B4AF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:24:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 809CA1F2164B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:20:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E9EBB212CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6801154BFD;
-	Sun, 28 Apr 2024 09:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D5354F86;
+	Sun, 28 Apr 2024 09:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XZKXGUVw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WHxXMuFm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D6E33C8;
-	Sun, 28 Apr 2024 09:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887A2524B7;
+	Sun, 28 Apr 2024 09:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714296022; cv=none; b=icaj8fNXpTlfutY+biaE+YcNC4i9Xzy5QtlXYwYyHdqJP9QEpsbu6lvcpRNKDnHXN5iPBWdZrUp/Wpf1NbYonCZL+ZY2dH5LEGdYQkyal1rsIl2dHGtMUqBRptCidUfQYsFLIDL8ofJ1W4S+RDlqBwqL3t54llAvshePUuh5tb4=
+	t=1714296280; cv=none; b=bbeGvd3OMIlsnS36nAwK2gTeU5zAWCO4e84NucSdUPNzS9ywqOBb3KEOLPhKnnHB0SjduZ+yQFF6mUQ0tlK0mmbYbfE6M9v1fLHqdFQFbccocGcbz+ry8Z5O2GWJxTFUU1MyCztofZRe7+aOdvhmqEoEkS88275jSMD99k4he3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714296022; c=relaxed/simple;
-	bh=tTcSI2He67CI3Bx08DQeboEo2tW7XByRd7BFoSlFVNI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rRj5qsX6N7hEAqEBNDLcgq/6BbiG/8zDInMT+Sl7ZL8HBuslZD04P6G8kO9CFq85Tz1bxABcp3hCycS+gfNNt5OXLQzBFggilX02Cyazrq2GkO/CuL7UUdaIZmc+5l86JCtIGaPRAvFZR9EPXzc7qtngYmmpzLRB5OypfQxmius=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XZKXGUVw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FCC3C113CC;
-	Sun, 28 Apr 2024 09:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714296022;
-	bh=tTcSI2He67CI3Bx08DQeboEo2tW7XByRd7BFoSlFVNI=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=XZKXGUVwBO3S/f+J33iIx2bUkBDqcBhVQNzXpdKlZHIXBp7tHqCinBxD/4a3uUXEq
-	 oVb0wiN1anfd9DWl3LtauefrWiszXFknLYEiIRhHkK78HeP5s1SOiz5Xfl+/7Sp1fh
-	 3R3dHd9u3lJZINnAEQBQOV3BzCCS+XSDOXpwdtIZNcda+6ODZVhguXm0q6Dudv7/hu
-	 hrKVaQPUEokY3oz4qpHEhz2HkJ6Q1hETt1zVaH38dydhIz5p27YduGZVsokX0kytJp
-	 0gMxJy2W07ZdirlDbmW1z7Nu6oaAxv53XuiwSJyfye0wOLNHWs4Pb2JGUSZ+uw+/Md
-	 VsqwZaY1CJquw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A01EC4345F;
-	Sun, 28 Apr 2024 09:20:22 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Sun, 28 Apr 2024 12:19:58 +0300
-Subject: [PATCH net-next v2] net: dsa: mt7530: do not set MT7530_P5_DIS
- when PHY muxing is being used
+	s=arc-20240116; t=1714296280; c=relaxed/simple;
+	bh=J+wrIvkEUJJ4NAAL2RM/Y60fLE6nSOmAeZ1QKeBR//s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hDq9Xhi3XTOVUnt4PTk25fJ2jhqex3SZw1kAW+nh1GmddF/ncFyi8oTtdtGnEteJHSPS4Fr3+fjX+38ZlZQSLF+5jVtWUJmJLAFdn7+55fgZ5chrl/v4w4FuzqNOwBRpdixB2ng2ArqUuNLp5y/lZP59EivDuDszHYTiEVlvLUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WHxXMuFm; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714296279; x=1745832279;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=J+wrIvkEUJJ4NAAL2RM/Y60fLE6nSOmAeZ1QKeBR//s=;
+  b=WHxXMuFmfIyRXC7tfnpnsMEEnVILqh1gDIGx1+cF8vr+ZSjZlPXRDEAN
+   LdHNQ9taDDrzV+HeknBBgZhhkD2cdXpN+wDkYBH9m2ObClsyxLRYrTwct
+   BhAZPAV7NMnVDnPxPXoBdPxayyCanNpPD8JNfk0QgAcyl5/uoKYg63BEq
+   RUC5Y1ZzUMv4vGRB2iKHxvzsS3dLUYZ7MrWBi8JVSn3Nr6Hv0pkAW2h+Z
+   AzWMHTZP8DPy4zVZ1BIWfzyDD4ooPj5b9VKNOQTPNckz/JkeU8n79I18N
+   K6Vrafq9Hs3z20wPo5c9Y3iTrAm6L0Uhy0NnD/xj/zXAym5XCacApWqQp
+   w==;
+X-CSE-ConnectionGUID: CMq/R/2jSGa3bo0mulmwXw==
+X-CSE-MsgGUID: ab9VD6AZRv+90G4NnjoW4A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="21127806"
+X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
+   d="scan'208";a="21127806"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 02:24:38 -0700
+X-CSE-ConnectionGUID: eJibCNLwSnqm9b9RSDyp2w==
+X-CSE-MsgGUID: wlN4xaxhRhypCMX7spNcrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,237,1708416000"; 
+   d="scan'208";a="63303775"
+Received: from xingyeyu-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.249.169.4])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 02:24:36 -0700
+From: Zhang Rui <rui.zhang@intel.com>
+To: rafael.j.wysocki@intel.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	srinivas.pandruvada@intel.com
+Subject: [PATCH V4 0/2] powercap: Introduce TPMI RAPL PMU support
+Date: Sun, 28 Apr 2024 17:24:25 +0800
+Message-Id: <20240428092427.24959-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240428-for-netnext-mt7530-do-not-disable-port5-when-phy-muxing-v2-1-bb7c37d293f8@arinc9.com>
-X-B4-Tracking: v=1; b=H4sIAL0ULmYC/6WOQQqDMBBFryKz7pQYlZCueo/iwpqJDtREktQq4
- t2beoUuHx/e+ztECkwRbsUOgRaO7F0GeSmgHzs3ELLJDFLIWtRSofUBHSVHa8IpqaYSaDw6n9B
- w7J4vwtmH1OBnJIfzuOH0XtkNqKxtrBFaN0ZBts+BLK9n+QFZiD8jtHkZOSYftvPSUp773/Wlx
- BKVrnpjtVFKqHsX2PX62vsJ2uM4voIqUjcJAQAA
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714295997; l=2134;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=mooBBatpyIktEez2DpRO7+tS0DbjK7qafqYlayMk1R4=;
- b=EH/F59K96vk3QVfn9tauaQDX4oX1KGLZrhENnMQ3zPIzdDGpVuG9d19WaDUmDkSL9oXlKYEUD
- RqTQzjjJFslCKXPH20Nulu1HorEX1WU6Kmh1q5sJpvuvG/541ly6mX6
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+RAPL energy counter MSRs are exposed via perf PMU. But this is done by
+separate code which is not part of RAPL framework, and it cannot be
+reused by other RAPL Interface drivers like TPMI RAPL.
 
-DSA initalises the ds->num_ports amount of ports in
-dsa_switch_touch_ports(). When the PHY muxing feature is in use, port 5
-won't be defined in the device tree. Because of this, the type member of
-the dsa_port structure for this port will be assigned DSA_PORT_TYPE_UNUSED.
-The dsa_port_setup() function calls ds->ops->port_disable() when the port
-type is DSA_PORT_TYPE_UNUSED.
+Introduce two new APIs for PMU support in RAPL framework. This allows
+TPMI RAPL PMU support and also makes it possible for future cleanups of
+MSR RAPL PMU code.
 
-The MT7530_P5_DIS bit is unset in mt7530_setup() when PHY muxing is being
-used. mt7530_port_disable() which is assigned to ds->ops->port_disable() is
-called afterwards. Currently, mt7530_port_disable() sets MT7530_P5_DIS
-which breaks network connectivity when PHY muxing is being used.
+Changes since V3:
+- Fix is_rp_pmu_cpu() return value. (Rafael)
+- Following the conversion in other PMU drivers to use
+  local64_try_cmpxchg() instead of local64_cmpxchg(). E.g. bcc6ec3d954b
+  ("perf/x86/rapl: Use local64_try_cmpxchg in rapl_event_update()"), and
+  update with a comment.
 
-Therefore, do not set MT7530_P5_DIS when PHY muxing is being used.
+Changes since V2:
+- drop patch 1/3 and rebase on PM tree bleeding-edge branch.
+- fix a regression introduced in patch V2 that RAPL PMU is not
+  successfully unregisted when unbinding the device. This causes kernel
+  calltrace about duplicate PMU name in sysfs when reloading the module.
+  Our unit test cases reproduced this but the test framework failed to
+  catch it, and now that problem is also fixed.
+- add comment for RAPL PMU implementation details.
+- add comment/document for struct rapl_pmu and rapl_package_pmu_data.
+- remove unneeded global RAPL PMU cpumask.
+- use an array to map RAPL PMU events to RAPL Domains.
+- Other minor improvements.
 
-Fixes: 377174c5760c ("net: dsa: mt7530: move MT753X_MTRAP operations for MT7530")
-Reported-by: Daniel Golle <daniel@makrotopia.org>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
-Hello.
+Changes since V1:
+- remove the MSR RAPL PMU conversion because it is a separate work that
+  can be done later.
+- instead of using a flag to indicate the need of PMU support, introduce
+  two APIs for the RAPL Interface driver to invoke explicitly.
+- minor code/comments/changelog improvements.
 
-I've sent this to net-next as the patch it fixes is on the current
-development cycle.
----
-Changes in v2:
-- Add a comment to the code.
-- Improve the patch log.
-- Link to v1: https://lore.kernel.org/r/20240427-for-netnext-mt7530-do-not-disable-port5-when-phy-muxing-v1-1-793cdf9d7707@arinc9.com
----
- drivers/net/dsa/mt7530.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+thanks,
+rui
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 2b9f904a98f0..2090f34e5289 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1220,7 +1220,8 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
- 	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
- 		return;
- 
--	if (port == 5)
-+	/* Do not set MT7530_P5_DIS when port 5 is being used for PHY muxing. */
-+	if (port == 5 && priv->p5_mode == GMAC5)
- 		mt7530_set(priv, MT753X_MTRAP, MT7530_P5_DIS);
- 	else if (port == 6)
- 		mt7530_set(priv, MT753X_MTRAP, MT7530_P6_DIS);
+----------------------------------------------------------------
+Zhang Rui (2):
+      powercap: intel_rapl: Introduce APIs for PMU support
+      powercap: intel_rapl_tpmi: Enable PMU support
 
----
-base-commit: 5c4c0edca68a5841a8d53ccd49596fe199c8334c
-change-id: 20240427-for-netnext-mt7530-do-not-disable-port5-when-phy-muxing-7ff5fd0995d7
-
-Best regards,
--- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
-
-
+ drivers/powercap/intel_rapl_common.c | 582 +++++++++++++++++++++++++++++++++++
+ drivers/powercap/intel_rapl_tpmi.c   |   3 +
+ include/linux/intel_rapl.h           |  32 ++
+ 3 files changed, 617 insertions(+)
 
