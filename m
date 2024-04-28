@@ -1,334 +1,198 @@
-Return-Path: <linux-kernel+bounces-161204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29538B48F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:58:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7CC8B48FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:00:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237701F21B0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 00:58:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74F9C1F21CBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1F5EC3;
-	Sun, 28 Apr 2024 00:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36885A5F;
+	Sun, 28 Apr 2024 01:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KKQJU6WI"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K2UCutB6"
+Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC64A5F;
-	Sun, 28 Apr 2024 00:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E778364A
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714265880; cv=none; b=Y0IcKCE/rrg6eRLJTIs2UViPfu/VTOf4EKipfAY0gJPoXKEHl2ccJJ2BQJBZZAcMGishLXreCFf+Ri0NwrYDNCzkg1XE7ZlO7rUK48Q6JBAYcPUfYxY2yLBSNtP/2lwLwYoYFE95D0Ug9SUlApLhrlsHPK1BRHgzOFaE7syGMz8=
+	t=1714266013; cv=none; b=o3Xdg1LchZbIGqlpQUBTODdW3uMGzbhywS3TcvLJkj79hkWyJdDfDXbDUSFiZxRfflhebW7svThl7yLZtr+CdFcGykpLCkBSxz7q581ig5S9Kg/fvQPPn9/fwOLjVekUhWzAymSQdt9fzRedYH1lTZHSlGbdznADz2Q1YzkH2eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714265880; c=relaxed/simple;
-	bh=aeZV4VkHFBd56GPAQ6Hk0pRkNPw80Fcm4EJgz9bw0pM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gGAmiotMidnBUWS2OGALhtzYwGat4YMu2BVZEEOh6MhkPaFV9Mokgf5gpb0hD6plFRHQLltJKkiRY7dhUIsMJRyB7B1LGAE2sXsupqZHLgtj+SwzP05BStNifR0Vib/XO/f7wkIfk7UXWt+x4lYxmo5+Yqmh1VEKT9jO5naEFXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KKQJU6WI; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso3218353b3a.1;
-        Sat, 27 Apr 2024 17:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714265878; x=1714870678; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8O+z1hsIAadgTFETxDS1vCHvfH0Dq8uKuo3sDo2uaLg=;
-        b=KKQJU6WIKIjpAbisXlwMmzITE+VrtzHDSvo3B503UHAGE7PNX6N0c/9zfAZyd6ZOJG
-         NEgDbBcJdGFX5tDp9b12uqHxJVtDhzAgwi2jtt2j0mrIN6rsjeEdEemcopPqU7FvGbq8
-         fzJXK3U5/bUasnpOvPn8yEhG4H+aE2/gmBwn3ehW+C/EYbrbsBEp/WbD96aAJ93aKPZo
-         LDXlk+ZaYzRtsZ32RObhbdjCWBomaBQqc6ji+BQwSThaOSuJaQOl8Tbr/uHFDs8FZ8Mu
-         FGatAvErqHtsnTbGOJ5otW/5g5T1fXZeF0CIz2UdZG932Qffhu2l0VV1g92EIIO90CX9
-         iZhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714265878; x=1714870678;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8O+z1hsIAadgTFETxDS1vCHvfH0Dq8uKuo3sDo2uaLg=;
-        b=wcjQjB2mGNybL9o8DQ66Pi7ZRHCINKQ6VugfjwTp6nznLFb18rJlgVzZKUICRF+qcA
-         2Ts/XeesRD62D0cYcCnoohbqOT5adHLdbCw6Io4mYDfUsTstrh6I3nxjoQK8XUpDHqOb
-         pL+Z1eSAqfa6I16rjBmomNgr09odjRsUvcHnFs6Oghb/k6QvqJk7yBqeqP+0WIa/W2fd
-         ncWKyKuoUMiWejYJzLpXSGRBOXSdrAFzic74FMblVRlLA/cxxxJj68K14LYKK+/EQaop
-         c99SiIxiMti9Q0H1e6mZ7e3QY4YLuyqs6oi6ec0b1Xd+caiGJ359Ospp3+fuTLcJUcBh
-         MRgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXvKsbCKK3U7eqFmVFcKrjeYLVIfm8izdn3qzicCj+e4N3EVFWVQBovKZ2anNbIjeFQron7snDGFPc4Qcmjp0SXqSkmbNTPI+KszK7lsxocT3jCG6DSmtRRR5aM4kRwDwm3KwOSkscKwVg=
-X-Gm-Message-State: AOJu0Yy24aT51wEY28eIie4juQ+1wOYQvZeXUjDJRvdic7VCPm83YceP
-	olQH5NieMDHo6G6VohC47nlb+MJC067+ldd4fNliPvrMf9D4qEzR
-X-Google-Smtp-Source: AGHT+IHcYlDQ+Qw3kc756nQlZxyezBVWXDm1Y9z3jz9sDj5e5RdNu96Hkrz6pHf7nxTVbsgEAfqJ3Q==
-X-Received: by 2002:a05:6a20:da9e:b0:1ac:4fca:23c2 with SMTP id iy30-20020a056a20da9e00b001ac4fca23c2mr8444563pzb.8.1714265877639;
-        Sat, 27 Apr 2024 17:57:57 -0700 (PDT)
-Received: from thought.. ([186.139.89.143])
-        by smtp.gmail.com with ESMTPSA id g11-20020aa7818b000000b006ecfd0bf326sm15771013pfi.99.2024.04.27.17.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 17:57:57 -0700 (PDT)
-From: ManuLinares <mbarriolinares@gmail.com>
-To: alsa-devel@alsa-project.org
-Cc: ManuLinares <mbarriolinares@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	dengxiang <dengxiang@nfschina.com>,
-	Geraldo Nascimento <geraldogabriel@gmail.com>,
-	Max McCarthy <mmccarthy@mcintoshlabs.com>,
-	WhaleChang <whalechang@google.com>,
-	Lukasz Tyl <ltyl@hem-e.com>,
-	Jeremie Knuesel <knuesel@gmail.com>,
-	Alexander Tsoy <alexander@tsoy.me>,
-	Jussi Laako <jussi@sonarnerd.net>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: Add sampling rates support for Mbox3
-Date: Sat, 27 Apr 2024 21:57:29 -0300
-Message-ID: <20240428005733.202978-1-mbarriolinares@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714266013; c=relaxed/simple;
+	bh=jHknUYvMTs/qmIX8gSVqBhO8YwAhP0j63afjH3jo+gw=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=m55qcKZ5yZvj2iP8zxXTwLU4ZSwKEXi8lcTH91nTL3j6e1QyPoMKFGmNQUl3Lem3AmHIphQfJ+egqhWpL72F0v8jYkTyzU8hZhPbQ0QJUkhXl6kE6VDCYSmLvPXO3/31ybZ4LVrWiX60b0X8UcFOr5b/kHsu6Ab8kH3FDWYMZi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K2UCutB6; arc=none smtp.client-ip=64.147.123.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 944861800116;
+	Sat, 27 Apr 2024 21:00:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 27 Apr 2024 21:00:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1714266008; x=1714352408; bh=lLPgP7wkBqHM0
+	uInpzkEUajZ0JcLSbNkr/nAV3+Lc7k=; b=K2UCutB6KM5aPMTSl+CqRnH7mCtID
+	GYjWNJYbOW6WbXqHrXQSsU9akozkf3BsdBGyCkjwBrsz4nxEVODj2+Yf831WKlXM
+	4OYwc37BGUfridIZo2HDj4i5XZTBCArvAlOvjRptTMkpqAcmC7DSuPcjE4s+MXTd
+	Z2OqtzqQ6JHORPwHoAi3gjmh/S6r5Ns/QhVwRu9ixrL+9pZtzFLCyBzMOvwV4qia
+	THVIPkPooAkW2hkkuFy+nV0PlM4qiQIJRnACyvJs2z5cKxcBf07sDxLn5s2ceCUa
+	l3SvRY/PQTIg853QGyBPBnIuKw9JMPyG9tPjPbtMjexDLS1/k/FtTGDDg==
+X-ME-Sender: <xms:l58tZnRzJXb0lnDZTS2DneJyiu5tpzP1-V8v8DFAc89WOnIGfp32lg>
+    <xme:l58tZox8kkJFHGzZ8KU5RhQq81zSVQJOKkrrgDHqWfhpuvF_0F6bOBQhZJfysq7Jl
+    -HIKOCX4ohJhRRlbKM>
+X-ME-Received: <xmr:l58tZs0ntSR4a14q9MyD_7RlyxluCE36tKL66ximBvybzx5-lLX4R0LueISCnkw5HDmECnYEjZmgEtm7m6PxLaOgVpmVxa8nOpU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtvddggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
+    hinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:l58tZnCMwx7PGKM0FoEnf4PlTx05hz5sIMpyPwZFXC1PMfWcQfIvJQ>
+    <xmx:l58tZggw85yMknl0eVtIFjgEIcrwAyqC2jQX-nVh01h23OkJ8SmzOQ>
+    <xmx:l58tZro_-QgcgquskDQ0th1oUkCoi4vC3Hj8BoH1dDuafnKKqHy76A>
+    <xmx:l58tZrjPdj8avur1PecYzs6-v0dmwskqsRljEq9XrkCEJse3qyuFuQ>
+    <xmx:mJ8tZpsiQJhf0VB6CWhO4sOQWx2ixHmkRWQFbuq5eSdHDMZHuiZe6YJU>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 27 Apr 2024 21:00:04 -0400 (EDT)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Michael Schmitz" <schmitzmic@gmail.com>,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-Id: <1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k: Handle put_user() faults more carefully
+Date: Sun, 28 Apr 2024 10:58:46 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-This adds support for all sample rates supported by the hardware,
-Digidesign Mbox 3 supports: {44100, 48000, 88200, 96000}
+Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
+produces an oops:
 
-Fixes syncing clock issues that presented as pops. To test this, without
-this patch playing 440hz tone produces pops.
+    Unable to handle kernel access at virtual address f1c422fb
+    Oops: 00000000
+    Modules linked in:
+    PC: [<00005a1a>] do_040writeback1+0xae/0x160
+    SR: 2010  SP: 96087dc2  a2: 01500000
+    d0: 00000000    d1: 014e8000    d2: 00000081    d3: 00000000
+    d4: 00000481    d5: c043dfff    a0: 014e8000    a1: 00632fd5
+    Process stress-ng (pid: 221, task=1b729d30)
+    Frame format=7 eff addr=014e9eb8 ssw=0c81 faddr=c043dfff
+    wb 1 stat/addr/data: 0001 00000481 c043dfff
+    wb 2 stat/addr/data: 0081 c043dfff 2f746d70
+    wb 3 stat/addr/data: 0005 014e9ed4 2f746d70
+    push data: c043dfff 800daa70 00000000 014e9f1c
+    Stack from 014e9ed4:
+      2f740000 8017c000 014e9f10 00006830 00000081 c043dfff 2f746d70 2f746d70
+      0081a000 00000400 c043dfff 800daa70 c043dfff 80016a20 00000003 014e9f88
+      000026c8 014e9f1c 00000001 2f746d70 0081a000 00000400 c043dfff 0081afff
+      c043dfff 01500000 00000001 ffffffff 00000000 20000046 41d67008 014e9f58
+      04810005 00810045 c043dfff 014e9f84 2f746d70 c043dfff 2f746d70 c043dfff
+      80016a20 8017c000 00000000 0081affb 00000005 014e9fc4 00128bc6 c043dfff
+    Call Trace: [<00006830>] buserr_c+0x510/0x698
+      [<000026c8>] buserr+0x20/0x28
+      [<00128bc6>] sys_getcwd+0xc8/0x15a
+      [<000027a2>] syscall+0x8/0xc
+      [<0008800d>] sanity_check_segment_list+0x17/0x11e
 
-Clock is now synced between playback and capture interfaces so no more
-latency drift issue when using pipewire pro-profile.
-(https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3900)
+    Code: 000c 0e90 1800 220f 0281 ffff e000 2041 <2228> 0008 0281 00ff
+          ff00 67a4 6026 4280 122e 0013 206e 000c 0e10 1800 220f 0281
 
-Signed-off-by: ManuLinares <mbarriolinares@gmail.com>
+The cause is a deliberately misaligned access in the 'bad_end_addr' test
+case in the 'sysbadaddr' stressor. The location being accessed here,
+0xc043dfff, was contrived to span the boundary between a r/w anonymous page
+and an unmapped page. The address was then passed to the getcwd syscall
+which faulted in copy_to_user().
+
+The fault for the mapped page appears to be handled okay -- up until
+do_040writeback1() called put_user() which produced a second fault due to
+the unmapped page.
+
+Michael Schmitz helpfully deciphered the oops and explained the exception
+processing leading up to it.
+
+    "regs->pc does point to the PC in the format 7 frame which is the PC
+    the fault was detected at, but not (in case of a writeback fault)
+    the PC of the faulting instruction [that is, MOVES.L].
+
+    "The writeback would still cross the page boundary, and fault if the
+    unmapped page still isn't present. We would not see the PC of the
+    movesl in that case, and fail to find the PC in the exception
+    table."
+
+One solution is to add a NOP instruction after the MOVES.L to flush the
+pipeline and take the fault. That way, the PC value in the exception frame
+becomes dependable so the exception table works.
+
+Theoretically, there seems to be another bug in the existing code. If
+the instruction following the MOVES faulted, then after the fixup,
+execution would resume at the instruction which caused the fault. This
+appears to be a loop. After this patch, that cannot happen.
+
+Cc: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-and-tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- sound/usb/quirks-table.h | 37 +++++++++++-------
- sound/usb/quirks.c       | 84 +++++++++++++++++++++++++++++++---------
- 2 files changed, 88 insertions(+), 33 deletions(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 5d72dc8441cb..5228afbc00e3 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3013,21 +3013,28 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
- 				.data = &(const struct audioformat) {
- 					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.fmt_bits = 24,
- 					.channels = 4,
- 					.iface = 2,
- 					.altsetting = 1,
- 					.altset_idx = 1,
- 					.attributes = 0x00,
--					.endpoint = 0x01,
-+					.endpoint = USB_RECIP_INTERFACE | USB_DIR_OUT,
- 					.ep_attr = USB_ENDPOINT_XFER_ISOC |
- 						USB_ENDPOINT_SYNC_ASYNC,
--					.rates = SNDRV_PCM_RATE_48000,
--					.rate_min = 48000,
--					.rate_max = 48000,
--					.nr_rates = 1,
-+					.rates = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+							SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
- 					.rate_table = (unsigned int[]) {
--						48000
--					}
-+						44100, 48000, 88200, 96000
-+					},
-+					.sync_ep = USB_RECIP_INTERFACE | USB_DIR_IN,
-+					.sync_iface = 3,
-+					.sync_altsetting = 1,
-+					.sync_ep_idx = 1,
-+					.implicit_fb = 1,
- 				}
- 			},
- 			{
-@@ -3035,22 +3042,24 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
- 				.data = &(const struct audioformat) {
- 					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.fmt_bits = 24,
- 					.channels = 4,
- 					.iface = 3,
- 					.altsetting = 1,
- 					.altset_idx = 1,
--					.endpoint = 0x81,
- 					.attributes = 0x00,
-+					.endpoint = USB_RECIP_INTERFACE | USB_DIR_IN,
- 					.ep_attr = USB_ENDPOINT_XFER_ISOC |
- 						USB_ENDPOINT_SYNC_ASYNC,
- 					.maxpacksize = 0x009c,
--					.rates = SNDRV_PCM_RATE_48000,
--					.rate_min = 48000,
--					.rate_max = 48000,
--					.nr_rates = 1,
-+					.rates = SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+							SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
- 					.rate_table = (unsigned int[]) {
--						48000
--					}
-+						44100, 48000, 88200, 96000
-+					},
- 				}
- 			},
- 			{
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 09712e61c606..279b80874f6a 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -984,21 +984,13 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
- 	return 0;
- }
- 
--static void mbox3_setup_48_24_magic(struct usb_device *dev)
-+static void mbox3_setup_defaults(struct usb_device *dev)
- {
- 	/* The Mbox 3 is "little endian" */
- 	/* max volume is: 0x0000. */
- 	/* min volume is: 0x0080 (shown in little endian form) */
- 
--
--	/* Load 48000Hz rate into buffer */
--	u8 com_buff[4] = {0x80, 0xbb, 0x00, 0x00};
--
--	/* Set 48000Hz sample rate */
--	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
--			0x01, 0x21, 0x0100, 0x0001, &com_buff, 4);  //Is this really needed?
--	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
--			0x01, 0x21, 0x0100, 0x8101, &com_buff, 4);
-+	u8 com_buff[2];
- 
- 	/* Deactivate Tuner */
- 	/* on  = 0x01*/
-@@ -1008,6 +1000,8 @@ static void mbox3_setup_48_24_magic(struct usb_device *dev)
- 		0x01, 0x21, 0x0003, 0x2001, &com_buff, 1);
- 
- 	/* Set clock source to Internal (as opposed to S/PDIF) */
-+	/* Internal  = 0x01*/
-+	/* S/PDIF    = 0x02*/
- 	com_buff[0] = 0x01;
- 	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
- 			1, 0x21, 0x0100, 0x8001, &com_buff, 1);
-@@ -1113,9 +1107,11 @@ static void mbox3_setup_48_24_magic(struct usb_device *dev)
- 			1, 0x21, 0x0107, 0x4201, &com_buff, 2);
- 
- 	/* Toggle allowing host control */
-+	/* Not needed
- 	com_buff[0] = 0x02;
- 	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
- 			3, 0x21, 0x0000, 0x2001, &com_buff, 1);
-+	 */
- 
- 	/* Do not dim fx returns */
- 	com_buff[0] = 0x00;
-@@ -1259,26 +1255,27 @@ static int snd_usb_mbox3_boot_quirk(struct usb_device *dev)
- 	descriptor_size = le16_to_cpu(get_cfg_desc(config)->wTotalLength);
- 
- 	if (descriptor_size != MBOX3_DESCRIPTOR_SIZE) {
--		dev_err(&dev->dev, "Invalid descriptor size=%d.\n", descriptor_size);
-+		dev_err(&dev->dev, "MBOX3: Invalid descriptor size=%d.\n", descriptor_size);
- 		return -ENODEV;
- 	}
- 
--	dev_dbg(&dev->dev, "device initialised!\n");
-+	dev_dbg(&dev->dev, "MBOX3: device initialised!\n");
- 
- 	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
- 		&dev->descriptor, sizeof(dev->descriptor));
- 	config = dev->actconfig;
--	if (err < 0)
--		dev_dbg(&dev->dev, "error usb_get_descriptor: %d\n", err);
-+	if (err < 0) 
-+		dev_dbg(&dev->dev, "MBOX3: error usb_get_descriptor: %d\n", err);
- 
- 	err = usb_reset_configuration(dev);
--	if (err < 0)
--		dev_dbg(&dev->dev, "error usb_reset_configuration: %d\n", err);
--	dev_dbg(&dev->dev, "mbox3_boot: new boot length = %d\n",
-+	if (err < 0) 
-+		dev_dbg(&dev->dev, "MBOX3: error usb_reset_configuration: %d\n", err);
-+
-+	dev_dbg(&dev->dev, "MBOX3: new boot length = %d\n",
- 		le16_to_cpu(get_cfg_desc(config)->wTotalLength));
- 
--	mbox3_setup_48_24_magic(dev);
--	dev_info(&dev->dev, "Digidesign Mbox 3: 24bit 48kHz");
-+	mbox3_setup_defaults(dev);
-+	dev_info(&dev->dev, "MBOX3: Initialized.");
- 
- 	return 0; /* Successful boot */
- }
-@@ -1734,6 +1731,52 @@ static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
- 	return 0;
- }
- 
-+static void mbox3_set_format_quirk(struct snd_usb_substream *subs,
-+									const struct audioformat *fmt)
-+{
-+	// Set rate only for one interface
-+	//u8 iface = subs->data_endpoint->iface;
-+	//if (iface != 2) return;
-+
-+	u8 buffer[4] = {0};
-+	u32 new_rate = subs->data_endpoint->cur_rate;
-+
-+	// Get current rate from card and check if changing it is needed
-+	snd_usb_ctl_msg(subs->dev, usb_sndctrlpipe(subs->dev, 0),
-+					0x01, 0x21 | USB_DIR_IN, 0x0100, 0x8101, &buffer, 4);
-+	//u32 current_rate = le32_to_cpu(*(u32 *)buffer);
-+	dev_dbg(&subs->dev->dev,
-+			 "MBOX3: Current configured sample rate: %d", le32_to_cpu(*(u32 *)buffer));
-+	if (le32_to_cpu(*(u32 *)buffer) == new_rate) {
-+		dev_dbg(&subs->dev->dev,
-+			"MBOX3: No change needed, current rate:%d == new rate:%d",
-+			le32_to_cpu(*(u32 *)buffer), new_rate);
-+		return;
-+	}
-+
-+	// Set new rate
-+	dev_info(&subs->dev->dev,
-+			 "MBOX3: Changing sample rate to: %d", new_rate);
-+	__le32 set_rate = cpu_to_le32(new_rate);
-+	snd_usb_ctl_msg(subs->dev, usb_sndctrlpipe(subs->dev, 0),
-+					0x01, 0x21, 0x0100, 0x8101, &set_rate, 4);
-+
-+	// Set clock source to Internal
-+	buffer[0] = 0x01;
-+	snd_usb_ctl_msg(subs->dev, usb_sndctrlpipe(subs->dev, 0),
-+					0x01, 0x21, 0x0100, 0x8001, &buffer[0], 1);
-+
-+	// Check whether the change was successful
-+	buffer[0] = 0; buffer[1] = 0; buffer[2] = 0; buffer[3] = 0;
-+	snd_usb_ctl_msg(subs->dev,
-+					usb_sndctrlpipe(subs->dev, 0),
-+					0x01, 0x21 | USB_DIR_IN, 0x0100, 0x8101, &buffer, 4);
-+	//set_rate = *(int *)buffer;
-+	set_rate = le32_to_cpu(*(u32 *)buffer);
-+	if (new_rate != set_rate)
-+		dev_warn(&subs->dev->dev, "MBOX3: Couldn't set the sample rate");
-+}
-+
- void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 			      const struct audioformat *fmt)
- {
-@@ -1755,6 +1798,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x08e4, 0x0163): /* Pioneer DJM-850 */
- 		pioneer_djm_set_format_quirk(subs, 0x0086);
- 		break;
-+	case USB_ID(0x0dba, 0x5000):
-+		mbox3_set_format_quirk(subs, fmt); /* Digidesign Mbox 3 */
-+		break;
- 	}
- }
- 
+So far this has only been tested on Motorola 68030 and 68040 systems
+and still needs testing on the other MMU-enabled processors.
+
+I don't know whether or not get_user() has the same problem. Hence this
+patch is confined to put_user().
+
+No change since RFC patch.
+---
+ arch/m68k/include/asm/uaccess.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
+index 64914872a5c9..44e52d8323e5 100644
+--- a/arch/m68k/include/asm/uaccess.h
++++ b/arch/m68k/include/asm/uaccess.h
+@@ -31,11 +31,12 @@
+ #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
+ asm volatile ("\n"					\
+ 	"1:	"inst"."#bwl"	%2,%1\n"		\
+-	"2:\n"						\
++	"2:	nop\n"					\
++	"3:\n"						\
+ 	"	.section .fixup,\"ax\"\n"		\
+ 	"	.even\n"				\
+ 	"10:	moveq.l	%3,%0\n"			\
+-	"	jra 2b\n"				\
++	"	jra 3b\n"				\
+ 	"	.previous\n"				\
+ 	"\n"						\
+ 	"	.section __ex_table,\"a\"\n"		\
+@@ -53,11 +54,12 @@ do {								\
+ 	asm volatile ("\n"					\
+ 		"1:	"inst".l %2,(%1)+\n"			\
+ 		"2:	"inst".l %R2,(%1)\n"			\
+-		"3:\n"						\
++		"3:	nop\n"					\
++		"4:\n"						\
+ 		"	.section .fixup,\"ax\"\n"		\
+ 		"	.even\n"				\
+ 		"10:	movel %3,%0\n"				\
+-		"	jra 3b\n"				\
++		"	jra 4b\n"				\
+ 		"	.previous\n"				\
+ 		"\n"						\
+ 		"	.section __ex_table,\"a\"\n"		\
 -- 
-2.44.0
+2.39.3
 
 
