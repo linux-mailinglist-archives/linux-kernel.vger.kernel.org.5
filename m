@@ -1,103 +1,173 @@
-Return-Path: <linux-kernel+bounces-161368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 679B78B4B35
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:09:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B7E8B4B3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:20:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06A4C1F21752
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:09:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E68AD1C20A6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879D156B67;
-	Sun, 28 Apr 2024 10:08:54 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903D756B81;
+	Sun, 28 Apr 2024 10:20:39 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66AF654BFC;
-	Sun, 28 Apr 2024 10:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727865675F
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714298934; cv=none; b=LQYoZwgULTlFMwu2D1F+HzuQ16RvrEPun1qFMf53lV/DLiua1KY0O5Oh0gVS3oqpOWTWICbOP/x/fDRezSRKkYhP0ZsyXiTmaD843DaFAHl0pcAoJJFeTz9DCdJSZq5KTR0SImKYylSdAZufl3VZHZntfksPiIZsW3Qj8Uf/xSo=
+	t=1714299639; cv=none; b=tsCieu6IiATmhvyomb1UmIMT0uNA3XnN3v+AQG5y994em0FXYyScjOhHttD0P2E7XOqMsu2xYT8W41FN/i9B10qX9i2jisRK+GoH/S/QUMI351EkVWTrt8dD1+AZxSbF9eow5T8fuFtTFNJFQQWnC3hqKezxVrnLiUTXRbGqlhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714298934; c=relaxed/simple;
-	bh=TTARU/Xd9FlQOME2CIODtyLJRuvfgCO/Q3kMmgLEpAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qdNQCGYj8L1lYuiMw11TX8nlT8CzQEmggXtZVczU3fWUBHhRN1JxYfTrSvVO36/9vpmPjsHZ8hBzQzfVlnW6GnE+pVb1fmMYM0OUhvfHNBZ643A3BCCgS26waUMkxfFX3WkGzL9XCqYftP0zJfr+YVmgwhb9PSq2xkrL3UrwZ7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 83873280072AE;
-	Sun, 28 Apr 2024 12:08:43 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 4D1F555998; Sun, 28 Apr 2024 12:08:43 +0200 (CEST)
-Date: Sun, 28 Apr 2024 12:08:43 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: gregkh@linuxfoundation.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Marc Herbert <marc.herbert@intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
-Message-ID: <Zi4gK8rs7jjdJOh8@wunner.de>
-References: <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
- <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
- <ZiYrzzk9Me1aksmE@wunner.de>
- <662beb6ad280f_db82d29458@dwillia2-xfh.jf.intel.com.notmuch>
- <Ziv9984CJeQ4muZy@wunner.de>
- <662d2ca522cc6_b6e02942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <Zi1qtKNwcyydP4c2@wunner.de>
- <662d6f24528d7_b6e0294d2@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	s=arc-20240116; t=1714299639; c=relaxed/simple;
+	bh=0KCSf97xhCyy4fk36LXoT6qkCb4jI9/Um5OMJ+dSoko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PLAsHP+oqX/Wjuz7H+rKy/WxXwMx3x0w/utGfpLDkwWYy6pqDFT8cRvZiI5CbteSZPS5AlPgTU+K57jWmn/p81cZSdc5YwR1x2HyjE+bmx86tRBqMIeQpaEgfwV2xaw2JAKqYsuzRPdPgQnMDdKZArT0itiv0FlGAtGXZwMbq0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43SAJqfW099414;
+	Sun, 28 Apr 2024 19:19:52 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
+ Sun, 28 Apr 2024 19:19:52 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43SAJq3e099411
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 28 Apr 2024 19:19:52 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
+Date: Sun, 28 Apr 2024 19:19:52 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <662d6f24528d7_b6e0294d2@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jiri Slaby <jirislaby@kernel.org>
+References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
+ <20230424004431.GG3390869@ZenIV>
+ <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
+ <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
+ <20230425160344.GS3390869@ZenIV>
+ <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
+ <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
+ <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
+ <2023053005-alongside-unvisited-d9af@gregkh>
+ <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
+ <2023053048-saved-undated-9adf@gregkh>
+ <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+ <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Apr 27, 2024 at 02:33:24PM -0700, Dan Williams wrote:
-> Lukas Wunner wrote:
-> > Perhaps an optional ->is_group_visible() callback in struct attribute_group
-> > which gets passed only the struct kobject pointer?
-> > 
-> > At least for PCI device authentication, that would be sufficient.
-> > I could get from the kobject to the corresponding struct device,
-> > then determine whether the device supports authentication or not.
-> > 
-> > Because it's a new, optional callback, there should be no compatibility
-> > issues.  The SYSFS_GROUP_INVISIBLE return code from the ->is_visible()
-> > call for individual attributes would not be needed then, at least in my
-> > use case.
+On 2024/04/28 4:02, Linus Torvalds wrote:
+> On Fri, 26 Apr 2024 at 23:21, Tetsuo Handa
+> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+>>
+>> syzbot is reporting data race between __tty_hangup() and __fput(), for
+>> filp->f_op readers are not holding tty->files_lock.
 > 
-> That's where I started with this, but decided it was overkill to
-> increase the size of that data structure globally for a small number of
-> use cases.
+> Hmm. I looked round, and we actually have another case of this:
+> snd_card_disconnect() also does
+> 
+>                         mfile->file->f_op = &snd_shutdown_f_ops;
 
-Memory is cheap and memory-constrained devices can set CONFIG_SYSFS=n.
+OK. That one needs to be fixed as well.
 
-There aren't that many struct attribute_groups and this is just
-8 additional bytes on a 64-bit machine.  (There are way more
-struct attribute than struct attribute_group.)  The contortions
-necessary to overload individual attribute ->is_visible() callbacks
-to also govern the group's visibility aren't worth it.
+> 
+> and I don't think tty->files_lock (or, in the sound case,
+> &card->files_lock) is at all relevant, since the users of f_ops don't
+> use it or care.
 
-Having an ->is_group_visible() callback has the additional benefit that
-the mode of directories no longer needs to be hardcoded to 0755 in
-sysfs_create_dir_ns(), but can be set to, say, 0500 or 0700 or 0511,
-depending on the use case.  So more flexibility there as well.
+More precisely, the users of f_op can't access it. For example,
+do_splice_read() cannot understand that "in" argument refers to a tty
+device and therefore will not know about tty->files_lock.
 
-Thanks,
+> 
+> That said, I really think we'd be better off just keeping the current
+> model, and have the "you get one or the other". For the two cases that
+> do this, do that f_op replacement with a WRITE_ONCE(), and just make
+> the rule be that you have to have all the same ops in both the
+> original and the shutdown version.
 
-Lukas
+If we keep the current model, WRITE_ONCE() is not sufficient.
+
+My understanding is that KCSAN's report like
+https://elixir.bootlin.com/linux/v6.9-rc5/source/Documentation/dev-tools/kcsan.rst#L56
+will remain unless we wrap all f_op readers using data_race() macro. That is,
+we will need to define a wrapper like
+
+static inline struct file_operations *f_op(struct file *file)
+{
+	/*
+	 * Ignore race in order to silence KCSAN, for __tty_hangup() or
+	 * snd_card_disconnect() might update f_op while file is in use.
+	 */
+	return data_race(file->f_op);
+}
+
+and do for example
+
+-	if (unlikely(!in->f_op->splice_read))
++	if (unlikely(!f_op(in)->splice_read))
+
+for https://elixir.bootlin.com/linux/v6.9-rc5/source/fs/splice.c#L977 and
+
+-	return in->f_op->splice_read(in, ppos, pipe, len, flags);
++	return f_op(in)->splice_read(in, ppos, pipe, len, flags);
+
+for https://elixir.bootlin.com/linux/v6.9-rc5/source/fs/splice.c#L985 .
+
+Are VFS people happy with such change? I guess that VFS people assume that
+file->f_op does not get updated while file is in use. Also, such data_race()
+usage does not match one of situations listed in
+https://elixir.bootlin.com/linux/v6.9-rc5/source/tools/memory-model/Documentation/access-marking.txt#L58 .
+
+> 
+> I do *not* think it's at all better to replace (in two different
+> places) the racy f_op thing with another racy 'hungup' flag.
+
+This approach allows VFS people to assume that file->f_op does not
+get updated while file is in use.
+
+> 
+> The sound case is actually a bit more involved, since it tries to deal
+> with module counts. That looks potentially bogus. It does
+> 
+>                         fops_get(mfile->file->f_op);
+> 
+> after it has installed the snd_shutdown_f_ops, but in snd_open() it
+> has done the proper
+> 
+>         replace_fops(file, new_fops);
+
+replace_fops() is intended to be used *ONLY* from ->open() instances.
+
+> 
+> which actually drops the module count for the old one. So the sound
+> case seems to possibly leak a module ref on disconnect. That's a
+> separate issue, though.
+> 
+>                       Linus
+> 
+>                     Linus
+
 
