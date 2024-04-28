@@ -1,140 +1,271 @@
-Return-Path: <linux-kernel+bounces-161563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8CA8B4DC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:22:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2DD18B4DC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAD631C20A37
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:22:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 686211F2120A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F272F1DFC7;
-	Sun, 28 Apr 2024 20:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D9D8BF0;
+	Sun, 28 Apr 2024 20:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="LNVdFvlY"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wo5ieR86"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7341A7350E
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 20:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8E7389
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 20:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714335768; cv=none; b=ZdgpY9vC4kARYLOJK18XNYI1XcbgN67v39m/IIjGPVvz2scfst3z3AtOCzwS3vONvmIV+Fsftij2e9PoBtOtfQCnBhXJBhuEfdZMA2KhzHpHMvnNYyHciHIDhyZTVhXWb8L4E7QrYH96z/v7yyyq1xLknh6guarprvMvf1bZmKk=
+	t=1714336851; cv=none; b=iODKru0Vl9ylq7ZsKi3nKGiGo+CCI74oSjZdYtmY9t647t37o1Okaw1PVFi3N0Inpa5ZmcTRJoFQqTNrMe/PyWRum1LIQBPkPbilF3/ZSP5t5PMlZ8QTpCyMKPPopyXm4OD1zUvQjWHBoNDye+riVqFq8hBEJb//OXoHrwwugls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714335768; c=relaxed/simple;
-	bh=H71Tv2dUxdSU6L0QrBYX2j1pl48rzgL4H1/kXqthOD8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TosgaTGDLGzmr+JUQfxSRvM3SbtBUCH1oEIxBv8qYd808oblz0R+xVDNogMYvTAjLPuQUyNhrERYUEvDBg1kJGBe+g2vqvFjNX8ybDlT70frx3+ZiqrQK0bvVbgmQi4AwMe0+PbJT3Qh/pF95xM8Zvo+szRCI021MVIXphnd+GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=LNVdFvlY; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5724f26b8c9so4762763a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 13:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714335764; x=1714940564; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qNIV9pJKRQ0bK2019WbvTNRu1m1w296Oj9c68XnoHTQ=;
-        b=LNVdFvlYt3jhy1z81Dj21uiB8CbhCD6yi9O0SMUv6XspmSCCK7Mn3tiQLhtZDip0NR
-         xBo78b3zyWpgC36WezkH1Z5hPmKE8IaCmF9RSSko90yyuCFDGWntvQk2aEyUNZOHMXAm
-         whdl0h5yNkQskhT7z07FUGJYRhFz3JDrHXVwY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714335764; x=1714940564;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qNIV9pJKRQ0bK2019WbvTNRu1m1w296Oj9c68XnoHTQ=;
-        b=qoqeO3LvH0psG7Yxc5ujUUfIKCpNF/K51FOLt+miqLGN0axWHWNNUbgX+438KEUkKd
-         yjXwHfGsZAKiPFWZaMVPeJRou4LSOQ2tlh8SQYWN0S5CPTXLPYMY6nv06MSQPG/XyGLI
-         4k4lLNfE74Ji9pIO5iR4556RSlilrtjmaqrXX862Jlia+ZCAHo+T3w7zN+HRN0sEmTVN
-         4fH2ZX12u/7T0tWqgkgBLTuL4aPgZgnw0trv1mUOkXCGZ3pEW1YC4vyQQvHWJ1lyCvye
-         bGBJkmScgrsRNy+knEd6fWGbsQj2KeAp/Aw5aG8/N9PDNilvxivRJBQ2dMLNfqutFSmx
-         ignw==
-X-Forwarded-Encrypted: i=1; AJvYcCX2hixjMru40xtvDSCGNwvrTySi2iOkF4+FTvi5JfOTj0PNTWRpur70jxU/U93xNnumllqlYWHjuwnCzGeNMKp99Fq3m4LSYCGZUzC3
-X-Gm-Message-State: AOJu0YyF40tfIRc7Ii2vrPLIHjzgb/JE1NGyeajCFBIVFq88VwLFNWgS
-	lV6hUHV3gcL8+/5kkCvZG58crPk2lqJzQza8dzIRV+ttIIqTNLzs3yAoLhdVVa1Y1UBHOCAAc9c
-	GafRfVA==
-X-Google-Smtp-Source: AGHT+IGSOGUd5GxDHoQzOBb+ChhZiW8XCgvmkzwvpHe7emLjcIiYYKMIhmYslZ6zR+0PknIg3MQ6kA==
-X-Received: by 2002:a17:906:f595:b0:a55:9574:48a6 with SMTP id cm21-20020a170906f59500b00a55957448a6mr5692206ejd.30.1714335764508;
-        Sun, 28 Apr 2024 13:22:44 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id l18-20020a1709065a9200b00a58a4ccf970sm4765081ejq.103.2024.04.28.13.22.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 13:22:43 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5724f26b8c9so4762747a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 13:22:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUs+11548ojt4luN2kxW9mUBSmuNNmneKzQFbF9xUfA6IvLarV7XteX5URy8ePCAP3Z8CZ6ySRNjSdE7BIyKWIP4tk+zxn483UzBA/c
-X-Received: by 2002:a17:906:370f:b0:a58:eb0d:f2a6 with SMTP id
- d15-20020a170906370f00b00a58eb0df2a6mr3640636ejc.31.1714335763076; Sun, 28
- Apr 2024 13:22:43 -0700 (PDT)
+	s=arc-20240116; t=1714336851; c=relaxed/simple;
+	bh=lDWxile2I7M8x6r0NlvEmESN/WnANxmW78NTMpySTlk=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=fuX7VN63/dYPEIjcv+wK3PkN1Z5IEaii+UP4EBn6XXM8hp6i1xPNyHSJ+xDtRGcdiYyBBR/sfKJKofGuMOkaiNKPO6YDgG1OjLNwRf3w6LZW2btFhJ178tg+70qshJ8UDXyzXljhFcyG5BiJb2xRjTV9nNQLfpe76owP1qM3cs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wo5ieR86; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714336849; x=1745872849;
+  h=date:from:to:cc:subject:message-id;
+  bh=lDWxile2I7M8x6r0NlvEmESN/WnANxmW78NTMpySTlk=;
+  b=Wo5ieR86eejyzPK9/Fd2JUh8iTM+isAMpqxRcHXCr2b6iSB9VushqagF
+   20+DUBO4PxifICgedK56NaVAfiQeFFgQpOV9soJHL9pKmx5KhXAKVy/qA
+   tIkD0t6WOu2n4rPyyy5hln/NrCwxJ9Z+GgFRIHCR56AJjB6V7+EDQtJqA
+   ldGqUOaj1v53pKc0XyajQtRwTWw836As4VUd4+15F6y6T7DJngsrO0aJf
+   0gy/XiDCbRX1ENX/9XC3kUJhH+cnR/cFYkmg3gXERE1+m9DaJWT1G4hfq
+   pigmnrxoMeTkmz5LVblG927hz+KHeC8odhAQ+IhyoQ79HyopfhCjdrmWe
+   g==;
+X-CSE-ConnectionGUID: LTmo9ItBQqeh4S7aktYI3A==
+X-CSE-MsgGUID: cfdliKGPTHSD9UniCLrepQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="13824312"
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="13824312"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 13:40:48 -0700
+X-CSE-ConnectionGUID: dZHFPP7/T2idJl6xLsZ6pA==
+X-CSE-MsgGUID: Y7pMHbfASOS6+zBUM9qNGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="30718195"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa005.jf.intel.com with ESMTP; 28 Apr 2024 13:40:47 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s1BKG-0006jq-0C;
+	Sun, 28 Apr 2024 20:40:44 +0000
+Date: Mon, 29 Apr 2024 04:40:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ 257bf89d84121280904800acd25cc2c444c717ae
+Message-ID: <202404290421.gwP6Ubv9-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
- <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Apr 2024 13:22:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi8U1PjW_L6Ng9_A80L_1keyEOKud3PVh-8bwPL9W0CNg@mail.gmail.com>
-Message-ID: <CAHk-=wi8U1PjW_L6Ng9_A80L_1keyEOKud3PVh-8bwPL9W0CNg@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
-To: Hillf Danton <hdanton@sina.com>
-Cc: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 28 Apr 2024 at 13:01, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> The *problem* here is that the page fault doesn't actually happen on a
-> user access, it happens on the *ret* instruction in
-> rep_movs_alternative itself (which doesn't have a exception fixup,
-> obviously, because no exception is supposed to happen there!):
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
+branch HEAD: 257bf89d84121280904800acd25cc2c444c717ae  sched/isolation: Fix boot crash when maxcpus < first housekeeping CPU
 
-Actually, there's another page fault deeper in that call chain:
+elapsed time: 722m
 
-   asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-  RIP: 0010:__put_user_handle_exception+0x0/0x10 arch/x86/lib/putuser.S:125
-  Code: 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 01 cb 48 89 01 31
-c9 0f 01 ca c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 66 90 <0f> 01
-ca b9 f2 ff ff ff c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90
-  RSP: 0000:ffffc90004137d98 EFLAGS: 00050202
-  RAX: 00000000662d5943 RBX: 0000000000000000 RCX: 0000000000000019
-  RDX: 0000000000000000 RSI: ffffffff8bcaca20 RDI: ffffffff8c1eaba0
-  RBP: ffffc90004137e50 R08: ffffffff8fa7cd6f R09: 1ffffffff1f4f9ad
-  R10: dffffc0000000000 R11: fffffbfff1f4f9ae R12: ffffc90004137de0
-  R13: dffffc0000000000 R14: 1ffff92000826fb8 R15: 0000000000000019
-   __do_sys_gettimeofday kernel/time/time.c:147 [inline]
-   __se_sys_gettimeofday+0xd9/0x240 kernel/time/time.c:140
+configs tested: 179
+configs skipped: 3
 
-which is also nonsensical, since that "<0f> 01 ca" code is just the
-"CLAC" instruction (which is the first instruction of
-__put_user_handle_exception, which is the exception fixup for the
-__put_user() functions.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-So that seems to be the *first* problem spot, actually. It too is
-incomprehensible to me. I must be missing something. A "clac"
-instruction cannot take a page fault (except for the instruction fetch
-itself, of course).
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240428   gcc  
+arc                   randconfig-002-20240428   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                      footbridge_defconfig   clang
+arm                          ixp4xx_defconfig   gcc  
+arm                            mmp2_defconfig   gcc  
+arm                         nhk8815_defconfig   clang
+arm                   randconfig-001-20240428   gcc  
+arm                   randconfig-002-20240428   clang
+arm                   randconfig-003-20240428   clang
+arm                   randconfig-004-20240428   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240428   gcc  
+arm64                 randconfig-002-20240428   gcc  
+arm64                 randconfig-003-20240428   clang
+arm64                 randconfig-004-20240428   gcc  
+csky                             alldefconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240428   gcc  
+csky                  randconfig-002-20240428   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240428   clang
+hexagon               randconfig-002-20240428   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240428   gcc  
+i386         buildonly-randconfig-002-20240428   clang
+i386         buildonly-randconfig-003-20240428   clang
+i386         buildonly-randconfig-004-20240428   clang
+i386         buildonly-randconfig-005-20240428   clang
+i386         buildonly-randconfig-006-20240428   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240428   clang
+i386                  randconfig-002-20240428   clang
+i386                  randconfig-003-20240428   clang
+i386                  randconfig-004-20240428   clang
+i386                  randconfig-005-20240428   gcc  
+i386                  randconfig-006-20240428   gcc  
+i386                  randconfig-011-20240428   gcc  
+i386                  randconfig-012-20240428   clang
+i386                  randconfig-013-20240428   gcc  
+i386                  randconfig-014-20240428   gcc  
+i386                  randconfig-015-20240428   clang
+i386                  randconfig-016-20240428   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240428   gcc  
+loongarch             randconfig-002-20240428   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         cobalt_defconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+mips                      maltaaprp_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240428   gcc  
+nios2                 randconfig-002-20240428   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240428   gcc  
+parisc                randconfig-002-20240428   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      bamboo_defconfig   clang
+powerpc                        icon_defconfig   gcc  
+powerpc                     powernv_defconfig   gcc  
+powerpc               randconfig-001-20240428   clang
+powerpc               randconfig-002-20240428   gcc  
+powerpc               randconfig-003-20240428   gcc  
+powerpc                     tqm8548_defconfig   clang
+powerpc64             randconfig-001-20240428   gcc  
+powerpc64             randconfig-002-20240428   clang
+powerpc64             randconfig-003-20240428   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240428   gcc  
+riscv                 randconfig-002-20240428   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                          debug_defconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240428   clang
+s390                  randconfig-002-20240428   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240428   gcc  
+sh                    randconfig-002-20240428   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240428   gcc  
+sparc64               randconfig-002-20240428   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240428   clang
+um                    randconfig-002-20240428   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240428   gcc  
+x86_64       buildonly-randconfig-002-20240428   clang
+x86_64       buildonly-randconfig-003-20240428   gcc  
+x86_64       buildonly-randconfig-004-20240428   clang
+x86_64       buildonly-randconfig-005-20240428   gcc  
+x86_64       buildonly-randconfig-006-20240428   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240428   gcc  
+x86_64                randconfig-002-20240428   clang
+x86_64                randconfig-003-20240428   gcc  
+x86_64                randconfig-004-20240428   clang
+x86_64                randconfig-005-20240428   gcc  
+x86_64                randconfig-006-20240428   clang
+x86_64                randconfig-011-20240428   gcc  
+x86_64                randconfig-012-20240428   clang
+x86_64                randconfig-013-20240428   gcc  
+x86_64                randconfig-014-20240428   clang
+x86_64                randconfig-015-20240428   clang
+x86_64                randconfig-016-20240428   gcc  
+x86_64                randconfig-071-20240428   gcc  
+x86_64                randconfig-072-20240428   clang
+x86_64                randconfig-073-20240428   gcc  
+x86_64                randconfig-074-20240428   gcc  
+x86_64                randconfig-075-20240428   clang
+x86_64                randconfig-076-20240428   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240428   gcc  
+xtensa                randconfig-002-20240428   gcc  
 
-So if the page fault on the 'RET' instruction was odd, the page fault
-on the CLAC is *really* odd.
-
-That original page fault looks like it's just from one of the
-put_user() calls in gettimeofday():
-
-                if (put_user(ts.tv_sec, &tv->tv_sec) ||
-                    put_user(ts.tv_nsec / 1000, &tv->tv_usec))
-
-and yes, they can fault, but I'm not seeing how that then points to
-the CLAC in the exception handler.
-
-                Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
