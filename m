@@ -1,118 +1,99 @@
-Return-Path: <linux-kernel+bounces-161237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 444C98B4951
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F268B4955
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753E41C20E92
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:10:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BB5F1C20D03
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7027C23A0;
-	Sun, 28 Apr 2024 03:10:30 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF3928F0;
+	Sun, 28 Apr 2024 03:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSE1W0ug"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11438BFC;
-	Sun, 28 Apr 2024 03:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666AC15A4;
+	Sun, 28 Apr 2024 03:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714273830; cv=none; b=Y5tfveqi/j91mybssbhMjomC7DHeZyaKWyP5bJ6aD0MNW8CJ3meUyqumix32NwAFu2c91TofWM0pkrmFDJjHCjUbDRXrVmVTy+H7BnjlAoQxSCjGC3KIWTYO9KGsUsM8ao0VrkjltEGPcLGXBXgTdkZifGUpg8RnIchbTxCUkaM=
+	t=1714274267; cv=none; b=cP9md6zaa0CJuDNOyD+pEaPz7iGY4/XKMPfrFmoHsBInvqbZejPCazvq8WuMzKXFjzLZMcRuVfpDzM/022KNSnPbA5CxplQexOp5GKKpR3jjEOsz2EgCzmOOwu+f9MuVTsWmR1Fp1XiX2z/pY2QG1NyXo08DkRI78TCGndys7n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714273830; c=relaxed/simple;
-	bh=Xkb858840JSpgt73J/+K8NkWTXhVSsceTUY+W6NiCQk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XbMUhPJprTxSog3bukld70zeAj6ShYnVW+aO+6Syo1hqgQmNd7W6mrhkW2enA9x3MeQq7xRb+PkwO6numLz6X4+4rGWyOwAh0Dwj28aEZJOPHLLYgICnXGFuUu+rivfjcwor8hbSf6ELk0hQK2kU1pNDWQipztfuZg5Hb0/dWuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VRryx2PCtzccF1;
-	Sun, 28 Apr 2024 11:09:13 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (unknown [7.221.188.204])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9D0FB180080;
-	Sun, 28 Apr 2024 11:10:19 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100011.china.huawei.com (7.221.188.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 28 Apr 2024 11:10:18 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
-	<namhyung@kernel.org>
-CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Changbin
- Du <changbin.du@huawei.com>
-Subject: [PATCH v3 2/2] perf trace beauty: Always show mmap prot even though PROT_NONE
-Date: Sun, 28 Apr 2024 11:10:08 +0800
-Message-ID: <20240428031008.1535765-3-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240428031008.1535765-1-changbin.du@huawei.com>
-References: <20240428031008.1535765-1-changbin.du@huawei.com>
+	s=arc-20240116; t=1714274267; c=relaxed/simple;
+	bh=Stf6RD+wk0dcrnB98wXmtvpPzh3y/7iTC6dGDf6CG6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dOhPdt927EMgfc0qosSs1xvSCEYtFT0DdWcYt0j3xeKiml+hJJtnNVpX23w/0GhUKOGypkWzHuXXbCuc7AU0uVbEEUD6av2SPxA2nWozZN9O3I5V/Im/JGtVb27rMwzF6ncNxo/Psr5bApU+2fQDwyEUpZLDC/AE6a4JdteQXxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSE1W0ug; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53A4C4AF17;
+	Sun, 28 Apr 2024 03:17:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714274265;
+	bh=Stf6RD+wk0dcrnB98wXmtvpPzh3y/7iTC6dGDf6CG6E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eSE1W0uggxKHMhGrafLiJ1MoFp6jqU0EtHhmTgaE7FD4rgDGhvXvwpgtHYv7X7tv9
+	 IUyXlgs2qZyH77BpEWVg91SzUXwOMH+0G6jiV5pKwep68UypOG9Y6DaiiKLz6Mkczc
+	 kma9smBLp1ZgQZvjYGPIXrgitC0pyJTSmmtX+w8nYqWqXEF9r8q8iTzLjvTlhwNUAQ
+	 3avnbxMudfJ/zwx0/ZETQql4MRxSBH0e9dBBPqGsHAXBLDeBw6UUwMm0qJOCmWdveF
+	 nIsER7Q+8JoeGWomOi6vvyBFi69Rk0dKnLglCYpQe70Ux/uu/E9KY2+EUcikN9uZuI
+	 semwXapexl8aA==
+Message-ID: <e635105f-829d-457d-a2ff-4672ec7a42fe@kernel.org>
+Date: Sun, 28 Apr 2024 11:17:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/8] f2fs: drop usage of page_index
+To: Matthew Wilcox <willy@infradead.org>, Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
+ Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>,
+ Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>,
+ Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240423170339.54131-1-ryncsn@gmail.com>
+ <20240423170339.54131-4-ryncsn@gmail.com>
+ <Zig9JCrhky9JieRS@casper.infradead.org>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <Zig9JCrhky9JieRS@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-PROT_NONE is also useful information, so do not omit the mmap prot even
-though it is 0. syscall_arg__scnprintf_mmap_prot() could print PROT_NONE
-for prot 0.
+On 2024/4/24 6:58, Matthew Wilcox wrote:
+> On Wed, Apr 24, 2024 at 01:03:34AM +0800, Kairui Song wrote:
+>> @@ -4086,8 +4086,7 @@ void f2fs_clear_page_cache_dirty_tag(struct page *page)
+>>   	unsigned long flags;
+>>   
+>>   	xa_lock_irqsave(&mapping->i_pages, flags);
+>> -	__xa_clear_mark(&mapping->i_pages, page_index(page),
+>> -						PAGECACHE_TAG_DIRTY);
+>> +	__xa_clear_mark(&mapping->i_pages, page->index, PAGECACHE_TAG_DIRTY);
+>>   	xa_unlock_irqrestore(&mapping->i_pages, flags);
+>>   }
+> 
+> I just sent a patch which is going to conflict with this:
+> 
+> https://lore.kernel.org/linux-mm/20240423225552.4113447-3-willy@infradead.org/
+> 
+> Chao Yu, Jaegeuk Kim; what are your plans for converting f2fs to use
 
-Before: PROT_NONE is not shown.
-$ sudo perf trace -e syscalls:sys_enter_mmap --filter prot==0  -- ls
-     0.000 ls/2979231 syscalls:sys_enter_mmap(len: 4220888, flags: PRIVATE|ANONYMOUS)
+Hi Matthew,
 
-After: PROT_NONE is displayed.
-$ sudo perf trace -e syscalls:sys_enter_mmap --filter prot==0  -- ls
-     0.000 ls/2975708 syscalls:sys_enter_mmap(len: 4220888, prot: NONE, flags: PRIVATE|ANONYMOUS)
+I've converted .read_folio and .readahead of f2fs to use folio w/ below patchset,
+and let me take a look how to support and enable large folio...
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- tools/perf/builtin-trace.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+https://lore.kernel.org/linux-f2fs-devel/20240422062417.2421616-1-chao@kernel.org/
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 915dcd258002..919a462a7cb5 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -1033,7 +1033,7 @@ static const struct syscall_fmt syscall_fmts[] = {
- #if defined(__s390x__)
- 	.alias = "old_mmap",
- #endif
--	  .arg = { [2] = { .scnprintf = SCA_MMAP_PROT,	/* prot */ },
-+	  .arg = { [2] = { .scnprintf = SCA_MMAP_PROT, .show_zero = true, /* prot */ },
- 		   [3] = { .scnprintf = SCA_MMAP_FLAGS,	/* flags */
- 			   .strtoul   = STUL_STRARRAY_FLAGS,
- 			   .parm      = &strarray__mmap_flags, },
-@@ -1050,7 +1050,7 @@ static const struct syscall_fmt syscall_fmts[] = {
- 		   [4] = { .scnprintf = SCA_MOVE_MOUNT_FLAGS, /* flags */ }, }, },
- 	{ .name	    = "mprotect",
- 	  .arg = { [0] = { .scnprintf = SCA_HEX,	/* start */ },
--		   [2] = { .scnprintf = SCA_MMAP_PROT,	/* prot */ }, }, },
-+		   [2] = { .scnprintf = SCA_MMAP_PROT, .show_zero = true, /* prot */ }, }, },
- 	{ .name	    = "mq_unlink",
- 	  .arg = { [0] = { .scnprintf = SCA_FILENAME, /* u_name */ }, }, },
- 	{ .name	    = "mremap",	    .hexret = true,
-@@ -1084,7 +1084,7 @@ static const struct syscall_fmt syscall_fmts[] = {
- 	  .arg = { [0] = { .scnprintf = SCA_INT,	/* key */ }, }, },
- 	{ .name	    = "pkey_mprotect",
- 	  .arg = { [0] = { .scnprintf = SCA_HEX,	/* start */ },
--		   [2] = { .scnprintf = SCA_MMAP_PROT,	/* prot */ },
-+		   [2] = { .scnprintf = SCA_MMAP_PROT, .show_zero = true, /* prot */ },
- 		   [3] = { .scnprintf = SCA_INT,	/* pkey */ }, }, },
- 	{ .name	    = "poll", .timeout = true, },
- 	{ .name	    = "ppoll", .timeout = true, },
--- 
-2.34.1
+Thanks,
 
+> folios?  This is getting quite urgent.
 
