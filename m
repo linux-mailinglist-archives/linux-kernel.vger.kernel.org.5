@@ -1,129 +1,191 @@
-Return-Path: <linux-kernel+bounces-161315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A99B68B4A95
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:01:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4ACB8B4A98
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:01:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA09E1C20BA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:01:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5A7F1C20E91
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84ECE51C48;
-	Sun, 28 Apr 2024 08:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="SRpbFwhi"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7211F524BB;
+	Sun, 28 Apr 2024 08:01:30 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543F950A7A;
-	Sun, 28 Apr 2024 08:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6232951010
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714291276; cv=none; b=jgfmVqnKA1Qi7V9Uht5Xgl/hdxGkP0qRp1RDKd7YjIlPRQ1lM3hG2oVegUS1bqsGGjbYizRwbEM8wgsAP6P9/eZpF9+52sTmVIYliD+2DVUUPqor8awjNDJQBh8XgfXHkAqqag0oYMKIKtlqgCNFNrW+W4P19mMoSWvF2Iv9exc=
+	t=1714291289; cv=none; b=Xs2EiztTM/OyLpCKWIleW7nNg1to7/iQGbrIQyNIYDGwoNB6BS2DOBhSHjTk3Uwwst9OnFuEgn+Lc88Rsxvg/dW98UhKhoFvezPgvb1b5cXJnMesmIdK9Vyuqa2RUvly+41v6jgWvW+D6uKZE9GkAv+suTNcoaIStErTe4U0g5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714291276; c=relaxed/simple;
-	bh=N2s73B78q5laafJMg4t6L7T31mh6Kv/HMq7cmTEVTmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U4WzXiRB43AZdF7Ongf7+KdXl2pDSQ/ukzb97TaT5JO5rc+3qJZc4ujYNUpw/wDHxSQC0bFSUA19KjQt+eB/PqFUA20tQSz2008cz/wLQIv4SWjrJKbwHqvqUNwHMMfHhOc8ldsgRMCysh8Vpfedx5ULh5hVSsZyiJq3FzEX3Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=SRpbFwhi; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=N2s73B78q5laafJMg4t6L7T31mh6Kv/HMq7cmTEVTmQ=;
-	t=1714291274; x=1714723274; b=SRpbFwhiQmcIcfDgJuTP5++SynysRF9QlDCNSFDRZYcVmo9
-	QxzefEWs2b1fYaU/osZ3W+zVvoE308MkDlTgQ+Khspxg+WxwAG3d+e8LkPKntnZvngpzM6epiAu9J
-	V269gjeVavIXeuzmjiHgflMZqZi+e0+e5k3oTUHuDDbSe89bdKTZLsq+ZSZjqh5sCHv1FfsUDPmTt
-	Y1o6KkGOiWPFVI/u4g12thhDDR9Rs+15fzn/L9fOXnwxbmxJ9Vr0AKVA7+aY5Q0BSOkJiRI0kA2OY
-	v8s36Zz6dIFkKgGzNaTaDLvfdHIZCNTzQecwsjC2kMugy1i5XeZQAD/Irwt2a7UA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1s0zT5-0002Im-4w; Sun, 28 Apr 2024 10:01:04 +0200
-Message-ID: <fd85f305-6540-4551-95c8-f75c9288f21a@leemhuis.info>
-Date: Sun, 28 Apr 2024 10:01:02 +0200
+	s=arc-20240116; t=1714291289; c=relaxed/simple;
+	bh=JeQzpn0ojjt3L8YwXaNiLPthR1ef9kT2QpNtC2elcOY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Xjw5r5+nQRJIGmusP/eow42lTlqPN0+6TFUWkkiHSxmqvC5rhuSt+3cWQ5NFQGLYZiHX3YwBLOgQV6X/oPzXN3IYgONEIaIsdLMFgBHR5eS6xF2PGu6wJ1DNNXHHOHcQq27H3Wy/9vXz1AKz3nHxvsUOfcas3oS3IYeRz3AYAGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36b3157ffb1so40195315ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:01:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714291287; x=1714896087;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eq4m4QKg/wotWqf/VohvqPmmq7dtrBmgeSgxA368thg=;
+        b=EgaZPaj7eWzvr/kfMFPwlVhSK/FwJT3IlO07V+GaS0mUMjqiJwwaCFgoYySy2xO/pP
+         dHyjDXzRfMdDlhunIA8A58Euaqhs3GaxpLnHfHIWriCvnH2ijATT0D7drBaXhYvH14b0
+         tv8Phd6JVQLF+iB8965+1lQt9uMy4opaHrWZkjMyNuWwqCzlE1t7/nJUDxZ0zgkkXVVr
+         HfaTorFzcl01mvX5pK0ICAB+5mkXMeMZGnq74QxCX65apSq+8YaSP1Ff1Tg6GVUxGma+
+         +z5n5a551V5+9inpIGllEbCghZPu8RwmOeGUk7+yPQI9QjnvGgUb0naCJPT+x98QMxny
+         m7Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCXTexz1+s3HPOUbH6uaMiMulgOBHrTGg92e1NzjAueCCdhN3AIGB69Dpf4zTzqDjjBLO5Z51i+QfvXs0Utb0gf7luuyoFmJ58jXBMJ/
+X-Gm-Message-State: AOJu0Yw5F4rpEdEy3idRkL0YhoOScPNDMYFV0oKpCVz5lcBQxclYavdQ
+	wSqi4++bKT+jTV7XWvutiuzArOM6Nu/gT0OsVJHG0w6HWbZQcz4DDeqNtZDJNajNRw2wNVkOx0t
+	ftdbCKj05W1Nb9l+vAcxH2T/TrjoMZHXw7kfiwsnyq4gMfFhH03A6IpY=
+X-Google-Smtp-Source: AGHT+IHIHjvMziOFJZk+Xpl1tYwnr0vrZFJhb+Yz6FMVAh7pZ0H7GtlwxLvPwKDi/IdW32yV0DWHjT61ZwU2SI0zLbwS1QqIiTjQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [BUG] e1000e, scheduling while atomic (stable)
-To: Greg KH <gregkh@linuxfoundation.org>, "Artem S. Tashkinov" <aros@gmx.com>
-Cc: intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <2024042328-footprint-enrage-2db3@gregkh>
- <2330c23c-e99b-454a-b195-32c5b4332071@gmx.com>
- <2024042756-lushness-cupped-f19b@gregkh>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <2024042756-lushness-cupped-f19b@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714291274;4add0749;
-X-HE-SMSGID: 1s0zT5-0002Im-4w
+X-Received: by 2002:a05:6e02:154e:b0:36b:3c9c:558d with SMTP id
+ j14-20020a056e02154e00b0036b3c9c558dmr120666ilu.1.1714291287606; Sun, 28 Apr
+ 2024 01:01:27 -0700 (PDT)
+Date: Sun, 28 Apr 2024 01:01:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d5bc30617238b6d@google.com>
+Subject: [syzbot] [overlayfs?] BUG: unable to handle kernel NULL pointer
+ dereference in __lookup_slow (3)
+From: syzbot <syzbot+94891a5155abdf6821b7@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 27.04.24 13:14, Greg KH wrote:
-> On Sat, Apr 27, 2024 at 10:54:23AM +0000, Artem S. Tashkinov wrote:
->> This fix is still not queued in 6.8 stable:
-> What fix?
+Hello,
 
-FWIW, this one:
-https://lore.kernel.org/all/20240417190320.3159360-1-vitaly.lifshits@intel.com/
+syzbot found the following issue on:
 
-But sadly the review is still pending (and hence it's not yet eligible
-for inclusion in stable afaics):
-https://lore.kernel.org/lkml/ded3e7ae-6a7d-48b2-8acc-c125874ee09f@leemhuis.info/
+HEAD commit:    9d1ddab261f3 Merge tag '6.9-rc5-smb-client-fixes' of git:/..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=131e4bf7180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5a05c230e142f2bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=94891a5155abdf6821b7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1514c36f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13649630980000
 
-HTH, Ciao, Thorsten
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/de0722c51d76/disk-9d1ddab2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bbe188cbd737/vmlinux-9d1ddab2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/74cb740a2e68/bzImage-9d1ddab2.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/1ea7930b04fb/mount_0.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143e0f10980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=163e0f10980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=123e0f10980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+94891a5155abdf6821b7@syzkaller.appspotmail.com
+
+overlayfs: fs on './file0' does not support file handles, falling back to index=off,nfs_export=off.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 8000000022852067 P4D 8000000022852067 PUD 2dc51067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 PID: 5070 Comm: syz-executor324 Not tainted 6.9.0-rc5-syzkaller-00036-g9d1ddab261f3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000352f1b8 EFLAGS: 00010246
+RAX: 1ffffffff17b0bc0 RBX: ffffffff8bd85e00 RCX: ffff88807ef35a00
+RDX: 0000000000000000 RSI: ffff8880207f85e0 RDI: ffff88807ebf8018
+RBP: ffffc9000352f2d0 R08: ffffffff820b2843 R09: 1ffffffff28ed13f
+R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880207f85e0 R14: 1ffff110040ff0bc R15: 1ffff920006a5e3c
+FS:  0000555558bc6380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000001cba8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __lookup_slow+0x28c/0x3f0 fs/namei.c:1692
+ lookup_slow fs/namei.c:1709 [inline]
+ lookup_one_unlocked+0x1a4/0x290 fs/namei.c:2817
+ ovl_lookup_positive_unlocked fs/overlayfs/namei.c:210 [inline]
+ ovl_lookup_single+0x200/0xbd0 fs/overlayfs/namei.c:240
+ ovl_lookup_layer+0x417/0x510 fs/overlayfs/namei.c:333
+ ovl_lookup+0xcf7/0x2a60 fs/overlayfs/namei.c:1124
+ lookup_open fs/namei.c:3475 [inline]
+ open_last_lookups fs/namei.c:3566 [inline]
+ path_openat+0x1033/0x3240 fs/namei.c:3796
+ do_filp_open+0x235/0x490 fs/namei.c:3826
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_openat fs/open.c:1437 [inline]
+ __se_sys_openat fs/open.c:1432 [inline]
+ __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fd739fc9f39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc39adcc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 6e69666e6f636e75 RCX: 00007fd739fc9f39
+RDX: 0000000000001200 RSI: 0000000020000340 RDI: 0000000000000003
+RBP: 646165725f78616d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 0030656c69662f2e
+R13: 7269647265776f6c R14: 0079616c7265766f R15: 2f31656c69662f2e
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000352f1b8 EFLAGS: 00010246
+RAX: 1ffffffff17b0bc0 RBX: ffffffff8bd85e00 RCX: ffff88807ef35a00
+RDX: 0000000000000000 RSI: ffff8880207f85e0 RDI: ffff88807ebf8018
+RBP: ffffc9000352f2d0 R08: ffffffff820b2843 R09: 1ffffffff28ed13f
+R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff8880207f85e0 R14: 1ffff110040ff0bc R15: 1ffff920006a5e3c
+FS:  0000555558bc6380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000001cba8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
