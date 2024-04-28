@@ -1,103 +1,124 @@
-Return-Path: <linux-kernel+bounces-161392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89808B4B73
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:06:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879BB8B4B74
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5171D28176A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4D541C208F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7750256B6F;
-	Sun, 28 Apr 2024 11:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFCB56455;
+	Sun, 28 Apr 2024 11:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AkJlo2HI"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9gdxeT3"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218F28480;
-	Sun, 28 Apr 2024 11:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6521E495
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 11:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714302374; cv=none; b=n5ozn7QuwEVP47WmPuXrfGX1n/gh94poV9BIUrlZzq8dfDKJmSljB4C2k+aBe07VxHynZbamEftomocodeUVuozUkuhIaSVbgIfFwj2bNXdgjyQ52U2+5VuXAJcSucQI8wkLICGepDtagq0B6DVWnuyZZjmAtSNqI7r5ZhNWACE=
+	t=1714302622; cv=none; b=Vo/BPqi3igya6r9fGps5kL0Jzyx5r/Nt7xdI/A7/fWtWmyY4idPCPObx1bxez2yikeEvSb2z66+KMgHcWfDm5HIUWJ8V4jIH7+u3YYVMNRkvgLmUJ4dpOtVOVP1A4aDAd5ALEvz2a7wBbitMKZFNJ75B2UjW+qA7aJm6P8QlwwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714302374; c=relaxed/simple;
-	bh=UU8SgdFGNOdhG65xRQTliPs03k4M2ugcfAJrcZTffaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qtqVMDVdNz4ZmFtqg9q4mhQ54oaVpkQXSecg91fyXx4MHZrPOZuik0Ov12NgtvoXcz+XlLtCTT+mrHJxfi5z3F3Q/dJ8Y0QhbStSPZEr7DhikdlIfvVv3Z3T4oay7a+0KndLf20wouQUBJdraABEXAcxAzTZGK6RaRwNZPCrOhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AkJlo2HI; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BA68A40E0205;
-	Sun, 28 Apr 2024 11:06:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gcN8NC6Ho0lk; Sun, 28 Apr 2024 11:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714302362; bh=nek46uYbbUwLxdWyYg2mscjnkdU3uUJznYeFluV5IIU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AkJlo2HI0N39m8wdNo6Msjt2VwdAK2LL7lR/d42d3MuLFw6ecUTuHSBAC0iBD1P9f
-	 500SVzdxU8UZ6mTzwCohUdm5WmuT0kZERam1wWDn7YdF4oh85OpernTS3arBreLmxJ
-	 SZHKKsphzN1axwtD92p1ovlvuxSOjHk9En//pFeS7pIJFr1vWn5t6GkK9B+VbjTm/0
-	 Y+mfxDkXmr/GYv1Owp7JnsXroCgA/XEZMy9dRnbInXKv4zJM04WDYlZPaCp4aQEcKq
-	 k+FmgdnH6qxGnIxMcEZSvx83YMLl+KVIjh7rZtCN/tOMr9pgr06l7g0bGxK2X1JMK0
-	 eFPGey2C1WnRvhLJwWs8EcMxUdut9Hq26rxgk07RvoIeQC3B1jPxmQGE1EmovylQkr
-	 XQN6u+627g0DsdJkBDb8OuBboLt8msVpEUgjlTeGzwAF3a+VIZuPAv41hHvrl4xj5p
-	 6qW0dQKFAMxBMvPHSLSdXmyW+meQbqJzwmUTCoLCv3Ih9K68rlJ2DJiOFJ7NDmoJnF
-	 rNfv7m783F502CWZbn9D/EM9gljdqXWrHliNR3NeVZIQ5V3UeEW5HryJB1oXwHqDgR
-	 AA/M1xpNlWndwezO9dIvwLQxkdq5I0sPtV39kIfPKNA5lQ+4HGAHVyhSLxaaT3SlrK
-	 XlWpUTGkEpk5eo3BDwGDp5S4=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2160040E016B;
-	Sun, 28 Apr 2024 11:05:55 +0000 (UTC)
-Date: Sun, 28 Apr 2024 13:05:49 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Du, Xiaojian" <Xiaojian.Du@amd.com>
-Cc: "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"Yuan, Perry" <Perry.Yuan@amd.com>,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/cpufeatures: Add AMD FAST CPPC feature flag
-Message-ID: <20240428110549.GAZi4tjadYAYgOBhEX@fat_crate.local>
-References: <20240428091133.592333-1-Xiaojian.Du@amd.com>
- <20240428095409.GAZi4cwYxRwQGW_WFq@fat_crate.local>
- <DM4PR12MB5136052EA0F1930B49F91BBCF1142@DM4PR12MB5136.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1714302622; c=relaxed/simple;
+	bh=+PkoAp4bAsc+2jHRlfS6PmVGfkfnRE4zZhVegUAT/Z8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hj3sa8B3FtQzJ/9YkMjYMQRWJdX8H4XsQTJfGz3fDOYT8J/CXFoxKpxSALc3wgwSJSSLXK6RqyZPL1hmq+1X8l00HeLTb+8KOq7OORR0jF8FRv55oenSrbamF7HLKMk1QzvRlikP2Lx0EGHnbFqqMNBSbNG2eJC7DkaUUKXbDZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H9gdxeT3; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2690217a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 04:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714302620; x=1714907420; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C0Fl9Xl8UBJIzLoWawbGovJK0UTUwu2+7Q1CeI9zq5U=;
+        b=H9gdxeT3NW0sveDqSxzvi9IuzJ07x1nGT1WPnK3W7FsZy5S9Ps/9lqM/PZJnyr/AX5
+         aXOiiETuGeJdH+DUVntlfHixhAl8TH99znFzJX7Rh8Ty0u1h1Y3JNsKuG+9XkImNfuoD
+         4m4X8D0p2Ch7vGiJahYusckk3dkw9fsg8Tf+C/HE3QYeX0umxyTRvoDw60mDWngFyOL8
+         +V5nVElHZpOKMN22TlABWM1DTRMpdM1ZSgxVGgvg/N5ugnMj938cmlF5kfFmgRS+YLsE
+         ITwYJ2FwGThxtLahLybVsl32J/FPtigKAVbm99SpQvKQcSTfBxr2sD9tZRrQ5Lk8Ay7y
+         AsYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714302620; x=1714907420;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C0Fl9Xl8UBJIzLoWawbGovJK0UTUwu2+7Q1CeI9zq5U=;
+        b=EYjRb0y+2KSw1yEa0OeH9gElls3IGXo0csKhHxHj6rNG5XYmJVcHVvRV0c8pdR6bve
+         QAmWb957oAHH1t4hTvxQEl4uKG0b7atvpKyCTgCNnIc8c4NhZF2LGk59Vf7lVzvMirTN
+         f62OETU7NxLtgM4j4l+Qqbwf+8KljSgEoUXYyNddtuy5uDWHWkFrt9N6Vn7nbAc5IvbN
+         z8zZ1nTrKe29tZmtXokMtzEusRHoHuuY0HUyd27jhPWfdaDmC/ZNJOisiltYRfQ7WpPw
+         h7M5mCtoQ9+YFUuvgoPT9qcUUFnzLA617ByqTzqe7AABtgbMdIGCfIZb3fVoPGkLcHzJ
+         cITg==
+X-Gm-Message-State: AOJu0YzDeTcd590Tgcj7MZXA8t1W52Qhb1NVFPVyuzMuYudjjOpFqrUL
+	Ks4iCf3dkp8Fz0oJKoriOgQ6pqlJnLLLq/3ouJWMnfEiKB+1hyRJI8PWtw==
+X-Google-Smtp-Source: AGHT+IFd3RbGVM2O5Wgx7iEsS2JQwgB4Q7LZZoaPz35wBYnkJ0KXAR3gCfvYu0HjuNqL1h4dlgt2sg==
+X-Received: by 2002:a17:90b:1085:b0:2a7:d810:2f5e with SMTP id gj5-20020a17090b108500b002a7d8102f5emr6844424pjb.48.1714302620572;
+        Sun, 28 Apr 2024 04:10:20 -0700 (PDT)
+Received: from [192.168.0.107] ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id sd3-20020a17090b514300b002af05d7e60bsm8002319pjb.18.2024.04.28.04.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 04:10:20 -0700 (PDT)
+Message-ID: <221f6cfe-07c9-4fc0-a908-84276b8e4088@gmail.com>
+Date: Sun, 28 Apr 2024 18:10:16 +0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB5136052EA0F1930B49F91BBCF1142@DM4PR12MB5136.namprd12.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Sending patches as eml message attachment?
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <Zi4bMx2FKuviJi0M@archie.me>
+ <2024042828-occupier-confused-e046@gregkh>
+Content-Language: en-US
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <2024042828-occupier-confused-e046@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Apr 28, 2024 at 10:59:50AM +0000, Du, Xiaojian wrote:
-> Thanks a lot for review, I will modify before submitting.
+On 4/28/24 16:56, Greg Kroah-Hartman wrote:
+> On Sun, Apr 28, 2024 at 04:47:31PM +0700, Bagas Sanjaya wrote:
+>> Hi Greg,
+>>
+>> Sometimes I'm tempted to send patches as .eml attachments (just like in
+>> error messages sent by mail servers to me). Is patch submission by
+>> aforementioned way accepted?
+> 
+> No.
+> 
+>> If not, why?
+> 
+> Why would they be?
+> 
+> Attachments don't usually work as you can not reply to them and comment
+> on the contents, right?  Try it yourself and see.
+> 
+
+OK.
+
+I experimented this by sending dummy patches to myself, as attachment.
+I replied to the patch using mutt and thunderbird. In mutt, the patch
+contents was quoted, whereas in the latter, it was missing. Hence,
+email clients are inconsistent on handling patch attachments.
+
+> Also, .eml is an odd standard, what's wrong with text?
+> 
+
+It's also text format like mbox or git-format-patch(1) patches,
+though.
 
 Thanks.
 
-Also, please do not top-post on a public ML but put your reply
-underneath, like I just did.
-
-That's also explained in those docs I pointed you to.
-
-Thx.
-
 -- 
-Regards/Gruss,
-    Boris.
+An old man doll... just what I always wanted! - Clara
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
