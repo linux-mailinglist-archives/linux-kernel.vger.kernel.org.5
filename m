@@ -1,202 +1,155 @@
-Return-Path: <linux-kernel+bounces-161572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D2A68B4DE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:16:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981BD8B4DE7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:20:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEEF81F2123E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:16:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBEF91C208FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEC9B661;
-	Sun, 28 Apr 2024 21:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="d87dyRQG"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856A5AD5F;
+	Sun, 28 Apr 2024 21:20:29 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACF78F7A
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4A18F62
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714338998; cv=none; b=gAA4Ys48cHnPrd4AMRw0wMI5aR0hVgqpr8T9UiIHLIb97LHK/hgAyzIcGDZ4KCvhsbQiPQ9mj6TTfx++VNpVNagrpybPGCVkTFQEnnY6o5ceKouIdIS0YtDXpNTiucl/EPMmN0uoGDUPwPctPctQawOdaQMGV+jEaBGJosksCFo=
+	t=1714339229; cv=none; b=pt60kz8Szrkp8flzOQnmNL5brMfUuI7g5LFuOZYKDVABOFFsaSdG35wWcgP26cJDI/mdqrAb+C/eTHVt88zscnkS3rGtC4nboLnySj/LNudXMSYVfcdaMAZCI53rHjlaqJcORCSuO91hqv0dGnR1+C99YLwdbvykePSSf7LAooc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714338998; c=relaxed/simple;
-	bh=gPj8v31ez3L5cKeSj569Pzxg+WTN01PIgBVMPUM0PVk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kR0xuYaLFR/SNhVGs8B/ybvZ1FPFxStTLmKTTHsvzv8JShjhck4qqT6vmyGbGdFs1jgc1XxhU8YKvnEbb2la+ubVcz0Lx4JGm7hbpZOikSjGAx3/U+3VU+Yq8Csjbq2asvosQpd6f5YkJ+0tv81vosYfrvQgG8UDv1gYiBKRpOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=d87dyRQG; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51aa6a8e49aso4541905e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 14:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714338994; x=1714943794; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Th6JOWhuN18ilbXtwucL9jIp9hlrqQkRJbPVZOZ6Mcs=;
-        b=d87dyRQG3ruQXMlkKxeNWt4ZeCPEj3IZGLHXbFlUGCW0m8Qhtm0X+Y83LNc1RFnmHD
-         5lDuuRuXOECpqGRHC38OT6Axkg3a3BWKpDlMZB5h9K0hiHKzQDJ41AWYwnfqDI2NqyYL
-         UYTML61ScTYq9swJdlhdhfln/afrUtClWb0jAmo4ZlZH2394KuzQCEkApxWxU9JelSsO
-         w2G6OqwNwOqIOHBoRhApBGqK0XQVU56vTlREnuLmNqVgHqLy+wkQTthBlxcibwgFf96D
-         /C1HY9psJpGS7DiyLSBgJU07gnnD0IWcHtxSJm1AdGgW9gA8ss7pS8BM9UM04+laT/9T
-         o23Q==
+	s=arc-20240116; t=1714339229; c=relaxed/simple;
+	bh=GnlWP92xN+/GoYzVZ2T5ivzMzjHUPtUijrlLUsETFHI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hk5Bj3WnC9l9/M/s5cKbiydkyOX/5LFwJ7cAMR5Z4lxN4VT2z1snmNet5GOPGE/igbeRWulvY9d1pzNoYEMl8RZ9v45f73OkhH7AwPQv8s/I1KjoogfJYrbzj7PA2P9FaztYR8o/JsQhmLTAIJlPh1iW9PZKeIdXPKyFZdy0wGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dab89699a8so433017039f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 14:20:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714338994; x=1714943794;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Th6JOWhuN18ilbXtwucL9jIp9hlrqQkRJbPVZOZ6Mcs=;
-        b=nQy5wdd5GE9nIIEQsQ7VOoO1fEpWCbKJK98u1S1IAj/xLWT+C9jY46VORUenoF37YU
-         mzSoPRbunVUHaO6R/N9kBIp9hTBWwocJxJ7yicEFJ7tuXOcewqL/cHVjvBSxUILW7UQV
-         SLdiBRloQTxdeBhnsA7NFunRpXKYZoyiVC7Ordpl+I1+Xqeuhh35fIdM9LngMKmuV6j9
-         0gO+SUJODWjnLKMFHV+X3wEvFn/jms9UzjFlpXElOHMMXQeX7Vx5HbGKvGw2oMBHVfKe
-         jv653f5D2MrUCABFPIY4g+w1+4O24P+2RO6Dj6FUrz6wVMr8JFxNETnMzOICzYU2bVkT
-         eqkA==
-X-Forwarded-Encrypted: i=1; AJvYcCV60STJh+I984KTytg4leeBeLq9vvB0EDjTq3WHOIjtNU7rLbjoySAlJGDcEYzKXZq2rA+Bl+sHFA23DzM/bfsBVaEckru3rDYUUIYp
-X-Gm-Message-State: AOJu0YwKHNeMR9nFnce3u57vVels/leQ5Ugwa9nJ6VCwN0VRCQcW1YvV
-	w3w0Or83K4fjgrLxOUsLtU1WD0qM3fWMj+E0R/f42QAfkKSRMfL1YBho20B8t3E=
-X-Google-Smtp-Source: AGHT+IEdHEc3lHTJKUvgUx6wcLka2P3zMWpdp0v9hONRgbCQmch2GDzwns2skCib8Gg5Xzl6+hkPew==
-X-Received: by 2002:ac2:4542:0:b0:51c:66eb:8a66 with SMTP id j2-20020ac24542000000b0051c66eb8a66mr4599862lfm.67.1714338994352;
-        Sun, 28 Apr 2024 14:16:34 -0700 (PDT)
-Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
-        by smtp.gmail.com with ESMTPSA id g28-20020a0565123b9c00b00518be964835sm3873408lfv.53.2024.04.28.14.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 14:16:33 -0700 (PDT)
-Date: Sun, 28 Apr 2024 23:16:32 +0200
-From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
-Message-ID: <Zi68sDje4wfgftyZ@builder>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+        d=1e100.net; s=20230601; t=1714339227; x=1714944027;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x6hVO5FhFpuKvFim9NSfwhPqv8ZEhAS9UENFDff7oD8=;
+        b=NaoXniUcFhPWcAF6CODAIEA/+MwI7qSFoC+vg7nlmBs30hH2iSKg0RfZeu8JEDIKYs
+         RHU7ac4jRTSXj4HpSQxLk4JioWDfesY/u/PHP8YkP/3kWgbdyWvoW/hGsE/p8O3LhxXO
+         zj4qHT6mkN7TX/AsjrZIH+uPJ9GPBIcz1Wjr0XD909cx8jTYg/+EFxd9m6x5gAzMugqU
+         Nkj3X0Y2lLSNkuh0wlHPiRlKHz4Uyyabdxu9LK+hDj4Yh7e+zsgHZ35IkLsftbN+aapu
+         /lrHLQzrP1vss8lCgGLjr5qszzKJdLB1L+nce35uqqueduI9stvU72mBTQSjwmmk0KeL
+         bB5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWQOobsivxTB/tj6Yu+xwrrIF/eWmVpI4CFihi7niMaDesRbnPh5gq1L/VW375gZoLX2zSuR7hSMYo4c4iBHb2Dy2OaOci+p4kNjNzS
+X-Gm-Message-State: AOJu0YxXo9BIH9sd9cmK58NCa/R3EFmJjaK/KxQ4LeYyZIYJC1w0aZmb
+	CdBK8MTXE55Uzo+4SBwAifN8PyGW//uj0X+C1mhSpNvsKCuBI2oKqInH92IsjTau+2PUWSJU28p
+	IkXoheC79bZJoigXFE0F+7LWjLc9Q3a1Jvxvnt3se49ZklstxReewK4c=
+X-Google-Smtp-Source: AGHT+IELbccC2vM6+djVggTer7HtqXCmr5mQTsm5NCgG9wQxWdfsVdh/X+3Bcg8Eu52lmR2ZYcsFRGpOupUzPxGkcj3/5TPlyGVA
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+X-Received: by 2002:a05:6638:3d89:b0:487:c6e:1bf2 with SMTP id
+ ci9-20020a0566383d8900b004870c6e1bf2mr706534jab.1.1714339226881; Sun, 28 Apr
+ 2024 14:20:26 -0700 (PDT)
+Date: Sun, 28 Apr 2024 14:20:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4a64506172eb4ff@google.com>
+Subject: [syzbot] [serial?] KMSAN: uninit-value in gsmld_receive_buf
+From: syzbot <syzbot+2f64914d6a3a8ce91bdd@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From c65e42982684d5fd8b2294eb6acf755aa0fcab83 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ram=C3=B3n=20Nordin=20Rodriguez?=
- <ramon.nordin.rodriguez@ferroamp.se>
-Date: Sun, 28 Apr 2024 22:25:12 +0200
-Subject: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Hello,
 
-This commit optionally enables a hardware reset of the lan8650/1
-mac-phy. These chips have a software reset that is discourage from use
-in the manual since it only resets the internal phy.
+syzbot found the following issue on:
 
-Signed-off-by: Ramón Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+HEAD commit:    e88c4cfcb7b8 Merge tag 'for-6.9-rc5-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1664a5e8980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=776c05250f36d55c
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f64914d6a3a8ce91bdd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/76771e00ba79/disk-e88c4cfc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c957ed943a4f/vmlinux-e88c4cfc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e719306ed8e3/bzImage-e88c4cfc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2f64914d6a3a8ce91bdd@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in gsmld_receive_buf+0x5dc/0x640 drivers/tty/n_gsm.c:3555
+ gsmld_receive_buf+0x5dc/0x640 drivers/tty/n_gsm.c:3555
+ tty_ldisc_receive_buf+0x202/0x290 drivers/tty/tty_buffer.c:391
+ tty_port_default_receive_buf+0xdf/0x190 drivers/tty/tty_port.c:37
+ receive_buf drivers/tty/tty_buffer.c:445 [inline]
+ flush_to_ldisc+0x473/0xdb0 drivers/tty/tty_buffer.c:495
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3804 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ __do_kmalloc_node mm/slub.c:3965 [inline]
+ __kmalloc+0x6e4/0x1000 mm/slub.c:3979
+ kmalloc include/linux/slab.h:632 [inline]
+ tty_buffer_alloc drivers/tty/tty_buffer.c:180 [inline]
+ __tty_buffer_request_room+0x36e/0x6d0 drivers/tty/tty_buffer.c:273
+ __tty_insert_flip_string_flags+0x140/0x570 drivers/tty/tty_buffer.c:309
+ tty_insert_flip_char include/linux/tty_flip.h:77 [inline]
+ uart_insert_char+0x39e/0xa10 drivers/tty/serial/serial_core.c:3558
+ serial8250_read_char+0x1a7/0x5d0 drivers/tty/serial/8250/8250_port.c:1750
+ serial8250_rx_chars drivers/tty/serial/8250/8250_port.c:1767 [inline]
+ serial8250_handle_irq+0x77a/0xb80 drivers/tty/serial/8250/8250_port.c:1927
+ serial8250_default_handle_irq+0x120/0x2b0 drivers/tty/serial/8250/8250_port.c:1952
+ serial8250_interrupt+0xc5/0x360 drivers/tty/serial/8250/8250_core.c:127
+ __handle_irq_event_percpu+0x118/0xca0 kernel/irq/handle.c:158
+ handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
+ handle_irq_event+0xef/0x2c0 kernel/irq/handle.c:210
+ handle_edge_irq+0x340/0xfb0 kernel/irq/chip.c:831
+ generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
+ handle_irq arch/x86/kernel/irq.c:238 [inline]
+ __common_interrupt+0x97/0x1f0 arch/x86/kernel/irq.c:257
+ common_interrupt+0x49/0xa0 arch/x86/kernel/irq.c:247
+ asm_common_interrupt+0x2b/0x40 arch/x86/include/asm/idtentry.h:693
+
+CPU: 1 PID: 14392 Comm: kworker/u8:1 Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events_unbound flush_to_ldisc
+=====================================================
+
+
 ---
- .../bindings/net/microchip,lan865x.yaml       |  4 +++
- .../net/ethernet/microchip/lan865x/lan865x.c  | 28 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
-index 4fdec0ba3532..0f11f431df06 100644
---- a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
-+++ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
-@@ -44,6 +44,9 @@ properties:
-     minimum: 15000000
-     maximum: 25000000
- 
-+  reset-gpios:
-+    maxItems: 1
-+
-   "#address-cells":
-     const: 1
- 
-@@ -76,5 +79,6 @@ examples:
-         interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
-         local-mac-address = [04 05 06 01 02 03];
-         spi-max-frequency = <15000000>;
-+        reset-gpios = <&gpio2 8 GPIO_ACTIVE_HIGH>;
-       };
-     };
-diff --git a/drivers/net/ethernet/microchip/lan865x/lan865x.c b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-index 9abefa8b9d9f..bed9033574b2 100644
---- a/drivers/net/ethernet/microchip/lan865x/lan865x.c
-+++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-@@ -9,6 +9,7 @@
- #include <linux/kernel.h>
- #include <linux/phy.h>
- #include <linux/oa_tc6.h>
-+#include <linux/gpio/driver.h>
- 
- #define DRV_NAME			"lan865x"
- 
-@@ -33,6 +34,7 @@
- 
- struct lan865x_priv {
- 	struct work_struct multicast_work;
-+	struct gpio_desc *reset_gpio;
- 	struct net_device *netdev;
- 	struct spi_device *spi;
- 	struct oa_tc6 *tc6;
-@@ -283,6 +285,24 @@ static int lan865x_set_zarfe(struct lan865x_priv *priv)
- 	return oa_tc6_write_register(priv->tc6, OA_TC6_REG_CONFIG0, regval);
- }
- 
-+static int lan865x_probe_reset_gpio(struct lan865x_priv *priv)
-+{
-+	priv->reset_gpio = devm_gpiod_get_optional(&priv->spi->dev, "reset",
-+						   GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->reset_gpio))
-+		return PTR_ERR(priv->reset_gpio);
-+
-+	return 0;
-+}
-+
-+static void lan865x_hw_reset(struct lan865x_priv *priv)
-+{
-+	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-+	// section 9.6.3 RESET_N Timing specifies a minimum hold of 5us
-+	usleep_range(5, 10);
-+	gpiod_set_value_cansleep(priv->reset_gpio, 0);
-+}
-+
- static int lan865x_probe(struct spi_device *spi)
- {
- 	struct net_device *netdev;
-@@ -297,6 +317,14 @@ static int lan865x_probe(struct spi_device *spi)
- 	priv->netdev = netdev;
- 	priv->spi = spi;
- 	spi_set_drvdata(spi, priv);
-+	if (lan865x_probe_reset_gpio(priv)) {
-+		dev_err(&spi->dev, "failed to probe reset pin");
-+		ret = -ENODEV;
-+		goto free_netdev;
-+	}
-+
-+	if (priv->reset_gpio)
-+		lan865x_hw_reset(priv);
- 	INIT_WORK(&priv->multicast_work, lan865x_multicast_work_handler);
- 
- 	priv->tc6 = oa_tc6_init(spi, netdev);
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
