@@ -1,221 +1,154 @@
-Return-Path: <linux-kernel+bounces-161425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B11B58B4BCB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:43:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E548C8B4BD6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 286871F21AEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7381C20F50
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB0E6BB37;
-	Sun, 28 Apr 2024 12:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBF26BB37;
+	Sun, 28 Apr 2024 12:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cpBo87EX"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0H2uhuk"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9E2634E2
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E0CF516;
+	Sun, 28 Apr 2024 12:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714308174; cv=none; b=ckSqS3M7FnwW+sun3xTLH0qYFhuZZMo/DeZMwL6hHrub5fpVUUXMBwItNCXZ25HAnZ/X+yBcU9xdqo7hax801R2gAa6rSS5QjmdSrUhfSTthlwUD4YG1BgGWqye5QDc6H4b0Me2mhMo78N8JZSod6NogfsPgem5B2Z866cRsuTU=
+	t=1714308777; cv=none; b=RsHG+uBd1Hnls1pdE1pkTTeLkWRuYzgdsYsYQaALhZpj9Pqxpet0Yv0UaK3MTzOaY8X+bcHQtyNETyxw3xuEPFJY7VGdBzLMWzmDNCcK8YAHBsPAe/LmO2xFwrkLRwpANYYw0dgOflIkCXYv0JURkGYAg/27gXIz0bLXMOHClC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714308174; c=relaxed/simple;
-	bh=k/iZvRfF4dcBdsWWF77jrzu9Aw/WjqQU12YZsvYi4a4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OJcRmuxnoYc1xMHOSVJ3pntXDydrl7llql08C3VOGczWz2wQe68dthCDdVCIX8ZVmku6SOfMS70SvvUgZgqwY18K7+QyTtFhKJN8nj/XSsdiYD4YvVHy96x64HyNC6UQsGEQMDXLKGGvF3iFUQ00ArKD07zXu0iAU77ssAb+8HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cpBo87EX; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a55911bff66so444430066b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 05:42:50 -0700 (PDT)
+	s=arc-20240116; t=1714308777; c=relaxed/simple;
+	bh=e1t+DAm/UcjgWEj5zteVdEHb88i/sXfM9ZVZmE5sY4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XfeG1k0XBTLeUjWRA4acuPb4Z8bIbEam/vFhynFLpma6ed74EQ1e8c61tXTxYxX+qlijc9gTCHFZaFvx4pPXOwezz7rj9t5FzoV47JKj2DbuXrmT69x3HzwT0QorgndVcgdsRJbVyIJyG9uIVG1FDff3QgukvT+Eok4JpYcPELk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O0H2uhuk; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-34c90082dd7so1204919f8f.1;
+        Sun, 28 Apr 2024 05:52:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714308169; x=1714912969; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ruxM04DcwSqc1+5CUH/yirqxxYT+4VUtJYzmah4p6Dc=;
-        b=cpBo87EXt3WMgaxpNN31yxuUx0Rcol8oyoxwM47VajTb3LiRx4pgpBjdeYONHMET2O
-         RFXgPINGMoAgUXJzEMHlVDVOE32Niqp5+OBHgouT1zeBajOiP2ncGH2Fr5tg6dg8ABc8
-         /MCd4x5VxrTAFVPI6RfUi7T6zLaBCm06WmonKBoPmzSMF/Eg7DkuCKgoCL49w2gZTsK2
-         a81yKfmYkE+BVXSddXZva9YgkWioOrifykpFaJvGvnBisaKgvbTbXTR3ZdGRe5v528z6
-         Bys94BLFRNBtVkasyOvG8SWtFA3aGygFRGNuWr0ROjJ9ghKQc0v5jU66vm2dEyNAkdF2
-         Iwqg==
+        d=gmail.com; s=20230601; t=1714308774; x=1714913574; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e1t+DAm/UcjgWEj5zteVdEHb88i/sXfM9ZVZmE5sY4A=;
+        b=O0H2uhukRGI0Gc0F1o1s9+HHOemAv0we5GkI5rxizleTwTRJuVVHA1j2ang2gNHTX9
+         WDpzJEvp3ybnCgH9jKbx4a63sjxSlTfEpX866IThhcEm//vwp/HaDbLV5LyEul7kaVYP
+         PerJRdpcsE/VSTkYL6qpzDos7SfOcO6vvjag5gWiEEx5xTOIE+Q1B6NVVcMHht/twobI
+         9dsn1CJ5i+Z0t/xPgytv2qR3K7/NzTBBep9EtUSYt54yoVFIE2mGey3cEnZQM2YJ8l/V
+         vsAjJNhfSAxJR5IXDWrRzm2m/qHIi7xZ1BlUfGHVJloeidUqF7krh6oaIhFFvr5oSUpm
+         SDIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714308169; x=1714912969;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ruxM04DcwSqc1+5CUH/yirqxxYT+4VUtJYzmah4p6Dc=;
-        b=uU+M4kuC1rKQw2xGKc2knrCI0wRvRAMQnlBqichqdbk+4AxCDF1fqI7uuf1cyP1BY1
-         6abZm4KQNzM8M9WOiYXRDAIAw/IMJAERxYUUlbJjJTBTjEZtOP95/6f0/fZis8cPmfdb
-         JQbGiJH+h7P9CG0LkDdatUnku5suyH46UZq3td3YOaL4cpMGZ05DuKCXPD99PTvsGm36
-         yBp809PLDAe/Cni2TcHl/kyUQXaZWWTk1ewPbWBAUwlJsvh3wO8Hx9iF37CE3LYSO3Ke
-         7RWb9Nh5H/pAiYlQf18/B10AWnmwWIaBmfqH86Uy8P+yzZGNS0rXNxnMS6ZiZWz7oK3i
-         DrBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUF5B62jELc7G8R3CPbvLvEgAGDDt9qsgEvUs3wcu4xaHwZuoCDGx5hfDGrKEGXYktPYmyH0yCBGUeCXKgAkdC2x9XH0OIMN2mwdad9
-X-Gm-Message-State: AOJu0YzF3htJI+QRWBQUuyx0KUrrGmMK3+ucnKk9QLYCSIRfQsVNimfn
-	mdvAoBeIjnc7JJJhxeYY0Xq/9ur8aZAZTUGi557R9Hif5MYIqKNKZ/RLCI6QjF8=
-X-Google-Smtp-Source: AGHT+IFEmenVCstN3qRQ3VZod695J/pFmJ7LOK2zFQWoDBSbhtYZRvHLRnkehwSsSY/MkO5h5SEVWQ==
-X-Received: by 2002:a17:906:a2d3:b0:a55:856b:5892 with SMTP id by19-20020a170906a2d300b00a55856b5892mr2957543ejb.30.1714308169136;
-        Sun, 28 Apr 2024 05:42:49 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id b25-20020a17090630d900b00a5875b34b6asm6935689ejb.14.2024.04.28.05.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 05:42:48 -0700 (PDT)
-Date: Sun, 28 Apr 2024 15:42:44 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Harry Wentland <harry.wentland@amd.com>
-Cc: Leo Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/amd/display: re-indent dpp401_dscl_program_isharp()
-Message-ID: <2b0a61a0-baca-415f-aad4-7dc4cde73ef7@moroto.mountain>
+        d=1e100.net; s=20230601; t=1714308774; x=1714913574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e1t+DAm/UcjgWEj5zteVdEHb88i/sXfM9ZVZmE5sY4A=;
+        b=iyaIjMdxKG4OirW1we8x9NFsswbWtyGpvxa7xsGuGgW+Lkxlad9/T4mzLsVEV9DXso
+         Pn1DrnaNP7He4+eR5oNiyVz6kxWjKlDy8PB05i0uu+U1MO1lwU4Kjllffe65lVlkEuKQ
+         aJklNtZUV8VMPV82d+gZKnVH3voFzzqZk1qzlsgOZFg2AbzX4lCJ03m938dXLe9APdH8
+         L6ujbOpHCKa4Lb9tmdT6XuqLtJKtz1grvC3vPPwozflP2bO558c0PQnNd6nOWfnpQAUq
+         QSQSJVn7yrEBwux8l+PrzZCdBOKQ61xBtVGAMdWjOndaQwdsXTjJUMlTeyKavDNAZwP6
+         2q1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXK47kBW9Xlni2/Tdq25pt5VDHrwZRZ2WJzrRjUjCzvOEhwzSXUuyZmrhlTwQIek8aD6Sa5tit0VNG6JtFUfkGgttOa5RqRjGsj/dDkH9gzD33JxPfs1o/5f7oG+4xh+OLBDdoshUujoA==
+X-Gm-Message-State: AOJu0YzDLumOhBWf1uChi4TUf9CX/5GQC7LOsDnPEchnC7cr0H2t6pKd
+	4gethWsn/Bc0SDsuBlMGVGO/AfeNxI8gZZWeev2TWDZVNwkNIH9OAIAvh6DVhh9d0T8TifZXbnE
+	n8MXd/nhx4utnB70fxuKWPtBBxiiq93DoYMU=
+X-Google-Smtp-Source: AGHT+IFk4s2m4By0fwDK8jV6cj9RlLs4N1Ac1W9zBcBWrStk7pz9SjLguNE0AHswsQkf8U1r+OrAzsbOP41G9LsIR6c=
+X-Received: by 2002:adf:f8d0:0:b0:346:4d41:8d5a with SMTP id
+ f16-20020adff8d0000000b003464d418d5amr5892887wrq.56.1714308773903; Sun, 28
+ Apr 2024 05:52:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+References: <20240416120635.361838-2-skseofh@gmail.com> <Zh9l_LpThq9aFUR7@kernel.org>
+ <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
+ <ZiFgYWydIwvnpIIY@kernel.org> <CAATEi5kFt8iUeWSkrj_bVTyPO_tfQzG77D719P5dLsr2j6Zkzw@mail.gmail.com>
+ <CAATEi5ksY-v7-LEqNZWFV5hsHiegNEtrh4LpMWOQ=vT7hC0Rng@mail.gmail.com>
+ <Ziy8AsAGZyKCyXX_@kernel.org> <CAATEi5=Z0qirM-fyGJL_UPcr7-iyCFtOW9d3XsdN50Tkhpm0iA@mail.gmail.com>
+ <Zi3twYLGvhtJa9Yh@kernel.org> <CAATEi5nOQE7xi5ztV0BFO6MRqSGwUPT4V9dqpMT+p4r7iZQwRQ@mail.gmail.com>
+ <Zi46Wri1mPTiEArU@kernel.org>
+In-Reply-To: <Zi46Wri1mPTiEArU@kernel.org>
+From: DaeRo Lee <skseofh@gmail.com>
+Date: Sun, 28 Apr 2024 21:52:42 +0900
+Message-ID: <CAATEi5=-oxOGqGD=xL=tjYRh5Q_xk5qLsXcTXq+4LRyOT8J6Rg@mail.gmail.com>
+Subject: Re: [PATCH v2] memblock: add no-map alloc functions
+To: Mike Rapoport <rppt@kernel.org>
+Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Daero Lee <daero_le.lee@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Smatch complains because some lines are indented more than they should
-be.  I went a bit crazy re-indenting this.  ;)
+2024=EB=85=84 4=EC=9B=94 28=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 9:01, M=
+ike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Sun, Apr 28, 2024 at 07:36:40PM +0900, DaeRo Lee wrote:
+> > 2024=EB=85=84 4=EC=9B=94 28=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 3:3=
+5, Mike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> > >
+> > > On Sat, Apr 27, 2024 at 07:24:23PM +0900, DaeRo Lee wrote:
+> > > > 2024=EB=85=84 4=EC=9B=94 27=EC=9D=BC (=ED=86=A0) =EC=98=A4=ED=9B=84=
+ 5:50, Mike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1=
+:
+> > > > > > >
+> > > > > > > So, here is what I think:
+> > > > > > > - reserved-memory w/ nomap region -> mark only to memblock.me=
+mory
+> > > > > > > - reserved-memory w/o nomap region -> add to the memblock.res=
+erved
+> > > > >
+> > > > > NOMAP and memblock.reserved are semantically different, and at ma=
+kes sense
+> > > > > to have a "reserved nomap" node in fdt recorded in both memblock.=
+memory and
+> > > > > memblock.reserved.
+> > > > >
+> > > > > memblock.reserved represents the memory that is used by firmware =
+or early
+> > > > > kernel allocation, so reserved memory in fdt should be reserved i=
+n memblock
+> > > > > as well. I believe it's an oversight that early_init_dt_reserve_m=
+emory()
+> > > > > does not call memblock_reserve() for nomap memory.
+> > > > >
+> > > > > NOMAP is a property of a memory region that says that that region=
+ should
+> > > > > not be mapped in the linear map, it's not necessarily in use.
+> > > >
+> > > > I agree that the NOMAP region should be added to memblock.reserved.
+> > > >
+> > > > So, I think we need to clean-up memmap_init_reserved_pages, because=
+ in
+> > > > this function we call reserve_bootmem_region for memblock.reserved =
+and
+> > > > memblock.memory with nomap. We don't need to call
+> > > > reserve_bootmem_region for nomap.
+> > >
+> > > Read the comment about memblock_mark_nomap()
+> > I read the comment about memblock_mark_nomap() and understood that
+> > regions with nomap flags should be treated as PageReserved.
+> > But, if we add this nomap region to memblock.reserved, the region with
+> > nomap flag will be processed in the first for-loop in
+> > memmap_init_reserved_pages.
+>
+> memblock still must make sure that pages in nomap regions get PG_Reserved
+> to be robust against potential errors and bugs in firmware parsing.
+Got it.
+Thank you for your comments. I'll make another patch for just clean-up
+early_init_dt_reserve_memory()
 
-The comments were not useful except as a marker of things which are left
-to implement so I deleted most of them except for the TODO.
+Thank you.
 
-I introduced a "data" pointer so that I could replace
-"scl_data->dscl_prog_data." with just "data->" and shorten the lines a
-bit.  It's more readable without the line breaks.
-
-I also tried to align it so you can see what is changing on each line.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- .../display/dc/dpp/dcn401/dcn401_dpp_dscl.c   | 93 ++++++-------------
- 1 file changed, 30 insertions(+), 63 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c b/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
-index c20376083441..696ccf96b847 100644
---- a/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
-+++ b/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
-@@ -779,75 +779,42 @@ static void dpp401_dscl_program_isharp(struct dpp *dpp_base,
- 		const struct scaler_data *scl_data)
- {
- 	struct dcn401_dpp *dpp = TO_DCN401_DPP(dpp_base);
-+	const struct dscl_prog_data *data;
- 
- 	if (memcmp(&dpp->scl_data, scl_data, sizeof(*scl_data)) == 0)
- 		return;
- 
- 	PERF_TRACE();
- 	dpp->scl_data = *scl_data;
--	// ISHARP_EN
--	REG_SET(ISHARP_MODE, 0,
--		ISHARP_EN, scl_data->dscl_prog_data.isharp_en);
--		// ISHARP_NOISEDET_EN
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_NOISEDET_EN, scl_data->dscl_prog_data.isharp_noise_det.enable);
--		// ISHARP_NOISEDET_MODE
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_NOISEDET_MODE, scl_data->dscl_prog_data.isharp_noise_det.mode);
--		// ISHARP_NOISEDET_UTHRE
--		REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
--				ISHARP_NOISEDET_UTHRE, scl_data->dscl_prog_data.isharp_noise_det.uthreshold);
--		// ISHARP_NOISEDET_DTHRE
--		REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
--				ISHARP_NOISEDET_DTHRE, scl_data->dscl_prog_data.isharp_noise_det.dthreshold);
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_NOISEDET_MODE, scl_data->dscl_prog_data.isharp_noise_det.mode);
--		// ISHARP_NOISEDET_UTHRE
--		REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
--				ISHARP_NOISEDET_UTHRE, scl_data->dscl_prog_data.isharp_noise_det.uthreshold);
--		// ISHARP_NOISEDET_DTHRE
--		REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
--				ISHARP_NOISEDET_DTHRE, scl_data->dscl_prog_data.isharp_noise_det.dthreshold);
--		// ISHARP_NOISEDET_PWL_START_IN
--		REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
--				ISHARP_NOISEDET_PWL_START_IN, scl_data->dscl_prog_data.isharp_noise_det.pwl_start_in);
--		// ISHARP_NOISEDET_PWL_END_IN
--		REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
--				ISHARP_NOISEDET_PWL_END_IN, scl_data->dscl_prog_data.isharp_noise_det.pwl_end_in);
--		// ISHARP_NOISEDET_PWL_SLOPE
--		REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
--				ISHARP_NOISEDET_PWL_SLOPE, scl_data->dscl_prog_data.isharp_noise_det.pwl_slope);
--		// ISHARP_LBA_MODE
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_LBA_MODE, scl_data->dscl_prog_data.isharp_lba.mode);
--		// TODO: ISHARP_LBA: IN_SEG, BASE_SEG, SLOPE_SEG
--		// ISHARP_FMT_MODE
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_FMT_MODE, scl_data->dscl_prog_data.isharp_fmt.mode);
--		// ISHARP_FMT_NORM
--		REG_SET(ISHARP_MODE, 0,
--				ISHARP_FMT_NORM, scl_data->dscl_prog_data.isharp_fmt.norm);
--		// ISHARP_DELTA_LUT
--		dpp401_dscl_set_isharp_filter(dpp, scl_data->dscl_prog_data.isharp_delta);
--		// ISHARP_NLDELTA_SCLIP_EN_P
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_EN_P, scl_data->dscl_prog_data.isharp_nldelta_sclip.enable_p);
--		// ISHARP_NLDELTA_SCLIP_PIVOT_P
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_PIVOT_P, scl_data->dscl_prog_data.isharp_nldelta_sclip.pivot_p);
--		// ISHARP_NLDELTA_SCLIP_SLOPE_P
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_SLOPE_P, scl_data->dscl_prog_data.isharp_nldelta_sclip.slope_p);
--		// ISHARP_NLDELTA_SCLIP_EN_N
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_EN_N, scl_data->dscl_prog_data.isharp_nldelta_sclip.enable_n);
--		// ISHARP_NLDELTA_SCLIP_PIVOT_N
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_PIVOT_N, scl_data->dscl_prog_data.isharp_nldelta_sclip.pivot_n);
--		// ISHARP_NLDELTA_SCLIP_SLOPE_N
--		REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
--				ISHARP_NLDELTA_SCLIP_SLOPE_N, scl_data->dscl_prog_data.isharp_nldelta_sclip.slope_n);
--		PERF_TRACE();
-+	data = &scl_data->dscl_prog_data;
-+
-+	REG_SET(ISHARP_MODE, 0,	ISHARP_EN, data->isharp_en);
-+
-+	REG_SET(ISHARP_MODE, 0,	              ISHARP_NOISEDET_EN,    data->isharp_noise_det.enable);
-+	REG_SET(ISHARP_MODE, 0,               ISHARP_NOISEDET_MODE,  data->isharp_noise_det.mode);
-+	REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_UTHRE, data->isharp_noise_det.uthreshold);
-+	REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_DTHRE, data->isharp_noise_det.dthreshold);
-+	REG_SET(ISHARP_MODE, 0,               ISHARP_NOISEDET_MODE,  data->isharp_noise_det.mode);
-+	REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_UTHRE, data->isharp_noise_det.uthreshold);
-+	REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_DTHRE, data->isharp_noise_det.dthreshold);
-+	REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_START_IN, data->isharp_noise_det.pwl_start_in);
-+	REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_END_IN, data->isharp_noise_det.pwl_end_in);
-+	REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_SLOPE, data->isharp_noise_det.pwl_slope);
-+
-+	REG_SET(ISHARP_MODE, 0, ISHARP_LBA_MODE, data->isharp_lba.mode);
-+	// TODO: ISHARP_LBA: IN_SEG, BASE_SEG, SLOPE_SEG
-+	REG_SET(ISHARP_MODE, 0, ISHARP_FMT_MODE, data->isharp_fmt.mode);
-+	REG_SET(ISHARP_MODE, 0, ISHARP_FMT_NORM, data->isharp_fmt.norm);
-+
-+	dpp401_dscl_set_isharp_filter(dpp, data->isharp_delta);
-+
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_EN_P,    data->isharp_nldelta_sclip.enable_p);
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_PIVOT_P, data->isharp_nldelta_sclip.pivot_p);
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_SLOPE_P, data->isharp_nldelta_sclip.slope_p);
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_EN_N,    data->isharp_nldelta_sclip.enable_n);
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_PIVOT_N, data->isharp_nldelta_sclip.pivot_n);
-+	REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, ISHARP_NLDELTA_SCLIP_SLOPE_N, data->isharp_nldelta_sclip.slope_n);
-+	PERF_TRACE();
- } // dpp401_dscl_program_isharp
- /**
-  * dpp401_dscl_set_scaler_manual_scale - Manually program scaler and line buffer
--- 
-2.43.0
-
+Regards,
+DaeRo Lee
 
