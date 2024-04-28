@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-161558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D62C8B4DAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:44:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 153C38B4DB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C123B20FE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:44:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 464021C20972
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92DD745FA;
-	Sun, 28 Apr 2024 19:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274F274C07;
+	Sun, 28 Apr 2024 19:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b="REZZLWVJ"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b="wYuP1pvI"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA268745ED
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 19:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E6976029
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 19:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714333458; cv=none; b=HjWR6llvzhkLQIHeh8zbPvcnwLohdyJz+OxGuFASxm3hJyU5qk7NWJxsiruLRrkDIiN//OOJzlhqLT3DGYcRGzYynhaubOgtlzkuQJfvGgEp9hhqzvhzdbyY9rl8TuM0PZugZLysn7bkNbmoIYxUf9TDyPxSvd4cxD46iLDcmLY=
+	t=1714333464; cv=none; b=R+PoUDQT2VUDpzos+InJrxlG0gN6+aMijmC5azzRKlh5V2hkTwsPGwI8BHJ7vsu4E1ZXwLN6Q1s5y/q7IBsxL7qRQm+Jr693Z9gfqOtuggoZylni9l/6YrsDeUmC+VRf6WPa90cU0rYvixLTrrXwm+EsIAgWu+TyxcMZZftvFdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714333458; c=relaxed/simple;
-	bh=811te4jalqhlAcpMRzxMNmHHpuACJOxE+5yG5CZ5VKw=;
+	s=arc-20240116; t=1714333464; c=relaxed/simple;
+	bh=zS4AnXDB56TofFf+N5bD9jOi5VXP4GDvHtyvSbjX1cE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RbGJJF8c9XvBA01qsV0IDIK8WQbdOtnK0lH3RCIjyn2PeNFvTt0lJTDenh2VFY2Qz+dqplKrCjMwo4rQfMWtRrIrBoEk+L0gLxBh00uhB0BtxUyV9klrr9U40RWisZW+TbpdOTgArellsNrbJ8d3emocJZVrQkHM7iYo/UgU6hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br; spf=pass smtp.mailfrom=usp.br; dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b=REZZLWVJ; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=K+kLegPYY2AI0DweH+5aiu0W3ALGPWt2HG2tQyRhePKR2bpn5/L0cHbBXcL4FzjqVEGL4e4UvRp+U34+Kkc4CVJlfH19YmufrqY0wMTlK1Vmpmf0i5AWWEvl8JsqbyxxzWk08YAKjdDIw0v7htvpEi1H5il8To+47CsMAXDKwgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br; spf=pass smtp.mailfrom=usp.br; dkim=pass (2048-bit key) header.d=usp.br header.i=@usp.br header.b=wYuP1pvI; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=usp.br
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=usp.br
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e5715a9ebdso31844705ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:44:15 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3ff14f249so28401705ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google; t=1714333455; x=1714938255; darn=vger.kernel.org;
+        d=usp.br; s=usp-google; t=1714333461; x=1714938261; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=95Ext5T8XeQ4NwII5w6xxgHcQxHIGHc3RjuE+Z3fol0=;
-        b=REZZLWVJ/iNIr8HJhPc4KfxnGu+nNcsdkxi9mi4UIINDYwbrQwm8X5f+goo6pXCM3X
-         vLfk6eFG4m5/qfpkQbuP+/pxKOvFhdIw1O/IMH0NSbbg34CDwx7JGqFVQ2P3hwzRdpkP
-         +ppsArfi5YM+C1v7Hur2Vfq6vqzkFvE46SXxIF517NklY/THTPfPXSH0tKStjPP3Im3F
-         ogfdWloq7rSiaPSLouO53/eZaVgFGN/we3cpycedCozVoH4t3OP5rXJIY5b/iZAJbayi
-         NwvZbOCcqZbl5NXlnR+H1MS3Vw5wt3FkzdSbde8JRC3o+JLS8mkmCTD0F0a2hDRQFr5U
-         OKfQ==
+        bh=+ABjwBx02udN5kYF+DG5k19J/UsOSoScqfXThrVpOhI=;
+        b=wYuP1pvIj4PQUuoddb1BiVK5jKf60pUY5xQv35eZbateorfTCTdPbEwchiONnAjbuP
+         DlHrLOeqGxlbioKQ8tVP6WtQNl61aztk5dfB6VrFBe9HR79d4ed/OT7wBo2YX4kVfnmP
+         YgUQveDgf4dWFCQs0bsh1Zoj+iplG0jDZQwixTUWBpZHVaLoY0n4IATaVNqkNnNHVEFd
+         X81AiW7nq0VE6SHa5xMn6PmV09aaDp4/CjEibVglUszM8LT3rsN3UgalupFoKiEeec6n
+         bV6BKl8A1uppsuz+ikAHI8dKIqVnxVfpmucvylziLlQI+qRVvHLWIuNPUlTNAV1JgZE6
+         x7Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714333455; x=1714938255;
+        d=1e100.net; s=20230601; t=1714333461; x=1714938261;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=95Ext5T8XeQ4NwII5w6xxgHcQxHIGHc3RjuE+Z3fol0=;
-        b=gnFE5j1jpareQc6SX2bQJ2Y+F9jVLjPB/vt+FbhAPYzfHgykU0HHV64F1mN4l8qXXt
-         U9fvOkmj02WbLJekrWjXoStqj03F+8mAuI9NWHMWqtSS3FIOOsvY4IsQTbhzPDJMSoG/
-         fJrMKoBgg9PB/C3+1l1mzx+1kmt0R6JHSh+XgHm1DqiyLcORQwgzWqS038oJXca0uC83
-         JEZw38evPB22pFtkyhzDrN4H7ANoAYCr1EKIHEWTw2s/XGC/RHlsgwKp2raUkpnBHzyb
-         zbyJ5pL8nLJMpTC9NW+uutLZayMcLv2pKvS9VlztDB6JgO/vWrq6bt68HC8AQRRpCdms
-         xkZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyEdxeDcr6YUINh3FvyT9ojMWRnGkriRaeNL9Ptbs0ZlVjG+usG0YWoKiqF7ZXK+e5flEVl0aP7Q0sc4JIV5WXaFHx+3s9JMVsFZZ3
-X-Gm-Message-State: AOJu0Yyd/PiUXUkUSE4CSsfT6K71KM3y19YChECt//kp6QpCXA23Iio+
-	NHjkG5oM5or84np4djPNnmt4MTa/w1JwAfv3CZ0NX36CSOBO84egHJQvpl2c1/s=
-X-Google-Smtp-Source: AGHT+IF8Gb3FbhJMc1opjcNmveeXitx/Funeb+MbXTQSZdluh/oI6MXbOmXjE05lUB2Ak4sJrltR9A==
-X-Received: by 2002:a17:902:684d:b0:1eb:3d24:3fc3 with SMTP id f13-20020a170902684d00b001eb3d243fc3mr5074584pln.47.1714333455216;
-        Sun, 28 Apr 2024 12:44:15 -0700 (PDT)
+        bh=+ABjwBx02udN5kYF+DG5k19J/UsOSoScqfXThrVpOhI=;
+        b=s5jDfd+v/HdIOgKa40S8BvcknJoqz/MBO9IBUrL0OT8UErYtTnvwejIMcMamqBT360
+         7+oL0Ggj+0juuM0nCWX/uno9+B8Tip3al9rcsw3r3+PKwLVoOumBXY/3IsjPKqX5Fl1+
+         KYjORTrKjL3Hhq//6bgIlpp0slZZEez2q83eEXFACUmsk73XC4U7CI+8LmKWu10RSQqA
+         HC18vY9aQ3EAN02opbxLZhRy4WDjd8kYVUF65dURrD8j9K0eT2i0ZHCBl1YxHC+cEs3U
+         f63+mWCDtheUia/+M8BZuZeFjj1vlsa0FPMS7IkpbjuuqJBXp74bxf+n690KqsVQLVPR
+         IkRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUPn0kP5IJEyB88K0iSZ9rUPs/6vFKG0C9jb3LB8JMSAirtRxc4Ny9bGq0GJYVxv1kkoK+PBu6gJfeqe4i39J676QAwubVfL/ESfSi+
+X-Gm-Message-State: AOJu0YyKlA24yRR2sRi0m2z0H5D6BKFezghVyVneU0LWdN848uX3ghMt
+	B/KWuTxWY+XRMgti9hLgNNCew0jpoEyDWhCPNPqDlq+zNsBnKP9SBma6BlnHTZI=
+X-Google-Smtp-Source: AGHT+IHN7fVBjs1dCCI0J5AyCaBYr3UpWc7xNEBjnoK+wy0S2i1lnqBxYpDA2nrlp1Vrr7RgpoRaHw==
+X-Received: by 2002:a17:903:32c7:b0:1e8:682b:7f67 with SMTP id i7-20020a17090332c700b001e8682b7f67mr11057040plr.29.1714333461475;
+        Sun, 28 Apr 2024 12:44:21 -0700 (PDT)
 Received: from ASUSLaptop-X513EAN.. ([2804:14c:81:903a:a3f3:f05c:11d1:1d76])
-        by smtp.gmail.com with ESMTPSA id l15-20020a170903120f00b001e45b3539dbsm18826374plh.41.2024.04.28.12.44.12
+        by smtp.gmail.com with ESMTPSA id l15-20020a170903120f00b001e45b3539dbsm18826374plh.41.2024.04.28.12.44.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 12:44:14 -0700 (PDT)
+        Sun, 28 Apr 2024 12:44:20 -0700 (PDT)
 From: ogustavo@usp.br
 To: lars@metafoo.de,
 	Michael.Hennerich@analog.com,
@@ -74,9 +74,9 @@ Cc: Gustavo Rodrigues <ogustavo@usp.br>,
 	linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Bruna Lopes <brunaafl@usp.br>
-Subject: [PATCH 2/3] iio: adc: ad799x: add blank line to avoid warning messages
-Date: Sun, 28 Apr 2024 16:43:25 -0300
-Message-Id: <20240428194326.2836387-3-ogustavo@usp.br>
+Subject: [PATCH 3/3] iio: adc: ad799x: Prefer to use octal permission 
+Date: Sun, 28 Apr 2024 16:43:26 -0300
+Message-Id: <20240428194326.2836387-4-ogustavo@usp.br>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240428194326.2836387-1-ogustavo@usp.br>
 References: <20240428194326.2836387-1-ogustavo@usp.br>
@@ -90,28 +90,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Gustavo Rodrigues <ogustavo@usp.br>
 
-Add a blank line before if statement to avoid warning messages pointed by
-checkpatch.
+Octal permissions are preferred over the symbolics ones
+for readbility. This ceases warning message pointed by checkpatch.
 
 Co-developed-by: Bruna Lopes <brunaafl@usp.br>
 Signed-off-by: Bruna Lopes <brunaafl@usp.br>
 Signed-off-by: Gustavo Rodrigues <ogustavo@usp.br>
 ---
- drivers/iio/adc/ad799x.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/ad799x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/iio/adc/ad799x.c b/drivers/iio/adc/ad799x.c
-index 3040575793a2..9a12e562c259 100644
+index 9a12e562c259..0f0dcd9ca6b6 100644
 --- a/drivers/iio/adc/ad799x.c
 +++ b/drivers/iio/adc/ad799x.c
-@@ -335,6 +335,7 @@ static ssize_t ad799x_read_frequency(struct device *dev,
- 	struct ad799x_state *st = iio_priv(indio_dev);
+@@ -524,7 +524,7 @@ static irqreturn_t ad799x_event_handler(int irq, void *private)
+ 	return IRQ_HANDLED;
+ }
  
- 	int ret = i2c_smbus_read_byte_data(st->client, AD7998_CYCLE_TMR_REG);
-+
- 	if (ret < 0)
- 		return ret;
- 
+-static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
++static IIO_DEV_ATTR_SAMP_FREQ(0644,
+ 			      ad799x_read_frequency,
+ 			      ad799x_write_frequency);
+ static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("15625 7812 3906 1953 976 488 244 0");
 -- 
 2.34.1
 
