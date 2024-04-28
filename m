@@ -1,112 +1,176 @@
-Return-Path: <linux-kernel+bounces-161499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 156668B4CCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:40:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5787F8B4CD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C60DB281747
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:40:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E0F5B2146F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:41:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F9E71B3D;
-	Sun, 28 Apr 2024 16:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70956FE07;
+	Sun, 28 Apr 2024 16:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l1n5JNUo"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="NW6/8fqJ"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF4D138C;
-	Sun, 28 Apr 2024 16:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C18A73177
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 16:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714322432; cv=none; b=UTQFe/gDqu1Ko2welNiLp9fvyPREC01Iih8lUdSUr3PE6DKm4pRPWe+yOXBRjw/be3WmSd/bH2Aob3ojIwHNkrblxAQimb54IGUBePtzxvhplbx6wYHRs4/AY6hJa6erO6+f9T6TUiUTYngCIOGZbpYCPuoM3FGLcUK3tINAoAw=
+	t=1714322495; cv=none; b=jgWX8w2P8mkMPBP24jCeh7Cosi37jjNiL/75W+ORFWRYn4zdbi25bdDJ+Gj6DmFzOl3uVW0w/lHb22kRVSxZkPbqQarmjdL9+HFnQBsM0lbUbXdHXyATOXyLbquBuXG/oPA4qF65XGEmGFgdCcja/mFLrCvvucRmezylfQFkQWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714322432; c=relaxed/simple;
-	bh=eWyNQEQgmbKTog4PZQGoo+/kvgutwCEHij/3lF15QW0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=FNBstz7XPc/UYjCqirhTVXNn4W/TnDx7JV8yJaQ5ZMZUFoMUQlLxRaHqqVlv7uPLJHcUCrS/Rv6AZ/QOGfUPA20o/wkoZ30WuPjzIALiwD1K7CXaNQLsbNbnGN7Dt55vJUz40CWQxVXXJS6laHzHTGTmAn0E4J8NSRRjW1eQY90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l1n5JNUo; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41b782405bbso18538285e9.1;
-        Sun, 28 Apr 2024 09:40:30 -0700 (PDT)
+	s=arc-20240116; t=1714322495; c=relaxed/simple;
+	bh=e9kozUVYrHIwrCQGcfpV/ZYobiatodQ1z9SiykSi/TI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kdp5RKjBVRtvl1E1sJMwcNsrRrv6+zqRIRWyHzyxITw81b8oolGr6tqrw0WWUzZ0tHJMh8oHO0p6KvXU9c5IFyfStRRm+4ak7uoC48hT60DCRbb7yMuhu34ZCNqW8JB3myLLXiraypYpEOi7qbd8PtzWr3EJpK/lh9rWgNZsQXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=NW6/8fqJ; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dcf9659603so961177e0c.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714322429; x=1714927229; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9vyGMkh9OeP8CcYsJVV9fAYIaFmcX5CM85mePm5ypHY=;
-        b=l1n5JNUovFEpaj2xjbw+dh7BH2bbyKfv/KNf7eXMm5CdqL/PMA4YaufLK7eMNpQlte
-         3IMEsvEUXIqn8GX4nZ071UHk7ctKZ6CzmKlWbUZItcdFgtIPsghBmSqCtzIzzAknA0l2
-         ScpBjmH1l8qyCXF91xa4gKvCcVUwEIZKcR387NlZk3cFOS4FEceSBI/y2FSiZ/Hp8Zr5
-         yBwwQsvgTV22VlfdJYLt4WPk5GLZ+7JP08Bh4o5284tX6/jvIBrOukE98TOBo8P5rp1r
-         dBGc+OlqMtGxKMqgjOap23TsbTKmO9X37nHR0F6L+rtvoKSAx1Ny51hTHj2vp3MiE5Ub
-         V/RA==
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714322491; x=1714927291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=34jZPs9Eiu4Qw7ZtmIIlooQKHvZkQc1XBH5UVUDjhOE=;
+        b=NW6/8fqJ+KdO/DzZrbNCTHib82w9uzAfVxzbzF5B174BLRoEJo1OlmWTErs4rBQI1Z
+         r00CQkONj79FwD5v3l1P2uOvR3yX4Tbo79HOZw1svG64XX7ksPBYy7E4HlsQb2xJG6QT
+         BnkLBfFkT9qz3L6gM3Rb6YN9BQjWQof4fCOnR9DloKu7i0fBMKV+cbCiOGQbjaIO+6oF
+         4VLTPAkYRktWEJmAHsJUOg1mS2scXHK1k/kr2lDgRkHbjfyBY/sTKrZjNw1eYOe36Oej
+         PhcMckUbpvccKIUrq1v08nnAt5jFpYfnABQr3IOLxePNRj1mzC34SUPxgK+KWOvAQlXS
+         M38g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714322429; x=1714927229;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9vyGMkh9OeP8CcYsJVV9fAYIaFmcX5CM85mePm5ypHY=;
-        b=cFdwA8CIcjEOODjSlZXgUqhmby3mRxiTOZ8xf4A+xvNw4penk3R4HKIcNRLlm//rgp
-         y2qvTBy+t1B5m71oVPMAxZRCe0Qw3wSO9qZDmna2UPcf6MKDEpLzx2dsNlrnX4ALR9W3
-         Z6jQlv/H0e7g/v4TcXFntZIP8HY9MFoQQWjV2w+JH7j403/I09iPIznO56ZGaD4ASO65
-         UeSTV+ACtXfaWQ6MJvGqgUQDT6CpqZClaOTAG4zmL5gRANp8Z9rHdtz9JjfMXfMWWhEm
-         C1R26o1b+toVQKo4aNbpVAt0xyjdtNA7xij4DLjqAkQz1c+s3fK8aORAPPGSbVZn+dDS
-         piyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrWnA2c+FUEly0fVdwIA4S2Y7tqjlilD63/DnsF8YyOirjvt1aCH+TN39KBBLEj3d6TDnFOEG/2A1f4zfTAqhc4V8e3UxeUmVflo5Sewhz0GQ1kggF0fGC8lw/V7U6Cv+u/YkjOV9BPoB0SEbSLA==
-X-Gm-Message-State: AOJu0YyI9MFkFOKGwYGTFvlLK1+hVjidlgi8v4ya16EKKREDs3joQl0B
-	wSKl40x6Pl6j304QMbJMf6ikiXW8WnGOAr/uQ0zvUCy9arskqO0=
-X-Google-Smtp-Source: AGHT+IELEnN4RuPB49/k0moK6uLDWfhKfFObOUQ9TI7Smjxdi5ZIe9JaWQPy/Wi/IvJCB9lHs/0QFQ==
-X-Received: by 2002:a05:600c:358e:b0:418:d91b:f1a3 with SMTP id p14-20020a05600c358e00b00418d91bf1a3mr6203963wmq.38.1714322429275;
-        Sun, 28 Apr 2024 09:40:29 -0700 (PDT)
-Received: from octinomon.home (182.179.147.147.dyn.plus.net. [147.147.179.182])
-        by smtp.gmail.com with ESMTPSA id iv14-20020a05600c548e00b0041c14e42e2bsm2819474wmb.44.2024.04.28.09.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 09:40:29 -0700 (PDT)
-Date: Sun, 28 Apr 2024 17:40:25 +0100
-From: Jules Irenge <jbi.octave@gmail.com>
-To: mark.rutland@arm.com
-Cc: alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf/x86/amd/power: Use div64_u64 onstead of do_div()
-Message-ID: <Zi57-TMgU19puaQM@octinomon.home>
+        d=1e100.net; s=20230601; t=1714322491; x=1714927291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=34jZPs9Eiu4Qw7ZtmIIlooQKHvZkQc1XBH5UVUDjhOE=;
+        b=hQK5G9fVkbDQKiXJ6c6NvTdkSfduP01VVitrpazKIQbWbboBC9aD6x6u1XcWcx2IzD
+         mSZnZYb+ADVfV48BIfBYuMXbWAHPn8ELnh/oCkvbRZaxVaL7e8+mYSmn5x5ZQalfd6ds
+         P7h3yUFxWw9bICYhC+8HNZuuOBR1AauMnlfamEQPmwxndVQ8aVaB8aWV4t/N4MsxZ2vG
+         XOM8tIZAYkpin36w4NnZXwhNYdTbrBwf/a7YpKzeKi9uf1VUPxo2jgA7FttGDQFSO8j0
+         3b4fBYNgqtca+wRb77qY8SXdBetjBoFzSLGhe7xLolrZsI6qzuEv9rl2a/kGUz6D/HxP
+         Z7Ww==
+X-Gm-Message-State: AOJu0Yw16s5V+hKvuBKRG9nd+26rF0i6AWkLhMnjVLT68qx+J+23zSFh
+	oPkJUTg4dxJ6WyAUmwuSfbyvvZHwupa3amFWGU5tt59mbkWVpQJRgMMrSWcWIUQybGtaYwyb8Pv
+	2htAjsQAef1/AFgRxkFPQD63DYjZZSN07F1LM+tw1q1urmGg=
+X-Google-Smtp-Source: AGHT+IHLdpt/9XWo4+d0fq5u+aGoe2Xweu2bbEMtHa8Q4gbQxrfJ/vnch45Ynf8rpTHz6dgnxhOkWQ1+y1wLqy+FQw8=
+X-Received: by 2002:a05:6122:251e:b0:4da:704f:7fc6 with SMTP id
+ cl30-20020a056122251e00b004da704f7fc6mr8248281vkb.15.1714322491304; Sun, 28
+ Apr 2024 09:41:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240426133310.1159976-1-stsp2@yandex.ru>
+In-Reply-To: <20240426133310.1159976-1-stsp2@yandex.ru>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Sun, 28 Apr 2024 09:41:20 -0700
+Message-ID: <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
+To: Stas Sergeev <stsp2@yandex.ru>, Aleksa Sarai <cyphar@cyphar.com>, 
+	"Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>, 
+	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Andy Lutomirski <luto@kernel.org>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Alexander Aring <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>, 
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, 
+	Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-do_div() truncates a u64 divisor to 32 bit.
-This can lead to non-zero being truncated to zero for division.
+> On Apr 26, 2024, at 6:39=E2=80=AFAM, Stas Sergeev <stsp2@yandex.ru> wrote=
+:
+> =EF=BB=BFThis patch-set implements the OA2_CRED_INHERIT flag for openat2(=
+) syscall.
+> It is needed to perform an open operation with the creds that were in
+> effect when the dir_fd was opened, if the dir was opened with O_CRED_ALLO=
+W
+> flag. This allows the process to pre-open some dirs and switch eUID
+> (and other UIDs/GIDs) to the less-privileged user, while still retaining
+> the possibility to open/create files within the pre-opened directory set.
+>
 
-Fix coccinelle warning
-WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead
+I=E2=80=99ve been contemplating this, and I want to propose a different sol=
+ution.
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- arch/x86/events/amd/power.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+First, the problem Stas is solving is quite narrow and doesn=E2=80=99t
+actually need kernel support: if I want to write a user program that
+sandboxes itself, I have at least three solutions already.  I can make
+a userns and a mountns; I can use landlock; and I can have a separate
+process that brokers filesystem access using SCM_RIGHTS.
 
-diff --git a/arch/x86/events/amd/power.c b/arch/x86/events/amd/power.c
-index 37d5b380516e..ff003c1a645b 100644
---- a/arch/x86/events/amd/power.c
-+++ b/arch/x86/events/amd/power.c
-@@ -64,7 +64,7 @@ static void event_update(struct perf_event *event)
- 	delta *= cpu_pwr_sample_ratio * 1000;
- 	tdelta = new_ptsc - prev_ptsc;
- 
--	do_div(delta, tdelta);
-+	div64_u64(delta, tdelta);
- 	local64_add(delta, &event->count);
- }
- 
--- 
-2.43.2
+But what if I want to run a container, where the container can access
+a specific host directory, and the contained application is not aware
+of the exact technology being used?  I recently started using
+containers in anger in a production setting, and =E2=80=9Canger=E2=80=9D wa=
+s
+definitely the right word: binding part of a filesystem in is
+*miserable*.  Getting the DAC rules right is nasty.  LSMs are worse.
+Podman=E2=80=99s =E2=80=9Cbind,relabel=E2=80=9D feature is IMO utterly disg=
+usting.  I think I
+actually gave up on making one of my use cases work on a Fedora
+system.
 
+Here=E2=80=99s what I wanted to do, logically, in production: pick a host
+directory, pick a host *principal* (UID, GID, label, etc), and have
+the *entire container* access the directory as that principal. This is
+what happens automatically if I run the whole container as a userns
+with only a single UID mapped, but I don=E2=80=99t really want to do that f=
+or
+a whole variety and of reasons.
+
+So maybe reimagining Stas=E2=80=99 feature a bit can actually solve this
+problem.  Instead of a special dirfd, what if there was a special
+subtree (in the sense of open_tree) that captures a set of creds and
+does all opens inside the subtree using those creds?
+
+This isn=E2=80=99t a fully formed proposal, but I *think* it should be
+generally fairly safe for even an unprivileged user to clone a subtree
+with a specific flag set to do this. Maybe a capability would be
+needed (CAP_CAPTURE_CREDS?), but it would be nice to allow delegating
+this to a daemon if a privilege is needed, and getting the API right
+might be a bit tricky.
+
+Then two different things could be done:
+
+1. The subtree could be used unmounted or via /proc magic links. This
+would be for programs that are aware of this interface.
+
+2. The subtree could be mounted, and accessed through the mount would
+use the captured creds.
+
+(Hmm. What would a new open_tree() pointing at this special subtree do?)
+
+
+With all this done, if userspace wired it up, a container user could
+do something like:
+
+=E2=80=94bind-capture-creds source=3Ddest
+
+And the contained program would access source *as the user who started
+the container*, and this would just work without relabeling or
+fiddling with owner uids or gids or ACLs, and it would continue to
+work even if the container has multiple dynamically allocated subuids
+mapped (e.g. one for =E2=80=9Croot=E2=80=9D and one for the actual applicat=
+ion).
+
+Bonus points for the ability to revoke the creds in an already opened
+subtree. Or even for the creds to automatically revoke themselves when
+the opener exits (or maybe when a specific cred-pinning fd goes away).
+
+(This should work for single files as well as for directories.)
+
+New LSM hooks or extensions of existing hooks might be needed to make
+LSMs comfortable with this.
+
+What do you all think?
 
