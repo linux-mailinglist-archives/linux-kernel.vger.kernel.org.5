@@ -1,115 +1,131 @@
-Return-Path: <linux-kernel+bounces-161439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E07E68B4BFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:32:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D78D28B4C00
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:32:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A8C61F2150F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:32:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 145DA1C20E20
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF0A6D1A9;
-	Sun, 28 Apr 2024 13:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B3D6E61D;
+	Sun, 28 Apr 2024 13:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OFUrmGeX"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SfjuQ0Z5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D008F516
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 13:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A40F516;
+	Sun, 28 Apr 2024 13:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714311139; cv=none; b=UyS37S3xKFNsd2vf85XGRtAOeZE8zpM+BKWXnMWpY4MpVMVbmgaG+HnIPC+vF7Bepin2Ol83bmtCBLkhZlsjxpbsxXALmo6khqB7ROjID4nDbPvVjampDvU7SnDGrRYkLgyfiXIuxqjua6vBUM4h10c82BmRUK1VkstXowsK7dY=
+	t=1714311147; cv=none; b=cVQfT8g4yG8Fh+fBKqw63Wu31HRh32iuWJQ9PQBJKmYYXeQf8sHdGLhA9vF5JwpPFmZungKsKyNHLG5xK5bov5giGA4qyAcN+dpOnNaMyxbCCaCy0AI301vzqKYhkhVwTIpGOX72XivZKkXsRdbXMiuc5awFWulwPmuNHWC1iXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714311139; c=relaxed/simple;
-	bh=dNfKAzc2n0aQjeRf37SRwgv/cL+MXMbKtLDCrQubHuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eaBhf+GrO3/gidJp2WB1eOcqSn+2VR31eA2fjhen+swDXRfti6JPP20Ql5CfI1vUxW8+OUVCHES7ozhp+wG5o4uvYD1at1YmWgPX9vXXRtzD2Ggr2lVVRbdpOtaBz6YXaYOSxbMazsfgqXWZiZngg3PKV4q91LUhduvcM6+ZXSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OFUrmGeX; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed627829e6so4451940b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 06:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714311137; x=1714915937; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jduh4GqUwvRZ4zY8Yj7RDLOSNJbHnEuldPhAhc4IioM=;
-        b=OFUrmGeXJH09c+3v/x/zwcLPQ6k+nUkvuY3ksKKDnFMq2+ZLrdJ53RtKVaa6PKRih+
-         qV2SAE0Iivpa22Hbc8EcSu7NUkCHrrXB2FzHDARdamG+p6XNEgg82Y7Soohj4SyAYFWM
-         DxgLaUEfCxtNNznGN4laD5iCDS5OMCQH4zFfOCpaLgwBd+QF1rvBDOlteQe43qJenk8A
-         CO7yNsuBHmZtA2G8OciRVvDmupAq5oQmmFQEvCb1BJx/l2AxN0LspN8SB+CQm7DmZ+5P
-         OQj/lUD7EkTnB+k5HQmlanslMvkZJMToikqjwU9FvQt6+3phsWDZY4gCyKBKi74lWoGO
-         nz+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714311137; x=1714915937;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jduh4GqUwvRZ4zY8Yj7RDLOSNJbHnEuldPhAhc4IioM=;
-        b=XdfEmWwFFyvpsS8dHOdPf+zN9xZnWxw8pPuiwKwpiXRykfBz1lHdrVrxuim3J0FOx6
-         nJnX6eC9u0PXBFpzPlBv5Vf+27ufj7UrULShzCf4bmOzEeeXN/Lef+RiyJ4WJUEqr6uU
-         NqDRz/zb3w3imha404nzbjZzGor16GJMl+/h8QYvragvXPrh2zWo+AfgbUjFVM2vx5nI
-         jGtCR9kfZHvbdZiKPfgK3youlNU4jwXJ+Y3jUpLPwLcIPgOAetsvqcCeXv+iiL5PVePT
-         kfBzluypIL8SPTB5aZxd2yhziVlbGDBFqppvgH5kKRqwysunsdKgQ14g+0BXNfRsixhR
-         UsyQ==
-X-Gm-Message-State: AOJu0YxtBQcjV/NW0+HwgpxYfAvKmoGo9LStdi9+aU4NPPfurHn5/OLA
-	ooDIaW1IWTwh2lFJiKbxDOPT9FVX9AK2DqFCggEV/gN3DbTZN5gyF2R/Ew==
-X-Google-Smtp-Source: AGHT+IFnBXdXBesbWY0nAX1ZFUw6nivCyZeO8uxLNEtkhb+41pihpFkZDcJ8pxVjh2DVM0aDKKt5/A==
-X-Received: by 2002:a05:6a20:394d:b0:1a7:a86a:113a with SMTP id r13-20020a056a20394d00b001a7a86a113amr10599703pzg.6.1714311137365;
-        Sun, 28 Apr 2024 06:32:17 -0700 (PDT)
-Received: from [192.168.0.107] ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id i6-20020aa787c6000000b006e6b52eb59asm17591218pfo.126.2024.04.28.06.32.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 06:32:16 -0700 (PDT)
-Message-ID: <ee12e2f4-3e43-406b-816a-5f5822002f39@gmail.com>
-Date: Sun, 28 Apr 2024 20:32:10 +0700
+	s=arc-20240116; t=1714311147; c=relaxed/simple;
+	bh=DpW/WuXrLhtm2ZKRngLmSo7dhMhjdfQekX2EAKWeMXM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lXlrl8bLSwyT5mFHvxPbLoi6vJHY5gcUF/w1qMI8AvA3sI1nVr8Cklk3AhrQv9A5XuY8kmaQkKFjIvcrpSYq2Vs19dl+oo4R+RQ3UfTVAhZlETjhLe9aS1Ntl/fKvOP9AtB0KshCSaJ5QtpilJ+p/Sxz9PtYAnkEyRpD4jKQvMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SfjuQ0Z5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD39C113CC;
+	Sun, 28 Apr 2024 13:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714311147;
+	bh=DpW/WuXrLhtm2ZKRngLmSo7dhMhjdfQekX2EAKWeMXM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SfjuQ0Z5+q3Ohqyg/hpbGu/B5Bkmr6r99A6SRFj7OeMzzBZCezPPuhnvKvjyKw7iC
+	 SZwQ/zlRKeJF6frW9kQ6sGnh9PPnL4GRMuQ88hHgRWYpdU6fi6Rd1v1FbmOoI6HYSe
+	 QlVbYISjLNNHisUuLIbSc8p9XFU4x/8bLlvL5z45v1TUjFG3KrKXe4DxoIDKu53BxF
+	 gyUCqvtMiQ80yDlBeaCzF+kE0VCK7Sxs6VgIhKJNTIq9+bE9D/j2ZkDbjrYGwZRMMb
+	 ee6gWl5EzNH5y2CM7A6FoEptUabwnJmBBwoF7RAKhgb/c0yp6gsI8RUWPqQETSHESi
+	 WXvRvPOlKaCtQ==
+Date: Sun, 28 Apr 2024 14:32:15 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, marius.cristea@microchip.com,
+ lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ conor+dt@kernel.org
+Subject: Re: [PATCH v1] iio: adc: PAC1934: fix accessing out of bounds array
+ index
+Message-ID: <20240428143215.3388426d@jic23-huawei>
+In-Reply-To: <20240425-vastly-salad-e56b9225e662@spud>
+References: <20240425114232.81390-1-marius.cristea@microchip.com>
+	<20240425-canteen-alias-5a907b1deecc@wendy>
+	<20240425-vastly-salad-e56b9225e662@spud>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Sending patches as eml message attachment?
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <Zi4bMx2FKuviJi0M@archie.me>
- <2024042828-occupier-confused-e046@gregkh>
- <221f6cfe-07c9-4fc0-a908-84276b8e4088@gmail.com>
- <2024042844-disfigure-dose-e194@gregkh>
-Content-Language: en-US
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <2024042844-disfigure-dose-e194@gregkh>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 4/28/24 18:18, Greg Kroah-Hartman wrote:
-> On Sun, Apr 28, 2024 at 06:10:16PM +0700, Bagas Sanjaya wrote:
->> On 4/28/24 16:56, Greg Kroah-Hartman wrote:
->>> Why would they be?
->>>
->>> Attachments don't usually work as you can not reply to them and comment
->>> on the contents, right?  Try it yourself and see.
->>>
->>
->> OK.
->>
->> I experimented this by sending dummy patches to myself, as attachment.
->> I replied to the patch using mutt and thunderbird. In mutt, the patch
->> contents was quoted, whereas in the latter, it was missing. Hence,
->> email clients are inconsistent on handling patch attachments.
-> 
-> That is true, which is why we say "do not attach patches".  It's as if
-> people assume we are new at this whole thing...
-> 
+On Thu, 25 Apr 2024 16:36:19 +0100
+Conor Dooley <conor@kernel.org> wrote:
 
-OK, thanks!
+> On Thu, Apr 25, 2024 at 01:22:45PM +0100, Conor Dooley wrote:
+> > On Thu, Apr 25, 2024 at 02:42:32PM +0300, marius.cristea@microchip.com wrote:  
+> > > From: Marius Cristea <marius.cristea@microchip.com>
+> > > 
+> > > Fix accessing out of bounds array index for average
+> > > current and voltage measurements. The device itself has
+> > > only 4 channels, but in sysfs there are "fake"
+> > > channels for the average voltages and currents too.
+> > > 
+> > > Fixes: 0fb528c8255b: "iio: adc: adding support for PAC193x"
+> > > Reported-by: Conor Dooley <conor.dooley@microchip.com>
+> > > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>  
+> 
+> 
+> Huh, this is an empty message. I intended to send some tags, but must
+> not have saved the buffer.
+> 
+> Closes: https://lore.kernel.org/linux-iio/20240405-embellish-bonnet-ab5f10560d93@wendy/
+> Tested-by: Conor Dooley <conor.dooley@microchip.com>
+Applied to the fixes-togreg branch of iio.git
 
--- 
-An old man doll... just what I always wanted! - Clara
+Thanks,
+
+Jonathan
+
+> 
+> Cheers,
+> Conor.
+> 
+> > > ---
+> > >  drivers/iio/adc/pac1934.c | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > > 
+> > > diff --git a/drivers/iio/adc/pac1934.c b/drivers/iio/adc/pac1934.c
+> > > index f751260605e4..456f12faa348 100644
+> > > --- a/drivers/iio/adc/pac1934.c
+> > > +++ b/drivers/iio/adc/pac1934.c
+> > > @@ -787,6 +787,15 @@ static int pac1934_read_raw(struct iio_dev *indio_dev,
+> > >  	s64 curr_energy;
+> > >  	int ret, channel = chan->channel - 1;
+> > >  
+> > > +	/*
+> > > +	 * For AVG the index should be between 5 to 8.
+> > > +	 * To calculate PAC1934_CH_VOLTAGE_AVERAGE,
+> > > +	 * respectively PAC1934_CH_CURRENT real index, we need
+> > > +	 * to remove the added offset (PAC1934_MAX_NUM_CHANNELS).
+> > > +	 */
+> > > +	if (channel >= PAC1934_MAX_NUM_CHANNELS)
+> > > +		channel = channel - PAC1934_MAX_NUM_CHANNELS;
+> > > +
+> > >  	ret = pac1934_retrieve_data(info, PAC1934_MIN_UPDATE_WAIT_TIME_US);
+> > >  	if (ret < 0)
+> > >  		return ret;
+> > > 
+> > > base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
+> > > -- 
+> > > 2.34.1
+> > >   
+> 
+> 
 
 
