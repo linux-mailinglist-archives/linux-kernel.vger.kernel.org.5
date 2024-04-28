@@ -1,127 +1,123 @@
-Return-Path: <linux-kernel+bounces-161483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4098B4CA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:12:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C283A8B4CA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:19:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6304C1F211A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:12:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDE50B21241
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5377171B4B;
-	Sun, 28 Apr 2024 16:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106C871756;
+	Sun, 28 Apr 2024 16:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MknSblpJ"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgztAZrJ"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A3D6FE35
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 16:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47C06F506;
+	Sun, 28 Apr 2024 16:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714320715; cv=none; b=rI1uaGRYur4b6aWbUqreLFhs91xHeX+Ubz1ApPTEhIeMGysrAzTD4sb9J5dwm3Kgpuu+OIrQiK6TgcIVlb/kdKLpKp3+uLXMD9KioJUdKfRqYfX67aHBZoqOiomNORJvWiStMNhUYOcc45bYQsS0OYRvV0dj/ns5XEt6jK1nHKE=
+	t=1714321159; cv=none; b=o/YcZEFNldCV7dWU0iYwoW5MIvU6VCe3IhY4lxZwQmBogIpnFNCrVAfpbs+DKmgTitDq6bTWzIbnFQgdTTSOFAwx5fsVxYiMRzvPxSoBVjzDZf9AtUgCx2LZxfuulfp+THT2xyCwFcG52IMsaJQbXJHebnK6zgNOVXbGEeSTZD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714320715; c=relaxed/simple;
-	bh=lwQO4festyPbAo4fEUDXtFX2fG35lsp/AYPDZzFtBwY=;
+	s=arc-20240116; t=1714321159; c=relaxed/simple;
+	bh=ulUn2Roe+pzNA/CtKdogTu9szg+ulnwZVNNaty/EbLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=POOsxydQ7pYsvzArTpxck9BbqmEjMobuUTcDWMNHJ+dztysa+iWtrjarKi+JiKdfxlgEyvjrv4tTja2NvWQw91ZIfkpciPQtTSGqtdHBimmM4fFtbY7ihsP7Fb1zw/OJtzXGJSG6LZz3TD850QFpyMzsRCv+67l2C/b2WdqQCgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MknSblpJ; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34cc606b1b1so812550f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:11:52 -0700 (PDT)
+	 MIME-Version:Content-Type; b=kaKCW/A53QkdPHIxvXPbgNdL7EnpF7T88MAj8SyexXu0HBjd8rZFKmuf+OySjjpArT1p7JVTRtcsFEVGLDdhsCb5iVY/uYOqfmExju0uoWf6qyCgjKAvY4orgTkXZoCH4GUtq05wfpYP/cfgixTUywAFIlId9OkkHHARvL36xOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fgztAZrJ; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41bab13ca80so13617745e9.0;
+        Sun, 28 Apr 2024 09:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714320711; x=1714925511; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714321156; x=1714925956; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=04cSsPNBtTMr6mKvSQUe5a7pLiO96Req29h2TQ6tsGw=;
-        b=MknSblpJLeBoEiHzzfwJrN9gKjFBRU9V5xp9HQdQekUKZSqAJNMQL1f8hUt3uOF3Gl
-         TNKH8s1fYSbY9ECMhlY77RW1VD0rLCCP3GeRi1pKtl/hTlOgx/mo5++iYNraoqbRGwwY
-         klfKEu/Q5MmgyQS5CftKjioedgssR7OGLRXxP1DKDY9g7DFtRWv0XsQf8nTdKPfWe4Ua
-         0botY+LHwyag4B7wz0h+T4lOwD0Eg/n1IF9HsGZDrmWuwGSt2ZlvxQKsCXlcIxuk2TLd
-         xcE1ZjBZW1FSL8pyu5EGGY8NWFq6s5gKzipVdusbdeLjOT7aw7E1tUyJKadqK3Eg6stu
-         iUTg==
+        bh=r8wa13zwfdNflwwU+lO/hDpPql8ov9l9JWWF4zFv8PI=;
+        b=fgztAZrJGVmDpQieqU4ArI9DMpafJLcO0GQY9TnZY3/v2hWORXWe+sQp8PMpm2szjK
+         zR+vPsObwZD3LEkg2n3qs8SZIKe859HCnDJu4/fv3P9FLk7LPsR9BMqyjUP3Vk+xzZoW
+         2QKl/MIMb9H3G8hZ2DN7W+3G+lfpDpqyE4UamOyNYWYI59QM+3uF+9YWdd9rVNetG623
+         ITIgIzQBfYNPqeN8Eutuh7Pswn/vhmMyqV9oaelsn6CkWu4XxzHgGf9VVlbEwXpejbAH
+         xAITLESlbZKd7fiH2OzuEEdMeuDDBiZGvFBOBLuQuRMaAEv8CL6/3Jq95IMyxuhocOLa
+         yl6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714320711; x=1714925511;
+        d=1e100.net; s=20230601; t=1714321156; x=1714925956;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=04cSsPNBtTMr6mKvSQUe5a7pLiO96Req29h2TQ6tsGw=;
-        b=ssD0GRlzpFkinmF+eSubS151Jqv4wVECPfjSQu6q6oricO60f0+FER2j+yhQxm6jfh
-         qp5xEjpjAZuHR1CWrf+KzTzJMFFrx22L45KVRi9hwtJjP+z/rYFPBMxaHGxNyeR62aIA
-         IbOfNANZjog0GDFuRYR4euEdoZLsVopGyRHB980l4pOd3+RyL1BAEM1xaedR3laF4nfY
-         +SzQYv63snXuIlAokhHQ+XiBhPyUDeX+wX0V75LJDYjZ1xwGCbSUMMJN7DJnfElaEbXv
-         uXfiML2eg2dKoxX2D/i/P0M002c+7ztebzViGyEPctsfbwaNIFOD5py1nFll2Ko9qsJJ
-         qd6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXNpUJYH41ThOMgGSA3e5uMEANjedZt0LdaO/x3y/WPgElE4QwmEDQpc5YCj8wHHQBoVP6K7xFfzVk3Rtxln/mUSUsL5WeESFOOx6yJ
-X-Gm-Message-State: AOJu0Yznoxfh4rX406Wx9+A9vahkKzav7HeEBJBlDi5d4Jbpnew5qTPS
-	MJfErjj1fqUjmMuX4KlpuOcZkZaWwqKTuyP2NjJK5eYg2ekxqUzbaVNHJ1cUB24=
-X-Google-Smtp-Source: AGHT+IFMUxU5Z3h0JtviqQ6YbIFzG1v4A97kqONBvP3SlthSR3Cm/ZZmQKSvWDI8YPlTZPb7gvEiuw==
-X-Received: by 2002:a5d:6208:0:b0:346:bb51:c203 with SMTP id y8-20020a5d6208000000b00346bb51c203mr6059990wru.12.1714320711038;
-        Sun, 28 Apr 2024 09:11:51 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id fi29-20020a170906da1d00b00a58f1eff266sm1325570ejb.189.2024.04.28.09.11.49
+        bh=r8wa13zwfdNflwwU+lO/hDpPql8ov9l9JWWF4zFv8PI=;
+        b=q1PcuGgyrwWz1cYGmFLmi7s2lnY7G2jKTTOgniH6vNSyiKhUsYWjkAzO+OFPzHoKV8
+         p79FYD/yWNRsKE03Fn+7wyKEHOEdY57xbrR/nNSBfdAA9mufPTE7RRoFAXwwyGJKPQsE
+         A8zKPFI7P/3oIWPgOly/yQ45M0Vk4csFNXbA/+nT1nBz3y5GFKIf0Tl4iXTQkMW7PCkb
+         qyUw0pvx3RSdZpWQNYO6Nzue9/LKHSz9nYKwYjAfIcW5YKCeWCax1mTeb2uwoerh9YuO
+         ob32V5r9PLCAP2jnhWQH+uN0SO3BKC8P8GR/BajQjjLrRs+7JZxYTAeiIwVHwe7PpvzN
+         UzRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJADKjE5ZVLZ0zYqQXBgTMgMC5Jjwy994bAm5eclk38zLoxg1paSJdVVPxMDlST8BUBW5ekJdljrIxR7X0FshfrTeZAMRYOADYNA6J9wtW5+kyt22x2avQJxtKO2Wrmoa5xSX2H5aZ9g==
+X-Gm-Message-State: AOJu0YwYgd74SeXdgNuFfEViHT6TcFAlyP43p3kDWgDGSAkaFH6l1/Xc
+	c4eKuigPqhoTCi21rWVz+dHTKMUwW/3QsjSWKIHzpIT7752eI6mH
+X-Google-Smtp-Source: AGHT+IGptgXSf37/lCXJb/77nPWdb36TF7NEcazq4nRcEnOE+ZBrhWAs9b9n7VfqYJuZo01OUoWiUg==
+X-Received: by 2002:a05:600c:3111:b0:41a:9fc2:a6b1 with SMTP id g17-20020a05600c311100b0041a9fc2a6b1mr7155221wmo.22.1714321155771;
+        Sun, 28 Apr 2024 09:19:15 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id p8-20020a05600c358800b00418f72d9027sm36319513wmq.18.2024.04.28.09.19.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 09:11:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Will McVicker <willmcvicker@google.com>,
-	kernel-team@android.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 4/5] clk: samsung: gs101: add support for cmu_hsi0
-Date: Sun, 28 Apr 2024 18:11:43 +0200
-Message-ID: <171432067235.26421.5148957892529383246.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240426-hsi0-gs101-v2-4-2157da8b63e3@linaro.org>
-References: <20240426-hsi0-gs101-v2-0-2157da8b63e3@linaro.org> <20240426-hsi0-gs101-v2-4-2157da8b63e3@linaro.org>
+        Sun, 28 Apr 2024 09:19:15 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: linux-sunxi@lists.linux.dev, Dragan Simic <dsimic@manjaro.org>
+Cc: wens@csie.org, samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC dtsi for
+ A64
+Date: Sun, 28 Apr 2024 18:19:13 +0200
+Message-ID: <2726728.mvXUDI8C0e@jernej-laptop>
+In-Reply-To:
+ <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
+References:
+ <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 
-
-On Fri, 26 Apr 2024 11:03:07 +0100, André Draszik wrote:
-> CMU_HSI0 is the clock management unit for one of the high speed
-> interfaces, which is used (amongst others) for USB
+Dne nedelja, 28. april 2024 ob 13:40:35 GMT +2 je Dragan Simic napisal(a):
+> Add missing cache information to the Allwinner A64 SoC dtsi, to allow
+> the userspace, which includes lscpu(1) that uses the virtual files provided
+> by the kernel under the /sys/devices/system/cpu directory, to display the
+> proper A64 cache information.
 > 
-> Some notes about the clocks marked as CLK_IGNORE_UNUSED:
-> * CLK_GOUT_HSI0_PCLK
->   CLK_GOUT_HSI0_LHM_AXI_P_HSI0_I_CLK
->   CLK_GOUT_HSI0_XIU_P_HSI0_ACLK need to be kept running as
->   otherwise the system becomes unresponsive and it doesn't complete
->   booting.
+> While there, use a more self-descriptive label for the L2 cache node, which
+> also makes it more consistent with other SoC dtsi files.
 > 
-> [...]
+> The cache parameters for the A64 dtsi were obtained and partially derived
+> by hand from the cache size and layout specifications found in the following
+> datasheets and technical reference manuals:
+> 
+>   - Allwinner A64 datasheet, version 1.1
+>   - ARM Cortex-A53 revision r0p3 TRM, version E
+> 
+> For future reference, here's a brief summary of the documentation:
+> 
+>   - All caches employ the 64-byte cache line length
+>   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative instruction
+>     cache and 32 KB of L1 4-way, set-associative data cache
+>   - The entire SoC has 512 KB of unified L2 16-way, set-associative cache
+> 
+> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
 
-Applied, thanks!
-
-[4/5] clk: samsung: gs101: add support for cmu_hsi0
-      https://git.kernel.org/krzk/linux/c/04ddcbec5651cd4da80d3b83e9c6d54c50dea456
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
 Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Jernej
+
+
 
