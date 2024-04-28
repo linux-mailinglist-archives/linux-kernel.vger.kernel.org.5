@@ -1,162 +1,128 @@
-Return-Path: <linux-kernel+bounces-161404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336FC8B4B93
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:49:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EA78B4B98
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 13:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB38B281C6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:49:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7AEE1F21667
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 11:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7651F5C904;
-	Sun, 28 Apr 2024 11:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE6665E02;
+	Sun, 28 Apr 2024 11:59:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="LhMYoc9Q";
-	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="BlwRuTRa"
-Received: from smtp.ivitera.com (smtp.ivitera.com [88.101.85.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXT0KNyV"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3118C5B694;
-	Sun, 28 Apr 2024 11:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.101.85.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9572F29;
+	Sun, 28 Apr 2024 11:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714304953; cv=none; b=oxTQvEEwXqEGwehBO75KMI/SjPYmR6FjzDN7iKxBiBi6BvnpP/7C2fJA9TKAZhdO03zJRpL8lHjut7ViBvOQqgBoqjMlN0zguDqC8Mi/9CSN66efGb7g6m7KHFZTNkyzDlQ73+m+GyiODAScBiw7ZRd5BO+aVPdNkutvftB1DBk=
+	t=1714305550; cv=none; b=IP1otd5V7lDPJXKoilff7X0L5350aUw5/MvUr/PwriVPLO/KDuwQrwivhYEFcUvfizA0b9M8jC984jbXm0efSpiyGl5Dor0OfwTHIYlE63EjyLg3XNQBwBFflbfV62WOyXsKeJ/DjliIORcE1SqaxsCjQsrU64qwtMLbmXp3HL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714304953; c=relaxed/simple;
-	bh=a3jtrhFLmJsd3Ue/6VPSau0Q462286ZMvv6PDrJlj9k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gn/8lbxbj2jg+aEOXiKzt5k/cwfTTbH2wvsOxm0cobXq88LuTicgcOnwC8Gn1VMg0ThsjrlpQf8Q6JFhdVk52IxFwaeHxWgwpLID4t8DfRgCrRkLemhiZz0WRkcgiSwLXWaPdsjzXR5ZjTbNUr/kacLWrvHN9DizDUzr9nolWDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ivitera.com; spf=pass smtp.mailfrom=ivitera.com; dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b=LhMYoc9Q; dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b=BlwRuTRa; arc=none smtp.client-ip=88.101.85.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ivitera.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ivitera.com
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.ivitera.com (Postfix) with ESMTP id 8B5E1160136;
-	Sun, 28 Apr 2024 13:49:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1714304941; bh=a3jtrhFLmJsd3Ue/6VPSau0Q462286ZMvv6PDrJlj9k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LhMYoc9QjBGMa5qc4n0OK2y6qZ4ouIg7wZCpeDpxR4Ax2y4qIttfughGcZbCTP+/Z
-	 hve7yTUTctZdw0sKKVy/IZhhFe98yMEyPpAaaem01VpWjsD3lf3SwJ2KIylrpYBD6G
-	 IksWcPdh+fyeDGSo4R5N/V70RikkvJO69k60xYa4=
-Received: from smtp.ivitera.com ([127.0.0.1])
-	by localhost (localhost [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id VeLKYB4rjy5u; Sun, 28 Apr 2024 13:49:01 +0200 (CEST)
-Received: from [192.168.105.22] (dustin.pilsfree.net [81.201.58.138])
-	(Authenticated sender: pavel)
-	by smtp.ivitera.com (Postfix) with ESMTPSA id B81331600E5;
-	Sun, 28 Apr 2024 13:49:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1714304940; bh=a3jtrhFLmJsd3Ue/6VPSau0Q462286ZMvv6PDrJlj9k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BlwRuTRaKZucHtdx16mb91suWp2Ulyzm4P2i1tN+LCpvVBARCqX0abSnkPhnhQqrD
-	 glzY8MThjaSjbMKnOVMBqRfUgOIGaxsCs3RDCrbhnpEzXB3Gn+Sacw8TKv1d4XvbGt
-	 mSuqhtNMsCXc8sauYYGRArdRpEw7XZa8158AHsmo=
-Message-ID: <817d5f6c-0f9d-7f88-b5ca-26c3547730fb@ivitera.com>
-Date: Sun, 28 Apr 2024 13:49:00 +0200
+	s=arc-20240116; t=1714305550; c=relaxed/simple;
+	bh=7dEusFxZFJ1Y5U18wib9rq2M+q9J2wbC2q2//EWKbio=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pAbHWp78wV8/VB9c+sJD3cDhITD9ccOVKcpIBixa68u5CRYKd+pnxZExEA69SI+zbBWe+zhsIiS/30rf3pFsMQnN90jY/Pv/kY54tlD4H6suq4SLcn+iLnrWVrJoS7zQTxJ6jc+LjibOBXqAg+KVjuMW/VuVEay4FARg+2bvb9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LXT0KNyV; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed9fc77bbfso2866132b3a.1;
+        Sun, 28 Apr 2024 04:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714305548; x=1714910348; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BOsaocwjFT1pz2ngVnKxeRZbtnK8Ubq+Yt8uQGBS4j4=;
+        b=LXT0KNyVpGzwDhjg5IvqjJV5H/LqzItNwyp9SC0b/CBTt1eRnQPzKM8dpKCeEOVsHQ
+         DO4n++YGw2mKyVvznULeSPWxRXpKIq5uviuC9gsKFzbxOE/HOdygq9CTtyk90YdeFgI5
+         U6iAcHM/rjF4y7tuaowUzmfZdOlTEoH4Vg7mQKSmjYSUpB0Da+urc0rXIIU2/CTZQ/DR
+         NiG/ZwU18pvHztNzJlNs87833yqW1143xp6RRMelXNuaJ5jooAYAOE4UqzUHrsDX7Bd9
+         RHDFjXHIrYnyuD5qX5MQZ2KZam1BtYm/Fp1t55hSWBkHXDMzwLXwP3UhBHMC50xKDH7u
+         QF+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714305548; x=1714910348;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BOsaocwjFT1pz2ngVnKxeRZbtnK8Ubq+Yt8uQGBS4j4=;
+        b=DjQedJ03+elgdVaREMsdd0wB4C5bltsobTqqJKqE46eyDhGNDWLh3JlVyzBa1amCk4
+         TI4cMrv9I9yLC1H6fGATAbQ54yxkzgdEO+bWCxeC8V4rRKzJIAxj49MpXgGP/c1SvkeV
+         bhppd41dBIhJ12vUSD+EjkvK4U1fxqNQfcXsRUr8DqLRqcU0G+eEWa2Oy4Sk3JCyzlMF
+         RZCzeNfcjp+KJBUViTm0rlzIUlFF0xzOHav5QHrVI3YB5jbGqHeSC1otQ8VgZNWhd0JQ
+         kIAij/UiGGwCRFRuasoUzZyEe0WxIJvRtofWR3Uf1g+Xz4c0lmzL6jSRJh9mdPePXFT4
+         dALQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/qdiVB4lQ3XKNZRg3zzGEuOmSkiKgTrrALLH9UfHGMUPHxA0w+fbCrnuK2UHOIYrYgX4EsgqBuckTh6wkZ73H9ZyVcopzOwaEsYUu
+X-Gm-Message-State: AOJu0YxyRtGfpNbtyTLSWb9mUQs7ThcMTPCECoPl72bE6iZRqfxMTAK3
+	W2+IsfPxGNBdFI+AeZuUWz8XN7+uNJ0dm+eLwGMuMHp3mKC9P4Nz
+X-Google-Smtp-Source: AGHT+IF1zETYOo1e1RYilJpjwP/DCPA3/FY8ol+QqaxDXzQmLI6VS8l1ku1pJ7AlQg1Mbu5xEsqsUA==
+X-Received: by 2002:a05:6a20:979a:b0:1a9:c3ac:c6d4 with SMTP id hx26-20020a056a20979a00b001a9c3acc6d4mr7078163pzc.62.1714305548036;
+        Sun, 28 Apr 2024 04:59:08 -0700 (PDT)
+Received: from localhost.localdomain ([122.161.51.221])
+        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001e431fb1336sm18341187plk.31.2024.04.28.04.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 04:59:07 -0700 (PDT)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: robh@kernel.org,
+	saravanak@google.com
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	javier.carrasco.cruz@gmail.com,
+	skhan@linuxfoundation.org,
+	Shresth Prasad <shresthprasad7@gmail.com>,
+	Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH][next] of: property: Use scope based cleanup on port_node
+Date: Sun, 28 Apr 2024 17:22:27 +0530
+Message-ID: <20240428115226.41345-2-shresthprasad7@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] usb: gadget: f_uac2: Expose all string descriptors
- through configfs.
-Content-Language: en-US
-To: Chris Wulff <Chris.Wulff@biamp.com>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- James Gruber <jimmyjgruber@gmail.com>, Lee Jones <lee@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.de>
-References: <CO1PR17MB54195BE778868AFDFE2DCB36E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
- <c9928edb-8b2d-1948-40b8-c16e34cea3e2@ivitera.com>
- <CO1PR17MB541989646698286B2B13CF23E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
- <9b40e148-f3eb-f8f5-bf2d-37a0a0629417@ivitera.com>
- <CO1PR17MB541942196F9A2F73CF8B5B14E1152@CO1PR17MB5419.namprd17.prod.outlook.com>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-In-Reply-To: <CO1PR17MB541942196F9A2F73CF8B5B14E1152@CO1PR17MB5419.namprd17.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 27. 04. 24 18:27, Chris Wulff wrote:
->> From: Pavel Hofman <pavel.hofman@ivitera.com>
->>>>> +             p_it_name               playback input terminal name
->>>>> +             p_ot_name               playback output terminal name
->>>>> +             p_fu_name               playback function unit name
->>>>> +             p_alt0_name             playback alt mode 0 name
->>>>> +             p_alt1_name             playback alt mode 1 name
->>>>
->>>> Nacked-by: Pavel Hofman <pavel.hofman@ivitera.com>
-> ...
->> If the params in the upper level were to stand as defaults for the
->> altsettings (and for the existing altsetting 1 if no specific altset
->> subdir configs were given), maybe the naming xxx_alt1_xxx could become a
->> bit confusing. E.g. p_altx_name or p_alt_non0_name?
-> 
-> I've been prototyping this a bit to see how it will work. My current configfs
-> structure looks something like:
-> 
-> (all existing properties)
-> c_it_name
-> c_it_ch_name
-> c_fu_name
-> c_ot_name
-> p_it_name
-> p_it_ch_name
-> p_fu_name
-> p_ot_name
-> num_alt_modes (settable to 2..5 in my prototype)
-> 
-> alt.0
->   c_alt_name
->   p_alt_name
-> alt.1 (for alt.1, alt.2, etc.)
->   c_alt_name
->   p_alt_name
->   c_ssize
->   p_ssize
->   (Additional properties here for other things that are settable for each alt mode,
->    but the only one I've implemented in my prototype so far is sample size.)
-> 
+Use __free cleanup handler which ensures that the resource is freed when
+it goes out of scope, thus removing the need to manually clean it up
+using of_node_put.
 
-Hats off to your speed, that's amazing. IMO this is a perfect config
-layout, logical, extensible, easy to generate manually as well as with a
-script.
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
+---
+Rob Herring <robh@kernel.org> sent a patch fixing similar cases in
+property.c but seems to have missed this one. Please let me know if this
+is mistake, or if it was left unchanged for a reason.
 
+ drivers/of/property.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> This brings up a few questions:
-> 
-> Is a property for setting the number of alt modes preferred, or being able to
-> make directories like some other things (eg, "mkdir alt.5" would add alt mode 5)?
-> The former is what I started with, but I am leaning towards the latter as it is a bit
-> more flexible (you could create alt modes of any index, though I'm not entirely
-> sure why you'd want to.) It does involve a bit more dynamic memory allocation,
-> but nothing crazy.
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 6d5ae58a7ac9..abc8613b471f 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -576,7 +576,8 @@ EXPORT_SYMBOL_GPL(of_prop_next_string);
+ int of_graph_parse_endpoint(const struct device_node *node,
+ 			    struct of_endpoint *endpoint)
+ {
+-	struct device_node *port_node = of_get_parent(node);
++	struct device_node *port_node __free(device_node) =
++			    of_get_parent(node);
+ 
+ 	WARN_ONCE(!port_node, "%s(): endpoint %pOF has no parent node\n",
+ 		  __func__, node);
+@@ -591,8 +592,6 @@ int of_graph_parse_endpoint(const struct device_node *node,
+ 	of_property_read_u32(port_node, "reg", &endpoint->port);
+ 	of_property_read_u32(node, "reg", &endpoint->id);
+ 
+-	of_node_put(port_node);
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL(of_graph_parse_endpoint);
+-- 
+2.44.0
 
-I am not sure the arbitrary index of alt mode would be useful (is it
-even allowed in USB specs?). But I may not have understood your question
-properly.
-
-The num_alt_modes property - can the number be perhaps aquired from the
-number of created directories? Or would that number of alt modes be
-created automatically (all same with default values), and the properties
-in alt.X dirs would subsequently only modify their respective values?
-
-> 
-> And second, should the alt.x directories go back to the defaults if you remove
-> and re-create them? I'm assuming it makes sense to do that, just putting it out
-> there since my current prototype doesn't work that way.
-
-IIUC just creating the alt.X directory would create the alt X mode, with
-default properties from the top-level configs or with the source-code
-defaults.
-
-Thanks a lot,
-
-Pavel.
 
