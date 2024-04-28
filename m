@@ -1,115 +1,98 @@
-Return-Path: <linux-kernel+bounces-161313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5163D8B4A8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:51:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990378B4A92
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02C931F216C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2894A2816B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C2051C3F;
-	Sun, 28 Apr 2024 07:51:51 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011563209
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 07:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A45A51C5E;
+	Sun, 28 Apr 2024 07:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="eofGzXtg"
+Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F76EED0;
+	Sun, 28 Apr 2024 07:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714290711; cv=none; b=uoUI8FFCzG7x6d7tu3zZxXkzDbbAtlZi+5W7dU927ug/JbBqSWOhvfoFByXHztX8X66On555Ag16qaOAXwkOvABAGYuzqn7VW5TbAixIP1i4wl4i9RHpycSXWDRpKcr6KPpOAcTVdw3cRdB1Z42kjpm/TJ/tYkA8U0M86UUjiFE=
+	t=1714291169; cv=none; b=WJ5ESVCeJuHcDpkaGdKSoCvfUzcQ82NOBEmpGDabC2/e3nQYelV9690A4iwy9ZcDMMdtqmSm6AK/mklDjaYMhajGCty0f7HRYQJi7ThmctjLNaCK2QB5ATFnJNlP/2sp2J5OK5BVzNq3INzx43fX0Tcp25GNxbxxV6ZY3pGN14o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714290711; c=relaxed/simple;
-	bh=SrBTxYzw3d3KAoGYMAdU6JfnCRLmrefQS2NelXl/BTg=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Y08fUD42dNja+92B3yPdwaQaIQsl4mdtcbGCTocQ3X8ATsMfu3GzIUPDLp8C7t+KosrgGRe0dV/2bdaUdfBDrHLnmMZCQHeHqI9ZDMg8sJjsGcvCzLXb2IOENLTuHB8cIB+IPzn8uqibpRi6iZ+XIfocosvKRRoHGI815/nB99U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VRz8n6GnyzXn7f;
-	Sun, 28 Apr 2024 15:48:09 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 344B718007D;
-	Sun, 28 Apr 2024 15:51:45 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 28 Apr 2024 15:51:44 +0800
-Subject: Re: [PATCH] ubi: block: fix null-pointer-dereference in
- ubiblock_create()
-To: <linan666@huaweicloud.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
-	<vigneshr@ti.com>, <axboe@kernel.dk>, <chaitanya.kulkarni@wdc.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yukuai3@huawei.com>, <yi.zhang@huawei.com>, <houtao1@huawei.com>,
-	<yangerkun@huawei.com>
-References: <20240428071922.2270892-1-linan666@huaweicloud.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <98698009-e3a2-5c00-7619-6b6e3422cd1b@huawei.com>
-Date: Sun, 28 Apr 2024 15:51:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1714291169; c=relaxed/simple;
+	bh=sJweSO7ymb4LO1Afes/fz5qes9jXjF77aWOkkBcE/LM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pWibhsOnbVcpEB3XgnoUzq53cHRMhXIwPbQ8C/7PH4Vid71oudPAVEDDtpGV/xkN5d7ECYxXW5tHdhf62/jUdF5uZTh/ZZNDzs/etg04unNocs7OAkfic7ZWBWjDdKpex0WYtvA8ZdQNPUpeZYF1zjfnmlJRZIHmphFnY1vFBk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=eofGzXtg; arc=none smtp.client-ip=123.58.177.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=N/5F1F5Rz7AAM3iNROhjX8YnjpmKVMOyfv0VpHrRf74=;
+	b=eofGzXtgvx2EtQ8WNM5a6W0OgTp5A7nGRgZioPZR2v+VBgg0/pxA3DI4SCNfOy
+	FytTEGmQ0huPOU61KPTWV5YKF8CgF2UTAUKPGuvJBmi/v8P/CMoRn54Hkk2QD6Ex
+	TOwozFBoQfXXxJxSOgj/t/2ccZvvZAlRV/F+wzkNCtyVI=
+Received: from dragon (unknown [114.216.210.46])
+	by smtp1 (Coremail) with SMTP id ClUQrAD3f3VwAS5mp07GAw--.21974S3;
+	Sun, 28 Apr 2024 15:57:39 +0800 (CST)
+Date: Sun, 28 Apr 2024 15:57:36 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Russell King <linux@armlinux.org.uk>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	linux-kernel@vger.kernel.org,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 00/49] ARM: dts: imx: Use #pwm-cells = <3> for
+ imx27-pwm device
+Message-ID: <Zi4BcG+1d5LEdbms@dragon>
+References: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
+ <oy4mnbkskyrw5dwkq3rebe2yh4i3fy44rubhvesug7pedzws46@472pzktn5t22>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240428071922.2270892-1-linan666@huaweicloud.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+In-Reply-To: <oy4mnbkskyrw5dwkq3rebe2yh4i3fy44rubhvesug7pedzws46@472pzktn5t22>
+X-CM-TRANSID:ClUQrAD3f3VwAS5mp07GAw--.21974S3
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gw4xXr47Xw4kGw18tFyfCrg_yoW3ArgE93
+	W293WDCa95AFWkGas0yw45t343KrWUt3y3try7Wrn29Fn3Cas8Ca4kKrWrtw13ur4rtas7
+	KFZ3t3WUX34Y9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8qYLPUUUUU==
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiBRTOZVsVCgQLwwAAsy
 
-ÔÚ 2024/4/28 15:19, linan666@huaweicloud.com Ð´µÀ:
-> From: Li Nan <linan122@huawei.com>
+On Fri, Apr 26, 2024 at 09:40:24PM +0200, Uwe Kleine-König wrote:
+> Hello,
 > 
-> Similar to commit adbf4c4954e3 ("ubi: block: fix memleak in
-> ubiblock_create()"), 'dev->gd' is not assigned but dereferenced if
-> blk_mq_alloc_tag_set() fails, and leading to a null-pointer-dereference.
+> On Fri, Apr 05, 2024 at 11:41:47PM +0200, Uwe Kleine-König wrote:
+> > this series addresses many warnings of the type:
+> > 
+> > 	arch/arm/boot/dts/nxp/imx/imx6ul-pico-dwarf.dtb: pwm@2088000: #pwm-cells:0:0: 3 was expected
+> > 	        from schema : http://devicetree.org/schemas/pwm/imx-pwm.yaml#
+> > 
+> > that is emitted when building with CHECK_DTBS=1.
+> > 
+> > This completes the conversion started with
+> > 
+> > 	fa28d8212ede ("ARM: dts: imx: default to #pwm-cells = <3> in the SoC dtsi files")
+> > 	4c6f19ab2aed ("dt-bindings: pwm: imx-pwm: Unify #pwm-cells for all compatibles")
 > 
-> Using 'gd' directly here is not a good idea, too. 'gd->part0.bd_device'
-> is not initialized at this point. The error log will be:
->    block (null): block: dynamic minor allocation failed
-> 
-> Fix it by using pr_err() and print ubi id.
-> 
-> Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->   drivers/mtd/ubi/block.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index f82e3423acb9..bf7308e8ec2f 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -390,7 +390,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
->   
->   	ret = blk_mq_alloc_tag_set(&dev->tag_set);
->   	if (ret) {
-> -		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
-> +		pr_err("ubiblock%d_%d: blk_mq_alloc_tag_set failed\n",
-> +			dev->ubi_num, dev->vol_id);
->   		goto out_free_dev;
->   	}
->   
-> @@ -407,8 +408,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
->   	gd->minors = 1;
->   	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
+> Gentle ping! I would expect that Shawn picks up this series.
 
-There is no need to modify this place. The device of 'gd' is initialized 
-in blk_mq_alloc_disk. Refer to nbd_dev_add.
->   	if (gd->first_minor < 0) {
-> -		dev_err(disk_to_dev(gd),
-> -			"block: dynamic minor allocation failed");
-> +		pr_err("ubiblock%d_%d: block: dynamic minor allocation failed\n",
-> +			dev->ubi_num, dev->vol_id);
->   		ret = -ENODEV;
->   		goto out_cleanup_disk;
->   	}
-> 
+Thanks for reminding!  Applied all, thanks!
+
+Shawn
 
 
