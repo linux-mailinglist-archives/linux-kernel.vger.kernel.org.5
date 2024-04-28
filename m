@@ -1,381 +1,103 @@
-Return-Path: <linux-kernel+bounces-161367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194B38B4B31
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:07:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 679B78B4B35
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 977881F216A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:07:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06A4C1F21752
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABE562178;
-	Sun, 28 Apr 2024 10:05:33 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CD05EE76;
-	Sun, 28 Apr 2024 10:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879D156B67;
+	Sun, 28 Apr 2024 10:08:54 +0000 (UTC)
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66AF654BFC;
+	Sun, 28 Apr 2024 10:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714298732; cv=none; b=WFOwNAoxYAuGKT2uXJaxQn3/dIx6Nt/SPMRwzrFI2Yp4IzlWwuA4wnRxMpRypWt/YFTjlsk23VUtvdFvI7yCciFykJNB35Y/bdb/mgwEpNVVwluO6SmxbataOo+/mAdevmpHAU7rYXNeslgVedRUYTo76UPA4BUQbZsTojyv0iQ=
+	t=1714298934; cv=none; b=LQYoZwgULTlFMwu2D1F+HzuQ16RvrEPun1qFMf53lV/DLiua1KY0O5Oh0gVS3oqpOWTWICbOP/x/fDRezSRKkYhP0ZsyXiTmaD843DaFAHl0pcAoJJFeTz9DCdJSZq5KTR0SImKYylSdAZufl3VZHZntfksPiIZsW3Qj8Uf/xSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714298732; c=relaxed/simple;
-	bh=L0P+jua0MdI3IQwh38hSaS606h8wjuq0EvWNRAtk/6s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ejEmOaqdCdwi1ilwLvx4NXqcozgC6WToJwVxzBtNgzWfer6Xrz2YZ+gzRlVySPKgeCuJhl2UCVui6PxMiQSTmkTc+/WAyI6CKr6bGv54rMT3SyxTBcBD1a26hzp8nTGGAd6ykZFWfcRvzKnnmSRGRE2VIly0Ppz1dzxUDaV/1RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8BxmPBnHy5mx10EAA--.16140S3;
-	Sun, 28 Apr 2024 18:05:27 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxsFVeHy5maTIIAA--.5646S8;
-	Sun, 28 Apr 2024 18:05:25 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Juergen Gross <jgross@suse.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: [PATCH v8 6/6] LoongArch: Add pv ipi support on guest kernel side
-Date: Sun, 28 Apr 2024 18:05:18 +0800
-Message-Id: <20240428100518.1642324-7-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240428100518.1642324-1-maobibo@loongson.cn>
-References: <20240428100518.1642324-1-maobibo@loongson.cn>
+	s=arc-20240116; t=1714298934; c=relaxed/simple;
+	bh=TTARU/Xd9FlQOME2CIODtyLJRuvfgCO/Q3kMmgLEpAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qdNQCGYj8L1lYuiMw11TX8nlT8CzQEmggXtZVczU3fWUBHhRN1JxYfTrSvVO36/9vpmPjsHZ8hBzQzfVlnW6GnE+pVb1fmMYM0OUhvfHNBZ643A3BCCgS26waUMkxfFX3WkGzL9XCqYftP0zJfr+YVmgwhb9PSq2xkrL3UrwZ7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 83873280072AE;
+	Sun, 28 Apr 2024 12:08:43 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 4D1F555998; Sun, 28 Apr 2024 12:08:43 +0200 (CEST)
+Date: Sun, 28 Apr 2024 12:08:43 +0200
+From: Lukas Wunner <lukas@wunner.de>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: gregkh@linuxfoundation.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Marc Herbert <marc.herbert@intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
+Message-ID: <Zi4gK8rs7jjdJOh8@wunner.de>
+References: <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
+ <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
+ <ZiYrzzk9Me1aksmE@wunner.de>
+ <662beb6ad280f_db82d29458@dwillia2-xfh.jf.intel.com.notmuch>
+ <Ziv9984CJeQ4muZy@wunner.de>
+ <662d2ca522cc6_b6e02942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <Zi1qtKNwcyydP4c2@wunner.de>
+ <662d6f24528d7_b6e0294d2@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxsFVeHy5maTIIAA--.5646S8
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <662d6f24528d7_b6e0294d2@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 
-PARAVIRT option and pv ipi is added on guest kernel side, function
-pv_ipi_init() is to add ipi sending and ipi receiving hooks. This function
-firstly checks whether system runs on VM mode. If kernel runs on VM mode,
-it will call function kvm_para_available() to detect current hypervirsor
-type. Now only KVM type detection is supported, the paravirt function can
-work only if current hypervisor type is KVM, since there is only KVM
-supported on LoongArch now.
+On Sat, Apr 27, 2024 at 02:33:24PM -0700, Dan Williams wrote:
+> Lukas Wunner wrote:
+> > Perhaps an optional ->is_group_visible() callback in struct attribute_group
+> > which gets passed only the struct kobject pointer?
+> > 
+> > At least for PCI device authentication, that would be sufficient.
+> > I could get from the kobject to the corresponding struct device,
+> > then determine whether the device supports authentication or not.
+> > 
+> > Because it's a new, optional callback, there should be no compatibility
+> > issues.  The SYSFS_GROUP_INVISIBLE return code from the ->is_visible()
+> > call for individual attributes would not be needed then, at least in my
+> > use case.
+> 
+> That's where I started with this, but decided it was overkill to
+> increase the size of that data structure globally for a small number of
+> use cases.
 
-PV IPI uses virtual IPI sender and virtual IPI receiver function. With
-virutal IPI sender, ipi message is stored in DDR memory rather than
-emulated HW. IPI multicast is supported, and 128 vcpus can received IPIs
-at the same time like X86 KVM method. Hypercall method is used for IPI
-sending.
+Memory is cheap and memory-constrained devices can set CONFIG_SYSFS=n.
 
-With virtual IPI receiver, HW SW0 is used rather than real IPI HW. Since
-VCPU has separate HW SW0 like HW timer, there is no trap in IPI interrupt
-acknowledge. And IPI message is stored in DDR, no trap in get IPI message.
+There aren't that many struct attribute_groups and this is just
+8 additional bytes on a 64-bit machine.  (There are way more
+struct attribute than struct attribute_group.)  The contortions
+necessary to overload individual attribute ->is_visible() callbacks
+to also govern the group's visibility aren't worth it.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/Kconfig                        |   9 ++
- arch/loongarch/include/asm/hardirq.h          |   1 +
- arch/loongarch/include/asm/paravirt.h         |  27 ++++
- .../include/asm/paravirt_api_clock.h          |   1 +
- arch/loongarch/kernel/Makefile                |   1 +
- arch/loongarch/kernel/irq.c                   |   2 +-
- arch/loongarch/kernel/paravirt.c              | 151 ++++++++++++++++++
- arch/loongarch/kernel/smp.c                   |   4 +-
- 8 files changed, 194 insertions(+), 2 deletions(-)
- create mode 100644 arch/loongarch/include/asm/paravirt.h
- create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
- create mode 100644 arch/loongarch/kernel/paravirt.c
+Having an ->is_group_visible() callback has the additional benefit that
+the mode of directories no longer needs to be hardcoded to 0755 in
+sysfs_create_dir_ns(), but can be set to, say, 0500 or 0700 or 0511,
+depending on the use case.  So more flexibility there as well.
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 54ad04dacdee..0a1540a8853e 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -583,6 +583,15 @@ config CPU_HAS_PREFETCH
- 	bool
- 	default y
- 
-+config PARAVIRT
-+	bool "Enable paravirtualization code"
-+	depends on AS_HAS_LVZ_EXTENSION
-+	help
-+          This changes the kernel so it can modify itself when it is run
-+	  under a hypervisor, potentially improving performance significantly
-+	  over full virtualization.  However, when run without a hypervisor
-+	  the kernel is theoretically slower and slightly larger.
-+
- config ARCH_SUPPORTS_KEXEC
- 	def_bool y
- 
-diff --git a/arch/loongarch/include/asm/hardirq.h b/arch/loongarch/include/asm/hardirq.h
-index 9f0038e19c7f..b26d596a73aa 100644
---- a/arch/loongarch/include/asm/hardirq.h
-+++ b/arch/loongarch/include/asm/hardirq.h
-@@ -21,6 +21,7 @@ enum ipi_msg_type {
- typedef struct {
- 	unsigned int ipi_irqs[NR_IPI];
- 	unsigned int __softirq_pending;
-+	atomic_t message ____cacheline_aligned_in_smp;
- } ____cacheline_aligned irq_cpustat_t;
- 
- DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
-diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
-new file mode 100644
-index 000000000000..58f7b7b89f2c
---- /dev/null
-+++ b/arch/loongarch/include/asm/paravirt.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_LOONGARCH_PARAVIRT_H
-+#define _ASM_LOONGARCH_PARAVIRT_H
-+
-+#ifdef CONFIG_PARAVIRT
-+#include <linux/static_call_types.h>
-+struct static_key;
-+extern struct static_key paravirt_steal_enabled;
-+extern struct static_key paravirt_steal_rq_enabled;
-+
-+u64 dummy_steal_clock(int cpu);
-+DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
-+
-+static inline u64 paravirt_steal_clock(int cpu)
-+{
-+	return static_call(pv_steal_clock)(cpu);
-+}
-+
-+int pv_ipi_init(void);
-+#else
-+static inline int pv_ipi_init(void)
-+{
-+	return 0;
-+}
-+
-+#endif // CONFIG_PARAVIRT
-+#endif
-diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
-new file mode 100644
-index 000000000000..65ac7cee0dad
---- /dev/null
-+++ b/arch/loongarch/include/asm/paravirt_api_clock.h
-@@ -0,0 +1 @@
-+#include <asm/paravirt.h>
-diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
-index 3a7620b66bc6..c9bfeda89e40 100644
---- a/arch/loongarch/kernel/Makefile
-+++ b/arch/loongarch/kernel/Makefile
-@@ -51,6 +51,7 @@ obj-$(CONFIG_MODULES)		+= module.o module-sections.o
- obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
- 
- obj-$(CONFIG_PROC_FS)		+= proc.o
-+obj-$(CONFIG_PARAVIRT)		+= paravirt.o
- 
- obj-$(CONFIG_SMP)		+= smp.o
- 
-diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
-index ce36897d1e5a..4863e6c1b739 100644
---- a/arch/loongarch/kernel/irq.c
-+++ b/arch/loongarch/kernel/irq.c
-@@ -113,5 +113,5 @@ void __init init_IRQ(void)
- 			per_cpu(irq_stack, i), per_cpu(irq_stack, i) + IRQ_STACK_SIZE);
- 	}
- 
--	set_csr_ecfg(ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 | ECFGF_IPI | ECFGF_PMC);
-+	set_csr_ecfg(ECFGF_SIP0 | ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 | ECFGF_IPI | ECFGF_PMC);
- }
-diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
-new file mode 100644
-index 000000000000..9044ed62045c
---- /dev/null
-+++ b/arch/loongarch/kernel/paravirt.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/export.h>
-+#include <linux/types.h>
-+#include <linux/interrupt.h>
-+#include <linux/jump_label.h>
-+#include <linux/kvm_para.h>
-+#include <asm/paravirt.h>
-+#include <linux/static_call.h>
-+
-+struct static_key paravirt_steal_enabled;
-+struct static_key paravirt_steal_rq_enabled;
-+
-+static u64 native_steal_clock(int cpu)
-+{
-+	return 0;
-+}
-+
-+DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
-+
-+#ifdef CONFIG_SMP
-+static void pv_send_ipi_single(int cpu, unsigned int action)
-+{
-+	unsigned int min, old;
-+	irq_cpustat_t *info = &per_cpu(irq_stat, cpu);
-+
-+	old = atomic_fetch_or(BIT(action), &info->message);
-+	if (old)
-+		return;
-+
-+	min = cpu_logical_map(cpu);
-+	kvm_hypercall3(KVM_HCALL_FUNC_PV_IPI, 1, 0, min);
-+}
-+
-+#define KVM_IPI_CLUSTER_SIZE		(2 * BITS_PER_LONG)
-+static void pv_send_ipi_mask(const struct cpumask *mask, unsigned int action)
-+{
-+	unsigned int cpu, i, min = 0, max = 0, old;
-+	__uint128_t bitmap = 0;
-+	irq_cpustat_t *info;
-+
-+	if (cpumask_empty(mask))
-+		return;
-+
-+	action = BIT(action);
-+	for_each_cpu(i, mask) {
-+		info = &per_cpu(irq_stat, i);
-+		old = atomic_fetch_or(action, &info->message);
-+		if (old)
-+			continue;
-+
-+		cpu = cpu_logical_map(i);
-+		if (!bitmap) {
-+			min = max = cpu;
-+		} else if (cpu > min && cpu < min + KVM_IPI_CLUSTER_SIZE) {
-+			max = cpu > max ? cpu : max;
-+		} else if (cpu < min && (max - cpu) < KVM_IPI_CLUSTER_SIZE) {
-+			bitmap <<= min - cpu;
-+			min = cpu;
-+		} else {
-+			/*
-+			 * Physical cpuid is sorted in ascending order ascend
-+			 * for the next mask calculation, send IPI here
-+			 * directly and skip the remainding cpus
-+			 */
-+			kvm_hypercall3(KVM_HCALL_FUNC_PV_IPI,
-+				(unsigned long)bitmap,
-+				(unsigned long)(bitmap >> BITS_PER_LONG), min);
-+			min = max = cpu;
-+			bitmap = 0;
-+		}
-+		__set_bit(cpu - min, (unsigned long *)&bitmap);
-+	}
-+
-+	if (bitmap)
-+		kvm_hypercall3(KVM_HCALL_FUNC_PV_IPI, (unsigned long)bitmap,
-+				(unsigned long)(bitmap >> BITS_PER_LONG), min);
-+}
-+
-+static irqreturn_t loongson_do_swi(int irq, void *dev)
-+{
-+	irq_cpustat_t *info;
-+	long action;
-+
-+	/* Clear swi interrupt */
-+	clear_csr_estat(1 << INT_SWI0);
-+	info = this_cpu_ptr(&irq_stat);
-+	action = atomic_xchg(&info->message, 0);
-+	if (action & SMP_CALL_FUNCTION) {
-+		generic_smp_call_function_interrupt();
-+		info->ipi_irqs[IPI_CALL_FUNCTION]++;
-+	}
-+
-+	if (action & SMP_RESCHEDULE) {
-+		scheduler_ipi();
-+		info->ipi_irqs[IPI_RESCHEDULE]++;
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void pv_init_ipi(void)
-+{
-+	int r, swi0;
-+
-+	swi0 = get_percpu_irq(INT_SWI0);
-+	if (swi0 < 0)
-+		panic("SWI0 IRQ mapping failed\n");
-+	irq_set_percpu_devid(swi0);
-+	r = request_percpu_irq(swi0, loongson_do_swi, "SWI0", &irq_stat);
-+	if (r < 0)
-+		panic("SWI0 IRQ request failed\n");
-+}
-+#endif
-+
-+static bool kvm_para_available(void)
-+{
-+	static int hypervisor_type;
-+	int config;
-+
-+	if (!hypervisor_type) {
-+		config = read_cpucfg(CPUCFG_KVM_SIG);
-+		if (!memcmp(&config, KVM_SIGNATURE, 4))
-+			hypervisor_type = HYPERVISOR_KVM;
-+	}
-+
-+	return hypervisor_type == HYPERVISOR_KVM;
-+}
-+
-+int __init pv_ipi_init(void)
-+{
-+	int feature;
-+
-+	if (!cpu_has_hypervisor)
-+		return 0;
-+	if (!kvm_para_available())
-+		return 0;
-+
-+	/*
-+	 * check whether KVM hypervisor supports pv_ipi or not
-+	 */
-+	feature = read_cpucfg(CPUCFG_KVM_FEATURE);
-+#ifdef CONFIG_SMP
-+	if (feature & KVM_FEATURE_PV_IPI) {
-+		smp_ops.init_ipi		= pv_init_ipi;
-+		smp_ops.send_ipi_single		= pv_send_ipi_single;
-+		smp_ops.send_ipi_mask		= pv_send_ipi_mask;
-+	}
-+#endif
-+
-+	return 1;
-+}
-diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
-index 1fce775be4f6..9eff7aa4c552 100644
---- a/arch/loongarch/kernel/smp.c
-+++ b/arch/loongarch/kernel/smp.c
-@@ -29,6 +29,7 @@
- #include <asm/loongson.h>
- #include <asm/mmu_context.h>
- #include <asm/numa.h>
-+#include <asm/paravirt.h>
- #include <asm/processor.h>
- #include <asm/setup.h>
- #include <asm/time.h>
-@@ -309,6 +310,7 @@ void __init loongson_smp_setup(void)
- 	cpu_data[0].core = cpu_logical_map(0) % loongson_sysconf.cores_per_package;
- 	cpu_data[0].package = cpu_logical_map(0) / loongson_sysconf.cores_per_package;
- 
-+	pv_ipi_init();
- 	iocsr_write32(0xffffffff, LOONGARCH_IOCSR_IPI_EN);
- 	pr_info("Detected %i available CPU(s)\n", loongson_sysconf.nr_cpus);
- }
-@@ -352,7 +354,7 @@ void loongson_boot_secondary(int cpu, struct task_struct *idle)
- void loongson_init_secondary(void)
- {
- 	unsigned int cpu = smp_processor_id();
--	unsigned int imask = ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 |
-+	unsigned int imask = ECFGF_SIP0 | ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 |
- 			     ECFGF_IPI | ECFGF_PMC | ECFGF_TIMER;
- 
- 	change_csr_ecfg(ECFG0_IM, imask);
--- 
-2.39.3
+Thanks,
 
+Lukas
 
