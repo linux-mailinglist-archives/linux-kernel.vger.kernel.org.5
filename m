@@ -1,118 +1,126 @@
-Return-Path: <linux-kernel+bounces-161485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E608B4CA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:20:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085328B4CA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:21:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CD551F21542
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:20:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7AF32816D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E146FE20;
-	Sun, 28 Apr 2024 16:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07F970CCB;
+	Sun, 28 Apr 2024 16:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZuMl3kab"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0TWNIn1"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D406F072
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 16:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C755B1E4;
+	Sun, 28 Apr 2024 16:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714321207; cv=none; b=VsUm4ckMRRbK0oCqYKOveWgmJGqoVGzTrPPYJxyQTpNSlR8bCPiao8iDepheS0FBUVLqFHc5QiIw1XKtPP/PQvqBp+mS5uZGkuZ6sVCEcdNw77zEcUyQV2YrdyjWEL+LY9b+n/3BpACIJCNShCE3vxgxPafKkhkPbR7B3IcbVNc=
+	t=1714321293; cv=none; b=R0iOVQC0J8O43C0/tEfzO98uZgJAvmR0SOpQ/U3CVYk9NoZojprX2Qd6sZMBG4LfOcaO10gKYIe4q0WfPvlqcXB22Fwy9sHVZ8Wa55YI6sztwnf7VD3yd7Io+Wlb93AkBwIcAZn9W/+azhUkReYVYl58AID0ovcgwsSr8mvl0Wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714321207; c=relaxed/simple;
-	bh=c4iAuXANxkyaFARjZ7T0cXAt+fVdYbYegOBH3TKfk0U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SzgvX9pHaD+mUYveuHRgX9ZK/XMHhO5CFKtwSaVujF3dZptOZ6zWr4AtjWc6geE3S3wPe6DcpfJ0091wMSqmrAq7zguT2lIM/keLrnRrR3PoE88quQlAO6G++eqUkkaVPjbKMJlCkZz777G5HkMT/k4Xnlz8QuPjGMHgiw2uCes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZuMl3kab; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a58f1f36427so92240066b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 09:20:05 -0700 (PDT)
+	s=arc-20240116; t=1714321293; c=relaxed/simple;
+	bh=Hcq5fDpR/sRrNIDN75Dx5TGFAVJTKRZVsYxdUtcHmgQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R4Dd9soOIRgfXEZaMx7+ZIIZKpslC2WaG0Pe/csQ8mNo1bajupClsc6V1b9xzxVyxoQgUIqj9FHcK1XC8YVJieQAGn2VJFQQ064VoZMV0udd7cS67Z6yMi9pna9C9IJ3kSUl7ExQv4oPST8+RlKg0n05kHMSG1Ps9kCtJeMtTnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0TWNIn1; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34a32ba1962so3099725f8f.2;
+        Sun, 28 Apr 2024 09:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714321204; x=1714926004; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FASynAs5IxrMDovqRBLq0gB6byYA6/mpBMhiTARocxs=;
-        b=ZuMl3kabH7+0uTZXsRqXWlrxtMWeEgxAq2OgfGXy9rGk/13qzHLfjuRh+QAi3He6NS
-         qndJL0E2E87ZhtMk9t6mW7Oi+/wUEtkLKTUIAz/CUY8QJyHELJVsTwbNZyL9IJE2DKDj
-         H0KJfoSJQ031liIUo3yTczslKYXEZgx+EDJb8ZfP2TcxHYlUBE7WRZPLP+mOhWZzEPRV
-         /NXImfYvQR8C7+2ZgmrXYomA4b8iFFyaWEv10mWAiQpHMtM7eF4xAo0UTyvNbOPPmp88
-         rADXP6i6VOhK3Se/bvE/NmLOabVOKg+mKX031qsJG06s5qBbtvN1y0DNbEjrKX2o1Qv+
-         jJpA==
+        d=gmail.com; s=20230601; t=1714321290; x=1714926090; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cDuTZksCbCwlQLX9V0u6jvPFt7dyage8pVEZZal0zuw=;
+        b=E0TWNIn1vbAsaTTwjm6ZtwgxvMMcy8u8jEJIuiU8sNOxsD8S8K/gyDkYYK95rWwnlu
+         xFSKdbjc3f6lBUI0AWJr+Xi02SL+/+1m2IaWPOsJrT+8LqYP6BnAkruT2XRT5Qz7/I0X
+         ffk0z4+bdxFSyouJGS8ggZQ2ov/XzajzBbyDEEKmtcI/R7TUpTh4BMeckuG270dqN4LU
+         MAbfixlkdtv4FOtF96qe5cItAUX2P8XEMCrZN7gGd0W1DNhF2VR/ox0ABpDvjhnS504C
+         jx3VYAiuc1dFA/5AxgmhTASEPl5IBBq1rGOYpjPcPVvXICcS7XRYiTlzYntJ08fZmblL
+         MODA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714321204; x=1714926004;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FASynAs5IxrMDovqRBLq0gB6byYA6/mpBMhiTARocxs=;
-        b=QsEJEv6pB3y9ZyK2f3leRuSp8CK744Q1saEPPgDrI/X2PbzVLvCjYy99NwzwjxqT7l
-         rDzbK7UhdkwzpQsdEuzBfZwUckg0Yy7JYOdKiXg5kxVe7UNibbd/Ujf3xVJPxiS+Pi4t
-         qD8ZrLUmHjsVDPlmAVXy5rYaSEEDKwXogFfSScGszVIIOpmGyhru+I+Kc43PqaVmIVOQ
-         fsTf/46oA9fK/0m6gdVG8EQdGzlgfymwbPK13XcmK4FM8iX2QCarzr6Ln9tLeqbdDH+8
-         SkppyAnjMyy3xja2P/tzhM1T7C/l2MfoNpyCTFIpECvevTqpvuBGTNgnbtWoD3p4KFpK
-         8kFg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQP6xXCHRFMawO77lQA8pNlqiwVObVbMeqV/rZb0CylgMmVsDL7gM8iY4e2szPCldbFrkpFY2yoNOZTttsNsRiN1TwN2ityyL8N5mg
-X-Gm-Message-State: AOJu0YyMs23gjJcQXTbv1Depsqhtdjo8lJUQ0bc7zP+Tv8m0U1zY2dd3
-	IlhbF9Iw32ZYV5oFhmrhPr4r42fwKyL1zNGLsWIQgn2ZO8e1MQYayY87918Atj1UDRZ6PGo+EPD
-	Gq14=
-X-Google-Smtp-Source: AGHT+IHUbZG5j4eAjiIEASfxJU33DsXgl8sNmmmfQQbZA+L0ob/0eeZAUp3u39qVBjAlNmwaZu7ueQ==
-X-Received: by 2002:a17:906:6d3:b0:a51:a288:5af9 with SMTP id v19-20020a17090606d300b00a51a2885af9mr4805711ejb.51.1714321203930;
-        Sun, 28 Apr 2024 09:20:03 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id u3-20020a170906b10300b00a52552a8605sm12886738ejy.159.2024.04.28.09.20.03
+        d=1e100.net; s=20230601; t=1714321290; x=1714926090;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cDuTZksCbCwlQLX9V0u6jvPFt7dyage8pVEZZal0zuw=;
+        b=TXrhtrwC+AyOyeIZyKnMg1jNV/P0E0BPmI1mjtIahKigOec5vVBwE9/cZwCNoFhAzb
+         XOHftoRHGFYYEsDZxdIyIOp12hcbj3kMTHhuMWSRWRPFCjrZyXcSmh85TX4GZHv42V+t
+         y/0Bs3r7ISLfJsj50HZ5916vln9HDbaMTIOwGqY6uo0J6uRLO4cQLFcZcXsDKhalW3kx
+         C4h/7fq7pdc7jdKIy9EZGJTSs0cSqTnI+qHuxg+Gn/lIszmBOh9KzWyyyt4jRMRfa8ze
+         1l3/ZSjeHuUPuJ4eOSUplJ7RNzSvK7K5/cc5LBLjRHEdUOjM8S0L74qZnTkmdwOhH5Wn
+         7Wig==
+X-Forwarded-Encrypted: i=1; AJvYcCVN1waB8P+KjPukRJULeGyVob/dH9QNIKBOjphQJxTEpabEBK14w6KxAixZfFZW/0/1bj+FIiSmrVZPZ4SJPlPe/qp2p+itF/rY0xNxXXhfz7ngIhEEJTdEL8rgdPp6rmJ4eXYIZxxrDQ==
+X-Gm-Message-State: AOJu0YwzfeDtRUPeMOYQrEGcCqHAQdxYb7myw74bgYmOdvrpkRT9HWxA
+	tanDZbpUVvZEYLVDB3n3qMI+pPGKBC0jq2X2HjcUtAMureIYLnCGU9Vuz7qv
+X-Google-Smtp-Source: AGHT+IGjYdwpUTlA0OuBWcAiywyJEAlMt6d4FSbR+ySGWGSkG9AUUGI+nRHZpFfGhpFk4jtkfWjdOg==
+X-Received: by 2002:a5d:6c6a:0:b0:34d:b45:9b33 with SMTP id r10-20020a5d6c6a000000b0034d0b459b33mr778495wrz.52.1714321289740;
+        Sun, 28 Apr 2024 09:21:29 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id s7-20020a5d5107000000b0034c61e211a5sm6351271wrt.63.2024.04.28.09.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 09:20:03 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Olof Johansson <olof@lixom.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	arm@kernel.org,
-	soc@kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] memory: drivers for v6.10
-Date: Sun, 28 Apr 2024 18:20:01 +0200
-Message-ID: <20240428162001.28011-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.43.0
+        Sun, 28 Apr 2024 09:21:29 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: linux-sunxi@lists.linux.dev, Dragan Simic <dsimic@manjaro.org>
+Cc: wens@csie.org, samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC dtsi for
+ H6
+Date: Sun, 28 Apr 2024 18:21:28 +0200
+Message-ID: <5773383.DvuYhMxLoT@jernej-laptop>
+In-Reply-To:
+ <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
+References:
+ <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
+ <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+Dne nedelja, 28. april 2024 ob 13:40:36 GMT +2 je Dragan Simic napisal(a):
+> Add missing cache information to the Allwinner H6 SoC dtsi, to allow
+> the userspace, which includes lscpu(1) that uses the virtual files provided
+> by the kernel under the /sys/devices/system/cpu directory, to display the
+> proper H6 cache information.
+> 
+> Adding the cache information to the H6 SoC dtsi also makes the following
+> warning message in the kernel log go away:
+> 
+>   cacheinfo: Unable to detect cache hierarchy for CPU 0
+> 
+> The cache parameters for the H6 dtsi were obtained and partially derived
+> by hand from the cache size and layout specifications found in the following
+> datasheets and technical reference manuals:
+> 
+>   - Allwinner H6 V200 datasheet, version 1.1
+>   - ARM Cortex-A53 revision r0p3 TRM, version E
+> 
+> For future reference, here's a brief summary of the documentation:
+> 
+>   - All caches employ the 64-byte cache line length
+>   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative instruction
+>     cache and 32 KB of L1 4-way, set-associative data cache
+>   - The entire SoC has 512 KB of unified L2 16-way, set-associative cache
+> 
+> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-are available in the Git repository at:
+Best regards,
+Jernej
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-6.10
 
-for you to fetch changes up to bf11908757eeab716536d16a32693b5dcd6990de:
-
-  memory: mtk-smi: fix module autoloading (2024-04-11 08:22:26 +0200)
-
-----------------------------------------------------------------
-Memory controller drivers for v6.10
-
-Few cleanups:
-1. Correct module auto-loading - missing aliases in the module.
-2. Document bindings for the Samsung S5Pv210 SoC DMC memory controller.
-
-----------------------------------------------------------------
-Krzysztof Kozlowski (3):
-      dt-bindings: memory-controllers: add Samsung S5Pv210 SoC DMC
-      memory: brcmstb_memc: fix module autoloading
-      memory: mtk-smi: fix module autoloading
-
- .../memory-controllers/samsung,s5pv210-dmc.yaml    | 33 ++++++++++++++++++++++
- drivers/memory/brcmstb_memc.c                      |  1 +
- drivers/memory/mtk-smi.c                           |  2 ++
- 3 files changed, 36 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/samsung,s5pv210-dmc.yaml
 
