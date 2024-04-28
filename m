@@ -1,148 +1,150 @@
-Return-Path: <linux-kernel+bounces-161474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17CF8B4C7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:50:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A34AB8B4C82
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:53:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78199281AC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:50:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 441361F20F21
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE50F1C2D;
-	Sun, 28 Apr 2024 15:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789FB6F07E;
+	Sun, 28 Apr 2024 15:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="axnkbvwQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eOeyAI4o"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1114A6BFB8;
-	Sun, 28 Apr 2024 15:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F65C4A01
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714319424; cv=none; b=SxvSpq/h18NxvEnCO80fHBMFrbLCfZPtKIk9Z/wd1lB4jMduqWEGFPHT7EE7tX20vTv1PV6cds1n3n/UvcLwbVHsu9y/mrWH1Qp1JSyvUXgt/3XSctzzBnetx8dbk07qjWFFXeBVX+QiPBXwoPs5Yeqpj7f+/XOuci0RGbI18dc=
+	t=1714319574; cv=none; b=HxRhV9sePXzTYVi5TLmCLF2ReytrkoGxx2KarYAat7V7FQcJXV29HARChg25aUJmaJl946F+R2xT63V2kQ/jRCWfYtEVa4nHm3HwpS2j+LWkuoy9JdQzIULFdcKBeP7tXiHCLIXyO9W84l7Fm2/CfniPHjn6TVRWt3OyJ3LCvro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714319424; c=relaxed/simple;
-	bh=6SLtj4qlM6RC/B1QjEfYRprkd6q1YdCM//V6eFsX8yM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YtVi4ELW0CuH97ZdzrH1jdd6tRgDKwWBhV0z9LbiYK4RxRjqGlw9uXiODnpflVzHGob8UAEBBfqBymAchWNkoajeEUdwp5OKfVS/NckpxADNsneCmmni/lx5N9FVgACXb1j4KlErDbYLjjkKrA7/Rfum1zfhcwbmZ9DIFYJV++4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=axnkbvwQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826B9C116B1;
-	Sun, 28 Apr 2024 15:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714319423;
-	bh=6SLtj4qlM6RC/B1QjEfYRprkd6q1YdCM//V6eFsX8yM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=axnkbvwQOy/I1hPjbRSjfOh9Xc5Q2sMjVgLpEUBoGx5IbtIRU2hAY0ImYhgz0vRvl
-	 xsK7DJubie/ym2Jl0lwGJZlKv9R4FwbC5H2d/VPCCsVzN026fO906AhadF9y5nSZBS
-	 T+cWOznZc4Hi4lHi7Li+4GFAavKUgiPkbsp8CLmC+A+D80Et5S69SZRdP9tvjFpY3e
-	 SnhY1ch7snsgIf7vcyu2ximnxbosjRCe9xXrVNV9mNIkKulpRmUL7nmnaZjo/fmNxK
-	 8STQoqMuPXVBkn5v4D6oeWYWaYhlLYw219v7yfpuaLdPiaORJcK8X3Zbg1BY7TFjQV
-	 w/zweK0utvGKA==
-Message-ID: <3377917b-556f-4502-888d-a0032b195833@kernel.org>
-Date: Sun, 28 Apr 2024 17:50:17 +0200
+	s=arc-20240116; t=1714319574; c=relaxed/simple;
+	bh=2wIGyMsyZwzKQCoJugGWjKv1x94RRNkPSOrpppHoAXQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Kb7UOZJD7kVH+D4MvSAQt+OztzclH+zxBqgWmacPRg4N6qzR80C10fMg4FYnIRhx4c7ZMflvHjjYZKIrchYd4tg2oQ79pMySFqWtcVNm1ScjgxrdWiqiEJ0yBr+MnWyWZQrzFMJEwCD+yFVP7GkCn06NafH8R2LQPNQquf7MCoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eOeyAI4o; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714319571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pZykVLyPTHNf2oLD7SWZNyhDuAGshWhY8pTDiUHRDL8=;
+	b=eOeyAI4oTxIIFDKYG2ZnGn3PIWdKFVXxoPJD7710PiVaEV3FNcABDIDa8Qwk5hPziB0mD1
+	uVChteTdTNsBpNglaUzt4ECvx4fyslmvTeHjFrH3aWS+K95CMXzsISSJZVLZW8o1tDJDxq
+	imc2QCksIi21z2oneNXQPK+eZ/Dpz2s=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-56-txyoNerbM5O42PWMhgEmuA-1; Sun, 28 Apr 2024 11:52:50 -0400
+X-MC-Unique: txyoNerbM5O42PWMhgEmuA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78d5fed0e1aso409532485a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:52:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714319569; x=1714924369;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZykVLyPTHNf2oLD7SWZNyhDuAGshWhY8pTDiUHRDL8=;
+        b=u1Vg1CqbMK/wZtT1DvhG25ug6k/IgfYrARWxfpUFdIU8om8yxx1yAb/NGa5ifNB2Wh
+         jzFeaN0kuUGSK0q4mNaOQpbWPyeA+87TGxGtlmL76FMjeD8QtnJXBlIsYMZ2oFrtG1NN
+         dWSnCvN+vBllUEArzB04MyMxb3w0ol64R//WOXsayNWGQz25Z6IXdqKvk3Hiv+IaXnVX
+         JvDYr3mIt+q5LTk/9447XXqdyId0fgVM6e6Fd83DrlBlGsPT5d+pwyDyBdfU7zKTm41x
+         a8idde1iXmrX6oheAAdvLyaQCAIb7xIPwihKrwdQOr5OiAV95nLCnt7RF4gQ2JUWHgxD
+         8mzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6vDhCq606tCVhNuokAy2D4xitKfRxIs7tScwB/D3JjjNVoYKYVnZD6H7yd+1+IXUf3WsHkvbRqB7NPdtko70hSrfRsf2UjZ/qV8NY
+X-Gm-Message-State: AOJu0YzWQz4+FgcyMQDSRIhvNDW8S3/qXm/Bf0ZF9QlA/FeTpFkWJlcD
+	E8f5nnJf7r7Y/lJoHduDXnM/ToEpcHq9LFzUzBmTno+LxYjqXxK/p5kElyDm8VNyxd3CcIKk8Pk
+	7AqqwmURLlBbqwihFRRSa3bVxHeVBPeZzSDEiPDTUYIHmjS/bK8xK37U44MI5lg==
+X-Received: by 2002:a05:620a:2415:b0:790:f40f:e24e with SMTP id d21-20020a05620a241500b00790f40fe24emr1246036qkn.22.1714319569616;
+        Sun, 28 Apr 2024 08:52:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE4L7xUX8yYGMYzxvIA1MdWkvVCmQ2dXjpZqYB5j1wO4eQWjPg8MkRG9IFPdeS3YyjYksF1qw==
+X-Received: by 2002:a05:620a:2415:b0:790:f40f:e24e with SMTP id d21-20020a05620a241500b00790f40fe24emr1246022qkn.22.1714319569338;
+        Sun, 28 Apr 2024 08:52:49 -0700 (PDT)
+Received: from chopper.lyude.net ([2600:4040:5c6c:a300::789])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05620a20d200b0078eaf335331sm9718788qka.77.2024.04.28.08.52.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 08:52:48 -0700 (PDT)
+Message-ID: <35b0ffe54f5e4077d5ebee6b82ae9ccd568dd77d.camel@redhat.com>
+Subject: Re: [PATCH 1/2] drm/nouveau/firmware: Fix SG_DEBUG error with
+ nvkm_firmware_ctor()
+From: Lyude Paul <lyude@redhat.com>
+To: Timur Tabi <ttabi@nvidia.com>, "nouveau@lists.freedesktop.org"
+	 <nouveau@lists.freedesktop.org>
+Cc: "bskeggs@redhat.com" <bskeggs@redhat.com>, "kherbst@redhat.com"
+ <kherbst@redhat.com>, "airlied@redhat.com" <airlied@redhat.com>, 
+ "justinstitt@google.com" <justinstitt@google.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "keescook@chromium.org" <keescook@chromium.org>, "airlied@gmail.com"
+ <airlied@gmail.com>,  "dakr@redhat.com" <dakr@redhat.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "daniel@ffwll.ch" <daniel@ffwll.ch>
+Date: Sun, 28 Apr 2024 11:52:47 -0400
+In-Reply-To: <4294e43a0165a36a063d74c7ef62fbdeb156f8c4.camel@nvidia.com>
+References: <20240426154138.64643-1-lyude@redhat.com>
+	 <4294e43a0165a36a063d74c7ef62fbdeb156f8c4.camel@nvidia.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 (3.52.1-1.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] arm64: dts: exynos: gs101: Add ufs and ufs-phy dt
- nodes
-To: Peter Griffin <peter.griffin@linaro.org>, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, alim.akhtar@samsung.com
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
- willmcvicker@google.com, kernel-team@android.com
-References: <20240426133824.2283144-1-peter.griffin@linaro.org>
- <20240426133824.2283144-4-peter.griffin@linaro.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240426133824.2283144-4-peter.griffin@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 26/04/2024 15:38, Peter Griffin wrote:
-> Add the ufs controller node and phy node for gs101.
-> 
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> Acked-by: André Draszik <andre.draszik@linaro.org>
-> ---
->  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 36 ++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> index 09044deede63..4679ca33c6a0 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -1277,6 +1277,42 @@ pinctrl_hsi2: pinctrl@14440000 {
->  			interrupts = <GIC_SPI 503 IRQ_TYPE_LEVEL_HIGH 0>;
->  		};
->  
-> +		ufs_0_phy: phy@17e04000 {
-> +			compatible = "google,gs101-ufs-phy";
-> +			reg = <0x14704000 0x3000>;
-> +			reg-names = "phy-pma";
-> +			samsung,pmu-syscon = <&pmu_system_controller>;
-> +			#phy-cells = <0>;
-> +			clocks = <&ext_24_5m>;
-> +			clock-names = "ref_clk";
-> +			status = "disabled";
-> +		};
-> +
-> +		ufs_0: ufs@14700000 {
+On Fri, 2024-04-26 at 15:47 +0000, Timur Tabi wrote:
+> On Fri, 2024-04-26 at 11:41 -0400, Lyude Paul wrote:
+> > We hit this because when initializing firmware of type
+> > NVKM_FIRMWARE_IMG_DMA we allocate coherent memory and then attempt
+> > to
+> > include that coherent memory in a scatterlist.=20
+>=20
+> I'm sure this patch is a good one, and I will try to test it soon,
+> but I am
+> very curious to know why including coherent memory in a scatterlist
+> is bad.
 
-Unit-address order got broken here.
+Thanks for asking this as I think you unintentionally pointed out this
+explanation I gave doesn't make sense - so I looked a bit more into it.
+The issue isn't coherent memory in the scatterlist, the issue is that
+we're allocating with dma_alloc_coherent(). And according to the source
+in dma_alloc_attrs() (which dma_alloc_coherent() is just a wrapper)
+for):
 
+   /*
+    * DMA allocations can never be turned back into a page pointer, so
+    * requesting compound pages doesn't make sense (and can't even be
+    * supported at all by various backends).
+    */
+   if (WARN_ON_ONCE(flag & __GFP_COMP))
+   	return NULL;
 
+Which explains the check in sg_set_buf() that this patch stops us from
+hitting:
 
-Best regards,
-Krzysztof
+   BUG_ON(!virt_addr_valid(buf));
+
+Scatterlists need page pointers (we use one later down here:)
+
+   sg_set_page(sg, virt_to_page(buf), buflen, offset_in_page(buf));
+
+But we can't get a page pointer from an allocation made by
+dma_alloc_coherent() - but we can from vmalloc(). I'll fix the patch
+explanation in the next version, I have to send out another version
+anyhow since I realized that patch #2 still needs one more check to
+work properly
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
 
