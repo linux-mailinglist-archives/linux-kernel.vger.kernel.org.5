@@ -1,164 +1,107 @@
-Return-Path: <linux-kernel+bounces-161626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C648B4EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:17:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7008B4EC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:23:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A82E41C20FE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:17:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBFA6B20FBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1681BF2F;
-	Sun, 28 Apr 2024 23:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="gnifZcZF"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CEF1B94D;
+	Sun, 28 Apr 2024 23:23:14 +0000 (UTC)
+Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C4CB664;
-	Sun, 28 Apr 2024 23:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B59389
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 23:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714346259; cv=none; b=Ic74vHarZf32p7uZI3FHrC0LWNnyggiFfCd4UP9qWCO35LCJ92J1vZ0Njl+A397mnASloFOfAEPIe97xcwX+YXO9KFn8neapzakydCEgPgE1VEjMYh3Qd20rp3f62f8qnFHBqeiDqxpNESCCtzeEj8rVgoMroOG8SMx4X9s4bPA=
+	t=1714346594; cv=none; b=IK96M4RIoyc07J70uEF2lLKqYrdOF4MxrAVY7M2n2SAVdro51WWVJf0gq3FnsFVgkt3gBOmxW/hogvzNF96qvETFc5AqIm37Xqi69me46bJbX4+gfiMumlI40SQ2fH0bY0XD5UdEDzw9kfJYzzKNPk+Rcl5S2NWMHYlxr3YEI+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714346259; c=relaxed/simple;
-	bh=yddcab5au8dcJoHAuuTUrC0HJdHCkbWtQT1Frk4wJt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l5bmsJtYKkC/UO1JSuvWR+a+VdfzSeKD2BaVaW9QzhTQK2Vb5WkBow5dhmXQhi9lgkTXnaM+1sllWUooQWevt7zIUQyTLVUHINDeSRhuBXWOn99SFItOCmT03jaA4/LmGsTrf+G93vWVhjNyrkXIk2AchSVXoHAh9FH1Nl83lnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=gnifZcZF; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=SMe0vlJFp/xalizO6Sd1gmUR5ZkmrPZTdfiEBeCz/LQ=; b=gn
-	ifZcZFkS4YmYfgxdFm6pJvh18z15pOUad4fald1wPhy8iZNEjhQRtTQCyPKUmEqLum0IUIWyDtFAv
-	ejkJL10FFOIALO/HmNmmV6ZGg3rBiou7Sh2ibZS/NDEaeevOqxLYwNzWth9jdnOAmTpb2dbEHHHc/
-	WLsv+poAhHxnNa8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s1Dlf-00ECv4-01; Mon, 29 Apr 2024 01:17:11 +0200
-Date: Mon, 29 Apr 2024 01:17:10 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
-Message-ID: <13c38696-25ed-418d-b85e-950736384a0b@lunn.ch>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <Zi68sDje4wfgftyZ@builder>
+	s=arc-20240116; t=1714346594; c=relaxed/simple;
+	bh=f5SHVKCd1yLoB3LpdWW54rLqKvQnFndtp0BSi77PSMI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=LebEwaFshdoIBnf5XnnirnK5rfx+pIq/feY/iyUEvqrrp1gz2BqrhFXSXsDhG4EHWRn2wV4Z9ZqhFtufVRSZFagqOBvNfD20cWj029Exsa0ptpydCfcCGTMy0d5R1igbpfgAdVlXetlnjc21/RCcmOPVRojVOO8eckB8OsTUeTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.11.20])
+	by sina.com (172.16.235.24) with ESMTP
+	id 662EDA5200003786; Sun, 29 Apr 2024 07:23:00 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 69199445089247
+X-SMAIL-UIID: 471609B53FAC4BECA5769360A9C487B0-20240429-072300-1
+From: Hillf Danton <hdanton@sina.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+	andrii@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
+Date: Mon, 29 Apr 2024 07:23:02 +0800
+Message-Id: <20240428232302.4035-1-hdanton@sina.com>
+In-Reply-To: <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zi68sDje4wfgftyZ@builder>
 
-On Sun, Apr 28, 2024 at 11:16:32PM +0200, Ramón Nordin Rodriguez wrote:
-> >From c65e42982684d5fd8b2294eb6acf755aa0fcab83 Mon Sep 17 00:00:00 2001
-> From: =?UTF-8?q?Ram=C3=B3n=20Nordin=20Rodriguez?=
->  <ramon.nordin.rodriguez@ferroamp.se>
-> Date: Sun, 28 Apr 2024 22:25:12 +0200
-> Subject: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
+On Sun, 28 Apr 2024 13:01:19 -0700 Linus Torvalds wrote:
+> On Sat, 27 Apr 2024 at 16:13, Hillf Danton <hdanton@sina.com> wrote:
+> >
+> > > -> #0 (&sighand->siglock){....}-{2:2}:
+> > >        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+> > >        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+> > >        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+> > >        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+> > >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+> > >        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> > >        _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+> > >        force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
+> > >        force_sig_fault_to_task kernel/signal.c:1733 [inline]
+> > >        force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+> > >        __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+> > >        handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+> >
+> > Given page fault with runqueue locked, bpf makes trouble instead of
+> > helping anything in this case.
+> 
+> That's not the odd thing here.
+> 
+> Look, the callchain is:
+> 
+> > >        exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+> > >        asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> > >        rep_movs_alternative+0x22/0x70 arch/x86/lib/copy_user_64.S:48
+> > >        copy_user_generic arch/x86/include/asm/uaccess_64.h:110 [inline]
+> > >        raw_copy_from_user arch/x86/include/asm/uaccess_64.h:125 [inline]
+> > >        __copy_from_user_inatomic include/linux/uaccess.h:87 [inline]
+> > >        copy_from_user_nofault+0xbc/0x150 mm/maccess.c:125
+> 
+> IOW, this is all doing a copy from user with page faults disabled, and
+> it shouldn't have caused a signal to be sent, so the whole
+> __bad_area_nosemaphore -> force_sig_fault path is bad.
+> 
+So is game like copying from/putting to user with runqueue locked
+at the first place.
 
-You sent this patch in an odd way. We don't normally see headers like
-this. I've been using b4 recently for patch management:
+Plus as per another syzbot report [1], bpf could make trouble with
+workqueue pool locked.
 
-https://b4.docs.kernel.org/en/latest/contributor/prep.html
-
-Using `b4 send` is a good idea. Otherwise git format-patch; git send-email
-
-> index 9abefa8b9d9f..bed9033574b2 100644
-> --- a/drivers/net/ethernet/microchip/lan865x/lan865x.c
-> +++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
-> @@ -9,6 +9,7 @@
->  #include <linux/kernel.h>
->  #include <linux/phy.h>
->  #include <linux/oa_tc6.h>
-> +#include <linux/gpio/driver.h>
-
-This is not a gpio driver, it is a gpio consumer. So you should be
-using linux/gpio/consumer.h. Also, i _think_ the includes are sorted,
-so it probably should go earlier.
-
->  
->  #define DRV_NAME			"lan865x"
->  
-> @@ -33,6 +34,7 @@
->  
->  struct lan865x_priv {
->  	struct work_struct multicast_work;
-> +	struct gpio_desc *reset_gpio;
->  	struct net_device *netdev;
->  	struct spi_device *spi;
->  	struct oa_tc6 *tc6;
-> @@ -283,6 +285,24 @@ static int lan865x_set_zarfe(struct lan865x_priv *priv)
->  	return oa_tc6_write_register(priv->tc6, OA_TC6_REG_CONFIG0, regval);
->  }
->  
-> +static int lan865x_probe_reset_gpio(struct lan865x_priv *priv)
-> +{
-> +	priv->reset_gpio = devm_gpiod_get_optional(&priv->spi->dev, "reset",
-> +						   GPIOD_OUT_HIGH);
-> +	if (IS_ERR(priv->reset_gpio))
-> +		return PTR_ERR(priv->reset_gpio);
-> +
-> +	return 0;
-> +}
-> +
-> +static void lan865x_hw_reset(struct lan865x_priv *priv)
-> +{
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	// section 9.6.3 RESET_N Timing specifies a minimum hold of 5us
-> +	usleep_range(5, 10);
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 0);
-> +}
-
-Do you see a need to do a reset at any time other than probe? If not,
-i would probably combine these two functions into one. Also, since you
-pass GPIOD_OUT_HIGH, you have already put it into reset. So setting
-the gpio to 1 is pointless.
-
-Does the datasheet say anything about how long you should wait after
-releasing the reset?
-
-> +
->  static int lan865x_probe(struct spi_device *spi)
->  {
->  	struct net_device *netdev;
-> @@ -297,6 +317,14 @@ static int lan865x_probe(struct spi_device *spi)
->  	priv->netdev = netdev;
->  	priv->spi = spi;
->  	spi_set_drvdata(spi, priv);
-> +	if (lan865x_probe_reset_gpio(priv)) {
-> +		dev_err(&spi->dev, "failed to probe reset pin");
-> +		ret = -ENODEV;
-
-It is normal that a function like lan865x_probe_reset_gpio() would
-return an error code. You should then return that error code, rather
-than replace it with ENODEV.
-
-     Andrew
+[1] https://lore.kernel.org/lkml/00000000000051348606171f61a1@google.com/
 
