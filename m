@@ -1,79 +1,83 @@
-Return-Path: <linux-kernel+bounces-161317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354EB8B4A9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:05:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75408B4AA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:08:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 450E21C20C2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:05:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CA7EB212C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 08:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD1D51C5E;
-	Sun, 28 Apr 2024 08:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE5E524C3;
+	Sun, 28 Apr 2024 08:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VDWCmKih"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="EhH1i29i"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E724F2F25
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8CB5026C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 08:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714291537; cv=none; b=Ha2dGTnR6VY3bu4UFMaFozcDlDIhISFsGHWbz/BTkNhKqmV2b7CwFYGtyOWyfz0nt8frTDN+/sNuRvFPp3bfrTFbjLZVSVlaBUkruj1DCLjFVRXRy241y7zoYB67Dsvkw27JltHXpLilnYYC+/GkeaLHjTg3LXUlM7vcXqixgrY=
+	t=1714291720; cv=none; b=pntllMW15al3dXWO2CLN+Xwiu0NLOUfh6ALQ6CbN5WHn88fS8AXyUeYTNXxVDGvEgGy7OjTpqp9X4rttQMZ4d+otRAJkToK9B4VekdyBIQVylTrhpoQFSARikX23ouGvMo4SiFK3R5VBWAVQ83QbMyzZUQCzm1K213YySMlBKTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714291537; c=relaxed/simple;
-	bh=Wuw8OxdyhJoifrv891YDOBEAeTYahgJhK0M7c5Rc6og=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=TNnKdypjvd6Fo7heFJ9gk21vyRdrEwAiNo8RJz14l3l3SjB4uNj72HcxmjsEF2XKqrREThAyPlY2Dg6M8lyvqU0A6AbENBeWNcu2KBpfMRAsE+tPqWaBAM7dhH+1qXDnY87cnvyu5ZJ7qZKRCV+EUpflSScDtQeE+YpmrJ77TXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VDWCmKih; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-346406a5fb9so2936153f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:05:35 -0700 (PDT)
+	s=arc-20240116; t=1714291720; c=relaxed/simple;
+	bh=dSY6VgHGBbMBKvEGRevVf1GZCM4YOb5TU3V7NL4pnSo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZQResmJ0HIIQnMTmAAKMWG6AE70eqJixaxrUPRs269qlNN05D9yZEUoYqPRQce4pAwobSigZlwCUKO/hQixDFaFntiXBcoWPxIBlDhtkY+3RWV58cadKIYdWQpPPpzhypkVhw8iHXK5r6IUc16uHYK6TghIhA6SNcXa4hn9cl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=EhH1i29i; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6effe9c852eso3155868b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714291534; x=1714896334; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHnmbGRWkJwyRcCXZFcMSmmyI7/rnbD54Au5nm1J+aU=;
-        b=VDWCmKihgaZRTgEH3aC3VAXEKdt++uw7kDIb1OXwB3/88ud5oQy9/ILMUQUwAaoqwj
-         TrLzJW8FIXUEuf3I5poaJtFuL56HkUR6DI1uS5ibYxBggyyxhbhRUI6oS7q+aOZcFd0F
-         m5AVJnTXKewhS6DgTZDYPpGel6C6oY4wLn7gf5sNTO2eYwu5jPc2lMZiIWA0KNVNdtem
-         OouNpAOn0pMYZiY3YYexj99UR2AhiJXRKPa6LQViYal5ReCi4Rm3d3na3y8UHr1t8G0W
-         tCprSKVq0fsK6CmtbwTW8NI197B2eWhrRWTjE9eTy65bL684DJELfhg4KrExsmUOtgty
-         8jaw==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714291719; x=1714896519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QvveInWpkkJVI1kMdY+t9XXysYkIGquu+XSLYBxptHs=;
+        b=EhH1i29iDHV0Skosw+4YK8OfnIKiVi26nhdRWsa4DrTvHrAp3fZOMVuBTSJFmUFg1q
+         NQIQy2z+bjVkXwPguV3kPiIiENce00R/R2m1VECnZ0eCCTadWIBKKYoEf3zyUkwe0ohh
+         6dDgxUIPxh4YC6A4eB59JzSDmioQpN8lvmAIp5LETV0QgBzDoGzp1YsKzjWRdkixo0y7
+         qW7KlnwNPQK0ft2b2s8l2BeCsY/liGbI+Xt5E9wB4fI7gNNoVIr30fyxnClAS5t284qV
+         sW+1M+10QMple1oV1D0jou24JtmkfOxJA6XfJLbS3DvAXriVd/bXbc6DlD4FiA2SG4La
+         Pd/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714291534; x=1714896334;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VHnmbGRWkJwyRcCXZFcMSmmyI7/rnbD54Au5nm1J+aU=;
-        b=W4HhnRNnzH97uCsvBsvEyZDzJ1lHTsJTx956oiF95DXfZhfnI4Jn30uah5rHWBSfbJ
-         mEoywLbp/iw59VkgKBnm4pLxT0B3PFMe9lNGQ2t6HZuavDG5s3zlbdG1mzOW3vjOfqDv
-         fhKh+/iWETSqLPYo//5lX1H4Qsz7uqZkwhsqnm7Y38EOo273+nupb69NE14EcqNd70ZY
-         Vha0GpGCICuSjr4b4axaQAR3Xs06hUNIzXxtkP2I+UtbfBwpFhl1rvJ4WHzfuU6Fc7C9
-         kqoa0uX8hKv/ETpYc0kg/EeY3n5ttLaOeVlwLjLQdv65jgj7KLv7ZyhZmDoERv/iNtsc
-         GSgQ==
-X-Gm-Message-State: AOJu0YyUwbnm3dy7qjgirJ86y/ntVtOpcuJdEUGcurdYIi01nFgked1t
-	8k3Ksrdqm8JQlHdRne3QEaljp8xeEv7WhuS3MbVhB/jp2Dok7TEr
-X-Google-Smtp-Source: AGHT+IGXwiM7pbATAJv72x3XbUMZdl4tbY6AjtIMiGq4/ISTsia+OxLzfi46JYyHvvP8BlaMr76Otw==
-X-Received: by 2002:a5d:5f86:0:b0:343:f3d9:a9d5 with SMTP id dr6-20020a5d5f86000000b00343f3d9a9d5mr6132458wrb.10.1714291533720;
-        Sun, 28 Apr 2024 01:05:33 -0700 (PDT)
-Received: from gmail.com (1F2EF175.nat.pool.telekom.hu. [31.46.241.117])
-        by smtp.gmail.com with ESMTPSA id h1-20020a5d5481000000b003437a76565asm26521641wrv.25.2024.04.28.01.05.32
+        d=1e100.net; s=20230601; t=1714291719; x=1714896519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QvveInWpkkJVI1kMdY+t9XXysYkIGquu+XSLYBxptHs=;
+        b=HK5irK9RJod+pY9jPcf6sH4QxqAmh+m9IOUpWwBgSwQGgPGgoePjSDRLmMeKmS4rCe
+         4op+ziYSiuN8wuPNxFRm1n0zkE2zVyBxH/8zVmslrZUlbpOOvQTb9F6X0dB7vsUlP8r9
+         TUglD6v0gOAjXq8CiAtZS/c5jTQ2Hqz9OF/2wDg11vsHS2VwJCFQkMVdsEp2t+dgVNZL
+         ZFza7VZaVspOkMdkHEvkmCAfuhjIc82hZYJxcaM1yoDOR2ZRxxvTrMiAhv8+3xbzTbJG
+         Tgs8tlKlpMaNtHoU6DABTJ4trAlNBrFtyqW2yo4rwktp4v5+Bl9LHTEGlXye3DEU13Y+
+         x+ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVAIZVPtMKbl+HMSvmmCvaRNJNijaL+zbk9dvjUdgniMY9etKMQYFDApyhDfHgOx5w7Z8oHIn917deupSIi9rvig1wWZYbLgJEJio5G
+X-Gm-Message-State: AOJu0YxcSlKYHc3LQ0AAQcev+88q0ejZmEziy9JEPMpGG6J114BabKMl
+	omZNj2VvsJbNXVcIAoVZq6ZT74RbXnxcmCsADNNYvHO1PB2FfTONHI3R9D83v9I=
+X-Google-Smtp-Source: AGHT+IE9rezMEVCJI2AgOLgm0NbSH5QVRsB1R59NgAnJhWz1z9wdBOj6S1k3TX1SSqf16fZBM7GEyw==
+X-Received: by 2002:a05:6a21:2d85:b0:1a7:a3cb:7901 with SMTP id ty5-20020a056a212d8500b001a7a3cb7901mr7712149pzb.61.1714291718477;
+        Sun, 28 Apr 2024 01:08:38 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-29-7.pa.nsw.optusnet.com.au. [49.181.29.7])
+        by smtp.gmail.com with ESMTPSA id l9-20020a170903120900b001e3e0aa9776sm18052951plh.27.2024.04.28.01.08.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 01:05:33 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 28 Apr 2024 10:05:31 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <a.p.zijlstra@chello.nl>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Borislav Petkov <bp@alien8.de>, Marc Zyngier <maz@kernel.org>
-Subject: [GIT PULL] IRQ fix
-Message-ID: <Zi4DS9dFnKE45Huc@gmail.com>
+        Sun, 28 Apr 2024 01:08:38 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s0zaN-00DfYm-0z;
+	Sun, 28 Apr 2024 18:08:35 +1000
+Date: Sun, 28 Apr 2024 18:08:35 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: syzbot <syzbot+a191ccc95425c3409faa@syzkaller.appspotmail.com>
+Cc: chandan.babu@oracle.com, djwong@kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [xfs?] possible deadlock in xfs_qm_dqpurge
+Message-ID: <Zi4EA0jFQADLo/3n@dread.disaster.area>
+References: <00000000000094b0b8061722f448@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,48 +86,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <00000000000094b0b8061722f448@google.com>
 
-Linus,
+On Sun, Apr 28, 2024 at 12:19:19AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    9d1ddab261f3 Merge tag '6.9-rc5-smb-client-fixes' of git:/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=131236e3180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=19891bd776e81b8b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a191ccc95425c3409faa
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: i386
 
-Please pull the latest irq/urgent Git tree from:
+#syz dup: possible deadlock in xfs_ilock_data_map_shared
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2024-04-28
-
-   # HEAD: c26591afd33adce296c022e3480dea4282b7ef91 irqchip/gic-v3-its: Prevent double free on error
-
-Fix a double free bug in the init error path of the
-GICv3 irqchip driver.
-
- Thanks,
-
-	Ingo
-
------------------->
-Guanrui Huang (1):
-      irqchip/gic-v3-its: Prevent double free on error
-
-
- drivers/irqchip/irq-gic-v3-its.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 2a537cbfcb07..5f7d3db3afd8 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -4567,13 +4567,8 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
- 		irqd_set_resend_when_in_progress(irq_get_irq_data(virq + i));
- 	}
- 
--	if (err) {
--		if (i > 0)
--			its_vpe_irq_domain_free(domain, virq, i);
--
--		its_lpi_free(bitmap, base, nr_ids);
--		its_free_prop_table(vprop_page);
--	}
-+	if (err)
-+		its_vpe_irq_domain_free(domain, virq, i);
- 
- 	return err;
- }
+-- 
+Dave Chinner
+david@fromorbit.com
 
