@@ -1,128 +1,174 @@
-Return-Path: <linux-kernel+bounces-161309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C60768B4A81
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:29:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B8D88B4A7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:23:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D828B214CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:29:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D562D1F21844
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB94250A67;
-	Sun, 28 Apr 2024 07:28:55 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E6750A6D;
+	Sun, 28 Apr 2024 07:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE66YgTI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909B64F8A3
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 07:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE82D50251;
+	Sun, 28 Apr 2024 07:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714289335; cv=none; b=itTECVQn1BnETJ9O9c+IGPlhT0sPn8w1cHSWAnz0ONChbpB43Mh9haq26xmLGmmNquOJF4zGyyVlspHbE0bOzch4ekpqd1sjC74s1AB6wCtk6lM5Z2rCBFKfsUKgy20QadS6t3YexZ3JDEfCfuFlBgHbqtMqx5B9a5RrW+FEC0A=
+	t=1714289005; cv=none; b=Gc6UpBcHvPO8UfzeaFr5mXk9XN1AEsASoAbvhLZC9B5Q3fFa3hrhMDLv+QmiRbftogrbj7pvl3fVMfDsHl5/RJ1FTTKlqBf7rxGEYOGFiWICrZHhV5kJT+Tj8ZX+pRBP2ROs9zUF07L3VKjnBKZ2rKCfxCxSzad9S4gytDG7+JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714289335; c=relaxed/simple;
-	bh=FGeFBTObhslhjMsVOBLpCyUd93LnC+Y1MOuCbCeu1RM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hOYIU8SA+j+5f/EfqCZen5Mc+O7Mf7MhIqujpnSAr6Ql27dwdD93NDJIuvrPe/v/jwHLArOyvNRJfruHrhxHvy1Lnmm2tJdMn1cuA6ViFSDS7xD8520BFhUhUbvFjnObUOVqYNkGNJ3JZImAgRoHNdR5loFyvty0XNdUxNN8h7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VRykK1glVz4f3jd1
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:28:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F3D601A0572
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:28:48 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxCu+i1m9VSxLA--.18736S4;
-	Sun, 28 Apr 2024 15:28:48 +0800 (CST)
-From: linan666@huaweicloud.com
-To: richard@nod.at,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com,
-	axboe@kernel.dk,
-	chaitanya.kulkarni@wdc.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] ubi: block: fix null-pointer-dereference in ubiblock_create()
-Date: Sun, 28 Apr 2024 15:19:22 +0800
-Message-Id: <20240428071922.2270892-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714289005; c=relaxed/simple;
+	bh=DP/Aemdi0KQCVAXsAFaA/0biCg9ptDN5YTYd2q7KhJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PNT/n7rh7YZdPSoroBBKT1U33ohcDND7V19Iih0S7Dh7Qp3AtpaAEgyRCSR0IIWL5jmOhNWD8lG7uXKFxWGffgTJso9sGTmm400Zc466nzP90OWQI7ImJyNtVMthg727alQJB6x001BAK4GUbB3/F7av4UGRAB6YlDBfP15MbmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE66YgTI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F02F1C113CC;
+	Sun, 28 Apr 2024 07:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714289004;
+	bh=DP/Aemdi0KQCVAXsAFaA/0biCg9ptDN5YTYd2q7KhJo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nE66YgTI69QfmVwPjTW2XnkJQBVd7P/4BPQ3n0Sz3wK+PAt5TCm2pCZuuKN6PDgoX
+	 pD2uajeEUrDUANVaxos2Kkcfj8zcJ7j9KAqtwBrRpK7YmQ5Uc3jv6WoMAd5EgUQKPr
+	 jF4ihlx0R1lV4LNlNeyt9D79u3zgWW4ci81MQAWx/xu19H+sMAUaSKXX3HxrAL4edU
+	 WTdcu8YK2R1QRkzCuP9BoDL5t1GJ8y/FlIT/TNzoM4t6b9EjuWNbScqd1nWhNsAKsd
+	 EiCPeUtKIrqHhyRIqX/2u2B8O2XZ+LFNdgVFKJ+l+qfFNBWLTG6uSpMkEeWd2iCHa2
+	 PNIV8SeDkhd1g==
+Date: Sun, 28 Apr 2024 08:23:18 +0100
+From: Will Deacon <will@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Vidya Sagar <vidyas@nvidia.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+	Shanker Donthineni <sdonthineni@nvidia.com>,
+	Krishna Thota <kthota@nvidia.com>, Joerg Roedel <joro@8bytes.org>
+Subject: Re: [Query] ACS enablement in the DT based boot flow
+Message-ID: <20240428072318.GA11447@willie-the-truck>
+References: <PH8PR12MB667446D4A4CAD6E0A2F488B5B83F2@PH8PR12MB6674.namprd12.prod.outlook.com>
+ <20240410192840.GA2147526@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxCu+i1m9VSxLA--.18736S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4kAr4Dtr4kXFy5Cr4fuFg_yoW8WF1Dpa
-	yDWa4Y9rW8GFWDuF4DJw4kCFy5X3W0g34rGFW29w4Fvr93Jr4IkFsYgr1Yvr4IyF97JanI
-	qFnxGrW8W3W8C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-	0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-	1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-	rcIFxwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr4
-	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-	wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBSoJUUUUU=
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410192840.GA2147526@bhelgaas>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-From: Li Nan <linan122@huawei.com>
+On Wed, Apr 10, 2024 at 02:28:40PM -0500, Bjorn Helgaas wrote:
+> [+cc Will, Joerg]
+> 
+> On Mon, Apr 01, 2024 at 10:40:15AM +0000, Vidya Sagar wrote:
+> > Hi folks,
+> > ACS (Access Control Services) is configured for a PCI device through
+> > pci_enable_acs().  The first thing pci_enable_acs() checks for is
+> > whether the global flag 'pci_acs_enable' is set or not.  The global
+> > flag 'pci_acs_enable' is set by the function pci_request_acs().
+> > 
+> > pci_enable_acs() function is called whenever a new PCI device is
+> > added to the system
+> > 
+> >  pci_enable_acs+0x4c/0x2a4
+> >  pci_acs_init+0x38/0x60
+> >  pci_device_add+0x1a0/0x670
+> >  pci_scan_single_device+0xc4/0x100
+> >  pci_scan_slot+0x6c/0x1e0
+> >  pci_scan_child_bus_extend+0x48/0x2e0
+> >  pci_scan_root_bus_bridge+0x64/0xf0
+> >  pci_host_probe+0x18/0xd0
+> > 
+> > In the case of a system that boots using device-tree blob,
+> > pci_request_acs() is called when the device driver binds with the
+> > respective device
+> > 
+> > of_iommu_configure+0xf4/0x230
+> > of_dma_configure_id+0x110/0x340
+> > pci_dma_configure+0x54/0x120
+> > really_probe+0x80/0x3e0
+> > __driver_probe_device+0x88/0x1c0
+> > driver_probe_device+0x3c/0x140
+> > __device_attach_driver+0xe8/0x1e0
+> > bus_for_each_drv+0x78/0xf0
+> > __device_attach+0x104/0x1e0
+> > device_attach+0x14/0x30
+> > pci_bus_add_device+0x50/0xd0
+> > pci_bus_add_devices+0x38/0x90
+> > pci_host_probe+0x40/0xd0
+> > 
+> > Since the device addition always happens first followed by the
+> > driver binding, this flow effectively makes sure that ACS never gets
+> > enabled.
+> > 
+> > Ideally, I would expect the pci_request_acs() get called (probably
+> > by the OF framework itself) before calling pci_enable_acs().
+> > 
+> > This happens in the ACPI flow where pci_request_acs() is called
+> > during IORT node initialization (i.e. iort_init_platform_devices()
+> > function).
+> > 
+> > Is this understanding correct? If yes, would it make sense to call
+> > pci_request_acs() during OF initialization (similar to IORT
+> > initialization in ACPI flow)?
+> 
+> Your understanding looks correct to me.  My call graph notes, FWIW:
+> 
+>   mem_init
+>     pci_iommu_alloc                   # x86 only
+>       amd_iommu_detect                # init_state = IOMMU_START_STATE
+>         iommu_go_to_state(IOMMU_IVRS_DETECTED)
+>           state_next
+>             switch (init_state)
+>             case IOMMU_START_STATE:
+>               detect_ivrs
+>                 pci_request_acs
+>                   pci_acs_enable = 1  # <--
+>       detect_intel_iommu
+>         pci_request_acs
+>           pci_acs_enable = 1          # <--
+> 
+>   pci_scan_single_device              # PCI enumeration
+>     ...
+>       pci_init_capabilities
+>         pci_acs_init
+>           pci_enable_acs
+>             if (pci_acs_enable)       # <--
+>               pci_std_enable_acs
+> 
+>   __driver_probe_device
+>     really_probe
+>       pci_dma_configure               # pci_bus_type.dma_configure
+>         if (OF)
+>           of_dma_configure
+>             of_dma_configure_id
+>               of_iommu_configure
+>                 pci_request_acs       # <-- 6bf6c24720d3
+>                 iommu_probe_device
+>         else if (ACPI)
+>           acpi_dma_configure
+>             acpi_dma_configure_id
+>               acpi_iommu_configure_id
+>                 iommu_probe_device
+> 
+> The pci_request_acs() in of_iommu_configure(), which happens too late
+> to affect pci_enable_acs(), was added by 6bf6c24720d3 ("iommu/of:
+> Request ACS from the PCI core when configuring IOMMU linkage"), so I
+> cc'd Will and Joerg.  I don't know if that *used* to work and got
+> broken somehow, or if it never worked as intended.
 
-Similar to commit adbf4c4954e3 ("ubi: block: fix memleak in
-ubiblock_create()"), 'dev->gd' is not assigned but dereferenced if
-blk_mq_alloc_tag_set() fails, and leading to a null-pointer-dereference.
+I don't have any way to test this, but I'm supportive of having the same
+flow for DT and ACPI-based flows. Vidya, are you able to cook a patch?
 
-Using 'gd' directly here is not a good idea, too. 'gd->part0.bd_device'
-is not initialized at this point. The error log will be:
-  block (null): block: dynamic minor allocation failed
-
-Fix it by using pr_err() and print ubi id.
-
-Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/mtd/ubi/block.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index f82e3423acb9..bf7308e8ec2f 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -390,7 +390,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- 	ret = blk_mq_alloc_tag_set(&dev->tag_set);
- 	if (ret) {
--		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
-+		pr_err("ubiblock%d_%d: blk_mq_alloc_tag_set failed\n",
-+			dev->ubi_num, dev->vol_id);
- 		goto out_free_dev;
- 	}
- 
-@@ -407,8 +408,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	gd->minors = 1;
- 	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
- 	if (gd->first_minor < 0) {
--		dev_err(disk_to_dev(gd),
--			"block: dynamic minor allocation failed");
-+		pr_err("ubiblock%d_%d: block: dynamic minor allocation failed\n",
-+			dev->ubi_num, dev->vol_id);
- 		ret = -ENODEV;
- 		goto out_cleanup_disk;
- 	}
--- 
-2.39.2
-
+Will
 
