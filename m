@@ -1,110 +1,121 @@
-Return-Path: <linux-kernel+bounces-161460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1934F8B4C3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:47:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4A38B4C41
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3B61C20A14
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F9528196B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB1A5FEED;
-	Sun, 28 Apr 2024 14:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC9F6D1C1;
+	Sun, 28 Apr 2024 14:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbpNeXf9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GjY/AysB"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A087B8C1F;
-	Sun, 28 Apr 2024 14:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E25AD52;
+	Sun, 28 Apr 2024 14:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714315652; cv=none; b=JEGVXWDWpQnFg49A2vX3J59TJ/BMrjVmD6pzpWu6dC7NUYnvEJHHzUnUe9g3nfMSrlgxgouH4kgPacFbmuKb9T9pgVI/xWAt0zM/Ni1xYn5CdGq+apFpT3DM9ryMMJr53JhSagpS+qUz5yz4oUGR/DKuEYoWN2R2dXTWW3IRtdo=
+	t=1714315739; cv=none; b=Nse+Z9yGSy4mONuEkHnbzTnGWcCsp1dZB1Pa0FK4JAWwSRMP0nPRE2SWPBk/L85CgThuzUbC/f4cnSh9DHwWdFcwrhbuMcItbFV4tmigY1yS6uBXHUwrCk/Ms1f/677MWqx3DTVlzZd4j6VNDq/72G2oHbQgI+NEAFxdt7Mn25w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714315652; c=relaxed/simple;
-	bh=j3dgZxwRNCdjI+Z7qYMD9SW57AmVLugjFAeYYrRK/KE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=udQZkj71zhe39tJAg3KZ4bYVWfXoo1EcguBoGD1ww+0KV4YSE+whkUVGrs4KYotCFF6n3KJwJ0ZM1nbnF99nhZn1eFPeO/SpRzd5GDLmHw+Oa8brrxcfZu0uRFbW3uPdAsCBoo+kVvTn6AvCbHQLrSemXbuWdBN79Nr2ct2R0Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbpNeXf9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F35F1C113CC;
-	Sun, 28 Apr 2024 14:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714315652;
-	bh=j3dgZxwRNCdjI+Z7qYMD9SW57AmVLugjFAeYYrRK/KE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fbpNeXf91akNWf9Z9oN/ywTA3xvo4Iv1flypFsbcpznkTXlDms019j7h21DKqAMaa
-	 8qk8DSkZ+HTvE5XRyhx2KInErkxig4gFbIFZ4OHfo1ZzVTN81rNKpro5ub4/XyshHr
-	 zRsAx15XPwMzLbdR0qApIgMPS+Hq+2PTlsmoZZRb7ZaWe8QcEccFeiRfF8hzVCyYbm
-	 Fz+SLqos/JBw2hMKGzPTKES9OBycPXy2ldh0GKa4pEgl6YbQFGxj/XHBsV0lMN1LeI
-	 BVPb3XgQ60MjmI8rau0K50/M1NM5zjqYC+7PvRpzIZuLO26U2FiwtmJKSxq+vMPRRp
-	 bD7Mm8Q4iFVzQ==
-Date: Sun, 28 Apr 2024 15:47:22 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-doc@vger.kernel.org, corbet@lwn.net, Ramona Gradinariu
- <ramona.gradinariu@analog.com>
-Subject: Re: [PATCH 1/1] docs: iio: adis16475: fix device files tables
-Message-ID: <20240428154722.168cb7c2@jic23-huawei>
-In-Reply-To: <20240424094152.103667-2-ramona.gradinariu@analog.com>
-References: <20240424094152.103667-1-ramona.gradinariu@analog.com>
-	<20240424094152.103667-2-ramona.gradinariu@analog.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714315739; c=relaxed/simple;
+	bh=TwQA7/miNNOphY2D3FI8tBXZwUzrt3mN49X+VNAy1tA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJereALt65o2jsJNMwf8ggrwNsxaZj9xaVH4Q7ugo6rDAE8E0+KOlXVTIE1sBfpmbqjR/tX634QoohYS9aJP5BkaXIJ2PytjIgSOYyWkpDcc4bI9pn4n/A5EGilGm4OxrrEXJ2jwAO7ELv+xmf0YB9it8EG4gHlJ0RQt6cDL3kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=GjY/AysB; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=xqq21paJKP2+riMYLIjLYPLWIPBCPPYAVbbEQpB67Mg=; b=Gj
+	Y/AysBpQW6z8Qb8hIUYe9BIu8ptnZKE/aFs2RjpMVx6H+3IW+JA74hS3uJr92JIqa/K8uulLDD9lK
+	17hzYyijU6s5haNc0DJAJQkHjnUlyCERbSthBROv2NlN8TSYlrqE+twK3ilp/HJKIaF6FKaLKZJEa
+	3DQvvwpUT2bzOlg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s15pa-00EBzI-9b; Sun, 28 Apr 2024 16:48:42 +0200
+Date: Sun, 28 Apr 2024 16:48:42 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
+ interrupts unmasking
+Message-ID: <4ea06ce4-d1df-49ea-8667-1f43dac7e747@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
+ <Zi1Xbz7ARLm3HkqW@builder>
+ <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
+ <Zi10QS6UGGaNVRaB@builder>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zi10QS6UGGaNVRaB@builder>
 
-On Wed, 24 Apr 2024 12:41:52 +0300
-Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
-
-> Remove in_accel_calibbias_x and in_anglvel_calibbias_x device files
-> description, as they do not exist and were added by mistake.
-> Add correct naming for in_accel_y_calibbias and in_anglvel_y_calibbias
-> device files and update their description.
+On Sat, Apr 27, 2024 at 11:55:13PM +0200, Ramón Nordin Rodriguez wrote:
+> > How fast is your SPI bus? Faster than the link speed? Or slower?
+> > 
+> > It could be different behaviour is needed depending on the SPI bus
+> > speed. If the SPI bus is faster than the link speed, by some margin,
+> > the receiver buffer should not overflow, since the CPU can empty the
+> > buffer faster than it fills.
 > 
-> Fixes: 8243b2877eef ("docs: iio: add documentation for adis16475 driver")
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Applied
-> ---
->  Documentation/iio/adis16475.rst | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis16475.rst
-> index 91cabb7d8d05..130f9e97cc17 100644
-> --- a/Documentation/iio/adis16475.rst
-> +++ b/Documentation/iio/adis16475.rst
-> @@ -66,11 +66,9 @@ specific device folder path ``/sys/bus/iio/devices/iio:deviceX``.
->  +-------------------------------------------+----------------------------------------------------------+
->  | in_accel_x_calibbias                      | Calibration offset for the X-axis accelerometer channel. |
->  +-------------------------------------------+----------------------------------------------------------+
-> -| in_accel_calibbias_x                      | x-axis acceleration offset correction                    |
-> -+-------------------------------------------+----------------------------------------------------------+
->  | in_accel_x_raw                            | Raw X-axis accelerometer channel value.                  |
->  +-------------------------------------------+----------------------------------------------------------+
-> -| in_accel_calibbias_y                      | y-axis acceleration offset correction                    |
-> +| in_accel_y_calibbias                      | Calibration offset for the Y-axis accelerometer channel. |
->  +-------------------------------------------+----------------------------------------------------------+
->  | in_accel_y_raw                            | Raw Y-axis accelerometer channel value.                  |
->  +-------------------------------------------+----------------------------------------------------------+
-> @@ -94,11 +92,9 @@ specific device folder path ``/sys/bus/iio/devices/iio:deviceX``.
->  +---------------------------------------+------------------------------------------------------+
->  | in_anglvel_x_calibbias                | Calibration offset for the X-axis gyroscope channel. |
->  +---------------------------------------+------------------------------------------------------+
-> -| in_anglvel_calibbias_x                | x-axis gyroscope offset correction                   |
-> -+---------------------------------------+------------------------------------------------------+
->  | in_anglvel_x_raw                      | Raw X-axis gyroscope channel value.                  |
->  +---------------------------------------+------------------------------------------------------+
-> -| in_anglvel_calibbias_y                | y-axis gyroscope offset correction                   |
-> +| in_anglvel_y_calibbias                | Calibration offset for the Y-axis gyroscope channel. |
->  +---------------------------------------+------------------------------------------------------+
->  | in_anglvel_y_raw                      | Raw Y-axis gyroscope channel value.                  |
->  +---------------------------------------+------------------------------------------------------+
+> I'm running at 25MHz, I'm guessing that should translate to fast enough
+> for the 10MBit half duplex link.
+> But I'm not sure how the spi clock translates to bps here.
 
+That seems plenty fast. Maybe you can get a bus pirate or similar
+sniffing the bus. Maybe there are big gaps between the transfers for
+some reason? Or the interrupt controller is very slow?
+
+> I'm guessing you are right and that the others actually would be
+> meningful to log.
+> There is a nested question here as well, and that is wheter to keep or
+> drop the code that drops the rx buffer on overflow interrupt.
+> I think not dropping the full buffer could be one of the reasons for the
+> perf change.
+
+You need to look careful at what a buffer overflow means, as written
+in the standard. Does it mean a chunk has been dropped from the frame
+currently being transferred over the SPI bus? If so, you need to drop
+the frame, because it is missing 64 bytes somewhere. That could happen
+if the device has very minimal buffering and does cut through. So the
+frame goes straight to the SPI bus while it is still being received
+from the line. Or the device could have sufficient buffers to hold a
+few full frames. It has run out of such buffers while receiving, and
+so dropped the frame. You never see that frame over SPI because it has
+already been discarded. If so, linux should not be dropping anything,
+the device already has.
+
+Given your 25Mhz bus speed, i think there at least two things wrong
+here. Dropping frames is too noise, and potentially doing it wrong. I
+also think there is something not optimal in your SPI master, because
+25MHz should not have trouble with 10Mbps line speed.
+
+	Andrew
 
