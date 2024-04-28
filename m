@@ -1,179 +1,137 @@
-Return-Path: <linux-kernel+bounces-161544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F3A8B4D88
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:52:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45BB48B4D8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089C41F2143A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:52:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F541F21238
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C00374418;
-	Sun, 28 Apr 2024 18:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155AF74422;
+	Sun, 28 Apr 2024 19:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ddgEG4UF"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HWilYCzn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B95EEC6;
-	Sun, 28 Apr 2024 18:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E8E10F1
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 19:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714330346; cv=none; b=KOKbG3/mj86aoRWHhjvJjVIXXFgPMPRX6wC4FYtizzavwn04oMeQn50i2AtcJokMWeoi5X1vJLnVcPLNCalvuPGRiKLCvOAJXlgewcPYtzlP8rBEpaKWehW+1aAOmu4z8tVyJx9Pu+mQY+bvExfwZipghsfIphpZFxmpD2lk+Xw=
+	t=1714330919; cv=none; b=qY0tzdrPSDWRTSWcsRIIji7jhGrGdlTPyyyOv9vN18Qw+TJ1mK0WjfOipyzJyCfnG1R7/7bZJdjbuNjYCKS+n9U28anCig7u1xg72xDzL0DVo5IrjgkZJ8zSQv7vfbG+DAJ5ykbaI/N1mR8ierDwBuJTWKBsJZueb2ZqwWiS5Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714330346; c=relaxed/simple;
-	bh=i08qcoe0Ph/eFDId2t+79a+VFYuTrFN+dA4Nd0o9YeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qD0Bku+Rt1gIIEALRR/nMMAOhYZt9qbPUqy/x6KLnAF1ft9aHBJ7RiZHAYATyBpils7Q1DlQJkvXgCZygHlk6xXShzdspewCS39V8uyZ8mGEaZnI966tkxm4KvL1dal+oBywOtfffbO2p6IR0dT/1tQlotGW3E1yfvikUzVl9vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ddgEG4UF; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4266673bbso33233415ad.2;
-        Sun, 28 Apr 2024 11:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714330344; x=1714935144; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=A50txbCSTHM0D9aUPO2eeX6hnGYpoz3AvNJN0jmEZFI=;
-        b=ddgEG4UFBlL60nY5qGtxacJcI3Y/Sqom5BI9T6Xw8BvhsCX3DNgDCHVCFJrHi4zdaA
-         A9xkWLMKaVR7WhLPad/BkqkBzhl+e5ngEJ40yVMy4Wbuk2nalwOqxl0mzhSRfmVJZWdt
-         wagoxe2SWADg4wE6dYet7dgP3pGUIbAyeumaOTTd3hObJkAfgcyLdild4yBe2xrKhOHp
-         4+kCPILWqtLIlfUpMoCDnAPx538Sey2WNYF/3qBEDNNyMcEksZfZhQbXtPxYaCzpJD54
-         CauHsUxHIfI7rAaqwXW6j4miDwRZ+asKOqYYvipmDxqv/cVUNZkYvb8ZsbioQ0JehPhq
-         Qezg==
+	s=arc-20240116; t=1714330919; c=relaxed/simple;
+	bh=RIQw26BWThK3J1ibTcR5IgYR08UTehW3GYYYG9XrKhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=dMN3sHBpKOLQ34zYfMhriP+trJXD5pmXOaUwNVAxHYC47ReQRLMHc4a4Nd5TiAjobd03H+3IK84ogv/LQPUDWvtYOsqRlynj0M2jBVHK2lyaf5NnYrpufmKOMGq6bETqyGZtP7s0Frn6Us1UdmDGAiuLUb87lTRLavCfc1gh0WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HWilYCzn; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714330916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pkigxwzJ0pF/T4NqveAQpx8gjiN35IK7jok4Q5z8klI=;
+	b=HWilYCzniiS/dajtY5AbmQ3AI6fAYAc1Ps3QbkQJaaQpO3ZiaEhHICnA0l1VfpVS/4CW4w
+	RNba3rP4im6E3cglfZhV2VZlEHI52rDFNw/umLkNgxqEZkPLUwcLy2mId6y7K5tG4jIJiK
+	j2lk+YxQROGbHX1paw0uBf1b5YdKo2E=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-cWRYfkhGO9y7x8siwRjuxA-1; Sun, 28 Apr 2024 15:01:54 -0400
+X-MC-Unique: cWRYfkhGO9y7x8siwRjuxA-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-43a3632d56aso15798091cf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 12:01:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714330344; x=1714935144;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A50txbCSTHM0D9aUPO2eeX6hnGYpoz3AvNJN0jmEZFI=;
-        b=J6vGR3k62d1B14VjUK1c0QoPYDQJzMxSQhnj3D+HiQVag+/G8c3HF0bC8dt/E9Rd92
-         lkmIHwZ002inrRQKuPPJdgVnLF8kJeNvNabyfY6dIOl1vV3ZVy82q7jnI8Vy/e9uvXiW
-         HAEHho+hpRqz2zoycMTSUW17Y76614bxj3fsBOez7JKk/LMGEFU/G2a7OHkKSNOhaWn5
-         +MN7SC4dgrHboYVWVGpMwTfJ+QKULXIsz7D+zFQx7BvGn+ZNeU2IzZpStGHxzlq3bUgE
-         gnJck36zi9D9VloxLFd57M5+86L1KvWDZQe2bVPHYMTR5syKT2pG4NUvXnlps44RP2wd
-         N7rw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfGiMSMl8acuk/ickWXv0+sAT6k4CdgW2V67HwEbkj4Jw74NXujzf0BqwaWIl+ofbPVYIXQalPsjGuc1oF/sYTXsRaUIsBIsyM3wjJvQKjsEPRdCuVCs3FDqLcOGaOw3FiSXIqkH3+
-X-Gm-Message-State: AOJu0YxWFcq8q9Y3IMzeeVXjtjdCWZiK5KJbTi89Td3U1V9x9uHPop42
-	Dfbz/FQWSD0T8HkpsXEQpFtlzi17nwLSV4XM1JC6RJkqrJFuvLkR9+8vPA==
-X-Google-Smtp-Source: AGHT+IHIr0ifpryJ3EV2/HqCQDfzc/+8MNeGNvg9Mo+9XDrJrdOekj30XZkKOI6ZJ9iIEL5E3F7oQA==
-X-Received: by 2002:a17:902:8483:b0:1e9:6609:37d5 with SMTP id c3-20020a170902848300b001e9660937d5mr6919400plo.27.1714330344472;
-        Sun, 28 Apr 2024 11:52:24 -0700 (PDT)
-Received: from localhost ([2804:30c:1f6c:5400:ea32:e7c8:5bc0:103])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170902b08a00b001e2c1e56f3bsm18667469plr.104.2024.04.28.11.52.22
+        d=1e100.net; s=20230601; t=1714330914; x=1714935714;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pkigxwzJ0pF/T4NqveAQpx8gjiN35IK7jok4Q5z8klI=;
+        b=NHmi/ZD1QDYkt88rU61jklgFfd+JgIg/Ej2Stjf5iIhM4R17/3jHLTvDIYpiXGpGt9
+         sogFXZ1soX2kmcAu6Ypk+xLCudoq/Bjs9dP32msE7GxAcZIY7C7o9JGdeKAcFnFDL61W
+         F2RHRp1tCRap1S+pc/tbmOkdeA20pluxy5qbbglsRxhtiI+fufHMlkoNbdwfH1Y+xuqE
+         3LfDEp7JPVaZywhwuQQmYh6dr/EXofdUnE6Z54Tlof/Xi7J42ZO7CSwUi+Whn9SV6V/J
+         bZEbXZ3+z+ulg4r7l/gZPVfdulp6bqh/HQXkGXFGKRRSht/OHywa4jVimd0fP5JemCZR
+         OYpQ==
+X-Gm-Message-State: AOJu0Yw3YUuSpHrmMh+/kmrxjCSGN3wb3d/mvq5JbMuLsMK1pQVdfmyH
+	mXBU1z6WvHBNWHaZAkbgxfX0u4zj5ccOvsmiI9RL8Nvl+tdrjgirOB12euSgyu3bHQce+ZyBScS
+	pEAigEKL2k2VF+Yaq22RQSouARJkahXx3+tybpLU2exRGdY7tKUZVnvjpdUlxNyrB4hwbK3wOns
+	pjXkGX/mtuD79VNeopNjQcWJziH1ezWNNzwJDtA67O6wA=
+X-Received: by 2002:a05:620a:17a0:b0:790:e83a:e6eb with SMTP id ay32-20020a05620a17a000b00790e83ae6ebmr4022635qkb.5.1714330913873;
+        Sun, 28 Apr 2024 12:01:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEc5kc0cZSyusKzQeLAgeOYcB5BLCEjzPmI8Bn8/lrUkN7IeJKwQ4CrGxFGrgIzhwqWtQQFqg==
+X-Received: by 2002:a05:620a:17a0:b0:790:e83a:e6eb with SMTP id ay32-20020a05620a17a000b00790e83ae6ebmr4022591qkb.5.1714330913186;
+        Sun, 28 Apr 2024 12:01:53 -0700 (PDT)
+Received: from x1n.redhat.com (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id oo8-20020a05620a530800b0078d693c0b4bsm9818152qkn.135.2024.04.28.12.01.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 11:52:23 -0700 (PDT)
-Date: Sun, 28 Apr 2024 15:53:12 -0300
-From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Andrew Hepp <andrew.hepp@ahepp.dev>, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
- negative values
-Message-ID: <Zi6bGN70PFGl4UJ_@debian-BULLSEYE-live-builder-AMD64>
-References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
- <Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
- <20240427195758.GA3350@debian>
- <20240428144606.5b3d9a7e@jic23-huawei>
+        Sun, 28 Apr 2024 12:01:52 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	peterx@redhat.com,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 0/2] mm/gup: Fix hugepd for longterm R/O pin on Power
+Date: Sun, 28 Apr 2024 15:01:49 -0400
+Message-ID: <20240428190151.201002-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240428144606.5b3d9a7e@jic23-huawei>
 
-On 04/28, Jonathan Cameron wrote:
-> On Sat, 27 Apr 2024 21:57:58 +0200
-> Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
-> 
-> > Am Sat, Apr 27, 2024 at 05:49:18AM -0300 schrieb Marcelo Schmitt:
-> > > Hi Dimitri,
-> > > 
-> > > Interesting patch this one.
-> > > I think this does apply, although, the cold junction register has for sign bits
-> > > so I think we could also have a mask to clear those out.
-> > > Some code suggestions inline.
-> > >  
-> > Hi Marcelo,
-> > 
-> > the temperature bits are in two’s complement format for hot and cold
-> > junction. Equations to calculate the temperature are also the same in
-> > the datasheet. There should be no difference when handling them. I don't
-> > think we need to do anything more with the value except sign_extend it to
-> > the appropriate data type. If the sign bits aren't right, there is a bug
-> > in the chip, until then futher processing of it is unneeded. I could add
-> > a comment here if it helps.
+This series should apply to both mm-stable and mm-unstable, I am not sure
+whether it's even applicable to apply on mm-stable directly, but perhaps
+not urgently needed either.  Anyway, it'll apply to either tree.  It also
+means cc stable is not needed even if I had the Fixes attached.
 
-Ah yes, I missed the fact that other bits need to be set to make the value
-smaller (closer to zero) when the MSB of two's complement number is set.
+Patch 1 fixes that bug in mm-stable, patch 2 enhances the gup_longterm to
+be able to discover such issue.
 
-> 
-> Agreed - by my reading the original patch is correct. Maybe it would act
-> as cleaner 'documentation' to have the sign_extend32() for the cold junction be
-> from bit 12 rather than 15, but I'm not sure it's worth the effort.
+In general, the previous hugetlb rework [1] on gup-slow introduced an issue
+with R/O longterm pin.  Nobody yet found it in either a real report or test
+case, probably because our test case doesn't yet cover it (not before patch
+2), and it's also a pretty rare path: it only happens with Power longterm
+R/O pins on a page cache that is installed as a hugepd read-only.
 
-Yes, the original patch should be correct.
-Yeah, no practical difference using bit 12 or 15 to sign extend the number so
-probably not worth changing that.
+Please read each of the patch for details.
 
-> 
-> Andrew, would be great if you can review this fix in case we are all missing
-> something!
-> 
-> Jonathan
-> 
-> > 
-> > > On 04/24, Dimitri Fedrau wrote:  
-> > > > Temperature is stored as 16bit value in two's complement format. Current
-> > > > implementation ignores the sign bit. Make it aware of the sign bit by
-> > > > using sign_extend32.
-> > > > 
+I retested "./run_vmtests.sh -t gup_test -a" on a Power8 system with a
+Power8 VM, with 16MB hugepd hugepd entries installed.  Note that I tested
+exactly the same matrix before, but patch 2 will change gup_longterm test,
+so it's actually slightly different test carried out, and the new test
+(gup_longterm.c, when apply patch 2 only) will hang mm-stable on Andrew's
+tree with that 16MB huge page.
 
-Reviewed-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+Thanks,
 
-> > > > Fixes: 3f6b9598b6df ("iio: temperature: Add MCP9600 thermocouple EMF converter")
-> > > > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> > > > ---
-> > > >  drivers/iio/temperature/mcp9600.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
-> > > > index 46845804292b..7a3eef5d5e75 100644
-> > > > --- a/drivers/iio/temperature/mcp9600.c
-> > > > +++ b/drivers/iio/temperature/mcp9600.c  
-> > > 
-> > > #define MCP9600_COLD_JUNCTION_SIGN_MSK GENMASK(15,12)
-> > > ...
-> > >   
-> > > > @@ -52,7 +52,8 @@ static int mcp9600_read(struct mcp9600_data *data,
-> > > >  
-> > > >  	if (ret < 0)
-> > > >  		return ret;
-> > > > -	*val = ret;
-> > > > +
-> > > > +	*val = sign_extend32(ret, 15);  
-> > > 	if (chan->address == MCP9600_COLD_JUNCTION)
-> > > 		*val &= ~MCP9600_COLD_JUNCTION_SIGN_MSK;
-> > >  
-> > This won't work. Assuming int is 32-bit ret = 0xfffe and *val = -2 after
-> > sign_extends32, this would result in *val = -61442 which is wrong.
-> > > >  
-> > > >  	return 0;
-> > > >  }
-> > > > -- 
-> > > > 2.39.2
-> > > > 
-> > > >   
-> > Best regards,
-> > Dimitri Fedrau
-> 
+[1] https://lore.kernel.org/r/20240327152332.950956-1-peterx@redhat.com
+
+Peter Xu (2):
+  mm/gup: Fix hugepd handling in hugetlb rework
+  mm/selftests: Don't prefault in gup_longterm tests
+
+ mm/gup.c                                  | 64 ++++++++++++++---------
+ tools/testing/selftests/mm/gup_longterm.c | 12 +++--
+ 2 files changed, 48 insertions(+), 28 deletions(-)
+
+-- 
+2.44.0
+
 
