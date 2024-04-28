@@ -1,55 +1,79 @@
-Return-Path: <linux-kernel+bounces-161233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C11068B494B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:06:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E830C8B494C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 05:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D37F282497
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:06:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D5FE2820B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FD98F4A;
-	Sun, 28 Apr 2024 03:05:42 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109111854;
-	Sun, 28 Apr 2024 03:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097BF23A6;
+	Sun, 28 Apr 2024 03:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="cg8K9yxO"
+Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com [68.232.139.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0455915A4;
+	Sun, 28 Apr 2024 03:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714273542; cv=none; b=Y4cJ9Pfa6yg6b2I9AVYppEpvFr+8Gr5r/4zOHf2hrk7BnRjeb4jwgWQ2m0DDeBH1bwSfLVA2IMcEPy8HSBIAJWCOfU3wJelWM/jvWqhUoJYk96zhpyN8cSsk+KZg835iXy4S4grRMyIH11+X9AEFrzqQDsoT2CWXEI4Pu14H8N4=
+	t=1714273759; cv=none; b=gAhbbDijK84faMtnWcotkZ9fR/FwiX3f41ZPQBIW5jRyLvG1SBcYI+Wj3Tko4QrjL/VZiXpsT3ELDT/gUsXRzvCgUhtzGYTAlJlisXPg3HRq2CW1a4+FJPVUzlIj+V6mP8Ae494Ehbrmi91ysJDORHWDU99idXt4igGfsQvEcts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714273542; c=relaxed/simple;
-	bh=/nBt/EInsoTVkYRGjAmDJe2GPmttLfF030/NoAPJxFk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vC6GbirnH6gJepxGsN5Cf9Nc1sq+OVHwE1x1HiDPMwaljF2eE1xSD3XevXmmuABGkiCgGW52gaunScPmeLakBCfj36H12Q6n4uGQMd75AA58gswRcPxV9px+ZD1uUV/KyGrAOiKNbNGp0vmYkDBTY3pwtnup6GMtHpZaY7kEgKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8AxqekBvS1mOTcEAA--.3393S3;
-	Sun, 28 Apr 2024 11:05:37 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxHlX6vC1mZOcHAA--.5433S4;
-	Sun, 28 Apr 2024 11:05:34 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Shuah Khan <skhan@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Mark Brown <broonie@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-kselftest@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] selftests/vDSO: Fix runtime errors on LoongArch
-Date: Sun, 28 Apr 2024 11:05:30 +0800
-Message-ID: <20240428030530.24399-3-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240428030530.24399-1-yangtiezhu@loongson.cn>
-References: <20240428030530.24399-1-yangtiezhu@loongson.cn>
+	s=arc-20240116; t=1714273759; c=relaxed/simple;
+	bh=k6OWLn97dyPXiojG9nCjtXAuHyNojQdpkS9sgnConzM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bHJZuOF89MeOgWKKx98EX5GYSBR31COOK5L7nMDcDJizewvyo1gQTfj6N0ZddxQ+vkF1zFfpdbfM4AWTRpEySRyzH4ToC/d9rJrAwCMNYMvFMZr8XZbUeqHhDA1C6+VLSKA/HHKUXFMflhK4K6W5ekBwBJqQeQVI6mBjyQPROVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=cg8K9yxO; arc=none smtp.client-ip=68.232.139.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1714273757; x=1745809757;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=k6OWLn97dyPXiojG9nCjtXAuHyNojQdpkS9sgnConzM=;
+  b=cg8K9yxO6DZ8R19DEvAGbxxVFwAcASjXeIxD8LWOe9TU1t7jsefKFpyr
+   BPiJxB9qBGN84jPHp8thLk78pgEA1MJicr37n0fjKyABiCDHJc8hFmxjI
+   geIwVNUSASNYNiWtNMllpWGbHyhAMb52a0ktMas6dRY5aOaQFw1xl89Yx
+   J1UnmALLpWo2/DtawJ3lhdkMIn0/g2j0DBCQg3chUlOmZgFsMOO68wfrJ
+   ih3rhA+7uAdWPNTH+IFITxY7l5xZxP3O/3SDiPXov5TpmQ4Dx14vmL6QL
+   YG+xRYLXBnoDis/xm7aFaki/Kk1bnq+LPhQ5Dru58gH67A5NWvOcoco0y
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="156389211"
+X-IronPort-AV: E=Sophos;i="6.07,236,1708354800"; 
+   d="scan'208";a="156389211"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 12:08:03 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id A12D1E8F86;
+	Sun, 28 Apr 2024 12:08:00 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id C7D60BF4AF;
+	Sun, 28 Apr 2024 12:07:59 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 539BD34789;
+	Sun, 28 Apr 2024 12:07:59 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 61EF31A0002;
+	Sun, 28 Apr 2024 11:07:58 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: dave@stgolabs.net,
+	jonathan.cameron@huawei.com,
+	dave.jiang@intel.com,
+	alison.schofield@intel.com,
+	vishal.l.verma@intel.com,
+	ira.weiny@intel.com,
+	dan.j.williams@intel.com,
+	linux-cxl@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH] cxl/region: Fix cxlr_pmem leaks
+Date: Sun, 28 Apr 2024 11:07:48 +0800
+Message-Id: <20240428030748.318985-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,157 +81,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxHlX6vC1mZOcHAA--.5433S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxuFy5Gw1UAFWkKF1kGF48uFX_yoWrZr4rpa
-	n7K342kw48tay5Kw1Iy3s8ur4fJrn7Ga18Aw4UAFW3AF47Zw48JrWDGFy5X3Z3urWvvws8
-	ua4Fgr4F9aykJagCm3ZEXasCq-sJn29KB7ZKAUJUUUUD529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8XTm3UUUUU==
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28348.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28348.004
+X-TMASE-Result: 10-0.891900-10.000000
+X-TMASE-MatchedRID: rWcK0WiM0yxUfypZw6S0pSQLXCPUFARrTFQnI+epPIakob0Y35+HFL8F
+	Hrw7frluf146W0iUu2v46qOd1x1zqpcFdomgH0lnFEUknJ/kEl5jFT88f69nG/oLR4+zsDTtjoc
+	zmuoPCq2BlDQq+LQ0B9zCG0GDXnSbHq67pWYcGwtU1RsVEEJA/I8pk/SmUpRHjZEDJ+dycfNkeF
+	KCrXUpHp8Roq8b+01TGnrijSn3hCQVwbf5lERMgI/2RRfVn5u4Tcu6aRtCI3BUKpNI+7y1VHsDE
+	gQ63iHZ
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-It could not find __vdso_getcpu and __vdso_gettimeofday when test
-getcpu and gettimeofday on LoongArch.
+Before this error path, cxlr_pmem pointed to a kzalloc() memory, free
+it to avoid this memory leaking.
 
-  # make headers && cd tools/testing/selftests/vDSO && make
-  # ./vdso_test_getcpu
-  Could not find __vdso_getcpu
-  # ./vdso_test_gettimeofday
-  Could not find __vdso_gettimeofday
-
-One simple way is to add LoongArch case to define version and name,
-just like commit d942f231afc0 ("selftests/vDSO: Add riscv getcpu &
-gettimeofday test"), but it is not the best way.
-
-Since each architecture has already defined names and versions in
-vdso_config.h, it is proper to include vdso_config.h to get version
-and name for all archs.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Fixes: f17b558d6663 ("cxl/pmem: Refactor nvdimm device registration, delete the workqueue")
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
- .../testing/selftests/vDSO/vdso_test_getcpu.c | 16 +++++-------
- .../selftests/vDSO/vdso_test_gettimeofday.c   | 26 +++++--------------
- 2 files changed, 13 insertions(+), 29 deletions(-)
+ drivers/cxl/core/region.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/vDSO/vdso_test_getcpu.c b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-index 1df5d057d79f..b758f68c6c9c 100644
---- a/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-@@ -13,13 +13,7 @@
- 
- #include "../kselftest.h"
- #include "parse_vdso.h"
--
--#if defined(__riscv)
--const char *version = "LINUX_4.15";
--#else
--const char *version = "LINUX_2.6";
--#endif
--const char *name = "__vdso_getcpu";
-+#include "vdso_config.h"
- 
- struct getcpu_cache;
- typedef long (*getcpu_t)(unsigned int *, unsigned int *,
-@@ -27,6 +21,8 @@ typedef long (*getcpu_t)(unsigned int *, unsigned int *,
- 
- int main(int argc, char **argv)
- {
-+	const char *version = versions[VDSO_VERSION];
-+	const char **name = (const char **)&names[VDSO_NAMES];
- 	unsigned long sysinfo_ehdr;
- 	unsigned int cpu, node;
- 	getcpu_t get_cpu;
-@@ -40,9 +36,9 @@ int main(int argc, char **argv)
- 
- 	vdso_init_from_sysinfo_ehdr(getauxval(AT_SYSINFO_EHDR));
- 
--	get_cpu = (getcpu_t)vdso_sym(version, name);
-+	get_cpu = (getcpu_t)vdso_sym(version, name[4]);
- 	if (!get_cpu) {
--		printf("Could not find %s\n", name);
-+		printf("Could not find %s\n", name[4]);
- 		return KSFT_SKIP;
- 	}
- 
-@@ -50,7 +46,7 @@ int main(int argc, char **argv)
- 	if (ret == 0) {
- 		printf("Running on CPU %u node %u\n", cpu, node);
- 	} else {
--		printf("%s failed\n", name);
-+		printf("%s failed\n", name[4]);
- 		return KSFT_FAIL;
- 	}
- 
-diff --git a/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c b/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-index e411f287a426..ee4f1ca56a71 100644
---- a/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-@@ -18,25 +18,13 @@
- 
- #include "../kselftest.h"
- #include "parse_vdso.h"
--
--/*
-- * ARM64's vDSO exports its gettimeofday() implementation with a different
-- * name and version from other architectures, so we need to handle it as
-- * a special case.
-- */
--#if defined(__aarch64__)
--const char *version = "LINUX_2.6.39";
--const char *name = "__kernel_gettimeofday";
--#elif defined(__riscv)
--const char *version = "LINUX_4.15";
--const char *name = "__vdso_gettimeofday";
--#else
--const char *version = "LINUX_2.6";
--const char *name = "__vdso_gettimeofday";
--#endif
-+#include "vdso_config.h"
- 
- int main(int argc, char **argv)
- {
-+	const char *version = versions[VDSO_VERSION];
-+	const char **name = (const char **)&names[VDSO_NAMES];
-+
- 	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
- 	if (!sysinfo_ehdr) {
- 		printf("AT_SYSINFO_EHDR is not present!\n");
-@@ -47,10 +35,10 @@ int main(int argc, char **argv)
- 
- 	/* Find gettimeofday. */
- 	typedef long (*gtod_t)(struct timeval *tv, struct timezone *tz);
--	gtod_t gtod = (gtod_t)vdso_sym(version, name);
-+	gtod_t gtod = (gtod_t)vdso_sym(version, name[0]);
- 
- 	if (!gtod) {
--		printf("Could not find %s\n", name);
-+		printf("Could not find %s\n", name[0]);
- 		return KSFT_SKIP;
- 	}
- 
-@@ -61,7 +49,7 @@ int main(int argc, char **argv)
- 		printf("The time is %lld.%06lld\n",
- 		       (long long)tv.tv_sec, (long long)tv.tv_usec);
- 	} else {
--		printf("%s failed\n", name);
-+		printf("%s failed\n", name[0]);
- 		return KSFT_FAIL;
- 	}
- 
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index 5c186e0a39b9..812b2948b6c6 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -2719,6 +2719,7 @@ static struct cxl_pmem_region *cxl_pmem_region_alloc(struct cxl_region *cxlr)
+ 		if (i == 0) {
+ 			cxl_nvb = cxl_find_nvdimm_bridge(cxlmd);
+ 			if (!cxl_nvb) {
++				kfree(cxlr_pmem);
+ 				cxlr_pmem = ERR_PTR(-ENODEV);
+ 				goto out;
+ 			}
 -- 
-2.42.0
+2.29.2
 
 
