@@ -1,763 +1,349 @@
-Return-Path: <linux-kernel+bounces-161292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D01EA8B4A38
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:00:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D8298B4A51
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8448C2820D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:00:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D3D62820E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479EA4F894;
-	Sun, 28 Apr 2024 07:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C69650A6C;
+	Sun, 28 Apr 2024 07:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b/9Ezebp"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=s.l-h@gmx.de header.b="AdU3eBOm"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A802728F0;
-	Sun, 28 Apr 2024 07:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFB02AF1D;
+	Sun, 28 Apr 2024 07:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714287622; cv=none; b=CGCfUBkK5vNlWLKvUkgHHOwoQTSqAx03RHwVUDFeddLFwBeyefrqbvaFS7crIoDeoDVgDOBp3fQgxBgGFYAE5wPDgz3j6o9qfe7FncHNs97RToWYaCYMZaRQF+Vwxc0jh0f+VZ/BrQu+uAsp4CnDjrFSoPe3v+/2fucGGIwCZLI=
+	t=1714287876; cv=none; b=EX+WpE7qt4Bi0gD+G7XegUJrBoHGg/lzZn7XsGcTuyriD0pjQpQALKMGQSug1DLUI3qHnClq76sZLu+vdofVzMr4yUYXMi9BE/7KMmzZpx3DKAFwD3XWgt0z0Hl61ZKXt2NXrKiPR0Ns4NE/M5k06rkBHy+enydz1dxq6pJckJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714287622; c=relaxed/simple;
-	bh=F8m3B467DUSm6wwNt48paDKl1QzytNh3VUvu5dCuKzU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pUYmjldrYnENLTaEt0cgxKhAlSNv+oQGTdoXtsRuBC0tQzdJgsSLEsnGFfVUEMKTMUI7tUCQfMtZLErUgDkekiTx0KbwH5W96zp0PzCz5XD39Gb2b7lMnVCzlTO+v71Tyd4dywGF0eliAeQEhim6+SlFRD/8r66EAhbXqcJ15tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b/9Ezebp; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so3617774b3a.3;
-        Sun, 28 Apr 2024 00:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714287620; x=1714892420; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=aaXHqS0cBqehJeGbQaqrlIhER2mtae+SMna7IPS14Rs=;
-        b=b/9Ezebp4JzVJMgFrsSKfoZnLYU3f5aWYuyF/vUDNCL+NNxEbLaL/iqDE//3kStLwf
-         ++0es0slQETRjXqO4LW1O+DshaG/vK6Itt+si4322Luh93BcwLeuDd7I03MmoSiVB9Dc
-         cUG4ykHQdvMtBWEWk/JgtZMUE6WUSNejTrUoEuoqiV8+spf9zKhLCsEN5SF5EZCqpCr1
-         BL+MjyvK5EZ42qMoSCzWX89vEZk7n/yEqcPcJzAuUWDZ3rSisSn9rRKtmsAQxk81kju1
-         FAAdv2oPSEJlhq4mk7d4QcYU5xM/O1werd+66eznNLmsHpgi4TY0RZRJ+fU8K/VNGGr/
-         3seg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714287620; x=1714892420;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aaXHqS0cBqehJeGbQaqrlIhER2mtae+SMna7IPS14Rs=;
-        b=Gc1Rrvwvq+XtzCWKVWkcVW+Y7Z+WPPzXP1PnFj126i4hMPLY31o+qbShxqC54KNuUU
-         A6K0BeIiS0OwM92qamfep66MNA9e5h+UOg7+dNUKb2EUjhpkuS42lMdz6GXhKE7EkJQK
-         f3nglPcllze+YKsDSYNhT+VmnYzxBkqbV9CmpWSqViAdr9jU0vFEE5Hsy3zOeIMhAfHo
-         +YOTYRP/lpnc+gTwBVzJ0mnWGemitFjTch7z/FjKoTTFri3Yc/sbnj7f6bx61H38tFMf
-         NPlCUadE2CXI5+2ZScGAJevLosu7xVnyz5Wesylw4f+uzXqLL2qK23tcdYT67j2VBVUD
-         GWPA==
-X-Forwarded-Encrypted: i=1; AJvYcCULVTp4FP6CQHMlnxZlkQbx7t7AWVtLqvxXmmczwaFtkUDsxNllBrBeYqgTXHwI9B7pf3DeEeeBv2lD2jFTdrKl8/3YXu3CdCivPDQiXxkkjEOEtx08Be9Jq6gUTj6ZeMuspkDSESRZXKQ=
-X-Gm-Message-State: AOJu0Yy/4ioGVDYoRb/m61V/D21+oEd5liXIGRGHYtC6h1YltytyEefd
-	GpiHxL7DL5p1usIidc3leaMgzw28kg+St0KnKbabT4qBE7AdIABvbE9h0g==
-X-Google-Smtp-Source: AGHT+IF2jU3CVPXW0kiA7mfkKXM9cY2YRl6GAOQyaj+bpsMWwq7cjP1gcRNbbMcvEEUVUpjlxhDNVQ==
-X-Received: by 2002:a05:6a20:7286:b0:1a9:5b3f:f139 with SMTP id o6-20020a056a20728600b001a95b3ff139mr8934380pzk.25.1714287618803;
-        Sun, 28 Apr 2024 00:00:18 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a056a002d8c00b006f3ec69bc09sm2171232pfb.75.2024.04.28.00.00.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 00:00:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <540cad62-db3d-4876-81a4-da396628e5ef@roeck-us.net>
-Date: Sun, 28 Apr 2024 00:00:15 -0700
+	s=arc-20240116; t=1714287876; c=relaxed/simple;
+	bh=LY4f4zJhk0iQT/QVzV6bstlU1vcR/W/CDMW7g8gYJnI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fmNB0gx01FKK84BVUMD34MT4cf3eDSCtEHki7/O9l2lHIu6B3BeLXbCDBGqh23n3OOM8bPaGY79FoUYcXMpDB/uUKNyBCHYoUfTjblIIo4BsTlstoqa+PMoSb5FvzgX9vSMfNkKO5DPtS9cFfLPV6SUdzg8YZxk6omaUWqFPr8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=s.l-h@gmx.de header.b=AdU3eBOm; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1714287854; x=1714892654; i=s.l-h@gmx.de;
+	bh=Q2OWwWgMhXVU65x1vGQbuEr/4YXlN5l4072z2iwRp5s=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=AdU3eBOmBLt5oKHVMiYgbAaha6NQSDv7PqbV1AsVcDQeopV6Z6z4FGftnF/AmYdd
+	 4mrdMO5zhMUFrqKHNSBuM4qJkRURBh6ebnYgrZKSMdLHIjtVCEmP0w6WiWXkOnKct
+	 mHltPxrTL4X/E4snVns3UPlghKRijkZpTDwTfF9q1zHPhGX6vzclCX+KMsKMsV9GJ
+	 Ti+LIcFgcxRXjkTo7aBNudk3F1TRq3W68hBOMVlfdu3Bn9FetknjOb095qxjSoGPm
+	 REVObAxVOsGxKvs8sq4VSOT5XouqyhATi8J+CUF6GXqblk6Y6LIGa7X6Rb2QNU27h
+	 C0QC08YasbnPQIZzuA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mir ([94.31.83.155]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MgesQ-1sb7gI102e-00h2Dt; Sun, 28
+ Apr 2024 09:04:14 +0200
+Date: Sun, 28 Apr 2024 09:04:04 +0200
+From: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Wu Yunchuan
+ <yunchuan@nfschina.com>, Johannes Berg <johannes.berg@intel.com>, "Breno
+ Leitao" <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+ <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
+Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
+Message-ID: <20240428090404.2d300255@mir>
+In-Reply-To: <87a5lhh1t0.fsf@kernel.org>
+References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
+	<171406032921.2967849.6111681305541795423.kvalo@kernel.org>
+	<87a5lhh1t0.fsf@kernel.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drivers: soc: sophgo: Add SG2042 external hardware
- monitor support
-To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jean Delvare <jdelvare@suse.com>, Stephen Boyd <sboyd@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Samuel Holland <samuel.holland@sifive.com>, Wei Xu <xuwei5@hisilicon.com>,
- Huisong Li <lihuisong@huawei.com>, Arnd Bergmann <arnd@arndb.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-hwmon@vger.kernel.org
-References: <IA1PR20MB49532A8A0C52FE5C599B6D13BB142@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB4953A6EF6ED0CD082B60DD80BB142@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <IA1PR20MB4953A6EF6ED0CD082B60DD80BB142@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4gmO+zBDJxeZysSaFd0fB+Bh9NnTyXXtBwo+ZX9AZAVb5pD9iu2
+ cl5jhtsaXK1RnDDVVMfjRZ3ELVZoIEA4M/PPAGATf6BWCZgX+SgK8m84nTQ1TJY2PmUw+IB
+ JI1tCzETEY+0qnpT7OtLSEnAO5rh/9n9xMww//87T6/tzCEzC+Dr7ceyFbYCrLQSALHPvea
+ fwKeQYJdxooheuVytxIQA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:sYyBQoSZoSY=;CAfyCaglsvcnevxmLFchAoVvn5P
+ C8dljfs2HGciyuFxsdmHe/3qi5Tp8Cs3vgtrZXAd3DeC+GNnTNyapdLK+7o9hJlmTEAwN52iz
+ sn9qcHy9MzjMlF4g7H0nLw7MCbwm1d1KfZsme+5O2AjdoLu/bLGZ9hV753GOCigpHz+U06rxZ
+ SRsplIFn6utCcQf87Yd7OwNl5ZRmJvvINkYAqLiuEaKdvdUW9m07MWa/z26NBFSmde3CcdQDA
+ 5JRcNccl4W/nCx+WIv9Mxjb4qrImHfUn9+7GkziKXH6AHHVtqNDrKB3zyi4GUxjnUvUTLs5kW
+ Ipnrsc6aRcVb9AEdiipb2SAXNEp8zHyjxHYim1NGRYSs8hrzOeuTCXK5VNKH77WSHxSIn7mOF
+ czo7YbANNPOoX+Wbkm2Gaz8WEMxDHuvOaBDRwQ8KFXh+eF6CjZkYHD/sknD+Ry8ClPpNWZnrw
+ HoD3iGx9kmcFSJKkEDuCu8iwSNpa7UvUoRqiA9ARlNzK4fG+RDKDseojGGkpjXb6MgfnUeDhU
+ SMBObMJzQFyvpKjioL7W0iU6XB2TDKbV3qRML3MmU3XyVuRUUI0mkAnJF1JfKi3v82or0TmgG
+ Ua/onnvqm3TB/7TLG8/zorwiKMFyDr9lvgKRFxw0VKX0k/zbzpcLDQAYU6tCZJDw5tjy02v2o
+ 0dx7dBFDJq8BxurMaFsGbZkezxBksLaDnwIQDUalV15yMr/VyjI/b9YXmR0bxiIXh2WyHXt19
+ zA2uV8qftx4zFXTW60AqJUj9WawZ3frM7SctpqkCufbs9Wln7mED6Cp/Hmbs8XK9mv7zDPRLE
+ VYlxD0tOZUkBltLtvXVlUB0b2az6NXXVWYohCeyGybGWQ=
 
-On 4/27/24 18:30, Inochi Amaoto wrote:
-> SG2042 use an external MCU to provide basic hardware information
-> and thermal sensors.
-> 
-> Add driver support for the onboard MCU of SG2042.
-> 
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+Hi
 
-Why does this driver reside in drivers/soc and not in drivers/hwmon ?
+On 2024-04-25, Kalle Valo wrote:
+> Kalle Valo <kvalo@kernel.org> writes:
+> > Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
+[...]
+> > Does anyone have a real device to test this? I have had so much proble=
+ms with
+> > syzbot fixes in the past that I'm hesitant to take such patches withou=
+t
+> > testing.
+>
+> Actually should we just remove ar5523 driver? Has anyone heard anyone
+> using this driver still?
 
-NACK from my perspective.
+While I'm not using it regularly, the driver does still work in plain
+v6.8.8 (and these Netgear WG111 and WG111T USB WLAN cards were quite
+common), tested against a qcn5024 AP.
 
-Guenter
+I'm just preparing a new kernel build with the proposed patch applied.
 
-> ---
->   drivers/soc/Kconfig                   |   1 +
->   drivers/soc/Makefile                  |   1 +
->   drivers/soc/sophgo/Kconfig            |  12 +
->   drivers/soc/sophgo/Makefile           |   5 +
->   drivers/soc/sophgo/sg2042-hwmon-mcu.c | 531 ++++++++++++++++++++++++++
->   5 files changed, 550 insertions(+)
->   create mode 100644 drivers/soc/sophgo/Kconfig
->   create mode 100644 drivers/soc/sophgo/Makefile
->   create mode 100644 drivers/soc/sophgo/sg2042-hwmon-mcu.c
-> 
-> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> index 5d924e946507..19050f094996 100644
-> --- a/drivers/soc/Kconfig
-> +++ b/drivers/soc/Kconfig
-> @@ -22,6 +22,7 @@ source "drivers/soc/qcom/Kconfig"
->   source "drivers/soc/renesas/Kconfig"
->   source "drivers/soc/rockchip/Kconfig"
->   source "drivers/soc/samsung/Kconfig"
-> +source "drivers/soc/sophgo/Kconfig"
->   source "drivers/soc/sunxi/Kconfig"
->   source "drivers/soc/tegra/Kconfig"
->   source "drivers/soc/ti/Kconfig"
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index ba8f5b5460e1..6948e6617316 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -28,6 +28,7 @@ obj-y				+= qcom/
->   obj-y				+= renesas/
->   obj-y				+= rockchip/
->   obj-$(CONFIG_SOC_SAMSUNG)	+= samsung/
-> +obj-y				+= sophgo/
->   obj-y				+= sunxi/
->   obj-$(CONFIG_ARCH_TEGRA)	+= tegra/
->   obj-y				+= ti/
-> diff --git a/drivers/soc/sophgo/Kconfig b/drivers/soc/sophgo/Kconfig
-> new file mode 100644
-> index 000000000000..de9842d1c287
-> --- /dev/null
-> +++ b/drivers/soc/sophgo/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Sophgo SoC drivers
-> +#
-> +
-> +config SG2042_HWMON_MCU
-> +	tristate "SG2042 onboard MCU support"
-> +	depends on RISCV
-> +	help
-> +	  Support for SG2042 onboard MCU. This mcu provides power
-> +	  control and some basic information for SG2042 chip.
-> +	  If unsure, say Y.
-> diff --git a/drivers/soc/sophgo/Makefile b/drivers/soc/sophgo/Makefile
-> new file mode 100644
-> index 000000000000..c72729ce61aa
-> --- /dev/null
-> +++ b/drivers/soc/sophgo/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Sophgo SoC drivers
-> +#
-> +obj-$(CONFIG_SG2042_HWMON_MCU)		+= sg2042-hwmon-mcu.o
-> diff --git a/drivers/soc/sophgo/sg2042-hwmon-mcu.c b/drivers/soc/sophgo/sg2042-hwmon-mcu.c
-> new file mode 100644
-> index 000000000000..3413b1a0f5e3
-> --- /dev/null
-> +++ b/drivers/soc/sophgo/sg2042-hwmon-mcu.c
-> @@ -0,0 +1,531 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2024 Inochi Amaoto <inochiama@outlook.com>
-> + *
-> + * Sophgo power control mcu for SG2042
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/i2c.h>
-> +#include <linux/err.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/time.h>
-> +
-> +/* fixed MCU registers */
-> +#define REG_BOARD_TYPE				0x00
-> +#define REG_MCU_FIRMWARE_VERSION		0x01
-> +#define REG_PCB_VERSION				0x02
-> +#define REG_PWR_CTRL				0x03
-> +#define REG_SOC_TEMP				0x04
-> +#define REG_BOARD_TEMP				0x05
-> +#define REG_RST_COUNT				0x0a
-> +#define REG_UPTIME				0x0b
-> +#define REG_RESET_REASON			0x0d
-> +#define REG_MCU_TYPE				0x18
-> +#define REG_CRITICAL_ACTIONS			0x65
-> +#define REG_CRITICAL_TEMP			0x66
-> +#define REG_REPOWER_TEMP			0x67
-> +
-> +#define CRITICAL_ACTION_REBOOT			0x1
-> +#define CRITICAL_ACTION_POWEROFF		0x2
-> +
-> +#define DEFAULT_REPOWER_TEMP			60
-> +#define MAX_REPOWER_TEMP			100
-> +
-> +#define sg2042_mcu_read_byte(client, reg)			\
-> +	i2c_smbus_read_byte_data(client, reg)
-> +#define sg2042_mcu_write_byte(client, reg, value)		\
-> +	i2c_smbus_write_byte_data(client, reg, value)
-> +#define sg2042_mcu_read_block(client, reg, array)		\
-> +	i2c_smbus_read_i2c_block_data(client, reg, sizeof(array), array)
-> +
-> +#define DEFINE_MCU_ATTR_READ_FUNC(_name, _type, _format)		\
-> +	static ssize_t _name##_show(struct device *dev,			\
-> +				    struct device_attribute *attr,	\
-> +				    char *buf)				\
-> +	{								\
-> +		struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);	\
-> +		_type ret;						\
-> +		ret = sg2042_mcu_get_##_name(mcu->client);		\
-> +		if (ret < 0)						\
-> +			return ret;					\
-> +		return sprintf(buf, _format "\n", ret);			\
-> +	}
-> +
-> +struct sg2042_mcu_board_data {
-> +	u8		id;
-> +	const char	*name;
-> +};
-> +
-> +struct sg2042_mcu_data {
-> +	struct i2c_client			*client;
-> +	const struct sg2042_mcu_board_data	*board_info;
-> +};
-> +
-> +static const struct sg2042_mcu_board_data sg2042_boards_data[] = {
-> +	{
-> +		.id = 0x80,
-> +		.name = "SG2042 evb x8",
-> +	},
-> +	{
-> +		.id = 0x81,
-> +		.name = "SG2042R evb",
-> +	},
-> +	{
-> +		.id = 0x83,
-> +		.name = "SG2042 evb x4",
-> +	},
-> +	{
-> +		.id = 0x90,
-> +		.name = "Milk-V Pioneer",
-> +	},
-> +};
-> +
-> +static const char *sg2042_mcu_reset_reason[8] = {
-> +	"Power supply overheat",
-> +	"Power supply failure",
-> +	"12V power supply failure",
-> +	"Reset commant",
-> +	"Unknown",
-> +	"Unknown",
-> +	"Unknown",
-> +	"SoC overheat",
-> +};
-> +
-> +static int sg2042_mcu_get_board_type(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_BOARD_TYPE);
-> +}
-> +
-> +static int sg2042_mcu_get_firmware_version(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_MCU_FIRMWARE_VERSION);
-> +}
-> +
-> +static int sg2042_mcu_get_pcb_version(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_PCB_VERSION);
-> +}
-> +
-> +static int sg2042_mcu_get_soc_temp(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_SOC_TEMP);
-> +}
-> +
-> +static int sg2042_mcu_get_board_temp(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_BOARD_TEMP);
-> +}
-> +
-> +static int sg2042_mcu_get_reset_count(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_RST_COUNT);
-> +}
-> +
-> +static s32 sg2042_mcu_get_uptime(struct i2c_client *client)
-> +{
-> +	int ret;
-> +	u8 time_val[2];
-> +
-> +	ret = sg2042_mcu_read_block(client, REG_UPTIME, time_val);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return (s32)(time_val[0]) + ((s32)(time_val[1]) << 8);
-> +}
-> +
-> +static int sg2042_mcu_get_reset_reason(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_RESET_REASON);
-> +}
-> +
-> +static int sg2042_mcu_get_mcu_type(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_MCU_TYPE);
-> +}
-> +
-> +static int sg2042_mcu_get_critical_action(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_CRITICAL_ACTIONS);
-> +}
-> +
-> +static int sg2042_mcu_get_critical_temp(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_CRITICAL_TEMP);
-> +}
-> +
-> +static int sg2042_mcu_get_repower_temp(struct i2c_client *client)
-> +{
-> +	return sg2042_mcu_read_byte(client, REG_REPOWER_TEMP);
-> +}
-> +
-> +static int sg2042_mcu_set_critical_action(struct i2c_client *client,
-> +					  u8 value)
-> +{
-> +	return sg2042_mcu_write_byte(client, REG_CRITICAL_ACTIONS, value);
-> +}
-> +
-> +static int sg2042_mcu_set_critical_temp(struct i2c_client *client,
-> +					u8 value)
-> +{
-> +	return sg2042_mcu_write_byte(client, REG_CRITICAL_TEMP, value);
-> +}
-> +
-> +static int sg2042_mcu_set_repower_temp(struct i2c_client *client,
-> +				       u8 value)
-> +{
-> +	return sg2042_mcu_write_byte(client, REG_REPOWER_TEMP, value);
-> +}
-> +
-> +static ssize_t board_type_show(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       char *buf)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +
-> +	return sprintf(buf, "%s\n", mcu->board_info->name ?: "Unknown");
-> +}
-> +
-> +DEFINE_MCU_ATTR_READ_FUNC(firmware_version, int, "0x%02x");
-> +DEFINE_MCU_ATTR_READ_FUNC(pcb_version, int, "0x%02x");
-> +DEFINE_MCU_ATTR_READ_FUNC(reset_count, int, "%d");
-> +DEFINE_MCU_ATTR_READ_FUNC(uptime, s32, "%d");
-> +
-> +static ssize_t reset_reason_show(struct device *dev,
-> +				 struct device_attribute *attr,
-> +				 char *buf)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	int ret, val, i;
-> +
-> +	val = sg2042_mcu_get_reset_reason(mcu->client);
-> +	if (val < 0)
-> +		return val;
-> +
-> +	ret = sprintf(buf, "Reason: 0x%02x\n", val);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(sg2042_mcu_reset_reason); i++) {
-> +		if (val & BIT(i))
-> +			ret += sprintf(buf + ret, "bit %d: %s\n", i,
-> +						  sg2042_mcu_reset_reason[i]);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t mcu_type_show(struct device *dev,
-> +			     struct device_attribute *attr,
-> +			     char *buf)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = sg2042_mcu_get_mcu_type(mcu->client);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return sprintf(buf, ret ? "GD32\n" : "STM32\n");
-> +}
-> +
-> +static ssize_t critical_action_show(struct device *dev,
-> +				    struct device_attribute *attr,
-> +				    char *buf)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	int ret;
-> +	const char *action;
-> +
-> +	ret = sg2042_mcu_get_critical_action(mcu->client);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret == CRITICAL_ACTION_REBOOT)
-> +		action = "reboot";
-> +	else if (ret == CRITICAL_ACTION_POWEROFF)
-> +		action = "poweroff";
-> +	else
-> +		action = "unknown";
-> +
-> +	return sprintf(buf, "%s\n", action);
-> +}
-> +
-> +static ssize_t critical_action_store(struct device *dev,
-> +				     struct device_attribute *attr,
-> +				     const char *buf, size_t count)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	int value;
-> +
-> +	if (sysfs_streq("reboot", buf))
-> +		value = CRITICAL_ACTION_REBOOT;
-> +	else if (sysfs_streq("poweroff", buf))
-> +		value = CRITICAL_ACTION_POWEROFF;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return sg2042_mcu_set_critical_action(mcu->client, value);
-> +}
-> +
-> +DEFINE_MCU_ATTR_READ_FUNC(repower_temp, u32, "%u");
-> +
-> +static ssize_t repower_temp_store(struct device *dev,
-> +				  struct device_attribute *attr,
-> +				  const char *buf, size_t count)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	u8 val;
-> +	int ret;
-> +
-> +	ret = kstrtou8(buf, 10, &val);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (val == 0 || val > MAX_REPOWER_TEMP)
-> +		return -EINVAL;
-> +
-> +	return sg2042_mcu_set_repower_temp(mcu->client, val);
-> +}
-> +
-> +static DEVICE_ATTR_RO(board_type);
-> +static DEVICE_ATTR_RO(firmware_version);
-> +static DEVICE_ATTR_RO(pcb_version);
-> +static DEVICE_ATTR_RO(reset_count);
-> +static DEVICE_ATTR_RO(uptime);
-> +static DEVICE_ATTR_RO(reset_reason);
-> +static DEVICE_ATTR_RO(mcu_type);
-> +static DEVICE_ATTR_RW(critical_action);
-> +static DEVICE_ATTR_RW(repower_temp);
-> +
-> +static struct attribute *sg2042_mcu_attrs[] = {
-> +	&dev_attr_board_type.attr,
-> +	&dev_attr_firmware_version.attr,
-> +	&dev_attr_pcb_version.attr,
-> +	&dev_attr_reset_count.attr,
-> +	&dev_attr_uptime.attr,
-> +	&dev_attr_reset_reason.attr,
-> +	&dev_attr_mcu_type.attr,
-> +	&dev_attr_critical_action.attr,
-> +	&dev_attr_repower_temp.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group sg2042_mcu_attr_group = {
-> +	.attrs	= sg2042_mcu_attrs,
-> +};
-> +
-> +static const struct hwmon_channel_info * const sg2042_mcu_info[] = {
-> +	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ | HWMON_C_UPDATE_INTERVAL),
-> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_CRIT,
-> +				 HWMON_T_INPUT),
-> +	NULL
-> +};
-> +
-> +static int sg2042_mcu_read_temp(struct device *dev,
-> +				u32 attr, int channel,
-> +				long *val)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	long tmp;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		switch (channel) {
-> +		case 0:
-> +			tmp = sg2042_mcu_get_soc_temp(mcu->client);
-> +			if (tmp < 0)
-> +				return tmp;
-> +			*val = tmp * 1000;
-> +			break;
-> +		case 1:
-> +			tmp = sg2042_mcu_get_board_temp(mcu->client);
-> +			if (tmp < 0)
-> +				return tmp;
-> +			*val = tmp * 1000;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_temp_crit:
-> +		if (channel)
-> +			return -EOPNOTSUPP;
-> +
-> +		tmp = sg2042_mcu_get_critical_temp(mcu->client);
-> +		if (tmp < 0)
-> +			return tmp;
-> +		*val = tmp * 1000;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int sg2042_mcu_read(struct device *dev,
-> +			   enum hwmon_sensor_types type,
-> +			   u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_chip:
-> +		if (attr != hwmon_chip_update_interval)
-> +			return -EOPNOTSUPP;
-> +		*val = 1000;
-> +		break;
-> +	case hwmon_temp:
-> +		return sg2042_mcu_read_temp(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int sg2042_mcu_write(struct device *dev,
-> +			    enum hwmon_sensor_types type,
-> +			    u32 attr, int channel, long val)
-> +{
-> +	struct sg2042_mcu_data *mcu = dev_get_drvdata(dev);
-> +	u8 down_temp, repower_temp;
-> +	int ret;
-> +
-> +	if (type != hwmon_temp || attr != hwmon_temp_crit || !channel)
-> +		return -EOPNOTSUPP;
-> +
-> +	ret = sg2042_mcu_get_repower_temp(mcu->client);
-> +	if (ret < 0)
-> +		repower_temp = DEFAULT_REPOWER_TEMP;
-> +	else
-> +		repower_temp = ret;
-> +
-> +	down_temp = val / 1000;
-> +	if (down_temp < repower_temp)
-> +		return -EINVAL;
-> +
-> +	return sg2042_mcu_set_critical_temp(mcu->client, (u8)(val / 1000));
-> +}
-> +
-> +static umode_t sg2042_mcu_is_visible(const void *_data,
-> +				     enum hwmon_sensor_types type,
-> +				     u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_chip:
-> +		if (attr == hwmon_chip_update_interval)
-> +			return 0444;
-> +		break;
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +			if (channel < 2)
-> +				return 0444;
-> +			break;
-> +		case hwmon_temp_crit:
-> +			if (channel == 0)
-> +				return 0664;
-> +			break;
-> +		default:
-> +			return 0;
-> +		}
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_ops sg2042_mcu_ops = {
-> +	.is_visible = sg2042_mcu_is_visible,
-> +	.read = sg2042_mcu_read,
-> +	.write = sg2042_mcu_write,
-> +};
-> +
-> +static const struct hwmon_chip_info sg2042_mcu_chip_info = {
-> +	.ops = &sg2042_mcu_ops,
-> +	.info = sg2042_mcu_info,
-> +};
-> +
-> +static int sg2042_mcu_check_board(u8 id)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(sg2042_boards_data); i++) {
-> +		if (sg2042_boards_data[i].id == id)
-> +			return i;
-> +	}
-> +
-> +	return -ENODEV;
-> +}
-> +
-> +static int sg2042_mcu_i2c_probe(struct i2c_client *client)
-> +{
-> +	int ret;
-> +	struct device *dev = &client->dev;
-> +	struct sg2042_mcu_data *mcu;
-> +	struct device *hwmon_dev;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA |
-> +						I2C_FUNC_SMBUS_BLOCK_DATA))
-> +		return -EIO;
-> +
-> +	ret = sg2042_mcu_get_board_type(client);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = sg2042_mcu_check_board(ret);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	mcu = devm_kmalloc(dev, sizeof(*mcu), GFP_KERNEL);
-> +	if (!mcu)
-> +		return -ENOMEM;
-> +
-> +	mcu->client = client;
-> +	mcu->board_info = &sg2042_boards_data[ret];
-> +
-> +	ret = sysfs_create_group(&dev->kobj, &sg2042_mcu_attr_group);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	i2c_set_clientdata(client, mcu);
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
-> +							 mcu,
-> +							 &sg2042_mcu_chip_info,
-> +							 NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static void sg2042_mcu_i2c_remove(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +
-> +	sysfs_remove_group(&dev->kobj, &sg2042_mcu_attr_group);
-> +}
-> +
-> +static const struct i2c_device_id sg2042_mcu_id[] = {
-> +	{ "sg2042-hwmon-mcu", 0 },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(i2c, sg2042_mcu_id);
-> +
-> +static const struct of_device_id sg2042_mcu_of_id[] = {
-> +	{ .compatible = "sophgo,sg2042-hwmon-mcu" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, sg2042_mcu_of_id);
-> +
-> +static struct i2c_driver sg2042_mcu_driver = {
-> +	.driver = {
-> +		.name = "sg2042-mcu",
-> +		.of_match_table = sg2042_mcu_of_id,
-> +	},
-> +	.probe = sg2042_mcu_i2c_probe,
-> +	.remove = sg2042_mcu_i2c_remove,
-> +	.id_table = sg2042_mcu_id,
-> +};
-> +
-> +module_i2c_driver(sg2042_mcu_driver);
-> +
-> +MODULE_DESCRIPTION("MCU I2C driver for bm16xx soc platform");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.44.0
-> 
+$ uname -r
+6.8.8
 
+[   54.027188] usb 3-5: new high-speed USB device number 5 using xhci_hcd
+[   54.154514] usb 3-5: New USB device found, idVendor=3D1385, idProduct=
+=3D4251, bcdDevice=3D 0.01
+[   54.154531] usb 3-5: New USB device strings: Mfr=3D1, Product=3D2, Seri=
+alNumber=3D3
+[   54.154537] usb 3-5: Product: WG111T
+[   54.154541] usb 3-5: Manufacturer: Atheros Communications Inc
+[   54.154545] usb 3-5: SerialNumber: 1.0
+[   54.262777] usbcore: registered new interface driver ar5523
+[   54.411417] usb 3-5: USB disconnect, device number 5
+[   54.660141] usb 3-5: new high-speed USB device number 6 using xhci_hcd
+[   54.787463] usb 3-5: New USB device found, idVendor=3D1385, idProduct=
+=3D4250, bcdDevice=3D 0.01
+[   54.787478] usb 3-5: New USB device strings: Mfr=3D1, Product=3D2, Seri=
+alNumber=3D3
+[   54.787483] usb 3-5: Product: WG111T
+[   54.787487] usb 3-5: Manufacturer: Atheros Communications Inc
+[   54.787491] usb 3-5: SerialNumber: 1.0
+[   54.835897] usb 3-5: Cap: CAP_TARGET_VERSION=3D0x00000006
+[   54.836738] usb 3-5: Cap: CAP_TARGET_REVISION=3D0x00000001
+[   54.836985] usb 3-5: Cap: CAP_MAC_VERSION=3D0x00000008
+[   54.837269] usb 3-5: Cap: CAP_MAC_REVISION=3D0x00000001
+[   54.837578] usb 3-5: Cap: CAP_PHY_REVISION=3D0x00000046
+[   54.837828] usb 3-5: Cap: CAP_ANALOG_5GHz_REVISION=3D0x00000046
+[   54.838114] usb 3-5: Cap: CAP_ANALOG_2GHz_REVISION=3D0x00000000
+[   54.838364] usb 3-5: Cap: CAP_REG_DOMAIN=3D0x00000000
+[   54.838635] usb 3-5: Cap: CAP_REG_CAP_BITS=3D0x00000000
+[   54.838876] usb 3-5: Cap: CAP_WIRELESS_MODES=3D0x00000000
+[   54.839138] usb 3-5: Cap: CAP_CHAN_SPREAD_SUPPORT=3D0x0000001c
+[   54.839446] usb 3-5: Cap: CAP_COMPRESS_SUPPORT=3D0x00000001
+[   54.839685] usb 3-5: Cap: CAP_BURST_SUPPORT=3D0x00000001
+[   54.839954] usb 3-5: Cap: CAP_FAST_FRAMES_SUPPORT=3D0x00000001
+[   54.840216] usb 3-5: Cap: CAP_CHAP_TUNING_SUPPORT=3D0x00000001
+[   54.840467] usb 3-5: Cap: CAP_TURBOG_SUPPORT=3D0x00000001
+[   54.840724] usb 3-5: Cap: CAP_TURBO_PRIME_SUPPORT=3D0x00000001
+[   54.840975] usb 3-5: Cap: CAP_DEVICE_TYPE=3D0x00000001
+[   54.841236] usb 3-5: Cap: CAP_WME_SUPPORT=3D0x00000001
+[   54.841506] usb 3-5: Cap: CAP_TOTAL_QUEUES=3D0x00000001
+[   54.841744] usb 3-5: Cap: CAP_CONNECTION_ID_MAX=3D0x0000000a
+[   54.842039] usb 3-5: Cap: CAP_LOW_5GHZ_CHAN=3D0x00000004
+[   54.842281] usb 3-5: Cap: CAP_HIGH_5GHZ_CHAN=3D0x00001338
+[   54.842554] usb 3-5: Cap: CAP_LOW_2GHZ_CHAN=3D0x000017d4
+[   54.842788] usb 3-5: Cap: CAP_HIGH_2GHZ_CHAN=3D0x00000908
+[   54.843056] usb 3-5: Cap: CAP_TWICE_ANTENNAGAIN_5G=3D0x00000001
+[   54.843343] usb 3-5: Cap: CAP_TWICE_ANTENNAGAIN_2G=3D0x00000004
+[   54.843593] usb 3-5: Cap: CAP_CIPHER_AES_CCM=3D0x00000001
+[   54.843851] usb 3-5: Cap: CAP_CIPHER_TKIP=3D0x00000000
+[   54.844113] usb 3-5: Cap: CAP_MIC_TKIP=3D0x00000000
+[   54.844677] usb 3-5: MAC/BBP AR5523, RF AR2112
+[   54.845129] usb 3-5: Found and initialized AR5523 device
+[   54.853451] ar5523 3-5:1.0 wlx<MAC>: renamed from wlan0
+[   79.311092] wlx<MAC>: 80 MHz not supported, disabling VHT
+[   79.314464] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:01 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.314472] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.365058] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:01 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.365073] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.368361] wlx<MAC>: authenticated
+[   79.369488] wlx<MAC>: associate with 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.376783] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:01 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   79.377789] wlx<MAC>: associated
+[   79.412980] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:01 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   79.613018] wlx<MAC>: 80 MHz not supported, disabling VHT
+[   79.618057] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:53 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.618068] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:53 (try 1/3)
+[   79.672878] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:53 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.672885] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:53 (try 1/3)
+[   79.675745] wlx<MAC>: authenticated
+[   79.676415] wlx<MAC>: associate with 9X:XX:XX:XX:XX:53 (try 1/3)
+[   79.682446] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:53 (capab=3D0x10=
+31 status=3D0 aid=3D1)
+[   79.683079] wlx<MAC>: associated
+[   79.708364] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:53 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   79.913528] wlx<MAC>: 80 MHz not supported, disabling VHT
+[   79.916480] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.916489] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   79.979005] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.979019] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   79.982175] wlx<MAC>: authenticated
+[   79.983460] wlx<MAC>: associate with 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   79.990499] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:b1 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   79.991150] wlx<MAC>: associated
+[   80.004037] wlx<MAC>: Limiting TX power to 20 (20 - 0) dBm as advertise=
+d by 9X:XX:XX:XX:XX:b1
+[   80.017058] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:b1 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   81.031824] wlx<MAC>: 80 MHz not supported, disabling VHT
+[   81.036498] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   81.036506] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   81.039194] wlx<MAC>: authenticated
+[   81.040489] wlx<MAC>: associate with 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   81.047244] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:b1 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   81.047905] wlx<MAC>: associated
+[   81.088917] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:b1 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   82.086878] wlx<MAC>: 80 MHz not supported, disabling VHT
+[   82.091343] wlx<MAC>: authenticate with aX:XX:XX:XX:XX:01 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   82.091351] wlx<MAC>: send auth to aX:XX:XX:XX:XX:01 (try 1/3)
+[   82.101245] wlx<MAC>: authenticated
+[   82.102400] wlx<MAC>: associate with aX:XX:XX:XX:XX:01 (try 1/3)
+[   82.107565] wlx<MAC>: RX AssocResp from aX:XX:XX:XX:XX:01 (capab=3D0x14=
+31 status=3D0 aid=3D2)
+[   82.108175] wlx<MAC>: associated
+[   82.196524] wlx<MAC>: Limiting TX power to 20 (20 - 0) dBm as advertise=
+d by aX:XX:XX:XX:XX:01
+
+# wpa_cli -i wlx<MAC> status
+bssid=3DaX:XX:XX:XX:XX:01
+freq=3D2437
+ssid=3DXXX
+id=3D2
+id_str=3DXXX
+mode=3Dstation
+pairwise_cipher=3DCCMP
+group_cipher=3DCCMP
+key_mgmt=3DWPA2-PSK
+wpa_state=3DCOMPLETED
+address=3D0X:XX:XX:XX:XX:65
+uuid=3DXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+$ iperf3 -c <remote_server_ipv6>
+Connecting to host <remote_server_ipv6>, port 5201
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 47110 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   384 KBytes  3.14 Mbits/sec   14   13.9 KBytes
+[  5]   1.00-2.00   sec   256 KBytes  2.10 Mbits/sec    8   13.9 KBytes
+[  5]   2.00-3.00   sec  0.00 Bytes  0.00 bits/sec    0   1.39 KBytes
+[  5]   3.00-4.00   sec  0.00 Bytes  0.00 bits/sec    1   18.1 KBytes
+[  5]   4.00-5.00   sec  0.00 Bytes  0.00 bits/sec    0   18.1 KBytes
+[  5]   5.00-6.00   sec  0.00 Bytes  0.00 bits/sec    0   23.7 KBytes
+[  5]   6.00-7.00   sec   128 KBytes  1.05 Mbits/sec    0   23.7 KBytes
+[  5]   7.00-8.00   sec  0.00 Bytes  0.00 bits/sec    0   23.7 KBytes
+[  5]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec    0   23.7 KBytes
+[  5]   9.00-10.00  sec  0.00 Bytes  0.00 bits/sec    0   23.7 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   768 KBytes   629 Kbits/sec   23             send=
+er
+[  5]   0.00-10.19  sec   512 KBytes   411 Kbits/sec                  rece=
+iver
+
+iperf Done.
+
+$ iperf3 -c <remote_server_ipv6> --reverse
+Connecting to host <remote_server_ipv6>, port 5201
+Reverse mode, remote host <remote_server_ipv6> is sending
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 39628 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec   768 KBytes  6.28 Mbits/sec
+[  5]   1.00-2.00   sec  1.12 MBytes  9.44 Mbits/sec
+[  5]   2.00-3.00   sec  1.12 MBytes  9.43 Mbits/sec
+[  5]   3.00-4.00   sec  1.12 MBytes  9.45 Mbits/sec
+[  5]   4.00-5.00   sec   896 KBytes  7.34 Mbits/sec
+[  5]   5.00-6.00   sec  1.12 MBytes  9.43 Mbits/sec
+[  5]   6.00-7.00   sec  1.38 MBytes  11.5 Mbits/sec
+[  5]   7.00-8.00   sec  1.12 MBytes  9.44 Mbits/sec
+[  5]   8.00-9.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5]   9.00-10.00  sec  1.50 MBytes  12.6 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.10  sec  13.6 MBytes  11.3 Mbits/sec    0             send=
+er
+[  5]   0.00-10.00  sec  11.4 MBytes  9.54 Mbits/sec                  rece=
+iver
+
+iperf Done.
+
+$ iperf3 -c <remote_server_ipv6> --bidir
+Connecting to host <remote_server_ipv6>, port 5201
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 38430 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[  7] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 38446 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID][Role] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5][TX-C]   0.00-1.00   sec   128 KBytes  1.05 Mbits/sec    6   4.18 KBy=
+tes
+[  7][RX-C]   0.00-1.00   sec   768 KBytes  6.28 Mbits/sec
+[  5][TX-C]   1.00-2.00   sec  0.00 Bytes  0.00 bits/sec    7   1.39 KByte=
+s
+[  7][RX-C]   1.00-2.00   sec  1.00 MBytes  8.39 Mbits/sec
+[  5][TX-C]   2.00-3.00   sec  0.00 Bytes  0.00 bits/sec    3   1.39 KByte=
+s
+[  7][RX-C]   2.00-3.00   sec   896 KBytes  7.35 Mbits/sec
+[  5][TX-C]   3.00-4.00   sec   128 KBytes  1.05 Mbits/sec    2   2.79 KBy=
+tes
+[  7][RX-C]   3.00-4.00   sec   896 KBytes  7.34 Mbits/sec
+[  5][TX-C]   4.00-5.00   sec  0.00 Bytes  0.00 bits/sec    3   2.79 KByte=
+s
+[  7][RX-C]   4.00-5.00   sec  1.12 MBytes  9.43 Mbits/sec
+[  5][TX-C]   5.00-6.00   sec  0.00 Bytes  0.00 bits/sec    3   1.39 KByte=
+s
+[  7][RX-C]   5.00-6.00   sec  1.38 MBytes  11.5 Mbits/sec
+[  5][TX-C]   6.00-7.00   sec  0.00 Bytes  0.00 bits/sec    3   2.79 KByte=
+s
+[  7][RX-C]   6.00-7.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5][TX-C]   7.00-8.00   sec  0.00 Bytes  0.00 bits/sec    3   2.79 KByte=
+s
+[  7][RX-C]   7.00-8.00   sec  1.38 MBytes  11.5 Mbits/sec
+[  5][TX-C]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec    2   2.79 KByte=
+s
+[  7][RX-C]   8.00-9.00   sec  1.50 MBytes  12.6 Mbits/sec
+[  5][TX-C]   9.00-10.00  sec  0.00 Bytes  0.00 bits/sec    1   4.18 KByte=
+s
+[  7][RX-C]   9.00-10.00  sec  1.50 MBytes  12.6 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate         Retr
+[  5][TX-C]   0.00-10.00  sec   256 KBytes   210 Kbits/sec   33           =
+  sender
+[  5][TX-C]   0.00-10.06  sec   128 KBytes   104 Kbits/sec                =
+  receiver
+[  7][RX-C]   0.00-10.00  sec  13.8 MBytes  11.5 Mbits/sec    0           =
+  sender
+[  7][RX-C]   0.00-10.06  sec  11.6 MBytes  9.70 Mbits/sec                =
+  receiver
+
+iperf Done.
+
+Regards
+	Stefan Lippers-Hollmann
 
