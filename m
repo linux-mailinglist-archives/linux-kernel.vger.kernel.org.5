@@ -1,137 +1,111 @@
-Return-Path: <linux-kernel+bounces-161528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535B28B4D3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:30:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBEA28B4D3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:31:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89181F2135A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:30:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11DF4B20E60
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B73C73527;
-	Sun, 28 Apr 2024 17:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6DB73506;
+	Sun, 28 Apr 2024 17:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GqIaZeoJ"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIaP5DaA"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E26D6F086;
-	Sun, 28 Apr 2024 17:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E6C7319C
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 17:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714325444; cv=none; b=QmM+czafCyJd1exJcOrTkzlM3gJK9AyL1iADqRdreTv6kBLvWr7/HMYp94bz+jK9izF/7q4Qvq6LmGiXwk2qFhEeuSTFioMl+TSPywfN6YUeA6BbNcLy7MRILdMbcEYLjPv2IXx4u+2ws/gLW5TdluE1inbDKHO0KZIUcE1HC1A=
+	t=1714325481; cv=none; b=BQR521CKUP4HOdjYeecdmqcvgCHn8POv+rda6te8lD6DOVuQUocZJmWTaxq/RezL+m34ci9oua1jfRNzaIM/bCYBi0+teUyMKicxAchHH2aAh5uz3RS4KkNmrvrfofn8niibwHk2O7xk+IWstkMrPdFpYX5NJhdHyQ+IOS0qT9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714325444; c=relaxed/simple;
-	bh=6C4iC5ro3NJyO5M+1IwRkJQ4c+Kk2vhMSEHiWNEkb7A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A4nOh5mZawDvb0BJJBdnRYuO7GYZI6ZBYkZH3nc74/+GIO25kjZn7C/oLIeSd2TCvHmXa5aFp08DiUQ/vF8/T5MCpTIMXjVVKxjKeWkkde+dL3pdELUvJlj2mQFJk2/QjImsJJngTe/43F8pcMqJCjepCjoEJJNhc1QutBaFWIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GqIaZeoJ; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1714325481; c=relaxed/simple;
+	bh=aS1hVFDot8tUcexvL9ujXRy4a2hTRJJG9AoytZrjhCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=J27ZBq6t2we1B4DhYiUtrF5NXNMISLcBg2SwWbeK2EgmdtZbtwA5TQc6/HY6Ru395I/mYWR7z9JfQr1FX2dypYaVyl1KcrA/aVzqI0MdKKZAWFP0Y8UNW8isHoUkyQTdBvocD2VC3W3utr4LhSRB8Ta4rh6xcVTvtLyB+2YMiO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SIaP5DaA; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-6123726725eso513360a12.3;
-        Sun, 28 Apr 2024 10:30:43 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34cdb750bb3so281069f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714325442; x=1714930242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6C4iC5ro3NJyO5M+1IwRkJQ4c+Kk2vhMSEHiWNEkb7A=;
-        b=GqIaZeoJ+L8WmspzlZM74m4dgxAoGtOv8UixRLJMpGSVfokGjl+CdZmQCjYEOlZuBl
-         8TDltN0shuZcTg3/eerCnthk3gWhCfw+Q69UIn0eI5MKm44Ix4kAisY54BE3HvgWX2oN
-         hNtOwboaXUufqIr9h67xhI1UFQ33NuB70CT+dCJCATz9ukVH5dcU7PjFv9Zqlyg1xDg3
-         S0jQgvWTO+OaoXu3Jy9U3BvYW5Rpw9DohV04+K/vu6r31yUxns+Cai9xC93CriULY6Ua
-         FwdS0nFZJIUOZi9SXTt+hl4f1rgRMuKeF4RWK4KRF1wahtPX6WBvLfciN3N/M99f+ypZ
-         ROxg==
+        d=gmail.com; s=20230601; t=1714325479; x=1714930279; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nCXiLm7VS4Eni3fCxaG++r7MP5fvvrXVGrzMU/enG2Q=;
+        b=SIaP5DaA+aegeQ+h1j/D5RJLEKuLMnCWtC2kFpmJ5pQg97+c4MM3EKI8rUGFODbyiF
+         3xZh55M+3ltKyaesemgB9eGvTlwcxGK1HH3VsOkvGxI/tnMfjSYklaqdoPRqda0wBZY5
+         0vbgTzUFZgOu2J173HZdKi+r6Gtl14lAAXXPOT1Yuyny6OKPUBU2/TCkeWFrtS2TbVuS
+         qlQp7Hpx6QNyi4FisMVTKiuD4cH68hU+DDk/vKdVufeTmdiFEnxf1UsjBiMrwJgRVwJJ
+         OJVdCICoi4Wtzq6LNX9gTOpgBHjZJR2TTel78qWo3mXSprcTVbXF041QGYPPtpYJhFNI
+         PL7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714325442; x=1714930242;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6C4iC5ro3NJyO5M+1IwRkJQ4c+Kk2vhMSEHiWNEkb7A=;
-        b=OJOqfDHMDg5KYRbnnfS23HNWmFWQZ8W3UKvcmHAXZ13QKdy94/Z58n3ytDGnGdZ96T
-         BDAq1spy/nD3oyPVzGg4MNVWd/3R68eNvYsbOFiaht8nfamXRV9ywC706XVQ33gtmQVu
-         rQRfsv6hBAQEEXWKWZmTnt2YA1lkictkYUe3GDDNtyEw0ewjkr583nifZ+g2OFEGaVYS
-         UNChN/28t1EBJE9zNUooaJnYEixIdy5Ntbpy5Pl0tfIQnpQsVp07i6WBohbhAekHjhYm
-         MfkH7VF/Ayn+CHwTVk/RamH0azsJ0C/duKr0lXWBDP0f/7JrhM0aOYNa8nCoRMdMTL7t
-         cCUg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1QXELZQiMHOfnkZRPHT+oHxraKNIRhGgDG9CI+/RvHG3ENxc5/J+IrmgVWCgfu/NwG5gN1P65POJIZWogj8dwd4QS6Kok3nqUdgpWxleql5DFE8XXFVdywGRkVZHuDb0DUiaNUgAGxya4LbMhax3eHLI/nbbp2PX9iyZztI2OenHqOFCb
-X-Gm-Message-State: AOJu0Yy348kyN5QkgXszbp3nNkqlRqYC1R1FmvFNjq8Fk7yRz+jxtUTN
-	mT9pEj1EtPsxGNRUImykmzTWeUrw4JrVefG2z6ezxV4MxFj7d+MyCyLuUCGYWkaDJA==
-X-Google-Smtp-Source: AGHT+IEAHcZT2hqdPXrUrD9utnViKm/pFwS+gPtcpridRGIUu3is+jGvfjVMNz/1yOUWrCv/AUnT2A==
-X-Received: by 2002:a05:6a20:430c:b0:1a7:73ed:7f8d with SMTP id h12-20020a056a20430c00b001a773ed7f8dmr6549978pzk.38.1714325442453;
-        Sun, 28 Apr 2024 10:30:42 -0700 (PDT)
-Received: from toyko-2.5 ([45.32.55.39])
-        by smtp.gmail.com with ESMTPSA id b186-20020a62cfc3000000b006ecf56cb55fsm19089266pfg.96.2024.04.28.10.30.07
+        d=1e100.net; s=20230601; t=1714325479; x=1714930279;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nCXiLm7VS4Eni3fCxaG++r7MP5fvvrXVGrzMU/enG2Q=;
+        b=IGfGpkYVfYIsWEiBA5OghkZB2H1YIYD4zneibX9OAur1h1CzJnLxmWQWyR+uno4T14
+         ZRAu5i9PikpqbHO/DrNx/a+vFpcoI/YH+oyz1aNXZiNhpkZxTdcOhpeDabO+RQpLfgQO
+         YP5l5oAzr4Q2Y06qlVJdTq11gFhij2I6tJjHXcgVsiw77kurfFa5yulKAIvMTW3mWodQ
+         BHcd342fgIIOxsRokH1oV77/JqZKrKigyJ9VKL2zybRl0RZxWTw3d8QNmEEE3qGxvclv
+         Kt0Y/dG92bo+8VD4h3BGFByk4zeQSSyGC7tP+7joFWTLOz/pN+EuyTT9QIGnEt76/RjD
+         1cgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNWUyGahdU8QqP7rX92mQzb/cwB2H+1Q3MX0YLDR6DyIKkRQj4ucbX/YmjGiMv+cCLSGM35BH6HopGe/pqKK5UVhSt1HFp74WoTphZ
+X-Gm-Message-State: AOJu0YzuCevESHBsj38oHgrdnwLtb8Zmoa8VDbKuZ7QRPocsHdG8L70x
+	0uLfK4Cgctu4Zlzb6esvoP32u8+a7heA/Y5nDfpegun7K9+HmW0=
+X-Google-Smtp-Source: AGHT+IEeG+G37i7NVp5ja1AM14qlgFHjmVKbYwRMQbRbBGfFM38L09NBHsClX0q2aMNL35z0lM1Vxw==
+X-Received: by 2002:a5d:630d:0:b0:34c:f87b:f9fb with SMTP id i13-20020a5d630d000000b0034cf87bf9fbmr1485757wru.25.1714325478569;
+        Sun, 28 Apr 2024 10:31:18 -0700 (PDT)
+Received: from octinomon.home (182.179.147.147.dyn.plus.net. [147.147.179.182])
+        by smtp.gmail.com with ESMTPSA id d18-20020a05600c34d200b0041b083e16e2sm16631101wmq.2.2024.04.28.10.31.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 10:30:42 -0700 (PDT)
-From: Jianfeng Liu <liujianfeng1994@gmail.com>
-To: heiko@sntech.de
-Cc: andy.yan@rock-chips.com,
-	conor+dt@kernel.org,
-	cristian.ciocaltea@collabora.com,
-	devicetree@vger.kernel.org,
-	dsimic@manjaro.org,
-	ezequiel@vanguardiasur.com.ar,
-	frattaroli.nicolas@gmail.com,
-	iommu@lists.linux.dev,
-	joro@8bytes.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linkmauve@linkmauve.fr,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	liujianfeng1994@gmail.com,
-	macromorgan@hotmail.com,
-	mchehab@kernel.org,
-	nicolas@ndufresne.ca,
-	p.zabel@pengutronix.de,
-	robh@kernel.org,
-	robin.murphy@arm.com,
-	sebastian.reichel@collabora.com,
-	shreeya.patel@collabora.com,
-	sigmaris@gmail.com,
-	will@kernel.org
-Subject: Re: [PATCH v4 0/2] Enable JPEG encoding on rk3588
-Date: Mon, 29 Apr 2024 01:29:19 +0800
-Message-Id: <20240428172919.691602-1-liujianfeng1994@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <3784322.QJadu78ljV@diego>
-References: <3784322.QJadu78ljV@diego>
+        Sun, 28 Apr 2024 10:31:18 -0700 (PDT)
+Date: Sun, 28 Apr 2024 18:31:16 +0100
+From: Jules Irenge <jbi.octave@gmail.com>
+To: mingo@redhat.com
+Cc: tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+	peterz@infradead.org, rdunlap@infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] x86/tsc: Use div64_ul instead of do_div()
+Message-ID: <Zi6H5P_mc6DPR_v3@octinomon.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Heiko,
+do_div() truncates a u64 divisor to 32 bit.
+This can lead to non-zero being truncated to zero for division.
 
-On Sun, 28 Apr 2024 19:01:38 +0200, Heiko Stübner wrote:
->the basic problem is that exposing multiple jpeg encoders would require
->userspace to do the scheduling. Which is bad.
->I.e. all userspace programms would need to know the existence of
->all jpeg encoders and then somehow negotiate how to use all of them
->most efficiently.
->
->Think multiple different programs that would need to negotiate to
->spread across all of them in the best way.
->
->Doing this in the kernel, we just expose one encoder (and queue) all
->programs would just pile onto that one encoder and the kernel then
->would be on the hook to do the scheduling - which the kernel can do
->better (with relevant code implemented)
+Fix coccinelle warning
+WARNING: do_div() does a 64-by-32 division, please consider using div64_ul instead
 
-Yeah let kernel do the scheduling is indeed better. And I'm happy to
-hear this method.
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ arch/x86/kernel/tsc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So I will keep the vpu at feb50000 with jpeg endoder disabled until
-multi encoder scheduling is implemented.
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc96..2da37f33dd17 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -484,7 +484,7 @@ static unsigned long pit_calibrate_tsc(u32 latch, unsigned long ms, int loopmin)
+ 
+ 	/* Calculate the PIT value */
+ 	delta = t2 - t1;
+-	do_div(delta, ms);
++	div64_ul(delta, ms);
+ 	return delta;
+ }
+ 
+-- 
+2.43.2
 
-Best regards,
-Jianfeng
 
