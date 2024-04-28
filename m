@@ -1,189 +1,103 @@
-Return-Path: <linux-kernel+bounces-161534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47FFB8B4D4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:46:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 514DD8B4D5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:16:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BC26B20EBC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:46:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82E0B1C20A54
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D016B73530;
-	Sun, 28 Apr 2024 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB3A74410;
+	Sun, 28 Apr 2024 18:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGGPJnS1"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKdCB2Xd"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836154087F;
-	Sun, 28 Apr 2024 17:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FC77319A;
+	Sun, 28 Apr 2024 18:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714326370; cv=none; b=Xkmx1HcuBq8DqpYhC2a8HuebvvvefYDBYmRIfDbj4cxVMH4iZXefdid1DmjoWZjCZPGwKRzGF+H+XL9irQTWjxk1j9aDvkUFZZ1VQNQ7k5undvAve8r8vJEObBwgjsFGlp36mcXGILbfavQxOsEOXCEVumhydrojWcJoKirZ4BY=
+	t=1714328197; cv=none; b=ZXlsMKawBm1RjHo1i74wPAO7r4d5w5PUS/OZwV/UIt5cglhTf2HidD39MznB/AXv5ZMp6d+sKaX0YZXfcMXtcIJ64fT2pt3JX3j3NsOJhPQmFNx1jCAoOwEb3m9O/DvGHIrsHXVRCZMDlIdKnIMNAKek3a6jrIm8Qt34rHB/tVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714326370; c=relaxed/simple;
-	bh=MxmbqoXt90QmaA54xJmZ52kaA7d5rIlfaRc/meZ8AW4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nvI3QibyG3fvbKeN/1KN6Q+0uY3otDljYYwPvBIp/VoVmCIhkgRZKU2RpLigk+z6k1/8YJH7yIPbTdv7NjFlU5EWqONj/zC+nXa0ziAyfjqfzOMq/Hk9ds4PsAQmN9y77hF+B5wrfesmx8uI62o596v1LVMXh0V+zfMIJJMO6Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGGPJnS1; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1714328197; c=relaxed/simple;
+	bh=d9HJPHpBZYGx+j+LD9rskBuivRQgOk542meAbykaPr8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dWNXH7TXA8oiC96kA7Id+JfEb9ttKJXzqrnZqETUySFg2KMtai8qmK9MMqT8TT6IzIK5cVxP/3+98HMtmnGnchF6LsChmgH/UoDiSgv5Nus9HF+nVroCW3AqGJ/rEWV44nbKUOVXVi3hdF1Hqz1AuPxB5jUAI4BCO8HiDc1fs+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dKdCB2Xd; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2dae975d0dcso51294621fa.1;
-        Sun, 28 Apr 2024 10:46:08 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso3185483b3a.0;
+        Sun, 28 Apr 2024 11:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714326367; x=1714931167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Urp8+z3N4hHCle9QkhlH7xL+m+5t13Mh2RYPMaU6QnY=;
-        b=YGGPJnS1NVisRSVV65fcSBu7skc0XLVw02ShU7bSvS0e6A4kVmrCvYMaq9hJHU3NVy
-         LjuBycr4ZWM3rZkm9l0nO8fFIb+z0xeYSeueqMMDXjpNp2zyIWFz1eDppB6ZiWGtdwcV
-         E98ekrs+pM4q6OZvTXoQw0fJ1qvnoVELVQK3RQkmbksJ9O2W21hwHO52dNY9pgcbexln
-         4mg+vK1UPJBqo5yTuogfsmxBshrmw8FOD4blAemtIQMA9qTNbEnMnHZKKs4aY2UT8mKy
-         Y/RYE/dmlnzpBK2WAQTdGzEZoVWsx0RpyyfPBeHv4EcqG4Cwt9CJPWc4hnNdFr1+Iz5B
-         fYLQ==
+        d=gmail.com; s=20230601; t=1714328195; x=1714932995; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L/SOqpHITcOX3MgGX5oGZ3ohm6bCiSEe4ahxlofBE5M=;
+        b=dKdCB2Xdc0WAk/wyz5GeVofRnPCaqSAefiY8uKzu5q2dLMJJIqtnkuFhHJHf99va6y
+         p8ZY7z+qwFTatv0Zkf5oz35xWl+Szi4stfF3Ok0zlz4w+aOZe3XAysOuYokpEU+jTn9D
+         EQ2UMsxvmI7mN7lwTvIEfUmcueQr2Khy1/csswqOITvpN6D+3XWH1M329V5I9wQhJUkC
+         VIrIHgLVyfI92nidMo7rDwICpzJIwNCi4qvJqDzfjr06jTzlIE9kHGD/HePjnoabZ7xJ
+         s9FyKb7AA6BBy1z0dksOsifukUFeHCebaEbHUMIHKsCsGi92How5G+XrFZLtaDB1pdv3
+         9nfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714326367; x=1714931167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714328195; x=1714932995;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Urp8+z3N4hHCle9QkhlH7xL+m+5t13Mh2RYPMaU6QnY=;
-        b=P3ofcQGwDPpYL9zMH0/HZ/v1qq9C42Q6QcnbN+eFXUS0Pq4rQDz6oQy6wLwEE2wFk5
-         PGisorGEx//TxUe9/UHyK1g4EQ2VkE2F2jNEEVgsmRB33Yni5I+qw51zUrxbns3l5/dz
-         WyFpHnJ4XZIzP28csVU4EPNx3GEUMwX2uaxos9aJGg65OSaniJRZUSzagpi3JPsScC3X
-         mQk91j9OXmuGcQYFTyk4QyWJGDs0rJP5OPniJHgST6Hq/QnLUjT4pNxF9i/7sz2ij61d
-         pOSnvL7TDm7Or9ll6aJor5c6qWL3WNks6AQl6BwEqOgNK4wCcwV1dAnqb1QjM+z0uch/
-         hx4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUyvy9wNYAJhl96Hvgu/cLZKL7eASD9TB2JNEediLretj60dLmzJJg/Oxm04wxbfdKv9ArOTRutVhhpBG1AM7rcJThFEw/PvYxSOfJkdMfFaxdU2ppqe6RAsSLgicb0erdR6kpOgiCTUdkd2g==
-X-Gm-Message-State: AOJu0YzRmeITnfhqY8omWIVeQzk3Sx5FFICRcwmjyrrk4UUQZtQC8Ia2
-	DHcX3qjK/71sPu0rjo8nQ/rlowW4FzsSeHLWl2pqH+ESq+cI45+Efw/vjmcxRBM9xAUoWQHxOeM
-	Qkgtj1oKcYQbp8LfeAoAxiim28rU=
-X-Google-Smtp-Source: AGHT+IF0hGkqlSiNpnCt1/7PlPxOXq6YivEUUbJxPWUGFtsMDlHgo9AM7RRFS9D7lB6xZ5hH4/+Ib+UmmeONZcU/zkA=
-X-Received: by 2002:a2e:914c:0:b0:2df:b42:84fc with SMTP id
- q12-20020a2e914c000000b002df0b4284fcmr2778845ljg.10.1714326366516; Sun, 28
- Apr 2024 10:46:06 -0700 (PDT)
+        bh=L/SOqpHITcOX3MgGX5oGZ3ohm6bCiSEe4ahxlofBE5M=;
+        b=SGhmDp8vmdFWHqgtcoQaWpp15xezAvIl9rtP8kzisXkbJMr/yOgsv2w/8brbH/RwQE
+         vgKtnsGP4Irzjc53jt7ZB6ov8NR4uQ/UvCiLUrGfYSpsbLk4su/xhXa9HqrYo5rTI/Nw
+         sZNdW8ePxUL+C3G5MPtPBHM5w20FCQfjhLW1qqLIh+PVmebBL92T6YmTQmsMYVal+Rf9
+         tjnQm/xA5s3ajXZTgm6a/lkn193If70tjOvu4y8FagXZscS83ksXeqPGTMlHcG09SsoZ
+         htCf1OECxS8nhpn+OWzb4lfNTW8VZC01sbNDGOTgg7oeEEIFaQeBuXalj87aPN3Wk3zv
+         q2ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcYDfJHWHpDfx/5o0vGLiAgYW+IZ+BZsJ4U3z/tq79jMSTsOMp6j9yuHrVZHttYctLPuhTGZmDrtRxZDHtCEPXfIaj8ekSX4hOk52WBBl22hmFM6nOGTHQNl2W0vRW8KDdsYKcpcLa
+X-Gm-Message-State: AOJu0YxoDXySOjTg58MBN33yunCoS7Bc8p6TdiaB6taaKdQVeZhwGdLV
+	5+nJaEMfqSL6NnMqaecJT0xyzbXveggRkfuOuw87XW4/k1L1zCHw
+X-Google-Smtp-Source: AGHT+IFNY06iofzMQtCWdsgHQuwdjN01HSWJrBsaAgh35dsS2duXY+Q/KoZzDbuUnlvczmwaX50rBA==
+X-Received: by 2002:a05:6a00:4b09:b0:6f3:368d:6f52 with SMTP id kq9-20020a056a004b0900b006f3368d6f52mr10600257pfb.5.1714328194880;
+        Sun, 28 Apr 2024 11:16:34 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d7-20020a056a00244700b006f0ba1c8ddesm8447579pfj.184.2024.04.28.11.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 11:16:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sun, 28 Apr 2024 11:16:33 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Aleksa Savic <savicaleksa83@gmail.com>
+Cc: linux-hwmon@vger.kernel.org, Jonas Malaco <jonas@protocubo.io>,
+	Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] hwmon: (nzxt-kraken3) Decouple device names from
+ kinds
+Message-ID: <a6a8c97f-be16-443b-af24-97f040db1b79@roeck-us.net>
+References: <20240428104812.14037-1-savicaleksa83@gmail.com>
+ <20240428104812.14037-2-savicaleksa83@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417160842.76665-1-ryncsn@gmail.com> <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Zico_U_i5ZQu9a1N@casper.infradead.org> <87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com> <CAMgjq7AD=n0T8C=pn_NM2nr-njNKXOxLh49GRrnP0ugGvuATcA@mail.gmail.com>
-In-Reply-To: <CAMgjq7AD=n0T8C=pn_NM2nr-njNKXOxLh49GRrnP0ugGvuATcA@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Mon, 29 Apr 2024 01:45:49 +0800
-Message-ID: <CAMgjq7Buvn4f4U8uwpZB3e-rWgCcpvfd5uopgUqQxrVcgGcEMQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
-To: Chris Li <chrisl@kernel.org>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Barry Song <v-songbaohua@oppo.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428104812.14037-2-savicaleksa83@gmail.com>
 
-On Mon, Apr 29, 2024 at 1:37=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
-e:
->
-> On Sat, Apr 27, 2024 at 7:16=E2=80=AFAM Chris Li <chrisl@kernel.org> wrot=
-e:
-> >
-> > Hi Ying,
-> >
-> > On Tue, Apr 23, 2024 at 7:26=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
-om> wrote:
-> > >
-> > > Hi, Matthew,
-> > >
-> > > Matthew Wilcox <willy@infradead.org> writes:
-> > >
-> > > > On Mon, Apr 22, 2024 at 03:54:58PM +0800, Huang, Ying wrote:
-> > > >> Is it possible to add "start_offset" support in xarray, so "index"
-> > > >> will subtract "start_offset" before looking up / inserting?
-> > > >
-> > > > We kind of have that with XA_FLAGS_ZERO_BUSY which is used for
-> > > > XA_FLAGS_ALLOC1.  But that's just one bit for the entry at 0.  We c=
-ould
-> > > > generalise it, but then we'd have to store that somewhere and there=
-'s
-> > > > no obvious good place to store it that wouldn't enlarge struct xarr=
-ay,
-> > > > which I'd be reluctant to do.
-> > > >
-> > > >> Is it possible to use multiple range locks to protect one xarray t=
-o
-> > > >> improve the lock scalability?  This is why we have multiple "struc=
-t
-> > > >> address_space" for one swap device.  And, we may have same lock
-> > > >> contention issue for large files too.
-> > > >
-> > > > It's something I've considered.  The issue is search marks.  If we =
-delete
-> > > > an entry, we may have to walk all the way up the xarray clearing bi=
-ts as
-> > > > we go and I'd rather not grab a lock at each level.  There's a conv=
-enient
-> > > > 4 byte hole between nr_values and parent where we could put it.
-> > > >
-> > > > Oh, another issue is that we use i_pages.xa_lock to synchronise
-> > > > address_space.nrpages, so I'm not sure that a per-node lock will he=
-lp.
-> > >
-> > > Thanks for looking at this.
-> > >
-> > > > But I'm conscious that there are workloads which show contention on
-> > > > xa_lock as their limiting factor, so I'm open to ideas to improve a=
-ll
-> > > > these things.
-> > >
-> > > I have no idea so far because my very limited knowledge about xarray.
-> >
-> > For the swap file usage, I have been considering an idea to remove the
-> > index part of the xarray from swap cache. Swap cache is different from
-> > file cache in a few aspects.
-> > For one if we want to have a folio equivalent of "large swap entry".
-> > Then the natural alignment of those swap offset on does not make
-> > sense. Ideally we should be able to write the folio to un-aligned swap
-> > file locations.
-> >
->
-> Hi Chris,
->
-> This sound interesting, I have a few questions though...
->
-> Are you suggesting we handle swap on file and swap on device
-> differently? Swap on file is much less frequently used than swap on
-> device I think.
->
-> And what do you mean "index part of the xarray"? If we need a cache,
-> xarray still seems one of the best choices to hold the content.
->
-> > The other aspect for swap files is that, we already have different
-> > data structures organized around swap offset, swap_map and
-> > swap_cgroup. If we group the swap related data structure together. We
-> > can add a pointer to a union of folio or a shadow swap entry. We can
-> > use atomic updates on the swap struct member or breakdown the access
-> > lock by ranges just like swap cluster does.
+On Sun, Apr 28, 2024 at 12:48:10PM +0200, Aleksa Savic wrote:
+> Prepare for the support of new models, for which the relationship
+> between device name (for hwmon and debugfs) and kind (for the selection
+> of appropriate code paths within this driver) will no longer be 1:1.
+> 
+> Originally-from: Jonas Malaco <jonas@protocubo.io>
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
 
-Oh, and BTW I'm also trying to breakdown the swap address space range
-(from 64M to 16M, SWAP_ADDRESS_SPACE_SHIFT from 14 to
-12). It's a simple approach, but the coupling and increased memory
-usage of address_space structure makes the performance go into
-regression (about -2% for worst real world workload). I found this
-part very performance sensitive, so basically I'm not making much
-progress for the future items I mentioned in this cover letter. New
-ideas could be very helpful!
+Applied.
 
-> >
-> > I want to discuss those ideas in the upcoming LSF/MM meet up as well.
->
-> Looking forward to it!
->
-> >
-> > Chris
+Thanks,
+Guenter
 
