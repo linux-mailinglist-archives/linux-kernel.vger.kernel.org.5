@@ -1,217 +1,262 @@
-Return-Path: <linux-kernel+bounces-161254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA0C8B49A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 06:53:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 909178B4992
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 06:17:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A5291F215EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:53:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7C4281518
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 04:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFE74436;
-	Sun, 28 Apr 2024 04:53:12 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35E83D75;
+	Sun, 28 Apr 2024 04:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YvJ8tVPH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B8E28F1;
-	Sun, 28 Apr 2024 04:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714279991; cv=none; b=dSRMvK1Q5HfZbEgWf2kRriqEj+9a6fKKmcyYHvr6jPY+l0M9xh9qs2Jo+2YnAHdYsRW352yDY0G8YydlZTB8ni7DbexTgMy90ocwX9kQgwPJC68e6cN8oidFWvRc1n41Aji80A3mWLgKdsts930SDJyOeBnenCohxmgT3qcpld8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714279991; c=relaxed/simple;
-	bh=G4YP2/ZWQwZU2XzsNw7jXNrEDs7fUDza/7rfo9ENXWI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L/wKD+TjfF7/bkBkCNjFXkRTKy7ruLH++wLMCTZIrt2GPWTj81nNUyiPcpwzRfxqEwC8oJZ8YwKgFVcOuHAnvxdCXG8h7XVblfAAoqYVlkvG6rSzbjztocxH800pKHDSllizHC5aLnfXbq/jXGtzmk0CJMqnu0onbMJBzztXSw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-	by h3cspam02-ex.h3c.com with ESMTP id 43S3jaSg028991;
-	Sun, 28 Apr 2024 11:45:36 +0800 (GMT-8)
-	(envelope-from xi.fengfei@h3c.com)
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 43S3iaGj025312;
-	Sun, 28 Apr 2024 11:44:37 +0800 (GMT-8)
-	(envelope-from xi.fengfei@h3c.com)
-Received: from DAG6EX01-IMDC.srv.huawei-3com.com (unknown [10.62.14.10])
-	by mail.maildlp.com (Postfix) with ESMTP id A2F8522E8727;
-	Sun, 28 Apr 2024 11:47:11 +0800 (CST)
-Received: from localhost.localdomain (10.99.206.12) by
- DAG6EX01-IMDC.srv.huawei-3com.com (10.62.14.10) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A621A2905;
+	Sun, 28 Apr 2024 04:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714277865; cv=fail; b=k3RX8CrAFCYRW095Fp/i8A2qrQaj7uXk3draMFU1yqhHbR8UROyiqNK8XReRSA1BbYFPMBgewvg4K96vP4aLlG+RatAoksQNy+CeXsAq9vBzGUQOJNO3h6tqwmqJWJDC3rmMGhTccICC+DE2JNnyxgWgAhFp+Bo3X+WE4w+gPSc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714277865; c=relaxed/simple;
+	bh=MJn/izRnzHO1JweDz8whytVnPYtTQD51PikyzXpLfgQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=aZbmBW9jNUavsEzXRAU1Unqm2uBUdGmU9caT8oVqFXx9Agxz1KfWOkW5jmKs4LCBemK6KzJA3H5tfyzxQkDxyL/3pLFrd9BgpfNynRPqo8+cZDqo1WU6EtKwZ903emlTq6iaq/8aKGauKIts44xmu3lNLqPka0oYs9PMNNtULNk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YvJ8tVPH; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714277864; x=1745813864;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=MJn/izRnzHO1JweDz8whytVnPYtTQD51PikyzXpLfgQ=;
+  b=YvJ8tVPHg1pC8HaIZHwvitT1Xqm61/A9OZQ64J1LuLgvHi8nQfokEHuV
+   EGte2CFMCsW/0Q9VQ7wS4zvgVDFyqFI1Bv8srDoqAd8zrGPkjUNboGKvY
+   iyMv0wh72mYKNmeS3mguZ1G6GhPqh9bL49jAF+zyHYMnSj5KS+UokDWdC
+   TTrdc9nIQc9TgpZMKqjXYIkx5NzYITZyg1D39SuU2cewiJoU83HQ5Qwvt
+   bwDwm+rLUO1ZunIA6df4NFCk7aK8+7R/pX/MEBvQCdjHmtY60LqfxsfaM
+   ALVvxAIQIniSTr6U7YuQ5VhwbLPBuL8msUj35dFrKaby5/iI2cZ0j+r46
+   w==;
+X-CSE-ConnectionGUID: TwAuE2cEQGGafxWO9xj6Hg==
+X-CSE-MsgGUID: buaYLFH7R4SRIChQQY6rOQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10130679"
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="10130679"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 21:17:43 -0700
+X-CSE-ConnectionGUID: 9PGUDi+xSEuu73ltuvpnQw==
+X-CSE-MsgGUID: yNN2r4IFTPOENWQ1Syh5tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="25859637"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Apr 2024 21:17:43 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.27; Sun, 28 Apr 2024 11:44:38 +0800
-From: Fengfei Xi <xi.fengfei@h3c.com>
-To: <sandeen@sandeen.net>
-CC: <darrick.wong@oracle.com>, <linux-kernel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <tian.xianting@h3c.com>,
-        <xi.fengfei@h3c.com>
-Subject: Re: [PATCH] xfs: fix system crash caused by null bp->b_pages
-Date: Sun, 28 Apr 2024 11:44:36 +0800
-Message-ID: <20240428034436.42237-1-xi.fengfei@h3c.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
-References: <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
+ 15.1.2507.35; Sat, 27 Apr 2024 21:17:42 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 27 Apr 2024 21:17:42 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sat, 27 Apr 2024 21:17:42 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 27 Apr 2024 21:17:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dkgAim8FXi/NU5Rx7uo0uNghVfuEtbBjvfAV7u7XvaGoKU6mtf+SadMdUWjqXqGP4+dHE39UsuIWmWdGtwvciMiRYopbDOUZuNXMk5xM7UD70e4uCpdxSd7m4Gu025fYgMSUMb9Y5ndiqJz6pjnNDmoZqZXk9AxehWwDfswz2b5HJSoTcEx8Er2+nuoRbgqbWWlSoa+P+tyLBGYOBs1d8SoRP+6vEgrsY7w7E3A7+QdBTLvHQNB5geRd5nOEgQv1zZdvZNLEoD0MgGbva7Pklgi2TMIOn4/F/cK+fHeTDdGw4nBh1O+13ZQM88blLAIt0RZCngnM7sjMTI2MzeKA3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MJn/izRnzHO1JweDz8whytVnPYtTQD51PikyzXpLfgQ=;
+ b=Nx1q8WIVbu/apw1val70jCD4P7qevCT6pikaJkgZhgQatftZ/dhEDsqanCXtvNCC3yokkb5qD8gUvU4xso85boCjnwZhj9ZVp2iYY81i5QGhTUCJ2yZ1ypaVEHYC95TFpOXgUTJfErT6qcVOB8ExOYcQ208EMNs3R4q1xh/cqYPIEUw+Edq0wgnQigRKokqWO+JxvJais9lDN2EJP87sGVkyZxKRZbFT+sclcf9uLGwLEjgOxG7aOWmmF/+GA7d+4wTbFHHorKabqgXUmDalgod95G+LcouSp0yHRC/rLMsWYvTx76fKzi6NyHolByI7/v+MbNF2pt84lLtbGl9gIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
+ by MW3PR11MB4746.namprd11.prod.outlook.com (2603:10b6:303:5f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Sun, 28 Apr
+ 2024 04:17:39 +0000
+Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
+ ([fe80::d5d6:c0cc:baae:1ba6]) by SJ0PR11MB6622.namprd11.prod.outlook.com
+ ([fe80::d5d6:c0cc:baae:1ba6%4]) with mapi id 15.20.7519.031; Sun, 28 Apr 2024
+ 04:17:39 +0000
+From: "Zhang, Rui" <rui.zhang@intel.com>
+To: "rjw@rjwysocki.net" <rjw@rjwysocki.net>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>
+CC: "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+	"jonathan.cameron@huawei.com" <jonathan.cameron@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] ACPI: scan: Avoid enumerating devices with clearly
+ invalid _STA values
+Thread-Topic: [PATCH v1] ACPI: scan: Avoid enumerating devices with clearly
+ invalid _STA values
+Thread-Index: AQHal/rEvYr4YALfg0ik+n9h9UnvILF9FgwA
+Date: Sun, 28 Apr 2024 04:17:39 +0000
+Message-ID: <278b47946efd7f67229e26335c419570871427cc.camel@intel.com>
+References: <2741433.mvXUDI8C0e@kreacher>
+In-Reply-To: <2741433.mvXUDI8C0e@kreacher>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|MW3PR11MB4746:EE_
+x-ms-office365-filtering-correlation-id: c0ad1298-840c-409d-0da0-08dc673a246b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|366007|376005|1800799015|38070700009;
+x-microsoft-antispam-message-info: =?utf-8?B?TERmUXlHNzlLQ2JTVzZIT0xqMGN2U3ltdGVudHptYzlSbURPckxZK1ZZL0FQ?=
+ =?utf-8?B?RG5hOUNKY2hRZVR0bFRjanFPYzVDai8rNjN2R004SXk0aTkzNXFFOEtub1Vm?=
+ =?utf-8?B?YktTWjBrZUVqU3RBdjF6Y0tMLzVkN2llV0FNV1dmTS84b1VQc1duSUtEVGl1?=
+ =?utf-8?B?a2dGNmZCVkxHeTNONUMyY1NObFAwb01iVXVHeFJ0VVdIbUkveWN3NzlpekEz?=
+ =?utf-8?B?S0VoaGF2cmYyQkJYUC9ZMWE4RWd3bGJRRU1scW1nSDV3QmorQVFrT0N2ZUxX?=
+ =?utf-8?B?bi9sRDhRaXkxc1FaWGRpeVYxUTFYaDZWUnUzTkFKNmJQQ1pFWGwvQTEyRUx3?=
+ =?utf-8?B?dTVzT0ZuSTFkQ2VRVmVvM0h0RVB3TDE3cGIyejJUTlpYbDdaLy9zMWszYWF6?=
+ =?utf-8?B?eEdBQ1M2SVJCL0pVWTJYcXhhNXBUUlMxWFNkTUZROHQwUTdOWmxRNmNvQ0ZJ?=
+ =?utf-8?B?VmFCYk5nTXBDZXpGcjE1RWlOWDdKYmZsQmh5c3dPd3MxbXBiVDV4MVVVWnlU?=
+ =?utf-8?B?S0xaVmYrd0dNMDlxMjU4aEVRelIzRmo1dFJQdldqMis0VXhaQTd4aGw4RDYx?=
+ =?utf-8?B?Ly8vbk9qT1JFQTMxdnNSL3pZS2ZXVTBzUGtMM2YxNGVjRkZJZmI3ZHM0REE5?=
+ =?utf-8?B?WjIzcjdWZXNQeThVT0JPVlRyM20ycW5vcFEyUENVdWoxM2NFcWUzOS9jeVFN?=
+ =?utf-8?B?YXljeXdUWnM2UlJBdnZJYWtwME1EcXQrbGxpOVV2elZxNDEreXBoVFJZTnc0?=
+ =?utf-8?B?MFIvWVdsZ2FvandHbW5qM1JyTVlzVXhnTG00L3UvZE5QZm9kVkRXZGVEZlNH?=
+ =?utf-8?B?U0ppcGRrUzhxNnd1N083WWxhM3FmRkQvVFRpRi90c1JVdWdxNDV3VlEyTEk3?=
+ =?utf-8?B?TyttdWZXZkR6N28yaXJzR2VyS1l1WmNYNnpBZmsxRGwyNXF6VWMrYlJUWlRl?=
+ =?utf-8?B?WVlHRllrVWlFRmJ1Si94L3FRSE9sSEdJMVF3SEsrOGRjUUFJMjVyYWx0MXZS?=
+ =?utf-8?B?YjIzYnRrZnZhaWZpenVia0kwbVdmcmhRNVk1SlJpcHlqTTdUZHUycmVLMitt?=
+ =?utf-8?B?RERLTkxxY2tTM1o2T0ZpZGZLSkwxM0V4YnZNNElZZnJ5RFJURTNiZGtuTzJS?=
+ =?utf-8?B?eU5SamFtSHdNN0JvVm1YcmdNMEt4aHEvNk5FS2hWYnBOS3VxdkVaU0E3RVE2?=
+ =?utf-8?B?SnRQazNTV1hYMVgwYXhIR3EydmFuNnhXa2xrR0k0UGpZOGlQWFROVnBSRCtO?=
+ =?utf-8?B?OW1yTzVFblBmM0tTNjJodG0zcGZ6d3ZYTUUyQmJJdWNURlVwYjA4d1IrdHdl?=
+ =?utf-8?B?NnNVbEFsT0lNSDBhQTNuYTRLd0N4WnVwZitySzlMdkcyYUpJZ3lkMkZnU2Rx?=
+ =?utf-8?B?YXV0R2VnMXZyR29qM0NPYndaWWs0RTBIa2JoTERPYXc5NjdlYUtDQ2lvYXN4?=
+ =?utf-8?B?Y0d6azFrRkNzbnpkNEZyMWdqZ09pNW5LaE5iNmRqMDZNbWVuYUV1UFJkY1FH?=
+ =?utf-8?B?QlUrVDFibXl0R1orei9reGVlTW1Nb1lKYmNFWHJZd0VxS2tGMDNBUndJbnNG?=
+ =?utf-8?B?NlB4Y1JleUlVMEdBNG5jb245OW9hd29MS2lUTmwvbGt6cEF2cVRta2ZHdVln?=
+ =?utf-8?B?NzdHT0pQSUkyVVBCZlY0SFpzK1lwQUtNNVgyOTEyTUNLUFlsYklJaHd6U1dS?=
+ =?utf-8?B?cmhHMUY3QStIUERlMXFjOGNpY2RNOWpnei9oWDlyOS9mditsY2xzajJnPT0=?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UFlsdXRQbVBGZjlJVVRmYS8yZzYzSVE2NnRKbEdrdGVIV0ZmbWNpL0hSTmhw?=
+ =?utf-8?B?cGVSWEs2Rk5wTmovRUd0RHIzUGllUVBsc1ZHaGd5UmRIS0pBVG5OdUUyRTc3?=
+ =?utf-8?B?a1Z2ejEwdlRVd3ArSUtPZWxhRndXejhxdytHekxKYm1hSGRNRjdPZCtsNzg4?=
+ =?utf-8?B?Y2d2TmVCZVRDZGhvLzY5U28vL2xQU1ZsTXRsV0hRTmFkbEhsYXpQSWd3ZVpK?=
+ =?utf-8?B?MkdGQVV5WDNWeEFTNkwvR21rc0hvdlNIRkVCWjZZMnhXTFRBT1hSeXg3VzdM?=
+ =?utf-8?B?YVlxYmlaZGRsQmdRUlpuUFArK2RGZVBjVkJZa3FsK0VCTEZBZkl3RXY4U3JB?=
+ =?utf-8?B?cFhudHpWeEQvNktFUEVMRng2ZDZPRDdOZTYzdWp1ZTRSVDJOT2NtK0ZRVC9S?=
+ =?utf-8?B?NStwSldtYS9kaGRaYjFqM1Zhb1haUnVaTHAzN3UxdE5QeHo3bXBKQWFnV3g5?=
+ =?utf-8?B?SlVuK3RXMEI0QjB3Z0NaWDZySUdkU0dDNlczc3A1dE1uVUN2TjZPNXJlTWlY?=
+ =?utf-8?B?YTJDNndvUnRPRzRkbEg2bjhLeFdhVm80V3QzSlJHM0NtTjVXM0dkUXdNeWdU?=
+ =?utf-8?B?Q09tNnlHUkZ1RHhOYlZ1QWxXWDdnK3hPUjlZZFpUTWdoRjB3NnZpMmV2QXJH?=
+ =?utf-8?B?aWpWdW5WVVhlK2hwV2ZDWEZnMms3Y21UbGtxZVJ5ejVhWWFlV3d0TFVwejRF?=
+ =?utf-8?B?Z2VRaFl6TmI4NFc2M0lMbTQwZG16dURYejhOclIvOS85YkZRZDE5SFoyVU5W?=
+ =?utf-8?B?QUFDMmdZakh2RTFRSVRET2ZyeUNQNVVlSVNTQVQxblozUVVPaHkvcDNCbmVw?=
+ =?utf-8?B?RkRFWkVMcDc5WmowdG9raFJud3BNc0NrNkVXQlZwazhMNjF6eDlRV3AxY2lD?=
+ =?utf-8?B?T0Q3cEkwaCtwOTd5eVZDdzJCK2xBRzNSQXc0U1pDTitMZ3lYd3QxSDJYci9X?=
+ =?utf-8?B?b2hLeml0REwzWFE5d3AxVWhkNTlJNHRidzR2VmMrYXkvUWZFTHVhT3o5RUFl?=
+ =?utf-8?B?M29oKzJuL1Q2M1ZySG1FRk03VFZxak9MUngrQWR0d1dQSytXS1dCYlloQTBz?=
+ =?utf-8?B?ckhRQktBbDczTCtudWNYR203N0hrTzIyRCtYNUZ1UG00a1ZGNDhHbGwrVzU1?=
+ =?utf-8?B?clJjUjFFemtUMEV4VzFob3RJSmRwcnlFc1F4dzNubUttb29TKzVuRGhzTXVQ?=
+ =?utf-8?B?NnA4OEk5V0FObnA5LzJaaDF4b1NNalN2Y3ZWdWUzQk84a0dOaFRjZGdrUys1?=
+ =?utf-8?B?akx4dkNUYUZYYllGYzZDem9USnFnbkQvMy92eVpseWw1Wm9TTk5NTjR1Y0tC?=
+ =?utf-8?B?Sk5weFdhQWduQmR2akFmU1pVU0ZUaTA3ZytvenJVdWVtemFjWHQrYUxqdVI3?=
+ =?utf-8?B?Y2hIK2dsUG8yV2w2bnh3Z2ZtYlN3NnBnYWVDMlFPekxpYjQyMmhKUlpkQWVC?=
+ =?utf-8?B?L091T3RVZU5lQjNCM211TGlGN3lvVUhYdTdOZXZNZWJIS09HbWY4TVAvb3Zs?=
+ =?utf-8?B?NDhmS2dRRnFhYml5R0xubldWRjh1QTJjNklacGVNQnN1YmxlQ0tNaGZlNFpZ?=
+ =?utf-8?B?RHA4YStvZXM3eGhKSVJRVGFuc0lSZytaRHlsQ1QvL3FGQkJoTjZmamljSDIx?=
+ =?utf-8?B?cmhHdTE2TDVsUVIwYnorTllaRW5EQkt5c2Y0dGt4Y24ybFg5ODJUNmlza25l?=
+ =?utf-8?B?UXRRcGVMVWVyNDlJa3FHbGFZbDRMb0RXVzROVVpramhIc1IrODBCTkkyWjJa?=
+ =?utf-8?B?RlpYYkE5VVpKdnViSkI4bUM2amNwSDdaSkVlU1RoNzA2MzhSSTVpc0cyczZn?=
+ =?utf-8?B?NnEzeWZHZlBMRkNua1V1UXE1aFhIZHN5eERpWEs4M1hUaGhxLzZOUWJuU3Ri?=
+ =?utf-8?B?VThNVUt0aDNVTGtnU09mUDNvZ2ZaNGplbnZ2bUdZWktnYzgwMmozdkZOR3Nz?=
+ =?utf-8?B?UFF6RG9ZdjBWazFuQ2sva2ovSDFSZ1Q4UVd1MjVlUURJUldrZExnclBEWENl?=
+ =?utf-8?B?MVkvWTNFYkFYZzFCYXlBcy82TkVTOS9WdXFJYUdrb0JNcWFJSVFSNUx0Mmho?=
+ =?utf-8?B?cjRadzRMbE9WMTZWV3Z3RzRBYWVhaGk5c216MlQyWFByVEF6TTFpbHFBZVFn?=
+ =?utf-8?Q?3B9ZKEhPO2OfKUyoiKFRjmoCg?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F320A58BE57F1B4BACDEB85D9BB9E607@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG6EX01-IMDC.srv.huawei-3com.com (10.62.14.10)
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 43S3jaSg028991
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0ad1298-840c-409d-0da0-08dc673a246b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2024 04:17:39.6109
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: f3MXq2ZfD4sssd9WGV0aNoOwanqMypBo7Y21XYx1zrPDQrrMMugOKgYLGa6VFqMjMkHjszWIyeKLrgbVzToRzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4746
+X-OriginatorOrg: intel.com
 
->On 12/24/20 3:51 AM, Fengfei Xi wrote:
->> We have encountered the following problems several times:
->>     1、A raid slot or hardware problem causes block device loss.
->>     2、Continue to issue IO requests to the problematic block device.
->>     3、The system possibly crash after a few hours.
-
->What kernel is this on?
-
->> dmesg log as below:
->> [15205901.268313] blk_partition_remap: fail for partition 1
-
->I think this message has been gone since kernel v4.16...
-
->If you're testing this on an old kernel, can you reproduce it on a
->current kernel?
-
->> [15205901.319309] blk_partition_remap: fail for partition 1
->> [15205901.319341] blk_partition_remap: fail for partition 1
->> [15205901.319873] sysctl (3998546): drop_caches: 3
-
->What performed the drop_caches immediately before the BUG?  Does
->the BUG happen without drop_caches?
-
->> [15205901.371379] BUG: unable to handle kernel NULL pointer dereference at
-
->was something lost here?  "dereference at" ... what?
-
->> [15205901.372602] IP: xfs_buf_offset+0x32/0x60 [xfs]
->> [15205901.373605] PGD 0 P4D 0
->> [15205901.374690] Oops: 0000 [#1] SMP
->> [15205901.375629] Modules linked in:
->> [15205901.382445] CPU: 6 PID: 18545 Comm: xfsaild/sdh1 Kdump: loaded Tainted: G
->> [15205901.384728] Hardware name:
->> [15205901.385830] task: ffff885216939e80 task.stack: ffffb28ba9b38000
->> [15205901.386974] RIP: 0010:xfs_buf_offset+0x32/0x60 [xfs]
->> [15205901.388044] RSP: 0018:ffffb28ba9b3bc68 EFLAGS: 00010246
->> [15205901.389021] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
->> [15205901.390016] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88627bebf000
->> [15205901.391075] RBP: ffffb28ba9b3bc98 R08: ffff88627bebf000 R09: 00000001802a000d
->> [15205901.392031] R10: ffff88521f3a0240 R11: ffff88627bebf000 R12: ffff88521041e000
->> [15205901.392950] R13: 0000000000000020 R14: ffff88627bebf000 R15: 0000000000000000
->> [15205901.393858] FS:  0000000000000000(0000) GS:ffff88521f380000(0000) knlGS:0000000000000000
->> [15205901.394774] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [15205901.395756] CR2: 0000000000000000 CR3: 000000099bc09001 CR4: 00000000007606e0
->> [15205901.396904] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [15205901.397869] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> [15205901.398836] PKRU: 55555554
->> [15205901.400111] Call Trace:
->> [15205901.401058]  ? xfs_inode_buf_verify+0x8e/0xf0 [xfs]
->> [15205901.402069]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
->> [15205901.403060]  xfs_inode_buf_write_verify+0x10/0x20 [xfs]
->> [15205901.404017]  _xfs_buf_ioapply+0x88/0x410 [xfs]
->> [15205901.404990]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
->> [15205901.405929]  xfs_buf_submit+0x63/0x200 [xfs]
->> [15205901.406801]  xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
->> [15205901.407675]  ? xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
->> [15205901.408540]  ? xfs_inode_item_push+0xb7/0x190 [xfs]
->> [15205901.409395]  xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
->> [15205901.410249]  xfsaild+0x29a/0x780 [xfs]
->> [15205901.411121]  kthread+0x109/0x140
->> [15205901.411981]  ? xfs_trans_ail_cursor_first+0x90/0x90 [xfs]
->> [15205901.412785]  ? kthread_park+0x60/0x60
->> [15205901.413578]  ret_from_fork+0x2a/0x40
->> 
->> The "obvious" cause is that the bp->b_pages was NULL in function
->> xfs_buf_offset. Analyzing vmcore, we found that b_pages=NULL but
->> b_page_count=16, so b_pages is set to NULL for some reason.
-
->this can happen, for example _xfs_buf_get_pages sets the count, but may
->fail the allocation, and leave the count set while the pointer is NULL.
->> 
->> crash> struct xfs_buf ffff88627bebf000 | less
->>     ...
->>   b_pages = 0x0,
->>   b_page_array = {0x0, 0x0},
->>   b_maps = 0xffff88627bebf118,
->>   __b_map = {
->>     bm_bn = 512,
->>     bm_len = 128
->>   },
->>   b_map_count = 1,
->>   b_io_length = 128,
->>   b_pin_count = {
->>     counter = 0
->>   },
->>   b_io_remaining = {
->>     counter = 1
->>   },
->>   b_page_count = 16,
->>   b_offset = 0,
->>   b_error = 0,
->>     ...
->> 
->> To avoid system crash, we can add the check of 'bp->b_pages' to
->> xfs_inode_buf_verify(). If b_pages == NULL, we mark the buffer
->> as -EFSCORRUPTED and the IO will not dispatched.
->> 
->> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
->> Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
->> ---
->>  fs/xfs/libxfs/xfs_inode_buf.c | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
->> 
->> diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
->> index c667c63f2..5a485c51f 100644
->> --- a/fs/xfs/libxfs/xfs_inode_buf.c
->> +++ b/fs/xfs/libxfs/xfs_inode_buf.c
->> @@ -45,6 +45,17 @@ xfs_inode_buf_verify(
->>  	int		i;
->>  	int		ni;
->>  
->> +	/*
->> +	 * Don't crash and mark buffer EFSCORRUPTED when b_pages is NULL
->> +	 */
->> +	if (!bp->b_pages) {
->> +		xfs_buf_ioerror(bp, -EFSCORRUPTED);
->> +		xfs_alert(mp,
->> +			"xfs_buf(%p) b_pages corruption detected at %pS\n",
->> +			bp, __return_address);
->> +		return;
->> +	}
-
->This seems fairly ad hoc.
-
->I think we need a better idea of how we got here; why should inode buffers
->be uniquely impacted (or defensively protected?)  Can you reproduce this
->using virtual devices so the test can be scripted?
-
-Hi, we have confirmed through the systemtap instrumentation of ioerror that 
-the issue is related to the cleanup logic for xfs_log_item->li_flags in the 
-xfs_buf_resubmit_failed_buffers function. 
-
-As described in commit d43aaf1685aa471f0593685c9f54d53e3af3cf3f: 
-if we clear the log item failed state before queuing the buffer for IO 
-we can release all active references to the buffer and free it, 
-leading to use after free problems in xfs_buf_delwri_queue.
-
-If we trigger dropcache between xfs_clear_li_failed and xfs_buf_delwri_queue,
-as no one holds the xfs_buf, the xfs_buf is released.
-
-Currently, after incorporating the modifications, the issue has not reoccurred.
-
---
-Thanks, 
-
-Fengfei.Xi
+T24gRnJpLCAyMDI0LTA0LTI2IGF0IDE4OjU2ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
+ZToNCj4gRnJvbTogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbC5qLnd5c29ja2lAaW50ZWwuY29t
+Pg0KPiANCj4gVGhlIHJldHVybiB2YWx1ZSBvZiBfU1RBIHdpdGggdGhlICJwcmVzZW50IiBiaXQg
+dW5zZXQgYW5kIHRoZQ0KPiAiZW5hYmxlZCINCj4gYml0IHNldCBpcyBjbGVhcmx5IGludmFsaWQg
+YXMgcGVyIHRoZSBBQ1BJIHNwZWNpZmljYXRpb24sIFNlY3Rpb24NCj4gNi4zLjcNCj4gIl9TVEEg
+KERldmljZSBTdGF0dXMpIiwgc28gbWFrZSB0aGUgQUNQSSBkZXZpY2UgZW51bWVyYXRpb24gY29k
+ZQ0KPiBkaXNyZWdhcmQgZGV2aWNlcyB3aXRoIHN1Y2ggX1NUQSByZXR1cm4gdmFsdWVzLg0KPiAN
+Cj4gQWxzbywgYmVjYXVzZSB0aGlzIGltcGxpZXMgdGhhdCBzdGF0dXMuZW5hYmxlZCB3aWxsIG9u
+bHkgYmUgc2V0IGlmDQo+IHN0YXR1cy5wcmVzZW50IGlzIHNldCB0b28sIGFjcGlfZGV2aWNlX2lz
+X2VuYWJsZWQoKSBjYW4gYmUgbW9kaWZpZWQNCj4gdG8gc2ltcGx5IHJldHVybiB0aGUgdmFsdWUg
+b2YgdGhlIGZvcm1lci4NCj4gDQo+IExpbms6DQo+IGh0dHBzOi8vdWVmaS5vcmcvc3BlY3MvQUNQ
+SS82LjUvMDZfRGV2aWNlX0NvbmZpZ3VyYXRpb24uaHRtbCNzdGEtZGV2aWNlLXN0YXR1cw0KPiBM
+aW5rOg0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1hY3BpLzg4MTc5MzExYTUwMzQ5
+MzA5OTAyOGMxMmNhMzdkNDMwQGh1YXdlaS5jb20vDQo+IFN1Z2dlc3RlZC1ieTogU2FsaWwgTWVo
+dGEgPHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFJhZmFlbCBKLiBX
+eXNvY2tpIDxyYWZhZWwuai53eXNvY2tpQGludGVsLmNvbT4NCj4gLS0tDQo+IMKgZHJpdmVycy9h
+Y3BpL2J1cy5jwqAgfMKgwqAgMTEgKysrKysrKysrKysNCj4gwqBkcml2ZXJzL2FjcGkvc2Nhbi5j
+IHzCoMKgwqAgMiArLQ0KPiDCoDIgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbigtKQ0KPiANCj4gSW5kZXg6IGxpbnV4LXBtL2RyaXZlcnMvYWNwaS9idXMuYw0KPiA9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo+IC0tLSBsaW51eC1wbS5vcmlnL2RyaXZlcnMvYWNwaS9idXMuYw0KPiArKysg
+bGludXgtcG0vZHJpdmVycy9hY3BpL2J1cy5jDQo+IEBAIC0xMTIsNiArMTEyLDE3IEBAIGludCBh
+Y3BpX2J1c19nZXRfc3RhdHVzKHN0cnVjdCBhY3BpX2RldmkNCj4gwqDCoMKgwqDCoMKgwqDCoGlm
+IChBQ1BJX0ZBSUxVUkUoc3RhdHVzKSkNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqByZXR1cm4gLUVOT0RFVjsNCj4gwqANCj4gK8KgwqDCoMKgwqDCoMKgaWYgKCFkZXZpY2UtPnN0
+YXR1cy5wcmVzZW50ICYmIGRldmljZS0+c3RhdHVzLmVuYWJsZWQpIHsNCj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoHByX2luZm8oRldfQlVHICJEZXZpY2UgWyVzXSBzdGF0dXMgWyUw
+OHhdOiBub3QNCj4gcHJlc2VudCBhbmQgZW5hYmxlZFxuIiwNCj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZpY2UtPnBucC5idXNfaWQsICh1MzIpc3Rh
+KTsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldmljZS0+c3RhdHVzLmVuYWJs
+ZWQgPSAwOw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyoNCj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIFRoZSBzdGF0dXMgaXMgY2xlYXJseSBpbnZhbGlkLCBz
+byBjbGVhciB0aGUNCj4gZW5hYmxlZCBiaXQgYXMNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAqIHdlbGwgdG8gYXZvaWQgYXR0ZW1wdGluZyB0byB1c2UgdGhlIGRldmljZS4NCj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLw0KDQpzZWVtcyB0aGF0IHRoaXMgY29t
+bWVudCBpcyBmb3IgdGhlIGxpbmUgYWJvdmU/DQoNCnRoYW5rcywNCnJ1aQ0KPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2aWNlLT5zdGF0dXMuZnVuY3Rpb25hbCA9IDA7DQo+ICvC
+oMKgwqDCoMKgwqDCoH0NCj4gKw0KPiDCoMKgwqDCoMKgwqDCoMKgYWNwaV9zZXRfZGV2aWNlX3N0
+YXR1cyhkZXZpY2UsIHN0YSk7DQo+IMKgDQo+IMKgwqDCoMKgwqDCoMKgwqBpZiAoZGV2aWNlLT5z
+dGF0dXMuZnVuY3Rpb25hbCAmJiAhZGV2aWNlLT5zdGF0dXMucHJlc2VudCkgew0KPiBJbmRleDog
+bGludXgtcG0vZHJpdmVycy9hY3BpL3NjYW4uYw0KPiA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo+IC0tLSBsaW51eC1w
+bS5vcmlnL2RyaXZlcnMvYWNwaS9zY2FuLmMNCj4gKysrIGxpbnV4LXBtL2RyaXZlcnMvYWNwaS9z
+Y2FuLmMNCj4gQEAgLTE5NjIsNyArMTk2Miw3IEBAIGJvb2wgYWNwaV9kZXZpY2VfaXNfcHJlc2Vu
+dChjb25zdCBzdHJ1Y3QNCj4gwqANCj4gwqBib29sIGFjcGlfZGV2aWNlX2lzX2VuYWJsZWQoY29u
+c3Qgc3RydWN0IGFjcGlfZGV2aWNlICphZGV2KQ0KPiDCoHsNCj4gLcKgwqDCoMKgwqDCoMKgcmV0
+dXJuIGFkZXYtPnN0YXR1cy5wcmVzZW50ICYmIGFkZXYtPnN0YXR1cy5lbmFibGVkOw0KPiArwqDC
+oMKgwqDCoMKgwqByZXR1cm4gYWRldi0+c3RhdHVzLmVuYWJsZWQ7DQo+IMKgfQ0KPiDCoA0KPiDC
+oHN0YXRpYyBib29sIGFjcGlfc2Nhbl9oYW5kbGVyX21hdGNoaW5nKHN0cnVjdCBhY3BpX3NjYW5f
+aGFuZGxlcg0KPiAqaGFuZGxlciwNCj4gDQo+IA0KPiANCj4gDQoNCg==
 
