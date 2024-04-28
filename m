@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-161477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D918B4C89
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:57:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584D18B4C8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FB69B21376
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:57:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D613C1F215C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 16:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1296F514;
-	Sun, 28 Apr 2024 15:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DACF6F525;
+	Sun, 28 Apr 2024 16:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErSzh2BE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8f6n0MD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD776138C;
-	Sun, 28 Apr 2024 15:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38486138C;
+	Sun, 28 Apr 2024 16:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714319846; cv=none; b=GyiMahZFQTUafP+gVz4jDkcUqCbgG3cJiyIgGyNlydanzaxjTmV+z/mPAIZwYLI/4TqiD1sSrlwOjl9W40bI4lHBWlTAhCQHx6p2cykfXbXONiV0Zte++7RCgeSMtUIiyZmvrpy7iV/DLsszboFNUiLM3dRZB2AYAPCPZ0ahOLQ=
+	t=1714320004; cv=none; b=jzLZx/JsHQs544JxO3uRSFQ9gMcKs3moxgWSeRM5TlFnLgvawoorsQXL05V5VpOyeus6MNLLv43+8QcbDdC8k237G8skPHE29BAhwUdm9B1GtI0XJG/muOTdhHd/14Uxh4CT3n44V24ynNhgQrEoYe+BTOgSpj5zAj9ecxbUZ8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714319846; c=relaxed/simple;
-	bh=1Fy502u8Ek3go3aP+vohtXuiZd36tbozOqRu3wCf7pA=;
+	s=arc-20240116; t=1714320004; c=relaxed/simple;
+	bh=qZ0Fbfj1vweWLzzSL3bdrgPz202m45WYfRUmedFWYPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uYviYMkFqWKpu47FlxiKdqZugQKxZ2hi9wqLSR66X14xgIZqr94wPtid71Z/XRxuWnBGypQ22M0Ql9D8StGzT9wKR8FI4vVOk5Acv5pbrwtyBJ3PAKzENFqkGSi6tSgoapv1uLmoK5iUJHIKiM8ikiN0WelCueHKll0sHmGofMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErSzh2BE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9AC4C113CC;
-	Sun, 28 Apr 2024 15:57:19 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=HoOp9cuASFbXiI2qyy1tzTMoDU15jCIHUpCtq4kvYTpUzu8yvykXu6UlqQfTlMv9hetjIo536WfKwnWqQqj2wxoQEvGKuptHPMlUENlOMZGtfhStTJZE1a5t0Wr4r2Uh0JOljmcSocUGGRB/U4WjQU3iKrzrBiukBxj0hLkujGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8f6n0MD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E29DC113CC;
+	Sun, 28 Apr 2024 15:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714319845;
-	bh=1Fy502u8Ek3go3aP+vohtXuiZd36tbozOqRu3wCf7pA=;
+	s=k20201202; t=1714320003;
+	bh=qZ0Fbfj1vweWLzzSL3bdrgPz202m45WYfRUmedFWYPw=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ErSzh2BEQRO/fOBIiXC25ay0W7DJgmANIeqQ3X66pNcy8tVUjHIiNAkdLwTYUvtwy
-	 Iz6oDzPO3JjNb8hAnwIlK24EdZbiQ2heq494wISIsGslg1sy0uM2oFuW9Ne82EZK8e
-	 FTMLuY1pb1tVeGlT5R8xcSbpmQ/xz09FgLi1+vzOtFaqZsblneQIoxcTrDpvVi/vgd
-	 +IcM2lDiiiA5wt5/rppFlNNOGgu6zA6N5scCoAvevAxefhmavWQONSqjcMFhqIz42v
-	 MB9Rxlw1rOfD3lfu44LeGeEj17hssnubAxfDSEYnUT6UwJnQ1Q1TUSsgDaKMBa851Z
-	 kIcNHB1SjiRaw==
-Message-ID: <8e8d1f26-2c55-471a-9efa-267cef34415e@kernel.org>
-Date: Sun, 28 Apr 2024 17:57:17 +0200
+	b=o8f6n0MD1/mOag26J70muvOPH6wBJdaZmNh9iJvxENVSFU5+U1AKlFejHUu+SmBf0
+	 oPfnXjqLoSImXJ9XjfC+N5XMzcCMlcskOw8F4v0A9LAa22fTOr9s3S38SPnuGIx6aY
+	 /9fXK/6kuXkGdUbo4faynMRv5/6jBB991XJn+gtBYb02gCHxCE/B/t7g5CXWXDKsQ7
+	 JugizA2qoCnbBdVYEE0bDRG7aNajcmrROa4PD9kb7oceVt/mJfqFRmRi+0TqNt6Qlq
+	 T3CXKsAH3WneCXAyxD1EhsjD0fq33ZfXK5ER92naBoTM5slJ/gvTt0z1TO1fWGkq9t
+	 UOL6I8zogFVfg==
+Message-ID: <79127b00-4349-48bd-9023-259c72cc47dd@kernel.org>
+Date: Sun, 28 Apr 2024 17:59:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,26 +49,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] dt-bindings: clock: google,gs101-clock: add HSI2
- clock management unit
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+Subject: Re: [PATCH 0/2] enable USB on Pixel 6 (Oriole)
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Peter Griffin <peter.griffin@linaro.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>
-Cc: Will McVicker <willmcvicker@google.com>, kernel-team@android.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Will McVicker <willmcvicker@google.com>, Roy Luo <royluo@google.com>,
+ kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-References: <20240426-hsi0-gs101-v2-0-2157da8b63e3@linaro.org>
- <20240426-hsi0-gs101-v2-1-2157da8b63e3@linaro.org>
- <1db611ee-b02c-4b40-8e35-70bbbcba7165@linaro.org>
-Content-Language: en-US
+References: <20240423-usb-dts-gs101-v1-0-3421b0371298@linaro.org>
 From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -112,25 +105,66 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <1db611ee-b02c-4b40-8e35-70bbbcba7165@linaro.org>
+In-Reply-To: <20240423-usb-dts-gs101-v1-0-3421b0371298@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 26/04/2024 12:50, Tudor Ambarus wrote:
+On 23/04/2024 22:52, André Draszik wrote:
+> These patches enable USB in peripheral mode on Pixel 6.
 > 
+> We can only support peripheral mode at this stage, as the MAX77759 TCPCI
+> controller used on Pixel 6 to do the role selection doesn't have a(n
+> upstream) Linux driver. Therefore the role is defaulted to peripheral
+> without any endpoints / ports.
 > 
-> On 4/26/24 11:03, André Draszik wrote:
->> +        clock-names:
->> +          items:
->> +            - const: oscclk
->> +            - const: bus
->> +            - const: pcie
->> +            - const: ufs_embd
->> +            - const: mmc_card
+> For the same reason, we can not detect the orientation of a SS USB-C cable
+> and therefore it will only establish a link in SS mode in one of the
+> possible orientations of the cable. In all other cases, the link will be HS.
 > 
-> I wonder whether we can get rid of the _embd and _card.
+> This series has a dependency on other patches, please see below.
+> 
+> I have mainly tested this as CDC ECM Ethernet device using the following:
+> 
+>     mount -t configfs configfs /sys/kernel/config/
+>     modprobe libcomposite
+>     modprobe usb_f_ecm
+>     mkdir /sys/kernel/config/usb_gadget/g3
+>     cd /sys/kernel/config/usb_gadget/g3
+> 
+>     echo 0xadad > idVendor
+>     echo 0xddaa > idProduct
+>     mkdir strings/0x409
+>     echo 01234567 > strings/0x409/serialnumber
+>     echo ADADAD > strings/0x409/manufacturer
+>     cat /proc/device-tree/model > strings/0x409/product
+>     # create the function (name must match a usb_f_<name> module such as 'acm')
+>     mkdir functions/ecm.usb0
+>     # stable MAC addresses
+>     echo "6e:27:3a:b9:40:87" > functions/ecm.usb0/dev_addr
+>     echo "ca:49:84:b0:3b:bc" > functions/ecm.usb0/host_addr
+> 
+>     mkdir configs/c.1
+>     ln -s functions/ecm.usb0 configs/c.1/
+>     echo $(ls -1 /sys/class/udc/) > UDC
+> 
+>     ifconfig usb0 192.168.1.2 up
+> 
+> at which point the other side should detect it and network communication
+> becomes possible (once the other side also configures its network
+> interface).
+> 
+> Due to the clock IDs, this series depends on the bindings patch
+> "dt-bindings: clock: google,gs101-clock: add HSI0 clock management unit" of
+> the series in
+> https://lore.kernel.org/r/20240423-hsi0-gs101-v1-0-2c3ddb50c720@linaro.org
+> 
 
-+1
+This is weird. The patchset applied cleanly without DTS parts from above
+set, but then failed to build. Obviously, because it depends on DTS,
+even though it is not explicitly said here...
+
+But when I applied DTS from above, these two patches fail to apply, so I
+really wonder how this was organized in the first place. Please rebase.
 
 Best regards,
 Krzysztof
