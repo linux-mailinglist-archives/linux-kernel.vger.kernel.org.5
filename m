@@ -1,209 +1,179 @@
-Return-Path: <linux-kernel+bounces-161373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C5178B4B42
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:32:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6C48B4B45
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:37:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F30CEB215C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:32:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608D81F213BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 10:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D0F3EA68;
-	Sun, 28 Apr 2024 10:32:27 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70AF3FB2F;
+	Sun, 28 Apr 2024 10:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="guWRDSzT"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0150528F4
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3561521101;
+	Sun, 28 Apr 2024 10:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714300346; cv=none; b=HXLxEw/VtfYa+1kg4pYM8drmA6c4fYBkMmcjfwQexkSVucLmq/qfbH6NxCTdASnfhgJm0MEGrH4f3EaX3U2o/t0wQhgmEseXRauTbvr/gcM46C8j+zqyUuTUKXwqOyJlRF7lDIORuWcL2PmtaY8GmmqNytniCIhYJXTCcP0QRO8=
+	t=1714300615; cv=none; b=pjKX2WjZgL8iIOn/kLRk/ByO6NVSgQKTVws1JKuMWcewZoENRu8NKQdo7eFDQmNEsVUbtK+jdFp4E+daDrHVlgJsNruSO5IETk32ajju/Cfss/88cMmJT6vro7cpuu7IRUAWaQe/KD4h038TaRCNXoGDDWbqcq+WtacViIeeXGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714300346; c=relaxed/simple;
-	bh=opVxBr2wFDfqgsK8V+RoidezO/Oi2DFxD0ve799PqoU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fQqkZRqdbATkSXSZFrpndYiMkPp0lHB81D0oDGTSf1sWlraSQGTi3yrBkdZTGglw/axEvAeSaHUrTr618xbfEmCrAffnXWB/pgYowwE8ckLmFXKDpHpMClPpneJf67DRnIk3bi5B+LRA8jD/5TeqPwV7LO+Hs3eDV3CMIz/tfTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d9fde69c43so371119539f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 03:32:24 -0700 (PDT)
+	s=arc-20240116; t=1714300615; c=relaxed/simple;
+	bh=A3nivpRe23n35pamaYeQ0NQo4GANL/bYE1cAUfQv3ns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TTQI0LxrwOvTiJkEp4OuOlWIhRul7DccageVG/tvqHBW2OLQBBkXTDadS8bjohG7UFLNTwrLU4lL5BAk645HMQz6qRB9yJJB1jaxPhED3SNJVHr4jdkyRmHJ4RXV3O36wzKjCLL1LGTF+M/Nt0pIpiWsQWZPEewJf7MQ4jPxeFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=guWRDSzT; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ae315bb20so4261914e87.1;
+        Sun, 28 Apr 2024 03:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714300612; x=1714905412; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3nivpRe23n35pamaYeQ0NQo4GANL/bYE1cAUfQv3ns=;
+        b=guWRDSzT/woGVEnn+h3lmqSXzjFX/Pg9Sbm54hzK54t7GgabRQV6mlt7v2UAmEule3
+         Zehw+4gpd1joqkf5sGQ8hFVdy1/IuCjYq6zwTYfk0jrK6mhLZ8flFU59mESrGwBjkmX7
+         WTY3ZgTj9WMnoLCPELqL91cXJDuq0e/MhNMX9T3Ij4722CZV+3j70IxqWCFqLkSlURAC
+         U6TNI+oe8B0naC7rjCt6Tib18TGnEY/qETrkplEsKYicLf+VTBojzgta/uYC9CfAro1l
+         M4QQmn2MZZDh0SS//zyxETEKdRy71HM87RpQ4tBQuIvYz3KruJoStXFyTtmVVQLmCaVu
+         os7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714300344; x=1714905144;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nkas7Bht5s1OZ3fGOEt3xe3g+0PCxh4/M4jdC0Ak61w=;
-        b=lAf8Heq/Dz5jolNHB9XU/UYDN7AgUuXsQdUyHI3JL8QNveRKaJjJvXrJ8fW+j8O3Yo
-         1oFaexVp8s4AOooYCJLaD5mYCFjbs2zhsuQZ2kUOTX2WlnxJK0rsC3JM/ehexOvBRLh3
-         H6vcG7muah6Xa0Kh2jb4D13lLLadvmgkNHDofCnV+OrOdh5rt7YBHNG6E3mEhabeVjqd
-         6teYkGbWLoHLuQgQ4P+P7HLKvoUy1fKhU+cK7uG9d+82uqBuvE+t/kcYW2+zTDa3gK3N
-         AS3dra3HQc6LxvUpBE/p/T58DtiyKFctxanDhcGF10yWTTFu17X4ZY5X7TvFkBqvpWSF
-         E5Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDUkXB6TBgjCv68CI3eUXjPkkpTChWvbwkMU49IPU47hWc//gQPwjoygKUKpQ1T5LzqDuYOHR0fEjPrKzlCweSiuFggc2fHmYwv9ll
-X-Gm-Message-State: AOJu0YxvJ/RbnHvJj5dnmRTpT/jh9bE274LjzntXtJsWqXQmnwH/exzH
-	f/KcsMEzqz+BTBX2yh8XRrFNWsbLdBcqjGiL36F9Kvl5VrZATK6WVArSq9fB/RmzOPka/tl/5/B
-	m7WqhwEEH95ievl614Ij/SYWYLDdJ3pswb7H8VpuvJu6HO98OFy4DW2c=
-X-Google-Smtp-Source: AGHT+IFV14aGv6V6oPWfZkx6hEtcG3ySBplmaxt0A1m/FBImkP8QkLxBKmPoyXmPFaqYxHgPbhsL2zuYv9j21/96yAb5C90J4M+V
+        d=1e100.net; s=20230601; t=1714300612; x=1714905412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A3nivpRe23n35pamaYeQ0NQo4GANL/bYE1cAUfQv3ns=;
+        b=iT7TCvbTDavCXq8NQb1WmTKS64sJIfLgydvFmV87j7scA+QaaUMKlTpvVZxRwUN2iL
+         UR0kfkPMpu8vPKUDbT0eolZAx3kxhQLMUb2FbwVQ6OSCb7U8/T9Hpbp+XwbJ+bNxiv0G
+         Quu/z2NgqPHFugiwcUkc7pWpvsD/PiJIk6pDnQoj5YtnO2ATZhcPucwNv2z2d9P1KSru
+         IpJObcdCNYXFgyKUpKehsuIoK9IbpcVuvt1y3c5+iFFQmLw5g7CPcmA+CV4OaeJCpNjz
+         JToTrAH+lWc6cTs8UCdyUkFPPkcmW+wZTl3k5hn9EbldjRkWcRQjllJomGue13YWrgQ1
+         O8AQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUoHr9OMZpZtp9bSLJd04sDXzUeWwn4jVBrMqkYimUz1HeJmGKwOdzu7LuEBQDT9kz9N3sk3nWeXVcUzY4rCiF96IZWkgytWNz9Jf5lpfgMr0IEpf/daM+COjwaN6eP+jtaY874C8Rfg==
+X-Gm-Message-State: AOJu0Yz4OQmDRoamemydAxfrObXx0WaN7YGouVUxRI2auH670q6eF5YT
+	MJET/sDrS8/luK0kcsh39NK8FSXxJViBSLsiM0xVXeo+GQ+Q27MioXPHTaSgRQYtdG22CdD/U8Z
+	tS6LPjGgjatPK1aijQMMwNNBAVeSRFVfl
+X-Google-Smtp-Source: AGHT+IH/DaS669Bmyaz9/X/48TD9TThgeNs7jYyoIAffpLAI+oq1Xd0RSZ+Q9R5j/jQkIkEOPbhalxhibL/MZSvUjXQ=
+X-Received: by 2002:a05:6512:3f17:b0:51a:a400:785e with SMTP id
+ y23-20020a0565123f1700b0051aa400785emr5299909lfa.43.1714300612066; Sun, 28
+ Apr 2024 03:36:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4c03:b0:487:de0:b631 with SMTP id
- dm3-20020a0566384c0300b004870de0b631mr251049jab.6.1714300344324; Sun, 28 Apr
- 2024 03:32:24 -0700 (PDT)
-Date: Sun, 28 Apr 2024 03:32:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000fe556061725a7be@google.com>
-Subject: [syzbot] [crypto?] KMSAN: uninit-value in aes_encrypt (5)
-From: syzbot <syzbot+aeb14e2539ffb6d21130@syzkaller.appspotmail.com>
-To: davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <linux-mm@kvack.org> <20240416120635.361838-1-skseofh@gmail.com>
+ <20240416120635.361838-2-skseofh@gmail.com> <Zh9l_LpThq9aFUR7@kernel.org>
+ <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
+ <ZiFgYWydIwvnpIIY@kernel.org> <CAATEi5kFt8iUeWSkrj_bVTyPO_tfQzG77D719P5dLsr2j6Zkzw@mail.gmail.com>
+ <CAATEi5ksY-v7-LEqNZWFV5hsHiegNEtrh4LpMWOQ=vT7hC0Rng@mail.gmail.com>
+ <Ziy8AsAGZyKCyXX_@kernel.org> <CAATEi5=Z0qirM-fyGJL_UPcr7-iyCFtOW9d3XsdN50Tkhpm0iA@mail.gmail.com>
+ <Zi3twYLGvhtJa9Yh@kernel.org>
+In-Reply-To: <Zi3twYLGvhtJa9Yh@kernel.org>
+From: DaeRo Lee <skseofh@gmail.com>
+Date: Sun, 28 Apr 2024 19:36:40 +0900
+Message-ID: <CAATEi5nOQE7xi5ztV0BFO6MRqSGwUPT4V9dqpMT+p4r7iZQwRQ@mail.gmail.com>
+Subject: Re: [PATCH v2] memblock: add no-map alloc functions
+To: Mike Rapoport <rppt@kernel.org>
+Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Daero Lee <daero_le.lee@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+2024=EB=85=84 4=EC=9B=94 28=EC=9D=BC (=EC=9D=BC) =EC=98=A4=ED=9B=84 3:35, M=
+ike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Sat, Apr 27, 2024 at 07:24:23PM +0900, DaeRo Lee wrote:
+> > 2024=EB=85=84 4=EC=9B=94 27=EC=9D=BC (=ED=86=A0) =EC=98=A4=ED=9B=84 5:5=
+0, Mike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> > >
+> > > On Fri, Apr 19, 2024 at 10:59:52AM +0900, DaeRo Lee wrote:
+> > > > 2024=EB=85=84 4=EC=9B=94 19=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84=
+ 10:46, DaeRo Lee <skseofh@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> > > > >
+> > > > > In memmap_init_reserved_pages, we mark memblock.reserved as
+> > > > > PageReserved first and mark the memblock.reserved with nomap flag
+> > > > > also.
+> > > > Sorry. This is my mistake. 'memblock.memory with nomap flag' is rig=
+ht.
+> > > >
+> > > > > -> Isn't this duplicated work? (If we add no-map region to
+> > > > > memblock.reserved 'and' mark in memblock.memory..)
+> > > > > So, I think that for the no-map region, we don't need to add to t=
+he
+> > > > > memblock.reserved.
+> > > > > This is what we do now in early_init_dt_reserve_memory. the nomap
+> > > > > region is not added to the memblock.reserved.
+> > > > >
+> > > > > In early_init_dt_alloc_reserved_memory_arch, if 'nomap' is true, =
+we
+> > > > > mark the memblock.memory region as _NOMAP. And if the return valu=
+e
+> > > > > 'err' is not zero(which is '-ENOMEM' from memblock_isolate_range)=
+, we
+> > > > > free the region.
+> > > > > - 'nomap' is true -> memblock_mark_nomap : success -> not free th=
+e region
+> > > > >
+> > > > > : fail -> free the region
+> > > > > And it can be said that we add the region to the memblock.reserve=
+d
+> > > > > using memblock_phys_alloc_range and if the region is nomap, then =
+we
+> > > > > can free the region from memblock.reserved. But is it necessary t=
+o add
+> > > > > it to memblock.reserved? We just need the region in memblock.memo=
+ry to
+> > > > > mark nomap.
+> > > > >
+> > > > > So, here is what I think:
+> > > > > - reserved-memory w/ nomap region -> mark only to memblock.memory
+> > > > > - reserved-memory w/o nomap region -> add to the memblock.reserve=
+d
+> > >
+> > > NOMAP and memblock.reserved are semantically different, and at makes =
+sense
+> > > to have a "reserved nomap" node in fdt recorded in both memblock.memo=
+ry and
+> > > memblock.reserved.
+> > >
+> > > memblock.reserved represents the memory that is used by firmware or e=
+arly
+> > > kernel allocation, so reserved memory in fdt should be reserved in me=
+mblock
+> > > as well. I believe it's an oversight that early_init_dt_reserve_memor=
+y()
+> > > does not call memblock_reserve() for nomap memory.
+> > >
+> > > NOMAP is a property of a memory region that says that that region sho=
+uld
+> > > not be mapped in the linear map, it's not necessarily in use.
+> >
+> > I agree that the NOMAP region should be added to memblock.reserved.
+> >
+> > So, I think we need to clean-up memmap_init_reserved_pages, because in
+> > this function we call reserve_bootmem_region for memblock.reserved and
+> > memblock.memory with nomap. We don't need to call
+> > reserve_bootmem_region for nomap.
+>
+> Read the comment about memblock_mark_nomap()
+I read the comment about memblock_mark_nomap() and understood that
+regions with nomap flags should be treated as PageReserved.
+But, if we add this nomap region to memblock.reserved, the region with
+nomap flag will be processed in the first for-loop in
+memmap_init_reserved_pages.
 
-syzbot found the following issue on:
+Am I thinking wrong?
 
-HEAD commit:    5d12ed4bea43 Merge tag 'i2c-for-6.9-rc6' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16491b80980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1c4a1df36b3414a8
-dashboard link: https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bb5148c91210/disk-5d12ed4b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/49a9a8f075f4/vmlinux-5d12ed4b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1309b451ab44/bzImage-5d12ed4b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aeb14e2539ffb6d21130@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:149 [inline]
-BUG: KMSAN: uninit-value in aes_encrypt+0x15cc/0x1db0 lib/crypto/aes.c:282
- subshift lib/crypto/aes.c:149 [inline]
- aes_encrypt+0x15cc/0x1db0 lib/crypto/aes.c:282
- aesti_encrypt+0x7d/0xf0 crypto/aes_ti.c:31
- crypto_ecb_crypt crypto/ecb.c:23 [inline]
- crypto_ecb_encrypt2+0x18a/0x300 crypto/ecb.c:40
- crypto_lskcipher_crypt_sg+0x36b/0x7f0 crypto/lskcipher.c:228
- crypto_lskcipher_encrypt_sg+0x8a/0xc0 crypto/lskcipher.c:247
- crypto_skcipher_encrypt+0x119/0x1e0 crypto/skcipher.c:669
- xts_encrypt+0x3c4/0x550 crypto/xts.c:269
- crypto_skcipher_encrypt+0x1a0/0x1e0 crypto/skcipher.c:671
- fscrypt_crypt_data_unit+0x4ee/0x8f0 fs/crypto/crypto.c:144
- fscrypt_encrypt_pagecache_blocks+0x422/0x900 fs/crypto/crypto.c:207
- ext4_bio_write_folio+0x13db/0x2e40 fs/ext4/page-io.c:526
- mpage_submit_folio+0x351/0x4a0 fs/ext4/inode.c:1869
- mpage_process_page_bufs+0xb92/0xe30 fs/ext4/inode.c:1982
- mpage_process_folio fs/ext4/inode.c:2036 [inline]
- mpage_map_and_submit_buffers fs/ext4/inode.c:2105 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x353e/0x62e0 fs/ext4/inode.c:2679
- ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
- do_writepages+0x427/0xc30 mm/page-writeback.c:2612
- __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
- wb_writeback+0x4a1/0xdf0 fs/fs-writeback.c:2117
- wb_do_writeback fs/fs-writeback.c:2264 [inline]
- wb_workfn+0x40b/0x1940 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was stored to memory at:
- le128_xor include/crypto/b128ops.h:69 [inline]
- xts_xor_tweak+0x4ae/0xbf0 crypto/xts.c:123
- xts_xor_tweak_pre crypto/xts.c:135 [inline]
- xts_encrypt+0x296/0x550 crypto/xts.c:268
- crypto_skcipher_encrypt+0x1a0/0x1e0 crypto/skcipher.c:671
- fscrypt_crypt_data_unit+0x4ee/0x8f0 fs/crypto/crypto.c:144
- fscrypt_encrypt_pagecache_blocks+0x422/0x900 fs/crypto/crypto.c:207
- ext4_bio_write_folio+0x13db/0x2e40 fs/ext4/page-io.c:526
- mpage_submit_folio+0x351/0x4a0 fs/ext4/inode.c:1869
- mpage_process_page_bufs+0xb92/0xe30 fs/ext4/inode.c:1982
- mpage_process_folio fs/ext4/inode.c:2036 [inline]
- mpage_map_and_submit_buffers fs/ext4/inode.c:2105 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x353e/0x62e0 fs/ext4/inode.c:2679
- ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
- do_writepages+0x427/0xc30 mm/page-writeback.c:2612
- __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
- wb_writeback+0x4a1/0xdf0 fs/fs-writeback.c:2117
- wb_do_writeback fs/fs-writeback.c:2264 [inline]
- wb_workfn+0x40b/0x1940 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
- alloc_pages mm/mempolicy.c:2335 [inline]
- folio_alloc+0x1d0/0x230 mm/mempolicy.c:2342
- filemap_alloc_folio+0xa6/0x440 mm/filemap.c:984
- __filemap_get_folio+0xa10/0x14b0 mm/filemap.c:1926
- ext4_write_begin+0x3e5/0x2230 fs/ext4/inode.c:1159
- ext4_da_write_begin+0x4cd/0xec0 fs/ext4/inode.c:2869
- generic_perform_write+0x400/0xc60 mm/filemap.c:3974
- ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
- ext4_file_write_iter+0x208/0x3450
- __kernel_write_iter+0x68b/0xc40 fs/read_write.c:523
- __kernel_write+0xca/0x100 fs/read_write.c:543
- __dump_emit fs/coredump.c:813 [inline]
- dump_emit+0x3aa/0x5d0 fs/coredump.c:850
- writenote+0x2ad/0x480 fs/binfmt_elf.c:1422
- write_note_info fs/binfmt_elf.c:1912 [inline]
- elf_core_dump+0x4f77/0x59c0 fs/binfmt_elf.c:2064
- do_coredump+0x32d5/0x4920 fs/coredump.c:764
- get_signal+0x267e/0x2d00 kernel/signal.c:2896
- arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- irqentry_exit_to_user_mode+0xa6/0x160 kernel/entry/common.c:231
- irqentry_exit+0x16/0x60 kernel/entry/common.c:334
- exc_general_protection+0x2e6/0x4b0 arch/x86/kernel/traps.c:644
- asm_exc_general_protection+0x2b/0x30 arch/x86/include/asm/idtentry.h:617
-
-CPU: 0 PID: 57 Comm: kworker/u8:3 Not tainted 6.9.0-rc5-syzkaller-00329-g5d12ed4bea43 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-7:1)
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+DaeRo Lee
 
