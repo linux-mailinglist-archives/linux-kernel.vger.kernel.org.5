@@ -1,198 +1,152 @@
-Return-Path: <linux-kernel+bounces-161206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB7CC8B48FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:00:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFE3E8B48FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 02:59:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74F9C1F21CBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:00:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9911C21018
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 00:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36885A5F;
-	Sun, 28 Apr 2024 01:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A78810FA;
+	Sun, 28 Apr 2024 00:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K2UCutB6"
-Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WZbkQ2qu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E778364A
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF60764A;
+	Sun, 28 Apr 2024 00:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714266013; cv=none; b=o3Xdg1LchZbIGqlpQUBTODdW3uMGzbhywS3TcvLJkj79hkWyJdDfDXbDUSFiZxRfflhebW7svThl7yLZtr+CdFcGykpLCkBSxz7q581ig5S9Kg/fvQPPn9/fwOLjVekUhWzAymSQdt9fzRedYH1lTZHSlGbdznADz2Q1YzkH2eM=
+	t=1714265939; cv=none; b=RA9CjTt3uN75CaSoqnv3xinM8auaMK7SInkM/ZX3fR94BeiF86oSXXZUXksHFlTHtYdRWqCShCBGRD6HLe2oEqnoEVrqu9v5C5zS/jeLm3MpeW2qLMbrEGfuVTDP4roeW5T7mBn6Eh66PgrlHXEjUAey9E3iVMkrtPcfvWdGWDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714266013; c=relaxed/simple;
-	bh=jHknUYvMTs/qmIX8gSVqBhO8YwAhP0j63afjH3jo+gw=;
-	h=To:Cc:Message-Id:From:Subject:Date; b=m55qcKZ5yZvj2iP8zxXTwLU4ZSwKEXi8lcTH91nTL3j6e1QyPoMKFGmNQUl3Lem3AmHIphQfJ+egqhWpL72F0v8jYkTyzU8hZhPbQ0QJUkhXl6kE6VDCYSmLvPXO3/31ybZ4LVrWiX60b0X8UcFOr5b/kHsu6Ab8kH3FDWYMZi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K2UCutB6; arc=none smtp.client-ip=64.147.123.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 944861800116;
-	Sat, 27 Apr 2024 21:00:08 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 27 Apr 2024 21:00:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1714266008; x=1714352408; bh=lLPgP7wkBqHM0
-	uInpzkEUajZ0JcLSbNkr/nAV3+Lc7k=; b=K2UCutB6KM5aPMTSl+CqRnH7mCtID
-	GYjWNJYbOW6WbXqHrXQSsU9akozkf3BsdBGyCkjwBrsz4nxEVODj2+Yf831WKlXM
-	4OYwc37BGUfridIZo2HDj4i5XZTBCArvAlOvjRptTMkpqAcmC7DSuPcjE4s+MXTd
-	Z2OqtzqQ6JHORPwHoAi3gjmh/S6r5Ns/QhVwRu9ixrL+9pZtzFLCyBzMOvwV4qia
-	THVIPkPooAkW2hkkuFy+nV0PlM4qiQIJRnACyvJs2z5cKxcBf07sDxLn5s2ceCUa
-	l3SvRY/PQTIg853QGyBPBnIuKw9JMPyG9tPjPbtMjexDLS1/k/FtTGDDg==
-X-ME-Sender: <xms:l58tZnRzJXb0lnDZTS2DneJyiu5tpzP1-V8v8DFAc89WOnIGfp32lg>
-    <xme:l58tZox8kkJFHGzZ8KU5RhQq81zSVQJOKkrrgDHqWfhpuvF_0F6bOBQhZJfysq7Jl
-    -HIKOCX4ohJhRRlbKM>
-X-ME-Received: <xmr:l58tZs0ntSR4a14q9MyD_7RlyxluCE36tKL66ximBvybzx5-lLX4R0LueISCnkw5HDmECnYEjZmgEtm7m6PxLaOgVpmVxa8nOpU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtvddggedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
-    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
-    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
-    hinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:l58tZnCMwx7PGKM0FoEnf4PlTx05hz5sIMpyPwZFXC1PMfWcQfIvJQ>
-    <xmx:l58tZggw85yMknl0eVtIFjgEIcrwAyqC2jQX-nVh01h23OkJ8SmzOQ>
-    <xmx:l58tZro_-QgcgquskDQ0th1oUkCoi4vC3Hj8BoH1dDuafnKKqHy76A>
-    <xmx:l58tZrjPdj8avur1PecYzs6-v0dmwskqsRljEq9XrkCEJse3qyuFuQ>
-    <xmx:mJ8tZpsiQJhf0VB6CWhO4sOQWx2ixHmkRWQFbuq5eSdHDMZHuiZe6YJU>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 27 Apr 2024 21:00:04 -0400 (EDT)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Michael Schmitz" <schmitzmic@gmail.com>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-Id: <1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k: Handle put_user() faults more carefully
-Date: Sun, 28 Apr 2024 10:58:46 +1000
+	s=arc-20240116; t=1714265939; c=relaxed/simple;
+	bh=sruZuykMgwQNrqDsSrjLsyhTwtcH6jJaF/1elUBTY4o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oJEjg8UYblshmzYK868Gw7Opr1YlKw+UXhQFJO3Jb2mJgEwVHGD80XET0WxGT1cGTn6V/N4YKUt6tJdgLDEwvSodrH8HF+nRoCqK3L8pzUe0w5u9//u/OL53D4O3i0nn7LdBRClnNENjS45q4xSYqZR369MTbh8vqKX9lNNkdwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WZbkQ2qu; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714265938; x=1745801938;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sruZuykMgwQNrqDsSrjLsyhTwtcH6jJaF/1elUBTY4o=;
+  b=WZbkQ2qunJKXyRHUKZ5cF2TwWCiNvHhfjzXsTYu1gilfOP2HKOQQlbV5
+   +aZFtsr95MX4pGP5QCyB7/oXXOgZWCb0yV2MPIY5ZLqzTM1CrjwYhltLz
+   OviE7Yag7zTuCtxc06Z6OmlO8bYP61oSu25IeStQ1HfVHlU1lJbArbvQH
+   HSm/vJBVXuUoe4AdS+INvfMKWKMlXOJ7zg0WRcJTk5TrvV1MJqN8BDspf
+   Y9TaQ6/33NBidnDlqLdUSyVmicwHAoWLF7Tukruo6LJtfvGoO8zNpkCW0
+   7MpvANHuym5OQXdd9z/rgBC7rW7ZxxKkfZO6qOiQfF0lZvI1tv6sNnAaT
+   g==;
+X-CSE-ConnectionGUID: c7P+zrYJRPeoG3GMLCd9+g==
+X-CSE-MsgGUID: KLLNWMcZTyuAv3FY7qv+1A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9827167"
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="9827167"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 17:58:57 -0700
+X-CSE-ConnectionGUID: 1ADNkzFRT7KuUnFBhO/zJg==
+X-CSE-MsgGUID: fFQsozLAQF6AxccK77EbFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,236,1708416000"; 
+   d="scan'208";a="25642447"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.245.127]) ([10.124.245.127])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2024 17:58:53 -0700
+Message-ID: <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com>
+Date: Sun, 28 Apr 2024 08:58:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>,
+ Sean Christopherson <seanjc@google.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+ <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+ <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
+ <ZirPGnSDUzD-iWwc@google.com>
+ <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+ <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
+ <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
+ <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+ <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com>
+ <ZiwEoZDIg8l7-uid@google.com>
+ <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
-produces an oops:
 
-    Unable to handle kernel access at virtual address f1c422fb
-    Oops: 00000000
-    Modules linked in:
-    PC: [<00005a1a>] do_040writeback1+0xae/0x160
-    SR: 2010  SP: 96087dc2  a2: 01500000
-    d0: 00000000    d1: 014e8000    d2: 00000081    d3: 00000000
-    d4: 00000481    d5: c043dfff    a0: 014e8000    a1: 00632fd5
-    Process stress-ng (pid: 221, task=1b729d30)
-    Frame format=7 eff addr=014e9eb8 ssw=0c81 faddr=c043dfff
-    wb 1 stat/addr/data: 0001 00000481 c043dfff
-    wb 2 stat/addr/data: 0081 c043dfff 2f746d70
-    wb 3 stat/addr/data: 0005 014e9ed4 2f746d70
-    push data: c043dfff 800daa70 00000000 014e9f1c
-    Stack from 014e9ed4:
-      2f740000 8017c000 014e9f10 00006830 00000081 c043dfff 2f746d70 2f746d70
-      0081a000 00000400 c043dfff 800daa70 c043dfff 80016a20 00000003 014e9f88
-      000026c8 014e9f1c 00000001 2f746d70 0081a000 00000400 c043dfff 0081afff
-      c043dfff 01500000 00000001 ffffffff 00000000 20000046 41d67008 014e9f58
-      04810005 00810045 c043dfff 014e9f84 2f746d70 c043dfff 2f746d70 c043dfff
-      80016a20 8017c000 00000000 0081affb 00000005 014e9fc4 00128bc6 c043dfff
-    Call Trace: [<00006830>] buserr_c+0x510/0x698
-      [<000026c8>] buserr+0x20/0x28
-      [<00128bc6>] sys_getcwd+0xc8/0x15a
-      [<000027a2>] syscall+0x8/0xc
-      [<0008800d>] sanity_check_segment_list+0x17/0x11e
+On 4/27/2024 11:04 AM, Mingwei Zhang wrote:
+> On Fri, Apr 26, 2024 at 12:46 PM Sean Christopherson <seanjc@google.com> wrote:
+>> On Fri, Apr 26, 2024, Kan Liang wrote:
+>>>> Optimization 4
+>>>> allows the host side to immediately profiling this part instead of
+>>>> waiting for vcpu to reach to PMU context switch locations. Doing so
+>>>> will generate more accurate results.
+>>> If so, I think the 4 is a must to have. Otherwise, it wouldn't honer the
+>>> definition of the exclude_guest. Without 4, it brings some random blind
+>>> spots, right?
+>> +1, I view it as a hard requirement.  It's not an optimization, it's about
+>> accuracy and functional correctness.
+> Well. Does it have to be a _hard_ requirement? no? The irq handler
+> triggered by "perf record -a" could just inject a "state". Instead of
+> immediately preempting the guest PMU context, perf subsystem could
+> allow KVM defer the context switch when it reaches the next PMU
+> context switch location.
+>
+> This is the same as the preemption kernel logic. Do you want me to
+> stop the work immediately? Yes (if you enable preemption), or No, let
+> me finish my job and get to the scheduling point.
+>
+> Implementing this might be more difficult to debug. That's my real
+> concern. If we do not enable preemption, the PMU context switch will
+> only happen at the 2 pairs of locations. If we enable preemption, it
+> could happen at any time.
 
-    Code: 000c 0e90 1800 220f 0281 ffff e000 2041 <2228> 0008 0281 00ff
-          ff00 67a4 6026 4280 122e 0013 206e 000c 0e10 1800 220f 0281
+IMO I don't prefer to add a switch to enable/disable the preemption. I 
+think current implementation is already complicated enough and 
+unnecessary to introduce an new parameter to confuse users. Furthermore, 
+the switch could introduce an uncertainty and may mislead the perf user 
+to read the perf stats incorrectly.  As for debug, it won't bring any 
+difference as long as no host event is created.
 
-The cause is a deliberately misaligned access in the 'bad_end_addr' test
-case in the 'sysbadaddr' stressor. The location being accessed here,
-0xc043dfff, was contrived to span the boundary between a r/w anonymous page
-and an unmapped page. The address was then passed to the getcwd syscall
-which faulted in copy_to_user().
 
-The fault for the mapped page appears to be handled okay -- up until
-do_040writeback1() called put_user() which produced a second fault due to
-the unmapped page.
-
-Michael Schmitz helpfully deciphered the oops and explained the exception
-processing leading up to it.
-
-    "regs->pc does point to the PC in the format 7 frame which is the PC
-    the fault was detected at, but not (in case of a writeback fault)
-    the PC of the faulting instruction [that is, MOVES.L].
-
-    "The writeback would still cross the page boundary, and fault if the
-    unmapped page still isn't present. We would not see the PC of the
-    movesl in that case, and fail to find the PC in the exception
-    table."
-
-One solution is to add a NOP instruction after the MOVES.L to flush the
-pipeline and take the fault. That way, the PC value in the exception frame
-becomes dependable so the exception table works.
-
-Theoretically, there seems to be another bug in the existing code. If
-the instruction following the MOVES faulted, then after the fixup,
-execution would resume at the instruction which caused the fault. This
-appears to be a loop. After this patch, that cannot happen.
-
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-and-tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-
-So far this has only been tested on Motorola 68030 and 68040 systems
-and still needs testing on the other MMU-enabled processors.
-
-I don't know whether or not get_user() has the same problem. Hence this
-patch is confined to put_user().
-
-No change since RFC patch.
----
- arch/m68k/include/asm/uaccess.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
-index 64914872a5c9..44e52d8323e5 100644
---- a/arch/m68k/include/asm/uaccess.h
-+++ b/arch/m68k/include/asm/uaccess.h
-@@ -31,11 +31,12 @@
- #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
- asm volatile ("\n"					\
- 	"1:	"inst"."#bwl"	%2,%1\n"		\
--	"2:\n"						\
-+	"2:	nop\n"					\
-+	"3:\n"						\
- 	"	.section .fixup,\"ax\"\n"		\
- 	"	.even\n"				\
- 	"10:	moveq.l	%3,%0\n"			\
--	"	jra 2b\n"				\
-+	"	jra 3b\n"				\
- 	"	.previous\n"				\
- 	"\n"						\
- 	"	.section __ex_table,\"a\"\n"		\
-@@ -53,11 +54,12 @@ do {								\
- 	asm volatile ("\n"					\
- 		"1:	"inst".l %2,(%1)+\n"			\
- 		"2:	"inst".l %R2,(%1)\n"			\
--		"3:\n"						\
-+		"3:	nop\n"					\
-+		"4:\n"						\
- 		"	.section .fixup,\"ax\"\n"		\
- 		"	.even\n"				\
- 		"10:	movel %3,%0\n"				\
--		"	jra 3b\n"				\
-+		"	jra 4b\n"				\
- 		"	.previous\n"				\
- 		"\n"						\
- 		"	.section __ex_table,\"a\"\n"		\
--- 
-2.39.3
-
+>
+>> What _is_ an optimization is keeping guest state loaded while KVM is in its
+>> run loop, i.e. initial mediated/passthrough PMU support could land upstream with
+>> unconditional switches at entry/exit.  The performance of KVM would likely be
+>> unacceptable for any production use cases, but that would give us motivation to
+>> finish the job, and it doesn't result in random, hard to diagnose issues for
+>> userspace.
+> That's true. I agree with that.
+>
+>>>> Do we want to preempt that? I think it depends. For regular cloud
+>>>> usage, we don't. But for any other usages where we want to prioritize
+>>>> KVM/VMM profiling over guest vPMU, it is useful.
+>>>>
+>>>> My current opinion is that optimization 4 is something nice to have.
+>>>> But we should allow people to turn it off just like we could choose to
+>>>> disable preempt kernel.
+>>> The exclude_guest means everything but the guest. I don't see a reason
+>>> why people want to turn it off and get some random blind spots.
 
