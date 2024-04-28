@@ -1,123 +1,107 @@
-Return-Path: <linux-kernel+bounces-161595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF638B4E6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:02:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33F808B4E70
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D17FB20FAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:02:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D42B6B20D22
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 22:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D3CC2C6;
-	Sun, 28 Apr 2024 22:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806ACBE5A;
+	Sun, 28 Apr 2024 22:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="aa+Nj/J2"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="if2Ye99H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843753F9D8
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 22:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47382F44;
+	Sun, 28 Apr 2024 22:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714341646; cv=none; b=anV1Xz4GqF0VbOABL2bVuvRVY6tS5cpXK0zMOQlsgk6seXNc8reCHhnLU9dIbatgN00fMfftmOn0xF0JQXTevidecK0+70PBRR49wlIdoY5f0Q+7m7NZ+r71t65ziwoKeM0TO+CjzKHX7wvHcISFlv71981/uCjm/OVCxbtXrX4=
+	t=1714341804; cv=none; b=mOgH11Hy98lYFCdd0H6JGYdaynn7ve67C+7oWqo4/pqxK8+oW43YD/k8uMkqq4Pgt7Pa5LSK2E0MOP2ks0gFQ1BzFvjs3K8EW2XWES+gyr3Kfpj8bxgs+zbqIy4QHY8YxqorVklWFtU2TNvc66A/TBMbspVxbBJ52Bq5SdNfzKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714341646; c=relaxed/simple;
-	bh=VKa5DRK+rov4mOndYM37s5U81Iupu8JcxyUVcg4m+F4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GVcJOuC+sr/jNh7nE2yKOTSUVJ6vNnPAZhvak6BAgFpdQVp2tB2DZFGg1KrrSeFjOgsw5LbfuVZZ6a3PVwNQt6JMvanctMURimXi2ynUEyUJnhbawnSADl6UmT4xEvHYaDl1/8GPzocYb9gS3G4D4YGc+33tthPZWfVW+MI5Nj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=aa+Nj/J2; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51b526f0fc4so4756699e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 15:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714341642; x=1714946442; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AWJwQ79KFPwoTQT9Ru/EFPzNPVyElzHVufYRANALvzk=;
-        b=aa+Nj/J2tKWrJ7FIFcFte6Vv5kEx/q5fJg4Jv9CmKXn3aSn7maYnaF/1G0xUWylXEP
-         UG4mSHUMzp8QDsA+EICzuN/mRBtXPT/0XO11p0jhaDmqTrjmfn1wICdOoRMlaSLmQ4S5
-         z8z3qgOK4WnRisytaA7KwtN1Ig7ildDr7p2l9ZJArWBlrNcL+fRjjCWcyhclGomoEE6O
-         FZusTxJFN6VbtqaVLFMBVlPZifDi/IGOEpuUPJUkLnqzVKfKF7uzJTmZofTm3VnStMn3
-         UVeQG+tmqTh/VaZIqifel++RV0T3CADBwVk7UIl6gci0onmQifzouChIQuUuJlvG4s30
-         l3qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714341642; x=1714946442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AWJwQ79KFPwoTQT9Ru/EFPzNPVyElzHVufYRANALvzk=;
-        b=wun8pYbIqK3GMMQ4umNsOcSjsqUxzQ6fGjEXV+9zLF+yV9Oa3n3+Zmv+VNty9i9VOQ
-         8o9k2fJNO26IXBexC41dgnkmFDtEo2DRCeOS51DqV8Je9hgpnHDQgyR1bYgzBy7nKsNn
-         //jY1S1VEgUq//RZlRT06Ox8ULVbL6M8Z71BFdpJtEzjAbSQkL81QdfHzTRNhrVU67oz
-         qILELfCdpLc2PBxtwW6TYhCp7Lb1dtJ2DPrHdyo+NKePAhxvkLFCB4h3etiWzvlDvFzj
-         f36S24ZorZPnHavrkqax9gAvtkQsecIDIvw0aVwOc2OOsHFiZmcYgKt/Pb9BrxgMp5aG
-         j/5g==
-X-Forwarded-Encrypted: i=1; AJvYcCV7lRTp1NSX293ro62jMx4SYTUp0pipb3OhiG6rGsRw+rWSBgFmjhYhxPJNkMpqXMR0ApUtASQxz6vgDu0IT+6y5aeYUkcxnxFCVLnW
-X-Gm-Message-State: AOJu0YxaeedzczHzgPjh1FidfmLvdIRXbgDvNC/isKrq07iuFHjSSdJw
-	RHA1LwHmqCI28U67gTunjy1jGGjmCNBpHSf+jx3Cs7xSvlN/5SvugpjPO5CFp3c=
-X-Google-Smtp-Source: AGHT+IH+pw1RUW60bhQZcyaY+b3pXcFRtK54hYisJiG7BkigT+/etaKESEap9CmgjFFnDFuPPpiVPQ==
-X-Received: by 2002:a05:6512:ba2:b0:516:d448:b42a with SMTP id b34-20020a0565120ba200b00516d448b42amr6329943lfv.26.1714341642522;
-        Sun, 28 Apr 2024 15:00:42 -0700 (PDT)
-Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
-        by smtp.gmail.com with ESMTPSA id j21-20020a056512399500b0051ab68bbb63sm3547485lfu.56.2024.04.28.15.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 15:00:42 -0700 (PDT)
-Date: Mon, 29 Apr 2024 00:00:40 +0200
-From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 11/12] microchip: lan865x: add driver support
- for Microchip's LAN865X MAC-PHY
-Message-ID: <Zi7HCBmpznyQbE_u@builder>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-12-Parthiban.Veerasooran@microchip.com>
- <Zi1Tang5RQMmEFdx@builder>
- <50b7cb69-61c0-45a2-9a48-4160b2d1e24c@lunn.ch>
- <Zi1uIjoIgzir1cwA@builder>
- <8e06c952-b5ab-4591-8ab0-7aebf612a67e@lunn.ch>
+	s=arc-20240116; t=1714341804; c=relaxed/simple;
+	bh=ambIjCt0dHWovx83ZJuXThRMYcTMq0iDPC2InteFJrs=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=qR5gond3HlVzxst0bvvSI2y3TW2k83kRQmkC4wJx9Dd2aOXiM4bvk7ogH1DDYhSN/nuacEloABNyjpfZvlxo4HMrh3GV3AbtWGHFrXBuNiw6+i8AaCC/HwEd7qaO+Vxkhxc0XypfCZoXr+QmXFzTZbX2wqhfFLLhk+IuSaqWr5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=if2Ye99H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2774C113CC;
+	Sun, 28 Apr 2024 22:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714341804;
+	bh=ambIjCt0dHWovx83ZJuXThRMYcTMq0iDPC2InteFJrs=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=if2Ye99HCceTNazUjBYkPYPLG8oueQ3JmHMVnP9RVf1jT7RJD+P3g9P5KRuzPby33
+	 VDs2OSeINZvSZhpxr+TjQAY6DgcHVG/gln1XRFYuxMR7V1OYR0rMkQt6Kh6AuHgsjk
+	 UTPJGuAQHo1g2K/eS/Ifg4VHjeyNOfKRjVZGoTOv3NgkBuqPakQ81cBUomiwz/yMcX
+	 zUkVI2CqO+N6bNAlO6HkpBGNX03sefg6gkpvVi+jZgogonvwaoXVO9RUsCw4p7RuTE
+	 sB2tTw0p1oJavBslNCgT6W3i3UhDMogqwwq6iAocPNaqH2FQz9nwlQngoFxZm5YNxy
+	 lU5zuk4XqVqnA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e06c952-b5ab-4591-8ab0-7aebf612a67e@lunn.ch>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 29 Apr 2024 01:03:17 +0300
+Message-Id: <D0W3G5GVNMMW.3OCGUH8AYNORY@kernel.org>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
+ <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Dave Hansen" <dave.hansen@intel.com>, "Huang, Kai"
+ <kai.huang@intel.com>, "hpa@zytor.com" <hpa@zytor.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "x86@kernel.org"
+ <x86@kernel.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "haitao.huang@linux.intel.com"
+ <haitao.huang@linux.intel.com>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+ "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>
+X-Mailer: aerc 0.17.0
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+ <op.2ma195shwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6b056faa6de2ba3a15c2e5dd576e96e3f85375ba.camel@intel.com>
+ <D0LLZTSVG3BC.8WIRM39WC7UU@kernel.org>
+ <f62c29ec-f893-4320-8097-f6b3a372267a@intel.com>
+In-Reply-To: <f62c29ec-f893-4320-8097-f6b3a372267a@intel.com>
 
-On Sun, Apr 28, 2024 at 04:25:28PM +0200, Andrew Lunn wrote:
-> > I agree with your assesment, the phy won't reset itself, but maybe we
-> > could add some comment doc about not adding it for the lan8670,
-> > so no one trips over that in the future.
-> 
-> In the PHY driver, you can provide your own .soft_reset handler. It
-> could return -EOPNOTSUPP, or -EINVAL. Maybe check the data sheets for
-> the standalone devices supported by the driver. Can you limit this to
-> just the TC6 PHY?
-> 
+On Fri Apr 26, 2024 at 5:28 PM EEST, Dave Hansen wrote:
+> On 4/16/24 07:15, Jarkko Sakkinen wrote:
+> > On Tue Apr 16, 2024 at 8:42 AM EEST, Huang, Kai wrote:
+> > Yes, exactly. I'd take one week break and cycle the kselftest part
+> > internally a bit as I said my previous response. I'm sure that there
+> > is experise inside Intel how to implement it properly. I.e. take some
+> > time to find the right person, and wait as long as that person has a
+> > bit of bandwidth to go through the test and suggest modifications.
+>
+> Folks, I worry that this series is getting bogged down in the selftests.
+>  Yes, selftests are important.  But getting _some_ tests in the kernel
+> is substantially more important than getting perfect tests.
+>
+> I don't think Haitao needs to "cycle" this back inside Intel.
 
-Gotcha, I think that should be pretty easy to handle then. The
-microchip_t1s.c module handles two phy families 
-* lan865x - baked in
-* lan867x - standalone 
+The problem with the tests was that they are hard to run anything else
+than Ubuntu (and perhaps Debian). It is hopefully now taken care of.
+Selftests do not have to be perfect but at minimum they need to be
+runnable.
 
-I need to do some thinking and get a bit more oriented. But pretty sure
-there is a simple path for this.
+I need ret-test the latest series because it is possible that I did not
+have right flags (I was travelling few days thus have not done it yet).
 
-R
+BR, Jarkko
 
