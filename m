@@ -1,322 +1,163 @@
-Return-Path: <linux-kernel+bounces-161212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02588B490E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:24:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BDE8B4916
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 03:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2985B218A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:24:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5145C1F2198A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 01:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEBDEDE;
-	Sun, 28 Apr 2024 01:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0D210F2;
+	Sun, 28 Apr 2024 01:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fq1e25n7"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="KHHgok0K"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04olkn2053.outbound.protection.outlook.com [40.92.47.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D79A55
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 01:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714267448; cv=none; b=DHluicOwfPtMufVHF6pjPInN7OfU8CCxZl92WgcUGl6wGlQQebEr9h/YOaV0z8tfrCq1h7R/DX+dlSqp5aCUU3Mzw8AYnKdg0qFGRUuIp0UruIGjBLbovqms1gFCwlIL5VDjxF7/OtJk/pCaSth2ay7/G/ATBBV/PGF39cmlrbY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714267448; c=relaxed/simple;
-	bh=YYjc/gR266GAgpt5VKOGmMF4sTUI7FY6TAnxvrckVPs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NWFIGQze2dNoaflV21FPwvv/3EmAXspMJFaqfBrctF/kOhX8HXoOFFMDaRTr2N0Ww3eOKErOVruGCqyHCJX0HDMZUpXGwUgv1vx7JpJIGKJOAKj2c7k6cTxP0hETDBBpit/4AKhdz7pTVtDPBsn2vxwTKD+SO9E9ly4NWP3se2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fq1e25n7; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7efcdb73992so491048241.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Apr 2024 18:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714267445; x=1714872245; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bDm1xlTeJ62qRqjr/MjwxR+LT5/CX/cKG3RA29L+Igk=;
-        b=fq1e25n7MBBoCrqRV/xbUpqR6l3wHC9FasMAqJ2nfilES1TaP+4lImMvVM6/wPsm9S
-         TJ7oOPhuMIbLBRkucMUHtjsuO+aeC8JR9HhG+gvhkELDHBO3pJ8c9wP3p6Oe/FkK8qoU
-         Gd1f6fTAuf0eVbZEBmnpME5GF09Y6UUO1SiWLeEm8PnRbDFhmx8PTSzlYG1Py5XBSWIy
-         HQu67UbnLGJlyVgrxcwaYG4k46Xe4BZ4TuSvcToypdu/s02G5nu04UXysreLWUGChzH1
-         r9+KnL7P0cmk0hhhreUwfyRC/Oc+aBjpGa11t5txOH/ag9A2Qz4EbfElkBm5KwXRCy+K
-         5i3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714267445; x=1714872245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bDm1xlTeJ62qRqjr/MjwxR+LT5/CX/cKG3RA29L+Igk=;
-        b=PysTx6BvOuFARKgk2N81pBRrFwtT4AlK/UT/KIukdFrK91aCWNiLAlXFbs3vTUsfjO
-         8bgKSY7YQ4wSBAR8GJcjDvtRFRcr22cKCEPtTz8R7pIvesqN4RUksX4wYYwqMLB1xnLV
-         AeUo4ELP9NjYbxlvxZ2Eod7+QiJxpFnbRhHrHVUv4niLRabmc8khOq605EOt7KYvbde1
-         abQz/NmcBA36w6KfDcBM3U7MlYDi8izkL2b3DrnFtKHt4Hxi5EyjrSiPf103y4JwEdHA
-         b07zePv7rLUBDwDmd8LZ5s/Wq+04dmYwJOKF/8SymdUNpsRJxduHRRbBf0C6I255qL92
-         kRAg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNu1sUXVLzdlU9Uy/TkCcyaPsAUaP0N0OE+3PYWP5B5tq4d6IlwujTii2W68mk7EvZAMemJgQHCDkw2WZIusEW7gZjmdVKLqFU6qvB
-X-Gm-Message-State: AOJu0Yy7IKgqByCrcy09KrX+X9oYZVm+KQ0w5iSLTe3nTRmpeYlv1ts3
-	ZPKc3jR4Z2BnqwmOCApGe7Bx+hbHClcVbgJHvh/c6FSBgfGfrGN+DeZw5UKxYEfTNLaEm6WAbU2
-	CjRhpY76eKc/GMRBwhtfud/pCq+I=
-X-Google-Smtp-Source: AGHT+IHcu6QpbQsdFiqLX6Pb8PeBjCFGPHT+zykUoeAC0/R+hXjsCA8MnWuvHKcvn0corxOZ9LTH9arxOXvhvQeJq7o=
-X-Received: by 2002:a67:f707:0:b0:47b:6d0b:e893 with SMTP id
- m7-20020a67f707000000b0047b6d0be893mr6529902vso.28.1714267445312; Sat, 27 Apr
- 2024 18:24:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5DA37E8;
+	Sun, 28 Apr 2024 01:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.47.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714267750; cv=fail; b=GAxu2BOdeNqX0Ny1xaRQfrKyOf7k44wNeEoLQ7rwtW1Y1e5WK8dFU6qPzsfnOnGIo6s1c5IuvTvd6H/XNd2Oxp3bjTINr3584Hn1dphvm8GYVoMBpcx6kiGTl0W8Jw0mGaRtG9jCUvlRy89XXukTJZQuBeXMfdOifV0dPf60toQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714267750; c=relaxed/simple;
+	bh=Ie6zL7gVWsSPi6xiyzZZ61swSkT/1YRgXhPScgbogXE=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=FvM22hvtYLtAmkcYg7PgP/NYUzmqSR/V5sSMQBYQRkRV0wjKXKnv2NREYCVN92d/o32kqW1DUkinwuWRAqxe9Is/e1fXThJ4efC1Hs7p+KeJphs4dgUaxwCSIJIULwERcP3pzWf50rTYHvE90kLkpP8ENm1OSW3Q4x3Uf9vbGrk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=KHHgok0K; arc=fail smtp.client-ip=40.92.47.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MxPABBko7BnQec5wU/JFjkjTp0x08i2jj1lWdvZFN1z85aVJfl+v2ghft20ZeDlFx9O4gmSSWu6QzFrDo04jNUQ6VXUxl/tDrymFa2s25SQY2Bl5eeUsqUgZPh6jEgsl7PdTcU0BpwVoNwo5CdHr9OKVy5xbovl+IelfPefNeqbCT6+NukShQ0u7DASB5P4HXJeRhQQIt7UKRcXQP219DGYaTeivyeqXZzBv8xWgJMQXGvjw9Zrxiuldd0iHpJ3/pA9heWQrbULooOzxXp8uPez3Tkv8Zyejw8fIo1TvsI8QFY1iD3XrnAFaV1r2rOnaiDmA4VecwOIRb0ao4Apf7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/8Q3SAk42oig58O/Ycajcf3/iHN5wqQ4CweZUM1NMBc=;
+ b=ZpfywTiA/Hz2kSL9B+fQYUpM6K9hf4kmAJszMAGq8n70Ulm+kc64PVCNe7HvlsYwopkBOf8552ufR8vGc4VvsHfy864OGslOhpc1ypLaiofAoR2qxsNEP66U8f8P7yUv+CrRbgGmhPuJrWJR//ZzbYuBBwWLcnNbIqWEngRtlpIin3Lqu8Ie+TTAtDcoabwl9DNeuXG+4obonExEIrDGpizneajwKdCHQz1GKs2BUxdwwek2GY4K1JAnYuiXlgX/oIC/pWMy/emedZgwk0wMwi+IKhzpKzU//ClH5v8jfOpLLo3pNBSU6aA6kANo69IGII1tuRGPhFZsbUTJD2yIYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/8Q3SAk42oig58O/Ycajcf3/iHN5wqQ4CweZUM1NMBc=;
+ b=KHHgok0KF0DtJeg0MCQrc/z43L31IL3fCW+qF420tScKy993PQp+sEepWwVnKExs89CTuEG6H7qSfgWCoJAyTf22ZtQ7fmMqBwVuJ7iOKKk4ULgDkwTnQmtrm/OVqGNunxsuTz1ecp/UkTgGtSfg7aP4voNi7juJZps0vJnr7CRen1jcD/yAKjo6otv5NbJnlaK6lxWdOQB7AKziLHOSLBO7fuYUsjPRkd/pYlMujhdlKD4ClolOjNEON2vTWxvtQTG76zXQVyNkla9OK/PtsGvq/rNkYvbMEV82CeJtgiJwz4V26Inpc7urvhT9pmD/SStfrmVkxfom5YHKE9eW7A==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by CYYPR20MB6663.namprd20.prod.outlook.com (2603:10b6:930:be::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.32; Sun, 28 Apr
+ 2024 01:29:06 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7519.030; Sun, 28 Apr 2024
+ 01:29:06 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Inochi Amaoto <inochiama@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Wei Xu <xuwei5@hisilicon.com>,
+	Huisong Li <lihuisong@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-hwmon@vger.kernel.org
+Subject: [PATCH 0/2] riscv: sophgo: Add SG2042 external hardware monitor support
+Date: Sun, 28 Apr 2024 09:29:22 +0800
+Message-ID:
+ <IA1PR20MB49532A8A0C52FE5C599B6D13BB142@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [LZXC9q2RhMWcsKvQcpB3K2GeGxWVlFmkaUZcy17Cy1A=]
+X-ClientProxiedBy: TYAPR03CA0001.apcprd03.prod.outlook.com
+ (2603:1096:404:14::13) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240428012924.474727-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409203411.1885121-1-jaegeuk@kernel.org> <20240409203411.1885121-3-jaegeuk@kernel.org>
- <050a93dc-d9a8-44bd-9a83-83718e95f04d@kernel.org> <Zhmf4klcOr4eplin@google.com>
- <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com> <49a4cc15-299f-432c-85c7-ab1b1daaaad1@kernel.org>
-In-Reply-To: <49a4cc15-299f-432c-85c7-ab1b1daaaad1@kernel.org>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Sat, 27 Apr 2024 18:23:54 -0700
-Message-ID: <CACOAw_wbCJfOpfHzsznofkP8nb=gigjwmMqrCaeUR+ago8Xo7Q@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: fix false alarm on invalid block address
-To: Chao Yu <chao@kernel.org>
-Cc: Juhyung Park <qkrwngud825@gmail.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CYYPR20MB6663:EE_
+X-MS-Office365-Filtering-Correlation-Id: 855be870-a59f-479c-7c55-08dc67229837
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|461199019|440099019|3412199016|1602099003|1710799017;
+X-Microsoft-Antispam-Message-Info:
+	4YRU06LkLjL0YJHv/yimWrMPvRhJ8SgER9lCqgUGXpzisomQKP8MsrNCf1wSAEY3j4+Sa8X7Kot7Ip9JWf+6+z8Eabs8Qj5SHUFxwo5J778Hzasy2BUvhdd9ghc++HH1jDBIN2Fk2otegmQKZD3AeGlEFtDieixP4bjzIwuEXD1AiSE8C+D5kXJcl3KhcnlX8KPGwsw2V23Hwkxuzv59kNfw7KyBGODAgdsgkKgzMspEfH5WrYu1txZAVOKrSjo9CJzsopzrgVo5xXdhbLvJQfTCr68NwjY020uqnmhjOtCokBW9YqAO1vVZ/E9trtJe54NjxeHs1bU/A9j+moyY/MbDubQFsJtBIDKF2braEEVJdsny9xNPvu8q5gwEa/8RuafFLbrzJ18/weZJVMuHa74V9TcR5jzMSyyGmzH+LUlvSQtOTrDXS0zICq4H1ncXkvrUhGePMl+ZU+PzgEIpk/LJOmBc+RHUdnsKmO7169qBQ7SllDnJw0g1EDGI8XI+O8LYR992m7Ke8qqC0NLsAzIsMLtmmJfCuVEIu9wDC62LjXXBBnGiuq//zu1VJh5Djks5BdzWknhtXKbL/fMN/iZDUcpaL7x62chn/5EaAQtyJOgCAG+x8LqA/+kpypB6mZ9H6IyAX6+JJuSQkZ6xu2exFoO7MyOANbplbNZ/SpVMC92FkxcO8vfwNYDXlgwJDnxOtAjGfceVaGJFyFiw3KOsAX8qqpphs1atD3toC7QAifGe7J/4ywY6lUiVl6wF
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ETdOJRKiNE853pqC/h6mY1gz8fn09rsIDQxcgKmkzEk1n9WCVKGU9V/og+fn?=
+ =?us-ascii?Q?mt2JUKvzlBRGphAnysBQGK0rdA82IGA+NnlcEHpDAVyCw0W3ZdDnGqw2g246?=
+ =?us-ascii?Q?o5zPJMjDO2GQ8urSDpfWXuJFl/NJtqnXCZUdLG/9sLEY+VVdAfBhKe4tvfQD?=
+ =?us-ascii?Q?HHByZ8LtEwYSNLNCXgxviZx8eGym7tmSa2y6VFWslCPr8IfDoLfF+PVh/Brc?=
+ =?us-ascii?Q?M/jXfwdL3mCWq4jIhttKgRVXJdbAC96cCJVUt+lo2iiJbQTzYl0Ea4NizFxV?=
+ =?us-ascii?Q?nd56uur+Dc4X0FjDuGW0qJsLLEB5mMTRcREzUIbmFLGEIzJGWhAHiZygAnoL?=
+ =?us-ascii?Q?am8o7UyTxpHJAB8keMEqTdLsl3D0XGl25sBbBCuGrrIA4Q2VsbN8N8lRflxH?=
+ =?us-ascii?Q?eEugY+ee3Zolk6lBNGkJUPN74g/5ZewrGjFyIf9JQHSVrz7QoTilFNOE4ZPx?=
+ =?us-ascii?Q?0zjAUYCp2MX7WLSFtUNQOiUT6YZRr1/4feklbYW9S3oaAm5L7pWtLk5SzDi+?=
+ =?us-ascii?Q?z7bs3NyI5nXLhcx3ZOYeoAjVvch4ze0rHqyzfh0Cars8pvOZZUPl8sHKzD44?=
+ =?us-ascii?Q?xs2d5RUHEGoTXOLUEWFshShPr7APnfPK7rBVq6n8/Nqyo0BPNo2PpjVQWrS4?=
+ =?us-ascii?Q?2FJ6aqp5Om0GFCSSCO3z1qkTtzlgIqYkf5PxkBVID5ZZJK5TfrZs19fZxSfB?=
+ =?us-ascii?Q?bB10jiWvGi8v9M3b1GjRg8EkzX9TWIhNm5W3Ck9dQw63loL6uURf+KlcNAvh?=
+ =?us-ascii?Q?ErQIOCJeRDZFuK/JTzDeJwtK3aGBww1FXihgWQWOIGHNJdS9YTs73EKq5w0+?=
+ =?us-ascii?Q?Hg2omGg9zlxXIbz2cHNeRqxwrFULraiJDxxEtBJgMhrxe/JcHZ7YGlJrRxjg?=
+ =?us-ascii?Q?J8SkFAMfL+9FAzKTdERyEyd3cPH635Ljp3cNGcmPtsP4te/zQSXeOVCulxgH?=
+ =?us-ascii?Q?txVQsaUGSknlVZ6aatIzOlZO5fEc73n0ecOl/gIMVQXlq4Fs2nnSniYSAmIy?=
+ =?us-ascii?Q?F3bGFjP3/oISTT5axMFhrZrXJT6feVF03+vaEejX5QHc9u4QhZ9G/da38ax0?=
+ =?us-ascii?Q?Q5Hae+cCGYi6AuJHOlJfT3A9VIEZG8MaloaJO0B7HtdIZp1Z+CVCMtcd6Oqh?=
+ =?us-ascii?Q?KwHkQKB0BSpxof3Aqu2I2cn6uFSqQgOCaqL9yEdRMFmfsl4nMGf9VzvBv92M?=
+ =?us-ascii?Q?1p0XcExGGMuwJ9ckRUZBp8k3yNhp1p16+MJUuLmiaoDFDAT4/zq0NhLXajni?=
+ =?us-ascii?Q?EkomcrxuAn/i9vldiCru?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 855be870-a59f-479c-7c55-08dc67229837
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2024 01:29:06.1670
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR20MB6663
 
-On Thu, Apr 25, 2024 at 12:30=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/4/19 18:27, Juhyung Park wrote:
-> > On Sat, Apr 13, 2024 at 5:57=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org=
-> wrote:
-> >>
-> >> On 04/11, Chao Yu wrote:
-> >>> On 2024/4/10 4:34, Jaegeuk Kim wrote:
-> >>>> f2fs_ra_meta_pages can try to read ahead on invalid block address wh=
-ich is
-> >>>> not the corruption case.
-> >>>
-> >>> In which case we will read ahead invalid meta pages? recovery w/ META=
-_POR?
-> >
-> > In my case, it seems like it's META_SIT, and it's triggered right after=
- mount.
->
-> Ah, I see, actually it hits at this case, thanks for the information.
->
-> Thanks,
->
-> > fsck detects invalid_blkaddr, and when the kernel mounts it, it
-> > immediately flags invalid_blkaddr again:
-> >
-> > [    6.333498] init: [libfs_mgr] Running /system/bin/fsck.f2fs -a -c
-> > 10000 --debug-cache /dev/block/sda13
-> > [    6.337671] fsck.f2fs: Info: Fix the reported corruption.
-> > [    6.337947] fsck.f2fs: Info: not exist /proc/version!
-> > [    6.338010] fsck.f2fs: Info: can't find /sys, assuming normal block =
-device
-> > [    6.338294] fsck.f2fs: Info: MKFS version
-> > [    6.338319] fsck.f2fs:   "5.10.160-android12-9-ge5cfec41c8e2"
-> > [    6.338366] fsck.f2fs: Info: FSCK version
-> > [    6.338380] fsck.f2fs:   from "5.10-arter97"
-> > [    6.338393] fsck.f2fs:     to "5.10-arter97"
-> > [    6.338414] fsck.f2fs: Info: superblock features =3D 1499 :  encrypt
-> > verity extra_attr project_quota quota_ino casefold
-> > [    6.338429] fsck.f2fs: Info: superblock encrypt level =3D 0, salt =
-=3D
-> > 00000000000000000000000000000000
-> > [    6.338442] fsck.f2fs: Info: checkpoint stop reason: shutdown(180)
-> > [    6.338455] fsck.f2fs: Info: fs errors: invalid_blkaddr
-> > [    6.338468] fsck.f2fs: Info: Segments per section =3D 1
-> > [    6.338480] fsck.f2fs: Info: Sections per zone =3D 1
-> > [    6.338492] fsck.f2fs: Info: total FS sectors =3D 58971571 (230357 M=
-B)
-> > [    6.340599] fsck.f2fs: Info: CKPT version =3D 2b7e3b29
-> > [    6.340620] fsck.f2fs: Info: version timestamp cur: 19789296, prev: =
-18407008
-> > [    6.677041] fsck.f2fs: Info: checkpoint state =3D 46 :  crc
-> > compacted_summary orphan_inodes sudden-power-off
-> > [    6.677052] fsck.f2fs: [FSCK] Check node 1 / 712937 (0.00%)
-> > [    8.997922] fsck.f2fs: [FSCK] Check node 71294 / 712937 (10.00%)
-> > [   10.629205] fsck.f2fs: [FSCK] Check node 142587 / 712937 (20.00%)
-> > [   12.278186] fsck.f2fs: [FSCK] Check node 213880 / 712937 (30.00%)
-> > [   13.768177] fsck.f2fs: [FSCK] Check node 285173 / 712937 (40.00%)
-> > [   17.446971] fsck.f2fs: [FSCK] Check node 356466 / 712937 (50.00%)
-> > [   19.891623] fsck.f2fs: [FSCK] Check node 427759 / 712937 (60.00%)
-> > [   23.251327] fsck.f2fs: [FSCK] Check node 499052 / 712937 (70.00%)
-> > [   28.493457] fsck.f2fs: [FSCK] Check node 570345 / 712937 (80.00%)
-> > [   29.640800] fsck.f2fs: [FSCK] Check node 641638 / 712937 (90.00%)
-> > [   30.718347] fsck.f2fs: [FSCK] Check node 712931 / 712937 (100.00%)
-> > [   30.724176] fsck.f2fs:
-> > [   30.737160] fsck.f2fs: [FSCK] Max image size: 167506 MB, Free space:=
- 62850 MB
-> > [   30.737164] fsck.f2fs: [FSCK] Unreachable nat entries
-> >           [Ok..] [0x0]
-> > [   30.737638] fsck.f2fs: [FSCK] SIT valid block bitmap checking
-> >           [Ok..]
-> > [   30.737640] fsck.f2fs: [FSCK] Hard link checking for regular file
-> >           [Ok..] [0xd]
-> > [   30.737641] fsck.f2fs: [FSCK] valid_block_count matching with CP
-> >           [Ok..] [0x28b98e6]
-> > [   30.737644] fsck.f2fs: [FSCK] valid_node_count matching with CP (de
-> > lookup)  [Ok..] [0xae0e9]
-> > [   30.737646] fsck.f2fs: [FSCK] valid_node_count matching with CP
-> > (nat lookup) [Ok..] [0xae0e9]
-> > [   30.737647] fsck.f2fs: [FSCK] valid_inode_count matched with CP
-> >           [Ok..] [0xa74a3]
-> > [   30.737649] fsck.f2fs: [FSCK] free segment_count matched with CP
-> >           [Ok..] [0x7aa3]
-> > [   30.737662] fsck.f2fs: [FSCK] next block offset is free
-> >           [Ok..]
-> > [   30.737663] fsck.f2fs: [FSCK] fixing SIT types
-> > [   30.737867] fsck.f2fs: [FSCK] other corrupted bugs
-> >           [Ok..]
-> > [   30.737893] fsck.f2fs: [update_superblock: 765] Info: Done to
-> > update superblock
-> > [   30.960610] fsck.f2fs:
-> > [   30.960618] fsck.f2fs: Done: 24.622956 secs
-> > [   30.960620] fsck.f2fs:
-> > [   30.960622] fsck.f2fs: c, u, RA, CH, CM, Repl=3D
-> > [   30.960627] fsck.f2fs: 10000 10000 43600517 42605434 995083 985083
-> > [   30.963274] F2FS-fs (sda13): Using encoding defined by superblock:
-> > utf8-12.1.0 with flags 0x0
-> > [   30.995360] __f2fs_is_valid_blkaddr: type=3D2
-> >
-> > (Manually added that print ^)
-> >
-> > [   30.995369] ------------[ cut here ]------------
-> > [   30.995375] WARNING: CPU: 7 PID: 1 at f2fs_handle_error+0x18/0x3c
-> > [   30.995378] CPU: 7 PID: 1 Comm: init Tainted: G S      W
-> > 5.10.209-arter97-r15-kernelsu-g0867d0e4f1d2 #6
-> > [   30.995379] Hardware name: Qualcomm Technologies, Inc. Cape QRD
-> > with PM8010 (DT)
-> > [   30.995380] pstate: 22400005 (nzCv daif +PAN -UAO +TCO BTYPE=3D--)
-> > [   30.995382] pc : f2fs_handle_error+0x18/0x3c
-> > [   30.995384] lr : __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-> > [   30.995385] sp : ffffff80209e79b0
-> > [   30.995386] x29: ffffff80209e79b0 x28: 0000000000000037
-> > [   30.995388] x27: 00000000000001c7 x26: 0000000020120121
-> > [   30.995389] x25: 00000000000000d9 x24: 0000000000000000
-> > [   30.995390] x23: ffffffff00f1a700 x22: 0000000000000828
-> > [   30.995391] x21: ffffff80462aa000 x20: ffffff80462aa000
-> > [   30.995392] x19: 0000000000000002 x18: ffffffffffffffff
-> > [   30.995393] x17: 0000000000000000 x16: 00000000ffff0000
-> > [   30.995394] x15: 0000000000000004 x14: ffffffd1675ac6d0
-> > [   30.995395] x13: 0000000000000003 x12: 0000000000000003
-> > [   30.995396] x11: 00000000ffffffff x10: 0000000000000000
-> > [   30.995397] x9 : 0000000100000001 x8 : 0000000100000000
-> > [   30.995398] x7 : 64696c61765f7369 x6 : ffffffd1681279e8
-> > [   30.995399] x5 : 000000000000001f x4 : 0000000000000001
-> > [   30.995400] x3 : 0000000000000000 x2 : ffffff89f03dedc8
-> > [   30.995401] x1 : 0000000000000002 x0 : ffffff80462aa000
-> > [   30.995403] Call trace:
-> > [   30.995404] f2fs_handle_error+0x18/0x3c
-> > [   30.995405] __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-> > [   30.995406] f2fs_is_valid_blkaddr+0x10/0x20
-> > [   30.995407] f2fs_ra_meta_pages+0xe0/0x230
-> > [   30.995409] build_sit_entries+0xa8/0x580
-> > [   30.995411] f2fs_build_segment_manager+0x124/0x170
-> > [   30.995412] f2fs_fill_super+0x78c/0xd1c
-> > [   30.995415] mount_bdev+0x168/0x1ac
-> > [   30.995416] f2fs_mount+0x18/0x24
-> > [   30.995418] legacy_get_tree.llvm.9147845779559715083+0x30/0x5c
-> > [   30.995419] vfs_get_tree+0x30/0xe0
-> > [   30.995421] do_new_mount+0x140/0x358
-> > [   30.995422] path_mount+0x1fc/0x4e8
-> > [   30.995423] __arm64_sys_mount+0x150/0x294
-> > [   30.995425] el0_svc_common.llvm.15698454952154965787+0xa8/0x138
-> > [   30.995426] do_el0_svc+0x24/0x90
-> > [   30.995429] el0_svc+0x10/0x1c
-> > [   30.995430] el0_sync_handler+0xcc/0xe4
-> > [   30.995432] el0_sync+0x1a0/0x1c0
-> > [   30.995433] ---[ end trace 3b83295e0cdac94e ]---
-> > [   31.005011] F2FS-fs (sda13): Mounted with checkpoint version =3D 2b7=
-e3b29
-> > [   31.005176] init: [libfs_mgr]
-> > __mount(source=3D/dev/block/bootdevice/by-name/userdata,target=3D/data,=
-type=3Df2fs)=3D0:
-> > Success
-> > [   31.007749] init: Userdata mounted using /vendor/etc/fstab.qcom resu=
-lt : 0
-> >
-> >
-> > I was bisecting a long boot time (24 additional seconds) issue, which
-> > is always reproducible, and found commit 31f85ccc84b8 ("f2fs: unify
-> > the error handling of f2fs_is_valid_blkaddr") to be causing it.
-> >
-> > I'll just revert that patch locally. Seems like Jaegeuk's dev branch
-> > doesn't have the fix for this specifically yet.
-> >
-> > Thanks.
-> >
-> >>
-> >> I was trying to debug another issue, but found the root cause. Let me =
-drop this
-> >> patch.
-> >>
-> >>>
-> >>> Thanks,
-> >>>
-> >>>>
-> >>>> Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_vali=
-d_blkaddr")
-> >>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> >>>> ---
-> >>>>    fs/f2fs/checkpoint.c | 9 +++++----
-> >>>>    1 file changed, 5 insertions(+), 4 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> >>>> index eac698b8dd38..b01320502624 100644
-> >>>> --- a/fs/f2fs/checkpoint.c
-> >>>> +++ b/fs/f2fs/checkpoint.c
-> >>>> @@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2f=
-s_sb_info *sbi,
-> >>>>              break;
-> >>>>      case META_SIT:
-> >>>>              if (unlikely(blkaddr >=3D SIT_BLK_CNT(sbi)))
-> >>>> -                   goto err;
-> >>>> +                   goto check_only;
-> >>>>              break;
-> >>>>      case META_SSA:
-> >>>>              if (unlikely(blkaddr >=3D MAIN_BLKADDR(sbi) ||
-> >>>>                      blkaddr < SM_I(sbi)->ssa_blkaddr))
-> >>>> -                   goto err;
-> >>>> +                   goto check_only;
-> >>>>              break;
-> >>>>      case META_CP:
-> >>>>              if (unlikely(blkaddr >=3D SIT_I(sbi)->sit_base_addr ||
-> >>>>                      blkaddr < __start_cp_addr(sbi)))
-> >>>> -                   goto err;
-> >>>> +                   goto check_only;
-> >>>>              break;
-> >>>>      case META_POR:
-> >>>>              if (unlikely(blkaddr >=3D MAX_BLKADDR(sbi) ||
-> >>>>                      blkaddr < MAIN_BLKADDR(sbi)))
-> >>>> -                   goto err;
-> >>>> +                   goto check_only;
-> >>>>              break;
-> >>>>      case DATA_GENERIC:
-> >>>>      case DATA_GENERIC_ENHANCE:
-> >>>> @@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_=
-sb_info *sbi,
-> >>>>      return true;
-> >>>>    err:
-> >>>>      f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-> >>>> +check_only:
-> >>>>      return false;
-> >>>>    }
-> >>
-> >>
-> >> _______________________________________________
-> >> Linux-f2fs-devel mailing list
-> >> Linux-f2fs-devel@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+Add support for the onboard hardware monitor for SG2042.
 
-I have a question. Is it okay for META_GENERIC?
+Related SBI patch:
+https://lists.infradead.org/pipermail/opensbi/2024-April/006849.html
+
+Inochi Amaoto (2):
+  dt-bindings: soc: sophgo: Add SG2042 external hardware monitor support
+  drivers: soc: sophgo: Add SG2042 external hardware monitor support
+
+ .../soc/sophgo/sophgo,sg2042-hwmon-mcu.yaml   |  40 ++
+ drivers/soc/Kconfig                           |   1 +
+ drivers/soc/Makefile                          |   1 +
+ drivers/soc/sophgo/Kconfig                    |  12 +
+ drivers/soc/sophgo/Makefile                   |   5 +
+ drivers/soc/sophgo/sg2042-hwmon-mcu.c         | 531 ++++++++++++++++++
+ 6 files changed, 590 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-hwmon-mcu.yaml
+ create mode 100644 drivers/soc/sophgo/Kconfig
+ create mode 100644 drivers/soc/sophgo/Makefile
+ create mode 100644 drivers/soc/sophgo/sg2042-hwmon-mcu.c
+
+--
+2.44.0
+
 
