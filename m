@@ -1,189 +1,125 @@
-Return-Path: <linux-kernel+bounces-161542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 193418B4D83
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:47:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C64A48B4D85
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 20:50:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C63D1C20E7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:47:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5D832816FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 18:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F5F74418;
-	Sun, 28 Apr 2024 18:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50047352D;
+	Sun, 28 Apr 2024 18:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CwWIQV1u"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AYtvcu5X"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEF610F1;
-	Sun, 28 Apr 2024 18:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA29EEC6
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 18:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714330055; cv=none; b=UnUKj2GD9wkUS2wEmCiJamvCo9ULtDd3b42h6sqWJGJo8yGVILjUe/UkqjJrjluW/tXtYQS3z4tavTauLEDN7IJZ8T75s5BJsvBBKMIbf/RDEJ6Uj9V5zNsOWrFrEYDuXYLZ/hGsEVELdQFQ2GDbb0gkYz6VcSqrL8ExPOoKAfI=
+	t=1714330236; cv=none; b=tb2BVvPKZiyweXbhJxc6Hrsn+jsU/I80GB4ZSKnP8y5SlK+Psd0VxItejl4xg+Jva8uL5A2DwF4cVO0Ix9+DLA8o8DmT7d7SptberRW0ok9HB7CSxwtXBus09viuvMqLgRb4PYQooqvT60B0RzpVTzxkrGICNNfPODu/U3ZbYQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714330055; c=relaxed/simple;
-	bh=m6j5X7kkRsy0jNz4W4J2H+m9P4T+FREt7QZZgGMbxHE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HwiCuxzaNBQEdu3HoFTi5rAJ9vuJRXZfv1cVFjcVFzl7UtklOYof1vgQ3Brm/Gq1FoY+uj03pnJX3pJR+vRoSCHKQoI1Gr4SKSyQyduJ1z+hz24nEUWRCnBvF9P/jn/RjYGA966P/PKNfcIS9Ma7alPvL0IIU01Qf9WAu8UT634=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CwWIQV1u; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43SI02d7023839;
-	Sun, 28 Apr 2024 18:47:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=I4ysU+McRbHc4h0GRmdtQ63jVm/RP8IBrMgQGol7Z2A=;
- b=CwWIQV1u79TDvzg30290GaenVGQVxC0EY5DkSwxHiLaaRs4Hlpf1QkPKn37oRi7r06/U
- XtjtdMpK5Vu8dDTm6mjtz5pSWRZ09/xiF9HNG/b4R7W9QuW94miwFgwfMHFIM0x9g1FE
- PN4bvDzijb2YRTk5vpZeKKIFJfkLxQI9SexiRIEJmrNnPTW27J+VOQRdruh4SpNg4e77
- t79+y8KRxpE7Re2mIHj0S7gBwvnGxNXosBePN/EKQEqaSmcWrlAaDGIyy0PeIGZNXNyQ
- FiWKNv7nhuxqlsiWpfrYESsw+kVDgLYGR6oQyNPlPgpcIhyxc7HoSWgevuhZo475IAPa ug== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrsdehbvj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 28 Apr 2024 18:47:31 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43SHOqfd008453;
-	Sun, 28 Apr 2024 18:47:30 GMT
-Received: from gms-ol9-upstr-build.osdevelopmeniad.oraclevcn.com (gms-ol9-upstr-build.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.250.194])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xrqt58jrm-1;
-	Sun, 28 Apr 2024 18:47:30 +0000
-From: Gulam Mohamed <gulam.mohamed@oracle.com>
-To: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: axboe@kernel.dk
-Subject: [RFC for-6.10/block] loop: Fix a race between loop detach and loop open
-Date: Sun, 28 Apr 2024 18:47:29 +0000
-Message-Id: <20240428184729.619458-1-gulam.mohamed@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1714330236; c=relaxed/simple;
+	bh=VMI+ua0sL2L95bgyIs5dyIDlZ/AGAU1djmVqBeGNFVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yfu51IIDbluz3I17jk1ix8Kx/Sbcy5ACI1lj6GJgayLlMy2vyF2aJdUATchkQh7hvaPpiEdRmbbKhHwKGKJcosiz7Pg+HGAxLGX6dPeDWCYLKBvSAKLIyjlFuq4aK1ohTUC7I8xxC5VSbp56VjQx2kWD0Aoa+qpXXi7mdAfj25A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=AYtvcu5X; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2deecd35088so34557391fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 11:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1714330232; x=1714935032; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BAlC94M7he/5/Z9dYzwoM4nnjSgK1MGblRHi8mBcmD8=;
+        b=AYtvcu5XqeS2npyYOdOEv6BWjDnXn8b5kKrzhBENCvx+AA8xRqmoJxVJC3a0ytdbYL
+         stLeDWXS8wUptLaC4wJaQYzkc+tW0OqFh51fuqe/LqdiW2j/lRlhmN4ekDrizg6Jk0pe
+         9bjW8A3waU/TJG4HBsSZ74daD4CHp1omYkUNw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714330232; x=1714935032;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BAlC94M7he/5/Z9dYzwoM4nnjSgK1MGblRHi8mBcmD8=;
+        b=tGb3yZ7Cyd/zfP8ufcYbSc3nphcwrPuqzRl45/kfR9Pt/5SJ664NR9tdQNH2Ne0yVt
+         vlGZj2w/o2mu9iMUxZK4TwGZnZi1UERm1tucwWuL2P6GiO3v0Q2Sxf2nPRP3XUWlcLJk
+         4PbBvc5Nw1XPzJz3nTOqDWA9OgHtySxCV9X5AII01oviA2vymfkVZXGNikTOWyEusj/2
+         Hxefw+yF55t2p8kndZwX3HwVX7cFU4LGuPALleyZDiYy/fvG3hPpZCZ0sSHBrUlYVkxs
+         2nQhbSRTyBYlQMBW45R/jQPJrfT3ISXsvNk955FKoG/3aI9O+6ZUIBOFUn6FHI6PLouh
+         OClg==
+X-Forwarded-Encrypted: i=1; AJvYcCXUl3nx0j21nMzmMzzuGOMD0tnVZsMtYi+AaZm5/ESZ7EFZXlLPpjlgvGiKzDiaAMiKoSZDbKtdQgw4WtnL5rOuhOjUAP4RwCsQ1W1j
+X-Gm-Message-State: AOJu0YztF10r9EVwH6v3yyCBdCFtT+KqSjk3CBKtlDZkyPqMtIgB+2mj
+	wvL779YYmBT8ACah8r32Lm++0UsMnrtniAq5mnu/gLyrTdUTvkpngM9IUyhATxDG+nTnbknaLni
+	1t4judQ==
+X-Google-Smtp-Source: AGHT+IE3gC1DJDRvUD+RkmR/KHAkJ4a6pTYDLBV1MomI6uJ+mOq8U3ICyzmiZprek5cw1jQDSvXtNw==
+X-Received: by 2002:a05:6512:1156:b0:51b:ebe0:a91a with SMTP id m22-20020a056512115600b0051bebe0a91amr3947222lfg.36.1714330232254;
+        Sun, 28 Apr 2024 11:50:32 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id r6-20020a170906704600b00a58e0d1d5bfsm2277783ejj.221.2024.04.28.11.50.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 11:50:31 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a58fbbcd77aso53756766b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 11:50:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU58HTgLvZheZPDYMFtw0LfX93mgs1mQRcfn3FsHhujWc4awhO+0BoOhjg5Yt/KZzL0mq2WxhnRVALjdBnsN59UT/kyPLnSF9sKr23A
+X-Received: by 2002:a17:906:25d7:b0:a52:13ff:5317 with SMTP id
+ n23-20020a17090625d700b00a5213ff5317mr3659858ejb.38.1714330231089; Sun, 28
+ Apr 2024 11:50:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-28_14,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404280134
-X-Proofpoint-GUID: zSG1xs6jvJXIG742Mb2RQVQGc1xCp9p1
-X-Proofpoint-ORIG-GUID: zSG1xs6jvJXIG742Mb2RQVQGc1xCp9p1
+References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
+ <20230424004431.GG3390869@ZenIV> <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
+ <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
+ <20230425160344.GS3390869@ZenIV> <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
+ <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
+ <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
+ <2023053005-alongside-unvisited-d9af@gregkh> <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
+ <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+ <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com> <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
+In-Reply-To: <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Apr 2024 11:50:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
+Message-ID: <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Description
-===========
+On Sun, 28 Apr 2024 at 03:20, Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+>
+> If we keep the current model, WRITE_ONCE() is not sufficient.
+>
+> My understanding is that KCSAN's report like
 
-1. Userspace sends the command "losetup -d" which uses the open() call
-   to open the device
-2. Kernel receives the ioctl command "LOOP_CLR_FD" which calls the
-   function loop_clr_fd()
-3. If LOOP_CLR_FD is the first command received at the time, then the
-   AUTOCLEAR flag is not set and deletion of the
-   loop device proceeds ahead and scans the partitions (drop/add
-   partitions)
+I find it obnoxious that these are NOT REAL PROBLEMS.
 
-	if (disk_openers(lo->lo_disk) > 1) {
-		lo->lo_flags |= LO_FLAGS_AUTOCLEAR;
-		loop_global_unlock(lo, true);
-		return 0;
-	}
+It's KCSAN that is broken and doesn't allow us to just tell it to
+sanely ignore things.
 
- 4. Before scanning partitions, it will check to see if any partition of
-    the loop device is currently opened
- 5. If any partition is opened, then it will return EBUSY:
+I don't want to add stupid and pointless annotations for a broken tooling.
 
-    if (disk->open_partitions)
-		return -EBUSY;
- 6. So, after receiving the "LOOP_CLR_FD" command and just before the above
-    check for open_partitions, if any other command
-    (like blkid) opens any partition of the loop device, then the partition
-    scan will not proceed and EBUSY is returned as shown in above code
- 7. But in "__loop_clr_fd()", this EBUSY error is not propagated
- 8. We have noticed that this is causing the partitions of the loop to
-    remain stale even after the loop device is detached resulting in the
-    IO errors on the partitions
+Can you instead just ask the KCSAN people to have some mode where we
+can annotate a pointer as a "use one or the other", and just shut that
+thing up that way?
 
-Fix
----
-Re-introduce the lo_open() call to restrict any process to open the loop
-device when its being detached
+Because no, we're not adding some idiotic "f_op()" wrapper just to
+shut KCSAN up about a non-issue.
 
-Test case
-=========
-Test case involves the following two scripts:
-
-script1.sh
-----------
-while [ 1 ];
-do
-	losetup -P -f /home/opt/looptest/test10.img
-	blkid /dev/loop0p1
-done
-
-script2.sh
-----------
-while [ 1 ];
-do
-	losetup -d /dev/loop0
-done
-
-Without fix, the following IO errors have been observed:
-
-kernel: __loop_clr_fd: partition scan of loop0 failed (rc=-16)
-kernel: I/O error, dev loop0, sector 20971392 op 0x0:(READ) flags 0x80700
-        phys_seg 1 prio class 0
-kernel: I/O error, dev loop0, sector 108868 op 0x0:(READ) flags 0x0
-        phys_seg 1 prio class 0
-kernel: Buffer I/O error on dev loop0p1, logical block 27201, async page
-        read
-
-Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
----
- drivers/block/loop.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 28a95fd366fe..9a235d8c062d 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -1717,6 +1717,24 @@ static int lo_compat_ioctl(struct block_device *bdev, blk_mode_t mode,
- }
- #endif
- 
-+static int lo_open(struct gendisk *disk, blk_mode_t mode)
-+{
-+        struct loop_device *lo = disk->private_data;
-+        int err;
-+
-+        if (!lo)
-+                return -ENXIO;
-+
-+        err = mutex_lock_killable(&lo->lo_mutex);
-+        if (err)
-+                return err;
-+
-+        if (lo->lo_state == Lo_rundown)
-+                err = -ENXIO;
-+        mutex_unlock(&lo->lo_mutex);
-+	return err;
-+}
-+
- static void lo_release(struct gendisk *disk)
- {
- 	struct loop_device *lo = disk->private_data;
-@@ -1752,6 +1770,7 @@ static void lo_free_disk(struct gendisk *disk)
- 
- static const struct block_device_operations lo_fops = {
- 	.owner =	THIS_MODULE,
-+	.open = 	lo_open,
- 	.release =	lo_release,
- 	.ioctl =	lo_ioctl,
- #ifdef CONFIG_COMPAT
--- 
-2.39.3
-
+                     Linus
 
