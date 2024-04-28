@@ -1,173 +1,202 @@
-Return-Path: <linux-kernel+bounces-161571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB1E08B4DDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:15:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2A68B4DE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 23:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0388C1C20953
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEEF81F2123E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 21:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D4BB660;
-	Sun, 28 Apr 2024 21:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEC9B661;
+	Sun, 28 Apr 2024 21:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="Ya6z4iXe"
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="d87dyRQG"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1001C14;
-	Sun, 28 Apr 2024 21:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACF78F7A
+	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 21:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714338916; cv=none; b=PQiSLEsbMoHHx03IoeftxZ5foxu1o4QhD9Y+uYQ6fkxvuweUUcuzk5cjgDRNiagotlqiVpS3QwFCiiIZ2QjpUoQ8ICnzOhJjX9kngQmk+0igUe/+8zg5fLc2zwEBl0LiDItZFzcbgHb7owg6D3QCJcCn+9esxnteafVGlil+tRw=
+	t=1714338998; cv=none; b=gAA4Ys48cHnPrd4AMRw0wMI5aR0hVgqpr8T9UiIHLIb97LHK/hgAyzIcGDZ4KCvhsbQiPQ9mj6TTfx++VNpVNagrpybPGCVkTFQEnnY6o5ceKouIdIS0YtDXpNTiucl/EPMmN0uoGDUPwPctPctQawOdaQMGV+jEaBGJosksCFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714338916; c=relaxed/simple;
-	bh=gUQG8PqdPH5BDrs7AhxJjTFFaurC53tWLI7kU1Lb8xA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bbv1AtF6hjNIVVmdizOoxTes0gjYXAZv7uO0dUbO9G8Qq8Apx49wqdaGu1FEfVKRng1p+1PWmz35pBNDZ5JtSlGEIQ5r+540jQTpb/6Bs7mNqtcwDU3jsXGLWOfEKXRYdPL80qaNWumxwjMq/kgDXwWWwl8Tf/m+YmRuQx5G1OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=Ya6z4iXe; arc=none smtp.client-ip=178.154.239.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:4d9c:0:640:f3a0:0])
-	by forward502c.mail.yandex.net (Yandex) with ESMTPS id 529F060954;
-	Mon, 29 Apr 2024 00:15:03 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id xEXIs2Td6iE0-gY3OEpmK;
-	Mon, 29 Apr 2024 00:15:02 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1714338902; bh=72CUr+jbIWTZIzy4esppyzeMB8w2qj2dHIKtHXbQeGY=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=Ya6z4iXepp4hzH6gKF62HTLLZOUMQCXkyBnYVjQucazO4C5/Kk6SSNNKTXIco12BA
-	 i03sti8GPnueaqQKTowxgJDhwHOEgYhIXG/h0bGLlWDizLcFcjx6fnpIgXAJKK+g+T
-	 OEKOLKHvphpxPpGvOhnF6MGd+C4tYu/wKDs/JxKE=
-Authentication-Results: mail-nwsmtp-smtp-production-main-23.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
-Date: Mon, 29 Apr 2024 00:14:59 +0300
+	s=arc-20240116; t=1714338998; c=relaxed/simple;
+	bh=gPj8v31ez3L5cKeSj569Pzxg+WTN01PIgBVMPUM0PVk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kR0xuYaLFR/SNhVGs8B/ybvZ1FPFxStTLmKTTHsvzv8JShjhck4qqT6vmyGbGdFs1jgc1XxhU8YKvnEbb2la+ubVcz0Lx4JGm7hbpZOikSjGAx3/U+3VU+Yq8Csjbq2asvosQpd6f5YkJ+0tv81vosYfrvQgG8UDv1gYiBKRpOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=d87dyRQG; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51aa6a8e49aso4541905e87.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 14:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714338994; x=1714943794; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Th6JOWhuN18ilbXtwucL9jIp9hlrqQkRJbPVZOZ6Mcs=;
+        b=d87dyRQG3ruQXMlkKxeNWt4ZeCPEj3IZGLHXbFlUGCW0m8Qhtm0X+Y83LNc1RFnmHD
+         5lDuuRuXOECpqGRHC38OT6Axkg3a3BWKpDlMZB5h9K0hiHKzQDJ41AWYwnfqDI2NqyYL
+         UYTML61ScTYq9swJdlhdhfln/afrUtClWb0jAmo4ZlZH2394KuzQCEkApxWxU9JelSsO
+         w2G6OqwNwOqIOHBoRhApBGqK0XQVU56vTlREnuLmNqVgHqLy+wkQTthBlxcibwgFf96D
+         /C1HY9psJpGS7DiyLSBgJU07gnnD0IWcHtxSJm1AdGgW9gA8ss7pS8BM9UM04+laT/9T
+         o23Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714338994; x=1714943794;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Th6JOWhuN18ilbXtwucL9jIp9hlrqQkRJbPVZOZ6Mcs=;
+        b=nQy5wdd5GE9nIIEQsQ7VOoO1fEpWCbKJK98u1S1IAj/xLWT+C9jY46VORUenoF37YU
+         mzSoPRbunVUHaO6R/N9kBIp9hTBWwocJxJ7yicEFJ7tuXOcewqL/cHVjvBSxUILW7UQV
+         SLdiBRloQTxdeBhnsA7NFunRpXKYZoyiVC7Ordpl+I1+Xqeuhh35fIdM9LngMKmuV6j9
+         0gO+SUJODWjnLKMFHV+X3wEvFn/jms9UzjFlpXElOHMMXQeX7Vx5HbGKvGw2oMBHVfKe
+         jv653f5D2MrUCABFPIY4g+w1+4O24P+2RO6Dj6FUrz6wVMr8JFxNETnMzOICzYU2bVkT
+         eqkA==
+X-Forwarded-Encrypted: i=1; AJvYcCV60STJh+I984KTytg4leeBeLq9vvB0EDjTq3WHOIjtNU7rLbjoySAlJGDcEYzKXZq2rA+Bl+sHFA23DzM/bfsBVaEckru3rDYUUIYp
+X-Gm-Message-State: AOJu0YwKHNeMR9nFnce3u57vVels/leQ5Ugwa9nJ6VCwN0VRCQcW1YvV
+	w3w0Or83K4fjgrLxOUsLtU1WD0qM3fWMj+E0R/f42QAfkKSRMfL1YBho20B8t3E=
+X-Google-Smtp-Source: AGHT+IEdHEc3lHTJKUvgUx6wcLka2P3zMWpdp0v9hONRgbCQmch2GDzwns2skCib8Gg5Xzl6+hkPew==
+X-Received: by 2002:ac2:4542:0:b0:51c:66eb:8a66 with SMTP id j2-20020ac24542000000b0051c66eb8a66mr4599862lfm.67.1714338994352;
+        Sun, 28 Apr 2024 14:16:34 -0700 (PDT)
+Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
+        by smtp.gmail.com with ESMTPSA id g28-20020a0565123b9c00b00518be964835sm3873408lfv.53.2024.04.28.14.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 14:16:33 -0700 (PDT)
+Date: Sun, 28 Apr 2024 23:16:32 +0200
+From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
+Message-ID: <Zi68sDje4wfgftyZ@builder>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
-Content-Language: en-US
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Aleksa Sarai <cyphar@cyphar.com>, "Serge E. Hallyn" <serge@hallyn.com>,
- linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
- Eric Biederman <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Alexander Aring <alex.aring@gmail.com>,
- David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org,
- linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-References: <20240426133310.1159976-1-stsp2@yandex.ru>
- <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
- <8e186307-bed2-4b5c-9bc6-bdc70171cc93@yandex.ru>
- <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
-From: stsp <stsp2@yandex.ru>
-In-Reply-To: <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+
+From c65e42982684d5fd8b2294eb6acf755aa0fcab83 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ram=C3=B3n=20Nordin=20Rodriguez?=
+ <ramon.nordin.rodriguez@ferroamp.se>
+Date: Sun, 28 Apr 2024 22:25:12 +0200
+Subject: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-28.04.2024 23:19, Andy Lutomirski пишет:
->> Doesn't this have the same problem
->> that was pointed to me? Namely (explaining
->> my impl first), that if someone puts the cred
->> fd to an unaware process's fd table, such
->> process can't fully drop its privs. He may not
->> want to access these dirs, but once its hacked,
->> the hacker will access these dirs with the
->> creds came from an outside.
-> This is not a real problem. If I have a writable fd for /etc/shadow or
-> an fd for /dev/mem, etc, then I need close them to fully drop privs.
+This commit optionally enables a hardware reset of the lan8650/1
+mac-phy. These chips have a software reset that is discourage from use
+in the manual since it only resets the internal phy.
 
-But isn't that becoming a problem once
-you are (maliciously) passed such fds via
-exec() or SCM_RIGHTS? You may not know
-about them (or about their creds), so you
-won't close them. Or?
+Signed-off-by: Ram�n Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+---
+ .../bindings/net/microchip,lan865x.yaml       |  4 +++
+ .../net/ethernet/microchip/lan865x/lan865x.c  | 28 +++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-> The problem is that, in current kernels, directory fds don’t allow
-> access using their f_cred, and changing that means that existing
-> software that does not intend to create a capability will start to do
-> so.
+diff --git a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+index 4fdec0ba3532..0f11f431df06 100644
+--- a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
++++ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+@@ -44,6 +44,9 @@ properties:
+     minimum: 15000000
+     maximum: 25000000
+ 
++  reset-gpios:
++    maxItems: 1
++
+   "#address-cells":
+     const: 1
+ 
+@@ -76,5 +79,6 @@ examples:
+         interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
+         local-mac-address = [04 05 06 01 02 03];
+         spi-max-frequency = <15000000>;
++        reset-gpios = <&gpio2 8 GPIO_ACTIVE_HIGH>;
+       };
+     };
+diff --git a/drivers/net/ethernet/microchip/lan865x/lan865x.c b/drivers/net/ethernet/microchip/lan865x/lan865x.c
+index 9abefa8b9d9f..bed9033574b2 100644
+--- a/drivers/net/ethernet/microchip/lan865x/lan865x.c
++++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
+@@ -9,6 +9,7 @@
+ #include <linux/kernel.h>
+ #include <linux/phy.h>
+ #include <linux/oa_tc6.h>
++#include <linux/gpio/driver.h>
+ 
+ #define DRV_NAME			"lan865x"
+ 
+@@ -33,6 +34,7 @@
+ 
+ struct lan865x_priv {
+ 	struct work_struct multicast_work;
++	struct gpio_desc *reset_gpio;
+ 	struct net_device *netdev;
+ 	struct spi_device *spi;
+ 	struct oa_tc6 *tc6;
+@@ -283,6 +285,24 @@ static int lan865x_set_zarfe(struct lan865x_priv *priv)
+ 	return oa_tc6_write_register(priv->tc6, OA_TC6_REG_CONFIG0, regval);
+ }
+ 
++static int lan865x_probe_reset_gpio(struct lan865x_priv *priv)
++{
++	priv->reset_gpio = devm_gpiod_get_optional(&priv->spi->dev, "reset",
++						   GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->reset_gpio))
++		return PTR_ERR(priv->reset_gpio);
++
++	return 0;
++}
++
++static void lan865x_hw_reset(struct lan865x_priv *priv)
++{
++	gpiod_set_value_cansleep(priv->reset_gpio, 1);
++	// section 9.6.3 RESET_N Timing specifies a minimum hold of 5us
++	usleep_range(5, 10);
++	gpiod_set_value_cansleep(priv->reset_gpio, 0);
++}
++
+ static int lan865x_probe(struct spi_device *spi)
+ {
+ 	struct net_device *netdev;
+@@ -297,6 +317,14 @@ static int lan865x_probe(struct spi_device *spi)
+ 	priv->netdev = netdev;
+ 	priv->spi = spi;
+ 	spi_set_drvdata(spi, priv);
++	if (lan865x_probe_reset_gpio(priv)) {
++		dev_err(&spi->dev, "failed to probe reset pin");
++		ret = -ENODEV;
++		goto free_netdev;
++	}
++
++	if (priv->reset_gpio)
++		lan865x_hw_reset(priv);
+ 	INIT_WORK(&priv->multicast_work, lan865x_multicast_work_handler);
+ 
+ 	priv->tc6 = oa_tc6_init(spi, netdev);
+-- 
+2.43.0
 
-Which is what I am trying to do. :)
-
->> My solution was to close such fds on
->> exec and disallowing SCM_RIGHTS passage.
-> I don't see what problem this solves.
-
-That the process that received them,
-doesn't know they have O_CRED_ALLOW
-within. So it won't deduce to close them
-in time.
-Again, this is not the only possible solution.
-The receiver can indicate its will to receive
-them anyway, and the kernel can check if
-such transaction is safe. But it was simpler
-to just disallow, who needs to pass those?
-
->> SCM_RIGHTS can be allowed in the future,
->> but the receiver will need to use some
->> new flag to indicate that he is willing to
->> get such an fd. Passage via exec() can
->> probably never be allowed however.
->>
->> If I understand your model correctly, you
->> put a magic sub-tree to the fs scope of some
->> unaware process.
-> Only if I want that process to have access!
-
-Who is "I" in that context?
-Can it be some malicious entity?
-
->> He may not want to access
->> it, but once hacked, the hacker will access
->> it with the creds from an outside.
->> And, unlike in my impl, in yours there is
->> probably no way to prevent that?
-> This is fundamental to the whole model. If I stick a FAT formatted USB
-> drive in the system and mount it, then any process that can find its
-> way to the mountpoint can write to it.  And if I open a dirfd, any
-> process with that dirfd can write it.  This is old news and isn't a
-> problem.
-
-But IIRC O_DIRECTORY only allows O_RDONLY.
-I even re-checked now, and O_DIRECTORY|O_RDWR
-gives EISDIR. So is it actually true that
-whoever has dir_fd, can write to it?
-
->> In short: my impl confines the hassle within
->> the single process. It can be extended, and
->> then the receiver will need to explicitly allow
->> adding such fds to his fd table.
->> But your idea seems to inherently require
->> 2 processes, and there is probably no way
->> for the second process to say "ok, I allow
->> such sub-tree in my fs scope".
-> A process could use my proposal to open_tree directory, make a whole
-> new mountns that is otherwise empty, switch to the mountns, mount the
-> directory, then change its UID and drop all privs, and still have
-> access to that one directory.
-
-Ok, if that requires actions that can't
-be done after priv drop, then it can
-indeed fully drop privs w/o mounting
-anything, if he doesn't want such access.
-Then the only security-related difference
-with my approach is that mine guarantees
-nothing new can be accessed, no matter
-who passes what. Currently nothing can
-be passed at all, but if it can - my approach
-would still guarantee only the same creds
-can be passed, not a new ones.
-Can the same restriction be applied in
-your case?
 
 
