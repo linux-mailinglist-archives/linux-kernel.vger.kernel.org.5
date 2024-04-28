@@ -1,100 +1,115 @@
-Return-Path: <linux-kernel+bounces-161468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4645A8B4C69
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:36:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCC58B4C6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:39:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7D22818EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907371F21382
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 15:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C626F074;
-	Sun, 28 Apr 2024 15:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002096F079;
+	Sun, 28 Apr 2024 15:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="IXWH8xfg"
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="QHSaNfVF"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C700A6EB7A;
-	Sun, 28 Apr 2024 15:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A51E48A;
+	Sun, 28 Apr 2024 15:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714318581; cv=none; b=nvcsnfOX6UTk8RU2IpnXuQcrjZFxpA9ezD8/qTveY9vf05UYwwhZ8WAvURJ+gPZtweIZy3t+HlmdcjMkPI3cT/cfSCUrFqiI5INV2vXDRVLtihf4xaaTfna+misAVc90sSBIz+W1rF2hQN4kfty9cVQgYuw5Q0IUAU5xUhB1Zdk=
+	t=1714318756; cv=none; b=m62tnnLRzeIH2KIF1ctSTSwKkrdrVqlXmNo+dOve3rU78JgZimYqpr7hnFoV80upD3/OQZZYCu4l/wHHq5KnZyLdSVCn6agWHx2W/vu+kyfY1W/qihT+/YkGKdv9GLyBRlsrgJwYuVyvfMu4tVv8WwcIHKJe6WCE+1H965CIyrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714318581; c=relaxed/simple;
-	bh=pH+9W97o7UGH4h29CTm7rSwQNCI2Ku73u5Nn6wkcv30=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L8B1wIxTzkta93SOu2GhYVwv84Om1ixYHBmjDb29kbM/DRwQp8KG/5FBUaArkjkozUhKCmTMq6XA14CiPcJ6Sih1gC25bRtggavgA3MfOEpwIfdk+HS07PpHx6fQLbaqpaihQdyxD8+0hnoarRJ7Js8K+L+1CFttcql+Dx6Z3dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=IXWH8xfg; arc=none smtp.client-ip=80.12.242.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from localhost.localdomain ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 16YWsTQrFuPiV16YWsibQ8; Sun, 28 Apr 2024 17:35:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1714318509;
-	bh=1gpd5ELJC1zLelEncmtXMoj1+Hn1p8lojfAwRP5/fus=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=IXWH8xfgTVGRyT2DCFddqdTlble52UnCPNXRABtgChyIVcuQJhTmLp43uwO3SZCKn
-	 0alesarNZUfWo71w8tt0s2iCENFjr7BKWhAbWKhqsOcNpXegvOgI0H5eUDdK2+1nK2
-	 LEr1umYSwvtaRV3iSOF5VWa6a+asGtJEui5MWnTVhR6Os63TU8diWZZO5cW9QSRHqv
-	 78jwoK2rb2jGRxn/VGBwgT3GpzeHG/l5WLf4ffN8/BNRAf/U1lWxyRb34rCwNka8vP
-	 G4U2u5Mpbv/WIq/V5zw5+44Gg5YzU5jE6uBOrKnapCJ4kAOhVt/U6tDwyPQ6cSmZb5
-	 DaiB4PDsDMZuQ==
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 28 Apr 2024 17:35:09 +0200
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-leds@vger.kernel.org
-Subject: [PATCH] leds: aat1290: Remove an unused field in struct aat1290_led
-Date: Sun, 28 Apr 2024 17:34:55 +0200
-Message-ID: <f7c8c22242544b11e95d9a77d7d0ea17f5a24fd5.1714318454.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714318756; c=relaxed/simple;
+	bh=ViyQZTMIcF5v+1IYQTvuXRzOzG85wmh4Y3HOHwhO5gY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=NjyQRgXfgBSv2ykHPLRPlNWc45WDUnU1KyXQun5VicjxDyFHbt15h35r3a7nVdqnDwxmrY/pzlKlqmI3EngEAoCTSD1asjdryauo+CTQ/+hYTyElMNQbo0nv7a0LORLAQQ+7d5f7ACH4AnTwZMsqSBtGg1FtNBYcrIgoejvcn9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=QHSaNfVF; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714318718; x=1714923518; i=markus.elfring@web.de;
+	bh=g4JtHB0LA6rj2gdM0a7dzQ25Ozs54psB2cq0Nnk5tUs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=QHSaNfVFBHPPh6QlbqU+9gPPj6bEDthUZd7Dpp0YrSmhPme/e0Oc6+N6bugbjUF2
+	 HQJdTl9d5tMomQ17HRA0yzbvyo1NDHzO8IODYZITJGzQ2AWyC3vsmNNnbzHskBktU
+	 DUdmc9k8pEjOQzzMs6E5fhvO58y9U9auXFyjwH//PA0aC3rKh+ylBUqGoDAdsTZxL
+	 BHSU1AlbSchjgPR5CKaseiaIPZEzGyLMBUDOZqv04dC8CQBnk2zV/UJiiRsE4VTYK
+	 7+Af6WLVDzKDzEBk6Vmpb/qExS2w1JLmBXZB+OF/P4m8AeivgqfhIkp+HbzwzEj5J
+	 gThzWZCkiLOWbNqYcg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MNORC-1sKIPn3wR0-00UEVD; Sun, 28
+ Apr 2024 17:38:38 +0200
+Message-ID: <d3f389e2-7a72-4ce0-9f05-245c4f34f829@web.de>
+Date: Sun, 28 Apr 2024 17:38:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Kunwu Chan <chentao@kylinos.cn>, Will Deacon <will@kernel.org>,
+ linux-kselftest@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+ Kunwu Chan <kunwu.chan@hotmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <171429017935.1716809.10906291781915903062.b4-ty@kernel.org>
+Subject: Re: kselftest: arm64: Add a null pointer check
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <171429017935.1716809.10906291781915903062.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OPEqQzbV7tCKfsZZw9Vc6Y9TOgOxLJenJ4U/zPHrydyN5r+4bVD
+ 9VMg1yI2DNsetpNcFGGaRR0mJYV2rK/HLnRoo7P5Y8E479Oj8CzsY5yfUA+AyI7txW/0u80
+ T+4HgJB13Rhz4cy4Q+wwcP3sQpPvSNosVJom4hTKg0qgPkcyvPg4+WDLcDmHDIU1kW4QIl9
+ nEyt4QCfKytD3iPPA2x1g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ohnDtBiNdL8=;gPBrqtU8Z9IHlSkwLLAp9xiAZvd
+ W6Ux4CMAEPEQs5QZKO1ETdkfczDxIJZh81DXWIb9LsS4nUESIEnMIA+B1Ho+PJmYW0j0ExWfm
+ kcEcDNmZt560gyijImr4jfjivl2Gb8bIT3IPpahVWquRTE5oKSqEKTHcJ3nUHye0YrL1IaEYe
+ 0yf7FHpJq4UAPCwb5VDL5S6E39PJLxQoc9yqS9kFQTzzuQFrYZKsqcxIodR3Iylgr2FSzrcP8
+ ++pWvOv6ZTdQXhB145021a0wP84PIUUYYUfcK7INs89g1Se/x1r0hRaAICmcHyD11GwemTdjJ
+ 1lrnJY844dIpF5puNdfeFFYi16PeTv1O+Upy8Ivh6A4/14djFbWw0ZbKPubAW97Q4KAtOcRSI
+ 4o8WMPQIXXw0LewsgH97qhpdT7BiyHIHIig4epfbWkNwmnZvViC6MMZfC6cP3oKvJUdg/7zC2
+ tABA0V5Cp+XHce7vtqTTbtUPXWqQ2Y8sZGpBB3+1NnNZgMQBRSwn3nYqpFnl/I9Msr5Hwltq2
+ A06fpQJ00IGowo/YBZGGI0aufyDem/F2eBx5AUNp3GW9kmbuymRfuWIE7yqSdnBXQhNN+/iCj
+ skgoGigwuu2PsHqvsR70ABTMLKFQzg6ueStZoy+sntgxlF040H/ST/50A6XjuliKAhYvwgc9p
+ 9fmYph0mZzp9KTeFdgLy2XyAiFvV4Q6xLPdP+/YDMuPjl34V4zD5QyMSYIHSjTE/ZOjRE0TvG
+ 9Tj2wsZW+i5MJdywmQ/Zve6J0uQrNPy+fXdmae7OP6uCKjPVYR+RRhrWEjW0acIUKd1iPSBiy
+ uEdzHHs+ELIHKPO2sP+VKM3r34fAlWYfTFfhf6SBE9biI=
 
-In "struct aat1290_led", the 'torch_brightness' field is unused.
-Remove it.
+> > There is a 'malloc' call, which can be unsuccessful.
+> > This patch will add the malloc failure checking
+> > to avoid possible null dereference and give more information
+> > about test fail reasons.
+>
+> Applied to arm64 (for-next/selftests), thanks!
+>
+> [1/1] kselftest: arm64: Add a null pointer check
+>       https://git.kernel.org/arm64/c/80164282b362
 
-Found with cppcheck, unusedStructMember.
+Why did you not adhere to known requirements for such a change description=
+?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n94
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested only.
+* Imperative mood
 
-It was added added in commit 49c34b8e0f43 ("leds: Add driver for AAT1290
-flash LED controller") and its only user was removed in commit 269e92da8b07
-("leds: aat1290: Remove work queue").
----
- drivers/leds/flash/leds-aat1290.c | 2 --
- 1 file changed, 2 deletions(-)
+* Addition of the tag =E2=80=9CFixes=E2=80=9D
 
-diff --git a/drivers/leds/flash/leds-aat1290.c b/drivers/leds/flash/leds-aat1290.c
-index 0195935a7c99..e8f9dd293592 100644
---- a/drivers/leds/flash/leds-aat1290.c
-+++ b/drivers/leds/flash/leds-aat1290.c
-@@ -77,8 +77,6 @@ struct aat1290_led {
- 	int *mm_current_scale;
- 	/* device mode */
- 	bool movie_mode;
--	/* brightness cache */
--	unsigned int torch_brightness;
- };
- 
- static struct aat1290_led *fled_cdev_to_led(
--- 
-2.44.0
 
+Regards,
+Markus
 
