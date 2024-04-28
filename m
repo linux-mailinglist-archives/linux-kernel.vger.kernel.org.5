@@ -1,304 +1,355 @@
-Return-Path: <linux-kernel+bounces-161311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475FF8B4A8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:48:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB648B4A8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 09:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C80B9281F6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 912411C20AEA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 07:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C6A524BA;
-	Sun, 28 Apr 2024 07:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58FB524A5;
+	Sun, 28 Apr 2024 07:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="la6hkShB";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="fyWJ4IRC"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=s.l-h@gmx.de header.b="Wy6F5Sr6"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4560979F9;
-	Sun, 28 Apr 2024 07:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714290510; cv=fail; b=Q+GKv2mdFOHt5nQq89O56hpZg8JmOTAD3Wz+3ztGnST6F6EXMhaF7u68VuQZCqWoy4/29qnsZNGgKdjoTFXpamUUAn0tOFLROM5AnE+TH6ZMm61N3BbUlvYoS9ydYvdCMR0/+np8zJByvPvKtp6P/CMlSsudq/3Rnr9QP49hh4k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714290510; c=relaxed/simple;
-	bh=YDQvaZG3HsYvazlvMgbLYs+SjmYwyOPArJWTMj4tz9Y=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=kht1F/8XQNdAfF6JA1E712jfw/jCNpAJZ7n88XE8H0CpJLNNfVN0h7qBl+rAc68wPDHto4d+TY37RBqIdUMZMYdCn3oBlqAe6RNE1nEVS3D5OnJbvypYlhbo61ZG7w3TAEeu9DBqVS9VF/sfM2R2jZM3B2NcEd+H6Itw54t/OjI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=la6hkShB; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=fyWJ4IRC; arc=fail smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: abcaa39e053311efb92737409a0e9459-20240428
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=YDQvaZG3HsYvazlvMgbLYs+SjmYwyOPArJWTMj4tz9Y=;
-	b=la6hkShBmgYJLfKoTjQeZbhtstHvhl5VlqFPtN6tJKrJe0Oxls3IDzNFn8WOYoVYxf7SYswWCOZ8iHAJWh3fBikw+3ERjlrWCSoiGPlw5rqmChVqL7p/ORfwVNltk2rfrC0NboAey4RCfpWF325393PdIKhN4/RFCzwT8rBQI1o=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:3b199800-dd17-4d7a-844a-93b56743aee1,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:82c5f88,CLOUDID:c3d5b286-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: abcaa39e053311efb92737409a0e9459-20240428
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <lena.wang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1634770474; Sun, 28 Apr 2024 15:48:15 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Sun, 28 Apr 2024 15:48:13 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Sun, 28 Apr 2024 15:48:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRckSog5DwRfk9bBfb62yMP3tgz/NMY71KXmqTYFIahw6MJzlx8URHsY390uODZvBxyXvwyB9YJo3oaoXumWz6Lv1R+ZY6TmCcFSg1lvUi6cV2y2kA+l6FcBXEUgdGh6hXmUyy0lmem/lI6T5CT1922HxS0RJeQ7qAnw43AAnK2nYuWoIU0wnnpElq55lgxK0gdhaEBGS+4KK+GfVNhljOshpDzETN0lLoGDiSJRbEEr8fA7Kjhy3dzVVa2kCxy1S6w/dv3b20Gm4Tzep18k3HU8zO1u1iEZ8m1UkToYAkV2USSnv7HX7oR3YvQ00PE7a/3E/O+WqkClQ9pCpgpzPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YDQvaZG3HsYvazlvMgbLYs+SjmYwyOPArJWTMj4tz9Y=;
- b=PyU7kvcuOWA+IRNxT5N1K8uwhXCxsxdsajA8VEECm+QuwbaM34aOq0so7ADkzKxHf2bNBT1+w2nUR/4s44B+90mrtmQ082nNFtBteyXadQxZZ48wfwPEUM3yNhmn3Rwt7da2OdQ8yB3O8TsDSnXUUvb9PBK70U4mepWfCX3/5mT0IZ+uAPMsOpcKJgLXnz0O+2kU+yMcGCSCVISuc5XTdMOeKDOuZcB7d0anJ4fxiG5SUqvIM7tuhRQg68yd8p9idAXSQvMKxb6eOx72gSPfXd2wlpOOO3WumS6PwF+mjhA9wHL3ZXB4Q8hFuj/g6OB2UUWVn2B7nkeDY9RF7AX2bA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YDQvaZG3HsYvazlvMgbLYs+SjmYwyOPArJWTMj4tz9Y=;
- b=fyWJ4IRCY5aPMGhQGJ69uFTLR0OmJ1JgYZ34qFqL9q/gvMsKt+O3nr4j8l12x4I8iWs/3dE5QFmEgDzahfTG9L7WR5Zhg2iMO7/CE6fuuLzS5tu5CEkEchVVSih7Aj2UwgxyF5rd6ZPtDjnn6NLdLZloaJt3XSVz/AzSDr3i8X8=
-Received: from SEZPR03MB6466.apcprd03.prod.outlook.com (2603:1096:101:4a::8)
- by SEZPR03MB8486.apcprd03.prod.outlook.com (2603:1096:101:220::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.19; Sun, 28 Apr
- 2024 07:48:10 +0000
-Received: from SEZPR03MB6466.apcprd03.prod.outlook.com
- ([fe80::3b7d:ad2c:b2cf:def7]) by SEZPR03MB6466.apcprd03.prod.outlook.com
- ([fe80::3b7d:ad2c:b2cf:def7%6]) with mapi id 15.20.7544.018; Sun, 28 Apr 2024
- 07:48:10 +0000
-From: =?utf-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
-To: "daniel@iogearbox.net" <daniel@iogearbox.net>, "maze@google.com"
-	<maze@google.com>, "willemdebruijn.kernel@gmail.com"
-	<willemdebruijn.kernel@gmail.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "steffen.klassert@secunet.com"
-	<steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	=?utf-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?=
-	<Shiming.Cheng@mediatek.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"edumazet@google.com" <edumazet@google.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"davem@davemloft.net" <davem@davemloft.net>, "yan@cloudflare.com"
-	<yan@cloudflare.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
-Thread-Topic: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
-Thread-Index: AQHaj0XOIxnbbRpuOEqwUbC2K0Us3rFpz0sAgABZ6oCAAArbAIAA8PYAgAAJ3wCAAAGxgIAAWJUAgACHpICAANEgAIAAdp6AgAAXCgCAAdtPAIAAXxYAgAA10YCAAANdgIAGGNsAgAA/VACAASp9AIAAIwMAgADr+gCAAKCBAIABSysAgAC8pYCAARHSgIABM2mA
-Date: Sun, 28 Apr 2024 07:48:10 +0000
-Message-ID: <afa6e302244a87c2a834fcc31d48b377e19a34a2.camel@mediatek.com>
-References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
-	 <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
-	 <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
-	 <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
-	 <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
-	 <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
-	 <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
-	 <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
-	 <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch>
-	 <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
-	 <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
-	 <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
-	 <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch>
-	 <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
-	 <662a63aeee385_1de39b294fd@willemb.c.googlers.com.notmuch>
-	 <752468b66d2f5766ea16381a0c5d7b82ab77c5c4.camel@mediatek.com>
-	 <ae0ba22a-049a-49c1-d791-d0e953625904@iogearbox.net>
-	 <662cfd6db06df_28b9852949a@willemb.c.googlers.com.notmuch>
-In-Reply-To: <662cfd6db06df_28b9852949a@willemb.c.googlers.com.notmuch>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SEZPR03MB6466:EE_|SEZPR03MB8486:EE_
-x-ms-office365-filtering-correlation-id: e197b371-38ae-441f-0c23-08dc67578cdc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|7416005|366007|376005|1800799015|38070700009;
-x-microsoft-antispam-message-info: =?utf-8?B?TDRZT0M0QklkSXk4eG9Ca0N4S0pNcVVGRlZLbXZQUklQSEhab2tQd3c4WTFt?=
- =?utf-8?B?MDB2bkVZTUhpd2pWK1c2bjdyeXAyWnRQK0llRXpmTFhCNmhVWU8xTkhtemlP?=
- =?utf-8?B?Tm5YdGUraUI2Q24xaktLREt4ZWc4Y25jdnV5QTlwZVl4OUMwYk43WUdvL0JH?=
- =?utf-8?B?YytGeXhOejA2dnd4ZXAvb0FmVllqSkNla0x5NWJXbmpMN1hNQ21zNUgzV2xF?=
- =?utf-8?B?eUtHM3pnbFE0Q25zMEEvbmEwSXJjN0RkWFI2eS9NU3puaXgxd0Q1TXFOSWEv?=
- =?utf-8?B?S1lWZTgvUDdxdHpUeGJ1ZmJiRlcyWi8wNnovSEhEczRkT2JoVzN6Zk5IL1M2?=
- =?utf-8?B?eSs0Q0wycHVPR0E1eHZpQVovQ1k4dWV4QUdHR05DU2dKUDBtTFVkcGVIRU0v?=
- =?utf-8?B?Y2pPQjlCdWFMSmxKUlhTdUVqYUVuVG41VmQ4RWFqWHR1SUxTNFZZQ2hwQnlP?=
- =?utf-8?B?N0g4N1h3a2VyOWZBRGxpSmtlNHhnTGpqdFFhYngzMnBsbnBDLzEySmVhOTJu?=
- =?utf-8?B?ajgvdzIvcXN3RDFMMjZ0anNxWEhqeHdRQmtNa2hZSDF3MkliNUVSekhua3lZ?=
- =?utf-8?B?ZGJWd3kzaGgzc1BOZ3JrTjNXNDdYczhobnllWGRMZDhiSmlVSlUyR3hHMng1?=
- =?utf-8?B?dUZ4RDFkVm0zeXgvUS9ndFF2N201TVVmUitlbXlLNjI5ZnBEQTVEM2VFVlEy?=
- =?utf-8?B?bys4N2FPRmhKUHlWcWEwZENUbFFVWGY4c0t1RjhlQXBITFNnME9HQUZJWWx3?=
- =?utf-8?B?cHppcVpaZVU2MFQ3YTBGemxsSHBMa1d5N0laUDRSdExpRE8xTVcrU2tqdmlu?=
- =?utf-8?B?Um4vWXhTQVp2YXhRZUMxdG5nRmJ2aVdPclVyUS9zdXdiTmVPOFlTclpDQTdo?=
- =?utf-8?B?NTFZa0swUE5PbCtmOExjTW1ONHVaV1d4UERxc1h1R2ZMS1lpQTFQbzM0WUJu?=
- =?utf-8?B?cXVrUnl6Wk9KNHdMcUJ2QnY0NUlibEc0WUxYT3lmSDlRZFFpVkwyM0J3Zm8x?=
- =?utf-8?B?R21hcEhRRC9UVW84cE9GMzNCaWpKNloxbHJBQlZiU3kyeG1ta3dOR0paM3dW?=
- =?utf-8?B?V25TSGFjVTMxVGIyamU2dXdydFBjV1cyQWZaOHJFbHNhbHg0WWlmMGsyU014?=
- =?utf-8?B?bXJMMWtpZ2dVajdUUEQxaDM1TTNrVDNuUUhwMkF2dXZnSVMybFFVb0VlTFNs?=
- =?utf-8?B?VzJXVFBBMlFwU09abzNsUnFRKzNXdVMzNmNTRmxEdFJzd2VuaWp3TVZqOWFW?=
- =?utf-8?B?Mzc4OUZ2amRUbW82NGNrN20zakdWYzM2amxBMVhKSUZsa0FMTXVrN3RMczNy?=
- =?utf-8?B?ZEtVQ1lCQUtkWmM3cVpsYVR1anFDTlp4SGl0SkpYMTVmV2hHYXk1Y1ZHdzRI?=
- =?utf-8?B?V3ZtS1NKRmNZSXRFUjFpYzVYVVdSYzVRZkF4eVVkQzhFaHhUZEV3NzBXb1NT?=
- =?utf-8?B?aXQzdktpU1ViU0EranVBQTM0aFJFbVZCNFB5OTc2WmdFVEV4OTZ6NDRjd3p3?=
- =?utf-8?B?cmRNbHpEeG1BUWtNWXpSckI0THZRYm1DcXZxaXlKZlN6QWdvRU84cG9VYWJo?=
- =?utf-8?B?NjhzclpNZGtBRkxuamFDRUgwclFER2lmSVNwMXROU20yVk9CNXl4cm0rMEIv?=
- =?utf-8?B?Skx4MElVL3VQWDMwMUdwLzFJemFVYkNBZlZlcno2em82amxrVlVWMndyemFR?=
- =?utf-8?B?c0o2emlmcjJWaU02aGZWUlpObEZnU1UzWFkzbUlNVUJLb2IrRnhuSlpqdUJJ?=
- =?utf-8?B?R3h3VytneVVPQmdtNU9FYkhuK1F1RUxnY2NUcHd5QXFzK09LaXZ4YVc0WUto?=
- =?utf-8?B?T0ZiZW9LS2tOWFJWQk9hUT09?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR03MB6466.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0xXLzRWdElvbmVicENzNWs0TmxzVG9HWGNnaUlCb2RTRCtZU2ZzZHA5Sk80?=
- =?utf-8?B?clRtcjE2R0NRRnpoempUT0ZQeERJVmpLOGd3UG5zaFkzNmhaRU0zTGpRcFBR?=
- =?utf-8?B?ME9oWjYwcGg1STlCS1MzSXdTWTVrNUhhSXBqNXRkWEh5YWpuZkR4ZzhTZG1H?=
- =?utf-8?B?K05TSXI4cnExWVBEMi9UN3JFbkNHRGo5OUtMZE5OR1QrdjNzZ0pFaVNqOXRY?=
- =?utf-8?B?V3JYOHZDeUhuaTRrejBERFFDT2lLUXd6cmZoa3NVbzhvbFlld2F6V0ZkRVh5?=
- =?utf-8?B?SVE2ZS94Ym1UUFBpRHc4bzFNUU1Vam00aUNtbkVIVWx2dVQ2Z1BJSlpxNWdE?=
- =?utf-8?B?ZzJQMjNYQ2t1MmdKQ1cwMENqVHZjSG9wejdmc2RWOTZhL1RCbFd6WGtBanJ6?=
- =?utf-8?B?NUZVUlMrTGNpTXpaNUE2dHpMd0NNSUtBZDRtQVZ4eWtRM3FwbzdUYzd1QUF2?=
- =?utf-8?B?UzVWZFJZYSs1VmJYUnVsQkJtT3ExRE5wRGxuSGIzMW56RytCRTdYS29oeXJv?=
- =?utf-8?B?M1l1Y3pqZjU5U1VJeDVISUg1dFRUYVF3Tjg0ZEM2NVVqMjJ1TFduVEF6YzhD?=
- =?utf-8?B?K1pLdXZKdC8wVGw0Vzh5aytCT0hpdjBOc016U2VQYUw3VnMwRFdyL2tSVWlB?=
- =?utf-8?B?QW5jNkVQN1RTMGJMSDNhTm9UdHhiN1kzMUwzcmI2VGNjc3gvcTBDRm1saGVN?=
- =?utf-8?B?ZzgxaDFzYnpzbkRaQTZLUFppZUZNRmZhenRlM3VnUDZaaW9aZktwcDJNUHhj?=
- =?utf-8?B?WjJyVnlFd2gwRHduemlpcC83d0d2NG02VUV1Y3dVYnAzYmFjQ0w1R08yY2lH?=
- =?utf-8?B?aU8zZnFCK2Z2M2xCczJwc1JvbnlxMU1BcHpUaDZPU211SzQ3OXQycEhXbFNl?=
- =?utf-8?B?eGV3YXNTbkJRK3g5ZXFveW1hQlNWWFlIbG5mZG5KMmtvd3JwclhHMTJQSk13?=
- =?utf-8?B?QitIUEFVemJvSXJ3c01oVHZXUHBRY0lHU2YwY3Y3QTFiUXFxUWR3RWYrWVVC?=
- =?utf-8?B?RWR6ZjVhcTFvV0VCY3FoZ09tL3hBQkJGcW5FMDVDK3JIOGdiZDRhTHdZZ3Fp?=
- =?utf-8?B?bzAxQ2MvaXBaWDNQTkErOU94dVNjeXp1SitaU0F1VUdyTE52bU5XelA4dmRk?=
- =?utf-8?B?OVpTNkprTWIrSnpQZ1lTUmM2RlA2MUlsUzY3RWtjTFVWdC96OXJFS2N6bHY5?=
- =?utf-8?B?M3RxQ09JQjFWekNNeHRVZVhIcFlzck1VWjdTaGowTXRrVWRjU0tCZkV3MXh5?=
- =?utf-8?B?Q05JWkp0RXRxYUdRYXhBdkR4TlRsRXN0SHpnc2R0NGVNbjlnUXlkZUx4NlFB?=
- =?utf-8?B?aGpZQXlzTDRVUXRiaGV6TE5aL2FndHpTR3FJMmRJQVhMK1ZyV2VOS2lLWTlq?=
- =?utf-8?B?bHlybGhPUUtPSXJpS0xUOUZHcHlrYjg5R1V3UmFJVzBPNGhBWFpMUGV4VWQr?=
- =?utf-8?B?UFFoS3ZlMm5GdmtVWHVTMmFVeVJ2cys4bjJ1SlJQK25pWE9aaWxhMko4dTR1?=
- =?utf-8?B?cXVpaGk2TjcrQVVSaTFySHY2Z3BSUkhDckZQaW9kdzlwUDRFc0JMVjJrUlNR?=
- =?utf-8?B?Y0dzSHRuZHdiNGNlVWJlRXcvd0JkcHJSTjhoMHlkVld3YU9lRDdHQlgxM0sv?=
- =?utf-8?B?RGdrUWJIdmhhMmdQeXJmWldWdTVsbS9JQ2ZqVitsMlBnNTMrdGNZQ3ZFNTI4?=
- =?utf-8?B?a0xlMnp2NlBHS3lCSWRSaXo5M2sxaFE3aURpS29mbk1pMXlJQ09OblVoY3RE?=
- =?utf-8?B?SHpGN2FnM0dtUUxPdWJKaDBRNTAraGYzYXRKa3R0ZDB6WWEvMkl3L0svak9V?=
- =?utf-8?B?NUY1NGtUSStxa0RyMUJCOHlleUZCYzUzRm9mUGt6UEI4dEhHTkJUenpoeGVT?=
- =?utf-8?B?WmNRUUljcEZvQ2FCaUh0SzJmZlNmOWV2Rk1nVDc0TUZ4Qi8wTTlJd0hIQmEw?=
- =?utf-8?B?VnVPQXZDdGcrc3ZwN3ZzQVNhd1ZOazNGQ042MnhFVUN6V01rMm1ISkFldE1Y?=
- =?utf-8?B?VkFnaWN3V0VuN0JsOUl0NDB6WjJNMXB6TjJGSHAyKzduLzhwV0ZzMTNBNEVF?=
- =?utf-8?B?NE83Z1FRWDM1RDVYbE9RQzJHRzZpbG9aTEgrejJIRHRwZDhmMGVvb3F3c0xF?=
- =?utf-8?B?bFEzeHNhaHNTd1FGZjc0SUIrcmJFYm1RY1UzWG1UMTR2QXdZRmdOZG5KRXll?=
- =?utf-8?B?NXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <571ED8B049A9B14494E2072D5F57F76D@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA175EED0;
+	Sun, 28 Apr 2024 07:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714290585; cv=none; b=X77BZPVIS0kXAiFmaxH02T2YjghCbGAeywpJ8H1gzEobDGb6QBLi5DN9CSuZYch8JSaU9F0UxRSiZCa+mFpe1/IaGBU0dtFZZSxu+ZjUDTiwuiaZjrjCZc+0BvHd9yUvsCBQ0pAZ7PRDlbnOdJdur8Wj4z2Gs5aa0qfaD9D9ZjI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714290585; c=relaxed/simple;
+	bh=m7V7jvHgvsuWFgkI820O4oM2C5WDF0vNx8t+WNKqojg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sGtOknIRExyOlKn2/xyrgn1InLHfnHuQfLP4Y2eoyslMhUmMu2Ew8y4N8MexmXx256gRu5o+JbDFaIorsqq5ySAmIIzSBEtLS21ao+kA/K9Zgy0A9Dmd+ZqpC8TCSVdVdU8v+EvyRGwAl4l3OMiCqlzrqdidIAb1k1pO7Aub6fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=s.l-h@gmx.de header.b=Wy6F5Sr6; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1714290563; x=1714895363; i=s.l-h@gmx.de;
+	bh=JrYx2aaiStWZAeMooKfC3gS1mrOiBTegFz+AD3MqFbU=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=Wy6F5Sr6Klm92xnP6l4H601R+sLvYUVEGd8JjJrDSXy32CmbkcLMjt+9Ca0vzwfl
+	 EnyH1QG0Tg9t9E0Eay4z0mzkSyjDm5FrdFLEzPnXwgFTienpIzjn1R5ISZEh3XC39
+	 i36Zd+p18F0hEt8/zJdDV2EldvX83mRXcXTQTg3rR5KiZllLVSlP5D2yKc+sqZZp9
+	 P2EyOZP4ahGRjJkq90Yzf8Q5D7/G05yxIbm5WG0D1MvOuh36K1M9u9WdBcTWx6F5A
+	 3RTmQrMQsIpeavBT46+HdNPPD1SpQI+tS2yMa1nkqm2DIvKwNFRZkrmKLdcrxJ4T+
+	 UgcJBoaCDRU0+1lVkw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mir ([94.31.83.155]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MOA3F-1sKPr13HPV-00Q9xC; Sun, 28
+ Apr 2024 09:49:22 +0200
+Date: Sun, 28 Apr 2024 09:49:16 +0200
+From: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Wu Yunchuan
+ <yunchuan@nfschina.com>, Johannes Berg <johannes.berg@intel.com>, "Breno
+ Leitao" <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+ <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
+Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
+Message-ID: <20240428094916.3d1e92b8@mir>
+In-Reply-To: <20240428090404.2d300255@mir>
+References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
+	<171406032921.2967849.6111681305541795423.kvalo@kernel.org>
+	<87a5lhh1t0.fsf@kernel.org>
+	<20240428090404.2d300255@mir>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR03MB6466.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e197b371-38ae-441f-0c23-08dc67578cdc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2024 07:48:10.2630
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KdIg/h6gorKosEf0O5YvokFyNEXzxkdLFYXSiaNjdyiRoFeBEf1h2aToYEf11iTq+7IKTXRbpLmvR99F1PD3pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8486
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--18.101300-8.000000
-X-TMASE-MatchedRID: L8tZF6zWW2oOwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
-	qIY+/skQkABPgKBt/0rbaVyalxbpdAxAtdzYwZJsA9lly13c/gEZmNqpqQL8xrV5fSMRD1zq/Vf
-	PwSZZsgguXHgAr73H7UIozxQvujgLrYhfqfvQWOmvnWBILruGleNlVbqPGsKiBfoAvdqdJ5f+GQ
-	FLLcthDaNgoT8G4NpHYDkHcBjdShSLwgJA7qJvFIQ6iEG+7EHnkos2tunL8DSYN5o4ZKM2rqPFj
-	JEFr+olFUew0Fl/1pE9wJeM2pSaRbxAi7jPoeEQftwZ3X11IV0=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--18.101300-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	3E2F06C62AE49CFB413E50019AEBFE43BFA32732F5D59293CA34927FB1FA00882000:8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7+/7J/CfzSJnvSF8fGnmSQ4nBXqQFCojEvCxXEd1GPgo9Sfz6Jb
+ SuACmvALwBlupqSnAqTYtz0oEIYbVPC5heCTa/mXQ2tUX5i0shlDIzfXznXePe7CUVymJS5
+ BdY7rehVy/B6jtqCpgyItJxsPqr7t5tHafGk05Q1jfMYdu1X9+akP52XKX5Y6z06a/nyV3i
+ u6vKmJTdinqKJR1DKMpsQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:IB7ICdqf8UI=;B14qGQxYfS+CXf8sXT82BagxjAM
+ z8N5q9jYyQdyDe5m6Qq/jtSDuGFdWrWkxiQc4yBejjGFDwlQJlNLCvl0lxN7hDNu3JvKvaaRn
+ bjEfN7y3TszTd2HT9pSt7X+Yo5+q71Trium3cNyB5ZCH3+cFzQsfVurhSuj3TBkS0Mefw/X8d
+ isuurXATiF1RIGHkvRHVA6flRulRQAJknBkwk/KStxZUNleND4uIapP3Lopyg1wMKRpJjG/P1
+ dheUBz9QG6xwXyini2eZKGm+Xet1KPoyNtNC3HLQGhGwM6BeWMUIqoHtXiBTMlr2oWHtyScy9
+ aCUpRKmwpJgWRVDDeoyksw1UjuSlr2HJu31meOdnSBy+4bXRB2cnLpvJ56aBJyQZPoBt6OC+j
+ WFTwYGaU6i0igzQTuARlys4Mzq5L3go1XE6/1472yJqz7G2SzCI9ZXPxaCxbt7pCsbLz6jJYC
+ ViiFuleaLefPF1ZHobtt7m8n6rei6P7K+m1SrlrIJmnKuDo9RxR23UcODIekOenEr5o7mCOit
+ +1YxJm8Intx+mLPnGwHNZ1lLwKMhqT470kwvf4mAEwHcWi3g5u1RG40ep5yfJ0Sa/ajrYaMyO
+ XUQSVVakQD1qkURdigryjdeBvz9Yng6HG0QlGlD3MishFmExBgM1TfYimbJAjEyZRGbLv7Zh7
+ NT6k4gUdSZ/NIAtAOseuRejst3KNTLjFjYg/NSaK0tp1DqXpc7ayVh9s5G0tG+XKFwvjrqWVa
+ pn5cCeQ0r2/GN7meDFMnQLO9p6QE9OsrBcjyA+be9O1hD9Ls7DdLAt9l/+Cpr8se3vcnQfcnt
+ By+J7v5wKMROZ6a1b7AMb1RjihA9SH886gSdi2VOdhri0=
 
-T24gU2F0LCAyMDI0LTA0LTI3IGF0IDA5OjI4IC0wNDAwLCBXaWxsZW0gZGUgQnJ1aWpuIHdyb3Rl
-Og0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtzIG9y
-IG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRlciBv
-ciB0aGUgY29udGVudC4NCj4gIA0KPiBEYW5pZWwgQm9ya21hbm4gd3JvdGU6DQo+ID4gT24gNC8y
-Ni8yNCAxMTo1MiBBTSwgTGVuYSBXYW5nICjnjovlqJwpIHdyb3RlOg0KPiA+IFsuLi5dDQo+ID4g
-Pj4+ICBGcm9tIDMwMWRhNWM5ZDY1NjUyYmFjNjA5MWQ0Y2Q2NGI3NTFiMzMzOGY4YmIgTW9uIFNl
-cCAxNw0KPiAwMDowMDowMA0KPiA+ID4+IDIwMDENCj4gPiA+Pj4gRnJvbTogU2hpbWluZyBDaGVu
-ZyA8c2hpbWluZy5jaGVuZ0BtZWRpYXRlay5jb20+DQo+ID4gPj4+IERhdGU6IFdlZCwgMjQgQXBy
-IDIwMjQgMTM6NDI6MzUgKzA4MDANCj4gPiA+Pj4gU3ViamVjdDogW1BBVENIIG5ldF0gbmV0OiBw
-cmV2ZW50IEJQRiBwdWxsaW5nIFNLQl9HU09fRlJBR0xJU1QNCj4gc2tiDQo+ID4gPj4+DQo+ID4g
-Pj4+IEEgU0tCX0dTT19GUkFHTElTVCBza2IgY2FuJ3QgYmUgcHVsbGVkIGRhdGENCj4gPiA+Pj4g
-ZnJvbSBpdHMgZnJhZ2xpc3QgYXMgaXQgbWF5IHJlc3VsdCBhbiBpbnZhbGlkDQo+ID4gPj4+IHNl
-Z21lbnRhdGlvbiBvciBrZXJuZWwgZXhjZXB0aW9uLg0KPiA+ID4+Pg0KPiA+ID4+PiBGb3Igc3Vj
-aCBzdHJ1Y3R1cmVkIHNrYiB3ZSBsaW1pdCB0aGUgQlBGIHB1bGxpbmcNCj4gPiA+Pj4gZGF0YSBs
-ZW5ndGggc21hbGxlciB0aGFuIHNrYl9oZWFkbGVuKCkgYW5kIHJldHVybg0KPiA+ID4+PiBlcnJv
-ciBpZiBleGNlZWRpbmcuDQo+ID4gPj4+DQo+ID4gPj4+IEZpeGVzOiAzYTEyOTZhMzhkMGMgKCJu
-ZXQ6IFN1cHBvcnQgR1JPL0dTTyBmcmFnbGlzdCBjaGFpbmluZy4iKQ0KPiA+ID4+PiBTaWduZWQt
-b2ZmLWJ5OiBTaGltaW5nIENoZW5nIDxzaGltaW5nLmNoZW5nQG1lZGlhdGVrLmNvbT4NCj4gPiA+
-Pj4gU2lnbmVkLW9mZi1ieTogTGVuYSBXYW5nIDxsZW5hLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+
-ID4+PiAtLS0NCj4gPiA+Pj4gICBuZXQvY29yZS9maWx0ZXIuYyB8IDUgKysrKysNCj4gPiA+Pj4g
-ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+ID4gPj4+DQo+ID4gPj4+IGRpZmYg
-LS1naXQgYS9uZXQvY29yZS9maWx0ZXIuYyBiL25ldC9jb3JlL2ZpbHRlci5jDQo+ID4gPj4+IGlu
-ZGV4IDhhZGY5NTc2NWNkZC4uOGVkNGQ1ZDg3MTY3IDEwMDY0NA0KPiA+ID4+PiAtLS0gYS9uZXQv
-Y29yZS9maWx0ZXIuYw0KPiA+ID4+PiArKysgYi9uZXQvY29yZS9maWx0ZXIuYw0KPiA+ID4+PiBA
-QCAtMTY2Miw2ICsxNjYyLDExIEBAIHN0YXRpYyBERUZJTkVfUEVSX0NQVShzdHJ1Y3QNCj4gYnBm
-X3NjcmF0Y2hwYWQsDQo+ID4gPj4+IGJwZl9zcCk7DQo+ID4gPj4+ICAgc3RhdGljIGlubGluZSBp
-bnQgX19icGZfdHJ5X21ha2Vfd3JpdGFibGUoc3RydWN0IHNrX2J1ZmYNCj4gKnNrYiwNCj4gPiA+
-Pj4gICAgIHVuc2lnbmVkIGludCB3cml0ZV9sZW4pDQo+ID4gPj4+ICAgew0KPiA+ID4+PiAraWYg
-KHNrYl9pc19nc28oc2tiKSAmJg0KPiA+ID4+PiArICAgIChza2Jfc2hpbmZvKHNrYiktPmdzb190
-eXBlICYgU0tCX0dTT19GUkFHTElTVCkgJiYNCj4gPiA+Pj4gKyAgICAgd3JpdGVfbGVuID4gc2ti
-X2hlYWRsZW4oc2tiKSkgew0KPiA+ID4+PiArcmV0dXJuIC1FTk9NRU07DQo+ID4gPj4+ICt9DQo+
-ID4gPj4+ICAgcmV0dXJuIHNrYl9lbnN1cmVfd3JpdGFibGUoc2tiLCB3cml0ZV9sZW4pOw0KPiA+
-IA0KPiA+IER1bWIgcXVlc3Rpb24sIGJ1dCBzaG91bGQgdGhpcyBndWFyZCBiZSBtb3JlIGdlbmVy
-aWNhbGx5IHBhcnQgb2YNCj4gc2tiX2Vuc3VyZV93cml0YWJsZSgpDQo+ID4gaW50ZXJuYWxzLCBw
-cmVzdW1hYmx5IHRoYXQgd291bGQgYmUgaW5zaWRlIHBza2JfbWF5X3B1bGxfcmVhc29uKCksDQo+
-IG9yIG9ubHkgaWYgd2UgZXZlcg0KPiA+IHNlZSBtb3JlIGNvZGUgaW5zdGFuY2VzIHNpbWlsYXIg
-dG8gdGhpcz8NCj4gDQo+IEdvb2QgcG9pbnQuIE1vc3QgY2FsbGVycyBvZiBza2JfZW5zdXJlX3dy
-aXRhYmxlIGNvcnJlY3RseSBwdWxsIG9ubHkNCj4gaGVhZGVycywgc28gd291bGRuJ3QgY2F1c2Ug
-dGhpcyBwcm9ibGVtLiBCdXQgaXQgYWxzbyBhZGRzIGNvdmVyYWdlIHRvDQo+IHRoaW5ncyBsaWtl
-IHRjIHBlZGl0Lg0KDQpVcGRhdGVkOg0KDQpGcm9tIDNiZTMwYjhjZjZlNjI5ZjI2MTVlZjRlYWZl
-M2IyYTFjMGQ2OGM1MzAgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxDQpGcm9tOiBTaGltaW5nIENo
-ZW5nIDxzaGltaW5nLmNoZW5nQG1lZGlhdGVrLmNvbT4NCkRhdGU6IFN1biwgMjggQXByIDIwMjQg
-MTU6MDM6MTIgKzA4MDANClN1YmplY3Q6IFtQQVRDSCBuZXRdIG5ldDogcHJldmVudCBwdWxsaW5n
-IFNLQl9HU09fRlJBR0xJU1Qgc2tiDQoNCkJQRiBvciBUQyBjYWxsZXJzIG1heSBwdWxsIGluIGEg
-bGVuZ3RoIGxvbmdlciB0aGFuIHNrYl9oZWFkbGVuKCkNCmZvciBhIFNLQl9HU09fRlJBR0xJU1Qg
-c2tiLiBUaGUgZGF0YSBpbiBmcmFnbGlzdCB3aWxsIGJlIHB1bGxlZA0KaW50byB0aGUgbGluZWFy
-IHNwYWNlLiBIb3dldmVyIGl0IGRlc3Ryb3lzIHRoZSBza2IncyBzdHJ1Y3R1cmUNCmFuZCBtYXkg
-cmVzdWx0IGluIGFuIGludmFsaWQgc2VnbWVudGF0aW9uIG9yIGtlcm5lbCBleGNlcHRpb24uDQoN
-ClNvIHdlIHNob3VsZCBhZGQgcHJvdGVjdGlvbiB0byBzdG9wIHRoZSBvcGVyYXRpb24gYW5kIHJl
-dHVybg0KZXJyb3IgdG8gcmVtaW5kIGNhbGxlcnMuDQoNCkZpeGVzOiAzYTEyOTZhMzhkMGMgKCJu
-ZXQ6IFN1cHBvcnQgR1JPL0dTTyBmcmFnbGlzdCBjaGFpbmluZy4iKQ0KU2lnbmVkLW9mZi1ieTog
-U2hpbWluZyBDaGVuZyA8c2hpbWluZy5jaGVuZ0BtZWRpYXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5
-OiBMZW5hIFdhbmcgPGxlbmEud2FuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBpbmNsdWRlL2xpbnV4
-L3NrYnVmZi5oIHwgNiArKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspDQoN
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NrYnVmZi5oIGIvaW5jbHVkZS9saW51eC9za2J1
-ZmYuaA0KaW5kZXggOWQyNGFlYzA2NGU4Li4zZWVmNjViM2RiMjQgMTAwNjQ0DQotLS0gYS9pbmNs
-dWRlL2xpbnV4L3NrYnVmZi5oDQorKysgYi9pbmNsdWRlL2xpbnV4L3NrYnVmZi5oDQpAQCAtMjc0
-MCw2ICsyNzQwLDEyIEBAIHBza2JfbWF5X3B1bGxfcmVhc29uKHN0cnVjdCBza19idWZmICpza2Is
-DQp1bnNpZ25lZCBpbnQgbGVuKQ0KIAlpZiAodW5saWtlbHkobGVuID4gc2tiLT5sZW4pKQ0KIAkJ
-cmV0dXJuIFNLQl9EUk9QX1JFQVNPTl9QS1RfVE9PX1NNQUxMOw0KIA0KKwlpZiAoc2tiX2lzX2dz
-byhza2IpICYmDQorCSAgICAoc2tiX3NoaW5mbyhza2IpLT5nc29fdHlwZSAmIFNLQl9HU09fRlJB
-R0xJU1QpICYmDQorCSAgICAgd3JpdGVfbGVuID4gc2tiX2hlYWRsZW4oc2tiKSkgew0KKwkJcmV0
-dXJuIFNLQl9EUk9QX1JFQVNPTl9OT01FTTsNCisJfQ0KKw0KIAlpZiAodW5saWtlbHkoIV9fcHNr
-Yl9wdWxsX3RhaWwoc2tiLCBsZW4gLSBza2JfaGVhZGxlbihza2IpKSkpDQogCQlyZXR1cm4gU0tC
-X0RST1BfUkVBU09OX05PTUVNOw0KIA0KLS0gDQoyLjE4LjANCg==
+Hi
+
+On 2024-04-28, Stefan Lippers-Hollmann wrote:
+> On 2024-04-25, Kalle Valo wrote:
+> > Kalle Valo <kvalo@kernel.org> writes:
+> > > Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
+> [...]
+> > > Does anyone have a real device to test this? I have had so much prob=
+lems with
+> > > syzbot fixes in the past that I'm hesitant to take such patches with=
+out
+> > > testing.
+> >
+> > Actually should we just remove ar5523 driver? Has anyone heard anyone
+> > using this driver still?
+>
+> While I'm not using it regularly, the driver does still work in plain
+> v6.8.8 (and these Netgear WG111 and WG111T USB WLAN cards were quite
+> common), tested against a qcn5024 AP.
+>
+> I'm just preparing a new kernel build with the proposed patch applied.
+
+=E2=80=A6and now the same with this patch applied:
+
+$ uname -r
+6.9.0-rc5-gcc1380dd1882-dirty
+
+wireless-next-2024-04-24-2112-gcc1380dd1882 with
+https://patchwork.kernel.org/project/linux-wireless/patch/20240408121425.2=
+9392-1-n.zhandarovich@fintech.ru/raw/
+applied
+
+[   22.303440] usb 1-5: new high-speed USB device number 5 using xhci_hcd
+[   22.431672] usb 1-5: New USB device found, idVendor=3D1385, idProduct=
+=3D4251, bcdDevice=3D 0.01
+[   22.431678] usb 1-5: New USB device strings: Mfr=3D1, Product=3D2, Seri=
+alNumber=3D3
+[   22.431680] usb 1-5: Product: WG111T
+[   22.431681] usb 1-5: Manufacturer: Atheros Communications Inc
+[   22.431682] usb 1-5: SerialNumber: 1.0
+[   22.537560] usbcore: registered new interface driver ar5523
+[   22.686170] usb 1-5: USB disconnect, device number 5
+[   22.935409] usb 1-5: new high-speed USB device number 6 using xhci_hcd
+[   23.062746] usb 1-5: New USB device found, idVendor=3D1385, idProduct=
+=3D4250, bcdDevice=3D 0.01
+[   23.062762] usb 1-5: New USB device strings: Mfr=3D1, Product=3D2, Seri=
+alNumber=3D3
+[   23.062767] usb 1-5: Product: WG111T
+[   23.062771] usb 1-5: Manufacturer: Atheros Communications Inc
+[   23.062775] usb 1-5: SerialNumber: 1.0
+[   23.110548] usb 1-5: Cap: CAP_TARGET_VERSION=3D0x00000006
+[   23.110837] usb 1-5: Cap: CAP_TARGET_REVISION=3D0x00000001
+[   23.111146] usb 1-5: Cap: CAP_MAC_VERSION=3D0x00000008
+[   23.111448] usb 1-5: Cap: CAP_MAC_REVISION=3D0x00000001
+[   23.111739] usb 1-5: Cap: CAP_PHY_REVISION=3D0x00000046
+[   23.112001] usb 1-5: Cap: CAP_ANALOG_5GHz_REVISION=3D0x00000046
+[   23.112235] usb 1-5: Cap: CAP_ANALOG_2GHz_REVISION=3D0x00000000
+[   23.112566] usb 1-5: Cap: CAP_REG_DOMAIN=3D0x00000000
+[   23.112809] usb 1-5: Cap: CAP_REG_CAP_BITS=3D0x00000000
+[   23.113120] usb 1-5: Cap: CAP_WIRELESS_MODES=3D0x00000000
+[   23.113391] usb 1-5: Cap: CAP_CHAN_SPREAD_SUPPORT=3D0x0000001c
+[   23.113663] usb 1-5: Cap: CAP_COMPRESS_SUPPORT=3D0x00000001
+[   23.113912] usb 1-5: Cap: CAP_BURST_SUPPORT=3D0x00000001
+[   23.114209] usb 1-5: Cap: CAP_FAST_FRAMES_SUPPORT=3D0x00000001
+[   23.114480] usb 1-5: Cap: CAP_CHAP_TUNING_SUPPORT=3D0x00000001
+[   23.114739] usb 1-5: Cap: CAP_TURBOG_SUPPORT=3D0x00000001
+[   23.114987] usb 1-5: Cap: CAP_TURBO_PRIME_SUPPORT=3D0x00000001
+[   23.115231] usb 1-5: Cap: CAP_DEVICE_TYPE=3D0x00000001
+[   23.115538] usb 1-5: Cap: CAP_WME_SUPPORT=3D0x00000001
+[   23.115804] usb 1-5: Cap: CAP_TOTAL_QUEUES=3D0x00000001
+[   23.116081] usb 1-5: Cap: CAP_CONNECTION_ID_MAX=3D0x0000000a
+[   23.116362] usb 1-5: Cap: CAP_LOW_5GHZ_CHAN=3D0x00000004
+[   23.116614] usb 1-5: Cap: CAP_HIGH_5GHZ_CHAN=3D0x00001338
+[   23.116889] usb 1-5: Cap: CAP_LOW_2GHZ_CHAN=3D0x000017d4
+[   23.117123] usb 1-5: Cap: CAP_HIGH_2GHZ_CHAN=3D0x00000908
+[   23.117387] usb 1-5: Cap: CAP_TWICE_ANTENNAGAIN_5G=3D0x00000001
+[   23.117656] usb 1-5: Cap: CAP_TWICE_ANTENNAGAIN_2G=3D0x00000004
+[   23.117906] usb 1-5: Cap: CAP_CIPHER_AES_CCM=3D0x00000001
+[   23.118165] usb 1-5: Cap: CAP_CIPHER_TKIP=3D0x00000000
+[   23.118429] usb 1-5: Cap: CAP_MIC_TKIP=3D0x00000000
+[   23.118972] usb 1-5: MAC/BBP AR5523, RF AR2112
+[   23.119638] usb 1-5: Found and initialized AR5523 device
+[   23.127613] ar5523 1-5:1.0 wlx<MAC>: renamed from wlan0
+[   79.014957] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:01 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.014962] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.047622] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:01 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.047635] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.050750] wlx<MAC>: authenticated
+[   79.051329] wlx<MAC>: associate with 9X:XX:XX:XX:XX:01 (try 1/3)
+[   79.066715] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:01 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   79.067462] wlx<MAC>: associated
+[   79.108615] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:01 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   79.459937] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:53 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   79.459941] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:53 (try 1/3)
+[   81.468858] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:53 (try 2/3)
+[   81.494179] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:53 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   81.494191] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:53 (try 1/3)
+[   81.497337] wlx<MAC>: authenticated
+[   81.499344] wlx<MAC>: associate with 9X:XX:XX:XX:XX:53 (try 1/3)
+[   81.505833] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:53 (capab=3D0x10=
+31 status=3D0 aid=3D1)
+[   81.506372] wlx<MAC>: associated
+[   81.543659] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:53 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   81.773371] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   81.773376] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   81.852279] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   81.852302] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   81.855407] wlx<MAC>: authenticated
+[   81.857339] wlx<MAC>: associate with 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   81.869094] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:b1 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   81.869614] wlx<MAC>: associated
+[   81.910697] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:b1 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   83.209701] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX:b1 (local addres=
+s=3D0X:XX:XX:XX:XX:65)
+[   83.209711] wlx<MAC>: send auth to 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   83.232421] wlx<MAC>: authenticated
+[   83.233337] wlx<MAC>: associate with 9X:XX:XX:XX:XX:b1 (try 1/3)
+[   83.240188] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX:b1 (capab=3D0x14=
+31 status=3D0 aid=3D1)
+[   83.240731] wlx<MAC>: associated
+[   83.254365] wlx<MAC>: Limiting TX power to 20 (20 - 0) dBm as advertise=
+d by 9X:XX:XX:XX:XX:b1
+[   83.275542] wlx<MAC>: deauthenticating from 9X:XX:XX:XX:XX:b1 by local =
+choice (Reason: 1=3DUNSPECIFIED)
+[   84.540669] wlx<MAC>: authenticate with 9X:XX:XX:XX:XX53 (local address=
+=3D0X:XX:XX:XX:XX:65)
+[   84.540680] wlx<MAC>: send auth to 9X:XX:XX:XX:XX53 (try 1/3)
+[   84.616128] wlx<MAC>: authenticated
+[   84.617421] wlx<MAC>: associate with 9X:XX:XX:XX:XX53 (try 1/3)
+[   84.622756] wlx<MAC>: RX AssocResp from 9X:XX:XX:XX:XX53 (capab=3D0x103=
+1 status=3D0 aid=3D6)
+[   84.623413] wlx<MAC>: associated
+[   84.671424] wlx<MAC>: Limiting TX power to 20 (20 - 0) dBm as advertise=
+d by 9X:XX:XX:XX:XX53
+
+# wpa_cli -i wlx<MAC> status
+bssid=3D9X:XX:XX:XX:XX53
+freq=3D2437
+ssid=3DXXX
+id=3D2
+id_str=3DXXX
+mode=3Dstation
+pairwise_cipher=3DCCMP
+group_cipher=3DCCMP
+key_mgmt=3DWPA2-PSK
+wpa_state=3DCOMPLETED
+address=3D0X:XX:XX:XX:XX:65
+uuid=3DXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+$ iperf3 -c sawfly
+Connecting to host sawfly, port 5201
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 39288 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   128 KBytes  1.05 Mbits/sec    2   1.39 KBytes
+[  5]   1.00-2.00   sec  0.00 Bytes  0.00 bits/sec    8   1.39 KBytes
+[  5]   2.00-3.00   sec   128 KBytes  1.05 Mbits/sec    1   11.2 KBytes
+[  5]   3.00-4.00   sec  0.00 Bytes  0.00 bits/sec    0   13.9 KBytes
+[  5]   4.00-5.00   sec  0.00 Bytes  0.00 bits/sec    0   15.3 KBytes
+[  5]   5.00-6.00   sec  0.00 Bytes  0.00 bits/sec    0   22.3 KBytes
+[  5]   6.00-7.00   sec  0.00 Bytes  0.00 bits/sec    0   29.3 KBytes
+[  5]   7.00-8.00   sec   128 KBytes  1.05 Mbits/sec    0   34.9 KBytes
+[  5]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec    0   34.9 KBytes
+[  5]   9.00-10.00  sec  0.00 Bytes  0.00 bits/sec    0   16.7 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   384 KBytes   315 Kbits/sec   11             send=
+er
+[  5]   0.00-10.00  sec   128 KBytes   105 Kbits/sec                  rece=
+iver
+
+iperf Done.
+
+$ iperf3 -c sawfly --reverse
+Connecting to host sawfly, port 5201
+Reverse mode, remote host sawfly is sending
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 54102 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec   640 KBytes  5.24 Mbits/sec
+[  5]   1.00-2.00   sec   768 KBytes  6.29 Mbits/sec
+[  5]   2.00-3.00   sec  1.00 MBytes  8.39 Mbits/sec
+[  5]   3.00-4.00   sec   896 KBytes  7.34 Mbits/sec
+[  5]   4.00-5.00   sec  1.00 MBytes  8.39 Mbits/sec
+[  5]   5.00-6.00   sec  1.12 MBytes  9.44 Mbits/sec
+[  5]   6.00-7.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5]   7.00-8.00   sec   896 KBytes  7.34 Mbits/sec
+[  5]   8.00-9.00   sec  1.00 MBytes  8.38 Mbits/sec
+[  5]   9.00-10.00  sec  1.12 MBytes  9.44 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.21  sec  11.8 MBytes  9.66 Mbits/sec    0             send=
+er
+[  5]   0.00-10.00  sec  9.62 MBytes  8.07 Mbits/sec                  rece=
+iver
+
+iperf Done.
+
+$ iperf3 -c sawfly --bidir
+Connecting to host sawfly, port 5201
+[  5] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 38694 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[  7] local 2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX65 port 38704 connected to =
+2aXX:XXX:XXXX:XXXX:XXXX:XXXX:XXX:XX01 port 5201
+[ ID][Role] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5][TX-C]   0.00-1.00   sec  0.00 Bytes  0.00 bits/sec    5   2.79 KByte=
+s
+[  7][RX-C]   0.00-1.00   sec  0.00 Bytes  0.00 bits/sec
+[  5][TX-C]   1.00-2.00   sec  0.00 Bytes  0.00 bits/sec    4   2.79 KByte=
+s
+[  7][RX-C]   1.00-2.00   sec   512 KBytes  4.20 Mbits/sec
+[  5][TX-C]   2.00-3.00   sec  0.00 Bytes  0.00 bits/sec    5   1.39 KByte=
+s
+[  7][RX-C]   2.00-3.00   sec   640 KBytes  5.24 Mbits/sec
+[  5][TX-C]   3.00-4.00   sec   128 KBytes  1.05 Mbits/sec    3   1.39 KBy=
+tes
+[  7][RX-C]   3.00-4.00   sec  1.12 MBytes  9.44 Mbits/sec
+[  5][TX-C]   4.00-5.00   sec  0.00 Bytes  0.00 bits/sec    2   4.18 KByte=
+s
+[  7][RX-C]   4.00-5.00   sec  1.00 MBytes  8.39 Mbits/sec
+[  5][TX-C]   5.00-6.00   sec  0.00 Bytes  0.00 bits/sec    4   1.39 KByte=
+s
+[  7][RX-C]   5.00-6.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5][TX-C]   6.00-7.00   sec  0.00 Bytes  0.00 bits/sec    2   2.79 KByte=
+s
+[  7][RX-C]   6.00-7.00   sec   768 KBytes  6.29 Mbits/sec
+[  5][TX-C]   7.00-8.00   sec  0.00 Bytes  0.00 bits/sec    2   2.79 KByte=
+s
+[  7][RX-C]   7.00-8.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5][TX-C]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec    2   1.39 KByte=
+s
+[  7][RX-C]   8.00-9.00   sec  1.25 MBytes  10.5 Mbits/sec
+[  5][TX-C]   9.00-10.00  sec  0.00 Bytes  0.00 bits/sec    1   2.79 KByte=
+s
+[  7][RX-C]   9.00-10.00  sec  1.50 MBytes  12.6 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate         Retr
+[  5][TX-C]   0.00-10.00  sec   128 KBytes   105 Kbits/sec   30           =
+  sender
+[  5][TX-C]   0.00-10.13  sec   128 KBytes   104 Kbits/sec                =
+  receiver
+[  7][RX-C]   0.00-10.00  sec  11.8 MBytes  9.86 Mbits/sec    0           =
+  sender
+[  7][RX-C]   0.00-10.13  sec  9.25 MBytes  7.66 Mbits/sec                =
+  receiver
+
+iperf Done.
+
+
+Regards
+	Stefan Lippers-Hollmann
 
