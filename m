@@ -1,276 +1,355 @@
-Return-Path: <linux-kernel+bounces-161513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08E28B4D06
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C74D8B4D0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 19:09:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5521A281819
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:03:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F5AE1C20A5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 17:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E4F74402;
-	Sun, 28 Apr 2024 17:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E87F7317F;
+	Sun, 28 Apr 2024 17:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OE65phJ7"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WR9r31rj"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2044.outbound.protection.outlook.com [40.107.101.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDCB73514
-	for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 17:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714323781; cv=none; b=PE14HtYM0WLqULbE+GnxRFG+8WpTByww2z6TTu8FK1TtMr1B34iHWx5P313wJXhvgW1bVrA3Jp0k7yZOOmEBT7L+5c+BrOevSWKRGXZdBFDbzmS11QE5amwJYFV+N/EyONztk3ThfbIMVLHRn9LoHTdV736hL7JE++hfxgna6K4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714323781; c=relaxed/simple;
-	bh=MmeFR06x7fh+/qtTYyu9q36cOU2EyiK1+9pSQ5Art7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Phlbpw8LqaV8kMG+hzZMNaAwYNuS6xUbJrqhbwpuGR36OkE1mxdaESwqdrafhFY3isQpz3msIvylh6weHrrO8gWoMAiy2g2xHNRkth1OQAf5a3Mwj+aWGZpXdZncu+qnAAFa4+u9q4nL50hOQ1ySpXnfgzYkNlEWxRi1FNSQqbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OE65phJ7; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ee0642f718so3529357b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 10:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714323779; x=1714928579; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2qJzM1aoYHicoc68EH18vvTtbMF+7vJm0oFHLDSG8g=;
-        b=OE65phJ7/jHPdgqTX3dyQk9bm0HT5aJP+q5+9aVktI4oSaaSR01dgJkeKRQXdTHJTa
-         MYNkfvsxGREuODPw8f3kZgwKjWcMi13L9yC+ld/hlhKrtsX+teyGbtGFt8iE1ymeFnRx
-         1xtmJ40ciZ3Ec3ToZkkeC/xiGPNbsK7W9EEoA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714323779; x=1714928579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y2qJzM1aoYHicoc68EH18vvTtbMF+7vJm0oFHLDSG8g=;
-        b=UNgyU8sEilN3QmQ/qthoN8TWTLopdJC7HbVjj+xcpSIg2N84sjumon8hzUig04pPKB
-         zCAbTCSybX7uYylCcxs/rUdGuYwivdWyXy9edPhqYZ9fgyLjd4YLorwDQZiWiInQHuFJ
-         mglOJRlH8/iYq0qIbUOFbS9ShsftJirUsYib76NLrKOfJWwKSpvE72iPF2g71pUk/t5N
-         DpBXIJPL/xd67+JILFd1P4zO/jfWhBBCl5MfMqrj7h8hARzpqp4+uaUKETKcH65EFnlP
-         Pg0tz8gsygC96eGYF5bfJJ+45oN08N6ORmex5NVMUbEfAiUK5+Vpl4X//2Ed++K8F0ai
-         HyLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWc2IrC4S5qpNmnyXDZEd9q/X4hA63zTpQ+qSUXdKatGv59f01jFljLGoagSyoF8OqqmL1ZYdSiBz1JdHzrJM/D1bn2iIDqvQ42r532
-X-Gm-Message-State: AOJu0Yyqcd7F92Eh7s98ARhApXv4v3Nu7lQJFcKDyCHsSi9DzvlVSsld
-	E+derPQIZrbjKsv0KJ4o4zEbeoLEg8R6EX/8CB90HiM1Hud27Z5ZcZu+qn+ps3jUhn5DgN9nJiI
-	=
-X-Google-Smtp-Source: AGHT+IHWWLQe2VynRuCx9igwEYpj8htea8REIW4foTlkiwAx1Ts/UbQSNMIiZJhRd0vlw2foXOGzlw==
-X-Received: by 2002:a17:902:e88a:b0:1e2:bdef:3973 with SMTP id w10-20020a170902e88a00b001e2bdef3973mr10803402plg.33.1714323778924;
-        Sun, 28 Apr 2024 10:02:58 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u9-20020a170903124900b001e3f4f1a2aasm18663059plh.23.2024.04.28.10.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 10:02:57 -0700 (PDT)
-Date: Sun, 28 Apr 2024 10:02:56 -0700
-From: Kees Cook <keescook@chromium.org>
-To: jvoisin <julien.voisin@dustri.org>,
-	Matteo Rizzo <matteorizzo@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Jann Horn <jannh@google.com>, Thomas Graf <tgraf@suug.ch>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] slab: Introduce dedicated bucket allocator
-Message-ID: <202404280921.A7683D511@keescook>
-References: <20240424213019.make.366-kees@kernel.org>
- <d0a65407-d3ae-46d5-800f-415ce7efcf22@dustri.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F080C433DA;
+	Sun, 28 Apr 2024 17:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714324157; cv=fail; b=vDO5lBvOyyneZAjP46yfgJXz6AU/OfowqwHSfNa7KYe8wEfjZhm6l+kEDLqjPh0GZZNKsgLhW0DZZVAujEWpXoR7tjCf1Tz5euA+mqckSedtOvXsc+H3Kq9wqaw2RbcqdzIBAJIHBGE8WlVi/NYxvGnwmhWTTMqXoUuWh/26Jj4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714324157; c=relaxed/simple;
+	bh=EngTiHJ9VgjxdGEouoazog2DF46QHCGa6bgZ44tNZNc=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NSDYLGTle6Reljur1tZOOrv69Z6FJNaB66OPXlD9xuOeTb33yJrkQUxzkeN3scjaCWQaDMbzTwW4z6ZYQHnQhspO6TebBNafYCtKroQmqri+to84tHg5EHlojOsxzq7Z57yIRpaacrEpGA+Kbof61yQ763tXYjNGZRVmBE4e9OI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WR9r31rj; arc=fail smtp.client-ip=40.107.101.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ls7TCVCjb7RddWPzMk7jp5pTaoVGZMNJ7p0JCEPeiLZ/EBAk+0A64gIDx7VAnBNWY15zb9DTUAnK8NBXRa6ITDFtYQVtWatddXcGLPm4EWSCvyKbFvsDQH4aXTvqYeyTjXoZ6uJh88Ce/qVPiPfZv9A9C9Px6riqCKnlqr4tYjDE/urNWesiDDY8lOEvYAzGf7Obf1w47uh5sb5i0zzjJ+uSRTFSLk8aTNveYU7powdhKI0WeUoI537VysGfM53x8FEWk9LKcVvIv/3WrFBtjx4z7OhhM9YgfnToryE3izcFkkW0Nz+IYWoC8GqFCs8KkcF3SVX4F0zE+w2fWvYxgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y1m3l6td1pk0xV6cLSH/kzEGj+Yabeb0COcO+ntBc5E=;
+ b=XQCYwheowCkQTvUyIoH8YiCjsCUzGPmaAnKoccjlEJhhuD/SFj+R06Xz+lVKc00x03AU9T9Ab2s8ozNsCa1nyq7p3jZ3ykyoi1lRseKqRAnpeVVRKxcjOV/HWpNAXp3fIR63OWAE1oixzynV7Sk2yXOLdiXJPsY0EmQY4HaRRZf0Dsig0uUPwL+qTWwQCoJ5wQtHiRWTSZYZeBzC+pfpKbZQxW1j+myefC1BiTNPyXV+SCVNFWcZJM1mAfJMGOXcfXKZNcA9ZTQK3f7NwI9KBO65Gb6nFW7tyMjSoAtNmJ5Dd/X8DQ9HcI0u3DeYWBY5YkYK5eMmJ9I8Fk/rw4F3vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y1m3l6td1pk0xV6cLSH/kzEGj+Yabeb0COcO+ntBc5E=;
+ b=WR9r31rjpCeHwKAzqhNtQfJgS3f3iIgTASJ1St0F5/nXmlruIs0QgPggZFrGekHO4UMGohHaZkYQOakojwIW8Gd2qtKw6aGOheS/rITUsC75jWKgkchpWE4YH63KGyKVfv8LhGoMB3ne8FPYiwRLiKq3sQ/KwHPMkIwkSlMfdrE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com (2603:10b6:610:d7::13)
+ by IA1PR12MB6284.namprd12.prod.outlook.com (2603:10b6:208:3e4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Sun, 28 Apr
+ 2024 17:09:09 +0000
+Received: from CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::8060:1b11:e9f3:3a51]) by CH0PR12MB5284.namprd12.prod.outlook.com
+ ([fe80::8060:1b11:e9f3:3a51%4]) with mapi id 15.20.7519.031; Sun, 28 Apr 2024
+ 17:09:09 +0000
+Message-ID: <8f9f3453-569f-46e1-ab99-c128d9c5ed5f@amd.com>
+Date: Sun, 28 Apr 2024 13:09:07 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: re-indent dpp401_dscl_program_isharp()
+From: Aurabindo Pillai <aurabindo.pillai@amd.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Harry Wentland <harry.wentland@amd.com>
+Cc: Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+References: <2b0a61a0-baca-415f-aad4-7dc4cde73ef7@moroto.mountain>
+ <62025fa0-6141-4332-9d1c-89a3e7cce7b3@amd.com>
+Content-Language: en-US
+In-Reply-To: <62025fa0-6141-4332-9d1c-89a3e7cce7b3@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQBPR0101CA0089.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:4::22) To CH0PR12MB5284.namprd12.prod.outlook.com
+ (2603:10b6:610:d7::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0a65407-d3ae-46d5-800f-415ce7efcf22@dustri.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5284:EE_|IA1PR12MB6284:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5641d827-5120-4db3-561c-08dc67a5eb45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?RlZYOWtBeWtvbGl4cElYRklMSVJUWitRMHhjZzJEaVQra3V5UWJVM1o1eWRI?=
+ =?utf-8?B?QWN4Q1RFaE42emJhdlRSL3FtSzNBNlBaKzhLblhGRUR6L0cwWnBDV1dSOFRv?=
+ =?utf-8?B?ZHlnbHpOM0phek1ybUR2U0lNUGIzSGtTblV3aEVReTh1T3hlZTRCL1pNWVlq?=
+ =?utf-8?B?MzdXSHBsZUpFRzBuSW1BUi9tKy95Mm1zUm03amhISWd2NFh6Qm1MMFB6UWw4?=
+ =?utf-8?B?U3U0WDBscGQwRXVMc3RJallUSGJ6UXNGT1IxVGEvYUowclB5YjhzOERIWnZh?=
+ =?utf-8?B?bWZ6TGVDRlR0aDlINVV6RDI2cVVWQ2d1d3M2S0ZLRTRCTDhLbHpMaEpiUHNl?=
+ =?utf-8?B?d21FSnJiNEtyTEN1WTNITWxGYko0YlZYbm1KSVBZR3IvUXdiRk5vQmhGL3FM?=
+ =?utf-8?B?YktKcEhDSmx6WUlIZFJ1YkljeUFaU080ZmcySzZmaFljM0QrV3R3VUlVU0Nh?=
+ =?utf-8?B?WkpNY2NVcDdXeVVkVjhpc2dnLzZNaWptK0JUL1pxdk5EOVovdy9nTlpRUEc5?=
+ =?utf-8?B?RldWLzk5MU5OVVFYK0ZudVlJQTEzYy9aMUVqV2w3UTMybzVOeWp3aTlsYlVk?=
+ =?utf-8?B?V294aGUybEdQTk9PMzNGYzhjUncrYlhaMG9hZFljWWYyeWxRUy9ZNnEwVXBy?=
+ =?utf-8?B?VUNUSmxyMWwwcTRIU1VJR1VTcmQ1OWFUem5ibnRGUGdtelZBOGpxR0YwMGNB?=
+ =?utf-8?B?cVAvckQxQUdmdDJRWG9aTi96OWlOT0s4RENWQXdVZmlmN2wveWx6Wkg2bUhr?=
+ =?utf-8?B?djFOT0VOTDA4MlM2K01NOVl1SmM5L1V0ZGhLZllvUDBLT0hldERvbmhEZFVo?=
+ =?utf-8?B?Q1R1THFUa3NaSTZDOXh2c09LbUNkMXp3L2dvV0JRREQveGlqR1FjSHFhVE9V?=
+ =?utf-8?B?ZG9BUlh5TWhkZEo3dDMyQkY5RkpxQXVkNmQ1a01NZHJ3K2pvOTFVdFFSTkhE?=
+ =?utf-8?B?UHoyQ1p5VjZRQWY2VnhTUU9XZXJOZitLRU43S2E4REY5R2dUMVNkRzJtQm1i?=
+ =?utf-8?B?SjdheitpdGJUaEpqeUtQckhNVytmb2FZeTR6QyszeDNGdW5ZdjZ5OWFQaG1T?=
+ =?utf-8?B?dlR5Vkd5VDJBQ0V3eUlNS1B0dld4TjVMS29uQXBpbVVXQTdFRVVURWxyYlcz?=
+ =?utf-8?B?Nkt0ZHdLVytrdDdLeXNXdjdRZXA2Kzk5TDVVMWNFK01IRXI5MU02TW91c0Z5?=
+ =?utf-8?B?Y0FZV21tNjdsTzkrbFBBOUMzTnNkWXAzNG5Gb0poTUtGcUVsVXIxVWU2SHM5?=
+ =?utf-8?B?NHVWRFJEdEFpb29yL1VvZFRmSDRBc0pCRWg5NjMzbDZCbU0xeWo4em1yTG5V?=
+ =?utf-8?B?VDlXeGsyUUNWeHBQOFZ6dTlPcFZXd1pkc3gvb0oyOWlXVHFHMFVMTWZ4MmVZ?=
+ =?utf-8?B?RkV0bjJZaUgxam5iTGFMVDEvTGF1TXo1MWRQU3dYblFPclIrZFZPQjVQRFl6?=
+ =?utf-8?B?Y2oyTGdUUThwZnEyaitzemxBR0c1S2YwaVRVTFI5ZklEb2FXUUlmWG4ybCta?=
+ =?utf-8?B?cnVsajZUR2RzYTJidmYyTzdiY0NEbjVKNC9XOVhWa3p0UUNELzFPenl2Q0tl?=
+ =?utf-8?B?V0NTMlRXb2JWMGhYdjVxTTBFdXZBU1dQYVJ3dnFQeFRZNzM3L2VYV2h5T1hL?=
+ =?utf-8?B?bllaLzZFd2Ewdi9xMzVBb1hHRUV6TUVYZnZLVVk1RHdxcUNpM1NEU0txUElL?=
+ =?utf-8?B?Y0t3YS9aalpXRU9OYlpUNmtpMjhVdXZRV2Y0alVMYVVTNkZVRm83TzhRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5284.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?S0VZcFpuem1GVFhreEZlQS9rbE9nS3ZrQ1dCZjJvYlNtbG5hemZ0dTJMSG1u?=
+ =?utf-8?B?TG55MXBFaFFYbkF4U0wweGpZYkxxNHNrR002U1ZZS1RFeXVCYlNGZFNxeG5L?=
+ =?utf-8?B?S2w4ZkV5aEdYYzdmOFI3VTYwN3FKL2tQOUxEUEhHYlZ3U0dFd2VmSS8yRG9u?=
+ =?utf-8?B?OG1hVHdFK25LbDMvL1NQZWZDRjNuMDZMT3plVEluRXQ0YlBtM1F0MGw2Q2o2?=
+ =?utf-8?B?YzdmNW1Nc0NpdXFkWFd6cEtvTzJvSU1obXA2Z2l5SnBJeFdCeWxRSmtGems0?=
+ =?utf-8?B?VDlzbHEvdDBoaGZUMmtpaHBSYlJqY0dvU1RucHc0VVZ0U1ROMTI5ZTZaL2tn?=
+ =?utf-8?B?V09TTXlHRTEweGNnVmc2NXN3MU9YN0lZQWxubWlkenFaMmRob1FTbVo3TFM2?=
+ =?utf-8?B?T3NPamJqSkRNNnpMaFlsNDRsTzVELytQdG42aGxHcnlKd3FtdFBRRHU2bWlY?=
+ =?utf-8?B?WVgxa0RucXlWSzdCYjFHSjByMXdEaXhDQ2RjUFVhRmhlQ3drYldxYWh1QVJ6?=
+ =?utf-8?B?RENLZ2RlM2ZkTzZvU09iejQzTzFRem5KTmlRQUs4OU5nOHFYRjVJMXZXYnh4?=
+ =?utf-8?B?YzRDQTNKa0JJdWZOdVA2K0UrOG4xb1JRQ1ZjbHMvdWlTNjBZekN5N2ozMDQr?=
+ =?utf-8?B?TDBkdnZEYWQyRm9wTXNtOTRsYitOMEtGdXlpWFBFUVNFZ3MxL0Mya21ZRTZW?=
+ =?utf-8?B?RzI1bEh0OFFTQ2hESEhaUVRKUGpTN3g1aG1wbDRJRTVUTzRBOHlVS205cDFx?=
+ =?utf-8?B?M3ZxQlJTTGpsWDBxODl3OWJvUndjcTVaT0tuWTJjN0pWa3dFNUVtUWs4M0lC?=
+ =?utf-8?B?ZWwyS3BEeFM0bG5yN0ViMEd0d2R6QURSSEdOOVNBbTAyNHJYN1llM2VKalJM?=
+ =?utf-8?B?YXJIVjEwTFZwcFNjeUN3TmVxakFPSGYwUmttZTE4dXVGZ3FNclhDWTAzYm9J?=
+ =?utf-8?B?eTdZd2t4QnN5Y1BYQ1NYVlNaTEhha3hmb0F2RlgwU3JFN3VmdzRBUmpIZVFh?=
+ =?utf-8?B?ZFdBK1JrWXg3NVR2UWgvNHV6Rm00bU5NVTRqT0RHcVhwNXdqSGhOcWZFK3FI?=
+ =?utf-8?B?WEwweXBja2t6UlpRTmE3V0pKTWFlQmwrd0Vza3hxeGpJa1pTN0tMSFhJMXht?=
+ =?utf-8?B?SnhZOUhUZ1Yvb3FNSzFFOFRselc3YlRJT3c2N1JCeU00VlRneHdkeHNMU2Yy?=
+ =?utf-8?B?SlRWQy9oMTVMdTNQVlkwUHlQMnhyV0pWbUk2cWJuNlZWWEFTbjJaTlJYZERP?=
+ =?utf-8?B?OEtNQUR4cklObXdwVm5weEgwbmVWMUtGQkxFUkg3K1FQWEZWRkRsQ2Y2T0Fv?=
+ =?utf-8?B?c1RnQ2FuWmxFUWtTekZvejk5ankxRkJVOVpMQUcwQlcvR0RWUHR0VERFMVMw?=
+ =?utf-8?B?WVovMDZncFF5K2hka3drMForUmVzV01UUXduL0FDTDhYK0M1U2tiWU5UTWcw?=
+ =?utf-8?B?WWdHNjY4bUU0ZEI5dFNzL3ZhMkQ4d0NhdkR5RGdPVGRWY1Bsa0Vadk1HenFB?=
+ =?utf-8?B?YUh0dE5jYUpTeTF6T3YzRGFjbStLalZEMDdOY3ZqQW9SWkhyaGZlcFVhcUdJ?=
+ =?utf-8?B?aWhxZ2tCaS81RHRjbEVSZkRzdFR5d1pEdUdnUFBiN1FZdDBHTUVlTkFqNnp6?=
+ =?utf-8?B?ZjdPSm5Gd1Q5UnhqVFlIZDMxT2dMU3RuQ1duTHZ2QlEwbzNSakhYVitYaVR2?=
+ =?utf-8?B?ank3TVlaODRzKzRQRThhdzRJbnlDR09qYVc4U0puTzIvekh3Nlh2dCtDdVVO?=
+ =?utf-8?B?NEd0QmRnRFdNU0RySU1hWWkvSGZ2dlI2UEN6clpUYVpYOTEwaUtrVm9GTEZ6?=
+ =?utf-8?B?QURiblZRK3g4WElqNUhQbXFyT2dpUDhWSnRqcU9sRy9tWlFuWXVvRjd1Qi94?=
+ =?utf-8?B?UnlHeERUMUlhL09ZeHhyZjQ3NXhWTEsxQXBBZ2hCMEdkaEJ2a0h2RVFyY3g3?=
+ =?utf-8?B?eW9UQkdaai9vK2t5RXFGTWxzQWhYTUFrL0Z2T2t0RExxUEZtZDN6b1Vla2k4?=
+ =?utf-8?B?Z1NxR2dPOUZicW9sM3VMZjdSVWFYNE5BNURZdVF6WnpxRU9PMVNiWmZhQU1k?=
+ =?utf-8?B?KzYybUQrd01rQnp6MlhNRVo0NVBsNm5OVk5kd3JBOGpZSXpiSllpMXQ4bDlY?=
+ =?utf-8?Q?2AJsZ8/C4jCEANaNBr4BXIf07?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5641d827-5120-4db3-561c-08dc67a5eb45
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5284.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2024 17:09:09.5527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rMomtCMT5Jz7VIwokdKAdCz2FTJ7p8fnpbc66UFvjUyozz6rZIWm2eZ2AmmnoGfs3igrEKsJjI1xbtWWMF7Q8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6284
 
-On Sun, Apr 28, 2024 at 01:02:36PM +0200, jvoisin wrote:
-> On 4/24/24 23:40, Kees Cook wrote:
-> > Hi,
-> > 
-> > Series change history:
-> > 
-> >  v3:
-> >   - clarify rationale and purpose in commit log
-> >   - rebase to -next (CONFIG_CODE_TAGGING)
-> >   - simplify calling styles and split out bucket plumbing more cleanly
-> >   - consolidate kmem_buckets_*() family introduction patches
-> >  v2: https://lore.kernel.org/lkml/20240305100933.it.923-kees@kernel.org/
-> >  v1: https://lore.kernel.org/lkml/20240304184252.work.496-kees@kernel.org/
-> > 
-> > For the cover letter, I'm repeating commit log for patch 4 here, which has
-> > additional clarifications and rationale since v2:
-> > 
-> >     Dedicated caches are available for fixed size allocations via
-> >     kmem_cache_alloc(), but for dynamically sized allocations there is only
-> >     the global kmalloc API's set of buckets available. This means it isn't
-> >     possible to separate specific sets of dynamically sized allocations into
-> >     a separate collection of caches.
-> >     
-> >     This leads to a use-after-free exploitation weakness in the Linux
-> >     kernel since many heap memory spraying/grooming attacks depend on using
-> >     userspace-controllable dynamically sized allocations to collide with
-> >     fixed size allocations that end up in same cache.
-> >     
-> >     While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
-> >     against these kinds of "type confusion" attacks, including for fixed
-> >     same-size heap objects, we can create a complementary deterministic
-> >     defense for dynamically sized allocations that are directly user
-> >     controlled. Addressing these cases is limited in scope, so isolation these
-> >     kinds of interfaces will not become an unbounded game of whack-a-mole. For
-> >     example, pass through memdup_user(), making isolation there very
-> >     effective.
+Patch has been merged to amd-staging-drm-next.
+
+On 4/28/24 12:09 PM, Aurabindo Pillai wrote:
+> Thanks for the fix!
 > 
-> What does "Addressing these cases is limited in scope, so isolation
-> these kinds of interfaces will not become an unbounded game of
-> whack-a-mole." mean exactly?
-
-The number of cases where there is a user/kernel API for size-controlled
-allocations is limited. They don't get added very often, and most are
-(correctly) using kmemdup_user() as the basis of their allocations. This
-means we have a relatively well defined set of criteria for finding
-places where this is needed, and most newly added interfaces will use
-the existing (kmemdup_user()) infrastructure that will already be covered.
-
-> >     In order to isolate user-controllable sized allocations from system
-> >     allocations, introduce kmem_buckets_create(), which behaves like
-> >     kmem_cache_create(). Introduce kmem_buckets_alloc(), which behaves like
-> >     kmem_cache_alloc(). Introduce kmem_buckets_alloc_track_caller() for
-> >     where caller tracking is needed. Introduce kmem_buckets_valloc() for
-> >     cases where vmalloc callback is needed.
-> >     
-> >     Allows for confining allocations to a dedicated set of sized caches
-> >     (which have the same layout as the kmalloc caches).
-> >     
-> >     This can also be used in the future to extend codetag allocation
-> >     annotations to implement per-caller allocation cache isolation[1] even
-> >     for dynamic allocations.
-> Having per-caller allocation cache isolation looks like something that
-> has already been done in
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c6152940584290668b35fa0800026f6a1ae05fe
-> albeit in a randomized way. Why not piggy-back on the infra added by
-> this patch, instead of adding a new API?
-
-It's not sufficient because it is a static set of buckets. It cannot be
-adjusted dynamically (which is not a problem kmem_buckets_create() has).
-I had asked[1], in an earlier version of CONFIG_RANDOM_KMALLOC_CACHES, for
-exactly the API that is provided in this series, because that would be
-much more flexible.
-
-And for systems that use allocation profiling, the next step
-would be to provide per-call-site isolation (which would supersede
-CONFIG_RANDOM_KMALLOC_CACHES, which we'd keep for the non-alloc-prof
-cases).
-
-> >     Memory allocation pinning[2] is still needed to plug the Use-After-Free
-> >     cross-allocator weakness, but that is an existing and separate issue
-> >     which is complementary to this improvement. Development continues for
-> >     that feature via the SLAB_VIRTUAL[3] series (which could also provide
-> >     guard pages -- another complementary improvement).
-> >     
-> >     Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [1]
-> >     Link: https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html [2]
-> >     Link: https://lore.kernel.org/lkml/20230915105933.495735-1-matteorizzo@google.com/ [3]
+> Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
 > 
-> To be honest, I think this series is close to useless without allocation
-> pinning. And even with pinning, it's still routinely bypassed in the
-> KernelCTF
-> (https://github.com/google/security-research/tree/master/pocs/linux/kernelctf).
-
-Sure, I can understand why you might think that, but I disagree. This
-adds the building blocks we need for better allocation isolation
-control, and stops existing (and similar) attacks today.
-
-But yes, given attackers with sufficient control over the entire system,
-all mitigations get weaker. We can't fall into the trap of "perfect
-security"; real-world experience shows that incremental improvements
-like this can strongly impact the difficulty of mounting attacks. Not
-all flaws are created equal; not everything is exploitable to the same
-degree.
-
-> Do you have some particular exploits in mind that would be completely
-> mitigated by your series?
-
-I link to like a dozen in the last two patches. :P
-
-This series immediately closes 3 well used exploit methodologies.
-Attackers exploiting new flaws that could have used the killed methods
-must now choose methods that have greater complexity, and this drives
-them towards cross-allocator attacks. Robust exploits there are more
-costly to develop as we narrow the scope of methods.
-
-Bad analogy: we're locking the doors of a house. Yes, some windows may
-still be unlocked, but now they'll need a ladder. And it doesn't make
-sense to lock the windows if we didn't lock the doors first. This is
-what I mean by complementary defenses, and comes back to what I mentioned
-earlier: "perfect security" is a myth, but incremental security works.
-
-> Moreover, I'm not aware of any ongoing development of the SLAB_VIRTUAL
-> series: the last sign of life on its thread is from 7 months ago.
-
-Yeah, I know, but sometimes other things get in the way. Matteo assures
-me it's still coming.
-
-Since you're interested in seeing SLAB_VIRTUAL land, please join the
-development efforts. Reach out to Matteo (you, he, and I all work for
-the same company) and see where you can assist. Surely this can be
-something you can contribute to while "on the clock"?
-
-> > After the core implementation are 2 patches that cover the most heavily
-> > abused "repeat offenders" used in exploits. Repeating those details here:
-> > 
-> >     The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
-> >     use-after-free type confusion flaws in the kernel for both read and
-> >     write primitives. Avoid having a user-controlled size cache share the
-> >     global kmalloc allocator by using a separate set of kmalloc buckets.
-> >     
-> >     Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
-> >     Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
-> >     Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
-> >     Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
-> >     Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
-> >     Link: https://zplin.me/papers/ELOISE.pdf [6]
-> >     Link: https://syst3mfailure.io/wall-of-perdition/ [7]
-> > 
-> >     Both memdup_user() and vmemdup_user() handle allocations that are
-> >     regularly used for exploiting use-after-free type confusion flaws in
-> >     the kernel (e.g. prctl() PR_SET_VMA_ANON_NAME[1] and setxattr[2][3][4]
-> >     respectively).
-> >     
-> >     Since both are designed for contents coming from userspace, it allows
-> >     for userspace-controlled allocation sizes. Use a dedicated set of kmalloc
-> >     buckets so these allocations do not share caches with the global kmalloc
-> >     buckets.
-> >     
-> >     Link: https://starlabs.sg/blog/2023/07-prctl-anon_vma_name-an-amusing-heap-spray/ [1]
-> >     Link: https://duasynt.com/blog/linux-kernel-heap-spray [2]
-> >     Link: https://etenal.me/archives/1336 [3]
-> >     Link: https://github.com/a13xp0p0v/kernel-hack-drill/blob/master/drill_exploit_uaf.c [4]
+> On 4/28/24 8:42 AM, Dan Carpenter wrote:
+>> Smatch complains because some lines are indented more than they should
+>> be.  I went a bit crazy re-indenting this.  ;)
+>>
+>> The comments were not useful except as a marker of things which are left
+>> to implement so I deleted most of them except for the TODO.
+>>
+>> I introduced a "data" pointer so that I could replace
+>> "scl_data->dscl_prog_data." with just "data->" and shorten the lines a
+>> bit.  It's more readable without the line breaks.
+>>
+>> I also tried to align it so you can see what is changing on each line.
+>>
+>> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+>> ---
+>>   .../display/dc/dpp/dcn401/dcn401_dpp_dscl.c   | 93 ++++++-------------
+>>   1 file changed, 30 insertions(+), 63 deletions(-)
+>>
+>> diff --git 
+>> a/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c 
+>> b/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
+>> index c20376083441..696ccf96b847 100644
+>> --- a/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
+>> +++ b/drivers/gpu/drm/amd/display/dc/dpp/dcn401/dcn401_dpp_dscl.c
+>> @@ -779,75 +779,42 @@ static void dpp401_dscl_program_isharp(struct 
+>> dpp *dpp_base,
+>>           const struct scaler_data *scl_data)
+>>   {
+>>       struct dcn401_dpp *dpp = TO_DCN401_DPP(dpp_base);
+>> +    const struct dscl_prog_data *data;
+>>       if (memcmp(&dpp->scl_data, scl_data, sizeof(*scl_data)) == 0)
+>>           return;
+>>       PERF_TRACE();
+>>       dpp->scl_data = *scl_data;
+>> -    // ISHARP_EN
+>> -    REG_SET(ISHARP_MODE, 0,
+>> -        ISHARP_EN, scl_data->dscl_prog_data.isharp_en);
+>> -        // ISHARP_NOISEDET_EN
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_NOISEDET_EN, 
+>> scl_data->dscl_prog_data.isharp_noise_det.enable);
+>> -        // ISHARP_NOISEDET_MODE
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_NOISEDET_MODE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.mode);
+>> -        // ISHARP_NOISEDET_UTHRE
+>> -        REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
+>> -                ISHARP_NOISEDET_UTHRE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.uthreshold);
+>> -        // ISHARP_NOISEDET_DTHRE
+>> -        REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
+>> -                ISHARP_NOISEDET_DTHRE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.dthreshold);
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_NOISEDET_MODE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.mode);
+>> -        // ISHARP_NOISEDET_UTHRE
+>> -        REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
+>> -                ISHARP_NOISEDET_UTHRE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.uthreshold);
+>> -        // ISHARP_NOISEDET_DTHRE
+>> -        REG_SET(ISHARP_NOISEDET_THRESHOLD, 0,
+>> -                ISHARP_NOISEDET_DTHRE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.dthreshold);
+>> -        // ISHARP_NOISEDET_PWL_START_IN
+>> -        REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
+>> -                ISHARP_NOISEDET_PWL_START_IN, 
+>> scl_data->dscl_prog_data.isharp_noise_det.pwl_start_in);
+>> -        // ISHARP_NOISEDET_PWL_END_IN
+>> -        REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
+>> -                ISHARP_NOISEDET_PWL_END_IN, 
+>> scl_data->dscl_prog_data.isharp_noise_det.pwl_end_in);
+>> -        // ISHARP_NOISEDET_PWL_SLOPE
+>> -        REG_SET(ISHARP_NOISE_GAIN_PWL, 0,
+>> -                ISHARP_NOISEDET_PWL_SLOPE, 
+>> scl_data->dscl_prog_data.isharp_noise_det.pwl_slope);
+>> -        // ISHARP_LBA_MODE
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_LBA_MODE, 
+>> scl_data->dscl_prog_data.isharp_lba.mode);
+>> -        // TODO: ISHARP_LBA: IN_SEG, BASE_SEG, SLOPE_SEG
+>> -        // ISHARP_FMT_MODE
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_FMT_MODE, 
+>> scl_data->dscl_prog_data.isharp_fmt.mode);
+>> -        // ISHARP_FMT_NORM
+>> -        REG_SET(ISHARP_MODE, 0,
+>> -                ISHARP_FMT_NORM, 
+>> scl_data->dscl_prog_data.isharp_fmt.norm);
+>> -        // ISHARP_DELTA_LUT
+>> -        dpp401_dscl_set_isharp_filter(dpp, 
+>> scl_data->dscl_prog_data.isharp_delta);
+>> -        // ISHARP_NLDELTA_SCLIP_EN_P
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_EN_P, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.enable_p);
+>> -        // ISHARP_NLDELTA_SCLIP_PIVOT_P
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_PIVOT_P, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.pivot_p);
+>> -        // ISHARP_NLDELTA_SCLIP_SLOPE_P
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_SLOPE_P, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.slope_p);
+>> -        // ISHARP_NLDELTA_SCLIP_EN_N
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_EN_N, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.enable_n);
+>> -        // ISHARP_NLDELTA_SCLIP_PIVOT_N
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_PIVOT_N, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.pivot_n);
+>> -        // ISHARP_NLDELTA_SCLIP_SLOPE_N
+>> -        REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0,
+>> -                ISHARP_NLDELTA_SCLIP_SLOPE_N, 
+>> scl_data->dscl_prog_data.isharp_nldelta_sclip.slope_n);
+>> -        PERF_TRACE();
+>> +    data = &scl_data->dscl_prog_data;
+>> +
+>> +    REG_SET(ISHARP_MODE, 0,    ISHARP_EN, data->isharp_en);
+>> +
+>> +    REG_SET(ISHARP_MODE, 0,                  ISHARP_NOISEDET_EN,    
+>> data->isharp_noise_det.enable);
+>> +    REG_SET(ISHARP_MODE, 0,               ISHARP_NOISEDET_MODE,  
+>> data->isharp_noise_det.mode);
+>> +    REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_UTHRE, 
+>> data->isharp_noise_det.uthreshold);
+>> +    REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_DTHRE, 
+>> data->isharp_noise_det.dthreshold);
+>> +    REG_SET(ISHARP_MODE, 0,               ISHARP_NOISEDET_MODE,  
+>> data->isharp_noise_det.mode);
+>> +    REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_UTHRE, 
+>> data->isharp_noise_det.uthreshold);
+>> +    REG_SET(ISHARP_NOISEDET_THRESHOLD, 0, ISHARP_NOISEDET_DTHRE, 
+>> data->isharp_noise_det.dthreshold);
+>> +    REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_START_IN, 
+>> data->isharp_noise_det.pwl_start_in);
+>> +    REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_END_IN, 
+>> data->isharp_noise_det.pwl_end_in);
+>> +    REG_SET(ISHARP_NOISE_GAIN_PWL, 0, ISHARP_NOISEDET_PWL_SLOPE, 
+>> data->isharp_noise_det.pwl_slope);
+>> +
+>> +    REG_SET(ISHARP_MODE, 0, ISHARP_LBA_MODE, data->isharp_lba.mode);
+>> +    // TODO: ISHARP_LBA: IN_SEG, BASE_SEG, SLOPE_SEG
+>> +    REG_SET(ISHARP_MODE, 0, ISHARP_FMT_MODE, data->isharp_fmt.mode);
+>> +    REG_SET(ISHARP_MODE, 0, ISHARP_FMT_NORM, data->isharp_fmt.norm);
+>> +
+>> +    dpp401_dscl_set_isharp_filter(dpp, data->isharp_delta);
+>> +
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_EN_P,    data->isharp_nldelta_sclip.enable_p);
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_PIVOT_P, data->isharp_nldelta_sclip.pivot_p);
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_SLOPE_P, data->isharp_nldelta_sclip.slope_p);
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_EN_N,    data->isharp_nldelta_sclip.enable_n);
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_PIVOT_N, data->isharp_nldelta_sclip.pivot_n);
+>> +    REG_SET(ISHARP_NLDELTA_SOFT_CLIP, 0, 
+>> ISHARP_NLDELTA_SCLIP_SLOPE_N, data->isharp_nldelta_sclip.slope_n);
+>> +    PERF_TRACE();
+>>   } // dpp401_dscl_program_isharp
+>>   /**
+>>    * dpp401_dscl_set_scaler_manual_scale - Manually program scaler and 
+>> line buffer
 > 
-> What's the performance impact of this series? Did you run some benchmarks?
-
-I wasn't able to measure any performance impact at all. It does add a
-small bit of memory overhead, but it's on the order of a dozen pages
-used for the 2 extra sets of buckets. (E.g. it's well below the overhead
-introduced by CONFIG_RANDOM_KMALLOC_CACHES, which adds 16 extra sets
-of buckets.)
-
--Kees
-
-[1] https://lore.kernel.org/lkml/202305161204.CB4A87C13@keescook/
 
 -- 
-Kees Cook
+--
+
+Thanks & Regards,
+Aurabindo Pillai
 
