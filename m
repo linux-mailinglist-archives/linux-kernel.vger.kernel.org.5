@@ -1,142 +1,115 @@
-Return-Path: <linux-kernel+bounces-161427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA9058B4BD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:54:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 655BE8B4BDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 14:55:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 802E0281631
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:54:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79984B213B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Apr 2024 12:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377956BB54;
-	Sun, 28 Apr 2024 12:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC746BB44;
+	Sun, 28 Apr 2024 12:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WBlpdREm"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewnwoOS5"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE14F516;
-	Sun, 28 Apr 2024 12:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B740653;
+	Sun, 28 Apr 2024 12:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714308838; cv=none; b=F7oU5BJWCCgKSVlWAbDTs49piKTj9OGVoC/nG1Bb41G+4fvWMTzPQUB8asmGwHSbvbxlKk/0AgN2dIb/fwhzNNlSMbbLALvih2l9LWuRZlyM0zXVp2xGPVlE7n3UsazR887r+siVdXQtd1DugN5/nAjExLjCg4n19FJISZp+Up8=
+	t=1714308916; cv=none; b=h8zwB5iH75+4PualyMAmqOmDL/nF6X8KE/JUJhg06cIt3rkw7CmZdzCtA5gAcrWFsB8s7ZPRSIHW05x3RvceyuWi44qd4oxW9X+o2rvRkk2iZGN8ucKogfdcWvetgXTh/ZFsPMApqR3P78JZ4/+olKcZXw6bzKj9PeBBG6sCXRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714308838; c=relaxed/simple;
-	bh=PObusAyonphNfE4wWT8tWyu3dftMdnrVBH0CtYfXnJg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=WgpijFVrsksqjEy30FESAicRUdFoyeZgE9hQA5w2RdV2xmommGXLhzkltcgQ13ZtxharNrBbK71O8Pn4jC7hO1D5tOqCiRi/V4R6wN/33uiAz2yVVs92SnywqDo1uN3TmRuOCyMPmjMXA1QlU7cKJmpQlclf6TrFDFh8ETOVqNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=WBlpdREm; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714308807; x=1714913607; i=markus.elfring@web.de;
-	bh=pytEz1hBiZhR3/33BHamZLo8u9WQHaEHaKOnyS1MB/I=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:From:Subject:To:
-	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=WBlpdREmeF8bEmsXc1pVzXOmwVopIrJtx64k5WaQHpGZD3WbfVqZ911KXlC9IZ3l
-	 Y/f1g9xytio8pm6LpbBr57gcCk8relXRPyYE5+AUQkeYV9Dya5OhFAQ6GTQrQFtEA
-	 IsZfQ8P+MYqCXUkx8jdQ+GWKcEPIHBQsGknXbi5gUPaolhzTZJyEhYiYk/Zoap4Ex
-	 kyvuYMfxjzlePs/99nr/xlgHEu8WOiOadKjsciR+XFe+yUSAp4mbZBEQREwx49KUE
-	 GOKRt9T/Kop1DqKRU+lfcTKj9MncgqqCTnSWrUqd6oCrbo3Rvbm+1i1iEpNA7k8e3
-	 pTRnJvTthas0RUYrcA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MnX5F-1sQo0g1qab-00e9OP; Sun, 28
- Apr 2024 14:53:27 +0200
-Message-ID: <63caf898-8072-48fe-ba7a-2e10e5b2d8ab@web.de>
-Date: Sun, 28 Apr 2024 14:52:50 +0200
+	s=arc-20240116; t=1714308916; c=relaxed/simple;
+	bh=EqN3AP8Sh1imWVLeXIIlEyo40sn1YcwBLc9TZ8TVZNY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kF+uh8KKUHkiHj/e5bQu0F8Q28x1k/Nk5zrbduFhQiRn7nEMnPa7Ti+r8ZE2mmpgEDw+hxdJOda8Ye59Wo95QXkpEa9D0OcVM2af3rQ7VRzYLSPBJE/r7I48Lw+68k0gXVnKjvfx4ZtlJlqNVjn2wiQfp11FOPdfVl8+SWtCWfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewnwoOS5; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so32938635ad.0;
+        Sun, 28 Apr 2024 05:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714308915; x=1714913715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TjsuFATNEaZUjTBdhjsGIqrTD0yuEnlIqwErMycmCrA=;
+        b=ewnwoOS5VnRMa5huuFyWqQnrf2pDPy8NIJtXeozC88YGbT63MO0vTeM+5HoDenpdHB
+         2QKVrTt6uCNMs9mtw1eCV/hoQKCL8S2zmI+KTv2JmXbRUlQGC39OUYo9EkP4lLzr802Y
+         +40qIRvaJwFuvnI1Ffd1J7lEitdZLgwak564OLdSDvQCotDhtxiTNyaa+1KVq3UNE6LI
+         hUT/k76Xs8GdtV1tvlIoHn3LiQSmhcMjeXRqvWsphNBlFByhl/o5actLBK43WBBv98IR
+         sJeoTxgckonTUA495VExYRY4JCmh5lH2H7oxqUHt9jykwP3v1zq+gBbeY0ujCboH+T+Q
+         ub6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714308915; x=1714913715;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TjsuFATNEaZUjTBdhjsGIqrTD0yuEnlIqwErMycmCrA=;
+        b=ktAfaJ5cKSxZjE+qOyyzcrnkF32y/QZgwK9WT0XppXivjvC/TVOhQCbcfmVaazS9O1
+         bKAlvzUsPMkfe1/QyaOqWOZ+jGIFQfvZSEH1Angwj19ilUsqHtPoajE5BfjyeanxtGR4
+         rayTH61L7VUbFWxXtJLG4GIRbdwEngl5huM0X6uReqaoD0UTGNBMIbHA6byIzambPqxf
+         oGz4BPxU353jalA8uH1Grj5oJAT4nPf5as/5Bkm8ETFVqKKKa2Dv2Qo0o4knnaaSzSOm
+         9MEhtOKai1CGuvAq+QblmwKJFyIT6YWyZbXEu1+zGGdgiZhEN4OJ+tfWBsq/Ufk5JLDL
+         zxjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsmzb6dMmT4whmAMAVUn1B1FHMv61+zP5KwCZXISAvnNZahsYkyw9p9yzZJ92bca5OaBxJhLunZqM3jWjE+KA0BDrEbTfEpvJCmQQM
+X-Gm-Message-State: AOJu0YyS9hitHlNzVscVEX2QnnWW/7SrSczSz147kpA+OzSMtFcGoYiW
+	NczrXjwoaCG8sGXdjiqQdkaR+LJ/ldl8wgMavYTE6/FvwBcmWiH2
+X-Google-Smtp-Source: AGHT+IG6ZIZB+OcAdME79YJfQMhBFiZCjAOr2DEI+5ogOCjicZpNZOJ3Y4zTzDHsSEK/+XIM5Y+31Q==
+X-Received: by 2002:a17:902:d345:b0:1e4:24cc:e025 with SMTP id l5-20020a170902d34500b001e424cce025mr9669614plk.59.1714308914715;
+        Sun, 28 Apr 2024 05:55:14 -0700 (PDT)
+Received: from localhost.localdomain ([49.142.40.215])
+        by smtp.gmail.com with ESMTPSA id f8-20020a17090274c800b001e28d18bd52sm18456937plt.232.2024.04.28.05.55.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 05:55:14 -0700 (PDT)
+From: skseofh@gmail.com
+To: robh@kernel.org,
+	saravanak@google.com,
+	rppt@kernel.org
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daero Lee <daero_le.lee@samsung.com>
+Subject: [PATCH] of: of_reserved_mem: clean-up reserved memory with no-map
+Date: Sun, 28 Apr 2024 21:55:05 +0900
+Message-Id: <20240428125505.434962-1-skseofh@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [PATCH V2] scsi: qla2xxx: Fix double free of fcport in error
- handling path
-To: Yongzhi Liu <hyperlyzcs@gmail.com>,
- GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Nilesh Javali <njavali@marvell.com>, Saurav Kashyap <skashyap@marvell.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Himanshu Madhani <himanshu.madhani@oracle.com>, huntazhang@tencent.com,
- jitxie@tencent.com
-References: <443fb75b-948b-430f-be33-170e6f592280@web.de>
- <20240428113404.12522-1-hyperlyzcs@gmail.com>
-Content-Language: en-GB
-In-Reply-To: <20240428113404.12522-1-hyperlyzcs@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DHaY0Tigrkl34GXVyr7bpiaZ8EZhWqneFXFznlSn8aMn2Z+1yr6
- hN/aKvbBLI7GRrxAz+ybXXkzeJdCQctKZ783I2AIz34mI7R14J6Fm8o5hW5hbpOqMfNaVet
- pkH4+1xpHF38NcOu+ovlH+S+/7BcupE7PoG5dkc8vdYBXqpU4zLqGx/eNTjuGPutv9vu7wS
- 1EqJwVPPanWOZoFeXRaKQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:uN1xlcZIsZ4=;Kp96PXXBw11iC5UJInr9kZBNFbD
- 8uGa8Ndl+XmLvn51uh7YA7tsGevYJHBOwl2no8hX441QxuvSd/LBeQT5OfDYb4rvDvS/obKAQ
- T16xCKTl3ectKG6QTp13MJEIN4Fa0654OiAfs4jB1qkb1+ofUHRLTorC1xzxDMBh6gcAjifn0
- PNbg8LKEdXru+OeOKJREsKIVBiqnjqmIg9R/l98I7GYE64IjVdK2kItcJUeXmWzZ5fgoSLc2s
- Zlyx6p5FVxR4FTHsvGcMt/S6eKyD0CKmfB4L+dOfXuJe85FvnlH89QKTkCYlGzw94WJf1WpcQ
- 37lvhIn6AYuYt31IZAJSwLuEm7LjjIlXyXEohRkpXHpG/JTVjhuJU6AAY0XRbIpLQAuDqIRJv
- 0w9lQC7w9xUiZ8pkpQsWdTG2AFwPd8QRkbURyDKJgWpmz/0u71G7dv99yAO210t4DPKoEYhhV
- g8xroe8aejAb8oG0Y77XTj8loGSKTft1d6OEBv543PYJrvfmNCLdfwbuFULGZPVQkYLxMmMF4
- PO2Hk+Q3nG1311JD8AXIP4OZDxdVSr/HLWi0WOXDGSAABEAYetgEzwucQ3dsAwELBMtZta3sm
- hli9nsYp8tLj5Spm1W7wVzrQJqUcnhjdhmWehrKvkJ78I6yMn4pAUuY+Jqc3Pr35lfuPHRSsL
- zR4c6rOn6Ax/SYr7k49pdo7ep/YGTT+XjjqZ4YVxKc9l0FZxZBS7wtZWney/5qmb3jYDEDG96
- XVcPmBz0/eDK3IUBCx0Q+SlCyzVhM83sG0hc4prtUnr7okqkhO0THEd/489P976GP3nl2XSAq
- gMJQrl5HyzToEFnrxMb7QVjyuD+MrlkidO8QiMkQEEb5E=
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> Fix this by cleaning up the redundant qla2x00_free_fcport() and
-> replacing error handling with a goto chain.
-=E2=80=A6
+From: Daero Lee <daero_le.lee@samsung.com>
 
-Can the following wording approach be a bit nicer?
+In early_init_dt_reserve_memory we only add memory w/o no-map flag to
+memblock.reserved. But we need to add memory w/ no-map flag to
+memblock.reserved, because NOMAP and memblock.reserved are semantically
+different.
 
-   Thus clean duplicate qla2x00_free_fcport() calls up
-   and use more common error handling code instead.
+Signed-off-by: Daero Lee <daero_le.lee@samsung.com>
+---
+ drivers/of/of_reserved_mem.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 8236ecae2953..1c916da8adaf 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -91,7 +91,8 @@ static int __init early_init_dt_reserve_memory(phys_addr_t base,
+ 		    memblock_is_region_reserved(base, size))
+ 			return -EBUSY;
+ 
+-		return memblock_mark_nomap(base, size);
++		if (memblock_mark_nomap(base, size))
++			return;
+ 	}
+ 	return memblock_reserve(base, size);
+ }
+-- 
+2.25.1
 
-
-> ---
->  drivers/scsi/qla2xxx/qla_iocb.c | 13 +++++--------
-=E2=80=A6
-
-Unfortunately, you overlooked to add a patch version description behind th=
-e marker line.
-
-See also:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n713
-
-
-=E2=80=A6
-> +++ b/drivers/scsi/qla2xxx/qla_iocb.c
-=E2=80=A6
-> @@ -2787,6 +2783,7 @@ qla24xx_els_dcmd_iocb(scsi_qla_host_t *vha, int el=
-s_opcode,
->
->  	wait_for_completion(&elsio->u.els_logo.comp);
->
-> +free_sp:
-
-* I suggest to omit a blank line here.
-
-* How do you think about to use the label =E2=80=9Cput_ref=E2=80=9D?
-
-
->  	/* ref: INIT */
->  	kref_put(&sp->cmd_kref, qla2x00_sp_release);
->  	return rval;
-
-
-Regards,
-Markus
 
