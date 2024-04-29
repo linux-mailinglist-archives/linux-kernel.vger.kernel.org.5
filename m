@@ -1,128 +1,136 @@
-Return-Path: <linux-kernel+bounces-162727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 612948B5FB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:11:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3ECD8B5FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 004FF1F25752
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:11:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDAE9B21D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E908626D;
-	Mon, 29 Apr 2024 17:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D24986652;
+	Mon, 29 Apr 2024 17:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="frNC7ypk"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sgbkYWiU"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3892B84E1A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF238627D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714410650; cv=none; b=hrtHrOrjMOwHLkRU7fA/awRzxwDWETDYFH+eTPRp+zJqNAV5oOQ8S7zyiXgWMpuOKGCeEqqJd3V8tlhXdMrX44FDH4dW6+L6bMnzT5VYhTHm2h1dlgrw0gRw5+nYV3Fg5nld728Vuuxf6MfAlbPDPAiZRsKwgPab3gXNGwGXUlQ=
+	t=1714410695; cv=none; b=IEWYOYUHQr51F9r7Uwr9qIc6YaOVV7N5k449qLt/a4ciL2GhYY963dIbqu04O+mLaDtsoecnAJrShJIcgK3/U+vGnYbyBrv6zCuhS/jsub6bASfll0zCSddg4ChTCWvjxqHmSa+c6BE6M/0AcnqDQmdQBZa3VKxFOOmRJ2/7PZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714410650; c=relaxed/simple;
-	bh=0jNTl45Cs7ezsUWeAWbPmvCWgF+22Evr0a+0tU6atao=;
+	s=arc-20240116; t=1714410695; c=relaxed/simple;
+	bh=gHKyucjbhj8cfFBnv6FeWZ+CCqaY0W6eus79r1bDca4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q4uFtuO9eC/EtjeNm9hEbg3/OcOfp2CICu/Ue7rCCwVeLAwpoycq44lJ5PIIw56/LEmCtNZaZDWaPEzzKNu8rrsc1pmsZTAOsNfRZoTtxjsI6uy1VlPwo+NxVtqsl497+5LcDJyVGk3GJ1tsxJh3gE446UH6AYADQBsiByxoGmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=frNC7ypk; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2b07f6b38daso2082764a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:10:48 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mu9e6McdgTsXqfTrRkbRiGXIN+eIhXV8SLphPkfs/vjMAl3RcF1N+Mx0Aw2BcoHbo39sa/NFeq1TpTfRDSrnglngC5x1G3lOWfRQwSAgFKk6pJjoU1PzOg+gq3v8O2JIIVPLGj4zeo3RlRIxTHZrcxFj+rHFMUiL2zVl06aOe6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sgbkYWiU; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-349545c3eb8so3245750f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714410647; x=1715015447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oZRgSAbzG7KcvdiTauEibDNnc/WC+ObXBWTvwKd5YyQ=;
-        b=frNC7ypk1oXy4cYOUkEh1xrUZaaHRoAmacK25JOYs6LaD2a0j0PVUxBhwPNtoo+kz0
-         fNI89O/2zo91YhFv3vITF6WmgBZiQLg535I5N3VbhJjbTa+ZInayKi2hMpVb9Nku4A9W
-         aCk06kZU1kUVBczu5Uddf++oFugHe8ZPo8JlI=
+        d=linaro.org; s=google; t=1714410691; x=1715015491; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RYAqBXsNEvrSMnv0mKSil9XtJ+T/DO6BwhlxG7738Uw=;
+        b=sgbkYWiUhRKgWieli5Dji3GWJ+NeTrPzU62B2/jZHn9HwRvae1xhVr75BKT7u+DHQg
+         uiC05d0TelGfUcLZrpLvnVa7OcZuzDf/ppVCsNh1R6dHj/N6ZlT8ESmEIWcn6eA8/njn
+         wideUNKCIiWPHzIJ7LsfhFBX7tsg+o7pTXMwRvnNhDr/eKDsrDgUpaBZV/TkvYqr7Fzi
+         6hJ2SmnB+VrbKGKLHFh7PuR0DyNuueZxBrxmcPKh2gdQNTSTQl3Myehswnm4XMMW/FRI
+         tBWvUqv+0GeHdpJD4VoYYQ1Uwnvpx/RID3dx8Mk7GbUH8w2uyKG76gLA/4jzGoF/COog
+         2vpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714410647; x=1715015447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oZRgSAbzG7KcvdiTauEibDNnc/WC+ObXBWTvwKd5YyQ=;
-        b=OqP6BBheXuvxewecwHVxfa3SU+aX7wqQua3Tb2MFJPMeCuqNAeqQ0ZS/Pw9eJIPyEP
-         /lJyj47vC/ThMriPkrst2c7+iPvEOi6AhY3ng4d//Gmh3Xbj2fvcg+wCvFVoiFulE8uY
-         LEFmACyOYK1PHOwDEYG1YJUPYyPyqIXdcTk8VwyEZEg52ZhkEA22lF8HVNu2QQsZg0Bz
-         VMpxc00Gv5BmLSLpjaMefy08mUzpaT2hTICYWfrJUIuq6sqmOEu/7pmrR/85gXDDLM6O
-         pEPW+V4G2kxcrWL7OAFS+UF6wBdsN6G9PBwMOmwvPBF036ragUpNi9uRl6qRZ0WSmDhS
-         ZsAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnZA3bf8pg5NJs59zuYCnieJ4hDzKI/G2NUPtBAI2yFEo4FO2xIaNHQEUYbI4XSSdcv2GfUWka/euTjQLg4yqRaScB1sCsXsxPPaQZ
-X-Gm-Message-State: AOJu0YxhZkR7MziOeuUVCtMnsQGW19VyL2eD7AVgDA8ih07/Px8n0yOO
-	BZSVmS8FIDuVQZJfSoJXKoSKgpfvWA8D8SuYMOfXb2dW/RfGI+e/TRtx42HpgA==
-X-Google-Smtp-Source: AGHT+IGj3Lb7QLmCDgTM2Q+YDthSN8UMWEbIVz5Z0H2XtkJT6q8gWsIvscYSHoZhP1Lgml101nzTDA==
-X-Received: by 2002:a17:90b:270d:b0:2a2:6244:32b5 with SMTP id px13-20020a17090b270d00b002a2624432b5mr368408pjb.11.1714410647531;
-        Mon, 29 Apr 2024 10:10:47 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m14-20020a17090a668e00b002a6e67e197dsm19363447pjj.45.2024.04.29.10.10.46
+        d=1e100.net; s=20230601; t=1714410691; x=1715015491;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RYAqBXsNEvrSMnv0mKSil9XtJ+T/DO6BwhlxG7738Uw=;
+        b=lwOCZppTJekgzhiCYjoITwLmuzBOgI7denOoiAMJaEkkHB8kptOUrxqlbK5iwOxuRl
+         lFYH82fCM47pCs3ADR1QIDhKY+1+kNOY6+GLcbw3vuTCj+0yGP5OpGyNL2qxpu/X5Y5g
+         ECppCptuz1B8KfSTSuPHZxKtwbXADp6OXbMC6pS0BH9Sq3jlHhSdVMuNrGBwslv30BIo
+         Wl/L9tG4L4hgmcKMGFe2wi3MG7aII0S9NAUjbC+GO9DcMQKcxRs4zkUY/CqXJVnJfzjn
+         XQvO2ieou+wKXtUEvkxf1Yf2IGUSoOSC9nOm/rruHwOB6kiimhi9b1A4eDKn0xTwgHrO
+         sFow==
+X-Forwarded-Encrypted: i=1; AJvYcCXz6AHUIFYsP5Fik/12LqOwcVxn617/dF/pWyA8Gn6rnyQ/2lN3gzAkAc/bOAAoMcpKg8ny63B4FR41+aiqeBKPNg5OVJOrxfe6wEhB
+X-Gm-Message-State: AOJu0YxSxbqbVKseSdyZzawiU2qtBL3msPIOS9/faCkoflhj1uoJbMnE
+	BrDDPndmw7Tbt/8+xflAs/UPt5vdD2Mw+5FXdCdQTbnSojsc9kSfiasC9rFI4G0=
+X-Google-Smtp-Source: AGHT+IG8umBD7o5FzAImUqAN8DYBJskAD7XTKjpSpsopHoP+FSd3CORx51YP8n2Ws0Pw8hnEOok6ug==
+X-Received: by 2002:a5d:45cb:0:b0:33e:7896:a9d7 with SMTP id b11-20020a5d45cb000000b0033e7896a9d7mr292530wrs.67.1714410691396;
+        Mon, 29 Apr 2024 10:11:31 -0700 (PDT)
+Received: from myrica ([2.221.137.100])
+        by smtp.gmail.com with ESMTPSA id y7-20020a5d6207000000b00346f9071405sm30075412wru.21.2024.04.29.10.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 10:10:46 -0700 (PDT)
-Date: Mon, 29 Apr 2024 10:10:46 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in
- struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
-Message-ID: <202404291008.51DB333F@keescook>
-References: <ZgSTCmdP+omePvWg@neat>
- <171222554691.1806092.8730005090791383928.kvalo@kernel.org>
+        Mon, 29 Apr 2024 10:11:31 -0700 (PDT)
+Date: Mon, 29 Apr 2024 18:11:45 +0100
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
+	Anders Roxell <anders.roxell@linaro.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v2] tools/build: Add clang cross-compilation flags to
+ feature detection
+Message-ID: <20240429171145.GA241057@myrica>
+References: <20231102103252.247147-1-bjorn@kernel.org>
+ <ZUOWcXDpCOzxbFW0@krava>
+ <87o79wxvnu.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <171222554691.1806092.8730005090791383928.kvalo@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o79wxvnu.fsf@all.your.base.are.belong.to.us>
 
-On Thu, Apr 04, 2024 at 10:12:28AM +0000, Kalle Valo wrote:
-> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+On Fri, Apr 26, 2024 at 12:31:17PM +0200, Björn Töpel wrote:
+> Jiri Olsa <olsajiri@gmail.com> writes:
 > 
-> > Prepare for the coming implementation by GCC and Clang of the
-> > __counted_by attribute. Flexible array members annotated with
-> > __counted_by can have their accesses bounds-checked at run-time
-> > via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
-> > (for strcpy/memcpy-family functions).
-> > 
-> > Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
-> > getting ready to enable it globally.
-> > 
-> > So, use the `DEFINE_FLEX()` helper for an on-stack definition of
-> > a flexible structure where the size of the flexible-array member
-> > is known at compile-time, and refactor the rest of the code,
-> > accordingly.
-> > 
-> > So, with these changes, fix the following warning:
-> > drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> > 
-> > Link: https://github.com/KSPP/linux/issues/202
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> > Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+> > On Thu, Nov 02, 2023 at 11:32:52AM +0100, Björn Töpel wrote:
+> >> From: Björn Töpel <bjorn@rivosinc.com>
+> >> 
+> >> When a tool cross-build has LLVM=1 set, the clang cross-compilation
+> >> flags are not passed to the feature detection build system. This
+> >> results in the host's features are detected instead of the targets.
+> >> 
+> >> E.g, triggering a cross-build of bpftool:
+> >> 
+> >>   cd tools/bpf/bpftool
+> >>   make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- LLVM=1
+> >> 
+> >> would report the host's, and not the target's features.
+> >> 
+> >> Correct the issue by passing the CLANG_CROSS_FLAGS variable to the
+> >> feature detection makefile.
+> >> 
+> >> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
+> >> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+> >
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> Patch applied to ath-next branch of ath.git, thanks.
+> Waking up the dead!
 > 
-> cbb0697e0ded wifi: wil6210: wmi: Use __counted_by() in struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+> Arnaldo, Jean-Philippe: I'm still stung by what this patch fixes. LMK
+> what you need from me/this patch to pick it up.
 
-Hi,
+I guess the problem is these files don't have a specific tree. Since you
+mention BPF maybe it should go through the BPF tree, in which case you
+could resend to the tools/bpf maintainers (and "PATCH bpf" subject prefix)
 
-I was just walking through our patch tracker and noticed that I don't
-see this patch include in -next yet (as of next-20240429). Is there a
-flush of the ath-next queue planned soon? Or did I miss some change?
+FWIW the change looks good to me:
 
-Thanks!
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
--Kees
 
--- 
-Kees Cook
 
