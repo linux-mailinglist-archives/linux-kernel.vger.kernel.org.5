@@ -1,201 +1,97 @@
-Return-Path: <linux-kernel+bounces-162502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8608B5C11
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:57:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D768B5C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:00:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AECE281216
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:57:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADE19B2858A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1FF8121F;
-	Mon, 29 Apr 2024 14:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323FE811E9;
+	Mon, 29 Apr 2024 14:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knUO9XcY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="5kNs7mmv"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79014745C5;
-	Mon, 29 Apr 2024 14:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFB37EEF2;
+	Mon, 29 Apr 2024 14:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402641; cv=none; b=OtFiXc9MHab4IdbSfSwcrMeM12cIGv7EX6ixjfFo+KDpukTYuLsoQTEp3zRVW+R+ta92K4IgzuJida9IV5PrpszcHfTUluXrEBLaOW2Uw31onJRN85KPX29k0/EKl8AkTU5rZXI1Fk+qaeIrqF5gyTNfjsSv0ClP6Zrdi0pRhlk=
+	t=1714402663; cv=none; b=Tw9vvKVenAaR/KMT3G7X8tM20IX0cghrfCmDBYCS6urb//xg2WXw0xxqF3Fn1n6qPxrpw5kNK/il+7IMVTt7GLgPPF/JvT65jOUuSlwxhpLY/1R8WIMpjd/6iZkEW+/mU91qvDitWNohnqlrB0phk0UBQPwiKRQYYepTwXffXzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402641; c=relaxed/simple;
-	bh=hWivQfQuF0fT04SNK+ienLT/ACa8KyiRA5sWZVweDL0=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=toco0n/mVdCQ8J7dD6upI4zaY1sMHhf5yDD8uezJ4oiHDCnMzsGUQkjNp8YHnThexxiQnud9uMJG1wwqRrLUdEAZ9aSlAdvKHyedmuxPY3S398UVtw1MdmzCFBkT50LcYyXN/8PYVAZWPRqGxVh63ObAO/r7hS2lIRszjlbNtFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knUO9XcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D58C113CD;
-	Mon, 29 Apr 2024 14:57:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714402641;
-	bh=hWivQfQuF0fT04SNK+ienLT/ACa8KyiRA5sWZVweDL0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=knUO9XcY4eGnQctWABveJeL0qRZmdybzZ834JWlQaEIXJ+2ElpTriIqFU9x5Y8R+d
-	 30zsFdVFpC4mqRED4c3tkyQISWeOWgX42OSKkPZGlHoDtu82gNa8SxpmuG7hjYxC6t
-	 Cz/k3L5UAFdloPiRpd1r+EoaRLG8emYBjiS012e5+6L2M0ud1O4cy7IdpOP5a8e924
-	 10PdGhurGmH83ffIg5bJjYJUK3cgGllmHWeAQ6447ejo+RSme6Zfmi+fIwME8ulx1W
-	 OkcHGTFolS8rdOrRkHO5Gam0a+nganFmdEwPoJ8QML7UH5TzD5kte9J1B3l6oCBeTd
-	 54Sz03oE8dqoQ==
-Date: Mon, 29 Apr 2024 23:57:14 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v9 29/36] bpf: Enable kprobe_multi feature if
- CONFIG_FPROBE is enabled
-Message-Id: <20240429235714.54135bc2d6dfcf4d0e338c46@kernel.org>
-In-Reply-To: <CAEf4BzZ2cZ-jJDj3Qdc4T_9FmCK21Ae-mr-d2RJRMtdUK8HOjQ@mail.gmail.com>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-	<171318568081.254850.16193015880509111721.stgit@devnote2>
-	<CAEf4BzZ2cZ-jJDj3Qdc4T_9FmCK21Ae-mr-d2RJRMtdUK8HOjQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714402663; c=relaxed/simple;
+	bh=IcugJ0QwbKQ6I/BOBlgoBQscijLsbDvk0jtQCL+HSjU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q0p5NsCvlVFBVMuf/3IXrTRYEqTtu3GYnNpft9kynleG9KlwdoWPZmfjLYJhW0zQ1mzNiNIkrHqfTbU4ko8NZFHqSJrISrZd+KsamdVia+MVCU9ers7uDVbotE62O+H5jNl8osvGbLlfdEp2N2njd33fntnF5Nzmb2gVzWUo2/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=5kNs7mmv; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=cWBfapoZi8jsbt7Iy+JKtlaopk7WUGuiHafZVePp7/w=; b=5kNs7mmveYPQjgP4V1Uy81UUsm
+	G1WP+1HAONV/YqfaHS9jlLRXy04i7tL67Yz7VRyu/TQ2w9Mcg1V3sgOaXpJcD1MHl9ir+tsKOT+Jv
+	TJcryVSOW+nIY1+6gM18qqyTpEkT/gdOCxn4FVhIQNv09WefiIxr0Ylx/YW6qMtPayZw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s1SRj-00EGI7-6N; Mon, 29 Apr 2024 16:57:35 +0200
+Date: Mon, 29 Apr 2024 16:57:35 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	Mark Brown <broonie@kernel.org>,
+	Kyle Swenson <kyle.swenson@est.tech>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: PoE complex usage of regulator API
+Message-ID: <5063429d-5dca-4538-b240-50c35cbf5e93@lunn.ch>
+References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+ <57a79abd-722c-4907-b0e7-2396392ae675@lunn.ch>
+ <20240429145203.219bee06@kmaincent-XPS-13-7390>
+ <Zi-vhKx-WlYPQe3c@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zi-vhKx-WlYPQe3c@pengutronix.de>
 
-On Thu, 25 Apr 2024 13:09:32 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> Since there is already support to work with current (I) values, there
+> are is also overcurrent protection. If a device is beyond the power
+> budget limit, it is practically an over current event. Regulator
+> framework already capable on handling some of this events, what we need
+> for PoE is prioritization. If we detect overcurrent on supply root/node
+> we need to shutdown enough low prio consumers to provide enough power
+> for the high prio consumers.
 
-> On Mon, Apr 15, 2024 at 6:22 AM Masami Hiramatsu (Google)
-> <mhiramat@kernel.org> wrote:
-> >
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> > Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
-> > converted from ftrace_regs by ftrace_partial_regs(), thus some registers
-> > may always returns 0. But it should be enough for function entry (access
-> > arguments) and exit (access return value).
-> >
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Acked-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  Changes from previous series: NOTHING, Update against the new series.
-> > ---
-> >  kernel/trace/bpf_trace.c |   22 +++++++++-------------
-> >  1 file changed, 9 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index e51a6ef87167..57b1174030c9 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2577,7 +2577,7 @@ static int __init bpf_event_init(void)
-> >  fs_initcall(bpf_event_init);
-> >  #endif /* CONFIG_MODULES */
-> >
-> > -#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
-> > +#ifdef CONFIG_FPROBE
-> >  struct bpf_kprobe_multi_link {
-> >         struct bpf_link link;
-> >         struct fprobe fp;
-> > @@ -2600,6 +2600,8 @@ struct user_syms {
-> >         char *buf;
-> >  };
-> >
-> > +static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
-> 
-> this is a waste if CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST=y, right?
-> Can we guard it?
+So the assumption is we allow over provisioning?
 
-Good catch! Yes, we can guard it.
+> > So there is a potential second user, that's great to hear it! Could the
+> > priority stuff be also interesting? Like to allow only high priority SFP to use
+> > higher power class in case of a limiting power budget.
 
-> 
-> 
-> > +
-> >  static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
-> >  {
-> >         unsigned long __user usymbol;
-> > @@ -2792,13 +2794,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
-> >
-> >  static int
-> >  kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
-> > -                          unsigned long entry_ip, struct pt_regs *regs)
-> > +                          unsigned long entry_ip, struct ftrace_regs *fregs)
-> >  {
-> >         struct bpf_kprobe_multi_run_ctx run_ctx = {
-> >                 .link = link,
-> >                 .entry_ip = entry_ip,
-> >         };
-> >         struct bpf_run_ctx *old_run_ctx;
-> > +       struct pt_regs *regs;
-> >         int err;
-> >
-> >         if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-> > @@ -2809,6 +2812,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
-> >
-> >         migrate_disable();
-> >         rcu_read_lock();
-> > +       regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
-> 
-> and then pass NULL if defined(CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST)?
+I was not expecting over-provisioning to happen. So prioritisation
+does not make much sense. You either have the power budget, or you
+don't. The SFP gets to use a higher power class if there is budget, or
+it is kept at a lower power class if there is no budget. I _guess_ you
+could give it a high power class, let it establish link, monitor its
+actual power consumption, and then decide to drop it to a lower class
+if the actual consumption indicates it could work at a lower
+class. But the danger is, you are going to loose link.
 
-Indeed.
+I've no real experience with this, and all systems today hide this
+away in firmware, rather than have Linux control it.
 
-Thank you!
+     Andrew
 
-> 
-> 
-> >         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> >         err = bpf_prog_run(link->link.prog, regs);
-> >         bpf_reset_run_ctx(old_run_ctx);
-> > @@ -2826,13 +2830,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
-> >                           void *data)
-> >  {
-> >         struct bpf_kprobe_multi_link *link;
-> > -       struct pt_regs *regs = ftrace_get_regs(fregs);
-> > -
-> > -       if (!regs)
-> > -               return 0;
-> >
-> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
-> > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-> > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
-> >         return 0;
-> >  }
-> >
-> > @@ -2842,13 +2842,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
-> >                                void *data)
-> >  {
-> >         struct bpf_kprobe_multi_link *link;
-> > -       struct pt_regs *regs = ftrace_get_regs(fregs);
-> > -
-> > -       if (!regs)
-> > -               return;
-> >
-> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
-> > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-> > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
-> >  }
-> >
-> >  static int symbols_cmp_r(const void *a, const void *b, const void *priv)
-> > @@ -3107,7 +3103,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
-> >         kvfree(cookies);
-> >         return err;
-> >  }
-> > -#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
-> > +#else /* !CONFIG_FPROBE */
-> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> >  {
-> >         return -EOPNOTSUPP;
-> >
-> >
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
