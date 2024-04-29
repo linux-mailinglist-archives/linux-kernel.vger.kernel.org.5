@@ -1,135 +1,115 @@
-Return-Path: <linux-kernel+bounces-162240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC638B5867
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:23:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C10688B5869
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:24:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE24B286B76
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:23:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A091C2313A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5446E60E;
-	Mon, 29 Apr 2024 12:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F393654910;
+	Mon, 29 Apr 2024 12:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YfN9xvJ2"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ug9q1Sme"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6DC6CDB7;
-	Mon, 29 Apr 2024 12:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3369C548F3;
+	Mon, 29 Apr 2024 12:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714393198; cv=none; b=kjWj2T/fXJYUrsezgRj0bM9FWjwEosPstbbLeL3bzEdQZW4+NhlO2nR+prs6OLCmmPkSOTkjR89LW+7pJoY0YlUwb7mlQeu1Hjkn1FrQsSvZ6cg6WVO9mQqwNzLc7D9wl/xF02Z323Q4EoubFe2le5cboCbcTdXhhnd+knv9/FM=
+	t=1714393284; cv=none; b=qB/m4sLy9+lFW2hi6vkFBMGaxdyVrKK6swBsrZPWv+gZKso+2BxM0+waHpktU6UHMHi5oKjs2A+ORhuZyCM3ZDc/ciWkGwTpSqFEebqyEl6dHjil6JhvNqb8/qmRtAUEuEK4BqH2zD2vrUIIRQC8/KR8oW4gu3MZhZv74xh/mnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714393198; c=relaxed/simple;
-	bh=CjtZnAARk7MKINso2pTgQybSMs6C5wNrBPWS1UNyhEI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J9y5BXTnKPgTiJlZ0Kouf7dYoPAxH85lyzVKrs9lGLJ7BQd5LpgEbQiXFfsKLezpQii0hQYdxDWaiAOA2XFScTGLAIFKQHtXvreg2+UTg12Yno+HmZwfiQS/i4yeuSlCr2evpxTS2uIty5L5E/ynP3i2Tp1WtkiiDf7E+abHpss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YfN9xvJ2; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714393198; x=1745929198;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CjtZnAARk7MKINso2pTgQybSMs6C5wNrBPWS1UNyhEI=;
-  b=YfN9xvJ2u7XoDEhwinQb5vQG0+M9BWiMm0nlN2hx4Oxc/TVtc127RKkU
-   B2xy7hq2RQb5opgXf+Lm5ecZnpIK0cTRb+COTFkYSvvR5+HEh6ZGLATBX
-   IOWBXBs9afsxFU/00V1+A3p5og90UuirsEhbZLbhYin0ZXlF8Oj6J0G7G
-   sXefOTAdcT4rDUOMOdNKNGue8XjfzYR/l8jRm6E/os76EIt4WsQIOy22n
-   AYx0q4H9wl9YZPlZEcZsj3nvpw9P2RFKetWoDq9Mc0BI7UPfjZYEvVAoj
-   Z/5cqlwDNTU+szy2gYEDLir2/MMR5VkcXFQpQ3zW6C5GlCrXG2eNSfHfA
-   A==;
-X-CSE-ConnectionGUID: AGwHbl2cTJ+gFqL37r4uCw==
-X-CSE-MsgGUID: Suql+Y3WTreQorJX4dBLqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10213654"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="10213654"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:19:57 -0700
-X-CSE-ConnectionGUID: vyCOCsvpTuyxEkTv0uZI+A==
-X-CSE-MsgGUID: BeR9vZjTQTSfzUNPU3CIBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26169766"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:19:54 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s1Pz5-00000002KT3-0EnX;
-	Mon, 29 Apr 2024 15:19:51 +0300
-Date: Mon, 29 Apr 2024 15:19:50 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
-	David Lechner <dlechner@baylibre.com>, Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] drm/ili9341: Remove the duplicative driver
-Message-ID: <Zi-QZmwa1kIAv0sP@smile.fi.intel.com>
-References: <20240425124208.2255265-1-andriy.shevchenko@linux.intel.com>
- <20240425-perky-myrtle-gorilla-e1e24f@penduick>
- <ZipxEk9Lpff1kB7b@smile.fi.intel.com>
- <20240429-gorgeous-beetle-of-downpour-492bbd@houat>
+	s=arc-20240116; t=1714393284; c=relaxed/simple;
+	bh=GN3QGB2jbFPL5Wk6rKTG25hzWJroU4o85TBERdc7DoE=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=l9SJs5rETMx4xQ3wj5eKQ/KW/V7Huju/Ty7avjs9LJjUJWe8A6N1YeFy6QzhEicsGjfvfSUB1DQk5c9jPn5TV4b+0RTBVgvRcow7JO5B3D71ExkteD0p+CyNCXGm3aJo9+qK9xt1vmD1kpLEi+Z9zEB3VhT/nazWyeyBGocXhgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ug9q1Sme; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 054D1C113CD;
+	Mon, 29 Apr 2024 12:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714393283;
+	bh=GN3QGB2jbFPL5Wk6rKTG25hzWJroU4o85TBERdc7DoE=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Ug9q1SmeSa9FZfVHBJQmoSFaZBTTz1yizjIKKT+tkO1UL4oQgm2PnI+uG7TlCGZhk
+	 EkQDZclIClMfuml0UwZztnx7KDyUNTBGficWFh//g7o+SaX2qNkp3FzYkv3KDwJOw2
+	 wFCJF6X94vJdyIvUYjnoBd0WdOCKf/pjly6f/gPzNztweC0u+PjvqIZgr8r3jgs293
+	 pYfpDC+Idt2haSHeT0aTJs2GVWjHEYKciwKNNFCkqtvzH6Ga3OpaQmmXVQMrWOgpYZ
+	 Cq249RThITDjVXarCdavRHYGf/unGIsWEl3oTyurp4ZAQ+Ws+kZbO0Vo6rZczLj03M
+	 OrNqpgHu0swbg==
+From: Kalle Valo <kvalo@kernel.org>
+To: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,  Wu Yunchuan
+ <yunchuan@nfschina.com>,  Johannes Berg <johannes.berg@intel.com>,  "Breno
+ Leitao" <leitao@debian.org>,  <linux-wireless@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>,  <lvc-project@linuxtesting.org>,
+  <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
+Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
+References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
+	<171406032921.2967849.6111681305541795423.kvalo@kernel.org>
+	<87a5lhh1t0.fsf@kernel.org> <20240428090404.2d300255@mir>
+	<20240428094916.3d1e92b8@mir>
+Date: Mon, 29 Apr 2024 15:21:20 +0300
+In-Reply-To: <20240428094916.3d1e92b8@mir> (Stefan Lippers-Hollmann's message
+	of "Sun, 28 Apr 2024 09:49:16 +0200")
+Message-ID: <87jzkgfjgf.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429-gorgeous-beetle-of-downpour-492bbd@houat>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 01:39:06PM +0200, Maxime Ripard wrote:
-> On Thu, Apr 25, 2024 at 06:04:50PM +0300, Andy Shevchenko wrote:
-> > On Thu, Apr 25, 2024 at 04:58:06PM +0200, Maxime Ripard wrote:
-> > > On Thu, Apr 25, 2024 at 03:42:07PM +0300, Andy Shevchenko wrote:
-> > > > First of all, the driver was introduced when it was already
-> > > > two drivers available for Ilitek 9341 panels.
-> > > > 
-> > > > Second, the most recent (fourth!) driver has incorporated this one
-> > > > and hence, when enabled, it covers the provided functionality.
-> > > > 
-> > > > Taking into account the above, remove duplicative driver and make
-> > > > maintenance and support eaiser for everybody.
-> > > > 
-> > > > Also see discussion [1] for details about Ilitek 9341 duplication
-> > > > code.
-> > > > 
-> > > > Link: https://lore.kernel.org/r/ZXM9pG-53V4S8E2H@smile.fi.intel.com [1]
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > 
-> > > I think it should be the other way around and we should remove the
-> > > mipi-dbi handling from panel/panel-ilitek-ili9341.c
-> > 
-> > Then please do it! I whining already for a few years about this.
-> 
-> I have neither the hardware nor the interest to do so. Seems it looks
-> like you have plenty of the latter at least, I'm sure you'll find some
-> time to tackle this.
+Stefan Lippers-Hollmann <s.l-h@gmx.de> writes:
 
-Hmm... Since the use of Arduino part in panel IliTek 9341 is clarified
-in this thread, I won't use that, but I have no time to clean up the mess
-in DRM in the nearest future, sorry. And TBH it seems you, guys, know much
-better what you want.
+> Hi
+>
+> On 2024-04-28, Stefan Lippers-Hollmann wrote:
+>> On 2024-04-25, Kalle Valo wrote:
+>> > Kalle Valo <kvalo@kernel.org> writes:
+>> > > Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
+>> [...]
+>> > > Does anyone have a real device to test this? I have had so much prob=
+lems with
+>> > > syzbot fixes in the past that I'm hesitant to take such patches with=
+out
+>> > > testing.
+>> >
+>> > Actually should we just remove ar5523 driver? Has anyone heard anyone
+>> > using this driver still?
+>>
+>> While I'm not using it regularly, the driver does still work in plain
+>> v6.8.8 (and these Netgear WG111 and WG111T USB WLAN cards were quite
+>> common), tested against a qcn5024 AP.
+>>
+>> I'm just preparing a new kernel build with the proposed patch applied.
+>
+> =E2=80=A6and now the same with this patch applied:
+>
+> $ uname -r
+> 6.9.0-rc5-gcc1380dd1882-dirty
+>
+> wireless-next-2024-04-24-2112-gcc1380dd1882 with
+> https://patchwork.kernel.org/project/linux-wireless/patch/20240408121425.=
+29392-1-n.zhandarovich@fintech.ru/raw/
+> applied
+>
 
-FYI:
-The drivers/gpu/drm/tiny/mi0283qt.c works for me (the plenty of the HW
-you referred to).
+[...]
 
-TL;DR: consider this as a (bug/feature/cleanup) report.
+> [   84.623413] wlx<MAC>: associated
 
--- 
-With Best Regards,
-Andy Shevchenko
+Very nice, thanks for testing! I'm surprised that ar5523 still works :)
 
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
 
