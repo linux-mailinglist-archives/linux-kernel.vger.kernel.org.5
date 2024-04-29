@@ -1,130 +1,181 @@
-Return-Path: <linux-kernel+bounces-162601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 774098B5DE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:38:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5670D8B5DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B021F22700
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:38:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158E3280E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA76882499;
-	Mon, 29 Apr 2024 15:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B55182499;
+	Mon, 29 Apr 2024 15:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IM9nb9E/"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H4kUOyiU"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2FF7E0F6
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:38:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A3C7E0F6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714405130; cv=none; b=R7/Fq93+nfDiSUn81Yt0QdRQIwKybS0qzJfbswfk+LmFgkhdwt2bb2Fcq/okJQ+FqthSMhCAKQDCAz2MoZsUABH4U9/rxqZ9tuJKQ14mBSdD9SnYftJ0Bs4Zb1+rkJ8j1RZsXbMkhsqmbE1drQ3JQCnIumCuyPwZ0J09U6vbrn0=
+	t=1714405169; cv=none; b=DOhbJ2MfBqaGHemIKkVaeDiNG5LXx0El16CAk8e2sJNt9fuIZk5Mb+qJnUhDyfLvkuZXfdndqqgc2pUr0DJ6oco30+By7xIK51/Q39WJH06CqOhfV73bmEmc77CV4Wku8Xk2OVvnopPh53Ez4oNYuurTkvpbcmcljWrQYZUh4nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714405130; c=relaxed/simple;
-	bh=v0HkdwseVtxbUG+TpIadKDFDMEX1O+OVMMIYGmNmfBo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EJsbil/Q4ylowgEmUHdIL9RlVMrqjvj2RuO6efFRBngpDPgCyUCQWRe9VtSOucIVWBuKNaAaZ06KbSgiU5Hx0MqJL8meA6MvnNSyzCbnkftiX5P3YcKVjnCatYvXtwIgbtuSmA/AfFfIcXbBSXjHCVYCMKtwZmFub0uQLJcwIws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IM9nb9E/; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51d62b0ecb7so2518076e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:38:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714405126; x=1715009926; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yzvwkbrrAC9JiUG9n8YloB91+ZmYMnCxhqfGJQxrqwQ=;
-        b=IM9nb9E/iQ9AmoxGKiClzhen7ssbqIH/WfNV3l6Msbsm+MGaQUcfvwx8aqZkcF0QpW
-         DIAI6zNVBx4xwP/IyFaEDMLuxjmhAKTC8dSvkCEsGsgHT3bl3oJdJ5LH3V12mF+7kNnq
-         ixY0NsrPYKNcC1SEDlNafHAX5LUFbWvoLzXwU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714405126; x=1715009926;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yzvwkbrrAC9JiUG9n8YloB91+ZmYMnCxhqfGJQxrqwQ=;
-        b=RA0sxhyvbBlqFfOUV/43rZGbVkGMTw1hjSeniDdOwQbWXXwqBZsOTqDNra+6vn+zTz
-         ZtBJyVpFETxraeoXkP9RVf8o86nBKn37Rjh5Mx1Z6LxnbBg1YMiveZ3EwFz4nFoZW8jH
-         qTTO7eSP4/bA0EdrKCG7YF+UFzogBaMSLErfluk6m+92gtKzJ/3xAf0B+0ZvCDuND0B0
-         rlE4/DIJscic0bXUaGJ7Q+JKy63oNYVg7DhCfsCs359XhTtPsLYfTVQP8V8qvT2zBkA3
-         swa4owMTM4/GnIlwB0/lRJC2c6XjppM0z0kxfvC75rbP1xzR/w7EnrR3mIcJMmhMMFLm
-         E2fg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJxBJ7McZvGiFiUCkDh3CiElVCmPBuDUmeGaxtlKEGoj8dX/AxUqzt6HGqU3utNEaGuLdULL5wgxMP9Nsq/kpRcNLpf73e9NyEpjyj
-X-Gm-Message-State: AOJu0YzAKyBCv0PoJwXsFGuOQug2PB/wO40kHTFB4Z7sUWZVQjiWaUDX
-	LW4T2YsYI7isc2z2xp8V8GSUaQlqOZhHXcRE02M6lQHlyBOCzo/s3DsVhte4YObRBVRcNvcuO7O
-	GTJ/w7g==
-X-Google-Smtp-Source: AGHT+IHfaJSak0O590tk2IkM9nll8CKFBK05zAJ+xj5BxGyXw5A4lvxMiKdBypT2q9QzFV9cpE63Zg==
-X-Received: by 2002:a05:6512:baa:b0:51d:d630:365c with SMTP id b42-20020a0565120baa00b0051dd630365cmr2567307lfv.4.1714405126060;
-        Mon, 29 Apr 2024 08:38:46 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id s14-20020a19770e000000b005188ea5d2b5sm4232478lfc.303.2024.04.29.08.38.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 08:38:45 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5176f217b7bso7946288e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:38:45 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXYVeQuBW+axr4igMRrJgAbqWZi8+Y+s1uNZX/g55pw3Rp4dTp0hDwPKSkRcgpDoxNw9BsVNQg39kkm/pLOdCfBOJjIv/HlpBCO3OXU
-X-Received: by 2002:a19:5f5d:0:b0:512:e02f:9fa7 with SMTP id
- a29-20020a195f5d000000b00512e02f9fa7mr8210499lfj.1.1714405125069; Mon, 29 Apr
- 2024 08:38:45 -0700 (PDT)
+	s=arc-20240116; t=1714405169; c=relaxed/simple;
+	bh=h9MGGwKZVRUgN0bDFdFcodYM4/Bv2gUDW4BQmK4V7rk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=L0bnWOhMo/Q0ZGd37YX8V/64uGXk4nWcE4dGA5Auh6DfgMGlr5pdJtPGU1W2I8U30DrHDECbVMOIug+WMgVdqC5uer7jwQAfS/3w/fFrOFyhLM7Wj7zbc1SiwlUNuxkDu/E9v434OWlt2pLQkPDTWsN9+XYPPOlfiea/gie+hgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H4kUOyiU; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714405168; x=1745941168;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=h9MGGwKZVRUgN0bDFdFcodYM4/Bv2gUDW4BQmK4V7rk=;
+  b=H4kUOyiUqX0GynofenalJU333BmU9+MREeMZ+t6deRiptsHgthOrtvso
+   jcSZ4ZJE4/ZmB5fsL4jzFKDUwXq+/6ol3EroYgoiVWibw7gvZHcUoPGjq
+   Dzi8aqGk5u5xHwDRcgRg+kmJlNWU6BqN52HbMYPJLF56iuWCHnSBfAtnL
+   JX64CowOucAcSC6BL3W+mM845oKQqHKw+p1yw+8JMXrxTFUu/ovKzts5M
+   XMK0C6nYD1qiS1P/yQPRu3glLAZXaXOrptO8j4+kxKhkqm0/iqT/QavXC
+   qCXl4K+WBoEluQu+9CveliHA5Wg85xSNMAIvxwUDeEHEL5WNRPo2QQDdC
+   w==;
+X-CSE-ConnectionGUID: 3Phjp3EKRraEdD1kg0FkWw==
+X-CSE-MsgGUID: /OwDMXopQTizp0He0u8Raw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="35464161"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="35464161"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 08:39:27 -0700
+X-CSE-ConnectionGUID: 3jPk27OrSBajaLlKSBR73g==
+X-CSE-MsgGUID: 4IAmxJ5xSk6hssnGCt8dsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26762827"
+Received: from aantonov-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.167])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 08:39:21 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Doug Anderson <dianders@chromium.org>, neil.armstrong@linaro.org
+Cc: dri-devel@lists.freedesktop.org, Linus Walleij
+ <linus.walleij@linaro.org>, lvzhaoxiong@huaqin.corp-partner.google.com,
+ Hsin-Yi Wang <hsinyi@google.com>, Javier Martinez Canillas
+ <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, Cong Yang
+ <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg
+ <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, David Airlie
+ <airlied@gmail.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce
+ mipi_dsi_*_write_seq_multi()
+In-Reply-To: <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240426235857.3870424-1-dianders@chromium.org>
+ <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid>
+ <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org>
+ <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
+Date: Mon, 29 Apr 2024 18:39:18 +0300
+Message-ID: <87y18w2n6h.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e1fe6a44-3021-62ad-690a-69146e39e1ac@I-love.SAKURA.ne.jp>
- <20230424004431.GG3390869@ZenIV> <8e21256a-736e-4c2d-1ff4-723775bcac46@I-love.SAKURA.ne.jp>
- <2fca7932-5030-32c3-dd61-48dd78e58e11@I-love.SAKURA.ne.jp>
- <20230425160344.GS3390869@ZenIV> <1b405689-ea0a-6696-6709-d372ce72d68c@I-love.SAKURA.ne.jp>
- <5cebade5-0aa9-506c-c817-7bcf098eba89@I-love.SAKURA.ne.jp>
- <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
- <2023053005-alongside-unvisited-d9af@gregkh> <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com> <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
-In-Reply-To: <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 29 Apr 2024 08:38:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
-Message-ID: <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Marco Elver <elver@google.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 29 Apr 2024 at 06:56, Marco Elver <elver@google.com> wrote:
+On Mon, 29 Apr 2024, Doug Anderson <dianders@chromium.org> wrote:
+> Hi,
 >
-> A WRITE_ONCE() / READ_ONCE() pair would do it here. What should we use instead?
+> On Mon, Apr 29, 2024 at 2:38=E2=80=AFAM Neil Armstrong
+> <neil.armstrong@linaro.org> wrote:
+>>
+>> > +/**
+>> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI DSI =
+funcs in a row
+>> > + * @dsi: Pointer to the MIPI DSI device
+>> > + * @accum_err: Storage for the accumulated error over the multiple ca=
+lls. Init
+>> > + *   to 0. If a function encounters an error then the error code will=
+ be
+>> > + *   stored here. If you call a function and this points to a non-zero
+>> > + *   value then the function will be a noop. This allows calling a fu=
+nction
+>> > + *   many times in a row and just checking the error at the end to se=
+e if
+>> > + *   any of them failed.
+>> > + */
+>> > +
+>> > +struct mipi_dsi_multi_context {
+>> > +     struct mipi_dsi_device *dsi;
+>> > +     int accum_err;
+>> > +};
+>>
+>> I like the design, but having a context struct seems over-engineered whi=
+le we could pass
+>> a single int over without encapsulating it with mipi_dsi_multi_context.
+>>
+>> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_multi_context *ctx,
+>>                                      const void *data, size_t len);
+>> vs
+>> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi, int *a=
+ccum_err,
+>>                                      const void *data, size_t len);
+>>
+>> is the same, and it avoids having to declare a mipi_dsi_multi_context an=
+d set ctx->dsi,
+>> and I'll find it much easier to migrate, just add a &ret and make sure r=
+et is initialized to 0.
+>
+> Yeah, I had the same reaction when Jani suggested the context style
+> [1] and I actually coded it up exactly as you suggest above. I then
+> changed my mind and went with the context. My motivation was that when
+> I tested it I found that using the context produced smaller code.
+> Specifically, from the description of this patch we see we end up
+> with:
+>
+> Total: Before=3D10651, After=3D9663, chg -9.28%
+>
+> ...when I didn't have the context and I had the accum_err then instead
+> of getting ~9% smaller I believe it actually got ~0.5% bigger. This
+> makes some sense as the caller has to pass 4 parameters to each call
+> instead of 3.
+>
+> It's not a giant size difference but it was at least some motivation
+> that helped push me in this direction. I'd also say that when I looked
+> at the code in the end the style grew on me. It's really not too
+> terrible to have one line in your functions that looks like:
+>
+> struct mipi_dsi_multi_context ctx =3D { .dsi =3D boe->dsi };
+>
+> ...and if that becomes the canonical way to do it then it's really
+> hard to accidentally forget to initialize the error value. With the
+> other API it's _very_ easy to forget to initialize the error value and
+> the compiler won't yell at you. It also makes it very obvious to the
+> caller that this function is doing something a little different than
+> most Linux APIs with that error return.
+>
+> So I guess I'd say that I ended up being pretty happy with the
+> "context" even if it does feel a little over engineered and I'd argue
+> to keep it that way. That being said, if you feel strongly about it
+> then we can perhaps get others to chime in to see which style they
+> prefer? Let me know what you think.
+>
+>
+> [1] https://lore.kernel.org/r/8734r85tcf.fsf@intel.com
 
-Why would we annotate a "any other code generation is insane" issues at all?
+FWIW, I don't feel strongly about this, and I could be persuaded either
+way, but I've got this gut feeling that an extensible context parameter
+might be benefitial future proofing in this case.
 
-When we do chained pointer loads in
+BR,
+Jani.
 
-    file->f_op->op()
 
-and we say "I don't care what value I get for the middle one", I don't
-see the value in annotating that at all.
-
-There is no compiler that will sanely and validly do a pointer chain
-load by *anything* but a load. And it doesn't matter to us if it then
-spills and reloads, it will *STILL* be a load.
-
-We're not talking about "extract different bits in separate
-operations". We're talking about following one pointer that can point
-to two separate static values.
-
-Reality matters. A *lot* more than some "C standard" that we already
-have ignored for decades because it's not strong enough.
-
-                       Linus
+--=20
+Jani Nikula, Intel
 
