@@ -1,292 +1,168 @@
-Return-Path: <linux-kernel+bounces-161740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BA7B8B507C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:08:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7379F8B5087
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29018B2292E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:08:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A86F2827E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D74D502;
-	Mon, 29 Apr 2024 05:07:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE57E573
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 05:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB45DF71;
+	Mon, 29 Apr 2024 05:10:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hB7rhtam"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2ED4DF42
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 05:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714367271; cv=none; b=VAOoz2TJWcTrWPB9yv3APywE88uGZedE6D4S9vHPNTmCT30T4gMBCcnMOP64BoO0kKhg4JRq89xgkiR7HhdPc83EPKyy9Zz3G9jYqGg0GrRaEPinGDGPaxnIxwCjy6nxvYWuHIClEOrVV85kmZ8PbQmdDcYhho99JtwC5zP9uH8=
+	t=1714367403; cv=none; b=Mhrz+8orFJiFVgnIuGGSyikpSK5VkApsbECmiTlXLUy7aJW2hCSxQJwnoODKql1x/Ay5ENrbXmYsOhK9JzmKdSVN2cBaIIksJl4hRszpDQA5Tau5zMfzls1lpMUo1LT+GLHs2dsP4xGsdncmdE0yMk4a4SjrJO9a6VDi7nYtr2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714367271; c=relaxed/simple;
-	bh=L1B3vk6TyTRh+NjtiUVnxHdKmDWYBNH7CVWeMCzBc9M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ob2zF4NLZN+CORjI2bgGdJU8+H8D+QrBlN5mk89nhv8vpRzlt2Epml8Z3RBsBWbJnFSNealLD7tNchNLje3Tq8NOLKcl6CICKPO/n+0Wfa4Ph4RIfl1KcckEuN94+WFPmXWBO+/kd7FlPm7jKrop201TWaZOxYKBpjbq77e3I3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFDA32F4;
-	Sun, 28 Apr 2024 22:08:14 -0700 (PDT)
-Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5DD43F793;
-	Sun, 28 Apr 2024 22:07:45 -0700 (PDT)
-Message-ID: <38cc14e0-e534-499a-a04f-463871e559de@arm.com>
-Date: Mon, 29 Apr 2024 10:37:42 +0530
+	s=arc-20240116; t=1714367403; c=relaxed/simple;
+	bh=uDXiZfQhRsyw1ft6MX0V67niOKlXGrJmWIAmhFCeVsU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QdQXUCVbSZU+KfCNyxKI7y6HMrw7ooNcoSVV4H7spuiJbcwes1T6//t6HBxvofiusSmIOrY+m76pgdUQB8byyF+vg/2N0bip4TlterI9J5DlY6Z0bMxqCD7aJruko8xjjXEvkBAaOpWEaRKqMkpDD6UrpbtQvP8lmCQtuI5S3Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hB7rhtam; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so2101282a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 22:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714367401; x=1714972201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zPfeZpHIqAor5KhZbagcI8P8T5SPnMSuPapyOCbP/Xo=;
+        b=hB7rhtamw/9svgCPh/wrjk65gyxLr/r2nvp8tU4z35FyICQKD1dniGsuEYnNcol16+
+         plxqU6LCvUCBda1fqlituIek0ZCJW4CtANgigWYSBrmcZ2B3krSuH/EBn0xlxMHP6B4e
+         mcCWOmK/ku6CuR5h4wM243TGVjzz1YO4ILBHDXzGeDvy2LS8HMGAN2edNH2MHspIYOyz
+         8oOeNrop++Bl9v4/tXyYwGuueGStaOUUoL5JHCHQIU3cllcTrnCN4eJeXrxm1ZyytDyw
+         x8MfWsZPhCVxPfZd0U0UbLhEhLrPdh5uFznVMsZsR36boryqtpjHRoGPvqvx8RMZ+rNh
+         kubQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714367401; x=1714972201;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zPfeZpHIqAor5KhZbagcI8P8T5SPnMSuPapyOCbP/Xo=;
+        b=TL26kPAmY/pr5aesR17nL0/jgGwcsGkjvwlRUYUAXgAUrMfi1a5LxCw7wr07mmUWag
+         eY5wAgTnu+rv6qKaYfe9rtPIy4vfjD0Hs/IsJLkumMTirbDL67E/BbcJovPxXzLHJ8JB
+         Gfmu7ohqAEFyQ0LHeSQinShHPQJlLBeVHbHqxEPcs7lzHkoI3XchZxB10GvnD8+mv6oa
+         yF6Fu22w8OGm1tyGDhgzEtMpWzC6buWBxYkUojP+YuylES7tvhcDrd3YjDtquEtfUB6P
+         66Z6MoPB99ak9S7LmC0/sUd0GcNmpBSYsTF91+0WjZLbaHWwZs2pav8BFGxi0EB9qtcb
+         Ny1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUDYufO7zn63LCwJhpuX81dqJJhbTTqREjJ11cT6U6MIeOBEb6Dy9H7aYWIiPs2eAnxXNUEyPntmAKZqPe/LnikD3sL5HHgefVsUG2r
+X-Gm-Message-State: AOJu0YzrbNyz5jZB1hWaSEV+FKLRU9VOsCjxkHZy3RTqQ9dekf8Cqunz
+	Okpjn+Tv9ke2JmK0LpXoj8+/plMtss28ji3zbz5Tn0+NZzEKz9cGmnupKrwCEOsq3ZQKYNM9gpF
+	/zrB+MHvnorL0tEtBGoY/+RZBRiE=
+X-Google-Smtp-Source: AGHT+IHZP9ujjyfE3gCmyzLzNyoIYQIZE/JAdcqnmQzPoRZZP8xJlGf2zY6G4Vij6uNG/z+sNBCfhtNTwhesx/iJx/Q=
+X-Received: by 2002:a05:6a20:968d:b0:1a9:5ba1:3713 with SMTP id
+ hp13-20020a056a20968d00b001a95ba13713mr9145913pzc.19.1714367400927; Sun, 28
+ Apr 2024 22:10:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and
- GUP-fast
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Zi Yan <zi.yan@cs.rutgers.edu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240425170704.3379492-1-ryan.roberts@arm.com>
- <39d0236c-4297-4001-bc7e-f516bc674f7b@arm.com>
- <87df74b7-2352-4ad6-b9f9-baed9291cbed@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <87df74b7-2352-4ad6-b9f9-baed9291cbed@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240319010920.125192-1-21cnbao@gmail.com> <0df6028c-3e7d-461c-85bd-8ba1bf06e2a6@roeck-us.net>
+In-Reply-To: <0df6028c-3e7d-461c-85bd-8ba1bf06e2a6@roeck-us.net>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Sun, 28 Apr 2024 22:09:49 -0700
+Message-ID: <CAMo8BfJTutHPByNZcpjb-2xeUX-Nu2XkjN0DWE6w5xV=zg__Kg@mail.gmail.com>
+Subject: Re: [PATCH v2] xtensa: remove redundant flush_dcache_page and
+ ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Barry Song <21cnbao@gmail.com>, chris@zankel.net, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, dennis@kernel.org, 
+	alexghiti@rivosinc.com, Barry Song <v-songbaohua@oppo.com>, 
+	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Apr 27, 2024 at 12:05=E2=80=AFPM Guenter Roeck <linux@roeck-us.net>=
+ wrote:
+>
+> Hi,
+>
+> On Tue, Mar 19, 2024 at 02:09:20PM +1300, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
+> >
+> > xtensa's flush_dcache_page() can be a no-op sometimes. There is a
+> > generic implementation for this case in include/asm-generic/
+> > cacheflush.h.
+> >  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+> >  static inline void flush_dcache_page(struct page *page)
+> >  {
+> >  }
+> >
+> >  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> >  #endif
+> >
+> > So remove the superfluous flush_dcache_page() definition, which also
+> > helps silence potential build warnings complaining the page variable
+> > passed to flush_dcache_page() is not used.
+> >
+> >    In file included from crypto/scompress.c:12:
+> >    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
+> >    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set but=
+ not used [-Wunused-but-set-variable]
+> >       76 |                 struct page *page;
+> >          |                              ^~~~
+> >    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> > >> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wun=
+used-variable]
+> >      174 |                         struct page *dst_page =3D sg_page(re=
+q->dst);
+> >          |
+> >
+> > The issue was originally reported on LoongArch by kernel test
+> > robot (Huacai fixed it on LoongArch), then reported by Guenter
+> > and me on xtensa.
+> >
+> > This patch also removes lots of redundant macros which have
+> > been defined by asm-generic/cacheflush.h.
+> >
+> > Cc: Huacai Chen <chenhuacai@loongson.cn>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202403091614.NeUw5zcv-lkp=
+@intel.com/
+> > Reported-by: Barry Song <v-songbaohua@oppo.com>
+> > Closes: https://lore.kernel.org/all/CAGsJ_4yDk1+axbte7FKQEwD7X2oxUCFrEc=
+9M5YOS1BobfDFXPA@mail.gmail.com/
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Closes: https://lore.kernel.org/all/aaa8b7d7-5abe-47bf-93f6-40794243647=
+2@roeck-us.net/
+> > Fixes: 77292bb8ca69 ("crypto: scomp - remove memcpy if sg_nents is 1 an=
+d pages are lowmem")
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>
+> The mainline kernel still fails to build xtensa:allmodconfig.
+>
+> Building xtensa:allmodconfig ... failed
+> --------------
+> Error log:
+> crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> crypto/scompress.c:174:38: error: unused variable 'dst_page' [-Werror=3Du=
+nused-variable]
+>   174 |                         struct page *dst_page =3D sg_page(req->ds=
+t);
+>
+> This patch fixes the problem. Is there a chance to get it applied to the
+> upstream kernel, or should I just stop build testing xtensa:allmodconfig =
+?
 
+Applied to my xtensa tree.
+I was still hoping to see rationale for why this is a useful warning.
 
-On 4/26/24 13:13, Ryan Roberts wrote:
-> On 26/04/2024 05:19, Anshuman Khandual wrote:
->> On 4/25/24 22:37, Ryan Roberts wrote:
->>> __split_huge_pmd_locked() can be called for a present THP, devmap or
->>> (non-present) migration entry. It calls pmdp_invalidate()
->>> unconditionally on the pmdp and only determines if it is present or not
->>> based on the returned old pmd. This is a problem for the migration entry
->>> case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
->>> called for a present pmd.
->>
->> pmdp_invalidate() must be called only for present PMD - is this expected
->> by core MM ? Does this cause any problem otherwise ?
-> 
-> I'm saying that only calling pmdp_invalidate() on a pte_present()==true pte is
-> the only semantic that makes sense. And, yes, it causes a problem if called on a
-> pte_present()==false pte - that's exactly what I'm describing in this commit log.
-> 
-> To labour the point, this is the logical type hierachy of PTEs (and block-mapped
-> PMDs) as I see it:
-> 
-> ---8<----
-> 
-> pte
->  |- present
->  |   |- valid
->  |   |- invalid
->  |
->  |- not_present
->      |- none
->      |- swap_pte
-> 
-> present: All fields must be interpretted the way the HW sees them. e.g.
->          pte_pfn(), pte_write(), pte_dirty(), pte_young(), pte_mkwrite(),
->          pte_mkold() can all be legitimately used to query and modify the pte.
-> 
->   valid: The HW may access the pte, interpret the fields and create a TLB entry,
->          etc.
-> 
->   invalid: The HW will never access the pte or create a TLB entry for it.
-> 
-> not_present: The fields are SW-defined. HW never accesses the PTE.
-> 
->   none: Unused; represents a hole
-> 
->   swap_pte: Contains a swap entry and swap pte bits. The contained swap entry
->             may 1 of a few different types e.g. actual swap entry, migration
->             entry, hw poison, etc.
-
-Sure, makes sense.
-
-> 
-> ---8<----
-> 
-> We test present vs not_present with pte_present()
-> 
-> We test none vs swap_pte with pte_none()
-
-Agreed.
-
-> 
-> valid vs invalid is slightly more vague. The core-mm can move a PMD from valid
-> -> invalid by calling pmd_mkinvalid(). But it can't query the state. And it
-> can't do this generically for a PTE.
-> 
-> 
-> Based on that lot, it makes no sense to me that we should permit calling
-> pmd_mkinvalid() on a non-present pte. Indeed, we don't permit calling
-> pte_mkwrite() etc on a non-present pte. And those functions are not defensive;
-> they don't check that the pte is present before making the change. They just
-> trust that the core-mm will not call them for non-present ptes.
-> 
-> The alternative approach would be to make pmdp_invalidate() defensive so that it
-> checks the pmd is present before making any changes. But it doesn't semantically
-> make sense to invalidate a non-present pmd in the first place so why call it
-> under these circumstances? There is also a practical problem in that some arches
-> implement their own pmdp_invalidate() so you would want to make all those
-> defensive too, which would grow the size of the change.
-
-I would suggest adding warnings in such arch specific pmdp_invalidate() helpers
-to catch further unexpected calls in non present PMD state ?
-
-> 
-> 
->>
->>>
->>> On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
->>> future call to pmd_present() will return true. And therefore any
->>
->> IIRC the following semantics needs to be followed as expected by core MM.
->>
->> -------------------------------------------------------------------------
->> |	PMD states	|	pmd_present	|	pmd_trans_huge	|
->> -------------------------------------------------------------------------
->> |	Mapped		|	Yes		|	Yes		|
->> -------------------------------------------------------------------------
->> |	Splitting	|	Yes		|	Yes		|
->> -------------------------------------------------------------------------
->> |	Migration/Swap	|	No		|	No		|
->> -------------------------------------------------------------------------
-> 
-> Indeed, the problem, as I see it, is if pmd_mkinvalid() is called on a
-> "Migration/Swap" pmd, then a future call to pmd_present() will return Yes, which
-> is clearly wrong. pmd_trans_huge() will also return Yes due to:
-> 
-> static inline int pmd_trans_huge(pmd_t pmd)
-> {
-> 	return pmd_val(pmd) && pmd_present(pmd) && !(pmd_val(pmd) & PMD_TABLE_BIT);
-> }
-
-Agreed pmd_mkinvalid() on "Migration/Swap" entries making any subsequent
-pmd_present() and pmd_trans_huge() return true is problematic. As you said,
-the solution is to prevent pmd_mkinvalid() on "Migration/Swap" entries.
-
-> 
-> At least this happens for arm64. Although Zi suggests other arches look like
-> they will do this too in the other email.
-> 
-> The reason is that arm64's pmd_mkinvalid() unconditionally sets
-> PMD_PRESENT_INVALID (bit 59) and clears PMD_SECT_VALID (bit 0) in the pte. So
-> next time pmd_present() is called it will see PMD_PRESENT_INVALID is set and
-> return true.
-
-> 
->>
->>
->>> lockless pgtable walker could see the migration entry pmd in this state
->>> and start interpretting the fields as if it were present, leading to
->>> BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
->>
->> Could you please explain how bad things might happen ?
-> 
-> See 2 places where pmdp_get_lockless() is called in gup.c, without the PTL.
-> These could both return the swap pte for which pmd_mkinvalid() has been called.
-> In both cases, this would lead to the pmd_present() check eroneously returning
-> true, eventually causing incorrect interpretation of the pte fields. e.g.:
-> 
-> gup_pmd_range()
->   pmd_t pmd = pmdp_get_lockless(pmdp);
->   gup_huge_pmd(pmd, ...)
->     page = nth_page(pmd_page(orig), (addr & ~PMD_MASK) >> PAGE_SHIFT);
-> 
-> page is guff.
-> 
-> Let me know what you think!
-
-Agreed, the page here might not be valid any more for the GUP as the migration
-would have changed the pfn in the mean time.
-
-> 
-> Thanks,
-> Ryan
-> 
-> 
->>  
->>> I suspect the same is possible on other architectures.
->>>
->>> Fix this by only calling pmdp_invalidate() for a present pmd. And for
->>> good measure let's add a warning to the generic implementation of
->>> pmdp_invalidate(). I've manually reviewed all other
->>> pmdp_invalidate[_ad]() call sites and believe all others to be
->>> conformant.
->>>
->>> This is a theoretical bug found during code review. I don't have any
->>> test case to trigger it in practice.
->>>
->>> Fixes: 84c3fc4e9c56 ("mm: thp: check pmd migration entry in common path")
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>
->>> Applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
->>>
->>> Thanks,
->>> Ryan
->>>
->>>
->>>  mm/huge_memory.c     | 5 +++--
->>>  mm/pgtable-generic.c | 2 ++
->>>  2 files changed, 5 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>> index 89f58c7603b2..80939ad00718 100644
->>> --- a/mm/huge_memory.c
->>> +++ b/mm/huge_memory.c
->>> @@ -2513,12 +2513,12 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->>>  	 * for this pmd), then we flush the SMP TLB and finally we write the
->>>  	 * non-huge version of the pmd entry with pmd_populate.
->>>  	 */
->>> -	old_pmd = pmdp_invalidate(vma, haddr, pmd);
->>>
->>> -	pmd_migration = is_pmd_migration_entry(old_pmd);
->>> +	pmd_migration = is_pmd_migration_entry(*pmd);
->>>  	if (unlikely(pmd_migration)) {
->>>  		swp_entry_t entry;
->>>
->>> +		old_pmd = *pmd;
->>>  		entry = pmd_to_swp_entry(old_pmd);
->>>  		page = pfn_swap_entry_to_page(entry);
->>>  		write = is_writable_migration_entry(entry);
->>> @@ -2529,6 +2529,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->>>  		soft_dirty = pmd_swp_soft_dirty(old_pmd);
->>>  		uffd_wp = pmd_swp_uffd_wp(old_pmd);
->>>  	} else {
->>> +		old_pmd = pmdp_invalidate(vma, haddr, pmd);
->>>  		page = pmd_page(old_pmd);
->>>  		folio = page_folio(page);
->>>  		if (pmd_dirty(old_pmd)) {
->>> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
->>> index 4fcd959dcc4d..74e34ea90656 100644
->>> --- a/mm/pgtable-generic.c
->>> +++ b/mm/pgtable-generic.c
->>> @@ -198,6 +198,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp)
->>>  pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->>>  		     pmd_t *pmdp)
->>>  {
->>> +	VM_WARN_ON(!pmd_present(*pmdp));
->>>  	pmd_t old = pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
->>>  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
->>>  	return old;
->>> @@ -208,6 +209,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->>>  pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
->>>  			 pmd_t *pmdp)
->>>  {
->>> +	VM_WARN_ON(!pmd_present(*pmdp));
->>>  	return pmdp_invalidate(vma, address, pmdp);
->>>  }
->>>  #endif
->>> --
->>> 2.25.1
->>>
->>>
-> 
+--=20
+Thanks.
+-- Max
 
