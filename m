@@ -1,56 +1,78 @@
-Return-Path: <linux-kernel+bounces-162966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED868B62CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:46:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C48B8B62D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFEB228397E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:46:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32FF71F212EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E8413B2BC;
-	Mon, 29 Apr 2024 19:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A6013B5AB;
+	Mon, 29 Apr 2024 19:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sgWt1An2"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OUtm69vX"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2787839FD
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005A112AAC9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714420001; cv=none; b=OHFfxGSv1Y5xHDbkHWBPLx8Io2NKVR/4fLMlw6gEC15PRbF51hu1qMCwWMjcJ6zmvwx4feq5mqmVs2Rtp/28LthSgw5EoK5/6SZ1y1OZhm2hCVVS6q2o8uZx11xxLikK9HL/CTA5BdZUrdoBJuNrljngxnq+/tSzyNL63yT4pb8=
+	t=1714420147; cv=none; b=XT/hZlPBatalh5oKLdgAWoeRzu5fyDNs+Lp+ZIQNDnWU+A8slPkVBCrEme0ARKfwGlni5FR6YzLhmxT5vS41yPVPqhgoBTLudst6TpyPKm3yW3SVLlUeQWoVZVEPt7KEVKYNJYib7moLxF4usiDsdNQjF8rU23snQl/aWtjfbrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714420001; c=relaxed/simple;
-	bh=a0MCZvyt3kJaAOrmL3OAu/2EhxYaFMLR5UetA8zD4NY=;
+	s=arc-20240116; t=1714420147; c=relaxed/simple;
+	bh=G5w+y4k/0B/MIhP3OIdnfnaBZzVFiznSU5o3Q+eJJrM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o6bB0TAzDCB2jBX9TxQNdquMan9c1NtEKGYVuVhJuETezWKVhqVetI/zg0mdspBhWPlmiPNI6IalUIXf5O0laSqmrKJZn69Q9EFIFY75GyKQ56u2GUQw8yq2V4zmPPm61Cw9ASAR6yQZOdsnOS1bSm+dRIUIkeRuiD4AqxQUcvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sgWt1An2; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 29 Apr 2024 12:46:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714419996;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y1WEB6RzCqCuX7Z+BbEKtZP6s+NxySx/uW1PWUvKOFE=;
-	b=sgWt1An2hPV1lyHHvEXOIJtMsZZlCWBtR2Rb4kypKeBamwx3dIlZyBHzI1a2c+l826ZZXr
-	Pn205wwwOjaAvRHFCqLFJU9A7zWx27uVJvOrKyVic7BvVQ6SPQrIGME921+LD9smTvsmRP
-	i4iBTSQrlmze93ONreGziI4zAbBKGrg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] memcg: dynamically allocate lruvec_stats
-Message-ID: <fs26xbxmaylxwpv35pb3aak2ilb352glnabsi3wq4havqzlg4j@62cltkwiup4z>
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
- <20240427003733.3898961-3-shakeel.butt@linux.dev>
- <Zi_BsznrtoC1N_lq@P9FQF9L96D>
+	 Content-Type:Content-Disposition:In-Reply-To; b=exeMrZvkIzXy9H35RQ5kTMXGwe7lSsKDjcgMTpAKmqeCaCtgphAeUhyzWE2rAQhYEofdRsJ7EE98dOLXwuIRmu2nQK+68Mw/hmha44hQys0N+asBYdKa4BkYzls662CYiZrGMDTOxNkcBfZOfkvezB5FLEcqNYzTXRB+ZPRMZmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OUtm69vX; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e51398cc4eso44089855ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714420145; x=1715024945; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jxlmAhxfEfZT8bTyeNiSvqaH1zNJ82/SnYCLRCDDuj4=;
+        b=OUtm69vXtxg/bF9L249dalzDtwsmmtcLzd+zQkMs/QcakiD8ydFCtA7GRRQSu1QrRL
+         Qv9yHiwgXQSn/eGX5eMaeDLHMNaj6ZokcYfG2duXxtIAMQPDhWiuf02yjt/l/kmqWShp
+         r0Xf177p1IPZc7ebLfcf7y2P/gQdC3aTCVRNc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714420145; x=1715024945;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jxlmAhxfEfZT8bTyeNiSvqaH1zNJ82/SnYCLRCDDuj4=;
+        b=KBdC58P2I6z9YTpMUCdX9DzMhQZBlDxg/9rwbvETXXs7cPd/x8icKry0IjDStJwB9U
+         VsUAnYZbbCkbK7I/hF+MPvvANkHcK+PXvFffpLcGo8fpNoILSGR9z6wfqbjXkVla+o7z
+         NfdgQlL6W+3NX9L0185yfeR+uo0acd1py4H1/VcmFWTJMl56q74fLlfAIqrjmCVow90u
+         O4SiNdShWz9IX5wjdYcJ+uXt14WTazUWAp/cVIUr4jG2R6vUZUY4omlQOxTFS9pIMlAY
+         qj6kjSoSqmelyNHMcyBJ1QWKy4vgiAzp/arhPlYWAZO9VH0r6f49dt8oxMxZX4AIEkch
+         Fx4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUNMRGRGzCQd5a6uphu9gVGFEAxm/2QkhguBriPOEVV5/WRdSpVBGBMf4NTSKpVb4ByLkG/PlwVQP6hkmTahAaKz5VeXWVgkQGBW5sc
+X-Gm-Message-State: AOJu0YyFvDW42SMrINLAH1OMkx9guLNsLQnjdcrMUXZLO04wtez6wnx5
+	SS0n2yqj1dgbA5DR7I75TWY9lWIhGsfrOi8m5i8mNjATvKFyiYqZsoidp/AN8w==
+X-Google-Smtp-Source: AGHT+IECRu8g8bwToaxRHQbb2UWAgCPjLtsrdSUmHlot5oVJviA+DDbB+NRaMqmFHCB9C3nFU7igXg==
+X-Received: by 2002:a17:902:ce87:b0:1eb:7285:d6fe with SMTP id f7-20020a170902ce8700b001eb7285d6femr8741775plg.23.1714420145374;
+        Mon, 29 Apr 2024 12:49:05 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s1-20020a170902ea0100b001e3d2314f3csm20739290plg.141.2024.04.29.12.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 12:49:04 -0700 (PDT)
+Date: Mon, 29 Apr 2024 12:49:04 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, ebiederm@xmission.com, mcgrof@kernel.org,
+	j.granados@samsung.com
+Subject: Re: [RFC PATCH] fs/coredump: Enable dynamic configuration of max
+ file note size
+Message-ID: <202404291245.18281A6D@keescook>
+References: <20240429172128.4246-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,58 +81,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zi_BsznrtoC1N_lq@P9FQF9L96D>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240429172128.4246-1-apais@linux.microsoft.com>
 
-On Mon, Apr 29, 2024 at 08:50:11AM -0700, Roman Gushchin wrote:
-> On Fri, Apr 26, 2024 at 05:37:28PM -0700, Shakeel Butt wrote:
-[...]
-> > +unsigned long lruvec_page_state_local(struct lruvec *lruvec,
-> > +				      enum node_stat_item idx)
-> > +{
-> > +	struct mem_cgroup_per_node *pn;
-> > +	long x = 0;
-> > +
-> > +	if (mem_cgroup_disabled())
-> > +		return node_page_state(lruvec_pgdat(lruvec), idx);
-> > +
-> > +	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> > +	x = READ_ONCE(pn->lruvec_stats->state_local[idx]);
-> > +#ifdef CONFIG_SMP
-> > +	if (x < 0)
-> > +		x = 0;
-> > +#endif
-> 
-> Not directly related to your change, but do we still need it? And if yes,
-> do we really care about !CONFIG_SMP case enough to justify these #ifdefs?
-> 
+On Mon, Apr 29, 2024 at 05:21:28PM +0000, Allen Pais wrote:
+> Introduce the capability to dynamically configure the maximum file
+> note size for ELF core dumps via sysctl. This enhancement removes
+> the previous static limit of 4MB, allowing system administrators to
+> adjust the size based on system-specific requirements or constraints.
 
-That's a good question and I think this is still needed. Particularly on
-large machines with large number of CPUs, we can have a situation where
-the flusher is flushing the CPU 100 and in parallel some workload
-allocated a lot of pages on, let's say, CPU 0 and freed on CPU 200.
+Under what conditions is this actually needed?
 
-> > +	return x;
-> > +}
-> > +
-> >  /* Subset of vm_event_item to report for memcg event stats */
-> >  static const unsigned int memcg_vm_event_stat[] = {
-> >  	PGPGIN,
-> > @@ -5492,18 +5546,25 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-> >  	if (!pn)
-> >  		return 1;
-> >  
-> > +	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
-> > +					node);
-> 
-> Why not GFP_KERNEL_ACCOUNT?
-> 
+> [...]
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 81cc974913bb..80cdc37f2fa2 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -63,6 +63,7 @@
+>  #include <linux/mount.h>
+>  #include <linux/userfaultfd_k.h>
+>  #include <linux/pid.h>
+> +#include <linux/coredump.h>
+>  
+>  #include "../lib/kstrtox.h"
+>  
+> @@ -1623,6 +1624,13 @@ static struct ctl_table kern_table[] = {
+>  		.mode		= 0644,
+>  		.proc_handler	= proc_dointvec,
+>  	},
+> +	{
+> +		.procname       = "max_file_note_size",
+> +		.data           = &max_file_note_size,
+> +		.maxlen         = sizeof(unsigned int),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec,
+> +	},
 
-Previously struct lruvec_stats was part of struct mem_cgroup_per_node
-and we use GFP_KERNEL to allocate struct mem_cgroup_per_node. I kept the
-behavior same and if we want to switch to GFP_KERNEL_ACCOUNT, I think it
-should be a separate patch.
+Please don't add new sysctls to kernel/sysctl.c. Put this in fs/coredump.c
+instead, and name it "core_file_note_size_max". (A "max" suffix is more
+common than prefixes, and I'd like it clarified that it relates to the
+coredumper with the "core" prefix that match the other coredump sysctls.
 
-Thanks for the review.
-Shakeel
+-Kees
+
+-- 
+Kees Cook
 
