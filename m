@@ -1,91 +1,82 @@
-Return-Path: <linux-kernel+bounces-162735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB9C88B5FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:15:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F648B5FE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:16:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13ECBB235A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:15:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55C551F22A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C188786AE3;
-	Mon, 29 Apr 2024 17:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD31284E1A;
+	Mon, 29 Apr 2024 17:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a9QXqmc7"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ONnyqKhu"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D284283CBA;
-	Mon, 29 Apr 2024 17:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D060386626;
+	Mon, 29 Apr 2024 17:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714410925; cv=none; b=DnyoUye5LJytN2vJp4j7/YvJNYF+D5m+1M1ybIw13kOjGPHrUGM6mscNUNtvnaO5ijTOJ5Cv2AKYGQlHjNKgVjSw4THHyb4bGZlIS8VKl2j3iMo8yRERhjumuwBh5za8snj1bi7i8NyHbUlu3tRNTeC1HBJRHJI03ufCuBNlE5A=
+	t=1714410960; cv=none; b=Xhc3N9rmoXqzQyNIY++JSPNsVdDa4N3NKfR3CDEvX72Awkc7SfJ+hSDQKWebu43AaEnLKYlduci77mdgnPIvXmrPMcA7aghTinjdBdPHaEmEVz5G0CK66rY/M3NJKo+thTBldrCscu4wyUvD4IiKu0Mb5cQ4eIT9nuF5uqxUfrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714410925; c=relaxed/simple;
-	bh=VP3HFtZH5mVhVC5OJXQaqpA4OP5AvOuBK0xAvVAVqIw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hypUSEJhXLSERzvOhlqbjeIhl/uyJS2BF7GojWFK0iPUjuax1bnjsEgzD1sP5imoNIJyOJ8zebcSNucVJ3ybZg4tQeASJEa9nt7FZYBpeyHRzXLSWWKmjuf1mqoz3WgJJzk0YWXqiilWQaEYPKscYhme1ZMQ3Y5xGQLkk01m/V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a9QXqmc7; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TGlwlO027112;
-	Mon, 29 Apr 2024 17:15:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=1ZEeUbJSgd/FznoOFx/46ZsQxvaZ7TORAHHAvhlCKk4=;
- b=a9QXqmc7pGFZBEUZIS0mtX72GgcNqJ5v1PVqmwlbgT9oro97jfPGLo1PqgQFdE8sX2Fj
- wu6Mj3wZRSDF590C8uBYrKNoZ6uiPvc3yA94LyDDu6e1DWd6eiNEn9SHwCkTrou20jSs
- uh5lGfZvZpUwzMhXoHK66aCavHqh3Wd7o5VcvIIf6nL1z5wVCQrEZZH0SybWUOGSCSK4
- TOXslGb0alxj2t3ILLcQsDGkKG4m2ki5oqwNXghhjYLV+OxW22UBaWec2rVNJlepnl4X
- DIBQG5kdvKFJ6xKxhehwtqMyo8/X4JTMfPJlyqBVafr9N8fCdQCF/60Hb3+Aiy5jSToy kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtfcnr2a8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 17:15:21 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43THFKGS003219;
-	Mon, 29 Apr 2024 17:15:20 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtfcnr2a5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 17:15:20 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43TGVHHR015582;
-	Mon, 29 Apr 2024 17:15:19 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsed2r4cc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 17:15:19 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43THFEY043909566
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 17:15:16 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 557412004B;
-	Mon, 29 Apr 2024 17:15:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2242A20043;
-	Mon, 29 Apr 2024 17:15:14 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 29 Apr 2024 17:15:14 +0000 (GMT)
-From: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To: Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc: Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH] s390/kvm/vsie: Use virt_to_phys for crypto control block
-Date: Mon, 29 Apr 2024 19:15:12 +0200
-Message-Id: <20240429171512.879215-1-nsg@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1714410960; c=relaxed/simple;
+	bh=a44/BSmG3RBpZbPjmIXq4XJfaUsc1AETKifkN/jhmU8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Kq3QW4wKlcjKbialo5ojxvuKVzD8ZsUcupvEiOtFEe+A2q5QiUSncqDjFn+euScOqvFflUWyTFx0WzrY8ETcGKomkajf9YOe0kG5tZFtC3N5ztm7rnEz0N5z3FD9Q+JQyVhbxulATbUn8rSU7Pup/hrJAUrj3UXox8GV51Pb1/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ONnyqKhu; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ecec796323so4495867b3a.3;
+        Mon, 29 Apr 2024 10:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714410958; x=1715015758; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVaastLuiUoz2XHZ9eDginCg+npialPTvah0q9bKA9k=;
+        b=ONnyqKhuxGtEBcRe1+GCzMfTthmC7gXt10q6MDz5cGMgkPYnkSleFRhw506rM0T0UB
+         ksmnb7AJNPfpkSZIFC9/4wfMhqiwAZHx93I2UtAR6FikvYqbyBtv6SajpSq5Q2WkCT+5
+         1p2U8NEfT62yoajcFs+vgXt04Utfkm6nM3CoJQyo7itR5ATKl2OTWLl8MyhjJg8QJXMU
+         hpbNAF4ZZ59pqIRtN5urHRYkbh8pvMBIKG+FjKdE/pMg9Wiiw8YHg/cHfr6Iw4GE9jla
+         rlDhVmJaFs107zTJsXO1jtlFGxpIe4hEM2exolB67N8zB4F3hln7qBftx01S7FmqlLlB
+         WjOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714410958; x=1715015758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TVaastLuiUoz2XHZ9eDginCg+npialPTvah0q9bKA9k=;
+        b=TotfGMXpfeNiO/5maNULO59AoTte+WQAOgzpQwn++JHh7v4T1F0nnGKUJPMq5Kik4i
+         HzEVJmYjLb5PX5admm1uvv3Vlah1P0dqLM0BpTMr17TpIF3Sodf+GTRkVJlKPAWTEUJh
+         p/mtHmm4BLp9hB7Lfus8slo2b8OiK1zp33W596r0M+LTKikAmD6NxDUI8YFnF4csOJsM
+         GoQk4xubnvQEtIRd0n8iVSie0LlY1HJbYQ9/STTAd/9geiyDEY3A+/MqWNe38+EGhAcF
+         4iulQyNkCIybTJ6gqiJEO3/x2MduYbAJRplybHHvkCb2Om4mKB98pzZoJlZnJeCaNeCW
+         2VOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ18aOiwzp1OTw3fUh3TNBxzvksd8e1sU8JFm8kelVR6FdBw6FkJ/IQFabwrm2/UCv0wSXMhIrO4+wAS5n3IzrDS/9tN/t6IFe745T
+X-Gm-Message-State: AOJu0YwNokUJL1A7Ymcz+YZoO3JeMf3lGPPr57SKsT6TEaNj/7VHgWrw
+	MIuih6USnGjDk2khiivCA+2LLbUsEh3z8jn7eZsqMsYIvjyU7aCQ
+X-Google-Smtp-Source: AGHT+IGbAQIKG6CNvuNdecrgw2pq5aamlFEwnyBkM6dmNuhC/YgjId0qnj3RkgktkcGrLFI+5hWW4A==
+X-Received: by 2002:a05:6a00:92a0:b0:6ea:bf1c:9dfd with SMTP id jw32-20020a056a0092a000b006eabf1c9dfdmr14531935pfb.27.1714410958017;
+        Mon, 29 Apr 2024 10:15:58 -0700 (PDT)
+Received: from dev.. ([2402:e280:214c:86:9744:8dfe:8ee3:9c0a])
+        by smtp.gmail.com with ESMTPSA id gu8-20020a056a004e4800b006f3eee787d5sm4386210pfb.18.2024.04.29.10.15.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 10:15:57 -0700 (PDT)
+From: R Sundar <prosunofficial@gmail.com>
+To: mripard@kernel.org,
+	mchehab@kernel.org
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	R Sundar <prosunofficial@gmail.com>,
+	Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH linux-next] media:cdns-csi2tx: replace of_node_put() with __free
+Date: Mon, 29 Apr 2024 22:45:43 +0530
+Message-Id: <20240429171543.13032-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,44 +84,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iImK1c6xl_QeZmmlj99npiOYPKHaZXVY
-X-Proofpoint-ORIG-GUID: ISSFKbLpKxQrN-D_UdIdGf6oBfoTDydX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_14,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- clxscore=1011 bulkscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404290110
 
-The address of the crypto control block in the (shadow) SIE block is
-absolute/physical.
-Convert from virtual to physical when shadowing the guest's control
-block during VSIE.
+Use the new cleanup magic to replace of_node_put() with
+__free(device_node) marking to auto release when they get out of scope.
 
-Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: R Sundar <prosunofficial@gmail.com>
 ---
- arch/s390/kvm/vsie.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/cadence/cdns-csi2tx.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-index b2c9f010f0fe..24defeada00c 100644
---- a/arch/s390/kvm/vsie.c
-+++ b/arch/s390/kvm/vsie.c
-@@ -361,7 +361,7 @@ static int shadow_crycb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 	case -EACCES:
- 		return set_validity_icpt(scb_s, 0x003CU);
+diff --git a/drivers/media/platform/cadence/cdns-csi2tx.c b/drivers/media/platform/cadence/cdns-csi2tx.c
+index 3d98f91f1bee..88aed2f299fd 100644
+--- a/drivers/media/platform/cadence/cdns-csi2tx.c
++++ b/drivers/media/platform/cadence/cdns-csi2tx.c
+@@ -496,48 +496,43 @@ static int csi2tx_get_resources(struct csi2tx_priv *csi2tx,
+ static int csi2tx_check_lanes(struct csi2tx_priv *csi2tx)
+ {
+ 	struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
+-	struct device_node *ep;
+ 	int ret, i;
+-
+-	ep = of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
++	struct device_node *ep __free(device_node) =
++		of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
++
+ 	if (!ep)
+ 		return -EINVAL;
+ 
+ 	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &v4l2_ep);
+ 	if (ret) {
+ 		dev_err(csi2tx->dev, "Could not parse v4l2 endpoint\n");
+-		goto out;
++		return ret;
  	}
--	scb_s->crycbd = ((__u32)(__u64) &vsie_page->crycb) | CRYCB_FORMAT2;
-+	scb_s->crycbd = (u32)virt_to_phys(&vsie_page->crycb) | CRYCB_FORMAT2;
- 	return 0;
+ 
+ 	if (v4l2_ep.bus_type != V4L2_MBUS_CSI2_DPHY) {
+ 		dev_err(csi2tx->dev, "Unsupported media bus type: 0x%x\n",
+ 			v4l2_ep.bus_type);
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	csi2tx->num_lanes = v4l2_ep.bus.mipi_csi2.num_data_lanes;
+ 	if (csi2tx->num_lanes > csi2tx->max_lanes) {
+ 		dev_err(csi2tx->dev,
+ 			"Current configuration uses more lanes than supported\n");
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	for (i = 0; i < csi2tx->num_lanes; i++) {
+ 		if (v4l2_ep.bus.mipi_csi2.data_lanes[i] < 1) {
+ 			dev_err(csi2tx->dev, "Invalid lane[%d] number: %u\n",
+ 				i, v4l2_ep.bus.mipi_csi2.data_lanes[i]);
+-			ret = -EINVAL;
+-			goto out;
++			return -EINVAL;
+ 		}
+ 	}
+ 
+ 	memcpy(csi2tx->lanes, v4l2_ep.bus.mipi_csi2.data_lanes,
+ 	       sizeof(csi2tx->lanes));
+ 
+-out:
+-	of_node_put(ep);
+ 	return ret;
  }
  
-
-base-commit: b947cc5bf6d793101135265352e205aeb30b54f0
 -- 
-2.40.1
+2.34.1
 
 
