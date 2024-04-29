@@ -1,109 +1,117 @@
-Return-Path: <linux-kernel+bounces-161720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4AFD8B5024
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:06:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4EB8B5026
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:07:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D5C82830C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:06:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F35A1F224E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB00946C;
-	Mon, 29 Apr 2024 04:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6CD9470;
+	Mon, 29 Apr 2024 04:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gd3FvGYW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ksp7pEgF"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EBE257B;
-	Mon, 29 Apr 2024 04:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4AD257B;
+	Mon, 29 Apr 2024 04:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714363598; cv=none; b=OH0k/nU1mNTu9pQRiUIg40eK+uY+wZuMBtnfbvO4PmZMgwbZZ5g7DF7v6QBOuXuaYWzApBWPx3k6N0g+SzKfzL/fUMdwMVUkgIaxPGXGPrb7+NTVI0r+iAGUBm7KWVMws4aYuFbyFpidGk4rfgb3j99aDN2Hp9RKxU3NZwrhYzo=
+	t=1714363656; cv=none; b=kDrosfYtVTG+pglmWJ5r4IjgJgxWD0hZ5oVAgAHkATrEWmirNxSG7/E3VTTEBDBuDBnKTtu70zmvG+zQkV6vtFZf2lxIYTVKaKvBQuhbpwfRg5FWcqR1V+TrK6hFSXCg+5Az6MPyPlE867b0t+4dyUz+QqS9xQxJrtmfYUbHAXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714363598; c=relaxed/simple;
-	bh=FD3ViZaLK0wtg7lH2KbwGb7HN39zndU5EWw+ZK7vnaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uCU66FuSXL9hSXKcziDeSDh46Qc0rw2bHBf7iv3CepMsu+IZd8Ph7ZZs5th458x0LA73tRo4BZZQyS9Ja9Jg0aVxRMRJ7pET5750DmNWB8Up29cqEmKyVMjvs2cE/iPKHKF/5ldCkWiGPhsKhxjS5DZZsEY4j7UFUAcUXEVbYZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gd3FvGYW; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714363596; x=1745899596;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FD3ViZaLK0wtg7lH2KbwGb7HN39zndU5EWw+ZK7vnaw=;
-  b=Gd3FvGYW6tIn0YnJgvu17mzgIWGQ0xRDhGLPdC7kiM7DlqkDMALfuZJE
-   kFQoPXXyCEFtKoZEhdrsiBJewBvgb65FtwNeVuzvsX6FlQc71wZZGugnp
-   cH3VidNQZodNUbP7mODAuJ+9XWUETV6KxqBVyUvP71TI7CSwCeqif1NtX
-   UlWVMjJoP3ZucsJIw/zg53r1/e0IkzaP5Q6q7iwMZsGPtWTEnnf6C0bv7
-   PSLmfeswzFdjS4MYP9emZVxJKLEhYVU+RhSFLq+MZDFFTvKCTZNXfbM8Z
-   vIEhHJJmGdUHO84ednkIgV4gmvO5WUc544fIhU9ovbjG4j5ki5EVjSS4R
-   A==;
-X-CSE-ConnectionGUID: Ks6MsBGKQOenRQES7iSdPA==
-X-CSE-MsgGUID: giSd5P3bTCKNvtNUwaTA+Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="20565179"
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="20565179"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:06:36 -0700
-X-CSE-ConnectionGUID: fVjHxYRMQvC1b0sDcXa9Ww==
-X-CSE-MsgGUID: uFmKF7yfSqah2LD348K8LQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="26001296"
-Received: from kscheema-mobl.amr.corp.intel.com (HELO [10.251.17.13]) ([10.251.17.13])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:06:35 -0700
-Message-ID: <228f5064-bf3d-4872-bcf7-b941f001d9dd@linux.intel.com>
-Date: Sun, 28 Apr 2024 21:06:34 -0700
+	s=arc-20240116; t=1714363656; c=relaxed/simple;
+	bh=ZPOdAdo5rNdhkmcuD8Q0Bjb82iNnSAHow9YWWhWSvqw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DHPy/fvDGzph/UPPe33NoozDc71/Sz6k+A8b30gqFc+xIlBsrJUcfHlcblcCX44rnMRIBsg6NcpoZkpS4LUEYm4roy2OIxAg/WHBvQujOeamYrQEohiIuGzmPOD0Zok8W0Eh2zf+xYnAnr8mJxgajq4VwMxuEOs7O6sc0P52R40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ksp7pEgF; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714363650;
+	bh=gXM/pmAGTPfke+UuNfHVJkFpjdgFQx4XDaPamrZGXkw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Ksp7pEgFztp2zNQFferXewH3IcXM/kuKLwsHC/e4nQg/4zheI0kLVI371BvP/Ttj2
+	 lbq7i+iGmxKX3KC1nHuoYA42nlBJLVGMZzbQyq/vslnPM7A/PQZLnTgj/Tw8oIpxjF
+	 YSV+NvLeGpLNArshkilGeptssnwPoBmiaCsp6J15OGi42L+Wk/bUjv42HIts+vuky/
+	 ZfI5iJI7R3sNxtaF/F/C9CIN2YaQUD3WG10Q6zEwOO2y4Bv0UWpVUCm6x17LDIWEx/
+	 7EgTnOHtuQUW0m7yfapRQtqtDxNMsTZ/ivh0mDPEt5zrzBKsBdeHRk3NaPb2DClSs9
+	 422JEJdxmoNnA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VSVCj0JPqz4wd7;
+	Mon, 29 Apr 2024 14:07:28 +1000 (AEST)
+Date: Mon, 29 Apr 2024 14:07:27 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Joerg Roedel <joro@8bytes.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Joerg Roedel
+ <jroedel@suse.de>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>, Robin Murphy <robin.murphy@arm.com>
+Subject: linux-next: manual merge of the iommu tree with the pm tree
+Message-ID: <20240429140727.016d5758@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ACPI: Declare acpi_blacklisted() only if CONFIG_X86 is
- enabled
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- Len Brown <lenb@kernel.org>
-References: <20240407063341.3710801-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAJZ5v0hqt6+1AvDWb0BYw0z9burVQfdkOF1qUGzRRuPmvq4qQg@mail.gmail.com>
- <ZiexZnmbLqPy11d1@smile.fi.intel.com>
-Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <ZiexZnmbLqPy11d1@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/7lU3zzmZSsQQJh4lyfcrIIC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/7lU3zzmZSsQQJh4lyfcrIIC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 4/23/24 6:02 AM, Andy Shevchenko wrote:
-> On Mon, Apr 22, 2024 at 06:37:59PM +0200, Rafael J. Wysocki wrote:
->> On Sun, Apr 7, 2024 at 8:33 AM Kuppuswamy Sathyanarayanan
->> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> ...
->
->> Applied (as 6.10 material), but it looks to me like this declaration
->> could be moved away from this header file at all, as the function is
->> only used in one place in arch-x86 code.
-> Yes, we probably may move it to asm/acpi.h for x86.
->
-> I don't remember if I ever expressed that idea, but I definitely was thinking
-> about this.
->
+Hi all,
 
-Makes sense. I have moved it to asm/acpi.h
+Today's linux-next merge of the iommu tree got a conflict in:
 
-https://lore.kernel.org/lkml/20240429040441.748479-1-sathyanarayanan.kuppuswamy@linux.intel.com/T/#u
+  drivers/acpi/scan.c
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+between commit:
 
+  e80d4122df9c ("ACPI: scan: Move misleading comment to acpi_dma_configure_=
+id()")
+
+from the pm tree and commit:
+
+  f091e93306e0 ("dma-mapping: Simplify arch_setup_dma_ops()")
+
+from the iommu tree.
+
+I fixed it up (the latter removed the comment updated by the former, so
+I just used the latter version) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7lU3zzmZSsQQJh4lyfcrIIC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYvHP8ACgkQAVBC80lX
+0GzSbgf+OxwUfsY9Xy2mtx6CzzznbBTeYjt3V3bYWnXYJrLc46yrq51bj08E36Za
+sa/zENKQb7jEf0Jpvgm+CkMZYnsRLUH3CG6cm8cO3hPm4ZDCoIWK6uQQFRGsomSS
+uYQ3dxexU4f1Nxkvnzlc77RopNScbrFFjJOcJIJaU1W71xeyyGtCVdAr0O1N38qg
+t789mkIYvfSkCED0ar1W/b49NX/hwd8KVLqLkt6LT02UQDaj8FOB3u/FFSER9JZb
+Vw+Pjv3cif96Be1nizkw1RFzSIOYMUi3rPsPWYW+U/yPDOF+1e22tHyDeYRpKTtx
+Q8iz836FL464tHmoh0Gth0adCZU+Kw==
+=lyV5
+-----END PGP SIGNATURE-----
+
+--Sig_/7lU3zzmZSsQQJh4lyfcrIIC--
 
