@@ -1,169 +1,162 @@
-Return-Path: <linux-kernel+bounces-162525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF368B5CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:09:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D52D78B5CF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:13:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EDDA1F21E30
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:09:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F5871F230BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7345129E8C;
-	Mon, 29 Apr 2024 15:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C35184A28;
+	Mon, 29 Apr 2024 15:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="D9T37vDA"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="NIZjB5Pm"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DB3127B75
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E0783CB0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403103; cv=none; b=IRTpfz2Jy+SvetAZPEo2tsKnk6uvkfxnavEBM0oVWywOR3ApLTNcA6pc+Ejp9T0kn1Qdpy0RGiMAgkZXx1aR4tTi74jIXMWC0nRYFgKteS2iVCzEH28QIvqLk+QqqRmq+b3ZVv4pgqG6K5h5rKwUlWraWlIKGpUmLjGgN8qm524=
+	t=1714403193; cv=none; b=LN5wqkNOBOc1WhcdMVPw63BckP62oKpDbcaZ+7TeBmZnCQh5iZOxGyGxtjmKrIFDPbs/NV5lbcRJSUKOoWloRNa1z1tk3lT1/9zG69Ayu9mn57rGmeZN3NM7hsBFgd3vt3XF7nztvJbSJfPG0hbQJrW0YdKjIUBcDqhvm2csJwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403103; c=relaxed/simple;
-	bh=eTwz8g9CAKdFfcMUb1pEl/K4JXk6NTjbKJcjx2VRsnQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GWaT7c8ZUvrSHq63enrUpl4NccM8Z3Wd2l8NRqX1sF2cJkTALNJdMvs9OmnhJ/7diLFm0TdS18Odc4nOUL54guZIRNghdQa8DLFLkobG3f00mihPhHbJkEcEnPr+Px5vF3r6ORJseypbpaRFXTYg5koorGOGm1sQEDNjRYPc6TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=D9T37vDA; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78edc3ad5fdso398183685a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:04:58 -0700 (PDT)
+	s=arc-20240116; t=1714403193; c=relaxed/simple;
+	bh=ZVcAG+OzER8E5YrxGpABeX9SY2L97uaCD62n5fHEDC0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jVn5gs/wCjP/6QfsvTEgxDzKmhv8B2kyiE8aG4mWlcaO25lHTKcNAu4lpvTmmOh8qGdkL3CuYB1ycveNFKs7WzBNgd138k12zCfAmRdUM7lyC9HRl6l6G2fylykR2c37FTx7t4H/kpaBeVld86m1irhI9my3Ub8lSqvI5ouerqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=NIZjB5Pm; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516ced2f94cso1093181e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:06:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714403097; x=1715007897; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B7WgC2+IPrCSABKNTDoDmq5evIyXV522VQOG0leEbcc=;
-        b=D9T37vDAU6WAGHnBT7CqKH5yKp0yWtydKQ4le4V+5yl0/L3aF8vXdHW55+2xfAXGQE
-         B/9W4t0GgFIVDCnl4mWJzoQbJ/Txi2lNUtIy5j9x/m+iEm77AXUafXSr8Vrca8uL3F3I
-         ShcXturg8NSd6F1j0kdP78ddCZOyM3F9gLzEk=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714403190; x=1715007990; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9QQSGk0Y9Ubz9htfULcfpBCmdaYN6MR+rakpquodwmU=;
+        b=NIZjB5PmwUuRqPa4NzQd0fJ4uDlI5Q6lVyUH6dtrFfpQkDk4iDy3ucmvrKcP/aFEzz
+         aSwFZEWLnpSaJ0bVbqUK8fN84wENhAWzJ0NlnALF7RPfdqAxU649yzRqsUgXp3xRg+8w
+         JARGW4hMoyFZ13rSflhoOELX6ByuWZDp+tMPCoeXh1803kXNw/fF1H37/fESNVpPON8e
+         a0nKfAbLoc8AeEQsIaW536H6o8X0PwfZaRMYVKPJ7IMwoHc1hw/3tWUe6KVgiocDzoog
+         NDNuCtqOn4hW7M4X/Rs3QA/p2qD4E3bSAtJHQQWjYMSNT+1zAxCttNe1TevBV9c1nlR2
+         Bnlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714403097; x=1715007897;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B7WgC2+IPrCSABKNTDoDmq5evIyXV522VQOG0leEbcc=;
-        b=QEqMRwHqXngHUx085vQmn4nXu4tsYnF/6JmimF124hRZvRRRD2acIjnJKlayCJWwiA
-         t1BEVNSd9Pf4UxYIuuGDGzV3Yi1jZCFh/bU1IC5S6QQS3ybSCZOApNdjz419+tvIPzSX
-         4vVFAmSa8j5egwvLNtMnBUkVsn2Y3wf7Sm9Myb2uZ2bGfhJNf7MpWp9jmLWOxZFWOz2/
-         76si6pmlXxEpQkqKpdT0lI752SRRyTn3En2aPvFw/NmiwNecT7S44JWsBqojFfpzVbQx
-         d/Ozt2YaXsE5NXX+KA5W5XITc3FdyM4KYDB3tvBGHrepHNeqGcASaVNBAFtXPxB4g1f1
-         0Hqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUM4zTiYIY7e3/WrDFwd5nmIrAIvd2Io5FphUdNjvjN9DNE4m0W2WGdvGEgv/lshs7G1GM9rmGQoSYHrvaBerDfBU5Zuipy3ruXOBpy
-X-Gm-Message-State: AOJu0YzCIGYWNXXy3wbT0bCPJscOX8IlfnZBFzSAngenAXM9Rbdh/gtv
-	lDJCxwj29m8uEQtyzr0gigN/3urTLxzrZRvUT/GaNrnTMhEFxfYFXbDrULvyyg==
-X-Google-Smtp-Source: AGHT+IF5XTR9AvencoZ/44RX25g9bUhd0pibp8Bru1gSUBx9gDRO27bIj/oJhNJSOtkZAwqzS5pcnA==
-X-Received: by 2002:a05:620a:29d4:b0:790:8656:8427 with SMTP id s20-20020a05620a29d400b0079086568427mr12321977qkp.7.1714403097437;
-        Mon, 29 Apr 2024 08:04:57 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b0078d3b9139edsm10568591qkp.97.2024.04.29.08.04.56
+        d=1e100.net; s=20230601; t=1714403190; x=1715007990;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9QQSGk0Y9Ubz9htfULcfpBCmdaYN6MR+rakpquodwmU=;
+        b=xJ3xJuidQLvX6hWlz7hm6b3rn7RGJNdUyqokmvuNpZj4b32kLedcJYX9xSQ5Tnv9Jp
+         O1QXI5EtH4vmwIaPj+hvjPqh98gZAH83YYRbNh61PG0vxewVK+B/qDeSugxS9qzIGhwv
+         6mTwf3LWf1cbyDdbedFT0aMHj3t6BEtX1PmQ1EDTlUzHA4yjsy7eQIDX54UfE4i2hCV2
+         5SbjN01newwkb+hx2+zKT8RclJjGF5aXBC7UPXjLJV97TMnUGQXOaQGdJJLyyqGyCYEj
+         OQLz+o6+hPgDvs6ZSike77e6o9QYcpdD1rMsrCukCHgvpmk6/uN4dYs+5Zj+0Mv9tVS8
+         ytVg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcbTbyHPNiysna08sNgczj3GyQhqSNP3gsSw7dudPGVhTZ7rguEJX1MAB9/Nwgktqy72/WZ+wSrw7QrUzuWAAkXPJHIY+KnART8MFw
+X-Gm-Message-State: AOJu0YzuBpQGgBucTyHAXTLr3iMNL9eJ7V/wwle3BJFtTfWejmCEr0A1
+	kpQUerb3Oc8p8aBPPW3WEYX8PDfXwGXAJ/k6L/7ouRwmJtF2hjGj3HtgF6vMzjQ=
+X-Google-Smtp-Source: AGHT+IGpsgfHeGU47OML9OlpyOLM1Fu89w8RTY/kpzyJSvnqOjqxI7tIAWzXykio3VNUfhS0z6TjLg==
+X-Received: by 2002:a2e:9547:0:b0:2d6:c59e:37bd with SMTP id t7-20020a2e9547000000b002d6c59e37bdmr6422086ljh.3.1714403189917;
+        Mon, 29 Apr 2024 08:06:29 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:2fec:d20:2b60:e334])
+        by smtp.gmail.com with ESMTPSA id l23-20020a05600c1d1700b00418f99170f2sm39646638wms.32.2024.04.29.08.06.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:04:57 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 29 Apr 2024 15:04:53 +0000
-Subject: [PATCH v3 14/26] media: dvb-frontends: drx39xyj: Use min macro
+        Mon, 29 Apr 2024 08:06:29 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 00/11] Add support for a few Zc* extensions as well as Zcmop
+Date: Mon, 29 Apr 2024 17:04:53 +0200
+Message-ID: <20240429150553.625165-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240429-fix-cocci-v3-14-3c4865f5a4b0@chromium.org>
-References: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-In-Reply-To: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hugues Fruchet <hugues.fruchet@foss.st.com>, 
- Alain Volmat <alain.volmat@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
- Abylay Ospan <aospan@netup.ru>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Dmitry Osipenko <digetx@gmail.com>, 
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
- Sylvain Petinot <sylvain.petinot@foss.st.com>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Replace ternary assignments with min() to simplify and make the code
-more readable.
+Add support for (yet again) more RVA23U64 missing extensions. Add
+support for Zcmop, Zca, Zcf, Zcd and Zcb extensions isa string parsing,
+hwprobe and kvm support. Zce, Zcmt and Zcmp extensions have been left
+out since they target microcontrollers/embedded CPUs and are not needed
+by RVA23U64.
 
-Found by cocci:
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1447:23-24: WARNING opportunity for min()
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1662:21-22: WARNING opportunity for min()
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1685:24-25: WARNING opportunity for min()
+Since Zc* extensions states that C implies Zca, Zcf (if F and RV32), Zcd
+(if D), this series modifies the way ISA string is parsed and now does
+it in two phases. First one parses the string and the second one
+validates it for the final ISA description.
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+This series is based on the Zimop one [1]. An additional fix [2] should
+be applied to correctly test that series.
+
+Link: https://lore.kernel.org/linux-riscv/20240404103254.1752834-1-cleger@rivosinc.com/ [1]
+Link: https://lore.kernel.org/all/20240409143839.558784-1-cleger@rivosinc.com/ [2]
+
 ---
- drivers/media/dvb-frontends/drx39xyj/drxj.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/drx39xyj/drxj.c b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-index 1ef53754bc03..6fcaf07e1b82 100644
---- a/drivers/media/dvb-frontends/drx39xyj/drxj.c
-+++ b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-@@ -1445,8 +1445,7 @@ static int drxdap_fasi_read_block(struct i2c_device_addr *dev_addr,
- 
- 	/* Read block from I2C **************************************************** */
- 	do {
--		u16 todo = (datasize < DRXDAP_MAX_RCHUNKSIZE ?
--			      datasize : DRXDAP_MAX_RCHUNKSIZE);
-+		u16 todo = min(datasize, DRXDAP_MAX_RCHUNKSIZE);
- 
- 		bufx = 0;
- 
-@@ -1660,7 +1659,7 @@ static int drxdap_fasi_write_block(struct i2c_device_addr *dev_addr,
- 		   Address must be rewritten because HI is reset after data transport and
- 		   expects an address.
- 		 */
--		todo = (block_size < datasize ? block_size : datasize);
-+		todo = min(block_size, datasize);
- 		if (todo == 0) {
- 			u16 overhead_size_i2c_addr = 0;
- 			u16 data_block_size = 0;
-@@ -1682,9 +1681,7 @@ static int drxdap_fasi_write_block(struct i2c_device_addr *dev_addr,
- 				first_err = st;
- 			}
- 			bufx = 0;
--			todo =
--			    (data_block_size <
--			     datasize ? data_block_size : datasize);
-+			todo = min(data_block_size, datasize);
- 		}
- 		memcpy(&buf[bufx], data, todo);
- 		/* write (address if can do and) data */
+v4:
+ - Modify validate() callbacks to return an 0, -EPROBEDEFER or another
+   error.
+ - v3: https://lore.kernel.org/all/20240423124326.2532796-1-cleger@rivosinc.com/
+
+v3:
+ - Fix typo "exists" -> "exist"
+ - Remove C implies Zca, Zcd, Zcf, dt-bindings rules
+ - Rework ISA string resolver to handle dependencies
+ - v2: https://lore.kernel.org/all/20240418124300.1387978-1-cleger@rivosinc.com/
+
+v2:
+ - Add Zc* dependencies validation in dt-bindings
+ - v1: https://lore.kernel.org/lkml/20240410091106.749233-1-cleger@rivosinc.com/
+
+Clément Léger (11):
+  dt-bindings: riscv: add Zca, Zcf, Zcd and Zcb ISA extension
+    description
+  riscv: add ISA extensions validation
+  riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+  riscv: hwprobe: export Zca, Zcf, Zcd and Zcb ISA extensions
+  RISC-V: KVM: Allow Zca, Zcf, Zcd and Zcb extensions for Guest/VM
+  KVM: riscv: selftests: Add some Zc* extensions to get-reg-list test
+  dt-bindings: riscv: add Zcmop ISA extension description
+  riscv: add ISA extension parsing for Zcmop
+  riscv: hwprobe: export Zcmop ISA extension
+  RISC-V: KVM: Allow Zcmop extension for Guest/VM
+  KVM: riscv: selftests: Add Zcmop extension to get-reg-list test
+
+ Documentation/arch/riscv/hwprobe.rst          |  24 ++
+ .../devicetree/bindings/riscv/extensions.yaml |  90 ++++++
+ arch/riscv/include/asm/cpufeature.h           |   1 +
+ arch/riscv/include/asm/hwcap.h                |   5 +
+ arch/riscv/include/uapi/asm/hwprobe.h         |   5 +
+ arch/riscv/include/uapi/asm/kvm.h             |   5 +
+ arch/riscv/kernel/cpufeature.c                | 259 ++++++++++++------
+ arch/riscv/kernel/sys_hwprobe.c               |   5 +
+ arch/riscv/kvm/vcpu_onereg.c                  |  10 +
+ .../selftests/kvm/riscv/get-reg-list.c        |  20 ++
+ 10 files changed, 337 insertions(+), 87 deletions(-)
 
 -- 
-2.44.0.769.g3c40516874-goog
+2.43.0
 
 
