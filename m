@@ -1,208 +1,187 @@
-Return-Path: <linux-kernel+bounces-163123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272408B6605
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:07:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC938B6609
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:10:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4803E1C21AC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:07:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A7BCB20B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3FD7EF02;
-	Mon, 29 Apr 2024 23:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mH6FW0XD"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7850D1E886
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E08D84A5E;
+	Mon, 29 Apr 2024 23:10:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC401E886;
+	Mon, 29 Apr 2024 23:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714432017; cv=none; b=cJiqVZ6vd65pZw/Bc43mydEAcH0QuLafyghj9S5jW79LGOoOoX30Xama3a2rF+6T3bNgUppI9cWNrSh/VIIfrcropyAo8VKIqk79+KJSng2qef8dBRc6Hisj5gWv6usiZMgZmkAEd3eF0m/cNZG+okSM5Dyrbw8qv1WkRVsydSA=
+	t=1714432240; cv=none; b=tTaNVIEw+HfsLvkmy+jkUfPLRzDgMY187CHBwgYOE2bJuj4evtNjsVGR5CpRctLZ/ppaHs0ed38EXLSI+oA3QmLBVKQs/1nHRjjsgwXKjoXwf9ZquDGtS5neNgNJdvFGe80v+sawfuxS4z1loy0L4mr5aDdv1x2uPzE1mMjLCLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714432017; c=relaxed/simple;
-	bh=T5msb/FwiOM2B8FoBye3KYi+F/yGogHxh2GWH/afDsU=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=qPvmJiv0G00+N20ezoigyMWk0R26+JkC2vNt1YC7wWsZ6Zog1zFHzO82xD2Y+01eWn9J/i1oedZRqoaMyZlzwhQn4yNkNbfxxl40S+odDT5qk1IwUA9k1C8I93ZqI2T5yGDJXYx5PCDAFXpxf2v7rcab4lRsIid2M8Yg6ca2gJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mH6FW0XD; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de6054876efso1462710276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714432014; x=1715036814; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LXyAxLtGa1196wXalz5OFqmoW+jEqlgIdoAjVVHAISs=;
-        b=mH6FW0XDHWrH8rvdfSWcP29vIPZPluqm/G0zE999cWr25zeMpNTdURnTPeHDtghf6r
-         6I/Cu3FQ2nma4A7IB1HcLDSFx+hnQDqWZREb2cRLiaf/t7uGra/UQldQ+xMC6+sosFxx
-         3imhigqQGmSRZGof5B1fpbaOiOxyqW+xMd7iHU8WeTqvUf5LJCjpE7X5IS/p7Fvz/9O6
-         zJXnrwMdejs8J8e3Pu5GTbymfVqypvv8nBfAKgJ0p28XpV6WpFKLy1wGCbDViQd/DOww
-         L/ADrvnOp/EmZiTVqmGA2IQYok3EEVQDPc7cNQJ5F3e71oKX0ykpaGNpWmJith1kUkvz
-         Mjcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714432014; x=1715036814;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LXyAxLtGa1196wXalz5OFqmoW+jEqlgIdoAjVVHAISs=;
-        b=aPo9RN9cFqWwPsH0j3pHSiI6Teq2uCi8b9OOKGApxYl9utLtt9Xg3/g8GQuThnGrAR
-         LP4t0xzQLTHI6IoGLmJBByiIHe3IMQqt56OWVs2oyjss+W2DmQ9ZZ1hmAh+OBE3G9lo+
-         EnO6Qqr2u2uVMa5nU/5eFfOTdX0tjEjzs5ptXyJ+cLgP1mVxT2Aju81gYFvkRAJRihG9
-         t0K6eu70750U4z5pLkODRR+gmLSYixKJD+xZaa1v7br1UvTTTWQA8022sXlCVjSRTINv
-         1qpB0Onn++FzBVFFpJuSR8GI0fCB9XkzrmktJSoegW/nTQF7c7lK2AQK2dnUZtU8KnAA
-         1mHg==
-X-Gm-Message-State: AOJu0Yz4SwTWMsi+AWHbvBnXM2oME1vh+EodPAnT3ORywbYrpV4/aPzX
-	3KtkLpSNxFcYJVbspQ3dwzXHjQgvbIncthhtGGiDP3EDbQ2/1HdQ8nnXQ1rcnYhO4VpSft9OrNr
-	tSSpvTbQyAVNy6Ilk4mQTvg==
-X-Google-Smtp-Source: AGHT+IGeIbhUCHMAFmraPY9YQhVZzsy985ANsGkhLyO1PUv0ne2OlVhD5fpVPeG5st0Esedb7gmgGjG+DqpsiLavSg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:2b03:b0:de4:845b:8f08 with
- SMTP id fi3-20020a0569022b0300b00de4845b8f08mr3758442ybb.2.1714432014609;
- Mon, 29 Apr 2024 16:06:54 -0700 (PDT)
-Date: Mon, 29 Apr 2024 23:06:54 +0000
+	s=arc-20240116; t=1714432240; c=relaxed/simple;
+	bh=SbRHJCSbdxa/qHvVX0OGFsqW3ckRvJ41Yn/16rcpiaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ku2Ne1ugC/OlqSMCs8X6Ru0FsDm/2kmi8bAqose+32fZzMf8Cp14JF2nL7A6aQ9FOsFmhhxU7T2FFsO3M9T396sqfFRodY70uhKXEC9D0gI3d6r3Gsi0HLLj/fqwnl3WRfd0ICGKj02hLwdoNAt1XRExEQJEYeBfgP5ug/FreCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 466312F4;
+	Mon, 29 Apr 2024 16:11:04 -0700 (PDT)
+Received: from minigeek.lan (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 251303F762;
+	Mon, 29 Apr 2024 16:10:36 -0700 (PDT)
+Date: Tue, 30 Apr 2024 00:10:02 +0100
+From: Andre Przywara <andre.przywara@arm.com>
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: linux-sunxi@lists.linux.dev, wens@csie.org, jernej.skrabec@gmail.com,
+ samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC
+ dtsi for H6
+Message-ID: <20240430001002.4797e4e3@minigeek.lan>
+In-Reply-To: <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
+References: <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
+	<49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAA0oMGYC/zWN2wpAQBBAf0XzbGptLvEr8qA1mGhssxLJv9uUp
- 9N5OeeGQMoUoEluUDo48CZRsjQBN/cyEfIQHayxucltjWFXcf7ChVRoRa8s+/LDYdlXdqRyMFV WQIx4pZHPb9B2z/MCzwNM8HAAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714432013; l=4237;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=T5msb/FwiOM2B8FoBye3KYi+F/yGogHxh2GWH/afDsU=; b=Sl5cyYRJ2u3ZR6g8GOSU49y8O3CeWfvN4QwouXDwsRoiAcxCVm+Ietg6oUzBENx/qK1zjQykn
- 07KFwNfS42mCzYeg0uLLrwnJ+OPMzXluQE2Nle26OKU9EGHO710tWOg
-X-Mailer: b4 0.12.3
-Message-ID: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
-Subject: [PATCH] printk: cleanup deprecated uses of strncpy/strcpy
-From: Justin Stitt <justinstitt@google.com>
-To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Cleanup some deprecated uses of strncpy() and strcpy() [1].
+On Sun, 28 Apr 2024 13:40:36 +0200
+Dragan Simic <dsimic@manjaro.org> wrote:
 
-There doesn't seem to be any bugs with the current code but the
-readability of this code could benefit from a quick makeover while
-removing some deprecated stuff as a benefit.
+> Add missing cache information to the Allwinner H6 SoC dtsi, to allow
+> the userspace, which includes lscpu(1) that uses the virtual files provided
+> by the kernel under the /sys/devices/system/cpu directory, to display the
+> proper H6 cache information.
+> 
+> Adding the cache information to the H6 SoC dtsi also makes the following
+> warning message in the kernel log go away:
+> 
+>   cacheinfo: Unable to detect cache hierarchy for CPU 0
+> 
+> The cache parameters for the H6 dtsi were obtained and partially derived
+> by hand from the cache size and layout specifications found in the following
+> datasheets and technical reference manuals:
+> 
+>   - Allwinner H6 V200 datasheet, version 1.1
+>   - ARM Cortex-A53 revision r0p3 TRM, version E
+> 
+> For future reference, here's a brief summary of the documentation:
+> 
+>   - All caches employ the 64-byte cache line length
+>   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative instruction
+>     cache and 32 KB of L1 4-way, set-associative data cache
+>   - The entire SoC has 512 KB of unified L2 16-way, set-associative cache
+> 
+> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
 
-The most interesting replacement made in this patch involves
-concatenating "ttyS" with a digit-led user-supplied string. Instead of
-doing two distinct string copies with carefully managed offsets and
-lengths, let's use the more robust and self-explanatory scnprintf().
-scnprintf will 1) respect the bounds of @buf, 2) null-terminate @buf, 3)
-do the concatenation. This allows us to drop the manual NUL-byte assignment.
+I can confirm that the data below matches the manuals, but also the
+decoding of the architectural cache type registers (CCSIDR_EL1):
+  L1D: 32 KB: 128 sets, 4 way associative, 64 bytes/line
+  L1I: 32 KB: 256 sets, 2 way associative, 64 bytes/line
+  L2: 512 KB: 512 sets, 16 way associative, 64 bytes/line
 
-Also, since isdigit() is used about a dozen lines after the open-coded
-version we'll replace it for uniformity's sake.
+tinymembench results for the H6 are available here:
+https://github.com/ThomasKaiser/sbc-bench/blob/master/results/26Ph.txt
+and confirm the theory. Also ran it locally with similar results.
 
-All the strcpy() --> strscpy() replacements are trivial as the source
-strings are literals and much smaller than the destination size. No
-behavioral change here.
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
-Use the new 2-argument version of strscpy() introduced in Commit
-e6584c3964f2f ("string: Allow 2-argument strscpy()"). However, to make
-this work fully (since the size must be known at compile time), also
-update the extern-qualified declaration to have the proper size
-information.
+Thanks,
+Andre
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90 [2]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [3]
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
----
- include/linux/printk.h |  2 +-
- kernel/printk/printk.c | 20 +++++++++-----------
- 2 files changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 955e31860095..b3a29c27abe9 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -71,7 +71,7 @@ extern void console_verbose(void);
- 
- /* strlen("ratelimit") + 1 */
- #define DEVKMSG_STR_MAX_SIZE 10
--extern char devkmsg_log_str[];
-+extern char devkmsg_log_str[DEVKMSG_STR_MAX_SIZE];
- struct ctl_table;
- 
- extern int suppress_printk;
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index adf99c05adca..64617bcda070 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -178,9 +178,9 @@ static int __init control_devkmsg(char *str)
- 	 * Set sysctl string accordingly:
- 	 */
- 	if (devkmsg_log == DEVKMSG_LOG_MASK_ON)
--		strcpy(devkmsg_log_str, "on");
-+		strscpy(devkmsg_log_str, "on");
- 	else if (devkmsg_log == DEVKMSG_LOG_MASK_OFF)
--		strcpy(devkmsg_log_str, "off");
-+		strscpy(devkmsg_log_str, "off");
- 	/* else "ratelimit" which is set by default. */
- 
- 	/*
-@@ -209,7 +209,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
- 			return -EINVAL;
- 
- 		old = devkmsg_log;
--		strncpy(old_str, devkmsg_log_str, DEVKMSG_STR_MAX_SIZE);
-+		strscpy(old_str, devkmsg_log_str);
- 	}
- 
- 	err = proc_dostring(table, write, buffer, lenp, ppos);
-@@ -227,7 +227,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
- 
- 			/* ... and restore old setting. */
- 			devkmsg_log = old;
--			strncpy(devkmsg_log_str, old_str, DEVKMSG_STR_MAX_SIZE);
-+			strscpy(devkmsg_log_str, old_str);
- 
- 			return -EINVAL;
- 		}
-@@ -2506,21 +2506,19 @@ static int __init console_setup(char *str)
- 	/*
- 	 * Decode str into name, index, options.
- 	 */
--	if (str[0] >= '0' && str[0] <= '9') {
--		strcpy(buf, "ttyS");
--		strncpy(buf + 4, str, sizeof(buf) - 5);
-+	if (isdigit(str[0])) {
-+		scnprintf(buf, sizeof(buf), "ttyS%s", str);
- 	} else {
--		strncpy(buf, str, sizeof(buf) - 1);
-+		strscpy(buf, str);
- 	}
--	buf[sizeof(buf) - 1] = 0;
- 	options = strchr(str, ',');
- 	if (options)
- 		*(options++) = 0;
- #ifdef __sparc__
- 	if (!strcmp(str, "ttya"))
--		strcpy(buf, "ttyS0");
-+		strscpy(buf, "ttyS0");
- 	if (!strcmp(str, "ttyb"))
--		strcpy(buf, "ttyS1");
-+		strscpy(buf, "ttyS1");
- #endif
- 	for (s = buf; *s; s++)
- 		if (isdigit(*s) || *s == ',')
-
----
-base-commit: 9e4bc4bcae012c98964c3c2010debfbd9e5b229f
-change-id: 20240429-strncpy-kernel-printk-printk-c-6a72fe6d0715
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> ---
+>  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 37 ++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> index d11e5041bae9..1a63066396e8 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> @@ -29,36 +29,73 @@ cpu0: cpu@0 {
+>  			clocks = <&ccu CLK_CPUX>;
+>  			clock-latency-ns = <244144>; /* 8 32k periods */
+>  			#cooling-cells = <2>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-line-size = <64>;
+> +			i-cache-sets = <256>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-line-size = <64>;
+> +			d-cache-sets = <128>;
+> +			next-level-cache = <&l2_cache>;
+>  		};
+>  
+>  		cpu1: cpu@1 {
+>  			compatible = "arm,cortex-a53";
+>  			device_type = "cpu";
+>  			reg = <1>;
+>  			enable-method = "psci";
+>  			clocks = <&ccu CLK_CPUX>;
+>  			clock-latency-ns = <244144>; /* 8 32k periods */
+>  			#cooling-cells = <2>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-line-size = <64>;
+> +			i-cache-sets = <256>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-line-size = <64>;
+> +			d-cache-sets = <128>;
+> +			next-level-cache = <&l2_cache>;
+>  		};
+>  
+>  		cpu2: cpu@2 {
+>  			compatible = "arm,cortex-a53";
+>  			device_type = "cpu";
+>  			reg = <2>;
+>  			enable-method = "psci";
+>  			clocks = <&ccu CLK_CPUX>;
+>  			clock-latency-ns = <244144>; /* 8 32k periods */
+>  			#cooling-cells = <2>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-line-size = <64>;
+> +			i-cache-sets = <256>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-line-size = <64>;
+> +			d-cache-sets = <128>;
+> +			next-level-cache = <&l2_cache>;
+>  		};
+>  
+>  		cpu3: cpu@3 {
+>  			compatible = "arm,cortex-a53";
+>  			device_type = "cpu";
+>  			reg = <3>;
+>  			enable-method = "psci";
+>  			clocks = <&ccu CLK_CPUX>;
+>  			clock-latency-ns = <244144>; /* 8 32k periods */
+>  			#cooling-cells = <2>;
+> +			i-cache-size = <0x8000>;
+> +			i-cache-line-size = <64>;
+> +			i-cache-sets = <256>;
+> +			d-cache-size = <0x8000>;
+> +			d-cache-line-size = <64>;
+> +			d-cache-sets = <128>;
+> +			next-level-cache = <&l2_cache>;
+> +		};
+> +
+> +		l2_cache: l2-cache {
+> +			compatible = "cache";
+> +			cache-level = <2>;
+> +			cache-unified;
+> +			cache-size = <0x80000>;
+> +			cache-line-size = <64>;
+> +			cache-sets = <512>;
+>  		};
+>  	};
+>  
+> 
 
 
