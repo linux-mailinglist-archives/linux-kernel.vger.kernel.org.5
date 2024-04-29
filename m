@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-162981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8159A8B6301
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:59:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DFB08B62FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 111CF1F224BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91D381C210AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DACD1419A2;
-	Mon, 29 Apr 2024 19:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55951411E7;
+	Mon, 29 Apr 2024 19:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b="Iw5RU2Bs"
+	dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b="KY90fIfE"
 Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2131.outbound.protection.outlook.com [40.107.101.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339861411DD;
-	Mon, 29 Apr 2024 19:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E1113C3D3;
+	Mon, 29 Apr 2024 19:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.131
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714420731; cv=fail; b=X1QYU4zUl/WJwOpF9tsOtl/Qf3vc5Px0lwUEGND5yOgYEpoB8jsqLurqjT4+jP864ZWuFXeZ0ve1jkrp8twWAS5wYIyhGcRmrkjdzePnPgqDh30j+snd7P1I6rlTdnP6HDUbsV2jyloaIDXlHCc7NrAs5gOdl1kPDxPCV6FHZgw=
+	t=1714420729; cv=fail; b=FY+1QLwpyJFy5f3+00lP3S+CUdgfbe5KPNh1Op1/kaaJhsiCSPzwAgbj7fKLZ/qD3m5JUGvoMY+ucz1HqUFnQaK21zLo7D22xFxg2MIIiB04SAuFpU7TLYYL06V8Coajzo6c6oiod4BURH1+oAteNCRhAL0mXHh1D8nuKFM6COg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714420731; c=relaxed/simple;
-	bh=vlz5GJsEUYOjqlVQF6fN/XpGNkb6zvg0+pwFU6gmOho=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=f0zaw40QaRaW2OPWvTq4yz2O9u2MILjfYCU/NUoPFtqVc4Z9YHI1vs5wRWoRvUQdRDhc7w3Cix9Fhf0IzXTdr2ySMdKmiWfdtje0RreBY0OvAUrGykdCztmwl5FAIePcU8Cksp6qY3e62GwjArsWVwtC6X3n01CZhLIbVED2bFo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b=Iw5RU2Bs; arc=fail smtp.client-ip=40.107.101.131
+	s=arc-20240116; t=1714420729; c=relaxed/simple;
+	bh=eDYoVr+XP357sZ07CwDDXTv1cyNxxJ+ZTgw78nRQSe0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HukZ+2nMWBaD+eZ+Igw35euEZZjiF6+XGCwmpSz9oLjqNf+3smsBc8Qilu5Xje1Kirl0xUKFRrzCxKkVvmErjA9STGJM3/r7asQW7E6SMQuTT/ZNlPdNhYMfOQmQdM1sALXmtpPJ5TZJEvsifTZn3mSu/bcX7Ou+DAExzlM2qYQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b=KY90fIfE; arc=fail smtp.client-ip=40.107.101.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IbscEK4qr+ZzsIvOGobymVUU247LInHjdTXBm7nCNaoKLxP2S9N8dQMCoWDKudMwH1ieqz+pEyCGHGzMCBd/tIJ/IkipCoas36SOh7apQMWABXSCwbM4/eyvOvImM2bS2i5tqNP+R9UsfO2lsQjK87wRiU6J3Ue/b/s+SSmNFTEEwtjt7RN+q6y1t3fqnqzIAY5RYgEluwKCGgLpAWXy3JAdsyTjlso/k5NI/ByzY5/QlC5rXa4Fca40qpX9UWC1OquC+7QEhH7pBD+LlVy2AN3rRePMwgDPmmiMKXeExv1GUN5rpPdhnEaOJY3hBVbSliRaYyBS5hqky6SDsQpcug==
+ b=DmX0+0pk9Ac5DiXuwCgSNCysf0t+Y7YrW4KV9+B8jtdP5DNurcuiafmJDlMPBk1RSkWTBWakZU++h8Uq3gMQOZLPVRm7C7VTJXGt3h1UeEynDPIDT9YrpxmeOsYWYQ+jvAUkbHCcVf/GeGq04z+x+7EItiFw7od3M5LbYFO/K8aR5nJ8Jwj3eJq4i0O6AkRIiFMCzTIsNdsR+QtYpE81Qpzk260uzvkyYKSEnymrXoFca/ByXWEVuIIYaUynasAwaIIn2/q7r0irBQJ3Jz5QPLIZwt/qas6WGcB4kt8MCUs7VYtaNOypVvY1zMUynzqaOneNdsTAtAWSPrjfDKqHSQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vgpKZcVHRw+lWtWey3gnvC6lBU9RyCAkIkL9WQef9u8=;
- b=jU97y+Bx9nL7FvH9CJ681rlz/jZqxSDX70n4+P59pygMZmX/pYxPootfXASDgXBtq/DDOXG0/h4BFOUbBRHqH/OjekOFs7wZcUusreqxbVY5HTjrNUz494G6IqSaPLYpb1KWL5H0sQUdxBb0v8f2f5Jmy8y3Phx7tPlnoNzc96s9A8CVqBbGKKbzIIxf/C7ZEjrhav5ec1UF1JZEjVaqzFhN+9H7noXE/LdF6uJYQxmDVZhkpsMfCBcD56i8IayZxeR+3wlBf1RsHcw80BaVViWDI4G8R0TF3KWbBHfRhyjUyVUKfrpNiRKWJGqzQyaGgKhdm36DWc48+vK/wjCj8Q==
+ bh=X54Xa1eKAVIDD9PaUZZqbbT3IyZpuTp5cidwzcrjnrA=;
+ b=a2aiRxlzER8E4uPbbZDLXiiWE/xif42ICArBc7CyaWBKc/Ld1eXUhxqqqjGSefkbc6PWpWJRuK9jvj67NH2YxdbzjXv7jeHDh0owUwLzVaXErYXWzZ6jvFDhLmBv2mWt889qaXIS5wc/Ogfkp8jBvnNJlcnqFeBaKeFms8xpi3rc/Y4ikhuq5S4Kig3eAJmBDLq6DTE4NhMqxQ0h5XK+YBC62g8xba8kNrBY4spLlZhAPS9dJeHtlhsToY2kqWAFeRFGo9qYtpW4iNdghSAX2Xzq2TxNw/rgFQCykQZ3HfR6yO97MMupRillhCQ5CNOqYnLb2zuNNW0afIj/NninbA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=phytec.com; dmarc=pass action=none header.from=phytec.com;
  dkim=pass header.d=phytec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=phytec.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vgpKZcVHRw+lWtWey3gnvC6lBU9RyCAkIkL9WQef9u8=;
- b=Iw5RU2BsZ8JZ1jjeW4ho9HGkDypMRQrYQC5DVkhTNiXwKOCRY/WnknzFAHQQk0Cij4GFVEs+c4HzdHE8sc4ASsS+KJFyHubcESi33r6IVx2KAtP/nuYed0l50CQgTDbEkUqojgC7TTbX1LHvsUPp9BcVw+RPiV6cKzNqQgLkIgQ=
+ bh=X54Xa1eKAVIDD9PaUZZqbbT3IyZpuTp5cidwzcrjnrA=;
+ b=KY90fIfEaG2P9j2yztfK3XMPXSUmh/i2Dzc5dPC9MOEgP0/NLZVLIV4FVYfoHZCMQZzqtCykBBDrTer6YF6EGFhcEHHCIQI15CHdxPTVMz2SE5d4xoih2VSkdn065QWAxj89T7uI+oqDlKGJUwN97Z2Lbb3jj9KQNl9lQsejXFA=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=phytec.com;
 Received: from SA1PR22MB5636.namprd22.prod.outlook.com (2603:10b6:806:3e2::15)
  by PH7PR22MB3962.namprd22.prod.outlook.com (2603:10b6:510:2bf::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Mon, 29 Apr
- 2024 19:58:43 +0000
+ 2024 19:58:45 +0000
 Received: from SA1PR22MB5636.namprd22.prod.outlook.com
  ([fe80::e6c9:dbd4:f002:212f]) by SA1PR22MB5636.namprd22.prod.outlook.com
  ([fe80::e6c9:dbd4:f002:212f%7]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 19:58:43 +0000
+ 19:58:45 +0000
 From: Nathan Morrisson <nmorrisson@phytec.com>
 To: lee@kernel.org,
 	robh@kernel.org,
@@ -69,10 +70,12 @@ Cc: devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	upstream@lists.phytec.de,
 	w.egorov@phytec.de
-Subject: [PATCH v2 1/2] dt-bindings: mfd: Convert lp873x.txt to json-schema
-Date: Mon, 29 Apr 2024 12:58:29 -0700
-Message-Id: <20240429195830.4027250-1-nmorrisson@phytec.com>
+Subject: [PATCH v2 2/2] arm64: dts: ti: phycore-am64: Add PMIC
+Date: Mon, 29 Apr 2024 12:58:30 -0700
+Message-Id: <20240429195830.4027250-2-nmorrisson@phytec.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240429195830.4027250-1-nmorrisson@phytec.com>
+References: <20240429195830.4027250-1-nmorrisson@phytec.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: CH0PR03CA0428.namprd03.prod.outlook.com
@@ -86,290 +89,142 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SA1PR22MB5636:EE_|PH7PR22MB3962:EE_
-X-MS-Office365-Filtering-Correlation-Id: de1431a7-3ec0-465f-e9bd-08dc6886c5ab
+X-MS-Office365-Filtering-Correlation-Id: 288faad5-0dc5-475a-6809-08dc6886c6c3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230031|1800799015|376005|7416005|52116005|366007|38350700005;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?WtLkWAkatMhipEAMmPgDb1vNqc6WELXIvMgPrj/jGLoW3uXUpLy/baB2yhVQ?=
- =?us-ascii?Q?09s2Yo4FoS68G2SQO6UfzMluR28MeTiPQfKZYbjOuIxaPWkfc28BGgefmoJ+?=
- =?us-ascii?Q?OLdYBa6us6D8J+TS923PcdAc9yh5yvnFr55wuA4JiiokKKLwfSySIEZ9YKft?=
- =?us-ascii?Q?DiA0Kdj+baMdDkZG67oxH15Mgzq2x14N0gpc9+R+jknDanci6PgC2GZNv6Gy?=
- =?us-ascii?Q?I91oatGLHKX0SDjyjv5ZHdY+y5zHKWLYccXNYn958KU1L6AYaemTT+iwM+3P?=
- =?us-ascii?Q?9Li9HBfGdLp97mMTivregWAqJKi8msrQgFGVzx80h1NIpuR1H2NQLU1pP9OA?=
- =?us-ascii?Q?kFZoMxQ6lEkrBzbZmYprVm/k6NR6560roH5C6Ipy/0WadSzxMAnDZZMwQcvO?=
- =?us-ascii?Q?inq0lowzuwXwq4MEtHa8A0MhKIrfKnIYiPhlcRXIJxNtPsrVkmOq4Fo+xIIq?=
- =?us-ascii?Q?e5vpKMah0bMvGzIX7QvHkAH2CbdeZZruh79onGvFcUJNKe4fy1WwEj9AOKzE?=
- =?us-ascii?Q?hJzE+f6w7aW/2saYBfI1QrIZW7vB2OIRep4w9LS0piZr6iFC6X+DuLkVouSc?=
- =?us-ascii?Q?Sy3kQ+fmVKt23tlEcX0My/U18tYnr9gIE0xNXYVVMTp5k6vtfPCrj+0fwJyG?=
- =?us-ascii?Q?N6xsKmBuYQDTcPmcxuukwyMcEUPLOv94o1QBETAsCQJIhN8sTODzY0ObvdnP?=
- =?us-ascii?Q?3HqsDJUi1+VAoDES0kV9wOs7OBlrmaF42mhlogv1oEo5tJP9wBrPk3tDVC1e?=
- =?us-ascii?Q?eE533KpydYMGamIzmJGz9oQBSPouGeLdGQHYj01ebRSZeoftxA3uoQ9l5xNb?=
- =?us-ascii?Q?DJFeSAGQSclPZTqWnmwu+BSuOtgjCaArkbXCQEECBcKQESbyWkexHVzGY4Xv?=
- =?us-ascii?Q?dltHEHMg2OFGn0k7GneylbVBCl7FDSKVueZITe7WbPqipww01ZL98ddFNgmt?=
- =?us-ascii?Q?Up1/8NrIQDb8jvSlEfwVK/xTQ9Uf7qpp9vbCkjvyJpDM5Bho29IvcneLIUcB?=
- =?us-ascii?Q?rHfsu9ID5qA2KYT7MfIgPc4VU4CB9iDXIk8QCSa3CNd6KW+X9zLcwRYp5gi5?=
- =?us-ascii?Q?yCjeYGDezqvb3qKd1qZj9Rgx5RTwgdFZyG3k78CViF6O+7va6TWd6qGfvIYl?=
- =?us-ascii?Q?uUu7ooLsW9rUkvItFr9etjztlQDxBRG6szu3+aqvG6pp6uEI/tO1tHXMMnUS?=
- =?us-ascii?Q?f/ldj+pFZ2U77uVXA8a83CtIQ+eLC4WG7SRloHmuDliTNTOYYMb9vJz/7CXf?=
- =?us-ascii?Q?5r9QT9RqccsR+pcDoKLvZXxLDdn7v/PzkYelAwwk52D90vHGbQfB8FvyB7TX?=
- =?us-ascii?Q?1Ks=3D?=
+	=?us-ascii?Q?lM7oRIowq1sP2j3CuvpNNxciZGIVB9lT74velMa0kjiN0++pe2SiSNQU2a9f?=
+ =?us-ascii?Q?kXtKKN2yu4RU5TqExyDM90GS1Qpj7JCgs0CDhSujGFUupNxN2FDS3CojzOQ/?=
+ =?us-ascii?Q?+xuR+TezLbObdcZ0CQTkyng44ODjM1VDDOERJNTZPLtykCseZ8g0LE+ebX/1?=
+ =?us-ascii?Q?tgHTJ3x6An3AphCTOvr+W+ImIOIah2Y4yKMC8onemm9teZfY3nQ8/MLjATlA?=
+ =?us-ascii?Q?udfvXVmDvhTiJhnzI/FAwvnAP4857k0Egh4K3VBaQ0Lx6F3XdkqlRtTc43td?=
+ =?us-ascii?Q?QAewpi18/dlwk9+/PVjZDKfwOi+5P083iyb7O+4Mv2MWXe9lI5909mQpFlEn?=
+ =?us-ascii?Q?DY4ySLY0h1juFv2BI2rEvKTL2DaYMfVHWja4ggMJDG9cSit4UN/Rmp1ozjC3?=
+ =?us-ascii?Q?hI5DIIFUyp/o/sCnm/olnYPZ4Sl78gjMZemxsskt+7loqlg1e5Hkt0U3t1Ey?=
+ =?us-ascii?Q?hMJEq17P4p2yGw1WvG5Q/Dka3eb8aOUIFbxyqeJ5yXqJOIMd7cKhr6wFf3kD?=
+ =?us-ascii?Q?rD0S1NWTkUpU5IF8eio1/OPYMedoFTV0LSA4v8iNY1FSQuWk4oDUiegs/78D?=
+ =?us-ascii?Q?pKqnzo+RsJJ77uA2DtSX1DtpRRO4oHdXwcOiIxPO9VYtJMpe+HZMcdw3xwOa?=
+ =?us-ascii?Q?LhjUzQY6xuueKOMuV4wCf/u5G/0xC1IEPlBg1w4Ngr57kyIXvG9XYDhhfDYl?=
+ =?us-ascii?Q?vPslQPUJfn0phxH8FpkBL5W1dopf7B2gm28s/yZUoWox2TBTr9kR5C/qtZDB?=
+ =?us-ascii?Q?c/gyo/cNnLBy5QjFmTb17G9KOmM6K640XYGnAtXU6VjKma0O6j+R0j87XMRW?=
+ =?us-ascii?Q?2+XBnQUSOylAlTnaWg5KmI136jf7oPlok0I/+vbe6JS0cmY6N+/HCm5xtiZH?=
+ =?us-ascii?Q?bZj1titfe0VHVgsncuHvbBkXccNtp2aIQJGoF7CfDNmkVfpYzfGdwYvYXh7m?=
+ =?us-ascii?Q?9CegJIcNB/kwc2qQyDpwFL5ofZLqUhRMUEX52UJtUAPjvCcdKeKFp10E9sty?=
+ =?us-ascii?Q?pv3kD+DaEQ5w9/UyDLiA4Q8GWqxY+CiLuEM0niqsQU1UfRaE5iUx3TmzgTUO?=
+ =?us-ascii?Q?9UmG8qy2zOpn3IUYFNmfg9PtSFnWFmUq1W+vNCh1pMOEWTZQuViRyRs9gkY+?=
+ =?us-ascii?Q?IWPEZGt9cGkjivR6f4eLr23d6MzDtBvS947avd/WbpKjiWMOdfzkSMQIPxDG?=
+ =?us-ascii?Q?LgewPMTG+OANdP2pHyCfqJiCMJ4I20lAS66gkfvB0ktW596i2lDor/n5qWeh?=
+ =?us-ascii?Q?beei8qAzJ3xQeSwi2IB8uO2Z27E5v4mH7rJvpV0gkP13ELKapWWs3fdu0as2?=
+ =?us-ascii?Q?2p/s1DzdjAKTwroaqISb78jnbDBVxGjuWJg0Jg/jtTNOlw=3D=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR22MB5636.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rN3UNMBTno4P23L/2xcFRMVPnFO1X7d9gnfQcX1QX5Y0H1G2Gu+cJazHcp4s?=
- =?us-ascii?Q?Uz7TEf8UC5jcm6KaC9vm/3ErHOafVVAaHeXo1S0RixQ4RjKZl8gTjgiUdwQM?=
- =?us-ascii?Q?eS/V+FT8FoDnnmhmFsQcONv9dXg4X43QEx8uw61P9/BWrcf9hNbb4MNCoQGZ?=
- =?us-ascii?Q?MfnEx6s6PeqLP9/1PRZ1isw1ugriOTvWghzYnInUiApSwLv7Ma/Cs7qRZNUZ?=
- =?us-ascii?Q?Ao3F6rTmvj6xOI0B7Kec80S4efGvJAEPnnU5lqlXjngXYxAzaSFetwb8plit?=
- =?us-ascii?Q?St10cNM1PmjSnzuMX7Uj16eILmk1hfxAGNCfrOs6PqyupY6RCG1rbHxrVAr3?=
- =?us-ascii?Q?aIJGwbjoGQN3FoWpep1Ynq9nw61vh2WjgdnAfQPmhDUR2CqCldEXdfx1kKcc?=
- =?us-ascii?Q?OqUxhhplDwXScsUOT8nmRjD1422hTbHAJJfoH9eZgXUcRcidjO/jCDuP9dP3?=
- =?us-ascii?Q?sADW4DlAytdefATJQmwmcRXhc1ZjV2o4ijc/NzWYJUYbHlt80ots9X54f7o/?=
- =?us-ascii?Q?LbRwNDcJvpmCD+CR/WriNDlw0wSNgv61c3sGOaa3xLktuYy3Eoqb1yMIhivI?=
- =?us-ascii?Q?q+NNbhnZAAFOkBWv77ZNd2dJlSfcg84s1qvomtMF9d4qfHTV4tewIef2WkwE?=
- =?us-ascii?Q?DndcdILtyuiqnUZEPde/whehd3eq/r4GQPPP9aqnMdYZrLrap4GRvftEij75?=
- =?us-ascii?Q?Z3Qax0WozTimKF0T3pWN/8MzBv+aK7q59OEjLuXAjIoyORL7M3nMCjr+KxxC?=
- =?us-ascii?Q?fRcWM0Ifr6auIj5vweqqDEZjCbGqNI0EVahru7TzFGqSGMO0x5HfkktuCRdM?=
- =?us-ascii?Q?/FDTFvGNG6ISDIfvEOog4mVsGr1B7G/zB3CtT+SXr02i1G0MX5muiLFyJQfA?=
- =?us-ascii?Q?mEbfAYJYcg6oFxrnBkjf11pSQT3Lza7LpruWovo6WYujE6/wN+J+NYuwym2H?=
- =?us-ascii?Q?UDyuaWEY5FqBVU3nXMZsyt6pINEFcRW75How3VirmI68/4lve2gi4aOAnGRo?=
- =?us-ascii?Q?upkU0qHchGoyTGZeKIrmEI/tb6IW/PG+d1DTNPcHDcawKlBzAjwI/E/3qrCY?=
- =?us-ascii?Q?9aQM8DKVF550BWKB7VRqsNxn3WO9hwbZeiG2xdZ+LGIpgThobqtIuzGYZok4?=
- =?us-ascii?Q?Xx6K7GmBGADbMARl7J/p//xvvqzKIr9xDf5HHRu8ZJ2wA1sGwHp8heLCTrS+?=
- =?us-ascii?Q?sD9lp/sEqz6n7m98Mpa+DmuOh39Cg0SGeOI6A2u00dQ+gd9UIK5N2ulEkz8x?=
- =?us-ascii?Q?TYlkNWXkubpmJSgt01lpVKPoP2HWXOSS/T8wZ4NDIWzibf3cTylLw7flYkwk?=
- =?us-ascii?Q?y2VMdDAe9keWCrJdJyRJok6PzNS6dPkbY3/QtLLO+X+twnwnWRtWHnPSFYY5?=
- =?us-ascii?Q?caZWy+XoNXmlNDTFwwbcZAw7ayUcgp3dnm7Q7mhnAyDCd4TV2hcBOaeEzleW?=
- =?us-ascii?Q?oZ3UHxiH8ewsxtv5eFIXGHFJ5zFEjslJh0Va9c7C0ueFNdbYzKKPbboJk2SR?=
- =?us-ascii?Q?J7ZYLVf7emHuGfwyV1pYOGVxZlB5MDxMFglLjklsL4LIYQEndAwHPtT/EsAe?=
- =?us-ascii?Q?2aLslQEYF+7d20kdi7HjyDYYCG1RquwNyuu1v9Bh?=
+	=?us-ascii?Q?9mB91L/o+hQNaV+s8GUz3ROnipsbEIMzlqSPeeDkHaTaHRw76An8vmlATO+4?=
+ =?us-ascii?Q?AGIiPYZM5Ut02l+cI/PHb5peS81uGiXf166Q0dlujl+nkhjycSh/Hod8c9s+?=
+ =?us-ascii?Q?JGf3XjWZeJSzPXfs4MUD8mnMmKGCXXZ5P+chBgSshft00Vr4+BLn4KyTpR2B?=
+ =?us-ascii?Q?MmF4rznRi9zu2yoqy53edFR2V7vPw9cLdaHA7KQcY1U9X4Z4nEnXF51Hb7dz?=
+ =?us-ascii?Q?qkE/vJc6hSWVRAEcVccZhnuo4h8otBVtIBZcY2+g433GehxrmUQVQ3sLxE2/?=
+ =?us-ascii?Q?B4LhGUptjLHOTeiJLhPq7/7P5kAcjiY4RLgTO1gi6C55+2Vsq092mLoL2DCx?=
+ =?us-ascii?Q?YKJFjFEowDptdJzHL9xnmPke9tXROtFGvXWg+vcjmojytlwNGVSrtp0d+zxF?=
+ =?us-ascii?Q?89jmo3+1oCxRGBJr8xRUCgXGNkLlU/EKmnlcjjGozSW2cAV1oHhzjXwyo8nz?=
+ =?us-ascii?Q?VgEB2ah6JPQCz4YKnj93lFTLIuQKaN0ztJDyfyfGtJ/q88oEgPsgZDGLFYLK?=
+ =?us-ascii?Q?eLZo5czr+BsaByGQya6UtR8I0GPARZST3R+nGaoVSyoG4YtzBWp2e8u+Ah5f?=
+ =?us-ascii?Q?mAH7IRdCIya0wJF6iYP/D9bBRQ/T1fhGH8gQ2SLsCHi2fGEhFWDPqRiGLvSK?=
+ =?us-ascii?Q?Q8K9/DZjsMDj7gBZ202pZgu5uEsqQLeRvHqXGNkc2s2ExKWSauvIZISZgd0G?=
+ =?us-ascii?Q?bQ6RMn6rLw/AFYAcYP0hEpjqvdoL7eBEuDKFe9OVXOWSHeelDeiBQb5O5YlY?=
+ =?us-ascii?Q?9sAoIAfAiLef4Ah0yoZq5XIKoQkdPtuXKP+4vSuPCAM5nR6oErTSq8R5CC7+?=
+ =?us-ascii?Q?MaHLnPrSdJx7VXe35Xw03GiQroe1DbGC4vtNvjnNm++rIhwGZHldNfu2fWnd?=
+ =?us-ascii?Q?l0d0bDPz1NzkHUzrYf/n6l1QoTdSZV+Gl//cj8/fEiAREPKUVwx0vsCHZbEQ?=
+ =?us-ascii?Q?+3KhxqBUiR4YcI9YREg20cYmDWY+KS4fx0iobx1na6fJ7JA0bhc58bxH5IcL?=
+ =?us-ascii?Q?0vHYLkxUORhE+mvF1kfsZ5dZEaK2gvaMxmMAkfM965W7dtbRf8VT4wMmyrw1?=
+ =?us-ascii?Q?bVbwl1GGJYfm/1yOM+CsPQ4f2ClvvwAipaLWZyFam/5/iDC12xsMCHkcnuoz?=
+ =?us-ascii?Q?OF2A+kZ3tsTOvvdG1tOFPE4qvY5t7og4EyUdSCKagjagIoZc0H5EduoP64/6?=
+ =?us-ascii?Q?YJmLGTECmmJ/jUgJwxwBXkaQzLm41HpjuiVMgCVL1RooT2NyBIkb0q6/JbdS?=
+ =?us-ascii?Q?DlH1wdQXJhbV1sOyH2SubrZQCICJRDFjHXC9wpFyxtlKgHosTnd5Q5/6poGe?=
+ =?us-ascii?Q?8YUUeuqDZYLQnNbV1fpEw0u0rFlydwz1NaVSANY1lRgdcwMmxuSRPs+S15X3?=
+ =?us-ascii?Q?Svtijg+JO8KHVW2uU1YMp7Ac8nmqJout10g58zSS+qWqI8tapAw9fX1f377D?=
+ =?us-ascii?Q?Y5ksuMx5qgRB83UJdwTIHYpBmvfcXa5WwtAw1/ygd0rcmMXXKoJJQngDnx7u?=
+ =?us-ascii?Q?DWANjhDrs9kxr5v3haCCB4r16ujINzWBM86lDYmcishv2t5AC8VLOrTtrREP?=
+ =?us-ascii?Q?PXaxFlmYDnExIkd8tpbhVbDtoX/16D8FzNQQkiqp?=
 X-OriginatorOrg: phytec.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de1431a7-3ec0-465f-e9bd-08dc6886c5ab
+X-MS-Exchange-CrossTenant-Network-Message-Id: 288faad5-0dc5-475a-6809-08dc6886c6c3
 X-MS-Exchange-CrossTenant-AuthSource: SA1PR22MB5636.namprd22.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 19:58:43.2987
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 19:58:45.1104
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 67bcab1a-5db0-4ee8-86f4-1533d0b4b5c7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X+GtzQvgYGS5xpJ4bpQcBCT7y0y8I7yL8gmmhvRJRP7DpNTlk1+kDSCEQPoYBPOBY9DqJXoMcuTH86zFo4I4hg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ccthxb8jOu/m9Rd1lzJd90R3uyfJg6peyDCpuLCBHlO1wvKHxnseyRrqxvDu8h1ldkBY05l0XfZv+ZdoJQ+KTw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR22MB3962
 
-Convert the lp873x binding to DT schema format. The gpio-controller
-and #gpio-cells properties were removed from required because using
-the device as a GPIO controller is optional.
+Add a PMIC node to the phycore-am64 device tree.
 
 Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
 ---
-v2:
-  - Added "mfd:" to subject prefix
-  - Added vendor TI to file name
-  - Updated title to match hardware
-  - Removed | where we do not need to preserve formatting
-  - Added *-in-supply back to required properties, they should not have been removed
-  - Added explanation for why gpio properties were removed from required
-  - Updated the example to be more generic and got rid of unnecessary i2c node
+v2: No change
 
- .../devicetree/bindings/mfd/lp873x.txt        |  67 -----------
- .../devicetree/bindings/mfd/ti,lp8732.yaml    | 112 ++++++++++++++++++
- 2 files changed, 112 insertions(+), 67 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/lp873x.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp8732.yaml
+ .../boot/dts/ti/k3-am64-phycore-som.dtsi      | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/lp873x.txt b/Documentation/devicetree/bindings/mfd/lp873x.txt
-deleted file mode 100644
-index ae9cf39bd101..000000000000
---- a/Documentation/devicetree/bindings/mfd/lp873x.txt
-+++ /dev/null
-@@ -1,67 +0,0 @@
--TI LP873X PMIC MFD driver
--
--Required properties:
--  - compatible:	"ti,lp8732", "ti,lp8733"
--  - reg:		I2C slave address.
--  - gpio-controller:	Marks the device node as a GPIO Controller.
--  - #gpio-cells:	Should be two.  The first cell is the pin number and
--			the second cell is used to specify flags.
--			See ../gpio/gpio.txt for more information.
--  - xxx-in-supply:	Phandle to parent supply node of each regulator
--			populated under regulators node. xxx can be
--			buck0, buck1, ldo0 or ldo1.
--  - regulators:	List of child nodes that specify the regulator
--			initialization data.
--Example:
--
--pmic: lp8733@60 {
--	compatible = "ti,lp8733";
--	reg = <0x60>;
--	gpio-controller;
--	#gpio-cells = <2>;
--
--	buck0-in-supply = <&vsys_3v3>;
--	buck1-in-supply = <&vsys_3v3>;
--	ldo0-in-supply = <&vsys_3v3>;
--	ldo1-in-supply = <&vsys_3v3>;
--
--	regulators {
--		lp8733_buck0: buck0 {
--			regulator-name = "lp8733-buck0";
--			regulator-min-microvolt = <800000>;
--			regulator-max-microvolt = <1400000>;
--			regulator-min-microamp = <1500000>;
--			regulator-max-microamp = <4000000>;
--			regulator-ramp-delay = <10000>;
--			regulator-always-on;
--			regulator-boot-on;
--		};
--
--		lp8733_buck1: buck1 {
--			regulator-name = "lp8733-buck1";
--			regulator-min-microvolt = <800000>;
--			regulator-max-microvolt = <1400000>;
--			regulator-min-microamp = <1500000>;
--			regulator-max-microamp = <4000000>;
--			regulator-ramp-delay = <10000>;
--			regulator-boot-on;
--			regulator-always-on;
--		};
--
--		lp8733_ldo0: ldo0 {
--			regulator-name = "lp8733-ldo0";
--			regulator-min-microvolt = <800000>;
--			regulator-max-microvolt = <3000000>;
--			regulator-boot-on;
--			regulator-always-on;
--		};
--
--		lp8733_ldo1: ldo1 {
--			regulator-name = "lp8733-ldo1";
--			regulator-min-microvolt = <800000>;
--			regulator-max-microvolt = <3000000>;
--			regulator-always-on;
--			regulator-boot-on;
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/mfd/ti,lp8732.yaml b/Documentation/devicetree/bindings/mfd/ti,lp8732.yaml
-new file mode 100644
-index 000000000000..9a90cee2b545
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/ti,lp8732.yaml
-@@ -0,0 +1,112 @@
-+# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/ti,lp8732.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+index 125e507966fb..2c3b20ddfb8b 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+@@ -265,6 +265,50 @@ i2c_som_rtc: rtc@52 {
+ 		interrupts = <70 IRQ_TYPE_EDGE_FALLING>;
+ 		wakeup-source;
+ 	};
 +
-+title: TI LP873X Power Management Integrated Circuit
++	pmic@61 {
++		compatible = "ti,lp8733";
++		reg = <0x61>;
 +
-+maintainers:
-+  - J Keerthy <j-keerthy@ti.com>
++		buck0-in-supply = <&vcc_5v0_som>;
++		buck1-in-supply = <&vcc_5v0_som>;
++		ldo0-in-supply = <&vdd_3v3>;
++		ldo1-in-supply = <&vdd_3v3>;
 +
-+description:
-+  PMIC with two high-current buck converters and two linear regulators.
++		regulators {
++			vdd_core: buck0 {
++				regulator-name = "VDD_CORE";
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - ti,lp8732
-+      - ti,lp8733
++			vdd_3v3: buck1 {
++				regulator-name = "VDD_3V3";
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
 +
-+  reg:
-+    maxItems: 1
++			vdd_1v8_ldo0: ldo0 {
++				regulator-name = "VDD_1V8_LDO0";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
 +
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  regulators:
-+    description:
-+      List of child nodes that specify the regulator initialization data.
-+    type: object
-+    patternProperties:
-+      "^buck[01]|ldo[01]$":
-+        type: object
-+        $ref: /schemas/regulator/regulator.yaml#
-+        unevaluatedProperties: false
-+    additionalProperties: false
-+
-+patternProperties:
-+  '^(buck[01]|ldo[01])-in-supply$':
-+    description: Phandle to parent supply of each regulator populated under regulators node.
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+  - buck0-in-supply
-+  - buck1-in-supply
-+  - ldo0-in-supply
-+  - ldo1-in-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pmic: pmic@60 {
-+            compatible = "ti,lp8733";
-+            reg = <0x60>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+
-+            buck0-in-supply = <&vsys_3v3>;
-+            buck1-in-supply = <&vsys_3v3>;
-+            ldo0-in-supply = <&vsys_3v3>;
-+            ldo1-in-supply = <&vsys_3v3>;
-+
-+            regulators {
-+                buck0: buck0 {
-+                    regulator-name = "buck0";
-+                    regulator-min-microvolt = <800000>;
-+                    regulator-max-microvolt = <1400000>;
-+                    regulator-min-microamp = <1500000>;
-+                    regulator-max-microamp = <4000000>;
-+                    regulator-ramp-delay = <10000>;
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                };
-+
-+                buck1: buck1 {
-+                    regulator-name = "buck1";
-+                    regulator-min-microvolt = <800000>;
-+                    regulator-max-microvolt = <1400000>;
-+                    regulator-min-microamp = <1500000>;
-+                    regulator-max-microamp = <4000000>;
-+                    regulator-ramp-delay = <10000>;
-+                    regulator-boot-on;
-+                    regulator-always-on;
-+                };
-+
-+                ldo0: ldo0 {
-+                    regulator-name = "ldo0";
-+                    regulator-min-microvolt = <800000>;
-+                    regulator-max-microvolt = <3000000>;
-+                    regulator-boot-on;
-+                    regulator-always-on;
-+                };
-+
-+                ldo1: ldo1 {
-+                    regulator-name = "ldo1";
-+                    regulator-min-microvolt = <800000>;
-+                    regulator-max-microvolt = <3000000>;
-+                    regulator-always-on;
-+                    regulator-boot-on;
-+                };
-+            };
-+        };
-+    };
++			vdda_1v8: ldo1 {
++				regulator-name = "VDDA_1V8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++		};
++	};
+ };
+ 
+ &main_r5fss0_core0 {
 -- 
 2.25.1
 
