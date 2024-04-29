@@ -1,168 +1,139 @@
-Return-Path: <linux-kernel+bounces-162351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B0608B59AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:18:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF91F8B59B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:18:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3B81C20FD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:18:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81FA91F2293F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA0E10971;
-	Mon, 29 Apr 2024 13:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD0556B6C;
+	Mon, 29 Apr 2024 13:18:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M4X/1p0a"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="FGEd0IUV"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DEA548F3
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B071674404;
+	Mon, 29 Apr 2024 13:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396667; cv=none; b=jyEiWXFqW++JvslFCkYpc37BJjb0GcGVLzeKj+gunAOK+I+3mGFGu2mpZpCgqN8JVbTZuwT1H0CNgk0xy3GlS929ERcFqk0froOMQhZEMSi5K+rJuiNkdx+5EYWJmFk0SOEFjgqlrgGrDFGyRuBUC4yBeklN3iwyUXFMLYoLOWg=
+	t=1714396701; cv=none; b=Q/skNZEUV07BRMCzKnqML/vlQ3yPToFl2Fff8oR5rtmTGf0xuHbzuiYhkCLT1vBN65gMqDbIt6IL331DXxkhCvmu8uAV5l9bozmt80JZl3TZExX4+fXp9tJdpKS8uIm1ZBW3ygOf3S28NkVIodgE+7vBnza1cTicectnhzaIprs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396667; c=relaxed/simple;
-	bh=vvnS47Dpfc2lPtfocF2xFFI42fQVbBcxzt1unzaD04A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tDQ3NqVQFjmE6u6usBlAHDAo4Rfoxo+k+VSfghzIztaF1Oc8PSMjU/GxeJFbGo78nBdQb/laAdHXg6pGrmd+KgysbijEVFFsD5ro1FCJqQTOtQHaOyyITKG55dKl8QIT9hJdXW9Wo4p0lHW+XMhb+G6VU2i51fy4HWMlFtk6IME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M4X/1p0a; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714396665; x=1745932665;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vvnS47Dpfc2lPtfocF2xFFI42fQVbBcxzt1unzaD04A=;
-  b=M4X/1p0aiAkbadnx/z5wIIUDVUdQm7eCE2dIz6w3TtotjSpsXyMLMxEy
-   i770O5WFrZ3p0fm/P+8jRIt8sISz9f5i33gOWxFWnvJhpceApJf8df6Hw
-   Qolqya0AMQZfybnrGGkZ5DLt5e8zHbp+U9Up6N0EJRSmxZjSgBIa1qy48
-   6ImfcxIWp7fq8mhoxeZNat44VQdKPeENfBrAXR3tY74utQqI47GBojZzD
-   RrzGO4GgTL60rntOaSmKz0iDpFHPxbjiL/CYFJ4pSTOStGoUzEz7rnI/I
-   gEtTiYQ9CWqqK/AXfB89YB83uZXlZTonANpfuATyAI6f6zSi36uwbPor7
-   w==;
-X-CSE-ConnectionGUID: 1UvsmeyoQkqljKBTM/n9RQ==
-X-CSE-MsgGUID: JznZSN5hTle8PM6tsZsViA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10167086"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="10167086"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:17:45 -0700
-X-CSE-ConnectionGUID: 8NOiztBIRTaSIwyN+FuNlw==
-X-CSE-MsgGUID: pfLor2xfQQiqFaB6fEhbAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26069268"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa009.fm.intel.com with ESMTP; 29 Apr 2024 06:17:39 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 71239179; Mon, 29 Apr 2024 16:17:38 +0300 (EEST)
-Date: Mon, 29 Apr 2024 16:17:38 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Sean Christopherson <seanjc@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
-	Kai Huang <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
- TDX guest
-Message-ID: <e35yxpa2xdynm7focg6k4u2bjzojn24bmeaszh2jz52e4szc5f@6mgtrdnkewhe>
-References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
- <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
- <ZhVPIDDLkjOB96fI@google.com>
- <3q6jv3g4tezybmd667mqxio7ty22akxv7okrznmzx3tju2u4qo@2alzjkbgm2lh>
- <20240428171111.GKZi6DLy_ZwuZsZdFq@fat_crate.local>
+	s=arc-20240116; t=1714396701; c=relaxed/simple;
+	bh=EUNYM67ljV/1+l6ugAx8BfuV7yZemSgbjdsgHuN1rzU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ta39qU74o4aQRWbPSlinkK+n0d/sOVbKQsiNKNX6qENo9nu5/bqhLVbAVwJC0MU/SQIw6Tn+MJPyUupwEz9FmrJWrTuoP2ocmVq9RhWYQ+WDVpfrA7PPiTWhC0xL9I554ekr/XiZWorH0zIeFW4CsJJKcKC+cgThCEBa7WyKkZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=FGEd0IUV; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D4C1DC0005;
+	Mon, 29 Apr 2024 13:18:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1714396691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6WIxTn0pRjbZXHgFG8AwaR4joGVxkdi8wOuc1SO7gIs=;
+	b=FGEd0IUVUimnHqEMC3oAwvto00HNVnMflL0L7Ph/Ryrk7N/JOd8t1z4bbBPy5b58KRO9k5
+	I3szYcCy8KVwRYHA1I6NfbF0HWGffDxy9+baoG19copWjA/jxRvbpIWFAaMDBDjyaWLWXk
+	IKPn/HbPA4OqlW2+y/DGE85RCCMAklQrxnr+rWemcMa7T4IlOjaPDGsuV3y00M+UGoipOp
+	Lsv/aCYhblt5FsBnUNpFA/1mLETUrUj0KaEnJ+E/2UYRMLXP3yc6HN0o0gYxq4oRf5EWh1
+	txO81TyFcNZxEJVl4hf3JCF+BaPQlmyEXsv00J6rxXu9sd40YeFXkPafTdvXzg==
+Message-ID: <f5eb359a-fdbf-4b0a-8df5-be034da1aca3@arinc9.com>
+Date: Mon, 29 Apr 2024 16:17:40 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428171111.GKZi6DLy_ZwuZsZdFq@fat_crate.local>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: dsa: mt7530: detect PHY muxing when PHY is
+ defined on switch MDIO bus
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240429-b4-for-netnext-mt7530-use-switch-mdio-bus-for-phy-muxing-v1-1-1f775983e155@arinc9.com>
+ <Zi9vYLwgekd0Pmzn@shell.armlinux.org.uk>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <Zi9vYLwgekd0Pmzn@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Sun, Apr 28, 2024 at 07:11:11PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 09, 2024 at 06:26:05PM +0300, Kirill A. Shutemov wrote:
-> > From 6be428e3b1c6fb494b2c48ba6a7c133514a0b2b4 Mon Sep 17 00:00:00 2001
-> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > Date: Fri, 10 Feb 2023 12:53:11 +0300
-> > Subject: [PATCHv10.1 05/18] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
-> > 
-> > Depending on setup, TDX guests might be allowed to clear CR4.MCE.
-> > Attempt to clear it leads to #VE.
-> > 
-> > Use alternatives to keep the flag during kexec for TDX guests.
-> > 
-> > The change doesn't affect non-TDX-guest environments.
+On 29.04.2024 12:58, Russell King (Oracle) wrote:
+> On Mon, Apr 29, 2024 at 12:46:43PM +0300, Arınç ÜNAL via B4 Relay wrote:
+>> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>
+>> Currently, the MT7530 DSA subdriver configures the MT7530 switch to provide
+>> direct access to switch PHYs, meaning, the switch PHYs listen on the MDIO
+>> bus the switch listens on. The PHY muxing feature makes use of this.
+>>
+>> This is problematic as the PHY may be probed before the switch is
+>> initialised, in which case attaching the PHY will fail.
+>>
+>> Since commit 91374ba537bd ("net: dsa: mt7530: support OF-based registration
+>> of switch MDIO bus"), we can describe the switch PHYs on the MDIO bus of
+>> the switch on the device tree. Extend the check to detect PHY muxing when
+>> the PHY is defined on the MDIO bus of the switch on the device tree.
+>>
+>> When the PHY is described this way, the switch will be initialised first,
+>> then the switch MDIO bus will be registered. Only after these steps, the
+>> PHY will be probed.
 > 
-> This is all fine and dandy but nothing explains *why* TDX needs this
-> special dance.
+> Looking at the commit description and the patch, I'm not sure whether
+> you really mean "probed" or whether you mean "attached".
 > 
-> Why can't TDX do the usual CR4.MCE diddling like the normal kernel
-> during init and needs to do that here immediately?
-
-As I mentioned above, clearing CR4.MCE triggers #VE. It is quirk of the
-platform.
-
-There's plan to allow it in newer TDX modules, but kernel still has to
-assume we cannot touch it in TDX guest case.
-
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/kernel/relocate_kernel_64.S | 15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
-> > index 56cab1bb25f5..90246d544eb1 100644
-> > --- a/arch/x86/kernel/relocate_kernel_64.S
-> > +++ b/arch/x86/kernel/relocate_kernel_64.S
-> > @@ -5,6 +5,8 @@
-> >   */
-> >  
-> >  #include <linux/linkage.h>
-> > +#include <linux/stringify.h>
-> > +#include <asm/alternative.h>
-> >  #include <asm/page_types.h>
-> >  #include <asm/kexec.h>
-> >  #include <asm/processor-flags.h>
-> > @@ -143,14 +145,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
-> >  
-> >  	/*
-> >  	 * Set cr4 to a known state:
-> > -	 *  - physical address extension enabled
-> >  	 *  - 5-level paging, if it was enabled before
-> > +	 *  - Machine check exception on TDX guest, if it was enabled before.
-> > +	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
+> PHY drivers will bind to PHY devices when they are detected on the MDIO
+> bus (either by scanning or instantiating firmware description) and the
+> devices are registered. As each device is registered, the drivers for
+> the bus type are scanned and any matches will have their probe function
+> called. This happens outside of any control of the DSA driver if the
+> DSA device is on the same MDIO bus.
 > 
-> 			 ... might not be allowed ...
+> This is separate from the process of looking up a PHY and attaching the
+> PHY.
 > 
+> So, I think there is probably a terminology issue with the patch
+> description. I suspect you don't mean "probing" as in phy_probe() being
+> called. Looking at the code, it looks like the driver is making
+> decisions based on how PHYs are connected to the ethernet MACs in the
+> device tree, and you're making decisions based on that. I wouldn't call
+> that "probing" a PHY.
 
-Oopsie. Thanks.
+Yes, I meant to say "looking up a PHY and attaching the PHY" by probing a
+PHY. I'll adjust the patch log to below, thanks.
 
-> > +	 *  - physical address extension enabled
-> >  	 */
-> > -	movl	$X86_CR4_PAE, %eax
-> > -	testq	$X86_CR4_LA57, %r13
-> > -	jz	1f
-> > -	orl	$X86_CR4_LA57, %eax
-> > -1:
-> > +	movl	$X86_CR4_LA57, %eax
-> > +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
-> > +	andl	%r13d, %eax
-> 
-> %r13 needs a comment here that it contains %cr4 read above in
-> relocate_kernel()
+Currently, the MT7530 DSA subdriver configures the MT7530 switch to provide
+direct access to switch PHYs, meaning, the switch PHYs listen on the MDIO
+bus the switch listens on. The PHY muxing feature makes use of this.
 
-Okay.
+This is problematic as the PHY may be attached before the switch is
+initialised, in which case, the PHY will fail to be attached.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Since commit 91374ba537bd ("net: dsa: mt7530: support OF-based registration
+of switch MDIO bus"), we can describe the switch PHYs on the MDIO bus of
+the switch on the device tree. Extend the check to detect PHY muxing when
+the PHY is defined on the MDIO bus of the switch on the device tree.
+
+When the PHY is described this way, the switch will be initialised first,
+then the switch MDIO bus will be registered. Only after these steps, the
+PHY will be attached.
+
+Arınç
 
