@@ -1,314 +1,201 @@
-Return-Path: <linux-kernel+bounces-162336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80078B59AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:17:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3C118B5988
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:12:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01F7AB24B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5731028DA58
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337AB651B6;
-	Mon, 29 Apr 2024 13:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E7670CAA;
+	Mon, 29 Apr 2024 13:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="TqcB3gDM"
-Received: from smtp-190d.mail.infomaniak.ch (smtp-190d.mail.infomaniak.ch [185.125.25.13])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="G9OxHGn6"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1717BAF4
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAA9C2C6;
+	Mon, 29 Apr 2024 13:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396198; cv=none; b=SLNzAsYB2nZq10x1E9eLcf6r2j6bWgrZlhKYcbccT0Ctql5KcrGvo6co3LD4v1dCQnAZOW4s8w72Gx9kN5YyQr+sozBUkCfPqcAVUFi97GY1vEjN2Pa+nd50oFkx53+XxtQRIxVmbO5sTW5kG2K0PeXQUjoPoaPgSUiVaKO+7GM=
+	t=1714396220; cv=none; b=IYLsTqkSe9Ur1sIp5fdDSXCTd7Auxns2nkTjs3VlXmsE87hJpltKYwDEMzY2cEnd3k01TCCvzI2y7e7v/1P+1HFtdWXir4cLW5GH3nAI9mPIW5/qHf7erlFW8i7D/gGj5A24QV9xNDTss3ucJAQWb+kuJdXxqViGNEfHVoF9Qhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396198; c=relaxed/simple;
-	bh=Jor1PqTa6MZWNm9AN36pFho/bi/wkmgECu26zOLSf8o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dflJ+b9Nxsb1tHOHAf3WIWBiz17kJ1laFLYAtbRBD7HOeEiAhJVmwGjhSuiujm/jmRqR0GVsjewgP7DMLc+FcxuXqyjNE/lkpSsIHT3JVwQc/eWHyqWBMuA8fYfgcTBBYuTo7MxsMnrdBGHyNq4oYSiPAInEkEKWCIcsmslUdRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=TqcB3gDM; arc=none smtp.client-ip=185.125.25.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VSkFS3s1KzCTL;
-	Mon, 29 Apr 2024 15:09:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1714396188;
-	bh=Jor1PqTa6MZWNm9AN36pFho/bi/wkmgECu26zOLSf8o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TqcB3gDMiDIdJYUqGEozEB9/MfC1XGIJTCyJLRfa1cTnBh7Fk81FrHw3v4HrWmnbI
-	 dRi1K2A+1zSQGgHR930QrBRb8/YVOqpvs23+ccvNfYGlKs6auLTWzbRUTIGBIqPWCt
-	 ohos0Rl4DHqm5ySgAJDAgERR+uPs4JBTcP31OnZM=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VSkFR70GSzL6k;
-	Mon, 29 Apr 2024 15:09:47 +0200 (CEST)
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Christian Brauner <brauner@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Mark Brown <broonie@kernel.org>,
-	Shengyu Li <shengyu.li.evgeny@gmail.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	"David S . Miller" <davem@davemloft.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Will Drewry <wad@chromium.org>,
-	kernel test robot <oliver.sang@intel.com>,
+	s=arc-20240116; t=1714396220; c=relaxed/simple;
+	bh=l2ypQGYvXw8D2rq+W/qtidSrfjuL+50QzlaZg2ZjPhU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k8qSc157Z6lVn97rzYab2V9tsno4IOyns8YF9ujrWBXEo1vF9LrQ49e1Gkp/33VVeQfRPmmwQXWEaqhe3J7BZQt0IIte6V5C+63tnq3H0NEGrvVCcPhx0/cJLCR80BdlbPkprz6wCG5Vh1xVwxXjpWqrohPpiwLTs60HcY2fRZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=G9OxHGn6; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CA48D240004;
+	Mon, 29 Apr 2024 13:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714396214;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=c2nY9oW5/iUT6Zx2N63VDP2nYCyfzTT6a6pD8hndgb8=;
+	b=G9OxHGn6e5kmPlbyzBHCQ+YkrA8iFhVI7DgJ4gnbkO81DdHTf4Uhn3awWQ9rcMdpE/NY/A
+	8+cTE81yeNqg9MHep3OY4Xu9J1bLoFi2NKS0It1lA7TsGPVSDtCP6PGoHadhmeStFzGntm
+	ogVXGm/jMXXqJ0xpj6I4B3XI5W7KtMmo+YE03uKdqloA9vtNuYypXJmkWmdExhIcJhJ7M8
+	ESVccH7WSn/bFzoQuyilX1S4T0QY4aI6jS/Q7ehFE2soYTaJ2FtsU8How2FCdFEHEbrY2O
+	UXeYT8ZlllNsefzIubBl6RD0jb9Xd76CmXp0J412ZYzNXV3Mqy23UpNQUMe0TQ==
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: davem@davemloft.net
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 9/9] selftests/harness: Fix vfork() side effects
-Date: Mon, 29 Apr 2024 15:09:31 +0200
-Message-ID: <20240429130931.2394118-10-mic@digikod.net>
-In-Reply-To: <20240429130931.2394118-1-mic@digikod.net>
-References: <20240429130931.2394118-1-mic@digikod.net>
+	thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	mwojtas@chromium.org,
+	Nathan Chancellor <nathan@kernel.org>,
+	Antoine Tenart <atenart@kernel.org>
+Subject: [PATCH net-next] net: phy: Don't conditionally compile the phy_link_topology creation
+Date: Mon, 29 Apr 2024 15:10:07 +0200
+Message-ID: <20240429131008.439231-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Setting the time namespace with CLONE_NEWTIME returns -EUSERS if the
-calling thread shares memory with another thread (because of the shared
-vDSO), which is the case when it is created with vfork().
+The core of the phy_link_topology isn't directly tied to phylib, and at
+the moment it's initialized, phylib might not be loaded yet. Move the
+initialization of the topology to the phy_link_topology_core header,
+which contains the bare minimum so that we can initialize it at netdev
+creation.
 
-Fix pidfd_setns_test by replacing test harness's vfork() call with a
-clone3() call with CLONE_VFORK, and an explicit sharing of the
-_metadata and self objects.
-
-Replace _metadata->teardown_parent with a new FIXTURE_TEARDOWN_PARENT()
-helper that can replace FIXTURE_TEARDOWN().  This is a cleaner approach
-and it enables to selectively share the fixture data between the child
-process running tests and the parent process running the fixture
-teardown.  This also avoids updating several tests to not rely on the
-self object's copy-on-write property (e.g. storing the returned value of
-a fork() call).
-
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Günther Noack <gnoack@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Will Drewry <wad@chromium.org>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
-Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240429130931.2394118-10-mic@digikod.net
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
+Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
 ---
+ drivers/net/phy/phy_link_topology.c    | 23 --------------------
+ include/linux/phy_link_topology.h      |  5 -----
+ include/linux/phy_link_topology_core.h | 30 +++++++++++++++++---------
+ 3 files changed, 20 insertions(+), 38 deletions(-)
 
-Changes since v1:
-* Split changes (suggested by Kees).
-* Improve documentation.
-* Remove the static fixture_name##_teardown_parent initialisation to
-  false (as suggested by checkpatch.pl).
----
- tools/testing/selftests/kselftest_harness.h | 66 ++++++++++++++++-----
- tools/testing/selftests/landlock/fs_test.c  | 16 ++---
- 2 files changed, 57 insertions(+), 25 deletions(-)
-
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index eceedb0a3586..88ae3c2db12f 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -294,6 +294,32 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
-  * A bare "return;" statement may be used to return early.
-  */
- #define FIXTURE_TEARDOWN(fixture_name) \
-+	static const bool fixture_name##_teardown_parent; \
-+	__FIXTURE_TEARDOWN(fixture_name)
-+
-+/**
-+ * FIXTURE_TEARDOWN_PARENT()
-+ * *_metadata* is included so that EXPECT_*, ASSERT_* etc. work correctly.
-+ *
-+ * @fixture_name: fixture name
-+ *
-+ * .. code-block:: c
-+ *
-+ *     FIXTURE_TEARDOWN_PARENT(fixture_name) { implementation }
-+ *
-+ * Same as FIXTURE_TEARDOWN() but run this code in a parent process.  This
-+ * enables the test process to drop its privileges without impacting the
-+ * related FIXTURE_TEARDOWN_PARENT() (e.g. to remove files from a directory
-+ * where write access was dropped).
-+ *
-+ * To make it possible for the parent process to use *self*, share (MAP_SHARED)
-+ * the fixture data between all forked processes.
-+ */
-+#define FIXTURE_TEARDOWN_PARENT(fixture_name) \
-+	static const bool fixture_name##_teardown_parent = true; \
-+	__FIXTURE_TEARDOWN(fixture_name)
-+
-+#define __FIXTURE_TEARDOWN(fixture_name) \
- 	void fixture_name##_teardown( \
- 		struct __test_metadata __attribute__((unused)) *_metadata, \
- 		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self, \
-@@ -368,10 +394,11 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
-  * Very similar to TEST() except that *self* is the setup instance of fixture's
-  * datatype exposed for use by the implementation.
-  *
-- * The @test_name code is run in a separate process sharing the same memory
-- * (i.e. vfork), which means that the test process can update its privileges
-- * without impacting the related FIXTURE_TEARDOWN() (e.g. to remove files from
-- * a directory where write access was dropped).
-+ * The _metadata object is shared (MAP_SHARED) with all the potential forked
-+ * processes, which enables them to use EXCEPT_*() and ASSERT_*().
-+ *
-+ * The *self* object is only shared with the potential forked processes if
-+ * FIXTURE_TEARDOWN_PARENT() is used instead of FIXTURE_TEARDOWN().
-  */
- #define TEST_F(fixture_name, test_name) \
- 	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT)
-@@ -392,39 +419,49 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
- 		struct __fixture_variant_metadata *variant) \
- 	{ \
- 		/* fixture data is alloced, setup, and torn down per call. */ \
--		FIXTURE_DATA(fixture_name) self; \
-+		FIXTURE_DATA(fixture_name) self_private, *self = NULL; \
- 		pid_t child = 1; \
- 		int status = 0; \
- 		/* Makes sure there is only one teardown, even when child forks again. */ \
- 		bool *teardown = mmap(NULL, sizeof(*teardown), \
- 			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
- 		*teardown = false; \
--		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
-+		if (sizeof(*self) > 0) { \
-+			if (fixture_name##_teardown_parent) { \
-+				self = mmap(NULL, sizeof(*self), PROT_READ | PROT_WRITE, \
-+					MAP_SHARED | MAP_ANONYMOUS, -1, 0); \
-+			} else { \
-+				memset(&self_private, 0, sizeof(self_private)); \
-+				self = &self_private; \
-+			} \
-+		} \
- 		if (setjmp(_metadata->env) == 0) { \
--			/* Use the same _metadata. */ \
--			child = vfork(); \
-+			/* _metadata and potentially self are shared with all forks. */ \
-+			child = clone3_vfork(); \
- 			if (child == 0) { \
--				fixture_name##_setup(_metadata, &self, variant->data); \
-+				fixture_name##_setup(_metadata, self, variant->data); \
- 				/* Let setup failure terminate early. */ \
- 				if (_metadata->exit_code) \
- 					_exit(0); \
- 				_metadata->setup_completed = true; \
--				fixture_name##_##test_name(_metadata, &self, variant->data); \
-+				fixture_name##_##test_name(_metadata, self, variant->data); \
- 			} else if (child < 0 || child != waitpid(child, &status, 0)) { \
- 				ksft_print_msg("ERROR SPAWNING TEST GRANDCHILD\n"); \
- 				_metadata->exit_code = KSFT_FAIL; \
- 			} \
- 		} \
- 		if (child == 0) { \
--			if (_metadata->setup_completed && !_metadata->teardown_parent && \
-+			if (_metadata->setup_completed && !fixture_name##_teardown_parent && \
- 					__sync_bool_compare_and_swap(teardown, false, true)) \
--				fixture_name##_teardown(_metadata, &self, variant->data); \
-+				fixture_name##_teardown(_metadata, self, variant->data); \
- 			_exit(0); \
- 		} \
--		if (_metadata->setup_completed && _metadata->teardown_parent && \
-+		if (_metadata->setup_completed && fixture_name##_teardown_parent && \
- 				__sync_bool_compare_and_swap(teardown, false, true)) \
--			fixture_name##_teardown(_metadata, &self, variant->data); \
-+			fixture_name##_teardown(_metadata, self, variant->data); \
- 		munmap(teardown, sizeof(*teardown)); \
-+		if (self && fixture_name##_teardown_parent) \
-+			munmap(self, sizeof(*self)); \
- 		if (!WIFEXITED(status) && WIFSIGNALED(status)) \
- 			/* Forward signal to __wait_for_test(). */ \
- 			kill(getpid(), WTERMSIG(status)); \
-@@ -895,7 +932,6 @@ struct __test_metadata {
- 	bool timed_out;	/* did this test timeout instead of exiting? */
- 	bool aborted;	/* stopped test due to failed ASSERT */
- 	bool setup_completed; /* did setup finish? */
--	bool teardown_parent; /* run teardown in a parent process */
- 	jmp_buf env;	/* for exiting out of test early */
- 	struct __test_results *results;
- 	struct __test_metadata *prev, *next;
-diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
-index 1e2cffde02b5..27744524df51 100644
---- a/tools/testing/selftests/landlock/fs_test.c
-+++ b/tools/testing/selftests/landlock/fs_test.c
-@@ -286,8 +286,6 @@ static void prepare_layout_opt(struct __test_metadata *const _metadata,
+diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+index 985941c5c558..960aedd73308 100644
+--- a/drivers/net/phy/phy_link_topology.c
++++ b/drivers/net/phy/phy_link_topology.c
+@@ -12,29 +12,6 @@
+ #include <linux/rtnetlink.h>
+ #include <linux/xarray.h>
  
- static void prepare_layout(struct __test_metadata *const _metadata)
- {
--	_metadata->teardown_parent = true;
+-struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
+-{
+-	struct phy_link_topology *topo;
 -
- 	prepare_layout_opt(_metadata, &mnt_tmp);
- }
- 
-@@ -316,7 +314,7 @@ FIXTURE_SETUP(layout0)
- 	prepare_layout(_metadata);
- }
- 
--FIXTURE_TEARDOWN(layout0)
-+FIXTURE_TEARDOWN_PARENT(layout0)
- {
- 	cleanup_layout(_metadata);
- }
-@@ -379,7 +377,7 @@ FIXTURE_SETUP(layout1)
- 	create_layout1(_metadata);
- }
- 
--FIXTURE_TEARDOWN(layout1)
-+FIXTURE_TEARDOWN_PARENT(layout1)
- {
- 	remove_layout1(_metadata);
- 
-@@ -3692,7 +3690,7 @@ FIXTURE_SETUP(ftruncate)
- 	create_file(_metadata, file1_s1d1);
- }
- 
--FIXTURE_TEARDOWN(ftruncate)
-+FIXTURE_TEARDOWN_PARENT(ftruncate)
- {
- 	EXPECT_EQ(0, remove_path(file1_s1d1));
- 	cleanup_layout(_metadata);
-@@ -3870,7 +3868,7 @@ FIXTURE_SETUP(layout1_bind)
- 	clear_cap(_metadata, CAP_SYS_ADMIN);
- }
- 
--FIXTURE_TEARDOWN(layout1_bind)
-+FIXTURE_TEARDOWN_PARENT(layout1_bind)
- {
- 	/* umount(dir_s2d2)) is handled by namespace lifetime. */
- 
-@@ -4275,7 +4273,7 @@ FIXTURE_SETUP(layout2_overlay)
- 	clear_cap(_metadata, CAP_SYS_ADMIN);
- }
- 
--FIXTURE_TEARDOWN(layout2_overlay)
-+FIXTURE_TEARDOWN_PARENT(layout2_overlay)
- {
- 	if (self->skip_test)
- 		SKIP(return, "overlayfs is not supported (teardown)");
-@@ -4708,8 +4706,6 @@ FIXTURE_SETUP(layout3_fs)
- 		SKIP(return, "this filesystem is not supported (setup)");
- 	}
- 
--	_metadata->teardown_parent = true;
+-	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
+-	if (!topo)
+-		return ERR_PTR(-ENOMEM);
 -
- 	prepare_layout_opt(_metadata, &variant->mnt);
+-	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
+-	topo->next_phy_index = 1;
+-
+-	return topo;
+-}
+-
+-void phy_link_topo_destroy(struct phy_link_topology *topo)
+-{
+-	if (!topo)
+-		return;
+-
+-	xa_destroy(&topo->phys);
+-	kfree(topo);
+-}
+-
+ int phy_link_topo_add_phy(struct phy_link_topology *topo,
+ 			  struct phy_device *phy,
+ 			  enum phy_upstream upt, void *upstream)
+diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
+index 6b79feb607e7..ad72d7881257 100644
+--- a/include/linux/phy_link_topology.h
++++ b/include/linux/phy_link_topology.h
+@@ -32,11 +32,6 @@ struct phy_device_node {
+ 	struct phy_device *phy;
+ };
  
- 	/* Creates directory when required. */
-@@ -4743,7 +4739,7 @@ FIXTURE_SETUP(layout3_fs)
- 	free(dir_path);
+-struct phy_link_topology {
+-	struct xarray phys;
+-	u32 next_phy_index;
+-};
+-
+ static inline struct phy_device *
+ phy_link_topo_get_phy(struct phy_link_topology *topo, u32 phyindex)
+ {
+diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
+index 0a6479055745..0116ec49cd1b 100644
+--- a/include/linux/phy_link_topology_core.h
++++ b/include/linux/phy_link_topology_core.h
+@@ -2,24 +2,34 @@
+ #ifndef __PHY_LINK_TOPOLOGY_CORE_H
+ #define __PHY_LINK_TOPOLOGY_CORE_H
+ 
+-struct phy_link_topology;
++#include <linux/xarray.h>
+ 
+-#if IS_REACHABLE(CONFIG_PHYLIB)
+-
+-struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
+-void phy_link_topo_destroy(struct phy_link_topology *topo);
+-
+-#else
++struct phy_link_topology {
++	struct xarray phys;
++	u32 next_phy_index;
++};
+ 
+ static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
+ {
+-	return NULL;
++	struct phy_link_topology *topo;
++
++	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
++	if (!topo)
++		return ERR_PTR(-ENOMEM);
++
++	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
++	topo->next_phy_index = 1;
++
++	return topo;
  }
  
--FIXTURE_TEARDOWN(layout3_fs)
-+FIXTURE_TEARDOWN_PARENT(layout3_fs)
+ static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
  {
- 	if (self->skip_test)
- 		SKIP(return, "this filesystem is not supported (teardown)");
+-}
++	if (!topo)
++		return;
+ 
+-#endif
++	xa_destroy(&topo->phys);
++	kfree(topo);
++}
+ 
+ #endif /* __PHY_LINK_TOPOLOGY_CORE_H */
 -- 
 2.44.0
 
