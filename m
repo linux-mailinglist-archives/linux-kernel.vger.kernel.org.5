@@ -1,113 +1,114 @@
-Return-Path: <linux-kernel+bounces-162609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C80E08B5E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:48:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA158B5E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:48:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04BE91C211E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB971282A82
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2291B82D66;
-	Mon, 29 Apr 2024 15:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F798288C;
+	Mon, 29 Apr 2024 15:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcUmaELw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMc9yYED"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6706B81745;
-	Mon, 29 Apr 2024 15:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C0282881;
+	Mon, 29 Apr 2024 15:48:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714405674; cv=none; b=jSTjRSzsQWREzlwcR/ieaWlK6VxW+/5PWXyQPGTtbIwB1IvRm8Aafprxt3CHvbiFvLY8RT/rk0mujOCQsSx2c2S5lcOJ1i7p3AjonQy6dFqE2LBHrN89R48S0OwVJ2VDHOjo/5FINaYabTtzw56ubSlqjbGTiDTdO8KDSir0A9s=
+	t=1714405698; cv=none; b=gCshtltMs7aQygQ8UBthwvgXvEm+o/Gt5k4AHszLa+uRMB0ydwixdoNbVvfKAwvNu0oegvNMHujqH/r8RIRpwwpaR6j90KePtxlq3xoDLSRIf5/RuyrWmRWxe4Rf95p2MY+FSeb+K10bVt0a1JTdn95n1ff7njCF9J8MBv7TuBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714405674; c=relaxed/simple;
-	bh=MXEUogA99lTzY+rAVdsNJFMUbYG/L9I1Xzm+BQCRy3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OE8EkhjdqbuJEnNATkmwK/z7L58iLZ95+4Z3yyKIesTmhn/UtpK9daMDttmwpwGUDa7v3hm3nqJgELwRDQabRDGkWJ0tseas59Aa7W5dwVLKhMmqOL0yu3dKJGcYOufcH4H3d88IISLiVweQ3vX8eqKx6HstvjaVdaQrGedD+K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kcUmaELw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5135C113CD;
-	Mon, 29 Apr 2024 15:47:53 +0000 (UTC)
+	s=arc-20240116; t=1714405698; c=relaxed/simple;
+	bh=q0TrEuqJ399P2tU46vjogSsElHWc/nM7/9Z+Al4Ihls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OBI0cy5evpflUZidOkyAmvjxuksL4qTgu+1nC5mycEJrnwxhaqnP50Yk4pBD8KIHGbn2qeHYFsdcbfP+kSV05gS4nrvPko2fwskoXXOb6WtLG/hGngcnAfT5dwEexLjp/7HhANd3hI3F/ZVZx7v0AuT4hZmx2Ar+pFXNg7qSfbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMc9yYED; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13401C113CD;
+	Mon, 29 Apr 2024 15:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714405674;
-	bh=MXEUogA99lTzY+rAVdsNJFMUbYG/L9I1Xzm+BQCRy3k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kcUmaELwtBnIWmSY3ozAgMoCaxxzNDMTn2KC5r/IuRVD3B7+azkCqWzbAe2+FQPho
-	 IGs6gKfAQvcMXN6EnTb4IMoYNqk69GGluSe+D/jG31e2bVQFymhIO5YBOoN6H2qyGa
-	 ZhP2cuTEV6BMNzBs77lEzCYUHKPEWqJ3cE30VnW46VGiH7KMEMef9Q630NNAAcqq8m
-	 +Q6rA6B5MqVLXE9tU0Ka7tuognfY6XOp1LcnwtcX0R/cgzks20lrsF9avU1wjowW+D
-	 8cMjQtUJwIzHjsXze61szxUxUJCuyb5bBcTum469sduiQ1rFO2c8KEaPTvAVkPR9NV
-	 unTYglmB72GdA==
-Date: Tue, 30 Apr 2024 00:47:52 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Kory Maincent <kory.maincent@bootlin.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Kyle Swenson <kyle.swenson@est.tech>,
-	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: PoE complex usage of regulator API
-Message-ID: <Zi_BKFa4Sk3IAFFU@finisterre.sirena.org.uk>
-References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
- <57a79abd-722c-4907-b0e7-2396392ae675@lunn.ch>
+	s=k20201202; t=1714405698;
+	bh=q0TrEuqJ399P2tU46vjogSsElHWc/nM7/9Z+Al4Ihls=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=lMc9yYEDyzeRZOJ1DRUT7SFpqY0LFuNwm2GRW2x2+4sUM7hTHv2OuNtKaNnQRJKHJ
+	 ZQxj5mkTm8xhpjAE+gbLHw4eaTyF58ajvnGBOcHEY+04zix7O+IFSlWCa7RG2grPXU
+	 bASVDmSzzNxqEKnUWhe66Lv/D8jUNNmhOiHs810CbbJYDiLAXDh0NQuPKM3gIUiJjE
+	 NWqBY/ffZIk/VT1uhSMNEOSDWi3Ke7G+hILanka25TL5nSmc5g4JI4GJNeoNpnRn5c
+	 qfDacGm6CMtmvyOq8M0a3yxpeZVKBongaytfhWthBPy24zkIx15HjVN+Ir57f7dppL
+	 Kbpvz+lYzGXRA==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51ca95db667so4074055e87.0;
+        Mon, 29 Apr 2024 08:48:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUP5nZVHWN9lHtDCg/dvclg1HKyxFE0UaWtTRUgDd2NBhycQsO5z62Ihmv5CI2f2TtheRsWcmuuuBVGddMY56gaPZ0c+OSyItqo6bk5OXKy+9kEHV/JwCjWnzNJ1jyJoSRLRVkE5IqHOKJiqZs6/qwq+TeSWPHGFgadePtRIwfq
+X-Gm-Message-State: AOJu0YyOvLxrGORjvkqf2N7jeQpWYMOmbqEA5ygfnVW+jZAFptY2hV/p
+	Sfb3pLX+jRn8H2GD7O04kp0DS8/p4KNwiWUl5XGVPX0jKBDi42iyYhUklN4KEJ3R/Vtjw9160UT
+	aRrMYFY7/B07g2vZBoxx42xAGv0k=
+X-Google-Smtp-Source: AGHT+IH8dW+HR1/IwDDX3dJknVDKeoWFxn3QWuqcOlBwnDTa15PNjBagiz2MJ/zAfJQ1b/bGC3FTypm4Ztu41t9o6iE=
+X-Received: by 2002:a05:6512:781:b0:51a:f31f:fc6e with SMTP id
+ x1-20020a056512078100b0051af31ffc6emr7462063lfr.14.1714405696431; Mon, 29 Apr
+ 2024 08:48:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z0k5BVdQYkZbQzID"
-Content-Disposition: inline
-In-Reply-To: <57a79abd-722c-4907-b0e7-2396392ae675@lunn.ch>
-X-Cookie: lisp, v.:
+References: <20240423135928.1200-1-hagarhem@amazon.com>
+In-Reply-To: <20240423135928.1200-1-hagarhem@amazon.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 29 Apr 2024 17:48:05 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHiPcgC7-kXToivcbfyHe9g3Cg6__TFWhHYRUcOJ8hy1g@mail.gmail.com>
+Message-ID: <CAMj1kXHiPcgC7-kXToivcbfyHe9g3Cg6__TFWhHYRUcOJ8hy1g@mail.gmail.com>
+Subject: Re: [PATCH v2] efi: libstub: only free priv.runtime_map when allocated
+To: Hagar Hemdan <hagarhem@amazon.com>
+Cc: Maximilian Heyne <mheyne@amazon.de>, Pratyush Yadav <ptyadav@amazon.de>, 
+	Norbert Manthey <nmanthey@amazon.de>, stable@vger.kernel.org, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 23 Apr 2024 at 16:00, Hagar Hemdan <hagarhem@amazon.com> wrote:
+>
+> priv.runtime_map is only allocated when efi_novamap is not set.
+> Otherwise, it is an uninitialized value.
+> In the error path, it is freed unconditionally.
+> Avoid passing an uninitialized value to free_pool.
+> Free priv.runtime_map only when it was allocated.
+>
+> This bug was discovered and resolved using Coverity Static Analysis
+> Security Testing (SAST) by Synopsys, Inc.
+>
+> Fixes: f80d26043af9 ("efi: libstub: avoid efi_get_memory_map() for allocating the virt map")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hagar Hemdan <hagarhem@amazon.com>
+> ---
+> v2: added Cc stable tag to the commit message as requested by kernel
+> test robot.
+> ---
+>  drivers/firmware/efi/libstub/fdt.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
 
---z0k5BVdQYkZbQzID
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Queued up in efi/next, thanks.
 
-On Sat, Apr 27, 2024 at 12:41:19AM +0200, Andrew Lunn wrote:
-
-> I'm assuming this is mostly about book keeping? When a regulator is
-> created, we want to say is can deliver up to X Kilowatts. We then want
-> to allocate power to ports. So there needs to be a call asking it to
-> allocate part of X to a consumer, which could fail if there is not
-> sufficient power budget left. And there needs to be a call to release
-> such an allocation.
-
-The current limits for regulators are generally imposed in hardware as a
-safety measure, this also happens for example with USB where there's
-regulators in the PHYs.  Whatever is providing the power is very likely
-to have reasonable headroom for robustness.
-
-> We are probably not so much interested in what the actual current
-> power draw is, assuming there is no wish to over provision?
-
-One of the goals is to protect the system in the case that something
-malfunctions and tries to draw more current than can be sustained.  A
-system that is overprovisioned might choose to allow excessive draw,
-especially transiently to cover bootsrapping issues, though there's
-tradeoffs with system protection vs interoperability with poor quality
-implementations there.
-
---z0k5BVdQYkZbQzID
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYvwScACgkQJNaLcl1U
-h9BE5wf/eGMbGuMBrgTE/BBGw7ZPtzshbhPpItvoGiNej1Aa8AeY6iPc6OJy3g27
-Ara8ZgQ0qWxv1hkOrgzlgNEq/BxkG5pGcNIRp68dJWM31xI2YkGAH4FiI0Yo74eD
-3fnt5adFdZzVVA/jHguYIzzdXp5AK32YEfZ4mbdaPO+gLM4VakFWiRVOU/P3jQoa
-asM2b9FLIFjMKtzlHYefDMUIC28WMbkVcpq9YJUy2Sr4goqJFObKFzIZhe2B7rmA
-kGEBGEh3c/vjcYGepZ2ivGD5yInwRK5njcTGgGI8kZ3YnyQOIX63Y0Ep+RaawToJ
-D3uv6/3i/nbUBM1TetHgPEjcafc+WQ==
-=I9We
------END PGP SIGNATURE-----
-
---z0k5BVdQYkZbQzID--
+> diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
+> index 70e9789ff9de..6a337f1f8787 100644
+> --- a/drivers/firmware/efi/libstub/fdt.c
+> +++ b/drivers/firmware/efi/libstub/fdt.c
+> @@ -335,8 +335,8 @@ efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
+>
+>  fail:
+>         efi_free(fdt_size, fdt_addr);
+> -
+> -       efi_bs_call(free_pool, priv.runtime_map);
+> +       if (!efi_novamap)
+> +               efi_bs_call(free_pool, priv.runtime_map);
+>
+>         return EFI_LOAD_ERROR;
+>  }
+> --
+> 2.40.1
+>
 
