@@ -1,233 +1,139 @@
-Return-Path: <linux-kernel+bounces-162773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC698B6054
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:45:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EDDC8B6057
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE4CA282594
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:45:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAE3DB20E9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ECE127B58;
-	Mon, 29 Apr 2024 17:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6371272D3;
+	Mon, 29 Apr 2024 17:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="C5uPYOGk"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q+TQ62Oy"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1725A1272AB
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087F01272CA;
+	Mon, 29 Apr 2024 17:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714412696; cv=none; b=leykuN6IfEYB4B5klSD4GNi3luXDsa3ZnGPQ/dNXeg/4gVYIOUZLpTCGckR+yd0+G0xWCGsRNpxUwC+i2+AABYVXfw0F9JOWTgfOj+93+am2XIxPE5wgzUkHw3UAVuwfcuCTQcD6L0nuWJEESZTjuwtdM5euEz4NB3l3bVnFfzE=
+	t=1714412705; cv=none; b=pHChRT+W3krkTbqJ5hu0ZL4buEc2AROK3Em2U1/mjE3OrGW6yF41J+2bonI0EhULDbywpUaht3VpDkPd9Ue0I30oQtdYlujhYmjVtHE0w33sh31oBr+zoC+X4eLh++nr7Jyj1S3bdYg+V27rbtjO2c6yBN1d3MVxPBmAa0XC4fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714412696; c=relaxed/simple;
-	bh=M+hPaOfpbSDmiTxqIHMuAh/MaygUIjMhfEd6gP+70+g=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ZAjtj1lovlgJUsawIMD4YA4uQN3U584ETejmI6Pu6kHX0aY4hKzQfAiua7hFdeuot0d0MjR2wcHQHyXgGbqXbzCzSFYCGgZfv8heGsSCCnv4048iGEQfG15TWPgZ/zzOTHWa+HIafq36JvkgBMYRg8c6QlTBCtdCNRvYu0XDUbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C5uPYOGk; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2ae9176abf6so5471773a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714412694; x=1715017494; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lxUOdGqUOpgMyAfxcS2HMVyNcgXEt2XbMeaSH7+ZMzY=;
-        b=C5uPYOGk2Nnk0Z68OFl6GzqQ/lK56UjKUGwSjnxyubr8ap70MbrISKeQrlYYs9ACjR
-         Ux1DkKh3CmEz07u4G2Bl9ib54gt4ue5RUFQSe6zlBmqGAXSD7jYe0n9KXNHN+HSW7lNy
-         7ea07OmM2UXUcwdXKmmRrlKq4GJO6mTQOc73P03P1rrfaER5Rm4h30HTolB7uUY+L5D0
-         JPdbUbzTxZA1cC1bhT2S0wwyYJzZUWCiONT4T6iKYxMFNzh3hs1z+kO8Bqu+3MIvpeWR
-         hn7n3FCoCyd5Pq0jsa83js3WoYelOwUjN3h/orlmdPpNvCg+GVEY9VWD1U5cUjCddtYp
-         LSpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714412694; x=1715017494;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lxUOdGqUOpgMyAfxcS2HMVyNcgXEt2XbMeaSH7+ZMzY=;
-        b=uS4hyRAq9C270I5ugPgQ149tp9/DSVhcZ2TGtGJA3q16yc829T86hsZ1cDrqAe9t7m
-         tisa0fwCXeVzFkFbLkkCD8bxSYudoDF9LU2jTtFkM+MNOhr+KVS9M93RcBmRvX0nhfo6
-         kvZ3veKVSMf9OJGCYsVWd9qxD7g41yAE09J18KWe01QY8khly4pGJvkw/SgfDA7dbyTB
-         tLtvFuwEFLNnrZKqs74k4h66rRWL7oTKInUhL9ZBj3RUOwVQhl8FJ+/2kn+J0BVW6KIR
-         pltfDQfEkNnhX3xqXogy4sjVRzOClnqSduuFRez2qS5KixvEgBBvWt3YjHGHLAtCBpOw
-         MdRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQSkQ/BRVRDogPDi+wC+pMJD8XujTLjOf4HPAQV0Rg8t16BWEUyTEC6mw6CxZHBaQn7vfIi/7DqEH4bEkd7ZhrdhMp7lrcsQLvh/Ag
-X-Gm-Message-State: AOJu0Yym3hRHqAcyTpC+DcJJFJ9kU0QAz7oK4n/L3WbS4La/6uWHkqkR
-	S8y0U/pPDe5cbu/zZyDLGMkEcP4meY3KHVFT3wQ0T3HsDXmhMxX4EfWCNcRc2S8n2U3cv3DnZ2T
-	5cg==
-X-Google-Smtp-Source: AGHT+IF5+EWfN0BUbR1MuaU8UwhODKvZD1uv+EdSDr1sqUfHafKEE/Jal4pwloCQ+NRceuIXxDz+glkcR1U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:3652:b0:2a7:82a8:2ac0 with SMTP id
- nh18-20020a17090b365200b002a782a82ac0mr33070pjb.1.1714412694436; Mon, 29 Apr
- 2024 10:44:54 -0700 (PDT)
-Date: Mon, 29 Apr 2024 10:44:53 -0700
-In-Reply-To: <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
+	s=arc-20240116; t=1714412705; c=relaxed/simple;
+	bh=1eUVYVp+Xjc4OAJFJGhCu1jSoyHLPRmAVQDaix2FU1g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fxTMMV+Tk8PjsyWeForAo4r4srbx71y8KH6jlkB6K+hW92PkZB6oe4xM8SfLl6xO6V6fucsV4DbFyJOV8qSJIRR6yJB0nWWH3+X5rBc09qzAx/YJVixYAp27qO6EJJLcqYJHvcAAzWE5cADoLqi7ayvByDuCkx/BC5lKfNQkQeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q+TQ62Oy; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714412702;
+	bh=1eUVYVp+Xjc4OAJFJGhCu1jSoyHLPRmAVQDaix2FU1g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q+TQ62OyNKLmCbA/w4rO9bbrxYPz4cep6d9dHLQAtOwTRrbuv4Ias4EavOK/ywMIN
+	 gLmVE/xm3EJbuHB9jotUbQnRml/fJFV1bQc3dZZwWh7k9rvJkIql2l2/dG5vi8QXyp
+	 j/IzOVv0WiDK8A1CVYcS+BU7KFFFL+M/4yNZDXKObdq1xlA2CqZdOvJ3GkZSDMRxnh
+	 qF3jmtoG4k+XTnWZEHHBg01wyNnqNxiiZ7YmTRTNCPxYJf5xMONyjv0I2IZTr68jr8
+	 iJc3f1DK9mkluAuo1y9l+pzUpLhin6nAtNafUCeGfKfY5U9SQyof96L2z2WpojK0DG
+	 Nk8rFdn22m4uA==
+Received: from [100.95.196.182] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: andrzej.p)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A0D6837809CE;
+	Mon, 29 Apr 2024 17:45:00 +0000 (UTC)
+Message-ID: <8c39b3c3-8146-4418-8835-6dbfe38a85ec@collabora.com>
+Date: Mon, 29 Apr 2024 19:44:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZirPGnSDUzD-iWwc@google.com> <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
- <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
- <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com> <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
- <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com> <ZiwEoZDIg8l7-uid@google.com>
- <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
- <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com> <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
-Message-ID: <Zi_cle1-5SZK2558@google.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] media: amphion: Remove lock in s_ctrl callback
+To: Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+ hverkuil-cisco@xs4all.nl
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ ming.qian@oss.nxp.com, imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240425065011.105915-1-ming.qian@nxp.com>
+ <20240425065011.105915-3-ming.qian@nxp.com>
+Content-Language: en-US
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20240425065011.105915-3-ming.qian@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 27, 2024, Mingwei Zhang wrote:
-> On Sat, Apr 27, 2024 at 5:59=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.inte=
-l.com> wrote:
-> >
-> >
-> > On 4/27/2024 11:04 AM, Mingwei Zhang wrote:
-> > > On Fri, Apr 26, 2024 at 12:46=E2=80=AFPM Sean Christopherson <seanjc@=
-google.com> wrote:
-> > >> On Fri, Apr 26, 2024, Kan Liang wrote:
-> > >>>> Optimization 4
-> > >>>> allows the host side to immediately profiling this part instead of
-> > >>>> waiting for vcpu to reach to PMU context switch locations. Doing s=
-o
-> > >>>> will generate more accurate results.
-> > >>> If so, I think the 4 is a must to have. Otherwise, it wouldn't hone=
-r the
-> > >>> definition of the exclude_guest. Without 4, it brings some random b=
-lind
-> > >>> spots, right?
-> > >> +1, I view it as a hard requirement.  It's not an optimization, it's=
- about
-> > >> accuracy and functional correctness.
-> > > Well. Does it have to be a _hard_ requirement? no?
+Hi Ming Qian,
 
-Assuming I understand how perf_event_open() works, which may be a fairly bi=
-g
-assumption, for me, yes, this is a hard requirement.
+W dniu 25.04.2024 o 08:50, Ming Qian pisze:
+> There is no need to add lock in s_ctrl callback, it has been
+> synchronized by the ctrl_handler's lock, otherwise it may led to
+> deadlock if driver call v4l2_ctrl_s_ctrl().
+> 
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> ---
+>   drivers/media/platform/amphion/vdec.c | 2 --
+>   drivers/media/platform/amphion/venc.c | 2 --
+>   2 files changed, 4 deletions(-)
+> 
+> diff --git a/drivers/media/platform/amphion/vdec.c b/drivers/media/platform/amphion/vdec.c
+> index a57f9f4f3b87..6a38a0fa0e2d 100644
+> --- a/drivers/media/platform/amphion/vdec.c
+> +++ b/drivers/media/platform/amphion/vdec.c
+> @@ -195,7 +195,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>   	struct vdec_t *vdec = inst->priv;
+>   	int ret = 0;
+>   
+> -	vpu_inst_lock(inst);
 
-> > > The irq handler triggered by "perf record -a" could just inject a
-> > > "state". Instead of immediately preempting the guest PMU context, per=
-f
-> > > subsystem could allow KVM defer the context switch when it reaches th=
-e
-> > > next PMU context switch location.
+I assume that PATCH v2 2/3 might cause the said deadlock to happen?
+If so, maybe it would make more sense to make the current patch preceed
+  PATCH v2 2/3? Otherwise the kernel at PATCH v2 2/3 introduces a potential
+deadlock.
 
-FWIW, forcefully interrupting the guest isn't a hard requirement, but pract=
-ically
-speaking I think that will yield the simplest, most robust implementation.
+Regards,
 
-> > > This is the same as the preemption kernel logic. Do you want me to
-> > > stop the work immediately? Yes (if you enable preemption), or No, let
-> > > me finish my job and get to the scheduling point.
+Andrzej
 
-Not really.  Task scheduling is by its nature completely exclusive, i.e. it=
-'s
-not possible to concurrently run multiple tasks on a single logical CPU.  G=
-iven
-a single CPU, to run task B, task A _must_ be scheduled out.
+>   	switch (ctrl->id) {
+>   	case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE:
+>   		vdec->params.display_delay_enable = ctrl->val;
+> @@ -207,7 +206,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>   		ret = -EINVAL;
+>   		break;
+>   	}
+> -	vpu_inst_unlock(inst);
+>   
+>   	return ret;
+>   }
+> diff --git a/drivers/media/platform/amphion/venc.c b/drivers/media/platform/amphion/venc.c
+> index cdfaba9d107b..351b4edc8742 100644
+> --- a/drivers/media/platform/amphion/venc.c
+> +++ b/drivers/media/platform/amphion/venc.c
+> @@ -518,7 +518,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>   	struct venc_t *venc = inst->priv;
+>   	int ret = 0;
+>   
+> -	vpu_inst_lock(inst);
+>   	switch (ctrl->id) {
+>   	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
+>   		venc->params.profile = ctrl->val;
+> @@ -579,7 +578,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>   		ret = -EINVAL;
+>   		break;
+>   	}
+> -	vpu_inst_unlock(inst);
+>   
+>   	return ret;
+>   }
 
-That is not the case here.  Profiling the host with exclude_guest=3D1 isn't=
- mutually
-exclusive with the guest using the PMU.  There's obviously the additional o=
-verhead
-of switching PMU context, but the two uses themselves are not mutually excl=
-usive.
-
-And more importantly, perf_event_open() already has well-established ABI wh=
-ere it
-can install events across CPUs.  And when perf_event_open() returns, usersp=
-ace can
-rely on the event being active and counting (assuming it wasn't disabled by=
- default).
-
-> > > Implementing this might be more difficult to debug. That's my real
-> > > concern. If we do not enable preemption, the PMU context switch will
-> > > only happen at the 2 pairs of locations. If we enable preemption, it
-> > > could happen at any time.
-
-Yes and no.  I agree that swapping guest/host state from IRQ context could =
-lead
-to hard to debug issues, but NOT doing so could also lead to hard to debug =
-issues.
-And even worse, those issues would likely be unique to specific kernel and/=
-or
-system configurations.
-
-E.g. userspace creates an event, but sometimes it randomly doesn't count co=
-rrectly.
-Is the problem simply that it took a while for KVM to get to a scheduling p=
-oint,
-or is there a race lurking?  And what happens if the vCPU is the only runna=
-ble task
-on its pCPU, i.e. never gets scheduled out?
-
-Mix in all of the possible preemption and scheduler models, and other sourc=
-es of
-forced rescheduling, e.g. RCU, and the number of factors to account for bec=
-omes
-quite terrifying.
-
-> > IMO I don't prefer to add a switch to enable/disable the preemption. I
-> > think current implementation is already complicated enough and
-> > unnecessary to introduce an new parameter to confuse users. Furthermore=
-,
-> > the switch could introduce an uncertainty and may mislead the perf user
-> > to read the perf stats incorrectly.
-
-+1000.
-
-> > As for debug, it won't bring any difference as long as no host event is=
- created.
-> >
-> That's ok. It is about opinions and brainstorming. Adding a parameter
-> to disable preemption is from the cloud usage perspective. The
-> conflict of opinions is which one you prioritize: guest PMU or the
-> host PMU? If you stand on the guest vPMU usage perspective, do you
-> want anyone on the host to shoot a profiling command and generate
-> turbulence? no. If you stand on the host PMU perspective and you want
-> to profile VMM/KVM, you definitely want accuracy and no delay at all.
-
-Hard no from me.  Attempting to support two fundamentally different models =
-means
-twice the maintenance burden.  The *best* case scenario is that usage is ro=
-ughly
-a 50/50 spit.  The worst case scenario is that the majority of users favor =
-one
-model over the other, thus resulting in extremely limited tested of the min=
-ority
-model.
-
-KVM already has this problem with scheduler preemption models, and it's pai=
-nful.
-The overwhelming majority of KVM users run non-preemptible kernels, and so =
-our
-test coverage for preemtible kernels is abysmal.
-
-E.g. the TDP MMU effectively had a fatal flaw with preemptible kernels that=
- went
-unnoticed for many kernel releases[*], until _another_ bug introduced with =
-dynamic
-preemption models resulted in users running code that was supposed to be sp=
-ecific
-to preemtible kernels.
-
-[* https://lore.kernel.org/kvm/ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxmox=
-com
 
