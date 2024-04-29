@@ -1,144 +1,261 @@
-Return-Path: <linux-kernel+bounces-161667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83F7B8B4F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:33:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59AF58B4F39
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C73C3281EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:33:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD291C213B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08301C27;
-	Mon, 29 Apr 2024 01:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D22410F7;
+	Mon, 29 Apr 2024 01:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="QPVjxbt5"
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="L7lHfAiv"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428EC39B;
-	Mon, 29 Apr 2024 01:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.61.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C988624
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714354398; cv=none; b=Zw/ixUFSRTA11uU1UVXuVFB6Asa3b/J/mJvMfySFFQ3ZeYIH1/Z6DyqOENQnHTAtUHvRXfb0aTH71op17zc7lfg+w1f+nHfaXEc6rPzh9Lxnk5OYSxyPHhPTItfCVy+YhwdM2PClMuyeI7Pwgiozcf8chMo7xRo4pbDnYyzxsGE=
+	t=1714354444; cv=none; b=F337i8U6FEdiFpRuaowRuzT26Bgk4ddTC8kc5u8gXKmJmPWvVLZWp301a4Q9vwghdmdoFMWzDUQvkDVE2bR7oBNvC2f21i5iS4AVClK4Ex794/kJpAlmNUWHXc+Zsr6kqZm5HGYf3aPvN2eQSuQ3ijdbUheA+HRP3+QyXHRziUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714354398; c=relaxed/simple;
-	bh=9C6faDAQEmad8o7+66WBO/zaYHnr/MM9Us0C56pm7/Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N+wYojX+hhItHM2dWOzB/xLbo+F2cYPign0FIwVslCXUPraNFSIUzRWHCYOVCs3Caa4iTmmsMIOqZvpIPfGspSjB8xFBO/IuLD7nbxua79D+rIw4qYr5K+ZZBXb+WJPQENmnPUTr8x576/5hZuFS889f46YPB0u0ubtv088XH70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=QPVjxbt5; arc=none smtp.client-ip=139.138.61.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1714354395; x=1745890395;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9C6faDAQEmad8o7+66WBO/zaYHnr/MM9Us0C56pm7/Q=;
-  b=QPVjxbt5mlda/cM9bIJndu+d7vckclgKEcEy4p8FN6/Haf4823WGz4Re
-   1Y3wolz+P6efwj3SYJlL8O+1VYcKhBobBwHOm7a2+2z3YHsB5aNHxhFly
-   q/cB7ioBgfI2jxtnR0w/ZOJa+iDkdOUmWyLcW450RcGvX2MTWYWVxVmme
-   3qiZ2KwqPmP+uI1amcpwO6xGYDjbA91vT+EgJcNiOP6O0YB231ExserZ2
-   QmrKoa3MUqD2mv4E781aWjnEECrQ2NDJsYMN3P34/uSzIhMahzcBqm3v1
-   EZgBzkp66bVpK1nP+OA5sRrPWLlqDjMICv9BTkxo8ii1ovei8qFZ7rw0L
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="135810658"
-X-IronPort-AV: E=Sophos;i="6.07,238,1708354800"; 
-   d="scan'208";a="135810658"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
-  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 10:32:02 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-	by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id A302AC2AC3;
-	Mon, 29 Apr 2024 10:32:00 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id E0C0712F6E2;
-	Mon, 29 Apr 2024 10:31:59 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 66196E206E;
-	Mon, 29 Apr 2024 10:31:59 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id CA99C1A000C;
-	Mon, 29 Apr 2024 09:31:58 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: dave@stgolabs.net,
-	jonathan.cameron@huawei.com,
-	dave.jiang@intel.com,
-	alison.schofield@intel.com,
-	vishal.l.verma@intel.com,
-	ira.weiny@intel.com,
-	dan.j.williams@intel.com,
-	linux-cxl@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH 2/2] cxl/region: Fix missing put_device(region_dev)
-Date: Mon, 29 Apr 2024 09:31:54 +0800
-Message-Id: <20240429013154.368118-2-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240429013154.368118-1-lizhijian@fujitsu.com>
-References: <20240429013154.368118-1-lizhijian@fujitsu.com>
+	s=arc-20240116; t=1714354444; c=relaxed/simple;
+	bh=fd0kJpD6vbyUOilYff0vqjgmGQdeo18DxumCk5VRECc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OWbfMQ7Efo6LON57hZaOY1Q/SidtchjWnFErUCMkKkfqubE5Wqef4PDVKTS/O1bYHxcW5J7lh2LpDpJlefW6iKha/xhg5f2J6PT/dnlAeGRrOVH+Bg//+j11d9N9ymXsn2WPbXyFG/hWocE0+QGYOl0WjO3SYgYOzfHY/0lBx7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=L7lHfAiv; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51c077cfc09so4555109e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 18:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1714354440; x=1714959240; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=V9FR6pOGINW5hWqGcUs2Y0pMovcHvidMbvjger7RIYI=;
+        b=L7lHfAiv+3nrxhqVyu5uatYy7ieFHJ3+mVKPZgSkE3PPZQxWQ2Xjo9Gn5N0qo5gEmH
+         vhoGBPmCOmYfSMnXubGE2GSeUuGPPKBoFXGRWd7VW5PGi6No1QJsV397Fuo0SZ4ZjeKm
+         oOFhSYAUtx8h9p/LBfPVN4EyKfKgBa9n7t/KY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714354440; x=1714959240;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V9FR6pOGINW5hWqGcUs2Y0pMovcHvidMbvjger7RIYI=;
+        b=SmRdClIICzxCRfUOaUFzeuQFRwQ6/2l3nVx5JlO0+eLlCgSdnUoPQSNmgWlkgR60Jh
+         Qr4wuuUxCTn99shMpAXJPKk0QNzULtWZlISBHuldauBp+42sLsS8mIJwS+bA6hOtPyUQ
+         Ibj6uQVjspa1O3PIydZ7sTJHURGUGbf2f72z80aLyPeiV1oM6p+ZBhLDCHUixW7d04MI
+         wL0Fu3H6mqizL0c1XTKbX/Zq3bqoLIOZdtToaA6dX8oLvsY5b7bfBbBQoYt7jQkemuw8
+         35SeS1HiRC+hmK6LUMPHfDf5fVojaGPEAeGTjP6cRCBNuo5oOezI34Zn40R12XV1v+JL
+         1FKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXkC7w4NtSRHQ+pIA/uhzqYzSyxvVZ5Le6ElRuWj2cS8WRbVEsfce8zbSHWoIJ2h1rbLB6prHAyhX6sWHSXiBVRCsO2nptehRS5aTjj
+X-Gm-Message-State: AOJu0YzItbbTG8X7sD5Im8lTn+lUoR5Fa+bKB0bTd/+fusJsBpeTlAVH
+	7J+rAS77Ucc49xYCD2mhw7LQxMhfj90ieuY8sWdIpjp7pjpxKZ/3c6o4MpfM3lnCc0Nz0X9hPnN
+	KalbSXg==
+X-Google-Smtp-Source: AGHT+IEoUWTks8xyNiHjis3Q5I0H7fjlwkSQaRUEtfEIMIi+z/4iDJTQqyP+dc0n66s8MUjDiU+Sgw==
+X-Received: by 2002:ac2:5586:0:b0:51c:cfae:afd0 with SMTP id v6-20020ac25586000000b0051ccfaeafd0mr4569105lfg.21.1714354440266;
+        Sun, 28 Apr 2024 18:34:00 -0700 (PDT)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id 18-20020a170906309200b00a523b03a1edsm13225493ejv.20.2024.04.28.18.33.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 18:33:59 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a58c89bda70so296535166b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 18:33:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVV9zOjRtRa0Jc69lwzIVYYggX62Hs84MuNpgsL/gevGlV6TtR1W9fbeve0QBjNMpJ8iGYuOgfMdffXDusmQs8HyXnYIU/DUvnU2Cro
+X-Received: by 2002:a17:906:698e:b0:a52:58a7:11d1 with SMTP id
+ i14-20020a170906698e00b00a5258a711d1mr5612258ejr.38.1714354438473; Sun, 28
+ Apr 2024 18:33:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28350.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28350.004
-X-TMASE-Result: 10-1.444300-10.000000
-X-TMASE-MatchedRID: MqppGi75AUU8c+bQ4YQ9BhmCYUYerLHrTFQnI+epPIY0DNPwjqLncGsW
-	ZV9YMDBb9GF0M6TbxPxoVBGpf4JXIy/7QU2czuUNA9lly13c/gF13MofE6YQy5soi2XrUn/J8m+
-	hzBStantdY+ZoWiLImydET58jp62SPXgxlenIvYLdnUkTfH1zvcYAUrvpAu24bUT0WFPJAlmhPe
-	a+lnFpXh4wA+Ks4bAaZnUnCHe3cUAcpzLq5IeMIPVxvlzS0OquwGC8e6520fKw0PJt06oJaHpaQ
-	l5xviY7wxgWdRvK9Un9g+oMf9KM6Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com> <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Apr 2024 18:33:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+Message-ID: <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
+To: Hillf Danton <hdanton@sina.com>, Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>, 
+	Ingo Molnar <mingo@kernel.org>, Adrian Bunk <bunk@kernel.org>
+Cc: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: multipart/mixed; boundary="0000000000005346490617323fd6"
 
->         mutex_lock(&cxlrd->range_lock);
->         region_dev = device_find_child(&cxlrd->cxlsd.cxld.dev, hpa,
->                                        match_region_by_range);
->         if (!region_dev)
->                 cxlr = construct_region(cxlrd, cxled);
->         else
->                 cxlr = to_cxl_region(region_dev);
->         mutex_unlock(&cxlrd->range_lock);
+--0000000000005346490617323fd6
+Content-Type: text/plain; charset="UTF-8"
+
+On Sun, 28 Apr 2024 at 17:50, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
->         rc = PTR_ERR_OR_ZERO(cxlr);
->         if (rc)
->                 goto out;
->
->         if (!region_dev)
->                 region_dev = &cxlr->dev;
+>    But the immediate problem is
+> not the user space access, it's that something goes horribly wrong
+> *around* it.
 
-When to_cxl_region(region_dev) fails, put_device(region_dev) should be
-called to decrease the reference count added by device_find_child().
+Side note: that stack trace from hell actually has three nested page
+faults, and I think that's actually the important thing here:
 
-Simply put_device(region_dev) if region_dev is valid in the error path.
+ - the first page fault is from user space, and triggers the vsyscall emulation.
 
-Fixes: a32320b71f08 ("cxl/region: Add region autodiscovery")
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
- drivers/cxl/core/region.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ - the second page fault is from __do_sys_gettimeofday, and that
+should just have caused the exception that then sets the return value
+to -EFAULT
 
-diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-index 3c80aa263a65..75390865382f 100644
---- a/drivers/cxl/core/region.c
-+++ b/drivers/cxl/core/region.c
-@@ -3117,8 +3117,9 @@ int cxl_add_to_region(struct cxl_port *root, struct cxl_endpoint_decoder *cxled)
- 				p->res);
- 	}
- 
--	put_device(region_dev);
- out:
-+	if (region_dev)
-+		put_device(region_dev);
- 	put_device(cxlrd_dev);
- 	return rc;
- }
--- 
-2.29.2
+ - the third nested page fault is due to _raw_spin_unlock_irqrestore
+-> preempt_schedule -> trace_sched_switch, which then causes that bpf
+trace program to run, which does that bpf_probe_read_compat, which
+causes that page fault under pagefault_disable().
 
+It's quite the nasty backtrace, and there's a lot going on.
+
+And I think I finally see what may be going on. The problem is
+literally the vsyscall emulation, which sets
+
+        current->thread.sig_on_uaccess_err = 1;
+
+and that causes the fixup_exception() code to send the signal
+*despite* the exception being caught.
+
+And I think that is in fact completely bogus.  It's completely bogus
+exactly because it sends that signal even when it *shouldn't* be sent
+- like for the bpf user mode trace gathering.
+
+In other words, I think the whole "sig_on_uaccess_err" thing is
+entirely broken, because it makes any nested page-faults do all the
+wrong things.
+
+Now, arguably, I don't think anybody should enable vsyscall emulation
+any more, but this test case clearly does.
+
+I think we should just make the "send SIGSEGV" be something that the
+vsyscall emulation does on its own, not this broken per-thread state
+for something that isn't actually per thread.
+
+The x86 page fault code actually tried to deal with the "incorrect
+nesting" by having that
+
+                if (in_interrupt())
+                        return;
+
+which ignores the sig_on_uaccess_err case when it happens in
+interrupts, but as shown by this example, these nested page faults do
+not need to be about interrupts at all.
+
+IOW, I think the only right thing is to remove that horrendously broken code.
+
+The attached patch is ENTIRELY UNTESTED, but looks like the
+ObviouslyCorrect(tm) thing to do.
+
+NOTE! This broken code goes back to commit 4fc3490114bb ("x86-64: Set
+siginfo and context on vsyscall emulation faults") in 2011, and back
+then the reason was to get all the siginfo details right. Honestly, I
+do not for a moment believe that it's worth getting the siginfo
+details right here, but part of the commit says
+
+    This fixes issues with UML when vsyscall=emulate.
+
+and so my patch to remove this garbage will probably break UML in this
+situation.
+
+I cannot find it in myself to care, since I do not believe that
+anybody should be running with vsyscall=emulate in 2024 in the first
+place, much less if you are doing things like UML. But let's see if
+somebody screams.
+
+Also, somebody should obviously test my COMPLETELY UNTESTED patch.
+
+Did I make it clear enough that this is UNTESTED and just does
+crapectgomy on something that is clearly broken?
+
+           Linus "UNTESTED" Torvalds
+
+--0000000000005346490617323fd6
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lvkac5u00>
+X-Attachment-Id: f_lvkac5u00
+
+IGFyY2gveDg2L2VudHJ5L3ZzeXNjYWxsL3ZzeXNjYWxsXzY0LmMgfCAyNSArKy0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wcm9jZXNzb3IuaCAgICAgIHwgIDEg
+LQogYXJjaC94ODYvbW0vZmF1bHQuYyAgICAgICAgICAgICAgICAgICB8IDMzICstLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMyBmaWxlcyBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyks
+IDU2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2VudHJ5L3ZzeXNjYWxsL3Zz
+eXNjYWxsXzY0LmMgYi9hcmNoL3g4Ni9lbnRyeS92c3lzY2FsbC92c3lzY2FsbF82NC5jCmluZGV4
+IGEzYzBkZjExZDBlNi4uM2IwZjYxYjJlYTZkIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9lbnRyeS92
+c3lzY2FsbC92c3lzY2FsbF82NC5jCisrKyBiL2FyY2gveDg2L2VudHJ5L3ZzeXNjYWxsL3ZzeXNj
+YWxsXzY0LmMKQEAgLTk4LDExICs5OCw2IEBAIHN0YXRpYyBpbnQgYWRkcl90b192c3lzY2FsbF9u
+cih1bnNpZ25lZCBsb25nIGFkZHIpCiAKIHN0YXRpYyBib29sIHdyaXRlX29rX29yX3NlZ3YodW5z
+aWduZWQgbG9uZyBwdHIsIHNpemVfdCBzaXplKQogewotCS8qCi0JICogWFhYOiBpZiBhY2Nlc3Nf
+b2ssIGdldF91c2VyLCBhbmQgcHV0X3VzZXIgaGFuZGxlZAotCSAqIHNpZ19vbl91YWNjZXNzX2Vy
+ciwgdGhpcyBjb3VsZCBnbyBhd2F5LgotCSAqLwotCiAJaWYgKCFhY2Nlc3Nfb2soKHZvaWQgX191
+c2VyICopcHRyLCBzaXplKSkgewogCQlzdHJ1Y3QgdGhyZWFkX3N0cnVjdCAqdGhyZWFkID0gJmN1
+cnJlbnQtPnRocmVhZDsKIApAQCAtMTIzLDcgKzExOCw2IEBAIGJvb2wgZW11bGF0ZV92c3lzY2Fs
+bCh1bnNpZ25lZCBsb25nIGVycm9yX2NvZGUsCiAJc3RydWN0IHRhc2tfc3RydWN0ICp0c2s7CiAJ
+dW5zaWduZWQgbG9uZyBjYWxsZXI7CiAJaW50IHZzeXNjYWxsX25yLCBzeXNjYWxsX25yLCB0bXA7
+Ci0JaW50IHByZXZfc2lnX29uX3VhY2Nlc3NfZXJyOwogCWxvbmcgcmV0OwogCXVuc2lnbmVkIGxv
+bmcgb3JpZ19keDsKIApAQCAtMjM0LDEyICsyMjgsOCBAQCBib29sIGVtdWxhdGVfdnN5c2NhbGwo
+dW5zaWduZWQgbG9uZyBlcnJvcl9jb2RlLAogCQlnb3RvIGRvX3JldDsgIC8qIHNraXAgcmVxdWVz
+dGVkICovCiAKIAkvKgotCSAqIFdpdGggYSByZWFsIHZzeXNjYWxsLCBwYWdlIGZhdWx0cyBjYXVz
+ZSBTSUdTRUdWLiAgV2Ugd2FudCB0bwotCSAqIHByZXNlcnZlIHRoYXQgYmVoYXZpb3IgdG8gbWFr
+ZSB3cml0aW5nIGV4cGxvaXRzIGhhcmRlci4KKwkgKiBXaXRoIGEgcmVhbCB2c3lzY2FsbCwgcGFn
+ZSBmYXVsdHMgY2F1c2UgU0lHU0VHVi4KIAkgKi8KLQlwcmV2X3NpZ19vbl91YWNjZXNzX2VyciA9
+IGN1cnJlbnQtPnRocmVhZC5zaWdfb25fdWFjY2Vzc19lcnI7Ci0JY3VycmVudC0+dGhyZWFkLnNp
+Z19vbl91YWNjZXNzX2VyciA9IDE7Ci0KIAlyZXQgPSAtRUZBVUxUOwogCXN3aXRjaCAodnN5c2Nh
+bGxfbnIpIHsKIAljYXNlIDA6CkBAIC0yNjIsMjMgKzI1MiwxMiBAQCBib29sIGVtdWxhdGVfdnN5
+c2NhbGwodW5zaWduZWQgbG9uZyBlcnJvcl9jb2RlLAogCQlicmVhazsKIAl9CiAKLQljdXJyZW50
+LT50aHJlYWQuc2lnX29uX3VhY2Nlc3NfZXJyID0gcHJldl9zaWdfb25fdWFjY2Vzc19lcnI7Ci0K
+IGNoZWNrX2ZhdWx0OgogCWlmIChyZXQgPT0gLUVGQVVMVCkgewogCQkvKiBCYWQgbmV3cyAtLSB1
+c2Vyc3BhY2UgZmVkIGEgYmFkIHBvaW50ZXIgdG8gYSB2c3lzY2FsbC4gKi8KIAkJd2Fybl9iYWRf
+dnN5c2NhbGwoS0VSTl9JTkZPLCByZWdzLAogCQkJCSAgInZzeXNjYWxsIGZhdWx0IChleHBsb2l0
+IGF0dGVtcHQ/KSIpOwotCi0JCS8qCi0JCSAqIElmIHdlIGZhaWxlZCB0byBnZW5lcmF0ZSBhIHNp
+Z25hbCBmb3IgYW55IHJlYXNvbiwKLQkJICogZ2VuZXJhdGUgb25lIGhlcmUuICAoVGhpcyBzaG91
+bGQgYmUgaW1wb3NzaWJsZS4pCi0JCSAqLwotCQlpZiAoV0FSTl9PTl9PTkNFKCFzaWdpc21lbWJl
+cigmdHNrLT5wZW5kaW5nLnNpZ25hbCwgU0lHQlVTKSAmJgotCQkJCSAhc2lnaXNtZW1iZXIoJnRz
+ay0+cGVuZGluZy5zaWduYWwsIFNJR1NFR1YpKSkKLQkJCWdvdG8gc2lnc2VndjsKLQotCQlyZXR1
+cm4gdHJ1ZTsgIC8qIERvbid0IGVtdWxhdGUgdGhlIHJldC4gKi8KKwkJZ290byBzaWdzZWd2Owog
+CX0KIAogCXJlZ3MtPmF4ID0gcmV0OwpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVkZS9hc20v
+cHJvY2Vzc29yLmggYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wcm9jZXNzb3IuaAppbmRleCA4MTE1
+NDhmMTMxZjQuLjc4ZTUxYjBkNjQzMyAxMDA2NDQKLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9hc20v
+cHJvY2Vzc29yLmgKKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vcHJvY2Vzc29yLmgKQEAgLTQ3
+Miw3ICs0NzIsNiBAQCBzdHJ1Y3QgdGhyZWFkX3N0cnVjdCB7CiAJdW5zaWduZWQgbG9uZwkJaW9w
+bF9lbXVsOwogCiAJdW5zaWduZWQgaW50CQlpb3BsX3dhcm46MTsKLQl1bnNpZ25lZCBpbnQJCXNp
+Z19vbl91YWNjZXNzX2VycjoxOwogCiAJLyoKIAkgKiBQcm90ZWN0aW9uIEtleXMgUmVnaXN0ZXIg
+Zm9yIFVzZXJzcGFjZS4gIExvYWRlZCBpbW1lZGlhdGVseSBvbgpkaWZmIC0tZ2l0IGEvYXJjaC94
+ODYvbW0vZmF1bHQuYyBiL2FyY2gveDg2L21tL2ZhdWx0LmMKaW5kZXggNjIyZDEyZWM3ZjA4Li5i
+YmE0ZTAyMGRkNjQgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L21tL2ZhdWx0LmMKKysrIGIvYXJjaC94
+ODYvbW0vZmF1bHQuYwpAQCAtNzIzLDM5ICs3MjMsOCBAQCBrZXJuZWxtb2RlX2ZpeHVwX29yX29v
+cHMoc3RydWN0IHB0X3JlZ3MgKnJlZ3MsIHVuc2lnbmVkIGxvbmcgZXJyb3JfY29kZSwKIAlXQVJO
+X09OX09OQ0UodXNlcl9tb2RlKHJlZ3MpKTsKIAogCS8qIEFyZSB3ZSBwcmVwYXJlZCB0byBoYW5k
+bGUgdGhpcyBrZXJuZWwgZmF1bHQ/ICovCi0JaWYgKGZpeHVwX2V4Y2VwdGlvbihyZWdzLCBYODZf
+VFJBUF9QRiwgZXJyb3JfY29kZSwgYWRkcmVzcykpIHsKLQkJLyoKLQkJICogQW55IGludGVycnVw
+dCB0aGF0IHRha2VzIGEgZmF1bHQgZ2V0cyB0aGUgZml4dXAuIFRoaXMgbWFrZXMKLQkJICogdGhl
+IGJlbG93IHJlY3Vyc2l2ZSBmYXVsdCBsb2dpYyBvbmx5IGFwcGx5IHRvIGEgZmF1bHRzIGZyb20K
+LQkJICogdGFzayBjb250ZXh0LgotCQkgKi8KLQkJaWYgKGluX2ludGVycnVwdCgpKQotCQkJcmV0
+dXJuOwotCi0JCS8qCi0JCSAqIFBlciB0aGUgYWJvdmUgd2UncmUgIWluX2ludGVycnVwdCgpLCBh
+a2EuIHRhc2sgY29udGV4dC4KLQkJICoKLQkJICogSW4gdGhpcyBjYXNlIHdlIG5lZWQgdG8gbWFr
+ZSBzdXJlIHdlJ3JlIG5vdCByZWN1cnNpdmVseQotCQkgKiBmYXVsdGluZyB0aHJvdWdoIHRoZSBl
+bXVsYXRlX3ZzeXNjYWxsKCkgbG9naWMuCi0JCSAqLwotCQlpZiAoY3VycmVudC0+dGhyZWFkLnNp
+Z19vbl91YWNjZXNzX2VyciAmJiBzaWduYWwpIHsKLQkJCXNhbml0aXplX2Vycm9yX2NvZGUoYWRk
+cmVzcywgJmVycm9yX2NvZGUpOwotCi0JCQlzZXRfc2lnbmFsX2FyY2hpbmZvKGFkZHJlc3MsIGVy
+cm9yX2NvZGUpOwotCi0JCQlpZiAoc2lfY29kZSA9PSBTRUdWX1BLVUVSUikgewotCQkJCWZvcmNl
+X3NpZ19wa3VlcnIoKHZvaWQgX191c2VyICopYWRkcmVzcywgcGtleSk7Ci0JCQl9IGVsc2Ugewot
+CQkJCS8qIFhYWDogaHdwb2lzb24gZmF1bHRzIHdpbGwgc2V0IHRoZSB3cm9uZyBjb2RlLiAqLwot
+CQkJCWZvcmNlX3NpZ19mYXVsdChzaWduYWwsIHNpX2NvZGUsICh2b2lkIF9fdXNlciAqKWFkZHJl
+c3MpOwotCQkJfQotCQl9Ci0KLQkJLyoKLQkJICogQmFycmluZyB0aGF0LCB3ZSBjYW4gZG8gdGhl
+IGZpeHVwIGFuZCBiZSBoYXBweS4KLQkJICovCisJaWYgKGZpeHVwX2V4Y2VwdGlvbihyZWdzLCBY
+ODZfVFJBUF9QRiwgZXJyb3JfY29kZSwgYWRkcmVzcykpCiAJCXJldHVybjsKLQl9CiAKIAkvKgog
+CSAqIEFNRCBlcnJhdHVtICM5MSBtYW5pZmVzdHMgYXMgYSBzcHVyaW91cyBwYWdlIGZhdWx0IG9u
+IGEgUFJFRkVUQ0gK
+--0000000000005346490617323fd6--
 
