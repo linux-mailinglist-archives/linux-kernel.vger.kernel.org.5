@@ -1,279 +1,160 @@
-Return-Path: <linux-kernel+bounces-163126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8D1C8B660D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:12:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1808B6632
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:23:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D8531F22607
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC0C01C21665
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AFBC1411F7;
-	Mon, 29 Apr 2024 23:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC539194C68;
+	Mon, 29 Apr 2024 23:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KyLtAM4Y"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b="HtobcFcy";
+	dkim=pass (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b="A2t+mgaE"
+Received: from smtp.vivaldi.net (smtp.vivaldi.net [31.209.137.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CF51E886;
-	Mon, 29 Apr 2024 23:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714432362; cv=fail; b=AFuM39TaLL5kgQ9ltEOy+QFeDoE7USgj00jMicHaSwSToKt2U+f/RaBaN2NzNBK+h5tloVo8My2YCAWyZMWPfSMrUwXG3zN+LbwWAdsh07Gq2Uh9ydLrHFI1377xu1pQJJiZVulY7ejdn253ZsJpw92Xw3+lXW/zXMLN/PADcTs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714432362; c=relaxed/simple;
-	bh=I43nLxdIiSuRFU7R4v2U2wnX02XPMARjKt2WkVVyqFk=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pG+BBU09XcTxiqGEMjNGwpmp7h9UnLyXajctc8KxT2vGh4quLcFk1Qyj2nnurRpF+oY7ZSJhBVa3czlr/yeoepfMTRh6mF+BZNd+ziiG7lNP4Ufz5sl85/7jdUlKAnjK8up6wiF8iLGaqMm5wL51MDaql1Ii98n1w9/Mdu63Yko=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KyLtAM4Y; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714432360; x=1745968360;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=I43nLxdIiSuRFU7R4v2U2wnX02XPMARjKt2WkVVyqFk=;
-  b=KyLtAM4YgyvFz5Ofhr1PRl8mI9okGJcYZiV/oIX2Q5IzZwKnJQts2V0i
-   8Xf7Nol78KsRC8rymCG/T0QAyQi8K2gTDVHVOfyYTxPv6YE5rSsaML3XL
-   6WYfOq78AFaaufrb8XYcOqRddtGyRMJAcWiWbtKx+UWMWKL7lp2BVsEsK
-   VJViH7DMLVfym8Cd/TDXwejA5jpUdishXTPCeyE8Az6fJDrCF2jzxHLcn
-   Ox2Meq7sqaWhEqL48Z0ZNaaoF/mTZNSVVsLtuPtwIIETu5R6TxdNIFOOq
-   FNwxIYVD6W9s6VFhSvw5hT3yQ+hjbIgA00zLghxkNCrB1ZKkHE0Bzuq6m
-   A==;
-X-CSE-ConnectionGUID: 3ULngXzdSravfJ732Lu+Ig==
-X-CSE-MsgGUID: VzriatiwTU+YEM4T9ykjgg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="13941457"
-X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
-   d="scan'208";a="13941457"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 16:12:39 -0700
-X-CSE-ConnectionGUID: yJk3IAUOQCOZmyLXJt6Fgg==
-X-CSE-MsgGUID: u5dC7qSfRyaMS8aLm/VHwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
-   d="scan'208";a="26769011"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Apr 2024 16:12:39 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Apr 2024 16:12:38 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Apr 2024 16:12:38 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Apr 2024 16:12:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bX8QJDBp59IXGEkRWAKfFPhvOM4JKVGgl8y0crvVYrMUzf0gL89mCxwSE83EnHd9VmEFId+pAvrI8DFgGeWoSODmdpUshjpmQnDbT1fB/RB6HDdNFFHogvr7uKcPXmw4LKKclHjhpWxTg22sSAQae2UgDlTO50U04nzxXJN/U3VbKCZBKiOV3pVCNomyRDw1Wnaoy4847YtelI0EOvO+sAFGrFlZPddEZzbD1SMZPZNU10+FiNJpwpfmqkvIkFnnY47VfugFlNjM7dR4yZcZASbwtAbpCeUIuOPyPj+jo5S3t0EbMJH4hpOP9jLKEmBScT7shBxEoZeu/Z4BqAVJ8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L5ag8m9duaC+NqYVEvkq3U2CIsr6DA35n0x6Btwe4XQ=;
- b=FRuED4aK4XML6E9JS2IXYX0uA2IRXDta01atObbzsqhKgVWk+AkAqTJPh9UfjYhxmdVUjlNPaoSF4qXywOLSKzcFWkibz3AyYZXHx1zRPaDUTfm+FErkhCECXz3UtWDDc0ws8c5k+LCbTfIDrAY4QhanbSfyJBBmzRyKcilo9H94gTSxn1wHdvhMz4iZruuGLmCFzLfhPobBmncCImw0ovL4ppxyPV7FOZACesiQIsYUUjtxFkNJy+rucuuhR5M9JMtIWCrY3I5vsOunCC2MrRsZ16j7cTPsIX64m4ORvEe8kSTSocoQqZi+acKnECeOqB4MXJ9+FhcDl/p+Rjh7Qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DS0PR11MB7262.namprd11.prod.outlook.com (2603:10b6:8:13c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Mon, 29 Apr
- 2024 23:12:36 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 23:12:36 +0000
-Message-ID: <2eab6265-3478-45db-86a5-722de6f39e74@intel.com>
-Date: Tue, 30 Apr 2024 11:12:26 +1200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
-To: Sean Christopherson <seanjc@google.com>
-CC: Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, "Bo2
- Chen" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas
-	<erdemaktas@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, Isaku Yamahata
-	<isaku.yamahata@intel.com>, "isaku.yamahata@linux.intel.com"
-	<isaku.yamahata@linux.intel.com>
-References: <Zib76LqLfWg3QkwB@google.com>
- <6e83e89f145aee496c6421fc5a7248aae2d6f933.camel@intel.com>
- <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
- <ZifQiCBPVeld-p8Y@google.com>
- <61ec08765f0cd79f2d5ea1e2acf285ea9470b239.camel@intel.com>
- <9c6119dacac30750defb2b799f1a192c516ac79c.camel@intel.com>
- <ZiqFQ1OSFM4OER3g@google.com>
- <b605722ac1ffb0ffdc1d3a4702d4e987a5639399.camel@intel.com>
- <Zircphag9i1h-aAK@google.com>
- <b2bfc0d157929b098dde09b32c9a3af18835ec57.camel@intel.com>
- <Zi_93AF1qRapsUOq@google.com>
-Content-Language: en-US
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <Zi_93AF1qRapsUOq@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0180.namprd04.prod.outlook.com
- (2603:10b6:303:85::35) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071346CDD3;
+	Mon, 29 Apr 2024 23:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=31.209.137.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714432977; cv=none; b=okjrtSu6Xh+XF4pHKTQs8XH44TX23rn8ZofAToW/ae1t+qlhnHDJ22n8HFPvGBWpQ2wnzNvKYv/zIpfkQtRuxDn+xQH7ETv1qNDutRh3IwW2t+/GGwaRbgQvqKoxghdo/wzhD3rr6gXIDDwvNDJ5den6nnh+i2Kfi9D4rsIP2D0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714432977; c=relaxed/simple;
+	bh=byf9Z71+sb0GLOb3GdyWbm5OBgcDZx9meWJrrQxJ3yU=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition; b=a+oOCDauaLElNvPxNDy8mbjeVoar86iemvnd3leRXtn6L05OIuI0ON32vXDK1U+auUNGr0KmRmBvI9uLGGE3ebVYHXT9R7HHTYETOZKOjSNB3MkqWIriljotCrlWXbC9ktwNV2gUn79rKqlnj4aADbwd1O+vwsLEhvcB+CBT2gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivaldi.net; spf=pass smtp.mailfrom=vivaldi.net; dkim=pass (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b=HtobcFcy; dkim=pass (2048-bit key) header.d=vivaldi.net header.i=@vivaldi.net header.b=A2t+mgaE; arc=none smtp.client-ip=31.209.137.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivaldi.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivaldi.net
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.vivaldi.net (Postfix) with ESMTP id 0BB6ABD871;
+	Mon, 29 Apr 2024 23:16:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.vivaldi.net 0BB6ABD871
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivaldi.net;
+	s=default; t=1714432588;
+	bh=gmlOdeuOOqOrPjRFOowspShiT6SLu9pZIyUtwclj2CM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=HtobcFcyrnUvMtU9i7nM2fVDAtYTPhl0TbvUYAgKthzbirMl+v09V2V5godpz/xV7
+	 MFpZdHQqrhln6jlPdyWq4kM6o4Yec5TvtcD3mD6SqkLu02F6mRRnLVlJDy3Pv6m5vH
+	 pkwzDQEAaTHqWTxCAw3eUu3FzWCLA5wV8KXpDB8D2vcWwh3P4qCgNuHbMlntIJMHA8
+	 vP+ib7wlc+qHONW19xWhdYM65Y0knFMvSOPp4sLWCNG3oUTTNmZ/ywcAQkl5HRS15S
+	 UqhJis+zHxw3whFWHzUspRitblMdgLw9SwLbpPr7nqJxW8+LKSA5BqNfmkWU20oXKk
+	 ZbN9pS4DQ5hAA==
+X-Virus-Scanned: Debian amavisd-new at smtp.vivaldi.net
+Received: from smtp.vivaldi.net ([127.0.0.1])
+	by localhost (mxo.viv.dc01 [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id KXrbchY7OmMQ; Mon, 29 Apr 2024 23:16:24 +0000 (UTC)
+Date: Mon, 29 Apr 2024 18:16:05 -0500
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.vivaldi.net 673B8BD6FC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivaldi.net;
+	s=default; t=1714432584;
+	bh=gmlOdeuOOqOrPjRFOowspShiT6SLu9pZIyUtwclj2CM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=A2t+mgaEWjnyp81IIVmf++ILe0m/k+aihZovm2QIzZfgZAfZ2WYIrDerKMGrFYncx
+	 wm0YlasYu0ONoAChz5KaPa2rQ2C3zLjrjIO8HLw/0ndPtn+rjr8Xt3YCEnju+YTaji
+	 5GFb6o1IxTMTCV67WtBx/a4pFunD39dlJSGj4aDWEM1WZmsqqtYgySbzKFVTeBvA+w
+	 3iV5o2P8mG8GHQcp2JPPywYy2EjSSQQn8MXvd6KTRAoedJJE1ts4qJ1G3FVBbpjn56
+	 UXEXSr1AMpblXrVRofOa6svAx7INUmcQupcukOU1/oWzwdAD1zgFxZVDg9e9HqtG1Z
+	 cv++XT95GJucQ==
+From: Isaac Ganoung <inventor500@vivaldi.net>
+To: jtornosm@redhat.com
+Cc: jtornosm@redhat.com, davem@davemloft.net, edumazet@google.com, 
+	jarkko.palviainen@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	stable@vger.kernel.org
+Subject: RE: [PATCH v2] net: usb: ax88179_178a: avoid writing the mac address
+ before first reading
+Message-ID: <hzhomd7d7uc4dcnpvd6ki6v2f6camzm5ufqp2syqudrvzzfxi4@ykcirhonbqql>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="n3kbqcmcqkpkrtj4"
+Content-Disposition: inline
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DS0PR11MB7262:EE_
-X-MS-Office365-Filtering-Correlation-Id: d480c237-a5e5-4df9-9552-08dc68a1db53
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?QXlqc3RTNER6emUzOU9NZlQvdDMrM05BK2p4dFZKZ1h0YnVKeE9mem1qb3NF?=
- =?utf-8?B?c3Q4RXRMNUhrd1UyQ1FPd1MrK3h2TWhhcmZnNC9XeVFjQ25heUswWm9nS0h0?=
- =?utf-8?B?SHJhZGxPaXdseExRSTl6aStSTzNqZDBhMHloSTBBQ1lMcG94dHE4L0Ivckdy?=
- =?utf-8?B?cFduektka2VTZnFoa1JXelBXdlFsNGpscWhuRzNQQ2xjOXh5SWlqT2ZHMTNo?=
- =?utf-8?B?eldlM2lNd2F0OEs1cmVpQkJXSGVwVnRZVmQ5cUxmblpaVVoyZlVyK0N4bDZP?=
- =?utf-8?B?azI0M1NPQ0J0dDQ4QXJtaTRLN2c3cWlZNVoxK3pndGdqTnZmS0V0cS9TMlBZ?=
- =?utf-8?B?VU43dS96SitXK3FPNVZid09yMGloWlBCSldGZGM0b3QzQWFZcmpnNm5MQlNq?=
- =?utf-8?B?SHRiZVQ4N0N4aGwrTE9wTUNyZmVCajNxeVJjRThvL1I2aXV3d1A5blI0N0ZK?=
- =?utf-8?B?K3FjaXp1SWlLYXpPNDFqSEJaZGM3QjNTazNvcmxycGprUzVWUXBzNzQvMDBB?=
- =?utf-8?B?UC9ZYmhPa1pmRUZYM2d2c2JBTjlFTmxVLzRhdGxaL0x1MS8zTGlFZkRGYW42?=
- =?utf-8?B?amhyN1pPNWQ0TFA5RnFjZndVdDNFQWVQclRZVWE3YXlCTVk1TUkrYmYyekhE?=
- =?utf-8?B?VC9Sc0htS21WU3ZaVEQrY3BvSzZHbVJGVno0cTlkcjlpRDlzd3p5bUs1M2dv?=
- =?utf-8?B?SVBOclJUUDl6TXlxNDcrNDZ4V1pkek4xSFYyMjI1V2Q3MFFqSFQxK1BMc0dm?=
- =?utf-8?B?Mm9PcWJneU1xb2t4UG0xa1hrZis1ZGdXa0MvWGprNWlQZnJrSCtIaHl5TytM?=
- =?utf-8?B?ZTYwMGliU2VONVlkSHY4UCt0MEdwVXlCbmVaTmRZOXB1M3o0RVJjb1I0eFZL?=
- =?utf-8?B?SXdybzhyN3d1WTVFRGU3UHJvbGhCZzFhMDZQVmRJa3RyVGF0V3U0Q3R6THRm?=
- =?utf-8?B?a01tNG1LLzNZSFZYUXArR2dPa2VobGdlV2FOUDU3bzgxZVFoclhEeWx1Nm5O?=
- =?utf-8?B?OXBVd1IwVEVPdi9aWnN3and2dExicDY1MnlxWDFuVGxKUkdLcFRtSHNQZndM?=
- =?utf-8?B?WTJQTU5rV1JuY3VyQWZlYnJkZnJtalBJNGtXdWJYYkJLZXExdFV4VFg2S0Fs?=
- =?utf-8?B?TEVocDR6cEplbVFhb0pUWmpJZ2xnejhtRURtT0hOWU9nMG5jSXhQTUlTYm9C?=
- =?utf-8?B?cFMxcHRnbXN2eGx5NVZMREx0akxEdUhaa2JScnpaZmJ4WlpEVFNteGFBSGUx?=
- =?utf-8?B?Z1EycnQ0NHpIR2ora1l6RnRwY0xFRTBsYys3T1U4TEFtQ0w3WldHbWFZeUtZ?=
- =?utf-8?B?VElqTzNDWU5aVjM3TFVxT1dZWmI3dE5vVnpuMlowUkRIWUpWaDg2QlJtQi94?=
- =?utf-8?B?WW5jaVdldU14Vk5kMnNWVmhkcmdBMWVkM3hKTHRSd25uR0YvN2YwVE5GK1Vt?=
- =?utf-8?B?dmxLSTRVbmllaFMwOVJGb25xeHg3TzcyNklhSjJGajdKL1pET1NLdEdiVlFY?=
- =?utf-8?B?OXFEN3g3emduc3ZsUlpTd0VlSE96ODVWRDRZbUw1NEk1cUNoNEc1UCtOeHIr?=
- =?utf-8?B?Z0puQTg1ZVJ6R2JBSXp4ZEUvVldMWDZ5THB1aHBiL1ZobTh4WVZIa2M4WkQz?=
- =?utf-8?B?QzBBT2Q0WUJxVkxqNXZBejE0ZXZDWEhUZzRvdklkT2tLME13bEtNaGxnZFBT?=
- =?utf-8?B?WC9McUNSZEpoaEw5cmZmdnAvVmFPV3ljaWw2amxMdkpZQkU2M2UwT0RRPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eTdKc3h4cWZZV0ZTd2hLZUdmTVYwdmFXbk0zeDZYT05PQ2E5M0VvN2MyM2xE?=
- =?utf-8?B?eFJDQUYxbUtUMjJtNVZmZ1R3RGN6V1VqWSt0UEZkcTdHVVNPdlpINGU4dFVv?=
- =?utf-8?B?ZlhhS2RrYTJPUXVZTzdFbFo1aENxVnVtRFJ0R1JmZjJjVHAzcHdydUpnaUJT?=
- =?utf-8?B?Q2xrNnRKaUVPZHJ6SmdVeTZRRWU2MzdNb3I3Y09ycUU0VUY0TExDSTdwZS9y?=
- =?utf-8?B?RkR0YmZvVGljN2tHbUlhM3pXYVlMdk85dXFDYkNzMS95K29raXlGVVpOK3lv?=
- =?utf-8?B?NHdHb2lNdGNTODR0QmtIb1hRZmxPZlRpdFA0Sy9FVWJrOTNoVlk0OVJCakZV?=
- =?utf-8?B?ZHVaMXNkTlY3TE05YVhtQXFNaXJCdWFGSFJZQ0c5eDB2MGtmYlNDQ3RtMUFY?=
- =?utf-8?B?TUttZit4dWNNNURCQVZPMlE2QmlVaTc3VGM3NkVmSGljZk94Wko0Z0JJOWFm?=
- =?utf-8?B?Qm9ocXBKMWNXUTBSRUxCMStsUlhuWkJaalJNaWE3MmJrNmFCQXFFcmNvVjB5?=
- =?utf-8?B?UDR3SHpVemVFQmVhWjQ4U0dMbWkxdFk4aTA0OFlwalBkL3lmMGpBQUFqZ0dC?=
- =?utf-8?B?enN6d1NMdnBFZmhjMm5IejY1QnYzVHRXSktHTFRGZUdlNitlUXh3azNlWDhk?=
- =?utf-8?B?ZUlrZjhPNXg0dGtCQVplRWJhUURoSEJRS3ozOE9RMUFKNVFzK3JzQVJUOXRh?=
- =?utf-8?B?L2I3SGx6QUFZVEVyZlRlanFGWGppUWNVL0s4RXJ3QVdralZTNTRLd3Nxazh4?=
- =?utf-8?B?alhveEpPSkxSajFjK2Z4WG9NY0lHM09lK0ZIZmNBWXdLZVB0ZHJocWRIclJy?=
- =?utf-8?B?cEM0Nyt2QTZFbEhqT3g3bG5GNW9RMnBCNUhwbElTNkVLY205amZ6TXFneTVo?=
- =?utf-8?B?YnJINStxTXF6SnFLMUtjbE9EYXFkZ29yWkdRRnpiQVZvTEpYR0t2UWFjQVBs?=
- =?utf-8?B?Lys4Y1JDUWhkQm5pUmVmaGI1ZDFuTy9HTkJ5Q0Y1SUhrQ2VYOGpCQnU4eWZx?=
- =?utf-8?B?NTgybFFQcThLcmNnMVNTZWxpUmpOcnovb08zQnBCVEdDd0NSWUQ3dkdpa3NB?=
- =?utf-8?B?Z2c4Z1dpMjlaZXBCUTc5c1pocm5PbnpKa200dlhqeTkxcUxDQ2pHelhRYkt5?=
- =?utf-8?B?bVRyMUdUUVF2Z254RUtYcGk2SGl5WlNNUU5HMEVHY0doV1g3ZzVXeUdHS1N6?=
- =?utf-8?B?QWEvUjdtNjlZU2g1QmlXM1hheE9UQkp3OUp3aGdyQ0RoMkt4WW10UDViMmJ1?=
- =?utf-8?B?T1Q1ZUZ5djVqcjJSeWxWb1NmRGk2RnJBeHZIRnMvajZEaUY4N2FCZnFYZW5V?=
- =?utf-8?B?YWNYSnBCc3pOcm1OUGFST0pNSUt5YWl1WlY5ckVPdnB2VEhQbWxlM1haOG5p?=
- =?utf-8?B?QlpBU3JKNjM4aXJQUUJMOHdwZEtTSjBIRGNEZmQyWEN1Z1cvNnJiWWdMRk0w?=
- =?utf-8?B?S0JoTFFlV3kzc0xMUE9RQTdIRHIvbjFPZkFOZHFpN2EweFVlcEhaK0FYOHho?=
- =?utf-8?B?WXcwVmpxQ09nMVliZWpwTW5jUFJ6NmoraHFUajViL0tDZlEwS0dVVE1pUmg2?=
- =?utf-8?B?aXRlNFMrSGRqS0FGQ20rU0Z0cEx3ZUVYVVJsV3gvS1pPOGIvMksvYlJZWndU?=
- =?utf-8?B?TmpxdytlQllSb3R3UVEyM3p3QVA4eEJCZUpsRjEyaU1XUE9id0ZXVENJQjV2?=
- =?utf-8?B?U2ZEZTRLOTQyd01BV1JlZml2WDk2N3dKWFM3TDk1NlVYellnMU9YWGNad0h5?=
- =?utf-8?B?ZU94Kyt5RkdhU2lraDRoT0JtMU9ndEo1N0lWdFV1enJWckEyb0I5dExnbnFz?=
- =?utf-8?B?MXlSU1dKS0Y2Q1lrS21qd1M2UUYrOTJZQVZnbG9xNFAya2kyNy9rN3FxemRx?=
- =?utf-8?B?QllxaVFNc04vZGM0WXgydUpER0hxWlJTT2hrUzNiYjVOb3NBTHEzRzJ4S3Qy?=
- =?utf-8?B?TzFrZklZeG02dE5HdmNDbG9oWmZKS0tqZzlaUzVreFdzeU1rWnQxV3NSWC9v?=
- =?utf-8?B?RkJVVHVwWlAveWtPQ2s5cU5PY080S0RwS2RMb0NiYnljUnhGVFFzemtidUhH?=
- =?utf-8?B?dXJWZUtHUkR2cUJyNGV2YllqdVZ0L2d0T2o5Z1lJem9nYnEvYkEwZEUxNTdw?=
- =?utf-8?Q?MegFglbZSHCOyTafr8goi4HyB?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d480c237-a5e5-4df9-9552-08dc68a1db53
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 23:12:36.0966
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hjr9gzvrHk7keY0z7ZTVNS23R5S/FivvJxSZdfpi7xMt4oNKdmKDwETfm73C+bdLFT5YsBvwTxjJNg5SuMJElQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7262
-X-OriginatorOrg: intel.com
 
 
+--n3kbqcmcqkpkrtj4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 30/04/2024 8:06 am, Sean Christopherson wrote:
-> On Mon, Apr 29, 2024, Kai Huang wrote:
->> On Thu, 2024-04-25 at 15:43 -0700, Sean Christopherson wrote:
->>>> And the odd is currently the common SEAMCALL functions, a.k.a,
->>>> __seamcall() and seamcall() (the latter is a mocro actually), both return
->>>> u64, so if we want to have such CR4.VMX check code in the common code, we
->>>> need to invent a new error code for it.
->>>
->>> Oh, I wasn't thinking that we'd check CR4.VMXE before *every* SEAMCALL, just
->>> before the TDH.SYS.LP.INIT call, i.e. before the one that is most likely to fail
->>> due to a software bug that results in the CPU not doing VMXON before enabling
->>> TDX.
->>>
->>> Again, my intent is to add a simple, cheap, and targeted sanity check to help
->>> deal with potential failures in code that historically has been less than rock
->>> solid, and in function that has a big fat assumption that the caller has done
->>> VMXON on the CPU.
->>
->> I see.
->>
->> (To be fair, personally I don't recall that we ever had any bug due to
->> "cpu not in post-VMXON before SEAMCALL", but maybe it's just me. :-).)
->>
->> But if tdx_enable() doesn't call tdx_cpu_enable() internally, then we will
->> have two functions need to handle.
-> 
-> Why?  I assume there will be exactly one caller of TDH.SYS.LP.INIT.
 
-Right, it's only done in tdx_cpu_enable().
+Hello,
 
-I was thinking "the one that is most likely to fail" isn't just 
-TDH.SYS.LP.INIT in this case, but also could be any SEAMCALL that is 
-firstly run on any online cpu inside tdx_enable().
+I am using a TP-Link UE306 USB Ethernet adapter. The kernel detects it as an ASIX AX88179A USB Ethernet adapter. When using a different MAC address than the adapter's own (i.e. MAC address randomization), I am unable to send or receive packets unless set to promiscuous mode.
 
-Or perhaps you were thinking once tdx_cpu_enable() is called on one cpu, 
-then we can safely assume that cpu must be in post-VMXON, despite we 
-have two separate functions: tdx_cpu_enable() and tdx_enable().
+I am using NetworkManager to manage my connections. When I set 802-3-ethernet.cloned-mac-address to the device's MAC address in the connection settings (i.e. `nmcli con edit), the device works as expected. When that property is not set (null value), the device is only able to receive packets when set to promiscuous mode.
 
-> 
->> For tdx_enable(), given it's still good idea to disable CPU hotplug around
->> it, we can still do some check for all online cpus at the beginning, like:
->>
->> 	on_each_cpu(check_cr4_vmx(), &err, 1);
-> 
-> If it gets to that point, just omit the check.  I really think you're making much
-> ado about nothing.  
+uname -a output: Linux hostname 6.8.8-arch1-1 #1 SMP PREEMPT_DYNAMIC Sun, 28 Apr 2024 18:53:26 +0000 x86_64 GNU/Linux
+This is Arch Linux's kernel. The patches applied are here: <https://github.com/archlinux/linux/releases/tag/v6.8.8-arch1>
 
-Yeah.
+dmesg:
+[37988.917741] usb 2-2: new SuperSpeed USB device number 4 using xhci_hcd
+[37989.208722] usb 2-2: New USB device found, idVendor=0b95, idProduct=1790, bcdDevice= 2.00
+[37989.208744] usb 2-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[37989.208753] usb 2-2: Product: AX88179A
+[37989.208760] usb 2-2: Manufacturer: ASIX
+[37989.208766] usb 2-2: SerialNumber: 0003B40D
+[37989.481930] cdc_ncm 2-2:2.0: MAC-Address: <removed>
+[37989.481949] cdc_ncm 2-2:2.0: setting rx_max = 16384
+[37989.494646] cdc_ncm 2-2:2.0: setting tx_max = 16384
+[37989.506072] cdc_ncm 2-2:2.0 eth1: register 'cdc_ncm' at usb-0000:00:14.0-2, CDC NCM (NO ZLP), <removed>
 
-> My suggestion is essentially "throw in a CR4.VMXE check before
-> TDH.SYS.LP.INIT if it's easy".  If it's not easy for some reason, then don't do
-> it.
+journalctl (from when not in promiscuous mode):
+Apr 29 17:34:47 hostname kernel: usb 2-1: new SuperSpeed USB device number 5 using xhci_hcd
+Apr 29 17:34:48 hostname kernel: usb 2-1: New USB device found, idVendor=0b95, idProduct=1790, bcdDevice= 2.00
+Apr 29 17:34:48 hostname kernel: usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Apr 29 17:34:48 hostname kernel: usb 2-1: Product: AX88179A
+Apr 29 17:34:48 hostname kernel: usb 2-1: Manufacturer: ASIX
+Apr 29 17:34:48 hostname kernel: usb 2-1: SerialNumber: 0003B40D
+Apr 29 17:34:48 hostname kernel: cdc_ncm 2-1:2.0: MAC-Address: <removed>
+Apr 29 17:34:48 hostname kernel: cdc_ncm 2-1:2.0: setting rx_max = 16384
+Apr 29 17:34:48 hostname kernel: cdc_ncm 2-1:2.0: setting tx_max = 16384
+Apr 29 17:34:48 hostname kernel: cdc_ncm 2-1:2.0 eth1: register 'cdc_ncm' at usb-0000:00:14.0-1, CDC NCM (NO ZLP), <removed>
+Apr 29 17:34:48 hostname NetworkManager[5652]: <info>  [1714430088.5005] manager: (eth1): new Ethernet device (/org/freedesktop/NetworkManager/Devices/14)
+Apr 29 17:34:48 hostname mtp-probe[6423]: checking bus 2, device 5: "/sys/devices/pci0000:00/0000:00:14.0/usb2/2-1"
+Apr 29 17:34:48 hostname mtp-probe[6423]: bus: 2, device: 5 was not an MTP device
+Apr 29 17:34:49 hostname (udev-worker)[6422]: Network interface NamePolicy= disabled on kernel command line.
+Apr 29 17:34:49 hostname NetworkManager[5652]: <info>  [1714430089.1558] device (eth1): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
+Apr 29 17:34:49 hostname mtp-probe[6456]: checking bus 2, device 5: "/sys/devices/pci0000:00/0000:00:14.0/usb2/2-1"
+Apr 29 17:34:49 hostname mtp-probe[6456]: bus: 2, device: 5 was not an MTP device
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2247] device (eth1): carrier: link connected
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2255] device (eth1): state change: unavailable -> disconnected (reason 'carrier-changed', sys-iface-state: 'managed')
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2275] policy: auto-activating connection 'Wired connection 2' (e1106b48-8695-3ed4-b512-a0909ddaa247)
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2279] device (eth1): Activation: starting connection 'Wired connection 2' (e1106b48-8695-3ed4-b512-a0909ddaa247)
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2280] device (eth1): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'managed')
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.2282] manager: NetworkManager state is now CONNECTING
+Apr 29 17:34:51 hostname NetworkManager[5652]: <warn>  [1714430091.2284] platform-linux: do-change-link[9]: failure 16 (Device or resource busy)
+Apr 29 17:34:51 hostname systemd[1]: NetworkManager-dispatcher.service: Deactivated successfully.
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.3634] device (eth1): set-hw-addr: set-cloned MAC address to 6A:0D:A2:E2:9D:A6 (random)
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.3646] device (eth1): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.3729] device (eth1): state change: config -> ip-config (reason 'none', sys-iface-state: 'managed')
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.3740] dhcp4 (eth1): activation: beginning transaction (timeout in 45 seconds)
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.3791] dhcp4 (eth1): dhclient started with pid 6459
+Apr 29 17:34:51 hostname dhclient[6459]: DHCPREQUEST for 192.168.1.169 on eth1 to 255.255.255.255 port 67
+Apr 29 17:34:51 hostname dhclient[6459]: DHCPNAK from 192.168.1.1
+Apr 29 17:34:51 hostname NetworkManager[5652]: <info>  [1714430091.4578] dhcp4 (eth1): state changed no lease
 
-I see.  The disconnection between us is I am not super clear why we 
-should treat TDH.SYS.LP.INIT as a special one that deserves a CR4.VMXE 
-check but not other SEAMCALLs.
+Thanks,
+Isaac Ganoung
 
-Anyway, I don't think adding such check or not matters a lot at this 
-stage, and I don't want to jeopardize any more time from you on this.  :-)
+--n3kbqcmcqkpkrtj4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKkFABYIACkiIQWu9OejSHRObh6wRzaYOt2b+sY1MbPYEve6H7+92tvbBgUCZjAq
+LgAALDEByM/RpJzrN4tsyayqlxQ6z1zu7GXBcKiNOWq4mkAk5ZNOS+EMr9Xm44S1
+Pq44eyG79m3d2NHw2fIMAAHHez3UYwCShykJyyvbM/dRBY4LoMxfxV1fcuca9udH
+Iosz4Sv/gnMLaxGkmS3cwLQ2RRSf3DEtdCYA
+=gXUS
+-----END PGP SIGNATURE-----
+
+--n3kbqcmcqkpkrtj4--
 
