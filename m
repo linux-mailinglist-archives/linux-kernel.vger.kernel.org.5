@@ -1,266 +1,234 @@
-Return-Path: <linux-kernel+bounces-162390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 387208B5A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E34DC8B5A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BEF21C21573
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:48:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 121F11C21534
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0158E7640E;
-	Mon, 29 Apr 2024 13:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7A6745F0;
+	Mon, 29 Apr 2024 13:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyORC9o2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Miyn4RRs"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0649C74E11;
-	Mon, 29 Apr 2024 13:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6032E401;
+	Mon, 29 Apr 2024 13:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398493; cv=none; b=Bx3nJaq6+ORDpsE0y3q9YGrux+vU/ZVyMa+Ecn+G6cy+Urip+PK+HdZz+t5zpiSJSjGoM7cbhdx1fdzAcqhwlaveQ5LfIg6nHX/BghnChDgeu10k2PQ9e8vuH7XOTjd1LVXCXYrXtefRlPMc/Autd5e7MT91oKEweIvH3Od+rfg=
+	t=1714398626; cv=none; b=jdbMKWlmbRUDuB2I+TNYrwrckD1zfNvqXD6FyW3bk7E2iNzgZn7nlGO6ugzrZ2EBygED0sT1GVj27WOeMOx1x8Lodv0JOpUlWeEn9XE4wVYb0r1QpbSzzOThxXWw01zo4tqvcDIeiM27wqpVgTtcyjR3upa++opWXH2LYlqS/Ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398493; c=relaxed/simple;
-	bh=2OmxYBcG8kYWa15/HKPOVgxwdgSzJ8/xMevqt/hqwIo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=iykIDcNFJPk5Gh0ScGi69j7sSEOGBELBYdkPhQtxZZkye8DUhdaEUncCM+7nYLDiA60JDHB0iDkFsUCoybLlmPajyGCQhALlhaScJfXy/YkZyoXOkWhLwC58+TApD9Cq1gaQtf6KnDg7SsMgL2sJMsZ/y1YwuZAni07kA5PAw0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyORC9o2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 427D1C113CD;
-	Mon, 29 Apr 2024 13:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714398492;
-	bh=2OmxYBcG8kYWa15/HKPOVgxwdgSzJ8/xMevqt/hqwIo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lyORC9o2Lm+u2avM+eOyj/ccYiyuxZQLnwqOF6FZV49QnzRN+Dcvvb8f+L/I+DIcc
-	 bR6gzWrxR06bLVpEA1X1PfPHzCF0nDSdsFIGgv/R/Ztx7jvyn/LZvp5GTSxbA3X+Ea
-	 5Q5++mVTUse/so5L++FV3pac1nAd6FyimPuc/dQPplc7m0nyf+JoSS48zL0c07gOKG
-	 +Q9TxDTXUAv++YZPpMLvDQVzMH1VHt+BXIScwupTc1u15EnhRP870WSg23oHheSEFh
-	 X/E2DhZuUkcbr1ov6EZLQFmBffBmxl2jf1fX5T3O6khvfYPOQWnrKD7j3rIrd7dwdJ
-	 AMHlyJcx5ffMw==
-Date: Mon, 29 Apr 2024 22:48:03 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
- <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
- Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
- Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao"
- <naveen.n.rao@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH] kprobe/ftrace: bail out if ftrace was killed
-Message-Id: <20240429224803.49d420b514e22d51412e1602@kernel.org>
-In-Reply-To: <20240426225834.993353-1-stephen.s.brennan@oracle.com>
-References: <20240426225834.993353-1-stephen.s.brennan@oracle.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714398626; c=relaxed/simple;
+	bh=+0By3Q1rGnmYRl/UhuSgmrbF78ae6+PB61PhQldbPaM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ipUeYBaLajGOGL/bre1WcpXhXUlMoS97BBjhzF8mZV/pCCdnyP4Do072WO9s8706+xRgMmSx1NKABSzQtgJ0tnxr1rASlzDJk5Sx/HwezbklNJTdhJqF728uExGI0ztNDbFptbJBNOyu1N6t0mHGvl/UJrXY0lNyXYR9Dn6fUcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Miyn4RRs; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2330f85c2ebso2754928fac.1;
+        Mon, 29 Apr 2024 06:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714398624; x=1715003424; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XrhYSG3xhMDj7OBlL1tC1PWG3ln9HAJzaFMOoyJkhZ4=;
+        b=Miyn4RRsaK0ofNecUnKAnYu/YL4R2QqKNOIjFtmXFhLmQIvLwzDWwh6WcfOvjFzgAO
+         bdM0rQ0qbdE8ID9iezf/kbDAHemIHdoYzN9WPgIegqQNn2xXTrKZC0Bfb16f6dtmoDnt
+         zeii0JfK4JKomPl4CsK6GVY1NdzC8ERj82CgRLvW9ri3Sdz4nlR64IQ4TESoyH3xB1MS
+         /FAYmJuyO1DCqVrHFoEKg5F2gFbHlSrdQXUNe3pmHqR+rq0V0DWkN76AMItnrr+LjiQg
+         BnSh73O+pLV2E829HTjnQEGc61VBUiUh1pbw3vJGAF6oxLRykF1tNoDS5Jy80u8hHLDU
+         ud6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714398624; x=1715003424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XrhYSG3xhMDj7OBlL1tC1PWG3ln9HAJzaFMOoyJkhZ4=;
+        b=Ew9Vj/WOrihZkaoxvZtFM7z5mG0CvgI1aVLNNQXrXLCQClDBmvZaJ8Y4lj4FEGoHm/
+         IvCiAwvT0W0RwoM+ycxSi9y1myYYbuuWrLN1/B9Qkk9yPYmixYNKsoA/Rj7sHHeYcClm
+         eprqaHWeL7NWw1cL1WevfbnuJfx/r9ZTVKt9igic0eYYCXXQ8qoK73EcMX7OI2Nn2Mri
+         ClJ5Dph7k+CneTiOKF5fYVsqEK9wjtEmfzbvW3mUdjwsVlxASU6AVgo0Yk+Ssq6WX9WE
+         N0ZYetkCIT721UC4TGm9s8NehreeuaruAsNrY4O0gkfIptdMNZ62wta13Aq2f6Y+HuKB
+         Ra3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXZ0Njks8iGfU+kl2D6w6aq4Qd4RVc7uswPDdkSXWTPcjaVTK5Pu5zXPKsFq5awSTT7dShH3v/5f5nDdjDt7fP71HkZz3+vKEJvI12n26wHa1WS0TdK6DxrlQuMSgFhlCd2dQ3JPLL77AJw
+X-Gm-Message-State: AOJu0Yz7LsJdZ4LwEHNugtPIm86qn6vIMA0erYi0rt+FucyD7xeY1BLd
+	IzUxAkFRpwChn7bYa9KnYWZtTqN8sqFXdxTcVXKn1LGOBCiddKZd
+X-Google-Smtp-Source: AGHT+IGFBF9LW2f4hp7yGLnn003gFHU/d1F8U7C1YHmI+jPbYT4dNTlp68ZwOuiPM700ftEs4rXNIA==
+X-Received: by 2002:a05:6870:5d8a:b0:23c:a649:4a48 with SMTP id fu10-20020a0568705d8a00b0023ca6494a48mr3246819oab.36.1714398624128;
+        Mon, 29 Apr 2024 06:50:24 -0700 (PDT)
+Received: from perdition.xmission.com ([2607:fa18:0:2::74])
+        by smtp.gmail.com with ESMTPSA id l5-20020a654485000000b005d8b2f04eb7sm15952921pgq.62.2024.04.29.06.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 06:50:23 -0700 (PDT)
+From: Aaron Toponce <aaron.toponce@gmail.com>
+To: 
+Cc: aaron.toponce@gmail.com,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: [PATCH] random: add chacha8_block and swtich the rng to it
+Date: Mon, 29 Apr 2024 07:48:49 -0600
+Message-ID: <20240429134942.2873253-1-aaron.toponce@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi Stephen,
+According to Jean-Philippe Aumasson in his paper "Too Much Crypto" [1]:
 
-On Fri, 26 Apr 2024 15:58:34 -0700
-Stephen Brennan <stephen.s.brennan@oracle.com> wrote:
+> "The best result on ChaCha is a key recovery attack on the 7-round version
+> with 2^237.7 time complexity using output data from 2^96 instances of ChaCha,
+> that is, 2^105 bytes of data."
 
-> If an error happens in ftrace, ftrace_kill() will prevent disarming
-> kprobes. Eventually, the ftrace_ops associated with the kprobes will be
-> freed, yet the kprobes will still be active, and when triggered, they
-> will use the freed memory, likely resulting in a page fault and panic.
+He then proposes that ChaCha use 8 rounds instead of 20, providing a 2.5x
+speed-up. As such, this patch adds chacha8_block and chacha12_block and switches
+the RNG from ChaCha20 to ChaCha8 to take advantage of that efficiency without
+sacrificing security.
 
-Hmm, indeed.
+[1]: https://eprint.iacr.org/2019/1492
 
-> 
-> This behavior can be reproduced quite easily, by creating a kprobe and
-> then triggering a ftrace_kill(). For simplicity, we can simulate an
-> ftrace error with a kernel module like [1]:
-> 
-> [1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
-> 
->   sudo perf probe --add commit_creds
->   sudo perf trace -e probe:commit_creds
->   # In another terminal
->   make
->   sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
->   # Back to perf terminal
->   # ctrl-c
->   sudo perf probe --del commit_creds
-> 
-> After a short period, a page fault and panic would occur as the kprobe
-> continues to execute and uses the freed ftrace_ops. While ftrace_kill()
-> is supposed to be used only in extreme circumstances, it is invoked in
-> FTRACE_WARN_ON() and so there are many places where an unexpected bug
-> could be triggered, yet the system may continue operating, possibly
-> without the administrator noticing. If ftrace_kill() does not panic the
-> system, then we should do everything we can to continue operating,
-> rather than leave a ticking time bomb.
+On my ThinkPad T480s with an Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz, the
+speed-up is close to what would be expected.
 
-OK, the patch looks good to me.
+Without the patch:
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+  $ dd if=/dev/urandom of=/dev/null bs=32M count=300
+  300+0 records in
+  300+0 records out
+  10066329600 bytes (10 GB, 9.4 GiB) copied, 20.4806 s, 492 MB/s
 
-Thanks!
+With the patch:
 
-> 
-> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
-> ---
-> 
-> Apologies for the wide net cast here. I recognize that a change like this
-> may need to be split up and go through arch-specific trees. I hoped to get
-> feedback on the patch itself. If it's satisfactory and the architecture
-> maintainers prefer it split out, I'm glad to do it. Thanks!
-> 
->  arch/csky/kernel/probes/ftrace.c     | 3 +++
->  arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
->  arch/parisc/kernel/ftrace.c          | 3 +++
->  arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
->  arch/riscv/kernel/probes/ftrace.c    | 3 +++
->  arch/s390/kernel/ftrace.c            | 3 +++
->  arch/x86/kernel/kprobes/ftrace.c     | 3 +++
->  include/linux/ftrace.h               | 2 ++
->  8 files changed, 23 insertions(+)
-> 
-> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-> index 834cffcfbce3..3931bf9f707b 100644
-> --- a/arch/csky/kernel/probes/ftrace.c
-> +++ b/arch/csky/kernel/probes/ftrace.c
-> @@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe_ctlblk *kcb;
->  	struct pt_regs *regs;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
-> index 73858c9029cc..82c952cb5be0 100644
-> --- a/arch/loongarch/kernel/ftrace_dyn.c
-> +++ b/arch/loongarch/kernel/ftrace_dyn.c
-> @@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-> index 621a4b386ae4..3660834f54c3 100644
-> --- a/arch/parisc/kernel/ftrace.c
-> +++ b/arch/parisc/kernel/ftrace.c
-> @@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe *p;
->  	int bit;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
-> index 072ebe7f290b..85eb55aa1457 100644
-> --- a/arch/powerpc/kernel/kprobes-ftrace.c
-> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
-> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
->  	struct pt_regs *regs;
->  	int bit;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(nip, parent_nip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
-> index 7142ec42e889..8814fbe4c888 100644
-> --- a/arch/riscv/kernel/probes/ftrace.c
-> +++ b/arch/riscv/kernel/probes/ftrace.c
-> @@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe_ctlblk *kcb;
->  	int bit;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-> index c46381ea04ec..ccbe8ccf945b 100644
-> --- a/arch/s390/kernel/ftrace.c
-> +++ b/arch/s390/kernel/ftrace.c
-> @@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe *p;
->  	int bit;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-> index dd2ec14adb77..c73f9ab7ff50 100644
-> --- a/arch/x86/kernel/kprobes/ftrace.c
-> +++ b/arch/x86/kernel/kprobes/ftrace.c
-> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  	struct kprobe_ctlblk *kcb;
->  	int bit;
->  
-> +	if (unlikely(ftrace_is_dead()))
-> +		return;
-> +
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
->  		return;
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 54d53f345d14..ba83e99c1fbe 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -399,6 +399,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
->  #define register_ftrace_function(ops) ({ 0; })
->  #define unregister_ftrace_function(ops) ({ 0; })
->  static inline void ftrace_kill(void) { }
-> +static inline int ftrace_is_dead(void) { return 0; }
->  static inline void ftrace_free_init_mem(void) { }
->  static inline void ftrace_free_mem(struct module *mod, void *start, void *end) { }
->  static inline int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
-> @@ -914,6 +915,7 @@ static inline bool is_ftrace_trampoline(unsigned long addr)
->  
->  /* totally disable ftrace - can not re-enable after this */
->  void ftrace_kill(void);
-> +int ftrace_is_dead(void);
->  
->  static inline void tracer_disable(void)
->  {
-> -- 
-> 2.39.3
-> 
+  $ dd if=/dev/urandom of=/dev/null bs=32M count=300
+  300+0 records in
+  300+0 records out
+  10066329600 bytes (10 GB, 9.4 GiB) copied, 11.5321 s, 873 MB/s
 
+Signed-off-by: Aaron Toponce <aaron.toponce@gmail.com>
+---
+ drivers/char/random.c   |  8 ++++----
+ include/crypto/chacha.h | 14 ++++++++++++--
+ lib/crypto/chacha.c     |  6 +++---
+ 3 files changed, 19 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 2597cb43f438..2e14a30b795f 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -302,7 +302,7 @@ static void crng_fast_key_erasure(u8 key[CHACHA_KEY_SIZE],
+ 	chacha_init_consts(chacha_state);
+ 	memcpy(&chacha_state[4], key, CHACHA_KEY_SIZE);
+ 	memset(&chacha_state[12], 0, sizeof(u32) * 4);
+-	chacha20_block(chacha_state, first_block);
++	chacha8_block(chacha_state, first_block);
+ 
+ 	memcpy(key, first_block, CHACHA_KEY_SIZE);
+ 	memcpy(random_data, first_block + CHACHA_KEY_SIZE, random_data_len);
+@@ -388,13 +388,13 @@ static void _get_random_bytes(void *buf, size_t len)
+ 
+ 	while (len) {
+ 		if (len < CHACHA_BLOCK_SIZE) {
+-			chacha20_block(chacha_state, tmp);
++			chacha8_block(chacha_state, tmp);
+ 			memcpy(buf, tmp, len);
+ 			memzero_explicit(tmp, sizeof(tmp));
+ 			break;
+ 		}
+ 
+-		chacha20_block(chacha_state, buf);
++		chacha8_block(chacha_state, buf);
+ 		if (unlikely(chacha_state[12] == 0))
+ 			++chacha_state[13];
+ 		len -= CHACHA_BLOCK_SIZE;
+@@ -444,7 +444,7 @@ static ssize_t get_random_bytes_user(struct iov_iter *iter)
+ 	}
+ 
+ 	for (;;) {
+-		chacha20_block(chacha_state, block);
++		chacha8_block(chacha_state, block);
+ 		if (unlikely(chacha_state[12] == 0))
+ 			++chacha_state[13];
+ 
+diff --git a/include/crypto/chacha.h b/include/crypto/chacha.h
+index b3ea73b81944..64c45121c69a 100644
+--- a/include/crypto/chacha.h
++++ b/include/crypto/chacha.h
+@@ -8,8 +8,7 @@
+  *
+  * The ChaCha paper specifies 20, 12, and 8-round variants.  In general, it is
+  * recommended to use the 20-round variant ChaCha20.  However, the other
+- * variants can be needed in some performance-sensitive scenarios.  The generic
+- * ChaCha code currently allows only the 20 and 12-round variants.
++ * variants can be needed in some performance-sensitive scenarios.
+  */
+ 
+ #ifndef _CRYPTO_CHACHA_H
+@@ -31,11 +30,22 @@
+ #define XCHACHA_IV_SIZE		32
+ 
+ void chacha_block_generic(u32 *state, u8 *stream, int nrounds);
++
+ static inline void chacha20_block(u32 *state, u8 *stream)
+ {
+ 	chacha_block_generic(state, stream, 20);
+ }
+ 
++static inline void chacha12_block(u32 *state, u8 *stream)
++{
++	chacha_block_generic(state, stream, 12);
++}
++
++static inline void chacha8_block(u32 *state, u8 *stream)
++{
++	chacha_block_generic(state, stream, 8);
++}
++
+ void hchacha_block_arch(const u32 *state, u32 *out, int nrounds);
+ void hchacha_block_generic(const u32 *state, u32 *out, int nrounds);
+ 
+diff --git a/lib/crypto/chacha.c b/lib/crypto/chacha.c
+index b748fd3d256e..15e773629f1d 100644
+--- a/lib/crypto/chacha.c
++++ b/lib/crypto/chacha.c
+@@ -18,7 +18,7 @@ static void chacha_permute(u32 *x, int nrounds)
+ 	int i;
+ 
+ 	/* whitelist the allowed round counts */
+-	WARN_ON_ONCE(nrounds != 20 && nrounds != 12);
++	WARN_ON_ONCE(nrounds != 20 && nrounds != 12 && nrounds != 8);
+ 
+ 	for (i = 0; i < nrounds; i += 2) {
+ 		x[0]  += x[4];    x[12] = rol32(x[12] ^ x[0],  16);
+@@ -67,7 +67,7 @@ static void chacha_permute(u32 *x, int nrounds)
+  * chacha_block_generic - generate one keystream block and increment block counter
+  * @state: input state matrix (16 32-bit words)
+  * @stream: output keystream block (64 bytes)
+- * @nrounds: number of rounds (20 or 12; 20 is recommended)
++ * @nrounds: number of rounds (20, 12, or 8; 20 is recommended)
+  *
+  * This is the ChaCha core, a function from 64-byte strings to 64-byte strings.
+  * The caller has already converted the endianness of the input.  This function
+@@ -93,7 +93,7 @@ EXPORT_SYMBOL(chacha_block_generic);
+  * hchacha_block_generic - abbreviated ChaCha core, for XChaCha
+  * @state: input state matrix (16 32-bit words)
+  * @stream: output (8 32-bit words)
+- * @nrounds: number of rounds (20 or 12; 20 is recommended)
++ * @nrounds: number of rounds (20, 12, or 8; 20 is recommended)
+  *
+  * HChaCha is the ChaCha equivalent of HSalsa and is an intermediate step
+  * towards XChaCha (see https://cr.yp.to/snuffle/xsalsa-20081128.pdf).  HChaCha
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0
+
 
