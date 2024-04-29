@@ -1,128 +1,209 @@
-Return-Path: <linux-kernel+bounces-162425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 655B68B5B05
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:13:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 954E18B5B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:13:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65F831C20ED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:13:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20B33283864
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493F977F10;
-	Mon, 29 Apr 2024 14:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E60679B7E;
+	Mon, 29 Apr 2024 14:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="YcUNS3Iq"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SCdtiYsy"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F849468;
-	Mon, 29 Apr 2024 14:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBED1768EA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714399985; cv=none; b=Tve5/F7aP6rrnKVc3h+1t47wMEVRueUuPlJ79CHcvgy6eCbYIQ5XzLYjjQa57ROryMEPa8QgnULhA9prOQ60EpTiEELbhBCJtVLJ579h4LN3f9a55FpINeVm+DdiBb5bMVJeqDLInPZIBuuTtYCoQp9sKdPH2JzgginDiZ8y94U=
+	t=1714400011; cv=none; b=pxsFI4l/GjVhr77dMqInnuEbWXnMfeTAMFPD7QNumOntMWz9GXFb64UNp8p0oMHhxHLMQ1MC6hMirsCmIL5baH1ebyhaZP8nqUcMglorFvA+AnOm3Z6YprEFs8Ys1opamIbSx15E/y+3OFQEFGK2jcWPSk0V36ItJRvgCJHSTTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714399985; c=relaxed/simple;
-	bh=3gAkZO77w6Vg/FEj8UDrJXdxtegquGNjwt6XnnvslHo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9CfZk/YMsoOZkKM0ZmHnIXlo++0HwhLUq/p5lk3vXILc89V0opFIPvj40LwYK8Iv2lQjcP6XqKTHaj+soeiwSGuQSdVIq3fcsrm3UVnOrZlYqkt0BBRphCUhHw9r8w1dP0rwAN8SIWHDt9q6uifustlXDvromKecRoormRlr7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=YcUNS3Iq; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9263C40E0187;
-	Mon, 29 Apr 2024 14:13:01 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BnmjDi5cs7Hs; Mon, 29 Apr 2024 14:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714399977; bh=oE13an3Sp1ZiL8L+oexSnFWbk2LomH2Gdl8IFWAPmBc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YcUNS3IqG3cdvTCOxDmGgWIHR4cqdTpT1EMz/hhxhrAtUIroLJN6O5oOM/P+81bQX
-	 PiZ3Txn0Zd6S1auEhZwouMkK0TJo4C/Xm6YUhdWt79m3rgJd1mkiRPNOn4tmA4ebqv
-	 eC8REkxxV8dSmk4CnNps/FHnRwl3qWl3a1+zhpHsQzr86PcQ/Eqid1G8Gu7NrHvfW2
-	 sF0ib0TZaCAltoXUULIXWSIqvU7045bR2nKrnjvuA86ffxpzhQ/atUYILCpcQxZh9g
-	 eo01CuXplF3hMPmAZppm06XFP4esrw7SJRFwmMpbI0HpOWT6sqXlhJnKJtPiWZEKks
-	 1b0wJYAm1g6x1gOS8nNkgBZo2+KG9j9iJIGyPbapIF1+/vrPvw6prD82q1xlj1/dEq
-	 XCTiYl0PUaGWbaTrYe9GMelYVstUQXKzh6TeDgAoS5T4Xdq3ko8yJtlxDQ9PzZOBwB
-	 zaIEmdDbpD3HzFO+cK0LH3isfShMuvewJ1MeMOjIxWLoSJS9lUuAadpfXTBtOcER0I
-	 rZAclthPHh/xurXgnmRqTm/a7IL4O/VppU+lUIYEX1TZrEHZKpTodOFYGSV4F8FODt
-	 DohmsijoYWhzat0KupGj7+jZwOnyz0cpEOJy8Fld54BFT0lC7hfykCbRdZPCN73EwB
-	 DSYP+P1gX9dQd4V7VIj5Edkc=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 66DC240E016B;
-	Mon, 29 Apr 2024 14:12:49 +0000 (UTC)
-Date: Mon, 29 Apr 2024 16:12:44 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: robert.richter@amd.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tony.luck@intel.com, x86@kernel.org,
-	Avadhut.Naik@amd.com, John.Allen@amd.com
-Subject: Re: [PATCH v2 07/16] x86/mce/amd: Simplify DFR handler setup
-Message-ID: <20240429141244.GGZi-q3NdmI17pai4N@fat_crate.local>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-8-yazen.ghannam@amd.com>
- <20240424190658.GHZilYUvw1KfSfVd_e@fat_crate.local>
- <e0d10606-4472-4cde-b55d-34180efad42b@amd.com>
- <20240429125956.GNZi-ZzN1Izxps8ztT@fat_crate.local>
- <d1e329da-6a04-47f7-bdab-ea6c4f584802@amd.com>
+	s=arc-20240116; t=1714400011; c=relaxed/simple;
+	bh=C9/BTBAjs4wYnosLHUhTNU6Oc1nB30MxAvT+9gJ7Mng=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=msnl9jCt2RG+AgdE5DkDb+Vbmmtz8InQHtgYPU4wO/Ljzhj4TDavUNObOO34YvyhKkanL1oDgrFm4PAxclo+HfN2CTESpRjftdm/rBaVuMjqbWx2WYAUrQLIxIZlaOes/quAAKkgiaYPa+6BCWiwBk3wwDqBKDFhHtVl1BgrS/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SCdtiYsy; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4365c1451d4so30900901cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714400007; x=1715004807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IXaUKKpFujkWymSRJKlgkreifFUpxgXsPFgEoLgrUDA=;
+        b=SCdtiYsyEtrTuU+044rUF97R64m4yTpFi+Eu4VXN2JWrb+QDpb44yTXJ6gdVR8ci4G
+         MbP4giwWVgzUAzKBl44DMyE+Ohj5M0CgaiASY9LnxupWjIEaG22RVqlv5/L0GW5BvcSA
+         VN46Zuw4Tw+DZ/qtlq7Di2mtU75Hu1G/iYZ9c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714400007; x=1715004807;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IXaUKKpFujkWymSRJKlgkreifFUpxgXsPFgEoLgrUDA=;
+        b=XsKLwxwDMiH1FMN2suJcQNUuJzzhqhR0OyBNgogjw8Qd25+mimJnmcKmN76pnIP3ES
+         +XkUCn/BfUSk9GTTtd4z8NZGOwFx9noXJtPewwIUy0CoEmLKYjFDD3Cq7PtojTfC9M+P
+         lRdGl09n6Gs8WNuKWo0aCMPJnDy3ozI1F2IAjlmOORMLvtY53fJpNTFij+f8/Io9BOa0
+         JSvemEUiqWRUWQK9RVpdN8Tz/grDWxNhgYV6VhoqHZIzR0VyyWI2WDVLDR8REyOQpSIC
+         JzSRAdkPHZluTHgdftn3Lv9fWICeSYneACvwTQmDnspwyBpEKHBTEyVVUEU2epVoG0eS
+         CKhg==
+X-Forwarded-Encrypted: i=1; AJvYcCU05+scSNLvk7SXD4Wp6q75rjcMyoURpBpU+Iyx5MLCk1IWLzcyxNIwqKIkZFeXyX61cTFr6WvDGwIIUwQMXAes0wGqRpitLOVLn7QE
+X-Gm-Message-State: AOJu0YyAKPiaT013zWJFuNzXwdvL3NBJvvIRXJnb6sCbwmpn0qeT0LeY
+	2co0PSPm5c3NGxuw3cIR5NcxXhFACwLlCjmzd/TxfwDFdgZq3mOR9WzpCbEd9KEENCroRnV5mYk
+	=
+X-Google-Smtp-Source: AGHT+IFvps1JjXT1PkgbZt/upN2FNAhZTQw4aBw9IBKqW8DcP1Lm09jUYMMZ9wSFNkg8pknSCz+fvw==
+X-Received: by 2002:a05:622a:2a16:b0:434:7c49:a94e with SMTP id hc22-20020a05622a2a1600b004347c49a94emr13941430qtb.27.1714400007539;
+        Mon, 29 Apr 2024 07:13:27 -0700 (PDT)
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
+        by smtp.gmail.com with ESMTPSA id d12-20020ac851cc000000b00438527a4eb5sm9145142qtn.10.2024.04.29.07.13.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 07:13:26 -0700 (PDT)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-439b1c72676so699111cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:13:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXD0YhucKHTEkswrVL999vu+p7SSjYIOF3LeAq0HMXpms6HwEeLlJ5nV3R4KvHOI/21b2dJBpKqt3lake9GBFUV5gwrjwO8I4ZdfSKB
+X-Received: by 2002:ac8:7d49:0:b0:43a:c278:83f9 with SMTP id
+ h9-20020ac87d49000000b0043ac27883f9mr320794qtb.3.1714400005486; Mon, 29 Apr
+ 2024 07:13:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d1e329da-6a04-47f7-bdab-ea6c4f584802@amd.com>
+References: <20240426235857.3870424-1-dianders@chromium.org>
+ <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid> <20240427063250.GB1137299@ravnborg.org>
+In-Reply-To: <20240427063250.GB1137299@ravnborg.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 29 Apr 2024 07:13:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UN5tWqQvnLRGtk+EVqjEqO6vqtEfaYONkCsze2+539Xw@mail.gmail.com>
+Message-ID: <CAD=FV=UN5tWqQvnLRGtk+EVqjEqO6vqtEfaYONkCsze2+539Xw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: dri-devel@lists.freedesktop.org, Linus Walleij <linus.walleij@linaro.org>, 
+	lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Hsin-Yi Wang <hsinyi@google.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Joel Selvaraj <jo@jsfamily.in>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 09:56:56AM -0400, Yazen Ghannam wrote:
-> Right, I mean we should do things the simpler way unless there's a real issue
-> to address.
+Hi,
 
-You need to pay attention to past issues before you go, simplify it and
-break it again.
+On Fri, Apr 26, 2024 at 11:33=E2=80=AFPM Sam Ravnborg <sam@ravnborg.org> wr=
+ote:
+>
+> > ---
+> > Right now this patch introduces two new functions in
+> > drm_mipi_dsi.c. Alternatively we could have changed the prototype of
+> > the "chatty" functions and made the deprecated macros adapt to the new
+> > prototype. While this sounds nice, it bloated callers of the
+> > deprecated functioin a bit because it caused the compiler to emit less
+> > optimal code. It doesn't seem terrible to add two more functions, so I
+> > went that way.
+> The concern here is when it will be cleaned up. As a minimum please
+> consider adding an item to todo.rst that details what should be done
+> to get rid of the now obsolete chatty functions so someone can pick it
+> up.
 
-> I'm not opposed to this, but I don't understand what is at risk.
-> 
-> Is it that the function pointer may not be written atomically? So even if we
-> write it again with the same value, a concurrent interrupt on another core may
-> see a partially updated (corrupt) pointer?
+Sure, I can add something to do TODO. Do folks agree that's the
+preferred way to do things? A few thoughts I had:
 
-Yes, it won't happen, they say as it is guaranteed by the
-architecture. But I've heard those "promises".
+1. In theory it could be useful to keep _both_ the "chatty" and
+"multi" variants of the functions. In at least a few places the
+"multi" variant was awkward. The resulting auo_kd101n80_45na_init()
+[1] looked awkward. If I was writing just this function I would have
+chosen an API more like the "chatty" one, but since I was trying to
+make all the init functions similar I kept them all using the "multi"
+API. Does it make sense to keep both long term?
 
-> intel_init_cmci() does not do this check. So is it more at risk, or is the AMD
-> code just more cautious?
-> 
-> Again I'm not against the current code. I just think we should simplify it, if
-> possible.
+[1] https://lore.kernel.org/all/20240426165839.v2.7.Ib5030ab5cd41b4e08b1958=
+bd7e51571725723008@changeid/
 
-So in looking at the INTR_CFG MSR, I think we should do a function which
-does MCA init stuff only on the BSP exactly for things like that.
+2. Going completely the opposite direction, we could also not bother
+saving as much space today and _force_ everyone to move to the new
+"multi" API to get the full space savings.
 
-There you can set the interrupt handler pointer, the INTR_CFG MSR and so
-on. And we don't have such function and I've needed a function like that
-in the past.
 
-And just for the general goal of not doing ugly code which should run
-only once but is run per-CPU just because our infrastructure doesn't
-allow it.
+So I guess three options: a) leave my patches the way they are and add
+a TODO, b) Keep the "chatty" variants long term and remove my
+"after-the-cut", or c) Don't get as much space savings today but don't
+introduce a new exported function. Opinions?
 
-Wanna give that a try?
 
-Thx.
+> > @@ -792,6 +792,34 @@ int mipi_dsi_generic_write_chatty(struct mipi_dsi_=
+device *dsi,
+> >  }
+> >  EXPORT_SYMBOL(mipi_dsi_generic_write_chatty);
+> >
+> > +/**
+> > + * mipi_dsi_generic_write_multi() - mipi_dsi_generic_write_chatty() w/=
+ accum_err
+> > + * @ctx: Context for multiple DSI transactions
+> > + * @payload: buffer containing the payload
+> > + * @size: size of payload buffer
+> > + *
+> > + * Like mipi_dsi_generic_write_chatty() but deals with errors in a way=
+ that
+> > + * makes it convenient to make several calls in a row.
+> > + */
+> > +void mipi_dsi_generic_write_multi(struct mipi_dsi_multi_context *ctx,
+> > +                               const void *payload, size_t size)
+> > +{
+> > +     struct mipi_dsi_device *dsi =3D ctx->dsi;
+> > +     struct device *dev =3D &dsi->dev;
+> > +     ssize_t ret;
+> > +
+> > +     if (ctx->accum_err)
+> > +             return;
+> > +
+> > +     ret =3D mipi_dsi_generic_write(dsi, payload, size);
+> > +     if (ret < 0) {
+> > +             ctx->accum_err =3D ret;
+> > +             dev_err_ratelimited(dev, "sending generic data %*ph faile=
+d: %d\n",
+> > +                                 (int)size, payload, ctx->accum_err);
+> > +     }
+> I see no point in using ratelimited and then change it in the next
+> patch.
 
--- 
-Regards/Gruss,
-    Boris.
+Sure, I'll re-order patches.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+> > @@ -197,6 +197,22 @@ struct mipi_dsi_device {
+> >       struct drm_dsc_config *dsc;
+> >  };
+> >
+> > +/**
+> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI DSI f=
+uncs in a row
+> > + * @dsi: Pointer to the MIPI DSI device
+> > + * @accum_err: Storage for the accumulated error over the multiple cal=
+ls. Init
+> > + *   to 0. If a function encounters an error then the error code will =
+be
+> > + *   stored here. If you call a function and this points to a non-zero
+> > + *   value then the function will be a noop. This allows calling a fun=
+ction
+> > + *   many times in a row and just checking the error at the end to see=
+ if
+> > + *   any of them failed.
+> > + */
+> > +
+> > +struct mipi_dsi_multi_context {
+> > +     struct mipi_dsi_device *dsi;
+> > +     int accum_err;
+> > +};
+> Inline comments is - I think - preferred.
+
+Sure, I'll update in the next version.
 
