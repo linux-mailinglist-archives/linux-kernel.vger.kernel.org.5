@@ -1,122 +1,134 @@
-Return-Path: <linux-kernel+bounces-162909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22CB68B61F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:21:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313308B61EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:21:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B33201F24DA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:21:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68FB1B22A7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B3313B7A7;
-	Mon, 29 Apr 2024 19:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC02A13B588;
+	Mon, 29 Apr 2024 19:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jc0JoP+e"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0RFfydn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0923113AA3B;
-	Mon, 29 Apr 2024 19:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE9012B73;
+	Mon, 29 Apr 2024 19:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714418496; cv=none; b=lbePcjylgjlyZkbmJM01kk1+M9d0CDZOYK1cWO7DC4L5bI/RC03LxkYKEwpHvulGmHCsh5mmlAK8gBcuJes2Fn+VT1mtYx2KATiuIw3ZMEJ9J5RMkTTbAd2XbXk36siEveHe08zL2mQm35Jbp1YkmgQAzTcaDBmPAEKcNfj+AhU=
+	t=1714418496; cv=none; b=lvZJ5CwUEjJYo7WOh6O/F1pmQZWUIZ/5BfsYOHuKFxPvhDDr0OpZXcD21k4hYO+egFQJWwC1goHepvcwH8WEAWrfw4K973LCzaeyeAiKnuMC2lhCzib9fdvOSUKyHbuqvIdGAu5hmDF5Hf22GoVjLDF4SZHdjlsinjSeD++T/08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714418496; c=relaxed/simple;
-	bh=jp0/hhNkqyvc+wcHZcmBPELue9y/n98F9TDt18ONk+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lgAx6T7XRs0SE5R+TzH6KJH76qxmhcQTX/1yTowdZkvLepFo4m0zYpHaHj424KDCrbXdT3makDa/6hufNn8PzRPT2k3siMAjduvbPK5F05Z9gOMkv6kAVpdWg6AUs9bTg7VtCnLLFOob8F+e9QNnNbnxviwZhjjmr9DHRMF3wkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Jc0JoP+e; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=neJzdRz9MNUmJ0r+KdRG51iWaNXVEV9Q2WvkNbVMuAo=; b=Jc0JoP+eKlc+BEPzMeneXAxsma
-	j/OYXl9xWbSVrgWEs60bJmZmC5ymQ6SxfijEAStU0JqYGSMrjhQl6oNoCCKdGKJWUrSWku+ucHqTd
-	PX1zm4qHityOpwJAN4lQlbZteHHAf1yVdNPaFECdf0EE0gXFMv7iJgeYnyrdgXnQBOwxRVi4j4q1K
-	+NWVRPqo4iabfKD59KHwsIpvkgf1QQuiO/oAQl1F9jEZlKEvQhCb+NCFSPzmwkpI9i7cev5c5lHkB
-	6zsNABrfOfPUa8ebmNG6SglJtXXI0vKLoXXI5iLW3FpLMd/2fpU/w572XWrQS4/s+eomGeYpFOSvw
-	sqIfsjmw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1WYv-0000000D9vn-12aN;
-	Mon, 29 Apr 2024 19:21:17 +0000
-Date: Mon, 29 Apr 2024 20:21:17 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/12] nfs: drop usage of folio_file_pos
-Message-ID: <Zi_zLQqpJ6PRX7HD@casper.infradead.org>
-References: <20240429190500.30979-1-ryncsn@gmail.com>
- <20240429191138.34123-1-ryncsn@gmail.com>
+	bh=vOAjXkqV/BW5BFMy/FugtkSomI+lCtbQeeOuE8DfZRM=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=o7M6vKzttgiUZ2NiTYYY2BbTwhmAeBvbC+rkkoNY6DMw0kvSHOBeV+AIhHfxzzMvCx5hP39HMwt31Eo094rkLxCPLiYrsG6s7SBRpfQlKlctQTDsFUlOkfbZOMqIerkcUPqvxT00dHtPcTCxMYwUKRwvUpa9/6nSXpJ0vSMCsOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0RFfydn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E4AEC4AF1A;
+	Mon, 29 Apr 2024 19:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714418495;
+	bh=vOAjXkqV/BW5BFMy/FugtkSomI+lCtbQeeOuE8DfZRM=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=c0RFfydnB/AYsCs+tTB8U2TfsP/SkMCXDKAFCcdiWgHbk9DVIikiajKo42GI80Bzb
+	 /QcXx4KflBBZyWAeym9CEbXh/qGHPhuo7Kco+c4KcJOVSQfcjg8guWhTHkP6/XUAcE
+	 +a+iNmYng8SmHShJOR9wjrONK4D8wB0vcsl9QKtk40PyINjGLtMMfZA0nnwOvNc/sd
+	 QYzzm5UP/ZEykBARAwTm9RqCCMl878CnBECYblsWQUZQ9P92P/3v2fri6fLCQ+OMqM
+	 +9Hs6zv0xovtrYn/RH8NSfiX3dOsovbAgZeZB7xrY/KI1Uji9+RKNjMW96pmwxovVL
+	 0cQwguLbnWKUw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,  Jeff Johnson
+ <quic_jjohnson@quicinc.com>,  linux-wireless@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in
+ struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+References: <ZgSTCmdP+omePvWg@neat>
+	<171222554691.1806092.8730005090791383928.kvalo@kernel.org>
+	<202404291008.51DB333F@keescook> <877cggqdwb.fsf@kernel.org>
+	<202404291109.331E1704@keescook>
+Date: Mon, 29 Apr 2024 22:21:32 +0300
+In-Reply-To: <202404291109.331E1704@keescook> (Kees Cook's message of "Mon, 29
+	Apr 2024 11:09:43 -0700")
+Message-ID: <87bk5sf003.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429191138.34123-1-ryncsn@gmail.com>
+Content-Type: text/plain
 
-On Tue, Apr 30, 2024 at 03:11:34AM +0800, Kairui Song wrote:
-> +++ b/fs/nfs/file.c
-> @@ -588,7 +588,7 @@ static vm_fault_t nfs_vm_page_mkwrite(struct vm_fault *vmf)
->  
->  	dfprintk(PAGECACHE, "NFS: vm_page_mkwrite(%pD2(%lu), offset %lld)\n",
->  		 filp, filp->f_mapping->host->i_ino,
-> -		 (long long)folio_file_pos(folio));
-> +		 (long long)folio_pos(folio));
+Kees Cook <keescook@chromium.org> writes:
 
-Yes, we can't call page_mkwrite() on a swapcache page.
+> On Mon, Apr 29, 2024 at 08:25:56PM +0300, Kalle Valo wrote:
+>
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > On Thu, Apr 04, 2024 at 10:12:28AM +0000, Kalle Valo wrote:
+>> >
+>> >> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+>> >> 
+>> >> > Prepare for the coming implementation by GCC and Clang of the
+>> >> > __counted_by attribute. Flexible array members annotated with
+>> >> > __counted_by can have their accesses bounds-checked at run-time
+>> >> > via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+>> >> > (for strcpy/memcpy-family functions).
+>> >> > 
+>> >> > Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+>> >> > getting ready to enable it globally.
+>> >> > 
+>> >> > So, use the `DEFINE_FLEX()` helper for an on-stack definition of
+>> >> > a flexible structure where the size of the flexible-array member
+>> >> > is known at compile-time, and refactor the rest of the code,
+>> >> > accordingly.
+>> >> > 
+>> >> > So, with these changes, fix the following warning:
+>> >> > drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure
+>> >> > containing a flexible array member is not at the end of another
+>> >> > structure [-Wflex-array-member-not-at-end]
+>> >> > 
+>> >> > Link: https://github.com/KSPP/linux/issues/202
+>> >> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> >> > Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>> >> > Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+>> >> 
+>> >> Patch applied to ath-next branch of ath.git, thanks.
+>> >> 
+>> >> cbb0697e0ded wifi: wil6210: wmi: Use __counted_by() in struct
+>> >> wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+>> >
+>> > Hi,
+>> >
+>> > I was just walking through our patch tracker and noticed that I don't
+>> > see this patch include in -next yet (as of next-20240429). Is there a
+>> > flush of the ath-next queue planned soon? Or did I miss some change?
+>> 
+>> Yeah, wireless-next was pulled last week so most likely we will create
+>> ath-next pull request this week.
+>> 
+>> BTW we are planning to move ath.git to a new location, rename branches
+>> etc. I think we'll see if we can also setup it so that it can be pulled
+>> to linux-next, so that you don't need to ask this every time ;)
+>> 
+>> (Just joking of course, there a lot of benefits from having the tree in
+>> linux-next)
+>
+> Ah-ha! Thanks. Yeah, sorry if I keep asking about that. It's different
+> from other trees, so it doesn't stick in my head. :) I should keep
+> better notes!
 
-> +++ b/fs/nfs/nfstrace.h
-> @@ -960,7 +960,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event,
->  			__entry->fileid = nfsi->fileid;
->  			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
->  			__entry->version = inode_peek_iversion_raw(inode);
-> -			__entry->offset = folio_file_pos(folio);
-> +			__entry->offset = folio_pos(folio);
->  			__entry->count = nfs_folio_length(folio);
->  		),
->  
-> @@ -1008,7 +1008,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event_done,
->  			__entry->fileid = nfsi->fileid;
->  			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
->  			__entry->version = inode_peek_iversion_raw(inode);
-> -			__entry->offset = folio_file_pos(folio);
-> +			__entry->offset = folio_pos(folio);
+BTW I think all vendor specific wireless driver trees are not pulled to
+linux-next: iwlwifi, mt76, rtw (Realtek) and ath. So with all of these it will
+take a while before the commit is in linux-next.
 
-These two I don't know about.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> +++ b/fs/nfs/write.c
-> @@ -281,7 +281,7 @@ static void nfs_grow_file(struct folio *folio, unsigned int offset,
->  	end_index = ((i_size - 1) >> folio_shift(folio)) << folio_order(folio);
->  	if (i_size > 0 && folio_index(folio) < end_index)
->  		goto out;
-> -	end = folio_file_pos(folio) + (loff_t)offset + (loff_t)count;
-> +	end = folio_pos(folio) + (loff_t)offset + (loff_t)count;
-
-This one concerns me.  Are we sure we can't call nfs_grow_file()
-for a swapfile?
-
-> @@ -2073,7 +2073,7 @@ int nfs_wb_folio_cancel(struct inode *inode, struct folio *folio)
->   */
->  int nfs_wb_folio(struct inode *inode, struct folio *folio)
->  {
-> -	loff_t range_start = folio_file_pos(folio);
-> +	loff_t range_start = folio_pos(folio);
->  	loff_t range_end = range_start + (loff_t)folio_size(folio) - 1;
-
-Likewise here.  Are we absolutely certain that swap I/O can't call this
-function?
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
