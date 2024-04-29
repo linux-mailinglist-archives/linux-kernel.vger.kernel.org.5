@@ -1,121 +1,159 @@
-Return-Path: <linux-kernel+bounces-163099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707C88B65AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:24:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631558B65B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 109401F225AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:24:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 193DE2818D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F29194C81;
-	Mon, 29 Apr 2024 22:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3AnwW7/q"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CB4194C88
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0B6194C73;
+	Mon, 29 Apr 2024 22:26:51 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF5C82D90;
+	Mon, 29 Apr 2024 22:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714429422; cv=none; b=QUcg+anpQi0tsRFvN0tX4H28VaE5XLYzWcf2oQq3jjgZjT3OWBUyU28n/dlylPAhO05heklTNxb6ciZPvYLxy/KnYvIXZBmYDqT/IpXi0dMmNcjkda/dsCDV6Yk0yc9zOIrI9vwOOxeYms56cE+wG849OV084Rn+vJDLw7CT1RM=
+	t=1714429610; cv=none; b=E+fSMgTBb8mloj61MZpxD3E9P/mpBGuGeZIQ4yYFKZa/Rty0/e3ugMeVz8ubo5oPUktDhXQLQsSuf2Aucf1Dve/RzgjcSz5yQyCmnkkzVyYQPq2H7XgIs8ScNFb+3HZE2hYIVBfUSXb86oUoHmXKhdpxEOa/G4QeIMoC0pmeCao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714429422; c=relaxed/simple;
-	bh=C4h5zkEyr8Y64gy7n6dsxrGyhQOLrBN0HPxO6F1zAyw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MwWp478Z1KcGFVuCL7N/TYXybqeBm2yxAt3YsfgZuCz1p9+YBV5IkS0aldAu/9VnSz0nOI3xMRGp3VQkaJwlwpBH+eQ8gw+DJg2+gFtgs3aPZf7cs00cmmJW1ZqkfK93LkxB/wcsgoM3TsQ98IFfBCTzQdNJUOE2Z8ssOWihzU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3AnwW7/q; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de54b28c41eso5675674276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714429419; x=1715034219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OGlufsSMUfGTy8V2I8bIM/xvglG1OuNLwieN2n+XFOw=;
-        b=3AnwW7/qt2NY4X4SppN269zumAqVP8dgWSz29q9hDW0TCMbFkJ/3R4R65EGKy+8BRH
-         fXU8i4pluLMRCLJGeZxa5lW5ZcOAwwwfThjY6/DZNuPGsJtFZR5jOyIIhl789SYmPspz
-         cLzV+rg5gmT8k0AneojDRWu3epgxaB4R7jVQfJDq6AMBJZubjS5OWDRCGl+usQzY4DUv
-         eB77sQqf2DfTplW4A10KroHlBazI39fx+Nbae8Noi1ouQVfSUzGEsIqccn4LrhQXgzYH
-         YxrnxXXb/KEAu/xCmUd2oZdySD/ObThezgEvCtw1jgjb6GT2HlfnLPJALDJwmD7NW68p
-         q/6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714429419; x=1715034219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OGlufsSMUfGTy8V2I8bIM/xvglG1OuNLwieN2n+XFOw=;
-        b=leGKUietEuucWfLJzt+aEVbAYg2oJYqeKewdNh1WG0mKvgj8wPFZxRdACL6dWTQ/t7
-         xoZr6lGb4q6HkkxCcOQposLaGYdFl4MgAbOhtqr6cyVGmwJn4lS8pDgmGjPGgNSDcidz
-         BMwbFPK3g9TrsCZ5yTfN6GOwTIfnIcMe3ZXhwC/mJj7evjvhy1wfazewhOSEr0y4xa+D
-         eSqUPGOB15hBKJBdTLq9vYGE66t6COfxYKI7HcwhLyjb9oRNDrVrC3Qovg7q7fMZQLxW
-         RTvIhZaP1la+lQqn5HXOOy7393WJB7i97UiitdKnMwcSWiVBhp9unBebDjzGtzGquhwX
-         L3Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCWiry29ZhkVOxtXGBg8Rx8grV7XYRVn7JKtp6zf+RRxye2o71UYDtA29ViwipiOOMXA5m6YX9l4BqwY3a4zD1JiIGUr1scpl3ET9e9s
-X-Gm-Message-State: AOJu0YwMmDcpzcSy93//dHZMzCmXBhP5NiMvYCt0NX6aNynvrLT3tp0m
-	2dwnZTmsc3D2Lh7MujiK/21SXQCDmYDzCQYlr8wcGdVlv6OdE0Bes7k7yhR2THQLG1AhtefjxUP
-	p1C8vANacmaIdbHkDt5pGmcn0ujrYJc0EHJ4+
-X-Google-Smtp-Source: AGHT+IFcZdV4o2I0NUoP3fsMkexjFVz2+gYRb/Ki6ZR5UaWOT+mDGMiynQRMBiBVixthEiWIHr0px9K7N8duA/KrQCI=
-X-Received: by 2002:a05:6902:160d:b0:de5:5647:c87e with SMTP id
- bw13-20020a056902160d00b00de55647c87emr14146085ybb.33.1714429419440; Mon, 29
- Apr 2024 15:23:39 -0700 (PDT)
+	s=arc-20240116; t=1714429610; c=relaxed/simple;
+	bh=ObXrOa0TOunXJEpPHw7bthYmANYOzksEBgD7Tq7f27U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pXJl9YtI1gLN9EfUZzYMhSqaPtr7blIxeE4UBgRmNj+wgZeF5AAs1/192sTZFk/7sGpdgYcFnIDXwMnFtKN+JWhrswiQ406GKg/EfpjFuCKBAusEwunqMGdrtAkdq2iDf1U1bSNW+sn4e1sup0ygI5RafnPG0TqnU+iQlWBPnxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23AB72F4;
+	Mon, 29 Apr 2024 15:27:13 -0700 (PDT)
+Received: from [10.57.2.57] (unknown [10.57.2.57])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CACA3F762;
+	Mon, 29 Apr 2024 15:26:40 -0700 (PDT)
+Message-ID: <2662a5ba-3115-4fe5-9cec-bff71f703a82@arm.com>
+Date: Mon, 29 Apr 2024 23:26:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
- <20240427003733.3898961-4-shakeel.butt@linux.dev> <CABdmKX0Mo74f-AjY46cyPwd2qSpwmj4CLvYVCEywq_PEsVmd9w@mail.gmail.com>
- <j4dsapl5hu2enzoq5c7y3z2bqksk6fpygkk5t45ok7d5v3gdt2@5ygpjaj2hiva>
-In-Reply-To: <j4dsapl5hu2enzoq5c7y3z2bqksk6fpygkk5t45ok7d5v3gdt2@5ygpjaj2hiva>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Mon, 29 Apr 2024 15:23:28 -0700
-Message-ID: <CABdmKX0OQM65dRK29XCAUrnJt2yv=p7i00Cpc9V9FGuOEfuZ_g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] memcg: reduce memory for the lruvec and memcg stats
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
+ Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo
+ <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
+ Niklas Schnelle <schnelle@linux.ibm.com>,
+ Matthew Rosato <mjrosato@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
+ devicetree@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>
+References: <cover.1713523152.git.robin.murphy@arm.com>
+ <bebea331c1d688b34d9862eefd5ede47503961b8.1713523152.git.robin.murphy@arm.com>
+ <Zi_LV28TR-P-PzXi@eriador.lumag.spb.ru>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <Zi_LV28TR-P-PzXi@eriador.lumag.spb.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 29, 2024 at 1:13=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Mon, Apr 29, 2024 at 10:35:38AM -0700, T.J. Mercier wrote:
-> > On Fri, Apr 26, 2024 at 5:37=E2=80=AFPM Shakeel Butt <shakeel.butt@linu=
-x.dev> wrote:
-> > >
-> [...]
-> > > +
-> > > +static const unsigned int memcg_stat_items[] =3D {
-> > > +       MEMCG_SWAP,
-> > > +       MEMCG_SOCK,
-> > > +       MEMCG_PERCPU_B,
-> > > +       MEMCG_VMALLOC,
-> > > +       MEMCG_KMEM,
-> > > +       MEMCG_ZSWAP_B,
-> > > +       MEMCG_ZSWAPPED,
-> > > +};
-> >
-> > Unsigned for these? All the values are positive now, but I don't think
-> > we'll get a build warning if a negative one ever got added, just a
-> > crash or corruption. BUG_ON in init_memcg_stats if a
-> > memcg_stat_items[i] < 0?
->
-> We are depending on NR_VM_NODE_STAT_ITEMS to tell the number of elements
-> for vmstats. So, I think there is an implicit assumption that there are
-> no negative enums in enum node_stat_item. So, if we want to verify those
-> assumptions then we should be adding such warnings/build-bugs in vmstat
-> first.
+On 2024-04-29 5:31 pm, Dmitry Baryshkov wrote:
+> On Fri, Apr 19, 2024 at 05:54:45PM +0100, Robin Murphy wrote:
+>> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
+>> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
+>> which means there should be no harm in achieving the same order of
+>> operations by running it off the back of iommu_probe_device() itself.
+>> This then puts it in line with the x86 and s390 .probe_finalize bodges,
+>> letting us pull it all into the main flow properly. As a bonus this lets
+>> us fold in and de-scope the PCI workaround setup as well.
+>>
+>> At this point we can also then pull the call up inside the group mutex,
+>> and avoid having to think about whether iommu_group_store_type() could
+>> theoretically race and free the domain if iommu_setup_dma_ops() ran just
+>> *before* iommu_device_use_default_domain() claims it... Furthermore we
+>> replace one .probe_finalize call completely, since the only remaining
+>> implementations are now one which only needs to run once for the initial
+>> boot-time probe, and two which themselves render that path unreachable.
+>>
+>> This leaves us a big step closer to realistically being able to unpick
+>> the variety of different things that iommu_setup_dma_ops() has been
+>> muddling together, and further streamline iommu-dma into core API flows
+>> in future.
+>>
+>> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com> # For Intel IOMMU
+>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Tested-by: Hanjun Guo <guohanjun@huawei.com>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>> ---
+>> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
+>>      is covered as well, with bonus side-effects as above.
+>> v3: *Really* do that, remembering the other two probe_finalize sites too.
+>> ---
+>>   arch/arm64/mm/dma-mapping.c  |  2 --
+>>   drivers/iommu/amd/iommu.c    |  8 --------
+>>   drivers/iommu/dma-iommu.c    | 18 ++++++------------
+>>   drivers/iommu/dma-iommu.h    | 14 ++++++--------
+>>   drivers/iommu/intel/iommu.c  |  7 -------
+>>   drivers/iommu/iommu.c        | 20 +++++++-------------
+>>   drivers/iommu/s390-iommu.c   |  6 ------
+>>   drivers/iommu/virtio-iommu.c | 10 ----------
+>>   include/linux/iommu.h        |  7 -------
+>>   9 files changed, 19 insertions(+), 73 deletions(-)
+> 
+> This patch breaks UFS on Qualcomm SC8180X Primus platform:
+> 
+> 
+> [    3.846856] arm-smmu 15000000.iommu: Unhandled context fault: fsr=0x402, iova=0x1032db3e0, fsynr=0x130000, cbfrsynra=0x300, cb=4
 
-Ok fair. I guess this if we get C23:
+Hmm, a context fault implies that the device did get attached to a DMA 
+domain, thus has successfully been through __iommu_probe_device(), yet 
+somehow still didn't get the right DMA ops (since that "IOVA" looks more 
+like a PA to me). Do you see the "Adding to IOMMU group..." message for 
+this device, and/or any other relevant messages or errors before this 
+point? I'm guessing there's a fair chance probe deferral might be 
+involved as well. I'd like to understand what path(s) this ends up 
+taking through __iommu_probe_device() and of_dma_configure(), or at 
+least the number and order of probe attempts between the UFS and SMMU 
+drivers.
 
-enum node_stat_item : unsigned {
+I'll stare at the code in the morning and see if I can spot any 
+overlooked ways in which what I think might be happening could happen, 
+but any more info to help narrow it down would be much appreciated.
+
+Thanks,
+Robin.
+
+> [    3.846880] ufshcd-qcom 1d84000.ufshc: ufshcd_check_errors: saved_err 0x20000 saved_uic_err 0x0
+> [    3.846929] host_regs: 00000000: 1587031f 00000000 00000300 00000000
+> [    3.846935] host_regs: 00000010: 01000000 00010217 00000000 00000000
+> [    3.846941] host_regs: 00000020: 00000000 00070ef5 00000000 00000000
+> [    3.846946] host_regs: 00000030: 0000000f 00000001 00000000 00000000
+> [    3.846951] host_regs: 00000040: 00000000 00000000 00000000 00000000
+> [    3.846956] host_regs: 00000050: 032db000 00000001 00000000 00000000
+> [    3.846962] host_regs: 00000060: 00000000 80000000 00000000 00000000
+> [    3.846967] host_regs: 00000070: 032dd000 00000001 00000000 00000000
+> [    3.846972] host_regs: 00000080: 00000000 00000000 00000000 00000000
+> [    3.846977] host_regs: 00000090: 00000016 00000000 00000000 0000000c
+> [    3.847074] ufshcd-qcom 1d84000.ufshc: ufshcd_err_handler started; HBA state eh_fatal; powered 1; shutting down 0; saved_err = 131072; saved_uic_err = 0; force_reset = 0
+> [    4.406550] ufshcd-qcom 1d84000.ufshc: ufshcd_verify_dev_init: NOP OUT failed -11
+> [    4.417953] ufshcd-qcom 1d84000.ufshc: ufshcd_async_scan failed: -11
+> 
 
