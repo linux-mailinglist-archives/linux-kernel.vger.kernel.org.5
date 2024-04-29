@@ -1,144 +1,142 @@
-Return-Path: <linux-kernel+bounces-161661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7CD8B4F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:13:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AAF68B4F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:15:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF7701F21D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:13:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1580028226C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50BE10F7;
-	Mon, 29 Apr 2024 01:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B05663E;
+	Mon, 29 Apr 2024 01:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="i8bCA03Z"
-Received: from forward500a.mail.yandex.net (forward500a.mail.yandex.net [178.154.239.80])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="HZohmaaX"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2028.outbound.protection.outlook.com [40.92.46.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DA57F;
-	Mon, 29 Apr 2024 01:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.80
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714353181; cv=none; b=qnLIdcBUi9tesTL2EmCtyVnRzQrIePerBGqsaISNGY+h3dF3/yslJD7NLae/P0ebBHXZG2AnDzkiwS/O7GYEyPVHJM9rABdlptGdw4ILpOjBVRN6KuuwuxvpvVSdero4lTKr8BJg1Tdf8JFxQMpPCjrmNmPKYktqgfqfDk1NRXM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714353181; c=relaxed/simple;
-	bh=atZTjMvbp/J9uFNSUp7SmwuYN/0G1ObO2MY7u9rDM18=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=dqN3ueeFofg3TGR1uEd57ElmXWLG/1VdGaBdPTHKul1j2N6OhpxEEL0rTP9Fze/dmbzcCQDGHfovTNHHRTBYVcdNxXcys7+OzI8uJKlaYulaiLz3dJJkY93/i8/gs4ElgN6aZWxOzrunHUoF6uHI+HwWarZXs5guOnipvWT7Q2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=i8bCA03Z; arc=none smtp.client-ip=178.154.239.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net [IPv6:2a02:6b8:c0f:570c:0:640:ca74:0])
-	by forward500a.mail.yandex.net (Yandex) with ESMTPS id 0DBA160E11;
-	Mon, 29 Apr 2024 04:12:54 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id pCESEr1uC0U0-N8n5dLns;
-	Mon, 29 Apr 2024 04:12:52 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1714353172; bh=JbpFPDnYYOMMsam7KnZq1vujrIs611gr9o5FFJ/T4I4=;
-	h=In-Reply-To:Cc:Date:References:To:From:Subject:Message-ID;
-	b=i8bCA03ZOoqiZUGgIkgPsnsvM6PQg7Off+6jOkXlfLqxgqxmeruErexcs9PZkwcEG
-	 kdvOD6IvUfUGvCdvMUmSlRoMfPrdbJctP6VymDRBj1N2nkTF0L53s4hhJjdk87yLic
-	 c5d8Y34wJv11ocOSdzo+fEOVYGJz27d92wTxsFmw=
-Authentication-Results: mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <35f7149a-728d-47a8-8884-347d87d5680e@yandex.ru>
-Date: Mon, 29 Apr 2024 04:12:50 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBCA38F
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.46.28
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714353343; cv=fail; b=oD/ldsZEl3j8pUlH+D7VaCmpIWJ85kkaEGDOMyozqR2bW4WxdWjoXJRFBOkHsuoo30Dvs8woo65x+OKXmwzPFQGkJUz/z8rWRTbM9He1jY+7oBmgpYFSJshSc2EpBH65cOXVzF90zJANZKS4pvA8RmcEg3mU2EclzQSm9BFfLbQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714353343; c=relaxed/simple;
+	bh=oN8Lcnp2D+pqv5dRDRvtlQCtFKr9LPIQOiG12yH2C60=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=KK0iRE859FG4OJrTzZWq0QHUWaSZn/C9eENaF/hhytbYuyg7ylOUfHXs4ZHd0Uf7nJtY15qjoHKyN9OzOUq9weTkV9cA+LaYMlWJi03UEacO92mGIeWxl0RRvJF2ci3sOfpfOTARVLk8f9aDYetA5fUm67TE0XVURn/xZo7nBmo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=HZohmaaX; arc=fail smtp.client-ip=40.92.46.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LA3QKghDIqDD7hgglMKLSU6xUD8Y4FyYYESqFqg1w0Zb2v2xOOxOV65xfm/7ddbnYT31alYkqpV2eYdpDsCRP2wDr+xq8Ch+PMlf58ea/jdLAgSQpJnhrQiZQ71vy6tlp0c7KzJ94O+B5gS6gGLpDYiI3w4S3blKhjeHMMlLB4vCRTnW/xHhPJgQ9H+rUp+/Z3XJot/+3p9whWWoToDNsQOx0xHVhiJZ/J04zH5P6Ni/mbNjLkgJAlmDuDXRe7pjifNVrCS89KvJ0TbNR22tz9ws935Cz25P2jNUtN2YpB6y4e2oqh2bnjDll5AjRg8YbmHzb2nFdTwnetTcjRfQHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RyT57RFSacCnsD4bVchDcwewCUN926qJqd3cWurKplQ=;
+ b=dGcLFwYOudzKsOk0igDHB3djuG5ic8lRFH/wWFvZP4AxUVp+VFUQsWqg7aQPSNKsdJwLX1KtYuQTCjK2ZXFLi2T6pVGZjf1U0G66oJBjBQIuJg+fMncelesOXS6hPyCgB/OFcpz1WxtrxWtZHxP5IdN3dqtYTDwTtx6dFxNqen96FcMTmwmuHrxwy/MU6VcBtUkY0DeTbhEUzGnHtM3qj1Iz2+po+zU5jr73TFIVgl84pSw/xNPSdko1ei96o/EOIfxuABc4fRE4tOptD4qDtFNHJ8+xdwrXxNmlhVZfLtvx/6804eDvTVo8xifcsnHQeLoOohjVtHPmN7YafDt9CA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RyT57RFSacCnsD4bVchDcwewCUN926qJqd3cWurKplQ=;
+ b=HZohmaaX+XP2uk4BWOgD4GCGdArHQU61tYcFCWgZ//3jqs1jdn5mzbaEy8XmyB8GVRUR/JfYdVE7GJ2O6imQdTIRCYgVTJhkg/DwUcEcFiO6rQH2mEE5+nhplGo/SIf7k6MFNlBqS8zDQCU18/lfWjHktrzvX//tMGpXH5eEQaATjdE9CiXQf8+hemt01uE2C7N0GG+VEs+BQCGhodD4X8UNy0dnx9lzIs612stbuFWxUjSzBc7nHiyD996hR17FMUHyHBlXG/JjLL23pdKdN6JM9pUn7L3GC0J4EDNc8wOPDohjxeGU9e3G0DLNeJhd1dZbyk31VFUnbYIF+hhIgA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by SJ1PR20MB4786.namprd20.prod.outlook.com (2603:10b6:a03:45b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 29 Apr
+ 2024 01:15:39 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
+ 01:15:39 +0000
+Date: Mon, 29 Apr 2024 09:16:08 +0800
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Chen Wang <unicorn_wang@outlook.com>, 
+	Inochi Amaoto <inochiama@outlook.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Sunil V L <sunilvl@ventanamicro.com>, Sven Joachim <svenjoac@gmx.de>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, Drew Fustini <dfustini@baylibre.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Jisheng Zhang <jszhang@kernel.org>
+Subject: Re: [PATCH] riscv: defconfig: Enable CONFIG_CLK_SOPHGO_CV1800
+Message-ID:
+ <IA1PR20MB495359703A7C5A28940AA4A2BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB49537E8B2D1FAAA7D5B8BDA2BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB49537E8B2D1FAAA7D5B8BDA2BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-TMN: [ijvFBjpuZgzrDCb0AByJ2GDjB4m/SmGcJ73biad8YuM=]
+X-ClientProxiedBy: TYAPR03CA0011.apcprd03.prod.outlook.com
+ (2603:1096:404:14::23) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <2ocbyuckk5jl2a4yeiieemxeb2wvcyczqoyrqfbwdd7fvrladx@de4jizqlv2yz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
-Content-Language: en-US
-From: stsp <stsp2@yandex.ru>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Aleksa Sarai <cyphar@cyphar.com>, "Serge E. Hallyn" <serge@hallyn.com>,
- linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
- Eric Biederman <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Alexander Aring <alex.aring@gmail.com>,
- David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org,
- linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-References: <20240426133310.1159976-1-stsp2@yandex.ru>
- <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
- <8e186307-bed2-4b5c-9bc6-bdc70171cc93@yandex.ru>
- <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
- <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
- <CALCETrXPgabERgWAru7PNz6A5rc6BTG9k2RRmjU71kQs4rSsPQ@mail.gmail.com>
- <eae8e7e6-9c03-4c8e-ab61-cf7060d74d6d@yandex.ru>
-In-Reply-To: <eae8e7e6-9c03-4c8e-ab61-cf7060d74d6d@yandex.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SJ1PR20MB4786:EE_
+X-MS-Office365-Filtering-Correlation-Id: 840c4d1a-6f85-4fc9-7801-08dc67e9e19a
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	3YeeRK+i01ywhEMOwPGtv+GlEVAfMU7BaBzkKjggEwMQ1lRLL1BvlssgtAzWnIvh7khvD1MNsEz1sAD9j0Fnrkwj1VNtnYW00oX2KEtXh0j71VVzS5qXADn5+JH43QHthwPrYoeStG38RWDOSRbLD+GavZzopfyh7XcDQuNsN6+hGC56yTnObb/DYWldVPByTTnRZZmKJ9W0tyjMsFZ9Ddytgymt8qde/Sy1E+xsu9cvhXOviLcj5uYkXPz/PVvpCxGA+KcH0/eWvXqipNWQl4a1AuMmCcPgo8SPP3tv70Dv8M4tomx49fZPLWOpq7hm4YEGdrWdZR0wlGKG7/1TBjCc37PTZ8PxFJ9uH+lMh9L716qfNiOAON14jU5boy+PuUBjVR8ZzgYBTOn3y72HP+bwHudqAD3N3QspqgaHcAEnlWa9ER4SI8yIdnU0dTJDIe+qO0zl6lwyJRdlDNP/M9Zhqw+j860ZAuHkiJsTUvZB4/17SkXfud9I8oti7RzKOC1CmhnWFsxUJI5msbAUosankDL5huBipTGDeYgB2d9FF4JZT5b3KouPa+TJTRch6BCBh8sp6nrJ7Y14stHh0zrdjmYYXS6y4e3TtTlRRuLvmT4/BarJwRvP/BHuwSqY
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?vAvOPNykYEVtARVBNFGNxEqxayfKVrVEpFXnUhpOR6Y374uvvg/rraw9rnig?=
+ =?us-ascii?Q?c2v8mnlUk8CF9zkdmvW6bUm2zt3qrcNae0EqNt66B/6U+wwIQF7S8qFlDJA8?=
+ =?us-ascii?Q?tVxZsvkdmDH1tEVcSlNU9dGQgbXegJrW/9cAsMtVNkShGUypzd/pfyUseEUN?=
+ =?us-ascii?Q?s5ECYrtshR/WNLG6t3piltncCKOOKxleY5KZYtVIqnm7GMg+/8Dc7eSBryOp?=
+ =?us-ascii?Q?iubu8JY+n4BY9RS7F8eEZ7NNM7yzFnbZ8NPzmzyRb8CAiM+zfICoFmG+QsTW?=
+ =?us-ascii?Q?FkQYF8bOjylAX216DH87WyblUfyEM5U0Sf51zuHtDQI9I5R9aawruI9vfe0m?=
+ =?us-ascii?Q?llhiMtg3ShQv4PBX4NArtkFBMAhZ1+HTYcKMd4Pa9aFvl8zuHbSMPRRllA9T?=
+ =?us-ascii?Q?qN+EExsoL+fIELSWUDr9fOxzu9bl7xrPZ3iBz1YjaQXS90VrN5PkFYM8KROO?=
+ =?us-ascii?Q?qtBRgReFGYogBPECw71+1NHZwD8fU+w0sqAYawgsTmEPoDx2iyX9thSXttPF?=
+ =?us-ascii?Q?XqyWgkzC1qWXz3lzhra3b3yDsCKaWEe8nqE/ouWRNmjIe+LPGspjJ00eqvh4?=
+ =?us-ascii?Q?GHAfLGrlzEeq+CSDl9Cs0jcDduMuHnq3ZXg8J1uXmHfCwrRp7fNp/IyINsv4?=
+ =?us-ascii?Q?lAQ3wLY2hyr40KEUNEvICdBr7rlwgWJY2AGycvG+UPEI5CgiZaQ6TGDYtpOD?=
+ =?us-ascii?Q?CNC4upfZqGaNFMkSUttmZxPGNObzEOLSJqF2bTuBPghrPbtfpndLgYFSpoWt?=
+ =?us-ascii?Q?ZhzE1xVOPf+Zu6sl2V3ZHsVwsAD9InjFSJfzZ61U1/WUJyYzQfZDfGRDjA6G?=
+ =?us-ascii?Q?JmTLp7Ndgq/CkMqgcb9o/4K3bSaaH6Zp8TnGfLgq7fsj5vOdM5XsOQlrL2Io?=
+ =?us-ascii?Q?4D9PROUvUv/wtF92V1bd7OXVAfEgzsCeKj4scetQ0tV2xLc6R4HvK8yJse9Y?=
+ =?us-ascii?Q?Jf2IN1fM7q+iVOB2WcuDuF0gK+svWLKdkyC14nTXbLIAIhstKDzz6aN1TIaL?=
+ =?us-ascii?Q?DZBR1VcsFnJeS/dufuq6/+dl/9auTUKt/FnfLKx+4BrTNxjxrhS6F4098gpo?=
+ =?us-ascii?Q?6W/zjutwEujMgEhdHiuWNGMSzqLEQxdsh39K0Cxpz+MVp5y3gD81thJp9xy/?=
+ =?us-ascii?Q?qqk6jgNmgh+msKuCSx4DLhPoSm3US5ccTB+L2tmUFoLA7l+7p4qorxigLmLb?=
+ =?us-ascii?Q?1dQkiaFyKIx9ZbiYVIFIhyAsS/9mUosqSt/ZzoYIBNzVknizkVe/PDakv43j?=
+ =?us-ascii?Q?F4D+OmFPk9+OxTHIEU/g?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 840c4d1a-6f85-4fc9-7801-08dc67e9e19a
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 01:15:39.1540
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR20MB4786
 
-29.04.2024 01:12, stsp пишет:
-> freely pass device nodes around, then
-> perhaps the ability to pass an r/o dir fd
-> that can suddenly give creds, is probably
-> not something new...
-Actually there is probably something
-new anyway. The process knows to close
-all sensitive files before dropping privs.
-But this may not be the case with dirs,
-because dir_fd pretty much invalidates
-itself when you drop privs: you'll get
-EPERM from openat() if you no longer
-have rights to open the file, and dir_fd
-doesn't help.
-Which is why someone may neglect
-to close dir_fd before dropping privs,
-but with O_CRED_ALLOW that would
-be a mistake.
+On Thu, Apr 11, 2024 at 08:12:40PM GMT, Inochi Amaoto wrote:
+> CONFIG_CLK_SOPHGO_CV1800 is required when booting the minimum
+> system for CV1800 series board.
+> 
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
 
-Or what about this scenario: receiver
-gets this fd thinking its some useful and
-harmless file fd that would be needed
-even after priv drop. So he makes sure
-with F_GETFL that this fd is O_RDONLY
-and doesn't close it. But it appears to be
-malicious O_CRED_ALLOW dir_fd, which
-basically exposes many files for a write.
+Hi, Palmer,
 
-So I am concerned about the cases where
-an fd was not closed before a priv drop,
-because the process didn't realize the threat.
+Could you take a look on this patch? The clk driver is necessary
+and the minimal system of cv18xx will be broken without enabling
+this.
 
-> But if the*whole point*  of opening the fd was to capture privileges
-> and preserve them across a privilege drop, and the program loads
-> malicious code after dropping privs, then that's a risk that's taken
-> intentionally.
-If you opened an fd yourself, then yes.
-You know what have you opened, and
-you care to close sensitive fds before
-dropping privs, or you take the risk.
-But if you requested something from
-another process and got some fd as
-the result, the kernel doesn't guarantee
-you got an fd to what you have requested.
-You can get a malicious fd, which is not
-"so" possible when you open an fd yourself.
-So if you want to keep such an fd open,
-you will probably at least make sure its
-read-only, its not a device node (with fstat)
-and so on.
-All checks pass, and oops, O_CRED_ALLOW...
-
-So why my patch makes O_CRED_ALLOW
-non-passable? Because the receiver has
-no way to see the potential harm within
-such fd. So if he intended to keep an fd
-open after some basic safety checks, he
-will be tricked.
-So while I think its a rather bad idea to
-leave the received fds open after priv drop,
-I don't completely exclude the possibility
-that someone did that, together with a few
-safety checks which would be tricked by
-O_CRED_ALLOW.
+Regard,
+Inochi
 
