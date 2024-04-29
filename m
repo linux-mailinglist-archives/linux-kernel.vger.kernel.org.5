@@ -1,250 +1,119 @@
-Return-Path: <linux-kernel+bounces-161955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DAD8B53BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CC18B53BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:04:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97EAC1F21C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:04:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BE951F21B05
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB17F43171;
-	Mon, 29 Apr 2024 09:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C22F20312;
+	Mon, 29 Apr 2024 09:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZCAxuJAM";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="smLIzmti"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dr8t6HlH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590BA2E40E;
-	Mon, 29 Apr 2024 09:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF841B809;
+	Mon, 29 Apr 2024 09:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714381328; cv=none; b=nY2M9dXBKyCu1syICxjTMXFT2etSv1jTpavbqqNC2NewSK3MNobRUxVFdOQrNzDkzdzo7GyoBZzY4lJd6xrxFwciSnjku1xyt9p4VSsKwHnPtmqYpdUb9+oe18R8i1TFhFBmEXa9dDkO5GdJgLNkzBteCMsgryKR2AAgjVYf4JY=
+	t=1714381383; cv=none; b=dl67EcmkT+VLWLTMPH3sIr931b54eSTKwj9iRSOY+FHNHfIAY2vb+nuURa17uMBSveV3UTlpezT51d+tMMvz3dCSDY8VYt3AfqVhl9C+X0PoLGm1WoLBaG1BIAX85yWS68z5qEFpxcPbmOlAXTJSikpUVSASX+bq+wGkqgoEqE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714381328; c=relaxed/simple;
-	bh=0Dr8LDhEEQEuzxPttKUTBGK5m8Ypx7Gk1/MO4suDsOc=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=pZROHRRJ4XEgVOfejw3oSsEfpH7wh53JmldIEBUImJ6gSfoBFbsWUH1DCQsEPsdiBfQJf/QE2+sGwCTWYqwfmxhnNMZhZ7XsPvVFfl2miK7brVaAd6yEtXLM8TLGUbasslVKR7v6nToOHpB8oJd3Kdwe5dP1cI+jVcFalx8Ubww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZCAxuJAM; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=smLIzmti; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 29 Apr 2024 09:01:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714381315;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMKZE/xVoBE0rclF6s10FaX030kZcRkb7pIxKsHIfiU=;
-	b=ZCAxuJAMKUE1QCa/hOyAwPgLqtoGpIyM3qq98vhL9559i5LKVSAj1eP2/lTSYiX51ydjRe
-	n7prLtHB8diEOY15JCI3/lbR75qXptoTGeFmX+/gZxGz10WphGV91HNRKzRR51rsjqQEQC
-	cbEnNxIpuSefWDtQYV4MLkRXWLCtwOMLpq78Fxx0m8XMvY92iQafusopLVFOF35TRT/6Qn
-	5acaopAGizo801jFmSBy+AmaTHjvGJBy0dZzNyUKcYANjQ4MkZuUY5ygTejoHfJxQX5lVy
-	bAzj/GzchaTdSAAK5C8hQBra3jJTSOZ2/CYFRLQZVmTDekNrefL5S313nBB31Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714381315;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=QMKZE/xVoBE0rclF6s10FaX030kZcRkb7pIxKsHIfiU=;
-	b=smLIzmti14EM4PKyiMCZX/9z8uNfyUPg8DPDgp8X5kUApPPCkuYcvZMQS2CDsHnfUaMJAy
-	2ZMNf35LAEgWG7Dw==
-From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] perf/x86/msr: Switch to new Intel CPU model defines
-Cc: Tony Luck <tony.luck@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1714381383; c=relaxed/simple;
+	bh=+zf5RRUnwgWXxIZ9E7blLj/P5PsrUKDHdtvY9otUWvw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Na5C22WwqgQFJdLPcok3onJu/0ez8mNf2fUXKEc6nw/3qvFfQZf3LK31OJ6sB+w6EsGVIaD07nc+zNgOX2PGoNW+RvOEx/NoVPtJjAzsRT4gUuW0zUkvHfUOwG6B6gkD0PKW/RSktA1UcXgSr3BtMwmkImRoXo57Mn+WGIqzmYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dr8t6HlH; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714381382; x=1745917382;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+zf5RRUnwgWXxIZ9E7blLj/P5PsrUKDHdtvY9otUWvw=;
+  b=dr8t6HlHDqVN+dCnd91k4wxukNBVxibhSt1JsSdolgfbm/NucnhrQ/FH
+   bjK7H3HUp4PTRo/VkSJwzfK49NRaANCzEs4s48IQsvTUZ/TnZKi5vff4b
+   h6EuIMVnpw0l9kODBXyP3FyyjXDWqfkjrq97mF3kzMKf0Q3oL/OwpGccz
+   3RUDYGOlyzcmBDTmkKCgV61eJm15yvD2dS7FHMTD+XJ4cLphGG8MOOi7g
+   HQQippu43QLQ6WYXUi8FP0HT1x/O1RsHYYfWqWfo4O9184LTEK8/xwef1
+   NcnIE3PdZoyOFo4E3hDY74ZYseDNHE9G9qdChEiZMtFMbjKX4MIfs2NWQ
+   A==;
+X-CSE-ConnectionGUID: g7YTvqC8R46OXSEwgXCLAQ==
+X-CSE-MsgGUID: j1/sbZW2TkKbAN37Wb24YQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="13809585"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="13809585"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 02:02:14 -0700
+X-CSE-ConnectionGUID: Z5Ci1fM7T0CE/5dvxE89fA==
+X-CSE-MsgGUID: /mHLFr6MRAOMrEJ8rbepDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="30706299"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 02:02:12 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s1Mtl-00000002GQ4-2GU7;
+	Mon, 29 Apr 2024 12:02:09 +0300
+Date: Mon, 29 Apr 2024 12:02:09 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Joerg Roedel <joro@8bytes.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+	Joerg Roedel <jroedel@suse.de>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Robin Murphy <robin.murphy@arm.com>
+Subject: Re: linux-next: manual merge of the iommu tree with the pm tree
+Message-ID: <Zi9iEVnhGqjxikU_@smile.fi.intel.com>
+References: <20240429140727.016d5758@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171438131547.10875.14597368227632566318.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429140727.016d5758@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Mon, Apr 29, 2024 at 02:07:27PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the iommu tree got a conflict in:
+> 
+>   drivers/acpi/scan.c
+> 
+> between commit:
+> 
+>   e80d4122df9c ("ACPI: scan: Move misleading comment to acpi_dma_configure_id()")
+> 
+> from the pm tree and commit:
+> 
+>   f091e93306e0 ("dma-mapping: Simplify arch_setup_dma_ops()")
+> 
+> from the iommu tree.
+> 
+> I fixed it up (the latter removed the comment updated by the former, so
+> I just used the latter version) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Commit-ID:     add69475de4b5196da9c58ba2d7c0182e70da2cb
-Gitweb:        https://git.kernel.org/tip/add69475de4b5196da9c58ba2d7c0182e70da2cb
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 24 Apr 2024 11:15:03 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 29 Apr 2024 10:31:04 +02:00
+To me it looks like the correct fix, thank you!
 
-perf/x86/msr: Switch to new Intel CPU model defines
+-- 
+With Best Regards,
+Andy Shevchenko
 
-New CPU #defines encode vendor and family as well as model.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/all/20240424181503.41614-1-tony.luck%40intel.com
----
- arch/x86/events/msr.c | 132 ++++++++++++++++++++---------------------
- 1 file changed, 66 insertions(+), 66 deletions(-)
-
-diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
-index 9e237b3..45b1866 100644
---- a/arch/x86/events/msr.c
-+++ b/arch/x86/events/msr.c
-@@ -2,7 +2,7 @@
- #include <linux/perf_event.h>
- #include <linux/sysfs.h>
- #include <linux/nospec.h>
--#include <asm/intel-family.h>
-+#include <asm/cpu_device_id.h>
- #include "probe.h"
- 
- enum perf_msr_id {
-@@ -43,75 +43,75 @@ static bool test_intel(int idx, void *data)
- 	    boot_cpu_data.x86 != 6)
- 		return false;
- 
--	switch (boot_cpu_data.x86_model) {
--	case INTEL_FAM6_NEHALEM:
--	case INTEL_FAM6_NEHALEM_G:
--	case INTEL_FAM6_NEHALEM_EP:
--	case INTEL_FAM6_NEHALEM_EX:
--
--	case INTEL_FAM6_WESTMERE:
--	case INTEL_FAM6_WESTMERE_EP:
--	case INTEL_FAM6_WESTMERE_EX:
--
--	case INTEL_FAM6_SANDYBRIDGE:
--	case INTEL_FAM6_SANDYBRIDGE_X:
--
--	case INTEL_FAM6_IVYBRIDGE:
--	case INTEL_FAM6_IVYBRIDGE_X:
--
--	case INTEL_FAM6_HASWELL:
--	case INTEL_FAM6_HASWELL_X:
--	case INTEL_FAM6_HASWELL_L:
--	case INTEL_FAM6_HASWELL_G:
--
--	case INTEL_FAM6_BROADWELL:
--	case INTEL_FAM6_BROADWELL_D:
--	case INTEL_FAM6_BROADWELL_G:
--	case INTEL_FAM6_BROADWELL_X:
--	case INTEL_FAM6_SAPPHIRERAPIDS_X:
--	case INTEL_FAM6_EMERALDRAPIDS_X:
--	case INTEL_FAM6_GRANITERAPIDS_X:
--	case INTEL_FAM6_GRANITERAPIDS_D:
--
--	case INTEL_FAM6_ATOM_SILVERMONT:
--	case INTEL_FAM6_ATOM_SILVERMONT_D:
--	case INTEL_FAM6_ATOM_AIRMONT:
--
--	case INTEL_FAM6_ATOM_GOLDMONT:
--	case INTEL_FAM6_ATOM_GOLDMONT_D:
--	case INTEL_FAM6_ATOM_GOLDMONT_PLUS:
--	case INTEL_FAM6_ATOM_TREMONT_D:
--	case INTEL_FAM6_ATOM_TREMONT:
--	case INTEL_FAM6_ATOM_TREMONT_L:
--
--	case INTEL_FAM6_XEON_PHI_KNL:
--	case INTEL_FAM6_XEON_PHI_KNM:
-+	switch (boot_cpu_data.x86_vfm) {
-+	case INTEL_NEHALEM:
-+	case INTEL_NEHALEM_G:
-+	case INTEL_NEHALEM_EP:
-+	case INTEL_NEHALEM_EX:
-+
-+	case INTEL_WESTMERE:
-+	case INTEL_WESTMERE_EP:
-+	case INTEL_WESTMERE_EX:
-+
-+	case INTEL_SANDYBRIDGE:
-+	case INTEL_SANDYBRIDGE_X:
-+
-+	case INTEL_IVYBRIDGE:
-+	case INTEL_IVYBRIDGE_X:
-+
-+	case INTEL_HASWELL:
-+	case INTEL_HASWELL_X:
-+	case INTEL_HASWELL_L:
-+	case INTEL_HASWELL_G:
-+
-+	case INTEL_BROADWELL:
-+	case INTEL_BROADWELL_D:
-+	case INTEL_BROADWELL_G:
-+	case INTEL_BROADWELL_X:
-+	case INTEL_SAPPHIRERAPIDS_X:
-+	case INTEL_EMERALDRAPIDS_X:
-+	case INTEL_GRANITERAPIDS_X:
-+	case INTEL_GRANITERAPIDS_D:
-+
-+	case INTEL_ATOM_SILVERMONT:
-+	case INTEL_ATOM_SILVERMONT_D:
-+	case INTEL_ATOM_AIRMONT:
-+
-+	case INTEL_ATOM_GOLDMONT:
-+	case INTEL_ATOM_GOLDMONT_D:
-+	case INTEL_ATOM_GOLDMONT_PLUS:
-+	case INTEL_ATOM_TREMONT_D:
-+	case INTEL_ATOM_TREMONT:
-+	case INTEL_ATOM_TREMONT_L:
-+
-+	case INTEL_XEON_PHI_KNL:
-+	case INTEL_XEON_PHI_KNM:
- 		if (idx == PERF_MSR_SMI)
- 			return true;
- 		break;
- 
--	case INTEL_FAM6_SKYLAKE_L:
--	case INTEL_FAM6_SKYLAKE:
--	case INTEL_FAM6_SKYLAKE_X:
--	case INTEL_FAM6_KABYLAKE_L:
--	case INTEL_FAM6_KABYLAKE:
--	case INTEL_FAM6_COMETLAKE_L:
--	case INTEL_FAM6_COMETLAKE:
--	case INTEL_FAM6_ICELAKE_L:
--	case INTEL_FAM6_ICELAKE:
--	case INTEL_FAM6_ICELAKE_X:
--	case INTEL_FAM6_ICELAKE_D:
--	case INTEL_FAM6_TIGERLAKE_L:
--	case INTEL_FAM6_TIGERLAKE:
--	case INTEL_FAM6_ROCKETLAKE:
--	case INTEL_FAM6_ALDERLAKE:
--	case INTEL_FAM6_ALDERLAKE_L:
--	case INTEL_FAM6_ATOM_GRACEMONT:
--	case INTEL_FAM6_RAPTORLAKE:
--	case INTEL_FAM6_RAPTORLAKE_P:
--	case INTEL_FAM6_RAPTORLAKE_S:
--	case INTEL_FAM6_METEORLAKE:
--	case INTEL_FAM6_METEORLAKE_L:
-+	case INTEL_SKYLAKE_L:
-+	case INTEL_SKYLAKE:
-+	case INTEL_SKYLAKE_X:
-+	case INTEL_KABYLAKE_L:
-+	case INTEL_KABYLAKE:
-+	case INTEL_COMETLAKE_L:
-+	case INTEL_COMETLAKE:
-+	case INTEL_ICELAKE_L:
-+	case INTEL_ICELAKE:
-+	case INTEL_ICELAKE_X:
-+	case INTEL_ICELAKE_D:
-+	case INTEL_TIGERLAKE_L:
-+	case INTEL_TIGERLAKE:
-+	case INTEL_ROCKETLAKE:
-+	case INTEL_ALDERLAKE:
-+	case INTEL_ALDERLAKE_L:
-+	case INTEL_ATOM_GRACEMONT:
-+	case INTEL_RAPTORLAKE:
-+	case INTEL_RAPTORLAKE_P:
-+	case INTEL_RAPTORLAKE_S:
-+	case INTEL_METEORLAKE:
-+	case INTEL_METEORLAKE_L:
- 		if (idx == PERF_MSR_SMI || idx == PERF_MSR_PPERF)
- 			return true;
- 		break;
 
