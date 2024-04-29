@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-162951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0F48B62A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BAC08B62AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:41:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783121C21DB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:41:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4A31C21D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310E713F014;
-	Mon, 29 Apr 2024 19:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9732D140E29;
+	Mon, 29 Apr 2024 19:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OcelNvCm"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DS/8CaIu"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27E313D267;
-	Mon, 29 Apr 2024 19:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6ADE13D62C;
+	Mon, 29 Apr 2024 19:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419582; cv=none; b=XnyplDRv4XCpboGRO4wG81fA586zPqcAgqcDozq7LlNYC7dKBS/8qG38A8//bho+P0MCThn/kGaHtif7eFAWsZJzkRzb32ywicVZwjJsw0ze2xJ3Y+puxYSEW1gWlGz6l3U7CJ9txPfA+zIM5tcKyvRuLqXyGuSOkBSg20kvfig=
+	t=1714419583; cv=none; b=c+UbisIuw5vSzBEJuXNAYaUrc8JInXZgNAe1DIleVXiXFx/SS0XmEJdfas5230ig/V6mQyrPrP8Z90J2zrNzMJo5eUo2r6xFfNxIdIgK1HPYPtJWPbWbMy5/rMERBoYFZvY49UCBqznTZa/tbnH7co3USwtjc50GTO1zRzu8vP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419582; c=relaxed/simple;
-	bh=yy+cEM8e/rdBfX564thDF5ITGSohMnbYYqys5EU7+Y0=;
+	s=arc-20240116; t=1714419583; c=relaxed/simple;
+	bh=+ZMtWk5lsJs9+6y5BoJzBbSCaGLSzqkdNg5i4sHJHsI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cw/kKfDw/YgzWxEFCvqaISSC7W3PIqWKHdpKIc8xhUa8HXvn22yW9UXbQ9UB0O/EOEqgs4IbEiBOQ/kOkDTN2VKEHK2CU0YlYrDW5Hj9LtVvUZVwAHFHfxCXIjUWJc26FJj3rDAK5SPLT87Wq6VjC0anv8dIRyzhIUJjrACnsi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OcelNvCm; arc=none smtp.client-ip=209.85.166.41
+	 MIME-Version; b=UGX1l3yL8VdpfPGZxaFyBtOcPrJU5EHtO9TplP2zsiXt8gqn9XbqWx/HDI0V2mKO9gDhKwtbClB8kcU2AxCtJZS2AUsA0Hlr0WpNRWEcGk6Hm1d3i794fG9kxsRna2vCwM/OJQfGNuPYrxYPaG5I7cMcaXb05+A438p0bIIR198=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DS/8CaIu; arc=none smtp.client-ip=209.85.166.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7da939572b5so197143439f.2;
-        Mon, 29 Apr 2024 12:39:40 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d9c2096c29so216936139f.0;
+        Mon, 29 Apr 2024 12:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714419580; x=1715024380; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714419581; x=1715024381; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a0MeHEZcsgFBBOIcW96muUaq6331rE39MA9kEHJFHdU=;
-        b=OcelNvCmlRlN9Vi4Y64rikKlThM2Qly/EWdJO2IolpAsJoJBjX6WtZzMXWW9t/87r+
-         v67LrERXJZ3LEkFX9P1Grdw2/3wVUO0y/WURFnRKfz7CJBkN2Z1OskXlPSxLcgR6uEy/
-         5QUHLbeYFpuH23H48jbu8L+A/WMOfwjMubm/k2OdpGUTnDXiZgCiONZGAzacPdLSQcT8
-         FDZpxXaQqGYvAtXGNKoOCnonI3P7OsS77pDI8cNJP58RjYOQ7kTlo+K1dYCzIdgXevdg
-         FAO8CuPod89JJjpF3K3HvZvoGGoG4Jt1plud3R48v6jW2QNeXmc49XQ4q+7qg8ZiNZwm
-         EnDQ==
+        bh=ulaYyaVft/YyoU0+fiQtajkDbj/WJZ88JMn79Ec/vX0=;
+        b=DS/8CaIuecXi3X/oVizeRXtAa9T+etjg+1grox7p/QVpoeEu0sASOfAcB6zV4N17CN
+         PS3u1MLXPF3LWU8Yq1z+u1v6faa44rXkz2QTu5roFNn8KrHgOqKTmZhMIuI4xz8gmBUs
+         lulEIUQlkBr4cNfMshLH8dAzu75tikEPaasTJ+bTMIgz9wAv54UmFzkPljERFjEQPF5h
+         8PhkTt3JuuysRlBualBtoCv63l26jNiJbpVIhyv4jViRiPS1KjvNCiFNPaMVxBwMseXZ
+         EeCYyXSZ4t8iAmXZWaTfOSt8UstVirZcFzIsQJdWruJoGR16+ecbDdUI2QvOa6WhQop/
+         Pn8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714419580; x=1715024380;
+        d=1e100.net; s=20230601; t=1714419581; x=1715024381;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a0MeHEZcsgFBBOIcW96muUaq6331rE39MA9kEHJFHdU=;
-        b=kzZE4ysNofIkAs6NzP323JR5mcphesfSMF1QF/3cA/Cfx2DP8u5++vg/AcgnXi3J48
-         XDaqrB6XurI7yMvkP5bYo8TObXtU5LxGt+yrHopnw66/eBp4Jce/yUo6A53eN3+yrSmW
-         ADBhLWJ4SOmzjboNN7Util5TByonybXzA9036f+9MXqVaWb6zwpnr/v+tzGUQ8pQoUP1
-         tyxAFC28uELOs7HEL8tUEDFwOyjofHXCkeMRpx8IJSEzaMv4e2sQhxL+/44D/RYatOHP
-         CPttYqVWAD5sEj4W+zTygnZm9KopB4XWYI55XUxKRQBbsikdC1FxuGsXjBwYvvYaYG7j
-         0+Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCUlS0tLl6IQjQ+PDKr7jdqwtn3Ld4b/YRr9oLdsFk3tMzSOKNI0zuHI/IhYPPr2rOkcDxnE5mztTyCKs8GOomDpW1OqK8BNNv2PHheh+Ma+lZHHyx3J8IsG3tucX7y1GuMqyYpiajr4
-X-Gm-Message-State: AOJu0YwGdpgs4sFCO0WfSFnewatf/ipwIdpFqFKIuyg7EKEe0IKaFvqE
-	lR5JWfNE3ozrY+Px1RHAkVk16ORvBsNt/0Lg+fGnUe4iZP/YD3fL
-X-Google-Smtp-Source: AGHT+IHlUVq3kyXnqc/U6UIcx1yMtr80xS3S0rVakdXkFmPbZcga6S+Hk2XVAzZ4ytI76/jmWP6Ckg==
-X-Received: by 2002:a05:6602:275a:b0:7de:d935:de0a with SMTP id b26-20020a056602275a00b007ded935de0amr1639049ioe.0.1714419579920;
-        Mon, 29 Apr 2024 12:39:39 -0700 (PDT)
+        bh=ulaYyaVft/YyoU0+fiQtajkDbj/WJZ88JMn79Ec/vX0=;
+        b=oPFt9WpK2Ncv7l1qE/2qXffV+doeUnfR4qpj6aOrKx4MirxR9x6uf7t106LT9Fcmjy
+         YBbtuxA4/HmuY86hv3hUCSucuICogTkgrpY3mCl3lK4qSdXLyj40xr/QHJKfL0ldL7NG
+         dR9YosCe6o2jT3djKEexlCNepZl8kFBlL61X+mZAA3iuRMcU7U//6RqozIijc3V70F/e
+         RIJEOlNfXVIEpvc0hjVhNXadYavprb0imTqxYTxZA+w4SnL5Mkf6MasmsJu9mmjWTILz
+         R1dAQNVHeYROCuas30lPZKUiBbCBCA7SQzPvm36kQ6j8g1zmmRLXjVyov1Ps7reTx9hL
+         H/JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXb36BXtYMl5DGWAhev3pcPW9Y20yKT2+HTMpvCy/BKD3Sy0nyrEWu+CEXrbD+YDofCuWaNjK5Ecprn36Wiceq4s3n2oGV21M34HFINcuxhm6o4sWoBzcM0YKHfSwh6Or4gnkl8Vl2w
+X-Gm-Message-State: AOJu0YzG5Rl0OCepsf17RDLvyOU2BCZme/FZGl1tRWeG1zOZHzVkuKBc
+	VT/TtF3QedzrS5x+QbG7Tujcyh0dRSyyYo8/IsHsTmh2xpkK43Vm
+X-Google-Smtp-Source: AGHT+IHyNsWP7Nzkt9gGnd6X8Rl4lpNvOOIYqiWNC2SKAWyiinyhoOsXf738AKl1GY5d/CNNu9onOw==
+X-Received: by 2002:a05:6602:25c2:b0:7da:18b8:a4fb with SMTP id d2-20020a05660225c200b007da18b8a4fbmr13508509iop.9.1714419581091;
+        Mon, 29 Apr 2024 12:39:41 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id y16-20020a056602165000b007de9f92dc57sm2325105iow.16.2024.04.29.12.39.38
+        by smtp.googlemail.com with ESMTPSA id y16-20020a056602165000b007de9f92dc57sm2325105iow.16.2024.04.29.12.39.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 12:39:39 -0700 (PDT)
+        Mon, 29 Apr 2024 12:39:40 -0700 (PDT)
 From: Jim Cromie <jim.cromie@gmail.com>
 To: jbaron@akamai.com,
 	gregkh@linuxfoundation.org,
@@ -86,9 +86,9 @@ Cc: ukaszb@chromium.org,
 	yanivt@google.com,
 	bleung@google.com,
 	Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v8 30/35] drm+drivers: adapt to use DYNDBG_CLASSMAP_{DEFINE,USE}
-Date: Mon, 29 Apr 2024 13:39:16 -0600
-Message-ID: <20240429193921.66648-11-jim.cromie@gmail.com>
+Subject: [PATCH v8 31/35] drm-dyndbg: adapt to use DYNDBG_CLASSMAP_PARAM
+Date: Mon, 29 Apr 2024 13:39:17 -0600
+Message-ID: <20240429193921.66648-12-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240429193921.66648-1-jim.cromie@gmail.com>
 References: <20240429193921.66648-1-jim.cromie@gmail.com>
@@ -100,196 +100,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Follow dynamic_debug API change from DECLARE_DYNDBG_CLASSMAP to
-DYNDBG_CLASSMAP_{DEFINE,USE}.
-
-Prior to this, we used DECLARE_DYNDBG_CLASSMAP, which was preserved to
-decouple DRM conversion.  I'm unsure of the full functionality
-in-between, a round of lkp-testing will help.
-
-Fixes: f158936b60a7 ("drm: POC drm on dyndbg - use in core, 2 helpers, 3 drivers.")
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+use new export
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 12 +-----------
- drivers/gpu/drm/display/drm_dp_helper.c | 12 +-----------
- drivers/gpu/drm/drm_crtc_helper.c       | 12 +-----------
- drivers/gpu/drm/drm_print.c             | 25 +++++++++++++------------
- drivers/gpu/drm/i915/i915_params.c      | 12 +-----------
- drivers/gpu/drm/nouveau/nouveau_drm.c   | 12 +-----------
- include/drm/drm_print.h                 |  8 ++++++++
- 7 files changed, 26 insertions(+), 67 deletions(-)
+ drivers/gpu/drm/drm_print.c | 8 ++------
+ include/drm/drm_print.h     | 6 ++++--
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index e4277298cf1a..b287f0cfd8fa 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -217,17 +217,7 @@ int amdgpu_damage_clips = -1; /* auto */
- 
- static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work);
- 
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+DRM_CLASSMAP_USE(drm_debug_classes);
- 
- struct amdgpu_mgpu_info mgpu_info = {
- 	.mutex = __MUTEX_INITIALIZER(mgpu_info.mutex),
-diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
-index f5d4be897866..d3a7df09846f 100644
---- a/drivers/gpu/drm/display/drm_dp_helper.c
-+++ b/drivers/gpu/drm/display/drm_dp_helper.c
-@@ -41,17 +41,7 @@
- 
- #include "drm_dp_helper_internal.h"
- 
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+DRM_CLASSMAP_USE(drm_debug_classes);
- 
- struct dp_aux_backlight {
- 	struct backlight_device *base;
-diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
-index 2dafc39a27cb..e9d229a393f4 100644
---- a/drivers/gpu/drm/drm_crtc_helper.c
-+++ b/drivers/gpu/drm/drm_crtc_helper.c
-@@ -50,17 +50,7 @@
- 
- #include "drm_crtc_helper_internal.h"
- 
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+DRM_CLASSMAP_USE(drm_debug_classes);
- 
- /**
-  * DOC: overview
 diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-index 699b7dbffd7b..4a5f2317229b 100644
+index 4a5f2317229b..efdf82f8cbbb 100644
 --- a/drivers/gpu/drm/drm_print.c
 +++ b/drivers/gpu/drm/drm_print.c
-@@ -55,18 +55,19 @@ MODULE_PARM_DESC(debug, "Enable debug output, where each bit enables a debug cat
- #if !defined(CONFIG_DRM_USE_DYNAMIC_DEBUG)
- module_param_named(debug, __drm_debug, ulong, 0600);
- #else
--/* classnames must match vals of enum drm_debug_category */
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+/* classnames must match value-symbols of enum drm_debug_category */
-+DRM_CLASSMAP_DEFINE(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS,
-+		    DRM_UT_CORE,
-+		    "DRM_UT_CORE",
-+		    "DRM_UT_DRIVER",
-+		    "DRM_UT_KMS",
-+		    "DRM_UT_PRIME",
-+		    "DRM_UT_ATOMIC",
-+		    "DRM_UT_VBL",
-+		    "DRM_UT_STATE",
-+		    "DRM_UT_LEASE",
-+		    "DRM_UT_DP",
-+		    "DRM_UT_DRMRES");
+@@ -69,12 +69,8 @@ DRM_CLASSMAP_DEFINE(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS,
+ 		    "DRM_UT_DP",
+ 		    "DRM_UT_DRMRES");
  
- static struct ddebug_class_param drm_debug_bitmap = {
- 	.bits = &__drm_debug,
-diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-index de43048543e8..dccf12d05105 100644
---- a/drivers/gpu/drm/i915/i915_params.c
-+++ b/drivers/gpu/drm/i915/i915_params.c
-@@ -29,17 +29,7 @@
- #include "i915_params.h"
- #include "i915_drv.h"
+-static struct ddebug_class_param drm_debug_bitmap = {
+-	.bits = &__drm_debug,
+-	.flags = "p",
+-	.map = &drm_debug_classes,
+-};
+-module_param_cb(debug, &param_ops_dyndbg_classes, &drm_debug_bitmap, 0600);
++DRM_CLASSMAP_PARAM_REF(debug, __drm_debug, drm_debug_classes, p);
++
+ #endif
  
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+DRM_CLASSMAP_USE(drm_debug_classes);
- 
- #define i915_param_named(name, T, perm, desc) \
- 	module_param_named(name, i915_modparams.name, T, perm); \
-diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
-index a947e1d5f309..27995c0c9b31 100644
---- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-@@ -72,17 +72,7 @@
- #include "nouveau_uvmm.h"
- #include "nouveau_sched.h"
- 
--DECLARE_DYNDBG_CLASSMAP(drm_debug_classes, DD_CLASS_TYPE_DISJOINT_BITS, 0,
--			"DRM_UT_CORE",
--			"DRM_UT_DRIVER",
--			"DRM_UT_KMS",
--			"DRM_UT_PRIME",
--			"DRM_UT_ATOMIC",
--			"DRM_UT_VBL",
--			"DRM_UT_STATE",
--			"DRM_UT_LEASE",
--			"DRM_UT_DP",
--			"DRM_UT_DRMRES");
-+DRM_CLASSMAP_USE(drm_debug_classes);
- 
- MODULE_PARM_DESC(config, "option string to pass to driver core");
- static char *nouveau_config;
+ void __drm_puts_coredump(struct drm_printer *p, const char *str)
 diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
-index 9cc473e5d353..905fc25bf65a 100644
+index 905fc25bf65a..95c667934bbb 100644
 --- a/include/drm/drm_print.h
 +++ b/include/drm/drm_print.h
-@@ -140,6 +140,14 @@ enum drm_debug_category {
- 	DRM_UT_DRMRES
+@@ -141,11 +141,13 @@ enum drm_debug_category {
  };
  
-+#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
-+#define DRM_CLASSMAP_DEFINE(...) DYNDBG_CLASSMAP_DEFINE(__VA_ARGS__)
-+#define DRM_CLASSMAP_USE(name)   DYNDBG_CLASSMAP_USE(name)
-+#else
-+#define DRM_CLASSMAP_DEFINE(...)
-+#define DRM_CLASSMAP_USE(name)
-+#endif
-+
+ #ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
+-#define DRM_CLASSMAP_DEFINE(...) DYNDBG_CLASSMAP_DEFINE(__VA_ARGS__)
+-#define DRM_CLASSMAP_USE(name)   DYNDBG_CLASSMAP_USE(name)
++#define DRM_CLASSMAP_DEFINE(...)    DYNDBG_CLASSMAP_DEFINE(__VA_ARGS__)
++#define DRM_CLASSMAP_USE(name)      DYNDBG_CLASSMAP_USE(name)
++#define DRM_CLASSMAP_PARAM_REF(...) DYNDBG_CLASSMAP_PARAM_REF(__VA_ARGS__)
+ #else
+ #define DRM_CLASSMAP_DEFINE(...)
+ #define DRM_CLASSMAP_USE(name)
++#define DRM_CLASSMAP_PARAM_REF(...)
+ #endif
+ 
  static inline bool drm_debug_enabled_raw(enum drm_debug_category category)
- {
- 	return unlikely(__drm_debug & BIT(category));
 -- 
 2.44.0
 
