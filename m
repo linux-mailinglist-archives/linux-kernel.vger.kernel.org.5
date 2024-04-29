@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-161634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F2C8B4EE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B2FA8B4EE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:27:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70BF7B20D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:26:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E5EEB20EB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 00:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9563D7EB;
-	Mon, 29 Apr 2024 00:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA6C7F;
+	Mon, 29 Apr 2024 00:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ebDfLKTS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UcmgcnRl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53097F;
-	Mon, 29 Apr 2024 00:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD762CA4;
+	Mon, 29 Apr 2024 00:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714350407; cv=none; b=f/zYo+AY34nGLNLl5aD4kNxaTlHvHitnya+1rCbXkzdzRi17gO3xLZt0tvtiOagQi+jKJriG2u4NsAtqpfTgeaFaDy2t0F6hYjlrTy0CWeUomaunjPtwhr9FzPwWroQuyAECpXhfQpX5pSXwPwDTqrlSe/Qmd/Hbyu0wSS8zT7c=
+	t=1714350410; cv=none; b=NIsTBWqoKv49lD11awDSbBBMgOV4P3mcn4nEoF2Sg0WXcKPNamjdWHbma+bWqRtIUTivDFznXYnKElJFGegLD2smuavWqjZBexsQFafLFcPk2lbO8tjohsjfG8Oztz0Zpgama0u/6QoooQvOotTBFZfSVFvpuOdT0uXmBeI0epY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714350407; c=relaxed/simple;
-	bh=+4O/HYaERDN6eRkgGqOsfuJ2sG6F1FBLC5XSIYkRN5s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dv+uri/F0YmWtj0TOki9V/efHIJwofweIIiE5ZclPAYDcLK/iYbQIrVq20PqENKkS5jSvDeenjlrCX8+BrEgJwcFKmC5kKuPfeyEHlL+Yc1IVuEIw5SiY8X3L50I2evitL6Fc1rVazwJeWbg63iH8QXwkG411gFVZdrpunh7/Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ebDfLKTS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75C63C113CC;
-	Mon, 29 Apr 2024 00:26:45 +0000 (UTC)
+	s=arc-20240116; t=1714350410; c=relaxed/simple;
+	bh=X3AMkYS2CfMdu/dFK6C/Hj93fNJfuxImVPaXP7FNbJI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tJ4HDue8JM8IQQxhGJoX3pdxoYlEoMHfU+YHzZfjjSDoVEIiZh5Hr5FxBxdo0hPjqNV2kZ2B6jA+K9VNHG5CHSiy4TV/aq7L1L6QmU0Pfq77waYwQ5yGmiZSfLRpQen4xNe0UOtw+WK23CFSZxP3oBegtf5pjUVbXi2DZyItnjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UcmgcnRl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7B3CC4AF1A;
+	Mon, 29 Apr 2024 00:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714350407;
-	bh=+4O/HYaERDN6eRkgGqOsfuJ2sG6F1FBLC5XSIYkRN5s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ebDfLKTSrQ4dlmo8LT/Y9amkpau0ccnbEOaESUZdtP4sZcxWdK3M8bMVFmAMff4tj
-	 lgdwkBbfMHFJ22JCywEJkfewrx4J37L0zOAsEOrGHv21lhTeNpujFKK8aSAXI0y72G
-	 uxYzihnHhoSct8uMGr+QVS14M3U9ckhgzPenN12CuEUkRC8yq/g7I+T7/K6WaZrDJL
-	 JVhgnsKvPYmeqcjo8Ee5uUkc2TaNgDqEpra+qNoevSBx+IQrJBDgZSUXlTLOtz0II+
-	 GjKeqQijPxKQjtk5xw5/QVJ9I8jklnw+p/1b0rRdPJ3GZpLh7twHzRcRtzMiJGGT67
-	 +5bzJ3MvtNY9Q==
+	s=k20201202; t=1714350410;
+	bh=X3AMkYS2CfMdu/dFK6C/Hj93fNJfuxImVPaXP7FNbJI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=UcmgcnRlk5rIHJlGJVFhYITXl6GACJ58+t8FxAQ/zuyIssQzkRWrISvkCTP/hpWkY
+	 BdaZfPeQ+YN2ao0L9Ai5H7V72IjxyPo33TxwAJeRsIV5JOi12DzbXvxSKvuxWGRu52
+	 z/I7aMzYIV2neP5wMq6NOYepXeOw9WPJfg603yTrVm/J5PEK+8qpujMdOk9nw/pNd2
+	 MQvlJBIFHE/ap728D6zrRe6fiBL8F6UdCJLsFeX9D2gk+VdCvygaHWToDQeCsYRgtn
+	 fRqP+O2y+mVdiHbWaRSbpDLV+0Oop3p+jpPqU/nRI37+PuzOW1aSPFWK5cNNRbRxC/
+	 mP1FBxi0GML3A==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Conor Dooley <conor@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -49,11 +50,14 @@ To: Conor Dooley <conor@kernel.org>,
 	Emil Renner Berthing <kernel@esmil.dk>
 Cc: linux-riscv@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/8] riscv: dts: starfive: add Milkv Mars board device tree
-Date: Mon, 29 Apr 2024 08:13:09 +0800
-Message-ID: <20240429001317.432-1-jszhang@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Subject: [PATCH v4 1/8] riscv: dts: starfive: add 'cpus' label to jh7110 and jh7100 soc dtsi
+Date: Mon, 29 Apr 2024 08:13:10 +0800
+Message-ID: <20240429001317.432-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240429001317.432-1-jszhang@kernel.org>
+References: <20240429001317.432-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,69 +66,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Milkv Mars is a development board based on the Starfive JH7110 SoC.
-The board features:
+Add the 'cpus' label so that we can reference it in board dts files.
 
-- JH7110 SoC
-- 1/2/4/8 GiB LPDDR4 DRAM
-- AXP15060 PMIC
-- 40 pin GPIO header
-- 3x USB 3.0 host port
-- 1x USB 2.0 host port
-- 1x M.2 E-Key
-- 1x eMMC slot
-- 1x MicroSD slot
-- 1x QSPI Flash
-- 1x 1Gbps Ethernet port
-- 1x HDMI port
-- 1x 2-lane DSI and 1x 4-lane DSI
-- 1x 2-lane CSI
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+---
+ arch/riscv/boot/dts/starfive/jh7100.dtsi | 2 +-
+ arch/riscv/boot/dts/starfive/jh7110.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-patch1 adds 'cpus' label
-patch2 adds "milkv,mars" board dt-binding
-patch3 ~ patch4 adopt Krzysztof's suggestions to DT node names
-patch5 introduces a board common dtsi for visionfive2 and mars
-patch3 adds the mars board dts file describing the currently supported
-features:
-Namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
-
-Since v3:
- - collect Reviewed-by tag
- - rename the common dtsi to jh7110-common.dtsi
- - mv cd-gpios and disable-wp into jh7110-common.dtsi
- - fix "gmac1-rgmii-rxin-clock: 'clock-frequency' is a required property"
-   warning
-
-Since v2:
- - add a common board file which can be used by vf2 and mars
-
-Since v1:
- - add two new patches which add "cpus" label and board dt-binding
- - adopt Krzysztof's suggestions, thanks
-
-Jisheng Zhang (8):
-  riscv: dts: starfive: add 'cpus' label to jh7110 and jh7100 soc dtsi
-  dt-bindings: riscv: starfive: add Milkv Mars board
-  riscv: dts: starfive: visionfive 2: update sound and codec dt node
-    name
-  riscv: dts: starfive: visionfive 2: use cpus label for timebase freq
-  riscv: dts: starfive: visionfive 2: add tf cd-gpios
-  riscv: dts: starfive: visionfive 2: add "disable-wp" for tfcard
-  riscv: dts: starfive: introduce a common board dtsi for jh7110 based
-    boards
-  riscv: dts: starfive: add Milkv Mars board device tree
-
- .../devicetree/bindings/riscv/starfive.yaml   |   1 +
- arch/riscv/boot/dts/starfive/Makefile         |   1 +
- arch/riscv/boot/dts/starfive/jh7100.dtsi      |   2 +-
- .../boot/dts/starfive/jh7110-common.dtsi      | 599 ++++++++++++++++++
- .../boot/dts/starfive/jh7110-milkv-mars.dts   |  30 +
- .../jh7110-starfive-visionfive-2.dtsi         | 584 +----------------
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |   2 +-
- 7 files changed, 634 insertions(+), 585 deletions(-)
- create mode 100644 arch/riscv/boot/dts/starfive/jh7110-common.dtsi
- create mode 100644 arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
-
+diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+index 9a2e9583af88..7de0732b8eab 100644
+--- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
+@@ -13,7 +13,7 @@ / {
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 
+-	cpus {
++	cpus: cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 4a5708f7fcf7..18047195c600 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -15,7 +15,7 @@ / {
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 
+-	cpus {
++	cpus: cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
 -- 
 2.43.0
 
