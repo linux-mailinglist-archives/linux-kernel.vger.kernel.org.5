@@ -1,114 +1,138 @@
-Return-Path: <linux-kernel+bounces-163060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 879878B6461
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D3A48B6464
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1BFE289A96
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:15:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A13A289D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF65181B83;
-	Mon, 29 Apr 2024 21:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1BB181BB7;
+	Mon, 29 Apr 2024 21:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Loc7/Yiw"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NEZ97k5u"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF81A3C482;
-	Mon, 29 Apr 2024 21:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308C73C482;
+	Mon, 29 Apr 2024 21:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714425292; cv=none; b=E5CihwSefPWHHgG34RedLV3JsleDDNgugzh/kUn/nsT0aO0NxkTJYuImMS8vACLVVBD6rjRZVNo09p3o/DM7MUXvrwwkf+csl3OGKdRznE76KMA3TCNt98ANLapaBu8s5zvRe62HRegQI+E+HZjERcbCfKglDlfN82u/JgIAspE=
+	t=1714425301; cv=none; b=lAOVTwcAFI3Hgd/rqw0rtN2H8jIVlgYAYfIZfUf5IgKmteRzr5mcb6Mfea56l4QGar4zmOAA6/OEOydxsgG7SYrOEw2c+E+dHKjFAbkF8rcnoJJnAdsDLzJhpJjX7DdnR6elRAQMfQqLF1Nnb2Ppx/4LAyY9TmZr7T627aIY8m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714425292; c=relaxed/simple;
-	bh=tiMvJprnoucEZ2mGwOGpl8nwGTZ2AMZh8ljot5HUHYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=honBJkeQVMokNTqYBhVWG60KmYGxWMkbsxaWc+wu7NIe7GCHZpmm2u/R2X5utdYWK7hI5Xkw54pix6IPN5o0AkqpLmlTPJtdSeNbLA36C1qPd6eBtFDriTH8dilTS8KVE1TcddI+AIajTFhdxwXhVe9yb/806k1TDJcxIwp53Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Loc7/Yiw; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1714425301; c=relaxed/simple;
+	bh=7+2sYOL5fqWMncPIRsbxS0iXQhfb/BgV4yUmovNTXdw=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=lqhi6lGuguVUZK2gyzfJus58nqshSSmcPrKMErPWdtmvuMTHGl2fIgk9LE/2/1fXwM8DTU6iiUDLoeoNrAvUHEg70wd+MLBBeOvrDizm822pBPEzktlRLOSisR2hmG9DnlfeheK2YIGYaZ3WhhEd0jk8SDwSz5GxJ5Azizv855M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NEZ97k5u; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a556d22fa93so540426966b.3;
-        Mon, 29 Apr 2024 14:14:50 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-618874234c9so56671867b3.0;
+        Mon, 29 Apr 2024 14:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714425289; x=1715030089; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GInBtKS5qcKC98Fjt9JiRdmtAQLI0mcNnSpjf6/+G2Q=;
-        b=Loc7/YiwLtnwAjHAO3HzkeVUPdO9zyZj5Gdb6c3ppRPq/yE4WPdWOxuo5a5+mIX2jD
-         zHon350BJWCg+FcHjg+oJs9E6VS421AjfWRVG5l874M3LlaDQvHNTX88ZGwBRWMTmjiP
-         8J1GC0eQZoNL9Vosgi5v8xjszqgEcw72xzBcTeuXPCiyqPLJfhAHxLTd70nbz+FLjE2T
-         1AzBqvB8+udKh1IMI3nuqq50XneJzYtqVjyS/7tYFppzPAAiV+BXdHezoc4gNlI0JVdM
-         egFhvagezenz41QZCEtC1b9/kMjMPdpw/hcieRFY3Q2OJyYTJTHSg9QaHfks2UMPRAIL
-         UuUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714425289; x=1715030089;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1714425299; x=1715030099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GInBtKS5qcKC98Fjt9JiRdmtAQLI0mcNnSpjf6/+G2Q=;
-        b=Tk4wotHF2ScbrQLCPtjNAddM1AdTnlUnJ7x11gAMVEsWZ2JMB8TeR2qK+4062djeP8
-         jdTcHFy+zkjuBs5zDdrkidnm54oDQZxR/UJEfIFO286wCfidRHTr8u5WgoXXv7RfsaFs
-         0JRK63pDnEJKuuwms50r4WbyA7UtqpJk12Wl9BBPhinlunrWRHguTy3U21fN8GNVQ9E1
-         G7ZZ7vNxX1ZpN8Iq2URgdr6IAuFjcp57st6Nx8bB8OUbOUkRNNYi/5VJ54M2M3voqY/y
-         eVtWHis8WlsoLuxEyJSolsJPu4jVAoHM3XG6O1nt2tkMtGLTfR7ol6j1Oyd1hGW4lQGa
-         k1fA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+oPh37jZxwsnAvdYD5CfbyWxpnnpFYRaVhd7loyZSgbspny74crKXlQKnF8RrPQEsZJj+lLwEuyg5L7Hm+pLAQ7oiQFVWN2HZHxdsG/NOyMpDYnM1DQqquE0GWFlTZQOGukN7uy502GPwiUm4JZce8U7KrLxruhJY9Ip1q+D/
-X-Gm-Message-State: AOJu0YyFqp71BsKWzc9afXq9vCqTBT6Pp21S7c1FPsdwnNpTqKcppoKl
-	stuFSyoInrO0hsiNx2pXT2tnsvP16CuoX0MgfliheNVb8Cg/3oCF
-X-Google-Smtp-Source: AGHT+IHF6pToBPXo1Tqa6vaxgqz49Q6gw8+6m3MaTXwNMNGTW1Vb68P41g2q4nGT68Bk2JZLrqKs2A==
-X-Received: by 2002:a17:906:19d6:b0:a58:bd52:38e3 with SMTP id h22-20020a17090619d600b00a58bd5238e3mr525055ejd.57.1714425288919;
-        Mon, 29 Apr 2024 14:14:48 -0700 (PDT)
-Received: from fedora (host-95-248-171-25.retail.telecomitalia.it. [95.248.171.25])
-        by smtp.gmail.com with ESMTPSA id m16-20020a1709061ed000b00a51c0c0cb86sm14286735ejj.22.2024.04.29.14.14.47
+        bh=NQPuAKB6zxzSBJxoiuturNalOncl1ZZO2UKPOMfyZOo=;
+        b=NEZ97k5un/4rEGrIj4mJ2hKl0ZoCOcLZ4aOur4xJt19y9k8sd7hniPPDp2if+KaQYN
+         XFGB7uc3554Pqx0w/eAco5oqUQI+v9i+/kh5XATJgqMN9FXr2tsNWeDmLjqjsJM9JUqt
+         riGnwz4w1OuJt0FqcbovPsR2HnYBCG2buIW6UpGL0kpFNv2PjLY7IHrlC5f00WhoEKtL
+         EIXTqYUgKKVcNUoTPN08fs5RNXyzlJJ8vncJkcbar94nbunhe/o21/db2rUltrom5tQh
+         OYIH3jN+V0c1d18EviFHMKQu+CQL1AHcwwmWP0dPqHqE0OJnLOlMLSQC8XcmecCFgS/w
+         jndg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714425299; x=1715030099;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NQPuAKB6zxzSBJxoiuturNalOncl1ZZO2UKPOMfyZOo=;
+        b=H/O+mlO3axNceTDqHTD23aH56e2GXXDkXW9BCJlbxJWWyqqYTyTVMBJKj93Znnjl+p
+         z2/GArxjOmGbUoHK6+uUX5UIZLYWj7Yo0hItvKfH63xml6UnD9lX4kTc/hU80JAEDE+Q
+         cSMu1drGbWfH/rNJu0p6DcJp+9mJRZ7/oUcbJuGpuMPccVAbI/suV96rbSoRvl8YeLIL
+         vR7fLZL/ic9qSGyOAsDsgJByXiJmJE3J+yG+J23q1x8Hiy+6G+2fXIfy0LdtkVIRH7CU
+         GKwVxvE6AEcFRyBeq06BKYBNfrDznUFWHY1nY3GS8FlC5YylOVZa9j9X+UISZPjEl18o
+         40SQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULzJ0epknS4OAYDawg5NNvqrm1GjoUo5hCOrFxEUJU027XBGc8fQqvtqk8Qbi/QfKwLfFkV+/nYz672bR/BRfAAg99k+oobQG8GVG3OVeroVn5TTuZnvOJmWjP
+X-Gm-Message-State: AOJu0YziTCAHwF36hlf2S+FMt6pFu3XlpoC/1/TDoWXiuGlag2NwwxdK
+	9sSb+1Cd5P0qOQcCausYpQE8nU7UTezCjSco2/Vv5Vi1XLqdssCJfQpStA==
+X-Google-Smtp-Source: AGHT+IFbhLt5B59v3Rsdoknwa2B5pxJZX7eKqimPFv+YyyRGoM7dckvZx8R2/LRC42VvRgmHb2NtJw==
+X-Received: by 2002:a25:870b:0:b0:dbd:be40:2191 with SMTP id a11-20020a25870b000000b00dbdbe402191mr10768280ybl.42.1714425299108;
+        Mon, 29 Apr 2024 14:14:59 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id a5-20020ac81085000000b00434a165d45asm10753716qtj.38.2024.04.29.14.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 14:14:48 -0700 (PDT)
-Date: Mon, 29 Apr 2024 23:14:45 +0200
-From: Francesco Valla <valla.francesco@gmail.com>
-To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Simon Horman <horms@kernel.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>, fabio@redaril.me
-Subject: Re: [PATCH] Documentation: networking: document ISO 15765-2
-Message-ID: <ZjANxXyipBxBeCkY@fedora>
-References: <20240426151825.80120-1-valla.francesco@gmail.com>
- <20240426151825.80120-2-valla.francesco@gmail.com>
- <CAMZ6RqJ8x1=SeZRyR8PBCHzOy7qjB4xPs2Uk4mHLHOm_Usy91A@mail.gmail.com>
+        Mon, 29 Apr 2024 14:14:58 -0700 (PDT)
+Date: Mon, 29 Apr 2024 17:14:58 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, 
+ =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
+ "maze@google.com" <maze@google.com>, 
+ "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+ "kuba@kernel.org" <kuba@kernel.org>, 
+ =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+ "pabeni@redhat.com" <pabeni@redhat.com>, 
+ "edumazet@google.com" <edumazet@google.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+ "davem@davemloft.net" <davem@davemloft.net>, 
+ "yan@cloudflare.com" <yan@cloudflare.com>
+Message-ID: <66300dd27bc48_2f15ff2944a@willemb.c.googlers.com.notmuch>
+In-Reply-To: <880367ab-e9a2-d9b4-c6d6-9e2efdf04a0f@iogearbox.net>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+ <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
+ <6622acdd22168_122c5b2945@willemb.c.googlers.com.notmuch>
+ <9f097bcafc5bacead23c769df4c3f63a80dcbad5.camel@mediatek.com>
+ <6627ff5432c3a_1759e929467@willemb.c.googlers.com.notmuch>
+ <274c7e9837e5bbe468d19aba7718cc1cf0f9a6eb.camel@mediatek.com>
+ <66291716bcaed_1a760729446@willemb.c.googlers.com.notmuch>
+ <c28a5c635f38a47f1be266c4328e5fbba44ff084.camel@mediatek.com>
+ <662a63aeee385_1de39b294fd@willemb.c.googlers.com.notmuch>
+ <752468b66d2f5766ea16381a0c5d7b82ab77c5c4.camel@mediatek.com>
+ <ae0ba22a-049a-49c1-d791-d0e953625904@iogearbox.net>
+ <662cfd6db06df_28b9852949a@willemb.c.googlers.com.notmuch>
+ <afa6e302244a87c2a834fcc31d48b377e19a34a2.camel@mediatek.com>
+ <5cc1c662-1cec-101c-8184-c32c210eeadc@iogearbox.net>
+ <bd9d5fef2fa6154e162e963f5d669ff618b95229.camel@mediatek.com>
+ <880367ab-e9a2-d9b4-c6d6-9e2efdf04a0f@iogearbox.net>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqJ8x1=SeZRyR8PBCHzOy7qjB4xPs2Uk4mHLHOm_Usy91A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Apr 27, 2024 at 10:39:11PM +0900, Vincent MAILHOL wrote:
-> On Sat. 27 Apr. 2024 at 00:23, Francesco Valla
-> <valla.francesco@gmail.com> wrote:
-> > Document basic concepts, APIs and behaviour of the ISO 15675-2 (ISO-TP)
-> > CAN stack.
-> >
-> > Signed-off-by: Francesco Valla <valla.francesco@gmail.com>
-> > Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> >> The 'write_len > skb_headlen(skb)' test is redundant, no ?
+> >>
+> >> It is covered by the earlier test :
+> >>
+> >>           if (likely(len <= skb_headlen(skb)))
+> >>                   return SKB_NOT_DROPPED_YET;
+> >>
+> > Daniel, it is not redundant. The bpf pulls a len between
+> > skb_headlen(skb) and skb->len that results in error. Here it will stop
+> > this operation. For other skbs(not SKB_GSO_FRAGLIST) it could be a
+> > normal behaviour and will continue to do next pulling.
 > 
-> Two typos/grammar nitpicks (see below). I am giving my review tag in advance:
-> 
-> Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> 
-> Thank you!
->
+> I meant something like the below. The len <= skb_headlen(skb) case you
+> already return earlier with SKB_NOT_DROPPED_YET. Willem, do you see a
+> case where this should not live in pskb_may_pull_reason() but rather
+> specifically in skb_ensure_writable()?
 
-Hello Vincent,
-
-thank you for the review!
-
-Regards,
-Francesco
-
+Yes. pskb_may_pull is called all over the hot path. All in locations
+that are known safe, because they only pull header bytes. I prefer to
+limit the branch to the few (user configurable) locations that are in
+scope.
 
