@@ -1,145 +1,185 @@
-Return-Path: <linux-kernel+bounces-162699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 663B68B5F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 961388B5F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97AAF1C20FE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:39:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8A5F1C215E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428A186244;
-	Mon, 29 Apr 2024 16:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FEF85C69;
+	Mon, 29 Apr 2024 16:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvaB+GUP"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JbmaZFUJ"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC3B85643;
-	Mon, 29 Apr 2024 16:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDF385924;
+	Mon, 29 Apr 2024 16:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408747; cv=none; b=XNNKzQrICafHqpZ2Nl7LrzJL6v0LZVWTjYC+izgllaMqfoWCjiNzB207KvZZmH5WifCFcWug47HSpWAFzaniEqtDnYI8T0jcMu+kihiyx/c2A8L1xI8Fzt8c8v1gRIeqfML0L+1WSx9J+tNJbBk/48qVcDv59GELHZdChV+scMs=
+	t=1714408843; cv=none; b=hZjdqWzcBqY0IQefFmcqidNSK+iQ8/kXLlH4HkGTG0sskTEs7dxOy4i/vc5G69hMHK1XVSB5e8l1B+izUDOPjCCuYIMoyYEUij+WF+msYjeLmKI8e577uUkuLFN0EtJGq/hjBXBHvQezISqi1DEXS7LKZy0zdej7hqRZoKsr8I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408747; c=relaxed/simple;
-	bh=zJC2jHdtvNuoh/7+wUOUQfN1zCwoKCDjYiEpvNDhnkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ebFims5TvqHPOR/ZYlSsTTvaq1q8PSxJ5c8ekY1dXUaO3VY7NAOKFjhqGgeYitnnr9dL+Fsq/CT6bGjcrqWf2Pnc256d7ZOf1EZFMck4Aftt9EnNJIBtBqioirP/jaFz0FQM4Ufy8kHHIxmE8+Comde1SWGf//Yy7kHUipzrsX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvaB+GUP; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1714408843; c=relaxed/simple;
+	bh=y/JoRti5C/zhiWY4j/apSF+4M4QIGCm1Y/dnb2ZI8zI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ghPEBJDnnGyLr6+TDQ7tTxKsF2RWRmXvWC1P1zWShQkDSeiSieh4U8U67E0tO6mnNsSDcsMcI57wcM+kyi5rx6ADJMJOy7KCUXzID6w8XOmpdSJ33X+Oqu/W2CAYkwm5XC91kpximGP6Lwz1yuJt/OA+HWhPv01VlQ4NKAh9E9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JbmaZFUJ; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5709cb80b03so4755722a12.2;
-        Mon, 29 Apr 2024 09:39:05 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f30f69a958so4057035b3a.1;
+        Mon, 29 Apr 2024 09:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714408744; x=1715013544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T8ZupKM3UqZOUqxG1rrXLoiAhRVggO/mf0Y0hq1+ePE=;
-        b=mvaB+GUP7LTLkjmadIhkg4NwG/5fD6+NgXB/o6iN2YKpPT0NBU1Q6PQ6eZ238pfSLq
-         Kzkz69KW0S3qLX2rlI8LM+q7oApeK6wJ88XV9BTRwTfvPW3hCy/8kl2FQiUfw78uPd4+
-         +6PXMXKqE2E+imTCEfuC+d1PzLyPRjpP8DODpjUYABslZJspAGcGfl3qPoa36mVjzA4j
-         jYjkoe6We6Be7sr7ai2WxFYzD2dEcN8nmYtGzRaMDhlUz6iSnTrToPL+fUEyPFATW2gP
-         kArmqBPlpXr7xDCA29JZu4pPda5H/wSzeLiL9ITmfBYQ+v0n5hiZ7NOW1V3FtBjk4qo/
-         rOYQ==
+        d=gmail.com; s=20230601; t=1714408841; x=1715013641; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=4hAwPIk/J0mbp1JgX2t87eFy3QhJBjBJL9p7CarC7ho=;
+        b=JbmaZFUJSYNCeXieOIvaohvoV3tTNas17EdHAYz1rwbujRC72pvdGTsZfZSG0hC/HP
+         PDzm5eSbPNoiMX8Ebp6v+0j7ISI9ybgU5vSia+kwMH4qop6R9b1i/YOpSJDrGqIPnnJ7
+         MoCzS/U7IpdbKn3Y6E2ciytpkcTP5Z45pjlYRUmOgwE7iLMqiY5TddOFiDFvti3+Q3li
+         YY+2Y8iXiMqkDPyqNr8G8dlC0NojwYdOE2AEnWmQicebi5p/oqgXBRNTCGNSCeHaPJ67
+         VWOA1/pg9CNUZzJwqPCUY0onOd1l/TyGpE5ZBPU/VUkSkn6QnBXFNrbJjc8CSNEjbjrT
+         ciig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714408744; x=1715013544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T8ZupKM3UqZOUqxG1rrXLoiAhRVggO/mf0Y0hq1+ePE=;
-        b=OKCDoylh4uEw5uYc4ibuFvNMDoApq5foFDCRZPjE4HCiW5Q3Z4Jia50TVzHp+ACeeb
-         OoPbidNT015qllN5zXDKgvU7aQw0d0rr8RqNFXzhPUnol2ySP5gUeJbuznxHPxKk2VSd
-         vIhFUb/zIiv+gJAC5PcFU7SFml96RzLbuE0Gmsv56+AsBzMAJbk2a44npoMI5pzJt/7j
-         WSATy39GVqmg6QlcLBAHgYcNMtsEhYKV+K5kmNlYUpa1DGWWP8S5ETBu/S+qMpD0sxfY
-         OMncduy74ReEP0XEVtw2bJW41aVkYNIvWDnZX/uvWDyzYasSEbapiyHgN9L6PWGm86t5
-         jbPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWm03LVTVVUHOlBs7L2egoECpapSIHI9eicpZYqHFuAU7LGGssx/talP15xqIEbeb60bMnYQO4C77Lln+M50ZCk+Y4tkAtF5AKgoRnoqYCE3SrmNIiuXTytvjNwTTTqh91ZASGHG+32SSUORn5Trw==
-X-Gm-Message-State: AOJu0Yzn8+zDU0lUIHmfS4X/0fKhU86fZZM2kPOxOkb6uBDAb2i/9o4l
-	WcioSZPA7ubRNTb8gVF0Fbv/0tTpcYLEGKribCr9BK5h/JrozNk0y07E7sxfO0wSuwpADGqWn4O
-	C9DtYDATGsiJbbAez1HgcHP44snQ=
-X-Google-Smtp-Source: AGHT+IFutqemErmK6ODXh6FUWRCGYBPCk1mNrXK+yjEdyK8mnXK+phIySKy9xjTvq8PMb7B1wAhD65ZJhyDztQrc2pw=
-X-Received: by 2002:a50:d602:0:b0:570:5b3d:91f with SMTP id
- x2-20020a50d602000000b005705b3d091fmr140668edi.23.1714408744009; Mon, 29 Apr
- 2024 09:39:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714408841; x=1715013641;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4hAwPIk/J0mbp1JgX2t87eFy3QhJBjBJL9p7CarC7ho=;
+        b=PVe/mUuglgx0ayaovCh3HfN+Z4n1gyB6X2bduCqv07uswyIxr4nN05PD14knjcNuMY
+         T7ErXMmlDOxuLp322E4Iq/VXjJOBa+KsuaWb4aAYE7Uvf668043p4lL11WRVU11U8LkC
+         AKP5gxkR51RQ1baQd6d8p1arbAtPrULHyp/eKTGOLU1Q2NV6x13mgKUqZjhS8LUdXIPH
+         fBcbbA+yZ39fb9e50zLBzu87TWbEgrsXYhyv4/kbdFRAzX5CYVFmg67EwLL9pohjr8Ox
+         v6v8yQKRZs49PfyPZ1MVTTL8CwNtV566KByl0pyySgAi5gg1lfIYzO0mhhgOPk3Lk+lg
+         D3IA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpnyskMWwj9cigLNFUCnqf1FkXY5+P0sTXcukwiq73Ad9HpsNaDyeIohwqLBo43gq5PLKmUa/TqGRYg9HPBX4UGHBCZNae5mEFlEbXeaGwGgjUbTtKWlZxY27cFjOlHJxR7qY4AcZO
+X-Gm-Message-State: AOJu0Yy4MTuSL8FS0Hz4DXOTqnHeUc/3IN1cy8r1yGWhfVuR/igolMh1
+	8zkFvj7ebOtEO8AjvezgXZH88h/RbyqMEPF4Ffb+0IVvxu97XdvJHTuJeQ==
+X-Google-Smtp-Source: AGHT+IFaLePabmDe56sSTqDUTsP0E+y7eUB7rbf8Ei5jEy+kdC65LXelOImCDPIe2HCcKFtb37uSgg==
+X-Received: by 2002:a05:6a20:551a:b0:1ad:8109:48f2 with SMTP id ko26-20020a056a20551a00b001ad810948f2mr98505pzb.36.1714408841503;
+        Mon, 29 Apr 2024 09:40:41 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n13-20020a17090ac68d00b002ab68ce865asm20718787pjt.9.2024.04.29.09.40.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 09:40:39 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <aff51500-0970-4513-af36-3c4edf38cd31@roeck-us.net>
+Date: Mon, 29 Apr 2024 09:40:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJg=8jw=5vKSE8ibuim0uFKQq=sA3sWULqM5auqKNJCq0=kqGg@mail.gmail.com>
- <20240424094305.GT40213@noisy.programming.kicks-ass.net>
-In-Reply-To: <20240424094305.GT40213@noisy.programming.kicks-ass.net>
-From: Marius Fleischer <fleischermarius@gmail.com>
-Date: Mon, 29 Apr 2024 09:38:52 -0700
-Message-ID: <CAJg=8jxS+omJP-HeBUNEgh-avEGQuCisPcX2knRiucppQTNAdw@mail.gmail.com>
-Subject: Re: possible deadlock in __perf_event_task_sched_in
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
-	harrisonmichaelgreen@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] usb: ohci: Prevent missed ohci interrupts
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ David Laight <David.Laight@aculab.com>, Gerd Hoffmann <kraxel@redhat.com>
+References: <20240429154010.1507366-1-linux@roeck-us.net>
+ <2c2ba8df-cdce-4666-8da3-252d4b707239@rowland.harvard.edu>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <2c2ba8df-cdce-4666-8da3-252d4b707239@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Peter,
+On 4/29/24 09:05, Alan Stern wrote:
+> On Mon, Apr 29, 2024 at 08:40:10AM -0700, Guenter Roeck wrote:
+>> Testing ohci functionality with qemu's pci-ohci emulation often results
+>> in ohci interface stalls, resulting in hung task timeouts.
+>>
+>> The problem is caused by lost interrupts between the emulation and the
+>> Linux kernel code. Additional interrupts raised while the ohci interrupt
+>> handler in Linux is running and before the handler clears the interrupt
+>> status are not handled. The fix for a similar problem in ehci suggests
+>> that the problem is likely caused by edge-triggered MSI interrupts. See
+>> commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
+>> edge-triggered MSI") for details.
+>>
+>> Ensure that the ohci interrupt code handles all pending interrupts before
+>> returning to solve the problem.
+>>
+>> Cc: Gerd Hoffmann <kraxel@redhat.com>
+>> Cc: David Laight <David.Laight@aculab.com>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>> v3: Check if any interrupts are pending before reading intrenable
+>>      Add 'Cc: stable@vger.kernel.org'
+>> v2: Only repeat if the interface is still active
+>>
+>> Note that I did not apply Alan's Reviewed-by: tag since I was not sure
+>> if that was appropriate after the code change.
+> 
+> I'm not too confident that the guess about all interrupt bits normally
+> being off is correct, but in any case the extra test won't hurt.
+> 
 
-Thanks for taking the time to explain this issue!
+OHCI_INTR_RHSC and OHCI_INTR_SF are often set but disabled while the system
+starts, but afterwards it is mostly 0 during normal operation, i.e., while
+there are no interface state changes.
 
-Wishing you a nice day!
+> Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+> 
+> Guenter, if you want to work on a patch to cache the interrupt-enable
+> value in the driver, feel free to do it.  I have too much other stuff
+> going on to spend any significant time on ohci-hcd.
+> 
 
-Best,
-Marius
+Unfortunately I am in the same situation. Also, I am not sure if doing that
+would really be worth the trouble.
 
-On Wed, 24 Apr 2024 at 02:43, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Apr 22, 2024 at 11:44:27AM -0700, Marius Fleischer wrote:
-> > Hi,
-> >
-> > We would like to report the following bug which has been found by our
-> > modified version of syzkaller.
-> >
-> > We found this report (https://lkml.org/lkml/2021/9/12/333) that seems
-> > to have a similar but different stack trace. We are unable to tell,
-> > though, whether it is the same cause. We=E2=80=99d be grateful for your
-> > advice.
->
-> This is just the printk thing sucks again. Some WARN/printk got tripped
-> in a non-suitable context.
->
->
-> >  _printk+0xba/0xed kernel/printk/printk.c:2299
-> >  ex_handler_msr.cold+0xb7/0x147 arch/x86/mm/extable.c:90
-> >  fixup_exception+0x973/0xbb0 arch/x86/mm/extable.c:187
-> >  __exc_general_protection arch/x86/kernel/traps.c:601 [inline]
-> >  exc_general_protection+0xed/0x2f0 arch/x86/kernel/traps.c:562
-> >  asm_exc_general_protection+0x22/0x30 arch/x86/include/asm/idtentry.h:5=
-62
-> > RIP: 0010:__wrmsr arch/x86/include/asm/msr.h:103 [inline]
-> > RIP: 0010:native_write_msr arch/x86/include/asm/msr.h:154 [inline]
-> > RIP: 0010:wrmsrl arch/x86/include/asm/msr.h:271 [inline]
-> > RIP: 0010:__x86_pmu_enable_event
-> > arch/x86/events/intel/../perf_event.h:1120 [inline]
-> > RIP: 0010:intel_pmu_enable_event+0x2d9/0xff0 arch/x86/events/intel/core=
-c:2694
-> > Code: ea 03 49 81 cc 00 00 40 00 4d 21 f4 80 3c 02 00 0f 85 5b 0c 00
-> > 00 44 8b ab 70 01 00 00 4c 89 e2 44 89 e0 48 c1 ea 20 44 89 e9 <0f> 30
-> > 0f 1f 44 00 00 e8 1b 32 75 00 48 83 c4 20 5b 5d 41 5c 41 5d
-> > RSP: 0018:ffffc900115af348 EFLAGS: 00010002
-> > RAX: 0000000000530000 RBX: ffff888019dd6a50 RCX: 0000000000000188
-> > RDX: 0000000000000002 RSI: ffffffff81029464 RDI: ffff888019dd6bc0
-> > RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888063e22ab7
-> > R10: 0000000000000000 R11: 0000000000000001 R12: 0000000200530000
-> > R13: 0000000000000188 R14: ffffffffffffffff R15: ffff888019dd6bb0
-> >  x86_pmu_start+0x1cc/0x270 arch/x86/events/core.c:1520
-> >  x86_pmu_enable+0x481/0xdf0 arch/x86/events/core.c:1337
-> >  perf_pmu_enable kernel/events/core.c:1243 [inline]
-> >  perf_pmu_enable kernel/events/core.c:1239 [inline]
->
-> Most likely your VM is wonky and perf tries to poke an MSR that either
-> doesn't exist or isn't emulated properly, who knows.
+Guenter
+
 
