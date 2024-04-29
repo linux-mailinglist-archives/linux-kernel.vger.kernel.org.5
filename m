@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-162621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB74E8B5E25
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:52:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3488B5E28
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC5C31C20FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:52:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C56AB25927
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DE882D69;
-	Mon, 29 Apr 2024 15:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE39C82D7F;
+	Mon, 29 Apr 2024 15:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Axq7vMu1"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Emn2PVfn"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0179982883
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83C282C76
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714405976; cv=none; b=ifzh2ydpMLpfPZ+5J8b+MMZI6pI+L6fFWrzdLhIp+75oUD/kCrxgo8vt0NEq5egm8Hsk2NYpN+HxtbMClv4T5sGRnIlZ6aWasKpuQgmW07QziXeEis9qrzRFWAV0m7X7rLeUi/c7y8hHT9sbO7W1QXLxyHkL9JREhDo4uNj+7LI=
+	t=1714405986; cv=none; b=BvcB2PukQle4rUKM8wIwOHmnjAncMMIagChiebqenVvH50EyJ6NzquEZSv2jgZ3PhREoMshXP2PR+CteKLZ86J5Bt9dmyi6VJ44oNs71aHpIoNIVDfnrtifKMlYgDDAfjw2d7AtArPWPoFw6eGhPwj3si3EvK/Y1WKBAJIUOYKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714405976; c=relaxed/simple;
-	bh=aqoYe7y596ceK+s22lTo4XTQ8iUewNNdVUJJ7YKSWzw=;
+	s=arc-20240116; t=1714405986; c=relaxed/simple;
+	bh=+Gy9RwHGHJ0e5OL0NRMNvIMDKmFymnkkxx/hxNe5NF4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6+bKCFIE9rtXJOkFz7pdKztRtxg12AeSEY6lGuSAytaQ8eKrvETJYrKbYgQ3ybWWALpnwkwlMTaCtDa3H2g7YHsDh+cPp/v0Bv/nM1SFo6DNI9ASrCoLgKV9iWxMzmEO1Ti0bVHLJf0bOPDVs9wvKood67zSCniUwAoEnGir1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Axq7vMu1; arc=none smtp.client-ip=209.85.215.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=e90nvZ5zB+zvEXpS69vQ8hyZSHxQLidOv+0dxfk/VytmuoQGKl65odbzC4m30f/ms2WolSSuutu9RI8eWglQu3d3uvuDzEM0BkOfKe4UBl3yOXTNevdEp/GFWe79R8GrK+sFHWp7iIVVrYHH5H5Hn1bhau5KXm2slSZDT3WDaR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Emn2PVfn; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso3873638a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:52:53 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e5715a9ebdso38512965ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714405973; x=1715010773; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714405984; x=1715010784; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=9lFVEj2ZOMp4v4mEsTFyGvr2pXAnpMOWy7SrvsDmidk=;
-        b=Axq7vMu1g1KVCC4WCL2wHEtdq3Uvm8NniZyXhKp4JN/gwfwKfhBSRR1EgG7sDdltw6
-         G5K6zuRF1yPWg/RBX4164DdOHpcWIOkQQKKLHR7D4XGmo4Dd1Y4DiWGqvm3bR3RbquWF
-         8TcXS6RdVfIC4cDOiT/2QqSCOchBi9GD221Kg=
+        bh=5eP7J5rmRXvh7SkF0EcLKfWbbg6AxsrY7JazBQWQacI=;
+        b=Emn2PVfns7oQ4XMJIYQqzUWBqou6AgdnUACrmBS+XqDnaxepDVoVbWZ8KhD1MvfkKy
+         M3m4qduT79bcDh6/QTn9REeUzp5eSMqbn4apWFfWfeSUVDx/P86qLyhD7dktPVcNEQAE
+         ryOjsLieB8qHUwqyHPy+k+XD6aKnsL9lMn+Dk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714405973; x=1715010773;
+        d=1e100.net; s=20230601; t=1714405984; x=1715010784;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9lFVEj2ZOMp4v4mEsTFyGvr2pXAnpMOWy7SrvsDmidk=;
-        b=mXx3mCvLWlrp74Gmc+4IoZBGU5SCVPYRLwRLOQyyczTE21ddX8oO9mWlSEus+9JmVw
-         YZleWUhMDxbrYQpCRgE3k1w5yV9Qi1Dhw2xMIaxKyn94d4hlVgVBMFpzXXPKPiJQzffs
-         PesxHsDprQu9hICB5afWCs44RFnZOAFUsDpDqVK7joR3aacL8mh3a7ij03cnTVJtFZsw
-         L7WKv/OTmj+cps09In/m+54mmKbV5g4QCe+O1BVhik8KcbRp2ACvGbjEL6zV/A7TMpJ5
-         MnDWOcC5lk45sMMzcu3qfP8WnTACxlcJcr5fci6uFnxDA25zntlMUMniiStxu7TvFo/f
-         FKgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCmQsQYcH1ttfBnkK+64+fx2VFpDppx6L/abY0WfPhNi468I6LgcamBD9TKOYyAahW9XiHlxpDZr/RIlPbLv1E78qapRNuN86sc0b0
-X-Gm-Message-State: AOJu0Ywq4H49PgQ7HjNvfiMjuCo20Kj84Afuod8X6aDFIJXIHKZTnWin
-	ypj5nZp5+1qAfWcgkxs+nxUMO7kE48X/vB5jSgiEu74N/vCwXBQBF3mzUmB/pw==
-X-Google-Smtp-Source: AGHT+IG5TTqLssvq9z3HQ/NiuCB1jv/9mz9B8cDLWUAwmsQjYlLPHPkcZyQSFOtZ7HAPToK6be32vw==
-X-Received: by 2002:a17:90b:1809:b0:2ad:3688:de80 with SMTP id lw9-20020a17090b180900b002ad3688de80mr11136934pjb.30.1714405973381;
-        Mon, 29 Apr 2024 08:52:53 -0700 (PDT)
+        bh=5eP7J5rmRXvh7SkF0EcLKfWbbg6AxsrY7JazBQWQacI=;
+        b=hWqomZn2Sun3NSbZ2PgqEYnizE6p36PIZH0b+QB8amOH0Zd8rMrtXiocH6RAhg2rGE
+         DKVRYczlfeAjt3M+vMQc6BZ0gu7ywH4m6VzHT+hhIRgLI2Nf5i+qTFNj18SQQoAaK+St
+         nADpkfv7CLNGxn/7MBA7V8mHDCNnBXHevPVhIt+Z1HXZ0tMjkfjRPBPE69kbmwFIenP6
+         K0zYDE6tl7DEfalLq1YKGfJhjSNwQFKX6oymIDxuHhzF6cSnDiMEKRe783VsPtVfPR01
+         y7qPKfH+w9sNM5CU/XvDUdZMsymym6vq5XzlP/WJUmEK9MANnSYEcBZ9prarrxCnHhky
+         Q0mA==
+X-Forwarded-Encrypted: i=1; AJvYcCXldm1TiDqjf8Xe1HAXDMSPeOUMXH7tkm6fMzb0JtVA6WRALlHTFssnyqduVlcQ4YJjj0w7LdALc64QMUlIVcIK51Lrr1pnva+cylCI
+X-Gm-Message-State: AOJu0YyY28Prt3FdPoTiQjeF+GrNj8Uz6vDGnoqQIHjlSP+LX1Dc8mw3
+	/VQ/Jprj+yu43nC9cEVknUIq0ZwLTtnnIAgVrGYaKnRhcio+MKWyHdRDnHB/cg==
+X-Google-Smtp-Source: AGHT+IHSqyOxeblKePjbJ2HI0zhUUlfn734QZma9y5m9jhA8eDudR1ftPfekBbvZQWW6+1i/in1j4Q==
+X-Received: by 2002:a17:902:c950:b0:1e2:65b3:de68 with SMTP id i16-20020a170902c95000b001e265b3de68mr12287764pla.19.1714405984267;
+        Mon, 29 Apr 2024 08:53:04 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y3-20020a17090a390300b002a232e4f9ddsm21130064pjb.34.2024.04.29.08.52.52
+        by smtp.gmail.com with ESMTPSA id j10-20020a17090276ca00b001dd69aca213sm20332520plt.270.2024.04.29.08.53.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:52:52 -0700 (PDT)
-Date: Mon, 29 Apr 2024 08:52:50 -0700
+        Mon, 29 Apr 2024 08:53:03 -0700 (PDT)
+Date: Mon, 29 Apr 2024 08:53:03 -0700
 From: Kees Cook <keescook@chromium.org>
 To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
 Cc: Christian Brauner <brauner@kernel.org>,
@@ -76,11 +76,10 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	kernel test robot <oliver.sang@intel.com>,
 	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
 	Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2 5/9] selftests/landlock: Do not allocate memory in
- fixture data
-Message-ID: <202404290852.29E4B471@keescook>
+Subject: Re: [PATCH v2 6/9] selftests/harness: Constify fixture variants
+Message-ID: <202404290853.858A4626@keescook>
 References: <20240429130931.2394118-1-mic@digikod.net>
- <20240429130931.2394118-6-mic@digikod.net>
+ <20240429130931.2394118-7-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,19 +89,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429130931.2394118-6-mic@digikod.net>
+In-Reply-To: <20240429130931.2394118-7-mic@digikod.net>
 
-On Mon, Apr 29, 2024 at 03:09:27PM +0200, Mickaël Salaün wrote:
-> Do not allocate self->dir_path in the test process because this would
-> not be visible in the FIXTURE_TEARDOWN() process when relying on
-> fork()/clone3() instead of vfork().
+On Mon, Apr 29, 2024 at 03:09:28PM +0200, Mickaël Salaün wrote:
+> FIXTURE_VARIANT_ADD() types are passed as const pointers to
+> FIXTURE_TEARDOWN().  Make that explicit by constifying the variants
+> declarations.
 > 
-> This change is required for a following commit removing vfork() call to
-> not break the layout3_fs.* test cases.
-> 
-> Cc: Günther Noack <gnoack@google.com>
 > Cc: Kees Cook <keescook@chromium.org>
 > Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Will Drewry <wad@chromium.org>
 > Signed-off-by: Mickaël Salaün <mic@digikod.net>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
