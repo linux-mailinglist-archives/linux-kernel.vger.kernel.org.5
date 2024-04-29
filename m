@@ -1,113 +1,171 @@
-Return-Path: <linux-kernel+bounces-162326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC1E8B5967
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:07:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469F98B5972
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:09:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F7371C2440F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:07:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B23B11F21004
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0014D54917;
-	Mon, 29 Apr 2024 13:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9248B56B6A;
+	Mon, 29 Apr 2024 13:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QXAni5OU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dUta8Edg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1CA5338A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC08C2C6;
+	Mon, 29 Apr 2024 13:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396056; cv=none; b=XtOKKMHsCjroz4p0gvCER854PzukYtOa5KN2BoTRzgUN/g7pZvzulaOi2maSSEETaPgQDc8CTTS/bgzT/KeJWAu/rSZ1Fi3FtG74VZq7HNnF30gnnS+ZqSf6dRYY3kOmduxQOBmhR5BBcO18xTnQG8Ek/s1kP9qeMb65xftsMWA=
+	t=1714396128; cv=none; b=h+poRy0Hh7Rk+ojoLneMXg+Mx9odiAn5LM5UM0OH5Hgw5qWkGHIN8qQR4DPfsYRqWyvqNet1aGhuuTjZkhkqRwRQFmifYXI8JaNOE+RkLET0jscLNcUqWt3MFk3lIhz3x/T+VJ/I2eJhpnFRPXrwGUPON0+RekJotiiePUzPHt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396056; c=relaxed/simple;
-	bh=mU6IqfK/ep54cTBYwZjovP3nUs54R/m1b1WtwAHyPX8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=R0eecAACGiANCkVgjTL5a/3o5dg8nzhq6lmwgpV3zbMfeQR7dSC1Z3tUNfnB61FqJ9rRISkRDtZSJWs4mvDYc7HpVEsBHmPwAXbOK2e2kV3jRS0O7GROYkoehWKnIyPTanVp45h5cPkFdAcUVWdUGuT0bOkXwNvsPtatLuAxWOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QXAni5OU; arc=none smtp.client-ip=198.175.65.11
+	s=arc-20240116; t=1714396128; c=relaxed/simple;
+	bh=h/k+QXiqSs9/NGwWZ9VrWj0RyO1ZNwAX2jIDUWeJ//s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iBMiEIg9sppFmHwkUMxnnVTg1AmVp2wIuFGdwI5C3rooJtQTLa9GD1THoHtp2/bb3I0qGxYYP+F+oGudAksT4HaApPOX/fDySRV+ggwJ3v5iyUx2xXp08SR3kJVpDziHMcDPA2X9IId2pM8u8llpmS8ZdqK2Dg06PM8lBIqkOlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dUta8Edg; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714396055; x=1745932055;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=mU6IqfK/ep54cTBYwZjovP3nUs54R/m1b1WtwAHyPX8=;
-  b=QXAni5OUdfUM4mCBe7QQjtVCe8dPMQXAwUStBtbaCZ4qy+IJeKafr8fx
-   OpY8lT/jMVRDGiurnFR5bke3gw10KOcONJC3SgzZ98q8DkBkb/aP9Scg2
-   6YAhJiKakm48nbLIzK6jWmkT5OFKUj43as3+uIepDRhLXAg0kDsxSbjMs
-   jYX6XLUZuo/+/NNTkBeYXIySK7KKK3mluvwRk/5bdarKwrmk1eXlscO4x
-   ymKxdSTXuNo5UVjHI0iqTakoa8uUOe0MaSaaankhxFbicDwkbZnmqNvLs
-   mQzQldyzKIh1D2HcENzcTymtP5iyyq4dqDXBI5jJH7Dsmw5dhhmK7WpVJ
-   Q==;
-X-CSE-ConnectionGUID: eBvN2ZXCRw2zQLrY8onC4w==
-X-CSE-MsgGUID: 0y1yjvwnRy2ZPYWSyDWtWQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="20604007"
+  t=1714396127; x=1745932127;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=h/k+QXiqSs9/NGwWZ9VrWj0RyO1ZNwAX2jIDUWeJ//s=;
+  b=dUta8EdgXPDedFUh1dEn18K+zbpMWsg7NiSCg8B5X/s+a6DvV6xlb7Yr
+   RWdti8K4EoKElWUlEkk41DkbzILauDfrASHiQJTRB3mjSK+sRaOOn2aUr
+   VJ+du1vQpI2q807tLJR+OTIf52BLuUtUY7ndT4mmXNAoKI7NI7gD7KKzL
+   SAvmzjoc9YgCwYBiRJRh9BO3BD5gsdlO/4jPKD2MJPPByKTQsKDHOzols
+   nQU5cl43lv7Wf7Qk5ZWa+CngDZgKadLuKyy54Q2ne/xx0Dlo0XtVf8cUv
+   Ep3dYhTEzcBLT5Tbi0L/GqbybcjMzEoCUci8NsZrSrpKI5QE04oBMVsDg
+   A==;
+X-CSE-ConnectionGUID: d1mmrVxlTcmS6fPvk5KAMQ==
+X-CSE-MsgGUID: jeui67zPRRCVGXaGYIoplA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="13840570"
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="20604007"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:07:35 -0700
-X-CSE-ConnectionGUID: q9ZWRW0aQbSPkWBKU0Er8A==
-X-CSE-MsgGUID: yG4anL5fQ2aOCL2I6/SjKQ==
+   d="scan'208";a="13840570"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:08:46 -0700
+X-CSE-ConnectionGUID: 8oTf2g0rRwu8qkcwHrQnqA==
+X-CSE-MsgGUID: VOAb7zO/RFKVe+CSmynZPw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26067867"
-Received: from ubik.fi.intel.com (HELO localhost) ([10.237.72.184])
-  by fmviesa009.fm.intel.com with ESMTP; 29 Apr 2024 06:07:32 -0700
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de,
- alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH 7/8] intel_th: Convert to platform remove callback
- returning void
-In-Reply-To: <87y18wuzao.fsf@ubik.fi.intel.com>
-References: <20231107202818.4005791-1-u.kleine-koenig@pengutronix.de>
- <20231107202818.4005791-8-u.kleine-koenig@pengutronix.de>
- <i3oybmf3axeyk5rcef5kgfdb4cucd63h24gup6idn62nq3vvav@4mfzwzyamq27>
- <jawceotzgdydpz74qr2e5dwgfumwjmt4wxvi43qlwldlbgemzf@v3qa2hoopawv>
- <qiiln66o6uy2nsqdjcykygp3yumonn7jqp7q4wxf56i6pazics@iqfaiglmsgwt>
- <87edd5y7lz.fsf@ubik.fi.intel.com>
- <rnybbv5sddkgtnxzad7sg2jyosr77vvud6t7ii3sssfsi7td2u@3b5nbhsprcaf>
- <875xwjxgsk.fsf@ubik.fi.intel.com>
- <rucgdqb5ejtttsd2ksvph3toeow652rdiqnohdsg6ndp6qgcwu@c3rz275bofqg>
- <871q6owe8f.fsf@ubik.fi.intel.com> <87y18wuzao.fsf@ubik.fi.intel.com>
-Date: Mon, 29 Apr 2024 16:07:31 +0300
-Message-ID: <87r0eouxkc.fsf@ubik.fi.intel.com>
+   d="scan'208";a="25976696"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:08:47 -0700
+Received: from [10.212.16.233] (kliang2-mobl1.ccr.corp.intel.com [10.212.16.233])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 9E06420B5739;
+	Mon, 29 Apr 2024 06:08:43 -0700 (PDT)
+Message-ID: <4bd55385-0c8e-4989-95be-37862b564dea@linux.intel.com>
+Date: Mon, 29 Apr 2024 09:08:42 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>,
+ Sean Christopherson <seanjc@google.com>
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <CAL715WKh8VBJ-O50oqSnCqKPQo4Bor_aMnRZeS_TzJP3ja8-YQ@mail.gmail.com>
+ <6af2da05-cb47-46f7-b129-08463bc9469b@linux.intel.com>
+ <CAL715W+zeqKenPLP2Fm9u_BkGRKAk-mncsOxrg=EKs74qK5f1Q@mail.gmail.com>
+ <42acf1fc-1603-4ac5-8a09-edae2d85963d@linux.intel.com>
+ <ZirPGnSDUzD-iWwc@google.com>
+ <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+ <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
+ <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
+ <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+ <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com>
+ <ZiwEoZDIg8l7-uid@google.com>
+ <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Alexander Shishkin <alexander.shishkin@linux.intel.com> writes:
 
-> Alexander Shishkin <alexander.shishkin@linux.intel.com> writes:
->
->> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> writes:
->>> I intend to change the prototype of platform_driver::remove() after the
->>> merge window leading to v6.10-rc1 closes to cook in next for some time.
->>> If this patch doesn't make it into the mainline before, I'll send it
->>> together with the change adapting the remove callback. That will go in
->>> via Greg's tree, too.
+
+On 2024-04-26 11:04 p.m., Mingwei Zhang wrote:
+> On Fri, Apr 26, 2024 at 12:46 PM Sean Christopherson <seanjc@google.com> wrote:
 >>
->> I saw that you included this patch with your series earlier today, so I
->
-> Wait, did I hallucinate this? I can't find your new series now. Ugh.
-> If so, I'll put your patch back in and re-send my series right away.
+>> On Fri, Apr 26, 2024, Kan Liang wrote:
+>>>> Optimization 4
+>>>> allows the host side to immediately profiling this part instead of
+>>>> waiting for vcpu to reach to PMU context switch locations. Doing so
+>>>> will generate more accurate results.
+>>>
+>>> If so, I think the 4 is a must to have. Otherwise, it wouldn't honer the
+>>> definition of the exclude_guest. Without 4, it brings some random blind
+>>> spots, right?
+>>
+>> +1, I view it as a hard requirement.  It's not an optimization, it's about
+>> accuracy and functional correctness.
+> 
+> Well. Does it have to be a _hard_ requirement? no? The irq handler
+> triggered by "perf record -a" could just inject a "state". Instead of
+> immediately preempting the guest PMU context, perf subsystem could
+> allow KVM defer the context switch when it reaches the next PMU
+> context switch location.
 
-Series re-sent [0]. Sorry for the mess.
+It depends on what is the upcoming PMU context switch location.
+If it's the upcoming VM-exit/entry, the defer should be fine. Because
+it's a exclude_guest event, nothing should be counted when a VM is running.
+If it's the upcoming vCPU boundary, no. I think there may be several
+VM-exit/entry before the upcoming vCPU switch. We may lose some results.
+> 
+> This is the same as the preemption kernel logic. Do you want me to
+> stop the work immediately? Yes (if you enable preemption), or No, let
+> me finish my job and get to the scheduling point.
 
-[0] https://lore.kernel.org/all/20240429130119.1518073-1-alexander.shishkin=
-@linux.intel.com/
+I don't think it's necessary. Just make sure that the counters are
+scheduled in the upcoming VM-exit/entry boundary should be fine.
 
-Regards,
---
-Alex
+Thanks,
+Kan
+> 
+> Implementing this might be more difficult to debug. That's my real
+> concern. If we do not enable preemption, the PMU context switch will
+> only happen at the 2 pairs of locations. If we enable preemption, it
+> could happen at any time.
+> 
+>>
+>> What _is_ an optimization is keeping guest state loaded while KVM is in its
+>> run loop, i.e. initial mediated/passthrough PMU support could land upstream with
+>> unconditional switches at entry/exit.  The performance of KVM would likely be
+>> unacceptable for any production use cases, but that would give us motivation to
+>> finish the job, and it doesn't result in random, hard to diagnose issues for
+>> userspace.
+> 
+> That's true. I agree with that.
+> 
+>>
+>>>> Do we want to preempt that? I think it depends. For regular cloud
+>>>> usage, we don't. But for any other usages where we want to prioritize
+>>>> KVM/VMM profiling over guest vPMU, it is useful.
+>>>>
+>>>> My current opinion is that optimization 4 is something nice to have.
+>>>> But we should allow people to turn it off just like we could choose to
+>>>> disable preempt kernel.
+>>>
+>>> The exclude_guest means everything but the guest. I don't see a reason
+>>> why people want to turn it off and get some random blind spots.
+> 
 
