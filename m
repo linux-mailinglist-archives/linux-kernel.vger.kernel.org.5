@@ -1,264 +1,201 @@
-Return-Path: <linux-kernel+bounces-161842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 029D78B5213
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:17:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285838B520E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2548F1C20F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:17:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C7D280DEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8078213AC5;
-	Mon, 29 Apr 2024 07:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC95C13FE7;
+	Mon, 29 Apr 2024 07:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jm8LKD+s";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xfNlBn4o";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CtT7dcQq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="N5/wMBiE"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILkP7k7U"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA36210A1D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CFD134BE;
+	Mon, 29 Apr 2024 07:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714375024; cv=none; b=H2REb9cQcqUNYK2AEwpnA1oLjoXnoNnzqysDu3szgUTbAPjxKr83hG60BzKhHfsxo+mhwaZpOJn9woBuVhOKsiaY45Jd7lvqLJMIR1ihiLMtOC941viv7AzhRkodeC1llIG8Q2B3Hc3Z6YjVeBHltwZFEFKiK5OgLISevgg6jcU=
+	t=1714374824; cv=none; b=QcB7gGjkComIGkkK+qUkiqVPK2BymbRggbGtgSAbMzTwrMbgc3ksbeijMdu8tPSeaen+opaDuPgX/K+1MoYvRUs1+X2m9IT/avM/9GPzXyVkbfNbdlOKdTR00lPpasslswHtOyJLDZ4oUK8oOnYMPO5SpF36lx/PDKAQbrpdGjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714375024; c=relaxed/simple;
-	bh=7SWyyj1OhWa5vxvghZJCLhlla1VEht7cYyK4SClYm2Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u2zmDiLlAELs1BL1iSA7qg/Hv8000usRBsXJ6e+M6Vx/9VE/y/WZxl6ngCe9rCpoOppOLrZ+of6VJVOaisM6lrQrXKvcObW8u0i4L6sfR54kA6aAKxCSYZPLjz51r1Xgmwc1cIA7bS2l1vZ9b+0rFrZ0aEPkxWLrjNbqcZ8ZX9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jm8LKD+s; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xfNlBn4o; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CtT7dcQq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=N5/wMBiE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A301A202FE;
-	Mon, 29 Apr 2024 07:16:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714375020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
-	b=jm8LKD+sp2NaZMl/jiS5I8w3CZddvw1USm2yp9bICZ/PBYxDzP+Y1gtLfhvnRbuK3O+/qF
-	mCjSt4QHTOQ1qECGXmFOx/jMUIGU9SzceQFX1m+iDkf0x+5f8W8X8AHzzmA3ohXbrcgEPq
-	nykikicC7/KRAgtDWfqWB7V09f/F9LU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714375020;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
-	b=xfNlBn4o5Kc+b1kxka2t77ABg7Amfex/GGl3kYgzG4xojIm+cVbmLmda3x/TCvHCBqig3V
-	tyO5HphGRNIQJMAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CtT7dcQq;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="N5/wMBiE"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714375019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
-	b=CtT7dcQqpmNZ743dQcCGpwy+1qIgHWiNRyorq31r7B9Cvj6kvs8CS7bWfaRx8xKDt34HsY
-	zjIdhf62lhjzDoblZ6sJ2uU6dhf1/yc9cAGt+HitLD7JGf6HHMaeMjxmx6a0metJLjvrkK
-	mBBiCdBkLmkgMsnrxnnQ99aYwnprF4k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714375019;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
-	b=N5/wMBiEMqBEzbH/2Rqyz1cU94cUUbGx6NXLp5UrCV/UoCMUxHyVUSyjg/mwDC1RjCorFu
-	8QBgihQC1pCxTiDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8610C138A7;
-	Mon, 29 Apr 2024 07:16:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qBmjH2tJL2ancgAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Mon, 29 Apr 2024 07:16:59 +0000
-Message-ID: <ecf30bde-f7a7-434f-8be0-352c376a96ee@suse.de>
-Date: Mon, 29 Apr 2024 09:16:59 +0200
+	s=arc-20240116; t=1714374824; c=relaxed/simple;
+	bh=+hqrct1glvL58HkQZQ62f7MQqOS2zEStZd8S2vqKT2A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fUKj58IfnotxCfLIpWe4xI+FdQaKoB/vSKfR4E9gElzKvOdcFl8ozoC0O91dwVJQjIa0ra6dpEf8qN0QfEyL7k/BadSV+k43Oy4XH+5AkOIvkh+XGkW/ZzLYIruUyZJR1mN2AYn17YpFC/g/QX+s/7rzohGTt9clW9Ib8pASBic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILkP7k7U; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so27963375e9.0;
+        Mon, 29 Apr 2024 00:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714374821; x=1714979621; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+hqrct1glvL58HkQZQ62f7MQqOS2zEStZd8S2vqKT2A=;
+        b=ILkP7k7Uq6hw9+PRDnk+1gbzT2LG6/1GGl6mq6GxhiAkcsY9FfkRFQuAL4heHIDDmn
+         CIesBEU9dJgSBpkkdOnvRqrbpU/aQ6tGgzkouSEo/U0vbFoLEs/3DSY+9bgEhjOcODFk
+         C7LUtfgvjO/vQHKTFElWNw7emV6ELvAjCspisUJEoMhpYwwx0xbxTs672ZGBjTHrTBat
+         YJ7vXL3Yn6fsmrbni4o1xeQBEI12VgYf3gpE/ILcoUyTS4nAQzloXLnKXY4iSp1ttenw
+         jH3Bnigr7m9hzwnR2VNZL26rGlHc6xnM0pJYidXRqZAzjk2zJfdh15ADontBtDB2buGQ
+         r92A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714374821; x=1714979621;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+hqrct1glvL58HkQZQ62f7MQqOS2zEStZd8S2vqKT2A=;
+        b=Omx0A2NRJuS3kzWM7IOxNLVdrmu8Q020JiF2sRa+idUUWYD4V0vCEDSNjLh0a3+Ilt
+         nlXXVDeSxLLX8PV+rLudHYIiZ/RGwptsgPzMH8ndn24vN70/yHJ6z/B2UjQnG8Zyi4UV
+         yydZ4hlQFnYnVKJNZMa7NHzNWnUFGTXQiHeBspR9sYYhcWKAeAYTSB5ZEMkQEf2wxI6f
+         XjIpm48kKVc8OaMbTtnu5huxBR6mzthJ2Vk0URuUdvaTGKMnn/Qj17pEnfJdqwbfILlf
+         XxxDu01kX638NuFwBPYik2greqYDTxHW9scE6D7wDB+5XQOUSylgaaaXpRc+qH4G32YS
+         T/5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUeEsM01ye77CWolQ/YV6dMYbeqKEXkujlRuLaPH3TKT3+gMn2s49G4srdNggqh2mlHNUjGMAkDBuG1TX0NPMPcTKdwHoUQKLuVP5R7PGsHMLyt6FJrrW41PsZDAgWydh6aE+oikWCa
+X-Gm-Message-State: AOJu0Yy4k7ViP0779JMhnq7ZrEk1NiA+X/X9ZVVQEEHoI2peGBwPdegy
+	GHhB8yGU3E2SwBd4lU9AIRWl8Mc5tJZ5+dwXtYsUOPz5Qh/6033C
+X-Google-Smtp-Source: AGHT+IHsnOgDmNCZDHXtkTu23Oi6Kkv6U6smYB4eXQYcS48Rr+6Ht7ybUGYjW3UEpoXwMQOT/fjbHA==
+X-Received: by 2002:a05:600c:458b:b0:41c:ab7:fa22 with SMTP id r11-20020a05600c458b00b0041c0ab7fa22mr3191722wmo.5.1714374820550;
+        Mon, 29 Apr 2024 00:13:40 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1c:c500:994e:fbde:478:1ce1? (p200300f6ef1cc500994efbde04781ce1.dip0.t-ipconnect.de. [2003:f6:ef1c:c500:994e:fbde:478:1ce1])
+        by smtp.gmail.com with ESMTPSA id a4-20020a5d5084000000b0034c6077c625sm7581519wrt.29.2024.04.29.00.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 00:13:40 -0700 (PDT)
+Message-ID: <9d1ac78951439bbcdc2f294713f55ee34e30f84e.camel@gmail.com>
+Subject: Re: [PATCH 0/3] iio: cleanup masklength usage
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Jonathan Cameron <jic23@kernel.org>, David Lechner
+ <dlechner@baylibre.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Shawn Guo <shawnguo@kernel.org>, Sascha
+ Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Fabio Estevam <festevam@gmail.com>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Date: Mon, 29 Apr 2024 09:17:18 +0200
+In-Reply-To: <20240428142343.5067c898@jic23-huawei>
+References: 
+	<20240425-b4-iio-masklength-cleanup-v1-0-d3d16318274d@baylibre.com>
+	 <2630ef8c8363b4fa772a2ff2c95cf115ad3c509d.camel@gmail.com>
+	 <CAMknhBGQB4MC8ejEs_uLgb=iKehXkoetgHjZnCvCKQbuua5kfA@mail.gmail.com>
+	 <20240428142343.5067c898@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: After suspend/resume cycle ASPEED VGA monitor suffers with "No
- Signal" state.
-To: Cary Garrett <cogarre@gmail.com>, airlied@redhat.com
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <8ce1e1cc351153a890b65e62fed93b54ccd43f6a.camel@gmail.com>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <8ce1e1cc351153a890b65e62fed93b54ccd43f6a.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -6.50
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A301A202FE
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-6.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,redhat.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim]
 
-Hi
+On Sun, 2024-04-28 at 14:23 +0100, Jonathan Cameron wrote:
+> On Fri, 26 Apr 2024 10:26:31 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+>=20
+> > On Fri, Apr 26, 2024 at 2:13=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail=
+com> wrote:
+> > >=20
+> > > On Thu, 2024-04-25 at 10:03 -0500, David Lechner wrote:=C2=A0=20
+> > > > While working on other patches I noticed that a few drivers are set=
+ting
+> > > > the masklength field of struct iio_dev even though it is marked as
+> > > > [INTERN]. It looks like maybe this was not always the case, but we =
+can
+> > > > safely clean it up now without breaking anything.
+> > > >=20
+> > > > ---
+> > > > David Lechner (3):
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: adc: ad7266: don't set maskleng=
+th
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: adc: mxs-lradc-adc: don't set m=
+asklength
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: buffer: initialize masklength a=
+ccumulator to 0
+> > > >=20
+> > > > =C2=A0drivers/iio/adc/ad7266.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | 1 -
+> > > > =C2=A0drivers/iio/adc/mxs-lradc-adc.c=C2=A0=C2=A0 | 1 -
+> > > > =C2=A0drivers/iio/industrialio-buffer.c | 2 +-
+> > > > =C2=A03 files changed, 1 insertion(+), 3 deletions(-)
+> > > > ---
+> > > > base-commit: b80ad8e3cd2712b78b98804d1f59199680d8ed91
+> > > > change-id: 20240425-b4-iio-masklength-cleanup-86b632b19901
+> > > > =C2=A0
+> > >=20
+> > > Hi David,
+> > >=20
+> > > Nice cleanup. The patches look good to me but there's one thing missi=
+ng
+> > > :). As you
+> > > correctly noted, the field should be internal to the IIO core and dri=
+vers
+> > > should not
+> > > touch it. Hence, you need to make sure not driver is using it so we c=
+an
+> > > move it into
+> > > struct iio_dev_opaque [1]. That's the place all the intern fields sho=
+uld,
+> > > eventually,
+> > > end up.
+> > >=20
+> > > Now, quite some drivers in the trigger handler will read the maskleng=
+th
+> > > for looping
+> > > with for_each_set_bit(). Hence, the straight thing would be an helper=
+ to
+> > > get it.
+> > > Maybe there's a clever way...
+> > >=20
+> > > I know this is more work than what you had in mind but I think it sho=
+uld
+> > > be fairly
+> > > simple (hopefully) and since you started it :), maybe we can get the =
+whole
+> > > thing done
+> > > and remove another [INTERN] member from the iio_dev struct.
+> > >=20
+> > > [1]:
+> > > https://elixir.bootlin.com/linux/latest/source/include/linux/iio/iio-=
+opaque.h#L42
+> > >=20
+> > > - Nuno S=C3=A1=C2=A0=20
+> >=20
+> > Sounds like fun. :-p
+> >=20
+> > I will look into it.
+>=20
+> I think this one might be miss marked as [INTERN]. It should be constant =
+from
+> the driver
+> point of view, but given active_scan_masks is meant to be visible to the
+> driver,
+> it's length should probably be as well.
+>=20
 
-Am 23.04.24 um 21:51 schrieb Cary Garrett:
-> Hello,
->
-> An Aspeed VGA monitor, in my case AST 2400, after a suspend/resume
-> cycle suffers with a "No Signal" state. This is also true of a
-> IPMI/BMC remote console. To restore the "Signal" state requires
-> a reboot or the following workaround.
->
-> To restore the "Signal" state without rebooting issue the
-> following commands from a SSH session or serial console
-> after every suspend/resume cycle:
->
->    sudo modprobe -r ast
->    sudo modprobe ast
->    
-> This a home media server which is updated infrequently, so
-> I am unable offer any guidance as to when this issue started
-> occurring.
+Yeah, that did crossed my mind. I guess we should just make it [DRIVER] the=
+n
+(likely with RO statement).
 
-Just to clarify, suspend/resume did restore the display in earlier versions?
+> Sure every driver should be able to trivially work this out for themselve=
+s,
+> but
+> do we care about stopping them using this?
+>=20
+> It might be worth some nice iterator wrappers with names like
+> iio_for_each_active_channel() though I'd expect those to still be accessi=
+ng
+> these
 
-Best regards
-Thomas
+That looks like a good idea. It would make it more clear that member is not=
+ to
+be directly accessed.
 
->
-> Regards, Cary Garrett
->
->
->
-> Current environment:
->
-> uname -a:
-> Linux xxxxxx-server 6.8.7-arch1-1 #1 SMP PREEMPT_DYNAMIC Wed, 17 Apr 2024 15:20:28 +0000 x86_64
-> GNU/Linux
->
-> modinfo:
-> filename:       /lib/modules/6.8.7-arch1-1/kernel/drivers/gpu/drm/ast/ast.ko.zst
-> license:        GPL and additional rights
-> description:    AST
-> author:         Dave Airlie
-> firmware:       ast_dp501_fw.bin
-> srcversion:     7E39455BCA2D11E968D8B2B
-> alias:          pci:v00001A03d00002010sv*sd*bc03sc*i*
-> alias:          pci:v00001A03d00002000sv*sd*bc03sc*i*
-> depends:        i2c-algo-bit
-> retpoline:      Y
-> intree:         Y
-> name:           ast
-> vermagic:       6.8.7-arch1-1 SMP preempt mod_unload
-> sig_id:         PKCS#7
-> signer:         Build time autogenerated kernel key
-> sig_key:        76:06:C7:84:BC:2F:C6:38:38:61:C1:6F:32:D5:6A:03:88:22:68:1C
-> sig_hashalgo:   sha512
-> signature:      30:66:02:31:00:AD:83:EB:D2:9B:91:E6:C3:9B:52:89:51:4B:BB:06:
-> 		DE:D7:44:A6:6B:07:92:AA:75:2A:0B:20:26:73:58:09:DF:C3:86:C6:
-> 		FC:B7:D4:13:5F:5D:35:4D:67:89:73:0E:C2:02:31:00:C3:98:99:67:
-> 		B4:74:02:5C:6D:D3:81:13:D4:9F:B4:F4:CF:37:8A:7C:84:8C:73:BF:
-> 		DF:4D:D5:34:B0:0A:CE:0E:59:67:28:98:07:BF:D7:FA:68:B3:37:43:
-> 		02:1C:59:3E
-> parm:           modeset:Disable/Enable modesetting (int)
->
-> lspci:
-> 04:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 30) (prog-if
-> 00 [VGA controller])
-> 	DeviceName: Onboard VGA
-> 	Subsystem: Super Micro Computer Inc Device 0804
-> 	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR-
-> FastB2B- DisINTx-
-> 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR-
-> <PERR- INTx-
-> 	Interrupt: pin A routed to IRQ 16
-> 	Region 0: Memory at f6000000 (32-bit, non-prefetchable) [size=16M]
-> 	Region 1: Memory at f7000000 (32-bit, non-prefetchable) [size=128K]
-> 	Region 2: I/O ports at d000 [size=128]
-> 	Expansion ROM at 000c0000 [virtual] [disabled] [size=128K]
-> 	Capabilities: [40] Power Management version 3
-> 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
-> 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> 	Capabilities: [50] MSI: Enable- Count=1/4 Maskable- 64bit+
-> 		Address: 0000000000000000  Data: 0000
-> 	Kernel driver in use: ast
-> 	Kernel modules: ast
->
-
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+- Nuno S=C3=9Fa
 
 
