@@ -1,194 +1,121 @@
-Return-Path: <linux-kernel+bounces-161717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6A398B5019
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:56:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB92F8B501E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:04:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 667021F2115C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:56:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86ADD282C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A859947B;
-	Mon, 29 Apr 2024 03:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7499468;
+	Mon, 29 Apr 2024 04:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2pAx3w3o"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K+PalhWm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6696A8479;
-	Mon, 29 Apr 2024 03:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA918F7A;
+	Mon, 29 Apr 2024 04:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714362988; cv=none; b=Vz+OuSukuTFFc/MtrMG9iP84OZS/rbpKByD/l2XReyFc03+CdSyO2l7qMlixGkEbx+ESa1pzZw5vLwyFBQnbSxzYrb/cRaXb958m1jwlXMezi66GC8OLeVHKQHJp/PzQ68y3jIFNXm58eD1/b14vnOXRap5YkL8QwU36q5YzE0A=
+	t=1714363490; cv=none; b=D+WU3bDi2daxR9HC9xS6fXbeZnhmbxJN//EzrNtG/kFV1zpYGrq4I1HWXsZkX7OHdM5EXL/RIdbAtfF8op6IhZqYeQYKkkcTXUcTnQS/CQc8WCISiRex5h1mT4vJ8aRAN8JzpZXDPn7zEdpypeijmoF9PfOtwQSqjl//5YlxUx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714362988; c=relaxed/simple;
-	bh=XJS/wNKVpkKXwu4FK8kulhTLv8pmwsUK//7rgNoEvY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H+p1ZHggydClgO9Ld6n1+2zsDmRfUL+g8dLniby8SQ7SmlIKrs67sbTiqDODvVPtzt1aAZrH5JnXqbFCbuL2w+0B54JhwpYpaHPZgZ/t/C8RE69lGg2e2SzqjTH8atVANt5tNNdfwXUivdDyvNWvvRBReATCWqfiKp2aMyw3Mos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=2pAx3w3o; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=xQ7whOK409YxkR8Cv9BM5mtiIqTovmirR+KC4rgl/J4=; b=2pAx3w3ow/jnTJlSmv8QmTHjrD
-	B0RT8e/LrlDCHLWFAauIURbiHtBo+n1AMqZ0znWx0rHthWQmRoWpRYeD9dpj+QuAjDhp/F4TxbBAF
-	I6A/DVak/OEMXkZ9qPyP3H2/yt4eYjXX0Y50CJVs7y2ulSG4qLDVQ9v3sq0wkMN2jRAON4vj+KPT3
-	pXMwc8L5RIf9eyISFTe3R0xGslYbHA8mWkkxnLji1Vc9ngrStLCwdiyn+tDSjY/IUyuwvUmDqP3Jj
-	A7YxDlR19mv4ZyqtPG2L2BLIfmUoQ1GZzX8XJSTw0a0+krFXQp4VTaNJcUgBM4nnkmSE/kUk1LcW1
-	mCoQarMg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1I7k-00000001NGG-2qwx;
-	Mon, 29 Apr 2024 03:56:16 +0000
-Date: Sun, 28 Apr 2024 20:56:16 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Vlastimil Babka <vbabka@suse.cz>,
-	Sean Christopherson <seanjc@google.com>,
-	Matthew Wilcox <willy@infradead.org>, ziy@nvidia.com
-Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, djwong@kernel.org,
-	brauner@kernel.org, david@fromorbit.com, chandan.babu@oracle.com,
-	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-	hare@suse.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 05/11] mm: do not split a folio if it has minimum
- folio order requirement
-Message-ID: <Zi8aYA92pvjDY7d5@bombadil.infradead.org>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <20240425113746.335530-6-kernel@pankajraghav.com>
- <Ziq4qAJ_p7P9Smpn@casper.infradead.org>
- <Zir5n6JNiX14VoPm@bombadil.infradead.org>
- <Ziw8w3P9vljrO9JV@bombadil.infradead.org>
- <Zi2e7ecKJK6p6ERu@bombadil.infradead.org>
+	s=arc-20240116; t=1714363490; c=relaxed/simple;
+	bh=iZm0usd8atUAN8OAiOAVACJyVWUpT+dQO9Unn+MZ+fI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LP+EB5ReyugI9rNmei9CcOmnoq9y32U3BM/WErajAZ+4bGdAiPr+EDwtlGh3qSIaMy0xEx6f7zLDqmHpO0tDoonykmIZfHYJNGUtySw+54i1jpIqkvB3It+irrDTkw65yE59CUhhOMjqz7fXTGX+LsmcE3Vc2cx/Ve5+nOEQhUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K+PalhWm; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714363489; x=1745899489;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iZm0usd8atUAN8OAiOAVACJyVWUpT+dQO9Unn+MZ+fI=;
+  b=K+PalhWme/5h3T9FhseMQmTtBEpgCtfiqDdDSLZVdik9IHvz2nvg067J
+   BVgUbirg1j5uVyEQgTp2H4iwOMx/GEcF/uUCWyik6VNo6s9hBuzLwAgmK
+   SdZCwSyYMva0TTpTIc4KzJ4vU/EOQYgpxArjjAEp5qWl/fgk7vAoT2E35
+   SqTIOJQCGiSQmXtfXYHvc4pBVz44/0egWwb6v1VCh3NQ6sCDk9G8GFleB
+   a+N7gDa82dACD3MocyjCgxfQ7VcZ+fwLBRAIGK2terbLLvq7w7iflDk/O
+   cSHY48DbAJfNy7OlLlrDjfxMEdozwTilhdMaGy1Rfm/A/yo15FnPqnEBH
+   w==;
+X-CSE-ConnectionGUID: Fec77ktfQWekzgtolE1dJQ==
+X-CSE-MsgGUID: KpTrUnZYSUukcL7Zl693kQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="20629045"
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="20629045"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:04:48 -0700
+X-CSE-ConnectionGUID: I/R3vOiNSPqt7Vk/Cr+dxw==
+X-CSE-MsgGUID: ZIUStbLiQf2ce+1tFur4UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="30442671"
+Received: from kscheema-mobl.amr.corp.intel.com (HELO skuppusw-mobl3.amr.corp.intel.com) ([10.251.17.13])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:04:48 -0700
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2] ACPI: Move acpi_blacklisted() declaration to asm/acpi.h
+Date: Sun, 28 Apr 2024 21:04:41 -0700
+Message-Id: <20240429040441.748479-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zi2e7ecKJK6p6ERu@bombadil.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 27, 2024 at 05:57:17PM -0700, Luis Chamberlain wrote:
-> On Fri, Apr 26, 2024 at 04:46:11PM -0700, Luis Chamberlain wrote:
-> > On Thu, Apr 25, 2024 at 05:47:28PM -0700, Luis Chamberlain wrote:
-> > > On Thu, Apr 25, 2024 at 09:10:16PM +0100, Matthew Wilcox wrote:
-> > > > On Thu, Apr 25, 2024 at 01:37:40PM +0200, Pankaj Raghav (Samsung) wrote:
-> > > > > From: Pankaj Raghav <p.raghav@samsung.com>
-> > > > > 
-> > > > > using that API for LBS is resulting in an NULL ptr dereference
-> > > > > error in the writeback path [1].
-> > > > >
-> > > > > [1] https://gist.github.com/mcgrof/d12f586ec6ebe32b2472b5d634c397df
-> > > > 
-> > > >  How would I go about reproducing this?
-> 
-> Well so the below fixes this but I am not sure if this is correct.
-> folio_mark_dirty() at least says that a folio should not be truncated
-> while its running. I am not sure if we should try to split folios then
-> even though we check for writeback once. truncate_inode_partial_folio()
-> will folio_wait_writeback() but it will split_folio() before checking
-> for claiming to fail to truncate with folio_test_dirty(). But since the
-> folio is locked its not clear why this should be possible.
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 83955362d41c..90195506211a 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3058,7 +3058,7 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->  	if (new_order >= folio_order(folio))
->  		return -EINVAL;
->  
-> -	if (folio_test_writeback(folio))
-> +	if (folio_test_dirty(folio) || folio_test_writeback(folio))
->  		return -EBUSY;
->  
->  	if (!folio_test_anon(folio)) {
+The function acpi_blacklisted() is defined only when CONFIG_X86 is
+enabled and is only used by X86 arch code. To align with its usage and
+definition conditions, move its declaration to asm/acpi.h
 
-I wondered what code path is causing this and triggering this null
-pointer, so I just sprinkled a check here:
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
 
-	VM_BUG_ON_FOLIO(folio_test_dirty(folio), folio);
+Changes since v1:
+- v1 link: https://lore.kernel.org/lkml/ZhQS6uYmpsxFD3gn@smile.fi.intel.com/T/
+- Changed the title to "ACPI: Move acpi_blacklisted() declaration to asm/acpi.h"
+- Removed the declaration from include/linux/acpi.h
 
-The answer was:
+ arch/x86/include/asm/acpi.h | 2 ++
+ include/linux/acpi.h        | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-kcompactd() --> migrate_pages_batch()
-                  --> try_split_folio --> split_folio_to_list() -->
-		       split_huge_page_to_list_to_order()
-
-Since it took running fstests generic/447 twice to reproduce the crash
-with a minorder and 16k block size, modified generic/447 as followed and
-it helps to speed up the reproducer with just running the test once:
-
-diff --git a/tests/generic/447 b/tests/generic/447
-index 16b814ee7347..43050b58e8ba 100755
---- a/tests/generic/447
-+++ b/tests/generic/447
-@@ -36,6 +39,15 @@ _scratch_mount >> "$seqres.full" 2>&1
- testdir="$SCRATCH_MNT/test-$seq"
- mkdir "$testdir"
+diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+index f896eed4516c..5af926c050f0 100644
+--- a/arch/x86/include/asm/acpi.h
++++ b/arch/x86/include/asm/acpi.h
+@@ -56,6 +56,8 @@ static inline void disable_acpi(void)
  
-+runfile="$tmp.compaction"
-+touch $runfile
-+while [ -e $runfile ]; do
-+	echo 1 > /proc/sys/vm/compact_memory
-+	sleep 10
-+done &
-+compaction_pid=$!
+ extern int acpi_gsi_to_irq(u32 gsi, unsigned int *irq);
+ 
++extern int acpi_blacklisted(void);
 +
-+
- # Setup for one million blocks, but we'll accept stress testing down to
- # 2^17 blocks... that should be plenty for anyone.
- fnr=20
-@@ -69,6 +81,8 @@ _scratch_cycle_mount
- echo "Delete file1"
- rm -rf $testdir/file1
+ static inline void acpi_noirq_set(void) { acpi_noirq = 1; }
+ static inline void acpi_disable_pci(void)
+ {
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 34829f2c517a..576e75b4529a 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -421,7 +421,6 @@ extern char *wmi_get_acpi_device_uid(const char *guid);
  
-+rm -f $runfile
-+wait > /dev/null 2>&1
- # success, all done
- status=0
- exit
-
-And I verified that moving the check only to the migrate_pages_batch()
-path also fixes the crash:
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 73a052a382f1..83b528eb7100 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1484,7 +1484,12 @@ static inline int try_split_folio(struct folio *folio, struct list_head *split_f
- 	int rc;
+ extern char acpi_video_backlight_string[];
+ extern long acpi_is_video_device(acpi_handle handle);
+-extern int acpi_blacklisted(void);
+ extern void acpi_osi_setup(char *str);
+ extern bool acpi_osi_is_win8(void);
  
- 	folio_lock(folio);
-+	if (folio_test_dirty(folio)) {
-+		rc = -EBUSY;
-+		goto out;
-+	}
- 	rc = split_folio_to_list(folio, split_folios);
-+out:
- 	folio_unlock(folio);
- 	if (!rc)
- 		list_move_tail(&folio->lru, split_folios);
+-- 
+2.34.1
 
-However I'd like compaction folks to review this. I see some indications
-in the code that migration can race with truncation but we feel fine by
-it by taking the folio lock. However here we have a case where we see
-the folio clearly locked and the folio is dirty. Other migraiton code
-seems to write back the code and can wait, here we just move on. Further
-reading on commit 0003e2a414687 ("mm: Add AS_UNMOVABLE to mark mapping
-as completely unmovable") seems to hint that migration is safe if the
-mapping either does not exist or the mapping does exist but has
-mapping->a_ops->migrate_folio so I'd like further feedback on this.
-Another thing which requires review is if we we split a folio but not
-down to order 0 but to the new min order, does the accounting on
-migrate_pages_batch() require changing?  And most puzzling, why do we
-not see this with regular large folios, but we do see it with minorder ?
-
-  Luis
 
