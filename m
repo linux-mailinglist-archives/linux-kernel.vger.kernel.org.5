@@ -1,128 +1,122 @@
-Return-Path: <linux-kernel+bounces-162907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 816B38B61ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22CB68B61F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 227431F248E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:21:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B33201F24DA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71B513B5B5;
-	Mon, 29 Apr 2024 19:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B3313B7A7;
+	Mon, 29 Apr 2024 19:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="UwohD1fc";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="UwohD1fc"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jc0JoP+e"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EAB13AA3B;
-	Mon, 29 Apr 2024 19:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0923113AA3B;
+	Mon, 29 Apr 2024 19:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714418415; cv=none; b=kI3P9Gf1IfEKAizhZFDRnlTFp5Uql2l0wwR0UjjP4m7IWtacvTpiodAwJb4Z1JWnbZkuI22fdBTUr7Lqw0pCI3+eTiEgezO2t81YbCF7eCipAl9+3R4bvFM5GepLQEA8SBfLBHOGXJ9NLqeIc/hZton9iE/1hqTHj/2PaRjHS2g=
+	t=1714418496; cv=none; b=lbePcjylgjlyZkbmJM01kk1+M9d0CDZOYK1cWO7DC4L5bI/RC03LxkYKEwpHvulGmHCsh5mmlAK8gBcuJes2Fn+VT1mtYx2KATiuIw3ZMEJ9J5RMkTTbAd2XbXk36siEveHe08zL2mQm35Jbp1YkmgQAzTcaDBmPAEKcNfj+AhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714418415; c=relaxed/simple;
-	bh=xexf8TmIz8amBZcDRUsUdrq6y5hbq/90WNiHb4InD2w=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=HQ2co7j49uzGSA94Q5Dx/KaTQsIV5Qx6hNMT8+jh9zFi8+282kPejW+EyyAABG91k3GGLrjvKHarr2GO6z8/AerGtvCzRyEAIjzMn23KMd0zNSE44tIrp/CkS8BF91QJKdPxK6I6/RQlLy1btUDRTdQg1KJMEjI5z/+nfFbAbeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=UwohD1fc; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=UwohD1fc; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1714418412;
-	bh=xexf8TmIz8amBZcDRUsUdrq6y5hbq/90WNiHb4InD2w=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=UwohD1fctUw78cKYTpyRHNLcWHgMErGXHxsRfknqXR7CoogyqqgOJI2o3lcH9S2pP
-	 tEbKTBRgNqqoLDFP44oiTpRijS1z7hPu2T2lXu+lVaBNKpHxOIXzgbJjeNwBItMqGu
-	 ww7Vx1vW3EOR/fqOK9egHaBkP6xtiyAinIC7yDgk=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8E9C8128167C;
-	Mon, 29 Apr 2024 15:20:12 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id KOa4eJ2Jzaar; Mon, 29 Apr 2024 15:20:12 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1714418412;
-	bh=xexf8TmIz8amBZcDRUsUdrq6y5hbq/90WNiHb4InD2w=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=UwohD1fctUw78cKYTpyRHNLcWHgMErGXHxsRfknqXR7CoogyqqgOJI2o3lcH9S2pP
-	 tEbKTBRgNqqoLDFP44oiTpRijS1z7hPu2T2lXu+lVaBNKpHxOIXzgbJjeNwBItMqGu
-	 ww7Vx1vW3EOR/fqOK9egHaBkP6xtiyAinIC7yDgk=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id D035D128164D;
-	Mon, 29 Apr 2024 15:20:11 -0400 (EDT)
-Message-ID: <1bbda065d2089acaca9ab88a3938234a60e780f1.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 6.9-rc6
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
-	 <torvalds@linux-foundation.org>
-Cc: linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel
-	 <linux-kernel@vger.kernel.org>
-Date: Mon, 29 Apr 2024 15:20:10 -0400
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1714418496; c=relaxed/simple;
+	bh=jp0/hhNkqyvc+wcHZcmBPELue9y/n98F9TDt18ONk+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lgAx6T7XRs0SE5R+TzH6KJH76qxmhcQTX/1yTowdZkvLepFo4m0zYpHaHj424KDCrbXdT3makDa/6hufNn8PzRPT2k3siMAjduvbPK5F05Z9gOMkv6kAVpdWg6AUs9bTg7VtCnLLFOob8F+e9QNnNbnxviwZhjjmr9DHRMF3wkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Jc0JoP+e; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=neJzdRz9MNUmJ0r+KdRG51iWaNXVEV9Q2WvkNbVMuAo=; b=Jc0JoP+eKlc+BEPzMeneXAxsma
+	j/OYXl9xWbSVrgWEs60bJmZmC5ymQ6SxfijEAStU0JqYGSMrjhQl6oNoCCKdGKJWUrSWku+ucHqTd
+	PX1zm4qHityOpwJAN4lQlbZteHHAf1yVdNPaFECdf0EE0gXFMv7iJgeYnyrdgXnQBOwxRVi4j4q1K
+	+NWVRPqo4iabfKD59KHwsIpvkgf1QQuiO/oAQl1F9jEZlKEvQhCb+NCFSPzmwkpI9i7cev5c5lHkB
+	6zsNABrfOfPUa8ebmNG6SglJtXXI0vKLoXXI5iLW3FpLMd/2fpU/w572XWrQS4/s+eomGeYpFOSvw
+	sqIfsjmw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s1WYv-0000000D9vn-12aN;
+	Mon, 29 Apr 2024 19:21:17 +0000
+Date: Mon, 29 Apr 2024 20:21:17 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 08/12] nfs: drop usage of folio_file_pos
+Message-ID: <Zi_zLQqpJ6PRX7HD@casper.infradead.org>
+References: <20240429190500.30979-1-ryncsn@gmail.com>
+ <20240429191138.34123-1-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429191138.34123-1-ryncsn@gmail.com>
 
-Minor core fix to prevent the sd driver printing the stream count every
-time we rescan and instead print only if it's changed
+On Tue, Apr 30, 2024 at 03:11:34AM +0800, Kairui Song wrote:
+> +++ b/fs/nfs/file.c
+> @@ -588,7 +588,7 @@ static vm_fault_t nfs_vm_page_mkwrite(struct vm_fault *vmf)
+>  
+>  	dfprintk(PAGECACHE, "NFS: vm_page_mkwrite(%pD2(%lu), offset %lld)\n",
+>  		 filp, filp->f_mapping->host->i_ino,
+> -		 (long long)folio_file_pos(folio));
+> +		 (long long)folio_pos(folio));
 
-The patch is available here:
+Yes, we can't call page_mkwrite() on a swapcache page.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> +++ b/fs/nfs/nfstrace.h
+> @@ -960,7 +960,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event,
+>  			__entry->fileid = nfsi->fileid;
+>  			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
+>  			__entry->version = inode_peek_iversion_raw(inode);
+> -			__entry->offset = folio_file_pos(folio);
+> +			__entry->offset = folio_pos(folio);
+>  			__entry->count = nfs_folio_length(folio);
+>  		),
+>  
+> @@ -1008,7 +1008,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event_done,
+>  			__entry->fileid = nfsi->fileid;
+>  			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
+>  			__entry->version = inode_peek_iversion_raw(inode);
+> -			__entry->offset = folio_file_pos(folio);
+> +			__entry->offset = folio_pos(folio);
 
-The short changelog is:
+These two I don't know about.
 
-John Garry (1):
-      scsi: sd: Only print updates to permanent stream count
+> +++ b/fs/nfs/write.c
+> @@ -281,7 +281,7 @@ static void nfs_grow_file(struct folio *folio, unsigned int offset,
+>  	end_index = ((i_size - 1) >> folio_shift(folio)) << folio_order(folio);
+>  	if (i_size > 0 && folio_index(folio) < end_index)
+>  		goto out;
+> -	end = folio_file_pos(folio) + (loff_t)offset + (loff_t)count;
+> +	end = folio_pos(folio) + (loff_t)offset + (loff_t)count;
 
-And the diffstat:
+This one concerns me.  Are we sure we can't call nfs_grow_file()
+for a swapfile?
 
- drivers/scsi/sd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> @@ -2073,7 +2073,7 @@ int nfs_wb_folio_cancel(struct inode *inode, struct folio *folio)
+>   */
+>  int nfs_wb_folio(struct inode *inode, struct folio *folio)
+>  {
+> -	loff_t range_start = folio_file_pos(folio);
+> +	loff_t range_start = folio_pos(folio);
+>  	loff_t range_end = range_start + (loff_t)folio_size(folio) - 1;
 
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 58fdf679341d..65cdc8b77e35 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3120,6 +3120,7 @@ static void sd_read_io_hints(struct scsi_disk *sdkp, unsigned char *buffer)
- {
- 	struct scsi_device *sdp = sdkp->device;
- 	const struct scsi_io_group_descriptor *desc, *start, *end;
-+	u16 permanent_stream_count_old;
- 	struct scsi_sense_hdr sshdr;
- 	struct scsi_mode_data data;
- 	int res;
-@@ -3140,12 +3141,13 @@ static void sd_read_io_hints(struct scsi_disk *sdkp, unsigned char *buffer)
- 	for (desc = start; desc < end; desc++)
- 		if (!desc->st_enble || !sd_is_perm_stream(sdkp, desc - start))
- 			break;
-+	permanent_stream_count_old = sdkp->permanent_stream_count;
- 	sdkp->permanent_stream_count = desc - start;
- 	if (sdkp->rscs && sdkp->permanent_stream_count < 2)
- 		sd_printk(KERN_INFO, sdkp,
- 			  "Unexpected: RSCS has been set and the permanent stream count is %u\n",
- 			  sdkp->permanent_stream_count);
--	else if (sdkp->permanent_stream_count)
-+	else if (sdkp->permanent_stream_count != permanent_stream_count_old)
- 		sd_printk(KERN_INFO, sdkp, "permanent stream count = %d\n",
- 			  sdkp->permanent_stream_count);
- }
-
+Likewise here.  Are we absolutely certain that swap I/O can't call this
+function?
 
