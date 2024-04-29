@@ -1,219 +1,159 @@
-Return-Path: <linux-kernel+bounces-162426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544BC8B5B08
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:13:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FECE8B5B0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:14:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C02091F2192D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:13:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92EB92851BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31BC7BB07;
-	Mon, 29 Apr 2024 14:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500957BAF4;
+	Mon, 29 Apr 2024 14:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRi/v7m6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d93copbI"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1599468;
-	Mon, 29 Apr 2024 14:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B90877624
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714400001; cv=none; b=ri/jecn9OnSYSciJF5a7k406M++DuHJwpD6r8qWSj8H1wwTlRUuuOqlwWVay5RT5S72D8JmSAhNGEngFxNeaccs399Esxga5U1o6WiIqHDaGNx2P1JzBtGu1caCv49cte6kWwir7aZRiVxqRVptmoVtglBcWbSglwWPO6QHyYek=
+	t=1714400032; cv=none; b=e45TplnSLs9AHro+TNMP9lcGpTS3zIFOuq68npb3kVKHOhIFdNaeXtfvwT0RO6CFQF9pnm2znHBCvGhOJgI1Pp0ByllI/80SKJwFNpUv22JQuKNTO0fF2JGhksNKpTHEIZABkmXAMnjF4QAUH5dfB8J93NXQcBX5t6vm+mDirmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714400001; c=relaxed/simple;
-	bh=618JHK33NfWpe17uC+zkMyziNzW0BIM5OKg4SY19Z4o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iHLdib8hjmK1JNF2wnJh0whtn4eYBpY5xMML8bh3Jdv2zXydXCma8kToWMueceahc+/WAHv7DcW1WJ50prkjqxuLdf+mW6Q+Ne2sY6Bde+rJt1dL6gInTRV60WOwydEQUYApj1g+zRlk2SsnvnfV9IgtzUMwGmM3XC5vwKZXpYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pRi/v7m6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A06CDC113CD;
-	Mon, 29 Apr 2024 14:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714400001;
-	bh=618JHK33NfWpe17uC+zkMyziNzW0BIM5OKg4SY19Z4o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pRi/v7m69mn8YjGwqv5JxC0uIfVArly6v1eFC5p2vwvEERWe47HOeeZv9VFHvg8oy
-	 ceOoJLDgAWB8NlyggIdoUfXpf1IdFvvdtvX1xqGlhs1ymXqGrJuILz5ZgDqb/Tb3uY
-	 cZZTFB3BZ5736Z9/wwc0OD55Qg+f7JhJakp3ufd5XubEM8sNCYpUvY+OdBrmc1F0T2
-	 STml+I0UGIK4YMkQHmzKPdt4RdL/3i3OfBUfYRSkK0yPNlS4aKkoq9NQ9oR09J5mbx
-	 mrMxE6GeYQQOG68nIxBIaH1GiHVidZGwFgN8xHiWQcfe93DuacfCx8pjkSOFPVG1Co
-	 8ieLALYIWNNMQ==
-Message-ID: <c3531f5f-7aaa-4363-8bfe-ac90521d7a0e@kernel.org>
-Date: Mon, 29 Apr 2024 17:13:13 +0300
+	s=arc-20240116; t=1714400032; c=relaxed/simple;
+	bh=xKAoabt7HJtasDcyDuElL7qQIzLgjnvvhXs1tJbhWpU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eKG/uiF3btEYaDhl/gylkm8XvPQeVgux2c9DvuHil/I1u7dOQWu+xH7UJZJimPSzWwlQAYNphtqvIYMx3+7r0yfZYeZvFk3V6wXmfLzNXhpb4pryDPJF/csLTsyHslQ5nLmjbCYJZY3bvLn02Q/rY8DqLxvKx2rJFpu2+49AZ5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d93copbI; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so6301107e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1714400029; x=1715004829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Ec7NC0pFEZ/zoqQiA/5SSHoiiFKKBKLCAaWzxjAkDI=;
+        b=d93copbIzgS8zk7NJ8+d5dWiTSo0QHTCPr0f7B8kGcMU/aQYwU8lH/kl2rSQxUa5TR
+         yvKtWYwiyXgo28IugM2wqJA82MOOnuCagBMfwaRilwO0k/NUDYTFRwYavomBhS+JV60X
+         9ZiTIJJWZ053VGhvo5fGADwqWxO0Yyp7X5E3YhhGmHEbkIDTkaFWBJxOXDBUfcJpJJwn
+         2wcwKBd4clCYLIBxz5GkXLXWOhK3rJv5jQFJDJsXlZ2TwRFF9Ss10QuZVvD04KdHQMrQ
+         1qiP+AsGa6uocS1Kd0WjMCqbHmiXsUPA3+sDiDOpvI9eBHx90LFexNSrlkt1snJv4MhI
+         HXEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714400029; x=1715004829;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Ec7NC0pFEZ/zoqQiA/5SSHoiiFKKBKLCAaWzxjAkDI=;
+        b=D92NOILvKaGlNEjezEUh61IyrvaTwIPNEuq0qQjaUQM4Sa7Q95jY2RD4GZfX+H02Tf
+         d7G4svevbHSHYlS1Nc8REERYoqnHqd0/+F0yCtNERj3/cptQwE9Mvf1G1o8QHtStWGLD
+         4ipGwohF9TjKK9P+s2tWvipcg/2oNagMPz/zJP7IlMDbP4gOJqrH+CbNyQMmvSIcK3k6
+         +Swozh1UkKGh0A1/hnITAM3qr+r780nNdw8b5poNu7rXes7XgBOZfCbFaCGwasbPvJMX
+         NRtt0LhqGWkW6OK3qsQ+hOu9op26u4ACHEvpqCKSf7pL9+KGuxFafvmGsqRMzmo4CbMG
+         5wWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXjYAGet2JUZIXSd1jPHW592nbUehjUtGYQMsnETcNtjA4mESmqlr2f2BP1UUesSosh9CR4dqekKUfRMA4YuASUAcuv/mLWgF+tJENb
+X-Gm-Message-State: AOJu0YwJ6RUV3nlpZM+AE4cURAwLznB4G79dlZHzkrPdS8IQARoSdZ26
+	Duk77nLRz2WECQWVA8DsciyqH1SQCkw5hdQdacYJVjXgrpRIN54TYrzmQxzRp8M=
+X-Google-Smtp-Source: AGHT+IGMLSEqq6+wXjNamWs7eYYCI7GGNtL8BGQKcnsWBs+om6N+6EkM2NWIl4R/VEb8qXYEufbvKg==
+X-Received: by 2002:a05:6512:3e29:b0:516:d1bd:7743 with SMTP id i41-20020a0565123e2900b00516d1bd7743mr7894085lfv.64.1714400028653;
+        Mon, 29 Apr 2024 07:13:48 -0700 (PDT)
+Received: from localhost (host-87-1-234-99.retail.telecomitalia.it. [87.1.234.99])
+        by smtp.gmail.com with ESMTPSA id kn9-20020a170906aa4900b00a534000d525sm13978971ejb.158.2024.04.29.07.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 07:13:48 -0700 (PDT)
+From: Andrea della Porta <andrea.porta@suse.com>
+X-Google-Original-From: Andrea della Porta <aporta@suse.de>
+Date: Mon, 29 Apr 2024 16:13:50 +0200
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dave.stevenson@raspberrypi.com,
+	Stefan Wahren <stefan.wahren@i2se.com>
+Subject: Re: [PATCH v2 15/15] ARM: dts: bcm2711: add bcm2711-dma node
+Message-ID: <Zi-rHv_jeEJA9AUv@apocalypse>
+Mail-Followup-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andrea della Porta <andrea.porta@suse.com>,
+	Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Saenz Julienne <nsaenz@kernel.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dave.stevenson@raspberrypi.com,
+	Stefan Wahren <stefan.wahren@i2se.com>
+References: <cover.1710226514.git.andrea.porta@suse.com>
+ <c1ef1ba7cd9153d607e6130277e560b139056fd9.1710226514.git.andrea.porta@suse.com>
+ <4a63aa94-e8b4-4282-9622-7c3a7eed1c99@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/7] soc: mediatek: Add MediaTek DVFS Resource
- Collector (DVFSRC) driver
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- keescook@chromium.org, gustavoars@kernel.org, henryc.chen@mediatek.com,
- linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, kernel@collabora.com,
- wenst@chromium.org, amergnat@baylibre.com,
- Dawei Chien <dawei.chien@mediatek.com>
-References: <20240424095416.1105639-1-angelogioacchino.delregno@collabora.com>
- <20240424095416.1105639-5-angelogioacchino.delregno@collabora.com>
-From: Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <20240424095416.1105639-5-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a63aa94-e8b4-4282-9622-7c3a7eed1c99@linaro.org>
 
-On 24.04.24 12:54, AngeloGioacchino Del Regno wrote:
-> The Dynamic Voltage and Frequency Scaling Resource Collector (DVFSRC) is a
-> Hardware module used to collect all the requests from both software and the
-> various remote processors embedded into the SoC and decide about a minimum
-> operating voltage and a minimum DRAM frequency to fulfill those requests in
-> an effort to provide the best achievable performance per watt.
+On 08:26 Sun 14 Apr     , Krzysztof Kozlowski wrote:
+> On 12/03/2024 10:12, Andrea della Porta wrote:
+> > BCM2711 has 4 DMA channels with a 40-bit address range, allowing them
+> > to access the full 4GB of memory on a Pi 4. Adding a new node to make
+> > use of the DMA channels capable of 40 bit addressing.
+> > 
+> > Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+> > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> > ---
+> >  arch/arm/boot/dts/broadcom/bcm2711.dtsi | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/broadcom/bcm2711.dtsi b/arch/arm/boot/dts/broadcom/bcm2711.dtsi
+> > index 22c7f1561344..d98e3cf0c569 100644
+> > --- a/arch/arm/boot/dts/broadcom/bcm2711.dtsi
+> > +++ b/arch/arm/boot/dts/broadcom/bcm2711.dtsi
+> > @@ -552,6 +552,22 @@ scb {
+> >  		ranges = <0x0 0x7c000000  0x0 0xfc000000  0x03800000>,
+> >  			 <0x6 0x00000000  0x6 0x00000000  0x40000000>;
+> >  
+> > +		dma40: dma-controller@7e007b00 {
+> > +			compatible = "brcm,bcm2711-dma";
+> > +			reg = <0x0 0x7e007b00 0x400>;
+> > +			interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>, /* dma4 11 */
+> > +				     <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>, /* dma4 12 */
+> > +				     <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>, /* dma4 13 */
+> > +				     <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>; /* dma4 14 */
+> > +			interrupt-names = "dma11",
+> > +					  "dma12",
+> > +					  "dma13",
+> > +					  "dma14";
+> > +			#dma-cells = <1>;
+> > +			/* The VPU firmware uses DMA channel 11 for VCHIQ */
+> > +			brcm,dma-channel-mask = <0x7000>;
 > 
-> This hardware IP is capable of transparently performing direct register R/W
-> on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+> Isn't one of your commits saying - this property is replaced?
+
+True. The next patchset revision will drop 'brcm,' prefix.
+Many thanks for pointing that out.
+
+Andrea
+
 > 
-> This driver includes support for MT8183, MT8192 and MT8195.
+> Best regards,
+> Krzysztof
 > 
-> Co-Developed-by: Dawei Chien <dawei.chien@mediatek.com>
-> [Angelo: Partial refactoring and cleanups]
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-Thanks for reviving this patchset!
-
-> ---
->   drivers/soc/mediatek/Kconfig             |  11 +
->   drivers/soc/mediatek/Makefile            |   1 +
->   drivers/soc/mediatek/mtk-dvfsrc.c        | 551 +++++++++++++++++++++++
->   include/linux/soc/mediatek/dvfsrc.h      |  36 ++
->   include/linux/soc/mediatek/mtk_sip_svc.h |   3 +
->   5 files changed, 602 insertions(+)
->   create mode 100644 drivers/soc/mediatek/mtk-dvfsrc.c
->   create mode 100644 include/linux/soc/mediatek/dvfsrc.h
-> 
-[..]
-> +++ b/drivers/soc/mediatek/mtk-dvfsrc.c
-> @@ -0,0 +1,551 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 MediaTek Inc.
-> + * Copyright (c) 2024 Collabora Ltd.
-> + *                    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/soc/mediatek/dvfsrc.h>
-> +#include <linux/soc/mediatek/mtk_sip_svc.h>
-> +
-> +/* DVFSRC_LEVEL */
-> +#define DVFSRC_V1_LEVEL_TARGET_LEVEL	GENMASK(15, 0)
-> +#define DVFSRC_TGT_LEVEL_IDLE		0x00
-> +#define DVFSRC_V1_LEVEL_CURRENT_LEVEL	GENMASK(31, 16)
-> +
-> +/* DVFSRC_SW_REQ, DVFSRC_SW_REQ2 */
-> +#define DVFSRC_V1_SW_REQ2_DRAM_LEVEL	GENMASK(1, 0)
-> +#define DVFSRC_V1_SW_REQ2_VCORE_LEVEL	GENMASK(3, 2)
-> +
-> +#define DVFSRC_V2_SW_REQ_DRAM_LEVEL	GENMASK(3, 0)
-> +#define DVFSRC_V2_SW_REQ_VCORE_LEVEL	GENMASK(6, 4)
-> +
-> +/* DVFSRC_VCORE */
-> +#define DVFSRC_V2_VCORE_REQ_VSCP_LEVEL	GENMASK(14, 12)
-> +
-> +#define KBPS_TO_MBPS(x)			((x) / 1000)
-> +
-> +#define DVFSRC_POLL_TIMEOUT_US		1000
-> +#define STARTUP_TIME_US			1
-> +
-> +#define MTK_SIP_DVFSRC_INIT		0x0
-> +#define MTK_SIP_DVFSRC_START		0x1
-> +
-> +struct dvfsrc_bw_constraints {
-> +	u16 max_dram_nom_bw;
-> +	u16 max_dram_peak_bw;
-> +	u16 max_dram_hrt_bw;
-> +};
-> +
-> +struct dvfsrc_opp {
-> +	u32 vcore_opp;
-> +	u32 dram_opp;
-> +};
-> +
-> +struct dvfsrc_opp_desc {
-> +	const struct dvfsrc_opp *opps;
-> +	u32 num_opp;
-> +};
-> +
-> +struct dvfsrc_soc_data;
-> +struct mtk_dvfsrc {
-> +	struct device *dev;
-> +	struct platform_device *icc;
-> +	struct platform_device *regulator;
-> +	const struct dvfsrc_soc_data *dvd;
-> +	const struct dvfsrc_opp_desc *curr_opps;
-> +	void __iomem *regs;
-> +	int dram_type;
-> +};
-> +
-> +struct dvfsrc_soc_data {
-> +	const int *regs;
-> +	const struct dvfsrc_opp_desc *opps_desc;
-> +	u32 (*get_target_level)(struct mtk_dvfsrc *dvfsrc);
-> +	u32 (*get_current_level)(struct mtk_dvfsrc *dvfsrc);
-> +	u32 (*get_vcore_level)(struct mtk_dvfsrc *dvfsrc);
-> +	u32 (*get_vscp_level)(struct mtk_dvfsrc *dvfsrc);
-> +	void (*set_dram_bw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
-> +	void (*set_dram_peak_bw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
-> +	void (*set_dram_hrt_bw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
-> +	void (*set_opp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
-> +	void (*set_vcore_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
-> +	void (*set_vscp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
-> +	int (*wait_for_opp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
-> +	int (*wait_for_vcore_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
-> +	const struct dvfsrc_bw_constraints *bw_constraints;
-> +};
-> +
-> +static u32 dvfsrc_readl(struct mtk_dvfsrc *dvfs, u32 offset)
-> +{
-> +	return readl(dvfs->regs + dvfs->dvd->regs[offset]);
-> +}
-> +
-> +static void dvfsrc_writel(struct mtk_dvfsrc *dvfs, u32 offset, u32 val)
-> +{
-> +	writel(val, dvfs->regs + dvfs->dvd->regs[offset]);
-> +}
-> +
-> +#define dvfsrc_rmw(dvfs, offset, val, mask, shift) \
-> +	dvfsrc_writel(dvfs, offset, \
-> +		(dvfsrc_readl(dvfs, offset) & ~(mask << shift)) | (val << shift))
-
-Nit: The above macro seems unused?
-
-BR,
-Georgi
-
-> +enum dvfsrc_regs {
-> +	DVFSRC_SW_REQ,
-> +	DVFSRC_SW_REQ2,
-> +	DVFSRC_LEVEL,
-> +	DVFSRC_TARGET_LEVEL,
-> +	DVFSRC_SW_BW,
-> +	DVFSRC_SW_PEAK_BW,
-> +	DVFSRC_SW_HRT_BW,
-> +	DVFSRC_VCORE,
-> +	DVFSRC_REGS_MAX,
-> +};
-> +
-
 
