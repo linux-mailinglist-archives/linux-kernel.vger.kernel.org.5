@@ -1,187 +1,139 @@
-Return-Path: <linux-kernel+bounces-163124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC938B6609
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:10:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82A438B660B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A7BCB20B60
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:10:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3F3D1C21652
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E08D84A5E;
-	Mon, 29 Apr 2024 23:10:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC401E886;
-	Mon, 29 Apr 2024 23:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE2982D90;
+	Mon, 29 Apr 2024 23:11:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PJHZ93X5"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DC06FE39
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714432240; cv=none; b=tTaNVIEw+HfsLvkmy+jkUfPLRzDgMY187CHBwgYOE2bJuj4evtNjsVGR5CpRctLZ/ppaHs0ed38EXLSI+oA3QmLBVKQs/1nHRjjsgwXKjoXwf9ZquDGtS5neNgNJdvFGe80v+sawfuxS4z1loy0L4mr5aDdv1x2uPzE1mMjLCLM=
+	t=1714432268; cv=none; b=BcnKIk3aqhPUsPzMDuXOXetdGUGJTlOt2ObAk+WUkhpwpKIuBiIwnacPpseu9cVhmjKrvtn9m/NqgCCnH39RdUPHSl7Zhoyz6qfOLu405G51gtVNZqE8bzFVaSw6D0RaURAC01ZlXpz2yBwvRgzLQKhwxGHBrSsiWBNohX3gLHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714432240; c=relaxed/simple;
-	bh=SbRHJCSbdxa/qHvVX0OGFsqW3ckRvJ41Yn/16rcpiaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ku2Ne1ugC/OlqSMCs8X6Ru0FsDm/2kmi8bAqose+32fZzMf8Cp14JF2nL7A6aQ9FOsFmhhxU7T2FFsO3M9T396sqfFRodY70uhKXEC9D0gI3d6r3Gsi0HLLj/fqwnl3WRfd0ICGKj02hLwdoNAt1XRExEQJEYeBfgP5ug/FreCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 466312F4;
-	Mon, 29 Apr 2024 16:11:04 -0700 (PDT)
-Received: from minigeek.lan (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 251303F762;
-	Mon, 29 Apr 2024 16:10:36 -0700 (PDT)
-Date: Tue, 30 Apr 2024 00:10:02 +0100
-From: Andre Przywara <andre.przywara@arm.com>
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: linux-sunxi@lists.linux.dev, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC
- dtsi for H6
-Message-ID: <20240430001002.4797e4e3@minigeek.lan>
-In-Reply-To: <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
-References: <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
-	<49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+	s=arc-20240116; t=1714432268; c=relaxed/simple;
+	bh=Iad/sxvyEw3VxQlZ783ao5OF0QpwmdVI6P36y5MsTmQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=En+uPVKnS+dtcqQHJNzhjm9xsarWsZXD14DTFbzyDQQV4Pbud98ROA3CoYx6NCb5SW6ZqiMvG8T8QvZV8ZxGJEnwhaUpWnx1AvmR0Grzv+hTTJTKxUshUW8bvifkO4Rit9VNv4htjz0EnB3emfX2cEzmj8pHdY7cO7DS4XodIMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PJHZ93X5; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43TMDXn6012500;
+	Mon, 29 Apr 2024 23:10:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=/iGrcEbU4mTTV/EfBj25+RbJHkCM05W+8/SkVzibSAk=; b=PJ
+	HZ93X5HM+lfsu0N18u3oW0M0ouK5FxdpATo2xSgaA/CYIXlIPft/XbdUVJKiwNGc
+	ike0M0SUE1aUQ0XmWUp2OeyT1bUTDXKYRSY6zeFKpzHU9bVloLnJ1KYROjLvQG0q
+	ze2lqaPN7dsQ9lfOtAlFfftjEPGZ02FrOYU6V5K/Sg1owTMBDpKLQGS/qfbIqGIm
+	2j/VJgDr+kTK78wRC7Iiz7/tY3xT2H9Q/tzc7ib2WeLLc0k4NIOSjfLtnHc2fg1B
+	WdXZAeviK0apQS4zL19701i5GGw7Nwdzcgu5yrGiby91C6VZ9i+vgzPJ7/gcGhkv
+	EEvaSmjAPm494a029WjQ==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xt8jm3qke-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 23:10:51 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43TNAoih021278
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 23:10:50 GMT
+Received: from [10.71.108.229] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 29 Apr
+ 2024 16:10:50 -0700
+Message-ID: <86b768d8-19e8-4f87-a250-b428bf78f756@quicinc.com>
+Date: Mon, 29 Apr 2024 16:10:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panel: ili9341: Remove a superfluous else after
+ return
+To: Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>
+CC: Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240429171218.708910-1-sui.jingfeng@linux.dev>
+Content-Language: en-US
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240429171218.708910-1-sui.jingfeng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wctaOuyARbRbTh91aLH7BFf4Xl0MWpJ4
+X-Proofpoint-ORIG-GUID: wctaOuyARbRbTh91aLH7BFf4Xl0MWpJ4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_20,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404290153
 
-On Sun, 28 Apr 2024 13:40:36 +0200
-Dragan Simic <dsimic@manjaro.org> wrote:
 
-> Add missing cache information to the Allwinner H6 SoC dtsi, to allow
-> the userspace, which includes lscpu(1) that uses the virtual files provided
-> by the kernel under the /sys/devices/system/cpu directory, to display the
-> proper H6 cache information.
-> 
-> Adding the cache information to the H6 SoC dtsi also makes the following
-> warning message in the kernel log go away:
-> 
->   cacheinfo: Unable to detect cache hierarchy for CPU 0
-> 
-> The cache parameters for the H6 dtsi were obtained and partially derived
-> by hand from the cache size and layout specifications found in the following
-> datasheets and technical reference manuals:
-> 
->   - Allwinner H6 V200 datasheet, version 1.1
->   - ARM Cortex-A53 revision r0p3 TRM, version E
-> 
-> For future reference, here's a brief summary of the documentation:
-> 
->   - All caches employ the 64-byte cache line length
->   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative instruction
->     cache and 32 KB of L1 4-way, set-associative data cache
->   - The entire SoC has 512 KB of unified L2 16-way, set-associative cache
-> 
-> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
 
-I can confirm that the data below matches the manuals, but also the
-decoding of the architectural cache type registers (CCSIDR_EL1):
-  L1D: 32 KB: 128 sets, 4 way associative, 64 bytes/line
-  L1I: 32 KB: 256 sets, 2 way associative, 64 bytes/line
-  L2: 512 KB: 512 sets, 16 way associative, 64 bytes/line
+On 4/29/2024 10:12 AM, Sui Jingfeng wrote:
+> The else clause after the ruturn clause is not useful.
 
-tinymembench results for the H6 are available here:
-https://github.com/ThomasKaiser/sbc-bench/blob/master/results/26Ph.txt
-and confirm the theory. Also ran it locally with similar results.
+Hi Sui,
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+Spelling nit: ruturn --> return
+
+Besides that,
+
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
 Thanks,
-Andre
 
+Jessica Zhang
+
+> 
+> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 > ---
->  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 37 ++++++++++++++++++++
->  1 file changed, 37 insertions(+)
+>   drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> index d11e5041bae9..1a63066396e8 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> @@ -29,36 +29,73 @@ cpu0: cpu@0 {
->  			clocks = <&ccu CLK_CPUX>;
->  			clock-latency-ns = <244144>; /* 8 32k periods */
->  			#cooling-cells = <2>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_cache>;
->  		};
->  
->  		cpu1: cpu@1 {
->  			compatible = "arm,cortex-a53";
->  			device_type = "cpu";
->  			reg = <1>;
->  			enable-method = "psci";
->  			clocks = <&ccu CLK_CPUX>;
->  			clock-latency-ns = <244144>; /* 8 32k periods */
->  			#cooling-cells = <2>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_cache>;
->  		};
->  
->  		cpu2: cpu@2 {
->  			compatible = "arm,cortex-a53";
->  			device_type = "cpu";
->  			reg = <2>;
->  			enable-method = "psci";
->  			clocks = <&ccu CLK_CPUX>;
->  			clock-latency-ns = <244144>; /* 8 32k periods */
->  			#cooling-cells = <2>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_cache>;
->  		};
->  
->  		cpu3: cpu@3 {
->  			compatible = "arm,cortex-a53";
->  			device_type = "cpu";
->  			reg = <3>;
->  			enable-method = "psci";
->  			clocks = <&ccu CLK_CPUX>;
->  			clock-latency-ns = <244144>; /* 8 32k periods */
->  			#cooling-cells = <2>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_cache>;
-> +		};
+> diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+> index 3574681891e8..433572c4caf9 100644
+> --- a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+> +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+> @@ -722,7 +722,8 @@ static int ili9341_probe(struct spi_device *spi)
+>   
+>   	if (!strcmp(id->name, "sf-tc240t-9370-t"))
+>   		return ili9341_dpi_probe(spi, dc, reset);
+> -	else if (!strcmp(id->name, "yx240qv29"))
 > +
-> +		l2_cache: l2-cache {
-> +			compatible = "cache";
-> +			cache-level = <2>;
-> +			cache-unified;
-> +			cache-size = <0x80000>;
-> +			cache-line-size = <64>;
-> +			cache-sets = <512>;
->  		};
->  	};
->  
+> +	if (!strcmp(id->name, "yx240qv29"))
+>   		return ili9341_dbi_probe(spi, dc, reset);
+>   
+>   	return -1;
+> -- 
+> 2.34.1
 > 
-
 
