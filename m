@@ -1,146 +1,125 @@
-Return-Path: <linux-kernel+bounces-163020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9048B63C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:40:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C348B63C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:41:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64238B2291C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:40:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 464E1283C04
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C221779B4;
-	Mon, 29 Apr 2024 20:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAAE91779A9;
+	Mon, 29 Apr 2024 20:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="hD0xxNtV"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lFVW50JX"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4886B1420DD;
-	Mon, 29 Apr 2024 20:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE7B1411EF;
+	Mon, 29 Apr 2024 20:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714423215; cv=none; b=LBgk+lnmkIj/9l2v8Kkcqa83QjVoQVpP2KzztYE/+eUdHB3pvEpfO8ynMmOdM8J4VEkXve8KpcNDblW5B+vcnTc4XV/HakzBlfwsyHmOMCV64gI2tIHHwv/MGORUNYi8vnp+YNCGjnV384JV+tXeLIgiEZGSZ1020jjbb8yX1f0=
+	t=1714423277; cv=none; b=ElgWhOaNnokOXC49eJ9NKeFG/NkiMUxwUIVOZ7OjxWNp8Z5eVSNz7sgmFgOr9WEu5l2mhO/6xSNwFlytnTY4PobIpUYNyhZdHRZsLMZl8TMGoLnE3YPDx2Wi/gTG0SCjTkl1v9VwfBzhBOVFJ1GapCbhKOqf7Wo8CUo5yCKz5wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714423215; c=relaxed/simple;
-	bh=dpVuKJaAI/3uU1ofF38ClOBxco65tUkbk4vkbZXEgLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y3wLVEILbCs5BeBbtYkhCzjy/bAcCR7CU4XAHdB+Bt/5Difx2PkYtp+NTy2ffUzTl57szv+v9Y9ajCV0jYX9XOfj+BnIW3114owecTvY0VrSD5fLClc/qPqRLk17/9SwZSX4G6f+1MOd/ZakR1w+JvvMMnT6Tufg9K5i4WcEG24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=hD0xxNtV; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4VSwDz4JFwz9skk;
-	Mon, 29 Apr 2024 22:40:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1714423203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bdRxYw1alqzNEbQvn6ARArUKP3stX6EgitWPX7yq5ok=;
-	b=hD0xxNtVSR4T/Vlszjoy5hAcIZofGysKkXAsrGwq+vDPpa8RNVQf8vdF2fv47nyhZdBL4V
-	+4OXXRw4TQPLZSlNHnxJQEOrnNj7djzlCEhBSzUWHxWtm0jWRZwcmDCl3pUhQ8kahz5f/v
-	IAgSEzuiZzvZ/Bv1OM58yCoZ8Hus9c3NblwPF+iTOTBPyGEuK2EjNkjst1McFU4uI1eDkG
-	9C3foAG2ODYHNvAGPzt3f/d1lZ6TbEWklnlI8wP+vgt8+rjLZTO7eocyL8WpQ2OnIzS0Gt
-	HNQdGac5fDgTc3ZWfOiM1R84oyVNrH5fTyAN7E42qsJwjDrMA+j3liAapF76cw==
-Date: Mon, 29 Apr 2024 20:39:58 +0000
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: willy@infradead.org, djwong@kernel.org, brauner@kernel.org,
-	david@fromorbit.com, chandan.babu@oracle.com,
-	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-	hare@suse.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com,
-	p.raghav@samsung.com
-Subject: Re: [PATCH v4 00/11] enable bs > ps in XFS
-Message-ID: <20240429203958.gtwqfmdhcwb36kq7@quentin>
-References: <20240425113746.335530-1-kernel@pankajraghav.com>
- <87y18zxvpd.fsf@gmail.com>
+	s=arc-20240116; t=1714423277; c=relaxed/simple;
+	bh=IBy5vuNdM6tBND8jWE+r9vS2L9OGBZ4fU8CmR7rmuPo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Fu8dM6S8wvkLUiuWmG3OMHWFRHT63IRh1n1wtRDK2vK+JJwNnaxuBbqDQ3SWwqV2xAQMXncvFyzqc1UWJs0vmqwkmoJaBsH8ngg457tSC9j8Hg0jKX2JbhA2MMc0iiCP9kGPXlVSq/Sz/K9v1kRdo9TfWVF9B3RjNs5lGxExgBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lFVW50JX; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43TKf3Eh057525;
+	Mon, 29 Apr 2024 15:41:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714423263;
+	bh=GABK8szO4+HDKRTLZ25fXfMpPgxdpF438K8WMz+nTlk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=lFVW50JXRz5yRKK7gX6uPySNfK+Nxv/IunUcS+k4BPVhTMxaJBSIdD574OsM2msxh
+	 CCC6nC2Gx+t3P2wyUubmGOlfbrH7csRPU0pCYl4208ngY+O1WOxytxauWL9ZimUoQ6
+	 sj3l4Rzdx7J/PW97mPAKwIYF9jViCUaFK52jd1fQ=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43TKf3D5027579
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 29 Apr 2024 15:41:03 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
+ Apr 2024 15:41:02 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 29 Apr 2024 15:41:02 -0500
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43TKf2dr121833;
+	Mon, 29 Apr 2024 15:41:02 -0500
+From: Nishanth Menon <nm@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>
+CC: Nishanth Menon <nm@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>,
+        <r-gunasekaran@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arm64: dts: ti: beagleplay: Fix Ethernet PHY RESET GPIOs
+Date: Mon, 29 Apr 2024 15:41:01 -0500
+Message-ID: <171442325719.132809.18343635173532672947.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240305-b4-for-v6-9-am65-beagleplay-ethernet-reset-v2-1-2bf463a7bf13@kernel.org>
+References: <20240305-b4-for-v6-9-am65-beagleplay-ethernet-reset-v2-1-2bf463a7bf13@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y18zxvpd.fsf@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sat, Apr 27, 2024 at 10:12:38AM +0530, Ritesh Harjani wrote:
-> "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com> writes:
-> 
-> > From: Pankaj Raghav <p.raghav@samsung.com>
-> >
-> > This is the fourth version of the series that enables block size > page size
-> > (Large Block Size) in XFS. The context and motivation can be seen in cover
-> > letter of the RFC v1[1]. We also recorded a talk about this effort at LPC [3],
-> > if someone would like more context on this effort.
-> >
-> > This series does not split a folio during truncation even though we have
-> > an API to do so due to some issues with writeback. While it is not a
-> > blocker, this feature can be added as a future improvement once we
-> > get the base patches upstream (See patch 7).
-> >
-> > A lot of emphasis has been put on testing using kdevops. The testing has
-> > been split into regression and progression.
-> >
-> > Regression testing:
-> > In regression testing, we ran the whole test suite to check for
-> > *regression on existing profiles due to the page cache changes.
-> >
-> > No regression was found with the patches added on top.
-> >
-> > Progression testing:
-> > For progression testing, we tested for 8k, 16k, 32k and 64k block sizes.
-> > To compare it with existing support, an ARM VM with 64k base page system
-> > (without our patches) was used as a reference to check for actual failures
-> > due to LBS support in a 4k base page size system.
-> >
-> > There are some tests that assumes block size < page size that needs to
-> > be fixed. I have a tree with fixes for xfstests here [6], which I will be
-> > sending soon to the list. Already a part of this has been upstreamed to
-> > fstest.
-> >
-> > No new failures were found with the LBS support.
-> 
-> I just did portability testing by creating XFS with 16k bs on x86 VM (4k
-> pagesize), created some files + checksums. I then moved the disk to
-> Power VM with 64k pagesize and mounted this. I was able to mount and
-> all the file checksums passed.
-> 
-> Then I did the vice versa, created a filesystem on Power VM with 64k
-> blocksize and created 10 files with random data of 10MB each. I then
-> hotplugged this device out from Power and plugged it into x86 VM and
-> mounted it.
-> 
-> <Logs of the 2nd operation>
-> ~# mount /dev/vdk /mnt1/
-> [   35.145350] XFS (vdk): EXPERIMENTAL: Filesystem with Large Block Size (65536 bytes) enabled.
-> [   35.149858] XFS (vdk): Mounting V5 Filesystem 91933a8b-1370-4931-97d1-c21213f31f8f
-> [   35.227459] XFS (vdk): Ending clean mount
-> [   35.235090] xfs filesystem being mounted at /mnt1 supports timestamps until 2038-01-19 (0x7fffffff)
-> ~# cd /mnt1/
-> ~# sha256sum -c checksums 
-> file-1.img: OK
-> file-2.img: OK
-> file-3.img: OK
-> file-4.img: OK
-> file-5.img: OK
-> file-6.img: OK
-> file-7.img: OK
-> file-8.img: OK
-> file-9.img: OK
-> file-10.img: OK
-> 
-> So thanks for this nice portability which this series offers :) 
+Hi Roger Quadros,
 
-That is indeed nice. Thanks a lot for testing this Ritesh. :)
+On Tue, 05 Mar 2024 15:15:32 +0200, Roger Quadros wrote:
+> The RESET GPIO pinmux should be part of MDIO bus node
+> so that they can be in the right state before the PHY
+> can be probed via MDIO bus scan.
+> 
+> The GPIO pin should be setup with PIN_INPUT so that
+> input circuitry is enabled in case software wants to
+> check pin status. Without this, incorrect status is shown
+> in /sys/kernel/debug/gpio.
+> 
+> [...]
 
-> 
-> -ritesh
-> 
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/1] arm64: dts: ti: beagleplay: Fix Ethernet PHY RESET GPIOs
+      commit: 0b1133ee36ecbf3b02f69cc4e8a169f1b6019e40
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
 
