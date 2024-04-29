@@ -1,158 +1,98 @@
-Return-Path: <linux-kernel+bounces-162652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF1A28B5E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:06:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FEC48B5E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 865922836A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D108E284789
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77EF3839FF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA4574400;
 	Mon, 29 Apr 2024 16:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A/yelYC3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lVsWtbiK"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB66F839EB;
-	Mon, 29 Apr 2024 16:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149D583A18
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714406790; cv=none; b=FBw5+XGaYhrzRG3s3nFq4nfxhPzLaShXMcsHUQS32DfZIP/+m0kggFw963XId+nvxY3gGuN/ZUCkgALlqmY3u4R1DZ0RLMz4/NxsX25qFRgHjuGVktd/KY75ZbjcQXEXOTivKJx3QlEAefSRQb13h/7XLri/5kL6ZpAYnvDQ9d8=
+	t=1714406790; cv=none; b=qqU/StYvyAR1Dj8BQYxaip+DGNyyXb/ZuxQlj7pJfwc1bnOnjG7hpACyU8vOIF3sDmv7hy3e6TAkzlRkIObblMqK5nrNxumKAj4nYfJnfEgJTwh5kBjLVaRibOIRRWH4b9fbfk8XIa3Am2c5T6XDNFM5YYK2eL1I/mvwtOMygs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714406790; c=relaxed/simple;
-	bh=afERztb9pVx17pXtbd9iQT9EUE2xeuhnB2fps9eTU2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=saUXrxLnuqAl56pHCTyebcxO5zwPoopYRHTwbsC80jgOCF/ibI2oZm2yTJ0r5rnC3I89SVxraorbsnFbmUlLImdMdkAIogjkxKu9pCbsK7yvpypVHafvZoibBAk5uTvy18P9Lx5wkzsxdCINBHR+zyvQVH+h2It7DD3cxUxVWCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A/yelYC3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39557C4AF14;
-	Mon, 29 Apr 2024 16:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714406790;
-	bh=afERztb9pVx17pXtbd9iQT9EUE2xeuhnB2fps9eTU2M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=A/yelYC3XQWHy2t462WvCtZugMJLgKpzXy9mNaFTqXtCTN38WaZJY+s+D1hNbr3DR
-	 W87uOgUVp1h2JuRBjRspQ4TRUQgVA1qlVZV90Mipt3fsFA7sAebneGw1R/BuKfN0Zu
-	 2oDesbX775ljUihmmaC9+1HRd+Gz+5bQ8ypJxRtMajNM9HgclDh4il8FquIrirJ+ST
-	 9aY9S8LjYNFuE6fmQ/epgbkfJp6+P3d/ioBTPkcxPdrEDuxWHOXH4yjTWE/RMQUDUF
-	 URj77m7f59ZyhPeeAYZ1IRLculf0Ya3VtidaPSKQTogOBOYDdyuDlaokQkeIyVqfuY
-	 79R+4A3n9kv1g==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5af609de0d2so452074eaf.2;
-        Mon, 29 Apr 2024 09:06:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXHZSpEmAd+BDZX4XI3aK41ZT9hcXoHeLkaR+/AblOzukJBS/q4yLgdz6/ss4ciBrdCbYffT5JzOy9SN3MNfnrVVvILUpNPyIaD8cAn4/fiYkxzmJmrvIOcmhCyb1Nhqvq4T1saJzKeyA==
-X-Gm-Message-State: AOJu0YxXiuKa9Cv2ZGvesiyxkjp+AmaIT4w4v7zmC8MFxbGL1AmfMwf/
-	o7Q11P10apsrU2js4glZbKg6C5SrV+JMbBvijQRcOG8phzCJ3ahuVdbBIXSHoEnF5BvKOpmvWgw
-	CEEluGtOa99hAtJn+2oxC1TNyNxs=
-X-Google-Smtp-Source: AGHT+IHyLxx0VBY2oJjwiSL4wBe2DRBpBa9uTPPMyX+rXpIuBc+hT9rzo9R5LOk970vfWB5Ip/O//eSUit0kTDrunuc=
-X-Received: by 2002:a4a:be9a:0:b0:5ac:6fc1:c2cb with SMTP id
- o26-20020a4abe9a000000b005ac6fc1c2cbmr12303338oop.0.1714406789435; Mon, 29
- Apr 2024 09:06:29 -0700 (PDT)
+	bh=uPC1BgfoZ/0CNcgBlxO1uJXrO4xZEvVHlQ6M555k1V4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BsinA2viHyuXG6XYmfpyRVUhnVq1PmZ58gv56NdpgwzRn6T9feTwSjuVSt3IyRcE2LMfArbev3DA1tI7ctvgn+PsHxa+fLSqGfKnWEygKoCeUWFTz4yMcuSeSUrXosRkDnjWj/mepYt20E3HJdo2KvAfREYFHMBBzCTk/UB0Bsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lVsWtbiK; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 29 Apr 2024 09:06:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714406787;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R2nXwXohL2J0wPP0PlowVYkLxMx+ryb/FZdWBx8UgrY=;
+	b=lVsWtbiK/0p4r9CmGvVnCV6zeaDp1O564nKflx9dr53zJ7/KNLSKPHL4kLZgSDTToYH7Yo
+	vyIq9SIsJw1b/CYQKvjAmTWYJg7bAPBXISxpqdKoUOEBLkDIdn0l4v/Sqv+FmY028v9hJt
+	0o5LZ9J1li3JG2PkWrpsS42DxUfVMOg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] memcg: pr_warn_once for unexpected events and
+ stats
+Message-ID: <Zi_Ff_iAs_PTph4l@P9FQF9L96D>
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
+ <20240427003733.3898961-6-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2741433.mvXUDI8C0e@kreacher> <278b47946efd7f67229e26335c419570871427cc.camel@intel.com>
-In-Reply-To: <278b47946efd7f67229e26335c419570871427cc.camel@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 29 Apr 2024 18:06:13 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0j46222cPihhkCo2Znum7f4A12sBve27Yeevv2LPdstPg@mail.gmail.com>
-Message-ID: <CAJZ5v0j46222cPihhkCo2Znum7f4A12sBve27Yeevv2LPdstPg@mail.gmail.com>
-Subject: Re: [PATCH v1] ACPI: scan: Avoid enumerating devices with clearly
- invalid _STA values
-To: "Zhang, Rui" <rui.zhang@intel.com>
-Cc: "rjw@rjwysocki.net" <rjw@rjwysocki.net>, 
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
-	"salil.mehta@huawei.com" <salil.mehta@huawei.com>, 
-	"jonathan.cameron@huawei.com" <jonathan.cameron@huawei.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240427003733.3898961-6-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Apr 28, 2024 at 6:17=E2=80=AFAM Zhang, Rui <rui.zhang@intel.com> wr=
-ote:
->
-> On Fri, 2024-04-26 at 18:56 +0200, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The return value of _STA with the "present" bit unset and the
-> > "enabled"
-> > bit set is clearly invalid as per the ACPI specification, Section
-> > 6.3.7
-> > "_STA (Device Status)", so make the ACPI device enumeration code
-> > disregard devices with such _STA return values.
-> >
-> > Also, because this implies that status.enabled will only be set if
-> > status.present is set too, acpi_device_is_enabled() can be modified
-> > to simply return the value of the former.
-> >
-> > Link:
-> > https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device=
--status
-> > Link:
-> > https://lore.kernel.org/linux-acpi/88179311a503493099028c12ca37d430@hua=
-wei.com/
-> > Suggested-by: Salil Mehta <salil.mehta@huawei.com>
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  drivers/acpi/bus.c  |   11 +++++++++++
-> >  drivers/acpi/scan.c |    2 +-
-> >  2 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > Index: linux-pm/drivers/acpi/bus.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/acpi/bus.c
-> > +++ linux-pm/drivers/acpi/bus.c
-> > @@ -112,6 +112,17 @@ int acpi_bus_get_status(struct acpi_devi
-> >         if (ACPI_FAILURE(status))
-> >                 return -ENODEV;
-> >
-> > +       if (!device->status.present && device->status.enabled) {
-> > +               pr_info(FW_BUG "Device [%s] status [%08x]: not
-> > present and enabled\n",
-> > +                       device->pnp.bus_id, (u32)sta);
-> > +               device->status.enabled =3D 0;
-> > +               /*
-> > +                * The status is clearly invalid, so clear the
-> > enabled bit as
-> > +                * well to avoid attempting to use the device.
-> > +                */
->
-> seems that this comment is for the line above?
+On Fri, Apr 26, 2024 at 05:37:31PM -0700, Shakeel Butt wrote:
+> To reduce memory usage by the memcg events and stats, the kernel uses
+> indirection table and only allocate stats and events which are being
+> used by the memcg code. To make this more robust, let's add warnings
+> where unexpected stats and events indexes are used.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 43 ++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 34 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 103e0e53e20a..36145089dcf5 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -671,9 +671,11 @@ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
+>  		return node_page_state(lruvec_pgdat(lruvec), idx);
+>  
+>  	i = memcg_stats_index(idx);
+> -	if (i >= 0) {
+> +	if (likely(i >= 0)) {
+>  		pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+>  		x = READ_ONCE(pn->lruvec_stats->state[i]);
+> +	} else {
+> +		pr_warn_once("%s: stat item index: %d\n", __func__, idx);
+>  	}
 
-No, I meant "functional" and wrote "enabled".  Not sure why really.
+I think it's generally a CONFIG_DEBUG_VM material. Do we have some extra
+concerns here?
 
-> > +               device->status.functional =3D 0;
-> > +       }
-> > +
-> >         acpi_set_device_status(device, sta);
-> >
-> >         if (device->status.functional && !device->status.present) {
-> > Index: linux-pm/drivers/acpi/scan.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/acpi/scan.c
-> > +++ linux-pm/drivers/acpi/scan.c
-> > @@ -1962,7 +1962,7 @@ bool acpi_device_is_present(const struct
-> >
-> >  bool acpi_device_is_enabled(const struct acpi_device *adev)
-> >  {
-> > -       return adev->status.present && adev->status.enabled;
-> > +       return adev->status.enabled;
-> >  }
-> >
-> >  static bool acpi_scan_handler_matching(struct acpi_scan_handler
-> > *handler,
-> >
-> >
-> >
-> >
->
+Having pr_warn_on_once() would be nice here.
 
