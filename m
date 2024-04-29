@@ -1,259 +1,449 @@
-Return-Path: <linux-kernel+bounces-162707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79BF58B5F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:47:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5A68B5F5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:47:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C207B21482
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:47:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 350B428417D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA25586244;
-	Mon, 29 Apr 2024 16:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE748624A;
+	Mon, 29 Apr 2024 16:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CKZ18j6U";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d+GkVceN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVG+Vq5B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDnWDRBe"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZSFYfTBB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EDD84FDB;
-	Mon, 29 Apr 2024 16:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409212; cv=none; b=TXgBX5YwsImvrHcH7e3HGr/pdX/KEpkIbs6k0H/3VvwjZBrDZ6EWsXFyfeRkU/4fYzc0J0dnVvuX1ldCtm4i0oo4T3uPLlXeoRZGvbiehH+SJbC1qI3HD549rlTLV5tY4qL78Ydm8L/kbnEaE2uu5AiCdPkkmeaxWRmBKELM08Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409212; c=relaxed/simple;
-	bh=RS/Nzkow4JdCZb3e2G1q+ZkbngBwp1eF3Py2i9zh+zs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W7JcZrtbkgVaGbb+q6Up2wAaq9Zdtbs41L97xT/O8TU1gpT303Wqhl0dhC/krsB8tkQorKTZFXes2/VseNCada6J42dkEY4rz0CVTypm+vbWvTQt3oON0cudwJxn5uELom82X5aIijbNjwAjfym2wAVz17uDZpa4VHPndOXFWoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CKZ18j6U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d+GkVceN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVG+Vq5B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDnWDRBe; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AC73533948;
-	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714409209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
-	b=CKZ18j6UJq+6XAMMI4K75K+U5rNPzWcV/mUuowFFuvT7re/vmVq+vciKBJxomQAfagA9mY
-	UummKYf0o2A9Gehug7E5A3dPY8jsYWUOOqtZpCYFGqLqHlB3gwt1AO9n7hUvPaRdfMcSOT
-	4M4yv/LtVBM1w/JalV3CAIePS9vFhWs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714409209;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
-	b=d+GkVceNa0zY5w/3bWdmRLA/mRvJuT6vhguUMLkzaCULG3/zj9NatBInitzt2xmiVMfJxq
-	QM0wRDHF7facwjDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IVG+Vq5B;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kDnWDRBe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714409208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
-	b=IVG+Vq5BLjyk2Wc/JVJqFA9PYCKOu7JZED4PD8UczFD04JQRajzDMeU3KG6Llv0EfdSKl4
-	Dz6of0Cnj7F/TWfvprKJQhEKBOJ+xStB8kNFnZA97sTQwDxt+vmcF2AcwOKXpBlRTGfaIi
-	oBxIu3lOIsWrvFstFnkcpty2loBuvms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714409208;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
-	b=kDnWDRBe9PNt4LuyCW+2B+jrl4w9Y4UZqNsdyiR17PoEyDgGK8BYSHgo5d4K2dlmni0TUx
-	gEJ8iWcI6viBKTBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9630F138A7;
-	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OwZkJPjOL2bvOAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 29 Apr 2024 16:46:48 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3A76AA082F; Mon, 29 Apr 2024 18:46:48 +0200 (CEST)
-Date: Mon, 29 Apr 2024 18:46:48 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v3 3/5] ext4: call ext4_mb_mark_free_simple to free
- continuous bits in found chunk
-Message-ID: <20240429164648.juifmjsm7qb3d4ev@quack3>
-References: <20240424061904.987525-1-shikemeng@huaweicloud.com>
- <20240424061904.987525-4-shikemeng@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E804484055;
+	Mon, 29 Apr 2024 16:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714409265; cv=fail; b=dzfoXWVpcuz9WhKadTJJg3ZAfMycYQYDvLC5Q8/SYtGIRa/7HItPO5vefVcIrC00qCjM+0/8GLi5bu/vbVTMuNf0q4Kj7S4ifuHOOtrqYvDZ58+aNMuFVIPXfbgtZUbP4O8FmfHyDyFheAoPVQDh5CTsjP8l/zIQH01N88wYPqI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714409265; c=relaxed/simple;
+	bh=4mQ7HjCveMYiMEdXKpuWTXDQ0Mc/9JjZoWnsjeT6Wws=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=V4bPupw9TZTEQpvBuU9ndOHoVdoYNLC7ArsJGuYW3R3fvT2TzYdTiFQFUoBS1pM9nsmwH5wGYKc31UaM/ze5gKma51PAzQhCS5CfwRvEGrSsN5pM3CX7lmMNEaAQjLMiQNUVtl6OUtDL/p3arAFyKPnwNJlJV+twxoNmvshbjGg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZSFYfTBB; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714409263; x=1745945263;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=4mQ7HjCveMYiMEdXKpuWTXDQ0Mc/9JjZoWnsjeT6Wws=;
+  b=ZSFYfTBBcWfid7LKrMTg447IQt8HTgTAEC7ZG1sHpsmokqGp8B5LRR3D
+   k5qlBZdOgyHNtTj6a+3Crh18CILluV5cLruWn0qfA0LcdpVty8mkstYLo
+   7jpCWTiUycYVGzYbW14h9NyaWQGNDv1N5/Ny9TYkoZKlPSLOutcNGyWw0
+   eDFRBX+sWPtX76/5x3sg/cqvUTJF/kthpH/sPRfvWqgePtmAMQfpYkJg6
+   zc6AWVhx/gWbWhY08mOeujf27kvLT6LmC366TdBZGgNP38TTX1gmyPT5Y
+   feQpceZjH2bbbSFWVKJGdN1nZUa4WkS9VtheYpxRlLs2BFn3v4xgeEQPs
+   g==;
+X-CSE-ConnectionGUID: agIAxZPvRVOs2/jtYFI2gg==
+X-CSE-MsgGUID: Icl++JMYR4iPebOKxana2A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="20767699"
+X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
+   d="scan'208";a="20767699"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 09:47:41 -0700
+X-CSE-ConnectionGUID: kMpML4EIQSSVc0VEQT1fsw==
+X-CSE-MsgGUID: YpHJPKdQSdOLk50VrqQKGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
+   d="scan'208";a="26154187"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Apr 2024 09:47:41 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Apr 2024 09:47:41 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Apr 2024 09:47:40 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Apr 2024 09:47:40 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Apr 2024 09:47:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GhlcxUmoR3uePu3BeA2CpiQrlzEKDdrZBbeC7GrQtERgeD4yYFrAhvRIP1lNaiFvbqIrgPcpInJsRB+EUjY1RBOG54xE5KCA791tK9Fom7ZHdSuXL75YPHXQQtGMO6k8CKTdXGEFaKyYU1YNS4LR8246+ZquIO977PK9reT+JHihRVcwSa1mBt7Ar/uGEzBLZHI3DZn+SG8iIHzOKxZ3EVtvqLJUGhUCHUZZMG8iATAys/SZ0navLyo2PBZ61cESRd19Xuou1t0qOb+TRQoXpTsrPrNeQ8E/7LTjLJenjHb8nmtXi06IsDvUhOLYVnTF0KPgkKwpoRuApCtw+n2+gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8PWAqL5Q0f9+yoypzpZscutOpbgXZ6pXm6Ti3inxRyU=;
+ b=TnRmgoI62GkQit5QK4lNHBw3R4aFBR4ijyUw8ex2W4GHIMMx0Y+rCTWFGMeDKMts4iZnpgzl0GYRGYsojfaIxfMKuyeFiHo8gk2kSN0dBd34RXVOpVNwxiQb9tcMNOyoNu8pE3AbJtc/YE17eTRlsLnsgJyBeIFAuqpZwF+7ZAOYwUywYHebMnkvEUHf1ukyrnBW8KOpeIFzdRN+0pxHKh7YkmDZhvmLwVUCcvzQLnLv21oyW/c3fXhNcrv70UnUq1arSmlUm3JXBO10p0fhZ7/9eNujUYneyLb14Z8INjgDsns+tLigKbmocwG6JFQRb1jUAI5Qgy2CjR/DDrw3CA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by BL3PR11MB6339.namprd11.prod.outlook.com (2603:10b6:208:3b3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
+ 2024 16:47:37 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d543:d6c2:6eee:4ec]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d543:d6c2:6eee:4ec%4]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
+ 16:47:37 +0000
+Date: Mon, 29 Apr 2024 09:47:33 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Dan
+ Williams" <dan.j.williams@intel.com>, Jonathan Cameron
+	<jonathan.cameron@huawei.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>
+CC: Dan Carpenter <dan.carpenter@linaro.org>, Yazen Ghannam
+	<yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>, "Alison
+ Schofield" <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Ard Biesheuvel <ardb@kernel.org>,
+	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>, "Rafael J.
+  Wysocki" <rafael@kernel.org>, Tony Luck <tony.luck@intel.com>, "Borislav
+ Petkov" <bp@alien8.de>, <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] acpi/ghes: Process CXL Component Events
+Message-ID: <662fcf25d0eb8_19ca3929452@iweiny-mobl.notmuch>
+References: <20240426-cxl-cper3-v4-0-58076cce1624@intel.com>
+ <20240426-cxl-cper3-v4-1-58076cce1624@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240426-cxl-cper3-v4-1-58076cce1624@intel.com>
+X-ClientProxiedBy: SJ0PR03CA0277.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::12) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240424061904.987525-4-shikemeng@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: AC73533948
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|BL3PR11MB6339:EE_
+X-MS-Office365-Filtering-Correlation-Id: 556e00fb-2974-4efe-9ed1-08dc686c1393
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?WhB3+nfE03pWz6Dm808gjAhglz1vThEZcKXgRfd33f/CjhvDc/mvVy4JqluA?=
+ =?us-ascii?Q?tzg7purPgx73tE6GF0X/IU2rqD+pN/TrjKmDQHDOyKco7zmkBYiV93a0XJtR?=
+ =?us-ascii?Q?ax7GBag3A+UOvFrvz6Jb/Ai6+zfheER2n2LaVIKKE+mLVxrCqQCNWPJCZzMu?=
+ =?us-ascii?Q?U+2pvp9wVEEjLuSs5Gdg/9eBNatAhMAh7PlkmsnRMNf1N4cHHqM3Ay0ihmw5?=
+ =?us-ascii?Q?jPQhi+S11UWZWxKWQ9BQ87HO7mTkpxWSBU0E1ed7kB3Q5L+3dTRcymR4uXoV?=
+ =?us-ascii?Q?IPwRiB43MbGN/Vf5Q/0CmlkpaZBMsUDvJrZU7PZkAe6oOPF0Pn1iIxdY81oP?=
+ =?us-ascii?Q?9QOnjudGr4uZsWGXVB1lHS3151cR95oVpP+RQyfIkUEjPpWa5S63TcJP8a1P?=
+ =?us-ascii?Q?KVf65CA2EiHyacN/pVwmdbqdegT9bbjhUAqXjd+Tmuj9tg/vOt4cRya0cwPc?=
+ =?us-ascii?Q?F+o+V45JKcgDSTRGxn21+4PH+hQNMtVa/CGh0mZFx0HJv0lUzEC6kUzORuki?=
+ =?us-ascii?Q?YE3C/jgCuTWqstjnRBZZEZclwAju9SMFV4exwttzUGkHga3XFtxJIDzMTnbe?=
+ =?us-ascii?Q?GiU++FpZsNfBsdWZL3KDM7qNBJEsJG7uhgMkK8OWErH+2KevlXauG/A5Ad5C?=
+ =?us-ascii?Q?Uvl5CLfXClEFtPqcu1IPkaCiyR/aNVrIEs9NZZefPpQNK25Wsi6LVB9Et6Dr?=
+ =?us-ascii?Q?CgA7gGhzO8+WII8HGQ+ckE8Tr2aV2+eOSaYaUN/9Coi3lGsuwzXtugNkFuSA?=
+ =?us-ascii?Q?DpmwZOD6qjXaI+CIDvApGtnxh5r5fWg9xV0fNwm1QpD4oHlxEHLLjG/g3D8F?=
+ =?us-ascii?Q?Tz8f55TvLw+47IkW5/Maez9TSwc2aVTe6rXKMEPnAMeZlc41dCqa93kNe0bs?=
+ =?us-ascii?Q?LccqTBXnVCGVnav17w5QDkPpmseYwPDQZpB0HhPLVlQ7X2czph0SHMaJlLNL?=
+ =?us-ascii?Q?r+jY78tB0bQBC4afvlJNKFgursA3OrfMa6AB223Jmgn3cbGEfIWm+nroya2v?=
+ =?us-ascii?Q?vNtI3mDKr/RW8wZs1maCtmS22TDAppAUkGGirlulu3mvJOlpwJgS7ejyJbkM?=
+ =?us-ascii?Q?GtOVLPr+7UksU+0NxArmdtReSJImwQbfQgL8Ml66OaK/UsX6OZa5G52rsV9x?=
+ =?us-ascii?Q?ib0YHqp2XPxtgTv/68d6KBSITO5oCFH4MxbrHU82hnyq/7VuT39/mdAx5ua8?=
+ =?us-ascii?Q?txX9XgK1wb8zHhFhBvonv91wnTMqGmJG/PtZHDTWxqyztN7r0pO18BfDmxw?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mNrGyAiADKJ6H8WHy92gH3FcN2QIGbPW6Ua21zEfTJkmo4453/zUiY6C8cTK?=
+ =?us-ascii?Q?xAzIBClhqxkZpn0MCL5CEKympA93NJIN8FRcQKxRde0eTFrcyxVAelDn6gVw?=
+ =?us-ascii?Q?6qy/WwrmA0Lnl0Nn2EB2uMtZsfXrr6EyvBli6nAhRu+mzoEUmiZHtfcXpF2C?=
+ =?us-ascii?Q?cGDtD2AN7Gt7JQieDEOA8uYIXYqQM66a7ODK6kOwh3BSD7bPHM2R1QR7Lb9I?=
+ =?us-ascii?Q?4lqN4CuX/0uVK/eYA0VquBlrwLLldnH4ifwhXNJADMEN8h2CIMo0xT3p9SUv?=
+ =?us-ascii?Q?VxUZHpWOViZj3nPkKGNUX9GO25btMfpGNKiyH/pXkks9PhQbDrqsV3At6avj?=
+ =?us-ascii?Q?7ybamRo3MPFRBo3kLTB16ETKspCVl/ErwKCtup0XPr5SC6oLnhRuAIQ5uF1Y?=
+ =?us-ascii?Q?37cU36TBOZBK5H75SeC1ULhLe0XY2gVFV725FyA89VU/wNzr7hUUKLNWWInR?=
+ =?us-ascii?Q?gmuhB0KnXjMyw5J49PmwM61bfevE23e8uQR7wyAEtriFRStCsEH8XNv2FaG0?=
+ =?us-ascii?Q?UeI5S5Cur7u9GZVJV7Qa+bgii1Y7HaPtcuNEpa2rRHEbPVKDxjQt7CQeNLVf?=
+ =?us-ascii?Q?Ldoig4Q3VOU7wQfEc8mb8v9zBCnyoU52fUTAGAZhlQosRMj/gavjs394inzy?=
+ =?us-ascii?Q?DiiAXMWxuWU45Oyr6jQdeHDXcpUTdjar86ZThKGRpmD7q1EnrbXlh0EHU6RE?=
+ =?us-ascii?Q?gTWYEpDLH7ZWbfCtVvVZeaixyXdjd+ryi/ZiQEDsFEckZLAAHi5x8tLi1ia4?=
+ =?us-ascii?Q?G1nMEYuP4xErDoi8zKpgp7BGiz3NvOw+9ztPwAgnlAwYoNUg7iwA80uvrdIM?=
+ =?us-ascii?Q?pQKGl1EUfCfqEimGDUZc5O3pl4HyR1MqpWj8nc5EVjsLDqrpVZyFdE5iB6wp?=
+ =?us-ascii?Q?mNicN4cuBnPf/2aC63l/MJs//o6LzWPOgpKZDD1luz0XOHxwE3I3eCvvnRHQ?=
+ =?us-ascii?Q?HtkrEVDUCDJiaPVNPCI0EiEiBXYYbCXGgysf59oafTxdFfbYiTS62wcvRiXl?=
+ =?us-ascii?Q?GAgDDu2SoHAsD7NjWgjZfOmeWh+F4dVxQSZnatOclVHl/E33Xz4pufmZ5kRa?=
+ =?us-ascii?Q?f5PXrH0xSHW5Tal7T4bKKw0/uAOegufxQgiuzLp2fOdPLemKR05mfN5xZbLR?=
+ =?us-ascii?Q?8hzSd2+8n5V7rkiBaH5sR4bt5U4ZmFzxCXA6rS8cNTCICTvEMEyeoDWS8Msq?=
+ =?us-ascii?Q?uNQswYwDzyEMSrO3ehSE0/M1pwAkGsEXg0IzTsJHuJX9H18SYqsbi8bQOur0?=
+ =?us-ascii?Q?d/CfwNBmwfBoWH+TJjypI0068xu9t0CXIWVhkrrSawc8sHuQN/dICZNl5AQW?=
+ =?us-ascii?Q?rxf0+GkRUNVIiyBcUpnmpg++6dkknBfKrIdlckSgbBXF2R4GMz/fBMQlIyeF?=
+ =?us-ascii?Q?0UHeS++Bxxb1ubZWyBOefHnOe1vml5rwa5M/2HAaG+/P6+vJkkMfAeILKHfR?=
+ =?us-ascii?Q?ott4DTDyKeubbkxqtUFT0uP77bv7rlQxvvFi6oTmanU4OD1yq4AdCM2zmY6z?=
+ =?us-ascii?Q?IMKQnXfK1xR3ZzAgJvLcvApRq1qpSvZc6ARG7IxqUyUyeKnc4sHymQhRqNn4?=
+ =?us-ascii?Q?JSA4EkqYckVpPuKvkeZ2u6GtEsbz0UwsiR1HVkXT?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 556e00fb-2974-4efe-9ed1-08dc686c1393
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 16:47:37.5483
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rAhc0qgjgMcPNNAweLBfokcIwzsLYKzEkNRx5KBz/HSVCGOZYQ9WGcxLmmYkPF5vjkZMY/ZBYOeyKO8EXeQS3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6339
+X-OriginatorOrg: intel.com
 
-On Wed 24-04-24 14:19:02, Kemeng Shi wrote:
-> In mb_mark_used, we will find free chunk and mark it inuse. For chunk
-> in mid of passed range, we could simply mark whole chunk inuse. For chunk
-> at end of range, we may need to mark a continuous bits at end of part of
-> chunk inuse and keep rest part of chunk free. To only mark a part of
-> chunk inuse, we firstly mark whole chunk inuse and then mark a continuous
-> range at end of chunk free.
-> Function mb_mark_used does several times of "mb_find_buddy; mb_clear_bit;
-> ..." to mark a continuous range free which can be done by simply calling
-> ext4_mb_mark_free_simple which free continuous bits in a more effective
-> way.
-> Just call ext4_mb_mark_free_simple in mb_mark_used to use existing and
-> effective code to free continuous blocks in chunk at end of passed range.
+Ira Weiny wrote:
+> BIOS can configure memory devices as firmware first.  This will send CXL
+> events to the firmware instead of the OS.  The firmware can then inform
+> the OS of these events via UEFI.
+
++ linux-acpi
+
+[I missed adding this list.]
+
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-
-I don't know with this patch. It looks correct to me. I don't find either
-the old or the new version dramatically better so I'd say I'll leave it
-upto Ted whether he finds this new version better or not...
-
-In case Ted decides to take this patch, feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
+> format for CXL Component Events.  The format is mostly the same as the
+> CXL Common Event Record Format.  The difference lies in the use of a
+> GUID as the CPER Section Type which matches the UUID defined in CXL 3.1
+> Table 8-43.
+> 
+> Currently a configuration such as this will trace a non standard event
+> in the log omitting useful details of the event.  In addition the CXL
+> sub-system contains additional region and HPA information useful to the
+> user.[0]
+> 
+> The CXL code is required to be called from process context as it needs
+> to take a device lock.  The GHES code may be in interrupt context.  This
+> complicated the use of a callback.  Dan Williams suggested the use of
+> work items as an atomic way of switching between the callback execution
+> and a default handler.[1]
+> 
+> The use of a kfifo simplifies queue processing by providing lock free
+> fifo operations.  cxl_cper_kfifo_get() allows easier management of the
+> kfifo between the ghes and cxl modules.
+> 
+> CXL 3.1 Table 8-127 requires a device to have a queue depth of 1 for
+> each of the four event logs.  A combined queue depth of 32 is chosen to
+> provide room for 8 entries of each log type.
+> 
+> Add GHES support to detect CXL CPER records.  Add the ability for the
+> CXL sub-system to register a work queue to process the events.
+> 
+> This patch adds back the functionality which was removed to fix the
+> report by Dan Carpenter[2].
+> 
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Rafael J. Wysocki <rafael@kernel.org>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Link: http://lore.kernel.org/r/cover.1711598777.git.alison.schofield@intel.com [0]
+> Link: http://lore.kernel.org/r/65d111eb87115_6c745294ac@dwillia2-xfh.jf.intel.com.notmuch [1]
+> Link: http://lore.kernel.org/r/b963c490-2c13-4b79-bbe7-34c6568423c7@moroto.mountain [2]
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > ---
->  fs/ext4/mballoc.c | 38 +++++++++++++++++++++-----------------
->  1 file changed, 21 insertions(+), 17 deletions(-)
+> Changes:
+> [iweiny: pick up tag]
+> [djbw: use proper link format]
+> ---
+>  drivers/acpi/apei/ghes.c  | 110 ++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/cxl-event.h |  27 ++++++++++++
+>  2 files changed, 137 insertions(+)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a61fc52956b2..5acf413808a2 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->  	int ord;
->  	int mlen = 0;
->  	int max = 0;
-> -	int cur;
->  	int start = ex->fe_start;
->  	int len = ex->fe_len;
->  	unsigned ret = 0;
->  	int len0 = len;
->  	void *buddy;
-> -	bool split = false;
-> +	int ord_start, ord_end;
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index 512067cac170..2247a1535b52 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -26,6 +26,8 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/timer.h>
+>  #include <linux/cper.h>
+> +#include <linux/cleanup.h>
+> +#include <linux/cxl-event.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/mutex.h>
+>  #include <linux/ratelimit.h>
+> @@ -33,6 +35,7 @@
+>  #include <linux/irq_work.h>
+>  #include <linux/llist.h>
+>  #include <linux/genalloc.h>
+> +#include <linux/kfifo.h>
+>  #include <linux/pci.h>
+>  #include <linux/pfn.h>
+>  #include <linux/aer.h>
+> @@ -673,6 +676,101 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
+>  	schedule_work(&entry->work);
+>  }
 >  
->  	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
->  	BUG_ON(e4b->bd_group != ex->fe_group);
-> @@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->  
->  	/* let's maintain buddy itself */
->  	while (len) {
-> -		if (!split)
-> -			ord = mb_find_order_for_block(e4b, start);
-> +		ord = mb_find_order_for_block(e4b, start);
->  
->  		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
->  			/* the whole chunk may be allocated at once! */
->  			mlen = 1 << ord;
-> -			if (!split)
-> -				buddy = mb_find_buddy(e4b, ord, &max);
-> -			else
-> -				split = false;
-> +			buddy = mb_find_buddy(e4b, ord, &max);
->  			BUG_ON((start >> ord) >= max);
->  			mb_set_bit(start >> ord, buddy);
->  			e4b->bd_info->bb_counters[ord]--;
-> @@ -2094,20 +2089,29 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
->  		if (ret == 0)
->  			ret = len | (ord << 16);
->  
-> -		/* we have to split large buddy */
->  		BUG_ON(ord <= 0);
->  		buddy = mb_find_buddy(e4b, ord, &max);
->  		mb_set_bit(start >> ord, buddy);
->  		e4b->bd_info->bb_counters[ord]--;
->  
-> -		ord--;
-> -		cur = (start >> ord) & ~1U;
-> -		buddy = mb_find_buddy(e4b, ord, &max);
-> -		mb_clear_bit(cur, buddy);
-> -		mb_clear_bit(cur + 1, buddy);
-> -		e4b->bd_info->bb_counters[ord]++;
-> -		e4b->bd_info->bb_counters[ord]++;
-> -		split = true;
-> +		ord_start = (start >> ord) << ord;
-> +		ord_end = ord_start + (1 << ord);
-> +		/* first chunk */
-> +		if (start > ord_start)
-> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
-> +						 ord_start, start - ord_start,
-> +						 e4b->bd_info);
+> +/* CXL Event record UUIDs are formated as GUIDs and reported in section type */
 > +
-> +		/* last chunk */
-> +		if (start + len < ord_end) {
-> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
-> +						 start + len,
-> +						 ord_end - (start + len),
-> +						 e4b->bd_info);
-> +			break;
-> +		}
-> +		len = start + len - ord_end;
-> +		start = ord_end;
->  	}
->  	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+> +/*
+> + * General Media Event Record
+> + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
+> + */
+> +#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
+> +	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
+> +		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
+> +
+> +/*
+> + * DRAM Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
+> + */
+> +#define CPER_SEC_CXL_DRAM_GUID						\
+> +	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
+> +		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
+> +
+> +/*
+> + * Memory Module Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
+> + */
+> +#define CPER_SEC_CXL_MEM_MODULE_GUID					\
+> +	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
+> +		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
+> +
+> +/* Room for 8 entries for each of the 4 event log queues */
+> +#define CXL_CPER_FIFO_DEPTH 32
+> +DEFINE_KFIFO(cxl_cper_fifo, struct cxl_cper_work_data, CXL_CPER_FIFO_DEPTH);
+> +
+> +/* Synchronize schedule_work() with cxl_cper_work changes */
+> +static DEFINE_SPINLOCK(cxl_cper_work_lock);
+> +struct work_struct *cxl_cper_work;
+> +
+> +static void cxl_cper_post_event(enum cxl_event_type event_type,
+> +				struct cxl_cper_event_rec *rec)
+> +{
+> +	struct cxl_cper_work_data wd;
+> +
+> +	if (rec->hdr.length <= sizeof(rec->hdr) ||
+> +	    rec->hdr.length > sizeof(*rec)) {
+> +		pr_err(FW_WARN "CXL CPER Invalid section length (%u)\n",
+> +		       rec->hdr.length);
+> +		return;
+> +	}
+> +
+> +	if (!(rec->hdr.validation_bits & CPER_CXL_COMP_EVENT_LOG_VALID)) {
+> +		pr_err(FW_WARN "CXL CPER invalid event\n");
+> +		return;
+> +	}
+> +
+> +	guard(spinlock_irqsave)(&cxl_cper_work_lock);
+> +
+> +	if (!cxl_cper_work)
+> +		return;
+> +
+> +	wd.event_type = event_type;
+> +	memcpy(&wd.rec, rec, sizeof(wd.rec));
+> +
+> +	if (!kfifo_put(&cxl_cper_fifo, wd)) {
+> +		pr_err_ratelimited("CXL CPER kfifo overflow\n");
+> +		return;
+> +	}
+> +
+> +	schedule_work(cxl_cper_work);
+> +}
+> +
+> +int cxl_cper_register_work(struct work_struct *work)
+> +{
+> +	if (cxl_cper_work)
+> +		return -EINVAL;
+> +
+> +	guard(spinlock)(&cxl_cper_work_lock);
+> +	cxl_cper_work = work;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_register_work, CXL);
+> +
+> +int cxl_cper_unregister_work(struct work_struct *work)
+> +{
+> +	if (cxl_cper_work != work)
+> +		return -EINVAL;
+> +
+> +	guard(spinlock)(&cxl_cper_work_lock);
+> +	cxl_cper_work = NULL;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_unregister_work, CXL);
+> +
+> +int cxl_cper_kfifo_get(struct cxl_cper_work_data *wd)
+> +{
+> +	return kfifo_get(&cxl_cper_fifo, wd);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_kfifo_get, CXL);
+> +
+>  static bool ghes_do_proc(struct ghes *ghes,
+>  			 const struct acpi_hest_generic_status *estatus)
+>  {
+> @@ -707,6 +805,18 @@ static bool ghes_do_proc(struct ghes *ghes,
+>  		}
+>  		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+>  			queued = ghes_handle_arm_hw_error(gdata, sev, sync);
+> +		} else if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID)) {
+> +			struct cxl_cper_event_rec *rec = acpi_hest_get_payload(gdata);
+> +
+> +			cxl_cper_post_event(CXL_CPER_EVENT_GEN_MEDIA, rec);
+> +		} else if (guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID)) {
+> +			struct cxl_cper_event_rec *rec = acpi_hest_get_payload(gdata);
+> +
+> +			cxl_cper_post_event(CXL_CPER_EVENT_DRAM, rec);
+> +		} else if (guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID)) {
+> +			struct cxl_cper_event_rec *rec = acpi_hest_get_payload(gdata);
+> +
+> +			cxl_cper_post_event(CXL_CPER_EVENT_MEM_MODULE, rec);
+>  		} else {
+>  			void *err = acpi_hest_get_payload(gdata);
 >  
-> -- 
-> 2.30.0
+> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> index 03fa6d50d46f..a0067c49e2ca 100644
+> --- a/include/linux/cxl-event.h
+> +++ b/include/linux/cxl-event.h
+> @@ -3,6 +3,8 @@
+>  #ifndef _LINUX_CXL_EVENT_H
+>  #define _LINUX_CXL_EVENT_H
+>  
+> +#include <linux/workqueue_types.h>
+> +
+>  /*
+>   * Common Event Record Format
+>   * CXL rev 3.0 section 8.2.9.2.1; Table 8-42
+> @@ -140,4 +142,29 @@ struct cxl_cper_event_rec {
+>  	union cxl_event event;
+>  } __packed;
+>  
+> +struct cxl_cper_work_data {
+> +	enum cxl_event_type event_type;
+> +	struct cxl_cper_event_rec rec;
+> +};
+> +
+> +#ifdef CONFIG_ACPI_APEI_GHES
+> +int cxl_cper_register_work(struct work_struct *work);
+> +int cxl_cper_unregister_work(struct work_struct *work);
+> +int cxl_cper_kfifo_get(struct cxl_cper_work_data *wd);
+> +#else
+> +static inline int cxl_cper_register_work(struct work_struct *work);
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline int cxl_cper_unregister_work(struct work_struct *work);
+> +{
+> +	return 0;
+> +}
+> +static inline int cxl_cper_kfifo_get(struct cxl_cper_work_data *wd)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  #endif /* _LINUX_CXL_EVENT_H */
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> -- 
+> 2.44.0
+> 
+
+
 
