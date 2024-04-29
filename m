@@ -1,81 +1,165 @@
-Return-Path: <linux-kernel+bounces-162685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0808E8B5EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C48EC8B5EFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:29:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D85E1F247AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:27:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 660691F249BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5357C84D22;
-	Mon, 29 Apr 2024 16:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AF984D27;
+	Mon, 29 Apr 2024 16:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dcOav+33"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nFSL4xYs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96498824AA;
-	Mon, 29 Apr 2024 16:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95038824AA;
+	Mon, 29 Apr 2024 16:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408040; cv=none; b=ke8uSIZ4m4e0NTHjL+bsbe/WD9a3TzbWIeH4Zx7cNUJn2bNKh8MiQpG/U7GBI8vcQH/k1G1MV2+9YFA49ZMquo7uLpOG/MorV6KydzW6PlYEpOSd/d7flUtcpfHq0cnxSUZI5sbr5ulnbk+BiALFomQX+In76IvA1Ld4AwN0+zM=
+	t=1714408144; cv=none; b=XRVwHRKvak+HrWqJdSu9IU1r07lLRZWyzqGn9dd9/gmrCtB1CK43eDrCaEpn9MDbK/TAQFgcEbwcOuOdm3IJ7mcohV8x1mmSws6moHXsc+5fKJWHvYOgxePyhAmtRHYz4fNRCJ6xtNp/AgR4/KZl0ZM3xW0S0skIXxTnL3Z0daQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408040; c=relaxed/simple;
-	bh=WTd0PHYr8dkvTrJwQDiAv3Ks1lrKu1Q404pSYACa/oQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pTMhZzKSQFNf2jVvIXLVEThsIhCFmBIgNGKJIe3ECKxerOUVSCnrCWoffA/UBhcYm94Qw2zuOf8Y+veJNw+WwPA0lrBRIsueAt2epsQO2Vk0AfriK1DDBVL8/SdVMhfG2uqGsCRyqc4rAhkopvUxn80pI78JXPCxE2+KNFtwGRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dcOav+33; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A997C113CD;
-	Mon, 29 Apr 2024 16:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714408040;
-	bh=WTd0PHYr8dkvTrJwQDiAv3Ks1lrKu1Q404pSYACa/oQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dcOav+33Qgbmy4BeigepKEv8dt4PMFttVCJkpAoTlQ7VEeAS87P3GRp8kxroRALLU
-	 MhX15hTdc1POlRN2YBmEOwthMYLiiAYKF5+kO4PeNIu4F18AnuX9btEH5FnHIsNx7a
-	 FU0z/on3LFiHOq2kW8joRg15buD7JKPGTqQ5VZpzlVtgwI0NAwP6d4eAn3bz+veNp+
-	 kZ8fK2fCTZFr2OVxAvKqWNCou35H8qGsVYieL+bzPzOEpbRbRea9GoYaEh1zzefw72
-	 cEivk0sx3hrX/sbgF+ES4foRNoB/1OzPLRc2GkyGjmh2Q1JQXOKIinBAV8i5+g8LoS
-	 OzVbVqv3TBaqw==
-Date: Mon, 29 Apr 2024 11:27:17 -0500
-From: Rob Herring <robh@kernel.org>
-To: Shresth Prasad <shresthprasad7@gmail.com>
-Cc: javier.carrasco.cruz@gmail.com, skhan@linuxfoundation.org,
-	devicetree@vger.kernel.org, saravanak@google.com,
-	linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH][next] of: property: Use scope based cleanup on port_node
-Message-ID: <171440802093.2111608.15033080205921005255.robh@kernel.org>
-References: <20240428115226.41345-2-shresthprasad7@gmail.com>
+	s=arc-20240116; t=1714408144; c=relaxed/simple;
+	bh=/rhfbBArK1vuX55gWRri0xcPJM+jiH9RSzxzjjGEBaI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=a5wrtBzAh/uCSZF2L4sXAVsDCbD6RLW5OFigaqOFd+NG8dS3r6ajx0UEx4kB7spcgA7XjCRculoJbEL4kCSjyrMrkr+kSr0oX1RuNJTUjsYIMqRI7dq8TJ3BdO/Vv6MGk+P2rN/XZ7XKTeBbydPYBlT//wxvIC4GoSdqdYnZPxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nFSL4xYs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43TFucHQ003792;
+	Mon, 29 Apr 2024 16:28:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=8aEzxpcfWPZRrq+K6Lw7TglFRUXWgUOU+zQ+AjNDdGU=; b=nF
+	SL4xYszEGgM11oxNQYEyCYje9JaFMVDVHQjObtRqOCQwd4k+77F4qtHJbBI0BBzn
+	7mokjnptD/9umDH7shc3IR3VUr3RmUaLfa+Z6IKwu74NIonvJbBMU01/M63hYIGv
+	MLw0IyQX9ye+6gf3SIN5u920gyVeZ/sKwSdmOznKzSu+bM6HRAkKLea/2CLva45p
+	vMwubcG9su7IRNg760s5cBtTz2X02HtTlPWj6p2HPoifTtjNRstVseItKPLkkTfP
+	XY7BacktNb9ErvhI1DOkongOaw7H9GEcGH6M+Y+V1EuwG6yqEJ8SchzEEmvt6AtP
+	yTuLcZNdotmb0+4MQQUg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtd8kgqyh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 16:28:41 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43TGSexC028096
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 16:28:40 GMT
+Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 29 Apr
+ 2024 09:28:37 -0700
+Message-ID: <b7296e60-1911-4302-b472-b0ae11cd3d87@quicinc.com>
+Date: Mon, 29 Apr 2024 09:28:30 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428115226.41345-2-shresthprasad7@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] sh: Call paging_init() earlier in the init sequence
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        <ysato@users.sourceforge.jp>, <dalias@libc.org>
+CC: <akpm@linux-foundation.org>, <linux-sh@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <kernel@quicinc.com>, Rob Herring <robh@kernel.org>
+References: <20240423233150.74302-1-quic_obabatun@quicinc.com>
+ <6ba5b226dfcbae3d9c789bb6943089621b315d65.camel@physik.fu-berlin.de>
+Content-Language: en-US
+From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+In-Reply-To: <6ba5b226dfcbae3d9c789bb6943089621b315d65.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: LA1Li0h98ffn-aMf74TbmVylhmK6Oive
+X-Proofpoint-ORIG-GUID: LA1Li0h98ffn-aMf74TbmVylhmK6Oive
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_14,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404290105
 
 
-On Sun, 28 Apr 2024 17:22:27 +0530, Shresth Prasad wrote:
-> Use __free cleanup handler which ensures that the resource is freed when
-> it goes out of scope, thus removing the need to manually clean it up
-> using of_node_put.
-> 
-> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
-> ---
-> Rob Herring <robh@kernel.org> sent a patch fixing similar cases in
-> property.c but seems to have missed this one. Please let me know if this
-> is mistake, or if it was left unchanged for a reason.
-> 
->  drivers/of/property.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
+On 4/29/2024 2:03 AM, John Paul Adrian Glaubitz wrote:
+> Hi Oreoluwa,
+>
+> On Tue, 2024-04-23 at 16:31 -0700, Oreoluwa Babatunde wrote:
+>> The unflatten_device_tree() function contains a call to
+>> memblock_alloc(). This is a problem because this allocation is done
+>> before any of the reserved memory is set aside in paging_init().
+>> This means that there is a possibility for memblock to allocate from
+>> any of the memory regions that are supposed to be set aside as reserved.
+>>
+>> Hence, move the call to paging_init() to be earlier in the init
+>> sequence so that the reserved memory regions are set aside before any
+>> allocations are done using memblock.
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+>> ---
+>> v2:
+>> - Added Rob Herrings Reviewed-by.
+>> - cc Andrew Morton to assist with merging this for sh architecture.
+>>   Similar change made for loongarch and openrisc in v1 have already
+>>   been merged.
+> Could you link the changes for references so I can have a look?
+Hi John,
 
-Applied, thanks!
+Here are links to the corresponding changes on Loongarch and Openrisc.
 
+- Loongarch:
+https://lore.kernel.org/all/20240218151403.2206980-1-chenhuacai@loongson.cn/
+
+- Openrisc:
+https://lore.kernel.org/all/1707524971-146908-3-git-send-email-quic_obabatun@quicinc.com/
+
+
+Thank you!
+Oreoluwa
+>
+>> v1:
+>> https://lore.kernel.org/all/1707524971-146908-4-git-send-email-quic_obabatun@quicinc.com/
+>>
+>>  arch/sh/kernel/setup.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
+>> index 620e5cf8ae1e..98c8473e130d 100644
+>> --- a/arch/sh/kernel/setup.c
+>> +++ b/arch/sh/kernel/setup.c
+>> @@ -322,6 +322,8 @@ void __init setup_arch(char **cmdline_p)
+>>  	/* Let earlyprintk output early console messages */
+>>  	sh_early_platform_driver_probe("earlyprintk", 1, 1);
+>>  
+>> +	paging_init();
+>> +
+>>  #ifdef CONFIG_OF_EARLY_FLATTREE
+>>  #ifdef CONFIG_USE_BUILTIN_DTB
+>>  	unflatten_and_copy_device_tree();
+>> @@ -330,8 +332,6 @@ void __init setup_arch(char **cmdline_p)
+>>  #endif
+>>  #endif
+>>  
+>> -	paging_init();
+>> -
+>>  	/* Perform the machine specific initialisation */
+>>  	if (likely(sh_mv.mv_setup))
+>>  		sh_mv.mv_setup(cmdline_p);
+> Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>
+> Adrian
+>
 
