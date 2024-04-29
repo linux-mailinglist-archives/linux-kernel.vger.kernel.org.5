@@ -1,165 +1,123 @@
-Return-Path: <linux-kernel+bounces-162135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 647518B5673
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:24:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691A08B5682
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85190B24017
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:24:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A89E2843E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6962A40BFD;
-	Mon, 29 Apr 2024 11:24:36 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347D04174A;
+	Mon, 29 Apr 2024 11:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UiTg6Pfl"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483E73FB84;
-	Mon, 29 Apr 2024 11:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16CE3FBBD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714389876; cv=none; b=TnCpeBaQHq8Njj330vov8Q93pqNuh7bFowZ1D//vXT6wuOex7C5ou2QvzLkiR7uwVVwURlOCfrF7kSIefJ57gEDsvuznV+LH9lwdFCgWZOK5kqVMfPSTU8alRx1NBrntejzMUcjSJlHHtHc/pgvu8xzXpwGg74h5oYQylKDuW3I=
+	t=1714390015; cv=none; b=lfxsGmfC0bY8CuxEQ8ySIvor9zcvUs79m3PnZYOHqF5v36yla+1nDmjuEtfG4p5bepl0feEaUnJpy5i0jZnIih9PoZ0xRb9xr09k69oM68GVGv67637nx3R4t1CoQpk/5Aku9SGS6d2N1BZQGbho3lHQFoyV5tPMHrxY5kRBSq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714389876; c=relaxed/simple;
-	bh=GGk8NpWnVKyXH0ro+J0lf0GfBw6k69PSAkEgfc9+Me4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=L9YShDgKAR53AJagJc6jzxmHUtivSb9LhxTzHiNYkAEf3WEWBUnJa3BSfrgU6e6I23HvESsYd9lTQL7Qgj058SPNfxmvIlA/vcwVgltof0wzdsxFvYMapR0+RoknivlnwspX828d9f2MDm6ctEHIy0aTlerAtp/m5dH3tnBvilo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VSgr96mvFz1R9wY;
-	Mon, 29 Apr 2024 19:21:13 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0D5E018007C;
-	Mon, 29 Apr 2024 19:24:22 +0800 (CST)
-Received: from [10.67.111.172] (10.67.111.172) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Apr 2024 19:24:21 +0800
-Message-ID: <5c0359c7-502f-fe8b-c1ee-3470b36b586c@huawei.com>
-Date: Mon, 29 Apr 2024 19:24:21 +0800
+	s=arc-20240116; t=1714390015; c=relaxed/simple;
+	bh=3vn/fi/i6sQ9Va1NbbM7YvYj+Lt8pEeMyM3DF6Y9eNo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EVR9I3LNiDdaw5O7j7Q0RL47o8/+wAT8VGm1WfWkvM4G2aN1anCkrmc0qIZn13rWXFSZCMim0Jk+Si5/unjbQpy69Qt3sr6kdjLnmt6TYu1xSTdFwbX5+k8vkKt6rw+yc2GknL8K2rhj08n7juq8zE3ACJHQqpUM7txcu0cMmew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UiTg6Pfl; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5171a529224so5451590e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 04:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714390012; x=1714994812; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=39YugN0AhrsG0ayBC0/e4hmLkEBwLSeUr7AqXUnVb0I=;
+        b=UiTg6PflnDnmh4E7QGt/TyieAN/Rp2W3P6QU2tsHmcqyVXGgwoEa/hA9GgFIbbTtv5
+         IOIwfj2L8VkWI3cudpQcoFpA7Pg4k8MBjDYD4m8GNJFQykQuHT6KtnliwMK8y+yWpEXP
+         m64sQoNYKegqxuh8vECvoqUCRpaTEMC+j5N366bbVmEZfK6voleQOH8HO6Drx977MnWI
+         s1Tnp09j2AJUmkOIgnSgAROrdqyAiUN4HMXltX15MZgkS+YkHPHLpbinvRJ5v+BahhA/
+         +vkCZV/B5l4IaLPl+3HSqNMbgoupH2jfexj2E0O+19OqUxrxFtRrCrQSHMTdVUv0nw4V
+         NDVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714390012; x=1714994812;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=39YugN0AhrsG0ayBC0/e4hmLkEBwLSeUr7AqXUnVb0I=;
+        b=eX3aKL1t7K1cS8XmKOT7zP92S3tUS/khFUakgoIUX6nRPMEjFhRBfgr2swL/csxFk/
+         djHpezDH7dTs2KHGNvU8ePyOgVqud+8RlBAD/5jv7RQ19RILEHoDFG727A8AbLxq3mNV
+         f3ISiPOv6jpshsLD7e1ZGYJ15YGmp6J9EOLT+yR0FR9fapWqIw5ioZx0KKwwalXS4wK6
+         0DbsQFhZa2Slz7GAOcb3IcgEJa5VmsV2hrISFBLCzPVIYc7loJvSkssE16yJHVtSvKFl
+         fPi7d+4f9Bh7GNbWBoEvDj7qFFghg+gdma/WPzZ24NGbL5GAd7Wrv13P2oUqCRiUEPaw
+         1o3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVlgL23X6qH6WFj5yLE01ucsudillJnYe1n2T04WOXRo95F7Dc5P9KYuoEPFSflESQhHuDEDdw27sMVOD8Rb498fYz6xN51BR68U2Gq
+X-Gm-Message-State: AOJu0YyX00/Gf5EJz9A2tK2Ch/idT87/tHE27X9yNOXDGB6538HBsoDc
+	tXJnJivK86tQfUyrXl+AjLB9ki5mcaCZJSy93bSWACL8toLhgCXLLmzqrFPGujrMoDhdi8WZXo0
+	F
+X-Google-Smtp-Source: AGHT+IFI3AluHhwTJpLYWZ4GiTLUyfPyto/m6pblcfEQZH7t+wQn7drSS1yqlWjP1qRAQv31+di14Q==
+X-Received: by 2002:a05:6512:2393:b0:518:ddc3:b3a8 with SMTP id c19-20020a056512239300b00518ddc3b3a8mr7874643lfv.61.1714390011890;
+        Mon, 29 Apr 2024 04:26:51 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id i10-20020a056512318a00b005159707b939sm4064914lfe.44.2024.04.29.04.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 04:26:51 -0700 (PDT)
+Date: Mon, 29 Apr 2024 14:26:50 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Badhri Jagan Sridharan <badhri@google.com>
+Cc: gregkh@linuxfoundation.org, linux@roeck-us.net, 
+	heikki.krogerus@linux.intel.com, kyletso@google.com, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rdbabiera@google.com, amitsd@google.com, stable@vger.kernel.org, 
+	frank.wang@rock-chips.com, broonie@kernel.org
+Subject: Re: [PATCH v3] usb: typec: tcpm: Check for port partner validity
+ before consuming it
+Message-ID: <sfy7bt7ygmjt2qvs2auxpz63rrvampj3vjyakt7rs77asnhqka@jsymy45qvbxb>
+References: <20240427202812.3435268-1-badhri@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] media: dvb-usb: Fix unexpected infinite loop in
- dvb_usb_read_remote_control()
-To: <mchehab@kernel.org>
-CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Zheng
- Yejian <zhengyejian1@huawei.com>
-References: <20240412135256.1546051-1-zhengyejian1@huawei.com>
-Content-Language: en-US
-From: Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20240412135256.1546051-1-zhengyejian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240427202812.3435268-1-badhri@google.com>
 
-On 2024/4/12 21:52, Zheng Yejian wrote:
-> Infinite log printing occurs during fuzz test:
+On Sat, Apr 27, 2024 at 08:28:12PM +0000, Badhri Jagan Sridharan wrote:
+> typec_register_partner() does not guarantee partner registration
+> to always succeed. In the event of failure, port->partner is set
+> to the error value or NULL. Given that port->partner validity is
+> not checked, this results in the following crash:
 > 
->    rc rc1: DViCO FusionHDTV DVB-T USB (LGZ201) as ...
->    ...
->    dvb-usb: schedule remote query interval to 100 msecs.
->    dvb-usb: DViCO FusionHDTV DVB-T USB (LGZ201) successfully initialized ...
->    dvb-usb: bulk message failed: -22 (1/0)
->    dvb-usb: bulk message failed: -22 (1/0)
->    dvb-usb: bulk message failed: -22 (1/0)
->    ...
->    dvb-usb: bulk message failed: -22 (1/0)
+> Unable to handle kernel NULL pointer dereference at virtual address xx
+>  pc : run_state_machine+0x1bc8/0x1c08
+>  lr : run_state_machine+0x1b90/0x1c08
+> ..
+>  Call trace:
+>    run_state_machine+0x1bc8/0x1c08
+>    tcpm_state_machine_work+0x94/0xe4
+>    kthread_worker_fn+0x118/0x328
+>    kthread+0x1d0/0x23c
+>    ret_from_fork+0x10/0x20
 > 
-> Looking into the codes, there is a loop in dvb_usb_read_remote_control(),
-> that is in rc_core_dvb_usb_remote_init() create a work that will call
-> dvb_usb_read_remote_control(), and this work will reschedule itself at
-> 'rc_interval' intervals to recursively call dvb_usb_read_remote_control(),
-> see following code snippet:
+> To prevent the crash, check for port->partner validity before
+> derefencing it in all the call sites.
 > 
->    rc_core_dvb_usb_remote_init() {
->      ...
->      INIT_DELAYED_WORK(&d->rc_query_work, dvb_usb_read_remote_control);
->      schedule_delayed_work(&d->rc_query_work,
->                            msecs_to_jiffies(rc_interval));
->      ...
->    }
-> 
->    dvb_usb_read_remote_control() {
->      ...
->      err = d->props.rc.core.rc_query(d);
->      if (err)
->        err(...)  // Did not return even if query failed
->      schedule_delayed_work(&d->rc_query_work,
->                            msecs_to_jiffies(rc_interval));
->    }
-> 
-> When the infinite log printing occurs, the query callback
-> 'd->props.rc.core.rc_query' is cxusb_rc_query(). And the log is due to
-> the failure of finding a valid 'generic_bulk_ctrl_endpoint'
-> in usb_bulk_msg(), see following code snippet:
-> 
->    cxusb_rc_query() {
->      cxusb_ctrl_msg() {
->        dvb_usb_generic_rw() {
->          ret = usb_bulk_msg(d->udev, usb_sndbulkpipe(d->udev,
->                             d->props.generic_bulk_ctrl_endpoint),...);
->          if (ret)
->            err("bulk message failed: %d (%d/%d)",ret,wlen,actlen);
->            ...
->        }
->    ...
->    }
-> 
-> By analyzing the corresponding USB descriptor, it shows that the
-> bNumEndpoints is 0 in its interface descriptor, but
-> the 'generic_bulk_ctrl_endpoint' is 1, that means user don't configure
-> a valid endpoint for 'generic_bulk_ctrl_endpoint', therefore this
-> 'invalid' USB device should be rejected before it calls into
-> dvb_usb_read_remote_control().
-> 
-> To fix it, iiuc, we can add endpoint check in dvb_usb_adapter_init().
-> 
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> Cc: stable@vger.kernel.org
+> Fixes: c97cd0b4b54e ("usb: typec: tcpm: set initial svdm version based on pd revision")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 > ---
->   drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> Hi, I'm not very familiar with USB driver, and I'm not sure the
-> type check is appropriate or not here. Would be any device properties
-> that allow 'generic_bulk_ctrl_endpoint' not being configured, or would
-> it be configured late after init ? :)
-> 
+>  drivers/usb/typec/tcpm/tcpm.c | 30 +++++++++++++++++++++++-------
+>  1 file changed, 23 insertions(+), 7 deletions(-)
 
-Kindly ping :)
-Hi, Mauro, would you mind taking a look at this code ?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
---
-Thanks,
-Zheng Yejian
 
-> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> index fbf58012becd..48e7b9fb93dd 100644
-> --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-> @@ -104,6 +104,14 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
->   	 * sometimes a timeout occurs, this helps
->   	 */
->   	if (d->props.generic_bulk_ctrl_endpoint != 0) {
-> +		ret = usb_pipe_type_check(d->udev, usb_sndbulkpipe(d->udev,
-> +					  d->props.generic_bulk_ctrl_endpoint));
-> +		if (ret)
-> +			goto frontend_init_err;
-> +		ret = usb_pipe_type_check(d->udev, usb_rcvbulkpipe(d->udev,
-> +					  d->props.generic_bulk_ctrl_endpoint));
-> +		if (ret)
-> +			goto frontend_init_err;
->   		usb_clear_halt(d->udev, usb_sndbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
->   		usb_clear_halt(d->udev, usb_rcvbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
->   	}
-
+-- 
+With best wishes
+Dmitry
 
