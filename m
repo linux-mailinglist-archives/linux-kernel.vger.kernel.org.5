@@ -1,188 +1,115 @@
-Return-Path: <linux-kernel+bounces-162411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9278B5AD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:03:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BDC68B5AD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 255D8B232A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:03:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D3E31C21F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0D67D089;
-	Mon, 29 Apr 2024 14:02:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB09E7BB1B
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E457BAE3;
+	Mon, 29 Apr 2024 14:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mIQAiOwY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5707350E;
+	Mon, 29 Apr 2024 14:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714399346; cv=none; b=i5567kxiz2+QmcVKmS8+d186492D4Cy0Cqr7iLr8oX/7SFl3zvWa4YLcWP0xRIq12TaxNby8T3na6zpKfn+1uRLxGs7ys3hWbFhylDoZL7oSJOfscViK6QDbL2RhR05pzfWW/MVPbEMwZLJxaPpLhbliE235piVYjwmRCSRp55w=
+	t=1714399366; cv=none; b=rzxDTs5nriDPFuwnris9c8KD1rhu2noB13Ug+tOiLQipMhCS0LSfvilOsTLNVkGEi0ns6VGnLdG+qXA3cN+yHaQgX4GUgmeGr7IYbcOpEOrQirHKf2cY4R5ZSurL4NAYmLMZGOXu/HV1rfHL6hlZxWCJ+H1icFv0SnW/E5UvvJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714399346; c=relaxed/simple;
-	bh=r9IDjDap4u+9qS/WYmIDbHz9I+cFSGPxoF+il2kITJk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lDgcmO/MFHGTZo4ojVB+bFca0+JOl0YzB+mvZYbl0E3yKlAWesl+Q+FHkQPXV3PrGyqBviOPdn47ks/bBpfRVxAiV9vkSfAzRP1u7WgdwodhIqWuPShBq3u3EHXf163FLPBR4zBAQkHsqTe4o3Rkiza702D8iO0YzoyaqSeLfbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18CE11007;
-	Mon, 29 Apr 2024 07:02:51 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE6213F793;
-	Mon, 29 Apr 2024 07:02:22 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Peter Xu <peterx@redhat.com>,
-	Mike Rapoport <rppt@linux.ibm.com>,
-	Shivansh Vij <shivanshvij@outlook.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64/mm: Add uffd write-protect support
-Date: Mon, 29 Apr 2024 15:02:07 +0100
-Message-Id: <20240429140208.238056-4-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240429140208.238056-1-ryan.roberts@arm.com>
-References: <20240429140208.238056-1-ryan.roberts@arm.com>
+	s=arc-20240116; t=1714399366; c=relaxed/simple;
+	bh=835iAcXRfjIYlXFFIwTdN1EOMd6MN3KDBFjtdpw5a40=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cbUe4wh+6uUb3TrU4E3p60GILpjjEjNW4cdfxI1i9/huV8htQfYCSyGIOT6G/KxDNCIY7sC8RRhmX3iClF6zY4ToH53Jq934CrcNeTSdMOGHu8kpbhkG89foXOWaDgIOukE623nPeEvO1/4+DFjBwVhPmIARpkuhHkfDNSFGegQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mIQAiOwY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77BA2C4AF19;
+	Mon, 29 Apr 2024 14:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714399365;
+	bh=835iAcXRfjIYlXFFIwTdN1EOMd6MN3KDBFjtdpw5a40=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mIQAiOwY1X+S90URPul8ZL26gdeBGQLXhnXDeQTxIa9KM0vKzNqP617ep23xAxHIy
+	 HQTxTRtMK//6MVqQmnif3WNYgzKoeENyXTBUNKtVRPRimNodrWIqLylyT0VWKVhdCh
+	 gls/b9VJftbfJCNIFHj9dlE0UcP/4vXJwuiPuXWOurv3ojJqBwSnluGK3VrqWOnb6N
+	 qYgyAW8fYDw96zokhC9yx2Zt8QIhHPVCWxPkerfplACVIE7+jY2AgqP8lXbgVtmBZy
+	 LFX2TbJJq0gVAd7UaaUyb0ZZ8a++pX75g69OAOoEQKxC6+FIF0nAeC5hAdgTRzSTc1
+	 2bN3YBjgBhsSA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s1Rae-000000004KY-3wOG;
+	Mon, 29 Apr 2024 16:02:45 +0200
+Date: Mon, 29 Apr 2024 16:02:44 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Cc: Doug Anderson <dianders@chromium.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, quic_mohamull@quicinc.com,
+	quic_hbandi@quicinc.com, quic_anubhavg@quicinc.com
+Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
+Message-ID: <Zi-ohCWv58d2h5VM@hovoldconsulting.com>
+References: <20240426155801.25277-1-johan+linaro@kernel.org>
+ <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+ <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
+ <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
 
-Let's use the newly-free PTE SW bit (58) to add support for uffd-wp.
+Hi Janaki,
 
-The standard handlers are implemented for set/test/clear for both pte
-and pmd. Additionally we must also track the uffd-wp state as a pte swp
-bit, so use a free swap pte bit (3).
+Please avoid top and remember to trim unnecessary context when replying
+to the mailing lists.
 
-Acked-by: Peter Xu <peterx@redhat.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- arch/arm64/Kconfig                    |  1 +
- arch/arm64/include/asm/pgtable-prot.h |  8 +++++
- arch/arm64/include/asm/pgtable.h      | 44 +++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
+On Mon, Apr 29, 2024 at 03:34:32PM +0530, Janaki Ramaiah Thota wrote:
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7b11c98b3e84..763e221f2169 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -255,6 +255,7 @@ config ARM64
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
- 	select HAVE_ARCH_USERFAULTFD_MINOR if USERFAULTFD
-+	select HAVE_ARCH_USERFAULTFD_WP if USERFAULTFD
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TRACE_IRQFLAGS_NMI_SUPPORT
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
-diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-index ddf55895c9c2..a5e7dd37bb0a 100644
---- a/arch/arm64/include/asm/pgtable-prot.h
-+++ b/arch/arm64/include/asm/pgtable-prot.h
-@@ -20,6 +20,14 @@
- #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
- #define PTE_INVALID		(PTE_NS)		 /* only when !PTE_VALID */
- 
-+#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+#define PTE_UFFD_WP		(_AT(pteval_t, 1) << 58) /* uffd-wp tracking */
-+#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 1) << 3)	 /* only for swp ptes */
-+#else
-+#define PTE_UFFD_WP		(_AT(pteval_t, 0))
-+#define PTE_SWP_UFFD_WP		(_AT(pteval_t, 0))
-+#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
-+
- #define _PROT_DEFAULT		(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
- #define _PROT_SECT_DEFAULT	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
- 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index d966d2ee1097..759ba8c32a58 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -279,6 +279,23 @@ static inline pte_t pte_mkdevmap(pte_t pte)
- 	return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
- }
- 
-+#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+static inline int pte_uffd_wp(pte_t pte)
-+{
-+	return !!(pte_val(pte) & PTE_UFFD_WP);
-+}
-+
-+static inline pte_t pte_mkuffd_wp(pte_t pte)
-+{
-+	return pte_wrprotect(set_pte_bit(pte, __pgprot(PTE_UFFD_WP)));
-+}
-+
-+static inline pte_t pte_clear_uffd_wp(pte_t pte)
-+{
-+	return clear_pte_bit(pte, __pgprot(PTE_UFFD_WP));
-+}
-+#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
-+
- static inline void __set_pte(pte_t *ptep, pte_t pte)
- {
- 	WRITE_ONCE(*ptep, pte);
-@@ -471,6 +488,23 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
- 	return clear_pte_bit(pte, __pgprot(PTE_SWP_EXCLUSIVE));
- }
- 
-+#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+static inline pte_t pte_swp_mkuffd_wp(pte_t pte)
-+{
-+	return set_pte_bit(pte, __pgprot(PTE_SWP_UFFD_WP));
-+}
-+
-+static inline int pte_swp_uffd_wp(pte_t pte)
-+{
-+	return !!(pte_val(pte) & PTE_SWP_UFFD_WP);
-+}
-+
-+static inline pte_t pte_swp_clear_uffd_wp(pte_t pte)
-+{
-+	return clear_pte_bit(pte, __pgprot(PTE_SWP_UFFD_WP));
-+}
-+#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
-+
- #ifdef CONFIG_NUMA_BALANCING
- /*
-  * See the comment in include/linux/pgtable.h
-@@ -512,6 +546,15 @@ static inline int pmd_trans_huge(pmd_t pmd)
- #define pmd_mkdirty(pmd)	pte_pmd(pte_mkdirty(pmd_pte(pmd)))
- #define pmd_mkyoung(pmd)	pte_pmd(pte_mkyoung(pmd_pte(pmd)))
- #define pmd_mkinvalid(pmd)	pte_pmd(pte_mkinvalid(pmd_pte(pmd)))
-+#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+#define pmd_uffd_wp(pmd)	pte_uffd_wp(pmd_pte(pmd))
-+#define pmd_mkuffd_wp(pmd)	pte_pmd(pte_mkuffd_wp(pmd_pte(pmd)))
-+#define pmd_clear_uffd_wp(pmd)	pte_pmd(pte_clear_uffd_wp(pmd_pte(pmd)))
-+#define pmd_swp_uffd_wp(pmd)	pte_swp_uffd_wp(pmd_pte(pmd))
-+#define pmd_swp_mkuffd_wp(pmd)	pte_pmd(pte_swp_mkuffd_wp(pmd_pte(pmd)))
-+#define pmd_swp_clear_uffd_wp(pmd) \
-+				pte_pmd(pte_swp_clear_uffd_wp(pmd_pte(pmd)))
-+#endif /* CONFIG_HAVE_ARCH_USERFAULTFD_WP */
- 
- #define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
- 
-@@ -1244,6 +1287,7 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
-  * Encode and decode a swap entry:
-  *	bits 0-1:	present (must be zero)
-  *	bits 2:		remember PG_anon_exclusive
-+ *	bit  3:		remember uffd-wp state
-  *	bit  5:		PTE_INVALID (must be zero)
-  *	bits 6-10:	swap type
-  *	bits 11-60:	swap offset
--- 
-2.25.1
+> Having a default BDA list from NVM BDA tag value will prevent developers
+> from using the device if there is no user space app(In Fluoride) to set
+> the BDA. Therefore, we are requesting to use default address check patch,
+> so that developer can change the NVM BDA to make use of the device.
 
+But a developer on such an old platform that can patch and replace the
+NVM configuration file should also be able to just disable the check in
+the driver right (e.g. by commenting out the call to
+qca_check_bdaddr())?
+
+>   List Of default Addresses:
+>   ---------------------------------------------------------
+> |       BDA          |      Chipset                       |
+>   ---------------------------------------------------------
+> | 39 80 10 00 00 20  |  WCN3988 with ROM Version 0x0200   |
+>   ---------------------------------------------------------
+> | 39 80 12 74 08 00  |  WCN3988 with ROM Version 0x0201   |
+>   ---------------------------------------------------------
+> | 39 90 21 64 07 00  |  WCN3990                           |
+>   ---------------------------------------------------------
+> | 39 98 00 00 5A AD  |  WCN3991                           |
+>   ---------------------------------------------------------
+> | 00 00 00 00 5A AD  |  QCA DEFAULT                       |
+>   ---------------------------------------------------------
+
+What about WCN6750 and 64:90:00:00:5a:ad?
+
+And then there's currently also:
+
+> > bluetooth hci0: bd_addr = 61:47:aa:31:22:14 (qca/nvm_00130300.bin)
+> > bluetooth hci0: bd_addr = 61:47:aa:32:44:07 (qca/nvm_00130302.bin)
+
+Which controllers use these configurations?
+
+Johan
 
