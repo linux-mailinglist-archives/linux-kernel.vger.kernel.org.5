@@ -1,275 +1,259 @@
-Return-Path: <linux-kernel+bounces-162706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51CAA8B5F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:45:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BF58B5F57
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7444C1C218A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:45:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C207B21482
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE82F86158;
-	Mon, 29 Apr 2024 16:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA25586244;
+	Mon, 29 Apr 2024 16:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bC2j9zaz"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CKZ18j6U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d+GkVceN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVG+Vq5B";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDnWDRBe"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7EF84D15;
-	Mon, 29 Apr 2024 16:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EDD84FDB;
+	Mon, 29 Apr 2024 16:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409103; cv=none; b=hiGXx6WFcUTQ+l2uaJ0oTrPe+jYp03n06j/X9xnGZ7iDaS8K/LYjgLoEyujNi9/ghtfOuBqtNHGZJhp3F1wU8xbQAL/UQBPTvjOBVYJxNFvMowBe2nBJKhcxPThsCzwOHaANDKmz4AYlZc/TxPmI9RpxxnZhZqCUUqawX7stK2Q=
+	t=1714409212; cv=none; b=TXgBX5YwsImvrHcH7e3HGr/pdX/KEpkIbs6k0H/3VvwjZBrDZ6EWsXFyfeRkU/4fYzc0J0dnVvuX1ldCtm4i0oo4T3uPLlXeoRZGvbiehH+SJbC1qI3HD549rlTLV5tY4qL78Ydm8L/kbnEaE2uu5AiCdPkkmeaxWRmBKELM08Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409103; c=relaxed/simple;
-	bh=zI0dXaWwW2H477UXrfRvW/LEn5xqCYL9yuMn0epTlnQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L6wX9n40Q34byiPLn3qbf4feYLQt7aOGvGl9PmlWKm4xBVRwngK6wNda1rn0thYrENHko9UFNpKJV/2cYfQJBVtxhAIqnr5xh6BBAIuFi2Tx1bFDSafIw1enisdhAAMFIAZ4S6VyGrfUeTepsJZICCtPQjC5Lmw9DlorAKN4Svw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bC2j9zaz; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso3145793a12.3;
-        Mon, 29 Apr 2024 09:45:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714409102; x=1715013902; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
-        b=bC2j9zazdkM2QJZxDgAkKgtMBRn3WT/p5QUOMG/IAoQAkjCmNBrGJoxwy48ELUyz+N
-         +aZqi0n2Y5xfnIvgkZ6RR6ZOYF7vxBD6lADP65/9ZCf/vehFbWHRwv00ntPxJM1PtVbQ
-         7T5gAOXDKWZXCsWa1ppmV0aBP34AlB3LWd01BSzYmpQRYZmZPXJ/6kLkaQUZvjUyevjs
-         QMekB4kPY1gniiLvzOi6XIWdXk1Wc2k3H/w/EVqIJI/KXRdu+jDiLCYYAkSOF6TwBK0r
-         D3qSItEJk6RVuhkurXham9anF+hX7lech3TSFpzAqcYFpz5vl6CHhzbU2kxqgLV9IRLY
-         GOxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714409102; x=1715013902;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
-        b=pEGt0Djr6B7NYC6hAuOCGQwRjyMm9KEQ6TvM2NNABgMVo6O7pg6GexGwC+dhA1z13y
-         MuMuSi39EoZYpzR/NCC6ff/2Ac+XHyIMN6o/ujCImwDkOhMQqQKthcEZJqGGWHkS+rlU
-         9uIO41TrVZyuoi5LjSGKBfCCc83+B3kDOYYs1jVfEbXRuUo7lYwFoOiE4k8KtAQBkW4E
-         Dc4/WYpCA5Nk4LAeiUjarg8WtQO3cLI6l0soBLsgONSHstG0Qx5Tz60Ew7DXLCmJ0CFi
-         Lk+lPl3mZR4YLzYncvrljP36Iv9wL2fRLVl3JuzufyxviMtZBFQUVi5a3/RAYUkAiUZQ
-         ybmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUh3dQbbudMM1klOfgmLTWGdgpUhxYRRnKoLHd2UT6zvTjrjuns+F5Fxl8/2x5OshNCptpPERN0FjiS7YXvd26o0i5jM5++ePPXkdUrwDVbCsU9J/kN1LWaTZoYQ9ljP93CyLQHA8MY+GZSXb9qZ7aK/IlMLJQvJM4BcJpMbSBmqGB1CQyvRKK4oNghYSHiGbR1AfL5jdKXeQT9lBwW4d46
-X-Gm-Message-State: AOJu0YzzaZOKr3xVVpufanHcMMeLwn9/s6H3ORhYoaIcsQf67XgK/fgb
-	/p2V5s27iAO+/GJhcXWo/kkDbhiMbb3/eT7+Tw0ruudk1kDPV2a9nHqm0JoAKxNP6BpvAQpk4Yh
-	25Gc0WAeGwfqHezhysddd3/Ask5s=
-X-Google-Smtp-Source: AGHT+IFEBjjOgIZI69S9O+DPbxRJS29XWyaWX2RRt0TM1E47XRESlvdqoITxR7rPoljfCms3ptvnuElmViiIbq0BAf0=
-X-Received: by 2002:a17:90b:3e89:b0:2b0:d163:3131 with SMTP id
- rj9-20020a17090b3e8900b002b0d1633131mr6513981pjb.17.1714409101691; Mon, 29
- Apr 2024 09:45:01 -0700 (PDT)
+	s=arc-20240116; t=1714409212; c=relaxed/simple;
+	bh=RS/Nzkow4JdCZb3e2G1q+ZkbngBwp1eF3Py2i9zh+zs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W7JcZrtbkgVaGbb+q6Up2wAaq9Zdtbs41L97xT/O8TU1gpT303Wqhl0dhC/krsB8tkQorKTZFXes2/VseNCada6J42dkEY4rz0CVTypm+vbWvTQt3oON0cudwJxn5uELom82X5aIijbNjwAjfym2wAVz17uDZpa4VHPndOXFWoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CKZ18j6U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d+GkVceN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVG+Vq5B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDnWDRBe; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC73533948;
+	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714409209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=CKZ18j6UJq+6XAMMI4K75K+U5rNPzWcV/mUuowFFuvT7re/vmVq+vciKBJxomQAfagA9mY
+	UummKYf0o2A9Gehug7E5A3dPY8jsYWUOOqtZpCYFGqLqHlB3gwt1AO9n7hUvPaRdfMcSOT
+	4M4yv/LtVBM1w/JalV3CAIePS9vFhWs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714409209;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=d+GkVceNa0zY5w/3bWdmRLA/mRvJuT6vhguUMLkzaCULG3/zj9NatBInitzt2xmiVMfJxq
+	QM0wRDHF7facwjDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IVG+Vq5B;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kDnWDRBe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714409208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=IVG+Vq5BLjyk2Wc/JVJqFA9PYCKOu7JZED4PD8UczFD04JQRajzDMeU3KG6Llv0EfdSKl4
+	Dz6of0Cnj7F/TWfvprKJQhEKBOJ+xStB8kNFnZA97sTQwDxt+vmcF2AcwOKXpBlRTGfaIi
+	oBxIu3lOIsWrvFstFnkcpty2loBuvms=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714409208;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=kDnWDRBe9PNt4LuyCW+2B+jrl4w9Y4UZqNsdyiR17PoEyDgGK8BYSHgo5d4K2dlmni0TUx
+	gEJ8iWcI6viBKTBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9630F138A7;
+	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OwZkJPjOL2bvOAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 29 Apr 2024 16:46:48 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3A76AA082F; Mon, 29 Apr 2024 18:46:48 +0200 (CEST)
+Date: Mon, 29 Apr 2024 18:46:48 +0200
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v3 3/5] ext4: call ext4_mb_mark_free_simple to free
+ continuous bits in found chunk
+Message-ID: <20240429164648.juifmjsm7qb3d4ev@quack3>
+References: <20240424061904.987525-1-shikemeng@huaweicloud.com>
+ <20240424061904.987525-4-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-7-jolsa@kernel.org>
- <CAEf4BzYU-y+vptqXpuALYecJJgPt+CTcbo+=Q9QXnu4vNwem+g@mail.gmail.com> <Zi9OwCwluxTo-Azd@krava>
-In-Reply-To: <Zi9OwCwluxTo-Azd@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Apr 2024 09:44:49 -0700
-Message-ID: <CAEf4Bzb6M=8x6=WMZq8GDB3gS4kejsB9QaVSNEc1MwWbX_vvUQ@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
-	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240424061904.987525-4-shikemeng@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: AC73533948
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
 
-On Mon, Apr 29, 2024 at 12:39=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
-te:
->
-> On Fri, Apr 26, 2024 at 11:06:53AM -0700, Andrii Nakryiko wrote:
-> > On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> w=
-rote:
-> > >
-> > > Adding test that adds return uprobe inside 32 bit task
-> > > and verify the return uprobe and attached bpf programs
-> > > get properly executed.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/.gitignore        |  1 +
-> > >  tools/testing/selftests/bpf/Makefile          |  6 ++-
-> > >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++=
-++
-> > >  .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
-> > >  4 files changed, 59 insertions(+), 1 deletion(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_=
-compat.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/s=
-elftests/bpf/.gitignore
-> > > index f1aebabfb017..69d71223c0dd 100644
-> > > --- a/tools/testing/selftests/bpf/.gitignore
-> > > +++ b/tools/testing/selftests/bpf/.gitignore
-> > > @@ -45,6 +45,7 @@ test_cpp
-> > >  /veristat
-> > >  /sign-file
-> > >  /uprobe_multi
-> > > +/uprobe_compat
-> > >  *.ko
-> > >  *.tmp
-> > >  xskxceiver
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/sel=
-ftests/bpf/Makefile
-> > > index edc73f8f5aef..d170b63eca62 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_s=
-kb_cgroup_id_user \
-> > >         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_me=
-tadata \
-> > >         xdp_features bpf_test_no_cfi.ko
-> > >
-> > > -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
-_multi
-> > > +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
-_multi uprobe_compat
-> >
-> > you need to add uprobe_compat to TRUNNER_EXTRA_FILES as well, no?
->
-> ah right
->
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c =
-b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > index 9233210a4c33..3770254d893b 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > @@ -11,6 +11,7 @@
-> > >  #include <sys/wait.h>
-> > >  #include "uprobe_syscall.skel.h"
-> > >  #include "uprobe_syscall_call.skel.h"
-> > > +#include "uprobe_syscall_compat.skel.h"
-> > >
-> > >  __naked unsigned long uretprobe_regs_trigger(void)
-> > >  {
-> > > @@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
-> > >                  "read_trace_pipe_iter");
-> > >         ASSERT_EQ(found, 0, "found");
-> > >  }
-> > > +
-> > > +static void trace_pipe_compat_cb(const char *str, void *data)
-> > > +{
-> > > +       if (strstr(str, "uretprobe compat") !=3D NULL)
-> > > +               (*(int *)data)++;
-> > > +}
-> > > +
-> > > +static void test_uretprobe_compat(void)
-> > > +{
-> > > +       struct uprobe_syscall_compat *skel =3D NULL;
-> > > +       int err, found =3D 0;
-> > > +
-> > > +       skel =3D uprobe_syscall_compat__open_and_load();
-> > > +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_loa=
-d"))
-> > > +               goto cleanup;
-> > > +
-> > > +       err =3D uprobe_syscall_compat__attach(skel);
-> > > +       if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
-> > > +               goto cleanup;
-> > > +
-> > > +       system("./uprobe_compat");
-> > > +
-> > > +       ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, =
-1000),
-> > > +                "read_trace_pipe_iter");
-> >
-> > why so complicated? can't you just set global variable that it was call=
-ed
->
-> hm, we execute separate uprobe_compat (32bit) process that triggers the b=
-pf
-> program, so we can't use global variable.. using the trace_pipe was the o=
-nly
-> thing that was easy to do
+On Wed 24-04-24 14:19:02, Kemeng Shi wrote:
+> In mb_mark_used, we will find free chunk and mark it inuse. For chunk
+> in mid of passed range, we could simply mark whole chunk inuse. For chunk
+> at end of range, we may need to mark a continuous bits at end of part of
+> chunk inuse and keep rest part of chunk free. To only mark a part of
+> chunk inuse, we firstly mark whole chunk inuse and then mark a continuous
+> range at end of chunk free.
+> Function mb_mark_used does several times of "mb_find_buddy; mb_clear_bit;
+> ..." to mark a continuous range free which can be done by simply calling
+> ext4_mb_mark_free_simple which free continuous bits in a more effective
+> way.
+> Just call ext4_mb_mark_free_simple in mb_mark_used to use existing and
+> effective code to free continuous blocks in chunk at end of passed range.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-you need child process to trigger uprobe, but you could have installed
-BPF program from parent process (you'd need to make child wait for
-parent to be ready, with normal pipe() like we do in other places).
+I don't know with this patch. It looks correct to me. I don't find either
+the old or the new version dramatically better so I'd say I'll leave it
+upto Ted whether he finds this new version better or not...
 
-I think generally the less work forked child process does, the better.
-All those ASSERT() failures won't produce any output in child process,
-unless you run tests in verbose mode, because we haven't implemented
-some form of sending all the logs back to the parent process and so
-they are completely lost. But that's a separate topic.
+In case Ted decides to take this patch, feel free to add:
 
-Either way, consider using pipe() to coordinate waiting from child on
-parent being ready, but otherwise do all the BPF-related heavy lifting
-from parent (you can attach BPF programs to specific PID using
-bpf_program__attach_uprobe() easily, it's not declarative, but simple
-enough).
+Reviewed-by: Jan Kara <jack@suse.cz>
 
->
-> jirka
->
-> >
-> > > +       ASSERT_EQ(found, 1, "found");
-> > > +
-> > > +cleanup:
-> > > +       uprobe_syscall_compat__destroy(skel);
-> > > +}
-> > >  #else
-> > >  static void test_uretprobe_regs_equal(void)
-> > >  {
-> > > @@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
-> > >  {
-> > >         test__skip();
-> > >  }
-> > > +
-> > > +static void test_uretprobe_compat(void)
-> > > +{
-> > > +       test__skip();
-> > > +}
-> > >  #endif
-> > >
-> > >  void test_uprobe_syscall(void)
-> > > @@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
-> > >  {
-> > >         test_uretprobe_syscall_call();
-> > >  }
-> > > +
-> > > +void serial_test_uprobe_syscall_compat(void)
-> >
-> > and then no need for serial_test?
-> >
-> > > +{
-> > > +       test_uretprobe_compat();
-> > > +}
-> > > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.=
-c b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> > > new file mode 100644
-> > > index 000000000000..f8adde7f08e2
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> > > @@ -0,0 +1,13 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include <linux/bpf.h>
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +
-> > > +char _license[] SEC("license") =3D "GPL";
-> > > +
-> > > +SEC("uretprobe.multi/./uprobe_compat:main")
-> > > +int uretprobe_compat(struct pt_regs *ctx)
-> > > +{
-> > > +       bpf_printk("uretprobe compat\n");
-> > > +       return 0;
-> > > +}
-> > > --
-> > > 2.44.0
-> > >
+								Honza
+
+> ---
+>  fs/ext4/mballoc.c | 38 +++++++++++++++++++++-----------------
+>  1 file changed, 21 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index a61fc52956b2..5acf413808a2 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  	int ord;
+>  	int mlen = 0;
+>  	int max = 0;
+> -	int cur;
+>  	int start = ex->fe_start;
+>  	int len = ex->fe_len;
+>  	unsigned ret = 0;
+>  	int len0 = len;
+>  	void *buddy;
+> -	bool split = false;
+> +	int ord_start, ord_end;
+>  
+>  	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+>  	BUG_ON(e4b->bd_group != ex->fe_group);
+> @@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  
+>  	/* let's maintain buddy itself */
+>  	while (len) {
+> -		if (!split)
+> -			ord = mb_find_order_for_block(e4b, start);
+> +		ord = mb_find_order_for_block(e4b, start);
+>  
+>  		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+>  			/* the whole chunk may be allocated at once! */
+>  			mlen = 1 << ord;
+> -			if (!split)
+> -				buddy = mb_find_buddy(e4b, ord, &max);
+> -			else
+> -				split = false;
+> +			buddy = mb_find_buddy(e4b, ord, &max);
+>  			BUG_ON((start >> ord) >= max);
+>  			mb_set_bit(start >> ord, buddy);
+>  			e4b->bd_info->bb_counters[ord]--;
+> @@ -2094,20 +2089,29 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  		if (ret == 0)
+>  			ret = len | (ord << 16);
+>  
+> -		/* we have to split large buddy */
+>  		BUG_ON(ord <= 0);
+>  		buddy = mb_find_buddy(e4b, ord, &max);
+>  		mb_set_bit(start >> ord, buddy);
+>  		e4b->bd_info->bb_counters[ord]--;
+>  
+> -		ord--;
+> -		cur = (start >> ord) & ~1U;
+> -		buddy = mb_find_buddy(e4b, ord, &max);
+> -		mb_clear_bit(cur, buddy);
+> -		mb_clear_bit(cur + 1, buddy);
+> -		e4b->bd_info->bb_counters[ord]++;
+> -		e4b->bd_info->bb_counters[ord]++;
+> -		split = true;
+> +		ord_start = (start >> ord) << ord;
+> +		ord_end = ord_start + (1 << ord);
+> +		/* first chunk */
+> +		if (start > ord_start)
+> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+> +						 ord_start, start - ord_start,
+> +						 e4b->bd_info);
+> +
+> +		/* last chunk */
+> +		if (start + len < ord_end) {
+> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+> +						 start + len,
+> +						 ord_end - (start + len),
+> +						 e4b->bd_info);
+> +			break;
+> +		}
+> +		len = start + len - ord_end;
+> +		start = ord_end;
+>  	}
+>  	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+>  
+> -- 
+> 2.30.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
