@@ -1,78 +1,187 @@
-Return-Path: <linux-kernel+bounces-162887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F728B61B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:10:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3408B61BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:12:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF403286159
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:10:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46C13B20C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E25C13B7A7;
-	Mon, 29 Apr 2024 19:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE9513AD32;
+	Mon, 29 Apr 2024 19:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DOnlPp/0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IcS4ErJs"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3B813AA32;
-	Mon, 29 Apr 2024 19:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB3513A3E5;
+	Mon, 29 Apr 2024 19:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714417809; cv=none; b=QpMhsvvdjqO9AG0pQZJa7xPgGdgNtTGLdWwfkvXxci+IUW987bmDYW+Bi+CtKOT7ezK3+D41UlKpSdzQw8YEfVR8oahRpxGEeXlpgnF4JlmRRhLNZGSpGM0yqWNmiVIkaA9/yjo50DiH6AYd7cLWXEVPsrYhYfGWixN2tPKJRC4=
+	t=1714417914; cv=none; b=pCAyk5Ie0fp9DKJRXTyUH4JKX24cS61BmHPIRbQ/fVbCm5Agav76SHlDEsHHXCE/Bv8gOWsFGRpGtYJiCC9x29/zMX6jtmKaWz8Y5pmmwvktkQL4OozGCYaiypYVDyyE7z/gY5duRsKIefAQqoJnii/en9jLbMywL87mq3vbDlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714417809; c=relaxed/simple;
-	bh=7Z6qYhI5Trwqo9MHjeMgaQy7lxx2FGG+iuvgKY0yDd4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=lEmujjYTWuM49gcix3Xseg0JTHhyc19+dEHEl6lTWyTwGbYw+Ed61MQ4qfNKcV6ZkypJ2gvP2tg6o7marK2YWScyNUtxeVMGWVRVC7OJhlpttOzfStC0OS/0U0JsFjdeWYpN/dVgFtNdhq4P+p1vWG68dQCWXya9/EG66CEbmYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DOnlPp/0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D4399C113CD;
-	Mon, 29 Apr 2024 19:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714417808;
-	bh=7Z6qYhI5Trwqo9MHjeMgaQy7lxx2FGG+iuvgKY0yDd4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=DOnlPp/0g7qcHYebD/6aZe+8b6OhPm18KQJENH9L+iGbjZjw3WqprLM8cXpbHb6kK
-	 Jg09lQQYRjq7gtm5KbzwVcHjYm7RTQUPEgV8EqkXz1IP5eoVTgGOzfGIwFTHInmIea
-	 jQsDMwV+k+1YkRMKlGP3m92U/+nzlgDBANIgvITZDKs2eqgKpCu6++AmTunY3gL8dz
-	 im6ha9PxCw6gom+oZLkLzPLneOac15aK5V1QFS8Ys2n/QZFmNtpgE9fSIA/wYYObrP
-	 OwzxpRb6vIrWBnDq2nZn8difUFGR7NHQrchRyS/Dmk/B94CAXo2IL2npA9+cC2xFXa
-	 OUXEAoRMSgD/w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7B54E2D48A;
-	Mon, 29 Apr 2024 19:10:08 +0000 (UTC)
-Subject: Re: [GIT PULL] Bugfixes for Linux 6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <230320fbf8c4a3fe3fcce24695aa4af65875bdf3.camel@hammerspace.com>
-References: <230320fbf8c4a3fe3fcce24695aa4af65875bdf3.camel@hammerspace.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <230320fbf8c4a3fe3fcce24695aa4af65875bdf3.camel@hammerspace.com>
-X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-2
-X-PR-Tracked-Commit-Id: 24457f1be29f1e7042e50a7749f5c2dde8c433c8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9e4bc4bcae012c98964c3c2010debfbd9e5b229f
-Message-Id: <171441780874.14808.6356000318708895546.pr-tracker-bot@kernel.org>
-Date: Mon, 29 Apr 2024 19:10:08 +0000
-To: Trond Myklebust <trondmy@hammerspace.com>
-Cc: "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+	s=arc-20240116; t=1714417914; c=relaxed/simple;
+	bh=aBlwHG+XSz2inbaFgGCXbG0yr6uY/trtijVmQNmku2w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u5wMI8c0A669c0cdX1r0aZiK4Ahux5KXCzes6kzNmnXGf5feI8huUIcXKN03klo5xwaEQ1rsXD0e6whfHcNQk5QibRGyQ1YJhTE/I7uQw488kwNFW2epLtX0vUgfx7qk3spZcb5pBrZ3NM0BELTztKdAqdP+0hZ2ceZsSWab2l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IcS4ErJs; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso4028539b3a.0;
+        Mon, 29 Apr 2024 12:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714417912; x=1715022712; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/1bORWOEMtQqR5EeJUVgL0AX3aI0603PhY0Dzu9DVzE=;
+        b=IcS4ErJsjpy550acoJoLVe0uzHganOhk2s7EDEfUqDM+WzbntpTp6/ukob6/n0TvkM
+         1jAdHlpdfesbTsmR06/xHMbbofY4ECH/7U+UG/jzB/ARt+n61Xht6gv2Bt6k1JO8VzQU
+         rei8uXlOBarMQ3GSdnMTOvDyNeKT8mejVfKbhfvUCNo/CIxvIBoyU9BtFJcbbv/haVdc
+         7svK4EZCIhe9EoUHQ9WhwnsWq4URAB67D83M3wzEzBcIYYN6YB+BsNDTdyxpxXadHmnS
+         vqapbA8lyUbjHjU1OiPMXOtnz/8M/xnKFw3U10Uzlw0hWJYf8HlVlPphpv1n7jO+8V3f
+         R3Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714417912; x=1715022712;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/1bORWOEMtQqR5EeJUVgL0AX3aI0603PhY0Dzu9DVzE=;
+        b=Sf3h//fxHy4BIfZoMWcsjlVcpfMkW8Um6iP6S9YA5xOWGpLMiSzIO8KmUFbjosKqvu
+         l7UDf2gZtOT2eEHkXZDV1R9wAD4Z9SQBxP/972WT3vhYpLT1IQdub4cb2keYPAdUCZL/
+         E+Br7JvZa9rdu3qhXsu96J5jA9bMtt9+E3TVtyHt2e150s733E5/7QpPuxS66/EZxwMG
+         /jOKTE3zbxO3qFosgMXZN+U1nButWrFNFYdHybpX3dvhB6mN59L7ersbEAs2QfJAd4e+
+         NOIWxeMR/qy/qpBzlEhiCgatKd3h1sdM8Murw2T4nNvCNoiwv5yUOmeiC+RrUAo7ibVG
+         DdiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNW5p5hBSvUY+D8IJHknE1GV+07QaVpTkl7lsJGhE3dBAS+4XnfkXzJmouJ8nK7fRNpYYkaGDYRBjlOxwXNQpUh3mRhxk0CEFDwmgbtWRizIY5xdBpwcMEU9Y2+S9W3TMPzBFKQo1ljaL3hw==
+X-Gm-Message-State: AOJu0YzbGT8c+ebb8xSTVyihUga99Krw/fzmWkpkmxrr/d39VvJq+Bdp
+	zFYdQF3NYmHh802exOzb3WiYeMWQEmxj0XaxShzAjUULcwyV/N49
+X-Google-Smtp-Source: AGHT+IGx8aY8FR50gdhXj18Vz7j7jddJ8qW0aYfCyeOPPSYXuiUjoJ/c7FOQYDIpxGDCtkTEqeM7Ww==
+X-Received: by 2002:a05:6a00:2186:b0:6ed:cd4c:cc11 with SMTP id h6-20020a056a00218600b006edcd4ccc11mr431263pfi.25.1714417912024;
+        Mon, 29 Apr 2024 12:11:52 -0700 (PDT)
+Received: from KASONG-MB2.tencent.com ([1.203.116.31])
+        by smtp.gmail.com with ESMTPSA id e10-20020aa7980a000000b006ed38291aebsm20307988pfl.178.2024.04.29.12.11.48
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 29 Apr 2024 12:11:51 -0700 (PDT)
+From: Kairui Song <ryncsn@gmail.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"Huang, Ying" <ying.huang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Chris Li <chrisl@kernel.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Neil Brown <neilb@suse.de>,
+	Minchan Kim <minchan@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kairui Song <kasong@tencent.com>
+Subject: [PATCH v3 08/12] nfs: drop usage of folio_file_pos
+Date: Tue, 30 Apr 2024 03:11:34 +0800
+Message-ID: <20240429191138.34123-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240429190500.30979-1-ryncsn@gmail.com>
+References: <20240429190500.30979-1-ryncsn@gmail.com>
+Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Mon, 29 Apr 2024 18:59:26 +0000:
+From: Kairui Song <kasong@tencent.com>
 
-> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-2
+folio_file_pos is only needed for mixed usage of page cache and
+swap cache, for pure page cache usage, the caller can just use
+folio_pos instead.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9e4bc4bcae012c98964c3c2010debfbd9e5b229f
+After commit e1209d3a7a67 ("mm: introduce ->swap_rw and use it for
+reads from SWP_FS_OPS swap-space"), swap cache is never exposed to
+nfs and it can't be a swap cache page here, so just drop it and
+use folio_pos instead.
 
-Thank you!
+Signed-off-by: Kairui Song <kasong@tencent.com>
+---
+ fs/nfs/file.c     | 2 +-
+ fs/nfs/nfstrace.h | 4 ++--
+ fs/nfs/write.c    | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+index 407c6e15afe2..02741c32e114 100644
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@ -588,7 +588,7 @@ static vm_fault_t nfs_vm_page_mkwrite(struct vm_fault *vmf)
+ 
+ 	dfprintk(PAGECACHE, "NFS: vm_page_mkwrite(%pD2(%lu), offset %lld)\n",
+ 		 filp, filp->f_mapping->host->i_ino,
+-		 (long long)folio_file_pos(folio));
++		 (long long)folio_pos(folio));
+ 
+ 	sb_start_pagefault(inode->i_sb);
+ 
+diff --git a/fs/nfs/nfstrace.h b/fs/nfs/nfstrace.h
+index afedb449b54f..d249741452e1 100644
+--- a/fs/nfs/nfstrace.h
++++ b/fs/nfs/nfstrace.h
+@@ -960,7 +960,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event,
+ 			__entry->fileid = nfsi->fileid;
+ 			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
+ 			__entry->version = inode_peek_iversion_raw(inode);
+-			__entry->offset = folio_file_pos(folio);
++			__entry->offset = folio_pos(folio);
+ 			__entry->count = nfs_folio_length(folio);
+ 		),
+ 
+@@ -1008,7 +1008,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event_done,
+ 			__entry->fileid = nfsi->fileid;
+ 			__entry->fhandle = nfs_fhandle_hash(&nfsi->fh);
+ 			__entry->version = inode_peek_iversion_raw(inode);
+-			__entry->offset = folio_file_pos(folio);
++			__entry->offset = folio_pos(folio);
+ 			__entry->count = nfs_folio_length(folio);
+ 			__entry->ret = ret;
+ 		),
+diff --git a/fs/nfs/write.c b/fs/nfs/write.c
+index 5de85d725fb9..fc782d889449 100644
+--- a/fs/nfs/write.c
++++ b/fs/nfs/write.c
+@@ -281,7 +281,7 @@ static void nfs_grow_file(struct folio *folio, unsigned int offset,
+ 	end_index = ((i_size - 1) >> folio_shift(folio)) << folio_order(folio);
+ 	if (i_size > 0 && folio_index(folio) < end_index)
+ 		goto out;
+-	end = folio_file_pos(folio) + (loff_t)offset + (loff_t)count;
++	end = folio_pos(folio) + (loff_t)offset + (loff_t)count;
+ 	if (i_size >= end)
+ 		goto out;
+ 	trace_nfs_size_grow(inode, end);
+@@ -1362,7 +1362,7 @@ int nfs_update_folio(struct file *file, struct folio *folio,
+ 	nfs_inc_stats(inode, NFSIOS_VFSUPDATEPAGE);
+ 
+ 	dprintk("NFS:       nfs_update_folio(%pD2 %d@%lld)\n", file, count,
+-		(long long)(folio_file_pos(folio) + offset));
++		(long long)(folio_pos(folio) + offset));
+ 
+ 	if (!count)
+ 		goto out;
+@@ -2073,7 +2073,7 @@ int nfs_wb_folio_cancel(struct inode *inode, struct folio *folio)
+  */
+ int nfs_wb_folio(struct inode *inode, struct folio *folio)
+ {
+-	loff_t range_start = folio_file_pos(folio);
++	loff_t range_start = folio_pos(folio);
+ 	loff_t range_end = range_start + (loff_t)folio_size(folio) - 1;
+ 	struct writeback_control wbc = {
+ 		.sync_mode = WB_SYNC_ALL,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.44.0
+
 
