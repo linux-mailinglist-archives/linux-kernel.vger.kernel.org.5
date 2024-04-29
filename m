@@ -1,400 +1,183 @@
-Return-Path: <linux-kernel+bounces-163073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 491A88B6499
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:31:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6988B64AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:33:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000FF289545
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3361C2109C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0CBD184102;
-	Mon, 29 Apr 2024 21:31:32 +0000 (UTC)
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E821B184107;
+	Mon, 29 Apr 2024 21:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cST7eTmy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAA412B73;
-	Mon, 29 Apr 2024 21:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B8412B73;
+	Mon, 29 Apr 2024 21:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714426291; cv=none; b=ZyqLDPjR6ZOLFvUYkj+nrsNC//P8lEXfnc1rfthjMP28F3IUh9Jfy24wf6qzvzEwEoppJQyJqr3B5LokEgVOMltJyNujhiplVRwv+IEcC7XA2sICsNjh5Kvxyr3cQg8UT0jmQD300m9SHG/AfNd4wBVu25x7ZOURa+DTY40YpU4=
+	t=1714426403; cv=none; b=cTGU7h04HJCZMn3s0sc+yxKpI/KlUtD+2+68MQb5Ds9d2DeSp8q9H+aZ45G20+lCUOgMniHXVhibGKff8SwkIO6bjDc26B9t79oLTVFb5eflv0GJxMyM2wEhdFd2MsmGLM2FdLW/XH/k4nQlfb+1/obuypZC0VCo78UIaK5fhdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714426291; c=relaxed/simple;
-	bh=Fl6XvrvFJSIhSxQ9pd+w6AqpPODhrCf8tYIKRsbcwxY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X49l9h2y9mhMhDP3war44/+CJkQyNYLoLwRgBk4hrLmL7j+rdj22Z54l6qYRD504SOD5ZjANVvPWWQhrcCCclfYnFiidWwmsdDJc5GvdxzQq+zSDm1jSXi3WAW6GF/N3HFflxPJjrzaB4dUbvBf7n7HmcJxbf7rqWa+I0psvifY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f4081574d6so1196415b3a.2;
-        Mon, 29 Apr 2024 14:31:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714426289; x=1715031089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xP6HbfwNK5+qUJ1h02ve6Ie9128x30bxsUrDg6c503g=;
-        b=NmUIs+0DEK8Pbt0QtGi22Wmq7wFc0vqRXJmZXXZ7jdG6yVJqLyyleiXJhH+6OAz/JY
-         g//rGlCbQzEnsLIy4dmjKA/1EgsXCOpTGtRMDR/zVEJSItVC3FrJhKh+iS1dDhkAyduA
-         e4XN5JFhf43vs0hxJaagLZSrynfRLJ0sCbyfljwPyMNBroHkUyCA2MKX282noTEHKKNg
-         nokBY3X6PMNXCiulLNiE0pvCAqVLpphnuyE5QPr0aIXJ05BiX0J0HccVvICckDWsLeA+
-         rZyBvKmIvfa7D6PIwR+mECKy/C7zh6F33IqrTybI/iNEfz7fghqCdOcW78lDVur791BJ
-         7C0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXHtBpyUUtIBgyv7It1MKWbRiE+7ZZD97rWvTMvUEW6KxufXtS3yBHldgI6jxGZLs6AB5q7+d/Bc6Z0oBeYKsaObAIQocAQ3mM+ZX9h453FJwz7TbUcf4QbR0Z1nXFUPqE6yFJUy9t3n5iwr5k8pA==
-X-Gm-Message-State: AOJu0YzJWSTf0TlEj9eZYO6nDLWgfrWGJH9Y+t+kykrqPua9iDFBZmSF
-	hMYZLBd0FA9OHiItM0Ps/yd83GM3TAUFZiQep0m9vugmbXWmKzg/ekb7ttAKqxHi991FcjYySt6
-	/i7rZksSPl1TYZuSFAgsZuPU3o+0=
-X-Google-Smtp-Source: AGHT+IEkQVGODG0vLZ5nh2x4VH7GgclljQgpgUvb1KQvkLAu9EfAwM0M/qMKOlS2/veJX8x6dwgcSEA49gLOjunnVY0=
-X-Received: by 2002:a05:6a20:d48f:b0:1ae:426d:abc5 with SMTP id
- im15-20020a056a20d48f00b001ae426dabc5mr11894101pzb.28.1714426289526; Mon, 29
- Apr 2024 14:31:29 -0700 (PDT)
+	s=arc-20240116; t=1714426403; c=relaxed/simple;
+	bh=vPZAau7DfYbcbdcMAfEj+TotC+iHlyn/Ut9666HLFes=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U+kvL2XPZxJxhFT0bfc/8I0mQVso7UJDtIF3BXdj15rAiabUMqNP4Pgt2ovQIajQ6xo6urqou4MPS9d2xzztbUEWsgL9DDefOaD+Ve64ubC054wGu1Kpq4RkOvZLAwTRYC+YDcBeVB9BwV3fsoe+gajj9OAvHG+HUHcQpnROWTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cST7eTmy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB2A3C4AF1A;
+	Mon, 29 Apr 2024 21:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714426402;
+	bh=vPZAau7DfYbcbdcMAfEj+TotC+iHlyn/Ut9666HLFes=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cST7eTmyDgOVR+Nm9wzqi9tTvJVZI0fLgyFmZWNloyIR9bGPDSxjdEkBwZ3IG8v4C
+	 MiEc6LghhyeC/ZngvHaazyR/X051K6EnoZLwCj+4u5gsHo8N4V+cHOQVg0Qe3T4Cqt
+	 Nkbt/DVrqJueJnzn7vxVYnpnhEA3GRgRsYoaDdz7rogy6Em+Yzm/Kxl9FK2OuciPZJ
+	 KJErWuLwmqoFMKUUulyc+/CjTr85ddpOCYHb1y/J8uPKKwTo3teqXXYPggxI0Qt+t4
+	 /jPZHQ+TGQ6WapvSM1qcAyrgpsxywS//JXr70hwxshAvqHYB/0oEHZiqWYU/6I+sn6
+	 dXkArOYB+ycVA==
+Date: Mon, 29 Apr 2024 22:33:18 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Witold Sadowski <wsadowski@marvell.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"robh@kernel.org" <robh@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"pthombar@cadence.com" <pthombar@cadence.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v3 2/5] spi: cadence: Add MRVL overlay
+ bindings documentation for Cadence XSPI
+Message-ID: <20240429-quickstep-hypnotic-5b8d1fbeb920@spud>
+References: <20240329194849.25554-1-wsadowski@marvell.com>
+ <20240418011353.1764672-1-wsadowski@marvell.com>
+ <20240418011353.1764672-3-wsadowski@marvell.com>
+ <20240418-sacrament-cornea-fd6fd569827e@spud>
+ <CO6PR18MB4098C815325699975B1BD794B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240428053616.1125891-1-irogers@google.com> <20240428053616.1125891-4-irogers@google.com>
-In-Reply-To: <20240428053616.1125891-4-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 29 Apr 2024 14:31:17 -0700
-Message-ID: <CAM9d7cgzTsfk3C+dTN80f5FhB1rmfturjuUUwvSTeUvny5eWKw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/3] perf evsel: Add retirement latency event support
-To: Ian Rogers <irogers@google.com>
-Cc: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Ze Gao <zegao2021@gmail.com>, Leo Yan <leo.yan@linux.dev>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Dmitrii Dolgov <9erthalion6@gmail.com>, 
-	Song Liu <song@kernel.org>, James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NS8/Unwlppg/0VLi"
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB4098C815325699975B1BD794B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+
+
+--NS8/Unwlppg/0VLi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 27, 2024 at 10:36=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> When a retirement latency event is processed it sets a flag on the
-> evsel. This change makes it so that when the flag is set evsel
-> opening, reading and exiting report values from child perf record and
-> perf report processes.
->
-> Something similar was suggested by Namhyung Kim in:
-> https://lore.kernel.org/lkml/CAM9d7cgdQQn5GYB7t++xuoMdeqPXiEkkcop69+rD06R=
-Anu9-EQ@mail.gmail.com/
->
-> This is trying to add support for retirement latency directly in
-> events rather than through metric changes, as suggested by Weilin Wang in=
-:
-> https://lore.kernel.org/lkml/20240402214436.1409476-1-weilin.wang@intel.c=
-om/
+On Mon, Apr 29, 2024 at 02:47:23PM +0000, Witold Sadowski wrote:
+> > ----------------------------------------------------------------------
+> > On Wed, Apr 17, 2024 at 06:13:49PM -0700, Witold Sadowski wrote:
+> > > Add new bindings for v2 Marvell xSPI overlay:
+> > > mrvl,xspi-nor  compatible string
+> > > New compatible string to distinguish between orginal and modified xSPI
+> > > block
+> > >
+> > > PHY configuration registers
+> > > Allow to change orginal xSPI PHY configuration values. If not set, and
+> > > Marvell overlay is enabled, safe defaults will be written into xSPI
+> > > PHY
+> > >
+> > > Optional base for xfer register set
+> > > Additional reg field to allocate xSPI Marvell overlay XFER block
+> > >
+> > > Signed-off-by: Witold Sadowski <wsadowski@marvell.com>
+> > > ---
+> > >  .../devicetree/bindings/spi/cdns,xspi.yaml    | 92 +++++++++++++++++=
++-
+> > >  1 file changed, 91 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> > > b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> > > index eb0f92468185..0e608245b136 100644
+> > > --- a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> > > +++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> > > @@ -20,23 +20,82 @@ allOf:
+> > >
+> > >  properties:
+> > >    compatible:
+> > > -    const: cdns,xspi-nor
+> > > +    oneOf:
+> > > +      - description: Vanilla Cadence xSPI controller
+> > > +        items:
+> > > +          - const: cdns,xspi-nor
+> >=20
+> > The "items: isn't required here is it? Can't you just have
+> >     oneOf:
+> >       - description: Vanilla Cadence xSPI controller
+> >         const: cdns,xspi-nor
+> >       - description: Cadence xSPI controller with v2 Marvell overlay
+> >         const: mrvl,xspi-nor
+> > if you don't want to use an enum?
+>=20
+> It works without items, but I will try also with enums.
+>=20
+> >=20
+> > > +      - description: Cadence xSPI controller with v2 Marvell overlay
+> > > +        items:
+> > > +          - const: mrvl,xspi-nor
+> >=20
+> >=20
+> > "mrvl" is deprecated, please use "marvell". You're also missing a soc-
+> > specific compatible here, I doubt there's only going to be one device f=
+rom
+> > marvell with an xspi controller ever.
+>=20
+> The intention is to add overlay on top of existing IP block to gain some
+> More features from it. So if there will be different SoC with same xSPI
+> IP, we can simply use that property, as internal SoC structure will be th=
+e same.
+> On the other hand, if there will be used different IP to handle SPI opera=
+tions
+> It should use different driver. Also, I do not expect that new version of=
+ the
+> Overlay will be developed to handle different IP.
 
-This seems to create perf record + report pair for each R event
-while Weilin's patch handled multiple events at once.
+I'm struggling to understand what you mean here by "overlay". Ordinarily
+I'd expect someone to meant a dt-overlay, but you're talking about IP
+blocks, so this sounds like hardware modifications.
+I am also a bit confused by the claim that the "internal SoC structure
+will be the same". Usually different SoCs have different internal
+structures, even when they re-use IP cores. If they have the same internal
+structure then they're not really different SoCs, just different
+packages! I think what you're saying here is that you intend using the
+"mrvl,xspi-nor" compatible for multiple SoCs that all contain the same
+modified versions of the Cadence IP, not different packages for the same
+SoC?
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/evsel.c | 186 +++++++++++++++++++++++++++++++++++++++-
->  tools/perf/util/evsel.h |   3 +
->  2 files changed, 188 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index a0a8aee7d6b9..17c123cddde3 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -22,6 +22,7 @@
->  #include <sys/resource.h>
->  #include <sys/types.h>
->  #include <dirent.h>
-> +#include <signal.h>
->  #include <stdlib.h>
->  #include <perf/evsel.h>
->  #include "asm/bug.h"
-> @@ -58,6 +59,7 @@
->  #include <internal/xyarray.h>
->  #include <internal/lib.h>
->  #include <internal/threadmap.h>
-> +#include <subcmd/run-command.h>
->
->  #include <linux/ctype.h>
->
-> @@ -493,6 +495,162 @@ struct evsel *evsel__newtp_idx(const char *sys, con=
-st char *name, int idx)
->  }
->  #endif
->
-> +static int evsel__start_retire_latency_cpu(struct evsel *evsel, struct p=
-erf_cpu_map *cpus,
-> +                                         int cpu_map_idx)
-> +{
-> +       char buf[16];
-> +       int pipefd[2];
-> +       int err, i;
-> +       struct perf_cpu cpu =3D perf_cpu_map__cpu(cpus, cpu_map_idx);
-> +       struct child_process *child_record =3D
-> +               xyarray__entry(evsel->children, cpu_map_idx, 0);
-> +       struct child_process *child_report =3D
-> +               xyarray__entry(evsel->children, cpu_map_idx, 1);
-> +       char *event =3D strdup(evsel__name(evsel));
-> +       /* TODO: the dummy event also won't be used, but there's no optio=
-n to disable. */
-> +       const char *record_argv[15] =3D {
-> +               [0] =3D "perf",
-> +               [1] =3D "record",
-> +               [2] =3D "--synth=3Dno",
-> +               [3] =3D "--no-bpf-event",
-> +               [4] =3D "-W",
-> +               [5] =3D "-o",
-> +               [6] =3D "-",
-> +               [7] =3D "-e",
-> +       };
-> +       const char *report_argv[] =3D {
-> +               [0] =3D "perf",
-> +               [1] =3D "report",
-> +               [2] =3D "-i",
-> +               [3] =3D "-",
-> +               [4] =3D "-q",
-> +               [5] =3D "-F",
-> +               [6] =3D "retire_lat",
-> +               NULL,
-> +       };
-> +
-> +       if (evsel->core.attr.sample_period) /* no sampling */
-> +               return -EINVAL;
-> +
-> +       if (!event)
-> +               return -ENOMEM;
-> +
-> +       /* Change the R modifier to the maximum precision one. */
-> +       for (i =3D strlen(event) - 1; i > 0; i--) {
-> +               if (event[i] =3D=3D 'R')
-> +                       break;
-> +               if (event[i] =3D=3D ':' || event[i] =3D=3D '/')
-> +                       i =3D 0;
-> +       }
-> +       if (i <=3D 0) {
-> +               pr_err("Expected retired latency 'R'\n");
-> +               return -EINVAL;
-> +       }
-> +       event[i] =3D 'P';
-> +
-> +       i =3D 8;
-> +       record_argv[i++] =3D event;
-> +       if (verbose) {
-> +               record_argv[i++] =3D verbose > 1 ? "-vv" : "-v";
-> +       }
-> +       if (cpu.cpu >=3D 0) {
-> +               record_argv[i++] =3D "-C";
-> +               snprintf(buf, sizeof(buf), "%d", cpu.cpu);
-> +               record_argv[i++] =3D buf;
-> +       } else {
-> +               record_argv[i++] =3D "-a";
-> +       }
-> +       /* TODO: use something like the control fds to control perf recor=
-d behavior. */
-> +       record_argv[i++] =3D "sleep";
-> +       record_argv[i++] =3D "0.1";
+Confusing wording aside, using the same generic compatible for different
+SoCs is what I trying to avoid. I don't mind there being a fallback
+compatible that's generic, but I want to see specific compatibles here
+for the individual SoCs.
 
-This might be too short and the record process can exit
-before perf report (but I guess it's fine when using a pipe).
-Also I'm not sure if it's ok to get the retire latency of 100 ms
-regardless of the execution of the given workload.
+If you did actually mean that only the packaging is different between
+the devices, then I don't think you need specific compatibles for each
+different package, but you should have one for the SoC itself IMO.
 
-> +
-> +       if (pipe(pipefd) < 0) {
-> +               free(event);
-> +               return -errno;
-> +       }
-> +
-> +       child_record->argv =3D record_argv;
-> +       child_record->pid =3D -1;
-> +       child_record->no_stdin =3D 1;
-> +       if (verbose)
-> +               child_record->err =3D fileno(stderr);
-> +       else
-> +               child_record->no_stderr =3D 1;
-> +       child_record->out =3D pipefd[1];
-> +       err =3D start_command(child_record);
-> +       free(event);
-> +       if (err)
-> +               return err;
-> +
-> +       child_report->argv =3D report_argv;
-> +       child_report->pid =3D -1;
-> +       if (verbose)
-> +               child_report->err =3D fileno(stderr);
-> +       else
-> +               child_report->no_stderr =3D 1;
-> +       child_report->in =3D pipefd[0];
-> +       child_report->out =3D -1;
-> +       return start_command(child_report);
-> +}
-> +
-> +static int evsel__finish_retire_latency_cpu(struct evsel *evsel, int cpu=
-_map_idx)
-> +{
-> +       struct child_process *child_record =3D
-> +               xyarray__entry(evsel->children, cpu_map_idx, 0);
-> +       struct child_process *child_report =3D
-> +               xyarray__entry(evsel->children, cpu_map_idx, 1);
-> +
-> +       if (child_record->pid > 0)
-> +               finish_command(child_record);
-> +       if (child_report->pid > 0)
-> +               finish_command(child_report);
-> +       return 0;
-> +}
-> +
-> +static int evsel__read_retire_latency(struct evsel *evsel, int cpu_map_i=
-dx, int thread)
-> +{
-> +       struct child_process *child_record =3D xyarray__entry(evsel->chil=
-dren, cpu_map_idx, 0);
-> +       struct child_process *child_report =3D xyarray__entry(evsel->chil=
-dren, cpu_map_idx, 1);
-> +       struct perf_counts_values *count =3D perf_counts(evsel->counts, c=
-pu_map_idx, thread);
-> +       char buf[256];
-> +       int err;
-> +
-> +       kill(child_record->pid, SIGTERM);
-> +       err =3D read(child_report->out, buf, sizeof(buf));
-> +       if (err < 0 || strlen(buf) =3D=3D 0)
-> +               return -1;
-> +
-> +       count->val =3D atoll(buf);
-> +       count->ena =3D 1;
-> +       count->run =3D 1;
-> +       count->id =3D 0;
-> +       count->lost =3D 0;
-> +
-> +       /*
-> +        * TODO: The SIGCHLD from the children exiting will cause interva=
-l mode
-> +        *       to stop, use the control fd to avoid this.
-> +        */
-> +       err =3D evsel__finish_retire_latency_cpu(evsel, cpu_map_idx);
-> +       if (err)
-> +               return err;
-> +
-> +       /* Restart the counter. */
-> +       return evsel__start_retire_latency_cpu(evsel, evsel->core.cpus, c=
-pu_map_idx);
+Cheers,
+Conor.
 
-Is this for the interval mode?  Then I think it's better to move the
-logic there and let this code just do the 'read'.
+--NS8/Unwlppg/0VLi
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> +}
-> +
-> +static int evsel__finish_retire_latency(struct evsel *evsel)
-> +{
-> +       int idx;
-> +
-> +       perf_cpu_map__for_each_idx(idx, evsel->core.cpus) {
-> +               int err =3D evsel__finish_retire_latency_cpu(evsel, idx);
-> +
-> +               if (err)
-> +                       return err;
-> +       }
-> +       return 0;
-> +}
-> +
->  const char *const evsel__hw_names[PERF_COUNT_HW_MAX] =3D {
->         "cycles",
->         "instructions",
-> @@ -1465,6 +1623,10 @@ static void evsel__free_config_terms(struct evsel =
-*evsel)
->
->  void evsel__exit(struct evsel *evsel)
->  {
-> +       if (evsel->children) {
-> +               evsel__finish_retire_latency(evsel);
-> +               zfree(&evsel->children);
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjASHgAKCRB4tDGHoIJi
+0oBbAQC0NnLRyKZEwSK5e9IOCYKDjpAqEH62W74ppfZV2hNxXgEAtffEVFSZIFTk
+1/X/2d+rKYdrMFt0jyi7ka5Aad0dogA=
+=PTs9
+-----END PGP SIGNATURE-----
 
-You'd better call xyarray__delete() and set it to NULL.
-
-Thanks,
-Namhyung
-
-> +       }
->         assert(list_empty(&evsel->core.node));
->         assert(evsel->evlist =3D=3D NULL);
->         bpf_counter__destroy(evsel);
-> @@ -1778,6 +1940,9 @@ int evsel__read_counter(struct evsel *evsel, int cp=
-u_map_idx, int thread)
->         if (evsel__is_tool(evsel))
->                 return evsel__read_tool(evsel, cpu_map_idx, thread);
->
-> +       if (evsel->retire_lat)
-> +               return evsel__read_retire_latency(evsel, cpu_map_idx, thr=
-ead);
-> +
->         if (evsel->core.attr.read_format & PERF_FORMAT_GROUP)
->                 return evsel__read_group(evsel, cpu_map_idx, thread);
->
-> @@ -1993,10 +2158,22 @@ static int __evsel__prepare_open(struct evsel *ev=
-sel, struct perf_cpu_map *cpus,
->                 threads =3D empty_thread_map;
->         }
->
-> -       if (evsel->core.fd =3D=3D NULL &&
-> +       if (!evsel->retire_lat && evsel->core.fd =3D=3D NULL &&
->             perf_evsel__alloc_fd(&evsel->core, perf_cpu_map__nr(cpus), nt=
-hreads) < 0)
->                 return -ENOMEM;
->
-> +       if (evsel->retire_lat && evsel->children =3D=3D NULL) {
-> +               /*
-> +                * Use ylen of 2, [0] is the record and [1] is the report
-> +                * command. Currently retirement latency doesn't support
-> +                * per-thread mode.
-> +                */
-> +               evsel->children =3D xyarray__new(perf_cpu_map__nr(cpus), =
-/*ylen=3D*/2,
-> +                                       sizeof(struct child_process));
-> +               if (!evsel->children)
-> +                       return -ENOMEM;
-> +       }
-> +
->         evsel->open_flags =3D PERF_FLAG_FD_CLOEXEC;
->         if (evsel->cgrp)
->                 evsel->open_flags |=3D PERF_FLAG_PID_CGROUP;
-> @@ -2209,6 +2386,13 @@ static int evsel__open_cpu(struct evsel *evsel, st=
-ruct perf_cpu_map *cpus,
->
->         for (idx =3D start_cpu_map_idx; idx < end_cpu_map_idx; idx++) {
->
-> +               if (evsel->retire_lat) {
-> +                       err =3D evsel__start_retire_latency_cpu(evsel, cp=
-us, idx);
-> +                       if (err)
-> +                               goto out_close;
-> +                       continue;
-> +               }
-> +
->                 for (thread =3D 0; thread < nthreads; thread++) {
->                         int fd, group_fd;
->  retry_open:
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index bd8e84954e34..3c0806436e64 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -177,6 +177,9 @@ struct evsel {
->         __u64 start_time;
->         /* Is the tool's fd for /proc/pid/stat or /proc/stat. */
->         bool pid_stat;
-> +
-> +       /* Used for retire_lat child process. */
-> +       struct xyarray *children;
->  };
->
->  struct perf_missing_features {
-> --
-> 2.44.0.769.g3c40516874-goog
->
+--NS8/Unwlppg/0VLi--
 
