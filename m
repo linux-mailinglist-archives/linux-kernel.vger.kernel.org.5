@@ -1,103 +1,244 @@
-Return-Path: <linux-kernel+bounces-162552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67AE58B5D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:18:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D289C8B5D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:19:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F13281D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C70CB2A526
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970B1824A6;
-	Mon, 29 Apr 2024 15:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDDC126F0D;
+	Mon, 29 Apr 2024 15:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Atfc3Nfz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="us7LGmTF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D516A846B;
-	Mon, 29 Apr 2024 15:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D2881AB1;
+	Mon, 29 Apr 2024 15:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403292; cv=none; b=E2sGar/NSnEwTu8MWKjRC86oT+imuSPBWvJJ9WJ3kFDn6EypvQLZHcsQ9yQytPXzGZw2qHYkPd6EGDHOasRNruzaWbTnBRFhiPd0MUsE/Nsl/8wo1rz/jiZ7hNYbMvaqVmcJOvUhCClX5rClzVKZJC/8uq9q5UTihZ9nGx0S9oQ=
+	t=1714403327; cv=none; b=b27KXvaqXpoa6OkW0R78j4Bed6/bhGJinEKRSwS3WzHkhy8WY1Ll5/EO0Ce5c4Y33R+FHlTLu9LTar24Drl/J8I4FrtFo3U6mNbn9SK9oOMD6XLT4KTN1zp9LM4QqB3b2MCLgTjioFH5UziyqC6LoR/MKLigMA7YpVJfog420YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403292; c=relaxed/simple;
-	bh=U0cAz+c9sTGbDIN3OBVNFjWl2jR+Tx695VgOjeNXMmQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S362oP1ZB8GVMVRocTJCGe/FyOwVw8nj0QKKxJ5M+1smAER7cy8q2m3syxen08+26MvkAMxHqUrKu5B45jlop2lysF/1Nc3/DZV4LJE3MmPEzHRgJOdisfJaC4Vzw01PFS1r4Bb7CqoL/krZjrI8A8Mg+onib9enPxYE4Sv2cz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Atfc3Nfz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26533C113CD;
-	Mon, 29 Apr 2024 15:08:09 +0000 (UTC)
+	s=arc-20240116; t=1714403327; c=relaxed/simple;
+	bh=Bjx5gl49VFSc1mqMjIvCV5QyXb/r8anmZ/JpE0QNtUg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SBkfRHdgey3TyJy8MLKVR+c4RVxDuU6mQCt4mUt/I6UsiY1u5tShMKL2epPMtqRLRls8ApPtoVZH33bfAi710p/0w82LgEYpw38gTgHiyowUCTPSgzKG8ywxXa6N0EfZirNTWEAnIwkXHMwYY1VTDNJRswUtZoGXK9v1I3rgVMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=us7LGmTF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C04FDC113CD;
+	Mon, 29 Apr 2024 15:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714403292;
-	bh=U0cAz+c9sTGbDIN3OBVNFjWl2jR+Tx695VgOjeNXMmQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Atfc3NfzTJ0OgbfSIei9mdm6zGOQ0nWCB3W3v7O49/nIzWMtgDe6S+rNhQcsULzI+
-	 hsNWHp0/7gKUOwqBW55Qg8tTl8Ueu7xCCD2o8FX/AU5N29e0J1uEp6DDjhVRYbJs3Z
-	 EdQH94mjgh4c45zOtLcN9UH6zzvGC3s9DTGeusD9P16wyERTHdZ/nfxmhEikYg/e55
-	 bPier0zvkjSbn5Y+Ysef1f/1zjuA6D3gtncGaTpz1waZ4VXEm5aqg89qL8UigToxGC
-	 IrR/DqsXI0f+b7xc6pCIdEvGTWzDfTA/xccF3Hz+GKWs1jTlQHxjqm9g74Oyz+FSLT
-	 NaS2CeOdGvP2g==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH] kbuild: simplify generic vdso installation code
-Date: Tue, 30 Apr 2024 00:07:54 +0900
-Message-Id: <20240429150754.3178262-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=k20201202; t=1714403327;
+	bh=Bjx5gl49VFSc1mqMjIvCV5QyXb/r8anmZ/JpE0QNtUg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=us7LGmTFUvR9qlbeUavr2vBJcXJDL8YupNIJWRuGGcSIHSRK4yNIbx4/nUELan+bZ
+	 QVsidnDrL639ZmuSN3im/wf0UNl6w2TSUCXIJFRvewc0mLD5fuR26XScAWn5avm3XV
+	 A0ROdl0dX1LU0BNMhth7be8WguEn8VJnJEtUkP1P1liOaGQX6GmG3FKWWM9n6aKZsb
+	 B/7mN+rhOnzjJFTgAikEbyPTvJxYtFLfNFqdj0UqDlC6CtZnbdBHngvSU07lni3+xX
+	 fTJnQHpcZxlg10cVvTU1OB/CAjY1g0Oy1kxilp6iNBSZ8Wr4L+2OjYPySzjolPDRGE
+	 CIqox8Qm+aG/A==
+Date: Mon, 29 Apr 2024 10:08:42 -0500
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 08/11] PCI: imx: Config look up table(LUT) to support
+ MSI ITS and IOMMU for i.MX95
+Message-ID: <20240429150842.GC1709920-robh@kernel.org>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-8-803414bdb430@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402-pci2_upstream-v3-8-803414bdb430@nxp.com>
 
-With commit 4b0bf9a01270 ("riscv: compat_vdso: install compat_vdso.so.dbg
-to /lib/modules/*/vdso/") applied, all debug VDSO files are installed in
-$(MODLIB)/vdso/.
+On Tue, Apr 02, 2024 at 10:33:44AM -0400, Frank Li wrote:
+> i.MX95 need config LUT to convert bpf to stream id. IOMMU and ITS use the
+> same stream id. Check msi-map and smmu-map and make sure the same PCI bpf
+> map to the same stream id. Then config LUT related registers.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-imx.c | 175 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 175 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-imx.c b/drivers/pci/controller/dwc/pcie-imx.c
+> index af0f960f28757..653d8e8ee1abc 100644
+> --- a/drivers/pci/controller/dwc/pcie-imx.c
+> +++ b/drivers/pci/controller/dwc/pcie-imx.c
+> @@ -55,6 +55,22 @@
+>  #define IMX95_PE0_GEN_CTRL_3			0x1058
+>  #define IMX95_PCIE_LTSSM_EN			BIT(0)
+>  
+> +#define IMX95_PE0_LUT_ACSCTRL			0x1008
+> +#define IMX95_PEO_LUT_RWA			BIT(16)
+> +#define IMX95_PE0_LUT_ENLOC			GENMASK(4, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA1			0x100c
+> +#define IMX95_PE0_LUT_VLD			BIT(31)
+> +#define IMX95_PE0_LUT_DAC_ID			GENMASK(10, 8)
+> +#define IMX95_PE0_LUT_STREAM_ID			GENMASK(5, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA2			0x1010
+> +#define IMX95_PE0_LUT_REQID			GENMASK(31, 16)
+> +#define IMX95_PE0_LUT_MASK			GENMASK(15, 0)
+> +
+> +#define IMX95_SID_MASK				GENMASK(5, 0)
+> +#define IMX95_MAX_LUT				32
+> +
+>  #define to_imx_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  enum imx_pcie_variants {
+> @@ -217,6 +233,159 @@ static int imx95_pcie_init_phy(struct imx_pcie *imx_pcie)
+>  	return 0;
+>  }
+>  
+> +static int imx_pcie_update_lut(struct imx_pcie *imx_pcie, int index, u16 reqid, u16 mask, u8 sid)
+> +{
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	u32 data1, data2;
+> +
+> +	if (sid >= 64) {
+> +		dev_err(dev, "Too big stream id: %d\n", sid);
+> +		return -EINVAL;
+> +	}
+> +
+> +	data1 = FIELD_PREP(IMX95_PE0_LUT_DAC_ID, 0);
+> +	data1 |= FIELD_PREP(IMX95_PE0_LUT_STREAM_ID, sid);
+> +	data1 |= IMX95_PE0_LUT_VLD;
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, data1);
+> +
+> +	data2 = mask;
+> +	data2 |= FIELD_PREP(IMX95_PE0_LUT_REQID, reqid);
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, data2);
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, index);
+> +
+> +	return 0;
+> +}
+> +
+> +struct imx_of_map {
+> +	u32 bdf;
+> +	u32 phandle;
+> +	u32 sid;
+> +	u32 sid_len;
+> +};
+> +
+> +static int imx_check_msi_and_smmmu(struct imx_pcie *imx_pcie,
+> +				   struct imx_of_map *msi_map, u32 msi_size, u32 msi_map_mask,
+> +				   struct imx_of_map *smmu_map, u32 smmu_size, u32 smmu_map_mask)
+> +{
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	int i;
+> +
+> +	if (msi_map && smmu_map) {
+> +		if (msi_size != smmu_size)
+> +			return -EINVAL;
+> +		if (msi_map_mask != smmu_map_mask)
+> +			return -EINVAL;
+> +
+> +		for (i = 0; i < msi_size / sizeof(*msi_map); i++) {
+> +			if (msi_map->bdf != smmu_map->bdf) {
+> +				dev_err(dev, "bdf setting is not match\n");
+> +				return -EINVAL;
+> +			}
+> +			if ((msi_map->sid & IMX95_SID_MASK) != smmu_map->sid) {
+> +				dev_err(dev, "sid setting is not match\n");
+> +				return -EINVAL;
+> +			}
+> +			if ((msi_map->sid_len & IMX95_SID_MASK) != smmu_map->sid_len) {
+> +				dev_err(dev, "sid_len setting is not match\n");
+> +				return -EINVAL;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Simple static config lut according to dts settings DAC index and stream ID used as a match result
+> + * of LUT pre-allocated and used by PCIes.
+> + *
+> + * Currently stream ID from 32-64 for PCIe.
+> + * 32-40: first PCI bus.
+> + * 40-48: second PCI bus.
+> + *
+> + * DAC_ID is index of TRDC.DAC index, start from 2 at iMX95.
+> + * ITS [pci(2bit): streamid(6bits)]
+> + *	pci 0 is 0
+> + *	pci 1 is 3
+> + */
+> +static int imx_pcie_config_sid(struct imx_pcie *imx_pcie)
+> +{
+> +	struct imx_of_map *msi_map = NULL, *smmu_map = NULL, *cur;
+> +	int i, j, lut_index, nr_map, msi_size = 0, smmu_size = 0;
+> +	u32 msi_map_mask = 0xffff, smmu_map_mask = 0xffff;
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	u32 mask;
+> +	int size;
+> +
+> +	of_get_property(dev->of_node, "msi-map", &msi_size);
+> +	if (msi_size) {
+> +		msi_map = devm_kzalloc(dev, msi_size, GFP_KERNEL);
+> +		if (!msi_map)
+> +			return -ENOMEM;
+> +
+> +		if (of_property_read_u32_array(dev->of_node, "msi-map", (u32 *)msi_map,
+> +					       msi_size / sizeof(u32)))
+> +			return -EINVAL;
+> +
+> +		of_property_read_u32(dev->of_node, "msi-map-mask", &msi_map_mask);
+> +	}
+> +
+> +	cur = msi_map;
+> +	size = msi_size;
+> +	mask = msi_map_mask;
+> +
+> +	of_get_property(dev->of_node, "iommu-map", &smmu_size);
+> +	if (smmu_size) {
+> +		smmu_map = devm_kzalloc(dev, smmu_size, GFP_KERNEL);
+> +		if (!smmu_map)
+> +			return -ENOMEM;
+> +
+> +		if (of_property_read_u32_array(dev->of_node, "iommu-map", (u32 *)smmu_map,
+> +					       smmu_size / sizeof(u32)))
+> +			return -EINVAL;
+> +
+> +		of_property_read_u32(dev->of_node, "iommu_map_mask", &smmu_map_mask);
+> +	}
 
-Simplify the installation rule.
+You should not be doing your own parsing of these properties.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/Makefile.vdsoinst | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/Makefile.vdsoinst b/scripts/Makefile.vdsoinst
-index c477d17b0aa5..bf72880c50d0 100644
---- a/scripts/Makefile.vdsoinst
-+++ b/scripts/Makefile.vdsoinst
-@@ -13,16 +13,15 @@ install-dir := $(MODLIB)/vdso
- 
- define gen_install_rules
- 
--src := $$(firstword $$(subst :,$(space),$(1)))
--dest := $(install-dir)/$$(or $$(word 2,$$(subst :,$(space),$(1))),$$(patsubst %.dbg,%,$$(notdir $(1))))
-+dest := $(install-dir)/$$(patsubst %.dbg,%,$$(notdir $(1)))
- 
- __default: $$(dest)
--$$(dest): $$(src) FORCE
-+$$(dest): $(1) FORCE
- 	$$(call cmd,install)
- 
- # Some architectures create .build-id symlinks
- ifneq ($(filter arm sparc x86, $(SRCARCH)),)
--link := $(install-dir)/.build-id/$$(shell $(READELF) -n $$(src) | sed -n 's@^.*Build ID: \(..\)\(.*\)@\1/\2@p').debug
-+link := $(install-dir)/.build-id/$$(shell $(READELF) -n $(1) | sed -n 's@^.*Build ID: \(..\)\(.*\)@\1/\2@p').debug
- 
- __default: $$(link)
- $$(link): $$(dest) FORCE
--- 
-2.40.1
-
+Rob
 
