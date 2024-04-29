@@ -1,120 +1,157 @@
-Return-Path: <linux-kernel+bounces-162394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A348B5A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:51:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D8CC8B5A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2EC31C21649
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:51:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7D11C21DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB75745F0;
-	Mon, 29 Apr 2024 13:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3F77BB07;
+	Mon, 29 Apr 2024 13:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T1GjTcmX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h5c61wun"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D33C2E401
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E112A79950;
+	Mon, 29 Apr 2024 13:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398679; cv=none; b=RhDo50IS5+Peqpz/oZRaARRnnt6Dwg/cliWDWdS0N3gFfn8lqsuYnM/MSl1GHJfT/XvDxstP6jvQqBOaX9nUIzRmqnwnWSTqSEZQ6ZDLvhQPbZejFk2HhGFVfPssOjVtE5J31KdnTNUZ2ex38rpRYcCDhON488daUFJPOckoJG8=
+	t=1714398687; cv=none; b=tCrKyBjbWhBfNJMzSZgxOEBJxkk8q9Ip+DIKRZqVenaqbThaV5z0fC/NxPIhB2WYPEfWfARVlbBKYk6+H9hESLrlZoQ6TB4UPRZ/8M2HRf/wzOatIkacF0dmD/edcfy0EekmJDMNEqbY/3If+zNybHCecCES068RgFc5uvCFbHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398679; c=relaxed/simple;
-	bh=/jIJCnMvgZY5Up4X3Z7+dau8RuABLbiQc/6Wav+cbRs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eqFVzgR9jEGIftKrfLb40KKj+w23uzz1zF0KB1BP7NQM5Ff3S13Rh/zg0j800iwcqX2I/0LQOfxtgRUv8KMR8Lb9Ri8WJTJo+PMiSwXOMX+AGxaGiqOrIUT3D3+8Q3LVJtXGRf5o3bwrSkLSWy7OGb9tlpewVX+DjJGdWSrKfN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T1GjTcmX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714398677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8tbMD2h7PJ3lWi6PtX11/1+14job09F9/bpkbzHIXK8=;
-	b=T1GjTcmXBqkFmfEFLhls6bEKwVwFv6gvsbJsAhcH74JOXfQ3BJCrPaqltyTbUF0snPKKoO
-	BwWBF11Rj8Myg0imCJtQLSENaCfkYlX6dTiWt3nfKQjJtryx3TETE940HSegDwuSykiZ8H
-	gdYAn/EOWKhFLUHmBWP3lilUqhZxZvE=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-202-Xw74E2WjOaGfQ788Kgabvg-1; Mon, 29 Apr 2024 09:51:14 -0400
-X-MC-Unique: Xw74E2WjOaGfQ788Kgabvg-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-61bb2b4204eso5536587b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:51:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714398674; x=1715003474;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8tbMD2h7PJ3lWi6PtX11/1+14job09F9/bpkbzHIXK8=;
-        b=Ow4O8a+QIrZ9eG3eWwBuAiLtCMIKJYXmKqwnzlI5ZGVpRMvjNj0CrKQB/9DXc9DZC1
-         y3E68tMo+2tgkErzfepdaHqrBXZupYNKo9cOwL5ttWQbtxuoH0hR8TW+e6/W2led1j3q
-         MKH/39HPhZSIvhb9Wzy8dm0dC37WHmoMRsn0hcZ7oNBflxPlM5WLFnyPWHl3eOYu1f1q
-         GcJ2mN5FD7eWN0AkJkEjIX7wpN1MHHGrP/FIFAB30IK7cTBXog9wvLMpAN5XWgIa/Utp
-         vp96ZSwSh3KM3OTwSdy2uGb73AIdXwDcpzfpiPUNaBWMoLX/c5NWwzCg9Dy6jFFblAzo
-         OIdg==
-X-Gm-Message-State: AOJu0Yy4Agu5c+UN/DtWBnCp/khqCxQrM1+fptIInhmAK+j6+faDph+g
-	B/z3evQkBro8P5dCjUOrLovA5KUd2NaK6aWa8QRdBkE8FtvSYbfyoxL57ODc1x7FJwUAE2sadgy
-	LcHA4zMR2bDi/4uHp/U4D5i8vlYYsktgzNlccsyZCSyFqP/2RMnFSqvhC253Q7Q==
-X-Received: by 2002:a25:b29f:0:b0:de4:5c38:40b8 with SMTP id k31-20020a25b29f000000b00de45c3840b8mr9172214ybj.6.1714398673780;
-        Mon, 29 Apr 2024 06:51:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFzbclBqcimK4lAEWdX1Uas2H83fsLI+db0WSQp/ICCVyIzSWiD5cYwnQ01wud/FLiGmgLing==
-X-Received: by 2002:a25:b29f:0:b0:de4:5c38:40b8 with SMTP id k31-20020a25b29f000000b00de45c3840b8mr9172187ybj.6.1714398673284;
-        Mon, 29 Apr 2024 06:51:13 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fu48-20020a05622a5db000b0043781985244sm10433284qtb.59.2024.04.29.06.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:51:13 -0700 (PDT)
-Date: Mon, 29 Apr 2024 09:51:10 -0400
-From: Peter Xu <peterx@redhat.com>
-To: David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	John Hubbard <jhubbard@nvidia.com>, linuxppc-dev@lists.ozlabs.org,
-	Muchun Song <muchun.song@linux.dev>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH 2/2] mm/selftests: Don't prefault in gup_longterm tests
-Message-ID: <Zi-lzjgoEiBGlsrX@x1n>
-References: <20240428190151.201002-1-peterx@redhat.com>
- <20240428190151.201002-3-peterx@redhat.com>
- <4171dbb6-81c0-4553-a405-a55f75be4cb7@redhat.com>
- <Zi-cONgqV4_kUIE4@x1n>
- <2338119d-060b-4127-9199-5ff39fd62fc4@redhat.com>
+	s=arc-20240116; t=1714398687; c=relaxed/simple;
+	bh=odyPaTA/NBNHAchzjVqJiP2jl0Yo6XGZMxvJSgkgKFc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=g8ctb78tfi21m7vlAcrHG4t++pja60ZAEvK9hOrpMMHGwVN2ufL4/nNf/nM3PNoAZkjtjuUQEC0E4X6H3XuIOqsozxEvzle0eHGm1ZaAowhN/veBw8wtDjmfktD9G46XVE+ky9hysArqGteqKXbrUuh5iGGkosVpBvlmMjGyxyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h5c61wun; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68756C4AF17;
+	Mon, 29 Apr 2024 13:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714398686;
+	bh=odyPaTA/NBNHAchzjVqJiP2jl0Yo6XGZMxvJSgkgKFc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=h5c61wunqAacEMS3E6c8pNczBD1EAXrrSWT+ABXr2u4rRtaVqjCFUafYO5SbXFmxW
+	 Y5buu4FvNHaCyPhdBzpUso/RVCKbtdw4HqV6cN/z8KHV/EQx9G6ALNK/Hzd+kBad0w
+	 UU2XvMzysLvE3rbyR2yfbwooMG7W0tgXR4lsmkwLrh/mgnRxA0fYzSk9sK2lkbpZy0
+	 Dmw9lA+ExiYpXRJfxa0eHYG5dGPsM1Cm75UZwVdPwHL1p+tCApfzHQUdGGQipGLt60
+	 CZjwEEn7rgh6WjCPg0gwv/tRxfyl/y3DxJ99izTnj1eI3STNvt64Ah8GaT9xckdkH8
+	 f6rd46qSLti6w==
+Date: Mon, 29 Apr 2024 22:51:19 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph:
+ Multi-function graph and fprobe on fgraph
+Message-Id: <20240429225119.410833c12d9f6fbcce0a58db@kernel.org>
+In-Reply-To: <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+	<CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2338119d-060b-4127-9199-5ff39fd62fc4@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 29, 2024 at 03:26:22PM +0200, David Hildenbrand wrote:
-> > The test patch here doesn't need to rush. David, how about you prepare a
-> > better and verified patch and post it separately, making sure to cover all
-> > the things we used to cover plus the unshare?  IIUC it used to be not
-> > touched because of pte_write() always returns true with a write prefault.
-> > 
-> > Then we let patch 1 go through first, and drop this one?
+Hi Andrii,
+
+On Thu, 25 Apr 2024 13:31:53 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> Hey Masami,
 > 
-> Whatever you prefer!
+> I can't really review most of that code as I'm completely unfamiliar
+> with all those inner workings of fprobe/ftrace/function_graph. I left
+> a few comments where there were somewhat more obvious BPF-related
+> pieces.
+> 
+> But I also did run our BPF benchmarks on probes/for-next as a baseline
+> and then with your series applied on top. Just to see if there are any
+> regressions. I think it will be a useful data point for you.
+
+Thanks for testing!
+
+> 
+> You should be already familiar with the bench tool we have in BPF
+> selftests (I used it on some other patches for your tree).
+
+What patches we need?
+
+> 
+> BASELINE
+> ========
+> kprobe         :   24.634 ± 0.205M/s
+> kprobe-multi   :   28.898 ± 0.531M/s
+> kretprobe      :   10.478 ± 0.015M/s
+> kretprobe-multi:   11.012 ± 0.063M/s
+> 
+> THIS PATCH SET ON TOP
+> =====================
+> kprobe         :   25.144 ± 0.027M/s (+2%)
+> kprobe-multi   :   28.909 ± 0.074M/s
+> kretprobe      :    9.482 ± 0.008M/s (-9.5%)
+> kretprobe-multi:   13.688 ± 0.027M/s (+24%)
+
+This looks good. Kretprobe should also use kretprobe-multi (fprobe)
+eventually because it should be a single callback version of
+kretprobe-multi.
+
+> 
+> These numbers are pretty stable and look to be more or less representative.
+> 
+> As you can see, kprobes got a bit faster, kprobe-multi seems to be
+> about the same, though.
+> 
+> Then (I suppose they are "legacy") kretprobes got quite noticeably
+> slower, almost by 10%. Not sure why, but looks real after re-running
+> benchmarks a bunch of times and getting stable results.
+
+Hmm, kretprobe on x86 should use ftrace + rethook even with my series.
+So nothing should be changed. Maybe cache access pattern has been
+changed?
+I'll check it with tracefs (to remove the effect from bpf related changes)
+
+> 
+> On the other hand, multi-kretprobes got significantly faster (+24%!).
+> Again, I don't know if it is expected or not, but it's a nice
+> improvement.
 
 Thanks!
 
-Andrew, would you consider taking patch 1 but ignore this patch 2? Or do
-you prefer me to resend?
+> 
+> If you have any idea why kretprobes would get so much slower, it would
+> be nice to look into that and see if you can mitigate the regression
+> somehow. Thanks!
+
+OK, let me check it.
+
+Thank you!
+
+> 
+> 
+> >  51 files changed, 2325 insertions(+), 882 deletions(-)
+> >  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+> >
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
+
 
 -- 
-Peter Xu
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
