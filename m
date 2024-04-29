@@ -1,76 +1,134 @@
-Return-Path: <linux-kernel+bounces-162738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005B88B5FE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:16:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCDB8B5FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:17:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9F211F21EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:16:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C37A1F22D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFAC86640;
-	Mon, 29 Apr 2024 17:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F5F86636;
+	Mon, 29 Apr 2024 17:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mUJtqOK1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="kP4I71W4";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="foUbY+h1"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB43683CBA;
-	Mon, 29 Apr 2024 17:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D0C2AE93
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411009; cv=none; b=DWDoVNBN50RGlvVRhx0dnoi1i6KC1k+Gu38n4pEjBDkgfhj+E+++xyYGE0Fj6fA8R/i1QpMSdb8wlK90k0kqHGKyB4xU9GIYA4T1bKYLGRrGRpZQGFn0tIndARF4cTm3wMS6Eupt0FU3lWZ4zCf3/tq98O3UDp2Q9t64YJSrBWc=
+	t=1714411067; cv=none; b=M440XRZKMcdPF2N/B3Z5pBGS+byQCdK6jw5UwcamQW966nSeX/kZIsxKhphx5CcjcqB9chdWTrQzJ+przaw6oNS40dg9YehUN2Pcun03cFvr0U0GbE2QCcPAsxhbVY6m6qLiDGl8oQQf1X+AHh7g8JyVkSPpt6crkylHf7M6jro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411009; c=relaxed/simple;
-	bh=Jf99MEr0EpcNQAp05QOEx0Ed6w8E09DIYgzKMwWYMdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=phoYOXISRSMn0Ea87bqfp/asPpN0hWsjTJGSTf8kBvWwWsFCdjfP/k3J8x6qw2cgkhGlRyLYyRNkComGBBhLPF7EZ7f0JAdSiKu7Zd9t+RO8U3TJ2GLwF1msc4YPkuNnrcclEvugQF1rXMInzhJizMwY4rmZkGb1E/Khwbgq6xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mUJtqOK1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A6DC113CD;
-	Mon, 29 Apr 2024 17:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714411009;
-	bh=Jf99MEr0EpcNQAp05QOEx0Ed6w8E09DIYgzKMwWYMdI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mUJtqOK1t9bYyIOz16i4YaVlAB03uNUlv1ln53D5j8C0+THNP26tsWaytERDaM8bl
-	 sF+HbyO4U2QD0MU/QpCaZkoL7LJ6keopNVaReHU7RuG7ojYW5lTuH6eBX1jE0bdWry
-	 WFC+qAI/oHyK1d9HWAOMr9v2Q/b0E1rvFjNP8zfUk7XGSC6aeht1J6jah9WuSnHMVB
-	 nSWf2XEGpuR66IOUTIyS1PEap9vOw+NHORGWN6CdfYjSKkAr3Otsd/tn/spJUfyXvb
-	 3wUAifAU8XmvX2WtrDRsBJn984bQMMtmx8izdAa53uD0mSqBcdcPP79n+Lt5A5oZva
-	 Zpx80WQrAgT8w==
-Date: Mon, 29 Apr 2024 10:16:47 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, Christian
- Brauner <brauner@kernel.org>, Mark Brown <broonie@kernel.org>, Shengyu Li
- <shengyu.li.evgeny@gmail.com>, Shuah Khan <shuah@kernel.org>, "David S .
- Miller" <davem@davemloft.net>, =?UTF-8?B?R8O8bnRoZXI=?= Noack
- <gnoack@google.com>, Will Drewry <wad@chromium.org>, kernel test robot
- <oliver.sang@intel.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] selftests/harness: Fix interleaved scheduling
- leading to race conditions
-Message-ID: <20240429101647.756a1ac7@kernel.org>
-In-Reply-To: <202404290852.C327596A@keescook>
-References: <20240429130931.2394118-1-mic@digikod.net>
-	<20240429130931.2394118-5-mic@digikod.net>
-	<202404290852.C327596A@keescook>
+	s=arc-20240116; t=1714411067; c=relaxed/simple;
+	bh=/AcgWBI1kWNeHnrawu01Ad+zBIAqb/wlbcn9c4qFU90=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=KfzdyFa5vTcg7T/amYyZbJocPmyIS3GHXYiXV2T9JHAfyT13y4pF1BB7D0Uq5AECYR0MQ0mfSHaU+RFKghzKK4dwaulX+ZUJOflh5ACCxw8lgPuilpQZ/sP3rNtxg0YdEW4I2MkXDyIjaP5u4ZPhSqDeTYSPzj+jJt2kOyR0P/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=kP4I71W4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=foUbY+h1; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 1F6DB18000AC;
+	Mon, 29 Apr 2024 13:17:44 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 29 Apr 2024 13:17:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1714411063; x=1714497463; bh=xekhz3+nyZ
+	m8Ea8jq2BOw2Y9kIUDt9YpLlTFfRvHFOE=; b=kP4I71W4xDoQDx+BkSQ7yea4f4
+	hfvD72bRwVQrY3vX0+/EyVSSPv3PEXNxCceFghMU9Z0jQ87MY04AqgO9emTp6wpD
+	rgHB1lAVNNquGzL+j1n+BaEmoJuVdojvyX088SAGGkOIEvfk65WWwXIRcPcC9tS+
+	hCepCeNjgvePBEhhNeih/bPG1mmtLjpqvHGRFFgqX1oPiZ3FihR/TXT2n/MSxodU
+	rFxYXtvu6VKyORHUd62WDMM2uE8yHNlJBkJYSrvWRg/FMBTx1LONi3/FanWJx7G4
+	nsX0A516+1NExfE3suXN6YN2bamHkng3cZ4FNTot1gFsOt24KvaQTVOgoIyw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714411063; x=1714497463; bh=xekhz3+nyZm8Ea8jq2BOw2Y9kIUD
+	t9YpLlTFfRvHFOE=; b=foUbY+h1Kw+2NJhyj+bbbpjLzOVliM2psSbkGJSnPVxZ
+	eDVqOM8bvNui2udA8VZYNCEUhTLX7Ag96mwjAgzc1MkLxsb76D7d31SgR7+FWpeB
+	blC1oHfCwH/xDvszqvU6saKH0dn22GcE/utLcbbr1OpSOyVJYDfmP1hsNvVL4WTi
+	9yTabR3cc7NNezoflDqOta5ncWNSaMRb+Z1xGjKeNxdtb8Aerk9q59if7Yp//AIP
+	2jU/Uiby0dRxSJp4WP9HvdKcLtMYSJYwzLoAGKva0zV5Bv63dwdT62ffb9VHEORp
+	KhAKJwPIuHg+wEXCYppQAww9PXUxl4TRwRik8M/12g==
+X-ME-Sender: <xms:N9YvZuQujlCHRkVFDk_Ko3pQg-gFWocstXL4Q4E_pdmKWyJacD3ThA>
+    <xme:N9YvZjzr0ESm8KCFwN9Ng9l0D7QeErVoqBRUBzVL5U-aEShP6hfodq4XVbNcuprMK
+    IRo9-lMcDiyHEDDLEc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdduuddguddtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeu
+    feehudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:N9YvZr1o_NrUNjHjlr3JIGPMz4BQRgqQ_ztoQg_WsF7foMfIuyyUGQ>
+    <xmx:N9YvZqDSsbw-4gVUu7s70n6jXlXtCoQrtewarN4HQ0exaM6DD3c0uQ>
+    <xmx:N9YvZngytkJyRGexyKWzG_aXcHP8FB3RCcJTZrpZOpEY9CYiNrrbxA>
+    <xmx:N9YvZmrpcTBv2hLIRMe07DA8k1rBtMoyBoGWzT1KPz42DRZ4FjiXLw>
+    <xmx:N9YvZsZSbss71b3R2D7NJiqPPmnCX5Q1ubWXFQwkNgSJ_9wXXEEbNdqn>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 68916B600A0; Mon, 29 Apr 2024 13:17:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-Id: <91dacd68-fdbe-4cb4-92c0-e5d6bc777658@app.fastmail.com>
+In-Reply-To: <8de32257786d3f062c479a8b10dcf17b775d563b.camel@nvidia.com>
+References: 
+ <CA+G9fYu7Ug0K8h9QJT0WbtWh_LL9Juc+VC0WMU_Z_vSSPDNymg@mail.gmail.com>
+ <c819df1c-4215-41bb-b24b-563a912d160f@leemhuis.info>
+ <8de32257786d3f062c479a8b10dcf17b775d563b.camel@nvidia.com>
+Date: Mon, 29 Apr 2024 19:17:22 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Timur Tabi" <ttabi@nvidia.com>,
+ "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+ "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "Anders Roxell" <anders.roxell@linaro.org>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Danilo Krummrich" <dakr@redhat.com>
+Subject: Re: nouveau: r535.c:1266:3: error: label at end of compound statement default:
+ with gcc-8
+Content-Type: text/plain
 
-On Mon, 29 Apr 2024 08:52:36 -0700 Kees Cook wrote:
-> > +/* Wait for the child process to end but without sharing memory mapping. */
-> > +static pid_t __attribute__((__unused__)) clone3_vfork(void)  
-> 
-> Why "unused"?
+On Mon, Apr 29, 2024, at 19:08, Timur Tabi wrote:
+> On Mon, 2024-04-29 at 17:30 +0200, Linux regression tracking (Thorsten
+> Leemhuis) wrote:
+>> TWIMC, there is another report about this in this thread (sadly some of
+>> its post did not make it to lore):
+>> 
+>> https://lore.kernel.org/all/162ef3c0-1d7b-4220-a21f-b0008657f8a5@redhat.com/
+>> 
+>> Ciao, Thorsten
+>
+> This doesn't fail on x86-64 when I build it.  I also did a cross-compile to
+> arm64 with the arm64 defconfig, and it doesn't fail there either.
+>
+> I'm guessing this is a compiler version thing.  I'm using gcc 11.4.  Is that
+> just too old?
 
-Right, static inline is enough
+It's too new: this is valid syntax in c23 and accepted by newer compilers
+as an extension to gnu11, but older versions don't like it.
+
+gcc-11 and clang-16 are fine, while gcc-10 and clang-15 as well as
+earlier versions produce this warning.
+
+      Arnd
 
