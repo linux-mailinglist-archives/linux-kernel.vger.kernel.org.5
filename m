@@ -1,233 +1,266 @@
-Return-Path: <linux-kernel+bounces-162389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D48B98B5A74
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387208B5A77
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0487E1C2145C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:48:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BEF21C21573
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CE6745C0;
-	Mon, 29 Apr 2024 13:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0158E7640E;
+	Mon, 29 Apr 2024 13:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="M/akvdJ0"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyORC9o2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2732745C3
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0649C74E11;
+	Mon, 29 Apr 2024 13:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398477; cv=none; b=HI+YKKKqDMgKg8EaOLkLyFm3YRj0kkQwzengSgSHJsyPNnb5vuKaDymjPnsjuC4VZSdrD4BspgXG+ERl9vUbGY+ASDVCDMGt/fRH5qZdWBbkE9TIP9Z7jCN+2JrSAXEN9VRCz1CwvgfPMCgJAYMvdjWZ+IsO5X7406TEzoDSpvU=
+	t=1714398493; cv=none; b=Bx3nJaq6+ORDpsE0y3q9YGrux+vU/ZVyMa+Ecn+G6cy+Urip+PK+HdZz+t5zpiSJSjGoM7cbhdx1fdzAcqhwlaveQ5LfIg6nHX/BghnChDgeu10k2PQ9e8vuH7XOTjd1LVXCXYrXtefRlPMc/Autd5e7MT91oKEweIvH3Od+rfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398477; c=relaxed/simple;
-	bh=ARPhoW58t0JAb+XhD4We4yq8qzr4Xlj7h6uPLXBL7yc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=toyhi6XGmcQPfeNDDF4pX2H1pt98Le7nHK8wv0E0mcWrhzZU/wp1Y5yXmmh8zQz8S8tsbERVa3whXEee67RoI0qRFvBMHE9IXjBa6R+u0hv5RfGu0wuxGw0tQkJla65ht3Ns0+jQPex9tucMA//q44ArzojuLdT/wNSqvBYuX3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=M/akvdJ0; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5196fe87775so4918041e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1714398473; x=1715003273; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fTbaPy+dJ2EwkSJYrQFFWcOz4izqUvcjbKkMYVCjdhM=;
-        b=M/akvdJ0tkfCpEjx2+tpWHbfuTw8nzp9xoOuDYZ5fd8D+Pwmg1w4AQ00TSJR1+xmwA
-         tj10fZGgjdRyuAAIGqQIDYqO+wIZ2IY/yocUQEfJMFQ8QsD/+CzeoB3m6M8yyhbsm3y1
-         TgzxmjpZCs1jbDMCs+jt29X4Jebixjswx1W+RHdBCaEOgTasx+Wu5TsDD0j3lFGBuAVO
-         /MQaT901Qsu3fL3sg6okdUH/0ByAh34niRLIg4tTCOJbogPYYKWJdB1SdKjY+s65xff3
-         hRcU0rurZS5GGMm1UqAYh1gAAmXhBFACSYum39X4zpl156hFCDL4zQDNoWYKel/hWWkQ
-         g8UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714398473; x=1715003273;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fTbaPy+dJ2EwkSJYrQFFWcOz4izqUvcjbKkMYVCjdhM=;
-        b=bpws03yoLgpFxRzwxabXBd/ZBI/My5d59gJlpNknckaToXR028duTaTrsYmkqMciHM
-         j1/Sukhg3hIOBT8LovymYi5dJtsZJjgCfvhAm7q2xG0L1MPwpJPEOV8TZazauOE8hR/Y
-         Dm5VFbbIDzcXGaUJRseoKzvAuTvJM/foIJy1rsgbKVTIPwQNwoxKig7L3htRllXkVYbe
-         rSVyJvLMO1PNi69zr3T8RLlbPNUK0lK0kKuqOQxRfyYQOaZyCPc5ZKutysLYgVDvrRqP
-         JDs0Wcyx/aEUc5BRSRT9Cmrete9dzHh2cILShocUKhwDDaWS+UyXdB8RnhYcH76QUy8p
-         q7ww==
-X-Forwarded-Encrypted: i=1; AJvYcCX2U8Nw3zFvcrg73iuj/L2h5D9ohgWXz+OZxuQRDnQeXtpWTBPwUyVOtpzDmMsi8Yeyf/betO8pUQl9dBNFyOpwJK2b9d7oqRX1yDiO
-X-Gm-Message-State: AOJu0Yx5yhp898xxH2rgqFj4DHX9aVtluJwDVOxyVDwbnMhlBOq3LBsT
-	SSO93rc2KCdzeaRjfqBCZpTkzjgLJ5GWec9ZIkHnRsWiI/pd3AOEbJkdsYtl9c4=
-X-Google-Smtp-Source: AGHT+IHvCP7iybwfg9JD3qH/GlFZDWAIgSbPT+EdmIP24wggfU7b0RC4JDQlZm6tM0m9ZlDxV2Mw5Q==
-X-Received: by 2002:a05:6512:1156:b0:51b:ebe0:a91a with SMTP id m22-20020a056512115600b0051bebe0a91amr5496821lfg.36.1714398473401;
-        Mon, 29 Apr 2024 06:47:53 -0700 (PDT)
-Received: from localhost ([194.62.217.2])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170906368400b00a4e48e52ecbsm13834825ejc.198.2024.04.29.06.47.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:47:52 -0700 (PDT)
-From: Andreas Hindborg <nmi@metaspace.dk>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: a.hindborg@samsung.com,  alex.gaynor@gmail.com,
-  anna-maria@linutronix.de,  benno.lossin@proton.me,
-  bjorn3_gh@protonmail.com,  boqun.feng@gmail.com,  frederic@kernel.org,
-  gary@garyguo.net,  linux-kernel@vger.kernel.org,  ojeda@kernel.org,
-  rust-for-linux@vger.kernel.org,  tglx@linutronix.de,  wedsonaf@gmail.com
-Subject: Re: [PATCH] rust: hrtimer: introduce hrtimer support
-In-Reply-To: <20240429124937.414056-1-aliceryhl@google.com> (Alice Ryhl's
-	message of "Mon, 29 Apr 2024 12:49:37 +0000")
-References: <20240425094634.262674-1-nmi@metaspace.dk>
-	<20240429124937.414056-1-aliceryhl@google.com>
-User-Agent: mu4e 1.12.4; emacs 29.3
-Date: Mon, 29 Apr 2024 15:47:47 +0200
-Message-ID: <87ttjkjn5o.fsf@metaspace.dk>
+	s=arc-20240116; t=1714398493; c=relaxed/simple;
+	bh=2OmxYBcG8kYWa15/HKPOVgxwdgSzJ8/xMevqt/hqwIo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=iykIDcNFJPk5Gh0ScGi69j7sSEOGBELBYdkPhQtxZZkye8DUhdaEUncCM+7nYLDiA60JDHB0iDkFsUCoybLlmPajyGCQhALlhaScJfXy/YkZyoXOkWhLwC58+TApD9Cq1gaQtf6KnDg7SsMgL2sJMsZ/y1YwuZAni07kA5PAw0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyORC9o2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 427D1C113CD;
+	Mon, 29 Apr 2024 13:48:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714398492;
+	bh=2OmxYBcG8kYWa15/HKPOVgxwdgSzJ8/xMevqt/hqwIo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lyORC9o2Lm+u2avM+eOyj/ccYiyuxZQLnwqOF6FZV49QnzRN+Dcvvb8f+L/I+DIcc
+	 bR6gzWrxR06bLVpEA1X1PfPHzCF0nDSdsFIGgv/R/Ztx7jvyn/LZvp5GTSxbA3X+Ea
+	 5Q5++mVTUse/so5L++FV3pac1nAd6FyimPuc/dQPplc7m0nyf+JoSS48zL0c07gOKG
+	 +Q9TxDTXUAv++YZPpMLvDQVzMH1VHt+BXIScwupTc1u15EnhRP870WSg23oHheSEFh
+	 X/E2DhZuUkcbr1ov6EZLQFmBffBmxl2jf1fX5T3O6khvfYPOQWnrKD7j3rIrd7dwdJ
+	 AMHlyJcx5ffMw==
+Date: Mon, 29 Apr 2024 22:48:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
+ <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
+ Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao"
+ <naveen.n.rao@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
+ Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH] kprobe/ftrace: bail out if ftrace was killed
+Message-Id: <20240429224803.49d420b514e22d51412e1602@kernel.org>
+In-Reply-To: <20240426225834.993353-1-stephen.s.brennan@oracle.com>
+References: <20240426225834.993353-1-stephen.s.brennan@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Alice Ryhl <aliceryhl@google.com> writes:
+Hi Stephen,
 
-> Andreas Hindborg <nmi@metaspace.dk> writes:
->> From: Andreas Hindborg <a.hindborg@samsung.com>
->>=20
->> This patch adds support for intrusive use of the hrtimer system. For now=
-, only
->> one timer can be embedded in a Rust struct.
->>=20
->> The hrtimer Rust API is based on the intrusive style pattern introduced =
-by the
->> Rust workqueue API.
->>=20
->> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
->
-> This patch is very similar to the workqueue I implemented. It seems like
-> we have the following correspondence between them:
->
-> * Your HasTimer is my HasWork.
-> * Your RawTimerCallback is my WorkItemPointer.
-> * Your TimerCallback is my WorkItem.
-> * Your RawTimer is my RawWorkItem. (but the match isn't great here)
->
-> I think it would make sense to have the names be more consistent. I
-> propose renaming RawTimerCallback to TimerCallbackPointer.
->
-> Or we can name them TimerEntry and RawTimerEntry?
+On Fri, 26 Apr 2024 15:58:34 -0700
+Stephen Brennan <stephen.s.brennan@oracle.com> wrote:
 
-I took some advice from Benno and merged `RawTimerCallback` with
-`RawTimer` and renamed the resulting trait `TimerPointer`. There is not
-really any reason they should be split for the `hrtimer` as far as I can
-tell.
+> If an error happens in ftrace, ftrace_kill() will prevent disarming
+> kprobes. Eventually, the ftrace_ops associated with the kprobes will be
+> freed, yet the kprobes will still be active, and when triggered, they
+> will use the freed memory, likely resulting in a page fault and panic.
 
-> I also note that the method on your RawTimer trait seems to be the
-> public API of how you're supposed to schedule a timer, whereas the
-> workqueue RawWorkItem only provides a raw low-level method, and instead
-> has the "public API" be a function on the Workqueue struct.
->
-> I'm not such a big fan of having the primary method everying is supposed
-> to use be a method on a trait whose name starts with "Raw".
+Hmm, indeed.
 
-I would remove the `Raw`.
+> 
+> This behavior can be reproduced quite easily, by creating a kprobe and
+> then triggering a ftrace_kill(). For simplicity, we can simulate an
+> ftrace error with a kernel module like [1]:
+> 
+> [1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
+> 
+>   sudo perf probe --add commit_creds
+>   sudo perf trace -e probe:commit_creds
+>   # In another terminal
+>   make
+>   sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
+>   # Back to perf terminal
+>   # ctrl-c
+>   sudo perf probe --del commit_creds
+> 
+> After a short period, a page fault and panic would occur as the kprobe
+> continues to execute and uses the freed ftrace_ops. While ftrace_kill()
+> is supposed to be used only in extreme circumstances, it is invoked in
+> FTRACE_WARN_ON() and so there are many places where an unexpected bug
+> could be triggered, yet the system may continue operating, possibly
+> without the administrator noticing. If ftrace_kill() does not panic the
+> system, then we should do everything we can to continue operating,
+> rather than leave a ticking time bomb.
 
-> It's worth
-> considering whether it makes more sense to have a free-standing function
-> called `schedule_timer` and have that be how you're supposed to schedule
-> timers, instead of the RawTimer trait.
+OK, the patch looks good to me.
 
-I think being able to call `my_timer_containing_struct.schedule()` is
-nice.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
->
->> +#[pinned_drop]
->> +impl<T> PinnedDrop for Timer<T> {
->> +    fn drop(self: Pin<&mut Self>) {
->> +        // SAFETY: By struct invariant `self.timer` was initialized by
->> +        // `hrtimer_init` so by C API contract it is safe to call
->> +        // `hrtimer_cancel`.
->> +        unsafe {
->> +            bindings::hrtimer_cancel(self.timer.get());
->> +        }
->> +    }
->> +}
->
-> Assuming that this is mirroring the workqueue, then this is not
-> necessary. The timer owns a refcount to the element, so the destructor
-> cannot run while the timer is scheduled.
+Thanks!
 
-Yes, it is very much a mirror. Yes, it is a leftover from trying to
-support stack allocated timers. I will remove it.
+> 
+> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+> ---
+> 
+> Apologies for the wide net cast here. I recognize that a change like this
+> may need to be split up and go through arch-specific trees. I hoped to get
+> feedback on the patch itself. If it's satisfactory and the architecture
+> maintainers prefer it split out, I'm glad to do it. Thanks!
+> 
+>  arch/csky/kernel/probes/ftrace.c     | 3 +++
+>  arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
+>  arch/parisc/kernel/ftrace.c          | 3 +++
+>  arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
+>  arch/riscv/kernel/probes/ftrace.c    | 3 +++
+>  arch/s390/kernel/ftrace.c            | 3 +++
+>  arch/x86/kernel/kprobes/ftrace.c     | 3 +++
+>  include/linux/ftrace.h               | 2 ++
+>  8 files changed, 23 insertions(+)
+> 
+> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+> index 834cffcfbce3..3931bf9f707b 100644
+> --- a/arch/csky/kernel/probes/ftrace.c
+> +++ b/arch/csky/kernel/probes/ftrace.c
+> @@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe_ctlblk *kcb;
+>  	struct pt_regs *regs;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
+> index 73858c9029cc..82c952cb5be0 100644
+> --- a/arch/loongarch/kernel/ftrace_dyn.c
+> +++ b/arch/loongarch/kernel/ftrace_dyn.c
+> @@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe *p;
+>  	struct kprobe_ctlblk *kcb;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+> index 621a4b386ae4..3660834f54c3 100644
+> --- a/arch/parisc/kernel/ftrace.c
+> +++ b/arch/parisc/kernel/ftrace.c
+> @@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe *p;
+>  	int bit;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+> index 072ebe7f290b..85eb55aa1457 100644
+> --- a/arch/powerpc/kernel/kprobes-ftrace.c
+> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
+> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>  	struct pt_regs *regs;
+>  	int bit;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(nip, parent_nip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+> index 7142ec42e889..8814fbe4c888 100644
+> --- a/arch/riscv/kernel/probes/ftrace.c
+> +++ b/arch/riscv/kernel/probes/ftrace.c
+> @@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe_ctlblk *kcb;
+>  	int bit;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index c46381ea04ec..ccbe8ccf945b 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe *p;
+>  	int bit;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+> index dd2ec14adb77..c73f9ab7ff50 100644
+> --- a/arch/x86/kernel/kprobes/ftrace.c
+> +++ b/arch/x86/kernel/kprobes/ftrace.c
+> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct kprobe_ctlblk *kcb;
+>  	int bit;
+>  
+> +	if (unlikely(ftrace_is_dead()))
+> +		return;
+> +
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+>  		return;
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 54d53f345d14..ba83e99c1fbe 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -399,6 +399,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
+>  #define register_ftrace_function(ops) ({ 0; })
+>  #define unregister_ftrace_function(ops) ({ 0; })
+>  static inline void ftrace_kill(void) { }
+> +static inline int ftrace_is_dead(void) { return 0; }
+>  static inline void ftrace_free_init_mem(void) { }
+>  static inline void ftrace_free_mem(struct module *mod, void *start, void *end) { }
+>  static inline int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
+> @@ -914,6 +915,7 @@ static inline bool is_ftrace_trampoline(unsigned long addr)
+>  
+>  /* totally disable ftrace - can not re-enable after this */
+>  void ftrace_kill(void);
+> +int ftrace_is_dead(void);
+>  
+>  static inline void tracer_disable(void)
+>  {
+> -- 
+> 2.39.3
+> 
 
 
-> Also, as a generaly note, putting semicolons outside of unsafe blocks
-> formats better.
-
-=F0=9F=91=8D
-
->
->> +/// Implemented by pointer types that can be the target of a C timer ca=
-llback.
->> +pub trait RawTimerCallback: RawTimer {
->> +    /// Callback to be called from C.
->> +    ///
->> +    /// # Safety
->> +    ///
->> +    /// Only to be called by C code in `hrtimer`subsystem.
->> +    unsafe extern "C" fn run(ptr: *mut bindings::hrtimer) -> bindings::=
-hrtimer_restart;
->> +}
->
-> Safety comment is missing a space.
-
-Thanks.
-
->
->> +/// Implemented by pointers to structs that can the target of a timer c=
-allback
->> +pub trait TimerCallback {
->> +    /// Type of `this` argument for `run()`.
->> +    type Receiver: RawTimerCallback;
->> +
->> +    /// Called by the timer logic when the timer fires
->> +    fn run(this: Self::Receiver);
->> +}
->
-> The documentation says that this is implemented by pointers to structs,
-> but that is not the case.
-
-I will update the doc comment, it should say "implemented by structs that
-can be the target...". Thanks.
-
->
->> +impl<T> RawTimer for Arc<T>
->> +where
->> +    T: Send + Sync,
->> +    T: HasTimer<T>,
->> +{
->> +    fn schedule(self, expires: u64) {
->> +        let self_ptr =3D Arc::into_raw(self);
->> +
->> +        // SAFETY: `self_ptr` is a valid pointer to a `T`
->> +        let timer_ptr =3D unsafe { T::raw_get_timer(self_ptr) };
->> +
->> +        // `Timer` is `repr(transparent)`
->> +        let c_timer_ptr =3D timer_ptr.cast::<bindings::hrtimer>();
->
-> I would add an `raw_get` method to `Timer` instead of this cast,
-> analogous to `Work::raw_get`.
->
-
-Why is that? It is a lot of extra code, extra safety comments, etc.
-
-In any case, would you prefer to implement said method with a cast
-(which we can because `Timer` is transparent), or by `Opaque::raw_get`:
-
-`Opaque::raw_get(core::ptr::addr_of!((*ptr).timer))`
-
-
-Best regards,
-Andreas
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
