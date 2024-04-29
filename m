@@ -1,129 +1,152 @@
-Return-Path: <linux-kernel+bounces-162634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542318B5E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:59:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165898B5E59
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DF59284A2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:59:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 485261C21265
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE0A583CCC;
-	Mon, 29 Apr 2024 15:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ii8sjjsx"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B731B84D07;
+	Mon, 29 Apr 2024 15:58:19 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08E18614D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:58:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE1A84A28
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714406282; cv=none; b=Ig7M5O7TSBot+DbHkOakzRE1XF7ObCx/qSEkiUXTunlU7PQRqq01FlWpnWUrKSpzvn9VYS99HvWhS4Cb/QnJTEwSWREgqAr2HTEWOm1tp/mU26TVTlELa/owIO7MwSjtHD/xc+dTqUTALGKFs3TYsDvINmz4rW7uuYynCg/1bUw=
+	t=1714406299; cv=none; b=YvhCAE8yDpKMr0YrNZrskSAIX+aQKqt8z0LbZqBYnZbcfVaBtvNZgaxkTZwXyZGKSoMfnKyzDFUvTydu/ANcHXRI4rTns2GlyQ/hzuim8blo2nwvM9sB1UkYnX9IfDuywkQPTID8nFYNutOB782SwZRNtuhJD80M6JmQKP6YPGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714406282; c=relaxed/simple;
-	bh=elJxk/k9sqYtC/MCZ2vFryQvPeupAL5xKULnIW6JfRU=;
+	s=arc-20240116; t=1714406299; c=relaxed/simple;
+	bh=bnm8R3BjU4r3oFI+LvM7c1yc3O+bDzJFXe68tYSrX9k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C88dzaQRUlO5Ha2+Z9ySLesC44d02YKFqcUiUaqXWfi6fnIjXUIOEgBNi1boNNkVzX61zpuDozPcNqrsCiH0rRflzSKN1CBiXyPh8/7zDgecZ8Cm/3jI6EHiy28H4mnD1al1ABS+Dkh4AG6O3OLOGxJjXIWDnyhJuQTK5I34iho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ii8sjjsx; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so2977131a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714406280; x=1715011080; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LXesceeVx7eAybXSMHvtACUpIAJaYRLCSDSMv3aiI6Y=;
-        b=ii8sjjsxUUoI7UJi0f+z1jQ/aZRF88qHkGEXQDr+zAffx5BYMijcwiwyB4dFA0o9wm
-         6jjVzaDFx9TOAQ+f33y8SRxnklbiFS9I6WS3Ia0t0CUD50obUEwy7AsguDN3iTo446so
-         TJ1y09rTSRdkD/nIXBLNDyJ2XAji/yACrcxFg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714406280; x=1715011080;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LXesceeVx7eAybXSMHvtACUpIAJaYRLCSDSMv3aiI6Y=;
-        b=CfNmI4GDz4/JIh2O9cfrSd0vjgGUaDWFvUusGMS7G+y1BLB91HrZUHQ/t9oZ3cIGOn
-         pzGIfRVY/3IwcDpZzb6/ec8xiatDl1p4d0pf45aQ2uUdDcwCKTYIq/VS+FObHZK5d2Sb
-         v7vtoX6QDSI4AmRHBHh6JsbumrAeiR5qATWpNxcsKKaf4n4Si2iWVbFuYX8rXX0XFj1O
-         NzEljwl7nPOYgHPB0bBjPs+KLEv2cuGTQ5PbU6e61ZqeGGgOik4bu1r9rsLlT1bdA7/l
-         M6zoRdH7yv2/AnV1DJzWvtN/73HPH9bZhBNP2DwCH/MEzoqavig/emAgWOiOOSZKZyGU
-         i+zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWo8N/QwERzb2ib7NPA7nhq66RQqx2/CogMNsckAv0lVaDABN2X4xqRvoeDs6REjIbjbrU7kUOjgGR+JhgU8MPn4mwhsxAHabOb86hi
-X-Gm-Message-State: AOJu0Yy337wsHCWldJUIrQEL85R60gmK+kzNclyJmoamniVYRfMt3jDW
-	nixUkTgQwAP2hAOXHlldo0GGsopZ8cxNYryVe8Du+7KLbAWOL0YTwiD0bPqQeQ==
-X-Google-Smtp-Source: AGHT+IH5mn+xNGRLvYr66gOyWrbSH5iYC8VFZwOPTFbEPOgPuBjIRhHvM+Dtaw5Y0QSIqnQeruOFzw==
-X-Received: by 2002:a05:6300:808d:b0:1a7:6262:1dd1 with SMTP id ap13-20020a056300808d00b001a762621dd1mr9709716pzc.51.1714406279974;
-        Mon, 29 Apr 2024 08:57:59 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m19-20020aa78a13000000b006e697bd5285sm19380439pfa.203.2024.04.29.08.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:57:59 -0700 (PDT)
-Date: Mon, 29 Apr 2024 08:57:58 -0700
-From: Kees Cook <keescook@chromium.org>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Shengyu Li <shengyu.li.evgeny@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Will Drewry <wad@chromium.org>,
-	kernel test robot <oliver.sang@intel.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] selftests/harness: Fix vfork() side effects
-Message-ID: <202404290857.4BEAF6D55@keescook>
-References: <20240429130931.2394118-1-mic@digikod.net>
- <20240429130931.2394118-10-mic@digikod.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=T55f4aCfuSRHH7MwOQ+GDIDrm0Ma0ITNYuM23x08nziRrr76POKoLLXwVTxAGrQn5lDSbwrMQEaiSBexi1R7RdFz1qxFY+jEq8pUPnOeFKGIFHHZLBys6+9ysn8kMVDOg2K3nbkJZv4qKVPZ0GQRl+ob3ZW1NyqS5OeOefVLrZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1TOM-0003NO-2W; Mon, 29 Apr 2024 17:58:10 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1TOL-00F0TU-Ds; Mon, 29 Apr 2024 17:58:09 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1TOL-002VfP-16;
+	Mon, 29 Apr 2024 17:58:09 +0200
+Date: Mon, 29 Apr 2024 17:58:09 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	Mark Brown <broonie@kernel.org>,
+	Kyle Swenson <kyle.swenson@est.tech>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: PoE complex usage of regulator API
+Message-ID: <Zi_DkX-m0F3TyAwH@pengutronix.de>
+References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+ <57a79abd-722c-4907-b0e7-2396392ae675@lunn.ch>
+ <20240429145203.219bee06@kmaincent-XPS-13-7390>
+ <Zi-vhKx-WlYPQe3c@pengutronix.de>
+ <5063429d-5dca-4538-b240-50c35cbf5e93@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429130931.2394118-10-mic@digikod.net>
+In-Reply-To: <5063429d-5dca-4538-b240-50c35cbf5e93@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Apr 29, 2024 at 03:09:31PM +0200, Mickaël Salaün wrote:
-> Setting the time namespace with CLONE_NEWTIME returns -EUSERS if the
-> calling thread shares memory with another thread (because of the shared
-> vDSO), which is the case when it is created with vfork().
+On Mon, Apr 29, 2024 at 04:57:35PM +0200, Andrew Lunn wrote:
+> > Since there is already support to work with current (I) values, there
+> > are is also overcurrent protection. If a device is beyond the power
+> > budget limit, it is practically an over current event. Regulator
+> > framework already capable on handling some of this events, what we need
+> > for PoE is prioritization. If we detect overcurrent on supply root/node
+> > we need to shutdown enough low prio consumers to provide enough power
+> > for the high prio consumers.
 > 
-> Fix pidfd_setns_test by replacing test harness's vfork() call with a
-> clone3() call with CLONE_VFORK, and an explicit sharing of the
-> _metadata and self objects.
+> So the assumption is we allow over provisioning?
+
+I assume yes. But I didn't spend enough time to understand and analyze
+this part. May be I just misunderstand over provisioning.
+
+> > > So there is a potential second user, that's great to hear it! Could the
+> > > priority stuff be also interesting? Like to allow only high priority SFP to use
+> > > higher power class in case of a limiting power budget.
 > 
-> Replace _metadata->teardown_parent with a new FIXTURE_TEARDOWN_PARENT()
-> helper that can replace FIXTURE_TEARDOWN().  This is a cleaner approach
-> and it enables to selectively share the fixture data between the child
-> process running tests and the parent process running the fixture
-> teardown.  This also avoids updating several tests to not rely on the
-> self object's copy-on-write property (e.g. storing the returned value of
-> a fork() call).
+> I was not expecting over-provisioning to happen. So prioritisation
+> does not make much sense. You either have the power budget, or you
+> don't.
+> The SFP gets to use a higher power class if there is budget, or
+> it is kept at a lower power class if there is no budget. I _guess_ you
+> could give it a high power class, let it establish link, monitor its
+> actual power consumption, and then decide to drop it to a lower class
+> if the actual consumption indicates it could work at a lower
+> class. But the danger is, you are going to loose link.
 > 
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Günther Noack <gnoack@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Will Drewry <wad@chromium.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
-> Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> I've no real experience with this, and all systems today hide this
+> away in firmware, rather than have Linux control it.
+> 
+>      Andrew
 
-Thanks for splitting these up! I found it much more digestible. :)
+It may not be a over-provisioning by design. I can imagine some scenarios where
+available power budge may dynamically change:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+- Changes in Available Power Budget: If a PoE switch is modular or supports
+hot-swappable power supplies, inserting a power supply with a lower power
+budget while the system is under load can lead to insufficient power
+availability. This might cause the system to redistribute power, potentially
+leading to instability or overcurrent situations if the power management isn't
+handled smoothly.
 
+- Power Loss and Switching to Backup Sources: In cases where a switch relies on
+a backup power source (like a UPS or a secondary power supply), the transition
+from the primary power source to the backup can create fluctuations. These
+fluctuations may temporarily affect how power is supplied to the PoE ports,
+potentially causing overcurrent if the backup power does not match the original
+specifications.
+
+- System Internal Consumers: Components within the switch itself, such as
+processing units or internal lighting/cooling systems, might draw power
+differently under various operating conditions. Changes in internal consumption
+due to increased processing needs or thermal dynamics could affect the overall
+power budget.
+
+- Environmental Conditions: High ambient temperatures can reduce the efficiency
+of power delivery and increase the electrical resistance in circuits,
+potentially leading to higher current draws. Additionally, cooling failures
+within the switch can exacerbate this issue.
+
+- Faulty Power Management Logic: Firmware bugs or errors in the power
+management algorithm might incorrectly allocate power or fail to properly
+respond to changes in power demands, leading to potential overcurrent
+scenarios.
+
+Regards,
+Oleksij
 -- 
-Kees Cook
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
