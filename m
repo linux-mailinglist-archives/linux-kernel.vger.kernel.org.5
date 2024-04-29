@@ -1,117 +1,140 @@
-Return-Path: <linux-kernel+bounces-163002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D17BC8B6338
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:07:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE2728B6335
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 137B4B2173D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:07:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DCF4B22BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE5614535E;
-	Mon, 29 Apr 2024 20:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C37A1411EF;
+	Mon, 29 Apr 2024 20:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2Eu+bDc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B4M3XXzP"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20A21442FD;
-	Mon, 29 Apr 2024 20:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DED21411D0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714421220; cv=none; b=JHZyneKZbcosxBtYHIs679lL9Vnbu30aatlB0Nb8RQu6RUijHUtefB4BpnE8Z9w3TMC5NMc+BQg2KiihCuIyVklDkAZePUcVa+b04/TCGh4DVOfvddjO2mc30TO6nZ0i1/DC13ToOu8SfkjBDSSLiqr2BtxkkIlSd1s1tZdxTd4=
+	t=1714421216; cv=none; b=EcVwXaxGTfIYeEBw7j4Ed3jvBStBXZlNgAYWmMx2rjhqdytRbem4Fnh/wIyWkBOXrc+EpGER1dIVB4VqQow/RRNiQNFlRoiIwvbuNPEBWBzzBT534MgnXuNZBEbbzH4HdrIdKTemb28mYawBcsM9eaYoAbb+oXXxdRDbFshPiZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714421220; c=relaxed/simple;
-	bh=4A88CtFhO9g0Vm1pMTxYoO6IBnLwMZJMkAtxvaB8yTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PD//LsOY5mZSEnj7mhp8kSd5Z2dfL2ZruNetOb9eE8NvqJOcPEg3bkIqzx/zuUfgPdpIEIFUWDZfEPu+uKEIxe9p7MN08LgDDfPxaF/OQ8pwnGJXfGZSJz/Pr9YDRIMMvJjge7dPhVY9bJVsyflDSMo+7IWQblxJyHwYw/D+N/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2Eu+bDc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C298EC4AF14;
-	Mon, 29 Apr 2024 20:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714421219;
-	bh=4A88CtFhO9g0Vm1pMTxYoO6IBnLwMZJMkAtxvaB8yTQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=d2Eu+bDcB2VBGxzdNS8FaG+wTdSF6EoPn0gvxQjza1D737089iPlbg0X3lOuJ7qth
-	 yva0Bwg83ykirUtT774C38MB8baxZTN7nAsmiaI4FJKiv2i9/gmHixZUCEOw9MeQ1h
-	 zg6AbK4mBXTHZT+4Cvu/os75HZWacf7PReftRCBMhYTrKwp2XbiaubHfGdTuvfZ5rg
-	 BONtufjopg6ZlMGGhKRZppD2XFeHXoXqHwen53ezbgea/Cg+w9UpW2hDxgRMTqxJC+
-	 07vhFpg9Xe221vL8ol/WQGRNXarUta0VmHYfVOgReolABJxkH5ps5kZNfzH3AFlg8w
-	 9NFnqEt6HKlLQ==
-Date: Mon, 29 Apr 2024 21:06:48 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-iio@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 0/8] iio: use 'time_left' instead of 'timeout' with
- wait_for_*() functions
-Message-ID: <20240429210648.4b429d31@jic23-huawei>
-In-Reply-To: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
-References: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714421216; c=relaxed/simple;
+	bh=ZQkpSdpmt4mYDJwdDVa8RfLmPSrJrAufaXCOysNf5gk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=UBR/DCrYqEFPeW+Ptoqg6f1YRxGQTJswX1uswlsreRA0AhMSUuBbAMlAbwHSEfHmf7Qe5Kva+BHURRWSyKzPYhg9L3AgZF0hdckC8vgo/N70JBjdDkMdLABrm7rEXupuQKVvzMbyjssNngmaM+WxIs6lPm0a7ke5Z/KtwQ5fgMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B4M3XXzP; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de549a4ea65so8620574276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714421214; x=1715026014; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5r9jrj7lJ8K2c/A/X813S+F4evPMkrfmwuk9AJ2VgE=;
+        b=B4M3XXzP2iQXxgSV+N1tdLcL/ldPIxZodk+z9Ek9SwtVBjUFW6+VNMRyK1R/LKqYhR
+         6/KTDP0RvVxXm1MLemFV9ktyTwvBaJagz6twaL7B8IowpxNlqe8brVePneBxgasLYX40
+         +ME6R8X+skT3ZKPKXSiXtP5euoxxmHFDh/z2GxT1TSm07Il3k7j4MPKg7HPv5hsQNBry
+         TU3LsxD4EpXtD61LEo2KGE6DXCORI89Iu1U0pSBthH1nSTaYkC9C/w8M6sjDpKr8Foe5
+         Nv+VE6G99Ly9aY0PFYRaTF8JiRkFBLgnXn2AUKQ8Y1GxB+eQgiAyWc5MN3O/ZzqV8ahQ
+         5+rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714421214; x=1715026014;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X5r9jrj7lJ8K2c/A/X813S+F4evPMkrfmwuk9AJ2VgE=;
+        b=fVNFmTZZ8z1FgwkvIbTIaILjT1JoJJ7eNcujzlkAjJR5PILljHWEvc5t/qwacDsdtM
+         jkAVVKfWoW0+caB+3WQswLFozeNlbneFMiz/4Ue/CXlH8aPE7sxFg4bZieOuN7KxMhC1
+         FoQWGxEL1lvpAt2O3ZWpaI0T8Mdid16Tl2phJTViJGjefZwDIhBNWU3eM5+mGNxa8yh8
+         PnaRte3UcQ5/hZWFAR5AyeZYdIwy2kDxWKjSeoMkeO+JK/NCNlRUlFyrbtriuN+ER7S1
+         N/shwvhJG7w6HsiEuBhzAOWz7XeYw+4HVVrR5yQmgJl7viX1AxqMKVGY+dS+Zc3Vc3SQ
+         m1hA==
+X-Forwarded-Encrypted: i=1; AJvYcCWstnBs+NgW9iQlQdYC45ZbDu2dPOFDvkTdKDOi6pJBIr4NinQ+j6SGAzTbX4Px23JeyZBidptRY/3uQokXitGbiB7qreNY6qrXeaWr
+X-Gm-Message-State: AOJu0YxYPDzxJawlmZgQ2jc8n69ghcV2LX+EKPj5R50kVFI7+KacpneB
+	FSJWWIOXzOjrJgZbbpBE0/cd02GUucbfPejuXLKqVe4QGCGawMjreAQ1IQAor/MDpsBo4oThxS6
+	Tdg==
+X-Google-Smtp-Source: AGHT+IFf8IzkssAjSX9+E+pyZ8b6wCf8T3MVnGnh3lV3JTeTnffbD7Ts+m4DeJyAG04Wpn1kmZbYGRXnX+g=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:c12:b0:dc6:cd85:bcd7 with SMTP id
+ fs18-20020a0569020c1200b00dc6cd85bcd7mr3946933ybb.3.1714421214393; Mon, 29
+ Apr 2024 13:06:54 -0700 (PDT)
+Date: Mon, 29 Apr 2024 13:06:52 -0700
+In-Reply-To: <b2bfc0d157929b098dde09b32c9a3af18835ec57.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <Zib76LqLfWg3QkwB@google.com> <6e83e89f145aee496c6421fc5a7248aae2d6f933.camel@intel.com>
+ <d0563f077a7f86f90e72183cf3406337423f41fe.camel@intel.com>
+ <ZifQiCBPVeld-p8Y@google.com> <61ec08765f0cd79f2d5ea1e2acf285ea9470b239.camel@intel.com>
+ <9c6119dacac30750defb2b799f1a192c516ac79c.camel@intel.com>
+ <ZiqFQ1OSFM4OER3g@google.com> <b605722ac1ffb0ffdc1d3a4702d4e987a5639399.camel@intel.com>
+ <Zircphag9i1h-aAK@google.com> <b2bfc0d157929b098dde09b32c9a3af18835ec57.camel@intel.com>
+Message-ID: <Zi_93AF1qRapsUOq@google.com>
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
+	Bo2 Chen <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, 
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, 29 Apr 2024 13:33:03 +0200
-Wolfram Sang <wsa+renesas@sang-engineering.com> wrote:
+On Mon, Apr 29, 2024, Kai Huang wrote:
+> On Thu, 2024-04-25 at 15:43 -0700, Sean Christopherson wrote:
+> > > And the odd is currently the common SEAMCALL functions, a.k.a,
+> > > __seamcall() and seamcall() (the latter is a mocro actually), both return
+> > > u64, so if we want to have such CR4.VMX check code in the common code, we
+> > > need to invent a new error code for it.
+> > 
+> > Oh, I wasn't thinking that we'd check CR4.VMXE before *every* SEAMCALL, just
+> > before the TDH.SYS.LP.INIT call, i.e. before the one that is most likely to fail
+> > due to a software bug that results in the CPU not doing VMXON before enabling
+> > TDX.
+> > 
+> > Again, my intent is to add a simple, cheap, and targeted sanity check to help
+> > deal with potential failures in code that historically has been less than rock
+> > solid, and in function that has a big fat assumption that the caller has done
+> > VMXON on the CPU.
+> 
+> I see.
+> 
+> (To be fair, personally I don't recall that we ever had any bug due to
+> "cpu not in post-VMXON before SEAMCALL", but maybe it's just me. :-).)
+> 
+> But if tdx_enable() doesn't call tdx_cpu_enable() internally, then we will
+> have two functions need to handle.
 
-> There is a confusing pattern in the kernel to use a variable named 'timeout' to
-> store the result of wait_for_*() functions causing patterns like:
-> 
->         timeout = wait_for_completion_timeout(...)
->         if (!timeout) return -ETIMEDOUT;
-> 
-> with all kinds of permutations. Use 'time_left' as a variable to make the code
-> obvious and self explaining.
-> 
-> This is part of a tree-wide series. The rest of the patches can be found here
-> (some parts may still be WIP):
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
-> 
-> Because these patches are generated, I audit them before sending. This is why I
-> will send series step by step. Build bot is happy with these patches, though.
-> No functional changes intended.
+Why?  I assume there will be exactly one caller of TDH.SYS.LP.INIT.
 
-Nice improvement.  Applied
+> For tdx_enable(), given it's still good idea to disable CPU hotplug around
+> it, we can still do some check for all online cpus at the beginning, like:
+> 
+> 	on_each_cpu(check_cr4_vmx(), &err, 1);
 
-> 
-> Wolfram Sang (8):
->   iio: adc: ad_sigma_delta: use 'time_left' variable with
->     wait_for_completion_timeout()
->   iio: adc: exynos_adc: use 'time_left' variable with
->     wait_for_completion_timeout()
->   iio: adc: fsl-imx25-gcq: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
->   iio: adc: intel_mrfld_adc: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
->   iio: adc: stm32-adc: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
->   iio: adc: stm32-dfsdm-adc: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
->   iio: adc: twl6030-gpadc: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
->   iio: pressure: zpa2326: use 'time_left' variable with
->     wait_for_completion_interruptible_timeout()
-> 
->  drivers/iio/adc/ad_sigma_delta.c  |  6 +++---
->  drivers/iio/adc/exynos_adc.c      | 16 ++++++++--------
->  drivers/iio/adc/fsl-imx25-gcq.c   | 10 +++++-----
->  drivers/iio/adc/intel_mrfld_adc.c | 12 ++++++------
->  drivers/iio/adc/stm32-adc.c       | 10 +++++-----
->  drivers/iio/adc/stm32-dfsdm-adc.c | 12 ++++++------
->  drivers/iio/adc/twl6030-gpadc.c   |  8 ++++----
->  drivers/iio/pressure/zpa2326.c    | 10 +++++-----
->  8 files changed, 42 insertions(+), 42 deletions(-)
-> 
+If it gets to that point, just omit the check.  I really think you're making much
+ado about nothing.  My suggestion is essentially "throw in a CR4.VMXE check before
+TDH.SYS.LP.INIT if it's easy".  If it's not easy for some reason, then don't do
+it.
 
+> Btw, please also see my last reply to Chao why I don't like calling
+> tdx_cpu_enable() inside tdx_enable():
+> 
+> https://lore.kernel.org/lkml/1fd17c931d5c2effcf1105b63deac8e3fb1664bc.camel@intel.com/
+> 
+> That being said, I can try to add additional patch(es) to do CR4.VMX check
+> if you want, but personally I found hard to have a strong justification to
+> do so.
+> 
 
