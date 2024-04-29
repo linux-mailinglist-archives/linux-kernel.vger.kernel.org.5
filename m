@@ -1,136 +1,201 @@
-Return-Path: <linux-kernel+bounces-162501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E80E8B5C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:56:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8608B5C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:57:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F58E1C21FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:56:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AECE281216
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224BC8060A;
-	Mon, 29 Apr 2024 14:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1FF8121F;
+	Mon, 29 Apr 2024 14:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="R+8Z798H"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knUO9XcY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7352777F10
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79014745C5;
+	Mon, 29 Apr 2024 14:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402594; cv=none; b=JhuzrBhdEaNPdVWWn6qCbvM1GJNRJCWINCooWIKCCtMH5f3L5wDs2j5Aa8+tEvWvaLAZc8BuhutP8dKa2BRtz1psLep6el7XD8CLd+EdRFZhWFt6DisVyRIRQBrjhM4qJgTohNOpWPBZPZYb2s5soiFF5/8JEF7T/8wzE9QEZmA=
+	t=1714402641; cv=none; b=OtFiXc9MHab4IdbSfSwcrMeM12cIGv7EX6ixjfFo+KDpukTYuLsoQTEp3zRVW+R+ta92K4IgzuJida9IV5PrpszcHfTUluXrEBLaOW2Uw31onJRN85KPX29k0/EKl8AkTU5rZXI1Fk+qaeIrqF5gyTNfjsSv0ClP6Zrdi0pRhlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402594; c=relaxed/simple;
-	bh=DaJQZCDIDOH7FlCCzFmzVcn1pnb5oiVg8UdCJ06JAo8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AedOhejGRXxHmM3NWlvkRqBxVv8rxubjxx3a/tl2aziFDMpowWmPkjFgw+OU1+x6vrfunPsOpfCPpIZYraXb+SLMsNpL0V+GV8ySK2gvL6sloJ0oCUc/IYW+Q9cfzbM27jR/qlmtn54RtZwR+LXhMdMAiGbwtz03hBt5Za2OfaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=R+8Z798H; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-790f4650f93so114217585a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1714402590; x=1715007390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WyfECjGT2cPe5HE/2z0fDQqdazh8yGo98dGumX8os9Y=;
-        b=R+8Z798HatwnIzy4kNxr6v+xygvR3lCftmADUUFSbwDy57KRD+6xyzBN562GJNHOgl
-         w8x1Y80uasv/PbtCy/fS2rmXibv6wzPgZf6X8BpUu2fHheyAuAcXJLfj4ZtkRZ1LG/Yt
-         FTJ9D++q8nzRFutLte4Bp1MtKevBraFEXItGT7S2vXxn8UL03IEUjzqDMdIPr2liZAP0
-         Vu6+PJ04sr9pnmlA8UcQJUknPEgo52OjH9lhOA8nkgggMPWmUoiR3DBXPmnf35lEcPlY
-         Ei0fkg1QUedndRI6WCra+OZv7Oj6GX2oF19F/KRGXpb9+hHZNpX8b+6ThPhz2r4iOXo/
-         ER5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714402590; x=1715007390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WyfECjGT2cPe5HE/2z0fDQqdazh8yGo98dGumX8os9Y=;
-        b=qRFKUxNtpcFlD8hHpypxY4XfP0aTm9RP7hKUi8wi2fYAFm2bGLcYGOHR+9JRLYjrKY
-         rpBq4cXd3GyCdDgXqwnjEU/Cz1P6w9nj9UAOGCtebLR4u2raFNtsJtjepBnGBvCqEXXd
-         lnDXR0LbvHsQcam/pfGgm1yYuP6hCvkPusGSlPVTv/kJO7B2rAgWYiDGLf+PjaUWjmvR
-         IFZYVxwhBorxLDDj+jboWRQbMPgrBl/rZD4D7RXBX0cDIA2sXMMmwJC9G2iCxtHtwj4Z
-         i+pxRT3yeQxKznCJiyoelCfxJeGmfETNcMS8xqdzR2MYN3cyfiI/l03rv5Q1wll29GZs
-         riqA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7NAWhI6coObpDrNw2q962E9AOXTg4OKUXIs/WrnrsU6ReK/pGSSrbLGLPevNvWmkre4t8a1lWt0GrsYavCJjjmrJ/rlCNwwqTDhYM
-X-Gm-Message-State: AOJu0YyyuuN7rA2RgTxeOmMlEngtGUG/gN5HWWgvPGsI39xLiaIuW3Xy
-	8/cbdMnFunwDDWG1/65+CFpTfQq7jmGaIwn6l9IBhpOj3gGNGHUUWFzOFuDKljM=
-X-Google-Smtp-Source: AGHT+IGVwrWen1NFJQXMe84L+uew1vCbsRt/8eFOs7aaXjU9TsngFFpgUz3SkXHgLUIQ5SMhLpHX/w==
-X-Received: by 2002:a05:620a:47c2:b0:788:31a1:4a16 with SMTP id du2-20020a05620a47c200b0078831a14a16mr12178748qkb.43.1714402590105;
-        Mon, 29 Apr 2024 07:56:30 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id op53-20020a05620a537500b0078d67d40c49sm10499522qkn.70.2024.04.29.07.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 07:56:29 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s1SQf-001WJH-1Y;
-	Mon, 29 Apr 2024 11:56:29 -0300
-Date: Mon, 29 Apr 2024 11:56:29 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rientjes@google.com,
-	dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-	will@kernel.org, robin.murphy@arm.com, iommu@lists.linux.dev
-Subject: Re: [RFC v2 2/3] iommu/intel: synchronize page table map and unmap
- operations
-Message-ID: <20240429145629.GO231144@ziepe.ca>
-References: <20240426034323.417219-1-pasha.tatashin@soleen.com>
- <20240426034323.417219-3-pasha.tatashin@soleen.com>
+	s=arc-20240116; t=1714402641; c=relaxed/simple;
+	bh=hWivQfQuF0fT04SNK+ienLT/ACa8KyiRA5sWZVweDL0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=toco0n/mVdCQ8J7dD6upI4zaY1sMHhf5yDD8uezJ4oiHDCnMzsGUQkjNp8YHnThexxiQnud9uMJG1wwqRrLUdEAZ9aSlAdvKHyedmuxPY3S398UVtw1MdmzCFBkT50LcYyXN/8PYVAZWPRqGxVh63ObAO/r7hS2lIRszjlbNtFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knUO9XcY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D58C113CD;
+	Mon, 29 Apr 2024 14:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714402641;
+	bh=hWivQfQuF0fT04SNK+ienLT/ACa8KyiRA5sWZVweDL0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=knUO9XcY4eGnQctWABveJeL0qRZmdybzZ834JWlQaEIXJ+2ElpTriIqFU9x5Y8R+d
+	 30zsFdVFpC4mqRED4c3tkyQISWeOWgX42OSKkPZGlHoDtu82gNa8SxpmuG7hjYxC6t
+	 Cz/k3L5UAFdloPiRpd1r+EoaRLG8emYBjiS012e5+6L2M0ud1O4cy7IdpOP5a8e924
+	 10PdGhurGmH83ffIg5bJjYJUK3cgGllmHWeAQ6447ejo+RSme6Zfmi+fIwME8ulx1W
+	 OkcHGTFolS8rdOrRkHO5Gam0a+nganFmdEwPoJ8QML7UH5TzD5kte9J1B3l6oCBeTd
+	 54Sz03oE8dqoQ==
+Date: Mon, 29 Apr 2024 23:57:14 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 29/36] bpf: Enable kprobe_multi feature if
+ CONFIG_FPROBE is enabled
+Message-Id: <20240429235714.54135bc2d6dfcf4d0e338c46@kernel.org>
+In-Reply-To: <CAEf4BzZ2cZ-jJDj3Qdc4T_9FmCK21Ae-mr-d2RJRMtdUK8HOjQ@mail.gmail.com>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+	<171318568081.254850.16193015880509111721.stgit@devnote2>
+	<CAEf4BzZ2cZ-jJDj3Qdc4T_9FmCK21Ae-mr-d2RJRMtdUK8HOjQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426034323.417219-3-pasha.tatashin@soleen.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 03:43:22AM +0000, Pasha Tatashin wrote:
-> Since, we are going to update  parent page table entries when lower
-> level page tables become emtpy and we add them to the free list.
-> We need a way to synchronize the operation.
+On Thu, 25 Apr 2024 13:09:32 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> On Mon, Apr 15, 2024 at 6:22 AM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
+> > Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
+> > converted from ftrace_regs by ftrace_partial_regs(), thus some registers
+> > may always returns 0. But it should be enough for function entry (access
+> > arguments) and exit (access return value).
+> >
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Acked-by: Florent Revest <revest@chromium.org>
+> > ---
+> >  Changes from previous series: NOTHING, Update against the new series.
+> > ---
+> >  kernel/trace/bpf_trace.c |   22 +++++++++-------------
+> >  1 file changed, 9 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index e51a6ef87167..57b1174030c9 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2577,7 +2577,7 @@ static int __init bpf_event_init(void)
+> >  fs_initcall(bpf_event_init);
+> >  #endif /* CONFIG_MODULES */
+> >
+> > -#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
+> > +#ifdef CONFIG_FPROBE
+> >  struct bpf_kprobe_multi_link {
+> >         struct bpf_link link;
+> >         struct fprobe fp;
+> > @@ -2600,6 +2600,8 @@ struct user_syms {
+> >         char *buf;
+> >  };
+> >
+> > +static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
 > 
-> Use domain->pgd_lock to protect all map and unmap operations.
-> This is reader/writer lock. At the beginning everything is going to be
-> read only mode, however, later, when free page table on unmap is added
-> we will add a writer section as well.
+> this is a waste if CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST=y, right?
+> Can we guard it?
+
+Good catch! Yes, we can guard it.
+
 > 
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> ---
->  drivers/iommu/intel/iommu.c | 21 +++++++++++++++++++--
->  drivers/iommu/intel/iommu.h |  3 +++
->  2 files changed, 22 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 1bfb6eccad05..8c7e596728b5 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -995,11 +995,13 @@ static void dma_pte_free_pagetable(struct dmar_domain *domain,
->  				   unsigned long last_pfn,
->  				   int retain_level)
->  {
-> +	read_lock(&domain->pgd_lock);
+> > +
+> >  static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
+> >  {
+> >         unsigned long __user usymbol;
+> > @@ -2792,13 +2794,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+> >
+> >  static int
+> >  kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> > -                          unsigned long entry_ip, struct pt_regs *regs)
+> > +                          unsigned long entry_ip, struct ftrace_regs *fregs)
+> >  {
+> >         struct bpf_kprobe_multi_run_ctx run_ctx = {
+> >                 .link = link,
+> >                 .entry_ip = entry_ip,
+> >         };
+> >         struct bpf_run_ctx *old_run_ctx;
+> > +       struct pt_regs *regs;
+> >         int err;
+> >
+> >         if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> > @@ -2809,6 +2812,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> >
+> >         migrate_disable();
+> >         rcu_read_lock();
+> > +       regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
+> 
+> and then pass NULL if defined(CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST)?
 
-I think no to this.
+Indeed.
 
-This is a very performance sensitive path for the DMA API, we really
-do want to see a lockless RCU scheme to manage this overhead here.
+Thank you!
 
-This would be fine for a VFIO user, which I guess is your use case.
+> 
+> 
+> >         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> >         err = bpf_prog_run(link->link.prog, regs);
+> >         bpf_reset_run_ctx(old_run_ctx);
+> > @@ -2826,13 +2830,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> >                           void *data)
+> >  {
+> >         struct bpf_kprobe_multi_link *link;
+> > -       struct pt_regs *regs = ftrace_get_regs(fregs);
+> > -
+> > -       if (!regs)
+> > -               return 0;
+> >
+> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+> >         return 0;
+> >  }
+> >
+> > @@ -2842,13 +2842,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
+> >                                void *data)
+> >  {
+> >         struct bpf_kprobe_multi_link *link;
+> > -       struct pt_regs *regs = ftrace_get_regs(fregs);
+> > -
+> > -       if (!regs)
+> > -               return;
+> >
+> >         link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > -       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> > +       kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+> >  }
+> >
+> >  static int symbols_cmp_r(const void *a, const void *b, const void *priv)
+> > @@ -3107,7 +3103,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >         kvfree(cookies);
+> >         return err;
+> >  }
+> > -#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+> > +#else /* !CONFIG_FPROBE */
+> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >  {
+> >         return -EOPNOTSUPP;
+> >
+> >
 
-IMHO it is not a good idea to fiddle around the edges like this. We
-need to get the iommu code to having shared algorithms for the radix
-tree so we can actually implement something good here and share
-it. Every driver has the same problem and needs the same complicated
-fix.
 
-I keep threatening to work on that but have yet to start..
-
-Jason
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
