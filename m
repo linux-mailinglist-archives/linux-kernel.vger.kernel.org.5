@@ -1,436 +1,264 @@
-Return-Path: <linux-kernel+bounces-161841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0118B5210
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:15:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029D78B5213
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F265AB20DFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:15:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2548F1C20F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8326D1400B;
-	Mon, 29 Apr 2024 07:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8078213AC5;
+	Mon, 29 Apr 2024 07:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="f7igGa1W"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jm8LKD+s";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xfNlBn4o";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CtT7dcQq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="N5/wMBiE"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FE210A0B;
-	Mon, 29 Apr 2024 07:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA36210A1D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714374931; cv=none; b=BwytME1T7UiLDYhufyULyl6LXfESxcidRX3d/3nmoe4QtZND8hIaNZfbCht6l65xglw7SvIUZE0AvkECElemnJPubA9M/xV6imgWusLZ/hlxm0vqLmX4gzfXeMoAFrZdtVqt64ZDMvULvR3IUqJtlfneF5mfYwiJEAvOF7qyNFg=
+	t=1714375024; cv=none; b=H2REb9cQcqUNYK2AEwpnA1oLjoXnoNnzqysDu3szgUTbAPjxKr83hG60BzKhHfsxo+mhwaZpOJn9woBuVhOKsiaY45Jd7lvqLJMIR1ihiLMtOC941viv7AzhRkodeC1llIG8Q2B3Hc3Z6YjVeBHltwZFEFKiK5OgLISevgg6jcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714374931; c=relaxed/simple;
-	bh=+9485QBJhLj31CrqjTB4Dr8j5N72/fKspLGu4Oq9LC4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MfUzRlISjcI1k+yTYKrCVWNk2rWFfPl47VjsGmoOaX7FnUkfsDmrmhMyUZw6gTQjieaqpmHGLWzrAkWKQT/fKevCS1ShBQUOYfM29Esu/DgBuUvMKp5AJcLD1s/KFGFfSZn36U/dgBnBp20t/0MyklrNHW6lMmsrnhQp/ADrntw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=f7igGa1W; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T7F89v005430;
-	Mon, 29 Apr 2024 02:15:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714374908;
-	bh=OZp6uSsVJCbSvfthpnh6xeuMKzkLg5SwiPTCgemjJNY=;
-	h=From:To:CC:Subject:Date;
-	b=f7igGa1Wt9lQzsUXLQ7noy1cflgLvRsYdkNUxSU+226Xw1s5NlVuSB5MTzCFlSluw
-	 fwKtm/6n0KyTamb1D54VeZ+FjTDY2hPhm4/g5Mi1rER8gLqWXVmgTpxKoDzVIXvK6p
-	 +e8hz2fUbsTsdsV1E5uWSHt4i68oX4e5HYvvwQzc=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T7F8g1016911
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 02:15:08 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 02:15:08 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 02:15:08 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T7F8v5033663;
-	Mon, 29 Apr 2024 02:15:08 -0500
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43T7F72n006131;
-	Mon, 29 Apr 2024 02:15:07 -0500
-From: MD Danish Anwar <danishanwar@ti.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>,
-        Heiner Kallweit
-	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Jan Kiszka
-	<jan.kiszka@siemens.com>,
-        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
-	<pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
-	<edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH net-next v2] net: ti: icssg_prueth: Add SW TX / RX Coalescing based on hrtimers
-Date: Mon, 29 Apr 2024 12:45:01 +0530
-Message-ID: <20240429071501.547680-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714375024; c=relaxed/simple;
+	bh=7SWyyj1OhWa5vxvghZJCLhlla1VEht7cYyK4SClYm2Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u2zmDiLlAELs1BL1iSA7qg/Hv8000usRBsXJ6e+M6Vx/9VE/y/WZxl6ngCe9rCpoOppOLrZ+of6VJVOaisM6lrQrXKvcObW8u0i4L6sfR54kA6aAKxCSYZPLjz51r1Xgmwc1cIA7bS2l1vZ9b+0rFrZ0aEPkxWLrjNbqcZ8ZX9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jm8LKD+s; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xfNlBn4o; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CtT7dcQq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=N5/wMBiE; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A301A202FE;
+	Mon, 29 Apr 2024 07:16:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714375020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
+	b=jm8LKD+sp2NaZMl/jiS5I8w3CZddvw1USm2yp9bICZ/PBYxDzP+Y1gtLfhvnRbuK3O+/qF
+	mCjSt4QHTOQ1qECGXmFOx/jMUIGU9SzceQFX1m+iDkf0x+5f8W8X8AHzzmA3ohXbrcgEPq
+	nykikicC7/KRAgtDWfqWB7V09f/F9LU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714375020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
+	b=xfNlBn4o5Kc+b1kxka2t77ABg7Amfex/GGl3kYgzG4xojIm+cVbmLmda3x/TCvHCBqig3V
+	tyO5HphGRNIQJMAA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=CtT7dcQq;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="N5/wMBiE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714375019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
+	b=CtT7dcQqpmNZ743dQcCGpwy+1qIgHWiNRyorq31r7B9Cvj6kvs8CS7bWfaRx8xKDt34HsY
+	zjIdhf62lhjzDoblZ6sJ2uU6dhf1/yc9cAGt+HitLD7JGf6HHMaeMjxmx6a0metJLjvrkK
+	mBBiCdBkLmkgMsnrxnnQ99aYwnprF4k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714375019;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CWnS1dINpx1Ckq7m4uduFkzjruDvnOn+AP28uKJXghU=;
+	b=N5/wMBiEMqBEzbH/2Rqyz1cU94cUUbGx6NXLp5UrCV/UoCMUxHyVUSyjg/mwDC1RjCorFu
+	8QBgihQC1pCxTiDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8610C138A7;
+	Mon, 29 Apr 2024 07:16:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qBmjH2tJL2ancgAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Mon, 29 Apr 2024 07:16:59 +0000
+Message-ID: <ecf30bde-f7a7-434f-8be0-352c376a96ee@suse.de>
+Date: Mon, 29 Apr 2024 09:16:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: After suspend/resume cycle ASPEED VGA monitor suffers with "No
+ Signal" state.
+To: Cary Garrett <cogarre@gmail.com>, airlied@redhat.com
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <8ce1e1cc351153a890b65e62fed93b54ccd43f6a.camel@gmail.com>
+Content-Language: en-US
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <8ce1e1cc351153a890b65e62fed93b54ccd43f6a.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -6.50
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: A301A202FE
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	XM_UA_NO_VERSION(0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,redhat.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim]
 
-Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
-driver, which can be enabled by ethtool commands:
+Hi
 
-- RX coalescing
-  ethtool -C eth1 rx-usecs 50
+Am 23.04.24 um 21:51 schrieb Cary Garrett:
+> Hello,
+>
+> An Aspeed VGA monitor, in my case AST 2400, after a suspend/resume
+> cycle suffers with a "No Signal" state. This is also true of a
+> IPMI/BMC remote console. To restore the "Signal" state requires
+> a reboot or the following workaround.
+>
+> To restore the "Signal" state without rebooting issue the
+> following commands from a SSH session or serial console
+> after every suspend/resume cycle:
+>
+>    sudo modprobe -r ast
+>    sudo modprobe ast
+>    
+> This a home media server which is updated infrequently, so
+> I am unable offer any guidance as to when this issue started
+> occurring.
 
-- TX coalescing can be enabled per TX queue
+Just to clarify, suspend/resume did restore the display in earlier versions?
 
-  - by default enables coalesing for TX0
-  ethtool -C eth1 tx-usecs 50
-  - configure TX0
-  ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
-  - configure TX1
-  ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
-  - configure TX0 and TX1
-  ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
-tx-usecs 100
+Best regards
+Thomas
 
-Minimum value for both rx-usecs and tx-usecs is 20us.
+>
+> Regards, Cary Garrett
+>
+>
+>
+> Current environment:
+>
+> uname -a:
+> Linux xxxxxx-server 6.8.7-arch1-1 #1 SMP PREEMPT_DYNAMIC Wed, 17 Apr 2024 15:20:28 +0000 x86_64
+> GNU/Linux
+>
+> modinfo:
+> filename:       /lib/modules/6.8.7-arch1-1/kernel/drivers/gpu/drm/ast/ast.ko.zst
+> license:        GPL and additional rights
+> description:    AST
+> author:         Dave Airlie
+> firmware:       ast_dp501_fw.bin
+> srcversion:     7E39455BCA2D11E968D8B2B
+> alias:          pci:v00001A03d00002010sv*sd*bc03sc*i*
+> alias:          pci:v00001A03d00002000sv*sd*bc03sc*i*
+> depends:        i2c-algo-bit
+> retpoline:      Y
+> intree:         Y
+> name:           ast
+> vermagic:       6.8.7-arch1-1 SMP preempt mod_unload
+> sig_id:         PKCS#7
+> signer:         Build time autogenerated kernel key
+> sig_key:        76:06:C7:84:BC:2F:C6:38:38:61:C1:6F:32:D5:6A:03:88:22:68:1C
+> sig_hashalgo:   sha512
+> signature:      30:66:02:31:00:AD:83:EB:D2:9B:91:E6:C3:9B:52:89:51:4B:BB:06:
+> 		DE:D7:44:A6:6B:07:92:AA:75:2A:0B:20:26:73:58:09:DF:C3:86:C6:
+> 		FC:B7:D4:13:5F:5D:35:4D:67:89:73:0E:C2:02:31:00:C3:98:99:67:
+> 		B4:74:02:5C:6D:D3:81:13:D4:9F:B4:F4:CF:37:8A:7C:84:8C:73:BF:
+> 		DF:4D:D5:34:B0:0A:CE:0E:59:67:28:98:07:BF:D7:FA:68:B3:37:43:
+> 		02:1C:59:3E
+> parm:           modeset:Disable/Enable modesetting (int)
+>
+> lspci:
+> 04:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 30) (prog-if
+> 00 [VGA controller])
+> 	DeviceName: Onboard VGA
+> 	Subsystem: Super Micro Computer Inc Device 0804
+> 	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR-
+> FastB2B- DisINTx-
+> 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR-
+> <PERR- INTx-
+> 	Interrupt: pin A routed to IRQ 16
+> 	Region 0: Memory at f6000000 (32-bit, non-prefetchable) [size=16M]
+> 	Region 1: Memory at f7000000 (32-bit, non-prefetchable) [size=128K]
+> 	Region 2: I/O ports at d000 [size=128]
+> 	Expansion ROM at 000c0000 [virtual] [disabled] [size=128K]
+> 	Capabilities: [40] Power Management version 3
+> 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
+> 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> 	Capabilities: [50] MSI: Enable- Count=1/4 Maskable- 64bit+
+> 		Address: 0000000000000000  Data: 0000
+> 	Kernel driver in use: ast
+> 	Kernel modules: ast
+>
 
-Compared to gro_flush_timeout and napi_defer_hard_irqs this patch allows
-to enable IRQ coalescing for RX path separately.
-
-Benchmarking numbers:
- ===============================================================
-| Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
-| ==============================================================
-| Default Driver           943 Mbps    31%      517 Mbps  38%   |
-| IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
- ===============================================================
-
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
-Changes from v1 [1] to v2:
-*) Added Benchmarking numbers in the commit message as suggested by
-   Andrew Lunn <andrew@lunn.ch>. Full logs [2]
-*) Addressed comments given by Simon Horman <horms@kernel.org> in v1.
-
-[1] https://lore.kernel.org/all/20240424091823.1814136-1-danishanwar@ti.com/
-
-[2] https://gist.githubusercontent.com/danish-ti/47855631be9f3635cee994693662a988/raw/94b4eb86b42fe243ab03186a88a314e0cb272fd0/gistfile1.txt
-
- drivers/net/ethernet/ti/icssg/icssg_common.c  | 38 +++++++-
- drivers/net/ethernet/ti/icssg/icssg_ethtool.c | 93 +++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icssg_prueth.c  | 18 +++-
- drivers/net/ethernet/ti/icssg/icssg_prueth.h  | 11 ++-
- 4 files changed, 153 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-index 284f97876054..94f16726be04 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_common.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-@@ -122,7 +122,7 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- }
- 
- int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
--			     int budget)
-+			     int budget, bool *tdown)
- {
- 	struct net_device *ndev = emac->ndev;
- 	struct cppi5_host_desc_t *desc_tx;
-@@ -145,6 +145,7 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
- 		if (cppi5_desc_is_tdcm(desc_dma)) {
- 			if (atomic_dec_and_test(&emac->tdown_cnt))
- 				complete(&emac->tdown_complete);
-+			*tdown = true;
- 			break;
- 		}
- 
-@@ -190,19 +191,37 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
- 	return num_tx;
- }
- 
-+static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
-+{
-+	struct prueth_tx_chn *tx_chns =
-+			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
-+
-+	enable_irq(tx_chns->irq);
-+	return HRTIMER_NORESTART;
-+}
-+
- static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
- {
- 	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
- 	struct prueth_emac *emac = tx_chn->emac;
-+	bool tdown = false;
- 	int num_tx_packets;
- 
--	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
-+	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget,
-+						  &tdown);
- 
- 	if (num_tx_packets >= budget)
- 		return budget;
- 
--	if (napi_complete_done(napi_tx, num_tx_packets))
--		enable_irq(tx_chn->irq);
-+	if (napi_complete_done(napi_tx, num_tx_packets)) {
-+		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown)) {
-+			hrtimer_start(&tx_chn->tx_hrtimer,
-+				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
-+				      HRTIMER_MODE_REL_PINNED);
-+		} else {
-+			enable_irq(tx_chn->irq);
-+		}
-+	}
- 
- 	return num_tx_packets;
- }
-@@ -226,6 +245,9 @@ int prueth_ndev_add_tx_napi(struct prueth_emac *emac)
- 		struct prueth_tx_chn *tx_chn = &emac->tx_chns[i];
- 
- 		netif_napi_add_tx(emac->ndev, &tx_chn->napi_tx, emac_napi_tx_poll);
-+		hrtimer_init(&tx_chn->tx_hrtimer, CLOCK_MONOTONIC,
-+			     HRTIMER_MODE_REL_PINNED);
-+		tx_chn->tx_hrtimer.function = &emac_tx_timer_callback;
- 		ret = request_irq(tx_chn->irq, prueth_tx_irq,
- 				  IRQF_TRIGGER_HIGH, tx_chn->name,
- 				  tx_chn);
-@@ -872,7 +894,13 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
- 	}
- 
- 	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
--		enable_irq(emac->rx_chns.irq[rx_flow]);
-+		if (unlikely(emac->rx_pace_timeout_ns)) {
-+			hrtimer_start(&emac->rx_hrtimer,
-+				      ns_to_ktime(emac->rx_pace_timeout_ns),
-+				      HRTIMER_MODE_REL_PINNED);
-+		} else {
-+			enable_irq(emac->rx_chns.irq[rx_flow]);
-+		}
- 
- 	return num_rx;
- }
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
-index ca20325d4d3e..c8d0f45cc5b1 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
-@@ -201,6 +201,93 @@ static void emac_get_rmon_stats(struct net_device *ndev,
- 	rmon_stats->hist_tx[4] = emac_get_stat_by_name(emac, "tx_bucket5_frames");
- }
- 
-+static int emac_get_coalesce(struct net_device *ndev,
-+			     struct ethtool_coalesce *coal,
-+			     struct kernel_ethtool_coalesce *kernel_coal,
-+			     struct netlink_ext_ack *extack)
-+{
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	struct prueth_tx_chn *tx_chn;
-+
-+	tx_chn = &emac->tx_chns[0];
-+
-+	coal->rx_coalesce_usecs = emac->rx_pace_timeout_ns / 1000;
-+	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
-+
-+	return 0;
-+}
-+
-+static int emac_get_per_queue_coalesce(struct net_device *ndev, u32 queue,
-+				       struct ethtool_coalesce *coal)
-+{
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	struct prueth_tx_chn *tx_chn;
-+
-+	if (queue >= PRUETH_MAX_TX_QUEUES)
-+		return -EINVAL;
-+
-+	tx_chn = &emac->tx_chns[queue];
-+
-+	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
-+
-+	return 0;
-+}
-+
-+static int emac_set_coalesce(struct net_device *ndev,
-+			     struct ethtool_coalesce *coal,
-+			     struct kernel_ethtool_coalesce *kernel_coal,
-+			     struct netlink_ext_ack *extack)
-+{
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	struct prueth *prueth = emac->prueth;
-+	struct prueth_tx_chn *tx_chn;
-+
-+	tx_chn = &emac->tx_chns[0];
-+
-+	if (coal->rx_coalesce_usecs &&
-+	    coal->rx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
-+		dev_info(prueth->dev, "defaulting to min value of %dus for rx-usecs\n",
-+			 ICSSG_MIN_COALESCE_USECS);
-+		coal->rx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
-+	}
-+
-+	if (coal->tx_coalesce_usecs &&
-+	    coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
-+		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs\n",
-+			 ICSSG_MIN_COALESCE_USECS);
-+		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
-+	}
-+
-+	emac->rx_pace_timeout_ns = coal->rx_coalesce_usecs * 1000;
-+	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
-+
-+	return 0;
-+}
-+
-+static int emac_set_per_queue_coalesce(struct net_device *ndev, u32 queue,
-+				       struct ethtool_coalesce *coal)
-+{
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	struct prueth *prueth = emac->prueth;
-+	struct prueth_tx_chn *tx_chn;
-+
-+	if (queue >= PRUETH_MAX_TX_QUEUES)
-+		return -EINVAL;
-+
-+	tx_chn = &emac->tx_chns[queue];
-+
-+	if (coal->tx_coalesce_usecs &&
-+	    coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
-+		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs for tx-%u\n",
-+			 ICSSG_MIN_COALESCE_USECS, queue);
-+		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
-+	}
-+
-+	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
-+
-+	return 0;
-+}
-+
- const struct ethtool_ops icssg_ethtool_ops = {
- 	.get_drvinfo = emac_get_drvinfo,
- 	.get_msglevel = emac_get_msglevel,
-@@ -209,6 +296,12 @@ const struct ethtool_ops icssg_ethtool_ops = {
- 	.get_ethtool_stats = emac_get_ethtool_stats,
- 	.get_strings = emac_get_strings,
- 	.get_ts_info = emac_get_ts_info,
-+	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS |
-+				     ETHTOOL_COALESCE_TX_USECS,
-+	.get_coalesce = emac_get_coalesce,
-+	.set_coalesce = emac_set_coalesce,
-+	.get_per_queue_coalesce = emac_get_per_queue_coalesce,
-+	.set_per_queue_coalesce = emac_set_per_queue_coalesce,
- 	.get_channels = emac_get_channels,
- 	.set_channels = emac_set_channels,
- 	.get_link_ksettings = emac_get_link_ksettings,
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 186b0365c2e5..7c9e9518f555 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -243,6 +243,16 @@ static void emac_adjust_link(struct net_device *ndev)
- 	}
- }
- 
-+static enum hrtimer_restart emac_rx_timer_callback(struct hrtimer *timer)
-+{
-+	struct prueth_emac *emac =
-+			container_of(timer, struct prueth_emac, rx_hrtimer);
-+	int rx_flow = PRUETH_RX_FLOW_DATA;
-+
-+	enable_irq(emac->rx_chns.irq[rx_flow]);
-+	return HRTIMER_NORESTART;
-+}
-+
- static int emac_phy_connect(struct prueth_emac *emac)
- {
- 	struct prueth *prueth = emac->prueth;
-@@ -582,8 +592,10 @@ static int emac_ndo_stop(struct net_device *ndev)
- 		netdev_err(ndev, "tx teardown timeout\n");
- 
- 	prueth_reset_tx_chan(emac, emac->tx_ch_num, true);
--	for (i = 0; i < emac->tx_ch_num; i++)
-+	for (i = 0; i < emac->tx_ch_num; i++) {
- 		napi_disable(&emac->tx_chns[i].napi_tx);
-+		hrtimer_cancel(&emac->tx_chns[i].tx_hrtimer);
-+	}
- 
- 	max_rx_flows = PRUETH_MAX_RX_FLOWS;
- 	k3_udma_glue_tdown_rx_chn(emac->rx_chns.rx_chn, true);
-@@ -591,6 +603,7 @@ static int emac_ndo_stop(struct net_device *ndev)
- 	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, true);
- 
- 	napi_disable(&emac->napi_rx);
-+	hrtimer_cancel(&emac->rx_hrtimer);
- 
- 	cancel_work_sync(&emac->rx_mode_work);
- 
-@@ -801,6 +814,9 @@ static int prueth_netdev_init(struct prueth *prueth,
- 	ndev->features = ndev->hw_features;
- 
- 	netif_napi_add(ndev, &emac->napi_rx, emac_napi_rx_poll);
-+	hrtimer_init(&emac->rx_hrtimer, CLOCK_MONOTONIC,
-+		     HRTIMER_MODE_REL_PINNED);
-+	emac->rx_hrtimer.function = &emac_rx_timer_callback;
- 	prueth->emac[mac] = emac;
- 
- 	return 0;
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-index 82e38ef5635b..a78c5eb75fb8 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-@@ -108,6 +108,8 @@ struct prueth_tx_chn {
- 	u32 descs_num;
- 	unsigned int irq;
- 	char name[32];
-+	struct hrtimer tx_hrtimer;
-+	unsigned long tx_pace_timeout_ns;
- };
- 
- struct prueth_rx_chn {
-@@ -127,6 +129,9 @@ struct prueth_rx_chn {
- 
- #define PRUETH_MAX_TX_TS_REQUESTS	50 /* Max simultaneous TX_TS requests */
- 
-+/* Minimum coalesce time in usecs for both Tx and Rx */
-+#define ICSSG_MIN_COALESCE_USECS 20
-+
- /* data for each emac port */
- struct prueth_emac {
- 	bool is_sr1;
-@@ -183,6 +188,10 @@ struct prueth_emac {
- 
- 	struct delayed_work stats_work;
- 	u64 stats[ICSSG_NUM_STATS];
-+
-+	/* RX IRQ Coalescing Related */
-+	struct hrtimer rx_hrtimer;
-+	unsigned long rx_pace_timeout_ns;
- };
- 
- /**
-@@ -320,7 +329,7 @@ void prueth_ndev_del_tx_napi(struct prueth_emac *emac, int num);
- void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
- 		      struct cppi5_host_desc_t *desc);
- int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
--			     int budget);
-+			     int budget, bool *tdown);
- int prueth_ndev_add_tx_napi(struct prueth_emac *emac);
- int prueth_init_tx_chns(struct prueth_emac *emac);
- int prueth_init_rx_chns(struct prueth_emac *emac,
-
-base-commit: 5c4c0edca68a5841a8d53ccd49596fe199c8334c
 -- 
-2.34.1
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
 
