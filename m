@@ -1,63 +1,57 @@
-Return-Path: <linux-kernel+bounces-162154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 720A48B56C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:34:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6428B56C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF641F24770
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:34:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 409301C20BCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C474C63F;
-	Mon, 29 Apr 2024 11:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DF5524CA;
+	Mon, 29 Apr 2024 11:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="YWJmo1O7"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="KtbDFO51"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFDC4C610
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7006D4E1AD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390401; cv=none; b=eZ9vunCCmk2ZFtLscVi/oD+LJdX8k2cC7BWi5xR/pbvRFvwhH94eoNsEeKc+q16JVa/F9f0tP557VW9wWconPTYjLw4snRyeraw9cLlRkRd5L2ulJA3Sn7+g8ahPWCA+2nr2H3RTzA2mjxm39p+1C6ecABY4uZzx0Q+sixVqNvg=
+	t=1714390403; cv=none; b=OpCqfv+k5Fq4HVoFzbnZvoMfooJNPvmRADoql/HNQvTbh5lUC2kv5mg7FGJhdKx8J+jw2CYl4TOH24XRxq7DV0P9GrfVG6W8Q4tW5JabVBus+PjWf1/89tc23cwWg7boGjWutTuzw6sFnE0TfDOv5R3DkAPbKzkFoyUQN9Lf+0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390401; c=relaxed/simple;
-	bh=cy2D1HP63aslov77VCicNGX0z0ZLnIZFrx66F9b/xOU=;
+	s=arc-20240116; t=1714390403; c=relaxed/simple;
+	bh=IGIx1rZpf+QAHUeiwtXKxVkLhI5SUIAGbDNEWThgGrA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oo8msDie2pj7lxmsbWIQcd+Wj6ztGACsiThPrHBG1qRfFPeP2bzpMAvbpMiIA35CJQQTySRvhiCjSAeSNdkppNLlt1+lNxjFjFMnJ3HOWZgUvizVjw6sWZEuQnPR0JGZW1pfabKjZwF+Lrsf/XKTAaoQJQazT29m0tY1Jq917gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=YWJmo1O7; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=hd18PHCC2mdeeNGs74XZFElQXPHeoyCQvygAg1A0ovxVEwrkFLLjgRNvYPsn3U2M2BYjgIOd9JF9yVJHG9m5ac/K49ymEyu7B2dutXJ9UUp6PRR9t4fg+XCneU2YXfeV4Pk0L3vB5vK2ysOqNCJVOvwsIaCDUj8gUd8sK2dqOc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=KtbDFO51; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=4U8CmUX52QVRFRqLXIis6AKCy/puBxC4uuyzZRCInlU=; b=YWJmo1
-	O7xl4olZbGoV0XZRVVyoTBkU9TYJ/bMKtmXad+r+g4nK5Dacm/o6oqpTx+Nf2i1V
-	//aM+hSv5+U8AhSmpeDykvycCkEYeo0KGk+ZaWYq5YR0F7LtBNJDcBJPwk/gEI7d
-	2LDrtJsJbVjs/QJ0fTcHbZjzbHNRuqUIJvXzWLKjCxnfhegx85w0cFrguCVpZ5MF
-	lfKWuDaNX8RqjqfVi8cZAx6AAPQxYA6uEhn2vPAuto1a3WXjH7TzaRbtBIvSfEUa
-	HDvRI5fILcSFo3L+nC/ibfSaiQuRSaFqH/3pK6VhOur84FKUk8oVYiHNIPeBaYyq
-	MKbqp5QHcTDT1upA==
-Received: (qmail 2281070 invoked from network); 29 Apr 2024 13:33:17 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:17 +0200
-X-UD-Smtp-Session: l3s3148p1@2+uYnjoX0Q9tKPB4
+	 s=k1; bh=kESE1b6S6hgZwP/UL/YPJJaCZtdxWblO0NQ4nm3v/zE=; b=KtbDFO
+	51nAKvleMvjxjL+SqADxQf1vuV85E1TX7lAu9hDHurd01LvOchlc+m1ILLLXTvMa
+	l8tc0OTHeDc9P+q2t9TH6H24sxfbtvCj6UcsLGoWbVrw4xoYK4R/mP0+zapslkFu
+	xUqf+2V6ZdzBcsdJk/l6XcEmvIJ9Vr1kw/a9uI6YpEgD8QtA0F0xrXvqS1oDTfIR
+	dfwyEhXsGQiVlTRyqPO84prfqbenN5i5c3JaCtYXSIbyqHzWIaM7R+S4RQuEhXm4
+	D8PFS8GmiFC/lmYcSmgLwxSGmERbum8pdguVAeWacj5gJuHqfHVASEQtSP651Jbs
+	z9wBC7rSIoThFcUQ==
+Received: (qmail 2281106 invoked from network); 29 Apr 2024 13:33:18 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:18 +0200
+X-UD-Smtp-Session: l3s3148p1@My2onjoXDRxtKPB4
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-iio@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Jonathan Cameron <jic23@kernel.org>,
 	Lars-Peter Clausen <lars@metafoo.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] iio: adc: fsl-imx25-gcq: use 'time_left' variable with wait_for_completion_interruptible_timeout()
-Date: Mon, 29 Apr 2024 13:33:06 +0200
-Message-ID: <20240429113313.68359-4-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 4/8] iio: adc: intel_mrfld_adc: use 'time_left' variable with wait_for_completion_interruptible_timeout()
+Date: Mon, 29 Apr 2024 13:33:07 +0200
+Message-ID: <20240429113313.68359-5-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
 References: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
@@ -80,38 +74,40 @@ self explaining.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/iio/adc/fsl-imx25-gcq.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/iio/adc/intel_mrfld_adc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
-index 68c813de0605..dabc5303d644 100644
---- a/drivers/iio/adc/fsl-imx25-gcq.c
-+++ b/drivers/iio/adc/fsl-imx25-gcq.c
-@@ -107,7 +107,7 @@ static int mx25_gcq_get_raw_value(struct device *dev,
- 				  struct mx25_gcq_priv *priv,
- 				  int *val)
- {
+diff --git a/drivers/iio/adc/intel_mrfld_adc.c b/drivers/iio/adc/intel_mrfld_adc.c
+index 7263ad76124d..c7f40ae6e608 100644
+--- a/drivers/iio/adc/intel_mrfld_adc.c
++++ b/drivers/iio/adc/intel_mrfld_adc.c
+@@ -75,7 +75,7 @@ static int mrfld_adc_single_conv(struct iio_dev *indio_dev,
+ 	struct mrfld_adc *adc = iio_priv(indio_dev);
+ 	struct regmap *regmap = adc->regmap;
+ 	unsigned int req;
 -	long timeout;
 +	long time_left;
- 	u32 data;
+ 	__be16 value;
+ 	int ret;
  
- 	/* Setup the configuration we want to use */
-@@ -120,12 +120,12 @@ static int mx25_gcq_get_raw_value(struct device *dev,
- 	regmap_update_bits(priv->regs, MX25_ADCQ_CR, MX25_ADCQ_CR_FQS,
- 			   MX25_ADCQ_CR_FQS);
+@@ -95,13 +95,13 @@ static int mrfld_adc_single_conv(struct iio_dev *indio_dev,
+ 	if (ret)
+ 		goto done;
  
--	timeout = wait_for_completion_interruptible_timeout(
-+	time_left = wait_for_completion_interruptible_timeout(
- 		&priv->completed, MX25_GCQ_TIMEOUT);
+-	timeout = wait_for_completion_interruptible_timeout(&adc->completion,
+-							    BCOVE_ADC_TIMEOUT);
 -	if (timeout < 0) {
+-		ret = timeout;
++	time_left = wait_for_completion_interruptible_timeout(&adc->completion,
++							      BCOVE_ADC_TIMEOUT);
 +	if (time_left < 0) {
- 		dev_err(dev, "ADC wait for measurement failed\n");
--		return timeout;
--	} else if (timeout == 0) {
-+		return time_left;
-+	} else if (time_left == 0) {
- 		dev_err(dev, "ADC timed out\n");
- 		return -ETIMEDOUT;
++		ret = time_left;
+ 		goto done;
+ 	}
+-	if (timeout == 0) {
++	if (time_left == 0) {
+ 		ret = -ETIMEDOUT;
+ 		goto done;
  	}
 -- 
 2.43.0
