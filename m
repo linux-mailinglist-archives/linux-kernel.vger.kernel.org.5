@@ -1,323 +1,152 @@
-Return-Path: <linux-kernel+bounces-162712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B724E8B5F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:54:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08EB28B5F6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:55:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA80B1C210F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:54:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9CDB28415D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EF68664A;
-	Mon, 29 Apr 2024 16:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722FD8595A;
+	Mon, 29 Apr 2024 16:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="M+vaCcAL"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A62KNs5X"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA078612E;
-	Mon, 29 Apr 2024 16:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0FA33C7
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409661; cv=none; b=PJrTVDuNXpw4wqi0xeXkOM12dcXD+nQQOxkUDgXJnf0EU3QbUZndqSSS24D0Nhbgs8/uwHmYO+bncgZuOW5XrD5nDnJ3TIhmdrkO+QnYs/yukHTjwMAmKEirj1c/PZzyNq7QiQfFEHTpepawUcn/YKsL0Ck7otu3hSdZ/T4K7ew=
+	t=1714409695; cv=none; b=g0Nb23xBCnCu1mZEhmDXfelQAYemvMliKJgiYixeve+wiggk5AV/6sn4ScqGG+vC2VJ7GaJqAUJsDTnaw3LJN+ZNZJQzAU488ZtfYBvcKBwyi4WrvV/mJYUkQwy2FF3QTcQ4Gn8HtrSTwAWpTwU0YBbW7eV0qGEXZ969n1ntzf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409661; c=relaxed/simple;
-	bh=YHT5rUvGSuucmsJOnLypI9mOEo8qAfWMPGLdOe9cpk0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gXFEUu/tV/YcK1BFs5mL1LvOT54I8dZEa1EiZOZ24NYQ/CvTYwSy47oQMdngp/cZPLCWa4/cyj4F2YFz05V0zNghCo3VdjD2RfktG1mEvrZy1WD9Y5euW0Y9fhTon2VOue+rs+evunE6q6qhMAVQhWYJEI7syoyQL5NeQZvMJ4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=M+vaCcAL; arc=none smtp.client-ip=192.19.144.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 72CE7C0000ED;
-	Mon, 29 Apr 2024 09:54:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 72CE7C0000ED
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1714409652;
-	bh=YHT5rUvGSuucmsJOnLypI9mOEo8qAfWMPGLdOe9cpk0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M+vaCcALWUI+Xh9vfCD2kHT0edLuFmYvK4v1oTcxrfbJt/9zQ51ooX64NydZF7y4h
-	 eWik99FLpwv8ASJn72kxU3DZkO5C86AJwA8MCnBXkXZO9VzcE4YmVvgFZq4wqlmpGO
-	 9JhGIdL5Al6e/XGw+tLrsybRzUdpNdVD5IhmbGuY=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 88EB218041CAC7;
-	Mon, 29 Apr 2024 09:54:10 -0700 (PDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: netdev@vger.kernel.org
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-Date: Mon, 29 Apr 2024 09:54:05 -0700
-Message-Id: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
-References: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1714409695; c=relaxed/simple;
+	bh=MbpqLIOqlMzRR/AblELpECM0WzRQ6+qleaLLlj0WoSQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t5k5gWEFjQJXZ2nB10vvqq1TbhKPRoff5NUpCHkVgcmPYLagoBVdPTibLbx56dqPHtlVmeVnJFarsL8LKLyRNN4TnPM60STBOt8AGllnr1WEFrez7KRnBaubkY7YM5VfnonFBQYT8zGQarAkW9UcuW0MaT13K+nWupjc4uV3vLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A62KNs5X; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <795bec5d-c7ba-4fc2-9be9-78c4063743d9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714409690;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JZcRLqCKZ99s9BPl9IWgxkXzMSNJVxZZp+zfZTMxHbQ=;
+	b=A62KNs5XmNHHpyGS9t1N4WYIPaZ86jsZuc3vSXflNzOpYnPNWpmOvsosZCSNYzCK1jkxzh
+	l4BZM4M7+e83rU7xsVteYzX5EmYPHe48Pq2f2cfIWbKZudpo6UG/1x4MF0sfR2YtzCxXUO
+	HMk014Gl8vOJMxcvR8o6OO5ag+0WDOs=
+Date: Tue, 30 Apr 2024 00:54:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+ <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
+ <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
+ <20240426-married-augmented-mantis-ff7edd@penduick>
+ <509b3822-dcf6-45eb-9516-ba8ff2cc4382@linux.dev>
+ <20240429-bouncy-attentive-vole-9964f1@houat>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20240429-bouncy-attentive-vole-9964f1@houat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Now that we no longer any drivers using PHYLIB's adjust_link callback,
-remove all paths that made use of adjust_link as well as the associated
-functions.
+Hi,
 
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- include/net/dsa.h |   7 ---
- net/dsa/dsa.c     |   3 +-
- net/dsa/port.c    | 136 ++++------------------------------------------
- 3 files changed, 12 insertions(+), 134 deletions(-)
 
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index 678f1fd8b189..eef702dbea78 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -24,8 +24,6 @@
- 
- struct dsa_8021q_context;
- struct tc_action;
--struct phy_device;
--struct phylink_link_state;
- 
- #define DSA_TAG_PROTO_NONE_VALUE		0
- #define DSA_TAG_PROTO_BRCM_VALUE		1
-@@ -867,11 +865,6 @@ struct dsa_switch_ops {
- 	int	(*phy_write)(struct dsa_switch *ds, int port,
- 			     int regnum, u16 val);
- 
--	/*
--	 * Link state adjustment (called from libphy)
--	 */
--	void	(*adjust_link)(struct dsa_switch *ds, int port,
--				struct phy_device *phydev);
- 	/*
- 	 * PHYLINK integration
- 	 */
-diff --git a/net/dsa/dsa.c b/net/dsa/dsa.c
-index 2f347cd37316..12521a7d4048 100644
---- a/net/dsa/dsa.c
-+++ b/net/dsa/dsa.c
-@@ -1511,8 +1511,7 @@ static int dsa_switch_probe(struct dsa_switch *ds)
- 		    ds->ops->phylink_mac_config ||
- 		    ds->ops->phylink_mac_finish ||
- 		    ds->ops->phylink_mac_link_down ||
--		    ds->ops->phylink_mac_link_up ||
--		    ds->ops->adjust_link)
-+		    ds->ops->phylink_mac_link_up)
- 			return -EINVAL;
- 	}
- 
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index c6febc3d96d9..68955014f83d 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -1535,25 +1535,6 @@ void dsa_port_set_tag_protocol(struct dsa_port *cpu_dp,
- 	cpu_dp->tag_ops = tag_ops;
- }
- 
--static struct phy_device *dsa_port_get_phy_device(struct dsa_port *dp)
--{
--	struct device_node *phy_dn;
--	struct phy_device *phydev;
--
--	phy_dn = of_parse_phandle(dp->dn, "phy-handle", 0);
--	if (!phy_dn)
--		return NULL;
--
--	phydev = of_phy_find_device(phy_dn);
--	if (!phydev) {
--		of_node_put(phy_dn);
--		return ERR_PTR(-EPROBE_DEFER);
--	}
--
--	of_node_put(phy_dn);
--	return phydev;
--}
--
- static struct phylink_pcs *
- dsa_port_phylink_mac_select_pcs(struct phylink_config *config,
- 				phy_interface_t interface)
-@@ -1616,17 +1597,13 @@ static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
- 					   phy_interface_t interface)
- {
- 	struct dsa_port *dp = dsa_phylink_to_port(config);
--	struct phy_device *phydev = NULL;
- 	struct dsa_switch *ds = dp->ds;
- 
- 	if (dsa_port_is_user(dp))
- 		phydev = dp->user->phydev;
- 
--	if (!ds->ops->phylink_mac_link_down) {
--		if (ds->ops->adjust_link && phydev)
--			ds->ops->adjust_link(ds, dp->index, phydev);
-+	if (!ds->ops->phylink_mac_link_down)
- 		return;
--	}
- 
- 	ds->ops->phylink_mac_link_down(ds, dp->index, mode, interface);
- }
-@@ -1641,11 +1618,8 @@ static void dsa_port_phylink_mac_link_up(struct phylink_config *config,
- 	struct dsa_port *dp = dsa_phylink_to_port(config);
- 	struct dsa_switch *ds = dp->ds;
- 
--	if (!ds->ops->phylink_mac_link_up) {
--		if (ds->ops->adjust_link && phydev)
--			ds->ops->adjust_link(ds, dp->index, phydev);
-+	if (!ds->ops->phylink_mac_link_up)
- 		return;
--	}
- 
- 	ds->ops->phylink_mac_link_up(ds, dp->index, mode, interface, phydev,
- 				     speed, duplex, tx_pause, rx_pause);
-@@ -1708,78 +1682,6 @@ void dsa_port_phylink_destroy(struct dsa_port *dp)
- 	dp->pl = NULL;
- }
- 
--static int dsa_shared_port_setup_phy_of(struct dsa_port *dp, bool enable)
--{
--	struct dsa_switch *ds = dp->ds;
--	struct phy_device *phydev;
--	int port = dp->index;
--	int err = 0;
--
--	phydev = dsa_port_get_phy_device(dp);
--	if (!phydev)
--		return 0;
--
--	if (IS_ERR(phydev))
--		return PTR_ERR(phydev);
--
--	if (enable) {
--		err = genphy_resume(phydev);
--		if (err < 0)
--			goto err_put_dev;
--
--		err = genphy_read_status(phydev);
--		if (err < 0)
--			goto err_put_dev;
--	} else {
--		err = genphy_suspend(phydev);
--		if (err < 0)
--			goto err_put_dev;
--	}
--
--	if (ds->ops->adjust_link)
--		ds->ops->adjust_link(ds, port, phydev);
--
--	dev_dbg(ds->dev, "enabled port's phy: %s", phydev_name(phydev));
--
--err_put_dev:
--	put_device(&phydev->mdio.dev);
--	return err;
--}
--
--static int dsa_shared_port_fixed_link_register_of(struct dsa_port *dp)
--{
--	struct device_node *dn = dp->dn;
--	struct dsa_switch *ds = dp->ds;
--	struct phy_device *phydev;
--	int port = dp->index;
--	phy_interface_t mode;
--	int err;
--
--	err = of_phy_register_fixed_link(dn);
--	if (err) {
--		dev_err(ds->dev,
--			"failed to register the fixed PHY of port %d\n",
--			port);
--		return err;
--	}
--
--	phydev = of_phy_find_device(dn);
--
--	err = of_get_phy_mode(dn, &mode);
--	if (err)
--		mode = PHY_INTERFACE_MODE_NA;
--	phydev->interface = mode;
--
--	genphy_read_status(phydev);
--
--	if (ds->ops->adjust_link)
--		ds->ops->adjust_link(ds, port, phydev);
--
--	put_device(&phydev->mdio.dev);
--
--	return 0;
--}
--
- static int dsa_shared_port_phylink_register(struct dsa_port *dp)
- {
- 	struct dsa_switch *ds = dp->ds;
-@@ -1983,44 +1885,28 @@ int dsa_shared_port_link_register_of(struct dsa_port *dp)
- 					dsa_switches_apply_workarounds))
- 		return -EINVAL;
- 
--	if (!ds->ops->adjust_link) {
--		if (missing_link_description) {
--			dev_warn(ds->dev,
--				 "Skipping phylink registration for %s port %d\n",
--				 dsa_port_is_cpu(dp) ? "CPU" : "DSA", dp->index);
--		} else {
--			dsa_shared_port_link_down(dp);
-+	if (missing_link_description) {
-+		dev_warn(ds->dev,
-+			 "Skipping phylink registration for %s port %d\n",
-+			 dsa_port_is_cpu(dp) ? "CPU" : "DSA", dp->index);
-+	} else {
-+		dsa_shared_port_link_down(dp);
- 
--			return dsa_shared_port_phylink_register(dp);
--		}
--		return 0;
-+		return dsa_shared_port_phylink_register(dp);
- 	}
- 
--	dev_warn(ds->dev,
--		 "Using legacy PHYLIB callbacks. Please migrate to PHYLINK!\n");
--
--	if (of_phy_is_fixed_link(dp->dn))
--		return dsa_shared_port_fixed_link_register_of(dp);
--	else
--		return dsa_shared_port_setup_phy_of(dp, true);
-+	return 0;
- }
- 
- void dsa_shared_port_link_unregister_of(struct dsa_port *dp)
- {
--	struct dsa_switch *ds = dp->ds;
--
--	if (!ds->ops->adjust_link && dp->pl) {
-+	if (dp->pl) {
- 		rtnl_lock();
- 		phylink_disconnect_phy(dp->pl);
- 		rtnl_unlock();
- 		dsa_port_phylink_destroy(dp);
- 		return;
- 	}
--
--	if (of_phy_is_fixed_link(dp->dn))
--		of_phy_deregister_fixed_link(dp->dn);
--	else
--		dsa_shared_port_setup_phy_of(dp, false);
- }
- 
- int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
+On 2024/4/29 19:55, Maxime Ripard wrote:
+> On Sat, Apr 27, 2024 at 01:57:46PM +0800, Sui Jingfeng wrote:
+>> Hi,
+>>
+>>
+>> On 2024/4/26 14:23, Maxime Ripard wrote:
+>>> Hi,
+>>>
+>>> On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
+>>>> On 2024/4/26 03:10, Andy Shevchenko wrote:
+>>>>> On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
+>>>>>> On 2024/4/25 22:26, Andy Shevchenko wrote:
+>>>>>>> It seems driver missed the point of proper use of device property APIs.
+>>>>>>> Correct this by updating headers and calls respectively.
+>>>>>> You are using the 'seems' here exactly saying that you are not 100% sure.
+>>>>>>
+>>>>>> Please allow me to tell you the truth: This patch again has ZERO effect.
+>>>>>> It fix nothing. And this patch is has the risks to be wrong.
+>>>>> Huh?! Really, stop commenting the stuff you do not understand.
+>>>> I'm actually a professional display drivers developer at the downstream
+>>>> in the past, despite my contribution to upstream is less. But I believe
+>>>> that all panel driver developers know what I'm talking about. So please
+>>>> have take a look at my replies.
+>>> Most of the interactions you had in this series has been uncalled for.
+>>> You might be against a patch, but there's no need to go to such length.
+>>>
+>>> As far as I'm concerned, this patch is fine to me in itself, and I don't
+>>> see anything that would prevent us from merging it.
+>> No one is preventing you, as long as don't misunderstanding what other
+>> people's technical replies intentionally. I'm just a usual and normal
+>> contributor, I hope the world will better than yesterday.
+> You should seriously consider your tone when replying then.
+>
+>> Saying such thing to me may not proper, I guess you may want to talk
+>> to peoples who has the push rights
+> I think you misunderstood me. My point was that your several rants were
+> uncalled for and aren't the kind of things we're doing here.
+>
+> I know very well how to get a patch merged, thanks.
+>
+>> just make sure it isn't a insult to the professionalism of drm bridge
+>> community itself though.
+> I'm not sure why you're bringing the bridge community or its
+> professionalism. It's a panel, not a bridge, and I never doubted the
+> professionalism of anyone.
+
+
+I means that the code itself could be adopted, as newer and younger
+programmer (like Andy) need to be encouraged to contribute. I express
+no obvious objections, just hints him that something else probably
+should also be taken into consideration as well.
+
+On the other hand, we probably should allow other people participate
+in discussion so that it is sufficient discussed and ensure that it
+won't be reverted by someone in the future for some reasons. Backing
+to out case happens here, we may need to move things forward. Therefore,
+it definitely deserve to have a try. It is not a big deal even though
+it gets reverted someday.
+
+In the end, I don't mind if you think there is nothing that could
+prevent you from merge it, but I still suggest you have a glance at
+peoples siting at the Cc list. I'm busy now and I have a lot of other
+tasks to do, and may not be able to reply you emails on time. So it up
+to you and other maintainers to decide.
+  
+Thank you.
+
+> Maxime
+
 -- 
-2.34.1
+Best regards,
+Sui
 
 
