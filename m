@@ -1,107 +1,216 @@
-Return-Path: <linux-kernel+bounces-161724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2568B502E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:24:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C18A8B502C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 237242814AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:24:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6FF91C2162D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A11CBE62;
-	Mon, 29 Apr 2024 04:24:24 +0000 (UTC)
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3F0C127;
+	Mon, 29 Apr 2024 04:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kNM3cAeL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6540C946C;
-	Mon, 29 Apr 2024 04:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29298F6A;
+	Mon, 29 Apr 2024 04:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714364663; cv=none; b=X+3Og/tJzkV78SVlH9od0QaB3boI/4EO0kLlekQl34D0cijdLLjO8klY9uNNSKxS1AF+Es49Ny7f2bw2HspY89Q0eBCtXOzU2SEGJPAqgVVVJe7LotdaloxJcfPllYnOGefil90L5YrHfwxpkEx/IzwemQLcqnRlBjFfS1Lb8Wg=
+	t=1714364623; cv=none; b=JG1z+kxhznA9QYroDKOkBHVQP7tgsMaLcqJ+2AvmDozCAiqlhG/YICa4aJZKrZ2tTSOWWCKV5sMhCimQp3r0n2EEN1QAz5xf7z+XW12reoOTGIncRERu5IR1iydSGJQO4K+0f5q4ZY+yuoYNoEj7dwdztSf67C4jNfNw64GV6qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714364663; c=relaxed/simple;
-	bh=JGOwRwb3wGY35/7bkooHaUwoAyvkcfcIq1Fea0jPVvo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HW9jgnhaxgcdQEQj5SNe+gOX8JruoHXhICXkjItVhrXagdUBa2qEC08h3kh0+Cv+HtOL0xEpfvqFaoQCARCzfsubZ5B+SF/M1bs5uQ+XOZZBlHTIYkZmV7X6ovBD0vaVy2OOUHcVL/v0GZpCjl6Hsg3ESWty097W3HpFZ2Js0HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-01 (Coremail) with SMTP id qwCowABnbRnkIC9mz_ISAQ--.33589S2;
-	Mon, 29 Apr 2024 12:24:05 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: cezary.rojewski@intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	liam.r.girdwood@linux.intel.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	maarten.lankhorst@linux.intel.com,
-	amadeuszx.slawinski@linux.intel.com
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] ASoC: intel: skylake: Add check for dma_set_max_seg_size
-Date: Mon, 29 Apr 2024 12:23:20 +0800
-Message-Id: <20240429042320.2150567-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714364623; c=relaxed/simple;
+	bh=1IVjWFDE0ZPVxEX7QCLOdk64+2ARx2EGinwsO9xJAqY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uOD53jkvfZroWp+8uQzj8S48zGQ0i8CsOCk2clJax/3RTOBeLhUIkX59ghj3N54QunyimCnGcq68mt28/kKgN6+RDTA/sWvAyfWXghs4T1z4FcKwxcitOOse+zIwowtjuYQl+zslWUfR1AFQgqsCAvpm52x53h69fu+ibAWyEj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kNM3cAeL; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714364621; x=1745900621;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1IVjWFDE0ZPVxEX7QCLOdk64+2ARx2EGinwsO9xJAqY=;
+  b=kNM3cAeLbRgpcIgxxZqB/VrrksKw3lHS3+WxmmmTaar1DnkuRovKghJu
+   UFJ24L/SqMGwdovB2aR5VFHw9ReNZ6SzW0f+9P5b8EqZkd1wIZ9MFWHL7
+   X9wJNh+H1tPhkFO2PGY5cBASv5lQgWKZ3NMX8gJxnAEfTjJ888GckuTYg
+   tDTnLwWJefeX8i++tx4q5htpKJETGnCrSe2VW7+KxyErvg7sni91pO3H8
+   c9z5anioUb6KHArd/Qhi3ipHs0uGHLla+RWiEPrsQU7tsvIIVxLL9Dtbb
+   AK3lT6FTGU6CZjKjDd/vsYn4pXl9NCUdgVdt8WUP/N3NoTeSzd4w5g50/
+   A==;
+X-CSE-ConnectionGUID: L7DH/PiJS66Oj6LBUCRX0w==
+X-CSE-MsgGUID: NruxqcKyTnyNeXdcM+Lslw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10134618"
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="10134618"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:23:40 -0700
+X-CSE-ConnectionGUID: lTeYmOudT8mJd96kUL1tRA==
+X-CSE-MsgGUID: kxGWAuvMTTmiz79jYMjsdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
+   d="scan'208";a="56886981"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:23:36 -0700
+Message-ID: <1398f18e-b490-4c2c-93f1-e210f7e74794@intel.com>
+Date: Mon, 29 Apr 2024 12:23:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 2/4] KVM: x86: Make nsec per APIC bus cycle a VM
+ variable
+To: Reinette Chatre <reinette.chatre@intel.com>, isaku.yamahata@intel.com,
+ pbonzini@redhat.com, erdemaktas@google.com, vkuznets@redhat.com,
+ seanjc@google.com, vannapurve@google.com, jmattson@google.com,
+ mlevitsk@redhat.com, chao.gao@intel.com, rick.p.edgecombe@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1714081725.git.reinette.chatre@intel.com>
+ <ae75ce37c6c38bb4efd10a0a41932984c40b24ac.1714081726.git.reinette.chatre@intel.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <ae75ce37c6c38bb4efd10a0a41932984c40b24ac.1714081726.git.reinette.chatre@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowABnbRnkIC9mz_ISAQ--.33589S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xry3uF47GrW8Xr4rZr47Jwb_yoWDXrX_Kw
-	n5G3s5Wa4UW3yI9wnrKr43CF42qws7ZFyDXFyvq3WfA343GrZ8GFWvqFnruFWku34Fqry0
-	v3ZIvrWDC348XjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-	b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-	nxnUUI43ZEXa7VUj_-BtUUUUU==
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-Add check for the return value of dma_set_max_seg_size() and return
-the error if it fails in order to catch the error.
+On 4/26/2024 6:07 AM, Reinette Chatre wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Introduce the VM variable "nanoseconds per APIC bus cycle" in
+> preparation to make the APIC bus frequency configurable.
+> 
+> The TDX architecture hard-codes the core crystal clock frequency to
+> 25MHz and mandates exposing it via CPUID leaf 0x15. The TDX architecture
+> does not allow the VMM to override the value.
+> 
+> In addition, per Intel SDM:
+>      "The APIC timer frequency will be the processor’s bus clock or core
+>       crystal clock frequency (when TSC/core crystal clock ratio is
+>       enumerated in CPUID leaf 0x15) divided by the value specified in
+>       the divide configuration register."
+> 
+> The resulting 25MHz APIC bus frequency conflicts with the KVM hardcoded
+> APIC bus frequency of 1GHz.
+> 
+> Introduce the VM variable "nanoseconds per APIC bus cycle" to prepare
+> for allowing userspace to tell KVM to use the frequency that TDX mandates
+> instead of the default 1Ghz. Doing so ensures that the guest doesn't have
+> a conflicting view of the APIC bus frequency.
 
-Fixes: c22a8086b384 ("ASoC: intel: skylake: Set max DMA segment size")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- sound/soc/intel/skylake/skl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 117125187793..8edc13795462 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -943,7 +943,9 @@ static int skl_first_init(struct hdac_bus *bus)
- 	/* allow 64bit DMA address if supported by H/W */
- 	if (dma_set_mask_and_coherent(bus->dev, DMA_BIT_MASK(64)))
- 		dma_set_mask_and_coherent(bus->dev, DMA_BIT_MASK(32));
--	dma_set_max_seg_size(bus->dev, UINT_MAX);
-+	err = dma_set_max_seg_size(bus->dev, UINT_MAX);
-+	if (err)
-+		return err;
- 
- 	/* initialize streams */
- 	snd_hdac_ext_stream_init_all
--- 
-2.25.1
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> [reinette: rework changelog]
+> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> ---
+> Changes v5:
+> - Add Rick's Reviewed-by tag.
+> 
+> Changes v4:
+> - Reword changelog to address comments related to "bus clock" vs
+>    "core crystal clock" frequency. (Xiaoyao)
+> - Typo in changelog ("APIC APIC" -> "APIC").
+> - Change logic "APIC bus cycles per nsec" -> "nanoseconds per
+>    APIC bus cycle".
+> 
+> Changes V3:
+> - Update commit message.
+> - Dropped apic_bus_frequency according to Maxim Levitsky.
+> 
+> Changes v2:
+> - No change.
+> 
+>   arch/x86/include/asm/kvm_host.h | 1 +
+>   arch/x86/kvm/hyperv.c           | 3 ++-
+>   arch/x86/kvm/lapic.c            | 6 ++++--
+>   arch/x86/kvm/lapic.h            | 2 +-
+>   arch/x86/kvm/x86.c              | 1 +
+>   5 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 1d13e3cd1dc5..f2735582c7e0 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1358,6 +1358,7 @@ struct kvm_arch {
+>   
+>   	u32 default_tsc_khz;
+>   	bool user_set_tsc;
+> +	u64 apic_bus_cycle_ns;
+>   
+>   	seqcount_raw_spinlock_t pvclock_sc;
+>   	bool use_master_clock;
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 1030701db967..5c31e715d2ad 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1737,7 +1737,8 @@ static int kvm_hv_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata,
+>   		data = (u64)vcpu->arch.virtual_tsc_khz * 1000;
+>   		break;
+>   	case HV_X64_MSR_APIC_FREQUENCY:
+> -		data = div64_u64(1000000000ULL, APIC_BUS_CYCLE_NS);
+> +		data = div64_u64(1000000000ULL,
+> +				 vcpu->kvm->arch.apic_bus_cycle_ns);
+>   		break;
+>   	default:
+>   		kvm_pr_unimpl_rdmsr(vcpu, msr);
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index cf37586f0466..3e66a0a95999 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1547,7 +1547,8 @@ static u32 apic_get_tmcct(struct kvm_lapic *apic)
+>   		remaining = 0;
+>   
+>   	ns = mod_64(ktime_to_ns(remaining), apic->lapic_timer.period);
+> -	return div64_u64(ns, (APIC_BUS_CYCLE_NS * apic->divide_count));
+> +	return div64_u64(ns, (apic->vcpu->kvm->arch.apic_bus_cycle_ns *
+> +			      apic->divide_count));
+>   }
+>   
+>   static void __report_tpr_access(struct kvm_lapic *apic, bool write)
+> @@ -1965,7 +1966,8 @@ static void start_sw_tscdeadline(struct kvm_lapic *apic)
+>   
+>   static inline u64 tmict_to_ns(struct kvm_lapic *apic, u32 tmict)
+>   {
+> -	return (u64)tmict * APIC_BUS_CYCLE_NS * (u64)apic->divide_count;
+> +	return (u64)tmict * apic->vcpu->kvm->arch.apic_bus_cycle_ns *
+> +		(u64)apic->divide_count;
+>   }
+>   
+>   static void update_target_expiration(struct kvm_lapic *apic, uint32_t old_divisor)
+> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> index a20cb006b6c8..51e09f5a7fc5 100644
+> --- a/arch/x86/kvm/lapic.h
+> +++ b/arch/x86/kvm/lapic.h
+> @@ -16,7 +16,7 @@
+>   #define APIC_DEST_NOSHORT		0x0
+>   #define APIC_DEST_MASK			0x800
+>   
+> -#define APIC_BUS_CYCLE_NS       1
+> +#define APIC_BUS_CYCLE_NS_DEFAULT	1
+>   
+>   #define APIC_BROADCAST			0xFF
+>   #define X2APIC_BROADCAST		0xFFFFFFFFul
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e9ef1fa4b90b..10e6315103f4 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -12629,6 +12629,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>   	raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
+>   
+>   	kvm->arch.default_tsc_khz = max_tsc_khz ? : tsc_khz;
+> +	kvm->arch.apic_bus_cycle_ns = APIC_BUS_CYCLE_NS_DEFAULT;
+>   	kvm->arch.guest_can_read_msr_platform_info = true;
+>   	kvm->arch.enable_pmu = enable_pmu;
+>   
 
 
