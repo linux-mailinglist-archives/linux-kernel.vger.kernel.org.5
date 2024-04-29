@@ -1,148 +1,107 @@
-Return-Path: <linux-kernel+bounces-162481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34F9E8B5BCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:48:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C2F8B5BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C87341F2194E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:48:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CED8B2645D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C47E8172F;
-	Mon, 29 Apr 2024 14:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A781E80603;
+	Mon, 29 Apr 2024 14:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="1vmX3/lo"
-Received: from smtp-bc0d.mail.infomaniak.ch (smtp-bc0d.mail.infomaniak.ch [45.157.188.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="SmVtEDzt"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F0B80604
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA3680022
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714401992; cv=none; b=mL2ZB2H3pZzI1q/N0kCI5OVJQ/cD5sHxueUq1O6xL9L8CfVRR82bOsijhViR73gU8rxny4KYwcYypIZlF/MwZ5V8Zgm+RBBqPaaoxxt6TAPVL6cQNFNjKRGDu9b0x1/zOosS1dtM+0dIRlA831gUPeGLKQ8xBewMWd42DqVN5Mo=
+	t=1714401987; cv=none; b=esBVaaAsgzbtt/vLvkT8cN7DtWmqLE6NPji3oj1Q4sZFXqhW0aJTYPJMHAkLsio3Jt6kxt4fN/NVWkhIVkwB+sg5BdHGNoXvNPSAqfN78QgxsQkulvZpw2+SBWFm7xoSEmXggsVMIa/9YXBRAj9jRRmqZXXqqcaN8M7q7S0nKGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714401992; c=relaxed/simple;
-	bh=ZPYXNWtZgVhgJXwEodlMEK1xGAdzBeNDB4Dn1jTvHBQ=;
+	s=arc-20240116; t=1714401987; c=relaxed/simple;
+	bh=7ffg10nGRai65DzA6Sm+DBPvuVwQZ6AScKW/4TvgHFo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QAX3S9ur/9qUJgL81rfSwV0hIjUkvFaBgimSow3PcJWyS3/Jj/lmDjFrSTY64TqytTAyEfxk29ZugBIujZFdsR7rVoXVBad60W9xfszVRDzPxjv5/fCalO3sQwovb3ykNA6JxxioNUgH4MWzLOSpMVSUP6TumxviJKic4tivp8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=1vmX3/lo; arc=none smtp.client-ip=45.157.188.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VSmNs2sPczCVc;
-	Mon, 29 Apr 2024 16:46:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1714401981;
-	bh=ZPYXNWtZgVhgJXwEodlMEK1xGAdzBeNDB4Dn1jTvHBQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=1vmX3/lolLE2GryXLD5Hs8sDa+5RkY9f+2t2tMX3X8Sj73JCWdcxofA58YW4Ca/x/
-	 G5gOzMcK9hwKO/RRz0XkLpWUG23sL0s4+Uto2tnBN5meKCF/5xBuQP/nelUmAC0726
-	 TRgZvxv62ryr6+PsJDP9ESy1la6P8WDOtIptXfK0=
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VSmNr6DWfzFnV;
-	Mon, 29 Apr 2024 16:46:20 +0200 (CEST)
-Date: Mon, 29 Apr 2024 16:46:19 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Ubisectech Sirius <bugreport@ubisectech.com>
-Cc: linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-security-module <linux-security-module@vger.kernel.org>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: =?utf-8?B?5Zue5aSN77yaV0FSTklO?= =?utf-8?Q?G?= in
- current_check_refer_path
-Message-ID: <20240429.ieR4Ajeitee5@digikod.net>
-References: <c426821d-8380-46c4-a494-7008bbd7dd13.bugreport@ubisectech.com>
- <20240429.Iyohkaimiep1@digikod.net>
- <d36cf38a-a22a-44ec-b606-b58ccc559a47.bugreport@ubisectech.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b4FyxNy8jrHRGTJc22UIin7VD0HHPsYzgS9KNzZrYjVg7uA7UaaQae0+8clADP9QPNRpS+lUdnv8HCK/ud6R+/wLJB5oPYoEPkIof3boVLske0OeNWfRNPFDgb9tf8+dPgHXLeMi3wryi0lKfuyZoV2dGqn8zTYC1jrhLTsiIYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=SmVtEDzt; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c8641b41e7so807469b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:46:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1714401985; x=1715006785; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PL6tZzyAQb/T1bd4KCzi312ESM92EvfA0363dcOQhRE=;
+        b=SmVtEDztMGKiJha93yc3YzWgOimowBu5KUyLGBxxDTLWJqPXUofvnlaadzFiaJCRby
+         i+0vD3qO18KYmzKrCRS8U33f1TJ8JxZ+jtkNbvDS2fgngM1BoPdhZ60Yz8VJID/YsgUK
+         t73vSALFj0ZuJBn0UxxtKERyn9nzXuRs23ajZx+9Ok3MIVEPxo+S8NmG9+tG9sDJe5Ht
+         5r44OzK2qilLvtef3lR9W3DXENwSQQpuA67arusaR4sUGOHXKqezz2rzdIDRdYhuSa2I
+         lS2v5dsf6A0zeiZ1GsubbwLJy2ncGfhXEDrHMiy2MxKRZL7EV0OXF+ZHpYVh9gK1I4dR
+         +djw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714401985; x=1715006785;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PL6tZzyAQb/T1bd4KCzi312ESM92EvfA0363dcOQhRE=;
+        b=lvA1vPaA4cu9U/8QnvA48b5BTIjwGe9nCPwEwTp2Jv1EyRmZ5xnNYdsSjklHR1nf7W
+         AvekSNITG81koGTdCcmJgubaQKfos/B5YXY1lFuF5H8BWbXeKK/v63jhGNNOpFYcPnQE
+         AHdwsZlPmF07etCD7/2QixxjTChQaltB8jPhMQqnbEOKDi7OBgWM4TbASQZk3EA3UVGl
+         LlZuHU/rqQJJPck5+BrW9ujE+IIvkXH0LcvwwjYSXb+GjI/YOhKyZZZRc9sj2V6P71XE
+         k0z8e+wi1xt/fZoieLgTo72IpI4mR2eadCvS//lxn0m227aIJk5uBcfEYRpxXT/D7u7r
+         1/kg==
+X-Forwarded-Encrypted: i=1; AJvYcCWmX0aJvK9Hgu/Gbvq6lyfgn5keEe13yShmlnOoXBJLC14KjeQtj5MueWCFVhIk7xvHK1EKkmUg7ll6GJfMQ2MDPsqt81E9gx1JEeB6
+X-Gm-Message-State: AOJu0Yz0W9UWXGSqxw7EwAWVzMWuGG3u3i5eN3xNK9S12rmd6qEY49+G
+	5FPwFMMQdra82UfLbC/vseCmN3x3LI6PAHoQaZFOv4gKJlWo1hxl+u1gzIxno7s=
+X-Google-Smtp-Source: AGHT+IFOe6gG5Zd5JVe9dZoFq+NoColD5kYFlBUlxnFkxrkFHFXSMMmhpY3dNxMYFJzSXNRqXqK1iQ==
+X-Received: by 2002:a54:408f:0:b0:3c7:45db:3ad2 with SMTP id i15-20020a54408f000000b003c745db3ad2mr31396oii.16.1714401985232;
+        Mon, 29 Apr 2024 07:46:25 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id mi23-20020a056214559700b0069b4cc9780fsm3071361qvb.2.2024.04.29.07.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 07:46:24 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s1SGt-001ToN-OO;
+	Mon, 29 Apr 2024 11:46:23 -0300
+Date: Mon, 29 Apr 2024 11:46:23 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rientjes@google.com,
+	dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+	will@kernel.org, robin.murphy@arm.com, iommu@lists.linux.dev
+Subject: Re: [RFC v2 0/3] iommu/intel: Free empty page tables on unmaps
+Message-ID: <20240429144623.GN231144@ziepe.ca>
+References: <20240426034323.417219-1-pasha.tatashin@soleen.com>
+ <2daf168e-e2b2-4b19-9b39-d58b358c8cd9@redhat.com>
+ <CA+CK2bC4SWTCG2bnA16Xe+gX7=N=UYWB1wSns-K-jNqC1yrdvQ@mail.gmail.com>
+ <9bf62e97-dfdd-4537-8fb0-b5f293856f59@redhat.com>
+ <ZiwC4snk03ptUQij@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d36cf38a-a22a-44ec-b606-b58ccc559a47.bugreport@ubisectech.com>
-X-Infomaniak-Routing: alpha
+In-Reply-To: <ZiwC4snk03ptUQij@casper.infradead.org>
 
-On Mon, Apr 29, 2024 at 05:16:57PM +0800, Ubisectech Sirius wrote:
-> > Hello,
-> 
-> > Thanks for the report.  Could you please provide a reproducer?
-> 
-> > Regards,
-> > Mickaël
-> 
-> Hi.
->   The Poc file has seed to you as attachment.
+On Fri, Apr 26, 2024 at 08:39:14PM +0100, Matthew Wilcox wrote:
 
-Indeed, but could you please trim down the file. There are 650 lines,
-most of them are irrelevant.
+> I think there's a lot of space in the struct page that can be used.
+> These are iommu page tables, not cpu page tables, so things are a bit
+> different for them.  But should they be converted to use ptdesc?  Maybe!
 
-> 
-> > On Sun, Apr 28, 2024 at 10:47:02AM +0800, Ubisectech Sirius wrote:
-> >> Hello.
-> >> We are Ubisectech Sirius Team, the vulnerability lab of China ValiantSec. Recently, our team has discovered a issue in Linux kernel 6.7. Attached to the email were a PoC file of the issue.
-> >> 
-> >> Stack dump:
-> >> 
-> > > loop3: detected capacity change from 0 to 1024
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 30368 at security/landlock/fs.c:598 get_mode_access security/landlock/fs.c:598 [inline]
-> > > WARNING: CPU: 0 PID: 30368 at security/landlock/fs.c:598 get_mode_access security/landlock/fs.c:578 [inline]
-> > > WARNING: CPU: 0 PID: 30368 at security/landlock/fs.c:598 current_check_refer_path+0x955/0xa60 security/landlock/fs.c:758
-> > > Modules linked in:
-> > > CPU: 0 PID: 30368 Comm: syz-executor.3 Not tainted 6.7.0 #2
-> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> > > RIP: 0010:get_mode_access security/landlock/fs.c:598 [inline]
-> > > RIP: 0010:get_mode_access security/landlock/fs.c:578 [inline]
-> > > RIP: 0010:current_check_refer_path+0x955/0xa60 security/landlock/fs.c:758
-> > > Code: e9 76 fb ff ff 41 bc fe ff ff ff e9 6b fb ff ff e8 00 99 77 fd 90 0f 0b 90 41 bc f3 ff ff ff e9 57 fb ff ff e8 ec 98 77 fd 90 <0f> 0b 90 31 db e9 86 f9 ff ff bb 00 08 00 00 e9 7c f9 ff ff 41 ba
-> > > RSP: 0018:ffffc90001fb7ba0 EFLAGS: 00010212
-> > > RAX: 0000000000000bc5 RBX: ffff88805feeb7b0 RCX: ffffc90006e15000
-> > > RDX: 0000000000040000 RSI: ffffffff84125d64 RDI: 0000000000000003
-> > > RBP: ffff8880123c5608 R08: 0000000000000003 R09: 000000000000c000
-> > > R10: 000000000000f000 R11: 0000000000000000 R12: ffff88805d32fc00
-> > > R13: ffff8880123c5608 R14: 0000000000000000 R15: 0000000000000001
-> > > FS:  00007fd70c4d8640(0000) GS:ffff88802c600000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 0000001b2c136000 CR3: 000000005b2a0000 CR4: 0000000000750ef0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > PKRU: 55555554
-> > > Call Trace:
-> > >  <TASK>
-> > >  security_path_rename+0x124/0x230 security/security.c:1828
-> > >  do_renameat2+0x9f6/0xd30 fs/namei.c:4983
-> > >  __do_sys_rename fs/namei.c:5042 [inline]
-> > >  __se_sys_rename fs/namei.c:5040 [inline]
-> > >  __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
-> > >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> > >  do_syscall_64+0x43/0x120 arch/x86/entry/common.c:83
-> > >  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> > > RIP: 0033:0x7fd70b6900ed
-> > > Code: c3 e8 97 2b 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> > > RSP: 002b:00007fd70c4d8028 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
-> > > RAX: ffffffffffffffda RBX: 00007fd70b7cbf80 RCX: 00007fd70b6900ed
-> >>  RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000020000100
-> > > RBP: 00007fd70b6f14a6 R08: 0000000000000000 R09: 0000000000000000
-> > > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > > R13: 000000000000000b R14: 00007fd70b7cbf80 R15: 00007fd70c4b8000
-> > >  </TASK>
-> > > 
-> > > Thank you for taking the time to read this email and we look forward to working with you further.
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > 
-> > 
-> > 
-> 
-> 
+Definately! Someday we will need more stuff in here..
 
-
+Jason
 
