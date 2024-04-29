@@ -1,261 +1,1333 @@
-Return-Path: <linux-kernel+bounces-162398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6F038B5A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A39E98B5AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5795B2B193
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:52:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD6C5B26553
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E806475804;
-	Mon, 29 Apr 2024 13:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C1C7B3E5;
+	Mon, 29 Apr 2024 13:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oi7Xwlvi"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="wH+bLKtc"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F565657D4;
-	Mon, 29 Apr 2024 13:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D1074BE5
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398714; cv=none; b=B1vrqlx7B60AChN0PsLDoXLj+Vu7acyTfd6D58DjNjy82T/YKksasEdyWgfIT2WNNE4+8iFRw3y3WvnEPt5JRjAVgzQHhTqaZLgeDxoZ+ZWLjLO2jXU9RGA8GCYiBeOYdQh5CYA9u85qg7S84uFondp/aqZuDNjspmxdSqC+bNY=
+	t=1714398721; cv=none; b=geiofbLambNJyxvaKh+yDWMMAlOedZVIqQGsyzIV9X51j2hqMBCgWycYQcUzne2IzOzs1CGKUk3MDziy5Z4x7lwnsMn/Pr6/V6GHhOIGqlSzJs7YQU1tbXHGUaXIFKsh5nF60RC19aQTmgdQ9oa8VL4IJWZ5cbnUBE4+71Jz4vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398714; c=relaxed/simple;
-	bh=e49NOt2GVVU+FTbdBwqIZXJOMOkE6tmLHI8TTI3eSTE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mmXaJ7GwXZYxSxElAtwUclzac5gKLmDcPfHTZQWL0h0Ij/xex0l2ql6nX43ZeKHB9bSwvv8KR+3uIYSMGbvrnbBbBujYwCOXwFR4Yu3DbXvvhnWIoKvGe6Cf0rAnI7xyuNQnwbAs9uyYu71OeFMtHkFmk6P4ZCMQ9UlGPAQrZWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oi7Xwlvi; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so6956851a12.2;
-        Mon, 29 Apr 2024 06:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714398710; x=1715003510; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
-        b=Oi7XwlviBnxZOrXDFCAUTQTsBeF/3ft7ZswRwidczjTcCERmRiGt0WKRaNsbDm/9MD
-         82ChuVYxZwG6GjtHEY6SVmkI9Vj0A6reVHStf3rkmjtiYgqaG3i1cmX6cL1AO3yFMTok
-         gIAQbxUzF1wW7bwf2ZJACem/FTJJnNfsjh0Lwhlf79/dasFeXImTqhLOsNlLJENV0P8B
-         j9pYeYVyRGz2pTdQtf4ZmwbX3OUM4oRguX0rgf0DIfenxkW1gFP0Czn3kXv7O2Ek2B9e
-         FFfBmzQIsn7DsWj5Gmv5w2Jmd0CkWEVFWG7W7aep/OCXBbm6aJdzPkT5Y8PIUNdHeMWC
-         llrQ==
+	s=arc-20240116; t=1714398721; c=relaxed/simple;
+	bh=QFgXJtXoBz8QTuDguzh147u/rIxiwoLrOj0jJbOXK5Y=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S+u1H8u2KtwPXfd1a7tC3b9p8BRJmfqq85UitsiibUNqbYB7jwP6M20a7JEhiPBYKor1OsGxDlnEd9UYdrg2pjUNrqMYet6XL3Ol8enT6zp1P22BR/0TstfiE/FYua/xKszTXRazJOrAB4y7QeHa8+jvpgSRDdoIq2JjAg1TCLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=wH+bLKtc; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com [209.85.222.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 956C43F6E6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1714398717;
+	bh=+Q93uYKVHkI8FjmsQvVCYUdtbVOhu2FzIUlsEgjYqSQ=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=wH+bLKtcUH0B9qJIc5SagyzKF/hrfI2wjsPOVUMeS9doONfskbYd2a/G1tC2Hhn9/
+	 m1IwKKAg5vT1lVbsbG8+0OoihckC6NfLo6gn3G2Mo7xMj160mwFdmiS9smz2b36GBh
+	 DmqNQnggnMuuC/aS74EjMzJCR4tPxzHeuotuGg/CzQlFDWvTMud2O8IDuywGmJW/V1
+	 YNWUTCbS3YE2BdEx6t/vzrqK8sIpGSogPWPfeSn7j/k+l3zzIOslL5FEPn6U3rII6i
+	 0kCSsn6cQYVRLtXJRTESIxVlLBX9rk6y/ElFqVrI0XTg+pZxoSt7D2zNWzMPLPFHCA
+	 HI3c0exxuzxtA==
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-7f0c4a6065dso583718241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:51:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714398710; x=1715003510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
-        b=U1Sst1mhfQ/cJHluy6tJpkcJurQt8gZzJo5kjS6Ze7Eeazv/GH6LdoA9f6uZ/8Uoot
-         yUHAxsmEcSilAiqabSKsFteK4CPTQCQPnx84drjGMy7iYodZ2WqitStjVIrdgB+HgAik
-         rvT8qg4Kxej8yu85KgNx9UXTyrs2IoMLscnUm88eSmjm/Z1Advm4nz77ktknH6ojzC1k
-         EW8rByBFOGUaASsA5k5tI1lLxhiacaYh78gMu8yug/5B3Za6LyX38OWVi076FlAosdlG
-         Wp/5c+DiWz+MPFunvwMNBOc3qzjxUHsPYrVBTKtTPB7gBXmcZtxhP9hPr6zAHQpqL14Y
-         NnCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnSaXhMkAjR65POA7MgNX40cuZb/B8+eR74ic003f4leaPRMnkF29vyxALLAyfSN7qoPfUtk2nEfJB5xHTFJAyFay2JShqiEzo4ACAcCNgTIIQiVXTzBleBS+sFpsaQ0n9
-X-Gm-Message-State: AOJu0YyrbGwslOLoHr56SGJV3zXH4uSjCqAiEYieMN4f7hqPREiCQylc
-	VocBffC+KM/igLfqA5fmK6/JU1OXLdkWFZVS06IJHGIxr6e2us/E
-X-Google-Smtp-Source: AGHT+IGMIjFVUQLQ3SYJFBmyCh6Th4YjbgO+QtQAMEV1CdaGAPtjurOXaW/PI9GDqdTNVOZ3Eq0X2A==
-X-Received: by 2002:a50:8e5e:0:b0:570:5b3d:4f60 with SMTP id 30-20020a508e5e000000b005705b3d4f60mr8003113edx.25.1714398710224;
-        Mon, 29 Apr 2024 06:51:50 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id y20-20020a056402271400b00572300f0768sm6019931edd.79.2024.04.29.06.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:51:49 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 29 Apr 2024 15:51:47 +0200
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>,
-	Adrian Bunk <bunk@kernel.org>,
-	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	andrii@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
- page fault code
-Message-ID: <Zi-l8xKhMbdJ-NBo@krava>
-References: <0000000000009dfa6d0617197994@google.com>
- <20240427231321.3978-1-hdanton@sina.com>
- <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
- <20240428232302.4035-1-hdanton@sina.com>
- <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
- <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
- <Zi9Ts1HcqiKzy9GX@gmail.com>
+        d=1e100.net; s=20230601; t=1714398716; x=1715003516;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Q93uYKVHkI8FjmsQvVCYUdtbVOhu2FzIUlsEgjYqSQ=;
+        b=IjZ76JUOOU5SnAEC+gu7+dl/NdxmMF3N+Sj4ehjJGMz9M+Onxdp4HsExfgtKEH/tpa
+         L6m7Vf3Urruuec9m4VpW1pCkYSWlQlTfa2QrcvyKPQUpQQjgNn0ZkwUj2MK+UmR3dbR9
+         A1qSD/CgE0zPW+K8LaRwSqOhVVCzw1WbHDnCdXLbfiVbghDfLVx/oPUhxz0e30yPEv2S
+         iaSxg9eKxQvxN+zNdtxWJMhc9tx8U3VoPGo4Ftsh88lrYIjWoTl21dAcmpeH4L14OoOA
+         T2ZXw7ds7kMlGyNn0CeNSw8rGrCuJWNp6dW2uhOHWF2i0SSw4FF1h+7TWZQ6RLehbqC5
+         TBdg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+w+pfZCpeh7XMxDuRbmmtgZfYiG93K4X47QunlScvKPZ9Zc0KKfKW8Vebh5KgwW3b2vMUNfsE8nIaieNo0nMca9T6IkhFgeHzk4JL
+X-Gm-Message-State: AOJu0YxheuIXwG0CMH1uWW8UHCOifpe1OqNDjkYCCpkq5qqlB4Eix6Gw
+	cAxa8PBLcmiM3e6MkBGU+/PVkW7VL1viuI4LiyH+NSvLPU2auHvy7gSRI4d603FPSYv7pK4SkWg
+	zXohWDNwsKMO9rUQjcgaY8ID0xjhzi2FUszMSvKv8F/y9DXlDuQTGuaaN6ftg/07uMhOR8zrzzR
+	8rjvvrEwTM2TmX7ZhEpr2r/NoQJttabs+/dFKGJgOQmejsy0Y6vdpv
+X-Received: by 2002:a67:bd0e:0:b0:47b:d2e2:9336 with SMTP id y14-20020a67bd0e000000b0047bd2e29336mr12187746vsq.19.1714398716380;
+        Mon, 29 Apr 2024 06:51:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGH6hB2bfs0xj4pBjEadwWBNZ9MR0YtcKFj/kCSFpP1XZR+oScu6QPe2skxOYLMgRQwKr8gvBtd5u28htMsKD8=
+X-Received: by 2002:a67:bd0e:0:b0:47b:d2e2:9336 with SMTP id
+ y14-20020a67bd0e000000b0047bd2e29336mr12187725vsq.19.1714398716003; Mon, 29
+ Apr 2024 06:51:56 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 29 Apr 2024 06:51:55 -0700
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240429001317.432-8-jszhang@kernel.org>
+References: <20240429001317.432-1-jszhang@kernel.org> <20240429001317.432-8-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zi9Ts1HcqiKzy9GX@gmail.com>
+Mime-Version: 1.0
+Date: Mon, 29 Apr 2024 06:51:55 -0700
+Message-ID: <CAJM55Z-TO9fJWqdBi8atcUGR8LsjdY5KtWNNes0j_2fOYX5vKQ@mail.gmail.com>
+Subject: Re: [PATCH v4 7/8] riscv: dts: starfive: introduce a common board
+ dtsi for jh7110 based boards
+To: Jisheng Zhang <jszhang@kernel.org>, Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Emil Renner Berthing <kernel@esmil.dk>
+Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 29, 2024 at 10:00:51AM +0200, Ingo Molnar wrote:
+Jisheng Zhang wrote:
+> This is to prepare for Milkv Mars board dts support in the following
+> patch. Let's factored out common part into .dtsi.
 
-SNIP
+Maybe something like:
 
-> The attached patch looks like the ObviouslyCorrect(tm) thing to do.
-> 
-> NOTE! This broken code goes back to this commit in 2011:
-> 
->   4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation faults")
-> 
-> ... and back then the reason was to get all the siginfo details right. 
-> Honestly, I do not for a moment believe that it's worth getting the siginfo 
-> details right here, but part of the commit says:
-> 
->     This fixes issues with UML when vsyscall=emulate.
-> 
-> ... and so my patch to remove this garbage will probably break UML in this 
-> situation.
-> 
-> I do not believe that anybody should be running with vsyscall=emulate in 
-> 2024 in the first place, much less if you are doing things like UML. But 
-> let's see if somebody screams.
-> 
-> Not-Yet-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Link: https://lore.kernel.org/r/CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com
+"Many boards using the StarFive JH7110 SoC share a lot of their design with the
+first VisionFive 2 boards. Let's factor out the common parts in preparation for
+adding support for the Milk-V Mars board."
 
-fwiw I can no longer trigger the invalid wait context bug
-with this change
+In any case:
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  arch/x86/entry/vsyscall/vsyscall_64.c | 25 ++-----------------------
->  arch/x86/include/asm/processor.h      |  1 -
->  arch/x86/mm/fault.c                   | 33 +--------------------------------
->  3 files changed, 3 insertions(+), 56 deletions(-)
-> 
-> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-> index a3c0df11d0e6..3b0f61b2ea6d 100644
-> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
-> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-> @@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
->  
->  static bool write_ok_or_segv(unsigned long ptr, size_t size)
->  {
-> -	/*
-> -	 * XXX: if access_ok, get_user, and put_user handled
-> -	 * sig_on_uaccess_err, this could go away.
-> -	 */
+>  .../boot/dts/starfive/jh7110-common.dtsi      | 599 ++++++++++++++++++
+>  .../jh7110-starfive-visionfive-2.dtsi         | 585 +----------------
+>  2 files changed, 600 insertions(+), 584 deletions(-)
+>  create mode 100644 arch/riscv/boot/dts/starfive/jh7110-common.dtsi
+>
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110-common.dtsi b/arch/riscv/boot/dts/starfive/jh7110-common.dtsi
+> new file mode 100644
+> index 000000000000..8ff6ea64f048
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/starfive/jh7110-common.dtsi
+> @@ -0,0 +1,599 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +/*
+> + * Copyright (C) 2022 StarFive Technology Co., Ltd.
+> + * Copyright (C) 2022 Emil Renner Berthing <kernel@esmil.dk>
+> + */
+> +
+> +/dts-v1/;
+> +#include "jh7110.dtsi"
+> +#include "jh7110-pinfunc.h"
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	aliases {
+> +		ethernet0 = &gmac0;
+> +		i2c0 = &i2c0;
+> +		i2c2 = &i2c2;
+> +		i2c5 = &i2c5;
+> +		i2c6 = &i2c6;
+> +		mmc0 = &mmc0;
+> +		mmc1 = &mmc1;
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	memory@40000000 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x40000000 0x1 0x0>;
+> +	};
+> +
+> +	gpio-restart {
+> +		compatible = "gpio-restart";
+> +		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
+> +		priority = <224>;
+> +	};
+> +
+> +	pwmdac_codec: audio-codec {
+> +		compatible = "linux,spdif-dit";
+> +		#sound-dai-cells = <0>;
+> +	};
+> +
+> +	sound {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "StarFive-PWMDAC-Sound-Card";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		simple-audio-card,dai-link@0 {
+> +			reg = <0>;
+> +			format = "left_j";
+> +			bitclock-master = <&sndcpu0>;
+> +			frame-master = <&sndcpu0>;
+> +
+> +			sndcpu0: cpu {
+> +				sound-dai = <&pwmdac>;
+> +			};
+> +
+> +			codec {
+> +				sound-dai = <&pwmdac_codec>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&cpus {
+> +	timebase-frequency = <4000000>;
+> +};
+> +
+> +&dvp_clk {
+> +	clock-frequency = <74250000>;
+> +};
+> +
+> +&gmac0_rgmii_rxin {
+> +	clock-frequency = <125000000>;
+> +};
+> +
+> +&gmac0_rmii_refin {
+> +	clock-frequency = <50000000>;
+> +};
+> +
+> +&gmac1_rgmii_rxin {
+> +	clock-frequency = <125000000>;
+> +};
+> +
+> +&gmac1_rmii_refin {
+> +	clock-frequency = <50000000>;
+> +};
+> +
+> +&hdmitx0_pixelclk {
+> +	clock-frequency = <297000000>;
+> +};
+> +
+> +&i2srx_bclk_ext {
+> +	clock-frequency = <12288000>;
+> +};
+> +
+> +&i2srx_lrck_ext {
+> +	clock-frequency = <192000>;
+> +};
+> +
+> +&i2stx_bclk_ext {
+> +	clock-frequency = <12288000>;
+> +};
+> +
+> +&i2stx_lrck_ext {
+> +	clock-frequency = <192000>;
+> +};
+> +
+> +&mclk_ext {
+> +	clock-frequency = <12288000>;
+> +};
+> +
+> +&osc {
+> +	clock-frequency = <24000000>;
+> +};
+> +
+> +&rtc_osc {
+> +	clock-frequency = <32768>;
+> +};
+> +
+> +&tdm_ext {
+> +	clock-frequency = <49152000>;
+> +};
+> +
+> +&camss {
+> +	assigned-clocks = <&ispcrg JH7110_ISPCLK_DOM4_APB_FUNC>,
+> +			  <&ispcrg JH7110_ISPCLK_MIPI_RX0_PXL>;
+> +	assigned-clock-rates = <49500000>, <198000000>;
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +		};
+> +
+> +		port@1 {
+> +			reg = <1>;
+> +
+> +			camss_from_csi2rx: endpoint {
+> +				remote-endpoint = <&csi2rx_to_camss>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&csi2rx {
+> +	assigned-clocks = <&ispcrg JH7110_ISPCLK_VIN_SYS>;
+> +	assigned-clock-rates = <297000000>;
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +
+> +			/* remote MIPI sensor endpoint */
+> +		};
+> +
+> +		port@1 {
+> +			reg = <1>;
+> +
+> +			csi2rx_to_camss: endpoint {
+> +				remote-endpoint = <&camss_from_csi2rx>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&gmac0 {
+> +	phy-handle = <&phy0>;
+> +	phy-mode = "rgmii-id";
+> +	status = "okay";
+> +
+> +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		compatible = "snps,dwmac-mdio";
+> +
+> +		phy0: ethernet-phy@0 {
+> +			reg = <0>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	clock-frequency = <100000>;
+> +	i2c-sda-hold-time-ns = <300>;
+> +	i2c-sda-falling-time-ns = <510>;
+> +	i2c-scl-falling-time-ns = <510>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c0_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&i2c2 {
+> +	clock-frequency = <100000>;
+> +	i2c-sda-hold-time-ns = <300>;
+> +	i2c-sda-falling-time-ns = <510>;
+> +	i2c-scl-falling-time-ns = <510>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c2_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&i2c5 {
+> +	clock-frequency = <100000>;
+> +	i2c-sda-hold-time-ns = <300>;
+> +	i2c-sda-falling-time-ns = <510>;
+> +	i2c-scl-falling-time-ns = <510>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c5_pins>;
+> +	status = "okay";
+> +
+> +	axp15060: pmic@36 {
+> +		compatible = "x-powers,axp15060";
+> +		reg = <0x36>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <1>;
+> +
+> +		regulators {
+> +			vcc_3v3: dcdc1 {
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc_3v3";
+> +			};
+> +
+> +			vdd_cpu: dcdc2 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <500000>;
+> +				regulator-max-microvolt = <1540000>;
+> +				regulator-name = "vdd-cpu";
+> +			};
+> +
+> +			emmc_vdd: aldo4 {
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "emmc_vdd";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c6 {
+> +	clock-frequency = <100000>;
+> +	i2c-sda-hold-time-ns = <300>;
+> +	i2c-sda-falling-time-ns = <510>;
+> +	i2c-scl-falling-time-ns = <510>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c6_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&mmc0 {
+> +	max-frequency = <100000000>;
+> +	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO0_SDCARD>;
+> +	assigned-clock-rates = <50000000>;
+> +	bus-width = <8>;
+> +	cap-mmc-highspeed;
+> +	mmc-ddr-1_8v;
+> +	mmc-hs200-1_8v;
+> +	cap-mmc-hw-reset;
+> +	post-power-on-delay-ms = <200>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mmc0_pins>;
+> +	vmmc-supply = <&vcc_3v3>;
+> +	vqmmc-supply = <&emmc_vdd>;
+> +	status = "okay";
+> +};
+> +
+> +&mmc1 {
+> +	max-frequency = <100000000>;
+> +	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO1_SDCARD>;
+> +	assigned-clock-rates = <50000000>;
+> +	bus-width = <4>;
+> +	no-sdio;
+> +	no-mmc;
+> +	cd-gpios = <&sysgpio 41 GPIO_ACTIVE_LOW>;
+> +	disable-wp;
+> +	cap-sd-highspeed;
+> +	post-power-on-delay-ms = <200>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mmc1_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&pwmdac {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pwmdac_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&qspi {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	nor_flash: flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +		cdns,read-delay = <5>;
+> +		spi-max-frequency = <12000000>;
+> +		cdns,tshsl-ns = <1>;
+> +		cdns,tsd2d-ns = <1>;
+> +		cdns,tchsh-ns = <1>;
+> +		cdns,tslch-ns = <1>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			spl@0 {
+> +				reg = <0x0 0x80000>;
+> +			};
+> +			uboot-env@f0000 {
+> +				reg = <0xf0000 0x10000>;
+> +			};
+> +			uboot@100000 {
+> +				reg = <0x100000 0x400000>;
+> +			};
+> +			reserved-data@600000 {
+> +				reg = <0x600000 0xa00000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&pwm {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pwm_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&spi0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&spi0_pins>;
+> +	status = "okay";
+> +
+> +	spi_dev0: spi@0 {
+> +		compatible = "rohm,dh2228fv";
+> +		reg = <0>;
+> +		spi-max-frequency = <10000000>;
+> +	};
+> +};
+> +
+> +&sysgpio {
+> +	i2c0_pins: i2c0-0 {
+> +		i2c-pins {
+> +			pinmux = <GPIOMUX(57, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C0_CLK,
+> +					      GPI_SYS_I2C0_CLK)>,
+> +				 <GPIOMUX(58, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C0_DATA,
+> +					      GPI_SYS_I2C0_DATA)>;
+> +			bias-disable; /* external pull-up */
+> +			input-enable;
+> +			input-schmitt-enable;
+> +		};
+> +	};
+> +
+> +	i2c2_pins: i2c2-0 {
+> +		i2c-pins {
+> +			pinmux = <GPIOMUX(3, GPOUT_LOW,
+> +					     GPOEN_SYS_I2C2_CLK,
+> +					     GPI_SYS_I2C2_CLK)>,
+> +				 <GPIOMUX(2, GPOUT_LOW,
+> +					     GPOEN_SYS_I2C2_DATA,
+> +					     GPI_SYS_I2C2_DATA)>;
+> +			bias-disable; /* external pull-up */
+> +			input-enable;
+> +			input-schmitt-enable;
+> +		};
+> +	};
+> +
+> +	i2c5_pins: i2c5-0 {
+> +		i2c-pins {
+> +			pinmux = <GPIOMUX(19, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C5_CLK,
+> +					      GPI_SYS_I2C5_CLK)>,
+> +				 <GPIOMUX(20, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C5_DATA,
+> +					      GPI_SYS_I2C5_DATA)>;
+> +			bias-disable; /* external pull-up */
+> +			input-enable;
+> +			input-schmitt-enable;
+> +		};
+> +	};
+> +
+> +	i2c6_pins: i2c6-0 {
+> +		i2c-pins {
+> +			pinmux = <GPIOMUX(16, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C6_CLK,
+> +					      GPI_SYS_I2C6_CLK)>,
+> +				 <GPIOMUX(17, GPOUT_LOW,
+> +					      GPOEN_SYS_I2C6_DATA,
+> +					      GPI_SYS_I2C6_DATA)>;
+> +			bias-disable; /* external pull-up */
+> +			input-enable;
+> +			input-schmitt-enable;
+> +		};
+> +	};
+> +
+> +	mmc0_pins: mmc0-0 {
+> +		 rst-pins {
+> +			pinmux = <GPIOMUX(62, GPOUT_SYS_SDIO0_RST,
+> +					      GPOEN_ENABLE,
+> +					      GPI_NONE)>;
+> +			bias-pull-up;
+> +			drive-strength = <12>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +
+> +		mmc-pins {
+> +			pinmux = <PINMUX(64, 0)>,
+> +				 <PINMUX(65, 0)>,
+> +				 <PINMUX(66, 0)>,
+> +				 <PINMUX(67, 0)>,
+> +				 <PINMUX(68, 0)>,
+> +				 <PINMUX(69, 0)>,
+> +				 <PINMUX(70, 0)>,
+> +				 <PINMUX(71, 0)>,
+> +				 <PINMUX(72, 0)>,
+> +				 <PINMUX(73, 0)>;
+> +			bias-pull-up;
+> +			drive-strength = <12>;
+> +			input-enable;
+> +		};
+> +	};
+> +
+> +	mmc1_pins: mmc1-0 {
+> +		clk-pins {
+> +			pinmux = <GPIOMUX(10, GPOUT_SYS_SDIO1_CLK,
+> +					      GPOEN_ENABLE,
+> +					      GPI_NONE)>;
+> +			bias-pull-up;
+> +			drive-strength = <12>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +
+> +		mmc-pins {
+> +			pinmux = <GPIOMUX(9, GPOUT_SYS_SDIO1_CMD,
+> +					     GPOEN_SYS_SDIO1_CMD,
+> +					     GPI_SYS_SDIO1_CMD)>,
+> +				 <GPIOMUX(11, GPOUT_SYS_SDIO1_DATA0,
+> +					      GPOEN_SYS_SDIO1_DATA0,
+> +					      GPI_SYS_SDIO1_DATA0)>,
+> +				 <GPIOMUX(12, GPOUT_SYS_SDIO1_DATA1,
+> +					      GPOEN_SYS_SDIO1_DATA1,
+> +					      GPI_SYS_SDIO1_DATA1)>,
+> +				 <GPIOMUX(7, GPOUT_SYS_SDIO1_DATA2,
+> +					     GPOEN_SYS_SDIO1_DATA2,
+> +					     GPI_SYS_SDIO1_DATA2)>,
+> +				 <GPIOMUX(8, GPOUT_SYS_SDIO1_DATA3,
+> +					     GPOEN_SYS_SDIO1_DATA3,
+> +					     GPI_SYS_SDIO1_DATA3)>;
+> +			bias-pull-up;
+> +			drive-strength = <12>;
+> +			input-enable;
+> +			input-schmitt-enable;
+> +			slew-rate = <0>;
+> +		};
+> +	};
+> +
+> +	pwmdac_pins: pwmdac-0 {
+> +		pwmdac-pins {
+> +			pinmux = <GPIOMUX(33, GPOUT_SYS_PWMDAC_LEFT,
+> +					      GPOEN_ENABLE,
+> +					      GPI_NONE)>,
+> +				 <GPIOMUX(34, GPOUT_SYS_PWMDAC_RIGHT,
+> +					      GPOEN_ENABLE,
+> +					      GPI_NONE)>;
+> +			bias-disable;
+> +			drive-strength = <2>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +	};
+> +
+> +	pwm_pins: pwm-0 {
+> +		pwm-pins {
+> +			pinmux = <GPIOMUX(46, GPOUT_SYS_PWM_CHANNEL0,
+> +					      GPOEN_SYS_PWM0_CHANNEL0,
+> +					      GPI_NONE)>,
+> +				 <GPIOMUX(59, GPOUT_SYS_PWM_CHANNEL1,
+> +					      GPOEN_SYS_PWM0_CHANNEL1,
+> +					      GPI_NONE)>;
+> +			bias-disable;
+> +			drive-strength = <12>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +	};
+> +
+> +	spi0_pins: spi0-0 {
+> +		mosi-pins {
+> +			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
+> +					      GPOEN_ENABLE,
+> +					      GPI_NONE)>;
+> +			bias-disable;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +		};
+> +
+> +		miso-pins {
+> +			pinmux = <GPIOMUX(53, GPOUT_LOW,
+> +					      GPOEN_DISABLE,
+> +					      GPI_SYS_SPI0_RXD)>;
+> +			bias-pull-up;
+> +			input-enable;
+> +			input-schmitt-enable;
+> +		};
+> +
+> +		sck-pins {
+> +			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_CLK,
+> +					      GPOEN_ENABLE,
+> +					      GPI_SYS_SPI0_CLK)>;
+> +			bias-disable;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +		};
+> +
+> +		ss-pins {
+> +			pinmux = <GPIOMUX(49, GPOUT_SYS_SPI0_FSS,
+> +					      GPOEN_ENABLE,
+> +					      GPI_SYS_SPI0_FSS)>;
+> +			bias-disable;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +		};
+> +	};
+> +
+> +	uart0_pins: uart0-0 {
+> +		tx-pins {
+> +			pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
+> +					     GPOEN_ENABLE,
+> +					     GPI_NONE)>;
+> +			bias-disable;
+> +			drive-strength = <12>;
+> +			input-disable;
+> +			input-schmitt-disable;
+> +			slew-rate = <0>;
+> +		};
+> +
+> +		rx-pins {
+> +			pinmux = <GPIOMUX(6, GPOUT_LOW,
+> +					     GPOEN_DISABLE,
+> +					     GPI_SYS_UART0_RX)>;
+> +			bias-disable; /* external pull-up */
+> +			drive-strength = <2>;
+> +			input-enable;
+> +			input-schmitt-enable;
+> +			slew-rate = <0>;
+> +		};
+> +	};
+> +};
+> +
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&usb0 {
+> +	dr_mode = "peripheral";
+> +	status = "okay";
+> +};
+> +
+> +&U74_1 {
+> +	cpu-supply = <&vdd_cpu>;
+> +};
+> +
+> +&U74_2 {
+> +	cpu-supply = <&vdd_cpu>;
+> +};
+> +
+> +&U74_3 {
+> +	cpu-supply = <&vdd_cpu>;
+> +};
+> +
+> +&U74_4 {
+> +	cpu-supply = <&vdd_cpu>;
+> +};
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> index e19f26628054..9d70f21c86fc 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> @@ -5,188 +5,11 @@
+>   */
+>
+>  /dts-v1/;
+> -#include "jh7110.dtsi"
+> -#include "jh7110-pinfunc.h"
+> -#include <dt-bindings/gpio/gpio.h>
+> +#include "jh7110-common.dtsi"
+>
+>  / {
+>  	aliases {
+> -		ethernet0 = &gmac0;
+>  		ethernet1 = &gmac1;
+> -		i2c0 = &i2c0;
+> -		i2c2 = &i2c2;
+> -		i2c5 = &i2c5;
+> -		i2c6 = &i2c6;
+> -		mmc0 = &mmc0;
+> -		mmc1 = &mmc1;
+> -		serial0 = &uart0;
+> -	};
 > -
->  	if (!access_ok((void __user *)ptr, size)) {
->  		struct thread_struct *thread = &current->thread;
->  
-> @@ -123,7 +118,6 @@ bool emulate_vsyscall(unsigned long error_code,
->  	struct task_struct *tsk;
->  	unsigned long caller;
->  	int vsyscall_nr, syscall_nr, tmp;
-> -	int prev_sig_on_uaccess_err;
->  	long ret;
->  	unsigned long orig_dx;
->  
-> @@ -234,12 +228,8 @@ bool emulate_vsyscall(unsigned long error_code,
->  		goto do_ret;  /* skip requested */
->  
->  	/*
-> -	 * With a real vsyscall, page faults cause SIGSEGV.  We want to
-> -	 * preserve that behavior to make writing exploits harder.
-> +	 * With a real vsyscall, page faults cause SIGSEGV.
->  	 */
-> -	prev_sig_on_uaccess_err = current->thread.sig_on_uaccess_err;
-> -	current->thread.sig_on_uaccess_err = 1;
+> -	chosen {
+> -		stdout-path = "serial0:115200n8";
+> -	};
 > -
->  	ret = -EFAULT;
->  	switch (vsyscall_nr) {
->  	case 0:
-> @@ -262,23 +252,12 @@ bool emulate_vsyscall(unsigned long error_code,
->  		break;
->  	}
->  
-> -	current->thread.sig_on_uaccess_err = prev_sig_on_uaccess_err;
+> -	memory@40000000 {
+> -		device_type = "memory";
+> -		reg = <0x0 0x40000000 0x1 0x0>;
+> -	};
 > -
->  check_fault:
->  	if (ret == -EFAULT) {
->  		/* Bad news -- userspace fed a bad pointer to a vsyscall. */
->  		warn_bad_vsyscall(KERN_INFO, regs,
->  				  "vsyscall fault (exploit attempt?)");
+> -	gpio-restart {
+> -		compatible = "gpio-restart";
+> -		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
+> -		priority = <224>;
+> -	};
 > -
-> -		/*
-> -		 * If we failed to generate a signal for any reason,
-> -		 * generate one here.  (This should be impossible.)
-> -		 */
-> -		if (WARN_ON_ONCE(!sigismember(&tsk->pending.signal, SIGBUS) &&
-> -				 !sigismember(&tsk->pending.signal, SIGSEGV)))
-> -			goto sigsegv;
+> -	pwmdac_codec: audio-codec {
+> -		compatible = "linux,spdif-dit";
+> -		#sound-dai-cells = <0>;
+> -	};
 > -
-> -		return true;  /* Don't emulate the ret. */
-> +		goto sigsegv;
->  	}
->  
->  	regs->ax = ret;
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index 811548f131f4..78e51b0d6433 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -472,7 +472,6 @@ struct thread_struct {
->  	unsigned long		iopl_emul;
->  
->  	unsigned int		iopl_warn:1;
-> -	unsigned int		sig_on_uaccess_err:1;
->  
->  	/*
->  	 * Protection Keys Register for Userspace.  Loaded immediately on
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 6b2ca8ba75b8..f26ecabc9424 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -724,39 +724,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
->  	WARN_ON_ONCE(user_mode(regs));
->  
->  	/* Are we prepared to handle this kernel fault? */
-> -	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
-> -		/*
-> -		 * Any interrupt that takes a fault gets the fixup. This makes
-> -		 * the below recursive fault logic only apply to a faults from
-> -		 * task context.
-> -		 */
-> -		if (in_interrupt())
-> -			return;
+> -	sound {
+> -		compatible = "simple-audio-card";
+> -		simple-audio-card,name = "StarFive-PWMDAC-Sound-Card";
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
 > -
-> -		/*
-> -		 * Per the above we're !in_interrupt(), aka. task context.
-> -		 *
-> -		 * In this case we need to make sure we're not recursively
-> -		 * faulting through the emulate_vsyscall() logic.
-> -		 */
-> -		if (current->thread.sig_on_uaccess_err && signal) {
-> -			sanitize_error_code(address, &error_code);
+> -		simple-audio-card,dai-link@0 {
+> -			reg = <0>;
+> -			format = "left_j";
+> -			bitclock-master = <&sndcpu0>;
+> -			frame-master = <&sndcpu0>;
 > -
-> -			set_signal_archinfo(address, error_code);
+> -			sndcpu0: cpu {
+> -				sound-dai = <&pwmdac>;
+> -			};
 > -
-> -			if (si_code == SEGV_PKUERR) {
-> -				force_sig_pkuerr((void __user *)address, pkey);
-> -			} else {
-> -				/* XXX: hwpoison faults will set the wrong code. */
-> -				force_sig_fault(signal, si_code, (void __user *)address);
-> -			}
-> -		}
+> -			codec {
+> -				sound-dai = <&pwmdac_codec>;
+> -			};
+> -		};
+> -	};
+> -};
 > -
-> -		/*
-> -		 * Barring that, we can do the fixup and be happy.
-> -		 */
-> +	if (fixup_exception(regs, X86_TRAP_PF, error_code, address))
->  		return;
-> -	}
->  
->  	/*
->  	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
-> 
+> -&cpus {
+> -	timebase-frequency = <4000000>;
+> -};
+> -
+> -&dvp_clk {
+> -	clock-frequency = <74250000>;
+> -};
+> -
+> -&gmac0_rgmii_rxin {
+> -	clock-frequency = <125000000>;
+> -};
+> -
+> -&gmac0_rmii_refin {
+> -	clock-frequency = <50000000>;
+> -};
+> -
+> -&gmac1_rgmii_rxin {
+> -	clock-frequency = <125000000>;
+> -};
+> -
+> -&gmac1_rmii_refin {
+> -	clock-frequency = <50000000>;
+> -};
+> -
+> -&hdmitx0_pixelclk {
+> -	clock-frequency = <297000000>;
+> -};
+> -
+> -&i2srx_bclk_ext {
+> -	clock-frequency = <12288000>;
+> -};
+> -
+> -&i2srx_lrck_ext {
+> -	clock-frequency = <192000>;
+> -};
+> -
+> -&i2stx_bclk_ext {
+> -	clock-frequency = <12288000>;
+> -};
+> -
+> -&i2stx_lrck_ext {
+> -	clock-frequency = <192000>;
+> -};
+> -
+> -&mclk_ext {
+> -	clock-frequency = <12288000>;
+> -};
+> -
+> -&osc {
+> -	clock-frequency = <24000000>;
+> -};
+> -
+> -&rtc_osc {
+> -	clock-frequency = <32768>;
+> -};
+> -
+> -&tdm_ext {
+> -	clock-frequency = <49152000>;
+> -};
+> -
+> -&camss {
+> -	assigned-clocks = <&ispcrg JH7110_ISPCLK_DOM4_APB_FUNC>,
+> -			  <&ispcrg JH7110_ISPCLK_MIPI_RX0_PXL>;
+> -	assigned-clock-rates = <49500000>, <198000000>;
+> -	status = "okay";
+> -
+> -	ports {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		port@0 {
+> -			reg = <0>;
+> -		};
+> -
+> -		port@1 {
+> -			reg = <1>;
+> -
+> -			camss_from_csi2rx: endpoint {
+> -				remote-endpoint = <&csi2rx_to_camss>;
+> -			};
+> -		};
+> -	};
+> -};
+> -
+> -&csi2rx {
+> -	assigned-clocks = <&ispcrg JH7110_ISPCLK_VIN_SYS>;
+> -	assigned-clock-rates = <297000000>;
+> -	status = "okay";
+> -
+> -	ports {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		port@0 {
+> -			reg = <0>;
+> -
+> -			/* remote MIPI sensor endpoint */
+> -		};
+> -
+> -		port@1 {
+> -			reg = <1>;
+> -
+> -			csi2rx_to_camss: endpoint {
+> -				remote-endpoint = <&camss_from_csi2rx>;
+> -			};
+> -		};
+> -	};
+> -};
+> -
+> -&gmac0 {
+> -	phy-handle = <&phy0>;
+> -	phy-mode = "rgmii-id";
+> -	status = "okay";
+> -
+> -	mdio {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -		compatible = "snps,dwmac-mdio";
+> -
+> -		phy0: ethernet-phy@0 {
+> -			reg = <0>;
+> -		};
+>  	};
+>  };
+>
+> @@ -206,412 +29,6 @@ phy1: ethernet-phy@1 {
+>  	};
+>  };
+>
+> -&i2c0 {
+> -	clock-frequency = <100000>;
+> -	i2c-sda-hold-time-ns = <300>;
+> -	i2c-sda-falling-time-ns = <510>;
+> -	i2c-scl-falling-time-ns = <510>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&i2c0_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&i2c2 {
+> -	clock-frequency = <100000>;
+> -	i2c-sda-hold-time-ns = <300>;
+> -	i2c-sda-falling-time-ns = <510>;
+> -	i2c-scl-falling-time-ns = <510>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&i2c2_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&i2c5 {
+> -	clock-frequency = <100000>;
+> -	i2c-sda-hold-time-ns = <300>;
+> -	i2c-sda-falling-time-ns = <510>;
+> -	i2c-scl-falling-time-ns = <510>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&i2c5_pins>;
+> -	status = "okay";
+> -
+> -	axp15060: pmic@36 {
+> -		compatible = "x-powers,axp15060";
+> -		reg = <0x36>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -
+> -		regulators {
+> -			vcc_3v3: dcdc1 {
+> -				regulator-boot-on;
+> -				regulator-always-on;
+> -				regulator-min-microvolt = <3300000>;
+> -				regulator-max-microvolt = <3300000>;
+> -				regulator-name = "vcc_3v3";
+> -			};
+> -
+> -			vdd_cpu: dcdc2 {
+> -				regulator-always-on;
+> -				regulator-min-microvolt = <500000>;
+> -				regulator-max-microvolt = <1540000>;
+> -				regulator-name = "vdd-cpu";
+> -			};
+> -
+> -			emmc_vdd: aldo4 {
+> -				regulator-boot-on;
+> -				regulator-always-on;
+> -				regulator-min-microvolt = <1800000>;
+> -				regulator-max-microvolt = <1800000>;
+> -				regulator-name = "emmc_vdd";
+> -			};
+> -		};
+> -	};
+> -};
+> -
+> -&i2c6 {
+> -	clock-frequency = <100000>;
+> -	i2c-sda-hold-time-ns = <300>;
+> -	i2c-sda-falling-time-ns = <510>;
+> -	i2c-scl-falling-time-ns = <510>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&i2c6_pins>;
+> -	status = "okay";
+> -};
+> -
+>  &mmc0 {
+> -	max-frequency = <100000000>;
+> -	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO0_SDCARD>;
+> -	assigned-clock-rates = <50000000>;
+> -	bus-width = <8>;
+> -	cap-mmc-highspeed;
+> -	mmc-ddr-1_8v;
+> -	mmc-hs200-1_8v;
+>  	non-removable;
+> -	cap-mmc-hw-reset;
+> -	post-power-on-delay-ms = <200>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&mmc0_pins>;
+> -	vmmc-supply = <&vcc_3v3>;
+> -	vqmmc-supply = <&emmc_vdd>;
+> -	status = "okay";
+> -};
+> -
+> -&mmc1 {
+> -	max-frequency = <100000000>;
+> -	assigned-clocks = <&syscrg JH7110_SYSCLK_SDIO1_SDCARD>;
+> -	assigned-clock-rates = <50000000>;
+> -	bus-width = <4>;
+> -	no-sdio;
+> -	no-mmc;
+> -	cd-gpios = <&sysgpio 41 GPIO_ACTIVE_LOW>;
+> -	disable-wp;
+> -	cap-sd-highspeed;
+> -	post-power-on-delay-ms = <200>;
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&mmc1_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&pwmdac {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pwmdac_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&qspi {
+> -	#address-cells = <1>;
+> -	#size-cells = <0>;
+> -	status = "okay";
+> -
+> -	nor_flash: flash@0 {
+> -		compatible = "jedec,spi-nor";
+> -		reg = <0>;
+> -		cdns,read-delay = <5>;
+> -		spi-max-frequency = <12000000>;
+> -		cdns,tshsl-ns = <1>;
+> -		cdns,tsd2d-ns = <1>;
+> -		cdns,tchsh-ns = <1>;
+> -		cdns,tslch-ns = <1>;
+> -
+> -		partitions {
+> -			compatible = "fixed-partitions";
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -
+> -			spl@0 {
+> -				reg = <0x0 0x80000>;
+> -			};
+> -			uboot-env@f0000 {
+> -				reg = <0xf0000 0x10000>;
+> -			};
+> -			uboot@100000 {
+> -				reg = <0x100000 0x400000>;
+> -			};
+> -			reserved-data@600000 {
+> -				reg = <0x600000 0xa00000>;
+> -			};
+> -		};
+> -	};
+> -};
+> -
+> -&pwm {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pwm_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&spi0 {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&spi0_pins>;
+> -	status = "okay";
+> -
+> -	spi_dev0: spi@0 {
+> -		compatible = "rohm,dh2228fv";
+> -		reg = <0>;
+> -		spi-max-frequency = <10000000>;
+> -	};
+> -};
+> -
+> -&sysgpio {
+> -	i2c0_pins: i2c0-0 {
+> -		i2c-pins {
+> -			pinmux = <GPIOMUX(57, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C0_CLK,
+> -					      GPI_SYS_I2C0_CLK)>,
+> -				 <GPIOMUX(58, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C0_DATA,
+> -					      GPI_SYS_I2C0_DATA)>;
+> -			bias-disable; /* external pull-up */
+> -			input-enable;
+> -			input-schmitt-enable;
+> -		};
+> -	};
+> -
+> -	i2c2_pins: i2c2-0 {
+> -		i2c-pins {
+> -			pinmux = <GPIOMUX(3, GPOUT_LOW,
+> -					     GPOEN_SYS_I2C2_CLK,
+> -					     GPI_SYS_I2C2_CLK)>,
+> -				 <GPIOMUX(2, GPOUT_LOW,
+> -					     GPOEN_SYS_I2C2_DATA,
+> -					     GPI_SYS_I2C2_DATA)>;
+> -			bias-disable; /* external pull-up */
+> -			input-enable;
+> -			input-schmitt-enable;
+> -		};
+> -	};
+> -
+> -	i2c5_pins: i2c5-0 {
+> -		i2c-pins {
+> -			pinmux = <GPIOMUX(19, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C5_CLK,
+> -					      GPI_SYS_I2C5_CLK)>,
+> -				 <GPIOMUX(20, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C5_DATA,
+> -					      GPI_SYS_I2C5_DATA)>;
+> -			bias-disable; /* external pull-up */
+> -			input-enable;
+> -			input-schmitt-enable;
+> -		};
+> -	};
+> -
+> -	i2c6_pins: i2c6-0 {
+> -		i2c-pins {
+> -			pinmux = <GPIOMUX(16, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C6_CLK,
+> -					      GPI_SYS_I2C6_CLK)>,
+> -				 <GPIOMUX(17, GPOUT_LOW,
+> -					      GPOEN_SYS_I2C6_DATA,
+> -					      GPI_SYS_I2C6_DATA)>;
+> -			bias-disable; /* external pull-up */
+> -			input-enable;
+> -			input-schmitt-enable;
+> -		};
+> -	};
+> -
+> -	mmc0_pins: mmc0-0 {
+> -		 rst-pins {
+> -			pinmux = <GPIOMUX(62, GPOUT_SYS_SDIO0_RST,
+> -					      GPOEN_ENABLE,
+> -					      GPI_NONE)>;
+> -			bias-pull-up;
+> -			drive-strength = <12>;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -			slew-rate = <0>;
+> -		};
+> -
+> -		mmc-pins {
+> -			pinmux = <PINMUX(64, 0)>,
+> -				 <PINMUX(65, 0)>,
+> -				 <PINMUX(66, 0)>,
+> -				 <PINMUX(67, 0)>,
+> -				 <PINMUX(68, 0)>,
+> -				 <PINMUX(69, 0)>,
+> -				 <PINMUX(70, 0)>,
+> -				 <PINMUX(71, 0)>,
+> -				 <PINMUX(72, 0)>,
+> -				 <PINMUX(73, 0)>;
+> -			bias-pull-up;
+> -			drive-strength = <12>;
+> -			input-enable;
+> -		};
+> -	};
+> -
+> -	mmc1_pins: mmc1-0 {
+> -		clk-pins {
+> -			pinmux = <GPIOMUX(10, GPOUT_SYS_SDIO1_CLK,
+> -					      GPOEN_ENABLE,
+> -					      GPI_NONE)>;
+> -			bias-pull-up;
+> -			drive-strength = <12>;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -			slew-rate = <0>;
+> -		};
+> -
+> -		mmc-pins {
+> -			pinmux = <GPIOMUX(9, GPOUT_SYS_SDIO1_CMD,
+> -					     GPOEN_SYS_SDIO1_CMD,
+> -					     GPI_SYS_SDIO1_CMD)>,
+> -				 <GPIOMUX(11, GPOUT_SYS_SDIO1_DATA0,
+> -					      GPOEN_SYS_SDIO1_DATA0,
+> -					      GPI_SYS_SDIO1_DATA0)>,
+> -				 <GPIOMUX(12, GPOUT_SYS_SDIO1_DATA1,
+> -					      GPOEN_SYS_SDIO1_DATA1,
+> -					      GPI_SYS_SDIO1_DATA1)>,
+> -				 <GPIOMUX(7, GPOUT_SYS_SDIO1_DATA2,
+> -					     GPOEN_SYS_SDIO1_DATA2,
+> -					     GPI_SYS_SDIO1_DATA2)>,
+> -				 <GPIOMUX(8, GPOUT_SYS_SDIO1_DATA3,
+> -					     GPOEN_SYS_SDIO1_DATA3,
+> -					     GPI_SYS_SDIO1_DATA3)>;
+> -			bias-pull-up;
+> -			drive-strength = <12>;
+> -			input-enable;
+> -			input-schmitt-enable;
+> -			slew-rate = <0>;
+> -		};
+> -	};
+> -
+> -	pwmdac_pins: pwmdac-0 {
+> -		pwmdac-pins {
+> -			pinmux = <GPIOMUX(33, GPOUT_SYS_PWMDAC_LEFT,
+> -					      GPOEN_ENABLE,
+> -					      GPI_NONE)>,
+> -				 <GPIOMUX(34, GPOUT_SYS_PWMDAC_RIGHT,
+> -					      GPOEN_ENABLE,
+> -					      GPI_NONE)>;
+> -			bias-disable;
+> -			drive-strength = <2>;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -			slew-rate = <0>;
+> -		};
+> -	};
+> -
+> -	pwm_pins: pwm-0 {
+> -		pwm-pins {
+> -			pinmux = <GPIOMUX(46, GPOUT_SYS_PWM_CHANNEL0,
+> -					      GPOEN_SYS_PWM0_CHANNEL0,
+> -					      GPI_NONE)>,
+> -				 <GPIOMUX(59, GPOUT_SYS_PWM_CHANNEL1,
+> -					      GPOEN_SYS_PWM0_CHANNEL1,
+> -					      GPI_NONE)>;
+> -			bias-disable;
+> -			drive-strength = <12>;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -			slew-rate = <0>;
+> -		};
+> -	};
+> -
+> -	spi0_pins: spi0-0 {
+> -		mosi-pins {
+> -			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
+> -					      GPOEN_ENABLE,
+> -					      GPI_NONE)>;
+> -			bias-disable;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -		};
+> -
+> -		miso-pins {
+> -			pinmux = <GPIOMUX(53, GPOUT_LOW,
+> -					      GPOEN_DISABLE,
+> -					      GPI_SYS_SPI0_RXD)>;
+> -			bias-pull-up;
+> -			input-enable;
+> -			input-schmitt-enable;
+> -		};
+> -
+> -		sck-pins {
+> -			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_CLK,
+> -					      GPOEN_ENABLE,
+> -					      GPI_SYS_SPI0_CLK)>;
+> -			bias-disable;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -		};
+> -
+> -		ss-pins {
+> -			pinmux = <GPIOMUX(49, GPOUT_SYS_SPI0_FSS,
+> -					      GPOEN_ENABLE,
+> -					      GPI_SYS_SPI0_FSS)>;
+> -			bias-disable;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -		};
+> -	};
+> -
+> -	uart0_pins: uart0-0 {
+> -		tx-pins {
+> -			pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
+> -					     GPOEN_ENABLE,
+> -					     GPI_NONE)>;
+> -			bias-disable;
+> -			drive-strength = <12>;
+> -			input-disable;
+> -			input-schmitt-disable;
+> -			slew-rate = <0>;
+> -		};
+> -
+> -		rx-pins {
+> -			pinmux = <GPIOMUX(6, GPOUT_LOW,
+> -					     GPOEN_DISABLE,
+> -					     GPI_SYS_UART0_RX)>;
+> -			bias-disable; /* external pull-up */
+> -			drive-strength = <2>;
+> -			input-enable;
+> -			input-schmitt-enable;
+> -			slew-rate = <0>;
+> -		};
+> -	};
+> -};
+> -
+> -&uart0 {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&uart0_pins>;
+> -	status = "okay";
+> -};
+> -
+> -&usb0 {
+> -	dr_mode = "peripheral";
+> -	status = "okay";
+> -};
+> -
+> -&U74_1 {
+> -	cpu-supply = <&vdd_cpu>;
+> -};
+> -
+> -&U74_2 {
+> -	cpu-supply = <&vdd_cpu>;
+> -};
+> -
+> -&U74_3 {
+> -	cpu-supply = <&vdd_cpu>;
+> -};
+> -
+> -&U74_4 {
+> -	cpu-supply = <&vdd_cpu>;
+>  };
+> --
+> 2.43.0
+>
 
