@@ -1,150 +1,172 @@
-Return-Path: <linux-kernel+bounces-163006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3468B6350
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:13:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 540078B6356
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:14:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32D331C21833
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A0E1280BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504931411EB;
-	Mon, 29 Apr 2024 20:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C77141987;
+	Mon, 29 Apr 2024 20:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OhPo1yH+"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fbTsrWC0"
+Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5F614039D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D3014039D;
+	Mon, 29 Apr 2024 20:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714421604; cv=none; b=qtwkl312pK4rX+kPB76tSO/+zlE04wB5U4i1+Ofd08nsfbjafBwISxve381ePs07A9sSQ9pAfVKmXDNhVYTiGzrdP8meBK/iXtkwEkSABUlg3Xrw94jsH3XdxtoRJ7pGXGEvu1R6/EDdfuyhubUWQsOpRGVf+NCBLmAbROy3XOY=
+	t=1714421647; cv=none; b=DH0J7dT+CIBMTp20ORYQEsC0VF6Y7mgIAciPkoGiw4qwP1Mv4dIJj/4rOHccJz17q11HrewZJxxDVWqYzw16K2r7nsaKgrnETW/nsXlZ3SEdToOHdWtUs/vkfiQM74P90T+q2YjcGYAoJKjHjo147a27Zu9QFhHyjG568348Xbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714421604; c=relaxed/simple;
-	bh=Wpz9boe/w8KT9hr5B4n4S8JECxM9pa+bGQT6Fr8iw4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aguFmXNuY/tumTRSD3kt9TJgGJAW8nQO3ofi0xiAZnU++usbiAtTfu1ARlYnk1y+zG2kDfKLsi1AY9ZuzE1Q0E8myEdSnhBSsj/5KbaCtDVso0+Btidv8Cyl001dtDeLsk+BqSWVLMyikDFm0Q9NioOXrUQi8yL/mWWm5qh+8OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OhPo1yH+; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso4410003b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:13:23 -0700 (PDT)
+	s=arc-20240116; t=1714421647; c=relaxed/simple;
+	bh=0At8lX7yDVT99lf+2YRT4XjVI4sYgWI0I8ADNXSCQ7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rh0d4Xb0XfJfW/kH50rr745QRI8St47/zB0hfc1y+kUIlPVRZ+zvz++ozeTTx+53aaTXDGtYJx6CDeqO5sStBwZXvy9l9PEDd+IqE626/IrCl4nbR+v3lLXhvpQGSkW0aEZmanHivrfIOHcIIDdWTxEETdkzLY/enPK69NcYf+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fbTsrWC0; arc=none smtp.client-ip=209.85.128.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-6184acc1ef3so46071957b3.0;
+        Mon, 29 Apr 2024 13:14:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714421603; x=1715026403; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BXjzsh/nfrNV74+/Eg/rT8Fya+BcYBRXBPB+VYkGIr8=;
-        b=OhPo1yH+CQsaHtevEsQPziFBtmiv7UnZc8xCKssikeC82GIEG5U0OnktR/nMyi9mP1
-         QeGKdnSrzfuRLR2homs1QDJQDu6Suuopgl6LgeCU6Wjfe/M8xVshT0p5mI2ItIDqPZRS
-         bTDvZnGG1pylYyK2NhR8QH4qqmGY3ZQAhk8Pg=
+        d=gmail.com; s=20230601; t=1714421645; x=1715026445; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ztn8VHREGAsyACExpYLYeMgJIaQby/N989yJJGpHZlE=;
+        b=fbTsrWC0qgwUHjyrcmmG0k5Hqg4JT+4pDYqz/xNq0HvJvIHpEFi+l2oit6WTp9WIeo
+         pyyecdJwzkkzcdw+mTTR7Jd2ekHlFd92joxPC+D//MwVX7RgjMDjJAPPs+clmBAa9hYV
+         s5YvaOFrw9UE42zPGAlJH4pcFYUZYo17Cu7xW9CsnQn1tJOzcME65Mjq9IxFzyqcpJgq
+         ACs1GeO21No3A2NnNqoYkvTsH+GKmYLJ6i6D2dok+eZwKnUJ72RGDq9KDDAgkgsvwdOC
+         dmvFeOhszygHqsPCdNYMoHANvknKbphvKVRhMWxonxUKkNFUixYinPnfFJxn7Qh23uRG
+         f/0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714421603; x=1715026403;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BXjzsh/nfrNV74+/Eg/rT8Fya+BcYBRXBPB+VYkGIr8=;
-        b=WxTQEsDtEiYjtoEggh53j8WAdqbkxAJARCSXfiIDiNcoFkXMNrPnfMaIHotnamLiN5
-         hMRvNZ41tgyhWyp2NyvGZSldwTFHgZY6+ZYISYf0q0GiyK/KVj32F2EIMjs7b7DCkYCu
-         ffGmLzc+mAoirftvrzyg4xx2fWoQERHddQxMtSzQ7gDk3BBD0pfBkkwBadZiV0/50uVI
-         /yaywOpwDJiRU6+0MyfhY2PLlg8WS4DVH+BfzESF1SYbnPvDClRzMhZEkF96LDNY8NYl
-         85f0Vur0ew2Q3BQCS7JJguzk0zpLnJC6p90Xdg+SnYCIcNofxe640KGODgOsrwLUPUaQ
-         8yug==
-X-Forwarded-Encrypted: i=1; AJvYcCUMDRWf2wzd4gB6ckURSoDG7iCbIrG1flg6LuaTKLNvghAvrOyyg56lmM3dngvuYpfgaIGRHCKdNE1OgTEVL0Elc0QPkOaYuvmXtYIr
-X-Gm-Message-State: AOJu0YwHHynksw8osLSguvT+rgipLMUEY0G8sT9tMeI/N9MXuDJgiNhC
-	EEuHxrKePbT6PgNmZZhQLPTaSId9stJj+L4oSWyqBL+H2raTz1ygnk2/QvxbZg==
-X-Google-Smtp-Source: AGHT+IHx20vgzODxO0CmjBxc3eLPOcVrUqtUBQgDReCQFkXCxJwNnQAZ4SSCabovup0+fIe8uoMO0A==
-X-Received: by 2002:a05:6a20:43ab:b0:1af:597f:ffa4 with SMTP id i43-20020a056a2043ab00b001af597fffa4mr620907pzl.14.1714421602751;
-        Mon, 29 Apr 2024 13:13:22 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001eab473021fsm6336073plg.168.2024.04.29.13.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 13:13:22 -0700 (PDT)
-Date: Mon, 29 Apr 2024 13:13:21 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Erick Archer <erick.archer@outlook.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] scsi: csiostor: Use kcalloc() instead of kzalloc()
-Message-ID: <202404291259.3A8EE11@keescook>
-References: <AS8PR02MB7237BA2BBAA646DFDB21C63B8B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
- <202404291019.5AC903A@keescook>
- <yq17cgg58sp.fsf@ca-mkp.ca.oracle.com>
+        d=1e100.net; s=20230601; t=1714421645; x=1715026445;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ztn8VHREGAsyACExpYLYeMgJIaQby/N989yJJGpHZlE=;
+        b=VmMCcsbjjD36EGT62maig1DImOGXH3xK7nY88V9gGYlona06NwNW12n50LaKwajI+6
+         9dczfhbfLGa8X8qv19LGPyMsFxQwlVypwiGahtKUKbCUAoq3wev5R/XKhyuctRpNoUpe
+         +1oa7Er+XpnTJp6WVyou83pQhGZkZYMF9G4NS3xxMD+8Uj/mkivKmIAJpI4UuAyumJDl
+         KAHm/Q30L6X/sX1D2DSnuQHXF6EgNPYRraFF39S72AcUFDz75aTBgI6l/ev7bNtL5elw
+         kDgAYgJOhTWtOWJh9xDAmNwj5ANLxkmhCp9CvVuRoPROu0y7k7GWGwqjRrAjGb7ECgni
+         uz7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWTS3BM+tsceF8YFe/MCNoXIPZe0R80DzAkNhJb128KMtYuwMNp9XL9VzANhEIb/qhfxVJ+JcKCbY1EnIhtwYLSmmMUlLygJniEVThJAS6EmyheT4KQE/r4m3oAXOIO+2KOSFrV
+X-Gm-Message-State: AOJu0YzsyQB8M3RewUk0M1cTVftfjUXbkC18zwwrPlS/y/C8sfSvY2TK
+	SunN926MAANYfJeUb+m18kU3suxlDf+Prb2CIjUFMwWc33JUAvB9
+X-Google-Smtp-Source: AGHT+IHQoR1nSmOx/G+v5N8K3+cuxrNIBxvrRympbd3Mm+wPCW8AuTUjgOFvvBvYxSJ9xKs2J6P1lg==
+X-Received: by 2002:a05:690c:678a:b0:615:22ff:b57d with SMTP id ib10-20020a05690c678a00b0061522ffb57dmr13364123ywb.42.1714421644855;
+        Mon, 29 Apr 2024 13:14:04 -0700 (PDT)
+Received: from [10.102.6.66] ([208.97.243.82])
+        by smtp.gmail.com with ESMTPSA id k19-20020a81ac13000000b0061be678259bsm144572ywh.36.2024.04.29.13.14.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 13:14:04 -0700 (PDT)
+Message-ID: <1f385946-84d0-499c-9bf6-90ef65918356@gmail.com>
+Date: Mon, 29 Apr 2024 16:14:03 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq17cgg58sp.fsf@ca-mkp.ca.oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Nikolay Aleksandrov <razor@blackwall.org>,
+ Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Roopa Prabhu <roopa@nvidia.com>, =?UTF-8?Q?Linus_L=C3=BCssing?=
+ <linus.luessing@c0d3.blue>, linux-kernel@vger.kernel.org,
+ bridge@lists.linux.dev
+References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
+ <7fc8264a-a383-4682-a144-8d91fe3971d9@blackwall.org>
+ <20240402174348.wosc37adyub5o7xu@skbuf>
+ <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
+ <20240402204600.5ep4xlzrhleqzw7k@skbuf>
+ <065b803f-14a9-4013-8f11-712bb8d54848@blackwall.org>
+ <804b7bf3-1b29-42c4-be42-4c23f1355aaf@gmail.com>
+ <20240405102033.vjkkoc3wy2i3vdvg@skbuf>
+ <935c18c1-7736-416c-b5c5-13ca42035b1f@blackwall.org>
+ <651c87fc-1f21-4153-bade-2dad048eecbd@gmail.com>
+ <20240405211502.q5gfwcwyhkm6w7xy@skbuf>
+Content-Language: en-US
+From: Joseph Huang <joseph.huang.2024@gmail.com>
+In-Reply-To: <20240405211502.q5gfwcwyhkm6w7xy@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 29, 2024 at 02:31:19PM -0400, Martin K. Petersen wrote:
+On 4/5/2024 5:15 PM, Vladimir Oltean wrote:
+> On Fri, Apr 05, 2024 at 04:22:43PM -0400, Joseph Huang wrote:
+>> Like this?
+>>
+>> bridge link set dev swp0 mcast_flood off
+>>    - all flooding disabled
+>>
+>> bridge link set dev swp0 mcast_flood on
+>>    - all flooding enabled
+>>
+>> bridge link set dev swp0 mcast_flood on mcast_ipv4_data_flood off
+>> mcast_ipv6_data_flood off
+>>    - IPv4 data packets flooding disabled, IPv6 data packets flooding
+>> disabled, everything else floods (that is to say, only allow IPv4 local
+>> subnet and IPv6 link-local to flood)
+>>
+>> ?
 > 
-> Kees,
+> Yeah.
 > 
-> >> This patch seems to be lost. Gustavo reviewed it on January 15, 2024
-> >> but the patch has not been applied since.
-> >
-> > This looks correct to me. I can pick this up if no one else snags it?
+>> The syntax seems to be counterintuitive.
+>>
+>> Or like this?
+>>
+>> bridge link set dev swp0 mcast_flood on mcast_ipv4_ctrl_flood on
+>>    - only allow IPv4 local subnet to flood, everything else off
+>>
+>> ?
 > 
-> I guess my original reply didn't make it out, I don't see it in the
-> archives.
+> Nope.
 > 
-> My objections were:
+>> So basically the question is, what should the behavior be when something is
+>> omitted from the command line?
 > 
->  1. The original code is more readable to me than the proposed
->     replacement.
+> The answer is always: "new options should default to behaving exactly
+> like before". It's not just about the command line arguments, but also
+> about the actual netlink attributes that iproute2 (and other tooling)
+> creates when communicating with the kernel. Old user space has no idea
+> about the existence of mcast_ipv4_ctrl_flood et. al. So, if netlink
+> attributes specifying their value are not sent by user space, their
+> value in the kernel must mimic the value of mcast_flood.
 
-I guess this is a style preference. I find the proposed easier to read.
-It also removes lines while doing it. :)
+How about the following syntax? I think it satisfies all the "not 
+breaking existing behavior" requirements (new option defaults to off, 
+and missing user space netlink attributes does not change the existing 
+behavior):
 
->  2. The original code has worked since introduced in 2012. Nobody has
->     touched it since, presumably it's fine.
+mcast_flood off
+   all off
+mcast_flood off mcast_flood_rfc4541 off
+   all off
+mcast_flood off mcast_flood_rfc4541 on
+   224.0.0.X and ff02::1 on, the rest off
+mcast_flood on
+   all on
+mcast_flood on mcast_flood_rfc4541 off
+   all on (mcast_flood on overrides mcast_flood_rfc4541)
+mcast_flood on mcast_flood_rfc4541 on
+   all on
+mcast_flood_rfc4541 off
+   invalid (mcast_flood_rfc4541 is only valid if mcast_flood [on | off] 
+is specified first)
+mcast_flood_rfc4541 on
+   invalid (mcast_flood_rfc4541 is only valid if mcast_flood [on | off] 
+is specified first)
 
-The code itself is fine unless you have a 32-bit system with a malicious
-card, so yeah, near zero risk.
-
->  3. I don't have the hardware and thus no way of validating the proposed
->     changes.
-
-This is kind of an ongoing tension we have between driver code and
-refactoring efforts. And this isn't a case where we can show identical
-binary output, since this actively adds overflow checking via kcalloc()
-internals.
-
-> So what is the benefit of me accepting this patch? We have had several
-> regressions in these conversions. Had one just last week, almost
-> identical in nature to the one at hand.
-
-People are working through large piles of known "weak code patterns"
-with the goal of reaching 0 instances in the kernel. Usually this is for
-ongoing greater compiler flag coverage, but this particular one is
-harder for the compiler to warn on, so it's from Coccinelle patterns.
-
-> I am all for fixing code which is undergoing active use and development.
-> But I really don't see the benefit of updating a legacy driver which
-> hasn't seen updates in ages. Why risk introducing a regression?
-
-I see a common pattern where "why risk introducing a regression?" gets
-paired with "we can't test this code". I'm really not sure what to do
-about this given how much the kernel is changing all the time.
-
-In this particular case, I guess all I can say is that it is a trivially
-correct change that uses a more robust API and more idiomatic allocation
-sizeof()s (i.e. use the sizeof() of what is being allocated, not a
-potentially disconnected struct name).
-
--Kees
-
--- 
-Kees Cook
+Think of mcast_flood_rfc4541 like a pet door if you will.
 
