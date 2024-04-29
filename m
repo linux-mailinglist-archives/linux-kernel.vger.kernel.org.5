@@ -1,85 +1,156 @@
-Return-Path: <linux-kernel+bounces-162964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC6D8B62C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B78208B62C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:46:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C3F02814E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:46:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBAE9283813
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A2213B5B5;
-	Mon, 29 Apr 2024 19:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F87413B2BC;
+	Mon, 29 Apr 2024 19:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="VQTJ1wRu"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="M7EWROTE"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359AB839FD;
-	Mon, 29 Apr 2024 19:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6352913AD3E
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419962; cv=none; b=f+A7pKN5GwD0Y3VKDKQyz09CW0uankoS285DgvQ9Wnnf1kU9quyUKdeOFmWjnIxIb9Z1613daH0adURzfhi6n3P1jqhT+SQWbF6fMtMJLYOiCCQFFvIopDF+Fv1wjU/MkeQ3oXha7ncJRD9ln9AzPdteFKQWNhbdC/zyP3txYvE=
+	t=1714419976; cv=none; b=BZlyZfMoJQXpbk1pmpWCejwihEczwXFoR5nneI4ZjPXWASODjQWk6Z7C//XD84Wgyl57rY2ZgHhpD6fsk29MdtyfIU9yXk/1XsnzzWRcskOc0BIOjfFEHh9T25RIq6sDk7Yxrr5+znxBFOA6iV6crQQorGSBA/GowCHy0bG1wT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419962; c=relaxed/simple;
-	bh=FZ9nXRV6ERZg5RvY6CtRN1IuNEzt8HVpFnFfYNjPhqo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JmJeW81MhvgxhMoUgvX9UVs2NiGnMogjJPdu9jCgVGsURdEUc1GStJE5Un13r811iGMHrjCNwhsZab9fAPrjlbuma0lCy1vYiHyoV5bCOtmkarhX53pSzI8XWg3VUaU184KwcaR9+Dhq+n1jrkx0CA0JIaYVghNyHYSEVyJoreE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=VQTJ1wRu; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=mb9OU1e8CDPWok28cClhi1tNTddJ9azpQJpcP/8KdxY=; b=VQ
-	TJ1wRuo6vKos0f+Nf1lutKbY94bPLsu3/eC76QIaUObwB3bOqYhrbcjwNZ+DlTMAlkH+LA+N8y8+I
-	QeIraoAeO2WYTQMrvrZWu0p4bCNK7kxLvNftz/sGemAaVuQb78j7BTozNe3zN72i5ru+5dY7my/a3
-	PI/I79gPCK9Hy6c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s1WwZ-00EHPQ-LU; Mon, 29 Apr 2024 21:45:43 +0200
-Date: Mon, 29 Apr 2024 21:45:43 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] PCI: mvebu: Use generic PCI Conf Type 1 helper
-Message-ID: <03a5fc99-2fd2-4788-a9cb-bf7e5d8353b8@lunn.ch>
-References: <20240429104633.11060-1-ilpo.jarvinen@linux.intel.com>
- <20240429104633.11060-10-ilpo.jarvinen@linux.intel.com>
+	s=arc-20240116; t=1714419976; c=relaxed/simple;
+	bh=Fflv2happyBtuC7pAoLoJyMtZKZg3vbQFe9oCckEd2g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZRyI/wYd8U1ZmFKSS51KJ7lPhCGTXaaYncBujVJSVenjkqA0HuUfISgEOROK82StalYu+jynrj2juGJFXSbd8cCHVewJSTqSVy6yTUlsqHC/HY9U93zEri6ke0TXeql0glHBLR+CIQPrIljoxqWl2pNEFIs85jedQ67MDwjiJG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=M7EWROTE; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so40056075ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714419975; x=1715024775; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4QjCg8SYenXS+XuIi5qqPpTiXsYXZeRvUkEwlZZQZlc=;
+        b=M7EWROTEIEMVgjPqceUVtdRpjHqOZrJVFvgyTMEe4QpVpUbyj76J5RGydPOPZG21Ib
+         bgqS667BfYX/rXh4SW/oR1j+8EIHw4umY1hoW8ThQeruDYc/2OpxRJdS9+49GkXdJ9Zy
+         qU0cBsIp7zJWK+PBAQzL5t7z1Kly1cko4P3MA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714419975; x=1715024775;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4QjCg8SYenXS+XuIi5qqPpTiXsYXZeRvUkEwlZZQZlc=;
+        b=wcHCPF00WcVxDT9iCWRzoXaXv7+pgcbbqd9kTlY7rd9+sqD3R61nJmERmIuO2mGPU2
+         RP+cj+tc31gYMq1MRdtP6plNb7RWxr96ZICIDyZkVI9UczdVrFVzazwcPTN00hDZ+2VM
+         XzpZaTy9WY/gVMDpd/ke3OtwQ4cGv5ix0SbIA5T2Olu/q/x7nFeR6JM2k/SzsHtBtpXh
+         g0vi3QufDhCPipG2jTTMjMj2NB+hryeVOQIHa8aoC2994H9eD7eQN0+CwU/amMXAlNYS
+         CclyNUTECjiV+y8lQfHNQGzrPuVMSfMcxd7kxfBuVkLJPcKzyJvX2oUXMNsXdtU741GG
+         5KkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUeiQRWX/OK4QgRCGOrdb8cwrZFF4q4zM/eTZGAFbCn81cHWo49sao47WwhWKbnbmF9kL193x1jLmVDMuappl+rFUpHDQYIVXpizjBB
+X-Gm-Message-State: AOJu0YxgEJZu0Jy/JQ/acF/D9wQ+ZfuFg+Q3+ro+uRY6S9XFqCuK0VPR
+	FsT8p1fG079T9B6GskM/2o1a0+ofoU7B+p3pVG0XWSVGxLAjHmILFGoAgll/EA==
+X-Google-Smtp-Source: AGHT+IFvxwrm+Nf34l1bmpd2F1KsT83NJku+4ZXZlMzkvoySXOfcschxgtys9x2RHfgzmnb0ut+qdA==
+X-Received: by 2002:a17:903:40cc:b0:1e4:a667:550e with SMTP id t12-20020a17090340cc00b001e4a667550emr10072628pld.20.1714419974796;
+        Mon, 29 Apr 2024 12:46:14 -0700 (PDT)
+Received: from localhost (4.198.125.34.bc.googleusercontent.com. [34.125.198.4])
+        by smtp.gmail.com with UTF8SMTPSA id o16-20020a170902d4d000b001eb3f4e96c2sm5236162plg.157.2024.04.29.12.46.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 12:46:14 -0700 (PDT)
+From: Stephen Boyd <swboyd@chromium.org>
+To: stable@vger.kernel.org
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 6.8.y] phy: qcom: qmp-combo: fix VCO div offset on v5_5nm and v6
+Date: Mon, 29 Apr 2024 12:46:12 -0700
+Message-ID: <20240429194612.3412821-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
+In-Reply-To: <2024042918-jet-harmonica-e767@gregkh>
+References: <2024042918-jet-harmonica-e767@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429104633.11060-10-ilpo.jarvinen@linux.intel.com>
 
-On Mon, Apr 29, 2024 at 01:46:32PM +0300, Ilpo Järvinen wrote:
-> Convert mvebu to use the pci_conf1_ext_addr() helper from PCI core
-> to calculate PCI Configuration Space address for Type 1 access.
-> 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+From: Johan Hovold <johan+linaro@kernel.org>
 
-Tested on a kirkwood QNAP and an Armanda XP. The kirkwood correctly
-reports there is nothing on the PCIe bus. The XP finds the two 88W8864
-WiFi devices, but there is no mainline driver for it, and it also
-finds an Etron Technology USB controller, which enumerates O.K.
+Commit 5abed58a8bde ("phy: qcom: qmp-combo: Fix VCO div offset on v3")
+fixed a regression introduced in 6.5 by making sure that the correct
+offset is used for the DP_PHY_VCO_DIV register on v3 hardware.
 
-Tested-by: Andrew Lunn <andrew@lunn.ch>
+Unfortunately, that fix instead broke DisplayPort on v5_5nm and v6
+hardware as it failed to add the corresponding offsets also to those
+register tables.
 
-    Andrew
+Fixes: 815891eee668 ("phy: qcom-qmp-combo: Introduce orientation variable")
+Fixes: 5abed58a8bde ("phy: qcom: qmp-combo: Fix VCO div offset on v3")
+Cc: stable@vger.kernel.org	# 6.5: 5abed58a8bde
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Link: https://lore.kernel.org/r/20240408093023.506-1-johan+linaro@kernel.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+(cherry picked from commit 025a6f7448f7bb5f4fceb62498ee33d89ae266bb)
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 2 ++
+ drivers/phy/qualcomm/phy-qcom-qmp.h       | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+index d83859e955a8..dee666f8e29e 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+@@ -188,6 +188,7 @@ static const unsigned int qmp_v5_5nm_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_COM_BIAS_EN_CLKBUFLR_EN]	= QSERDES_V5_COM_BIAS_EN_CLKBUFLR_EN,
+ 
+ 	[QPHY_DP_PHY_STATUS]		= QSERDES_V5_DP_PHY_STATUS,
++	[QPHY_DP_PHY_VCO_DIV]		= QSERDES_V5_DP_PHY_VCO_DIV,
+ 
+ 	[QPHY_TX_TX_POL_INV]		= QSERDES_V5_5NM_TX_TX_POL_INV,
+ 	[QPHY_TX_TX_DRV_LVL]		= QSERDES_V5_5NM_TX_TX_DRV_LVL,
+@@ -212,6 +213,7 @@ static const unsigned int qmp_v6_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
+ 	[QPHY_COM_BIAS_EN_CLKBUFLR_EN]	= QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN,
+ 
+ 	[QPHY_DP_PHY_STATUS]		= QSERDES_V6_DP_PHY_STATUS,
++	[QPHY_DP_PHY_VCO_DIV]		= QSERDES_V6_DP_PHY_VCO_DIV,
+ 
+ 	[QPHY_TX_TX_POL_INV]		= QSERDES_V6_TX_TX_POL_INV,
+ 	[QPHY_TX_TX_DRV_LVL]		= QSERDES_V6_TX_TX_DRV_LVL,
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
+index 6923496cbfee..49ceded9b3cb 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.h
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
+@@ -132,9 +132,11 @@
+ #define QSERDES_V4_DP_PHY_AUX_INTERRUPT_STATUS		0x0d8
+ #define QSERDES_V4_DP_PHY_STATUS			0x0dc
+ 
++#define QSERDES_V5_DP_PHY_VCO_DIV			0x070
+ #define QSERDES_V5_DP_PHY_STATUS			0x0dc
+ 
+ /* Only for QMP V6 PHY - DP PHY registers */
++#define QSERDES_V6_DP_PHY_VCO_DIV			0x070
+ #define QSERDES_V6_DP_PHY_AUX_INTERRUPT_STATUS		0x0e0
+ #define QSERDES_V6_DP_PHY_STATUS			0x0e4
+ 
+-- 
+https://chromeos.dev
+
 
