@@ -1,115 +1,136 @@
-Return-Path: <linux-kernel+bounces-162241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C10688B5869
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:24:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED678B586C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A091C2313A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:24:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDEFF287920
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F393654910;
-	Mon, 29 Apr 2024 12:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ug9q1Sme"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF1871749;
+	Mon, 29 Apr 2024 12:21:42 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3369C548F3;
-	Mon, 29 Apr 2024 12:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A880954BCC;
+	Mon, 29 Apr 2024 12:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714393284; cv=none; b=qB/m4sLy9+lFW2hi6vkFBMGaxdyVrKK6swBsrZPWv+gZKso+2BxM0+waHpktU6UHMHi5oKjs2A+ORhuZyCM3ZDc/ciWkGwTpSqFEebqyEl6dHjil6JhvNqb8/qmRtAUEuEK4BqH2zD2vrUIIRQC8/KR8oW4gu3MZhZv74xh/mnQ=
+	t=1714393302; cv=none; b=Wp9VCdv6F2fVKJT+DS7D0Q74FtTi9rgWcaKWKUJETMFxfjWPnQQGcCxOByNhNUMJc0QyxIpLrV7MufxZq5zI19RR3ibhgVFtJ7BuTxIPy9T04/i1svJJL0Y7cl532RUutsGJuj4vMeSzdBjkzwNXFeSmc8fax0Ve8he57qCjqTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714393284; c=relaxed/simple;
-	bh=GN3QGB2jbFPL5Wk6rKTG25hzWJroU4o85TBERdc7DoE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=l9SJs5rETMx4xQ3wj5eKQ/KW/V7Huju/Ty7avjs9LJjUJWe8A6N1YeFy6QzhEicsGjfvfSUB1DQk5c9jPn5TV4b+0RTBVgvRcow7JO5B3D71ExkteD0p+CyNCXGm3aJo9+qK9xt1vmD1kpLEi+Z9zEB3VhT/nazWyeyBGocXhgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ug9q1Sme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 054D1C113CD;
-	Mon, 29 Apr 2024 12:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714393283;
-	bh=GN3QGB2jbFPL5Wk6rKTG25hzWJroU4o85TBERdc7DoE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Ug9q1SmeSa9FZfVHBJQmoSFaZBTTz1yizjIKKT+tkO1UL4oQgm2PnI+uG7TlCGZhk
-	 EkQDZclIClMfuml0UwZztnx7KDyUNTBGficWFh//g7o+SaX2qNkp3FzYkv3KDwJOw2
-	 wFCJF6X94vJdyIvUYjnoBd0WdOCKf/pjly6f/gPzNztweC0u+PjvqIZgr8r3jgs293
-	 pYfpDC+Idt2haSHeT0aTJs2GVWjHEYKciwKNNFCkqtvzH6Ga3OpaQmmXVQMrWOgpYZ
-	 Cq249RThITDjVXarCdavRHYGf/unGIsWEl3oTyurp4ZAQ+Ws+kZbO0Vo6rZczLj03M
-	 OrNqpgHu0swbg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,  Wu Yunchuan
- <yunchuan@nfschina.com>,  Johannes Berg <johannes.berg@intel.com>,  "Breno
- Leitao" <leitao@debian.org>,  <linux-wireless@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <lvc-project@linuxtesting.org>,
-  <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
-References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
-	<171406032921.2967849.6111681305541795423.kvalo@kernel.org>
-	<87a5lhh1t0.fsf@kernel.org> <20240428090404.2d300255@mir>
-	<20240428094916.3d1e92b8@mir>
-Date: Mon, 29 Apr 2024 15:21:20 +0300
-In-Reply-To: <20240428094916.3d1e92b8@mir> (Stefan Lippers-Hollmann's message
-	of "Sun, 28 Apr 2024 09:49:16 +0200")
-Message-ID: <87jzkgfjgf.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1714393302; c=relaxed/simple;
+	bh=u9i7GEaEPB0efe/XuAZN0XrJRMGHZ1l3GMvjslIx3gs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RFdyO36yl5z8ZJhNUtloK/bqwEYna5dc6tViXvRccMmROK+hNEa5lOzHkLkpQ0ejzM0z6DAo9JrqhQzx0Y3M86Ek3rmAHvTqrOhB4oeA7q1IL5/X5bUISvjRs4lBQ4DYmWGquJaA6Ha/2nrafTfySWAceDJl32yN6bLVAbK6TnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VSj6s3BKzz6GD6F;
+	Mon, 29 Apr 2024 20:19:01 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 989301400DB;
+	Mon, 29 Apr 2024 20:21:35 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 29 Apr
+ 2024 13:21:34 +0100
+Date: Mon, 29 Apr 2024 13:21:33 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Shiju Jose <shiju.jose@huawei.com>
+CC: fan <nifan.cxl@gmail.com>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"dan.j.williams@intel.com" <dan.j.williams@intel.com>, "dave@stgolabs.net"
+	<dave@stgolabs.net>, "dave.jiang@intel.com" <dave.jiang@intel.com>,
+	"alison.schofield@intel.com" <alison.schofield@intel.com>,
+	"vishal.l.verma@intel.com" <vishal.l.verma@intel.com>, "ira.weiny@intel.com"
+	<ira.weiny@intel.com>, "linux-edac@vger.kernel.org"
+	<linux-edac@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "david@redhat.com" <david@redhat.com>,
+	"Vilas.Sridharan@amd.com" <Vilas.Sridharan@amd.com>, "leo.duran@amd.com"
+	<leo.duran@amd.com>, "Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>,
+	"rientjes@google.com" <rientjes@google.com>, "jiaqiyan@google.com"
+	<jiaqiyan@google.com>, "tony.luck@intel.com" <tony.luck@intel.com>,
+	"Jon.Grimm@amd.com" <Jon.Grimm@amd.com>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "rafael@kernel.org" <rafael@kernel.org>,
+	"lenb@kernel.org" <lenb@kernel.org>, "naoya.horiguchi@nec.com"
+	<naoya.horiguchi@nec.com>, "james.morse@arm.com" <james.morse@arm.com>,
+	"jthoughton@google.com" <jthoughton@google.com>, "somasundaram.a@hpe.com"
+	<somasundaram.a@hpe.com>, "erdemaktas@google.com" <erdemaktas@google.com>,
+	"pgonda@google.com" <pgonda@google.com>, "duenwen@google.com"
+	<duenwen@google.com>, "mike.malvestuto@intel.com"
+	<mike.malvestuto@intel.com>, "gthelen@google.com" <gthelen@google.com>,
+	"wschwartz@amperecomputing.com" <wschwartz@amperecomputing.com>,
+	"dferguson@amperecomputing.com" <dferguson@amperecomputing.com>,
+	"wbs@os.amperecomputing.com" <wbs@os.amperecomputing.com>, tanxiaofei
+	<tanxiaofei@huawei.com>, "Zengtao (B)" <prime.zeng@hisilicon.com>,
+	"kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>, wanghuiqiang
+	<wanghuiqiang@huawei.com>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH v8 05/10] cxl/memscrub: Add CXL device patrol scrub
+ control feature
+Message-ID: <20240429132133.0000606c@Huawei.com>
+In-Reply-To: <31df9f7d63e34e4bb1504dcc13a70604@huawei.com>
+References: <20240419164720.1765-1-shiju.jose@huawei.com>
+	<20240419164720.1765-6-shiju.jose@huawei.com>
+	<Ziw_Ll3vMBK1zNw4@debian>
+	<31df9f7d63e34e4bb1504dcc13a70604@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Stefan Lippers-Hollmann <s.l-h@gmx.de> writes:
 
-> Hi
->
-> On 2024-04-28, Stefan Lippers-Hollmann wrote:
->> On 2024-04-25, Kalle Valo wrote:
->> > Kalle Valo <kvalo@kernel.org> writes:
->> > > Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
->> [...]
->> > > Does anyone have a real device to test this? I have had so much prob=
-lems with
->> > > syzbot fixes in the past that I'm hesitant to take such patches with=
-out
->> > > testing.
->> >
->> > Actually should we just remove ar5523 driver? Has anyone heard anyone
->> > using this driver still?
->>
->> While I'm not using it regularly, the driver does still work in plain
->> v6.8.8 (and these Netgear WG111 and WG111T USB WLAN cards were quite
->> common), tested against a qcn5024 AP.
->>
->> I'm just preparing a new kernel build with the proposed patch applied.
->
-> =E2=80=A6and now the same with this patch applied:
->
-> $ uname -r
-> 6.9.0-rc5-gcc1380dd1882-dirty
->
-> wireless-next-2024-04-24-2112-gcc1380dd1882 with
-> https://patchwork.kernel.org/project/linux-wireless/patch/20240408121425.=
-29392-1-n.zhandarovich@fintech.ru/raw/
-> applied
->
+> >> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c index
+> >> 0c79d9ce877c..399e43463626 100644
+> >> --- a/drivers/cxl/mem.c
+> >> +++ b/drivers/cxl/mem.c
+> >> @@ -117,6 +117,12 @@ static int cxl_mem_probe(struct device *dev)
+> >>  	if (!cxlds->media_ready)
+> >>  		return -EBUSY;
+> >>
+> >> +	rc = cxl_mem_patrol_scrub_init(cxlmd);
+> >> +	if (rc) {
+> >> +		dev_dbg(&cxlmd->dev, "CXL patrol scrub init failed\n");
+> >> +		return rc;
+> >> +	}  
+> >
+> >If the device does not support memory patrol scrub feature, the above function
+> >will return -EOPNOTSUPP. Since the feature is optional, should we just warn it
+> >and let it go through?  
+> Feedback from Jonathan was that, if this feature is built in, then should not proceed
+> if the patrol scrub init failed, though it is an optional feature.
 
-[...]
+Oops. That wasn't my intent.  If the feature is implemented by the hardware and
+init fails, then I think we should fail probe.  Or maybe just print a very shouty
+message about it being broken.  If the feature is simply not implemented we
+should definitely not fail.
 
-> [   84.623413] wlx<MAC>: associated
+Jonathan
 
-Very nice, thanks for testing! I'm surprised that ar5523 still works :)
+>  
+> >
+> >Fan  
+> >> +
+> >>  	/*
+> >>  	 * Someone is trying to reattach this device after it lost its port
+> >>  	 * connection (an endpoint port previously registered by this memdev
+> >> was
+> >> --
+> >> 2.34.1
+> >>  
+> Thanks,
+> Shiju
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
 
