@@ -1,225 +1,179 @@
-Return-Path: <linux-kernel+bounces-162437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A308B5B30
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:25:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A5D8B5B34
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7243E1F21D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:25:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CB11B248F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88CB7C080;
-	Mon, 29 Apr 2024 14:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AED57BAE3;
+	Mon, 29 Apr 2024 14:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IBDm9geC"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ggf1VbJd"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4752C7BB07;
-	Mon, 29 Apr 2024 14:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714400708; cv=fail; b=sKd6w4n+qILPbW/wHPsG1waz97RxJyK2m/Mf8XuPqUzY0/joTaDbHL9jMOleOJ9bXEQlhy+L/4tN6/9Bjb1s/6BEgacBtC1Pxuy4yejsyspMYGd5vKrfSiJL/Fe/adKJ+uGgYzyvMONlyc8bfNHdFhiVJ4urejy6lyGIfvCXOI4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714400708; c=relaxed/simple;
-	bh=9cwG9g2LBbXKRA90IkO4X8caW1yioWgPbtU7F3BEhos=;
-	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=nanpGWxBgX3h4cLos9uKWQayYK3yg93jbDvYHC60Zf4MhqfP2cg9Hqb7REl00gAhPtXWFL4fsbXcHVa5L5KNWshKiDrSHFm8mvrLDSHPjR0rPf2VNDbzw69sFxYhVvSEKbiLBTMQ9lT5J4rTTwdg47d7oGJa8R5KykbOPhMJTQw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=IBDm9geC; arc=fail smtp.client-ip=40.107.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RDuPi3q+aiLrRGWZBxee8WH5O6Ns38qj2fkgxUzOL4lCLNuLTNI+ynTI2Aq2ffWgujyv84DqP7A6FThUTIVEt/fxi5x+41yhsYU17DeC9bLKS0dczOxGj9PjqeZWHVkfJxkrWqS/vJy1SNMRBkBa5HzZB8pkWUFIFCdnCP/Iut3hipv6Q3OwF1VIyLdwMR04r+5cs5jXZopmz6WhgPKA52i126cIKHtehuEHcMlSbOoUuLmU0XX7Y8qQyTKK6Rg2nQ+jIbQY5kBqTRKriIr/bBbtRSt+tHydyaZCnEuPitGvycM+4NQAlcp03rGtK5uP+hizgz+QznWR2eCQ71DH2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T4UwnZCOwc+GyNehe4kP2EcG8Fc8hPy5AViVeYefe+w=;
- b=noyWmTAk6Ir11MmN0V8W2TgiQwcCeNEbWgkKQa0DuTtPAY4jG7zzMci5EkG/+53l7kNXJEQOULF0e9bNyC6DqtJkR1hPSsmKDNnbhju4ME0q9kIT8mAS1Pw7bsJUlfxic9vri4lSAl2hxtZmBZIa3lSUTGx/wm08kI9KU+PIw6lZVFLCfGuA/lapIeqybKNZ2NshJmJxcCatFiuQCKgeAF8u47NX49JeyywPxHBUkYZXn3bNXOWFumEwIwgei5DQ1x5wYHW/GUqt1p1hEa7wc/C8B7vjYvDqGpudnv3pCiBFqN23yxrO9YjI3TM3mPn5GKrQIjmvxHi6zmYGnOSTMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T4UwnZCOwc+GyNehe4kP2EcG8Fc8hPy5AViVeYefe+w=;
- b=IBDm9geCWQf0CikIf8iVE2Y4iu7TZaNfR6QbYCnsEYojSrzd9JVxnbXVh+RIWwkluA2SJYUHMOFo1goIyLNPQMBo6MDpZyINEMyVk3E1cTwnoEI1pV7xOxwrSwB6O+JZduIEFfuPwsCccsb/1UaUTg9F5OwRTAhug7Ae588+ISw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by PH7PR12MB5853.namprd12.prod.outlook.com (2603:10b6:510:1d4::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 14:25:04 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::43a5:ed10:64c2:aba3]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::43a5:ed10:64c2:aba3%7]) with mapi id 15.20.7519.035; Mon, 29 Apr 2024
- 14:25:04 +0000
-Message-ID: <891ec639-e557-4dbe-8afa-3317b9c173ce@amd.com>
-Date: Mon, 29 Apr 2024 10:25:02 -0400
-User-Agent: Mozilla Thunderbird
-Cc: yazen.ghannam@amd.com, robert.richter@amd.com,
- linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
- tony.luck@intel.com, x86@kernel.org, Avadhut.Naik@amd.com, John.Allen@amd.com
-Subject: Re: [PATCH v2 07/16] x86/mce/amd: Simplify DFR handler setup
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-8-yazen.ghannam@amd.com>
- <20240424190658.GHZilYUvw1KfSfVd_e@fat_crate.local>
- <e0d10606-4472-4cde-b55d-34180efad42b@amd.com>
- <20240429125956.GNZi-ZzN1Izxps8ztT@fat_crate.local>
- <d1e329da-6a04-47f7-bdab-ea6c4f584802@amd.com>
- <20240429141244.GGZi-q3NdmI17pai4N@fat_crate.local>
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-In-Reply-To: <20240429141244.GGZi-q3NdmI17pai4N@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN9PR03CA0170.namprd03.prod.outlook.com
- (2603:10b6:408:f4::25) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24417441F
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714400816; cv=none; b=dt/jJh5MObuf+AfAo9dw9nTYkoK6ravV8OMFsXyhXDBU2PpDzYQGzABrUFvUGHe84PWpkuvcM77LTC2IG+KrbDbmD+/NSnYsSg+VcGkp10OzWaE4iwjhB2gBNubxwuU6QmUKvsOZfMN4mOk917gnqOqk9gSOdQs5d8Wmks99Ibs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714400816; c=relaxed/simple;
+	bh=HTekq4v1g9PJYx89IdggT2vGh+svrZvAdMEVJmZM0R8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mzcptp0cgUKbfStk1c/laIbt44PUvDY2Q+QshXjj1hNTeLsYlOFo7zxEIArz4KKFrI+rpzkQtG4nalIj2uK2wPp6evfjrQ5Rl7BJqRpo4CiJbhWkJ69DtWEfhWImG/2OA8rnQf0XV9uRQ9oGQy9OaWYAFatOORpF0bge86TjQJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ggf1VbJd; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-43a5715f71eso22974871cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714400813; x=1715005613; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NqDQQoT9vxUaIMkwbyFExGHs1F5iC7Nw1z6NMheJx1s=;
+        b=ggf1VbJdq5S/vNO5w2QDy4SWyJitdi6Jcm+UBR2XxZ2tgVzw0nWSTyjapEXcc0wWKm
+         7uH9bLVBMRhQtk7sZxCPUa+5uJK57mmlSSgZ6Oi7mPSElb6QEoPAEn9vBMR6nQcmWRSa
+         W7sxJkjhPyD4KoL1ZitqYzOYGqXJjDrfVmtOE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714400813; x=1715005613;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NqDQQoT9vxUaIMkwbyFExGHs1F5iC7Nw1z6NMheJx1s=;
+        b=BglqgPHGEZr8odrR3ykDe72v4wE5FaN7zxzuu4hxBEVTSKIXVFWdjfXEwKv1DE/7VB
+         sKVmgypPsVe9lmdCdVetKU9DLloowamJAjRsavP6xGp8Hyuo7aHxWoSwv6+mcEqr55AV
+         +qwZ7ancm8qxX2zPteXJZf+jhR+vzA+lZBci3emrWKsrcZq7KgsU2Ml4jV4UHVdPepAK
+         r03UKstEVtti48ZhC1I7kBseqUnNFFl8XmN3b03dfEH3gqPM+kv7is/N8OVmxNk0KuL+
+         qA7Sa4Sx7PMIpN0UUaUiOz6/DJ4NdA+vfykFgzPmfw566BixZ6wcP79/oaq9su9C2ktB
+         P0pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvcE1qadg+qJ9X7Nto77mEOppkVisQ2ARFVu8QjBcoAO9PPuwOBDekolgOvuoHyrZM3hRc2p4weuF/tUpwn9rCmxe9tZJplpJNGjxe
+X-Gm-Message-State: AOJu0Yyykr9Jk6scQ9AHw8Fp+1gdMBA81O5jC5+SIiAhyHbWxEuXw7o2
+	CriXMRUHeByp/HBiB+uL4WCrMhNG9n6nrGxqfaSYzgU6uB4JfDOy7Ck9uqaOs6BXHSUKC24x/g4
+	=
+X-Google-Smtp-Source: AGHT+IE37flgVjYV/E0D/HhfYmogBng8JhYD59jh3Z5166MCGSWzG6o82LWlrcK8a6VnJM647AzbpA==
+X-Received: by 2002:a05:622a:6107:b0:437:ba0e:68f5 with SMTP id hg7-20020a05622a610700b00437ba0e68f5mr10568217qtb.25.1714400813652;
+        Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
+        by smtp.gmail.com with ESMTPSA id kg25-20020a05622a761900b00436eacea78fsm10417169qtb.65.2024.04.29.07.26.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-436ed871225so511281cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUaNRdl3F+Syt9c3n2smEO1Wo0sJgDkCZGPdrLY+6YSZlXdLYWwuCzNmG1obxCEqB+/qre8R3kdUtK3b23n2N11HiE6AehDyUNwghUi
+X-Received: by 2002:a05:622a:14d:b0:439:a979:ccb2 with SMTP id
+ v13-20020a05622a014d00b00439a979ccb2mr546226qtw.16.1714400812823; Mon, 29 Apr
+ 2024 07:26:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|PH7PR12MB5853:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f94da89-1948-47a7-03e6-08dc68582960
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dzQ2QXNtUTN4dzZJT1ZiaW9KSTZxN1F3bEtjc2xWeWJsZnRRKzU2dEJ5bmZ4?=
- =?utf-8?B?K3l2L1ZPRUVvV1RXNmNtSHgwNXdTZ0NJTTh1eFc0eDRob1B0Z0JnWmJLOE1C?=
- =?utf-8?B?RmRyNmRCSGc4SU4zOUQyb3lzT0dpMS92Q3B3emNRV0JHS1hwKzlxeTBKelRH?=
- =?utf-8?B?ZkFCOFg2cEY4dDk0MC9aMUpiYUl4NmgrZkd5NHByUDZsZDk2WEtCSzJyV0J1?=
- =?utf-8?B?MjRteXBnQ2NOZyt1ajN4SGs4NGU4bndWM2pxZGhlYS8ydlBxdnVPMXJNQUV3?=
- =?utf-8?B?RmVIaUpqWGNGdlJNbVRlRkdLcjZrQ1h3NVQ5UVhhVFZTSE9xaUUvNzM3OTRk?=
- =?utf-8?B?NEZUR0RhN2o0QWp3Vmg3eVUwcXNCUCtpWFI0V1hBNFgwYjhZUzVvUWZVRCtY?=
- =?utf-8?B?anQrZUhoVmQ0MHVVK3YrNmdsTkRmcVk4MWtLS3p5d0l1V2tzS1JzemhZRXFq?=
- =?utf-8?B?WWhKcWlFY0p1dCszY2VCd05ON1k1Snc5UjVqMlhOUWUwNTJSNkdYQ0I2RjNS?=
- =?utf-8?B?RmliWVJITU9vOHkzMEhPTmhmUTVGRFN0M3Vsb3lSenVldnpqbVl6OWhEc3NM?=
- =?utf-8?B?N2ZaRXEyanN4UDMwMC9IWmtNUW9JSUFUQ2hEVThKQmF5TGpvbW0vY29nTnZl?=
- =?utf-8?B?dzZkOW9PRW5CMW5WcGtva0NvaXZXYUF0d3pVN0k4RUVxTUx4d1Q0dE5ZQjh3?=
- =?utf-8?B?QkxpeWY4b1ZFUWNsN3I5NisvalZFQmJrNHp6K0FRU3dCTlkyK2NxZU16NGtV?=
- =?utf-8?B?WnRyOFhSOXZNcGJCRzNLSmIyblhLUUxGMnpvRDRIRUxsZG1VWEhyWkFKbE1k?=
- =?utf-8?B?UTNvMlExUmdTeUJwbG1YNENQVnpzTUMvYllvVUpKaGU5blphMmg3L085eG9u?=
- =?utf-8?B?MExMcTd5Q1NZY3RKMEsrRHA2VDF5YnFXc2NuQ3k3dHVqK2JMVUxLM1ZMYkx5?=
- =?utf-8?B?bUJjS0hzNHcxS1poZ3VMRmZQMGRHbDZNcXRoOExVUi9RS0RGaHJiN0l3L0FI?=
- =?utf-8?B?SnkyUG9DK1FUMjlvTnN0TmZCc1BDRWJCUGZyYUFwVzVteTNrVFZZbzhTS0FD?=
- =?utf-8?B?QVlpUnJldlFUUDl4WXEvbmVmZ1JGdm1zWW43b0ZFdHE2WDFUV0JXNE5zKytw?=
- =?utf-8?B?eVFoWjlWMTRMVnVLZ1llUm5GMUk5WGVUemV2SFhrTElGcjBVZXgyWG9Eb2h5?=
- =?utf-8?B?VjZqdnJIV0tnMk9Fcld1U3VHNEJCQnFGa01ZUHRrV0JXMFUvY0c1R0JQTVdG?=
- =?utf-8?B?ck4yMnRBRzZuZk5oM083RzhCSENPMFVhWlhKWmJtczZESHI2QXhkNXdraG5Q?=
- =?utf-8?B?QUtlZlZsU25UWGhORTIvUWNiR1RiV2R3Zkp4Qk53L2l3a3pTVFljb1VSeVlh?=
- =?utf-8?B?bFZVSE5lb2p5Wm9mTUdqSHRxN25qV0s3QXQ0c2JoOVh5Y0tGdHNyT3BCeG5a?=
- =?utf-8?B?SC9HUFMwUXVnOFJ0UDB5VlNCV29Gb2hVUmRQVXhHYlFmeUdrK1FUNTRTd2ow?=
- =?utf-8?B?RzA2SXZKOWM2Qk84RU5KL1RTdXhHd1R0cDlnSDZYa3B2T2syNERQaFNFeFdT?=
- =?utf-8?B?eENILzh1c2dOSkhMb2JEUjV2NS9ERDFCVjVkMWd1YVd1VGc5dm9SeWp4LzJ2?=
- =?utf-8?B?anhOeEdhbWZDQWlHTVZnKzZDRGc5RjVhbmQ1TlNwUnJiVlVNWnNkM1dzNmtW?=
- =?utf-8?B?djFSRnAybFFHdk1OVURueFNldERITHlIaXJRdUQ0NEMrRThlNEpmMm5BPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Z25zY1VwV3lXNThsTFZiNmxpZFRSTEs3R0FYcjYyRTJjWThRZkFoYkNiL1hG?=
- =?utf-8?B?cVFmbzRtNFVhT2tPU3FCNVB1VjlMMWNwMjZXeGpvQm5MWnlVR1pGWkNhMS8r?=
- =?utf-8?B?NWRybVcyTVNUSlpvVXlCc3JmN09veUgzY0J0UURiMVA1bldMM0dkRmFUbkJV?=
- =?utf-8?B?YVN1Yzhlc0VXdGx4R2ptQjRVMVd4akUvZUk0R0hMUDlTRVpNN2gxNDZXVllQ?=
- =?utf-8?B?V1ZzV3N4ekgvcHlYKzdWaUg5MFZlcHN0anltRmtWWDlFM0MyU0EwZTBER1VQ?=
- =?utf-8?B?N3FxZ1BvUmozdnhYUCtpWmlnUjhENWo3am9oZlhsR2xjMmYwaWMzRno4eGFH?=
- =?utf-8?B?YnkxYXMvTHM2blI2RmhSQVNsaWI2S1FyRGlJMklDcDJIMS8wUStSbzZnVTZX?=
- =?utf-8?B?TmM3bVRJSjFITzZMVzlRdHcrN3pHcDY1eEFqYStvVWdjUzhWVFBlbC9hRGlx?=
- =?utf-8?B?a0hlSCs0VDliV1BkOXFFRVhNQlo3MXF2ajlBaEEwZmVnWjJTenB1TXpaaHYv?=
- =?utf-8?B?eEdoQ2M1cXMxRllTZkZOa3BLMUs5SXZpMDJLdENTdHEzMWc2VEJaWGJWampi?=
- =?utf-8?B?SlFzbFhYUVpRcXhSOFQ2VWxCdGs1cFZ2SXZaYnphRjlvQmtBS29xV05UcVFS?=
- =?utf-8?B?bTNsQ3ErSExOSVRNNmMvNWpkS3lXRzFrREZVSHdaQTdPeEdCS050M3BwelI2?=
- =?utf-8?B?WlBYSHlxanJicENuMHcrYlQrb1ByRzBhVHI3aHF1d1VRWEw1NVcvTU84Qkxp?=
- =?utf-8?B?R2QyK1VhcmwvR09DS1lvTW42REFKMGE1NDh3S1VqRzNXL2hFYm43TFZaQlg0?=
- =?utf-8?B?TDV1cFN3RG1NNGRpdnVRL1E1aU5jSTdmVWpjUGd6Sk90YVlVRzdHSC9ZYnpK?=
- =?utf-8?B?K1hsUUdzYWVmelNrSDg5dXlqMDB1U1FYZldlUFFRMmVWRVFpOXNiL2VOQllP?=
- =?utf-8?B?WW9FbUNGTCtaSXc2UFZ4SFEraVpKRXUrT21sT1MxSmdJVmdxM3QyQWJCdWN4?=
- =?utf-8?B?dndYL2lOLzJkeGFLMnhwQzlhQ2hVMXh1TGNTeTBsdG5CVXFucE4xOVlQQWw2?=
- =?utf-8?B?TkYzOTU2WUhiMWs3OXBCTVpGdDkxY2RWK0FSUThVdTZwbXZQWEtOczNjZG9k?=
- =?utf-8?B?RTlQNGZ4bXJ2dXNuWXgvQUtWeWlOR0lVaW0zZ2ZDNkhWNE1lek9obnZhbzlP?=
- =?utf-8?B?aDZybjY0S01EVXBLeU56QUdrdkxKczhKR2tZZExZTGlkNUhaNCtwMkpaWjZT?=
- =?utf-8?B?ZTR5R3ZBcHJhYUhuZk0wUlI0bE1UL1V1V2sycEFLdmR1cEdPeEJsVEJhQVRO?=
- =?utf-8?B?TDcyOEVrK01xbWN6TzBYeUZIOFY2QVBtUnN4cFhYcktwUkJHSmp3Y3ZDVUZ3?=
- =?utf-8?B?VkZKVkYySERKSVBpb0ZSOTgvNVh3STVBUndweXo4cDQ4eldtU1h4Zjk1WVp3?=
- =?utf-8?B?OE5aWUVRV3FCbURRR2xRZUN3WDhmdHRPRzQ3NzVwK0ZpaHdCNEdtU3VtNlhJ?=
- =?utf-8?B?TElNQ3JkYUt2T0NBeTZOc0VTcWJWNkkwTzhPSmlESklYTmdXclFKNVgrSTJo?=
- =?utf-8?B?c3F6c2d6anhxc29QeEM2R210SVRFYlc2aG40aytSVFlaMGRqUkppclEyblRY?=
- =?utf-8?B?QkFFT3ZHZEtSYnpqUmtIVSt4SHYwanRVa2xZSVN5QzVnTnZqYmliSGh4WE92?=
- =?utf-8?B?RmRXeDVIamVsQXF0MDRkOGtFajJoRHlkWnVJQXJtWFRXY0VpK0FDNm5QSHJC?=
- =?utf-8?B?S2pRWkpjeDg1Z0ZRY1FCZDVXNDkweVdqYmhWWlM0TWZXYzVNT01DYkFpN1l4?=
- =?utf-8?B?VFVDQ256TGtsa2NQRkFpdWNJdDV4cnNXbEthb0RnMHJRbFVtMDkxZkJYamVE?=
- =?utf-8?B?TTJKTW5jeHVyOEpSMVVCTVpmTVByWEk4anlFWnFwYXJTemNxWDByeURtZmY2?=
- =?utf-8?B?YTdWYmJwZENRaUU2WC9NZnV2Z2xNdmRiUkx1cTJRNUFVR2ZJb2plQzVFVzA2?=
- =?utf-8?B?Z3lmM2pNcWlQRjd0RU1QYmZDNVVuNk04NVcyWlN0WDZwNFd3SDBlRDNjYlBr?=
- =?utf-8?B?Y2VoSmR1LzkvVkpWa0NKKzY5Q29KNGFEUkplRzl6ZVpMVWlScG9MRWFBbDRu?=
- =?utf-8?Q?LvFZOu+uaO2YnoU8xotwH5gNI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f94da89-1948-47a7-03e6-08dc68582960
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 14:25:04.1070
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kQwI7Eea2dTjD8UigPXIKjvsr9MDcZTS2ciCAE+WIZdURTi8ejZbLIBFoZsztOKvBmfeF/Z6zmBpqvxw53USKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5853
+References: <20240426235857.3870424-1-dianders@chromium.org>
+ <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid> <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org>
+In-Reply-To: <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 29 Apr 2024 07:26:41 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
+Message-ID: <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
+To: neil.armstrong@linaro.org
+Cc: dri-devel@lists.freedesktop.org, Linus Walleij <linus.walleij@linaro.org>, 
+	lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Hsin-Yi Wang <hsinyi@google.com>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/29/2024 10:12 AM, Borislav Petkov wrote:
-> On Mon, Apr 29, 2024 at 09:56:56AM -0400, Yazen Ghannam wrote:
->> Right, I mean we should do things the simpler way unless there's a real issue
->> to address.
-> 
-> You need to pay attention to past issues before you go, simplify it and
-> break it again.
-> 
+Hi,
 
-I completely agree. I haven't seen evidence of an issue yet for the DFR case
-though. Which is why I thought it'd be safe to do some clean up.
+On Mon, Apr 29, 2024 at 2:38=E2=80=AFAM Neil Armstrong
+<neil.armstrong@linaro.org> wrote:
+>
+> > +/**
+> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI DSI f=
+uncs in a row
+> > + * @dsi: Pointer to the MIPI DSI device
+> > + * @accum_err: Storage for the accumulated error over the multiple cal=
+ls. Init
+> > + *   to 0. If a function encounters an error then the error code will =
+be
+> > + *   stored here. If you call a function and this points to a non-zero
+> > + *   value then the function will be a noop. This allows calling a fun=
+ction
+> > + *   many times in a row and just checking the error at the end to see=
+ if
+> > + *   any of them failed.
+> > + */
+> > +
+> > +struct mipi_dsi_multi_context {
+> > +     struct mipi_dsi_device *dsi;
+> > +     int accum_err;
+> > +};
+>
+> I like the design, but having a context struct seems over-engineered whil=
+e we could pass
+> a single int over without encapsulating it with mipi_dsi_multi_context.
+>
+> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_multi_context *ctx,
+>                                      const void *data, size_t len);
+> vs
+> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi, int *ac=
+cum_err,
+>                                      const void *data, size_t len);
+>
+> is the same, and it avoids having to declare a mipi_dsi_multi_context and=
+ set ctx->dsi,
+> and I'll find it much easier to migrate, just add a &ret and make sure re=
+t is initialized to 0.
 
->> I'm not opposed to this, but I don't understand what is at risk.
->>
->> Is it that the function pointer may not be written atomically? So even if we
->> write it again with the same value, a concurrent interrupt on another core may
->> see a partially updated (corrupt) pointer?
-> 
-> Yes, it won't happen, they say as it is guaranteed by the
-> architecture. But I've heard those "promises".
-> 
->> intel_init_cmci() does not do this check. So is it more at risk, or is the AMD
->> code just more cautious?
->>
->> Again I'm not against the current code. I just think we should simplify it, if
->> possible.
-> 
-> So in looking at the INTR_CFG MSR, I think we should do a function which
-> does MCA init stuff only on the BSP exactly for things like that.
-> 
-> There you can set the interrupt handler pointer, the INTR_CFG MSR and so
-> on. And we don't have such function and I've needed a function like that
-> in the past.
-> 
-> And just for the general goal of not doing ugly code which should run
-> only once but is run per-CPU just because our infrastructure doesn't
-> allow it.
-> 
-> Wanna give that a try?
-> 
-> Thx.
-> 
+Yeah, I had the same reaction when Jani suggested the context style
+[1] and I actually coded it up exactly as you suggest above. I then
+changed my mind and went with the context. My motivation was that when
+I tested it I found that using the context produced smaller code.
+Specifically, from the description of this patch we see we end up
+with:
 
-Yep, "MCA init cleanup" is another thing on my TODO list.
+Total: Before=3D10651, After=3D9663, chg -9.28%
 
-The BSP still completely finishes init before the APs, correct? I recall some
-effort to make CPU init more parallel, but I haven't been following it.
+..when I didn't have the context and I had the accum_err then instead
+of getting ~9% smaller I believe it actually got ~0.5% bigger. This
+makes some sense as the caller has to pass 4 parameters to each call
+instead of 3.
 
-Thanks,
-Yazen
+It's not a giant size difference but it was at least some motivation
+that helped push me in this direction. I'd also say that when I looked
+at the code in the end the style grew on me. It's really not too
+terrible to have one line in your functions that looks like:
+
+struct mipi_dsi_multi_context ctx =3D { .dsi =3D boe->dsi };
+
+..and if that becomes the canonical way to do it then it's really
+hard to accidentally forget to initialize the error value. With the
+other API it's _very_ easy to forget to initialize the error value and
+the compiler won't yell at you. It also makes it very obvious to the
+caller that this function is doing something a little different than
+most Linux APIs with that error return.
+
+So I guess I'd say that I ended up being pretty happy with the
+"context" even if it does feel a little over engineered and I'd argue
+to keep it that way. That being said, if you feel strongly about it
+then we can perhaps get others to chime in to see which style they
+prefer? Let me know what you think.
+
+
+[1] https://lore.kernel.org/r/8734r85tcf.fsf@intel.com
 
