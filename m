@@ -1,122 +1,119 @@
-Return-Path: <linux-kernel+bounces-161836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F268B5206
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:10:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6045F8B5209
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F0BBB2146C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:10:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 158B61F21C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5AF13AE2;
-	Mon, 29 Apr 2024 07:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LY9EyzqS"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E76D13FF2;
+	Mon, 29 Apr 2024 07:11:59 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2759134A0;
-	Mon, 29 Apr 2024 07:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917751079D;
+	Mon, 29 Apr 2024 07:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714374640; cv=none; b=JaqkHwxNoWTGRHIKcyq39z5ihXz8xFBJabUV7tPuAJbW5RWUD+XgorovkGZjFd7R5kvrko/ar6VXL89LnY1RAM5vpBGtSFQgkIUaUVIIfdmUuReG9xKRXfDfY+vovd87mNNX0tzOe15DJ/D3rPRSgYKLFKwucv1eIEUwf90bHv8=
+	t=1714374718; cv=none; b=H/4RrAWL1WgEAq/aXCrYZuWi1mNIjMy33UzgM2y8QqAtIHUWS+dz8Cn0Y00pxV7pkAkbb7EfgunEYJPQMahQ5Q0u2i6Gb+DCtfGZOxbA4VvUhkDx59oO2Ybc8eC3DnpudgQFDihKCJu3EhpHZM5Y+6qJpQRi/+ljr08cw/bJwnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714374640; c=relaxed/simple;
-	bh=u4RpuH47LCq8+OKqkijooorm9I+Cq42DccMjOsHgWJo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mGC3ffyF4B2LXVcPh+jK2ZGlQxyXTnpF445i2LM0ZCYl94o2hcVli/VjPCl+86icwWYbAqH6eQfyvD7aD1qd9rJZ71+XFdDQx7iv1ukexFH3cef1lj3QLsE1GwBfdIERfKNEFGPQ+I82ETGw6EiNBlcsJ/YwI+tuwb6pwi3f7BI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LY9EyzqS; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e2b137d666so31468905ad.2;
-        Mon, 29 Apr 2024 00:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714374638; x=1714979438; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ezNGmgXtmN/d5QQIznl5zIrhQk/v8pmvi9ftsZ0N98=;
-        b=LY9EyzqSZrOSb8FtxwnWlmDwIStHPJwII4rCneOMRmHYberz3eAHot0iYqGC8mEqh0
-         dJHk3WVzzT9u9RWD9g0wjg+XiLNU2sBH5XatOtQq/jYbQ4szQ1W7NAxdGTcbhgacaB6+
-         jbEkGoXwuQwvauiArgwxXHrsM84OxA8ug2vr8I1KU0CEHZWR5zlnRfli6MbXMShKNfeU
-         zjFtw8JrXDvHAoJ5ftAvp13FVxc5MpcckCULpcFldg1h1BMsuK29rQyyfDUxnuPVWwCm
-         Jx+vDDTBHL5dPDQK0+u8c7ygm+BFegToCr+ypjZjQtdheRIL3u7Vdj+ELjT+j7m/uupx
-         hmnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714374638; x=1714979438;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ezNGmgXtmN/d5QQIznl5zIrhQk/v8pmvi9ftsZ0N98=;
-        b=rfs4xLoO0A9VjgGNlwAbV2Wq9k6s3812KwA+G0yFeYEzpupPrJOAJN5rdptbEbDoZB
-         ZM6xz1l0toSChPA7xKjDdJ8cb/QBRp10RIn0ukgZAYi/MPfJHmqQEiILjrm+asjgbrDh
-         t58Yy75sf9p8/RuF6TsnLzgvSuOC+3wvi9OyU/5ppG7Fq+r0rPOLJQHEGIg6TtPVLSyH
-         VhjkfnKzPUWE9Eq0lFOroX+ufD1EUc5UEo++9CkRmEYAKAoackuIll68pVHXg6fKRXMu
-         IBNGrYgAR/i0K5th5t+Cs9zyI9qwrayfrNsjB8qGhpV1wcmQEwCm9z6jed3PoJ0cayw4
-         759A==
-X-Forwarded-Encrypted: i=1; AJvYcCXVNRFAPYepb8MTBFBgBNgDac8Jt3wDpTjQedG0BxNVYOFyyUCyOzkFmhoIqoNeK17ZhWkWcDUokYaBQxUKBlV1a/4A4z22QKmVlpGvDWRJ8alxHqqSmQ63m/tmEI4Nd33/D+hQVUge69KPTVUb6ogBgXOGuL95SRgZOuy6/lUfU9+tBQ==
-X-Gm-Message-State: AOJu0YySJYTutRokwUZYoiKwyYWDIP/Ni6v0yooNvy3nPHjXMKh/CGRT
-	g2+XHjMO1Lw+z10JljWkfrgeDvy99xtacRb6mtaTtUGNHIpP0nHy3MS6rF40
-X-Google-Smtp-Source: AGHT+IGZzv0nK/Ap+onynsI5bN80EXBIn8pYwFdVCFbTCUWgtG4x9ojg6OcZwUwaJZNiNQm8wLn4Jg==
-X-Received: by 2002:a17:902:e5cd:b0:1e8:6614:51cc with SMTP id u13-20020a170902e5cd00b001e8661451ccmr11367971plf.5.1714374637938;
-        Mon, 29 Apr 2024 00:10:37 -0700 (PDT)
-Received: from five231003 ([2409:40f0:3004:21d1:ce46:748f:4353:8a5d])
-        by smtp.gmail.com with ESMTPSA id ku13-20020a170903288d00b001e403970ec0sm19500551plb.277.2024.04.29.00.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 00:10:37 -0700 (PDT)
-Date: Mon, 29 Apr 2024 12:40:31 +0530
-From: Kousik Sanagavarapu <five231003@gmail.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: Re: [RFC PATCH] spi: dt-bindings: ti,qspi: convert to dtschema
-Message-ID: <Zi9H5371PrJtIKVy@five231003>
-References: <20240428070258.4121-1-five231003@gmail.com>
- <59fe75b6-a4a4-4c90-a3c4-c8a4b539e879@kernel.org>
+	s=arc-20240116; t=1714374718; c=relaxed/simple;
+	bh=VrcNs7voZl2xbyNLKiAEs2ZgJnR3UJ/Zp71/jqId5Po=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=AzLTvnnLd7xfn45ZMBH1NgXLuUEWJ7KdBtmrIX7CzjgFNOG3WD/UMqHJQ+7sc0lhvsp4DO3I/BvjKgT9t8QKm3MIrOTjnOqsThpRdh2fg7Sf3b/vElTEfeA0lB1+NTg9oPQ1n400oheGSOvjDNBFT4NbmFFOC6J8HnizMUqePNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VSZJF44Qpz4f3mHg;
+	Mon, 29 Apr 2024 15:11:41 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id F3B691A0568;
+	Mon, 29 Apr 2024 15:11:50 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgAXOQw1SC9mlDgXLg--.20275S3;
+	Mon, 29 Apr 2024 15:11:50 +0800 (CST)
+Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+To: Christoph Hellwig <hch@infradead.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+ tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
+References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
+ <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+ <20240425182904.GA360919@frogsfrogsfrogs>
+ <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
+ <ZitKncYr0cCmU0NG@infradead.org>
+ <5b6228ce-c553-3387-dfc4-2db78e3bd810@huaweicloud.com>
+ <ZiyiNzQ6oY3ZAohg@infradead.org>
+ <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
+ <Zi8lCUjX8lByIVZI@infradead.org>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <f8363f80-027c-cbc2-8abc-fd211e639b38@huaweicloud.com>
+Date: Mon, 29 Apr 2024 15:11:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <Zi8lCUjX8lByIVZI@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <59fe75b6-a4a4-4c90-a3c4-c8a4b539e879@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAXOQw1SC9mlDgXLg--.20275S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw18JF1DCFWfuFy5ZFyfCrg_yoW3urc_uF
+	WI939xCrs7Jan3Zan0kr1SqrWvkF45Gr1YgrZ8Xrs7Jas8AFyxJ395GrZ5uw1fKw42yrnx
+	W3ZFvFy7CF9FqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, Apr 29, 2024 at 07:07:38AM +0200, Krzysztof Kozlowski wrote:
-> On 28/04/2024 08:58, Kousik Sanagavarapu wrote:
-> > Convert txt binding of TI's qspi controller (found on their omap SoCs) to
-> > dtschema to allow for validation.
-
-[...]
-
-> > +  spi-max-frequency:
-> > +    description: Maximum SPI clocking speed of the controller in Hz.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
+On 2024/4/29 12:41, Christoph Hellwig wrote:
+> On Sun, Apr 28, 2024 at 11:26:00AM +0800, Zhang Yi wrote:
+>>>
+>>> Oh well.  Given that we're full in on the speculative allocations
+>>> we might as well deal with it.
+>>>
+>>
+>> Let me confirm, so you also think the preallocations in the COW fork that
+>> overlaps the unreflinked range is useless, we should avoid allocating
+>> this range, is that right? If so, I suppose we can do this improvement in
+>> another patch(set), this one works fine now.
 > 
+> Well, not stop allocating it, but not actually convert it to a real
+> allocation when we're just truncating it and replacing the blocks with
+> reflinked blocks.
+
+OK, it looks fine, too.
+
+Thanks,
+Yi.
+
 > 
-> Are you sure that's actually needed? That's not a property of controller.
-
-[...]
-
-> > +        num-cs = <4>;
-> > +        spi-max-frequency = <48000000>;
+> But yes, this is a bigger project.>
+> For now for this patch to go ahead:
 > 
-> Drop. Are you sure driver parses it?
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
 
-The driver does parse it though.  Looking at
-drivers/spi/spi-ti-qspi.c::ti_qspi_probe(),
-
-	if (!of_property_read_u32(np, "spi-max-frequency", &max_freq))
-		host->max_speed_hz = max_freq;
-
-So I included it in the dtschema as well.  Please let me know if
-including it in the dtschema in this case is wrong.
-
-Thanks
 
