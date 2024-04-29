@@ -1,244 +1,141 @@
-Return-Path: <linux-kernel+bounces-161705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4979C8B4FF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:41:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 449458B4FFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7DA81F21E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3BFD282922
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87768F6C;
-	Mon, 29 Apr 2024 03:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NFRyUeZU"
-Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1406412E70;
+	Mon, 29 Apr 2024 03:47:57 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB3F6FD0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 03:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52351118D;
+	Mon, 29 Apr 2024 03:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714362103; cv=none; b=LIAM7x8WA5KNBVWvTB9RCF6GOFdLN0WD1h5PTY86BMQpb8jXNpi27hu4RtvZs9CxQGLvV7ikwDA0z5cHlnWNqOLp0NPzCZ7OumHLHKkPYgWnGcjZ8z8RNZ4wgtoYBvqJAxpnra+2kI+TjKmUXRhQFgEtM263F2SL2r7wrb/12Ms=
+	t=1714362476; cv=none; b=PeoTZrpXqU4k0Hxb2shhNjjcErdjbn59Yt7EZ/wJbeD3iWhDqMxDmzO+H2viAphWZkzKX//bAWdCQDO2eSLwBVViQrEike7O0En18smKLp1IqB8xjwxEt1WwydoTYxB7N5CMLzs/th4eYsx01yPlFYOPfKlxFSPPXDyWRBNvog4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714362103; c=relaxed/simple;
-	bh=XcC2SQ+hyRPVOuSGKyLwXqtjOb9L2X26n5bIqzPSuos=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GzggFaL17gRmKkIpb2KWDLzkpf3N0XkOvUieVGVRDR2a9nbf04pbScBoJWMulh9RaEtGCnWvHm+YcU2sApI+DhSj/pXRnPG0UORdoyGhBbJ9FkzEtHUMaOIy3sCw/XZfEfrqFN2qUP0qb9o8xeJ7QQCJdbyhL3Zhht3VdGotBhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--smostafa.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NFRyUeZU; arc=none smtp.client-ip=209.85.221.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--smostafa.bounces.google.com
-Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-345aa380e51so2771850f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 20:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714362099; x=1714966899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K9jmX3QxBB0ptLSuKTUjjV92gcfpZ8FtQn0+7RhIfec=;
-        b=NFRyUeZUldSCicbDBMoR+9dqD4t38VnXs6qOTsc2UDom4nzzetWwbI0T70jYQWh+nS
-         8UR0mCx9SnMoZzg01hbpY55IHl0Gim2v8k+bk567wzzOP1dt+6auMtNd9aMjMCy4moxr
-         8dnthUQg16ZHfsXSeeFG1wkC6zjztRh3rIlEOFjNdNWa/Z+PBUMDq1gFB+LzvXipRDWr
-         BRRyEXHbSLmjFrEKB3p4s9IIH4tFhKAJSuBE6ugTG7QAL324lzeFuyRfJ12zngFfBGY4
-         /+eVHh5WrgTKKraP2Fj4+w7bThTTE+6HGwvdJ8eY3CNdef5HOe1sQVR/3nINKH+Xnfyf
-         FF0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714362099; x=1714966899;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K9jmX3QxBB0ptLSuKTUjjV92gcfpZ8FtQn0+7RhIfec=;
-        b=A7lNECphQdWdV0YNT7IxiJ1BusuOlilhqjE8y0WTVIV99da8I0436WuEyNaqixBRT4
-         vQeufBJOvqhvGLVDrTMFEkvuiRGC9/N+SFyIAC30czKYRG33fTG22D9P1jSglL/6WJaK
-         sxzT7dnFQ022JeV78SX70QvDtzZzAzmbTNJIFG/3fz+4bjySDRI3i6XVh3vMtTS3eTjz
-         ljdDZ5EaLndYmkPg6NtuKeUzv3qGzlBYYy/uPyRKDwLH9sky8O9GghnYo188rVPlhY95
-         myMDYu0NokmaxfJmChSQVe/te8yVZIwNvXMVMNVcocihro3Y+70CdHE8jXT+AIV8bdHK
-         02Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+01sg/WvzqOrSNyG4Jq8PtPBvB/bnddTofpxqudf97vMB1oknNaZQPxp4KYzwjRogzfvheWGFTfaQ2Ad5e1nnnH0ePdwsIxsQY3Pm
-X-Gm-Message-State: AOJu0YwK8aNhKafNgPP5Em1PuvEtqCxfJ8NG2LBbBQwHuaQBJ+u+kEF5
-	wEIDHzlW9GB33icQlFiPmsFjXLkoydQ83RkKMmaMAlMjN63+ycgb36PEORPqAngMBiYVN8w5qcP
-	QNVn9rQr9Zw==
-X-Google-Smtp-Source: AGHT+IEfXkUgHUjB1E8RP2G4K8gsuLdAN8GK0mvfTfa0cd18WhB6TgcyB7zjI8UPl5fJo6iEBvE4V92w+u23RA==
-X-Received: from mostafa.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:333c])
- (user=smostafa job=sendgmr) by 2002:a7b:cc0d:0:b0:416:3e78:2a2b with SMTP id
- f13-20020a7bcc0d000000b004163e782a2bmr41613wmh.6.1714362098699; Sun, 28 Apr
- 2024 20:41:38 -0700 (PDT)
-Date: Mon, 29 Apr 2024 03:41:12 +0000
+	s=arc-20240116; t=1714362476; c=relaxed/simple;
+	bh=s+npPNcWKMeZEYom4cv+3hbdgohXqkg2iyExANnuyDo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZcLuXAzacza98H1a5TH+PZxszNtVVYcvRv1da64kXHhMbTpUk3bxjsyj06Y5nQTFJHhkKxnd/FzePwHriSDcbxdF5UABhZy1ivVMhD5UGDmR5GLZtcgETyXr5fYwm4RQCHLsN+J3gMZ8nQvQf/DMoVGiYNiMQrJK973Jzeuqz6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VSTmr6CdBz4f3jkS;
+	Mon, 29 Apr 2024 11:47:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id DB60D1A0568;
+	Mon, 29 Apr 2024 11:47:45 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.6])
+	by APP1 (Coremail) with SMTP id cCh0CgA3UwxgGC9m24__LA--.38879S2;
+	Mon, 29 Apr 2024 11:47:45 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: willy@infradead.org,
+	akpm@linux-foundation.org,
+	jack@suse.cz,
+	tj@kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 00/10] Add helper functions to remove repeated code and
+Date: Mon, 29 Apr 2024 11:47:28 +0800
+Message-Id: <20240429034738.138609-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240429034112.140594-1-smostafa@google.com>
-Subject: [PATCH] PCI/MSI: Fix UAF in msi_capability_init
-From: Mostafa Saleh <smostafa@google.com>
-To: bhelgaas@google.com, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: ilpo.jarvinen@linux.intel.com, tglx@linutronix.de, kernel-team@android.com, 
-	Mostafa Saleh <smostafa@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgA3UwxgGC9m24__LA--.38879S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw18WF1rGF4kJF47AF1rCrg_yoW8tFW7pF
+	Z3Kr1aqr1UJ3W3Ar9xCay29ryS9397AF45t3sxXw4SvF43Cry2gFy2vFyFkay2yFy3Gry5
+	ZFs8t34xGr1qkaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+	daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-While running Android15-6.6 and hacking on latest Qemu, I observed
-the following with KFENCE:
+This series add a lot of helpers to remove repeated code between domain
+and wb; dirty limit and dirty background; global domain and wb domain.
+The helpers also improve readability. More details can be found on
+respective patches.
+Thanks.
 
-[   10.761992][   T81] pcieport 0000:00:03.0: Adding to iommu group 0
-[   10.782536][   T81] pcieport 0000:00:03.0: enabling device (0000 -> 0003=
-)
-[   10.814259][   T81] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[   10.816534][   T81] BUG: KFENCE: use-after-free read in __pci_enable_msi=
-_range+0x2c0/0x488
-[   10.816534][   T81]
-[   10.820189][   T81] Use-after-free read at 0x0000000024629571 (in kfence=
--#12):
-[   10.822652][   T81]  __pci_enable_msi_range+0x2c0/0x488
-[   10.824304][   T81]  pci_alloc_irq_vectors_affinity+0xec/0x14c
-[   10.826129][   T81]  pci_alloc_irq_vectors+0x18/0x28
-[   10.827606][   T81]  pcie_portdrv_probe+0x1e0/0x608
-[   10.828979][   T81]  pci_device_probe+0xa8/0x174
-[   10.830316][   T81]  really_probe+0x150/0x2b8
-[   10.831717][   T81]  __driver_probe_device+0x7c/0x130
-[   10.833368][   T81]  driver_probe_device+0x40/0x118
-[   10.834899][   T81]  __device_attach_driver+0xc4/0x108
-[   10.836464][   T81]  bus_for_each_drv+0x8c/0xf0
-[   10.837915][   T81]  __device_attach+0xa4/0x198
-[   10.839260][   T81]  device_initial_probe+0x18/0x28
-[   10.840684][   T81]  bus_probe_device+0xb0/0xb4
-[   10.842174][   T81]  deferred_probe_work_func+0xac/0xf8
-[   10.843760][   T81]  process_one_work+0x18c/0x414
-[   10.845129][   T81]  worker_thread+0x41c/0x53c
-[   10.846611][   T81]  kthread+0x114/0x118
-[   10.847841][   T81]  ret_from_fork+0x10/0x20
-[   10.849298][   T81]
-[   10.850435][   T81] kfence-#12: 0x0000000008614900-0x00000000e06c228d, s=
-ize=3D104, cache=3Dkmalloc-128
-[   10.850435][   T81]
-[   10.853455][   T81] allocated by task 81 on cpu 7 at 10.808142s:
-[   10.856329][   T81]  __kmem_cache_alloc_node+0x1f0/0x2bc
-[   10.857988][   T81]  kmalloc_trace+0x44/0x138
-[   10.859299][   T81]  msi_alloc_desc+0x3c/0x9c
-[   10.860582][   T81]  msi_domain_insert_msi_desc+0x30/0x78
-[   10.862058][   T81]  msi_setup_msi_desc+0x13c/0x184
-[   10.862942][   T81]  __pci_enable_msi_range+0x258/0x488
-[   10.863847][   T81]  pci_alloc_irq_vectors_affinity+0xec/0x14c
-[   10.864821][   T81]  pci_alloc_irq_vectors+0x18/0x28
-[   10.866011][   T81]  pcie_portdrv_probe+0x1e0/0x608
-[   10.867047][   T81]  pci_device_probe+0xa8/0x174
-[   10.867937][   T81]  really_probe+0x150/0x2b8
-[   10.868774][   T81]  __driver_probe_device+0x7c/0x130
-[   10.869755][   T81]  driver_probe_device+0x40/0x118
-[   10.870665][   T81]  __device_attach_driver+0xc4/0x108
-[   10.871654][   T81]  bus_for_each_drv+0x8c/0xf0
-[   10.872585][   T81]  __device_attach+0xa4/0x198
-[   10.873581][   T81]  device_initial_probe+0x18/0x28
-[   10.874645][   T81]  bus_probe_device+0xb0/0xb4
-[   10.875610][   T81]  deferred_probe_work_func+0xac/0xf8
-[   10.876696][   T81]  process_one_work+0x18c/0x414
-[   10.877573][   T81]  worker_thread+0x41c/0x53c
-[   10.878468][   T81]  kthread+0x114/0x118
-[   10.879331][   T81]  ret_from_fork+0x10/0x20
-[   10.880238][   T81]
-[   10.880767][   T81] freed by task 81 on cpu 7 at 10.811436s:
-[   10.882311][   T81]  msi_domain_free_descs+0xd4/0x10c
-[   10.883318][   T81]  msi_domain_free_locked.part.0+0xc0/0x1d8
-[   10.884401][   T81]  msi_domain_alloc_irqs_all_locked+0xb4/0xbc
-[   10.885519][   T81]  pci_msi_setup_msi_irqs+0x30/0x4c
-[   10.886549][   T81]  __pci_enable_msi_range+0x2a8/0x488
-[   10.887537][   T81]  pci_alloc_irq_vectors_affinity+0xec/0x14c
-[   10.888576][   T81]  pci_alloc_irq_vectors+0x18/0x28
-[   10.889693][   T81]  pcie_portdrv_probe+0x1e0/0x608
-[   10.890719][   T81]  pci_device_probe+0xa8/0x174
-[   10.891623][   T81]  really_probe+0x150/0x2b8
-[   10.892534][   T81]  __driver_probe_device+0x7c/0x130
-[   10.893541][   T81]  driver_probe_device+0x40/0x118
-[   10.894491][   T81]  __device_attach_driver+0xc4/0x108
-[   10.895433][   T81]  bus_for_each_drv+0x8c/0xf0
-[   10.896381][   T81]  __device_attach+0xa4/0x198
-[   10.897359][   T81]  device_initial_probe+0x18/0x28
-[   10.898401][   T81]  bus_probe_device+0xb0/0xb4
-[   10.899268][   T81]  deferred_probe_work_func+0xac/0xf8
-[   10.900314][   T81]  process_one_work+0x18c/0x414
-[   10.901279][   T81]  worker_thread+0x41c/0x53c
-[   10.902138][   T81]  kthread+0x114/0x118
-[   10.902916][   T81]  ret_from_fork+0x10/0x20
-[   10.903816][   T81]
-[   10.904429][   T81] CPU: 7 PID: 81 Comm: kworker/u16:2 Not tainted 6.6.2=
-3mostafa+ #224
-[   10.906362][   T81] Hardware name: linux,dummy-virt (DT)
-[   10.907934][   T81] Workqueue: events_unbound deferred_probe_work_func
-[   10.909959][   T81] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+A simple domain hierarchy is tested:
+global domain (> 20G)
+	|
+cgroup domain1(10G)
+	|
+	wb1
+	|
+	fio
 
-Looking at the upstream code, it seems to have the same issue where:
+Test steps:
+/* make it easy to observe */
+echo 300000 > /proc/sys/vm/dirty_expire_centisecs
+echo 3000 > /proc/sys/vm/dirty_writeback_centisecs
 
-Descriptor allocation done in:
-__pci_enable_msi_range
-    msi_capability_init
-        msi_setup_msi_desc
-            msi_insert_msi_desc
-                msi_domain_insert_msi_desc
-                    msi_alloc_desc
-                        ...
+/* create cgroup domain */
+cd /sys/fs/cgroup
+echo "+memory +io" > cgroup.subtree_control
+mkdir group1
+cd group1
+echo 10G > memory.high
+echo 10G > memory.max
+echo $$ > cgroup.procs
+mkfs.ext4 -F /dev/vdb
+mount /dev/vdb /bdi1/
 
-Freed in case of failure in __msi_domain_alloc_locked()
-__pci_enable_msi_range
-    msi_capability_init
-        pci_msi_setup_msi_irqs
-            msi_domain_alloc_irqs_all_locked
-                msi_domain_alloc_locked
-                    __msi_domain_alloc_locked =3D> fails
-                    msi_domain_free_locked
-		        ...
+/* run fio to generate dirty pages */
+fio -name test -filename=/bdi1/file -size=xxx -ioengine=libaio -bs=4K \
+-iodepth=1 -rw=write -direct=0 --time_based -runtime=600 -invalidate=0
 
-That failure would propagate back till pci_msi_setup_msi_irqs() call
-in msi_capability_init() which have "goto err" which would access the
-descriptor to clear the mask.
+When fio size is 1.5G, the wb is in freerun state and dirty pages is
+written back when dirty inode is expired after 30 seconds.
+When fio size is 2G, the dirty pages keep being written back.
+When fio size is 3G, the dirty pages keep being written back and
+bandwidth of fio is reduce to 0 occasionally. It's more easy to observe
+the dirty limitation by set /proc/sys/vm/dirty_ratio to a higher
+value, and set /proc/sys/vm/dirty_ratio back to 20 when 3G pages are
+dirtied.
 
-However, we can=E2=80=99t make assumptions if the descriptor is freed or no=
-t
-as it depends on the failure location and on MSI_FLAG_FREE_MSI_DESCS,
-so one simple solution is to re-read it.
+Kemeng Shi (10):
+  writeback: factor out wb_bg_dirty_limits to remove repeated code
+  writeback: add general function domain_dirty_avail to calculate dirty
+    and avail of domain
+  writeback: factor out domain_over_bg_thresh to remove repeated code
+  writeback use [global/wb]_domain_dirty_avail helper in
+    cgwb_calc_thresh
+  writeback: call domain_dirty_avail in balance_dirty_pages
+  writeback: Factor out code of freerun to remove repeated code
+  writeback: factor out wb_dirty_freerun to remove more repeated freerun
+    code
+  writeback: factor out balance_domain_limits to remove repeated code
+  writeback: factor out wb_dirty_exceeded to remove repeated code
+  writeback: factor out balance_wb_limits to remove repeated code
 
-Also, calling pci_free_msi_irqs() after will trigger
-msi_domain_free_locked() again, however it re-iterates through the xa
-array, which should be safe.
+ mm/page-writeback.c | 324 ++++++++++++++++++++++++--------------------
+ 1 file changed, 176 insertions(+), 148 deletions(-)
 
-I hit this only once, but I can confirm the bug(and verify the fix)
-for the upstream kernel through stubbing return of
-__msi_domain_alloc_locked() to fail and with KASAN enabled.
-
-bf6e054e0e3f ("genirq/msi: Provide msi_device_populate/destroy_sysfs()")
-is the first commit that introduced the free logic from the context
-of pci_msi_setup_msi_irqs()
-
-Signed-off-by: Mostafa Saleh <smostafa@google.com>
----
- drivers/pci/msi/msi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
-index 682fa877478f..dd961151fecf 100644
---- a/drivers/pci/msi/msi.c
-+++ b/drivers/pci/msi/msi.c
-@@ -393,7 +393,10 @@ static int msi_capability_init(struct pci_dev *dev, in=
-t nvec,
- 	goto unlock;
-=20
- err:
--	pci_msi_unmask(entry, msi_multi_mask(entry));
-+	/* Re-read the descriptor as it might have been freed */
-+	entry =3D msi_first_desc(&dev->dev, MSI_DESC_ALL);
-+	if (entry)
-+		pci_msi_unmask(entry, msi_multi_mask(entry));
- 	pci_free_msi_irqs(dev);
- fail:
- 	dev->msi_enabled =3D 0;
---=20
-2.44.0.769.g3c40516874-goog
+-- 
+2.30.0
 
 
