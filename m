@@ -1,166 +1,133 @@
-Return-Path: <linux-kernel+bounces-162214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B997C8B57A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:15:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2FD8B57A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:15:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75BD8287733
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F3A21C22E8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777ED53E34;
-	Mon, 29 Apr 2024 12:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE906CDDF;
+	Mon, 29 Apr 2024 12:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="u3z3yMXW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="YdzBQ9nR";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="u3z3yMXW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="YdzBQ9nR"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j8u6Ry/C"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CCC53378;
-	Mon, 29 Apr 2024 12:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81ED5474D;
+	Mon, 29 Apr 2024 12:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714392787; cv=none; b=Y7biPPqprOGgaXNM4qA+UVnE5EvTdNBa/RKLJ2geXmSEO4nk8aJDn3Suzmb2NeGQJ5YJBUA31+v2jJaEqEOi5UWLzp/OEG8Z1d6ShrFQ1tNBWYtOdCQm7uoCT8MnqSQ77+GkFYHSEYiRJx/A8sMrcC1s/5j7DaNm9AbbTCEBU8g=
+	t=1714392811; cv=none; b=GyDI2KQK0B3hLqzsqVgBXjq9IwhphvQTYdgwLcfYhF5HU8kd8AXFGZXnvPdKWJWvp+ZtTU5WIn0WdSxbp99d32y/ZF/T5/T6d8TMxXkbYavYPz56TYFy7svwTgiNZFshOgR97AYmZoNi9D+SFPRlfMezG6MIfLGZuzoNRCoPCUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714392787; c=relaxed/simple;
-	bh=is+ZZRR1qjQpcT+IviiIaio3XkpSgD8LftCNzbntfDU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gcfi1w3+WppYsLpfqVNWFY2rPi19YZao1PZzxKXDYFL0Zytwhgjtb8I6sXuvRjdhUcR+PwNsFZRaKthIyUyq9iQQuM1SM5/INZFhGyyOtdmb8gsuse7h9pLJPvUqR3rfNhFT4WEwDSCcCLw7OQ1lIOleieAS58+3tJdOVQwB3Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=u3z3yMXW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=YdzBQ9nR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=u3z3yMXW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=YdzBQ9nR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 93FD233743;
-	Mon, 29 Apr 2024 12:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714392784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ta/xgiOSdujgYrMackSTdmdnjtlcI/U1edyYAhI44nw=;
-	b=u3z3yMXWNO1peNgfA6o0JOXiHGnAkbUREtR7LKVaUrARitgKPwq17nahal7yzRHFrLQ69s
-	CrBdf+jL8oXheHO5lI9ijJ4PmQC/FmHC+/3fN1sWC9MgL14ddkJ2fpPxkYellyfaiVW/tl
-	tY4p++rSyiULhpzQD2fndc9Nxn98Egg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714392784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ta/xgiOSdujgYrMackSTdmdnjtlcI/U1edyYAhI44nw=;
-	b=YdzBQ9nR91L3a8xEkKxAtGDdrD7etwTeKKJAmILTesf7JWrO1gBB8AmUdafI7HcBnXjUVr
-	rBSYifoEGomkUBBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714392784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ta/xgiOSdujgYrMackSTdmdnjtlcI/U1edyYAhI44nw=;
-	b=u3z3yMXWNO1peNgfA6o0JOXiHGnAkbUREtR7LKVaUrARitgKPwq17nahal7yzRHFrLQ69s
-	CrBdf+jL8oXheHO5lI9ijJ4PmQC/FmHC+/3fN1sWC9MgL14ddkJ2fpPxkYellyfaiVW/tl
-	tY4p++rSyiULhpzQD2fndc9Nxn98Egg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714392784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ta/xgiOSdujgYrMackSTdmdnjtlcI/U1edyYAhI44nw=;
-	b=YdzBQ9nR91L3a8xEkKxAtGDdrD7etwTeKKJAmILTesf7JWrO1gBB8AmUdafI7HcBnXjUVr
-	rBSYifoEGomkUBBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37A28139DE;
-	Mon, 29 Apr 2024 12:13:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +REoDNCOL2Z2VwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 29 Apr 2024 12:13:04 +0000
-Date: Mon, 29 Apr 2024 14:13:16 +0200
-Message-ID: <87il00pdsz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: ManuLinares <mbarriolinares@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	dengxiang <dengxiang@nfschina.com>,
-	Geraldo Nascimento <geraldogabriel@gmail.com>,
-	Max McCarthy <mmccarthy@mcintoshlabs.com>,
-	WhaleChang <whalechang@google.com>,
-	Lukasz Tyl <ltyl@hem-e.com>,
-	Jeremie Knuesel <knuesel@gmail.com>,
-	Alexander Tsoy <alexander@tsoy.me>,
-	Jussi Laako <jussi@sonarnerd.net>,
-	linux-sound@vger.kernel.org,
+	s=arc-20240116; t=1714392811; c=relaxed/simple;
+	bh=0IDV4wwXjhB7GAsTZK4UtfbDqgXcZqHx4iXcoFYyL98=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TS9X8pJR6x5DFnuolRv40z7zM7FuEkUELyMTWMoymacsfULxCB9OJKB9cK0VqdZxjbEGlpsKorW32Km3lv8zlYm/LM7nlsRsZYD9qF7Cb3NrLCr8gmhMfBAzQQtnuUrQdj4nsNhb+BZo8Ji3xtrQlevhnfAWnLAIdlsqG6gJCOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j8u6Ry/C; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714392810; x=1745928810;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0IDV4wwXjhB7GAsTZK4UtfbDqgXcZqHx4iXcoFYyL98=;
+  b=j8u6Ry/Cd1X3xeoM9dPpMUPXf2MzXrN9NnTIhdxYeSha1g8xW5NVexew
+   gzp5YZoNZxZdtYghF+N4FhU0BHSHCHTb5jMnSCyEMvy6DscOgdki5B4OD
+   jtdeQbKJ4JgRtyijMrdzUQdbSFlCL3hDlP047sqJXyD+GvZZ2+Pz051DN
+   oph6+n1PKzUcmsCccRzJdh7TH8lnAHBS7OEe8hXjq973YpPWLQjc4lVMk
+   A9MVXrR//dLPUnB+km2770Ul8e4+PPL3m8PjO5pnWAghhlLgdkm3NeUy+
+   lAHQPs0GHWfs6zZGxcVxFsDW7ClktpX1NgXxUl3ZQfUVA4URrW55FeTbc
+   g==;
+X-CSE-ConnectionGUID: nV1uzaFQQ/Gm3SBINfkdBA==
+X-CSE-MsgGUID: vJSuUidrQFyG6KLVVYr92Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="35440894"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="35440894"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:13:29 -0700
+X-CSE-ConnectionGUID: HP79hpQ0TC2blCYLTzid+g==
+X-CSE-MsgGUID: iY5ZkRPpRS2Ky2XYZSEJfg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26603701"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa007.jf.intel.com with ESMTP; 29 Apr 2024 05:13:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 23FDA15B; Mon, 29 Apr 2024 15:13:24 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: usb-audio: Add sampling rates support for Mbox3
-In-Reply-To: <87jzkgpdvm.wl-tiwai@suse.de>
-References: <20240428005733.202978-1-mbarriolinares@gmail.com>
-	<87jzkgpdvm.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] bpf: Use struct_size()
+Date: Mon, 29 Apr 2024 15:13:22 +0300
+Message-ID: <20240429121323.3818497-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Flag: NO
-X-Spam-Score: -3.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[alsa-project.org,perex.cz,suse.com,nfschina.com,gmail.com,mcintoshlabs.com,google.com,hem-e.com,tsoy.me,sonarnerd.net,vger.kernel.org];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Apr 2024 14:11:41 +0200,
-Takashi Iwai wrote:
-> 
-> On Sun, 28 Apr 2024 02:57:29 +0200,
-> ManuLinares wrote:
-> > 
-> > This adds support for all sample rates supported by the hardware,
-> > Digidesign Mbox 3 supports: {44100, 48000, 88200, 96000}
-> > 
-> > Fixes syncing clock issues that presented as pops. To test this, without
-> > this patch playing 440hz tone produces pops.
-> > 
-> > Clock is now synced between playback and capture interfaces so no more
-> > latency drift issue when using pipewire pro-profile.
-> > (https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3900)
-> > 
-> > Signed-off-by: ManuLinares <mbarriolinares@gmail.com>
+Use struct_size() instead of hand writing it.
+This is less verbose and more robust.
 
-Also, put a space between Manu and Linares (supposing it's your real
-name).  Signed-off-by is a legal requirement, hence it should be
-properly spelled.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ kernel/bpf/core.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 778775bdbb2e..6047979d5be6 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -25,6 +25,7 @@
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
+ #include <linux/objtool.h>
++#include <linux/overflow.h>
+ #include <linux/rbtree_latch.h>
+ #include <linux/kallsyms.h>
+ #include <linux/rcupdate.h>
+@@ -2455,13 +2456,14 @@ EXPORT_SYMBOL(bpf_empty_prog_array);
+ 
+ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
+ {
+-	if (prog_cnt)
+-		return kzalloc(sizeof(struct bpf_prog_array) +
+-			       sizeof(struct bpf_prog_array_item) *
+-			       (prog_cnt + 1),
+-			       flags);
++	struct bpf_prog_array *p;
+ 
+-	return &bpf_empty_prog_array.hdr;
++	if (prog_cnt)
++		p = kzalloc(struct_size(p, items, prog_cnt + 1), flags);
++	else
++		p = &bpf_empty_prog_array.hdr;
++
++	return p;
+ }
+ 
+ void bpf_prog_array_free(struct bpf_prog_array *progs)
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-thanks,
-
-Takashi
 
