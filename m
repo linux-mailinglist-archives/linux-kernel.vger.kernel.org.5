@@ -1,161 +1,158 @@
-Return-Path: <linux-kernel+bounces-162528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A548B5CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:09:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1BCF8B5D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:15:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD03E1F21F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:09:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0014B1C214C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31DA12C477;
-	Mon, 29 Apr 2024 15:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94EB812D767;
+	Mon, 29 Apr 2024 15:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="M1Y2gNmS"
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="fUpvo53l"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03609127B6A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C37212F58B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403108; cv=none; b=tmR/B/w/tt42mVF4I1SAg6e41A3FspEalA5EXRixrkW/wWV6YSBvFiLyVmvKlXcJR6i63mANymRZoqmnKocizZGF1bhXrvQJRN+W7E2q0QZhpi0uimTkSMBRWDxLyXLXtHXquVHvxmLBxeAvHmHVxlE7ItHKCpG1QVpLyM0MJwA=
+	t=1714403200; cv=none; b=qy+TItfszHPtC1vVAiSQ+wAyz7EO4b6+MzPNNz+GWmhE+Xdv+G2WR8k49qxW2/HDTB9yIG66O0y4Y/JnwePFFyu7eLUQOqUWNwB85t4F02HSr5L1ThECAwGqYpoEC4pgkFxUTEuU/BlttqVqSRK7IjpzjTz4GDHcAUCHuHozpcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403108; c=relaxed/simple;
-	bh=1j0StfCVwtH5LoYMUWVtbp8TzQTzEnDFIjwyMu0303U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=W+FMoMuzzB/KyP5XTsL2AZJFNt2xqN+dbi8YYyzAtVts5/39nxEqb3EiCa80gLuGWPjbZuskwqvFKJXv4X1eM0oRd88x7HcJSRDx7WMZL34V5UksEDzEYPDRJhm8gMt6TkgwNViWmqWzQuINPJDmNCwO63TyadVafFAD1u8Wxlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=M1Y2gNmS; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-78f0440656eso282462585a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:05:03 -0700 (PDT)
+	s=arc-20240116; t=1714403200; c=relaxed/simple;
+	bh=bVEuZKlZZ0yffOCE7tYaM0ZOFAKNB5aKfkAz8DnA8Vs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SnmINi688R514huf5pFstZSOS42NAVMtzFjaOZCjPhPZo57m94WN1ob2RFI2xj0mzgTjDNg04vyVx0vzvdd1rQ0F2u4/O2HRRPcmOQsyx2/8nOLKernZD2hSPKjYxieID3gZRPuWclVWjB4bRbx1+7NxYYJL2rXegSKaWNkojM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=fUpvo53l; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51d9d8c2c3dso210906e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714403102; x=1715007902; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WOR8+WeMkxm0czNaQrlO8zy4rfkYFKnx5dqFso5t3cA=;
-        b=M1Y2gNmSxFcSBHj5qZqDfTBtcsV4hTtOgHQ9gLfb603zu8DhUXOqKrtZa9F7t8Y/AH
-         NcfCZfogUROpsZVGTnOaHjBgTFwhXNlqDSgxXBdnw5YG896bEScn6cSNg8D9033ZBNoX
-         hJBLJNTaGPYTi+4vhJp9/3vPc1Qbp0Ggx0ulc=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714403197; x=1715007997; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rKUXibPhUwjjSXA/KBDdbbKS1P63ijLLovqIt9fNrZc=;
+        b=fUpvo53lbBf4n2bA5Sg7YpH7HFBUTMQ5sv01vh+iiAgUZVxq5BKtHj+7Z0BsXSNBnO
+         Ll55fUAgRh6/FpzCn/3iUY4S1bohNESIBNwD+t8fRgtjeWA4MoxbZWIX+0VzUjb28yBU
+         1o3N26Ter3YfPz3cq0plSad3gDEdmrratuNskZ55uHmwygcbL2ZPtOtMBMYi5xW5ytni
+         /yCXNdfOA7eMA/PVNcb9cRKqF+jzJivF6m84UTR+ckjsPQw3gHBjaBgKs+u6+RYqFzRO
+         NjDiE/M5MTgyhiyAb3ybRvTzeW63NaOCFxsCRCj+ZwLRZGbNkxkVn/OUJwwxlcJLTwOE
+         +Elg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714403102; x=1715007902;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714403197; x=1715007997;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WOR8+WeMkxm0czNaQrlO8zy4rfkYFKnx5dqFso5t3cA=;
-        b=a122MxmrgVceyihusb6B8lPTJU5QsBeTxD1WCqvFjIKrZ6Mr2OrS67a2bfBGVyUaWl
-         Ee53ef/nDp7Fxk2VEgOREqRH5qmKIoywGyT5owmNxY3u6+3DolRwvB1JMGrIHn78Nt7P
-         62rSFpW9fE2pEjIaDYkcYKUWwGhUtUwKKTZZYqJUMqfRN+QpQqmdpzLP3XwGuFVgzUtj
-         DEQ7ZervkN9Hbps+VCo/npFhjqB3c02020b5zwewdLuA6xKj/Wy4kzJFly4nt/tZ7xgI
-         rk26pVO95NWE5KLrAsPguO5tmjHJR/o6yOKRDoA3Uq8OFJNOP5VvpcT1t7f4Hgv2UlYC
-         cc/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUBm4CWGm2sz2ED6dwfnEJkosXyuj7Q1d3NIQ2Uk8i5QrlVwcYOrTrs9wnQkp4i2ddOT+qC66sA5LjsAMZ5EEAbBuGuLti/dnm8bfLC
-X-Gm-Message-State: AOJu0YyURQkG76PQIJzxKnkhYRFbYydVLTTytXJBxqUR1M6DKeivnIzm
-	ynCWJb7Ue2yHLM+vkwUqDoFFGShTcoUoA1y3auTTefAjRDi4TJ4jLnhdHTRa2g==
-X-Google-Smtp-Source: AGHT+IFvqATO8BLnIi9vdu5lMT65HlpTVBjzYUMzQ45Qpvw3JFM44+jkXB+KR4H073WWP4wnEfgBGQ==
-X-Received: by 2002:a05:620a:70d9:b0:790:ac08:8d4d with SMTP id vk25-20020a05620a70d900b00790ac088d4dmr11390058qkn.57.1714403102367;
-        Mon, 29 Apr 2024 08:05:02 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b0078d3b9139edsm10568591qkp.97.2024.04.29.08.05.01
+        bh=rKUXibPhUwjjSXA/KBDdbbKS1P63ijLLovqIt9fNrZc=;
+        b=iQJAeGetYV7PEr24ML7KKFX+Jx6RQCJuH4plnRuSvVrS8jOJs4WKQ7WhUaMObpZlLY
+         dtIhtK6Wt5swBePLEr1enPZgLP0APYnW6ZuugXZz6Ux/3RnbB++VK9zxxHYrnVF5/I1B
+         GZhonNDkCWir0aWWlvv+fM84h93XDANTHuCXpcnVVO9b9cg4C/m1ziLUs7kjiaLsWX1Z
+         qKze9pYkhEW7Ag5Rdcnrf922OEfTwzC0UmZT66z08Asifkj/cSq+c0jpeaOLpU/yiJQr
+         mT3bDGyQMkYEy5CKKWLX8xW9Y4biCIA03Pzzxi+b8O8IPPP1y2rD85AcBF/yDPdHriNr
+         hEnw==
+X-Forwarded-Encrypted: i=1; AJvYcCWslT0BO4AK2b53vWSQlf9ZsbDkxyOju7UIONBb8pd8U6b4Jt5tWrkRVVLW+1VnJw02OjVWr6PCzK1miDcoZp6Gqkrm8umTbWF9N57N
+X-Gm-Message-State: AOJu0Yxn0x+5XlImkZNlKhMhIBQu/ZeZgz+Oj0dWZowCeiyWRTE9bgLd
+	E8o8ltvrbDz35vqVidUxf2ruvUvt4H8KtuTk4JX69Kb3BwbL6nODo2stg6mLEWk=
+X-Google-Smtp-Source: AGHT+IHBeQWCMZrNLW0+ykllLuDLc1Y3CgTNKkl/oAAzYPksrb/JlVrkXxJwQYgzThm7ieqJgwd2hg==
+X-Received: by 2002:a2e:910a:0:b0:2dd:60d3:7664 with SMTP id m10-20020a2e910a000000b002dd60d37664mr6737706ljg.5.1714403196813;
+        Mon, 29 Apr 2024 08:06:36 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:2fec:d20:2b60:e334])
+        by smtp.gmail.com with ESMTPSA id l23-20020a05600c1d1700b00418f99170f2sm39646638wms.32.2024.04.29.08.06.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:05:02 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 29 Apr 2024 15:04:58 +0000
-Subject: [PATCH v3 19/26] media: stk1160: Use min macro
+        Mon, 29 Apr 2024 08:06:36 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 05/11] RISC-V: KVM: Allow Zca, Zcf, Zcd and Zcb extensions for Guest/VM
+Date: Mon, 29 Apr 2024 17:04:58 +0200
+Message-ID: <20240429150553.625165-6-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240429150553.625165-1-cleger@rivosinc.com>
+References: <20240429150553.625165-1-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240429-fix-cocci-v3-19-3c4865f5a4b0@chromium.org>
-References: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-In-Reply-To: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hugues Fruchet <hugues.fruchet@foss.st.com>, 
- Alain Volmat <alain.volmat@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
- Abylay Ospan <aospan@netup.ru>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Dmitry Osipenko <digetx@gmail.com>, 
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
- Sylvain Petinot <sylvain.petinot@foss.st.com>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Instead of a custom min() implementation, use the real macro.
+Extend the KVM ISA extension ONE_REG interface to allow KVM user space
+to detect and enable Zca, Zcf, Zcd and Zcb extensions for Guest/VM.
 
-Mitigates the following cocci WARNINGs:
-drivers/media/usb/stk1160/stk1160-video.c:133:12-13: WARNING opportunity for min()
-drivers/media/usb/stk1160/stk1160-video.c:176:13-14: WARNING opportunity for min()
-
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Acked-by: Anup Patel <anup@brainfault.org>
 ---
- drivers/media/usb/stk1160/stk1160-video.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ arch/riscv/include/uapi/asm/kvm.h | 4 ++++
+ arch/riscv/kvm/vcpu_onereg.c      | 8 ++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-index e79c45db60ab..9cbd957ecc90 100644
---- a/drivers/media/usb/stk1160/stk1160-video.c
-+++ b/drivers/media/usb/stk1160/stk1160-video.c
-@@ -130,10 +130,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 	dst += linesdone * bytesperline * 2 + lineoff;
+diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
+index 35a12aa1953e..57db3fea679f 100644
+--- a/arch/riscv/include/uapi/asm/kvm.h
++++ b/arch/riscv/include/uapi/asm/kvm.h
+@@ -168,6 +168,10 @@ enum KVM_RISCV_ISA_EXT_ID {
+ 	KVM_RISCV_ISA_EXT_ZTSO,
+ 	KVM_RISCV_ISA_EXT_ZACAS,
+ 	KVM_RISCV_ISA_EXT_ZIMOP,
++	KVM_RISCV_ISA_EXT_ZCA,
++	KVM_RISCV_ISA_EXT_ZCB,
++	KVM_RISCV_ISA_EXT_ZCD,
++	KVM_RISCV_ISA_EXT_ZCF,
+ 	KVM_RISCV_ISA_EXT_MAX,
+ };
  
- 	/* Copy the remaining of current line */
--	if (remain < (bytesperline - lineoff))
--		lencopy = remain;
--	else
--		lencopy = bytesperline - lineoff;
-+	lencopy = min(remain, bytesperline - lineoff);
- 
- 	/*
- 	 * Check if we have enough space left in the buffer.
-@@ -178,10 +175,7 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 		src += lencopy;
- 
- 		/* Copy one line at a time */
--		if (remain < bytesperline)
--			lencopy = remain;
--		else
--			lencopy = bytesperline;
-+		lencopy = min(remain, bytesperline);
- 
- 		/*
- 		 * Check if we have enough space left in the buffer.
-
+diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+index 12436f6f0d20..a2747a6dbdb6 100644
+--- a/arch/riscv/kvm/vcpu_onereg.c
++++ b/arch/riscv/kvm/vcpu_onereg.c
+@@ -48,6 +48,10 @@ static const unsigned long kvm_isa_ext_arr[] = {
+ 	KVM_ISA_EXT_ARR(ZBKC),
+ 	KVM_ISA_EXT_ARR(ZBKX),
+ 	KVM_ISA_EXT_ARR(ZBS),
++	KVM_ISA_EXT_ARR(ZCA),
++	KVM_ISA_EXT_ARR(ZCB),
++	KVM_ISA_EXT_ARR(ZCD),
++	KVM_ISA_EXT_ARR(ZCF),
+ 	KVM_ISA_EXT_ARR(ZFA),
+ 	KVM_ISA_EXT_ARR(ZFH),
+ 	KVM_ISA_EXT_ARR(ZFHMIN),
+@@ -128,6 +132,10 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
+ 	case KVM_RISCV_ISA_EXT_ZBKC:
+ 	case KVM_RISCV_ISA_EXT_ZBKX:
+ 	case KVM_RISCV_ISA_EXT_ZBS:
++	case KVM_RISCV_ISA_EXT_ZCA:
++	case KVM_RISCV_ISA_EXT_ZCB:
++	case KVM_RISCV_ISA_EXT_ZCD:
++	case KVM_RISCV_ISA_EXT_ZCF:
+ 	case KVM_RISCV_ISA_EXT_ZFA:
+ 	case KVM_RISCV_ISA_EXT_ZFH:
+ 	case KVM_RISCV_ISA_EXT_ZFHMIN:
 -- 
-2.44.0.769.g3c40516874-goog
+2.43.0
 
 
