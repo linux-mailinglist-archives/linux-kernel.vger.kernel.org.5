@@ -1,92 +1,120 @@
-Return-Path: <linux-kernel+bounces-162665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BB28B5EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:14:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D688D8B5EB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED6E1C21546
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:14:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 136D31C2169D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632198564F;
-	Mon, 29 Apr 2024 16:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B5E84D0B;
+	Mon, 29 Apr 2024 16:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="opFG75l1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jEgCPSL7"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823AB84E15;
-	Mon, 29 Apr 2024 16:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA57535A2
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714407272; cv=none; b=ezZALn8cFa+Z3XFCRyEtl2lWNEwFZvX+oZov7qxrovSB0eDLnQmnNVcn4mA86b0wXuceZvYXGyDStkHAQtePBCyEQ8q73L0dT/e3NxAnscqcUN0BfYKXVKnSBSQivlXZYWGB7CPLZH0t+iY+MfCCQ1fjp9Ej4R4dKBWpQXQlha8=
+	t=1714407370; cv=none; b=CVGES5PFzyL1M2Iy+ZvbqZzQugj46ztFeV+H7LhdwHmTeG3ZxOhdoYCyoND1UEnTahjhcMT6ReIyFM31gjixkdDBvz+MNm9gVjlBUrbFsbZCoonyhXzmWQSfLMH/8CQAruAgkYjWNGT2wqJb+1Ftzf3ZjRpOo/nhmtyFiovAMiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714407272; c=relaxed/simple;
-	bh=8TgknXW2nRuCRYEDQcohbK1tjflgHkvvO4mslMioqVQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FYTkImdrMjq39SbiHW9dQfOVRoE/774n6RZyXYF0EcW74rXvDJXpOHR/gZc5faUk2eSuOiO5Rp4+/MIbluyTVtJ0s/zwDV9KdQ1V5qd3SpcMFiDSscLoDhQ3Jpk9dqZmlV2knFDhGpV59RXtMH9pE2DIlFYVji3vkhoTYWXW40o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=opFG75l1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9061C4AF19;
-	Mon, 29 Apr 2024 16:14:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714407272;
-	bh=8TgknXW2nRuCRYEDQcohbK1tjflgHkvvO4mslMioqVQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=opFG75l15B4u2m1seEWAdfME4XBzWmXYYhz4UqZlVy+JM4dQNi5Ao05N6EFMEAbMD
-	 lbWnpOpH+OOSF+6Q8836kuXsmOeWBme5lHERzLUYGYsQ6mnG8YJVmcDgo3SsAjtAfr
-	 Q/INyLbjWlKR2UiXLRFWdHyLUW+oUjTe5KChDKa6yuI4Dsoq1s8RU5n8yZScND56Di
-	 O/inyLh6dLPBm2LjuRCv4akJDqqZr7mLMB+axLNw6D8TjbTQeTTSsdRYESYhSg9Ruh
-	 49xj0v0RR2/YEfRw4sKsi55mDzCzXH4rJPAFymXBxv7IqlfUZ/Y9GLfWsUr/eU8zZU
-	 /OhekKRkJMZKg==
-Date: Mon, 29 Apr 2024 11:14:28 -0500
-From: Rob Herring <robh@kernel.org>
-To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-Cc: Thierry Reding <treding@nvidia.com>, linux-tegra@vger.kernel.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-sound@vger.kernel.org,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] ASoC: dt-bindings: tegra30-i2s: convert to dt schema
-Message-ID: <171440724894.1987444.14829061739938565881.robh@kernel.org>
-References: <20240426170322.36273-1-sheharyaar48@gmail.com>
+	s=arc-20240116; t=1714407370; c=relaxed/simple;
+	bh=owIzVogv4Qw/oYcoIXYyMgnDSnVXcxUoyS/wWNB0VVg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RWzEFQUlIh+6xyAwbduRUcAscB/0w+17cmmzhP2a0kktfqLRIz83XFRpr8zIeKRh74u6BPYn4bsdtfoMT4dyYc1aBjIF0jeyRrP+oW/ajl1erBpcZANd8LIVezGoEqM5SB3tRGK0tZXTeqi6VHy4aBtSTupcBB6CIF5/NyLkeJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jEgCPSL7; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e2bbc2048eso40474415ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714407368; x=1715012168; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=up3/fdKYbKn8KYnOeLYCwwUMCKqtp/CYqkoyNeCtLiA=;
+        b=jEgCPSL79gZekHzp3/45SFkDRo7ypQYvHUyghrJfKqhhlpRa9ZMSHQO2uVm+DGUCe1
+         UowY5URBdF6QVJoyHwCq8G3RhKsaR28D3MgtvUWHtzCwK4JHZoRRy8ueVCq9xgRbzRCt
+         fMm8qm1VgfaUmLyluNPBSZZoiM2jbWo7M484bhHQVFsUgHbpb1oIcF9iV5BP9nyDAun/
+         RPz0Fz+dJG5bZFDcyWA+sprvBr40fZvr6In5BGYEwXI15axUSOgDDqeMi5AkGRAHCQzM
+         Kq2G9mvJRx5pjsh+qwlOnC1iLQiamWHy5g5v7tl3+/NfdeyYDJ/1m7hC6sAPDQEIc5Bo
+         ot5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714407368; x=1715012168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=up3/fdKYbKn8KYnOeLYCwwUMCKqtp/CYqkoyNeCtLiA=;
+        b=hUUhBnFCInMQvnvO2/n+YBLl0O44suZqxOLdxg5/wJlzVbvVVsSKAKe8UIIv70eCFd
+         eBMxfSUzaE6eM4YtiwuczAobgWdr+7ml4JVZRNKffv72Wg6p+iZzBPjFvHAoYGv/ahmH
+         5TrCW/eVhYbIyf2xIrFDACHCrUmN50XtsUwqs084R7xripBbUtJeawxhJMVlbMGnl3Bf
+         /w0J9/gaPkz6vU84VNPdbm3ZHvtf2XnHD+fhQpCjiHGuTDSfyozJnYhOraTyknxbjzeQ
+         xua+CirblvH3OUTsDmA43EN+LLh6MSYlLyVFl+Jl2/aXuszDLLrm8xspqlNiFNI/SoC2
+         qYeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXCNGFjnx3Qwl4zt2thrlumKMpBJMoPqtscIvCm6RWNu7F0Uv8Cc2qcGIH87T+ndyxe5+P622ho9I1gNZ82S6lAuKxyv0Xfw18sXb+C
+X-Gm-Message-State: AOJu0YxQwghApRea/VLNYR755VWFm9lRdl6hhTqTsPnuq/lK77XzBkAJ
+	b4cPmoJTakAkzscu7DQ7CD615fB1+8AfuObxRKRubZhkoMtvpYg+NXASCAzHZYjU2a10S0IRPDY
+	NgCMOL+rLNXVPcprkbxHIcIqiGtg=
+X-Google-Smtp-Source: AGHT+IGfPQVfcz7PbTTS7VQY2ZPnXSQy2u3EbjBP8lla+K7zNwQzvnmc4QBBgeu2oV6hTU4MQBLIuwwekvrVEROpSrg=
+X-Received: by 2002:a17:903:1246:b0:1e4:31e9:83ba with SMTP id
+ u6-20020a170903124600b001e431e983bamr13341631plh.1.1714407368452; Mon, 29 Apr
+ 2024 09:16:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426170322.36273-1-sheharyaar48@gmail.com>
+References: <20240425013553.35843-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20240425013553.35843-1-jiapeng.chong@linux.alibaba.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Mon, 29 Apr 2024 12:15:56 -0400
+Message-ID: <CADnq5_OcjDhKHeH32VZrie4j2S4umkxukzSygXyfC3sq-zY2gg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Remove duplicate spl/dc_spl_types.h header
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc: harry.wentland@amd.com, sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com, 
+	alexander.deucher@amd.com, christian.koenig@amd.com, Xinhui.Pan@amd.com, 
+	airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Abaci Robot <abaci@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Applied.  Thanks!
 
-On Fri, 26 Apr 2024 22:33:18 +0530, Mohammad Shehar Yaar Tausif wrote:
-> Convert NVIDIA Tegra30 I2S binding to DT schema and
-> add "clock-names" property used by multiple tegra i2s blocks
-> in arch/arm64/boot/dts/nvidia/tegra132.dtsi. This is not a
-> required property by the binding.
-> 
-> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+On Wed, Apr 24, 2024 at 9:52=E2=80=AFPM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> ./drivers/gpu/drm/amd/display/dc/inc/hw/transform.h: spl/dc_spl_types.h i=
+s included more than once.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D8884
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
-> Changes v4->v5:
-> - removed redundant example
-> - removed redundant compatible
-> 
-> v4 : https://lore.kernel.org/all/20240425153045.49939-1-sheharyaar48@gmail.com/
-> ---
->  .../bindings/sound/nvidia,tegra30-i2s.txt     | 27 --------
->  .../bindings/sound/nvidia,tegra30-i2s.yaml    | 67 +++++++++++++++++++
->  2 files changed, 67 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
-> 
-
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-
+>  drivers/gpu/drm/amd/display/dc/inc/hw/transform.h | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/transform.h b/drivers/=
+gpu/drm/amd/display/dc/inc/hw/transform.h
+> index 5aa2f1a1fb83..28da1dddf0a0 100644
+> --- a/drivers/gpu/drm/amd/display/dc/inc/hw/transform.h
+> +++ b/drivers/gpu/drm/amd/display/dc/inc/hw/transform.h
+> @@ -31,8 +31,6 @@
+>  #include "fixed31_32.h"
+>  #include "spl/dc_spl_types.h"
+>
+> -#include "spl/dc_spl_types.h"
+> -
+>  #define CSC_TEMPERATURE_MATRIX_SIZE 12
+>
+>  struct bit_depth_reduction_params;
+> --
+> 2.19.1.6.gb485710b
+>
 
