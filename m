@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-162489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B88B8B5BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FDA78B5BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D2E61C218B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:51:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0EA51C218F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323AF81725;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E7781737;
 	Mon, 29 Apr 2024 14:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="CXNBUgdO"
+	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="R/pc/Wc+"
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904087EF18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9044C7EF1C
 	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.227.64.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402259; cv=none; b=haRX6ME3VkKmlvnQ/5zpo2iXA1F8jyY34G1/Eub1tKoShXe25M4TNicWxJadQAWtCwe7OqZz05PaubpIfQRDf2iFpS4SSPwSFqtnf7FMZhxnbJ0GBQQ4UneO/aYqsywUofFAZkS9eABANn6i4e1KEkjcDTc9QcR1WTy9DbvFMtY=
+	t=1714402259; cv=none; b=W2vQuuUgYmv1IwuDTXczFpWDBXCfnYl9U4V3MR6sWNKgLooCZCvFYFLu16R0/9GNAju+LqIVGYZWShQhAsQFEqOnAydh6eaNEHk50rndvZO1PuqlAS1+EHek8/tWo3QSQ0yC1+7jtw+axlspVvC71ppafmZGDWt/FXfgcVywN0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714402259; c=relaxed/simple;
-	bh=LPUEFAe2CFZFvNUk6/2zfnIXl6UTcgi77ORqhlB5NFU=;
+	bh=ta4hw3RJe3RLJyhrYAahLj+IfUyV8pprABjjd5hupD0=;
 	h=Date:Message-Id:In-Reply-To:References:Subject:MIME-Version:
-	 Content-Type:From:To:Cc; b=MZnbEX1YKvRm252++bu7POu7XWUqoIMJ4Gx4vnwDciS1p+CP1MYXND9WUCbvaDbDEOcHRb+qS0z5PV4l5jFjN+5PSpNbvrUQrLf4C4xD3Lvzwn/lG0qhEFM3kfxPo8p8flQEwrBhTHkHsl/I6ZajSd8VVyDvhVrCkRSnhsvN8X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=CXNBUgdO; arc=none smtp.client-ip=91.227.64.183
+	 Content-Type:From:To:Cc; b=GABZahlPAEaa3vmEKbZtTUovMqD6IkAAg/Pcgc3JzUgT6CkvF587c2sbp3Ktw+rsX00MA4Wb2blT7H9+ag1p1/96cb+o8fcS0Ykw5iQRzFa6qHxvmh+Vx/jI0f1GWeeEHHc3XC/cEtVZV/v2Z8g6qyeHhc49xzVZJtV3RdTroNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=R/pc/Wc+; arc=none smtp.client-ip=91.227.64.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rere.qmqm.pl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-	t=1714401928; bh=LPUEFAe2CFZFvNUk6/2zfnIXl6UTcgi77ORqhlB5NFU=;
+	t=1714401927; bh=ta4hw3RJe3RLJyhrYAahLj+IfUyV8pprABjjd5hupD0=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-	b=CXNBUgdOn5PNXgtyDNwXHO8yQOrEkUxX54+HLpUqqlmPCxNpmwaO4VcqfAGzitumj
-	 kMM5ltDX112P8EZk7MFGls3nhyXJfeysaS1C5DXOir5WwYRJQNTsOPeH8SwrTjsJil
-	 mnCcRq1nZd2X0FNGxsZd8xfDXdyhvLrKGbEC/g3ahNDVr9CbUuGpW+rqZkBDwMa5S+
-	 rxtxcee5ggpTAKmyCrkmKryRC/qY4V4QOkaRIs+YVqCDffKcY6zU03+hrs1Avpl7qP
-	 70ULbKdGL5+YBiSjD6IOORV1mbCgIQpTNvAhMVr2yYSjmSmyqbmFtaIu62fWrvJft/
-	 Nii0ChNLj3/Wg==
+	b=R/pc/Wc+3xgD24HE1IGkzNHeLQarLD6Dsr3hEkxHFYqDW0dM7fd29VYL3Xk0IfEVq
+	 u8XdiNBTA9LNRyymrwKSZyRqlGMGKcbARbrTK3kv7tda+NKtoixGcVBQ8IFIbq5+Ev
+	 nmuyOBTf0RtDfIvmbj3tIC7YyCRPrUOmeUu9HIyGhP0U0W4sFyKGyNiz13VGTg/54H
+	 O23z1nsQ6zTkGuTTA4wJmJbwTVjMk0tkFu1fjNOf/bxuHSdR8v0hhWy1AgAbhQc/Fo
+	 DH32ieTI2bMg20Fsv7oUyMDx323yUmA/ehB11iBhIwjjtOOhr92k7NKcYqFhioVXYB
+	 wv2jIrtEb36Mg==
 Received: from remote.user (localhost [127.0.0.1])
-	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMr0vyHzBL;
-	Mon, 29 Apr 2024 16:45:28 +0200 (CEST)
+	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMq5ftlz8k;
+	Mon, 29 Apr 2024 16:45:27 +0200 (CEST)
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 1.0.5 at mail
 Date: Mon, 29 Apr 2024 16:45:27 +0200
-Message-Id: <17f0bcb197b82e6a7bd8860178a363c96f85572d.1714399603.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <2680c3b712b36a3ddc279b7efcd87dbf2f24ccaf.1714399603.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 02/12] regulator/core: set_consumer_device_supply: remove
- `has_dev`
+Subject: [PATCH v2 01/12] regulator/core: _regulator_get: simplify error
+ returns
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,44 +63,72 @@ To:	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
 Cc:	linux-kernel@vger.kernel.org
 
-`has_dev` is only ever used once to check if the name is non-NULL.
-Inline the check and make the intent obvious.
+Remove unnecessary stores to `regulator`.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/regulator/core.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 62dd3ac19e6d..5db3bf08145c 100644
+index dabac9772741..62dd3ac19e6d 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -1738,16 +1738,10 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 				      const char *supply)
- {
- 	struct regulator_map *node, *new_node;
--	int has_dev;
+@@ -2222,15 +2222,13 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
+ 	}
  
- 	if (supply == NULL)
- 		return -EINVAL;
+ 	if (rdev->exclusive) {
+-		regulator = ERR_PTR(-EPERM);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(-EPERM);
+ 	}
  
--	if (consumer_dev_name != NULL)
--		has_dev = 1;
--	else
--		has_dev = 0;
--
- 	new_node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
- 	if (new_node == NULL)
- 		return -ENOMEM;
-@@ -1755,7 +1749,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
- 	new_node->regulator = rdev;
- 	new_node->supply = supply;
+ 	if (get_type == EXCLUSIVE_GET && rdev->open_count) {
+-		regulator = ERR_PTR(-EBUSY);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(-EBUSY);
+ 	}
  
--	if (has_dev) {
-+	if (consumer_dev_name != NULL) {
- 		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
- 		if (new_node->dev_name == NULL) {
- 			kfree(new_node);
+ 	mutex_lock(&regulator_list_mutex);
+@@ -2238,32 +2236,28 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
+ 	mutex_unlock(&regulator_list_mutex);
+ 
+ 	if (ret != 0) {
+-		regulator = ERR_PTR(-EPROBE_DEFER);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(-EPROBE_DEFER);
+ 	}
+ 
+ 	ret = regulator_resolve_supply(rdev);
+ 	if (ret < 0) {
+-		regulator = ERR_PTR(ret);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	if (!try_module_get(rdev->owner)) {
+-		regulator = ERR_PTR(-EPROBE_DEFER);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(-EPROBE_DEFER);
+ 	}
+ 
+ 	regulator_lock(rdev);
+ 	regulator = create_regulator(rdev, dev, id);
+ 	regulator_unlock(rdev);
+ 	if (regulator == NULL) {
+-		regulator = ERR_PTR(-ENOMEM);
+ 		module_put(rdev->owner);
+ 		put_device(&rdev->dev);
+-		return regulator;
++		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	rdev->open_count++;
 -- 
 2.39.2
 
