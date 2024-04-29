@@ -1,107 +1,109 @@
-Return-Path: <linux-kernel+bounces-162467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88DD18B5BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:43:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E728F8B5BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:44:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45C0C28120A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24C121C211BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CF97F7C7;
-	Mon, 29 Apr 2024 14:42:58 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F299E7F487;
+	Mon, 29 Apr 2024 14:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Un7qa4q1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF68D7E105
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D0A745C5;
+	Mon, 29 Apr 2024 14:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714401777; cv=none; b=ccvbrn0C9HggkryE9rZJM+p5j5KwDAFqkTb3PF9P/kvWtuPBPIqgSRwP0PUdG8IzeL61d1qJw8sk6+ZBw8NKV06XfFxajEMCayc2W0RSzEm+8gcXzR9eIiyCta8o6u6xPvQiCEj3ZDyIvDP2OIzakSCGIcobZwBt94sTtlxamms=
+	t=1714401854; cv=none; b=Ap5SmytI9+2VlB77C+By00g0qmp9nq24SrLmKdFO9tqn6vRFPmMUOLEyPnnGZ/bujBcDsPkRG9WR41AdnG8yReBQ5yvJawmMz1qwNDO4iEGz6wou65M9vTUVYz14rtKS+/B+XuXXk+YyNOjJLrlJ+JC8dTPzIUk/uzBZ2GTH300=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714401777; c=relaxed/simple;
-	bh=4KHo3K0yMqAtatyZFcanNVB7mzLD4SlZydyr9+0iJPc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L1Tb6KyZbAVxHy8ShV+MnHH3Nk8XzXZ9lzFx+Fy79Ppua5+IKOkoui7RmLS+gB66uAQVAc/AKuzmQJnJzkC/hDEoU8TcHFOTbF5Y0yy8RaHLn6bmGpodxCVYNJckOX2vQH+nuiSQ8lVtYNM849ar4NqrRONcKl1B+PIqtkylIT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-61be4b986aaso2532007b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:42:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714401774; x=1715006574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w9Gzfsp8ljXq//x61giKmA5xlVQsBt5j2vtHzz0iF6k=;
-        b=QP3q505S5TZnpnDx9hpy7Dnl1A6aEukK9nX2DYq5R7gwPWhV6/KP3BL4w0hbyoqVvG
-         LmFxNit85C3YYFJ/UUlB5jkK5jTLnsbKuW+A5xvq+PsEAQf+7Q8BiylMNYTDr5q2PCxy
-         hGQkD0ArZ2bdzJxhLCNtZ8aidKOsI7ZB+Q1uQG6t4aMsmo53dmrtRYxiBlR+5nsiIgEp
-         S2wm/F01gfeHCYLHSNZizCvanfe5LRwdI+4EfclhXatdacKIey+SyWu57iw+enn5Dt6P
-         ArPWKvJxMR3sfw8DIjQCBeN76DJFThvOVNGpqgR4bYr3IRgXpPdUpXE6s3KKofsXqx9a
-         gLyA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1F3vLrAbaXgIbkK1Trvx7J1KGeOB8iUTiGhhewVTVXHX+V3V1t0Dr0bH/D7aif44H58KBT+RSeGkf+mIzU2KdNbcZOiIJdzUcDsVy
-X-Gm-Message-State: AOJu0YxjTaAlODUmF1Z67c3VD+1cLO+C/Bi+JriLwUM/QKr2JF54WG5Q
-	CaWq9Ger1Pt0/mf9yqMT9FZT3yMyxCmlSsMbUtj9arfL8oMSUqqqnPcZzkAf
-X-Google-Smtp-Source: AGHT+IHU9KWt1ZrDIAJYSsZ0DUJ4dojY5EZPSjlSsTLUI54iDWNcIuMyDPugFY0Sq08kPlNXxbgTKA==
-X-Received: by 2002:a05:690c:708e:b0:618:91a0:70f with SMTP id jg14-20020a05690c708e00b0061891a0070fmr9320444ywb.6.1714401774377;
-        Mon, 29 Apr 2024 07:42:54 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id u17-20020a81b611000000b0060a046c50f1sm5447110ywh.58.2024.04.29.07.42.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 07:42:54 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de5a7b18acdso3714387276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:42:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXMsFDvmMc6TV4dXunDQ0M2Y71RYxSakhgMhFRax0AzrpjawGibrD169ik1u8OX0G0LU16pnzJkTxxTbV/4iGhxP3y7P9GcWqCl+2dP
-X-Received: by 2002:a25:b286:0:b0:dcd:2f89:6aac with SMTP id
- k6-20020a25b286000000b00dcd2f896aacmr11362965ybj.10.1714401773859; Mon, 29
- Apr 2024 07:42:53 -0700 (PDT)
+	s=arc-20240116; t=1714401854; c=relaxed/simple;
+	bh=OJZ8QasGzmijXQVkG9V9fKJa/f1XqrNRU4PDTZrp2Uc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=enLhwMWtDh2OI2tSJaW+skMgVDmrWMlrWMcvIc2rMH+YEtugHojo3N+hDDCHg02H/A5dabnAU0Yp0F/cJIG1vSnH8LNsf8wz+NQB0UcRHeHqgaaZQXoGik9kZ0tXxlh2gdfn96J+A36+TEND2v7/oPeDxAdhcJv6IB50JBdwrP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Un7qa4q1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 331BFC113CD;
+	Mon, 29 Apr 2024 14:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714401853;
+	bh=OJZ8QasGzmijXQVkG9V9fKJa/f1XqrNRU4PDTZrp2Uc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Un7qa4q1crb9OyUCdLgWWFuWgrAJiyu10NlOIPbgqHlSAu5OabyJzuympIYoUdPs6
+	 ZOpE/xD0zuKphaxaryHG5bX1bslKr9WWvdK7Qpo3CePYkL5edQ6vIMaDCCeuKMaJdG
+	 Unr+BrxRThdxZ9xwq3c70enLrL+2Z6xLcLI/4VOVQ39KBlwa/j7No45GvCubpp0ET3
+	 0JFK/No4MqUSECJUFjAqu4Ok8TM2rPhxD3StLSH56Ij34VDbWB68a5+JgJWsQcdk6l
+	 tP21IlUe9bKrXVI6yJuibFAAzun3HDtIbtNAN9RGOUgLXlMeq2k7kEvKuOPQI3i4QZ
+	 T5cyBQycWYnnQ==
+Date: Mon, 29 Apr 2024 23:44:11 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v4 05/16] SoC: mediatek: mt8365: support audio clock
+ control
+Message-ID: <Zi-yOzFhgKQXx9tk@finisterre.sirena.org.uk>
+References: <20240226-audio-i350-v4-0-082b22186d4c@baylibre.com>
+ <20240226-audio-i350-v4-5-082b22186d4c@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240330175720.126122-2-thorsten.blum@toblux.com>
-In-Reply-To: <20240330175720.126122-2-thorsten.blum@toblux.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 29 Apr 2024 16:42:42 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW==FUNJe79TPi_3r8VP1jUo6LOL1MvJgEr4uRgd1yr3w@mail.gmail.com>
-Message-ID: <CAMuHMdW==FUNJe79TPi_3r8VP1jUo6LOL1MvJgEr4uRgd1yr3w@mail.gmail.com>
-Subject: Re: [PATCH] m68k: amiga: Use str_plural() to fix Coccinelle warning
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LT6g6VETYU3X2f5e"
+Content-Disposition: inline
+In-Reply-To: <20240226-audio-i350-v4-5-082b22186d4c@baylibre.com>
+X-Cookie: TANSTAAFL
 
-On Sat, Mar 30, 2024 at 6:58=E2=80=AFPM Thorsten Blum <thorsten.blum@toblux=
-com> wrote:
-> Fixes the following Coccinelle/coccicheck warning reported by
-> string_choices.cocci:
->
->         opportunity for str_plural(zorro_num_autocon)
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.10.
+--LT6g6VETYU3X2f5e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Gr{oetje,eeting}s,
+On Fri, Apr 26, 2024 at 07:22:34PM +0200, Alexandre Mergnat wrote:
+> Add audio clock wrapper and audio tuner control.
 
-                        Geert
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+--LT6g6VETYU3X2f5e
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYvsjoACgkQJNaLcl1U
+h9CAlAf7BkKtB98FNb4ZDCugUcYlYByugcjzPafZiPbUVpmYfmvJYoiOrSDEXePb
+NRZWBGpWUDpa1l+TOGWwcOQegbbwV48nDMyJnQn+CXRUvUg0dePpRmUSLsXCwB0+
+X6Z+EJ9hoQ3OrqBmt1mTld6Uk5GoZWkhoJ+OcEKXoLtQJcfUUL8uCqjciW9ySs+g
+ibgnMTOqccfOfUoZNYTGIKKYypfUnQHFcKV5Lk03UtWeatQXk5SUe131QsK2w5xB
+8uFXF4PuB9RiX0OQEtKgENtVVwajA3M6z3euJ2RkXwqtR+klGzgUJFFnJKjJQmye
+wr8Eom+wgxxY7GyPGD3aRCnBuFDyHg==
+=ccn2
+-----END PGP SIGNATURE-----
+
+--LT6g6VETYU3X2f5e--
 
