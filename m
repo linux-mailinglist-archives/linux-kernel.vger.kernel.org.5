@@ -1,202 +1,237 @@
-Return-Path: <linux-kernel+bounces-162775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FDC8B605A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:45:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285948B6061
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:46:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8E7D1F21DB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:45:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7E601F21F72
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636E5128815;
-	Mon, 29 Apr 2024 17:45:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9803C12882F;
+	Mon, 29 Apr 2024 17:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ov084Mox"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JtLSw0kt"
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37296128396
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E6F128399
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714412723; cv=none; b=eztzwwwTvHq1VYmT53D0NV0iatkzfdDjX7nnHRkNUD/sNPqKrLJx/HF8iEv7Z2yZB5JgMZ2dng1t/4zYUXNnRgmFJogHHJYbodA3FgjxgvWk1gYQoA5ZiM4011PgJVIUVE24mMSNJe8sT10hFSkkZYxo5OLRP9MQQzASQG53P/c=
+	t=1714412758; cv=none; b=jFhuViO6PJ6ZE6Jqwj3+kCX2fk+e9Wlbcs/H8ZbOcxUimz0foJG4lwgmIJ1nIb8JTwp2CLtiJgersWNDqc5vj9dGZ8tu0+K4GWNatQdpLlf5n6HbQhcVZp0byHqwKbGtGIAW+ivnJozjqtpJxrvox8gLnpHnP2GT98Lib75n77A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714412723; c=relaxed/simple;
-	bh=yC65xUsXdzGIMRm3JuMM7ViqdUqr5hPlZJ/3EznCieU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WCRXsmRg+d0jBfT4zwV6MVJ6zNvcP4trroMyBggNcBKOq2IRfbE5ECeWpbuFfOxyHnBZjBxbhWqzjLaNDPiDAT0otDaUiXRK7Ql8+JaxE3lvX6bM4ptcUoi0ThC3mSZmb4S0NTNq8g0Hek9t+Hg97OWAIReC0ATNtUfxAqRDw+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ov084Mox; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f3e3d789cdso2829751b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714412721; x=1715017521; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7G4KfVVL57asc6jdAgtmGDhKAJMXo7zTUk6MT6QrGQs=;
-        b=Ov084MoxZwzc68hma6vAnIR8uCO0cWqnShjwT6JUQeOskaP5u9lMmSKdobwGOfKmpk
-         Z1fIXOGeRFbrIpiQPsBF/ue70oWxkCy6vS0jvX6pe2exKXlXX4Ps9KADHxR7IlOtkeui
-         hXKLKj3VJZm3nwJYb67sGOlaK5iSmBXLe9+vI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714412721; x=1715017521;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7G4KfVVL57asc6jdAgtmGDhKAJMXo7zTUk6MT6QrGQs=;
-        b=EshRBVnoW+5V5o51A0Qt7TyZGQxeXw8rrv2BqDu7JnxUXxSrgRybGmmlHdV2UJP5JQ
-         NIkK0LGs7cz4kXxqI4EUExRZZW6Jn+DDLOZ9cQN1Hge8xi7dje2AQjxeg46ATqe55xsi
-         U9rMebH/d3QWpr9Miy/nQuLpLiuMpj6LC58sb8pq9SDh9xYKgRygsEVM05svOadI39vt
-         9l6L5mJ7bPZMvU49LEO+XNk6pnNPJpX6sz8or993J9Ar3+HIhD6swbygcx/1MobYY+mc
-         JDugezfzLIuDHmg7SBixMD4H7gIPQC1TxgEsnEKHUhJT0acjuy3s5EzO69GnEAy2qNsQ
-         tttw==
-X-Forwarded-Encrypted: i=1; AJvYcCWsHGzDBMDlOCJR8u6jKi45K5YMZtPG6h5ffJKl1rvBYa2aNw4EpmkMVelCq6VQVta9OIG3gxfSY0SnCYPacNt6ofAzLr3ET6pTR+uK
-X-Gm-Message-State: AOJu0YxJJYuTKyWZ6vRiCx2Rp27Jo/crfcBiX/zo92TQQe2fa7I3vumh
-	BEbyXVAm0lac9diJt1b8hrwNb2+yuWgsQTVrIfF4+yDWQIQrXCvFdJoVzUZBKQ==
-X-Google-Smtp-Source: AGHT+IFGc3/kOEV9/ewwKn9tq1l3GHLYlcfc71HQx0P4bfGndPtYd6mE9UF3L0lkmhnYTfEDthuc1g==
-X-Received: by 2002:a05:6a20:6a99:b0:1a5:bc5d:3c0a with SMTP id bi25-20020a056a206a9900b001a5bc5d3c0amr12084908pzb.61.1714412721543;
-        Mon, 29 Apr 2024 10:45:21 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x5-20020a170902a38500b001e2bfd40b86sm21028740pla.47.2024.04.29.10.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 10:45:21 -0700 (PDT)
-Date: Mon, 29 Apr 2024 10:45:20 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Erick Archer <erick.archer@outlook.com>
-Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Justin Stitt <justinstitt@google.com>, linux-sctp@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sctp: prefer struct_size over open coded arithmetic
-Message-ID: <202404291044.E9A6A13@keescook>
-References: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+	s=arc-20240116; t=1714412758; c=relaxed/simple;
+	bh=lFxLGe1ug8Ra1SKtFkV6OMijDJZuGgOGdi/k0+rQBX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HpxaC1ISBfX/NIcDeEnjrrl88fqc3avGQRoCVxedalGABT5c0E5D1VyMIq5mZFSBY6jj8Fo+QurWQUx47WZapZ3MkH+L5WMUQo4cGJv+TrEBCyfj2I9iz1wA7Iku7IlLGB1UCluZuW4ppQMKWEoL/BXZWr4ClKIgPh2A4OnUtcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JtLSw0kt; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <eeeac631-6495-4b4c-9423-490839397dd1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714412754;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r7oFU2BoxCCtC1ccNHcqKzlkmI8ESHX9lPB03PGJn9w=;
+	b=JtLSw0ktJVMmaBbu6NfLE+Nn85jlnfqvxnNX9ctwmRVvOlVQ76zPhEb3KLuYPLINVhDyjC
+	D2VvztNkf47xQd6IvC8FZmJ2Lz8Daux/v/kPMKs8ooAmhCD/foy6zqxoxWiW3HUe10U1IV
+	YKYqsoVsy7jX3zgD+TvcLD7X3Bezbfw=
+Date: Mon, 29 Apr 2024 10:45:47 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+Subject: Re: [syzbot] [bpf?] [trace?] WARNING in group_send_sig_info
+Content-Language: en-GB
+To: syzbot <syzbot+1902c6d326478ce2dfb0@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ martin.lau@linux.dev, mathieu.desnoyers@efficios.com, mhiramat@kernel.org,
+ netdev@vger.kernel.org, rostedt@goodmis.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000bc2d38061716975e@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <000000000000bc2d38061716975e@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Apr 27, 2024 at 07:23:36PM +0200, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
-> 
-> As the "ids" variable is a pointer to "struct sctp_assoc_ids" and this
-> structure ends in a flexible array:
-> 
-> struct sctp_assoc_ids {
-        __u32           gaids_number_of_ids;
-> 	sctp_assoc_t	gaids_assoc_id[];
-> };
 
-This could gain __counted_by:
+On 4/27/24 9:34 AM, syzbot wrote:
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11ca8fe7180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1902c6d326478ce2dfb0
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+1902c6d326478ce2dfb0@syzkaller.appspotmail.com
+>
+> ------------[ cut here ]------------
+> raw_local_irq_restore() called with IRQs enabled
+> WARNING: CPU: 1 PID: 7785 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x40 kernel/locking/irqflag-debug.c:10
+> Modules linked in:
+> CPU: 1 PID: 7785 Comm: syz-executor.3 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> RIP: 0010:warn_bogus_irq_restore+0x29/0x40 kernel/locking/irqflag-debug.c:10
+> Code: 90 f3 0f 1e fa 90 80 3d de 59 01 04 00 74 06 90 c3 cc cc cc cc c6 05 cf 59 01 04 01 90 48 c7 c7 20 ba aa 8b e8 f8 d5 e7 f5 90 <0f> 0b 90 90 90 c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
+> RSP: 0018:ffffc9000399fbb8 EFLAGS: 00010246
+>
+> RAX: 4aede97b00455d00 RBX: 1ffff92000733f7c RCX: ffff88802a129e00
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffc9000399fc50 R08: ffffffff8157cc12 R09: 1ffff110172a51a2
+> R10: dffffc0000000000 R11: ffffed10172a51a3 R12: dffffc0000000000
+> R13: 1ffff92000733f78 R14: ffffc9000399fbe0 R15: 0000000000000246
+> FS:  000055557ae76480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffc27e190f8 CR3: 000000006cb50000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+>   _raw_spin_unlock_irqrestore+0x120/0x140 kernel/locking/spinlock.c:194
+>   spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+>   unlock_task_sighand include/linux/sched/signal.h:754 [inline]
+>   do_send_sig_info kernel/signal.c:1302 [inline]
+>   group_send_sig_info+0x2e0/0x310 kernel/signal.c:1453
+>   bpf_send_signal_common+0x2dd/0x430 kernel/trace/bpf_trace.c:881
+>   ____bpf_send_signal kernel/trace/bpf_trace.c:886 [inline]
+>   bpf_send_signal+0x19/0x30 kernel/trace/bpf_trace.c:884
+>   bpf_prog_8cc4ff36b5985b6a+0x1d/0x1f
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>   __bpf_prog_run include/linux/filter.h:650 [inline]
+>   bpf_prog_run include/linux/filter.h:664 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>   bpf_trace_run2+0x375/0x420 kernel/trace/bpf_trace.c:2420
+>   trace_sys_exit include/trace/events/syscalls.h:44 [inline]
+>   syscall_exit_work+0x153/0x170 kernel/entry/common.c:163
+>   syscall_exit_to_user_mode_prepare kernel/entry/common.c:194 [inline]
+>   __syscall_exit_to_user_mode_work kernel/entry/common.c:199 [inline]
+>   syscall_exit_to_user_mode+0x273/0x360 kernel/entry/common.c:212
+>   do_syscall_64+0x10a/0x240 arch/x86/entry/common.c:89
+>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-diff --git a/include/uapi/linux/sctp.h b/include/uapi/linux/sctp.h
-index b7d91d4cf0db..836173e73401 100644
---- a/include/uapi/linux/sctp.h
-+++ b/include/uapi/linux/sctp.h
-@@ -1007,7 +1007,7 @@ enum sctp_sstat_state {
-  */
- struct sctp_assoc_ids {
- 	__u32		gaids_number_of_ids;
--	sctp_assoc_t	gaids_assoc_id[];
-+	sctp_assoc_t	gaids_assoc_id[] __counted_by(gaids_number_of_ids);
- };
- 
- /*
+The following are related functions.
 
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the calculation "size + size * count" in
-> the kmalloc() function.
-> 
-> Also, refactor the code adding the "ids_size" variable to avoid sizing
-> twice.
-> 
-> This way, the code is more readable and safer.
-> 
-> This code was detected with the help of Coccinelle, and audited and
-> modified manually.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
+                                            unsigned long *flags)
+{
+         struct sighand_struct *sighand;
+
+         rcu_read_lock();
+         for (;;) {
+                 sighand = rcu_dereference(tsk->sighand);
+                 if (unlikely(sighand == NULL))
+                         break;
+
+                 /*
+                  * This sighand can be already freed and even reused, but
+                  * we rely on SLAB_TYPESAFE_BY_RCU and sighand_ctor() which
+                  * initializes ->siglock: this slab can't go away, it has
+                  * the same object type, ->siglock can't be reinitialized.
+                  *
+                  * We need to ensure that tsk->sighand is still the same
+                  * after we take the lock, we can race with de_thread() or
+                  * __exit_signal(). In the latter case the next iteration
+                  * must see ->sighand == NULL.
+                  */
+                 spin_lock_irqsave(&sighand->siglock, *flags);
+                 if (likely(sighand == rcu_access_pointer(tsk->sighand)))
+                         break;
+                 spin_unlock_irqrestore(&sighand->siglock, *flags);
+         }
+         rcu_read_unlock();
+
+         return sighand;
+}
+
+static inline struct sighand_struct *lock_task_sighand(struct task_struct *task,
+                                                        unsigned long *flags)
+{
+         struct sighand_struct *ret;
+
+         ret = __lock_task_sighand(task, flags);
+         (void)__cond_lock(&task->sighand->siglock, ret);
+         return ret;
+}
+
+
+static inline void unlock_task_sighand(struct task_struct *task,
+                                                 unsigned long *flags)
+{
+         spin_unlock_irqrestore(&task->sighand->siglock, *flags);
+}
+
+int do_send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p,
+                         enum pid_type type)
+{
+         unsigned long flags;
+         int ret = -ESRCH;
+
+         if (lock_task_sighand(p, &flags)) {
+                 ret = send_signal_locked(sig, info, p, type);
+                 unlock_task_sighand(p, &flags);
+         }
+         
+         return ret;
+}
+
+If p->sighand changed between lock_task_sighand() and unlock_task_sighand(),
+the warning makes sense. But I am not sure whether and how this could happen.
+
+> RIP: 0033:0x7f8e47e7dc0b
+> Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
+> RSP: 002b:00007ffd999e9950 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: fffffffffffffffa RBX: 0000000000000003 RCX: 00007f8e47e7dc0b
+> RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000003
+> RBP: 00007ffd999e9a0c R08: 0000000000000000 R09: 00007ffd999e96f7
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
+> R13: 000000000004757a R14: 000000000004754c R15: 000000000000000f
+>   </TASK>
+>
+>
 > ---
-> Hi,
-> 
-> The Coccinelle script used to detect this code pattern is the following:
-> 
-> virtual report
-> 
-> @rule1@
-> type t1;
-> type t2;
-> identifier i0;
-> identifier i1;
-> identifier i2;
-> identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
-> position p1;
-> @@
-> 
-> i0 = sizeof(t1) + sizeof(t2) * i1;
-> ...
-> i2 = ALLOC@p1(..., i0, ...);
-> 
-> @script:python depends on report@
-> p1 << rule1.p1;
-> @@
-> 
-> msg = "WARNING: verify allocation on line %s" % (p1[0].line)
-> coccilib.report.print_report(p1[0],msg)
-> 
-> Regards,
-> Erick
-> ---
->  net/sctp/socket.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-> index e416b6d3d270..64196b1dce1d 100644
-> --- a/net/sctp/socket.c
-> +++ b/net/sctp/socket.c
-> @@ -7119,6 +7119,7 @@ static int sctp_getsockopt_assoc_ids(struct sock *sk, int len,
->  	struct sctp_sock *sp = sctp_sk(sk);
->  	struct sctp_association *asoc;
->  	struct sctp_assoc_ids *ids;
-> +	size_t ids_size;
->  	u32 num = 0;
->  
->  	if (sctp_style(sk, TCP))
-> @@ -7131,11 +7132,11 @@ static int sctp_getsockopt_assoc_ids(struct sock *sk, int len,
->  		num++;
->  	}
->  
-> -	if (len < sizeof(struct sctp_assoc_ids) + sizeof(sctp_assoc_t) * num)
-> +	ids_size = struct_size(ids, gaids_assoc_id, num);
-> +	if (len < ids_size)
->  		return -EINVAL;
->  
-> -	len = sizeof(struct sctp_assoc_ids) + sizeof(sctp_assoc_t) * num;
-> -
-> +	len = ids_size;
->  	ids = kmalloc(len, GFP_USER | __GFP_NOWARN);
->  	if (unlikely(!ids))
->  		return -ENOMEM;
-
-But yes, this looks fine to me.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
 
