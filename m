@@ -1,141 +1,197 @@
-Return-Path: <linux-kernel+bounces-162939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F15648B626F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:38:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AFF58B6281
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA59282450
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:38:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8BB1C21C47
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21C813B584;
-	Mon, 29 Apr 2024 19:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09E813BC07;
+	Mon, 29 Apr 2024 19:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bF9BfMwu"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnhpHzDg"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1436839FD;
-	Mon, 29 Apr 2024 19:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA8313B2A2;
+	Mon, 29 Apr 2024 19:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419525; cv=none; b=GcExgvUvyOMagyLtHgfTZLMOU6s01TTiU15OHbNrzOYMkc8xetRasHjVTMv34UCsOG3PTB3EoDQvMxobc7/Zq54Hm+EBnw4jtho0vr6URuDgRBpBiYOtqMLEZAiemDOTV7p0ZFeRKcKrhSQb90ioYZHpewD+UPaL4jiiTDTQLTA=
+	t=1714419570; cv=none; b=Zo8GWqlhiAOfEOVcjfVsCCgV9STaKWoUrQv+lPd6CFh6tjMnwM+4JP0Dvkh8wZaK+038mIxn0LWrS+pVJX8iaIhARsR2uj0PIKkEBk0AfG6Bg3WiAS+MdBGuNQGhFspXgBRYQtfuKqhDpi2BD3oapzwoIBEN6RJ0Pg6ScEyn/8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419525; c=relaxed/simple;
-	bh=6sOyCYbmudXxqIfu8q2gns5cKCCQS7+LZ0HN4mbWG3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P8/OIMloDTBk8zR51T6wqWyXSwvsx0KQxu6JzjDHDoCugHXORIR8rTr10pfiZ7QoDSEaEKqLLk/PwEbJwrpVzMNGpAEW/BwO/7VtSz3EI8zdgi68xRZJ3i/4mibpV+ZOEHEzomqdydcus0xdYnTZDOQ5xMU+osdWSIfTIM5Cjbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bF9BfMwu; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=mhiR8BMDH8TnfXdcMJSpEG42MjSDkV9S8051r036NMU=; b=bF9BfMwuyaFnCeeHNcd0cOmAmf
-	q1RgqnXFU2/R6KGuz4/E1f9q4VMiepPinqDu6cjHubiBD04zcEAN4Rni0rDM6hyRrWhIx43uopdH1
-	cWk1GjHdPRXGBno/F9VK5h4Z9dnQmK2/Tdf3n6PnjDatZTr0lTEwHZ+GxwLOEtR/63AgCWs7kCXpP
-	QE7q9I0Tkw+1XHiKQaA0h6ionXFdrR0OCWD3LVEO49BFTKF1NGIWsNFEJ7zds7iR+zzZLi3s62lJA
-	oUJyeb2Yx4ZrJFHOtXh6aZa5ba+pDl/HL45PvoosF6z+RNko6DIL3ZXAqt8HunQcOXOGPU8oIlxcR
-	mK5eZJxA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1Wpf-0000000DBQI-3MMq;
-	Mon, 29 Apr 2024 19:38:35 +0000
-Date: Mon, 29 Apr 2024 20:38:35 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org
-Subject: Re: [PATCH v3 02/12] nilfs2: drop usage of page_index
-Message-ID: <Zi_3OxP6xKjBWBLO@casper.infradead.org>
-References: <20240429190500.30979-1-ryncsn@gmail.com>
- <20240429190500.30979-3-ryncsn@gmail.com>
- <Zi_xeKUSD6C8TNYK@casper.infradead.org>
- <CAMgjq7D5zwksHxh5c00U82BCsLxYj-_GevZZtAM8xNZO7p-RQQ@mail.gmail.com>
- <CAKFNMomdPzaF4AL5qHCZovtgdefd3V35D_qFDPoMeXyWCZtzUg@mail.gmail.com>
+	s=arc-20240116; t=1714419570; c=relaxed/simple;
+	bh=0OetwS3VJCN5pUQCPfGzxhYb5ZicuWDFYppJAp8i11M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Msw0Y2KR8rLf5FMBjalOTACCQi9whcarnC5GiUvz4gCk7fFeI7APavg7X9y1eJX3fOEpBZIDVZVZwP4FieyKgTw6RCRdR0c2moiwX/sysdE2qvbkpu9G4MUdnJWc2usEEyFcmA8DOv6NbMgdkQj8Ze/UCIx1QdMfc7grdjP7vtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnhpHzDg; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7dbc33bdf08so207963339f.1;
+        Mon, 29 Apr 2024 12:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714419567; x=1715024367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JIz+6Oy1eqH41GGZgxlPQbWfghUp3j8MpQZmEvPSsQ0=;
+        b=bnhpHzDgRg7wt4oBvu3Jjww2Hi0e10OgUdBFf1HSZRxZvYJAX7ViAwxSX5D0UXEhuQ
+         +yCAekCU391LpPDpnNhMgtVlbVIEvQ1x0pWPKG+p4ETmWrvSQxd+m0sGqVeTthLIETTb
+         i7wdLBndN7MrXRFXqUXFxNxwz15qexv+AGvGMBWEQULS6lTnKunXotgrKXw6fFg4BSCx
+         ToIiJQKouYxAqlDwJVpQ3QDSY+7iFXVtJ9g4yPgL0Hn3e9ijYpp4D9esqaXCzvyuXorF
+         USqvfr9s49xEJ1Hjgu9LTpf8sbMNr5GvkdgLnuiRkmCDn0RqNkoSHccgolv96U135JeZ
+         d2rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714419567; x=1715024367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JIz+6Oy1eqH41GGZgxlPQbWfghUp3j8MpQZmEvPSsQ0=;
+        b=iX2p7eDo1NaCp32Zs5y5DhgUj8616Eoh5reeTRdcyh7pdG6LhwyvuW55V1WXLA+6LE
+         cFYBu8E4kuxWlp0/0SbpTxsYY0UpX/aQOos30S0NSbe2v2fdyA9rbAgBF4XlCITSikND
+         11kTsMjT7g47REi5HhZLfpXSOYthwuduwJk4eIJGZwGXM6ScBTMF08mn1f3IuFUNvcQ5
+         888RlSB2xxn4p50SPB89BSIollsnR7XBmP7JBxR1Y0hxSFAe2n5Upq5sN6Z4K+NvhZyx
+         ns7N7AfzKXkkPKKOiSOKrxvj/7Ix/sZDATEBiXoBGctX8sTv5YLiK3/oNX3ASTXi9GqL
+         G3dA==
+X-Forwarded-Encrypted: i=1; AJvYcCXueTZfVtpOvVtMpTxU1FS0PUrxz2g5541+3H5khL+/dyS2pMvcM+rZtH/LXLfnN++2K0b/u1BC1ARssYqQw7KvBeJmFMcwTpZomVSSrDQcTbHEznDdIWvLYxUoRnkVk+nTLGClw08q
+X-Gm-Message-State: AOJu0Yz1A6sWa+lBTVVJKB+2X/IbQVT7Ng+qc6EN3+t6mw2fpPYb6GpT
+	ZOaSTYIKNSzaxoF6da0iYyjSXCxtcrB/fXbecXwg+pOfRsIisOKsHUTsKh6x
+X-Google-Smtp-Source: AGHT+IFThzWVB3vIE8LFgGpixsEhbHUun9+9i1vLB9kJbGTkJx0mvT+Q90khSTqWjq6hpXuEXvfcOQ==
+X-Received: by 2002:a05:6602:1cca:b0:7de:8d0d:8836 with SMTP id hg10-20020a0566021cca00b007de8d0d8836mr9390488iob.7.1714419567644;
+        Mon, 29 Apr 2024 12:39:27 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id y16-20020a056602165000b007de9f92dc57sm2325105iow.16.2024.04.29.12.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 12:39:27 -0700 (PDT)
+From: Jim Cromie <jim.cromie@gmail.com>
+To: jbaron@akamai.com,
+	gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	intel-gvt-dev@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org
+Cc: ukaszb@chromium.org,
+	linux-doc@vger.kernel.org,
+	daniel.vetter@ffwll.ch,
+	tvrtko.ursulin@linux.intel.com,
+	jani.nikula@intel.com,
+	ville.syrjala@linux.intel.com,
+	seanpaul@chromium.org,
+	robdclark@gmail.com,
+	groeck@google.com,
+	yanivt@google.com,
+	bleung@google.com,
+	Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v8 20/35] dyndbg-doc: add classmap info to howto
+Date: Mon, 29 Apr 2024 13:39:06 -0600
+Message-ID: <20240429193921.66648-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKFNMomdPzaF4AL5qHCZovtgdefd3V35D_qFDPoMeXyWCZtzUg@mail.gmail.com>
 
-On Tue, Apr 30, 2024 at 04:28:41AM +0900, Ryusuke Konishi wrote:
-> On Tue, Apr 30, 2024 at 4:22 AM Kairui Song <ryncsn@gmail.com> wrote:
-> >
-> > On Tue, Apr 30, 2024 at 3:14 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Tue, Apr 30, 2024 at 03:04:50AM +0800, Kairui Song wrote:
-> > > > From: Kairui Song <kasong@tencent.com>
-> > > >
-> > > > page_index is only for mixed usage of page cache and swap cache, for
-> > > > pure page cache usage, the caller can just use page->index instead.
-> > > >
-> > > > It can't be a swap cache page here (being part of buffer head),
-> > > > so just drop it, also convert it to use folio.
-> > > >
-> > > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > > Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-> > > > Cc: linux-nilfs@vger.kernel.org
-> > > > ---
-> > > >  fs/nilfs2/bmap.c | 5 ++---
-> > > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
-> > > > index 383f0afa2cea..f4e5df0cd720 100644
-> > > > --- a/fs/nilfs2/bmap.c
-> > > > +++ b/fs/nilfs2/bmap.c
-> > > > @@ -453,9 +453,8 @@ __u64 nilfs_bmap_data_get_key(const struct nilfs_bmap *bmap,
-> > > >       struct buffer_head *pbh;
-> > > >       __u64 key;
-> > > >
-> > > > -     key = page_index(bh->b_page) << (PAGE_SHIFT -
-> > > > -                                      bmap->b_inode->i_blkbits);
-> > > > -     for (pbh = page_buffers(bh->b_page); pbh != bh; pbh = pbh->b_this_page)
-> > > > +     key = bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->i_blkbits);
-> > > > +     for (pbh = folio_buffers(bh->b_folio); pbh != bh; pbh = pbh->b_this_page)
-> > > >               key++;
-> > > >
-> > > >       return key;
-> > >
-> > > Why isn't this entire function simply:
-> > >
-> > >         return bh->b_blocknr;
-> > >
-> >
-> > Nice idea, I didn't plan for extra clean up and test for fs code, but
-> > this might be OK to have, will check it.
-> 
-> Wait a minute.
-> 
-> This function returns a key that corresponds to the cache offset of
-> the data block, not the disk block number.
-> 
-> Why is returning to bh->b_blocknr an alternative ?
-> Am I missing something?
+Describe the 3 API macros providing dynamic_debug's classmaps
 
-Sorry, I forgot how b_blocknr was used.  What I meant was:
+DYNDBG_CLASSMAP_DEFINE - create, exports a module's classmap
+DYNDBG_CLASSMAP_USE    - refer to exported map
+DYNDBG_CLASSMAP_PARAM  - bind control param to the classmap
+DYNDBG_CLASSMAP_PARAM_REF + use module's storage - __drm_debug
 
-	u64 key = bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->i_blkbits);
+cc: linux-doc@vger.kernel.org
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+v5 adjustments per Randy Dunlap
+v7 checkpatch fixes
+v8 more
+---
+ .../admin-guide/dynamic-debug-howto.rst       | 63 ++++++++++++++++++-
+ 1 file changed, 62 insertions(+), 1 deletion(-)
 
-	return key + bh_offset(bh) >> bmap->b_inode->i_blkbits;
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 6a8ce5a34382..742eb4230c6e 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -225,7 +225,6 @@ the ``p`` flag has meaning, other flags are ignored.
+ Note the regexp ``^[-+=][fslmpt_]+$`` matches a flags specification.
+ To clear all flags at once, use ``=_`` or ``-fslmpt``.
+ 
+-
+ Debug messages during Boot Process
+ ==================================
+ 
+@@ -375,3 +374,65 @@ just a shortcut for ``print_hex_dump(KERN_DEBUG)``.
+ For ``print_hex_dump_debug()``/``print_hex_dump_bytes()``, format string is
+ its ``prefix_str`` argument, if it is constant string; or ``hexdump``
+ in case ``prefix_str`` is built dynamically.
++
++Dynamic Debug classmaps
++=======================
++
++Dyndbg allows selection/grouping of *prdbg* callsites using structural
++info: module, file, function, line.  Classmaps allow authors to add
++their own domain-oriented groupings using class-names.  Classmaps are
++exported, so they referencable from other modules.
++
++  # enable classes individually
++  :#> ddcmd class DRM_UT_CORE +p
++  :#> ddcmd class DRM_UT_KMS +p
++  # or more selectively
++  :#> ddcmd class DRM_UT_CORE module drm +p
++
++The "class FOO" syntax protects class'd prdbgs from generic overwrite::
++
++  # IOW this doesn't wipe any DRM.debug settings
++  :#> ddcmd -p
++
++To support the DRM.debug parameter, DYNDBG_CLASSMAP_PARAM* updates all
++classes in a classmap, mapping param-bits 0..N onto the classes:
++DRM_UT_<*> for the DRM use-case.
++
++Dynamic Debug Classmap API
++==========================
++
++DYNDBG_CLASSMAP_DEFINE - modules use this to create classmaps, naming
++each of the classes (stringified enum-symbols: "DRM_UT_<*>"), and
++type, and mapping the class-names to consecutive _class_ids.
++
++By doing so, modules tell dyndbg that they have prdbgs with those
++class_ids, and they authorize dyndbg to accept "class FOO" for the
++module defining the classmap, and its contained classnames.
++
++DYNDBG_CLASSMAP_USE - drm drivers invoke this to ref the CLASSMAP that
++drm DEFINEs.  This shares the classmap definition, and authorizes
++dyndbg to apply changes to the user module's class'd pr_debugs.  It
++also tells dyndbg how to initialize the user's prdbgs at modprobe,
++based upon the current setting of the parent's controlling param.
++
++There are 2 types of classmaps:
++
++ DD_CLASS_TYPE_DISJOINT_BITS: classes are independent, like DRM.debug
++ DD_CLASS_TYPE_LEVEL_NUM: classes are relative, ordered (V3 > V2)
++
++DYNDBG_CLASSMAP_PARAM - modelled after module_param_cb, it refers to a
++DEFINEd classmap, and associates it to the param's data-store.  This
++state is then applied to DEFINEr and USEr modules when they're modprobed.
++
++This interface also enforces the DD_CLASS_TYPE_LEVEL_NUM relation
++amongst the contained classnames; all classes are independent in the
++control parser itself.
++
++Modules or module-groups (drm & drivers) can define multiple
++classmaps, as long as they share the limited 0..62 per-module-group
++_class_id range, without overlap.
++
++``#define DEBUG`` will enable all pr_debugs in scope, including any
++class'd ones.  This won't be reflected in the PARAM readback value,
++but the class'd pr_debug callsites can be forced off by toggling the
++classmap-kparam all-on then all-off.
+-- 
+2.44.0
 
-The point is to get rid of the loop.  We could simplify this (and make
-it ready for bs>PS) by doing:
-
-	loff_t pos = folio_pos(bh->b_folio) + bh_offset(bh);
-	return pos >> bmap->b_inode->i_blkbits;
 
