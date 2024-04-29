@@ -1,422 +1,191 @@
-Return-Path: <linux-kernel+bounces-162560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A858B5D92
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:25:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433DF8B5D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80DC4B26D35
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:21:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8042282B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1879E84E00;
-	Mon, 29 Apr 2024 15:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0472B8562E;
+	Mon, 29 Apr 2024 15:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDm2bpgg"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XUxKW8+j"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF13D84D2A;
-	Mon, 29 Apr 2024 15:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B8485632
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403745; cv=none; b=VT4vT+SEAp++bDCuRPAd+m5YNkUkWg+F+RZv2EEbtOTRCyWfZviiwsoSuXwNn5NS6d6nOHy59lqYPMmO4Ohq5hhuKOWXwC0IKJ/MXgKV7ehGnFihPmtXgmGSpbzxzszWTlXCdZpxL39c1pkH7XewDLhH4S1L2qKWwmabtsZGkBY=
+	t=1714403777; cv=none; b=uXpJRqp+duzwzD9lroITsyEUPkKvaLVelL1P1MFj9XOP82+mxamnQnpzqMyBLSh12BTfmP5A8JsbhDH+2ELPPblE59hAb96IGjM62g2o3t3bvowNDrDm8aAp2Tg+DHyVn7E31mxBOurvzSH7W70s+IdLNVMi9nVqg1oC6c2qqX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403745; c=relaxed/simple;
-	bh=x78mlTOSNCeKuhBeSLrp8lTJqci7URpsTUsfLD+c7bw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qoYSWQY5P8y4lns5zktlK98vyIjlwDeUDvZfh6c4y2wfbiAkuh4zZE7UsKq4EAXCmOnM3onnswq2lqRbj+Uk6/zlIZ+CdnQPMjbRFiziMbbb4v8HG9cYqhFub123LGIEOdvA/v75HKMOlvi5vGyQg18ii20zmxuEoA7WkubforQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDm2bpgg; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2dd041acff1so52798391fa.1;
-        Mon, 29 Apr 2024 08:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714403742; x=1715008542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3UWb+wjXyFhA+z+YN1Lsjts+67pUWWgwlP3uOwoNAkY=;
-        b=aDm2bpggUeiGc3GEcf06EnmVB/EnQNwWzeHAcXmvYCEetC5QP3dnFhUM/ElKUTvUtk
-         HXmmrQMiK4lpygpBP8Ugx/f2nAGZWV8yVgJ7EaEwmGVNPoDxL0Rdwtl5O8yk6we4BTSW
-         SingdCnH9wfYZ97yxm0lL8DLCy2HWceuHpZEXxoTgjT/xX15WZGNTKiGC4opCnGkvOGD
-         xpTv8dAdGMdTHT1CSc6WyZh/C6C0RBTEXIpqXBOXvCQcA5oOVWrl2U43tKGOUcEIqAWT
-         8BTuz5B34yQUJPrvako9nKezq2R+jUwWCSYZ8f8wiEs2ePrVqhNL+2hw5YdG1/NS9wXP
-         kE/g==
+	s=arc-20240116; t=1714403777; c=relaxed/simple;
+	bh=JInUyCfWa4cj2hSY+8TlfNabBmIPS0UDzEe5ma2bn5I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bEugS4eD8oCgbezTinEdPKk/mAj0o3pGDW+H7CqwJUWdpLhswhdq4IYZUUwwozHr8Vnuwsx1ZFQ6lwFI6t+395WrRO2TjahCWSvgyNXX9pIEBkYITAPF0AkoawF7Bt+ldC5YpU6rcVZnhGjip+Y4JPIooTofJ0NffD2xsbXi1RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XUxKW8+j; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714403774;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=k9nifAwGr2Zp6gvAQ7eF6eUdfZNy/PCRT7il66zHEGQ=;
+	b=XUxKW8+jAA+WeG6/fdU4oJYm71MXGCX0MIunRMU0textbyYnWRP26RSTfOF5pOjZH1DfzM
+	85WlKc77CV1V3jqQztr+qlICPYaAOTZWJP7AxRM75FqUPQxThgiuUVy0+XjOeV+RfnW1pl
+	eZkXuBgvUhrxpCZYceO7veJovJahs9c=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-EL694DlpMA--J8_B3GcpxA-1; Mon, 29 Apr 2024 11:16:13 -0400
+X-MC-Unique: EL694DlpMA--J8_B3GcpxA-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2a2dbaacff8so5317385a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:16:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714403742; x=1715008542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3UWb+wjXyFhA+z+YN1Lsjts+67pUWWgwlP3uOwoNAkY=;
-        b=Fo33UI0fZjvoSD4g1HjdYGTJko/OSGotzUUek62DOq5TdXKHGecGMkariEJwz8Dbpw
-         CrDQDfXCVPnI7XfWfICpM3NYhFu3qJ5CiGNbaNpcp+FkodnLova2uOHUaW0opxjVlZC0
-         mnMs25XuZxkIgDWdG36vn7PmbrDZELEzCWf0C5SHENoFhYjk37fs0qKVNH9zsPiF9V5J
-         Aan/4vJN4RwRGfbJscuCsrSlsTzLUmN97RLpZhtadndO7a/CU3si48tjGvsGBnwj7vjr
-         KPEwVY73Z3NVbBltO7D6QTdDpO9/04C5UT/8yvV75OuyNncAjYbLWbcM784B80vcuQ01
-         DcUg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYWbyJYkjULzsgn9TQt+me3NZyCwwmuofsR1FmZcXcozKMmmIZVWtfpvz9v/RfNCEL5ulDlVIpQlt0fzQfU5xLBU6DclEr5dYoobHn/uCsLrrdCV2db2PFRYcilSwa+N0bqMZbsvLEtUEBXjOo
-X-Gm-Message-State: AOJu0YwJJtv2kjwem2XjwdBU2uJg2brO+JaKFpNUDpOqwQmyN9oeDpnN
-	1Vy0bmdzCjYJFkXKXef9nG59CJEwUUVc/GdxRTBjmp7iMkJgP3dfavXQZF0wBQp/KEMFuNygMb0
-	zdKnsa6kbLMFdi3NowXc7W6slUqOjlg==
-X-Google-Smtp-Source: AGHT+IF06A4f1GlmDffVTuIeToSJZQBy3Y+dnpJ5qD62Jmrsw/hDK8txoOny0lpB+VnAmUWyLNNRX2q/DhI+yjefJsI=
-X-Received: by 2002:a2e:9c12:0:b0:2e0:3c3f:1d38 with SMTP id
- s18-20020a2e9c12000000b002e03c3f1d38mr2576578lji.30.1714403741655; Mon, 29
- Apr 2024 08:15:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714403772; x=1715008572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k9nifAwGr2Zp6gvAQ7eF6eUdfZNy/PCRT7il66zHEGQ=;
+        b=cEAY2Ap/fgLbvUCcg0SyNmH3qAk8+ScOQ9TRNAJbqFU+tYlNE9fg12ArzlFvPIB7lR
+         tcyFLe6I1x6XcsLgAv34uGZrao9C/63wc6UBwOTphBb/LQ2xMxiDLX/G3DFB+G/OLifz
+         OmsB+VTHif+zLBdLe8kjk4cd04dwURanSa/7yIzoPfP+BNkYBA5ZHbKysbXq5/d+aa4s
+         0koI/mJ6M6rjsoBZj/FFFNdKcvl91W9GQ9jbbu7sjiGuz45lZCNp6JLd4bEtG2tzWwWS
+         NltgYdIkrXHqmk5eMmC2xTQ6kkaz6pnhd/w/FSa75n1vOrWfy9RF0YPH7PB+zf4NxY01
+         s6EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOdgl19T52SjAiaksnsM/kfTuEWKALZlhc1QQlS6Ejo6pkom+Ha20eZzloOiFmxxTzealu5ipZpS3uB/p48iYyS7EKVYZJlhSNmHfH
+X-Gm-Message-State: AOJu0Yzd2r/v4l00S5nTViT6w1jrY0/QCgXjBG8ZT95uI6L26ETlQiKp
+	mWur2m5vaNnsJy+Co7j27E5wCTZdKOvSEr3lDOpNaPzqc9+zk+Jkys8IFY5JvQMjUHWMzjGuVKl
+	u/5lsL0EUzcwWoWS1yLK4Ujh8gWNFHLV/3i4sX9beViQC32tOp7/h8qlSCrhWoA==
+X-Received: by 2002:a17:90a:c292:b0:2ae:bbf7:30fa with SMTP id f18-20020a17090ac29200b002aebbf730famr8504459pjt.3.1714403771778;
+        Mon, 29 Apr 2024 08:16:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEPSUIoPmz7NnF1amN3oBULQy1w4IN8FGpSu183OjoavIw2Db/Ild1Dxk/V3NT0S8XGUWTzzw==
+X-Received: by 2002:a17:90a:c292:b0:2ae:bbf7:30fa with SMTP id f18-20020a17090ac29200b002aebbf730famr8504428pjt.3.1714403771253;
+        Mon, 29 Apr 2024 08:16:11 -0700 (PDT)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:6883:65ff:fe1c:cf69])
+        by smtp.gmail.com with ESMTPSA id nv5-20020a17090b1b4500b002a2f055e52csm20840663pjb.34.2024.04.29.08.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 08:16:10 -0700 (PDT)
+From: Shigeru Yoshida <syoshida@redhat.com>
+To: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Shigeru Yoshida <syoshida@redhat.com>,
+	syzkaller <syzkaller@googlegroups.com>
+Subject: [PATCH net] ipv4: Fix uninit-value access in __ip_make_skb()
+Date: Tue, 30 Apr 2024 00:16:05 +0900
+Message-ID: <20240429151605.2055465-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240428054307.1178347-1-iam@sung-woo.kim>
-In-Reply-To: <20240428054307.1178347-1-iam@sung-woo.kim>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Mon, 29 Apr 2024 11:15:29 -0400
-Message-ID: <CABBYNZKDouOrxG1XcSq2me0WW3A3yAbfdtonw2XJ54VZ8+Nbfg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: L2CAP: Fix div-by-zero in l2cap_le_flowctl_init()
-To: Sungwoo Kim <iam@sung-woo.kim>
-Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Sungwoo,
+KMSAN reported uninit-value access in __ip_make_skb() [1].  __ip_make_skb()
+tests HDRINCL to know if the skb has icmphdr. However, HDRINCL can cause a
+race condition. If calling setsockopt(2) with IP_HDRINCL changes HDRINCL
+while __ip_make_skb() is running, the function will access icmphdr in the
+skb even if it is not included. This causes the issue reported by KMSAN.
 
-On Sun, Apr 28, 2024 at 1:43=E2=80=AFAM Sungwoo Kim <iam@sung-woo.kim> wrot=
-e:
->
-> Hello, could you review this bug and its patch?
->
-> l2cap_le_flowctl_init() can cause both div-by-zero and an integer overflo=
-w.
->
-> l2cap_le_flowctl_init()
->   chan->mps =3D min_t(u16, chan->imtu, chan->conn->mtu - L2CAP_HDR_SIZE);
->   chan->rx_credits =3D (chan->imtu / chan->mps) + 1;  <- div-by-zero
->
-> Here, mtu could be less than or equal to L2CAP_HDR_SIZE (4). If mtu is 4,=
- it
-> causes div-by-zero. If mtu is less than 4, it causes an integer overflow.
+Check FLOWI_FLAG_KNOWN_NH on fl4->flowi4_flags instead of testing HDRINCL
+on the socket.
 
-That is because it is not valid to have hdev->le_mtu < 0x001b (the
-range is 0x001b to 0xffff), so we should really look into checking
-that conn->mtu is actually valid.
+Also, fl4->fl4_icmp_type and fl4->fl4_icmp_code are not initialized. These
+are union in struct flowi4 and are implicitly initialized by
+flowi4_init_output(), but we should not rely on specific union layout.
 
-> How mtu could have such low value:
->
-> hci_cc_le_read_buffer_size()
->   hdev->le_mtu =3D __le16_to_cpu(rp->le_mtu);
->
-> l2cap_conn_add()
->   conn->mtu =3D hcon->hdev->le_mtu;
+Initialize these explicitly in raw_sendmsg().
 
-Yeah this assignment is incorrect and in fact we don't do that if
-le_mtu is zero so we probably should do some checks e.g. le_mtu >
-0x001a, or perhaps we need to move the MTU directly to hci_conn so it
-can check there are enough buffers to serve the link so we stop the
-connection procedure earlier.
+[1]
+BUG: KMSAN: uninit-value in __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
+ __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
+ ip_finish_skb include/net/ip.h:243 [inline]
+ ip_push_pending_frames+0x4c/0x5c0 net/ipv4/ip_output.c:1508
+ raw_sendmsg+0x2381/0x2690 net/ipv4/raw.c:654
+ inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x274/0x3c0 net/socket.c:745
+ __sys_sendto+0x62c/0x7b0 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x130/0x200 net/socket.c:2199
+ do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-> As shown, mtu is an input from an HCI device. So, any HCI device can
-> set mtu value to any value, such as lower than 4.
->
-> To fix this, this patch adds a validation before subtractions. If MTU is
-> too small, the corresponding value will set by 0, and a warning message
-> will show up.
->
-> However, I'm not sure that 0-ing the value is the best. It'd be great if
-> you could comment on this.
->
-> Thank you,
-> Sungwoo.
->
-> divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> CPU: 0 PID: 67 Comm: kworker/u5:0 Tainted: G        W          6.9.0-rc5+=
- #20
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
-1/2014
-> Workqueue: hci0 hci_rx_work
-> RIP: 0010:l2cap_le_flowctl_init+0x19e/0x3f0 net/bluetooth/l2cap_core.c:54=
-7
-> Code: e8 17 17 0c 00 66 41 89 9f 84 00 00 00 bf 01 00 00 00 41 b8 02 00 0=
-0 00 4c 89 fe 4c 89 e2 89 d9 e8 27 17 0c 00 44 89 f0 31 d2 <66> f7 f3 89 c3=
- ff c3 4d 8d b7 88 00 00 00 4c 89 f0 48 c1 e8 03 42
-> RSP: 0018:ffff88810bc0f858 EFLAGS: 00010246
-> RAX: 00000000000002a0 RBX: 0000000000000000 RCX: dffffc0000000000
-> RDX: 0000000000000000 RSI: ffff88810bc0f7c0 RDI: ffffc90002dcb66f
-> RBP: ffff88810bc0f880 R08: aa69db2dda70ff01 R09: 0000ffaaaaaaaaaa
-> R10: 0084000000ffaaaa R11: 0000000000000000 R12: ffff88810d65a084
-> R13: dffffc0000000000 R14: 00000000000002a0 R15: ffff88810d65a000
-> FS:  0000000000000000(0000) GS:ffff88811ac00000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000100 CR3: 0000000103268003 CR4: 0000000000770ef0
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
->  l2cap_le_connect_req net/bluetooth/l2cap_core.c:4902 [inline]
->  l2cap_le_sig_cmd net/bluetooth/l2cap_core.c:5420 [inline]
->  l2cap_le_sig_channel net/bluetooth/l2cap_core.c:5486 [inline]
->  l2cap_recv_frame+0xe59d/0x11710 net/bluetooth/l2cap_core.c:6809
->  l2cap_recv_acldata+0x544/0x10a0 net/bluetooth/l2cap_core.c:7506
->  hci_acldata_packet net/bluetooth/hci_core.c:3939 [inline]
->  hci_rx_work+0x5e5/0xb20 net/bluetooth/hci_core.c:4176
->  process_one_work kernel/workqueue.c:3254 [inline]
->  process_scheduled_works+0x90f/0x1530 kernel/workqueue.c:3335
->  worker_thread+0x926/0xe70 kernel/workqueue.c:3416
->  kthread+0x2e3/0x380 kernel/kthread.c:388
->  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
->
-> Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
-> ---
->  net/bluetooth/l2cap_core.c | 94 +++++++++++++++++++++++++++++---------
->  1 file changed, 73 insertions(+), 21 deletions(-)
->
-> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-> index 84fc70862..472ddfb2e 100644
-> --- a/net/bluetooth/l2cap_core.c
-> +++ b/net/bluetooth/l2cap_core.c
-> @@ -541,10 +541,17 @@ static void l2cap_le_flowctl_init(struct l2cap_chan=
- *chan, u16 tx_credits)
->         chan->sdu_last_frag =3D NULL;
->         chan->sdu_len =3D 0;
->         chan->tx_credits =3D tx_credits;
-> -       /* Derive MPS from connection MTU to stop HCI fragmentation */
-> -       chan->mps =3D min_t(u16, chan->imtu, chan->conn->mtu - L2CAP_HDR_=
-SIZE);
-> -       /* Give enough credits for a full packet */
-> -       chan->rx_credits =3D (chan->imtu / chan->mps) + 1;
-> +
-> +       if (chan->conn->mtu < L2CAP_HDR_SIZE) {
-> +               BT_WARN("mtu is too small (mtu %d < %d)", chan->conn->mtu=
-, L2CAP_HDR_SIZE);
-> +               chan->mps =3D 0;
-> +               chan->rx_credits =3D 0;
-> +       } else {
-> +               /* Derive MPS from connection MTU to stop HCI fragmentati=
-on */
-> +               chan->mps =3D min_t(u16, chan->imtu, chan->conn->mtu - L2=
-CAP_HDR_SIZE);
-> +               /* Give enough credits for a full packet */
-> +               chan->rx_credits =3D (chan->imtu / chan->mps) + 1;
-> +       }
->
->         skb_queue_head_init(&chan->tx_q);
->  }
-> @@ -2222,7 +2229,12 @@ static struct sk_buff *l2cap_create_connless_pdu(s=
-truct l2cap_chan *chan,
->         BT_DBG("chan %p psm 0x%2.2x len %zu", chan,
->                __le16_to_cpu(chan->psm), len);
->
-> -       count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       if (conn->mtu < hlen) {
-> +               count =3D 0;
-> +               BT_WARN("mtu is too small (mtu %d < len %d)", conn->mtu, =
-hlen);
-> +       } else {
-> +               count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       }
->
->         skb =3D chan->ops->alloc_skb(chan, hlen, count,
->                                    msg->msg_flags & MSG_DONTWAIT);
-> @@ -2253,7 +2265,12 @@ static struct sk_buff *l2cap_create_basic_pdu(stru=
-ct l2cap_chan *chan,
->
->         BT_DBG("chan %p len %zu", chan, len);
->
-> -       count =3D min_t(unsigned int, (conn->mtu - L2CAP_HDR_SIZE), len);
-> +       if (conn->mtu < L2CAP_HDR_SIZE) {
-> +               BT_WARN("mtu is too small (mtu %d < %d)", conn->mtu, L2CA=
-P_HDR_SIZE);
-> +               count =3D 0;
-> +       } else {
-> +               count =3D min_t(unsigned int, (conn->mtu - L2CAP_HDR_SIZE=
-), len);
-> +       }
->
->         skb =3D chan->ops->alloc_skb(chan, L2CAP_HDR_SIZE, count,
->                                    msg->msg_flags & MSG_DONTWAIT);
-> @@ -2295,7 +2312,12 @@ static struct sk_buff *l2cap_create_iframe_pdu(str=
-uct l2cap_chan *chan,
->         if (chan->fcs =3D=3D L2CAP_FCS_CRC16)
->                 hlen +=3D L2CAP_FCS_SIZE;
->
-> -       count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       if (conn->mtu < hlen) {
-> +               BT_WARN("mtu is too small (mtu %d < len %d)", conn->mtu, =
-hlen);
-> +               count =3D 0;
-> +       } else {
-> +               count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       }
->
->         skb =3D chan->ops->alloc_skb(chan, hlen, count,
->                                    msg->msg_flags & MSG_DONTWAIT);
-> @@ -2412,7 +2434,12 @@ static struct sk_buff *l2cap_create_le_flowctl_pdu=
-(struct l2cap_chan *chan,
->         if (sdulen)
->                 hlen +=3D L2CAP_SDULEN_SIZE;
->
-> -       count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       if (conn->mtu < hlen) {
-> +               BT_WARN("mtu is too small (mtu %d < len %d)", conn->mtu, =
-hlen);
-> +               count =3D 0;
-> +       } else {
-> +               count =3D min_t(unsigned int, (conn->mtu - hlen), len);
-> +       }
->
->         skb =3D chan->ops->alloc_skb(chan, hlen, count,
->                                    msg->msg_flags & MSG_DONTWAIT);
-> @@ -3225,6 +3252,7 @@ static int l2cap_build_conf_req(struct l2cap_chan *=
-chan, void *data, size_t data
->         void *ptr =3D req->data;
->         void *endptr =3D data + data_size;
->         u16 size;
-> +       int hlen;
->
->         BT_DBG("chan %p", chan);
->
-> @@ -3275,14 +3303,19 @@ static int l2cap_build_conf_req(struct l2cap_chan=
- *chan, void *data, size_t data
->                 break;
->
->         case L2CAP_MODE_ERTM:
-> +               hlen =3D L2CAP_EXT_HDR_SIZE + L2CAP_SDULEN_SIZE + L2CAP_F=
-CS_SIZE;
->                 rfc.mode            =3D L2CAP_MODE_ERTM;
->                 rfc.max_transmit    =3D chan->max_tx;
->
->                 __l2cap_set_ertm_timeouts(chan, &rfc);
->
-> -               size =3D min_t(u16, L2CAP_DEFAULT_MAX_PDU_SIZE, chan->con=
-n->mtu -
-> -                            L2CAP_EXT_HDR_SIZE - L2CAP_SDULEN_SIZE -
-> -                            L2CAP_FCS_SIZE);
-> +               if (chan->conn->mtu < hlen) {
-> +                       BT_WARN("mtu is too small (mtu %d < len %d)", cha=
-n->conn->mtu, hlen);
-> +                       size =3D 0;
-> +               } else {
-> +                       size =3D min_t(u16, L2CAP_DEFAULT_MAX_PDU_SIZE, c=
-han->conn->mtu - hlen);
-> +               }
-> +
->                 rfc.max_pdu_size =3D cpu_to_le16(size);
->
->                 l2cap_txwin_setup(chan);
-> @@ -3310,6 +3343,7 @@ static int l2cap_build_conf_req(struct l2cap_chan *=
-chan, void *data, size_t data
->                 break;
->
->         case L2CAP_MODE_STREAMING:
-> +               hlen =3D L2CAP_EXT_HDR_SIZE + L2CAP_SDULEN_SIZE + L2CAP_F=
-CS_SIZE;
->                 l2cap_txwin_setup(chan);
->                 rfc.mode            =3D L2CAP_MODE_STREAMING;
->                 rfc.txwin_size      =3D 0;
-> @@ -3317,9 +3351,12 @@ static int l2cap_build_conf_req(struct l2cap_chan =
-*chan, void *data, size_t data
->                 rfc.retrans_timeout =3D 0;
->                 rfc.monitor_timeout =3D 0;
->
-> -               size =3D min_t(u16, L2CAP_DEFAULT_MAX_PDU_SIZE, chan->con=
-n->mtu -
-> -                            L2CAP_EXT_HDR_SIZE - L2CAP_SDULEN_SIZE -
-> -                            L2CAP_FCS_SIZE);
-> +               if (chan->conn->mtu < hlen) {
-> +                       BT_WARN("mtu is too small (mtu %d < len %d)", cha=
-n->conn->mtu, hlen);
-> +                       size =3D 0;
-> +               } else {
-> +                       size =3D min_t(u16, L2CAP_DEFAULT_MAX_PDU_SIZE, c=
-han->conn->mtu - hlen);
-> +               }
->                 rfc.max_pdu_size =3D cpu_to_le16(size);
->
->                 l2cap_add_conf_opt(&ptr, L2CAP_CONF_RFC, sizeof(rfc),
-> @@ -3351,7 +3388,7 @@ static int l2cap_parse_conf_req(struct l2cap_chan *=
-chan, void *data, size_t data
->         void *endptr =3D data + data_size;
->         void *req =3D chan->conf_req;
->         int len =3D chan->conf_len;
-> -       int type, hint, olen;
-> +       int type, hint, olen, hlen;
->         unsigned long val;
->         struct l2cap_conf_rfc rfc =3D { .mode =3D L2CAP_MODE_BASIC };
->         struct l2cap_conf_efs efs;
-> @@ -3496,6 +3533,7 @@ static int l2cap_parse_conf_req(struct l2cap_chan *=
-chan, void *data, size_t data
->                         break;
->
->                 case L2CAP_MODE_ERTM:
-> +                       hlen =3D L2CAP_EXT_HDR_SIZE + L2CAP_SDULEN_SIZE +=
- L2CAP_FCS_SIZE;
->                         if (!test_bit(CONF_EWS_RECV, &chan->conf_state))
->                                 chan->remote_tx_win =3D rfc.txwin_size;
->                         else
-> @@ -3503,9 +3541,15 @@ static int l2cap_parse_conf_req(struct l2cap_chan =
-*chan, void *data, size_t data
->
->                         chan->remote_max_tx =3D rfc.max_transmit;
->
-> -                       size =3D min_t(u16, le16_to_cpu(rfc.max_pdu_size)=
-,
-> -                                    chan->conn->mtu - L2CAP_EXT_HDR_SIZE=
- -
-> -                                    L2CAP_SDULEN_SIZE - L2CAP_FCS_SIZE);
-> +                       if (chan->conn->mtu < hlen) {
-> +                               BT_WARN("mtu is too small (mtu %d < len %=
-d)",
-> +                                       chan->conn->mtu, hlen);
-> +                               size =3D 0;
-> +                       } else {
-> +                               size =3D min_t(u16, le16_to_cpu(rfc.max_p=
-du_size),
-> +                                            chan->conn->mtu - hlen);
-> +                       }
-> +
->                         rfc.max_pdu_size =3D cpu_to_le16(size);
->                         chan->remote_mps =3D size;
->
-> @@ -3534,9 +3578,17 @@ static int l2cap_parse_conf_req(struct l2cap_chan =
-*chan, void *data, size_t data
->                         break;
->
->                 case L2CAP_MODE_STREAMING:
-> -                       size =3D min_t(u16, le16_to_cpu(rfc.max_pdu_size)=
-,
-> -                                    chan->conn->mtu - L2CAP_EXT_HDR_SIZE=
- -
-> -                                    L2CAP_SDULEN_SIZE - L2CAP_FCS_SIZE);
-> +                       hlen =3D L2CAP_EXT_HDR_SIZE + L2CAP_SDULEN_SIZE +=
- L2CAP_FCS_SIZE;
-> +
-> +                       if (chan->conn->mtu < hlen) {
-> +                               BT_WARN("mtu is too small (mtu %d < len %=
-d)",
-> +                                       chan->conn->mtu, hlen);
-> +                               size =3D 0;
-> +                       } else {
-> +                               size =3D min_t(u16, le16_to_cpu(rfc.max_p=
-du_size),
-> +                                            chan->conn->mtu - hlen);
-> +                       }
-> +
->                         rfc.max_pdu_size =3D cpu_to_le16(size);
->                         chan->remote_mps =3D size;
->
-> --
-> 2.34.1
->
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3804 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmem_cache_alloc_node+0x5f6/0xc50 mm/slub.c:3888
+ kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:577
+ __alloc_skb+0x35a/0x7c0 net/core/skbuff.c:668
+ alloc_skb include/linux/skbuff.h:1318 [inline]
+ __ip_append_data+0x49ab/0x68c0 net/ipv4/ip_output.c:1128
+ ip_append_data+0x1e7/0x260 net/ipv4/ip_output.c:1365
+ raw_sendmsg+0x22b1/0x2690 net/ipv4/raw.c:648
+ inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x274/0x3c0 net/socket.c:745
+ __sys_sendto+0x62c/0x7b0 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x130/0x200 net/socket.c:2199
+ do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
+CPU: 1 PID: 15709 Comm: syz-executor.7 Not tainted 6.8.0-11567-gb3603fcb79b1 #25
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-1.fc39 04/01/2014
 
---=20
-Luiz Augusto von Dentz
+Fixes: 99e5acae193e ("ipv4: Fix potential uninit variable access bug in __ip_make_skb()")
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+v1->v2: https://lore.kernel.org/all/20240324050554.1609460-1-syoshida@redhat.com/
+- Explicitly initialize fl4->fl4_icmp_type and fl4->fl4_icmp_code because
+  we should not rely on a specific union layout.
+---
+ net/ipv4/ip_output.c | 2 +-
+ net/ipv4/raw.c       | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 1fe794967211..39229fd0601a 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1473,7 +1473,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
+ 		 * by icmp_hdr(skb)->type.
+ 		 */
+ 		if (sk->sk_type == SOCK_RAW &&
+-		    !inet_test_bit(HDRINCL, sk))
++		    !(fl4->flowi4_flags & FLOWI_FLAG_KNOWN_NH))
+ 			icmp_type = fl4->fl4_icmp_type;
+ 		else
+ 			icmp_type = icmp_hdr(skb)->type;
+diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
+index dcb11f22cbf2..4cb43401e0e0 100644
+--- a/net/ipv4/raw.c
++++ b/net/ipv4/raw.c
+@@ -612,6 +612,9 @@ static int raw_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 			    (hdrincl ? FLOWI_FLAG_KNOWN_NH : 0),
+ 			   daddr, saddr, 0, 0, sk->sk_uid);
+ 
++	fl4.fl4_icmp_type = 0;
++	fl4.fl4_icmp_code = 0;
++
+ 	if (!hdrincl) {
+ 		rfv.msg = msg;
+ 		rfv.hlen = 0;
+-- 
+2.44.0
+
 
