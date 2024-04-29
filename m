@@ -1,172 +1,181 @@
-Return-Path: <linux-kernel+bounces-162276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B068B58F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:46:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2658D8B58F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:47:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A11C428A300
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:46:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93E0D1F25E60
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCE77EF1D;
-	Mon, 29 Apr 2024 12:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06AE56B6C;
+	Mon, 29 Apr 2024 12:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zQYvs2zy"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UF7z2l4N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="tc9ZF9Y6";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UF7z2l4N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="tc9ZF9Y6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B77D7C6E9
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B3910961
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714394638; cv=none; b=kHPpzXlAUBhzD4We+d06EVds77+FwW6D6cz/CGd4GFHHT79vwLocFW41VUACJxAmzi2ag20+Wc64noarMfxw/KYzJxyvk27XTa21rZIuqhX8m+cEWMXiIE8cmiM4c4s6eLEnRSr409koKPtR1ypGPUgKzGNM77aH0vLjIwLHuaw=
+	t=1714394690; cv=none; b=RL7iy0E/8W2pFOVFiHk2Jf6zx0hV1ElphEuXgEIVdnuodPsTlrPutG8pehzIoPNwnj7l4l72SAAtkr6BQTVOVKT/kES+LjEFBHgBszgvAksxgoCrlYjHVO5U0ylxbH7KJpWVVjbdqlbgN+Y0qRcVlTvqXsEC0XlbhHDWolIg50I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714394638; c=relaxed/simple;
-	bh=Zxc4rW527dKenl2Mbly1X5nJqEt90f+a5Ld5zvIb4vQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TfhH0J542y4D9Odn+sSUfSs3wTFjHI6fmwAl4OJwltdmoyYRYr8e3YAhiaJPAe4owl6bvyavwJAGsSEkOJPxLW0NVCdjpRqHReRBwXpRH2FPBrix1eGaZwYeznsuozLIdK2aJJnjaCsmh+2Lc/Smn5B8QjeZOPnKqseSQ/6BgoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zQYvs2zy; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so6111007e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 05:43:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714394635; x=1714999435; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5TzjAuvmddZvd7O/0VqMVZaXXIfiLHk7iuZZZQxk6yA=;
-        b=zQYvs2zyA3B+kbtsnhhVQGAWD44aahJZT6fgeCpFdHvI8/T+Y010ZJ2Zx0fiuHzGIs
-         boYwoq/SqXM0D14/SQIa8fFeaD9RcoYN9YrDPtPF3rVBA25/Xy0S1R4sbi0d5arHtwsY
-         UAlCDwPJNlrD4Xb67lYKOyNkDZduiMbrFHUH8fOLu5MtfcIV3BTSL28sVClFsXP/a9N+
-         WyDB72e96uatQ2vHwrbLaMkQaGU7sB7PlU77G+SaO20P5EkzudpRt9Fp0s+OHPHWj77w
-         SuHN617eBTiVAApWcOG9RFpnuP4g9VnFrROcxVZdIEKl3A+CET98AeEXcWliTJUzsKbC
-         W9mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714394635; x=1714999435;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5TzjAuvmddZvd7O/0VqMVZaXXIfiLHk7iuZZZQxk6yA=;
-        b=R+WijwllrXRK3Jfiip0aTmy1tPOVxtll4ra5ditPJGe6MZqzAiKbYSuU0FBxouKOaD
-         Brd3NofinQdjDoFIWDlzMHK8Zcf0jDDpNxN/MHyJyPm1iJCJ0CcryCGfETS5VlgySeoS
-         nZf8mjKzIQQwLxfg598c3gjZ7M3KFR+CL9+H7C9yGT1FSLRQzPJSSTX0znyljmOCfzNX
-         V/DDlLUN8zCrCJhYjMILcsgcbLoviWADV/nhjilFHNd4rV/84BmOh/4PShQiNOX6s1EO
-         Pr+fGBpO9Bba5P9Xjn/rs3HD9SnioIaZ0JygYDYmi45FTY1hFfcPBDSKu8b53GrKNupA
-         SKlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXWDgeb10iewCiJK8AYT6fyjOIQYtAyOXTUsXg2RHDvz5H0Ttvivg7cUMz6qbG5FYgFYyElPDh8bhH4KzUOlcS0djzrh5YJN7AtkQ/J
-X-Gm-Message-State: AOJu0YwsJs4JgkJGkaEY0/m8sgnL0V4xzH23g23uduMzZSa3GievgnzV
-	V2KiVI0l5fVjde3p0O/xv4CzWxUFnyVu6hZ3y1UdOdQpPgacy2/ghJnN2z60otKFHHeOOb/gjqN
-	i
-X-Google-Smtp-Source: AGHT+IEdwyAHzs7xcJsghCo85/iFqaDFNwV/J1HNdGF0EYu0HLBfB7jEWrAYqM1SO7H56ilSMrbahQ==
-X-Received: by 2002:ac2:4a73:0:b0:51a:b110:3214 with SMTP id q19-20020ac24a73000000b0051ab1103214mr5878301lfp.49.1714394635355;
-        Mon, 29 Apr 2024 05:43:55 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id h18-20020a0565123c9200b0051d94297380sm467538lfv.241.2024.04.29.05.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 05:43:55 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 29 Apr 2024 15:43:49 +0300
-Subject: [PATCH 12/12] arm64: dts: qcom: x1e80100: drop wrong
- usb-role-switch properties
+	s=arc-20240116; t=1714394690; c=relaxed/simple;
+	bh=66rdI/GBqjiXeIs+U15w20lxYuu2e3aonXQoBWKEXi0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mhJgIjHUEiAXf/Tl0JdWlH9YxAGShrUGI+fbk8mov+7hwElVcNg0biE5rFaPC0PsbyHBMjNO+8QdrayuWjp91ghM2qhCCvVqv5nUa/4ZRD5KB0qxZTaXcZfsxkoIOc85PO3phyi9D6wLsJnZN4FjX0Qu8i/wRki6RYFZUxI9Zuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UF7z2l4N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=tc9ZF9Y6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UF7z2l4N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=tc9ZF9Y6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C15661F392;
+	Mon, 29 Apr 2024 12:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714394686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTLiGH0LMrBU/hhsuu2ns8jPvm10lUVCaNgVvudddD0=;
+	b=UF7z2l4NtotDO7ZgEYQzrr8elVdNG5n3EdQQWST3fm9EIDdwRW0/yn2MIKFg+VCsjDDdC1
+	sOT/DgAPhlWiSOa9I3eXL+g+1i85Vbf2eFZdeASUCCWWFz20erUWxWXZjxiJGSu3+F5nLF
+	zL/igR7x0ZpjKaGRJkrdr1ujuGOKrTo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714394686;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTLiGH0LMrBU/hhsuu2ns8jPvm10lUVCaNgVvudddD0=;
+	b=tc9ZF9Y6jiUsc9o7HTdClS2470p1Cu9KSUVJSFexz49I7KQb5sbvzALulsVtYknFXacyGZ
+	LvPe2NryhkW6n8AA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=UF7z2l4N;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=tc9ZF9Y6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714394686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTLiGH0LMrBU/hhsuu2ns8jPvm10lUVCaNgVvudddD0=;
+	b=UF7z2l4NtotDO7ZgEYQzrr8elVdNG5n3EdQQWST3fm9EIDdwRW0/yn2MIKFg+VCsjDDdC1
+	sOT/DgAPhlWiSOa9I3eXL+g+1i85Vbf2eFZdeASUCCWWFz20erUWxWXZjxiJGSu3+F5nLF
+	zL/igR7x0ZpjKaGRJkrdr1ujuGOKrTo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714394686;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTLiGH0LMrBU/hhsuu2ns8jPvm10lUVCaNgVvudddD0=;
+	b=tc9ZF9Y6jiUsc9o7HTdClS2470p1Cu9KSUVJSFexz49I7KQb5sbvzALulsVtYknFXacyGZ
+	LvPe2NryhkW6n8AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D16E138A7;
+	Mon, 29 Apr 2024 12:44:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /tEIDD6WL2bDYgAAD6G6ig
+	(envelope-from <jdelvare@suse.de>); Mon, 29 Apr 2024 12:44:46 +0000
+Date: Mon, 29 Apr 2024 14:44:42 +0200
+From: Jean Delvare <jdelvare@suse.de>
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: dmi: Change size of dmi_ids_string[] to 256
+Message-ID: <20240429144442.472aa83c@endymion.delvare>
+In-Reply-To: <1677030901-29326-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1677030901-29326-1-git-send-email-yangtiezhu@loongson.cn>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240429-usb-link-dtsi-v1-12-87c341b55cdf@linaro.org>
-References: <20240429-usb-link-dtsi-v1-0-87c341b55cdf@linaro.org>
-In-Reply-To: <20240429-usb-link-dtsi-v1-0-87c341b55cdf@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1579;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=Zxc4rW527dKenl2Mbly1X5nJqEt90f+a5Ld5zvIb4vQ=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmL5X/bFJjVn7sjPOdNCH4QfmpkSI7MAalgUZXy
- Dj8oTEarPeJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZi+V/wAKCRCLPIo+Aiko
- 1a1TB/460MYnFM7+pfnU7+QJNXl5W8MgWVr1UKqJfZ6K7i53BEbxXKIgK6nIQGgXenGGL2EJeX5
- NajzCOFelfBGrx5oyCoQv2wWcUvQ2shkL+X4rmqeuSUF7xcfDf9MlwdPXRYDtionJ9l84c1Pxln
- VcVc/42FGzuiyZwstrqpzmvejBsV21tzPKwkSBIdpUWzE3mO/4vF+6oYeXKJXw/VrvtTyLd3Tpa
- dtlAj0aity5xHbQupBdq1fUkO/glridh/B3Mg//bqyIyQpC6KabJotFDXP6uaDuTLXD6doefVcv
- rHALFg2oWaRNAJI8eByrF7xpykia9nXFG1zwnZxKwuRtEoNw
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+X-Spam-Flag: NO
+X-Spam-Score: -2.43
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: C15661F392
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.43 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	BAYES_HAM(-0.92)[86.23%];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
 
-The usb-role-switch property doesn't make sense for the USB hosts which
-are fixed to the host USB data mode. Delete usb-role-switch property
-from these hosts.
+Hi Tiezhu,
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 3 ---
- arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 3 ---
- 2 files changed, 6 deletions(-)
+Sorry for the very late answer, somehow your messages slipped through
+the cracks.
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-index c5c2895b37c7..7e4a13969d25 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-@@ -849,7 +849,6 @@ &usb_1_ss0 {
- 
- &usb_1_ss0_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
- 
- &usb_1_ss1_hsphy {
-@@ -871,7 +870,6 @@ &usb_1_ss1 {
- 
- &usb_1_ss1_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
- 
- &usb_1_ss2_hsphy {
-@@ -893,5 +891,4 @@ &usb_1_ss2 {
- 
- &usb_1_ss2_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-index 2061fbe7b75a..1aebfa5f958d 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-@@ -545,7 +545,6 @@ &usb_1_ss0 {
- 
- &usb_1_ss0_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
- 
- &usb_1_ss1_hsphy {
-@@ -567,7 +566,6 @@ &usb_1_ss1 {
- 
- &usb_1_ss1_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
- 
- &usb_1_ss2_hsphy {
-@@ -589,5 +587,4 @@ &usb_1_ss2 {
- 
- &usb_1_ss2_dwc3 {
- 	dr_mode = "host";
--	usb-role-switch;
- };
+On Wed, 22 Feb 2023 09:55:01 +0800, Tiezhu Yang wrote:
+> The current size of dmi_ids_string[] is 128, the BIOS date
+> can not be seen if the total string length of system vendor,
+> product name, board name, BIOS version and BIOS date is too
+> long to over 128, it is better and enough to change size of
+> dmi_ids_string[] to 256 for most cases.
+
+In order to convince me that the size of this buffer needs to be
+increased, one would have to provide a real world example with valid
+DMI data where the output doesn't fit. However...
+
+> Without this patch:
+> 
+> [    0.000000] DMI: Loongson Loongson-3A5000-7A1000-1w-A2101/Loongson-LS3A5000-7A1000-1w-A2101, BIOS vUDK2018-LoongArch-V4.0.05132-beta10 12/13/202
+> 
+> With this patch:
+> 
+> [    0.000000] DMI: Loongson Loongson-3A5000-7A1000-1w-A2101/Loongson-LS3A5000-7A1000-1w-A2101, BIOS vUDK2018-LoongArch-V4.0.05132-beta10 12/13/2022
+
+This example is apparently taken from an engineering sample with rather
+"low quality" strings or invalid string indexes. Specifically:
+* The product name and the board name are the exact same string.
+* Both duplicate the system vendor name ("Loongson").
+* The BIOS version includes the architecture name "LoongArch", which
+  seems unnecessarily verbose.
+
+So my feeling is that the issue would be better addressed by fixing the
+DMI data of your board than increasing the buffer size.
+
+Do you have any production-grade DMI table with proper strings where
+the buffer is still not large enough?
 
 -- 
-2.39.2
-
+Jean Delvare
+SUSE L3 Support
 
