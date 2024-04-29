@@ -1,139 +1,162 @@
-Return-Path: <linux-kernel+bounces-161815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B189D8B5196
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:40:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B788C8B5199
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 670661F219AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:40:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D855281098
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C871119F;
-	Mon, 29 Apr 2024 06:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E371171A;
+	Mon, 29 Apr 2024 06:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2nJFGMC"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="h1N4ehux"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5E710A09;
-	Mon, 29 Apr 2024 06:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67CD333F6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714372848; cv=none; b=kzE6QTsHgflVEz+wWQD9bnO2mJHLxD9yPtvcaFvTwDgR0dHTnKvj+lYzeNTQDJSK7XEs5wxhavA7uuDNebTXiNNncViqWK66/fzhSJoZ240CF5WV5aP9824m4LxS08O/eqdMIAWI/ARDHhXROyLFaULezZxebxOK/7yeulv6Sug=
+	t=1714372873; cv=none; b=KaYiIdtlreZDstkrUdHYYfX3Cu6i0T/TtymEbUW0Vg+UK8fdavdo41hfa+pJIzkx5JCfigW8bYL195xDLlVNPE4t0H9CSObdEoYwesrEdpoYvLJvL51jNnGGcBZiO2cE+0oQMR3oipj/8eZBHwMso5Ixq1vz4bVaqMAujODkuQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714372848; c=relaxed/simple;
-	bh=fgvAz0sLTTktebTn14gaVVatU6mFkIDYuROOi6e1HvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LEUOrpAk5WTZUhCYAlOWtgBuBJpKKv22FiCwFOlGm/BIf9MYH2775L4qcJ5BWI2qR/uHsnKivogd3gyOQAFr8aYpcKJc+ss/gOgIwAtYOIDvBKh7uJ1i3w3Z7T4jvNeho9p/lnRU6X5xiYEsKLVrKAj5cG1iOeWbS8y9db6J4pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2nJFGMC; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2dd615b6c44so43351971fa.0;
-        Sun, 28 Apr 2024 23:40:46 -0700 (PDT)
+	s=arc-20240116; t=1714372873; c=relaxed/simple;
+	bh=YeRC4XxrlBzoc6aB9nHXzHEeLpZealXCAg5sLvD6yWA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ax//PO2b8c2HG4COxKDwh1TwkVpiR5ME1NDVrFJt4ojjqTYjDyoXXsadcuDkbaGPu++ZBjrGzDQ5fF19ccUdTRoR4WHHp6CVlb/5wBEZNQfRrPxt9aub/KCKhSuR1IgFdyNRii4zPCe3qxCF9Rq8txrDDZ1zHVZbwOVdPIbipNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=h1N4ehux; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1eab699fcddso30697875ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 23:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714372844; x=1714977644; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+ySN0noyUH14atcen2ygoeKf0I5NwKf7EhALfl5OZZU=;
-        b=F2nJFGMCTq2EE5tS2mgJ2H0mB/otH8KqS3dBVAIL8vqcsLRdwA6Otsy5mN/x84HJuG
-         Afxf7rwEttY52y3ZVPOz0AqtJN8DRQxguTabcoMkYnPweKhyQA5PMlptZmXzIYPRi3f1
-         h9M9CyRfIKBICzv4H8HiOmpukECEioIYQMtPZpLBquOKydLxfRqm1coSnhriDCAMRkAU
-         iDvHTWqvksbnJzWEn2QUf+AsVq73Y9yc8x0wsbuNs4BEb8TXXEYuAr4UTIfeaPzDdpTS
-         UrVw6f/sb4fqnHlQih7ILDw6pqm1aq3XvXfz4cZgfnTIseitJZGMJ/fvKc31TnKl7Auj
-         BVxA==
+        d=ventanamicro.com; s=google; t=1714372872; x=1714977672; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g3CHl/SFXqYAERGdLxtaMngC8S6DnU6XgXGwCxtAafo=;
+        b=h1N4ehuxNf1WNo9AT27O1M9NrihbnhveVDvKhdRXUk6djD2BVg/jaAjQQNfohwmjQZ
+         m8AQgehMo4iCgd23HXNFlEtW++ATzzGQ4r6fITUcpaaf0sKOL9qVZvSPko1At/+1pD34
+         G3Cbm9jepoDNI3LkaGP9u9vOQtrNXSvO2Z0gGstE0ZCwDElHSjuF0I1yV8yRQX6WKQYM
+         jRtOJqlPaSQ711yMHUW6OOCBYGZzuwCQC5Z4FOwnKDbbsFLnkr2JSdfFKzD0QZdhoOhn
+         dNAJxtavnh8+CtDVpKJB9ssP/p+c8pjDq2nT9EXIzrKUo8UXuPiWlA0DPZ9dwF8zn3Et
+         klWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714372844; x=1714977644;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1714372872; x=1714977672;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ySN0noyUH14atcen2ygoeKf0I5NwKf7EhALfl5OZZU=;
-        b=wrzSFGdbGkitKmLcRwZL4c1bJpFV/4PGkO14UHsz/R1QZ8hLjbKTiwPMPFEX37lGZb
-         42UJ+CAmu+zVgpxNb2JKfZzKekWt771nv9bKDMInwRSFqPYMgcI+Qq25usgIYhCi0NiI
-         wCCTQoGGfuR6eE78KUOhWGLtsxrADehrfnPi6Fy5d1BvDlmsFNXYZM+LNv0PPzozXOya
-         mhCsxwuZeenkBRl0jcis4h+bvbgjLWQM5oUUFBmKYOWp6IAUOOxM9AB+a3u4g/AYAp/c
-         z0TJl+VkYpWpUOCMIwlzSzNYhN0pCmyotZhHnFW1Vn530clTLP7im8/+HNVwiThHjTHe
-         MNag==
-X-Forwarded-Encrypted: i=1; AJvYcCW0sjZ9KzUegFFWay8BIuwqRCGp3dKmwu5iVdaCJwpQPRQ3yHmhmGkgKa2Xt60DC3NCc4fMjod7qhbQrwKBgn2ngxEZZa9heUBMi+JAYXWhp4LChxTPH62PBm2J5Q+U8+zJO84egXPA
-X-Gm-Message-State: AOJu0YwuKfiYibiUwJJ7FZ0y+uH5ZvnMnXvvHHefLlSr5LLWBYKoBZW4
-	qFQuC5KMWEE/5Oc79w+Hj793kI9/Uj1rP+vvhsHDg095Or5tYPJJ
-X-Google-Smtp-Source: AGHT+IGccakOSvOuehrzUCUisMfZI7hs8SALqkXA/2RpJEU5gO4lg9UDYpmUo/aWKiMEMc1Yw+KpOQ==
-X-Received: by 2002:a2e:a789:0:b0:2e0:9ab7:22af with SMTP id c9-20020a2ea789000000b002e09ab722afmr363960ljf.53.1714372844359;
-        Sun, 28 Apr 2024 23:40:44 -0700 (PDT)
-Received: from ?IPV6:2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd? ([2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd])
-        by smtp.gmail.com with ESMTPSA id e20-20020a2e9e14000000b002df37b8e73bsm1094215ljk.37.2024.04.28.23.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 23:40:43 -0700 (PDT)
-Message-ID: <142a905d-f0e8-487e-a8db-ee1ded6da21f@gmail.com>
-Date: Mon, 29 Apr 2024 09:40:43 +0300
+        bh=g3CHl/SFXqYAERGdLxtaMngC8S6DnU6XgXGwCxtAafo=;
+        b=PsR05u/PdlCmD9Rsz0ac3UJyxPYUgZUDIQ0WNvpIyzX3JYBiVB8LtBAywYal6mdvi8
+         fzagKpR1LDh28QXOl/kmVwN6vSf/1hqjipOTIkiRBCyapiQPVyrfoG17et/mIlJfi2Ab
+         /zQGvd88Mb1VRqp3+N3siQsD+UHzFl85XvRsVDUWLrDb8Aqu01yN1R9w9VSHTdr3GdF6
+         pCl2rr/wJlWYUv77O7AphYoSfSS9rl/C3YBdx5/g6Ff6oQEYQbcu5WMVSWkdH4dy36Md
+         2jWF+XkzGnX8c6vwfGosibm4M9DRyW2D8FgEb3guw4FcLqiujF17wa8TqByV5VonAIWq
+         EQ7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVrYfNbejstIDWtg2UsVBAI5+VWl+GxA4PIc4iAk70BXnZYlzJ6ZLuB4G8hWoeHQSL0wdeaU2TNwgKWP82b3Tz7Ssy26uP5K8N+eHMF
+X-Gm-Message-State: AOJu0YzJe7byIUAfrFLO8R7kz98n2YSY+lUxUjkx90aNAtT3Wd2UdMh6
+	LVGVm80S0oYVSiovXwj2lRnhqXz7T3U1l5vhoi5OORCz46V+adI4dnAX/7t9Nh8=
+X-Google-Smtp-Source: AGHT+IHJIq5O7lAJlnVgT2TPMMefYPHPYX81CZ0/PXoTk2cDvl0s5hdpuoLRaOXaOY+XM//0LK1HGQ==
+X-Received: by 2002:a17:902:bf01:b0:1e8:32ed:6f6d with SMTP id bi1-20020a170902bf0100b001e832ed6f6dmr9271613plb.39.1714372871641;
+        Sun, 28 Apr 2024 23:41:11 -0700 (PDT)
+Received: from sunil-laptop ([106.51.187.62])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170902bf4900b001e26b7ac950sm19421830pls.272.2024.04.28.23.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 23:41:11 -0700 (PDT)
+Date: Mon, 29 Apr 2024 12:11:00 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Len Brown <lenb@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Robert Moore <robert.moore@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
+ controller support
+Message-ID: <Zi9A/KQv5fB/8nB3@sunil-laptop>
+References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
+ <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
+ <871q6uir15.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] iio: Fix the sorting functionality in
- iio_gts_build_avail_time_table
-Content-Language: en-US, en-GB
-To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
- <lars@metafoo.de>, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
- Chenyuan Yang <chenyuan0y@gmail.com>
-References: <cover.1714371936.git.mazziesaccount@gmail.com>
- <3d98589455726e812cf2ad2610f7351ee2b93b07.1714371936.git.mazziesaccount@gmail.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <3d98589455726e812cf2ad2610f7351ee2b93b07.1714371936.git.mazziesaccount@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <871q6uir15.fsf@all.your.base.are.belong.to.us>
 
-On 4/29/24 09:29, Chenyuan Yang wrote:
-> The sorting in iio_gts_build_avail_time_table is not working as intended.
-> It could result in an out-of-bounds access when the time is zero.
+On Wed, Apr 24, 2024 at 07:55:50PM +0200, Björn Töpel wrote:
+> "Rafael J. Wysocki" <rafael@kernel.org> writes:
 > 
-> Here are more details:
+> > On Mon, Apr 15, 2024 at 7:01 PM Sunil V L <sunilvl@ventanamicro.com> wrote:
+> >>
+> >> This series adds support for the below ECR approved by ASWG.
+> >> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
+> >>
+> >> The series primarily enables irqchip drivers for RISC-V ACPI based
+> >> platforms.
+> >>
+> >> The series can be broadly categorized like below.
+> >>
+> >> 1) PCI ACPI related functions are migrated from arm64 to common file so
+> >> that we don't need to duplicate them for RISC-V.
+> >>
+> >> 2) Added support for re-ordering the probe of interrupt controllers when
+> >> IRQCHIP_ACPI_DECLARE is used.
+> >>
+> >> 3) To ensure probe order between interrupt controllers and devices,
+> >> implicit dependency is created similar to when _DEP is present.
+> >>
+> >> 4) When PNP devices like Generic 16550A UART, have the dependency on the
+> >> interrupt controller, they will not be added to PNP data structures. So,
+> >> added second phase of pnpacpi_init to handle this.
+> >>
+> >> 5) ACPI support added in RISC-V interrupt controller drivers.
+> >>
+> >> This series is still kept as RFC to seek feedback on above design
+> >> changes. Looking forward for the feedback!
+> >
+> > I've looked at the patches and I don't see anything deeply concerning
+> > in them from the ACPI core code perspective.
+> >
+> > The changes look reasonably straightforward to me.
 > 
-> 1. When the gts->itime_table[i].time_us is zero, e.g., the time
-> sequence is `3, 0, 1`, the inner for-loop will not terminate and do
-> out-of-bound writes. This is because once `times[j] > new`, the value
-> `new` will be added in the current position and the `times[j]` will be
-> moved to `j+1` position, which makes the if-condition always hold.
-> Meanwhile, idx will be added one, making the loop keep running without
-> termination and out-of-bound write.
-> 2. If none of the gts->itime_table[i].time_us is zero, the elements
-> will just be copied without being sorted as described in the comment
-> "Sort times from all tables to one and remove duplicates".
+> Sunil, given Rafael's input, it sounds like it's time for a patch
+> proper. This is really the missing piece to make ACPI usable on RISC-V!
 > 
-> For more details, please refer to
-> https://lore.kernel.org/all/6dd0d822-046c-4dd2-9532-79d7ab96ec05@gmail.com.
+> Thanks for the nice work!
+> Björn
 > 
-> Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
-> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
-> Co-developed-by: Chenyuan Yang <chenyuan0y@gmail.com>
-> Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
-> Co-developed-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com> 
+> FWIW,
+> Tested-by: Björn Töpel <bjorn@rivosinc.com>
+> 
+Sorry for the delayed response. I was AFK last week.
 
-Huh. I had never before sent a patch with co-authored tags. Just to 
-ensure there is no misunderstandings - I did send this patch mail. I 
-added the From: tag as was suggested in:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+Many thanks!!, Rafael. Let me send next version without RFC.
 
-I am afraid mutt picked the email sender from this tag - which does not 
-fee like correct thing to do! Sorry! I did not intend to impersonate 
-Chenyuan!
+Thank you very much Björn for testing it.
 
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Thanks,
+Sunil
 
