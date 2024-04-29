@@ -1,80 +1,64 @@
-Return-Path: <linux-kernel+bounces-162692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C928B5F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:36:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1598B5F2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F092A1F21178
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:36:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2CBCB213AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8108785C6F;
-	Mon, 29 Apr 2024 16:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB6584A58;
+	Mon, 29 Apr 2024 16:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MFFWZzQG"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDHwpBwM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FB41DA23
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352EE84E1B;
+	Mon, 29 Apr 2024 16:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408557; cv=none; b=ceNFM1dRQ+VB5pooSgLZMfOnqJ8lNp8AMj0uBfNXHDJTNVFSfibhu4TMTmwXUPlQ9fP1YVJcAFWIt8p68vXfKIcwXdmjkeqndZWQVyyXVtzgVcRadaIU075yPIGvvRr56MZvwbPcWbfTiUGf/c/N7ERiV8VIcTSEiADktf1TEM8=
+	t=1714408598; cv=none; b=n4TYRqOLE863M5/+dOKeIV0NxB7WEfr7XZnWatqHCSUW3ilkl/q9nK9G9iDR0QS98TWArBjvEP8kqrj3hNLMwT9wogxX+4IKFL3U+bHk+/BUFVgft5mWDRLn8aUL0fHv9Wysq1Xfs9PYp5rOHdzw2OjzvQoA0AZZdjn2uhW4Ko4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408557; c=relaxed/simple;
-	bh=RrdAgFpxvfICpslsME+uAzTz5L+5aHCg8asgXZuWRvY=;
+	s=arc-20240116; t=1714408598; c=relaxed/simple;
+	bh=fgSKb2lwvDBvPMmVmRJwxhth9YzFQDQdsEr9HfbL5yE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F5cV+uKEi7rTgdwmpeCXQDCED0jsFsowny7T5j+I9Te8QwMoZCbUUKE1YFkQYyTZnWTm43qNVUqbZr6U8SmiVa1+HkWBdeulr3bD0Vyxt+mUJTWZZg44aYiXAqo2s2xcfGPKfw4zmIWXJ/h1rp1BlQuvZ3gAz64v0y6iHipIHXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MFFWZzQG; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2dd64d6fe94so53153731fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714408554; x=1715013354; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=adQzda6pc9co5++PgQWHY34hjE2pAbP51bI2S0NH5CU=;
-        b=MFFWZzQGvMB3sZPd7XGWhailnvzkrtm3LS/5aEEtyLszFr305CoNZzQwetIzKdG7/v
-         ppNVrhDPBsItfOIPyWvor6oT11Jjk6mVGchfxMhRjuDCjbkVL/DmfhNLgbIltuT2fgeM
-         pGNTnWeB5O81XQ4n32AOYx+kQkSPsx3rHm/jgC5eq21ZqeL2Sd2isEwjKL7oYrLqSiDO
-         IOKBfV20JxAKY1Zjv0EV+HJqLauTtUdig6HO8cXmw3ERzbt0qQsHtgyLappOse6OVJ5h
-         wApSzD29UhSl+x7i0a5pzqXhu6uB6cYRG3KuhVDJw6j4tpMkbtbwVzqoia2uzwzValg8
-         OOfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714408554; x=1715013354;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=adQzda6pc9co5++PgQWHY34hjE2pAbP51bI2S0NH5CU=;
-        b=PxZkWeaaWQ1neX87Th3AjlCz6doWOpobrMhrSEfJR600uV+DDjBzNUAZgMRhNSd4Rz
-         s3aaYZPD+/EqfOVb8c9fwp9bVfkyF1j8eJex84P5Tf76GS3X9Mt2hxZf+PXxxyV1N5mR
-         iDnEPrN0uL1my6F6k2mDrLaYtOCAtBnrygBBGSHupfuTWb9sulpFgjGaD3CCd0uzqRBH
-         r1A9L57Ka1rKGeMGQbc5I8+n4zl5tGUrwXYAR7L+juZBefrhILqYEJy7RuMEE45mSWCa
-         HMScCs1DJpe2LSIjogUAez85ZxaQD6E0JzVmvtIVnG+gP9Acu1nSX+5iNtIx4DoNPmrL
-         O3fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5qDQVY5G1mBFJI6H0rBfhT7F6E0h9vpKX20m9bGdyA4YkLnR+Dp/r40OQWe+iSHfpmEseTNkY/LH40MHaXu2f5vjHdo+GkPx6Bojr
-X-Gm-Message-State: AOJu0Yz6HqgA0rx1t4gm+sYO1xdwBjE7dtFYnj9kSFbyz4nfabFmH5B5
-	QWBJWaI37DtphOTMPBNbPGM0hS2ZumeK3Bc6n6utX/t+DpZscWZSJ0fEzh2bDCc=
-X-Google-Smtp-Source: AGHT+IGDTwVSx+nyBEEqecLTAG5SWZdeSLzhvyNBENyKS37lohDmf4DELco9ZuvEF8Rv1oK17n9Kaw==
-X-Received: by 2002:a2e:7c0f:0:b0:2e0:aaaa:e550 with SMTP id x15-20020a2e7c0f000000b002e0aaaae550mr1329798ljc.23.1714408554585;
-        Mon, 29 Apr 2024 09:35:54 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id l9-20020a05651c10c900b002de553e0a7esm1874471ljn.102.2024.04.29.09.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 09:35:54 -0700 (PDT)
-Date: Mon, 29 Apr 2024 19:35:52 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] usb: typec: tipd: rely on i2c_get_match_data()
-Message-ID: <3xo5l7b5ushwkpq7tfmic7eurg624sd6f47v7fobmawtq4ai4w@qnbrumzv5nha>
-References: <20240429-tps6598x_fix_event_handling-v3-0-4e8e58dce489@wolfvision.net>
- <20240429-tps6598x_fix_event_handling-v3-3-4e8e58dce489@wolfvision.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iibVxYdeWYCp+ibUpkPiYDdiXuSWw1fdp7e5pwIRY4zDH8qwxJU8hmq4cCBQPelHS5hxxMk11WlDszwENfJn0HM/WJpMZ28Q2gRnHOSj9v3hoZ1i52HcJXnNN77tlhfgU3L68OQr/0yNoZDZRq3AofEGCCorpj1UCIcytHkWxn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDHwpBwM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA721C4AF18;
+	Mon, 29 Apr 2024 16:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714408597;
+	bh=fgSKb2lwvDBvPMmVmRJwxhth9YzFQDQdsEr9HfbL5yE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WDHwpBwM0YY0dIOhxTwSvBih1XHfmxFemrNC7H1vsZlRU9dtpxx+3aGi8e6qGXSet
+	 ++0V0LqyYXCYxdCJbv/FJtIqcUxL+tIm9bLc9lziMj1QFk6JJo9oG4MP7R25D9+gWS
+	 GoFcqyCB2oYcF45xMN1Tfvgf6YxbNmKJTXlPFDTgsNektWqutM5oXTGFPrsX+xLBsc
+	 9HAYUsH4KqkjGYt9dy3SWzopNfYlE9svOuR7WTvN12yJqF15MLOSDDKSq6Mj80iLUw
+	 RswJOryh47sAEEpxriPPbqALSbvVRmP2UmXWDXO12grOycXywOeSNeUgx3EO6hy+17
+	 fbvSEa5+nanbg==
+Date: Mon, 29 Apr 2024 17:36:30 +0100
+From: Simon Horman <horms@kernel.org>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	andrew@lunn.ch, corbet@lwn.net, linux-doc@vger.kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	horatiu.vultur@microchip.com, ruanjinjie@huawei.com,
+	steen.hegelund@microchip.com, vladimir.oltean@nxp.com,
+	UNGLinuxDriver@microchip.com, Thorsten.Kummermehr@microchip.com,
+	Pier.Beruto@onsemi.com, Selvamani.Rajagopal@onsemi.com,
+	Nicolas.Ferre@microchip.com, benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 02/12] net: ethernet: oa_tc6: implement
+ register write operation
+Message-ID: <20240429163630.GA516117@kernel.org>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-3-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,24 +67,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429-tps6598x_fix_event_handling-v3-3-4e8e58dce489@wolfvision.net>
+In-Reply-To: <20240418125648.372526-3-Parthiban.Veerasooran@microchip.com>
 
-On Mon, Apr 29, 2024 at 03:35:59PM +0200, Javier Carrasco wrote:
-> The first thing i2c_get_match_data() does is calling
-> device_get_match_data(), which already checks if there is a fwnode.
+On Thu, Apr 18, 2024 at 06:26:38PM +0530, Parthiban Veerasooran wrote:
+> Implement register write operation according to the control communication
+> specified in the OPEN Alliance 10BASE-T1x MACPHY Serial Interface
+> document. Control write commands are used by the SPI host to write
+> registers within the MAC-PHY. Each control write commands are composed of
+> a 32 bits control command header followed by register write data.
 > 
-> Remove explicit usage of device_get_match_data() as it is already
-> included in i2c_get_match_data().
+> The MAC-PHY ignores the final 32 bits of data from the SPI host at the
+> end of the control write command. The write command and data is also
+> echoed from the MAC-PHY back to the SPI host to enable the SPI host to
+> identify which register write failed in the case of any bus errors.
+> Control write commands can write either a single register or multiple
+> consecutive registers. When multiple consecutive registers are written,
+> the address is automatically post-incremented by the MAC-PHY. Writing to
+> any unimplemented or undefined registers shall be ignored and yield no
+> effect.
 > 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-> ---
->  drivers/usb/typec/tipd/core.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+..
 
+> diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
 
--- 
-With best wishes
-Dmitry
+..
+
+> +/**
+> + * oa_tc6_write_registers - function for writing multiple consecutive registers.
+> + * @tc6: oa_tc6 struct.
+> + * @address: address of the first register to be written in the MAC-PHY.
+> + * @value: values to be written from the starting register address @address.
+> + * @length: number of consecutive registers to be written from @address.
+> + *
+> + * Maximum of 128 consecutive registers can be written starting at @address.
+> + *
+> + * Returns 0 on success otherwise failed.
+
+Nit: I think you need a ':' after "Returns" (or "Return")
+     in order for kernel-doc -Wall to recognise this as a return section.
+
+Likewise elsewhere in this patch(set).
+
+> + */
+> +int oa_tc6_write_registers(struct oa_tc6 *tc6, u32 address, u32 value[],
+> +			   u8 length)
+> +{
+
+..
 
