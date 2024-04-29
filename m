@@ -1,78 +1,169 @@
-Return-Path: <linux-kernel+bounces-162628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890048B5E47
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:57:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0E28B5E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A49F1F21B38
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11BBD282402
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17FF83A08;
-	Mon, 29 Apr 2024 15:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6093A83A15;
+	Mon, 29 Apr 2024 15:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i5XEOK4K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="C30e7yIK"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1AE839F1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F087A839E2;
+	Mon, 29 Apr 2024 15:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714406253; cv=none; b=iRazLIRvpHOJVSf1oTGyj+3d7oTqKEr9BUdkfBr3Gw31tHeIzg3csEQpY41Cl+aRJUsKf2SyaBB7uh1ZBXk/pvobkJcianmTdch1exfmeeABzzWf8I+QCjXSZfXQg+CJooeIOUjL6tIK1SQP3XUfmmTIZsDyYrkTM40S05qAeWs=
+	t=1714406268; cv=none; b=Pmh3242ELbPaC6MIsjw+MElkYVgbZj1K+Txp7+lJABAFeZtN8x/vNPuJbaNkUcQPYmDuko+uNVNqCpAcyCvrx81EGa1mWRStMvf6aNIJdDzcnSDCPlpeJhze9xvAnpDmUO581rQhuLD3w+z4fUDN1Ecemvrf5uVFI84Bt3qE08A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714406253; c=relaxed/simple;
-	bh=V+kKALgBUFrCSd3iERim7a+BS/b1pVtfqSotzhpBpEs=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=pmmTkxr38arD9CLgQ8F3iXKKj0dS/E20aCNBsIsw54/TwVklOtd5jF0hFlz+GmbMKpvgkXNN8fDY3aeuvZcIXOkFnwuxsxgiSCb3Kktx7fITHUTVidGNHs8LKtd4PcJsG6b/ROAxGKBOs7G9GoeIJmqjW9GWHH5SycqARytzXXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i5XEOK4K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AB6EC113CD;
-	Mon, 29 Apr 2024 15:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714406252;
-	bh=V+kKALgBUFrCSd3iERim7a+BS/b1pVtfqSotzhpBpEs=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=i5XEOK4KoAL5hu+7ezsB2L25L4ZFFfszPx9AtvtRwyISg45U5QHTFvl1RlLkTZbFw
-	 2csagYz0FNDwGNU8KKFo8Ece+F45k78HrnqyFwBRbqilea+GZFkDliF+YSxz2sz4t+
-	 5UiDbaA1n9BYwI3uz/YynOXpY5noG2IvsfbVuH2AEY5zXsNIoOMTSU9PsbahiBGKik
-	 SS9eSfTLgFRFM70bIk1cywDS05TGOUbnOLa5vYndSYmPHJ0vQOsfGW8H9KMbwKe1Br
-	 BzMJvwxQzpsbiHWkv4iq8OaDeC3XhaozhcqtIcFUb1CHAqr9CRyzgbhm7W9QFx+MYe
-	 2etnHsDdbbDYg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 715C9C43613;
-	Mon, 29 Apr 2024 15:57:32 +0000 (UTC)
-Subject: Re: [GIT PULL] erofs fixes for 6.9-rc7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <Zi9wpiog2uo1wGBb@debian>
-References: <Zi9wpiog2uo1wGBb@debian>
-X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <Zi9wpiog2uo1wGBb@debian>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.9-rc7-fixes
-X-PR-Tracked-Commit-Id: 7af2ae1b1531feab5d38ec9c8f472dc6cceb4606
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b947cc5bf6d793101135265352e205aeb30b54f0
-Message-Id: <171440625245.25744.17856946532911858716.pr-tracker-bot@kernel.org>
-Date: Mon, 29 Apr 2024 15:57:32 +0000
-To: Gao Xiang <xiang@kernel.org>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Hongbo Li <lihongbo22@huawei.com>, linux-erofs@lists.ozlabs.org
+	s=arc-20240116; t=1714406268; c=relaxed/simple;
+	bh=sLrrAHqZlF1X56CXdSNoLpSd8RrM139WBbW+izxEvXY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iR2sFbrLs5KDxlLF2T/dwgVBhMe2UOlHG/3rfiIbUvViNrVd+yljSiVmfjNTEqlK6Khsox1BK6GHI9mFNGnqT92mioB5FfbBTWgeIUGfaXdmUrGd+BP0wYn1irwZJRBNXQE0cbmfF3yX+UDOS8yolJGNRbJiskemNIvrPY4t6aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=C30e7yIK; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TFnZ6f028131;
+	Mon, 29 Apr 2024 15:57:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=NI3ArjhF/GJ5SZWvlrsqW2i59fZz8Art3BAI3Citk0o=;
+ b=C30e7yIKf7YFf2BZ0YKapxyUwaT2M42hTa9NDaacHARrp4YlXSygfBpA+woGNKFh4vxd
+ 1sR6/IJUjUfOB/NaJmrZ64XweKWrO9q0zNtH7ViL3H1JuNtajKBs9jmoeCuK/4qXz8dV
+ S4Ryl605sxdig1sFAMnXu9c1gF+xkAASaieveDhjGebnreJZWGjM/htSi0G5gk2qG+ri
+ 4+tVwLjgE7A6CrCwhoqZrr3F9OhQCVO9z6yuKbamOZP96aNtDsd1t9rBIyU1nxqtj1Qv
+ dl8hURL9ef4ytPU+o7ESnXh3EGzunhl4C+kbDaG0OhaS7fxQqBIkKNmTpF9be/zh8NiO uA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrswvjxwm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Apr 2024 15:57:41 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43TF7l1T011403;
+	Mon, 29 Apr 2024 15:57:41 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt6j93f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Apr 2024 15:57:40 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43TFuxjK040299;
+	Mon, 29 Apr 2024 15:57:40 GMT
+Received: from alaljime-dev-e4flex-vm.osdevelopmeniad.oraclevcn.com (alaljime-dev-e4flex-vm.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.106])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xrqt6j91w-1;
+	Mon, 29 Apr 2024 15:57:40 +0000
+From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+To: kvm@vger.kernel.org
+Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, vashegde@amd.com, mlevitsk@redhat.com,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        mark.kanda@oracle.com, alejandro.j.jimenez@oracle.com
+Subject: [PATCH 0/4] Export APICv-related state via binary stats interface
+Date: Mon, 29 Apr 2024 15:57:34 +0000
+Message-Id: <20240429155738.990025-1-alejandro.j.jimenez@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_14,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404290101
+X-Proofpoint-GUID: JooSZhZd6ljsWBVCn_gWkiWrys_PiyNw
+X-Proofpoint-ORIG-GUID: JooSZhZd6ljsWBVCn_gWkiWrys_PiyNw
 
-The pull request you sent on Mon, 29 Apr 2024 18:04:22 +0800:
+After discussion in the RFC thread[0], the following items were identified as
+desirable to expose via the stats interface:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.9-rc7-fixes
+- APICv status: (apicv_enabled, boolean, per-vCPU)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b947cc5bf6d793101135265352e205aeb30b54f0
+- Guest using SynIC's AutoEOI: (synic_auto_eoi_used, boolean, per-VM)
 
-Thank you!
+- KVM PIT in reinject mode inhibits AVIC: (pit_reinject_mode, boolean, per-VM)
 
+- APICv unaccelerated injections causing a vmexit (i.e. AVIC_INCOMPLETE_IPI,
+  AVIC_UNACCELERATED_ACCESS, APIC_WRITE): (apicv_unaccelerated_inj, counter,
+  per-vCPU)
+
+Example retrieving the newly introduced stats for guest running on AMD Genoa
+host, with AVIC enabled:
+
+(QEMU) query-stats target=vcpu vcpus=['/machine/unattached/device[0]'] providers=[{'provider':'kvm','names':['apicv_unaccelerated_inj','apicv_active']}]
+{
+    "return": [
+        {
+            "provider": "kvm",
+            "qom-path": "/machine/unattached/device[0]",
+            "stats": [
+                {
+                    "name": "apicv_unaccelerated_inj",
+                    "value": 2561
+                },
+                {
+                    "name": "apicv_active",
+                    "value": true
+                }
+            ]
+        }
+    ]
+}
+(QEMU) query-stats target=vm providers=[{'provider':'kvm','names':['pit_reinject_mode','synic_auto_eoi_used']}]
+{
+    "return": [
+        {
+            "provider": "kvm",
+            "stats": [
+                {
+                    "name": "pit_reinject_mode",
+                    "value": false
+                },
+                {
+                    "name": "synic_auto_eoi_used",
+                    "value": false
+                }
+            ]
+        }
+    ]
+}
+
+Changes were also sanity tested on Intel Sapphire Rapids platform, with/without
+IPI virtualization.
+
+Regards,
+Alejandro
+
+[0] https://lore.kernel.org/all/20240215160136.1256084-1-alejandro.j.jimenez@oracle.com/
+
+Alejandro Jimenez (4):
+  KVM: x86: Expose per-vCPU APICv status
+  KVM: x86: Add a VM stat exposing when SynIC AutoEOI is in use
+  KVM: x86: Add a VM stat exposing when KVM PIT is set to reinject mode
+  KVM: x86: Add vCPU stat for APICv interrupt injections causing #VMEXIT
+
+ arch/x86/include/asm/kvm_host.h | 4 ++++
+ arch/x86/kvm/hyperv.c           | 2 ++
+ arch/x86/kvm/i8254.c            | 2 ++
+ arch/x86/kvm/lapic.c            | 1 +
+ arch/x86/kvm/svm/avic.c         | 7 +++++++
+ arch/x86/kvm/vmx/vmx.c          | 2 ++
+ arch/x86/kvm/x86.c              | 7 ++++++-
+ 7 files changed, 24 insertions(+), 1 deletion(-)
+
+
+base-commit: 7b076c6a308ec5bce9fc96e2935443ed228b9148
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.39.3
+
 
