@@ -1,228 +1,183 @@
-Return-Path: <linux-kernel+bounces-162346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56A48B599D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:15:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3FCE8B59A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:17:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5796528B4EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317241C213A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B3056B67;
-	Mon, 29 Apr 2024 13:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA7656B6A;
+	Mon, 29 Apr 2024 13:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FoyGH3XA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EQmWiQem";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FZiv6bSG";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jkkB5zSH"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBuqgQIO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341A4C2C6;
-	Mon, 29 Apr 2024 13:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93053EA71;
+	Mon, 29 Apr 2024 13:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396509; cv=none; b=IQ1JG3QbGZvgZK1JkAi1JTroBPHfiXa5FFlIuN5gGO4m2C6HzXMdethTgGt/lRz0fRIFl1EMtS/V9OHJ2MHVKhUmOCU+MD/c6jPoWjnRc+0PK01a5TzJX1SKJGWPpENKZTIsEoO0y+PIVjc62mFs1prlFnL6lSdAkI6pt9XGK8k=
+	t=1714396623; cv=none; b=mQ7ChSUn/fl8ZCYCLL9SC6lnhW9cPbHsPFoD1+xh1NFC934jgyniGRk4t7lnRIsXD35pyKYTyIHgmcwDsv9tTHw2oFTuIA/C8RyKeQ6CREEW9hNfYUvc/EqXW8fQQwRce5SpgM8LXvpAjr/iVn5HnsUtDuxE5MuTy1vUOtPBqC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396509; c=relaxed/simple;
-	bh=lwLrzIKXexv93JpZCZiipvkI1Hw7oxMVMH2FzhKlnBw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EvHlD3rflygZcKM/tNKcE/Phn/WCnvFs7mRRrRd+W7T7hOcmf9GUI6gCWsx4jfEczbYmxIWbayZo+dKCUGzfqM1NoGhQI8s5B9FXRlGFFgxwkAkAxm9PCHbqDqavgrVXL1aiVQxYG7M7EtsB9QcNxxfyiY3reLn6bn4P/XduHq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FoyGH3XA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EQmWiQem; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FZiv6bSG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jkkB5zSH; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0FA901F441;
-	Mon, 29 Apr 2024 13:15:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714396504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1mr/HuGgEXLPHqOYlEvgjUC+ZIRbepV7tY26iCKUpdk=;
-	b=FoyGH3XAmDpGIesb1M+qAYKKGFEPXoKIJLLRNxuOlqsoQUwcXPQCk3l4Exa1rOW2mSKE0O
-	0O15bt65wxnnc1oo1Pq/47bpe3ZPQkiu0/aj1ixXe2W4AcZ8h2ijeLb2QOPsPIdqm2FcWD
-	T/NWg3dbur1IlXClabZsQtxnxdlL9z8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714396504;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1mr/HuGgEXLPHqOYlEvgjUC+ZIRbepV7tY26iCKUpdk=;
-	b=EQmWiQemmgwWn6Cl4MqmSRrvJosZV3cvw8DIRkAvhI0XORGoVNyT0PBnMBNzPkE/Mv+8ka
-	a4gEJbHj5Q6JFFAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FZiv6bSG;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jkkB5zSH
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714396503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1mr/HuGgEXLPHqOYlEvgjUC+ZIRbepV7tY26iCKUpdk=;
-	b=FZiv6bSGf6hR+8Dmo+IrIi7ojZw5EtUJIm3uols3g6XfaxeV93Wwwmb5Wlg2JbgckfUU5t
-	warZU6gmCdLqG0ez9yPgZTiNweo1pXTLARJC29crxwn1Cwm0+/0pgYNmKsOMGUJxsT+GBU
-	DON6GMP8Kq6PbLdwNRle5f9+4MEc1gw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714396503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1mr/HuGgEXLPHqOYlEvgjUC+ZIRbepV7tY26iCKUpdk=;
-	b=jkkB5zSH0P7Q2D8EuoKCfUUzDQCX+OD0tHVr4tpoO4fleRQwy9SFDcF2JX8Gz9uFzSxFuS
-	FV4yw7xoWKRJ7eCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0003F138A7;
-	Mon, 29 Apr 2024 13:15:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uxxNO1adL2aKbQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 29 Apr 2024 13:15:02 +0000
-Message-ID: <c9b39bd3-235e-4b04-838a-b0238ecf2295@suse.cz>
-Date: Mon, 29 Apr 2024 15:15:02 +0200
+	s=arc-20240116; t=1714396623; c=relaxed/simple;
+	bh=K2caPeF0LKtMastSJ6K3MVqGt0i4ZwtzFf13eZFnB0w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=eeVv6rqRrN9z3KMjEUbu+WreFmY7PZ4nNhwTN/9xUEXQJ/aPD+pf53B46ozqU6d1V6e8noVZX8eyuhWkJd+TirA4L0RW4g70R7hvWYriq7T9EIpTcOB/CCXmnVfFrWejxCWXSrJbE7+U8CiF7W1A3NYgoh5cxWY8jp3Q85OoCnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eBuqgQIO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 036A7C113CD;
+	Mon, 29 Apr 2024 13:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714396623;
+	bh=K2caPeF0LKtMastSJ6K3MVqGt0i4ZwtzFf13eZFnB0w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eBuqgQIOPyvC82nYwsijdosmn4WUwYusmDxAFKuzzeJrAHIrkz+W8unctWIIW9St8
+	 aHF2705D6AvN3jhfvs/IOnW50D428MXXrzmblvenEUN/Q/vWh/tI60iBsMqhXvtt1J
+	 tm3EaUgQsylTuHc+DjDRoF3yEci7iBKmrAIrdog6JWywhq3MnuBXmrIxZBVsUKhzoh
+	 lcje+Q4bDKNpX+kSHeNpz2ST3eX3z5QqOfm3IGgmNYojBwc1HW3OcjIl8AyE8oZlKe
+	 N3TvUJ0t87lVqd48HgfnLAWy0dXDde77qO2BRheHJUxiDNNvqc7ZXfl+PKLtrsNpXS
+	 X9hwc2aILIjGQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>,
+	Florent Revest <revest@chromium.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v4 0/2] bpf, arm64: Support per-cpu instruction
+Date: Mon, 29 Apr 2024 13:16:45 +0000
+Message-Id: <20240429131647.50165-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/11] KVM: guest_memfd: Use AS_INACCESSIBLE when creating
- guest_memfd inode
-Content-Language: en-US
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: seanjc@google.com, michael.roth@amd.com, isaku.yamahata@intel.com
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-3-pbonzini@redhat.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20240404185034.3184582-3-pbonzini@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0FA901F441
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.50
+Content-Transfer-Encoding: 8bit
 
-On 4/4/24 8:50 PM, Paolo Bonzini wrote:
-> From: Michael Roth <michael.roth@amd.com>
-> 
-> truncate_inode_pages_range() may attempt to zero pages before truncating
-> them, and this will occur before arch-specific invalidations can be
-> triggered via .invalidate_folio/.free_folio hooks via kvm_gmem_aops. For
-> AMD SEV-SNP this would result in an RMP #PF being generated by the
-> hardware, which is currently treated as fatal (and even if specifically
-> allowed for, would not result in anything other than garbage being
-> written to guest pages due to encryption). On Intel TDX this would also
-> result in undesirable behavior.
-> 
-> Set the AS_INACCESSIBLE flag to prevent the MM from attempting
-> unexpected accesses of this sort during operations like truncation.
-> 
-> This may also in some cases yield a decent performance improvement for
-> guest_memfd userspace implementations that hole-punch ranges immediately
-> after private->shared conversions via KVM_SET_MEMORY_ATTRIBUTES, since
-> the current implementation of truncate_inode_pages_range() always ends
-> up zero'ing an entire 4K range if it is backing by a 2M folio.
-> 
-> Link: https://lore.kernel.org/lkml/ZR9LYhpxTaTk6PJX@google.com/
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Message-ID: <20240329212444.395559-6-michael.roth@amd.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Changes in v3 -> v4:
+v3: https://lore.kernel.org/all/20240426121349.97651-1-puranjay@kernel.org/
+- Fix coding style issue related to C89 standards.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Changes in v2 -> v3:
+v2: https://lore.kernel.org/all/20240424173550.16359-1-puranjay@kernel.org/
+- Fixed the xlated dump of percpu mov to "r0 = &(void __percpu *)(r0)"
+- Made ARM64 and x86-64 use the same code for inlining. The only difference
+  that remains is the per-cpu address of the cpu_number.
 
-> ---
->  virt/kvm/guest_memfd.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index 0f4e0cf4f158..5a929536ecf2 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -357,6 +357,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
->  	inode->i_private = (void *)(unsigned long)flags;
->  	inode->i_op = &kvm_gmem_iops;
->  	inode->i_mapping->a_ops = &kvm_gmem_aops;
-> +	inode->i_mapping->flags |= AS_INACCESSIBLE;
->  	inode->i_mode |= S_IFREG;
->  	inode->i_size = size;
->  	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+Changes in v1 -> v2:
+v1: https://lore.kernel.org/all/20240405091707.66675-1-puranjay12@gmail.com/
+- Add a patch to inline bpf_get_smp_processor_id()
+- Fix an issue in MRS instruction encoding as pointed out by Will
+- Remove CONFIG_SMP check because arm64 kernel always compiles with CONFIG_SMP
+
+This series adds the support of internal only per-CPU instructions and
+inlines the bpf_get_smp_processor_id() helper call for ARM64 BPF JIT.
+
+Here is an example of calls to bpf_get_smp_processor_id() and
+percpu_array_map_lookup_elem() before and after this series.
+
+                                         BPF
+                                        =====
+              BEFORE                                       AFTER
+             --------                                     -------
+
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+(85) call bpf_get_smp_processor_id#229032       (18) r0 = 0xffff800082072008
+                                                (bf) r0 = &(void __percpu *)(r0)
+                                                (61) r0 = *(u32 *)(r0 +0)
+
+
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+(18) r1 = map[id:78]                            (18) r1 = map[id:153]
+(18) r2 = map[id:82][0]+65536                   (18) r2 = map[id:157][0]+65536
+(85) call percpu_array_map_lookup_elem#313512   (07) r1 += 496
+                                                (61) r0 = *(u32 *)(r2 +0)
+                                                (35) if r0 >= 0x1 goto pc+5
+                                                (67) r0 <<= 3
+                                                (0f) r0 += r1
+                                                (79) r0 = *(u64 *)(r0 +0)
+                                                (bf) r0 = &(void __percpu *)(r0)
+                                                (05) goto pc+1
+                                                (b7) r0 = 0
+
+
+                                      ARM64 JIT
+                                     ===========
+
+              BEFORE                                       AFTER
+             --------                                     -------
+
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ffffffff
+movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl #16
+movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
+blr     x10                                     mrs     x10, tpidr_el1
+add     x7, x0, #0x0                            add     x7, x7, x10
+                                                ldr     w7, [x7]
+
+
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+mov     x0, #0xffff0003ffffffff                 mov     x0, #0xffff0003ffffffff
+movk    x0, #0xce5c, lsl #16                    movk    x0, #0xe0f3, lsl #16
+movk    x0, #0xca00                             movk    x0, #0x7c00
+mov     x1, #0xffff8000ffffffff                 mov     x1, #0xffff8000ffffffff
+movk    x1, #0x8bdb, lsl #16                    movk    x1, #0xb0c7, lsl #16
+movk    x1, #0x6000                             movk    x1, #0xe000
+mov     x10, #0xffffffffffff3ed0                add     x0, x0, #0x1f0
+movk    x10, #0x802d, lsl #16                   ldr     w7, [x1]
+movk    x10, #0x8000, lsl #32                   cmp     x7, #0x1
+blr     x10                                     b.cs    0x0000000000000090
+add     x7, x0, #0x0                            lsl     x7, x7, #3
+                                                add     x7, x7, x0
+                                                ldr     x7, [x7]
+                                                mrs     x10, tpidr_el1
+                                                add     x7, x7, x10
+                                                b       0x0000000000000094
+                                                mov     x7, #0x0
+
+              Performance improvement found using benchmark[1]
+
+             BEFORE                                       AFTER
+            --------                                     -------
+
+glob-arr-inc   :   23.817 ± 0.019M/s      glob-arr-inc   :   24.631 ± 0.027M/s [+ 3.41%]
+arr-inc        :   23.253 ± 0.019M/s      arr-inc        :   23.742 ± 0.023M/s [+ 2.10%]
+hash-inc       :   12.258 ± 0.010M/s      hash-inc       :   12.625 ± 0.004M/s [+ 3.00%]
+
+[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+
+Puranjay Mohan (2):
+  arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+  bpf, arm64: inline bpf_get_smp_processor_id() helper
+
+ arch/arm64/include/asm/insn.h |  7 +++++++
+ arch/arm64/lib/insn.c         | 11 +++++++++++
+ arch/arm64/net/bpf_jit.h      |  6 ++++++
+ arch/arm64/net/bpf_jit_comp.c | 14 ++++++++++++++
+ kernel/bpf/verifier.c         | 27 ++++++++++++++++++++-------
+ 5 files changed, 58 insertions(+), 7 deletions(-)
+
+-- 
+2.40.1
 
 
