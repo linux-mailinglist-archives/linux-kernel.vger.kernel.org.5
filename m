@@ -1,186 +1,153 @@
-Return-Path: <linux-kernel+bounces-163078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF13C8B64BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:43:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE9BE8B64C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A718E2818E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:43:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14244B20CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE8D184105;
-	Mon, 29 Apr 2024 21:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EVgs+/c9"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB7C18410E;
+	Mon, 29 Apr 2024 21:45:01 +0000 (UTC)
+Received: from maynard.decadent.org.uk (maynard.decadent.org.uk [95.217.213.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E8D946C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332131836E9;
+	Mon, 29 Apr 2024 21:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.217.213.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714426979; cv=none; b=LJx+btGUYEu4BPQPp/XTuv2Io2dp/bUznzrqafxX/2Ox6lQ+FM3af8K4yDLcw8pLZO8Eows0uUMNcKOErEnPixWhA2bhdH+q+g9AJ13I+ETqw5iy4fTq1guHyuCpf5Ka1IyJsHvWK0dz5N1o1nn1Q38IVs/xnUR8qoj0LYJPZBc=
+	t=1714427100; cv=none; b=J8neQFC3sKH5m7kVDylai5LbBBDJmvje4JjNNPlpoXnA7gNViE6MXilwhISESnlJ+1yWHcroxxX0/ATw59OLafVO/TE+PvxO+SOdhA4dh2Fv0USkSIGMkzHQtVmB9hMlrh4cbDJ4V0aGqsps2rEVaCUUjyecM2ZlTEColb9/rq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714426979; c=relaxed/simple;
-	bh=LEQHju8fsKHtiTStMJz8A27pQpAO2tZToySraVKTxQE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cnkz6JutsexcGTt650oeU8P18NnzxFz+TLscT4bOdTGCAMHxoJ7CfvxbtgCHnX5xHoJfAIPUofnjCsrtu/nrh5jCR4AAT/SIAptAv8CH4k3tO2NDmg2VRtq/CapUg+cAhyCnITyjrjYh1KNTzJlDKkgRRHgQWOi9PH+7UF7ZTvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EVgs+/c9; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-47c5bf7aadaso330729137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714426975; x=1715031775; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bqnFNN8zPFgAcPpgK4V26OF8GBtrp6I1yBRCL/sHKGw=;
-        b=EVgs+/c9l8rQLuVKbhJ0R1/Efm6n/1VEVOk55htQK3Nfs61TQcjwMl5UzAfKTpN9Py
-         7+gA1c9aYIocC0gq+odDrf3xj0up164mMhkF7KweJU+N6ATvD/M8jATGE5iOpBOkigPI
-         N3TUTNCLbpEDb3cWr9gIzgqkfWnlA1iFTZS04=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714426975; x=1715031775;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bqnFNN8zPFgAcPpgK4V26OF8GBtrp6I1yBRCL/sHKGw=;
-        b=gr1GmVN335ARxzp3T2VB9rcUvXhwWJqJIzsWOe2oI/CNbMBLNNgNzSm9hg5W2sMzMK
-         8O6IGb+QT8g9meGnKGIKL7luf4MAXnKn5dWYN4aFRzXEDsEwYnYOlbk8F8dddRNzLiAs
-         L8vr0Zed0iSRMfmGMbLzdllSvf2kyX0tQjkEs9rxVMUwBRAjSaKwA8BeGosLALzNC74S
-         f4rg+r6cL62pN52AjDskgIeTfJsctJR0rRJC/WKBVJmPMu9oPkuVeGcQcgun6ru+bmyk
-         57kTZAWcmvAp7fq+jDFnlrFemP0iGeWkVdX2zcFyqBxVSECjZ+dJM8TuPRuPNtDTS6wO
-         S5+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWBF+7Qh0FOd0Axv8EOkRLXruGKJuXcK904Rq86H0pFSQHzQLNT5QAx+HLaOiPkUGLU5EfAbeOfzOPC5Xl/+0q707+xacJk5LCsD7ZO
-X-Gm-Message-State: AOJu0YxWvRYX1vRA24NyhIQ5K0h6CdYykqr5e3xaFL/SRn5buKfWoZYp
-	wUVoTs5er8cRc4BiT3HRQcPEvdCr3hIgjumLFhk1emEYKdLuUf34C/Xpxb93YZY2KIUeNwG9WDA
-	=
-X-Google-Smtp-Source: AGHT+IHvzB32WgWZL9mjMTT2lHFTtv+2Z/xGMUD8Ram4cUnnYc4+HTU5M21azwzmPq2xB7cDIRuHlA==
-X-Received: by 2002:a05:6102:292a:b0:47c:3492:cb0 with SMTP id cz42-20020a056102292a00b0047c34920cb0mr1160946vsb.25.1714426974996;
-        Mon, 29 Apr 2024 14:42:54 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id n11-20020a056214008b00b006a0d0c6ed22sm35450qvr.98.2024.04.29.14.42.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 14:42:54 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-436ed871225so39131cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:42:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXcC2HBqAEl83A2BhnCo8fojHh8pxYps7xU51IyFGUxqmXGG4tm/mND5OAN5zxQNyBWcpiLiwsWgzYICl58Ju6xlaOKEr90jdwLMiO4
-X-Received: by 2002:a05:622a:1886:b0:43a:bcee:5b7f with SMTP id
- v6-20020a05622a188600b0043abcee5b7fmr79306qtc.24.1714426973449; Mon, 29 Apr
- 2024 14:42:53 -0700 (PDT)
+	s=arc-20240116; t=1714427100; c=relaxed/simple;
+	bh=RoWHTWHhsord5pYxLYxgW7KTMxod+abyWlHDgLf0u/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dc4sxLswWmpeUBUGlSRre1UYUgDSfGTKs5fdnEkIS4cV8Hl28+yKWAir94o3HJpHkUr4WimZGkh2oE+YXqUycYJaph4AlOhaBY3VYqPs5X3cT/o9Usb8byYSO35spql5/FoyB6HnmD5oJsv3suy23/kHHGtLTl7dwJCyfV0hqA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decadent.org.uk; spf=pass smtp.mailfrom=decadent.org.uk; arc=none smtp.client-ip=95.217.213.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decadent.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=decadent.org.uk
+Received: from 213.219.156.63.adsl.dyn.edpnet.net ([213.219.156.63] helo=deadeye)
+	by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ben@decadent.org.uk>)
+	id 1s1Ynq-00069t-QU; Mon, 29 Apr 2024 23:44:50 +0200
+Received: from ben by deadeye with local (Exim 4.97)
+	(envelope-from <ben@decadent.org.uk>)
+	id 1s1Ynq-00000001wOL-0yVl;
+	Mon, 29 Apr 2024 23:44:50 +0200
+Date: Mon, 29 Apr 2024 23:44:50 +0200
+From: Ben Hutchings <ben@decadent.org.uk>
+To: Greg KH <gregkh@linuxfoundation.org>,
+	Guenter Roeck <linux@roeck-us.net>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: [PATCH 4.19] Revert "y2038: rusage: use __kernel_old_timeval"
+Message-ID: <ZjAU0hFgBDotATCy@decadent.org.uk>
+References: <2024041118-slingshot-contented-1586@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426235857.3870424-1-dianders@chromium.org>
- <20240426165839.v2.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
- <CAA8EJpog5yn5kiabJOZRipTx--onH9cepPe0dD4nA=Hm0aZS+g@mail.gmail.com> <20240427062202.GA1137299@ravnborg.org>
-In-Reply-To: <20240427062202.GA1137299@ravnborg.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 29 Apr 2024 14:42:38 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XLoz1S+iQG6qowEGUV_oSF7tcHuXhsw3_0sn30byC0ZA@mail.gmail.com>
-Message-ID: <CAD=FV=XLoz1S+iQG6qowEGUV_oSF7tcHuXhsw3_0sn30byC0ZA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, dri-devel@lists.freedesktop.org, 
-	Linus Walleij <linus.walleij@linaro.org>, lvzhaoxiong@huaqin.corp-partner.google.com, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Hsin-Yi Wang <hsinyi@google.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Joel Selvaraj <jo@jsfamily.in>, Cong Yang <yangcong5@huaqin.corp-partner.google.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Nn+ogYiDFdDnSeEP"
+Content-Disposition: inline
+In-Reply-To: <2024041118-slingshot-contented-1586@gregkh>
+X-SA-Exim-Connect-IP: 213.219.156.63
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
+
+
+--Nn+ogYiDFdDnSeEP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+This reverts commit d5e38d6b84d6d21a4f8a4f555a0908b6d9ffe224, which
+was commit bdd565f817a74b9e30edec108f7cb1dbc762b8a6 upstream.  It
+broke the build for alpha and that can't be fixed without backporting
+other more intrusive y2038 changes.
 
-On Fri, Apr 26, 2024 at 11:22=E2=80=AFPM Sam Ravnborg <sam@ravnborg.org> wr=
-ote:
->
-> On Sat, Apr 27, 2024 at 04:44:33AM +0300, Dmitry Baryshkov wrote:
-> > On Sat, 27 Apr 2024 at 02:59, Douglas Anderson <dianders@chromium.org> =
-wrote:
-> > >
-> > > The mipi_dsi_dcs_write_seq() macro makes a call to
-> > > mipi_dsi_dcs_write_buffer() which returns a type ssize_t. The macro
-> > > then stores it in an int and checks to see if it's negative. This
-> > > could theoretically be a problem if "ssize_t" is larger than "int".
-> > >
-> > > To see the issue, imagine that "ssize_t" is 32-bits and "int" is
-> > > 16-bits, you could see a problem if there was some code out there tha=
-t
-> > > looked like:
-> > >
-> > >   mipi_dsi_dcs_write_seq(dsi, cmd, <32767 bytes as arguments>);
-> > >
-> > > ...since we'd get back that 32768 bytes were transferred and 32768
-> > > stored in a 16-bit int would look negative.
-> > >
-> > > Though there are no callsites where we'd actually hit this (even if
-> > > "int" was only 16-bit), it's cleaner to make the types match so let's
-> > > fix it.
-> > >
-> > > Fixes: 2a9e9daf7523 ("drm/mipi-dsi: Introduce mipi_dsi_dcs_write_seq =
-macro")
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > >
-> > > Changes in v2:
-> > > - New
-> > >
-> > >  include/drm/drm_mipi_dsi.h | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> > > index 82b1cc434ea3..b3576be22bfa 100644
-> > > --- a/include/drm/drm_mipi_dsi.h
-> > > +++ b/include/drm/drm_mipi_dsi.h
-> > > @@ -337,12 +337,12 @@ int mipi_dsi_dcs_get_display_brightness_large(s=
-truct mipi_dsi_device *dsi,
-> > >         do {                                                         =
-      \
-> > >                 static const u8 d[] =3D { cmd, seq };                =
-        \
-> > >                 struct device *dev =3D &dsi->dev;                    =
-        \
-> > > -               int ret;                                             =
-      \
-> > > +               ssize_t ret;                                         =
-      \
-> > >                 ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(=
-d));    \
-> > >                 if (ret < 0) {                                       =
-      \
-> > >                         dev_err_ratelimited(                         =
-      \
-> > >                                 dev, "sending command %#02x failed: %=
-d\n", \
-> > > -                               cmd, ret);                           =
-      \
-> > > +                               cmd, (int)ret);                      =
-      \
-> >
-> > Please consider using %zd instead
->
-> Hi Douglas,
-> please consider the above for all the pathces, there are more places
-> where a cast can be dropped.
+This was not a completely clean revert as the affected code in
+getrusage() was moved by subsequent changes.
 
-Sure, I'll change in the next version. I personally prefer the %d with
-an "int" type because technically we're printing an error code and
-errors are int-sized. ...but I don't feel strongly and I guess there's
-a tiny chance some bug in the code could lead to a negative value
-that's more useful as 64-bits than 32-bits. ;-)
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+ arch/alpha/kernel/osf_sys.c   | 2 +-
+ include/uapi/linux/resource.h | 4 ++--
+ kernel/sys.c                  | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-I will note that I will still need a cast in some of the later patches
-for "%*ph" since, I believe, the size passed for the "*" in a printf
-format string is defined to be an int, not a size_t or ssize_t.
+diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+index d5694f263dd6..cff52d8ffdb1 100644
+--- a/arch/alpha/kernel/osf_sys.c
++++ b/arch/alpha/kernel/osf_sys.c
+@@ -964,7 +964,7 @@ put_tv32(struct timeval32 __user *o, struct timespec64 =
+*i)
+ }
+=20
+ static inline long
+-put_tv_to_tv32(struct timeval32 __user *o, struct __kernel_old_timeval *i)
++put_tv_to_tv32(struct timeval32 __user *o, struct timeval *i)
+ {
+ 	return copy_to_user(o, &(struct timeval32){
+ 				.tv_sec =3D i->tv_sec,
+diff --git a/include/uapi/linux/resource.h b/include/uapi/linux/resource.h
+index 74ef57b38f9f..cc00fd079631 100644
+--- a/include/uapi/linux/resource.h
++++ b/include/uapi/linux/resource.h
+@@ -22,8 +22,8 @@
+ #define	RUSAGE_THREAD	1		/* only the calling thread */
+=20
+ struct	rusage {
+-	struct __kernel_old_timeval ru_utime;	/* user time used */
+-	struct __kernel_old_timeval ru_stime;	/* system time used */
++	struct timeval ru_utime;	/* user time used */
++	struct timeval ru_stime;	/* system time used */
+ 	__kernel_long_t	ru_maxrss;	/* maximum resident set size */
+ 	__kernel_long_t	ru_ixrss;	/* integral shared memory size */
+ 	__kernel_long_t	ru_idrss;	/* integral unshared data size */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 62930aac0bad..690ab55449e7 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1795,8 +1795,8 @@ void getrusage(struct task_struct *p, int who, struct=
+ rusage *r)
+=20
+ out_children:
+ 	r->ru_maxrss =3D maxrss * (PAGE_SIZE / 1024); /* convert pages to KBs */
+-	r->ru_utime =3D ns_to_kernel_old_timeval(utime);
+-	r->ru_stime =3D ns_to_kernel_old_timeval(stime);
++	r->ru_utime =3D ns_to_timeval(utime);
++	r->ru_stime =3D ns_to_timeval(stime);
+ }
+=20
+ SYSCALL_DEFINE2(getrusage, int, who, struct rusage __user *, ru)
 
--Doug
+--Nn+ogYiDFdDnSeEP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmYwFMcACgkQ57/I7JWG
+EQnF5Q//VBXRzWWcHeyNlMbFndboUCUpjtohfoY5iVPhbs1ESOxb6yl8JJekeR2n
+LQyhcftbM4k8ZOG2dlb363TKh6i3pQBKNxrKoT9zcLEcSvjtVWwtF5n2ypJ1S4Dp
+saKTGM8YDWcnKKid8PJfH+A0uvvii+JSQlX/CzUIbpq+MGvwyjg0qBVHUvvr38MU
+cwzYMubOCWiULZpOYp46L2tLZzDXp0fB/bCnVqj69Za31mDcrWVQ4w+LjzVO/Bx5
+nLzPDLvto7bp74ddB8MAB6xHyqAuwj7keZjMQ5bASKdIW9GEnWPgDAb5YjRPfi1w
+lOTNOhFq4MIjai6uvolWrhINRTDerdMrD4TuPdocx69+/0FKXHcmfN9gIgD/UiEz
+OV2A421j6HaAM9CZ+yJ3NHFz2D7RixFgTn/iMx7S3nPILaV4bCjgfUaR3B3mc9BV
+EKVmSWmm1ivqZ+WQdTID/75OrPkdYwMO1cBjosTEW6jdTmcfZs5St46a+Xc1e3Km
+ozjyLrs/KtZ/qhcCjHIsHu39LYXVtz8bVCmKUdTe6LMPTowlZYLmuhExgb/q+RJC
+pHPTOTxyP3+pMFVJDqnAImyJr6e7Ekl+C3UironQO7XCMcUCLjgCMT+B0ik/ChGq
+QQXT26fUkdpTwy4Yy5T0zsuRMDGsrolYrw7xenF/fprMgVizGSo=
+=UsXv
+-----END PGP SIGNATURE-----
+
+--Nn+ogYiDFdDnSeEP--
 
