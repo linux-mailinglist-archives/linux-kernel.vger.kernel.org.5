@@ -1,134 +1,138 @@
-Return-Path: <linux-kernel+bounces-162908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 313308B61EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:21:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6FA8B61F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:22:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68FB1B22A7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:21:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057402847C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC02A13B588;
-	Mon, 29 Apr 2024 19:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F1F13B299;
+	Mon, 29 Apr 2024 19:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0RFfydn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QbI2AEXd"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE9012B73;
-	Mon, 29 Apr 2024 19:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF07A12B73;
+	Mon, 29 Apr 2024 19:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714418496; cv=none; b=lvZJ5CwUEjJYo7WOh6O/F1pmQZWUIZ/5BfsYOHuKFxPvhDDr0OpZXcD21k4hYO+egFQJWwC1goHepvcwH8WEAWrfw4K973LCzaeyeAiKnuMC2lhCzib9fdvOSUKyHbuqvIdGAu5hmDF5Hf22GoVjLDF4SZHdjlsinjSeD++T/08=
+	t=1714418551; cv=none; b=GlOIVpjHpfLwAJZ237mj6OZN+dDu4rmCKi+GUtbdIgDdNcYyJzjmHzqk1cIvaYaGuZQjEMgSj8zSmoHWUy2dTeeGtUQyw1CPo3dKLayxTMwzrD1ddm3z2oGU8T6BxH3acoFIaa/Vd7dItchJjRjsCUrw9TQMZbBg90IFSo+Fz1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714418496; c=relaxed/simple;
-	bh=vOAjXkqV/BW5BFMy/FugtkSomI+lCtbQeeOuE8DfZRM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=o7M6vKzttgiUZ2NiTYYY2BbTwhmAeBvbC+rkkoNY6DMw0kvSHOBeV+AIhHfxzzMvCx5hP39HMwt31Eo094rkLxCPLiYrsG6s7SBRpfQlKlctQTDsFUlOkfbZOMqIerkcUPqvxT00dHtPcTCxMYwUKRwvUpa9/6nSXpJ0vSMCsOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0RFfydn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E4AEC4AF1A;
-	Mon, 29 Apr 2024 19:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714418495;
-	bh=vOAjXkqV/BW5BFMy/FugtkSomI+lCtbQeeOuE8DfZRM=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=c0RFfydnB/AYsCs+tTB8U2TfsP/SkMCXDKAFCcdiWgHbk9DVIikiajKo42GI80Bzb
-	 /QcXx4KflBBZyWAeym9CEbXh/qGHPhuo7Kco+c4KcJOVSQfcjg8guWhTHkP6/XUAcE
-	 +a+iNmYng8SmHShJOR9wjrONK4D8wB0vcsl9QKtk40PyINjGLtMMfZA0nnwOvNc/sd
-	 QYzzm5UP/ZEykBARAwTm9RqCCMl878CnBECYblsWQUZQ9P92P/3v2fri6fLCQ+OMqM
-	 +9Hs6zv0xovtrYn/RH8NSfiX3dOsovbAgZeZB7xrY/KI1Uji9+RKNjMW96pmwxovVL
-	 0cQwguLbnWKUw==
-From: Kalle Valo <kvalo@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,  Jeff Johnson
- <quic_jjohnson@quicinc.com>,  linux-wireless@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in
- struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
-References: <ZgSTCmdP+omePvWg@neat>
-	<171222554691.1806092.8730005090791383928.kvalo@kernel.org>
-	<202404291008.51DB333F@keescook> <877cggqdwb.fsf@kernel.org>
-	<202404291109.331E1704@keescook>
-Date: Mon, 29 Apr 2024 22:21:32 +0300
-In-Reply-To: <202404291109.331E1704@keescook> (Kees Cook's message of "Mon, 29
-	Apr 2024 11:09:43 -0700")
-Message-ID: <87bk5sf003.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1714418551; c=relaxed/simple;
+	bh=6/2fDYkZ0Fc/sJSvHR4r/NMjtwcjsKhDUHRFLAmNtSc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVtDbaA7FJJpdNLnF2zERXkU1VFcD2/Zmjv78YSlXEH9kwdgm7erf7CP+Wa1hEmrUPNQ6KHZFP+vbuCDvqmuofAZVROR5xis+yV7QYT8+fIuzS5/I8C6zGIqhb7KiUTgx1qp0nYZfWh/l3adVLO4tIizGLt0fYrkATa7AHI+bH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QbI2AEXd; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2e0933d3b5fso14139841fa.2;
+        Mon, 29 Apr 2024 12:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714418548; x=1715023348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cpd1WYildkuoLom26860P+BikCx3lu1sKsq7QDlDPG8=;
+        b=QbI2AEXdTTDJQB662zdIT1aekFHJfEt14OcrX2kZOv0gw1Ud01Ziz3SalF24haOlrD
+         Tr8icVrTMUs/6anFU1xd79it5Xvu+bNtzkIwNxa932qHaqJ/bJkc1ga9TBGixl7l4zk2
+         xHEpSHMvbMvPNzPvh43d49hYzrIjrowKxvDux7DmHDiTc8T3VuaG5fGdkje5qvkTmaOJ
+         U/4Zm0m9D6kK9NBxvYAFku74mDYhHLZRKwCMFod9sP/5OvHmT4NiLLDh1IyxOGGcSoZV
+         lvNVjqaYIWw8g1BFkmjL7cqscEYqBF/ZrUd/dcFVA/N0a92do3mBm2PwXlt0YxyIYRBv
+         Wlkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714418548; x=1715023348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cpd1WYildkuoLom26860P+BikCx3lu1sKsq7QDlDPG8=;
+        b=g2ELdxRPQQOldc+9tl49txyWOA/yp/AWCthINvOSZaGO43D5fEcXJZ/SLU3sIC/ume
+         MHh5/zat8UTndih5KheO9+Q02yKowjuWfsqqlz1OnVRyBPJP7/OTPRh2guCEB7VNgdwX
+         f4BSyRMjJg99LQBBdi5KyGGRBkfp7dmurPgEgck5d2ZzZ8SiUDpSVy6r80aY868z0EXt
+         nqPLjS6ejTGSL1rjZXyPJ4pccOZQ/yempJD/niSlBD3/jL4+YrAW1c1pRsEhylY7dUov
+         MEfPfAmcofIMiNvGjwMxIOpx4XuMu3R0n8jWmV7ErDZxuXLl/VZu2jeCobN2+rANP/bv
+         LM/g==
+X-Forwarded-Encrypted: i=1; AJvYcCX9XNRoZ2ew52jmZplaxDNG5ldpMIW6nAQ9Gwse+qu/W3dieaN+V+jFUbkj+jxt7pGEvRr8ZQm1T16i2RmEWxvtnQGBOXXO0iAX6bjr1aGfpHUxNzFK7FjQ5Wiali2dlH/m2JvOlcB5A2zEK91gAlhL4bIP/tuGFDDS8a9Rt7ZuNvfR24fMkLBf
+X-Gm-Message-State: AOJu0Yy9mzOovZcdcq260h9QQdlzKXo6QAfyZxwocNEy0tktqa4eWS3Z
+	tZvYeYxYW9mr84NF/uqUbyez4fqypTh3iXQDksikrpJuFZmRwjBj8bfNUGREgmMoIE92tWYpmRj
+	7qKzFdy8F4N3PX4wfeDRbFDtL6F4=
+X-Google-Smtp-Source: AGHT+IGSowF/+xWsJ96Y/dHBc0kV+WSElRsdFJhZmSTk9Dz1YbSkQSIgU2LDwJkdHchcBZki+qVTxZok5w4qnCfrVlQ=
+X-Received: by 2002:a2e:b6d1:0:b0:2d6:e2aa:6801 with SMTP id
+ m17-20020a2eb6d1000000b002d6e2aa6801mr6798806ljo.46.1714418547561; Mon, 29
+ Apr 2024 12:22:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240429190500.30979-1-ryncsn@gmail.com> <20240429190500.30979-3-ryncsn@gmail.com>
+ <Zi_xeKUSD6C8TNYK@casper.infradead.org>
+In-Reply-To: <Zi_xeKUSD6C8TNYK@casper.infradead.org>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 30 Apr 2024 03:22:10 +0800
+Message-ID: <CAMgjq7D5zwksHxh5c00U82BCsLxYj-_GevZZtAM8xNZO7p-RQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 02/12] nilfs2: drop usage of page_index
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+	linux-nilfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kees Cook <keescook@chromium.org> writes:
-
-> On Mon, Apr 29, 2024 at 08:25:56PM +0300, Kalle Valo wrote:
+On Tue, Apr 30, 2024 at 3:14=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
 >
->> Kees Cook <keescook@chromium.org> writes:
->> 
->> > On Thu, Apr 04, 2024 at 10:12:28AM +0000, Kalle Valo wrote:
->> >
->> >> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
->> >> 
->> >> > Prepare for the coming implementation by GCC and Clang of the
->> >> > __counted_by attribute. Flexible array members annotated with
->> >> > __counted_by can have their accesses bounds-checked at run-time
->> >> > via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
->> >> > (for strcpy/memcpy-family functions).
->> >> > 
->> >> > Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
->> >> > getting ready to enable it globally.
->> >> > 
->> >> > So, use the `DEFINE_FLEX()` helper for an on-stack definition of
->> >> > a flexible structure where the size of the flexible-array member
->> >> > is known at compile-time, and refactor the rest of the code,
->> >> > accordingly.
->> >> > 
->> >> > So, with these changes, fix the following warning:
->> >> > drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure
->> >> > containing a flexible array member is not at the end of another
->> >> > structure [-Wflex-array-member-not-at-end]
->> >> > 
->> >> > Link: https://github.com/KSPP/linux/issues/202
->> >> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> >> > Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
->> >> > Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
->> >> 
->> >> Patch applied to ath-next branch of ath.git, thanks.
->> >> 
->> >> cbb0697e0ded wifi: wil6210: wmi: Use __counted_by() in struct
->> >> wmi_set_link_monitor_cmd and avoid -Wfamnae warning
->> >
->> > Hi,
->> >
->> > I was just walking through our patch tracker and noticed that I don't
->> > see this patch include in -next yet (as of next-20240429). Is there a
->> > flush of the ath-next queue planned soon? Or did I miss some change?
->> 
->> Yeah, wireless-next was pulled last week so most likely we will create
->> ath-next pull request this week.
->> 
->> BTW we are planning to move ath.git to a new location, rename branches
->> etc. I think we'll see if we can also setup it so that it can be pulled
->> to linux-next, so that you don't need to ask this every time ;)
->> 
->> (Just joking of course, there a lot of benefits from having the tree in
->> linux-next)
+> On Tue, Apr 30, 2024 at 03:04:50AM +0800, Kairui Song wrote:
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > page_index is only for mixed usage of page cache and swap cache, for
+> > pure page cache usage, the caller can just use page->index instead.
+> >
+> > It can't be a swap cache page here (being part of buffer head),
+> > so just drop it, also convert it to use folio.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> > Cc: linux-nilfs@vger.kernel.org
+> > ---
+> >  fs/nilfs2/bmap.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
+> > index 383f0afa2cea..f4e5df0cd720 100644
+> > --- a/fs/nilfs2/bmap.c
+> > +++ b/fs/nilfs2/bmap.c
+> > @@ -453,9 +453,8 @@ __u64 nilfs_bmap_data_get_key(const struct nilfs_bm=
+ap *bmap,
+> >       struct buffer_head *pbh;
+> >       __u64 key;
+> >
+> > -     key =3D page_index(bh->b_page) << (PAGE_SHIFT -
+> > -                                      bmap->b_inode->i_blkbits);
+> > -     for (pbh =3D page_buffers(bh->b_page); pbh !=3D bh; pbh =3D pbh->=
+b_this_page)
+> > +     key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->i_blkb=
+its);
+> > +     for (pbh =3D folio_buffers(bh->b_folio); pbh !=3D bh; pbh =3D pbh=
+->b_this_page)
+> >               key++;
+> >
+> >       return key;
 >
-> Ah-ha! Thanks. Yeah, sorry if I keep asking about that. It's different
-> from other trees, so it doesn't stick in my head. :) I should keep
-> better notes!
+> Why isn't this entire function simply:
+>
+>         return bh->b_blocknr;
+>
 
-BTW I think all vendor specific wireless driver trees are not pulled to
-linux-next: iwlwifi, mt76, rtw (Realtek) and ath. So with all of these it will
-take a while before the commit is in linux-next.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Nice idea, I didn't plan for extra clean up and test for fs code, but
+this might be OK to have, will check it.
 
