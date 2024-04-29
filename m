@@ -1,155 +1,102 @@
-Return-Path: <linux-kernel+bounces-161934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C83F8B5386
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:54:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAAFB8B5390
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 493E3280DE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:54:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6EAA281182
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CB11F946;
-	Mon, 29 Apr 2024 08:54:12 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF45E17C69;
+	Mon, 29 Apr 2024 08:55:34 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6601D17C60
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9F817BB4;
+	Mon, 29 Apr 2024 08:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714380851; cv=none; b=LP9atLziaDX5SexHXBdl6FRNEhJBHfi4YadbeHr8HNY08OtiQB4H32zuwYe1oPCgWC8wqVtz68Yt84DHIyJmzgm0owjQ5NYxQGHDz5s50U2FEq05LHqBMVnhSvxrOhjgiKCsxFmEhMiCm3ZIAhDiLyDwOOZPPWFFGo7XJExT7zk=
+	t=1714380934; cv=none; b=q/ZNrih6LhLgG/WMiRHL8lm5earSxScPWjBwK1dQwX9r9rUPQCyQMmImAmnbBnVzyshfCNde4ESHqsrBGfZtZ6agsCFhdRUcx0T1js5b53AdGtwYDbNYNXSyLoP6+SJaQt6gog2hH8MaBAttoXdUxKc8xs8EUuiAF4veQ5REi5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714380851; c=relaxed/simple;
-	bh=39/LY3r7dvVvCjMdt27gl95vbrEuu8DvmfjktGo/Bk0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EidkIx4rUdeqxd/02GloyLbiujy1MTFXBDhM/uO2midyk5/f6dAde/VfA04UbPfcbFS/NZeE2/+j2wI4yjEVjybqYn9Zq/BVY8/pBHtq2441DLnELZ62w57M4WUppJwS510nnMgYr9ccNx3zQOGYorEWOOgqkuLiRxS7Fht4BqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=207.211.30.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-617-ZW5VIqNkMmGdttBEc-vIJA-1; Mon,
- 29 Apr 2024 04:54:00 -0400
-X-MC-Unique: ZW5VIqNkMmGdttBEc-vIJA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E4A538000A9;
-	Mon, 29 Apr 2024 08:53:58 +0000 (UTC)
-Received: from hog (unknown [10.39.193.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id B198740BB4E;
-	Mon, 29 Apr 2024 08:53:48 +0000 (UTC)
-Date: Mon, 29 Apr 2024 10:53:47 +0200
-From: Sabrina Dubroca <sd@queasysnail.net>
-To: j.granados@samsung.com
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	David Ahern <dsahern@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
-	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, bridge@lists.linux.dev,
-	lvs-devel@vger.kernel.org
-Subject: Re: [PATCH v5 1/8] net: Remove the now superfluous sentinel elements
- from ctl_table array
-Message-ID: <Zi9gG82_OKnLlFI2@hog>
-References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
- <20240426-jag-sysctl_remset_net-v5-1-e3b12f6111a6@samsung.com>
+	s=arc-20240116; t=1714380934; c=relaxed/simple;
+	bh=rns7ha14qTiupCx4x3Wcc8y0CTICI8sh1Se/YizYD0I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CW7AqSLXNYSW+lXM8aRHPCe1+rSLgjbcdzCIvs0ocEWR82MedR6ov8cvBkMg9lmYr8oTBmvsRNgm/JHVWdN0syXdoc5CLB/UgdXdlzppIKshYm2pizndTdQY6qeTAgbFbyqO1zSe40jtgcB5cxtFIHtrdsGImUClC3sEcv2fHvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowAB3fgJpYC9mH+MbBw--.23909S2;
+	Mon, 29 Apr 2024 16:55:06 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: srinivas.pandruvada@linux.intel.com,
+	jikos@kernel.org,
+	bentiss@kernel.org,
+	even.xu@intel.com,
+	lixu.zhang@intel.com,
+	kai.heng.feng@canonical.com,
+	hongyan.song@intel.com
+Cc: linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] HID: intel-ish-hid: ipc: Add check for pci_alloc_irq_vectors
+Date: Mon, 29 Apr 2024 16:54:22 +0800
+Message-Id: <20240429085422.2434036-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240426-jag-sysctl_remset_net-v5-1-e3b12f6111a6@samsung.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAB3fgJpYC9mH+MbBw--.23909S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4xtF43GFW3GF1kKrW3ZFb_yoWDJFgEkF
+	y0vw4xurZ7trs3trnFkry7ArW2vrW0gry8W34IqryakF97Aw47XrW8ZryrJFWfWryqyF1D
+	XFWDZr1rAF17ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+	b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+	vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUbqQ6JUUUUU==
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-2024-04-26, 12:46:53 +0200, Joel Granados via B4 Relay wrote:
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index 6973dda3abda..a84690b13bb9 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-[...]
-> @@ -723,12 +722,11 @@ static __net_init int sysctl_core_net_init(struct net *net)
->  		if (tbl == NULL)
->  			goto err_dup;
->  
-> -		for (tmp = tbl; tmp->procname; tmp++)
-> -			tmp->data += (char *)net - (char *)&init_net;
+Add check for the return value of pci_alloc_irq_vectors() and return
+the error if it fails in order to catch the error.
 
-Some coding style nits in case you re-post:
+Fixes: 74fbc7d371d9 ("HID: intel-ish-hid: add MSI interrupt support")
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> +		for (int i = 0; i < table_size; ++i)
-
-move the declaration of int i out of the for (), it's almost never
-written this way (at least in networking)
-
-> +			(tbl + i)->data += (char *)net - (char *)&init_net;
-
-                        tbl[i].data = ...
-
-is more in line with other similar functions in the rest of net/
-
-
-[...]
-> diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
-> index 6dab883a08dd..ecc849678e7b 100644
-> --- a/net/mpls/af_mpls.c
-> +++ b/net/mpls/af_mpls.c
-[...]
-> @@ -2674,6 +2673,7 @@ static const struct ctl_table mpls_table[] = {
->  
->  static int mpls_net_init(struct net *net)
->  {
-> +	size_t table_size = ARRAY_SIZE(mpls_table);
-
-This table still has a {} as its final element. It should be gone too?
-
+diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+index e79d72f7db2a..9b9bc58f0524 100644
+--- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
++++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+@@ -174,6 +174,11 @@ static int ish_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	/* request and enable interrupt */
+ 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
++	if (ret < 0) {
++		dev_err(dev, "ISH: Failed to allocate IRQ vectors\n");
++		return ret;
++	}
++
+ 	if (!pdev->msi_enabled && !pdev->msix_enabled)
+ 		irq_flag = IRQF_SHARED;
+ 
 -- 
-Sabrina
+2.25.1
 
 
