@@ -1,103 +1,127 @@
-Return-Path: <linux-kernel+bounces-162788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31BAF8B608E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42BE48B6073
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE2B02811C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:51:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED2FE282FEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D3512B16E;
-	Mon, 29 Apr 2024 17:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59026128801;
+	Mon, 29 Apr 2024 17:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Xlv7S2xS";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WNDhmIzE"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="bJ8+VEU+";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="D2Fgf0/6"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FC11292FC;
-	Mon, 29 Apr 2024 17:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98B71272D3;
+	Mon, 29 Apr 2024 17:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714412974; cv=fail; b=pk+5RSkM9yEXeksrI4PlKu8Bme5ie/XVV57PMCnA9/TdxbiRRnIQOWw0+1acDC10q3Ob+tb6ez9iC05dShKZpPtC/v3sm4TJUJja3RiAR+roVqAPNWUanQey9Dtqn7dhTyGtzE4UdhnibyDQ3pGZAlcm5NDghZDC/jcXzg6h2iM=
+	t=1714412911; cv=fail; b=TjcuME4bBOHzi0ZhB70L3CaMaQ3Kfy3PbKhzb2dLTD9nZk+CgXsVopFyuV2GDRTPjlynBrH9C7PYbsvFIbS6Rr1XUQRvLATF5mAfLtC6+6KQQV4bs2AxJWfTf8AaVehQYJN7gNkvmsOC/GUfZSz5mvzAB4kDgYMAN4ygJ7sMahk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714412974; c=relaxed/simple;
-	bh=iHCHI6mi1dkX8hWRb5N7guyQSaNUC7ecYv4z32iAUgM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QHLuVv1x+DKBnMhtqyZDIIuXiCzPRy51Au1Qx5VPdikOQxShi3mrlpFG33wy1G1EzQ6DHqVBQKBvBqpk7V2rbAQyIydd/lgGVaMEKZzW4KxZacDlBOWWLPi+INAOEM9u/P4Ipc2EmuIumjshvwOYsiq9h5gEj1JLmSuTcxZrKtM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Xlv7S2xS; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WNDhmIzE; arc=fail smtp.client-ip=205.220.165.32
+	s=arc-20240116; t=1714412911; c=relaxed/simple;
+	bh=ls/vvU8hv+c46Yfl8Cs5y0gYGsZ29KaE2AknDJfdsNU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 Content-Type:MIME-Version; b=ZnHZ/bJGDDc/qbLHXN4/rG5uBFpKT1jWx9rRh1LMeVQTRFQq1bAR2dUD0Bwd7BE12hRmhBhrvcBe1ZJhpw1Dqf2qU/ZWobAtpXgSO5bU92vrQfCCU1QEqgaklR7L0aL66KNHxtuP/Nsu3K9Kk/+pXG9eo2CBFbVYnm7Pan6NJW0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=bJ8+VEU+; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=D2Fgf0/6; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TGxRa5020045;
-	Mon, 29 Apr 2024 17:48:25 GMT
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TGwuwV030171;
+	Mon, 29 Apr 2024 17:47:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=z5fiq6XyRE51nFIbwNmIhlOIF8X5RoQbq2JLAjay9UQ=;
- b=Xlv7S2xSHLXhF5xZDY4IB2h5scu2TrRuQd7L0Dv2sDuj5bacptZag3Rk6i8q1Q81DcQD
- NpxCyHOXu7KjvXaT7P7Hn+mvuj5uayN3ZAJ0Q/WO+QnRfDEHbZjZCx2/OxOQRHuNTmg9
- +O3uYlbcVTLIXZasstPSf7F9FDdQG4BLI0OcZTjjQvz+0X9BKk5LBr21VGTsfaLNjUHs
- yN3EhDtcv0BZFd+5jiHAmfY8ctK0KY4pBQbtQhyei2UzSO+wyFZwFTDsWfmVFEX365Sg
- s0il3Ij0SOHw1XLFZehZ/s4PEV++/MVNd3vL8YheRqGY0S/NN0pCdVTM5Kj46a2FFwh3 ng== 
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=7S5CCPWZC3yvWQk7iHzLzlhKUtoexHsWty2EfUmAKIY=;
+ b=bJ8+VEU+xIX+yAq0eUNV9Y+tEdZZExO3Y3oV0Oyz2sIOrny936BACe+jXSMPuaTkm79y
+ kls8apDeNfG859D6d3GnCqOnk8kP4CqvVtY9kEpLmWBSKxRtpR1HDoyENuROPH57XC2I
+ 8OczI3/74qcbcLe0fcE1I9X8Lz2rwWWoCVzv/NxgLMp0add+CEX9RowRhWMV+ODP7jzO
+ DuRxpebNOALcBI/AjPyj83pSfuP38EnwLxF4+dten9MfCRJqe1mKq1rIYAAp5ZyrGssf
+ nBT61j2TeHM5BFS6rsO5wX5Cr8LFNSVZaqkJ6nrWrAdTtxGaZ6m+xwz0mrXPCK30k1vM eg== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrs8ck67t-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrryv363v-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 17:48:25 +0000
+	Mon, 29 Apr 2024 17:47:30 +0000
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43THkxUL004324;
-	Mon, 29 Apr 2024 17:48:23 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtc7ns0-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43TGYOC3004276;
+	Mon, 29 Apr 2024 17:47:30 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtc7muk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 17:48:23 +0000
+	Mon, 29 Apr 2024 17:47:30 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pqs01GnvTOmmeUgelUSsy16Djgn1fX1vh00EiWQCCRubU8gfxcWmr8fBEJFmmqFKBwyIM7bDZ3VHVjhN8ZLhMtK3YzneYu4baFiIJF2vQIPslMTF+u9SGKis0orIIVgOdlUdUyr9K/hjiikbuspAsCfHy226YfK4sZAgKDMIk6zJEiGBEJbnO61C+8+lZpgZDDmHj/WqiSM7ulljDWKMAI28+XqQ2Vtc5XwIVu1c1nTQmLo3vUQNGlRmOO5mi36P4kD73UVOY7eSP6rOjgVHfMZwZAnxvWKAy8QihDeTR3Lk57yYr0i171X8hMNSZJvKODcgAwDb5siHOiwhyvihZQ==
+ b=gJhifzk8zW5d0llXHIQ/mxdFWZ+whUwsxeMtujZol14ugjliqQo2Z0jO/EBs0w/i1Q/vIslyeE9tVQxl8nOg/kdy4huHt59W8MlAheBWFYWzA+jRWFUY4hA0AsnXz2QwXWz32gj1yb1gRTGvlxT6l7JPV3K7mm7FIhZClccrQf6bFLVonXYUAnWtuqsDrLRLV1wlHYqIegPp7Pr6dHO+b1cSQEvMJbs1AN6uAshsAhz8Y0lAQciCteOAG7jTtYo5g5lDBfKrVNi8OYdg6SyDKBbvqHBFrM4l3pV5oPC1S7xnxslyR2d48sEf9PoLpaNXrqnfQr6xHcpcBVuBt//iUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z5fiq6XyRE51nFIbwNmIhlOIF8X5RoQbq2JLAjay9UQ=;
- b=dRlujkZ15p+28AKI18cSffwUiF5tFndBoXbwcoMW05SeK59Y9py6fD7MYb+wASXIFrtrRvF/7upG5BEnXdl3lVQkJHaQXzGftZJ94jd7HPc5p83VWZ99wNWU4RckfJ2prVxUDN61uAwZh98L4Ejx2jvfY+cVoRepT16w0y2UWELGp+pF2OP3eesP2BIb/WKRYn3w69B7Bds9rb2A4QYVrAyCxgTmcRrsJsVVenZKfdTeILHcaMBcdzMNgP1kqJF43dSIZ28KniHQ/U/O+S98IgtBJzOlpgKaLXb0ER7mXV0CbW5//dTpgkxVTlYnhMBTHzUNkH6Wp3fKegNorbUnLQ==
+ bh=7S5CCPWZC3yvWQk7iHzLzlhKUtoexHsWty2EfUmAKIY=;
+ b=JxjM5ifEoNPF7W0MM0bV6GgUcSXdYl1fH8Ltptf8cxJER75KIOrxzfDx+INWey3HMcx7uUCUuu7FZYMKU3TcwUOJk1DmAn5Sdnl81ZMQQtB8SrrrUHVaGD26Sgw2gHRFOjPcpsYMYmuiyPG0Y4Bdj7yXIFboTDp2XmlQT+64woC1Au7jW6Hm5o0nTgcCX1uOHrMiQY1mmZTqVBXNbL4M+RV/JKzN6bm0DNch+eIzxhQDg3LCEa6e+xUdn44cEGQxdLm6z7sDfmcZ7Nrmr6UAzxCiAgxHYaOiv1k1TUJT4cSbT02C4GabKWpQMO8gl58MQT6UIq7HDCdXFbVwa7mkYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z5fiq6XyRE51nFIbwNmIhlOIF8X5RoQbq2JLAjay9UQ=;
- b=WNDhmIzEGjfjA1lT6jJ1PKxFwjrX+cqUdKRd8bz8XIDRfkpPeBl0tcwG/uvmAGTsq2uAEy0OT96QtFQYDxC3h1tP0UY9iqNoXJ/7HYdn/cg5AQajwpCO/ZoG1GtmMMb3aXGq/reJFLuj1XfV+kKArw00G4fmr+O1janPfdoCLzM=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SA1PR10MB6389.namprd10.prod.outlook.com (2603:10b6:806:255::21) with
+ bh=7S5CCPWZC3yvWQk7iHzLzlhKUtoexHsWty2EfUmAKIY=;
+ b=D2Fgf0/6ydAsZS0z+IfCZzZ6ix0AXvdOyLvIcIAmMSe+FyHOfwJ/qoohKzaBQsFu3s26zZ4AuAh8QIreyH7bgPU/hKYLoc3Vpgq0B16H2Xb6PR0iuSF+8o1f8HMYZgNtST+Qi9QoCoJQ7Cc2k838dvJfWWmleRwtaHdVzhjDzyk=
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com (2603:10b6:510:226::20)
+ by SA1PR10MB6318.namprd10.prod.outlook.com (2603:10b6:806:251::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 17:48:05 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088%4]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 17:48:05 +0000
-From: John Garry <john.g.garry@oracle.com>
-To: david@fromorbit.com, djwong@kernel.org, hch@lst.de,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-        chandan.babu@oracle.com, willy@infradead.org
-Cc: axboe@kernel.dk, martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        ojaswin@linux.ibm.com, ritesh.list@gmail.com, mcgrof@kernel.org,
-        p.raghav@samsung.com, linux-xfs@vger.kernel.org,
-        catherine.hoang@oracle.com, John Garry <john.g.garry@oracle.com>
-Subject: [PATCH v3 01/21] fs: Add generic_atomic_write_valid_size()
-Date: Mon, 29 Apr 2024 17:47:26 +0000
-Message-Id: <20240429174746.2132161-2-john.g.garry@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240429174746.2132161-1-john.g.garry@oracle.com>
-References: <20240429174746.2132161-1-john.g.garry@oracle.com>
-Content-Transfer-Encoding: 8bit
+ 2024 17:47:27 +0000
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca]) by PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca%3]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
+ 17:47:27 +0000
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
+ <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        "James E.J.
+ Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge
+ Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas
+ Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        "Naveen N. Rao"
+ <naveen.n.rao@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav
+ Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH] kprobe/ftrace: bail out if ftrace was killed
+In-Reply-To: <20240429224803.49d420b514e22d51412e1602@kernel.org>
+References: <20240426225834.993353-1-stephen.s.brennan@oracle.com>
+ <20240429224803.49d420b514e22d51412e1602@kernel.org>
+Date: Mon, 29 Apr 2024 10:47:26 -0700
+Message-ID: <87jzkgawnl.fsf@oracle.com>
 Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0019.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::24) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+X-ClientProxiedBy: SJ0PR13CA0203.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::28) To PH8PR10MB6597.namprd10.prod.outlook.com
+ (2603:10b6:510:226::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,120 +129,286 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA1PR10MB6389:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fbfbcf3-4c58-4f31-f6b9-08dc68748610
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6597:EE_|SA1PR10MB6318:EE_
+X-MS-Office365-Filtering-Correlation-Id: 80b73fe3-a5a1-4723-5905-08dc68746f39
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|376005|366007;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?K99eoXrHtu8GM/dQZ4N0ugIJO9pvSbf0zPMgiBrluj9qjGqJhus2SJlt6pyV?=
- =?us-ascii?Q?3fkVJ4tPdgwLtG7lDzCJBpL46t0wFqnt6Jg9AxSMf0pBWTGHkz37oZY70NSc?=
- =?us-ascii?Q?Bi9bGg0g3D8G0awuD8ZEdbV7wv+2oVrV2nvRJ8IUUnh8PQGD3OHbbWDLVnon?=
- =?us-ascii?Q?9NA7geoDvCVq39Su8KEsopvZFhW2p1zVUNAUbOCHaueXrV2ixh4QddpkgPdu?=
- =?us-ascii?Q?K44dJkF181ckql+z3c4qARnVW8zqwSQ8uOnItVx1Bd7beKbM68oYY85GRscK?=
- =?us-ascii?Q?Z4g4wpY0uwBmoTQfsr9HNn14Fj6hW/OQhZv3dPAnNKVmaUsB3f9dvZIkwygg?=
- =?us-ascii?Q?Hkbdye89WNO0Xp6rr9Q8LyjcY1euDGGvjd4Rc3uNZyeEp1lsebfQsUbdTdnP?=
- =?us-ascii?Q?EW4Dv29+HnFYr2gS0ZKQ7lrXx5q2HC2Of+QmJ96VEM6yTUBRXNh0ut59k8PB?=
- =?us-ascii?Q?/sIotYVgSDiZT+OeSBjiJ5uUte1of/wg4ss66ODjKKjzVX9MhwtNYWJM2I9Y?=
- =?us-ascii?Q?4QlXrM7JnMxJwq13Uyw3WuxpeE9Af38tvhPsn9Ecnv2Lw+TCHqGPx6gnuxZP?=
- =?us-ascii?Q?IkRoaa1HuCRacfZyxP/id5DqCrVxGYLuGV7/n80fQe6EE5HUMi6zhawOzwIY?=
- =?us-ascii?Q?ia7N1rO7fzV/cniQSbFzKcODc2XkJfEC20RIufuMPKbukQlMFIgXdIganbQ9?=
- =?us-ascii?Q?BoRn+wHweeuo6TfOy4nLNYfoJV05quZwSA+AmSw5U07Uu/acPISqzyLdIJhu?=
- =?us-ascii?Q?Bk7yLRyxHPClDjUJKWPC1jWEvAgThYt93dCmMhoVKL9wUk/49qNPrTjcZdd6?=
- =?us-ascii?Q?2rJ6uYBlNDSQe0so1XE/9Us/BdP2zhe/sovjBdZJQ5Jro1R8MiPkSdFZBCRp?=
- =?us-ascii?Q?LEc27hUEXjFBbA5mGWEWszIv/c5gOsDmHxoRKp5jbYCzZJsiSVIFUjOtjxbT?=
- =?us-ascii?Q?cMxPGAns3X2NmYW93h7WDRnUxi29PIhgoAq3epJyxd5TBru5rgXsK8NVvAIx?=
- =?us-ascii?Q?oJY3qqhgDnjiEauK5F+07PeY8wjidepO2W3toZ24nZCX7wpnl+LKZzDcjD4v?=
- =?us-ascii?Q?akd/FFzPw4VvLeZ0PwMcAoOOC0SuUTRTZGK+cvsSo+2bdeCzGEPhnDMi4Yb2?=
- =?us-ascii?Q?2oxXbHqTtm2uzvEhla7npkb5RUSK8UI2xJ7Hts/gre5PcGpY33cVW0iCuZj0?=
- =?us-ascii?Q?sqamWmVPc9NQaG+4kIzhxeyS7ivtWeZ6r6/FFuR8e1tzUj3qR7pOYUyip1cQ?=
- =?us-ascii?Q?khy03I1IyDKwRjO5oxfQvMre1oedgNNjN/yzs/plMw=3D=3D?=
+	=?us-ascii?Q?x7JTWbGR1AgcI96uHYacxk3In2AkukrmTYl9Nzt2JUgVf0ao/HhUI/fqj3sQ?=
+ =?us-ascii?Q?rtMu18IDJrcK2l1jjLhKZ+mcvECVte+gsNDMv+PcF6juBjabijFqMGTneh2r?=
+ =?us-ascii?Q?PLh3Bkq+9uc6t5W/Obu6/UHs7ZLSAkqHVZrQQRLvrLYofjo8gk8UtcNmrdcL?=
+ =?us-ascii?Q?Uk5JVy0M47s81rkIXq07nxW0oUJXS9wZkSlZMK/AD6vxLXlJrWEBLkiHPmtN?=
+ =?us-ascii?Q?gZUkzlPjcFmt4gDQCJvPX+Xyhi+AxJm/c0zC1+dERDA4l1gTTkiScd2yoRsM?=
+ =?us-ascii?Q?K6woBcfxvRqeb5Ti+ucxUBJV0FG8VIdenl4ZXigr0wWgwsaDxSHuPMl9hb9r?=
+ =?us-ascii?Q?qFWpfSp2Gm9Pzxq9y/Nny79DYByq6B1VjyTs4pM5bCDyF/saanlgVOI3F7LG?=
+ =?us-ascii?Q?iIWeHdL7Q4meVnXmtVZaKs8vCATWDgvRmCR2pz/fEMv/VMNtbcRsbpOQZnnd?=
+ =?us-ascii?Q?dlHeqSCvd0SVbuCjfvLVdtro5AH8to6Ol2BJIniMiMKcjIw0/M51mu8xN61/?=
+ =?us-ascii?Q?WAyqaBqBrgaz55rcQobsskZSNzAbYgW8NxGtrT2TXpnR8izF56gLdpYb+3Nv?=
+ =?us-ascii?Q?G+i9TGxp6WQwVo1tAC9lO1IXT4jwtI5xNzwZUPw1Gl/HgnTGpUGE1ct7/WyG?=
+ =?us-ascii?Q?ZNtMeFj5hP7zAVlBTenzkeJDTQUotfo61kpO7xgOBDxUTlHGWh459GcoXi0T?=
+ =?us-ascii?Q?W9133tnedU8SKMnxFGX4lwXesR9W/8vY5oEfooc/23G6hyNIEnGOYu7yIuky?=
+ =?us-ascii?Q?wRFj2ppdp4lmPB6q1eccuH905V5OzwpWfcGXXjbseDwiiEBIB0c2rlL9ihTn?=
+ =?us-ascii?Q?IjvDO17qDwznOouzujZV1GA03x9RgOsTBWh7cxSVLCqbFu2BUajSGqfyhF29?=
+ =?us-ascii?Q?Ahh/VCpyHY+2e8kABOANR0HJ33v0OkSDGKjvNO2oOzd3ZT1Vx+iwzqDnVBkS?=
+ =?us-ascii?Q?xnlEc3/W6f/Z+4Z59pugkcKakh7PDlB2fIF+akdHd2NBT0x//4fddBovkf6f?=
+ =?us-ascii?Q?uwxUg2jdM6q2+5Qzueyyhm8xa9yiLOh7feSw+p0a4gps+QPLS+9m9PPGQBH7?=
+ =?us-ascii?Q?8E5xZAAlZcmZ0wLNcAGr9HWRW0jAvFganpIHvUMyukm+u4byApZMDyFfLOMM?=
+ =?us-ascii?Q?q23iaF9I6eVRsxSojvCsBMElDJJSWlUsWQOyvQ4pa5ndz+73sEbfMe0uwqFI?=
+ =?us-ascii?Q?sTOZ6r5D/o62RDadshPLyfELNTo/EwTKuhfzpTCA1aN9AoXpEn9cwvGynRhS?=
+ =?us-ascii?Q?Ltqx9vTISj+f23ULacwWF6c1wMjVe76dPrrO0izOiA=3D=3D?=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6597.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?jqs6r7/eOgqb6n6nBqvWAXyRXIrO3BWMG5ksZF0ZHkzRcOCWL970nVBwbHKu?=
- =?us-ascii?Q?M9pBFhPx6SH+Yaw5yTY+OhRfOJfohUyDOc6icKnG+iVa6pdsWvbYCj3tjKdI?=
- =?us-ascii?Q?Ju3AJtRG212dUwiFjO1rHWIKtznXJQooSg/VYXC2FCHI+GWwAISvbgzLQ4Cz?=
- =?us-ascii?Q?wUHPA7CeOrr/txjvq4J0Io+7E4ktOSqn1SmoIaQq8m260ZhjVMV7iWk3UcwG?=
- =?us-ascii?Q?aw/vEaFv+c6XLAp2forGfsEXW0luloeEkWCpVdN/tJHEzrF+FFzARzjATR8r?=
- =?us-ascii?Q?QOkXASMHdGy8Va3/lfwV3YDY1bznFPs+huhMhDFhK2woIqjryMNODqpN7riA?=
- =?us-ascii?Q?O5XmdXWErb4SvIq/A5RSblFlUZRWjq1k64IOviRsB+uJBdLksYWSadhznlZ6?=
- =?us-ascii?Q?bUvmETkz67zjhSWeL3fjayriHOcSbNNEUuVr9KvvK1+lyy9ry1aV5sUeVj/P?=
- =?us-ascii?Q?IAvD8K4fU51e+xGxEUGlqD7BgSQHyR8e+YLtLP650s3laRFQQdZl3qIfcvn4?=
- =?us-ascii?Q?wJX/Ej/LEUfGCBmA6Y8/QEFPg4Z7Z6yBoYeso0D+dAd9/3ts5Qae9rHogI4q?=
- =?us-ascii?Q?8l7wv13SnTRuFrGqszwooP/8FIyHs9ss4PccanaTPyJMIPRJHXHZwL+8Cb7E?=
- =?us-ascii?Q?AwboqNiRcvXDKr69SF76kQzZbrtxrf6kHUShLq5xcx7NfkXIZbqYuIxaKWmQ?=
- =?us-ascii?Q?53AkaMIJ6lJJw9aj6cy/hvY752io/yxFparScfaWHSklDIlddNiD/uauBen9?=
- =?us-ascii?Q?bNAo8hoMuUYe9ooNn+VyRgHyuSIm1QfQmAwCxRoX2WvmmZkFpVPXPUDz8cAy?=
- =?us-ascii?Q?EelzjdErwuCOtr7cHW8rM1bEFEgUtVp8Ni/BmdgrEIC4F32mWKZP0JmngFr0?=
- =?us-ascii?Q?JQ/mwfqKF5iKw0dh8reVc+ILEpnltJGuUQeb4JTM4hIhf0nOg40EtoN1xbVp?=
- =?us-ascii?Q?1JRoh+lDrDjTnJINkwerwHLhDX5uMdTxYCnKsSmXcgcm7jBwmpfDl9QDtObL?=
- =?us-ascii?Q?VZY5boqLVGpNfLTL2bqLewMIGbNXbOnNdx1VCJwvVh4Hl4vU8yOOBra+rK6O?=
- =?us-ascii?Q?JKKyB1SgkV1iPfBWbkEzwboqTFr/4jiZ/B/kNL13SV6+rjbjcG1U+d1l2mZw?=
- =?us-ascii?Q?o27IcFEFaynzmbqo86nZHFsA0TaBd18ZeVaiBhm0WewpzrO1hzilz5kuKMgi?=
- =?us-ascii?Q?s0rW2lHINgC8S15fKoDAPrzPso8ATuMjBDorP0e9ajEHleM/ly4apK/uN8p5?=
- =?us-ascii?Q?WFXN5LtNbqVl7VVEjhZpkcpSxsdlm0s4NkaumEmbaB1GeEy4r2j9ucs5jU0J?=
- =?us-ascii?Q?5JdY3ZWDsoO3d0e6o20JwEAUoaL6IGCgrcLSkuoZUKHFj2m4o0s8RjCYf/qJ?=
- =?us-ascii?Q?CwsK3Q//aAO/Mv3CXQQeZEbhoDZsLrpNIJGjWXlHg129eSnzhBSqcs7pwtGi?=
- =?us-ascii?Q?VyVT8W39TmCM4YT8yxABaC+zlyHNh/y9tf2LvYny+4FmSymfFZQMJuJWT2Jj?=
- =?us-ascii?Q?Jddg1ZtOJwmM0bNDfQ3GQpXHAUw8wV5CUWAL5cV1MKwLRxkzEtHcAB+Pw7QC?=
- =?us-ascii?Q?1y1Y4Xys5a7cueESnd95gq2hiIK6GtHXaYkyt2huyqtXsR4DWqJljAuKngWv?=
- =?us-ascii?Q?Lg=3D=3D?=
+	=?us-ascii?Q?StVJN1mOo8/T508V8NrwQxReaeU2VOxhYax332GUwfAkXmU874Lxltfr44lo?=
+ =?us-ascii?Q?OBhzjqOVFP4rjit6SQ7MllWLMnqt7hvlpbiQGH6SO4up9PwpJ0b/ZTagD7yw?=
+ =?us-ascii?Q?MSo3bYl1wR0rN32BFoUCN+D8avwBWZZIZTliLu37xJWXD/NTrO0LkyxigZc4?=
+ =?us-ascii?Q?CIvJYAwaYE266AeEXeLcILwWQ5gaj97xGnJOgH6WNDhhEbxxmau+RpJV7Hd6?=
+ =?us-ascii?Q?dkwhnfzrkJJCnjW44x/UaK1txIxKJzfZvAX30b5L4HfVn424/JcwetroVRdi?=
+ =?us-ascii?Q?8hY0ZZZVPeOh87cYadneec4lZTySTUqQ1hAxBoKxD4LpD26VwAqyu1oHLtSi?=
+ =?us-ascii?Q?vg91DTdLsX0gizWPTdTStribqZ2TNW6c3nw89+DeBoZ5Co5NMjayzYK11SYj?=
+ =?us-ascii?Q?ubyf12oDOWo1gQoNRPA/N1M03k2FojN0dEC/pcHCzTIwf5GYuJkIDZLrRwDJ?=
+ =?us-ascii?Q?4DdNKDGnJG+3WssvgKpp58NSMnESpYiufJO5R/Yvqcl+hYtJxHi1llKPcbB9?=
+ =?us-ascii?Q?PE+g9AdZHnrAeF59cB6aqAfhpX59W3EWQ9rLFRCoLQAFTEohVDX3DfUnuaRA?=
+ =?us-ascii?Q?1a0aWVPJCByzpGkqfj/iMUG9lRRigpP3G+pYRVf+A/xjOLU1apbOeZs+4lz2?=
+ =?us-ascii?Q?XW1VYCE3EQkRTBSGNFFl65Zy193DEVArwkSwTI6YfZaw2TPzyhhsOEtgIVLr?=
+ =?us-ascii?Q?4zxWNZtqpPqCU6UKsV7VOEFOVxgBgsy3QHxwaunx1/IVVgpte/RC3fy73nqA?=
+ =?us-ascii?Q?BnmMqC+/icCcoS8frWP5JR5yVKBKtmW+BHX6LeaqxcbL7DhjRmoOJkL+Jm/A?=
+ =?us-ascii?Q?xlB267NHpCIQXQ9xehcvRM6ZzlAbJnxiHqUYsolNsZRfTniI5F9DXVeOpGn5?=
+ =?us-ascii?Q?DKRFGtjYcga291FczQWlwOdBnSV5mfCfuzLmA5EtyVvWcInARsgUluMLqhlS?=
+ =?us-ascii?Q?koQM80BURi4o6t2UFAYLjwYrD6WFJ0pav9n9KMQ6GJVfOn4QKye/KpEp62by?=
+ =?us-ascii?Q?pkxAMMmsBOxmoldk8JFSZRJzauQraXOS7+YR7kS2Ge5vJ+v9mveUXQ5BsUgg?=
+ =?us-ascii?Q?K0p245v7P0rlwBAkBdMNejTRPRnBsICjghVAMEIwoA9gzP4S60ftI+JSVJnn?=
+ =?us-ascii?Q?W3lCdgWXfa3aTcEo6mvz4df2TSzAbmpHhCJ/YNkRbJiuUxUO/rHVpYm+hLPA?=
+ =?us-ascii?Q?O4ZHDTsIF+QFPeNbThhAiypx/nVDaAGT8dBzGfFYda7qxkdNF8Nv0aEUmOBY?=
+ =?us-ascii?Q?b3dx93qqxF1rthorMydil6Fz8y1eTsHNCHqOOzDwcREOMtayL+edZT3POkmw?=
+ =?us-ascii?Q?JJ1bi85CIkfXkMKKzqF2h9iOq2kpXpNgZVyD1D2XqMaW96FArREthyy2+q3D?=
+ =?us-ascii?Q?JfGKbi2z8lf9amrNq31HPDjBiv7AwtXvP+TdqLGIO/vfABdL6XX5W8G2o2GK?=
+ =?us-ascii?Q?Ea64So/0vdans9VB0rmVO9VkIcWkQwsuDSiUYK8108Iej6uGvT5da5lW5/FT?=
+ =?us-ascii?Q?D/qGw/89x6OBOiN1Y5HNemU2APenswRBa+M2QVc0zjFDhYrbuu/vzBZb7fbt?=
+ =?us-ascii?Q?7Wpw2hOc+1Mk6J/4TOsx2uFlhxdweRwhYh0ErZDBEb5B6m9QW7dNz1R1oEgF?=
+ =?us-ascii?Q?31Wa0J4+yi2pbiNOUsY2DQo=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	BHscyP2YmJjeZq01X69J1MnViHx14w0xfGz2XOgsXAq6rEsItEclego0TbHLXD5TA35WAE8jpFHkHj+r8fIpF2esznxad+wy7hl+wZDUnTUxZ5rJ4icti9lWEc0cr0KtQxL3XZ+akQWT21bCZ7MDJBvBm/GsSnlnoqmm+ui+5LM5sw3OWKkjEVOqS7nU6jCpeyuNLZxexdb1h89+ZGsThrdzqp8OluJ+0yIpUgCWOJ3ZksofTEvvaUihm4Tlz4RiM9nS7OnEKVMIfgtbZcRscRWz37mHzpTXMLJKtFmFa1IDq4Z335EHXOEJea0tzfRJmTJsolYRykrUZUIH23cebrAkij+zaTWkBsikLOmKKC4k5sASxoVz2U0UM1pR1ultWPsbIMsPfH2T03xaa8GyJuEUvY75uIoTZLCFP6QQMk3gKWkLsjNcuxi443BzyCrNooxdMr/6R4XCJDGA2VVuYbk7VLBW3TYCgKRVPpqVMK1GqJdwtAB9R9XP4tIOK+kqsKlcbhsJtlmrumrr2DuaJ/qhD3JgrVSJrfWllb/zGmLv1zzfG08Mtsjpklm0A6gvMCwJ2kgnCtw0H4i30ruTqiO7JwFllZC0UwstW8zNSwI=
+	PkfwBj7fTIDJTedffS4IGnbUab4kuoApnUu/zbn1P/Wpy7dGP53gLlzhqRtiUM5vdnDTLyZ943kXrCw7tqeqBPxvE3trS5HBdDN1TW3cDBzVFVHvYm13ynF/PJeiMVQNREyN3S45fj7TZCDSmHJ36BGU9ajbzAcU5EGr8/3L8S6IR9nwVBMvePVNoINzRkDIY7d24okD53oSdPbIXKljzKhWIpFlAXbQzMfYy9Tw7okwC/GFi4oNO8MHrUEHPz7osn+mmTe9v8p4eBOCwrCZxN69D9o4stKuZ+Khkobgp68p860d8UXEQbZaHRB+ceqfmuGTAQZNAr9cX8Eu/B2FC5S8EGEsWF7lTc0ChcaWKFXz2gLednEZhPd05CW8RpEF+nf7xx290LSDFNxQ3MPkOrtPg7h7GISvyexAk1ch1Lo+iQyINaiH9M8Dzr6PY80/X+U8t6b9ONVwjk5o4+jjtJjNUurUF+aVUbG1UR1xIAMIecagnWwu7RXvHJHSlSDugGbLH+/iP/c0lMv4gmWNtR7CL4VSrCqXOQUPmzE6np71f+Gap72r48lvpVMd2kdDw7QZmNkxC48Pw0SKTqW1ZGyh1Hc3y6Bczig1lF/Xi6g=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fbfbcf3-4c58-4f31-f6b9-08dc68748610
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80b73fe3-a5a1-4723-5905-08dc68746f39
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6597.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 17:48:05.6125
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 17:47:27.2269
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zTaK3K2KET+EgypJFluXHVK8BOzJ/P+kyJc6dANu0K6CDsNdf0aCop4dZGOxZk1w5UrEwC63er1+41NJfBTYwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6389
+X-MS-Exchange-CrossTenant-UserPrincipalName: xm8Y16QOBqnR/hSp3geHQDd/s/B+biAubvg9XESqcudFXIGlKetscf/jbBZjHaG+k9oQNEhidlev87F/vx7u7jH2k+Tn44ijImFZMM/6ywc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6318
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-29_15,2024-04-29_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
  phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 mlxscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404290115
-X-Proofpoint-GUID: 3UAwMplDnlAEfmpLs6lZIu2HfnyQCLzq
-X-Proofpoint-ORIG-GUID: 3UAwMplDnlAEfmpLs6lZIu2HfnyQCLzq
+ engine=8.12.0-2404010000 definitions=main-2404290114
+X-Proofpoint-GUID: cmW9DUuK3hyTSbya-l_k4rsmy1fzObSc
+X-Proofpoint-ORIG-GUID: cmW9DUuK3hyTSbya-l_k4rsmy1fzObSc
 
-Add a generic helper for FSes to validate that an atomic write is
-appropriately sized (along with the other checks).
+Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+> Hi Stephen,
+>
+> On Fri, 26 Apr 2024 15:58:34 -0700
+> Stephen Brennan <stephen.s.brennan@oracle.com> wrote:
+>
+>> If an error happens in ftrace, ftrace_kill() will prevent disarming
+>> kprobes. Eventually, the ftrace_ops associated with the kprobes will be
+>> freed, yet the kprobes will still be active, and when triggered, they
+>> will use the freed memory, likely resulting in a page fault and panic.
+>
+> Hmm, indeed.
+>
+>> 
+>> This behavior can be reproduced quite easily, by creating a kprobe and
+>> then triggering a ftrace_kill(). For simplicity, we can simulate an
+>> ftrace error with a kernel module like [1]:
+>> 
+>> [1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
+>> 
+>>   sudo perf probe --add commit_creds
+>>   sudo perf trace -e probe:commit_creds
+>>   # In another terminal
+>>   make
+>>   sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
+>>   # Back to perf terminal
+>>   # ctrl-c
+>>   sudo perf probe --del commit_creds
+>> 
+>> After a short period, a page fault and panic would occur as the kprobe
+>> continues to execute and uses the freed ftrace_ops. While ftrace_kill()
+>> is supposed to be used only in extreme circumstances, it is invoked in
+>> FTRACE_WARN_ON() and so there are many places where an unexpected bug
+>> could be triggered, yet the system may continue operating, possibly
+>> without the administrator noticing. If ftrace_kill() does not panic the
+>> system, then we should do everything we can to continue operating,
+>> rather than leave a ticking time bomb.
+>
+> OK, the patch looks good to me.
+>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> Thanks!
 
-Signed-off-by: John Garry <john.g.garry@oracle.com>
----
- include/linux/fs.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Hi Masami,
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 6ebefb079740..9bfa9b68d800 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3648,4 +3648,16 @@ bool generic_atomic_write_valid(loff_t pos, struct iov_iter *iter)
- 	return true;
- }
- 
-+static inline
-+bool generic_atomic_write_valid_size(loff_t pos, struct iov_iter *iter,
-+				unsigned int unit_min, unsigned int unit_max)
-+{
-+	size_t len = iov_iter_count(iter);
-+
-+	if (len < unit_min || len > unit_max)
-+		return false;
-+
-+	return generic_atomic_write_valid(pos, iter);
-+}
-+
- #endif /* _LINUX_FS_H */
--- 
-2.31.1
+Thank you! Sadly I took a second look at the patch and noticed I forgot
+to remove the existing declarations of ftrace_is_dead() from
+kernel/trace/trace.h. I've sent v2 in reply to v1 in order to correct
+that. I'm sorry for the churn.
 
+Thanks,
+Stephen
+
+>> 
+>> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+>> ---
+>> 
+>> Apologies for the wide net cast here. I recognize that a change like this
+>> may need to be split up and go through arch-specific trees. I hoped to get
+>> feedback on the patch itself. If it's satisfactory and the architecture
+>> maintainers prefer it split out, I'm glad to do it. Thanks!
+>> 
+>>  arch/csky/kernel/probes/ftrace.c     | 3 +++
+>>  arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
+>>  arch/parisc/kernel/ftrace.c          | 3 +++
+>>  arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
+>>  arch/riscv/kernel/probes/ftrace.c    | 3 +++
+>>  arch/s390/kernel/ftrace.c            | 3 +++
+>>  arch/x86/kernel/kprobes/ftrace.c     | 3 +++
+>>  include/linux/ftrace.h               | 2 ++
+>>  8 files changed, 23 insertions(+)
+>> 
+>> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+>> index 834cffcfbce3..3931bf9f707b 100644
+>> --- a/arch/csky/kernel/probes/ftrace.c
+>> +++ b/arch/csky/kernel/probes/ftrace.c
+>> @@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe_ctlblk *kcb;
+>>  	struct pt_regs *regs;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
+>> index 73858c9029cc..82c952cb5be0 100644
+>> --- a/arch/loongarch/kernel/ftrace_dyn.c
+>> +++ b/arch/loongarch/kernel/ftrace_dyn.c
+>> @@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe *p;
+>>  	struct kprobe_ctlblk *kcb;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+>> index 621a4b386ae4..3660834f54c3 100644
+>> --- a/arch/parisc/kernel/ftrace.c
+>> +++ b/arch/parisc/kernel/ftrace.c
+>> @@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe *p;
+>>  	int bit;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+>> index 072ebe7f290b..85eb55aa1457 100644
+>> --- a/arch/powerpc/kernel/kprobes-ftrace.c
+>> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
+>> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+>>  	struct pt_regs *regs;
+>>  	int bit;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(nip, parent_nip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+>> index 7142ec42e889..8814fbe4c888 100644
+>> --- a/arch/riscv/kernel/probes/ftrace.c
+>> +++ b/arch/riscv/kernel/probes/ftrace.c
+>> @@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe_ctlblk *kcb;
+>>  	int bit;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+>> index c46381ea04ec..ccbe8ccf945b 100644
+>> --- a/arch/s390/kernel/ftrace.c
+>> +++ b/arch/s390/kernel/ftrace.c
+>> @@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe *p;
+>>  	int bit;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+>> index dd2ec14adb77..c73f9ab7ff50 100644
+>> --- a/arch/x86/kernel/kprobes/ftrace.c
+>> +++ b/arch/x86/kernel/kprobes/ftrace.c
+>> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>>  	struct kprobe_ctlblk *kcb;
+>>  	int bit;
+>>  
+>> +	if (unlikely(ftrace_is_dead()))
+>> +		return;
+>> +
+>>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>>  	if (bit < 0)
+>>  		return;
+>> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+>> index 54d53f345d14..ba83e99c1fbe 100644
+>> --- a/include/linux/ftrace.h
+>> +++ b/include/linux/ftrace.h
+>> @@ -399,6 +399,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
+>>  #define register_ftrace_function(ops) ({ 0; })
+>>  #define unregister_ftrace_function(ops) ({ 0; })
+>>  static inline void ftrace_kill(void) { }
+>> +static inline int ftrace_is_dead(void) { return 0; }
+>>  static inline void ftrace_free_init_mem(void) { }
+>>  static inline void ftrace_free_mem(struct module *mod, void *start, void *end) { }
+>>  static inline int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
+>> @@ -914,6 +915,7 @@ static inline bool is_ftrace_trampoline(unsigned long addr)
+>>  
+>>  /* totally disable ftrace - can not re-enable after this */
+>>  void ftrace_kill(void);
+>> +int ftrace_is_dead(void);
+>>  
+>>  static inline void tracer_disable(void)
+>>  {
+>> -- 
+>> 2.39.3
+>> 
+>
+>
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
