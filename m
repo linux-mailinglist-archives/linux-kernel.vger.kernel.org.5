@@ -1,177 +1,141 @@
-Return-Path: <linux-kernel+bounces-161987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A792A8B543E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 819B88B5441
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4921C20D72
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:27:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ECED1C212F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23A829421;
-	Mon, 29 Apr 2024 09:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b="cQ139JZl";
-	dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b="RIy0Cxgg"
-Received: from e2i187.smtp2go.com (e2i187.smtp2go.com [103.2.140.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E227B22318
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.2.140.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA1A28373;
+	Mon, 29 Apr 2024 09:29:11 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC58D224EA;
+	Mon, 29 Apr 2024 09:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714382855; cv=none; b=VmnSGhh152TurIQcsI8NFcsKlADA8q9aXT21RHbbIAcS+erfgKoD81q562Uv+haa++h+AVDJg1yFiQZvWb32zaMkrxSSMP3317e596vK4gqMFRTd675DzvJmNXw6s62CxvO6XWaUlBLhljJN0PFqqDF1K7lBwmXk8F5m8P/LKyI=
+	t=1714382951; cv=none; b=BWJ5o+JnrGbxrlRXj5pykReaOzz9ugHCELP5SujtgA2g7VLyaD5KT7w/wEdVHGMWdLiAYgdlaZc+X4DfXB+piWB739IBFa0azF0dndgMKlKGq5jd6j3pdgxK/pZwKxg0bSiBoTn5YBuW/yhoUaTyRXg/Zsuq+yIOljWFEfftAMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714382855; c=relaxed/simple;
-	bh=30cqX5XdpQa8TGqXCdDPHM4UVl01LjROZCbP87EagOQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pdWmgx/k80zqBUwAeL8SP0Cow/jl4hf9s62Cv+J8yPf4Z+KBPyhyNLgFr6tuBFaghHMSGkLxF2AvErh0QBsgcePeYPAbnLTk1X4vLal2gEmUhs2Xcf0k5GU1lilL/r3g/w/vzB4QbsqZffWk+vNu0T43jrXOGqxF0ZjJVCZORaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it; spf=pass smtp.mailfrom=em1174574.asem.it; dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b=cQ139JZl; dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b=RIy0Cxgg; arc=none smtp.client-ip=103.2.140.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174574.asem.it
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=smtpcorp.com; s=a1-4; h=Feedback-ID:X-Smtpcorp-Track:Message-Id:Date:
-	Subject:To:From:Reply-To:Sender:List-Unsubscribe;
-	bh=nJrQkD6SYS7EZ39Pwcqy3OegRAr4vtSj0mwkDW3shfA=; b=cQ139JZll1YjT2F0xGZZ2Eaqt0
-	uLa0ZeCO+DDWyJNBn0DkrwSo0HW7qaSnFHKIKofi2bg0+79le9KlyJm30VQ/h7iTtVhSCOA3AM957
-	aURFbiw273PJs9HxJSCkbqxExyJDzs9Hw2C5o8H2yw0j8E2GQxZQWOh5lV6YpScGrbRvnG2ix9aqc
-	KxOkmLUwfQsE6BgZyHC6bQJxunZM4t653YjM9U1R052ccOzk+gcqs5sIleYBk3W8avgQUNyPXKChR
-	zglYR9CPC5ghwimrezU9AZTeSvs1sr/iDbFgc/Vj36ljirm8RmR7pL7QymaakyNClMG9sQQTkR/8M
-	4IkbnpGQ==;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it;
- i=@asem.it; q=dns/txt; s=s1174574; t=1714382854; h=from : subject : to
- : message-id : date; bh=nJrQkD6SYS7EZ39Pwcqy3OegRAr4vtSj0mwkDW3shfA=;
- b=RIy0CxggibolWuJm+o/2rEN1HiS69UMECgF2WLK5nCltHHR3iAfIhlmSxautN1mM/0XtV
- jnD/DwjBzoO5xv3FACrIU1mDy9Er+l0Dpx1TsuLnYgZ9sJZaLYuwF25J7CqD/wJcknchGFP
- 5XBBVA9yG/8Yc4NSGlQuQZaVtdf5/zc2M8/Voxt5TG8TNU562llnZn4fQ/lrjvp5fCubz5W
- tb7A8ZcHxYs72/ngiPV/0wdXPkGhfvntsnku4B0iNyOlXeQuxUx9wzFS8exjEC+uy4y5M0y
- v09KuRrUO9k7LPN8fHcueO1PVDV23/9jHXPiE1y4/JaEsFtOKVVJwix9TwEA==
-Received: from [10.45.79.114] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
- (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
- (Exim 4.94.2-S2G) (envelope-from <f.suligoi@asem.it>)
- id 1s1NIA-Y8PKoU-Br; Mon, 29 Apr 2024 09:27:22 +0000
-Received: from [10.86.249.198] (helo=asas054.asem.intra)
- by smtpcorp.com with esmtpa (Exim 4.97-S2G)
- (envelope-from <f.suligoi@asem.it>) id 1s1NI8-FnQW0hPkfet-Om7l;
- Mon, 29 Apr 2024 09:27:20 +0000
-Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with
- Microsoft SMTPSVC(10.0.14393.4169); Mon, 29 Apr 2024 11:27:18 +0200
-From: Flavio Suligoi <f.suligoi@asem.it>
-To: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Jose Abreu <joabreu@synopsys.com>, Adam Ford <aford173@gmail.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>,
- Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH net-next v3 1/1] dt-bindings: net: snps,
- dwmac: remove tx-sched-sp property
-Date: Mon, 29 Apr 2024 11:26:54 +0200
-Message-Id: <20240429092654.31390-2-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240429092654.31390-1-f.suligoi@asem.it>
-References: <20240429092654.31390-1-f.suligoi@asem.it>
+	s=arc-20240116; t=1714382951; c=relaxed/simple;
+	bh=EY2UMA9YckVBPm5cXLrC9DEDGRaHmRG/SJECqw9GRjg=;
+	h=From:Subject:To:Cc:Message-ID:Date:MIME-Version:Content-Type; b=AhsKZgghYsBc2bvO2krs5e3gJ9+fYx6JkA5e/BoGMI6RwIBbZGwux6EhNNlY+No7zT7TgQNHIY6BAZpW6yrEDFQiu17+rTLX/7ltwIZeoHVkJ0+RLbzklwONOU24EBQJCzjw0BwOb2yPp4msFmltMlV5cbLanroVVYbI9TJVkfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8DxKPFhaC9myNwEAA--.17136S3;
+	Mon, 29 Apr 2024 17:29:05 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxLN5eaC9muvEJAA--.24632S3;
+	Mon, 29 Apr 2024 17:29:03 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Problem and solution about SCSI configs
+To: James.Bottomley@HansenPartnership.com, martin.petersen@oracle.com
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <ce58178c-7f26-a9a1-443a-71577162c814@loongson.cn>
+Date: Mon, 29 Apr 2024 17:29:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 29 Apr 2024 09:27:18.0373 (UTC)
- FILETIME=[6E258950:01DA9A17]
-X-Smtpcorp-Track: -hxUTecPyyFq.bz9aliRl8u2c.mFSb3AI5Rco
-Feedback-ID: 1174574m:1174574aXfMg4B:1174574s5yIPG_of4
-X-Report-Abuse: Please forward a copy of this message, including all headers,
- to <abuse-report@smtp2go.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8AxLN5eaC9muvEJAA--.24632S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGFW7ZF4UurykWr4fAryUCFX_yoW5WFyxpF
+	4xtay7Ar1kJr4qvr4UZryxWFW5Xa97J398KF1Ikas3uF1UAa47Cr9xtrW5J3y7Xwn3JF10
+	qrWUWasxCa95JagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8cz
+	VUUUUUU==
 
-Strict priority for the tx scheduler is by default in Linux driver, so the
-tx-sched-sp property was removed in commit aed6864035b1 ("net: stmmac:
-platform: Delete a redundant condition branch").
+Hi all,
 
-This property is still in use in the following DT (and it will be removed
-in a separate patch series):
+In the current code, if the rootfs is located on a SCSI device and root=
+/dev/sda3 is specified as boot option in grub.cfg, kernel boots failed
+with CONFIG_SCSI=y and CONFIG_BLK_DEV_SD=m when there is no initrd, here
+are the boot messages via the serial console:
 
-- arch/arm64/boot/dts/freescale/imx8mp-beacon-som.dtsi
-- arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-- arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
-- arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-- arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+   /dev/root: Can't open blockdev
+   VFS: Cannot open root device "/dev/sda3" or unknown-block(0,0): error -6
+   Please append a correct "root=" boot option; here are the available 
+partitions:
+   ...
+   Kernel panic - not syncing: VFS: Unable to mount root fs on 
+unknown-block(0,0)
 
-There is no problem if that property is still used in the DTs above,
-since, as seen above, it is a default property of the driver.
+Set CONFIG_BLK_DEV_SD=y can solve the above issue, but in order to avoid
+the potential failure, it is better to restrict the configs.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Adam Ford <aford173@gmail.com>
----
+Here are some backgrounds according to Documentation/scsi/scsi.rst and
+drivers/scsi/Kconfig:
 
-v3 - Added history in the patch, as well as in the cover-letter.
-   - Add "Acked-by: Adam Ford <aford173@gmail.com>".
-v2 - This patch is the 2nd version of a previous patch series, where both
-     the DTS and the yaml files were included toghether. Then I split this
-     1st patch series in two, as suggested by Krzysztof.
-   - Add "Acked-by: Krzysztof Kozlowski <krzk@kernel.org>"
-v1 - Original version of the patch series, including, in addition to this
-     patch, also other five DTS patches, in which the property
-     "snps,tx-sched-sp" appeared.
+The SCSI support in the Linux kernel can be modularized in a number of
+different ways depending upon the needs of the end user.
 
- .../devicetree/bindings/net/snps,dwmac.yaml        | 14 --------------
- 1 file changed, 14 deletions(-)
+The scsi-core (also known as the "mid level") contains the core of SCSI
+support. Without it you can do nothing with any of the other SCSI drivers.
+The SCSI core support can be a module, or it can be built into the kernel.
+If the core is a module, it must be the first SCSI module loaded, and if
+you unload the modules, it will have to be the last one unloaded.
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index 15073627c53a..21cc27e75f50 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -328,9 +328,6 @@ properties:
-       snps,tx-sched-dwrr:
-         type: boolean
-         description: Deficit Weighted Round Robin
--      snps,tx-sched-sp:
--        type: boolean
--        description: Strict priority
-     allOf:
-       - if:
-           required:
-@@ -339,7 +336,6 @@ properties:
-           properties:
-             snps,tx-sched-wfq: false
-             snps,tx-sched-dwrr: false
--            snps,tx-sched-sp: false
-       - if:
-           required:
-             - snps,tx-sched-wfq
-@@ -347,7 +343,6 @@ properties:
-           properties:
-             snps,tx-sched-wrr: false
-             snps,tx-sched-dwrr: false
--            snps,tx-sched-sp: false
-       - if:
-           required:
-             - snps,tx-sched-dwrr
-@@ -355,15 +350,6 @@ properties:
-           properties:
-             snps,tx-sched-wrr: false
-             snps,tx-sched-wfq: false
--            snps,tx-sched-sp: false
--      - if:
--          required:
--            - snps,tx-sched-sp
--        then:
--          properties:
--            snps,tx-sched-wrr: false
--            snps,tx-sched-wfq: false
--            snps,tx-sched-dwrr: false
-     patternProperties:
-       "^queue[0-9]$":
-         description: Each subnode represents a queue.
--- 
-2.34.1
+The individual upper and lower level drivers can be loaded in any order
+once the SCSI core is present in the kernel (either compiled in or loaded
+as a module). The disk driver, CD-ROM driver, tape driver and SCSI generics
+driver represent the upper level drivers to support the various assorted
+devices which can be controlled.  You can for example load the tape driver
+to use the tape drive, and then unload it once you have no further need for
+the driver (and release the associated memory).
+
+However, do not compile the SCSI disk driver as a module if your root file
+system is located on a SCSI device. In this case, do not compile the driver
+for your SCSI host adapter as a module either.
+
+That is to say, if you want to use an ATA hard disk as root device, config
+ATA will be set as y and select CONFIG_SCSI, then CONFIG_BLK_DEV_SD should
+be set as y and it can not be modified as m through the defconfig or make
+menuconfig if CONFIG_SCSI is y, the simple way is to let CONFIG_SCSI select
+CONFIG_BLK_DEV_SD if CONFIG_SCSI is y.
+
+Could you please let me know are you OK with the following change?
+
+-- >8 --
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 634f2f501c6c..3e59e3e59e79 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -25,6 +25,7 @@ config SCSI
+         select SG_POOL
+         select SCSI_COMMON
+         select BLK_DEV_BSG_COMMON if BLK_DEV_BSG
++       select BLK_DEV_SD if SCSI=y
+         help
+           If you want to use a SCSI hard disk, SCSI tape drive, SCSI 
+CD-ROM or
+           any other SCSI device under Linux, say Y and make sure that 
+you know
+
+If yes, I will post a formal patch later.
+
+Thanks,
+Tiezhu
 
 
