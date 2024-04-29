@@ -1,104 +1,151 @@
-Return-Path: <linux-kernel+bounces-162257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C028B58B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:38:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350718B58B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:38:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6D3E1F24906
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD4B0284DD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16C410953;
-	Mon, 29 Apr 2024 12:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NusVyk7t"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F613EA71;
+	Mon, 29 Apr 2024 12:38:38 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEF4322E;
-	Mon, 29 Apr 2024 12:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7666738DC7
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714394315; cv=none; b=o+Lbq8AdRg7KgYYZ2f5M7LeEpYTYIZAWjVHkhJeHEiWrqbwaXwdEEDhhSErcCHJJwK/klkZd4gZ0Bw2krsbe808Cy2WC5dZSSJ4q8lg7RyVKENgH8YBvH9vzDHEXspUrY+2u/7RQoS30Ov4aPA66k4josVuOtx2t41BfmFWaBGw=
+	t=1714394318; cv=none; b=Tt5giKWInNK4ZuwqmBIukSyrrxP1XeYU9YEaU85VeAQPp6CMMx0+cxIseVCaKZXIbkCxgsewEleV8aZMzY9noUsQMvjAqR67KxrzWk3+kUsF1rraJstLXwnERLjLjIw0XpwSw/sbZbKCRV3QGYfeN8jVLMwkuDA2PR2i7EBvzhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714394315; c=relaxed/simple;
-	bh=v4UXMKorrS1MWpudNhezId53qq7JsKiY5JAW3oUdBZY=;
+	s=arc-20240116; t=1714394318; c=relaxed/simple;
+	bh=Q5yExRS4uoTndDoprkbbxWEANHw4gUs9VYdK6Qtoo1I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gfgWkN9iv1FrVbRpvnUTx5KxxcWYJkg6ix4viOGIgRg/tZOxi/kjgXc0z3YN4NmP6I5wREoJM1H6x+QMXV846aiZYQs1CzdbJp/v1lgvqL0xIYhCIxZuE5jhoEm3Vff+BkEP0SipI+h6abfNFj6ModnOT4hUwlR5LJ8LTxpPkAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=NusVyk7t; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AFA4F40E0187;
-	Mon, 29 Apr 2024 12:38:30 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id usRaInnAyky6; Mon, 29 Apr 2024 12:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714394307; bh=uBo83RXsgIKfYIzl0qK0twOO+iMg1Pp04mCeg+L0u3A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NusVyk7t3e/4AVJvzRmoo/WpHndXOyrDyvqq7AIfC805pIVSuCuy77Lxo9kRaxz/u
-	 WcKT2ZCfdBVZ/wkfqmgBjJBF6NY16RdIYQG5OkVX1UdC7/6A59vyoXDKUHKpTE/eXj
-	 F3CBCjmPVbYauhBW792GJNVScgvfWapxRHZMc7RCuaA+TSJ49p1ca05dwVdqPD8BQh
-	 flHDxZIM5cyl7C+m+MO7LPdK1V2mlfcrxrDs8DWsKR1/JKUXGjzPvIBpdgVeRilcb0
-	 d7QpoJ0q83Vkzv3JZTPfgWB4FxOgZPkFX0zqwLm9/7JGHEBomvQDFcp7JZJTLdFc0Y
-	 k8ww5GlMbdkjbRi8Oj6A+x4aVXK1KiT0ZgWiGp3jgc5ZH5kjMeZWiFzvT7SeTjbYOR
-	 rv+0GBGKjVVvTjjGd3hwj6l8EHphZVT4QMxElMXdUKUFkglyDb4+WIQM9KYa23lplh
-	 W/jnrNz97GdbsFkG/YMEgxeRXLZ7DXhDnLwNOxShE4sgsrjTnIBYolQ8HXsKD0NTW8
-	 JpRnlWvEqdoFQXcAPXv8Km19/MPvkFxHl3VnQOE8kGxlW28uvS7HuwxkCvvfn1pfoD
-	 ePYKV2ZA7HojMw2sLASUz1vrWh1/8Yv6sWSFRJJ57WNp/T+vIiAdjz4AQeXiR16LhJ
-	 o+Kr9mEsrVANE+lR4st9PAr8=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 06C2240E00C7;
-	Mon, 29 Apr 2024 12:38:19 +0000 (UTC)
-Date: Mon, 29 Apr 2024 14:38:18 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tony.luck@intel.com, x86@kernel.org, Avadhut.Naik@amd.com,
-	John.Allen@amd.com
-Subject: Re: [PATCH v2 06/16] x86/mce/amd: Prep DFR handler before enabling
- banks
-Message-ID: <20240429123818.GCZi-UugM5_UFHm7es@fat_crate.local>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-7-yazen.ghannam@amd.com>
- <20240424183429.GGZilQtVJtGhOPm1ES@fat_crate.local>
- <190ec43d-bd44-42a4-a395-f278f97748fb@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J3i2hBykNTygqV4mjc/c2yCMTnzO4gi9mgNPMIKRbT03X7uGgnicmKT3r2cIBts3SpumMsSFPVTiWd1k4fHh+gvxMTQGNtBbcVKq2X0ckr1qvRKtymAdFPn+km94ddwoLrlPlx/SvAbb6swrEmm/q0ezvX0aQq5nFcZ8Oqi6o/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA46FC4AF17;
+	Mon, 29 Apr 2024 12:38:35 +0000 (UTC)
+Date: Mon, 29 Apr 2024 13:38:33 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: David Hildenbrand <david@redhat.com>, Will Deacon <will@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Peter Xu <peterx@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
+	Shivansh Vij <shivanshvij@outlook.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] arm64/mm: Move PTE_PROT_NONE and
+ PMD_PRESENT_INVALID
+Message-ID: <Zi-UyS5IC_truh8M@arm.com>
+References: <20240424111017.3160195-1-ryan.roberts@arm.com>
+ <20240424111017.3160195-2-ryan.roberts@arm.com>
+ <b55558a5-a9d4-4aea-956a-1babad01b6cd@redhat.com>
+ <df0475e1-9078-4629-b23d-0919ab1e37c2@arm.com>
+ <eed172b5-c71a-469f-a790-76126760ca7c@arm.com>
+ <Ziu-r2nkssCQ_uCS@arm.com>
+ <f5de5685-d955-4aa0-a307-a4da927f36f0@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <190ec43d-bd44-42a4-a395-f278f97748fb@amd.com>
+In-Reply-To: <f5de5685-d955-4aa0-a307-a4da927f36f0@arm.com>
 
-On Thu, Apr 25, 2024 at 09:31:58AM -0400, Yazen Ghannam wrote:
-> They are independent features. SUCCOR is the feature that defines the deferred
-> error interrupt and data poisoning. This predates SMCA. SUCCOR was introduced
-> in the later Family 15h systems.
+On Mon, Apr 29, 2024 at 11:04:53AM +0100, Ryan Roberts wrote:
+> On 26/04/2024 15:48, Catalin Marinas wrote:
+> > On Thu, Apr 25, 2024 at 11:37:42AM +0100, Ryan Roberts wrote:
+> >> Also, IMHO we shouldn't really need to reserve PMD_PRESENT_INVALID for swap
+> >> ptes; it would be cleaner to have one bit that defines "present" when valid is
+> >> clear (similar to PTE_PROT_NONE today) then another bit which is only defined
+> >> when "present && !valid" which tells us if this is PTE_PROT_NONE or
+> >> PMD_PRESENT_INVALID (I don't think you can ever have both at the same time?).
+> > 
+> > I think this make sense, maybe rename the above to PTE_PRESENT_INVALID
+> > and use it for both ptes and pmds.
+> 
+> Yep, sounds good. I've already got a patch to do this, but it's exposed a bug in
+> core-mm so will now fix that before I can validate my change. see
+> https://lore.kernel.org/linux-arm-kernel/ZiuyGXt0XWwRgFh9@x1n/
+> 
+> With this in place, I'm proposing to remove PTE_PROT_NONE entirely and instead
+> represent PROT_NONE as a present but invalid pte (PTE_VALID=0, PTE_INVALID=1)
+> with both PTE_WRITE=0 and PTE_RDONLY=0.
+> 
+> While the HW would interpret PTE_WRITE=0/PTE_RDONLY=0 as "RW without dirty bit
+> modification", this is not a problem as the pte is invalid, so the HW doesn't
+> interpret it. And SW always uses the PTE_WRITE bit to interpret the writability
+> of the pte. So PTE_WRITE=0/PTE_RDONLY=0 was previously an unused combination
+> that we now repurpose for PROT_NONE.
 
-.. and as we've established, it is not really enabled on them for
-whatever reason so for simplicity's sake, we'll simply assume that it
-was enabled together with SMCA and that would simplify a lot of things
-in the code.
+Why not just keep the bits currently in PAGE_NONE (PTE_RDONLY would be
+set) and check PTE_USER|PTE_UXN == 0b01 which is a unique combination
+for PAGE_NONE (bar the kernel mappings).
 
-Please put that in the commit message so that we know.
+For ptes, it doesn't matter, we can assume that PTE_PRESENT_INVALID
+means pte_protnone(). For pmds, however, we can end up with
+pmd_protnone(pmd_mkinvalid(pmd)) == true for any of the PAGE_*
+permissions encoded into a valid pmd. That's where a dedicated
+PTE_PROT_NONE bit helped.
 
-Thx.
+Let's say a CPU starts splitting a pmd and does a pmdp_invalidate*()
+first to set PTE_PRESENT_INVALID. A different CPU gets a fault and since
+the pmd is present, it goes and checks pmd_protnone() which returns
+true, ending up on do_huge_pmd_numa_page() path. Maybe some locks help
+but it looks fragile to rely on them.
+
+So I think for protnone we need to check some other bits (like USER and
+UXN) in addition to PTE_PRESENT_INVALID.
+
+> This will subtly change behaviour in an edge case though. Imagine:
+> 
+> pte_t pte;
+> 
+> pte = pte_modify(pte, PAGE_NONE);
+> pte = pte_mkwrite_novma(pte);
+> WARN_ON(pte_protnone(pte));
+> 
+> Should that warning fire or not? Previously, because we had a dedicated bit for
+> PTE_PROT_NONE it would fire. With my proposed change it will not fire. To me
+> it's more intuitive if it doesn't fire. Regardless there is no core code that
+> ever does this. Once you have a protnone pte, its terminal - nothing ever
+> modifies it with these helpers AFAICS.
+
+I don't think any core code should try to make page a PAGE_NONE pte
+writeable.
+
+> Personally I think this is a nice tidy up that saves a SW bit in both present
+> and swap ptes. What do you think? (I'll just post the series if its easier to
+> provide feedback in that context).
+
+It would be nice to tidy this up and get rid of PTE_PROT_NONE as long as
+it doesn't affect the pmd case I mentioned above.
+
+> >> But there is a problem with this: __split_huge_pmd_locked() calls
+> >> pmdp_invalidate() for a pmd before it determines that it is pmd_present(). So
+> >> the PMD_PRESENT_INVALID can be set in a swap pte today. That feels wrong to me,
+> >> but was trying to avoid the whole thing unravelling so didn't persue.
+> > 
+> > Maybe what's wrong is the arm64 implementation setting this bit on a
+> > swap/migration pmd (though we could handle this in the core code as
+> > well, it depends what the other architectures do). The only check for
+> > the PMD_PRESENT_INVALID bit is in the arm64 code and it can be absorbed
+> > into the pmd_present() check. I think it is currently broken as
+> > pmd_present() can return true for a swap pmd after pmd_mkinvalid().
+> 
+> I've posted a fix here:
+> https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
+> 
+> My position is that you shouldn't be calling pmd_mkinvalid() on a non-present pmd.
+
+I agree, thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Catalin
 
