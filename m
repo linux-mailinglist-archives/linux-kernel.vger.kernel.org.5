@@ -1,87 +1,87 @@
-Return-Path: <linux-kernel+bounces-162422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1878B5AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:07:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB0D8B5AFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:09:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 297341C20E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:07:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE7DC1F2133E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970F67C089;
-	Mon, 29 Apr 2024 14:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADD679B7E;
+	Mon, 29 Apr 2024 14:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ogSygeqS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="SI9Vr1qH"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BBF763FC;
-	Mon, 29 Apr 2024 14:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518EC9468;
+	Mon, 29 Apr 2024 14:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714399614; cv=none; b=jYaa2nCXafI80Dvqfd9X8eUlNJRiyBKJPId+jX7bFPYmk8laAoHJbpA3nJx0qJ9hhOP3EPNtnh/SzzWVIjhpLUuypH2msWqFCQItMbxeU9m/+FfNOUzcYQJR+dEOVi35Jd7td8/r0++1F9zI5pnw41rBKUCHDxVCCf742UHibDc=
+	t=1714399748; cv=none; b=K5/IW+FUVQ+m3IJoEYooa8XdpSIvl5t3pCCl1BMjzmL6YkXIjt6OjBwaE+K8pgUakY4/xFJjx6zY4BOlxAjJXcIhJxdXJxcO1ApV7OVKw3jitupK0nRhBE6+q327XnwMo27bQI86oBmfQchNblWDvzL8w2eGw47adhx/+s/brd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714399614; c=relaxed/simple;
-	bh=sJO/Lcs+rY37o08NZeFavwRGMkijjGwoIQvZuzab768=;
+	s=arc-20240116; t=1714399748; c=relaxed/simple;
+	bh=vA75/zFWpkErrewBXuJkOdlmx+Yz8j0uhWIhQIud5P0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YuIK6Jlpwiogb2jZxw/hx0/WH3RJSzOE6nDyItW4XArDz7v/Ji7rCflM9HHCivNR+jmeDfV2E8q9GuWYF/7zn1hgGBJnDn+CByi0CZZ6XB9K1YxCgzLuY49qaeQzj8NFd0q/h3+q4/Ssahh2Qw8ksIh4Q8pjAZPna3BgNaX97YI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ogSygeqS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 522CDC113CD;
-	Mon, 29 Apr 2024 14:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714399614;
-	bh=sJO/Lcs+rY37o08NZeFavwRGMkijjGwoIQvZuzab768=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ogSygeqS3rlcEe3fU4U6rujK5dm0ka5/nrKXwi4j7NozemxPIl4ZTcKZsbzbLuvSC
-	 93DPMYeSc8r0kS2G24ODhiLf/3hhV0N7r+wyRUepwjM32X4wOu4ENBMXxWLYwKOceb
-	 CQ3izCEz/t6P9KjRM+Nton6IwVGoZyITXRM389xurXSKfnerXxKpaFV5Rl38yTORTp
-	 yDzAbPVtKPEsV6mWpKFqGk3Jm3JmTD5XcF4ywySqVbJ1DDBLvxrcJjYcZ+aPEmN8Dd
-	 /GpQ+T4WVhQsuA7Nc4nXcUM7Bd0tZX8ORCoGWcAcWjZjSjq13njAc9U70Q/zxykCIx
-	 aZ6+NIwx1x2vQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s1Reg-000000004R6-0cMD;
-	Mon, 29 Apr 2024 16:06:54 +0200
-Date: Mon, 29 Apr 2024 16:06:54 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Cc: Doug Anderson <dianders@chromium.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, quic_mohamull@quicinc.com,
-	quic_hbandi@quicinc.com, quic_anubhavg@quicinc.com
-Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
-Message-ID: <Zi-pfqUplv6VZ-aC@hovoldconsulting.com>
-References: <20240426155801.25277-1-johan+linaro@kernel.org>
- <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
- <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
- <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
- <Zi-ohCWv58d2h5VM@hovoldconsulting.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=btlXqFP7icaYSDE2hWr/HGiKVIzZhEbK+rm1UHxz8xEgJ6CZ5eu2ktrH/L1hAHDZv+/pBV7jEO8xpHFBnXHJ1mgE1Hx7pBi5hrjsI4N9gxZIXNeXT6jds9EDyt89UAHyYnm+wvN3CyQI7596CG+EP74OAi0ginWAq67lHcedHg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=SI9Vr1qH; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=Ma/lOIsOjn5MOqTJBU1zrEvCux3uZ9sv7GB+cMtUSm0=; b=SI
+	9Vr1qHq2ikrTl41E0ygAJMaUtCwCGTUWAgkFqUCFJqoYXXVUaRYKrNA1Ek+Oi0ksj8Ky1/DYX03AW
+	F0ZRkZ1WXo3ZkxlNFPT75pTRLjHFl+E05Wx+WI2H9z9Tv6xqjK+TGFqhQi5g7QsbgSh1sVv2g3vSX
+	zF+6ahSYXCIsNUk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s1RgZ-00EG3f-1w; Mon, 29 Apr 2024 16:08:51 +0200
+Date: Mon, 29 Apr 2024 16:08:51 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] ARM: orion5x: Rename PCI_CONF_{REG,FUNC}() out of
+ the way
+Message-ID: <980ae9cd-2adf-4a8c-9c0e-de002840daf9@lunn.ch>
+References: <20240429104633.11060-1-ilpo.jarvinen@linux.intel.com>
+ <20240429104633.11060-2-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <Zi-ohCWv58d2h5VM@hovoldconsulting.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240429104633.11060-2-ilpo.jarvinen@linux.intel.com>
 
-On Mon, Apr 29, 2024 at 04:02:44PM +0200, Johan Hovold wrote:
+On Mon, Apr 29, 2024 at 01:46:24PM +0300, Ilpo Järvinen wrote:
+> orion5x defines PCI_CONF_REG() and PCI_CONF_FUNC() that are problematic
+> because PCI core is going to introduce defines with the same names.
+> 
+> Add ORION5X prefix to those defines to avoid name conflicts.
+> 
+> Note: as this is part of series that replaces the code in question
+> anyway, only bare minimum renaming is done and other similarly named
+> macros are not touched.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-> Please avoid top and remember to trim unnecessary context when replying
-> to the mailing lists.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-This was supposed to say: Please avoid top-posting and ...
-
-See also:
-
-	https://people.kernel.org/tglx/notes-about-netiquette
-	http://daringfireball.net/2007/07/on_top
-
-Johan
+    Andrew
 
