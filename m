@@ -1,51 +1,47 @@
-Return-Path: <linux-kernel+bounces-161736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E19D18B5066
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:58:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDB18B506A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:59:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19ADD1C21C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:58:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0011C21C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88F5D515;
-	Mon, 29 Apr 2024 04:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AF4D52A;
+	Mon, 29 Apr 2024 04:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="l1X1KYAj"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4o2wgoK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7708C147;
-	Mon, 29 Apr 2024 04:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FAB08BE2;
+	Mon, 29 Apr 2024 04:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714366687; cv=none; b=skDkVBjyrn1MhcxrIdMm7a6axGx7s82kaERN9yHVcnOOm665N9BLAqwEuo2Qn5EfsX6fiWaOtexrPmF0YB36kfz9F3hPxTzQphb93NwWh25Cd+hOmkfTo7HNeRAXpUvMtOTeq5w+KrUw3YkrTEm9+qxhgUxTWvNNsvBoe0RJdVw=
+	t=1714366766; cv=none; b=dXLhhhpixXpMzhgm4/emGGz+su2JNIlsI90It6hPjYJj/ugoIKQvBVOc5XPkzsg8DAmwxqSVG6PEO5gwmgvpJYCQ2V2lno0MCpRa91FFtB+jTNRYD9xDI3mCyi18fBg+D5RgEFmp79kwNxzJICxkzxMKmlp6pyGFmZ2SydvAGpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714366687; c=relaxed/simple;
-	bh=qwcuk2Zn9wJiQ5C9erBrZYZVUIhDBacnXUKFMj5UQys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f4vC+tjkNLUOGzNVzsrc5dmf8yqIFdNB628OJBKG9oLg2Dz+KnHMCHKEg8jK1OGYM8p7WVGroNgICW7X4r9ftcm44OAf/zIYKXphRNWj0a7/qRmA73x5gzN9e5MPrxKDTxR58aDowVw0gj7NZcCjzVZUDMJOvP3IznpLqA5et2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=l1X1KYAj; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=aEXLd2DIoVZCU2/LTfjWm3bDpRi/ps0F+k24Tiuwso4=;
-	t=1714366684; x=1714798684; b=l1X1KYAj3nijO4T9Haji3btSbw+4RsP5Kp6alHfkWeZs0qq
-	hVeVjDHenxu5wFmMrtkXU3Zx2smquk/7pbuLBGk5XhxfMGreHl9UHrZ0EcvT4cbFprBhxXlbOxVP7
-	JYJ6UDRDHB2bkUHhVoFIfnWUEU+Hj6n0Yg8NtFvLweDgnE3IftHebMzic7xzFseDD2jPorUb6kjvP
-	KNiMmjvBLGWQtkSPGkQhnJSe3mjd5x60VqrG2JRRvcTuk5DiiwDgNBuJh2+nydDGjaHBMK0Dlmq6w
-	eGxfNCFHH9mqbCzwmiTiJLh/1sSt7rvQV82hyrf98RUzUn+lTWT2kljFy6b3EXag==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1s1J5V-0000ES-35; Mon, 29 Apr 2024 06:58:01 +0200
-Message-ID: <56bb312e-5dca-4005-a388-c039646a9fa4@leemhuis.info>
-Date: Mon, 29 Apr 2024 06:58:00 +0200
+	s=arc-20240116; t=1714366766; c=relaxed/simple;
+	bh=bwe4ZmYGeqaYYwCOQPICOcCrzDCCZ1aAfQslqrwsDxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CbCtZVJOdYokhWIvrqEMXHSUswNNJ32d+INVuBmZmtiEqHKh9SGjfs5GxGLvYmfBKwERlaFZiLQMgm+xA8z7fnegc3BhK7WhMV/nxiI2+J64T5/vORWk/qtLrIX8DmL00awhNO5oFq1dZ1jzta1uCivUpB3ZW7k8RTruoXOC3nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4o2wgoK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2189C113CD;
+	Mon, 29 Apr 2024 04:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714366765;
+	bh=bwe4ZmYGeqaYYwCOQPICOcCrzDCCZ1aAfQslqrwsDxA=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=S4o2wgoKCQS33tfxuZSg1N3VmzHvVzYKIIARSwfuR+AXF1XlirPmjvWrU1dSk4wKT
+	 QPJOpIyjDfjI80TP5XQsAOfWHpXCa3JXuzOxG3oXS+D1HeJ3DsqN8w/tc9Vxzhoori
+	 GwQodiazpMFe3rE/njN8J+3t5QjWk4Ql4sgfmSRGGAt3jGzuz9wWYsFDD0Th2/N6zS
+	 h/qvGlAG5IhxmRfoeqdfYEqhGgJgvjnViZuAnovdomwGicdZD3I/U/vVboUQkJWF3o
+	 qkkBdSdKaqbKscrlKKlpkbIYlSF9eFjfCsdGEG5SKQD/stwSJtVgv0m3vvhVpxEegm
+	 4qYIZvyv+LzaA==
+Message-ID: <bfca3ac9-38be-484c-a110-9f2fe1c07601@kernel.org>
+Date: Mon, 29 Apr 2024 06:59:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,66 +49,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-To: Vinod Koul <vkoul@kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- 'karthikeyan' <karthikeyan@linumiz.com>,
- "bumyong.lee" <bumyong.lee@samsung.com>
-References: <000001da6ecc$adb25420$0916fc60$@samsung.com>
- <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
- <000001da7140$6a0f1570$3e2d4050$@samsung.com>
- <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
- <001001da7a60$78603130$69209390$@samsung.com>
- <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
- <8734a80b-c7a9-4cc2-91c9-123b391d468c@leemhuis.info>
- <ZgUTbiL86_bg0ZkZ@matsya>
- <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
- <0b5da67a-7482-4f18-9246-9c118f182b8b@leemhuis.info>
- <Zi8mzMWubkfi9UiV@matsya>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <Zi8mzMWubkfi9UiV@matsya>
+Subject: Re: [PATCH v3 0/2] hwmon: (pmbus) Add support for Infineon XDP710
+To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Lukas Wunner <lukas@wunner.de>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20240429033833.895122-1-peteryin.openbmc@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240429033833.895122-1-peteryin.openbmc@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1714366684;5fe217de;
-X-HE-SMSGID: 1s1J5V-0000ES-35
 
-On 29.04.24 06:49, Vinod Koul wrote:
-> On 25-04-24, 12:03, Thorsten Leemhuis wrote:
->> On 28.03.24 16:06, Linux regression tracking (Thorsten Leemhuis) wrote:
->>> On 28.03.24 07:51, Vinod Koul wrote:
->>>> On 26-03-24, 14:50, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>>>
->>>>> Vinod Koul, what's your option here? We have two reports about
->>>>> regressions caused by 22a9d958581244 ("dmaengine: pl330: issue_pending
->>>>> waits until WFP state") [v6.8-rc1] now:
->>>>>
->>>>> https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
->>>>>
->>>>> https://lore.kernel.org/all/ZYhQ2-OnjDgoqjvt@wens.tw/
->>>>> [the first link points to the start of this thread]
->>>>>
->>>>> To me it sounds like this is a change that better should be reverted,
->>>>> but you are of course the better judge here.
->>>>
->>>> Sure I have reverted this,
->>>
->>> Thx!
->>
->> That revert afaics has not made it to Linus yet. Is that intentional, or
->> did it just fell through the cracks?
+On 29/04/2024 05:38, Peter Yin wrote:
+> Add support for Infineon XDP710. This is a Hot-Swap Controller.
 > 
-> Nope, it was sent to Linus last week and is now in -rc6...
+> Change log:
+> 
+> v2 -> v3
+>     - Fixed Ack quotes
+>     - rename "microOhmRsense" to "micro_ohm_rsense" 
 
-Yeah, I noticed yesterday, as I otherwise would have mentioned it to
-Linus. But it wasn't merged yet when I wrote the quoted mail. ;-)
+You got the message it was applied, didn't you?
 
-Thx again!
-
-Ciao, Thorsten
+Best regards,
+Krzysztof
 
 
