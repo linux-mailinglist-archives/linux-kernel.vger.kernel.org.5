@@ -1,163 +1,578 @@
-Return-Path: <linux-kernel+bounces-161885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D758B52AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:56:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC9A8B52B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:57:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A80CFB209D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA30D281FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD5F15E86;
-	Mon, 29 Apr 2024 07:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB14415E8B;
+	Mon, 29 Apr 2024 07:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="ZVb+L3fw"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="azjBFXk8";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="Fyhcyrgz"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B5614AA3
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C570134BF;
+	Mon, 29 Apr 2024 07:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714377369; cv=none; b=LRPAV+8GZsvZCmeDeCHBouU+GSIGtjp1bj9ab4WTL95342QptGSNXvbLxf3v3uDuqrBlTE05ZcYUu3C8XLMCC8aD57fUJ3QsAzM+fS/rVp2E+NnJiJbDgS/VObw7y5Qt9Qc+yLoWaznaRqjwfSrq+piYTbeHLpPym7HVH9uamkg=
+	t=1714377455; cv=none; b=VpkHBE++eCv4fhMzgHt2jsaaCbndL9MpyHeeRSlbqLn9vpGe5I8Mo0LsggNO8xtvUQtT9XzRj7zfR6TQu/cGPNoMbVPCHWLyTWiaNuhs7SLnrZKv2iCZIk69D0N3l55CJbtyLsy13BJ3vbAQSGPPzy+MoF4aKaUOOrbYrzxx0Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714377369; c=relaxed/simple;
-	bh=eWilt8G5gLl7+AXu+4/dX6hli8GN8Nanfu09syNcIdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XxLNg3xq2u5QJtSvcJbvIAzKbperFjPFvLH/MnOWgqqp0JScAwhfD966IutCbJoej7lhqoVZzKK1MFBSToP7+rrzpYEkd1o7GwOxCcRWIaM2oCEff+jn7T+ANIR3B06NOY7878tQElxJuYHSJ/3JFiu9KB3qJ/TKQt6xrm9gQ7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=ZVb+L3fw; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2F26160005;
-	Mon, 29 Apr 2024 07:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
-	t=1714377358;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qRFrm6wJpTdJo02mNwFpZgTYCwsjhC4CDet4zevy5n8=;
-	b=ZVb+L3fwl4phMyrApv6CGFbaRYimX1adE0s/u893Huzsi1cR9O/9q8yOIyvqdp+yDwWoFv
-	abkLETToqKRrwLM1ecrEyLXs6IJDiDu/ajqjfNntI6qLAk9KHd6nE6TRZqMHHKexLQmy3g
-	Pdrfkdr8CjpBqmdzcThNs2fTAn4oCrC4eUPVyP5r9/uMGt6ObZXo4UEGElZD268RBXgSwr
-	B4v1XR7mPz6LBsGtgTrkveLfhTK5BjXYZHdWu1Otpr8egk9e2jLtpQeafik03iC+unr5N/
-	pg8fIe1yMk4DN0xjO+fOTi4lTM3rUaV0m73eQ5W5jRzwPvvjLS/SFEjwUn3+fQ==
-Message-ID: <1136cf64-c1b6-4909-b64e-0c754276024c@clip-os.org>
-Date: Mon, 29 Apr 2024 09:55:55 +0200
+	s=arc-20240116; t=1714377455; c=relaxed/simple;
+	bh=2Csj8vQ/o5Y1whqdjjnOMA73pdiy08ZXUx5FipTRmFk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kWau/GdsiV+wDQUWO/bcWq4Q1rSiion+fPawfyeDRN7ce0KG7mmoUPLhzwfjZqG3HG8nyIZpNqj32gsa+sD7oOdvmfmtd/Zkd1anmIjKwvpJHbRyRwmnQY52FK7mGzMA7FSfuMp8tsBXYbUp9xpq6VN0OzDqDXLwRt9jaGoSN2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=azjBFXk8; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=Fyhcyrgz reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1714377451; x=1745913451;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cNyy9Xymu93IargWw+Ntbl8DtdzKzOcj+rUjWJe0nlQ=;
+  b=azjBFXk8ZHtMw48Sym05889JHh7WINh/a9BL+2fzTfmoW4G8HdUmaaHg
+   vcIztRROXXqBUh4As6mN2jsU/f2ddHDhtXxeLQzf1ciOIc6i1U91/Lsb4
+   zgc22aGAmt388drXDLq2tci2e+g461nA8QxlKGHGMm63yfCsABTpx5lGO
+   S2Olr+6FpmhuD+kPiOVr4drhNQtghT/qWtMcwY2ogLSPaMQBxLNGLeB0I
+   PQEqpDbidrazoJRBNzY/bFq3+i3xToFH937FLZYBcAXorXHPOJKCJYDzp
+   E5vJImr5PO8yYcbI3OVFUMLvZnl6jVUXKZ5aHgluiAhn1gF5sJue3YNwL
+   g==;
+X-IronPort-AV: E=Sophos;i="6.07,239,1708383600"; 
+   d="scan'208";a="36654817"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 29 Apr 2024 09:57:22 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 20C7F171759;
+	Mon, 29 Apr 2024 09:57:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1714377437;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=cNyy9Xymu93IargWw+Ntbl8DtdzKzOcj+rUjWJe0nlQ=;
+	b=FyhcyrgzvLH2lHCSx6khA5nJs/WJ6VIeeagdCSezB/6khMJtodYoA+f+xSiy2KpCxzx19Z
+	SDCK2gzWgGQxoevkCZmPKtQAb0Ii5+8tBaPHEY3h6+ldsvvIjJdGUbyHOm0hkKkd9GwBQ1
+	0CIiAuQ9F4cyX6U2BRvef9jxTXBQg3Y8MD59VnG7XDg/TH8sNY1fa40Q5HbUQiWzD6h/N1
+	aG/Bar4hUXTf7RtHYiW+Zt6c+6Gh3Y+AuRm1U0G6M8H9kw0O5chBJQKtkDnOYYCttW+PJZ
+	E6xYxeVIA8Qvhbv1aGm6dwAsHs89WOWlKK7s20MptRNOdmTomykLaCyTUQXOjQ==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Subject: Re: [PATCH v3 2/3] arm64: dts: freescale: add i.MX95 basic dtsi
+Date: Mon, 29 Apr 2024 09:57:19 +0200
+Message-ID: <4938664.31r3eYUQgx@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240428-imx95-dts-v3-v3-2-765395f88b9f@nxp.com>
+References: <20240428-imx95-dts-v3-v3-0-765395f88b9f@nxp.com> <20240428-imx95-dts-v3-v3-2-765395f88b9f@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] slub: Fixes freepointer encoding for single free
-To: Xiongwei Song <sxwjean@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cl@linux.com,
- penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- 42.hyeyoo@gmail.com
-References: <Zij_fGjRS_rK-65r@archlinux>
- <CAEVVKH8Oagbih8E8YNPpNhyh75fWnBLdod+eEGQm9i8ciNv7sQ@mail.gmail.com>
- <47011bf2-4000-4fd8-9dd3-4c6b6a1c4a80@clip-os.org>
- <CAEVVKH9rwS6vR5_AjHyjS0vknyZvHabooE+c+k_5XNn2Rdac6w@mail.gmail.com>
-Content-Language: en-US
-From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-In-Reply-To: <CAEVVKH9rwS6vR5_AjHyjS0vknyZvHabooE+c+k_5XNn2Rdac6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: nicolas.bouchinet@clip-os.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Last-TLS-Session-Version: TLSv1.3
+
+Hi Peng,
+
+thanks for your patch.
+
+Am Sonntag, 28. April 2024, 14:22:20 CEST schrieb Peng Fan (OSS):
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> i.MX95 features 6 A55 Cores, ARM Mali GPU, ISP, ML acceleration NPU,
+> and Edgelock secure enclave security. This patch is to add a minimal
+> dtsi, with cpu cores, coresight, scmi, gic, uart, mu, sdhc, lpi2c added.
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx95-clock.h |  187 +++++
+>  arch/arm64/boot/dts/freescale/imx95-power.h |   55 ++
+>  arch/arm64/boot/dts/freescale/imx95.dtsi    | 1152 +++++++++++++++++++++=
+++++++
+>  3 files changed, 1394 insertions(+)
+>=20
+> [snip]
+> diff --git a/arch/arm64/boot/dts/freescale/imx95.dtsi b/arch/arm64/boot/d=
+ts/freescale/imx95.dtsi
+> new file mode 100644
+> index 000000000000..f52023ec7f0c
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx95.dtsi
+> [snip]
+> +	soc {
+> +		compatible =3D "simple-bus";
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
+> +		ranges;
+> +
+> +		aips2: bus@42000000 {
+> +			compatible =3D "fsl,aips-bus", "simple-bus";
+> +			reg =3D <0x0 0x42000000 0x0 0x800000>;
+> +			ranges =3D <0x42000000 0x0 0x42000000 0x8000000>,
+> +				 <0x28000000 0x0 0x28000000 0x10000000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			mu7: mailbox@42430000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x42430000 0x10000>;
+> +				interrupts =3D <GIC_SPI 234 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			mu8: mailbox@42730000 {
+
+Please sort all nodes by address.
+
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x42730000 0x10000>;
+> +				interrupts =3D <GIC_SPI 235 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			wdog3: watchdog@42490000 {
+> +				compatible =3D "fsl,imx93-wdt";
+> +				reg =3D <0x42490000 0x10000>;
+> +				interrupts =3D <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +				timeout-sec =3D <40>;
+> +				fsl,ext-reset-output;
+
+Isn't this board specific?
+
+> +				status =3D "disabled";
+> +			};
+> +
+> +			tpm3: pwm@424e0000 {
+> +				compatible =3D "fsl,imx7ulp-pwm";
+> +				reg =3D <0x424e0000 0x1000>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +				#pwm-cells =3D <3>;
+> +				status =3D "disabled";
+> +			};
+> [snip]
+> +		};
+> +
+> +		aips3: bus@42800000 {
+> +			compatible =3D "fsl,aips-bus", "simple-bus";
+> +			reg =3D <0 0x42800000 0 0x800000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +			ranges =3D <0x42800000 0x0 0x42800000 0x800000>;
+> +
+> +			usdhc1: mmc@42850000 {
+> +				compatible =3D "fsl,imx95-usdhc", "fsl,imx8mm-usdhc";
+> +				reg =3D <0x42850000 0x10000>;
+> +				interrupts =3D <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +					 <&scmi_clk IMX95_CLK_WAKEUPAXI>,
+> +					 <&scmi_clk IMX95_CLK_USDHC1>;
+> +				clock-names =3D "ipg", "ahb", "per";
+> +				assigned-clocks =3D <&scmi_clk IMX95_CLK_USDHC1>;
+> +				assigned-clock-parents =3D <&scmi_clk IMX95_CLK_SYSPLL1_PFD1>;
+> +				assigned-clock-rates =3D <400000000>;
+> +				bus-width =3D <8>;
+> +				fsl,tuning-start-tap =3D <1>;
+> +				fsl,tuning-step=3D <2>;
+
+Isn't this board specific? Or is there a hardware limitation?
+
+> +				status =3D "disabled";
+> +			};
+> +
+> +			usdhc2: mmc@42860000 {
+> +				compatible =3D "fsl,imx95-usdhc", "fsl,imx8mm-usdhc";
+> +				reg =3D <0x42860000 0x10000>;
+> +				interrupts =3D <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +					 <&scmi_clk IMX95_CLK_WAKEUPAXI>,
+> +					 <&scmi_clk IMX95_CLK_USDHC2>;
+> +				clock-names =3D "ipg", "ahb", "per";
+> +				assigned-clocks =3D <&scmi_clk IMX95_CLK_USDHC2>;
+> +				assigned-clock-parents =3D <&scmi_clk IMX95_CLK_SYSPLL1_PFD1>;
+> +				assigned-clock-rates =3D <200000000>;
+
+Why is usdhc2 only 200 MHz but usdhc1 400 MHz?
+
+> +				bus-width =3D <4>;
+> +				fsl,tuning-start-tap =3D <1>;
+> +				fsl,tuning-step=3D <2>;
+
+Isn't this board specific? Or is there a hardware limitation?
+
+> +				status =3D "disabled";
+> +			};
+> +
+> +			usdhc3: mmc@428b0000 {
+> +				compatible =3D "fsl,imx95-usdhc", "fsl,imx8mm-usdhc";
+> +				reg =3D <0x428b0000 0x10000>;
+> +				interrupts =3D <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +					 <&scmi_clk IMX95_CLK_WAKEUPAXI>,
+> +					 <&scmi_clk IMX95_CLK_USDHC3>;
+> +				clock-names =3D "ipg", "ahb", "per";
+
+No need to configure IMX95_CLK_USDHC3?
+
+> +				bus-width =3D <4>;
+> +				fsl,tuning-start-tap =3D <1>;
+> +				fsl,tuning-step=3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +		};
+> +
+> +		gpio2: gpio@43810000 {
+> +			compatible =3D "fsl,imx95-gpio", "fsl,imx8ulp-gpio";
+> +			reg =3D <0x0 0x43810000 0x0 0x1000>;
+> +			gpio-controller;
+> +			#gpio-cells =3D <2>;
+> +			interrupts =3D <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells =3D <2>;
+> +			clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +				 <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +			clock-names =3D "gpio", "port";
+> +		};
+> +
+> +		gpio3: gpio@43820000 {
+> +			compatible =3D "fsl,imx95-gpio", "fsl,imx8ulp-gpio";
+> +			reg =3D <0x0 0x43820000 0x0 0x1000>;
+> +			gpio-controller;
+> +			#gpio-cells =3D <2>;
+> +			interrupts =3D <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells =3D <2>;
+> +			clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +				 <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +			clock-names =3D "gpio", "port";
+> +		};
+> +
+> +		gpio4: gpio@43840000 {
+> +			compatible =3D "fsl,imx95-gpio", "fsl,imx8ulp-gpio";
+> +			reg =3D <0x0 0x43840000 0x0 0x1000>;
+> +			gpio-controller;
+> +			#gpio-cells =3D <2>;
+> +			interrupts =3D <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells =3D <2>;
+> +			clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +				 <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +			clock-names =3D "gpio", "port";
+> +		};
+> +
+> +		gpio5: gpio@43850000 {
+> +			compatible =3D "fsl,imx95-gpio", "fsl,imx8ulp-gpio";
+> +			reg =3D <0x0 0x43850000 0x0 0x1000>;
+> +			gpio-controller;
+> +			#gpio-cells =3D <2>;
+> +			interrupts =3D <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells =3D <2>;
+> +			clocks =3D <&scmi_clk IMX95_CLK_BUSWAKEUP>,
+> +				 <&scmi_clk IMX95_CLK_BUSWAKEUP>;
+> +			clock-names =3D "gpio", "port";
+> +		};
+> +
+> +		aips1: bus@44000000 {
+> +			compatible =3D "fsl,aips-bus", "simple-bus";
+> +			reg =3D <0x0 0x44000000 0x0 0x800000>;
+> +			ranges =3D <0x44000000 0x0 0x44000000 0x800000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			mu1: mailbox@44220000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x44220000 0x10000>;
+> +				interrupts =3D <GIC_SPI 224 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSAON>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			mu2: mailbox@445b0000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x445b0000 0x1000>;
+> +				ranges;
+> +				interrupts =3D <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <1>;
+> +				#mbox-cells =3D <2>;
+> +
+> +				sram0: sram@445b1000 {
+> +					compatible =3D "mmio-sram";
+> +					reg =3D <0x445b1000 0x400>;
+> +					ranges =3D <0x0 0x445b1000 0x400>;
+> +					#address-cells =3D <1>;
+> +					#size-cells =3D <1>;
+> +
+> +					scmi_buf0: scmi-sram-section@0 {
+> +						compatible =3D "arm,scmi-shmem";
+> +						reg =3D <0x0 0x80>;
+> +					};
+> +
+> +					scmi_buf1: scmi-sram-section@80 {
+> +						compatible =3D "arm,scmi-shmem";
+> +						reg =3D <0x80 0x80>;
+> +					};
+> +				};
+
+I guess this MU depends on the system manager firmware, no?
+
+> +			};
+> +
+> +			mu3: mailbox@445d0000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x445d0000 0x10000>;
+> +				interrupts =3D <GIC_SPI 228 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSAON>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			mu4: mailbox@445f0000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x445f0000 0x10000>;
+> +				interrupts =3D <GIC_SPI 230 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSAON>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			mu6: mailbox@44630000 {
+> +				compatible =3D "fsl,imx95-mu";
+> +				reg =3D <0x44630000 0x10000>;
+> +				interrupts =3D <GIC_SPI 206 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSAON>;
+> +				#mbox-cells =3D <2>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			tpm1: pwm@44310000 {
+> +				compatible =3D "fsl,imx7ulp-pwm";
+> +				reg =3D <0x44310000 0x1000>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_BUSAON>;
+> +				#pwm-cells =3D <3>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			tpm2: pwm@44320000 {
+> +				compatible =3D "fsl,imx7ulp-pwm";
+> +				reg =3D <0x44320000 0x1000>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_TPM2>;
+> +				#pwm-cells =3D <3>;
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpi2c1: i2c@44340000 {
+> +				compatible =3D "fsl,imx95-lpi2c", "fsl,imx7ulp-lpi2c";
+> +				reg =3D <0x44340000 0x10000>;
+> +				interrupts =3D <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPI2C1>,
+> +					 <&scmi_clk IMX95_CLK_BUSAON>;
+> +				clock-names =3D "per", "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpi2c2: i2c@44350000 {
+> +				compatible =3D "fsl,imx95-lpi2c", "fsl,imx7ulp-lpi2c";
+> +				reg =3D <0x44350000 0x10000>;
+> +				interrupts =3D <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPI2C2>,
+> +					 <&scmi_clk IMX95_CLK_BUSAON>;
+> +				clock-names =3D "per", "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpspi1: spi@44360000 {
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <0>;
+> +				compatible =3D "fsl,imx95-spi", "fsl,imx7ulp-spi";
+> +				reg =3D <0x44360000 0x10000>;
+> +				interrupts =3D <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPSPI1>,
+> +					 <&scmi_clk IMX95_CLK_BUSAON>;
+> +				clock-names =3D "per", "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpspi2: spi@44370000 {
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <0>;
+> +				compatible =3D "fsl,imx95-spi", "fsl,imx7ulp-spi";
+> +				reg =3D <0x44370000 0x10000>;
+> +				interrupts =3D <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPSPI2>,
+> +					 <&scmi_clk IMX95_CLK_BUSAON>;
+> +				clock-names =3D "per", "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpuart1: serial@44380000 {
+> +				compatible =3D "fsl,imx95-lpuart", "fsl,imx8ulp-lpuart",
+> +					     "fsl,imx7ulp-lpuart";
+> +				reg =3D <0x44380000 0x1000>;
+> +				interrupts =3D <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPUART1>;
+> +				clock-names =3D "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			lpuart2: serial@44390000 {
+> +				compatible =3D "fsl,imx95-lpuart", "fsl,imx8ulp-lpuart",
+> +					     "fsl,imx7ulp-lpuart";
+> +				reg =3D <0x44390000 0x1000>;
+> +				interrupts =3D <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_LPUART2>;
+> +				clock-names =3D "ipg";
+> +				status =3D "disabled";
+> +			};
+> +
+> +			adc1: adc@44530000 {
+> +				compatible =3D "nxp,imx93-adc";
+> +				reg =3D <0x44530000 0x10000>;
+> +				interrupts =3D <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>,
+> +					     <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
+> +					     <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks =3D <&scmi_clk IMX95_CLK_ADC>;
+> +				clock-names =3D "ipg";
+> +				status =3D "disabled";
+> +			};
+
+Please sort the nodes by address.
+
+> +		};
+> +
+> +		aips4: bus@49000000 {
+> +			compatible =3D "fsl,aips-bus", "simple-bus";
+> +			reg =3D <0x0 0x49000000 0x0 0x800000>;
+> +			ranges =3D <0x49000000 0x0 0x49000000 0x800000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			smmu: iommu@490d0000 {
+> +				compatible =3D "arm,smmu-v3";
+> +				reg =3D <0x490d0000 0x100000>;
+> +				interrupts =3D <GIC_SPI 325 IRQ_TYPE_EDGE_RISING>,
+> +					     <GIC_SPI 328 IRQ_TYPE_EDGE_RISING>,
+> +					     <GIC_SPI 334 IRQ_TYPE_EDGE_RISING>,
+> +					     <GIC_SPI 326 IRQ_TYPE_EDGE_RISING>;
+> +				interrupt-names =3D "eventq", "gerror", "priq", "cmdq-sync";
+> +				#iommu-cells =3D <1>;
+> +				status =3D "disabled";
+> +			};
+> +		};
+> +
+> +		gpio1: gpio@47400000 {
+> +			compatible =3D "fsl,imx95-gpio", "fsl,imx8ulp-gpio";
+> +			reg =3D <0x0 0x47400000 0x0 0x1000>;
+> +			gpio-controller;
+> +			#gpio-cells =3D <2>;
+> +			interrupts =3D <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-controller;
+> +			#interrupt-cells =3D <2>;
+> +			clocks =3D <&scmi_clk IMX95_CLK_M33>,
+> +				 <&scmi_clk IMX95_CLK_M33>;
+> +			clock-names =3D "gpio", "port";
+> +			status =3D "disabled";
+
+I'm wondering of there should be a comment here that gpio1 usually is under
+exclusive control of SM.
+
+> +		};
+> +
+> +		elemu0: mailbox@47520000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47520000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		elemu1: mailbox@47530000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47530000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		elemu2: mailbox@47540000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47540000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		elemu3: mailbox@47550000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47550000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +		};
+> +
+> +		elemu4: mailbox@47560000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47560000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		elemu5: mailbox@47570000 {
+> +			compatible =3D "fsl,imx95-mu-ele";
+> +			reg =3D <0x0 0x47570000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +			status =3D "disabled";
+> +		};
+> +
+> +		v2x_mu: mailbox@47350000 {
+> +			compatible =3D "fsl,imx95-mu-v2x";
+> +			reg =3D <0x0 0x47350000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +		};
+> +
+> +		v2x_mu6: mailbox@47320000 {
+> +			compatible =3D "fsl,imx95-mu-v2x";
+> +			reg =3D <0x0 0x47320000 0x0 0x10000>;
+> +			interrupts =3D <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>;
+> +			#mbox-cells =3D <2>;
+> +		};
+
+Please sort nodes by address.
+
+Best regards,
+Alexander
+
+> +	};
+> +};
+>=20
+>=20
 
 
-On 4/26/24 15:14, Xiongwei Song wrote:
-> On Fri, Apr 26, 2024 at 8:18 PM Nicolas Bouchinet
-> <nicolas.bouchinet@clip-os.org> wrote:
->> On 4/26/24 11:20, Xiongwei Song wrote:
->>> On Wed, Apr 24, 2024 at 8:48 PM Nicolas Bouchinet
->>> <nicolas.bouchinet@clip-os.org> wrote:
->>>> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
->>>>
->>>> Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
->>>> separately") splits single and bulk object freeing in two functions
->>>> slab_free() and slab_free_bulk() which leads slab_free() to call
->>>> slab_free_hook() directly instead of slab_free_freelist_hook().
->>>>
->>>> If `init_on_free` is set, slab_free_hook() zeroes the object.
->>>> Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
->>>> set, the do_slab_free() slowpath executes freelist consistency
->>>> checks and try to decode a zeroed freepointer which leads to a
->>>> "Freepointer corrupt" detection in check_object().
->>>>
->>>> Object's freepointer thus needs to be properly set using
->>>> set_freepointer() after init_on_free.
->>>>
->>>> To reproduce, set `slub_debug=FU init_on_free=1 log_level=7` on the
->>>> command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=y`.
->>>>
->>>> dmesg sample log:
->>>> [   10.708715] =============================================================================
->>>> [   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Freepointer corrupt
->>>> [   10.712695] -----------------------------------------------------------------------------
->>>> [   10.712695]
->>>> [   10.712695] Slab 0xffffd8bdc400d580 objects=32 used=4 fp=0xffff9d9a80356f80 flags=0x200000000000a00(workingset|slab|node=0|zone=2)
->>>> [   10.716698] Object 0xffff9d9a80356600 @offset=1536 fp=0x7ee4f480ce0ecd7c
->>> If init_on_free is set,  slab_free_hook() zeros the object first, then
->>> do_slab_free() calls
->>> set_freepointer() to set the fp value, so there are 8 bytes non-zero
->>> at the moment?
->>> Hence, the issue is not related to init_on_free?
->>>
->>> The fp=0x7ee4f480ce0ecd7c here is beyond kernel memory space, is the issue from
->>> CONFIG_SLAB_FREELIST_HARDENED enabled?
->> My understanding of the bug is that slab_free_hook() indeed zeroes the
->> object and its metadata first, then calls do_slab_free() and directly
->> calls __slab_free(), head an tail parameters being set to the object.
->>
->> If `slub_debug=F` (SLAB_CONSISTENCY_CHECKS) is set, the following call
->> path can be executed :
->>
->> free_to_partial_list() ->
->>
->> free_debug_processing() ->
->>
->> free_consistency_checks() ->
->>
->> check_object() ->
->>
->> check_valid_pointer(get_freepointer())
-> I understand the call path. I meant here the freepointer is not ZERO
-> but an illegal
-> value( fp=0x7ee4f480ce0ecd7c),
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
 
-Yes this is the reason of this patch. The freepointer is an illegal 
-value because the memory range where it sits has been overridden by 
-zeroes, set_freepointer() is never called and thus the freepointer is 
-never properly set.
-
-
-  The illegal value is obtained after zeroes has been decoded by 
-get_freepointer()->freelist_ptr_decode().
-
-
->   then check_valid_pointer return 1 with
-> it's last line
-> and then check_object() printed out the error message. I'm not sure if I
-> misunderstood you.
-
-
-check_valid_pointer() returns 0 since object < base, the object being 
-the decoded fp (0x7ee4f480ce0ecd7c < 0xffff.* base addr), hence 
-check_object() returns 0, not 1.
-
-This is why the "Object at 0x%p not freed" slab_fix() is called in 
-free_debug_processing().
-
-
->
-> Thank,
-> Xiongwei
->
 
