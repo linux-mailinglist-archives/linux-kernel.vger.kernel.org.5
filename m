@@ -1,106 +1,176 @@
-Return-Path: <linux-kernel+bounces-162747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E63C18B6004
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:26:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56DC08B6006
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:29:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23F111C21DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:26:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C177A1F218F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124CB86658;
-	Mon, 29 Apr 2024 17:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54AE126F08;
+	Mon, 29 Apr 2024 17:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="Octz1rqy"
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U5Bi/Urb"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41A886634;
-	Mon, 29 Apr 2024 17:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EB98595F;
+	Mon, 29 Apr 2024 17:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411597; cv=none; b=AOEpu64U8nfSWg6xgbQbwiYAHKBFyg7M2Jm0YxKTLHTp+ULLnQ4z2v1Y+Kiwony0hmCsCjHYHFyo9ckCV912ZoDLbMVy+f1brC8UsPhp6Ij2G7c3xZgW6SVfANZ1RQvwxTSQBtiW5Z4RiOHDCAQYl/UjioWmSdk2z7ro03VF68Y=
+	t=1714411737; cv=none; b=QnimhtaSlGwBuA+eE0wR8XhgLCztFIIlTqCxIQ4CdBm8Xn7oYBCCAY+3DjqUIXXeMd6nw/MuMte8HrBuPipltNPzYfmosYs5cYUbvLovIbPiX2UJmq2TAVDXIcAqTFjy7vZ/nllFi0x4J/R6S+qcZC0eWlBXNjSfekxYBQCdfb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411597; c=relaxed/simple;
-	bh=w07M/vaw50sNjlO6CMuybn5nRpOkqiRmdT3SgCEP3Jo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AO+6u4vXnfV2Lths1bHfIyVYaNP28BDdCmjSinkRHPwO/r4cvMbnXAfPwzqWq5vPSYbfH/FR87pptK0LRLsw8rQXwcO5rrXTOHAOKKRcstkF2eHFLabYBxcpKC2afC3CkbydY1tb3UpkWGluIhZHabv1Xn/BgwVzrN7mbB8O6XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=Octz1rqy; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=r4nv9lqGpL5EGgvBQaVdji0KjEOJdAny/DoV/cKu4uk=; t=1714411593; x=1715016393; 
-	b=Octz1rqyfZo7K6W/ymQfTxjwICJOwp/HULD0VUNVqB9WB6BUrELf9S2I9m9oAi5MYU1Wpbah3XR
-	6z/SYETmHwgqvGl8IltZUR5yV7Jmj9gA0qtPNNC8KI0pZEZn0BRvg1C/IaTrYE617B1P3TSOxhS3A
-	tlqgvLzd4Hh5KGQtACi0w/BJIEtDY1JNwr4ArXudopddIKyIz6Mq9lPdp6OpxPA09pjgdb3O+YVW4
-	29ifsy3t4ZUMrx+ncUbp1HQA1375JW5Ox9bqADyiXdJfbawFAnIeQ9KJWJyBAHc80A5QRBer61+l9
-	Px+ovkS3Meku+iBp5IgU/8tlhPZRCzUdzxow==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1s1Ulp-00000002bEb-2d8Z; Mon, 29 Apr 2024 19:26:29 +0200
-Received: from dynamic-077-191-138-057.77.191.pool.telefonica.de ([77.191.138.57] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1s1Ulp-00000003Dr9-1kVo; Mon, 29 Apr 2024 19:26:29 +0200
-Message-ID: <9b3f9acd208842bb3c419b7f9bb40e1fe98f0c40.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2] sh: Call paging_init() earlier in the init sequence
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>, 
-	ysato@users.sourceforge.jp, dalias@libc.org
-Cc: akpm@linux-foundation.org, linux-sh@vger.kernel.org, 
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, kernel@quicinc.com, Rob
- Herring <robh@kernel.org>
-Date: Mon, 29 Apr 2024 19:26:28 +0200
-In-Reply-To: <b7296e60-1911-4302-b472-b0ae11cd3d87@quicinc.com>
-References: <20240423233150.74302-1-quic_obabatun@quicinc.com>
-	 <6ba5b226dfcbae3d9c789bb6943089621b315d65.camel@physik.fu-berlin.de>
-	 <b7296e60-1911-4302-b472-b0ae11cd3d87@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1714411737; c=relaxed/simple;
+	bh=V/EdWqjSL66K2W+Rljv5d3dHA1Y71VTttKSIAVGvPVw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CSsLndQejD2nTKttp+Dq0hgS2sToNwCBWeisAls9atrh/FxAEVrEmilgtqZH6O9MTjiWL+2zw9B868dsFby+F7GqD2rkevA1sPabvooymKys6HA/egEGbNY++VuHRlRIaOXPvryL7StYdEuSSBNGu6il8JJNi9xNu2df/+Zbwiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U5Bi/Urb; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 13BCE20005;
+	Mon, 29 Apr 2024 17:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714411732;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D3NitkVDANPDUYTKXLeCe7dOJF6tcodDJ3rgCbuQyDo=;
+	b=U5Bi/UrbUpDiDFR83uoGZnDosNkfFT1p7MFxseTl4LwmMXU3UhER9hr739l0a7IxRvA3bU
+	Bb2dXrQry8bnnFfFRYn0mlyJVD7SvDYEr2xdTvLqQNhaPg67S/uRdv950nBxvk9F3uItp6
+	bDog9dJmJO2J/uXFV0X6yqrU+swBIuOU9KpUnOXmF0lBgtgbUH8NpmrFyZBbIIbeVsH1oO
+	FrfLPaG4z9nsXoNiqvkG9WhZGq2YX6BJVGxsowGpN/0BC6j18XscvZxQpntXVoVg7ouX7W
+	crA1MouDEsi3e2B5Q5Vd/65riGIwdTQi+3zT4oh+7Sb9gUfypgvJf/+KP84tBA==
+Date: Mon, 29 Apr 2024 19:28:48 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Kyle Swenson
+ <kyle.swenson@est.tech>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: PoE complex usage of regulator API
+Message-ID: <20240429192848.13c576b7@kmaincent-XPS-13-7390>
+In-Reply-To: <Zi--4ko_vAtFSxyn@finisterre.sirena.org.uk>
+References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+	<Zi--4ko_vAtFSxyn@finisterre.sirena.org.uk>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Hi Oreoluwa,
+On Tue, 30 Apr 2024 00:38:10 +0900
+Mark Brown <broonie@kernel.org> wrote:
 
-On Mon, 2024-04-29 at 09:28 -0700, Oreoluwa Babatunde wrote:
-> Here are links to the corresponding changes on Loongarch and Openrisc.
+Hello all, thank for your replies!
+That gives me more hint for the development.
+
+> On Fri, Apr 26, 2024 at 12:42:53PM +0200, Kory Maincent wrote:
 >=20
-> - Loongarch:
-> https://lore.kernel.org/all/20240218151403.2206980-1-chenhuacai@loongson.=
-cn/
+> > Let's begin simple, in PSE world we are more talking about power.
+> > Would it be ok to add a regulator_get/set_power_limit() and
+> > regulator_get_power() callback to regulator API. Would regulator API ha=
+ve
+> > interest to such callbacks? =20
 >=20
-> - Openrisc:
-> https://lore.kernel.org/all/1707524971-146908-3-git-send-email-quic_obaba=
-tun@quicinc.com/
+> Why would these be different to the existing support for doing current
+> limiting?  If the voltage for the supply is known then the power is a
+> simple function of the current and the voltage.  I suppose you could try
+> to do a convenience functions for a fixed voltage, but there'd be issues
+> there if the voltage isn't configured to an exact voltage and might
+> vary.
 
-Great, thanks a lot! I will apply all reviewed patches to my sh-linux tree =
-tomorrow.
+That's right I was focusing on power where I could use already implemented
+voltage and current callbacks. Would you be interested to a new get_current=
+()
+callback to know the current and allows regulator to deduce the consumed po=
+wer
+or should it be specific to PSE subsystem.
 
-Thanks,
-Adrian
+> > Port priority, more complex subject:
+> > Indeed a PSE controller managing several ports may be able to turn off =
+ports
+> > with low priority if the total power consumption exceed a certain level.
+> > - There are controller like PD692x0 that can managed this on the hardwa=
+re
+> > side. In that case we would have a regulator_get/set_power_limit()
+> > callbacks from the regulator parent (the PSE contoller) and a
+> > regulator_get/set_priory() callbacks for the regulator children (PSE
+> > ports). =20
+>=20
+> All this priority stuff feels very PSE specific but possibly doable.
+> You'd have to define the domains in which priorities apply as well as
+> the priorities themselves.
 
+If you think that it is really specific to PSE no need to add it in the
+regulator API, it will also remove me some brain knots.
+
+> > - There are controller like TPS23881 or LTC4266 that can set two priori=
+ties
+> >   levels on their ports and a level change in one of their input pin can
+> >   shutdown all the low priority ports. In that case the same callbacks
+> > could be used. regulator_get/set_power_limit() from the parent will be =
+only
+> > at software level. regulator_get/set_priority() will set the priorities=
+ of
+> > the ports on hardware level. A polling function have to read frequently=
+ the
+> > total power used and compare it to the power budget, then it has to call
+> > something like regulator_shutdown_consumer() in case of power overflow.=
+   =20
+>=20
+> I would expect the regulators can generate notifications when they go
+> out of regulation?  Having to poll feels very crude for something with
+> configurable power limits.
+
+Yep that's true. Indeed using notification would be way better!
+
+> > https://lore.kernel.org/netdev/20240417-feature_poe-v9-10-242293fd1900@=
+bootlin.com/
+> > But in case the port is enabled from Linux then shutdown from the PSE
+> > controller for any reason, I have to run disable and enable command to
+> > enable it again. Not really efficient :/ =20
+>=20
+> If that is a hot path something has gone very wrong with the system,
+> especially if it's such a hot path that the cost of a disable is making
+> a difference. =20
+
+That's not in the hotpath.
+
+> Note that hardware may have multiple error handling
+> strategies, some hardware will turn off outputs when there's a problem
+> while other implementations will try to provide as good an output as
+> they can.  Sometimes the strategy will depend on the specific error
+> condition, and there may be timeouts involved.  This all makes it very
+> difficult to assume any particular state after an error has occurred, or
+> that the state configured in the control registers reflects the physical
+> state of the hardware so you probably want some explicit handling for
+> any new state you're looking for.
+
+Alright, didn't thought of these different management of an error condition.
+We might also see similar things in PSE, so I will keep it like that.
+
+> > I am thinking of disabling the usage of counters in case of a
+> > regulator_get_exclusive(). What do you think? Could it break other usag=
+e? =20
+>=20
+> Yes, that seems likely to break other users and in general a sharp edge
+> for people working with the API.
+
+Okay,
+
+Regards,
 --=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
