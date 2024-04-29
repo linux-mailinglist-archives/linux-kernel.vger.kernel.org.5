@@ -1,197 +1,135 @@
-Return-Path: <linux-kernel+bounces-161907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6228B5320
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:28:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B328B5326
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:30:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32BE82822F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:28:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3CDF1C2150E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF4D175AD;
-	Mon, 29 Apr 2024 08:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bwuLoxnx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CCF1759E;
+	Mon, 29 Apr 2024 08:29:55 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CDF15E8B;
-	Mon, 29 Apr 2024 08:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28638EAE5;
+	Mon, 29 Apr 2024 08:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714379315; cv=none; b=jHv5mJHkqiMprVCreZcsN/0vDO5ssadi0GBZYTjPjLFxleEKG2aliffYa0AiM+J1PvrW/kdaX2/dj/C9vCTg2RgOUf1aFscYTTbLKtXCwuKeu8yQEkIbVVR9Fg0Mfby+v8jMY+TqnqIsK3RgskSRulH/Gw6P0YTzKuO+qNHZ0oc=
+	t=1714379395; cv=none; b=TtA08El8DXmZGdV0ycgGTAYpnp3NnuZVRvAJKvoSRsIcqBq0p7e4vpFfW/ffjH5lnkUQ5b2twQLCzcGTq5Ofkp7Q7XAnQfYhxdOxbfny4V+ryFKUt5fk7PQBaOcvmTZNT0kWyYxQqGPmPa6vHWptDGvHMgyR5tgdnwDa3IFabBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714379315; c=relaxed/simple;
-	bh=z2vGEtEwQgWYrDDKbib2/oFVDFE3vbryndLEEjqI+h4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X9jFs3B6AN1o9epEvMgfQyzsQlSGhTeEs1IgJFJw29tDTlF0bTlnQ1kCpGmH0QgbHVxIcBQCvtwvZNTl1Q+MaTg1tMPYOIc0R2z8PPxtfqgNA8Zlj5OrPTT6nsExmiUtwYEsRtZcAGqR9r1cI85W434QZsU0bkvR5/CLGU5pVc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bwuLoxnx; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714379313; x=1745915313;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=z2vGEtEwQgWYrDDKbib2/oFVDFE3vbryndLEEjqI+h4=;
-  b=bwuLoxnxAnAlxIlL1JfwrgBlhOdTSTKkbgT9jPMO9/xH67EvAzROrMtv
-   zMoDtVsdOL5Jvc+9gmD0Hw/irhxeaCKWCoS2Gc4m4Ol+eUmSzZPTI3oTc
-   +NmhHiuFH755gkGz6EnZynuUYQ0RvK25hB9xJu0dPUbPYPy6pP8u2mVPx
-   cd+Wj4EgJLxRk/+vYdr7nzlv/wW4XKRRVxFwBXXFPgg6YcWYga0xGs/4k
-   NVxwulwRaFOpB2NMCwsFEEnTOhapBroYscAoicuaBkrMupOjbu6eJQg1u
-   BufHorP7+VC0X0qO/VVW/M9N+EzF9vk/AxXhmubZj4lMugejnfPXsHfMP
-   w==;
-X-CSE-ConnectionGUID: Te/HxkeLS3GFaXWM/stO3g==
-X-CSE-MsgGUID: f2fIcHTOQ0qXoc2PFQnNrQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9891912"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="9891912"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:28:33 -0700
-X-CSE-ConnectionGUID: 9ZPXB2RdRpGWbqzfc7mywA==
-X-CSE-MsgGUID: eLtAfOSETzuGh3LyL8mFPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="30862918"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orviesa004.jf.intel.com with SMTP; 29 Apr 2024 01:28:30 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 29 Apr 2024 11:28:28 +0300
-Date: Mon, 29 Apr 2024 11:28:28 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Badhri Jagan Sridharan <badhri@google.com>
-Cc: gregkh@linuxfoundation.org, linux@roeck-us.net, kyletso@google.com,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rdbabiera@google.com, amitsd@google.com, stable@vger.kernel.org,
-	frank.wang@rock-chips.com, broonie@kernel.org,
-	dmitry.baryshkov@linaro.org
-Subject: Re: [PATCH v3] usb: typec: tcpm: Check for port partner validity
- before consuming it
-Message-ID: <Zi9aLJS2vlHxwaFP@kuha.fi.intel.com>
-References: <20240427202812.3435268-1-badhri@google.com>
+	s=arc-20240116; t=1714379395; c=relaxed/simple;
+	bh=UjNF+WJ8bFa3h858ykeWlkf9ppOKXDAJYJklbdVa5Eg=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fqgOKxMl7tOY/oAwgKqUSfcoHtAI8PojFWiNvl6DHbLw2ZgMZw93ssezDKhOMQT8zQpkJOvAkaSgKf+5g0yCSylQ+9VAGgGOJ3V5CU1sj8I2wsENB5MqZmlqyzZwrXxf0MDO4oZToP7bVXZ2obmTi5gWTYDNkUR4rlHeIF6hQ54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VSc1z0Y7Kz6K9DL;
+	Mon, 29 Apr 2024 16:29:27 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 519031406AE;
+	Mon, 29 Apr 2024 16:29:43 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 29 Apr
+ 2024 09:29:42 +0100
+Date: Mon, 29 Apr 2024 09:29:42 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC: Linux ACPI <linux-acpi@vger.kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>
+Subject: Re: [PATCH v1] ACPI: scan: Avoid enumerating devices with clearly
+ invalid _STA values
+Message-ID: <20240429092942.00004c96@Huawei.com>
+In-Reply-To: <2741433.mvXUDI8C0e@kreacher>
+References: <2741433.mvXUDI8C0e@kreacher>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240427202812.3435268-1-badhri@google.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sat, Apr 27, 2024 at 08:28:12PM +0000, Badhri Jagan Sridharan wrote:
-> typec_register_partner() does not guarantee partner registration
-> to always succeed. In the event of failure, port->partner is set
-> to the error value or NULL. Given that port->partner validity is
-> not checked, this results in the following crash:
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address xx
->  pc : run_state_machine+0x1bc8/0x1c08
->  lr : run_state_machine+0x1b90/0x1c08
-> ..
->  Call trace:
->    run_state_machine+0x1bc8/0x1c08
->    tcpm_state_machine_work+0x94/0xe4
->    kthread_worker_fn+0x118/0x328
->    kthread+0x1d0/0x23c
->    ret_from_fork+0x10/0x20
-> 
-> To prevent the crash, check for port->partner validity before
-> derefencing it in all the call sites.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: c97cd0b4b54e ("usb: typec: tcpm: set initial svdm version based on pd revision")
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+On Fri, 26 Apr 2024 18:56:21 +0200
+"Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> The return value of _STA with the "present" bit unset and the "enabled"
+> bit set is clearly invalid as per the ACPI specification, Section 6.3.7
+> "_STA (Device Status)", so make the ACPI device enumeration code
+> disregard devices with such _STA return values.
+> 
+> Also, because this implies that status.enabled will only be set if
+> status.present is set too, acpi_device_is_enabled() can be modified
+> to simply return the value of the former.
+> 
+> Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device-status
+> Link: https://lore.kernel.org/linux-acpi/88179311a503493099028c12ca37d430@huawei.com/
+> Suggested-by: Salil Mehta <salil.mehta@huawei.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Seems a sensible tidying up.  Hopefully nothing was relying on
+this looser behavior.  One trivial thing inline.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
+>  drivers/acpi/bus.c  |   11 +++++++++++
+>  drivers/acpi/scan.c |    2 +-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index ab6ed6111ed0..e1c6dffe5f8b 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1580,7 +1580,8 @@ static void svdm_consume_identity(struct tcpm_port *port, const u32 *p, int cnt)
->  	port->partner_ident.cert_stat = p[VDO_INDEX_CSTAT];
->  	port->partner_ident.product = product;
+> Index: linux-pm/drivers/acpi/bus.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/bus.c
+> +++ linux-pm/drivers/acpi/bus.c
+> @@ -112,6 +112,17 @@ int acpi_bus_get_status(struct acpi_devi
+>  	if (ACPI_FAILURE(status))
+>  		return -ENODEV;
 >  
-> -	typec_partner_set_identity(port->partner);
-> +	if (port->partner)
-> +		typec_partner_set_identity(port->partner);
->  
->  	tcpm_log(port, "Identity: %04x:%04x.%04x",
->  		 PD_IDH_VID(vdo),
-> @@ -1742,6 +1743,9 @@ static void tcpm_register_partner_altmodes(struct tcpm_port *port)
->  	struct typec_altmode *altmode;
->  	int i;
->  
-> +	if (!port->partner)
-> +		return;
-> +
->  	for (i = 0; i < modep->altmodes; i++) {
->  		altmode = typec_partner_register_altmode(port->partner,
->  						&modep->altmode_desc[i]);
-> @@ -4231,7 +4235,10 @@ static int tcpm_init_vconn(struct tcpm_port *port)
->  
->  static void tcpm_typec_connect(struct tcpm_port *port)
->  {
-> +	struct typec_partner *partner;
-> +
->  	if (!port->connected) {
-> +		port->connected = true;
->  		/* Make sure we don't report stale identity information */
->  		memset(&port->partner_ident, 0, sizeof(port->partner_ident));
->  		port->partner_desc.usb_pd = port->pd_capable;
-> @@ -4241,9 +4248,13 @@ static void tcpm_typec_connect(struct tcpm_port *port)
->  			port->partner_desc.accessory = TYPEC_ACCESSORY_AUDIO;
->  		else
->  			port->partner_desc.accessory = TYPEC_ACCESSORY_NONE;
-> -		port->partner = typec_register_partner(port->typec_port,
-> -						       &port->partner_desc);
-> -		port->connected = true;
-> +		partner = typec_register_partner(port->typec_port, &port->partner_desc);
-> +		if (IS_ERR(partner)) {
-> +			dev_err(port->dev, "Failed to register partner (%ld)\n", PTR_ERR(partner));
-> +			return;
-> +		}
-> +
-> +		port->partner = partner;
->  		typec_partner_set_usb_power_delivery(port->partner, port->partner_pd);
->  	}
->  }
-> @@ -4323,9 +4334,11 @@ static void tcpm_typec_disconnect(struct tcpm_port *port)
->  	port->plug_prime = NULL;
->  	port->cable = NULL;
->  	if (port->connected) {
-> -		typec_partner_set_usb_power_delivery(port->partner, NULL);
-> -		typec_unregister_partner(port->partner);
-> -		port->partner = NULL;
-> +		if (port->partner) {
-> +			typec_partner_set_usb_power_delivery(port->partner, NULL);
-> +			typec_unregister_partner(port->partner);
-> +			port->partner = NULL;
-> +		}
->  		port->connected = false;
->  	}
->  }
-> @@ -4549,6 +4562,9 @@ static enum typec_cc_status tcpm_pwr_opmode_to_rp(enum typec_pwr_opmode opmode)
->  
->  static void tcpm_set_initial_svdm_version(struct tcpm_port *port)
->  {
-> +	if (!port->partner)
-> +		return;
-> +
->  	switch (port->negotiated_rev) {
->  	case PD_REV30:
->  		break;
-> 
-> base-commit: 3f12222a4bebeb13ce06ddecc1610ad32fa835dd
-> -- 
-> 2.44.0.769.g3c40516874-goog
+> +	if (!device->status.present && device->status.enabled) {
+> +		pr_info(FW_BUG "Device [%s] status [%08x]: not present and enabled\n",
+> +			device->pnp.bus_id, (u32)sta);
+> +		device->status.enabled = 0;
+> +		/*
+> +		 * The status is clearly invalid, so clear the enabled bit as
+> +		 * well to avoid attempting to use the device.
+> +		 */
 
--- 
-heikki
+Comment seems to be in a slightly odd place.  Perhaps one line earlier makes
+more sense?  Or was the intent to mention functional here?
+
+> +		device->status.functional = 0;
+> +	}
+> +
+>  	acpi_set_device_status(device, sta);
+>  
+>  	if (device->status.functional && !device->status.present) {
+> Index: linux-pm/drivers/acpi/scan.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/scan.c
+> +++ linux-pm/drivers/acpi/scan.c
+> @@ -1962,7 +1962,7 @@ bool acpi_device_is_present(const struct
+>  
+>  bool acpi_device_is_enabled(const struct acpi_device *adev)
+>  {
+> -	return adev->status.present && adev->status.enabled;
+> +	return adev->status.enabled;
+>  }
+>  
+>  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+> 
+> 
+> 
+
 
