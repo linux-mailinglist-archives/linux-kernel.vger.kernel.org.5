@@ -1,179 +1,165 @@
-Return-Path: <linux-kernel+bounces-162438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A5D8B5B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:27:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 167A78B5B36
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:27:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CB11B248F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:27:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C18A42819D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AED57BAE3;
-	Mon, 29 Apr 2024 14:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E837C08C;
+	Mon, 29 Apr 2024 14:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ggf1VbJd"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TNvfnSyR"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24417441F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E0277F11
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714400816; cv=none; b=dt/jJh5MObuf+AfAo9dw9nTYkoK6ravV8OMFsXyhXDBU2PpDzYQGzABrUFvUGHe84PWpkuvcM77LTC2IG+KrbDbmD+/NSnYsSg+VcGkp10OzWaE4iwjhB2gBNubxwuU6QmUKvsOZfMN4mOk917gnqOqk9gSOdQs5d8Wmks99Ibs=
+	t=1714400846; cv=none; b=vD4jyKA0K9wqE8vplnBmLwofe83Eg18K2cKxbyDL/4UhxJBxcrnLFLMr5g3H4zmKzPcDXfaMMX2vtKzQjkdQcDcBDNSCiolf+WawuxsmSFzsGOKdmF0/0bSiu/xdGo1iDeO3iF8fjY6e3A2WlCCjA1+VA7vL5NhtQvjAwksZ6eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714400816; c=relaxed/simple;
-	bh=HTekq4v1g9PJYx89IdggT2vGh+svrZvAdMEVJmZM0R8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mzcptp0cgUKbfStk1c/laIbt44PUvDY2Q+QshXjj1hNTeLsYlOFo7zxEIArz4KKFrI+rpzkQtG4nalIj2uK2wPp6evfjrQ5Rl7BJqRpo4CiJbhWkJ69DtWEfhWImG/2OA8rnQf0XV9uRQ9oGQy9OaWYAFatOORpF0bge86TjQJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ggf1VbJd; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-43a5715f71eso22974871cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:26:54 -0700 (PDT)
+	s=arc-20240116; t=1714400846; c=relaxed/simple;
+	bh=dOL5MQJEWlm+ALadfwEWLIsuMmXKHK7rNTd6CxqSNA0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cOdGNNR5ia47c1e5JDXLXckDQORTyGxbCAbum0PFTOtiT4UCHYumLiLYb/YXSaK4E+tzTRg0SMKRou6CCXJcxCOf0LQr5ZExL5xAdF+ymf1q+t7ips7rvgivX8GCX14vsUtdTj1ZlngxXaE5qQ/O07OOKdhwbPDNVz73GL9q3Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TNvfnSyR; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-601fef07eaeso5218470a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714400813; x=1715005613; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NqDQQoT9vxUaIMkwbyFExGHs1F5iC7Nw1z6NMheJx1s=;
-        b=ggf1VbJdq5S/vNO5w2QDy4SWyJitdi6Jcm+UBR2XxZ2tgVzw0nWSTyjapEXcc0wWKm
-         7uH9bLVBMRhQtk7sZxCPUa+5uJK57mmlSSgZ6Oi7mPSElb6QEoPAEn9vBMR6nQcmWRSa
-         W7sxJkjhPyD4KoL1ZitqYzOYGqXJjDrfVmtOE=
+        d=google.com; s=20230601; t=1714400844; x=1715005644; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3mlM0E1TrjvYHfesQNSkr38bw44gyQq8z5XmrX3EV0=;
+        b=TNvfnSyRLs2kUehKYQg9lgy0+HSgeBrQ3mGDf7ZZH65mLocaUa6qmks0FzpCpzV2Qn
+         BD9e6HPgy7fN6Rvq/0LD6EXaoM+OexYxuE/e59aOI56V3cPh9Ca8QnpVOR3sw6ABQmTD
+         zhRNNRIEGeImEQLC3EKXn8IA+NI8ZMv04IMKNeHcgY4fDFgDqANrxIp6xnrk04TONTN9
+         bTtORWXUnZv0uKm4bqxVDJHUOsHZEVOBW1jA/qI4nGfb8GxTnxdHg3NbtjHQycg7PlpX
+         27ZXstLqzB32bkQi8Dbyb9bM5UWaebeMGIIJwt/siu8JpqaKsODF4ih8CqXilsAtdBcW
+         bsmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714400813; x=1715005613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NqDQQoT9vxUaIMkwbyFExGHs1F5iC7Nw1z6NMheJx1s=;
-        b=BglqgPHGEZr8odrR3ykDe72v4wE5FaN7zxzuu4hxBEVTSKIXVFWdjfXEwKv1DE/7VB
-         sKVmgypPsVe9lmdCdVetKU9DLloowamJAjRsavP6xGp8Hyuo7aHxWoSwv6+mcEqr55AV
-         +qwZ7ancm8qxX2zPteXJZf+jhR+vzA+lZBci3emrWKsrcZq7KgsU2Ml4jV4UHVdPepAK
-         r03UKstEVtti48ZhC1I7kBseqUnNFFl8XmN3b03dfEH3gqPM+kv7is/N8OVmxNk0KuL+
-         qA7Sa4Sx7PMIpN0UUaUiOz6/DJ4NdA+vfykFgzPmfw566BixZ6wcP79/oaq9su9C2ktB
-         P0pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXvcE1qadg+qJ9X7Nto77mEOppkVisQ2ARFVu8QjBcoAO9PPuwOBDekolgOvuoHyrZM3hRc2p4weuF/tUpwn9rCmxe9tZJplpJNGjxe
-X-Gm-Message-State: AOJu0Yyykr9Jk6scQ9AHw8Fp+1gdMBA81O5jC5+SIiAhyHbWxEuXw7o2
-	CriXMRUHeByp/HBiB+uL4WCrMhNG9n6nrGxqfaSYzgU6uB4JfDOy7Ck9uqaOs6BXHSUKC24x/g4
-	=
-X-Google-Smtp-Source: AGHT+IE37flgVjYV/E0D/HhfYmogBng8JhYD59jh3Z5166MCGSWzG6o82LWlrcK8a6VnJM647AzbpA==
-X-Received: by 2002:a05:622a:6107:b0:437:ba0e:68f5 with SMTP id hg7-20020a05622a610700b00437ba0e68f5mr10568217qtb.25.1714400813652;
-        Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id kg25-20020a05622a761900b00436eacea78fsm10417169qtb.65.2024.04.29.07.26.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-436ed871225so511281cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:26:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUaNRdl3F+Syt9c3n2smEO1Wo0sJgDkCZGPdrLY+6YSZlXdLYWwuCzNmG1obxCEqB+/qre8R3kdUtK3b23n2N11HiE6AehDyUNwghUi
-X-Received: by 2002:a05:622a:14d:b0:439:a979:ccb2 with SMTP id
- v13-20020a05622a014d00b00439a979ccb2mr546226qtw.16.1714400812823; Mon, 29 Apr
- 2024 07:26:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714400844; x=1715005644;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3mlM0E1TrjvYHfesQNSkr38bw44gyQq8z5XmrX3EV0=;
+        b=KfNmfTuXXGbNlLn2z+O25X1v0hBxt9MviGS4ZtpbR5cJVKgKipbujoQcKTqbAoWHC9
+         Kjn0dOobnfx0xiKPWuW7EHKOtleGmD6alPZacmYTrb4pL7F3T74ulXZoKmOU0lwzaS5+
+         redvCd+QKzUAzX+NJCVLMUCGegvKcCF1BRInU4j7twM9esxiRIHitqv3fDyTrUeYF9yF
+         KUTpWQOrMyrdF+BRrPpbzB1xyuQ3JeGUhhAu3askkHzkpYMXwXrJtujW+iCTRQ8Tbe8U
+         IdYF2kZdU3+zkzfVgn9Dz4hsdSI50oCS4D4bJPvZd72QJW0WMeFY3WyGMIhVydWzUGun
+         zUdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGtljy4zkIl/VKjuSRbRModFa5fj+ZyNnQ1qT9hXDdt2U5KGnC4HmEzz9FsLthyTfLOTFKetSwfs2vwSNrYXx6BynXAuDHLkVJXojb
+X-Gm-Message-State: AOJu0YwTq2F4ZcJRn2QEYUeCv9LRtn1qAi6R90QkxBd8ETV1cXqeje9i
+	1CapbnUTa4YzkL85kSegacNsK1jqWVwIR+ckSxVLCDG0/yePzrtiDZSC0qE6/y/O0oZDxr/NNQp
+	mUg==
+X-Google-Smtp-Source: AGHT+IFtI1VRsJxmoBaQkkMNkidpPOTCEAStMWY3Kr4rNLpPFTYg7KKAfEudEOmt/GvfkLL4yDTV9xTdh4k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:1e5d:0:b0:5f7:651b:fed8 with SMTP id
+ p29-20020a631e5d000000b005f7651bfed8mr29463pgm.12.1714400843944; Mon, 29 Apr
+ 2024 07:27:23 -0700 (PDT)
+Date: Mon, 29 Apr 2024 07:27:22 -0700
+In-Reply-To: <20240427013210.ioz7mv3yuu2r5un6@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240426235857.3870424-1-dianders@chromium.org>
- <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid> <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org>
-In-Reply-To: <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 29 Apr 2024 07:26:41 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
-Message-ID: <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-To: neil.armstrong@linaro.org
-Cc: dri-devel@lists.freedesktop.org, Linus Walleij <linus.walleij@linaro.org>, 
-	lvzhaoxiong@huaqin.corp-partner.google.com, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Hsin-Yi Wang <hsinyi@google.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240421180122.1650812-1-michael.roth@amd.com>
+ <20240421180122.1650812-22-michael.roth@amd.com> <ZimgrDQ_j2QTM6s5@google.com>
+ <20240426173515.6pio42iqvjj2aeac@amd.com> <ZiwHFMfExfXvqDIr@google.com>
+ <20240426214633.myecxgh6ci3qshmi@amd.com> <ZixCYlKn5OYUFWEq@google.com> <20240427013210.ioz7mv3yuu2r5un6@amd.com>
+Message-ID: <Zi-t65xmCk9x78lb@google.com>
+Subject: Re: [PATCH v14 21/22] crypto: ccp: Add the SNP_{PAUSE,RESUME}_ATTESTATION
+ commands
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, Larry.Dewey@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-Hi,
+On Fri, Apr 26, 2024, Michael Roth wrote:
+> On Fri, Apr 26, 2024 at 05:10:10PM -0700, Sean Christopherson wrote:
+> > e.g. put the cert in a directory along with a lock.  Actually, IIUC, there doesn't
+> > even need to be a separate lock file.  I know very little about userspace programming,
+> > but common sense and a quick search tells me that file locks are a solved problem.
+> > 
+> > E.g. it took me ~5 minutes of Googling to come up with this, which AFAICT does
+> > exactly what you want.
+> > 
+> > touch ~/vlek.cert
+> > (
+> >   flock -e 200
+> >   echo "Locked the cert, sleeping for 10 seconds"
+> >   sleep 10
+> >   echo "Igor, it's alive!!!!!!"
+> > ) 200< vlek.cert
+> > 
+> > touch ~/vlek.cert
+> > (
+> >   flock -s 201
+> >   echo "Got me a shared lock, no updates for you!"
+> > ) 201< vlek.cert
+> > 
+> 
+> Hmm... I did completely miss this option. But I think there are still some
+> issues here. IIUC you're suggesting (for example):
+> 
+>   "Management":
+>   a) writelock vlek.cert
+>   b) perform SNP_LOAD_VLEK and update vlek.cert contents
+>   c) unlock vlek.cert
+> 
+>   "QEMU":
+>   a) readlock vlek.cert
+>   b) copy cert into guest buffer
+>   c) unlock vlek.cert
+> 
+> The issue is that after "QEMU" unlocks and return the cert to KVM we'll
+> have:
+> 
+>   "KVM"
+>   a) return from EXT_GUEST_REQ exit to userspace
+>   b) issue the attestation report to firmware
+>   c) return the attestation report and cert to the guest
+> 
+> Between a) and b), "Management" can complete another entire update, but
+> the cert that it passes back to the guest will be stale relative to the
+> key used to sign the attestation report.
 
-On Mon, Apr 29, 2024 at 2:38=E2=80=AFAM Neil Armstrong
-<neil.armstrong@linaro.org> wrote:
->
-> > +/**
-> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI DSI f=
-uncs in a row
-> > + * @dsi: Pointer to the MIPI DSI device
-> > + * @accum_err: Storage for the accumulated error over the multiple cal=
-ls. Init
-> > + *   to 0. If a function encounters an error then the error code will =
-be
-> > + *   stored here. If you call a function and this points to a non-zero
-> > + *   value then the function will be a noop. This allows calling a fun=
-ction
-> > + *   many times in a row and just checking the error at the end to see=
- if
-> > + *   any of them failed.
-> > + */
-> > +
-> > +struct mipi_dsi_multi_context {
-> > +     struct mipi_dsi_device *dsi;
-> > +     int accum_err;
-> > +};
->
-> I like the design, but having a context struct seems over-engineered whil=
-e we could pass
-> a single int over without encapsulating it with mipi_dsi_multi_context.
->
-> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_multi_context *ctx,
->                                      const void *data, size_t len);
-> vs
-> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi, int *ac=
-cum_err,
->                                      const void *data, size_t len);
->
-> is the same, and it avoids having to declare a mipi_dsi_multi_context and=
- set ctx->dsi,
-> and I'll find it much easier to migrate, just add a &ret and make sure re=
-t is initialized to 0.
+I was thinking userspace would hold the lock across SEV_CMD_SNP_GUEST_REQUEST.
 
-Yeah, I had the same reaction when Jani suggested the context style
-[1] and I actually coded it up exactly as you suggest above. I then
-changed my mind and went with the context. My motivation was that when
-I tested it I found that using the context produced smaller code.
-Specifically, from the description of this patch we see we end up
-with:
+   QEMU:
+    a) readlock vlek.cert
+    b) copy cert into guest buffer
+    c) set kvm_run->immediate_exit
+    d) invoke KVM_RUN
+    e) KVM sends SEV_CMD_SNP_GUEST_REQUEST to PSP
+    f) KVM exits to userspace with -EINTR
+    g) unlock vlek.cert
+    h) invoke KVM_RUN (resume the guest)
 
-Total: Before=3D10651, After=3D9663, chg -9.28%
+> If we need to take more time to explore other options it's not
+> absolutely necessary to have the kernel solve this now. But every userspace
+> will need to solve it in some way so it seemed like it might be nice to
+> have a simple reference implementation to start with.
 
-..when I didn't have the context and I had the accum_err then instead
-of getting ~9% smaller I believe it actually got ~0.5% bigger. This
-makes some sense as the caller has to pass 4 parameters to each call
-instead of 3.
-
-It's not a giant size difference but it was at least some motivation
-that helped push me in this direction. I'd also say that when I looked
-at the code in the end the style grew on me. It's really not too
-terrible to have one line in your functions that looks like:
-
-struct mipi_dsi_multi_context ctx =3D { .dsi =3D boe->dsi };
-
-..and if that becomes the canonical way to do it then it's really
-hard to accidentally forget to initialize the error value. With the
-other API it's _very_ easy to forget to initialize the error value and
-the compiler won't yell at you. It also makes it very obvious to the
-caller that this function is doing something a little different than
-most Linux APIs with that error return.
-
-So I guess I'd say that I ended up being pretty happy with the
-"context" even if it does feel a little over engineered and I'd argue
-to keep it that way. That being said, if you feel strongly about it
-then we can perhaps get others to chime in to see which style they
-prefer? Let me know what you think.
-
-
-[1] https://lore.kernel.org/r/8734r85tcf.fsf@intel.com
+Shoving something into the kernel is not a "reference implementation", especially
+not when it impacts the ABI of multiple subsystems.
 
