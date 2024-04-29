@@ -1,87 +1,85 @@
-Return-Path: <linux-kernel+bounces-162752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B6C8B6019
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:30:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 854A28B601C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D82D01C21A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:30:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 257211F21D1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A44127B77;
-	Mon, 29 Apr 2024 17:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652A8127E38;
+	Mon, 29 Apr 2024 17:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qU0w7UQI"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LyfmSKZr"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E591272A7
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646D2127B58
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411810; cv=none; b=k4tyz+vgOPgW+n2D8aV7uXNiUSoy9ZkI1CRUUNgCD90t+tLjtAsTWfpByjiMfKxGKMe3M91y/sgyedKqlI7WQhP1hUmbDIs0CFAubVrjUCJibayWX45QF5qFrvjKJJhQa+C2PN2iyt/OzhkdvywDPaooVYd8Y+3oFAG/Kb1geMY=
+	t=1714411812; cv=none; b=YRgZCTbqaayTPRjXO7pz+wgzaYaE636byAHG1fRWZBwEOUDdeV7FKy4y4PdvwQO41phncCbS71XxnZdkinbJnvQdOV190x6oQhR88/IpWhUccYpivhU/40kEN6C7RBS41hpTa8MxiCII+ar5qFfjB7y/eNY+sqP57JkB07EhyFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411810; c=relaxed/simple;
-	bh=NAYUwQk3+viNKWYj0Ci8K+1OFeyRtiPWNJCpAFbxutE=;
+	s=arc-20240116; t=1714411812; c=relaxed/simple;
+	bh=cRkiJUAPzdyGSuRp9yfhNiMROQ+tPMAI9gPTeFbgk3A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=q9VHgZRUzznv4XiZPh7wxDYZGZpaNaQW3ZhOPFNi5dOnpFGTzdRadpG26DHd0DGEfbw8d75KUnLqae7veBJ9A6C1KzzNgpGNDRFG7YEyD4Ia/i4/yFEemHhtMf1wCJYdnyr3iVzXC0N6fCaUwRuRwlfmBlclNBuZly4PaWkpnlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qU0w7UQI; arc=none smtp.client-ip=209.85.218.45
+	 MIME-Version:Content-Type; b=eDpPG5N7GLW2ROGEt4q2Tew/CEoWn9GMh75ebAViaS8U9ODUvml+KskNcSotZxuSOS2m3lI8csUeEDTi8+hUrLhwv7T68pgVF1t/IaS4ONd9TTSUSdMDTHRHG50WbB58mL8/WvOiZr5Z3pfMC9hSuiaOVLxivcleHubNOkEv9Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LyfmSKZr; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a58a36008ceso561893566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:30:08 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55b3d57277so574186466b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:30:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714411807; x=1715016607; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714411809; x=1715016609; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ApsAmNtF7WojJxJovU3iPiwCDNKhiq4dAAzkVUAsKYM=;
-        b=qU0w7UQIvkuDG6eBbYmcmPjuRY7wXyXLMbO0RsF9XzsK17Bb4EqTCV5bTVLfXWnX6s
-         sPnNlZuKHP9rn3eF5FU0kiI7j5FDlvI8MnDllgl6SwqaVbRdwSLlxBLplOp0QBmK6wNN
-         jTfEm/afsMabJP1NG14sfjFCu6b6v8r0m2gYBa29WyvjbFKmMq9+GUN+jECFTH2C8muR
-         6gUr5fSgXdIIupNI/iXpThcYOJ5zUa2GMp4AWiJIQuXUA1/9j5gJlm+d+KAT4Odlyq4H
-         4czTYlsWGDZ69TaBse6NkTuJGh0iw68kPGWvMG1K0xd9bX9VQWPIByjg92u2R5oDa/xv
-         DIVA==
+        bh=lKhKqy5/7Ei/RZU9HCv/MdOytLVhH+m1/UF0NQoH4no=;
+        b=LyfmSKZrguyPWiMWiEJeS7vRhuXQCRkaOUH/ixA8lUONKjsQOlApj/nZ0VFEa3UwkP
+         hDqPqT/ykZRACgQFUr4K1xvePKew/dDCkRzIaVnYoSzSjXPnYszXvUQK6w15pmHMc9jz
+         UTpSbBFld4Ux0XPR4MBkJiK/9AyV+JZKtib7+LWaLV+LQTdCGJuzTzMrXm2VSRfyBDdJ
+         c1OtYOy1isY9t9Et7WM+pY82uX0FXVMMl9sAMlrXvrLHe0Jx8v7XubFojSG6LdOqj4ZU
+         LZb7+Px3a+Mo+qplSk56c2g+iXhNmJS+3Al5rNMPcF/1ssE+H8iDJrqqM/Mngy0XH3l8
+         0LRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714411807; x=1715016607;
+        d=1e100.net; s=20230601; t=1714411809; x=1715016609;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ApsAmNtF7WojJxJovU3iPiwCDNKhiq4dAAzkVUAsKYM=;
-        b=AjF4JoBZ8ghNuF8JBQr6N3fZZc0DKBDsGCEgIgpurpkrF29pqi/HnZvLN7E3X4zHsZ
-         Gm0OYvvmQGR7HHfxDOdbNhGPud7VtALJNkX2SASVVmq17V3mNkmiPxNpObIUUSRjYuUn
-         uPz8rCTQAM76CMyTB7XZ3OQ48ZGHCslKiwt64ykFtjnQY9ZvC1EWn7TntYMmPaZMrWl/
-         Nr26JBqHzlHLxGfkZM3x5OQTAbEp9UWpEFuQvlyI3vL7iYxSPOnewfEsi+lVgwLluGPC
-         S6uDkEomNSxqgEmQGjPWfLesfTJBi3VQfXMypgQh56w/A/zEtgtMG+aztgosk4qqRm/7
-         LbLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWs/2576BE48wetJhQHieX1EjWFYtcMliT+JjdXN/9Ojo3t2tcwwVq33/2lhUlstrnJFOf2D9saVa6Mtytl1BEqjVJA4MAQkwcWX6YN
-X-Gm-Message-State: AOJu0YzY5a9gNlwPD//IHurEcyKlHt8XOVrq3qZE+Nb3Z6JbArp7+BYf
-	dAPd0pp+Vq4bZJ24PSk3EdoaXsZHqRHHirkAU4DHReXAk65em18HcYT5L7VEUwU+4YOwDD9OsfR
-	2Yx0=
-X-Google-Smtp-Source: AGHT+IF6Jf+FDVXZFYTzzEsiJyYjXEo46zQqXDIGe//XlnoIxz3tHXt5cCHfbrryZRIviq2Dbj2hgA==
-X-Received: by 2002:a17:906:f18d:b0:a58:7298:fdfe with SMTP id gs13-20020a170906f18d00b00a587298fdfemr9105221ejb.53.1714411807391;
-        Mon, 29 Apr 2024 10:30:07 -0700 (PDT)
+        bh=lKhKqy5/7Ei/RZU9HCv/MdOytLVhH+m1/UF0NQoH4no=;
+        b=nbydo5qUqNHr4PzocRfTmTktPh9AOa5H+V1zQ7d8IOft4W7s3t8A9ZTy75Z2g+s05r
+         9yR8H4d7Egi8Y/YxHD4Q5Kvr+MqDYjgQJ/c8tkLqr/mkQ4RLnK4qTU2T9FZKUazrupaG
+         1E7QWnrZkxJxa/7JlEIdxYeRzl+uJhGO5Y9L9ZkVBVFBH1nAMnqVpxVtfhP8TNRWH+Xi
+         tM78h/JovZA4Vcs0re9CyKv7rHMuq9X8YScJ10G2DEKERejctV278ganMKLyhJncTn7h
+         oZ396sR9nzUFh8zJqcQlhtB1ag++BiAVITqSWhieoHBjdOx1NZ0kKgay0vOOAQue9b3W
+         +yAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVW7/dqbLUbHWMude3r19tyaXGSv/M04a3Ro1KBf/8fJcjZJvyu0EPZTxHcWEYeQqNoStEMD2QSulYXmPmfRNSwy57+BoTLh8MwoQAQ
+X-Gm-Message-State: AOJu0YxKho/Dio3KS4B0+vt8hXbSj4inpX6lXJRgEqxuBJjBbQ48/GX2
+	Ui/9P/1Y81dyc2Vz6BvoG6RFFF23Uo/IiozaS1USGb97rkLx7UrMDa6Fxw35Jt8=
+X-Google-Smtp-Source: AGHT+IFMCwYKqThp3mwiSf+4+XCuztnSTcv7W1qMoW81GVcGEYxjbTiZBj/6VWTRdTIMLOWAQTjavg==
+X-Received: by 2002:a17:907:1b16:b0:a58:725b:a021 with SMTP id mp22-20020a1709071b1600b00a58725ba021mr9532292ejc.15.1714411808790;
+        Mon, 29 Apr 2024 10:30:08 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id x10-20020a170906298a00b00a58ed644d6dsm2770173eje.127.2024.04.29.10.30.06
+        by smtp.gmail.com with ESMTPSA id x10-20020a170906298a00b00a58ed644d6dsm2770173eje.127.2024.04.29.10.30.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 10:30:06 -0700 (PDT)
+        Mon, 29 Apr 2024 10:30:08 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Will McVicker <willmcvicker@google.com>, Roy Luo <royluo@google.com>, 
- kernel-team@android.com, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240429-usb-dts-gs101-v2-0-7c1797c9db80@linaro.org>
-References: <20240429-usb-dts-gs101-v2-0-7c1797c9db80@linaro.org>
-Subject: Re: [PATCH v2 0/2] enable USB on Pixel 6 (Oriole)
-Message-Id: <171441180540.306855.2701742264944278377.b4-ty@linaro.org>
-Date: Mon, 29 Apr 2024 19:30:05 +0200
+To: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+ alim.akhtar@samsung.com, Peter Griffin <peter.griffin@linaro.org>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com, 
+ willmcvicker@google.com, kernel-team@android.com
+In-Reply-To: <20240429111537.2369227-2-peter.griffin@linaro.org>
+References: <20240429111537.2369227-1-peter.griffin@linaro.org>
+ <20240429111537.2369227-2-peter.griffin@linaro.org>
+Subject: Re: (subset) [PATCH v4 1/4] dt-bindings: soc: google:
+ exynos-sysreg: add dedicated hsi2 sysreg compatible
+Message-Id: <171441180684.306855.6625584588248689841.b4-ty@linaro.org>
+Date: Mon, 29 Apr 2024 19:30:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,26 +87,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13.0
 
 
-On Mon, 29 Apr 2024 11:35:48 +0100, André Draszik wrote:
-> These patches enable USB in peripheral mode on Pixel 6.
+On Mon, 29 Apr 2024 12:15:34 +0100, Peter Griffin wrote:
+> Update dt schema to include the gs101 hsi2 sysreg compatible.
 > 
-> We can only support peripheral mode at this stage, as the MAX77759 TCPCI
-> controller used on Pixel 6 to do the role selection doesn't have a(n
-> upstream) Linux driver. Therefore the role is defaulted to peripheral
-> without any endpoints / ports.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/2] arm64: dts: exynos: gs101: add USB & USB-phy nodes
-      https://git.kernel.org/krzk/linux/c/14d15fcbe0f1fac5979a0b01160f3651340e38b4
-[2/2] arm64: dts: exynos: gs101-oriole: enable USB on this board
-      https://git.kernel.org/krzk/linux/c/b93b3140e82a0e48442087c38346eabfb92c63af
+[1/4] dt-bindings: soc: google: exynos-sysreg: add dedicated hsi2 sysreg compatible
+      https://git.kernel.org/krzk/linux/c/6d1434a7d95939d21cf300f73040e3e6a02e84f8
 
 Best regards,
 -- 
