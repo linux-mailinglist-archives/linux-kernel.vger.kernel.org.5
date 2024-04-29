@@ -1,121 +1,183 @@
-Return-Path: <linux-kernel+bounces-163016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32E38B6385
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:29:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C498B6386
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:29:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFDC1C21DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:29:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231B31F22DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0231A1419B5;
-	Mon, 29 Apr 2024 20:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225F81448F3;
+	Mon, 29 Apr 2024 20:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xSjOtVAd"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RYjmG/98"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F921419B4
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0498514262C;
+	Mon, 29 Apr 2024 20:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714422535; cv=none; b=b+TK1TYzY5iIsOkt8KMzQ9Kf8BdDiVLxXAWqHVQkrbzujsb792IbavQeshroiphIUYhBr0oMWLEUEGYrx5sMlQg4u5uvDb3VqKXYEfqEdh4ddeKXUuhctOWydNUgg6ULyelejhXe7q5XWM1lVhr1IjrkGSB2wiocGTIedYvWHqs=
+	t=1714422538; cv=none; b=FUDODrJsLgROLGwKOizET2GAeE8t1Dzbeye/sbwj9GmMEDHXW1qMngprlZdO1/FFxcW/glekvBWRI4TgMoH7K0aoOWgOvBixkYBa0ZtHRCH2RwVVyPN8uUOlWReD4hRxI8UVxd6jhOXwuWqzESeZwu9FZyhbwTTICvF6EfjwG5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714422535; c=relaxed/simple;
-	bh=qD9fA+6x5YEjH6N/bnfv4m+coO6ZZOEi8S65u1eBRvM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=iqHOnIauU4MI4WGEqSL1tgrRNQVnY/FItBkxCfSjXESZGUdTODx9oJxdl+WOgOv8w2zZ8CuBRJE1gc3FZI7cIjFKer65qjqdTRENISdT4FjvVsCLTRjs0x/ynlv7EZ0IhJRqLB+yZKzVxs6fr8r8bJ8lR78iybfb8E1o+Lii03w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xSjOtVAd; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4affeacaff9so1025348e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:28:53 -0700 (PDT)
+	s=arc-20240116; t=1714422538; c=relaxed/simple;
+	bh=j1QRSZ5OruzsGFwaFs+K9v6w+Z1q7xCcJnmc+J/tF+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FNJ0sukXW+B6HmvmCyr/fHhE/dWYbo08A2o1Dve/wBtpkxcb0qR0FgrdJXraNfJzrZSJCDLzosrBbDmeOzP4oVVfFhA10+whaoDDdichdFmrZY6b1eluuKwgG1wclGi3oCMxPOQrwIolKi0zHpn9P9P82i4H6AxKVSqJirbv1gQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RYjmG/98; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a559928f46so3353161a91.0;
+        Mon, 29 Apr 2024 13:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714422532; x=1715027332; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lKuZuU03NTynIqlQQqRGb6a67x7v1EBlFYJcjyUFQ04=;
-        b=xSjOtVAdPBiDeq+zZQjPW8x+wzsBe/N4ImR1v3wOB/iC0ayq3MgIZP2rpzBNplGlNF
-         S3FdSyMZpGDZp9G0pnx1iHiwdhg+WJLxdAJV5OLfKmn8khNnvscOpOgZEHwFlcKBczX2
-         0+b3PD1c29mzNL8Fjsdq66s5d6x9T5ddZDyA6q1NtyQkD0wuLdE9g1XcVWzddrzfRbii
-         FGKpoXkHfwTp0ziFqO8c3MpDgMDOU5IoCCuCX0TNKdnaTF+f10p9gC7GciX6LhneAbQR
-         l1+JgmXvTcYOsT3PTfe33mLPH5y6p4kOnJX4tELHYXLijJfjB1j3G2YJlgves14dkhcH
-         ZdCQ==
+        d=gmail.com; s=20230601; t=1714422536; x=1715027336; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yokQIPHiZ4cYpK5/Hrt6FWyO6M/zwcNjQu1CZ6YXzSs=;
+        b=RYjmG/98kshwMV88M5hyr++uBPRL5l1UURVP2/e9l4FYXbgWWVYc8uq06FqMO0IL1M
+         U2FZ3V2qh6LoBBkmrThbKCDgl8qASMiU67VXwL50n6VfERY01etvs4gLZV+3PKGxyUX9
+         +4zA4YHq2ofk+4Gs3MP6WbYHvQSvJ/vflCGBfcrfmJ+QIkW/rlQGPIh8+r4C0Tl5kxdd
+         gl1neU138VJOQIuiFz7Hp5WjegVC6v5mcaM0dPbYT5hgutvW0VlH+nFqtEi+++KNarJF
+         njF9Z4MYASbVhjYxpuyVGXDkKmhBXcBo23V82kt8rv/iUtTiYDiCRE+LXvDM8QW9lvJr
+         XTbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714422532; x=1715027332;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lKuZuU03NTynIqlQQqRGb6a67x7v1EBlFYJcjyUFQ04=;
-        b=O6WfzmY7sxpQpCjvPCzq4hzEo2+c3o78qGI1z4sq4ENl4sk3AYKt4y7RAWyfA794xO
-         UyPfQud3GlknKaDwlhhl08zYt3RsXnKvMlIlfKg6K+ghBeDYVkAEkmBGDkuUYyWE06RX
-         oIX2NNou5jBYtASyDCxj0jMxQC7LqP3iFlgjAGSNjqOsgv+OSLDIULnKVAqIPCaxkyQI
-         7/AWQGDEfRuGmi2paNWF7d46X1mpGb/1XqJpK66mKM7xWxwKyJ6ZXBSzCqo+yIPbTjjQ
-         0q9oyIrNmA0Af35mTgOACWf1sdKMUmeUPBX/yp06abpJ/PATgpGdeKSXPQPcov54Pz54
-         7fGw==
-X-Gm-Message-State: AOJu0YxCbDjwk+j6g0IbKfglYqoS8znRRjp4ltAio35C8djOkUvMQ4RN
-	viY9Pw/c3ge7dkAfSjW8J+0DMdQOWCF43F55rnM886GDU2YkUizVAzQJhahsfOvdFdmTvy2MykA
-	2ue+Ucx+HnnuTX5fXC3PwVkvpgqfNi85MWQz59IIdGnIvpjwhmr4=
-X-Google-Smtp-Source: AGHT+IGWE4dZTf8eDRkrviqbjY4zijszcVXO72v7h15YxEvhFegCWLtOLh372/gBc1wZQisnIMhcKj7hvdbxUkY8IEQ=
-X-Received: by 2002:a05:6122:2221:b0:4d4:20fa:eb0c with SMTP id
- bb33-20020a056122222100b004d420faeb0cmr11396869vkb.5.1714422532382; Mon, 29
- Apr 2024 13:28:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714422536; x=1715027336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yokQIPHiZ4cYpK5/Hrt6FWyO6M/zwcNjQu1CZ6YXzSs=;
+        b=u2GwzyCeafpxGzUAdA0t0V3Y5VvJ5aMYcUfpKi/ntHXXL0vc8NesOqcXYEp2GTPxWF
+         yYXNdKzWkpLm4/etuNP53n0qrbrXFKtdT5onpX85Zb3LV2K2ufZ14IujQlHYVza1j1RH
+         hL1RAmAuD43HCIobr3PxmZiM6hthlOmKxh2GYBSTTFKthkRLbhh/+UY9fTJGGATmSmXm
+         Z+hU7Ea10nTs/FEmyVOjW5E/ED9KKXy1tZBKp63tuA+2rkJ0PQL+Xvnn3EbRHsHQcOFx
+         RUaP5FprNWiM0d2Bv89IODnn+BZEphe6Tvjo8dYyI6pWjlb/2RNBQCJM17mgT2oSJkDo
+         eZiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQzTKlgBjVhK5hQECYE7A989V2QowQVmYQwqxwsXVSJjo4JnW691LIuK1L+9Jq3gBamImgMLYe+HctLaDqmnuky0ra7ndXqcfzu90SP7Uy6UHwX7QssrCgvvasCUNfedMzYrJZqrWoRW8LdxRj0WVS7ZHv62Pk7MjBstmldrsPHM07ZenA
+X-Gm-Message-State: AOJu0Yyw25Vatx6Z3gDhsqdMqehaOuCEpseBLEfHk6LZ8jWDXhQ/kaiN
+	6D3UVSy8rKlp1RAc4N7VkY/P6w71JnmW721do+EaHrmvXHxUlHBCbHIqAD/pyYpILnNRql33BZV
+	0DeO81+6O1uVTqqKHcjLEER3Qk98=
+X-Google-Smtp-Source: AGHT+IEcKpz0kCzyKt+ymuuc69CeTchfc8CdR312rjP5Z0eGUnWPRpC+XGnRzDSDwvJGsVNsIM3l0z/gqcgg/+scljI=
+X-Received: by 2002:a17:90b:4f48:b0:2b2:6834:e983 with SMTP id
+ pj8-20020a17090b4f4800b002b26834e983mr675590pjb.45.1714422536190; Mon, 29 Apr
+ 2024 13:28:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 30 Apr 2024 01:58:40 +0530
-Message-ID: <CA+G9fYsXkn3xcdOm7H3+s4Xw_vc0f+uqCbFHHOcQE6OUascTsw@mail.gmail.com>
-Subject: arm64: dts: ti: k3-j784s4: No rule to make target:
- k3-j784s4-evm-usxgmii-exp1-exp2.dtb', needed by 'arch/arm64/boot/dts/ti/dtbs-list'.
-To: open list <linux-kernel@vger.kernel.org>, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, lkft-triage@lists.linaro.org, 
-	Linux Regressions <regressions@lists.linux.dev>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>, Chintan Vankar <c-vankar@ti.com>, danishanwar@ti.com, 
-	krzk+dt@kernel.org, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Anders Roxell <anders.roxell@linaro.org>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+ <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com> <20240428192549.7898bf6b@rorschach.local.home>
+In-Reply-To: <20240428192549.7898bf6b@rorschach.local.home>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Apr 2024 13:28:44 -0700
+Message-ID: <CAEf4BzazmnBOr+sq7w_KeUQpP7v9o+k418tuzCMEbXXbUeg7bQ@mail.gmail.com>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
+ graph and fprobe on fgraph
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The arm64 gcc-13 allmodconfig builds failed due to following dtb issues,
+On Sun, Apr 28, 2024 at 4:25=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Thu, 25 Apr 2024 13:31:53 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> I'm just coming back from Japan (work and then a vacation), and
+> catching up on my email during the 6 hour layover in Detroit.
+>
+> > Hey Masami,
+> >
+> > I can't really review most of that code as I'm completely unfamiliar
+> > with all those inner workings of fprobe/ftrace/function_graph. I left
+> > a few comments where there were somewhat more obvious BPF-related
+> > pieces.
+> >
+> > But I also did run our BPF benchmarks on probes/for-next as a baseline
+> > and then with your series applied on top. Just to see if there are any
+> > regressions. I think it will be a useful data point for you.
+> >
+> > You should be already familiar with the bench tool we have in BPF
+> > selftests (I used it on some other patches for your tree).
+>
+> I should get familiar with your tools too.
+>
 
-Looks like the recent changes on arm64: dts: ti: k3-j784s4: are causing
-build breaks.
+It's a nifty and self-contained tool to do some micro-benchmarking, I
+replied to Masami with a few details on how to build and use it.
 
-arm64:
-  allmodconfig - gcc-13 - fail
-  allmodconfig - clang-18 - fail
+> >
+> > BASELINE
+> > =3D=3D=3D=3D=3D=3D=3D=3D
+> > kprobe         :   24.634 =C2=B1 0.205M/s
+> > kprobe-multi   :   28.898 =C2=B1 0.531M/s
+> > kretprobe      :   10.478 =C2=B1 0.015M/s
+> > kretprobe-multi:   11.012 =C2=B1 0.063M/s
+> >
+> > THIS PATCH SET ON TOP
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
+> > kprobe-multi   :   28.909 =C2=B1 0.074M/s
+> > kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
+> > kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
+> >
+> > These numbers are pretty stable and look to be more or less representat=
+ive.
+>
+> Thanks for running this.
+>
+> >
+> > As you can see, kprobes got a bit faster, kprobe-multi seems to be
+> > about the same, though.
+> >
+> > Then (I suppose they are "legacy") kretprobes got quite noticeably
+> > slower, almost by 10%. Not sure why, but looks real after re-running
+> > benchmarks a bunch of times and getting stable results.
+> >
+> > On the other hand, multi-kretprobes got significantly faster (+24%!).
+> > Again, I don't know if it is expected or not, but it's a nice
+> > improvement.
+> >
+> > If you have any idea why kretprobes would get so much slower, it would
+> > be nice to look into that and see if you can mitigate the regression
+> > somehow. Thanks!
+>
+> My guess is that this patch set helps generic use cases for tracing the
+> return of functions, but will likely add more overhead for single use
+> cases. That is, kretprobe is made to be specific for a single function,
+> but kretprobe-multi is more generic. Hence the generic version will
+> improve at the sacrifice of the specific function. I did expect as much.
+>
+> That said, I think there's probably a lot of low hanging fruit that can
+> be done to this series to help improve the kretprobe performance. I'm
+> not sure we can get back to the baseline, but I'm hoping we can at
+> least make it much better than that 10% slowdown.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+That would certainly be appreciated, thanks!
 
-Build errors:
-----
-  make[4]: *** No rule to make target
-'arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtb', needed
-by 'arch/arm64/boot/dts/ti/dtbs-list'.
-  make[4]: Target 'arch/arm64/boot/dts/ti/' not remade because of errors.
+But I'm also considering trying to switch to multi-kprobe/kretprobe
+automatically on libbpf side, whenever possible, so that users can get
+the best performance. There might still be situations where this can't
+be done, so singular kprobe/kretprobe can't be completely deprecated,
+but multi variants seems to be universally faster, so I'm going to
+make them a default (I need to handle some backwards compat aspect,
+but that's libbpf-specific stuff you shouldn't be concerned with).
 
-metadata:
-------
-  git_describe: next-20240429
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git_short_log: b0a2c79c6f35 ("Add linux-next specific files for 20240429")
-
-Steps to reproduce:
-----
- # tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
---kconfig allmodconfig
-
-Links:
-----
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fmJ3r7MbjcUn6ZjBeDKT6SpKpH/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240429/testrun/23715285/suite/build/test/gcc-13-allmodconfig/details/
-
---
-Linaro LKFT
-https://lkft.linaro.org
+>
+> I'll be reviewing this patch set this week as I recover from jetlag.
+>
+> -- Steve
 
