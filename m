@@ -1,191 +1,124 @@
-Return-Path: <linux-kernel+bounces-161979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5168B5421
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:21:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4DB28B5426
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:22:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73D9A282C39
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:21:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02AE5B2207A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6818B22EEB;
-	Mon, 29 Apr 2024 09:21:39 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3A422EF8;
+	Mon, 29 Apr 2024 09:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="RtJypCal"
+Received: from smtpcmd13147.aruba.it (smtpcmd13147.aruba.it [62.149.156.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F97C12E7F;
-	Mon, 29 Apr 2024 09:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEB9225D9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714382498; cv=none; b=dwz1PVOxLrFpbbYcy0uDL1/nS6tjTKWyWTTcOVx2gOUmbA3gqBeCfD1PakWQgltf7F4WU51DIn7jvwGeYKZJFE5BZiC5Kf6O04UJ4DBONRUsS2kZMNejGIlPquV4MwWmxf5Wy9LR+3WWrc1JSflGkcvK/31J1hFpMSUgqCp943Q=
+	t=1714382533; cv=none; b=jvSlJrm/8zZyqSzJcH0fUMRKSKK8bZJeSTdsb9bLRvCr9TPrAE2NowOQgfHLOdWPxTGsBTwdLeJorIfzZPJCzSvqhr+v/xHJsIlNLM+T3RQJqV2ytu8lmTYYLP+S7eBFoFQYQr+oCJilrSRy92mfiB5UuBAslSVVpulLKrqt4V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714382498; c=relaxed/simple;
-	bh=psU9IiCnjLKZ0N5EAzULiwZffDrrX9StQx6qKklgmuY=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lZdWHpeFMErwxFTNC6Emlsqh8NfoWXnR9LB0KZDq7RsX2z2yNMgFYuwd2LlrFieLwpHlGEW6JER0rUmSnE0vcpGRavy7BCcK7G/al4HaQRLw31S8PbFS+spk5U9cOF4DO3F/yWKnm7TsCPrHoaCv4FEPwJ6N+crKKbYMsapiTB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VSd751DX3z6K6pc;
-	Mon, 29 Apr 2024 17:18:57 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 21420140B63;
-	Mon, 29 Apr 2024 17:21:34 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 29 Apr
- 2024 10:21:33 +0100
-Date: Mon, 29 Apr 2024 10:21:31 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Marc Zyngier <maz@kernel.org>, <linuxarm@huawei.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Hanjun Guo
-	<guohanjun@huawei.com>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>, "Lorenzo
- Pieralisi" <lpieralisi@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v8 11/16] irqchip/gic-v3: Add support for ACPI's
- disabled but 'online capable' CPUs
-Message-ID: <20240429101938.000027b2@huawei.com>
-In-Reply-To: <87frv5u3p8.wl-maz@kernel.org>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
-	<20240426135126.12802-12-Jonathan.Cameron@huawei.com>
-	<87il04t7j2.wl-maz@kernel.org>
-	<20240426192858.000033d9@huawei.com>
-	<87frv5u3p8.wl-maz@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714382533; c=relaxed/simple;
+	bh=v+9IardeQVHSNjpM0cCMrsumgfLobKVvrfyCwoM4r5A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I5c99LB8qD1BJM8axcpwK2iWRYAZ8TkgN4gbMD60KG5CbMvgjy11Vr1jydqiLjSYEk1oBYBgc6fvIZKpJTyZZRuCSDo4uGf0IpWn74NrAlK71/0MJDjzrDsfcJ6DIvo0rB100jLXqERCEU1r5/o1ydVAvQ7bduGv5ox40Pv451E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=RtJypCal; arc=none smtp.client-ip=62.149.156.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam ([146.241.8.107])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id 1ND4sV3Dq8U421ND5sO3Gl; Mon, 29 Apr 2024 11:22:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1714382527; bh=v+9IardeQVHSNjpM0cCMrsumgfLobKVvrfyCwoM4r5A=;
+	h=Date:From:To:Subject:MIME-Version:Content-Type;
+	b=RtJypCal2HgNizvWD+OI4RGT1RAfQK4PMNc7BVnf2+MkPqf5xMeEVHTQXlvfUR5bm
+	 rhe3HiZEYyE/THa/lggvICFtb7+ZbN3wAEmpyE9+e4d4xRmKE/Fvc69kSYo5dqPQ8A
+	 8u2SS9hCoNMdlPkWlZkUnvFekPFQQ5JpNbOrXoOdCaSN4p4aAud2JAkIPKm7HHwu9z
+	 iad4i0PLXUNGFQgfKooOhbf4RUgLH0jEN0jIN4gSbSmmuqerdva+izh5Xqd4YgTEtQ
+	 /nloKzXl4qFiRs83bBR8pF3MxRFplTgVxNEVja4xV9TAWFOOE/dKihI4PLWIueBGKS
+	 GE+951pfJSpKA==
+Date: Mon, 29 Apr 2024 11:22:06 +0200
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Matteo Lisi <matteo.lisi@engicam.com>,
+	Mirko Ardinghi <mirko.ardinghi@engicam.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v7 1/3] dt-bindings: arm: fsl: add Engicam i.Core MX93
+ EDIMM 2.0 Starter Kit
+Message-ID: <Zi9mvnx90mxnhv8j@engicam>
+References: <20240429084422.8369-1-fabio.aiuto@engicam.com>
+ <20240429084422.8369-2-fabio.aiuto@engicam.com>
+ <07fa8910-da6e-49f3-a3d3-b7a55c48224a@kernel.org>
+ <Zi9iAZjrq13X4K/C@engicam>
+ <5858b5de-4083-4c46-b23c-14f5bec113f0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5858b5de-4083-4c46-b23c-14f5bec113f0@kernel.org>
+X-CMAE-Envelope: MS4xfEclqJNNWSx5Jl/gUw/lTjW5w2a5uNsh6ud23jxkPlVxDs5py/slyZcCBI+c9jxHVeScb29MJTtBYE4cUp8whME/QmgWnp/naj9Mdk/icw855VuWwciB
+ 7uWoQ7oXfsysyYbTKzNAGMEtPmOl7Sat4+HACGYPvgr2js6G7G/PLxDbdZ8gauI1AEvnuwA/NYGvoIf80ldAnLv5pyQ4/QtrNntv8R27iMTXioTNHrffew8k
+ q+s2Mb/5um7W8arZTR4iANbj0Jfxd0iCcMMsujCppcRaDriW/kW2uSR3z9D+Z01Xr7Wmt1uP0h4xcBATIx4QAXWFveFm8IbX6YLkS89HfoqSMych54+iVgSL
+ wEMJDUJEi49+Ybp3zvPD0nSaQns7GT+IfBanb+AkLEuti/Qy4IVW46/OHvBMGsqA+H8n7GQNWsDK5NW6e/vKgTw0JyjFd0TzjSAp0OJ/3Yn8Cp+Cx234XnkX
+ +BI5vR+riCvat7Mwf/GfhR+Wn/G0iYDPqTdBJKWa04kFHFezaNFmfsm9ddpBEXulMEOgeqlFHvTxYq9u3YhgfeU7LCJUqjSZcMRpsLzEcwY+H/UDPEBhfosl
+ iaL/ynxT70moFwYXPPrSUh2tX6DSM54Uti9V1AQSqHKHmg==
 
-On Sun, 28 Apr 2024 12:28:03 +0100
-Marc Zyngier <maz@kernel.org> wrote:
+Dear Krzysztof,
 
-> On Fri, 26 Apr 2024 19:28:58 +0100,
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+Il Mon, Apr 29, 2024 at 11:04:03AM +0200, Krzysztof Kozlowski ha scritto:
+> On 29/04/2024 11:01, Fabio Aiuto wrote:
+> > Dear Krzysztof,
 > > 
+> > Il Mon, Apr 29, 2024 at 10:53:08AM +0200, Krzysztof Kozlowski ha scritto:
+> >> On 29/04/2024 10:44, Fabio Aiuto wrote:
+> >>> i.Core MX93 is a NXP i.MX93 based EDIMM SoM by Engicam.
+> >>>
+> >>> EDIMM 2.0 Starter Kit is an EDIMM 2.0 Form Factor Capacitive
+> >>> Evaluation Board by Engicam.
+> >>>
+> >>> i.Core MX93 needs to be mounted on top of EDIMM 2.0 Starter Kit
+> >>> to get the full i.Core MX93 EDIMM 2.0 Starter Kit board.
+> >>>
+> >>> Add bindings for this board.
+> >>>
+> >>> Cc: Matteo Lisi <matteo.lisi@engicam.com>
+> >>> Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+> >>> Reviewed-by: Krzysztof Kozlowsky <krzk@kernel.org>
+> >>
+> >> What the hell? Why are you changing tags?
 > > 
-> > I'll not send a formal v9 until early next week, so here is the current state
-> > if you have time to take another look before then.  
+> > I fear I don't understand your comment. Did you gave me
+> > your Reviewed-by: tag, didn't you?
+> > 
+> > When Conor gave me his Acked-by in v2 told me to pick up
+> > yours too...
 > 
-> Don't bother resending this on my account -- you only sent it on
-> Friday and there hasn't been much response to it yet. There is still a
-> problem (see below), but looks otherwise OK.
-> 
-> [...]
-> 
-> > @@ -2363,11 +2381,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
-> >  				(struct acpi_madt_generic_interrupt *)header;
-> >  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
-> >  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
-> > +	int cpu = get_cpu_for_acpi_id(gicc->uid);  
-> 
-> I already commented that get_cpu_for_acpi_id() can...
+> I *DID NOT* give such tag. Why do you manually type people names? You
+> are ought to COPY the entire tag. Not amend it, not change it, not try
+> to write by yourself.
 
-Indeed sorry - I blame Friday syndrome for me failing to address that.
+I apologize for that, will send a v8
+
+kr,
+
+fabio
 
 > 
-> >  	void __iomem *redist_base;
-> >  
-> > -	if (!acpi_gicc_is_usable(gicc))
-> > +	/* Neither enabled or online capable means it doesn't exist, skip it */
-> > +	if (!(gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_ONLINE_CAPABLE)))
-> >  		return 0;
-> >  
-> > +	/*
-> > +	 * Capable but disabled CPUs can be brought online later. What about
-> > +	 * the redistributor? ACPI doesn't want to say!
-> > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
-> > +	 * Otherwise, prevent such CPUs from being brought online.
-> > +	 */
-> > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
-> > +		pr_warn("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
-> > +		cpumask_set_cpu(cpu, &broken_rdists);  
+> Best regards,
+> Krzysztof
 > 
-> ... return -EINVAL, and then be passed to cpumask_set_cpu(), with
-> interesting effects. It shouldn't happen, but I trust anything that
-> comes from firmware tables as much as I trust a campaigning
-> politician's promises. This should really result in the RD being
-> considered unusable, but without affecting any CPU (there is no valid
-> CPU the first place).
-> 
-> Another question is what get_cpu_for acpi_id() returns for a disabled
-> CPU. A valid CPU number? Or -EINVAL?
-It's a match function that works by iterating over 0 to nr_cpu_ids and
-
-if (uid == get_acpi_id_for_cpu(cpu))
-
-So the question become does get_acpi_id_for_cpu() return a valid CPU
-number for a disabled CPU.
-
-That uses acpi_cpu_get_madt_gicc(cpu)->uid so this all gets a bit circular.
-That looks it up via cpu_madt_gicc[cpu] which after the proposed updated
-patch is set if enabled or online capable.  There are however a few other
-error checks in acpi_map_gic_cpu_interface() that could lead to it
-not being set (MPIDR validity checks). I suspect all of these end up being
-fatal elsewhere which is why this hasn't blown up before.
-
-If any of those cases are possible we could get a null pointer
-dereference.
-
-Easy to harden this case via the following (which will leave us with
--EINVAL.  There are other call sites that might trip over this.
-I'm inclined to harden them as a separate issue though so as not
-to get in the way of this patch set.
-
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index bc9a6656fc0c..a407f9cd549e 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -124,7 +124,8 @@ static inline int get_cpu_for_acpi_id(u32 uid)
-        int cpu;
-
-        for (cpu = 0; cpu < nr_cpu_ids; cpu++)
--               if (uid == get_acpi_id_for_cpu(cpu))
-+               if (acpi_cpu_get_madt_gicc(cpu) &&
-+                   uid == get_acpi_id_for_cpu(cpu))
-                        return cpu;
-
-        return -EINVAL;
-
-I'll spin an additional patch to make that change after testing I haven't
-messed it up.
-
-At the call site in gic_acpi_parse_madt_gicc() I'm not sure we can do better
-than just skipping setting broken_rdists. I'll also pull the declaration of
-that cpu variable down into this condition so it's more obvious we only
-care about it in this error path.
-
-Jonathan
-
-
-
-
-
-> 
-> Thanks,
-> 
-> 	M.
-> 
-
 
