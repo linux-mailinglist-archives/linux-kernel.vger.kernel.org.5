@@ -1,113 +1,159 @@
-Return-Path: <linux-kernel+bounces-162217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 857278B57A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:15:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B285C8B57A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B70071C22EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:15:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA85AB2617C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CEF0548F0;
-	Mon, 29 Apr 2024 12:14:45 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18502535A4;
-	Mon, 29 Apr 2024 12:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D255380B;
+	Mon, 29 Apr 2024 12:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LE0uEKnI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="m62Jjwkg";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LE0uEKnI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="m62Jjwkg"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC21F535A2;
+	Mon, 29 Apr 2024 12:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714392884; cv=none; b=QayZPJi/TVGOQfHwwcCUM6L0KsEctDHzJAaioYDw7Xf/bpKtXtO7i4TkYIstHQbT1019/ZEhzo6FwwUzILrEMLEa98TYqYyb7ymcnbIp+cjMWpOXCUz+aZ2IKHngrXt5STXxugUfnQfdRbnTRv5nat3u3lpHggBsZaxAZDqt10k=
+	t=1714392944; cv=none; b=HyfDvdkJanhEnBfpVdVQi7VFUIEIPrZ9cCC00bJ5/MxM8IzacKBEdukIzlRUjQuzlD4ComQGr/uTzpu3np6GhJCSl7d7KGto+yE7u1BP5VZrQMt9JvYadgdK/v1VM1Zv5SIQAO2MKigtbPOGkVAZU/GmVK5UqsD49ETcNxCV7Rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714392884; c=relaxed/simple;
-	bh=TY0BbP/ydR9gp4nj26TsMUiKKoe0SHMu2mZIdj/+l9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZzOAcpvHl9pRvdGK7+BRBP19qh1iOr2aLoYHf+URlTw47cjWxzHXyN8izK8cbNp0M1pdfOaCFxhIbzgHgvHtW2c3qU32DbyIoDN6yuOvx++qfI2i+7u7MKoh3jbnnBAL79ANsDKgp2d/ogJlUnwVdDn4V5svV4uL7NvdcfNYcd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D8602F4;
-	Mon, 29 Apr 2024 05:15:09 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61A223F73F;
-	Mon, 29 Apr 2024 05:14:41 -0700 (PDT)
-Date: Mon, 29 Apr 2024 13:14:38 +0100
-From: Andre Przywara <andre.przywara@arm.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai
- <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland
- <samuel@sholland.org>, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/8] spi: sun4i: use 'time_left' variable with
- wait_for_completion_timeout()
-Message-ID: <20240429131438.1f036341@donnerap.manchester.arm.com>
-In-Reply-To: <20240429112843.67628-7-wsa+renesas@sang-engineering.com>
-References: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
-	<20240429112843.67628-7-wsa+renesas@sang-engineering.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1714392944; c=relaxed/simple;
+	bh=cYOL1tJRTvgRsSRBeQI6fqJ4MHgAImgZfkWcYgXM/18=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rQzDyk76Gkcq67B1QCotABw5rmyxyghevJbct1dQrIE5i/NGuXZclSDnfyyX1McFem42yzSoWInrBdMSfiXnQxhY45iFvmSztfu7IBkqMN3h3EUGLa+kVymBdSWOxop43j9ImpJhLuddpHY873oMX+jMCnq3XtyrUN11oGvMLCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LE0uEKnI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=m62Jjwkg; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LE0uEKnI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=m62Jjwkg; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E61FA1F397;
+	Mon, 29 Apr 2024 12:15:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714392940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYgTSu72KpDPtvQDnavAwUGYEuGoWQ7yKpTecDsft60=;
+	b=LE0uEKnIpYFoXEoUitHs6NjEUAj40vLGcOLSUDUJjY4tJVP9YTUBl6i69Jr2otTtdRbgTR
+	/yqvXREKMqBqkCatsLRTyS0rOZUEv7ajUElN79CoxBFk1K5Y0ZpuMqU7N+L2UZ/vHpoZM6
+	GQWadIHI1e14s4vMWbfa8K3JtXGCuPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714392940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYgTSu72KpDPtvQDnavAwUGYEuGoWQ7yKpTecDsft60=;
+	b=m62Jjwkgh1l/akcWa9BF63Cjfk2voe0v/1LgrADmJDNHdQ8tuF5bNOBPVNRiEzmLXEQv0p
+	dBHZoQWKPoXtR+Cw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714392940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYgTSu72KpDPtvQDnavAwUGYEuGoWQ7yKpTecDsft60=;
+	b=LE0uEKnIpYFoXEoUitHs6NjEUAj40vLGcOLSUDUJjY4tJVP9YTUBl6i69Jr2otTtdRbgTR
+	/yqvXREKMqBqkCatsLRTyS0rOZUEv7ajUElN79CoxBFk1K5Y0ZpuMqU7N+L2UZ/vHpoZM6
+	GQWadIHI1e14s4vMWbfa8K3JtXGCuPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714392940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYgTSu72KpDPtvQDnavAwUGYEuGoWQ7yKpTecDsft60=;
+	b=m62Jjwkgh1l/akcWa9BF63Cjfk2voe0v/1LgrADmJDNHdQ8tuF5bNOBPVNRiEzmLXEQv0p
+	dBHZoQWKPoXtR+Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2D9A139DE;
+	Mon, 29 Apr 2024 12:15:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wl7tLWyPL2Z4WAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 29 Apr 2024 12:15:40 +0000
+Date: Mon, 29 Apr 2024 14:15:52 +0200
+Message-ID: <87frv4pdon.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Aman Dhoot <amandhoot12@gmail.com>
+Cc: tiwai@suse.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Patch for mute led of HP Laptop 15 da3001TU
+In-Reply-To: <CAMTp=B+3NG65Z684xMwHqdXDJhY+DJK-kuSw4adn6xwnG+b5JA@mail.gmail.com>
+References: <CAMTp=B+3NG65Z684xMwHqdXDJhY+DJK-kuSw4adn6xwnG+b5JA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.53
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.53 / 50.00];
+	BAYES_HAM(-2.23)[96.36%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4]
 
-On Mon, 29 Apr 2024 13:28:39 +0200
-Wolfram Sang <wsa+renesas@sang-engineering.com> wrote:
-
-> There is a confusing pattern in the kernel to use a variable named 'timeout' to
-> store the result of wait_for_completion_timeout() causing patterns like:
+On Wed, 24 Apr 2024 18:06:42 +0200,
+Aman Dhoot wrote:
 > 
-> 	timeout = wait_for_completion_timeout(...)
-> 	if (!timeout) return -ETIMEDOUT;
 > 
-> with all kinds of permutations. Use 'time_left' as a variable to make the code
-> self explaining.
+> Hello there,
 > 
-> Fix to the proper variable type 'unsigned long' while here.
+> This patch is for fixing the volume mute LED on HP Laptop 15 da3001TU,
+> this patch adds SND_PCI_QUIRK for HP Laptop 15-da3001TU, please review this
+> patch & add this patch to the mainline kernel.
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Cheers,
-Andre
-
-> ---
->  drivers/spi/spi-sun4i.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> I have tested this patch on the latest kernel 6.8.7 & it is working without
+> any problem.
 > 
-> diff --git a/drivers/spi/spi-sun4i.c b/drivers/spi/spi-sun4i.c
-> index 11d8bd27b3e9..2ee6755b43f5 100644
-> --- a/drivers/spi/spi-sun4i.c
-> +++ b/drivers/spi/spi-sun4i.c
-> @@ -206,7 +206,8 @@ static int sun4i_spi_transfer_one(struct spi_controller *host,
->  				  struct spi_transfer *tfr)
->  {
->  	struct sun4i_spi *sspi = spi_controller_get_devdata(host);
-> -	unsigned int mclk_rate, div, timeout;
-> +	unsigned int mclk_rate, div;
-> +	unsigned long time_left;
->  	unsigned int start, end, tx_time;
->  	unsigned int tx_len = 0;
->  	int ret = 0;
-> @@ -327,10 +328,10 @@ static int sun4i_spi_transfer_one(struct spi_controller *host,
->  
->  	tx_time = max(tfr->len * 8 * 2 / (tfr->speed_hz / 1000), 100U);
->  	start = jiffies;
-> -	timeout = wait_for_completion_timeout(&sspi->done,
-> -					      msecs_to_jiffies(tx_time));
-> +	time_left = wait_for_completion_timeout(&sspi->done,
-> +						msecs_to_jiffies(tx_time));
->  	end = jiffies;
-> -	if (!timeout) {
-> +	if (!time_left) {
->  		dev_warn(&host->dev,
->  			 "%s: timeout transferring %u bytes@%iHz for %i(%i)ms",
->  			 dev_name(&spi->dev), tfr->len, tfr->speed_hz,
+> From 12108ce794465925c9dc184253356d1daaa9f509 Mon Sep 17 00:00:00 2001
+> From: Aman Dhoot <amandhoot12@gmail.com>
+> Date: Mon, 22 Apr 2024 18:08:23 +0530
+> Subject: [PATCH] Fix mute led of HP Laptop 15-da3001TU.
+> 
+> This patch simply add SND_PCI_QUIRK for HP Laptop 15-da3001TU to fixed mute led of laptop.
+> 
+> Signed-off-by: Aman Dhoot <amandhoot12@gmail.com>
 
+Applied now.  Thanks.
+
+
+Takashi
 
