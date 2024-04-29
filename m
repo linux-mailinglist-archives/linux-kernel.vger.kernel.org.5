@@ -1,119 +1,280 @@
-Return-Path: <linux-kernel+bounces-162971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B978B62DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:50:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542878B62DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:50:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A204B2193D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A653283894
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121C313F439;
-	Mon, 29 Apr 2024 19:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F7D13F00B;
+	Mon, 29 Apr 2024 19:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="X1iLXXi0"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V7h0AcIp"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E813712B15A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1C812D1E9
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714420227; cv=none; b=Ex1y8B/uRD0e8RTseqG37Z0w4m//OJeLjAvOTNA3wBRXiqOKNVH+lJfLwIq8+5jwCIG+sthkierIo8fySc3Sp+OhsRX/eQIgIMXURaSceq9Fq7phkF+AZgxMQnhamz4YowfkIPYGDyUodtbRaLwaKULhWNufEVTEVejQmXYSNE0=
+	t=1714420250; cv=none; b=F3HQW5sWmnwmsFkM/pqx8bVQNa4Yrb4WPNQdZnMO2jXWySO1IZxlabHahmn88nwWHcERZqlLJ9ogCPe1yNULMgWibbdeaechNm0HXnxm4GaV0k4tICVmklB5g7mNyIwQBGPHzQqb+oB1N98NyHixHZrDfALB26fbfYs4nQ/w3uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714420227; c=relaxed/simple;
-	bh=eVY5B9TKSEJHZydMdH45kMqzzeNFXqTEx/rOwKxe4KM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WRN8p9iEbPCYsVh4M7/EQ/+15My70K/Xt5poPI8oSHwUxOC7tQPZVZmU3z0J/b2bu6lTe78TNWFuG92eLZgPo20jDcoRBwXnjwORzqcqAfiLJX0PE/LVAkzjlBI2c+VMfGkqH3/PRotk3nm0bijktqQUPxoSqpjauN7JbUbwg7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=X1iLXXi0; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e86d56b3bcso44880915ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:50:25 -0700 (PDT)
+	s=arc-20240116; t=1714420250; c=relaxed/simple;
+	bh=GQ+JFS1Jk+xndYHzEiOndheElZ95SLwVPHB0du1f+3A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H9HUS5CdfcE2U/xJfRCmHzWT0CKhtZMZZNAR3yC2dkjlB+EDUcd9v03xM8Zi7AXWVwNoKaclhe9c6Wop+FqQta2B4F5BNCInSyQklUwNhtRY/qHYXAc149+SqvQyCHYb60Gohe+2g+vTntooy9yVPVKEjHQo2OdWzHwZF+CIryg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V7h0AcIp; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-436ed871225so5071cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714420225; x=1715025025; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t66m2yC6w51sUPxTLrw0e9BFXrR1zy7lTroSpOOOXcU=;
-        b=X1iLXXi0MX+8PwCMrN2iN7K9/Zl3V4KsI6RzyNa1mvlctnAycjOzFwib9SZsHVb1UP
-         QLtypdBLTJK4UZzKpctrh6L5HXRV9C2gDBRqq0KbQscfWvoS5iUc29+uFewm3eh5nnXP
-         6KOiXLVpCOx6cgtmo+8The9Sebsi0EHwKJhks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714420225; x=1715025025;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1714420247; x=1715025047; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t66m2yC6w51sUPxTLrw0e9BFXrR1zy7lTroSpOOOXcU=;
-        b=lC+bB7ApLhtX2T/7qvkPKBi1oaC6BvBF+fcoTg80dEJpik2cBxR/a7AIwZ4/o9tzEd
-         1Jy+IXHPrCk7ACYdiJjI4CmHrbf2NPf1wYFg72+6dwizyOeY8MgjrAa4vRS6VMFScJrL
-         Bhu3jGWBQuFWPFW3FvNJCPdZ2A4fBorgUQR/geMOoLIAHpv4+lKN293eqpE5Suig+VHm
-         KyTciBdBqTp4+VOLCbqE0uOI2YNWgegp6XLKKwL+kdQ0pmN66iB4vJi+5A5z1igo6mJS
-         pCshWiTkxcMPAx48YJIRcB4TGATGaLT1hCfpUqlh06isHKYw4OxM/p07uMZaaXrt4D11
-         f1Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHy4BjFrNgUSKFDsnnBMzMIko0Avszyy3GWzyeZ3uJxrthvMe34yZ/LoIABSFjp3qo8u774WVQIzo4GrH1f0qvPXpd23uqCvhR3Z51
-X-Gm-Message-State: AOJu0Yx7bIjLv1/A9ssofYfnXHL9rgA1j5sGzln1pd2cO8jH2aQYOZyc
-	o/1rl/pfd2nAryVQ0U8cb4QQDxe7i835uxoa6djwdlepe57jsGsngs5S8NQVbA==
-X-Google-Smtp-Source: AGHT+IE+SteDEJUNTAb7/nI8MNDpW/XVg8ijQNerSCdwLAPwwr/v5RyMt4I/w7vZ1LzWcXiblxshPA==
-X-Received: by 2002:a17:902:f7d4:b0:1eb:5b59:fab9 with SMTP id h20-20020a170902f7d400b001eb5b59fab9mr618246plw.53.1714420225318;
-        Mon, 29 Apr 2024 12:50:25 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jj1-20020a170903048100b001e2526a5cc3sm20699547plb.307.2024.04.29.12.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 12:50:24 -0700 (PDT)
-Date: Mon, 29 Apr 2024 12:50:24 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux1394-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/2][next] firewire: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <202404291250.FA94E630@keescook>
-References: <cover.1709658886.git.gustavoars@kernel.org>
- <20240306011030.GA71684@workstation.local>
- <6a7854af-a183-4db2-8400-4d9eb0cc4308@embeddedor.com>
- <202404291129.F261DEA21F@keescook>
- <90ddce3b-1ad5-49be-89f9-2f3e48d73e19@embeddedor.com>
+        bh=8HGhfVpQjOVkb9HLWtg2vngpQ4aBVDIOd0yGR7/N4Vs=;
+        b=V7h0AcIpb0mr8K5iIIbY/8lQy8hYt/RS+GzW637Q/3OLFqKuF0AEf1Kq5yunU3CybQ
+         gnUl8UsP4FR20G19U7D3ROBMf7vPo8AOSeqeX7abud/NPaWcB7X94WaV2NnTGyppIRuE
+         1hjxcyAJrZz2+cAkZ3krsDljKxQ7w/14Dd2/AI0ZoewzE5Mvzw9Si/rgNxtNKpsFsdnx
+         RLJXrJhGyaHaBepawJc2Xmolqk5wgsi8IECaAkrSvj5BQwwkO+v3wFimq0a3fbVtsGA1
+         JAEZwWKwlTuBktNEoJsZG9DV3SJJkJoP4XOxE/LBRvZM8E/r9Zno21r8hCeaKoOdrFGy
+         oebQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714420247; x=1715025047;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8HGhfVpQjOVkb9HLWtg2vngpQ4aBVDIOd0yGR7/N4Vs=;
+        b=E1EHWHU1+u5NzrtuNvVazjDOxVx3KIcP5nUaI9Fh/+z2QrQPjJuf9X8yRDq1wFr+DQ
+         LsSeDMPkjJmFf3WeiWGeweJnv1kBp4JRaGIzK/kifQVrn3V06pfaI53pG+s6n7/yqSF/
+         aGobXCSFFZ56bXR/uQE/pWhuoFGfBB/A9USHzuIUNgfzOQlRZYVw0tTetF/4gA5Z5aZg
+         +Bh9zaqFrVMGiF7n88/Tqk36BjVIp7oOxZyjndTDJyQEo8V6v96smxtpXXUTKw5biFCr
+         hv9ZxSi5yvkll3zk/sfdZxMmrU9B3knv6NQpXX7pvqt7xyshzvpW/zii+N8vrrdZBD2A
+         F9qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcqIjPVjpWgh68yjJqIFyaFiZGMx9+z+Q2SuzPAQcBxO3r3gOLIAy1ZzdbCjCVKuv0/HO7W2xZ5uF1oM1BpnKOCsd/iFOUIGp8VTPN
+X-Gm-Message-State: AOJu0YwnqhA2r7zKTfpnIdZvGyL+JVVc2yPnj8o/9HWSIZJawH9E8zc4
+	mRe1uayVkTsd5DfeuUxnQPc5Uqdqk5SOBdMWKETN3cbYyGrW/cfBqPH4eJ6S9NkZcad1veYKMSd
+	xz5+6cLPyC7ktYgUtYSdCo+78At4dFMNPSIWZ
+X-Google-Smtp-Source: AGHT+IFLhTw258uz7gSs0I6QVFEnndIkAvJYJGfQm2ewdk5b9QVKe9+CKSEDAc/GfpSIxD3aSkejpIPzKmi+/XgMHyI=
+X-Received: by 2002:a05:622a:1207:b0:43a:4745:ddcc with SMTP id
+ y7-20020a05622a120700b0043a4745ddccmr44722qtx.11.1714420246500; Mon, 29 Apr
+ 2024 12:50:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90ddce3b-1ad5-49be-89f9-2f3e48d73e19@embeddedor.com>
+References: <20240429184614.1224041-1-irogers@google.com> <Zi_yKzGMoDU0-L3K@x1>
+In-Reply-To: <Zi_yKzGMoDU0-L3K@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 29 Apr 2024 12:50:34 -0700
+Message-ID: <CAP-5=fUETVGR+BVsHPyEAPFHcAQNRE0BJjXFyaqFtmwt8PY2HA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] dso/dsos memory savings and clean up
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@arm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, nabijaczleweli@nabijaczleweli.xyz, 
+	Leo Yan <leo.yan@linux.dev>, Song Liu <song@kernel.org>, 
+	Ilkka Koskinen <ilkka@os.amperecomputing.com>, Ben Gainey <ben.gainey@arm.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Yanteng Si <siyanteng@loongson.cn>, 
+	Sun Haiyong <sunhaiyong@loongson.cn>, Changbin Du <changbin.du@huawei.com>, 
+	Andi Kleen <ak@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Dima Kogan <dima@secretsauce.net>, 
+	zhaimingbing <zhaimingbing@cmss.chinamobile.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Li Dong <lidong@vivo.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Yang Jihong <yangjihong1@huawei.com>, Chengen Du <chengen.du@canonical.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 12:42:23PM -0600, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 4/29/24 12:30, Kees Cook wrote:
-> > On Wed, Mar 06, 2024 at 10:18:59AM -0600, Gustavo A. R. Silva wrote:
-> > > 
-> > > > Thanks for the improvements, however we are mostly at the end of
-> > > > development period for v6.8 kernel. Let me postpone applying the patches
-> > > > until closing the next merge window (for v6.9), since we need the term to
-> > > > evaluate the change. I mean that it goes to v6.10 kernel.
-> > > 
-> > > Sure, no problem.
-> > > 
-> > > Actually, I'll send a v2 with DEFINE_FLEX(), instead.
-> > 
-> > I was just going through the patch tracker to make sure stuff got
-> > handled -- did a v2 of these ever get posted? I don't see anything in
-> > the tracker nor changes here in -next.
-> 
-> Yes, it's in linux-next already:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=1d717123bb1a7555a432e51a41709badf8545dba
+On Mon, Apr 29, 2024 at 12:17=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Mon, Apr 29, 2024 at 11:46:07AM -0700, Ian Rogers wrote:
+> > 7 more patches from:
+> > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.co=
+m/
+> > a near half year old adventure in trying to lower perf's dynamic
+> > memory use. Bits like the memory overhead of opendir are on the
+> > sidelines for now, too much fighting over how
+> > distributions/C-libraries present getdents. These changes are more
+> > good old fashioned replace an rb-tree with a sorted array and add
+> > reference count tracking.
+> >
+> > The changes migrate dsos code, the collection of dso structs, more
+> > into the dsos.c/dsos.h files. As with maps and threads, this is done
+> > so the internals can be changed - replacing a linked list (for fast
+> > iteration) and an rb-tree (for fast finds) with a lazily sorted
+> > array. The complexity of operations remain roughly the same, although
+> > iterating an array is likely faster than iterating a linked list, the
+> Th> memory usage is at least reduced by half.
+> >
+> > As fixing the memory usage necessitates changing operations like find,
+> > modify these operations so that they increment the reference count to
+> > avoid races like a find in dsos and a remove. Similarly tighten up
+> > lock usage so that operations working on dsos state hold the
+> > appropriate lock. Note, since this series is partially applied in the
+> > perf-tools-next tree currently some memory leaks have been introduced.
+> >
+> > v5. Rebase, adding use of accessors to dso as necessary. Previous
+> >     versions were all rebases or dropping merged patches.
+>
+> So, on an Intel machine:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git log --oneline -8
+> fb401385575211e6 (HEAD -> perf-tools-next) perf dso: Use container_of to =
+avoid a pointer in 'struct dso_data'
+> 0fe118d129ab1c77 perf dso: Reference counting related fixes
+> 35e44adf6103a407 perf dso: Add reference count checking and accessor func=
+tions
+> 35673675ebbbac5d perf dsos: Switch hand code to bsearch()
+> 654d60f2f5c737cd perf dsos: Remove __dsos__findnew_link_by_longname_id()
+> 94b0ba802e090b66 perf dsos: Remove __dsos__addnew()
+> 47692286dd856469 perf dsos: Switch backing storage to array from rbtree/l=
+ist
+> 8c618b58c89ce4c2 (perf-tools-next.korg/perf-tools-next, acme.korg/perf-to=
+ols-next) perf test: Reintroduce -p/--parallel and make -S/--sequential the=
+ default
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+> When I'm at:
+>
+> 8c618b58c89ce4c2 (perf-tools-next.korg/perf-tools-next, acme.korg/perf-to=
+ols-next) perf test: Reintroduce -p/--parallel and make -S/--sequential the=
+ default
+>
+> root@x1:~# perf -v
+> perf version 6.9.rc5.g8c618b58c89c
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : Ok
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : Ok
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : Ok
+> root@x1:~# time perf test "lock contention"
+>  87: kernel lock contention analysis test                            : Ok
+>
+> real    0m9.143s
+> user    0m5.201s
+> sys     0m4.812s
+> root@x1:~#
+>
+> Moving to the first patch in this series:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git log --oneline -2
+> 47692286dd856469 (HEAD) perf dsos: Switch backing storage to array from r=
+btree/list
+> 8c618b58c89ce4c2 (perf-tools-next.korg/perf-tools-next, acme.korg/perf-to=
+ols-next) perf test: Reintroduce -p/--parallel and make -S/--sequential the=
+ default
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ alias m
+> alias m=3D'rm -rf ~/libexec/perf-core/ ; make -k CORESIGHT=3D1 O=3D/tmp/b=
+uild/$(basename $PWD)/ -C tools/perf install-bin && perf test pythond'
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ rm -rf /tmp/build/$(basename $PW=
+D)/ ; mkdir -p /tmp/build/$(basename $PWD)/ ; m
+> <SNIP>
+>
+> root@x1:~# perf -v
+> perf version 6.9.rc5.g47692286dd85
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test -vvv "lock contention"
+>  87: kernel lock contention analysis test:
+> --- start ---
+> test child forked, pid 2279518
+> Testing perf lock record and perf lock contention
+> [Fail] Recorded result count is not 1: 2
+> ---- end(-1) ----
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~#
+>
+> This breaks bisectability, but then lets see if at the end of the series
+> it works:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git log --oneline -8
+> fb401385575211e6 (HEAD -> perf-tools-next) perf dso: Use container_of to =
+avoid a pointer in 'struct dso_data'
+> 0fe118d129ab1c77 perf dso: Reference counting related fixes
+> 35e44adf6103a407 perf dso: Add reference count checking and accessor func=
+tions
+> 35673675ebbbac5d perf dsos: Switch hand code to bsearch()
+> 654d60f2f5c737cd perf dsos: Remove __dsos__findnew_link_by_longname_id()
+> 94b0ba802e090b66 perf dsos: Remove __dsos__addnew()
+> 47692286dd856469 perf dsos: Switch backing storage to array from rbtree/l=
+ist
+> 8c618b58c89ce4c2 (perf-tools-next.korg/perf-tools-next, acme.korg/perf-to=
+ols-next) perf test: Reintroduce -p/--parallel and make -S/--sequential the=
+ default
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ rm -rf /tmp/build/$(basename $PW=
+D)/ ; mkdir -p /tmp/build/$(basename $PWD)/ ; m
+>
+> root@x1:~# perf -v
+> perf version 6.9.rc5.gfb4013855752
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test "lock contention"
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~# perf test -vvv "lock contention"
+>  87: kernel lock contention analysis test:
+> --- start ---
+> test child forked, pid 2289060
+> Testing perf lock record and perf lock contention
+> Testing perf lock contention --use-bpf
+> Testing perf lock record and perf lock contention at the same time
+> [Fail] Recorded result count is not 1: 2
+> ---- end(-1) ----
+>  87: kernel lock contention analysis test                            : FA=
+ILED!
+> root@x1:~#
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ gcc --version | head -1
+> gcc (GCC) 13.2.1 20240316 (Red Hat 13.2.1-7)
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ rpm -q gcc
+> gcc-13.2.1-7.fc39.x86_64
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+> root@x1:~# grep -m1 'model name' /proc/cpuinfo
+> model name      : 13th Gen Intel(R) Core(TM) i7-1365U
+> root@x1:~# free
+>                total        used        free      shared  buff/cache   av=
+ailable
+> Mem:        32507912     9081644     3531432     1987616    22554868    2=
+3426268
+> Swap:        8388604      314112     8074492
+> root@x1:~#
 
-Ah-ha! Thank you! :)
+Thanks, will check. Will likely need a v6 to fix. v5 was just
+addressing the rebase issues.
 
--- 
-Kees Cook
+Ian
+
+> - Arnaldo
 
