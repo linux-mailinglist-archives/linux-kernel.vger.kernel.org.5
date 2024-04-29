@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-162755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB1A8B6024
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:31:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D098B6027
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:31:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582C2285CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:31:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077361C22132
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3A1811F2;
-	Mon, 29 Apr 2024 17:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21AE127B67;
+	Mon, 29 Apr 2024 17:30:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZ/De68t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FW+tQ+qu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE891272A2;
-	Mon, 29 Apr 2024 17:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D132F126F08;
+	Mon, 29 Apr 2024 17:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411829; cv=none; b=cDAUNciwBkFv01yAfO7aydMEFOL78EX9YVkt4TsIUhDMBmx1n3BR59O8cNtJDT7DC5w5vVG95gQIk30oZi2Xcs5Dlx1Nrdl8rEfXfzsBBrsHuRzJaK7UBZ+OrQyhxLvUTYnDvA3gAD6GQjtMejirIOwYLJwI+80EgfK4NJKjh1I=
+	t=1714411845; cv=none; b=s7gqZUgk682nZQ3IB1CyGlhrFCqM9EpSmnbKL2z9Lhf4de7jL3DqnNWGRLtn1xcs1wYIAxRpl1ha8gERgipFYMXo+9TtsrKZcEqyp6UZFhMz/81zT4grF16K+YdYOdvSpS2XXVz0jLkFAaFJ4KtB66fvXFFBUIoXl48EDcsHm6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411829; c=relaxed/simple;
-	bh=IoJJZoHuwpbars6MDVbchi5NPfxaXz1cuMkxIo3nDgI=;
+	s=arc-20240116; t=1714411845; c=relaxed/simple;
+	bh=Fvx4HChwgRIpWBOzS/+3wD8TnVRboVAfXw5D+J97/Qg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GeRUQwP053VLAhUBokqFa2sofLEfV3n+tIOZd96nLxqpQgU9W5jdamQjqBrWgaUEtqvZ8S8mfKPyV0EVQ/l70uQrugaSnJEJ7aSXBhLCR5vSI0WgPX42Qq7d7OcdC41Z8DjCR9UMXFyqJm8GkvSSTXIzxLdruoPhssP7U9kTo4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZ/De68t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC60C113CD;
-	Mon, 29 Apr 2024 17:30:25 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=jPgYgWvYrgjvDdH5TGErHP7UtOCOOwqNY53gzkpjO6gA5rXOx6CkdWHiIGajzVNbn63mwfOAaXMpfb3/ty8KqCN/oUOkETK6NN+ACS7oxSVjoSzPMmWlULHjr6aTAmf8l2AYpVxbcQoKudN6/bqi3C5/7Mntl2CSaI7FclnU+uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FW+tQ+qu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DE9C113CD;
+	Mon, 29 Apr 2024 17:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714411829;
-	bh=IoJJZoHuwpbars6MDVbchi5NPfxaXz1cuMkxIo3nDgI=;
+	s=k20201202; t=1714411845;
+	bh=Fvx4HChwgRIpWBOzS/+3wD8TnVRboVAfXw5D+J97/Qg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AZ/De68tsCeETuA1lzlo5cW43rGWf16hTpqB8bDpSflOiJsarjVaSMwN/uw5IS4H1
-	 LmfeImepa4B7f/NElAS7zU2Tub+5yF0jz73F09yOAp8dMlUy573lEV8qPRZd3/GLEU
-	 IP/47IdKXSCM8RvTxwjUkQtgANNgELlBXpICeabe7QsUr/0uyvn60N0LPLFX/k8kEQ
-	 PrnzhemrXeJGGy69v7paQGLGlKX3wgAI56tTXIr5sq07SpMu1pz5nqQsqrmJo4BKjR
-	 7HgefcTNHgs7wE4i3TSN3WMUzbueC6AbdvWzbOQeg46e+O7+M8uAjyBcPovosSovGq
-	 VtRBAEb0xHB5g==
-Message-ID: <757176be-e57b-4232-838a-0f1778c99df7@kernel.org>
-Date: Mon, 29 Apr 2024 19:30:22 +0200
+	b=FW+tQ+qud0THWqc2ik5/R/sUysmBByDgMoTQWtZbn4KQv/Uu79B/VD4cY3VBoXHw5
+	 ELABzGgArhQfCfpFeMWd/vZdlU6YQmmpUOGFiyi30T2jHoXEJI/n5ZTus/IvKbqvVD
+	 lKyoayjw+4+0MWp0+Ly8861cJpYEdoRkA9t7kG2rdyZi9Bq8SfVBZUwz6sBqdXyjKi
+	 azzQo5sUZ2036U35mt/014/PNT5JNZOw5OpP03ryIuPx77LT+7GUJgiDoTfUnrVVAr
+	 asyN4LDM9GHHVknRRUrofKtWHXqM07ZdurQ/olp/GLVcam1xtHT/gRoCqW5++u4dLM
+	 LSqYZNQrfAg8A==
+Message-ID: <8b3c9d34-15d5-4aac-b725-4cc25e469a58@kernel.org>
+Date: Mon, 29 Apr 2024 19:30:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] arm64: dts: exynos: gs101: Add the hsi2 sysreg
- node
+Subject: Re: [PATCH v4 3/4] arm64: dts: exynos: gs101: Add ufs and ufs-phy dt
+ nodes
 To: Peter Griffin <peter.griffin@linaro.org>, robh@kernel.org,
  krzk+dt@kernel.org, conor+dt@kernel.org, alim.akhtar@samsung.com
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -58,7 +58,7 @@ Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
  willmcvicker@google.com, kernel-team@android.com
 References: <20240429111537.2369227-1-peter.griffin@linaro.org>
- <20240429111537.2369227-3-peter.griffin@linaro.org>
+ <20240429111537.2369227-4-peter.griffin@linaro.org>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,29 +104,41 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240429111537.2369227-3-peter.griffin@linaro.org>
+In-Reply-To: <20240429111537.2369227-4-peter.griffin@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 On 29/04/2024 13:15, Peter Griffin wrote:
-> This has some configuration bits such as sharability that
-> are required by UFS.
-> 
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> Reviewed-by: André Draszik <andre.draszik@linaro.org>
-> ---
->  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> index 38ac4fb1397e..09044deede63 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -1265,6 +1265,12 @@ cmu_hsi2: clock-controller@14400000 {
->  			clock-names = "oscclk", "bus", "pcie", "ufs_embd", "mmc_card";
->  		};
+> +		ufs_0: ufs@14700000 {
+> +			compatible = "google,gs101-ufs";
+> +			reg = <0x14700000 0x200>,
+> +			      <0x14701100 0x200>,
+> +			      <0x14780000 0xa000>,
+> +			      <0x14600000 0x100>;
+> +			reg-names = "hci", "vs_hci", "unipro", "ufsp";
+> +			interrupts = <GIC_SPI 532 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			clocks = <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_ACLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_CLK_UNIPRO>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_FMP_CLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_ACLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_PCLK>,
+> +				 <&cmu_hsi2 CLK_GOUT_HSI2_SYSREG_HSI2_PCLK>;
+> +			clock-names = "core_clk", "sclk_unipro_main", "fmp",
+> +				      "aclk", "pclk", "sysreg";
+> +			freq-table-hz = <0 0>, <0 0>, <0 0>, <0 0>, <0 0>, <0 0>;
+> +			pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
+> +			pinctrl-names = "default";
+> +			phys = <&ufs_0_phy>;
+> +			phy-names = "ufs-phy";
+> +			samsung,sysreg = <&sysreg_hsi2 0x710>;
+> +			status = "disabled";
+> +		};
+> +
+> +		ufs_0_phy: phy@0x14704000 {
 
-Does not apply anymore, please rebase.
+Drop 0x from unit address.
+
+
 
 Best regards,
 Krzysztof
