@@ -1,92 +1,122 @@
-Return-Path: <linux-kernel+bounces-163055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D048B644F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:07:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 143878B6454
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24D8728732A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45F291C217FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C209718412A;
-	Mon, 29 Apr 2024 21:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C90178CE8;
+	Mon, 29 Apr 2024 21:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sb2qCSJI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Fc5TQjoQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qKZlLs+g"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DDC184122;
-	Mon, 29 Apr 2024 21:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A99A178CC5;
+	Mon, 29 Apr 2024 21:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714424580; cv=none; b=MytEXxEfll5TTJn9zaDd8QumDLGwyIq5xDKgyED7m5jMCLCRY1Ikp5Hgo2Ne5Pr9KBcEsTi5Jf6XrWJivvL8C26q+zWjdsEnrC5QJfpzdNGUaCadiTPKZQ6hWWPgb69PbIsY3FdIP+wEmNU4xXz6hygaKN308lWAobkSUYUaYf0=
+	t=1714424685; cv=none; b=cWq0VMhQ5Oo00tcQKlo2PsMUtvE1URnDYUbJJOFDUbWimHX+DXftCRTgf0qPGJsoU7ewQJt4/7z4inNlHooUjhcGA3MmI0+PGB0pVWbBbFL+2LgJr2cGubzyrmlTlVakonUtAtT+fjNKv9eRmr2uYFK6UDsx1OsxeIHoKwtCECQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714424580; c=relaxed/simple;
-	bh=MQuCrwMPjl9SahlT1RpXugY0MT/jSs2oen0IKRVjKHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z5CauvSE2aU4+aXVdIWmYWSh18YeZJDTW4POFvczRBg4YfGZa2TIKDYqPKbvq5mj43KPNIjo+YiFStxu9CJxkZAGai7Ugla2EP5xMH1mNQVbm5/AWRSqnOA7BQsNL7JSO/iWH07u1LjRIzA85Rj2J4WA0s4dC2YcWM5aNvUZP30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sb2qCSJI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90702C4AF18;
-	Mon, 29 Apr 2024 21:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714424579;
-	bh=MQuCrwMPjl9SahlT1RpXugY0MT/jSs2oen0IKRVjKHs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Sb2qCSJI+U6H2vKGi+t74y2Aj4Iwox1NMPXsO5TnHT4t2Y6tHgUCYfd7hFGMDVk9s
-	 w6Q4BY25EWRIQCHDutRZGCxq5kMmA0fWNqXE6Q5FVjEI5hsBvDJllSNoKvXsSA12gA
-	 AVYiKPdwcfXBGchT1ibikRqbgXJdUvKRFw1uC4p5imBc81iu/KICiIsfSh32i4Lffr
-	 kK5DN3bMLNbgv7I8NUJaDlk44lKKyBgHXluz3HHZfpkpILV9fYbfCHOt5J/NWS54nG
-	 hRm8KnkM/ngUID+6XAP9bWzZwFPBtECN5C37O9O1uD4TVoqL/eObHOpnSZwsCR+m1Y
-	 KkSEV3PiftUJw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3A47ECE0B6B; Mon, 29 Apr 2024 14:02:59 -0700 (PDT)
-Date: Mon, 29 Apr 2024 14:02:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/4] rcu/nocb cleanups
-Message-ID: <73c6f9fd-5f3f-44c4-9955-dd022fda7f59@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240425141835.19776-1-frederic@kernel.org>
+	s=arc-20240116; t=1714424685; c=relaxed/simple;
+	bh=RJU+rqzbC2GGAl4tdD5o6ueZMzfbxZmF8XAZfOL96T8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iPx6dvO7PNH57uqxNWBNe7aSlSchD5YsKctGn3gEKKH0p+n//85xENIZpXETJnVWdwSOF0bovqHXvmgmohG4E4VFKl8+lbZQb28C3f1YbxQ5pgA2tbcs+1UDEPHsnKTgpipxaQE3Te55p7mgWPCQagPnz7ln3ZY0qGvB3HPuIgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Fc5TQjoQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qKZlLs+g; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714424681;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTxwFLVccxj2TMlIRUP97VQiicQibR0IBgIQhq6q02k=;
+	b=Fc5TQjoQViZhw1EV1ApD2hD4We9rVGUJ+kTDcHsZrBT2bAPodN3X7vJ7jpMPon2JFfznkx
+	KyftyqF46wOw4kjWPxu3BbeP99YKx7xSySTJ3iSuanmUZSQHIoVnKZVPJS8snSkJujCcrx
+	sX/74UYcXZacHk+V2S0s6jrchU3ecfh4mgO3MPktzpD6d64HyaAVRD2cqdVG1rSoC+LBTb
+	YMvaBFWTMQIWia1idgTNzIYRoTBBjF1/H1bncgQw4/UOog9GQbAbhHEKOniphP4V5IPJHY
+	Yk26lbR0/JvzmOb86lWAnV5YPSyh8Nk7k2BiTe8baP4cK1ptG18MWbcL6Yxc0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714424681;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fTxwFLVccxj2TMlIRUP97VQiicQibR0IBgIQhq6q02k=;
+	b=qKZlLs+gbIvDn89xz6XtsUzOqd4E7crbcHbGIgxjLJjbG0KLGY3sJcLJsDvpNcMwpImEqm
+	P2ZKjBiz6L0vZpDQ==
+To: Mostafa Saleh <smostafa@google.com>, bhelgaas@google.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: ilpo.jarvinen@linux.intel.com, kernel-team@android.com, Mostafa Saleh
+ <smostafa@google.com>
+Subject: Re: [PATCH] PCI/MSI: Fix UAF in msi_capability_init
+In-Reply-To: <20240429034112.140594-1-smostafa@google.com>
+References: <20240429034112.140594-1-smostafa@google.com>
+Date: Mon, 29 Apr 2024 23:04:39 +0200
+Message-ID: <87zftbswwo.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425141835.19776-1-frederic@kernel.org>
+Content-Type: text/plain
 
-On Thu, Apr 25, 2024 at 04:18:31PM +0200, Frederic Weisbecker wrote:
-> Hi,
-> 
-> Some cleanups before converting (de-)offloading to only work on offline
-> CPUs.
+On Mon, Apr 29 2024 at 03:41, Mostafa Saleh wrote:
+>  err:
+> -	pci_msi_unmask(entry, msi_multi_mask(entry));
+> +	/* Re-read the descriptor as it might have been freed */
+> +	entry = msi_first_desc(&dev->dev, MSI_DESC_ALL);
+> +	if (entry)
+> +		pci_msi_unmask(entry, msi_multi_mask(entry));
 
-Seeing no objections, I have queued this series for testing and
-review.
+What unmasks the entry in the NULL case?
 
-							Thanx, Paul
+The mask has to be undone. So you need something like the uncompiled
+below.
 
-> Frederic Weisbecker (4):
->   rcu/nocb: Fix segcblist state machine comments about bypass
->   rcu/nocb: Fix segcblist state machine stale comments about timers
->   rcu/nocb: Use kthread parking instead of ad-hoc implementation
->   rcu/nocb: Remove buggy bypass lock contention mitigation
-> 
->  include/linux/rcu_segcblist.h |  88 +++++++++-----------
->  kernel/rcu/tree.h             |   1 -
->  kernel/rcu/tree_nocb.h        | 149 ++++++++++------------------------
->  3 files changed, 79 insertions(+), 159 deletions(-)
-> 
-> -- 
-> 2.44.0
-> 
+Thanks,
+
+        tglx
+---
+
+--- a/drivers/pci/msi/msi.c
++++ b/drivers/pci/msi/msi.c
+@@ -349,7 +349,7 @@ static int msi_capability_init(struct pc
+ 			       struct irq_affinity *affd)
+ {
+ 	struct irq_affinity_desc *masks = NULL;
+-	struct msi_desc *entry;
++	struct msi_desc *entry, desc;
+ 	int ret;
+ 
+ 	/* Reject multi-MSI early on irq domain enabled architectures */
+@@ -374,6 +374,12 @@ static int msi_capability_init(struct pc
+ 	/* All MSIs are unmasked by default; mask them all */
+ 	entry = msi_first_desc(&dev->dev, MSI_DESC_ALL);
+ 	pci_msi_mask(entry, msi_multi_mask(entry));
++	/*
++	 * Copy the MSI descriptor for the error path because
++	 * pci_msi_setup_msi_irqs() will free it for the hierarchical
++	 * interrupt domain case.
++	 */
++	memcpy(&desc, entry, sizeof(desc));
+ 
+ 	/* Configure MSI capability structure */
+ 	ret = pci_msi_setup_msi_irqs(dev, nvec, PCI_CAP_ID_MSI);
+@@ -393,7 +399,7 @@ static int msi_capability_init(struct pc
+ 	goto unlock;
+ 
+ err:
+-	pci_msi_unmask(entry, msi_multi_mask(entry));
++	pci_msi_unmask(&desc, msi_multi_mask(&desc));
+ 	pci_free_msi_irqs(dev);
+ fail:
+ 	dev->msi_enabled = 0;
 
