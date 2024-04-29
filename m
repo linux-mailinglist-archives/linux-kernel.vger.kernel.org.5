@@ -1,114 +1,123 @@
-Return-Path: <linux-kernel+bounces-161937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748FC8B5392
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:56:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D46B58B5394
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:56:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FEC1281497
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:56:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2061B21AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E64718041;
-	Mon, 29 Apr 2024 08:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ZciszVDJ"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779591805A;
+	Mon, 29 Apr 2024 08:56:11 +0000 (UTC)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A487717BB4;
-	Mon, 29 Apr 2024 08:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7FD17BB4;
+	Mon, 29 Apr 2024 08:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714380956; cv=none; b=snu6KPFyEn7MWeN45ZVvaPNmlPX23fHi/9wYI0GJZt+WLv9b3VYCWYGl4DTrERNzxYGkKjxkHYPq842PyEDd2tamGSernrlkFhP3zIAtxjkO6vuEm3iftzMYhi2zJv7qG5GOzuIIFUeNlD0303dCeafA182K5QjcnEbIAiMpa1A=
+	t=1714380971; cv=none; b=pBR2XTcKVq3tJkTurkNhKMEjCuKF9tFboR+nfcwwxldZv3uzPTv5lEDquqOaLf+kTw/A48IlkJ3U2NZLhI8gUN3qcsmyQProU118hcdO2j2XfTOWGMroCz4GO61KcaRUV3C52w0eNA7IiKHE3oHsU0V9sTJSemwkoXH0bdAFnSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714380956; c=relaxed/simple;
-	bh=l8Xof23BbhSzLfOSXDkmbn8p+6qq1fPgKfJxk7WsIQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s3qEJI7lWPtvm6XFvc6cjGRg1rK1kxccCqmyx6LsHAG6M9avXfE9khcxwlMgzvRKQallHt0Vd9WU7Q0n4ueQtYU7vy7P57NQbjhp/NM3l6in4LDUmjbpSpLhi6Nv7wol2Tr/B6pO/31XANGRAMspXBRaeKGWegGz8lYzSbGdK7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ZciszVDJ; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714380931; x=1714985731; i=markus.elfring@web.de;
-	bh=l8Xof23BbhSzLfOSXDkmbn8p+6qq1fPgKfJxk7WsIQI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZciszVDJL+Cfft0UBUcPRH7hJ48Q85n5943psKjryJugXdgh8XhJP+TNVljqXUms
-	 BIom+RgdMWRWlumtjXc5OmgxM07bJA3Qo3BbjxXyQUo1hzkns5+n/Y1xq7gJSYpNb
-	 yzqgOK/brRsLtNg7nLCAOt2r5BInpPWXyH08lk1tEvBo2D4rE9bjC9xRv+z9jFml+
-	 qMxJoGegZoRtRcErky6bK0bxyPIW8AYbwceHhGdTKlR6d0y1IbKFGPGEs24T90wqj
-	 vmBFiV/Ri6QLfa8ePRMXxE9nw64aNfgxa0NwjuWO1Q/GQHqWuuufwK8W/iA30RaNI
-	 AeOQbJefAKy/ajo1fQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MSZHv-1s7b9W1mFF-00T4oM; Mon, 29
- Apr 2024 10:55:31 +0200
-Message-ID: <ace70750-6f58-4bd9-a18f-9889dae30061@web.de>
-Date: Mon, 29 Apr 2024 10:55:29 +0200
+	s=arc-20240116; t=1714380971; c=relaxed/simple;
+	bh=n30UgSV1qzNHJ8b0nte2dL/KqEDeOoQVGhz9ly56ikw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RJ7UfgoIGbShRe2RENKEdw8WCnKbPaogpKOLC1+Xl66ruF0CWthHfJnp6DyN+yO3AC1PXI8wEGNe8CNtgFzeQmB6lQCjrO6vPU61oE2e6rp8jsD0juvnZXs3KXQTx7KyVOjEt541oHSOUadz3+wMXv1THUzg59g4l7bp0HCbGH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso6509750e87.2;
+        Mon, 29 Apr 2024 01:56:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714380967; x=1714985767;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=42P8a0IUByEq2e/patLP18PTczZWOHTFsxOc5Y3WezM=;
+        b=LMQ6bmnAJgc84QzxeyTmGzYJq+l4b/EHzd3ypdYYhaboPOe4FCgFlkiDYQXANxfeRr
+         /rftTWUyxjHbH+fu8aF17M8KVNfR8n518ppXNo/6XgMyD6yo6X9IDXDr3Ep/RC0O7wF7
+         YMP9SokdPMGto5Sg8uSIFnQQT+OXchAKXXVaLcAHcGq+bdtLbG1/P2THeOjd/3Xso/pd
+         iiQBk+V0dxmOuyBly1KWqL6uCtMjytITvk/ktJ7n41uHV6YRtytiEKfciQHAmB1djfAd
+         VQJr7secmFOTFi//gbskuHrjXXfNaWkpV34tkRSFmGokcV3fEGQofoVWtBNtO94nHzLI
+         NG4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVu1RQYC0WNp82gqJunAhi68lSVhloyEGIn2l1aOioI6lhao6UIEUHkr/5YoEGOWfd7B9ip0TTFD7P4uuN3rHU5YRA2SgLSdqg84FtbTvEuOuCK0i6sY2WiO+0oWwq5CUfWSdyC
+X-Gm-Message-State: AOJu0YxfycMva69u6Vru/eZgkSZxOrmMWCnH/oh5ait/gZQWpIn4ezQr
+	JNfG9LdD3t9SX7cXkuD8fnEhSIhDMjB7xaxPE1Xl8ISGcFgior8T
+X-Google-Smtp-Source: AGHT+IG3f/cLozETnEYH5jic5ZXorevBtIrIoPSpZIwUNaNbuJGlI7FdFyZTjt18QbaEx7EI3Hcelw==
+X-Received: by 2002:a19:5517:0:b0:51d:4c8a:bbdb with SMTP id n23-20020a195517000000b0051d4c8abbdbmr3768447lfe.3.1714380967255;
+        Mon, 29 Apr 2024 01:56:07 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm10995436ejx.107.2024.04.29.01.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 01:56:06 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: leit@meta.com,
+	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: loopback: Do not allocate tstats explicitly
+Date: Mon, 29 Apr 2024 01:55:58 -0700
+Message-ID: <20240429085559.2841918-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [1/2] cxl/region: Fix potential invalid pointer dereference
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-cxl@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Alison Schofield <alison.schofield@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Vishal Verma <vishal.l.verma@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240429013154.368118-1-lizhijian@fujitsu.com>
- <1df4e8d4-733f-43d9-a9d7-3764b6df7ed7@web.de>
- <bbcab973-46b5-4d91-b8b3-c91d43c0f58b@fujitsu.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <bbcab973-46b5-4d91-b8b3-c91d43c0f58b@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B9QWJts4awVPIctxoxeBFcWVCQbZFqFvtDiFDwvRjStPFwA9s7w
- Yt57WdkqEGnhbxG19RpDG3LLuVvkVmeSfjJyZ+uFMjfe2c0DTDMiYPILQj0YEx4pwogeF1s
- mfChOtNiLMLbaipx/gdmEiUpwPDU7ywZOfWj5d4+jz7c/D3KoZyJMdakWAWhcjoEs/11zxH
- 4jJi+Y5FDTlAlXVRrl6ZQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mPqRFujCFQI=;EnfOIVo2BLueNwmCRkDBAiaorcL
- hwM4eo45Mf4J6+w7XznnHRFYtultKYv7pK2voUv8nq2EGZy8TcxT3vdmPjV30V4j1XSHKmupY
- h1D11FtG/gKuG0rTalH4eNCkc60BK7+KuFNYphsuEKu89hBoSYHNg+w/qAHrmYYmrMVmFBmWC
- FQt+CaXlupuhpD8LuhyD0SSyxN+sKfibZ9YIrvWyJIWFmOLa6/aiQVU+33IJ1cethzhdPGCGi
- g+0OSinfnyjSUBwUKZyKK0BVB7eN65IK9LedqduZJCY+cNE19MoKSQoCpJqcjTYi6BjL4C6zS
- G48YMqt2kZBnuGo3iq178IUovHhiCjgaGhpWOMqlXfBLts9EBA9eN+tvlVoso7orAxsmXxImU
- rljHF6Wu5nz1m+mWOE/dyg1JqVh7u3GW+K+hIAp36Hwf2nQtO+uIZG7rFiD+Jz9QI/dOyXeM7
- fMcqUsEtv3udvUX9L64W9fWzC986AuO6pzZQybGLAludfLZjN2yCZMiNqce1vMj83I0sN6aDs
- tnoBzWHqgbxQkG8tQJbloaLSvAiH1QXyIeuDRHXJBDSuBtdY48Rvin9Q6BwMnFw0/jwKgiF0x
- CHC4tRbXpoykIbHRkOZIV6QolBY5yGyU/HNVKZItmgyz/EK53BrD1uJuYaGpI7HgKS87v87RL
- Zvt4aVU4FnjwF+xqV1yfzgpUQPdK7lHL3IGGAiZf0KDvdw1nYsc1SiMgcywLGUNAD0JK0Fhoj
- 0m1dUgL+WSHNq8baD3EdQLHYxwiDCoRY+lbr6vaPzFLVhDdfLLphmUK/X+jy4kwAWnUOVTP+W
- F9LaPHuY3gFq+wzlEj0KW+NOfAnjqaPGYxhhfRg3Y0Wl0=
+Content-Transfer-Encoding: 8bit
 
->> I suggest to simplify such source code by using a conditional operator =
-expression.
->
-> Thanks for your suggestion. Do you mean something like:
-> cxlr =3D region_dev ? to_cxl_region(region_dev) : construct_region(cxlrd=
-, cxled);
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of in this driver.
 
-Yes.
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
+Remove the allocation in the loopback driver and leverage the network
+core allocation instead.
 
-> If so, I'm open to this option, but the kernel does not always obey this=
- convention.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/loopback.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Involved developers present different coding style preferences.
-I hope that further source code parts can become a bit more succinct.
+diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
+index f6eab66c2660..2b486e7c749c 100644
+--- a/drivers/net/loopback.c
++++ b/drivers/net/loopback.c
+@@ -141,9 +141,6 @@ static const struct ethtool_ops loopback_ethtool_ops = {
+ 
+ static int loopback_dev_init(struct net_device *dev)
+ {
+-	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+-	if (!dev->lstats)
+-		return -ENOMEM;
+ 	netdev_lockdep_set_classes(dev);
+ 	return 0;
+ }
+@@ -151,7 +148,6 @@ static int loopback_dev_init(struct net_device *dev)
+ static void loopback_dev_free(struct net_device *dev)
+ {
+ 	dev_net(dev)->loopback_dev = NULL;
+-	free_percpu(dev->lstats);
+ }
+ 
+ static const struct net_device_ops loopback_ops = {
+@@ -191,6 +187,7 @@ static void gen_lo_setup(struct net_device *dev,
+ 	dev->header_ops		= hdr_ops;
+ 	dev->netdev_ops		= dev_ops;
+ 	dev->needs_free_netdev	= true;
++	dev->pcpu_stat_type	= NETDEV_PCPU_STAT_LSTATS;
+ 	dev->priv_destructor	= dev_destructor;
+ 
+ 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
+-- 
+2.43.0
 
-Regards,
-Markus
 
