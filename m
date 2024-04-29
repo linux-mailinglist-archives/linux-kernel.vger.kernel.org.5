@@ -1,44 +1,39 @@
-Return-Path: <linux-kernel+bounces-161698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72A78B4FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F1188B4FD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:36:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4FF1C2100E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:32:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89A001C21156
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2809D8F68;
-	Mon, 29 Apr 2024 03:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="VAY/pWr+"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8798BEC;
-	Mon, 29 Apr 2024 03:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205058F55;
+	Mon, 29 Apr 2024 03:36:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4D86FD0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 03:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714361540; cv=none; b=Ef8D4NKcnjJhjsEqUTXt8bL6T0JsYfZ+ByV11yHeYPUsX/ClxxiB77PzNU3jy6/PKVwz3M6UAnOK5rUf92x1ZHEH71wCqf/9w08js9kn0yt/zAQ9Twcwf0+PygxeDEbxlxtwaSNNgv17jvmm+KYY75rtxIIo9aJaUst6ZUMSa8E=
+	t=1714361791; cv=none; b=HjVz/jjThJ01CuA9Qvx0aH2553ZlOChRyI5ABgCCW3ikU05SQwzrhdX7L8R0lUFQ8XGcAUw6mqVB4htPR+rnovs91hvnAg/d4esKLpycFSXYiQCEsBRM4LF3Iz8HyN5f3lIDFjIzmTqAkXD5qNcYxG27PYktsMI43BsO1bQvAgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714361540; c=relaxed/simple;
-	bh=f2KQguX71x1xq7iC9KGN5UfbWpxX4Rd3/wmNbAjMcLU=;
+	s=arc-20240116; t=1714361791; c=relaxed/simple;
+	bh=OMypMfMPWaoZtX2P8Zb0bC9bAef9DLGboc1N3FIq4Ag=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I58asYjtimWwi+5lSvEkYasZj4P/8ImUSKXyylclRliaedoOSvJlAtnljbE9WV8Ymr/CghcBmx/AxK046WPutY+BK04/VaeHnmIvAixhfwlX3Cu5KDIpIq6kg226JhrTI4e3DyAAzXvSQt5JuAfeKLBbLE7X4q+vUNqL0OXPDzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=VAY/pWr+; arc=none smtp.client-ip=220.197.31.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=CHSUhxC6lM1/IFRN+7v8UnKMqdYD3kpZXA4RJ6Yr18A=;
-	b=VAY/pWr+mr1srwZ7TVWSsxCFRjJ4x5BDWIcj9slomL8YMxH110QFrsI82LJzq9
-	Rmhi/dsnpDpestidFNjF2DjPdfBcg/f8Sxjfh8339B5MkWOWf0OqUUtrIag9ApqW
-	w5sapIsILs+O+AZ5AfAOKHBgCG+o4wU1/rlNt6OaMLEU0=
-Received: from [192.168.50.76] (unknown [58.22.7.114])
-	by gzga-smtp-mta-g0-0 (Coremail) with SMTP id _____wD3v7NwFC9mrac4Bg--.23843S2;
-	Mon, 29 Apr 2024 11:31:00 +0800 (CST)
-Message-ID: <aee69bf3-ea7b-4ff3-8fd5-01e97d3381eb@126.com>
-Date: Mon, 29 Apr 2024 11:30:57 +0800
+	 In-Reply-To:Content-Type; b=i3Beva6ZKvjNJexesqclBnzoETor9q0CjK5EUIIvrPgOTWxCR67hrqZxr/MdqnuGatdZ5ZtcmSNHIk0h2GwDWD1is/KzBSiJz/+vdu2txX1CHjeubWC1u2YrxAyAduHtejZgFmDfUcBRqMkgMFWgbbh7F3cnezmeTo6BHYyriMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF93E2F4;
+	Sun, 28 Apr 2024 20:36:54 -0700 (PDT)
+Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FB573F73F;
+	Sun, 28 Apr 2024 20:36:24 -0700 (PDT)
+Message-ID: <34a9ec83-40ab-4028-8ee3-27438665155f@arm.com>
+Date: Mon, 29 Apr 2024 09:06:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,152 +41,186 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: core: Convert to use __mmc_poll_for_busy()
- SD_APP_OP_COND too
-Content-Language: en-GB
-To: Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>, Avri Altman
- <avri.altman@wdc.com>, Dragan Simic <dsimic@manjaro.org>,
- linux-kernel@vger.kernel.org
-References: <20240425133034.79599-1-ulf.hansson@linaro.org>
-From: Yao Xiao <xiaokeqinhealth@126.com>
-In-Reply-To: <20240425133034.79599-1-ulf.hansson@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and
+ GUP-fast
+Content-Language: en-US
+To: Zi Yan <ziy@nvidia.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+References: <20240425170704.3379492-1-ryan.roberts@arm.com>
+ <922F6794-1C32-4862-8A67-90D4F7DBC474@nvidia.com>
+ <af20fd17-1e31-4e28-8773-1298aa799aec@arm.com>
+ <683CC7EC-3FAB-4C63-92F2-636C4DBE7729@nvidia.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <683CC7EC-3FAB-4C63-92F2-636C4DBE7729@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_____wD3v7NwFC9mrac4Bg--.23843S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGw15JF4ktFWrtFykKF17Wrg_yoW5tF18pF
-	WUXryYkF4Dtr1a9F97WanF93s3uw1SkFWUG3s7X34FvrsI9r98KFyvkayFvF18Zr9rC3yI
-	vFWjgr15u3sxJrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U65lnUUUUU=
-X-CM-SenderInfo: 50ld0yhhtl0xhhdo3xa6rslhhfrp/1tbiEBXP1WVLbIDYJgAAsj
 
-Hi ulf,
 
-On 2024/4/25 21:30, Ulf Hansson wrote:
-> Similar to what has already been changed for eMMC and the MMC_SEND_OP_COND
-> (CMD1), let's convert the SD_APP_OP_COND (ACMD41) for SD cards to use the
-> common __mmc_poll_for_busy() too.
-> 
-> This change means the initial delay period, that starts as 10ms will now
-> increase for every loop when being busy. The total accepted timeout for
-> being busy is 1s, which is according to the SD spec.
-> 
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->   drivers/mmc/core/sd_ops.c | 77 +++++++++++++++++++++++++--------------
->   1 file changed, 50 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/mmc/core/sd_ops.c b/drivers/mmc/core/sd_ops.c
-> index a59cd592f06e..3ce1ff336826 100644
-> --- a/drivers/mmc/core/sd_ops.c
-> +++ b/drivers/mmc/core/sd_ops.c
-> @@ -19,6 +19,15 @@
->   #include "sd_ops.h"
->   #include "mmc_ops.h"
->   
-> +#define SD_APP_OP_COND_PERIOD_US	(10 * 1000) /* 10ms */
-> +#define SD_APP_OP_COND_TIMEOUT_MS	1000 /* 1s */
-> +
-> +struct sd_app_op_cond_busy_data {
-> +	struct mmc_host *host;
-> +	u32 ocr;
-> +	struct mmc_command *cmd;
-> +};
-> +
->   int mmc_app_cmd(struct mmc_host *host, struct mmc_card *card)
->   {
->   	int err;
-> @@ -115,10 +124,44 @@ int mmc_app_set_bus_width(struct mmc_card *card, int width)
->   	return mmc_wait_for_app_cmd(card->host, card, &cmd);
->   }
->   
-> +static int sd_app_op_cond_cb(void *cb_data, bool *busy)
-> +{
-> +	struct sd_app_op_cond_busy_data *data = cb_data;
-> +	struct mmc_host *host = data->host;
-> +	struct mmc_command *cmd = data->cmd;
-> +	u32 ocr = data->ocr;
-> +	int err;
-> +	*busy = false;
-> +
-> +	err = mmc_wait_for_app_cmd(host, NULL, cmd);
-> +	if (err)
-> +		return err;
-> +
-> +	/* If we're just probing, do a single pass. */
-> +	if (ocr == 0)
-> +		return 0;
-> +
-> +	/* Wait until reset completes. */
-> +	if (mmc_host_is_spi(host)) {
-> +		if (!(cmd->resp[0] & R1_SPI_IDLE))
-> +			return 0;
-> +	} else if (cmd->resp[0] & MMC_CARD_BUSY) {
-> +		return 0;
-> +	}
-> +
-> +	*busy = true;
-> +	return 0;
-> +}
-> +
->   int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
->   {
->   	struct mmc_command cmd = {};
-> -	int i, err = 0;
-> +	struct sd_app_op_cond_busy_data cb_data = {
-> +		.host = host,
-> +		.ocr = ocr,
-> +		.cmd = &cmd
-> +	};
-> +	int err;
->   
->   	cmd.opcode = SD_APP_OP_COND;
->   	if (mmc_host_is_spi(host))
-> @@ -127,36 +170,16 @@ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
->   		cmd.arg = ocr;
->   	cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R3 | MMC_CMD_BCR;
->   
-> -	for (i = 100; i; i--) {
-> -		err = mmc_wait_for_app_cmd(host, NULL, &cmd);
-> -		if (err)
-> -			break;
-> -
-> -		/* if we're just probing, do a single pass */
-> -		if (ocr == 0)
-> -			break;
-> -
-> -		/* otherwise wait until reset completes */
-> -		if (mmc_host_is_spi(host)) {
-> -			if (!(cmd.resp[0] & R1_SPI_IDLE))
-> -				break;
-> -		} else {
-> -			if (cmd.resp[0] & MMC_CARD_BUSY)
-> -				break;
-> -		}
-> -
-> -		err = -ETIMEDOUT;
-> -
-> -		mmc_delay(10);
-> -	}
-> -
-> -	if (!i)
-> -		pr_err("%s: card never left busy state\n", mmc_hostname(host));
-> +	err = __mmc_poll_for_busy(host, SD_APP_OP_COND_PERIOD_US,
-> +				  SD_APP_OP_COND_TIMEOUT_MS, &sd_app_op_cond_cb,
-> +				  &cb_data);
-> +	if (err)
-> +		return err;
->   
->   	if (rocr && !mmc_host_is_spi(host))
->   		*rocr = cmd.resp[0];
->   
-> -	return err;
-> +	return 0;
->   }
->   
->   static int __mmc_send_if_cond(struct mmc_host *host, u32 ocr, u8 pcie_bits,
-The implementation looks solid and it works as expected in the scenarios 
-I tested.
-Acked-by: Felix Qin <xiaokeqinhealth@126.com>
 
+On 4/26/24 20:03, Zi Yan wrote:
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
+> 
+> On 26 Apr 2024, at 0:50, Anshuman Khandual wrote:
+> 
+>> On 4/26/24 00:28, Zi Yan wrote:
+>>> +Anshuman, who changed pmd_present() semantics. See:
+>>> https://lore.kernel.org/all/1599627183-14453-2-git-send-email-anshuman.khandual@arm.com/ and commit b65399f6111b ("arm64/mm: Change
+>>> THP helpers to comply with generic MM semantics")
+>>>
+>>> On 25 Apr 2024, at 13:07, Ryan Roberts wrote:
+>>>
+>>>> __split_huge_pmd_locked() can be called for a present THP, devmap or
+>>>> (non-present) migration entry. It calls pmdp_invalidate()
+>>>> unconditionally on the pmdp and only determines if it is present or not
+>>>> based on the returned old pmd. This is a problem for the migration entry
+>>>> case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
+>>>> called for a present pmd.
+>>>>
+>>>> On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
+>>>> future call to pmd_present() will return true. And therefore any
+>>>
+>>> But pmd_mkinvalid() on x86 does not behave so. Maybe we should fix
+>>> pmd_mkinvalid() on arm64 by not setting PMD_PRESENT_INVALID when the
+>>> entry is invalid already. And add a test in mm/debug_vm_pgtable.c.
+>>>
+>>> I notice that x86, risc-v, mips behave the same. loongarch also
+>>> has _PAGE_PRESENT_INVALID bit set during pmd_mkinvalid(), but its
+>>> pmd_present() makes sure _PAGE_HUEG is set before checks _PAGE_PRESENT_INVALID.
+>>> So it is not a problem for loongarch. Add Huacai to confirm this.
+>>>
+>>> Maybe pmd_present() on arm64 can do that too?
+>>
+>> pmd_present() should return true even for a splitting PMD which is not
+>> currently mapped. IIRC in all other architectures, there is a distinct
+>> identification bit for huge page which stays back, even when the entry
+>> becomes unmapped. That bit helps pmd_present() return true, during PMD
+>> splitting process.
+>>
+>> But on arm64 platform
+>>
+>> #define PTE_VALID                (_AT(pteval_t, 1) << 0)
+>> #define PMD_SECT_VALID           (_AT(pmdval_t, 1) << 0)
+>> #define PMD_TABLE_BIT            (_AT(pmdval_t, 1) << 1)
+>>
+>> When the PMD entry becomes unmapped, PTE_VALID gets cleared, so does the
+>> PMD_SECT_VALID, thus erasing its identity as a huge mapping. A software
+>> bit PMD_PRESENT_INVALID was added which helps in preserving that cleared
+>> huge page mapping identity once it becomes unmapped.
+> 
+> OK. PMD_SECT_VALID is just a different name of PTE_VALID. I wonder
+
+Non PTE Level descriptor
+
+	BIT[1:0] = X0 Invalid entry
+		 = 01 Block entries (Huge Pages)
+		 = 11 Table entries
+
+PTE Level descriptor
+
+	BIT[1:0] = X0 Invalid entry
+		 = 01 Reserved invalid entry
+		 = 11 Page entries
+
+Although PTE_VALID and PMD_SECT_VALID share the same bit position, the huge
+page also requires the table bit to be cleared.
+
+> if ~PMD_TABLE_BIT can be used as _PAGE_HUGE to indicate it is a huge page
+> PMD, since PMD_TABLE_BIT is unset for PMD huge page already, for swap
+> entry, since PMD_SECT_VALID is unset, PMD_TABLE_BIT is ignored. But it
+> will require PTE and PMD have different swap entry encoding on arm64.
+> It might not be worth the effort.
+
+Right and also depending on just clearing of table bit for huge page mapping
+might be problematic in subtle ways.
+
+> 
+>>>
+>>>> lockless pgtable walker could see the migration entry pmd in this state
+>>>> and start interpretting the fields as if it were present, leading to
+>>>> BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
+>>>> I suspect the same is possible on other architectures.
+>>>>
+>>>> Fix this by only calling pmdp_invalidate() for a present pmd. And for
+>>>> good measure let's add a warning to the generic implementation of
+>>>> pmdp_invalidate(). I've manually reviewed all other
+>>>> pmdp_invalidate[_ad]() call sites and believe all others to be
+>>>> conformant.
+>>>>
+>>>> This is a theoretical bug found during code review. I don't have any
+>>>> test case to trigger it in practice.
+>>>>
+>>>> Fixes: 84c3fc4e9c56 ("mm: thp: check pmd migration entry in common path")
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>
+>>>> Applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
+>>>>
+>>>> Thanks,
+>>>> Ryan
+>>>>
+>>>>
+>>>>  mm/huge_memory.c     | 5 +++--
+>>>>  mm/pgtable-generic.c | 2 ++
+>>>>  2 files changed, 5 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>> index 89f58c7603b2..80939ad00718 100644
+>>>> --- a/mm/huge_memory.c
+>>>> +++ b/mm/huge_memory.c
+>>>> @@ -2513,12 +2513,12 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>>>>  	 * for this pmd), then we flush the SMP TLB and finally we write the
+>>>>  	 * non-huge version of the pmd entry with pmd_populate.
+>>>>  	 */
+>>>> -	old_pmd = pmdp_invalidate(vma, haddr, pmd);
+>>>>
+>>>> -	pmd_migration = is_pmd_migration_entry(old_pmd);
+>>>> +	pmd_migration = is_pmd_migration_entry(*pmd);
+>>>>  	if (unlikely(pmd_migration)) {
+>>>>  		swp_entry_t entry;
+>>>>
+>>>> +		old_pmd = *pmd;
+>>>>  		entry = pmd_to_swp_entry(old_pmd);
+>>>>  		page = pfn_swap_entry_to_page(entry);
+>>>>  		write = is_writable_migration_entry(entry);
+>>>> @@ -2529,6 +2529,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+>>>>  		soft_dirty = pmd_swp_soft_dirty(old_pmd);
+>>>>  		uffd_wp = pmd_swp_uffd_wp(old_pmd);
+>>>>  	} else {
+>>>> +		old_pmd = pmdp_invalidate(vma, haddr, pmd);
+>>>>  		page = pmd_page(old_pmd);
+>>>>  		folio = page_folio(page);
+>>>>  		if (pmd_dirty(old_pmd)) {
+>>>> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+>>>> index 4fcd959dcc4d..74e34ea90656 100644
+>>>> --- a/mm/pgtable-generic.c
+>>>> +++ b/mm/pgtable-generic.c
+>>>> @@ -198,6 +198,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp)
+>>>>  pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+>>>>  		     pmd_t *pmdp)
+>>>>  {
+>>>> +	VM_WARN_ON(!pmd_present(*pmdp));
+>>>>  	pmd_t old = pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
+>>>>  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
+>>>>  	return old;
+>>>> @@ -208,6 +209,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
+>>>>  pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
+>>>>  			 pmd_t *pmdp)
+>>>>  {
+>>>> +	VM_WARN_ON(!pmd_present(*pmdp));  	return pmdp_invalidate(vma, address, pmdp);
+>>>>  }
+>>>>  #endif
+>>>> --
+>>>> 2.25.1
+>>>
+>>>
+>>> --
+>>> Best Regards,
+>>> Yan, Zi
 
