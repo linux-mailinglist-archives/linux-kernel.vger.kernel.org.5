@@ -1,181 +1,123 @@
-Return-Path: <linux-kernel+bounces-162660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E8A58B5EA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:13:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068CA8B5EAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:14:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F4971F22F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:13:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3837E1C2130B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA2284A58;
-	Mon, 29 Apr 2024 16:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1EF784D02;
+	Mon, 29 Apr 2024 16:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="n4Kjlks1"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULmvL0e+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952D314A8D;
-	Mon, 29 Apr 2024 16:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B4E83CB9;
+	Mon, 29 Apr 2024 16:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714407229; cv=none; b=XpNfKqjFLAlgCN78lBrDaQHSAQ/JzZ7RGi0snZo9jfZkIaRWicXDwhaYlxY9OuRHLsL4rZzFxGuOzcYi29mR2D2w0FN5qhVRyf/UH5ZK1+GcY0G0HcEddBQYInaSrnRVha/730SySu67tmAQIqInMWtKAn074u9ClhZ7DdCXWAg=
+	t=1714407239; cv=none; b=A9gc0p84xbGQYp2uXwjNL+O0Emn7NiuPwuXPjecqIls+B3aoFXAxC8mKjGsij5m3/6/tI7fRntap2BEiH2iOBTbtzdgtDCeo5jBJ49b5XpwnOoMEk42dU5JGQEyQ40d4C+Fw5DlyK+Rr7iO5/ZeEnrXA76YzZAfA+AkZDyCSKC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714407229; c=relaxed/simple;
-	bh=N4AXQ9Sm3ZMZO5yFRp5NX2KC0ZilNb9dYL3CF2h/4eE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VTn+FkUY1QtwRN20C21zTX8z/MMs2YBlk/jMYH4eGGPU7Nx2CB0rD++oyMcMUMApLtWyBEI4DbjOi++5UgMG8Pm1jP3RyPfBX167/HUcE8X9u9XDA4wNArp1Gr3m5xCBat6aD1uC897ZMnmOhn4/zelwzlMQdL6GQ+1rUSc3DAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=n4Kjlks1; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TG1r71003472;
-	Mon, 29 Apr 2024 16:13:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=h4+iE+KbJHd6Gc6j7wA2FWoZzMmC3ovRPKg0l7zryMI=;
- b=n4Kjlks1gytAdTnkrjLPVkDy7aCkfeqwDzojR6qUHF6iapAEjVLR3Qxu4vvKmv5+HeJ2
- jNEYmAbQLM0vopPE1ESJiVT5UotnaMeqjzvBoMN4Q2and1mYe1RNgZu0/yphmlZHPeGP
- Gaw6n2UKNwiwa9CRqbiWSq+PNzadowVreIjCFhL6xiiorievGCV4v5ZDKkbpdlouftiM
- tWy14BZ9zU9KxNm8reTwzij8Gr33T54u0Zr8EiyP5Wq3nLYnC1xnqXGqDCVkQ9OJilvY
- FWD59YDFNxAz7+80fXq8ncLU4BUo608mHFBg35qlhCItZ3pfH01ONxsqo3smy0Nwmhhe Eg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xteqar13n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 16:13:40 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43TF28OW003036;
-	Mon, 29 Apr 2024 16:13:38 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscpp8714-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 16:13:38 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43TGDaiN15925780
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 16:13:38 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 657D158062;
-	Mon, 29 Apr 2024 16:13:36 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A4CA35805A;
-	Mon, 29 Apr 2024 16:13:35 +0000 (GMT)
-Received: from sbct-3.bos2.lab (unknown [9.47.158.153])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 29 Apr 2024 16:13:35 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, lukas@wunner.de, jarkko@kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v2] crypto: ecc - Prevent ecc_digits_from_bytes from reading too many bytes
-Date: Mon, 29 Apr 2024 12:13:16 -0400
-Message-ID: <20240429161316.3146626-1-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714407239; c=relaxed/simple;
+	bh=2oFLRsAgw53HjrPHJfiYkkbK08cBxJ1ZVH2NeS3iJU8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YI+K4WbMpx18Y71bKZ9qee8KIaFFYG8HSOtuunRE0r/a3AqeiUgR0UFKVBC5RUGJob4IDly6P/NiYMgHg/wV3pSPPAYbzkko7YfyboUdSKzagSsPOnzA6GzCN9CiW6xzUk2becD1gpBk5tUs/2WSVQVtYHbX88QVcaU2Gtw1pzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULmvL0e+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35538C113CD;
+	Mon, 29 Apr 2024 16:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714407238;
+	bh=2oFLRsAgw53HjrPHJfiYkkbK08cBxJ1ZVH2NeS3iJU8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ULmvL0e+8/UYbIjh1UWsrEwtwqrgUyH65IYS1AHQwX59qHb6amZBYOpM5rKV4mluO
+	 /Fr4t+AUoowzReyDVQoT3UP1ZWS+hFnEr06ra8uWkh+DudjprANd7gJKudBV1sfxOj
+	 uItLx0EN9snwEZNV0l8IQXP11f049XWOPKbuXHS8vIjOVaQpVr5H3tiPPhSACP/K2J
+	 ExgIdiDKOUqs4Eo03ZdEy8SQiO39grXQ8iOfuH2W51j4PyOOVvN/KIIAzCua3PJV8j
+	 11oi+jn0ViRGIVhAREs5OZjg04HHZvKAIIhpTDtGHggtTJbpuRQsf5qcyvP/pm4x1A
+	 schkbqt4UBxbQ==
+Date: Tue, 30 Apr 2024 01:13:56 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Alina Yu <alina_yu@richtek.com>
+Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	johnny_lai@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH 2/2] regulator: rtq2208: Fix RTQ2208 buck ramp delay and
+ ldo vout setting and segmentaion fault when devm_of_regulator_put_matches is
+ called
+Message-ID: <Zi_HRJ6xJ8cEhKAy@finisterre.sirena.org.uk>
+References: <1714385807-22393-1-git-send-email-alina_yu@richtek.com>
+ <1714385807-22393-3-git-send-email-alina_yu@richtek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: arv7NAPhe9CPalAeYXLn5Ttmz0HUse4d
-X-Proofpoint-ORIG-GUID: arv7NAPhe9CPalAeYXLn5Ttmz0HUse4d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_14,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404290104
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="CMFEKwFL0XCdxy2X"
+Content-Disposition: inline
+In-Reply-To: <1714385807-22393-3-git-send-email-alina_yu@richtek.com>
+X-Cookie: lisp, v.:
 
-Prevent ecc_digits_from_bytes from reading too many bytes from the input
-byte array in case an insufficient number of bytes is provided to fill the
-output digit array of ndigits. Therefore, initialize the most significant
-digits with 0 to avoid trying to read too many bytes later on. Convert the
-function into a regular function since it is getting too big for an inline
-function.
 
-If too many bytes are provided on the input byte array the extra bytes
-are ignored since the input variable 'ndigits' limits the number of digits
-that will be filled.
+--CMFEKwFL0XCdxy2X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: d67c96fb97b5 ("crypto: ecdsa - Convert byte arrays with key coordinates to digits")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+On Mon, Apr 29, 2024 at 06:16:47PM +0800, Alina Yu wrote:
 
----
+> ramp_delay range of bucks is changed.
+> The maximum ramp up and down range is shorten from 64mVstep/us tor 16mVstep/us/.
+> The LDO's Vout is adjustable if the haardware setting allow it, and it can be set either 1800mv or 3300mv.
+> Additionally, the discharge register is chaned to other position.
+> The discharge register has been moved to another position.
+> In this version, a software bug has been fixed. rtq2208_ldo_match is no longer a local variable,
+> which prevents invalid memory access when devm_of_regulator_put_matches is called.
 
-v2:
- - un-inline function
- - use memset
----
- crypto/ecc.c                  | 22 ++++++++++++++++++++++
- include/crypto/internal/ecc.h | 15 ++-------------
- 2 files changed, 24 insertions(+), 13 deletions(-)
+As covered in submitting-patches.rst since this is a bunch of different
+changes that don't really overlap it should be split into multiple
+patches, for example the change of the ramp time for the DCDCs should be
+separate to all the LDO stuff.
 
-diff --git a/crypto/ecc.c b/crypto/ecc.c
-index c1d2e884be1e..fe761256e335 100644
---- a/crypto/ecc.c
-+++ b/crypto/ecc.c
-@@ -68,6 +68,28 @@ const struct ecc_curve *ecc_get_curve(unsigned int curve_id)
- }
- EXPORT_SYMBOL(ecc_get_curve);
- 
-+void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
-+			   u64 *out, unsigned int ndigits)
-+{
-+	int diff = ndigits - DIV_ROUND_UP(nbytes, sizeof(u64));
-+	unsigned int o = nbytes & 7;
-+	__be64 msd = 0;
-+
-+	/* diff > 0: not enough input bytes: set most significant digits to 0 */
-+	if (diff > 0) {
-+		ndigits -= diff;
-+		memset(&out[ndigits - 1], 0, diff * sizeof(u64));
-+	}
-+
-+	if (o) {
-+		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
-+		out[--ndigits] = be64_to_cpu(msd);
-+		in += o;
-+	}
-+	ecc_swap_digits(in, out, ndigits);
-+}
-+EXPORT_SYMBOL(ecc_digits_from_bytes);
-+
- static u64 *ecc_alloc_digits_space(unsigned int ndigits)
- {
- 	size_t len = ndigits * sizeof(u64);
-diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h
-index 7ca1f463d1ec..f7e75e1e71f3 100644
---- a/include/crypto/internal/ecc.h
-+++ b/include/crypto/internal/ecc.h
-@@ -64,19 +64,8 @@ static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigit
-  * @out       Output digits array
-  * @ndigits:  Number of digits to create from byte array
-  */
--static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
--					 u64 *out, unsigned int ndigits)
--{
--	unsigned int o = nbytes & 7;
--	__be64 msd = 0;
--
--	if (o) {
--		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
--		out[--ndigits] = be64_to_cpu(msd);
--		in += o;
--	}
--	ecc_swap_digits(in, out, ndigits);
--}
-+void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
-+			   u64 *out, unsigned int ndigits);
- 
- /**
-  * ecc_is_key_valid() - Validate a given ECDH private key
--- 
-2.43.0
+> -		if (init_data->constraints.min_uV == init_data->constraints.max_uV)
+> -			rdesc->desc.fixed_uV = init_data->constraints.min_uV;
+> +		fixed_uV = of_property_read_bool(match->of_node, "richtek,use-fix-dvs");
+> +
+> +		if (fixed_uV) {
+> +			desc->n_voltages = 1;
+> +			desc->fixed_uV = init_data->constraints.min_uV;
+> +			desc->ops = &rtq2208_regulator_ldo_fix_ops;
+> +		} else {
+> +			desc->n_voltages = ARRAY_SIZE(rtq2208_ldo_volt_table);
+> +			desc->volt_table = rtq2208_ldo_volt_table;
+> +			desc->ops = &rtq2208_regulator_ldo_adj_ops;
+> +		}
 
+The driver shouldn't need to look at the constraints to set up the
+operations for the hardware, if the regulator can be configured for
+multiple voltages just register it that way and let the core figure out
+if we ever actually want to change the voltage.
+
+--CMFEKwFL0XCdxy2X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYvx0MACgkQJNaLcl1U
+h9A9ygf/b3X8dbsjTS9LgrAuYbruOGAJnJaScqP+1gX0zNEp0EFUHrtJPJ4T4mZU
+QqwtkJWQgMcw/9pt62Av3woKE2P684R4nExzH0rUOxdchYNHQN71NB8BingBqX+a
+NZp5iqeorVGrRBdSjbDmI6w0UYS0cRbGhxn6gZ4HCtkC+9THf0N6YFdrA6RuhwRx
+BUWG6LZbDxdPD/B9ePz5R8OIy7W3u/sGf5iy5KIc/KoLTh+EGnHrM6Ldr2s+ZoEn
+fv5pyBI0ZgzsvKxhtPhEkxvZTJMIA30cpYm3sxzoTj9Pjz9lJPs/iddRu04N+RMU
+81nq1XlHyqNRI7o8eE5HFb4cQP4jeg==
+=BqI3
+-----END PGP SIGNATURE-----
+
+--CMFEKwFL0XCdxy2X--
 
