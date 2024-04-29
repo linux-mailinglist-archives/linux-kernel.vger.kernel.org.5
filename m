@@ -1,208 +1,150 @@
-Return-Path: <linux-kernel+bounces-163119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 809398B65FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:00:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2238B65FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3ECF1C215A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:00:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA155B21781
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC5F77624;
-	Mon, 29 Apr 2024 23:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE587441F;
+	Mon, 29 Apr 2024 23:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="enbfHYXn"
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0Z2txDD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C1A1E886;
-	Mon, 29 Apr 2024 23:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D60D1E886
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714431621; cv=none; b=o96EjoWBfCYptOSwkWqnt//hJyZiiTa/XJ+2bf0iGKEMHxHPeRsNOQ2sMbHvk/psFqWas/x20QCm1SKSlKEOSL7jgSEZKKNPhcthWRIVh9NwSd0aDWKLLK2CR7KSEDZpu+9VM5ghSCwmdPV5JansJTV4Mll4DAbhloPW1bIvCVw=
+	t=1714431633; cv=none; b=NRv/PIqE1KvSfgSdQZEZsdjqJWo41Ue9NBvDpZrQXLjyT0pFnrWjOZVXzTjODlBeYgphZxDaFSEC52qBnu/lcJewHvRVyY5hqLT3CqiomteIKxechfNW2+5rq8D21Cdgx4l6/y2U5giYLK/cUrbjOTIegvA5wXhEu/NFkid4MH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714431621; c=relaxed/simple;
-	bh=dL0o/ufwJBiUqRbb02bZCxha9ZSzutJqJcs3mS4kp+0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ajtDMfR2/8wri7LP8dPmGKlZNGnlr6bqxOX+OqGHcLp08W+4XvokduCk/whzQvDgE6+P87KncKp1I+ImEWYnhvwerzs9dpdBQkM4fZxEkL/qqWnJWRimz5G2z5HdlqAfH6d+GE4saff9m/+2mbt7sCsgZH9yjqzwmG4wGBx5w2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=enbfHYXn; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6a0c3b691bfso782386d6.3;
-        Mon, 29 Apr 2024 16:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714431618; x=1715036418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7IxfdkyFt5OLCIS5OAJXlji6swH3nvqAQmnUqjM0TX4=;
-        b=enbfHYXnyOnTNCccYJmmpRFp6uFyjA243AHy4XskE53WXTQo2tyoPSUvRZnwqvQ1jl
-         aoCDUSY/jXKyKtrx0ROiJWJ2zI/apl3iaPZi2aYRpvEtNjqlEQj/PULEf1DSFMFxhKB7
-         Vcj/Rq+Z7CQw9XpM/xR0IRhbx/KAWvd2F4dEhzvMGWDs/3ytPW3Mactsk39ue3DCX/Y+
-         4733kUyeLLuPq4HAobfu7NnGAxHE+OK6tjNSla3tILnMWKuiH2JbGeRJASx6zyUy7RaC
-         UUwfPwQ6QbDg8LnsrqDuebNklpVH5MJ60D731SriQKCj4l417d/VdFqO4T+f6Ot747nn
-         AWSQ==
+	s=arc-20240116; t=1714431633; c=relaxed/simple;
+	bh=p+U0/z6qpWvhxLpDOQ9kwr52CI9MOZsHkOK0yPzOXU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qqJoLN1EQTZVNNFu31wXaVwPT+UPi1TrnuSsaYCNj1D8ksVzodFy2UbweaxZsxzajgIfs14IOlRu6wxgthf0ej6dbJc8iLmd0LoSwlsHHjPYrhupljsFj+0lJFefYVWbpYIRXu3uKEEeMHJXU4jChVHD/im9+jQGpBCgIZI5wgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y0Z2txDD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714431630;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uTpDjsWrbDelUOoovp9TM5pcXXPdflIY1tu9If4E9h0=;
+	b=Y0Z2txDDlfKxwTrCVciAGauorNE/zuHCgs5SYzOWqpBw6Hf4aCZ7N+QFB0b0kZELeaWSHV
+	/2oKC+ygObiykzhQpPkfGcpsKDJKNCacLjrz2/fHqEVkdt9v1Xr+pq7BIL/RkpqWoEzTzu
+	JZun2MXvcp2MbM6aAk6Ty7BeL9Xec50=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-55-BHe5j8KVMXOW1_FjEbMdbA-1; Mon, 29 Apr 2024 19:00:28 -0400
+X-MC-Unique: BHe5j8KVMXOW1_FjEbMdbA-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c65e666609so5473702a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:00:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714431618; x=1715036418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7IxfdkyFt5OLCIS5OAJXlji6swH3nvqAQmnUqjM0TX4=;
-        b=oND4ADQbbvpY4F9QtnnBH81Kxea3ls8E5Y1xnsYUFUjaWhQF+rsm13ozD6Fn3kpaQL
-         QAQLjP9ynr1q6PD5yr4TPaqZTWhby6fDyjm2o3QQB9bgD1o2fo6zcbXRR+pFjmNW5Grg
-         cKbG0k0QN4l26CdLG0rJe81xhPutW7CCtce895T5dlAuzlZKWKuzS8IFYufdp5FemrXk
-         ygnlbbyDOaVqxGRR2VoaEc78vN60r+mnofmizn9Gg5As0ASonEqRVcwgU7tvCTBVvI9E
-         5rYvFXxJbGy4RlQidoKz2Tcr789H2/dVc+54bSxG0zuv17I7EMT6YnmtDAXEWqdiauUo
-         RNZw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgKpCOj9sxVMfqz1YhEgtpm/kzhfppz6qjBZNfkBu06K0R0lZ2An62kbc6x60rLTANPTWJvgBFAPHXSRdDnQbJxe7vTTMtkktt1Io=
-X-Gm-Message-State: AOJu0YyZ+yqBxWboClRCf5i9G0ayNspI0yFk9Zqyu+g0W0gh/UDL3BzA
-	LF7clbo0AFeIReegD4Ozgw4gdMmpJhkgvMNCxsgH5qmfzVn0MuFQ1uLdzEsmQX36tSwXtfuFNFp
-	6HB2VkVwd92MnKxr8NLwIrLPRIDXinHeQN9uTi8F9
-X-Google-Smtp-Source: AGHT+IEbjAosZC96d/RanqA+wzMVaXf7eMoXt3QgxJ9NiYNBKA7eEMc7GzluIcM0vbIdj53OskB+0EmZKREdPwd3iCU=
-X-Received: by 2002:ad4:4a70:0:b0:6a0:a98a:487b with SMTP id
- cn16-20020ad44a70000000b006a0a98a487bmr12731802qvb.2.1714431618334; Mon, 29
- Apr 2024 16:00:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714431628; x=1715036428;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uTpDjsWrbDelUOoovp9TM5pcXXPdflIY1tu9If4E9h0=;
+        b=Bmz0jsq9iI2mY0Ij3+j074BuaAg5cGkfhS79oC0eUFqqBTFgstO2Gh0J1haD/OV3OG
+         QKBChcdHLXRGvNQeKLx2fhxtXuzSSTn+tvAFg18+lzHsRHej2dPsCGWz2ikK3wskltjx
+         GqHmB0vXjKGWoq9gatqQ/GZCbgdrRf226kM5PIzqYZXPMWk5HAORbDzudAny8FJTGypW
+         b/vQ7ecEkghhUcGuGXLdXvk/6nrvqKJCTK2FlosjzechUACza4XqVH1E9u9AIbTw4ehL
+         kVvyRdXn0ZsdNG0/jV1Fkx8yxFbc+KFhobf28FjMN+CVlIJ9cDFtPlVZs5frIB0uEtbe
+         iRYg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0cgTJSod/3eB3LM8LFoS2RAkwqWrM3Ujok8RZrOR5cbHDALt2kIK7ZVDqgl1sGWAcPbxDsvt1LhpcsOu8M941RhBHQFsS/VcTfjey
+X-Gm-Message-State: AOJu0YyQ6xcPNyoPBPPpVGwHwXOrg474bdXiQRl91DbR5jc4gDih1TeJ
+	pLQOw+4Vm3hFOyy56a+nJOfi1MoXNDY9blqX+fSo8jcZPqYmyR9oHRDe+A/A1XP5vCpajZHY2mv
+	PBE58nctFeuSrRzEldYnw5D4utlfFau94hmJyw1kDq3XhKjuylw1pNEp1KwPS7w==
+X-Received: by 2002:a05:6a20:4f28:b0:1a9:9547:1145 with SMTP id gi40-20020a056a204f2800b001a995471145mr950596pzb.47.1714431627673;
+        Mon, 29 Apr 2024 16:00:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFWb9DI/V+M/teJZ9AwOOl2ERKzxL1dyLl/vajtEN723v38aemsJL9zaCqiW1bIQJH0s9Qj4Q==
+X-Received: by 2002:a05:6a20:4f28:b0:1a9:9547:1145 with SMTP id gi40-20020a056a204f2800b001a995471145mr950579pzb.47.1714431627299;
+        Mon, 29 Apr 2024 16:00:27 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id p9-20020a170902780900b001eab1fb1093sm8782186pll.102.2024.04.29.16.00.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 16:00:26 -0700 (PDT)
+Message-ID: <4e133a86-a2e5-43ed-acd0-fe6f1aa9eed2@redhat.com>
+Date: Tue, 30 Apr 2024 09:00:21 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsNmEtrN9DK-XmESaPm_1xpXm8A+juE+44Jf6AK5JE0+TQ@mail.gmail.com>
- <874jcl7e83.wl-tiwai@suse.de> <CABXGCsMmRFW3EYJ3UvNd-LO7ZTOyoNqjc_3OAmaCDSL=LuxJqg@mail.gmail.com>
- <87v851e2di.wl-tiwai@suse.de> <CABXGCsNMBRUaY-V8mhUQKdq+CQW5+eGUWL_YCJWXo0cgh9bGJQ@mail.gmail.com>
- <87h6glt9zc.wl-tiwai@suse.de> <CABXGCsMcazRvmiN4XtiHQCE9=dB=M=VsRqB=v+RPmtuhBL29DA@mail.gmail.com>
- <a6f4e20ea2a68f56a7d2c4d76280bca44d6bf421.camel@gmail.com>
- <CABXGCsPdqfXeZUw1ocx8O3NdOEb+h4yQ77+zdNpcwP_4JrYXuQ@mail.gmail.com>
- <CABXGCsMTbmU4CP8CHUqRVXWkGiErFtEVG4COy6RSRWsAuK_-CQ@mail.gmail.com>
- <87pluedgx5.wl-tiwai@suse.de> <87jzkmdghh.wl-tiwai@suse.de>
-In-Reply-To: <87jzkmdghh.wl-tiwai@suse.de>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Tue, 30 Apr 2024 04:00:07 +0500
-Message-ID: <CABXGCsP-e5CjqCFztiym=zjQ=Z00uxYcQPFACEbTwjV=BHEdJQ@mail.gmail.com>
-Subject: Re: regression/bisected/6.9 commit 587d67fd929ad89801bcc429675bda90d53f6592
- decrease 30% of gaming performance
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] vhost: Drop variable last_avail_idx in
+ vhost_get_vq_desc()
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ jasowang@redhat.com, shan.gavin@gmail.com
+References: <20240429101400.617007-1-gshan@redhat.com>
+ <20240429101400.617007-3-gshan@redhat.com>
+ <20240429144522-mutt-send-email-mst@kernel.org>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240429144522-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 24, 2024 at 6:42=E2=80=AFPM Takashi Iwai <tiwai@suse.de> wrote:
->
-> That said, maybe the first thing you can try would be to check who is
-> actually calling the corresponding function
-> (snd_timer_close_locked()).  Put a debug print or a tracing hook to
-> watch out for figuring out.  If the commit was really relevant, it
-> must be called very frequently and concurrently, and I don't know
-> really who does it except for dmix/dsnoop.
->
+On 4/30/24 04:45, Michael S. Tsirkin wrote:
+> On Mon, Apr 29, 2024 at 08:13:58PM +1000, Gavin Shan wrote:
+>> The local variable @last_avail_idx is equivalent to vq->last_avail_idx.
+>> So the code can be simplified a bit by dropping the local variable
+>> @last_avail_idx.
+>>
+>> No functional change intended.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   drivers/vhost/vhost.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+>> index 7aa623117aab..b278c0333a66 100644
+>> --- a/drivers/vhost/vhost.c
+>> +++ b/drivers/vhost/vhost.c
+>> @@ -2524,7 +2524,6 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+>>   {
+>>   	struct vring_desc desc;
+>>   	unsigned int i, head, found = 0;
+>> -	u16 last_avail_idx = vq->last_avail_idx;
+>>   	__virtio16 ring_head;
+>>   	int ret, access;
+>>   
+>> @@ -2539,10 +2538,10 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+>>   
+>>   	/* Grab the next descriptor number they're advertising, and increment
+>>   	 * the index we've seen. */
+>> -	if (unlikely(vhost_get_avail_head(vq, &ring_head, last_avail_idx))) {
+>> +	if (unlikely(vhost_get_avail_head(vq, &ring_head, vq->last_avail_idx))) {
+>>   		vq_err(vq, "Failed to read head: idx %d address %p\n",
+>> -		       last_avail_idx,
+>> -		       &vq->avail->ring[last_avail_idx % vq->num]);
+>> +		       vq->last_avail_idx,
+>> +		       &vq->avail->ring[vq->last_avail_idx % vq->num]);
+>>   		return -EFAULT;
+>>   	}
+> 
+> I don't see the big advantage and the line is long now.
+> 
 
-It's madness.
-Yes I added printk to snd_timer_close_locked and saw that function
-invoked only 3 times when the system booted.
-And never invoked during benchmark.
+The point is to avoid the local variable @last_avail_idx since it's equivalent
+to vq->last_avail_idx, as stated in the commit log. Besides, it paves the way
+for PATCH[v2 3/4] where the whole logic fetching the head and sanity check is
+moved to vhost_get_avail_head(), so that vhost_get_vq_desc() is simplified
 
-> git diff
-diff --git a/Makefile b/Makefile
-index 40fb2ca6fe4c..3ecff79a23b8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -2,7 +2,7 @@
- VERSION =3D 6
- PATCHLEVEL =3D 9
- SUBLEVEL =3D 0
--EXTRAVERSION =3D -rc6
-+EXTRAVERSION =3D -rc6-test-build
- NAME =3D Hurr durr I'ma ninja sloth
+I will drop PATCH[2, 3, 4] as you suggested.
 
- # *DOCUMENTATION*
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 4d2ee99c12a3..59d8e4698b0b 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -407,7 +407,7 @@ static void snd_timer_close_locked(struct
-snd_timer_instance *timeri,
-                                   struct device **card_devp_to_put)
- {
-        struct snd_timer *timer =3D timeri->timer;
--
-+       printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
-        if (timer) {
-                guard(spinlock_irq)(&timer->lock);
-                timeri->flags |=3D SNDRV_TIMER_IFLG_DEAD;
+Thanks,
+Gavin
 
-[Tue Apr 30 03:33:25 2024] igc 0000:0a:00.0 eno1: NIC Link is Up 1000
-Mbps Full Duplex, Flow Control: RX/TX
-[Tue Apr 30 03:33:33 2024] rfkill: input handler disabled
-[Tue Apr 30 03:33:36 2024] DEBUG: Passed snd_timer_close_locked 410
-[Tue Apr 30 03:33:36 2024] Bluetooth: RFCOMM TTY layer initialized
-[Tue Apr 30 03:33:36 2024] Bluetooth: RFCOMM socket layer initialized
-[Tue Apr 30 03:33:36 2024] Bluetooth: RFCOMM ver 1.11
-[Tue Apr 30 03:33:51 2024] systemd-journald[949]:
-/var/log/journal/1b6a399fb0874de8b095a739fe2ff323/user-1000.journal:
-Journal file uses a different sequence number ID, rotating.
-[Tue Apr 30 03:33:52 2024] rfkill: input handler enabled
-[Tue Apr 30 03:33:55 2024] DEBUG: Passed snd_timer_close_locked 410
-[Tue Apr 30 03:33:55 2024] rfkill: input handler disabled
-[Tue Apr 30 03:33:57 2024] input: solaar-keyboard as
-/devices/virtual/input/input18
-[Tue Apr 30 03:34:08 2024] DEBUG: Passed snd_timer_close_locked 410
-[Tue Apr 30 03:34:11 2024] input: Noble FoKus Mystique (AVRCP) as
-/devices/virtual/input/input19
-[Tue Apr 30 03:34:23 2024] show_signal: 8 callbacks suppressed
-[Tue Apr 30 03:34:23 2024] traps: gldriverquery[4464] general
-protection fault ip:7ff83958c76f sp:7ffc464e0e00 error:0 in
-libLLVM.so.18.1[7ff83920c000+3afd000]
-[Tue Apr 30 03:34:25 2024] workqueue: gc_worker [nf_conntrack] hogged
-CPU for >10000us 5 times, consider switching to WQ_UNBOUND
-[Tue Apr 30 03:34:26 2024] workqueue: gc_worker [nf_conntrack] hogged
-CPU for >10000us 7 times, consider switching to WQ_UNBOUND
-[Tue Apr 30 03:35:27 2024] workqueue: gc_worker [nf_conntrack] hogged
-CPU for >10000us 11 times, consider switching to WQ_UNBOUND
-[Tue Apr 30 03:36:28 2024] workqueue: gc_worker [nf_conntrack] hogged
-CPU for >10000us 19 times, consider switching to WQ_UNBOUND
-[Tue Apr 30 03:39:33 2024] workqueue: gc_worker [nf_conntrack] hogged
-CPU for >10000us 35 times, consider switching to WQ_UNBOUND
-
-I saw a similar picture with ftrace.
-I had no experience with ftrace, so I am laying out everything here
-for you to see if I am doing something wrong or not.
-
-# echo "snd_timer_close_locked" > /sys/kernel/tracing/set_ftrace_filter
-
-# echo "function" > /sys/kernel/tracing/current_tracer
-
-# echo 1 > /sys/kernel/tracing/tracing_on
-
-/*  Benchmark the game here  */
-
-# echo 0 > /sys/kernel/tracing/tracing_on
-
-# cat /sys/kernel/tracing/trace
-# tracer: function
-#
-# entries-in-buffer/entries-written: 0/0   #P:32
-#
-#                                _-----=3D> irqs-off/BH-disabled
-#                               / _----=3D> need-resched
-#                              | / _---=3D> hardirq/softirq
-#                              || / _--=3D> preempt-depth
-#                              ||| / _-=3D> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-
-# cat /sys/kernel/tracing/set_ftrace_filter
-snd_timer_close_locked [snd_timer]
-
-Now I am tormented by the question: how can reverting code that is not
-invoked directly during a benchmark affect the benchmark result so
-much?
-I'm afraid that I won't be able to figure this out on my own.
-
---=20
-Best Regards,
-Mike Gavrilov.
 
