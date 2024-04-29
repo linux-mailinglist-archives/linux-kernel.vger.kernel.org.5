@@ -1,58 +1,61 @@
-Return-Path: <linux-kernel+bounces-162152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5FA28B56BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:33:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2A68B56BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:33:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2651F241DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:33:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18FD81C20F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B6E481D8;
-	Mon, 29 Apr 2024 11:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5004C615;
+	Mon, 29 Apr 2024 11:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="b3o54+FB"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="aRUD4h14"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2A74501D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFDD4501B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390398; cv=none; b=pKfCqYBwTH8Ih7/0+4gVWvKiPxZeGaHrPzH+eg0dUlp+HLv3T0/t27z5qdOL//f/v6DzyxGSdERHie9gwpAPh4Mugpj/s5EEMg6uh5DWyxw2EpLscj5sF6rr1Cm5Zj9IIwk3werldA0LGZp3E+BJKgXdq9mywKx74aujKmtB1VI=
+	t=1714390399; cv=none; b=F/Shi7TzTQckQ3MSa1kDsgcvId0lxQytn7zbT7g/dIuj3Rrz5ZPrLqyI0MapXDNjLA4M0voVbBJ4MBnE0JZXtrSdalyV91CFLWQxjwXPCfOM46GPUfbcCf1l+VmNfn1xUu3IewNaDptygmo5G2TrKP4QTBCXEvYxuLlJjd1t6xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390398; c=relaxed/simple;
-	bh=V06hBJ0AbH+QLN6vjA3YFpErKpkzt+h3vT6AjALWIu0=;
+	s=arc-20240116; t=1714390399; c=relaxed/simple;
+	bh=qjQ+LYbUEfrBtu3ymflLP9dmO9tQ6/Bs/eoY36v4nPg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TXpjxzZJ1020cpKejup6PCJobgZlGhN22U3GhglcPffjI1VV51TcQcA1TSTmjnC0XwvVa5AhHLlPFcdZ7xvZRHai95v+SaQPsTHtktOHYjh0zxQJK+dLxIuiKdCyH3kxTTvXHV6coRxN55E0DDrn5VlCnEi7AFx3NrfTtfBlNXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=b3o54+FB; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=sYiDYFlPQsDQs7rBtY/QM1SG7GaqIk+frEB9ktfphea6Wt+jpkHISkmiSKMXndouY8Md3zJGH+mg8Cl6bG+cHZHVD8fEyHsJf/CZ8gI+F2BQxMW+xNUZ83MMxYQfKb8yaL8PgOFNV4wu+ZxU4dj/koXt+LZec6Z23Ei/muT+sfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=aRUD4h14; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=ytaMDbrRHYTkVlHscVH3Jk5trLpcIFOkGRyH/ZBVpu4=; b=b3o54+
-	FBrZMOOENh3SFIj9rXzdWDB/PlMnG8ozVY6pIS70/2X2gDbHZh7H5/OaLvIdk10Q
-	SGkowgG2M3LM/2Fv76mbrNXLogK9XXlIG8m0du4N6MiddcbLQ2tql2FMRoi2rdFH
-	+67ppN7OH0BrBmUlPfOzeRhXcly+NgABG9vRkN6ZFYg92iQbIRdvZ/twGC3odSbi
-	sXm9EIA2wLjnDAqy8d9mavlUOZiYeFXUXGAZB57swnNffTEUcTuwb2+FRDaqhrYu
-	uwWxLEiTnz/30pRG0WfuVVaKhEjM1Qgubcwd+OB4iC1pSV26uJZAFpkg3hzwSF9m
-	Lsl9AZOTeskRDuLg==
-Received: (qmail 2280987 invoked from network); 29 Apr 2024 13:33:15 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:15 +0200
-X-UD-Smtp-Session: l3s3148p1@rkh5njoX3kFtKPB4
+	 s=k1; bh=jF+95jMp/45NMjGYJKM23B9xKBucPH4GAO56Jky3844=; b=aRUD4h
+	14HkB1S+ge4YmGYHgC6e8z1QFZnIGEwb7VW6Wjs/dhS7SsCqi0J0cylMLueUjaEq
+	AzQQSTtE2ukCCPvolzhDzwOet/OsyfJOcsP25SvVacjNnIPJWbyZdsFy8AWWXQjE
+	JEN7NjXU5WZUMCKOJpmTB6Ol2U6ck+VZnD04dRml5NzTEEhWiHVaybCPCekVY0SX
+	wmEad53AvSdMQtbMvJigWFQ9xmNYNoXjBHokUg6x7Y2SfWGm5GOz3V0j/rPqtQTq
+	M79guIWLd/tJTTBZ5+/FF3GuhfhySodEF9CpOXSgD15S6MjKwX9XSsEl/ppis9Hs
+	eSMz0D9XYsDRI+AQ==
+Received: (qmail 2281021 invoked from network); 29 Apr 2024 13:33:16 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:16 +0200
+X-UD-Smtp-Session: l3s3148p1@fvOInjoXqG5tKPB4
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-iio@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
 	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] iio: adc: ad_sigma_delta: use 'time_left' variable with wait_for_completion_timeout()
-Date: Mon, 29 Apr 2024 13:33:04 +0200
-Message-ID: <20240429113313.68359-2-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 2/8] iio: adc: exynos_adc: use 'time_left' variable with wait_for_completion_timeout()
+Date: Mon, 29 Apr 2024 13:33:05 +0200
+Message-ID: <20240429113313.68359-3-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
 References: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
@@ -75,33 +78,57 @@ self explaining.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/iio/adc/ad_sigma_delta.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/adc/exynos_adc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
-index a602429cdde4..40ba6506bfc1 100644
---- a/drivers/iio/adc/ad_sigma_delta.c
-+++ b/drivers/iio/adc/ad_sigma_delta.c
-@@ -206,7 +206,7 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delta,
- 	unsigned int mode, unsigned int channel)
+diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
+index 614de9644800..78fada4b7b1c 100644
+--- a/drivers/iio/adc/exynos_adc.c
++++ b/drivers/iio/adc/exynos_adc.c
+@@ -538,7 +538,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+ 				long mask)
  {
- 	int ret;
+ 	struct exynos_adc *info = iio_priv(indio_dev);
 -	unsigned long timeout;
 +	unsigned long time_left;
+ 	int ret;
  
- 	ret = ad_sigma_delta_set_channel(sigma_delta, channel);
- 	if (ret)
-@@ -223,8 +223,8 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delta,
+ 	if (mask == IIO_CHAN_INFO_SCALE) {
+@@ -562,9 +562,9 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+ 	if (info->data->start_conv)
+ 		info->data->start_conv(info, chan->address);
  
- 	sigma_delta->irq_dis = false;
- 	enable_irq(sigma_delta->spi->irq);
--	timeout = wait_for_completion_timeout(&sigma_delta->completion, 2 * HZ);
+-	timeout = wait_for_completion_timeout(&info->completion,
+-					      EXYNOS_ADC_TIMEOUT);
 -	if (timeout == 0) {
-+	time_left = wait_for_completion_timeout(&sigma_delta->completion, 2 * HZ);
++	time_left = wait_for_completion_timeout(&info->completion,
++						EXYNOS_ADC_TIMEOUT);
 +	if (time_left == 0) {
- 		sigma_delta->irq_dis = true;
- 		disable_irq_nosync(sigma_delta->spi->irq);
- 		ret = -EIO;
+ 		dev_warn(&indio_dev->dev, "Conversion timed out! Resetting\n");
+ 		if (info->data->init_hw)
+ 			info->data->init_hw(info);
+@@ -583,7 +583,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+ {
+ 	struct exynos_adc *info = iio_priv(indio_dev);
+-	unsigned long timeout;
++	unsigned long time_left;
+ 	int ret;
+ 
+ 	mutex_lock(&info->lock);
+@@ -597,9 +597,9 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+ 	/* Select the ts channel to be used and Trigger conversion */
+ 	info->data->start_conv(info, ADC_S3C2410_MUX_TS);
+ 
+-	timeout = wait_for_completion_timeout(&info->completion,
+-					      EXYNOS_ADC_TIMEOUT);
+-	if (timeout == 0) {
++	time_left = wait_for_completion_timeout(&info->completion,
++						EXYNOS_ADC_TIMEOUT);
++	if (time_left == 0) {
+ 		dev_warn(&indio_dev->dev, "Conversion timed out! Resetting\n");
+ 		if (info->data->init_hw)
+ 			info->data->init_hw(info);
 -- 
 2.43.0
 
