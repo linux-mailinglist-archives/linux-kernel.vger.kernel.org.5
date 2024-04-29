@@ -1,80 +1,65 @@
-Return-Path: <linux-kernel+bounces-162710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889CB8B5F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:52:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB348B5F67
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4BA6B21149
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A9C72823C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C63086244;
-	Mon, 29 Apr 2024 16:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754098627D;
+	Mon, 29 Apr 2024 16:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cgnxoZev"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aR8IZmw8"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF28D33C7;
-	Mon, 29 Apr 2024 16:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BF88613E;
+	Mon, 29 Apr 2024 16:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409511; cv=none; b=PjKvtG1Pg5joiQMpVhiDpsV8mGIxEOIZsaUoz1Q0pdk4TjnEJ53q1U1T4sngh5aMslWvlj/lR75EbtlfFwDrOEpePyjn43U4KGpJgontIqAGg04Cgg1X38pgHzYMgzDCZxR9VJV0OyoSzoRIEMP8Bfop317KKsKpX78sdvaUzrI=
+	t=1714409660; cv=none; b=Clge0UMdZVMOxTFJgF6EjbIciXcw28lVEsJnYdDX5/QJuCIcVC7W6t3P1p9FAU9htOr+0NNweV+ynXsehnacQhgzysBNum0kvM/aIhQWfmXKRk6eh7ZJPimbhCapTjL8avAgKkd3eGrSnG+FqU5Kw8RLbwiACJxRA+c5AZJv7XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409511; c=relaxed/simple;
-	bh=QJLySMYgKPWaWMPyrh9HHankw97JNTA7XxHF8MoanDU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pOG++BM63Kf3fSSGuJ4TepB3I1v4HevdIeeCh1TXwwxBq9F2wh0x77iNlxxx1ii6fF12NvqCL+a6DM4JOP04Wl9kX80rGXVD7n4ybMwzQ6b+KlNyVLPdonThGfP1Rl0NtKhv5Vcnq6YSatutVAf2LLTrWYud6xG5ut/1PcUhH/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cgnxoZev; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b24dbd1bb6so289643a91.3;
-        Mon, 29 Apr 2024 09:51:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714409509; x=1715014309; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xFhiFPiemiTSARcy05czXiciKI4zhthcV3gzUyhyfZo=;
-        b=cgnxoZevKBHCWyO4V0kUqkFjvWflm3ETUDKQMYGaRRhRjeXkFLoZU/xhGr65VkM+UX
-         lqmCi0Jod8H91daMj8lZZEztamwFaH8yYHfRqf0cXik7yB+vAWnUqgeX/p/IXAk3k6uP
-         u3T0+mG3NkfAV0H2+AI3niAQZgS9Osr1QYJsj8bIrj7OYMGkdplAeUO0JUVG5MrNUzrY
-         vD4p62tdNkBWwaAPVzMt2MvLISAruivZcLhDVn8aP7FC9097q3my8GuwdVPtHdajYX2F
-         d6GmBd/TRYUgPyymajazWZqVLWyGjEe0cunyj0uADlD0VJIXUMUtjLMY1c76dRcYsHLz
-         q5Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714409509; x=1715014309;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xFhiFPiemiTSARcy05czXiciKI4zhthcV3gzUyhyfZo=;
-        b=bDUI2yh46XysM2CCS7afxGidMluOAMVBWLG0O8eoY+zDzNWlrptOAk8+JPS428OJPm
-         EmR/Oe+OD3Oxl2bb1QgVRg9xNQkANRyKRJJLAzkL8VmC2bLFiS5pEUXxL27jYqJ1bL01
-         hcp2KFSqcMckPh7mHfmt7PbTT0rZGUuCYteqYem2cMuZoWA8OthZ/8Bx0SXSJfs+E6mh
-         CpdWRq6J2vGS5bHldkuHM7+UuW3otfmw7MHfvczE1mr1K8fxLFIFrzBCknnF6q5GF7Ys
-         G2yczd4DewsbD0Y//mOcBvJaGr34LKGkDUMrDrVjLJ7execS77kfiOqW/A3FYaQciCXD
-         G4Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCVkLgqOEF1Y5RwHzeWepPSJHYtwEwv63XClKiT/mSmSGerPJq3DlV63xRcgG4QLWzo7LPv4a+Xyy9pLe73oohSeQP9P8zd+miMVL6H6DoDYmllJZY5zT8BUQu4MvklXA2fPJyuoeWfdMy3hZlg+0kOCVPSWTpbP9+Bjm8STXvVwi5ZgZcfJ5dwq
-X-Gm-Message-State: AOJu0YyN7GuVWv4/UDTbwgbp72xZwZFuDAXu95We3orKZY2HBE1z9Qjd
-	jLXFO6zC8QIYR9KolmSkIF6Sg0Dzv/ZVLqZoSCAupLZBMJSTYxM3
-X-Google-Smtp-Source: AGHT+IFTHhZzxxN0MM3ENYoF4u8yyFHcB9HiImRHm+ynCmr7bAYBJup8q1ytVzkGxYOxHJRUEbZB/Q==
-X-Received: by 2002:a17:90a:2f21:b0:2ad:eb55:2e39 with SMTP id s30-20020a17090a2f2100b002adeb552e39mr9524317pjd.49.1714409508881;
-        Mon, 29 Apr 2024 09:51:48 -0700 (PDT)
-Received: from 0xff07.hitronhub.home ([2407:4d00:3c04:80be:64cb:3685:54f4:1445])
-        by smtp.googlemail.com with ESMTPSA id p7-20020a17090a348700b002a55198259fsm5322473pjb.0.2024.04.29.09.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 09:51:47 -0700 (PDT)
-From: "Yo-Jung (Leo) Lin" <0xff07@gmail.com>
-To: skhan@linuxfoundation.org
-Cc: 0xff07@gmail.com,
-	Shuah Khan <shuah@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-kselftest@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: kselftest: fix codeblock
-Date: Tue, 30 Apr 2024 00:50:47 +0800
-Message-Id: <20240429165047.16088-1-0xff07@gmail.com>
+	s=arc-20240116; t=1714409660; c=relaxed/simple;
+	bh=m+a0mpd9lPCvf7rECTwJNwAyUY/aioHvQrkAhuahk7c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GphrjEWmPhcClEclA+sXuRWtxthfulvoXFqxzW2F7evUQXgCRLrUj9t4uWSODd3wjWKo7wtHzJ+6BiIRgXAp7XGlPBZr79mdRdOTewwTRTy3oYVwBgmhi/kl5s8/il9iZfB24HIRmHKt0EO5Cz0yejDyTKEPUuAXSuqdX52q2yU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aR8IZmw8; arc=none smtp.client-ip=192.19.144.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1F4ECC0000E7;
+	Mon, 29 Apr 2024 09:54:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1F4ECC0000E7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1714409652;
+	bh=m+a0mpd9lPCvf7rECTwJNwAyUY/aioHvQrkAhuahk7c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aR8IZmw8AueI1Pf30pWHZiYSPYjF3df3uyCgMZJJg0+ckeR1ICbBaZsXseg4GQ38n
+	 XQYL1UfzR4B/jA0iS0HyTF1wgqrHAXwr3ZagwhCrglkSCmODtvXBYnt1COqIkRoKW9
+	 ZVAJ1dI4q09Ol/XAsSBufK+LIfE72i4Y9Lft1P5w=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 2C56818041CAC4;
+	Mon, 29 Apr 2024 09:54:10 -0700 (PDT)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: netdev@vger.kernel.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next v2 0/2] net: dsa: adjust_link removal
+Date: Mon, 29 Apr 2024 09:54:03 -0700
+Message-Id: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,26 +69,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add extra colon to mark command in the next paragraph as codeblock
+Now that the last in-tree driver (b53) has been converted to PHYLINK, we
+can get rid of all of code that catered to working with drivers
+implementing only PHYLIB's adjust_link callback.
 
-Signed-off-by: Yo-Jung (Leo) Lin <0xff07@gmail.com>
----
- Documentation/dev-tools/kselftest.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
 
-diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
-index ff10dc6eef5d..dcf634e411bd 100644
---- a/Documentation/dev-tools/kselftest.rst
-+++ b/Documentation/dev-tools/kselftest.rst
-@@ -183,7 +183,7 @@ expected time it takes to run a test. If you have control over the systems
- which will run the tests you can configure a test runner on those systems to
- use a greater or lower timeout on the command line as with the `-o` or
- the `--override-timeout` argument. For example to use 165 seconds instead
--one would use:
-+one would use::
- 
-    $ ./run_kselftest.sh --override-timeout 165
- 
+- remove a now unused phy_device pointer in
+  dsa_port_phylink_mac_link_down
+
+Florian Fainelli (2):
+  net: dsa: Remove fixed_link_update member
+  net: dsa: Remove adjust_link paths
+
+ include/net/dsa.h |  11 ----
+ net/dsa/dsa.c     |   3 +-
+ net/dsa/port.c    | 136 ++++------------------------------------------
+ 3 files changed, 12 insertions(+), 138 deletions(-)
+
 -- 
 2.34.1
 
