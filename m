@@ -1,269 +1,236 @@
-Return-Path: <linux-kernel+bounces-161796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D0808B5163
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 506548B5165
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:28:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B778B1F222EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:26:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32561F22302
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE4B1118C;
-	Mon, 29 Apr 2024 06:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5E31118E;
+	Mon, 29 Apr 2024 06:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="o/Kjek6v"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2053.outbound.protection.outlook.com [40.107.7.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Py6EuaIT"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DC3DDB1;
-	Mon, 29 Apr 2024 06:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714371964; cv=fail; b=jn01BFJ/muhbL2AjoMDsr9rI7PzzvcujEk7i1hi1kYQH2KIANYFWsv+c30WR24bG689xmGx2ZTEGpWS4lQiQUqFrq7YGeSOJq4P5JBPgV0baJtDW3nEwNwRvQjNotPBlDUUmd9dUyN/VFibRT8sKiehhOY6oLYd6oKCEukrsdhk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714371964; c=relaxed/simple;
-	bh=+Sj1fUuTwwSL0kAoItzClYOWICUJq/2q8/VKHQUb9AM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EClbRi+yxK8Si1/Lg4yFwthQTEUTrXkb2rpyCQ6J+MJ9sIh446VzFmR7skmnvkbnglrExMR1x+fBVySfBmfhy8SG2o5j/vKlvbFrX0k66Zi9+DlCprJW5qXS20PRDQ35ZCKpjWxJYQw6PD8tVKgDGGLKW+xZC+Xt4DlOtNsWrfA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=o/Kjek6v; arc=fail smtp.client-ip=40.107.7.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kc9IeOzPmEdil9QtJpqASuROe2Dxe/Yyi9df3bOx2kIr1nuwRU0pa9b7NOOmRvZY1ecbFMWlksgNa24SZk3bCr8e2Ux8W1idGLoZSkuR/VpBVJGo9NXe09WeJMUv5X8vMAGChJeBZ1NoGccQQ0ZmIm0BgSm5thxj6Jq6lKD2IfzbcC81NuulUkK6+IHa5Vff1XF8zUsxQmY3T6bDmzVUA2ELy48eOWsWywVfx/cdtLadf0HEih/t5PjEpGPBxqdS7jRJZn9xxjKZJrhix/7MAlofk/WE8qD65sA4s/feXbIpvOkxh2XM8HI6tH5HwpUaCqoMOXeXZo4nWkvpBseGFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ld4TZHnfRE81yKZtQO/gJwEYQ+CVu77ZiunipcsG4uU=;
- b=Yr7kZr08eCe2TZsNJl3J41+1lSDz22pBKNuDvRzo5zB8ik0akx59V/rEx6GHt+E30dA1q9lbKxnFshu95v0VhURSKrmd7V50+wECTEQAd0npppQTriw+zO1bJ3bJzHxhTd7XTml3YMgKgUFEnBNnIJOwwM+89CYKRiu4slE7YP6OVDpVpSw2aHc1ROozQ1u1cKkNl9V2P7B1isPL7xNgEyfec6+bs53xBUUYBQhP5apM2BofKiKdFgYG8rliKIgMKOVg7/vhV2r4m7jMuzH+Vy0cQ/kG/QKBn1wmRSCCJnp6pTEK7N4LUCtUjodGbSrni9t1PM7tBu1F/hv72nIuLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ld4TZHnfRE81yKZtQO/gJwEYQ+CVu77ZiunipcsG4uU=;
- b=o/Kjek6vPq+d5UY8TkiIBE71iy6uwLodunL9uhMC4ICi/p58GC0cUHJaDUjuj/YleeWglAGubqnUozLxxstUOnBz0eJPNddHWza6gLeUAHpLYuTOpEc4QGyJ2SGP/CUIvpVaZgllnP1Uw/rqCBTZh6QOiuiTWTDIKau3NOY3VBQ=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM9PR04MB8891.eurprd04.prod.outlook.com (2603:10a6:20b:40a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 06:25:58 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 06:25:58 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Pankaj Gupta <pankaj.gupta@nxp.com>, "robh+dt@kernel.org"
-	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
-	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de"
-	<kernel@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>,
-	dl-linux-imx <linux-imx@nxp.com>, Jacky Bai <ping.bai@nxp.com>, Bough Chen
-	<haibo.chen@nxp.com>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: Varun Sethi <V.Sethi@nxp.com>
-Subject: RE: [PATCH v4] arm64: dts: imx8ulp: add caam jr
-Thread-Topic: [PATCH v4] arm64: dts: imx8ulp: add caam jr
-Thread-Index: AQHail9/rk3RFekv9UScQDV5SFo/57F+5fGAgAABZDA=
-Date: Mon, 29 Apr 2024 06:25:58 +0000
-Message-ID:
- <DU0PR04MB9417125D2C4EB2441142D22F881B2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240409092040.3870497-1-pankaj.gupta@nxp.com>
- <AM9PR04MB86045B81C1E9C3B660079546951B2@AM9PR04MB8604.eurprd04.prod.outlook.com>
-In-Reply-To:
- <AM9PR04MB86045B81C1E9C3B660079546951B2@AM9PR04MB8604.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM9PR04MB8891:EE_
-x-ms-office365-filtering-correlation-id: b4c987c2-2d98-409f-83e2-08dc68153b7e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230031|376005|7416005|1800799015|366007|921011|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?+QlhSoK99hg70AwPKxTsYaSTO+GQOBLSC3URR/gdxBj+zHqjtAl/bqXU2E5D?=
- =?us-ascii?Q?UMKTp7Dw3eBvbmeucJcCIDqyVy2KoR/EpF7Fn2OihK2nOiVxCwvULqB1Lv5S?=
- =?us-ascii?Q?Nv9918cNt9Ke6ONVi+PK3jZSyZzaT3emqsyYwyycqDTxaLVhh5izh+M/AUaB?=
- =?us-ascii?Q?i8cS0e0MhsAA7Lc4tfzt8z6TJ/96MMmj+qd0CorW6CN7sacAuGCY76sHM/EE?=
- =?us-ascii?Q?+ckHKFD4dghf++09vdlLlSqU2Rd/1snL457XDh5LVuo35hSoZ5//ggCN5ODO?=
- =?us-ascii?Q?yyXUT2tTEsaFsAg7+ulymK//rN1ILK9mzzprEjfqV2RF6DUUHV1Tl2+NLpg5?=
- =?us-ascii?Q?vxD491eKkrMt+YJd/D/0V5qC/ooxW7ADnpKQqWk9ndqCcMMWnMq0yEONyNKw?=
- =?us-ascii?Q?AClznHuI5h6DlPuPPjonMv1JatwGMBN1AWqX/fiSXtzihJdn7CeJAuhjGvhP?=
- =?us-ascii?Q?4FW/mvYGOrypL4jq5U6ON9DtL7lUYzRtW8+h28/kiZw74NWJZmdHIdce5dT6?=
- =?us-ascii?Q?cQiNnJe10xyXEQw/lIjMDgi1/MGQPi/o3bmPG1ZfUd72BEripEIMK7s5zMoh?=
- =?us-ascii?Q?yy8YoQWkqfb3c/54mDejQxrMfThuUYKPBTVymTY0tCGxgzB11OfUsXWFACMY?=
- =?us-ascii?Q?zyn+c69POMppYRJkKSa8PJ8WxmrWJdDnawLtkLmFRFi3ILnaX3yVwg1bMMSV?=
- =?us-ascii?Q?y5tOY7lKjP7ZIISA4bOoiOCiHoaEeVpuQY8VOy4deliDnDRS0CGkc4qItHl4?=
- =?us-ascii?Q?7WaSGFphGdCV1kqzFnKYd84OtbK/FdF7WUzQji9TEYu+W4FtoBLbGMk/S1pn?=
- =?us-ascii?Q?hCoG2SlMYTYNrC4f5q5XrxR/UdXyxTdSi5lERyYkqmO9dvrJznlpyYKLB2Ss?=
- =?us-ascii?Q?arYu4hcZEZbaAKPMweSZj6sdQ/TMuuH2e0BjgnUzaZ+d224EpubUJYXhO1PF?=
- =?us-ascii?Q?F+fSLG8RecqaFoY2Jb5rAXAfOHfpQfwHSCrAaUZ0vEmRxOjVGS06jWHcbH20?=
- =?us-ascii?Q?u8JcFs4wz/zlZxUzfjCEM4+ntSmlELB4QoTryjs0TxzLN6Q677VUvYX4RKv6?=
- =?us-ascii?Q?LN/lfjh5BNd80VYo7nN62a5gAtvyVELf+J03r9tYElD0EEWsY3mMI5//CYRn?=
- =?us-ascii?Q?gMsNmJlC3yNJq8z6SS0UomA01bDhEuwjiscHdwfXlx7ogWyjZwYupU7mvjfw?=
- =?us-ascii?Q?BN6xYK1f4PdBOfu1Z2PRif8wm6vhvbk0s0UXADdSyMrlmJUxICmZKUk7vI8t?=
- =?us-ascii?Q?keiSpOajTQlDQBuwMElRZeM3rWWFJ4K/JgY7yACI99wL/WZPnz4JiKJw8XdO?=
- =?us-ascii?Q?buzO9lOe2jVGYYP2MUIGjnrzb27O19yFW5g+ibClCAg7AgVCzp0LBh6FmK+h?=
- =?us-ascii?Q?PCETHQQ=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?3HgSl+I3gLB8ECnt7cPczEgbxo3VdqYQwNcIZm4ohxs3sPa9wFiCV9ECoHC9?=
- =?us-ascii?Q?9msQm8e6Y6etqkiK0XuumO8LEZB+YsgZ1nZ+Hegd5Tm9sqx2gFxui9DKpB4w?=
- =?us-ascii?Q?ZI+dWpPF/lRL/5JtisT8JpwuBCUHa8GK9u7zb6Ehtj0/ZjY4pIMRAnCp8dQM?=
- =?us-ascii?Q?obIr/iWF/VeVVSNcid4wbRZFBhv9IUDHdrje8Wp+8uG5RcW7thk2Geq6w7Z4?=
- =?us-ascii?Q?x/LMzCnhZCusLYhciUwIKsMm1zXNOohj3tgmagZrv+XK3/AYBcKF7wK7uxC7?=
- =?us-ascii?Q?zctqHaBt24O8AZ4Dk5vRpKGBNe8cakFBXg/DlMwmqBUoDO7symZqLUv3H8CB?=
- =?us-ascii?Q?fA8oVrEvslCjKcODMwRiEDOw8jRs3fB/EXtY0b9d5+m5lPZGezgMj9LSXqbS?=
- =?us-ascii?Q?uDj1Dm8AL1mCX0t6KWUXnUEorQMtSU5LE9yPLi3136k+mLIBgSRb7BU8cgWB?=
- =?us-ascii?Q?+TnMgiK/S2qaLzAINKnh3P4T8Lla0vsYS9FutExyQeHDH6WceL8ng9eSXika?=
- =?us-ascii?Q?PYUeUtFfsJkkGA4rx1HP456XlelpE0oDAV9XXyjqDerK4uK0Tc2/JkzGYomi?=
- =?us-ascii?Q?YEoDb5HD50wobTagNUQbKD7o5sw9gpGjKU3fEFUjJVd7UEmlnKF18RzTXwa/?=
- =?us-ascii?Q?bKhhgEe/quC76J/eYkELSal4Mias5wtv46YqudNpB4E3XbKwRi1g9QCFeQOG?=
- =?us-ascii?Q?O1xY/BFhg5VPQR/LnGqs0rSIPKePmYRUButd5GR0H24oXMVM4UNHlYdn+Jqr?=
- =?us-ascii?Q?xO5ruqE4QRvdBZFWBt4rnbXUOr6GQXO+RX65qeUX7SFi7zzpA3zskns86q1v?=
- =?us-ascii?Q?8T+gWukjwjxStZo8TqABkxVRwZ/2bHwh8qJPNRTGnrAvFCq2mwqMLygE8Rdm?=
- =?us-ascii?Q?pjdNwlN3lwfHCFEkHK/bpkZ68Se14eYZ8mK0v/Nc+Sa0e9+7U3gy3uW1t2PN?=
- =?us-ascii?Q?pHMNtSjfQ4StOvsBfOu392beXiOSRkr02x3zj/PcOeJhtz2HEtDNl5dewFO9?=
- =?us-ascii?Q?ouoze5qqI5NluUSag3VSDHh72LPZX09E2DThLGb+yC10kbenI/7O2SS/xIAZ?=
- =?us-ascii?Q?JpfhhG0IpyLcAWQiRdw3Te+qBM/KjFEvHxkO7r1iDzc1d4SpIQMaLb0uEGTx?=
- =?us-ascii?Q?D/OO90v8mDb/hZzUFlibUz/b3R0UCTQvESVG6QMH56jt+2Y17Z7qO9JytknE?=
- =?us-ascii?Q?HSSmG99CpftJen4+o3RBjB7nVohPgjgHqWBcXHY2VyR4FMcTE9FORib+Yv+k?=
- =?us-ascii?Q?6ShuheYIJZOkO0s7Lb7/8Pfklr5y4a0DMPTyRsY8SR+TVqjTrgyS6d6e/70W?=
- =?us-ascii?Q?Bch5lXbPeUvrPy/JNNmUdRdOy/fwEIA8Tcd3f2wsIAZF8XsUoShB0uvGonIA?=
- =?us-ascii?Q?31HAtk+4SyOzU1zXpRY8gfkM3MnMTIBoeO/ozjtAB70OlUhJlSMzZkYZJ1m+?=
- =?us-ascii?Q?n9inaKGTNIReeKSDz6vXMcARZWWmYZ2JVt1OYES7pVFjrnPsest9hT/lEQ+n?=
- =?us-ascii?Q?JIs7p4BY+PbdBRRQYcb/kIskpQ64I6xzRq8CT0oYHHPxOyoxHRtI8gOqqlBK?=
- =?us-ascii?Q?tCxZRMlB4TmDaJlUZvA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C5EF507
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714372070; cv=none; b=DaM9Mj2CFAVTUZSzHADDr7UgKy5XQA9/OBLNApdEwtnUEBDSX48lNvSim9b2fhQYF3VAdXz0XEptWS9I1yNilGzGgode/VBlCHZ7aqflQ1fgOJGtk09qB/7tFiKlM2Ci+jevtDCIgyvbkozlJhNcl4ln0+ArXFMWOJlR01pEmqQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714372070; c=relaxed/simple;
+	bh=pQ1HlVQ90krhqOnXJ5XQMVdoHSa9+n1hUzM/hln9e50=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vcr2UbngO+XA8jooYcws5EDpFplz+ey0JoI9dDC6+rojQn0pFNfZpEAwt/RO6eP55UllTO3erEs6CoSOWjf2nzuQSgXily+0ZlU4AZfoXucnu5zYqjG7SHauKg6D0GYhBMLvvvVZ8/CPnIoHauay1uAP84kthKuDKWBsAgSFRdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Py6EuaIT; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so4979849a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 23:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714372067; x=1714976867; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=qA1Mq+BKArwz7aZn7XQgiZHHBtYnA3j8xSFLJOCXWzY=;
+        b=Py6EuaITLY+hOvGO4ULiTbwDKB8P/f2O9c0pbW0ZWvFfPEJ+upQ5Auz4UpsTHZUxXJ
+         Omb97/Ua/Pmsitn6DGSTP9lTnTzdOkkmP/Xv5XeVS66AicLUURQ9TVGeD6+bJ8qGzxMZ
+         fwLRc39vDGzUKEfiTdVk5+zpirSXyYrU+j+8zVotnP+pDC1CJlmjvlKFhT2PuLorwoyP
+         24AE0KDlNw8cvzKvL3MEkwzLRWkv0CVH4zzsrgTQUMzwJ1+LWscqfwfBmknXgdl8IqcE
+         YmwGZDEKOKMcda7hysVznjjWK39Q4FPkXXvSw+Heo9xP5uItK7pvEWlFwTrno32lPol5
+         3nqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714372067; x=1714976867;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qA1Mq+BKArwz7aZn7XQgiZHHBtYnA3j8xSFLJOCXWzY=;
+        b=rgmYBk6tXJbY6XJ1gkUFAP7GpKmd6zP3DwDkO3cOdgl7GiiTNn5BMcP798wzIgD4CO
+         ILgfT4yXClGH1+4jJ/GNuOq0x8NHuOzkPyAh1bKCnJPuUMShkoPpeDCx4S9D0yKQC8k0
+         8pqO5OI0qS5lmXfIgvF6Qmckcrk9wGWN+jBgr2lEYpwakPEb3w5elHkEv9i4uyePii4P
+         E15OYRlijG/m9CnTXTaSADMj9n14WAHahGTAHRNSXWVkhbiLFaTyiFswSi84c92zKn4e
+         t6YD02I8iWPB87dISkeUjExPsaugK+ayY/cac8xr85bgzyigYvMt9dWeIwOpCLwkTwqk
+         yBjw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZrdZCMjJbvNMpzUTxtNLevCjWFo/OZbRF2n4BmFLn7WUahRuxwMO6jYqwDcRSV0JbEvqRAenaX69jSkZfu3HK6GerZN0Vh0MlK++G
+X-Gm-Message-State: AOJu0YyQ7Gg4kaYXHm/jZQlX/AjToiiGdkUXhirvnk/J6FmJx8lQseEv
+	oDJYIsCq16S1g7xqjeguoxI7dRiKyPall6/Sr3nKYbUJbtvg+amJX74iRAQlk14=
+X-Google-Smtp-Source: AGHT+IESUXN7I7fO318PxM8X0XDcywLSdQf4htvE8HhqgqMtYThdRx/pY4Ue7USfJXLXKoE92r5Sog==
+X-Received: by 2002:a50:8acd:0:b0:56e:3774:749b with SMTP id k13-20020a508acd000000b0056e3774749bmr4907398edk.42.1714372067101;
+        Sun, 28 Apr 2024 23:27:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id a13-20020aa7d74d000000b005726ee95a38sm2183591eds.88.2024.04.28.23.27.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 23:27:46 -0700 (PDT)
+Message-ID: <1613d7e3-a5cc-4b8e-a905-3699779476fe@linaro.org>
+Date: Mon, 29 Apr 2024 08:27:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4c987c2-2d98-409f-83e2-08dc68153b7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2024 06:25:58.1326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0MiVfxco9CzzvoEXv3ZdxhamrJhUekcfnd4dLv3zJ8caOXBgjbeFnz6cy8ZIGQUIooA4Pp52wbK2173rl4LhcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8891
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for mule
+ i2c multiplexer
+To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+ Heiko Stuebner <heiko@sntech.de>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
+ <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> Subject: RE: [PATCH v4] arm64: dts: imx8ulp: add caam jr
->=20
-> If there are no further comments.
-> Please merge this patch.
+Except that this was not fully tested few comments.
 
-Shawn has picked it up one week ago.
+A nit, subject: drop second/last, redundant "dt-bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
 
-Regards,
-Peng.
->=20
-> Regards
-> Pankaj
->=20
-> > -----Original Message-----
-> > From: Pankaj Gupta
-> > Sent: Tuesday, April 9, 2024 2:53 PM
-> > To: robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> > conor+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> > kernel@pengutronix.de; festevam@gmail.com; dl-linux-imx <linux-
-> > imx@nxp.com>; Peng Fan <peng.fan@nxp.com>; Jacky Bai
-> > <ping.bai@nxp.com>; Bough Chen <haibo.chen@nxp.com>;
-> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> > linux- kernel@vger.kernel.org
-> > Cc: Pankaj Gupta <pankaj.gupta@nxp.com>; Varun Sethi
-> <V.Sethi@nxp.com>
-> > Subject: [PATCH v4] arm64: dts: imx8ulp: add caam jr
-> >
-> > Add crypto node in device tree for:
-> > - CAAM job-ring
-> >
-> > Signed-off-by: Varun Sethi <v.sethi@nxp.com>
-> > Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
-> > ---
-> >
-> > v4:
-> >  - Order of node properties changed.
-> >
-> > v3:
-> >  - Commit message title is changed from "imx8ulp-evk" to "imx8ulp".
-> >
-> > v2:
-> >  - As requested, this patch is separated from the larger patch-set of 9
-> >    patches.
-> >
-> > Commit
-> >  arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 32
-> > ++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> > b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> > index 8a6596d5a581..ed86854a59c3 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> > @@ -252,6 +252,38 @@ pcc3: clock-controller@292d0000 {
-> >  				#reset-cells =3D <1>;
-> >  			};
-> >
-> > +			crypto: crypto@292e0000 {
-> > +				compatible =3D "fsl,sec-v4.0";
-> > +				reg =3D <0x292e0000 0x10000>;
-> > +				ranges =3D <0 0x292e0000 0x10000>;
-> > +				#address-cells =3D <1>;
-> > +				#size-cells =3D <1>;
-> > +
-> > +				sec_jr0: jr@1000 {
-> > +					compatible =3D "fsl,sec-v4.0-job-ring";
-> > +					reg =3D <0x1000 0x1000>;
-> > +					interrupts =3D <GIC_SPI 82
-> > IRQ_TYPE_LEVEL_HIGH>;
-> > +				};
-> > +
-> > +				sec_jr1: jr@2000 {
-> > +					compatible =3D "fsl,sec-v4.0-job-ring";
-> > +					reg =3D <0x2000 0x1000>;
-> > +					interrupts =3D <GIC_SPI 82
-> > IRQ_TYPE_LEVEL_HIGH>;
-> > +				};
-> > +
-> > +				sec_jr2: jr@3000 {
-> > +					compatible =3D "fsl,sec-v4.0-job-ring";
-> > +					reg =3D <0x3000 0x1000>;
-> > +					interrupts =3D <GIC_SPI 82
-> > IRQ_TYPE_LEVEL_HIGH>;
-> > +				};
-> > +
-> > +				sec_jr3: jr@4000 {
-> > +					compatible =3D "fsl,sec-v4.0-job-ring";
-> > +					reg =3D <0x4000 0x1000>;
-> > +					interrupts =3D <GIC_SPI 82
-> > IRQ_TYPE_LEVEL_HIGH>;
-> > +				};
-> > +			};
-> > +
-> >  			tpm5: tpm@29340000 {
-> >  				compatible =3D "fsl,imx8ulp-tpm",
-> "fsl,imx7ulp- tpm";
-> >  				reg =3D <0x29340000 0x1000>;
-> > --
-> > 2.34.1
+
+On 26/04/2024 18:49, Farouk Bouabid wrote:
+> This patch adds support for the Mule I2C multiplexer.
+
+Please do not use "This commit/patch/change", but imperative mood. See
+longer explanation here:
+https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
+
+> 
+> Mule is an mcu that emulates a set of i2c devices which are reacheable
+> through an i2c-mux.
+> 
+> The emulated devices share a single i2c address with the mux itself where
+> the requested register is what determines which logic is executed (mux or
+> device).
+> 
+> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+> ---
+>  .../devicetree/bindings/i2c/i2c-mux-mule.yaml      | 80 ++++++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-mule.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-mule.yaml
+> new file mode 100644
+> index 000000000000..458e4661cbc8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-mule.yaml
+
+Use compatible as filename.
+
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-mux-mule.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mule I2C multiplexer
+> +
+> +maintainers:
+> +  - Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+> +  - Quentin Schulz <quentin.schulz@theobroma-systems.com>
+> +
+> +description: |
+> +  Mule is an mcu that emulates a set of i2c devices which are reacheable
+
+typo, reachable
+
+> +  through an i2c-mux.
+> +
+> +  The emulated devices share a single i2c address with the mux itself where
+> +  the requested register is what determines which logic is executed (mux or
+> +  device)
+> +
+> +      +--------------------------------------------------+
+> +      | Mule                                             |
+> +      |    +---------------+                             |
+> +  ------+->|Config register|----+                        |
+> +      | |  +---------------+    |                        |
+> +      | |                       V_                       |
+> +      | |                      |  \          +--------+  |
+> +      | |                      |   \-------->| dev #0 |  |
+> +      | |                      |   |         +--------+  |
+> +      | |                      | M |-------->| dev #1 |  |
+> +      | +--------------------->| U |         +--------+  |
+> +      |                        | X |-------->| dev #2 |  |
+> +      |                        |   |         +--------+  |
+> +      |                        |   /-------->| dev #3 |  |
+> +      |                        |__/          +--------+  |
+> +      +--------------------------------------------------+
+> +
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-mux.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: tsd,mule-i2c-mux
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+
+Best regards,
+Krzysztof
 
 
