@@ -1,79 +1,122 @@
-Return-Path: <linux-kernel+bounces-162598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF918B5DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:36:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 459798B5DF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D16F41C21D24
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:36:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA3B6B243BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E1A81AB4;
-	Mon, 29 Apr 2024 15:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B893839F1;
+	Mon, 29 Apr 2024 15:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U/ADFdM7"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U2aUTXJ0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD37F7C09E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67CA87BB17;
+	Mon, 29 Apr 2024 15:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714404983; cv=none; b=Mo2ydMyomv0n/9P2wHLIxN1gMthBGx684RE/CxcYQvGicSorm6nNZT5mZaxhqem/CMFDJcG4DpaLTeQK1jSA7pMObdgR9YSjh+P5W6qTTgkOzQttxKSZyP7XH6aMHGg5I4pwqKq8Up+OkhxKTiM+2zYwyBedTxO0fcHG0oWR5Ig=
+	t=1714405039; cv=none; b=LZiCASTHqW4z3GwZcaZ/LwzEOhThostncG7VdrcHsvbGcfj/evWfh6D/TRqUuyUeCoCXRhmkiNfN386Mzi989JXvdmVVSESqMaIxxaU0F4iKas4a1CTOUvMdYhGCPJXwBphy8T1knDVedVVrPLUFhaOjg22ZJmUfsiacTJ4OJvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714404983; c=relaxed/simple;
-	bh=u2SqR4xY4qqz6czR1VJmSTq5N17r8ruEGaFZQngeBBg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RViEKrFrAONDwLlzh6FuicoV8aXq0QuaRwcGkpQrH6uNOx7uGqfWz83nAlUJbhlPcdOfreZ0gihc10UKyY12R1JDp4KuMKiVe0X81mRanCb4wsZ7FJTXufu70YujXRm2Qze27VdYV/llnNXiVRFmPnrWyloZgDi57HWZSnm1YQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U/ADFdM7; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 29 Apr 2024 08:36:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714404977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7pgIU5d1obfciNK5ZO1w/49MA6EFqpbOPs15zytydTc=;
-	b=U/ADFdM745j3hf4HRTQdWUpmPhb8wVUiIyzqLow8fCO10A54hhEZu6tUEL7b6qBL3Ou5W/
-	qZ9qenQ3UEK8vQtoKjKTkfGih6rcDrb8BMmzbUjncKkZzatMPVFUWyxsf3/8ktLwcxAx13
-	+1mLbgkRziwZfUw+QY3UPftp2vEuDFc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] memcg: reduce memory size of
- mem_cgroup_events_index
-Message-ID: <Zi--bEqvwJHXqTLL@P9FQF9L96D>
-References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
- <20240427003733.3898961-2-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1714405039; c=relaxed/simple;
+	bh=wkw00x65JD2z/zUy53Xusx3TmiNHgV4aXrSReAeslNU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Px5oueUpA5Dup0VmfN7Vq1HXtX+8PM34DqKAsSHF283+m9TMFRPSVoz6CZ02jqPeG8qaiHn1qlmhBn0YQhe/rxsHnVMrPSmMxD5zwXNofZHuclyZUpRgSQY+2VGFiwPYt2+Qo4mvqJIGllUORbwXnly3k14fkEjSMiJLwA4isJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U2aUTXJ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B500C113CD;
+	Mon, 29 Apr 2024 15:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714405038;
+	bh=wkw00x65JD2z/zUy53Xusx3TmiNHgV4aXrSReAeslNU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=U2aUTXJ0qBqnfV1G4kuhMFIHzs54ReUNSO9gdQNtg4aGDsfvXSEOuTceTJIHCrepO
+	 enWS0OujmfpxwX44YIbD/uwDAXH+g3thvf3iqnDonevsW/ibWuO1issIRj68s6X5ep
+	 TuOLh/uOmVlCl7Wc29Ak4CUQKxvedSO5ft1qKfGJng0yCptHMPdODDhJzQLQjsfs/l
+	 wlvhb5J02hOJeMsxzxw6t/D8G4UL3WC/yHXQ4fssWwT8BLkn9jLpWH1Z7kkNmXwYGr
+	 IjPG1cDEH5VNXTaduRwcJHGacrVRQzzcKpy3euQrZsOX1H03TxYl2IyQ08YvZ9n/nk
+	 EvBLVSqx4zzmA==
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+In-Reply-To: <20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@bootlin.com>
+References: <20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@bootlin.com>
+Subject: Re: (subset) [PATCH v4 0/6] spi: cadence-qspi: add Mobileye EyeQ5
+ support
+Message-Id: <171440503607.1841738.5217862939003945939.b4-ty@kernel.org>
+Date: Tue, 30 Apr 2024 00:37:16 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240427003733.3898961-2-shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.14-dev
 
-On Fri, Apr 26, 2024 at 05:37:27PM -0700, Shakeel Butt wrote:
-> mem_cgroup_events_index is a translation table to get the right index of
-> the memcg relevant entry for the general vm_event_item. At the moment,
-> it is defined as integer array. However on a typical system the max
-> entry of vm_event_item (NR_VM_EVENT_ITEMS) is 113, so we don't need to
-> use int as storage type of the array. For now just use int8_t as type
-> and add a BUILD_BUG_ON() and will switch to short once NR_VM_EVENT_ITEMS
-> touches 127.
+On Tue, 23 Apr 2024 12:01:39 +0200, Théo Lebrun wrote:
+> V4 of this series adding octal SPI-NOR support to Mobileye EyeQ5
+> platform. It has been tested on EyeQ5 hardware successfully. Patches
+> have been taken over time, meaning series got smaller over time.
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Patches:
+>  - Make cdns,fifo-depth optional by computing it from hardware.
+>  - No-IRQ mode for indirect read operations. Behind a quirk flag.
+>  - Busywait on commands and indirect reads; reduces hrtimeouts load.
+>  - Add mobileye,eyeq5-ospi compatible.
+>  - EyeQ5 devicetree:
+>     - Add octal SPI-NOR node.
+>     - Add SPI-NOR flash node on eval board.
+> 
+> [...]
 
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/6] spi: cadence-qspi: allow FIFO depth detection
+      commit: 3bf64a2b66edffd28614b004648ccd60e3139c9e
+[2/6] spi: cadence-qspi: add no-IRQ mode to indirect reads
+      commit: 1f257b92e6330d576cc826fb8f0b74fe0e8209de
+[3/6] spi: cadence-qspi: add early busywait to cqspi_wait_for_bit()
+      commit: c1887396373b8faecef61d352bd521ac66162706
+[4/6] spi: cadence-qspi: add mobileye,eyeq5-ospi compatible
+      commit: 47766799f546249813e97a0ccde8978ba114e89f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
