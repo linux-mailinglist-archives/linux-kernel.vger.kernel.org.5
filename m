@@ -1,114 +1,83 @@
-Return-Path: <linux-kernel+bounces-161917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DECB8B533F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EFF88B5346
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2A161F21033
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:37:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3CBC1F207C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC1418041;
-	Mon, 29 Apr 2024 08:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e9AcN+Hn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3FC179A8;
+	Mon, 29 Apr 2024 08:38:42 +0000 (UTC)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A7313AEE;
-	Mon, 29 Apr 2024 08:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7E1171B6
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714379827; cv=none; b=Uf1si5tNAEipY4f/OkqkRZknhZKDGZoqDgQvh7UoViL6/m+nVeNCJiNZj99TetU3PcWUSOcHZ7w6eeBOjTmBXTK3EBwZUKj0oEmcHBbghLtmeQspYywr622522lPwLLuq7juaR8G9/ZimA4KEwDBZgkIdIi7/8CGF/k01tjm0sI=
+	t=1714379921; cv=none; b=O+UhXHprBw3vVTaFFeXSvEV6CgaWHpzn3ByqSE4vE2SOxTgZgXJwKB7XQR1PidDPGH9YkJS+uGXzVsRCGQs3uIZTtip7FhrSiLXYQ3SDg6CasO2zy5T6tQhY6mG9vl6rJFI+5uSnq1tnUoYNXY6I5cpn2JKX2/zoJdv6fVxcKko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714379827; c=relaxed/simple;
-	bh=N0XGSmeKMB0rC6XgAkwwB5iWclud4yL7qhYZt2jHTvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tma936htwrJoE8xlq7fznk9wlIUNijE9dRfarUtMe0mpjzgrhyyqjXYHXT7PYXQ0YBsxDeEQUwcezZk2IWNiY2Yw7vaCtxBFMETEckz6sR2iWbItdsYgRl4Txyj85W0kEClTJ+VeQd6B+rvfJR0/eJerROzg/se3VXztRf+cta4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e9AcN+Hn; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714379827; x=1745915827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N0XGSmeKMB0rC6XgAkwwB5iWclud4yL7qhYZt2jHTvQ=;
-  b=e9AcN+Hn2DjM0mEP+NA75hoffKqpeMIt0dBBxBh8UihXlkJBJbfQokl5
-   /X9G6GePX6QhNuxLaFituewmHEYN/TPoWtnPIIGADh24uHf8j1mqPIvF2
-   maDOFZnFjoUCZgO2aGAzo3J8IBBRobr90PQjw6x3mnrbwjfMdSiPLPzpG
-   yUZaFAg4vK569yORikkNCeygEmYpN3Yd1uEN3LcuMTIij08t0ZNsF7X7z
-   Yl00pne10DvTgO+umOc7RwLoYja6f12xY4EtoAc8f+4Uqs9VNGn/NZ1Wl
-   XBHOr3a+3JuHXGqedIi4J2TnXQAKxWDDlE3xZTiIhQIMRs+S/lwVET5M6
-   g==;
-X-CSE-ConnectionGUID: B2CSXVzSQayDBXPD4vtZqw==
-X-CSE-MsgGUID: ASQU3e3LScmv7evgcUGCCQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="21439663"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="21439663"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:37:06 -0700
-X-CSE-ConnectionGUID: mhLrSkThTdOTHTLvEDDe+A==
-X-CSE-MsgGUID: UUrw3BNuT/iOCT+pl66gNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26117627"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:37:04 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s1MVR-00000002Fzg-3ehE;
-	Mon, 29 Apr 2024 11:37:01 +0300
-Date: Mon, 29 Apr 2024 11:37:01 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Martijn Braam <martijn@brixit.nl>
-Subject: Re: [PATCH v1 1/1] iio: light: stk3310: Drop most likely fake ACPI ID
-Message-ID: <Zi9cLbf6JdomA8jW@smile.fi.intel.com>
-References: <20240415141852.853490-1-andriy.shevchenko@linux.intel.com>
- <20240420122633.79b4185b@jic23-huawei>
- <ZiZEN807oywU-MAx@smile.fi.intel.com>
- <ZiZEqDCqc01Cx3oq@smile.fi.intel.com>
- <20240428164333.44a7f8f3@jic23-huawei>
+	s=arc-20240116; t=1714379921; c=relaxed/simple;
+	bh=coe19udBXGrIB7KgXPN9V74azBX0djzDVAarFrgFyFU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Tqc6AzVQJydD798D/SWEe86n3TOma8cGU8Nf2Wzk4+Rd5aRbDw+P2HuVQihC0CCwpx6GLNCvs1nq0ZEHKlmtmVVw3/XlBQhmjwRK/ZKiJ+AU2LeBi3GvFYmJ+wIImAlQVr+C2sd7pMOpsEllkSh0PVFJl7/yilNb4PMWdm1xtlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2e0b2ddc5d1so1828321fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:38:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714379918; x=1714984718;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LE72eHQelOwK5Y7fjbeK2rbBwk+1TC+HkqJkcUHiJ6Q=;
+        b=Y+mNAF7WnYshFw2LS30SXndmRDT7zNACCivPFjXMOgPsPPz9Z7kKk7lH41MG9Lif/o
+         6gMe4q/04uubxNIUgB0PSJCcV0LTMgwHxE/x0SNK2sz9FylAuTvtxpQpTKT+AiCNKKf5
+         5HS/jbm2tjSf4SdHo/9Zpg462E9GMDLJuIj70bqLvHQohstlizmAX1xX4xSNJyUSgIYl
+         Huap/xpjSwVa6s5fq6SSx2PLeuhO2aHX86AYbvk3IuYeu52+5UqbHGcCllfswjcuuqL8
+         XaDX1WmSOW3mvCsjOhT3i6FKevounh+RprXEmkGz1RWo4/iIAofaAm1LoVbTShO33PlO
+         Xo1g==
+X-Gm-Message-State: AOJu0YxHaSrXGpwX1PcYayNMQ8paTaZbbohHZqL4oHwuLw40+ROvVndV
+	+mE25k7ONroOvn6XlUvsXiHHj1sQ+lup3DgqFeapR8qBbH1i7jQ1
+X-Google-Smtp-Source: AGHT+IERUWyQZZwsZW0QTBN7cnmNhiXQYCwxZRezVe/9I/2nFhNjfWABEa9htJowzQB27tBVqdxy0Q==
+X-Received: by 2002:a2e:b94e:0:b0:2df:6cb8:c92f with SMTP id 14-20020a2eb94e000000b002df6cb8c92fmr4513697ljs.23.1714379917967;
+        Mon, 29 Apr 2024 01:38:37 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f745a800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f745:a800:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id u5-20020a05600c138500b0041c5151dc1csm2113152wmf.29.2024.04.29.01.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 01:38:37 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH 0/1] mcb: patches for v6.10
+Date: Mon, 29 Apr 2024 10:38:24 +0200
+Message-Id: <cover.1714379722.git.jth@kernel.org>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428164333.44a7f8f3@jic23-huawei>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 28, 2024 at 04:43:33PM +0100, Jonathan Cameron wrote:
-> On Mon, 22 Apr 2024 14:06:16 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Apr 22, 2024 at 02:04:23PM +0300, Andy Shevchenko wrote:
+Hey Greg,
 
-..
+Here's a patch for mcb from Uwe I've collected for the 6.10 cycle.
 
-> > P.S>  
-> > What I may agree on is to drop Fixes tag.
-> > 
-> That's a compromise I'm fine with. As long as we've done due diligence on
-> whether there are known cases we can take the risk of breaking someone (briefly)
-> if these turn out to be in use.
+Uwe Kleine-König (1):
+  mcb: lpc: Convert to platform remove callback returning void
 
-I'll try to remember not putting Fixes in similar patches in the future,
-if any.
-
-> Applied,
-
-Thank you!
+ drivers/mcb/mcb-lpc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.35.3
 
 
