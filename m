@@ -1,119 +1,85 @@
-Return-Path: <linux-kernel+bounces-162963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862488B62C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:44:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BC6D8B62C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:46:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25D3C1F21BAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:44:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C3F02814E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5A213B5BB;
-	Mon, 29 Apr 2024 19:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A2213B5B5;
+	Mon, 29 Apr 2024 19:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FnC8DoqY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="VQTJ1wRu"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED71839FD;
-	Mon, 29 Apr 2024 19:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359AB839FD;
+	Mon, 29 Apr 2024 19:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419863; cv=none; b=r8dDJw5pPYtfRzg+KV5kx5fI6/72986KQphT8TnDbAhUOSVOPR1ULaFbflxZZaCoz3MojPBXwURD2rNdJRnDLlnE+fdJFhRziGNmrWEHMyQ1D0KpCimzc+FNVRC6RlFOn/xJEH1CTD8O6m7d3KwrCN6jYEQjhrsxPUUUyhNL6vU=
+	t=1714419962; cv=none; b=f+A7pKN5GwD0Y3VKDKQyz09CW0uankoS285DgvQ9Wnnf1kU9quyUKdeOFmWjnIxIb9Z1613daH0adURzfhi6n3P1jqhT+SQWbF6fMtMJLYOiCCQFFvIopDF+Fv1wjU/MkeQ3oXha7ncJRD9ln9AzPdteFKQWNhbdC/zyP3txYvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419863; c=relaxed/simple;
-	bh=RzBcr/M0OG2ERiXaSIPD48X4gSHEuscyRDmi4DDnPE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QgEJBPDEUQCBoV3qKaDDQRD+2cJHdZC5Th4/wpYXhplDoOuSHQXZN0vgXnw0CVFPqUBZiojVN7GGHMSAIdxQdparPYuiNz1d7eGxLPU8fIkg3X2HT2OlxjUt1UzoKD20W1KCAUW2fgbIQMm7wAa4W8UvNq0JD4TUIgBbos9yCO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FnC8DoqY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 334C5C113CD;
-	Mon, 29 Apr 2024 19:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714419863;
-	bh=RzBcr/M0OG2ERiXaSIPD48X4gSHEuscyRDmi4DDnPE4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FnC8DoqYmhDVkzDzoBc9a0KEisxngdm0n85nFoEdAKoGCw2DeCny7xnCFSnx1joDn
-	 T7mTF328jGvnREvujV8YQdRxcZvFE+3c5Gbf5nlAXTx3+og/Ge1jzXtLCftLPy1Kha
-	 gkafGNVkDgpE8VDyRSjr9MvKIg83YRpOIM5i4yaWIqy+Dvcqu5yX3buadxPxePztFt
-	 WOeIX+K+BRd7DweGxEdd5VAWHumNSxycUcrdEfGsUyO1XKBqj7cX056HV6cX/f6WXb
-	 dDJLQiLnvFxskhy2GpmnZtYa6RD3VW5uFWWB6T5gou8JcUzSeyHRgTF62uL6qoW6NA
-	 QJrQlikvWF5nw==
-Date: Mon, 29 Apr 2024 20:44:09 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Andrew Hepp <andrew.hepp@ahepp.dev>
-Cc: Dimitri Fedrau <dima.fedrau@gmail.com>, Marcelo Schmitt
- <marcelo.schmitt1@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: temperature: mcp9600: Fix temperature reading for
- negative values
-Message-ID: <20240429204409.73b4d676@jic23-huawei>
-In-Reply-To: <C96CEE0A-920C-4BDD-9689-058B2E6D4B29@ahepp.dev>
-References: <20240424185913.1177127-1-dima.fedrau@gmail.com>
-	<Ziy8DsMCeAGK79E7@debian-BULLSEYE-live-builder-AMD64>
-	<20240427195758.GA3350@debian>
-	<20240428144606.5b3d9a7e@jic23-huawei>
-	<C96CEE0A-920C-4BDD-9689-058B2E6D4B29@ahepp.dev>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714419962; c=relaxed/simple;
+	bh=FZ9nXRV6ERZg5RvY6CtRN1IuNEzt8HVpFnFfYNjPhqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JmJeW81MhvgxhMoUgvX9UVs2NiGnMogjJPdu9jCgVGsURdEUc1GStJE5Un13r811iGMHrjCNwhsZab9fAPrjlbuma0lCy1vYiHyoV5bCOtmkarhX53pSzI8XWg3VUaU184KwcaR9+Dhq+n1jrkx0CA0JIaYVghNyHYSEVyJoreE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=VQTJ1wRu; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=mb9OU1e8CDPWok28cClhi1tNTddJ9azpQJpcP/8KdxY=; b=VQ
+	TJ1wRuo6vKos0f+Nf1lutKbY94bPLsu3/eC76QIaUObwB3bOqYhrbcjwNZ+DlTMAlkH+LA+N8y8+I
+	QeIraoAeO2WYTQMrvrZWu0p4bCNK7kxLvNftz/sGemAaVuQb78j7BTozNe3zN72i5ru+5dY7my/a3
+	PI/I79gPCK9Hy6c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s1WwZ-00EHPQ-LU; Mon, 29 Apr 2024 21:45:43 +0200
+Date: Mon, 29 Apr 2024 21:45:43 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] PCI: mvebu: Use generic PCI Conf Type 1 helper
+Message-ID: <03a5fc99-2fd2-4788-a9cb-bf7e5d8353b8@lunn.ch>
+References: <20240429104633.11060-1-ilpo.jarvinen@linux.intel.com>
+ <20240429104633.11060-10-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240429104633.11060-10-ilpo.jarvinen@linux.intel.com>
 
-On Sun, 28 Apr 2024 14:46:39 -0400
-Andrew Hepp <andrew.hepp@ahepp.dev> wrote:
+On Mon, Apr 29, 2024 at 01:46:32PM +0300, Ilpo Järvinen wrote:
+> Convert mvebu to use the pci_conf1_ext_addr() helper from PCI core
+> to calculate PCI Configuration Space address for Type 1 access.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-> Hi all,
->=20
-> On Apr 28, 2024, at 9:46=E2=80=AFAM, Jonathan Cameron <jic23@kernel.org> =
-wrote:
->=20
-> > Agreed - by my reading the original patch is correct. Maybe it would act
-> > as cleaner 'documentation' to have the sign_extend32() for the cold jun=
-ction be
-> > from bit 12 rather than 15, but I'm not sure it's worth the effort.
-> >=20
-> > Andrew, would be great if you can review this fix in case we are all mi=
-ssing
-> > something! =20
->=20
-> I also agree that Dimitri=E2=80=99s original patch appears correct per th=
-e data sheet.
->=20
-> I think of the cold junction register as a 16 bit 2s complement signed in=
-teger,=20
-> despite the limited range. I like sign extending it from bit 15 rather th=
-an from 12.
->=20
-> I applied Dimitri=E2=80=99s patch and stuck a dev board in my icebox.
->=20
-> Before patch:
->     # cat /sys/bus/iio/devices/iio:device0/in_temp_raw=20
->     65222
->     # cat /sys/bus/iio/devices/iio:device0/in_temp_ambient_raw
->     65256
->=20
-> After patch:
->     # cat /sys/bus/iio/devices/iio:device0/in_temp_raw
->     -260
->     # cat /sys/bus/iio/devices/iio:device0/in_temp_ambient_raw
->     -212
->=20
-> Looks good to me! Thanks for the patch Dimitri, and thanks to all for the=
- review!
->=20
-> Andrew
-That definitely deserves a Tested-by tag so I added one. Hope you don't min=
-d!
+Tested on a kirkwood QNAP and an Armanda XP. The kirkwood correctly
+reports there is nothing on the PCIe bus. The XP finds the two 88W8864
+WiFi devices, but there is no mainline driver for it, and it also
+finds an Etron Technology USB controller, which enumerates O.K.
 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+Tested-by: Andrew Lunn <andrew@lunn.ch>
 
-Thanks,
-
-Jonathan
+    Andrew
 
