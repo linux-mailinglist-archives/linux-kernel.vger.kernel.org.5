@@ -1,54 +1,80 @@
-Return-Path: <linux-kernel+bounces-162830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FA28B6124
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:33:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FFF28B6129
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9345281F00
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:33:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 498DC282083
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB6112A159;
-	Mon, 29 Apr 2024 18:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE7B12A159;
+	Mon, 29 Apr 2024 18:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="amzwYIlz"
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dpg+JCAn"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FB683CBA;
-	Mon, 29 Apr 2024 18:32:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C288C83CBA;
+	Mon, 29 Apr 2024 18:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714415577; cv=none; b=s5TKqHFJh0MoNh2GkNeXPm4qv7saVxUj2RG0/LQHj8TA27/3dzejdj+XaiheW0JLv74xkEDzBuVqvdCQp1yKvTqFs6ZBTRNmklRn5l4nzI+Vp1dVD8HrEbCzGek9IlASfhthLqVWwD2n/SxH3wJHd/dmCT+TGsN2iIj0QyXNEPs=
+	t=1714415631; cv=none; b=s/2fahBaOHZiZIXJFKKeb5uRd2QUSQpBT+nCB6mI9Pe/K6dQm5+g8tzEf7TysWo9yM0oGkjmF2DcVsNP2UDxaGQvDdfraeoVe9H1DggGfO6tzmsPA3NTgcE/Z7kifEo8YTWJNC75+3aie1NtKCKAENouncmMDNF3Hq7ww8bPjG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714415577; c=relaxed/simple;
-	bh=km++YSXFjLJWolJR5xpxNqeUcqNq1cJFCz/rYworjU8=;
+	s=arc-20240116; t=1714415631; c=relaxed/simple;
+	bh=GZHC88BVTwBCrjrEU6F9yViISGylF0nVvze26vl3cq4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AAw0SRRp/lJ/4TsrOkmpbjXMdCBO6UptcWnHrGgmAK53DlB4O2bq7hqdDG+/VmdNK5lyeaWa60YD7biVfcwgXdyqcK7vxQowx4t8j8rbqs8VvarZsHeZOJGdTatACHlHWX4auFS9urTivU3OKQY9362YjtluLyEa4j+AK7saCPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=amzwYIlz; arc=none smtp.client-ip=80.12.242.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 1VmksUnBSiGtU1VmlsQI2r; Mon, 29 Apr 2024 20:31:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1714415492;
-	bh=2kpOLjd1RsRGoMgjZcS9EsszKwG0ZQhgAo+c26was84=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=amzwYIlzPbcKaAQJXOdD545sUIppqdGaR/8v1JITt97n7KazHFyAzCgHaFyuN7LWe
-	 iOxrYE7qhUuW20IWvMWtioSxORH+y48F7Q3yy2cc5F8Ql6FpEHY36vMboQ7ufkO/3L
-	 y5wn2hGZUXQFKtjaxzi9v+1LQWJ0BJMiS4rtAlQV0lV+PtY2Y2gC2albLo0NqR9qTL
-	 a7xYq7aH5nQyi17j1wkrFAaJM6Ji3qPAjctofHLJqOOn5Nv78NuwmeoEpzOTULElV4
-	 lWsBbCy/xzDvcn0ZjBZdOpSXbi3nLsrYiyD4aSiW9unMNxET/z90DHbWfn96WEgGvk
-	 IZJdstbFJyloQ==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 29 Apr 2024 20:31:32 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <d526b169-0385-4f23-8806-17bc73c2507b@wanadoo.fr>
-Date: Mon, 29 Apr 2024 20:31:30 +0200
+	 In-Reply-To:Content-Type; b=BSBGTCWkGHvKgdIjR7q/gfX0qw9ohPSfJ4Jcob787sIEuRcO9aKrEZ/mvoY5zA+Bm3r114SIxwEg9nFkkys138OHU0l/17bFg3mqdD3xojkkF1NvWRPxJPP/2EIk5B8vxwgn5UYzF1L4orM0/HLsQ3JF6ExXLfz37m1S5mQrJPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dpg+JCAn; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TIXlss015294;
+	Mon, 29 Apr 2024 18:33:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=H4I8e41/l8uB3Hyx06Bhk4DnM+0xnAu6yljLBAjxOq8=;
+ b=dpg+JCAnsP0BiULl4spKXDzvC0EGMvlA1F45PWZvjGHRbwAH9YIs6p/M71h+qih66XQx
+ tgX5nQA+6jzhJO2knCyeEdUloe0xMrI12TCi0xh3PNjTFV0mijHdlzcAKJNhzdTJVJ4g
+ VTadfVwDEOT5eh8V5LHo2gAPwAXkzyRsX6rqms6JTA+HAjvtrgAGwFesjyZoC+mU5LzE
+ YjTDnWEWCezg3OagMlIqeeRJzHv67zzu1alrYAnJ1hj89ZE0CRzVylW6M888qCzB6yob
+ cWQkHVG2iAhTOL77UpXqgKgkx9da4IxFj3XzFWsnOrSLEnJtAvRMWhydKfh4UkjokTSd 0Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtgseg0u7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 18:33:47 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43TIXkvb015204;
+	Mon, 29 Apr 2024 18:33:46 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtgseg0t9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 18:33:46 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43TI5UIZ002989;
+	Mon, 29 Apr 2024 18:32:49 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscpp8ve5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 18:32:48 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43TIWjZT45023634
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Apr 2024 18:32:47 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E6D132004B;
+	Mon, 29 Apr 2024 18:32:44 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 491632007D;
+	Mon, 29 Apr 2024 18:32:44 +0000 (GMT)
+Received: from [9.179.12.126] (unknown [9.179.12.126])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 29 Apr 2024 18:32:44 +0000 (GMT)
+Message-ID: <2f046603-ae89-4ad2-95df-8e187501e06d@linux.ibm.com>
+Date: Mon, 29 Apr 2024 20:32:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,58 +82,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] leds: mt6370: Remove an unused field in struct
- mt6370_priv
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <e389be5e1012dc05fc2641123883ca3b0747525a.1714328839.git.christophe.jaillet@wanadoo.fr>
- <16df315e-8a05-49a4-ac07-d1ed150c9317@collabora.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <16df315e-8a05-49a4-ac07-d1ed150c9317@collabora.com>
+Subject: Re: [PATCH] s390/kvm/vsie: Use virt_to_phys for crypto control block
+To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc: David Hildenbrand <david@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>
+References: <20240429171512.879215-1-nsg@linux.ibm.com>
+Content-Language: en-US
+From: Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20240429171512.879215-1-nsg@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: QQ92b6CKSJI40klk5fSh85R5vsMD_YkQ
+X-Proofpoint-ORIG-GUID: VQ81qEtSuObAP9dr3zNDjJwJmKd2TUZy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_16,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 adultscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404290120
 
-Le 29/04/2024 à 10:13, AngeloGioacchino Del Regno a écrit :
-> Il 28/04/24 20:27, Christophe JAILLET ha scritto:
->> In "struct mt6370_priv", the 'reg_cfgs' field is unused.
->>
->> Moreover the "struct reg_cfg" is defined nowhere. Neither in this 
->> file, nor
->> in a global .h file, so it is completely pointless.
->>
->> Remove it.
+Am 29.04.24 um 19:15 schrieb Nina Schoetterl-Glausch:
+> The address of the crypto control block in the (shadow) SIE block is
+> absolute/physical.
+> Convert from virtual to physical when shadowing the guest's control
+> block during VSIE.
 > 
-> Sure
-> 
->>
->> Found with cppcheck, unusedStructMember.
->>
->> So, remove it.
-> 
-> Again?! :-P
+> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
 
-Yes. This way we safe twice the memory space :).
+vsie_page was created with page_to_virt to this make sense to translated back here.
 
+Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+
+I guess this should go via the s390 with the other virt/phys changes.
+
+> ---
+>   arch/s390/kvm/vsie.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> 
-> 
-> Anyway, this commit misses a Fixes tag; please add the relevant one, 
-> after which,
-
-Will do, but this patch does not fix anything.
-It is just a clean-up.
-
-CJ
-
-> 
-> Reviewed-by: AngeloGioacchino Del Regno 
-> <angelogioacchino.delregno@collabora.com>
-
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index b2c9f010f0fe..24defeada00c 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -361,7 +361,7 @@ static int shadow_crycb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   	case -EACCES:
+>   		return set_validity_icpt(scb_s, 0x003CU);
+>   	}
+> -	scb_s->crycbd = ((__u32)(__u64) &vsie_page->crycb) | CRYCB_FORMAT2;
+> +	scb_s->crycbd = (u32)virt_to_phys(&vsie_page->crycb) | CRYCB_FORMAT2;
+>   	return 0;
+>   }
 
