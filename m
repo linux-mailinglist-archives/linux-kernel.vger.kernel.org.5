@@ -1,127 +1,124 @@
-Return-Path: <linux-kernel+bounces-161682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101368B4F6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:29:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B338B4F65
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C26B1F21856
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ACE31C20BE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6345117FD;
-	Mon, 29 Apr 2024 02:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="i0VpV/Ky"
-Received: from out0-212.mail.aliyun.com (out0-212.mail.aliyun.com [140.205.0.212])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCED7F;
-	Mon, 29 Apr 2024 02:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6406B17F3;
+	Mon, 29 Apr 2024 02:23:23 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4752C7EB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 02:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714357735; cv=none; b=MwgczTHvdh+ZLlNb5wFA5u6Ned2/tFomZQDN3UjzZjirOfBYNFOZlUqkGf+NCYy7op/nJMGUYfR5rHAehaEUoyAkMgpooxRExgjyKbWPh0hbDzyiiClTBuB1Od+tIJjKf1Lmpf1ULXS0nBSdDDuvLOdqU5mnPBxxTijL3SHR36k=
+	t=1714357403; cv=none; b=VWz+FI9xr6/ijy9xH5IUCUKx+aDgFbbSpNQnXsRZdl8S0IZoIB4f1JpEgZ00jyLeaJo6AxMs1dx7GLHGG6zwJvAwu9GjDWj4Pn2g9xvnvg4WEdDY/Bnu90kg9YXCIDsKgiRcVysNz0atjf1b9YaywoXFaXwRb9pIXe+OPZ0ZtVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714357735; c=relaxed/simple;
-	bh=rgmPIBtv04xS/NJZfML1GPnR64jTHK95wha30aKgRC4=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=aSGm0At9IskOcQstmx1ZV1AGxdeIQCnKHNkhzxlErXgQJyZLFWMYswbeVZLVbdHaAOfY3v8kCvpSqwQme/J13MKAZaJLhOT4uJELY3OeHCxBsTEG8mDR3FWfbEqlU0+nHScPrG1k/B3kbw7w0XrBKFSJ+GcfJBg+FANygltFGI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=i0VpV/Ky; arc=none smtp.client-ip=140.205.0.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1714357723; h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-	bh=jT7mAVU8gcg5YtFTPn+gZh0CF87ozRgd/5PRarkdmMI=;
-	b=i0VpV/KyTRQi8K95bjKOx/1QLAyxIicE2syfgPkD5XOEvDPUcLg7J7cwP8RaexXxHUQCfExiECdSy7/Qp044us0jD5ThWHSAurp760LQW6uUFQNM6MyInLcqf4+a9yWj2+JtA8oXynxs9nUh9K197Egn6gV0rZH2S/tS5eZQSJs=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047201;MF=zhubojun.zbj@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.XNqNRHq_1714357403;
-Received: from smtpclient.apple(mailfrom:zhubojun.zbj@antgroup.com fp:SMTPD_---.XNqNRHq_1714357403)
-          by smtp.aliyun-inc.com;
-          Mon, 29 Apr 2024 10:23:24 +0800
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1714357403; c=relaxed/simple;
+	bh=FscvFKLev/pbFhBKOoUhHWN2J3QCiz+0dzat4SNZspg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qW0zFBIzVQKI17FvLp2KIEMACtaRX8zDteN1unGPA2GUq1VMGOJu+WCFMuXIcEaqvLbjj0n77ONjus3x/vxYGWLhYZn3vyW1ZpTfWQbIK+6OVNn0PyX/TNZGBRUolj9j/n4V4cAdR29++6NabIHOyn5OEZCrHon4O4wOexiijrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6C812F4;
+	Sun, 28 Apr 2024 19:23:47 -0700 (PDT)
+Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF2BF3F73F;
+	Sun, 28 Apr 2024 19:23:17 -0700 (PDT)
+Message-ID: <ab6466f2-023e-4b5f-bb60-aadb9eee089a@arm.com>
+Date: Mon, 29 Apr 2024 07:53:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
-Subject: Re: [RFC PATCH v2 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
- ioctl() to avoid softlockup
-From: "Bojun Zhu" <zhubojun.zbj@antgroup.com>
-In-Reply-To: <30415ed3-a05a-454d-9077-c8674617f291@intel.com>
-Date: Mon, 29 Apr 2024 10:23:12 +0800
-Cc:  <linux-kernel@vger.kernel.org>,
-   <linux-sgx@vger.kernel.org>,
-  "Jarkko Sakkinen" <jarkko@kernel.org>,
-   <dave.hansen@linux.intel.com>,
-  "=?UTF-8?B?Q2hhdHJlLCBSZWluZXR0ZQ==?=" <reinette.chatre@intel.com>,
-  "=?UTF-8?B?5YiY5Y+MKOi9qeWxuSk=?=" <ls123674@antgroup.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F7EBCAA4-6412-42AE-9A56-36914E22B4A1@antgroup.com>
-References: <20240426141823.112366-1-zhubojun.zbj@antgroup.com>
- <20240426141823.112366-2-zhubojun.zbj@antgroup.com>
- <30415ed3-a05a-454d-9077-c8674617f291@intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-X-Mailer: Apple Mail (2.3774.100.2.1.4)
-
-Hi Dave,
-
-Appreciate for your review!
-
-> On Apr 27, 2024, at 01:06, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> On 4/26/24 07:18, Bojun Zhu wrote:
->> 	for (c =3D 0 ; c < modp->length; c +=3D PAGE_SIZE) {
->> +		if (sgx_check_signal_and_resched()) {
->> +			if (!c)
->> +				ret =3D -ERESTARTSYS;
->> +
->> +			goto out;
->> +		}
->=20
-> This construct is rather fugly.  Let's not perpetuate it, please.  Why
-> not do:
->=20
-> 	int ret =3D -ERESTARTSYS;
->=20
-> 	...
-> 	for (c =3D 0 ; c < modp->length; c +=3D PAGE_SIZE) {
-> 		if (sgx_check_signal_and_resched())
-> 			goto out;
->=20
-> Then, voila, when c=3D=3D0 on the first run through the loop, you'll =
-get a
-> ret=3D-ERESTARTSYS.
->=20
-
-Okay, I will refine it later.
-
-> But honestly, it seems kinda silly to annotate all these loops with
-> explicit cond_resched()s.  I'd much rather do this once and, for
-> instance, just wrap the enclave locks:
->=20
-> -	  mutex_lock(&encl->lock);
-> +	  sgx_lock_enclave(encl);
->=20
-> and then have the lock function do the rescheds.  I assume that
-> mutex_lock() isn't doing this generically for performance reasons.  =
-But
-> we don't care in SGX land and can just resched to our heart's content.
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] KVM: arm64: Replace custom macros with fields from
+ ID_AA64PFR0_EL1
+Content-Language: en-US
+To: Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+ Oliver Upton <oliver.upton@linux.dev>, Will Deacon <will@kernel.org>,
+ kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Fuad Tabba <tabba@google.com>
+References: <20240418053804.2573071-1-anshuman.khandual@arm.com>
+ <20240418053804.2573071-2-anshuman.khandual@arm.com>
+ <871q73rufi.wl-maz@kernel.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <871q73rufi.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-`mutex_lock(&encl->lock)` appears in everywhere in SGX in-tree driver.
-But it seems that we only need to additionally invoke `cond_resched()` =
-for
-the sgx_enclave_{restrict_permissions | modify_types | remove_pages }=20
-and sgx_ioc_add_pages()=E2=80=99s ioctl()s.=20
 
-Shall we replace all the `mutex_lock(&encl->lock) with =
-`sgx_lock_enclave(encl)`=20
-in SGX in-tree driver and then wrap reschedule operation in
-`sgx_lock_enclave()` ?=20
+On 4/18/24 13:09, Marc Zyngier wrote:
+> + Fuad
+> 
+> On Thu, 18 Apr 2024 06:38:03 +0100,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>
+>> This replaces custom macros usage (i.e ID_AA64PFR0_EL1_ELx_64BIT_ONLY and
+>> ID_AA64PFR0_EL1_ELx_32BIT_64BIT) and instead directly uses register fields
+>> from ID_AA64PFR0_EL1 sysreg definition.
+>>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: Oliver Upton <oliver.upton@linux.dev>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: kvmarm@lists.linux.dev
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/kvm/hyp/include/nvhe/fixed_config.h | 8 ++++----
+>>  arch/arm64/kvm/hyp/nvhe/pkvm.c                 | 4 ++--
+>>  arch/arm64/kvm/hyp/nvhe/sys_regs.c             | 2 +-
+>>  3 files changed, 7 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+>> index 51f043649146..0034bfffced6 100644
+>> --- a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+>> +++ b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+>> @@ -52,10 +52,10 @@
+>>   *	Supported by KVM
+>>   */
+>>  #define PVM_ID_AA64PFR0_RESTRICT_UNSIGNED (\
+>> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+>> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+>> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+>> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+>> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_EL0_IMP) | \
+>> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_EL1_IMP) | \
+>> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_EL2_IMP) | \
+>> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_EL3_IMP) | \
+> 
+> If you are going to rework this, can we instead use something less
+> verbose such as SYS_FIELD_GET()?
 
-Regards,
-Bojun=
+Just wondering, is not FIELD_PREP() and SYS_FIELD_GET() does the exact opposite thing.
+The earlier builds the entire register value from various constituents, where as the
+later extracts a single register field from a complete register value instead. Or did
+I just misunderstood something here.
+
+> 
+> There is also a series from Fuad moving things around, and maybe
+> that's the opportunity to rework this while limiting the amount of
+> cosmetic churn. Not to that this fixed config stuff needs to be
+
+I guess that might be a better place to change the code instead. Because this series
+just replaces the derived register field from tools syreg, but will be happy to have
+those changes here as well in a separate pre/post patch.
+
+> reworked in order to match the runtime feature enforcement that the
+> rest of KVM has adopted.
+
+I am afraid, did not get the above. Could you please give some more details.
 
