@@ -1,183 +1,129 @@
-Return-Path: <linux-kernel+bounces-163017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C498B6386
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:29:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38ED38B63A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:31:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231B31F22DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2E8B284198
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225F81448F3;
-	Mon, 29 Apr 2024 20:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RYjmG/98"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE57C15B56D;
+	Mon, 29 Apr 2024 20:30:51 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0498514262C;
-	Mon, 29 Apr 2024 20:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025A315B572
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714422538; cv=none; b=FUDODrJsLgROLGwKOizET2GAeE8t1Dzbeye/sbwj9GmMEDHXW1qMngprlZdO1/FFxcW/glekvBWRI4TgMoH7K0aoOWgOvBixkYBa0ZtHRCH2RwVVyPN8uUOlWReD4hRxI8UVxd6jhOXwuWqzESeZwu9FZyhbwTTICvF6EfjwG5Y=
+	t=1714422651; cv=none; b=rejHv9abrUqGmhoToZlVK4qY/DMg+sc9/kV4BukREXxSiSh11ZjB2q0PbEPl4HIdEOqRiuVcKCtJlqKgqFtDLQHbXk+5WHQptcLTJakzPiuVJgN3BtQgB9q4jAr1iLomHCg13a16LLaOHqpRk0fZ0lYEDQSCeGuGRTe7G8kAcC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714422538; c=relaxed/simple;
-	bh=j1QRSZ5OruzsGFwaFs+K9v6w+Z1q7xCcJnmc+J/tF+U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FNJ0sukXW+B6HmvmCyr/fHhE/dWYbo08A2o1Dve/wBtpkxcb0qR0FgrdJXraNfJzrZSJCDLzosrBbDmeOzP4oVVfFhA10+whaoDDdichdFmrZY6b1eluuKwgG1wclGi3oCMxPOQrwIolKi0zHpn9P9P82i4H6AxKVSqJirbv1gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RYjmG/98; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a559928f46so3353161a91.0;
-        Mon, 29 Apr 2024 13:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714422536; x=1715027336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yokQIPHiZ4cYpK5/Hrt6FWyO6M/zwcNjQu1CZ6YXzSs=;
-        b=RYjmG/98kshwMV88M5hyr++uBPRL5l1UURVP2/e9l4FYXbgWWVYc8uq06FqMO0IL1M
-         U2FZ3V2qh6LoBBkmrThbKCDgl8qASMiU67VXwL50n6VfERY01etvs4gLZV+3PKGxyUX9
-         +4zA4YHq2ofk+4Gs3MP6WbYHvQSvJ/vflCGBfcrfmJ+QIkW/rlQGPIh8+r4C0Tl5kxdd
-         gl1neU138VJOQIuiFz7Hp5WjegVC6v5mcaM0dPbYT5hgutvW0VlH+nFqtEi+++KNarJF
-         njF9Z4MYASbVhjYxpuyVGXDkKmhBXcBo23V82kt8rv/iUtTiYDiCRE+LXvDM8QW9lvJr
-         XTbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714422536; x=1715027336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yokQIPHiZ4cYpK5/Hrt6FWyO6M/zwcNjQu1CZ6YXzSs=;
-        b=u2GwzyCeafpxGzUAdA0t0V3Y5VvJ5aMYcUfpKi/ntHXXL0vc8NesOqcXYEp2GTPxWF
-         yYXNdKzWkpLm4/etuNP53n0qrbrXFKtdT5onpX85Zb3LV2K2ufZ14IujQlHYVza1j1RH
-         hL1RAmAuD43HCIobr3PxmZiM6hthlOmKxh2GYBSTTFKthkRLbhh/+UY9fTJGGATmSmXm
-         Z+hU7Ea10nTs/FEmyVOjW5E/ED9KKXy1tZBKp63tuA+2rkJ0PQL+Xvnn3EbRHsHQcOFx
-         RUaP5FprNWiM0d2Bv89IODnn+BZEphe6Tvjo8dYyI6pWjlb/2RNBQCJM17mgT2oSJkDo
-         eZiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQzTKlgBjVhK5hQECYE7A989V2QowQVmYQwqxwsXVSJjo4JnW691LIuK1L+9Jq3gBamImgMLYe+HctLaDqmnuky0ra7ndXqcfzu90SP7Uy6UHwX7QssrCgvvasCUNfedMzYrJZqrWoRW8LdxRj0WVS7ZHv62Pk7MjBstmldrsPHM07ZenA
-X-Gm-Message-State: AOJu0Yyw25Vatx6Z3gDhsqdMqehaOuCEpseBLEfHk6LZ8jWDXhQ/kaiN
-	6D3UVSy8rKlp1RAc4N7VkY/P6w71JnmW721do+EaHrmvXHxUlHBCbHIqAD/pyYpILnNRql33BZV
-	0DeO81+6O1uVTqqKHcjLEER3Qk98=
-X-Google-Smtp-Source: AGHT+IEcKpz0kCzyKt+ymuuc69CeTchfc8CdR312rjP5Z0eGUnWPRpC+XGnRzDSDwvJGsVNsIM3l0z/gqcgg/+scljI=
-X-Received: by 2002:a17:90b:4f48:b0:2b2:6834:e983 with SMTP id
- pj8-20020a17090b4f4800b002b26834e983mr675590pjb.45.1714422536190; Mon, 29 Apr
- 2024 13:28:56 -0700 (PDT)
+	s=arc-20240116; t=1714422651; c=relaxed/simple;
+	bh=pBhVrD24rhjqUw6MC3m/vF5Vnl9vshYrCWZYtDq6rWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bok23laTNy+O27PdmcZR3MG1lSQlWvLZ4U1arJXk3f5CaWWZ4aWwGWvL5iYU4VegNVsAyWuu0cv7xjNBXeXtA61uY2ZxKSw0n/G+bP6rXrtz4p244ruUKq4vhioKRnu5VSUdESQ7zGU9O32/UDUDauzTBU+YgyIRYfgSAb6/ROs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1XeC-0001t4-6i; Mon, 29 Apr 2024 22:30:48 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1XeB-00F2hq-Jj; Mon, 29 Apr 2024 22:30:47 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1XeB-00BjCv-1i;
+	Mon, 29 Apr 2024 22:30:47 +0200
+Date: Mon, 29 Apr 2024 22:30:47 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
+	linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] parport: amiga: Mark driver struct with __refdata to
+ prevent section mismatch
+Message-ID: <wgsua47zswruupzxsmi5dr42oyhxqygbuh4de63k2lbqejevx4@e4adtgy4syif>
+References: <2e3783106bf6bd9a7bdeb12b706378fb16316471.1711748999.git.u.kleine-koenig@pengutronix.de>
+ <49ab91032bf9b57cd5fb6d306c38884d059dce2f.1711748999.git.u.kleine-koenig@pengutronix.de>
+ <zoyfbhbrjyefxooa4nvvg6563r5pjdjo6odgg4wqwbumnhjw6z@nobzlb454jiw>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
- <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com> <20240428192549.7898bf6b@rorschach.local.home>
-In-Reply-To: <20240428192549.7898bf6b@rorschach.local.home>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Apr 2024 13:28:44 -0700
-Message-ID: <CAEf4BzazmnBOr+sq7w_KeUQpP7v9o+k418tuzCMEbXXbUeg7bQ@mail.gmail.com>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="b52gwbzzlhss6bj4"
+Content-Disposition: inline
+In-Reply-To: <zoyfbhbrjyefxooa4nvvg6563r5pjdjo6odgg4wqwbumnhjw6z@nobzlb454jiw>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--b52gwbzzlhss6bj4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 28, 2024 at 4:25=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Thu, 25 Apr 2024 13:31:53 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> I'm just coming back from Japan (work and then a vacation), and
-> catching up on my email during the 6 hour layover in Detroit.
->
-> > Hey Masami,
-> >
-> > I can't really review most of that code as I'm completely unfamiliar
-> > with all those inner workings of fprobe/ftrace/function_graph. I left
-> > a few comments where there were somewhat more obvious BPF-related
-> > pieces.
-> >
-> > But I also did run our BPF benchmarks on probes/for-next as a baseline
-> > and then with your series applied on top. Just to see if there are any
-> > regressions. I think it will be a useful data point for you.
-> >
-> > You should be already familiar with the bench tool we have in BPF
-> > selftests (I used it on some other patches for your tree).
->
-> I should get familiar with your tools too.
->
+Hello,
 
-It's a nifty and self-contained tool to do some micro-benchmarking, I
-replied to Masami with a few details on how to build and use it.
+On Mon, Apr 15, 2024 at 04:37:44PM +0200, Uwe Kleine-K=F6nig wrote:
+> On Fri, Mar 29, 2024 at 10:54:39PM +0100, Uwe Kleine-K=F6nig wrote:
+> > As described in the added code comment, a reference to .exit.text is ok
+> > for drivers registered via module_platform_driver_probe(). Make this
+> > explicit to prevent the following section mismatch warning
+> >=20
+> > 	WARNING: modpost: drivers/parport/parport_amiga: section mismatch in r=
+eference: amiga_parallel_driver+0x8 (section: .data) -> amiga_parallel_remo=
+ve (section: .exit.text)
+> >=20
+> > that triggers on an allmodconfig W=3D1 build.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>=20
+> I'd like to enable these warnings even for W=3D0 builds, so it would be
+> great to get it into the main line soon.
+>=20
+> If you apply it, please notice that I fat-fingered the parameters to git
+> send-email and it was sent in a thread. So (assuming you're using b4)
+> you'd need:
+>=20
+>         b4 am -P _ -v1 49ab91032bf9b57cd5fb6d306c38884d059dce2f.171174899=
+9.git.u.kleine-koenig@pengutronix.de
 
-> >
-> > BASELINE
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> > kprobe         :   24.634 =C2=B1 0.205M/s
-> > kprobe-multi   :   28.898 =C2=B1 0.531M/s
-> > kretprobe      :   10.478 =C2=B1 0.015M/s
-> > kretprobe-multi:   11.012 =C2=B1 0.063M/s
-> >
-> > THIS PATCH SET ON TOP
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
-> > kprobe-multi   :   28.909 =C2=B1 0.074M/s
-> > kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
-> > kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
-> >
-> > These numbers are pretty stable and look to be more or less representat=
-ive.
->
-> Thanks for running this.
->
-> >
-> > As you can see, kprobes got a bit faster, kprobe-multi seems to be
-> > about the same, though.
-> >
-> > Then (I suppose they are "legacy") kretprobes got quite noticeably
-> > slower, almost by 10%. Not sure why, but looks real after re-running
-> > benchmarks a bunch of times and getting stable results.
-> >
-> > On the other hand, multi-kretprobes got significantly faster (+24%!).
-> > Again, I don't know if it is expected or not, but it's a nice
-> > improvement.
-> >
-> > If you have any idea why kretprobes would get so much slower, it would
-> > be nice to look into that and see if you can mitigate the regression
-> > somehow. Thanks!
->
-> My guess is that this patch set helps generic use cases for tracing the
-> return of functions, but will likely add more overhead for single use
-> cases. That is, kretprobe is made to be specific for a single function,
-> but kretprobe-multi is more generic. Hence the generic version will
-> improve at the sacrifice of the specific function. I did expect as much.
->
-> That said, I think there's probably a lot of low hanging fruit that can
-> be done to this series to help improve the kretprobe performance. I'm
-> not sure we can get back to the baseline, but I'm hoping we can at
-> least make it much better than that 10% slowdown.
+Gentle ping!? It would be great to get this patch in during the
+upcoming merge window.
 
-That would certainly be appreciated, thanks!
+Best regards
+Uwe
 
-But I'm also considering trying to switch to multi-kprobe/kretprobe
-automatically on libbpf side, whenever possible, so that users can get
-the best performance. There might still be situations where this can't
-be done, so singular kprobe/kretprobe can't be completely deprecated,
-but multi variants seems to be universally faster, so I'm going to
-make them a default (I need to handle some backwards compat aspect,
-but that's libbpf-specific stuff you shouldn't be concerned with).
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
->
-> I'll be reviewing this patch set this week as I recover from jetlag.
->
-> -- Steve
+--b52gwbzzlhss6bj4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYwA3YACgkQj4D7WH0S
+/k5pQggAuUhMdZby1efDy4qLEUMK5QAKYv7ihaz58M7snwC5aD7Vdrru9jCiVivX
+Zl0aESQnHD1P/BZqkIK6U8kzCRlzQXhvXt+l0gQrknvuTHnVnjwpao6VrMiZSUuZ
+1HMVVY/XGj0GvcjzU4DNWm/g2q+GRIzkh+Xwra89Tvc/1t0lw6nHXb9I03ZCHQKa
+fTSznBcxRp1zz3tezSul4xm3eF7/ivCUS+xF1oFw7KjJC4qzo7Tzadma6lHVzkmd
+UDIu7k+lC2K3QvVRjTMuSDS3PfAs34a4q1/aEHXvFFWXhaabEttwM5P/tWFbN4gT
+EFXmtQGxMatwg0PuEaOVypBC+jWu5A==
+=ef66
+-----END PGP SIGNATURE-----
+
+--b52gwbzzlhss6bj4--
 
