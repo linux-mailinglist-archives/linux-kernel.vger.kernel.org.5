@@ -1,159 +1,129 @@
-Return-Path: <linux-kernel+bounces-162884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9198B61A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:08:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0428B61AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:09:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61B191F22216
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342ED2854AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6509613CFA0;
-	Mon, 29 Apr 2024 19:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C68213D25F;
+	Mon, 29 Apr 2024 19:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JQ2LSAo4"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FhZFxRnt"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675C813C91B;
-	Mon, 29 Apr 2024 19:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0418F13AA52
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714417640; cv=none; b=N73jDGZcHb7SiIA5R4GQ0F6AGq9Aaok9vatQZgfgpnWUzHMItKwjUDaqUw1keRS9SmadbFJuHsTK3yzT7FcfsNRpREkwqfAi6Itay79BdDxdLtrULdQTtvRG4x4ROGtZw5EqRKtj8AUnORReEgjDRzX8Cxi4DVs6eVtAk33cHVc=
+	t=1714417649; cv=none; b=GBfT7jO5iT2iZSryhZ7eOmeJ8g4QQczWfXiYzk7m8U4R5dge/QntkvXBhs2Vmmk1QB8ZqAgXseBnPJrSv1z3m4D51Ra57FBkiftk0LBT5s7Cf6TZLFmg7SRAtrMgNUtYK380Hkq0CtrGovgLMWIzti2JdzAW8jL+mcQ4COH6ir8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714417640; c=relaxed/simple;
-	bh=qqZmyySN3ttr0mL8w3csYiQ6Lq6o3ZnWQDeTR//44Ts=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XSUJ/zmmU5X/p513KREaCDh8OOGVfjxnJIyPYq3RYLCQEQS6SRHBJYVUwoT6eiUGdHwlb+ce+aHcspFrdp+ewekBZlJysoMSO7dM+BpkrZBDY5WJyMMfFsunqSm2dyb/Gc755OIWPGbHAs/FOsCQLEoEbpm0R2qoQWoinfoYzog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JQ2LSAo4; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so33046505ad.0;
-        Mon, 29 Apr 2024 12:07:19 -0700 (PDT)
+	s=arc-20240116; t=1714417649; c=relaxed/simple;
+	bh=xZ+i34Cf2kb3FAwoHPMUHPU8QtuIKuYH2rbGEJRg9XI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UTpFnNSEc0LFXduC1YFRmvldoIXXOmaaU/DO9xWulrQ3J+TxVTV89KVumcIJkDzdN7G8/c4cIo7UA/eSkhv6VLzMPdVfXwFsoxjFobHp0ah4mJXom1hPz/+sqRU4lshl4TDU1lsZokQNG//p+6P8zLcrFAtc41v4VhUJ845Z/vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FhZFxRnt; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5724e69780bso5153739a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714417639; x=1715022439; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/ZAdz4nacsjUfg+kmWc7WaK5L40TR/d1vDMSfySNIi0=;
-        b=JQ2LSAo4R+obODDRpfUZSKAVEQHQ8bsTRNn1aIm/NI7EA5xPbtu7QSu7PCS12bAyRo
-         N3hxJ6oN+UayuKohyBE/sGgkVZoAlZlX+1E+UJrG5RO9V2XQnsKF46AQ/lqygBcFDfbo
-         g/d5nuGeXBHNieJ5ePQZCrdj4guDSxoIxXTanDJx77Mn7nGOFjECPB3WdvuP8gnOxNfe
-         0olxPxKBKWXt9ZzPZzQyxm2ANpuHMNJHBvXvze6O3iEvwI5VrVoWgEvWgX2fxsBWJEVU
-         n1txSUp1kJJTUjy7QelwiKdlzw6Pw6cH+sEj6uYlXCuzZ4PMk505Cwm2VfirVEDTYShl
-         6aWg==
+        d=linux-foundation.org; s=google; t=1714417646; x=1715022446; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=va/hNt/iM3MNb7CVvLz718YlZI1otzVGYYp14TWrAyQ=;
+        b=FhZFxRnteElRfasvTmJH55CpjLYSKDdv0RmOvGLj5WW9auy4njJh4diQ8nwhW9dJww
+         fpfmYv4eeeBBWgtVbrEDs7BoHjC4A+XgQGVIUPUEjhmoJsoFvUFB5m2Rhn50t+1c+e8x
+         Go61x1fqExHK8To3htJo64GB7AByQq81I8H2w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714417639; x=1715022439;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZAdz4nacsjUfg+kmWc7WaK5L40TR/d1vDMSfySNIi0=;
-        b=angW+WLC+N+Rm0mUItkNbxZBppy9bFHu1vZhjlgmn28nbBkchbeSL/TKo5FgeTYlLo
-         0kSVh8cdVvzpNcasi1jCmT3z4xoTmsqTflmjHRc87FyFy+lTi0CCursNRZRT0CIF9Hiz
-         KS9ykZId1oFiPu8sVzOusMuG0C3o+VAj3iPinyHuyjZfCjec3w7ZhT3mhf3G42oYoS+v
-         aVZJPZbiGG5EZBkZO4fAxsJ++MS4Hs4NxWXhCINTxppmN9i0oNo0G3CXbYfYPbc4HNFA
-         8o8lD7XaE/f+QVmD8ZLs6uy8usgYO8V01EMvBVXUZWjmnvhuepNBq6CgLZxbnetk4HsX
-         Z7CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWx0z1V/goda4/GBsEIHjVfuoXt10YCs6OmcsPlgo+BW5WCxA52tBmw2GFIPwmRFfxZYdswxYquRKiXuosnoJwZ7k6ZhLq/QR31t2fmCXgFUSztuU+DWJg0TW4x3ChwLD1FC4qRRiJZNCZ9FQ==
-X-Gm-Message-State: AOJu0Yw1/mVV8tQAI5CRB08GPG1eSUTWbzYYWvJCHDa1jM/ajis4IB8r
-	vm8Y8yHfIpJ3rs23d2hqW7p7T+OoupN8oE7TphfR+CyeLC70V4T6
-X-Google-Smtp-Source: AGHT+IEmVRDgcLWQ+6tPsCb7ZBjy6NSNZhmYZz0nvDiJO9htXZ6R1aiOcZHSzS635P8dLMc8xNX3jg==
-X-Received: by 2002:a17:902:d489:b0:1ea:964f:9b0b with SMTP id c9-20020a170902d48900b001ea964f9b0bmr870204plg.5.1714417638707;
-        Mon, 29 Apr 2024 12:07:18 -0700 (PDT)
-Received: from KASONG-MB2.tencent.com ([1.203.116.31])
-        by smtp.gmail.com with ESMTPSA id y4-20020a170902864400b001e49428f313sm20619356plt.261.2024.04.29.12.07.14
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 29 Apr 2024 12:07:17 -0700 (PDT)
-From: Kairui Song <ryncsn@gmail.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Chris Li <chrisl@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Neil Brown <neilb@suse.de>,
-	Minchan Kim <minchan@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kairui Song <kasong@tencent.com>,
-	David Howells <dhowells@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	netfs@lists.linux.dev
-Subject: [PATCH v3 07/12] netfs: drop usage of folio_file_pos
-Date: Tue, 30 Apr 2024 03:04:55 +0800
-Message-ID: <20240429190500.30979-8-ryncsn@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240429190500.30979-1-ryncsn@gmail.com>
-References: <20240429190500.30979-1-ryncsn@gmail.com>
-Reply-To: Kairui Song <kasong@tencent.com>
+        d=1e100.net; s=20230601; t=1714417646; x=1715022446;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=va/hNt/iM3MNb7CVvLz718YlZI1otzVGYYp14TWrAyQ=;
+        b=p4UdhNAF5F2u9hAwrj288E1KVG2cJ2m4BR/Hjs0tJ94X1FfHWM0znP0ra0QiuhAfkm
+         z6SfWbXRDH5Ke2ZwuNKnCLVFyC9xgPq67XnTRPij7SnH73V0izBwSxkOPsvVV//+qDQh
+         zA0yNlHwe2R9DcqG1w+xwz2si/zsYyk/uLHUgoJl5z7llHy5je1eVyVKtVLD0LhiJoca
+         hvR77VvK2CAK10me+a6rO7SAAovOscMgCJaLRtYbPsnucH1Yt3gcG2FdYBdovOVduc5E
+         Egvy7CWgzavsws3uajjqE2mf4d5EwG/6ha2qmbPgHxFGdtP8qJemhjNFb7f4sUlvRRcf
+         xWvA==
+X-Forwarded-Encrypted: i=1; AJvYcCW127CK88GQBhnYAdpK5GA6l2R0LCF+8qfLaSowTGCzBI7xodqqqZf7STsdufdHX8VIbTnQ0XaMkUN8173bs3F2Ubvv7N/4cJXfSXe5
+X-Gm-Message-State: AOJu0YxgXJtk6qRZ7JOBiDqgdCNHf1IbahYEC6tQKWnL8UEZWENAOdiC
+	YzQZNy0omNtyqODjW6f0VrLErnSHXYd7feoDUMkbMUsUDBTMv+wiOT5xC8EYMJqTN5aqhVorIsm
+	FCAkaPw==
+X-Google-Smtp-Source: AGHT+IHW54oNRxW1QetVvwNKvJi8/comRl26hZNjPxIpWr3VOn5SoJvSvxpIh3gtDxpQ69vGVo7dyw==
+X-Received: by 2002:a50:d651:0:b0:572:47be:be36 with SMTP id c17-20020a50d651000000b0057247bebe36mr6712528edj.0.1714417646121;
+        Mon, 29 Apr 2024 12:07:26 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id k25-20020a056402049900b005700ef75274sm13369688edv.33.2024.04.29.12.07.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 12:07:25 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a55b3d57277so586126466b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:07:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWFQAdMlE3uzNpDkrSWsGapXGgWFX8cUGLuHMzg5qSg44CyilOxYdES8XeF6blO70cUocu4XNCAzUBsH6EVp6lZfYefTXfxeUX2VKIS
+X-Received: by 2002:a17:906:12c1:b0:a55:3707:781d with SMTP id
+ l1-20020a17090612c100b00a553707781dmr6853559ejb.73.1714417645239; Mon, 29 Apr
+ 2024 12:07:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com> <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com> <CAHk-=wj9=+4k+sY6hNsQy2oQA4HABNA369cBPSgBNaeRHbbTZg@mail.gmail.com>
+ <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com>
+In-Reply-To: <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 29 Apr 2024 12:07:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
+Message-ID: <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Hillf Danton <hdanton@sina.com>, Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>, 
+	Adrian Bunk <bunk@kernel.org>, 
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Kairui Song <kasong@tencent.com>
+On Mon, 29 Apr 2024 at 11:47, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> In particular, I think the page fault emulation code should be moved
+> from do_user_addr_fault() to do_kern_addr_fault(), and the horrible
+> hack that is fault_in_kernel_space() should be removed (it is what now
+> makes a vsyscall page fault be treated as a user address, and the only
+> _reason_ for that is that we do the vsyscall handling in the wrong
+> place).
 
-folio_file_pos is only needed for mixed usage of page cache and
-swap cache, for pure page cache usage, the caller can just use
-folio_pos instead.
+Final note: we should also remove the XONLY option entirely, and
+remove all the strange page table handling we currently do for it.
 
-It can't be a swap cache page here, swap cache is never exposed
-to netfs, so just drop it and use folio_pos instead.
+It won't work anyway on future CPUs with LASS, and we *have* to
+emulate things (and not in the page fault path, I think LASS will
+cause a GP fault).
 
-Signed-off-by: Kairui Song <kasong@tencent.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: netfs@lists.linux.dev
----
- fs/netfs/buffered_read.c  | 4 ++--
- fs/netfs/buffered_write.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I think the LASS patches ended up just disabling LASS if people wanted
+vsyscall, which is probably the worst case.
 
-diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
-index 3298c29b5548..d3687d81229f 100644
---- a/fs/netfs/buffered_read.c
-+++ b/fs/netfs/buffered_read.c
-@@ -255,7 +255,7 @@ int netfs_read_folio(struct file *file, struct folio *folio)
- 	_enter("%lx", folio->index);
- 
- 	rreq = netfs_alloc_request(mapping, file,
--				   folio_file_pos(folio), folio_size(folio),
-+				   folio_pos(folio), folio_size(folio),
- 				   NETFS_READPAGE);
- 	if (IS_ERR(rreq)) {
- 		ret = PTR_ERR(rreq);
-@@ -454,7 +454,7 @@ int netfs_write_begin(struct netfs_inode *ctx,
- 	}
- 
- 	rreq = netfs_alloc_request(mapping, file,
--				   folio_file_pos(folio), folio_size(folio),
-+				   folio_pos(folio), folio_size(folio),
- 				   NETFS_READ_FOR_WRITE);
- 	if (IS_ERR(rreq)) {
- 		ret = PTR_ERR(rreq);
-diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
-index 9a0d32e4b422..859a22a740c3 100644
---- a/fs/netfs/buffered_write.c
-+++ b/fs/netfs/buffered_write.c
-@@ -63,7 +63,7 @@ static enum netfs_how_to_modify netfs_how_to_modify(struct netfs_inode *ctx,
- 						    bool maybe_trouble)
- {
- 	struct netfs_folio *finfo = netfs_folio_info(folio);
--	loff_t pos = folio_file_pos(folio);
-+	loff_t pos = folio_pos(folio);
- 
- 	_enter("");
- 
--- 
-2.44.0
+Again, this is more of a "I think we have more work to do", and should
+all happen after that sig_on_uaccess_err stuff is gone.
 
+I guess that patch to rip out sig_on_uaccess_err needs to go into 6.9
+and even be marked for stable, since it most definitely breaks some
+stuff currently. Even if that "some stuff" is pretty esoteric (ie
+"vsyscall=emulate" together with tracing).
+
+                  Linus
 
