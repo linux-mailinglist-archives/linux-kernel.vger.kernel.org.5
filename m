@@ -1,120 +1,203 @@
-Return-Path: <linux-kernel+bounces-162594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8128B5DC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:33:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9833B8B5DCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:35:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612C11C21D4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:33:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBBCF1C216BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED1081AA2;
-	Mon, 29 Apr 2024 15:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DHUUMOVt"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D99A7BAF0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12889823A8;
+	Mon, 29 Apr 2024 15:35:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FC764CC0
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714404781; cv=none; b=mNyWKKCpjLOiSzTbjPzwFhHhDrSbhmNhQF4MteWX/easxAq5LdmxKUTK4d5HLxjERjvR+nY24D0GyliwVHFocumEvbYhgg2ooS2GaQo5cdG21OmSWTK17Xu93nAc+I6ORzeB7S4q3hsPZqWr9BfATH7/5NDAXajXnoB+t6BSj0g=
+	t=1714404900; cv=none; b=QjSLgRWOf0O3R5kFwZCrttufZA10kJSppYm6O1YsBcKotfpd/0HRGIONuLNZOLLe/ffFnngxggAK76uWYyLe0vkncnxmk9nVTiRfxY5aoIKlTPWgHneV2RB/V6+OIWWcc4Y3kKTLH6iA2iO55IWOpYXBf/4CUY1W/iAIHjt/y3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714404781; c=relaxed/simple;
-	bh=wDxA9I9+VmVVSI9BroVzQWlSN5RXJEUSc5DnHUzQWGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZRO/+LPQOrQGuBi/ksLB+o+hciKt/aihZlC+LQic9uhoI5vmBTtFeuGEp0Imh690+Vek+1X41u5CzyUS1Ov4FIB34Q7HYjgJAdAIhvgczOtO7oF3lO9ZUXmULwAxnhlkQAZvBBCG1xM/3WOA7JbJQ/KC4kNdeSqiUnJgg5cK2XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DHUUMOVt; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58c89bda70so388134666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714404777; x=1715009577; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8YJLjrLtk5N3O9qDCOgLkM7hm+XAZ4QGYxxZrlDK20=;
-        b=DHUUMOVtK5sWyfMohMF8oYVp2cRIN+8yptDQo9Tnv/wKjzOAqovy6ZLXlNt0wtfHm6
-         kyt0k+t+IQs786MWtRjyKff4rHU2S3Qft3AokPoTkhQ7heYk5Tfrsxhsva6MwmvA4ATz
-         HfXuPa5hfqoeeDOwcy0GO5sUEBD2XFfErd3hU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714404777; x=1715009577;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F8YJLjrLtk5N3O9qDCOgLkM7hm+XAZ4QGYxxZrlDK20=;
-        b=L75hlpwCMZ/5PuqXYXZxL++UfUoA0J87heNa0bA7UVVyGzxGFNuxRWvMMe2RJIjbFd
-         QhMxhzvrWOmA4Ni9modWatHvFUuqobKAtvKNZ9qHrcM9ThrlF/LbBTrGEgJ/Dj9DwU+e
-         M6OYbG055Ygkx4smgnvEqQEtRPmluDd0m5wXdyTYWVdMjORn1SofRz6Hg6SjWf47OjzF
-         38cIx3pkrCb811cLYDwv5JUHiVVvWdmOziiQ4EKiyY/Z7RSuCBzVoxjEQCGEL6w4OhSk
-         VcA5wllVm1HAcrJMiWJcjpR1hpRUa+++MHmWzWvZCDCgO3QgpiO6aiCEUgQksiG4pCIn
-         5SDA==
-X-Gm-Message-State: AOJu0YxpA4mBv59SGJOTxHwAvWDhaFpkYpMUEUJlub9JAktj8OdxAG90
-	NdNFFRs72apSvsC742m+zz3xXkDQIeOAAj+un26Nwue3AyyPy+AKE+JobMgBK/ptggXKhmdbbse
-	Z62bogg==
-X-Google-Smtp-Source: AGHT+IG7Zn172TezdjbML23ZVcjV6Ku8PkW1lem7ykhZnxa41DiF14Hyrj8h3jr2bsiOHz1Clu0dtQ==
-X-Received: by 2002:a17:906:dfc5:b0:a58:bd1b:a05f with SMTP id jt5-20020a170906dfc500b00a58bd1ba05fmr7343465ejc.68.1714404777390;
-        Mon, 29 Apr 2024 08:32:57 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id wt8-20020a170906ee8800b00a55ac292b66sm10271117ejb.219.2024.04.29.08.32.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 08:32:56 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a55b3d57277so556715866b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:32:56 -0700 (PDT)
-X-Received: by 2002:a17:906:12c1:b0:a55:3707:781d with SMTP id
- l1-20020a17090612c100b00a553707781dmr6533136ejb.73.1714404776259; Mon, 29 Apr
- 2024 08:32:56 -0700 (PDT)
+	s=arc-20240116; t=1714404900; c=relaxed/simple;
+	bh=1+k1quiOkszeSfEDn/ofRri5lvYBYUzIqrPAxFaeW2E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OmSAYwShl3L5X//xBrtLaOm+s2/+d69QtNpg2pp2yVj1DXS1CMJIfe+YnYVGWXu86y20x7L2Jg/3/oRqqysT1wQiqmIN3bosKYoN0BpExA0PmHazP4oaZA1eMZfieos0NgpDZUPCEXlBQz/EVtKmoUZu1urQ5Mm+6ou7i/dtq+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29D292F4;
+	Mon, 29 Apr 2024 08:35:25 -0700 (PDT)
+Received: from [10.57.65.53] (unknown [10.57.65.53])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 623AE3F793;
+	Mon, 29 Apr 2024 08:34:57 -0700 (PDT)
+Message-ID: <99384a25-9ff5-43c9-b09d-5a048c456d02@arm.com>
+Date: Mon, 29 Apr 2024 16:34:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429144807.3012361-1-willy@infradead.org>
-In-Reply-To: <20240429144807.3012361-1-willy@infradead.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 29 Apr 2024 08:32:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whEMvpPLrzsi6BoH=o+-ScRKuuqxrdWSnrTtGEi=JvcNA@mail.gmail.com>
-Message-ID: <CAHk-=whEMvpPLrzsi6BoH=o+-ScRKuuqxrdWSnrTtGEi=JvcNA@mail.gmail.com>
-Subject: Re: [PATCH] bounds: Use the right number of bits for power-of-two CONFIG_NR_CPUS
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, 
-	=?UTF-8?B?0JzQuNGF0LDQuNC7INCd0L7QstC+0YHQtdC70L7Qsg==?= <m.novosyolov@rosalinux.ru>, 
-	=?UTF-8?B?0JjQu9GM0YTQsNGCINCT0LDQv9GC0YDQsNGF0LzQsNC90L7Qsg==?= <i.gaptrakhmanov@rosalinux.ru>, 
-	stable@vger.kernel.org, Rik van Riel <riel@surriel.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and
+ GUP-fast
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Zi Yan <zi.yan@cs.rutgers.edu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240425170704.3379492-1-ryan.roberts@arm.com>
+ <17956e0f-1101-42d7-9cba-87e196312484@nvidia.com>
+ <2C9D897B-0E96-42F0-B3C4-9926E6DF5F4B@nvidia.com>
+ <328b2b69-e4ab-4a00-9137-1f7c3dc2d195@nvidia.com>
+ <23fbca83-a175-4d5a-8cf7-ed54c1830d37@arm.com>
+ <64037B35-3E80-4367-BA0B-334356373A78@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <64037B35-3E80-4367-BA0B-334356373A78@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Apr 2024 at 07:48, Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
->
-> bits_per() rounds up to the next power of two when passed a power of
-> two.  This causes crashes on some machines and configurations.
+On 29/04/2024 15:45, Zi Yan wrote:
+> On 29 Apr 2024, at 5:29, Ryan Roberts wrote:
+> 
+>> On 27/04/2024 20:11, John Hubbard wrote:
+>>> On 4/27/24 8:14 AM, Zi Yan wrote:
+>>>> On 27 Apr 2024, at 0:41, John Hubbard wrote:
+>>>>> On 4/25/24 10:07 AM, Ryan Roberts wrote:
+>>>>>> __split_huge_pmd_locked() can be called for a present THP, devmap or
+>>>>>> (non-present) migration entry. It calls pmdp_invalidate()
+>>>>>> unconditionally on the pmdp and only determines if it is present or not
+>>>>>> based on the returned old pmd. This is a problem for the migration entry
+>>>>>> case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
+>>>>>> called for a present pmd.
+>>>>>>
+>>>>>> On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
+>>>>>> future call to pmd_present() will return true. And therefore any
+>>>>>> lockless pgtable walker could see the migration entry pmd in this state
+>>>>>> and start interpretting the fields as if it were present, leading to
+>>>>>> BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
+>>>>>> I suspect the same is possible on other architectures.
+>>>>>>
+>>>>>> Fix this by only calling pmdp_invalidate() for a present pmd. And for
+>>>>>
+>>>>> Yes, this seems like a good design decision (after reading through the
+>>>>> discussion that you all had in the other threads).
+>>>>
+>>>> This will only be good for arm64 and does not prevent other arch developers
+>>>> to write code breaking arm64, since only arm64's pmd_mkinvalid() can turn
+>>>> a swap entry to a pmd_present() entry.
+>>>
+>>> Well, let's characterize it in a bit more detail, then:
+>>
+>> Hi All,
+>>
+>> Thanks for all the feedback! I had thought that this patch would be entirely
+>> uncontraversial - obviously I was wrong :)
+>>
+>> I've read all the emails, and trying to summarize a way forward here...
+>>
+>>>
+>>> 1) This patch will make things better for arm64. That's important!
+>>>
+>>> 2) Equally important, this patch does not make anything worse for
+>>>    other CPU arches.
+>>>
+>>> 3) This patch represents a new design constraint on the CPU arch
+>>>    layer, and thus requires documentation and whatever enforcement
+>>>    we can provide, in order to keep future code out of trouble.
+>>
+>> I know its only semantics, but I don't view this as a new design constraint. I
+>> see it as an existing constraint that was previously being violated, and this
+>> patch aims to fix that. The generic version of pmdp_invalidate() unconditionally
+>> does a tlb invalidation on the address range covered by the pmd. That makes no
+>> sense unless the pmd was previously present. So my conclusion is that the
+>> function only expects to be called for present pmds.
+>>
+>> Additionally Documentation/mm/arch_pgtable_helpers.rst already says this:
+>>
+>> "
+>> | pmd_mkinvalid             | Invalidates a mapped PMD [1]                     |
+>> "
+>>
+>> I read "mapped" to be a synonym for "present". So I think its already
+>> documented. Happy to explcitly change "mapped" to "present" though, if it helps?
+>>
+>> Finally, [1] which is linked from Documentation/mm/arch_pgtable_helpers.rst,
+>> also implies this constraint, although it doesn't explicitly say it.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20181017020930.GN30832@redhat.com/
+>>
+>>>
+>>> 3.a) See the VM_WARN_ON() hunks below.
+>>
+>> It sounds like everybody would be happy if I sprinkle these into the arches that
+>> override pmdp_invalidate[_ad]()? There are 3 arches that have their own version
+>> of pmdp_invalidate(); powerpc, s390 and sparc. And 1 that has its own version of
+>> pmdp_invalidate_ad(); x86. I'll add them in all of those.
+>>
+>> I'll use VM_WARN_ON_ONCE() as suggested by John.
+>>
+>> I'd rather not put it directly into pmd_mkinvalid() since that would set a
+>> precedent for adding them absolutely everywhere. (e.g. pte_mkdirty(), ...).
+> 
+> I understand your concern here. I assume you also understand the potential issue
+> with this, namely it does not prevent one from using pmd_mkinvalid() improperly
+> and causing a bug and the bug might only appear on arm64.
 
-Bah. Your patch is *still* wrong, because bits_per() thinks you need
-one bit for a zero value, so when you do
+Are you saying that arm64 is the *only* arch where pmd_mkinvalid() can turn a
+swap pte into a present pte? I hadn't appreciated that; in your first reply to
+this patch you said "I notice that x86, risc-v, mips behave the same" - I
+thought you were saying they behaved the same as arm64, but on re-reading, I
+think I've taken that out of context.
 
-        bits_per(CONFIG_NR_CPUS - 1)
+But in spite of that, it still remains my view that making arm64's
+pmd_mkinvalid() robust to non-present ptes is not the right fix - or at least
+not sufficient on its own. That change on its own would still result in issuing
+a TLBI for the non-present pte from pmdp_invalidate(). That's not a correctness
+issue, but certainly could be a performance concern.
 
-and some insane person has enabled SMP and managed to set
-CONFIG_NR_CPUS to 1, the math is *still* broken.
+I think its much better to have the design constraint that pmd_mkinvalid(),
+pmdp_invalidate() and pmdp_invalidate_ad() can only be called for present ptes.
+And I think the combination of WARNs and docs that we've discussed should be
+enough to allay your concerns about introduction of arm64-specific bugs.
 
-The right thing to do is
+> 
+>>
+>>>
+>>> 3.b) I like the new design constraint, because it is reasonable and
+>>>      clearly understandable: don't invalidate a non-present page
+>>>      table entry.
+>>>
+>>> I do wonder if there is somewhere else that this should be documented?
+>>
+>> If I change:
+>>
+>> "
+>> | pmd_mkinvalid             | Invalidates a mapped PMD [1]                     |
+>> "
+>>
+>> To:
+>>
+>> "
+>> | pmd_mkinvalid             | Invalidates a present PMD; do not call for       |
+>> |                             non-present pmd [1]                              |
+>> "
+>>
+>> Is that sufficient? (I'll do the same for pud_mkinvalid() too.
+> 
+> Sounds good to me.
+> 
+> Also, if you move pmdp_invalidate(), please move the big comment with it to
+> avoid confusion. Thanks.
 
-        order_base_2(CONFIG_NR_CPUS)
+Yes good spot, I'll move it.
 
-and 'bits_per()' should be avoided, having completely crazy semantics
-(you can tell how almost all users actually do "x-1" as the argument).
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
-We should probably get rid of that horrid bits_per(() entirely.
-
-I applied your patch with that fixed (which admittedly make it all
-*my* patch, but applying it as yours just to get the changelog).
-
-               Linus
 
