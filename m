@@ -1,228 +1,98 @@
-Return-Path: <linux-kernel+bounces-161733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A992A8B504F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:40:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B233F8B5052
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD8061C219E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67FDC1F225DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D5BCA73;
-	Mon, 29 Apr 2024 04:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6261DD515;
+	Mon, 29 Apr 2024 04:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m3ReCz15"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iUD8i6Sk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B980279F9;
-	Mon, 29 Apr 2024 04:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5D279F9;
+	Mon, 29 Apr 2024 04:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714365649; cv=none; b=qjfQFfrqZKFDz6qr7vFCXEhEu0QZnV6bqzSfzVjUdtr26gmdZvworWEBe5puA8WKdqTcK/zEWlxR/kQC4w0c5qL7n3ZMWt6jWAA56uxFr4MrxJA01PLhc/H3SU0SYbo5ukTQuNdjBy4K+t7sOuREAIl6/JwfPWgEp3Mj95NdBcU=
+	t=1714365708; cv=none; b=hhhPZZMSepA0/bThEMNCrYksjLwsNbv/P7G3EdwTHR91f2pro7UV4NmPGhq6/sMiwSFFMcQetGv4F0e7qRCcjrYhy0asL7VlIKjR22ofBv26OOmG4ORcJ4M0BX8kxPs/YfXLfjA1x/3lKk8A6nRpq3zQreVo0oDtY+cX0tek0B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714365649; c=relaxed/simple;
-	bh=5zPcB13L2TEYchA6zl5rtYTcXIkZ8sVxvp8s1ZUnN0A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aXSAooukdYevsXNFGEbtSEhYhEiudBX1+wv1s1rDftDy9kzTB9qbCm8EUAjBgAq75bATycOd1hVbE7qVbEjAiNjr5xVyr9PHC1xaRMt6AYPPfmzqtTkO3Wt/JIELOVeNspXi+Vv5wRKainTFB2VotQMadJHYrT5WaEi57W233aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m3ReCz15; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41b5e74fa2fso23674005e9.1;
-        Sun, 28 Apr 2024 21:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714365646; x=1714970446; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=solEmZTLUT9rrgpr8rWc5di4N0OBO3L9+P0yMo2Rqts=;
-        b=m3ReCz15GGDO2qU2SWxwHEQILMawEPijTerArl88Xh3gFsk5RgYs7Az+4yKwgIUjCz
-         EYghO3rLQD4+6AA++v2S+Bccvus6/xJMyH4Htlx5Pi4VP9i2kp50e2+2oRnC4P/qcvLi
-         JHMcu3U07YpQx05FG2FpOARBfbMAJBv+9bQvMn8gM5kZBujMa9w3n3cGmWcMg7nfj1dP
-         xpOJgF6ahsC9kXuO44ZPvSbMa50tsR/wcMdCEuWemRnhQ8rkB4lolO9jDUoPjypzHOI3
-         8P4Cgs/uoumCzBdh5iBA3pJfXJmNJt+6LuaQmVtv4ABP/H6Ef+bCZ3eeBPqUqlGW3yyK
-         2+/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714365646; x=1714970446;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=solEmZTLUT9rrgpr8rWc5di4N0OBO3L9+P0yMo2Rqts=;
-        b=Mg7EDxV7DCxo/UY1Pue5r0sWDVV2su5uE4F1jumysFPs9WogjBzSf5Yen+wmiJwTA8
-         kNUDSVQooFuowuTVVPiGq5ReYglkz6p3OngGHKeVy32W91UfNnWA0/f/nQ4itp0u6/Dz
-         5xNGmtaQC1/wpJ/AyaDM3avqB2XPYgm5xwKANfJP0WsipDGhnOXDZhmv9YMpNkdeVK4x
-         2Rie/xGVb5Hw7ff7B91blc+DhVNVqT5GOLNzF9pJH38drS0CjUZKDYTEB9Cfii5T8vfp
-         oMRVtT7AUlUh+maKFYRBcbQLXep/Dn2osVWeDgpEYCYycGzVV7zoDOoqPfslQ9BWZGSy
-         BOeg==
-X-Forwarded-Encrypted: i=1; AJvYcCU88cdtYK0BJLry8Eacf2t87sVGXrdlNJnPR9ItPpsD6aAvkKn5jfFMsNCs6Pdo5keSLtD1ZNp17QfZgomPHKKLLfV1HjuAeYqSfD3TLN0EajfyNdU/aTXz93zEoRm1eWP7zFGynhCbxps5uAw8
-X-Gm-Message-State: AOJu0YwA9uV2rXNnXhSARHwWzHb/tVwNwnbFbR6A9lNtNAWD0ViQtTIQ
-	npw+oUWaR9s0BoHRhMi9kUKUj1QL/KNQfCkCfs/y0LowCgBoUQxlR7X10ti/
-X-Google-Smtp-Source: AGHT+IGLyIURNb/0G7vU9X1cZNkRP4t+/yiUDBQmcmDw3eUtAqWgWVXNvatw9THmMZMddpB4KawfaQ==
-X-Received: by 2002:a05:600c:500c:b0:41b:e416:43d3 with SMTP id n12-20020a05600c500c00b0041be41643d3mr4112231wmr.35.1714365645751;
-        Sun, 28 Apr 2024 21:40:45 -0700 (PDT)
-Received: from ubuntu-focal.zuku.co.ke ([197.237.50.252])
-        by smtp.gmail.com with ESMTPSA id u5-20020a05600c138500b0041c5151dc1csm1409367wmf.29.2024.04.28.21.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 21:40:45 -0700 (PDT)
-From: Dorine Tipo <dorine.a.tipo@gmail.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Dorine Tipo <dorine.a.tipo@gmail.com>,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH] selftests:arm64: Test PR_SVE_VL_INHERIT after a double fork
-Date: Mon, 29 Apr 2024 04:40:12 +0000
-Message-Id: <20240429044012.5018-1-dorine.a.tipo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714365708; c=relaxed/simple;
+	bh=owcXP+fsTgaHZFyUzCBMT1bCDgfz3/4CftWoEv2Acic=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hMdjmxWcyDk2yVUinm4S+zGIJlSlm1VfkPG6PCy9uZwHVR9LoVL+HgZQ1jfyXhijIhLZAbzg7DNXBmgFuHyLYoMgFg3Cro2FwKG/3Rl5cGYMvHZv6pi/yca2X/RiEhjjzb3Cmntk8kvBjC3+5HsF74WttqrPd+Cn7ZrcOJ8RjJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iUD8i6Sk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wZLTTPnjjgVPc51teM35bkMR46cidPv+y0mcRd/jT54=; b=iUD8i6SkDwuRDoyxK+6J+lVAFg
+	kx4jy3bRbUcjCs4nzPAwR9bzpl1MCcr9+66rNBv8BQOwCgihP/M31/xiU6rvf6r13WjAAlIks3z5F
+	E+gJ21n42uwY3TvDgrjA7tdv/JQh8D1KeiEzCU2Us7SeCgo05e1CnOVRq2+M0bZistaRxizzW2KyC
+	/HeDnBbcWwCYkmXYrzI8i083Nx7QTWMMSQmUxm7GrcO6LVn3IiNzPC7vp3VGOHsxMSKBETn7Lm6Nu
+	mwnCMr9QxVldF1Mzq06V2VhvSTzzsbErJ554QUzi9NbcdxhwnM2GlcAvjveaVySRBJmC5mAN3Xm7y
+	ZqvYu4Nw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s1Ipl-00000001RPG-2exv;
+	Mon, 29 Apr 2024 04:41:45 +0000
+Date: Sun, 28 Apr 2024 21:41:45 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+	tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+Message-ID: <Zi8lCUjX8lByIVZI@infradead.org>
+References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
+ <20240425131335.878454-5-yi.zhang@huaweicloud.com>
+ <20240425182904.GA360919@frogsfrogsfrogs>
+ <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
+ <ZitKncYr0cCmU0NG@infradead.org>
+ <5b6228ce-c553-3387-dfc4-2db78e3bd810@huaweicloud.com>
+ <ZiyiNzQ6oY3ZAohg@infradead.org>
+ <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Add a new test, double_fork_test() to check the inheritance of the SVE
-vector length after a double fork.
-The `EXPECTED_TESTS` macro has been updated to account for this additional
-test.
-This patch addresses task 7 on the TODO list.
+On Sun, Apr 28, 2024 at 11:26:00AM +0800, Zhang Yi wrote:
+> > 
+> > Oh well.  Given that we're full in on the speculative allocations
+> > we might as well deal with it.
+> > 
+> 
+> Let me confirm, so you also think the preallocations in the COW fork that
+> overlaps the unreflinked range is useless, we should avoid allocating
+> this range, is that right? If so, I suppose we can do this improvement in
+> another patch(set), this one works fine now.
 
-Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
----
- tools/testing/selftests/arm64/fp/za-fork.c | 95 +++++++++++++++++++++-
- 1 file changed, 94 insertions(+), 1 deletion(-)
+Well, not stop allocating it, but not actually convert it to a real
+allocation when we're just truncating it and replacing the blocks with
+reflinked blocks.
 
-diff --git a/tools/testing/selftests/arm64/fp/za-fork.c b/tools/testing/selftests/arm64/fp/za-fork.c
-index 587b94648222..35229e570dcf 100644
---- a/tools/testing/selftests/arm64/fp/za-fork.c
-+++ b/tools/testing/selftests/arm64/fp/za-fork.c
-@@ -11,7 +11,7 @@
+But yes, this is a bigger project.
 
- #include "kselftest.h"
+For now for this patch to go ahead:
 
--#define EXPECTED_TESTS 1
-+#define EXPECTED_TESTS 2
-
- int fork_test(void);
- int verify_fork(void);
-@@ -69,6 +69,97 @@ int fork_test_c(void)
-	}
- }
-
-+int double_fork_test(void)
-+{
-+	pid_t newpid, grandchild_pid, waiting;
-+	int ret, child_status, parent_result;
-+
-+	ret = prctl(PR_SVE_SET_VL, vl | PR_SVE_VL_INHERIT);
-+	if (ret < 0)
-+		ksft_exit_fail_msg("Failed to set SVE VL %d\n", vl);
-+
-+	newpid = fork();
-+	if (newpid == 0) {
-+		/* In child */
-+		if (!verify_fork()) {
-+			ksft_print_msg("ZA state invalid in child\n");
-+			exit(0);
-+		}
-+
-+		grandchild_pid = fork();
-+		if (grandchild_pid == 0) {
-+			/* in grandchild */
-+			if (!verfy_fork()) {
-+				ksft_print_msg("ZA state invalid in grandchild\n");
-+				exit(0);
-+			}
-+
-+			ret = prctl(PR_SVE_GET_VL);
-+			if (ret & PR_SVE_VL_INHERIT) {
-+				ksft_print_msg("prctl() reports _INHERIT\n");
-+				return;
-+			}
-+			 ksft_print_msg("prctl() does not report _INHERIT\n");
-+
-+		} else if (grandchild_pid < 0) {
-+			ksft_print_msg("fork() failed in first child: %d\n", grandchild_pid);
-+			return 0;
-+		}
-+
-+		/*  Wait for the grandchild process to exit */
-+		waiting = waitpid(grandchild_pid, &child_status, 0);
-+		if (waiting < 0) {
-+			if (errno == EINTR)
-+				continue;
-+			ksft_print_msg("waitpid() failed: %d\n", errno);
-+			return 0;
-+		}
-+		if (waiting != grandchild_pid) {
-+			ksft_print_msg("waitpid() returned wrong PID\n");
-+			return 0;
-+		}
-+
-+		if (!WIFEXITED(child_status)) {
-+			ksft_print_msg("grandchild did not exit\n");
-+			return 0;
-+		}
-+
-+		exit(1);
-+		}
-+	}
-+	if (newpid < 0) {
-+		ksft_print_msg("fork() failed: %d\n", newpid);
-+
-+		return 0;
-+	}
-+
-+	parent_result = verify_fork();
-+	if (!parent_result)
-+		ksft_print_msg("ZA state invalid in parent\n");
-+
-+	for (;;) {
-+		waiting = waitpid(newpid, &child_status, 0);
-+
-+		if (waiting < 0) {
-+			if (errno == EINTR)
-+				continue;
-+			ksft_print_msg("waitpid() failed: %d\n", errno);
-+			return 0;
-+		}
-+		if (waiting != newpid) {
-+			ksft_print_msg("waitpid() returned wrong PID\n");
-+			return 0;
-+		}
-+
-+		if (!WIFEXITED(child_status)) {
-+			ksft_print_msg("child did not exit\n");
-+			return 0;
-+		}
-+
-+		return WEXITSTATUS(child_status) && parent_result;
-+	}
-+}
-+
- int main(int argc, char **argv)
- {
- 	int ret, i;
-@@ -86,11 +177,13 @@ int main(int argc, char **argv)
- 	ret = open("/proc/sys/abi/sme_default_vector_length", O_RDONLY, 0);
- 	if (ret >= 0) {
- 		ksft_test_result(fork_test(), "fork_test\n");
-+		ksft_test_result(double_fork_test(), "double_fork_test\n");
-
- 	} else {
- 		ksft_print_msg("SME not supported\n");
- 		for (i = 0; i < EXPECTED_TESTS; i++) {
- 			ksft_test_result_skip("fork_test\n");
-+			ksft_test_result_skip("double_fork_test\n");
- 		}
- 	}
-
---
-2.25.1
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 
