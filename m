@@ -1,193 +1,183 @@
-Return-Path: <linux-kernel+bounces-162836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D6D8B6139
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:38:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B503D8B613C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:40:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6476C1C21D85
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:38:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFBB51C220EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCF912A158;
-	Mon, 29 Apr 2024 18:38:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n2Sigmal"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D30512A157;
+	Mon, 29 Apr 2024 18:40:39 +0000 (UTC)
+Received: from mail.schimsalabim.eu (vps01.schimsalabim.eu [85.214.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F9B67A14;
-	Mon, 29 Apr 2024 18:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A08067A14;
+	Mon, 29 Apr 2024 18:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714415926; cv=none; b=GgoYfTNBiJc7UBjxByGeCx9ES1G7kRaMlirI/b3nf/ZZuh/hdcDlcTQIhk4Ju0pqX3NQmK70P9YOQP7UWedRYdMjH1GvZLAbHQMlQyALzN8NR6eCAlgdl+EQHFcFd5znVUu/akpnlER1ggGalc9EazbJrhCjYBAS4NXnkbPrWxQ=
+	t=1714416038; cv=none; b=oWi/e7cHWJZlFY5/mPV67YebLcgprx2xJf9FQBiAmvQ5cZdudL2taieC7miiryB5iZ+pFC2vYuRYiX0S/pLwrcZo+Nwjz61lsBOva+TCcT1VvdQ/rRsHPvFVtjiQffsca6Mzkw1e1zSW51DOnIXdhypb/5zv66l1AU0kbRwC54c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714415926; c=relaxed/simple;
-	bh=195C9nIwNh1lmaOXqjfZD4ItUOxg/XueSkuoCzneoWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SY4lugn/FemBNQXWtEQWN5z5fjxLZKsywW/qO0c3h9qn1depEPDs5bZRchwSMRoMDrF+19ElVWTHcTIQ7Ink3vk2YYhHLqqQuQZNxXUhEvC37ay8u8CwkMJm456n6kOEZQH8qM6eokTp41BbtbMca1v4No6k4f68Vv7Iu3QXmQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n2Sigmal; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Un8ngqywrftT4NxpkTUiNzqeWjbiCXUSCQfTmTunVeQ=; b=n2SigmalDCeek8ry5sud7+wrNg
-	jLEW9gVIj3LtZCcbB4u3TclX75PGVogMBEzvslg4nQBEtFlYwfz7Y7Uio2F+AGnVZZU4UsMsvDkfj
-	dT2CV2H+/kv76TLykHa42wLq64Iy9r92eZ9b2GkrVBZAJSsqP17CGFSLrwer+8lXMVrvLbsbrjYSz
-	77GQU55gtpQrv39XZnCaaZDrOlPbaC37GV8dkGlo2KHyZkPQpqQ4QbPA9hzfUmx92Mzs1LPhalpKr
-	5bBzMbQPXU5aWuWxvgjgOl1MDDGSzgCn+9e3H3QKW/jifURER2TizGLIzbM9TYG4Kj4A/TFJPBq4a
-	FN+HX5IA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1Vtk-00000003tLh-2HjW;
-	Mon, 29 Apr 2024 18:38:44 +0000
-Date: Mon, 29 Apr 2024 11:38:44 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	jack@suse.cz, ebiederm@xmission.com, keescook@chromium.org,
-	j.granados@samsung.com
-Subject: Re: [RFC PATCH] fs/coredump: Enable dynamic configuration of max
- file note size
-Message-ID: <Zi_pNF0OMgKViIWe@bombadil.infradead.org>
-References: <20240429172128.4246-1-apais@linux.microsoft.com>
+	s=arc-20240116; t=1714416038; c=relaxed/simple;
+	bh=JKKbafSuoPn8Q0v0LpzntyGjrFoJpfFeVfyKmby/OBg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PChfq4ldKHa26U5AEC/oEwbl4mlxeEdpsyjDj2G1EvTHIMW14PNktKjzY5kKSyac3JglpR1ZFnuRzy10hyEbHNd1ko42IWIyB8QP7YpwhxdhaLcEAHI6Q8GBx9euuwZ+GLOeKThm7R8RvCVQYTUVnv1fq/9rhONv2+76GdFY3/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu; spf=pass smtp.mailfrom=schimsalabim.eu; arc=none smtp.client-ip=85.214.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=schimsalabim.eu
+Received: from [192.168.0.158] (82-217-109-137.cable.dynamic.v4.ziggo.nl [82.217.109.137])
+	(authenticated bits=0)
+	by h2374449.stratoserver.net (8.14.7/8.14.7) with ESMTP id 43TIdTVN028081
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 29 Apr 2024 20:39:29 +0200
+Message-ID: <534a73a7-bc41-42a7-a060-bc1465f3a21e@schimsalabim.eu>
+Date: Mon, 29 Apr 2024 20:39:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429172128.4246-1-apais@linux.microsoft.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic
+ gains
+To: =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20240422150213.4040734-1-joao@schimsalabim.eu>
+ <5772237.DvuYhMxLoT@jernej-laptop>
+ <e256942d-eba1-4800-bd02-c490167dea12@schimsalabim.eu>
+ <2262648.iZASKD2KPV@jernej-laptop>
+Content-Language: en-US
+From: Joao Schim <joao@schimsalabim.eu>
+In-Reply-To: <2262648.iZASKD2KPV@jernej-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 29, 2024 at 05:21:28PM +0000, Allen Pais wrote:
-> Introduce the capability to dynamically configure the maximum file
-> note size for ELF core dumps via sysctl. This enhancement removes
-> the previous static limit of 4MB, allowing system administrators to
-> adjust the size based on system-specific requirements or constraints.
-> 
-> - Remove hardcoded `MAX_FILE_NOTE_SIZE` from `fs/binfmt_elf.c`.
-> - Define `max_file_note_size` in `fs/coredump.c` with an initial value set to 4MB.
-> - Declare `max_file_note_size` as an external variable in `include/linux/coredump.h`.
-> - Add a new sysctl entry in `kernel/sysctl.c` to manage this setting at runtime.
-> 
-> $ sysctl -a | grep max_file_note_size
-> kernel.max_file_note_size = 4194304
-> 
-> $ sysctl -n kernel.max_file_note_size
-> 4194304
-> 
-> $echo 519304 > /proc/sys/kernel/max_file_note_size
-> 
-> $sysctl -n kernel.max_file_note_size
-> 519304
+On 4/26/24 16:39, Jernej Škrabec wrote:
+> Dne četrtek, 25. april 2024 ob 13:03:56 GMT +2 je Joao Schim napisal(a):
+>> On 4/24/24 20:42, Jernej Škrabec wrote:
+>>> Hi Joao,
+>> Hi Jernej,  thanks for your prompt response.
+>>> Dne ponedeljek, 22. april 2024 ob 17:02:13 GMT +2 je Joao Schim napisal(a):
+>>>> The AllWinner H6 and later SoCs that sport a DMIC block contain a set of registers to control
+>>>> the gain (left + right) of each of the four supported channels.
+>>>>
+>>>> Add ASoC controls for changing each of the stereo channel gains using alsamixer and alike
+>>> Add SoB tag.
+>> Yeah, i realized that too late. Thanks for bringing that to my
+>> attention. I will add it in v1.
+>>>> ---
+>>>>    sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 34 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+>>>> index c76628bc86c6..f8613d8c3462 100644
+>>>> --- a/sound/soc/sunxi/sun50i-dmic.c
+>>>> +++ b/sound/soc/sunxi/sun50i-dmic.c
+>>>> @@ -14,6 +14,7 @@
+>>>>    #include <sound/dmaengine_pcm.h>
+>>>>    #include <sound/pcm_params.h>
+>>>>    #include <sound/soc.h>
+>>>> +#include <sound/tlv.h>
+>>>>    
+>>>>    #define SUN50I_DMIC_EN_CTL			(0x00)
+>>>>    	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
+>>>> @@ -43,6 +44,17 @@
+>>>>    	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
+>>>>    #define SUN50I_DMIC_CNT				(0x2c)
+>>>>    	#define SUN50I_DMIC_CNT_N				(1 << 0)
+>>>> +#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
+>>>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
+>>>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
+>>>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
+>>>> +	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
+>>>> +#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
+>>>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
+>>>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
+>>>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
+>>>> +        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
+>>>> +
+>>>>    #define SUN50I_DMIC_HPF_CTRL			(0x38)
+>>>>    #define SUN50I_DMIC_VERSION			(0x50)
+>>>>    
+>>>> @@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_match[] = {
+>>>>    };
+>>>>    MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
+>>>>    
+>>>> +static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, 1);
+>>> DECLARE_TLV_DB_SCALE is old name, SNDRV_CTL_TLVD_DECLARE_DB_SCALE should be
+>>> used instead.
+>> I can't seem to find that define in HEAD. what code-base are you
+>> referring to that i should checkout ?
+> Here is define:
+> https://elixir.bootlin.com/linux/v6.9-rc1/source/include/uapi/sound/tlv.h#L52
+>
+> However, I'm not sure if this message means DECLARE_TLV_DB_SCALE is
+> deprecated or not:
+> https://elixir.bootlin.com/linux/v6.9-rc1/source/include/sound/tlv.h#L12
 
-This doesn't highlight anything about *why*. So in practice you must've
-hit a use case where ELF notes are huge, can you give an example of
-that? The commit should also describe that this is only used in the path
-of a coredump on ELF binaries via elf_core_dump().
+Right, apparently i sneaked in another D in the name. That explains i 
+could not find it.
 
-More below.
+Will send v1 in a few minutes. Thanks.
 
-> Signed-off-by: Vijay Nag <nagvijay@microsoft.com>
-> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-> ---
->  fs/binfmt_elf.c          | 3 +--
->  fs/coredump.c            | 3 +++
->  include/linux/coredump.h | 1 +
->  kernel/sysctl.c          | 8 ++++++++
->  4 files changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 5397b552fbeb..5fc7baa9ebf2 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
->  	fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
->  }
->  
-> -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
->  /*
->   * Format of NT_FILE note:
->   *
-> @@ -1592,7 +1591,7 @@ static int fill_files_note(struct memelfnote *note, struct coredump_params *cprm
->  
->  	names_ofs = (2 + 3 * count) * sizeof(data[0]);
->   alloc:
-> -	if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
-> +	if (size >= max_file_note_size) /* paranoia check */
->  		return -EINVAL;
->  	size = round_up(size, PAGE_SIZE);
->  	/*
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index be6403b4b14b..a83c6cc893fc 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -56,10 +56,13 @@
->  static bool dump_vma_snapshot(struct coredump_params *cprm);
->  static void free_vma_snapshot(struct coredump_params *cprm);
->  
-> +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
-> +
->  static int core_uses_pid;
->  static unsigned int core_pipe_limit;
->  static char core_pattern[CORENAME_MAX_SIZE] = "core";
->  static int core_name_size = CORENAME_MAX_SIZE;
-> +unsigned int max_file_note_size = MAX_FILE_NOTE_SIZE;
->  
->  struct core_name {
->  	char *corename;
-> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-> index d3eba4360150..e1ae7ab33d76 100644
-> --- a/include/linux/coredump.h
-> +++ b/include/linux/coredump.h
-> @@ -46,6 +46,7 @@ static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
->  #endif
->  
->  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
-> +extern unsigned int max_file_note_size;
->  extern void validate_coredump_safety(void);
->  #else
->  static inline void validate_coredump_safety(void) {}
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 81cc974913bb..80cdc37f2fa2 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -63,6 +63,7 @@
->  #include <linux/mount.h>
->  #include <linux/userfaultfd_k.h>
->  #include <linux/pid.h>
-> +#include <linux/coredump.h>
->  
->  #include "../lib/kstrtox.h"
->  
-> @@ -1623,6 +1624,13 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> +	{
-> +		.procname       = "max_file_note_size",
-> +		.data           = &max_file_note_size,
-> +		.maxlen         = sizeof(unsigned int),
-> +		.mode           = 0644,
-> +		.proc_handler   = proc_dointvec,
-> +	},
->  #ifdef CONFIG_PROC_SYSCTL
+Kind regards,
 
-No, please move this to coredump_sysctls in fs/coredump.c. And there is
-no point in supporting int, this is unisgned int right? So use the right
-proc handler for it.
+Joao
 
-If we're gonna do this, it makes sense to document the ELF note binary
-limiations. Then, consider a defense too, what if a specially crafted
-binary with a huge elf note are core dumped many times, what then?
-Lifting to 4 MiB puts in a situation where abuse can lead to many silly
-insane kvmalloc()s. Is that what we want? Why?
-
-  Luis
+> Best regards,
+> Jernej
+>
+>>> Other than that, it looks fine.
+>> Thanks.
+>>
+>>> Best regards,
+>>> Jernej
+>>>
+>>>> +
+>>>> +static const struct snd_kcontrol_new sun50i_dmic_controls[] = {
+>>>> +
+>>>> +        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
+>>>> +                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_VOL_CTR_0R,
+>>>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>>>> +        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
+>>>> +                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_VOL_CTR_1R,
+>>>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>>>> +        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
+>>>> +                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_VOL_CTR_2R,
+>>>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>>>> +        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
+>>>> +                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_VOL_CTR_3R,
+>>>> +                       0xFF, 0, sun50i_dmic_vol_scale),
+>>>> +
+>>>> +
+>>>> +};
+>>>> +
+>>>>    static const struct snd_soc_component_driver sun50i_dmic_component = {
+>>>>    	.name           = "sun50i-dmic",
+>>>> +	.controls	= sun50i_dmic_controls,
+>>>> +	.num_controls	= ARRAY_SIZE(sun50i_dmic_controls),
+>>>>    };
+>>>>    
+>>>>    static int sun50i_dmic_runtime_suspend(struct device *dev)
+>>>>
+>>>
+>>>
+>> Kind regards,
+>>
+>> Joao
+>>
+>>
+>
+>
+>
 
