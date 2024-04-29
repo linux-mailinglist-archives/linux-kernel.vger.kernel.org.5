@@ -1,113 +1,151 @@
-Return-Path: <linux-kernel+bounces-163056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED7B8B6451
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B04A8B63D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 442A91F21FB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:07:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72181F22693
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B939717BB3F;
-	Mon, 29 Apr 2024 21:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6FA17994D;
+	Mon, 29 Apr 2024 20:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cgKAzGaP"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AsTxMjRQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EF117BB3E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563DE179641;
+	Mon, 29 Apr 2024 20:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714424590; cv=none; b=cnC8IV1KoVbLZZZKLZJK6b+W7jacJ5qNkAsj9BPC9nkrI2XbCxnppK0klg34vYTxdrd5crLeecKtcTTTlcko63Qb8U/Rul4xicqLVTVlozXamlE0zoPnYujb2uNcNrrLh/K1O/E0r6R1GRA+lmO841euT6fVpSyqbCysygeg9y4=
+	t=1714423545; cv=none; b=qP4+uC88cEw6u2kt3Zp953B6SZxYUHu5ulqgdZVmjUNH7zdWVt4tXx1V5mBUgoCWmQaO1TrxxAE2rP0afTl+xAt93sjQxKi9Dgc6i9LsJKBwP6bBqoK3wdPR0GYlovzIyXxDmWIQqqpfxW0ru1kRtKO1iVpIIvpWu8xOV08L0kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714424590; c=relaxed/simple;
-	bh=SK3G96T4aqZ9rwUi1oPJAY9W3TBSIlSx0r4F6GDwouM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=AxEECkSy6Y1Jv13LfqWAv1ZsaPrDRna77FoqQ+zKuqm06oCSf0Sbz+hOtKSvld21REAGOeGDXMyJCXuCQEER3uRlViWEFtlqVThgWeZZ85Q7FBSS+PpAwfsTkSobHHrQc+u/Epb6o/mwuYM5ntjJbwB18thg9x4J0pA+ZbntLoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cgKAzGaP; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a4f59746f7so4965070a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714424588; x=1715029388; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPUCCa2Pl8BfWUCgilhIb1m2EInOqsTo96Ea33xypmw=;
-        b=cgKAzGaPZ9ujApIH4Hcnxrqci3z8/11B1kI2+e2cgTpyDBcW0qqUwqDnOvAAXl1k7F
-         NLectClbYdiytd3+VDYGtM/0OwRmTIUM86C1Z+7wQf2hguYCybrURfq/JdFudlr+aZPX
-         BRzKD53xHf8XQ+pW2lY83bbAexyizNRgW2wPk8F2OSJd+4Bx4yhDSN+W+0DK85ZKJG7q
-         X1gevqfdmAc6gqlNhBcxZ9W0ykCB5Y0DbZsxHCkWrS3QmedZ5IAa6xKnskdC7gEkKELv
-         fWPKZ0rX5IF1f6qZDFZ1nmooUyu6tqQZJFdKcGjoHy/Cf5xK53n/UYQwe6O9ivIkBKUb
-         YZ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714424588; x=1715029388;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPUCCa2Pl8BfWUCgilhIb1m2EInOqsTo96Ea33xypmw=;
-        b=YAe0pNv//vQUmraBtIC0yfd2O/1neuQeXS185uA4Cp/XZL51oNvy0PI+GqKGPhcTPT
-         W6rGUkL069CYiq5YgWLV/E9qmtOQrxs8J7B9esYzP6CY70WEZicvt3QrFbWEtN+i8Ehy
-         c3tCgOiL7IrQx2iUPG32Xx+AOLrDLMNcn5CmfE/EiZ15blxsoUpMvxt6j8/JYczQxKCV
-         jZFe+0fyC5s6NUu87uFSNV1gjy2vkj6qbvh76/X0UKKBQClL/LI3xTXy2CIYx4elUiHZ
-         dC/Z5isSXn3+0hdMk6rbIQDFLpknxo4izjJgxbr7Z+r9ThnoOUTx9gBl7LtLfRPBlMgP
-         BGSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXC2TQ5hIqU4OMFn5TaLVZbJPNGx4oHjTm0nUGjqg+an0+vaR9ejWwLAmU886VECvyhdBqATWb4CFZyJx0umLJgaQap4F8Om/Vgf25+
-X-Gm-Message-State: AOJu0YxTbwkhPFKWFoNVnjM7iLRgyy6euK7lc5rlFFcHvq0Ojvcuos/k
-	ZaqcUs5mbAQqHApP5JNS0GfV4MlcAN52GfcQ50TzySvl60n6YO39vrod0GPlcV+YL32evzFDjWB
-	Mtg==
-X-Google-Smtp-Source: AGHT+IEf5flitXXjN5u4Fo/6BuICYPX69sOUimUW4HLvgZ+EOzKzbDHisvJHvToaGifZKMFhjp1lvKfYuJo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:8814:b0:2af:2a48:b458 with SMTP id
- s20-20020a17090a881400b002af2a48b458mr2004pjn.4.1714424587929; Mon, 29 Apr
- 2024 14:03:07 -0700 (PDT)
-Date: Mon, 29 Apr 2024 13:45:27 -0700
-In-Reply-To: <20240206151950.31174-1-vkuznets@redhat.com>
+	s=arc-20240116; t=1714423545; c=relaxed/simple;
+	bh=K3a2iZ9Cz/1M52sNjT+DInoYMFpT7/x83Kmbuiq20Fk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sCaHGjm0eTsQ6V/eUzZgiDn2/6utnaMSW70QyJPnJDtUsMJnR5ZuMLnr2/3VJFZGLMfrK6AKm3k4x/CX/P1F7RRzppP0f/UeV+6yf5RctgvEx910vZG54GNQgZ+xzwNAMrjbmoj7i+kxLzkANvA60dWx84ffdTVqOlFoqvQ1JOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AsTxMjRQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C28C0C113CD;
+	Mon, 29 Apr 2024 20:45:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714423544;
+	bh=K3a2iZ9Cz/1M52sNjT+DInoYMFpT7/x83Kmbuiq20Fk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=AsTxMjRQJTS2LxmMjhScPaQzbxTu0Z8/typvFFYYOK5xUCiCKU945h3bHI8rHYG2s
+	 1GMyzEL7fY9wxdg5JWCVvJkXiZOvQdkwYq9NMvOqeYRscyRaVf2lkNmPx8D5CPkR2I
+	 iTG5DTVvGTFtvOmez1V2LV4EM1CzUygTVLFY3HPh8jcH6GIwcoM1l6l3Ypa7bvfdRt
+	 pYx0SI4XBH4+Fgo+QdbDC8RxDBUga7Vyv1jtEjkwBbi/h7Iqb5A3mrrRPmHDyNxGxT
+	 QMtfgvSzigCNUb4MwVE2OddSCoHl7A34g3/NosOhrdWWE1JcYVJg1Y7wICfHhT6+J2
+	 aEkhEAgEZTe0g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 588E4CE0B6B; Mon, 29 Apr 2024 13:45:44 -0700 (PDT)
+Date: Mon, 29 Apr 2024 13:45:44 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: tglx@linutronix.de, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix suspicious RCU usage in __do_softirq()
+Message-ID: <9f227fd2-13b2-4c78-b3b3-05ef6d583078@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240206151950.31174-1-vkuznets@redhat.com>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <171441840173.70995.3768949354008381229.b4-ty@google.com>
-Subject: Re: [PATCH v2] KVM: selftests: Compare wall time from xen shinfo
- against KVM_GET_CLOCK
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, David Woodhouse <dwmw@amazon.co.uk>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
 
-On Tue, 06 Feb 2024 16:19:50 +0100, Vitaly Kuznetsov wrote:
-> xen_shinfo_test is observed to be flaky failing sporadically with
-> "VM time too old". With min_ts/max_ts debug print added:
+On Sat, Apr 27, 2024 at 06:28:08PM +0800, Zqiang wrote:
+> Currently, the condition "__this_cpu_read(ksoftirqd) == current" is
+> checked to ensure the rcu_softirq_qs() is invoked in ksoftirqd tasks
+> context for non-RT kernels. however, in some scenarios, this condition
+> will be broken.
 > 
-> Wall clock (v 3269818) 1704906491.986255664
-> Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
-> Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552223 shift 4294967295 flags 1
-> min_ts: 1704906491.986312153
-> max_ts: 1704906506.001006963
-> ==== Test Assertion Failure ====
->   x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm_ts) <= 0
->   pid=32724 tid=32724 errno=4 - Interrupted system call
->      1	0x00000000004030ad: main at xen_shinfo_test.c:1003
->      2	0x00007fca6b23feaf: ?? ??:0
->      3	0x00007fca6b23ff5f: ?? ??:0
->      4	0x0000000000405e04: _start at ??:?
->   VM time too old
+>      ksoftirqd/0
+> ->finish_task_switch
+>   ->put_task_struct_rcu_user
+>     ->call_rcu(&task->rcu, delayed_put_task_struct)
+>       ->__kasan_record_aux_stack
+>         ->pfn_valid
+>           ->rcu_read_lock_sched()
+>             <interrupt>
+>              __irq_exit_rcu
+>              ->__do_softirq
+>                -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+>                    __this_cpu_read(ksoftirqd) == current)
+>                    ->rcu_softirq_qs
+>                      ->RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
 > 
-> [...]
+> The rcu quiescent states is reported occurs in the rcu-read critical
+> section, so the lockdep warning is triggered. this commit therefore
+> remove "__this_cpu_read(ksoftirqd) == current" condition check, generate
+> new "handle_softirqs(bool kirqd)" function to replace __do_softirq() in
+> run_ksoftirqdt(), and set parameter kirqd to true, make rcu_softirq_qs()
+> be invoked only in ksofirqd tasks context for non-RT kernels.
+> 
+> Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/lkml/8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop/T/#mea8aba4abfcb97bbf499d169ce7f30c4cff1b0e3
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-Applied to kvm-x86 selftests, thanks!
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-[1/1] KVM: selftests: Compare wall time from xen shinfo against KVM_GET_CLOCK
-      https://github.com/kvm-x86/linux/commit/201142d16010
-
---
-https://github.com/kvm-x86/linux/tree/next
+> ---
+>  kernel/softirq.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index b315b21fb28c..e991d735be0d 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
+>  static inline void lockdep_softirq_end(bool in_hardirq) { }
+>  #endif
+>  
+> -asmlinkage __visible void __softirq_entry __do_softirq(void)
+> +static void handle_softirqs(bool kirqd)
+>  {
+>  	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+>  	unsigned long old_flags = current->flags;
+> @@ -563,8 +563,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  		pending >>= softirq_bit;
+>  	}
+>  
+> -	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> -	    __this_cpu_read(ksoftirqd) == current)
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kirqd)
+>  		rcu_softirq_qs();
+>  
+>  	local_irq_disable();
+> @@ -584,6 +583,11 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  	current_restore_flags(old_flags, PF_MEMALLOC);
+>  }
+>  
+> +asmlinkage __visible void __softirq_entry __do_softirq(void)
+> +{
+> +	handle_softirqs(false);
+> +}
+> +
+>  /**
+>   * irq_enter_rcu - Enter an interrupt context with RCU watching
+>   */
+> @@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
+>  		 * We can safely run softirq on inline stack, as we are not deep
+>  		 * in the task stack here.
+>  		 */
+> -		__do_softirq();
+> +		handle_softirqs(true);
+>  		ksoftirqd_run_end();
+>  		cond_resched();
+>  		return;
+> -- 
+> 2.17.1
+> 
 
