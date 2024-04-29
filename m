@@ -1,111 +1,102 @@
-Return-Path: <linux-kernel+bounces-163089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A368B6553
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:08:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFFDE8B6556
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:11:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6698D1C2180B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:08:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB781B2115F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA00190698;
-	Mon, 29 Apr 2024 22:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BFD190680;
+	Mon, 29 Apr 2024 22:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="SMMJ4PDT"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AwhPErZ3"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4710217798F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84FE19069C;
+	Mon, 29 Apr 2024 22:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714428482; cv=none; b=GPDipHRWfDJfbJrjX47eTn7zamVJSyHBziLIXkiuu1umP2+gnmy2vQdjfiNLHPXQA0XQG4fdI3Sy3jzeLrFLlL94oHXnn665K+RuxFcg1Eb3L2GB9NU4otrZFveCSb5UxW26M+Aq4ZEXZgHRHymtBKsQKDA44vXATbyC/eSXQso=
+	t=1714428649; cv=none; b=UnJY+xI8ETO2yRLoE4tTn+RyqrnS1T1/bmvCrJkezk8ZzqyBm6bhKI/A4IFw61rZvUOHgz7cWGDlNln9k1Fn7CKfr4EXY6gtzILhk/uw7rQArURlFCzk/He5Gx1gvUEG5LF1UGo7vCd6KIsdHpVmQuQWDjx1VvMGITNeUn5/+IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714428482; c=relaxed/simple;
-	bh=c6DOXNFSE9LC756AIalg/cV64lMokKtaCuXo91v+i34=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=cgJigREYGyhCfz4lRsbepmK34k/IPA2utOLoLejPkjG8/dXLvaXYXDlHD57AI1ktCuIxt4wixruAlo+LS7MRkBFY7tV7F2LHeRJ1Sris7Gqcg/BtruzCYjbyepAQIXTmuXwHnyz1n3FzJTnc5VdQ1mcRsNaOf1vjC14Rn4V8CGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elsk.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SMMJ4PDT; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elsk.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de60cd96bf3so1025442276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714428480; x=1715033280; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FA8V8gAzYFmHUQzg7LC2FwIVOm15GM/FHQJrgNvwAkE=;
-        b=SMMJ4PDTcv7H2i4o0zGzlZV8x1icw8CD0NzK9zl8mpEWyXeXFn3frAbLOVUUcyaysA
-         NwWUcL+uMl1kJ9IJ6ecIp0v3do1ONpTluevTTEJhWkFPSt7qGJAaZrCE9H3eBeruE4Vg
-         peOUvT1GeHvCPjoccobTY9zhOuI4cVCSOG3HD0Ysa1Lc18S/QPuDTGOJbxqxrnSSpTjB
-         4jSla7YurIdmJZOd0f4uhgHHLduj4lVggtUlKVWP2V1etTjjI3LYG7erRzMmtR7bi7Yw
-         yo0ryGQj0oyN1a6LEq0nzx1Di0RdnxcQzeLJ8vzSG21Y8ZM2kjy5WhHenaFo4q81XtT7
-         H9CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714428480; x=1715033280;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FA8V8gAzYFmHUQzg7LC2FwIVOm15GM/FHQJrgNvwAkE=;
-        b=LjTO9V18IfAUW9coyIJ1B+SsfMdXocXnf9I6Xpn7U3xFyRGyPbi80+9oYQHK59/cq0
-         qYK8YB9GvBgq3KNornIyXcZDitIQrKICAOXy+Uns8TGHW4NtFKsQMnNe0WaRTypnLodM
-         6wAl4mjy6ecEKvyfqQtAS19JCNCCZhabgc1qdT+TTIjvROJA2VzW+GN/59utrYBuEl/x
-         bZZPoVrfyaS2tkGkLRIMIxUubuDB0FjpARV7+HiaoXuHTH5JinFtZN7eBTn3WPd0pMYn
-         1vAIk0PmeoSpJx3tIMI5OLTHHi64uE339idwEYHpUEJMcY6fKawSyjJ6VbzkZT+R2+LF
-         X2yg==
-X-Forwarded-Encrypted: i=1; AJvYcCUVd56pm2sd727O0T2h2Ub3P17uRK0eKOzzg1vgHNv6qSx1x0UolSmm2GAvG4HQzjRFqY/gSys07ga6QmMIVFBbhdPPV/wV0u+WVmih
-X-Gm-Message-State: AOJu0YyRHsbZ87kpAKijaGweI8z6/cSrv5VI3xN2VgXD9uKJ6ziYxUFj
-	584gcdeNlROm+jcAyS6cwAJdlbc+Hyq8WFgcm0QUAZ28nlgoBOTSmWzMlWxrYyI/FavZ+A==
-X-Google-Smtp-Source: AGHT+IE+uWIumkI/51wfaF//38ql/5Ay511pPM+gcPsmGC0cRdqsl57WUREGxwArKrVla/CcvxgSb9Cn
-X-Received: from elsk.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:dbd])
- (user=elsk job=sendgmr) by 2002:a05:6902:c04:b0:dd9:20c1:85b6 with SMTP id
- fs4-20020a0569020c0400b00dd920c185b6mr310500ybb.2.1714428480334; Mon, 29 Apr
- 2024 15:08:00 -0700 (PDT)
-Date: Mon, 29 Apr 2024 22:07:56 +0000
+	s=arc-20240116; t=1714428649; c=relaxed/simple;
+	bh=BnORpZI96ulOL2ybGBlixNtcajQVtJLpgJmjNiq9iXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HrnPk8d4ZoqSmOo7XCFfhYU9QvCelO69Iu1981MPbur+nifPqUv1AUBrOM+oXxHcUotAUyYU4JJUKEPVL0gvR0lvlR2sRrIf+H55w9k7qxPHgNlr0qKwa5kJfFx7eJLrTsZW/GoWFZas7hyAUxceqjsY0B7jQrcPJ9bCn1CXreY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AwhPErZ3; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7291D40E00C7;
+	Mon, 29 Apr 2024 22:10:38 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7oE8v-9sJrwS; Mon, 29 Apr 2024 22:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714428634; bh=Msj1Hf1pE0OzlB7eC2G079cRtumFYJCMn8TqRTaMLN4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AwhPErZ3fyhhceeJbn5Eqsp7ufWGQyJdE/K+WV3uTmuq1agttfcoFjFi1IrZU/B6n
+	 YXpeelZouhEQR1f5I01ziH1iTZT6GdEBtE398NGlsP4TGnnpufW5vqWiB+liqsq2CO
+	 dsgEN5NI2nSYqiLE79Tf2yXSP2XEjlotni7/VspBHfNH3KrxcMu1FwqYwMYLHkbAZw
+	 ixwhTBJ6oHAplgsSNXkjUGHJ1SAD+njmmkyeEe9bRQ41TQHMG57FUabzhai7mVbtLp
+	 UlYqn+Qjh1ZUZ9trQsOtUDHRcN1uRiSAE0mxrnMVuHH9qTHSWgPDZ8ptFDfet3bVVI
+	 m63ew2tUwhGelkxyMMNr1AK77LfJS1itcXUiAo+pOK85jne+XUEq0kujN9oWp8cs94
+	 hHS1RLo7tltzhPpZJFHaKdRnkwwoDg4bVTxp2pslkskeymWUsPh6aLcDmszMgI+b8w
+	 lZqIT0Qxr3VJEOVD0uD36Vw90alhCfzaE72X216D7yqb6G4qSNA4RBotUuPZw9MxsA
+	 UUvNYQYig7wbx3wFiatf2c4Sm6OR/A7Mo1hsfPS5M7VnLjYk/S92iuenqwOE1Wak9W
+	 mc45FamvCR4DR/25bs6C1AaF40hYWwL4hE69eszDly4/23o2D1+PX4mJvZOGhFgxpN
+	 4nbsB1lEJJ6RQGp2Ku6rYzgk=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CC64740E0187;
+	Mon, 29 Apr 2024 22:10:29 +0000 (UTC)
+Date: Tue, 30 Apr 2024 00:10:22 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH] x86/cpu: Fix thinko comparing x86_vfm with x86_model
+Message-ID: <20240429221022.GKZjAazoIhwQkK7-H_@fat_crate.local>
+References: <20240428183142.GHZi6WDu5nbmJJ_BcH@fat_crate.local>
+ <20240429022051.63360-1-tony.luck@intel.com>
+ <20240429082242.GAZi9Y0uK-e2KGWxmX@fat_crate.local>
+ <SJ1PR11MB6083B53C58D36ADB74C08AABFC1B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Message-ID: <20240429220756.979347-2-elsk@google.com>
-Subject: [PATCH] kernel/configs: Disable LTO on kernel/configs.o
-From: Yifan Hong <elsk@google.com>
-To: Yifan Hong <elsk@google.com>
-Cc: kernel-team@android.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083B53C58D36ADB74C08AABFC1B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-This solves an incremental
-build issue that, when a config changes, config_data
-and config_data.gz is rebuilt, but because the
-thinlto-cache cannot be updated, the config is not
-reflected in the final vmlinux binary.
+On Mon, Apr 29, 2024 at 04:05:29PM +0000, Luck, Tony wrote:
+> I made one patch per file touched (wherever possible ... there are a few patches
+> where ".h" and ".c" files needed to be bundled together).
 
-The issue is described in
-https://github.com/ClangBuiltLinux/linux/issues/2021.
+I figured. I think the next step would've been to group them all into
+a single patch based on the subject prefix. But we're doing that now
+anyway.
 
-Signed-off-by: Yifan Hong <elsk@google.com>
----
- kernel/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+> Thanks. I just did a "git fetch" the x86/cpu branch. It all looks good.
 
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 10ef068f598d..76d9acc49c5f 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -140,6 +140,10 @@ obj-$(CONFIG_SCF_TORTURE_TEST) += scftorture.o
- 
- $(obj)/configs.o: $(obj)/config_data.gz
- 
-+# Disable LTO on configs.o so changes in .config is reflected in vmlinux. See
-+# https://github.com/ClangBuiltLinux/linux/issues/2021
-+CFLAGS_REMOVE_configs.o += $(CC_FLAGS_LTO)
-+
- targets += config_data config_data.gz
- $(obj)/config_data.gz: $(obj)/config_data FORCE
- 	$(call if_changed,gzip)
+Thx!
+
 -- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
