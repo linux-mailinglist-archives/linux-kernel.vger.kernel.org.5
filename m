@@ -1,166 +1,242 @@
-Return-Path: <linux-kernel+bounces-161989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA8F8B5442
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1968B5448
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:30:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1241F21054
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6BAD281A28
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C9B29437;
-	Mon, 29 Apr 2024 09:29:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2726A17C60
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85917286AE;
+	Mon, 29 Apr 2024 09:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JhPTvqGU"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD67317C60;
+	Mon, 29 Apr 2024 09:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714382953; cv=none; b=Pq/ffozNvWcdmkQhvgLbcf+kUUiAZnVD+XEJYqYeAKapPAOvq3LIx4/HqTiTuUdxwcfoYQPD+2SOouA03cpYlTKh9KQxC+zW2euhOWII1ZnWzrPnZWgdcoOX3QYNZBDbGSkdZcvljgqsPY6oqPjwwVH6hTHa3u3qCHU0C+wHxU0=
+	t=1714382980; cv=none; b=iamogWT8S5mwlJzHXbvvHOKjw7TNixvVSMbpDvz/2TjgmiqhAoXyAHlm6QOPXylszWZU8jwWqD/8IIIAgOcOFqFnrEQx/TYFGpK6nChHzTfckCsNxOnM3a84jY47XufhBCEMaVB6Yd0U4BljBrWYiUzG8QYCBCKE2U+rjtM+k2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714382953; c=relaxed/simple;
-	bh=JjLvtLnDwfV4/KjHc1KICPIVpwiotjzVIVZ7v/E2X8Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oo2thCNwelq8mFgII1iGra85ydEg5Aiv/jD1t5dTLk0+bfjGmFy9X5hwV6repRDlXKc8V9ajg7dMI7csNqxEPUBFH2nKMt4IqTXmBzdIPZVjeYOdUNV34H+qORXtHWqHhx0lB6WuPQO5FrmUjo193yol0ptmnnetde8KTsidAuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 820C92F4;
-	Mon, 29 Apr 2024 02:29:37 -0700 (PDT)
-Received: from [10.57.65.53] (unknown [10.57.65.53])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BB4D3F73F;
-	Mon, 29 Apr 2024 02:29:09 -0700 (PDT)
-Message-ID: <23fbca83-a175-4d5a-8cf7-ed54c1830d37@arm.com>
-Date: Mon, 29 Apr 2024 10:29:07 +0100
+	s=arc-20240116; t=1714382980; c=relaxed/simple;
+	bh=uSdxRzJFml3nCo76HAUg3DSxjX0UoERQLwTqM3FlGMI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TuTyX53Pp7uVDhqu+9ZPyeLLhYxhusJRKHnWj4kPMAmbOGwcGIQXmmwZ4yr+VXKxDy1BmGLgn/fl8WTAXEsQaefB7naGLyxdSx+LYKuiR6diekAR50CGt6jCARzS8v6h9hkUbD/tsFvjSxWqjdK7fCBU6oex5y13kr0ThfESR6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=JhPTvqGU; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T9TM3M043203;
+	Mon, 29 Apr 2024 04:29:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714382962;
+	bh=FK6SYIgTwTmZUuVtGZyXbYiIG/QDRVtYkXsYn7IPvUQ=;
+	h=From:To:CC:Subject:Date;
+	b=JhPTvqGUp4ZFgzEhcU5dwy22f9YJSuD8tjHmIQqcpG3MtV63b4gT3YSyO4JcnNdsr
+	 1TBssUrax6RiYEU/HypCJywgMkID9WzptBnQagkvLrB8ubZVd/ktDJL46c4oPTEtk8
+	 MpvtuGEw1lqiZEBjcqxItiJL1pzcGTtE+0IxsSX8=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T9TMiP008968
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 29 Apr 2024 04:29:22 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
+ Apr 2024 04:29:22 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 29 Apr 2024 04:29:22 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T9TMfK001599;
+	Mon, 29 Apr 2024 04:29:22 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43T9TL0U017042;
+	Mon, 29 Apr 2024 04:29:22 -0500
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC: Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        MD
+ Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH v2] arm64: dts: ti: k3-am642-evm-icssg1-dualemac: add overlay for mii mode
+Date: Mon, 29 Apr 2024 14:59:19 +0530
+Message-ID: <20240429092919.657629-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and
- GUP-fast
-Content-Language: en-GB
-To: John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan
- <zi.yan@cs.rutgers.edu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240425170704.3379492-1-ryan.roberts@arm.com>
- <17956e0f-1101-42d7-9cba-87e196312484@nvidia.com>
- <2C9D897B-0E96-42F0-B3C4-9926E6DF5F4B@nvidia.com>
- <328b2b69-e4ab-4a00-9137-1f7c3dc2d195@nvidia.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <328b2b69-e4ab-4a00-9137-1f7c3dc2d195@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 27/04/2024 20:11, John Hubbard wrote:
-> On 4/27/24 8:14 AM, Zi Yan wrote:
->> On 27 Apr 2024, at 0:41, John Hubbard wrote:
->>> On 4/25/24 10:07 AM, Ryan Roberts wrote:
->>>> __split_huge_pmd_locked() can be called for a present THP, devmap or
->>>> (non-present) migration entry. It calls pmdp_invalidate()
->>>> unconditionally on the pmdp and only determines if it is present or not
->>>> based on the returned old pmd. This is a problem for the migration entry
->>>> case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
->>>> called for a present pmd.
->>>>
->>>> On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
->>>> future call to pmd_present() will return true. And therefore any
->>>> lockless pgtable walker could see the migration entry pmd in this state
->>>> and start interpretting the fields as if it were present, leading to
->>>> BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
->>>> I suspect the same is possible on other architectures.
->>>>
->>>> Fix this by only calling pmdp_invalidate() for a present pmd. And for
->>>
->>> Yes, this seems like a good design decision (after reading through the
->>> discussion that you all had in the other threads).
->>
->> This will only be good for arm64 and does not prevent other arch developers
->> to write code breaking arm64, since only arm64's pmd_mkinvalid() can turn
->> a swap entry to a pmd_present() entry.
-> 
-> Well, let's characterize it in a bit more detail, then:
+Add device tree overlay to enable both ICSSG1 ports available on AM64x-EVM
+in MII mode.
 
-Hi All,
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+This is v2 of the series v1 [1]
+Changes from v1 to v2:
+*) Rebased the patch on next-20240429 linux-next tag.
+*) Added "GPL-2.0-only OR MIT" in the license as pointed out by
+   Ravi Gunasekaran <r-gunasekaran@ti.com>
 
-Thanks for all the feedback! I had thought that this patch would be entirely
-uncontraversial - obviously I was wrong :)
+[1] https://lore.kernel.org/all/20240423090028.1311635-1-danishanwar@ti.com/
 
-I've read all the emails, and trying to summarize a way forward here...
+ arch/arm64/boot/dts/ti/Makefile               |   4 +
+ .../ti/k3-am642-evm-icssg1-dualemac-mii.dtso  | 101 ++++++++++++++++++
+ 2 files changed, 105 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
 
-> 
-> 1) This patch will make things better for arm64. That's important!
-> 
-> 2) Equally important, this patch does not make anything worse for
->    other CPU arches.
-> 
-> 3) This patch represents a new design constraint on the CPU arch
->    layer, and thus requires documentation and whatever enforcement
->    we can provide, in order to keep future code out of trouble.
-
-I know its only semantics, but I don't view this as a new design constraint. I
-see it as an existing constraint that was previously being violated, and this
-patch aims to fix that. The generic version of pmdp_invalidate() unconditionally
-does a tlb invalidation on the address range covered by the pmd. That makes no
-sense unless the pmd was previously present. So my conclusion is that the
-function only expects to be called for present pmds.
-
-Additionally Documentation/mm/arch_pgtable_helpers.rst already says this:
-
-"
-| pmd_mkinvalid             | Invalidates a mapped PMD [1]                     |
-"
-
-I read "mapped" to be a synonym for "present". So I think its already
-documented. Happy to explcitly change "mapped" to "present" though, if it helps?
-
-Finally, [1] which is linked from Documentation/mm/arch_pgtable_helpers.rst,
-also implies this constraint, although it doesn't explicitly say it.
-
-[1] https://lore.kernel.org/linux-mm/20181017020930.GN30832@redhat.com/
-
-> 
-> 3.a) See the VM_WARN_ON() hunks below.
-
-It sounds like everybody would be happy if I sprinkle these into the arches that
-override pmdp_invalidate[_ad]()? There are 3 arches that have their own version
-of pmdp_invalidate(); powerpc, s390 and sparc. And 1 that has its own version of
-pmdp_invalidate_ad(); x86. I'll add them in all of those.
-
-I'll use VM_WARN_ON_ONCE() as suggested by John.
-
-I'd rather not put it directly into pmd_mkinvalid() since that would set a
-precedent for adding them absolutely everywhere. (e.g. pte_mkdirty(), ...).
-
-> 
-> 3.b) I like the new design constraint, because it is reasonable and
->      clearly understandable: don't invalidate a non-present page
->      table entry.
-> 
-> I do wonder if there is somewhere else that this should be documented?
-
-If I change:
-
-"
-| pmd_mkinvalid             | Invalidates a mapped PMD [1]                     |
-"
-
-To:
-
-"
-| pmd_mkinvalid             | Invalidates a present PMD; do not call for       |
-|                             non-present pmd [1]                              |
-"
-
-Is that sufficient? (I'll do the same for pud_mkinvalid() too.
-
-> 
-> 
-> thanks,
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index 48fb19a523bd..f35f8af23264 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -44,6 +44,7 @@ k3-am642-hummingboard-t-usb3-dtbs := \
+ 	k3-am642-hummingboard-t.dtb k3-am642-hummingboard-t-usb3.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
++dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac-mii.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
+@@ -134,6 +135,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
+ 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
+ k3-am642-evm-icssg1-dualemac-dtbs := \
+ 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
++k3-am642-evm-icssg1-dualemac-mii-dtbs := \
++	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac-mii.dtbo
+ k3-am642-phyboard-electra-gpio-fan-dtbs := \
+ 	k3-am642-phyboard-electra-rdk.dtb k3-am642-phyboard-electra-gpio-fan.dtbo
+ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
+@@ -168,6 +171,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+ 	k3-am62p5-sk-csi2-ov5640.dtb \
+ 	k3-am62p5-sk-csi2-tevi-ov5640.dtb \
+ 	k3-am642-evm-icssg1-dualemac.dtb \
++	k3-am642-evm-icssg1-dualemac-mii.dtb \
+ 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+ 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+ 	k3-am68-sk-base-board-csi2-dual-imx219-dtbs \
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+new file mode 100644
+index 000000000000..423d6027278d
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/**
++ * DT overlay for enabling both ICSSG1 port on AM642 EVM in MII mode
++ *
++ * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
++ */
++
++/dts-v1/;
++/plugin/;
++#include <dt-bindings/gpio/gpio.h>
++#include "k3-pinctrl.h"
++
++&{/} {
++	aliases {
++		ethernet1 = "/icssg1-eth/ethernet-ports/port@1";
++	};
++
++	mdio-mux-2 {
++		compatible = "mdio-mux-multiplexer";
++		mux-controls = <&mdio_mux>;
++		mdio-parent-bus = <&icssg1_mdio>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		mdio@0 {
++			reg = <0x0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			icssg1_phy2: ethernet-phy@3 {
++				reg = <3>;
++			};
++		};
++	};
++};
++
++&main_pmx0 {
++	icssg1_mii1_pins_default: icssg1-mii1-default-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x00f8, PIN_INPUT, 1) /* (V9) PRG1_PRU0_GPO16.PR1_MII_MT0_CLK */
++			AM64X_IOPAD(0x00f4, PIN_OUTPUT, 0) /* (Y9) PRG1_PRU0_GPO15.PR1_MII0_TXEN */
++			AM64X_IOPAD(0x00f0, PIN_OUTPUT, 0) /* (AA9) PRG1_PRU0_GPO14.PR1_MII0_TXD3 */
++			AM64X_IOPAD(0x00ec, PIN_OUTPUT, 0) /* (W9) PRG1_PRU0_GPO13.PR1_MII0_TXD2 */
++			AM64X_IOPAD(0x00e8, PIN_OUTPUT, 0) /* (U9) PRG1_PRU0_GPO12.PR1_MII0_TXD1 */
++			AM64X_IOPAD(0x00e4, PIN_OUTPUT, 0) /* (AA8) PRG1_PRU0_GPO11.PR1_MII0_TXD0 */
++			AM64X_IOPAD(0x00c8, PIN_INPUT, 1) /* (Y8) PRG1_PRU0_GPO4.PR1_MII0_RXDV */
++			AM64X_IOPAD(0x00d0, PIN_INPUT, 1) /* (AA7) PRG1_PRU0_GPO6.PR1_MII_MR0_CLK */
++			AM64X_IOPAD(0x00c4, PIN_INPUT, 1) /* (V8) PRG1_PRU0_GPO3.PR1_MII0_RXD3 */
++			AM64X_IOPAD(0x00c0, PIN_INPUT, 1) /* (W8) PRG1_PRU0_GPO2.PR1_MII0_RXD2 */
++			AM64X_IOPAD(0x00cc, PIN_INPUT, 1) /* (V13) PRG1_PRU0_GPO5.PR1_MII0_RXER */
++			AM64X_IOPAD(0x00bc, PIN_INPUT, 1) /* (U8) PRG1_PRU0_GPO1.PR1_MII0_RXD1 */
++			AM64X_IOPAD(0x00b8, PIN_INPUT, 1) /* (Y7) PRG1_PRU0_GPO0.PR1_MII0_RXD0 */
++			AM64X_IOPAD(0x00d8, PIN_INPUT, 1) /* (W13) PRG1_PRU0_GPO8.PR1_MII0_RXLINK */
++		>;
++	};
++
++	icssg1_mii2_pins_default: icssg1-mii2-default-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0148, PIN_INPUT, 1) /* (Y10) PRG1_PRU1_GPO16.PR1_MII_MT1_CLK */
++			AM64X_IOPAD(0x0144, PIN_OUTPUT, 0) /* (Y11) PRG1_PRU1_GPO15.PR1_MII1_TXEN */
++			AM64X_IOPAD(0x0140, PIN_OUTPUT, 0) /* (AA11) PRG1_PRU1_GPO14.PR1_MII1_TXD3 */
++			AM64X_IOPAD(0x013c, PIN_OUTPUT, 0) /* (U10) PRG1_PRU1_GPO13.PR1_MII1_TXD2 */
++			AM64X_IOPAD(0x0138, PIN_OUTPUT, 0) /* (V10) PRG1_PRU1_GPO12.PR1_MII1_TXD1 */
++			AM64X_IOPAD(0x0134, PIN_OUTPUT, 0) /* (AA10) PRG1_PRU1_GPO11.PR1_MII1_TXD0 */
++			AM64X_IOPAD(0x0118, PIN_INPUT, 1) /* (W12) PRG1_PRU1_GPO4.PR1_MII1_RXDV */
++			AM64X_IOPAD(0x0120, PIN_INPUT, 1) /* (U11) PRG1_PRU1_GPO6.PR1_MII_MR1_CLK */
++			AM64X_IOPAD(0x0114, PIN_INPUT, 1) /* (Y12) PRG1_PRU1_GPO3.PR1_MII1_RXD3 */
++			AM64X_IOPAD(0x0110, PIN_INPUT, 1) /* (AA12) PRG1_PRU1_GPO2.PR1_MII1_RXD2 */
++			AM64X_IOPAD(0x011c, PIN_INPUT, 1) /* (AA13) PRG1_PRU1_GPO5.PR1_MII1_RXER */
++			AM64X_IOPAD(0x010c, PIN_INPUT, 1) /* (V11) PRG1_PRU1_GPO1.PR1_MII1_RXD1 */
++			AM64X_IOPAD(0x0108, PIN_INPUT, 1) /* (W11) PRG1_PRU1_GPO0.PR1_MII1_RXD0 */
++			AM64X_IOPAD(0x0128, PIN_INPUT, 1) /* (U12) PRG1_PRU1_GPO8.PR1_MII1_RXLINK */
++		>;
++	};
++};
++
++&cpsw3g {
++	pinctrl-0 = <&rgmii1_pins_default>;
++};
++
++&cpsw_port2 {
++	status = "disabled";
++};
++
++&mdio_mux_1 {
++	status = "disabled";
++};
++
++&icssg1_eth {
++	pinctrl-0 = <&icssg1_mii1_pins_default &icssg1_mii2_pins_default>;
++};
++
++&icssg1_emac0 {
++	phy-mode = "mii";
++};
++
++&icssg1_emac1 {
++	status = "okay";
++	phy-handle = <&icssg1_phy2>;
++	phy-mode = "mii";
++};
+-- 
+2.34.1
 
 
