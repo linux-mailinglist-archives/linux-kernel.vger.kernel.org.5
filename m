@@ -1,95 +1,110 @@
-Return-Path: <linux-kernel+bounces-162137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B54A8B5689
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16C3E8B5693
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128FC1F20E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:28:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C261B1F236A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2E640872;
-	Mon, 29 Apr 2024 11:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA5546452;
+	Mon, 29 Apr 2024 11:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IF48j8qN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="mFsf7TdV"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B255F23772;
-	Mon, 29 Apr 2024 11:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD84C40BFE
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390074; cv=none; b=SEzS+abuXdxKB9lg6UsH5RWIRvgs3kWI5QNtEtGqGUacqA2oZBxNuMzfiCtpQaAmiePu6djUMMwZZGo45G4l05RnwJe+phlXVq70CN8v1T+iuHNTeHNMP3bIUXtltAwrVCW+l1SCkOsPySjk+BymOGOlI8bhpLonEGgNw83ocsI=
+	t=1714390134; cv=none; b=hUNSGvPEae7NZLKe6MDiw3MIixEIJAFIS/UVuG8psbGVPqJhs4b4Ph5mfB8nfHaSdCtmERoOk882+FrBRoPDwXyC/HkiA3/sdHh8fWGqI25/VaAsq/fDoOQU7YrkNwuOTylEFbEQpFdto1HFKW7zSFX7dZ9PvSZY601FuDDUlk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390074; c=relaxed/simple;
-	bh=aKvg3KEps3tM2Kj6EjXlb4/nIS7PP+1b1pbgoXobQ18=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=AIT2Z4jP0Xxq6xpMGHirLiN4aUF5bOD+Tm91trTzDPvD/saYpiRwHjtdTe8EECn5eq6bgiuWp/mSnIteLaZNEafRhVMdff29AtCjML8TLqerysSD/xZFgh/b+NSVlP8oGIVCAZ1kcSpRMmXKuKaQYJoqxHI+Ytaa5WwG/E/5D5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IF48j8qN; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714390073; x=1745926073;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=aKvg3KEps3tM2Kj6EjXlb4/nIS7PP+1b1pbgoXobQ18=;
-  b=IF48j8qNZBDLdUSsmGp3eQu8XI030aiJPrbvuM6qsTs1GkcqakZXtedd
-   GLHDoACNmaf/I6Un33GiYprk5N3V9duQP9pprExoNoBeHIEyHTTC2m8cL
-   B3eIDTxIamGnO4TTq79m3Ig/sEz3OHNYGje7aqjwBrTfXJQIthAkjWT3Q
-   0SA6ieBbKo5mELV/Dy1Pn5RM/sprhIHALUY5D37PZF4L9c3U5AOPthkB9
-   njlEfimceREOofdWinyKTkCN7+8i3MM6vpG4RIy2KrVoYvnAALsZ0IY3q
-   NvXL2q5yfgWn4mWjdaTC+Ib5ow9dngFP7wZIumep8QHVn7f5Z/FIpfx7d
-   Q==;
-X-CSE-ConnectionGUID: UHjW3qLJSmijXc6OVl/a8g==
-X-CSE-MsgGUID: x0bwdYgRTfWAeOTnL4ucRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9919077"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="9919077"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 04:27:52 -0700
-X-CSE-ConnectionGUID: Knd1WZYDTCypwlGxyzqaSw==
-X-CSE-MsgGUID: HF/kEQONQVSl8ALaxGojWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="56964054"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.45])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 04:27:50 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 29 Apr 2024 14:27:46 +0300 (EEST)
-To: Hans de Goede <hdegoede@redhat.com>
-cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-    markgross@kernel.org, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: ISST: Add Grand Ridge to HPM CPU list
-In-Reply-To: <f7ff317b-f91b-429c-ac09-61b338264890@redhat.com>
-Message-ID: <4a5d6fb2-4082-dab4-8f91-5bfb83e6ee30@linux.intel.com>
-References: <20240422212222.3881606-1-srinivas.pandruvada@linux.intel.com> <f7ff317b-f91b-429c-ac09-61b338264890@redhat.com>
+	s=arc-20240116; t=1714390134; c=relaxed/simple;
+	bh=60QpStQOhAZIW9mb3S0HOBlCt88AByrWdkN0ZXP5wz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d1NfQE9BA1IEE/Ys12KT01VDlrqbJBIOrE4hUkg+yEqUlZnLR90F+yOw5xSNGO0nKWGS5XCj5z3OveomXxnMiv729Olw4KsLjwN2kTrw5VpmYPuAR5gs510YPLR1JprWSgHpgcSP4RiyA7rud6gwZNJX3wXsg+C51Fq7TaLjUik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=mFsf7TdV; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=k1; bh=fAVKMqRoK3GEyb
+	zsjMIQAuD5pNP2sMiRqK4blj9QPNs=; b=mFsf7TdVwL/397rbVrkXr2nBV8tMCW
+	XHy9YScgS2ZQnBjtt3TOVqzHClpOGhxN7qMbIZThDZKEib3yuxqbiXJQ/RVQOXhi
+	XVq61D9hQBt9dSB8QxIxvI9PENpSZqPTazwt6LYp2ADbtXc5hvCP0CnmexUQ8Aw5
+	yB5auSBygdg8jQfpPFdkzf3QvCFon727ZkRfED6dggWW0NiKQquqVJXObAfixcxg
+	gz3L0ZILg/RiGoDHPTO71G7W1Tc8BXMAhs+XBl/Y4VQ9Pr/IBC9bvop6Zw4zn5Ia
+	9wKlUKh+HFHuI1/d6IqP6AGauU2movDEBKcWjjXKkFi8KuD3M+ORlGyg==
+Received: (qmail 2279485 invoked from network); 29 Apr 2024 13:28:43 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:28:43 +0200
+X-UD-Smtp-Session: l3s3148p1@KkJPjjoXgAptKPB4
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-spi@vger.kernel.org
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH 0/8] spi: use 'time_left' instead of 'timeout' with wait_for_*() functions
+Date: Mon, 29 Apr 2024 13:28:33 +0200
+Message-ID: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Apr 2024, Hans de Goede wrote:
-> On 4/22/24 11:22 PM, Srinivas Pandruvada wrote:
-> > Add Grand Ridge (ATOM_CRESTMONT) to hpm_cpu_ids, so that MSR 0x54 can be
-> > used.
-> > 
-> > Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> 
-> This looks like it needs to be applied on top of the fixes branch, or else
-> after 6.10-rc1 is out.
-> 
-> Ilpo, what do you think ?
+There is a confusing pattern in the kernel to use a variable named 'timeout' to
+store the result of wait_for_*() functions causing patterns like:
 
-I've now taken this into fixes branch.
+        timeout = wait_for_completion_timeout(...)
+        if (!timeout) return -ETIMEDOUT;
+
+with all kinds of permutations. Use 'time_left' as a variable to make the code
+obvious and self explaining.
+
+This is part of a tree-wide series. The rest of the patches can be found here
+(some parts may still be WIP):
+
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+
+Because these patches are generated, I audit them before sending. This is why I
+will send series step by step. Build bot is happy with these patches, though.
+No functional changes intended.
+
+Wolfram Sang (8):
+  spi: armada-3700: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: fsl-lpspi: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: imx: use 'time_left' variable with wait_for_completion_timeout()
+  spi: pic32-sqi: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: pic32: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: sun4i: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: sun6i: use 'time_left' variable with
+    wait_for_completion_timeout()
+  spi: xlp: use 'time_left' variable with wait_for_completion_timeout()
+
+ drivers/spi/spi-armada-3700.c |  8 ++++----
+ drivers/spi/spi-fsl-lpspi.c   | 14 +++++++-------
+ drivers/spi/spi-imx.c         | 20 ++++++++++----------
+ drivers/spi/spi-pic32-sqi.c   |  6 +++---
+ drivers/spi/spi-pic32.c       |  6 +++---
+ drivers/spi/spi-sun4i.c       |  9 +++++----
+ drivers/spi/spi-sun6i.c       | 17 +++++++++--------
+ drivers/spi/spi-xlp.c         |  8 ++++----
+ 8 files changed, 45 insertions(+), 43 deletions(-)
 
 -- 
- i.
+2.43.0
 
 
