@@ -1,114 +1,143 @@
-Return-Path: <linux-kernel+bounces-162723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E18D8B5FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:07:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E0248B5FAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D5D1F2479D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:07:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 614E6B23BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9FC8663A;
-	Mon, 29 Apr 2024 17:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D80B8663A;
+	Mon, 29 Apr 2024 17:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FZY2kFOf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/CVFZA2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE76986260;
-	Mon, 29 Apr 2024 17:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA33A8595A;
+	Mon, 29 Apr 2024 17:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714410423; cv=none; b=hPIZ0eYYlqWDF6KZ8ZEY9ui/IY2zX9l1DMbwu0B41q+c29cd1jvgikjPgFZcHGqllTFvLNadw29vOpY49JR5rZLbOExE7eCaX2m7/4JwzXBOZXYfpKzS3a7kpD7xgxW1EANFpdLJjqVkcYqO6E8SjQtWFMCFMOCGKJNzSAMc0Hg=
+	t=1714410441; cv=none; b=iQIo3ednYkhGvoksuTZZ/7C90/Sr/AIP/cbB6k8G2y+lELyg8/WTbjBny4Zvz1ZHiw2Oz8bgbY0MMGczA7f0EKkfRPFfrmmnpeK2G5jpC+gmqy3av7EAbKBh/sw/1gDOjtqdQlI0BFtkjF2Hrw9p61it+l775gSvb1ttYagRdkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714410423; c=relaxed/simple;
-	bh=EIzrA7raKowYk/Gh9aT2i443/RBNMTyOgVQ4r1yOGGY=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=XpivBR7k76JSmYpLt2hvklnFphxDtbP1Qk1O/6vrXC02y8Tz6eQy1gwvaXOas5VP4+KbUS4X+xjJpYByeRPHIH1InVlWzpgxAR8eGAynAZeB18QQAhAwDJOruzRpjBviQ22AdOqRVeYbRbVCSuK9xiAs9MNa5CP8DU0MPgGr0QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FZY2kFOf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF84C113CD;
-	Mon, 29 Apr 2024 17:07:00 +0000 (UTC)
+	s=arc-20240116; t=1714410441; c=relaxed/simple;
+	bh=Ig19MYaxZdSQhmDoDlYi6kLIFuiHYwBd3fglHUPaw4Q=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=QOkPH5ZJtbr1nai7WkZ93Lp/gJNUpmAcfOsuEPAehv7MVx2HgxpVjhZBK3Ca+rcpd9jXLO2nK4TuZrRl5p6wHSzO7+ilYxYvlpPn+0HrwYOxjAMw5E6wilVbowriRAkSy4GHqX8Gft0llgRHC4anPNdXuQovbhW0VbRB/UkaMgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c/CVFZA2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFE3C113CD;
+	Mon, 29 Apr 2024 17:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714410422;
-	bh=EIzrA7raKowYk/Gh9aT2i443/RBNMTyOgVQ4r1yOGGY=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=FZY2kFOfhjpqCaYkpX4F3j3DWpENVTxwpF2fweIEBEGdECKV+SwgweTbII6b57mlq
-	 zmbZbgiTbB6eHq0sslxTBxjVgwhN3+E937qzytwB/vv7FQbIwo81CjcjjNp867sEJ4
-	 ltIA7dtbDTw2tBnuyuXBFPvmg3oU7xU8hyJTiKVoo5FmfIbPK1LV9PjlAbkLzUVZ//
-	 ChMNv3U+cx1YMbAqDwIGFvVFsae0sqNmgT9IqKf5NutWum7FPHW1ilSpWw48uzIM8o
-	 lkIQnE14lp0KnKtbpl3qfdTcPEk1vWuIO2jPoEos9qQ4Wg8QTpukBnXramsi80UbGD
-	 OMbBRvY26A6tQ==
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1714410441;
+	bh=Ig19MYaxZdSQhmDoDlYi6kLIFuiHYwBd3fglHUPaw4Q=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=c/CVFZA2iWSHoZmV8qZGuWnrG7Na2Vrm4xsEbtFPAeVBpqQQbmZTRAivpId+ZMLs0
+	 U5d/0DnzmMVPgY+oB5AHuuJOwk8vF+BNbgTlJwD6w1o1z6N4UgoeWly5QBdCctkNcn
+	 o0Uu5WLsHADHVfK3e+tSh+55Q64VDD+BgEUWiWxjH5DgzWQAhBxabpGtjG/PdlM+q5
+	 gpydtu0mUprs/0bRXZrfwPav13fAGRwgHG04eyAl7pIpUWmxR/YMXkv+u89Phi7z0U
+	 +qFY+ahqtyf5YZvnmrd7+l/tf6Oz0HeAH6ibN0LOe2Cu2zrkpR6xlS2w+F8KPCetqR
+	 LHFXYJNct3yRw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] wifi: carl9170: add a proper sanity check for
- endpoints
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240422183355.3785-1-n.zhandarovich@fintech.ru>
-References: <20240422183355.3785-1-n.zhandarovich@fintech.ru>
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc: Christian Lamparter <chunkeey@googlemail.com>,
- Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
- <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <syzkaller-bugs@googlegroups.com>, <lvc-project@linuxtesting.org>,
- <syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171441041857.3988917.8424866883496462665.kvalo@kernel.org>
-Date: Mon, 29 Apr 2024 17:07:00 +0000 (UTC)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 29 Apr 2024 20:07:18 +0300
+Message-Id: <D0WRS2FV8DBK.41XFI0SAD18M@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <lukas@wunner.de>
+Subject: Re: [PATCH v2] crypto: ecc - Prevent ecc_digits_from_bytes from
+ reading too many bytes
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
+ <davem@davemloft.net>
+X-Mailer: aerc 0.17.0
+References: <20240429161316.3146626-1-stefanb@linux.ibm.com>
+ <D0WRD3IZ3AJC.GWZHZLHHBJ5B@kernel.org>
+ <f001bc3f-0c70-4118-bc71-8455808004b4@linux.ibm.com>
+In-Reply-To: <f001bc3f-0c70-4118-bc71-8455808004b4@linux.ibm.com>
 
-Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
+On Mon Apr 29, 2024 at 7:57 PM EEST, Stefan Berger wrote:
+>
+>
+> On 4/29/24 12:47, Jarkko Sakkinen wrote:
+> > On Mon Apr 29, 2024 at 7:13 PM EEST, Stefan Berger wrote:
+> >> Prevent ecc_digits_from_bytes from reading too many bytes from the inp=
+ut
+> >> byte array in case an insufficient number of bytes is provided to fill=
+ the
+> >> output digit array of ndigits. Therefore, initialize the most signific=
+ant
+> >> digits with 0 to avoid trying to read too many bytes later on. Convert=
+ the
+> >> function into a regular function since it is getting too big for an in=
+line
+> >> function.
+> >>
+> >> If too many bytes are provided on the input byte array the extra bytes
+> >> are ignored since the input variable 'ndigits' limits the number of di=
+gits
+> >> that will be filled.
+> >>
+> >> Fixes: d67c96fb97b5 ("crypto: ecdsa - Convert byte arrays with key coo=
+rdinates to digits")
+> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >>
+> >> ---
+> >>
+> >> v2:
+> >>   - un-inline function
+> >>   - use memset
+> >> ---
+> >>   crypto/ecc.c                  | 22 ++++++++++++++++++++++
+> >>   include/crypto/internal/ecc.h | 15 ++-------------
+> >>   2 files changed, 24 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/crypto/ecc.c b/crypto/ecc.c
+> >> index c1d2e884be1e..fe761256e335 100644
+> >> --- a/crypto/ecc.c
+> >> +++ b/crypto/ecc.c
+> >> @@ -68,6 +68,28 @@ const struct ecc_curve *ecc_get_curve(unsigned int =
+curve_id)
+> >>   }
+> >>   EXPORT_SYMBOL(ecc_get_curve);
+> >>  =20
+> >=20
+> > Just a minor nit:
+> >=20
+> > For exported symbol you need to document the function,including
+> > the parameters [1].
+>
+> Like other functions, the ecc_digits_from_bytes also still/already has=20
+> the documentation in the header file:
+>
+> /**
+>   * ecc_digits_from_bytes() - Create ndigits-sized digits array from=20
+> byte array
+>   * @in:       Input byte array
+>   * @nbytes    Size of input byte array
+>   * @out       Output digits array
+>   * @ndigits:  Number of digits to create from byte array
+>   */
+> void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
+>                             u64 *out, unsigned int ndigits);
+>
+>   Should be ok?
 
-> Syzkaller reports [1] hitting a warning which is caused by presence
-> of a wrong endpoint type at the URB sumbitting stage. While there
-> was a check for a specific 4th endpoint, since it can switch types
-> between bulk and interrupt, other endpoints are trusted implicitly.
-> Similar warning is triggered in a couple of other syzbot issues [2].
-> 
-> Fix the issue by doing a comprehensive check of all endpoints
-> taking into account difference between high- and full-speed
-> configuration.
-> 
-> [1] Syzkaller report:
-> ...
-> WARNING: CPU: 0 PID: 4721 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-> ...
-> Call Trace:
->  <TASK>
->  carl9170_usb_send_rx_irq_urb+0x273/0x340 drivers/net/wireless/ath/carl9170/usb.c:504
->  carl9170_usb_init_device drivers/net/wireless/ath/carl9170/usb.c:939 [inline]
->  carl9170_usb_firmware_finish drivers/net/wireless/ath/carl9170/usb.c:999 [inline]
->  carl9170_usb_firmware_step2+0x175/0x240 drivers/net/wireless/ath/carl9170/usb.c:1028
->  request_firmware_work_func+0x130/0x240 drivers/base/firmware_loader/main.c:1107
->  process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
->  worker_thread+0x669/0x1090 kernel/workqueue.c:2436
->  kthread+0x2e8/0x3a0 kernel/kthread.c:376
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
->  </TASK>
-> 
-> [2] Related syzkaller crashes:
-> Link: https://syzkaller.appspot.com/bug?extid=e394db78ae0b0032cb4d
-> Link: https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
-> 
-> Reported-and-tested-by: syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com
-> Fixes: a84fab3cbfdc ("carl9170: 802.11 rx/tx processing and usb backend")
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> Acked-By: Christian Lamparter <chunkeey@gmail.com>
-> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+I think it should be OK, or at least documentation has not denied
+doing that and gives example how to import from header files:
 
-Patch applied to ath-next branch of ath.git, thanks.
+https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
 
-b6dd09b3dac8 wifi: carl9170: add a proper sanity check for endpoints
+Just had not encountered that before so that said
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240422183355.3785-1-n.zhandarovich@fintech.ru/
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+BR, Jarkko
 
