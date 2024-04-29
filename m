@@ -1,118 +1,108 @@
-Return-Path: <linux-kernel+bounces-162454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1538B5B7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:37:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533118B5B7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:37:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D711B253D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:37:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0D4281457
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2FA7E0FF;
-	Mon, 29 Apr 2024 14:37:12 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166DF7E772;
+	Mon, 29 Apr 2024 14:37:37 +0000 (UTC)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEEA7D3F4
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58DC7E105
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714401431; cv=none; b=A/VIWo7Jul/lq5C9ujkvqgTVjxc4vO6J5JE2jw5R9QnqCaGPgnq9VdaGai4XexGbkbNqRbdzK55g+bOOfzD9DOq8Krll+9HmoueRDLP9kfisVDjMDsf3caDSq8haHFYZrF5yY2opCTEHwmE8FY5ww7iU8GBEWNk3Eq+cqp35s/s=
+	t=1714401456; cv=none; b=Bj89VxL2QLWngZwBLWHvgf51yja70uYSSBjdwYJr4rKgnBYafNoEI0IsY5ljSy3c2Dl6j1c+VXuQ2jb48QCg+V/2HPa16Fl5sINsq3LjlyB6ARBQ9je4Hp8CdFZWGGiHNRmUyF54qD9heQW5lcbxoRZGzNH8Zg1U5gJCMwiDvDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714401431; c=relaxed/simple;
-	bh=nB3lm5LGvKV9XqkrnYtTkE3fYv9JWWTBzsV7krSTC2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=um3b9cZz0aESpeQywJ4P87/0IpJgdXCAo8Bx5El5e4LVwSnoc4N0lcv+lNENQ6+W/UMLQlksA+CwEGiJfLRAOCBt0V4MSbabl2nnAeMWwuZDNsS8IiScq8XgLqcNNrFNPLAf97hMYjAekYhclGyy7J01Guh5lxvoG7E9MZ4Yh7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s1S7m-0002gk-Gd; Mon, 29 Apr 2024 16:36:58 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s1S7l-00EzxD-S7; Mon, 29 Apr 2024 16:36:57 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1s1S7l-00BVIe-2V;
-	Mon, 29 Apr 2024 16:36:57 +0200
-Date: Mon, 29 Apr 2024 16:36:57 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: nikita.shubin@maquefel.me
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v9 12/38] dt-bindings: pwm: Add Cirrus EP93xx
-Message-ID: <qfydt2yyc7ao62qgqqfwc5e6h3bzlil32k7sqfcnphlpbjk4fp@65lcb7ggqpsj>
-References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
- <20240326-ep93xx-v9-12-156e2ae5dfc8@maquefel.me>
+	s=arc-20240116; t=1714401456; c=relaxed/simple;
+	bh=o76I6uYyuIHYHMcSkzurzNhgHFDpP4E7YAUzENMyBn0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wp4LlIWBA2qpA0YpdrAKGpGm6+czKmH6VzoMAY05vVZQK9ZZfhQnP8bxDLtPa8vyeTPthrxZpuuXYfFKm4OPPQCI/82q84XAS26zqqabbByNP3mKVNT9+6mhLJICMT/6vwRkLkCLBuAP3R3qSrMOjHV8c0UnkUqyhpwSlxplkJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de54cb87998so4876777276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:37:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714401452; x=1715006252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1B8TUxX3GMUuuf6X9eCvF4beZUOUbPqjMpWnhsqSxGE=;
+        b=cj8hnyeJk0TDAftS+LxaVqUlBG+DXz8Iq84lWhQxITlV4om9Xb+jIzkPnnH46p0sIK
+         z6JJrcJKEp+pT+DzWNNnIlFpPnr0FpQKN/EcyD3XUKdUnxSqmwLen/EEgO0YHr6dx2IJ
+         NGRvIRe9BTAb9j945etX2lSxm2TuQNaLrZyr3sPAbnXLBruSEtISbaDzxuKOxtbOsNsF
+         AIexIwFgfnEhOyNDDx7SLB61pvQcF1b2ACYi3s3ZJm+J6ANWnVzoDSeY5aFJaubSUcrY
+         3kqiZoxQD6YmZcVr0JUV1a+Fcbb3tQYsajs+qh7Ga6wUmpZ/qXwnj7Nl8gGZSAQ0wp19
+         P3gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWePtzZ+PgqqoGgMuH6XOaKVGmNQ+xEK8XS5wb9K6c/2uo0cFigDTJ/n2HMYVZIjkZXwu5fSBHVvsjpdk9qciD9Y/cPG3eF5wEOVGwv
+X-Gm-Message-State: AOJu0YwxaeUklAKv30c2TI37wf6iQP/+N8cspIndkBwJQELon+2w1G+q
+	ArtxN5+6lZEkPwKaXdzk9R+YW2yrXqNWDlPBYQbOceQKW1nlwMKEN0Lx8LRW
+X-Google-Smtp-Source: AGHT+IEkTNx36IKCOzAK6M8IDj7To112Rew8+PT5tFpgZIapR9YHscf9FmAHMF2RZeKbzI0zd2tf/A==
+X-Received: by 2002:a05:6902:220b:b0:de5:4a91:11c4 with SMTP id dm11-20020a056902220b00b00de54a9111c4mr13778234ybb.44.1714401452551;
+        Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id a6-20020a258706000000b00dcd2c2e7550sm5546689ybl.21.2024.04.29.07.37.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de5acdb3838so3334495276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVTckxnLENU4uQEDQ3eSYe4OS0pPwfnikjiFTMdHWKgpGcQQenAslkb+y0zAKr3eS2Qo23sWOtyj8mJnKYzaUenTzdKCY3gKJS/eEQA
+X-Received: by 2002:a05:6902:2187:b0:dcf:a52d:6134 with SMTP id
+ dl7-20020a056902218700b00dcfa52d6134mr13962181ybb.26.1714401451935; Mon, 29
+ Apr 2024 07:37:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7kuxxtmkh4tc37qi"
-Content-Disposition: inline
-In-Reply-To: <20240326-ep93xx-v9-12-156e2ae5dfc8@maquefel.me>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---7kuxxtmkh4tc37qi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <419fcc09d0e563b425c419053d02236b044d86b0.1710298421.git.fthain@linux-m68k.org>
+In-Reply-To: <419fcc09d0e563b425c419053d02236b044d86b0.1710298421.git.fthain@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 29 Apr 2024 16:37:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUGAAqJsget--=ZZ9CejfPt5kLPkXFJkh5hfZrzhs8hzQ@mail.gmail.com>
+Message-ID: <CAMuHMdUGAAqJsget--=ZZ9CejfPt5kLPkXFJkh5hfZrzhs8hzQ@mail.gmail.com>
+Subject: Re: [PATCH] macintosh/via-macii: Fix "BUG: sleeping function called
+ from invalid context"
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 12:18:39PM +0300, Nikita Shubin via B4 Relay wrote:
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/cirrus,ep9301-syscon.h>
-> +    pwm@80910000 {
-> +        compatible =3D "cirrus,ep9301-pwm";
-> +        reg =3D <0x80910000 0x10>;
-> +        clocks =3D <&syscon EP93XX_CLK_PWM>;
-> +        #pwm-cells =3D <3>;
-> +    };
+On Wed, Mar 13, 2024 at 3:55=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> =
+wrote:
+> The via-macii ADB driver calls request_irq() after disabling hard
+> interrupts. But disabling interrupts isn't necessary here because the
+> VIA shift register interrupt was masked during VIA1 initialization.
+>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-I considered taking this patch via my pwm tree for v6.10-rc1, but there
-is a dependency on another patch from this series because of the
-#include in the example that maeks dt_binding_check fail.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.10.
 
-So I won't apply the patch for now.
+Gr{oetje,eeting}s,
 
-Best regards
-Uwe
+                        Geert
 
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
---7kuxxtmkh4tc37qi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYvsIgACgkQj4D7WH0S
-/k5U/wf/YhSADpxczwrguNSREeaMRJwPUDspvnf/1s/wsr2IEbezgRpf4xrlbvi6
-Znv/O/k0w8JI0oJT+JocLeMVEddb/MggKRZ1utP52BhS1x4v814fZUKlJXx81bue
-esuaq3XMHOegVIEdELOZAWH5vCfJykRlgxzblCnYIaAna/PWj8A24OJYS62wWPnl
-8NhseEbffwyZHtiA82l3aAdn6o2W2vo98808c+8Opa6+GQ5tdJcKZC94cz/WLcHg
-gNoaY7WsZKDDxIS4WoMGuiPFFus7qGzee5RYLaWoPy//6uJZQ5aSgT1PI4FQm0vw
-TqEk6yFlBswL3jWeYqJ9ikKmYM+ziw==
-=h7YV
------END PGP SIGNATURE-----
-
---7kuxxtmkh4tc37qi--
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
