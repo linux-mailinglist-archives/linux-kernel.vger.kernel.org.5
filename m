@@ -1,74 +1,64 @@
-Return-Path: <linux-kernel+bounces-161929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084AA8B5374
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:50:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB6C38B537E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919791F218E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00EDA1C20F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B7717BCC;
-	Mon, 29 Apr 2024 08:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C4B17C79;
+	Mon, 29 Apr 2024 08:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VmS3j3Te"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="cx8ZJd96"
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9BC1773A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD66DC2C8;
+	Mon, 29 Apr 2024 08:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714380622; cv=none; b=TLwIieNk2Hn+A35w6IiUmrglliyYpxgHZMQOxrSQ1xrC6d3kBs+5S1SFUr9iB4ZB4D5hE2hzOaRpy7ma0YqagPaba8Zk9vJeQgnJnU2rD+vzb4T0OJWc61337WCjSUt8TRDVBovwmYawXQqgzNTmmhga3jch1sU41O5+GxAnKtw=
+	t=1714380827; cv=none; b=vGXj9E4wMqBaXp3btfGJYQVWf3zNcnvGoq1xwtpo3zcafV//4yBCIplf5WhVGUth0/CSjRZJqrcksQ+zajX7Pau1MV8o3cr66HhUgRrPbd9q949Xgzd02rq8oHtxLW/lW0ruf+MI/AjceyPQ1kKr00rzj3qmPDvTQdLYt0laLUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714380622; c=relaxed/simple;
-	bh=UEftw4bypC83j5FB26vPGAB+xWzHocHd3cthIUjvWEI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e9vj/4m+5pvOBcidjRLCM3kZUKls8Bg3msWGMBdLZDZ2v9LdPDT/RzzEeD7/RUoduE5L7nPmReFRVMfGucg4ujo7ZJe/tlHQXNkfgFgZ7xg1HzXOReQBU9Yg7W4+YKZIsSadALUzb7RW4/vPr11pw7PVkQUNkHXwELY/II8iz8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VmS3j3Te; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so4274689a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714380619; x=1714985419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wJ2dspUAZTJIyxNFJe36YLQ9sGiLmUwzrDU28IFnD3g=;
-        b=VmS3j3TeZucmT3Txa+S2mUR5sex2g2k+WEmA7FBd3KEssyXdYISx467GcRTg5PTYNQ
-         taHuq6PSTog2A++LGuLmooDO0bZJQ2pv3PC5LZ/Slv3bK0sovUqyNgTAmk+Xl4OkeIsm
-         3D/bWVLLvoOcnKL3YD5YLw/JQcc2hrw6PBVB/Lwwev8o3E8rOGzXae/DjJJhdQfFQay6
-         DELvCjj7GzgH5FuYT0qXRXNcVLKV1WjRqj2HQVaOfetBmoLpK+HY/Gbpzyqz5NnCjB3I
-         orYtHMCz8/RfxzhWIMd+BoK9yqEX0ztsIMMN4vvN4BDjvsurROhZRxEVb9BWlMFa9Jz2
-         NtMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714380619; x=1714985419;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wJ2dspUAZTJIyxNFJe36YLQ9sGiLmUwzrDU28IFnD3g=;
-        b=rZhm01GB+vUt9qy2kubpvg0YTed+b0jUeBU5qwW/oVkZGJ7jhunc77ZEfIZui5q1cU
-         HGApKa+s0GacaBtqMYGvAvpQNlxaxodQ8KDXmThO8b7tMXOSknF6h4cpTdKZaCOPndGW
-         xDM8wKPM/hdPN21+Y2xhxdtIi58xyBNgSYYu4h+Aawm77Ply+zGrDaWKIAZKa130AQ81
-         xwkGSEXUsXEv+rII+d30OFoC8xlt8oAAEdKNRFwmmjvf0XTmnshRdEGc3azJzgV6RBTj
-         sMkrsEIx8vIOb8WK9ZJZkAOmk3XMb8I2frMOSN3YHv/U91FWEyQm5h1hG0DnAUhL008K
-         lDVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWGGEMND/huuu/mjCbdDFN17QkXLeOWOc+MLZ2K8kzGP6c5vn4y8OaLQfGR6AD8/Kyk4j2vXYj+Jl5gFagxllXY6eaTN77hUUnQvoKu
-X-Gm-Message-State: AOJu0YwJTma3ntqGNn+CqWgyiN8I2DqAjBQc4EJr8f0ZiR7Ch5rVPrWx
-	PyRMQiQALjp1KO2aBBkiND9/b+5PcPwTwkVtEOj/kMD+U56uWSQzQKGmgrJSo0c=
-X-Google-Smtp-Source: AGHT+IHNAnbf391vNLLOtI6hxFOkSeLXRESnQKTCG64z/DXXxuzgWUbtk/MtLOKlaj/4RAIJ9uGvMw==
-X-Received: by 2002:a17:906:786:b0:a52:6cb2:9347 with SMTP id l6-20020a170906078600b00a526cb29347mr5390414ejc.8.1714380618670;
-        Mon, 29 Apr 2024 01:50:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170906640d00b00a5267ee40efsm13879801ejm.18.2024.04.29.01.50.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 01:50:18 -0700 (PDT)
-Message-ID: <a105ba2b-a809-4a6e-84fc-f67eb11606be@linaro.org>
-Date: Mon, 29 Apr 2024 10:50:16 +0200
+	s=arc-20240116; t=1714380827; c=relaxed/simple;
+	bh=XxJMGad54tR9sirQj06vDhJW0TOP5mpqMJiFYt+RuPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ipM1+vYFuaYs3sNBwOHjF+1jXS1C2SlEDHup3aQcWn0NAlzPsH/GS/zPV4sa+GUD5byTqbq0DiE8xFiPgwF9G6vKgnlNvrDcp0j8XwfF6dLpaMJc/5Hc2QNT+4wty0cd2ZRD3j0jz60DOdmNK4QnchHyQzhrGzFhijDcCWKTYxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=cx8ZJd96; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43T7ixZ9007532;
+	Mon, 29 Apr 2024 10:53:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=PDnBIULbsSxakTpOd1Nm1WtFrD4kcum3r6evgJ4f4ys=; b=cx
+	8ZJd96Uhy5fsInDA28xxjsDp188fEYLlEWtAt6Oe1LxNo3O6j1QyWLiHHiGYuJ57
+	y3WtM0kRFbKbkeqRJ2Q2up7MfiST9GM/suENhxKwlO7PLFl/4bIYOgq2hOLdZEKU
+	m5PE2G29eymm6Xl9xFrxOy7GOENbjgvF2mNKAX06OlsLkhUudwemF1ueAgsCTUnU
+	KUmHHPKMGzKPAFTVtoGnC1ToIlHWgEXk3mY1PIzC+iQtSxybuPh3k6N4U9v6UuMy
+	3ZSccP+1zXRPv3xFzTHjLCTiRpkPstvmUh61P0ACcaDSOCua4zVzkKlzBsbepBAY
+	IozdqzjusGz4+6Algqmw==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xscahufgs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 10:53:18 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id AD1524004B;
+	Mon, 29 Apr 2024 10:53:12 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3E7D6216837;
+	Mon, 29 Apr 2024 10:52:35 +0200 (CEST)
+Received: from [10.130.72.241] (10.130.72.241) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 29 Apr
+ 2024 10:52:34 +0200
+Message-ID: <d2432381-827f-4825-a450-9954f8291576@foss.st.com>
+Date: Mon, 29 Apr 2024 10:52:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,103 +66,158 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sh: j2: drop incorrect SPI controller max frequency
- property
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- devicetree@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Kousik Sanagavarapu <five231003@gmail.com>
-References: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
- <d6b562f336b3750c131830a984b148ea7103ab0d.camel@physik.fu-berlin.de>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH linux-next] media: i2c: st-mipid02: replace of_node_put()
+ with __free
+To: R Sundar <prosunofficial@gmail.com>, <sylvain.petinot@foss.st.com>,
+        <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <skhan@linuxfoundation.org>, <javier.carrasco.cruz@gmail.com>,
+        Julia Lawall
+	<julia.lawall@inria.fr>
+References: <20240427095643.11486-1-prosunofficial@gmail.com>
 Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d6b562f336b3750c131830a984b148ea7103ab0d.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8
+From: Benjamin Mugnier <benjamin.mugnier@foss.st.com>
+In-Reply-To: <20240427095643.11486-1-prosunofficial@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_06,2024-04-26_02,2023-05-22_02
 
-On 29/04/2024 10:16, John Paul Adrian Glaubitz wrote:
-> On Fri, 2024-03-22 at 07:42 +0100, Krzysztof Kozlowski wrote:
->> The J2 SPI controller bindings never allowed spi-max-frequency property
->> in the controller node.  Neither old spi-bus.txt bindings, nor new DT
->> schema allows it.  Linux driver does not parse that property from
->> controller node, thus drop it from DTS as incorrect hardware
->> description.  The SPI child device has already the same property with
->> the same value, so functionality should not be affected.
->>
->> Cc: Kousik Sanagavarapu <five231003@gmail.com>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  arch/sh/boot/dts/j2_mimas_v2.dts | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/sh/boot/dts/j2_mimas_v2.dts b/arch/sh/boot/dts/j2_mimas_v2.dts
->> index fa9562f78d53..faf884f53804 100644
->> --- a/arch/sh/boot/dts/j2_mimas_v2.dts
->> +++ b/arch/sh/boot/dts/j2_mimas_v2.dts
->> @@ -71,8 +71,6 @@ spi0: spi@40 {
->>  			#address-cells = <1>;
->>  			#size-cells = <0>;
->>  
->> -			spi-max-frequency = <25000000>;
->> -
->>  			reg = <0x40 0x8>;
->>  
->>  			sdcard@0 {
+Hi,
+
+Thank you for your patch.
+
+On 4/27/24 11:56, R Sundar wrote:
+> Use the new cleanup magic to replace of_node_put() with
+> __free(device_node) marking to auto release and to simplify the error
+> paths.
 > 
-> It seems that spi-bus.txt has been replaced by spi-controller.yaml now, so
-> I think we should update the filename in the commit message, shouldn't we?
+> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: R Sundar <prosunofficial@gmail.com>
 
-I think commit msg properly says what is old and what is new....
+I was not aware of this kind of auto release mechanism. Thanks for
+bringing that to my eyes.
 
-Best regards,
-Krzysztof
+Now I looked in /drivers/media and couldn't find such structure. All
+drivers seem to follow the goto error_of_node_put style.
+As I'm unsure if we want to introduce such magic, could either Laurent
+or Sakari comment on this ?
 
+> ---
+>  drivers/media/i2c/st-mipid02.c | 37 +++++++++-------------------------
+>  1 file changed, 9 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+> index f250640729ca..d42a306530f3 100644
+> --- a/drivers/media/i2c/st-mipid02.c
+> +++ b/drivers/media/i2c/st-mipid02.c
+> @@ -715,31 +715,28 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
+>  	struct v4l2_fwnode_endpoint ep = { .bus_type = V4L2_MBUS_CSI2_DPHY };
+>  	struct i2c_client *client = bridge->i2c_client;
+>  	struct v4l2_async_connection *asd;
+> -	struct device_node *ep_node;
+>  	int ret;
+>  
+>  	/* parse rx (endpoint 0) */
+> -	ep_node = of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node,
+> -						0, 0);
+> +	struct device_node *ep_node __free(device_node) =
+> +		of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node, 0, 0);
+>  	if (!ep_node) {
+>  		dev_err(&client->dev, "unable to find port0 ep");
+> -		ret = -EINVAL;
+> -		goto error;
+> +		return -EINVAL;
+>  	}
+>  
+>  	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), &ep);
+>  	if (ret) {
+>  		dev_err(&client->dev, "Could not parse v4l2 endpoint %d\n",
+>  			ret);
+> -		goto error_of_node_put;
+> +		return ret;
+>  	}
+>  
+>  	/* do some sanity checks */
+>  	if (ep.bus.mipi_csi2.num_data_lanes > 2) {
+>  		dev_err(&client->dev, "max supported data lanes is 2 / got %d",
+>  			ep.bus.mipi_csi2.num_data_lanes);
+> -		ret = -EINVAL;
+> -		goto error_of_node_put;
+> +		return -EINVAL;
+>  	}
+>  
+>  	/* register it for later use */
+> @@ -750,7 +747,6 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
+>  	asd = v4l2_async_nf_add_fwnode_remote(&bridge->notifier,
+>  					      of_fwnode_handle(ep_node),
+>  					      struct v4l2_async_connection);
+> -	of_node_put(ep_node);
+>  
+>  	if (IS_ERR(asd)) {
+>  		dev_err(&client->dev, "fail to register asd to notifier %ld",
+> @@ -764,46 +760,31 @@ static int mipid02_parse_rx_ep(struct mipid02_dev *bridge)
+>  		v4l2_async_nf_cleanup(&bridge->notifier);
+>  
+>  	return ret;
+> -
+> -error_of_node_put:
+> -	of_node_put(ep_node);
+> -error:
+> -
+> -	return ret;
+>  }
+>  
+>  static int mipid02_parse_tx_ep(struct mipid02_dev *bridge)
+>  {
+>  	struct v4l2_fwnode_endpoint ep = { .bus_type = V4L2_MBUS_PARALLEL };
+>  	struct i2c_client *client = bridge->i2c_client;
+> -	struct device_node *ep_node;
+>  	int ret;
+>  
+>  	/* parse tx (endpoint 2) */
+> -	ep_node = of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node,
+> -						2, 0);
+> +	struct device_node *ep_node =
+> +		of_graph_get_endpoint_by_regs(bridge->i2c_client->dev.of_node, 2, 0);
+
+Shouldn't there be a '__free' here too ?
+
+>  	if (!ep_node) {
+>  		dev_err(&client->dev, "unable to find port1 ep");
+> -		ret = -EINVAL;
+> -		goto error;
+> +		return -EINVAL;
+>  	}
+>  
+>  	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep_node), &ep);
+>  	if (ret) {
+>  		dev_err(&client->dev, "Could not parse v4l2 endpoint\n");
+> -		goto error_of_node_put;
+> +		return ret;
+>  	}
+>  
+> -	of_node_put(ep_node);
+>  	bridge->tx = ep;
+>  
+>  	return 0;
+> -
+> -error_of_node_put:
+> -	of_node_put(ep_node);
+> -error:
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static int mipid02_probe(struct i2c_client *client)
+
+-- 
+Regards,
+
+Benjamin
 
