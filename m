@@ -1,216 +1,154 @@
-Return-Path: <linux-kernel+bounces-161723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C18A8B502C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:23:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF328B5035
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6FF91C2162D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:23:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87674B20D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3F0C127;
-	Mon, 29 Apr 2024 04:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B098BE2;
+	Mon, 29 Apr 2024 04:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kNM3cAeL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="IYdEDpOa";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XWtCMm3X"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29298F6A;
-	Mon, 29 Apr 2024 04:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451D6372
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 04:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714364623; cv=none; b=JG1z+kxhznA9QYroDKOkBHVQP7tgsMaLcqJ+2AvmDozCAiqlhG/YICa4aJZKrZ2tTSOWWCKV5sMhCimQp3r0n2EEN1QAz5xf7z+XW12reoOTGIncRERu5IR1iydSGJQO4K+0f5q4ZY+yuoYNoEj7dwdztSf67C4jNfNw64GV6qI=
+	t=1714365147; cv=none; b=BIXgbO/UIKq36nW1O+PCjO0DYw2HajDxKueCB9Dyf+iHCqUo5mHPdP4jiDWenheu5HCkxN0xLBZjFkPHyWlNT0Jy6oVMk8yzNk4R7XwHPPhvuWXvBv6RhtQO/qiNIcDyJWyAqaq/MYFwusZ5xO0PWVe88LcnmAAAPJQcFkd8HMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714364623; c=relaxed/simple;
-	bh=1IVjWFDE0ZPVxEX7QCLOdk64+2ARx2EGinwsO9xJAqY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uOD53jkvfZroWp+8uQzj8S48zGQ0i8CsOCk2clJax/3RTOBeLhUIkX59ghj3N54QunyimCnGcq68mt28/kKgN6+RDTA/sWvAyfWXghs4T1z4FcKwxcitOOse+zIwowtjuYQl+zslWUfR1AFQgqsCAvpm52x53h69fu+ibAWyEj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kNM3cAeL; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714364621; x=1745900621;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1IVjWFDE0ZPVxEX7QCLOdk64+2ARx2EGinwsO9xJAqY=;
-  b=kNM3cAeLbRgpcIgxxZqB/VrrksKw3lHS3+WxmmmTaar1DnkuRovKghJu
-   UFJ24L/SqMGwdovB2aR5VFHw9ReNZ6SzW0f+9P5b8EqZkd1wIZ9MFWHL7
-   X9wJNh+H1tPhkFO2PGY5cBASv5lQgWKZ3NMX8gJxnAEfTjJ888GckuTYg
-   tDTnLwWJefeX8i++tx4q5htpKJETGnCrSe2VW7+KxyErvg7sni91pO3H8
-   c9z5anioUb6KHArd/Qhi3ipHs0uGHLla+RWiEPrsQU7tsvIIVxLL9Dtbb
-   AK3lT6FTGU6CZjKjDd/vsYn4pXl9NCUdgVdt8WUP/N3NoTeSzd4w5g50/
-   A==;
-X-CSE-ConnectionGUID: L7DH/PiJS66Oj6LBUCRX0w==
-X-CSE-MsgGUID: NruxqcKyTnyNeXdcM+Lslw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10134618"
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="10134618"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:23:40 -0700
-X-CSE-ConnectionGUID: lTeYmOudT8mJd96kUL1tRA==
-X-CSE-MsgGUID: kxGWAuvMTTmiz79jYMjsdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="56886981"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 21:23:36 -0700
-Message-ID: <1398f18e-b490-4c2c-93f1-e210f7e74794@intel.com>
-Date: Mon, 29 Apr 2024 12:23:33 +0800
+	s=arc-20240116; t=1714365147; c=relaxed/simple;
+	bh=ox/62EbT5oj8f7xt9MKcSewdgkEtXx/74onEea31BCM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nvauZ7zG4WAhaKHS+hQAyblPXwZ6thmoFx9NG1tL4iK4lUf/gu6F5zdhuGLmQNSfn9ug1/OWQNg50NKbN4OQt8iz3UBDiiyvcVw8sRNb/Oa5aeBP5p4755r/4qIVXsVePheokk3KEYPLxFQ+HXEpC5E5HL3ObRrcMb7iuCpL0Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=IYdEDpOa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XWtCMm3X; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 46A831380228;
+	Mon, 29 Apr 2024 00:32:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 29 Apr 2024 00:32:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1714365143; x=1714451543; bh=SOhiZLaSJM
+	K3vRwXHVf80avqHnvi4hJiW4QMdFB5tDo=; b=IYdEDpOalzPZbEZWa3eINnTYv8
+	vrwutmxYOYrGrhUl8ZRkMmgvTcQKnr5cPPsMCwNXPGq/TN8wXIUk5O/8auutTncO
+	A8DiQR4xHgaLVLJs/stCK80DS7KyeCAE913DSg9VvJQuQ9Csj+wZqzxkwzDq4RQ2
+	nZD9ZcTQJ2uXLIRX8wksGI8CREOPZkrgwvI/Tv5OcZwdlI8qYxKsIElBLq5WQ2ZH
+	vRgx2bngFmk0qBg0wmkcMfoipjEQnnUqgHovp9SBe5yu3AXvB62dL3jJj4eiM2mz
+	Iv/61JytAp4uNtrMRcnP/XLYYn/5io2w7cf+59yrZ/3CBc2KIXO14+myRHAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714365143; x=1714451543; bh=SOhiZLaSJMK3vRwXHVf80avqHnvi
+	4hJiW4QMdFB5tDo=; b=XWtCMm3XCG3Pi8vbCsp6ih+BY8w+rqdO2u2dHd9BGywE
+	NJgUpGETTb6ToJuXEuJwWp+pfD6o3W8ziW1M9YUpWQ8rrcPHz3Ej2OCzlFT/XW87
+	z1RH35nTl7zKXel40F6ONWWNe5h9+u1Cc/H69jWhRE6X/U6XsyGL/TrQfCh5VArJ
+	LUms+OzzdgXdIvs+Rth7tP6ng4/i11MmXLY8RM88DrQVJiVSm2fuW7UMNWco8LQD
+	SPgxy6OS0M0KB2tQOwyuQqHalnp4QXptbGmSsU7z1E1orsRLzZ3eMlrM+fl5fRsp
+	DmTU529PNI1yaTS3WTEkpLgElyyB4oTmtOKaIMpuqw==
+X-ME-Sender: <xms:1yIvZo4TJMBShdOty7YQF9qWl8wJL3ToH3-AUggp7dH4hTPqWlBKGQ>
+    <xme:1yIvZp4DzKtypy3bfqQXFaoVr1YVbTLiLNwQQGeAl3V8jkWfjBvfanJ9eSM0cSr4-
+    JB5zIPhpSfNh9NVW-0>
+X-ME-Received: <xmr:1yIvZnfWJcI0jvM1F6OIQh3yS0QYkK9Wut3NcnUKEvTnu3kvY1qc6ASO2jdb0RJkNbckLfdAjGlTwX2es_fKjt0-ztuP2B6lUlW_u0tyA4ggIw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtledgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeggfehleehje
+    eileehveefkefhtdeffedtfeeghfekffetudevjeegkeevhfdvueenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:1yIvZtKmYtVRBqZY0WQISGaNIQS8sNCVI07p3e1CAp2WG-CJov3ywg>
+    <xmx:1yIvZsJ3vZ5CGODP9Aa88Q2ezF-ljH1dVJ3tkh4JuE8gmrMAkaWpYg>
+    <xmx:1yIvZuzlAvQbYXM6sBji1Dd3QYNCiOjoFfek3LqA8W9RJ86aRbTczA>
+    <xmx:1yIvZgJ_-4_XksZ0KycyF3dmmBwd1Yfw8zhjCPgt9jAOMn_GIjfh6A>
+    <xmx:1yIvZjX7oq1zWA8vNxis0y--8L7YmUOSCKrxPBjG00PKnTwvxiUDZpi4>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Apr 2024 00:32:22 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] firewire: add tracepoints events for asynchronous transaction
+Date: Mon, 29 Apr 2024 13:32:13 +0900
+Message-ID: <20240429043218.609398-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 2/4] KVM: x86: Make nsec per APIC bus cycle a VM
- variable
-To: Reinette Chatre <reinette.chatre@intel.com>, isaku.yamahata@intel.com,
- pbonzini@redhat.com, erdemaktas@google.com, vkuznets@redhat.com,
- seanjc@google.com, vannapurve@google.com, jmattson@google.com,
- mlevitsk@redhat.com, chao.gao@intel.com, rick.p.edgecombe@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1714081725.git.reinette.chatre@intel.com>
- <ae75ce37c6c38bb4efd10a0a41932984c40b24ac.1714081726.git.reinette.chatre@intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ae75ce37c6c38bb4efd10a0a41932984c40b24ac.1714081726.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 4/26/2024 6:07 AM, Reinette Chatre wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Introduce the VM variable "nanoseconds per APIC bus cycle" in
-> preparation to make the APIC bus frequency configurable.
-> 
-> The TDX architecture hard-codes the core crystal clock frequency to
-> 25MHz and mandates exposing it via CPUID leaf 0x15. The TDX architecture
-> does not allow the VMM to override the value.
-> 
-> In addition, per Intel SDM:
->      "The APIC timer frequency will be the processor’s bus clock or core
->       crystal clock frequency (when TSC/core crystal clock ratio is
->       enumerated in CPUID leaf 0x15) divided by the value specified in
->       the divide configuration register."
-> 
-> The resulting 25MHz APIC bus frequency conflicts with the KVM hardcoded
-> APIC bus frequency of 1GHz.
-> 
-> Introduce the VM variable "nanoseconds per APIC bus cycle" to prepare
-> for allowing userspace to tell KVM to use the frequency that TDX mandates
-> instead of the default 1Ghz. Doing so ensures that the guest doesn't have
-> a conflicting view of the APIC bus frequency.
+Hi,
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+The series of changes in this patchse is to revise the previous RFC:
+https://lore.kernel.org/lkml/20240418092303.19725-1-o-takashi@sakamocchi.jp/
 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> [reinette: rework changelog]
-> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-> ---
-> Changes v5:
-> - Add Rick's Reviewed-by tag.
-> 
-> Changes v4:
-> - Reword changelog to address comments related to "bus clock" vs
->    "core crystal clock" frequency. (Xiaoyao)
-> - Typo in changelog ("APIC APIC" -> "APIC").
-> - Change logic "APIC bus cycles per nsec" -> "nanoseconds per
->    APIC bus cycle".
-> 
-> Changes V3:
-> - Update commit message.
-> - Dropped apic_bus_frequency according to Maxim Levitsky.
-> 
-> Changes v2:
-> - No change.
-> 
->   arch/x86/include/asm/kvm_host.h | 1 +
->   arch/x86/kvm/hyperv.c           | 3 ++-
->   arch/x86/kvm/lapic.c            | 6 ++++--
->   arch/x86/kvm/lapic.h            | 2 +-
->   arch/x86/kvm/x86.c              | 1 +
->   5 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 1d13e3cd1dc5..f2735582c7e0 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1358,6 +1358,7 @@ struct kvm_arch {
->   
->   	u32 default_tsc_khz;
->   	bool user_set_tsc;
-> +	u64 apic_bus_cycle_ns;
->   
->   	seqcount_raw_spinlock_t pvclock_sc;
->   	bool use_master_clock;
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 1030701db967..5c31e715d2ad 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -1737,7 +1737,8 @@ static int kvm_hv_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata,
->   		data = (u64)vcpu->arch.virtual_tsc_khz * 1000;
->   		break;
->   	case HV_X64_MSR_APIC_FREQUENCY:
-> -		data = div64_u64(1000000000ULL, APIC_BUS_CYCLE_NS);
-> +		data = div64_u64(1000000000ULL,
-> +				 vcpu->kvm->arch.apic_bus_cycle_ns);
->   		break;
->   	default:
->   		kvm_pr_unimpl_rdmsr(vcpu, msr);
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index cf37586f0466..3e66a0a95999 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -1547,7 +1547,8 @@ static u32 apic_get_tmcct(struct kvm_lapic *apic)
->   		remaining = 0;
->   
->   	ns = mod_64(ktime_to_ns(remaining), apic->lapic_timer.period);
-> -	return div64_u64(ns, (APIC_BUS_CYCLE_NS * apic->divide_count));
-> +	return div64_u64(ns, (apic->vcpu->kvm->arch.apic_bus_cycle_ns *
-> +			      apic->divide_count));
->   }
->   
->   static void __report_tpr_access(struct kvm_lapic *apic, bool write)
-> @@ -1965,7 +1966,8 @@ static void start_sw_tscdeadline(struct kvm_lapic *apic)
->   
->   static inline u64 tmict_to_ns(struct kvm_lapic *apic, u32 tmict)
->   {
-> -	return (u64)tmict * APIC_BUS_CYCLE_NS * (u64)apic->divide_count;
-> +	return (u64)tmict * apic->vcpu->kvm->arch.apic_bus_cycle_ns *
-> +		(u64)apic->divide_count;
->   }
->   
->   static void update_target_expiration(struct kvm_lapic *apic, uint32_t old_divisor)
-> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
-> index a20cb006b6c8..51e09f5a7fc5 100644
-> --- a/arch/x86/kvm/lapic.h
-> +++ b/arch/x86/kvm/lapic.h
-> @@ -16,7 +16,7 @@
->   #define APIC_DEST_NOSHORT		0x0
->   #define APIC_DEST_MASK			0x800
->   
-> -#define APIC_BUS_CYCLE_NS       1
-> +#define APIC_BUS_CYCLE_NS_DEFAULT	1
->   
->   #define APIC_BROADCAST			0xFF
->   #define X2APIC_BROADCAST		0xFFFFFFFFul
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e9ef1fa4b90b..10e6315103f4 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12629,6 +12629,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
->   
->   	kvm->arch.default_tsc_khz = max_tsc_khz ? : tsc_khz;
-> +	kvm->arch.apic_bus_cycle_ns = APIC_BUS_CYCLE_NS_DEFAULT;
->   	kvm->arch.guest_can_read_msr_platform_info = true;
->   	kvm->arch.enable_pmu = enable_pmu;
->   
+In a view of IEEE 1394 bus, the main function of kernel core is to
+provide transaction service to the bus. It is helpful to have some
+mechanisms to trace any action of the service.
+
+This series of changes adds some tracepoints events for the purpose.
+It adds the following tracepoints events via 'firewire' subsystem:
+
+* For outbound transactions (e.g. initiated by user process)
+    * async_request_outbound_initiate
+    * async_request_outbound_complete
+    * async_response_inbound
+* For inbound transactions (e.g. initiated by the other nodes in the bus)
+    * async_request_inbound
+    * async_response_outbound_initiate
+    * async_response_outbound_complete
+
+When probing these tracepoints events, the content of 'struct fw_packet'
+passed between the core function and 1394 OHCI driver is recorded with
+the fields of header and packet data. For example of the outbound
+split transaction:
+
+async_request_outbound_initiate: \
+    transaction=0xffff955fc6a07b30 generation=5 scode=2 dst_id=0xffc0 \
+    tlabel=18 tcode=9 src_id=0xffc1 offset=0xfffff0000984 \
+    header={0xffc04990,0xffc1ffff,0xf0000984,0x80002} data={0x81,0x80}
+async_request_outbound_complete: \
+    transaction=0xffff955fc6a07b30 generation=5 scode=2 status=2 \
+    timestamp=0xeabf
+async_response_inbound: \
+    transaction=0xffff955fc6a07b30 generation=5 scode=2 status=1 \
+    timestamp=0xeac2 dst_id=0xffc1 tlabel=18 tcode=11 src_id=0xffc0 \
+    rcode=0 header={0xffc149b0,0xffc00000,0x0,0x40002} data={0x81}
+
+Takashi Sakamoto (5):
+  firewire: core: add support for Linux kernel tracepoints
+  firewire: core: add tracepoints events for asynchronous outbound
+    request
+  firewire: core: add tracepoints event for asynchronous inbound
+    response
+  firewire: core: add tracepoint event for asynchronous inbound request
+  firewire: core: add tracepoints events for asynchronous outbound
+    response
+
+ drivers/firewire/Makefile           |   2 +-
+ drivers/firewire/core-trace.c       |   5 +
+ drivers/firewire/core-transaction.c |  93 +++++++-----
+ include/trace/events/firewire.h     | 211 ++++++++++++++++++++++++++++
+ 4 files changed, 276 insertions(+), 35 deletions(-)
+ create mode 100644 drivers/firewire/core-trace.c
+ create mode 100644 include/trace/events/firewire.h
+
+-- 
+2.43.0
 
 
