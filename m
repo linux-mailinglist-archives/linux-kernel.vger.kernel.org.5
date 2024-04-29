@@ -1,155 +1,126 @@
-Return-Path: <linux-kernel+bounces-162339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAEB8B598E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:12:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094428B59D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:25:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB3F228A4AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:12:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F5B2B2534A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A76375804;
-	Mon, 29 Apr 2024 13:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339D956B6A;
+	Mon, 29 Apr 2024 13:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZkJT+KE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VqczON2z"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF30F74E09;
-	Mon, 29 Apr 2024 13:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2FD53E08;
+	Mon, 29 Apr 2024 13:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396267; cv=none; b=eRP7uhs/pdS9mPxXGzSwHXPR2XB5IfJh/GsRR17yj6ADuB79AEYcbbe38g4dZoMK9E9m+5nAwZIoaxg/5xNZdjLcY8a/u56sIVd32KQIwNLyfxL03BnRPCjR6GMK5wrWIyDaXTwJ0MXTmHUH4d/FwJyUTNg+FaNn7rbRq8UtvKE=
+	t=1714396322; cv=none; b=G+XHS1ft2U++hqZTRhJUX8rXFU6xM6i9ZwQfq3aYfX91yGlDvwOWnxzUkG5QP4ZvIgdorWGlWEmtwZzHcnLdWsYzpxZIjrHU/QJZJDLnvTKgt+MggdEPL2riS4jVYXTF8l8FtZnrInAKNd3DA33VT5AFbxwB44icOkANxnm4XHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396267; c=relaxed/simple;
-	bh=R1UTtJT+uCWZh4nuC8+cBSQQbi4Zt4uHEdWDrtkOgC8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=b/G2qQLkmvpMAj7MiTnaEdlvVpQNaybPOcPqYlo6CYbsB2WvR8433RFXbS5DzaEwLWUkPNjbys4fU1EE8puLAKzcp77sfmvDh26Ea3p+J3v4ryzJJ3KdVBE2luPf71k3BJW8sX5Q303p95wv21VkgW50TxQTV374VT+GZAhLdVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZkJT+KE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922A3C116B1;
-	Mon, 29 Apr 2024 13:11:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714396267;
-	bh=R1UTtJT+uCWZh4nuC8+cBSQQbi4Zt4uHEdWDrtkOgC8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lZkJT+KESuOXKJCmj7z1WgncbrlZZaqmsCr+7vvy9mdeH/MDoBe5I6KWlV2x5geaP
-	 /PDBYUrCpOP3sADI8xemeDggKrEV6/dB0unAL1bUKUZEd/5tNB8jW+JzSO3She/SjI
-	 bFJV1mpIcltDAsNxm/CLT5kCEEdm+Hu6hGGnOyJ7cS8P4ctjbfUGUCXIvTKK80mlI6
-	 4Bx51IbOId5D1rv7EXtxMd7/yFpPOOOolKMckG8qvvVq34fegsYFLM7TXeEG55roS/
-	 vSOye6v5UAoVLD/nQsbdsL+AyO3NBg6Utl0SoeZiu/0wm9FYGtkEKg7D4XyJlw1u3z
-	 EhyRCIcAAj4Ug==
+	s=arc-20240116; t=1714396322; c=relaxed/simple;
+	bh=MFWWHdC5SeCYB1p3vDQDuMwidEp6zCaFXCem7rFaIiE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pksd+43y+TGjvTi63Iyfurwv/JehTZnjhUY0dxIrGFK5A8YWS8YZe5e65g+exPpUB0P3AwNgHox1IHn643C26vypQv3rjY59vHyPJHsvbwpJE6wrJhW4mvQayGnIowC2lx2QaxKvTh2g19WRrcZ6/X5jP0viIdvswmBh5L3pQFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VqczON2z; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TBPnnD025305;
+	Mon, 29 Apr 2024 13:11:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Nukm+9MkQ5xXDW8B5Fz9uUrwSluyRvivZVwj+fVZxM8=;
+ b=VqczON2zkBlZM53dEYiQdTainh5BkE+3A7az8MKWJXVDbo3cYs6eoJMFsGjS77nqWr9K
+ FlpiH9zHTHWj1AVZBpGeI1yb1VNRnrUBcHZiLCa6xN+VJdEDpBW5v1h0GYkqi66tMlvH
+ erF86dhaJYQpEE9Uf5Yhpx0mUkd9li7nup37f0c7aW5G6yKMxzBEUwCpcby9mmIFqew5
+ EiA6VuXdM2V1ULUy5XWOTDazCcMy7RTvR7h+3ywewgZm0DnvXm5Zdo3BBuXiOF874nHK
+ efCCfS19BUF9Y89tiQYp73wec9WK+rMMRuwK0aRU7+TaK8BcaWva+9OtgvSyeoIsqe3g sQ== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xta8egbtg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 13:11:58 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43TBrCXa003038;
+	Mon, 29 Apr 2024 13:11:57 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscpp7d3p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 13:11:57 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43TDBpDB50004390
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Apr 2024 13:11:53 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8561A2004B;
+	Mon, 29 Apr 2024 13:11:51 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2BA8E20040;
+	Mon, 29 Apr 2024 13:11:51 +0000 (GMT)
+Received: from osiris (unknown [9.171.12.101])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 29 Apr 2024 13:11:51 +0000 (GMT)
+Date: Mon, 29 Apr 2024 15:11:49 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, svens@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, borntraeger@de.ibm.com
+Subject: Re: [PATCH v3 2/2] s390/pgtable: add missing hardware bits for puds,
+ pmds
+Message-ID: <20240429131149.29046-M-hca@linux.ibm.com>
+References: <20240426120447.34318-1-imbrenda@linux.ibm.com>
+ <20240426120447.34318-3-imbrenda@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 29 Apr 2024 16:11:03 +0300
-Message-Id: <D0WMR6UESTUC.IMBRWMJ80RHQ@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Dmitrii Kuvaiskii" <dmitrii.kuvaiskii@intel.com>,
- <dave.hansen@linux.intel.com>, <kai.huang@intel.com>,
- <haitao.huang@linux.intel.com>, <reinette.chatre@intel.com>,
- <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Cc: <mona.vij@intel.com>, <kailun.qin@intel.com>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/sgx: Resolve EREMOVE page vs EAUG page data
- race
-X-Mailer: aerc 0.17.0
-References: <20240429104330.3636113-1-dmitrii.kuvaiskii@intel.com>
- <20240429104330.3636113-3-dmitrii.kuvaiskii@intel.com>
-In-Reply-To: <20240429104330.3636113-3-dmitrii.kuvaiskii@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240426120447.34318-3-imbrenda@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qZnZdy1HxWS5r3pjECRQsHEFvfT-Bn38
+X-Proofpoint-ORIG-GUID: qZnZdy1HxWS5r3pjECRQsHEFvfT-Bn38
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_10,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 adultscore=0 clxscore=1015 impostorscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 suspectscore=0 mlxlogscore=899
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404290083
 
-On Mon Apr 29, 2024 at 1:43 PM EEST, Dmitrii Kuvaiskii wrote:
-> Two enclave threads may try to add and remove the same enclave page
-> simultaneously (e.g., if the SGX runtime supports both lazy allocation
-> and `MADV_DONTNEED` semantics). Consider this race:
->
-> 1. T1 performs page removal in sgx_encl_remove_pages() and stops right
->    after removing the page table entry and right before re-acquiring the
->    enclave lock to EREMOVE and xa_erase(&encl->page_array) the page.
-> 2. T2 tries to access the page, and #PF[not_present] is raised. The
->    condition to EAUG in sgx_vma_fault() is not satisfied because the
->    page is still present in encl->page_array, thus the SGX driver
->    assumes that the fault happened because the page was swapped out. The
->    driver continues on a code path that installs a page table entry
->    *without* performing EAUG.
-> 3. The enclave page metadata is in inconsistent state: the PTE is
->    installed but there was no EAUG. Thus, T2 in userspace infinitely
->    receives SIGSEGV on this page (and EACCEPT always fails).
->
-> Fix this by making sure that T1 (the page-removing thread) always wins
-> this data race. In particular, the page-being-removed is marked as such,
-> and T2 retries until the page is fully removed.
->
-> Fixes: 9849bb27152c ("x86/sgx: Support complete page removal")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dmitrii Kuvaiskii <dmitrii.kuvaiskii@intel.com>
+On Fri, Apr 26, 2024 at 02:04:47PM +0200, Claudio Imbrenda wrote:
+> Add the table type and ACCF validity bits to _SEGMENT_ENTRY_BITS and
+> _SEGMENT_ENTRY_HARDWARE_BITS{,_LARGE}.
+> 
+> For completeness, introduce _REGION3_ENTRY_HARDWARE_BITS_LARGE and
+> _REGION3_ENTRY_HARDWARE_BITS, containing the hardware bits used for
+> large puds and normal puds.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 > ---
->  arch/x86/kernel/cpu/sgx/encl.c  | 3 ++-
->  arch/x86/kernel/cpu/sgx/encl.h  | 3 +++
->  arch/x86/kernel/cpu/sgx/ioctl.c | 1 +
->  3 files changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/enc=
-l.c
-> index 41f14b1a3025..7ccd8b2fce5f 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -257,7 +257,8 @@ static struct sgx_encl_page *__sgx_encl_load_page(str=
-uct sgx_encl *encl,
-> =20
->  	/* Entry successfully located. */
->  	if (entry->epc_page) {
-> -		if (entry->desc & SGX_ENCL_PAGE_BEING_RECLAIMED)
-> +		if (entry->desc & (SGX_ENCL_PAGE_BEING_RECLAIMED |
-> +				   SGX_ENCL_PAGE_BEING_REMOVED))
->  			return ERR_PTR(-EBUSY);
-> =20
->  		return entry;
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/enc=
-l.h
-> index f94ff14c9486..fff5f2293ae7 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -25,6 +25,9 @@
->  /* 'desc' bit marking that the page is being reclaimed. */
->  #define SGX_ENCL_PAGE_BEING_RECLAIMED	BIT(3)
-> =20
-> +/* 'desc' bit marking that the page is being removed. */
-> +#define SGX_ENCL_PAGE_BEING_REMOVED	BIT(2)
-> +
->  struct sgx_encl_page {
->  	unsigned long desc;
->  	unsigned long vm_max_prot_bits:8;
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/io=
-ctl.c
-> index b65ab214bdf5..c542d4dd3e64 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -1142,6 +1142,7 @@ static long sgx_encl_remove_pages(struct sgx_encl *=
-encl,
->  		 * Do not keep encl->lock because of dependency on
->  		 * mmap_lock acquired in sgx_zap_enclave_ptes().
->  		 */
-> +		entry->desc |=3D SGX_ENCL_PAGE_BEING_REMOVED;
->  		mutex_unlock(&encl->lock);
-> =20
->  		sgx_zap_enclave_ptes(encl, addr);
+>  arch/s390/include/asm/pgtable.h | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 
-It is somewhat trivial to NAK this as the commit message does
-not do any effort describing the new flag. By default at least
-I have strong opposition against any new flags related to
-reclaiming even if it needs a bit of extra synchronization
-work in the user space.
+..
+> +#define _REGION3_ENTRY_HARDWARE_BITS_LARGE	0xffffffff8001073cUL
+> +#define _REGION3_ENTRY_HARDWARE_BITS		0xfffffffffffff6ffUL
+..
+> +#define _SEGMENT_ENTRY_BITS			0xfffffffffffffe3fUL
+> +#define _SEGMENT_ENTRY_HARDWARE_BITS		0xfffffffffffffe3cUL
+> +#define _SEGMENT_ENTRY_HARDWARE_BITS_LARGE	0xfffffffffff1073cUL
 
-One way to describe concurrency scenarios would be to take
-example from https://www.kernel.org/doc/Documentation/memory-barriers.txt
+Please resend and make sure the order (BITS, BITS_LARGE, ...) is the
+same; then Alexander can pick this up.
 
-I.e. see the examples with CPU 1 and CPU 2.
-
-BR, Jarkko
+For the definitions:
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
 
