@@ -1,123 +1,111 @@
-Return-Path: <linux-kernel+bounces-161664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0C438B4F2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:19:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A09968B4F15
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE13EB21D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:19:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0688A282256
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4807EB;
-	Mon, 29 Apr 2024 01:19:09 +0000 (UTC)
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC277FD;
+	Mon, 29 Apr 2024 01:00:49 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDD57F;
-	Mon, 29 Apr 2024 01:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.101.241.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1307C7F;
+	Mon, 29 Apr 2024 01:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714353548; cv=none; b=t2AUDE1KW4aZIX3py7FTrowlnCG6Fa20PZ7dh4dA5efjyn8vTAI3pjI5U9uQS7bX3BJ9QJR3SrR+x+ZTEIEOmkRMf8LW5eYwwMkp+2FpmSilQqbUeKNWGcYGdDqwJ8Pem4GtrG3pMBmqWNQBphcy9S3OOKQn6k6gJrLr1Hk2GqU=
+	t=1714352449; cv=none; b=X4Af5mfsvkB7+hex8yWlpViM2LZ4dMqrNd6ui3TpYdG1R8RSus68fYe/3CIrXkEAaCWolOWkD9mQxcLbMb1g+0JZGGvUrZQqEQXz1cnVqLcW6ijIqVKIdcFxguG20SKzxPTXVMNJlFYrKSUTHUtoF4sJ/3obPaDh/ylzdnoKkOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714353548; c=relaxed/simple;
-	bh=CKS3du/7e+GPCqzNT8eSGOvRiJ/GyU/R+Cz7M5rCuiE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y8CZujzCRQKEV+Pbi+PR3ZUc5vyxrB5ykttw/yIIzkmUUYKkcZzd0LM2SQ1mB6UV1JHg6fdpRSrNS3DFA5TR5b2jbIbTUqDnZf0UlgZK3/5a0FK0GhukW+8N2Y3pkJAmQP3f/ztqlZfi1netBduOW8quFhJ/3qdD2wIen5tadEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net; spf=pass smtp.mailfrom=just42.net; arc=none smtp.client-ip=150.101.241.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
-Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
-	by server.atrad.com.au (8.18.1/8.18.1) with ESMTPS id 43T102D7008874
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Mon, 29 Apr 2024 10:30:03 +0930
-Date: Mon, 29 Apr 2024 10:30:02 +0930
-From: Jonathan Woithe <jwoithe@just42.net>
-To: Szilard Fabian <szfabian@bluemarch.art>
-Cc: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com
-Subject: Re: [PATCH] platform/x86/fujitsu-laptop: Replace sprintf() with
- sysfs_emit()
-Message-ID: <Zi7xEp5Gs4qtzB5p@marvin.atrad.com.au>
-References: <20240428192548.113261-1-szfabian@bluemarch.art>
+	s=arc-20240116; t=1714352449; c=relaxed/simple;
+	bh=etxDARaiQCIvJBPFCwe6H3mQwF1npXNEqvXf+0RiTUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gSuzgBodDpFgm1eVdN8hhcyLCiDlhbwaUvoqs4n80Jud3JvyMWf1Uzy3SWK0bBUXL0NAu1GwzRV6jkx6nJJZBU3WVV8BKitP+OFh+9S8lcKjEPH8kFCEIpvCigfjnlEy4sl07bE6LLsm6b17Mk5ka6JziU+YB8NB98Hmwy0HdJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43T10VjC039860;
+	Mon, 29 Apr 2024 10:00:31 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
+ Mon, 29 Apr 2024 10:00:31 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43T10VJT039857
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Mon, 29 Apr 2024 10:00:31 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <a93a0b0f-4607-46d6-937d-0ddf3544bb2d@I-love.SAKURA.ne.jp>
+Date: Mon, 29 Apr 2024 10:00:30 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428192548.113261-1-szfabian@bluemarch.art>
-X-MIMEDefang-action: accept
-X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in
+ force_sig_info_to_task
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>
+Cc: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
+        andrii@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <0000000000009dfa6d0617197994@google.com>
+ <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com>
+ <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Apr 28, 2024 at 07:26:33PM +0000, Szilard Fabian wrote:
-> As suggested by Documentation/filesystems/sysfs.rst sysfs_emit() should be
-> used when formatting the value to be returned to user space.
+On 2024/04/29 9:50, Linus Torvalds wrote:
+> On Sun, 28 Apr 2024 at 16:23, Hillf Danton <hdanton@sina.com> wrote:
+>>
+>> So is game like copying from/putting to user with runqueue locked
+>> at the first place.
 > 
-> Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
+> No, that should be perfectly fine. In fact, it's even normal. It would
+> happen any time you have any kind of tracing thing, where looking up
+> the user mode frame involves doing user accesses with page faults
+> disabled.
+> 
+> The runqueue lock is irrelevant. As mentioned, it's only a symptom of
+> something else going wrong.
+> 
+> Now, judging by the syz reproducer, the trigger for this all is almost
+> certainly that
+> 
+>    bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
+> &(0x7f00000000c0)={&(0x7f0000000080)='sched_switch\x00', r0}, 0x10)
+> 
+> and that probably causes the instability. But the immediate problem is
+> not the user space access, it's that something goes horribly wrong
+> *around* it.
 
-This seems entirely reasonable.
+I can't recall title of the commit, but I feel that things went very wrong
+after a commit that allows running tracing function upon lock contention
+(run code when e.g. a spinlock could not be taken) was introduced.
+That commit is forming random locking dependency, resulting in flood of
+lockdep warnings.
 
-Acked-by: Jonathan Woithe <jwoithe@just42.net>
+> 
+>> Plus as per another syzbot report [1], bpf could make trouble with
+>> workqueue pool locked.
+> 
+> That seems to be entirely different. There's no unexplained page fault
+> in that case, that seems to be purely a "take lock in the wrong order"
+> 
+>                 Linus
 
-> ---
->  drivers/platform/x86/fujitsu-laptop.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/fujitsu-laptop.c b/drivers/platform/x86/fujitsu-laptop.c
-> index 94480af49467..968fc91bd5e4 100644
-> --- a/drivers/platform/x86/fujitsu-laptop.c
-> +++ b/drivers/platform/x86/fujitsu-laptop.c
-> @@ -386,11 +386,11 @@ static ssize_t lid_show(struct device *dev, struct device_attribute *attr,
->  	struct fujitsu_laptop *priv = dev_get_drvdata(dev);
->  
->  	if (!(priv->flags_supported & FLAG_LID))
-> -		return sprintf(buf, "unknown\n");
-> +		return sysfs_emit(buf, "unknown\n");
->  	if (priv->flags_state & FLAG_LID)
-> -		return sprintf(buf, "open\n");
-> +		return sysfs_emit(buf, "open\n");
->  	else
-> -		return sprintf(buf, "closed\n");
-> +		return sysfs_emit(buf, "closed\n");
->  }
->  
->  static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
-> @@ -399,11 +399,11 @@ static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
->  	struct fujitsu_laptop *priv = dev_get_drvdata(dev);
->  
->  	if (!(priv->flags_supported & FLAG_DOCK))
-> -		return sprintf(buf, "unknown\n");
-> +		return sysfs_emit(buf, "unknown\n");
->  	if (priv->flags_state & FLAG_DOCK)
-> -		return sprintf(buf, "docked\n");
-> +		return sysfs_emit(buf, "docked\n");
->  	else
-> -		return sprintf(buf, "undocked\n");
-> +		return sysfs_emit(buf, "undocked\n");
->  }
->  
->  static ssize_t radios_show(struct device *dev, struct device_attribute *attr,
-> @@ -412,11 +412,11 @@ static ssize_t radios_show(struct device *dev, struct device_attribute *attr,
->  	struct fujitsu_laptop *priv = dev_get_drvdata(dev);
->  
->  	if (!(priv->flags_supported & FLAG_RFKILL))
-> -		return sprintf(buf, "unknown\n");
-> +		return sysfs_emit(buf, "unknown\n");
->  	if (priv->flags_state & FLAG_RFKILL)
-> -		return sprintf(buf, "on\n");
-> +		return sysfs_emit(buf, "on\n");
->  	else
-> -		return sprintf(buf, "killed\n");
-> +		return sysfs_emit(buf, "killed\n");
->  }
->  
->  static DEVICE_ATTR_RO(lid);
-> -- 
-> 2.44.0
-> 
-> 
 
