@@ -1,64 +1,47 @@
-Return-Path: <linux-kernel+bounces-161741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C22698B5080
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B23DF8B507B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60E41C21BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:08:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74B01C21A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3123FD518;
-	Mon, 29 Apr 2024 05:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0478CD520;
+	Mon, 29 Apr 2024 05:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D4M9Bo93"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxGCJSnH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89513372
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 05:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1422B372;
+	Mon, 29 Apr 2024 05:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714367327; cv=none; b=Vv7hV2YMeo/e9NNncFLB0viySAiid9HTZ8Dy/x6mOO5TzDn/7oWOCy21W+nzPbm2dCBVGEZUQNJgF6B8AYZdDF7aEHNZqJ2j4NGkHn3V7nNNE0cbg2XfqnPNkY6WKpNDSdxwF4fHf36yH1FLvQHbp4lurRYpimDbZ3vnKWytmLc=
+	t=1714367265; cv=none; b=qYnRAXy3sCjtiae6EkqcM6tX3i5VDaGqCtcHQgDX01ngqPLEHqYf3p6xax1q45N/iETfny3oVXaR9BVZq6q56YPFd/8Nc/ivvoKW4nmDzdyroIl4KqJZMZXC7zu622v0n6nuVHfetR3m6QIhvQJjpJ8+pg+TVz2cLefwHCCHRAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714367327; c=relaxed/simple;
-	bh=mxVSpiVc3CFUOue6xPqdNIQrLke23NOIAqrrjzMXkAs=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CIV0n1tyWy/AkScIGNqCxS1oD5XchMgiWtpo+b8wjmvUFdzPq6rqdI4acxnU8l9s5TwzX34oLZr1ZmdFsvpBKGJExukqxUFHar3S5vbVlmUe1rVLRCsphMRhJkWt2YhBkT8xbkv2APbx0UiLZmwnpsbMMpLQK58jSLZQO7W8U6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D4M9Bo93; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714367325; x=1745903325;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mxVSpiVc3CFUOue6xPqdNIQrLke23NOIAqrrjzMXkAs=;
-  b=D4M9Bo93kRtN3dPEHi0OyuOEg8Bw4QJZAXhog8AXzXBn/bDwCwQFc0+/
-   i4NajLl9Ql4WDgtWS6rE2WqmT2jEh3sgmKiU0W5vf21HGBxPmcjQXTXYn
-   lbLk3MZMfnMkd25dYRjE8AT85LumPsd7pew+yIB3R9/shKmcwZ2fa8EJ/
-   1joq0oT13BucEx3+M2OJBj0nfj5bFT3D5DbxdBwSZQ2r8IXOVeOy0H9nm
-   owz+Ds9TZunF98liw2oMY/GHUTKhVmyTtIvlX3yGuSr03pCtXprQvwzY7
-   +Y6tJkZCVhb6gfxCN9EwnspKCCPA+4ERLZ4qt5rvhkEKpfquQ0eE6U7Tj
-   w==;
-X-CSE-ConnectionGUID: oQUMRHsfQsupX+hsiWwuBw==
-X-CSE-MsgGUID: WhIPc9yJTWyBYWPpo7sfUQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10231760"
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="10231760"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2024 22:08:44 -0700
-X-CSE-ConnectionGUID: mvNirE5RSEyXwSzpR9HIbw==
-X-CSE-MsgGUID: lTA8GHIvRQ+tyNNKpDF9ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,238,1708416000"; 
-   d="scan'208";a="26630786"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa008.jf.intel.com with ESMTP; 28 Apr 2024 22:08:42 -0700
-Message-ID: <001d6fa8-d2f5-4011-988d-d2bc4f43a1aa@linux.intel.com>
-Date: Mon, 29 Apr 2024 13:07:14 +0800
+	s=arc-20240116; t=1714367265; c=relaxed/simple;
+	bh=4yumOtWk+CUvCeDlMuZqjH/oo4gxzHrDIJIlWnfOnqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J5pJqvaMFLUSaVpQBjaDoAhMpmK1hO17ZuqJVVjzCbBjdSFZUbbgs/58j3CtmR802/X/4F57Dz/B8aBWfZtbdcbTDh3QsQac1yiKlplXWkGEZ7vJ+ndGerdLh3y3ZTto/obfvkVgyYagxMXVB4jz4PO0K+YFR/q6FtvTM6KzVRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nxGCJSnH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F703C113CD;
+	Mon, 29 Apr 2024 05:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714367264;
+	bh=4yumOtWk+CUvCeDlMuZqjH/oo4gxzHrDIJIlWnfOnqc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nxGCJSnHiaf6RUrZklrHzo1HZdMckjjdvP2zLZ8HzvklBZX34c2KkrwjE1HmDWQ3H
+	 zXM+rolOVYqnAN9DFaRmomB4FazqXumdD2tYOzVnp4TXChvQeeZRfx8/Tgd5JsveHT
+	 k7r/8Ak/5HtDUtVYIXkzjgVYbJSSKxIt6iB+Y7zgLEXyLPX4NFzeac55QHjSGbvUwL
+	 7D8M5+D69fyj7DW2uQ9FCflLeF217/cF8A3mcsAkUXIrObXOO36jKRsjn3FtmnfBSJ
+	 x6JG2xog+ykpLrcfta69TyKGN246CD+U8ctiDts1VxjN8rzi1Pv5ymwFW6E419GRaA
+	 dVZ1UdBPYiqKw==
+Message-ID: <59fe75b6-a4a4-4c90-a3c4-c8a4b539e879@kernel.org>
+Date: Mon, 29 Apr 2024 07:07:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,138 +49,215 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Joel Granados <j.granados@samsung.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "virtualization@lists.linux-foundation.org"
- <virtualization@lists.linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/9] iommu: Replace sva_iommu with iommu_attach_handle
-To: "Tian, Kevin" <kevin.tian@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
- <20240403011519.78512-3-baolu.lu@linux.intel.com>
- <20240403115913.GC1363414@ziepe.ca>
- <e3f526e3-6474-49ff-b8d6-995aaf1c1830@linux.intel.com>
- <20240408141946.GB223006@ziepe.ca>
- <86e723e7-c3be-41b1-95d8-dbdf86bbdab5@linux.intel.com>
- <20240409234800.GD223006@ziepe.ca>
- <5871aaec-b81a-4ad4-8eb1-656a04d04bda@linux.intel.com>
- <BN9PR11MB5276F89C1C21BD03207A044F8C1B2@BN9PR11MB5276.namprd11.prod.outlook.com>
+Subject: Re: [RFC PATCH] spi: dt-bindings: ti,qspi: convert to dtschema
+To: Kousik Sanagavarapu <five231003@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+References: <20240428070258.4121-1-five231003@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276F89C1C21BD03207A044F8C1B2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240428070258.4121-1-five231003@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/29/24 10:39 AM, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Sunday, April 28, 2024 6:22 PM
->>
->> On 2024/4/10 7:48, Jason Gunthorpe wrote:
->>> On Tue, Apr 09, 2024 at 10:11:28AM +0800, Baolu Lu wrote:
->>>> On 4/8/24 10:19 PM, Jason Gunthorpe wrote:
->>>>> On Sat, Apr 06, 2024 at 02:09:34PM +0800, Baolu Lu wrote:
->>>>>> On 4/3/24 7:59 PM, Jason Gunthorpe wrote:
->>>>>>> On Wed, Apr 03, 2024 at 09:15:12AM +0800, Lu Baolu wrote:
->>>>>>>> +	/* A bond already exists, just take a reference`. */
->>>>>>>> +	handle = iommu_attach_handle_get(group, iommu_mm-
->>> pasid);
->>>>>>>> +	if (handle) {
->>>>>>>> +		mutex_unlock(&iommu_sva_lock);
->>>>>>>> +		return handle;
->>>>>>>>      	}
->>>>>>> At least in this context this is not enough we need to ensure that the
->>>>>>> domain on the PASID is actually an SVA domain and it was installed by
->>>>>>> this mechanism, not an iommufd domain for instance.
->>>>>>>
->>>>>>> ie you probably need a type field in the iommu_attach_handle to tell
->>>>>>> what the priv is.
->>>>>>>
->>>>>>> Otherwise this seems like a great idea!
->>>>>> Yes, you are right. For the SVA case, I will add the following changes.
->>>>>> The IOMMUFD path will also need such enhancement. I will update it in
->>>>>> the next version.
->>>>> The only use for this is the PRI callbacks right? Maybe instead of
->>>>> adding a handle type let's just check domain->iopf_handler  ?
->>>>>
->>>>> Ie SVA will pass &ommu_sva_iopf_handler as its "type"
->>>> Sorry that I don't fully understand the proposal here.
->>> I was talking specifically about the type field you suggested adding
->>> to the handle struct.
->>>
->>> Instead of adding a type field check the domain->iopf_handler to
->>> determine the domain and thus handle type.
->>>
->>>> The problem is that the context code (SVA, IOMMUFD, etc.) needs to
->> make
->>>> sure that the attach handle is really what it has installed during
->>>> domain attachment. The context code needs some mechanism to include
->> some
->>>> kind of "owner cookie" in the attach handle, so that it could check
->>>> against it later for valid use.
->>> Right, you have a derived struct for each user and you need a way to
->>> check if casting from the general handle struct to the derived struct
->>> is OK.
->>>
->>> I'm suggesting using domain->iopf_handle as the type key.
->>
->> After removing the refcount from the attach handle, I am trying to make
->> the code look like this,
->>
->>           /* A bond already exists, just take a reference`. */
->>           handle = iommu_attach_handle_get(group, iommu_mm->pasid);
->>           if (handle) {
->>                   if (handle->domain->iopf_handler !=
->> iommu_sva_iopf_handler) {
->>                           ret = -EBUSY;
->>                           goto out_unlock;
->>                   }
->>
->>                   refcount_inc(&handle->users);
->>                   mutex_unlock(&iommu_sva_lock);
->>                   return handle;
->>           }
->>
->> But it appears that this code is not lock safe. If the domain on the
->> PASID is not a SVA domain, the check of "handle->domain->iopf_handler !=
->> iommu_sva_iopf_handler" could result in a use-after-free issue as the
->> other thread might detach the domain in between the fetch and check
->> lines.
->>
->> Probably we still need to keep the refcount in the attach handle?
->>
+On 28/04/2024 08:58, Kousik Sanagavarapu wrote:
+> Convert txt binding of TI's qspi controller (found on their omap SoCs) to
+> dtschema to allow for validation.
 > 
-> What about Jason's another comment in his original replies?
+> It is however to be noted that it is not a one-to-one conversion, in the
+> sense that the original txt binding needed to be updated, but these
+> changes are included in the dtschema and are mentioned below.
+
+Drop this paragraph.
+
 > 
-> "
-> Though I'm not convinced the refcount should be elevated into the core
-> structure. The prior patch I showed you where the caller can provide
-> the memory for the handle and we don't have a priv would make it easy
-> to put the refcount in a SVA dervied handle struct without more
-> allocation. Then we don't need this weirdness.
-> "
+> The changes, w.r.t. the original txt binding, are:
+
+You also dropped qspi_ctrlmod during conversion.
+
 > 
-> That sounds like we'll need a iommu_sva like structure to hold
-> its own refcnt. Then we don't need this type check and refcnt
-> in the core.
+> - Introduce "clocks" and "clock-names" which was never mentioned.
+> - Reflect that "ti,hwmods" is deprecated and is not a "required"
+>   property anymore.
+> - Introduce "num-cs" which allows for setting the number of chip
+>   selects.
+> 
+> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+> ---
+> I'm a bit iffy about this one as I guess the original txt binding failed
+> to cover some things about the properties.  I added the properties based
+> on their use in the *.dtsi files when I grepped for the compatible string
+> 
+>         arch/arm/boot/dts/ti/omap/dra7.dtsi
+>         arch/arm/boot/dts/ti/omap/am4372.dtsi
+> 
+> I also looked at the probe function in the driver for it, which can be
+> found at
+> 
+>         drivers/spi/spi-ti-qspi.c
+> 
+>  .../devicetree/bindings/spi/ti,qspi.yaml      | 94 +++++++++++++++++++
+>  .../devicetree/bindings/spi/ti_qspi.txt       | 53 -----------
+>  2 files changed, 94 insertions(+), 53 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/ti,qspi.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/spi/ti_qspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/ti,qspi.yaml b/Documentation/devicetree/bindings/spi/ti,qspi.yaml
+> new file mode 100644
+> index 000000000000..77cabd7158f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/ti,qspi.yaml
+> @@ -0,0 +1,94 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/ti,qspi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI QSPI controller
+> +
+> +maintainers:
+> +  - Kousik Sanagavarapu <five231003@gmail.com>
+> +
+> +allOf:
+> +  - $ref: spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,am4372-qspi
+> +      - ti,dra7xxx-qspi
+> +
+> +  reg:
+> +    items:
+> +      - description: base registers
+> +      - description: mapped memory
+> +
+> +  reg-names:
+> +    items:
+> +      - const: qspi_base
+> +      - const: qspi_mmap
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: fck
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  num-cs:
+> +    maxItems: 1
+> +
+> +  ti,hwmods:
+> +    description:
+> +      Name of the hwmod associated to the QSPI.  This is for legacy
+> +      platforms only.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    deprecated: true
+> +
+> +  syscon-chipselects:
+> +    description:
+> +      Handle to system control region contains QSPI chipselect register
+> +      and offset of that register.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      items:
+> +        - description: phandle to system control register
+> +        - description: register offset
+> +
+> +  spi-max-frequency:
+> +    description: Maximum SPI clocking speed of the controller in Hz.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-The problem I'm facing isn't about who allocates the handle memory.
-Instead, there's no mechanism to synchronize access between two threads.
-One thread might remove the handle while another fetches and reads a
-member of its structure.
 
-A similar issue exists with iommu_get_domain_for_dev_pasid(). It fetches
-and returns a domain, but there's no guarantee that the domain will
-*not* be freed while the caller is still using it.
+Are you sure that's actually needed? That's not a property of controller.
 
-One reason I introduced the reference count for attach handles is to
-potentially replace iommu_get_domain_for_dev_pasid(), allowing the
-domain to be accessible without any potential UAF issue.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/dra7.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    qspi: spi@0 {
+> +        compatible = "ti,dra7xxx-qspi";
+> +        reg = <0x4b300000 0x100>,
+> +              <0x5c000000 0x4000000>;
+> +        reg-names = "qspi_base", "qspi_mmap";
+> +        syscon-chipselects = <&scm_conf 0x558>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        clocks = <&l4per2_clkctrl DRA7_L4PER2_QSPI_CLKCTRL 25>;
+> +        clock-names = "fck";
+> +        num-cs = <4>;
+> +        spi-max-frequency = <48000000>;
+
+Drop. Are you sure driver parses it?
+
+> +        interrupts = <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+
+
 
 Best regards,
-baolu
+Krzysztof
+
 
