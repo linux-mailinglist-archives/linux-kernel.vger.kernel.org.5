@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-163156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E18E58B666C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:40:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3D498B666E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:40:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2066BB22D58
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3081D1C21CD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDAB194C9E;
-	Mon, 29 Apr 2024 23:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7988B194C7F;
+	Mon, 29 Apr 2024 23:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b="amN4irZ5"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b="SaNJQ6sI"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD0F194C8C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3DE1836D1
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714433998; cv=none; b=M0dsZYqs2k3bKHwFK9Jc/SlyVeZKi8BdcHyuuXbV82S5fGwEaddkpEzaVN5dNv2v7Av3w0Y/3F27uOtJLSur7c46t1MSZv9yHpTfLKmG3qidyPqRi7jjc/iQaMcigVwTihqJSlFRZh+F2pUeONDoArxSQopfkWPGh7MSA5lUp/o=
+	t=1714434007; cv=none; b=VsaLvd8iuHIfQYdNdoWDT95lw1LNRoo1m7kMD7/YUXPVr7/yWKZPhScHZXGMDLb+NRAg0IEs19G7LJsd2b+M3qC3wslKw9GwdeLMFpVnFJ/6WpyHskekQ7FlnGYHibvpKBXoAZqxtBzQAj5yYnmJsfajYPmX6VYH9g99S+mB31E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714433998; c=relaxed/simple;
-	bh=BClq4mDPmyZgU0qr+f9VFy4skql2e7wKlGAmZ6Hi+vk=;
+	s=arc-20240116; t=1714434007; c=relaxed/simple;
+	bh=rxAEVq+yifZnHDpSwnTFmxkZ/Y0BmsczwpqA4u2RUTA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JB0xrSxibSfewKyCsffPX3UI448t3QoMkLn0Ll4Vnt3XYUJU8WJ8wwJpKRtLJD1eftXd6bVVOkIVTfZgkeUjaZfbBoDCKOrEfPPSqV3Q0UkIM5VyfDSKGx9oIkQ1hOjIy7K5/K2RV8EkweSKjdB5e7PrWm9C0SpRd7yh3wEs95E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf; spf=pass smtp.mailfrom=kl.wtf; dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b=amN4irZ5; arc=none smtp.client-ip=95.215.58.174
+	 MIME-Version; b=PD9MTDwqOGCnsh06ubapoDwayd43SnnZ83WWTg/aLesA2ehUPk9h9+SgUKCpKaYLl/LfiK2+Lse0+alkIhTphtXUivNjxjMxC41aeCTvzRN077X49iLxuxhX5e4B5tYRs1ERdX8Lt37kfQsGipU9N4UhhQ0TGJ4gQOXbYzW8Qcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf; spf=pass smtp.mailfrom=kl.wtf; dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b=SaNJQ6sI; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kl.wtf
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=key1;
-	t=1714433993;
+	t=1714434004;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EdRWlVXmvhwr8N4NqwgJPMuCGKujk/MjJK4ya7Ikf4o=;
-	b=amN4irZ5KoJZ4oYNiAEWeoFyQIpPEI1EZZmc7YV3B/GlLFGaGJtA69PVBuK75gyXYfBxf1
-	1Ji2OEfQ5ibuSgZD0EcFvdbgWtxB1hEHkhs96WTxljxfppvZoSVVcVZp6F3NaMYTKQ9CDD
-	a0cKUbYUb3PNQ6NHoLdYB+XNqdCMGejiY6c1YVw/HgbKNDgKxH7y5xiv6iQTxzS2cDYlWi
-	UJO0vy+tC3AbP5IGlG3ekTE+2xOX4J0HW9ou26M7w0NzmS+V9HZ1sXSBJfWuxZ4SrO0HW/
-	6gip3x8ESAYpLsvTHm7fcopziXTjfbvcs+wxMffWP+wFUX3UnwpERX02nGbCdg==
+	bh=y0LgG9Ur/gE5LwaFx84ee4SVeTx5Bvd1sdclfM8Q3a4=;
+	b=SaNJQ6sI0gOg/Yf8qvx/TsNAUA3kHWmRGUo1ZM8nt3t0OW8V4dz+wYI/XnJQThFXdaZVUv
+	H6jhdu3OogLQMponF+tTPT15z3/KSEHoBQ0M9s1y8AnleyFhGo7ijA7SuelualTjPYNrd0
+	h/qQbebw+zJMkN/nvO77YAINjsVnVLLiAXtIlzN0PNdFuc1Y7F5hccYPdFI9ov0sMTT3bF
+	4exSD40FiaF4X6wCX5yjzIBfQGsVM/m4mlcFSQbJVhWHBFzR+MN9XlfPTKToaEshvT8FE+
+	k0YuGjFWT2nMMhIaS7JxNzdKed2WcNAMNYZh845gqUGXYUvEgjgx3oBqURQYbg==
 From: Kenny Levinsen <kl@kl.wtf>
 To: Jiri Kosina <jikos@kernel.org>,
 	Dmitry Torokhov <dtor@chromium.org>,
@@ -57,9 +57,9 @@ To: Jiri Kosina <jikos@kernel.org>,
 	Radoslaw Biernacki <rad@chromium.org>,
 	Lukasz Majczak <lma@chromium.org>
 Cc: Kenny Levinsen <kl@kl.wtf>
-Subject: [PATCH 1/2] HID: i2c-hid: Retry address probe after delay
-Date: Tue, 30 Apr 2024 01:33:14 +0200
-Message-ID: <20240429233924.6453-2-kl@kl.wtf>
+Subject: [PATCH 2/2] HID: i2c-hid: Use address probe to wake on resume
+Date: Tue, 30 Apr 2024 01:33:15 +0200
+Message-ID: <20240429233924.6453-3-kl@kl.wtf>
 In-Reply-To: <20240429233924.6453-1-kl@kl.wtf>
 References: <20240429233924.6453-1-kl@kl.wtf>
 Precedence: bulk
@@ -68,64 +68,62 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Some STM microcontrollers need 400µs after rising clock edge in order to
-come out of their deep sleep state. This in turn means that our address
-probe will fail as the device is not ready to service it.
+Certain devices, both from STM and Weida Tech, need to be woken up after
+having entered a deeper sleep state. The relevant places to wake up such
+device is during our initial HID probe, and after resuming.
 
-Retry the probe once after a delay to see if the device came alive,
-otherwise treat the device as missing.
+A retry for power commands was previously added to i2c_hid_set_power to
+wake up Weida Tech devices, but lacked sufficient sleep for STM devices.
+Replace the power command retry with the same address probe we using
+during our initial HID probe.
 
-Link: https://lore.kernel.org/all/20240405102436.3479210-1-lma@chromium.org/#t
-Co-developed-by: Radoslaw Biernacki <rad@chromium.org>
-Co-developed-by: Lukasz Majczak <lma@chromium.org>
 Signed-off-by: Kenny Levinsen <kl@kl.wtf>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/hid/i2c-hid/i2c-hid-core.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index d965382196c6..a40489bb7643 100644
+index a40489bb7643..3e3885ae6ce2 100644
 --- a/drivers/hid/i2c-hid/i2c-hid-core.c
 +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -163,6 +163,24 @@ static u32 i2c_hid_lookup_quirk(const u16 idVendor, const u16 idProduct)
- 	return quirks;
- }
+@@ -402,19 +402,6 @@ static int i2c_hid_set_power(struct i2c_hid *ihid, int power_state)
  
-+static int i2c_hid_probe_address(struct i2c_hid *ihid)
-+{
-+	int ret;
-+
-+	/*
-+	 * Some STM-based devices need 400µs after a rising clock edge to wake
-+	 * from deep sleep, in which case the first read will fail. Try after a
-+	 * short sleep to see if the device came alive on the bus. Certain
-+	 * Weida Tech devices also need this.
-+	 */
-+	ret = i2c_smbus_read_byte(ihid->client);
-+	if (ret < 0) {
-+		usleep_range(400, 500);
-+		ret = i2c_smbus_read_byte(ihid->client);
-+	}
-+	return ret < 0 ? ret : 0;
-+}
-+
- static int i2c_hid_xfer(struct i2c_hid *ihid,
- 			u8 *send_buf, int send_len, u8 *recv_buf, int recv_len)
- {
-@@ -992,8 +1010,7 @@ static int __i2c_hid_core_probe(struct i2c_hid *ihid)
- 	struct hid_device *hid = ihid->hid;
- 	int ret;
+ 	i2c_hid_dbg(ihid, "%s\n", __func__);
  
--	/* Make sure there is something at this address */
--	ret = i2c_smbus_read_byte(client);
+-	/*
+-	 * Some devices require to send a command to wakeup before power on.
+-	 * The call will get a return value (EREMOTEIO) but device will be
+-	 * triggered and activated. After that, it goes like a normal device.
+-	 */
+-	if (power_state == I2C_HID_PWR_ON) {
+-		ret = i2c_hid_set_power_command(ihid, I2C_HID_PWR_ON);
+-
+-		/* Device was already activated */
+-		if (!ret)
+-			goto set_pwr_exit;
+-	}
+-
+ 	ret = i2c_hid_set_power_command(ihid, power_state);
+ 	if (ret)
+ 		dev_err(&ihid->client->dev,
+@@ -977,6 +964,14 @@ static int i2c_hid_core_resume(struct i2c_hid *ihid)
+ 
+ 	enable_irq(client->irq);
+ 
++	/* Make sure the device is awake on the bus */
 +	ret = i2c_hid_probe_address(ihid);
- 	if (ret < 0) {
- 		i2c_hid_dbg(ihid, "nothing at this address: %d\n", ret);
- 		return -ENXIO;
++	if (ret < 0) {
++		dev_err(&client->dev, "nothing at address after resume: %d\n",
++			ret);
++		return -ENXIO;
++	}
++
+ 	/* Instead of resetting device, simply powers the device on. This
+ 	 * solves "incomplete reports" on Raydium devices 2386:3118 and
+ 	 * 2386:4B33 and fixes various SIS touchscreens no longer sending
 -- 
 2.44.0
 
