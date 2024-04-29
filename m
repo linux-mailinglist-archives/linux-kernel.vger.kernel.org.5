@@ -1,230 +1,454 @@
-Return-Path: <linux-kernel+bounces-162557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65AFC8B5D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:20:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C488B5D8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 885B61C21686
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:20:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E362B2AEAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF5682D9F;
-	Mon, 29 Apr 2024 15:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DDCA83A18;
+	Mon, 29 Apr 2024 15:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="PybrW8QL"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkO7kl7e"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9127FBD3;
-	Mon, 29 Apr 2024 15:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403602; cv=fail; b=HMlouqpwPBOpNXwPx2MRI1SEh/RH+NIn7zX34aYJ+b9zS7Z3O6SkrFjpkGvlWu6Z8qjXkYOuM9NaS1vakjYpYW08WPhiyB6E11MheEv2hAZNjYr6xY8CKZmuPkdTFLts6qIVcjW/a3cMkofABPXl2u6anASexHzMwqeEJmtkQGA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403602; c=relaxed/simple;
-	bh=0i2x+1O0ux1txoHj9YZifg2+zxZ4D8SvEc39hY7H03s=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bMBTmZAbKbGnQM767veW3Z+UMopgS7Zr1zsiqA+a88xny6JLP21Uhkt/ocsZVaDJWZPJCJzFw50iEq5RwIBK9LpkBXtVdwPqunjusjczx3TYASwFr8efv9zkXo6/5TtZ/ddig0qL3sKpdd/OLNj9DQlmz9q74q6guvRxHGc/6e4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=PybrW8QL; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43T3w5ID005626;
-	Mon, 29 Apr 2024 08:13:16 -0700
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xt43aug16-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 08:13:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E2wPpgNgJNFrnAzYrZn3gkKMY/a8WfryldRVtliwJ14s17+uGe9P+7I7GocmYcvxgqpaabLt06HuVGiV3lqemueKEhZsXquJtlcHrZXSp0BiGLoWuHXu3WlJ0t9HueZKjGyiXu+v7/9j31csaiOMoK4W4vtjix08fh7lV8iKNc/vDryt9O1UaDJmanUXxzCfn2RXUxmcLF48rW4K5+4zc8DqemGEiwA0suAMMfUiTP9CzdMIVC1nXAXwJCyOZ3VRBQ63criQRBEi9VDTxNpHh0QE46ZZGoe4ZwRV1DaY7YpHmyWrMHqXkSN2I6J1x9RmSE9OzCx66DXy72WSag4xcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0i2x+1O0ux1txoHj9YZifg2+zxZ4D8SvEc39hY7H03s=;
- b=HpiQ9SYA0vjLCIOWFAzwSTrgl9y8GYONxI/Dxstt4SXDAHW14xUS+r5HjWFeoaporBnN7k//G7GgSR2NQbg+YgDfoFFu2spnMTu84T39hfhOfldCg+z5v7kKaM4LXQrT7TEB11qkwSFBn8Ey3tXQreIUr84MjylRrXuWWfISEaW1aZf1wYHzhcS7YdzEuvQ0S3UNr+rc9b6Dgz7UCXbfRH56a94VAMWM20OqxWKzy3Fe7zE2trngupMt+18iSY/NANzaEwvLW52Y+wwqf0w3XI0+tfE3sWQaEgmOxVEGlfQnBpXurJ8drh4Ap9GFoWhjngACwrTQCZd6PnraBbWwOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0i2x+1O0ux1txoHj9YZifg2+zxZ4D8SvEc39hY7H03s=;
- b=PybrW8QL9JIXd1iQISYyYWeeWN0qhE6l63GhdvB/TEYyNvzJzFED+7nG2i9bVHoYHy1xCbvOCnAKrDXBo3uSrkiEO/z/a1evEwe5qjfxPv+hTza5SmTHR2jSEJ4jjGJXbgXAz4xztlRISHn/SxvLO20p22Tq3cyLE1ZiGxfOXpo=
-Received: from CO6PR18MB4098.namprd18.prod.outlook.com (2603:10b6:5:34b::5) by
- MW5PR18MB5150.namprd18.prod.outlook.com (2603:10b6:303:1c8::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 15:13:13 +0000
-Received: from CO6PR18MB4098.namprd18.prod.outlook.com
- ([fe80::5dc7:7d9d:2619:191d]) by CO6PR18MB4098.namprd18.prod.outlook.com
- ([fe80::5dc7:7d9d:2619:191d%5]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 15:13:13 +0000
-From: Witold Sadowski <wsadowski@marvell.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>,
-        "broonie@kernel.org"
-	<broonie@kernel.org>
-CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jpawar@cadence.com" <jpawar@cadence.com>,
-        "pthombar@cadence.com"
-	<pthombar@cadence.com>,
-        "konrad@cadence.com" <konrad@cadence.com>,
-        Wojciech
- Bartczak <wbartczak@marvell.com>,
-        Wojciech Zmuda <wzmuda@marvell.com>
-Subject: RE: [EXT] Re: [PATCH 4/7] spi: cadence: Change dt-bindings
- documentation for Cadence XSPI controller
-Thread-Topic: [EXT] Re: [PATCH 4/7] spi: cadence: Change dt-bindings
- documentation for Cadence XSPI controller
-Thread-Index: AQHZE7g6JEJMP4HivU24epqxDA42Zq520eSAgwuVibA=
-Date: Mon, 29 Apr 2024 15:13:13 +0000
-Message-ID: 
- <CO6PR18MB4098ACA74130C6471AD35E52B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
-References: <20221219144254.20883-1-wsadowski@marvell.com>
- <20221219144254.20883-5-wsadowski@marvell.com>
- <65e1f6da-d0eb-2fa1-1457-8a3afe714a9b@kernel.org>
-In-Reply-To: <65e1f6da-d0eb-2fa1-1457-8a3afe714a9b@kernel.org>
-Accept-Language: en-US, pl-PL
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR18MB4098:EE_|MW5PR18MB5150:EE_
-x-ms-office365-filtering-correlation-id: 00d211f5-7c59-45d4-5a00-08dc685ee392
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
-x-microsoft-antispam-message-info: 
- =?utf-8?B?MC84TTFDSGExWHpqeldZRnRSbTNZa0FkY0tpWWhKR3ZpWmFwV3FSL0dGS3JI?=
- =?utf-8?B?RlJXLy9lNWdzajV0WFdsN0NtN1M2TGsrc01QS0JFMGtJcVhabFNiUVAvdUQw?=
- =?utf-8?B?eGJmMENyVS9mQ3BWd3lRZnZZODltS3JjOTVBeDBneW43R3V0Wk8yMWZ1QXlO?=
- =?utf-8?B?NkxobWgrRzlKbVVKcjNVdXMxaHB5WXpjeXhpMHdpMFVEenlOb1JyamNId3Zs?=
- =?utf-8?B?aHFxWXhnTjRZMDJTUk92bVNpc0FFcUN5MDNUd1VWV0prVE9ENmZJZTZ4N3BB?=
- =?utf-8?B?NURIUXdjK0UrOWRucEQ0a0owaFlSVWNkNDZBcStxSGdFTWJwYk9QNnoxd2Nq?=
- =?utf-8?B?OWNjUkkwMFczakJTVXZRTnUzL1QrSktDRGZtVzJFSTFqaVBSYVRpdVhxeTZV?=
- =?utf-8?B?bkt0aENoTzUrZDN4ajBkVk5yYWNxM1JRbXlrbFNXcjN1NG0ySW1ZOUlmWUJ5?=
- =?utf-8?B?OUUzSVFUUnkwV25QUzU3UzVHalhIRno4UnBLbW5wQnhKaUN5bWFXSmJYZkZx?=
- =?utf-8?B?aVVKNTVHSFo4UDRKODdtaTBqeTVLdElXdVdtbHF3S2I4V1NRUDdZN1hkeWZB?=
- =?utf-8?B?TVJsMmJqK0Z0NlhpSWxsaFhlUzc2M1ZuZ01WSHd1SmIyR1hEbnkyL0xZRkp5?=
- =?utf-8?B?aFB0V20xazhXOXFTVnF5a0xEQ0FJMi9TVnY4enFDSDZ3WmEvR3RZeVVjT3NB?=
- =?utf-8?B?OFFHSGZDYk1UUXNHRThQa3FEbk9HaGlwWUhCb3VmRGhsdjNvaWtyQUE1T1Na?=
- =?utf-8?B?VHI5Sy9STlVaSVozNHN6U2xXK1NxdTlhM3BvMDM4OGIwNHRtSkQxZUlyRlBB?=
- =?utf-8?B?OXg3V1FZZm16YTVWUTZGREthRU52WU0yQXg1bmtBM1JCV2E5eEpwSDZ0VVFH?=
- =?utf-8?B?S2kyTzB1MTY0d2NObVNEc05NNXZtVjdUdVk4SkY0RStURmRCNXNVTVltQllH?=
- =?utf-8?B?ZXIvbzRaOHkzMU9QTkZlbkpxL284NGJRTWNUd3VLdjQ0dm5pWHRzUEo3L3Zx?=
- =?utf-8?B?RGx1VlV1a2NJTVFvTzFjVHhHOFliTVBIR0NraFN4SG9Lb1ZGQjJkbk5DVWR0?=
- =?utf-8?B?ZjlFeW1Yd3lQdENGamhrRWVXeGlqY3hMSFpTRUNuRXJDNnpJUHJaYzdHYnp6?=
- =?utf-8?B?cm1PMGdXSFhSd1ZmQXVCVHIzdE01RXpVUWV5eWZKaE1MVHhvQVZMaUcyMm1q?=
- =?utf-8?B?MTBRckJyM2djeU11bCtJSzFyUTg3RXBsRE5VU01vbnJ1SC9PeTF2Ym9oaDA5?=
- =?utf-8?B?TVQvd1lsMzdEUjlnZHN6NlFSa083c3h0NlI0SHgyOXVBZ2I5VVB3emRLQnhH?=
- =?utf-8?B?aXZ4Rm5BWHYrazFiOEZ3bzJSVzBmUHlNcjdVeXZyaTk4Y1FHTUFTQzNJUDZp?=
- =?utf-8?B?ekpxSWJKdDM3S0lSYU1jYmdGZ044M2x4Qnlubi8vSDdXK1YwYm0yUWRoNzRT?=
- =?utf-8?B?YlBhRjRIMmNTOGx1ZmdmTnBIMDFjSkpPc1VMZTN1dlJSemJMUDZReUJ1QzRJ?=
- =?utf-8?B?eXAyWFJxZDU0OU4wdnhjWENacjNnamJJZW5vclIrTTEydGlGVzdVZHp1Rk43?=
- =?utf-8?B?Wk1tR2NwVVlFM2lSNzA3bHg3dksxemZ2cUJ5dE9qeUZrUGtkT3hLMTdpNkJj?=
- =?utf-8?B?ek9RYlJYckZvV2ZGeWFDeCsxb2ZkSG1WQ0VseGozVzdIVkRZdnR2VVBGREhY?=
- =?utf-8?B?NGZlbXd6YlNOd0V3UGVvVGpIL3dhZUNVaHc5ZHZOUFlTeGxrTkFnTThGSXF3?=
- =?utf-8?B?bHpmMUVrYmJGRTBHSmxYa2NqaExNS0pRM1VrZ09Kb0tFbUtSSlpzZXhlUEIz?=
- =?utf-8?B?OTR0SzBENENHQVZwN1E5UT09?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB4098.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?YWwyeFF2TmtveUIrNk9FWlBBWGtEcndxajArVDBvRFFOYjNHWUhWK0ZDTlh5?=
- =?utf-8?B?WGorZHNKNEQycDkwQW1saUZoWit2cURsMUY2aHlaWnZuTVQrTUdJV3U0dGZ6?=
- =?utf-8?B?NkNadllMYkJXUmJoenliR3FWZnhQeFlpcEgrUHE2dWNXb0FocjBNdW8rOVpp?=
- =?utf-8?B?T3JJR2ZJOGhjUnVBRTlsNWRXZVlNa09tQlJldkd4UTRMaXh0OVZBQUxiMWRK?=
- =?utf-8?B?RHAyR0hHUGtjcFdFSkt2MXord3FSanNuOHR0c1BTOUs3cTNWNCtaZDM3eE1t?=
- =?utf-8?B?bGVGS2JVcGFKMFVxSnpMR3V2OVF6Yjk4ZjhtNlE2MmpPT09jblRraS83Ulh6?=
- =?utf-8?B?Sk1TZ1FScGZiSXM4RUJHVDFsZEJLM25pOUxBWk9qNUFSZWdFRUxjN05aMUdB?=
- =?utf-8?B?TkMvWUFKQlRGeFl4UGdXZkh6K29qZ3MyRkw0L1lCcjZjMjB2eldUc01rbXJG?=
- =?utf-8?B?TlpGTmUrQjBGUXlqb2FuT3pnenRZdUtkMUVqU2d3QXdYYXFKK25DMllOTjJJ?=
- =?utf-8?B?dStic1V4YXVLRmRLTUtqcDdacklnTXFZUDA1WEwrV2FWenNwSXlkRVBrK1I0?=
- =?utf-8?B?T1ZVOVduSGo5Z2RMNStZdWJ3MzZRRVNBSGxldDBNdTFpd2RZQjFkTWcwUnBq?=
- =?utf-8?B?aDJsWnpjOER5SnBxa2JISStpSVAyMXozV3RFWlMzQXNiMnlMMWlUQTNEaFFH?=
- =?utf-8?B?cVZrckZrcEVoTW03S1dnbndMb1V0V2JEMEJ4WHc3NXFSazhMMllmazN1V3lr?=
- =?utf-8?B?a2xTVFNqclpVRUxRYXIyeGVyc1pGUkVKTm1UcmlDVG5hSUR1cGx5eldzUnlv?=
- =?utf-8?B?MlBDSTdkQmIxRHh6TXJtV2tQTmZaZmxYZlVBUVlwcitKOE5HbUlDTytlVWlT?=
- =?utf-8?B?MGsrSXBGdDFuTVJhaFA1MHRYTFBPcUgvN3JKV1cvbjkvYXl1UUJzTkxPK1hr?=
- =?utf-8?B?U0VPNjlpblpHNmVCUi9uTS9pdXFrV2ZaeERtVXFTbDZ6aDZ1cDZ6TVF2VHpR?=
- =?utf-8?B?ejJPenVraHlnU3FPanRtMWRRYXpVQUpHWG01bUEyS1J5SUh1bFV3bXBDZnpj?=
- =?utf-8?B?TnVNaHNpZkhmckRDVzExaXBsSzRjWVk5Q1VyN1Z1NEpYeVBlZmNmSmRsTXFS?=
- =?utf-8?B?cGZqSmdadms4T0FuNDRWYzhkS2hLOHIySVovNUx0cEptNU45OHEyK2NkY1Zj?=
- =?utf-8?B?R1BBMkQ3TmMxRkF3b090M09CZGNwN291dkl4M3hkNXhFTFdZbkR4d1VXZXZV?=
- =?utf-8?B?bU0xQmtsRllJK0ttSE9OdkdvTjNRUERIT2tuUFd0RHB2Mk41aUFISi9MKzVq?=
- =?utf-8?B?WEErMkJaSGNzbzhmaTh1L0Eydkk5Q3NWZWhRU1pObC9uL1pFZk5NbHpQWlNu?=
- =?utf-8?B?aXJFVnAyTUdNdFJRQitmeW9JZWhNQ1BFaE9Ib1pyMW5pd2JVTVc5YTFxTVhp?=
- =?utf-8?B?Ly9ZMTNlcHlPczNLQTFSUlNKdTBhbnNNMWJRTXM0WDdHRUl1a1ozWHU3b1Er?=
- =?utf-8?B?a2REMGQzem8xdUFrUWw0LzhCSU9MczhLV1VDRElBTllNSEFhOW9OYVVrMzFN?=
- =?utf-8?B?REVIUWFuRDRKUmtnNVlYRTZuSUNFOUpUbGVwK29IaFY0R3FCZjRnMzMzK0Nm?=
- =?utf-8?B?VThBVGIzcWdsMVFUYlpiSVhqeVNHek15QkhjbVN1TWxRTkVzRzdsT0llOURh?=
- =?utf-8?B?RXpodDEyWVc0ZlZMLzh1MVZKd1kxVlVWWFFMOWhrVkE3R21MelBoNnQza3la?=
- =?utf-8?B?ay80a0JXc0I2TGlDdlBUVFE5Z0Iya3lsRXFDVHpoZVVCakdKM2JIUFR0amFD?=
- =?utf-8?B?OE1pRHVRTVpNZm5aZFpCWnMvMnZTYWVrVHoxdDV3bUx6cWdvdDZEcS9icWRQ?=
- =?utf-8?B?UDlsZytSVHF0Qm5LNk1sUzRhL2pTenRZQVJaQkxabFdhd3NoOG5uWnhQNzdo?=
- =?utf-8?B?QVJVbGt5Ynl2aytGUzIzT2VINUVuWm1qb2RPNTNtZDUrbUp2cUxuQjZhbjQz?=
- =?utf-8?B?WDNjYSt0YXRZUE5GaHl3TGZaeXFIeUF5YlViSStBZnJJTTl2NlUrZUJpSi9i?=
- =?utf-8?B?c1FKdDUySnhTTTNyZzBNWXY5V3J1QWk4OTdpbTBsR2pWd3dLbmVQNlFhOGRI?=
- =?utf-8?Q?L36pzZbIAF9wbu91aTmwOPsxp?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0972B7FBCE;
+	Mon, 29 Apr 2024 15:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714403649; cv=none; b=P6AmSjOvunGOraPsg1VQ7LXIsp2ugQmr/2r9wuGj4z0pTJ4YiyNflT9D7F1ZXHAWnws+BeN4nZtg2rLOHdVY4E2UdKqfBheUGKLnlD5I05cVMwKoo10X6u93NpinMlZU3QxDI/+9visLwh7hgk51xwtJZiQL5fLKNyxH52Dlw08=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714403649; c=relaxed/simple;
+	bh=ZLdAKcDbgWHNy6Wm/uK3iEHGMBSiMqRGho0YJ3hjVho=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=feFBbvfDPyNzq16Fl3oQ4+XxPMr1BRwVqOe05r0RKJWQ4sC8EFnuA0Bgb4IrYKYmM4jOffUoMWnqdG/48JtikQBcqR2+EV9V+9o5bvPMBR7Po5UCLL84TjMTzzS09VPDhEbERSHeZ3BQWT2Wf74my0TZkfgLAS6BMwKt69bRYRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GkO7kl7e; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so4448962b3a.0;
+        Mon, 29 Apr 2024 08:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714403646; x=1715008446; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qlpaWY+PTBNKSuVC2AUjKR7GrNRBVT5IMEhkOGHHSFU=;
+        b=GkO7kl7ewRw3UolVBH7fw7iVwbgG4oY0dvqQkwNxA81Jb0C4rHNa6nznovFz2ImHwn
+         hI97mh0ZH37AQH8TscymDoCs4+VTZ1qknsYyjxdkx78rnwvVhTX/ZJQbUnPVW1YvAG5Q
+         aH6MPa5lOxfRosDkGI9Wy9LydT3DoZdxbgrVqzC5fkDcDCu7ivtzVEhtrvtzI+salRfb
+         +5+NbnnbKvfIKI3TrI2nlZwyqUTYYIPRyUBmy5i10sUKhAjCgDUYsDVH4E18JrUsj65V
+         VRWTTYRKC+dhkYUNps8gIpAYAlWmlhzlEwsm7ZDnwYuCSn268OdNNuv1E7D7lYFBnX3+
+         UDPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714403646; x=1715008446;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qlpaWY+PTBNKSuVC2AUjKR7GrNRBVT5IMEhkOGHHSFU=;
+        b=UWX8YTV7ZXAGs8wrrl3ljCZQiQbReDcOILagAVz7uXEFwHuoKLYYrmDEzL9OdDeWgy
+         7A05EOnyO56KCS8hA2AjImXhhgUJv4KCgIyXwKqjXJ+J0Fp6yGpvqCU17huJkJuvCeE/
+         x41vzv8TBvof/93377O1TZiv8V43hEVGlj9nRnEM6SLe+zCYE42KK5bt/ac1vpBi2gZd
+         0CLM9+9TPFHAoTfl/JtgSW7A0X0Y7z/EnSztEaJce8ywv7Aq/c5cnDxDPW2tZLptpuHh
+         hn2HLQzX5SkuQN34d4wAXgw7wNFWl3FzTBbWj4qBiLPPkHqHYNQanYRzup01ZOrmHYs3
+         pSyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZcAI3tELIsCX6cfcIQi9wEepVjG4UdsW14MZbFYgDjkP++g948ibBt/XGUY42icWKAs/wx1aSAJbsfqwUKslFBh5PjiQyXps5MrRoIHYyzShQhGPtjP8uDW2QmA9zl+clzKcHP/YD
+X-Gm-Message-State: AOJu0YxLifyMpnVbMKBegQzgPTEtwbBNZoi4Ayn8xxdn54NUkuBOI3Ww
+	PLS+d1zrCSTtssHP3sSB5BWIxITeBF6SrJ5vYoYDvF6ipptQwGHr
+X-Google-Smtp-Source: AGHT+IHhbRsN7k7ThOfKiLg6kfrSci/gXoJj+9KLYD6Wxzz7q+sEgznNZ/Kzeo25MP5ggnxFaJIo3w==
+X-Received: by 2002:a05:6a21:8ccc:b0:1a7:807:ca2 with SMTP id ta12-20020a056a218ccc00b001a708070ca2mr14671900pzb.29.1714403645888;
+        Mon, 29 Apr 2024 08:14:05 -0700 (PDT)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id q13-20020a62e10d000000b006ece7862035sm19380488pfh.128.2024.04.29.08.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 08:14:05 -0700 (PDT)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: robin.murphy@arm.com,
+	joro@8bytes.org,
+	will@kernel.org,
+	hch@lst.de,
+	m.szyprowski@samsung.com,
+	corbet@lwn.net,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	petr@tesarici.cz,
+	roberto.sassu@huaweicloud.com
+Subject: [PATCH v3 1/1] Documentation/core-api: Add swiotlb documentation
+Date: Mon, 29 Apr 2024 08:13:37 -0700
+Message-Id: <20240429151337.1069470-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB4098.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00d211f5-7c59-45d4-5a00-08dc685ee392
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2024 15:13:13.3827
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MVBLQCl3mapS0gHqrtBiG5hcLHxYod5b3KgOmIf3VJW9nMJvp3iT33W0465u/Ob0zAcwnTdxeGXnRZ6nsCq84Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR18MB5150
-X-Proofpoint-ORIG-GUID: DNCsKpWJ2e-BXKzezgVUXnwsNq1NAlMV
-X-Proofpoint-GUID: DNCsKpWJ2e-BXKzezgVUXnwsNq1NAlMV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_12,2024-04-29_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tDQo+IE9uIDE5LzEyLzIwMjIgMTU6NDIsIFdpdG9sZCBTYWRvd3NraSB3
-cm90ZToNCj4gPiBBZGQgcGFyYW1ldGVyIGNkbnMscmVhZC1zaXplLg0KPiA+IFBhcmFtZXRlciBp
-cyBjb250cm9sbGluZyBTRE1BIHJlYWQgc2l6ZSBsZW5ndGguDQo+IA0KPiBVc2Ugc3ViamVjdCBw
-cmVmaXhlcyBtYXRjaGluZyB0aGUgc3Vic3lzdGVtIChnaXQgbG9nIC0tb25lbGluZSAtLSAuLi4p
-Lg0KPiANCj4gUGxlYXNlIHVzZSBzY3JpcHRzL2dldF9tYWludGFpbmVycy5wbCB0byBnZXQgYSBs
-aXN0IG9mIG5lY2Vzc2FyeSBwZW9wbGUNCj4gYW5kIGxpc3RzIHRvIENDLiAgSXQgbWlnaHQgaGFw
-cGVuLCB0aGF0IGNvbW1hbmQgd2hlbiBydW4gb24gYW4gb2xkZXINCj4ga2VybmVsLCBnaXZlcyB5
-b3Ugb3V0ZGF0ZWQgZW50cmllcy4gIFRoZXJlZm9yZSBwbGVhc2UgYmUgc3VyZSB5b3UgYmFzZQ0K
-PiB5b3VyIHBhdGNoZXMgb24gcmVjZW50IExpbnV4IGtlcm5lbC4NCj4gDQo+ID4NCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBXaXRvbGQgU2Fkb3dza2kgPHdzYWRvd3NraUBtYXJ2ZWxsLmNvbT4NCj4gPiAt
-LS0NCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9jZG5zLHhzcGku
-eWFtbCB8IDUgKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQ0KPiA+
-DQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkv
-Y2Rucyx4c3BpLnlhbWwNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
-cGkvY2Rucyx4c3BpLnlhbWwNCj4gPiBpbmRleCBmNzFhOWM3NGUyY2EuLjEyNzRlM2JmNjhlNiAx
-MDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2Nk
-bnMseHNwaS55YW1sDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NwaS9jZG5zLHhzcGkueWFtbA0KPiA+IEBAIC0zNyw2ICszNywxMCBAQCBwcm9wZXJ0aWVzOg0K
-PiA+ICAgIGludGVycnVwdHM6DQo+ID4gICAgICBtYXhJdGVtczogMQ0KPiA+DQo+ID4gKyAgY2Ru
-cyxyZWFkLXNpemU6DQo+ID4gKyAgICBpdGVtczoNCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjog
-c2l6ZSBvZiBzaW5nbGUgU0RNQSByZWFkIG9wZXJhdGlvbg0KPiANCj4gV2h5IGlzIHRoaXMgYSBw
-cm9wZXJ0eSBvZiBEVD8NCg0KUmVtb3ZlZCwgcmVhZCBzaXplIGNoZWNrIHdpbGwgYmUgYmFzZWQg
-b24gbWF0Y2hpbmcuDQpUaGUgcHJvYmxlbSBpcyBpbnRlcm5hbCBidXMgY29ubmVjdGlvbiB0byB4
-U1BJIElQLg0KDQo+IA0KPiA+ICsNCj4gPiAgcmVxdWlyZWQ6DQo+ID4gICAgLSBjb21wYXRpYmxl
-DQo+ID4gICAgLSByZWcNCj4gPiBAQCAtNjAsNiArNjQsNyBAQCBleGFtcGxlczoNCj4gPiAgICAg
-ICAgICAgICAgcmVnLW5hbWVzID0gImlvIiwgInNkbWEiLCAiYXV4IjsNCj4gPiAgICAgICAgICAg
-ICAgaW50ZXJydXB0cyA9IDwwIDkwIElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiA+ICAgICAgICAg
-ICAgICBpbnRlcnJ1cHQtcGFyZW50ID0gPCZnaWM+Ow0KPiA+ICsgICAgICAgICAgICBjZG5zLHJl
-YWQtc2l6ZT08MD47DQo+IA0KPiBUaGF0J3Mgbm90IERUIGNvZGluZyBzdHlsZS4NCj4gDQo+ID4N
-Cj4gPiAgICAgICAgICAgICAgZmxhc2hAMCB7DQo+ID4gICAgICAgICAgICAgICAgICBjb21wYXRp
-YmxlID0gImplZGVjLHNwaS1ub3IiOw0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YN
-Cg0KUmVnYXJkcw0KV2l0ZWsNCg0K
+From: Michael Kelley <mhklinux@outlook.com>
+
+There's currently no documentation for the swiotlb. Add documentation
+describing usage scenarios, the key APIs, and implementation details.
+Group the new documentation with other DMA-related documentation.
+
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+---
+Changes in v3:
+* Reference swiotlb as just "swiotlb", not "the swiotlb" [Christoph Hellwig]
+* Lengthen text lines to close to 80 chars instead of 65 [Christoph Hellwig]
+
+Changes in v2:
+* Use KiB/MiB/GiB units instead of Kbytes/Mbytes/Gbytes [Matthew Wilcox]
+
+ Documentation/core-api/index.rst   |   1 +
+ Documentation/core-api/swiotlb.rst | 320 +++++++++++++++++++++++++++++
+ 2 files changed, 321 insertions(+)
+ create mode 100644 Documentation/core-api/swiotlb.rst
+
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index 7a3a08d81f11..89c517665763 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -102,6 +102,7 @@ more memory-management documentation in Documentation/mm/index.rst.
+    dma-api-howto
+    dma-attributes
+    dma-isa-lpc
++   swiotlb
+    mm-api
+    genalloc
+    pin_user_pages
+diff --git a/Documentation/core-api/swiotlb.rst b/Documentation/core-api/swiotlb.rst
+new file mode 100644
+index 000000000000..e301e534736d
+--- /dev/null
++++ b/Documentation/core-api/swiotlb.rst
+@@ -0,0 +1,320 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++DMA and swiotlb
++===============
++
++swiotlb is a memory buffer allocator used by the Linux kernel DMA layer. It is
++typically used when a device doing DMA can't directly access the target memory
++buffer because of hardware limitations or other requirements. In such a case,
++the DMA layer calls swiotlb to allocate a temporary memory buffer that conforms
++to the limitations. The DMA is done to/from this temporary memory buffer, and
++the CPU copies the data between the temporary buffer and the original target
++memory buffer. This approach is generically called "bounce buffering", and the
++temporary memory buffer is called a "bounce buffer".
++
++Device drivers don't interact directly with swiotlb. Instead, drivers inform
++the DMA layer of the DMA attributes of the devices they are managing, and use
++the normal DMA map, unmap, and sync APIs when programming a device to do DMA.
++These APIs use the device DMA attributes and kernel-wide settings to determine
++if bounce buffering is necessary. If so, the DMA layer manages the allocation,
++freeing, and sync'ing of bounce buffers. Since the DMA attributes are per
++device, some devices in a system may use bounce buffering while others do not.
++
++Because the CPU copies data between the bounce buffer and the original target
++memory buffer, doing bounce buffering is slower than doing DMA directly to the
++original memory buffer, and it consumes more CPU resources. So it is used only
++when necessary for providing DMA functionality.
++
++Usage Scenarios
++---------------
++swiotlb was originally created to handle DMA for devices with addressing
++limitations. As physical memory sizes grew beyond 4 GiB, some devices could
++only provide 32-bit DMA addresses. By allocating bounce buffer memory below
++the 4 GiB line, these devices with addressing limitations could still work and
++do DMA.
++
++More recently, Confidential Computing (CoCo) VMs have the guest VM's memory
++encrypted by default, and the memory is not accessible by the host hypervisor
++and VMM. For the host to do I/O on behalf of the guest, the I/O must be
++directed to guest memory that is unencrypted. CoCo VMs set a kernel-wide option
++to force all DMA I/O to use bounce buffers, and the bounce buffer memory is set
++up as unencrypted. The host does DMA I/O to/from the bounce buffer memory, and
++the Linux kernel DMA layer does "sync" operations to cause the CPU to copy the
++data to/from the original target memory buffer. The CPU copying bridges between
++the unencrypted and the encrypted memory. This use of bounce buffers allows
++existing device drivers to "just work" in a CoCo VM, with no modifications
++needed to handle the memory encryption complexity.
++
++Other edge case scenarios arise for bounce buffers. For example, when IOMMU
++mappings are set up for a DMA operation to/from a device that is considered
++"untrusted", the device should be given access only to the memory containing
++the data being transferred. But if that memory occupies only part of an IOMMU
++granule, other parts of the granule may contain unrelated kernel data. Since
++IOMMU access control is per-granule, the untrusted device can gain access to
++the unrelated kernel data. This problem is solved by bounce buffering the DMA
++operation and ensuring that unused portions of the bounce buffers do not
++contain any unrelated kernel data.
++
++Core Functionality
++------------------
++The primary swiotlb APIs are swiotlb_tbl_map_single() and
++swiotlb_tbl_unmap_single(). The "map" API allocates a bounce buffer of a
++specified size in bytes and returns the physical address of the buffer. The
++buffer memory is physically contiguous. The expectation is that the DMA layer
++maps the physical memory address to a DMA address, and returns the DMA address
++to the driver for programming into the device. If a DMA operation specifies
++multiple memory buffer segments, a separate bounce buffer must be allocated for
++each segment. swiotlb_tbl_map_single() always does a "sync" operation (i.e., a
++CPU copy) to initialize the bounce buffer to match the contents of the original
++buffer.
++
++swiotlb_tbl_unmap_single() does the reverse. If the DMA operation updated the
++bounce buffer memory, the DMA layer does a "sync" operation to cause a CPU copy
++of the data from the bounce buffer back to the original buffer. Then the bounce
++buffer memory is freed.
++
++swiotlb also provides "sync" APIs that correspond to the dma_sync_*() APIs that
++a driver may use when control of a buffer transitions between the CPU and the
++device. The swiotlb "sync" APIs cause a CPU copy of the data between the
++original buffer and the bounce buffer. Like the dma_sync_*() APIs, the swiotlb
++"sync" APIs support doing a partial sync, where only a subset of the bounce
++buffer is copied to/from the original buffer.
++
++Core Functionality Constraints
++------------------------------
++The swiotlb map/unmap/sync APIs must operate without blocking, as they are
++called by the corresponding DMA APIs which may run in contexts that cannot
++block. Hence the default memory pool for swiotlb allocations must be
++pre-allocated at boot time (but see Dynamic swiotlb below). Because swiotlb
++allocations must be physically contiguous, the entire default memory pool is
++allocated as a single contiguous block.
++
++The need to pre-allocate the default swiotlb pool creates a boot-time tradeoff.
++The pool should be large enough to ensure that bounce buffer requests can
++always be satisfied, as the non-blocking requirement means requests can't wait
++for space to become available. But a large pool potentially wastes memory, as
++this pre-allocated memory is not available for other uses in the system. The
++tradeoff is particularly acute in CoCo VMs that use bounce buffers for all DMA
++I/O. These VMs use a heuristic to set the default pool size to ~6% of memory,
++with a max of 1 GiB, which has the potential to be very wasteful of memory.
++Conversely, the heuristic might produce a size that is insufficient, depending
++on the I/O patterns of the workload in the VM. The dynamic swiotlb feature
++described below can help, but has limitations. Better management of the swiotlb
++default memory pool size remains an open issue.
++
++A single allocation from swiotlb is limited to IO_TLB_SIZE * IO_TLB_SEGSIZE
++bytes, which is 256 KiB with current definitions. When a device's DMA settings
++are such that the device might use swiotlb, the maximum size of a DMA segment
++must be limited to that 256 KiB. This value is communicated to higher-level
++kernel code via dma_map_mapping_size() and swiotlb_max_mapping_size(). If the
++higher-level code fails to account for this limit, it may make requests that
++are too large for swiotlb, and get a "swiotlb full" error.
++
++A key device DMA setting is "min_align_mask". When set, swiotlb allocations are
++done so that the min_align_mask bits of the physical address of the bounce
++buffer match the same bits in the address of the original buffer. This setting
++may produce an "alignment offset" in the address of the bounce buffer that
++slightly reduces the maximum size of an allocation. This potential alignment
++offset is reflected in the value returned by swiotlb_max_mapping_size(), which
++can show up in places like /sys/block/<device>/queue/max_sectors_kb. For
++example, if a device does not use swiotlb, max_sectors_kb might be 512 KiB or
++larger. If a device might use swiotlb, max_sectors_kb will be 256 KiB. If
++min_align_mask is also set, max_sectors_kb might be even smaller, such as 252
++KiB.
++
++swiotlb_tbl_map_single() also takes an "alloc_align_mask" parameter. This
++parameter specifies the allocation of bounce buffer space must start at a
++physical address with the alloc_align_mask bits set to zero. But the actual
++bounce buffer might start at a larger address if min_align_mask is set. Hence
++there may be pre-padding space that is allocated prior to the start of the
++bounce buffer. Similarly, the end of the bounce buffer is rounded up to an
++alloc_align_mask boundary, potentially resulting in post-padding space. Any
++pre-padding or post-padding space is not initialized by swiotlb code. The
++"alloc_align_mask" parameter is used by IOMMU code when mapping for untrusted
++devices. It is set to the granule size - 1 so that the bounce buffer is
++allocated entirely from granules that are not used for any other purpose.
++
++Data structures concepts
++------------------------
++Memory used for swiotlb bounce buffers is allocated from overall system memory
++as one or more "pools". The default pool is allocated during system boot with a
++default size of 64 MiB. The default pool size may be modified with the
++"swiotlb=" kernel boot line parameter. The default size may also be adjusted
++due to other conditions, such as running in a CoCo VM, as described above. If
++CONFIG_SWIOTLB_DYNAMIC is enabled, additional pools may be allocated later in
++the life of the system. Each pool must be a contiguous range of physical
++memory. The default pool is allocated below the 4 GiB physical address line so
++it works for devices that can only address 32-bits of physical memory (unless
++architecture-specific code provides the SWIOTLB_ANY flag). In a CoCo VM, the
++pool memory must be decrypted before swiotlb is used.
++
++Each pool is divided into "slots" of size IO_TLB_SIZE, which is 2 KiB with
++current definitions. IO_TLB_SEGSIZE contiguous slots (128 slots) constitute
++what might be called a "slot set". When a bounce buffer is allocated, it
++occupies one or more contiguous slots. A slot is never shared by multiple
++bounce buffers. Furthermore, a bounce buffer must be allocated from a single
++slot set, which leads to the maximum bounce buffer size being IO_TLB_SIZE *
++IO_TLB_SEGSIZE. Multiple smaller bounce buffers may co-exist in a single slot
++set if the alignment and size constraints can be met.
++
++Slots are also grouped into "areas", with the constraint that a slot set exists
++entirely in a single area. Each area has its own spin lock that must be held to
++manipulate the slots in that area. The division into areas avoids contending
++for a single global spin lock when swiotlb is heavily used, such as in a CoCo
++VM. The number of areas defaults to the number of CPUs in the system for
++maximum parallelism, but since an area can't be smaller than IO_TLB_SEGSIZE
++slots, it might be necessary to assign multiple CPUs to the same area. The
++number of areas can also be set via the "swiotlb=" kernel boot parameter.
++
++When allocating a bounce buffer, if the area associated with the calling CPU
++does not have enough free space, areas associated with other CPUs are tried
++sequentially. For each area tried, the area's spin lock must be obtained before
++trying an allocation, so contention may occur if swiotlb is relatively busy
++overall. But an allocation request does not fail unless all areas do not have
++enough free space.
++
++IO_TLB_SIZE, IO_TLB_SEGSIZE, and the number of areas must all be powers of 2 as
++the code uses shifting and bit masking to do many of the calculations. The
++number of areas is rounded up to a power of 2 if necessary to meet this
++requirement.
++
++The default pool is allocated with PAGE_SIZE alignment. If an alloc_align_mask
++argument to swiotlb_tbl_map_single() specifies a larger alignment, one or more
++initial slots in each slot set might not meet the alloc_align_mask criterium.
++Because a bounce buffer allocation can't cross a slot set boundary, eliminating
++those initial slots effectively reduces the max size of a bounce buffer.
++Currently, there's no problem because alloc_align_mask is set based on IOMMU
++granule size, and granules cannot be larger than PAGE_SIZE. But if that were to
++change in the future, the initial pool allocation might need to be done with
++alignment larger than PAGE_SIZE.
++
++Dynamic swiotlb
++---------------
++When CONFIG_DYNAMIC_SWIOTLB is enabled, swiotlb can do on-demand expansion of
++the amount of memory available for allocation as bounce buffers. If a bounce
++buffer request fails due to lack of available space, an asynchronous background
++task is kicked off to allocate memory from general system memory and turn it
++into an swiotlb pool. Creating an additional pool must be done asynchronously
++because the memory allocation may block, and as noted above, swiotlb requests
++are not allowed to block. Once the background task is kicked off, the bounce
++buffer request creates a "transient pool" to avoid returning an "swiotlb full"
++error. A transient pool has the size of the bounce buffer request, and is
++deleted when the bounce buffer is freed. Memory for this transient pool comes
++from the general system memory atomic pool so that creation does not block.
++Creating a transient pool has relatively high cost, particularly in a CoCo VM
++where the memory must be decrypted, so it is done only as a stopgap until the
++background task can add another non-transient pool.
++
++Adding a dynamic pool has limitations. Like with the default pool, the memory
++must be physically contiguous, so the size is limited to MAX_PAGE_ORDER pages
++(e.g., 4 MiB on a typical x86 system). Due to memory fragmentation, a max size
++allocation may not be available. The dynamic pool allocator tries smaller sizes
++until it succeeds, but with a minimum size of 1 MiB. Given sufficient system
++memory fragmentation, dynamically adding a pool might not succeed at all.
++
++The number of areas in a dynamic pool may be different from the number of areas
++in the default pool. Because the new pool size is typically a few MiB at most,
++the number of areas will likely be smaller. For example, with a new pool size
++of 4 MiB and the 256 KiB minimum area size, only 16 areas can be created. If
++the system has more than 16 CPUs, multiple CPUs must share an area, creating
++more lock contention.
++
++New pools added via dynamic swiotlb are linked together in a linear list.
++swiotlb code frequently must search for the pool containing a particular
++swiotlb physical address, so that search is linear and not performant with a
++large number of dynamic pools. The data structures could be improved for
++faster searches.
++
++Overall, dynamic swiotlb works best for small configurations with relatively
++few CPUs. It allows the default swiotlb pool to be smaller so that memory is
++not wasted, with dynamic pools making more space available if needed (as long
++as fragmentation isn't an obstacle). It is less useful for large CoCo VMs.
++
++Data Structure Details
++----------------------
++swiotlb is managed with four primary data structures: io_tlb_mem, io_tlb_pool,
++io_tlb_area, and io_tlb_slot. io_tlb_mem describes a swiotlb memory allocator,
++which includes the default memory pool and any dynamic or transient pools
++linked to it. Limited statistics on swiotlb usage are kept per memory allocator
++and are stored in this data structure. These statistics are available under
++/sys/kernel/debug/swiotlb when CONFIG_DEBUG_FS is set.
++
++io_tlb_pool describes a memory pool, either the default pool, a dynamic pool,
++or a transient pool. The description includes the start and end addresses of
++the memory in the pool, a pointer to an array of io_tlb_area structures, and a
++pointer to an array of io_tlb_slot structures that are associated with the pool.
++
++io_tlb_area describes an area. The primary field is the spin lock used to
++serialize access to slots in the area. The io_tlb_area array for a pool has an
++entry for each area, and is accessed using a 0-based area index derived from the
++calling processor ID. Areas exist solely to allow parallel access to swiotlb
++from multiple CPUs.
++
++io_tlb_slot describes an individual memory slot in the pool, with size
++IO_TLB_SIZE (2 KiB currently). The io_tlb_slot array is indexed by the slot
++index computed from the bounce buffer address relative to the starting memory
++address of the pool. The size of struct io_tlb_slot is 24 bytes, so the
++overhead is about 1% of the slot size.
++
++The io_tlb_slot array is designed to meet several requirements. First, the DMA
++APIs and the corresponding swiotlb APIs use the bounce buffer address as the
++identifier for a bounce buffer. This address is returned by
++swiotlb_tbl_map_single(), and then passed as an argument to
++swiotlb_tbl_unmap_single() and the swiotlb_sync_*() functions.  The original
++memory buffer address obviously must be passed as an argument to
++swiotlb_tbl_map_single(), but it is not passed to the other APIs. Consequently,
++swiotlb data structures must save the original memory buffer address so that it
++can be used when doing sync operations. This original address is saved in the
++io_tlb_slot array.
++
++Second, the io_tlb_slot array must handle partial sync requests. In such cases,
++the argument to swiotlb_sync_*() is not the address of the start of the bounce
++buffer but an address somewhere in the middle of the bounce buffer, and the
++address of the start of the bounce buffer isn't known to swiotlb code. But
++swiotlb code must be able to calculate the corresponding original memory buffer
++address to do the CPU copy dictated by the "sync". So an adjusted original
++memory buffer address is populated into the struct io_tlb_slot for each slot
++occupied by the bounce buffer. An adjusted "alloc_size" of the bounce buffer is
++also recorded in each struct io_tlb_slot so a sanity check can be performed on
++the size of the "sync" operation. The "alloc_size" field is not used except for
++the sanity check.
++
++Third, the io_tlb_slot array is used to track available slots. The "list" field
++in struct io_tlb_slot records how many contiguous available slots exist starting
++at that slot. A "0" indicates that the slot is occupied. A value of "1"
++indicates only the current slot is available. A value of "2" indicates the
++current slot and the next slot are available, etc. The maximum value is
++IO_TLB_SEGSIZE, which can appear in the first slot in a slot set, and indicates
++that the entire slot set is available. These values are used when searching for
++available slots to use for a new bounce buffer. They are updated when allocating
++a new bounce buffer and when freeing a bounce buffer. At pool creation time, the
++"list" field is initialized to IO_TLB_SEGSIZE down to 1 for the slots in every
++slot set.
++
++Fourth, the io_tlb_slot array keeps track of any "padding slots" allocated to
++meet alloc_align_mask requirements described above. When
++swiotlb_tlb_map_single() allocates bounce buffer space to meet alloc_align_mask
++requirements, it may allocate pre-padding space across zero or more slots. But
++when swiotbl_tlb_unmap_single() is called with the bounce buffer address, the
++alloc_align_mask value that governed the allocation, and therefore the
++allocation of any padding slots, is not known. The "pad_slots" field records
++the number of padding slots so that swiotlb_tbl_unmap_single() can free them.
++The "pad_slots" value is recorded only in the first non-padding slot allocated
++to the bounce buffer.
++
++Restricted pools
++----------------
++The swiotlb machinery is also used for "restricted pools", which are pools of
++memory separate from the default swiotlb pool, and that are dedicated for DMA
++use by a particular device. Restricted pools provide a level of DMA memory
++protection on systems with limited hardware protection capabilities, such as
++those lacking an IOMMU. Such usage is specified by DeviceTree entries and
++requires that CONFIG_DMA_RESTRICTED_POOL is set. Each restricted pool is based
++on its own io_tlb_mem data structure that is independent of the main swiotlb
++io_tlb_mem.
++
++Restricted pools add swiotlb_alloc() and swiotlb_free() APIs, which are called
++from the dma_alloc_*() and dma_free_*() APIs. The swiotlb_alloc/free() APIs
++allocate/free slots from/to the restricted pool directly and do not go through
++swiotlb_tbl_map/unmap_single().
+-- 
+2.25.1
+
 
