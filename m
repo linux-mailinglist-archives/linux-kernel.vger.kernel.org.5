@@ -1,176 +1,117 @@
-Return-Path: <linux-kernel+bounces-162958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEEC8B62BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:43:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 400C28B62C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:44:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE9831C21298
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634441C20B06
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78ABC13B5B5;
-	Mon, 29 Apr 2024 19:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533D013C3CF;
+	Mon, 29 Apr 2024 19:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyNqMME5"
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P0Xozhv9"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6FE839FD;
-	Mon, 29 Apr 2024 19:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8CE13B2BC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419796; cv=none; b=dIdDmGqFgyJIXP+AwefkyP+lPev4riiE7eMQPWhVO+s+AtDhNQW33v+dOVOfYX230H/GCrwe0WaJisyUqr7Z0+SUA3waFs7o+/J5AY59ZaSUNy/g2TnvjIwmt2XC+XXiB3jOzWeNUFNwemvYSQsbjVgocTvcEgvUWscEhX8HPBM=
+	t=1714419827; cv=none; b=SwcV8kaPGRF/qOGDfrE5HKfqfOeSSg19zDo95ZbdWjNalzz+cfOKQ0nK5EKoiXGE7+HDY+2xjzY+x2OeDTlWUdhnZIrwuQjqFP3w1gYmnCfZZ4rM3lTjQxVP7lxC/41yhmQ7MGQHpRFO3uZ3m0mIeAJah/WfoC2E4kOxdmkw1KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419796; c=relaxed/simple;
-	bh=tl/009IYwx2qJeQv9fMSvqg/ZQzt/JznC46sdr2iiQY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W/wSl0lSZ1fjaqlZhvW1MA7G5V1zpLXLwrGphdLTmdFDM4b6HyM5n+29+7g7MWVQgkXXI6p52dAx38RroHEHidWxjd7h4RC+dkqorSiuk4sgXYU7ebvBO/dKdyPOlVyyy/IdiwF+dnqoryekYStv1DseJIBJXGRTHUsEN3oJ/J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZyNqMME5; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7d5db134badso207468539f.2;
-        Mon, 29 Apr 2024 12:43:15 -0700 (PDT)
+	s=arc-20240116; t=1714419827; c=relaxed/simple;
+	bh=VIy9QVTN2qcxjefTX2tH+Yz/iQIFnIJTdKGucOLxoMk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nRmTz+ky5+/BZx6f69RAVusNcwy41GJYkunC5YJblBU31Ytm2q06+hO4qLfeTM3z61iSSUoNDs3zs0dR5rGGOuPzdpjwkd/eIUJLYbENbDOOZQ9zqT2NAzhl+GrpTLpxVY/8u6scYDSv1e63OrHyHLdl1f5kHRriEMwRZ6zRbJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P0Xozhv9; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso4381729b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:43:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714419794; x=1715024594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1bXEsZemPTapFUBYJYdGYyaTl1e47CcMr+klkQDxtP0=;
-        b=ZyNqMME5v22JYWEbj0OwI94B4urPdR6H/AgW9l4boWiZIc6CkFPJAnZLyGzQ+I7Dgu
-         P9SGrHhMqIwKAaa2nyEMxc4kqmUSNMNnwgnLV524quIdtdPj2PRH3ihHKp1wwJuZgw31
-         ZPQsrrVzHxqr1vGBV/9LQPX3lRLl/IQBBFcgh0WDchH1hlHTJQW80qqY/RX7QXQ21P2c
-         ISAbs90c7L24E7tIsC6VRCLVQlCtONGBfEmV2tdxo6nDhJ63JYjlPTdEFdeMgMC3tbOo
-         wSmJ/yMfdgCmOqOhZpHn0vpm/gF7npu1x1T/hrStaPrqvlTzOdivNaq61EpR3pAtv/Ix
-         kMYQ==
+        d=chromium.org; s=google; t=1714419826; x=1715024626; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fKDr4fJvmSW109ZvoEEynaQf9bTi64PsX/IPJzqOlYI=;
+        b=P0Xozhv9RS37ym5xZoGikRXXzF6BUvw0DwbemdHtvrjLOJqiDY4GPt88PKHzzWIR+Y
+         j2aeg8Y8PnXxjiUdM+M3O2ZgXDoaqZl9DAZOUoqOxLFuXFiI+HVbDrbhnOfbHnJsT0Zl
+         wTSIFhO0ITK8YcwFbumzZDus+C8g07vF/jloo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714419794; x=1715024594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1bXEsZemPTapFUBYJYdGYyaTl1e47CcMr+klkQDxtP0=;
-        b=wwDCKA7XQNgrwZox10cjgaD+YTY5hkL3HnfieezqR22qfoIeHUvO+Sbo8PFMEo7OJm
-         KoFQ1bQtVh9v2RdXxhOfs9FWZBx5blsjDpzPT54DcCzt2xDQQQnVozZyoZ3X1Fjgaqs7
-         5Nsw5Qeo5ne86RSWjQwR25T2OIJip/utgDzrQOhJqTcV0afXZoHdFn73E1+QSlTR5LQr
-         j0H03v6m11d4Toa0QrMpjNf1u+iTT0j16yYPVZ+v2uDxLRy3CcgJBnDOH1eGWaIuEx0x
-         6L2GcLHJ4ALsoZFr6eVGr4Xgbr4f3a71yU1SvxnY8wv2QJHScJ1DtTzio0BGYJe6SIYZ
-         axDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIwuIuaHCFeXgwMJFT5JftFcp8Vh6H4hdGCl3dpEIuych+4COspB/lmLHwxPup4ckD5K8t2PDOVzBdBYrC6251g8Du51IFEAt22pXWAv1nxqg4QcC7l+KMmRGtkjg5pmNqXCt59PS2LSdeiw==
-X-Gm-Message-State: AOJu0YxXkqxT1LJug1FHe4NXQx4nkfsP/mNaUtA/J26RkWcVYjt3LY5U
-	1RYUgVuYk35K7J1BB2QHLnYowN1Jg8jv423y9jh9htzBsFf6/9bX3nGuf08ClYnIubo6Iv8jDiv
-	FvS2Y6W4g35mplibYj1MvhNotWEs=
-X-Google-Smtp-Source: AGHT+IFBsfccKTIUgtY7jo7PWKUIF+Yl965BP3mgAmUMrz8teYaaYNi1DQEwU5Tw7VSl4uBZm/ij82Dtt9Mrt6sMoI0=
-X-Received: by 2002:a5d:9642:0:b0:7d3:4ef3:e6c1 with SMTP id
- d2-20020a5d9642000000b007d34ef3e6c1mr13521809ios.10.1714419794363; Mon, 29
- Apr 2024 12:43:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714419826; x=1715024626;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fKDr4fJvmSW109ZvoEEynaQf9bTi64PsX/IPJzqOlYI=;
+        b=hIbRdA9TfGsNuYqKLr2HOnNv9li3L7JSNoFIqLHME+3YtEAtIgNhLEK5v/lqWvnzqd
+         uC6Ilz/EAfZERM0VJp/kHr4g6GcynIid7WANZ3EkQvErp8jK9TV9qoA6zYXI8xT6g02S
+         a0b4F7nT8deu2xlRfxYwOYEBrcHdDa23QjLCIe+OE0eRBdhSPCDOb43D09frP9S+0V9G
+         eqcm3gR1VLKlhf3nhqbJb0/rEWNXyWweBM1z9JvvHoEc9mZueyXcgre4V98cupszcb2N
+         fq1uGh9TL36JTBclWqt9cNwOuid/BQLZsQt0TiMKxjIu25S8UN10/sOEMjZ0Bg11UbIa
+         1w/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVoD0293PRzgkBOKsNdh/C3yfOt2/av7MXjQa7c+jDbwtHXJulO2gzU4ARV0j0B/701j73HARty2ga7bKJWV/2B1QN8AVxRDYFka6/s
+X-Gm-Message-State: AOJu0Yy0yZ1qMI8g2CeCHNhc1VZHzMZGFURE+Kj5thImDWl4nwqnT4Am
+	IAWA9l/0NbdiDn90fVc2Z4dWQtcLVTRhIE8i1qXF6tlF9vxCC+l7W0moiO5U/w==
+X-Google-Smtp-Source: AGHT+IFWtiHj8a1VoRQm0nq5ioH7+C0b5unkMry0uVptPw+otkKozDcxw0l++LwQvQzuijATx8uqug==
+X-Received: by 2002:a05:6a21:1f24:b0:1a7:91b0:4f14 with SMTP id ry36-20020a056a211f2400b001a791b04f14mr627637pzb.23.1714419825750;
+        Mon, 29 Apr 2024 12:43:45 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id px11-20020a17090b270b00b002ae071346a2sm13389365pjb.36.2024.04.29.12.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 12:43:43 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] kunit/fortify: Add memcpy() tests
+Date: Mon, 29 Apr 2024 12:43:38 -0700
+Message-Id: <20240429194019.work.664-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429190500.30979-1-ryncsn@gmail.com> <20240429191138.34123-1-ryncsn@gmail.com>
- <Zi_zLQqpJ6PRX7HD@casper.infradead.org>
-In-Reply-To: <Zi_zLQqpJ6PRX7HD@casper.infradead.org>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 30 Apr 2024 03:42:54 +0800
-Message-ID: <CAMgjq7A+W9g8Bng22+iROgdq_Khz=v2Mj70VNAH2Q9ckK50AKQ@mail.gmail.com>
-Subject: Re: [PATCH v3 08/12] nfs: drop usage of folio_file_pos
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=604; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=VIy9QVTN2qcxjefTX2tH+Yz/iQIFnIJTdKGucOLxoMk=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmL/httbmsQItvMY0uFd6j4hYaYCstXS3BgqKHL
+ p0ncvc8EceJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZi/4bQAKCRCJcvTf3G3A
+ JhLKD/4w53qKNAGkHRjVUlL3JoDVZHy+a4JqhPXqb8GmjsPB4621MjVd4rsZ6XmiKcwk2fnqbvU
+ CHS6xbdOUc1AC9N6Xwmghk9x0r0l54IHzLMMXm1MqQNIl4syp5uc0i5xcqjwMqzpkHC+3ORQqTZ
+ OrASafSnHzJxAfEgOQpZO8x3vejG6/2xBt46twYfrddMXXcENntF2TYjrM0LMzZAdex20gJbKtg
+ kkgB/j4LxAfKQAoioOafYY35vvRtpoGQkjQBc6qVDxSTg1qRqmjDRe03GiKtW4rYxxzIZziJPE7
+ 3d4e2V7wIjOIvjkIs+bpgPUIfGEbgonoQ+hVW2FZvsHdtOLuxxlg40j15ZM6le+MFMAnUTWrUen
+ YQVUmTJHbWU5nl4QYNajhO8rmiezNiTGw6qkDpQEL3WaflIM41qzHlF9PHY2GgtleDA2ZB/gEKm
+ pJP1d8SthelDtscHXc1yri6Ha1XHs0SM7kT7ZiAysCx+QKZt0HhpZYCq0HP4sfrEJvqOZcxCKMU
+ rm8+rIz5i3GGrBR22svxrMoCNobGpwBl/6/pHgJBByu6o9gkLI9bm5JUf83f7Tnhxl01W8/XEsz
+ nP9czNbmvxQDBov3/YqO2xukp4Ajn1ufJ+Nudhx5M7xhQFWv5V8+WEQ/7T8+6TSGmqNl0HLREoL
+ r1PEON62 rLiag4g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 3:21=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Tue, Apr 30, 2024 at 03:11:34AM +0800, Kairui Song wrote:
-> > +++ b/fs/nfs/file.c
-> > @@ -588,7 +588,7 @@ static vm_fault_t nfs_vm_page_mkwrite(struct vm_fau=
-lt *vmf)
-> >
-> >       dfprintk(PAGECACHE, "NFS: vm_page_mkwrite(%pD2(%lu), offset %lld)=
-\n",
-> >                filp, filp->f_mapping->host->i_ino,
-> > -              (long long)folio_file_pos(folio));
-> > +              (long long)folio_pos(folio));
->
-> Yes, we can't call page_mkwrite() on a swapcache page.
->
-> > +++ b/fs/nfs/nfstrace.h
-> > @@ -960,7 +960,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event,
-> >                       __entry->fileid =3D nfsi->fileid;
-> >                       __entry->fhandle =3D nfs_fhandle_hash(&nfsi->fh);
-> >                       __entry->version =3D inode_peek_iversion_raw(inod=
-e);
-> > -                     __entry->offset =3D folio_file_pos(folio);
-> > +                     __entry->offset =3D folio_pos(folio);
-> >                       __entry->count =3D nfs_folio_length(folio);
-> >               ),
-> >
-> > @@ -1008,7 +1008,7 @@ DECLARE_EVENT_CLASS(nfs_folio_event_done,
-> >                       __entry->fileid =3D nfsi->fileid;
-> >                       __entry->fhandle =3D nfs_fhandle_hash(&nfsi->fh);
-> >                       __entry->version =3D inode_peek_iversion_raw(inod=
-e);
-> > -                     __entry->offset =3D folio_file_pos(folio);
-> > +                     __entry->offset =3D folio_pos(folio);
->
-> These two I don't know about.
+Hi,
 
-I can add a more detailed call chain for this in the commit message to
-make it look more convincing.
+This adds memcpy() fortify KUnit tests, similar to how the others
+were done. This is in preparation for removing the 0-sized destination
+exclusion now that we seem to be in good shape now after removing all
+our 0-sized arrays.
 
-> > +++ b/fs/nfs/write.c
-> > @@ -281,7 +281,7 @@ static void nfs_grow_file(struct folio *folio, unsi=
-gned int offset,
-> >       end_index =3D ((i_size - 1) >> folio_shift(folio)) << folio_order=
-(folio);
-> >       if (i_size > 0 && folio_index(folio) < end_index)
-> >               goto out;
-> > -     end =3D folio_file_pos(folio) + (loff_t)offset + (loff_t)count;
-> > +     end =3D folio_pos(folio) + (loff_t)offset + (loff_t)count;
->
-> This one concerns me.  Are we sure we can't call nfs_grow_file()
-> for a swapfile?
+-Kees
 
-Right, I did a audit of the code, all callers of nfs_grow_file are listed b=
-elow:
-write_end -> nfs_write_end -> nfs_update_folio -> nfs_writepage_setup
--> nfs_grow_file
-page_mkwrite -> nfs_vm_page_mkwrite -> nfs_update_folio ->
-nfs_writepage_setup -> nfs_grow_file
+Kees Cook (3):
+  kunit/fortify: Rename tests to use recommended conventions
+  kunit/fortify: Do not spam logs with fortify WARNs
+  kunit/fortify: Add memcpy() tests
 
->
-> > @@ -2073,7 +2073,7 @@ int nfs_wb_folio_cancel(struct inode *inode, stru=
-ct folio *folio)
-> >   */
-> >  int nfs_wb_folio(struct inode *inode, struct folio *folio)
-> >  {
-> > -     loff_t range_start =3D folio_file_pos(folio);
-> > +     loff_t range_start =3D folio_pos(folio);
-> >       loff_t range_end =3D range_start + (loff_t)folio_size(folio) - 1;
->
-> Likewise here.  Are we absolutely certain that swap I/O can't call this
-> function?
+ include/linux/fortify-string.h |   6 +-
+ lib/fortify_kunit.c            | 174 ++++++++++++++++++++++++---------
+ 2 files changed, 135 insertions(+), 45 deletions(-)
 
-Similar above:
-release_folio -> nfs_release_folio -> nfs_wb_folio
-launder_folio -> nfs_launder_folio -> nfs_wb_folio
-write_begin -> nfs_write_begin -> nfs_read_folio -> nfs_wb_folio
-read_folio -> nfs_read_folio -> nfs_wb_folio
-nfs_update_folio (listed above) -> nfs_writepage_setup ->
-nfs_setup_write_request -> nfs_try_to_update_request -> nfs_wb_folio--
-write_begin -> nfs_write_begin -> nfs_flush_incompatible -> nfs_wb_folio
-page_mkwrite -> nfs_vm_page_mkwrite -> nfs_flush_incompatible -> nfs_wb_fo=
-lio
+-- 
+2.34.1
 
-And nothing from the swap mapping side can call into fs, except
-swap_rw, none of the helpers are called by that.
 
