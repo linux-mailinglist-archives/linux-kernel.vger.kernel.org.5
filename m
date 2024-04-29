@@ -1,118 +1,93 @@
-Return-Path: <linux-kernel+bounces-162165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C78C8B56EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:39:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD0F8B56F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:40:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E4681C216A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:39:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CAE11F26212
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5FF45957;
-	Mon, 29 Apr 2024 11:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC+nGYW2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C9C3C24;
-	Mon, 29 Apr 2024 11:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C4546453;
+	Mon, 29 Apr 2024 11:40:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CDD3C24;
+	Mon, 29 Apr 2024 11:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390749; cv=none; b=EYdt7JP3Fniln9ORe5iaO4HEO+QoMDKnPuIald4Be6WMcbQn3FOdNa8pxRhT4WdaVKIZoFQyvuzqCUHOm9uUpt8bQMPqKzv1Pn5JCDoweLmUU2/hdUOQjp7WFqmG5KNogEvusYy3RBsnfCcI+pY9+/VxQA1UlaqWdsmyw1mTroY=
+	t=1714390834; cv=none; b=QE+/t90mZMMvHkE6l6LOn3ShoiUqA5EAgGyIPi9Ka6xPw+Kx0eM8E7fDg/DUOGc55Igx2+IE2+vj1B56SyoxLViCFNzQUK2v9nizMulAKG15N82Kx7LXPh3Y8mXjjKGQBiIZWe/Bx4az2tX/Km25m6JKfzN8vMMhq6ZTU2mEDlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390749; c=relaxed/simple;
-	bh=uZu3wKHQNWr0ZLymAFjd5ivV78yNbTAn33ozggWSTE0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PH1kE/m6n/e0WBIRTH1FKIF+sWAjfWngKmvGkUCowhTNEb9B3E5XOBDkTepz716SKHBC19Dtao6aBQqiFLeL20R9EP0KP38wfQslhMB4ki70G7/yxtjoLDANmgTWeLu2DEq8llzQHM5eyrB5NcsrT+yqN+aFRYxW030pSZIaqTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC+nGYW2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A805C113CD;
-	Mon, 29 Apr 2024 11:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714390748;
-	bh=uZu3wKHQNWr0ZLymAFjd5ivV78yNbTAn33ozggWSTE0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HC+nGYW2S8rw/A3OruRlx4jB+D0gz6jk7NqR9R3PD4B/0HEXqW+bZlzv5BlOdJrrY
-	 35TrG6u24kc/7Igpkw3xHpC+21isyj/mWgnZaz7LUqmvQhTK0ATuaZwqpAgWjUXkI9
-	 qK4HvdMYxr/fLAh8VFLa7Y7Wh3NOqqp0VQ2Qrkq+2K+0xti8Dz4wpSBsp26g9nXvK6
-	 GOL3H26QxYWHjhZi3rPuusu+SBqJpF9boYvhrXddnSQMK8CEnNcfWqsCg8MvbXQFye
-	 0ENWLu3F3Wxv5CffhqU4AovNvY79Jb0X2BrlZp1mDFVfpaUjT3EPaFa42qr3QA+Zxf
-	 DUIqQ5gZ080tQ==
-Date: Mon, 29 Apr 2024 13:39:06 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Noralf =?utf-8?Q?Tr=C3=B8nnes?= <noralf@tronnes.org>, David Lechner <dlechner@baylibre.com>, 
-	Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] drm/ili9341: Remove the duplicative driver
-Message-ID: <20240429-gorgeous-beetle-of-downpour-492bbd@houat>
-References: <20240425124208.2255265-1-andriy.shevchenko@linux.intel.com>
- <20240425-perky-myrtle-gorilla-e1e24f@penduick>
- <ZipxEk9Lpff1kB7b@smile.fi.intel.com>
+	s=arc-20240116; t=1714390834; c=relaxed/simple;
+	bh=/gI/+z7qi46TOsKZwW+XKxc4nIlP1Z7bWqZ7E6UNQhA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=REf6t3PH68m/SlSQVKTkTKaKxwbMXSy+3XFWQiZJgFmlQg9/KCZQTJ5urc/c5piuUKNJlMJZzsSDw74UDM2/8RwJest5lZ2z8wUnuHrmpk9D9jpD0fZ8tw5H3jyV0Vehtjnqtnsn829MBoAPLz0HYKbB/OkdUsBs9VOKxCpNs+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 307C52F4;
+	Mon, 29 Apr 2024 04:40:57 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 607543F793;
+	Mon, 29 Apr 2024 04:40:29 -0700 (PDT)
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Peter Xu <peterx@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH v1] fs/proc/task_mmu: Fix loss of young/dirty bits during pagemap scan
+Date: Mon, 29 Apr 2024 12:40:17 +0100
+Message-Id: <20240429114017.182570-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="ypdsdw5t4cfybdrt"
-Content-Disposition: inline
-In-Reply-To: <ZipxEk9Lpff1kB7b@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 
+make_uffd_wp_pte() was previously doing:
 
---ypdsdw5t4cfybdrt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  pte = ptep_get(ptep);
+  ptep_modify_prot_start(ptep);
+  pte = pte_mkuffd_wp(pte);
+  ptep_modify_prot_commit(ptep, pte);
 
-On Thu, Apr 25, 2024 at 06:04:50PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 25, 2024 at 04:58:06PM +0200, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Thu, Apr 25, 2024 at 03:42:07PM +0300, Andy Shevchenko wrote:
-> > > First of all, the driver was introduced when it was already
-> > > two drivers available for Ilitek 9341 panels.
-> > >=20
-> > > Second, the most recent (fourth!) driver has incorporated this one
-> > > and hence, when enabled, it covers the provided functionality.
-> > >=20
-> > > Taking into account the above, remove duplicative driver and make
-> > > maintenance and support eaiser for everybody.
-> > >=20
-> > > Also see discussion [1] for details about Ilitek 9341 duplication
-> > > code.
-> > >=20
-> > > Link: https://lore.kernel.org/r/ZXM9pG-53V4S8E2H@smile.fi.intel.com [=
-1]
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >=20
-> > I think it should be the other way around and we should remove the
-> > mipi-dbi handling from panel/panel-ilitek-ili9341.c
->=20
-> Then please do it! I whining already for a few years about this.
+But if another thread accessed or dirtied the pte between the first 2
+calls, this could lead to loss of that information. Since
+ptep_modify_prot_start() gets and clears atomically, the following is
+the correct pattern and prevents any possible race. Any access after the
+first call would see an invalid pte and cause a fault:
 
-I have neither the hardware nor the interest to do so. Seems it looks
-like you have plenty of the latter at least, I'm sure you'll find some
-time to tackle this.
+  pte = ptep_modify_prot_start(ptep);
+  pte = pte_mkuffd_wp(pte);
+  ptep_modify_prot_commit(ptep, pte);
 
-Maxime
+Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+---
+ fs/proc/task_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---ypdsdw5t4cfybdrt
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 23fbab954c20..af4bc1da0c01 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1825,7 +1825,7 @@ static void make_uffd_wp_pte(struct vm_area_struct *vma,
+ 		pte_t old_pte;
 
------BEGIN PGP SIGNATURE-----
+ 		old_pte = ptep_modify_prot_start(vma, addr, pte);
+-		ptent = pte_mkuffd_wp(ptent);
++		ptent = pte_mkuffd_wp(old_pte);
+ 		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
+ 	} else if (is_swap_pte(ptent)) {
+ 		ptent = pte_swp_mkuffd_wp(ptent);
+--
+2.25.1
 
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZi+G2QAKCRAnX84Zoj2+
-dpzEAX9NlMH8mHXaP+9bA+sNZT1R3FNYhW4Pt/1Pn1ubi1pgXk5iBoL6JrqISoVP
-QXA4pXMBgORaHd6OB/qFoTj87/v5BZX5gZC0QpOeO4bItwlvpgRISkUwBwjWNi6u
-pd9y46+Yag==
-=V5/I
------END PGP SIGNATURE-----
-
---ypdsdw5t4cfybdrt--
 
