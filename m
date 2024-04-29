@@ -1,114 +1,131 @@
-Return-Path: <linux-kernel+bounces-162015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A068B54B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:04:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 391938B54B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:05:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E12D1F22350
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:04:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31091F222C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A542D2C6B9;
-	Mon, 29 Apr 2024 10:04:45 +0000 (UTC)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9702029421;
-	Mon, 29 Apr 2024 10:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536AF2E41C;
+	Mon, 29 Apr 2024 10:05:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9072DF84
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714385085; cv=none; b=JQ7NNWQpYGdnw2PY3VoNjMoIpTm8z4T0wdQf8PriPvt/CaJnbzMXP2c+Oebs8sRmp63vhl9uRBNIPGEZZNJwdDKhzask+VZY/Igb27yEBFH+CguCyZHFVvmD7a12QnD9tyMTbCjIl5SOYjD/WniIXYIPrgm8P7q1sUpdHUQRAQ0=
+	t=1714385100; cv=none; b=gcKkN2gdRVFbKHlRG70oFh/JBmwblbN9E2Jt1Wh6YnrrNfpBjFh4S/iFHlVgohl+EFPf3zRLKhJlC5xGdtU9IiY4WesbTEyGJHgLwY1AED0BmhPSbhl4aSC0MD1vj4M458LxyrV9tz1HXyNCpRku1TjHDeWnytGVuqQZM+GMfZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714385085; c=relaxed/simple;
-	bh=iv0of1SDuLM2j+lS8i9Lv/zFTg7B6r5cfF5tUfHgGdQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EAuv0iKYstykdOCmZyX7q2YeIsKWcRSkfxpAJ1RXiqxwnrjMl7UxTDfP9Fzx/C4boLQVoon4yk1afZ0VU4cRhihVyY9mxFJBROCKv20tTwgY26YJgCanTfNuyvFY2sqVVBm9LEa6JOun85uJn41wwKNAMI3oTTP3040l5sJv5Fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a55b93f5540so565496866b.1;
-        Mon, 29 Apr 2024 03:04:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714385082; x=1714989882;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u871SX269932WaLaHJ9AhtcP7Cj5iBk3lhKgV6jUuqM=;
-        b=fjfYm4am06ul0JfcU8kGDnRTV5v0ZtcmqmI4SVXjGkmHA/HUAMcgk3A+2RZ+PYs2Qe
-         QtOKKtkdbTY/fNAxkMFfvk/leRRJJa1vMAEr/XlbWpjVaQx23ooOBgv6eod0hI+FZRYJ
-         RWMx9o3wnjbFuyiNSk3qhu/8N5ZBaJxObaq/ZVMDemlbQwh/QzL9EZ8FvUkhJMaBRhBs
-         NSZ8jwAKjaCsh0p3pHkAWYZelmWnOB+rZ2FEz9Vxg5QXZsVtPQaFpitgdZqsbadl5Au8
-         1zsf/MziGpIh7I5x7F4yH/opZIOTah/xVU21OE524pGKTYenhy+pp2148AAxYJsNFbpJ
-         g8+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWqzjnPBjCLk8yYCQ6PX1bEAU1Gf5HrS9CeZtNI+wLJtM9DMLZIGW7QVHxxF88rt5ox2SAfJoj0D+RP9TjIw/b78m4QA5pS2zOGfWw1QQHnwWOgbbSz17fAWOV6aSfhLTWgepvL
-X-Gm-Message-State: AOJu0YzAgdmouwxi7wTYDJxVQkpNEz0zf4gh3QeRRDYWwEbYOtm0u72J
-	r4CkBZ2GAcqKoglbZXxY5kPjgrU1NcTQWpsCgMkrxS52sSVF05ky
-X-Google-Smtp-Source: AGHT+IFH+kBOBRma4QXn972uVsjWjU+aUIe0TKAfOhLbRNkOSO3ysqiqh8e22s8Omp0bk6BGAzSMww==
-X-Received: by 2002:a17:906:7185:b0:a58:73f0:4d1a with SMTP id h5-20020a170906718500b00a5873f04d1amr6449916ejk.70.1714385081700;
-        Mon, 29 Apr 2024 03:04:41 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id z13-20020a170906434d00b00a51e5813f4fsm13924963ejm.19.2024.04.29.03.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 03:04:41 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: leit@meta.com,
-	netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] netpoll: Fix race condition in netpoll_owner_active
-Date: Mon, 29 Apr 2024 03:04:33 -0700
-Message-ID: <20240429100437.3487432-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714385100; c=relaxed/simple;
+	bh=34WzQl9GT4Za2QymXSBmg6u6dOgh91fS2RdcnWcNQf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s1cT4iRlrLdrt4mpPyFj1unimJikjWfNTgJTt1eMucoeaKMKLyM9pcpTMykZhLD3EuYYw10QfIxRlcrTF1tTsO80+q4ofxGXRHcFfSa91P0qtZPEnj84wJEYbcTXzsOugr5ctmP2uHD0Gbt2rZju2yRxxQQ6wdNZLhn9b5fCZjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0BC02F4;
+	Mon, 29 Apr 2024 03:05:23 -0700 (PDT)
+Received: from [10.57.65.53] (unknown [10.57.65.53])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44F073F793;
+	Mon, 29 Apr 2024 03:04:55 -0700 (PDT)
+Message-ID: <f5de5685-d955-4aa0-a307-a4da927f36f0@arm.com>
+Date: Mon, 29 Apr 2024 11:04:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] arm64/mm: Move PTE_PROT_NONE and
+ PMD_PRESENT_INVALID
+Content-Language: en-GB
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Hildenbrand <david@redhat.com>, Will Deacon <will@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240424111017.3160195-1-ryan.roberts@arm.com>
+ <20240424111017.3160195-2-ryan.roberts@arm.com>
+ <b55558a5-a9d4-4aea-956a-1babad01b6cd@redhat.com>
+ <df0475e1-9078-4629-b23d-0919ab1e37c2@arm.com>
+ <eed172b5-c71a-469f-a790-76126760ca7c@arm.com> <Ziu-r2nkssCQ_uCS@arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <Ziu-r2nkssCQ_uCS@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-KCSAN detected a race condition in netpoll:
+On 26/04/2024 15:48, Catalin Marinas wrote:
+> On Thu, Apr 25, 2024 at 11:37:42AM +0100, Ryan Roberts wrote:
+>> Also, IMHO we shouldn't really need to reserve PMD_PRESENT_INVALID for swap
+>> ptes; it would be cleaner to have one bit that defines "present" when valid is
+>> clear (similar to PTE_PROT_NONE today) then another bit which is only defined
+>> when "present && !valid" which tells us if this is PTE_PROT_NONE or
+>> PMD_PRESENT_INVALID (I don't think you can ever have both at the same time?).
+> 
+> I think this make sense, maybe rename the above to PTE_PRESENT_INVALID
+> and use it for both ptes and pmds.
 
-	BUG: KCSAN: data-race in net_rx_action / netpoll_send_skb
-	write (marked) to 0xffff8881164168b0 of 4 bytes by interrupt on cpu 10:
-	net_rx_action (./include/linux/netpoll.h:90 net/core/dev.c:6712 net/core/dev.c:6822)
-<snip>
-	read to 0xffff8881164168b0 of 4 bytes by task 1 on cpu 2:
-	netpoll_send_skb (net/core/netpoll.c:319 net/core/netpoll.c:345 net/core/netpoll.c:393)
-	netpoll_send_udp (net/core/netpoll.c:?)
-<snip>
-	value changed: 0x0000000a -> 0xffffffff
+Yep, sounds good. I've already got a patch to do this, but it's exposed a bug in
+core-mm so will now fix that before I can validate my change. see
+https://lore.kernel.org/linux-arm-kernel/ZiuyGXt0XWwRgFh9@x1n/
 
-This happens because netpoll_owner_active() needs to check if the
-current CPU is the owner of the lock, touching napi->poll_owner
-non atomically. The ->poll_owner field contains the current CPU holding
-the lock.
+With this in place, I'm proposing to remove PTE_PROT_NONE entirely and instead
+represent PROT_NONE as a present but invalid pte (PTE_VALID=0, PTE_INVALID=1)
+with both PTE_WRITE=0 and PTE_RDONLY=0.
 
-Use an atomic read to check if the poll owner is the current CPU.
+While the HW would interpret PTE_WRITE=0/PTE_RDONLY=0 as "RW without dirty bit
+modification", this is not a problem as the pte is invalid, so the HW doesn't
+interpret it. And SW always uses the PTE_WRITE bit to interpret the writability
+of the pte. So PTE_WRITE=0/PTE_RDONLY=0 was previously an unused combination
+that we now repurpose for PROT_NONE.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/core/netpoll.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This will subtly change behaviour in an edge case though. Imagine:
 
-diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-index 543007f159f9..55bcacf67df3 100644
---- a/net/core/netpoll.c
-+++ b/net/core/netpoll.c
-@@ -316,7 +316,7 @@ static int netpoll_owner_active(struct net_device *dev)
- 	struct napi_struct *napi;
- 
- 	list_for_each_entry_rcu(napi, &dev->napi_list, dev_list) {
--		if (napi->poll_owner == smp_processor_id())
-+		if (READ_ONCE(napi->poll_owner) == smp_processor_id())
- 			return 1;
- 	}
- 	return 0;
--- 
-2.43.0
+pte_t pte;
+
+pte = pte_modify(pte, PAGE_NONE);
+pte = pte_mkwrite_novma(pte);
+WARN_ON(pte_protnone(pte));
+
+Should that warning fire or not? Previously, because we had a dedicated bit for
+PTE_PROT_NONE it would fire. With my proposed change it will not fire. To me
+it's more intuitive if it doesn't fire. Regardless there is no core code that
+ever does this. Once you have a protnone pte, its terminal - nothing ever
+modifies it with these helpers AFAICS.
+
+Personally I think this is a nice tidy up that saves a SW bit in both present
+and swap ptes. What do you think? (I'll just post the series if its easier to
+provide feedback in that context).
+
+> 
+>> But there is a problem with this: __split_huge_pmd_locked() calls
+>> pmdp_invalidate() for a pmd before it determines that it is pmd_present(). So
+>> the PMD_PRESENT_INVALID can be set in a swap pte today. That feels wrong to me,
+>> but was trying to avoid the whole thing unravelling so didn't persue.
+> 
+> Maybe what's wrong is the arm64 implementation setting this bit on a
+> swap/migration pmd (though we could handle this in the core code as
+> well, it depends what the other architectures do). The only check for
+> the PMD_PRESENT_INVALID bit is in the arm64 code and it can be absorbed
+> into the pmd_present() check. I think it is currently broken as
+> pmd_present() can return true for a swap pmd after pmd_mkinvalid().
+
+I've posted a fix here:
+https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
+
+My position is that you shouldn't be calling pmd_mkinvalid() on a non-present pmd.
+
+> 
+> So I don't think we lose anything if pmd_mkinvalid() skips any bit
+> setting when !PTE_VALID. Maybe it even fixes some corner case we never
+> hit yet (like pmd_present() on a swap/migration+invalid pmd).
+> 
 
 
