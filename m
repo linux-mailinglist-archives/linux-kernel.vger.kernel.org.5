@@ -1,82 +1,84 @@
-Return-Path: <linux-kernel+bounces-162248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 178DE8B5888
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:30:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B978B588D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:31:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83C41F240B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:30:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14AF71C23070
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2AB41A85;
-	Mon, 29 Apr 2024 12:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13603C133;
+	Mon, 29 Apr 2024 12:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b6zg6tz3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Ule6R+K6"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE0339FC1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9293A322E;
+	Mon, 29 Apr 2024 12:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714393811; cv=none; b=pOrcnmm6llzzLaulshMLut9xNYr2EtPZF4UzaQHIJ6njG5gOMG6Vtq0A8B+fROkdXfMD8tIXPMgdU1TRm2ZhMEgxlxvcalMjlUdJ8pzgz0pl6OEc4zTmURrLoaoWb1AVYQJLZy1WJYka83Lo3M43O2FpV/HwG2hXFHmBvCnFgeM=
+	t=1714393854; cv=none; b=KO4PcIvIqGC0WC3UnA0HzWzVb3QLXv6EZVY+VXvjtl5D6Y3nKuuKVPpHmb5Z6E87jvbatmLC2NsIgi/GIFsQK3fP1yrxDe1vzrsPJWOhnHG5vOL3sj5fwCMtdM0kBhlvlRz23imgAmOMeTUqLtFLDrASD0aRbzjPerLBmQwVv20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714393811; c=relaxed/simple;
-	bh=jSZtNNbY89BBhDgG9LJQspn1hyqRqmbxw5Q4oVoqn5A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ce83UuZ0NfLzfAy+Vy3jA90bTg52u7VRj3HiMi+8ivdRGINViyqsC5zkpexBvU87MSWMnLDfx21HovBu4AtTkg1vi2V1jf/28oT2dNoWTp87TvjAoYpy8/tLNDhkW2e2IVCDoUwKDaKdLmLXX0dL960CeYqGyDULruXRz3x//CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b6zg6tz3; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714393810; x=1745929810;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=jSZtNNbY89BBhDgG9LJQspn1hyqRqmbxw5Q4oVoqn5A=;
-  b=b6zg6tz3ecPHHdtlwoFzUntUDpe38Y4TyfGtfLmsury5N+mfJaaYEiOu
-   1MScDmrXEt0NZGlwjz9oqf6iEJsVus09BEyHrOk0pRzRLdeaG2EGNKAAn
-   GMxafTX7sfUx/rG+q6Fq5B6SGpQToakflRLLIUOONGHy3rvKvu5cGDrOC
-   RcGmP7PmEjzuHsgr27tOIbYkeP/9tlml64ylb+8jLszvcs7eJ2C2Paq5i
-   2OZASPcNq1ETSBqpBZ0CzVBh09kAWjdSGmkCUgei6pU+NvgJPxfqt+73I
-   nxEkNVzKNfK+fWwvKKX3jVVhkutzzcg+Iir/xgNDnTMgFQDBbZK0YbwzL
-   A==;
-X-CSE-ConnectionGUID: MmgETgAGT2mJG24J1P+Cfw==
-X-CSE-MsgGUID: evBtjPtyTnKtbmJBkY8bvA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10160081"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="10160081"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:30:09 -0700
-X-CSE-ConnectionGUID: u7GDqQo6SpuY9Q0t8jI1Hg==
-X-CSE-MsgGUID: mzZu2YE9SdyC+9E+jTxfZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="57287644"
-Received: from ubik.fi.intel.com (HELO localhost) ([10.237.72.184])
-  by fmviesa001.fm.intel.com with ESMTP; 29 Apr 2024 05:30:08 -0700
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de,
- alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH 7/8] intel_th: Convert to platform remove callback
- returning void
-In-Reply-To: <871q6owe8f.fsf@ubik.fi.intel.com>
-References: <20231107202818.4005791-1-u.kleine-koenig@pengutronix.de>
- <20231107202818.4005791-8-u.kleine-koenig@pengutronix.de>
- <i3oybmf3axeyk5rcef5kgfdb4cucd63h24gup6idn62nq3vvav@4mfzwzyamq27>
- <jawceotzgdydpz74qr2e5dwgfumwjmt4wxvi43qlwldlbgemzf@v3qa2hoopawv>
- <qiiln66o6uy2nsqdjcykygp3yumonn7jqp7q4wxf56i6pazics@iqfaiglmsgwt>
- <87edd5y7lz.fsf@ubik.fi.intel.com>
- <rnybbv5sddkgtnxzad7sg2jyosr77vvud6t7ii3sssfsi7td2u@3b5nbhsprcaf>
- <875xwjxgsk.fsf@ubik.fi.intel.com>
- <rucgdqb5ejtttsd2ksvph3toeow652rdiqnohdsg6ndp6qgcwu@c3rz275bofqg>
- <871q6owe8f.fsf@ubik.fi.intel.com>
-Date: Mon, 29 Apr 2024 15:30:07 +0300
-Message-ID: <87y18wuzao.fsf@ubik.fi.intel.com>
+	s=arc-20240116; t=1714393854; c=relaxed/simple;
+	bh=7N0utKAEx4E/O+TGpndTrMTBy90ouwclTFUM80d5C0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UICQN7v8SRtN289dlCcMeY6ytKyY25J5jc7jKq2FQvo7DdjT+f+5kK91RQJ7pAvI2dXZM3e6op6HmXH2nJ1LWraAheWkDUzIwXK1VLqM26IMyQmTeXQHOpC9NIxEDVkERQgqRnx8kOYPF7i5NCL8kAQYEkzIqJG7/NsySVo1B1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Ule6R+K6; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 065FA40E0187;
+	Mon, 29 Apr 2024 12:30:48 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id hjGpXXIOrkZm; Mon, 29 Apr 2024 12:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714393844; bh=P53mqjXOTmkoFUZX78LGD91nZVEGE1SG7dpgszC6P1M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ule6R+K6K4cCkTfEev7OmO5agpjnJMB1butWf2LNU9DbJ7cYvoLoGfrzDVVibk7Ar
+	 lOtczadxrOmM9IdzJPDZjFSZohe3ulrAABFx/oqYiQrOejCd35YffTY3D0Vau8CXht
+	 WiOVXig5ocdgn3lBNve7Ya3LDT9z9uxezxFaM4v6UqZUs7tOu7g+HpsXWpgF63/srg
+	 YIXkBdBoRaj+nBabw/9Czd62kVt5BuY1LgRFU7xwkckuvCE8OYTaYrFcJXVJkfHLdx
+	 1s4ChX1J2YbfBMG1pzvlhNGZ2FolO00mDtuU+tlUiu/Nk9OiDU288UzzvSeYCsyzsb
+	 WtZToIRWHu60GFTXnkBc3I9a6SFAKPpwrvoniYL3swieAlRFmIUTgHhUNhQS/C3TqI
+	 9Vdn4NC6b8V2UMSNaZBBJOSnv1vh+iRdgVi602C4blcqAqXf61riyXVEODkqmha5Ij
+	 9wPL6Gg2iiTuEVAOGByblZoHjeJ4YmQkV/tR1WikTo+Em5RLPfxZnNKuOc4JRZAjED
+	 TbwROhjjEnrLFEWYYZz6gLOkgH17xBCk7Y1Baah4ty79QrK8QQJX+0Hy29YFvva6nv
+	 jNnUMpQFiU9Z8zjqqKDfjER9xh3nmiCWxEw3C2pAy24sJQl9RdAb46YGT1e5iekNyN
+	 jmXINKOX3//0gf1bA8TEkUjs=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4787740E00B2;
+	Mon, 29 Apr 2024 12:30:29 +0000 (UTC)
+Date: Mon, 29 Apr 2024 14:30:22 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Matz <matz@suse.de>
+Cc: Jiri Slaby <jirislaby@kernel.org>, Ard Biesheuvel <ardb+git@google.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, Song Liu <song@kernel.org>,
+	Ricardo Ribalda <ribalda@kernel.org>,
+	Fangrui Song <maskray@google.com>,
+	Arthur Eubanks <aeubanks@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/purgatory: Switch to the position-independent small
+ code model
+Message-ID: <20240429123022.GBZi-S3p4vlPK10pYM@fat_crate.local>
+References: <20240418201705.3673200-2-ardb+git@google.com>
+ <3f23b551-4815-4a06-9217-ff5beeb80df2@kernel.org>
+ <20240420131717.GAZiPAXY9EAYnHajaw@fat_crate.local>
+ <836c267f-a028-acce-8b19-180162a5febc@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,23 +86,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <836c267f-a028-acce-8b19-180162a5febc@suse.de>
 
-Alexander Shishkin <alexander.shishkin@linux.intel.com> writes:
+On Mon, Apr 29, 2024 at 02:05:12PM +0200, Michael Matz wrote:
+> It may be so ingrained in my brain that I'm not _always_ saying it when 
+> talking about the large code model over a beer.
 
-> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> writes:
->> I intend to change the prototype of platform_driver::remove() after the
->> merge window leading to v6.10-rc1 closes to cook in next for some time.
->> If this patch doesn't make it into the mainline before, I'll send it
->> together with the change adapting the remove callback. That will go in
->> via Greg's tree, too.
+Doh, you should. This is what you start with! :-P
+
+> And indeed I know of no particular problems with it vis GCC, but that
+> doesn't mean it's a good idea to use :-)
 >
-> I saw that you included this patch with your series earlier today, so I
+> So once again: "everyone should simply stop using -mcmodel=large.  Noone
+> should use it."
+>
+> So the patch goes strictly into the direction of betterment of the
+> universe. :)
 
-Wait, did I hallucinate this? I can't find your new series now. Ugh.
-If so, I'll put your patch back in and re-send my series right away.
+Yeah, it is already on its way to every kernel near you. And looka here:
 
-Regards,
---
-Alex
+$ git grep mcmodel=large
+arch/powerpc/Makefile:125:      # 64bit relocation for this to work, hence -mcmodel=large.
+arch/powerpc/Makefile:126:      KBUILD_CFLAGS_MODULE += -mcmodel=large
+arch/um/Makefile:34:    KBUILD_CFLAGS += -mcmodel=large
+
+x86 is all free of the large model now.
+
+One less thing to worry about - gazillion more to go.
+
+:-P
+
+See ya on Thu.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
