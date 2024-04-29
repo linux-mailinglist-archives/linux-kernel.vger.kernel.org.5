@@ -1,151 +1,171 @@
-Return-Path: <linux-kernel+bounces-162940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEE9D8B6272
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:39:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CAF8B629F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A40C28363F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:39:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F3A91F22D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722E813B5AB;
-	Mon, 29 Apr 2024 19:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6050613C9C8;
+	Mon, 29 Apr 2024 19:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xWbJ9Vy0"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gOaabP7t"
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF2B17597;
-	Mon, 29 Apr 2024 19:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD1C13C802;
+	Mon, 29 Apr 2024 19:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419563; cv=none; b=PQClUZRzU6kzmtxVqULRT1ydYenbAVN+yLDKHwBqPEfgP9qZyY215yxBp7BoDPtXyXDwPSl2qjhOTXQ1rqAQGCVDyKvXsrGeqQKp3VdXjrZdyo4/fa0hV5mXBJ+fhQsgNtOA+UxKU5AhnieH14Kx8kEB8Pp5UqSr8a3/7+1plv8=
+	t=1714419575; cv=none; b=mCAzswi5xb10K11YUy+Uv1MuHMLcPv4aQm46jQZWwynSf8SwQkUtfGyEqXPxfd9FNguQ5i0+MV/BHPpow0LHUbtk5muotj3S5nkXnAL7xUaBPht9FEwJiRX4B4+FfQWjAs8d2y6QLdTk2sDkYpF5/2RrwXKEI132JCdw9gvkHi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419563; c=relaxed/simple;
-	bh=WhgcW/bisSpMZeVcT/iQoAmlUPS83pZyhBZcNJvwjkI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XCNlnRHqYYpI6nuP82mzU5vPR4JWzReA0GtyG+x56o5Kot3O5VnzWQ1Nned3xADh3CWGNFWntX1ZPNv9EApIaXL/ORIbF3v+t/zmxaSvFb/OnsCzYM85CbwpHn2tK6gW0l/NqxTvh9jL/0Li1MrwSUPskZDhzmlv2xeFswXqwUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xWbJ9Vy0; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43TJdCRA025117;
-	Mon, 29 Apr 2024 14:39:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714419552;
-	bh=lVO2rgJjLq4yw9Oul8jln9aM6c3F0zQr/8SSJzsApYQ=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=xWbJ9Vy0/d5ip39xkTzF8xujH1O01/X1GWBuwV2fAnFSrT8ogcV6GvYb0X4p8VCOw
-	 crR45GlvB0XLGWRFmD4QFYxUAhA4aO/0QCqn360r9l1AuTONz+smPNY5m7i0QIuU9k
-	 0E5wMpnrQi90uHe70pSfMLydPDf9BY+n4qoKwP70=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43TJdCfU109555
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 14:39:12 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 14:39:12 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 14:39:11 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43TJdBQE093494;
-	Mon, 29 Apr 2024 14:39:11 -0500
-Date: Mon, 29 Apr 2024 14:39:11 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Chintan Vankar <c-vankar@ti.com>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh@kernel.org>, Tero
- Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <s-vadapalli@ti.com>
-Subject: Re: [PATCH v6 5/5] arm64: dts: ti: k3-j784s4: Add overlay for dual
- port USXGMII mode
-Message-ID: <20240429193911.crcrasbcxnhxonlh@altitude>
-References: <20240329053130.2822129-1-c-vankar@ti.com>
- <20240329053130.2822129-6-c-vankar@ti.com>
- <1cf7f439-45cc-42cb-b707-4c87c00015ac@linaro.org>
- <f406bac9-f4c1-4289-8239-82420cd300b8@ti.com>
+	s=arc-20240116; t=1714419575; c=relaxed/simple;
+	bh=5WpZu/r79l+78bbnFmQqDFjB9RGGvzz/imN1yr7Rf/I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ccM7P0f2i9hBQpRZytPSbPdPTpXBkPFnmrAFJ0IpFeFFtxg5pryNsnIoj7+jwo5YQoKqGmI9NAB5g+1iE/A+VbYfHPFLHaav0fMu30ttgZAE+ib+uHp5359hZ8hK3VJWGfITcCWLAz1EvnVuXiO43z8G83uARHmUTAYzqzH8oKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gOaabP7t; arc=none smtp.client-ip=209.85.166.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7da09662332so160424439f.0;
+        Mon, 29 Apr 2024 12:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714419573; x=1715024373; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RXI+MXWRKKGIldf/Embfy128LRyyxhcJagthHMuW3ts=;
+        b=gOaabP7tGLD8uBt0TqjWvg5YxVGTBUI0EVE/AjMKaMPa20FoseHQFCnrcjlh4OE8ht
+         qp9nfpsR0JIbYMBTgNhpGscQB7Mjbg6j/yFJd+0VGTQF1FoFeLQjecIBKQQNugdn5O6K
+         6RMlFgJzSEMOv7auRo46wjsTZXFzfcXP5s96kN4eofJiK3zb01fOSn68OZovzn7lTIQ/
+         f5mQmYUjGhJfauKSGRNs/tLsQFgOOmwdvNVen1+JGJFSUzecyQhIEleYbvPMRSF17kIy
+         H55qEfdOf5UP5uqvFZgL2KpsvDnzB2BjpbZKdC7ATDxcK0OEtMbuLFEdlkLd/2ci1UA5
+         SQ2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714419573; x=1715024373;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RXI+MXWRKKGIldf/Embfy128LRyyxhcJagthHMuW3ts=;
+        b=Fa37GKuP0I3lABgCbfOw3kARtmbwez0bdBHlav8S0/7gGTnvMmAY6Ewnvh0qDP9Bhh
+         WKZOBnzpPy+7+PbLZVojLwqWGHcxkSqgMbHcBcVbMM4XAI3xVP0V0Fx5iBr0FKsEizy3
+         pjA9BS6qLfAAxE7ux4Y+s2W+xetaC+cU0KIVQRqbX+zifkrBKOEEG0puWl5+Dg7i3jVJ
+         PjVAFEEYUKhaXvdR8z8ADymSrgZKHzoFBPkY3o3YusSpsroBzl86ki6gsA484+PfxmuB
+         aJ7CDHWJ5ssX8+KyZo2q5vu2KVp6z89TUrZ0iNSOdDwVtzmQdgEDNkGF272DgB9j0ubK
+         aIpg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8aCIHUiiwBFp5Bk1YSfD2O7XxGI/7X5LhoiN575RKLmWiusPgiiGqlvXqPC5+Ab45tZ6KNIo0y4z2yxSRBW267RQbMIS304B80nTURrJstJveBrxYySF0zdXcsPoj09SCudw+F+gA
+X-Gm-Message-State: AOJu0Yx2gNUwRE8lPNgrm5azM2SU4NXgKkqwp1xf1wnVf34Ql27O8X+J
+	WrEdlv80QCdoTH8Zg+BYlOqyFQ/YNzdbbGv6ncqZqZhnPUyH8JUV
+X-Google-Smtp-Source: AGHT+IGWpfjvznK6WhTujjscD4YN6L0AQxbNzmm1AE5SspjD0rno7TIevntaxjo8L0b9AeQnuOA3fw==
+X-Received: by 2002:a6b:db05:0:b0:7da:1a22:e832 with SMTP id t5-20020a6bdb05000000b007da1a22e832mr584954ioc.0.1714419573239;
+        Mon, 29 Apr 2024 12:39:33 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id y16-20020a056602165000b007de9f92dc57sm2325105iow.16.2024.04.29.12.39.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 12:39:32 -0700 (PDT)
+From: Jim Cromie <jim.cromie@gmail.com>
+To: jbaron@akamai.com,
+	gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	intel-gvt-dev@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org
+Cc: ukaszb@chromium.org,
+	linux-doc@vger.kernel.org,
+	daniel.vetter@ffwll.ch,
+	tvrtko.ursulin@linux.intel.com,
+	jani.nikula@intel.com,
+	ville.syrjala@linux.intel.com,
+	seanpaul@chromium.org,
+	robdclark@gmail.com,
+	groeck@google.com,
+	yanivt@google.com,
+	bleung@google.com,
+	Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v8 25/35] docs/dyndbg: explain new delimiters: comma, percent
+Date: Mon, 29 Apr 2024 13:39:11 -0600
+Message-ID: <20240429193921.66648-6-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240429193921.66648-1-jim.cromie@gmail.com>
+References: <20240429193921.66648-1-jim.cromie@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f406bac9-f4c1-4289-8239-82420cd300b8@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-On 17:16-20240429, Chintan Vankar wrote:
-> 
-> 
-> On 29/04/24 16:01, Krzysztof Kozlowski wrote:
-> > On 29/03/2024 06:31, Chintan Vankar wrote:
-> > > From: Siddharth Vadapalli <s-vadapalli@ti.com>
-> > > 
-> > > The CPSW9G instance of the CPSW Ethernet Switch supports USXGMII mode
-> > > with MAC Ports 1 and 2 of the instance, which are connected to ENET
-> > > Expansion 1 and ENET Expansion 2 slots on the EVM respectively, through
-> > > the Serdes2 instance of the SERDES.
-> > > 
-> > > Enable CPSW9G MAC Ports 1 and 2 in fixed-link configuration USXGMII mode
-> > > at 5 Gbps each.
-> > > 
-> > > Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> > > Signed-off-by: Chintan Vankar <c-vankar@ti.com>
-> > > ---
-> > > 
-> > > Link to v5:
-> > > https://lore.kernel.org/r/20240314072129.1520475-6-c-vankar@ti.com/
-> > > 
-> > > Changes from v5 to v6:
-> > > - Updated order of properties in Device Nodes based on
-> > >    https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
-> > > 
-> > >   arch/arm64/boot/dts/ti/Makefile               |  6 +-
-> > >   .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   | 81 +++++++++++++++++++
-> > >   2 files changed, 86 insertions(+), 1 deletion(-)
-> > >   create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> > > index f8e47278df43..2d798ef415e4 100644
-> > > --- a/arch/arm64/boot/dts/ti/Makefile
-> > > +++ b/arch/arm64/boot/dts/ti/Makefile
-> > > @@ -101,6 +101,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j722s-evm.dtb
-> > >   dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-> > >   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
-> > >   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-quad-port-eth-exp1.dtbo
-> > > +dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-usxgmii-exp1-exp2.dtbo
-> > >   # Build time test only, enabled by CONFIG_OF_ALL_DTBS
-> > >   k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
-> > > @@ -148,6 +149,8 @@ k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
-> > >   	k3-j721s2-evm-pcie1-ep.dtbo
-> > >   k3-j784s4-evm-quad-port-eth-exp1-dtbs := k3-j784s4-evm.dtb \
-> > >   	k3-j784s4-evm-quad-port-eth-exp1.dtbo
-> > > +k3-j784s4-evm-usxgmii-exp1-exp2.dtbs := k3-j784s4-evm.dtb \
-> > > +	k3-j784s4-evm-usxgmii-exp1-exp2.dtbo\
-> > 
-> > I have doubts this commit was ever built. It clearly fails, just like
-> > now linux-next fails.
-> > 
-> 
-> Apologies for the syntax error here, I will fix it and post next
-> version.
+Add mention of comma and percent delimiters into the respective
+paragraphs describing their equivalents: space and newline.
 
-Series dropped. Looks like it slipped my checker as well :(
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ .../admin-guide/dynamic-debug-howto.rst        | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 742eb4230c6e..7b570f29ae98 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -73,16 +73,18 @@ Command Language Reference
+ ==========================
+ 
+ At the basic lexical level, a command is a sequence of words separated
+-by spaces or tabs.  So these are all equivalent::
++by spaces, tabs, or commas.  So these are all equivalent::
+ 
+   :#> ddcmd file svcsock.c line 1603 +p
+   :#> ddcmd "file svcsock.c line 1603 +p"
+   :#> ddcmd '  file   svcsock.c     line  1603 +p  '
++  :#> ddcmd file,svcsock.c,line,1603,+p
+ 
+-Command submissions are bounded by a write() system call.
+-Multiple commands can be written together, separated by ``;`` or ``\n``::
++Command submissions are bounded by a write() system call.  Multiple
++commands can be written together, separated by ``%``, ``;`` or ``\n``::
+ 
+-  :#> ddcmd "func pnpacpi_get_resources +p; func pnp_assign_mem +p"
++  :#> ddcmd func foo +p % func bar +p
++  :#> ddcmd func foo +p \; func bar +p
+   :#> ddcmd <<"EOC"
+   func pnpacpi_get_resources +p
+   func pnp_assign_mem +p
+@@ -104,7 +106,6 @@ The match-spec's select *prdbgs* from the catalog, upon which to apply
+ the flags-spec, all constraints are ANDed together.  An absent keyword
+ is the same as keyword "*".
+ 
+-
+ A match specification is a keyword, which selects the attribute of
+ the callsite to be compared, and a value to compare against.  Possible
+ keywords are:::
+@@ -128,7 +129,6 @@ keywords are:::
+   ``line-range`` cannot contain space, e.g.
+   "1-30" is valid range but "1 - 30" is not.
+ 
+-
+ The meanings of each keyword are:
+ 
+ func
+@@ -153,9 +153,11 @@ module
+     The given string is compared against the module name
+     of each callsite.  The module name is the string as
+     seen in ``lsmod``, i.e. without the directory or the ``.ko``
+-    suffix and with ``-`` changed to ``_``.  Examples::
++    suffix and with ``-`` changed to ``_``.
++
++    Examples::
+ 
+-	module sunrpc
++	module,sunrpc	# with ',' as token separator
+ 	module nfsd
+ 	module drm*	# both drm, drm_kms_helper
+ 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.44.0
+
 
