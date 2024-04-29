@@ -1,184 +1,153 @@
-Return-Path: <linux-kernel+bounces-162765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8DB68B603D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A688B6045
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:39:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF0BD1C216B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:38:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E9AB1C22094
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12498126F0D;
-	Mon, 29 Apr 2024 17:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5C2127B7A;
+	Mon, 29 Apr 2024 17:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LZJjv8nB"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Lt+I7KYc"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F618627D
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34ED91272A7;
+	Mon, 29 Apr 2024 17:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714412286; cv=none; b=HRlaOkiEcGslt1q8vOCa7KHmticIEj+biVERIHY2YfpBSOK/GAaanvxws3LKicA29je+00LQwLTdpuWyEMeCVrb7+oYC9mlcBSqcLglMabdTq7gATsRK0n9cUlnvldUz3pnPE+2sQlYfRUrM/PAOFzQHJznxZlN2S8a2FZK4mc8=
+	t=1714412322; cv=none; b=KRJ2sY9THZuEczM51GWMv2593gwr6TcU+M+dDfN64L3iuYSF/QR/a09jWkDexoAYkSLknVvq1P7eBb9hZeSP7TM0p8UAR5fU7W+ksxRLhJVdJPhxaDWQ+wo45h9C0Gs0+8ZqzwE0ssp+mp5WP5q+95nSgzps4tjjBP3jYLOoxdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714412286; c=relaxed/simple;
-	bh=jZICQhTLjVbGoXbLAw7fdChRrXlYrhHBQwoN7fp00Zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L7UWbmuqF0ATVPCseEadLvfcviiRflAyHgZey+WJCTfj3okT8sb9vS44o93uxpLTg003+QeGMZo+7/Bt71FsabzUxt4DKQt36EejblBtE7LMbWICARZBziFFbxz1b2epOffa6CEHif5V/iLSrNIm8dVHnW+eFT/4OrfFz3iXAS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LZJjv8nB; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so4458759b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714412284; x=1715017084; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FZdX1Cezd33gwlmLv7IZxW/osMfveXEryHL7Jm8dSrs=;
-        b=LZJjv8nB5yK2CbMViEHtZlILSokwuxq5OdVsDEK8ye/foQuZHZ5xotoB14MNNuXQKM
-         umCJ1skdtCJntlrWnIwTdfb4nX3rgP4xYAE/sWi6Vdh452Oe4B83qKKnL+gQlgCqP7dY
-         N+lh+2mMEkBwUHJVbkKRD5zVshbS9L/1DViIA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714412284; x=1715017084;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FZdX1Cezd33gwlmLv7IZxW/osMfveXEryHL7Jm8dSrs=;
-        b=kHFWUo6SpjuPryD4W2+K43x1VJwF6vOz7z4z8ARNSdu9Y87g1dKzNmAJhNf5UMnUHG
-         6OmsLoATiCO/uDPXAfHa4g4lmQ5c6DSgi5u7doatooFycVUfknA3aYEty4hxPu8WL4r/
-         Z0xh8ns1nIrKwUfLoSz1hTquYS+bh0usReUWhSU6JCOhSZyrbwrv2Z1eWedVq7MnXuex
-         usndNFtIFPRs3X/Te5P9Exap7sSDzB8Vo7FhYs4IuQDqL2eWq9frqTijIT80XovVOXTq
-         +3DT7hXQ12T/tpDCAgmIMIppaf0ALmF3s63HhdaKnsfI03gwa2/1cNEopOvYVmulAs84
-         FzCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTV2+vOyyLJimcndzdXULSzcFDUMhhzGGCcQ+djADLGqBvz/9pr6rtT4xfvY7iBTJZi00ojJZ8tGA+R8le2TzSDSkZw/dEWlX3ec/4
-X-Gm-Message-State: AOJu0YyUV0C5hW3gJOdZgQmAatNhj93Dfax6ziNAlYIBDkIHvxmuBk/0
-	CH9MH9jdhNXlrQPc6NopQI8oNUhAw09hc/5HaW1pSZkftYfsx4zKjqG4tdX8sg==
-X-Google-Smtp-Source: AGHT+IG0Ug+Y9/YgxIBXiIws/D83aLQ8EE2Y9SjkanMbBtQN9P+XFAK2SptutXGuaucRfTEMzA8PzA==
-X-Received: by 2002:a05:6a00:850:b0:6f3:8479:290a with SMTP id q16-20020a056a00085000b006f38479290amr246404pfk.17.1714412284263;
-        Mon, 29 Apr 2024 10:38:04 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id le7-20020a056a004fc700b006e567c81d14sm19497081pfb.43.2024.04.29.10.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 10:38:03 -0700 (PDT)
-Date: Mon, 29 Apr 2024 10:38:03 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Erick Archer <erick.archer@outlook.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] Input: ff-core - prefer struct_size over open coded
- arithmetic
-Message-ID: <202404291037.1A42B7C6B@keescook>
-References: <AS8PR02MB72371E646714BAE2E51A6A378B152@AS8PR02MB7237.eurprd02.prod.outlook.com>
+	s=arc-20240116; t=1714412322; c=relaxed/simple;
+	bh=1x9AweOCRN6wAjRzCLfOzzcJLe5L2DBnD5eJbMilD6Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AM3Et8nPM3iMLPq21+l0O3+hIcHtSEc1hprLVNdhAL+sqK5SI+IAg3FOvQUzEj5Mz1O1k3aWzf4HQmXRqAUuakMv0uo01MpuAFJ6WfcQNrO+ZXFEqedlo5mFLqRWMF2q/Bn0v2Pc2hM7WZ9q1VGHQeM2Y3dOuxP+/o8HCvBPlGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Lt+I7KYc; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714412317;
+	bh=1x9AweOCRN6wAjRzCLfOzzcJLe5L2DBnD5eJbMilD6Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Lt+I7KYcV8IuzPU6PJpbH65QoqYW53dwofd8Ph0O7H1yKKXJ6Sfy+aOSOpJy2znx0
+	 hjmFTaacPM1ekS2VqHO7kZ51yq0wmY1QOuZeQjfj8bmZIOkeR6ko0HiF3o+2okNgyC
+	 ssveiXOsUAEiiUh32sGZancWPqxeVUjnSod91xd2dpgZWmlUeFAuXDCSa+78+X9AIT
+	 CND3mxDM0DH8mPFZHJCkNa310AdGnaG4WaPVbsW69KNNOzxQMRcDi770us6fng+8Q+
+	 V4YiQ3A+UhosXyk9buS9N10bHp7mLTQRv+qZzugQZwRXnkrYUGwzuuiymSh0kBWzNT
+	 LqzlaM025IAEw==
+Received: from [100.95.196.182] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: andrzej.p)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D485837809CE;
+	Mon, 29 Apr 2024 17:38:34 +0000 (UTC)
+Message-ID: <c9fdf07d-f434-430e-bb41-8bc8f6bf1bb8@collabora.com>
+Date: Mon, 29 Apr 2024 19:38:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS8PR02MB72371E646714BAE2E51A6A378B152@AS8PR02MB7237.eurprd02.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] media: v4l2-ctrls: Add average qp control
+To: Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+ hverkuil-cisco@xs4all.nl
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ ming.qian@oss.nxp.com, imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240425065011.105915-1-ming.qian@nxp.com>
+Content-Language: en-US
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20240425065011.105915-1-ming.qian@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 27, 2024 at 05:05:56PM +0200, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
+Hi Ming Qian,
+
+W dniu 25.04.2024 o 08:50, Ming Qian pisze:
+> Add a control V4L2_CID_MPEG_VIDEO_AVERAGE_QP to report the average qp
+> value of current encoded frame. the value applies to the last dequeued
+> capture buffer.
 > 
-> As the "ff" variable is a pointer to "struct ff_device" and this
-> structure ends in a flexible array:
-> 
-> struct ff_device {
-> 	[...]
-> 	struct file *effect_owners[] __counted_by(max_effects);
-> };
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the calculation "size + count * size" in
-> the kzalloc() function.
-> 
-> The struct_size() helper returns SIZE_MAX on overflow. So, refactor
-> the comparison to take advantage of this.
-> 
-> This way, the code is more readable and safer.
-> 
-> This code was detected with the help of Coccinelle, and audited and
-> modified manually.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
 > ---
-> Hi,
+> v2
+>   - improve document description according Hans's comments
+>   - drop volatile flag
 > 
-> The Coccinelle script used to detect this code pattern is the following:
+>   Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 +++++
+>   drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 5 +++++
+>   include/uapi/linux/v4l2-controls.h                        | 2 ++
+>   3 files changed, 12 insertions(+)
 > 
-> virtual report
-> 
-> @rule1@
-> type t1;
-> type t2;
-> identifier i0;
-> identifier i1;
-> identifier i2;
-> identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
-> position p1;
-> @@
-> 
-> i0 = sizeof(t1) + sizeof(t2) * i1;
-> ...
-> i2 = ALLOC@p1(..., i0, ...);
-> 
-> @script:python depends on report@
-> p1 << rule1.p1;
-> @@
-> 
-> msg = "WARNING: verify allocation on line %s" % (p1[0].line)
-> coccilib.report.print_report(p1[0],msg)
-> 
-> Regards,
-> Erick
-> ---
->  drivers/input/ff-core.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/input/ff-core.c b/drivers/input/ff-core.c
-> index 16231fe080b0..609a5f01761b 100644
-> --- a/drivers/input/ff-core.c
-> +++ b/drivers/input/ff-core.c
-> @@ -9,8 +9,10 @@
->  /* #define DEBUG */
->  
->  #include <linux/input.h>
-> +#include <linux/limits.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
-> +#include <linux/overflow.h>
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  
-> @@ -315,9 +317,8 @@ int input_ff_create(struct input_dev *dev, unsigned int max_effects)
->  		return -EINVAL;
->  	}
->  
-> -	ff_dev_size = sizeof(struct ff_device) +
-> -				max_effects * sizeof(struct file *);
-> -	if (ff_dev_size < max_effects) /* overflow */
-> +	ff_dev_size = struct_size(ff, effect_owners, max_effects);
-> +	if (ff_dev_size == SIZE_MAX) /* overflow */
->  		return -EINVAL;
->  
->  	ff = kzalloc(ff_dev_size, GFP_KERNEL);
-> -- 
-> 2.25.1
-> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 2a165ae063fb..7d82ab14b8ba 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -1653,6 +1653,11 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>       Quantization parameter for a P frame for FWHT. Valid range: from 1
+>       to 31.
+>   
+> +``V4L2_CID_MPEG_VIDEO_AVERAGE_QP (integer)``
+> +    This read-only control returns the average QP value of the currently
+> +    encoded frame. The value applies to the last dequeued capture buffer
+> +    (VIDIOC_DQBUF). Applicable to encoders.
+> +
 
-Yup, thanks. This looks right to me.
+What is the intended range of the values? And why? Is your intention to make it
+a hardware-agnostic control or a hardware-specific control?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Regrds,
 
--- 
-Kees Cook
+Andrzej
+
+>   .. raw:: latex
+>   
+>       \normalsize
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..1ea52011247a 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -970,6 +970,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>   	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
+>   	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Frame LTR Index";
+>   	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
+> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:			return "Average QP Value";
+>   	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
+>   	case V4L2_CID_FWHT_P_FRAME_QP:				return "FWHT P-Frame QP Value";
+>   
+> @@ -1507,6 +1508,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>   		*max = 0xffffffffffffLL;
+>   		*step = 1;
+>   		break;
+> +	case V4L2_CID_MPEG_VIDEO_AVERAGE_QP:
+> +		*type = V4L2_CTRL_TYPE_INTEGER;
+> +		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> +		break;
+>   	case V4L2_CID_PIXEL_RATE:
+>   		*type = V4L2_CTRL_TYPE_INTEGER64;
+>   		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 99c3f5e99da7..974fd254e573 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -898,6 +898,8 @@ enum v4l2_mpeg_video_av1_level {
+>   	V4L2_MPEG_VIDEO_AV1_LEVEL_7_3 = 23
+>   };
+>   
+> +#define V4L2_CID_MPEG_VIDEO_AVERAGE_QP  (V4L2_CID_CODEC_BASE + 657)
+> +
+>   /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+>   #define V4L2_CID_CODEC_CX2341X_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1000)
+>   #define V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE		(V4L2_CID_CODEC_CX2341X_BASE+0)
+
 
