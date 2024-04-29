@@ -1,117 +1,141 @@
-Return-Path: <linux-kernel+bounces-162388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1888B5A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22D0E8B5A75
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:48:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B7711C20DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:48:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FCB0B25FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FCF79949;
-	Mon, 29 Apr 2024 13:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209FD76405;
+	Mon, 29 Apr 2024 13:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xv72g4Gl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="cYHKVQPi"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF2C745C5
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D673745C5;
+	Mon, 29 Apr 2024 13:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398456; cv=none; b=lNZjrw7ADjIVrqv/EdlRUkpgaD7P38QBKOcO49qEG40AJKepAsHz98tXGAXFwUB0IxZYjj/Guxtg5+EuUfhltH9l6F0UyVXRp4pMRTEEDDzVhleDYc35vN+cBEkfrT2Nbcb/MUvBugf5Dcoiy2TzgRrAXAGse5NNNp4qO0rPKTg=
+	t=1714398452; cv=none; b=bJDspt5mPf02BtbxhslPwii8L7knqw3D1MFoGwuQV73jPG1zsGNsa5MR95b3vdH8OfkvWOeifNhvNOtETGoOqmNlAbkXLkCLHcGTbmmVemBGJaiBZQnWIGdiA0Y+IhlYWoxbWvrhkBsubXlBuZM/T5qyO8Ax0/XgaOJH6d08CPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398456; c=relaxed/simple;
-	bh=YTDBu7i4Qm3uWNrBtZ6iNRK3KTpA55FXccHlI6B3vMM=;
-	h=Content-Type:Date:Message-Id:To:Subject:Cc:From:References:
-	 In-Reply-To; b=St0WXCRYU6gvtmITLPrPebtwYFPtLCydqS97hj31v4Tjy97LCOyxacNiBrGDSJxiN0xzKduP7Ej0sjhziFuK4QjNLXR9g3ZWr8NZh+8jGoSaMg/lbg2Q23dDu9ENvlXvoB6Dtj8bg0kCQAK2Nw0CfTbYjao2hHGfPR7fQO1WyvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xv72g4Gl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4A29C4AF19;
-	Mon, 29 Apr 2024 13:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714398456;
-	bh=YTDBu7i4Qm3uWNrBtZ6iNRK3KTpA55FXccHlI6B3vMM=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
-	b=Xv72g4GlaEdk3wBng8Z5HiexlLCD8loaMEjgufAWr7g/rzguM8zgkXjP2Fvhf0W20
-	 380Us1/2fnsnNAemrg0MlTNuE65w1ocXpnyyfiOl0kkndIS7NAruS5J8auWZdw3Z+y
-	 o1nY4Go5/KENX23/KTMwixIjLdlVVinVGvWKPy1MvF+cYDB4jAdJT5MMEgYKXM2E4a
-	 XYXVFEaTxcih5FnogwMYiq6RBhloy1E/y1BpYA/Bdmx+SMFK54oddp1pOlQvnMpJNR
-	 OQs/fn7d7rlkRru4/xBUW34o6dcF05Bvu1YnVkaMyRnEDqBFFdqeFBqzBrePWoownx
-	 dqsqHedEUh2QQ==
-Content-Type: multipart/signed;
- boundary=835c43056ed51c66bddab6950631070232af469583daba94213c5b42a3fe;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Mon, 29 Apr 2024 15:47:13 +0200
-Message-Id: <D0WNIVK1DBL5.3KQOD1K2O128P@kernel.org>
-To: "Pratyush Yadav" <pratyush@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: replace unnecessary div64_u64() with
- div_u64()
-Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Dan Carpenter"
- <dan.carpenter@linaro.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240429121113.803703-1-mwalle@kernel.org>
- <mafs05xw0cn8v.fsf@kernel.org>
-In-Reply-To: <mafs05xw0cn8v.fsf@kernel.org>
+	s=arc-20240116; t=1714398452; c=relaxed/simple;
+	bh=8qW/AiTuh5RfV5Y3WsEwv1Sr3kSET/1uMKux5Eab8c0=;
+	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
+	 Content-Type:Subject; b=APwWBUtb/sKydEqXFD04le3YDMcLxA/gfkK72Q8TNa2rcy7PXhtKDEDpyC40BLDS6XlUijoxgwtU1bxyijofV09D3IVAVAg8ueWDGCAzaVFf7ypYj2TtVVN4z0AJeCs+iWf8HfGfLOlJGZKBFUBblfPUZElv0KKew9ldQzhd9kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=cYHKVQPi; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=JOScwd5emOA8f50rEfismq1Niilar7kDI+5Uq6EhCPs=; b=cYHKVQPi227WuXG120+O8hG3qn
+	XjmPCTL36uOSO+8lXNETngTWDy2ooeTc6iIGIV4yPmFBkcOM7VjDiniSTMLjeYWy0AzyDf4eUWtA/
+	1E/EZM0pe7qlFh7UOuMoHB6PEGdU+gmlDnov857ZlO7BE8UcDhR6o7r2lmYPSSGk3RxM=;
+Received: from [70.80.174.168] (port=58788 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1s1RLi-00052M-6X; Mon, 29 Apr 2024 09:47:18 -0400
+Date: Mon, 29 Apr 2024 09:47:17 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jon Ringle
+ <jringle@gridpoint.com>, ria.freelander@gmail.com, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Message-Id: <20240429094717.de45ad35814e3c618e08c36b@hugovil.com>
+In-Reply-To: <17d2cc58-cf68-430d-9248-25abe4c5b0f0@kernel.org>
+References: <20240426135937.3810959-1-hugo@hugovil.com>
+	<17d2cc58-cf68-430d-9248-25abe4c5b0f0@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-
---835c43056ed51c66bddab6950631070232af469583daba94213c5b42a3fe
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -1.1 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when
+ using prescaler
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-Hi,
+On Mon, 29 Apr 2024 08:39:22 +0200
+Jiri Slaby <jirislaby@kernel.org> wrote:
 
-On Mon Apr 29, 2024 at 3:27 PM CEST, Pratyush Yadav wrote:
-> On Mon, Apr 29 2024, Michael Walle wrote:
->
-> > Both occurences of div64_u64() just have a u8 or u32 divisor. Use
-> > div_u64() instead.
->
-> Does this improve performance or is this only for correctness?
+> On 26. 04. 24, 15:59, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > When using a high speed clock with a low baud rate, the 4x prescaler is
+> > automatically selected if required. In that case, sc16is7xx_set_baud()
+> > properly configures the chip registers, but returns an incorrect baud
+> > rate by not taking into account the prescaler value. This incorrect baud
+> > rate is then fed to uart_update_timeout().
+> > 
+> > For example, with an input clock of 80MHz, and a selected baud rate of 50,
+> > sc16is7xx_set_baud() will return 200 instead of 50.
+> > 
+> > Fix this by first changing the prescaler variable to hold the selected
+> > prescaler value instead of the MCR bitfield. Then properly take into
+> > account the selected prescaler value in the return value computation.
+> > 
+> > Also add better documentation about the divisor value computation.
+> > 
+> > Fixes: dfeae619d781 ("serial: sc16is7xx")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >   drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
+> >   1 file changed, 18 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> > index 03cf30e20b75..dcd6c5615401 100644
+> > --- a/drivers/tty/serial/sc16is7xx.c
+> > +++ b/drivers/tty/serial/sc16is7xx.c
+> > @@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
+> >   	return reg == SC16IS7XX_RHR_REG;
+> >   }
+> >   
+> > +/*
+> > + * Configure programmable baud rate generator (divisor) according to the
+> > + * desired baud rate.
+> > + *
+> > + * From the datasheet, the divisor is computed according to:
+> > + *
+> > + *              XTAL1 input frequency
+> > + *             -----------------------
+> > + *                    prescaler
+> > + * divisor = ---------------------------
+> > + *            baud-rate x sampling-rate
+> > + */
+> >   static int sc16is7xx_set_baud(struct uart_port *port, int baud)
+> >   {
+> >   	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
+> >   	u8 lcr;
+> > -	u8 prescaler = 0;
+> > +	int prescaler = 1;
+> 
+> Ugh, why do you move to signed arithmetics?
 
-See function doc for div_u64():
+Hi Jiri,
+before this patch, the variable prescaler was used to store an 8 bit
+bitfield. Now the variable meaning is changed to be used as the
+prescaler value, which can be 1 or 4 in this case. Leaving
+it as u8 would still be ok, or making it "unsigned int" maybe?
 
- * This is the most common 64bit divide and should be used if possible,
- * as many 32bit archs can optimize this variant better than a full 64bit
- * divide.
+Hugo.
 
-> Patch LGTM otherwise.
->
-> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
->
-> BTW, I also noticed that there is a do_div() call in spi_nor_write()
-> that also uses a u64 dividend and u32 divisor. I was wondering why it
-> uses do_div() and not div_u64() (I am not sure what the difference
-> between the two is) but I suppose it doesn't matter much since your
-> spring cleaning series will delete that code anyway.
-
-do_div() is a macro and is modifying the dividend in place, whereas
-div_u64() will return it. do_div() is using u32 for the divisor
-anyway.
-
--michael
-
---835c43056ed51c66bddab6950631070232af469583daba94213c5b42a3fe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZi+k4hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hNLgF+LlPVrs+XYNoNPY3HJktt+35X6xG0B4sa
-6xZL8RX95pozeOpjBoMygK1kDKUwqFOMAYDKZIyCD1kN0n0Wj7tiRpY/YCRQJjxd
-yZfQNMubH2WhzSpI0oA45LJLEfYadWaoCqg=
-=2oCk
------END PGP SIGNATURE-----
-
---835c43056ed51c66bddab6950631070232af469583daba94213c5b42a3fe--
+-- 
+Hugo Villeneuve
 
