@@ -1,135 +1,118 @@
-Return-Path: <linux-kernel+bounces-163137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDDB8B663E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:31:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3DC8B6641
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2245C1F22348
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:31:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03B281F2234F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A61D194C6D;
-	Mon, 29 Apr 2024 23:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B01194C6B;
+	Mon, 29 Apr 2024 23:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="H/fVaNW6"
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ereFXtia"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4559117BCA
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F9117BB1A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714433461; cv=none; b=e0SCj9rr34oanDk022SzNIgncoRHKD+9h6ckhFs2qhRSZie/pB8qe37CEUQ3flogyzY3Q6X8x/29h7nW32hkBtgGoLMPKS7C9Fg11fXhGe3AJbXhCIu1Fr+xeWImy7Vqh9wHhlRDr8byZrHcyGrD7dHZ6YB/v5GdKGlY2LoNjxw=
+	t=1714433490; cv=none; b=uioh/FDaO57vfResTS7y9aJOLIBh+un/8CeFFdiTcYM0n/ypQuABAs2wTPRzS7ZCi7XbVI/thWI8a0COQzb2afj1Q1j4KAzs5x6wQdAS8PsXJupvnyJ14Mi3pKP7qfLT4OHwIcZAgrMo5BFgas0xYvTDr4yzdFjux7OUBfzNod0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714433461; c=relaxed/simple;
-	bh=S+dPFVEkBSO1+Lekql8lRjMu0h5ao+3tKW3x9Y61x5g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WQWAdVmU93DgBIsOBd3XsmcrDUHFCpISTaEWoE+X2HjRfEUJaLLwHyxQdIra1EcA/5M5BGMxfDRHLhewEK1kBp11PbMGwmBK9EYtm3PSZyV7WrcVJPCrKIL9m0q7t4f2YSz1iRmrQtA1o6DRUB4e0yscaNsN9/jnEdPvyNtsPD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=H/fVaNW6; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4db24342894so1839102e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714433459; x=1715038259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XdB1a9j5b9pnV9/YAndgEj8zAneUUJ873X3soEfLy4M=;
-        b=H/fVaNW6PHLXWfQAEhfo5fNSBAvny2mVGwgE1Qvz4jpTVXz3x9puL9r7C7rEVFzCOd
-         OJoBMxv8AGi2Gwtr3/v4gOqscbN84xNtloe1NFxvrIWCyNosG4yKhScGSrbO0qu6qRK2
-         3UR90uh6k7pdHjN5F2qQMoBHZqVR2OWw4ToKzBbwsbSz/9DReqQnHvxvymBrW8PK+3DW
-         10x0/v4NbIFPp/7OrqpST/UP0P+pZW4g8UAmlGct0s412y7Oyl4oB76O+LQVEHGWtkui
-         0Aw3puXgirt0LupgMhv6uc+RVYFjfOzJJ6IzBjW5tt5sqjfTZvZCzUsE8wWm8bHAzDmh
-         M2UQ==
+	s=arc-20240116; t=1714433490; c=relaxed/simple;
+	bh=uqj4V0skS+CEC8NZm0u8vNAfU7/jX2gON652FcP3oRc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ahl9mqVEwTlxIM6lXzr9TUOBAZ+7NZMmXETwJS3Y+7KDn/BtsFOlmVjAMDF0jf2cOphS1a6odFUiQlK/7kdFq6XMCUSKCDwZf5KSb89pqldWCiSZxlIX67FxJD9TOLaZNJkMZO9UB7sO5pwEUEmm/w0kwog6NypWjgpTNH8NaXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ereFXtia; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714433488;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WSjdbinHyW1mkl/2RciXGi7LJcTI4CBgysLnfFPLy8s=;
+	b=ereFXtiaQLeAKWXtmBsuzi5QzJhHc6x+EJogTgw+pT2OLVq0O5rO6Y4CD7HCScghr9wUF/
+	09tzvqyIfRkpkFomIazxcOxyJFUZp3I8CSZOguWKC3r1stwE2d6kp6ofgO7qAOZH98M8ju
+	1anx3qLbDCvR+dlHjFP/P0oTDBrq2N4=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-378-ytkIzzI1OFu2L0SXNU7vyA-1; Mon, 29 Apr 2024 19:31:27 -0400
+X-MC-Unique: ytkIzzI1OFu2L0SXNU7vyA-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1e2a5cb5455so57818625ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:31:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714433459; x=1715038259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XdB1a9j5b9pnV9/YAndgEj8zAneUUJ873X3soEfLy4M=;
-        b=fhI9Vwm/P3qI54jKBulFAAX7r82XVGcgGZEveK5mT5blWl9kSFrJT74l3TMcnsWsZM
-         gkWIkJRnn5vmKW8NRWbiJdMg6zeSLP+Fax+G2II5bhUnLRnDgTj8+F3B1NrFc46vUQZG
-         9TMHjrEsnMxAANnYqQ3rrLMk2LgYM5J390+kH0mEwqPdqlCXv61wCHv8S5NCC0TSqsAW
-         YbOH/zJNYALE09lGUaWhDPHFmmneOXBzhe1lXpvVPbyxvqq13GCiFRm+54DjEvhPW+8N
-         E4PceMcWtvZMjxrqy/shF+cvgIYFE+h6bmqDIRmrVxjwNlBLVzqv6j+5sfQXizs3I6q+
-         krZg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXmezTJSmVrFzwNofwI7sMYroKr2Sqo/htDbHvKglcaWGYQtAujrXV5K4vV1BxdSOhplWlBqjEHr83boicp6Mc4Y/DMFjnDE2ooVOq
-X-Gm-Message-State: AOJu0YwQ07xtXYvLawoggrNtlR5+vnyLHLxFbBXTins11qlFmkcfB2Ma
-	Q1Qim/g4exInI6keWfm53k/VWn4epfe7Q8CleIDdnwAb/07JSepDatE+cICdrw2v+2ucYFMooVp
-	VEgivOvQ6xVYB668Ixuso1ouzb89H1bJBhbK9
-X-Google-Smtp-Source: AGHT+IEyRjAcGfJRvUwcUnwiNyKDxzkAamKGUS14YMsy/dxwXWe/Fei7hW9Hmpxn9s8N9fSZhCPyVeoDb9ErL8VjVLQ=
-X-Received: by 2002:a05:6122:1695:b0:4de:8eb7:a8b8 with SMTP id
- 21-20020a056122169500b004de8eb7a8b8mr11132092vkl.3.1714433457692; Mon, 29 Apr
- 2024 16:30:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714433484; x=1715038284;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WSjdbinHyW1mkl/2RciXGi7LJcTI4CBgysLnfFPLy8s=;
+        b=OWUkLt3YEhsToBWKlsRTnMDcG2NhVXNSsAikmiac0dd0egDCAdMb4SPcYerCDDKDdw
+         YQg/byNgC5Q2jZWHgwUIXrKgONmZx6e03uG9NzrZpo848FuxBU2IaGwmvIl64o5091w6
+         DfQotM/e7PsqTxV8tGWWRuTbjnG1XKLCaNGwZi4pkUcB+DV8TOTEN+NK4spT7rU1PqaZ
+         Qh6HITs3cJYOsK4lBVtWIPgZT6YL/u52xD6elGMemEyOk3o+E9QXBpJmAxMD6fGFsLe2
+         ML0aW0yhZP7ta6N2wNrJMH+jmBBUuTlCOGdR1JVu0CT0AXyutJHSDpM1t8GSo+JV5Oc1
+         9c8w==
+X-Forwarded-Encrypted: i=1; AJvYcCWlRi6gIwIXyWqPaT0FVx/VRTEtzqVKoU1E2AwbCJ/d0lfyZlQiM0i+drJoB990pDCjoD+F5tr5AegDHrht9zEbxiAtr5+pjL5VYP6t
+X-Gm-Message-State: AOJu0Yz3yoLrrGmzoJXIwIhH4vB4qKbsSyAqsWHAdHkKIRiNe1hklWsI
+	UUazEk7ULbDiEfWiS3NogSEYYzCHeK2a0E9x1ARg2e288GvDCr/CzgR4SAW1AGFMh/ssguIyORJ
+	rOUTLWgBo/i6NJ1wWch3fp32zlRnQPvA7TqvXKuX6QaJkWMnhXfRZaWUuzmBJCw==
+X-Received: by 2002:a17:903:2409:b0:1e9:a0ce:f618 with SMTP id e9-20020a170903240900b001e9a0cef618mr11564138plo.69.1714433484114;
+        Mon, 29 Apr 2024 16:31:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF3e9Pfy4WGNwSUUoxTKAPNsdqjkvEKIg+2mxHAdsBmatNV2ftHrHQ/ozCS3sFtSigko90WTQ==
+X-Received: by 2002:a17:903:2409:b0:1e9:a0ce:f618 with SMTP id e9-20020a170903240900b001e9a0cef618mr11564121plo.69.1714433483816;
+        Mon, 29 Apr 2024 16:31:23 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id u17-20020a17090341d100b001eb3d459143sm5443739ple.48.2024.04.29.16.31.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 16:31:23 -0700 (PDT)
+Message-ID: <4dbd2f9e-0769-4b9f-89af-d864f404c86a@redhat.com>
+Date: Tue, 30 Apr 2024 09:31:18 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
- <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
- <20240428232302.4035-1-hdanton@sina.com> <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
- <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
- <Zi9Ts1HcqiKzy9GX@gmail.com> <Zi-l8xKhMbdJ-NBo@krava>
-In-Reply-To: <Zi-l8xKhMbdJ-NBo@krava>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Mon, 29 Apr 2024 16:30:46 -0700
-Message-ID: <CALCETrUUOU55ctJwxZeV7N-a_hadV7ejYnacEDbhmc5PFb0fvw@mail.gmail.com>
-Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
- page fault code
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Hillf Danton <hdanton@sina.com>, Peter Anvin <hpa@zytor.com>, Adrian Bunk <bunk@kernel.org>, 
-	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, andrii@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] vhost: Cleanup
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ jasowang@redhat.com, shan.gavin@gmail.com
+References: <20240429101400.617007-1-gshan@redhat.com>
+ <20240429144955-mutt-send-email-mst@kernel.org>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240429144955-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 29, 2024 at 6:51=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Mon, Apr 29, 2024 at 10:00:51AM +0200, Ingo Molnar wrote:
->
-> SNIP
->
-> > The attached patch looks like the ObviouslyCorrect(tm) thing to do.
-> >
-> > NOTE! This broken code goes back to this commit in 2011:
-> >
-> >   4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation =
-faults")
-> >
-> > ... and back then the reason was to get all the siginfo details right.
-> > Honestly, I do not for a moment believe that it's worth getting the sig=
-info
-> > details right here, but part of the commit says:
-> >
-> >     This fixes issues with UML when vsyscall=3Demulate.
-> >
-> > ... and so my patch to remove this garbage will probably break UML in t=
-his
-> > situation.
-> >
-> > I do not believe that anybody should be running with vsyscall=3Demulate=
- in
-> > 2024 in the first place, much less if you are doing things like UML. Bu=
-t
-> > let's see if somebody screams.
-> >
-> > Not-Yet-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Link: https://lore.kernel.org/r/CAHk-=3Dwh9D6f7HUkDgZHKmDCHUQmp+Co89GP+=
-b8+z+G56BKeyNg@mail.gmail.com
->
-> fwiw I can no longer trigger the invalid wait context bug
-> with this change
->
-> Tested-by: Jiri Olsa <jolsa@kernel.org>
+On 4/30/24 04:50, Michael S. Tsirkin wrote:
+> On Mon, Apr 29, 2024 at 08:13:56PM +1000, Gavin Shan wrote:
+>> This is suggested by Michael S. Tsirkin according to [1] and the goal
+>> is to apply smp_rmb() inside vhost_get_avail_idx() if needed. With it,
+>> the caller of the function needn't to worry about memory barriers. Since
+>> we're here, other cleanups are also applied.
+>>
+>> [1] https://lore.kernel.org/virtualization/20240327155750-mutt-send-email-mst@kernel.org/
+> 
+> 
+> Patch 1 makes some sense, gave some comments. Rest I think we should
+> just drop.
+> 
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Sure, v3 has been sent with PATCH[v2 2/3/4] dropped. Please take a look
+when you getting a chance.
+
+v3: https://lore.kernel.org/virtualization/20240429232748.642356-1-gshan@redhat.com/T/#u
+
+Thanks,
+Gavin
+
 
