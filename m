@@ -1,96 +1,191 @@
-Return-Path: <linux-kernel+bounces-162658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45808B5EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:10:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D11D8B5EA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:13:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 217F61C21393
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:10:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 614201C2114E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8717684038;
-	Mon, 29 Apr 2024 16:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158E084A27;
+	Mon, 29 Apr 2024 16:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gw4y/hv0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O+/8k8U+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C736714A8D;
-	Mon, 29 Apr 2024 16:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CFA14A8D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714407000; cv=none; b=Fi44Kktl77AAps0ogrCSru4RYUvaTfD7F9QGkcpkM3MR1E7OF9k+oiqxA2wExHaMUNvDec5jLlY5pnvKDULKfGXDr8e1xjbkZnJYDgwN5+ae8sjMJFPBLnSJ+uJDCEYb/eBu605mtsNMP1B1drEs/Gbi5+L0ZcptCofHN+sD4Bc=
+	t=1714407190; cv=none; b=YXFg+dTrrpi3hGiLjL3ybS9T7RT4/oIPsVNjIiVoZTe6m33Hd6zmyl0E8dmQEsImhjHmluqw3N6mFir8i4U9e28YCZxZLgd5BfyBwfMpevATB81E77jgBpC3LlUnPmyF5A9Erj1NR7qvMo/aikDNMGdoD9D2RNmlmRJT1yYwv2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714407000; c=relaxed/simple;
-	bh=ZAtGzg5xpGyRTDWRrb2P98Cvugc+fB+eaQXGW6P1/hE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qpvpOQjG5YT2CttgKF/Z1siSQcpJe5qMFyBLuv/KHfYuAfeUTPPPevlw553mHOF7jSAE2NpOvSwcSRLljOJ8cUqXG2aaU9epvImKTldfwrZpOPN0F0DkYfQt20horjeYm60eIageB6OHid9xXnbkMP+J1FadDXfkVXiWzLkq7o8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gw4y/hv0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C47FC113CD;
-	Mon, 29 Apr 2024 16:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714407000;
-	bh=ZAtGzg5xpGyRTDWRrb2P98Cvugc+fB+eaQXGW6P1/hE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gw4y/hv0on/UyzNmi4cz6milNX1OQfPdqWJ//xYpNdrCAvZV7BZvi6kywVg10g7Os
-	 8xP0emuan30Ddh4d16M+uYPMpVAgiOGtvWmxGTUft3mY/o7zfGqt/MngKsEr6XHzhG
-	 z3O3uIwbKliJxxrnbqJ8ekwtga9LX7zveXVEHnzToracaCaU/cGdsvVLP7HYIutAWC
-	 G2LbUuUkqvFfZMNBLmzypobpICmnx7beK2au/htN8cxTzdS8zTORVVXIXC/iPxv7VH
-	 8oaRjZzH/g69yHwiRY/XdNLiWv1Y/mvShsSyj9tiTgQWAWzUSNJhWTjr11lKg+uPN1
-	 iH8G1tWMCIGCw==
-Date: Tue, 30 Apr 2024 01:09:58 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Alina Yu <alina_yu@richtek.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	johnny_lai@richtek.com, cy_huang@richtek.com
-Subject: Re: [PATCH 1/2] regulator: dt-bindings: rtq2208: Add property to get
- ldo of RTQ2208 is adjustable or not
-Message-ID: <Zi_GVrak1a8e6v7r@finisterre.sirena.org.uk>
-References: <1714385807-22393-1-git-send-email-alina_yu@richtek.com>
- <1714385807-22393-2-git-send-email-alina_yu@richtek.com>
+	s=arc-20240116; t=1714407190; c=relaxed/simple;
+	bh=MSJC2tmdrpYjP9+1c6IUjgFjxAExkKqORRXOeXVJBNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RkbY/RZRtoFEQjsFRkpjPbDk3RwWA375gcxEfYKxGZZ6FIQ6/9ZhHhhDiLhLPV1/GSMVidDvcVhcCDjumB9o7n+LxS3PSDpuld2vzGI5pJehHgmciUOUV/Jf6fURtJs5y/Rc6sdwEJRooqbodv2cf6WcbLv6BMG671UKbhv4mSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O+/8k8U+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714407187;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1ycdCIJv2Qgq3dB8EJnLUeXZnIrFoZVo1CT+RzFPB/g=;
+	b=O+/8k8U+EDZ4q/aNSCN/oqjUb8K7FJdnxySS2ME1DvEIomiHj3FIrq16UCq4fqS0ojyvpi
+	wAEC50hFyc5aeOTeWbPLnbVPCqzMASGDVVxIYI7OeWXNVof67Mwo3WalbWy7SwIdmqppXP
+	GnIPXyjINC+fcwA/53XyHPleZE5scio=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-NW2o8kP8NgCXfD_TM0UwwA-1; Mon, 29 Apr 2024 12:13:04 -0400
+X-MC-Unique: NW2o8kP8NgCXfD_TM0UwwA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-34ccedec528so1242661f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:13:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714407180; x=1715011980;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1ycdCIJv2Qgq3dB8EJnLUeXZnIrFoZVo1CT+RzFPB/g=;
+        b=pNRLLvAxO51QzENRbMrqz3GSaM4R4d/eZxgf5crpsDRnxHJzXp03swHOU0reZG7RvX
+         38zJrjteKukbOR602jYgfisxXTI8kx9hSNKFsMGnmn9SPveqB1ThMYlD8bc6VmGsuAV5
+         bcpTSUmLM9q9UZawIFgBZJn5WB+L4Y4miRzfoL7QA7mRD9ySDLN+cqj7nSGTtW7sLOrY
+         SBIHZ+SM3Yy26W1eCeyWVv29gLy51vhr4wq3lY25V4xC1xppMCnLa5X3Nma23cGCCoxz
+         EYqQjg95a861PhcLv3d8LAolVDq03OOukXe7drLA1YBgmvveQameXxG4pmZVI/Glw9jb
+         vc6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWn0HWQ+ICp0eHyUGJRY7fKM6GGS+o1ARF56xZ/zMxvpbq2wPHzBTROoprrD6BrvrxUEq9zeNtYLrlgcIx6evfD+xIbt4zPb7RITPrl
+X-Gm-Message-State: AOJu0YxhAhb+2ZzQw86O0zoq4bUCY9iBNB46uaUe6x6J1Y70f3fgj6OJ
+	LJ5w0U5gbyTGttSM2OMAe2+CnITB2CkRlt9gLX9fkJHrbam1DgTDKTeXH4C/oglggEPeJ0L0djm
+	gZvnxDObt0dkVqAYuQLpT4f76DXzHJnruesDrOnsoNKd+wtNSKzo02xCHzLE2aQ==
+X-Received: by 2002:a05:6000:1a8c:b0:34c:f3cb:64d5 with SMTP id f12-20020a0560001a8c00b0034cf3cb64d5mr4014934wry.46.1714407180286;
+        Mon, 29 Apr 2024 09:13:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHJpEQRAWCq2NpEsiaWpLeyQo2L3sMdtvcZ9PVkl2jroFFIrPt5sj5G3Vm86QXy1djezG3RKA==
+X-Received: by 2002:a05:6000:1a8c:b0:34c:f3cb:64d5 with SMTP id f12-20020a0560001a8c00b0034cf3cb64d5mr4014913wry.46.1714407179840;
+        Mon, 29 Apr 2024 09:12:59 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f26:e700:f1c5:285b:72a5:d8c8? (p200300d82f26e700f1c5285b72a5d8c8.dip0.t-ipconnect.de. [2003:d8:2f26:e700:f1c5:285b:72a5:d8c8])
+        by smtp.gmail.com with ESMTPSA id q4-20020adffec4000000b00347f6b5bb6dsm29828656wrs.30.2024.04.29.09.12.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 09:12:59 -0700 (PDT)
+Message-ID: <ea96a7ec-03b4-45f2-8d2d-14ead6f5075c@redhat.com>
+Date: Mon, 29 Apr 2024 18:12:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1k+RQz/jK2KhQiZu"
-Content-Disposition: inline
-In-Reply-To: <1714385807-22393-2-git-send-email-alina_yu@richtek.com>
-X-Cookie: lisp, v.:
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
+ PTE_PROT_NONE bits
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240429140208.238056-1-ryan.roberts@arm.com>
+ <20240429140208.238056-2-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240429140208.238056-2-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 29.04.24 16:02, Ryan Roberts wrote:
+> Currently the PMD_PRESENT_INVALID and PTE_PROT_NONE functionality
+> explicitly occupy 2 bits in the PTE when PTE_VALID/PMD_SECT_VALID is
+> clear. This has 2 significant consequences:
+> 
+>    - PTE_PROT_NONE consumes a precious SW PTE bit that could be used for
+>      other things.
+>    - The swap pte layout must reserve those same 2 bits and ensure they
+>      are both always zero for a swap pte. It would be nice to reclaim at
+>      least one of those bits.
+> 
+> Note that while PMD_PRESENT_INVALID technically only applies to pmds,
+> the swap pte layout is common to ptes and pmds so we are currently
+> effectively reserving that bit at both levels.
+> 
+> Let's replace PMD_PRESENT_INVALID with a more generic PTE_INVALID bit,
+> which occupies the same position (bit 59) but applies uniformly to
+> page/block descriptors at any level. This bit is only interpretted when
 
---1k+RQz/jK2KhQiZu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+s/interpretted/interpreted/
 
-On Mon, Apr 29, 2024 at 06:16:46PM +0800, Alina Yu wrote:
-> Since there is no way to check is ldo is adjustable or not.
-> 'richtek,use-fix-dvs' is added for that. user is supposed to know whether vout of ldo is adjustable.
+> PTE_VALID is clear. If it is set, then the pte is still considered
+> present; pte_present() returns true and all the fields in the pte follow
+> the HW interpretation (e.g. SW can safely call pte_pfn(), etc). But
+> crucially, the HW treats the pte as invalid and will fault if it hits.
+> 
+> With this in place, we can remove PTE_PROT_NONE entirely and instead
+> represent PROT_NONE as a present but invalid pte (PTE_VALID=0,
+> PTE_INVALID=1) with PTE_USER=0 and PTE_UXN=1. This is a unique
+> combination that is not used anywhere else.
+> 
+> The net result is a clearer, simpler, more generic encoding scheme that
+> applies uniformly to all levels. Additionally we free up a PTE SW bit a
+> swap pte bit (bit 58 in both cases).
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-As Krzysztof said we already know if the voltage can change since in
-order for Linux to change the voltage there must be a voltage range
-specified (and see comment on patch 2).
+Not an expert on all the details, but nothing jumped at me.
 
---1k+RQz/jK2KhQiZu
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Cheers,
 
------BEGIN PGP SIGNATURE-----
+David / dhildenb
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYvxlUACgkQJNaLcl1U
-h9DfNgf8ClE+rYHKggStfAAkgeIFkBwgVTxO1I85bFXhSuclF7fd7Y6sE0sTwNtr
-QtWcDvwPxbAEKwqJwouq/C3ktCeNVQVGKkGpRaUnQZ+FjqKN2ZS6CImRWb697D6l
-tuwIjMt660KtNHtDCDLvXODd2OaVUkxCfL55C94hHgURP0+C8D43KjBasw5lHz7j
-fdBpUC84egX4zFpDfTCmATRVIjCLXIxooUEfog6NnoM+7gZV3xlVOS7mDoCgoUcQ
-t3ji3C+JZqo3sEb7cuYiuQcZAhAOU85adO7mo9YLzpKZKSOxoH7u4PpR9mUqG+5m
-5X7DT0Z3/Ekv5DSu6KoR9WEQTTMWkQ==
-=rZd1
------END PGP SIGNATURE-----
-
---1k+RQz/jK2KhQiZu--
 
