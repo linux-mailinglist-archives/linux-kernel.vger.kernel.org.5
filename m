@@ -1,123 +1,110 @@
-Return-Path: <linux-kernel+bounces-161938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D46B58B5394
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:56:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B0B38B5397
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2061B21AFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:56:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D90A3281237
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779591805A;
-	Mon, 29 Apr 2024 08:56:11 +0000 (UTC)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549151805E;
+	Mon, 29 Apr 2024 08:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="USY0V7BX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7FD17BB4;
-	Mon, 29 Apr 2024 08:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAEE17C61;
+	Mon, 29 Apr 2024 08:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714380971; cv=none; b=pBR2XTcKVq3tJkTurkNhKMEjCuKF9tFboR+nfcwwxldZv3uzPTv5lEDquqOaLf+kTw/A48IlkJ3U2NZLhI8gUN3qcsmyQProU118hcdO2j2XfTOWGMroCz4GO61KcaRUV3C52w0eNA7IiKHE3oHsU0V9sTJSemwkoXH0bdAFnSw=
+	t=1714381083; cv=none; b=OXp89+BV6VrdkINdV4fh2NTzElg5vOs3ZS48fA0aSMRhfk1F5yrIu8Geg2zCLAK7XdpG25QEYmlsMXpzSSJe0vhwtnOQBuAULOe330LY971hlp+VGGcdEarLFR3ISAVaWb17FhHe+jy4aVT7WgVD70X+du8FRvpfmp+k4OLPcJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714380971; c=relaxed/simple;
-	bh=n30UgSV1qzNHJ8b0nte2dL/KqEDeOoQVGhz9ly56ikw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RJ7UfgoIGbShRe2RENKEdw8WCnKbPaogpKOLC1+Xl66ruF0CWthHfJnp6DyN+yO3AC1PXI8wEGNe8CNtgFzeQmB6lQCjrO6vPU61oE2e6rp8jsD0juvnZXs3KXQTx7KyVOjEt541oHSOUadz3+wMXv1THUzg59g4l7bp0HCbGH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso6509750e87.2;
-        Mon, 29 Apr 2024 01:56:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714380967; x=1714985767;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=42P8a0IUByEq2e/patLP18PTczZWOHTFsxOc5Y3WezM=;
-        b=LMQ6bmnAJgc84QzxeyTmGzYJq+l4b/EHzd3ypdYYhaboPOe4FCgFlkiDYQXANxfeRr
-         /rftTWUyxjHbH+fu8aF17M8KVNfR8n518ppXNo/6XgMyD6yo6X9IDXDr3Ep/RC0O7wF7
-         YMP9SokdPMGto5Sg8uSIFnQQT+OXchAKXXVaLcAHcGq+bdtLbG1/P2THeOjd/3Xso/pd
-         iiQBk+V0dxmOuyBly1KWqL6uCtMjytITvk/ktJ7n41uHV6YRtytiEKfciQHAmB1djfAd
-         VQJr7secmFOTFi//gbskuHrjXXfNaWkpV34tkRSFmGokcV3fEGQofoVWtBNtO94nHzLI
-         NG4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVu1RQYC0WNp82gqJunAhi68lSVhloyEGIn2l1aOioI6lhao6UIEUHkr/5YoEGOWfd7B9ip0TTFD7P4uuN3rHU5YRA2SgLSdqg84FtbTvEuOuCK0i6sY2WiO+0oWwq5CUfWSdyC
-X-Gm-Message-State: AOJu0YxfycMva69u6Vru/eZgkSZxOrmMWCnH/oh5ait/gZQWpIn4ezQr
-	JNfG9LdD3t9SX7cXkuD8fnEhSIhDMjB7xaxPE1Xl8ISGcFgior8T
-X-Google-Smtp-Source: AGHT+IG3f/cLozETnEYH5jic5ZXorevBtIrIoPSpZIwUNaNbuJGlI7FdFyZTjt18QbaEx7EI3Hcelw==
-X-Received: by 2002:a19:5517:0:b0:51d:4c8a:bbdb with SMTP id n23-20020a195517000000b0051d4c8abbdbmr3768447lfe.3.1714380967255;
-        Mon, 29 Apr 2024 01:56:07 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm10995436ejx.107.2024.04.29.01.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 01:56:06 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: leit@meta.com,
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: loopback: Do not allocate tstats explicitly
-Date: Mon, 29 Apr 2024 01:55:58 -0700
-Message-ID: <20240429085559.2841918-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714381083; c=relaxed/simple;
+	bh=M4a//tB14SY34//ET05IxTBHfSZ0qWozPe6V/QGR5G0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K41i45rheVd1uotf+kmDtra4muPzJl1DrEV0KLyiv3YSk1+HH8YEqAAPNFjCV3vhXtc7CMIYr7/GYdKU7PUTDQHQ+txg8T3HZ9kgdfnoLOcozBcdL5jfBeoYjXd9zaVIksbcjNoA5Af94AHisy/8NRI0RGbxrQbgvcJvcG19p34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=USY0V7BX; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714381082; x=1745917082;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=M4a//tB14SY34//ET05IxTBHfSZ0qWozPe6V/QGR5G0=;
+  b=USY0V7BXnEai50hd5NcAB4c2cjp3aDAHETqitegFGYiJmRi3d4dS9Ez+
+   3N520+wC3GLgqplTgJBloiYq2wEUgr2Ysi3bW0kb8VwVMjIxZFdYP95rm
+   SRO9HFdVVgfH5J39EBjoeTyfvTVuPl255zam3l3+TdjycBmNszD26rQU7
+   fE9v+7GfAvoYfL7uzYWXAz/W+Si65XY8/5xtebcVxsE56wINkUf3M6sWH
+   egBdd726hmia2OOy6t3P2TiVfT5ilT/Vvpf831QDTcaiwzXMwqjeHtsOe
+   Gs+IPq0Bjti/3lmZ7x79OsMnxp+oMF2+AfZGvMdOG/JfJ96ZBftwbCgn0
+   Q==;
+X-CSE-ConnectionGUID: ZVXIlvQvQ+OTQg1NTXBnig==
+X-CSE-MsgGUID: 6Y1dhmgbQa2xdojczxBf9w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="13821087"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="13821087"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:58:01 -0700
+X-CSE-ConnectionGUID: yOtsl2o6RJuzC0Pn19N3sg==
+X-CSE-MsgGUID: 84T2sAI1Slenx/37+HTUTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26035129"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:58:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s1Mph-00000002GMQ-2bOl;
+	Mon, 29 Apr 2024 11:57:57 +0300
+Date: Mon, 29 Apr 2024 11:57:57 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v2] ACPI: Move acpi_blacklisted() declaration to
+ asm/acpi.h
+Message-ID: <Zi9hFbrIfyDhrA5R@smile.fi.intel.com>
+References: <20240429040441.748479-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429040441.748479-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+On Sun, Apr 28, 2024 at 09:04:41PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> The function acpi_blacklisted() is defined only when CONFIG_X86 is
+> enabled and is only used by X86 arch code. To align with its usage and
+> definition conditions, move its declaration to asm/acpi.h
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Remove the allocation in the loopback driver and leverage the network
-core allocation instead.
+..
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/loopback.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+>  extern char acpi_video_backlight_string[];
+>  extern long acpi_is_video_device(acpi_handle handle);
+> -extern int acpi_blacklisted(void);
 
-diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
-index f6eab66c2660..2b486e7c749c 100644
---- a/drivers/net/loopback.c
-+++ b/drivers/net/loopback.c
-@@ -141,9 +141,6 @@ static const struct ethtool_ops loopback_ethtool_ops = {
- 
- static int loopback_dev_init(struct net_device *dev)
- {
--	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
--	if (!dev->lstats)
--		return -ENOMEM;
- 	netdev_lockdep_set_classes(dev);
- 	return 0;
- }
-@@ -151,7 +148,6 @@ static int loopback_dev_init(struct net_device *dev)
- static void loopback_dev_free(struct net_device *dev)
- {
- 	dev_net(dev)->loopback_dev = NULL;
--	free_percpu(dev->lstats);
- }
- 
- static const struct net_device_ops loopback_ops = {
-@@ -191,6 +187,7 @@ static void gen_lo_setup(struct net_device *dev,
- 	dev->header_ops		= hdr_ops;
- 	dev->netdev_ops		= dev_ops;
- 	dev->needs_free_netdev	= true;
-+	dev->pcpu_stat_type	= NETDEV_PCPU_STAT_LSTATS;
- 	dev->priv_destructor	= dev_destructor;
- 
- 	netif_set_tso_max_size(dev, GSO_MAX_SIZE);
+I would replace it with a blank line (to me it seems the above and below are
+different groups from semantic point of view, but Rafael may correct me).
+
+>  extern void acpi_osi_setup(char *str);
+>  extern bool acpi_osi_is_win8(void);
+
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
+
 
 
