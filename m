@@ -1,77 +1,58 @@
-Return-Path: <linux-kernel+bounces-163083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 722E98B64FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:58:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E198A8B64FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2703E2831CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:58:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0248DB21B01
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD589190696;
-	Mon, 29 Apr 2024 21:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2EAE190686;
+	Mon, 29 Apr 2024 21:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZDD1p7Ek"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ixxDWaYp"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B84190682
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECE81779BD
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714427909; cv=none; b=qJ/+BCUJfCO0nhOQ11DKr5HiE0uzeDUyz16ASRZJzbKLP5nDnB7VUkBGfMXiSiJdg8BOOsRybezIpBOsx4Kl1+2dGPOQzBwsaeHpF23o9jL2F43x0qc0jLZlb1fxlHQNemgAq1oPGFzXc75EwNVtRjE7uBrEuP4JXCtolDos/iA=
+	t=1714427971; cv=none; b=XQY6Id57g32SuctaX0FvQsM8XuENyIpvVQ56Li9B5bMd6yBw2GJjxrVUfuaAWUsYu6xbGcTxUGaNDMVNHTITa0wkM2Hul+JfpfrESY3P9hEch2w81Sw3Wk5S5EFsS5X/6xEhLMLvbZOX97ovm4Mx7JerEMkhc9lM9AgizHZldOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714427909; c=relaxed/simple;
-	bh=i6lqpid3/ifH983zglzaRmJlc7nvZzdwdzL3SlBT1GI=;
+	s=arc-20240116; t=1714427971; c=relaxed/simple;
+	bh=Sm/QhYaANzS96GQWMRGXzHvIopnHpQxaOfBEBSIv3tU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uSDMls2euWv4SmRQ5T8Qi1hpKRb3WhzJAShFzx5MBi5oNIWNFCpvEueyYUNS1RSifJWrRvYyq79IJlXwpXgKdpPii2Mjczy9Hbz2gqmLj0W6U+kL9kfikvdnLiCPJ8BFgmLFUyggM5hExo0jHn1pWHBzXzZgUrEeAz9mlaT8Idg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZDD1p7Ek; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so4276257b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714427906; x=1715032706; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pt4pmVDe1gHqk8GSYJUn0euBaNvq8Bf6JSXO1Xsdf5U=;
-        b=ZDD1p7EkJ56UE59hBbkIXdaJny5SS7tlrgfC95duBrz9Jy/R1boGAkiR3UTX8rLp3l
-         CD5bhyv129qrcu3CneUU2vuGss+Nj5M+f8MMPk3Cvu5PMnE4s1Y8FYNDfCgz2jlR1Gu6
-         MQkbj65WMSZJ2GGDsfviDw40TgIDVVVQgynXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714427906; x=1715032706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pt4pmVDe1gHqk8GSYJUn0euBaNvq8Bf6JSXO1Xsdf5U=;
-        b=NlH7WlySUEbuS8xfKsatrdMT2OjkR6xFQtFs3TxGNY0GVzIsDTdzGLZUuPvHdqkh6d
-         mp7ns19QdZLDFv/ye1Lqw3xUDfrh6dh8/6ZA99tD2MVFuyLOz23eBzuFCEcg6wb5at7y
-         DyW+mK9hCPRj2/rgBeB6Y6VzwIcszKRdaWsiZ5Im3U4sKVcpu+TwWiF29jCncpUcDwwI
-         ZEYvUODTpQNY928nEyAtOUM5zlqM6t2shKv3+wPhtH+EixSEAVgPrU2d9C6fJTMw4tQE
-         simWshJyEC2pTS2QqZq8wS5UPFVgWs9dMbSSW7Kap68JtXcH27Dw0ApDrkSCb0DC+Jj1
-         yiDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZsODdZN/4dICzk1qlCBmk5uVg9ORscet8iJoMyjAuBj3R+C5pF+El059WyE5OrsY6y2mGk2bleBt1UoQhK+hSvOx9IPnebj6HLImU
-X-Gm-Message-State: AOJu0Yz0SPZz2FliLs/mokxQTIvK2UMAkOL8B1pOYQIPSYW3A77XUd40
-	l1R87sa1K1k0LN+FRvqyJQUo6YfSLBvKPvwxrPH4k9tJSdx5+2vt8cHM8wE/lw==
-X-Google-Smtp-Source: AGHT+IEsWmJgVhdteBNFpcp99zENVzWfPLc9Uvz/OFqNT+c1CKX09b/Qwv6MZ23E7a+08D6po9slVQ==
-X-Received: by 2002:a05:6a00:2315:b0:6ec:ec8f:d588 with SMTP id h21-20020a056a00231500b006ecec8fd588mr13038861pfh.16.1714427906391;
-        Mon, 29 Apr 2024 14:58:26 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ff3-20020a056a002f4300b006eab6f3d8a9sm19709557pfb.207.2024.04.29.14.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 14:58:25 -0700 (PDT)
-Date: Mon, 29 Apr 2024 14:58:25 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] PM: hibernate: replace deprecated strncpy with strscpy
-Message-ID: <202404291457.8E79DC5@keescook>
-References: <20240429-strncpy-kernel-power-hibernate-c-v1-1-8688f492d3e6@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QZ76zaC+CG1/15+wh68J9McIVUX6noUXrjXOP/EFRUih9uFrHKHBgPbKxlqDC5fZYOruk4wvn8tkUk1CN3GJdOStCXFdAnX6PwjuNAi4vDLo6TMntwaPm/qQDGLiDpAyEQ/s9ypcemSeraxz6QoPwv7+EY8oYH/W3IxTkuommR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ixxDWaYp; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 29 Apr 2024 14:59:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714427967;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2oq8GpknbuUizjxkKnYJjGUQCiIjEtDOZULkmvv0Vfs=;
+	b=ixxDWaYpir3Wna7zhULD0rDFlZCTLryAoW7WU11UVrwuHqwNsrvNiRagbc6zExkzSrcFzK
+	IKfT0T/zXOd2uOg4/R6TnRAOMeZ59JeTJyWRoWhzm3thd3XZq7KC0lQUSUcOwDEs06tvF2
+	wQ2ttgJn8cCQ2VMbm5P1Pr4rGyoxPnE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] memcg: dynamically allocate lruvec_stats
+Message-ID: <fxdydsynztkijk666x6rjjnokykigop5e77erb6jvflsxr32sx@tezn4jgjsp5v>
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
+ <20240427003733.3898961-3-shakeel.butt@linux.dev>
+ <Zi_BsznrtoC1N_lq@P9FQF9L96D>
+ <fs26xbxmaylxwpv35pb3aak2ilb352glnabsi3wq4havqzlg4j@62cltkwiup4z>
+ <ZjAK32S2eG_sI-kv@P9FQF9L96D>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,61 +61,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429-strncpy-kernel-power-hibernate-c-v1-1-8688f492d3e6@google.com>
+In-Reply-To: <ZjAK32S2eG_sI-kv@P9FQF9L96D>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 29, 2024 at 08:50:30PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Mon, Apr 29, 2024 at 02:02:23PM -0700, Roman Gushchin wrote:
+> On Mon, Apr 29, 2024 at 12:46:32PM -0700, Shakeel Butt wrote:
+> > On Mon, Apr 29, 2024 at 08:50:11AM -0700, Roman Gushchin wrote:
+> > > On Fri, Apr 26, 2024 at 05:37:28PM -0700, Shakeel Butt wrote:
+> > [...]
+> > 
+> > > > +	return x;
+> > > > +}
+> > > > +
+> > > >  /* Subset of vm_event_item to report for memcg event stats */
+> > > >  static const unsigned int memcg_vm_event_stat[] = {
+> > > >  	PGPGIN,
+> > > > @@ -5492,18 +5546,25 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+> > > >  	if (!pn)
+> > > >  		return 1;
+> > > >  
+> > > > +	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
+> > > > +					node);
+> > > 
+> > > Why not GFP_KERNEL_ACCOUNT?
+> > > 
+> > 
+> > Previously struct lruvec_stats was part of struct mem_cgroup_per_node
+> > and we use GFP_KERNEL to allocate struct mem_cgroup_per_node. I kept the
+> > behavior same and if we want to switch to GFP_KERNEL_ACCOUNT, I think it
+> > should be a separate patch.
 > 
-> This kernel config option is simply assigned with the resume_file
-> buffer. It should be NUL-terminated but not necessarily NUL-padded as
-> per its further usage with other string apis:
-> |	static int __init find_resume_device(void)
-> |	{
-> |		if (!strlen(resume_file))
-> |			return -ENOENT;
-> |
-> |		pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
+> Agree. Here is the patch:
+
+Awesome, I will pull this in my v3 post.
+
 > 
-> Use strscpy [2] as it guarantees NUL-termination on the destination
-> buffer. Specifically, use the new 2-argument version of strscpy()
-> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
-> strscpy()").
+> --
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> From fd6854c0b272c5314bce6c9dee7d3c8f8cee3a86 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <roman.gushchin@linux.dev>
+> Date: Mon, 29 Apr 2024 13:57:26 -0700
+> Subject: [PATCH] mm: memcg: account memory used for memcg vmstats and lruvec
+>  stats
+> 
+> The percpu memory used by memcg's memory statistics is already accounted.
+> For consistency, let's enable accounting for vmstats and lruvec stats
+> as well.
+> 
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
 > ---
-> Note: build-tested only.
+>  mm/memcontrol.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> Found with: $ rg "strncpy\("
-> ---
->  kernel/power/hibernate.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index 43b1a82e800c..0a213f69a9e4 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -1361,7 +1361,7 @@ static int __init resume_setup(char *str)
->  	if (noresume)
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d11536ef59ef..2fe25d49cfaa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5661,8 +5661,8 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+>  	if (!pn)
 >  		return 1;
 >  
-> -	strncpy(resume_file, str, 255);
-> +	strscpy(resume_file, str);
->  	return 1;
->  }
+> -	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
+> -					node);
+> +	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats),
+> +					GFP_KERNEL_ACCOUNT, node);
+>  	if (!pn->lruvec_stats)
+>  		goto fail;
 >  
-
-Yup, this looks correct to me. resume_file is:
-
-static char resume_file[256] = CONFIG_PM_STD_PARTITION;
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+> @@ -5733,7 +5733,8 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+>  		goto fail;
+>  	}
+>  
+> -	memcg->vmstats = kzalloc(sizeof(struct memcg_vmstats), GFP_KERNEL);
+> +	memcg->vmstats = kzalloc(sizeof(struct memcg_vmstats),
+> +				 GFP_KERNEL_ACCOUNT);
+>  	if (!memcg->vmstats)
+>  		goto fail;
+>  
+> -- 
+> 2.43.2
+> 
 
