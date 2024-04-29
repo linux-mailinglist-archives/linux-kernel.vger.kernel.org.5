@@ -1,154 +1,146 @@
-Return-Path: <linux-kernel+bounces-162536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9113A8B5CE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B41138B5CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C5C1F22A10
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4187A1F23134
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D01839E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BF312EBDD;
 	Mon, 29 Apr 2024 15:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cs/Z3XNn"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5QnIuR4"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA2B12C461
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4FE12C486;
+	Mon, 29 Apr 2024 15:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403123; cv=none; b=NU2oxT3e1OmEunx4uo/NzaHpsvtYAelKaYs58953BC16IPHcrW9+FPhVRu4ISgZDPkpFk7XYCrNl5QDiT+k9mEjI5pX7sQ3Y3HcB5+GXB41LMatgRzZrDFMWZ+JWfAIypAioeyndM62V7DAnCKOChJQ5EjqeNSS6N0Nh+OkgT10=
+	t=1714403124; cv=none; b=YOuvXcj+HpkRUYuGAqIJWnLNZZxDQgz9WwyhdowYCRfQc12rSo/S1i252unyWCCNIh5KX92qXfRqirtcDZBAwpujhu2dO072lsAVD3ot6ofT9WRLX61gR79ywduHfoev6ZGgSekzKnet7hGSbMETddaKY1JeG3jJkiu1axP307g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403123; c=relaxed/simple;
-	bh=17e3seaVPIolCVRnz9dvrXMTILwJmsuH1BK6VcvWdM0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=c0m5zHnakfL97G6DCfXFX2Nnv3IgxTHMwkNeAlpFX9nGkZ7/NVkL/7HuHfg6I52rKJD/KOdMsVsTtSscC3hpR0lhrKA9twmCtMjgG2jfayDgseUdEJZEbaHWFKMJOzRUb5oWfkRTAcKfX9gPANtQHCuGTbWp0DKaeJlyVQdYiQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cs/Z3XNn; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78f049fefd5so305448385a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:05:12 -0700 (PDT)
+	s=arc-20240116; t=1714403124; c=relaxed/simple;
+	bh=Czf3Qf2QtCITmmu5rDJ793XRKMMcRoe9FeUXQg11vmg=;
+	h=Content-Type:Mime-Version:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=GvdFRXNMGT5keEagp1pO/BAFfZow5CMRCnRvrfyorrzmP3vCynpzS28wAVrTDiCrwGd3BrsEjGmHTgFmMeVyBWPaHQHMWgcDUdV2/8ajrNDU5fLudf2HHlwKVdUlCsYv/d+kM54zpRbYjNkqrZCJrR4rR7AhDS+UXHCg0oBj8R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5QnIuR4; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a58872c07d8so993262066b.0;
+        Mon, 29 Apr 2024 08:05:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714403111; x=1715007911; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=STqazHEagBxWlHC69lQFp5WbvQ2Sdx8rB6+uKcUB0cU=;
-        b=cs/Z3XNnHKQx1vr6EMlWwKFDUVk+wBR22JAaohZkk/k3TKtqbsfKePvDSqEa6SOO2O
-         r20oF1/L/C4ljsjF5+o1uIoiXJsiVNRWNMXvQgf6J+Icu248tynLoEiMDP77WvTKyGd7
-         CvXvXriOxlgYpIGgAgxhsMEwehNZfeTk7IejQ=
+        d=gmail.com; s=20230601; t=1714403111; x=1715007911; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jRLnMQt74RAYZqrOQceAPqjFBeZeSYFo8RlZsGguPTo=;
+        b=c5QnIuR4QKxXnvtsRuLbK1ZnEoYXLeA5u28rib1jtJB+7N9tQR457iR+eYRk/SZn65
+         EwvFe+s/C5yyMKltlXbkiDZko8ujo+AGw0VDM6LKfd4dlV4Ks/zCt/SkSGjQbZEoLq75
+         VHeqxmloZ8eGb1XIkQnuQ9abcmCqDRXwDyBeJKNBZih/kgCNBaduCKtnvRGqF+JesHG2
+         bwTs7105vhkGci/Npf6Xtmd167FROCvMRd/Kw1X23JT6KGvJLDEYTqFQI2jcBz6NgdWc
+         rN546iDuNBjVdvLQsKq3O5SR96AoJ6aS1noT7sDFPwEa9MhdjYf+vTRoAnPVbwMtm2/g
+         +TAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714403111; x=1715007911;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=STqazHEagBxWlHC69lQFp5WbvQ2Sdx8rB6+uKcUB0cU=;
-        b=r/hv6VGn3SNgaqrhJx+wzFHbdA7184n/qr9+/aenZob4Y8+78x/DXcgHeSouuD3LFU
-         A646F1x2Vm3f6CpT+TWS56DqEh40u1PUI67XGX6leAasJmEYomUxEjkh1dDmTq3zifW9
-         9jw0/Y+eTfqEr6xyDIJYLtDJ4kwLBZiJCuMYVNAflCoVqgmHtBWjvCF6Mw8VE3Z4idkA
-         K5cLYVW7hd4TqIgB+7bDKVaJ5rZ/Nm1LLypv87Tat9ak7QOkJdIvQpJylPxtY4Qp8tky
-         2s+KiHN5BQEeQYpsfjugjlL6FXSWFezjm8uhWqXfv52tOZ29vUaCkA51AC8wxwqSMRCf
-         nZwg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRxQK6QSJMB5V4RnrQNMQJfIdoImuVwODnwSO0IiUwrD8b3ULqWThpnyfRK7bWgSIoH76+GmiDb6+1tBNEVwQGonBDHA6BpLPns8JJ
-X-Gm-Message-State: AOJu0YzU3Zps6Mz0hDMhAIvPCm6V45f/1BcYernL8QMBFgNhrIEYBLbF
-	/uUh5F7Ejd7jeseKWSp4eMZ/YsqWIH9qQMz93GSYxeoJ5APnNpyFwVlTMqQxsw==
-X-Google-Smtp-Source: AGHT+IHvPitwm/34xW/kQUa8TA8n6UCg3fwO9ex2lf7MaH+MC5XxlTHiUGq0Riy9QnEe78dxXREmpg==
-X-Received: by 2002:a05:620a:5e48:b0:790:c81e:7840 with SMTP id ya8-20020a05620a5e4800b00790c81e7840mr6919928qkn.12.1714403111405;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jRLnMQt74RAYZqrOQceAPqjFBeZeSYFo8RlZsGguPTo=;
+        b=dzMcSstCA0COs7xVhEsnReTh3veQsahdpBydKyvIuwboih2Ge0czga3UzJGHWbUIFF
+         rdc4NVPFI9LLoVxwvkrWupDo10URgVJ8eyVE1+cYv3km4yAgosZOHtoVSxXYIE8xf5xM
+         LcYfNvp1OBvyM5qZG4816lLDsEDfaiTxMBVeXMsEZ35ihfUq/BmaZOB0YxMIzZaXJOfz
+         4O0BdHHEEiPlX+zvwNmiwa95+Cj4MPCTuEcMvb0Xz7XIz9LT3yMM6wdDmv4Kh19rFxUo
+         69QjCdN8B2bmh2tAFO07RAWyjlNoV2fPJfiu4Bu+E5tfEMUWtQNFH0ei+mNwtsTz4L0R
+         Kd2A==
+X-Forwarded-Encrypted: i=1; AJvYcCWhMDp5muKCra3WSnRl7WGlGwVNqj0XVv6vkYMJN+NGiScGVXtHjKpXZO1vDE64a5yHyr/NQ5Vu1Deo8zRdfKz3DMZ4EGgtHIE/uN3ro84ib3QyMk6a59QTJimDL4CCRJHrB3fnkWSZ5Hp5y76h/WbMtyvlV3OycotC0WxusIQG6FveaWHLu8rZn55Fwq/xXhzt4+s18Ax4153HgvvG5R0R
+X-Gm-Message-State: AOJu0YzceG2hk4SVz3sU1KM6E6asmMFHFn5YZrUYcbLNVKhrcsLqyuIf
+	NJtg/b6iOm8OABYr7kaBVOCIHe0BRG44yoiUcw6vm6I5c8JjuhQJ
+X-Google-Smtp-Source: AGHT+IEhcxyiDkn4etHYTk4Ajtaz+3EvULJi9TZG7CDYngTG1q+F7q123kJC9XMpFvy8FUWZaxjBUg==
+X-Received: by 2002:a17:906:c111:b0:a58:eb9a:420d with SMTP id do17-20020a170906c11100b00a58eb9a420dmr6898891ejc.17.1714403111239;
         Mon, 29 Apr 2024 08:05:11 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b0078d3b9139edsm10568591qkp.97.2024.04.29.08.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:05:11 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 29 Apr 2024 15:05:05 +0000
-Subject: [PATCH v3 26/26] media: dvb-frontends: tda10048: Make the range of
- z explicit.
+Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id v5-20020a170906380500b00a58f36e5fecsm2350418ejc.67.2024.04.29.08.05.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 08:05:10 -0700 (PDT)
+Content-Type: multipart/signed;
+ boundary=64d8f73e5566f44c66d078f5487c89221898d7d8af4e7f37e5a21c35e662;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240429-fix-cocci-v3-26-3c4865f5a4b0@chromium.org>
-References: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-In-Reply-To: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hugues Fruchet <hugues.fruchet@foss.st.com>, 
- Alain Volmat <alain.volmat@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
- Abylay Ospan <aospan@netup.ru>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Dmitry Osipenko <digetx@gmail.com>, 
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
- Sylvain Petinot <sylvain.petinot@foss.st.com>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Mime-Version: 1.0
+Date: Mon, 29 Apr 2024 17:05:10 +0200
+Message-Id: <D0WP6K0OPG1U.3B8RHWV50GB9W@gmail.com>
+To: "Rob Herring (Arm)" <robh@kernel.org>, "Russell King"
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Bharat Kumar Gogada" <bharat.kumar.gogada@amd.com>, "Michal Simek"
+ <michal.simek@amd.com>, "Bjorn Helgaas" <bhelgaas@google.com>, "Lorenzo
+ Pieralisi" <lpieralisi@kernel.org>, =?utf-8?q?Krzysztof_Wilczy=C5=84ski?=
+ <kw@linux.com>, "Vinod Koul" <vkoul@kernel.org>, "Kishon Vijay Abraham I"
+ <kishon@kernel.org>, "Liam Girdwood" <lgirdwood@gmail.com>, "Mark Brown"
+ <broonie@kernel.org>, "Jonathan Hunter" <jonathanh@nvidia.com>
+Cc: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-phy@lists.infradead.org>,
+ <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: Drop unnecessary quotes on keys
+From: "Thierry Reding" <thierry.reding@gmail.com>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240426202239.2837516-1-robh@kernel.org>
+In-Reply-To: <20240426202239.2837516-1-robh@kernel.org>
 
-We do not expect the sample_freq to be over 613MHz.
+--64d8f73e5566f44c66d078f5487c89221898d7d8af4e7f37e5a21c35e662
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Found by cocci:
-drivers/media/dvb-frontends/tda10048.c:345:1-7: WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead.
+On Fri Apr 26, 2024 at 10:22 PM CEST, Rob Herring (Arm) wrote:
+> The yamllint quoted-strings check wasn't checking keys for quotes, but
+> support for checking keys was added in 1.34 release. Fix all the errors
+> found when enabling the check.
+>
+> Clean-up the xilinx-versal-cpm formatting while we're here.
+>
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/net/sff,sfp.yaml   | 12 ++++++------
+>  .../devicetree/bindings/pci/xilinx-versal-cpm.yaml   |  7 +++++--
+>  .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml       |  2 +-
+>  .../devicetree/bindings/phy/brcm,sata-phy.yaml       |  8 ++++----
+>  .../devicetree/bindings/regulator/ti,tps62864.yaml   |  2 +-
+>  .../bindings/soc/tegra/nvidia,tegra20-pmc.yaml       |  6 +++---
+>  Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml  |  4 ++--
+>  7 files changed, 22 insertions(+), 19 deletions(-)
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/dvb-frontends/tda10048.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-diff --git a/drivers/media/dvb-frontends/tda10048.c b/drivers/media/dvb-frontends/tda10048.c
-index 3e725cdcc66b..1886f733dbbf 100644
---- a/drivers/media/dvb-frontends/tda10048.c
-+++ b/drivers/media/dvb-frontends/tda10048.c
-@@ -328,7 +328,8 @@ static int tda10048_set_wref(struct dvb_frontend *fe, u32 sample_freq_hz,
- 			     u32 bw)
- {
- 	struct tda10048_state *state = fe->demodulator_priv;
--	u64 t, z;
-+	u32 z;
-+	u64 t;
- 
- 	dprintk(1, "%s()\n", __func__);
- 
-@@ -341,6 +342,7 @@ static int tda10048_set_wref(struct dvb_frontend *fe, u32 sample_freq_hz,
- 	/* t *= 2147483648 on 32bit platforms */
- 	t *= (2048 * 1024);
- 	t *= 1024;
-+	/* Sample frequency is under 613MHz */
- 	z = 7 * sample_freq_hz;
- 	do_div(t, z);
- 	t += 5;
+--64d8f73e5566f44c66d078f5487c89221898d7d8af4e7f37e5a21c35e662
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-2.44.0.769.g3c40516874-goog
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYvtyYACgkQ3SOs138+
+s6Fo9g//fBFtmm6Kzzagoso58OU0++dfARWpxNf/HxdA/8KmVTIBMzo0T+ZfHo26
+56OwCliAQnav38XNkTce1vi3t/ZSC7ZVfH3Ox8Xd/ezD5joI0LtRmHVp73EOn65W
+eTRYiezydhG+skWTEWxAzwV/FWZyePwhlnNDdYPc4GBWgYmw0cYRV/GsSLqVfly8
+EoD0PlswlKZ3xaBhyhhLjBpdXYkCS+c3P1R5tG85ZaF1SFxr7Z8qyf6zIas1l/ze
+QTxdOEQGrlhF0kWhxwJh3Ad0DDHGpdbNVf7UEISNId8ubvZxwQwvFAMPhvOUh9wi
+ViVoIHaRv1fD+nJDPf+I27RYyjjMRpoXadGAOH/nB8Pk+/4oDv0VTLacCtKngpJS
+xGsVf9l50NQNp4Qp/WvsMSEj4JKodIMoD2Gp51TsrD+7rLd9rLKynq2+Spjs0BFX
+gz3Fwt74Qth8w647xL31X+MBD2Ay8N2DjxyTp93JFbDwmqF2qpqTLKbJPDXoVuGJ
+PrT3kUvEsEueguFPZM6IqzqvZWjS/ziu8OIbwMrMOWhQKPtqnRkFpgkxoFSHyX7n
+PZrPL4DLPDeNL6ZPClkt21EvpoHXzdzIYQDbMslhMBVrngKmoMUPopLHiJYqn+X9
++E/4DDlE5rskMoc416HYi5iIHERtrDSeVoWzqDGWaGYY4UbkpH4=
+=AP3j
+-----END PGP SIGNATURE-----
+
+--64d8f73e5566f44c66d078f5487c89221898d7d8af4e7f37e5a21c35e662--
 
