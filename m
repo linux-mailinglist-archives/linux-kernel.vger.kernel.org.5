@@ -1,189 +1,166 @@
-Return-Path: <linux-kernel+bounces-161965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8769A8B53E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:12:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07ACC8B53E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:12:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA48F1C218FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:12:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AA5BB21561
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA5E1AAA5;
-	Mon, 29 Apr 2024 09:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9306A210E9;
+	Mon, 29 Apr 2024 09:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S55dBUep"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cp7ycruY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B32612E7F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A5E17BCB;
+	Mon, 29 Apr 2024 09:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714381919; cv=none; b=HODimhE9413UanxzMpYVdnhKwghF2afpNxZKaqbfEQ7wNzOYcPe68bwDSuMjH3xhr3pOPn2garZIW1SkAJxdW6VjxyexfujGOJQRMdhcHAguX8Rxm7iUqAGVfH15erIeATzIpHVAx7tSoDjDmughijdS4AOQ9EQ55fFuFFJiKVI=
+	t=1714381966; cv=none; b=Rd873q7qpj8g8jqmf82Cum2CQohOugnrzryK0Sv6jp1qj1d2T04F8tj6cYKAoQfA8qhw7wo2v3PfKij/15crYI16plLaa91OKD3+G18JpfEBfYR0maZaDDouLmu4LDDn+yiCqXgv8spBUvqSDu3H9zp7xaDu4PtfGpCApxN9IiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714381919; c=relaxed/simple;
-	bh=Yl1ZoNMiWYXwoU/S1421c17p+hEvnhat19Jy0CmGSMg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IDQ3LJkVdtzc8g85RKf0w22DcGswdY2kNtHeQwUkicdlCljGP0/BMihbByYLdBYi7wo92QNxoJIaUtISVZA9XXvQwzIvM4x68HmiCCKaucIVbyKQ2ZWLwTgJ09rpC1pTrt9Hv1wkCxG38c/S/+7gp1DSc48qOMriwH6jUCP9rrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S55dBUep; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7efcdc89872so969463241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 02:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714381917; x=1714986717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Stgo6Dxtb5dKPf4odo5eyp2rmXqPNzOhx3G5+MgJJvU=;
-        b=S55dBUepbT+AAPqvxP4Dmr5HCqN98qo67TmHvUhwZWB/y2G2AooCW0ws+3Dg5VkLDP
-         9C/uCy8ZHBFmzyc5eJH2ePT1J7PgqlyuP89ENilnoeI3BHG8ZdA3a03s4Rod4h6NIadU
-         n+Y8pmytrr4pI85xSD4grvuZjCYiywCIK1MxeYLx4Z83J0css7McrFm5wAP0PmxfHelP
-         7sr+98YjqdTan+Axkg6etGy4YAM9hIy9kvxIdrZ0xo5+qmMLP7PNcRpmFhCMWY8eVQQV
-         vkdaNu2ccfN6CRK9d8QVkKccN8yRjwDob1TkZHjFEupGnGULh31sD3jlF+YMe0I1kLtd
-         XyUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714381917; x=1714986717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Stgo6Dxtb5dKPf4odo5eyp2rmXqPNzOhx3G5+MgJJvU=;
-        b=Kp5LTuAryqBJ9PtzsCO0sFb811ssn3Oc6/W7Yoy1puB71k8dMKR7Wvwo9Ci5e54Jvx
-         DJND39hgGkZ3C5zEIPhgd3lQqTe7TzVBB2cxFvKnYNSIoIzWwtzU/6CoqvQDyqKStQ3K
-         Hn9aOwfWrKmzXZLfNkKrY+H1wLoujHhJrc1dTzwuA61csQ8S7cGctsy7dYOg23lLSI6L
-         soUMv3jGBXqa6MkxGhJd8uz7Fn1lN638HKmP0Dt7ZjzeFlQfMgEtrw8Js2MPG3Fdki0t
-         jekKKDPO4fxHsVmwI0RqtwzlkdgFXT4k1H1hM2sbeXDILgDnsVwdjczmfXczIOKLyL6t
-         1VRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXF0GsZdYWH+7jcQbCIGcXq7hOQ2CCisQefVyThcUt6ZUs+NxMjrbqVOcXry7FMGAilcW5vkFIoSiKoTyCOSzLB7FkbNjHjGYx9gjDh
-X-Gm-Message-State: AOJu0Yzc/XphQr9dF1tio1VM20/AXElwflpf30BzCoRtxsGTV97VO1/f
-	hsdxCa0REDyHnFF0LOlO4zMSbEKwBJeKbTg2suknhhP8unw7WN+EnYUOYLbxbO5EEwu646tEmIG
-	0rKLa+I+jf7pI8qr0CiRG2SSLUnI=
-X-Google-Smtp-Source: AGHT+IGpzyRj1gRk27YdA9s7LvX4y/BA+7L8TtwXpkpRVv2myhNigyeZMKpOUT8byTk/awVja3dq+I7j+73x4n1spiU=
-X-Received: by 2002:a67:f644:0:b0:47c:2a70:422a with SMTP id
- u4-20020a67f644000000b0047c2a70422amr8610761vso.6.1714381917220; Mon, 29 Apr
- 2024 02:11:57 -0700 (PDT)
+	s=arc-20240116; t=1714381966; c=relaxed/simple;
+	bh=rsGj0P8emcKb8hKu9ORzTWwrGWwZ6ES5DkeLfKwLzQY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BNKnXpyoMwHy1rS1qjqF3qmogzr5umqgut3SJJNffuDOXZ9ffdszM7mEu065mvXpB8WCaVrds2JoR5Xn5/izgVvBgQ2I+FHRP+6vOR9Rl762MQh9lIp29Gks06OISaV5LK9TEBfSWRvTY9LS47u2qw2CTYGQl1ak9oSQRyqGLmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cp7ycruY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F57C113CD;
+	Mon, 29 Apr 2024 09:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714381966;
+	bh=rsGj0P8emcKb8hKu9ORzTWwrGWwZ6ES5DkeLfKwLzQY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cp7ycruYXV7fRH86kj7Y1D1E71XzyLYhW96Mt5mpFGp/wKKJfCpS4Iq7+wyWRvWwC
+	 +HEtCIvs8RAbkpwoZ5vM4kfmJPZbPhr8bSYqd0qO8An0qpq4LlxQtAFQ73FXnmZ+GA
+	 Bb+8VZs/7w25/+f7SRxvfzauo5+Ox1LAbeliZssb99mOdHZkjrodD2gkceLydgwnAM
+	 X7uKYEwOB7X0jVKIaS0IWaNpo6Vu0CMbjmxIwtxULZR6cmq63p/Yph00iAxC7RsUuA
+	 GbP/Pc9koYev24eUXsnzFxcHCMJL7SorHZl2/bE7/AJBRtyuFjHkuvbmfaC46PCpqC
+	 tFyxL9uRXRzug==
+Date: Mon, 29 Apr 2024 11:12:39 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Stas Sergeev <stsp2@yandex.ru>, Aleksa Sarai <cyphar@cyphar.com>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	Stefan Metzmacher <metze@samba.org>, Eric Biederman <ebiederm@xmission.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Alexander Aring <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>, 
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Christian =?utf-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>
+Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
+Message-ID: <20240429-donnerstag-behilflich-a083311d8e00@brauner>
+References: <20240426133310.1159976-1-stsp2@yandex.ru>
+ <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319010920.125192-1-21cnbao@gmail.com> <0df6028c-3e7d-461c-85bd-8ba1bf06e2a6@roeck-us.net>
- <CAMo8BfJTutHPByNZcpjb-2xeUX-Nu2XkjN0DWE6w5xV=zg__Kg@mail.gmail.com>
-In-Reply-To: <CAMo8BfJTutHPByNZcpjb-2xeUX-Nu2XkjN0DWE6w5xV=zg__Kg@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Mon, 29 Apr 2024 21:11:45 +1200
-Message-ID: <CAGsJ_4zrnw5ziZHZciC3asgsZUzWP8N69k7o48WKdV2qNn6+pw@mail.gmail.com>
-Subject: Re: [PATCH v2] xtensa: remove redundant flush_dcache_page and
- ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Guenter Roeck <linux@roeck-us.net>, chris@zankel.net, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, willy@infradead.org, dennis@kernel.org, 
-	alexghiti@rivosinc.com, Barry Song <v-songbaohua@oppo.com>, 
-	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
 
-On Mon, Apr 29, 2024 at 5:10=E2=80=AFPM Max Filippov <jcmvbkbc@gmail.com> w=
-rote:
->
-> On Sat, Apr 27, 2024 at 12:05=E2=80=AFPM Guenter Roeck <linux@roeck-us.ne=
-t> wrote:
+On Sun, Apr 28, 2024 at 09:41:20AM -0700, Andy Lutomirski wrote:
+> > On Apr 26, 2024, at 6:39 AM, Stas Sergeev <stsp2@yandex.ru> wrote:
+> > ﻿This patch-set implements the OA2_CRED_INHERIT flag for openat2() syscall.
+> > It is needed to perform an open operation with the creds that were in
+> > effect when the dir_fd was opened, if the dir was opened with O_CRED_ALLOW
+> > flag. This allows the process to pre-open some dirs and switch eUID
+> > (and other UIDs/GIDs) to the less-privileged user, while still retaining
+> > the possibility to open/create files within the pre-opened directory set.
 > >
-> > Hi,
-> >
-> > On Tue, Mar 19, 2024 at 02:09:20PM +1300, Barry Song wrote:
-> > > From: Barry Song <v-songbaohua@oppo.com>
-> > >
-> > > xtensa's flush_dcache_page() can be a no-op sometimes. There is a
-> > > generic implementation for this case in include/asm-generic/
-> > > cacheflush.h.
-> > >  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-> > >  static inline void flush_dcache_page(struct page *page)
-> > >  {
-> > >  }
-> > >
-> > >  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-> > >  #endif
-> > >
-> > > So remove the superfluous flush_dcache_page() definition, which also
-> > > helps silence potential build warnings complaining the page variable
-> > > passed to flush_dcache_page() is not used.
-> > >
-> > >    In file included from crypto/scompress.c:12:
-> > >    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
-> > >    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set b=
-ut not used [-Wunused-but-set-variable]
-> > >       76 |                 struct page *page;
-> > >          |                              ^~~~
-> > >    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
-> > > >> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-W=
-unused-variable]
-> > >      174 |                         struct page *dst_page =3D sg_page(=
-req->dst);
-> > >          |
-> > >
-> > > The issue was originally reported on LoongArch by kernel test
-> > > robot (Huacai fixed it on LoongArch), then reported by Guenter
-> > > and me on xtensa.
-> > >
-> > > This patch also removes lots of redundant macros which have
-> > > been defined by asm-generic/cacheflush.h.
-> > >
-> > > Cc: Huacai Chen <chenhuacai@loongson.cn>
-> > > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202403091614.NeUw5zcv-l=
-kp@intel.com/
-> > > Reported-by: Barry Song <v-songbaohua@oppo.com>
-> > > Closes: https://lore.kernel.org/all/CAGsJ_4yDk1+axbte7FKQEwD7X2oxUCFr=
-Ec9M5YOS1BobfDFXPA@mail.gmail.com/
-> > > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > > Closes: https://lore.kernel.org/all/aaa8b7d7-5abe-47bf-93f6-407942436=
-472@roeck-us.net/
-> > > Fixes: 77292bb8ca69 ("crypto: scomp - remove memcpy if sg_nents is 1 =
-and pages are lowmem")
-> > > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> >
-> > The mainline kernel still fails to build xtensa:allmodconfig.
-> >
-> > Building xtensa:allmodconfig ... failed
-> > --------------
-> > Error log:
-> > crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
-> > crypto/scompress.c:174:38: error: unused variable 'dst_page' [-Werror=
-=3Dunused-variable]
-> >   174 |                         struct page *dst_page =3D sg_page(req->=
-dst);
-> >
-> > This patch fixes the problem. Is there a chance to get it applied to th=
-e
-> > upstream kernel, or should I just stop build testing xtensa:allmodconfi=
-g ?
->
-> Applied to my xtensa tree.
+> 
+> I’ve been contemplating this, and I want to propose a different solution.
+> 
+> First, the problem Stas is solving is quite narrow and doesn’t
+> actually need kernel support: if I want to write a user program that
+> sandboxes itself, I have at least three solutions already.  I can make
+> a userns and a mountns; I can use landlock; and I can have a separate
+> process that brokers filesystem access using SCM_RIGHTS.
+> 
+> But what if I want to run a container, where the container can access
+> a specific host directory, and the contained application is not aware
+> of the exact technology being used?  I recently started using
+> containers in anger in a production setting, and “anger” was
+> definitely the right word: binding part of a filesystem in is
+> *miserable*.  Getting the DAC rules right is nasty.  LSMs are worse.
 
-Thanks for taking care of this, Max!
+Nowadays it's extremely simple due tue open_tree(OPEN_TREE_CLONE) and
+move_mount(). I rewrote the bind-mount logic in systemd based on that
+and util-linux uses that as well now.
+https://brauner.io/2023/02/28/mounting-into-mount-namespaces.html
 
-> I was still hoping to see rationale for why this is a useful warning.
+> Podman’s “bind,relabel” feature is IMO utterly disgusting.  I think I
+> actually gave up on making one of my use cases work on a Fedora
+> system.
+> 
+> Here’s what I wanted to do, logically, in production: pick a host
+> directory, pick a host *principal* (UID, GID, label, etc), and have
+> the *entire container* access the directory as that principal. This is
+> what happens automatically if I run the whole container as a userns
+> with only a single UID mapped, but I don’t really want to do that for
+> a whole variety and of reasons.
 
-Personally, I think the reason is quite obvious.
+You're describing idmapped mounts for the most part which are upstream
+and are used in exactly that way by a lot of userspace.
 
-This warning serves as a valuable alert, highlighting an issue where Xtensa
-fails to properly implement flush_dcache_page(). The problem lies in a macr=
-o
-definition that neglects to evaluate its argument. Such discrepancies can
-impact driver functionality across various architectures, rendering them
-independent of specific architectural considerations.
+> 
+> So maybe reimagining Stas’ feature a bit can actually solve this
+> problem.  Instead of a special dirfd, what if there was a special
+> subtree (in the sense of open_tree) that captures a set of creds and
+> does all opens inside the subtree using those creds?
 
->
-> --
-> Thanks.
-> -- Max
+That would mean override creds in the VFS layer when accessing a
+specific subtree which is a terrible idea imho. Not just because it will
+quickly become a potential dos when you do that with a lot of subtrees
+it will also have complex interactions with overlayfs.
 
-Thanks
-Barry
+> 
+> This isn’t a fully formed proposal, but I *think* it should be
+> generally fairly safe for even an unprivileged user to clone a subtree
+> with a specific flag set to do this. Maybe a capability would be
+> needed (CAP_CAPTURE_CREDS?), but it would be nice to allow delegating
+> this to a daemon if a privilege is needed, and getting the API right
+> might be a bit tricky.
+> 
+> Then two different things could be done:
+> 
+> 1. The subtree could be used unmounted or via /proc magic links. This
+> would be for programs that are aware of this interface.
+> 
+> 2. The subtree could be mounted, and accessed through the mount would
+> use the captured creds.
+> 
+> (Hmm. What would a new open_tree() pointing at this special subtree do?)
+> 
+> 
+> With all this done, if userspace wired it up, a container user could
+> do something like:
+> 
+> —bind-capture-creds source=dest
+> 
+> And the contained program would access source *as the user who started
+> the container*, and this would just work without relabeling or
+> fiddling with owner uids or gids or ACLs, and it would continue to
+> work even if the container has multiple dynamically allocated subuids
+> mapped (e.g. one for “root” and one for the actual application).
+> 
+> Bonus points for the ability to revoke the creds in an already opened
+> subtree. Or even for the creds to automatically revoke themselves when
+> the opener exits (or maybe when a specific cred-pinning fd goes away).
+> 
+> (This should work for single files as well as for directories.)
+> 
+> New LSM hooks or extensions of existing hooks might be needed to make
+> LSMs comfortable with this.
+> 
+> What do you all think?
+
+I think the problem you're describing is already mostly solved.
 
