@@ -1,172 +1,142 @@
-Return-Path: <linux-kernel+bounces-163026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FFE78B63D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B1DF8B63DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81CF81C219A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:48:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7451C219D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6984C1779BD;
-	Mon, 29 Apr 2024 20:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20584178CC4;
+	Mon, 29 Apr 2024 20:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="NFT4EKyb"
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iQlsfeP3"
+Received: from mail-il1-f202.google.com (mail-il1-f202.google.com [209.85.166.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C56412880A;
-	Mon, 29 Apr 2024 20:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA3412880A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714423699; cv=none; b=KTf5zUdEovqXcDna7lvjLZ16mx/amamgsJnyMgrmWl9VAf6RYVUnvuvX5XopuBgsEpIfx+0AB9GOUJI0Yg9skn5JooWA4AUZk3bcPiZA+cn2YP//Jo2yX2JQ84tWmt6fTJyvxp8ID+0kZEF9qk5Dj3VTKitni+nFgyrEWfG2NF0=
+	t=1714423836; cv=none; b=DRSx0264eWh3Det0Xd2O0itr9jA4rVqzsR04r5M206+HNHwgW3yLh1BqxlPKTgKiVZG5v+81PUYT6VPCai0h7NzARt0AOXd7u5rTamttUobrUEIQBC9xofH6UcMXBNVwKkWpnbpRsbRTqzkkjvZveL1dJmLZLck11DMJoJSgF1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714423699; c=relaxed/simple;
-	bh=hi9jHuX0t+MiyHdv6bvpydi3NtTh3mzwnyovDtOhWfM=;
-	h=Message-ID:Date:MIME-Version:Subject:References:From:To:Cc:
-	 In-Reply-To:Content-Type; b=VLZGfyUsUVe6ggY24WDDxQCpG+Z5NQuA0ErwZ7nqGGbDAtKSrJyjooQ0JqGcOlYVz4rOZSzpcMleJmSrNZv4rFiLvbfyqoCjlLyAqX13lBLqQ+12BlBe/DO+SP3SIKzEbuz3YYdcTmJHdZ1PxVvX/dVukiqpS5ODcgvlmaEPHu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=NFT4EKyb; arc=none smtp.client-ip=80.12.242.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 1XussKoaLoeci1XussY2eu; Mon, 29 Apr 2024 22:48:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1714423687;
-	bh=2tkIHRgbihugbvQSDrnZucCqwWRA089i99j5eTq3fo4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To;
-	b=NFT4EKyb8uYCTdvhnoUA2B48EVqoeOgNJHp/FkjJY7eUqfcHVw5aFI8d0rgqgI9Z0
-	 4pOznp7iJq0E6E/zRrdpYP774Bf0z+yUPo94apXItBZblnlWsxW8wPqTrDzpQ0dxTS
-	 zq8Dp7NA0NHS+jEtV/VwMorBFZqk5ErBM4YEMWhTXUCUpo7XAE2k/yYMOEPSwANeps
-	 q72ShUELnyuUv2UoT4DUw40vJtVNFKXlkGsq7r6p8JpiS+yV3+YjMEJ1adZaUlZikL
-	 WU1XHWTz1ch0uhJDDoqknfchxLXOBfpL9TQgb9qTuC2+HxF0GwSo5qOm6jWg14qAdT
-	 /s7dm3fN0f1jA==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 29 Apr 2024 22:48:07 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <95484936-3f63-45ab-8b60-179508c159fb@wanadoo.fr>
-Date: Mon, 29 Apr 2024 22:48:01 +0200
+	s=arc-20240116; t=1714423836; c=relaxed/simple;
+	bh=E51RN5MCBslyxtFShtUwThE7vElft68Pwp0ik5uTa94=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kZabgkdwQYXkw554Lvr4odUmuNphhFDCLYW3E3prNvX1y0nw2V7XSn0cY7wFu2ozRiBe//Lapyff4rrTxnKC751gaABFsGOH3bIChwENYhwfyzplMooZAXTo/MGdeESAmKOCvhKRbhR4Mee69L6qCOlZvfgLHlEdx6GpUJ5Y9qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iQlsfeP3; arc=none smtp.client-ip=209.85.166.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-il1-f202.google.com with SMTP id e9e14a558f8ab-36b3b387b4eso58862615ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714423833; x=1715028633; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=p+KWfUI7WWjJz2aEzllZVt1Sw+QNmzAz/2DNTRseciU=;
+        b=iQlsfeP3PNVldcJa9zzyk5dcdlNcSO4Hs6D8TTNB2xJ2WCMdN/zxTziC/KLYbw/0AC
+         vs7ddWBnIMzgwG9JKcXCibZLcjD+KeeF9e3V9MVkW/B94ARTVhELXNsUHSlN/LW68vvY
+         qf/Mfrshqq/heqZ3ZLXSvWMnvjoi6U3Vv7wsU6cWgwBHf7MZze+qA9r396FOiuXRj1sL
+         2F3S/qqPvmPk7VYncU0baxJoOnFS4i9B2/VRdORqZ2AjZgJUG9+HNQVVyVmQDWUtpqN1
+         6uG3iZ6VwVKDhT87CyuuPGxceZiZKd6+kDKLHgAj1MxZ7iFfJcH5CG+dstD/gy4kp7lv
+         LNyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714423833; x=1715028633;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p+KWfUI7WWjJz2aEzllZVt1Sw+QNmzAz/2DNTRseciU=;
+        b=IVbb8LeEKdyaVnUWZ+jzQ341gXn2F4Lt2mg4XIzP8h0wM/36DcRNzrFcMb0ug+TUzV
+         s4cFAMaoCQy5VSOXgGRYO/drKxW4bh2xemyeYRTyT3BYkwyoDoP+Pcg7NCkhIgXiOoX9
+         NEAfJax0n+XFoiLp7fyVA4hOGcXgrbZUlNEM6ptQiS9JJO76vsrbcBlP3NtwZs3B8YKU
+         05vMIzsjqolMZsNgN+Rc4S68giFG19KUzcy1iAWgOb73fkSkDX3Q5qhPuZcZVIN2VQvk
+         FiY3k6NVKbL4/ZC46U9m5EMDuCubde6VAWwO2u4snOppzilxr+HBXlZagVqkAnrZLHFA
+         6RRw==
+X-Forwarded-Encrypted: i=1; AJvYcCXsZSex5xDxI6RQbi9kPOhv0MVLH7lhZUl7JhJWtLweT0pVAxQf7U8+36wNOh+VKWAleXBULcy8raJgu8yrHAwj+96F0iH0BveLm2lk
+X-Gm-Message-State: AOJu0YwVjwfrMSgytXYcrqZbWwuCe0B/MlT9wbJHDr4v5dzyqB3NDzH7
+	BCHCREtRokEiiNExpwxO4zQhZKpbhi5ZpgKAXOlN31cxBKyQ5Pv/vNmr857GY92BzA/TX8fA3Sg
+	X4+YliWJ2Ycwqv+mQd30jLA==
+X-Google-Smtp-Source: AGHT+IFmrEC39GW//zFmGOIhRKDWCLIzg+5DId6LIi/jSAtahHuWsAG/CndMnYRnHSw3kt3DwU65bT4uzvQA4TMr2A==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6e02:f13:b0:36c:4405:68af with
+ SMTP id x19-20020a056e020f1300b0036c440568afmr265464ilj.6.1714423832942; Mon,
+ 29 Apr 2024 13:50:32 -0700 (PDT)
+Date: Mon, 29 Apr 2024 20:50:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] perf/x86/amd/uncore: Use kcalloc*() instead of
- kzalloc*()
-References: <PAXPR02MB7248F46DEFA47E79677481B18B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Erick Archer <erick.archer@outlook.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Kees Cook <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Justin Stitt <justinstitt@google.com>
-Cc: x86@kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <PAXPR02MB7248F46DEFA47E79677481B18B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIABUIMGYC/x3Nyw6CMBBG4Vchs2YSqJXbqxAXWH9lIinNtFEI4
+ d1tXH6bcw6KUEGkoThI8ZEoq8+oy4LcPPkXWB7ZZCpjK1sbjkm9Czu/oR4Lh/UL5VnumVMCO27 bvrs2fWPtxVHOBMVTtv9ivJ3nD+WqHI9yAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714423831; l=1762;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=E51RN5MCBslyxtFShtUwThE7vElft68Pwp0ik5uTa94=; b=KRsbfMxM48ZQuhpUdtIv3IR8y1K3aT/WjQXifMOc/OUMsw4zO+bfvDG1CgeQ8ial9UKusJEFS
+ EIocTm4zPwKBfi9QfaKdU3X/YObu5KAKXEKmxSx6ktLmw/kSeaBYng3
+X-Mailer: b4 0.12.3
+Message-ID: <20240429-strncpy-kernel-power-hibernate-c-v1-1-8688f492d3e6@google.com>
+Subject: [PATCH] PM: hibernate: replace deprecated strncpy with strscpy
+From: Justin Stitt <justinstitt@google.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Le 27/04/2024 à 18:45, Erick Archer a écrit :
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1].
-> 
-> Here the multiplication is obviously safe. However, using kcalloc*()
-> is more appropriate [2] and improves readability. This patch has no
-> effect on runtime behavior.
-> 
-> Link: https://github.com/KSPP/linux/issues/162 [1]
-> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Erick Archer <erick.archer@outlook.com>
-> ---
-> Changes in v3:
-> - Update the commit message to better explain the changes.
-> - Rebase against linux-next.
-> 
-> Changes in v2:
-> - Add the "Reviewed-by:" tag.
-> - Rebase against linux-next.
-> 
-> Previous versions:
-> v1 -> https://lore.kernel.org/linux-hardening/20240116125813.3754-1-erick.archer@gmx.com
-> v2 -> https://lore.kernel.org/linux-hardening/AS8PR02MB7237A07D73D6D15EBF72FD8D8B392@AS8PR02MB7237.eurprd02.prod.outlook.com
-> 
-> Hi,
-> 
-> This is a new try. In the v2 version Ingo explained that this change
-> is nonsense since kzalloc() is a perfectly usable interface and there
-> is no real overflow here.
-> 
-> Anyway, if we have the 2-factor form of the allocator, I think it is
-> a good practice to use it.
-> 
-> In this version I have updated the commit message to explain that
-> the code is obviusly safe in contrast with the last version where the
-> impression was given that there was a real overlow bug.
-> 
-> I hope this patch can be applied this time.
-> 
-> Regards,
-> Erick
-> ---
->   arch/x86/events/amd/uncore.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-> index 4ccb8fa483e6..61c0a2114183 100644
-> --- a/arch/x86/events/amd/uncore.c
-> +++ b/arch/x86/events/amd/uncore.c
-> @@ -479,8 +479,8 @@ static int amd_uncore_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
->   				goto fail;
->   
->   			curr->cpu = cpu;
-> -			curr->events = kzalloc_node(sizeof(*curr->events) *
-> -						    pmu->num_counters,
-> +			curr->events = kcalloc_node(pmu->num_counters,
-> +						    sizeof(*curr->events),
->   						    GFP_KERNEL, node);
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Hi,
+This kernel config option is simply assigned with the resume_file
+buffer. It should be NUL-terminated but not necessarily NUL-padded as
+per its further usage with other string apis:
+|	static int __init find_resume_device(void)
+|	{
+|		if (!strlen(resume_file))
+|			return -ENOENT;
+|
+|		pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
 
-not related to your patch, but amd_uncore_ctx looks like a good 
-candidate for a flexible array.
+Use strscpy [2] as it guarantees NUL-termination on the destination
+buffer. Specifically, use the new 2-argument version of strscpy()
+introduced in Commit e6584c3964f2f ("string: Allow 2-argument
+strscpy()").
 
-This would simplify allocation/freeing of the memory.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-struct amd_uncore_ctx {
-	int refcnt;
-	int cpu;
-	struct hlist_node node;
-	struct perf_event *events[];
-};
+Found with: $ rg "strncpy\("
+---
+ kernel/power/hibernate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Just my 2c,
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 43b1a82e800c..0a213f69a9e4 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -1361,7 +1361,7 @@ static int __init resume_setup(char *str)
+ 	if (noresume)
+ 		return 1;
+ 
+-	strncpy(resume_file, str, 255);
++	strscpy(resume_file, str);
+ 	return 1;
+ }
+ 
 
-CJ
+---
+base-commit: d7ad0581567927c433918bb5f06f3d29f89807d3
+change-id: 20240412-strncpy-kernel-power-hibernate-c-77985696443c
 
->   			if (!curr->events) {
->   				kfree(curr);
-> @@ -928,7 +928,7 @@ int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
->   		uncore->num_pmus += group_num_pmus[gid];
->   	}
->   
-> -	uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
-> +	uncore->pmus = kcalloc(uncore->num_pmus, sizeof(*uncore->pmus),
->   			       GFP_KERNEL);
->   	if (!uncore->pmus) {
->   		uncore->num_pmus = 0;
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
