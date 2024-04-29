@@ -1,201 +1,368 @@
-Return-Path: <linux-kernel+bounces-162120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC99E8B5638
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:13:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02BB98B563B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:14:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6810B2361A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:13:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD42285C3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043A43F8F4;
-	Mon, 29 Apr 2024 11:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9793EA96;
+	Mon, 29 Apr 2024 11:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KYX0iCqD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bBe1xS8o"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8033DB8E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C02B3D555
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714389206; cv=none; b=ahbCREYcC3eOT/Ch47FFXjSGS4cUJ5v2iILhY9xHUwLbOMHsDmHtUQGlKqLII6Fiwwvdn4Xit/uMKmLzczvtvmkoOKOeOnvBwrsbWxdelh7/Pq3xwapdg6FYpzG4x+WYVOScfadXD/RvgDbhSaSj1nX0cDmr11Qb1T7tg3j424k=
+	t=1714389252; cv=none; b=e8UKDlaHVfBL41DsMUQnJgdMTD1B5KZ3KJzbulNqBsaQzjUGIePwAlM/n3vm2ys/tBD9I02d0JALdk2UkI/+SRQqb+4XHJaE15UMOHT1/gi3DGQKNgLTm1OVBkF54eG63u2ds03+j04m0t60WYxNcC7AWJVKDas9OF/F315YusY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714389206; c=relaxed/simple;
-	bh=T/crSH9DSA8ylB7Et4pCh0oc+2zAxyiMJFqQVdttaQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=frmCJpDlUG3ZexlkJ1M3MQGOth0AYyIksXj1brfBloWai6lvpYIYsVzvbKJOToVEgVltRRWHSaVKJYVBUnNiJPHX/GBEnkYSbblVHemHz5B6xI1GSqKe6sKLau4DeRHxwR6DB+W2tHUvfNggki5jSyrXFCUF5BE0ZCWT6SS2ZX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KYX0iCqD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714389203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8sJML5s0biiGbCVOwrO3DXEz4jiznSmREmBT1P/exaw=;
-	b=KYX0iCqD3rllL7xcpZWR9F9k5Z4AuSKf1xOPD3bIwNoP8fSdMn+AH6qPkATfDh07p8LR1Q
-	nSUm8O+PtnuZ/bJ/+SGaKx2OxLQyS123LL50QeXDWlWGC1Usegl0aUzZT+3E2fJxBiVCae
-	eJWKJgdHqDinJLrVG3NFKmXST5Ry+r4=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-691-KTjS55DKPSGs9msMhCM-2Q-1; Mon, 29 Apr 2024 07:13:22 -0400
-X-MC-Unique: KTjS55DKPSGs9msMhCM-2Q-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-51bd015c476so3486397e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 04:13:22 -0700 (PDT)
+	s=arc-20240116; t=1714389252; c=relaxed/simple;
+	bh=VJB3XtpKsMeidKLa9MlkFGIvAwCSFeeeCNDFgrIklH4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZzqX8eshExaZXHNl+0H40H47wcAWuyzPdm7mr7ZOxBygmcXADwvKKcnY+v5A/Ac8K5N1ODEzv+7/v+z9yqGkhQK/pas1l1CmXJsAT7FXyYejI4xTalJCO8JpBj2CD7IteFCQgneylqHMdyuid0zkYd0b43v0aM4HBpFBPZ2PGPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bBe1xS8o; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-23333dddd8aso1960256fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 04:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714389250; x=1714994050; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l9DP9J7iPWxCL5kOfm2ENQN3TRKnqGagxTY2cYMKEiw=;
+        b=bBe1xS8og/otzikeMN29p41Xs7jF4TCZgxEfdgVBMvaTKLsvyQb4sQWlABcT7lHyCt
+         0r4jtgbNPvip++p0Hx/4uVQnZhWha7p/usghJsJ8MnFOv42pneSKcKEJzI6XR9UepoDN
+         +WFAddCvmFG8vi4gFVAIOJqBhedmgPom14pbtkRsjG7AUANhLoBGev8dXopyy4B2zyV1
+         JiPZRN8cDu2GiQlhU7MYWsTMMZNHoVbCEy3TpS2WExMOGUrJPUzabThXbLKkD2jX1+MW
+         FywWlvjz8zIVb1EsxMwpv10+wC+rYdIK232yJbVK3rxBkGOUIQwARe/Rvu2JOHRisQx4
+         HdJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714389201; x=1714994001;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sJML5s0biiGbCVOwrO3DXEz4jiznSmREmBT1P/exaw=;
-        b=o/cCRZT/IpOQ4VrQdMpvB2fn9NhaCX3HsQiCHN1rTQheBuj9bCt0huiX7D3/svxhBJ
-         uwP+PZtDWSNqDLOOOj5NXof5QlX04CdvQm+QFWno1vf3K8UHhmMKPixm0u+vn5uj3L4e
-         IcVHxxQjPCETBzToG87PxJ1uVlAQw/C10MhKLgJXjH4XGcwBpG2KF3sLOLEq64YVDkUY
-         p3YdCIo4UegKTDYtGbnas9Qax3mx60Y1vCW/g85KsF8xU9o9/wbmP5/6Yoe9vaa49oPX
-         knKqDXBoow+QVEqyc9tV3jKDpylesuDeoS4KJVjrlOZ0yCnSRtXcOmU17anxEyomzf7L
-         kvBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrED9OA6yWpH3Q9zU/hjr59IUvBokcMNSFNHO5eIhZ3w1QBY9ibzlc1BGFQWx19myXvfAlmDPeft1pkpLM2/Gr/gu818aJQwa3TL2W
-X-Gm-Message-State: AOJu0YzvALhteolRNr/wNIJbftlwwL7z9KGuSgz64vIYYleiDLQB5aUW
-	bxVkdBTAGZa6FsiEEInNH9T/HzgSho9aAtF4vHYg/S0T3boBxdwZIsOacGUq0ihRNa38aRSX+tH
-	5NxcvKyn9HHEZvHhsNvTYGKsd6iTt4CD/xcpwxDF0S3DbKeYa5aKL0MyfT6ne1Q==
-X-Received: by 2002:ac2:4e03:0:b0:516:cf0a:9799 with SMTP id e3-20020ac24e03000000b00516cf0a9799mr7129200lfr.64.1714389200939;
-        Mon, 29 Apr 2024 04:13:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHg7WXBOz5A0aLSEx3ARFvToHVEBe47VUDofaiUeVucK5VTQ3/DUfw1ow8m393Bc5sqQ2amPw==
-X-Received: by 2002:ac2:4e03:0:b0:516:cf0a:9799 with SMTP id e3-20020ac24e03000000b00516cf0a9799mr7129152lfr.64.1714389200211;
-        Mon, 29 Apr 2024 04:13:20 -0700 (PDT)
-Received: from [10.40.98.157] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id ah2-20020a1709069ac200b00a4e393b6349sm13686361ejc.5.2024.04.29.04.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 04:13:19 -0700 (PDT)
-Message-ID: <32d7fbec-1b62-4e61-a078-ef7549bc8947@redhat.com>
-Date: Mon, 29 Apr 2024 13:13:19 +0200
+        d=1e100.net; s=20230601; t=1714389250; x=1714994050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l9DP9J7iPWxCL5kOfm2ENQN3TRKnqGagxTY2cYMKEiw=;
+        b=gwwgSMAWP+e+D2nJosxuIkqtEWpWKVLF5+0JWxi+fF16YQ/wY/DwFfrf9hmLjrF/DP
+         b/HirzOddeIZkFZ5vjTiSLdEkxGAvh5CWdhz3NnQbXkqXalHTq82VhAJOTsaTJ3EgXtA
+         HyFt1FHZti9Lo66v3Ocnic8S4IrkV5XCa+3H0WhipCHAhZm9OV7TfRNIagwJnU3WuQaX
+         reyGb12dLjn8/ZVcmN5FvBtCbbSyVLgbsGxi5TPaoi9Mj5r3AScfXRXuYzAaMiM1Wi1Q
+         3bnm0bt9UXAGZJU9V5NdlLwKLmzrLTh1BoS5K1KVIh05xNs4BGNvtNFzHDdnkJ3ZLDwM
+         5X1g==
+X-Gm-Message-State: AOJu0YzySxAgy7dlD6ty9tbJCTTx+ooOiU1BagFo0ZWOy/VPPhdl5+xh
+	/G9m3rKT3RoiRpyaJegTzS6tkSKAPo3/lHIBFUEYhsOU7/Ei9Y+0as2LnYNWnuDxB0nEuJmGfiS
+	wKbGQYcjCBJIDWV51uaclnMW0f5aB3E053cizfw==
+X-Google-Smtp-Source: AGHT+IF67DRiNiHLY4WQ/eDXvLNqYYC9N8SB52YmZ74MfzfEaVB62/a2e9VU/9nUbOX429oOvY9N3csLoqwWMqVSMCE=
+X-Received: by 2002:a05:6870:c08e:b0:22d:f675:d525 with SMTP id
+ c14-20020a056870c08e00b0022df675d525mr11542637oad.48.1714389249497; Mon, 29
+ Apr 2024 04:14:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/6] KTD2026 indicator LED for X86 Xiaomi Pad2
-To: Kate Hsuan <hpa@redhat.com>, Pavel Machek <pavel@ucw.cz>,
- Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
- linux-kernel@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-References: <20240424065212.263784-1-hpa@redhat.com>
-Content-Language: en-US
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240424065212.263784-1-hpa@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240422091936.3714381-1-jens.wiklander@linaro.org>
+ <20240422091936.3714381-3-jens.wiklander@linaro.org> <ZioXkvnIw5V5MXBU@mecka.net>
+ <CAHUa44Fojanryuc+ciJrVZUopRLcTt2teS_pC4BBjt1Wmy240A@mail.gmail.com>
+ <Zi9rKzz8u8z7cIy0@mecka.net> <CAHUa44HHtcaYXhcWg5zL5EQ8pEP7aEDKS+yjpaMJH8vTtF3xFw@mail.gmail.com>
+ <Zi93_0aCq9mQ_6cD@mecka.net> <CAHUa44FG3ge3nyQVStKjfpeJvpjuQjNiZsxHjyRz+CUjHwkS=g@mail.gmail.com>
+In-Reply-To: <CAHUa44FG3ge3nyQVStKjfpeJvpjuQjNiZsxHjyRz+CUjHwkS=g@mail.gmail.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Mon, 29 Apr 2024 13:13:58 +0200
+Message-ID: <CAHUa44EecehfyzE97z49e=-qA513um21JyJz_CNKweuctp=HoQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] mmc: block: register RPMB partition with the RPMB subsystem
+To: Manuel Traut <manut@mecka.net>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Jerome Forissier <jerome.forissier@linaro.org>, 
+	Sumit Garg <sumit.garg@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Bart Van Assche <bvanassche@acm.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
+	Alexander Usyskin <alexander.usyskin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi All,
+On Mon, Apr 29, 2024 at 12:45=E2=80=AFPM Jens Wiklander
+<jens.wiklander@linaro.org> wrote:
+>
+> On Mon, Apr 29, 2024 at 12:35=E2=80=AFPM Manuel Traut <manut@mecka.net> w=
+rote:
+> >
+> > On Mon, Apr 29, 2024 at 12:08:45PM +0200, Jens Wiklander wrote:
+> > > On Mon, Apr 29, 2024 at 11:41=E2=80=AFAM Manuel Traut <manut@mecka.ne=
+t> wrote:
+> > > >
+> > > > On Fri, Apr 26, 2024 at 03:24:21PM +0200, Jens Wiklander wrote:
+> > > > > On Thu, Apr 25, 2024 at 10:43=E2=80=AFAM Manuel Traut <manut@meck=
+a.net> wrote:
+> > > > > >
+> > > > > > On Mon, Apr 22, 2024 at 11:19:35AM +0200, Jens Wiklander wrote:
+> > > > > > > Register eMMC RPMB partition with the RPMB subsystem and prov=
+ide
+> > > > > > > an implementation for the RPMB access operations abstracting
+> > > > > > > the actual multi step process.
+> > > > > > >
+> > > > > > > Add a callback to extract the needed device information at re=
+gistration
+> > > > > > > to avoid accessing the struct mmc_card at a later stage as we=
+'re not
+> > > > > > > holding a reference counter for this struct.
+> > > > > > >
+> > > > > > > Taking the needed reference to md->disk in mmc_blk_alloc_rpmb=
+_part()
+> > > > > > > instead of in mmc_rpmb_chrdev_open(). This is needed by the
+> > > > > > > route_frames() function pointer in struct rpmb_ops.
+> > > > > > >
+> > > > > > > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> > > > > > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com=
+>
+> > > > > > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > > > > > ---
+> > > > > > >  drivers/mmc/core/block.c | 241 +++++++++++++++++++++++++++++=
++++++++++-
+> > > > > > >  1 file changed, 239 insertions(+), 2 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/bloc=
+k.c
+> > > > > > > index 32d49100dff5..a7f126fbc605 100644
+> > > > > > > --- a/drivers/mmc/core/block.c
+> > > > > > > +++ b/drivers/mmc/core/block.c
+> > > > > > > @@ -33,6 +33,7 @@
+> > > > > > >  #include <linux/cdev.h>
+> > > > > > >  #include <linux/mutex.h>
+> > > > > > >  #include <linux/scatterlist.h>
+> > > > > > > +#include <linux/string.h>
+> > > > > > >  #include <linux/string_helpers.h>
+> > > > > > >  #include <linux/delay.h>
+> > > > > > >  #include <linux/capability.h>
+> > > > > > > @@ -40,6 +41,7 @@
+> > > > > > >  #include <linux/pm_runtime.h>
+> > > > > > >  #include <linux/idr.h>
+> > > > > > >  #include <linux/debugfs.h>
+> > > > > > > +#include <linux/rpmb.h>
+> > > > > > >
+> > > > > > >  #include <linux/mmc/ioctl.h>
+> > > > > > >  #include <linux/mmc/card.h>
+> > > > > > > @@ -76,6 +78,48 @@ MODULE_ALIAS("mmc:block");
+> > > > > > >  #define MMC_EXTRACT_INDEX_FROM_ARG(x) ((x & 0x00FF0000) >> 1=
+6)
+> > > > > > >  #define MMC_EXTRACT_VALUE_FROM_ARG(x) ((x & 0x0000FF00) >> 8=
+)
+> > > > > > >
+> > > > > > > +/**
+> > > > > > > + * struct rpmb_frame - rpmb frame as defined by eMMC 5.1 (JE=
+SD84-B51)
+> > > > > > > + *
+> > > > > > > + * @stuff        : stuff bytes
+> > > > > > > + * @key_mac      : The authentication key or the message aut=
+hentication
+> > > > > > > + *                 code (MAC) depending on the request/respo=
+nse type.
+> > > > > > > + *                 The MAC will be delivered in the last (or=
+ the only)
+> > > > > > > + *                 block of data.
+> > > > > > > + * @data         : Data to be written or read by signed acce=
+ss.
+> > > > > > > + * @nonce        : Random number generated by the host for t=
+he requests
+> > > > > > > + *                 and copied to the response by the RPMB en=
+gine.
+> > > > > > > + * @write_counter: Counter value for the total amount of the=
+ successful
+> > > > > > > + *                 authenticated data write requests made by=
+ the host.
+> > > > > > > + * @addr         : Address of the data to be programmed to o=
+r read
+> > > > > > > + *                 from the RPMB. Address is the serial numb=
+er of
+> > > > > > > + *                 the accessed block (half sector 256B).
+> > > > > > > + * @block_count  : Number of blocks (half sectors, 256B) req=
+uested to be
+> > > > > > > + *                 read/programmed.
+> > > > > > > + * @result       : Includes information about the status of =
+the write counter
+> > > > > > > + *                 (valid, expired) and result of the access=
+ made to the RPMB.
+> > > > > > > + * @req_resp     : Defines the type of request and response =
+to/from the memory.
+> > > > > > > + *
+> > > > > > > + * The stuff bytes and big-endian properties are modeled to =
+fit to the spec.
+> > > > > > > + */
+> > > > > > > +struct rpmb_frame {
+> > > > > > > +     u8     stuff[196];
+> > > > > > > +     u8     key_mac[32];
+> > > > > > > +     u8     data[256];
+> > > > > > > +     u8     nonce[16];
+> > > > > > > +     __be32 write_counter;
+> > > > > > > +     __be16 addr;
+> > > > > > > +     __be16 block_count;
+> > > > > > > +     __be16 result;
+> > > > > > > +     __be16 req_resp;
+> > > > > > > +} __packed;
+> > > > > > > +
+> > > > > > > +#define RPMB_PROGRAM_KEY       0x1    /* Program RPMB Authen=
+tication Key */
+> > > > > > > +#define RPMB_GET_WRITE_COUNTER 0x2    /* Read RPMB write cou=
+nter */
+> > > > > > > +#define RPMB_WRITE_DATA        0x3    /* Write data to RPMB =
+partition */
+> > > > > > > +#define RPMB_READ_DATA         0x4    /* Read data from RPMB=
+ partition */
+> > > > > > > +#define RPMB_RESULT_READ       0x5    /* Read result request=
+  (Internal) */
+> > > > > > > +
+> > > > > > >  static DEFINE_MUTEX(block_mutex);
+> > > > > > >
+> > > > > > >  /*
+> > > > > > > @@ -163,6 +207,7 @@ struct mmc_rpmb_data {
+> > > > > > >       int id;
+> > > > > > >       unsigned int part_index;
+> > > > > > >       struct mmc_blk_data *md;
+> > > > > > > +     struct rpmb_dev *rdev;
+> > > > > > >       struct list_head node;
+> > > > > > >  };
+> > > > > > >
+> > > > > > > @@ -2672,7 +2717,6 @@ static int mmc_rpmb_chrdev_open(struct =
+inode *inode, struct file *filp)
+> > > > > > >
+> > > > > > >       get_device(&rpmb->dev);
+> > > > > > >       filp->private_data =3D rpmb;
+> > > > > > > -     mmc_blk_get(rpmb->md->disk);
+> > > > > > >
+> > > > > > >       return nonseekable_open(inode, filp);
+> > > > > > >  }
+> > > > > > > @@ -2682,7 +2726,6 @@ static int mmc_rpmb_chrdev_release(stru=
+ct inode *inode, struct file *filp)
+> > > > > > >       struct mmc_rpmb_data *rpmb =3D container_of(inode->i_cd=
+ev,
+> > > > > > >                                                 struct mmc_rp=
+mb_data, chrdev);
+> > > > > > >
+> > > > > > > -     mmc_blk_put(rpmb->md);
+> > > > > > >       put_device(&rpmb->dev);
+> > > > > > >
+> > > > > > >       return 0;
+> > > > > > > @@ -2703,10 +2746,165 @@ static void mmc_blk_rpmb_device_rele=
+ase(struct device *dev)
+> > > > > > >  {
+> > > > > > >       struct mmc_rpmb_data *rpmb =3D dev_get_drvdata(dev);
+> > > > > > >
+> > > > > > > +     rpmb_dev_unregister(rpmb->rdev);
+> > > > > > > +     mmc_blk_put(rpmb->md);
+> > > > > > >       ida_simple_remove(&mmc_rpmb_ida, rpmb->id);
+> > > > > > >       kfree(rpmb);
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +static void free_idata(struct mmc_blk_ioc_data **idata, unsi=
+gned int cmd_count)
+> > > > > > > +{
+> > > > > > > +     unsigned int n;
+> > > > > > > +
+> > > > > > > +     for (n =3D 0; n < cmd_count; n++)
+> > > > > > > +             kfree(idata[n]);
+> > > > > > > +     kfree(idata);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static struct mmc_blk_ioc_data **alloc_idata(struct mmc_rpmb=
+_data *rpmb,
+> > > > > > > +                                          unsigned int cmd_c=
+ount)
+> > > > > > > +{
+> > > > > > > +     struct mmc_blk_ioc_data **idata;
+> > > > > > > +     unsigned int n;
+> > > > > > > +
+> > > > > > > +     idata =3D kcalloc(cmd_count, sizeof(*idata), GFP_KERNEL=
+);
+> > > > > > > +     if (!idata)
+> > > > > > > +             return NULL;
+> > > > > > > +     for (n =3D 0; n < cmd_count; n++) {
+> > > > > > > +             idata[n] =3D kcalloc(1, sizeof(**idata), GFP_KE=
+RNEL);
+> > > > > > > +             if (!idata[n]) {
+> > > > > > > +                     free_idata(idata, n);
+> > > > > > > +                     return NULL;
+> > > > > > > +             }
+> > > > > > > +             idata[n]->rpmb =3D rpmb;
+> > > > > > > +     }
+> > > > > > > +
+> > > > > > > +     return idata;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static void set_idata(struct mmc_blk_ioc_data *idata, u32 op=
+code,
+> > > > > > > +                   int write_flag, u8 *buf, unsigned int buf=
+_bytes)
+> > > > > > > +{
+> > > > > > > +     /*
+> > > > > > > +      * The size of an RPMB frame must match what's expected=
+ by the
+> > > > > > > +      * hardware.
+> > > > > > > +      */
+> > > > > > > +     BUILD_BUG_ON(sizeof(struct rpmb_frame) !=3D 512);
+> > > > > > > +
+> > > > > > > +     idata->ic.opcode =3D opcode;
+> > > > > > > +     idata->ic.flags =3D MMC_RSP_R1 | MMC_CMD_ADTC;
+> > > > > > > +     idata->ic.write_flag =3D write_flag;
+> > > > > > > +     idata->ic.blksz =3D sizeof(struct rpmb_frame);
+> > > > > > > +     idata->ic.blocks =3D buf_bytes /  idata->ic.blksz;
+> > > > > > > +     idata->buf =3D buf;
+> > > > > >
+> > > > > > I tested the series on a i.MX8MM with a eMMC connected via the =
+imx-sdhci
+> > > > > > controller. Reading from RPMB does not work. It ends in timeout=
+s due to
+> > > > > > no response from the SDHCI controller.
+> > > > > >
+> > > > > > If idata->buf is allocated here with kmalloc(buf_bytes, GFP_KER=
+NEL) and
+> > > > > > the content of buf is copied to the new allocated area, transfe=
+rs succeed.
+> > > > > >
+> > > > > > Is it possible that idata->buf is not DMA capable? Any other id=
+eas?
+> > > > >
+> > > > > Thanks for testing. I don't know, the idata->buf is allocated usi=
+ng
+> > > > > alloc_pages_exact(nr_pages * PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);=
+ in
+> > > > > optee_pool_op_alloc_helper().
+> > > >
+> > > > Is this really true for idata->buf or isnt the complete RPMB frame =
+memory
+> > > > allocated like this and therefore idata->buf not page aligned?
+> > >
+> > > You're right.
+> > >
+> > > >
+> > > > For RPMB via tee-supplicant the idata->buf is allocated within memd=
+up_user
+> > > > and therefore page aligned.
+> > >
+> > > Yes, that's a difference. Have you tested with page-aligned buffers t=
+o
+> > > see if it helps?
+> >
+> > Yes, this helps. I tested with the following patch, but probably it can=
+ also
+> > be solved during frame allocation in optee?
+>
+> Great, thanks for confirming. Yes, we should fix that in the secure world=
+.
 
-On 4/24/24 8:52 AM, Kate Hsuan wrote:
-> This patch added the support for Xiaomi Pad2 indicator LED. This work
-> included:
-> 1. Added the KTD2026 swnode description to describe the LED controller.
-> 2. Migrated the original driver to fwnode to support x86 platform.
-> 3. Support for multi-color LED trigger event.
-> 4. The LED shows orange  when charging and the LED shows green when the
->    battery is full.
-> 
-> Moreover, the LED trigger is set to the new trigger, called
-> "bq27520-0-charging-orange-full-green" for Xiaomi Pad2 so the LED shows
-> orange when charging and the LED shows green when the battery is full.
+I've pushed an update to
+https://github.com/jenswi-linaro/optee_os/tree/rpmb_probe
 
-Lee, I believe this series is ready for merging now ?  I've reviewed
-patches 1-2 + 5 and Jacek has reviewed patches 3 + 4.
-
-Patch 5 also has an Acked-by from Sebastian for merging it together
-with the rest of the series.
-
-Can you merge patches 1-5 ?
-
-Patch 6 just changes the value of a device-property (the default-trigger
-string) and I can merge that through the pdx86 tree independent of
-patches 1-5.
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> --
-> Changes in v7:
-> 1. Platform: x86-android-tablets: other: Add swnode for Xiaomi pad2
->    indicator LED was included in Hans' branch.
-> 2. Included the tags from the previous version in the commit message.
-> 3. Fixed the comma issue for the structure initialiser.
-> 
-> Changes in v6:
-> 1. The I2C ID table was moved to a separate patch.
-> 2. The LED shows orange when charging.
-> 3. The trigger name was renamed to charging-orange-full-green.
-> 4. The default trigger of Xiaomi Pad2 is
->    "bq27520-0-charging-orange-full-green".
-> 
-> Changes in v5:
-> 1. Fix swnode LED color settings.
-> 2. Improve the driver based on the comments.
-> 3. Introduce a LED new API- led_mc_trigger_event() to make the LED
->    color can be changed according to the trigger.
-> 4. Introduced a new trigger "charging-red-full-green". The LED will be
->    red when charging and the the LED will be green when the battery is
->    full.
-> 5. Set the default trigger to "bq27520-0-charging-red-full-green" for
->    Xiaomi Pad2.
-> 
-> Changes in v4:
-> 1. Fix double casting.
-> 2. Since force casting a pointer value to int will trigger a compiler
->    warning, the type of num_leds was changed to unsigned long.
-> 
-> Changes in v3:
-> 1. Drop the patch "leds-ktd202x: Skip regulator settings for Xiaomi
->    pad2"
-> 
-> Changes in v2:
-> 1. Typo and style fixes.
-> 2. The patch 0003 skips all the regulator setup for Xiaomi pad2 since
->    KTD2026 on Xiaomi pad2 is already powered by BP25890RTWR. So, the
->    sleep can be removed when removing the module.
-> 
-> 
-> Hans de Goede (2):
->   leds: core: Add led_mc_set_brightness() function
->   leds: trigger: Add led_mc_trigger_event() function
-> 
-> Kate Hsuan (4):
->   leds: rgb: leds-ktd202x: Get device properties through fwnode to
->     support ACPI
->   leds: rgb: leds-ktd202x: I2C ID tables for KTD2026 and 2027
->   power: supply: power-supply-leds: Add charging_orange_full_green
->     trigger for RGB LED
->   platform: x86-android-tablets: others: Set the LED trigger to
->     charging_orange_full_green for Xiaomi pad2
-> 
->  drivers/leds/led-class-multicolor.c           |  1 +
->  drivers/leds/led-core.c                       | 31 ++++++++
->  drivers/leds/led-triggers.c                   | 20 ++++++
->  drivers/leds/rgb/Kconfig                      |  1 -
->  drivers/leds/rgb/leds-ktd202x.c               | 72 +++++++++++--------
->  .../platform/x86/x86-android-tablets/other.c  |  2 +-
->  drivers/power/supply/power_supply_leds.c      | 26 +++++++
->  include/linux/leds.h                          | 26 +++++++
->  include/linux/power_supply.h                  |  2 +
->  9 files changed, 149 insertions(+), 32 deletions(-)
-> 
-
+Cheers,
+Jens
 
