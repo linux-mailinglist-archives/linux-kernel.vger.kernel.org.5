@@ -1,127 +1,492 @@
-Return-Path: <linux-kernel+bounces-161888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281038B52BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:58:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4CB8B52CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:03:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7EBD281EB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:58:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DDC01C20DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D460E16419;
-	Mon, 29 Apr 2024 07:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C6D171A2;
+	Mon, 29 Apr 2024 08:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIcFffME"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uLrmyNoi"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B46134BF;
-	Mon, 29 Apr 2024 07:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725EB15E85
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714377488; cv=none; b=XOqd87Zrxi10ZYHMw4qi5yfs/Rcgo3A4w1LL+gFYW5gUVltyoQ6zlih51O22O8fm1Tnq2pGirkWQRbA/nMLYYv6ZZtp+b1KxbgR1YZRypb7iBYv2hD9XLPqICEzJ7a8bT7mqODpHkjpGULJIi7Tq/WL1AAgs1ZVCb/UKCyY73Hc=
+	t=1714377770; cv=none; b=RTIGJPNjrFYd5MpaDx44aUuwTCVDRKxoG6HKcPWfhsyUPKLaXszxiKXp+ML8yojzvC9mOUN3QGp8SsblR/SkqkI04bSOXq+JsrwOVs/1jh0HgFqIOZ22KSopTuqa+zz+ABHiuzWKw2F1RylVLUFW373lcFEH/yBdJ5osCd7XDIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714377488; c=relaxed/simple;
-	bh=xYM2yXWnRhqySCaj8k34zqA1nOe3QZmh3OR/nz2Lfss=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Y+a1SxCGCM7j89kPg2aSmbCGbRhosWxd8HBAYgP2q4s9BWcsOfwO1efTGzI2fe9W8dv2lEQdXCUKcVPCSWos0cEuUrKm2fa3kmXW/AN28ilwk7LcD/POq21Hhu7JFO+i1BO4pMyDeDLOJB0C6pLNfpE+3W8i5+qCVTt5+V+T5sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIcFffME; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41adf3580dbso23261875e9.0;
-        Mon, 29 Apr 2024 00:58:06 -0700 (PDT)
+	s=arc-20240116; t=1714377770; c=relaxed/simple;
+	bh=9HoXmHzHQZ9ELzIrBrYKNCb/oWvWn5TWjSoHPopcX6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mAiozZXzJ2DB2NGSfv9kEIGCfInTwSzKsAcp7ik+/eUA60/mfdLbv/R3YR9xmdIWgSLpg0Zn+WOfPg45UiaB3WtiHvsdNNOabVN0K+Hbh2eRzHe2H15UF0F3IaUmUakVw+hTBj7Lb7B26PKkVFuRF/aEgqBntAKUnbP7cFWwbr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uLrmyNoi; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34a42d6e216so902979f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714377485; x=1714982285; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xYM2yXWnRhqySCaj8k34zqA1nOe3QZmh3OR/nz2Lfss=;
-        b=YIcFffMEYRPDlYaxvtquul+IbmqRUsE6J4yvtU7trJmU7vKOu+bDq80uQj8R9P+Dbw
-         +o5ilkUmTaEy3c8zdBO4WvVxM7Ul634TIosTRqieLWXF9LZh8mnc+qhGU7JwJYIdtXSt
-         GfiHGodRjr3+QHz7SaAeLp2B1r1L86RL4CbHINtMAOe7+LfoaXfvNbC1UiySfx2ZlN1k
-         rDyrL3MWgTQ75fS4f7O4HzXH8uSWc5CY2zrL7ss2jW2ROBhL0IFspjeyNloQqIFb92ig
-         4O5Cy9M/yZc4V8DLY230z3Yks2Oa+rT5+c55DBrql8ah/SzdFxbT/LssrJTXvs87t8AW
-         dWOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714377485; x=1714982285;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714377767; x=1714982567; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xYM2yXWnRhqySCaj8k34zqA1nOe3QZmh3OR/nz2Lfss=;
-        b=RR1e9efHxbaaf6ih96nhZjuQ2Nl5OqjWqKDdd04fgLQgjzbq4hW2/S9UP8EXat1FFf
-         eAOHSz0jnA3VuE+BSxZe4zKplug1CQ1KD0tew54PPg/NY/HzLjhMCSYLKW3F+qN7oqww
-         tsooMr1eSW835zlit4B+N3dvMB7kBbBiNGjEKP29MbPKCds2lro4WXEyKVHaK9Dy1IfD
-         0456aqQGAT8kcGi2KpVuTRIXmkZ4QUewzJR/VRMPmEkjZkpMhfTl/KKJJp0aVp8cSOe0
-         wvICyTT2/4mTnBm7zl/1xE70Lx8BB2PNBQdxFthCUjbfTpnAzHciclJUr3BDLRTSHBFq
-         gN9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXcUzQTXosWvUBuTIIXFDSbiZ3OebIZDrVZKtpAGZbYe2LGB5/jHvLny3/b8ZNe5wXSvlrxAL32PiO3sMVSlkfB68eqXqRMEhKYrzGt51iK6RA1w4P2Gaa6puntokWUSDjsQZT7TUrAS7B1j2kKbH7QJx3GIzBaiZqSCRdQvgYftg==
-X-Gm-Message-State: AOJu0YzW4mhK9bf33vqN/5HJrZ0FhNmEdOTn4dDDNiVn959Vvj8axOxD
-	hMddIwaJlJq1gLsb1112As8u0g7qynCnbwzfiUAYSsBWU/rmcExs
-X-Google-Smtp-Source: AGHT+IHUXWkWmSGPpEjYl3wk64uAdREH56IKk99xgzW0ANzW0yF5B6m46aVyp4rUqYCBMTndgimAVA==
-X-Received: by 2002:a05:600c:3507:b0:41c:13f6:1ee1 with SMTP id h7-20020a05600c350700b0041c13f61ee1mr2877367wmq.4.1714377484714;
-        Mon, 29 Apr 2024 00:58:04 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1c:c500:994e:fbde:478:1ce1? (p200300f6ef1cc500994efbde04781ce1.dip0.t-ipconnect.de. [2003:f6:ef1c:c500:994e:fbde:478:1ce1])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c510e00b00419f572671dsm32010568wms.20.2024.04.29.00.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 00:58:04 -0700 (PDT)
-Message-ID: <51bb337457b6deab93bb1cc3652d8168763f6aa1.camel@gmail.com>
-Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7 families
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>, Ramona Gradinariu
-	 <ramona.bolboaca13@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, 
- linux-doc@vger.kernel.org, devicetree@vger.kernel.org, corbet@lwn.net, 
- conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, robh@kernel.org,
- Ramona Gradinariu <ramona.gradinariu@analog.com>, Nuno
- =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>
-Date: Mon, 29 Apr 2024 10:01:42 +0200
-In-Reply-To: <20240428162555.3ddf31ea@jic23-huawei>
-References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
-	 <20240423084210.191987-5-ramona.gradinariu@analog.com>
-	 <20240428162555.3ddf31ea@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.1 
+        bh=9lk6J9c7nceHYPPSuxHCl/jFNOuQDl39RqYLkN6g2zo=;
+        b=uLrmyNoivx3LSuqSymvFaYWv9E98dWMFdUXz055tfEppaax/syZeM6hnC9AyWAziau
+         ohUoc62nwq4ReIlXzWipN31JfYleJL7l0i7T4RYimDyfDBulsM2uB1xMPwPCj6uxxe7L
+         n+9pzABtdkovUUKWLRDzKywvfya03I/uhaC8WiWG+2ap84BnjuR39Vd1J/tYESQ70h2F
+         HInkAfX8L7Tfa8LNnTzAGfpxlpcdWLcYZxRkly+O3iw1u1Zcdk4kdTfms0G4v8zVUx56
+         6ybgjL4EFBOrcwvt2IsGybTv8lHIuKiEcnXdfZrfKJjI1NvKIPPXe2W7d4KGPRHsy6st
+         zI0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714377767; x=1714982567;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9lk6J9c7nceHYPPSuxHCl/jFNOuQDl39RqYLkN6g2zo=;
+        b=sifcMqSauDBqK9GnTuVh6vmHwoGLeX3VK2iBTAzRck1FS+r9jmPu55zI7nroyu+Abx
+         mdT0PwoaF+YtrjkFxhQONYPQ3R7k9CeFBo8t8crnVH5P4u7KVdbjZT/LgCMwaUhR272n
+         LaG2+m6RjSJU48MrSXe1zgZCxirsZzFep/usUr78oJn+zshd4ttL7HJze25QUiyy5VTW
+         0JmmmaS+Ew0b6iWY3nqXqPeKLSlX6v2z+NnFdV0aCZP7Uuy8Bn/1tdAmeZLXYR91GIdi
+         +FqCBCoqUgVSLTHF+GKG9/LKrsfZ/VgPqLgVB1iOlpnn5p3MvBf89Puyd+8RX1nV0NWA
+         uRXA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4J+9HzLlz3wIZ2aaPzsWVHw+wZODLN1Vvtw5+67ICDcrZIlexdb6tGwRnBa0rK74hbAPg/t+eFjpuMDsiw3jo06Rs/ADxOLMrVKkT
+X-Gm-Message-State: AOJu0YzZKa+TNZijFVP7xwvPBQnhZu8iy1QcuOsstSV7i4KiiQvPvhAd
+	V8Mw2A4ddtCjiVrP1MEPHKmHcdFN3KrPsVOMWW1ghacVSrTCW/G0TA6ZRz7z/90=
+X-Google-Smtp-Source: AGHT+IGd/GTek2EtViHRdRFeIXZn3n2LYf5CPBHrEQdxd9jjHLyUtqDgKKXlzgWCD9IG4KWRHuQ70A==
+X-Received: by 2002:adf:eb88:0:b0:34c:a12:8722 with SMTP id t8-20020adfeb88000000b0034c0a128722mr6358975wrn.1.1714377766520;
+        Mon, 29 Apr 2024 01:02:46 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:2fec:d20:2b60:e334? ([2a01:e0a:999:a3a0:2fec:d20:2b60:e334])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d6b88000000b0034c462f920csm8446915wrx.40.2024.04.29.01.02.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 01:02:45 -0700 (PDT)
+Message-ID: <7b2b8045-b814-4f93-a9ce-4e3d087c8f0e@rivosinc.com>
+Date: Mon, 29 Apr 2024 10:02:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/11] riscv: add ISA extensions validation
+To: Conor Dooley <conor@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+ Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+References: <20240423124326.2532796-1-cleger@rivosinc.com>
+ <20240423124326.2532796-3-cleger@rivosinc.com>
+ <20240426-smugly-jury-e933a4ef035c@spud>
+Content-Language: en-US
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240426-smugly-jury-e933a4ef035c@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, 2024-04-28 at 16:25 +0100, Jonathan Cameron wrote:
-> On Tue, 23 Apr 2024 11:42:09 +0300
-> Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
->=20
-> > The ADIS16545 and ADIS16547 are a complete inertial system that
-> > includes a triaxis gyroscope and a triaxis accelerometer.
-> > The serial peripheral interface (SPI) and register structure provide a
-> > simple interface for data collection and configuration control.
-> >=20
-> > These devices are similar to the ones already supported in the driver,
-> > with changes in the scales, timings and the max spi speed in burst
-> > mode.
-> > Also, they support delta angle and delta velocity readings in burst
-> > mode, for which support was added in the trigger handler.
-> >=20
-> > Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>
->=20
-> What is Nuno's relationship to this patch?=C2=A0 You are author and the s=
-ender
-> which is fine, but in that case you need to make Nuno's involvement expli=
-cit.
-> Perhaps a Co-developed-by or similar is appropriate?
->=20
 
-Ah and regarding this is that I guess Ramona just modified my internal patc=
-hes
-adding support for these parts long ago (when they were not public yet). No=
-t
-sure how much did she changed but a Co-developed-by looks the way to go...
 
-- Nuno S=C3=A1
->=20
+On 26/04/2024 16:23, Conor Dooley wrote:
+> On Tue, Apr 23, 2024 at 02:43:16PM +0200, Clément Léger wrote:
+>> Since a few extensions (Zicbom/Zicboz) already needs validation and
+>> future ones will need it as well (Zc*) add a validate() callback to
+>> struct riscv_isa_ext_data. This require to rework the way extensions are
+>> parsed and split it in two phases. First phase is isa string or isa
+>> extension list parsing and consists in enabling all the extensions in a
+>> temporary bitmask without any validation. The second step "resolves" the
+>> final isa bitmap, handling potential missing dependencies. The mechanism
+>> is quite simple and simply validate each extension described in the
+>> temporary bitmap before enabling it in the final isa bitmap. This
+>> process takes place until the final isa bitmap reaches a stable state.
+>> In order to avoid any potential infinite looping, allow looping a
+>> maximum of the number of extension we handle. Zicboz and Zicbom
+>> extensions are modified to use this validation mechanism.
+> 
+> Yaknow, seeing the implemtation I'm having second thoughts. I think
+> there's two pretty separate actions going on here - the first is things
+> like Zicbom or Zicboz where we are looking at the DT to find some extra
+> properties which we can do exactly once. The other is the Zc* case,
+> where we are making sure that extensions they depend on are enabled.
+> I understand that the latter may need to loop, but I don't think there's
+> a reason to loop in the Zicbom or Zicboz case.
 
+That's a good point, we could potentially avoid that by specifying
+different return values for the validate callback (Similar to what is
+done by platform driver probing):
+
+- 0 -> Ok, enable the extension
+- -EDEFER -> Try to probe again later
+- -E<whatever> -> Disabled the extension once for all in the original
+ISA bitmap so the callback won't get called again.
+
+That would also allows to get rid of at least the extra loop that is
+done to verify the stability of the ISA even if there were no defered
+probed extensions.
+
+Thanks,
+
+Clément
+
+> 
+> That said, I do actually like the idea of having specific callbacks for
+> extensions that require them, rather than calling extension_check()
+> unconditionally.
+> 
+> I've not reviewed the actual code here FWIW, just spent some time
+> thinking about the idea. I might do that later on this revision, or on
+> another, depending on what you think of splitting the Zicbom and Zicboz
+> type extra prop checking from dependency related stuff like Zc*.
+> 
+> Cheers,
+> Conor.
+> 
+>>
+>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>> ---
+>>  arch/riscv/include/asm/cpufeature.h |   1 +
+>>  arch/riscv/kernel/cpufeature.c      | 201 ++++++++++++++++------------
+>>  2 files changed, 118 insertions(+), 84 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+>> index 347805446151..328f895f6b8f 100644
+>> --- a/arch/riscv/include/asm/cpufeature.h
+>> +++ b/arch/riscv/include/asm/cpufeature.h
+>> @@ -70,6 +70,7 @@ struct riscv_isa_ext_data {
+>>  	const char *property;
+>>  	const unsigned int *subset_ext_ids;
+>>  	const unsigned int subset_ext_size;
+>> +	bool (*validate)(const struct riscv_isa_ext_data *data, const unsigned long *isa_bitmap);
+>>  };
+>>  
+>>  extern const struct riscv_isa_ext_data riscv_isa_ext[];
+>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+>> index 115ba001f1bc..6d238c8dbccf 100644
+>> --- a/arch/riscv/kernel/cpufeature.c
+>> +++ b/arch/riscv/kernel/cpufeature.c
+>> @@ -72,51 +72,62 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, unsigned i
+>>  }
+>>  EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
+>>  
+>> -static bool riscv_isa_extension_check(int id)
+>> +static bool riscv_isa_extension_valid(int id)
+>>  {
+>> -	switch (id) {
+>> -	case RISCV_ISA_EXT_ZICBOM:
+>> -		if (!riscv_cbom_block_size) {
+>> -			pr_err("Zicbom detected in ISA string, disabling as no cbom-block-size found\n");
+>> -			return false;
+>> -		} else if (!is_power_of_2(riscv_cbom_block_size)) {
+>> -			pr_err("Zicbom disabled as cbom-block-size present, but is not a power-of-2\n");
+>> -			return false;
+>> -		}
+>> -		return true;
+>> -	case RISCV_ISA_EXT_ZICBOZ:
+>> -		if (!riscv_cboz_block_size) {
+>> -			pr_err("Zicboz detected in ISA string, disabling as no cboz-block-size found\n");
+>> -			return false;
+>> -		} else if (!is_power_of_2(riscv_cboz_block_size)) {
+>> -			pr_err("Zicboz disabled as cboz-block-size present, but is not a power-of-2\n");
+>> -			return false;
+>> -		}
+>> -		return true;
+>> -	case RISCV_ISA_EXT_INVALID:
+>> +	return id != RISCV_ISA_EXT_INVALID;
+>> +}
+>> +
+>> +static bool riscv_ext_zicbom_validate(const struct riscv_isa_ext_data *data,
+>> +				      const unsigned long *isa_bitmap)
+>> +{
+>> +	if (!riscv_cbom_block_size) {
+>> +		pr_err_once("Zicbom detected in ISA string,"
+>> +			    "disabling as no cbom-block-size found\n");
+>> +		return false;
+>> +	} else if (!is_power_of_2(riscv_cbom_block_size)) {
+>> +		pr_err_once("Zicbom disabled as cbom-block-size present,"
+>> +			    "but is not a power-of-2\n");
+>>  		return false;
+>>  	}
+>> +	return true;
+>> +}
+>>  
+>> +static bool riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *data,
+>> +				      const unsigned long *isa_bitmap)
+>> +{
+>> +	if (!riscv_cboz_block_size) {
+>> +		pr_err_once("Zicboz detected in ISA string,"
+>> +			    "disabling as no cboz-block-size found\n");
+>> +		return false;
+>> +	} else if (!is_power_of_2(riscv_cboz_block_size)) {
+>> +		pr_err_once("Zicboz disabled as cboz-block-size present,"
+>> +			    "but is not a power-of-2\n");
+>> +		return false;
+>> +	}
+>>  	return true;
+>>  }
+>>  
+>> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size) {	\
+>> -	.name = #_name,								\
+>> -	.property = #_name,							\
+>> -	.id = _id,								\
+>> -	.subset_ext_ids = _subset_exts,						\
+>> -	.subset_ext_size = _subset_exts_size					\
+>> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size, _validate) {	\
+>> +	.name = #_name,									\
+>> +	.property = #_name,								\
+>> +	.id = _id,									\
+>> +	.subset_ext_ids = _subset_exts,							\
+>> +	.subset_ext_size = _subset_exts_size,						\
+>> +	.validate = _validate								\
+>>  }
+>>  
+>> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0)
+>> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, NULL)
+>>  
+>>  /* Used to declare pure "lasso" extension (Zk for instance) */
+>>  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
+>> -	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_SIZE(_bundled_exts))
+>> +	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
+>> +			    ARRAY_SIZE(_bundled_exts), NULL)
+>>  
+>>  /* Used to declare extensions that are a superset of other extensions (Zvbb for instance) */
+>>  #define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
+>> -	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
+>> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), NULL)
+>> +#define __RISCV_ISA_EXT_SUPERSET_VALIDATE(_name, _id, _sub_exts, _validate) \
+>> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), _validate)
+>>  
+>>  static const unsigned int riscv_zk_bundled_exts[] = {
+>>  	RISCV_ISA_EXT_ZBKB,
+>> @@ -247,8 +258,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>>  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
+>>  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
+>>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+>> -	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts),
+>> -	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts),
+>> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts,
+>> +					  riscv_ext_zicbom_validate),
+>> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts,
+>> +					  riscv_ext_zicboz_validate),
+>>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+>>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+>> @@ -310,33 +323,70 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>>  
+>>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+>>  
+>> -static void __init match_isa_ext(const struct riscv_isa_ext_data *ext, const char *name,
+>> -				 const char *name_end, struct riscv_isainfo *isainfo)
+>> +static void riscv_isa_set_ext(const struct riscv_isa_ext_data *ext, unsigned long *bitmap)
+>>  {
+>> -	if ((name_end - name == strlen(ext->name)) &&
+>> -	     !strncasecmp(name, ext->name, name_end - name)) {
+>> -		/*
+>> -		 * If this is a bundle, enable all the ISA extensions that
+>> -		 * comprise the bundle.
+>> -		 */
+>> -		if (ext->subset_ext_size) {
+>> -			for (int i = 0; i < ext->subset_ext_size; i++) {
+>> -				if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
+>> -					set_bit(ext->subset_ext_ids[i], isainfo->isa);
+>> -			}
+>> +	/*
+>> +	 * This is valid even for bundle extensions which uses the RISCV_ISA_EXT_INVALID id
+>> +	 * (rejected by riscv_isa_extension_valid()).
+>> +	 */
+>> +	if (riscv_isa_extension_valid(ext->id))
+>> +		set_bit(ext->id, bitmap);
+>> +
+>> +	for (int i = 0; i < ext->subset_ext_size; i++) {
+>> +		if (riscv_isa_extension_valid(ext->subset_ext_ids[i]))
+>> +			set_bit(ext->subset_ext_ids[i], bitmap);
+>> +	}
+>> +}
+>> +
+>> +static void __init riscv_resolve_isa(const unsigned long *isa_bitmap, struct riscv_isainfo *isainfo,
+>> +				     unsigned long *this_hwcap, unsigned long *isa2hwcap)
+>> +{
+>> +	const struct riscv_isa_ext_data *ext;
+>> +	DECLARE_BITMAP(prev_bitmap, RISCV_ISA_EXT_MAX);
+>> +	int max_loop_count = riscv_isa_ext_count + 1;
+>> +
+>> +	do {
+>> +		if (max_loop_count-- < 0) {
+>> +			pr_err("Failed to reach a stable ISA state\n");
+>> +			return;
+>>  		}
+>> +		memcpy(prev_bitmap, isainfo->isa, sizeof(prev_bitmap));
+>> +		for (int i = 0; i < riscv_isa_ext_count; i++) {
+>> +			ext = &riscv_isa_ext[i];
+>> +
+>> +			/* Bundle extensions ids are invalid*/
+>> +			if (!riscv_isa_extension_valid(ext->id))
+>> +				continue;
+>> +
+>> +			if (!test_bit(ext->id, isa_bitmap) || test_bit(ext->id, isainfo->isa))
+>> +				continue;
+>> +
+>> +			if (ext->validate && !ext->validate(ext, isainfo->isa))
+>> +				continue;
+>>  
+>> -		/*
+>> -		 * This is valid even for bundle extensions which uses the RISCV_ISA_EXT_INVALID id
+>> -		 * (rejected by riscv_isa_extension_check()).
+>> -		 */
+>> -		if (riscv_isa_extension_check(ext->id))
+>>  			set_bit(ext->id, isainfo->isa);
+>> +
+>> +			/* Only single letter extensions get set in hwcap */
+>> +			if (ext->id < RISCV_ISA_EXT_BASE)
+>> +				*this_hwcap |= isa2hwcap[ext->id];
+>> +		}
+>> +	} while (memcmp(prev_bitmap, isainfo->isa, sizeof(prev_bitmap)));
+>> +}
+>> +
+>> +static void __init match_isa_ext(const char *name, const char *name_end, unsigned long *bitmap)
+>> +{
+>> +	for (int i = 0; i < riscv_isa_ext_count; i++) {
+>> +		const struct riscv_isa_ext_data *ext = &riscv_isa_ext[i];
+>> +
+>> +		if ((name_end - name == strlen(ext->name)) &&
+>> +		    !strncasecmp(name, ext->name, name_end - name)) {
+>> +			riscv_isa_set_ext(ext, bitmap);
+>> +			break;
+>> +		}
+>>  	}
+>>  }
+>>  
+>> -static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct riscv_isainfo *isainfo,
+>> -					  unsigned long *isa2hwcap, const char *isa)
+>> +static void __init riscv_resolve_isa_string(const char *isa, unsigned long *bitmap)
+>>  {
+>>  	/*
+>>  	 * For all possible cpus, we have already validated in
+>> @@ -349,7 +399,7 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+>>  	while (*isa) {
+>>  		const char *ext = isa++;
+>>  		const char *ext_end = isa;
+>> -		bool ext_long = false, ext_err = false;
+>> +		bool ext_err = false;
+>>  
+>>  		switch (*ext) {
+>>  		case 's':
+>> @@ -389,7 +439,6 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+>>  			 * character itself while eliminating the extensions version number.
+>>  			 * A simple re-increment solves this problem.
+>>  			 */
+>> -			ext_long = true;
+>>  			for (; *isa && *isa != '_'; ++isa)
+>>  				if (unlikely(!isalnum(*isa)))
+>>  					ext_err = true;
+>> @@ -469,17 +518,8 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+>>  
+>>  		if (unlikely(ext_err))
+>>  			continue;
+>> -		if (!ext_long) {
+>> -			int nr = tolower(*ext) - 'a';
+>>  
+>> -			if (riscv_isa_extension_check(nr)) {
+>> -				*this_hwcap |= isa2hwcap[nr];
+>> -				set_bit(nr, isainfo->isa);
+>> -			}
+>> -		} else {
+>> -			for (int i = 0; i < riscv_isa_ext_count; i++)
+>> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
+>> -		}
+>> +		match_isa_ext(ext, ext_end, bitmap);
+>>  	}
+>>  }
+>>  
+>> @@ -501,6 +541,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+>>  	for_each_possible_cpu(cpu) {
+>>  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
+>>  		unsigned long this_hwcap = 0;
+>> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) = { 0 };
+>>  
+>>  		if (acpi_disabled) {
+>>  			node = of_cpu_device_node_get(cpu);
+>> @@ -523,7 +564,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+>>  			}
+>>  		}
+>>  
+>> -		riscv_parse_isa_string(&this_hwcap, isainfo, isa2hwcap, isa);
+>> +		riscv_resolve_isa_string(isa, isa_bitmap);
+>>  
+>>  		/*
+>>  		 * These ones were as they were part of the base ISA when the
+>> @@ -531,10 +572,10 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+>>  		 * unconditionally where `i` is in riscv,isa on DT systems.
+>>  		 */
+>>  		if (acpi_disabled) {
+>> -			set_bit(RISCV_ISA_EXT_ZICSR, isainfo->isa);
+>> -			set_bit(RISCV_ISA_EXT_ZIFENCEI, isainfo->isa);
+>> -			set_bit(RISCV_ISA_EXT_ZICNTR, isainfo->isa);
+>> -			set_bit(RISCV_ISA_EXT_ZIHPM, isainfo->isa);
+>> +			set_bit(RISCV_ISA_EXT_ZICSR, isa_bitmap);
+>> +			set_bit(RISCV_ISA_EXT_ZIFENCEI, isa_bitmap);
+>> +			set_bit(RISCV_ISA_EXT_ZICNTR, isa_bitmap);
+>> +			set_bit(RISCV_ISA_EXT_ZIHPM, isa_bitmap);
+>>  		}
+>>  
+>>  		/*
+>> @@ -548,9 +589,11 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+>>  		if (acpi_disabled && riscv_cached_mvendorid(cpu) == THEAD_VENDOR_ID &&
+>>  		    riscv_cached_marchid(cpu) == 0x0) {
+>>  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
+>> -			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+>> +			clear_bit(RISCV_ISA_EXT_v, isa_bitmap);
+>>  		}
+>>  
+>> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
+>> +
+>>  		/*
+>>  		 * All "okay" hart should have same isa. Set HWCAP based on
+>>  		 * common capabilities of every "okay" hart, in case they don't
+>> @@ -579,6 +622,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
+>>  		unsigned long this_hwcap = 0;
+>>  		struct device_node *cpu_node;
+>>  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
+>> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) = { 0 };
+>>  
+>>  		cpu_node = of_cpu_device_node_get(cpu);
+>>  		if (!cpu_node) {
+>> @@ -598,22 +642,11 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
+>>  						     ext->property) < 0)
+>>  				continue;
+>>  
+>> -			if (ext->subset_ext_size) {
+>> -				for (int j = 0; j < ext->subset_ext_size; j++) {
+>> -					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
+>> -						set_bit(ext->subset_ext_ids[j], isainfo->isa);
+>> -				}
+>> -			}
+>> -
+>> -			if (riscv_isa_extension_check(ext->id)) {
+>> -				set_bit(ext->id, isainfo->isa);
+>> -
+>> -				/* Only single letter extensions get set in hwcap */
+>> -				if (strnlen(riscv_isa_ext[i].name, 2) == 1)
+>> -					this_hwcap |= isa2hwcap[riscv_isa_ext[i].id];
+>> -			}
+>> +			riscv_isa_set_ext(ext, isa_bitmap);
+>>  		}
+>>  
+>> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
+>> +
+>>  		of_node_put(cpu_node);
+>>  
+>>  		/*
+>> -- 
+>> 2.43.0
+>>
 
