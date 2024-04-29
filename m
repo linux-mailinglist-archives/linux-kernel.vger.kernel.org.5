@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-162462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EBF18B5B97
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:41:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DE68B5B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A9D41C215BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:41:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 841CD1F227B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C9F7F7CC;
-	Mon, 29 Apr 2024 14:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D030C7EEF2;
+	Mon, 29 Apr 2024 14:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XU6p+tGh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvdPOYQ2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C2A7EF1C;
-	Mon, 29 Apr 2024 14:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2CE7E11E;
+	Mon, 29 Apr 2024 14:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714401690; cv=none; b=mm2IMI7aF0YGaIbVC14FPk2HsPmzaEyHPIEFx9QvUZJi1F9brdJC07MAOVsIaS1lOAYykXvysKEL2h7mdtVbfe0b/ZYTBPWNFk+76ZkZ6AeGdfMTMExjVQpcu0zN2K3yLQBE5sMWwtKdFIwxscxo0Hxaftd11h829O34Igxip3M=
+	t=1714401697; cv=none; b=NDVScw1vTsIYYf1rgRYkEncnbxEUgJi0XhVE6GiYKayKGDDr3aIm5YrFECAXL18zzcvQX+JcA/YLJSvNLuDc+z71h2E4s7TN8PSS2oR1F/Dyb5BoKW1Slt8BBRy7RmwwvsHIxkwEiTdcfgkthGkJjT3QxbRDnTE1syxRjaUMpX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714401690; c=relaxed/simple;
-	bh=BfGzqjUkUfh2bKjqEy9+ovnsRwzMYpaL/0SsvVv1eD0=;
+	s=arc-20240116; t=1714401697; c=relaxed/simple;
+	bh=JEfYMeBJOiHNAWe4+hJZqGxv7XM4utWyxu6aJe0ctqM=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=qKyj1ol7Q/fEcKMAuExxrdC5TBvnuYKXZbb2cmSTYCdv9UWF6kQpMZb1/L35YyJ2DyJkhh6qOvszcYaDpIEcoW0zSe4kHGwgwUGNXycgFVDqqXPbtmjvBP0J8q4MzwNQ99tbGD9fWkmOH7hngRFBBpWtGhbd/NUXhIhXZFB1zM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XU6p+tGh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28CCCC113CD;
-	Mon, 29 Apr 2024 14:41:30 +0000 (UTC)
+	 Message-Id:Subject; b=lislRm5UTzOjuGawODeoFpJw6D9RKZ7TLTgIGttJ6GK13dK4YaduGJ7QDBPaMTXuEymsC5ayIvRpzfs4d/pJSpxWI7HkKcwAtk6JrQYFy9cvGCqzcH3fhvWZzHz9C8Sqcqki188eHXz4DIrt775NC+djfLaKRjN9t7XPEe0kPVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvdPOYQ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7307CC113CD;
+	Mon, 29 Apr 2024 14:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714401690;
-	bh=BfGzqjUkUfh2bKjqEy9+ovnsRwzMYpaL/0SsvVv1eD0=;
+	s=k20201202; t=1714401696;
+	bh=JEfYMeBJOiHNAWe4+hJZqGxv7XM4utWyxu6aJe0ctqM=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=XU6p+tGhv5RfHy84tJ1zvaJPBiOwMr01YePNRSF5lEf54aBacb+FYPUm19/u54tug
-	 hNl/QAQflnCtzjGEwVVNArWfqKzdI2qpqokL2wI8Dzx/oCcaKU/IKn49mz5k2+518G
-	 HMfdvfA/l27awPv6pTNbQkbujj6qUQYzl+sDhVn/79a6ncw+RxSEyZqI2kwogV/ndJ
-	 UqSgFgdj3SFDsQfF+xRFessMq3mLUy7LhyiskNM+kjOO6KQNemBHvdIOrYkrd2kvYO
-	 v7g1jh/GsGPbSUG/Mq1iGLoa/DAi7bK1nHFIfviXIKCIhXE9E6sJoa7+88Wcz/qIbY
-	 RcNyhtjr9CyrA==
-Date: Mon, 29 Apr 2024 09:41:27 -0500
+	b=mvdPOYQ2lylbTa663fLAJVJeNVyOjkeFmUH3B97UTHaqDr/w9U+Vc4Dr82Uvz+7/k
+	 QkbEKQmgAsCP+lQIO2O26JQ8cf/SSzmWqu+Ma8fQPY1esjGT9/W8tuZh/pgfC/0D6Z
+	 5iHthO5ZeqBdOEwD4sk6tceN1aCtmkUdtCuL2LYgaXQ+r1HT7xpz5z16rnMQxEFphJ
+	 UWMHVnAPyd8JxXIQS/2CPSaSdAmdpsEU3vTw4WsEE5BGWzAnqUjkFrrW8okqT0Y1K6
+	 /Zfpcpwt+FEnW02X34meBl1CULNDw/YPVnu8bIcEEwS9GGYMX7s5utVwMHBIBBMLVS
+	 gcusE43a0ipqg==
+Date: Mon, 29 Apr 2024 09:41:34 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,91 +50,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: linux-arm-kernel@lists.infradead.org, 
  Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Andi Shyti <andi.shyti@kernel.org>, devicetree@vger.kernel.org, 
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Peter Rosin <peda@axentia.se>, 
- Quentin Schulz <quentin.schulz@theobroma-systems.com>
-In-Reply-To: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
-References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
-Message-Id: <171440140976.1676403.7480189987204011691.robh@kernel.org>
-Subject: Re: [PATCH 0/7] Add Mule I2C multiplexer support
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org
+In-Reply-To: <20240428123618.72170-1-amadeus@jmu.edu.cn>
+References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
+Message-Id: <171440141099.1676491.7602268087983618249.robh@kernel.org>
+Subject: Re: [PATCH v2 0/2] arm64: dts: rockchip: Add Radxa ROCK 3C
 
 
-On Fri, 26 Apr 2024 18:49:31 +0200, Farouk Bouabid wrote:
-> Mule is an mcu that emulates a set of i2c devices which are reacheable
-> through an i2c-mux.
+On Sun, 28 Apr 2024 20:36:16 +0800, Chukun Pan wrote:
+> Changes in v2:
+>   Collected Acked-by.
+>   Drop cd-gpios for sdhci.
+>   Add mmc-hs200-1_8v to eMMC.
+>   Correct the spi max frequency.
+>   Update model name and compatible.
+>   Update regulator according to the schematic.
 > 
-> The emulated devices share a single i2c address with the mux itself where
-> the requested register is what determines which logic is executed (mux or
-> device):
+> Chukun Pan (2):
+>   dt-bindings: arm: rockchip: add Radxa ROCK 3C
+>   arm64: dts: rockchip: Add Radxa ROCK 3C
 > 
-> 1- The devices on the mux can be selected (mux function) by writing the
-> appropriate device number to an i2c config register (0xff) that is not
-> used by any device logic.
+>  .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>  .../boot/dts/rockchip/rk3566-rock-3c.dts      | 750 ++++++++++++++++++
+>  3 files changed, 756 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-rock-3c.dts
 > 
-> 2- Any access to a register other than the config register will be
-> handled by the previously selected device.
-> 
->       +-------------------------------------------------------+
->       |  Mule                                                 |
->       |        +---------------+                              |
->     ----+-(1)->|Config register|-----+                        |
->       | |      +---------------+     |                        |
->       | |                            V_                       |
->       | |                            |  \          +--------+ |
->       | |                            |   \-------->| dev #0 | |
->       | |                            |   |         +--------+ |
->       | |                            | M |-------->| dev #1 | |
->       | +-----------(2)------------->| U |         +--------+ |
->       |                              | X |-------->| dev #2 | |
->       |                              |   |         +--------+ |
->       |                              |   /-------->| dev #3 | |
->       |                              |__/          +--------+ |
->       +-------------------------------------------------------+
-> 
-> The current i2c-mux implementation does not allow the mux to share the i2c
-> address of a child device. As a workaround, when creating each i2c child
-> adapter we do not assign the parent adapter to avoid the address-match with
-> the mux.
-> 
-> This patch-series adds support for this multiplexer. Mule is integrated
-> as part of rk3399-puma, px30-ringneck, rk3588-tiger and rk3588-jaguar
-> boards.
-> 
-> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-> ---
-> Farouk Bouabid (7):
->       i2c: mux: add the ability to share mux-address with child nodes
->       dt-bindings: i2c: mux: mule: add dt-bindings for mule i2c multiplexer
->       i2c: muxes: add support for mule i2c multiplexer
->       arm64: dts: rockchip: add mule i2c mux (0x18) on rk3399-puma
->       arm64: dts: rockchip: add mule i2c mux (0x18) on rk3588-tiger
->       arm64: dts: rockchip: add mule i2c mux (0x18) on px30-ringneck
->       arm64: dts: rockchip: add mule i2c mux (0x18) on rk3588-jaguar
-> 
->  .../devicetree/bindings/i2c/i2c-mux-mule.yaml      |  80 +++++++++++
->  arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi    |  20 ++-
->  arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  20 ++-
->  arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts     |  19 ++-
->  arch/arm64/boot/dts/rockchip/rk3588-tiger.dtsi     |  19 ++-
->  drivers/i2c/i2c-mux.c                              |  10 +-
->  drivers/i2c/muxes/Kconfig                          |  11 ++
->  drivers/i2c/muxes/Makefile                         |   1 +
->  drivers/i2c/muxes/i2c-mux-mule.c                   | 157 +++++++++++++++++++++
->  include/linux/i2c-mux.h                            |   1 +
->  10 files changed, 327 insertions(+), 11 deletions(-)
-> ---
-> base-commit: c85af715cac0a951eea97393378e84bb49384734
-> change-id: 20240404-dev-mule-i2c-mux-9103cde07021
-> 
-> Best regards,
 > --
-> Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+> 2.25.1
 > 
 > 
 > 
@@ -154,10 +101,10 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y rockchip/rk3588-jaguar.dtb' for 20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com:
+New warnings running 'make CHECK_DTBS=y rockchip/rk3566-rock-3c.dtb' for 20240428123618.72170-1-amadeus@jmu.edu.cn:
 
-arch/arm64/boot/dts/rockchip/rk3588-jaguar.dtb: fan@18: '#cooling-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/trivial-devices.yaml#
+arch/arm64/boot/dts/rockchip/rk3566-rock-3c.dtb: pmic@20: '#sound-dai-cells', 'assigned-clock-parents', 'assigned-clocks', 'clock-names', 'clocks', 'codec' do not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/mfd/rockchip,rk809.yaml#
 
 
 
