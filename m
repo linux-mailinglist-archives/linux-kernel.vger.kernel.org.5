@@ -1,509 +1,609 @@
-Return-Path: <linux-kernel+bounces-163092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6819D8B655D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:16:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1904A8B6563
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:17:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7134EB218EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:16:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D62E1C2179B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B2F194C6F;
-	Mon, 29 Apr 2024 22:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gQvD37S0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105F219069B;
+	Mon, 29 Apr 2024 22:17:01 +0000 (UTC)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DF317798F;
-	Mon, 29 Apr 2024 22:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4918B17798F;
+	Mon, 29 Apr 2024 22:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714428961; cv=none; b=FwvkonT3CSZ8KxOJbsoDkABaE6RbQ0AFsyHdmGrrEOfQP7gSLWE5xfFIAmDJZTzFPAVz1nDYe3ZWjGcvOshKXXaxGUjRzeTpuq5RoHNsxxK1zWPQCE9WfZS+vdKYadxiGIyHtAnOGbx2SrlEw4o7rcVh1G/dQvbbjbTgCfZYbjU=
+	t=1714429019; cv=none; b=N+pBWHLAsNFPPIjWzZFmfovueF3OGIAMFmk6449DUzUnmvxXgUtwh/2fZsV8Jm1UsystmB7FdzL9gGdlI1rI1SghZrQIv7zrT/fMZcPh2d77K4galSlT52K9FFFJJW4ZQuRc97xCEBjffgYYa0cIOaFhBO1tb4HsQoWom0fIAdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714428961; c=relaxed/simple;
-	bh=kI6j9LvXJei+paKWCFq45W4DHlVh8To1UON+IuKXPAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PFUBPKtparEa29kd2H5omitqqDOlpFRgsw8/y1+EQT+CY8OqQfI7YOxIaHSqCwiIbG86F/tftHa4IdhJwSLv0eCA0x2SMXeNuts688QGJNXEggFILhqjifA326hWZG/JJhv7FVDi2KXMOYA5y32z4RsT14GpebwfCQ4aLcbERQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gQvD37S0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B773C113CD;
-	Mon, 29 Apr 2024 22:15:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714428960;
-	bh=kI6j9LvXJei+paKWCFq45W4DHlVh8To1UON+IuKXPAY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gQvD37S0sU34ym3B+9iPpcfQINjMBdg9SrZXZM3G3UHvK+h5Q2OXGYQQtA/FB4ZlS
-	 ShbaqtPWoD/OpXsnAUvbWydtIsIapxmXZnzVe9ChRXpj6tDpMS9f0pgJTHNDuaXW6R
-	 O3NVFycd+Ud4PJbZmnmfliONIb/DRB7S+1+2C1Q7YGTD0dhCpuB6MTItqRCK8VKfIV
-	 BkhPlb75uAW03eC63BX0L88ebk6S96d/LA+Tn74knpew+mjSHrzz8u+Ti3Kjgjx+Vx
-	 IhOwrFV8hFP9vozQ6W7ZOO0UuN26irkaJ+8DouoPe52vtuniTEqrjojydITjK2VGru
-	 LcMZR7/oHxHnA==
-Date: Mon, 29 Apr 2024 23:15:55 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 02/11] riscv: add ISA extensions validation
-Message-ID: <20240429-subtext-tabby-3a1532f058a5@spud>
-References: <20240429150553.625165-1-cleger@rivosinc.com>
- <20240429150553.625165-3-cleger@rivosinc.com>
+	s=arc-20240116; t=1714429019; c=relaxed/simple;
+	bh=4X7GwcLc8yxmxxc5I9ttQQzqzVh1dSVqNfsQ0+7jX7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gG3YrmONX83oVXYlCYZ5omtQYh5xRe+WjC/kc7DuhWDZcUgtJBnZukmDz9psQaTo8Q8K+RkmNW92QYzRo5ocNOaS+c1LXWumpMcbWvXgCP0RbpjHDwMNsEtI35PSgFRkoO8H2tmbVFTHmHQAMmCwZSlZaTHmOxDH7XTCn2TtIFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51abf1a9332so6831141e87.3;
+        Mon, 29 Apr 2024 15:16:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714429015; x=1715033815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vDTwbZhCJRdU1G4mvD1N+DmlAPyioR4zaFFnbRYQr/4=;
+        b=FzwtUhXu/nWGWcFn3SSjSjoo3voj0lf9YCAJq22w/Akw8fGlxbOTLi4VUjRHMgb40W
+         xVtvliEem0F/pjzXmjnd9XFMRTCu+9I6uCekdR5j7nXurcq7ooBXyw3M5JeLlku1uKde
+         SsnS7aw+xEmQUidoabCCfNOI9POKPF4DFNJFSdHsJHLnJR4usIJh4ny8o6s7S6cJL+jf
+         5NZFclbC7vp8/fstNqkDh/CDpoMTDpDEmdnDk8NVSl4+NO+6llFTKLhM51skZo30Up7l
+         RTWd1IX1Xj3IUciE2OzBmG5GPB+MbyUpy3NFf69ja6SpaDQUvRYbG0rLmqxM9EbhLzTd
+         PHIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWB6WroFeQT299pJByEMZqRsZWJcS7Kzbn/1qKKKFsOfgRMaZD+x1tFrA5cFQNP4HOorhXDul6fjcqoRFEQz02Ivi9Xx7ELD434GEe9Bfe6cs69Z3Rbt7AtprhhOOCaYw0eMq7usD1U4uWw44oL
+X-Gm-Message-State: AOJu0YyHYkh/Gf+RoLyXhojBwUEhRoLFMkPcvzCEwfoen4EY0kdN2Ctn
+	vUDdZCgW+ubULOyev+B1liSUZcfyMcMpoSlEovg3fwt06dBQYqcTcp23H6fS/iE=
+X-Google-Smtp-Source: AGHT+IFnZuI4ODIy+uR85m0109vDoNTUMvRpHYt5JgfsQsPP7d6FVKpzwz/TKLucT4KQonRHFQ2rcg==
+X-Received: by 2002:ac2:5504:0:b0:51c:22fb:182f with SMTP id j4-20020ac25504000000b0051c22fb182fmr7440315lfk.13.1714429014964;
+        Mon, 29 Apr 2024 15:16:54 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id k10-20020a05651210ca00b0051d77bf5465sm721351lfg.67.2024.04.29.15.16.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 15:16:54 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51abf1a9332so6831123e87.3;
+        Mon, 29 Apr 2024 15:16:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXdNtJrWTlK0dehrqYfJFm2rWRSSWbqRKAlP46pxgZ9ucC6zt+En9kqeewpKTXWf6zAPgSxiYkrnBkf5qokh2cCBrBT5giYk5L3e5traG9ogkSmPRW8DVKklDcI/DtcihZ9KetvV0J1Yq4iARKt
+X-Received: by 2002:ac2:58ca:0:b0:518:e69b:25a2 with SMTP id
+ u10-20020ac258ca000000b00518e69b25a2mr6796426lfo.45.1714429014394; Mon, 29
+ Apr 2024 15:16:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gd7/nk5BpVfZAZKi"
-Content-Disposition: inline
-In-Reply-To: <20240429150553.625165-3-cleger@rivosinc.com>
-
-
---gd7/nk5BpVfZAZKi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240428015834.2485653-1-iam@sung-woo.kim> <CABBYNZJ21uzmWiksD6CLDBuEe2pfPzFGsbn5quZ4edz3W0Wv=g@mail.gmail.com>
+In-Reply-To: <CABBYNZJ21uzmWiksD6CLDBuEe2pfPzFGsbn5quZ4edz3W0Wv=g@mail.gmail.com>
+From: Sungwoo Kim <iam@sung-woo.kim>
+Date: Mon, 29 Apr 2024 18:16:38 -0400
+X-Gmail-Original-Message-ID: <CAJNyHp+S2BvX6kWy8Y4Vfkmkw+SEQiy1oB6OAn9t-8gRy+is9Q@mail.gmail.com>
+Message-ID: <CAJNyHp+S2BvX6kWy8Y4Vfkmkw+SEQiy1oB6OAn9t-8gRy+is9Q@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: msft: fix slab-use-after-free in msft_do_close()
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>, 
+	Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 05:04:55PM +0200, Cl=E9ment L=E9ger wrote:
-> Since a few extensions (Zicbom/Zicboz) already needs validation and
-> future ones will need it as well (Zc*) add a validate() callback to
-> struct riscv_isa_ext_data. This require to rework the way extensions are
-> parsed and split it in two phases. First phase is isa string or isa
-> extension list parsing and consists in enabling all the extensions in a
-> temporary bitmask without any validation. The second step "resolves" the
-> final isa bitmap, handling potential missing dependencies. The mechanism
-> is quite simple and simply validate each extension described in the
-> temporary bitmap before enabling it in the final isa bitmap. validate()
-> callbacks can return either 0 for success, -EPROBEDEFER if extension
-> needs to be validated again at next loop. A previous ISA bitmap is kept
-> to avoid looping mutliple times if an extension dependencies are never
-> satisfied until we reach a stable state. In order to avoid any potential
-> infinite looping, allow looping a maximum of the number of extension we
-> handle. Zicboz and Zicbom extensions are modified to use this validation
-> mechanism.
+Dear Luiz,
+Thank you for reviewing.
 
-Your reply to my last review only talked about part of my comments,
-which is usually what you do when you're gonna implement the rest, but
-you haven't.
-I like the change you've made to shorten looping, but I'd at least like
-a response to why a split is not worth doing :)
+On Mon, Apr 29, 2024 at 12:43=E2=80=AFPM Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
+>
+> Hi Sungwoo,
+>
+> On Sat, Apr 27, 2024 at 10:03=E2=80=AFPM Sungwoo Kim <iam@sung-woo.kim> w=
+rote:
+> >
+> > Hi, could you review this patch?
+> > Now *not static* msft functions hold and put hdev->msft_data.
+> > It prevents from potential and real use-after-free bugs.
+> >
+> > How msft is used after freed:
+> >
+> > [use]
+> > msft_do_close()
+> >   msft =3D hdev->msft_data;
+> >   if (!msft)                      ...(1) <- passed.
+> >     return;
+> >   mutex_lock(&msft->filter_lock); ...(4) <- used after freed.
+> >
+> > [free]
+> > msft_unregister()
+> >   msft =3D hdev->msft_data;
+> >   hdev->msft_data =3D NULL;         ...(2)
+> >   kfree(msft);                    ...(3) <- msft is freed.
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: slab-use-after-free in __mutex_lock_common kernel/locking/m=
+utex.c:587 [inline]
+> > BUG: KASAN: slab-use-after-free in __mutex_lock+0x8f/0xc30 kernel/locki=
+ng/mutex.c:752
+> > Read of size 8 at addr ffff888106cbbca8 by task kworker/u5:2/309
+> >
+> > CPU: 0 PID: 309 Comm: kworker/u5:2 Not tainted 6.9.0-rc5+ #5
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Workqueue: hci4 hci_error_reset
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xcd/0x140 lib/dump_stack.c:114
+> >  print_address_description mm/kasan/report.c:377 [inline]
+> >  print_report+0x191/0x560 mm/kasan/report.c:488
+> >  kasan_report+0xe2/0x120 mm/kasan/report.c:601
+> >  __asan_report_load8_noabort+0x18/0x20 mm/kasan/report_generic.c:381
+> >  __mutex_lock_common kernel/locking/mutex.c:587 [inline]
+> >  __mutex_lock+0x8f/0xc30 kernel/locking/mutex.c:752
+> >  mutex_lock_nested+0x1f/0x30 kernel/locking/mutex.c:804
+> >  msft_do_close+0x292/0x700 net/bluetooth/msft.c:694
+> >  hci_dev_close_sync+0x906/0xf10 net/bluetooth/hci_sync.c:5168
+> >  hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
+> >  hci_error_reset+0x152/0x410 net/bluetooth/hci_core.c:1091
+> >  process_one_work kernel/workqueue.c:3254 [inline]
+> >  process_scheduled_works+0x90f/0x1530 kernel/workqueue.c:3335
+> >  worker_thread+0x926/0xe70 kernel/workqueue.c:3416
+> >  kthread+0x2e3/0x380 kernel/kthread.c:388
+> >  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> >  </TASK>
+> >
+> > Allocated by task 7328:
+> >  kasan_save_stack mm/kasan/common.c:47 [inline]
+> >  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+> >  kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:565
+> >  poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+> >  __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
+> >  kasan_kmalloc include/linux/kasan.h:211 [inline]
+> >  kmalloc_trace+0x20c/0x3e0 mm/slub.c:3997
+> >  kmalloc include/linux/slab.h:628 [inline]
+> >  kzalloc include/linux/slab.h:749 [inline]
+> >  msft_register+0x66/0x1d0 net/bluetooth/msft.c:760
+> >  hci_register_dev+0x85e/0x9a0 net/bluetooth/hci_core.c:2737
+> >  __vhci_create_device drivers/bluetooth/hci_vhci.c:438 [inline]
+> >  vhci_create_device+0x390/0x720 drivers/bluetooth/hci_vhci.c:480
+> >  vhci_get_user drivers/bluetooth/hci_vhci.c:537 [inline]
+> >  vhci_write+0x39b/0x460 drivers/bluetooth/hci_vhci.c:617
+> >  call_write_iter include/linux/fs.h:2110 [inline]
+> >  new_sync_write fs/read_write.c:497 [inline]
+> >  vfs_write+0x8eb/0xb50 fs/read_write.c:590
+> >  ksys_write+0x106/0x1f0 fs/read_write.c:643
+> >  __do_sys_write fs/read_write.c:655 [inline]
+> >  __se_sys_write fs/read_write.c:652 [inline]
+> >  __x64_sys_write+0x84/0xa0 fs/read_write.c:652
+> >  x64_sys_call+0x271a/0x2ce0 arch/x86/include/generated/asm/syscalls_64.=
+h:2
+> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >  do_syscall_64+0x9c/0x130 arch/x86/entry/common.c:83
+> >  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> >
+> > Freed by task 7332:
+> >  kasan_save_stack mm/kasan/common.c:47 [inline]
+> >  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+> >  kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:579
+> >  poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
+> >  __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
+> >  kasan_slab_free include/linux/kasan.h:184 [inline]
+> >  slab_free_hook mm/slub.c:2106 [inline]
+> >  slab_free mm/slub.c:4280 [inline]
+> >  kfree+0x13c/0x330 mm/slub.c:4390
+> >  msft_unregister+0x9d/0x120 net/bluetooth/msft.c:785
+> >  hci_unregister_dev+0x1d9/0x520 net/bluetooth/hci_core.c:2771
+> >  vhci_release+0x8c/0xe0 drivers/bluetooth/hci_vhci.c:674
+> >  __fput+0x36f/0x750 fs/file_table.c:422
+> >  ____fput+0x1e/0x30 fs/file_table.c:450
+> >  task_work_run+0x1da/0x280 kernel/task_work.c:180
+> >  exit_task_work include/linux/task_work.h:38 [inline]
+> >  do_exit+0x856/0x2210 kernel/exit.c:878
+> >  do_group_exit+0x201/0x2c0 kernel/exit.c:1027
+> >  get_signal+0x12ff/0x1380 kernel/signal.c:2911
+> >  arch_do_signal_or_restart+0x3b/0x650 arch/x86/kernel/signal.c:310
+> >  exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+> >  exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+> >  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+> >  syscall_exit_to_user_mode+0xcc/0x2a0 kernel/entry/common.c:218
+> >  do_syscall_64+0xa8/0x130 arch/x86/entry/common.c:89
+> >  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> >
+> > The buggy address belongs to the object at ffff888106cbbc00
+> >  which belongs to the cache kmalloc-256 of size 256
+> > The buggy address is located 168 bytes inside of
+> >  freed 256-byte region [ffff888106cbbc00, ffff888106cbbd00)
+> >
+> > The buggy address belongs to the physical page:
+> > page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10=
+6cba
+> > head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> > flags: 0x17ffffe0000840(slab|head|node=3D0|zone=3D2|lastcpupid=3D0x3fff=
+ff)
+> > page_type: 0xffffffff()
+> > raw: 0017ffffe0000840 ffff888100042040 ffffea00042de590 ffffea00041b3e1=
+0
+> > raw: 0000000000000000 00000000000a000a 00000001ffffffff 000000000000000=
+0
+> > head: 0017ffffe0000840 ffff888100042040 ffffea00042de590 ffffea00041b3e=
+10
+> > head: 0000000000000000 00000000000a000a 00000001ffffffff 00000000000000=
+00
+> > head: 0017ffffe0000001 ffffea00041b2e81 dead000000000122 00000000ffffff=
+ff
+> > head: 0000000200000000 0000000000000000 00000000ffffffff 00000000000000=
+00
+> > page dumped because: kasan: bad access detected
+> >
+> > Memory state around the buggy address:
+> >  ffff888106cbbb80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> >  ffff888106cbbc00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > >ffff888106cbbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >                                   ^
+> >  ffff888106cbbd00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> >  ffff888106cbbd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > Fixes: 9e14606d8f38 ("Bluetooth: disable advertisement filters during s=
+uspend")
+> > Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
+> > ---
+> > v2: Move BT_DBG after null checking in msft_data_hold_unless_zero()
+> >
+> >  net/bluetooth/msft.c | 124 ++++++++++++++++++++++++++++++++++---------
+> >  1 file changed, 99 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+> > index 9612c5d1b..1f79e7980 100644
+> > --- a/net/bluetooth/msft.c
+> > +++ b/net/bluetooth/msft.c
+> > @@ -132,10 +132,45 @@ struct msft_data {
+> >         __u8 filter_enabled;
+> >         /* To synchronize add/remove address filter and monitor device =
+event.*/
+> >         struct mutex filter_lock;
+> > +       struct kref     kref;
+>
+> NAK, the lifetime of this object should be tied to hdev which already
+> has a kref.
 
-Thanks,
-Conor.
+I got this.
 
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
-> ---
->  arch/riscv/include/asm/cpufeature.h |   1 +
->  arch/riscv/kernel/cpufeature.c      | 211 ++++++++++++++++------------
->  2 files changed, 126 insertions(+), 86 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index 347805446151..000796c2d0b1 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -70,6 +70,7 @@ struct riscv_isa_ext_data {
->  	const char *property;
->  	const unsigned int *subset_ext_ids;
->  	const unsigned int subset_ext_size;
-> +	int (*validate)(const struct riscv_isa_ext_data *data, const unsigned l=
-ong *isa_bitmap);
->  };
-> =20
->  extern const struct riscv_isa_ext_data riscv_isa_ext[];
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 115ba001f1bc..cb2ffa6c8c33 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -72,51 +72,58 @@ bool __riscv_isa_extension_available(const unsigned l=
-ong *isa_bitmap, unsigned i
->  }
->  EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
-> =20
-> -static bool riscv_isa_extension_check(int id)
-> +static bool riscv_isa_extension_valid(int id)
->  {
-> -	switch (id) {
-> -	case RISCV_ISA_EXT_ZICBOM:
-> -		if (!riscv_cbom_block_size) {
-> -			pr_err("Zicbom detected in ISA string, disabling as no cbom-block-siz=
-e found\n");
-> -			return false;
-> -		} else if (!is_power_of_2(riscv_cbom_block_size)) {
-> -			pr_err("Zicbom disabled as cbom-block-size present, but is not a powe=
-r-of-2\n");
-> -			return false;
-> -		}
-> -		return true;
-> -	case RISCV_ISA_EXT_ZICBOZ:
-> -		if (!riscv_cboz_block_size) {
-> -			pr_err("Zicboz detected in ISA string, disabling as no cboz-block-siz=
-e found\n");
-> -			return false;
-> -		} else if (!is_power_of_2(riscv_cboz_block_size)) {
-> -			pr_err("Zicboz disabled as cboz-block-size present, but is not a powe=
-r-of-2\n");
-> -			return false;
-> -		}
-> -		return true;
-> -	case RISCV_ISA_EXT_INVALID:
-> -		return false;
-> +	return id !=3D RISCV_ISA_EXT_INVALID;
-> +}
-> +
-> +static int riscv_ext_zicbom_validate(const struct riscv_isa_ext_data *da=
-ta,
-> +				     const unsigned long *isa_bitmap)
-> +{
-> +	if (!riscv_cbom_block_size) {
-> +		pr_err("Zicbom detected in ISA string, disabling as no cbom-block-size=
- found\n");
-> +		return -EINVAL;
-> +	} else if (!is_power_of_2(riscv_cbom_block_size)) {
-> +		pr_err("Zicbom disabled as cbom-block-size present, but is not a power=
--of-2\n");
-> +		return -EINVAL;
->  	}
-> +	return 0;
-> +}
-> =20
-> -	return true;
-> +static int riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *da=
-ta,
-> +				     const unsigned long *isa_bitmap)
-> +{
-> +	if (!riscv_cboz_block_size) {
-> +		pr_err("Zicboz detected in ISA string, disabling as no cboz-block-size=
- found\n");
-> +		return -EINVAL;
-> +	} else if (!is_power_of_2(riscv_cboz_block_size)) {
-> +		pr_err("Zicboz disabled as cboz-block-size present, but is not a power=
--of-2\n");
-> +		return -EINVAL;
-> +	}
-> +	return 0;
->  }
-> =20
-> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
- {	\
-> -	.name =3D #_name,								\
-> -	.property =3D #_name,							\
-> -	.id =3D _id,								\
-> -	.subset_ext_ids =3D _subset_exts,						\
-> -	.subset_ext_size =3D _subset_exts_size					\
-> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size,=
- _validate) {	\
-> +	.name =3D #_name,									\
-> +	.property =3D #_name,								\
-> +	.id =3D _id,									\
-> +	.subset_ext_ids =3D _subset_exts,							\
-> +	.subset_ext_size =3D _subset_exts_size,						\
-> +	.validate =3D _validate								\
->  }
-> =20
-> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
- NULL, 0)
-> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
- NULL, 0, NULL)
-> =20
->  /* Used to declare pure "lasso" extension (Zk for instance) */
->  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
-> -	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_=
-SIZE(_bundled_exts))
-> +	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
-> +			    ARRAY_SIZE(_bundled_exts), NULL)
-> =20
->  /* Used to declare extensions that are a superset of other extensions (Z=
-vbb for instance) */
->  #define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
-> -	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
-> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), NULL)
-> +#define __RISCV_ISA_EXT_SUPERSET_VALIDATE(_name, _id, _sub_exts, _valida=
-te) \
-> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), _vali=
-date)
-> =20
->  static const unsigned int riscv_zk_bundled_exts[] =3D {
->  	RISCV_ISA_EXT_ZBKB,
-> @@ -247,8 +254,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
->  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
-> -	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvc=
-fg_exts),
-> -	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvc=
-fg_exts),
-> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_x=
-linuxenvcfg_exts,
-> +					  riscv_ext_zicbom_validate),
-> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_x=
-linuxenvcfg_exts,
-> +					  riscv_ext_zicboz_validate),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> @@ -310,33 +319,80 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
- {
-> =20
->  const size_t riscv_isa_ext_count =3D ARRAY_SIZE(riscv_isa_ext);
-> =20
-> -static void __init match_isa_ext(const struct riscv_isa_ext_data *ext, c=
-onst char *name,
-> -				 const char *name_end, struct riscv_isainfo *isainfo)
-> +static void riscv_isa_set_ext(const struct riscv_isa_ext_data *ext, unsi=
-gned long *bitmap)
->  {
-> -	if ((name_end - name =3D=3D strlen(ext->name)) &&
-> -	     !strncasecmp(name, ext->name, name_end - name)) {
-> -		/*
-> -		 * If this is a bundle, enable all the ISA extensions that
-> -		 * comprise the bundle.
-> -		 */
-> -		if (ext->subset_ext_size) {
-> -			for (int i =3D 0; i < ext->subset_ext_size; i++) {
-> -				if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
-> -					set_bit(ext->subset_ext_ids[i], isainfo->isa);
-> -			}
-> +	/*
-> +	 * This is valid even for bundle extensions which uses the RISCV_ISA_EX=
-T_INVALID id
-> +	 * (rejected by riscv_isa_extension_valid()).
-> +	 */
-> +	if (riscv_isa_extension_valid(ext->id))
-> +		set_bit(ext->id, bitmap);
-> +
-> +	for (int i =3D 0; i < ext->subset_ext_size; i++) {
-> +		if (riscv_isa_extension_valid(ext->subset_ext_ids[i]))
-> +			set_bit(ext->subset_ext_ids[i], bitmap);
-> +	}
-> +}
-> +
-> +static void __init riscv_resolve_isa(unsigned long *isa_bitmap, struct r=
-iscv_isainfo *isainfo,
-> +				     unsigned long *this_hwcap, unsigned long *isa2hwcap)
-> +{
-> +	bool loop;
-> +	const struct riscv_isa_ext_data *ext;
-> +	DECLARE_BITMAP(prev_bitmap, RISCV_ISA_EXT_MAX);
-> +	int max_loop_count =3D riscv_isa_ext_count, ret;
-> +
-> +	do {
-> +		loop =3D false;
-> +		if (max_loop_count-- < 0) {
-> +			pr_err("Failed to reach a stable ISA state\n");
-> +			return;
->  		}
-> +		memcpy(prev_bitmap, isainfo->isa, sizeof(prev_bitmap));
-> +		for (int i =3D 0; i < riscv_isa_ext_count; i++) {
-> +			ext =3D &riscv_isa_ext[i];
-> +
-> +			/* Bundle extensions ids are invalid*/
-> +			if (!riscv_isa_extension_valid(ext->id))
-> +				continue;
-> +
-> +			if (!test_bit(ext->id, isa_bitmap) || test_bit(ext->id, isainfo->isa))
-> +				continue;
-> +
-> +			if (ext->validate) {
-> +				ret =3D ext->validate(ext, isainfo->isa);
-> +				if (ret) {
-> +					if (ret =3D=3D -EPROBE_DEFER)
-> +						loop =3D true;
-> +					else
-> +						clear_bit(ext->id, isa_bitmap);
-> +					continue;
-> +				}
-> +			}
-> =20
-> -		/*
-> -		 * This is valid even for bundle extensions which uses the RISCV_ISA_E=
-XT_INVALID id
-> -		 * (rejected by riscv_isa_extension_check()).
-> -		 */
-> -		if (riscv_isa_extension_check(ext->id))
->  			set_bit(ext->id, isainfo->isa);
-> +
-> +			/* Only single letter extensions get set in hwcap */
-> +			if (ext->id < RISCV_ISA_EXT_BASE)
-> +				*this_hwcap |=3D isa2hwcap[ext->id];
-> +		}
-> +	} while (loop && memcmp(prev_bitmap, isainfo->isa, sizeof(prev_bitmap))=
-);
-> +}
-> +
-> +static void __init match_isa_ext(const char *name, const char *name_end,=
- unsigned long *bitmap)
-> +{
-> +	for (int i =3D 0; i < riscv_isa_ext_count; i++) {
-> +		const struct riscv_isa_ext_data *ext =3D &riscv_isa_ext[i];
-> +
-> +		if ((name_end - name =3D=3D strlen(ext->name)) &&
-> +		    !strncasecmp(name, ext->name, name_end - name)) {
-> +			riscv_isa_set_ext(ext, bitmap);
-> +			break;
-> +		}
->  	}
->  }
-> =20
-> -static void __init riscv_parse_isa_string(unsigned long *this_hwcap, str=
-uct riscv_isainfo *isainfo,
-> -					  unsigned long *isa2hwcap, const char *isa)
-> +static void __init riscv_resolve_isa_string(const char *isa, unsigned lo=
-ng *bitmap)
->  {
->  	/*
->  	 * For all possible cpus, we have already validated in
-> @@ -349,7 +405,7 @@ static void __init riscv_parse_isa_string(unsigned lo=
-ng *this_hwcap, struct risc
->  	while (*isa) {
->  		const char *ext =3D isa++;
->  		const char *ext_end =3D isa;
-> -		bool ext_long =3D false, ext_err =3D false;
-> +		bool ext_err =3D false;
-> =20
->  		switch (*ext) {
->  		case 's':
-> @@ -389,7 +445,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
-ng *this_hwcap, struct risc
->  			 * character itself while eliminating the extensions version number.
->  			 * A simple re-increment solves this problem.
->  			 */
-> -			ext_long =3D true;
->  			for (; *isa && *isa !=3D '_'; ++isa)
->  				if (unlikely(!isalnum(*isa)))
->  					ext_err =3D true;
-> @@ -469,17 +524,8 @@ static void __init riscv_parse_isa_string(unsigned l=
-ong *this_hwcap, struct risc
-> =20
->  		if (unlikely(ext_err))
->  			continue;
-> -		if (!ext_long) {
-> -			int nr =3D tolower(*ext) - 'a';
-> =20
-> -			if (riscv_isa_extension_check(nr)) {
-> -				*this_hwcap |=3D isa2hwcap[nr];
-> -				set_bit(nr, isainfo->isa);
-> -			}
-> -		} else {
-> -			for (int i =3D 0; i < riscv_isa_ext_count; i++)
-> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
-> -		}
-> +		match_isa_ext(ext, ext_end, bitmap);
->  	}
->  }
-> =20
-> @@ -501,6 +547,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->  	for_each_possible_cpu(cpu) {
->  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
->  		unsigned long this_hwcap =3D 0;
-> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) =3D { 0 };
-> =20
->  		if (acpi_disabled) {
->  			node =3D of_cpu_device_node_get(cpu);
-> @@ -523,7 +570,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->  			}
->  		}
-> =20
-> -		riscv_parse_isa_string(&this_hwcap, isainfo, isa2hwcap, isa);
-> +		riscv_resolve_isa_string(isa, isa_bitmap);
-> =20
->  		/*
->  		 * These ones were as they were part of the base ISA when the
-> @@ -531,10 +578,10 @@ static void __init riscv_fill_hwcap_from_isa_string=
-(unsigned long *isa2hwcap)
->  		 * unconditionally where `i` is in riscv,isa on DT systems.
->  		 */
->  		if (acpi_disabled) {
-> -			set_bit(RISCV_ISA_EXT_ZICSR, isainfo->isa);
-> -			set_bit(RISCV_ISA_EXT_ZIFENCEI, isainfo->isa);
-> -			set_bit(RISCV_ISA_EXT_ZICNTR, isainfo->isa);
-> -			set_bit(RISCV_ISA_EXT_ZIHPM, isainfo->isa);
-> +			set_bit(RISCV_ISA_EXT_ZICSR, isa_bitmap);
-> +			set_bit(RISCV_ISA_EXT_ZIFENCEI, isa_bitmap);
-> +			set_bit(RISCV_ISA_EXT_ZICNTR, isa_bitmap);
-> +			set_bit(RISCV_ISA_EXT_ZIHPM, isa_bitmap);
->  		}
-> =20
->  		/*
-> @@ -548,9 +595,11 @@ static void __init riscv_fill_hwcap_from_isa_string(=
-unsigned long *isa2hwcap)
->  		if (acpi_disabled && riscv_cached_mvendorid(cpu) =3D=3D THEAD_VENDOR_I=
-D &&
->  		    riscv_cached_marchid(cpu) =3D=3D 0x0) {
->  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
-> -			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> +			clear_bit(RISCV_ISA_EXT_v, isa_bitmap);
->  		}
-> =20
-> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
-> +
->  		/*
->  		 * All "okay" hart should have same isa. Set HWCAP based on
->  		 * common capabilities of every "okay" hart, in case they don't
-> @@ -579,6 +628,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsi=
-gned long *isa2hwcap)
->  		unsigned long this_hwcap =3D 0;
->  		struct device_node *cpu_node;
->  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
-> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) =3D { 0 };
-> =20
->  		cpu_node =3D of_cpu_device_node_get(cpu);
->  		if (!cpu_node) {
-> @@ -598,22 +648,11 @@ static int __init riscv_fill_hwcap_from_ext_list(un=
-signed long *isa2hwcap)
->  						     ext->property) < 0)
->  				continue;
-> =20
-> -			if (ext->subset_ext_size) {
-> -				for (int j =3D 0; j < ext->subset_ext_size; j++) {
-> -					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
-> -						set_bit(ext->subset_ext_ids[j], isainfo->isa);
-> -				}
-> -			}
-> -
-> -			if (riscv_isa_extension_check(ext->id)) {
-> -				set_bit(ext->id, isainfo->isa);
-> -
-> -				/* Only single letter extensions get set in hwcap */
-> -				if (strnlen(riscv_isa_ext[i].name, 2) =3D=3D 1)
-> -					this_hwcap |=3D isa2hwcap[riscv_isa_ext[i].id];
-> -			}
-> +			riscv_isa_set_ext(ext, isa_bitmap);
->  		}
-> =20
-> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
-> +
->  		of_node_put(cpu_node);
-> =20
->  		/*
-> --=20
-> 2.43.0
->=20
+>
+> >  };
+> >
+> > +static void msft_data_free(struct kref *kref);
+> > +
+> > +static struct msft_data *msft_data_hold_unless_zero(struct msft_data *=
+msft)
+> > +{
+> > +       if (!msft)
+> > +               return NULL;
+> > +
+> > +       BT_DBG("msft %p orig refcnt %u", msft, kref_read(&msft->kref));
+> > +
+> > +       if (!kref_get_unless_zero(&msft->kref))
+> > +               return NULL;
+> > +
+> > +       return msft;
+> > +}
+> > +
+> > +static void msft_data_put(struct msft_data *msft)
+> > +{
+> > +       BT_DBG("msft %p orig refcnt %u", msft, kref_read(&msft->kref));
+> > +
+> > +       kref_put(&msft->kref, msft_data_free);
+> > +}
+> > +
+> > +static void msft_data_free(struct kref *kref)
+> > +{
+> > +       struct msft_data *msft =3D container_of(kref, struct msft_data,=
+ kref);
+> > +
+> > +       BT_DBG("msft %p", msft);
+> > +
+> > +       kfree(msft->evt_prefix);
+> > +       mutex_destroy(&msft->filter_lock);
+> > +       kfree(msft);
+> > +}
+> > +
+> >  bool msft_monitor_supported(struct hci_dev *hdev)
+> >  {
+> > +       /* msft_get_features() holds and put hdev->msft_data */
+> >         return !!(msft_get_features(hdev) & MSFT_FEATURE_MASK_LE_ADV_MO=
+NITOR);
+> >  }
+> >
+> > @@ -449,12 +484,17 @@ static int msft_remove_monitor_sync(struct hci_de=
+v *hdev,
+> >  /* This function requires the caller holds hci_req_sync_lock */
+> >  int msft_suspend_sync(struct hci_dev *hdev)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >         struct adv_monitor *monitor;
+> >         int handle =3D 0;
+> >
+> > -       if (!msft || !msft_monitor_supported(hdev))
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> > +       if (!msft)
+> >                 return 0;
+> > +       if (!msft_monitor_supported(hdev)) {
+> > +               msft_data_put(msft);
+> > +               return 0;
+> > +       }
+> >
+> >         msft->suspending =3D true;
+> >
+> > @@ -471,6 +511,7 @@ int msft_suspend_sync(struct hci_dev *hdev)
+> >         /* All monitors have been removed */
+> >         msft->suspending =3D false;
+> >
+> > +       msft_data_put(msft);
+> >         return 0;
+> >  }
+> >
+> > @@ -608,11 +649,17 @@ static void reregister_monitor(struct hci_dev *hd=
+ev)
+> >  /* This function requires the caller holds hci_req_sync_lock */
+> >  int msft_resume_sync(struct hci_dev *hdev)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >
+> > -       if (!msft || !msft_monitor_supported(hdev))
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> > +       if (!msft)
+> >                 return 0;
+> >
+> > +       if (!msft_monitor_supported(hdev)) {
+> > +               msft_data_put(msft);
+> > +               return 0;
+> > +       }
+> > +
+> >         hci_dev_lock(hdev);
+> >
+> >         /* Clear already tracked devices on resume. Once the monitors a=
+re
+> > @@ -625,17 +672,19 @@ int msft_resume_sync(struct hci_dev *hdev)
+> >
+> >         reregister_monitor(hdev);
+> >
+> > +       msft_data_put(msft);
+> >         return 0;
+> >  }
+> >
+> >  /* This function requires the caller holds hci_req_sync_lock */
+> >  void msft_do_open(struct hci_dev *hdev)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >
+> >         if (hdev->msft_opcode =3D=3D HCI_OP_NOP)
+> >                 return;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft) {
+> >                 bt_dev_err(hdev, "MSFT extension not registered");
+> >                 return;
+> > @@ -650,8 +699,7 @@ void msft_do_open(struct hci_dev *hdev)
+> >         msft->features =3D 0;
+> >
+> >         if (!read_supported_features(hdev, msft)) {
+> > -               hdev->msft_data =3D NULL;
+> > -               kfree(msft);
+> > +               msft_data_put(msft);
+> >                 return;
+> >         }
+> >
+> > @@ -663,15 +711,17 @@ void msft_do_open(struct hci_dev *hdev)
+> >                  */
+> >                 reregister_monitor(hdev);
+> >         }
+> > +       msft_data_put(msft);
+> >  }
+> >
+> >  void msft_do_close(struct hci_dev *hdev)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >         struct msft_monitor_advertisement_handle_data *handle_data, *tm=
+p;
+> >         struct msft_monitor_addr_filter_data *address_filter, *n;
+> >         struct adv_monitor *monitor;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft)
+> >                 return;
+> >
+> > @@ -705,6 +755,8 @@ void msft_do_close(struct hci_dev *hdev)
+> >         hdev->advmon_pend_notify =3D false;
+> >         msft_monitor_device_del(hdev, 0, NULL, 0, true);
+> >
+> > +       msft_data_put(msft);
+> > +
+> >         hci_dev_unlock(hdev);
+> >  }
+> >
+> > @@ -767,6 +819,7 @@ void msft_register(struct hci_dev *hdev)
+> >         INIT_LIST_HEAD(&msft->address_filters);
+> >         hdev->msft_data =3D msft;
+> >         mutex_init(&msft->filter_lock);
+> > +       kref_init(&msft->kref);
+> >  }
+> >
+> >  void msft_unregister(struct hci_dev *hdev)
+> > @@ -779,10 +832,7 @@ void msft_unregister(struct hci_dev *hdev)
+> >         bt_dev_dbg(hdev, "Unregister MSFT extension");
+> >
+> >         hdev->msft_data =3D NULL;
+> > -
+> > -       kfree(msft->evt_prefix);
+> > -       mutex_destroy(&msft->filter_lock);
+> > -       kfree(msft);
+> > +       msft_data_put(msft);
+> >  }
+> >
+> >  /* This function requires the caller holds hdev->lock */
+> > @@ -1068,10 +1118,11 @@ static void msft_monitor_device_evt(struct hci_=
+dev *hdev, struct sk_buff *skb)
+> >
+> >  void msft_vendor_evt(struct hci_dev *hdev, void *data, struct sk_buff =
+*skb)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >         u8 *evt_prefix;
+> >         u8 *evt;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft)
+> >                 return;
+> >
+> > @@ -1081,21 +1132,21 @@ void msft_vendor_evt(struct hci_dev *hdev, void=
+ *data, struct sk_buff *skb)
+> >         if (msft->evt_prefix_len > 0) {
+> >                 evt_prefix =3D msft_skb_pull(hdev, skb, 0, msft->evt_pr=
+efix_len);
+> >                 if (!evt_prefix)
+> > -                       return;
+> > +                       goto done;
+> >
+> >                 if (memcmp(evt_prefix, msft->evt_prefix, msft->evt_pref=
+ix_len))
+> > -                       return;
+> > +                       goto done;
+> >         }
+> >
+> >         /* Every event starts at least with an event code and the rest =
+of
+> >          * the data is variable and depends on the event code.
+> >          */
+> >         if (skb->len < 1)
+> > -               return;
+> > +               goto done;
+> >
+> >         evt =3D msft_skb_pull(hdev, skb, 0, sizeof(*evt));
+> >         if (!evt)
+> > -               return;
+> > +               goto done;
+> >
+> >         hci_dev_lock(hdev);
+> >
+> > @@ -1112,13 +1163,24 @@ void msft_vendor_evt(struct hci_dev *hdev, void=
+ *data, struct sk_buff *skb)
+> >         }
+> >
+> >         hci_dev_unlock(hdev);
+> > +
+> > +done:
+> > +       msft_data_put(msft);
+> >  }
+> >
+> >  __u64 msft_get_features(struct hci_dev *hdev)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> > +       unsigned long long features;
+> > +
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> > +       if (!msft)
+> > +               return 0;
+> > +
+> > +       features =3D msft->features;
+> >
+> > -       return msft ? msft->features : 0;
+> > +       msft_data_put(msft);
+> > +       return features;
+> >  }
+> >
+> >  static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev =
+*hdev,
+> > @@ -1152,37 +1214,48 @@ static void msft_le_set_advertisement_filter_en=
+able_cb(struct hci_dev *hdev,
+> >  /* This function requires the caller holds hci_req_sync_lock */
+> >  int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor =
+*monitor)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> > +       int err;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft)
+> >                 return -EOPNOTSUPP;
+> >
+> > -       if (msft->resuming || msft->suspending)
+> > +       if (msft->resuming || msft->suspending) {
+> > +               msft_data_put(msft);
+> >                 return -EBUSY;
+> > +       }
+> >
+> > -       return msft_add_monitor_sync(hdev, monitor);
+> > +       err =3D msft_add_monitor_sync(hdev, monitor);
+> > +       msft_data_put(msft);
+> > +       return err;
+> >  }
+> >
+> >  /* This function requires the caller holds hci_req_sync_lock */
+> >  int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *moni=
+tor)
+> >  {
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> > +       int err;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft)
+> >                 return -EOPNOTSUPP;
+> >
+> >         if (msft->resuming || msft->suspending)
+> >                 return -EBUSY;
+> >
+> > -       return msft_remove_monitor_sync(hdev, monitor);
+> > +       err =3D msft_remove_monitor_sync(hdev, monitor);
+> > +       msft_data_put(msft);
+> > +       return err;
+> >  }
+> >
+> >  int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
+> >  {
+> >         struct msft_cp_le_set_advertisement_filter_enable cp;
+> > -       struct msft_data *msft =3D hdev->msft_data;
+> > +       struct msft_data *msft;
+> >         int err;
+> >
+> > +       msft =3D msft_data_hold_unless_zero(hdev->msft_data);
+> >         if (!msft)
+> >                 return -EOPNOTSUPP;
+> >
+> > @@ -1193,6 +1266,7 @@ int msft_set_filter_enable(struct hci_dev *hdev, =
+bool enable)
+> >
+> >         msft_le_set_advertisement_filter_enable_cb(hdev, &cp, err);
+> >
+> > +       msft_data_put(msft);
+> >         return 0;
+> >  }
+> >
+> > --
+> > 2.34.1
+>
+> Looks at the current code I do wonder if the order is incorrect since we =
+do:
+>
+>     msft_unregister(hdev);
+>
+>     hci_dev_do_close(hdev);
+>
+> Anyway msft_unregister shall probably be renamed to msft_release and
 
---gd7/nk5BpVfZAZKi
-Content-Type: application/pgp-signature; name="signature.asc"
+It could be a nitpick but how about making msft_unregister() static
+and wrapping this with msft_release() for consistency?
+Since msft_register is there, it may look inconsistent if
+msft_unregister() doesn't exist.
 
------BEGIN PGP SIGNATURE-----
+> then called from hci_release_dev instead since that is where we free
+> fields of hdev, not on unregister.
+>
+> --
+> Luiz Augusto von Dentz
+>
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjAcGwAKCRB4tDGHoIJi
-0pT4AP4kpeAwM643hQaOreeufIP87GLfG2CZSm6TigSWmM7XiQEAj71baUpHBbbR
-Wd/42Ew6FGbxhqzfsiMcqhUbQeJTgwk=
-=qQwN
------END PGP SIGNATURE-----
-
---gd7/nk5BpVfZAZKi--
+Best,
+Sungwoo.
 
