@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-162198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC2D8B5784
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:11:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 482C78B5785
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:11:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F25081C2230D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:11:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F132D28714F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F7D71734;
-	Mon, 29 Apr 2024 12:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9047440B;
+	Mon, 29 Apr 2024 12:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="khJtnEAt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OI2NDMoK"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343506EB6F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FFB77172F
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 12:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714392572; cv=none; b=GAIFKwQ/cwz5OEkNU+aNLmak9Y5DVi+WCw3ampbI93cQqRaerZJwjGrGUKf69BOKVPtWJG2D2eVw2dTTlIZwfJSHjbmxWltsfIrep/2qxOmDZQkZM06krqp+YI828e8K2irrzPnAxgie+zm/YG+nU/KdzYoB0kgz0eVH7dmBZKA=
+	t=1714392574; cv=none; b=qSYmSPGsxxjMvutqIIyhK+moW6SspaRo01mZJTqPjOUYbS6UtFT4eAAQYlcLNA/TrN+CJytlAFqLTEG4a9slUFgL6XSfELY6HPaUA7f/P8gELotmw3t4BWcRt7G5c+uzo2I9XRUhtd9TMW3N172pwceNiZyIQ2ttgqKANSmY2UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714392572; c=relaxed/simple;
-	bh=J9FY2ipo2lxecD7Za9X7g2Z+V+7tNAF/Om/EeWGmizU=;
+	s=arc-20240116; t=1714392574; c=relaxed/simple;
+	bh=O/tPLmmDVxjWqjenqSekjhHbDwgCsVPjYLagOWXNRp4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WXRaU+M7+idtNEvTqaw76EzFfh2SEf4rQERQ6DtbzVXGjDDHGEGhxg4bk3sSJrz4YrMfgHUCrab0ULK8vv1JtPiR0jt9PNWAetBR1w4f77qrrWZDL1XqFEq5ZXz/9xiuKhjSEC/zZrdp4ZYcR62FzXh54ifvicCAyQ2mMtU6DCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=khJtnEAt; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=r+8kA3Ox/ogIs4uhM48CbON6T4X8KBSB1dSEXahMcaVQqisuXtOACmOjZbi7Jo7emUpgL1McglAJXtzRILJUVvaTDRM2NUr3E/25Q66tcc9NZoQGGNA3JHUPwnPb6ieBNMySiQWHXyi+ATmMIE/W4tXex5SiL4Y0q9jblKU8bMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OI2NDMoK; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714392572; x=1745928572;
+  t=1714392574; x=1745928574;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=J9FY2ipo2lxecD7Za9X7g2Z+V+7tNAF/Om/EeWGmizU=;
-  b=khJtnEAtHthfl/3lkymHwvT513Z5nnCeo5cG0cOzu7CDDbbke86GhGzy
-   +g8Ass/Qy1ezwWiN/7fDyFHKhSO12WKca+6j9qZa6tu6qb4D/oFrNI7vk
-   KYV1x6EuvA6cj2eLAgsChmX/7Zk2tCgnxv5j+h/NEB7bkoFIUUKafi3Xd
-   J7n1SOs0l61DfdOtyerLFXr3BkkS5JAOVWTgsiu9VFmRrv+HoOYQ5c0vm
-   9pDHLrm+A7r+NGIUOvBT8f5I0K7bEVqP33y1BZhYMxzT7f34P7ZvmHyLt
-   KuBRzafuEyz402AdcLy1KqySvpsgQs3azSAxaxTuZc71o6+OTWDhVwMiQ
+  bh=O/tPLmmDVxjWqjenqSekjhHbDwgCsVPjYLagOWXNRp4=;
+  b=OI2NDMoKkW2DqsVryK0e9usaAIGA810T5XY1xo0dhBkyr1kMFKNdz3YC
+   5aRyxh1B7nS2rIoGY3DMhiSwDKg6kzVY+vRQF0C6D7KrPKy1/95a6Z0BQ
+   d9gnTchLBMDUojcSfirTI8qnIvRAaEte8BgCOTZk0yCEFE4R5WG1uAxUf
+   254xom6frJ92LBZQ9wui/wO4f/Ue1tX0GFgtSfW+S+AXl81BaZX32sdSE
+   NaUbOuqf1JhlXfCsw7LwLGdcaikCpjezZWBl/hZtx2DeEJPIellEQjTvw
+   yNOK3s9cJRx25dIZ/BQbV9NDfbhSvNmYpE37wv7htTUl+srxeNBZGtG1i
    g==;
-X-CSE-ConnectionGUID: OEYvmlmbRtCGK+WImS+tpQ==
-X-CSE-MsgGUID: lmeugz1hSaWFR77UpljEeA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9908267"
+X-CSE-ConnectionGUID: JS4nHBeLTM+hGkZKdZa68A==
+X-CSE-MsgGUID: 7ved6F7dRDexdhUahYbv+g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9908273"
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="9908267"
+   d="scan'208";a="9908273"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:09:31 -0700
-X-CSE-ConnectionGUID: WchvvseIQnyeTacoQeFBfg==
-X-CSE-MsgGUID: 7Bes899vR0Syg//Bed5mTQ==
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:09:33 -0700
+X-CSE-ConnectionGUID: C047f2fIQheXzXzzLbaS3w==
+X-CSE-MsgGUID: dBOOQmHvRRahGC3vX9h26w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26166640"
+   d="scan'208";a="26166644"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmviesa010.fm.intel.com with ESMTP; 29 Apr 2024 05:09:29 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 29 Apr 2024 05:09:31 -0700
 From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-kernel@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>,
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 08/14] intel_th: msu: Fix kernel-doc warnings
-Date: Mon, 29 Apr 2024 15:09:02 +0300
-Message-ID: <20240429120908.3723458-9-alexander.shishkin@linux.intel.com>
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	stable@kernel.org
+Subject: [PATCH 09/14] intel_th: pci: Add Granite Rapids support
+Date: Mon, 29 Apr 2024 15:09:03 +0300
+Message-ID: <20240429120908.3723458-10-alexander.shishkin@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429120908.3723458-1-alexander.shishkin@linux.intel.com>
 References: <20240429120908.3723458-1-alexander.shishkin@linux.intel.com>
@@ -77,85 +77,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Add support for the Trace Hub in Granite Rapids.
 
-Correct function comments to prevent kernel-doc warnings
-found when using "W=1".
-
-msu.c:77: warning: Function parameter or member 'msc' not described in 'msc_window'
-msu.c:122: warning: bad line:
-msu.c:760: warning: No description found for return value of 'msc_configure'
-msu.c:1309: warning: Function parameter or member 'nr_pages' not described in 'msc_buffer_alloc'
-msu.c:1309: warning: Function parameter or member 'nr_wins' not described in 'msc_buffer_alloc'
-msu.c:1309: warning: Excess function parameter 'size' description in 'msc_buffer_alloc'
-msu.c:1376: warning: No description found for return value of 'msc_buffer_free_unless_used'
-msu.c:1444: warning: No description found for return value of 'msc_win_to_user'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: stable@kernel.org
 ---
- drivers/hwtracing/intel_th/msu.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/hwtracing/intel_th/pci.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/hwtracing/intel_th/msu.c b/drivers/hwtracing/intel_th/msu.c
-index 9621efe0e95c..be63d5b8f193 100644
---- a/drivers/hwtracing/intel_th/msu.c
-+++ b/drivers/hwtracing/intel_th/msu.c
-@@ -61,6 +61,7 @@ enum lockout_state {
-  * @lo_lock:	lockout state serialization
-  * @nr_blocks:	number of blocks (pages) in this window
-  * @nr_segs:	number of segments in this window (<= @nr_blocks)
-+ * @msc:	pointer to the MSC device
-  * @_sgt:	array of block descriptors
-  * @sgt:	array of block descriptors
-  */
-@@ -119,7 +120,6 @@ struct msc_iter {
-  * @user_count:		number of users of the buffer
-  * @mmap_count:		number of mappings
-  * @buf_mutex:		mutex to serialize access to buffer-related bits
--
-  * @enabled:		MSC is enabled
-  * @wrap:		wrapping is enabled
-  * @mode:		MSC operating mode
-@@ -755,6 +755,8 @@ static int msc_win_set_lockout(struct msc_window *win,
-  * Program storage mode, wrapping, burst length and trace buffer address
-  * into a given MSC. Then, enable tracing and set msc::enabled.
-  * The latter is serialized on msc::buf_mutex, so make sure to hold it.
-+ *
-+ * Return:	%0 for success or a negative error code otherwise.
-  */
- static int msc_configure(struct msc *msc)
- {
-@@ -1291,7 +1293,8 @@ static void msc_buffer_free(struct msc *msc)
- /**
-  * msc_buffer_alloc() - allocate a buffer for MSC
-  * @msc:	MSC device
-- * @size:	allocation size in bytes
-+ * @nr_pages:	number of pages for each window
-+ * @nr_wins:	number of windows
-  *
-  * Allocate a storage buffer for MSC, depending on the msc::mode, it will be
-  * either done via msc_buffer_contig_alloc() for SINGLE operation mode or
-@@ -1370,6 +1373,9 @@ static int msc_buffer_unlocked_free_unless_used(struct msc *msc)
-  * @msc:	MSC device
-  *
-  * This is a locked version of msc_buffer_unlocked_free_unless_used().
-+ *
-+ * Return:	0 on successful deallocation or if there was no buffer to
-+ *		deallocate, -EBUSY if there are active users.
-  */
- static int msc_buffer_free_unless_used(struct msc *msc)
- {
-@@ -1438,6 +1444,8 @@ struct msc_win_to_user_struct {
-  * @data:	callback's private data
-  * @src:	source buffer
-  * @len:	amount of data to copy from the source buffer
-+ *
-+ * Return:	>= %0 for success or -errno for error.
-  */
- static unsigned long msc_win_to_user(void *data, void *src, size_t len)
- {
+diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
+index 147d338c191e..beb4b2766aae 100644
+--- a/drivers/hwtracing/intel_th/pci.c
++++ b/drivers/hwtracing/intel_th/pci.c
+@@ -299,6 +299,11 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0xa76f),
+ 		.driver_data = (kernel_ulong_t)&intel_th_2x,
+ 	},
++	{
++		/* Granite Rapids */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x0963),
++		.driver_data = (kernel_ulong_t)&intel_th_2x,
++	},
+ 	{
+ 		/* Alder Lake CPU */
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x466f),
 -- 
 2.43.0
 
