@@ -1,55 +1,79 @@
-Return-Path: <linux-kernel+bounces-161915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390038B533C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:36:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DECB8B533F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 719D0B21C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:36:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2A161F21033
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0095D17BBB;
-	Mon, 29 Apr 2024 08:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC1418041;
+	Mon, 29 Apr 2024 08:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Mx9QXgo6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e9AcN+Hn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BACD14A8C;
-	Mon, 29 Apr 2024 08:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A7313AEE;
+	Mon, 29 Apr 2024 08:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714379801; cv=none; b=mavg66inV0WeXXHzMCIgJcVTLEyUAXZGT3pUcUb+FMzLP87ocSuxzFsrJ+DHe61v8oMrx475HId9ZLwGQA4p0bfVJuXnHX9GjwNbaoC1GEJYYxQ2CHEMqWsac6Nf+IKstyHDr0Qxy1bMxRv4rlxXvcGKkp14VlmeRj/Pw/CfeMo=
+	t=1714379827; cv=none; b=Uf1si5tNAEipY4f/OkqkRZknhZKDGZoqDgQvh7UoViL6/m+nVeNCJiNZj99TetU3PcWUSOcHZ7w6eeBOjTmBXTK3EBwZUKj0oEmcHBbghLtmeQspYywr622522lPwLLuq7juaR8G9/ZimA4KEwDBZgkIdIi7/8CGF/k01tjm0sI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714379801; c=relaxed/simple;
-	bh=tqnqj5bYRDYYmHHW3t4b3JcGXP2u6dMCeU1YcEoYQB4=;
+	s=arc-20240116; t=1714379827; c=relaxed/simple;
+	bh=N0XGSmeKMB0rC6XgAkwwB5iWclud4yL7qhYZt2jHTvQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gcHHKh8F2axVy9zPHXTz7osUSbCr2W9rrhfK+ynaWsZAZURwaOgW0ib3VvoNScmoxh6bQ9A/rpy42lpwaSJzooVG4f47MvHLy1zrjO9BVcmVIBVFeNiJWQk2crOIL3r9J+QHlOLGzij0NQjGRJOMPWVLb4e21nIDO4JXTmQ1jQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Mx9QXgo6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAA1C113CD;
-	Mon, 29 Apr 2024 08:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714379800;
-	bh=tqnqj5bYRDYYmHHW3t4b3JcGXP2u6dMCeU1YcEoYQB4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mx9QXgo6uCpYFlnlEPQFxsloKgzlWFJ9nfrOLlzaIN18UierazL/l4HJZeeYXbtyq
-	 vgaslwGrusML/Dte0Ss47I9ZWSPTGOsAnCcvuuH7J37wFGu5KmoeISTXSsFhkpeLG1
-	 +e/gLzQHsFP94UcJgddRC7YeESEnj3lMneYXzocg=
-Date: Mon, 29 Apr 2024 10:36:37 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: Sasha Levin <sashal@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	stable@vger.kernel.org, workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] docs: stable-kernel-rules: explain use of
- stable@kernel.org (w/o @vger.)
-Message-ID: <2024042900-sabbath-switch-69f1@gregkh>
-References: <cover.1714367921.git.linux@leemhuis.info>
- <6783b71da48aac5290756343f58591dc42da87bc.1714367921.git.linux@leemhuis.info>
- <2024042957-revision-sublevel-57c2@gregkh>
- <2dde6e68-bdac-437a-bd89-73dddf446211@leemhuis.info>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tma936htwrJoE8xlq7fznk9wlIUNijE9dRfarUtMe0mpjzgrhyyqjXYHXT7PYXQ0YBsxDeEQUwcezZk2IWNiY2Yw7vaCtxBFMETEckz6sR2iWbItdsYgRl4Txyj85W0kEClTJ+VeQd6B+rvfJR0/eJerROzg/se3VXztRf+cta4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e9AcN+Hn; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714379827; x=1745915827;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N0XGSmeKMB0rC6XgAkwwB5iWclud4yL7qhYZt2jHTvQ=;
+  b=e9AcN+Hn2DjM0mEP+NA75hoffKqpeMIt0dBBxBh8UihXlkJBJbfQokl5
+   /X9G6GePX6QhNuxLaFituewmHEYN/TPoWtnPIIGADh24uHf8j1mqPIvF2
+   maDOFZnFjoUCZgO2aGAzo3J8IBBRobr90PQjw6x3mnrbwjfMdSiPLPzpG
+   yUZaFAg4vK569yORikkNCeygEmYpN3Yd1uEN3LcuMTIij08t0ZNsF7X7z
+   Yl00pne10DvTgO+umOc7RwLoYja6f12xY4EtoAc8f+4Uqs9VNGn/NZ1Wl
+   XBHOr3a+3JuHXGqedIi4J2TnXQAKxWDDlE3xZTiIhQIMRs+S/lwVET5M6
+   g==;
+X-CSE-ConnectionGUID: B2CSXVzSQayDBXPD4vtZqw==
+X-CSE-MsgGUID: ASQU3e3LScmv7evgcUGCCQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="21439663"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="21439663"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:37:06 -0700
+X-CSE-ConnectionGUID: mhLrSkThTdOTHTLvEDDe+A==
+X-CSE-MsgGUID: UUrw3BNuT/iOCT+pl66gNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26117627"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 01:37:04 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s1MVR-00000002Fzg-3ehE;
+	Mon, 29 Apr 2024 11:37:01 +0300
+Date: Mon, 29 Apr 2024 11:37:01 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Martijn Braam <martijn@brixit.nl>
+Subject: Re: [PATCH v1 1/1] iio: light: stk3310: Drop most likely fake ACPI ID
+Message-ID: <Zi9cLbf6JdomA8jW@smile.fi.intel.com>
+References: <20240415141852.853490-1-andriy.shevchenko@linux.intel.com>
+ <20240420122633.79b4185b@jic23-huawei>
+ <ZiZEN807oywU-MAx@smile.fi.intel.com>
+ <ZiZEqDCqc01Cx3oq@smile.fi.intel.com>
+ <20240428164333.44a7f8f3@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,64 +82,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2dde6e68-bdac-437a-bd89-73dddf446211@leemhuis.info>
+In-Reply-To: <20240428164333.44a7f8f3@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Apr 29, 2024 at 10:30:49AM +0200, Thorsten Leemhuis wrote:
-> On 29.04.24 09:51, Greg Kroah-Hartman wrote:
-> > On Mon, Apr 29, 2024 at 09:18:29AM +0200, Thorsten Leemhuis wrote:
-> >> Document when to use of stable@kernel.org instead of
-> >> stable@vger.kernel.org, as the two are easily mixed up and their
-> >> difference not explained anywhere[1].
-> >>
-> >> Link: https://lore.kernel.org/all/20240422231550.3cf5f723@sal.lan/ [1]
-> >> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> >> ---
-> >>  Documentation/process/stable-kernel-rules.rst | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/Documentation/process/stable-kernel-rules.rst b/Documentation/process/stable-kernel-rules.rst
-> >> index b4af627154f1d8..ebf4152659f2d0 100644
-> >> --- a/Documentation/process/stable-kernel-rules.rst
-> >> +++ b/Documentation/process/stable-kernel-rules.rst
-> >> @@ -72,6 +72,10 @@ for stable trees, add this tag in the sign-off area::
-> >>  
-> >>    Cc: stable@vger.kernel.org
-> >>  
-> >> +Use ``Cc: stable@kernel.org`` instead when fixing unpublished vulnerabilities:
-> >> +it reduces the chance of accidentally exposing the fix to the public by way of
-> >> +'git send-email', as mails sent to that address are not delivered anywhere.
+On Sun, Apr 28, 2024 at 04:43:33PM +0100, Jonathan Cameron wrote:
+> On Mon, 22 Apr 2024 14:06:16 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Apr 22, 2024 at 02:04:23PM +0300, Andy Shevchenko wrote:
+
+..
+
+> > P.S>  
+> > What I may agree on is to drop Fixes tag.
 > > 
-> > The "fun" part of just saying this is that then it is a huge "signal" to
-> > others that "hey, this might be a security fix!" when it lands in
-> > Linus's tree.  But hey, we do what we can, I know my scripts always use
-> > this address just to put a bit more noise into that signal :)
-> 
-> Yeah, that's likely true. :-D
-> 
-> FWIW, we could stay more vague here and use a text like """Use ``Cc:
-> stable@kernel.org`` instead when fixing something that should be kept
-> private for the timing being: it will prevent the change for
-> accidentally being exposed to the public through 'git send-email', as
-> mails sent to that address are not delivered anywhere."""
-> 
-> The sign would not be that huge anymore, but I'm not sure if that makes
-> any difference.
+> That's a compromise I'm fine with. As long as we've done due diligence on
+> whether there are known cases we can take the risk of breaking someone (briefly)
+> if these turn out to be in use.
 
-Yeah, let's leave this as-is for now.
+I'll try to remember not putting Fixes in similar patches in the future,
+if any.
 
-> > That being said, it's good to have this documented now, thanks for it:
-> 
-> yw!
-> 
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Many thx for your feedback to this and the other patches. Do you want to
-> pick those up (last time I changes something in that text that was the
-> case) or let Jonathan handle them?
+> Applied,
 
-Which ever Jonathan finds easier is fine for me.
+Thank you!
 
-thanks,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-greg k-h
+
 
