@@ -1,61 +1,63 @@
-Return-Path: <linux-kernel+bounces-162153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA2A68B56BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:33:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 720A48B56C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18FD81C20F96
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:33:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF641F24770
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5004C615;
-	Mon, 29 Apr 2024 11:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C474C63F;
+	Mon, 29 Apr 2024 11:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="aRUD4h14"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="YWJmo1O7"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFDD4501B
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFDC4C610
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390399; cv=none; b=F/Shi7TzTQckQ3MSa1kDsgcvId0lxQytn7zbT7g/dIuj3Rrz5ZPrLqyI0MapXDNjLA4M0voVbBJ4MBnE0JZXtrSdalyV91CFLWQxjwXPCfOM46GPUfbcCf1l+VmNfn1xUu3IewNaDptygmo5G2TrKP4QTBCXEvYxuLlJjd1t6xw=
+	t=1714390401; cv=none; b=eZ9vunCCmk2ZFtLscVi/oD+LJdX8k2cC7BWi5xR/pbvRFvwhH94eoNsEeKc+q16JVa/F9f0tP557VW9wWconPTYjLw4snRyeraw9cLlRkRd5L2ulJA3Sn7+g8ahPWCA+2nr2H3RTzA2mjxm39p+1C6ecABY4uZzx0Q+sixVqNvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390399; c=relaxed/simple;
-	bh=qjQ+LYbUEfrBtu3ymflLP9dmO9tQ6/Bs/eoY36v4nPg=;
+	s=arc-20240116; t=1714390401; c=relaxed/simple;
+	bh=cy2D1HP63aslov77VCicNGX0z0ZLnIZFrx66F9b/xOU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sYiDYFlPQsDQs7rBtY/QM1SG7GaqIk+frEB9ktfphea6Wt+jpkHISkmiSKMXndouY8Md3zJGH+mg8Cl6bG+cHZHVD8fEyHsJf/CZ8gI+F2BQxMW+xNUZ83MMxYQfKb8yaL8PgOFNV4wu+ZxU4dj/koXt+LZec6Z23Ei/muT+sfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=aRUD4h14; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=oo8msDie2pj7lxmsbWIQcd+Wj6ztGACsiThPrHBG1qRfFPeP2bzpMAvbpMiIA35CJQQTySRvhiCjSAeSNdkppNLlt1+lNxjFjFMnJ3HOWZgUvizVjw6sWZEuQnPR0JGZW1pfabKjZwF+Lrsf/XKTAaoQJQazT29m0tY1Jq917gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=YWJmo1O7; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=jF+95jMp/45NMjGYJKM23B9xKBucPH4GAO56Jky3844=; b=aRUD4h
-	14HkB1S+ge4YmGYHgC6e8z1QFZnIGEwb7VW6Wjs/dhS7SsCqi0J0cylMLueUjaEq
-	AzQQSTtE2ukCCPvolzhDzwOet/OsyfJOcsP25SvVacjNnIPJWbyZdsFy8AWWXQjE
-	JEN7NjXU5WZUMCKOJpmTB6Ol2U6ck+VZnD04dRml5NzTEEhWiHVaybCPCekVY0SX
-	wmEad53AvSdMQtbMvJigWFQ9xmNYNoXjBHokUg6x7Y2SfWGm5GOz3V0j/rPqtQTq
-	M79guIWLd/tJTTBZ5+/FF3GuhfhySodEF9CpOXSgD15S6MjKwX9XSsEl/ppis9Hs
-	eSMz0D9XYsDRI+AQ==
-Received: (qmail 2281021 invoked from network); 29 Apr 2024 13:33:16 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:16 +0200
-X-UD-Smtp-Session: l3s3148p1@fvOInjoXqG5tKPB4
+	 s=k1; bh=4U8CmUX52QVRFRqLXIis6AKCy/puBxC4uuyzZRCInlU=; b=YWJmo1
+	O7xl4olZbGoV0XZRVVyoTBkU9TYJ/bMKtmXad+r+g4nK5Dacm/o6oqpTx+Nf2i1V
+	//aM+hSv5+U8AhSmpeDykvycCkEYeo0KGk+ZaWYq5YR0F7LtBNJDcBJPwk/gEI7d
+	2LDrtJsJbVjs/QJ0fTcHbZjzbHNRuqUIJvXzWLKjCxnfhegx85w0cFrguCVpZ5MF
+	lfKWuDaNX8RqjqfVi8cZAx6AAPQxYA6uEhn2vPAuto1a3WXjH7TzaRbtBIvSfEUa
+	HDvRI5fILcSFo3L+nC/ibfSaiQuRSaFqH/3pK6VhOur84FKUk8oVYiHNIPeBaYyq
+	MKbqp5QHcTDT1upA==
+Received: (qmail 2281070 invoked from network); 29 Apr 2024 13:33:17 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:33:17 +0200
+X-UD-Smtp-Session: l3s3148p1@2+uYnjoX0Q9tKPB4
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-iio@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Jonathan Cameron <jic23@kernel.org>,
 	Lars-Peter Clausen <lars@metafoo.de>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	imx@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/8] iio: adc: exynos_adc: use 'time_left' variable with wait_for_completion_timeout()
-Date: Mon, 29 Apr 2024 13:33:05 +0200
-Message-ID: <20240429113313.68359-3-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 3/8] iio: adc: fsl-imx25-gcq: use 'time_left' variable with wait_for_completion_interruptible_timeout()
+Date: Mon, 29 Apr 2024 13:33:06 +0200
+Message-ID: <20240429113313.68359-4-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
 References: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
@@ -68,9 +70,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 There is a confusing pattern in the kernel to use a variable named 'timeout' to
-store the result of wait_for_completion_timeout() causing patterns like:
+store the result of wait_for_completion_interruptible_timeout() causing patterns like:
 
-	timeout = wait_for_completion_timeout(...)
+	timeout = wait_for_completion_interruptible_timeout(...)
 	if (!timeout) return -ETIMEDOUT;
 
 with all kinds of permutations. Use 'time_left' as a variable to make the code
@@ -78,57 +80,39 @@ self explaining.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/iio/adc/exynos_adc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/iio/adc/fsl-imx25-gcq.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-index 614de9644800..78fada4b7b1c 100644
---- a/drivers/iio/adc/exynos_adc.c
-+++ b/drivers/iio/adc/exynos_adc.c
-@@ -538,7 +538,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
- 				long mask)
+diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+index 68c813de0605..dabc5303d644 100644
+--- a/drivers/iio/adc/fsl-imx25-gcq.c
++++ b/drivers/iio/adc/fsl-imx25-gcq.c
+@@ -107,7 +107,7 @@ static int mx25_gcq_get_raw_value(struct device *dev,
+ 				  struct mx25_gcq_priv *priv,
+ 				  int *val)
  {
- 	struct exynos_adc *info = iio_priv(indio_dev);
--	unsigned long timeout;
-+	unsigned long time_left;
- 	int ret;
+-	long timeout;
++	long time_left;
+ 	u32 data;
  
- 	if (mask == IIO_CHAN_INFO_SCALE) {
-@@ -562,9 +562,9 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
- 	if (info->data->start_conv)
- 		info->data->start_conv(info, chan->address);
+ 	/* Setup the configuration we want to use */
+@@ -120,12 +120,12 @@ static int mx25_gcq_get_raw_value(struct device *dev,
+ 	regmap_update_bits(priv->regs, MX25_ADCQ_CR, MX25_ADCQ_CR_FQS,
+ 			   MX25_ADCQ_CR_FQS);
  
--	timeout = wait_for_completion_timeout(&info->completion,
--					      EXYNOS_ADC_TIMEOUT);
--	if (timeout == 0) {
-+	time_left = wait_for_completion_timeout(&info->completion,
-+						EXYNOS_ADC_TIMEOUT);
-+	if (time_left == 0) {
- 		dev_warn(&indio_dev->dev, "Conversion timed out! Resetting\n");
- 		if (info->data->init_hw)
- 			info->data->init_hw(info);
-@@ -583,7 +583,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
- static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
- {
- 	struct exynos_adc *info = iio_priv(indio_dev);
--	unsigned long timeout;
-+	unsigned long time_left;
- 	int ret;
- 
- 	mutex_lock(&info->lock);
-@@ -597,9 +597,9 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
- 	/* Select the ts channel to be used and Trigger conversion */
- 	info->data->start_conv(info, ADC_S3C2410_MUX_TS);
- 
--	timeout = wait_for_completion_timeout(&info->completion,
--					      EXYNOS_ADC_TIMEOUT);
--	if (timeout == 0) {
-+	time_left = wait_for_completion_timeout(&info->completion,
-+						EXYNOS_ADC_TIMEOUT);
-+	if (time_left == 0) {
- 		dev_warn(&indio_dev->dev, "Conversion timed out! Resetting\n");
- 		if (info->data->init_hw)
- 			info->data->init_hw(info);
+-	timeout = wait_for_completion_interruptible_timeout(
++	time_left = wait_for_completion_interruptible_timeout(
+ 		&priv->completed, MX25_GCQ_TIMEOUT);
+-	if (timeout < 0) {
++	if (time_left < 0) {
+ 		dev_err(dev, "ADC wait for measurement failed\n");
+-		return timeout;
+-	} else if (timeout == 0) {
++		return time_left;
++	} else if (time_left == 0) {
+ 		dev_err(dev, "ADC timed out\n");
+ 		return -ETIMEDOUT;
+ 	}
 -- 
 2.43.0
 
