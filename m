@@ -1,226 +1,131 @@
-Return-Path: <linux-kernel+bounces-161699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F1188B4FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D970B8B4FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89A001C21156
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:36:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1746B1C2105D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205058F55;
-	Mon, 29 Apr 2024 03:36:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4D86FD0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 03:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE0C9454;
+	Mon, 29 Apr 2024 03:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIG9nt5j"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF9B6FD0;
+	Mon, 29 Apr 2024 03:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714361791; cv=none; b=HjVz/jjThJ01CuA9Qvx0aH2553ZlOChRyI5ABgCCW3ikU05SQwzrhdX7L8R0lUFQ8XGcAUw6mqVB4htPR+rnovs91hvnAg/d4esKLpycFSXYiQCEsBRM4LF3Iz8HyN5f3lIDFjIzmTqAkXD5qNcYxG27PYktsMI43BsO1bQvAgU=
+	t=1714361923; cv=none; b=GE40fPyx6W0pfgsBRfvxajr1kZsGwFSclenBsNGxEFjuk0mtM70Lyq1aeU61C+mzLEYxvVD/3JMkgqaR9KTQ2OQffaACwqTCKTvs6B0sL4aA7Id0sHSRlph5Fw8HTtCquxUgSg3CtgiMecaYaE9+Chyy54JpFagrR49+fRIIChc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714361791; c=relaxed/simple;
-	bh=OMypMfMPWaoZtX2P8Zb0bC9bAef9DLGboc1N3FIq4Ag=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3Beva6ZKvjNJexesqclBnzoETor9q0CjK5EUIIvrPgOTWxCR67hrqZxr/MdqnuGatdZ5ZtcmSNHIk0h2GwDWD1is/KzBSiJz/+vdu2txX1CHjeubWC1u2YrxAyAduHtejZgFmDfUcBRqMkgMFWgbbh7F3cnezmeTo6BHYyriMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF93E2F4;
-	Sun, 28 Apr 2024 20:36:54 -0700 (PDT)
-Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FB573F73F;
-	Sun, 28 Apr 2024 20:36:24 -0700 (PDT)
-Message-ID: <34a9ec83-40ab-4028-8ee3-27438665155f@arm.com>
-Date: Mon, 29 Apr 2024 09:06:22 +0530
+	s=arc-20240116; t=1714361923; c=relaxed/simple;
+	bh=ZAmjTwF6yoXFTOYFHK88jkBnSke3Kk/EgHpHSH5a2pA=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=hjjpbFN+IDRLuBAO044xyaXtbMwpHv09IDoOalHmdEyP6bm8WdRHGfNzmfQ8Q9ewjhs3siNFGsE1a0Uw4RyRRzUloDPEH3+nCDhHV07YI4kI5PXr9mMAgM/FB3y9+gUUiOBwWXUNdJkvqWVygtlpsugA+QrOSF0xqFDPWXuOF2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIG9nt5j; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c8644aa3feso528729b6e.1;
+        Sun, 28 Apr 2024 20:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714361921; x=1714966721; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5F3XqO3gwYBh+qZ32WvAihH+srGMf65nvhU1ICDwCnA=;
+        b=HIG9nt5jo7hatuVQyPP0GBby2Xcq1xHxsjTUHJYI1Q5Mz1z3nHsxKNDJTNAGqITGQ2
+         UwR2GNRrjqIm9q5WII6tBgpXl6cxofUN9gGb6xRzvTk/svgiUa4ml7BzL21hzEZcin6S
+         5p5swS9D1nTxYxAWzT7tj6wvbQwuUjW0FtH9sulWd0bDVyhedCLrjNXzfMxAnlLuNc7b
+         LaKR+zUMklggZDYdIuUvPvqlhHFyKbcwHdbYvx9lnobzadSW/+N7DIk5OkUGXNB6g8H+
+         2tCuMYmtRQyoNYEESyR/iGZgSZQu987OLr+06aspAa9HQ3lK2TGalHz+WOYzxUJk7S4g
+         G2qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714361921; x=1714966721;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5F3XqO3gwYBh+qZ32WvAihH+srGMf65nvhU1ICDwCnA=;
+        b=Hvan0KpdFIHiCX6dmagm2OHV+3qlXlQ369EDymB5vw8Q2Aya9kk5mMCY8G+ULdG0xF
+         USY7mqdJHF/yKWCLP0t7j0SnKH1IveVtoLHEPP2Gli0sPHJodupSO3uqfucqOGmXETnh
+         bLgmzYP4lWtDQQGGCHAi6nhdWCJnwJzOEtmXT77mDPvuY1CXdDJVRr5NlvjYftSrF0bq
+         Wow0FhsnsCOBxV/D1FEQmeiMWsN2mLTqXcA9SJBWOqYOwtNE+aUy7DW1tgoXv9LE0fgO
+         k8myflnEk6ZqxGV/t1EGgbJjvVf3RSGBOzC3u5r2hVX5iTrYGWuEqOpitQumq6erGCHf
+         /+nw==
+X-Forwarded-Encrypted: i=1; AJvYcCWGg49JyY49dUwceXhr05p8m7R9NMoUzpuuY+nMP/heqDVSIpEnL585HQQ4gHJTua4dmIEVH0QFwgjKnW6M7kVy9Eknc7hroXVQ0OCmvv7W/irkjjFWUuwHOv/iddmDmivSJNydS1ZNUsQdpd78Ghf4M0m0YVVAVta2/C9WJoBqVoe0Hg+6S5bG1D0QkOrzjv64doU8nNO46y2BGwpRJnl7t+DQeH+f2pFmr7lcnLZXy1kX7bNANNWLDfj8
+X-Gm-Message-State: AOJu0YxVZethibIFptAV2R6/p8gx73YGEZDLQ3DDqNJaDcL81f0qTrIQ
+	tt2SvA9Yfi6lYkg/ecKHYY+HOfWRDCs6kjqKpuhU1Nr1oa+7rZBJ
+X-Google-Smtp-Source: AGHT+IEVkNKGgkf0aimQWPTPkaL57Ie/RiwOj6OQsfAYQl/46vOuW21nhf1/t7015lw6T/NDsNtMtQ==
+X-Received: by 2002:aca:1b13:0:b0:3c8:2bb4:2288 with SMTP id b19-20020aca1b13000000b003c82bb42288mr9621924oib.2.1714361920689;
+        Sun, 28 Apr 2024 20:38:40 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (2001-b400-e2aa-928c-7bf0-01bb-028d-772b.emome-ip6.hinet.net. [2001:b400:e2aa:928c:7bf0:1bb:28d:772b])
+        by smtp.gmail.com with ESMTPSA id i28-20020a63585c000000b005d5445349edsm17835424pgm.19.2024.04.28.20.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 20:38:40 -0700 (PDT)
+From: Peter Yin <peteryin.openbmc@gmail.com>
+To: patrick@stwcx.xyz,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-i2c@vger.kernel.org
+Subject: [PATCH v3 0/2] hwmon: (pmbus) Add support for Infineon XDP710
+Date: Mon, 29 Apr 2024 11:38:24 +0800
+Message-Id: <20240429033833.895122-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: Fix race between __split_huge_pmd_locked() and
- GUP-fast
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-References: <20240425170704.3379492-1-ryan.roberts@arm.com>
- <922F6794-1C32-4862-8A67-90D4F7DBC474@nvidia.com>
- <af20fd17-1e31-4e28-8773-1298aa799aec@arm.com>
- <683CC7EC-3FAB-4C63-92F2-636C4DBE7729@nvidia.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <683CC7EC-3FAB-4C63-92F2-636C4DBE7729@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Add support for Infineon XDP710. This is a Hot-Swap Controller.
 
+Change log:
 
-On 4/26/24 20:03, Zi Yan wrote:
-> 
-> 
-> --
-> Best Regards,
-> Yan, Zi
-> 
-> On 26 Apr 2024, at 0:50, Anshuman Khandual wrote:
-> 
->> On 4/26/24 00:28, Zi Yan wrote:
->>> +Anshuman, who changed pmd_present() semantics. See:
->>> https://lore.kernel.org/all/1599627183-14453-2-git-send-email-anshuman.khandual@arm.com/ and commit b65399f6111b ("arm64/mm: Change
->>> THP helpers to comply with generic MM semantics")
->>>
->>> On 25 Apr 2024, at 13:07, Ryan Roberts wrote:
->>>
->>>> __split_huge_pmd_locked() can be called for a present THP, devmap or
->>>> (non-present) migration entry. It calls pmdp_invalidate()
->>>> unconditionally on the pmdp and only determines if it is present or not
->>>> based on the returned old pmd. This is a problem for the migration entry
->>>> case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
->>>> called for a present pmd.
->>>>
->>>> On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
->>>> future call to pmd_present() will return true. And therefore any
->>>
->>> But pmd_mkinvalid() on x86 does not behave so. Maybe we should fix
->>> pmd_mkinvalid() on arm64 by not setting PMD_PRESENT_INVALID when the
->>> entry is invalid already. And add a test in mm/debug_vm_pgtable.c.
->>>
->>> I notice that x86, risc-v, mips behave the same. loongarch also
->>> has _PAGE_PRESENT_INVALID bit set during pmd_mkinvalid(), but its
->>> pmd_present() makes sure _PAGE_HUEG is set before checks _PAGE_PRESENT_INVALID.
->>> So it is not a problem for loongarch. Add Huacai to confirm this.
->>>
->>> Maybe pmd_present() on arm64 can do that too?
->>
->> pmd_present() should return true even for a splitting PMD which is not
->> currently mapped. IIRC in all other architectures, there is a distinct
->> identification bit for huge page which stays back, even when the entry
->> becomes unmapped. That bit helps pmd_present() return true, during PMD
->> splitting process.
->>
->> But on arm64 platform
->>
->> #define PTE_VALID                (_AT(pteval_t, 1) << 0)
->> #define PMD_SECT_VALID           (_AT(pmdval_t, 1) << 0)
->> #define PMD_TABLE_BIT            (_AT(pmdval_t, 1) << 1)
->>
->> When the PMD entry becomes unmapped, PTE_VALID gets cleared, so does the
->> PMD_SECT_VALID, thus erasing its identity as a huge mapping. A software
->> bit PMD_PRESENT_INVALID was added which helps in preserving that cleared
->> huge page mapping identity once it becomes unmapped.
-> 
-> OK. PMD_SECT_VALID is just a different name of PTE_VALID. I wonder
+v2 -> v3
+    - Fixed Ack quotes
+    - rename "microOhmRsense" to "micro_ohm_rsense" 
 
-Non PTE Level descriptor
+v1 -> v2
+    - Merged patch 3 into patch 1.
+    - Modified comments.
+    - Fixed the microOhmRsense array.
+    - Improved operational accuracy.
 
-	BIT[1:0] = X0 Invalid entry
-		 = 01 Block entries (Huge Pages)
-		 = 11 Table entries
+v1
+    - Add support for xdp710 hot-swap device from Infineon vendor
+---
 
-PTE Level descriptor
+Peter Yin (2):
+  hwmon: (pmbus) Add support for Infineon XDP710
+  dt-bindings: hwmon: Add infineon xdp710 driver bindings
 
-	BIT[1:0] = X0 Invalid entry
-		 = 01 Reserved invalid entry
-		 = 11 Page entries
+ .../devicetree/bindings/trivial-devices.yaml  |   2 +
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/xdp710.rst                |  83 +++++++++++
+ drivers/hwmon/pmbus/Kconfig                   |   9 ++
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/xdp710.c                  | 132 ++++++++++++++++++
+ 6 files changed, 228 insertions(+)
+ create mode 100644 Documentation/hwmon/xdp710.rst
+ create mode 100644 drivers/hwmon/pmbus/xdp710.c
 
-Although PTE_VALID and PMD_SECT_VALID share the same bit position, the huge
-page also requires the table bit to be cleared.
+-- 
+2.25.1
 
-> if ~PMD_TABLE_BIT can be used as _PAGE_HUGE to indicate it is a huge page
-> PMD, since PMD_TABLE_BIT is unset for PMD huge page already, for swap
-> entry, since PMD_SECT_VALID is unset, PMD_TABLE_BIT is ignored. But it
-> will require PTE and PMD have different swap entry encoding on arm64.
-> It might not be worth the effort.
-
-Right and also depending on just clearing of table bit for huge page mapping
-might be problematic in subtle ways.
-
-> 
->>>
->>>> lockless pgtable walker could see the migration entry pmd in this state
->>>> and start interpretting the fields as if it were present, leading to
->>>> BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
->>>> I suspect the same is possible on other architectures.
->>>>
->>>> Fix this by only calling pmdp_invalidate() for a present pmd. And for
->>>> good measure let's add a warning to the generic implementation of
->>>> pmdp_invalidate(). I've manually reviewed all other
->>>> pmdp_invalidate[_ad]() call sites and believe all others to be
->>>> conformant.
->>>>
->>>> This is a theoretical bug found during code review. I don't have any
->>>> test case to trigger it in practice.
->>>>
->>>> Fixes: 84c3fc4e9c56 ("mm: thp: check pmd migration entry in common path")
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>
->>>> Applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>
->>>>  mm/huge_memory.c     | 5 +++--
->>>>  mm/pgtable-generic.c | 2 ++
->>>>  2 files changed, 5 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>> index 89f58c7603b2..80939ad00718 100644
->>>> --- a/mm/huge_memory.c
->>>> +++ b/mm/huge_memory.c
->>>> @@ -2513,12 +2513,12 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->>>>  	 * for this pmd), then we flush the SMP TLB and finally we write the
->>>>  	 * non-huge version of the pmd entry with pmd_populate.
->>>>  	 */
->>>> -	old_pmd = pmdp_invalidate(vma, haddr, pmd);
->>>>
->>>> -	pmd_migration = is_pmd_migration_entry(old_pmd);
->>>> +	pmd_migration = is_pmd_migration_entry(*pmd);
->>>>  	if (unlikely(pmd_migration)) {
->>>>  		swp_entry_t entry;
->>>>
->>>> +		old_pmd = *pmd;
->>>>  		entry = pmd_to_swp_entry(old_pmd);
->>>>  		page = pfn_swap_entry_to_page(entry);
->>>>  		write = is_writable_migration_entry(entry);
->>>> @@ -2529,6 +2529,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->>>>  		soft_dirty = pmd_swp_soft_dirty(old_pmd);
->>>>  		uffd_wp = pmd_swp_uffd_wp(old_pmd);
->>>>  	} else {
->>>> +		old_pmd = pmdp_invalidate(vma, haddr, pmd);
->>>>  		page = pmd_page(old_pmd);
->>>>  		folio = page_folio(page);
->>>>  		if (pmd_dirty(old_pmd)) {
->>>> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
->>>> index 4fcd959dcc4d..74e34ea90656 100644
->>>> --- a/mm/pgtable-generic.c
->>>> +++ b/mm/pgtable-generic.c
->>>> @@ -198,6 +198,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp)
->>>>  pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->>>>  		     pmd_t *pmdp)
->>>>  {
->>>> +	VM_WARN_ON(!pmd_present(*pmdp));
->>>>  	pmd_t old = pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
->>>>  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
->>>>  	return old;
->>>> @@ -208,6 +209,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
->>>>  pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
->>>>  			 pmd_t *pmdp)
->>>>  {
->>>> +	VM_WARN_ON(!pmd_present(*pmdp));  	return pmdp_invalidate(vma, address, pmdp);
->>>>  }
->>>>  #endif
->>>> --
->>>> 2.25.1
->>>
->>>
->>> --
->>> Best Regards,
->>> Yan, Zi
 
