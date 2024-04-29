@@ -1,201 +1,199 @@
-Return-Path: <linux-kernel+bounces-161757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE108B50D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:51:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59718B50D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A9521C20E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:51:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 734E41F2202B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A1C10A11;
-	Mon, 29 Apr 2024 05:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4ACEAFA;
+	Mon, 29 Apr 2024 05:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fDVQFtHI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="w9+EPYWQ"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98DF5F9DF;
-	Mon, 29 Apr 2024 05:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997D7DDD8;
+	Mon, 29 Apr 2024 05:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714369847; cv=none; b=pE6f8OXpyHC7S10gzSToCvXSeSiSm6CyrzQ4XkWO68HC+D8irwRSc1kw6NtrF/VakR6NzBV5XCuN7mOiLRkilPoeFP7OFABIpEtSXVesUqFz9hDSMdJAgPmisjNxoSxrtHafv/PDA8+GbbCo4omRQjJR1MIVik5EoyXR0xNEOmc=
+	t=1714370104; cv=none; b=HrIdWDSeoJe+YXeCJzbrdJCKnnglBsVNR8mZAO2FRR8UMIsUfad+De2tRkSDR7IFh25ai1UwFq77qqS6X1OxzdjIJA7Jl7ULrbKLiAs1gdJyySALWZHM+QqRhh2auSiZOee9qdgg3n3YOOdyLEp1XFb7j5k1Pk0yzwZ8yTWczNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714369847; c=relaxed/simple;
-	bh=DOYjcOGT2lvFGzzOnztFKgQBfcSNc3I4JqaOJDOA3jQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E8vYmeg8GBgsovdqbPNg1NTQ4ApuBt4dtpeAVWsaymxqUee/6z1lej6g91WzcqmL0Heo2mneNSKVL9UFpN59CPhuRnv0R+wYtsBnh+j+W7117cDf3xjs6JmIcFIQAHP3gRJxM2rITukHXW7iNLjxT1mtO6i5M+uL2ttTHzHiauE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fDVQFtHI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20C9AC4AF1D;
-	Mon, 29 Apr 2024 05:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714369847;
-	bh=DOYjcOGT2lvFGzzOnztFKgQBfcSNc3I4JqaOJDOA3jQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fDVQFtHIL71AwWubiWRpC5V7cVJP+UE8URy1geXOBDV0MEeHBMi8JS/1WT/qM7av7
-	 pFgt79/xS7B9NQlz1bu7FBDA6lDitzKg2x+GAYAv7oHjDrrlUSluBZVoD53ddRmYNF
-	 lJvd2unpFmJ7qgGESv1GKcOWsxQcNiToIZ8zotCpcCDC8GPXeO3ZGG+j4eTcj0+kNF
-	 FOD+qvx55NejF/Fw1y/iWVDThxXqJNDaKO2XKGDjLU92tf5pOix+fCvCPCPp6tZQS3
-	 etYPP/u8YObV6Lyrg7vQuf7tAqQaUZrfmSze8VondIYVqtiDNARcUGZyMqOf3cQKmK
-	 jC8Bt754Q3jfw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51ac9c6599bso4335459e87.1;
-        Sun, 28 Apr 2024 22:50:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU8TtYlMBKdW8+lso4yzFEaL4CxY5ezJ0DP9gkS+odUUulLUyZstlUxeHHun7JS+5oDgTv3pPI3M6z0aAXarUFKXK7Jm2/vow/dppUGI9x/M0APpbTpwxNn2TT1ZMNrjWCa9TDsUmjp+SVdjw==
-X-Gm-Message-State: AOJu0YxfrDlQJj7fb5Vn7B51onH/8BIVVRhMuIIH1XCIdbiYnSU2tHv/
-	EVdkk6/yeXUPCVQ1a2tXBrjwvxYceobw5nyamVVheR2nDcjFyl+1KD1Xp+zi3CeR8+EEylUaagN
-	jArNvjXZO6vZygbILEJwAT7Bjdw==
-X-Google-Smtp-Source: AGHT+IHEaMf3LwcTvqhFz7t0z8NVl14xdoF0IutWNhbpIHDYBF2FnwK8O/uwZkbLX4yS0SfYSJsvt/nMH8aECkAoFSw=
-X-Received: by 2002:a05:6512:e86:b0:51d:ed1:b44c with SMTP id
- bi6-20020a0565120e8600b0051d0ed1b44cmr4438441lfb.19.1714369845752; Sun, 28
- Apr 2024 22:50:45 -0700 (PDT)
+	s=arc-20240116; t=1714370104; c=relaxed/simple;
+	bh=B/8yaOKjqm4lDksZDUxYpsKoDBodUyrAGmiPUBu0eq8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=FcNKF+ueXNakm4DpS4za8oO071WDj2py2B3Z4G6pa7tkUVJOL0IGKAnSfDhPIhsSDhhnV9CjQtMoRvpiUgWLtrTI/rc5o4CutUIoYgSeX9pq3tYnrYSHxDsexvTkvXllYn5kOyQS6gpnHJw36140PmaaF7M4AQWR3DNcasdnHwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=w9+EPYWQ; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T5s82Q052960;
+	Mon, 29 Apr 2024 00:54:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714370048;
+	bh=9z+5mrcooFlbXR+nO+DTW5Jb0Y5LWwkCd9vReQSQTeA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=w9+EPYWQ6GGF8dZ+J2fGTL2TArMBiqkkvdCS/SdNjSfGehyDyEIIFNgydFTJ5qJn9
+	 wqtCy7lD4trk/O+Tf+u6Qi9wLdqvlxsH/lmf6DShIvU6XOeqy+AkL6NI6eiNUrZKEZ
+	 AhWTL7a7MLqN3lh7Bxu9KDN8HIyTD2beCNDboNnI=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T5s873114950
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 29 Apr 2024 00:54:08 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
+ Apr 2024 00:54:08 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 29 Apr 2024 00:54:08 -0500
+Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T5s2m5029844;
+	Mon, 29 Apr 2024 00:54:03 -0500
+Message-ID: <c138f315-ed9d-4c10-b9b6-e88cc3ec5e8c@ti.com>
+Date: Mon, 29 Apr 2024 11:24:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417160842.76665-1-ryncsn@gmail.com> <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Zico_U_i5ZQu9a1N@casper.infradead.org> <87o79zsdku.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CANeU7Q=YYFWPBMHPPeOQDxO9=yAiQP8w90e2mO0U+hBuzCV1RQ@mail.gmail.com> <CAMgjq7AD=n0T8C=pn_NM2nr-njNKXOxLh49GRrnP0ugGvuATcA@mail.gmail.com>
-In-Reply-To: <CAMgjq7AD=n0T8C=pn_NM2nr-njNKXOxLh49GRrnP0ugGvuATcA@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Sun, 28 Apr 2024 22:50:33 -0700
-X-Gmail-Original-Message-ID: <CANeU7Q=aqrb+qqGBc1NQxObQxuCPL80pJHc4mfpsirWPOCzboA@mail.gmail.com>
-Message-ID: <CANeU7Q=aqrb+qqGBc1NQxObQxuCPL80pJHc4mfpsirWPOCzboA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
-To: Kairui Song <ryncsn@gmail.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Barry Song <v-songbaohua@oppo.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: ti: icssg_prueth: Add SW TX / RX Coalescing
+ based on hrtimers
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+CC: Dan Carpenter <dan.carpenter@linaro.org>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jan Kiszka
+	<jan.kiszka@siemens.com>,
+        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
+	<pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>
+References: <20240424091823.1814136-1-danishanwar@ti.com>
+ <20240427134120.GJ516117@kernel.org>
+From: MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <20240427134120.GJ516117@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, Apr 28, 2024 at 10:37=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> On Sat, Apr 27, 2024 at 7:16=E2=80=AFAM Chris Li <chrisl@kernel.org> wrot=
-e:
-> >
-> > Hi Ying,
-> >
-> > On Tue, Apr 23, 2024 at 7:26=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
-om> wrote:
-> > >
-> > > Hi, Matthew,
-> > >
-> > > Matthew Wilcox <willy@infradead.org> writes:
-> > >
-> > > > On Mon, Apr 22, 2024 at 03:54:58PM +0800, Huang, Ying wrote:
-> > > >> Is it possible to add "start_offset" support in xarray, so "index"
-> > > >> will subtract "start_offset" before looking up / inserting?
-> > > >
-> > > > We kind of have that with XA_FLAGS_ZERO_BUSY which is used for
-> > > > XA_FLAGS_ALLOC1.  But that's just one bit for the entry at 0.  We c=
-ould
-> > > > generalise it, but then we'd have to store that somewhere and there=
-'s
-> > > > no obvious good place to store it that wouldn't enlarge struct xarr=
-ay,
-> > > > which I'd be reluctant to do.
-> > > >
-> > > >> Is it possible to use multiple range locks to protect one xarray t=
-o
-> > > >> improve the lock scalability?  This is why we have multiple "struc=
-t
-> > > >> address_space" for one swap device.  And, we may have same lock
-> > > >> contention issue for large files too.
-> > > >
-> > > > It's something I've considered.  The issue is search marks.  If we =
-delete
-> > > > an entry, we may have to walk all the way up the xarray clearing bi=
-ts as
-> > > > we go and I'd rather not grab a lock at each level.  There's a conv=
-enient
-> > > > 4 byte hole between nr_values and parent where we could put it.
-> > > >
-> > > > Oh, another issue is that we use i_pages.xa_lock to synchronise
-> > > > address_space.nrpages, so I'm not sure that a per-node lock will he=
-lp.
-> > >
-> > > Thanks for looking at this.
-> > >
-> > > > But I'm conscious that there are workloads which show contention on
-> > > > xa_lock as their limiting factor, so I'm open to ideas to improve a=
-ll
-> > > > these things.
-> > >
-> > > I have no idea so far because my very limited knowledge about xarray.
-> >
-> > For the swap file usage, I have been considering an idea to remove the
-> > index part of the xarray from swap cache. Swap cache is different from
-> > file cache in a few aspects.
-> > For one if we want to have a folio equivalent of "large swap entry".
-> > Then the natural alignment of those swap offset on does not make
-> > sense. Ideally we should be able to write the folio to un-aligned swap
-> > file locations.
-> >
->
-> Hi Chris,
->
-> This sound interesting, I have a few questions though...
->
-> Are you suggesting we handle swap on file and swap on device
-> differently? Swap on file is much less frequently used than swap on
-> device I think.
 
-That is not what I have in mind. The swap struct idea did not
-distinguish the swap file vs swap device.BTW, I sometimes use swap on
-file because I did not allocate a swap partition in advance.
 
->
-> And what do you mean "index part of the xarray"? If we need a cache,
-> xarray still seems one of the best choices to hold the content.
+On 27/04/24 7:11 pm, Simon Horman wrote:
+> On Wed, Apr 24, 2024 at 02:48:23PM +0530, MD Danish Anwar wrote:
+>> Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
+>> driver, which can be enabled by ethtool commands:
+>>
+>> - RX coalescing
+>>   ethtool -C eth1 rx-usecs 50
+>>
+>> - TX coalescing can be enabled per TX queue
+>>
+>>   - by default enables coalesing for TX0
+>>   ethtool -C eth1 tx-usecs 50
+>>   - configure TX0
+>>   ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
+>>   - configure TX1
+>>   ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
+>>   - configure TX0 and TX1
+>>   ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
+>> tx-usecs 100
+>>
+>> Minimum value for both rx-usecs and tx-usecs is 20us.
+>>
+>> Comapared to gro_flush_timeout and napi_defer_hard_irqs this patch
+> 
+> nit: Compared
+> 
+>> allows to enable IRQ coalescing for RX path separately.
+>>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> 
+> ...
+> 
+>> @@ -190,19 +191,35 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+>>  	return num_tx;
+>>  }
+>>  
+>> +static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
+>> +{
+>> +	struct prueth_tx_chn *tx_chns =
+>> +			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
+>> +
+>> +	enable_irq(tx_chns->irq);
+>> +	return HRTIMER_NORESTART;
+>> +}
+>> +
+>>  static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
+>>  {
+>>  	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
+>>  	struct prueth_emac *emac = tx_chn->emac;
+>> +	bool tdown = false;
+>>  	int num_tx_packets;
+>>  
+>> -	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
+>> +	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget, &tdown);
+> 
+> Please consider limiting lines to 80 columns wide in Networking code.
+> 
+>>  
+>>  	if (num_tx_packets >= budget)
+>>  		return budget;
+>>  
+>> -	if (napi_complete_done(napi_tx, num_tx_packets))
+>> -		enable_irq(tx_chn->irq);
+>> +	if (napi_complete_done(napi_tx, num_tx_packets)) {
+>> +		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown))
+>> +			hrtimer_start(&tx_chn->tx_hrtimer,
+>> +				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
+>> +				      HRTIMER_MODE_REL_PINNED);
+>> +		else
+>> +			enable_irq(tx_chn->irq);
+>> +	}
+>>  
+>>  	return num_tx_packets;
+>>  }
+> 
+> ...
+> 
+>> @@ -870,7 +889,12 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
+>>  	}
+>>  
+>>  	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
+>> -		enable_irq(emac->rx_chns.irq[rx_flow]);
+>> +		if (unlikely(emac->rx_pace_timeout_ns))
+>> +			hrtimer_start(&emac->rx_hrtimer,
+>> +				      ns_to_ktime(emac->rx_pace_timeout_ns),
+>> +				      HRTIMER_MODE_REL_PINNED);
+>> +		else
+>> +			enable_irq(emac->rx_chns.irq[rx_flow]);
+> 
+> clang-18 and gcc-13 both complain about the if/else logic above.
+> I think it would be best to add {} to the outer if statement.
+> 
+>>  
+>>  	return num_rx;
+>>  }
+> 
+> ...
 
-We still need to look up swap file offset -> folio. However if we
-allocate each swap offset a "struct swap", then the folio lookup can
-be as simple as get the swap_struc by offset, then atomic read of
-swap_structt->folio.
+Sure Simon, I'll fix all this and send v2.
 
-Not sure how you come to the conclusion for "best choices"?  It is one
-choice, but it has its drawbacks. The natural alignment requirement of
-xarray, e.g. 2M large swap entries need to be written to 2M aligned
-offset, that is an unnecessary restriction. If we allocate the "struct
-swap" ourselves, we have more flexibility.
-
-> > The other aspect for swap files is that, we already have different
-> > data structures organized around swap offset, swap_map and
-> > swap_cgroup. If we group the swap related data structure together. We
-> > can add a pointer to a union of folio or a shadow swap entry. We can
-> > use atomic updates on the swap struct member or breakdown the access
-> > lock by ranges just like swap cluster does.
-> >
-> > I want to discuss those ideas in the upcoming LSF/MM meet up as well.
->
-> Looking forward to it!
-
-Thanks, I will post more when I get more progress on that.
-
->
-> Oh, and BTW I'm also trying to breakdown the swap address space range
-> (from 64M to 16M, SWAP_ADDRESS_SPACE_SHIFT from 14 to
-> 12). It's a simple approach, but the coupling and increased memory
-> usage of address_space structure makes the performance go into
-> regression (about -2% for worst real world workload). I found this
-
-Yes, that sounds plausible.
-
-> part very performance sensitive, so basically I'm not making much
-> progress for the future items I mentioned in this cover letter. New
-> ideas could be very helpful!
->
-
-The swap_struct idea is very different from what you are trying to do
-in this series. It is more related to my LSF/MM topic on the swap back
-end overhaul. More long term and bigger undertakings.
-
-Chris
+-- 
+Thanks and Regards,
+Danish
 
