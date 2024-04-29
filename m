@@ -1,193 +1,312 @@
-Return-Path: <linux-kernel+bounces-162718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D1B8B5F7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE128B5F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCA0D283F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:02:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF26B2831AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F0586279;
-	Mon, 29 Apr 2024 17:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DB18626E;
+	Mon, 29 Apr 2024 17:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4asB7LY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P+0RUbda"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B523F86136;
-	Mon, 29 Apr 2024 17:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F50083CBA;
+	Mon, 29 Apr 2024 17:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714410136; cv=none; b=T4NfknMtFSwWBbetzV+Qyqp6eq+5yyokCwXIsrW4cAyma5aXs9DmAqTbx/tFE2Dq5Dj7bb3Vz6WRGnkjmf+4H52ihxl/REVhAtwq3ykWGLFdqgytqo5dHE7xkTfFzMd7/ui/AdM14yrshvLpcVltoLsO+ruBfSwmnZPLS+m379U=
+	t=1714410183; cv=none; b=EHe+i//KUU4AQm/PAYUznmxhctL5LAaaCTTiDSzxX6uH6oQPH/pms4Rs4loUgQDu5+maIrGRtZSygseAtmZDORHD/aUhY26F+o16HTH/Lm7hyTITxV+BUapp51B3jdgAlydN43qug/RO+iA6f1ghdanksHR8el3f5rFuU7Dr1lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714410136; c=relaxed/simple;
-	bh=mf+Frf7fl4octShqGzqgSvfIMtLGvDDcUQwMkYwh52w=;
+	s=arc-20240116; t=1714410183; c=relaxed/simple;
+	bh=syACykxAVbSkeZcHF6gZV/lrjpltNqbeV+UKZ6am1Go=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f7GZhmub1F3M6OSZ0xVcIFlMcmxGNq180ING5E3ciLlETV0kimWJHdh2EDsn2M5XQ5IaPIMxU0ig5YAFIoZf7YAScZ3DHdM/WFEOf+gP21af/Tk3MBM8Mvj+7LZtb3SjrnbGnBfLhkYHA4RALSCTgy2ul9oSTMwJlu2PC8C9VJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4asB7LY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49588C113CD;
-	Mon, 29 Apr 2024 17:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714410136;
-	bh=mf+Frf7fl4octShqGzqgSvfIMtLGvDDcUQwMkYwh52w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=N4asB7LYM7edUrYg20DFQhFxA5xHp7KBeRiplnxz42b/zY597qXOefd92XaaFjLX7
-	 SjUxtQRFjNs8cIIJoxAN36VhzCgvUz39Vzk/7tidvIZP7DBf31OF7jk1f+cZA6FPPL
-	 Vpt7jxNDq5vYzSMC+xYn+uartn7aX7P8rR4D6rV0nqiQf9UqOERu8uaVCMybeMbhYG
-	 EAsIZr1KG/KbhgdqpKv0qlipw04BC5TuWX3Uqa3ikgQ4sHQcFaQECH3IsYf3JDq2+p
-	 B8krtSnmepcwItO2p50wzQDxv3YqxZZH/LVNGgpvUtFD1ZSyzzdC3jC39Kt4ZxNtsD
-	 NPkPZ0NmU6saQ==
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5afbcf8059cso92494eaf.1;
-        Mon, 29 Apr 2024 10:02:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU6zCKVv2gj1Fqg0G/W5ia1H2cSE6G9MlGs7ccrnzUtUZKo/Jzdq+2CfAfSua3/SJr3U5kFvtBg6dMZZ66O5i5FEDfKuHn0gl4eCa++7WqKOn4GuoT3eVlKM/ZZF7e577vhJy0Aarw=
-X-Gm-Message-State: AOJu0YxjxceqjjLcT/FwlkqsU1BpJOK0+tDbSDNdtj60F2WNQpxNiJ6D
-	7GDeRPJ8L7V5+YXwBZ6Ca5q0AX505CFYmVhIYrwEXZb0qQxTbnBCOVhtfShKj1mpvSoSsSGbNAD
-	CRVdpAwFrlSIOiDfvYPWS5ZuXsms=
-X-Google-Smtp-Source: AGHT+IEh2603NEh5eaK6jZwLSv1i7q/5BJhdB7/G6wwWs0YkMLMlL5+osmYaEIGLHGAdsZBuodNgU3JUvs+l6m1bFE8=
-X-Received: by 2002:a4a:a882:0:b0:5aa:241a:7f4b with SMTP id
- q2-20020a4aa882000000b005aa241a7f4bmr12779394oom.1.1714410135568; Mon, 29 Apr
- 2024 10:02:15 -0700 (PDT)
+	 To:Cc:Content-Type; b=bcQXr+g/xR1K/VW9e2BWoV0xMgx5R51Rv7i/DnGpp6zVhiBLTTDwCYe6W2KE08ySP3LHSzQWOnvFRrhEy7e2opbeBguJLYibxDUHh4cjM5fbqQApylpwYHlIIghX/x1ZhWxpZzxS5WUzuWprEi8djlZ6XIoWh/XEqAjfkfycFOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P+0RUbda; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2e0b2ddc54fso9553561fa.0;
+        Mon, 29 Apr 2024 10:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714410179; x=1715014979; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZFe/lyAG7NGNsKVWaKGz+a3MNdcGucVyu2qmhcUKIuU=;
+        b=P+0RUbdaTS6CsE/3y8NxS6vYVslscjMjMFb0qURyam9eR9Y51foaLDYmxbGGf/Fgd4
+         vcS6kI99HdmyAZMn+QWBPcdLMqEc57+HN5mek4Jw4mtBsT/aruuoxOotvz/5mTUGKg7U
+         TMK5H0DBP0GUn0B0Kq2kL2cyuLGeIvORy8X8iSilhd8Ezo2G68v4HgYdnDCaYqCKkJVg
+         NNopl/JyE36Qr0dkWK4zWMI5QgZayQAwe9uxS7FtstpR1ct6kBBLdhUOYHMEeHGq8uuS
+         Oc43l4LhxI3wJJhQAQrT3BUYBhRjNsGTwZlGMyeIY5rkjLGZRFKKMx21fjnnD7lVBh+H
+         JcFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714410179; x=1715014979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZFe/lyAG7NGNsKVWaKGz+a3MNdcGucVyu2qmhcUKIuU=;
+        b=nYB+vdprAIKxxsPApPgujKGwFlxi2+wA5TjrIqOOC3Qvly1ABoWQ4RKuIgbxKzlCXM
+         tn0GtMDhcKG6Oli6KdpGP8kycH9ef07d8ld7CIoths+NxvCK2IklJ0o599RPSXbB/97y
+         t134aipxyOMWqw1tb2knuvAcEMn1JrkKR8sdtC3aM7r+bBUt4iMEufj7xjgiGtvTa0HV
+         6x7lCi/6zPmGWtcL2fGezy0Z0dJ5PgMDYWQvStpq70m4Ig9QQWyIhpGKtoNv6tSDE+B6
+         NDwBL+FBDUONbv4LbDK57HqvVmr+xCfm6xyaVOnyf9+NorJZw96Q2zcd+UzTlNNcnsoP
+         t5Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcCQptwcW5g/IevLDR0EGZBFFWEZFD5BACGAd8FCz6zInONuZeflzVuOWsi0ih7IWpVlEmF8iyUlM2PEyTgostVFsZkrfSAgXd6HudDjJDeMAMubeY50mOYIUkPVgQvS5lJ4tFQ+aVSPB/MQz1
+X-Gm-Message-State: AOJu0Yz9xFQLV71iXaD5hZkwoRJaUMuItWya2/D9Db7EbLv5LuTmewRI
+	L4tNr4xHng/iGqyCpD1Y6T92ywR6uFO4c5IQy8IuPGUTPRedCKSdk76Rk1tNsnk5XOVSBzpwNVF
+	WbMd21Bf8kaOyjKLMPrtcqog0rz0=
+X-Google-Smtp-Source: AGHT+IGGanGu1qQmc0HpgRvFdEg3TV7+rU0uj5j95aYXsZf5//w3HPC3s5lN0QSQBI9Cy5Vfp5HaBGSW9/z6VYMkUw8=
+X-Received: by 2002:a2e:3615:0:b0:2df:a29f:8b45 with SMTP id
+ d21-20020a2e3615000000b002dfa29f8b45mr4864260lja.49.1714410178960; Mon, 29
+ Apr 2024 10:02:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zgtjdd0C2FzYVBto@xsang-OptiPlex-9020> <87zfth3l6y.fsf@somnus>
- <CAJZ5v0g_GKF8-QK5UdFCpJapf+MK7EouQ7hMTVtPYRjNNyUt+g@mail.gmail.com>
- <3aba1a1d-8ebc-4ee0-9caf-d9baae586db7@arm.com> <87zftcy0xt.fsf@somnus> <87sez4xxhn.fsf@somnus>
-In-Reply-To: <87sez4xxhn.fsf@somnus>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 29 Apr 2024 19:02:03 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iLNWu6K2vhA3j==rbeHjku6eOvuWymRGcux4V9Xx_7Uw@mail.gmail.com>
-Message-ID: <CAJZ5v0iLNWu6K2vhA3j==rbeHjku6eOvuWymRGcux4V9Xx_7Uw@mail.gmail.com>
-Subject: Re: [linus:master] [timers] 7ee9887703: stress-ng.uprobe.ops_per_sec
- -17.1% regression
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com, 
-	feng.tang@intel.com, fengwei.yin@intel.com, 
-	Frederic Weisbecker <frederic@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	linux-pm@vger.kernel.org
+References: <20240427174333.457156-1-iam@sung-woo.kim>
+In-Reply-To: <20240427174333.457156-1-iam@sung-woo.kim>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Mon, 29 Apr 2024 13:02:46 -0400
+Message-ID: <CABBYNZL4Fc2J6HtEJT9Rr6tzntGv3hc-LxM+5X+sN8V5Z0eVRg@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: L2CAP: Fix slab-use-after-free in l2cap_connect()
+To: Sungwoo Kim <iam@sung-woo.kim>
+Cc: daveti@purdue.edu, dan.carpenter@linaro.org, 
+	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 12:40=E2=80=AFPM Anna-Maria Behnsen
-<anna-maria@linutronix.de> wrote:
+Hi Kim,
+
+On Sat, Apr 27, 2024 at 1:44=E2=80=AFPM Sungwoo Kim <iam@sung-woo.kim> wrot=
+e:
 >
-> Anna-Maria Behnsen <anna-maria@linutronix.de> writes:
+> Add an hold and lock the channel at l2cap_connect() to avoid use after fr=
+ee.
+> Also make the l2cap_connect() return type void. Nothing is using the
+> returned value but it is ugly to return a potentially freed pointer.
+> Making i void will help with backports because earlier kernels did use
+> the return value. Now the compile will break for kernels where this
+> patch is not a complete fix.
 >
-> > Hi,
-> >
-> > Lukasz Luba <lukasz.luba@arm.com> writes:
-> >> On 4/26/24 17:03, Rafael J. Wysocki wrote:
-> >>> On Thu, Apr 25, 2024 at 10:23=E2=80=AFAM Anna-Maria Behnsen
-> >>> <anna-maria@linutronix.de> wrote:
-> >
-> > [...]
-> >
-> >>>> So my assumption here is, that cpuidle governors assume that a deepe=
-r
-> >>>> idle state could be choosen and selecting the deeper idle state make=
-s an
-> >>>> overhead when returning from idle. But I have to notice here, that I=
-'m
-> >>>> still not familiar with cpuidle internals... So I would be happy abo=
-ut
-> >>>> some hints how I can debug/trace cpuidle internals to falsify or ver=
-ify
-> >>>> this assumption.
-> >>>
-> >>> You can look at the "usage" and "time" numbers for idle states in
-> >>>
-> >>> /sys/devices/system/cpu/cpu*/cpuidle/state*/
-> >>>
-> >>> The "usage" value is the number of times the governor has selected th=
-e
-> >>> given state and the "time" is the total idle time after requesting th=
-e
-> >>> given state (ie. the sum of time intervals between selecting that
-> >>> state by the governor and wakeup from it).
-> >>>
-> >>> If "usage" decreases for deeper (higher number) idle states relative
-> >>> to its value for shallower (lower number) idle states after applying
-> >>> the test patch, that will indicate that the theory is valid.
-> >>
-> >> I agree with Rafael here, this is the first thing to check, those
-> >> statistics. Then, when you see difference in those stats in baseline
-> >> vs. patched version, we can analyze the internal gov decisions
-> >> with help of tracing.
-> >>
-> >> Please also share how many idle states is in those testing platforms.
-> >
-> > Thanks Rafael and Lukasz, for the feedback here!
-> >
-> > So I simply added the state usage values for all 112 CPUs and calculate=
-d
-> > the diff before and after the stress-ng call. The values are from a
-> > single run.
-> >
+> Thank you for your help, Dan.
 >
-> Now here are the values of the states and the time because I forgot to
-> track also the time in the first run:
+> Call stack summary:
 >
-> USAGE           good            bad             bad+patch
->                 ----            ---             ---------
-> state0          115             137             234
-> state1          450680          354689          420904
-> state2          3092092         2687410         3169438
+> [use]
+> l2cap_bredr_sig_cmd
+>   l2cap_connect
+>   =E2=94=8C mutex_lock(&conn->chan_lock);
+>   =E2=94=82 chan =3D pchan->ops->new_connection(pchan); <- alloc chan
+>   =E2=94=82 __l2cap_chan_add(conn, chan);
+>   =E2=94=82   l2cap_chan_hold(chan);
+>   =E2=94=82   list_add(&chan->list, &conn->chan_l);   ... (1)
+>   =E2=94=94 mutex_unlock(&conn->chan_lock);
+>     chan->conf_state              ... (4) <- use after free
 >
+> [free]
+> l2cap_conn_del
+> =E2=94=8C mutex_lock(&conn->chan_lock);
+> =E2=94=82 foreach chan in conn->chan_l:            ... (2)
+> =E2=94=82   l2cap_chan_put(chan);
+> =E2=94=82     l2cap_chan_destroy
+> =E2=94=82       kfree(chan)               ... (3) <- chan freed
+> =E2=94=94 mutex_unlock(&conn->chan_lock);
+
+Sounds like we didn't even respond so I do wonder why we are releasing
+the conn->chan_lock.
+
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: slab-use-after-free in instrument_atomic_read include/linux/i=
+nstrumented.h:68 [inline]
+> BUG: KASAN: slab-use-after-free in _test_bit include/asm-generic/bitops/i=
+nstrumented-non-atomic.h:141 [inline]
+> BUG: KASAN: slab-use-after-free in l2cap_connect+0xa67/0x11a0 net/bluetoo=
+th/l2cap_core.c:4260
+> Read of size 8 at addr ffff88810bf040a0 by task kworker/u3:1/311
 >
-> TIME            good            bad             bad+patch
->                 ----            ---             ---------
-> state0          9347            9683            18378
-> state1          626029557       562678907       593350108
-> state2          6130557768      6201518541      6150403441
+> CPU: 0 PID: 311 Comm: kworker/u3:1 Not tainted 6.8.0+ #61
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
+1/2014
+> Workqueue: hci0 hci_rx_work
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x85/0xb0 lib/dump_stack.c:106
+>  print_address_description mm/kasan/report.c:377 [inline]
+>  print_report+0x18f/0x560 mm/kasan/report.c:488
+>  kasan_report+0xd7/0x110 mm/kasan/report.c:601
+>  kasan_check_range+0x262/0x2f0 mm/kasan/generic.c:189
+>  __kasan_check_read+0x15/0x20 mm/kasan/shadow.c:31
+>  instrument_atomic_read include/linux/instrumented.h:68 [inline]
+>  _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inli=
+ne]
+>  l2cap_connect+0xa67/0x11a0 net/bluetooth/l2cap_core.c:4260
+>  l2cap_bredr_sig_cmd+0x17fe/0x9a70
+>  l2cap_sig_channel net/bluetooth/l2cap_core.c:6539 [inline]
+>  l2cap_recv_frame+0x82e/0x86a0 net/bluetooth/l2cap_core.c:7818
+>  l2cap_recv_acldata+0x379/0xbe0 net/bluetooth/l2cap_core.c:8536
+>  hci_acldata_packet net/bluetooth/hci_core.c:3876 [inline]
+>  hci_rx_work+0x64b/0xcb0 net/bluetooth/hci_core.c:4111
+>  process_one_work kernel/workqueue.c:2633 [inline]
+>  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+>  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+>  kthread+0x2a9/0x340 kernel/kthread.c:388
+>  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+>  </TASK>
 >
+> Allocated by task 311:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+>  kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:575
+>  poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+>  __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
+>  kasan_kmalloc include/linux/kasan.h:211 [inline]
+>  kmalloc_trace+0x1c9/0x390 mm/slub.c:4012
+>  kmalloc include/linux/slab.h:590 [inline]
+>  kzalloc include/linux/slab.h:711 [inline]
+>  l2cap_chan_create+0x59/0xc80 net/bluetooth/l2cap_core.c:466
+>  l2cap_sock_alloc net/bluetooth/l2cap_sock.c:1849 [inline]
+>  l2cap_sock_new_connection_cb+0x14d/0x2a0 net/bluetooth/l2cap_sock.c:1457
+>  l2cap_connect+0x329/0x11a0 net/bluetooth/l2cap_core.c:4176
+>  l2cap_bredr_sig_cmd+0x17fe/0x9a70
+>  l2cap_sig_channel net/bluetooth/l2cap_core.c:6539 [inline]
+>  l2cap_recv_frame+0x82e/0x86a0 net/bluetooth/l2cap_core.c:7818
+>  l2cap_recv_acldata+0x379/0xbe0 net/bluetooth/l2cap_core.c:8536
+>  hci_acldata_packet net/bluetooth/hci_core.c:3876 [inline]
+>  hci_rx_work+0x64b/0xcb0 net/bluetooth/hci_core.c:4111
+>  process_one_work kernel/workqueue.c:2633 [inline]
+>  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+>  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+>  kthread+0x2a9/0x340 kernel/kthread.c:388
+>  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
 >
-> > good: 57e95a5c4117 ("timers: Introduce function to check timer base
-> >         is_idle flag")
-> > bad:    v6.9-rc4
-> > bad+patch: v6.9-rc4 + patch
-> >
-> > I choosed v6.9-rc4 for "bad", to make sure all the timer pull model fix=
-es
-> > are applied.
-> >
-> > If I got Raphael right, the values indicate, that my theory is not
-> > right...
+> Freed by task 66:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+>  kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:589
+>  poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
+>  __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
+>  kasan_slab_free include/linux/kasan.h:184 [inline]
+>  slab_free_hook mm/slub.c:2121 [inline]
+>  slab_free mm/slub.c:4299 [inline]
+>  kfree+0x106/0x2e0 mm/slub.c:4409
+>  l2cap_chan_destroy net/bluetooth/l2cap_core.c:509 [inline]
+>  kref_put include/linux/kref.h:65 [inline]
+>  l2cap_chan_put+0x1e7/0x2b0 net/bluetooth/l2cap_core.c:533
+>  l2cap_conn_del+0x38e/0x5f0 net/bluetooth/l2cap_core.c:1929
+>  l2cap_connect_cfm+0xc2/0x11e0 net/bluetooth/l2cap_core.c:8254
+>  hci_connect_cfm include/net/bluetooth/hci_core.h:1986 [inline]
+>  hci_conn_failed+0x202/0x370 net/bluetooth/hci_conn.c:1289
+>  hci_abort_conn_sync+0x913/0xae0 net/bluetooth/hci_sync.c:5359
+>  abort_conn_sync+0xda/0x110 net/bluetooth/hci_conn.c:2988
+>  hci_cmd_sync_work+0x20d/0x3e0 net/bluetooth/hci_sync.c:306
+>  process_one_work kernel/workqueue.c:2633 [inline]
+>  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+>  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+>  kthread+0x2a9/0x340 kernel/kthread.c:388
+>  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+>
+> The buggy address belongs to the object at ffff88810bf04000
+>  which belongs to the cache kmalloc-1k of size 1024
+> The buggy address is located 160 bytes inside of
+>  freed 1024-byte region [ffff88810bf04000, ffff88810bf04400)
+>
+> The buggy address belongs to the physical page:
+> page:00000000567b7faa refcount:1 mapcount:0 mapping:0000000000000000 inde=
+x:0x0 pfn:0x10bf04
+> head:00000000567b7faa order:2 entire_mapcount:0 nr_pages_mapped:0 pincoun=
+t:0
+> anon flags: 0x17ffffc0000840(slab|head|node=3D0|zone=3D2|lastcpupid=3D0x1=
+fffff)
+> page_type: 0xffffffff()
+> raw: 0017ffffc0000840 ffff888100041dc0 0000000000000000 0000000000000001
+> raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+>
+> Memory state around the buggy address:
+>  ffff88810bf03f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>  ffff88810bf04000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >ffff88810bf04080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                ^
+>  ffff88810bf04100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff88810bf04180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Fixes: 73ffa904b782 ("Bluetooth: Move conf_{req,rsp} stuff to struct l2ca=
+p_chan")
+> Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
+> ---
+> V1 -> V2:
+> Make l2cap_connect() return void.
+> Fix a wrong stack trace attached.
+>
+>  net/bluetooth/l2cap_core.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> index 84fc70862..e7c18267c 100644
+> --- a/net/bluetooth/l2cap_core.c
+> +++ b/net/bluetooth/l2cap_core.c
+> @@ -3902,7 +3902,7 @@ static inline int l2cap_command_rej(struct l2cap_co=
+nn *conn,
+>         return 0;
+>  }
+>
+> -static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+> +static void l2cap_connect(struct l2cap_conn *conn,
+>                                         struct l2cap_cmd_hdr *cmd,
+>                                         u8 *data, u8 rsp_code, u8 amp_id)
+>  {
+> @@ -3953,6 +3953,9 @@ static struct l2cap_chan *l2cap_connect(struct l2ca=
+p_conn *conn,
+>         if (!chan)
+>                 goto response;
+>
+> +       l2cap_chan_hold(chan);
+> +       l2cap_chan_lock(chan);
+> +
+>         /* For certain devices (ex: HID mouse), support for authenticatio=
+n,
+>          * pairing and bonding is optional. For such devices, inorder to =
+avoid
+>          * the ACL alive for too long after L2CAP disconnection, reset th=
+e ACL
+> @@ -4041,7 +4044,10 @@ static struct l2cap_chan *l2cap_connect(struct l2c=
+ap_conn *conn,
+>                 chan->num_conf_req++;
+>         }
+>
+> -       return chan;
+> +       if (chan) {
+> +               l2cap_chan_unlock(chan);
+> +               l2cap_chan_put(chan);
+> +       }
+>  }
+>
+>  static int l2cap_connect_req(struct l2cap_conn *conn,
+> --
+> 2.34.1
+>
 
-It appears so.
+How about we do something like:
 
-However, the hardware may refuse to enter a deeper idle state in some cases=
-.
+https://gist.github.com/Vudentz/c0c09ca0eff64a32ca50b1a6eb41295d
 
-It would be good to run the test under turbostat and see what happens
-to hardware C-state residencies.  I would also like to have a look at
-the CPU frequencies in use in all of the cases above.
-
-> ... but with the time values: CPUs are less often but in total longer in =
-state2.
-
-I have divided the total residency numbers above by the corresponding
-usage numbers and got the below:
-
-state1:   1389,08         1586,40        1409,70
-state2:   1982,66         2307,62        1940,53
-
-for "good", "bad" and "bad+patch" , respectively.
-
-This shows that, on the average, after entering an idle state, a CPU
-spends more time in it in the "bad" case than in the other cases.
-
-To me, this means that, on the average, in the "bad" case there are
-fewer wakeups from idle states (or IOW the wakeups occur less
-frequently) and that seems to affect the benchmark in question
-adversely.
-
-Thanks!
+--=20
+Luiz Augusto von Dentz
 
