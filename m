@@ -1,113 +1,175 @@
-Return-Path: <linux-kernel+bounces-162985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59B978B630D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:02:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48108B630B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:01:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82B7DB21F40
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:02:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334B81F22A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F805140E5B;
-	Mon, 29 Apr 2024 20:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C45E140E58;
+	Mon, 29 Apr 2024 20:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RACQStYK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RgNVBP5A"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B26013DBBF;
-	Mon, 29 Apr 2024 20:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242D9128807;
+	Mon, 29 Apr 2024 20:01:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714420934; cv=none; b=KJkCIW6u7fQ/8vy3scK12U9GO3SCVrtoeIDXB6EfTIE/x3+JiK1qP0wPn5Fk/L3nt/oZEU/9Ppm5msicafNGG215q06WuRxkeOw7wJixkivzU7GMxnm1W/gmdf8wEoRqt9BE5QlDEzx3vmYCj8evV+ahKMlHF+DJNxA4xGACED8=
+	t=1714420905; cv=none; b=UzYksNWyh436jgzoI0KRhs9z2JaeqKakdoDVPbV++JebjN2ZWBlZXJtZCpBsMkiaa2XVMt/137Q6ZIL2pciLIlMllyDO7w1BxyDU8uG8GzxX1RStxwvIh/B7xzDGFsUTGLbJPVNmU7K3ACmV37YRZuQmECsLYZw4c7knt6mzYIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714420934; c=relaxed/simple;
-	bh=vHS/ptla2mwP6XYt6Xcx0zxc8F6JczcDTaQZFsC9CTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hapvLgZFy5kubKJZ46UT+9Ubqg+M6kMcZwlkWCorp+/YLKHdB8T1lYO74/IaDsysVsLHtJfAoau6ng02d2dXuIcvqmHlTMyxs0/VrOeHcAPBstTD+CseEtsXduIFkaV37JrCNq/lN2floWMnzg4BSHVEdJp+stERv0LeJ/+fgCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RACQStYK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5137C113CD;
-	Mon, 29 Apr 2024 20:02:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714420934;
-	bh=vHS/ptla2mwP6XYt6Xcx0zxc8F6JczcDTaQZFsC9CTM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RACQStYKfNgky/pH6fJjctmTggrmtCY6pXdPArKgQc5jef1EmUYyc5tb4bhJ3poAB
-	 6la/44JKo2+fkGm+p8SvPJdo/QCE83wGIzEqFrGmk6byNUighgERJuj/zKf9sFksBP
-	 0R6ZDsoI35+PAeUJojTt1Q+PEoieNkB6G85kvCwMJQggR0eeZvv63unTNCE3c4ZzrS
-	 ZAri7x/Mx/2ii1SV0GQTz03DvyXGxGxdzy18tZyPNdihPIY2ydeycYW8NPktzX/HGu
-	 sCB18Maf5MiJw+CE6AEbqo8a6ldQkkHTAKVnz/ZmhZVHTOlDDYGl8OieArjFl4IqH8
-	 cTTHEWjh6qgUg==
-Date: Mon, 29 Apr 2024 21:00:39 +0100
-From: Simon Horman <horms@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-Message-ID: <20240429200039.GH516117@kernel.org>
-References: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
- <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1714420905; c=relaxed/simple;
+	bh=OhvfwqbEewNNmLOjBwipzE7KXYAA4WVSdJVmyQX+r18=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HcjGMiXeLvBVJ0szi0pNb8g8DOdUULMN+p7vTPbyc/9bHQGzGwuTzQ5H8kMIm3zlPwI5H/vEx6c7/l/2/VyBzJYL6kJ3N5dXMFpD2tPa55PD0bXA4gprdu3pVxxF/68Lre7vNY/1IUQlQ18wmrXBtuZySJum78us3/49VVB1aWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RgNVBP5A; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2def8e5ae60so55906711fa.2;
+        Mon, 29 Apr 2024 13:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714420902; x=1715025702; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gt3s+UzBw6kM3wJOvLkf2xGMTIu2IRgPL+I5Y7L6Qrw=;
+        b=RgNVBP5AEtc9dpo3i7C68RIYmaPeofBuiSRHjTh4kAt4kr2mEc8nFZoJnwpYCx/fEI
+         a8m5f4BAiOk4Gmnvt2vpxEd1cvRHcTxB3IO8aHPkNOa6oP/j5SDJi0kT9yQDxrbAtk84
+         qKgK2OVQC3JpHKrHBSv9AzKjlGHZOF6U85tOHMDNCb69ApA0BPG/kjLeYJAAsviYpeXr
+         I0Ts1xZ4Jk+oPw2ybrAk2NoWsBJZjoumzMTYs+UxKsQE6absl6prgXnFq/ztOsF+jFxe
+         3ITE1GlOZBEMbbZEsue4S9pSd9pva9hjbDekQnZicSxA8CTNGd0jUxfKvk6tpfVYzm6N
+         w7xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714420902; x=1715025702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gt3s+UzBw6kM3wJOvLkf2xGMTIu2IRgPL+I5Y7L6Qrw=;
+        b=tsKIBdLSIS2jiD/diD3T4dJ1ZM7+dUSBQrW+McsDnZhzTt2N8wEShwlhUR5Zercmqh
+         6sRs2240MEAuU65TtAUtKm/32cYqKtotzGy29ot0UDbpqMaFI81UG+WtCYhDyWF6ItbN
+         TnfvgDtduMRt2inKS7pL+RNx+2quLptOEwhMFX5BKT44GHhTzblgYER1UZ21JyFehWY1
+         woVmYAvXLBsJu0VcrLH50jftGV86tT9+iMkQsTtB8bq1z69v4/DJD38jtDxohGFGKowQ
+         IVm78J8dE3TW06S+mRX9mmy/zdhvtKJQs91sqseX5Llo3yNxVl35EKfR3/k7jGtKT+fu
+         caZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXn1vmY13br0r1/T2TKB2BrqEZVWaPnAeIFYBrRYjh/qXJkbLSqyGtIzPcCPxso38eNd+WiXhOutIgiyuPg25otVDgZ4qA/r450xb/bbFqKHzqCe38Ffmw74XfFAr2SPSXoLxw67ftr7AdX84Z0IoAlR2kTmsRUejEBvmpBa4Yc/Bx+3cjJ8DSz
+X-Gm-Message-State: AOJu0Yxfh3HG19bhyis1ZeVSZBe0VMSuIStWLB2jAa+++fEc52jBN1+s
+	uLvp6f6hlMhPGdf0WJu934vxRdMpcp56YYqT6Ipy3dl03i8zyltvi/7GPWdR9hhwaavpW/6WFlp
+	+vN3zVBjqBU/r5Sl53wetOLsczn8=
+X-Google-Smtp-Source: AGHT+IEUwVSZGAkL0NmCiPGfPRW7x955qFnKQc6XQIgknlcmV/FRn4nEWgAGVLy6zxpOCntcK+HxFa6yyP83rfcnZa8=
+X-Received: by 2002:a2e:8802:0:b0:2dc:c95f:984d with SMTP id
+ x2-20020a2e8802000000b002dcc95f984dmr7214308ljh.5.1714420901889; Mon, 29 Apr
+ 2024 13:01:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+References: <20240429190500.30979-1-ryncsn@gmail.com> <20240429190500.30979-3-ryncsn@gmail.com>
+ <Zi_xeKUSD6C8TNYK@casper.infradead.org> <CAMgjq7D5zwksHxh5c00U82BCsLxYj-_GevZZtAM8xNZO7p-RQQ@mail.gmail.com>
+ <CAKFNMomdPzaF4AL5qHCZovtgdefd3V35D_qFDPoMeXyWCZtzUg@mail.gmail.com> <Zi_3OxP6xKjBWBLO@casper.infradead.org>
+In-Reply-To: <Zi_3OxP6xKjBWBLO@casper.infradead.org>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Tue, 30 Apr 2024 05:01:25 +0900
+Message-ID: <CAKFNMokDR7oQxDH8WeUeJKm6GLDo54AnByYXxdAWHjiFeGWEwA@mail.gmail.com>
+Subject: Re: [PATCH v3 02/12] nilfs2: drop usage of page_index
+To: Matthew Wilcox <willy@infradead.org>, Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 09:54:05AM -0700, Florian Fainelli wrote:
-> Now that we no longer any drivers using PHYLIB's adjust_link callback,
-> remove all paths that made use of adjust_link as well as the associated
-> functions.
-> 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+On Tue, Apr 30, 2024 at 4:38=E2=80=AFAM Matthew Wilcox wrote:
+>
+> On Tue, Apr 30, 2024 at 04:28:41AM +0900, Ryusuke Konishi wrote:
+> > On Tue, Apr 30, 2024 at 4:22=E2=80=AFAM Kairui Song <ryncsn@gmail.com> =
+wrote:
+> > >
+> > > On Tue, Apr 30, 2024 at 3:14=E2=80=AFAM Matthew Wilcox <willy@infrade=
+ad.org> wrote:
+> > > >
+> > > > On Tue, Apr 30, 2024 at 03:04:50AM +0800, Kairui Song wrote:
+> > > > > From: Kairui Song <kasong@tencent.com>
+> > > > >
+> > > > > page_index is only for mixed usage of page cache and swap cache, =
+for
+> > > > > pure page cache usage, the caller can just use page->index instea=
+d.
+> > > > >
+> > > > > It can't be a swap cache page here (being part of buffer head),
+> > > > > so just drop it, also convert it to use folio.
+> > > > >
+> > > > > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > > > > Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> > > > > Cc: linux-nilfs@vger.kernel.org
+> > > > > ---
+> > > > >  fs/nilfs2/bmap.c | 5 ++---
+> > > > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
+> > > > > index 383f0afa2cea..f4e5df0cd720 100644
+> > > > > --- a/fs/nilfs2/bmap.c
+> > > > > +++ b/fs/nilfs2/bmap.c
+> > > > > @@ -453,9 +453,8 @@ __u64 nilfs_bmap_data_get_key(const struct ni=
+lfs_bmap *bmap,
+> > > > >       struct buffer_head *pbh;
+> > > > >       __u64 key;
+> > > > >
+> > > > > -     key =3D page_index(bh->b_page) << (PAGE_SHIFT -
+> > > > > -                                      bmap->b_inode->i_blkbits);
+> > > > > -     for (pbh =3D page_buffers(bh->b_page); pbh !=3D bh; pbh =3D=
+ pbh->b_this_page)
+> > > > > +     key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->=
+i_blkbits);
+> > > > > +     for (pbh =3D folio_buffers(bh->b_folio); pbh !=3D bh; pbh =
+=3D pbh->b_this_page)
+> > > > >               key++;
+> > > > >
+> > > > >       return key;
+> > > >
+> > > > Why isn't this entire function simply:
+> > > >
+> > > >         return bh->b_blocknr;
+> > > >
+> > >
+> > > Nice idea, I didn't plan for extra clean up and test for fs code, but
+> > > this might be OK to have, will check it.
+> >
+> > Wait a minute.
+> >
+> > This function returns a key that corresponds to the cache offset of
+> > the data block, not the disk block number.
+> >
+> > Why is returning to bh->b_blocknr an alternative ?
+> > Am I missing something?
+>
+> Sorry, I forgot how b_blocknr was used.  What I meant was:
+>
+>         u64 key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->i_=
+blkbits);
+>
+>         return key + bh_offset(bh) >> bmap->b_inode->i_blkbits;
+>
+> The point is to get rid of the loop.  We could simplify this (and make
+> it ready for bs>PS) by doing:
+>
+>         loff_t pos =3D folio_pos(bh->b_folio) + bh_offset(bh);
+>         return pos >> bmap->b_inode->i_blkbits;
 
-..
+I see, I understand the idea that it would be better to eliminate the loop.
 
-> @@ -1616,17 +1597,13 @@ static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
->  					   phy_interface_t interface)
->  {
->  	struct dsa_port *dp = dsa_phylink_to_port(config);
-> -	struct phy_device *phydev = NULL;
+The above conversion looks fine.
+What are you going to do, Kairui ?
 
-Hi Florian,
-
-I'm wondering if some changes got lost somewhere.
-
-phydev is removed here...
-
->  	struct dsa_switch *ds = dp->ds;
->  
->  	if (dsa_port_is_user(dp))
->  		phydev = dp->user->phydev;
-
-.. assigned here, but not used.
-
-Perhaps the three lines above should be removed?
-
->  
-> -	if (!ds->ops->phylink_mac_link_down) {
-> -		if (ds->ops->adjust_link && phydev)
-> -			ds->ops->adjust_link(ds, dp->index, phydev);
-> +	if (!ds->ops->phylink_mac_link_down)
->  		return;
-> -	}
->  
->  	ds->ops->phylink_mac_link_down(ds, dp->index, mode, interface);
->  }
-
-..
-
--- 
-pw-client: changes-requested
+Thanks,
+Ryusuke Konishi
 
