@@ -1,121 +1,110 @@
-Return-Path: <linux-kernel+bounces-163170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E7948B66B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:03:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC238B66A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:46:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7BA51F232A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:03:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD2571C21DBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E911870;
-	Tue, 30 Apr 2024 00:03:07 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C370194C7E;
+	Mon, 29 Apr 2024 23:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eHSBEGvW"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B91623;
-	Tue, 30 Apr 2024 00:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7A7194C72
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714435386; cv=none; b=VGdAZRpTEcOdi2YV9wolqn4+iaHvJM5II0wmUZ1H5UJmLdE6qY88of7W3HpB1/c90J03owmi3wuLfgCMWpn/oi2EDbsurUXD5BYj6p4UCc14sD2PM7zbRKXNrmDlCIA6FZyl+WTbKdqicj61DEdccYMqSdxGItw3W2kFguYg3L4=
+	t=1714434398; cv=none; b=Jxa7m7IIJP3Sy+pqC9Bk8qenjDoaQmzoXLXrL3yeV4hkCIGQmYvbOJ/AxuSDyToQLYJGMrdbnvkqIpqpkMwipUHIh3BX/n3RA0QHQeSERpSsOtDpBvkMxAuqFx70SDOz4WDAE8V6ijGYOCAoVBqzMtMz/Ssrc5b8S8hRzobF9hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714435386; c=relaxed/simple;
-	bh=OAALAvGgj2+eNeT14GTmZ9nctNzxrwyvFnOi6pdmdv0=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UPhSpWWmObfMAt2dC+FF7c1mEpk37QCoVuVAOhui4+OwK0a8yXB8fH57UWTRsTsietFQZ9j1S/llGepm+Wszd6XVZE8k9Qb73thg0iNDOYNXUtyft2aexKKz02I1Rek5fWASMj7xAom+yHGPZ5WRdF4MBPiWE5XHwvAUFEs2yls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.97.1)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1s1ah2-000000003Ss-0jtq;
-	Mon, 29 Apr 2024 23:45:56 +0000
-Date: Tue, 30 Apr 2024 00:45:46 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Felix Fietkau <nbd@nbd.name>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Landen Chao <Landen.Chao@mediatek.com>, devicetree@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH net] net: dsa: mt7530: fix impossible MDIO address and issue
- warning
-Message-ID: <e615351aefba25e990215845e4812e6cb8153b28.1714433716.git.daniel@makrotopia.org>
+	s=arc-20240116; t=1714434398; c=relaxed/simple;
+	bh=eegKWMCzrzmAYKZZgWikTznQIF2vb+MOg4eHgNWHlvI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kenXCO+lai1Eij4dFodVxG2MMLAZqlysXoOsdJl90tTKRZPKpF8D+MFAILaDwQd/kEl9nkJK3tRSAjV21kff6PGGkbUrGcA4v7N5BzYdGdl+152DxILH/AwoSNq5/3xpojKTX/nR1CRChgeONHkbpsPn/ihYQSmxocTtAN0pJXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eHSBEGvW; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8bff2b792so5100873a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714434395; x=1715039195; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VBKZZVwka2zaA5v6QzXM0lkoNOh+22WGqQQ6UgQ50cs=;
+        b=eHSBEGvWL15RNxpFN1o/z2TsCBOpM5PHzbyWILQxF0RW4NMO7OT7Cq9fHtRMNUe0/a
+         N1z9R6ipNPuqj0ovEDGBSg+k3W8o6pSHmOshm3DkN80xfwOP+jboIc9EydSgRyXY55oE
+         CeM5gF0xV+WH+gPvlWPjMYzu1URutmcL3+kgLrLkZrBHvVzjgMYQXDeIheRDQkjiDeJU
+         2kzUbmXYA5fKB5pJWmXrS9QY4NZNrEijtCDsSx29Ln8wSvlvJN0mXyVKQc9d5i7dB80P
+         5MPYLvBp+JV6B0wzEDppsc+K8oPjGiDhB/BqYmyYlMfzhPFQuWUOY7GzTlm5UYX3xKcO
+         e68A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714434395; x=1715039195;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VBKZZVwka2zaA5v6QzXM0lkoNOh+22WGqQQ6UgQ50cs=;
+        b=oDWuDtBTdwpGvPK16A9H5RHSsQrqOYMwKzAo/b2DCY/Pzk9MfBr3HD9FqrxDfKE/Vq
+         VHW5qLqkOYZ8NcP5gePaZ2TD5Mo+lSPhtsNzpR5IGqfmpbcQhJ6U0Mqi85wJNd5DNe6C
+         hf7tgTVubSR1GFCWiPhusTTScBXC7TpUg9YcEdCeo3qIQhX0n7RWAXP9XlFFPG8DFobu
+         2q/SaPgziLEBK556YGOcQcfQknWtv3B8gCA7DBsbTQS0aZqLpfCnnHDvBgbR6//gPBqz
+         PjHRL8ShAv3h3daNtGBESS8tsPxr0SLOvoaB2F+/YNhjGzDEDHrnXmuzs/ewzCdUKp1m
+         d8Jw==
+X-Gm-Message-State: AOJu0Yyl7seOM4lEnDlavir7RQbG/sKXti14S4cipCZDfH8EjtevTFKq
+	QGfX6kzLNMUSMI8mvEz7+hdWe5LYsGmSB6yiF5pIYoVkRYGY9vqEMoGACOFCwFWiAjz+kZ35pO6
+	X208M60EBdtij+7hsiMnVwGgwVPfQd1Psl3oUpym0sXG+YHfZarjnPrxIGrr6LZc4PBYbvkSFkO
+	D/oTg7Ic5BQ7vW32OxaPHJpH10CygDTFbtLXSnhVyW
+X-Google-Smtp-Source: AGHT+IHmoAnjMd09Wlv6UL5QKa6QxWL7QFhCXyeHDXlfoY9FtEuKDfIaCrjFq4GlMUJN9085xhFmBcBtaf0=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a63:f508:0:b0:5f7:9783:12ed with SMTP id
+ w8-20020a63f508000000b005f7978312edmr49147pgh.10.1714434394810; Mon, 29 Apr
+ 2024 16:46:34 -0700 (PDT)
+Date: Mon, 29 Apr 2024 23:46:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240429234610.191144-1-edliaw@google.com>
+Subject: [PATCH] selftests/kcmp: Remove unused open mode
+From: Edward Liaw <edliaw@google.com>
+To: linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, Cyrill Gorcunov <gorcunov@openvz.org>, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	Edward Liaw <edliaw@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The MDIO address of the MT7530 and MT7531 switch ICs can be configured
-using bootstrap pins. However, there are only 4 possible options for the
-switch itself: 7, 15, 23 and 31 (ie. only 3 and 4 can be configured, bit
-0~2 are always 111). Practically all boards known as of today use the
-default setting which is to have the switch respond to address 31, while
-the built-in switch PHYs respond to address 0~4 in this case.
+Android bionic warns that open modes are ignored if O_CREAT or O_TMPFILE
+aren't specified.  The permissions for the file are set above:
 
-However, even in MediaTek's SDK the address of the switch is wrongly
-stated in the device trees as 0 (while in reality it is 31), so warn the
-user about such broken device tree and make a good guess what was
-actually intended.
+	fd1 = open(kpath, O_RDWR | O_CREAT | O_TRUNC, 0644);
 
-This is imporant to not break compatibility with older Device Trees as
-with commit 868ff5f4944a ("net: dsa: mt7530-mdio: read PHY address of
-switch from device tree") the address in device tree will be taken into
-account. Doing so instead of assuming the switch is always at
-address 31 which was previously hard-coded will obviously break things
-for many existing downstream device trees as they contain the wrong
-address (0) which previously didn't matter.
-
-Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Fixes: d97b46a64674 ("syscalls, x86: add __NR_kcmp syscall")
+Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- drivers/net/dsa/mt7530-mdio.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ tools/testing/selftests/kcmp/kcmp_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/mt7530-mdio.c b/drivers/net/dsa/mt7530-mdio.c
-index fa3ee85a99c1..119630fd9060 100644
---- a/drivers/net/dsa/mt7530-mdio.c
-+++ b/drivers/net/dsa/mt7530-mdio.c
-@@ -193,6 +193,19 @@ mt7530_probe(struct mdio_device *mdiodev)
- 			return PTR_ERR(priv->io_pwr);
- 	}
+diff --git a/tools/testing/selftests/kcmp/kcmp_test.c b/tools/testing/selftests/kcmp/kcmp_test.c
+index 25110c7c0b3e..d7a8e321bb16 100644
+--- a/tools/testing/selftests/kcmp/kcmp_test.c
++++ b/tools/testing/selftests/kcmp/kcmp_test.c
+@@ -91,7 +91,7 @@ int main(int argc, char **argv)
+ 		ksft_print_header();
+ 		ksft_set_plan(3);
  
-+	/* Only MDIO bus address 7, 15, 23 and 31 are valid options */
-+	if (~(priv->mdiodev->addr & 0x7) & 0x7) {
-+		/* If the address in DT must be wrong, make a good guess about
-+		 * the most likely intention, and issue a warning.
-+		 */
-+		int correct_addr = ((((priv->mdiodev->addr - 7) & ~0x7) % 0x20) + 7) & 0x1f;
-+
-+		dev_warn(&mdiodev->dev,
-+			 "impossible switch MDIO address in device tree: %d, assuming %d\n",
-+			 priv->mdiodev->addr, correct_addr);
-+		priv->mdiodev->addr = correct_addr;
-+	}
-+
- 	regmap_config = devm_kzalloc(&mdiodev->dev, sizeof(*regmap_config),
- 				     GFP_KERNEL);
- 	if (!regmap_config)
+-		fd2 = open(kpath, O_RDWR, 0644);
++		fd2 = open(kpath, O_RDWR);
+ 		if (fd2 < 0) {
+ 			perror("Can't open file");
+ 			ksft_exit_fail();
 -- 
-2.44.0
+2.44.0.769.g3c40516874-goog
 
 
