@@ -1,143 +1,181 @@
-Return-Path: <linux-kernel+bounces-162369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E3FA8B5A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:33:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E5B28B59E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:28:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32666B244C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:28:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C471C244B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9286E61D;
-	Mon, 29 Apr 2024 13:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4A56E61D;
+	Mon, 29 Apr 2024 13:27:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+BUAKZk"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Gjh+jVlS"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB2656B6C;
-	Mon, 29 Apr 2024 13:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE3A56768;
+	Mon, 29 Apr 2024 13:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714397291; cv=none; b=jBIb7/9ehAZmVfKI8e2pUGq4P8Wr8YNDjIZQ32eXL8EKRMxVpgAdFu07XahUkuhpaw8cphESYIIPExBkgDLvYKGTIkpbu6VbYgAJNaVzSBSRcoeTvtasPWvkih2MclV27ubDttFiH0n6W6IqLYKdtwIlnVZU4quV9Hum0y8CrxE=
+	t=1714397276; cv=none; b=Fjd6+4FczwdbuP0piPczTrTyMjFRaIjOSxOmLk38h6jrexHcQWXW8iGVALnOoFZHrvGG+7FjvrM4SsmHguRTylYs+9xI8uL9SeIEsZe5dQmTPISS0qwGi2wOv/xwrhhSLqIatiJ7RACOO/pKt5wcJTsnec2iMtNaYjBsigC1c/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714397291; c=relaxed/simple;
-	bh=pR7/a0by9yBxrfh6k79m1vRnSAYmPWUcYcwe7V2g0kE=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=ouIcnosTv2lfiHWyp2zwe5u6hEz7XNDIyY+lRqjoaG0KJBo45HJsrOFnVnSpA3ijdGyQ/ckTpK8n1bXo0v0qIkr6WeNR8x4OUDCeEQUBOjaKKTwZE/1nBLnG7RXk0NdjlHR7SAeOWzO0ouRZnsSUGVzxHrj3krQrRyT8joHrU0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+BUAKZk; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-790e7c02430so144627885a.0;
-        Mon, 29 Apr 2024 06:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714397289; x=1715002089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zvb50xK6t3u+mnfQxJVlidFaDH9bNsJDchVJ2caNt0c=;
-        b=g+BUAKZkDBnVLDlbz6wiUWlDdDuOukfJYBAjC04CBEbMz7enTPF3BlyhO8THuQ1x9q
-         e8R983ReNKFUlCrFDUOwwAXLdh1Mw3VhJPPnVYJZ9cSUGaEVylLMwHJRKzAZ+EBYBpWn
-         hVQcZmpamnihtMgNMboZ9TD8B9vDoD1aY0CieeLcPZ0qJRzppurrYij3qhQuX1+y2GXK
-         aOb3Gh68KI5Hj4FPHWjlD32/7jWlSjO7xitI5c6WM9kiT4jhyO79M2c7lYPCjghJ5bCU
-         cNMUqLuII/9qCwQxWa1X7hmaWyWVhv2oHxtYwzyU1fSdjCtYKPVw/qXLMRN9KTMpA2KY
-         3Lpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714397289; x=1715002089;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Zvb50xK6t3u+mnfQxJVlidFaDH9bNsJDchVJ2caNt0c=;
-        b=EnbKfApxs6PhusYQXeE2K7/d6Gm3wCTLYnR11w/Kp2dehPHbCa9qOYxmZme7d4MhrM
-         ii2lp7LSwwdnLdr5Gu6iXASXSMLRNVC1xcCNlm47EjZSQnKXjHZ7KbuY1qBaAn6HMXUa
-         +Xrnh3fvR4ErbxPXzwy1nSVGwn9O20XUQ/CaD3oUgfG16lp6AZcxRmw9gMTKv7s6c7ZI
-         TqrcYLpFUstpO/EonFTN0sJdOyHBzlOJaDrFIiPwupO30jzTiy3iihfmX4UFIJw1G4oK
-         Z1He7kL6qMw7d5G+t5E2NGl2PCeRjfA8kd7sj5Ioa09ykj9F3CaKGzlWq7hlC0eLYxEp
-         Kraw==
-X-Forwarded-Encrypted: i=1; AJvYcCXitax0o+ZasoNS/arW2nwNU/bt+/+mz29ms0kNd3T16SB98dbXcNZC+nZ+bwoS50cWF00IdthdKUxzXSdPm/KPN9e71fZs
-X-Gm-Message-State: AOJu0YyXizo+7M91thmK7t1kz7S5kLR6U+JI/ZgUTI63/pk+bHgXI7TF
-	8Lc3kQzjUWp/KW+2HAVWLis36vOhW2qVwtE7PEjr1xRuZXLnnNS6
-X-Google-Smtp-Source: AGHT+IH2Vufgr8rm7sw/n0lcdtaQaTzClaMd6bA1+jrR1BRGGyolktP24UxusELVdcvcf2HlYYJbYg==
-X-Received: by 2002:ae9:e915:0:b0:790:fd4f:3daf with SMTP id x21-20020ae9e915000000b00790fd4f3dafmr1316897qkf.67.1714397288602;
-        Mon, 29 Apr 2024 06:28:08 -0700 (PDT)
-Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
-        by smtp.gmail.com with ESMTPSA id pa2-20020a05620a830200b0078ede2e9125sm10353067qkn.57.2024.04.29.06.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:28:08 -0700 (PDT)
-Date: Mon, 29 Apr 2024 09:28:07 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: shiming.cheng@mediatek.com, 
- willemdebruijn.kernel@gmail.com, 
- edumazet@google.com, 
- davem@davemloft.net, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- matthias.bgg@gmail.com
-Cc: linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- shiming.cheng@mediatek.com, 
- Lena Wang <lena.wang@mediatek.com>, 
- daniel@iogearbox.net
-Message-ID: <662fa067c7066_2e2f1d294a0@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240428142913.18666-1-shiming.cheng@mediatek.com>
-References: <20240428142913.18666-1-shiming.cheng@mediatek.com>
-Subject: Re: [PATCH net] net: prevent pulling SKB_GSO_FRAGLIST skb
+	s=arc-20240116; t=1714397276; c=relaxed/simple;
+	bh=uu+beZKI3o95LC0DBDGmU+b7eBp2cD9rZyXroXh6L0Y=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=owqfQiOddXpaxg/gPycMKQANUJP7H59UdIMJ3m/AIUi80BegGvUJ71E0ViJBYPz0huBe/1lOLdfCGya5v6C9ii878coQh4OBZWPPaXKvuPtmPT7tY0DJVO7IZmIAaDhPrAo1hCMaISXFr3SefYQO56oyOo4SLF7mK3mS94bUYUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Gjh+jVlS; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714397273;
+	bh=uu+beZKI3o95LC0DBDGmU+b7eBp2cD9rZyXroXh6L0Y=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=Gjh+jVlSPSai+JANWfpL6b2N4ly11fetxM6hx+ZDtsVQn+yrw8y7tDYNDvvSJ7nkf
+	 PcTe/2BBdENnU8q4wsJS8VpIaOs2AVGiUEgZGp/qr1pjqqDCNljRYYRR3nxOHRvmQJ
+	 QlqwiLxJgd4RfYjnrwandAcui3TlV4gjhaMk/Lghva32zDQt6TAg3IYjJAGpVzcnQs
+	 FPuTxUgC2o1NQLYp3o0zeSlo1fIq/thKXduGYYLjrf4+pXpPwR9YWRfcWlIaZW5ztY
+	 eCLm/Rs/dTFCa3mjMf2Rrr2RR0hRZylvmSmMAQfugxw3o7eIiNCoQ/hMqaiDgMvg5D
+	 ecyr7i8gzrCEQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2F3C53780C22;
+	Mon, 29 Apr 2024 13:27:50 +0000 (UTC)
+Message-ID: <256aa75f-abaa-45b5-8615-537e50a5077a@collabora.com>
+Date: Mon, 29 Apr 2024 18:28:20 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v1] fs/proc/task_mmu: Fix uffd-wp confusion in
+ pagemap_scan_pmd_entry()
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>
+References: <20240429114104.182890-1-ryan.roberts@arm.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240429114104.182890-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-shiming.cheng@ wrote:
-> From: Shiming Cheng <shiming.cheng@mediatek.com>
+Thanks for finding and fixing Ryan!
+
+On 4/29/24 4:41 PM, Ryan Roberts wrote:
+> pagemap_scan_pmd_entry() checks if uffd-wp is set on each pte to avoid
+> unnecessary if set. However it was previously checking with
+> `pte_uffd_wp(ptep_get(pte))` without first confirming that the pte was
+> present. It is only valid to call pte_uffd_wp() for present ptes. For
+> swap ptes, pte_swp_uffd_wp() must be called because the uffd-wp bit may
+> be kept in a different position, depending on the arch.
 > 
-> BPF or TC callers may pull in a length longer than skb_headlen()
-> for a SKB_GSO_FRAGLIST skb. The data in fraglist will be pulled
-> into the linear space. However it destroys the skb's structure
-> and may result in an invalid segmentation or kernel exception.
+> This was leading to test failures in the pagemap_ioctl mm selftest, when
+> bringing up uffd-wp support on arm64 due to incorrectly interpretting
+> the uffd-wp status of migration entries.
 > 
-> So we should add protection to stop the operation and return
-> error to remind callers.
+> Let's fix this by using the correct check based on pte_present(). While
+> we are at it, let's pass the pte to make_uffd_wp_pte() to avoid the
+> pointless extra ptep_get() which can't be optimized out due to
+> READ_ONCE() on many arches.
 > 
-> Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
-> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
->
+> Closes: https://lore.kernel.org/linux-arm-kernel/ZiuyGXt0XWwRgFh9@x1n/
+> Fixes: 12f6b01a0bcb ("fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag")
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Tested-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+
 > ---
->  net/core/skbuff.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  fs/proc/task_mmu.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
 > 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f68f2679b086..2d35e009e814 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -6100,6 +6100,12 @@ EXPORT_SYMBOL(skb_vlan_untag);
->  
->  int skb_ensure_writable(struct sk_buff *skb, unsigned int write_len)
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index af4bc1da0c01..102f48668c35 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1817,10 +1817,8 @@ static unsigned long pagemap_page_category(struct pagemap_scan_private *p,
+>  }
+> 
+>  static void make_uffd_wp_pte(struct vm_area_struct *vma,
+> -			     unsigned long addr, pte_t *pte)
+> +			     unsigned long addr, pte_t *pte, pte_t ptent)
 >  {
-> +	if (skb_is_gso(skb) &&
-> +	    (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST) &&
-> +	     write_len > skb_headlen(skb)) {
-> +		return -ENOMEM;
-> +	}
+> -	pte_t ptent = ptep_get(pte);
+> -
+>  	if (pte_present(ptent)) {
+>  		pte_t old_pte;
+> 
+> @@ -2175,9 +2173,12 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  	if ((p->arg.flags & PM_SCAN_WP_MATCHING) && !p->vec_out) {
+>  		/* Fast path for performing exclusive WP */
+>  		for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
+> -			if (pte_uffd_wp(ptep_get(pte)))
+> +			pte_t ptent = ptep_get(pte);
 > +
-
-Most callers of skb_ensure_writable pull less than headlen.
-It might be good to start with the write_len check. Before
-looking at gso type.
-
->  	if (!pskb_may_pull(skb, write_len))
->  		return -ENOMEM;
->  
-> -- 
-> 2.18.0
+> +			if ((pte_present(ptent) && pte_uffd_wp(ptent)) ||
+> +			    pte_swp_uffd_wp_any(ptent))
+>  				continue;
+> -			make_uffd_wp_pte(vma, addr, pte);
+> +			make_uffd_wp_pte(vma, addr, pte, ptent);
+>  			if (!flush_end)
+>  				start = addr;
+>  			flush_end = addr + PAGE_SIZE;
+> @@ -2190,8 +2191,10 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  	    p->arg.return_mask == PAGE_IS_WRITTEN) {
+>  		for (addr = start; addr < end; pte++, addr += PAGE_SIZE) {
+>  			unsigned long next = addr + PAGE_SIZE;
+> +			pte_t ptent = ptep_get(pte);
+> 
+> -			if (pte_uffd_wp(ptep_get(pte)))
+> +			if ((pte_present(ptent) && pte_uffd_wp(ptent)) ||
+> +			    pte_swp_uffd_wp_any(ptent))
+>  				continue;
+>  			ret = pagemap_scan_output(p->cur_vma_category | PAGE_IS_WRITTEN,
+>  						  p, addr, &next);
+> @@ -2199,7 +2202,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  				break;
+>  			if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+>  				continue;
+> -			make_uffd_wp_pte(vma, addr, pte);
+> +			make_uffd_wp_pte(vma, addr, pte, ptent);
+>  			if (!flush_end)
+>  				start = addr;
+>  			flush_end = next;
+> @@ -2208,8 +2211,9 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  	}
+> 
+>  	for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
+> +		pte_t ptent = ptep_get(pte);
+>  		unsigned long categories = p->cur_vma_category |
+> -					   pagemap_page_category(p, vma, addr, ptep_get(pte));
+> +					   pagemap_page_category(p, vma, addr, ptent);
+>  		unsigned long next = addr + PAGE_SIZE;
+> 
+>  		if (!pagemap_scan_is_interesting_page(categories, p))
+> @@ -2224,7 +2228,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>  		if (~categories & PAGE_IS_WRITTEN)
+>  			continue;
+> 
+> -		make_uffd_wp_pte(vma, addr, pte);
+> +		make_uffd_wp_pte(vma, addr, pte, ptent);
+>  		if (!flush_end)
+>  			start = addr;
+>  		flush_end = next;
+> --
+> 2.25.1
 > 
 
-
+-- 
+BR,
+Muhammad Usama Anjum
 
