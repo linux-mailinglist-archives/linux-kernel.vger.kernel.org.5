@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-162620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82458B5E23
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:52:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB74E8B5E25
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:52:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64A9A282C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:52:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC5C31C20FA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542F882D66;
-	Mon, 29 Apr 2024 15:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DE882D69;
+	Mon, 29 Apr 2024 15:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V6RmxZrh"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Axq7vMu1"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526BD82883
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0179982883
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714405959; cv=none; b=C7lqYQcG4az8LmA4oeBsd1dkW20aSqRIm4blTHipmOP73rOXgtzYueKO6wEzxiJoCVGwS4tWMfzBotWOLQ3oC0bFJLhCVYem4C9QYSM3pnbdm57MmHWPKHeJCP3t18LOKb9BCpyTJ13UbAaiHQdbPKkcvj37rGkEIIxgRldvn2Q=
+	t=1714405976; cv=none; b=ifzh2ydpMLpfPZ+5J8b+MMZI6pI+L6fFWrzdLhIp+75oUD/kCrxgo8vt0NEq5egm8Hsk2NYpN+HxtbMClv4T5sGRnIlZ6aWasKpuQgmW07QziXeEis9qrzRFWAV0m7X7rLeUi/c7y8hHT9sbO7W1QXLxyHkL9JREhDo4uNj+7LI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714405959; c=relaxed/simple;
-	bh=ZGroGLVCIbK/w2kt3vda3NvOtFQm8DNYiuqe1a85j7c=;
+	s=arc-20240116; t=1714405976; c=relaxed/simple;
+	bh=aqoYe7y596ceK+s22lTo4XTQ8iUewNNdVUJJ7YKSWzw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RLSZ8hVr2MZUEkuICPgyrRY/dLFz4Z51BMvUsE1EMA0BaH+rdd0HYRy5V2h4y3/a1CUMEezGgsA4pbEqhS3lTksEevmNiDLxf2kUCm0xQJEq2cj22M/G7/Wg/7apc8+nu+LnpkefIHiUaEjZ3lMBjTASnpWKmlrnHvnChPz56BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V6RmxZrh; arc=none smtp.client-ip=209.85.210.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=t6+bKCFIE9rtXJOkFz7pdKztRtxg12AeSEY6lGuSAytaQ8eKrvETJYrKbYgQ3ybWWALpnwkwlMTaCtDa3H2g7YHsDh+cPp/v0Bv/nM1SFo6DNI9ASrCoLgKV9iWxMzmEO1Ti0bVHLJf0bOPDVs9wvKood67zSCniUwAoEnGir1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Axq7vMu1; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ee12766586so3474481b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:52:38 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso3873638a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714405957; x=1715010757; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714405973; x=1715010773; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=gima1jfCICeyQJgLxFU9qZsAD6bEvLHMP34ZgzB6Ps0=;
-        b=V6RmxZrhZWKzVig5HYsP2yF9HZMG45HYF7j3aS1InQHCmcJUL34YQcHolJIS/ddpmn
-         FUMOlIRq81A8Pi4fnjNglddQRmZi0GdYVLQ6QQqis3bOGEyBQvGc8hzDEsQu+qkuVHjn
-         3n0AEFHhLLzMkQT3kzRQHa9qx08kD3VFy5Svk=
+        bh=9lFVEj2ZOMp4v4mEsTFyGvr2pXAnpMOWy7SrvsDmidk=;
+        b=Axq7vMu1g1KVCC4WCL2wHEtdq3Uvm8NniZyXhKp4JN/gwfwKfhBSRR1EgG7sDdltw6
+         G5K6zuRF1yPWg/RBX4164DdOHpcWIOkQQKKLHR7D4XGmo4Dd1Y4DiWGqvm3bR3RbquWF
+         8TcXS6RdVfIC4cDOiT/2QqSCOchBi9GD221Kg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714405957; x=1715010757;
+        d=1e100.net; s=20230601; t=1714405973; x=1715010773;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gima1jfCICeyQJgLxFU9qZsAD6bEvLHMP34ZgzB6Ps0=;
-        b=oR3Wz0GJGmsY5JiS+7eRDmiT3RdKrI2l7iMRK424BG3zA4fu3GrhbkZ1BUOIq4J1cX
-         6HhjtOVuki8qPUlZecgbP1jpbl7QhJUVwbBrGoAreAPGxquuIvR1FhJNvAzb2oVyPq7C
-         +Jo5xS6qP5dJt9W8yspJt1lX+QHi2IUkoTNEJDNJY2kjeAnLdxT8c4kbdXczUsVRqKEH
-         RWebp4JyBZyJXN3gk1bqzz1wuCplyoV7Kytj7I4vJZihUkv6Vk+2QGyt7nVh/dwFijQi
-         6OvDUuqt25Br2vMUoMRVUTdYRyAY3ZhMA3XQrTxgwvTL4y26cP+jOx5l5r0clkhYgxKz
-         NyOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUu+NYXuVrT/KyTvHLvdH2wo2RWcGSNLtTQAtEV00Gh8AWineWOFNAZPjMb1LiwZ2MalVfEDa0NP+r5ti6tmcXUZQ8u0U0MaQou+G+I
-X-Gm-Message-State: AOJu0YzFh6bbQkQ/HfDDYcZ46dpra4WtZhn+Qfz9yfBa6YBcJTKMiCyA
-	rYqxf3WNtVsVEka9Xyb5Wm75jYgKIlyIOghMTMVsB4xWGB6pIcoP1dAuJ0Higg==
-X-Google-Smtp-Source: AGHT+IGz0OVF8FOBG5ad2HJpYX+iCqoilEeanBPBnxJEQfuJZQ8o1+SlNlPpuioodO7c78+X5jYWEQ==
-X-Received: by 2002:a05:6a00:4b10:b0:6ed:21d5:fbdb with SMTP id kq16-20020a056a004b1000b006ed21d5fbdbmr63495pfb.8.1714405957544;
-        Mon, 29 Apr 2024 08:52:37 -0700 (PDT)
+        bh=9lFVEj2ZOMp4v4mEsTFyGvr2pXAnpMOWy7SrvsDmidk=;
+        b=mXx3mCvLWlrp74Gmc+4IoZBGU5SCVPYRLwRLOQyyczTE21ddX8oO9mWlSEus+9JmVw
+         YZleWUhMDxbrYQpCRgE3k1w5yV9Qi1Dhw2xMIaxKyn94d4hlVgVBMFpzXXPKPiJQzffs
+         PesxHsDprQu9hICB5afWCs44RFnZOAFUsDpDqVK7joR3aacL8mh3a7ij03cnTVJtFZsw
+         L7WKv/OTmj+cps09In/m+54mmKbV5g4QCe+O1BVhik8KcbRp2ACvGbjEL6zV/A7TMpJ5
+         MnDWOcC5lk45sMMzcu3qfP8WnTACxlcJcr5fci6uFnxDA25zntlMUMniiStxu7TvFo/f
+         FKgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCmQsQYcH1ttfBnkK+64+fx2VFpDppx6L/abY0WfPhNi468I6LgcamBD9TKOYyAahW9XiHlxpDZr/RIlPbLv1E78qapRNuN86sc0b0
+X-Gm-Message-State: AOJu0Ywq4H49PgQ7HjNvfiMjuCo20Kj84Afuod8X6aDFIJXIHKZTnWin
+	ypj5nZp5+1qAfWcgkxs+nxUMO7kE48X/vB5jSgiEu74N/vCwXBQBF3mzUmB/pw==
+X-Google-Smtp-Source: AGHT+IG5TTqLssvq9z3HQ/NiuCB1jv/9mz9B8cDLWUAwmsQjYlLPHPkcZyQSFOtZ7HAPToK6be32vw==
+X-Received: by 2002:a17:90b:1809:b0:2ad:3688:de80 with SMTP id lw9-20020a17090b180900b002ad3688de80mr11136934pjb.30.1714405973381;
+        Mon, 29 Apr 2024 08:52:53 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fb22-20020a056a002d9600b006eceaccaec9sm19364854pfb.131.2024.04.29.08.52.36
+        by smtp.gmail.com with ESMTPSA id y3-20020a17090a390300b002a232e4f9ddsm21130064pjb.34.2024.04.29.08.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:52:36 -0700 (PDT)
-Date: Mon, 29 Apr 2024 08:52:36 -0700
+        Mon, 29 Apr 2024 08:52:52 -0700 (PDT)
+Date: Mon, 29 Apr 2024 08:52:50 -0700
 From: Kees Cook <keescook@chromium.org>
 To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
 Cc: Christian Brauner <brauner@kernel.org>,
@@ -74,12 +74,13 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
 	Will Drewry <wad@chromium.org>,
 	kernel test robot <oliver.sang@intel.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] selftests/harness: Fix interleaved scheduling
- leading to race conditions
-Message-ID: <202404290852.C327596A@keescook>
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2 5/9] selftests/landlock: Do not allocate memory in
+ fixture data
+Message-ID: <202404290852.29E4B471@keescook>
 References: <20240429130931.2394118-1-mic@digikod.net>
- <20240429130931.2394118-5-mic@digikod.net>
+ <20240429130931.2394118-6-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,80 +90,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429130931.2394118-5-mic@digikod.net>
+In-Reply-To: <20240429130931.2394118-6-mic@digikod.net>
 
-On Mon, Apr 29, 2024 at 03:09:26PM +0200, Mickaël Salaün wrote:
-> Fix a race condition when running several FIXTURE_TEARDOWN() managing
-> the same resource.  This fixes a race condition in the Landlock file
-> system tests when creating or unmounting the same directory.
+On Mon, Apr 29, 2024 at 03:09:27PM +0200, Mickaël Salaün wrote:
+> Do not allocate self->dir_path in the test process because this would
+> not be visible in the FIXTURE_TEARDOWN() process when relying on
+> fork()/clone3() instead of vfork().
 > 
-> Using clone3() with CLONE_VFORK guarantees that the child and grandchild
-> test processes are sequentially scheduled.  This is implemented with a
-> new clone3_vfork() helper replacing the fork() call.
+> This change is required for a following commit removing vfork() call to
+> not break the layout3_fs.* test cases.
 > 
-> This avoids triggering this error in __wait_for_test():
->   Test ended in some other way [127]
-> 
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: David S. Miller <davem@davemloft.net>
 > Cc: Günther Noack <gnoack@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
 > Cc: Kees Cook <keescook@chromium.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Will Drewry <wad@chromium.org>
-> Fixes: 41cca0542d7c ("selftests/harness: Fix TEST_F()'s vfork handling")
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
 > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240429130931.2394118-5-mic@digikod.net
-> ---
->  tools/testing/selftests/kselftest_harness.h | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-> index 55699a762c45..9f04638707ae 100644
-> --- a/tools/testing/selftests/kselftest_harness.h
-> +++ b/tools/testing/selftests/kselftest_harness.h
-> @@ -66,6 +66,8 @@
->  #include <sys/wait.h>
->  #include <unistd.h>
->  #include <setjmp.h>
-> +#include <syscall.h>
-> +#include <linux/sched.h>
->  
->  #include "kselftest.h"
->  
-> @@ -80,6 +82,17 @@
->  #  define TH_LOG_ENABLED 1
->  #endif
->  
-> +/* Wait for the child process to end but without sharing memory mapping. */
-> +static pid_t __attribute__((__unused__)) clone3_vfork(void)
-
-Why "unused"?
-
-> +{
-> +	struct clone_args args = {
-> +		.flags = CLONE_VFORK,
-> +		.exit_signal = SIGCHLD,
-> +	};
-> +
-> +	return syscall(__NR_clone3, &args, sizeof(args));
-> +}
-> +
->  /**
->   * TH_LOG()
->   *
-> @@ -1183,7 +1196,7 @@ void __run_test(struct __fixture_metadata *f,
->  	fflush(stdout);
->  	fflush(stderr);
->  
-> -	t->pid = fork();
-> +	t->pid = clone3_vfork();
->  	if (t->pid < 0) {
->  		ksft_print_msg("ERROR SPAWNING TEST CHILD\n");
->  		t->exit_code = KSFT_FAIL;
-
-Regardless, yup, looks good.
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
