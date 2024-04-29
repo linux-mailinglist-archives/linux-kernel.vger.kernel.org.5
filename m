@@ -1,183 +1,168 @@
-Return-Path: <linux-kernel+bounces-162350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77E838B59AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0608B59AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:18:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995C81C20E63
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:17:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3B81C20FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F8E54908;
-	Mon, 29 Apr 2024 13:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA0E10971;
+	Mon, 29 Apr 2024 13:17:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jgZihBMK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M4X/1p0a"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5961C7350E;
-	Mon, 29 Apr 2024 13:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DEA548F3
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396631; cv=none; b=bwKBNer82bUL/dynYscef8quC2HDNg1tnlquy2tnhs+sBrdb/L/tKQgLxl4VHiFGxbYZgVBgzJMPNjU6Ze5+aMPHz+3i//aA66q0ScWfKFsAZ3OidarV62c9dV+xnLujcqvXJ9gM+uYP8SaTf9xRz/TCeQ546MTp92uREnDmBhg=
+	t=1714396667; cv=none; b=jyEiWXFqW++JvslFCkYpc37BJjb0GcGVLzeKj+gunAOK+I+3mGFGu2mpZpCgqN8JVbTZuwT1H0CNgk0xy3GlS929ERcFqk0froOMQhZEMSi5K+rJuiNkdx+5EYWJmFk0SOEFjgqlrgGrDFGyRuBUC4yBeklN3iwyUXFMLYoLOWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396631; c=relaxed/simple;
-	bh=w2Ysbdlw62K0XMPywgvp3DwJa4tgzeEkrintEchxF5U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DhSn6fQP53lhITcs863x0pSS8zvhhc4Zaf4N+fzwN7wlXuGQCU/hOQfXjKsWYVigSQyx3RXX/6VQ0SpxxHpICwtt/tuVZ5ZzNbyHHXnUgas14U6mYy2uhjsF7CqukmOnpcuqOAQFOxsTQ1fSjDgbGN90tV1MXnJtSqVGuRpssAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jgZihBMK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE3FC4AF19;
-	Mon, 29 Apr 2024 13:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714396631;
-	bh=w2Ysbdlw62K0XMPywgvp3DwJa4tgzeEkrintEchxF5U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jgZihBMKVPHRsloBrY/8lzLQ/TRynZHkNsHXz/ww9wRr+Av0CpfExPcWbDbhfkym5
-	 GLSOpLPZ/BIInWmbkT6XLEK95VsCL5UwA7qIMCl4z38Nnntf60a4HXHilFRyV9+NWK
-	 LuTwupx/d/ttfDXaO3OrDC6l/o08n62KMxBajo6OO8Ffu+6xkZMwkVDGOEt5HrNhQI
-	 c+MZiKmjpb9m5d6flH8k4wT2v4QZlqPh+dBV0ywGnVAIJaRxaXUT73aRJxBcTELrmO
-	 j/lGMUQjBBkK+x0xzhxx6WZbQtx+PWNtFsbnSySP2vFAkaEs+sBKD0ASau85NA2c0A
-	 GbLpILZGFHTPg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Florent Revest <revest@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v4 2/2] bpf, arm64: inline bpf_get_smp_processor_id() helper
-Date: Mon, 29 Apr 2024 13:16:47 +0000
-Message-Id: <20240429131647.50165-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240429131647.50165-1-puranjay@kernel.org>
-References: <20240429131647.50165-1-puranjay@kernel.org>
+	s=arc-20240116; t=1714396667; c=relaxed/simple;
+	bh=vvnS47Dpfc2lPtfocF2xFFI42fQVbBcxzt1unzaD04A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tDQ3NqVQFjmE6u6usBlAHDAo4Rfoxo+k+VSfghzIztaF1Oc8PSMjU/GxeJFbGo78nBdQb/laAdHXg6pGrmd+KgysbijEVFFsD5ro1FCJqQTOtQHaOyyITKG55dKl8QIT9hJdXW9Wo4p0lHW+XMhb+G6VU2i51fy4HWMlFtk6IME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M4X/1p0a; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714396665; x=1745932665;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vvnS47Dpfc2lPtfocF2xFFI42fQVbBcxzt1unzaD04A=;
+  b=M4X/1p0aiAkbadnx/z5wIIUDVUdQm7eCE2dIz6w3TtotjSpsXyMLMxEy
+   i770O5WFrZ3p0fm/P+8jRIt8sISz9f5i33gOWxFWnvJhpceApJf8df6Hw
+   Qolqya0AMQZfybnrGGkZ5DLt5e8zHbp+U9Up6N0EJRSmxZjSgBIa1qy48
+   6ImfcxIWp7fq8mhoxeZNat44VQdKPeENfBrAXR3tY74utQqI47GBojZzD
+   RrzGO4GgTL60rntOaSmKz0iDpFHPxbjiL/CYFJ4pSTOStGoUzEz7rnI/I
+   gEtTiYQ9CWqqK/AXfB89YB83uZXlZTonANpfuATyAI6f6zSi36uwbPor7
+   w==;
+X-CSE-ConnectionGUID: 1UvsmeyoQkqljKBTM/n9RQ==
+X-CSE-MsgGUID: JznZSN5hTle8PM6tsZsViA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10167086"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="10167086"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:17:45 -0700
+X-CSE-ConnectionGUID: 8NOiztBIRTaSIwyN+FuNlw==
+X-CSE-MsgGUID: pfLor2xfQQiqFaB6fEhbAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26069268"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa009.fm.intel.com with ESMTP; 29 Apr 2024 06:17:39 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 71239179; Mon, 29 Apr 2024 16:17:38 +0300 (EEST)
+Date: Mon, 29 Apr 2024 16:17:38 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Sean Christopherson <seanjc@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Ashish Kalra <ashish.kalra@amd.com>, 
+	Kai Huang <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
+ TDX guest
+Message-ID: <e35yxpa2xdynm7focg6k4u2bjzojn24bmeaszh2jz52e4szc5f@6mgtrdnkewhe>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
+ <ZhVPIDDLkjOB96fI@google.com>
+ <3q6jv3g4tezybmd667mqxio7ty22akxv7okrznmzx3tju2u4qo@2alzjkbgm2lh>
+ <20240428171111.GKZi6DLy_ZwuZsZdFq@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428171111.GKZi6DLy_ZwuZsZdFq@fat_crate.local>
 
-As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
-bpf_get_smp_processor_id().
+On Sun, Apr 28, 2024 at 07:11:11PM +0200, Borislav Petkov wrote:
+> On Tue, Apr 09, 2024 at 06:26:05PM +0300, Kirill A. Shutemov wrote:
+> > From 6be428e3b1c6fb494b2c48ba6a7c133514a0b2b4 Mon Sep 17 00:00:00 2001
+> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > Date: Fri, 10 Feb 2023 12:53:11 +0300
+> > Subject: [PATCHv10.1 05/18] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+> > 
+> > Depending on setup, TDX guests might be allowed to clear CR4.MCE.
+> > Attempt to clear it leads to #VE.
+> > 
+> > Use alternatives to keep the flag during kexec for TDX guests.
+> > 
+> > The change doesn't affect non-TDX-guest environments.
+> 
+> This is all fine and dandy but nothing explains *why* TDX needs this
+> special dance.
+> 
+> Why can't TDX do the usual CR4.MCE diddling like the normal kernel
+> during init and needs to do that here immediately?
 
-ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+As I mentioned above, clearing CR4.MCE triggers #VE. It is quirk of the
+platform.
 
-Here is how the BPF and ARM64 JITed assembly changes after this commit:
+There's plan to allow it in newer TDX modules, but kernel still has to
+assume we cannot touch it in TDX guest case.
 
-                                         BPF
-         		                =====
-              BEFORE                                       AFTER
-             --------                                     -------
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  arch/x86/kernel/relocate_kernel_64.S | 15 +++++++++------
+> >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+> > index 56cab1bb25f5..90246d544eb1 100644
+> > --- a/arch/x86/kernel/relocate_kernel_64.S
+> > +++ b/arch/x86/kernel/relocate_kernel_64.S
+> > @@ -5,6 +5,8 @@
+> >   */
+> >  
+> >  #include <linux/linkage.h>
+> > +#include <linux/stringify.h>
+> > +#include <asm/alternative.h>
+> >  #include <asm/page_types.h>
+> >  #include <asm/kexec.h>
+> >  #include <asm/processor-flags.h>
+> > @@ -143,14 +145,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+> >  
+> >  	/*
+> >  	 * Set cr4 to a known state:
+> > -	 *  - physical address extension enabled
+> >  	 *  - 5-level paging, if it was enabled before
+> > +	 *  - Machine check exception on TDX guest, if it was enabled before.
+> > +	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
+> 
+> 			 ... might not be allowed ...
+> 
 
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-(85) call bpf_get_smp_processor_id#229032       (18) r0 = 0xffff800082072008
-                                                (bf) r0 = &(void __percpu *)(r0)
-                                                (61) r0 = *(u32 *)(r0 +0)
+Oopsie. Thanks.
 
-				      ARM64 JIT
-				     ===========
+> > +	 *  - physical address extension enabled
+> >  	 */
+> > -	movl	$X86_CR4_PAE, %eax
+> > -	testq	$X86_CR4_LA57, %r13
+> > -	jz	1f
+> > -	orl	$X86_CR4_LA57, %eax
+> > -1:
+> > +	movl	$X86_CR4_LA57, %eax
+> > +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+> > +	andl	%r13d, %eax
+> 
+> %r13 needs a comment here that it contains %cr4 read above in
+> relocate_kernel()
 
-              BEFORE                                       AFTER
-             --------                                     -------
+Okay.
 
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ffffffff
-movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl #16
-movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
-blr     x10                                     mrs     x10, tpidr_el1
-add     x7, x0, #0x0                            add     x7, x7, x10
-                                                ldr     w7, [x7]
-
-Performance improvement using benchmark[1]
-
-             BEFORE                                       AFTER
-            --------                                     -------
-
-glob-arr-inc   :   23.817 ± 0.019M/s      glob-arr-inc   :   24.631 ± 0.027M/s [+ 3.41%]
-arr-inc        :   23.253 ± 0.019M/s      arr-inc        :   23.742 ± 0.023M/s [+ 2.10%]
-hash-inc       :   12.258 ± 0.010M/s      hash-inc       :   12.625 ± 0.004M/s [+ 3.00%]
-
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/verifier.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4e474ef44e9c..d0725b1c7bec 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20273,19 +20273,33 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
- 
--#ifdef CONFIG_X86_64
- 		/* Implement bpf_get_smp_processor_id() inline. */
- 		if (insn->imm == BPF_FUNC_get_smp_processor_id &&
- 		    prog->jit_requested && bpf_jit_supports_percpu_insn()) {
- 			/* BPF_FUNC_get_smp_processor_id inlining is an
--			 * optimization, so if pcpu_hot.cpu_number is ever
-+			 * optimization, so if cpu_number_addr is ever
- 			 * changed in some incompatible and hard to support
- 			 * way, it's fine to back out this inlining logic
- 			 */
--			insn_buf[0] = BPF_MOV32_IMM(BPF_REG_0, (u32)(unsigned long)&pcpu_hot.cpu_number);
--			insn_buf[1] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
--			insn_buf[2] = BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0);
--			cnt = 3;
-+			u64 cpu_number_addr;
-+			struct bpf_insn ld_insn[2] = {
-+				BPF_LD_IMM64(BPF_REG_0, 0)
-+			};
-+
-+#if defined(CONFIG_X86_64)
-+			cpu_number_addr = (u64)&pcpu_hot.cpu_number;
-+#elif defined(CONFIG_ARM64)
-+			cpu_number_addr = (u64)&cpu_number;
-+#else
-+			goto next_insn;
-+#endif
-+			ld_insn[0].imm = (u32)cpu_number_addr;
-+			ld_insn[1].imm = (u32)(cpu_number_addr >> 32);
-+			insn_buf[0] = ld_insn[0];
-+			insn_buf[1] = ld_insn[1];
-+			insn_buf[2] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
-+			insn_buf[3] = BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0);
-+			cnt = 4;
- 
- 			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
- 			if (!new_prog)
-@@ -20296,7 +20310,6 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			insn      = new_prog->insnsi + i + delta;
- 			goto next_insn;
- 		}
--#endif
- 		/* Implement bpf_get_func_arg inline. */
- 		if (prog_type == BPF_PROG_TYPE_TRACING &&
- 		    insn->imm == BPF_FUNC_get_func_arg) {
 -- 
-2.40.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
