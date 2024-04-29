@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-162488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A18A8B5BEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:51:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27FF8B5C0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:56:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AC981C21446
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:51:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F2BF1C21F75
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918D080058;
-	Mon, 29 Apr 2024 14:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC0680023;
+	Mon, 29 Apr 2024 14:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="cR4NfQRT"
+	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="OuEMaWs/"
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903CD7EEF3
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0207EEF2
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.227.64.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402258; cv=none; b=cVQuoY9fUNDsLf558abJ7UZLFXvVAxjEcW8L6NthFR2Aoje/VzZH2R3/x+MfxYA+N81fsJuTAY8FjAuoGnTNNqcpKYQjdskkfl1AAK1Y6aMlXjt/qgYJmggCezSwllMdB/GVQ8i7gnJ0sB5tcq98C2bPDUZKsG0E5VQIEi9j8YI=
+	t=1714402558; cv=none; b=qmbWJdHci7XZ+aRAYyKqqEeNxk1B/uMFIE7IJVAXJMmNaHSLVy8AMxZwV6i/ZaqUiTFh+xo/jeqePhFg0X+HcBFu2+SJp6yFlXs88Uk8NqZQa+X9VYDJOgQAO4JcxA3AJ4twMFZ+4B3RNp/CzNIzRzCTP/ko1Vu0qtShWj4rPmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402258; c=relaxed/simple;
-	bh=27EreRFOAHgU+jSBmIoV3nR5fKGUFarI3dQ5IBk0P9Y=;
+	s=arc-20240116; t=1714402558; c=relaxed/simple;
+	bh=cCS+DVLBcUHkUuYmcqkFBMezGuTJlFBBRX3YxppQm40=;
 	h=Date:Message-Id:In-Reply-To:References:Subject:MIME-Version:
-	 Content-Type:From:To:Cc; b=fMEGeHx8N+hYYWYV9u43pl4bqUYZEDH4+2UikEXKaB/ic4oOId2mMAoltirH9Zp3IkRuATpjaHMqXb9rA5ohJ2b67lVmCCP8c6YKwl3Dh/ZonfYdG6yrXiI3+6fK2YI/seTn3KOisx487+FXZivEJKCtV4uDYzCu/ox1wcG2m9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=cR4NfQRT; arc=none smtp.client-ip=91.227.64.183
+	 Content-Type:From:To:Cc; b=fryk4p6L2NSo51AKjG1i22sGgXoY9itqL3Etb5bDPSMy/eFAf8uEF0HZe7KMZEXnzyhAWMf4D6RQ3pL3GzNn3DH7pg6+1u77qNxCSUxlRmQ0NkVKiAOrTizacVPpfWCwwx/3loHlJ/e0TMXuQW7M/hnRiZEnwPAjNdge43yRAdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=OuEMaWs/; arc=none smtp.client-ip=91.227.64.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rere.qmqm.pl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-	t=1714401928; bh=27EreRFOAHgU+jSBmIoV3nR5fKGUFarI3dQ5IBk0P9Y=;
+	t=1714401928; bh=cCS+DVLBcUHkUuYmcqkFBMezGuTJlFBBRX3YxppQm40=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-	b=cR4NfQRTMafP5SvYwBsJ4ywJrRbJF/UMVO1dqiIyf05cBx0AOZyjb1+Wax5LgjEqW
-	 W9yeY/RBnAs81MwnUuuMpzq8zfCcFkx7b0BQdlLuuWbTz/kVbCUoO58CapcRgUeo9l
-	 mw7lTUgWx5NnaW0He+0pQZeNv5JkXvgsWKEauYjbl4DkKUhGqXMGuS99mynmETeh5T
-	 +3bNgTQO7mLnACD5+bZDDT1QriOuRYbn7xKoB6xKC3+urr/tl31WHndV7Q0FP8cNOD
-	 Xbgil78aH0OrlbVvWb/AMRzCpdbdgil8lAz0XdlVBPgFHFa3fRujQLw/FnDmPXsLM9
-	 emHodgmZwjqgQ==
+	b=OuEMaWs/7pg3zJyycDLH8eqqRUDlq91Rjfc35++RcaAXUaxMaDHlQNl4iwWeb5sCs
+	 h9AY335esHMkvPbm4Q+uo5PIy1ZzCOw5oD123CbkFuaP10Bk3uP6DfE/OYFT4CHcqC
+	 91BemroiHoJCZwDXJdLA9Ubj5TSm9WAB7cltUkxYolEaeejAzBb8n51P3d31hIXQ7L
+	 OfiKEA7P1qzeyhML7P6QN/m53IXqpMN6YtPcoOcAlXNgzhdwczfQSvvZ0co09Hwkbx
+	 2qJpJqvE6ufCkDLzypjtDACzeoEdFt/aB1vY9A9mlLIST9LgxBRQtcjev+syCTUFf6
+	 6Ti2RcRrPYaWg==
 Received: from remote.user (localhost [127.0.0.1])
-	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMr60flzDJ;
+	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMr3f1NzCW;
 	Mon, 29 Apr 2024 16:45:28 +0200 (CEST)
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 1.0.5 at mail
 Date: Mon, 29 Apr 2024 16:45:28 +0200
-Message-Id: <1ec1a8090c0e316ee005629c24f2779211e0aebf.1714399603.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <079287cf3922f3b38a4f751f6e9097816037dd8e.1714399603.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 04/12] regulator/core: regulator_bulk_get: remove redundant
- NULL stores
+Subject: [PATCH v2 03/12] regulator/core: of_get_child_regulator: remove goto
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,43 +62,44 @@ To:	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
 Cc:	linux-kernel@vger.kernel.org
 
-On error, callers of regulator_bulk_get() pass the error up and don't
-use the pointers in consumers[]. The function is documented to release
-all regulators if any request fails.
-
-Note: if an i-th regulator_get() failed only the i-th pointer was
-cleared. This is another suggestion that the clearing was unnecessary.
+Because of_node_put() handles NULL properly (like kfree() et al)
+we can call it also after the loop ends (due to child == NULL).
+This makes the gotos redundant.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/regulator/core.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 3d7147fabbed..a1573a7ff2b2 100644
+index 5db3bf08145c..3d7147fabbed 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -4872,11 +4872,7 @@ static int _notifier_call_chain(struct regulator_dev *rdev,
- int _regulator_bulk_get(struct device *dev, int num_consumers,
- 			struct regulator_bulk_data *consumers, enum regulator_get_type get_type)
- {
--	int i;
--	int ret;
--
--	for (i = 0; i < num_consumers; i++)
--		consumers[i].consumer = NULL;
-+	int ret, i;
+@@ -438,18 +438,15 @@ static struct device_node *of_get_child_regulator(struct device_node *parent,
  
- 	for (i = 0; i < num_consumers; i++) {
- 		consumers[i].consumer = _regulator_get(dev,
-@@ -4885,7 +4881,6 @@ int _regulator_bulk_get(struct device *dev, int num_consumers,
- 			ret = dev_err_probe(dev, PTR_ERR(consumers[i].consumer),
- 					    "Failed to get supply '%s'",
- 					    consumers[i].supply);
--			consumers[i].consumer = NULL;
- 			goto err;
- 		}
+ 	for_each_child_of_node(parent, child) {
+ 		regnode = of_parse_phandle(child, prop_name, 0);
++		if (regnode)
++			break;
  
+-		if (!regnode) {
+-			regnode = of_get_child_regulator(child, prop_name);
+-			if (regnode)
+-				goto err_node_put;
+-		} else {
+-			goto err_node_put;
+-		}
++		regnode = of_get_child_regulator(child, prop_name);
++		if (regnode)
++			break;
+ 	}
+-	return NULL;
+ 
+-err_node_put:
++	/* Release the node if the loop was exited early. */
+ 	of_node_put(child);
+ 	return regnode;
+ }
 -- 
 2.39.2
 
