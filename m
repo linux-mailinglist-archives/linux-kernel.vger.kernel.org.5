@@ -1,67 +1,82 @@
-Return-Path: <linux-kernel+bounces-162239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BBA8B5864
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:23:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC638B5867
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:23:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FC811F21496
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE24B286B76
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F0A83A0B;
-	Mon, 29 Apr 2024 12:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5446E60E;
+	Mon, 29 Apr 2024 12:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="qLUQsOww"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YfN9xvJ2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A906A348;
-	Mon, 29 Apr 2024 12:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6DC6CDB7;
+	Mon, 29 Apr 2024 12:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714393190; cv=none; b=cnFBj/9+l/Jkz46bMijV7TWSXLNGN1L2cyZUo9HZ3MidcJI8dW4H+71AXCyiZp+LolmsNeOjxzOSVRV6D9o87MfBOUckOt6fpNIyILUH+Uh5moJnNKKrKSub9PPYyOwAUV5yxVrAc5oWEcql+LKA0C5wb6GG8jdyogUH4HS+EGI=
+	t=1714393198; cv=none; b=kjWj2T/fXJYUrsezgRj0bM9FWjwEosPstbbLeL3bzEdQZW4+NhlO2nR+prs6OLCmmPkSOTkjR89LW+7pJoY0YlUwb7mlQeu1Hjkn1FrQsSvZ6cg6WVO9mQqwNzLc7D9wl/xF02Z323Q4EoubFe2le5cboCbcTdXhhnd+knv9/FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714393190; c=relaxed/simple;
-	bh=Fl9BhUxNImaCXdVN/1n68+3txGl5bOMxWJDJ36ZX+3A=;
+	s=arc-20240116; t=1714393198; c=relaxed/simple;
+	bh=CjtZnAARk7MKINso2pTgQybSMs6C5wNrBPWS1UNyhEI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jjhw8Bk8RcPoUiq4zCrRFb2yaZspbaWGZngDcYiqqndUUcSOScmmKr2Jyq/TVy6POKlbVzWt8jeuRSjcIVyQAP/yHpU6ypcvrgVZDlMMFHT+Z7PQTMsdzRi5GX2LmiYTHkSwgpJFH18beehwottDMD6TFt0gYKuFO9Xzof7VHIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=qLUQsOww; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=55Zi9dSPjmV6EHr7HXJBBK0GAS5n6uFRNxp94MfZdBU=; b=qLUQsOwwolipCNVXpGEyEnoXAw
-	PQUEuVzOIPv1Xra3ZcnQ8/4vEmqxgy17IPjhTjhQlOJTL2tEL7Fhbg/mCN86z+XXuvKN9k3VJznlQ
-	u867a5LQb+Ba7RbPrkr+dhEgP2nj8UsgbIz8Syvjx4H/92JStHWIIaNVUZUf+kKZJbg8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s1Pyo-00EFN7-Sg; Mon, 29 Apr 2024 14:19:34 +0200
-Date: Mon, 29 Apr 2024 14:19:34 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-Cc: Parthiban.Veerasooran@microchip.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	corbet@lwn.net, linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
-	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 13/12] net: lan865x: optional hardware reset
-Message-ID: <eaa4eb3e-d82a-4b52-a375-1fc84be7225a@lunn.ch>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <Zi68sDje4wfgftyZ@builder>
- <dd9da345-e056-4f34-8e39-6901bf9c1636@microchip.com>
- <Zi94jdVg8a5MaB3E@builder>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J9y5BXTnKPgTiJlZ0Kouf7dYoPAxH85lyzVKrs9lGLJ7BQd5LpgEbQiXFfsKLezpQii0hQYdxDWaiAOA2XFScTGLAIFKQHtXvreg2+UTg12Yno+HmZwfiQS/i4yeuSlCr2evpxTS2uIty5L5E/ynP3i2Tp1WtkiiDf7E+abHpss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YfN9xvJ2; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714393198; x=1745929198;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CjtZnAARk7MKINso2pTgQybSMs6C5wNrBPWS1UNyhEI=;
+  b=YfN9xvJ2u7XoDEhwinQb5vQG0+M9BWiMm0nlN2hx4Oxc/TVtc127RKkU
+   B2xy7hq2RQb5opgXf+Lm5ecZnpIK0cTRb+COTFkYSvvR5+HEh6ZGLATBX
+   IOWBXBs9afsxFU/00V1+A3p5og90UuirsEhbZLbhYin0ZXlF8Oj6J0G7G
+   sXefOTAdcT4rDUOMOdNKNGue8XjfzYR/l8jRm6E/os76EIt4WsQIOy22n
+   AYx0q4H9wl9YZPlZEcZsj3nvpw9P2RFKetWoDq9Mc0BI7UPfjZYEvVAoj
+   Z/5cqlwDNTU+szy2gYEDLir2/MMR5VkcXFQpQ3zW6C5GlCrXG2eNSfHfA
+   A==;
+X-CSE-ConnectionGUID: AGwHbl2cTJ+gFqL37r4uCw==
+X-CSE-MsgGUID: Suql+Y3WTreQorJX4dBLqA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="10213654"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="10213654"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:19:57 -0700
+X-CSE-ConnectionGUID: vyCOCsvpTuyxEkTv0uZI+A==
+X-CSE-MsgGUID: BeR9vZjTQTSfzUNPU3CIBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="26169766"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:19:54 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s1Pz5-00000002KT3-0EnX;
+	Mon, 29 Apr 2024 15:19:51 +0300
+Date: Mon, 29 Apr 2024 15:19:50 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+	David Lechner <dlechner@baylibre.com>, Helge Deller <deller@gmx.de>,
+	linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] drm/ili9341: Remove the duplicative driver
+Message-ID: <Zi-QZmwa1kIAv0sP@smile.fi.intel.com>
+References: <20240425124208.2255265-1-andriy.shevchenko@linux.intel.com>
+ <20240425-perky-myrtle-gorilla-e1e24f@penduick>
+ <ZipxEk9Lpff1kB7b@smile.fi.intel.com>
+ <20240429-gorgeous-beetle-of-downpour-492bbd@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,22 +85,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zi94jdVg8a5MaB3E@builder>
+In-Reply-To: <20240429-gorgeous-beetle-of-downpour-492bbd@houat>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-> Additionally I figured out why my setup did not work without the HW
-> reset, I had missed a pull resistor in the schematic that held the IC in
-> reset.
+On Mon, Apr 29, 2024 at 01:39:06PM +0200, Maxime Ripard wrote:
+> On Thu, Apr 25, 2024 at 06:04:50PM +0300, Andy Shevchenko wrote:
+> > On Thu, Apr 25, 2024 at 04:58:06PM +0200, Maxime Ripard wrote:
+> > > On Thu, Apr 25, 2024 at 03:42:07PM +0300, Andy Shevchenko wrote:
+> > > > First of all, the driver was introduced when it was already
+> > > > two drivers available for Ilitek 9341 panels.
+> > > > 
+> > > > Second, the most recent (fourth!) driver has incorporated this one
+> > > > and hence, when enabled, it covers the provided functionality.
+> > > > 
+> > > > Taking into account the above, remove duplicative driver and make
+> > > > maintenance and support eaiser for everybody.
+> > > > 
+> > > > Also see discussion [1] for details about Ilitek 9341 duplication
+> > > > code.
+> > > > 
+> > > > Link: https://lore.kernel.org/r/ZXM9pG-53V4S8E2H@smile.fi.intel.com [1]
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > 
+> > > I think it should be the other way around and we should remove the
+> > > mipi-dbi handling from panel/panel-ilitek-ili9341.c
+> > 
+> > Then please do it! I whining already for a few years about this.
+> 
+> I have neither the hardware nor the interest to do so. Seems it looks
+> like you have plenty of the latter at least, I'm sure you'll find some
+> time to tackle this.
 
-Having a reset controlled by software is a pretty common
-design. Something needs to ensure the device is out of reset. It could
-be the bootloader, but i don't particularly like that, hiding away
-critical things where they are hard to see. So i think having it in
-the Linux driver is better.
+Hmm... Since the use of Arduino part in panel IliTek 9341 is clarified
+in this thread, I won't use that, but I have no time to clean up the mess
+in DRM in the nearest future, sorry. And TBH it seems you, guys, know much
+better what you want.
 
-There is an open question of does the driver need to actually reset
-the device, or is it sufficient to ensure it is out of reset? The
-wording of the standard suggests a hardware reset cycle is probably
-not required, but why did Microchip provide a reset pin?
+FYI:
+The drivers/gpu/drm/tiny/mi0283qt.c works for me (the plenty of the HW
+you referred to).
 
-	Andrew
+TL;DR: consider this as a (bug/feature/cleanup) report.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
