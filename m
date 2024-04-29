@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-162141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7245A8B5696
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:29:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EE1B8B5698
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27AB11F235BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D093A1C233F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3E9481BE;
-	Mon, 29 Apr 2024 11:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA314CE0E;
+	Mon, 29 Apr 2024 11:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="WbKQJDFH"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="CC8HVkPf"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763F44176B
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8EF44C6A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390135; cv=none; b=Mz0rkAm3XbX0yfbfSNM8d8wZpJHx/Ak6l8cjE3PXJ/8af0tvKrZhgoVw9x1yYmDzf2s5YwXJFPTA738enre7lTmy7b5vBQUMDnCsJxn6LlHJpYbqMJgt33DufUrt4ejwrOzdl7aLdt5h70KlEc5ALMuH01vg9xHr93Leg3QQ0No=
+	t=1714390136; cv=none; b=DGYgC9Enrvy4NiVk1JDRzJV5OUuGze1FAlJpZqjcdIU+FwzpXpqXembOyhuufpyl5wa81WTa3WDp4VwNfODg1o4IePCYsgeWaEcTKPdBye9ihZW2DEKGPaBABwbgIl0GEMD3quxhty2IoSzSxyAUWoEHdG/1IOrhZqIKSQ/DogU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390135; c=relaxed/simple;
-	bh=Zmt3mvVxR8/6eumvAZBZCb07XHV0s9S1SjrKXTEDONg=;
+	s=arc-20240116; t=1714390136; c=relaxed/simple;
+	bh=Xsyv5SDNkoLgH9URuS3zIADXYIorPsuiL3ykMXINUvE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nffv3xNOyDuub4VAuufrVZYjYBMwmO28aeziiLivqlXNkMudnLpO9ZkbEmX4XZ+2Xiz7NWqelv0HQ1coREen+Mj3t1sFISpqDd67o3jx6C6D/hNtUR6WytZss2uE+57UFQCxwJCsSeGq3b7nVR36izNL+YTnsi7XFfP/3nOOvZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=WbKQJDFH; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=CpA67BmrMfVDRxNhrUzdbMQFPQRRrWsXoQ3k5+cPFhlpMdt9qhghX+OVXMPqVFvaE/206MxOy/I6ukTnU11ouzJXEtm13CH3eYt4Bt3z/WalmwwAB5OIj2RXEte1vT0sFtjHukH1vR+3GUsSobTyztawbvJvoABHEt7bjcEY3sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=CC8HVkPf; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=MInQ7pWHBpWvz99BT9rM0W6PRLzDwOBqZlUusbB0xrA=; b=WbKQJD
-	FHMrDGNaxa7kcjZJGqVu3ihuDXv9KISrpMvum40cOr470SRiySzb7UDHfBJm8Tj0
-	pr2TYBxLI4CVC/WkJgBljlUOn/GSnJT1W2f7SCVmdQc1X1TrbX5LczsOxBjs5H67
-	Q7MsY7QcTbEAul2tCZeWUebTHSQVrz8qYe49tRQN/u0upsjhX2Azuav2aiWLJ/0B
-	Z1ShxOI9HNOf6T4cMXydCmTBBZf/wNvvaVmW/5gBuc3G/njYpFupGVsg8c9XD7Is
-	TV8ECecwMrNlM61NCgjxGj+k0dD1FhLQbn+kLpnFa7v2vwoC12kb2+hoIcYsk+Lq
-	npiM1+AUpgqLHaYw==
-Received: (qmail 2279552 invoked from network); 29 Apr 2024 13:28:46 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:28:46 +0200
-X-UD-Smtp-Session: l3s3148p1@uCdzjjoXtG1tKPB4
+	 s=k1; bh=7uNA3296SSZr7aZkz7ZdUhN4Qf0isSkwCYvTIcIHIv8=; b=CC8HVk
+	PfDiXBD6JGqzCl/GFyo9GTZfjDKVejx1LSIaI+5AsreC5+T+yH0CZ2wWt8j5eI3y
+	8P81reUjJ00HeO/33tGlMJBGcriHmvyUxGqVPFIeh3JjngRZ4zMyateJQELR4mmH
+	yiOM+RJhdsmdg6OBeQnRHqKxdhcCEfoJ8QBk5J8av+FZLBm6ZFxyAFtILyLsA9Mb
+	l2Wyki0pHaRl7Y0apLZGS5a0rlwks0LoBkMCEVjjrjcDgX+BQtLzZCgkYqxC+VV1
+	R4B4LpySmiMxpKH/RGP4QYaa4GsgEN2VX7604QsEt685XwuvHWlArROFXQkHNPSa
+	qZOVNSrG47cXVNXQ==
+Received: (qmail 2279577 invoked from network); 29 Apr 2024 13:28:47 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:28:47 +0200
+X-UD-Smtp-Session: l3s3148p1@aCKGjjoXGlBtKPB4
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-spi@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Mark Brown <broonie@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/8] spi: fsl-lpspi: use 'time_left' variable with wait_for_completion_timeout()
-Date: Mon, 29 Apr 2024 13:28:35 +0200
-Message-ID: <20240429112843.67628-3-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 3/8] spi: imx: use 'time_left' variable with wait_for_completion_timeout()
+Date: Mon, 29 Apr 2024 13:28:36 +0200
+Message-ID: <20240429112843.67628-4-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
 References: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
@@ -73,48 +79,68 @@ self explaining.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/spi/spi-fsl-lpspi.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/spi/spi-imx.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/spi/spi-fsl-lpspi.c b/drivers/spi/spi-fsl-lpspi.c
-index 92a662d1b55c..aa5ed254be46 100644
---- a/drivers/spi/spi-fsl-lpspi.c
-+++ b/drivers/spi/spi-fsl-lpspi.c
-@@ -553,7 +553,7 @@ static int fsl_lpspi_dma_transfer(struct spi_controller *controller,
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index c3e5cee18bea..f4006c82f867 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -1405,7 +1405,7 @@ static int spi_imx_dma_transfer(struct spi_imx_data *spi_imx,
  {
  	struct dma_async_tx_descriptor *desc_tx, *desc_rx;
  	unsigned long transfer_timeout;
 -	unsigned long timeout;
 +	unsigned long time_left;
+ 	struct spi_controller *controller = spi_imx->controller;
  	struct sg_table *tx = &transfer->tx_sg, *rx = &transfer->rx_sg;
- 	int ret;
+ 	struct scatterlist *last_sg = sg_last(rx->sgl, rx->nents);
+@@ -1471,18 +1471,18 @@ static int spi_imx_dma_transfer(struct spi_imx_data *spi_imx,
+ 	transfer_timeout = spi_imx_calculate_timeout(spi_imx, transfer->len);
  
-@@ -594,9 +594,9 @@ static int fsl_lpspi_dma_transfer(struct spi_controller *controller,
- 							       transfer->len);
+ 	/* Wait SDMA to finish the data transfer.*/
+-	timeout = wait_for_completion_timeout(&spi_imx->dma_tx_completion,
++	time_left = wait_for_completion_timeout(&spi_imx->dma_tx_completion,
+ 						transfer_timeout);
+-	if (!timeout) {
++	if (!time_left) {
+ 		dev_err(spi_imx->dev, "I/O Error in DMA TX\n");
+ 		dmaengine_terminate_all(controller->dma_tx);
+ 		dmaengine_terminate_all(controller->dma_rx);
+ 		return -ETIMEDOUT;
+ 	}
  
- 		/* Wait eDMA to finish the data transfer.*/
--		timeout = wait_for_completion_timeout(&fsl_lpspi->dma_tx_completion,
--						      transfer_timeout);
--		if (!timeout) {
-+		time_left = wait_for_completion_timeout(&fsl_lpspi->dma_tx_completion,
-+							transfer_timeout);
-+		if (!time_left) {
- 			dev_err(fsl_lpspi->dev, "I/O Error in DMA TX\n");
- 			dmaengine_terminate_all(controller->dma_tx);
- 			dmaengine_terminate_all(controller->dma_rx);
-@@ -604,9 +604,9 @@ static int fsl_lpspi_dma_transfer(struct spi_controller *controller,
- 			return -ETIMEDOUT;
- 		}
+-	timeout = wait_for_completion_timeout(&spi_imx->dma_rx_completion,
+-					      transfer_timeout);
+-	if (!timeout) {
++	time_left = wait_for_completion_timeout(&spi_imx->dma_rx_completion,
++						transfer_timeout);
++	if (!time_left) {
+ 		dev_err(&controller->dev, "I/O Error in DMA RX\n");
+ 		spi_imx->devtype_data->reset(spi_imx);
+ 		dmaengine_terminate_all(controller->dma_rx);
+@@ -1501,7 +1501,7 @@ static int spi_imx_pio_transfer(struct spi_device *spi,
+ {
+ 	struct spi_imx_data *spi_imx = spi_controller_get_devdata(spi->controller);
+ 	unsigned long transfer_timeout;
+-	unsigned long timeout;
++	unsigned long time_left;
  
--		timeout = wait_for_completion_timeout(&fsl_lpspi->dma_rx_completion,
--						      transfer_timeout);
--		if (!timeout) {
-+		time_left = wait_for_completion_timeout(&fsl_lpspi->dma_rx_completion,
-+							transfer_timeout);
-+		if (!time_left) {
- 			dev_err(fsl_lpspi->dev, "I/O Error in DMA RX\n");
- 			dmaengine_terminate_all(controller->dma_tx);
- 			dmaengine_terminate_all(controller->dma_rx);
+ 	spi_imx->tx_buf = transfer->tx_buf;
+ 	spi_imx->rx_buf = transfer->rx_buf;
+@@ -1517,9 +1517,9 @@ static int spi_imx_pio_transfer(struct spi_device *spi,
+ 
+ 	transfer_timeout = spi_imx_calculate_timeout(spi_imx, transfer->len);
+ 
+-	timeout = wait_for_completion_timeout(&spi_imx->xfer_done,
+-					      transfer_timeout);
+-	if (!timeout) {
++	time_left = wait_for_completion_timeout(&spi_imx->xfer_done,
++						transfer_timeout);
++	if (!time_left) {
+ 		dev_err(&spi->dev, "I/O Error in PIO\n");
+ 		spi_imx->devtype_data->reset(spi_imx);
+ 		return -ETIMEDOUT;
 -- 
 2.43.0
 
