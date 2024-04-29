@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-162916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E5FD8B6231
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4448B6239
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:33:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F9DF1C21556
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6171C211CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B258A13C669;
-	Mon, 29 Apr 2024 19:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C85413C804;
+	Mon, 29 Apr 2024 19:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X8H5tHkS"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yj8OlTIw"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FB513B792;
-	Mon, 29 Apr 2024 19:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A64913C3F9;
+	Mon, 29 Apr 2024 19:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419137; cv=none; b=TMoDGu5zyXsJensjAULbZGYftLXXxO/h57OYBJ14TRXWnhEvzgb2UE6v16nTDZc42yQWrbCSdJ/diqTLGOBU7VAlbugMMzIXJTpz8RcAoTJYJ/e/VQuS4V6X7EXTXWlIaP5aLJ7vTWkmeyMnlkOq3xb74p412BAfGf6gHYKW6Co=
+	t=1714419138; cv=none; b=iAqqrno45ZuLe1CpeD8XLCavKEGYOHxI3MAsueDiVgg2kqhZMlZtMHnYxckrGA+QIPCELCT8KrHyYZxsYI8Vz/Z2D5WgfqsCFaiORsd86R9tMvg+WenxKkFvISCte1/0ue6NpvwCLe9RCl0yES1Ps9T3a7YbZEyIoZaO/a2Vswk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419137; c=relaxed/simple;
-	bh=HtCrrX5c+iiTjbF0YZ4GUlJog3ej7ihnvN5pVpfoU7Y=;
+	s=arc-20240116; t=1714419138; c=relaxed/simple;
+	bh=zMFmJJwULaWExvGol+TjNkqMC0083Zqrgkttkhvky2E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tlciVysPO9NIkJmhAWMLIxZf/LrW8x/knDGYTvG8NNqUEcF3BxS2pY9SZTp4HCq1PpQy6/ELquH2Sm6DRHCBYffjtqzznzrFalnPLgYAGLhfb6BAWiTVOgmox1kNB3Yl44vHA/qlTZkaB9wGhicdScidtwKNj1S6N1QdrjRgjro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X8H5tHkS; arc=none smtp.client-ip=209.85.166.45
+	 MIME-Version; b=Pqng6XfY1S3+majH4ptN4I5swKnitvdoJjbbfFDwCAFxP150vaX6S7HtgJlcE9O3mHGSpnbaTYl+tVbjlw3bsa2TZxcPANi4mmykeiXsU5lpKral/KEjwicM3mreMVY8UyIGXUOKzEPv7cZXMNHICFKsyz+fmneSLhhq6Prrkiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yj8OlTIw; arc=none smtp.client-ip=209.85.166.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7ded214dbdcso45344239f.0;
-        Mon, 29 Apr 2024 12:32:15 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d5db134badso207093539f.2;
+        Mon, 29 Apr 2024 12:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714419135; x=1715023935; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714419136; x=1715023936; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wDfc87QI/eMI4MzIADapjmb72+cDPF1z6qQEsyJfsGs=;
-        b=X8H5tHkSgD7f/mH//Zf/AhSpvl6XchIWQfaX1trBAWm+tjL7Sd76MJMU807eRtKk/N
-         OVWt192PgwqAYh3e9yXXzjfvmVIDxr0rmRdX7C8skke4puXN9PfqwqqxbW2wVQFvsh8Q
-         8sTBbbWzN+XQmlvCB+5T6wiO6Y25LGO1cuAMiKwfsGVt4EZAKeXLmLzTZZ1mESolR43P
-         hVVkrG7IiLSIfR3FUgyZ0jbvWjKtFe8A/exH/BYQbru8jWnroZ7s8Qld0G6X12OUat/a
-         hVwmnPb7j9HB9UPL0V2JCHgVDr/yJKg5CBJN4BJhDR5qlGnUvct45ia3SkvPbJxHKw+D
-         lqAQ==
+        bh=nCusk8GKkQWxBikouf75pGq1h+EOpfhpPreu3ro8jhg=;
+        b=Yj8OlTIwxVQ/9W5v1V9r39YKJOmWogRHpw9x7elO6heBT0ZF80YHeL4EJlEHsq2K5P
+         dAifAGRZNOFaGD30WdEHFkRvFlo8Unim9I4tYDB7eqyATGnYfqPCaPXVd7+iL1LjMVvt
+         Rboszt2fU7x40PifZdRLsDCy8niIT4ez1J2WQLzcnvA4TJNdqQC9jJEQu8PjKXixGUux
+         RRZ9pdU3TBZ4yIbmOzPyTkmC4UOo8Y10eneAt1U7JktAmU3Cgy2DwKpDR6hyFiWYdI8u
+         gXY5RKFywUmRxnC31t7PsfY3piAnUcAYcuDkhXmgwCKUaC70vdg5TSAo/NfcQdwgWHwb
+         8yPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714419135; x=1715023935;
+        d=1e100.net; s=20230601; t=1714419136; x=1715023936;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wDfc87QI/eMI4MzIADapjmb72+cDPF1z6qQEsyJfsGs=;
-        b=bBKpABv+eeRkC1FR3vWgUxMSnodycNkShnJpYv31GxMMmR5JcnKsLNTSJD8iovPDkC
-         Ah2LAxJlJ6ekw9g0VNw6bX5/Le8w2LU5ykQQ+9O9tv+w+16887gU5oy+K0p6Apy6m/zj
-         RXhLNPjsY2CMf9q6K7lZok9YMzOJTgOw+FVglWmGJWXEVlTqpmOPFgCJyaQvDnD1j4FB
-         /bU2BLCaLBekW+J+qqMZ6RJdpOLIxqjlfG3rel4p1HrcMTv2RJaxp6ViSdLYwy1T2GUI
-         ILa4i3FG/7tAbRw+0aMU7ZvR2g2A3G7mziPBl1sMTWAqkaXXT7IFko0UwnYounWDpYY3
-         nBkw==
-X-Forwarded-Encrypted: i=1; AJvYcCXESmuPPMeO8c1ngwZwUZ4RY5JUqkjYpHA2HkNF/G9F928uYc3H6B1lu3Z+pv9zSB3q/wf1BZSSZJ1rdtTFZulNaGBL/HUS5oj9TXisImVoWRgcWENsraBgLk36VUnkwgNTQPP+fIRY
-X-Gm-Message-State: AOJu0YxaZB/CLeUBzcmloTzEW5lKJO4cvTM26tPyJm+0VTU+zTVTQAr1
-	GJtArgWKcwKNo/MK6S5J/bN3ZTqASv/GvBYEA+81rUatouHqlIU1
-X-Google-Smtp-Source: AGHT+IFCpqSCEP95iURCr0k1lU6JUePJS0EaRN/GAVW2aKwBMyed7xyc65n15xF4Y5xyFvKbGHsOVw==
-X-Received: by 2002:a6b:f715:0:b0:7da:109d:1b84 with SMTP id k21-20020a6bf715000000b007da109d1b84mr13383318iog.12.1714419134673;
-        Mon, 29 Apr 2024 12:32:14 -0700 (PDT)
+        bh=nCusk8GKkQWxBikouf75pGq1h+EOpfhpPreu3ro8jhg=;
+        b=F9OeU68SZDZ3/9anFF7h2ZSJXcvC76UVM34gnTZH7/jlw/62VYB2PC0TOD9ZXfytwv
+         HisVGVhIfDr9HKVJYlbjUZw9xfW4T6un2MTe2z7esUk8Gv60CFoDhHF7gilOFG+2J3ym
+         pzAw0ygtPFORYJRW1svwpd0N6upMm5FCqzkKO6oBVHPF6rGjSKyexbHhtvl9IbU3MJkV
+         2xaUhd+nI3KS9fgvNoLobJW6B+sFeh70E7kgBzVnYHNUwTePPUGwpVX1ELE9FI7cB0a0
+         wHHxvGmJ3mGq4wILdmASQrg1TwiZilgtwnXXDyxt/H6MwZRTXlQv6SGHcdC+5twYr1hw
+         gtHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLMJRa4f/PQ+lv4wLgwaiLXFFghDj9DZF39HPJgPjRSgOCMyuQ+ugOFUc43d8UYgyiAqnxg57Sk5XbroW6rm+dATlx0j0dKd7BDn6PKxiZyaRARBJ2/vfpl1MKRILOa5LevOS0g7nr
+X-Gm-Message-State: AOJu0Yx1GLnJ6LLq5WXJ3PWoR8FLfauX57hmcxgMcD6ApYFiUTp7Dfay
+	FDyVPc4xBSjbkkOcDDebCZDG6/wsPptf+Qioi437wNBg9vu+Dk9G
+X-Google-Smtp-Source: AGHT+IH14GqaWbrfrr+QP4SpVTkK0x2ngYDCiN8y24Rs/2jpEJrSfNm2tmzjuCieVqr3UxjfHAADGQ==
+X-Received: by 2002:a5d:8498:0:b0:7d5:f78f:ab21 with SMTP id t24-20020a5d8498000000b007d5f78fab21mr13368096iom.11.1714419136396;
+        Mon, 29 Apr 2024 12:32:16 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id dq18-20020a0566021b9200b007d5ec9b77aesm5988402iob.51.2024.04.29.12.32.13
+        by smtp.googlemail.com with ESMTPSA id dq18-20020a0566021b9200b007d5ec9b77aesm5988402iob.51.2024.04.29.12.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 12:32:14 -0700 (PDT)
+        Mon, 29 Apr 2024 12:32:15 -0700 (PDT)
 From: Jim Cromie <jim.cromie@gmail.com>
 To: jbaron@akamai.com,
 	gregkh@linuxfoundation.org,
@@ -86,9 +86,9 @@ Cc: ukaszb@chromium.org,
 	yanivt@google.com,
 	bleung@google.com,
 	Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v8 03/35] test-dyndbg: fixup CLASSMAP usage error
-Date: Mon, 29 Apr 2024 13:31:13 -0600
-Message-ID: <20240429193145.66543-4-jim.cromie@gmail.com>
+Subject: [PATCH v8 04/35] dyndbg: reword "class unknown," to "class:_UNKNOWN_"
+Date: Mon, 29 Apr 2024 13:31:14 -0600
+Message-ID: <20240429193145.66543-5-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240429193145.66543-1-jim.cromie@gmail.com>
 References: <20240429193145.66543-1-jim.cromie@gmail.com>
@@ -100,49 +100,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A more careful reading of logging output from test_dynamic_debug.ko
-reveals:
+When a dyndbg classname is unknown to a kernel module (as before
+previous patch), the callsite is un-addressable via >control queries.
 
-lib/test_dynamic_debug.c:103 [test_dynamic_debug]do_cats =pmf "doing categories\n"
-lib/test_dynamic_debug.c:105 [test_dynamic_debug]do_cats =p "LOW msg\n" class:MID
-lib/test_dynamic_debug.c:106 [test_dynamic_debug]do_cats =p "MID msg\n" class:HI
-lib/test_dynamic_debug.c:107 [test_dynamic_debug]do_cats =_ "HI msg\n" class unknown, _id:13
-
-107 says: HI is unknown, 105,106 have LOW/MID and MID/HI skew.
-
-The enum's 1st val (explicitly initialized) was wrong; it must be
-_base, not _base+1 (a DECLARE_DYNDBG_CLASSMAP param).  So the last
-enumeration exceeded the range of mapped class-id's, which triggered
-the "class unknown" report.  I coded in an error, intending to verify
-err detection, then forgot, and missed that it was there.
-
-So this patch fixes a bad usage of DECLARE_DYNDBG_CLASSMAP(), showing
-that it is too error-prone.  As noted in test-mod comments:
-
- * Using the CLASSMAP api:
- * - classmaps must have corresponding enum
- * - enum symbols must match/correlate with class-name strings in the map.
- * - base must equal enum's 1st value
- * - multiple maps must set their base to share the 0-62 class_id space !!
+The control-file displays this condition as "class unknown,"
+currently.  That spelling is sub-optimal, so change it to
+"class:_UNKNOWN_" to loudly announce the erroneous situation, and to
+make it exceedingly greppable.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/test_dynamic_debug.c | 2 +-
+ lib/dynamic_debug.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_dynamic_debug.c b/lib/test_dynamic_debug.c
-index 8dd250ad022b..a01f0193a419 100644
---- a/lib/test_dynamic_debug.c
-+++ b/lib/test_dynamic_debug.c
-@@ -75,7 +75,7 @@ DD_SYS_WRAP(disjoint_bits, p);
- DD_SYS_WRAP(disjoint_bits, T);
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index f2c5e7910bb1..73ccf947d4aa 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -1154,7 +1154,7 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 		if (class)
+ 			seq_printf(m, " class:%s", class);
+ 		else
+-			seq_printf(m, " class unknown, _id:%d", dp->class_id);
++			seq_printf(m, " class:_UNKNOWN_ _id:%d", dp->class_id);
+ 	}
+ 	seq_puts(m, "\n");
  
- /* symbolic input, independent bits */
--enum cat_disjoint_names { LOW = 11, MID, HI };
-+enum cat_disjoint_names { LOW = 10, MID, HI };
- DECLARE_DYNDBG_CLASSMAP(map_disjoint_names, DD_CLASS_TYPE_DISJOINT_NAMES, 10,
- 			"LOW", "MID", "HI");
- DD_SYS_WRAP(disjoint_names, p);
 -- 
 2.44.0
 
