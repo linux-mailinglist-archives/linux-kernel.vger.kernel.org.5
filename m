@@ -1,302 +1,261 @@
-Return-Path: <linux-kernel+bounces-162397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A1B8B5A92
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:52:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F038B5A9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:56:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF74F28B45F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:52:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5795B2B193
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8427C6D4;
-	Mon, 29 Apr 2024 13:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E806475804;
+	Mon, 29 Apr 2024 13:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="MFPwtNQR"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oi7Xwlvi"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6B97BB15;
-	Mon, 29 Apr 2024 13:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F565657D4;
+	Mon, 29 Apr 2024 13:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398691; cv=none; b=GA5ysuWGIJOzj+uEYbO9JpKWehIYOrfAdYLRSZZ71RmdI+2NOmwgTFhEaM71llItx1saaST7ARRhDzKS29S3R5o4yzsvLpBgBBEn/13jPSY3H55sJPmO5q1PuPB3SH0Qm0Blj/5/DSeLl3/ymfxyJgBl6qpAivP6ke0qnLfly0A=
+	t=1714398714; cv=none; b=B1vrqlx7B60AChN0PsLDoXLj+Vu7acyTfd6D58DjNjy82T/YKksasEdyWgfIT2WNNE4+8iFRw3y3WvnEPt5JRjAVgzQHhTqaZLgeDxoZ+ZWLjLO2jXU9RGA8GCYiBeOYdQh5CYA9u85qg7S84uFondp/aqZuDNjspmxdSqC+bNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398691; c=relaxed/simple;
-	bh=b7Rg1QyyNp473bNWrsPGhu6YROme/S3QIe4I6xPMgrw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=lyzhm6XE5WHEZk5teE8BohOifu8JREM0l1+OqP7KdUonbybBHy2GeLzMkVeVMOb6DXmfiSVWcXej5E7zzZyQnfCjXx1zUVhey8WCIRiCiwLMRSIYm1Gkhl/q2FGSQC6Fdn1DbHrt5iI20u5T2hSqRYY3R3rzCQb1rAfmnkqmQ5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=MFPwtNQR; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1714398714; c=relaxed/simple;
+	bh=e49NOt2GVVU+FTbdBwqIZXJOMOkE6tmLHI8TTI3eSTE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mmXaJ7GwXZYxSxElAtwUclzac5gKLmDcPfHTZQWL0h0Ij/xex0l2ql6nX43ZeKHB9bSwvv8KR+3uIYSMGbvrnbBbBujYwCOXwFR4Yu3DbXvvhnWIoKvGe6Cf0rAnI7xyuNQnwbAs9uyYu71OeFMtHkFmk6P4ZCMQ9UlGPAQrZWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oi7Xwlvi; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so6956851a12.2;
+        Mon, 29 Apr 2024 06:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714398710; x=1715003510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
+        b=Oi7XwlviBnxZOrXDFCAUTQTsBeF/3ft7ZswRwidczjTcCERmRiGt0WKRaNsbDm/9MD
+         82ChuVYxZwG6GjtHEY6SVmkI9Vj0A6reVHStf3rkmjtiYgqaG3i1cmX6cL1AO3yFMTok
+         gIAQbxUzF1wW7bwf2ZJACem/FTJJnNfsjh0Lwhlf79/dasFeXImTqhLOsNlLJENV0P8B
+         j9pYeYVyRGz2pTdQtf4ZmwbX3OUM4oRguX0rgf0DIfenxkW1gFP0Czn3kXv7O2Ek2B9e
+         FFfBmzQIsn7DsWj5Gmv5w2Jmd0CkWEVFWG7W7aep/OCXBbm6aJdzPkT5Y8PIUNdHeMWC
+         llrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714398710; x=1715003510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
+        b=U1Sst1mhfQ/cJHluy6tJpkcJurQt8gZzJo5kjS6Ze7Eeazv/GH6LdoA9f6uZ/8Uoot
+         yUHAxsmEcSilAiqabSKsFteK4CPTQCQPnx84drjGMy7iYodZ2WqitStjVIrdgB+HgAik
+         rvT8qg4Kxej8yu85KgNx9UXTyrs2IoMLscnUm88eSmjm/Z1Advm4nz77ktknH6ojzC1k
+         EW8rByBFOGUaASsA5k5tI1lLxhiacaYh78gMu8yug/5B3Za6LyX38OWVi076FlAosdlG
+         Wp/5c+DiWz+MPFunvwMNBOc3qzjxUHsPYrVBTKtTPB7gBXmcZtxhP9hPr6zAHQpqL14Y
+         NnCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUnSaXhMkAjR65POA7MgNX40cuZb/B8+eR74ic003f4leaPRMnkF29vyxALLAyfSN7qoPfUtk2nEfJB5xHTFJAyFay2JShqiEzo4ACAcCNgTIIQiVXTzBleBS+sFpsaQ0n9
+X-Gm-Message-State: AOJu0YyrbGwslOLoHr56SGJV3zXH4uSjCqAiEYieMN4f7hqPREiCQylc
+	VocBffC+KM/igLfqA5fmK6/JU1OXLdkWFZVS06IJHGIxr6e2us/E
+X-Google-Smtp-Source: AGHT+IGMIjFVUQLQ3SYJFBmyCh6Th4YjbgO+QtQAMEV1CdaGAPtjurOXaW/PI9GDqdTNVOZ3Eq0X2A==
+X-Received: by 2002:a50:8e5e:0:b0:570:5b3d:4f60 with SMTP id 30-20020a508e5e000000b005705b3d4f60mr8003113edx.25.1714398710224;
+        Mon, 29 Apr 2024 06:51:50 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id y20-20020a056402271400b00572300f0768sm6019931edd.79.2024.04.29.06.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 06:51:49 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 29 Apr 2024 15:51:47 +0200
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Hillf Danton <hdanton@sina.com>,
+	Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>,
+	Adrian Bunk <bunk@kernel.org>,
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	andrii@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+Message-ID: <Zi-l8xKhMbdJ-NBo@krava>
+References: <0000000000009dfa6d0617197994@google.com>
+ <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com>
+ <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1714398684;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5YSn6AgyIXRGau81MN3D1/UxkQL5cT1aZKXSLaJirts=;
-	b=MFPwtNQRuOOkgnq58Vrp262/QR28weK3CTp7uOtSQGrJ+B3I1NyvN+srZ+FYWxDK/WGk96
-	/DGS2DnHkYxDzZ7dicu6yaFpwj4rCB4lV8Nvwv42dDfqAG2UOci1Y1ggHhSG8cgk8sJDQQ
-	aGhzaV1KSxVIEjf68TXhWrVgMdBKkxEFjD7L9vNj+5Smryl7gQ0ei8+UHoRMlJMDeg766A
-	rRRtpUQ8kfdaGjwXZkIbguFjU5o5qOpr7Y+0AHMLe38fFt8NK29Do1DWw6HuQT2ctMUWPD
-	9g8bLBiNo4676hTW3rTcONhAwgrFGDJA9BL25pyQgvWZLX6mcZ2YpOZ2E/Qvtg==
-Date: Mon, 29 Apr 2024 15:51:23 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: linux-sunxi@lists.linux.dev, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC
- dtsi for A64
-In-Reply-To: <20240429113321.1f4da653@donnerap.manchester.arm.com>
-References: <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
- <20240429113321.1f4da653@donnerap.manchester.arm.com>
-Message-ID: <789ac34fc2e0329210b4cfe73eb30bec@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zi9Ts1HcqiKzy9GX@gmail.com>
 
-Hello Andre,
+On Mon, Apr 29, 2024 at 10:00:51AM +0200, Ingo Molnar wrote:
 
-On 2024-04-29 12:33, Andre Przywara wrote:
-> On Sun, 28 Apr 2024 13:40:35 +0200
-> Dragan Simic <dsimic@manjaro.org> wrote:
-> thanks for taking care of this!
+SNIP
 
-Thank you for reviewing my patch!
-
->> Add missing cache information to the Allwinner A64 SoC dtsi, to allow
->> the userspace, which includes lscpu(1) that uses the virtual files 
->> provided
->> by the kernel under the /sys/devices/system/cpu directory, to display 
->> the
->> proper A64 cache information.
->> 
->> While there, use a more self-descriptive label for the L2 cache node, 
->> which
->> also makes it more consistent with other SoC dtsi files.
->> 
->> The cache parameters for the A64 dtsi were obtained and partially 
->> derived
->> by hand from the cache size and layout specifications found in the 
->> following
->> datasheets and technical reference manuals:
->> 
->>   - Allwinner A64 datasheet, version 1.1
->>   - ARM Cortex-A53 revision r0p3 TRM, version E
->> 
->> For future reference, here's a brief summary of the documentation:
->> 
->>   - All caches employ the 64-byte cache line length
->>   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative 
->> instruction
->>     cache and 32 KB of L1 4-way, set-associative data cache
->>   - The entire SoC has 512 KB of unified L2 16-way, set-associative 
->> cache
+> The attached patch looks like the ObviouslyCorrect(tm) thing to do.
 > 
-> So that looks correct when checking the manuals, and the per-CPU
-> entries below match both between themselves and with that description
-> above.
-> However I have some level of distrust towards the Allwinner manuals,
-> regarding the cache sizes (which are chosen by Allwinner).
-
-Quite frankly, I was surprised a bit to see that the A64 contains
-512 KB of L2 cache.  IMHO, that's quite a lot for an SoC that was
-advertised primarily as a cost-effective solution.
-
-> So while I haven't measured this myself, nor checked the cache type
-> registers, tinymembench's memory latency test supports those sizes are
-> correct:
-> https://github.com/ssvb/tinymembench/wiki/PINE64-(Allwinner-A64)
-
-Ah, that's a nice benchmark report.  Let me copy & paste the most
-relevant part of that report below, just for future reference in
-case that web page becomes inaccessible at some point:
-
-==========================================================================
-== Memory latency test                                                  
-==
-==                                                                      
-==
-== Average time is measured for random memory accesses in the buffers   
-==
-== of different sizes. The larger is the buffer, the more significant   
-==
-== are relative contributions of TLB, L1/L2 cache misses and SDRAM      
-==
-== accesses. For extremely large buffer sizes we are expecting to see   
-==
-== page table walk with several requests to SDRAM for almost every      
-==
-== memory access (though 64MiB is not nearly large enough to experience 
-==
-== this effect to its fullest).                                         
-==
-==                                                                      
-==
-== Note 1: All the numbers are representing extra time, which needs to  
-==
-==         be added to L1 cache latency. The cycle timings for L1 cache 
-==
-==         latency can be usually found in the processor documentation. 
-==
-== Note 2: Dual random read means that we are simultaneously performing 
-==
-==         two independent memory accesses at a time. In the case if    
-==
-==         the memory subsystem can't handle multiple outstanding       
-==
-==         requests, dual random read has the same timings as two       
-==
-==         single reads performed one after another.                    
-==
-==========================================================================
-
-block size : single random read / dual random read, [MADV_NOHUGEPAGE]
-       1024 :    0.0 ns          /     0.0 ns
-       2048 :    0.0 ns          /     0.0 ns
-       4096 :    0.0 ns          /     0.0 ns
-       8192 :    0.0 ns          /     0.0 ns
-      16384 :    0.0 ns          /     0.0 ns
-      32768 :    0.0 ns          /     0.0 ns
-      65536 :    5.9 ns          /    10.0 ns
-     131072 :    9.1 ns          /    14.0 ns
-     262144 :   10.7 ns          /    15.5 ns
-     524288 :   12.7 ns          /    17.7 ns
-    1048576 :   92.8 ns          /   143.2 ns
-    2097152 :  134.9 ns          /   184.4 ns
-    4194304 :  163.5 ns          /   207.1 ns
-    8388608 :  178.6 ns          /   217.6 ns
-   16777216 :  187.5 ns          /   223.7 ns
-   33554432 :  192.8 ns          /   228.0 ns
-   67108864 :  195.8 ns          /   230.7 ns
-
-block size : single random read / dual random read, [MADV_HUGEPAGE]
-       1024 :    0.0 ns          /     0.0 ns
-       2048 :    0.0 ns          /     0.0 ns
-       4096 :    0.0 ns          /     0.0 ns
-       8192 :    0.0 ns          /     0.0 ns
-      16384 :    0.0 ns          /     0.0 ns
-      32768 :    0.0 ns          /     0.0 ns
-      65536 :    5.9 ns          /    10.0 ns
-     131072 :    9.1 ns          /    14.0 ns
-     262144 :   10.7 ns          /    15.6 ns
-     524288 :   12.6 ns          /    17.8 ns
-    1048576 :   92.7 ns          /   142.6 ns
-    2097152 :  134.7 ns          /   184.3 ns
-    4194304 :  155.8 ns          /   198.4 ns
-    8388608 :  166.4 ns          /   203.8 ns
-   16777216 :  171.6 ns          /   206.0 ns
-   33554432 :  174.2 ns          /   206.9 ns
-   67108864 :  175.4 ns          /   207.4 ns
-
->> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
+> NOTE! This broken code goes back to this commit in 2011:
 > 
-> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+>   4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation faults")
+> 
+> ... and back then the reason was to get all the siginfo details right. 
+> Honestly, I do not for a moment believe that it's worth getting the siginfo 
+> details right here, but part of the commit says:
+> 
+>     This fixes issues with UML when vsyscall=emulate.
+> 
+> ... and so my patch to remove this garbage will probably break UML in this 
+> situation.
+> 
+> I do not believe that anybody should be running with vsyscall=emulate in 
+> 2024 in the first place, much less if you are doing things like UML. But 
+> let's see if somebody screams.
+> 
+> Not-Yet-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Link: https://lore.kernel.org/r/CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com
 
-Thanks!
+fwiw I can no longer trigger the invalid wait context bug
+with this change
 
->> ---
->>  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 
->> ++++++++++++++++---
->>  1 file changed, 32 insertions(+), 5 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi 
->> b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
->> index 57ac18738c99..86074d03afa9 100644
->> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
->> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
->> @@ -51,49 +51,76 @@ cpu0: cpu@0 {
->>  			device_type = "cpu";
->>  			reg = <0>;
->>  			enable-method = "psci";
->> -			next-level-cache = <&L2>;
->>  			clocks = <&ccu CLK_CPUX>;
->>  			clock-names = "cpu";
->>  			#cooling-cells = <2>;
->> +			i-cache-size = <0x8000>;
->> +			i-cache-line-size = <64>;
->> +			i-cache-sets = <256>;
->> +			d-cache-size = <0x8000>;
->> +			d-cache-line-size = <64>;
->> +			d-cache-sets = <128>;
->> +			next-level-cache = <&l2_cache>;
->>  		};
->> 
->>  		cpu1: cpu@1 {
->>  			compatible = "arm,cortex-a53";
->>  			device_type = "cpu";
->>  			reg = <1>;
->>  			enable-method = "psci";
->> -			next-level-cache = <&L2>;
->>  			clocks = <&ccu CLK_CPUX>;
->>  			clock-names = "cpu";
->>  			#cooling-cells = <2>;
->> +			i-cache-size = <0x8000>;
->> +			i-cache-line-size = <64>;
->> +			i-cache-sets = <256>;
->> +			d-cache-size = <0x8000>;
->> +			d-cache-line-size = <64>;
->> +			d-cache-sets = <128>;
->> +			next-level-cache = <&l2_cache>;
->>  		};
->> 
->>  		cpu2: cpu@2 {
->>  			compatible = "arm,cortex-a53";
->>  			device_type = "cpu";
->>  			reg = <2>;
->>  			enable-method = "psci";
->> -			next-level-cache = <&L2>;
->>  			clocks = <&ccu CLK_CPUX>;
->>  			clock-names = "cpu";
->>  			#cooling-cells = <2>;
->> +			i-cache-size = <0x8000>;
->> +			i-cache-line-size = <64>;
->> +			i-cache-sets = <256>;
->> +			d-cache-size = <0x8000>;
->> +			d-cache-line-size = <64>;
->> +			d-cache-sets = <128>;
->> +			next-level-cache = <&l2_cache>;
->>  		};
->> 
->>  		cpu3: cpu@3 {
->>  			compatible = "arm,cortex-a53";
->>  			device_type = "cpu";
->>  			reg = <3>;
->>  			enable-method = "psci";
->> -			next-level-cache = <&L2>;
->>  			clocks = <&ccu CLK_CPUX>;
->>  			clock-names = "cpu";
->>  			#cooling-cells = <2>;
->> +			i-cache-size = <0x8000>;
->> +			i-cache-line-size = <64>;
->> +			i-cache-sets = <256>;
->> +			d-cache-size = <0x8000>;
->> +			d-cache-line-size = <64>;
->> +			d-cache-sets = <128>;
->> +			next-level-cache = <&l2_cache>;
->>  		};
->> 
->> -		L2: l2-cache {
->> +		l2_cache: l2-cache {
->>  			compatible = "cache";
->>  			cache-level = <2>;
->>  			cache-unified;
->> +			cache-size = <0x80000>;
->> +			cache-line-size = <64>;
->> +			cache-sets = <512>;
->>  		};
->>  	};
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  arch/x86/entry/vsyscall/vsyscall_64.c | 25 ++-----------------------
+>  arch/x86/include/asm/processor.h      |  1 -
+>  arch/x86/mm/fault.c                   | 33 +--------------------------------
+>  3 files changed, 3 insertions(+), 56 deletions(-)
+> 
+> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
+> index a3c0df11d0e6..3b0f61b2ea6d 100644
+> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+> @@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
+>  
+>  static bool write_ok_or_segv(unsigned long ptr, size_t size)
+>  {
+> -	/*
+> -	 * XXX: if access_ok, get_user, and put_user handled
+> -	 * sig_on_uaccess_err, this could go away.
+> -	 */
+> -
+>  	if (!access_ok((void __user *)ptr, size)) {
+>  		struct thread_struct *thread = &current->thread;
+>  
+> @@ -123,7 +118,6 @@ bool emulate_vsyscall(unsigned long error_code,
+>  	struct task_struct *tsk;
+>  	unsigned long caller;
+>  	int vsyscall_nr, syscall_nr, tmp;
+> -	int prev_sig_on_uaccess_err;
+>  	long ret;
+>  	unsigned long orig_dx;
+>  
+> @@ -234,12 +228,8 @@ bool emulate_vsyscall(unsigned long error_code,
+>  		goto do_ret;  /* skip requested */
+>  
+>  	/*
+> -	 * With a real vsyscall, page faults cause SIGSEGV.  We want to
+> -	 * preserve that behavior to make writing exploits harder.
+> +	 * With a real vsyscall, page faults cause SIGSEGV.
+>  	 */
+> -	prev_sig_on_uaccess_err = current->thread.sig_on_uaccess_err;
+> -	current->thread.sig_on_uaccess_err = 1;
+> -
+>  	ret = -EFAULT;
+>  	switch (vsyscall_nr) {
+>  	case 0:
+> @@ -262,23 +252,12 @@ bool emulate_vsyscall(unsigned long error_code,
+>  		break;
+>  	}
+>  
+> -	current->thread.sig_on_uaccess_err = prev_sig_on_uaccess_err;
+> -
+>  check_fault:
+>  	if (ret == -EFAULT) {
+>  		/* Bad news -- userspace fed a bad pointer to a vsyscall. */
+>  		warn_bad_vsyscall(KERN_INFO, regs,
+>  				  "vsyscall fault (exploit attempt?)");
+> -
+> -		/*
+> -		 * If we failed to generate a signal for any reason,
+> -		 * generate one here.  (This should be impossible.)
+> -		 */
+> -		if (WARN_ON_ONCE(!sigismember(&tsk->pending.signal, SIGBUS) &&
+> -				 !sigismember(&tsk->pending.signal, SIGSEGV)))
+> -			goto sigsegv;
+> -
+> -		return true;  /* Don't emulate the ret. */
+> +		goto sigsegv;
+>  	}
+>  
+>  	regs->ax = ret;
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index 811548f131f4..78e51b0d6433 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -472,7 +472,6 @@ struct thread_struct {
+>  	unsigned long		iopl_emul;
+>  
+>  	unsigned int		iopl_warn:1;
+> -	unsigned int		sig_on_uaccess_err:1;
+>  
+>  	/*
+>  	 * Protection Keys Register for Userspace.  Loaded immediately on
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 6b2ca8ba75b8..f26ecabc9424 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -724,39 +724,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+>  	WARN_ON_ONCE(user_mode(regs));
+>  
+>  	/* Are we prepared to handle this kernel fault? */
+> -	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
+> -		/*
+> -		 * Any interrupt that takes a fault gets the fixup. This makes
+> -		 * the below recursive fault logic only apply to a faults from
+> -		 * task context.
+> -		 */
+> -		if (in_interrupt())
+> -			return;
+> -
+> -		/*
+> -		 * Per the above we're !in_interrupt(), aka. task context.
+> -		 *
+> -		 * In this case we need to make sure we're not recursively
+> -		 * faulting through the emulate_vsyscall() logic.
+> -		 */
+> -		if (current->thread.sig_on_uaccess_err && signal) {
+> -			sanitize_error_code(address, &error_code);
+> -
+> -			set_signal_archinfo(address, error_code);
+> -
+> -			if (si_code == SEGV_PKUERR) {
+> -				force_sig_pkuerr((void __user *)address, pkey);
+> -			} else {
+> -				/* XXX: hwpoison faults will set the wrong code. */
+> -				force_sig_fault(signal, si_code, (void __user *)address);
+> -			}
+> -		}
+> -
+> -		/*
+> -		 * Barring that, we can do the fixup and be happy.
+> -		 */
+> +	if (fixup_exception(regs, X86_TRAP_PF, error_code, address))
+>  		return;
+> -	}
+>  
+>  	/*
+>  	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
+> 
 
