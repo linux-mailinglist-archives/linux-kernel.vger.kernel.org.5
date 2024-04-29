@@ -1,71 +1,121 @@
-Return-Path: <linux-kernel+bounces-162745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4DD8B5FFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC04C8B6001
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5041F212E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:23:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3601F2119E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993E286AE9;
-	Mon, 29 Apr 2024 17:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B278186AFE;
+	Mon, 29 Apr 2024 17:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="1vaJMAky"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmnSZgx7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF1B8595F;
-	Mon, 29 Apr 2024 17:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6458595F;
+	Mon, 29 Apr 2024 17:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411412; cv=none; b=aULhXVIjm7+J6ZbZlhyW1Nu8qN+mWAHMyl3u3Wcmne4jC9p7qrFfpwrbu82sjMSSPNgRD5phQe3YCQL5PGRHoWuOyVyBWFhJcRzPxEmFPwRg4lA8Qk5FSThKkNrqmYrC0H0i0JFMlNOxCWoa4dTHtc+nqBj6NJdiAFZERRXyq28=
+	t=1714411560; cv=none; b=A4mrSFyh7V4m78UOdEPyn8XNll9ruAbR9lgEVMpfda1nRrFBhZiWFCJQDfs7J89kBaIYq/GR03WXGOeF7R82Hrznzsxj/0bFuyHVNJuj1I5sbQpMUXj++Ax8reGo/2P8dheKRAKfJN8RwtNl4bQjdfWgAlQJabO2XtfQ5OhR65s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411412; c=relaxed/simple;
-	bh=c/zdxvS55JZPVf8d8w3oVUIUTtIn3jzMVQdAfaUaLj4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=HrT4AvgF7mtYPyZMkGlG5Sy94q3zuI4CQP+IoqDmHb3GpkRuVXihcW/jVlSkMyDE4yq00ZyWBmycrRbsZhWOGbJWJVgK+5aPQUkYhtpJQWlxK/CyBkZzVZClF8TLqnzaVdSyRt3OeELzGJDLLwSf9eQ4pC2RwpG9doe+3HPJDH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=1vaJMAky; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD0EAC113CD;
-	Mon, 29 Apr 2024 17:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1714411411;
-	bh=c/zdxvS55JZPVf8d8w3oVUIUTtIn3jzMVQdAfaUaLj4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=1vaJMAkyI5thXlhnD85yA0+eOEQOpsb+p8fEyEc/QjMiMV/Z0A9KIl4da5rZMrelp
-	 qW4JVR71b+8POkDCO/fndyy7YKm9UkHcPcP7mlu1F1ymBEosbpQ6KNHbf8z7BTtOuY
-	 ccHOrscBm3tKzxHD558ZtnZb9gKdZN/M4YcFlb84=
-Date: Mon, 29 Apr 2024 10:23:29 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: David Hildenbrand <david@redhat.com>, Muhammad Usama Anjum
- <usama.anjum@collabora.com>, Peter Xu <peterx@redhat.com>,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v1] fs/proc/task_mmu: Fix loss of young/dirty bits
- during pagemap scan
-Message-Id: <20240429102329.164f500875c51eb0a6d14528@linux-foundation.org>
-In-Reply-To: <a6656f48-da57-4bbd-849c-7f4e812a0092@arm.com>
-References: <20240429114017.182570-1-ryan.roberts@arm.com>
-	<a6656f48-da57-4bbd-849c-7f4e812a0092@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714411560; c=relaxed/simple;
+	bh=yWh+/d7hvYOisNptTdkyCNIRiL/pEpjcNGp7wzwrlF4=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=BDQUZcAAJ+8sLamlicDp/2VRnByGtjkHb4SjxJqfPyXI+ur2XSoWbVQ9cX/KIzPucrurdULySObBCLdVJd+L/MzmcMYNHol/dpQHHLtsFt8afaYjgLEoVppdpf1X5I4wSe23pm7mNIeHzvKDNKhsj/wc9s3tBlD9mAOd19FJg6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmnSZgx7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55FD4C113CD;
+	Mon, 29 Apr 2024 17:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714411559;
+	bh=yWh+/d7hvYOisNptTdkyCNIRiL/pEpjcNGp7wzwrlF4=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=kmnSZgx7B6mABLxeTfo7qZPdx7Zg01FhKCmZFeq+mO65FpNtQOWF5WSyTgrt++0PH
+	 UAiI8A2ZYjX1DgKi4TXYTKBjdbNT4rHed87e/Q+zyvH3+XRYNcy/7WZm5vVt1SJRsO
+	 EROE4UE9cCw8cznhvY4S6D5jD63afzq/oSG35bcl3Ucgxd+rsJIO84Stex8WuPmGAk
+	 iKOUpFFgONj/mAxZdAswAwlc8ANXbdb0Ou3uxFQk8YMvavxTrRtFyzp819TbJCL6ci
+	 gOYMxyzxYYtKv6wuls9t6fIX4mrOFmAWqn6Ymtz4FkEnKZGaRer8MYEGWdwiHyBIgk
+	 646Y1es6OazVg==
+From: Kalle Valo <kvalo@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,  Jeff Johnson
+ <quic_jjohnson@quicinc.com>,  linux-wireless@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in
+ struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+References: <ZgSTCmdP+omePvWg@neat>
+	<171222554691.1806092.8730005090791383928.kvalo@kernel.org>
+	<202404291008.51DB333F@keescook>
+Date: Mon, 29 Apr 2024 20:25:56 +0300
+In-Reply-To: <202404291008.51DB333F@keescook> (Kees Cook's message of "Mon, 29
+	Apr 2024 10:10:46 -0700")
+Message-ID: <877cggqdwb.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Mon, 29 Apr 2024 16:55:07 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+Kees Cook <keescook@chromium.org> writes:
 
-> > Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
-> > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> I guess this should have cc'ed stable but I forgot to add it. Are you able to
-> fix this up when you take it, Andrew, or do I need to repost?
+> On Thu, Apr 04, 2024 at 10:12:28AM +0000, Kalle Valo wrote:
+>
+>> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+>> 
+>> > Prepare for the coming implementation by GCC and Clang of the
+>> > __counted_by attribute. Flexible array members annotated with
+>> > __counted_by can have their accesses bounds-checked at run-time
+>> > via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+>> > (for strcpy/memcpy-family functions).
+>> > 
+>> > Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+>> > getting ready to enable it globally.
+>> > 
+>> > So, use the `DEFINE_FLEX()` helper for an on-stack definition of
+>> > a flexible structure where the size of the flexible-array member
+>> > is known at compile-time, and refactor the rest of the code,
+>> > accordingly.
+>> > 
+>> > So, with these changes, fix the following warning:
+>> > drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure
+>> > containing a flexible array member is not at the end of another
+>> > structure [-Wflex-array-member-not-at-end]
+>> > 
+>> > Link: https://github.com/KSPP/linux/issues/202
+>> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> > Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>> > Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+>> 
+>> Patch applied to ath-next branch of ath.git, thanks.
+>> 
+>> cbb0697e0ded wifi: wil6210: wmi: Use __counted_by() in struct
+>> wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+>
+> Hi,
+>
+> I was just walking through our patch tracker and noticed that I don't
+> see this patch include in -next yet (as of next-20240429). Is there a
+> flush of the ath-next queue planned soon? Or did I miss some change?
 
-I have made that change.
+Yeah, wireless-next was pulled last week so most likely we will create
+ath-next pull request this week.
+
+BTW we are planning to move ath.git to a new location, rename branches
+etc. I think we'll see if we can also setup it so that it can be pulled
+to linux-next, so that you don't need to ask this every time ;)
+
+(Just joking of course, there a lot of benefits from having the tree in
+linux-next)
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
