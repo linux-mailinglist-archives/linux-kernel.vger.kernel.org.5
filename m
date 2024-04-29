@@ -1,94 +1,245 @@
-Return-Path: <linux-kernel+bounces-161683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362B18B4F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:30:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E648B4F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:34:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA3641F217C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:30:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7396A1C20B5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017751851;
-	Mon, 29 Apr 2024 02:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDD67460;
+	Mon, 29 Apr 2024 02:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s9WHkqZa"
-Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="RuKGoTx2"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73B8376
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 02:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470EA7FE;
+	Mon, 29 Apr 2024 02:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714357832; cv=none; b=G2jH4HTiM2yP9lCiqausTRhKLOrxXmxReLEEnZkuAP3GL4jt12j0iVeZYEY+YxJSUXzIQPTH6rqZ+t6fQc+sDEquZ6qbC6HooRVJxV4pHOmpMjJ7MGmRK+T65g7g9J2ZwYdjam3RxWRN1vtXfOZaK6szhKslsd0y/cVVQGny6/s=
+	t=1714358038; cv=none; b=UztlGvs4zq0NLaMLAPLRqKk82uk64F1JVAP7eYFI+oBPj2JB7K4IZuIkPushkhqGFCIbA6RZg1l7b3DBM5AHrGJqcZhipXvfwCnHhe0Kf84Ai+rjdZCl67AH2SClaRKg1/ECdzHmqFiSG+hND6U1oEBzg3umb20oCaX+RBRVl3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714357832; c=relaxed/simple;
-	bh=3ohJ3/2hrxmI8wIW26hyhWEdxBpoWnozaUBh1OBgC5Q=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=WIFk6n2VhXaNz3FnJV5SxGtEol/jL7UB1fEcuX6xdjGGOlouTBDJ2vl6fAY6/yrv+MCykpWFUSP4y3mxWla2Qh/5pojyCNW0Hxg5WmBoIdG7ML57o0hL9TFNgwOE5yQQX5ShJJwXMDgm/DHcY4ca1sQ8Xk0XLJjIf0+zj71yoo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=s9WHkqZa; arc=none smtp.client-ip=203.205.221.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1714357520; bh=g/W9MeVv6E272U0RiQZkE7LuD/jReUyY/39514QJAjg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=s9WHkqZabR7FnhMdajGDJsc2ZQV7/ayoAB2V9pV6ARj9uCPus1HASJKRO3hr5YWwB
-	 dcsBqlpSSljqPDwyJzb+iaxCa0pQQyGKGfwursq2mOLUVuniAplGOsiQQcJJ/TtJdx
-	 Tx3eAD2ziQazXR8HLobnlQtSdcBvhyQTfih2+bms=
-Received: from localhost.localdomain ([58.213.8.145])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 65112406; Mon, 29 Apr 2024 10:25:17 +0800
-X-QQ-mid: xmsmtpt1714357517t7qfl32cq
-Message-ID: <tencent_7D666329DA16C3E9303F1DB5A06B0AB2A407@qq.com>
-X-QQ-XMAILINFO: MtM+4b/on8CsByaGpei1ONbA9jExRLHmGwvWQNPx1a1uCjbAKj/xXbClsNv0o8
-	 3umyoJS4ldbaSd7SoT8O5UAf6YRKtdBXqx3duoBuonlLxIYw0QfW389Ua1sWmT+z2kvYHmjcKkfe
-	 81g+BjWE8HZmYbnh8IfdFaLFlKEEapFwtpfIDBeDYYt4wJFcI7A1IiPEBBPsvkhmVhrdvhXf09fJ
-	 GG+g/W2CVvp6JfFmBv1agMW/irYwz6i2N1+ohSGvgMJdfaVPXoNypK44jnVJoStqyf1jhZP/zJFK
-	 PCRmtf3tD01Le3RSkn5pyyFXEUtN96pvhWFzZJY+KYSWYlH47njqDpK551vPXoWOylmaz1+bAshm
-	 bQ3zN1GRtfTjpn4qn2dI3ATFelqbkBrtV8ruhaohoR8toffpMaTZRyNFVmjScmNb19X1X6qO1M/A
-	 xJ6TVqrugZcdgJvWNKJJvf07IH92TNiuSR9/yfaVmxkiUwrXERu5FcwA6peAprU8DQRV4QHdnEc0
-	 rARL1e7iYe1YrNo7bwBXstf9epaHVRoaQf4MD5sc5IPcjSvxeWKlyqnfHxTMyW3SjBWCg0Dq0SVy
-	 WYt1pAmymRH92o9ySe2foKr2P8E/Yu9chGwfm9nQsqYTlAiSFp38wRMjjyIVQyV9ydqX+KWPj0T3
-	 Bl18NzMuMhra8MydwE77rLXKP4SWPG5iw4Sy7rR7BsCmaD726M440s+bijJ5AVcojA4vmlHn7N3M
-	 zGluW+fTjwaFTEIN9WZ9Wi24CtY7qVLhoBEf2LVTva8/NLqziXTyzs7D2uwFDfx2cQ3FAHkiHA7u
-	 LAqJsfHqfQnyL92xC4NrwA+WAhxI/590o5NtaC31pj89kq0+bWOWqlLW7bP57xaJk1j+eiU1FIzx
-	 lDJX7br0ZOm2Nv367huOeE5zoT5kNaQhNY2EyDnVVKR5I21PcCjepkTuV87izSS14niJhu3dLYAJ
-	 VKuK5trBXN+hJuXHx5HRl93jOubGZWDYhwgEd3mRf97hyDj273obqMmk9TrnjirkELwcb1C8umtW
-	 drcaQ1r3Ewt0WtA/Z+P8NOZNqIt9mv+lbez3fE5A==
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: linke li <lilinke99@qq.com>
-To: rientjes@google.com
-Cc: 42.hyeyoo@gmail.com,
-	akpm@linux-foundation.org,
-	cl@linux.com,
-	iamjoonsoo.kim@lge.com,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	penberg@kernel.org,
-	roman.gushchin@linux.dev,
-	vbabka@suse.cz,
-	xujianhao01@gmail.com
-Subject: Re: [PATCH] mm/slub: mark racy access on slab->freelist
-Date: Mon, 29 Apr 2024 10:25:15 +0800
-X-OQ-MSGID: <20240429022515.46685-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <1096134d-df6f-185d-240f-8a774d66f98f@google.com>
-References: <1096134d-df6f-185d-240f-8a774d66f98f@google.com>
+	s=arc-20240116; t=1714358038; c=relaxed/simple;
+	bh=h/opiJnZpmZpouz2+MELfEpG2wucS5m9X5tSKHAMWMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iMc6EGx0fqKrWKuvj8raGlRCHRnIp9stOzczCdK9wZVkpi3oR91eJuSAbx1X8X7MNOKTsoT9MWSTdImYvfIT8U4EyZZOmFztNaHgPJRIJpXc7miiGN0sW6liOtpfk6xJsl7F7fvhPdR/ddt4MfBAyUBMIBa0013xpoZ5e1N//tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=RuKGoTx2; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714358033;
+	bh=u+UhjTsEA+5N3Ev1yrs7sFh5vXXmYDontS3DPeNM0nM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RuKGoTx2HCgKZYhtA68KTpE3pbJtqYmJGZtddK9JBdvtUk19hv1jqp9GifeEUGwRl
+	 tiO5nqvXY8ltJ7KfEP699yM4feAVq7Xq0wMHfAtZgodT2qPdlQwE1TIPEGhLd8Eh3B
+	 DMObZAqCahcmPuhVbFU6OM7X4ThEYimGG8hAEUkkvUce7cZFU/4DWQ3rBqWnL/KeWl
+	 6e6MABEEmM9FJaHzsV6xlrLk337U452uMv4PHpRf8LTJri2htbfIz6okvgLlpt0TkJ
+	 9Xbz0uMa/jK3xMWsw3NMxUgvv7kxQcj0cOr1baVUKavibzbPd/WKX9JosBICSwPynb
+	 /jAu1/NXDzYKA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VSS7h52dBz4wyk;
+	Mon, 29 Apr 2024 12:33:51 +1000 (AEST)
+Date: Mon, 29 Apr 2024 12:33:51 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Networking <netdev@vger.kernel.org>, Alexander Lobakin
+ <aleksander.lobakin@intel.com>, Kent Overstreet
+ <kent.overstreet@linux.dev>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Suren
+ Baghdasaryan <surenb@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: Re: linux-next: manual merge of the net-next tree with the mm tree
+Message-ID: <20240429123351.03b44797@canb.auug.org.au>
+In-Reply-To: <20240429114302.7af809e8@canb.auug.org.au>
+References: <20240429114302.7af809e8@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/85.Si+AxzyH5ns4uTat.sbw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-> Thanks!  Do you have a data race report to copy+paste into the commit 
-> description so people can search for it if they stumble across the same 
-> thing?
+--Sig_/85.Si+AxzyH5ns4uTat.sbw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't have a data race report, just try to analyze the code statically
-and then check it manually. I hope I could help in some way.
+Hi all,
 
+On Mon, 29 Apr 2024 11:43:02 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the net-next tree got a conflict in:
+>=20
+>   include/linux/slab.h
+>=20
+> between commit:
+>=20
+>   7bd230a26648 ("mm/slab: enable slab allocation tagging for kmalloc and =
+friends")
+>=20
+> from the mm_unstable branch of the mm tree and commit:
+>=20
+>   a1d6063d9f2f ("slab: introduce kvmalloc_array_node() and kvcalloc_node(=
+)")
+>=20
+> from the net-next tree.
+>=20
+> I fixed it up (maybe? see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+
+I tried again, see below.
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/slab.h
+index 4cc37ef22aae,d1d1fa5e7983..88426b015faa
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@@ -773,40 -744,66 +773,54 @@@ static inline __alloc_size(1, 2) void *
+   * @size: how many bytes of memory are required.
+   * @flags: the type of memory to allocate (see kmalloc).
+   */
+ -static inline __alloc_size(1) void *kzalloc(size_t size, gfp_t flags)
+ +static inline __alloc_size(1) void *kzalloc_noprof(size_t size, gfp_t fla=
+gs)
+  {
+ -	return kmalloc(size, flags | __GFP_ZERO);
+ +	return kmalloc_noprof(size, flags | __GFP_ZERO);
+  }
+ +#define kzalloc(...)				alloc_hooks(kzalloc_noprof(__VA_ARGS__))
+ +#define kzalloc_node(_size, _flags, _node)	kmalloc_node(_size, (_flags)|_=
+_GFP_ZERO, _node)
+ =20
+ -/**
+ - * kzalloc_node - allocate zeroed memory from a particular memory node.
+ - * @size: how many bytes of memory are required.
+ - * @flags: the type of memory to allocate (see kmalloc).
+ - * @node: memory node from which to allocate
+ - */
+ -static inline __alloc_size(1) void *kzalloc_node(size_t size, gfp_t flags=
+, int node)
+ -{
+ -	return kmalloc_node(size, flags | __GFP_ZERO, node);
+ -}
+ +extern void *kvmalloc_node_noprof(size_t size, gfp_t flags, int node) __a=
+lloc_size(1);
+ +#define kvmalloc_node(...)			alloc_hooks(kvmalloc_node_noprof(__VA_ARGS__=
+))
+ =20
+ -extern void *kvmalloc_node(size_t size, gfp_t flags, int node) __alloc_si=
+ze(1);
+ -static inline __alloc_size(1) void *kvmalloc(size_t size, gfp_t flags)
+ -{
+ -	return kvmalloc_node(size, flags, NUMA_NO_NODE);
+ -}
+ -static inline __alloc_size(1) void *kvzalloc_node(size_t size, gfp_t flag=
+s, int node)
+ -{
+ -	return kvmalloc_node(size, flags | __GFP_ZERO, node);
+ -}
+ -static inline __alloc_size(1) void *kvzalloc(size_t size, gfp_t flags)
+ -{
+ -	return kvmalloc(size, flags | __GFP_ZERO);
+ -}
+ +#define kvmalloc(_size, _flags)			kvmalloc_node(_size, _flags, NUMA_NO_NO=
+DE)
+ +#define kvmalloc_noprof(_size, _flags)		kvmalloc_node_noprof(_size, _flag=
+s, NUMA_NO_NODE)
+ +#define kvzalloc(_size, _flags)			kvmalloc(_size, _flags|__GFP_ZERO)
+ =20
+ -static inline __alloc_size(1, 2) void *
+ -kvmalloc_array_node(size_t n, size_t size, gfp_t flags, int node)
+ +#define kvzalloc_node(_size, _flags, _node)	kvmalloc_node(_size, _flags|_=
+_GFP_ZERO, _node)
+ +
+- static inline __alloc_size(1, 2) void *kvmalloc_array_noprof(size_t n, si=
+ze_t size, gfp_t flags)
+++static inline __alloc_size(1, 2) void *kvmalloc_array_node_noprof(size_t =
+n, size_t size, gfp_t flags, int node)
+  {
+  	size_t bytes;
+ =20
+  	if (unlikely(check_mul_overflow(n, size, &bytes)))
+  		return NULL;
+ =20
+- 	return kvmalloc_node_noprof(bytes, flags, NUMA_NO_NODE);
+ -	return kvmalloc_node(bytes, flags, node);
+++	return kvmalloc_node_noprof(bytes, flags, node);
++ }
++=20
+++#define kvmalloc_array_node(...)	alloc_hooks(kvmalloc_array_node_noprof(_=
+_VA_ARGS__))
+++
++ static inline __alloc_size(1, 2) void *
++ kvmalloc_array(size_t n, size_t size, gfp_t flags)
++ {
++ 	return kvmalloc_array_node(n, size, flags, NUMA_NO_NODE);
++ }
+++#define kvmalloc_array_noprof(_n, _size, _flags)	kvmalloc_array(_n, _size=
+, _flags)
++=20
++ static inline __alloc_size(1, 2) void *
++ kvcalloc_node(size_t n, size_t size, gfp_t flags, int node)
++ {
+ -	return kvmalloc_array_node(n, size, flags | __GFP_ZERO, node);
+++	return kvmalloc_array_node_noprof(n, size, flags | __GFP_ZERO, node);
+  }
+ =20
+- #define kvmalloc_array(...)			alloc_hooks(kvmalloc_array_noprof(__VA_ARGS=
+__))
+ -static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gf=
+p_t flags)
+ -{
+ -	return kvmalloc_array(n, size, flags | __GFP_ZERO);
+ -}
+ +#define kvcalloc(_n, _size, _flags)		kvmalloc_array(_n, _size, _flags|__G=
+FP_ZERO)
+- #define kvcalloc_noprof(_n, _size, _flags)	kvmalloc_array_noprof(_n, _siz=
+e, _flags|__GFP_ZERO)
+++#define kvcalloc_noprof(_n, _size, _flags)	kvmalloc_array_node_noprof(_n,=
+ _size, _flags|__GFP_ZERO)
+ =20
+ -extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp=
+_t flags)
+ +extern void *kvrealloc_noprof(const void *p, size_t oldsize, size_t newsi=
+ze, gfp_t flags)
+  		      __realloc_size(3);
+ +#define kvrealloc(...)				alloc_hooks(kvrealloc_noprof(__VA_ARGS__))
+ +
+  extern void kvfree(const void *addr);
+  DEFINE_FREE(kvfree, void *, if (_T) kvfree(_T))
+ =20
+
+--Sig_/85.Si+AxzyH5ns4uTat.sbw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYvBw8ACgkQAVBC80lX
+0Gx4JggApEOgP/Pl3GMzrZ86iVsw6wLb/fOfqnbppBQd4aWZKSAO7+0E+jzT9ikG
+L1UKvw60OW604oxPIze5cT1MRvOpa8cygRAnxiHpzj3IV85+2HrzMrXvsSLC+k0X
+G4KysLSW8BzRHDLGW7KxbJmRHKbvMTCleEr95xf5s/OcTyJ+WqFUK7LyA9fwiCVl
+82WaVbfzHTtoUSqjaJJgql5aBBYmAAlILMnyOkOTJZcmZBmDQhAzPmMtDAiy9hk2
+jx+dVQ63GA5YUAgz9L9MWAbjxLeHiBnLAynPhRBeAraUV8Ossk0EE45y6S8+UfYM
+NerMlORefcxIf3R3O3+QnCtO6QIfCw==
+=pfHy
+-----END PGP SIGNATURE-----
+
+--Sig_/85.Si+AxzyH5ns4uTat.sbw--
 
