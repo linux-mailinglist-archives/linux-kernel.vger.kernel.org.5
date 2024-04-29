@@ -1,167 +1,257 @@
-Return-Path: <linux-kernel+bounces-162492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4FC8B5BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:53:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8358B5C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:56:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B58D1F23C73
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:53:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5641EB277AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868F17FBC8;
-	Mon, 29 Apr 2024 14:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D958063B;
+	Mon, 29 Apr 2024 14:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xqp4Fc/V"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="h+bE41xu"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2074.outbound.protection.outlook.com [40.107.20.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079AC535A2
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402375; cv=none; b=cW1tCH4crCjKnTj0JDtjsTxeNPExWOAc5eU3i1sW6FiVjMXtP60qfUPvMg+6pXdW1DqCMVD1EF0teG8FTJK8adSXfRP65zGEqtCGr8x2Lo04MhZ7wj3SbsDpMOcjm1VVsDpbX8uOWuFPxhqh+XP7C/oKwO04RqKETkE73tnFRY4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402375; c=relaxed/simple;
-	bh=PjfyzDxuHcXjJQs0gZdNT3nn9EZWf/T3Rfu1w2tjr/8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nrnw6BjYjAv273tYt+aAWsv3crAzg8HC0mlxkI1JPwj95aQryGsPML9US32JVIhNqhw2V2EV0517tAfKI2+FG2FIc71sL/TKetjt7YDNyRRfcxaljygWASuuCUsTUZV8AVGWM376JrrNKkufdXlipPHnWC+R4xgTzxxYrEla0k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xqp4Fc/V; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <73f80886-e390-4320-84dd-68e7cd7e8c62@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714402369;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yw4ulu8ftgPuJpsyuQp9BIsUJ4D+yOSy5kuEcyNjLxM=;
-	b=xqp4Fc/Vpi2QqcQsslE+BHBPozhJ7LqljB9QKZcHGFaQDOKwnQmcrKfUKSNPnK5ojF5Ktt
-	ub4/gwd0tjcY4XdM5rxpkIZOQwSMk95yXRr5igSchCvJYpyYiH6/yfebE1WSCbwC33M03b
-	TUAlVRSvkDPVvKAtqhxo+CJA1lBWSuU=
-Date: Mon, 29 Apr 2024 22:52:42 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A74D745C5;
+	Mon, 29 Apr 2024 14:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714402419; cv=fail; b=IenmHkjiuVVcjrVqug1GN3kVUvIhHeSX492qRNIej4FQThHzwkDy5LrYPCjg5u63JXk6NLP9eZj55EC2SB8seh0+V9VN/DMNrfk4Ar5g4DhuOE0eId6rrdOOprItkart4tt/UdDi7uQYC6/Maw7xhkPCrkOPpb5iRcgH2GPbMUA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714402419; c=relaxed/simple;
+	bh=6iwZtktwNi5GwAUHukB6UGOGaFML4ql5Jn9IqpwDfSI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Yz8ZN0SZLD/v2LIOLrgVUK5c9QlHJyrsKXJuZlckFZm0PlducJUhIF4WgUUuBg5NfqaQApH35oZyTy+jIe8f9brwBkpmasHb9imUHL0ZyMRyPPPy9VoX6+Gfbbo2bVqcFeaKm3HMPICqSDUkNaTzdLCC1wnd26AB+RwQOqX2BJw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=h+bE41xu; arc=fail smtp.client-ip=40.107.20.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MlMIufFbyJWb75jWtZNXEtBK2sAvM4yvtSWmHL+axlBVbqdkY2VxR5eveCDpn8S3l5XRp7M4GvyXlRrgJAfnuwJVyceEB+8wvapHlnnDGhtWt3gR9emdXliuAOl6ct9IazahFyJN0XVlbgDCwO1bgSXGRml7m4cWLFUGvcyCU9LUuckL5q8OWfzxWPbfg9i7mMpQQNOceYM5GcK67qFgsCLy7Vv1hU5pBAGY4ZYxV6ObHOuXOI4fU0ifYsjBHyiyww6Cu+JdwB300ScYfe1ibjw18lckbFz/6O/M6Y276Kgdi35cXs0GGZAqUMvubL6lmfNB1ML6hV6KjnSV4AYZKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WTv3s8R4gGV8eA5SgAMN9mmpzdrZxMMikCAiNKuSIiY=;
+ b=mK7EoDN4yTsoQZL32TCKlF8tv40Urj/qz1B64+kBRZc9WziQ7XIJUpygrCqidzj5rZKMPJ82jgY9x5LbgIKJ3ulgqigRXFNkCTvfBsm32MDemZBhnbNWNW/Ij9qpZjLEpTANwYTkxFbtWAc/a9n9OgWO6CsfBcAusO8XubkjzSYELIJCcwJWk52u045JCHInfHgTSMhwi4FZByFcMzfagyUtb/PecN8A8qiv9t5YEzVzEBj2GJTZt5V/9VeUfZpl+OPbyu1e0UyZo8B+l3qFa2ZW6ODFdiRKvW9hu1vnPT/Q8iV9KsqeDe9TcR+IHeEJ9OHFZW2wkrOfV1gZOvEc5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WTv3s8R4gGV8eA5SgAMN9mmpzdrZxMMikCAiNKuSIiY=;
+ b=h+bE41xuIIa0YQS4fUp/QzogNXOM4ZNTt/ixikHTTg9BGKyv33m+DLkh4+mA16FscbNwbHI+6HhvmIUlpwHkpbE7NfEd01ox0bhecAe1DYz7pYxG+86n2tnwYRgTVvAWLoLhYaxkNjbZX4z/XIIw2ybjJ9ZvrTp62zg50ZRe8h4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM0PR04MB7108.eurprd04.prod.outlook.com (2603:10a6:208:19e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
+ 2024 14:53:34 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
+ 14:53:34 +0000
+Date: Mon, 29 Apr 2024 10:53:23 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 01/11] PCI: imx6: Fix PCIe link down when i.MX8MM and
+ i.MX8MP PCIe is EP mode
+Message-ID: <Zi+0Y+BhPqIw7PeL@lizhi-Precision-Tower-5810>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-1-803414bdb430@nxp.com>
+ <20240427090057.GF1981@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240427090057.GF1981@thinkpad>
+X-ClientProxiedBy: SJ0PR05CA0117.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::32) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] slub: Fixes freepointer encoding for single free
-Content-Language: en-US
-To: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>,
- Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: cl@linux.com, penberg@kernel.org, rientjes@google.com,
- iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, roman.gushchin@linux.dev,
- 42.hyeyoo@gmail.com, Xiongwei Song <xiongwei.song@windriver.com>
-References: <Zij_fGjRS_rK-65r@archlinux>
- <f9c133a9-8886-4c86-a24f-4778997547f2@linux.dev>
- <bbf2063f-54d4-43f0-84b3-1ea789470914@clip-os.org>
- <5c34b253-b476-494a-96c9-fe3c95b9b74d@linux.dev>
- <6f977874-2a18-44ef-b207-9eb0baad9d66@suse.cz>
- <d17d7b20-b99e-46ce-b7bf-fb7058a66e79@clip-os.org>
- <7074c0b4-62d4-444d-8e59-e23bbbccf9b8@clip-os.org>
- <e03c8cbb-ddbf-4721-8e71-01e96379b0cc@linux.dev>
- <83fda406-0340-4b7b-9f02-e9eb41c77f0e@clip-os.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <83fda406-0340-4b7b-9f02-e9eb41c77f0e@clip-os.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM0PR04MB7108:EE_
+X-MS-Office365-Filtering-Correlation-Id: d94fe8eb-7e04-4f42-4d11-08dc685c24b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|376005|7416005|1800799015|52116005|366007|38350700005;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?b2lLS3M4RDZCZkFhRVJIVFNTZlBqa01qOGlEa2RFYVZWU014SGtHejEzZldW?=
+ =?utf-8?B?anBncHBuUy9YQlIvVTU4SzVTMEFQcUwwT3pnTGZoeFVsNzZRSUFGVnNMSUR3?=
+ =?utf-8?B?eDRiazF3M0F6Z1Z5SXViVVlMdzlzbldHYTNTSVdMWXBRMk5ySHlqek9kanQ1?=
+ =?utf-8?B?a3NSelNUVGNRV0VjZGlnajVHWnA2c2tkSHcrbVI2NmYrb3lhWTdabDQ4Skgy?=
+ =?utf-8?B?YlhsSjVDNVRmU3lLNlRWOXhBcEUwbkFSRnZUMFkrb01BenRpM2Zrak01aCtj?=
+ =?utf-8?B?UVMrQlNTbjdtaElHRXVHNEpJRkxRWnIrYjJiUm5BR2hDeGNpYXUvUnlNUGRN?=
+ =?utf-8?B?SmdQaFBZNHR3bndiSk5tZDZsRXFwd2VNQm5Na2t6V0xFSU05ajAzRlRJUGxq?=
+ =?utf-8?B?MjNkZ1BjMVZEa0drL2cxbTM5dG90ckZMYnF5Mm5XWmJMMiszRXpBN2lUS0tX?=
+ =?utf-8?B?c3BvaXdzMEpQUWgwMGNuWThVM3A0WWFZSEowL3N4aUNDNko3MEwrQkQveE9U?=
+ =?utf-8?B?SGdVUEtuby9lcmpHVDVNYWZzWEhyWXl1c1ZwVjEvMTJmekZqVUpBc29SdTN1?=
+ =?utf-8?B?eVNzbWppZ3NveXVsYUt5UWtpWWxXc213ZnN0eWVOTk80aTdRVU9wMzJuWVIw?=
+ =?utf-8?B?bjRBeFNlRklxRFgzZ1k1VE15QjZxajN4bi9VRXhWb0o2QlFwZjlSZTNtWW1G?=
+ =?utf-8?B?czNsQTFyYkJySWs5RGxzRXkrS2MxTW5qeHYvNTJpTHJjdTkxWE1JSWRPSkhK?=
+ =?utf-8?B?cTNSOGdaM21qVVpDeFJLOWJlckJ3cEI0b3RFalQ4ZmlVL3htcWtaTy8xbzVY?=
+ =?utf-8?B?b3MxOWhDVjhTTlRtOXRXMUk5bWs5QnRTZThESDFKcjNIaWwxOXdRbDZENm5i?=
+ =?utf-8?B?SC8weEc1T09VdHdBSWxPLzlJbVhpd084THNQelpXWDFQSVYxcDhOZTluclNu?=
+ =?utf-8?B?eS9TbFpNeDBJTjZPK1BZdnBpK3NmUDFSWGV6ajJqSlBCcVVmQ3BEU2N3MzlO?=
+ =?utf-8?B?YVZxc0VGbDFRbFgwdzNjWnovRm1nalJGRDRZY3NvbS90MEFGNEJwekJJSmJa?=
+ =?utf-8?B?ZkcrUlI4Skh3WlR3U0dGNEtlaEEzT0hZRFlrVFBrRHcvUVBsTS82RVlHNlEw?=
+ =?utf-8?B?OFY4RmFYTFFGRXZORmdYSUR6QXJhTHBueVl2WWJ5RnBuTlhSbDVkL0NlTDV5?=
+ =?utf-8?B?bW9Va2tCTFlDcENNN3BYTU9Fb2ExOVZLb085M1ZsUzF1RjBUSk44ejFjdUdy?=
+ =?utf-8?B?NjZOZ21BeG12dkZFOHRaY2NiTzc5RE85Y2VpV1c2S0FOckNQZTh2cWs3bDFs?=
+ =?utf-8?B?bWl0a01tYTlsZkdXYUx0bms3UzVvUWhCVXUzbXBGazFoNEY4K284UXh0eTNz?=
+ =?utf-8?B?ZmJQQ2RJWFF4RElRZE9OTWtXVHFvK3U4aVh2RXBNU3Y1dE5vNWFwU2NVZFVw?=
+ =?utf-8?B?Z21QdGcxU2VibElIY0FOZU5HRHNDNGVaS1RxdVhNaElTaUhBc0pNeFRjeGZX?=
+ =?utf-8?B?TXdnNDE3MWdWWWt6R0c2UEVPNmNyM3c3dTlTM2hBTkNmMmhieU8xNWtPMElX?=
+ =?utf-8?B?TTZ0M1k5Wjd0UzMzYUUrTE1Fc21lNHFGNm1lbDlDMHBGQkFhMWw4dmxJT1VR?=
+ =?utf-8?B?d0JEK3d4ZzliU21EL29oZFNRbUYwU0JWdDBlUld1VHduWnhveWkwN3p3SkVF?=
+ =?utf-8?B?aS8vK1Z4TjZkUWJCTm9ON2lTdFJVb0FwcGZpREtlWXRnODNqK3ZqRG5ZK0Vl?=
+ =?utf-8?B?NWt3TWJ0ZnFQUm9UbUxvS3NtMlozekw2TmtFUHVrVC91eUduY3ZIRlRnYnZV?=
+ =?utf-8?B?WXU0R25BaGQ5VU85NXBRQT09?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(52116005)(366007)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aWUwVEQ1VjhCVVNpeWRidmIzdUEzUmp4ZlBrYnBWdkRXQVY5ZVZDWGIxZ1Ns?=
+ =?utf-8?B?cnFZV1hxN3NzQVNDZUhzaG5qajQ2TXZ3Z0ZDcUlFUDNxSTU1MGNVTFBLc2xo?=
+ =?utf-8?B?M2JTdU1hL0tpbkFvWTYrZmoyUmpaOUVGVjEzelJYVUNmRUlaeG9aTTFacHZV?=
+ =?utf-8?B?QTBIREtQTit2YUtUNjZxQ0dnamV5Nmd3RVF2VEI4dHhhRFNPcjdNeG9lcS9z?=
+ =?utf-8?B?b2lRUkpkVDlQRWxBUDg3R3lKL0lQYnFDVDhLa05CR2RjZ29kcUwzZ1dNU3Ri?=
+ =?utf-8?B?SFFRSHNKSFFCQTdvZHhacitEVGo0N3BWemxadThpT0pDcWFYMGZVbUx3VTJH?=
+ =?utf-8?B?TkRuMm1NS1VwM1dYL1BtWjg0V0ltWlVvT2tYOTVteW12WHFETkZkSHVPUkxx?=
+ =?utf-8?B?akFFdDExVCtiVnRtTXhXU1ZuanE3WHI3NjBrbE5FWllSTHBMNWN1TkU5WWsz?=
+ =?utf-8?B?NjM3MGo2RE1BdnhWbUVydVcwcnlYdFoyM0NRbDlaTUhIcVM0bXBsQWN1RFg1?=
+ =?utf-8?B?WEd1aWpwdmVTZFA2QVZ4SThsV2syZ2dBb0IxMllsUDVONWFaZGtKMmpQbEp3?=
+ =?utf-8?B?N0duVUp4ZTl4WElhaXdRd0RpN2h1ZnhlM2dMYmtHeTN4Ukp1U21QZnNITDZH?=
+ =?utf-8?B?TXNLbXJnOGFyUTE4K3podkc2eWVYOWRncmsrZ0QzSzA1SGpnYXMwY1RueDdY?=
+ =?utf-8?B?cllhQUFRRGFLNUgyR0pVR2RQbFNzSXlJNjdScVdZN3EyeVUvUDU5NFZLMGcy?=
+ =?utf-8?B?WUh0aDl4bWl1M255UE1iQ0JzSi9kOHg5b2hacHNKdEgwMWZ5V3JoTjhCd01r?=
+ =?utf-8?B?R2pJa1dYQmRvQ3JtdmNDRDZVOFVpOGk2NGtLdmFWRzJPbjEydStUbVlUQVRP?=
+ =?utf-8?B?RVVvbHRuUFByTzFRdHVQMmJzNEJXYkFoOTZ3ak1pS3M0Vk96L3d2bGJjQVp3?=
+ =?utf-8?B?T0JRMFVpYzJkRU5aNmNOMHpHYmtWTXVBWVZ2b1lOMGttVzdCekpwL3grcEU4?=
+ =?utf-8?B?ZmQyK3ZodEpIeVJFRWhzOEZkUUk4eTArUTBVRGkrbXpFdlhjazZ0Z2RUZkZa?=
+ =?utf-8?B?T2craWwrbjhBTjc1WUFuOVNSVmNLa0FpMHlicUl1elptdnA5N2wvcUY0elZx?=
+ =?utf-8?B?NGdiTDRoZUZ2SGd6Q2xwSFQ0WE1IZVNEVG5OWG5GajVPbWM4bUtxVm1uQXBZ?=
+ =?utf-8?B?MllMcHVIUnFtVTFMaGNrdkxlZjFLeHJvSXVBeHBWWGlQSjJoL3A1cVdVbFlM?=
+ =?utf-8?B?MU5VdmQvOW9ZUDdUL2M3aFA0STJIcDVGUnF2N3YxU2dOTWZhWjRVdEZoRmdE?=
+ =?utf-8?B?czRmbmlsMk1oMTJpcWx1d0dkRzl5YXdSTGlKQXpHWS9HWFc0ZlIvUDJuNEkw?=
+ =?utf-8?B?ei9IZ1lLallhYTNnbHc2WXdjQ2VyUEpTTW1ZdXVWS3gxNjczbDNyRkxrR2x3?=
+ =?utf-8?B?NW52K0dYQy9IYnpXNVRHTTBpMUdpeTNKYWdOMlppTWR2WlFwRDJESktuaXR5?=
+ =?utf-8?B?WFQ3RFJ5T1RSak9ZWDdrZ3NiYkRSNk5oTjNBWnh1ejNZNXE3ZTFQZks2YnZR?=
+ =?utf-8?B?NXBNeUlMZU1tUXIyU3ZuNWxwTDFpYjlOaU9YV2NscG5JdThtRS9DbXBPS3kx?=
+ =?utf-8?B?SWdYWDBpN2p6SmF5NDBMdmJRUngvRVI3T0xzcEJDWm5neGd5K3RHS3hpK0V1?=
+ =?utf-8?B?eEtBRHFOanMzbThGTWJoWVBiN1JBMmlxWHhkd1hFN0dsS1BvaXA0L1ZFTjlG?=
+ =?utf-8?B?SC9pT3hudE96MitOVnVGYTdJUE50MFM5WE9GRjNDUG9IN1BBU2RickxVTXJM?=
+ =?utf-8?B?UnBkeTNmMnd0RjNMSjA4cnlmOERiejlkbXdUeElSTzVYaERvcnE5bmh1cXBw?=
+ =?utf-8?B?Vm1xRzc2aGs2YTBzeEh3dUVqUWRYdndyV20vcnRudTRFUHloVDZicFdXTld6?=
+ =?utf-8?B?UUtoTW9DK1pmSnpVeU9lTkR2U1RYS084Umg1V29GVGlId09kZWtDcGsxV2xy?=
+ =?utf-8?B?bXFTRWhGWW1EL2x6dHIzaVc0akRiZmtiNnphQ0k4WkdnUFRvV2diVGk1dWlT?=
+ =?utf-8?B?b1Z0dHk4SEhra09yZkI3T1U3VUNYYW1EcUhBS1JOS1NqT3pYcjl6ZDB5dEJx?=
+ =?utf-8?Q?vsRaHbfvFQ2titywgzAIx+L9F?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d94fe8eb-7e04-4f42-4d11-08dc685c24b3
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 14:53:34.4239
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a6AmzYPD2r8cFd7e+7tPXYqH3rIAAsi8nucNZlbCQtU3Bus8Kw6Ua+dGyo+MkFKvlppLMviVQBhfkvU3DbqN7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7108
 
-On 2024/4/29 22:32, Nicolas Bouchinet wrote:
+On Sat, Apr 27, 2024 at 02:30:57PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Apr 02, 2024 at 10:33:37AM -0400, Frank Li wrote:
+> > From: Richard Zhu <hongxing.zhu@nxp.com>
+> > 
+> > Both IMX8MM_EP and IMX8MP_EP have the "IMX6_PCIE_FLAG_HAS_APP_RESET"
+> > set indeed. Otherwise, the LTSSM_EN bit wouldn't be asserted anymore.
+> > That's the root cause that PCIe link is down when i.MX8MM and i.MX8MP
+> > PCIe are in the EP mode.
+> > 
 > 
-> On 4/29/24 15:35, Chengming Zhou wrote:
->> On 2024/4/29 20:59, Nicolas Bouchinet wrote:
->>> On 4/29/24 11:09, Nicolas Bouchinet wrote:
->>>> Hi Vlastimil,
->>>>
->>>> thanks for your review and your proposal.
->>>>
->>>> On 4/29/24 10:52, Vlastimil Babka wrote:
->>>>> On 4/25/24 5:14 PM, Chengming Zhou wrote:
->>>>>> On 2024/4/25 23:02, Nicolas Bouchinet wrote:
->>>>> Thanks for finding the bug and the fix!
->>>>>
->>>>>>> Hy,
->>>>>>>
->>>>>>> First of all, thanks a lot for your time.
->>>>>>>
->>>>>>> On 4/25/24 10:36, Chengming Zhou wrote:
->>>>>>>> On 2024/4/24 20:47, Nicolas Bouchinet wrote:
->>>>>>>>> From: Nicolas Bouchinet<nicolas.bouchinet@ssi.gouv.fr>
->>>>>>>>>
->>>>>>>>> Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
->>>>>>>>> separately") splits single and bulk object freeing in two functions
->>>>>>>>> slab_free() and slab_free_bulk() which leads slab_free() to call
->>>>>>>>> slab_free_hook() directly instead of slab_free_freelist_hook().
->>>>>>>> Right.
->>>>>>>> y not suitable for a stable-candidate fix we need
->>>>>>>>> If `init_on_free` is set, slab_free_hook() zeroes the object.
->>>>>>>>> Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
->>>>>>>>> set, the do_slab_free() slowpath executes freelist consistency
->>>>>>>>> checks and try to decode a zeroed freepointer which leads to a
->>>>>>>>> "Freepointer corrupt" detection in check_object().
->>>>>>>> IIUC, the "freepointer" can be checked on the free path only when
->>>>>>>> it's outside the object memory. Here slab_free_hook() zeroed the
->>>>>>>> freepointer and caused the problem.
->>>>>>>>
->>>>>>>> But why we should zero the memory outside the object_size? It seems
->>>>>>>> more reasonable to only zero the object_size when init_on_free is set?
->>>>>>> The original purpose was to avoid leaking information through the object and its metadata / tracking information as described in init_on_free initial Commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and init_on_free=1 boot options").
->>>>>>>
->>>>>>> I have to admit I didn't read the entire lore about the original patchset yet, though it could be interesting to know a bit more the threat models, specifically regarding the object metadata init.
->>>>>> Thank you for the reference! I also don't get why it needs to zero
->>>>>> the metadata and tracking information.
->>>>> Hmm taking a step back, it seems really suboptimal to initialize the
->>>>> outside-object freepointer as part of init_on_free:
->>>>>
->>>>> - the freeing itself will always set it one way or another, in this case
->>>>> free_to_partial_list() will do set_freepointer() after free_debug_processing()
->>>>>
->>>>> - we lose the ability to detect if the allocated slab object's user wrote to
->>>>> it, which is a buffer overflow
->> Ah, right, this ability seems important for debugging overflow problem.
->>
->>>>> So the best option to me would be to adjust the init in slab_free_hook() to
->>>>> avoid the outside-object freepointer similarly to how it avoids the red zone.
->> Agree.
->>
->>>>> We'll still not have the buffer overflow detection ability for bulk free
->>>>> where slab_free_freelist_hook() will set the free pointer before we reach
->>>>> the checks, but changing that is most likely not worth the trouble, and
->>>>> especially not suitable for a stable-candidate fix we need here.
->>>> It seems like a good alternative to me, I'll push a V2 patch with those changes.
->>>>
->>>> I help maintaining the Linux-Hardened patchset in which we have a slab object canary feature that helps detecting overflows. It is located just after the object freepointer.
->>>
->>> I've tried a patch where the freepointer is avoided but it results in the same bug. It seems that the commit 0f181f9fbea8bc7ea ("mm/slub.c: init_on_free=1 should wipe freelist ptr for bulk allocations") inits the freepointer on allocation if init_on_free is set in order to return a clean initialized object to the caller.
->>>
->> Good catch! You may need to change maybe_wipe_obj_freeptr() too,
->> I haven't tested this, not sure whether it works for you. :)
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 3e33ff900d35..3f250a167cb5 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -3796,7 +3796,8 @@ static void *__slab_alloc_node(struct kmem_cache *s,
->>   static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
->>                                                     void *obj)
->>   {
->> -       if (unlikely(slab_want_init_on_free(s)) && obj)
->> +       if (unlikely(slab_want_init_on_free(s)) && obj &&
->> +           !freeptr_outside_object(s))
->>                  memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
->>                          0, sizeof(void *));
->>   }
->>
->> Thanks!
+> This commit message is difficult to understand. I think the issue you are fixing
+> is that these 2 SoCs do not control the 'apps_reset', due to which the LTSSM
+> state is not configured properly.
 > 
-> Indeed since check_object() avoids objects for which freepointer is in the object and since val is equal to SLUB_RED_ACTIVE in our specific case it should work. Do you want me to add you as Co-authored ?
-> 
+> Referring Link Down is confusing at its best. Is the link training happens first
+> of all?
 
-Ok, it's great. Thanks!
+Commit message is not good enough, how about change to below one
+
+PCI: imx6: Fix iMX8MM and iMX8MP's EP mode failing to establish link
+
+Add IMX6_PCIE_FLAG_HAS_APP_RESET flag to IMX8MM_EP and IMX8MP_EP drvdata.
+This was missed during code restructuring. The app-reset from System Reset
+Controller needs to be released before starting LTSSM.
+
+Frank
+
+> 
+> - Mani
+> 
+> > Fixes: 0c9651c21f2a ("PCI: imx6: Simplify reset handling by using *_FLAG_HAS_*_RESET")
+> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> >  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> > index 99a60270b26cd..e43eda6b33ca7 100644
+> > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > @@ -1568,7 +1568,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+> >  	},
+> >  	[IMX8MM_EP] = {
+> >  		.variant = IMX8MM_EP,
+> > -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
+> > +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
+> > +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
+> >  		.mode = DW_PCIE_EP_TYPE,
+> >  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+> >  		.clk_names = imx8mm_clks,
+> > @@ -1579,7 +1580,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+> >  	},
+> >  	[IMX8MP_EP] = {
+> >  		.variant = IMX8MP_EP,
+> > -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
+> > +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
+> > +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
+> >  		.mode = DW_PCIE_EP_TYPE,
+> >  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+> >  		.clk_names = imx8mm_clks,
+> > 
+> > -- 
+> > 2.34.1
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
