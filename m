@@ -1,182 +1,135 @@
-Return-Path: <linux-kernel+bounces-161691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F208B4FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:08:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 187FE8B4FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2115A2824C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:08:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3F9A280E0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706218C09;
-	Mon, 29 Apr 2024 03:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B238F5D;
+	Mon, 29 Apr 2024 03:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tTmVinvh";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DCIbbhdV"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OFvPKKzx"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1077490;
-	Mon, 29 Apr 2024 03:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CABF8479;
+	Mon, 29 Apr 2024 03:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714360087; cv=none; b=n/bSjo33lTcgnj93ckTiszE96V/8xiboAwgSEDGnaxzjdSCRg2jbtP6fDlsMCzyM66g+s3rcrzQ1bch553nPRuKOC1jyiwTywKu69eEHYQXhxNf4kFx7C5mCukPnbIfQSHLKf98jKs8hPegTgjxB8WhRi3CvbvHlOu+cZ5GVFnk=
+	t=1714360375; cv=none; b=sXhcXeL2vEOz3xEY8+PF+o/YreLCY8uK1dQX/STp6cZFWrc5lH/S+c/8Fc3xgD/c9Y2EnTdEHsI+7ZrdDcKLfBOQOZU8V59J3FX7B8+AB/ggFABQ/E5DUmzWHgtPSNgJTZ/jrUP9ZeLk1MSJPLmGwK+T9HWtWhH1hzMuKz4zyAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714360087; c=relaxed/simple;
-	bh=nNQqdSIvzSh2ESfM+ejgQAsufIActqWQxEnkE1E5Zlg=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=n78NG/UUGJtD5uIDwupTcle7T2/V+JG7FJZwRGznIxsgfEa9d6rZrT3IbCho0BVp/pJCKoDi6K4ZA2ZIccA7SJvRYHdm1qEXo/LstJIWTMnYfxpvghq0D9VpJbPY350ZDuR0eYls77vMqkr3kTa1N80E9Odn64TbIEnGhE9hbw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tTmVinvh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DCIbbhdV; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 29 Apr 2024 03:08:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714360083;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9tny/bqYFxNMLBGYyW1p9Exu0FP+zgAxWcwU0Hl6Bew=;
-	b=tTmVinvhOZ1arsfp52wd3igODmmtbyMIAhP7jNnF8dcJiXz7keOeRSeU+qW1SoYzVrL85N
-	Qu5SeO+dAQGAxjpoQqTzkyH+ZVrqH5WtrOzKF+ixEs2k6JWg9M5r1yD5PAw6PFslp3pqXi
-	PddugXEHnlvEIFgQRPG3YnOFSlArfQqXFPk4XG19U6wrfohl/W3wVOBVk7aa5DZsPt6/dz
-	pz3rdksrPzi7AnO3v9w+FLFcXBz9riaG+PKXqfWE5vO2vYuZXIc8soJ006FZ3pIgttxA22
-	vp5HWYyBCCeq1rdyCPTiJArVYY5Xz9GIDJhqv6e9zPElpm43CXaLct/TiYSSAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714360083;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9tny/bqYFxNMLBGYyW1p9Exu0FP+zgAxWcwU0Hl6Bew=;
-	b=DCIbbhdVFTYw/6m1fyLdwPAz+RjBPjHQK5C8G3pwY1CxGBRKCp5GQJpwPSmad6v9uKsw2Z
-	pYsbamx0tnRt5YCg==
-From: "tip-bot2 for Zqiang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] softirq: Fix suspicious RCU usage in __do_softirq()
-Cc: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com,
- Thomas Gleixner <tglx@linutronix.de>, Zqiang <qiang.zhang1211@gmail.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
-References: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1714360375; c=relaxed/simple;
+	bh=dHhlMceTSxg5KPIsE2YuvweDSt8KUh06RZaKKN1O6No=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ULwvLmFT3T1aJET8CxMXP8q1Wkbiwp04/dLKgZsaXLWHTqWg6JkZPmdK/JW1fE57pBoC6Ofahdwp2qnSMAJgM/tcU8btT4IzJj2cCaWl1fauJ125f92b0naDLVn7t88bLxcAYomBg+Vug/DgMk5vLcQjgiNi9tMy5ndrjjOelts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=OFvPKKzx; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714360368;
+	bh=2FzFPUX3bLG3faCR0xhttaBk0b99Aw0RFjXJ8hQd4cE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=OFvPKKzx+stCGjTBRA6T6BVN2JBAFtMIHeJ2LrLdz24W3pcCvyT+NhtlM2+fp2ovp
+	 R/n8rCWQjTO+AZMIo+xgVyvs6YoH4/SEc/sIV2jQwvEQt30XEMvxfJahRUHAGKw2GM
+	 tOXnaR2DVaeQuayNfDIfGnK14X0KbsMZxDCkdoKEhQhlCHJiQ6jpTWndc2E8GrhWp+
+	 D0YFgPlc6T2EFgYopHh4mUiKTYCpwl3T7Er+1417aD/aPUJaU3rWgSQavcXBVz96zJ
+	 nfpCl8V+vSpA2ohTfNfmEdoADJ8ePER4zeqeXrAUJ86Gq+ru/zMn33buuCyT4TXGwW
+	 lUuvDcyrVpkEg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VST0b4VLWz4wyp;
+	Mon, 29 Apr 2024 13:12:47 +1000 (AEST)
+Date: Mon, 29 Apr 2024 13:12:45 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay
+ <ogabbay@kernel.org>, Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?=
+ <thomas.hellstrom@linux.intel.com>, Dave Airlie <airlied@redhat.com>
+Cc: DRI <dri-devel@lists.freedesktop.org>, DRM XE List
+ <intel-xe@lists.freedesktop.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the drm-xe tree with the drm tree
+Message-ID: <20240429131245.5d4fcc37@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171436008266.10875.5509449909240073046.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/O.2GsTH7sUrY0rG9nG7feeQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The following commit has been merged into the irq/urgent branch of tip:
+--Sig_/O.2GsTH7sUrY0rG9nG7feeQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Commit-ID:     1dd1eff161bd55968d3d46bc36def62d71fb4785
-Gitweb:        https://git.kernel.org/tip/1dd1eff161bd55968d3d46bc36def62d71fb4785
-Author:        Zqiang <qiang.zhang1211@gmail.com>
-AuthorDate:    Sat, 27 Apr 2024 18:28:08 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 29 Apr 2024 05:03:51 +02:00
+Hi all,
 
-softirq: Fix suspicious RCU usage in __do_softirq()
+Today's linux-next merge of the drm-xe tree got a conflict in:
 
-Currently, the condition "__this_cpu_read(ksoftirqd) == current" is used to
-invoke rcu_softirq_qs() in ksoftirqd tasks context for non-RT kernels.
+  drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h
 
-This works correctly as long as the context is actually task context but
-this condition is wrong when:
+between commit:
 
-     - the current task is ksoftirqd
-     - the task is interrupted in a RCU read side critical section
-     - __do_softirq() is invoked on return from interrupt
+  cb4046d289bd ("drm/i915: Drop dead code for xehpsdv")
 
-Syzkaller triggered the following scenario:
+from the drm tree and commit:
 
-  -> finish_task_switch()
-    -> put_task_struct_rcu_user()
-      -> call_rcu(&task->rcu, delayed_put_task_struct)
-        -> __kasan_record_aux_stack()
-          -> pfn_valid()
-            -> rcu_read_lock_sched()
-              <interrupt>
-                __irq_exit_rcu()
-                -> __do_softirq)()
-                   -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-                     __this_cpu_read(ksoftirqd) == current)
-                     -> rcu_softirq_qs()
-                       -> RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
+  6a2a90cba12b ("drm/xe/display: Fix ADL-N detection")
 
-The rcu quiescent state is reported in the rcu-read critical section, so
-the lockdep warning is triggered.
+from the drm-xe tree.
 
-Fix this by splitting out the inner working of __do_softirq() into a helper
-function which takes an argument to distinguish between ksoftirqd task
-context and interrupted context and invoke it from the relevant call sites
-with the proper context information and use that for the conditional
-invocation of rcu_softirq_qs().
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240427102808.29356-1-qiang.zhang1211@gmail.com
-Link: https://lore.kernel.org/lkml/8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop/T/#mea8aba4abfcb97bbf499d169ce7f30c4cff1b0e3
----
- kernel/softirq.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index b315b21..0258201 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
- static inline void lockdep_softirq_end(bool in_hardirq) { }
- #endif
- 
--asmlinkage __visible void __softirq_entry __do_softirq(void)
-+static void handle_softirqs(bool ksirqd)
- {
- 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
- 	unsigned long old_flags = current->flags;
-@@ -563,8 +563,7 @@ restart:
- 		pending >>= softirq_bit;
- 	}
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
--	    __this_cpu_read(ksoftirqd) == current)
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && ksirqd)
- 		rcu_softirq_qs();
- 
- 	local_irq_disable();
-@@ -584,6 +583,11 @@ restart:
- 	current_restore_flags(old_flags, PF_MEMALLOC);
- }
- 
-+asmlinkage __visible void __softirq_entry __do_softirq(void)
-+{
-+	handle_softirqs(false);
-+}
-+
- /**
-  * irq_enter_rcu - Enter an interrupt context with RCU watching
-  */
-@@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
- 		 * We can safely run softirq on inline stack, as we are not deep
- 		 * in the task stack here.
- 		 */
--		__do_softirq();
-+		handle_softirqs(true);
- 		ksoftirqd_run_end();
- 		cond_resched();
- 		return;
+diff --cc drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h
+index ffaa4d2f1eed,9ee694bf331f..000000000000
+--- a/drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h
++++ b/drivers/gpu/drm/xe/compat-i915-headers/i915_drv.h
+@@@ -78,8 -84,11 +78,9 @@@ static inline struct drm_i915_private *
+  #define IS_ROCKETLAKE(dev_priv)	IS_PLATFORM(dev_priv, XE_ROCKETLAKE)
+  #define IS_DG1(dev_priv)        IS_PLATFORM(dev_priv, XE_DG1)
+  #define IS_ALDERLAKE_S(dev_priv) IS_PLATFORM(dev_priv, XE_ALDERLAKE_S)
+- #define IS_ALDERLAKE_P(dev_priv) IS_PLATFORM(dev_priv, XE_ALDERLAKE_P)
++ #define IS_ALDERLAKE_P(dev_priv) (IS_PLATFORM(dev_priv, XE_ALDERLAKE_P) |=
+| \
++ 				  IS_PLATFORM(dev_priv, XE_ALDERLAKE_N))
+ -#define IS_XEHPSDV(dev_priv) (dev_priv && 0)
+  #define IS_DG2(dev_priv)	IS_PLATFORM(dev_priv, XE_DG2)
+ -#define IS_PONTEVECCHIO(dev_priv) IS_PLATFORM(dev_priv, XE_PVC)
+  #define IS_METEORLAKE(dev_priv) IS_PLATFORM(dev_priv, XE_METEORLAKE)
+  #define IS_LUNARLAKE(dev_priv) IS_PLATFORM(dev_priv, XE_LUNARLAKE)
+  #define IS_BATTLEMAGE(dev_priv)  IS_PLATFORM(dev_priv, XE_BATTLEMAGE)
+
+--Sig_/O.2GsTH7sUrY0rG9nG7feeQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYvEC0ACgkQAVBC80lX
+0GxeEwf+JyDY0T+hn6eCyOuA9aEMlFHOEU4DvYaWY8f0W/5gqxkXzIHajzcPIFJ7
+U66qycz4Jubk+RmfA4MEwHzAZjE2p51RKiE/UuastXFQppA6rAwvyCOZkStTl79N
+PdU0/lTq/N4OKdLyVm7W09FdN7y6PZxX/gH1ykqAWaJLEoUBsNPu9Hh4jOTVdGmO
+dVcZcS8/xwgbXBdYQzuVb776ty0tNnRVSTDJyTbMlh5ioEynjbHbMjYGtSSA6fYM
+JYGH7NZzpc1t+UG1kWrhdSfiWIb04GfWU03vw0t1U9F+Eo6Cf70cbZMiYbdUaSbU
+LD0KSF1hvIBhpTRS+PJh0GziFSC9ug==
+=SlGa
+-----END PGP SIGNATURE-----
+
+--Sig_/O.2GsTH7sUrY0rG9nG7feeQ--
 
