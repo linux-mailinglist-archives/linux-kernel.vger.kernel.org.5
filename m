@@ -1,115 +1,120 @@
-Return-Path: <linux-kernel+bounces-161978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 730DC8B5418
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E840B8B5423
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B126AB21353
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:20:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20D52B21696
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31412030B;
-	Mon, 29 Apr 2024 09:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D3B225D9;
+	Mon, 29 Apr 2024 09:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JeBcUTjG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGGCczmC"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F9112E7F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642D320300;
+	Mon, 29 Apr 2024 09:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714382412; cv=none; b=oMz/Gsc61VvWjo2DP7ya19+55iJjm6xVLl5U7yzKP3DsDkme8rnOAWHPINYP+HpQoCdk5NAopQS3WvcbLjrtDQTAPs4oTyCCPJyBTtPtnKpcJkG2tD53xAkol5yowIIV8krqv3WRZNjePYDJKLxDOMMcsUlXIN9qmZj1C6f1L8E=
+	t=1714382512; cv=none; b=OtonOwB5KGXkw+tVXI+ammbht8A5Kifq60ShwAmevsWIKjLFjjYyPw1nfSkrm9SJMnREpAzOPI1fpms9dFSBh6UzpIDpUVzJQbC183dv+XK31AEivmnDQFnHsUYy/4DfERqVXb7+0lJISrDaMC2g4SEgkZ6mex59HLZ4UBm+Urg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714382412; c=relaxed/simple;
-	bh=Y4bDuRSz6TSLz3mVCCjXzVCR5pym+nGoMR5ch9kpkR0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fxHvRsXVRKxsyrQWwLvCaUaIK0k5zis9IZ/LdED/Zg0ndthFdfknjxHWN9NNJTZzJiMfr5PcQ0ZHCLdYNpwGpmgojZLDbL+FXmA/8l5NnTAdJaP3kXueyoRjpT32gFtTXTkfV6bVCumUYuCffMSvPXvUb6wA78h3L90Pq1BUKuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JeBcUTjG; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714382410; x=1745918410;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=Y4bDuRSz6TSLz3mVCCjXzVCR5pym+nGoMR5ch9kpkR0=;
-  b=JeBcUTjG7BEFUqrncqvszHvEVjDqfNylQP6nYHEsy6FWZGmJd7T2IrzQ
-   W4XK6g+fPRJrbZ2cDJYEhk63lfTBBIYh72lGjtGA+qb8l1lnO0U0whkom
-   Q7/8sV7JYbLICwOnBQ+Hp5aualkd5wLK3ZTNXNwFN5qjadx0mDS+Gc4Nh
-   ZMM1ajDTJQR9j5I+LVZwgIRTIECM5imPPIl1CaW4xt/OGn+LjZwRUA8pn
-   OOr1DayFa0FxITbFqmfsxVWL65B7i4bt10L3sunib/5S7hQQevISIPpic
-   vsd379jrfdxgX6KI4SKCA4btaMYipy2TQLPHHuV36202xbmdsa00OKXuR
-   A==;
-X-CSE-ConnectionGUID: xsfdljZ4TlCj8U20W8hVlA==
-X-CSE-MsgGUID: mvrjThVnTnqEWWC1/MVZnw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9958800"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="9958800"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 02:20:10 -0700
-X-CSE-ConnectionGUID: whTviabCQ5apEoLo5b0/eQ==
-X-CSE-MsgGUID: dKioqKMaQBq/p9WyJJh/VQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26461169"
-Received: from aantonov-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.167])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 02:20:02 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang
- <hsinyi@google.com>, Javier Martinez Canillas <javierm@redhat.com>, Neil
- Armstrong <neil.armstrong@linaro.org>, Joel Selvaraj <jo@jsfamily.in>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Cong Yang
- <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg
- <sam@ravnborg.org>, Douglas Anderson <dianders@chromium.org>, Daniel
- Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] drm/mipi-dsi: Reduce bloat and add funcs for
- cleaner init seqs
-In-Reply-To: <20240426235857.3870424-1-dianders@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240426235857.3870424-1-dianders@chromium.org>
-Date: Mon, 29 Apr 2024 12:20:00 +0300
-Message-ID: <87jzkg4jb3.fsf@intel.com>
+	s=arc-20240116; t=1714382512; c=relaxed/simple;
+	bh=RYP47pychMJazvWWYbs34D9U+KDiYMmu3kJmqSc4RBA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eQlJTOj3qLaa2IGynxvY1XEBy69l8nJtjz8zbdLtrfFPlyegpvtBxZpGEtNiP8xTm72fjvPPEvWQOeg4zc/x+C3Io9Uo0OYNVALI7sF59iN8TlcxLOYsrqCnjYHV5Ndi8yKkMIWvvlhkxDJtLehElgkKktDxzDOOwXOqHrA27EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGGCczmC; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so4334882b3a.3;
+        Mon, 29 Apr 2024 02:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714382511; x=1714987311; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J9UFM0QgrM1FAh0+vb7l+Th4iJA3HL3efcqlB9gfYVY=;
+        b=TGGCczmCR7npqeFgumPKFt1rQgAxe9MDZ9vvkcS8F75j6J/4yN2WGfv1GODgdgcbcI
+         HaWVAUN6AwUlB/FJn5wOeH6HfC560ceQvei4Oh3VaoL7NlL4/cdCeVgypJi5T/OITjjf
+         MHej2fRZLzQX+jzD2XWF83xB5OtBWKLc7EFZT7nhdmRDrtwiM10qCVP/n8hTyYNoNyq5
+         LVEHEbN5YytaaAcVNFhn0f28W16tVHNfAmUIooVJ18vWa9/5Uh4SfvJqAshz4/MIfe+K
+         Tz6dHEqPN4a17WECqqjmquCv+5itFJjrcNLLge+v3No+A1Og31zsNvMZRtI0sUmbAr2n
+         6PZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714382511; x=1714987311;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J9UFM0QgrM1FAh0+vb7l+Th4iJA3HL3efcqlB9gfYVY=;
+        b=eiZ334sll0+bpzkpDI8yB3c22yW/MjoP28AvprvTBce97pBXX1jl5YzA9V20AGh04J
+         C/CxUXfjy75UZnXJh+1nu0iBqKB+LNBAf9NGdwcqVdKG4HUefWSBJemLNFeJldJ3Gyzm
+         +9ylYNr4brinojXag7ExcQAKxAaP4xYDc/xliOONmXW10feDqjOCwHbTAWixOjp5duk8
+         Mbwur3mrLSx8RlgRor22XCZxaW3fY6NgeyPue7xnJmtl7rl0CQLTJwSfDNq7by1kd0Su
+         7NvNloi20UIEEl/o8L4aPyOjpWY1JeeQi5CNSMvpsZKCl/qka8EnAG3o1TLfV+87QZuQ
+         gQ9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXOke+AjiUjVWx63/KltiNSF39CEJXkr5+5qri+kGIxNtPIoDxt604174/McFZjIjxw0JOMs0sb+nEJeeTL90n22ifjES/Xn+bq4lvnzEhz5pFQOe26fJeYKNs2In3SEj6l
+X-Gm-Message-State: AOJu0YyAeupcIUj6IA2h1B8gWIygxIBAo0hKp5K/1826BIRczB71geQE
+	tJW1yVs7AUmu5ii0xMa8Q6DmkFTsW1ZOtPauszUiocDz8AAgr5nTASVNaBXtAsY=
+X-Google-Smtp-Source: AGHT+IFUWMxCtXR0YEgu24XHMxJDW5kxEJj7RXx/NjNPsp2tU9ljNIxOlNFDAkPSTudVDNteHZSAFA==
+X-Received: by 2002:a05:6a00:3a09:b0:6ea:74d4:a01c with SMTP id fj9-20020a056a003a0900b006ea74d4a01cmr10302896pfb.14.1714382510598;
+        Mon, 29 Apr 2024 02:21:50 -0700 (PDT)
+Received: from localhost.localdomain (122-116-220-221.hinet-ip.hinet.net. [122.116.220.221])
+        by smtp.gmail.com with ESMTPSA id b16-20020a63d810000000b005e438fe702dsm18503787pgh.65.2024.04.29.02.21.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 02:21:50 -0700 (PDT)
+From: Yu-Wei Hsu <betterman5240@gmail.com>
+To: anup@brainfault.org
+Cc: atishp@atishpatra.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Yu-Wei Hsu <betterman5240@gmail.com>
+Subject: [PATCH] RISC-V:KVM: Add AMO load/store access fault traps to redirect to guest
+Date: Mon, 29 Apr 2024 09:21:13 +0000
+Message-Id: <20240429092113.70695-1-betterman5240@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, 26 Apr 2024, Douglas Anderson <dianders@chromium.org> wrote:
-> The consensus of many DRM folks is that we want to move away from DSI
-> drivers defining tables of init commands. Instead, we want to move to
-> init functions that can use common DRM functions. The issue thus far
-> has been that using the macros mipi_dsi_generic_write_seq() and
-> mipi_dsi_dcs_write_seq() bloats the driver using them.
->
-> While trying to solve bloat, we realized that the majority of the it
-> was easy to solve. This series solves the bloat for existing drivers
-> by moving the printout outside of the macro.
->
-> During discussion of my v1 patch to fix the bloat [1], we also decided
-> that we really want to change the way that drivers deal with init
-> sequences to make it clearer. In addition to being cleaner, a side
-> effect of moving drivers to the new style reduces bloat _even more_.
->
-> This series also contains a few minor fixes / cleanups that I found
-> along the way.
+When unhandled AMO load/store access fault traps are not delegated to
+VS mode (hedeleg), M mode redirects them back to S mode.
+However, upon returning from M mode,the KVM executed in HS mode terminates
+VS mode software.
+KVM should redirect traps back to VS mode and let the VS mode trap handler
+determine the next steps.
+This is one approach to handling access fault traps in KVM,
+not only redirecting them to VS mode or terminating it.
 
-FWIW, I like the general approach taken here. Thanks!
+Signed-off-by: Yu-Wei Hsu <betterman5240@gmail.com>
+---
+ arch/riscv/kvm/vcpu_exit.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-BR,
-Jani.
-
-
+diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
+index 2415722c01b8..ef8c5e3ec8a0 100644
+--- a/arch/riscv/kvm/vcpu_exit.c
++++ b/arch/riscv/kvm/vcpu_exit.c
+@@ -185,6 +185,8 @@ int kvm_riscv_vcpu_exit(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ 	case EXC_INST_ILLEGAL:
+ 	case EXC_LOAD_MISALIGNED:
+ 	case EXC_STORE_MISALIGNED:
++	case EXC_LOAD_ACCESS:
++	case EXC_STORE_ACCESS:
+ 		if (vcpu->arch.guest_context.hstatus & HSTATUS_SPV) {
+ 			kvm_riscv_vcpu_trap_redirect(vcpu, trap);
+ 			ret = 1;
 -- 
-Jani Nikula, Intel
+2.25.1
+
 
