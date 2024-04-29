@@ -1,246 +1,295 @@
-Return-Path: <linux-kernel+bounces-163081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E6D28B64E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:48:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 656078B64E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 323001C2160C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:48:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25BB7282E5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B09518412D;
-	Mon, 29 Apr 2024 21:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71EE184120;
+	Mon, 29 Apr 2024 21:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dwNmtjAY"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lO7nRQOa"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B9F176FDB
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F881802CF;
+	Mon, 29 Apr 2024 21:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714427272; cv=none; b=bGV+QD3xPyR0HxgAXxWkCxAjOobhL0DbozzONkB/OdmILOgc44ZU/7awOQ288wB/h9HfTeUn0YhTGAQsot7R4TSU95msDZNNHR37DLTmBOShVBOc8FIE8n8g2RzOgTxgXCKQfp62vh6Z1cVzjPqobR68aMMjvpoRN2A8P8jp9tg=
+	t=1714427446; cv=none; b=sT6Jaed57HmawAbhJ9Gj+ltEeSRUMiDvJt8tasRWWuZ/WuSFRFa+TJ5cttqfsbuVwIY9fRArli8jHLX0BCDtIJXYMJ43bhpsXGXxwU4VKSSob48SjbkAqVjznsPADlWH+AM9JPQF0R7+gaBL787IJVpiafaVKrr6cktoww1ctT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714427272; c=relaxed/simple;
-	bh=JO4qmWTUr/xTamopkxRFJ0GCVaBlVpWvZDRCyjwXidQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pbdq2vZeJR948EZaWBhQpkyDOxx8qbgCqaJ+eDXUsECXlLR3/kETNyXQZN2ij0OTW2eImRDxLGOxzzikbq1+wFnxL+nZQLqp1lTs8plU9TVESBwY5defYVl+s0cFNsN82nocgU5MqkuWKRe5DwbiCv3z8WsBCRVjWBMkLwY86Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dwNmtjAY; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so3904659a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:47:50 -0700 (PDT)
+	s=arc-20240116; t=1714427446; c=relaxed/simple;
+	bh=qPCS9g/zZA8fp8fMlrE5hztv2c9oq3fHJ3Jltx972jw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kexbCogF6aPJfyrtV/H9rbI1pZ5aMAjLRhyqjG7RlNqbbJKxACRNyhHZbTWIjc5l8c2u+FHq60v/Qf3eRZpM2uQ6TF8/erZ4o5Y0RmzpaX2YWQob1xI+rA9fP+1RjTHiif/ZxRRDkoq30hCCO0wCfJL8slQMyGqds89r83ycEoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lO7nRQOa; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5f807d941c4so3890407a12.0;
+        Mon, 29 Apr 2024 14:50:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1714427270; x=1715032070; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5xVT8Jjt9lAh7n7cvM8CSpR532A4Hm5u8nOqLQeCkxI=;
-        b=dwNmtjAY+Bpu549ETKc9lDYTqS8cqrR8MmdKRWluzU0/wUhZ8XJspWXF+3A9v1snKA
-         Hjj1v6/vbLTtkMAdYZ7YI0YirEGc0y9BP1WiucB5nJYdGfNSMcaEr9ZsHf5aTJgRV/ZT
-         V2U9g6CzJ6bS13Ag6AMac05RxJC4Sy3AuqnPU=
+        d=gmail.com; s=20230601; t=1714427444; x=1715032244; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=feq+on9ujG3HDJjQ/ipIbYLZ3xlr6YMjv8piL05aAW0=;
+        b=lO7nRQOagCrvjlA+pl38XLhbftG6ERy9jb28/KpruCg8hc/8RuQUFe7pkeSwOpXURt
+         Ah7XyvDELcVL7n4r4IbePggDOK8synaN8UQJiSl0zHUYAsismDvjPZgnM+66O6nNaQdL
+         TmYvCPYs+IDp3x3DnyBQjrx87o/kbKmrKHhv0+RPzCycFQkAMUkpMR0p1nRnY7Px/4JF
+         Pj4uoZhZ9hXiTuvnbQBIDG+zfyqzFwwc1MxWD8Q8VS0HrQ1VZNHcv6Y5bvyKOU985Cpv
+         H9tNYwfkdkqNz3n074Mk3U6d5FvRLCw7Z2MNZBi/wtkUxoJqbSHDwbVNfiYoVLbqYybk
+         RHkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714427270; x=1715032070;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5xVT8Jjt9lAh7n7cvM8CSpR532A4Hm5u8nOqLQeCkxI=;
-        b=cKPzpDaoMAcMd0YXsnqxIWheXjpQNq4IbkjFP1LrCoHxgfKaBj5ooE3oruWQl2T7l3
-         7DN9xpweAbPe+Ouw1uNUPq2QKG4oDjUtQOeeu1eoqippLbhxyBNcnmoUVR0TymufD5u5
-         gbSHF7GQxvuwK14HhGQEZzWQGxWg07OBOFS5v9ykKg0Ll+3kOKGlrWm48QQt6Grq5wtu
-         dEOvYI+Vqg6v/y6DtrnIS498+Acurhuc4k3Pa+PWT1j30Dso7qbgc9QPMTgB5kExZY1v
-         BwhOMa/P1um7p9jEv8nea+sfISH4pVPes+ofOEkuuuTmNYkMm8sEnl9Ydof72VriUgQ5
-         eDRA==
-X-Forwarded-Encrypted: i=1; AJvYcCUuKgHF9NEk3M7t3L0fPF287lfyvL7zGWU/HBYeeUCmsF4hzvWL1SZFldtGbrCD0qoVTsJQiOEpoxLfeAdpNkwXlcWuecdv+fSgExby
-X-Gm-Message-State: AOJu0YwOuRIJzhX426wV3IiUZcEjb/AWtuHHvd6RJ8XQXERboKBr0/qx
-	WQFUtLKd3lgUBm1BkftcdsXCnuc3M6Spb0ozSbyDplKGaGbEULe3ZaD+pLNqNA==
-X-Google-Smtp-Source: AGHT+IGEiHYpaig815BmNvEmu8hCP7T5ISJhw+VnLN6FFtGy25LXnq+0LwCJ8R5FHq93GPwepfBgJA==
-X-Received: by 2002:a05:6a20:de15:b0:1a7:55f2:c92c with SMTP id kz21-20020a056a20de1500b001a755f2c92cmr13832009pzb.45.1714427270112;
-        Mon, 29 Apr 2024 14:47:50 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id w7-20020a170902e88700b001eb7823164esm4250606plg.279.2024.04.29.14.47.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 14:47:49 -0700 (PDT)
-Message-ID: <a0b22caa-59d7-497b-9b86-339535a8508c@broadcom.com>
-Date: Mon, 29 Apr 2024 14:47:46 -0700
+        d=1e100.net; s=20230601; t=1714427444; x=1715032244;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=feq+on9ujG3HDJjQ/ipIbYLZ3xlr6YMjv8piL05aAW0=;
+        b=WM6tMaByW0E98sc0tzmoEIy1LDLHZzBZ1dbaRJTeZxDuupOpVgC3M2zBHJjr3P7zUl
+         EtdadxKhCqDM24S9cs0TIJjoturDbxaojVQ1wFV3JIUKz+oCOpx5TTc1uLhCcjQW+6hP
+         ulCndC8h5LiLDNhZ9HEcgV5S2EapnI0FGEfLJAOWInkW3baTkr/D//w3UEv86P6++dWe
+         G8qdwmjtx9CdwnYzEbrSQB43qwnPuLnxWg1r26YjaaXqSQjj3LIfzRelo8HesRmAr53e
+         gaRLBGE7Nyxe3iY1RnXFZg4p9q74pzT0+hq/0YWItzGmyj3pK4t0qzDoCkUlfV0oPLMs
+         PJ/A==
+X-Forwarded-Encrypted: i=1; AJvYcCX2GHw4OfABOVWHKYyukiL8HKMXlQHG08QeL91/DZPWCjbnAuq8ETLY/7/bWK3vOc26kDYHiVYdH9ez2scwEvUCq4eKg3tTKE8Mojsk
+X-Gm-Message-State: AOJu0Yxlv9TKnpJGFE+l2Zjwpw//a37PFkOTqyhfi8hVqrRBb+a05fsF
+	9at2ehOZSl3UeVHD0coIT6gyYK+fmrd/ALSMHpCP5pmr/cdoFOLsTEkHkA==
+X-Google-Smtp-Source: AGHT+IErLsqPy0vjXi0q5KxNhYnnybrwPmUeCGDb2LSEMNlTb2bjDT9zznI5ns5uxoHZSDCoeC0fKg==
+X-Received: by 2002:a17:902:e546:b0:1e5:b82:2f82 with SMTP id n6-20020a170902e54600b001e50b822f82mr17193351plf.42.1714427444190;
+        Mon, 29 Apr 2024 14:50:44 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:f2d8:c41e:613b:df5a])
+        by smtp.gmail.com with ESMTPSA id b14-20020a170902650e00b001e5e6877494sm21288518plk.238.2024.04.29.14.50.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 14:50:43 -0700 (PDT)
+Date: Mon, 29 Apr 2024 14:50:41 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: linux-input@vger.kernel.org
+Cc: Jason Andryuk <jandryuk@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Peter Hutterer <peter.hutterer@who-t.net>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Input: try trimming too long modalias strings
+Message-ID: <ZjAWMQCJdrxZkvkB@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
- <20240429165405.2298962-3-florian.fainelli@broadcom.com>
- <20240429200039.GH516117@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240429200039.GH516117@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000745c9a061743343d"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---000000000000745c9a061743343d
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+If an input device declares too many capability bits then modalias
+string for such device may become too long and not fit into uevent
+buffer, resulting in failure of sending said uevent. This, in turn,
+may prevent userspace from recognizing existence of such devices.
 
-On 4/29/24 13:00, Simon Horman wrote:
-> On Mon, Apr 29, 2024 at 09:54:05AM -0700, Florian Fainelli wrote:
->> Now that we no longer any drivers using PHYLIB's adjust_link callback,
->> remove all paths that made use of adjust_link as well as the associated
->> functions.
->>
->> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> 
-> ...
-> 
->> @@ -1616,17 +1597,13 @@ static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
->>   					   phy_interface_t interface)
->>   {
->>   	struct dsa_port *dp = dsa_phylink_to_port(config);
->> -	struct phy_device *phydev = NULL;
-> 
-> Hi Florian,
-> 
-> I'm wondering if some changes got lost somewhere.
-> 
-> phydev is removed here...
-> 
->>   	struct dsa_switch *ds = dp->ds;
->>   
->>   	if (dsa_port_is_user(dp))
->>   		phydev = dp->user->phydev;
-> 
-> ... assigned here, but not used.
-> 
-> Perhaps the three lines above should be removed?
+This is typically not a concern for real hardware devices as they have
+limited number of keys, but happen with synthetic devices such as
+ones created by xen-kbdfront driver, which creates devices as being
+capable of delivering all possible keys, since it doesn't know what
+keys the backend may produce.
 
-Yes, sorry about that, rebase gone wrong on my side.
+To deal with such devices input core will attempt to trim key data,
+in the hope that the rest of modalias string will fit in the given
+buffer. When trimming key data it will indicate that it is not
+complete by placing "+," sign, resulting in conversions like this:
+
+old: k71,72,73,74,78,7A,7B,7C,7D,8E,9E,A4,AD,E0,E1,E4,F8,174,
+new: k71,72,73,74,78,7A,7B,7C,+,
+
+This should allow existing udev rules continue to work with existing
+devices, and will also allow writing more complex rules that would
+recognize trimmed modalias and check input device characteristics by
+other means (for example by parsing KEY= data in uevent or parsing
+input device sysfs attributes).
+
+Note that the driver core may try adding more uevent environment
+variables once input core is done adding its own, so when forming
+modalias we can not use the entire available buffer, so we reduce
+it by somewhat an arbitrary amount (96 bytes).
+
+Reported-by: Jason Andryuk <jandryuk@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+
+v2: do not use entire available buffer when formatting modalias, leave
+    some space for driver core to add more data.
+
+ drivers/input/input.c | 108 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 91 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/input/input.c b/drivers/input/input.c
+index b04bcdeee557..045f4b62088a 100644
+--- a/drivers/input/input.c
++++ b/drivers/input/input.c
+@@ -1338,19 +1338,19 @@ static int input_print_modalias_bits(char *buf, int size,
+ 				     char name, const unsigned long *bm,
+ 				     unsigned int min_bit, unsigned int max_bit)
+ {
+-	int len = 0, i;
++	int bit = min_bit;
++	int len = 0;
+ 
+ 	len += snprintf(buf, max(size, 0), "%c", name);
+-	for (i = min_bit; i < max_bit; i++)
+-		if (bm[BIT_WORD(i)] & BIT_MASK(i))
+-			len += snprintf(buf + len, max(size - len, 0), "%X,", i);
++	for_each_set_bit_from(bit, bm, max_bit)
++		len += snprintf(buf + len, max(size - len, 0), "%X,", bit);
+ 	return len;
+ }
+ 
+-static int input_print_modalias(char *buf, int size, const struct input_dev *id,
+-				int add_cr)
++static int input_print_modalias_parts(char *buf, int size, int full_len,
++				      const struct input_dev *id)
+ {
+-	int len;
++	int len, klen, remainder, space;
+ 
+ 	len = snprintf(buf, max(size, 0),
+ 		       "input:b%04Xv%04Xp%04Xe%04X-",
+@@ -1359,8 +1359,48 @@ static int input_print_modalias(char *buf, int size, const struct input_dev *id,
+ 
+ 	len += input_print_modalias_bits(buf + len, size - len,
+ 				'e', id->evbit, 0, EV_MAX);
+-	len += input_print_modalias_bits(buf + len, size - len,
++
++	/*
++	 * Calculate the remaining space in the buffer making sure we
++	 * have place for the terminating 0.
++	 */
++	space = max(size - (len + 1), 0);
++
++	klen = input_print_modalias_bits(buf + len, size - len,
+ 				'k', id->keybit, KEY_MIN_INTERESTING, KEY_MAX);
++	len += klen;
++
++	/*
++	 * If we have more data than we can fit in the buffer, check
++	 * if we can trim key data to fit in the rest. We will indicate
++	 * that key data is incomplete by adding "+" sign at the end, like
++	 * this: * "k1,2,3,45,+,".
++	 *
++	 * Note that we shortest key info (if present) is "k+," so we
++	 * can only try to trim if key data is longer than that.
++	 */
++	if (full_len && size < full_len + 1 && klen > 3) {
++		remainder = full_len - len;
++		/*
++		 * We can only trim if we have space for the remainder
++		 * and also for at least "k+," which is 3 more characters.
++		 */
++		if (remainder <= space - 3) {
++			/*
++			 * We are guaranteed to have 'k' in the buffer, so
++			 * we need at least 3 additional bytes for storing
++			 * "+," in addition to the remainder.
++			 */
++			for (int i = size - 1 - remainder - 3; i >= 0; i--) {
++				if (buf[i] == 'k' || buf[i] == ',') {
++					strcpy(buf + i + 1, "+,");
++					len = i + 3; /* Not counting '\0' */
++					break;
++				}
++			}
++		}
++	}
++
+ 	len += input_print_modalias_bits(buf + len, size - len,
+ 				'r', id->relbit, 0, REL_MAX);
+ 	len += input_print_modalias_bits(buf + len, size - len,
+@@ -1376,22 +1416,37 @@ static int input_print_modalias(char *buf, int size, const struct input_dev *id,
+ 	len += input_print_modalias_bits(buf + len, size - len,
+ 				'w', id->swbit, 0, SW_MAX);
+ 
+-	if (add_cr)
+-		len += snprintf(buf + len, max(size - len, 0), "\n");
+-
+ 	return len;
+ }
+ 
++static int input_print_modalias(char *buf, int size, const struct input_dev *id)
++{
++	int full_len;
++
++	/*
++	 * Printing is done in 2 passes: first one figures out total length
++	 * needed for the modalias string, second one will try to trim key
++	 * data in case when buffer is too small for the entire modalias.
++	 * If the buffer is too small regardless, it will fill as much as it
++	 * can (without trimming key data) into the buffer and leave it to
++	 * the caller to figure out what to do with the result.
++	 */
++	full_len = input_print_modalias_parts(NULL, 0, 0, id);
++	return input_print_modalias_parts(buf, size, full_len, id);
++}
++
+ static ssize_t input_dev_show_modalias(struct device *dev,
+ 				       struct device_attribute *attr,
+ 				       char *buf)
+ {
+ 	struct input_dev *id = to_input_dev(dev);
+-	ssize_t len;
++	size_t len;
+ 
+-	len = input_print_modalias(buf, PAGE_SIZE, id, 1);
++	len = input_print_modalias(buf, PAGE_SIZE, id);
++	if (len < PAGE_SIZE - 2)
++		len += snprintf(buf + len, PAGE_SIZE - len, "\n");
+ 
+-	return min_t(int, len, PAGE_SIZE);
++	return min(len, PAGE_SIZE);
+ }
+ static DEVICE_ATTR(modalias, S_IRUGO, input_dev_show_modalias, NULL);
+ 
+@@ -1601,6 +1656,23 @@ static int input_add_uevent_bm_var(struct kobj_uevent_env *env,
+ 	return 0;
+ }
+ 
++/*
++ * This is a pretty gross hack. When building uevent data the driver core
++ * may try adding more environment variables to kobj_uevent_env without
++ * telling us, so we have no idea how much of the buffer we can use to
++ * avoid overflows/-ENOMEM elsewhere. To work around this let's artificially
++ * reduce amount of memory we will use for the modalias environment variable.
++ *
++ * The potential additions are:
++ *
++ * SEQNUM=18446744073709551615 - (%llu - 28 bytes)
++ * HOME=/ (6 bytes)
++ * PATH=/sbin:/bin:/usr/sbin:/usr/bin (34 bytes)
++ *
++ * 68 bytes total. Allow extra buffer - 96 bytes
++ */
++#define UEVENT_ENV_EXTRA_LEN	96
++
+ static int input_add_uevent_modalias_var(struct kobj_uevent_env *env,
+ 					 const struct input_dev *dev)
+ {
+@@ -1610,9 +1682,11 @@ static int input_add_uevent_modalias_var(struct kobj_uevent_env *env,
+ 		return -ENOMEM;
+ 
+ 	len = input_print_modalias(&env->buf[env->buflen - 1],
+-				   sizeof(env->buf) - env->buflen,
+-				   dev, 0);
+-	if (len >= (sizeof(env->buf) - env->buflen))
++				   (int)sizeof(env->buf) - env->buflen -
++					UEVENT_ENV_EXTRA_LEN,
++				   dev);
++	if (len >= ((int)sizeof(env->buf) - env->buflen -
++					UEVENT_ENV_EXTRA_LEN))
+ 		return -ENOMEM;
+ 
+ 	env->buflen += len;
 -- 
-Florian
+2.44.0.769.g3c40516874-goog
 
 
---000000000000745c9a061743343d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFzk2UzyFd0xbtxq
-l6OzpJlNklA1eMLUxF9hGg5sl5FiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQyOTIxNDc1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC/S3MISVaAHq+Kb+GGE7DNAiuyAO8uF3H0
-Od76ga8gDDMLgGbtTjwZCLe1WJzWg57USJ8k9bHD8/lYw5VbqOB0uK6t6uO5LyVl8b83tdyl1f2o
-kTmBw1LrKgzdsOgACasc+eisDnK3ChV/LtjMDTeDNTDqfudwj9Qp+P4rGSE3KHyKZ+nHmtWhXzYX
-NzxOuhToj7uSPPoMqFi06Y5ZfS/2qXfL8RJSLf7u66jWwvEAyfp/a/u08BVvT8C5CMzQOxx8Xb6w
-VK9DgM3Jcz1wX/ZLqjQ7YLVmuJZCwp9KGuQ+A32GzsEIoQF0EGXq6fGRZr02nd86FownvxUSjTIC
-4zbE
---000000000000745c9a061743343d--
+-- 
+Dmitry
 
