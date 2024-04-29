@@ -1,158 +1,129 @@
-Return-Path: <linux-kernel+bounces-162096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F478B55C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:49:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E148B55C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:50:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A091F2361D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE2FC1F23634
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F6D39AC7;
-	Mon, 29 Apr 2024 10:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1954139AC7;
+	Mon, 29 Apr 2024 10:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jKnJiCly"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DUur3TSw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95261EB2F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36483715E
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714387790; cv=none; b=VwoGAPSl/6CZtFK5rZaUyCiCmDsg5013lc6x6Wmi/qJs8Ph0JJsmXDGQ+CdaiI9060RhuQybj5jW5bpJII5XN61h2pItzuhcQVFPtHY/+G4QrS/S1n2Q3LkWAb2LHq1ljvmUXFsDtCxlWo/r1AhsH7WnRrYnrO1ebbAA9aR5508=
+	t=1714387800; cv=none; b=lk81vIeLJKITZ1dijYXKobUHJLOzJ5YEv6IhUQZEp3jbaqure5qFrkaX+s3OCoBIJbZNET1IgfSkzVgbYjLI+GWtwK/4h8r+KE4/5LP9jHxmOWGXnzo3/BJEE/GW4cTBdGtFus0BoOlzB23bGgXBUuYnjYJdOO3Q1cV3BPK4T68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714387790; c=relaxed/simple;
-	bh=UJFvPPh0/QlMypN0TnrTOQMDf0epez0uqhSyuMj9eqk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nM0zl9xnOKwt+DeUL1gkc5C9lasKFDpngY1+Ookx0la84GogdFoktNa22Cg5QJ81zQzz3cDSVU8TO+vCJsTmJDovG8Z8PJWJfmRFSvjUndpIHuHkRu77eSRj1g9cTktOdRLuKi2Xdn8JfedvZloXxAu2uY9Dndm0SvudGEeS3xA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jKnJiCly; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8b519e438so3225219a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 03:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714387788; x=1714992588; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u+iVpNJBX2gJKOKBcpgOxaTNFvPSLwXG51MweiMNRXw=;
-        b=jKnJiClyIDKR1ryiOhdLJ6YyD/KhD+p7gE2Ix2WGW/nRyE1G/cP1/hzqMz8hP7vQ1X
-         WlPsGpBpoAcIHLGTCyQAcWizd8cI8PxXBg3QclkgH8A96eqYFrklL8/5RXwvE5gY6AR1
-         yUMhmnMCGGQ00oyZiqUjJaM1yeJ7DII4oSVYDc/+rA++GIk/qG8SpoikjdDeqE2hK0CQ
-         U5DE/ND7J3NmootVEswVkVvKXY/uQhV5KZEsMv6zruxbJoabs424nfUNEEN50KxZq/7S
-         6DqlcS6PUySFeO9LvA/KPV7+OIx7yO2tCTHZck6a+/Me4Ad/qSz6sJ7Qu4tdpVtoK+AJ
-         vzzA==
+	s=arc-20240116; t=1714387800; c=relaxed/simple;
+	bh=UGloWyBZuHazCTnA5JUy0JL498lI4VHlVYFtMASdMdw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mz790Uq2hKn4ifAa74sageY1kZg6/BkKegq9DjXY2iLPwHmjZlngmrduzxRT0/AXnpA9IJtkL7eNpJH5P5AKHL3j8FW1jnfKHlx0C6CP4Ty9F7fC0gpd75kLMjOIgfQJfBO5XhGAKJLvPdABa1nz39G9AM5hMxmf5k5SuvdCx0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DUur3TSw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714387798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vcd2JWrf3E7vjtQeMf6O7h0qouO2cxaE02l5lL6WC20=;
+	b=DUur3TSwicT1Nhu4HczvPlGQF78yXt2mcvYkb9T8VgpSNL5cfRUQUO+TmAYKV08qGLnsZg
+	NIAKVQC2bd9fcSWWhMNL1PETPYq47gN+UZKDQoAHjf4W1sxhchocbPNHA/sdkF62JLoEPC
+	ra5wCSmiRjeV5HFavlWeIdhTbYxjj0M=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-335-tnob1uCLPZ-Tc_A61INPjQ-1; Mon, 29 Apr 2024 06:49:56 -0400
+X-MC-Unique: tnob1uCLPZ-Tc_A61INPjQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a58bcb4aec0so104700166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 03:49:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714387788; x=1714992588;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u+iVpNJBX2gJKOKBcpgOxaTNFvPSLwXG51MweiMNRXw=;
-        b=DHjXIzlihZ6tXhdSk0fQ/c4ld8qd5rLOZi2ENciozbcBWmv2G11wRLRUqtVYw0HxHV
-         pGmdjrxYb3S02TNLTitMdY814GT2VHUfiAS79fWY2VbFvSDTRqxerFEq8EoBVdGmLF1w
-         1hcqN3N2VZwIVmRsdr1gtlCLvS8nexFtNPOuUevFCRw0SCpkk12lhxzW8fWu3LNWGO4f
-         nlkBOYRXkTWEBRiyzGqVeYDaHpKqOb8eCeOaLze8/Eq0PPiIAQms1VFC1VHw4EoxtcC8
-         znrTt/WrhAC0gVZwuaRg2nWOW7J2qE0hbj+ST1rXLcXa7vDO+80UgHaesGDuvicddezx
-         60wg==
-X-Forwarded-Encrypted: i=1; AJvYcCWbvK29tzOxxqCy6coVD+50ZNaTfjUYmi3doJOEtecjSzJ57JMAVacXNYyhtuO3n+IXKKAdkDoXypX0aHzIis/mNkUm4s632aVgqfXQ
-X-Gm-Message-State: AOJu0YyCsnftSL2MoB7Gy+Pli1lmevhtC7Tf8yfBcIfxVWKKx7c4Qy47
-	UPCiu/Zz/wnW7ugM2xKFBYyoLWmdUeSGdgQJk5Ty1lBgzv8nca69SuvcOSgjKGU=
-X-Google-Smtp-Source: AGHT+IF/8CnN46xmrbPDkOtSJdBW9Qtb34t0WWC6WBtBIZPr1+8/WhFiLRP0oSRWZZcJ7UzLVUxBwg==
-X-Received: by 2002:a05:6a21:78a4:b0:1a5:6a85:8ce9 with SMTP id bf36-20020a056a2178a400b001a56a858ce9mr11659322pzc.12.1714387788049;
-        Mon, 29 Apr 2024 03:49:48 -0700 (PDT)
-Received: from localhost ([122.172.87.52])
-        by smtp.gmail.com with ESMTPSA id g2-20020a170902934200b001e25da6f2f2sm19985099plp.68.2024.04.29.03.49.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 03:49:47 -0700 (PDT)
-Date: Mon, 29 Apr 2024 16:19:45 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: liwei <liwei728@huawei.com>, Ionela Voinescu <ionela.voinescu@arm.com>,
-	Beata Michalska <beata.michalska@arm.com>,
-	Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc: rafael@kernel.org, al.stone@linaro.org, ashwin.chaugule@linaro.org,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	liwei391@huawei.com, liaoyu15@huawei.com
-Subject: Re: [PATCH] cpufreq/cppc: changing highest_perf to nominal_perf in
- cppc_cpufreq_cpu_init()
-Message-ID: <20240429104945.esdukn6ayudgyumc@vireshk-i7>
-References: <20240428092852.1588188-1-liwei728@huawei.com>
+        d=1e100.net; s=20230601; t=1714387795; x=1714992595;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vcd2JWrf3E7vjtQeMf6O7h0qouO2cxaE02l5lL6WC20=;
+        b=opokUndZm/pZGUk9DyfLUFvXdlLlcZ5ef84AoU231sQC/PKdydP6jkt44iNeEt4+NH
+         HR9LGvIZPrhS2sCOaauq2bOnFE2pPj78WNdPO3K1XOF9YwDmf9fFa/Uk/cbb+2uL/GQ3
+         NYC9BkFJuI+d6PSvcN+9zcfrToMoZ+ecKvTwiobNGqYpqpTOyv8Z9RaYr210/oWJ1oxU
+         jSe9HoXrs4lsfL0JSMrhmtdPd/7f4u/XF+kbla4b5czsrMpGzgDu/gRnETTpKNieeAR/
+         tLw1CDmcekZYoVGpFPpDiUPEVzn540wMQbLWDoVEmGz7L8wFlCaaA3e5eTAbjXfAZL+y
+         ZBIA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4GDxovB1vXbrtKZQ60lPe3lN5QMV9xFSiWJ+bFF7tJi35VKj258ktxBQa/YWLRYwbTDR8rUlMsw1oMg82ybAVZqL+tu0RJQROa55r
+X-Gm-Message-State: AOJu0YyAF2FpEQ6szs5J5L42z3i/NQ3Uij8X7AXEKd42zFcwufvcIezT
+	b6m3oERC5uuGZmQ4Lmcg0IXp6io/tSVKSCT/aGYSlysbfhGDyCm5GpnusFof4p7fe3TAe0XhACn
+	uEjRRZpUbkDfmj4/iXM+iy9xNiferPeBoJT34+1xmwthKQV6wCITkvd/s1Wpnow==
+X-Received: by 2002:a50:bb2a:0:b0:56b:829a:38e3 with SMTP id y39-20020a50bb2a000000b0056b829a38e3mr8133366ede.16.1714387795497;
+        Mon, 29 Apr 2024 03:49:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFxaAk7ujYaxXYwlydlAdtfXBP2naI+GbOYOjO3PpgkOZlewZ6TuzGpHbbXbtuUhFpTirBPew==
+X-Received: by 2002:a50:bb2a:0:b0:56b:829a:38e3 with SMTP id y39-20020a50bb2a000000b0056b829a38e3mr8133353ede.16.1714387795219;
+        Mon, 29 Apr 2024 03:49:55 -0700 (PDT)
+Received: from [10.40.98.157] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id er25-20020a056402449900b005727eb1ed6asm1219115edb.68.2024.04.29.03.49.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 03:49:54 -0700 (PDT)
+Message-ID: <f7ff317b-f91b-429c-ac09-61b338264890@redhat.com>
+Date: Mon, 29 Apr 2024 12:49:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240428092852.1588188-1-liwei728@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: ISST: Add Grand Ridge to HPM CPU list
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ markgross@kernel.org, ilpo.jarvinen@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240422212222.3881606-1-srinivas.pandruvada@linux.intel.com>
+Content-Language: en-US
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240422212222.3881606-1-srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-CC'ing few folks who are working with the driver.
+Hi,
 
-On 28-04-24, 17:28, liwei wrote:
-> When turning on turbo, if frequency configuration takes effect slowly,
-> the updated policy->cur may be equal to the frequency configured in
-> governor->limits(), performance governor will not adjust the frequency,
-> configured frequency will remain at turbo-freq.
+On 4/22/24 11:22 PM, Srinivas Pandruvada wrote:
+> Add Grand Ridge (ATOM_CRESTMONT) to hpm_cpu_ids, so that MSR 0x54 can be
+> used.
 > 
-> Simplified call stack looks as follows:
-> cpufreq_register_driver(&cppc_cpufreq_driver)
-> 	...
-> 	cppc_cpufreq_cpu_init()
-> 		cppc_get_perf_caps()
-> 		policy->max = cppc_perf_to_khz(caps, caps->nominal_perf)
-> 			cppc_set_perf(highest_perf) // set highest_perf
-> 			policy->cur = cpufreq_driver->get() // if cur == policy->max
-> 	cpufreq_init_policy()
-> 		...
-> 		cpufreq_start_governor() // governor: performance
-> 			new_freq = cpufreq_driver->get() // if new_freq == policy->max
-> 			if (policy->cur != new_freq)
-> 			cpufreq_out_of_sync(policy, new_freq)
-> 				...
-> 				policy->cur = new_freq
-> 			...
-> 			policy->governor->limits()
-> 				__cpufreq_driver_target(policy->max)
-> 					if (policy->cur==target)
-> 					// generate error, keep set highest_perf
-> 						ret
-> 					cppc_set_perf(target)
-> 
-> Fix this by changing highest_perf to nominal_perf in cppc_cpufreq_cpu_init().
-> 
-> Fixes: 5477fb3bd1e8 ("ACPI / CPPC: Add a CPUFreq driver for use with CPPC")
-> Signed-off-by: liwei <liwei728@huawei.com>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+
+This looks like it needs to be applied on top of the fixes branch, or else
+after 6.10-rc1 is out.
+
+Ilpo, what do you think ?
+
+Regards,
+
+Hans
+
 > ---
->  drivers/cpufreq/cppc_cpufreq.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/platform/x86/intel/speed_select_if/isst_if_common.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 64420d9cfd1e..db04a82b8a97 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -669,14 +669,14 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	if (caps->highest_perf > caps->nominal_perf)
->  		boost_supported = true;
->  
-> -	/* Set policy->cur to max now. The governors will adjust later. */
-> -	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
-> -	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
-> +	/* Set policy->cur to norm now. */
-> +	policy->cur = cppc_perf_to_khz(caps, caps->nominal_perf);
-> +	cpu_data->perf_ctrls.desired_perf =  caps->nominal_perf;
->  
->  	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
->  	if (ret) {
->  		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
-> -			 caps->highest_perf, cpu, ret);
-> +			 caps->nominal_perf, cpu, ret);
->  		goto out;
->  	}
->  
-> -- 
-> 2.25.1
+> diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+> index 30951f7131cd..1accdaaf282c 100644
+> --- a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+> +++ b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+> @@ -721,6 +721,7 @@ static struct miscdevice isst_if_char_driver = {
+>  static const struct x86_cpu_id hpm_cpu_ids[] = {
+>  	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	NULL),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT,	NULL),
+>  	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	NULL),
+>  	{}
+>  };
 
--- 
-viresh
 
