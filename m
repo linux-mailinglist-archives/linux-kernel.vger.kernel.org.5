@@ -1,352 +1,178 @@
-Return-Path: <linux-kernel+bounces-162486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 207938B5BE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:50:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 720088B5BEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:50:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EBB01F23031
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:50:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E138B26CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE2D823A8;
-	Mon, 29 Apr 2024 14:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MThFsg/T"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761968172D;
+	Mon, 29 Apr 2024 14:49:44 +0000 (UTC)
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70DC7EF1C;
-	Mon, 29 Apr 2024 14:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D30811F2
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.139.111.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402188; cv=none; b=HlIIr5Nr0u52yRpartJoN5hVOxkEzP0MP6uOCU4qpgb6Qe6asXCML+oTgMCIgSHSo+vwrq0OU4NQJ37L3ww9zf+tvBvbfAnjMSH4JmuqWwl/beYt2pfVzauvNtFI1Q0BbxMKDiNQiH7tA1YWCBFWb5kmgR8kdBrSjC+0LPBXSYI=
+	t=1714402184; cv=none; b=iQl7YGlj8Nzsw3K7s7AdlSXH//0ewDo0vwEHdzRPxKQFchQ7WPIr1o1v/IoclEHQ/bAvwWEB94YwwC9l4m4ZIsdd+NV+Vx//kcYvdfUEqzJQvhYouZQKCyRedBGOccKNN7hJM6AKbgUIQICeVfsUa6IdFnw88q8+9ITuPvqmhx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402188; c=relaxed/simple;
-	bh=qdnrieP7xQy7d5/UHTh9VvZfK9UpC01YfOtyW0mTLow=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UvV1LnZ5uaO+HZBXg66IDr6MN9kDUFUiXbVchdr6mN0yIT6Um9hG74aohgIquaK2eNUBYgNmKMIj+rgHUnAQlwsNIwNFfcHiaGlCG1n36SVSrbt6N12qAP0wVEH6CpWoOWeJUFdUUmyOE6vgv4NWht0pIVHF7f/8yOKpKTRwwJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MThFsg/T; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34d1adeffbfso729958f8f.0;
-        Mon, 29 Apr 2024 07:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714402185; x=1715006985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TfyRjOuSPcP/8vf1MVxXT/xq8HK5zEuNahOzWkgZ0UE=;
-        b=MThFsg/TwjCaGtugok/piU1oKe/EHDCHCUHbL35EcwI1jeklXsOHGiv4nhr25MvdVW
-         RoGwU2e1TznKT9Qc3qCDWTIzapvVE6kgkB0mv8dA7KbOGSUC2DDvSNiOcBDCk3DGQtnf
-         3PheJr3IDXMFWQPtDb2tTAYO3h7Hx0f82+9hkeCDTjMPua3uYcUeGBuZC2S+idYY9FXp
-         19rH9Lj9kwpjl2tI6NKkx4Q3DGjo8fXNUyYPGsa5wlLvbQdR/4LKb4zwfP0syPsFteor
-         3ytHbY2eavp/Tr4Sso9CAu6QHadz80FoK8GrAL5nPS06vQBfmOtGKuemwMfyKed5ziug
-         UDVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714402185; x=1715006985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TfyRjOuSPcP/8vf1MVxXT/xq8HK5zEuNahOzWkgZ0UE=;
-        b=EgqlfPT4x/5dw7hkFnza3V12roBsX57qSUWILtblaliHcEqB7xVeO6+hL2KjwA6yuh
-         IdhRMli/9SisYGMv49I2mbNvZ8/MkSpPuCOGuxRYFXniW8TNXaoI5aYA55z+jDYYPqpR
-         5G0KRaZx+KthVUZlSWoV9tm36jdKluaOd32EIZjWMbiHIrPZBmD70MM9Xm9RnT4egDYs
-         9f+uwU5cSCggS6dEGEv8RHpcCfgxUmMglcmEi9wun1smIZugeM9S23l4nzWzL6iTHf7r
-         fVlAPV0ohbN0wmekEqWdjsxv3YDTnyrKwDiKBZFB+mP/gELx/9d4hMpjqXDCMRh/tf7Y
-         q9fg==
-X-Forwarded-Encrypted: i=1; AJvYcCXIZdsDoPl7Q+u3xn+eN0SaK5vhRpz5CtbU6kdWbng+0NXldUA4SfLKyL5YOs4S2fEKXu7m1wWZLGLyiZb7OV7sJJVRUqPjIamNXv2Jv91mReycSDLVMzCEiwW6FKD3wilbeTls
-X-Gm-Message-State: AOJu0YwAIe0a3w8rjuGgLe/CF12MfBNZD0drKl+wqeXiKFChiTcIsMzG
-	nJCxL+hfribHeJeZ2ZGKwTA08UPhXt3AD3LqYJ6xfneh7synQ1SZLK5tnXcDY6HcrLEy/Tn42WP
-	y3CVIlAgsbQcnQLKpa0CdIDSWQNs=
-X-Google-Smtp-Source: AGHT+IHN6ERBx3BZ2D7GhtOhaTlbSbZAY8hX8akybIxOVIxZINp7QT5r+1i/VyK3jejhfRJu2FkKq+RQtBYoZpfzVdM=
-X-Received: by 2002:adf:e111:0:b0:345:ca71:5ddb with SMTP id
- t17-20020adfe111000000b00345ca715ddbmr4826030wrz.66.1714402185017; Mon, 29
- Apr 2024 07:49:45 -0700 (PDT)
+	s=arc-20240116; t=1714402184; c=relaxed/simple;
+	bh=FJs8eokBGMHjIH+cHsG71Fq5VDtHzRLCp+Jo7EBuRfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LMDLm+L8eKcaoJRO1+NkeOFaoTjzV2AmAoukE6+DrOdAThNoaT707PBNqEw90W57GSk1Ywqa73ypOgOcZ4U2jrUNb807I0XjWX2kQeZgYV0V7hplWlMQr77T6QvrfkA+sYivapvu9NQkw9QG3jxrR2lr2Gqfv1jHaBlUE9Nbwq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=205.139.111.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-396-XjvN4SeQPm-Ibx1LHUbIvQ-1; Mon,
+ 29 Apr 2024 10:49:31 -0400
+X-MC-Unique: XjvN4SeQPm-Ibx1LHUbIvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 10FF4380390A;
+	Mon, 29 Apr 2024 14:49:29 +0000 (UTC)
+Received: from hog (unknown [10.39.193.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id AD66D2166B32;
+	Mon, 29 Apr 2024 14:49:19 +0000 (UTC)
+Date: Mon, 29 Apr 2024 16:49:18 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	David Ahern <dsahern@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
+	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
+	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, bridge@lists.linux.dev,
+	lvs-devel@vger.kernel.org
+Subject: Re: [PATCH v5 1/8] net: Remove the now superfluous sentinel elements
+ from ctl_table array
+Message-ID: <Zi-zbrq43dnlsQBY@hog>
+References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
+ <20240426-jag-sysctl_remset_net-v5-1-e3b12f6111a6@samsung.com>
+ <CGME20240429085414eucas1p11b3790e4687b8dc8ef02fe0f54bc9c55@eucas1p1.samsung.com>
+ <Zi9gG82_OKnLlFI2@hog>
+ <20240429123315.og27yehofzz6cui3@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
- <20240415131941.51153-10-linyunsheng@huawei.com> <37d012438d4850c3d7090e784e09088d02a2780c.camel@gmail.com>
- <8b7361c2-6f45-72e8-5aca-92e8a41a7e5e@huawei.com> <17066b6a4f941eea3ef567767450b311096da22b.camel@gmail.com>
- <c45fdd75-44be-82a6-8e47-42bbc5ee4795@huawei.com> <efd21f1d-8c67-b060-5ad2-0d500fac2ba6@huawei.com>
-In-Reply-To: <efd21f1d-8c67-b060-5ad2-0d500fac2ba6@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Mon, 29 Apr 2024 07:49:08 -0700
-Message-ID: <CAKgT0UfQWEkaWM_mfk=FhCErTL_ZS3RL6x3iMzPdEP3FD+9zZQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 09/15] mm: page_frag: reuse MSB of 'size'
- field for pfmemalloc
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240429123315.og27yehofzz6cui3@joelS2.panther.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Fri, Apr 26, 2024 at 2:38=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2024/4/18 17:39, Yunsheng Lin wrote:
->
-> ...
->
-> >
-> >> combining the pagecnt_bias with the va. I'm wondering if it wouldn't
-> >> make more sense to look at putting together the structure something
-> >> like:
-> >>
-> >> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-> >> typedef u16 page_frag_bias_t;
-> >> #else
-> >> typedef u32 page_frag_bias_t;
-> >> #endif
-> >>
-> >> struct page_frag_cache {
-> >>      /* page address and offset */
-> >>      void *va;
-> >
-> > Generally I am agreed with combining the virtual address with the
-> > offset for the reason you mentioned below.
-> >
-> >>      page_frag_bias_t pagecnt_bias;
-> >>      u8 pfmemalloc;
-> >>      u8 page_frag_order;
-> >> }
-> >
-> > The issue with the 'page_frag_order' I see is that we might need to do
-> > a 'PAGE << page_frag_order' to get actual size, and we might also need
-> > to do 'size - 1' to get the size_mask if we want to mask out the offset
-> > from the 'va'.
-> >
-> > For page_frag_order, we need to:
-> > size =3D PAGE << page_frag_order
-> > size_mask =3D size - 1
-> >
-> > For size_mask, it seem we only need to do:
-> > size =3D size_mask + 1
-> >
-> > And as PAGE_FRAG_CACHE_MAX_SIZE =3D 32K, which can be fitted into 15 bi=
-ts
-> > if we use size_mask instead of size.
-> >
-> > Does it make sense to use below, so that we only need to use bitfield
-> > for SIZE < PAGE_FRAG_CACHE_MAX_SIZE in 32 bits system? And 'struct
-> > page_frag' is using a similar '(BITS_PER_LONG > 32)' checking trick.
-> >
-> > struct page_frag_cache {
-> >       /* page address and offset */
-> >       void *va;
-> >
-> > #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <=3D 32)
-> >       u16 pagecnt_bias;
-> >       u16 size_mask:15;
-> >       u16 pfmemalloc:1;
-> > #else
-> >       u32 pagecnt_bias;
-> >       u16 size_mask;
-> >       u16 pfmemalloc;
-> > #endif
-> > };
-> >
->
-> After considering a few different layouts for 'struct page_frag_cache',
-> it seems the below is more optimized:
->
-> struct page_frag_cache {
->         /* page address & pfmemalloc & order */
->         void *va;
+2024-04-29, 14:33:15 +0200, Joel Granados wrote:
+> On Mon, Apr 29, 2024 at 10:53:47AM +0200, Sabrina Dubroca wrote:
+> > 2024-04-26, 12:46:53 +0200, Joel Granados via B4 Relay wrote:
+> > > diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> > > index 6973dda3abda..a84690b13bb9 100644
+> > > --- a/net/core/sysctl_net_core.c
+> > > +++ b/net/core/sysctl_net_core.c
+> > [...]
+> > > @@ -723,12 +722,11 @@ static __net_init int sysctl_core_net_init(struct net *net)
+> > >  		if (tbl == NULL)
+> > >  			goto err_dup;
+> > >  
+> > > -		for (tmp = tbl; tmp->procname; tmp++)
+> > > -			tmp->data += (char *)net - (char *)&init_net;
+> > 
+> > Some coding style nits in case you re-post:
+> Thx. I will, so please scream if you see more issues.
 
-I see. So basically just pack the much smaller bitfields in here.
+I've gone through the whole series and didn't see anything more.
 
->
-> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <=3D 32)
->         u16 pagecnt_bias;
->         u16 size;
-> #else
->         u32 pagecnt_bias;
->         u32 size;
-> #endif
-> }
->
-> The lower bits of 'va' is or'ed with the page order & pfmemalloc instead
-> of offset or pagecnt_bias, so that we don't have to add more checking
-> for handling the problem of not having enough space for offset or
-> pagecnt_bias for PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE and 32 bits system.
-> And page address & pfmemalloc & order is unchanged for the same page
-> in the same 'page_frag_cache' instance, it makes sense to fit them
-> together.
->
-> Also, it seems it is better to replace 'offset' with 'size', which indica=
-tes
-> the remaining size for the cache in a 'page_frag_cache' instance, and we
-> might be able to do a single 'size >=3D fragsz' checking for the case of =
-cache
-> being enough, which should be the fast path if we ensure size is zoro whe=
-n
-> 'va' =3D=3D NULL.
+> > > +		for (int i = 0; i < table_size; ++i)
+> > 
+> > move the declaration of int i out of the for (), it's almost never
+> > written this way (at least in networking)
+> done
+> 
+> > 
+> > > +			(tbl + i)->data += (char *)net - (char *)&init_net;
+> > 
+> >                         tbl[i].data = ...
+> > 
+> > is more in line with other similar functions in the rest of net/
+> done
+> 
+> > 
+> > 
+> > [...]
+> > > diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
+> > > index 6dab883a08dd..ecc849678e7b 100644
+> > > --- a/net/mpls/af_mpls.c
+> > > +++ b/net/mpls/af_mpls.c
+> > [...]
+> > > @@ -2674,6 +2673,7 @@ static const struct ctl_table mpls_table[] = {
+> > >  
+> > >  static int mpls_net_init(struct net *net)
+> > >  {
+> > > +	size_t table_size = ARRAY_SIZE(mpls_table);
+> > 
+> > This table still has a {} as its final element. It should be gone too?
+> Now, how did that get away?  I'll run my coccinelle scripts once more to
+> make sure that I don't have more of these hiding in the shadows.
 
-I'm not sure the rename to size is called for as it is going to be
-confusing. Maybe something like "remaining"?
+I didn't spot any other with a dumb
 
-> Something like below:
->
-> #define PAGE_FRAG_CACHE_ORDER_MASK      GENMASK(1, 0)
-> #define PAGE_FRAG_CACHE_PFMEMALLOC_BIT  BIT(2)
+    sed -n '<line>,^};/p' <file>
 
-The only downside is that it is ossifying things so that we can only
-ever do order 3 as the maximum cache size. It might be better to do a
-full 8 bytes as on x86 it would just mean accessing the low end of a
-16b register. Then you can have pfmemalloc at bit 8.
+(with file/line produced by git grep 'struct ctl_table' -- net)
 
-> struct page_frag_cache {
->         /* page address & pfmemalloc & order */
->         void *va;
->
 
-When you start combining things like this we normally would convert va
-to an unsigned long.
+Thanks.
 
-> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <=3D 32)
->         u16 pagecnt_bias;
->         u16 size;
-> #else
->         u32 pagecnt_bias;
->         u32 size;
-> #endif
-> };
->
->
-> static void *__page_frag_cache_refill(struct page_frag_cache *nc,
->                                       unsigned int fragsz, gfp_t gfp_mask=
-,
->                                       unsigned int align_mask)
-> {
->         gfp_t gfp =3D gfp_mask;
->         struct page *page;
->         void *va;
->
-> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->         /* Ensure free_unref_page() can be used to free the page fragment=
- */
->         BUILD_BUG_ON(PAGE_FRAG_CACHE_MAX_ORDER > PAGE_ALLOC_COSTLY_ORDER)=
-;
->
->         gfp_mask =3D (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
->                    __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
->         page =3D alloc_pages_node(NUMA_NO_NODE, gfp_mask,
->                                 PAGE_FRAG_CACHE_MAX_ORDER);
->         if (likely(page)) {
->                 nc->size =3D PAGE_FRAG_CACHE_MAX_SIZE - fragsz;
+-- 
+Sabrina
 
-I wouldn't pass fragsz here. Ideally we keep this from having to get
-pulled directly into the allocator and can instead treat this as a
-pristine page. We can do the subtraction further down in the actual
-frag alloc call.
-
->                 va =3D page_address(page);
->                 nc->va =3D (void *)((unsigned long)va |
->                                   PAGE_FRAG_CACHE_MAX_ORDER |
->                                   (page_is_pfmemalloc(page) ?
->                                    PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
->                 page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
->                 nc->pagecnt_bias =3D PAGE_FRAG_CACHE_MAX_SIZE;
->                 return va;
->         }
-> #endif
->         page =3D alloc_pages_node(NUMA_NO_NODE, gfp, 0);
->         if (likely(page)) {
->                 nc->size =3D PAGE_SIZE - fragsz;
->                 va =3D page_address(page);
->                 nc->va =3D (void *)((unsigned long)va |
->                                   (page_is_pfmemalloc(page) ?
->                                    PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
->                 page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
->                 nc->pagecnt_bias =3D PAGE_FRAG_CACHE_MAX_SIZE;
->                 return va;
->         }
->
->         nc->va =3D NULL;
->         nc->size =3D 0;
->         return NULL;
-> }
->
-> void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
->                                  unsigned int fragsz, gfp_t gfp_mask,
->                                  unsigned int align_mask)
-> {
-> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->         unsigned long page_order;
-> #endif
->         unsigned long page_size;
->         unsigned long size;
->         struct page *page;
->         void *va;
->
->         size =3D nc->size & align_mask;
->         va =3D nc->va;
-> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->         page_order =3D (unsigned long)va & PAGE_FRAG_CACHE_ORDER_MASK;
->         page_size =3D PAGE_SIZE << page_order;
-> #else
->         page_size =3D PAGE_SIZE;
-> #endif
-
-So I notice you got rid of the loops within the function. One of the
-reasons for structuring it the way it was is to enable better code
-caching. By unfolding the loops you are increasing the number of
-instructions that have to be fetched and processed in order to
-allocate the buffers.
-
->
->         if (unlikely(fragsz > size)) {
->                 if (unlikely(!va))
->                         return __page_frag_cache_refill(nc, fragsz, gfp_m=
-ask,
->                                                         align_mask);
->
->                 /* fragsz is not supposed to be bigger than PAGE_SIZE as =
-we are
->                  * allowing order 3 page allocation to fail easily under =
-low
->                  * memory condition.
->                  */
->                 if (WARN_ON_ONCE(fragsz > PAGE_SIZE))
->                         return NULL;
->
->                 page =3D virt_to_page(va);
->                 if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
->                         return __page_frag_cache_refill(nc, fragsz, gfp_m=
-ask,
->                                                         align_mask);
->
->                 if (unlikely((unsigned long)va &
->                              PAGE_FRAG_CACHE_PFMEMALLOC_BIT)) {
->                         free_unref_page(page, compound_order(page));
->                         return __page_frag_cache_refill(nc, fragsz, gfp_m=
-ask,
->                                                         align_mask);
->                 }
->
->                 /* OK, page count is 0, we can safely set it */
->                 set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
->
->                 /* reset page count bias and offset to start of new frag =
-*/
->                 nc->pagecnt_bias =3D PAGE_FRAG_CACHE_MAX_SIZE + 1;
->                 size =3D page_size;
->         }
->
->         va =3D (void *)((unsigned long)va & PAGE_MASK);
->         va =3D va + (page_size - size);
->         nc->size =3D size - fragsz;
->         nc->pagecnt_bias--;
->
->         return va;
-> }
-> EXPORT_SYMBOL(__page_frag_alloc_va_align);
->
 
