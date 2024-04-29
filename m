@@ -1,168 +1,80 @@
-Return-Path: <linux-kernel+bounces-162733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7E98B5FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:14:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7BE8B5FD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:15:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF89428174C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:14:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FD561F22961
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE86586636;
-	Mon, 29 Apr 2024 17:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5AC86640;
+	Mon, 29 Apr 2024 17:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FyLWtJPU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xce7v5aP"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB7C83CBA;
-	Mon, 29 Apr 2024 17:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CBB385C41
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714410879; cv=none; b=AlRho7zv83soi+7+qWZPYXMbApPGsXxq66FpbUKxJ8vkjeAIYR4M7gGDmlV9lLLcIKe5w/1S4VQa4Evh91bdmfY4B5Ptz29sx/JldOjp14FVClT1K5dxfpIuWTr2l8V/xIOdhFpFdEF3E5vZ8YD+gj2SzrrH3k6pgaAEfd3NDvc=
+	t=1714410893; cv=none; b=OMnTVs6YW+7+aXFzl7yS0xorSE2aMrW/RtEGErXaSeWKP2vpl9yrmH98sWJo+mPd2zDc44HRuEXiF9qVV5LdmW3+mnMX58fBO68kwXBBM2wqUBHUzjHcQ9HylNR0V3nJeAgKt4ajN+5++yMi440RMglLdPHQWjl6eHYaNDfbspk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714410879; c=relaxed/simple;
-	bh=LFhDhAlcTNp4irr48KstARqghe7SJlpdE/8vhdM2+Lc=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=oz0WlD34eiygpu9NrqeNXJYkfJmfty4L6iNidmMP1Oa+dkg2EVFfuWE/62F2ht/1xDMFEaem+Lqui7xvAUFLHigPUlng8HKNBSzP1GJCcOzjbuBsT/YT2I9Uc3Rrptshdg9MgkgWuuGMMz9k9NRye3ErlK/O3fBLSwy3svCceAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FyLWtJPU; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714410877; x=1745946877;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=LFhDhAlcTNp4irr48KstARqghe7SJlpdE/8vhdM2+Lc=;
-  b=FyLWtJPU78TwnqquYRivTDAgPrE4mRoJyFLRw0/03K5q/ahaA8D/4ptF
-   obAYt1M+pitfmlm3vNc7BqgJpkhUbgtjgSaQ42GpJ05YiMWFXtcoLwp+C
-   Wyq5mxBmkE4zroAN1iO/oCwewY6nZoUwBFmfrEeAqH+uAh6xpChO316kN
-   28eIKxKT5+gHAZ/mZEPm0P0iGxPZDwxmPn30AYpKPYhqRVIV4NRiq316+
-   2IGyl6XnypKWA104DvKuBt5ytdvVas9BvOxmVQ294z0pFGxXeTNAtaIJV
-   Qc1NKPa11nCL3twyGKKviZyY0kTv+gimpsY5J6nCPNkJaa612D5WSz3rg
-   g==;
-X-CSE-ConnectionGUID: 8FG4BPvhTqyrKzF0+8H7/g==
-X-CSE-MsgGUID: HLMo+Jx2SFW72wI8sYCtLw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="21236489"
-X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
-   d="scan'208";a="21236489"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 10:14:37 -0700
-X-CSE-ConnectionGUID: 4wZwqHyiSB6OCwBv47OV8A==
-X-CSE-MsgGUID: Q9MowttDShiXJc9yKhRJWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,240,1708416000"; 
-   d="scan'208";a="30972200"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.99.222])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 29 Apr 2024 10:14:33 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Dave Hansen" <dave.hansen@intel.com>, "Huang, Kai" <kai.huang@intel.com>,
- "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "Mehta, Sohil" <sohil.mehta@intel.com>, "tj@kernel.org"
- <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
- <bp@alien8.de>, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
- <op.2ma195shwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <6b056faa6de2ba3a15c2e5dd576e96e3f85375ba.camel@intel.com>
- <D0LLZTSVG3BC.8WIRM39WC7UU@kernel.org>
- <f62c29ec-f893-4320-8097-f6b3a372267a@intel.com>
- <D0W3G5GVNMMW.3OCGUH8AYNORY@kernel.org>
- <op.2mzzkowowjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0WR9J2AICDK.GM1G85DEHDDF@kernel.org>
-Date: Mon, 29 Apr 2024 12:14:31 -0500
+	s=arc-20240116; t=1714410893; c=relaxed/simple;
+	bh=MAZjE9XDcoq2UoyMSHQ5O/M24trUzg61i7joGuCUb/U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=idqu0E0TwEvGS0jGTCAn92iv0jk3xbhO24/7xwZooVMMHGv+erCJ5/huXLs4Ay+g/LqTfQeJSrb+guC2baiG5gGkDxsQ+p34FGt0+MzLBk/lq9xwceS8mtYU5xB8CdJtj/ZaStskwhwqBdgPjcyHh2y2JGwFcCZMMPAATt0rnGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xce7v5aP; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2e7e6d53-38a2-464a-ac6e-10d87184897c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714410889;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MAZjE9XDcoq2UoyMSHQ5O/M24trUzg61i7joGuCUb/U=;
+	b=xce7v5aPOGLFts1xBsTlM1YOtUPfiHGRHD6r9XSA9cxB+Hrkky1FRb1QWduHc7sjNqEOgC
+	NNlmqkFp3pr6T3O+4vwOZG1Bat4tGvvWyBii3rOqeEACkHAdUUbJurHh5Vz+jL3zvSAPOc
+	B2VyQN2V+gM1YGhS7+RCTpVbBGtSV9s=
+Date: Mon, 29 Apr 2024 10:14:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v1 1/1] bpf: Switch to krealloc_array()
+Content-Language: en-GB
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+References: <20240429120005.3539116-1-andriy.shevchenko@linux.intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240429120005.3539116-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mz16ha3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0WR9J2AICDK.GM1G85DEHDDF@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 29 Apr 2024 11:43:05 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
 
-> On Mon Apr 29, 2024 at 7:18 PM EEST, Haitao Huang wrote:
->> Hi Jarkko
->>
->> On Sun, 28 Apr 2024 17:03:17 -0500, Jarkko Sakkinen <jarkko@kernel.org>
->> wrote:
->>
->> > On Fri Apr 26, 2024 at 5:28 PM EEST, Dave Hansen wrote:
->> >> On 4/16/24 07:15, Jarkko Sakkinen wrote:
->> >> > On Tue Apr 16, 2024 at 8:42 AM EEST, Huang, Kai wrote:
->> >> > Yes, exactly. I'd take one week break and cycle the kselftest part
->> >> > internally a bit as I said my previous response. I'm sure that  
->> there
->> >> > is experise inside Intel how to implement it properly. I.e. take  
->> some
->> >> > time to find the right person, and wait as long as that person has  
->> a
->> >> > bit of bandwidth to go through the test and suggest modifications.
->> >>
->> >> Folks, I worry that this series is getting bogged down in the  
->> selftests.
->> >>  Yes, selftests are important.  But getting _some_ tests in the  
->> kernel
->> >> is substantially more important than getting perfect tests.
->> >>
->> >> I don't think Haitao needs to "cycle" this back inside Intel.
->> >
->> > The problem with the tests was that they are hard to run anything else
->> > than Ubuntu (and perhaps Debian). It is hopefully now taken care of.
->> > Selftests do not have to be perfect but at minimum they need to be
->> > runnable.
->> >
->> > I need ret-test the latest series because it is possible that I did  
->> not
->> > have right flags (I was travelling few days thus have not done it  
->> yet).
->> >
->> > BR, Jarkko
->> >
->>
->> Let me know if you want me to send v13 before testing or you can just  
->> use
->> the sgx_cg_upstream_v12_plus branch in my repo.
->>
->> Also thanks for the "Reviewed-by" tags for other patches. But I've not  
->> got
->> "Reviewed-by" from you for patches #8-12 (not sure I missed). Could you  
->> go
->> through those alsoe when you get chance?
+On 4/29/24 5:00 AM, Andy Shevchenko wrote:
+> Let the krealloc_array() copy the original data and
+> check for a multiplication overflow.
 >
-> So, I compiled v12 branch. Was the only difference in selftests?
->
-> I can just copy them to the device.
->
-> BR, Jarkko
->
-The only other functional change is using BUG_ON() when workqueue  
-allocation fails in sgx_cgroup_init(). It should not affect testing  
-results.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks
-Haitao
- 
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
 
