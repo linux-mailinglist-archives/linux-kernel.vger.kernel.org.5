@@ -1,176 +1,125 @@
-Return-Path: <linux-kernel+bounces-162748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56DC08B6006
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:29:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AA038B6008
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:29:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C177A1F218F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:29:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F40CF1F21761
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:29:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54AE126F08;
-	Mon, 29 Apr 2024 17:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94131272B5;
+	Mon, 29 Apr 2024 17:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U5Bi/Urb"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LkRvuc5b"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EB98595F;
-	Mon, 29 Apr 2024 17:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8AE86652
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714411737; cv=none; b=QnimhtaSlGwBuA+eE0wR8XhgLCztFIIlTqCxIQ4CdBm8Xn7oYBCCAY+3DjqUIXXeMd6nw/MuMte8HrBuPipltNPzYfmosYs5cYUbvLovIbPiX2UJmq2TAVDXIcAqTFjy7vZ/nllFi0x4J/R6S+qcZC0eWlBXNjSfekxYBQCdfb4=
+	t=1714411739; cv=none; b=FlBW/WjUiUBQ86QwtZGO+7aBrvPrCUTg0cf+CCILYWPNxB44wyjuQw5Ie+BHweQTxaLBvx1VLXQBOPj5X/4o1sFJvGMQC3UZjFkH1s4BVCyoJKJA6fZzZvfWxNI3W1CFdnar2G/TJiBbfzLcd2IB18R3L+mARiCq4tu08qDNqjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714411737; c=relaxed/simple;
-	bh=V/EdWqjSL66K2W+Rljv5d3dHA1Y71VTttKSIAVGvPVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CSsLndQejD2nTKttp+Dq0hgS2sToNwCBWeisAls9atrh/FxAEVrEmilgtqZH6O9MTjiWL+2zw9B868dsFby+F7GqD2rkevA1sPabvooymKys6HA/egEGbNY++VuHRlRIaOXPvryL7StYdEuSSBNGu6il8JJNi9xNu2df/+Zbwiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U5Bi/Urb; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 13BCE20005;
-	Mon, 29 Apr 2024 17:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714411732;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D3NitkVDANPDUYTKXLeCe7dOJF6tcodDJ3rgCbuQyDo=;
-	b=U5Bi/UrbUpDiDFR83uoGZnDosNkfFT1p7MFxseTl4LwmMXU3UhER9hr739l0a7IxRvA3bU
-	Bb2dXrQry8bnnFfFRYn0mlyJVD7SvDYEr2xdTvLqQNhaPg67S/uRdv950nBxvk9F3uItp6
-	bDog9dJmJO2J/uXFV0X6yqrU+swBIuOU9KpUnOXmF0lBgtgbUH8NpmrFyZBbIIbeVsH1oO
-	FrfLPaG4z9nsXoNiqvkG9WhZGq2YX6BJVGxsowGpN/0BC6j18XscvZxQpntXVoVg7ouX7W
-	crA1MouDEsi3e2B5Q5Vd/65riGIwdTQi+3zT4oh+7Sb9gUfypgvJf/+KP84tBA==
-Date: Mon, 29 Apr 2024 19:28:48 +0200
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Kyle Swenson
- <kyle.swenson@est.tech>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: PoE complex usage of regulator API
-Message-ID: <20240429192848.13c576b7@kmaincent-XPS-13-7390>
-In-Reply-To: <Zi--4ko_vAtFSxyn@finisterre.sirena.org.uk>
-References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
-	<Zi--4ko_vAtFSxyn@finisterre.sirena.org.uk>
-Organization: bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714411739; c=relaxed/simple;
+	bh=PxWdf9Kkj0n6VHhFtbztMb/tWZE85qZYX2SkOsfKcdk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pCrA57epaCp7suQlpkhl6P20vrM3D7AZ6x0mhmqPoWrnCWQLabgvFRRa0ZT+sc9wb3qmpoLEQVPKQ4n+DWU158rZ/tYnAuwGS6MmKmN2S3RBomWqAlru4AA3Co8IkVa6j83Dp5TKdYoGjBHnD2K1bEQbP/Wh671whtM97fz5Cmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LkRvuc5b; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a524ecaf215so600749666b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714411736; x=1715016536; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SfvUr/npMdZ/GS2t3ldGkKTtvFh58aymblnh7l1bHtk=;
+        b=LkRvuc5b4mfRBsVCtYHEsW3AUOr4XzTrBwrQM4GJAPaetanel39BIpomj4KajuonWE
+         YNDDNuwQ1bb0NS3vr3/g7y5kO+26ZkXUpBMw1xOq9+C9uTOjraBA/4YKudZIS7Ddy5Dd
+         40iahqwfribZlNqm7nrhvN5QIaTpGwlfPRzSCu5+uO1wNVYhIyXOqWjCCGyMW6TzS7tP
+         pF8n+k4w8kJIs7nMAjIXb3L3+MZXRkA9YXqgEWxAqaAVuGPSZJ/kyRC9yAukUuRW9hJ4
+         gwSI29RgWWVrSIneuLuFuDizwaulTdn5zXQiY6bVCkFpsDWWH1048utt43BOp76vzds5
+         S+VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714411736; x=1715016536;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SfvUr/npMdZ/GS2t3ldGkKTtvFh58aymblnh7l1bHtk=;
+        b=r88LqJF12Bd7pQU1FhKefgYVFMLkOxGdB3pz0yDQcZcvwTtOMQlwJn3BY0WbjilKvJ
+         n2L+rQ62945Nf7NQ5W7Ze4BtOgreQcIzb6cG3bZwKVsIBPnU2HH5gyFFfs5UHU4+MrS6
+         fnmpP4eArwUxoX2B6N4Wmrmu6qm2Tkp0rtCRduh5t5Iqo0nqm7JNz9EGzKuQKx3xUF+a
+         SOpFWUp6GZGjo6gcAcNNwmUTxRD++TPX6N8/64UtTRk+6VaIHrORHuIbH2x+uATQpERU
+         AqU86lNZa8cpss9diGxers5ziAmi9PMeg8msREwVdmxcqmku/K70G1C8sNZPUMOma0Kk
+         +CcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTta6m0mVRXbOABvod5JqhfTRFCy27uuex9R2BUnaULqdqp+CWhmaHkMEHH3uM/CPC8lcW8jZcY1zsp7A57AH8u9Nd3UpNrnG+EVUj
+X-Gm-Message-State: AOJu0YzI9PhESU9GSiAkp9gIXsEWb+z9xuIoHUPtA5DEJZDdLH0UrONi
+	DiGdaiBCv5QJCqoKocj8Th0BhOZOIbLAKUPL4JkowYF5zTlmiKlyLQtP3yFXLGQ=
+X-Google-Smtp-Source: AGHT+IHXKKToeyb3BoIe7riCQypv2ZercpV0O3E7vrpAKyMXse2leBAsPr7FdPKCLzbfNcuNrVeftw==
+X-Received: by 2002:a17:906:3bcf:b0:a55:5ed2:44d5 with SMTP id v15-20020a1709063bcf00b00a555ed244d5mr7457851ejf.68.1714411735610;
+        Mon, 29 Apr 2024 10:28:55 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id u8-20020a170906654800b00a58f15b070dsm2556560ejn.43.2024.04.29.10.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 10:28:54 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Will McVicker <willmcvicker@google.com>,
+	Sam Protsenko <semen.protsenko@linaro.org>,
+	kernel-team@android.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] clock support for Samsung Exynos pin controller (Google Tensor gs101)
+Date: Mon, 29 Apr 2024 19:28:50 +0200
+Message-ID: <171441172281.306662.17546797534297489946.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
+References: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Apr 2024 00:38:10 +0900
-Mark Brown <broonie@kernel.org> wrote:
 
-Hello all, thank for your replies!
-That gives me more hint for the development.
+On Fri, 26 Apr 2024 14:25:13 +0100, André Draszik wrote:
+> This series enables clock support on the Samsung Exynos pin controller
+> driver.
+> 
+> This is required on Socs like Google Tensor gs101, which implement
+> fine-grained clock control / gating, and as such a running bus clock is
+> required for register access to work.
+> 
+> [...]
 
-> On Fri, Apr 26, 2024 at 12:42:53PM +0200, Kory Maincent wrote:
->=20
-> > Let's begin simple, in PSE world we are more talking about power.
-> > Would it be ok to add a regulator_get/set_power_limit() and
-> > regulator_get_power() callback to regulator API. Would regulator API ha=
-ve
-> > interest to such callbacks? =20
->=20
-> Why would these be different to the existing support for doing current
-> limiting?  If the voltage for the supply is known then the power is a
-> simple function of the current and the voltage.  I suppose you could try
-> to do a convenience functions for a fixed voltage, but there'd be issues
-> there if the voltage isn't configured to an exact voltage and might
-> vary.
+Applied, thanks!
 
-That's right I was focusing on power where I could use already implemented
-voltage and current callbacks. Would you be interested to a new get_current=
-()
-callback to know the current and allows regulator to deduce the consumed po=
-wer
-or should it be specific to PSE subsystem.
+[1/2] dt-bindings: pinctrl: samsung: google,gs101-pinctrl needs a clock
+      https://git.kernel.org/pinctrl/samsung/c/dff9f3fb6ba4f74eb805bc172cc16ff2c91648bf
+[2/2] pinctrl: samsung: support a bus clock
+      https://git.kernel.org/pinctrl/samsung/c/f9c74474797351c60e009ebc59a798fcfd93ee57
 
-> > Port priority, more complex subject:
-> > Indeed a PSE controller managing several ports may be able to turn off =
-ports
-> > with low priority if the total power consumption exceed a certain level.
-> > - There are controller like PD692x0 that can managed this on the hardwa=
-re
-> > side. In that case we would have a regulator_get/set_power_limit()
-> > callbacks from the regulator parent (the PSE contoller) and a
-> > regulator_get/set_priory() callbacks for the regulator children (PSE
-> > ports). =20
->=20
-> All this priority stuff feels very PSE specific but possibly doable.
-> You'd have to define the domains in which priorities apply as well as
-> the priorities themselves.
-
-If you think that it is really specific to PSE no need to add it in the
-regulator API, it will also remove me some brain knots.
-
-> > - There are controller like TPS23881 or LTC4266 that can set two priori=
-ties
-> >   levels on their ports and a level change in one of their input pin can
-> >   shutdown all the low priority ports. In that case the same callbacks
-> > could be used. regulator_get/set_power_limit() from the parent will be =
-only
-> > at software level. regulator_get/set_priority() will set the priorities=
- of
-> > the ports on hardware level. A polling function have to read frequently=
- the
-> > total power used and compare it to the power budget, then it has to call
-> > something like regulator_shutdown_consumer() in case of power overflow.=
-   =20
->=20
-> I would expect the regulators can generate notifications when they go
-> out of regulation?  Having to poll feels very crude for something with
-> configurable power limits.
-
-Yep that's true. Indeed using notification would be way better!
-
-> > https://lore.kernel.org/netdev/20240417-feature_poe-v9-10-242293fd1900@=
-bootlin.com/
-> > But in case the port is enabled from Linux then shutdown from the PSE
-> > controller for any reason, I have to run disable and enable command to
-> > enable it again. Not really efficient :/ =20
->=20
-> If that is a hot path something has gone very wrong with the system,
-> especially if it's such a hot path that the cost of a disable is making
-> a difference. =20
-
-That's not in the hotpath.
-
-> Note that hardware may have multiple error handling
-> strategies, some hardware will turn off outputs when there's a problem
-> while other implementations will try to provide as good an output as
-> they can.  Sometimes the strategy will depend on the specific error
-> condition, and there may be timeouts involved.  This all makes it very
-> difficult to assume any particular state after an error has occurred, or
-> that the state configured in the control registers reflects the physical
-> state of the hardware so you probably want some explicit handling for
-> any new state you're looking for.
-
-Alright, didn't thought of these different management of an error condition.
-We might also see similar things in PSE, so I will keep it like that.
-
-> > I am thinking of disabling the usage of counters in case of a
-> > regulator_get_exclusive(). What do you think? Could it break other usag=
-e? =20
->=20
-> Yes, that seems likely to break other users and in general a sharp edge
-> for people working with the API.
-
-Okay,
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
