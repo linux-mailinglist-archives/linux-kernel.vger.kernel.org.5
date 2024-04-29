@@ -1,151 +1,172 @@
-Return-Path: <linux-kernel+bounces-163025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B04A8B63D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:46:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FFE78B63D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:48:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72181F22693
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:46:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81CF81C219A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 20:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6FA17994D;
-	Mon, 29 Apr 2024 20:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6984C1779BD;
+	Mon, 29 Apr 2024 20:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AsTxMjRQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="NFT4EKyb"
+Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563DE179641;
-	Mon, 29 Apr 2024 20:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C56412880A;
+	Mon, 29 Apr 2024 20:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714423545; cv=none; b=qP4+uC88cEw6u2kt3Zp953B6SZxYUHu5ulqgdZVmjUNH7zdWVt4tXx1V5mBUgoCWmQaO1TrxxAE2rP0afTl+xAt93sjQxKi9Dgc6i9LsJKBwP6bBqoK3wdPR0GYlovzIyXxDmWIQqqpfxW0ru1kRtKO1iVpIIvpWu8xOV08L0kI=
+	t=1714423699; cv=none; b=KTf5zUdEovqXcDna7lvjLZ16mx/amamgsJnyMgrmWl9VAf6RYVUnvuvX5XopuBgsEpIfx+0AB9GOUJI0Yg9skn5JooWA4AUZk3bcPiZA+cn2YP//Jo2yX2JQ84tWmt6fTJyvxp8ID+0kZEF9qk5Dj3VTKitni+nFgyrEWfG2NF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714423545; c=relaxed/simple;
-	bh=K3a2iZ9Cz/1M52sNjT+DInoYMFpT7/x83Kmbuiq20Fk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sCaHGjm0eTsQ6V/eUzZgiDn2/6utnaMSW70QyJPnJDtUsMJnR5ZuMLnr2/3VJFZGLMfrK6AKm3k4x/CX/P1F7RRzppP0f/UeV+6yf5RctgvEx910vZG54GNQgZ+xzwNAMrjbmoj7i+kxLzkANvA60dWx84ffdTVqOlFoqvQ1JOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AsTxMjRQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C28C0C113CD;
-	Mon, 29 Apr 2024 20:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714423544;
-	bh=K3a2iZ9Cz/1M52sNjT+DInoYMFpT7/x83Kmbuiq20Fk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=AsTxMjRQJTS2LxmMjhScPaQzbxTu0Z8/typvFFYYOK5xUCiCKU945h3bHI8rHYG2s
-	 1GMyzEL7fY9wxdg5JWCVvJkXiZOvQdkwYq9NMvOqeYRscyRaVf2lkNmPx8D5CPkR2I
-	 iTG5DTVvGTFtvOmez1V2LV4EM1CzUygTVLFY3HPh8jcH6GIwcoM1l6l3Ypa7bvfdRt
-	 pYx0SI4XBH4+Fgo+QdbDC8RxDBUga7Vyv1jtEjkwBbi/h7Iqb5A3mrrRPmHDyNxGxT
-	 QMtfgvSzigCNUb4MwVE2OddSCoHl7A34g3/NosOhrdWWE1JcYVJg1Y7wICfHhT6+J2
-	 aEkhEAgEZTe0g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 588E4CE0B6B; Mon, 29 Apr 2024 13:45:44 -0700 (PDT)
-Date: Mon, 29 Apr 2024 13:45:44 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: tglx@linutronix.de, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix suspicious RCU usage in __do_softirq()
-Message-ID: <9f227fd2-13b2-4c78-b3b3-05ef6d583078@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1714423699; c=relaxed/simple;
+	bh=hi9jHuX0t+MiyHdv6bvpydi3NtTh3mzwnyovDtOhWfM=;
+	h=Message-ID:Date:MIME-Version:Subject:References:From:To:Cc:
+	 In-Reply-To:Content-Type; b=VLZGfyUsUVe6ggY24WDDxQCpG+Z5NQuA0ErwZ7nqGGbDAtKSrJyjooQ0JqGcOlYVz4rOZSzpcMleJmSrNZv4rFiLvbfyqoCjlLyAqX13lBLqQ+12BlBe/DO+SP3SIKzEbuz3YYdcTmJHdZ1PxVvX/dVukiqpS5ODcgvlmaEPHu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=NFT4EKyb; arc=none smtp.client-ip=80.12.242.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 1XussKoaLoeci1XussY2eu; Mon, 29 Apr 2024 22:48:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1714423687;
+	bh=2tkIHRgbihugbvQSDrnZucCqwWRA089i99j5eTq3fo4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To;
+	b=NFT4EKyb8uYCTdvhnoUA2B48EVqoeOgNJHp/FkjJY7eUqfcHVw5aFI8d0rgqgI9Z0
+	 4pOznp7iJq0E6E/zRrdpYP774Bf0z+yUPo94apXItBZblnlWsxW8wPqTrDzpQ0dxTS
+	 zq8Dp7NA0NHS+jEtV/VwMorBFZqk5ErBM4YEMWhTXUCUpo7XAE2k/yYMOEPSwANeps
+	 q72ShUELnyuUv2UoT4DUw40vJtVNFKXlkGsq7r6p8JpiS+yV3+YjMEJ1adZaUlZikL
+	 WU1XHWTz1ch0uhJDDoqknfchxLXOBfpL9TQgb9qTuC2+HxF0GwSo5qOm6jWg14qAdT
+	 /s7dm3fN0f1jA==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 29 Apr 2024 22:48:07 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <95484936-3f63-45ab-8b60-179508c159fb@wanadoo.fr>
+Date: Mon, 29 Apr 2024 22:48:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240427102808.29356-1-qiang.zhang1211@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] perf/x86/amd/uncore: Use kcalloc*() instead of
+ kzalloc*()
+References: <PAXPR02MB7248F46DEFA47E79677481B18B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Erick Archer <erick.archer@outlook.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Justin Stitt <justinstitt@google.com>
+Cc: x86@kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+In-Reply-To: <PAXPR02MB7248F46DEFA47E79677481B18B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 27, 2024 at 06:28:08PM +0800, Zqiang wrote:
-> Currently, the condition "__this_cpu_read(ksoftirqd) == current" is
-> checked to ensure the rcu_softirq_qs() is invoked in ksoftirqd tasks
-> context for non-RT kernels. however, in some scenarios, this condition
-> will be broken.
+Le 27/04/2024 à 18:45, Erick Archer a écrit :
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
 > 
->      ksoftirqd/0
-> ->finish_task_switch
->   ->put_task_struct_rcu_user
->     ->call_rcu(&task->rcu, delayed_put_task_struct)
->       ->__kasan_record_aux_stack
->         ->pfn_valid
->           ->rcu_read_lock_sched()
->             <interrupt>
->              __irq_exit_rcu
->              ->__do_softirq
->                -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
->                    __this_cpu_read(ksoftirqd) == current)
->                    ->rcu_softirq_qs
->                      ->RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
+> Here the multiplication is obviously safe. However, using kcalloc*()
+> is more appropriate [2] and improves readability. This patch has no
+> effect on runtime behavior.
 > 
-> The rcu quiescent states is reported occurs in the rcu-read critical
-> section, so the lockdep warning is triggered. this commit therefore
-> remove "__this_cpu_read(ksoftirqd) == current" condition check, generate
-> new "handle_softirqs(bool kirqd)" function to replace __do_softirq() in
-> run_ksoftirqdt(), and set parameter kirqd to true, make rcu_softirq_qs()
-> be invoked only in ksofirqd tasks context for non-RT kernels.
-> 
-> Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/lkml/8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop/T/#mea8aba4abfcb97bbf499d169ce7f30c4cff1b0e3
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
 > ---
->  kernel/softirq.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+> Changes in v3:
+> - Update the commit message to better explain the changes.
+> - Rebase against linux-next.
 > 
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index b315b21fb28c..e991d735be0d 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
->  static inline void lockdep_softirq_end(bool in_hardirq) { }
->  #endif
->  
-> -asmlinkage __visible void __softirq_entry __do_softirq(void)
-> +static void handle_softirqs(bool kirqd)
->  {
->  	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
->  	unsigned long old_flags = current->flags;
-> @@ -563,8 +563,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
->  		pending >>= softirq_bit;
->  	}
->  
-> -	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> -	    __this_cpu_read(ksoftirqd) == current)
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && kirqd)
->  		rcu_softirq_qs();
->  
->  	local_irq_disable();
-> @@ -584,6 +583,11 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
->  	current_restore_flags(old_flags, PF_MEMALLOC);
->  }
->  
-> +asmlinkage __visible void __softirq_entry __do_softirq(void)
-> +{
-> +	handle_softirqs(false);
-> +}
-> +
->  /**
->   * irq_enter_rcu - Enter an interrupt context with RCU watching
->   */
-> @@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
->  		 * We can safely run softirq on inline stack, as we are not deep
->  		 * in the task stack here.
->  		 */
-> -		__do_softirq();
-> +		handle_softirqs(true);
->  		ksoftirqd_run_end();
->  		cond_resched();
->  		return;
-> -- 
-> 2.17.1
+> Changes in v2:
+> - Add the "Reviewed-by:" tag.
+> - Rebase against linux-next.
 > 
+> Previous versions:
+> v1 -> https://lore.kernel.org/linux-hardening/20240116125813.3754-1-erick.archer@gmx.com
+> v2 -> https://lore.kernel.org/linux-hardening/AS8PR02MB7237A07D73D6D15EBF72FD8D8B392@AS8PR02MB7237.eurprd02.prod.outlook.com
+> 
+> Hi,
+> 
+> This is a new try. In the v2 version Ingo explained that this change
+> is nonsense since kzalloc() is a perfectly usable interface and there
+> is no real overflow here.
+> 
+> Anyway, if we have the 2-factor form of the allocator, I think it is
+> a good practice to use it.
+> 
+> In this version I have updated the commit message to explain that
+> the code is obviusly safe in contrast with the last version where the
+> impression was given that there was a real overlow bug.
+> 
+> I hope this patch can be applied this time.
+> 
+> Regards,
+> Erick
+> ---
+>   arch/x86/events/amd/uncore.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+> index 4ccb8fa483e6..61c0a2114183 100644
+> --- a/arch/x86/events/amd/uncore.c
+> +++ b/arch/x86/events/amd/uncore.c
+> @@ -479,8 +479,8 @@ static int amd_uncore_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+>   				goto fail;
+>   
+>   			curr->cpu = cpu;
+> -			curr->events = kzalloc_node(sizeof(*curr->events) *
+> -						    pmu->num_counters,
+> +			curr->events = kcalloc_node(pmu->num_counters,
+> +						    sizeof(*curr->events),
+>   						    GFP_KERNEL, node);
+
+Hi,
+
+not related to your patch, but amd_uncore_ctx looks like a good 
+candidate for a flexible array.
+
+This would simplify allocation/freeing of the memory.
+
+struct amd_uncore_ctx {
+	int refcnt;
+	int cpu;
+	struct hlist_node node;
+	struct perf_event *events[];
+};
+
+Just my 2c,
+
+CJ
+
+>   			if (!curr->events) {
+>   				kfree(curr);
+> @@ -928,7 +928,7 @@ int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+>   		uncore->num_pmus += group_num_pmus[gid];
+>   	}
+>   
+> -	uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
+> +	uncore->pmus = kcalloc(uncore->num_pmus, sizeof(*uncore->pmus),
+>   			       GFP_KERNEL);
+>   	if (!uncore->pmus) {
+>   		uncore->num_pmus = 0;
+
 
