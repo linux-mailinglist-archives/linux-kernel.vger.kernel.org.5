@@ -1,265 +1,177 @@
-Return-Path: <linux-kernel+bounces-161871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A73FB8B5283
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:46:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58E5F8B5288
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:49:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 469C4B21100
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:46:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 194C7281FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA94D14A9F;
-	Mon, 29 Apr 2024 07:45:55 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F19C14F65;
+	Mon, 29 Apr 2024 07:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ou+SZkO9"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895E112E7C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B14EADC
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714376755; cv=none; b=JN82MLADRoAj24ST/M+GX24BPomq8aUhhIkDDTpykdG3ug/O3LXAlAzsF25j3HilG+AMIWmh1VNRdraq19plXAaFgq5OLJnmEr2HaIjklv9xqSXIpj0pjfbyWSwAb9u+dxPiNIRxOfOfvsvLGsJbTxNoQeSaYZUi1HPBa5//Y1E=
+	t=1714376935; cv=none; b=Dsz1U8wzkS/RGGbmXijIDUYqoOQInCRGB5DGNFQ11+KM0DBwUn+TXa+dmSM5ADCx9zxhYCHtm7NIDcbBn9XQ1YYoDRAXCUmeAsSvrS3VzE0jkS0pE8TYnWDTdNDSXa6k/oLYN6xEFwZ2ubrbSja1kVJJK6mNX1/9RIwYf0zpO8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714376755; c=relaxed/simple;
-	bh=f0rWuCd3N1DHxBQyLLk4t0jedNeLgIopaOYz6BLW66w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oVUMgKnCeUTccJRmdKohMKWmG53IPoDKH15XrB46DOA1H+6b4CbzG2W7nOE1jhpb275srFM/FkMPrh0LlHfIuQcR1Ed7D2FQeyuyg98p6e/+3yo+Ri3btpph5jTmVKOClKuL73OCMzONLLEG3Q0tUGutVt8sJIeYKDJFDVZ3xvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VSZzy1DMwz1RBGN;
-	Mon, 29 Apr 2024 15:42:38 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 10AEF180065;
-	Mon, 29 Apr 2024 15:45:46 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Apr 2024 15:45:44 +0800
-Message-ID: <e936b9cd-39ce-1ae1-b348-3000f7e47a45@huawei.com>
-Date: Mon, 29 Apr 2024 15:45:44 +0800
+	s=arc-20240116; t=1714376935; c=relaxed/simple;
+	bh=3c7zy3iSVTlQorEG/DOBVvSVS2bP1zYxg/tNrFtpIL0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=CNIW9hPnAwg9H9s59ZLI3Ajl5sXkrGDvo2uhju91He30jEAWUNqHSKLdwgv+4ja5bOmQrQEiAF/f+ObS49AXG+7JXDtaiGm4g2TK0PEuSscja36OmcMLdWB4AhQ0Dmi+Ks/GQLqnmqLXc69UY3Ph6QOxgRjVmpruVrcAefEGcqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ou+SZkO9; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-57255e89facso3119283a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 00:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714376932; x=1714981732; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+UOjRndgrxlYnQuIQ0BoNUYlVsmwnDC/3XZ5al12mRI=;
+        b=ou+SZkO9boujP22bjZraGfoSQFWEReW5eYzguNUjcmTZfewdJbp5N3d2Kq7AxcLygp
+         EH0AaryHFGLieG/gC5yaQHslvab69LjfgC2mZOBrdr5uoYfxj8sChwtPUojqEfIA4WJl
+         MgwbIU8qZyEbnOs0URmIJpM7ZLiDl3kW+vdRg+5V1T4jRHmfMuLS46njj32XG9J3np/C
+         RNatrd7TUJgDkW/kmdL4f8D2PvnroaoQfBitxoXCeq8mHj6XCqPN6NPLskBv3wbHDHYh
+         GBNsdi0FaX6vebggdGfJT3Noh9LmlDGbOYSEC8acDtW9hUAXSmnIX47Q4kJqSwE7Ta8E
+         7Kuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714376932; x=1714981732;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+UOjRndgrxlYnQuIQ0BoNUYlVsmwnDC/3XZ5al12mRI=;
+        b=Sve7Ra458QRB4Eml93LUQlGb49d1L1hm5ww8Uv58seKWzDEUQ7iB/0kJEiZ6AFDxPL
+         k3maSuA5R9UtGmbtb2tLOrGgc/3ZOexOD+2DH+o4kDr2Bsifx4hfpYJiCxnxasQBGxEL
+         LQrspol+TGPuiuTN+F7nluTQGXWW8f8u+QkFGOerVEHJJOvUCR4+PAqzmb9yksnwai7z
+         nLZ1f1ZS2j0bdhQYZ2A2we6kAmDwYECyc5/kYxvTSNn3gWLs40yU3v4wEDWI7HACJvFI
+         DFRvTdEylEONi5g/gbtmxixX1Z0toqnNm3OsaUbRv4R4KgYurfbz1MSpiYbtV57qXNEP
+         WcPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2rWcz3ncVanigL94GaftAmTqsHWyXKkymC/Zy/Q7uSINtR0L+bFLZ5QsDw23/hD4KShefU3GOO0VZITiq1MV5rZ2N6p2GbW94fRDT
+X-Gm-Message-State: AOJu0YzItsCvbcPGH0n6fYGclXvxSh23s1uAQRq090OBmVwvpjoi0zkQ
+	5R6GfC7rI9BF5ztiNvTPUaoTly6xo+TJolTFHNXFFD9nOmBzk/+9DGjfO1iQ5Co=
+X-Google-Smtp-Source: AGHT+IGKT/RjKWi5HrDyYeVBP4XaPU5/i2eOwcP54jLz2CMiGk4BSAM4mx9I/BVTljFgUBmiNnM9Ug==
+X-Received: by 2002:a50:d00a:0:b0:56e:743:d4d9 with SMTP id j10-20020a50d00a000000b0056e0743d4d9mr1764727edf.42.1714376932066;
+        Mon, 29 Apr 2024 00:48:52 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id fg4-20020a056402548400b005727e798b5bsm1138075edb.63.2024.04.29.00.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 00:48:51 -0700 (PDT)
+Message-ID: <fa857531-0d8c-4cce-865d-066a95cd4f77@linaro.org>
+Date: Mon, 29 Apr 2024 09:48:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH v2 1/2] percpu_counter: introduce atomic mode for
- percpu_counter
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] spi: cadence: Add new bindings documentation for
+ Cadence XSPI
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Witold Sadowski <wsadowski@marvell.com>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org
+Cc: broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, pthombar@cadence.com
+References: <20240329194849.25554-1-wsadowski@marvell.com>
+ <20240329194849.25554-2-wsadowski@marvell.com>
+ <52f49ae7-e15a-4aaf-b66d-42895e8352de@linaro.org>
 Content-Language: en-US
-To: Dennis Zhou <dennisszhou@gmail.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <shakeelb@google.com>, <jack@suse.cz>,
-	<surenb@google.com>, <kent.overstreet@linux.dev>, <mhocko@suse.cz>,
-	<vbabka@suse.cz>, <yuzhao@google.com>, <yu.ma@intel.com>,
-	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
- <20240418142008.2775308-2-zhangpeng362@huawei.com>
- <ZithwiPpjke2qbrv@snowbird>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <ZithwiPpjke2qbrv@snowbird>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <52f49ae7-e15a-4aaf-b66d-42895e8352de@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 2024/4/26 16:11, Dennis Zhou wrote:
+On 30/03/2024 12:32, Krzysztof Kozlowski wrote:
 
-> On Thu, Apr 18, 2024 at 10:20:07PM +0800, Peng Zhang wrote:
->> From: ZhangPeng <zhangpeng362@huawei.com>
->>
->> Depending on whether counters is NULL, we can support two modes:
->> atomic mode and perpcu mode. We implement both modes by grouping
->> the s64 count and atomic64_t count_atomic in a union. At the same time,
->> we create the interface for adding and reading in atomic mode and for
->> switching atomic mode to percpu mode.
->>
->> Suggested-by: Jan Kara <jack@suse.cz>
->> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   include/linux/percpu_counter.h | 43 +++++++++++++++++++++++++++++++---
->>   lib/percpu_counter.c           | 31 ++++++++++++++++++++++--
->>   2 files changed, 69 insertions(+), 5 deletions(-)
->>
->> diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
->> index 3a44dd1e33d2..160f9734c0bb 100644
->> --- a/include/linux/percpu_counter.h
->> +++ b/include/linux/percpu_counter.h
->> @@ -21,7 +21,13 @@
->>   
->>   struct percpu_counter {
->>   	raw_spinlock_t lock;
->> -	s64 count;
->> +	/* Depending on whether counters is NULL, we can support two modes,
->> +	 * atomic mode using count_atomic and perpcu mode using count.
->> +	 */
->> +	union {
->> +		s64 count;
->> +		atomic64_t count_atomic;
->> +	};
->>   #ifdef CONFIG_HOTPLUG_CPU
->>   	struct list_head list;	/* All percpu_counters are on a list */
->>   #endif
->> @@ -32,14 +38,14 @@ extern int percpu_counter_batch;
->>   
->>   int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->>   			       gfp_t gfp, u32 nr_counters,
->> -			       struct lock_class_key *key);
->> +			       struct lock_class_key *key, bool switch_mode);
-> Nit: the lock_class_key at the end.
+..
 
-Got it.
+>>  
+>>  properties:
+>>    compatible:
+>> -    const: cdns,xspi-nor
+>> +    - const: cdns,xspi-nor
+>> +    - const: mrvl,xspi-nor
+> 
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
+> 
+> There is a lot of things happening here, but I won't perform review if
+> the code was never tested. Sorry, please test before sending.
 
->>   
->>   #define percpu_counter_init_many(fbc, value, gfp, nr_counters)		\
->>   	({								\
->>   		static struct lock_class_key __key;			\
->>   									\
->>   		__percpu_counter_init_many(fbc, value, gfp, nr_counters,\
->> -					   &__key);			\
->> +					   &__key, false);		\
->>   	})
->>   
->>   
->> @@ -130,6 +136,20 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
->>   	return (fbc->counters != NULL);
->>   }
->>   
->> +static inline s64 percpu_counter_atomic_read(struct percpu_counter *fbc)
->> +{
->> +	return atomic64_read(&fbc->count_atomic);
->> +}
->> +
->> +static inline void percpu_counter_atomic_add(struct percpu_counter *fbc,
->> +					     s64 amount)
->> +{
->> +	atomic64_add(amount, &fbc->count_atomic);
->> +}
->> +
->> +int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
->> +				       u32 nr_counters);
->> +
->>   #else /* !CONFIG_SMP */
->>   
->>   struct percpu_counter {
->> @@ -260,6 +280,23 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
->>   static inline void percpu_counter_sync(struct percpu_counter *fbc)
->>   {
->>   }
->> +
->> +static inline s64 percpu_counter_atomic_read(struct percpu_counter *fbc)
->> +{
->> +	return fbc->count;
->> +}
->> +
->> +static inline void percpu_counter_atomic_add(struct percpu_counter *fbc,
->> +					     s64 amount)
->> +{
->> +	percpu_counter_add(fbc, amount);
->> +}
->> +
->> +static inline int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
->> +						     u32 nr_counters)
->> +{
->> +	return 0;
->> +}
->>   #endif	/* CONFIG_SMP */
->>   
->>   static inline void percpu_counter_inc(struct percpu_counter *fbc)
->> diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
->> index 44dd133594d4..95c4e038051a 100644
->> --- a/lib/percpu_counter.c
->> +++ b/lib/percpu_counter.c
->> @@ -153,7 +153,7 @@ EXPORT_SYMBOL(__percpu_counter_sum);
->>   
->>   int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->>   			       gfp_t gfp, u32 nr_counters,
->> -			       struct lock_class_key *key)
->> +			       struct lock_class_key *key, bool switch_mode)
->>   {
->>   	unsigned long flags __maybe_unused;
->>   	size_t counter_size;
->> @@ -174,7 +174,8 @@ int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
->>   #ifdef CONFIG_HOTPLUG_CPU
->>   		INIT_LIST_HEAD(&fbc[i].list);
->>   #endif
->> -		fbc[i].count = amount;
->> +		if (likely(!switch_mode))
->> +			fbc[i].count = amount;
->>   		fbc[i].counters = (void *)counters + (i * counter_size);
->>   
->>   		debug_percpu_counter_activate(&fbc[i]);
->> @@ -357,6 +358,32 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
->>   	return good;
->>   }
->>   
->> +/*
->> + * percpu_counter_switch_to_pcpu_many: Converts struct percpu_counters from
->> + * atomic mode to percpu mode.
->> + */
->> +int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
->> +				       u32 nr_counters)
->> +{
->> +	static struct lock_class_key __key;
-> This is an improper use of lockdep. Now all of the percpu_counters
-> initialized on this path will key off of this lock_class_key.
+Hi,
 
-Sorry, I don't know much about lock_class_key. I may not understand the reason
-why it's not appropriate here. Could you please help me with the details?
+You did not address any of the comments and build issues neither here
+nor in previous mailings. Starting from 2022, all previous comments look
+ignored and then after some time you send another v1 expecting us to do
+review of the same code with the same issues.
 
->> +	unsigned long flags;
->> +	bool ret = 0;
->> +
->> +	if (percpu_counter_initialized(fbc))
->> +		return 0;
->> +
->> +	preempt_disable();
->> +	local_irq_save(flags);
->> +	if (likely(!percpu_counter_initialized(fbc)))
->> +		ret = __percpu_counter_init_many(fbc, 0,
->> +					GFP_ATOMIC|__GFP_NOWARN|__GFP_ZERO,
->> +					nr_counters, &__key, true);
->> +	local_irq_restore(flags);
->> +	preempt_enable();
->> +
->> +	return ret;
->> +}
-> I'm staring at this API and I'm not in love with it. I think it hinges
-> on that there's one user of mm_stats prior hence it's safe. Generically
-> though, I can't see why this is safe.
->
-> I need to give this a little more thought, but my gut reaction is I'd
-> rather this look like percpu_refcount where we can init dead minus the
-> percpu allocation. Maybe that's not quite right, but I'd feel better
-> about it than requiring external synchronization on a percpu_counter to
-> ensure that it's correct.
+I gave it 1 month for some sort of response from you. None came.
 
-Maybe it would be better if I change this API to the internal function of
-mm counter.
+Therefore let's be clear: I will automatically NAK any further version
+you send, based on assumption you ignored entire existing feedback.
+Before sending any new patches for this XSPI, please first respond to
+numerous emails you already got (from the last two years). That's way we
+will know that reviewer's feedback is being addressed.
 
-Sorry again, maybe percpu_refcount is better, but I don't understand this
-sentence "we can init dead minus the percpu allocation." Please forgive my
-ignorance...
+Thank you for understanding.
 
-Thank you very much for your review and valuable comments!
-
->> +
->>   static int __init percpu_counter_startup(void)
->>   {
->>   	int ret;
->> -- 
->> 2.25.1
->>
-> Thanks,
-> Dennis
-
--- 
-Best Regards,
-Peng
+Best regards,
+Krzysztof
 
 
