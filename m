@@ -1,109 +1,94 @@
-Return-Path: <linux-kernel+bounces-161681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0DEA8B4F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:24:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362B18B4F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1242CB2101A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:24:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA3641F217C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 02:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB101851;
-	Mon, 29 Apr 2024 02:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017751851;
+	Mon, 29 Apr 2024 02:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pojz2P2v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s9WHkqZa"
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E559F7F;
-	Mon, 29 Apr 2024 02:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73B8376
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 02:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714357430; cv=none; b=Aa5XQBlPmI2Qk1LFV2Ejb4zeinB5Rd6AwRFHfFggUz1jtOdYiY4oklKq0wJ+oL91i0gXvNH4CwF3bCQpv54UXpCtGyxJBVINZtAuMW4oF16ys+TxP9PXJ2kx0HM6ArBZTTWJ+/oBK5gcIsMSRgvSsNp3sD11yT/etFCgPjrSLl4=
+	t=1714357832; cv=none; b=G2jH4HTiM2yP9lCiqausTRhKLOrxXmxReLEEnZkuAP3GL4jt12j0iVeZYEY+YxJSUXzIQPTH6rqZ+t6fQc+sDEquZ6qbC6HooRVJxV4pHOmpMjJ7MGmRK+T65g7g9J2ZwYdjam3RxWRN1vtXfOZaK6szhKslsd0y/cVVQGny6/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714357430; c=relaxed/simple;
-	bh=WYFriNTPWk5Av35BEvQDZ0ykSmc5zyg+ED9bmRoMVrE=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=uBtpiRa9JAg1V+F6ZFA6Defk9wZbDDdQnWPweu9DQT4DWbcKqLsTKFsrF8tve6Ed7asPaOACQGT+y0X78n9gRbpUkU4HV0Ofxu+PwiFNq4uZ3NczBF+7jJqF5Ny9+lIxyu1mNzCxTXDvkND2+ypniv7ptXfdDp8V2jxGGjMpC+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pojz2P2v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 486F9C113CC;
-	Mon, 29 Apr 2024 02:23:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714357429;
-	bh=WYFriNTPWk5Av35BEvQDZ0ykSmc5zyg+ED9bmRoMVrE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=Pojz2P2vRZfzYY4NXQ59bMet2uyQGXEwouqIljiQr/MDQ/yTgV2kgqgP0Eo/2x9Az
-	 Aqe4Yp2ZceR2JdWH2Br8vvZqF6YONQ45o/IqfCCZtHbpm7WSrI5PdU0pmVSr06+HlT
-	 kUzhwn/+gsw9xfbKVt9ONvhBzhBfIdxWA2ISp4K/Lp/pa6d6phgi5uvd033vIZmulR
-	 Yvqw6r23cUfumJGPXKun2wXfK9KiMjfF9CQSaMngUZeLJKtrs/YLF4j2v1STngmgpy
-	 apiCxBxJikGMKLqppGtsuUztWrkxsgqXaDhvNIrzvzjSUrlzlNFpPVFyKL2FwDSBeV
-	 Bu0S557oOR0Ww==
-Date: Sun, 28 Apr 2024 21:23:47 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1714357832; c=relaxed/simple;
+	bh=3ohJ3/2hrxmI8wIW26hyhWEdxBpoWnozaUBh1OBgC5Q=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=WIFk6n2VhXaNz3FnJV5SxGtEol/jL7UB1fEcuX6xdjGGOlouTBDJ2vl6fAY6/yrv+MCykpWFUSP4y3mxWla2Qh/5pojyCNW0Hxg5WmBoIdG7ML57o0hL9TFNgwOE5yQQX5ShJJwXMDgm/DHcY4ca1sQ8Xk0XLJjIf0+zj71yoo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=s9WHkqZa; arc=none smtp.client-ip=203.205.221.209
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1714357520; bh=g/W9MeVv6E272U0RiQZkE7LuD/jReUyY/39514QJAjg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=s9WHkqZabR7FnhMdajGDJsc2ZQV7/ayoAB2V9pV6ARj9uCPus1HASJKRO3hr5YWwB
+	 dcsBqlpSSljqPDwyJzb+iaxCa0pQQyGKGfwursq2mOLUVuniAplGOsiQQcJJ/TtJdx
+	 Tx3eAD2ziQazXR8HLobnlQtSdcBvhyQTfih2+bms=
+Received: from localhost.localdomain ([58.213.8.145])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 65112406; Mon, 29 Apr 2024 10:25:17 +0800
+X-QQ-mid: xmsmtpt1714357517t7qfl32cq
+Message-ID: <tencent_7D666329DA16C3E9303F1DB5A06B0AB2A407@qq.com>
+X-QQ-XMAILINFO: MtM+4b/on8CsByaGpei1ONbA9jExRLHmGwvWQNPx1a1uCjbAKj/xXbClsNv0o8
+	 3umyoJS4ldbaSd7SoT8O5UAf6YRKtdBXqx3duoBuonlLxIYw0QfW389Ua1sWmT+z2kvYHmjcKkfe
+	 81g+BjWE8HZmYbnh8IfdFaLFlKEEapFwtpfIDBeDYYt4wJFcI7A1IiPEBBPsvkhmVhrdvhXf09fJ
+	 GG+g/W2CVvp6JfFmBv1agMW/irYwz6i2N1+ohSGvgMJdfaVPXoNypK44jnVJoStqyf1jhZP/zJFK
+	 PCRmtf3tD01Le3RSkn5pyyFXEUtN96pvhWFzZJY+KYSWYlH47njqDpK551vPXoWOylmaz1+bAshm
+	 bQ3zN1GRtfTjpn4qn2dI3ATFelqbkBrtV8ruhaohoR8toffpMaTZRyNFVmjScmNb19X1X6qO1M/A
+	 xJ6TVqrugZcdgJvWNKJJvf07IH92TNiuSR9/yfaVmxkiUwrXERu5FcwA6peAprU8DQRV4QHdnEc0
+	 rARL1e7iYe1YrNo7bwBXstf9epaHVRoaQf4MD5sc5IPcjSvxeWKlyqnfHxTMyW3SjBWCg0Dq0SVy
+	 WYt1pAmymRH92o9ySe2foKr2P8E/Yu9chGwfm9nQsqYTlAiSFp38wRMjjyIVQyV9ydqX+KWPj0T3
+	 Bl18NzMuMhra8MydwE77rLXKP4SWPG5iw4Sy7rR7BsCmaD726M440s+bijJ5AVcojA4vmlHn7N3M
+	 zGluW+fTjwaFTEIN9WZ9Wi24CtY7qVLhoBEf2LVTva8/NLqziXTyzs7D2uwFDfx2cQ3FAHkiHA7u
+	 LAqJsfHqfQnyL92xC4NrwA+WAhxI/590o5NtaC31pj89kq0+bWOWqlLW7bP57xaJk1j+eiU1FIzx
+	 lDJX7br0ZOm2Nv367huOeE5zoT5kNaQhNY2EyDnVVKR5I21PcCjepkTuV87izSS14niJhu3dLYAJ
+	 VKuK5trBXN+hJuXHx5HRl93jOubGZWDYhwgEd3mRf97hyDj273obqMmk9TrnjirkELwcb1C8umtW
+	 drcaQ1r3Ewt0WtA/Z+P8NOZNqIt9mv+lbez3fE5A==
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: linke li <lilinke99@qq.com>
+To: rientjes@google.com
+Cc: 42.hyeyoo@gmail.com,
+	akpm@linux-foundation.org,
+	cl@linux.com,
+	iamjoonsoo.kim@lge.com,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	penberg@kernel.org,
+	roman.gushchin@linux.dev,
+	vbabka@suse.cz,
+	xujianhao01@gmail.com
+Subject: Re: [PATCH] mm/slub: mark racy access on slab->freelist
+Date: Mon, 29 Apr 2024 10:25:15 +0800
+X-OQ-MSGID: <20240429022515.46685-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <1096134d-df6f-185d-240f-8a774d66f98f@google.com>
+References: <1096134d-df6f-185d-240f-8a774d66f98f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Inochi Amaoto <inochiama@outlook.com>
-Cc: linux-hwmon@vger.kernel.org, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor+dt@kernel.org>, 
- Guenter Roeck <linux@roeck-us.net>, 
- Paul Walmsley <paul.walmsley@sifive.com>, Jean Delvare <jdelvare@suse.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org, 
- Chen Wang <unicorn_wang@outlook.com>, linux-kernel@vger.kernel.org, 
- linux-riscv@lists.infradead.org
-In-Reply-To: 
- <IA1PR20MB495302443F9B18EB1A0DDF65BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB49533CA5A5D0036F373308DBBB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB495302443F9B18EB1A0DDF65BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
-Message-Id: <171435742665.8725.14900976847572107188.robh@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add Sophgo SG2042 external
- hardware monitor support
+Content-Transfer-Encoding: 8bit
 
+> Thanks!  Do you have a data race report to copy+paste into the commit 
+> description so people can search for it if they stumble across the same 
+> thing?
 
-On Mon, 29 Apr 2024 08:56:34 +0800, Inochi Amaoto wrote:
-> Due to the design, Sophgo SG2042 use an external MCU to provide
-> hardware information, thermal information and reset control.
-> 
-> Add bindings for this monitor device.
-> 
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> ---
->  .../hwmon/sophgo,sg2042-hwmon-mcu.yaml        | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
-> 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
- 	 $id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-hwmon-mcu.yaml
- 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/IA1PR20MB495302443F9B18EB1A0DDF65BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+I don't have a data race report, just try to analyze the code statically
+and then check it manually. I hope I could help in some way.
 
 
