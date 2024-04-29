@@ -1,140 +1,103 @@
-Return-Path: <linux-kernel+bounces-161760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BDA98B50D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:55:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F178B50DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:57:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E5941C21672
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:55:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 746A81F2203A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E6210A3B;
-	Mon, 29 Apr 2024 05:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B1DF507;
+	Mon, 29 Apr 2024 05:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="izBL91tb"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i2OoIamw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451AFDF59;
-	Mon, 29 Apr 2024 05:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE74DDD8;
+	Mon, 29 Apr 2024 05:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714370112; cv=none; b=b+5C93ZiAdFeVEPOuF5DbAfpg0iENle4LH90RjdsH68nJorUmz6bqyQADa7yjv8wLH4QIkkUUtvKIImPOKPBZ7JoejYNVAh/OsU71tHerYdBh5luP5JWT30QWL51EVyxjRFjYX/L5s7O7e+/+WMSgHi3lyPy5z7nCbajnkq0b3k=
+	t=1714370235; cv=none; b=PHw91w2wBcXruHLvrlSKil8QC1+DMRpJY3CYcNQc+3VC+t9U3hhQHXDUfioM0+tXFkekYPvt+fbjuJsP07VyD/dUxu4hZ6SgEDtdkGnjXpo5T4aqlBVs6VmRlaUN0000yIjSY+B4shnuTZL0p/Can1qEPs+b6pIxpvXuAvF1j70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714370112; c=relaxed/simple;
-	bh=eX3H8wIHM0FiZFB+0x0D89Bzoy/mfyWPnroB4QnwF4I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DNPy06pBHtd/kW9heQvUH/2UTJSTm2s4OEAbayTnrWMbVlQLijLdl7HDbtRvPwrg9ZyeomKE3FCvXDHmy3fThYGsgBMm9LhuOUizyKpSYy2xwplnarPs5iU/ctcD2WYLRyctdPpFav34of1LcUvQFNS6iewA7TJA6qD7y1NrCx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=izBL91tb; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T5svHD072170;
-	Mon, 29 Apr 2024 00:54:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714370097;
-	bh=gLzy6b8OJzfnnQC7tsrjEadostV0B9ZF2+TL8e/KtDY=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=izBL91tbOV2BdJNXdqzxBLj8xOluaLxal4ZexGf+deAsojZnQ9LqFekcG1WntIkCf
-	 NxDj2Xc2rNzXVFKBBU53YfdgmoRY6YgSaFrngJfLdI0U4M1wuC/fmB6kCuUQZMd7Fx
-	 1jeALg5N44kJ7kAOL3rVrM1XXPBoPwarYgscj5zg=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T5svsF071960
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 00:54:57 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 00:54:57 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 00:54:56 -0500
-Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T5spBo097279;
-	Mon, 29 Apr 2024 00:54:51 -0500
-Message-ID: <f6ef8692-246e-49a5-952f-d371a87a70f4@ti.com>
-Date: Mon, 29 Apr 2024 11:24:50 +0530
+	s=arc-20240116; t=1714370235; c=relaxed/simple;
+	bh=Y3JTxXiA/2VBJh7i4el44QgN8SPiNeyLeGOOlvqfmP0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nJgdMVa12/SirUBkEmIefz/rcY4OfqqxvNkrGTRX0F3y4Wv4yYbnPRTPXRoCqXJN/IDhacqDCKtel12xYqCpgLUD4qgCLI95jqOlzr726OmYD5jDCFS8p652OE/9LlDIfJvnh1KB52pxx4lRHQPvsPtRxEEMuP10PxXL+CLS5NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i2OoIamw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95946C113CD;
+	Mon, 29 Apr 2024 05:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714370234;
+	bh=Y3JTxXiA/2VBJh7i4el44QgN8SPiNeyLeGOOlvqfmP0=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=i2OoIamw2CGACWO/JQNbAGxyr7rJdGVbGok+nc8nzzVIZxeZvjG0Qr9HYAF5x1zO6
+	 oJb/RNUsBYCfzCGKKylsm5WBZK8QmyjceFnIyDuj33+CEgD2AX82GDJBFmq8sOxpDt
+	 GpXyVmV0jgPa4B+6HfVu7lrJWocleE4an4FaCmwXDmRCxZzrE4EWcZhtUjnLIqDzTF
+	 yLnH8XfVKc5qNZOY6ouR16LRwSm+fr50ek46uPWZIEIyfy2iCpfN6UHNOEcTRPvqSs
+	 nuPY1Gdu6ek6en/jw4r5cKNXDzAeUgvZ+EgltFrnweJ924jq2OB+ivLkQ5qUnwevFC
+	 LWWJCOR8HpWlA==
+Message-ID: <ce49c67c24f57ffab166d688a1c9e3139733f412.camel@kernel.org>
+Subject: Re: [PATCH 1/1] cxl/acpi.c: Add buggy BIOS hint for CXL ACPI lookup
+ failure
+From: PJ Waskiewicz <ppwaskie@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Sun, 28 Apr 2024 22:57:13 -0700
+In-Reply-To: <20240409132241.GA2071709@bhelgaas>
+References: <20240409132241.GA2071709@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: ti: icssg_prueth: Add SW TX / RX Coalescing
- based on hrtimers
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Dan Carpenter <dan.carpenter@linaro.org>,
-        Heiner Kallweit
-	<hkallweit1@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Diogo Ivo
-	<diogo.ivo@siemens.com>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski
-	<kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>
-References: <20240424091823.1814136-1-danishanwar@ti.com>
- <98588a89-4970-4d75-be8a-ac410d77789f@lunn.ch>
- <1c5809f2-b69d-48d1-8c27-285f164ebeb8@ti.com>
- <2a4bea87-04bf-4373-8220-69650b435710@lunn.ch>
-From: MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <2a4bea87-04bf-4373-8220-69650b435710@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+On Tue, 2024-04-09 at 08:22 -0500, Bjorn Helgaas wrote:
+> On Sun, Apr 07, 2024 at 02:05:26PM -0700, ppwaskie@kernel.org=C2=A0wrote:
+> > From: PJ Waskiewicz <ppwaskie@kernel.org>
+> >=20
+> > Currently, Type 3 CXL devices (CXL.mem) can train using host CXL
+> > drivers on Emerald Rapids systems.=C2=A0 However, on some production
+> > systems from some vendors, a buggy BIOS exists that improperly
+> > populates the ACPI =3D> PCI mappings.
+>=20
+> Can you be more specific about what this ACPI =3D> PCI mapping is?
+> If you already know what the problem is, I'm sure this is obvious,
+> but
+> otherwise it's not.
 
+Apologies for the delay in response.  Things got a bit busy with travel
+and whatnot...
 
-On 25/04/24 6:19 pm, Andrew Lunn wrote:
->> I did some benchmarking today with,
->> 	1. Default driver (without any IRQ coalescing enabled)
->> 	2. IRQ Coalescing (With this patch)
->> 	3. Default IRQ Coalescing (Suggested by you in the above patch)
->>
->> I have pasted the full logs at [1].
->>
->> Below are the final numbers,
->>
->> ==============================================================
->> Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
->> ==============================================================
->> Default Driver           943 Mbps    31%      517 Mbps  38%   |
->> IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
->> Default IRQ Coalescing   942 Mbps    32%      521 Mbps  25%   |
->> ==============================================================
->>
->> I see that the performance number is more or less same for all three
->> methods only the CPU load seems to be varying. The IRQ coalescing patch
->> (using hrtimer) seems to improve the cpu load by 3-4% in TX and 13% in
->> RX. Whereas the default method that you have suggested doesn't give any
->> improvemnet in tx however cpu load improves in RX with the same amount
->> as method 2.
->>
->> Please let me know if this patch is OK to you based on the benchmarking?
-> 
-> It is good to include benchmark results in patches which claim to
-> improve performance. Please add the default and the patch version
-> results to the commit message.
+On one of these particular hosts, in /sys/bus/acpi/devices/ACPI0016:00,
+for example, the UID would be something like CX01.  It isn't an u64 at
+all, and there's no atoi() or other conversions that would match what
+the UID should be.
 
-Sure, I will add the benchmarking numbers in commit message and send v2.
+In my case, /sys/bus/acpi/devices/ACPI0016:02/ is my CXL device in
+question. The UID that is presented from enumeration was CX02.=20
+However, if I scour the CEDT manually, the UID of my particular CXL
+device is really UID 49.
 
-> 
-> The numbers show your more complex version does bring benefits, so it
-> is O.K. to use it. I just wounder how many other drivers would benefit
-> from a one line change.
-> 
-> 	Andrew
+So, if I went from the PCI/CXL device side, and called something along
+the lines of to_cxl_host_bridge() and tried to go from the pci_dev to
+the acpi_handle, I'd get CX02 back.  Then trying to use that to call
+acpi_table_parse_cedt() would fail.
 
--- 
-Thanks and Regards,
-Danish
+The BIOS fix from the vendor corrected the UID enumeration on the ACPI
+side.  This allowed things to properly line up when traversing through
+the kernel APIs and parsing the ACPI tables.
+
+Let me know if this helps clarify!  If not, I can try and get more
+detailed info.
+
+-PJ
 
