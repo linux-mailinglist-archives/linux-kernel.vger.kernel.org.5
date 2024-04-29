@@ -1,86 +1,144 @@
-Return-Path: <linux-kernel+bounces-161660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F9B8B4F1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:10:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7CD8B4F23
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 03:13:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE91B1F21DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:10:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF7701F21D71
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 01:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E6C624;
-	Mon, 29 Apr 2024 01:10:05 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50BE10F7;
+	Mon, 29 Apr 2024 01:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="i8bCA03Z"
+Received: from forward500a.mail.yandex.net (forward500a.mail.yandex.net [178.154.239.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7587F
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DA57F;
+	Mon, 29 Apr 2024 01:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714353004; cv=none; b=ph011K+QzgDhD3gi6ET5eqUknJc75O2PeQig/PehthDfHhMGU5NSS7IqP1bmYkwwcd+zfOLuTienklNRhzuWoKl51sUCIeL8ZyJ7yAnYpMxWjMqzGinMth4b5VvCHaW5BLH53VkeSkfgxNq/fcJfTAbysAiRORgKLb13cAr+xa8=
+	t=1714353181; cv=none; b=qnLIdcBUi9tesTL2EmCtyVnRzQrIePerBGqsaISNGY+h3dF3/yslJD7NLae/P0ebBHXZG2AnDzkiwS/O7GYEyPVHJM9rABdlptGdw4ILpOjBVRN6KuuwuxvpvVSdero4lTKr8BJg1Tdf8JFxQMpPCjrmNmPKYktqgfqfDk1NRXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714353004; c=relaxed/simple;
-	bh=vrSQTxWBFab2Mboo9C43dx/oR/DcLbQlMKsI2BCX9xc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TW30gxbX7HIOEfx05itq2ZJmBLpGy0S4FJ61o072UNkJHXfW3BvXh2uMkiBN6k+ReD24hL56JVlPns7X/HFC5z380yh/k6Pyd9CdvDDeF3aeayvEVrw5LlELMnyxkL2rVutnboaT6XxQlNdL3q2KtFsej4NAl8fLcKVFqDHujIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7da3d17a35cso423562039f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 18:10:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714353002; x=1714957802;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T1744AvMemfGe060IOAxiA57Uo8IhwgAsilqKUNvK8Q=;
-        b=f8faXJr/kS3JE1INGi1sIxysi+iN5zYo3PwAbiKkwFI9bmfWQfRZB3qvjmKCq1lsBi
-         2xNWWeoJwQxfB8XsOdMlC9ZPRUKxxC23RsBDl+uQP4WySKCMtLaeR5JNkcyd09CabI5X
-         k4uX81riW07F3Nd4QkgFbXYHnJZ3OQEgaYG25DJDoV/NEl5BJEDx5lwIk7v4OZax7Srq
-         rDpDsqiLb2aZZbHhDAcTdg75YkBnOPHpyKBlsTQZAVPkUGlOJ5PNdMM3rtu1102i/X8K
-         i+nEVW1pG4kkEbYSBM1sBwVPehkZ5+Wc2CkCxYJSPsabqQdKp404y/o4sSB3M+JsiHKh
-         Pf1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUTeIRH3JI2xZSWTDcUOJYMuLnq++yY5HNCWytSxUNd8QRPX+FSgLBQosumOLtTwqcBYcgzp8oiMzd1iO628Ahd+uYz2hTgfthhomUV
-X-Gm-Message-State: AOJu0YzlsjmzaqadhDTG3m7islThqmDOBdnS+B5R6fC6IGBCzBxfIiKt
-	PTwLslEQN4vDZURiBlivL+nfgj+SPm7dvwdYsU14NqZfY4EOU3lglD95BfU4bs62M3VBpF9YbHC
-	KszK5yzODpaBDrHboUiz+02dp6XDAvlZg68NGMLQEqiwVtSxIaWUauqM=
-X-Google-Smtp-Source: AGHT+IGhfbMIkHkX2tFFSUs1nSKn3JTchoSURqhzyYPQq2YNeeu+MYjLUilTLflItXHpTrWTV/N9eDlDn+Z5QZo1T6jlHa4oAkqe
+	s=arc-20240116; t=1714353181; c=relaxed/simple;
+	bh=atZTjMvbp/J9uFNSUp7SmwuYN/0G1ObO2MY7u9rDM18=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=dqN3ueeFofg3TGR1uEd57ElmXWLG/1VdGaBdPTHKul1j2N6OhpxEEL0rTP9Fze/dmbzcCQDGHfovTNHHRTBYVcdNxXcys7+OzI8uJKlaYulaiLz3dJJkY93/i8/gs4ElgN6aZWxOzrunHUoF6uHI+HwWarZXs5guOnipvWT7Q2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=i8bCA03Z; arc=none smtp.client-ip=178.154.239.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net [IPv6:2a02:6b8:c0f:570c:0:640:ca74:0])
+	by forward500a.mail.yandex.net (Yandex) with ESMTPS id 0DBA160E11;
+	Mon, 29 Apr 2024 04:12:54 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id pCESEr1uC0U0-N8n5dLns;
+	Mon, 29 Apr 2024 04:12:52 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1714353172; bh=JbpFPDnYYOMMsam7KnZq1vujrIs611gr9o5FFJ/T4I4=;
+	h=In-Reply-To:Cc:Date:References:To:From:Subject:Message-ID;
+	b=i8bCA03ZOoqiZUGgIkgPsnsvM6PQg7Off+6jOkXlfLqxgqxmeruErexcs9PZkwcEG
+	 kdvOD6IvUfUGvCdvMUmSlRoMfPrdbJctP6VymDRBj1N2nkTF0L53s4hhJjdk87yLic
+	 c5d8Y34wJv11ocOSdzo+fEOVYGJz27d92wTxsFmw=
+Authentication-Results: mail-nwsmtp-smtp-production-main-81.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <35f7149a-728d-47a8-8884-347d87d5680e@yandex.ru>
+Date: Mon, 29 Apr 2024 04:12:50 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4117:b0:487:31da:eaf1 with SMTP id
- ay23-20020a056638411700b0048731daeaf1mr527811jab.1.1714353002758; Sun, 28 Apr
- 2024 18:10:02 -0700 (PDT)
-Date: Sun, 28 Apr 2024 18:10:02 -0700
-In-Reply-To: <20240428234240.4096-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfd87b061731e96f@google.com>
-Subject: Re: [syzbot] [bluetooth?] possible deadlock in hci_dev_do_close (2)
-From: syzbot <syzbot+c55f7bc8d4809b2bad59@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
+Content-Language: en-US
+From: stsp <stsp2@yandex.ru>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Aleksa Sarai <cyphar@cyphar.com>, "Serge E. Hallyn" <serge@hallyn.com>,
+ linux-kernel@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Aring <alex.aring@gmail.com>,
+ David Laight <David.Laight@aculab.com>, linux-fsdevel@vger.kernel.org,
+ linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+References: <20240426133310.1159976-1-stsp2@yandex.ru>
+ <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+ <8e186307-bed2-4b5c-9bc6-bdc70171cc93@yandex.ru>
+ <CALCETrVioWt0HUt9K1vzzuxo=Hs89AjLDUjz823s4Lwn_Y0dJw@mail.gmail.com>
+ <33bbaf98-db4f-4ea6-9f34-d1bebf06c0aa@yandex.ru>
+ <CALCETrXPgabERgWAru7PNz6A5rc6BTG9k2RRmjU71kQs4rSsPQ@mail.gmail.com>
+ <eae8e7e6-9c03-4c8e-ab61-cf7060d74d6d@yandex.ru>
+In-Reply-To: <eae8e7e6-9c03-4c8e-ab61-cf7060d74d6d@yandex.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+29.04.2024 01:12, stsp пишет:
+> freely pass device nodes around, then
+> perhaps the ability to pass an r/o dir fd
+> that can suddenly give creds, is probably
+> not something new...
+Actually there is probably something
+new anyway. The process knows to close
+all sensitive files before dropping privs.
+But this may not be the case with dirs,
+because dir_fd pretty much invalidates
+itself when you drop privs: you'll get
+EPERM from openat() if you no longer
+have rights to open the file, and dir_fd
+doesn't help.
+Which is why someone may neglect
+to close dir_fd before dropping privs,
+but with O_CRED_ALLOW that would
+be a mistake.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Or what about this scenario: receiver
+gets this fd thinking its some useful and
+harmless file fd that would be needed
+even after priv drop. So he makes sure
+with F_GETFL that this fd is O_RDONLY
+and doesn't close it. But it appears to be
+malicious O_CRED_ALLOW dir_fd, which
+basically exposes many files for a write.
 
-Reported-and-tested-by: syzbot+c55f7bc8d4809b2bad59@syzkaller.appspotmail.com
+So I am concerned about the cases where
+an fd was not closed before a priv drop,
+because the process didn't realize the threat.
 
-Tested on:
+> But if the*whole point*  of opening the fd was to capture privileges
+> and preserve them across a privilege drop, and the program loads
+> malicious code after dropping privs, then that's a risk that's taken
+> intentionally.
+If you opened an fd yourself, then yes.
+You know what have you opened, and
+you care to close sensitive fds before
+dropping privs, or you take the risk.
+But if you requested something from
+another process and got some fd as
+the result, the kernel doesn't guarantee
+you got an fd to what you have requested.
+You can get a malicious fd, which is not
+"so" possible when you open an fd yourself.
+So if you want to keep such an fd open,
+you will probably at least make sure its
+read-only, its not a device node (with fstat)
+and so on.
+All checks pass, and oops, O_CRED_ALLOW...
 
-commit:         bb7a2467 Add linux-next specific files for 20240426
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1459ee9b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5c6a0288262dd108
-dashboard link: https://syzkaller.appspot.com/bug?extid=c55f7bc8d4809b2bad59
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13483327180000
-
-Note: testing is done by a robot and is best-effort only.
+So why my patch makes O_CRED_ALLOW
+non-passable? Because the receiver has
+no way to see the potential harm within
+such fd. So if he intended to keep an fd
+open after some basic safety checks, he
+will be tricked.
+So while I think its a rather bad idea to
+leave the received fds open after priv drop,
+I don't completely exclude the possibility
+that someone did that, together with a few
+safety checks which would be tricked by
+O_CRED_ALLOW.
 
