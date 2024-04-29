@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-161743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955408B5090
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:11:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289F58B5095
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:11:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CD5B2827B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ABFE1C21D69
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FA0E57F;
-	Mon, 29 Apr 2024 05:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0661ED524;
+	Mon, 29 Apr 2024 05:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8khpBYX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QxKqmohu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC8DDDD8;
-	Mon, 29 Apr 2024 05:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D27C8E2;
+	Mon, 29 Apr 2024 05:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714367459; cv=none; b=UgLaxVEL3Q0YVnLGsKbkPlLdbph1hevKC5tc7QUHwJ/bFkvzdbwzGqlYlhfDujNKxTrPApIinRuEJxOQ7ViWQBWir8DbAaASVAKWLKiHIHlcNfRpG5+aB9NlZBsF91EmdwQHy5Id1r0HIOX253F/QPXOM9OP8HWkw3tmrgL7WVQ=
+	t=1714367510; cv=none; b=q8hs1BVNRdd7mr4O+ya2RYWIZy156bU4B58iXAPrm3IEXAZsv45/O6ggQeEgZY0f39YD4qf0QLTDMd2pSwwhQJrh9ihmuN0aMojIMF1uP66rlHz3ai7+8kwa5dJ43guMlZKejgCjIYvUqsaYGhJKLa4mb/dobwDaG2kVnJW9SSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714367459; c=relaxed/simple;
-	bh=pnrIbRSyb6jGRMXUkMiNUC0kmmHi+yco7kA11jFJBdI=;
+	s=arc-20240116; t=1714367510; c=relaxed/simple;
+	bh=Iu9ihiDH7ipkBxbPE/zRH0DjYFD8tuEm8iaj2BgOdEs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CjmovpWKl6YKUsWAknu3d8Vo70XJBlUYRJ2R0iU9bBVFWNkgvQLYo0g943tc8xLRxRKuCAeTLjulE4ROzEornUfKbV0bC8Jd9e0Ji7TfKu9uvk88dFy4nTNS75sV1x3NAKnoRis1zLggg194otLU/lBYN6mKCru8NW5ZM7H2m9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T8khpBYX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CDD3C113CD;
-	Mon, 29 Apr 2024 05:10:53 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=ABkLCdaKa4CNUHxmhvqMFDEkFMrCvFmwSNxPU5ol+IFh5jkxSBRM3QvgocrP47I3ZP6IuN3+S9FiXsKYcGIfimgMQM2xVDjXpZgW1esswnK2Xz2FG/u1w4D2Aj2koGG4LDG0G9g0rabQW40hzX+OL1qIXr1c1ylT1ZvYEUzm1KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QxKqmohu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94910C113CD;
+	Mon, 29 Apr 2024 05:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714367458;
-	bh=pnrIbRSyb6jGRMXUkMiNUC0kmmHi+yco7kA11jFJBdI=;
+	s=k20201202; t=1714367509;
+	bh=Iu9ihiDH7ipkBxbPE/zRH0DjYFD8tuEm8iaj2BgOdEs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=T8khpBYX5WlEOp8FM3hrD3cALzjsweauCjy/wmz3UC2bjTBroE5lrPsqPbmjQuG+m
-	 VmXn9jyi0EfM/OVeME4R7jnXZyrbV/wQbTPUA1AyCe7utf8Jvjo0b/GQJXd2VVeRko
-	 QljtFgXjqyG8sDh8fAPekBuWfBn+betB3lML6G6WeWDKj+xVaHcBM0A/SUolo4RiTa
-	 LqucHdt4JBqRlgtyumMt2IlySh6vO06MKjmeXUewtmPVdNwu5whbsX/lBJpnB3tSsw
-	 0uJDIzp2V2jG7Znt/HXbMu2iZxb5cTYrO8wNjiHH/VmdIYjWGAsx1FqhkXrywcjnwi
-	 b80G2U9FeMuzg==
-Message-ID: <302e582e-d433-44df-ab7a-65de5bccd419@kernel.org>
-Date: Mon, 29 Apr 2024 07:10:50 +0200
+	b=QxKqmohu67m+yQMNNYKrW27EFY+hTEUQL1tmu5yBDh7ncs3M9N5rQk5ntRVnxRGZd
+	 tyZ8BBd979in+PtAGznoIBu0cnIpt/L/y1jPXyJ8KgUg3WutU4CIJ3HnKXc8HljruE
+	 UZAkW7WsGE01MVNcyS/2I+eNFfoaqcXs5GOfyMCh5j7Gkukanbzedoyc6WZ/cPQYGi
+	 jU+SNKDXFrsA+pg/74iI/tGDE4EQvwwHn1+yCPnQkzxVa21ZEYFT5viaQjCEKT95eo
+	 9ExIvlyIDUIQT+5QYgiaBKu5a0TZNYtTiErCBc0u9+TeaTJyVk1/4rTH0fhi7Demq2
+	 9R56BWaDSw7Rw==
+Message-ID: <b0e794ad-f164-4304-b59e-736606bfe529@kernel.org>
+Date: Mon, 29 Apr 2024 07:11:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,22 +49,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 1/4] dt-bindings: clock: Document T-Head TH1520
- AP_SUBSYS controller
-To: Drew Fustini <dfustini@tenstorrent.com>,
- Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
- Fu Wei <wefu@redhat.com>, Yangtao Li <frank.li@vivo.com>,
- Thomas Bonnefille <thomas.bonnefille@bootlin.com>,
- Emil Renner Berthing <emil.renner.berthing@canonical.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240426-th1520-clk-v2-v2-0-96b829e6fcee@tenstorrent.com>
- <20240426-th1520-clk-v2-v2-1-96b829e6fcee@tenstorrent.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: st,stm32mp1-pwr-reg: add
+ compatible for STM32MP13
+To: Patrick Delaunay <patrick.delaunay@foss.st.com>,
+ Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Pascal Paillet <p.paillet@foss.st.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20240426183253.1360098-1-patrick.delaunay@foss.st.com>
+ <20240426203245.v2.1.Ia0a99d90acb512aa020a6e7a8cca8cc1b71f1759@changeid>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -110,53 +107,20 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240426-th1520-clk-v2-v2-1-96b829e6fcee@tenstorrent.com>
+In-Reply-To: <20240426203245.v2.1.Ia0a99d90acb512aa020a6e7a8cca8cc1b71f1759@changeid>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 27/04/2024 02:10, Drew Fustini wrote:
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/thead,th1520-clk-ap.h>
-> +    soc {
-> +
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      clk: clock-controller@ffef010000 {
+On 26/04/2024 20:32, Patrick Delaunay wrote:
+> Add new compatible "st,stm32mp13-pwr-reg" for STM32MP13 SoC family.
+> 
+> Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
+> ---
+> 
+> Changes in v2:
+> - update for Rob review, only add compatible for STM32MP13 family
 
-This is a friendly reminder during the review process.
-
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
-
-Thank you.
-
-> +        compatible = "thead,th1520-clk-ap";
-> +        reg = <0xff 0xef010000 0x0 0x1000>;
-> +        clocks = <&osc>;
-> +        clock-names = "osc";
-> +        #clock-cells = <1>;
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ebf03f5f0619..51d550cb1329 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19023,7 +19023,9 @@ M:	Guo Ren <guoren@kernel.org>
->  M:	Fu Wei <wefu@redhat.com>
->  L:	linux-riscv@lists.infradead.org
->  S:	Maintained
-> +F:	Documentation/devicetree/bindings/clock/thead,th1520-clk-ap.yaml
->  F:	arch/riscv/boot/dts/thead/
-> +F:	include/dt-bindings/clock/thead,th1520-clk-ap.h
->  
-
+Please start testing your patches BEFORE sending.
 
 Best regards,
 Krzysztof
