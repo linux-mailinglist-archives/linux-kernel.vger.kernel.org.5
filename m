@@ -1,135 +1,196 @@
-Return-Path: <linux-kernel+bounces-162956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3428C8B62B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:42:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45EDE8B62BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDABE2856AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68D0A1C21882
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 19:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DD514389A;
-	Mon, 29 Apr 2024 19:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA80713C670;
+	Mon, 29 Apr 2024 19:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ROLnCNST"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8EOKwFJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA84A1419AD;
-	Mon, 29 Apr 2024 19:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6F51292CA;
+	Mon, 29 Apr 2024 19:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714419588; cv=none; b=hVYC2BqkJOVXyPdkkN74FPuLDkkdS4MBaDnozqr0q90xI/fV24z5WPIQQx0bwPdmob70hjC/cMvp+jR6VTCe9n1M9pLrny2LO2sZfPY2x3kd46jasf/DJPlAncgmJ57T4/qTWiQRnQCKbjl5EzQ8s6vEIZgc2gYY+BJFUCZ+wD8=
+	t=1714419642; cv=none; b=Xo84fkZgiW6yzmQMTD35OFQzmOJwFEWO43iX9ntx4E9vwJltYiMYT5KTei5CqLNgIfx61l/Lda9pnnz4YZmtDr3YZu9qcB83WIS7xXWiIDTnOkJNo2TkSEEVXhbIjNBVR4jpm1qzrYCUeO95I6GVdLLQy1dEqIdsjE1mcwBYwkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714419588; c=relaxed/simple;
-	bh=pDuYHUWb78NUezMer2s4ZMlqPswwqeKYYv0uXixfqXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bapiS5iH+26Vr8q1FMkoy3p+FsPEPTsMdpOTq1bgalIM+VQdUEeE0Fgsfd7r3biQelJ5sKbfvGWceHcYl/Rnp6mW+nNDAemZTir8A1k/ToeJJQVqNGKfR8Qi+F7xF+q4DH1ob8xIfMh8nLbPwmxS9p1vfdQ2Gdwew0yfjfobQCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ROLnCNST; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7deb424da41so138744539f.1;
-        Mon, 29 Apr 2024 12:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714419586; x=1715024386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bvtcoSNmHJyPK9Yxvdf/16D7QT7gwaP1R4zyZ6VaX/E=;
-        b=ROLnCNSTu3yYd2T5SodL/QjyuxSTFDTtHa9j9mSMcUsEMhwres7nFNDjRnAge+jlzV
-         pAiBr/0mG2nsQy/AGWVZk/8rvixUuN6cG3IX6BlSSmXAfC31Dr93Jy74SP3ca/CXyj4x
-         TtelDeEd1gSv/2FQHCGTFURV4OdoKqWjQWLBdlHbWkUpkcwBx5EGy8k9EA0jJG/0YI+3
-         GR3uxfMvz6PGAr72N6ucmMp4QDCEPgKNkbdmlKEYG4XiE9RHJhgX7w0/Tc6wbWM0RnsP
-         wkpWVS81y8myIf8UiZm0f6iY9RY1jOlqCqcaU9md79Bw2rTvrh3khF9gieKhPoN2pBCm
-         Ubew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714419586; x=1715024386;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bvtcoSNmHJyPK9Yxvdf/16D7QT7gwaP1R4zyZ6VaX/E=;
-        b=ImcoYr17w96kwhf9ezE9CIG8RA4A/vk5z0dXDAjv9q41kVLi96MkEF5yYu99XjFtur
-         cJXmHKh9CPjUnYZBtldUIJWcZhlL0CY7nk7yXlE8GxyHyq9rOlSO3aKy7MIlVQrdqugu
-         II/5KTUkOyQ8DQvFBBTv9m/vVG1dVc6D7JXoELpmzWiqFXQS0spmhgpOHdVBgkmaBqqe
-         fJIUxPLHXg8JRpzkkSbdj5i/oE+2WoXMRKM6i8JSRKddGwBrll2QrjK5q6f22SkP59aI
-         RBEiiV6Ak5RGJF1TKE0ksKeOXqHbpE669dz34z5BhpaG2ipi4G+zfjfm5amvqee0OjfV
-         mgvA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3P3+/KNvTYynsSEgT2SsAznS0Cm3FyvtT3w+erS/TlEru6l63tYR97h6Jnltyq4yPbKtdDN1NsdA0gxBDOsL02N6+m/DB/VfbOLkSiVpnBVgE9XOxnthCRJZLvw0lpgJFswgQqskM
-X-Gm-Message-State: AOJu0YyMhHQo5gqQLjB68wZXhnXkj1UNzuCrLV6zVePtIsWabOLYOV67
-	j4tgVMaWm7Z4I7G0UQ/J0SUCDoYSN2Sq+XeMxcwkG3jGxxSzy1O0
-X-Google-Smtp-Source: AGHT+IHSnDWahXuoiSDXC0PbzHzDdWYaT2zAER4xc4v4brlYZetM7hGw+hMRIEMbRLILknW0hU1xag==
-X-Received: by 2002:a5d:9492:0:b0:7da:67fa:7da7 with SMTP id v18-20020a5d9492000000b007da67fa7da7mr14361568ioj.3.1714419586086;
-        Mon, 29 Apr 2024 12:39:46 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id y16-20020a056602165000b007de9f92dc57sm2325105iow.16.2024.04.29.12.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 12:39:45 -0700 (PDT)
-From: Jim Cromie <jim.cromie@gmail.com>
-To: jbaron@akamai.com,
-	gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	intel-gvt-dev@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org
-Cc: ukaszb@chromium.org,
-	linux-doc@vger.kernel.org,
-	daniel.vetter@ffwll.ch,
-	tvrtko.ursulin@linux.intel.com,
-	jani.nikula@intel.com,
-	ville.syrjala@linux.intel.com,
-	seanpaul@chromium.org,
-	robdclark@gmail.com,
-	groeck@google.com,
-	yanivt@google.com,
-	bleung@google.com,
-	Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v8 35/35] drm-print: workaround compiler meh
-Date: Mon, 29 Apr 2024 13:39:21 -0600
-Message-ID: <20240429193921.66648-16-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240429193921.66648-1-jim.cromie@gmail.com>
-References: <20240429193921.66648-1-jim.cromie@gmail.com>
+	s=arc-20240116; t=1714419642; c=relaxed/simple;
+	bh=ULuvvHNYTvbRfphoJuwlrdezz0qvdg3BcFmkYoUv1dU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ORoDt9rMrM0gdxm8Wvezje+J2oCdgaN7hHn27SjUuklveb3HuIr5yBBIUtywanc6qKGgeTVpi2bkePk75MZX/ztEzxBi0qNDObAqvJZ7rDW2zwLFhSszPuhojVnEYzaVh9HLHx0YVE3hkU8Ht9dkOu/3zSsFfgK3leoDfudG5Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8EOKwFJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B71C113CD;
+	Mon, 29 Apr 2024 19:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714419641;
+	bh=ULuvvHNYTvbRfphoJuwlrdezz0qvdg3BcFmkYoUv1dU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=I8EOKwFJMeZfDlNOw897+opXzCVtAiP8j2JL/cuCRnAHVlYRvMn5iQAxdgoLzYjEr
+	 ULE+4fYpBn/OogPErRCEFEGs8ET23cFo7k7kO9/VM8qFC2ED0pKcG+XoS+ONFoFuqB
+	 eV4TIiE6lgoXEzAWRHrhwxAkgaEBkjz+1XGXMySSmkDHzC9/+JGsZlGLWARXc1Mif2
+	 L1rRl+9f8Gyqn23hap1M8UgEV5RmYG58bLEH6lZ2mmI6Mh4DMJy5dQaryQv2H+6BR5
+	 jtWytxo6qK+kcGwQHexYfl07+G7ucpserSaDklVGx04xMPab7H4jRfDKCVh7tFXC8A
+	 d75hvBROnnPkg==
+Date: Mon, 29 Apr 2024 20:40:27 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: "Gradinariu, Ramona" <Ramona.Gradinariu@analog.com>
+Cc: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>, Ramona Gradinariu
+ <ramona.bolboaca13@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-iio@vger.kernel.org"
+ <linux-iio@vger.kernel.org>, "linux-doc@vger.kernel.org"
+ <linux-doc@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "robh@kernel.org" <robh@kernel.org>, "Sa, Nuno" <Nuno.Sa@analog.com>
+Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7
+ families
+Message-ID: <20240429204027.3e47074a@jic23-huawei>
+In-Reply-To: <BL1PR03MB5992DEBF82C0DB7BDC5EA0FF971B2@BL1PR03MB5992.namprd03.prod.outlook.com>
+References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
+	<20240423084210.191987-5-ramona.gradinariu@analog.com>
+	<20240428162555.3ddf31ea@jic23-huawei>
+	<e62f8df4b06abc371b1e9fe3232cb593e468d54c.camel@gmail.com>
+	<BL1PR03MB5992DEBF82C0DB7BDC5EA0FF971B2@BL1PR03MB5992.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-For some reason I cannot grok, I get an unused variable 'category'
-warning/error, though the usage follows immediately.  This drops the
-local var and directly derefs in the macro-call, which somehow avoids
-the warning.
+On Mon, 29 Apr 2024 13:17:42 +0000
+"Gradinariu, Ramona" <Ramona.Gradinariu@analog.com> wrote:
 
-commit 9fd6f61a297e ("drm/print: add drm_dbg_printer() for drm device specific printer")
-CC: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- drivers/gpu/drm/drm_print.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> > -----Original Message-----
+> > From: Nuno S=C3=A1 <noname.nuno@gmail.com>
+> > Sent: Monday, April 29, 2024 10:59 AM
+> > To: Jonathan Cameron <jic23@kernel.org>; Ramona Gradinariu
+> > <ramona.bolboaca13@gmail.com>
+> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org; linux-
+> > doc@vger.kernel.org; devicetree@vger.kernel.org; corbet@lwn.net;
+> > conor+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; robh@kernel.org;
+> > Gradinariu, Ramona <Ramona.Gradinariu@analog.com>; Sa, Nuno
+> > <Nuno.Sa@analog.com>
+> > Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7 fa=
+milies
+> >=20
+> > [External]
+> >=20
+> > On Sun, 2024-04-28 at 16:25 +0100, Jonathan Cameron wrote: =20
+> > > On Tue, 23 Apr 2024 11:42:09 +0300
+> > > Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
+> > > =20
+> > > > The ADIS16545 and ADIS16547 are a complete inertial system that
+> > > > includes a triaxis gyroscope and a triaxis accelerometer.
+> > > > The serial peripheral interface (SPI) and register structure provid=
+e a
+> > > > simple interface for data collection and configuration control.
+> > > >
+> > > > These devices are similar to the ones already supported in the driv=
+er,
+> > > > with changes in the scales, timings and the max spi speed in burst
+> > > > mode.
+> > > > Also, they support delta angle and delta velocity readings in burst
+> > > > mode, for which support was added in the trigger handler.
+> > > >
+> > > > Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com> =20
+> > >
+> > > What is Nuno's relationship to this patch?=C2=A0 You are author and t=
+he sender
+> > > which is fine, but in that case you need to make Nuno's involvement e=
+xplicit.
+> > > Perhaps a Co-developed-by or similar is appropriate?
+> > > =20
+> > > > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com> =20
+> > > A few comments inline.=C2=A0 Biggest one is I'd like a clear statemen=
+t of why you
+> > > can't do a burst of one type, then a burst of other.=C2=A0 My guess i=
+s that the
+> > > transition is very time consuming?=C2=A0 If so, that is fine, but you=
+ should be
+> > > able
+> > > to let available_scan_masks handle the disjoint channel sets. =20
+> >=20
+> > Yeah, the burst message is a special spi transfer that brings you all o=
+f the
+> > channels data at once but for the accel/gyro you need to explicitly con=
+figure
+> > the chip to either give you the "normal vs "delta" readings. Re-configu=
+ring the
+> > chip and then do another burst would destroy performance I think. We co=
+uld
+> > do
+> > the manual readings as we do in adis16475 for chips not supporting burs=
+t32.
+> > But
+> > in the burst32 case those manual readings should be minimal while in he=
+re we
+> > could have to do 6 of them which could also be very time consuming...
+> >=20
+> > Now, why we don't use available_scan_masks is something I can't really
+> > remember
+> > but this implementation goes in line with what we have in the adis16475
+> > driver.
+> >=20
+> > - Nuno S=C3=A1
+> >  =20
+>=20
+> Thank you Nuno for all the additional explanations.
+> Regarding the use of available_scan_masks, the idea is to have any possib=
+le
+> combination for accel, gyro, temp and timestamp channels or delta angle, =
+delta=20
+> velocity, temp and  timestamp channels. There are a lot of combinations f=
+or=20
+> this and it does not seem like a good idea to write them all manually. Th=
+at is=20
+> why adis16480_update_scan_mode is used for checking the correct channels=
+=20
+> selection.
 
-diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-index efdf82f8cbbb..c400441cd77e 100644
---- a/drivers/gpu/drm/drm_print.c
-+++ b/drivers/gpu/drm/drm_print.c
-@@ -183,11 +183,10 @@ void __drm_printfn_dbg(struct drm_printer *p, struct va_format *vaf)
- {
- 	const struct drm_device *drm = p->arg;
- 	const struct device *dev = drm ? drm->dev : NULL;
--	enum drm_debug_category category = p->category;
- 	const char *prefix = p->prefix ?: "";
- 	const char *prefix_pad = p->prefix ? " " : "";
- 
--	if (!__drm_debug_enabled(category))
-+	if (!__drm_debug_enabled(p->category))
- 		return;
- 
- 	/* Note: __builtin_return_address(0) is useless here. */
--- 
-2.44.0
+If you are using bursts, the data is getting read anyway - which is the main
+cost here. The real question becomes what are you actually saving by suppor=
+ting all
+the combinations of the the two subsets of channels in the pollfunc?
+Currently you have to pick the channels out and repack them, if pushing the=
+m all
+looks to me like a mempcy and a single value being set (unconditionally).
+
+Then it's a question of what the overhead of the channel demux in the core =
+is.
+What you pass out of the driver via iio_push_to_buffers*()
+is not what ends up in the buffer if you allow the IIO core to do data demu=
+xing
+for you - that is enabled by providing available_scan_masks.  At buffer
+start up the demux code computes a fairly optimal set of copies to repack
+the incoming data to match with what channels the consumer (here probably
+the kfifo on the way to userspace) is expecting.
+
+That demux adds a small overhead but it should be small as long
+as the channels wanted aren't pathological (i.e. every other one).
+
+Advantage is the driver ends up simpler and in the common case of turn
+on all the channels (why else did you buy a device with those measurements
+if you didn't want them!) the demux is zerocopy so effectively free which
+is not going to be the case for the bitmap walk and element copy in the
+driver.
+
+Jonathan
+
+>=20
+> Ramona G.
 
 
