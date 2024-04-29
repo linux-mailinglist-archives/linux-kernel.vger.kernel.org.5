@@ -1,147 +1,218 @@
-Return-Path: <linux-kernel+bounces-162527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED49B8B5CBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:09:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A998A8B5D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:14:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA2E9285E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:09:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDCAE1C20ADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965D11292D3;
-	Mon, 29 Apr 2024 15:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2336512F59E;
+	Mon, 29 Apr 2024 15:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZaIJ/gNO"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="GANTSt3D"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B12112839A
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F2D85636
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714403106; cv=none; b=E8LUEJgPczJvNHIywEAzWD+JqaZFTh7/OhKIyPiTxxGNFTNTiBJ72bNp/eY2gJPcL5pk0pod5rd/DLA7tHoGF9EGSSBIgROgaL3KB38xHgLh08aoLQ61QrsdcJc/p/MLPEcVw/3YefCPeZq3H3BVj3ULudUUBE8bbg1fdeHlud8=
+	t=1714403197; cv=none; b=ZJ4iGttYL3XbUoK5fPd6j5p+jhZSYTgDXeLtEISqu7a7lqsoQADroayQ/5Ik7LnFOVWNwg4ccoYvJu9AQszQ2dG2o06wMQyNwcHCnextNo+FUm8A9RmDl71+LSmpF8gswAlE8bjl/GrGISyrsmJtFzJCKDw4ATwFmnMAucbhWN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714403106; c=relaxed/simple;
-	bh=/GjVSD6SioMDjZElg1Hs94tKxcIDWbAsQoWFdXy84sY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ovzJxsEhhuU/q9kunLEXRytuoa/KKPBY+ALn9aHJp+u5IjeqjM4ICQ1mqIcx3MzxrfWoU5OOGfkQVVyC3g9KQXTbpNDYrC/+nZZ/RUXARvvce/RA9kkQ2Vo8+/kpBoy2nOrx1RbDqvUSk0rc+HyjLBSvJIMy/bswiP6o6BF5+RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZaIJ/gNO; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-790f699eb2cso103545385a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:05:01 -0700 (PDT)
+	s=arc-20240116; t=1714403197; c=relaxed/simple;
+	bh=YMjaEkrxjc1PO/RQH+dOr7zekjKikgMU93R8pM8EfO4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RJl00oDIGIJuIXoNj4iM52jY+6bLzUEriMVqpCYzUp/JIdYwrnSf4fqwRMuExQxPLxjI0PG5KwW7I3IMSsUdsN2U3KOolqfv1ojRsZ30wyfq1xJc6FH0AZtTTOKI0h1OPlK5SZ5gATSQBFjNK4b1SCTQbr0HTFsXUYQ1LoJkODs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=GANTSt3D; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2dd80401e81so10682111fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714403101; x=1715007901; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7GlL3qsiOGQC7mYG6gX2GhOJ6HGHUo3zfWR8UxyLbWA=;
-        b=ZaIJ/gNOzKFqiF0n5UFOa/VFCoysPJi6lHKbehpjrCiDXmQKZINZehyS2m71yQHbZB
-         5imLWJPyt1YHDT3/u4mXkr6mOcfJEcDXXu1YPDHcW6ZeUL8iJgnSNV+gxK64QomWeaC+
-         F+ZEzQXxmND+qkNUjVwMYrIWHVnKrojt1/oFc=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714403194; x=1715007994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5N/I1d/nxZgekQMM5jCoIXfn4C85INJQIncOsDuOLy4=;
+        b=GANTSt3DQdfKT4pHyyKs0HvPWTISWu+z19ZncKT8WJ7P815BmCeL3lOT8i/kl2Y5sw
+         qhiLV/wEcRKVQlApqyZQBW+IT7U9Vb1g41rfJqcAOQP2dtkhXzKOugrQK9241KR5dnHf
+         rfK4Lh5rGQm2f0oORL5Iopi3pdstPdlwoj33jJqqz+JfNrV1QP+fM/e1UURX3gGm2I7k
+         t2bfmvyBGSX/3jz/Mz/GI2Nq/s9bDqjP9V3LJtGWKVrTwXD6ZlMFoii7SIQ3iTwa3cgt
+         gbvzMZi7rXMEspFLTg5E4erxygLeC5aHNB8niUJIyTF2lAzqwx3pcOyY/6qWM5xYHyv4
+         MR8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714403101; x=1715007901;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714403194; x=1715007994;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7GlL3qsiOGQC7mYG6gX2GhOJ6HGHUo3zfWR8UxyLbWA=;
-        b=rytAgZevVKeu36XLZBb1kTFmr0D4YAz4mO0kasIDQJGs7osXgc51LNsGQ/jTGEADdH
-         kmIsfJ/Iim4qG/q7gQ3E1O8gej/dlXsk00B6fkTp/X7miOct9i+4u+hVY82r4SnIKJsq
-         NNxDAc8a9h6DZeX0NzNkqg9771QKPHGSnh03IrUVdL4rpvCn2Yah8cANwSZlrXMF1Cyr
-         OrTHd7ODpRnXRrsgggyfnVtcvUG4S95K7sCvjWyaREEJBsQc+KtMW7RwZnm0tYwfTDH+
-         NLSYZBEOZeCVuuULPyx8j9uBibZQW1wzrahc4hEqzy1JPMdDZOMC2Tk/mHGZ10wBxtq1
-         rhmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVt/NFaGc/w/1PUSEYPzX3CiR5tOv9WtLREu1CqPAXwDO6vQ3CmBgbpHs6dOTQ1MtDtlWhC63aos9y6phPs3hK/0Rpv5MhTCJ3tHl7c
-X-Gm-Message-State: AOJu0YzW/g6cXdxB52VR5IaZBapyI4tWfrcBl6csnC9mmbVFSr9tP1xB
-	Y85MNHMwP7CC1ebhwLKiifL4bIvI0tPhnVfKvul8ES1svT+Yx2QGUAkl9zkIDQ==
-X-Google-Smtp-Source: AGHT+IHEbQ6k/spB/F4rjxeKOljXK5qMBOo6nR8m19hLRAfwF8PZ7AqOGD/HUUCFVnU+KrmkTId48g==
-X-Received: by 2002:a05:620a:28c5:b0:790:ed33:5b91 with SMTP id l5-20020a05620a28c500b00790ed335b91mr5568169qkp.56.1714403100578;
-        Mon, 29 Apr 2024 08:05:00 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b0078d3b9139edsm10568591qkp.97.2024.04.29.08.04.59
+        bh=5N/I1d/nxZgekQMM5jCoIXfn4C85INJQIncOsDuOLy4=;
+        b=Sc148BlWAduKruCLGS2tkk74WZQVILOhINYtZ8YabXEOHTHSva8Jl/cosBYTTo7iaM
+         vXyKUYtiNDBpcZgASpq25iR6LSKroIchmsGg8IVXsKM4H2qYWZKbfpxg/N1jKwCnIvsj
+         wAc1YEXUwiCladKXWSXSenQcJot0aE/XfAL91FZSIqKnp4XiilRT7Zp85gyUIze9zESP
+         tTNmakQgKF2oZPUte0M48bo38r3xsgiO51Ymnoh4wqqnOOMdQ0p9lvk0uqbkND7j5VwZ
+         RY2fxKcJZJRwRF38aoqe4kQ6gKcJm/dMH8wuGhaTeEHg3D7X5FO8XxkeLc0skJeFFFlt
+         kAzw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3p47eeWCc7GOZ/HcAnuYy+sdHYLKvS7ZXzch+0V1O8my7AwYS+RjY9gRUYixR7GT3adBpXXGxReQ3kAfI893bq9qtLvYN32TG46E3
+X-Gm-Message-State: AOJu0YxPiSADFiX6e0knEbZ0EJ3dMuam/07PbkQR/eKt3FDjVpwDKARF
+	SxlF6lzDb6nLtacwu+7182qyzVQl9TddPG0skEmqyV3biwgKrgTaQUDSGfxBbqk=
+X-Google-Smtp-Source: AGHT+IG9HZsh2i7sVeCuAUEar2abxwDfOKHyADVeYeIjKhIgKdYkVrA4cFC4fhiOfny2Upe6g0iLJQ==
+X-Received: by 2002:a2e:9801:0:b0:2de:9c32:b98b with SMTP id a1-20020a2e9801000000b002de9c32b98bmr6614512ljj.2.1714403193995;
+        Mon, 29 Apr 2024 08:06:33 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:2fec:d20:2b60:e334])
+        by smtp.gmail.com with ESMTPSA id l23-20020a05600c1d1700b00418f99170f2sm39646638wms.32.2024.04.29.08.06.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 08:05:00 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 29 Apr 2024 15:04:56 +0000
-Subject: [PATCH v3 17/26] media: flexcop-usb: Use min macro
+        Mon, 29 Apr 2024 08:06:33 -0700 (PDT)
+From: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 03/11] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+Date: Mon, 29 Apr 2024 17:04:56 +0200
+Message-ID: <20240429150553.625165-4-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240429150553.625165-1-cleger@rivosinc.com>
+References: <20240429150553.625165-1-cleger@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240429-fix-cocci-v3-17-3c4865f5a4b0@chromium.org>
-References: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-In-Reply-To: <20240429-fix-cocci-v3-0-3c4865f5a4b0@chromium.org>
-To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hugues Fruchet <hugues.fruchet@foss.st.com>, 
- Alain Volmat <alain.volmat@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
- Abylay Ospan <aospan@netup.ru>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Dmitry Osipenko <digetx@gmail.com>, 
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
- Sylvain Petinot <sylvain.petinot@foss.st.com>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Simplifies the code.
+The Zc* standard extension for code reduction introduces new extensions.
+This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
+are left out of this patch since they are targeting microcontrollers/
+embedded CPUs instead of application processors.
 
-Found by cocci:
-drivers/media/usb/b2c2/flexcop-usb.c:201:8-9: WARNING opportunity for min()
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
 ---
- drivers/media/usb/b2c2/flexcop-usb.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/riscv/include/asm/hwcap.h |  4 +++
+ arch/riscv/kernel/cpufeature.c | 47 +++++++++++++++++++++++++++++++++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/b2c2/flexcop-usb.c b/drivers/media/usb/b2c2/flexcop-usb.c
-index 43dd3c932a85..90f1aea99dac 100644
---- a/drivers/media/usb/b2c2/flexcop-usb.c
-+++ b/drivers/media/usb/b2c2/flexcop-usb.c
-@@ -197,10 +197,7 @@ static int flexcop_usb_memory_req(struct flexcop_usb *fc_usb,
- 		return -EINVAL;
- 	}
- 	for (i = 0; i < len;) {
--		pagechunk =
--			wMax < bytes_left_to_read_on_page(addr, len) ?
--				wMax :
--				bytes_left_to_read_on_page(addr, len);
-+		pagechunk = min(wMax, bytes_left_to_read_on_page(addr, len));
- 		deb_info("%x\n",
- 			(addr & V8_MEMORY_PAGE_MASK) |
- 				(V8_MEMORY_EXTENDED*extended));
-
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 543e3ea2da0e..b7551bad341b 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -82,6 +82,10 @@
+ #define RISCV_ISA_EXT_ZACAS		73
+ #define RISCV_ISA_EXT_XANDESPMU		74
+ #define RISCV_ISA_EXT_ZIMOP		75
++#define RISCV_ISA_EXT_ZCA		76
++#define RISCV_ISA_EXT_ZCB		77
++#define RISCV_ISA_EXT_ZCD		78
++#define RISCV_ISA_EXT_ZCF		79
+ 
+ #define RISCV_ISA_EXT_XLINUXENVCFG	127
+ 
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index cb2ffa6c8c33..c74bdb9c0a9f 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -103,6 +103,29 @@ static int riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *data,
+ 	return 0;
+ }
+ 
++static int riscv_ext_zca_depends(const struct riscv_isa_ext_data *data,
++				 const unsigned long *isa_bitmap)
++{
++	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA) ? 0 : -EPROBE_DEFER;
++}
++static int riscv_ext_zcd_validate(const struct riscv_isa_ext_data *data,
++				  const unsigned long *isa_bitmap)
++{
++	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA) &&
++	       __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_d) ? 0 : -EPROBE_DEFER;
++}
++
++static int riscv_ext_zcf_validate(const struct riscv_isa_ext_data *data,
++				  const unsigned long *isa_bitmap)
++{
++#ifdef CONFIG_64BIT
++	return -EINVAL;
++#else
++	return __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_ZCA) &&
++	       __riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_f) ? 0 : -EPROBE_DEFER;
++#endif
++}
++
+ #define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size, _validate) {	\
+ 	.name = #_name,									\
+ 	.property = #_name,								\
+@@ -114,6 +137,9 @@ static int riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *data,
+ 
+ #define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, NULL)
+ 
++#define __RISCV_ISA_EXT_DATA_VALIDATE(_name, _id, _validate) \
++			_RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, _validate)
++
+ /* Used to declare pure "lasso" extension (Zk for instance) */
+ #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
+ 	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
+@@ -205,6 +231,21 @@ static const unsigned int riscv_xlinuxenvcfg_exts[] = {
+ 	RISCV_ISA_EXT_XLINUXENVCFG
+ };
+ 
++/*
++ * Zc* spec states that:
++ * - C always implies Zca
++ * - C+F implies Zcf (RV32 only)
++ * - C+D implies Zcd
++ *
++ * These extensions will be enabled and then validated depending on the
++ * availability of F/D RV32.
++ */
++static const unsigned int riscv_c_exts[] = {
++	RISCV_ISA_EXT_ZCA,
++	RISCV_ISA_EXT_ZCF,
++	RISCV_ISA_EXT_ZCD,
++};
++
+ /*
+  * The canonical order of ISA extension names in the ISA string is defined in
+  * chapter 27 of the unprivileged specification.
+@@ -251,7 +292,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(f, RISCV_ISA_EXT_f),
+ 	__RISCV_ISA_EXT_DATA(d, RISCV_ISA_EXT_d),
+ 	__RISCV_ISA_EXT_DATA(q, RISCV_ISA_EXT_q),
+-	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
++	__RISCV_ISA_EXT_SUPERSET(c, RISCV_ISA_EXT_c, riscv_c_exts),
+ 	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
+ 	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+ 	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts,
+@@ -270,6 +311,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
+ 	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+ 	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
++	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
++	__RISCV_ISA_EXT_DATA_VALIDATE(zcb, RISCV_ISA_EXT_ZCB, riscv_ext_zca_depends),
++	__RISCV_ISA_EXT_DATA_VALIDATE(zcd, RISCV_ISA_EXT_ZCD, riscv_ext_zcd_validate),
++	__RISCV_ISA_EXT_DATA_VALIDATE(zcf, RISCV_ISA_EXT_ZCF, riscv_ext_zcf_validate),
+ 	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+ 	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
 -- 
-2.44.0.769.g3c40516874-goog
+2.43.0
 
 
