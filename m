@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-162144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FD68B569E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:30:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970EA8B56A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:30:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD2131F237D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:30:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7F86B21D79
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B4052F87;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A76E4594A;
 	Mon, 29 Apr 2024 11:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="FS32s8bm"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="cYd8t3yS"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF9940843
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B59751C2C
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 11:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390139; cv=none; b=EsIJJvomWG0IBzY+UjTFk2EE62U1PLElRDjVO0MaQpTblOt/mnxsMkntbgHFsSJqO68A3zbfOWqymhBcKi8Vr6uSSvb0kRrVMrmz9uVyD7A12JoTyERAn8R1Aqh9b6RmEAyMTDIsrH5Gangzxzzod/pj5FPgdFMNdgKAncAIzp4=
+	t=1714390139; cv=none; b=qV02Aioq77e5COWZ/F9uvlmHIopfD4RKORJgSo2hI0RkuruvpipI4lCd03XWLI1E+GJaNlSL7orUmpXaRel9hu+uJC/oZoBb2kZ9RbRQVvmmuzV/z4bKW2buCcBrVzOrZJlrBDgcXD2U7wHMWu2LFu6oHxovMrDlMsFzm0wqLRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714390139; c=relaxed/simple;
-	bh=HttXKCFGHIVX81OVIeLZCnbPUyLUoWDK6FOuG7LInck=;
+	bh=D7OPeJLbch41oDZDivUDejzOlkcUJd7HsRHODi0a1SQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dkk0zfNBQgQpV+l8vHfxcwAjYQcr56pXehlKomrpL+mHLZCb2kP/UHjFc/DKjnEjPG0nBNlfkus9ZIOldAGRaOpDmzCqldFde0HZ0Sf+y8vH4kKQJuK2VJZhKBczf7XtuBemLoAe5QdlbjxkRuhHCrgFQsoRM1Rsv4F913rTMJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=FS32s8bm; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=AxT/h2BKYhBhJv1p39r+uVRKLZbRsZCKlPKIgR+2mVZhOpXQyZFrbicBiN9dMNl2GGaDlbhQ74To4OQz1OuCWZ5k22+ptlgvEqS0VuYrAvbpj+56U2J2kUGcegv4Z4NNnujKFBkVDC0JVm5TNNGBpoixDjrSbOLVL7MCn4QNv4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=cYd8t3yS; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=tTCtWiINuS6VElP26/IngafNkTKRIxMsJbQoLAWEXag=; b=FS32s8
-	bmah6IRXRbty3oQurlZK/iOpTiXwlVlHuTDS98+48ztRUvUDA9o9TR6zM41+WC0p
-	kDLol/mdm37N6kFzFCZa3UFR+FcDbe+z8y1m+FRT51PcJwc6j71B4GQkUrb3+kza
-	062OsVGXS9DCeoeLdvHrdqCqi/1eqida0U+Gs2/pBR5pHPxTFySQ+1JuduILJAnE
-	8WYfcAGVKbxFg+6s57JnmCuFRHh/PBwnFkhE1T1TBc+eLR3PQj9DbkTAwPSIkNHc
-	yv19OmpdKpZZu9aQh2fyzJrJ4caRG+WMtsgtuHV+Zij1mZEHJvor8P+Dxx/MzFrX
-	viCh6/TlqsnS8C/w==
-Received: (qmail 2279687 invoked from network); 29 Apr 2024 13:28:50 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:28:50 +0200
-X-UD-Smtp-Session: l3s3148p1@3dazjjoXCnxtKPB4
+	 s=k1; bh=U1aYJ6z7/ImyPl7HdsAgHQCypuNdVejMIowCb/bL9pw=; b=cYd8t3
+	ySsRqddvAIvU2awFj5wQ4kr6hxnSUl7b6LwQIzVbrVQD7DxEeLiwn7fNNkSrjJhw
+	sNEzTH4tMs/hUDlbXvxngx11O2LtX6Ls51Ln/Gi9Q5Q7+4IAjTPZiwPQf7hjPtr4
+	4ebeituvnd/X3Lq4W9md+orAk1NCeaDowiz0N4BVBpOVATdOlExq2W9hziqJOCC5
+	jrwLgtJIv+H77HZ9TSzNtlNZ8IhHicWa8KWreX2y8QeDa9xGIEJBmVX4ROMb+SS1
+	ixeG9nyYxDl9ubbFsUDy7E76Ubt59rEhhHlAK2idWFOkQ8XYPeqqozwJma5Wemok
+	f8yoVpM+HrgSY0RQ==
+Received: (qmail 2279704 invoked from network); 29 Apr 2024 13:28:51 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Apr 2024 13:28:51 +0200
+X-UD-Smtp-Session: l3s3148p1@wATEjjoX7VxtKPB4
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-spi@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
@@ -53,9 +53,9 @@ Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] spi: sun4i: use 'time_left' variable with wait_for_completion_timeout()
-Date: Mon, 29 Apr 2024 13:28:39 +0200
-Message-ID: <20240429112843.67628-7-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 7/8] spi: sun6i: use 'time_left' variable with wait_for_completion_timeout()
+Date: Mon, 29 Apr 2024 13:28:40 +0200
+Message-ID: <20240429112843.67628-8-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
 References: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
@@ -80,31 +80,51 @@ Fix to the proper variable type 'unsigned long' while here.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/spi/spi-sun4i.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/spi/spi-sun6i.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-sun4i.c b/drivers/spi/spi-sun4i.c
-index 11d8bd27b3e9..2ee6755b43f5 100644
---- a/drivers/spi/spi-sun4i.c
-+++ b/drivers/spi/spi-sun4i.c
-@@ -206,7 +206,8 @@ static int sun4i_spi_transfer_one(struct spi_controller *host,
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index cd018ea1abf1..7bbe7ea0d66a 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -277,7 +277,8 @@ static int sun6i_spi_transfer_one(struct spi_controller *host,
  				  struct spi_transfer *tfr)
  {
- 	struct sun4i_spi *sspi = spi_controller_get_devdata(host);
--	unsigned int mclk_rate, div, timeout;
-+	unsigned int mclk_rate, div;
+ 	struct sun6i_spi *sspi = spi_controller_get_devdata(host);
+-	unsigned int div, div_cdr1, div_cdr2, timeout;
++	unsigned int div, div_cdr1, div_cdr2;
 +	unsigned long time_left;
  	unsigned int start, end, tx_time;
- 	unsigned int tx_len = 0;
- 	int ret = 0;
-@@ -327,10 +328,10 @@ static int sun4i_spi_transfer_one(struct spi_controller *host,
+ 	unsigned int trig_level;
+ 	unsigned int tx_len = 0, rx_len = 0, nbits = 0;
+@@ -488,26 +489,26 @@ static int sun6i_spi_transfer_one(struct spi_controller *host,
  
- 	tx_time = max(tfr->len * 8 * 2 / (tfr->speed_hz / 1000), 100U);
+ 	tx_time = spi_controller_xfer_timeout(host, tfr);
  	start = jiffies;
 -	timeout = wait_for_completion_timeout(&sspi->done,
 -					      msecs_to_jiffies(tx_time));
 +	time_left = wait_for_completion_timeout(&sspi->done,
 +						msecs_to_jiffies(tx_time));
+ 
+ 	if (!use_dma) {
+ 		sun6i_spi_drain_fifo(sspi);
+ 	} else {
+-		if (timeout && rx_len) {
++		if (time_left && rx_len) {
+ 			/*
+ 			 * Even though RX on the peripheral side has finished
+ 			 * RX DMA might still be in flight
+ 			 */
+-			timeout = wait_for_completion_timeout(&sspi->dma_rx_done,
+-							      timeout);
+-			if (!timeout)
++			time_left = wait_for_completion_timeout(&sspi->dma_rx_done,
++							      time_left);
++			if (!time_left)
+ 				dev_warn(&host->dev, "RX DMA timeout\n");
+ 		}
+ 	}
+ 
  	end = jiffies;
 -	if (!timeout) {
 +	if (!time_left) {
