@@ -1,149 +1,104 @@
-Return-Path: <linux-kernel+bounces-162171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F2EC8B5709
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:46:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D7D98B570F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:47:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3BD1F21227
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:46:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DFA31F21227
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4D84CE11;
-	Mon, 29 Apr 2024 11:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i+pwZsOl"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7874EB43;
+	Mon, 29 Apr 2024 11:46:46 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E684B5DA;
-	Mon, 29 Apr 2024 11:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBD747A5C;
+	Mon, 29 Apr 2024 11:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714391185; cv=none; b=us9e3mm9IAOzcpGqJ+R/o06LfZN3gBFondXF/tvyz4lmvuc4RewbpTQebRIABYYAxn4XIIjXKs2Ad65DS2tDI6fmBUKZZXoc8XKv/ASrWHWqrMD0L6rtpMzFIM7TLSddoyCRg0XR/uAthYzpTuZB5X4LzkRHOo6zoEBo7ar9EqY=
+	t=1714391205; cv=none; b=m/zdKh+dY6uC9MIwuQbvcat3c/J00nS+OGsSsGuLjip1rm1knE+Hn7GcYhZlRhksoVvJf5dqq4Yfh+u33DcNO/Asb1VSEL8h2lCe2iXB/nFEm8S6b5ZtYNA09ZEbE8Y2dzUhv9mpdnvEkR3DDIaCDFVm6nr2P7smpuFy3KpWCdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714391185; c=relaxed/simple;
-	bh=NQ5SGdqdAmQZOScQ9Q82ZKMV6DbrbkLXg5mjOjzV6oE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Phw0VG7GGOscOAQ78zaX/CLbTd8NKlnj3MGc3WX+rOOF7tF+2Cvw6oIeQXQM5UnyYSRLSAkIFnyTzlbKEESME6wxFSCi+EyCyHSD/NwyDku83uyqxV10FYtGy9C1Zo3Yrt9SBmNgUxO/nmaCvBYg3pNZezwApZ3gbOAefIAjs+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=i+pwZsOl; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43TBkEEF017873;
-	Mon, 29 Apr 2024 06:46:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714391174;
-	bh=UUwDz8JS3bdRJRihPsNX0v5/LIsDiQOiM2qFVEyewPQ=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=i+pwZsOlZ4Q7cMcilY808cuUxzTlatVMoZJuZ7dTtyKd8cbQWtLqOioY2s+ptY1Xk
-	 3qS+rhj8QbQUXflNiQTrB5trQErFdCnCssqOR0ElDUL7xIlxBSlbS0xCVQqwk1lty8
-	 83FojerqmkdJlZWDeXrTU6aRxE5jgnwbTKV59ueQ=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43TBkE1u124387
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 06:46:14 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 06:46:14 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 06:46:14 -0500
-Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43TBkAom098182;
-	Mon, 29 Apr 2024 06:46:11 -0500
-Message-ID: <f406bac9-f4c1-4289-8239-82420cd300b8@ti.com>
-Date: Mon, 29 Apr 2024 17:16:10 +0530
+	s=arc-20240116; t=1714391205; c=relaxed/simple;
+	bh=ITYF6YQ6atV387lGaOq8pM/DKovLv/P+pLmkVn+3D5c=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VqVemaMl6L6yxFt9U33wrpXwa8ANI4+9OWRbDzSZPnNyNMwQJ1VqEUWIOXsysQXl0VaLuF96nCD9LtbZybbWvx4SYTM/2RNLcZHzIJ1feqhNFK5TNV7qlai+n0gAq0Fl/PoVLzxQtHDCT7egUi8MhRsU7UtyDWpp8osCYvY9vvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VShNB3rkQzccJ0;
+	Mon, 29 Apr 2024 19:45:30 +0800 (CST)
+Received: from dggpemd500003.china.huawei.com (unknown [7.185.36.29])
+	by mail.maildlp.com (Postfix) with ESMTPS id 715DC180A9F;
+	Mon, 29 Apr 2024 19:46:37 +0800 (CST)
+Received: from huawei.com (10.67.108.248) by dggpemd500003.china.huawei.com
+ (7.185.36.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 29 Apr
+ 2024 19:46:37 +0800
+From: felix <fuzhen5@huawei.com>
+To: <paul@paul-moore.com>, <casey@schaufler-ca.com>,
+	<roberto.sassu@huawei.com>, <stefanb@linux.ibm.com>, <zohar@linux.ibm.com>,
+	<kamrankhadijadj@gmail.com>, <andrii@kernel.org>, <omosnace@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<xiujianfeng@huawei.com>, <wangweiyang2@huawei.com>
+Subject: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
+Date: Mon, 29 Apr 2024 19:46:36 +0800
+Message-ID: <20240429114636.123395-1-fuzhen5@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/5] arm64: dts: ti: k3-j784s4: Add overlay for dual
- port USXGMII mode
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh@kernel.org>, Tero
- Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
- Menon <nm@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <s-vadapalli@ti.com>
-References: <20240329053130.2822129-1-c-vankar@ti.com>
- <20240329053130.2822129-6-c-vankar@ti.com>
- <1cf7f439-45cc-42cb-b707-4c87c00015ac@linaro.org>
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <1cf7f439-45cc-42cb-b707-4c87c00015ac@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd500003.china.huawei.com (7.185.36.29)
 
+From: Felix Fu <fuzhen5@huawei.com>
 
+The return value of security_inode_set(remove)xattr should
+be 1. If it return 0, cap_inode_setxattr would not be
+executed when no lsm exist, which is not what we expected,
+any user could set some security.* xattr for a file.
 
-On 29/04/24 16:01, Krzysztof Kozlowski wrote:
-> On 29/03/2024 06:31, Chintan Vankar wrote:
->> From: Siddharth Vadapalli <s-vadapalli@ti.com>
->>
->> The CPSW9G instance of the CPSW Ethernet Switch supports USXGMII mode
->> with MAC Ports 1 and 2 of the instance, which are connected to ENET
->> Expansion 1 and ENET Expansion 2 slots on the EVM respectively, through
->> the Serdes2 instance of the SERDES.
->>
->> Enable CPSW9G MAC Ports 1 and 2 in fixed-link configuration USXGMII mode
->> at 5 Gbps each.
->>
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
->> ---
->>
->> Link to v5:
->> https://lore.kernel.org/r/20240314072129.1520475-6-c-vankar@ti.com/
->>
->> Changes from v5 to v6:
->> - Updated order of properties in Device Nodes based on
->>    https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
->>
->>   arch/arm64/boot/dts/ti/Makefile               |  6 +-
->>   .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   | 81 +++++++++++++++++++
->>   2 files changed, 86 insertions(+), 1 deletion(-)
->>   create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
->>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
->> index f8e47278df43..2d798ef415e4 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -101,6 +101,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j722s-evm.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-quad-port-eth-exp1.dtbo
->> +dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-usxgmii-exp1-exp2.dtbo
->>   
->>   # Build time test only, enabled by CONFIG_OF_ALL_DTBS
->>   k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
->> @@ -148,6 +149,8 @@ k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
->>   	k3-j721s2-evm-pcie1-ep.dtbo
->>   k3-j784s4-evm-quad-port-eth-exp1-dtbs := k3-j784s4-evm.dtb \
->>   	k3-j784s4-evm-quad-port-eth-exp1.dtbo
->> +k3-j784s4-evm-usxgmii-exp1-exp2.dtbs := k3-j784s4-evm.dtb \
->> +	k3-j784s4-evm-usxgmii-exp1-exp2.dtbo\
-> 
-> I have doubts this commit was ever built. It clearly fails, just like
-> now linux-next fails.
-> 
+Before commit 260017f31a8c ("lsm: use default hook return
+value in call_int_hook()") was approved, this issue would
+still happened when lsm only include bpf, because bpf_lsm_
+inode_setxattr return 0 by default which cause cap_inode_set
+xattr to be not executed.
 
-Apologies for the syntax error here, I will fix it and post next
-version.
+Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_hook()")
+Signed-off-by: Felix Fu <fuzhen5@huawei.com>
+---
+ include/linux/lsm_hook_defs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Best regards,
-> Krzysztof
-> 
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index f804b76cde44..9c768b954264 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -144,14 +144,14 @@ LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *idmap, struct dentry *dentry,
+ LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap,
+ 	 struct dentry *dentry, int ia_valid)
+ LSM_HOOK(int, 0, inode_getattr, const struct path *path)
+-LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
++LSM_HOOK(int, 1, inode_setxattr, struct mnt_idmap *idmap,
+ 	 struct dentry *dentry, const char *name, const void *value,
+ 	 size_t size, int flags)
+ LSM_HOOK(void, LSM_RET_VOID, inode_post_setxattr, struct dentry *dentry,
+ 	 const char *name, const void *value, size_t size, int flags)
+ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
+ LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
+-LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
++LSM_HOOK(int, 1, inode_removexattr, struct mnt_idmap *idmap,
+ 	 struct dentry *dentry, const char *name)
+ LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
+ 	 const char *name)
+-- 
+2.34.1
+
 
