@@ -1,436 +1,122 @@
-Return-Path: <linux-kernel+bounces-161835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36898B5200
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:08:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03F268B5206
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:10:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49E461F21871
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:08:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F0BBB2146C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3051E134DE;
-	Mon, 29 Apr 2024 07:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5AF13AE2;
+	Mon, 29 Apr 2024 07:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lc/I3oyZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LY9EyzqS"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0791DEED4;
-	Mon, 29 Apr 2024 07:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2759134A0;
+	Mon, 29 Apr 2024 07:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714374496; cv=none; b=VyLEdclmXUGSvqA1W6+cBt22ii9thrFI/hK7h6//UC2x0Q28hjzGJUN7y5Tn9whHa7sM7sibMsPCfBPo3OFhPz9vZudKNCXt0Rdm7heXIcbmlMKJlDlWV0wnvB1R16ND+pqxliQPBXT7xnwuE4rwX0ke/JynQkQq9rC7SO6u3+c=
+	t=1714374640; cv=none; b=JaqkHwxNoWTGRHIKcyq39z5ihXz8xFBJabUV7tPuAJbW5RWUD+XgorovkGZjFd7R5kvrko/ar6VXL89LnY1RAM5vpBGtSFQgkIUaUVIIfdmUuReG9xKRXfDfY+vovd87mNNX0tzOe15DJ/D3rPRSgYKLFKwucv1eIEUwf90bHv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714374496; c=relaxed/simple;
-	bh=C2BxIS0N3dmWzQ9cgH+7pz/lzpzb+iCAx2gAwbADPHY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hC1nvpFcUzSmfEreWQ3MvbNdOhhw8WdJYDDBIC5uo5E7yVwySXbINEvVt+VUPEwozZlrMitjJLSI/S8wMaA0UXamG1cEMIahZLljAN5xVW5js3FpmcCSjbPd1iiaquwM7ZDMzy4Z6IsWx/Nei+Pq8kDuWTIjkd5e6Tx6PuWUdBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lc/I3oyZ; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714374494; x=1745910494;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=C2BxIS0N3dmWzQ9cgH+7pz/lzpzb+iCAx2gAwbADPHY=;
-  b=Lc/I3oyZH5tCb57cPVvBlKgGbySUDYNXrS7Pfm/hgb6ZIcpQ8JTGTFPg
-   JvUIpguLnvqQak+9h7SiDP5S7chdyuLm9S1Z01NOvxL9YTWcuvMoSwHpd
-   fmvRQur0BedGPIMDjmDu23x4XL4YBeJeM+tCINWfGfdFprO4HT5g/BKr2
-   796f0nypTEnIq00g5w+VGL531AHqpTxes426yakCWCFBPqSo3Kn3Qu/RZ
-   hXjoz+MNhNa3IM8RprwIBeJlAEPi1PsmY3/s1RIwmVW415QZHfiUAUDhm
-   u+KtOqRhbnKzh9FfsBCyG4Bp2Z0jCZTN0r6XEPc3F4P+BjE4vKientiHZ
-   w==;
-X-CSE-ConnectionGUID: QKMksg49RzqKDnoeKSDOvQ==
-X-CSE-MsgGUID: xU+aLn5SRpigVnaxbyrktw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="27475166"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="27475166"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 00:08:13 -0700
-X-CSE-ConnectionGUID: FYnyvPCcR1mW/gt0AA+Tog==
-X-CSE-MsgGUID: tjGHuoAcSHqLPE0fsKe/vQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26022810"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.208.71])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 00:08:07 -0700
-Message-ID: <ed900af1-f090-49a9-bc7e-363a28a4ac2b@intel.com>
-Date: Mon, 29 Apr 2024 10:08:04 +0300
+	s=arc-20240116; t=1714374640; c=relaxed/simple;
+	bh=u4RpuH47LCq8+OKqkijooorm9I+Cq42DccMjOsHgWJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mGC3ffyF4B2LXVcPh+jK2ZGlQxyXTnpF445i2LM0ZCYl94o2hcVli/VjPCl+86icwWYbAqH6eQfyvD7aD1qd9rJZ71+XFdDQx7iv1ukexFH3cef1lj3QLsE1GwBfdIERfKNEFGPQ+I82ETGw6EiNBlcsJ/YwI+tuwb6pwi3f7BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LY9EyzqS; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e2b137d666so31468905ad.2;
+        Mon, 29 Apr 2024 00:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714374638; x=1714979438; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ezNGmgXtmN/d5QQIznl5zIrhQk/v8pmvi9ftsZ0N98=;
+        b=LY9EyzqSZrOSb8FtxwnWlmDwIStHPJwII4rCneOMRmHYberz3eAHot0iYqGC8mEqh0
+         dJHk3WVzzT9u9RWD9g0wjg+XiLNU2sBH5XatOtQq/jYbQ4szQ1W7NAxdGTcbhgacaB6+
+         jbEkGoXwuQwvauiArgwxXHrsM84OxA8ug2vr8I1KU0CEHZWR5zlnRfli6MbXMShKNfeU
+         zjFtw8JrXDvHAoJ5ftAvp13FVxc5MpcckCULpcFldg1h1BMsuK29rQyyfDUxnuPVWwCm
+         Jx+vDDTBHL5dPDQK0+u8c7ygm+BFegToCr+ypjZjQtdheRIL3u7Vdj+ELjT+j7m/uupx
+         hmnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714374638; x=1714979438;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6ezNGmgXtmN/d5QQIznl5zIrhQk/v8pmvi9ftsZ0N98=;
+        b=rfs4xLoO0A9VjgGNlwAbV2Wq9k6s3812KwA+G0yFeYEzpupPrJOAJN5rdptbEbDoZB
+         ZM6xz1l0toSChPA7xKjDdJ8cb/QBRp10RIn0ukgZAYi/MPfJHmqQEiILjrm+asjgbrDh
+         t58Yy75sf9p8/RuF6TsnLzgvSuOC+3wvi9OyU/5ppG7Fq+r0rPOLJQHEGIg6TtPVLSyH
+         VhjkfnKzPUWE9Eq0lFOroX+ufD1EUc5UEo++9CkRmEYAKAoackuIll68pVHXg6fKRXMu
+         IBNGrYgAR/i0K5th5t+Cs9zyI9qwrayfrNsjB8qGhpV1wcmQEwCm9z6jed3PoJ0cayw4
+         759A==
+X-Forwarded-Encrypted: i=1; AJvYcCXVNRFAPYepb8MTBFBgBNgDac8Jt3wDpTjQedG0BxNVYOFyyUCyOzkFmhoIqoNeK17ZhWkWcDUokYaBQxUKBlV1a/4A4z22QKmVlpGvDWRJ8alxHqqSmQ63m/tmEI4Nd33/D+hQVUge69KPTVUb6ogBgXOGuL95SRgZOuy6/lUfU9+tBQ==
+X-Gm-Message-State: AOJu0YySJYTutRokwUZYoiKwyYWDIP/Ni6v0yooNvy3nPHjXMKh/CGRT
+	g2+XHjMO1Lw+z10JljWkfrgeDvy99xtacRb6mtaTtUGNHIpP0nHy3MS6rF40
+X-Google-Smtp-Source: AGHT+IGZzv0nK/Ap+onynsI5bN80EXBIn8pYwFdVCFbTCUWgtG4x9ojg6OcZwUwaJZNiNQm8wLn4Jg==
+X-Received: by 2002:a17:902:e5cd:b0:1e8:6614:51cc with SMTP id u13-20020a170902e5cd00b001e8661451ccmr11367971plf.5.1714374637938;
+        Mon, 29 Apr 2024 00:10:37 -0700 (PDT)
+Received: from five231003 ([2409:40f0:3004:21d1:ce46:748f:4353:8a5d])
+        by smtp.gmail.com with ESMTPSA id ku13-20020a170903288d00b001e403970ec0sm19500551plb.277.2024.04.29.00.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 00:10:37 -0700 (PDT)
+Date: Mon, 29 Apr 2024 12:40:31 +0530
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: Re: [RFC PATCH] spi: dt-bindings: ti,qspi: convert to dtschema
+Message-ID: <Zi9H5371PrJtIKVy@five231003>
+References: <20240428070258.4121-1-five231003@gmail.com>
+ <59fe75b6-a4a4-4c90-a3c4-c8a4b539e879@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mmc: sdhci-of-dwcmshc: add callback functions for
- dwcmshc_priv
-To: Chen Wang <unicornxw@gmail.com>, ulf.hansson@linaro.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, jszhang@kernel.org,
- dfustini@baylibre.com, yifeng.zhao@rock-chips.com, shawn.lin@rock-chips.com,
- chao.wei@sophgo.com, haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
- tingzhu.wang@sophgo.com, guoren@kernel.org, inochiama@outlook.com,
- unicorn_wang@outlook.com
-References: <cover.1714270290.git.unicorn_wang@outlook.com>
- <5bb708cc830684676dede5f44ee22c7fd03300b7.1714270290.git.unicorn_wang@outlook.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <5bb708cc830684676dede5f44ee22c7fd03300b7.1714270290.git.unicorn_wang@outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <59fe75b6-a4a4-4c90-a3c4-c8a4b539e879@kernel.org>
 
-On 28/04/24 05:32, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
+On Mon, Apr 29, 2024 at 07:07:38AM +0200, Krzysztof Kozlowski wrote:
+> On 28/04/2024 08:58, Kousik Sanagavarapu wrote:
+> > Convert txt binding of TI's qspi controller (found on their omap SoCs) to
+> > dtschema to allow for validation.
+
+[...]
+
+> > +  spi-max-frequency:
+> > +    description: Maximum SPI clocking speed of the controller in Hz.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
 > 
-> The current framework is not easily extended to support new SOCs.
-> For example, in the current code we see that the SOC-level
-> structure `rk35xx_priv` and related logic are distributed in
-> functions such as dwcmshc_probe/dwcmshc_remove/dwcmshc_suspend/......,
-> which is inappropriate.
 > 
-> The solution is to abstract some possible common operations of soc
-> into virtual members of `dwcmshc_priv`. Each soc implements its own
-> corresponding callback function and registers it in init function.
-> dwcmshc framework is responsible for calling these callback functions
-> in those dwcmshc_xxx functions.
+> Are you sure that's actually needed? That's not a property of controller.
+
+[...]
+
+> > +        num-cs = <4>;
+> > +        spi-max-frequency = <48000000>;
 > 
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 152 +++++++++++++++++-----------
->  1 file changed, 91 insertions(+), 61 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index 39edf04fedcf..525f954bcb65 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -214,6 +214,10 @@ struct dwcmshc_priv {
->  	void *priv; /* pointer to SoC private stuff */
->  	u16 delay_line;
->  	u16 flags;
-> +
-> +	void (*soc_postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-> +	int (*soc_clks_enable)(struct dwcmshc_priv *dwc_priv);
-> +	void (*soc_clks_disable)(struct dwcmshc_priv *dwc_priv);
+> Drop. Are you sure driver parses it?
 
-Normally the ops would be part of platform data.  For example,
-sdhci-of-arasan.c has:
+The driver does parse it though.  Looking at
+drivers/spi/spi-ti-qspi.c::ti_qspi_probe(),
 
-	struct sdhci_arasan_of_data {
-		const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-		const struct sdhci_pltfm_data *pdata;
-		const struct sdhci_arasan_clk_ops *clk_ops;
-	};
+	if (!of_property_read_u32(np, "spi-max-frequency", &max_freq))
+		host->max_speed_hz = max_freq;
 
-And then:
+So I included it in the dtschema as well.  Please let me know if
+including it in the dtschema in this case is wrong.
 
-	static struct sdhci_arasan_of_data sdhci_arasan_rk3399_data = {
-		.soc_ctl_map = &rk3399_soc_ctl_map,
-		.pdata = &sdhci_arasan_cqe_pdata,
-		.clk_ops = &arasan_clk_ops,
-	};
-	etc
-
-	static const struct of_device_id sdhci_arasan_of_match[] = {
-		/* SoC-specific compatible strings w/ soc_ctl_map */
-		{
-			.compatible = "rockchip,rk3399-sdhci-5.1",
-			.data = &sdhci_arasan_rk3399_data,
-		},
-		etc
-
-So, say:
-
-struct dwcmshc_pltfm_data {
-	const struct sdhci_pltfm_data *pltfm_data;
-	void (*postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-	int  (*clks_enable)(struct dwcmshc_priv *dwc_priv);
-	void (*clks_disable)(struct dwcmshc_priv *dwc_priv);
-}
-
-Or if the ops are mostly the same, it might be more convenient to
-have them in their own structure:
-
-struct dwcmshc_pltfm_data {
-	const struct sdhci_pltfm_data *pltfm_data;
-	const struct dwcmshc_ops *ops;
-}
-
->  };
->  
->  /*
-> @@ -1033,10 +1037,40 @@ static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *
->  	host->mmc->caps2 &= ~(MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD);
->  }
->  
-> -static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-> +static int dwcmshc_rk35xx_clks_enable(struct dwcmshc_priv *dwc_priv)
->  {
-> -	int err;
->  	struct rk35xx_priv *priv = dwc_priv->priv;
-> +	int ret = 0;
-> +
-> +	if (priv)
-> +		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, priv->rockchip_clks);
-> +	return ret;
-> +}
-> +
-> +static void dwcmshc_rk35xx_clks_disable(struct dwcmshc_priv *dwc_priv)
-> +{
-> +	struct rk35xx_priv *priv = dwc_priv->priv;
-> +
-> +	if (priv)
-> +		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> +					   priv->rockchip_clks);
-> +}
-> +
-> +static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-
-Avoid forward declarations if possible.  If necessary, it is
-preferable to move the function definition.
-
-> +static int dwcmshc_rk35xx_init(struct device *dev,
-> +			       struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-
-This patch looks like it might be doing too much.  Please consider
-splitting it so reorganising the code is separate from adding the
-callbacks.
-
-> +{
-> +	int err;
-> +	struct rk35xx_priv *priv;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	if (of_device_is_compatible(dev->of_node, "rockchip,rk3588-dwcmshc"))
-> +		priv->devtype = DWCMSHC_RK3588;
-> +	else
-> +		priv->devtype = DWCMSHC_RK3568;
->  
->  	priv->reset = devm_reset_control_array_get_optional_exclusive(mmc_dev(host->mmc));
->  	if (IS_ERR(priv->reset)) {
-> @@ -1071,6 +1105,11 @@ static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
->  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
->  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
->  
-> +	dwc_priv->priv = priv;
-> +	dwc_priv->soc_postinit = dwcmshc_rk35xx_postinit;
-> +	dwc_priv->soc_clks_enable = dwcmshc_rk35xx_clks_enable;
-> +	dwc_priv->soc_clks_disable = dwcmshc_rk35xx_clks_disable;
-> +
->  	return 0;
->  }
->  
-> @@ -1088,6 +1127,35 @@ static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv
->  	}
->  }
->  
-> +static int dwcmshc_th1520_init(struct device *dev,
-> +			       struct sdhci_host *host,
-> +			       struct dwcmshc_priv *dwc_priv)
-> +{
-> +	dwc_priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
-> +
-> +	if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
-> +	    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
-> +	    device_property_read_bool(dev, "mmc-hs400-1_8v"))
-> +		dwc_priv->flags |= FLAG_IO_FIXED_1V8;
-> +	else
-> +		dwc_priv->flags &= ~FLAG_IO_FIXED_1V8;
-> +
-> +	/*
-> +	 * start_signal_voltage_switch() will try 3.3V first
-> +	 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
-> +	 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
-> +	 * in sdhci_start_signal_voltage_switch().
-> +	 */
-> +	if (dwc_priv->flags & FLAG_IO_FIXED_1V8) {
-> +		host->flags &= ~SDHCI_SIGNALING_330;
-> +		host->flags |=  SDHCI_SIGNALING_180;
-> +	}
-> +
-> +	sdhci_enable_v4_mode(host);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
->  	{
->  		.compatible = "rockchip,rk3588-dwcmshc",
-> @@ -1134,7 +1202,6 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  	struct sdhci_pltfm_host *pltfm_host;
->  	struct sdhci_host *host;
->  	struct dwcmshc_priv *priv;
-> -	struct rk35xx_priv *rk_priv = NULL;
->  	const struct sdhci_pltfm_data *pltfm_data;
->  	int err;
->  	u32 extra, caps;
-> @@ -1191,46 +1258,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  	host->mmc_host_ops.execute_tuning = dwcmshc_execute_tuning;
->  
->  	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
-> -		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
-> -		if (!rk_priv) {
-> -			err = -ENOMEM;
-> -			goto err_clk;
-> -		}
-> -
-> -		if (of_device_is_compatible(pdev->dev.of_node, "rockchip,rk3588-dwcmshc"))
-> -			rk_priv->devtype = DWCMSHC_RK3588;
-> -		else
-> -			rk_priv->devtype = DWCMSHC_RK3568;
-> -
-> -		priv->priv = rk_priv;
-> -
-> -		err = dwcmshc_rk35xx_init(host, priv);
-> +		err = dwcmshc_rk35xx_init(dev, host, priv);
->  		if (err)
->  			goto err_clk;
->  	}
->  
->  	if (pltfm_data == &sdhci_dwcmshc_th1520_pdata) {
-> -		priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
-> -
-> -		if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
-> -		    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
-> -		    device_property_read_bool(dev, "mmc-hs400-1_8v"))
-> -			priv->flags |= FLAG_IO_FIXED_1V8;
-> -		else
-> -			priv->flags &= ~FLAG_IO_FIXED_1V8;
-> -
-> -		/*
-> -		 * start_signal_voltage_switch() will try 3.3V first
-> -		 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
-> -		 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
-> -		 * in sdhci_start_signal_voltage_switch().
-> -		 */
-> -		if (priv->flags & FLAG_IO_FIXED_1V8) {
-> -			host->flags &= ~SDHCI_SIGNALING_330;
-> -			host->flags |=  SDHCI_SIGNALING_180;
-> -		}
-> -
-> -		sdhci_enable_v4_mode(host);
-> +		err = dwcmshc_th1520_init(dev, host, priv);
-> +		if (err)
-> +			goto err_clk;
->  	}
->  
->  #ifdef CONFIG_ACPI
-> @@ -1260,8 +1296,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  		dwcmshc_cqhci_init(host, pdev);
->  	}
->  
-> -	if (rk_priv)
-> -		dwcmshc_rk35xx_postinit(host, priv);
-> +	if (priv->soc_postinit)
-> +		priv->soc_postinit(host, priv);
->  
->  	err = __sdhci_add_host(host);
->  	if (err)
-> @@ -1279,9 +1315,9 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  err_clk:
->  	clk_disable_unprepare(pltfm_host->clk);
->  	clk_disable_unprepare(priv->bus_clk);
-> -	if (rk_priv)
-> -		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> -					   rk_priv->rockchip_clks);
-> +	if (priv->soc_clks_disable)
-> +		priv->soc_clks_disable(priv);
-> +
->  free_pltfm:
->  	sdhci_pltfm_free(pdev);
->  	return err;
-> @@ -1303,7 +1339,6 @@ static void dwcmshc_remove(struct platform_device *pdev)
->  	struct sdhci_host *host = platform_get_drvdata(pdev);
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->  	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> -	struct rk35xx_priv *rk_priv = priv->priv;
->  
->  	pm_runtime_get_sync(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-> @@ -1315,9 +1350,9 @@ static void dwcmshc_remove(struct platform_device *pdev)
->  
->  	clk_disable_unprepare(pltfm_host->clk);
->  	clk_disable_unprepare(priv->bus_clk);
-> -	if (rk_priv)
-> -		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> -					   rk_priv->rockchip_clks);
-> +	if (priv->soc_clks_disable)
-> +		priv->soc_clks_disable(priv);
-> +
->  	sdhci_pltfm_free(pdev);
->  }
->  
-> @@ -1327,7 +1362,6 @@ static int dwcmshc_suspend(struct device *dev)
->  	struct sdhci_host *host = dev_get_drvdata(dev);
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->  	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> -	struct rk35xx_priv *rk_priv = priv->priv;
->  	int ret;
->  
->  	pm_runtime_resume(dev);
-> @@ -1346,9 +1380,8 @@ static int dwcmshc_suspend(struct device *dev)
->  	if (!IS_ERR(priv->bus_clk))
->  		clk_disable_unprepare(priv->bus_clk);
->  
-> -	if (rk_priv)
-> -		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> -					   rk_priv->rockchip_clks);
-> +	if (priv->soc_clks_disable)
-> +		priv->soc_clks_disable(priv);
->  
->  	return ret;
->  }
-> @@ -1358,7 +1391,6 @@ static int dwcmshc_resume(struct device *dev)
->  	struct sdhci_host *host = dev_get_drvdata(dev);
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->  	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
-> -	struct rk35xx_priv *rk_priv = priv->priv;
->  	int ret;
->  
->  	ret = clk_prepare_enable(pltfm_host->clk);
-> @@ -1371,29 +1403,27 @@ static int dwcmshc_resume(struct device *dev)
->  			goto disable_clk;
->  	}
->  
-> -	if (rk_priv) {
-> -		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
-> -					      rk_priv->rockchip_clks);
-> +	if (priv->soc_clks_enable) {
-> +		ret = priv->soc_clks_enable(priv);
->  		if (ret)
->  			goto disable_bus_clk;
->  	}
->  
->  	ret = sdhci_resume_host(host);
->  	if (ret)
-> -		goto disable_rockchip_clks;
-> +		goto disable_soc_clks;
->  
->  	if (host->mmc->caps2 & MMC_CAP2_CQE) {
->  		ret = cqhci_resume(host->mmc);
->  		if (ret)
-> -			goto disable_rockchip_clks;
-> +			goto disable_soc_clks;
->  	}
->  
->  	return 0;
->  
-> -disable_rockchip_clks:
-> -	if (rk_priv)
-> -		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-> -					   rk_priv->rockchip_clks);
-> +disable_soc_clks:
-> +	if (priv->soc_clks_disable)
-> +		priv->soc_clks_disable(priv);
->  disable_bus_clk:
->  	if (!IS_ERR(priv->bus_clk))
->  		clk_disable_unprepare(priv->bus_clk);
-
+Thanks
 
