@@ -1,242 +1,163 @@
-Return-Path: <linux-kernel+bounces-161991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1968B5448
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:30:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7482B8B5445
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6BAD281A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:30:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D2C1F2185C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85917286AE;
-	Mon, 29 Apr 2024 09:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JhPTvqGU"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D40B2575A;
+	Mon, 29 Apr 2024 09:29:24 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD67317C60;
-	Mon, 29 Apr 2024 09:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B86A17C60
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 09:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714382980; cv=none; b=iamogWT8S5mwlJzHXbvvHOKjw7TNixvVSMbpDvz/2TjgmiqhAoXyAHlm6QOPXylszWZU8jwWqD/8IIIAgOcOFqFnrEQx/TYFGpK6nChHzTfckCsNxOnM3a84jY47XufhBCEMaVB6Yd0U4BljBrWYiUzG8QYCBCKE2U+rjtM+k2Q=
+	t=1714382964; cv=none; b=Mq4QaToaA6Sa0meLbR7N4z6R5OwGCh3yHWhQ6e7ebUIJh+apzEj6055NTTlTCfzSrkf5l/P8EyS1xWB+coApkFISZNPON197D/PRDSpc+/TGcBrE2zmfNrNfHB0fkITJRTEApvh+fs0a+88ok/5M1bLhsL2AM5+YrpblQmOT+Tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714382980; c=relaxed/simple;
-	bh=uSdxRzJFml3nCo76HAUg3DSxjX0UoERQLwTqM3FlGMI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TuTyX53Pp7uVDhqu+9ZPyeLLhYxhusJRKHnWj4kPMAmbOGwcGIQXmmwZ4yr+VXKxDy1BmGLgn/fl8WTAXEsQaefB7naGLyxdSx+LYKuiR6diekAR50CGt6jCARzS8v6h9hkUbD/tsFvjSxWqjdK7fCBU6oex5y13kr0ThfESR6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=JhPTvqGU; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T9TM3M043203;
-	Mon, 29 Apr 2024 04:29:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714382962;
-	bh=FK6SYIgTwTmZUuVtGZyXbYiIG/QDRVtYkXsYn7IPvUQ=;
-	h=From:To:CC:Subject:Date;
-	b=JhPTvqGUp4ZFgzEhcU5dwy22f9YJSuD8tjHmIQqcpG3MtV63b4gT3YSyO4JcnNdsr
-	 1TBssUrax6RiYEU/HypCJywgMkID9WzptBnQagkvLrB8ubZVd/ktDJL46c4oPTEtk8
-	 MpvtuGEw1lqiZEBjcqxItiJL1pzcGTtE+0IxsSX8=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T9TMiP008968
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 04:29:22 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 04:29:22 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 04:29:22 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T9TMfK001599;
-	Mon, 29 Apr 2024 04:29:22 -0500
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43T9TL0U017042;
-	Mon, 29 Apr 2024 04:29:22 -0500
-From: MD Danish Anwar <danishanwar@ti.com>
-To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzk+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        MD
- Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-am642-evm-icssg1-dualemac: add overlay for mii mode
-Date: Mon, 29 Apr 2024 14:59:19 +0530
-Message-ID: <20240429092919.657629-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714382964; c=relaxed/simple;
+	bh=q45+hjjmLxml1aJNtwd5XFVUIciX6r6bmdXOp91wvSo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Y/C1FR6GDl9jWDAlLIS1NvodIk+3RR4I+0bXJLCC66QKIHbmmDP98bFVK3SmW6Krs97XDMrSqmY7M9Y5EM0/VA2TiWd3b24xXlRs19qjnGIW+W6CrSzDER2zsTib+r4C0QtKbBU+/9c4Yvz86H4m1g3jLjp4bgE27+8JKyAPLzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7da41da873bso551979239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 02:29:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714382961; x=1714987761;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hJ+5Yb2Ln58wiDSoBQwENTmi0SaJH0WHD9oB1lDL3Cs=;
+        b=gkEFI8hA6L7XBni8Uspkk4gBRvIIzJ0ODW6d2fh4LoBl/20rCmsOu9Dcr9kcLtg1mQ
+         aXblxHw3OiI/V+8347Yxjkb3D65iC+9FJEGHez4rhfZMTh/RHJLuwAl+G7ghNI8Du+j7
+         leyWns8jf8APoR9rMU7b7wEVK2zJ2PFpLrTcSN5AxPvs5+QZy/La6wIMw5PAMVaItgND
+         x2twtst5SHAU9C66sAWef9bRhuuIosHOwP5uC9gY0PYUafEkCeOVU1aK6GBNTAnYc6SG
+         umbycFg259eqhNNmhsSzXjui59U8LdPh+P51IwCIzgUns7eZsRvEkbUT9t7w6LJg4Hfd
+         xnNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIr0xdBSg/CYGcS8X29FkTOKaDtJvtoyATVd/RWZkcBK56/8OxiQinigZSzWI6s1FPAykeyvz3fGmNAnImrKvh6q7TdRBfpd7SJ/AO
+X-Gm-Message-State: AOJu0Yz0ZOIf4+i8vOY7VOCo6UqttcjpUa6jWhjz7+IPs4TiGHpSSrxs
+	uEJCf3tOJoUs9gy0YkeARGMDQnQeVcy/siZcwuld3RurrvRfXOAJ/cnx28lRpeL3INeX5x80GAO
+	djzXuzJ2k5e6xyToKVytnUCILejJnO+hsgkvEnHpyGsYg97Ag6XAD7FU=
+X-Google-Smtp-Source: AGHT+IGOSnK61WCYmFa2d18gGFKctUlhzvIRl1iR74ZajCvsYB5LqaVvQwzRqZSp1JoOOne0FxaTR9iW9re5ONjKvGOV33tYi3hj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a05:6e02:12eb:b0:36b:3c17:28d0 with SMTP id
+ l11-20020a056e0212eb00b0036b3c1728d0mr238702iln.6.1714382961663; Mon, 29 Apr
+ 2024 02:29:21 -0700 (PDT)
+Date: Mon, 29 Apr 2024 02:29:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000070759a061738e388@google.com>
+Subject: [syzbot] [wireless?] WARNING in _ieee80211_change_chanctx
+From: syzbot <syzbot+bc0f5b92cc7091f45fb6@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, johannes@sipsolutions.net, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add device tree overlay to enable both ICSSG1 ports available on AM64x-EVM
-in MII mode.
+Hello,
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+syzbot found the following issue on:
+
+HEAD commit:    e88c4cfcb7b8 Merge tag 'for-6.9-rc5-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12aea028980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=545d4b3e07d6ccbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc0f5b92cc7091f45fb6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cc2737f2e766/disk-e88c4cfc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c53581da70d1/vmlinux-e88c4cfc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c90cde48e98f/bzImage-e88c4cfc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc0f5b92cc7091f45fb6@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3146 at net/mac80211/chan.c:501 _ieee80211_change_chanctx+0x363/0x11c0 net/mac80211/chan.c:501
+Modules linked in:
+CPU: 0 PID: 3146 Comm: syz-executor.2 Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:_ieee80211_change_chanctx+0x363/0x11c0 net/mac80211/chan.c:501
+Code: 0f 8e 1a 0c 00 00 8b 7b 08 48 c7 c6 00 e3 4f 8c 49 89 fc e8 5f d5 33 f7 41 83 fc 05 76 0f 41 83 fc 0d 74 09 e8 0e da 33 f7 90 <0f> 0b 90 e8 05 da 33 f7 48 8b 74 24 10 ba 01 00 00 00 48 8b 3c 24
+RSP: 0018:ffffc90003376e20 EFLAGS: 00010287
+RAX: 0000000000001a65 RBX: ffffc90003376fd0 RCX: ffffc90004012000
+RDX: 0000000000040000 RSI: ffffffff8a59e842 RDI: 0000000000000005
+RBP: ffff88807b6f80b6 R08: 0000000000000005 R09: 000000000000000d
+R10: 0000000000000006 R11: 0000000000000000 R12: 0000000000000006
+R13: 0000000000000000 R14: ffff88805de532f8 R15: ffff88807b6f8000
+FS:  00007f75cdf286c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2d823000 CR3: 0000000040486000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000003
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ieee80211_change_chanctx net/mac80211/chan.c:547 [inline]
+ ieee80211_recalc_chanctx_chantype+0x69c/0x870 net/mac80211/chan.c:773
+ ieee80211_link_change_chanreq+0x7aa/0xd70 net/mac80211/chan.c:1920
+ ieee80211_set_ap_chanwidth+0x181/0x320 net/mac80211/cfg.c:4343
+ rdev_set_ap_chanwidth net/wireless/rdev-ops.h:1136 [inline]
+ __nl80211_set_channel+0x4cb/0x990 net/wireless/nl80211.c:3418
+ nl80211_set_wiphy+0xcc8/0x2d00 net/wireless/nl80211.c:3575
+ genl_family_rcv_msg_doit+0x202/0x2f0 net/netlink/genetlink.c:1113
+ genl_family_rcv_msg net/netlink/genetlink.c:1193 [inline]
+ genl_rcv_msg+0x565/0x800 net/netlink/genetlink.c:1208
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2559
+ genl_rcv+0x28/0x40 net/netlink/genetlink.c:1217
+ netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
+ netlink_unicast+0x542/0x820 net/netlink/af_netlink.c:1361
+ netlink_sendmsg+0x8b8/0xd70 net/netlink/af_netlink.c:1905
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0xab5/0xc90 net/socket.c:2584
+ ___sys_sendmsg+0x135/0x1e0 net/socket.c:2638
+ __sys_sendmsg+0x117/0x1f0 net/socket.c:2667
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f75cd27dea9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f75cdf280c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f75cd3abf80 RCX: 00007f75cd27dea9
+RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00007f75cd2ca4a4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f75cd3abf80 R15: 00007ffd05dbb2b8
+ </TASK>
+
+
 ---
-This is v2 of the series v1 [1]
-Changes from v1 to v2:
-*) Rebased the patch on next-20240429 linux-next tag.
-*) Added "GPL-2.0-only OR MIT" in the license as pointed out by
-   Ravi Gunasekaran <r-gunasekaran@ti.com>
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-[1] https://lore.kernel.org/all/20240423090028.1311635-1-danishanwar@ti.com/
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
- arch/arm64/boot/dts/ti/Makefile               |   4 +
- .../ti/k3-am642-evm-icssg1-dualemac-mii.dtso  | 101 ++++++++++++++++++
- 2 files changed, 105 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 48fb19a523bd..f35f8af23264 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -44,6 +44,7 @@ k3-am642-hummingboard-t-usb3-dtbs := \
- 	k3-am642-hummingboard-t.dtb k3-am642-hummingboard-t-usb3.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac-mii.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
-@@ -134,6 +135,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
- 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
- k3-am642-evm-icssg1-dualemac-dtbs := \
- 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
-+k3-am642-evm-icssg1-dualemac-mii-dtbs := \
-+	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac-mii.dtbo
- k3-am642-phyboard-electra-gpio-fan-dtbs := \
- 	k3-am642-phyboard-electra-rdk.dtb k3-am642-phyboard-electra-gpio-fan.dtbo
- k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
-@@ -168,6 +171,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am62p5-sk-csi2-ov5640.dtb \
- 	k3-am62p5-sk-csi2-tevi-ov5640.dtb \
- 	k3-am642-evm-icssg1-dualemac.dtb \
-+	k3-am642-evm-icssg1-dualemac-mii.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
- 	k3-am68-sk-base-board-csi2-dual-imx219-dtbs \
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
-new file mode 100644
-index 000000000000..423d6027278d
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac-mii.dtso
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/**
-+ * DT overlay for enabling both ICSSG1 port on AM642 EVM in MII mode
-+ *
-+ * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	aliases {
-+		ethernet1 = "/icssg1-eth/ethernet-ports/port@1";
-+	};
-+
-+	mdio-mux-2 {
-+		compatible = "mdio-mux-multiplexer";
-+		mux-controls = <&mdio_mux>;
-+		mdio-parent-bus = <&icssg1_mdio>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		mdio@0 {
-+			reg = <0x0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			icssg1_phy2: ethernet-phy@3 {
-+				reg = <3>;
-+			};
-+		};
-+	};
-+};
-+
-+&main_pmx0 {
-+	icssg1_mii1_pins_default: icssg1-mii1-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x00f8, PIN_INPUT, 1) /* (V9) PRG1_PRU0_GPO16.PR1_MII_MT0_CLK */
-+			AM64X_IOPAD(0x00f4, PIN_OUTPUT, 0) /* (Y9) PRG1_PRU0_GPO15.PR1_MII0_TXEN */
-+			AM64X_IOPAD(0x00f0, PIN_OUTPUT, 0) /* (AA9) PRG1_PRU0_GPO14.PR1_MII0_TXD3 */
-+			AM64X_IOPAD(0x00ec, PIN_OUTPUT, 0) /* (W9) PRG1_PRU0_GPO13.PR1_MII0_TXD2 */
-+			AM64X_IOPAD(0x00e8, PIN_OUTPUT, 0) /* (U9) PRG1_PRU0_GPO12.PR1_MII0_TXD1 */
-+			AM64X_IOPAD(0x00e4, PIN_OUTPUT, 0) /* (AA8) PRG1_PRU0_GPO11.PR1_MII0_TXD0 */
-+			AM64X_IOPAD(0x00c8, PIN_INPUT, 1) /* (Y8) PRG1_PRU0_GPO4.PR1_MII0_RXDV */
-+			AM64X_IOPAD(0x00d0, PIN_INPUT, 1) /* (AA7) PRG1_PRU0_GPO6.PR1_MII_MR0_CLK */
-+			AM64X_IOPAD(0x00c4, PIN_INPUT, 1) /* (V8) PRG1_PRU0_GPO3.PR1_MII0_RXD3 */
-+			AM64X_IOPAD(0x00c0, PIN_INPUT, 1) /* (W8) PRG1_PRU0_GPO2.PR1_MII0_RXD2 */
-+			AM64X_IOPAD(0x00cc, PIN_INPUT, 1) /* (V13) PRG1_PRU0_GPO5.PR1_MII0_RXER */
-+			AM64X_IOPAD(0x00bc, PIN_INPUT, 1) /* (U8) PRG1_PRU0_GPO1.PR1_MII0_RXD1 */
-+			AM64X_IOPAD(0x00b8, PIN_INPUT, 1) /* (Y7) PRG1_PRU0_GPO0.PR1_MII0_RXD0 */
-+			AM64X_IOPAD(0x00d8, PIN_INPUT, 1) /* (W13) PRG1_PRU0_GPO8.PR1_MII0_RXLINK */
-+		>;
-+	};
-+
-+	icssg1_mii2_pins_default: icssg1-mii2-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0148, PIN_INPUT, 1) /* (Y10) PRG1_PRU1_GPO16.PR1_MII_MT1_CLK */
-+			AM64X_IOPAD(0x0144, PIN_OUTPUT, 0) /* (Y11) PRG1_PRU1_GPO15.PR1_MII1_TXEN */
-+			AM64X_IOPAD(0x0140, PIN_OUTPUT, 0) /* (AA11) PRG1_PRU1_GPO14.PR1_MII1_TXD3 */
-+			AM64X_IOPAD(0x013c, PIN_OUTPUT, 0) /* (U10) PRG1_PRU1_GPO13.PR1_MII1_TXD2 */
-+			AM64X_IOPAD(0x0138, PIN_OUTPUT, 0) /* (V10) PRG1_PRU1_GPO12.PR1_MII1_TXD1 */
-+			AM64X_IOPAD(0x0134, PIN_OUTPUT, 0) /* (AA10) PRG1_PRU1_GPO11.PR1_MII1_TXD0 */
-+			AM64X_IOPAD(0x0118, PIN_INPUT, 1) /* (W12) PRG1_PRU1_GPO4.PR1_MII1_RXDV */
-+			AM64X_IOPAD(0x0120, PIN_INPUT, 1) /* (U11) PRG1_PRU1_GPO6.PR1_MII_MR1_CLK */
-+			AM64X_IOPAD(0x0114, PIN_INPUT, 1) /* (Y12) PRG1_PRU1_GPO3.PR1_MII1_RXD3 */
-+			AM64X_IOPAD(0x0110, PIN_INPUT, 1) /* (AA12) PRG1_PRU1_GPO2.PR1_MII1_RXD2 */
-+			AM64X_IOPAD(0x011c, PIN_INPUT, 1) /* (AA13) PRG1_PRU1_GPO5.PR1_MII1_RXER */
-+			AM64X_IOPAD(0x010c, PIN_INPUT, 1) /* (V11) PRG1_PRU1_GPO1.PR1_MII1_RXD1 */
-+			AM64X_IOPAD(0x0108, PIN_INPUT, 1) /* (W11) PRG1_PRU1_GPO0.PR1_MII1_RXD0 */
-+			AM64X_IOPAD(0x0128, PIN_INPUT, 1) /* (U12) PRG1_PRU1_GPO8.PR1_MII1_RXLINK */
-+		>;
-+	};
-+};
-+
-+&cpsw3g {
-+	pinctrl-0 = <&rgmii1_pins_default>;
-+};
-+
-+&cpsw_port2 {
-+	status = "disabled";
-+};
-+
-+&mdio_mux_1 {
-+	status = "disabled";
-+};
-+
-+&icssg1_eth {
-+	pinctrl-0 = <&icssg1_mii1_pins_default &icssg1_mii2_pins_default>;
-+};
-+
-+&icssg1_emac0 {
-+	phy-mode = "mii";
-+};
-+
-+&icssg1_emac1 {
-+	status = "okay";
-+	phy-handle = <&icssg1_phy2>;
-+	phy-mode = "mii";
-+};
--- 
-2.34.1
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
