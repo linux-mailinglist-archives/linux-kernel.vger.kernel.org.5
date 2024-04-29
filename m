@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-163162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FED8B6688
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:41:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E9C8B668D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C48D21C22611
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADB63B237CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59821A0B02;
-	Mon, 29 Apr 2024 23:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37F41A0B17;
+	Mon, 29 Apr 2024 23:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="K9iiAVNG"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ZMCOsu5f"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E576199EB1
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E95319DF48
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714434041; cv=none; b=OZcd3ruKHqwoh9bx5ywzk4fS9DZj3voDJSNQ/KEWSr0DxKoxW8T5FtbSGR1ZPAVPb9f/qJrbQS4LNZUbgFxF0v6Jrt/aEKwhoi2/VH8nw8bqq5s2luRasyA34aKgUbga57lQasqsp//mgPGZnoRcG+NpyZnh+CDycgkN+KRRmg4=
+	t=1714434042; cv=none; b=uZkAfst4M9y2/HHWOBRl/GsEH0z7OKu+80X2iyH84/OPfSVTvxhSg39HnWefExaIM9PMCW0twMvW8adknfOaSUtsrnN5k1i7XYpFxBAcwPLpw0nJHp1tBNmhp+VoUwFG0PfHYSAo3j6Huj21x1HGmb+CDGAh3awhkwYErkU0lQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714434041; c=relaxed/simple;
-	bh=NUwBgmeSK3VKvI/ARdfWUNBS7Wbg1ExrHA4koeGcxm0=;
+	s=arc-20240116; t=1714434042; c=relaxed/simple;
+	bh=3hilpxNXGTNYNV/psPrPfqfzf4YMNvFNvehwsbDVqf0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ems/P6jMIBkQD1Gb5uzxi8rulVJi0jw6cE2q7tK6s7muuShz7s+4yH6j70OIkJw0pr0B4yyPT8tO2I4yF/6bURyoupDRfbPAY/JbJCpfOeB9CypVkp73v5D+cAgF71q7zSUIRFmOUrdZWnc2LnMFWdqMGFeIBzp/yS4VXhd1XEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=K9iiAVNG; arc=none smtp.client-ip=209.85.160.41
+	 MIME-Version:Content-Type; b=YVuY8fsxz9HiZ0HifZzhhvAdYzoMYKM3Ol0ukx+svMENJHkVPugY0TBvSkpWuzKRbS4xJANvk6A7iuWTeWzrEXbvAdMIGKtUn56M34dqvDcJIIjbxb8rJt5x/9jsNOG8l6728fOv84O1ywMCeIKQu15C2i3yJRT7VM3weFAAiWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ZMCOsu5f; arc=none smtp.client-ip=209.85.161.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-22fa7e4b0beso1948443fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:40:37 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5aa2a74c238so3697147eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:40:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714434037; x=1715038837; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714434038; x=1715038838; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7M5L1jF+Kp9rDaa/Fjma53dz8N5rl7gUPtDyE6LZUDo=;
-        b=K9iiAVNGKN9MnTEvkvb9qzEjylwdt6PrKJCjK9jUaNjF16En1bFd4+xCl4WyRd+uCL
-         UIfmPB/fp8yLBc45WWscm51b75qPYC4MtQbIEgu94CQGdVZA0s7hzhZfNfLSIXO7E0jh
-         RmcCp/UP0zMof4hTTwHGCj7DEI+NX5bDwgA/TOBWKWEC49Df09pZF1Pa9g2RBsvtKUba
-         HA1ZLnNv2P5rq2PxWJJvfwlXa0IXwqK8QIX6jkytXacyZfxLkSV+W8RWMezm9Xr8TCSW
-         utH/sYhCB+06jqlw2i8q0TGwY3a+nNwURYJ1EGChrnMqoZgF7xvP552JddzIgrDsd4Tk
-         1VIQ==
+        bh=cMPnK0ZmMp+orXBCVZaO6rHB522p+A6Oq1x+E+/WEkw=;
+        b=ZMCOsu5f6QifjuBcTkNswzU6fvqPP4XkmOabRxJdPiS+zDnyExIufYLwXOdpirCtYM
+         gD2TVZw31Px3KB/AuKMxwl5RVLLr/QbLSr94jz9fxHV558z++ITEdStCZgv0NXqSO1BY
+         7fmkysQiz/OoREErE7ojaKN7mlDqhuSaqhhX9PsjTGzWNOKAuPBr5+T8yRc3U67SuFUs
+         4lU/eg05dyWDqxSyLdb0+TFIetpuLH25q/ipuFFKbP8nmH/LZGDV699Pn89Ch+A64d9M
+         GCf2HYaZa8A75WBI0/k4lDJBQ2Wrl9mDV8SxcFgJy9NVOn/2KfHtkPGCNj2fn06afMkM
+         0cVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714434037; x=1715038837;
+        d=1e100.net; s=20230601; t=1714434038; x=1715038838;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7M5L1jF+Kp9rDaa/Fjma53dz8N5rl7gUPtDyE6LZUDo=;
-        b=eILTTb8EZiFMjxSj7HnsA03dJM0gc2Hsi93I+Xam3HcYVIWoz2sPFBbwrvPQn4ll6q
-         h2WIcWpcemKxu/vGxDmGdy4rUfVhksnl5izlUNMScYGqb0WgRaKHQBHGIWbdpj8r9+J7
-         ROcnbif4Z3XidxXS277+a/e4TBfY+ja7aB2M+tfjRx2WgOja/H1tbZfCIz//Ivu2bnIK
-         ML8e3jw3xD5zYkdBh/dINqZNXjbtxum2N/14BINI9JKFYjMGtUA9iXKZkdGs+rgirnqO
-         Hegz6/6i+/mlA4JyE+c+TTCf+5Fl22Gj5IZlwOh6jaoD+fg6MTuQJDwRrzCF0cxrtY88
-         03GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaHNlv4FFB0vnL9Bj2+ogdhAsB4NDVmQnZgD93z6C/4LmgVUDCwtlKhOIcdPeVj6I8/T/LlfZKUBe4pWBqhHVpTsUxARzaVujTUSop
-X-Gm-Message-State: AOJu0Yw8YXD9enh7x9hVTLAnnfJ/fqYLVXIDF+gVVGOQK1DCeBw7WLTr
-	aaqdwjeaxq9EZ2gZbZquKEUTenPl+CKWPyYM647N7cRKnNL53Z5GN9YbwsQDyPo=
-X-Google-Smtp-Source: AGHT+IEkVlk2cV8mp+ZOarfU3l4tFQus8TZbqOG542aqbSglrecsjyn0xdubyW2FSqkOsnvvP58lDA==
-X-Received: by 2002:a05:6870:1604:b0:22e:dea0:83c6 with SMTP id b4-20020a056870160400b0022edea083c6mr14055773oae.10.1714434037262;
-        Mon, 29 Apr 2024 16:40:37 -0700 (PDT)
+        bh=cMPnK0ZmMp+orXBCVZaO6rHB522p+A6Oq1x+E+/WEkw=;
+        b=Fy7vpkWydpwA/ZM5R7bxikehNWGM2Dg6eVXCc0Stxf1pJLkGMeA+CaLJv9P3JZmb2b
+         VuPJUD3lH93zpIA1xfSiBsA9bCBhVzeufq0qdjQsO8GQsAheu+srbkFxY7hJOT+178dv
+         HpFivpVgVIhsYFaHTsJcwXn6poQkNnO6M2CnvPvUmIpnMGuTp99V4wHUl8U6dy/irMRL
+         9+gTajLc0Ov0kCd8FmMn8VWJyj6kP4hSUxM2V8uYG/h58KmIh0TNbiDvu8f5EWTRBDd+
+         hsKLUJHEHGkAbrhsieu++WvomRkKDJg1EZSlr7lSVR8G3H2wpVJ8B4wBkDP4jZapt4tV
+         416A==
+X-Forwarded-Encrypted: i=1; AJvYcCVXRBz2EpAJfF/nGyk2iv+SJcKUjgCdmIO6LvoQGr4NmGrOBx478NbhcOhGG0rhsngLkwIHSSJTGSgtb4AxTUUNFT50EYz29EKnJIUY
+X-Gm-Message-State: AOJu0Yw5sIyxrD/uk7aYqfxsYQLP9a5TReR1up6DH8crKzljq7dv/JFF
+	xCu36NlvikQutpjwIGpmPogGxUedGfcYOK0xf4W3A6bwY6lJOmp6/w7ywf9tUFw=
+X-Google-Smtp-Source: AGHT+IHCto7xk1AhSGi7ynmclCr1dSNmOQSXsdzM1syGcPB+E666URhfsrB23a+JfSpjd1mIFdGxEg==
+X-Received: by 2002:a05:6870:9a1b:b0:23c:9f74:f6d4 with SMTP id fo27-20020a0568709a1b00b0023c9f74f6d4mr1370575oab.52.1714434038300;
+        Mon, 29 Apr 2024 16:40:38 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id hp22-20020a0568709a9600b0023b58aa20afsm2144508oab.25.2024.04.29.16.40.36
+        by smtp.gmail.com with ESMTPSA id hp22-20020a0568709a9600b0023b58aa20afsm2144508oab.25.2024.04.29.16.40.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 16:40:36 -0700 (PDT)
+        Mon, 29 Apr 2024 16:40:37 -0700 (PDT)
 From: David Lechner <dlechner@baylibre.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -86,11 +86,10 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	linux-hwmon@vger.kernel.org,
 	linux-iio@vger.kernel.org,
 	linux-staging@lists.linux.dev,
-	linux-input@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v2 3/7] hwmon: (da9052) Use devm_regulator_get_enable_read_voltage()
-Date: Mon, 29 Apr 2024 18:40:11 -0500
-Message-ID: <20240429-regulator-get-enable-get-votlage-v2-3-b1f11ab766c1@baylibre.com>
+	linux-input@vger.kernel.org
+Subject: [PATCH v2 4/7] iio: addac: ad74115: Use devm_regulator_get_enable_read_voltage()
+Date: Mon, 29 Apr 2024 18:40:12 -0500
+Message-ID: <20240429-regulator-get-enable-get-votlage-v2-4-b1f11ab766c1@baylibre.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240429-regulator-get-enable-get-votlage-v2-0-b1f11ab766c1@baylibre.com>
 References: <20240429-regulator-get-enable-get-votlage-v2-0-b1f11ab766c1@baylibre.com>
@@ -107,111 +106,100 @@ Content-Transfer-Encoding: 8bit
 We can reduce boilerplate code by using
 devm_regulator_get_enable_read_voltage().
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To maintain backwards compatibility in the case a DT does not provide
+an avdd-supply, we fall back to calling devm_regulator_get_enable()
+so that there is no change in user-facing behavior (e.g. dummy regulator
+will still be in sysfs).
+
+Also add an informative error message when we failed to get the voltage
+and knowing the voltage is required while we are touching this.
+
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
 
 v2 changes:
-* rename to devm_regulator_get_enable_read_voltage()
-* add local variable tsiref_uv instead of using err
-* restored error message via dev_err_probe()
-* shortened pdev->dev to dev in lines we are touching anyway
+* renamed to devm_regulator_get_enable_read_voltage()
+* restored error message on failure
+* restored validation check in ad74115_setup() and added error message
+* added fallback call to devm_regulator_get_enable() for compatibility
 ---
- drivers/hwmon/da9052-hwmon.c | 38 ++++++++++----------------------------
- 1 file changed, 10 insertions(+), 28 deletions(-)
+ drivers/iio/addac/ad74115.c | 40 +++++++++++++++-------------------------
+ 1 file changed, 15 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/hwmon/da9052-hwmon.c b/drivers/hwmon/da9052-hwmon.c
-index 2bd7ae8100d7..7fb0c57dfef5 100644
---- a/drivers/hwmon/da9052-hwmon.c
-+++ b/drivers/hwmon/da9052-hwmon.c
-@@ -26,7 +26,6 @@ struct da9052_hwmon {
- 	struct mutex		hwmon_lock;
- 	bool			tsi_as_adc;
- 	int			tsiref_mv;
--	struct regulator	*tsiref;
- 	struct completion	tsidone;
- };
+diff --git a/drivers/iio/addac/ad74115.c b/drivers/iio/addac/ad74115.c
+index e6bc5eb3788d..12dc43d487b4 100644
+--- a/drivers/iio/addac/ad74115.c
++++ b/drivers/iio/addac/ad74115.c
+@@ -199,7 +199,6 @@ struct ad74115_state {
+ 	struct spi_device		*spi;
+ 	struct regmap			*regmap;
+ 	struct iio_trigger		*trig;
+-	struct regulator		*avdd;
  
-@@ -397,7 +396,7 @@ static int da9052_hwmon_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct da9052_hwmon *hwmon;
- 	struct device *hwmon_dev;
--	int err;
-+	int err, tsiref_uv;
+ 	/*
+ 	 * Synchronize consecutive operations when doing a one-shot
+@@ -1672,13 +1671,9 @@ static int ad74115_setup(struct iio_dev *indio_dev)
+ 	if (ret)
+ 		return ret;
  
- 	hwmon = devm_kzalloc(dev, sizeof(struct da9052_hwmon), GFP_KERNEL);
- 	if (!hwmon)
-@@ -414,32 +413,20 @@ static int da9052_hwmon_probe(struct platform_device *pdev)
- 		device_property_read_bool(pdev->dev.parent, "dlg,tsi-as-adc");
- 
- 	if (hwmon->tsi_as_adc) {
--		hwmon->tsiref = devm_regulator_get(pdev->dev.parent, "tsiref");
--		if (IS_ERR(hwmon->tsiref)) {
--			err = PTR_ERR(hwmon->tsiref);
--			dev_err(&pdev->dev, "failed to get tsiref: %d", err);
--			return err;
--		}
+-	if (val == AD74115_DIN_THRESHOLD_MODE_AVDD) {
+-		ret = regulator_get_voltage(st->avdd);
+-		if (ret < 0)
+-			return ret;
 -
--		err = regulator_enable(hwmon->tsiref);
--		if (err)
--			return err;
+-		st->avdd_mv = ret / 1000;
+-	}
++	if (val == AD74115_DIN_THRESHOLD_MODE_AVDD && !st->avdd_mv)
++		return dev_err_probe(dev, -EINVAL,
++				     "AVDD voltage is required for digital input threshold mode AVDD\n");
+ 
+ 	st->din_threshold_mode = val;
+ 
+@@ -1788,11 +1783,6 @@ static int ad74115_reset(struct ad74115_state *st)
+ 	return 0;
+ }
+ 
+-static void ad74115_regulator_disable(void *data)
+-{
+-	regulator_disable(data);
+-}
 -
--		hwmon->tsiref_mv = regulator_get_voltage(hwmon->tsiref);
--		if (hwmon->tsiref_mv < 0) {
--			err = hwmon->tsiref_mv;
--			goto exit_regulator;
--		}
-+		tsiref_uv = devm_regulator_get_enable_read_voltage(dev->parent,
-+								   "tsiref");
-+		if (tsiref_uv < 0)
-+			return dev_err_probe(dev, tsiref_uv,
-+					     "failed to get tsiref voltage\n");
+ static int ad74115_setup_trigger(struct iio_dev *indio_dev)
+ {
+ 	struct ad74115_state *st = iio_priv(indio_dev);
+@@ -1855,20 +1845,20 @@ static int ad74115_probe(struct spi_device *spi)
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &ad74115_info;
  
- 		/* convert from microvolt (DT) to millivolt (hwmon) */
--		hwmon->tsiref_mv /= 1000;
-+		hwmon->tsiref_mv = tsiref_uv / 1000;
- 
- 		/* TSIREF limits from datasheet */
- 		if (hwmon->tsiref_mv < 1800 || hwmon->tsiref_mv > 2600) {
- 			dev_err(hwmon->da9052->dev, "invalid TSIREF voltage: %d",
- 				hwmon->tsiref_mv);
--			err = -ENXIO;
--			goto exit_regulator;
-+			return -ENXIO;
- 		}
- 
- 		/* disable touchscreen features */
-@@ -456,7 +443,7 @@ static int da9052_hwmon_probe(struct platform_device *pdev)
- 		if (err) {
- 			dev_err(&pdev->dev, "Failed to register TSIRDY IRQ: %d",
- 				err);
--			goto exit_regulator;
-+			return err;
- 		}
+-	st->avdd = devm_regulator_get(dev, "avdd");
+-	if (IS_ERR(st->avdd))
+-		return PTR_ERR(st->avdd);
+-
+-	ret = regulator_enable(st->avdd);
+-	if (ret) {
+-		dev_err(dev, "Failed to enable avdd regulator\n");
+-		return ret;
++	ret = devm_regulator_get_enable_read_voltage(dev, "avdd");
++	if (ret < 0) {
++		/*
++		 * Since this is both a power supply and only optionally a
++		 * reference voltage, make sure to enable it even when the
++		 * voltage is not available.
++		 */
++		ret = devm_regulator_get_enable(dev, "avdd");
++		if (ret)
++			return dev_err_probe(dev, ret, "failed to enable avdd\n");
++	} else {
++		st->avdd_mv = ret / 1000;
  	}
  
-@@ -472,9 +459,6 @@ static int da9052_hwmon_probe(struct platform_device *pdev)
- exit_irq:
- 	if (hwmon->tsi_as_adc)
- 		da9052_free_irq(hwmon->da9052, DA9052_IRQ_TSIREADY, hwmon);
--exit_regulator:
--	if (hwmon->tsiref)
--		regulator_disable(hwmon->tsiref);
- 
- 	return err;
- }
-@@ -483,10 +467,8 @@ static void da9052_hwmon_remove(struct platform_device *pdev)
- {
- 	struct da9052_hwmon *hwmon = platform_get_drvdata(pdev);
- 
--	if (hwmon->tsi_as_adc) {
-+	if (hwmon->tsi_as_adc)
- 		da9052_free_irq(hwmon->da9052, DA9052_IRQ_TSIREADY, hwmon);
--		regulator_disable(hwmon->tsiref);
--	}
- }
- 
- static struct platform_driver da9052_hwmon_driver = {
+-	ret = devm_add_action_or_reset(dev, ad74115_regulator_disable, st->avdd);
+-	if (ret)
+-		return ret;
+-
+ 	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulator_names),
+ 					     regulator_names);
+ 	if (ret)
 
 -- 
 2.43.2
