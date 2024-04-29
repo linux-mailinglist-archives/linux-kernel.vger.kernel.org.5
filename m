@@ -1,159 +1,165 @@
-Return-Path: <linux-kernel+bounces-162134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC658B566A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:23:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 647518B5673
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:24:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23E801F22D43
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:23:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85190B24017
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA423FE28;
-	Mon, 29 Apr 2024 11:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ml7PDV8t"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6962A40BFD;
+	Mon, 29 Apr 2024 11:24:36 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA3F3FB84;
-	Mon, 29 Apr 2024 11:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483E73FB84;
+	Mon, 29 Apr 2024 11:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714389828; cv=none; b=YHWY8oW3Hz85owL23+ThT6ofyLQxTP28SFU1SgK/yiJENYnkXP5fR4aftyIDxWdxdPNJELe0+CiMPGHMUiK2bLhQkm1bBjiwT611fozqPDmJnfkwKWiSQ2R8oGJk0QMaLoby3i2KYQYpyOj9GyuIexnhAZV7x+Ao5j8U2VOsv0c=
+	t=1714389876; cv=none; b=TnCpeBaQHq8Njj330vov8Q93pqNuh7bFowZ1D//vXT6wuOex7C5ou2QvzLkiR7uwVVwURlOCfrF7kSIefJ57gEDsvuznV+LH9lwdFCgWZOK5kqVMfPSTU8alRx1NBrntejzMUcjSJlHHtHc/pgvu8xzXpwGg74h5oYQylKDuW3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714389828; c=relaxed/simple;
-	bh=aqXHscrRfcuVMryQ0VmPAD470hPq8NqBWV6Twu76Fgk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WOpBpyqmT3tjQE13WRO9jbVTn9kvAOsQBnuidhXl7MP/PzI+bVDLT/jYkf8ECMtV/F08X3fwCDd2pbqn4booe5e3WH87rDMR/uBRdRNdYehq2myT9eTlt2fxxzZJUzbWgPbfFhRYanjoHjnoiGdywf0ZMXu8JThndyaPu7AhuJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ml7PDV8t; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-571bddddbc2so5147274a12.1;
-        Mon, 29 Apr 2024 04:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714389824; x=1714994624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5KI8jwSeT1iJj/UBYCVNCpYpjMdWJYZrUv0ljjTWL48=;
-        b=Ml7PDV8tDafrW5jNE6i8WI8B/0iL0aVC9zBl3C7Tr8sItZGleq4DiDtnfGHfZI+s5u
-         Zk/DisMMnVjmS1LMCPiKMTuBKdKhlI8qUiOghy/+tKu7aINxWuyr6Srv0cVGbWecW2gv
-         kC3Tzq0qGreqCJHIT3/GCGcmjfwPoUP5vYHvHf4Q+hPDqMQnyroEO/woQzraAhmWQz//
-         zq1StHTdIzo98WsPbxHcxyOCYYQ/oulOb4huHaChFhKexjhj/lI2OXdina5+5V2Q6Rae
-         ot5xp4TcEXMVE0hAnaBkssHQSwvr8q4Xqj7cOxoLc7JV240uwLSDzqT/FzthQAVK1lub
-         NFYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714389824; x=1714994624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5KI8jwSeT1iJj/UBYCVNCpYpjMdWJYZrUv0ljjTWL48=;
-        b=wSVpWzCl5suZ00ma+VmbhbRPYaXSR0cGJt5mxwbX9mkm5U2P9q+DoWW3atnycBuziB
-         qwiiKJ8cMbqnVaO3ELdzRgO30l4wkhRQlJTSK394pBgTPJiURJoK/4woxgabv0lB8wut
-         dXIyPfzOuMtfkipe5WAspHcrOkMYx4snCu4TPQocTmz8x1dpacybLljHmyUJI+1xIRXz
-         cJXdBCxWscIPYx3oRpCUasTc1/ewA7JqYc1LQ0zNRDgVMMNboUmvQTI++WIl0Az/KiHV
-         y1nUR01l6DPCVbP9N5fKQQPzUbzkTwtoGtx6pen4WhVQRtqApckVIzGOJWz9P0pNBzcI
-         xu1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW9m3Bvf+v6+KizI8QI5y2bV6medG6/KhXWX6bFP1g/n/HnMhDFFZ4GoMvuDezUS+oW3Wla1O09HEUYyW7npIHPHsFril4R+GpSRwajrTLs9GqGLPVKwhvLoRUFZG6BNZkmCK0bjgE/fQ==
-X-Gm-Message-State: AOJu0YwTu39aIWOLN8Kfcw2ZF+zsfh1pgCJAeNmFmr2LlrGIUUcsgnje
-	pZ2yj0/sGDJHb7VflXIXLnhcV/GU5oudDqBPXVnSfiU0PCzzsvKu+HH5pFEF/yI+T2Ji7sIANGH
-	WnJhx+lv6WTH0OWC6mYs6k/my3Hw=
-X-Google-Smtp-Source: AGHT+IG2L6VHSgjPSI/ILsTX8RnUhW7ZCUeTXF2zruE9lvX81lsZxzWjLYduBB8ybTFePpHpcWjpPPLOGxbnBtFwaHY=
-X-Received: by 2002:a50:8a89:0:b0:568:a30c:2db5 with SMTP id
- j9-20020a508a89000000b00568a30c2db5mr5612851edj.40.1714389824240; Mon, 29 Apr
- 2024 04:23:44 -0700 (PDT)
+	s=arc-20240116; t=1714389876; c=relaxed/simple;
+	bh=GGk8NpWnVKyXH0ro+J0lf0GfBw6k69PSAkEgfc9+Me4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=L9YShDgKAR53AJagJc6jzxmHUtivSb9LhxTzHiNYkAEf3WEWBUnJa3BSfrgU6e6I23HvESsYd9lTQL7Qgj058SPNfxmvIlA/vcwVgltof0wzdsxFvYMapR0+RoknivlnwspX828d9f2MDm6ctEHIy0aTlerAtp/m5dH3tnBvilo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VSgr96mvFz1R9wY;
+	Mon, 29 Apr 2024 19:21:13 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0D5E018007C;
+	Mon, 29 Apr 2024 19:24:22 +0800 (CST)
+Received: from [10.67.111.172] (10.67.111.172) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Apr 2024 19:24:21 +0800
+Message-ID: <5c0359c7-502f-fe8b-c1ee-3470b36b586c@huawei.com>
+Date: Mon, 29 Apr 2024 19:24:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429103346.59115-1-libang.li@antgroup.com> <20240429103346.59115-6-libang.li@antgroup.com>
-In-Reply-To: <20240429103346.59115-6-libang.li@antgroup.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Mon, 29 Apr 2024 19:23:32 +0800
-Message-ID: <CAK1f24n4usJm4=e0+jrTxGtRjqTJZvn4gBp8d_vU=p2CrU=TsA@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] mm: Add update_mmu_tlb_range()
-To: Bang Li <libang.li@antgroup.com>
-Cc: akpm@linux-foundation.org, chenhuacai@kernel.org, 
-	tsbogend@alpha.franken.de, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	chris@zankel.net, jcmvbkbc@gmail.com, david@redhat.com, ryan.roberts@arm.com, 
-	libang.linux@gmail.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] media: dvb-usb: Fix unexpected infinite loop in
+ dvb_usb_read_remote_control()
+To: <mchehab@kernel.org>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Zheng
+ Yejian <zhengyejian1@huawei.com>
+References: <20240412135256.1546051-1-zhengyejian1@huawei.com>
+Content-Language: en-US
+From: Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <20240412135256.1546051-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
-Hey Bang,
-
-On Mon, Apr 29, 2024 at 6:36=E2=80=AFPM Bang Li <libang.li@antgroup.com> wr=
-ote:
->
-> After the commit 19eaf44954df ("mm: thp: support allocation of anonymous
-> multi-size THP"), it may need to batch update tlb of an address range
-> through the update_mmu_tlb function. We can simplify this operation by
-> adding the update_mmu_tlb_range function, which may also reduce the
-> execution of some unnecessary code in some architectures.
->
-> Signed-off-by: Bang Li <libang.li@antgroup.com>
+On 2024/4/12 21:52, Zheng Yejian wrote:
+> Infinite log printing occurs during fuzz test:
+> 
+>    rc rc1: DViCO FusionHDTV DVB-T USB (LGZ201) as ...
+>    ...
+>    dvb-usb: schedule remote query interval to 100 msecs.
+>    dvb-usb: DViCO FusionHDTV DVB-T USB (LGZ201) successfully initialized ...
+>    dvb-usb: bulk message failed: -22 (1/0)
+>    dvb-usb: bulk message failed: -22 (1/0)
+>    dvb-usb: bulk message failed: -22 (1/0)
+>    ...
+>    dvb-usb: bulk message failed: -22 (1/0)
+> 
+> Looking into the codes, there is a loop in dvb_usb_read_remote_control(),
+> that is in rc_core_dvb_usb_remote_init() create a work that will call
+> dvb_usb_read_remote_control(), and this work will reschedule itself at
+> 'rc_interval' intervals to recursively call dvb_usb_read_remote_control(),
+> see following code snippet:
+> 
+>    rc_core_dvb_usb_remote_init() {
+>      ...
+>      INIT_DELAYED_WORK(&d->rc_query_work, dvb_usb_read_remote_control);
+>      schedule_delayed_work(&d->rc_query_work,
+>                            msecs_to_jiffies(rc_interval));
+>      ...
+>    }
+> 
+>    dvb_usb_read_remote_control() {
+>      ...
+>      err = d->props.rc.core.rc_query(d);
+>      if (err)
+>        err(...)  // Did not return even if query failed
+>      schedule_delayed_work(&d->rc_query_work,
+>                            msecs_to_jiffies(rc_interval));
+>    }
+> 
+> When the infinite log printing occurs, the query callback
+> 'd->props.rc.core.rc_query' is cxusb_rc_query(). And the log is due to
+> the failure of finding a valid 'generic_bulk_ctrl_endpoint'
+> in usb_bulk_msg(), see following code snippet:
+> 
+>    cxusb_rc_query() {
+>      cxusb_ctrl_msg() {
+>        dvb_usb_generic_rw() {
+>          ret = usb_bulk_msg(d->udev, usb_sndbulkpipe(d->udev,
+>                             d->props.generic_bulk_ctrl_endpoint),...);
+>          if (ret)
+>            err("bulk message failed: %d (%d/%d)",ret,wlen,actlen);
+>            ...
+>        }
+>    ...
+>    }
+> 
+> By analyzing the corresponding USB descriptor, it shows that the
+> bNumEndpoints is 0 in its interface descriptor, but
+> the 'generic_bulk_ctrl_endpoint' is 1, that means user don't configure
+> a valid endpoint for 'generic_bulk_ctrl_endpoint', therefore this
+> 'invalid' USB device should be rejected before it calls into
+> dvb_usb_read_remote_control().
+> 
+> To fix it, iiuc, we can add endpoint check in dvb_usb_adapter_init().
+> 
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 > ---
->  include/linux/pgtable.h | 5 +++++
->  mm/memory.c             | 4 +---
->  2 files changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 18019f037bae..73411dfebf7a 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -734,6 +734,11 @@ static inline void update_mmu_tlb(struct vm_area_str=
-uct *vma,
->                                 unsigned long address, pte_t *ptep)
->  {
->  }
-> +
-> +static inline void update_mmu_tlb_range(struct vm_area_struct *vma,
-> +                               unsigned long address, pte_t *ptep, unsig=
-ned int nr)
-> +{
-> +}
->  #define __HAVE_ARCH_UPDATE_MMU_TLB
->  #endif
+>   drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> Hi, I'm not very familiar with USB driver, and I'm not sure the
+> type check is appropriate or not here. Would be any device properties
+> that allow 'generic_bulk_ctrl_endpoint' not being configured, or would
+> it be configured late after init ? :)
+> 
 
-IMO, it might be better to use a separate definition to determine whether
-update_mmu_tlb_range() is overridden by a specific architecture.
+Kindly ping :)
+Hi, Mauro, would you mind taking a look at this code ?
 
+--
 Thanks,
-Lance
+Zheng Yejian
 
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 6647685fd3c4..1f0ca362b82a 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4396,7 +4396,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault=
- *vmf)
->         vm_fault_t ret =3D 0;
->         int nr_pages =3D 1;
->         pte_t entry;
-> -       int i;
->
->         /* File mapping without ->vm_ops ? */
->         if (vma->vm_flags & VM_SHARED)
-> @@ -4465,8 +4464,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault=
- *vmf)
->                 update_mmu_tlb(vma, addr, vmf->pte);
->                 goto release;
->         } else if (nr_pages > 1 && !pte_range_none(vmf->pte, nr_pages)) {
-> -               for (i =3D 0; i < nr_pages; i++)
-> -                       update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pt=
-e + i);
-> +               update_mmu_tlb_range(vma, addr, vmf->pte, nr_pages);
->                 goto release;
->         }
->
-> --
-> 2.19.1.6.gb485710b
->
+> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> index fbf58012becd..48e7b9fb93dd 100644
+> --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> @@ -104,6 +104,14 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+>   	 * sometimes a timeout occurs, this helps
+>   	 */
+>   	if (d->props.generic_bulk_ctrl_endpoint != 0) {
+> +		ret = usb_pipe_type_check(d->udev, usb_sndbulkpipe(d->udev,
+> +					  d->props.generic_bulk_ctrl_endpoint));
+> +		if (ret)
+> +			goto frontend_init_err;
+> +		ret = usb_pipe_type_check(d->udev, usb_rcvbulkpipe(d->udev,
+> +					  d->props.generic_bulk_ctrl_endpoint));
+> +		if (ret)
+> +			goto frontend_init_err;
+>   		usb_clear_halt(d->udev, usb_sndbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+>   		usb_clear_halt(d->udev, usb_rcvbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+>   	}
+
 
