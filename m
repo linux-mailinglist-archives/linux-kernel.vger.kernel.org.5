@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-162473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A175A8B5BC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:46:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B999B8B5BC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CDD0281E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:46:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 762452819A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED9E82869;
-	Mon, 29 Apr 2024 14:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B0483CB2;
+	Mon, 29 Apr 2024 14:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="o8cd8ajn"
+	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="ff8RvQJf"
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A7D7EF04
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA91180624
 	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 14:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.227.64.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714401940; cv=none; b=I9JNxhxv4ukCP/cruzwmWnHbrMSJN8FE+xxcp5dxHp+OQSD6wpH9m+s+vNK9zUtRNNXOpe3wOMRl00gPAty3Fyxrtj2P1bTKLrnlqvwePFQKlAC985E2/U/taf5Ubofgwedw2nOAmKey8xRBiY9RW4wysF7vVcAd4ZzYlON03rk=
+	t=1714401941; cv=none; b=jRCVTWr2rWMeGta7guolOr5kmlfEN91wvPxQbapSFIiQxpnHXVEs6yLpxBrqv8kiAUP4iaUVBhdiGbg5bXNPyPl+81gxcl7bcu5ZxbhYan8LnKTVKJ/eIvTM7qLOKJqcws3uhRCPP02Gr8QSKuzUgcInKQqyNaivGRN4Ze5Z/z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714401940; c=relaxed/simple;
-	bh=ALJ3a2lN8gTuNkfwOUbs2XXgVwKG43Au7jQay+z9jLo=;
+	s=arc-20240116; t=1714401941; c=relaxed/simple;
+	bh=SQFjFnDvj4pBVC5wVcGxU/7jwPxTwAo0q5RMDCeQAH4=;
 	h=Date:Message-Id:In-Reply-To:References:Subject:MIME-Version:
-	 Content-Type:From:To:Cc; b=HdmWb83yvYiRXuSG9CmU02+QSSQQdXM/oG3YbH1peP3OWvLipJ5RqLQnwtSFns3VmbvWhYYWqAyeqQkgaPGZADwNOLffopbgqmdF1khe1Z0lDpLLz4j8CkNrQHgswQkyavCTIkEnU/JYX9s7LNMXCFYJKd5e4LCCYI4393TxR74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=o8cd8ajn; arc=none smtp.client-ip=91.227.64.183
+	 Content-Type:From:To:Cc; b=kfjsIT/5rW1V9Y8Nt2YtjVaJV9H+Nxew8V4Q32ZrtUpEr9Ai+gsN5yDbOOvuIVEMQvuk3fmyeWBrR+HZOQaUQXcKlb7Gf3ugQyVZnBRxyyzt7HhnzqU+U6VsAChf06DZ/kSP4PSQ1iVTdMEF2GtKM4SVx7gVrjVCZxFT1ODGFRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=ff8RvQJf; arc=none smtp.client-ip=91.227.64.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rere.qmqm.pl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-	t=1714401930; bh=ALJ3a2lN8gTuNkfwOUbs2XXgVwKG43Au7jQay+z9jLo=;
+	t=1714401931; bh=SQFjFnDvj4pBVC5wVcGxU/7jwPxTwAo0q5RMDCeQAH4=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-	b=o8cd8ajnyyhrxSSiD6U8g8JnpFXWWK1pMOxNyh2Zt29WreK2PQn6jaT//0yEPloDJ
-	 WEzM5EzOKqWWqwuXx1+tpvB7yMtRvqL4oBK2GisXxWXklzKYUQNOFvVQEeDmmhQk4i
-	 cJBMDRLT8skn6uETl37+G5lErxMi3oSNcPsVL2NSgQ0bQxpZ2lTypVL1Y5fheVmzeJ
-	 tcp9IEmcIdoqN8RaKZFMrTyhSJEq31yOj+ZdUK1cxj67yvt0b0wlKAKS6s+g04bMeo
-	 EFtrHsqq8JbuK9RV2BMp5F7RKJ7JqdzeYLxq2N4jSCoIQzYGZ7JuWWdR3jJh3hNIo5
-	 vdqOfwiw35ueQ==
+	b=ff8RvQJfgPFfPn3n24LNh7YmnyyvRDaQfxk3WY6L3jXeNXHFfERWjsGno2mQ/BuJr
+	 YFuVwwptDS9hNmqExoO14nmqD6mpb4RTF6dsnSB3n6Ue1m2wWzquBec2KpCtScaDW1
+	 Ts1XsxxhPbQNIa49oY6O8jMeZPEg81FsRfn5RUNpktsQ9Jse55xP4PlTkkW4TK/x5Z
+	 0piKBUn5ngKrY65OK67wmi9LmpXNfX4VbuQerQ5RDSLW5qMFGCe/lX5g9C7qJwolJU
+	 KFYdGSkLlDwQUhA+YqdtGJk18CDz1olvhq++djjwxJGXgtlo21EnYYu6ngUh0c79MO
+	 rNp3uu+duAgdQ==
 Received: from remote.user (localhost [127.0.0.1])
-	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMt5bqlzPG;
-	Mon, 29 Apr 2024 16:45:30 +0200 (CEST)
+	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VSmMv0rxTzbm;
+	Mon, 29 Apr 2024 16:45:31 +0200 (CEST)
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 1.0.5 at mail
 Date: Mon, 29 Apr 2024 16:45:30 +0200
-Message-Id: <80d42ba84110eb04d451f832ba6033955aba90fa.1714399603.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <92a354a86ceb572c4fde35047177c5681d83f81f.1714399603.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 07/12] regulator/core: remove regulator_get_init_drvdata()
+Subject: [PATCH v2 08/12] regulator/core: set_consumer_device_supply: avoid
+ copying const data
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,43 +63,45 @@ To:	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
 Cc:	linux-kernel@vger.kernel.org
 
-There are no in-tree users.
+As consumer_dev_name might as well be const, don't copy it if not
+required.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c         | 6 ------
- include/linux/regulator/driver.h | 1 -
- 2 files changed, 7 deletions(-)
+ drivers/regulator/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index be45983e1d23..efb68a5c85af 100644
+index efb68a5c85af..431e1c164b11 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -5955,12 +5955,6 @@ struct regmap *rdev_get_regmap(struct regulator_dev *rdev)
- }
- EXPORT_SYMBOL_GPL(rdev_get_regmap);
+@@ -1747,7 +1747,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
+ 	new_node->supply = supply;
  
--void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data)
--{
--	return reg_init_data->driver_data;
--}
--EXPORT_SYMBOL_GPL(regulator_get_init_drvdata);
--
- #ifdef CONFIG_DEBUG_FS
- static int supply_map_show(struct seq_file *sf, void *data)
- {
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 22a07c0900a4..c1334601cf02 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -753,7 +753,6 @@ int regulator_set_active_discharge_regmap(struct regulator_dev *rdev,
- int regulator_set_current_limit_regmap(struct regulator_dev *rdev,
- 				       int min_uA, int max_uA);
- int regulator_get_current_limit_regmap(struct regulator_dev *rdev);
--void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data);
- int regulator_find_closest_bigger(unsigned int target, const unsigned int *table,
- 				  unsigned int num_sel, unsigned int *sel);
- int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay);
+ 	if (consumer_dev_name != NULL) {
+-		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
++		new_node->dev_name = kstrdup_const(consumer_dev_name, GFP_KERNEL);
+ 		if (new_node->dev_name == NULL) {
+ 			kfree(new_node);
+ 			return -ENOMEM;
+@@ -1782,7 +1782,7 @@ static int set_consumer_device_supply(struct regulator_dev *rdev,
+ 
+ fail:
+ 	mutex_unlock(&regulator_list_mutex);
+-	kfree(new_node->dev_name);
++	kfree_const(new_node->dev_name);
+ 	kfree(new_node);
+ 	return -EBUSY;
+ }
+@@ -1794,7 +1794,7 @@ static void unset_regulator_supplies(struct regulator_dev *rdev)
+ 	list_for_each_entry_safe(node, n, &regulator_map_list, list) {
+ 		if (rdev == node->regulator) {
+ 			list_del(&node->list);
+-			kfree(node->dev_name);
++			kfree_const(node->dev_name);
+ 			kfree(node);
+ 		}
+ 	}
 -- 
 2.39.2
 
