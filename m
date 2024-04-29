@@ -1,133 +1,118 @@
-Return-Path: <linux-kernel+bounces-161857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC83C8B5251
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:26:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22CFD8B5253
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0A11F21A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:26:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529B31C2105A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C2C1427E;
-	Mon, 29 Apr 2024 07:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DF91401B;
+	Mon, 29 Apr 2024 07:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2f7D534"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l3d18lRD"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D0A14003;
-	Mon, 29 Apr 2024 07:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6662D134BE;
+	Mon, 29 Apr 2024 07:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714375581; cv=none; b=TUoAtuMj+iJgbJs1r5CnwdyhCyUQioRXuE5kFM66xWm1vXWAjG9B6cOAEN8fzIULve3/vHhoP6BR+/B8Exiw2nMlYUOdTCu1Sm2ksPF8DGp8kAkgxg1ebJi9o7J0Iplf4RnGxXDXg5DyiZNOK2GR1a4JKBbD9ebYzIjz/Hz+jLA=
+	t=1714375621; cv=none; b=gCfC6brGos7oKkhpsobll1OJC13iVU7tbB+LJXK+tjdES7acyBNsZ0Cs6bu4ZEFIJlp2RNRwRhSSLvmMLU5NidUHfTnOCSA47L0W0H9XFnxAPXdf3Gg3WqKkDu51IQz5M6j9f+ttaFlYmY0Qoxpen/aescNt9HwQetx1EDlWEnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714375581; c=relaxed/simple;
-	bh=yak16byc3TWXxdICWXkXcuSlkx8ka4I8T5KbpEX+Igc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ceUJFUeVM97s/ByXT8GX4hd3gpfcY7YwDClB27tfd4zgagIk/cZRypT9pm8D0E0TLMaHMceYsBq4E7r6HN4RKpIEZYvis8PEJG7ODrXobY5eBReUAchUJjNIrBmxCwcW4FL6vMGyOTHhtP/zXz9/QhlU0qCBAnOL+eau1XOahVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P2f7D534; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF9BC4AF14;
-	Mon, 29 Apr 2024 07:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714375580;
-	bh=yak16byc3TWXxdICWXkXcuSlkx8ka4I8T5KbpEX+Igc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=P2f7D5346PT5Y6qZ7bAe/EbqSveqvUEQmrvJXXbw7F2tTSQDQqghXTIhBx+Gu6eZ9
-	 wWsDaVXwpplMBKTGnLUYlcKH2G3c6rxlIVNo7TrgZF6lP/usNl8LY18d76/prwIJQk
-	 GWlbzrbFtH8GeqEII+s6Goo1UpYb/7evKQ8PwmWlOKE0ZYwlqJY/q3Kt3c8c4ORZJe
-	 p4qulhwjkJ+a8FOu6XU3U4ysSDpjLLJGCBUc9lVSRzIzY4Il9wAedvBp3wMkpfS149
-	 uMSICECtlZzpvAbvwO0wy2Yho13eWoM1JNWG7RyVnkcS1wPDfSBEuB61IMUvrUam5t
-	 bUAh+OLVI+tCA==
-Message-ID: <44e430f6-1bad-4d0c-a908-823b83625db5@kernel.org>
-Date: Mon, 29 Apr 2024 09:26:16 +0200
+	s=arc-20240116; t=1714375621; c=relaxed/simple;
+	bh=tUY7YOGv15eW67rwM1O0QPfv5E+4gJOUvH80Wpnfxu4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bMSqELQR9Qod3gH27vEkM0KAOSngpmtzko5VnPhs49giFeZS20aR7h7zamUpPYwXFLhnPHCG6Z9OmGwJ+0UHaQg11y/8EOKTExU18hS3rB9dgPsA1l8j2oNzwEKHYBjz/KrOSxrhQyV+OAJzI7/Q5xS6LQ8H92WBO2iDgaBu1EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l3d18lRD; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so20447405ad.1;
+        Mon, 29 Apr 2024 00:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714375619; x=1714980419; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=plE/4ftCE6lXuzJzPfSuImu38o2csfGGp934wr7ZOZQ=;
+        b=l3d18lRDhwZJSX9Y5FZc2zV+HaMTg/IJa1wOiuYyUsSiLjbp4pEw9oxGjaLddVvfoZ
+         NEqIckxUcCbaINhTFwtBW3ovHHVXy14Qfju0x9jhZB+AZ/RCtRLSnpx3nOMDyKMjwrab
+         OCxxfsMCMkfKnif99MprBXnY+wa35EvCSjAEA4HQ2NcZyViY90FyN+rqqtLb2W1dOOz2
+         yRQPNNFS8MdYYwMejUGoZB877K+DcyvAWhinCEyfbZBzcpRPpJ10fxKML6h8GcNkI6yF
+         TSPKnayJU2QukDcvtd2KI61GoHM+CNQtPilMNSkU4abdsxAInHrT1oby12AM3llw/H5Q
+         5WQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714375619; x=1714980419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=plE/4ftCE6lXuzJzPfSuImu38o2csfGGp934wr7ZOZQ=;
+        b=kqQlPiQRzbfm8CNmh4ghzKFRM/zdin7JX/MAyJ5sg1XwhQUwSyEQMQWCWsrpgkehkJ
+         TArIPmXjdR8P4RB9cRNPvO7ay8r7HQU3A5n+tmBvJcZ9IZ4TKSIgdOkCboMOPNNxIMvq
+         ZI5xpa6RXVuCMUuCEyZMO/bkGSpMwqnvsf5AHCPCRE+BPWPoAFtC/EOfDMaoG5lzcEhp
+         JbLSz2n1OtMvFelu2U2YHiiYE6qaJobfmTMdI6IGlT8Y7dVAhtRHryTNt6dpKfl9Dw0q
+         DJcEWdHr58SnXbTflz84MeU3IJi5rqbZ/fdds/Fx0d6FaDtdlcu004TLG3v0NukbGYL3
+         DJcg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLMyej410Xk1rQK+T7W7vUdpnXDbjlaNG+VrPGgs+HTAFwzC169XUaGKE0d8asfbEgqBsP1n7rzkHUt378GaeX4gyaf5FDw02tVETe
+X-Gm-Message-State: AOJu0Yw92M8AbypQaMmAo0P2md9GiYTMsvHoEZOe2R8g4olNJMKGlDfu
+	3qaFtd3xA5HxjtchewmDVikEVTaYTmlv5CeMnyI1LYV4sfdAghDh
+X-Google-Smtp-Source: AGHT+IFiTLs7V33QGQDaRhhm84AqOkJ7ce+sgAj/vEOsSn7h1vOnU8/cr7FY+Qp7x9nr9JMzqGfKcg==
+X-Received: by 2002:a17:902:7809:b0:1e4:19e3:56cb with SMTP id p9-20020a170902780900b001e419e356cbmr11933122pll.12.1714375619542;
+        Mon, 29 Apr 2024 00:26:59 -0700 (PDT)
+Received: from localhost.localdomain ([205.204.117.126])
+        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001eac9aa55edsm6928331plh.250.2024.04.29.00.26.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 00:26:59 -0700 (PDT)
+From: zhangwarden@gmail.com
+To: jpoimboe@kernel.org,
+	mbenes@suse.cz,
+	jikos@kernel.org,
+	pmladek@suse.com,
+	joe.lawrence@redhat.com
+Cc: live-patching@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wardenjohn <zhangwarden@gmail.com>
+Subject: [PATCH] livepatch.h: Add comment to klp transition state
+Date: Mon, 29 Apr 2024 15:26:28 +0800
+Message-Id: <20240429072628.23841-1-zhangwarden@gmail.com>
+X-Mailer: git-send-email 2.37.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am625-sk: Add bootph-all property
- in phy_gmii_sel node
-To: Chintan Vankar <c-vankar@ti.com>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Nishanth Menon <nm@ti.com>, s-vadapalli@ti.com
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240429061600.2723904-1-c-vankar@ti.com>
- <c17d8123-e9cb-45b5-84df-9fe102ddeddc@kernel.org>
- <4b3d2578-06ea-4feb-aa31-3968063953e8@ti.com>
- <f400160f-1caf-44f6-a1b2-3a538eebd63c@ti.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <f400160f-1caf-44f6-a1b2-3a538eebd63c@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 29/04/2024 08:58, Chintan Vankar wrote:
-> 
-> 
-> On 29/04/24 12:12, Chintan Vankar wrote:
->>
->>
->> On 29/04/24 12:08, Krzysztof Kozlowski wrote:
->>> Are you sure you kept proper ordering of nodes or just stuffed this to
->>> the end?
->>
->> Yes, I added this node at the end.
-> 
-> Is it okay to add it at the end or it should be defined after "cpsw3g"
-> node ?
+From: Wardenjohn <zhangwarden@gmail.com>
 
-What is the ordering for this subarch? What does the DTS coding style say?
+livepatch.h use KLP_UNDEFINED\KLP_UNPATCHED\KLP_PATCHED for klp transition state.
+When livepatch is ready but idle, using KLP_UNDEFINED seems very confusing.
+In order not to introduce potential risks to kernel, just update comment
+to these state.
+---
+ include/linux/livepatch.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+index 9b9b38e89563..b6a214f2f8e3 100644
+--- a/include/linux/livepatch.h
++++ b/include/linux/livepatch.h
+@@ -18,9 +18,9 @@
+ #if IS_ENABLED(CONFIG_LIVEPATCH)
+ 
+ /* task patch states */
+-#define KLP_UNDEFINED	-1
+-#define KLP_UNPATCHED	 0
+-#define KLP_PATCHED	 1
++#define KLP_UNDEFINED	-1 /* idle, no transition in progress */
++#define KLP_UNPATCHED	 0 /* transitioning to unpatched state */
++#define KLP_PATCHED	 1 /* transitioning to patched state */
+ 
+ /**
+  * struct klp_func - function structure for live patching
+-- 
+2.37.3
 
 
