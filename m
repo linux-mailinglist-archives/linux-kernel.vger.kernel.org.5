@@ -1,199 +1,140 @@
-Return-Path: <linux-kernel+bounces-161759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59718B50D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3020A8B50D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 734E41F2202B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:55:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8CD81F22011
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 05:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4ACEAFA;
-	Mon, 29 Apr 2024 05:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 646F5F9CD;
+	Mon, 29 Apr 2024 05:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="w9+EPYWQ"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Adpq5CPz"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997D7DDD8;
-	Mon, 29 Apr 2024 05:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FD61119F;
+	Mon, 29 Apr 2024 05:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714370104; cv=none; b=HrIdWDSeoJe+YXeCJzbrdJCKnnglBsVNR8mZAO2FRR8UMIsUfad+De2tRkSDR7IFh25ai1UwFq77qqS6X1OxzdjIJA7Jl7ULrbKLiAs1gdJyySALWZHM+QqRhh2auSiZOee9qdgg3n3YOOdyLEp1XFb7j5k1Pk0yzwZ8yTWczNw=
+	t=1714370116; cv=none; b=dUeIsbg9bQ1NiqsIZOU+3Z0OQ1gDNGlBnaeAv9BlCkTrKU0tijTWiWQB0BR7Qk3BRgvsXX15s9j3n3/4L7mh9jTePo2+1Ek2Lf3L88J/IziUxlSANcUca8pOxxa6cDOHwjtDvL/DalKv3e2r1WXgXQC4KborQKKCzHIVhjAcF7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714370104; c=relaxed/simple;
-	bh=B/8yaOKjqm4lDksZDUxYpsKoDBodUyrAGmiPUBu0eq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FcNKF+ueXNakm4DpS4za8oO071WDj2py2B3Z4G6pa7tkUVJOL0IGKAnSfDhPIhsSDhhnV9CjQtMoRvpiUgWLtrTI/rc5o4CutUIoYgSeX9pq3tYnrYSHxDsexvTkvXllYn5kOyQS6gpnHJw36140PmaaF7M4AQWR3DNcasdnHwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=w9+EPYWQ; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43T5s82Q052960;
-	Mon, 29 Apr 2024 00:54:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714370048;
-	bh=9z+5mrcooFlbXR+nO+DTW5Jb0Y5LWwkCd9vReQSQTeA=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=w9+EPYWQ6GGF8dZ+J2fGTL2TArMBiqkkvdCS/SdNjSfGehyDyEIIFNgydFTJ5qJn9
-	 wqtCy7lD4trk/O+Tf+u6Qi9wLdqvlxsH/lmf6DShIvU6XOeqy+AkL6NI6eiNUrZKEZ
-	 AhWTL7a7MLqN3lh7Bxu9KDN8HIyTD2beCNDboNnI=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43T5s873114950
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 29 Apr 2024 00:54:08 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 29
- Apr 2024 00:54:08 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 29 Apr 2024 00:54:08 -0500
-Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43T5s2m5029844;
-	Mon, 29 Apr 2024 00:54:03 -0500
-Message-ID: <c138f315-ed9d-4c10-b9b6-e88cc3ec5e8c@ti.com>
-Date: Mon, 29 Apr 2024 11:24:02 +0530
+	s=arc-20240116; t=1714370116; c=relaxed/simple;
+	bh=RpSffKBYdZJHtJT6BEJldCAqUGT6J1+z9IACpC9e4bw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OEz5UmKDmzljTDXlMG5guRZf1dBFGMPZeT0wQZspLHtMMAIY2cgJhBq7mtUyTF/RU3sUtIHvRLaodEg2QWhZBPx7QFK+zOe/wPZTlrTWsPeyxYuUnglBdu6bkKquNdACG1kRX+K8fDzf3ruaot7KD6i2cGlTbnyukUXkkp9NEtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Adpq5CPz; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43T4oJnU021349;
+	Mon, 29 Apr 2024 05:54:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=cNxs2TQAt/Gjy+68TESEKnKwZfqi+c0s1TOQ+rGD0Gc=;
+ b=Adpq5CPzUBrV/q5gLBQPQQyEirSZeqT+8f+l91DONSXqux+zPmw+gPVtMakAEErAbSXD
+ kqXdcpCKCVNvN5cLfAVjpXKTSrAbqliXrlkJN2fRD+T3cBNSJW0+SWQWao1jWxahk/dr
+ agdgHaUmrZ2TUxB46Zj419pTwEMEgc2zJSBnt1RjfBjyOREcvMqM2HmyFno+Md3p2FN6
+ axNFtzHDCJQyioRjHoogAWbesBTJxn7XtBjJSFPGiiGwkyUXizhnehpngM8+nOHhDx5s
+ Ob3egMdqnRbL5LU4KSRMUD1aYR8eFcp5U79UJ3H/fzNij8nbeVzzpzo0z+L95J90EiFm gA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xt1yn8ahu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 05:54:31 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43T5sVDL018481;
+	Mon, 29 Apr 2024 05:54:31 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xt1yn8ahp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 05:54:31 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43T1qmHC015545;
+	Mon, 29 Apr 2024 05:54:30 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsed2n5we-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 05:54:30 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43T5sQhC43385190
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Apr 2024 05:54:28 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 575FD2004E;
+	Mon, 29 Apr 2024 05:54:26 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 444CD2004D;
+	Mon, 29 Apr 2024 05:54:26 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 29 Apr 2024 05:54:26 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+	id D00CEE082E; Mon, 29 Apr 2024 07:54:25 +0200 (CEST)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/core: Test online status in available_idle_cpu()
+Date: Mon, 29 Apr 2024 07:54:15 +0200
+Message-Id: <20240429055415.3278672-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: ti: icssg_prueth: Add SW TX / RX Coalescing
- based on hrtimers
-Content-Language: en-US
-To: Simon Horman <horms@kernel.org>
-CC: Dan Carpenter <dan.carpenter@linaro.org>,
-        Heiner Kallweit
-	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Jan Kiszka
-	<jan.kiszka@siemens.com>,
-        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
-	<pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
-	<edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>
-References: <20240424091823.1814136-1-danishanwar@ti.com>
- <20240427134120.GJ516117@kernel.org>
-From: MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <20240427134120.GJ516117@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: It9T9tFBeBRTt7wpgRGL86vUJr4uVOoq
+X-Proofpoint-ORIG-GUID: -qZoA8vCQ80tkAysgnCFlRyAJAlThVxg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_03,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404290038
 
+The current implementation of available_idle_cpu() doesn't test
+whether a possible cpu is offline. On s390 this dereferences a
+NULL pointer in arch_vcpu_is_preempted() because lowcore is not
+allocated for offline cpus. On x86, tracing also shows calls to
+available_idle_cpu() after a cpu is disabled, but it looks like
+this isn't causing any (obvious) issue. Nevertheless, add a check
+and return early if the cpu isn't online.
 
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+---
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 27/04/24 7:11 pm, Simon Horman wrote:
-> On Wed, Apr 24, 2024 at 02:48:23PM +0530, MD Danish Anwar wrote:
->> Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
->> driver, which can be enabled by ethtool commands:
->>
->> - RX coalescing
->>   ethtool -C eth1 rx-usecs 50
->>
->> - TX coalescing can be enabled per TX queue
->>
->>   - by default enables coalesing for TX0
->>   ethtool -C eth1 tx-usecs 50
->>   - configure TX0
->>   ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
->>   - configure TX1
->>   ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
->>   - configure TX0 and TX1
->>   ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
->> tx-usecs 100
->>
->> Minimum value for both rx-usecs and tx-usecs is 20us.
->>
->> Comapared to gro_flush_timeout and napi_defer_hard_irqs this patch
-> 
-> nit: Compared
-> 
->> allows to enable IRQ coalescing for RX path separately.
->>
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> 
-> ...
-> 
->> @@ -190,19 +191,35 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
->>  	return num_tx;
->>  }
->>  
->> +static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
->> +{
->> +	struct prueth_tx_chn *tx_chns =
->> +			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
->> +
->> +	enable_irq(tx_chns->irq);
->> +	return HRTIMER_NORESTART;
->> +}
->> +
->>  static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
->>  {
->>  	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
->>  	struct prueth_emac *emac = tx_chn->emac;
->> +	bool tdown = false;
->>  	int num_tx_packets;
->>  
->> -	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
->> +	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget, &tdown);
-> 
-> Please consider limiting lines to 80 columns wide in Networking code.
-> 
->>  
->>  	if (num_tx_packets >= budget)
->>  		return budget;
->>  
->> -	if (napi_complete_done(napi_tx, num_tx_packets))
->> -		enable_irq(tx_chn->irq);
->> +	if (napi_complete_done(napi_tx, num_tx_packets)) {
->> +		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown))
->> +			hrtimer_start(&tx_chn->tx_hrtimer,
->> +				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
->> +				      HRTIMER_MODE_REL_PINNED);
->> +		else
->> +			enable_irq(tx_chn->irq);
->> +	}
->>  
->>  	return num_tx_packets;
->>  }
-> 
-> ...
-> 
->> @@ -870,7 +889,12 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
->>  	}
->>  
->>  	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
->> -		enable_irq(emac->rx_chns.irq[rx_flow]);
->> +		if (unlikely(emac->rx_pace_timeout_ns))
->> +			hrtimer_start(&emac->rx_hrtimer,
->> +				      ns_to_ktime(emac->rx_pace_timeout_ns),
->> +				      HRTIMER_MODE_REL_PINNED);
->> +		else
->> +			enable_irq(emac->rx_chns.irq[rx_flow]);
-> 
-> clang-18 and gcc-13 both complain about the if/else logic above.
-> I think it would be best to add {} to the outer if statement.
-> 
->>  
->>  	return num_rx;
->>  }
-> 
-> ...
-
-Sure Simon, I'll fix all this and send v2.
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7019a40457a6..1d9b80411594 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7434,6 +7434,9 @@ int idle_cpu(int cpu)
+  */
+ int available_idle_cpu(int cpu)
+ {
++	if (!cpu_online(cpu))
++		return 0;
++
+ 	if (!idle_cpu(cpu))
+ 		return 0;
+ 
 -- 
-Thanks and Regards,
-Danish
+2.40.1
+
 
