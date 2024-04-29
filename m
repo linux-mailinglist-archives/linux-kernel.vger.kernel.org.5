@@ -1,130 +1,93 @@
-Return-Path: <linux-kernel+bounces-161876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3FB48B5294
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:51:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489ED8B5299
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693A61F21686
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:51:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDDC41F21686
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495CC15E85;
-	Mon, 29 Apr 2024 07:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5141759E;
+	Mon, 29 Apr 2024 07:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="FarfbKJu"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Zjl2L+fS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06B814A8D;
-	Mon, 29 Apr 2024 07:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97075883D;
+	Mon, 29 Apr 2024 07:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714377062; cv=none; b=bHUh8h5xyIHKAv5iTXvBbRQE5+CtqXYTHYSym2dsVdpKEXya3Fau7hZNjCAB2TLEvaCl0LWgYGPPeQGmDmnAD3g5DUC/EGtgSKI9m44z0vURuunaYFntCaMbbHz+xBxzrYU+PmcsldzQLXst5ZzX+2nZ1AgzU8hOSb0aCYdo1IY=
+	t=1714377068; cv=none; b=A7BG0P0B4zYFtNb0s/AZ/6NoO7tk9J0782WJ4zd8FgT+HtmghyQRVKqrYS9hggqws22viHKuKB/Y9MwHPreWNV/psliEujg4j8iLu3n+oRAv1gNGSzih2425y2OgBbysW14GFhetAcUzGYE4BeMIUFxTV6V8pLadTpu0CbGJ1oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714377062; c=relaxed/simple;
-	bh=o3lSfrItv9/X+b/XFKMfQD5nbXMPoTZ50KGLPNc6OGE=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=l1nB9geywAR8I+qIyWvFgVngyFR4fyHMD6O/X6Fmir6W/kbUh9kAEZ7XSUomDlIVTMQmBVeRUNNP5Al9OiR9/E/xK1zzJtBaOxoqvOnY/QozpE05QKSX8ukD9WWrvIwr+HLoDFOpeDTaj1hvKRymRfoYC5pnkXKo9vYaadfv794=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=FarfbKJu; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714377037; x=1714981837; i=markus.elfring@web.de;
-	bh=PwgbfZv/QKuas8oXbIWGJWatANQIrG/1UIMV8+ZSv1Y=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=FarfbKJupRCGXP0R8oQtmIYHvwMhx4ft5+v3MVRfBpzzZRKVotKNsM51gJc/YwVR
-	 ltfcT19nSkWwmVDrl2Xw90bxilKSxjrvGBLh9Ji3zZNPolljUaSb5egBp9jNCiGBx
-	 N43VQ87a6YmUxVGoiGTg+s8nJf4qOIVFFpFdW8irUvQZ7Dzp33SSFEZ4Szspca9Lb
-	 0WzGnlJqJVq7J1zaiZue3riFEwJQWmPLZvO8jpfguvfLNJgfyjkqOZ0+EreLGT63W
-	 OFg7hSK3Yom0IWqyiZqaJVAMWw9Mcor/4f9H+SKMmGCBxnKs0nyKxXQWezHV5jVKD
-	 MPMhSbuV1uA3T/KeIg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mo6Nt-1sTHxG36eB-00q8PB; Mon, 29
- Apr 2024 09:50:37 +0200
-Message-ID: <1df4e8d4-733f-43d9-a9d7-3764b6df7ed7@web.de>
-Date: Mon, 29 Apr 2024 09:50:36 +0200
+	s=arc-20240116; t=1714377068; c=relaxed/simple;
+	bh=McMEvZTQ6MNqR/t54W2eBDQB6SXAnERPBrY+KwJc16Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L1ZmrQPf596CUXiLfjJf5ePfk2+hRgI9hwh7olIePfasIs53b4Ytw0kwmB/mWBR2fp5b2ysejrvMaImVWpYbr7x2jq6cRdO4YAa1p9RAPdHNiQy4SjdspkkojbYP/bIU7WI+wfCsJVzpf4cwb9CFj5kt9AES41Mv4/VQYE0v/uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Zjl2L+fS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 015AFC113CD;
+	Mon, 29 Apr 2024 07:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714377068;
+	bh=McMEvZTQ6MNqR/t54W2eBDQB6SXAnERPBrY+KwJc16Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zjl2L+fShKi1Srk5oK9LjSUdOYVVoFxv4TbxuKP2BxTrzdtIqKC20YbMx6t4y2Ccj
+	 d94jmHjjk88Q915550yLOZvNSey3AnNJMFKr8uI6RGEhDk5VhY4M3JXBZRo3CBj29e
+	 S8zThCWLdJ+cowu5VzrTiGRLJqju7cRrA0GPWUd8=
+Date: Mon, 29 Apr 2024 09:51:05 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: Sasha Levin <sashal@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	stable@vger.kernel.org, workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] docs: stable-kernel-rules: explain use of
+ stable@kernel.org (w/o @vger.)
+Message-ID: <2024042957-revision-sublevel-57c2@gregkh>
+References: <cover.1714367921.git.linux@leemhuis.info>
+ <6783b71da48aac5290756343f58591dc42da87bc.1714367921.git.linux@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-cxl@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Alison Schofield <alison.schofield@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Vishal Verma <vishal.l.verma@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240429013154.368118-1-lizhijian@fujitsu.com>
-Subject: Re: [PATCH 1/2] cxl/region: Fix potential invalid pointer dereference
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240429013154.368118-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/YgV0cA6lKGixm8+QuV2vBOSOM230psviYgQtCMgXsfzK+y0HVv
- NNnrBJriTCJRUoGnKcQNOEpO22Xg1cEfBZn6TbygF+fAexxqK8urnbC2mylPaocWLIH1tAk
- s6OWYF+JCmlEp8Z1E1RuSfGXj2xDbxySCoGip+a/p0YSfXzoELdoChrdTZa5lMbvaSifT2i
- Kkm1t/RtAiLLjl6OgNC3A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5AUYALFlqcs=;5IN+RQpPqc6kRVvvKWiU6Ggjxpw
- Tks4v5dEKYql2S9K/LSiubnVjaA89gOJRCsQ3CxVSMec1F157wgvZl8gcdH1g01WV8fGrDWp8
- 19kKNVKyhUxA0vZT7+mtOuOSPMLVaSFwlJz+2Q1mryG9tTyBtUaSG7ibhOCCc7a9uOkP9gUyc
- GKjOP4DeNBtmVBPHuG+HGCRUoXt1DNEPlL6YaSunFi8jodUF8L/L69lUG/xBr0avRkyUyQBLz
- MvGe3jzGef4UzPKwB+J9U7Hn7UsSczgkTQcv64VQdV7A1+vOWNCUgaIEgj3F6SVDV27QHYsXh
- +FjoJDUqLPO41CtGlRX3Eh1dQnLWoY/SlTIkmSWlNcSZX+9IAoeS2RMuDoefbLzEVt6+g2nqC
- lPDCcZ3xNENYMxnIlILc25WCD9pFRjXJ2olx2/f5fgHAYIl1n/+ijAfDKq5o6kXqUqL6x+1a/
- aJ+4hl+dUH3u9zFr7FNQAFR+03ecBpythDE2/h4DEtRxVa+NghOHnW0BOuF7WvcqLit90d7V5
- R2V8cEu2rg7zWJv1bRAV76rZfhQYafkGtjWWK190Ovc74eg7SM6G4MmgDqWxxuWJj4cYpHq6L
- 6W6cJUpJ02EvgvPXPGV3qtUYGJHXflpv+pIfnlAILVXycrqOUkdHr9PHWHKD2GzIUzV0/P+00
- RfKNoWmiQWqFTdwbzOf6b0eW4JIHBetHCOk0Crd0Y/NeYcmk5oPX9BvhAxXsNgo5RvpgZ6LAH
- rh413SXfTRHE+XbNxs66eRGroq7Z0JJ9ykeG6WbEr90BeYyTYUBECnWZfTr9c/qG7EuLPIh2K
- UlShrw0Ppg93zthB4oCI4xecmzODj6/fZ3cnho8qIe6Z0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6783b71da48aac5290756343f58591dc42da87bc.1714367921.git.linux@leemhuis.info>
 
-I would usually expect a corresponding cover letter for patch series.
+On Mon, Apr 29, 2024 at 09:18:29AM +0200, Thorsten Leemhuis wrote:
+> Document when to use of stable@kernel.org instead of
+> stable@vger.kernel.org, as the two are easily mixed up and their
+> difference not explained anywhere[1].
+> 
+> Link: https://lore.kernel.org/all/20240422231550.3cf5f723@sal.lan/ [1]
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> ---
+>  Documentation/process/stable-kernel-rules.rst | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/process/stable-kernel-rules.rst b/Documentation/process/stable-kernel-rules.rst
+> index b4af627154f1d8..ebf4152659f2d0 100644
+> --- a/Documentation/process/stable-kernel-rules.rst
+> +++ b/Documentation/process/stable-kernel-rules.rst
+> @@ -72,6 +72,10 @@ for stable trees, add this tag in the sign-off area::
+>  
+>    Cc: stable@vger.kernel.org
+>  
+> +Use ``Cc: stable@kernel.org`` instead when fixing unpublished vulnerabilities:
+> +it reduces the chance of accidentally exposing the fix to the public by way of
+> +'git send-email', as mails sent to that address are not delivered anywhere.
 
+The "fun" part of just saying this is that then it is a huge "signal" to
+others that "hey, this might be a security fix!" when it lands in
+Linus's tree.  But hey, we do what we can, I know my scripts always use
+this address just to put a bit more noise into that signal :)
 
-> construct_region() could return a PTR_ERR() which cannot be derefernced.
+That being said, it's good to have this documented now, thanks for it:
 
-I hope that a typo will be avoided in the last word of this sentence.
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
-> Moving the dereference behind the error checking to make sure the
-> pointer is valid.
-
-Please choose an imperative wording for an improved change description.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc5#n94
-
-
-=E2=80=A6
-> +++ b/drivers/cxl/core/region.c
-> @@ -3086,10 +3086,9 @@ int cxl_add_to_region(struct cxl_port *root, stru=
-ct cxl_endpoint_decoder *cxled)
->  	mutex_lock(&cxlrd->range_lock);
->  	region_dev =3D device_find_child(&cxlrd->cxlsd.cxld.dev, hpa,
->  				       match_region_by_range);
-> -	if (!region_dev) {
-> +	if (!region_dev)
->  		cxlr =3D construct_region(cxlrd, cxled);
-> -		region_dev =3D &cxlr->dev;
-> -	} else
-> +	else
->  		cxlr =3D to_cxl_region(region_dev);
->  	mutex_unlock(&cxlrd->range_lock);
-
-I suggest to simplify such source code by using a conditional operator exp=
-ression.
-
-Regards,
-Markus
 
