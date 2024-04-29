@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-162315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991658B597B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:10:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 878BE8B594B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:05:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DED4EB2C15E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:04:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41DF2289958
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF1280604;
-	Mon, 29 Apr 2024 13:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BA28121F;
+	Mon, 29 Apr 2024 13:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OMMtTJfn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SiI0IzXt"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BB67F48C
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EAC8060A
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714395727; cv=none; b=qkIrBTLfNC11LjFHu2PiU0pTA0qjOQ1w6AvZeS1SbUOwoND6s6EdD6fZZpSvKSMfoKpkmU2Pq/nNejzekEvKPN/XmjkSwmljn/KGdGMoNQKBd1062nx/GbCTpR6VdS/OiNpWTjYAd5/5k8yA5DDRQXplZ0Gfluv+HgYXccw23Qc=
+	t=1714395729; cv=none; b=Y4Wo7L7SniUJw3R3op+CE3Vt62DAIWqJCCaJ14m9WdYsPREqpaSupiS2QRF2Jrv7iS0KsssgsWgu68XOOmMUyTbG/3fGr1iVZnJN/XBZdu9Ze4cm9FTQlJ3SR6S3WCmDkFfT9i6TICPJxiObRMYsMO4XTBkseHGgZHkMlyv/12s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714395727; c=relaxed/simple;
-	bh=wLYBlxedLAthkJZqqlPpyzb7ig9rN7jLeqrZ6Jbe1HE=;
+	s=arc-20240116; t=1714395729; c=relaxed/simple;
+	bh=6oEQ8SmB24y33MxFtl+D/rMkW5uAGu9qGTWbUveLuYk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tHNMEpDybM3Nw+/rof5rtlHW6hyyruRppOHfx7fFJAi/zp0NZKxkU1B7orl8wj1MxnnDIUFz4HZ8oc772Oji1lN43WJDOIdO95mQoAueDV1YeyfXWuktgom9+WNxUbBudbRoddGvdjr2aqzq1STApeomiSj7883X4M/7LRZjD2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OMMtTJfn; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=a1WgJ7GKlIKC7jeLQVW+ZT//mGX4+GyKZp9rti3eoFi8joU9OShNKuxxMXoW638/CG89q6/TQzD2msbIr5xUn5JDEdTFSnU+kfLaOv2ZcF/w4xU/6M7TLUzK6KRYgWLB1ChUaENLAthD6fXu7xGZE2ZCw7vFJvjUASTmAHEyVys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SiI0IzXt; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714395726; x=1745931726;
+  t=1714395728; x=1745931728;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=wLYBlxedLAthkJZqqlPpyzb7ig9rN7jLeqrZ6Jbe1HE=;
-  b=OMMtTJfnE//xJnemWa+V6o4DPfrVssxx3CM5I6ctbFQIQgSk3wKR3dmn
-   1xqh0cu2IFHT0p46n5Mh6+LzMCxLiqmF8IICYISgpmPSA5lsxFXgyQiE0
-   sGzB0mg8a2gmWuGQ9HqBZNg5W6IOCB0AYCtuMsXLcgq+loSA9U86Jmvjc
-   qRbYksqnysxjvCi9OSKN5fES/V2ApeI4Uq+sxzYxj852Sz0hFfDkn9B9u
-   2hYJ3TCLnxL5E0k8SB4N675/5CfyF2Q4puXyXoF2hRmPGBEn2YgXHyWEU
-   XMvs/h/5PNzTcHe7tY2nzSks8h0jKWgxESPDSjNPMoRUuhj8X6Qp1QW8Y
-   w==;
-X-CSE-ConnectionGUID: WvtpcqVsQWqFLNM+gWUh5Q==
-X-CSE-MsgGUID: jhzogL1KS7+LSskHfAze4Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="12986956"
+  bh=6oEQ8SmB24y33MxFtl+D/rMkW5uAGu9qGTWbUveLuYk=;
+  b=SiI0IzXti8bBwG1QeNOW/gaq/jaGAq+0qzNCZqaubX65hftYiJUtlfkN
+   fGwO6hUps0XYzS5lE7RLHXFVpTpVn7bcQHJDDZEYmyDylOalTFP+L3ctE
+   2kIVcqCDuANGTygVqoOuQ3yPWzKAyMZJ6s8jQbM8VgWPZEhpCmaFDpFij
+   9yRXhIt9tV8fEhDmzwU6qvo7CnbeXI0eHvg1oobtqkf78cstujzioV1jh
+   +LITQEh3C2DQvoRS7UM7mFi5oX1CcA+qbkMvsgJjxQsYANqTTX8gND1iX
+   es+4WHILKABDdDVL/AxfUJcRrWeYCEcoS7Of00UmbtYYKBADUDQIscdUl
+   A==;
+X-CSE-ConnectionGUID: WhZD3Os+ShSfrG0guuiyQA==
+X-CSE-MsgGUID: sZJwrwc4Rxi8Kr9CKixc5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="12986967"
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="12986956"
+   d="scan'208";a="12986967"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:02:06 -0700
-X-CSE-ConnectionGUID: MkqZ6cdRTymCour0pe9o+w==
-X-CSE-MsgGUID: uKbvR911SqyRL4W/Vh+tbg==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 06:02:08 -0700
+X-CSE-ConnectionGUID: OVy405HkRWmQBAoOhQC/xA==
+X-CSE-MsgGUID: fDqrNWCLQBqSxcw8fAjkNA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26507201"
+   d="scan'208";a="26507206"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by orviesa006.jf.intel.com with ESMTP; 29 Apr 2024 06:02:03 -0700
+  by orviesa006.jf.intel.com with ESMTP; 29 Apr 2024 06:02:05 -0700
 From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-kernel@vger.kernel.org,
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	stable@kernel.org
-Subject: [PATCH v1 12/15] intel_th: pci: Add Sapphire Rapids SOC support
-Date: Mon, 29 Apr 2024 16:01:16 +0300
-Message-ID: <20240429130119.1518073-13-alexander.shishkin@linux.intel.com>
+Subject: [PATCH v1 13/15] intel_th: pci: Add Meteor Lake-S support
+Date: Mon, 29 Apr 2024 16:01:17 +0300
+Message-ID: <20240429130119.1518073-14-alexander.shishkin@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240429130119.1518073-1-alexander.shishkin@linux.intel.com>
 References: <20240429130119.1518073-1-alexander.shishkin@linux.intel.com>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the Trace Hub in Sapphire Rapids SOC.
+Add support for the Trace Hub in Meteor Lake-S.
 
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
@@ -87,21 +87,21 @@ Cc: stable@kernel.org
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
-index 44c08db253d8..08c956fb4995 100644
+index 08c956fb4995..7bb50d414027 100644
 --- a/drivers/hwtracing/intel_th/pci.c
 +++ b/drivers/hwtracing/intel_th/pci.c
-@@ -309,6 +309,11 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3256),
+@@ -289,6 +289,11 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x7e24),
  		.driver_data = (kernel_ulong_t)&intel_th_2x,
  	},
 +	{
-+		/* Sapphire Rapids SOC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3456),
++		/* Meteor Lake-S */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x7f26),
 +		.driver_data = (kernel_ulong_t)&intel_th_2x,
 +	},
  	{
- 		/* Alder Lake CPU */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x466f),
+ 		/* Raptor Lake-S */
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x7a26),
 -- 
 2.43.0
 
